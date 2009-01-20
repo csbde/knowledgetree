@@ -40,10 +40,12 @@
  * @version Version 0.9
  */
 
-// Generic error messages used in the API. There may be some others specific to functionality
-// directly in the code.
-// TODO: Check that they are all relevant.
-
+/**
+ * Generic error messages used in the API. There may be some others specific to functionality
+ * directly in the code.
+ *
+ * TODO: Check that they are all relevant.
+*/
 define('KTAPI_ERROR_SESSION_INVALID', 			'The session could not be resolved.');
 define('KTAPI_ERROR_PERMISSION_INVALID', 		'The permission could not be resolved.');
 define('KTAPI_ERROR_FOLDER_INVALID', 			'The folder could not be resolved.');
@@ -59,15 +61,18 @@ define('KTAPI_ERROR_WORKFLOW_INVALID', 			'The workflow could not be resolved.')
 define('KTAPI_ERROR_WORKFLOW_NOT_IN_PROGRESS', 	'The workflow is not in progress.');
 define('KTAPI_ERROR_DOCUMENT_LINK_TYPE_INVALID','The link type could not be resolved.');
 
-// Mapping of permissions to actions.
-// TODO: Check that they are all correct.
-// Note, currently, all core actions have permissions that are defined in the plugins.
-// As the permissions are currently associated with actions which are quite closely linked
-// to the web interface, it is not the nicest way to do things. They should be associated at
-// a lower level, such as in the api. probably, better, would be at some stage to assocate
-// the permissions to the action/transaction in the database so administrators can really customise
-// as required.
-
+/**
+ * Mapping of permissions to actions.
+ *
+ * Note, currently, all core actions have permissions that are defined in the plugins.
+ * As the permissions are currently associated with actions which are quite closely linked
+ * to the web interface, it is not the nicest way to do things. They should be associated at
+ * a lower level, such as in the api. probably, better, would be at some stage to assocate
+ * the permissions to the action/transaction in the database so administrators can really customise
+ * as required.
+ *
+ * TODO: Check that they are all correct.
+*/
 define('KTAPI_PERMISSION_DELETE',			'ktcore.permissions.delete');
 define('KTAPI_PERMISSION_READ',				'ktcore.permissions.read');
 define('KTAPI_PERMISSION_WRITE',			'ktcore.permissions.write');

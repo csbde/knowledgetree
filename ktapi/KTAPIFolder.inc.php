@@ -1081,7 +1081,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 *
 	 * @author KnowledgeTree Team
 	 * @access public
-	 * @access public
 	 * @return array
 	 */
 	function get_permissions()
