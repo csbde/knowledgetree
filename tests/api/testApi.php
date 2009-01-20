@@ -1,20 +1,6 @@
 <?php
-require_once (dirname(__FILE__) . '/../test.php');
+require_once (KT_DIR . '/tests/test.php');
 require_once (KT_DIR . '/ktapi/ktapi.inc.php');
-
-/**
-* This class creates a random file to test the object/permissions access
-*
-*/
-class APIDocumentHelper {
-    function createRandomFile($content = 'this is some text') {
-        $temp = tempnam(dirname(__FILE__), 'myfile');
-        $fp = fopen($temp, 'wt');
-        fwrite($fp, $content);
-        fclose($fp);
-        return $temp;
-    }
-}
 
 /**
 * These are the unit tests for the main KnowledgeTree API class
@@ -130,47 +116,37 @@ class APITestCase extends KTUnitTestCase {
         $permission = 'ktcore.permissions.read';
 
         // create the document object
-        $randomFile = APIDocumentHelper::createRandomFile();
+        $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('title_1.txt', 'name_1.txt', 'Default', $randomFile);
-        $internalDocObject = $document->document;
+        @unlink($randomFile);
 
+        $internalDocObject = $document->getObject();
         $user = $this->ktapi->can_user_access_object_requiring_permission($internalDocObject, $permission);
 
         $this->assertNotNull($user);
         $this->assertIsA($user, 'User');
         $this->assertNoErrors();
-        @unlink($randomFile);
 
         // test case 2 - test for bad permissions string
         $permission = 'ktcore.permissions.badstring';
 
         // create the document object
-        $randomFile = APIDocumentHelper::createRandomFile();
-        $document = $this->root->add_document('title_2.txt', 'name_2.txt', 'Default', $randomFile);
+        $randomFile = $this->createRandomFile();
+        $document2 = $this->root->add_document('title_2.txt', 'name_2.txt', 'Default', $randomFile);
+        @unlink($randomFile);
 
-        $user = $this->ktapi->can_user_access_object_requiring_permission($document, $permission);
+        $internalDocObject2 = $document2->getObject();
+        $user = $this->ktapi->can_user_access_object_requiring_permission($internalDocObject2, $permission);
 
         $this->assertNotNull($user);
         $this->assertEqual($user, PEAR::isError($user));
         $this->assertNoErrors();
-        @unlink($randomFile);
 
-
-        /*
-        // test case 3 - test for incorect permissions
-        $permission = 'ktcore.permissions.read';
-
-        // create the document object
-        $randomFile = APIDocumentHelper::createRandomFile();
-        $document = $this->root->add_document('title_3.txt', 'name_3.txt', 'Default', $randomFile);
-
-        $user = $this->ktapi->can_user_access_object_requiring_permission($document, $permission);
-
-        $this->assertNotNull($user);
-        $this->assertEqual($user, PEAR::isError($user));
-        $this->assertNoErrors();
-        @unlink($randomFile);
-        */
+        // clean up
+        $document->delete('Testing');
+        $document2->delete('Testing');
+        $document->expunge();
+        $document2->expunge();
     }
 
     /**
@@ -181,26 +157,34 @@ class APITestCase extends KTUnitTestCase {
     {
         // test case 1 - no matching oem numbers
         // create the document object
-        $randomFile = APIDocumentHelper::createRandomFile();
+        $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('title_4.txt', 'name_4.txt', 'Default', $randomFile);
+        @unlink($randomFile);
 
         $list = $this->ktapi->get_documents_by_oem_no('1');
 
         $this->assertTrue(empty($list));
         $this->assertNoErrors();
-        @unlink($randomFile);
 
         // test case 2 - matching oem numbers
         // create the document object
-        $randomFile = APIDocumentHelper::createRandomFile();
-        $document = $this->root->add_document('title_5.txt', 'name_5.txt', 'Default', $randomFile);
+        $randomFile = $this->createRandomFile();
+        $document2 = $this->root->add_document('title_5.txt', 'name_5.txt', 'Default', $randomFile);
+        @unlink($randomFile);
 
         $list = $this->ktapi->get_documents_by_oem_no('2');
 
         $this->assertFalse(empty($list));
         $this->assertNoErrors();
-        @unlink($randomFile);
+
+
+        // clean up
+        $document->delete('Testing');
+        $document2->delete('Testing');
+        $document->expunge();
+        $document2->expunge();
     }
+    */
 
     /**
     * This method tests for the current session
@@ -211,7 +195,7 @@ class APITestCase extends KTUnitTestCase {
         // get session id of active session
         $sessionID = $this->session->get_sessionid();
 
-        $session = KTAPI::get_active_session($sessionID);
+        $session = $this->ktapi->get_active_session($sessionID);
         $this->assertNotNull($session);
         $this->assertIsA($session, 'KTAPI_Session');
         $this->assertNoErrors();
@@ -220,26 +204,26 @@ class APITestCase extends KTUnitTestCase {
     /**
     * This method tests the creation of a session
     *
-    *
+    */
     public function testStartSession()
     {
-        $this->session->logout();
-        $this->session = NULL;
+        $this->ktapi->session_logout();
 
         $this->session = $this->ktapi->start_session('admin', 'admin');
 
         $this->assertNotNull($this->session);
         $this->assertIsA($this->session, 'KTAPI_Session');
         $this->assertNoErrors();
-        die();
     }
 
     /**
     * This method tests the creation of a root session
     *
-    *
+    */
     public function testStartSystemSession()
     {
+        $this->ktapi->session_logout();
+
         $session = $this->ktapi->start_system_session();
 
         $this->assertNotNull($session);
@@ -250,14 +234,24 @@ class APITestCase extends KTUnitTestCase {
     /**
     * This method tests the creation of an anonymous session
     *
-    *
+    */
     public function testStartAnonymousSession()
     {
+        $this->ktapi->session_logout();
+
         $session = $this->ktapi->start_anonymous_session();
 
-        $this->assertNotNull($session);
-        $this->assertIsA($session, 'KTAPI_Session');
-        $this->assertNoErrors();
+        $config = &KTConfig::getSingleton();
+		$allow_anonymous = $config->get('session/allowAnonymousLogin', false);
+
+		$this->assertNotNull($session);
+
+		if($allow_anonymous){
+            $this->assertIsA($session, 'KTAPI_Session');
+            $this->assertNoErrors();
+		}else{
+		    $this->assertError($session);
+		}
     }
 
     /**
@@ -306,7 +300,7 @@ class APITestCase extends KTUnitTestCase {
     public function testGetDocumentById()
     {
         // create the document object
-        $randomFile = APIDocumentHelper::createRandomFile();
+        $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('title_5.txt', 'name_5.txt', 'Default', $randomFile);
 
         $documentID = $document->get_documentid();
@@ -489,7 +483,7 @@ class APITestCase extends KTUnitTestCase {
     public function testRunSavedSearch()
     {
         // create the document object
-        $randomFile = APIDocumentHelper::createRandomFile();
+        $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('title_1.txt', 'name_1.txt', 'Default', $randomFile);
 
         $searchID = $this->ktapi->create(rand(1,1000), '(GeneralText contains "title")');
@@ -500,6 +494,15 @@ class APITestCase extends KTUnitTestCase {
         $this->assertNotEqual($result, PEAR::isError($result));
         $this->assertNoErrors();
         @unlink($randomFile);
+    }
+
+
+    function createRandomFile($content = 'this is some text') {
+        $temp = tempnam(dirname(__FILE__), 'myfile');
+        $fp = fopen($temp, 'wt');
+        fwrite($fp, $content);
+        fclose($fp);
+        return $temp;
     }
 }
 ?>

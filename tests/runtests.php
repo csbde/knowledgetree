@@ -8,6 +8,8 @@ class UnitTests extends TestSuite {
         $this->TestSuite('Unit tests');
 
         // KTAPI
+        $this->addFile('api/testApi.php');
+//        $this->addFile('api/testAcl.php');
         $this->addFile('api/testAuthentication.php');
         $this->addFile('api/testDocument.php');
         $this->addFile('api/testFolder.php');
@@ -25,7 +27,6 @@ class UnitTests extends TestSuite {
 
         // Search (2) and indexing
         $this->addFile('documentProcessor/testExtracters.php');
-//        $this->addFile('documentProcessor/testIndexer.php');
         $this->addFile('documentProcessor/testGuidInserter.php');
         $this->addFile('search2/testSearch.php');
     }

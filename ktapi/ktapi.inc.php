@@ -244,8 +244,9 @@ class KTAPI
  	*/
  	public function can_user_access_object_requiring_permission(&$object, $permission)
  	{
-		//assert(!is_null($object));
- 		//assert(is_a($object,'DocumentProxy') || is_a($object,'FolderProxy') || is_a($object,'Document') || is_a($object,'Folder'));
+		assert(!is_null($object));
+ 		assert(is_a($object,'DocumentProxy') || is_a($object,'FolderProxy') || is_a($object,'Document') || is_a($object,'Folder'));
+ 		/*
         if(is_null($object) || PEAR::isError($object)){
             $error = $object;
             return $object;
@@ -255,6 +256,7 @@ class KTAPI
             $error = new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
             return $error;
         }
+        */
 
  		$permissions = &KTAPI::get_permission($permission);
 		if (is_null($permissions) || PEAR::isError($permissions))
@@ -428,6 +430,11 @@ class KTAPI
 		return $session;
 	}
 
+	function session_logout()
+	{
+	    $this->session->logout();
+	    $this->session = null;
+	}
 
 	/**
 	* Gets the root folder.
