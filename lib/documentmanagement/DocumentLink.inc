@@ -35,12 +35,14 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original 
  * copyright notice.
- * Contributor( s): ______________________________________
  *
- *
- * @author Bryn Divey, Jam Warehouse (Pty) Ltd, South Africa
- * @package lib.documentmanagement
+ * @copyright 2008-2009, KnowledgeTree Inc.
+ * @license GNU General Public License version 3
+ * @author KnowledgeTree Team
+ * @package KnowledgeTree
+ * @version Version 0.9
  */
+
 class DocumentLink extends KTEntity {
 
 	/** primary key value */
