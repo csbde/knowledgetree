@@ -100,12 +100,23 @@ class DocumentExtractorsTestCase extends KTUnitTestCase {
     {
         static $extractors = array();
 
-        // get powerpoint extractor
+        // get extractor
         $query = "select me.id, me.name from mime_types mt
             INNER JOIN mime_extractors me ON mt.extractor_id = me.id
             WHERE filetypes = '{$extension}'";
 
         $res = DBUtil::getOneResult($query);
+
+        // On first run the mime_extractors table is empty - populate it for the tests
+        if(empty($res) || PEAR::isError($res)){
+            $this->indexer->registerTypes(true);
+
+            $query = "select me.id, me.name from mime_types mt
+                INNER JOIN mime_extractors me ON mt.extractor_id = me.id
+                WHERE filetypes = '{$extension}'";
+
+            $res = DBUtil::getOneResult($query);
+        }
 
         // Instantiate extractor
         if(array_key_exists($res['name'], $extractors)){
@@ -116,7 +127,7 @@ class DocumentExtractorsTestCase extends KTUnitTestCase {
         }
 
         $this->assertNotNull($extractor);
-        if(empty($extractor)) return;
+        if(empty($extractor)) return '';
 
         // Extract content
         $targetFile = tempnam($this->tempPath, 'ktindexer');
