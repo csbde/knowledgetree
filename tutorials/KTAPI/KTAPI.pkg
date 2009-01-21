@@ -27,22 +27,22 @@
                <para>
                     This is KTAPI example one.
                     <example><title>Example 1</title>
-32                      <programlisting role="tutorial">
-33
-34     public function KTAPI_Error($msg, $obj = null)
-35     {
-36         if (PEAR::isError($obj))
-37         {
-38             parent::PEAR_Error($msg . ' - ' . $obj->getMessage());
-39         }
-40         else
-41         {
-42             parent::PEAR_Error($msg);
-43         }
-44     }
-45
-46                      </programlisting>
-47                  </example>
+                      <programlisting role="tutorial">
+
+     public function KTAPI_Error($msg, $obj = null)
+     {
+         if (PEAR::isError($obj))
+         {
+             parent::PEAR_Error($msg . ' - ' . $obj->getMessage());
+         }
+         else
+         {
+             parent::PEAR_Error($msg);
+         }
+     }
+
+                      </programlisting>
+                  </example>
                </para>
             </refsect3>
         </refsect2>
