@@ -1,0 +1,51 @@
+<refentry id="{@id}">
+    <refnamediv>
+        <refname>KTAPI User Guide</refname>
+        <refpurpose>Documentation, examples and tutorials for the KnowledgeTree API (KTAPI)</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <author>
+            KnowledgeTree Team
+            <authorblurb>
+                This documentation is maintained by the {@link mailto:info@knowledgetree.com KnowledgeTree Team}.
+            </authorblurb>
+        </author>
+    </refsynopsisdiv>
+    {@toc}
+    <refsect1 id="{@id intro}">
+        <title>Introduction</title>
+            <para>
+                This is an introductory blurb about the KTAPI Package.
+            </para>
+        <refsect2 id="{@id examples}">
+            <title>Examples</title>
+            <para>
+                This is a blurb about the KTAPI examples offered here.
+            </para>
+            <refsect3 id="{@id example1}">
+                <title>Example 1</title>
+               <para>
+                    This is KTAPI example one.
+                    <example><title>Example 1</title>
+32                      <programlisting role="tutorial">
+33
+34     public function KTAPI_Error($msg, $obj = null)
+35     {
+36         if (PEAR::isError($obj))
+37         {
+38             parent::PEAR_Error($msg . ' - ' . $obj->getMessage());
+39         }
+40         else
+41         {
+42             parent::PEAR_Error($msg);
+43         }
+44     }
+45
+46                      </programlisting>
+47                  </example>
+               </para>
+            </refsect3>
+        </refsect2>
+    </refsect1>
+</refentry>
+
