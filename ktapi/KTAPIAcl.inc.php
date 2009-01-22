@@ -56,6 +56,7 @@ abstract class KTAPI_Dynamic
 	/**
 	 * Generic getter method
 	 *
+     * @author KnowledgeTree Team
 	 * @access protected
 	 * @param string $property
 	 * @return mixed
@@ -70,15 +71,16 @@ abstract class KTAPI_Dynamic
         }
         throw new Exception('Unknown method ' . get_class($this) . '.' . $method);
     }
-    
+
 	/**
 	 * Generic setter method
-	 * 
+	 *
+     * @author KnowledgeTree Team
 	 * @access protected
 	 * @param string $property
 	 * @param mixed $value
 	 */
-    
+
     protected
     function __set($property, $value)
     {
@@ -137,7 +139,9 @@ class KTAPI_User extends KTAPI_Member
     /**
      * Using the id, the user can be resolved.
      *
-     * @static 
+     * @author KnowledgeTree Team
+     * @access public
+     * @static
      * @param int $id
      * @return KTAPI_User Returns null if  there is no match.
      */
@@ -158,6 +162,8 @@ class KTAPI_User extends KTAPI_Member
     /**
      * Using the full name, the user can be resolved.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @static
      * @param string $name
      * @return KTAPI_User Returns null if  there is no match.
@@ -179,6 +185,8 @@ class KTAPI_User extends KTAPI_Member
     /**
      * Using the username, the user is resolved.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @static
      * @param string $username
      * @return KTAPI_User  Returns null if  there is no match.
@@ -199,6 +207,8 @@ class KTAPI_User extends KTAPI_Member
     /**
      * Using the email, the user is resolved.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @static
      * @param string $email
      * @return KTAPI_User  Returns null if  there is no match.
@@ -220,6 +230,8 @@ class KTAPI_User extends KTAPI_Member
     /**
      * Returns a list of users matching the filter criteria.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @static
      * @param string $filter
      * @param array $options
@@ -245,15 +257,19 @@ class KTAPI_User extends KTAPI_Member
     }
 
     /**
-     * Return username property. (readonly)
+     * Return id property. (readonly)
      *
-     * @return string
+     * @author KnowledgeTree Team
+     * @access public
+     * @return integer
      */
     public function getId() { return $this->user->getId(); }
 
     /**
      * Return username property. (readonly)
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return string
      */
     public function getUsername() { return $this->user->getUserName(); }
@@ -261,6 +277,8 @@ class KTAPI_User extends KTAPI_Member
     /**
      * Return display name property. (readonly)
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return string
      */
     public function getName() { return $this->user->getName(); }
@@ -268,6 +286,8 @@ class KTAPI_User extends KTAPI_Member
     /**
      * Return email property. (readonly)
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return string
      */
     public function getEmail() { return $this->user->getEmail(); }
@@ -294,6 +314,7 @@ class KTAPI_Group extends KTAPI_Member
     /**
      * Constructor for KTAPI_Group. This is private, and can only be constructed by the static getByXXX() functions.
      *
+     * @author KnowledgeTree Team
      * @access private
      * @param Group $group
      */
@@ -306,6 +327,8 @@ class KTAPI_Group extends KTAPI_Member
     /**
      * Using the id, the group can be resolved.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @static
      * @param int $id
      * @return KTAPI_Group Returns null if  there is no match.
@@ -327,6 +350,8 @@ class KTAPI_Group extends KTAPI_Member
     /**
      * Using the name, the group can be resolved.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @static
      * @param string $name
      * @return KTAPI_Group Returns null if  there is no match.
@@ -347,6 +372,8 @@ class KTAPI_Group extends KTAPI_Member
     /**
      * Returns a list of groups matching the filter criteria.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @static
      * @param string $filter
      * @param array $options
@@ -374,6 +401,8 @@ class KTAPI_Group extends KTAPI_Member
     /**
      * Return username property. (readonly)
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return string
      */
     public function getId() { return $this->group->getId(); }
@@ -381,6 +410,8 @@ class KTAPI_Group extends KTAPI_Member
     /**
      * Return display name property. (readonly)
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return string
      */
     public function getName() { return $this->group->getName(); }
@@ -388,6 +419,8 @@ class KTAPI_Group extends KTAPI_Member
     /**
      * Indicates if the group members are system administrators. (readonly)
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return boolean
      */
     public function getIsSystemAdministrator() { return $this->group->getSysAdmin(); }
@@ -414,6 +447,7 @@ class KTAPI_Role extends KTAPI_Member
     /**
      * Constructor for KTAPI_Group. This is private, and can only be constructed by the static getByXXX() functions.
      *
+     * @author KnowledgeTree Team
      * @access private
      * @param Role $role
      */
@@ -426,6 +460,8 @@ class KTAPI_Role extends KTAPI_Member
     /**
      * Using the id, the role can be resolved.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @static
      * @param int $id
      * @return KTAPI_Role Returns null if  there is no match.
@@ -445,6 +481,8 @@ class KTAPI_Role extends KTAPI_Member
     /**
      * Using the name, the role can be resolved.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @static
      * @param string $name
      * @return KTAPI_Role Returns null if  there is no match.
@@ -467,6 +505,8 @@ class KTAPI_Role extends KTAPI_Member
     /**
      * Returns a list of roles matching the filter criteria.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @static
      * @param string $filter
      * @param array $options
@@ -494,6 +534,8 @@ class KTAPI_Role extends KTAPI_Member
     /**
      * Return id property. (readonly)
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return string
      */
     public function getId() { return $this->role->getId(); }
@@ -501,6 +543,8 @@ class KTAPI_Role extends KTAPI_Member
     /**
      * Return display name property. (readonly)
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return string
      */
     public function getName() { return $this->role->getName(); }
@@ -529,6 +573,7 @@ class KTAPI_Permission extends KTAPI_Dynamic
     /**
      * Constructor for KTAPI_Permission. This is private, and can only be constructed by the static getByXXX() functions.
      *
+     * @author KnowledgeTree Team
      * @access private
      * @param KTPermission $permission
      */
@@ -541,6 +586,8 @@ class KTAPI_Permission extends KTAPI_Dynamic
     /**
      * Return a list of permissions.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @static
      * @param string $filter
      * @param array $options
@@ -567,6 +614,8 @@ class KTAPI_Permission extends KTAPI_Dynamic
     /**
      * Returns a KTAPI_Permission based on id.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @static
      * @param int $id
      * @return KTAPI_Permission Returns null if the namespace could not be resolved.
@@ -587,6 +636,8 @@ class KTAPI_Permission extends KTAPI_Dynamic
     /**
      * Returns a KTAPI_Permission based on namespace.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @static
      * @param string $namespace
      * @return KTAPI_Permission Returns null if the namespace could not be resolved.
@@ -607,6 +658,8 @@ class KTAPI_Permission extends KTAPI_Dynamic
     /**
      * Returns the permission id.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return int
      */
     public
@@ -615,6 +668,8 @@ class KTAPI_Permission extends KTAPI_Dynamic
     /**
      * Returns the permission name.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return string
      */
     public
@@ -623,6 +678,8 @@ class KTAPI_Permission extends KTAPI_Dynamic
     /**
      * Returns the permission namespace.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return string
      */
     public
@@ -630,7 +687,7 @@ class KTAPI_Permission extends KTAPI_Dynamic
 }
 
 /**
- * AllocationBase.
+ * Allocation Base class
  *
  * @author KnowledgeTree Team
  * @package KTAPI
@@ -672,6 +729,8 @@ abstract class KTAPI_AllocationBase extends KTAPI_Dynamic
 
 
     /**
+     * Instance of the KTAPI object
+     *
      * @access protected
      * @var KTAPI
      */
@@ -680,6 +739,7 @@ abstract class KTAPI_AllocationBase extends KTAPI_Dynamic
     /**
      * Constructor for KTAPI_Permission. This is protected, and can only be constructed by the static getAllocation() function.
      *
+     * @author KnowledgeTree Team
      * @access protected
      * @param KTAPI_FolderItem $folderItem
      */
@@ -695,6 +755,7 @@ abstract class KTAPI_AllocationBase extends KTAPI_Dynamic
     /**
      * Helper method to identify the member type for the map.
      *
+     * @author KnowledgeTree Team
      * @access protected
      * @param KTAPI_Member $member
      * @return string
@@ -707,7 +768,7 @@ abstract class KTAPI_AllocationBase extends KTAPI_Dynamic
         {
             case 'KTAPI_User': $type = 'user'; break;
             case 'KTAPI_Group': $type = 'group'; break;
-            case 'KTAPI_Route': $type = 'route'; break;
+            case 'KTAPI_Role': $type = 'role'; break;
             default:
                 throw new Exception('Unknown type: ' . $type);
         }
@@ -717,6 +778,7 @@ abstract class KTAPI_AllocationBase extends KTAPI_Dynamic
     /**
      * Log the transaction for the current user.
      *
+     * @author KnowledgeTree Team
      * @access protected
      * @param string $comment
      * @param string $namespace
@@ -761,6 +823,8 @@ abstract class KTAPI_AllocationBase extends KTAPI_Dynamic
     /**
      * Restore working copy, voiding the add(), remove() changes.
      *
+     * @author KnowledgeTree Team
+     * @access public
      */
     public
     function restore()
@@ -792,7 +856,9 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Returns the permission allocation for a specified folder item.
      *
-     * @static 
+     * @author KnowledgeTree Team
+     * @access public
+     * @static
      * @param KTAPI
      * @param KTAPI_FolderItem
      * @return KTAPI_PermissionAllocation
@@ -808,6 +874,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Force the current folder item to inherit permission from the parent.
      *
+     * @author KnowledgeTree Team
+     * @access public
      */
     public
     function inheritAllocation()
@@ -822,6 +890,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Creates a copy of the current permissions.
      *
+     * @author KnowledgeTree Team
+     * @access public
      */
     public
     function overrideAllocation()
@@ -834,6 +904,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Gives permission to the specified member.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @param KTAPI_Member $member A KTAPI_Role, KTAPI_Group or KTAPI_User.
      * @param KTAPI_Permission $permission
      */
@@ -847,6 +919,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
      * Removes permission from the specified member.
      * NOTE: This only removes permission if it was already granted.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @param KTAPI_Member $member A KTAPI_Role, KTAPI_Group or KTAPI_User.
      * @param KTAPI_Permission $permission
      */
@@ -859,6 +933,7 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Helper method to update the permission map for the current folder item.
      *
+     * @author KnowledgeTree Team
      * @access private
      * @param KTAPI_Member $member
      * @param KTAPI_Permission $permission
@@ -881,6 +956,7 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Returns a list of members.
      *
+     * @author KnowledgeTree Team
      * @access private
      * @param string $type
      * @return array
@@ -894,6 +970,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Return list of users for which there are allocations.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return array
      */
     public
@@ -905,6 +983,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Return list of groups for which there are allocations.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return array
      */
     public
@@ -916,6 +996,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Return list of members for which there are allocations.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return array
      */
     public
@@ -927,6 +1009,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Returns the map of permissions for the specific member.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @param KTAPI_Member $member
      * @return array
      */
@@ -941,6 +1025,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Returns true if the permission is set for the specific member.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @param KTAPI_Member $member
      * @param KTAPI_Permission $permission
      * @return boolean
@@ -970,6 +1056,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Returns the properties defined in the system.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return array
      *
      */
@@ -982,6 +1070,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Returns an associative array with permissions mapped onto users, groups and roles.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @access protected
      */
     protected
@@ -1097,13 +1187,13 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
         $inheritedId = $inherited->getId();
         $objectId = $object->getId();
 
-        $map['inherited'] = ($inheritedId === $objectId) && ($objectId != 1);
+        $map['inherited'] = ($inheritedId !== $objectId) && ($objectId != 1);
 
-        // only allow inheritance if not inherited, -and- folders is editable
+        // only allow inheritance of permissions from parent if not inherited, -and- folder is editable
         $map['inheritable'] = $editable && !$map['inherited'] && ($objectId != 1);
 
-        // only allow edit if the folder is editable.
-        $map['editable'] = $editable && $map['inherited'];
+        // only allow edit if the folder is editable and not inherited
+        $map['editable'] = $editable && !$map['inherited'];
 
         $this->map = $map;
         $this->mapCopy = $map;
@@ -1113,6 +1203,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Saves changes made by add() and remove().
      *
+     * @author KnowledgeTree Team
+     * @access public
      */
     public
     function save()
@@ -1124,7 +1216,7 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
         }
 
         // if the current setup is inherited, then we must create a new copy to store the new associations.
-        if ($this->IsInherited)
+        if ($this->getIsInherited())
         {
             $this->overrideAllocation();
         }
@@ -1185,6 +1277,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Indicates if any changes have been made.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return boolean
      */
     public
@@ -1193,6 +1287,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Indicates if the current folder item is allowed to inherit permissions from the parent.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return boolean
      */
     public
@@ -1201,6 +1297,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Indicates it the current folder item currently inherits the permissions from the parent.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return boolean
      */
     public
@@ -1209,6 +1307,8 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
     /**
      * Indicates if the permissions are editable but the current user.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @return boolean
      */
     public
@@ -1226,7 +1326,10 @@ final class KTAPI_PermissionAllocation extends KTAPI_AllocationBase
 final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
 {
 	/**
-	 * 
+	 * Resolve the folder item allocations
+	 *
+     * @author KnowledgeTree Team
+     * @access public
 	 * @access protected
 	 */
     protected
@@ -1293,7 +1396,9 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
     /**
      * Returns a reference to the role alloction on a folder item.
      *
-     * @static 
+     * @author KnowledgeTree Team
+     * @access public
+     * @static
      * @param KTAPI $ktapi
      * @param KTAPI_FolderItem $folderItem
      * @return KTAPI_RoleAllocation
@@ -1308,7 +1413,9 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
     /**
      * Return an array mapping the membership.
      *
-     * @static 
+     * @author KnowledgeTree Team
+     * @access public
+     * @static
      * @param string $filter
      * @param array $options
      * @return array of KTAPIMember
@@ -1322,6 +1429,8 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
     /**
      * Link a member to a role on the current folder item.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @param KTAPI_Role $role Must be a KTAPIRole, or an array of roles.
      * @param KTAPI_Member $member A KTAPI_Group, KTAPI_User, array.
      */
@@ -1356,6 +1465,8 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
     /**
      * Remove a member from a role on the current folder item.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @param KTAPI_Role $role Must be a KTAPIRole, or an array of roles.
      * @param KTAPI_Member $member A KTAPI_Group or KTAPI_User.
      */
@@ -1382,6 +1493,8 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
     /**
      * Check's if a role has a specific member
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @param KTAPI_Role $role
      * @param KTAPI_Member $member
      * @return boolean
@@ -1411,6 +1524,8 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
     /**
      * Removes all members associated with roles on the current folder item.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @param KTAPI_Role $role Must be a KTAPI_Role, or an array of roles.
      * @param KTAPI_Member $member A KTAPI_Group or KTAPI_User.
      */
@@ -1436,8 +1551,10 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
     }
 
     /**
-     * 
+     * Override the role allocation for each role
      *
+     * @author KnowledgeTree Team
+     * @access public
      */
     public
     function overrideAllocation()
@@ -1447,10 +1564,12 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
             $this->overrideRoleAllocation(KTAPI_Role::getById($roleId));
         }
     }
-    
+
 	/**
 	 * Overrides a role allocation
 	 *
+     * @author KnowledgeTree Team
+     * @access public
 	 * @param KTAPI_Role $role
 	 */
     public
@@ -1497,12 +1616,15 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
 
         // regenerate permissions
 
-		$this->renegeratePermissionsForRole($roleId);
+		$this->_regeneratePermissionsForRole($roleId);
+		return $roleAllocation;
     }
 
     /**
      * Force all roles to inherit role associations.
      *
+     * @author KnowledgeTree Team
+     * @access public
      */
     public
     function inheritAllocation()
@@ -1520,6 +1642,13 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
         }
     }
 
+    /**
+     * Can the folder inherit allocations
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @return unknown
+     */
     public
     function canInheritRoleAllocation()
     {
@@ -1532,6 +1661,8 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
     /**
      * Inherit the role associations from the parent.
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @param KTAPI_Role $role
      * @param boolean $log
      */
@@ -1565,19 +1696,21 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
             return PEAR::raiseError(_kt('Could not inherit allocation from parent.'));
         }
 
-        $this->_renegeratePermissionsForRole($roleId);
+        $this->_regeneratePermissionsForRole($roleId);
     }
 
     /**
      * Regenerate permissions for a role.
      *
-     * Adapted from KTRoleAllocationPlugin::renegeratePermissionsForRole()
+     * Adapted from KTRoleAllocationPlugin::regeneratePermissionsForRole()
      *
+     * @author KnowledgeTree Team
+     * @access public
      * @access private
      * @param int $iRoleId
      */
     private
-	function _renegeratePermissionsForRole($iRoleId)
+	function _regeneratePermissionsForRole($iRoleId)
 	{
 	    $object = $this->folderItem->getObject();
 
@@ -1642,6 +1775,8 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
 	/**
 	 * Save's the role allocation
 	 *
+     * @author KnowledgeTree Team
+     * @access public
 	 */
     public
     function save()

@@ -32,7 +32,7 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * 
+ *
  * @copyright 2008-2009, KnowledgeTree Inc.
  * @license GNU General Public License version 3
  * @author KnowledgeTree Team
@@ -50,7 +50,7 @@ require_once(KT_DIR . '/ktwebservice/KTUploadManager.inc.php');
  * @author KnowledgeTree Team
  * @package KTAPI
  * @version Version 0.9
- * 
+ *
 */
 class KTAPI_Folder extends KTAPI_FolderItem
 {
@@ -112,7 +112,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 	/**
 	 * Checks if the folder is a shortcut
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 * @return boolean
@@ -124,7 +124,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 	/**
 	 * Retrieves the shortcuts linking to this folder
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 * @return array
@@ -194,7 +194,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	}
 	/**
 	 * This clears the global object cashe of the folder class.
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 *
@@ -211,8 +211,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	}
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 * @return unknown
@@ -247,7 +247,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 	/**
 	 * This function will return a folder by it's name (not ID)
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 * @param KTAPI $ktapi
@@ -303,7 +303,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 	/**
 	 * This will return the full path string of the current folder object
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 * @return string
@@ -318,7 +318,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 	/**
 	 * This gets a document by filename or name.
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access private
 	 * @param string $documentname
@@ -409,7 +409,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 	/**
 	 * Gets a User class based on the user id
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @param int $userid
 	 * @return User
@@ -431,7 +431,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 	/**
 	 * Get's a permission string for a folder eg: 'RW' or 'RWA'
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 * @param Folder $folder
@@ -457,7 +457,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 	/**
 	 * Get's a folder listing, recursing to the given depth
-	 * 
+	 *
 	 * <code>
 	 * $root = $this->ktapi->get_root_folder();
 	 * $listing = $root->get_listing();
@@ -468,7 +468,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 *  }
 	 * }
 	 * </code>
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 * @param int $depth
@@ -753,7 +753,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 	/**
 	 * This adds a shortcut to an existing document to the current folder
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 * @param int $document_id The ID of the document to create a shortcut to
@@ -787,7 +787,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 	/**
 	 * This adds a shortcut pointing to an existing folder to the current folder
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 * @param int $folder_id The ID of the folder to create a shortcut to
@@ -827,7 +827,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * $folder = $kt->get_folder_by_name("My New folder");
 	 * $res = $folder->add_document("Test Document", "test.txt", "Default", $tmpfname);
 	 * </code>
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 * @param string $title This is the title for the file in the repository.
@@ -905,7 +905,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * $root->add_folder("My New folder");
 	 * ?>
 	 * </code>
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 * @param string $foldername
@@ -944,7 +944,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * $folder = $kt->get_folder_by_name("My New folder");
 	 * $folder->delete("It was getting old!");
 	 * </code>
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 * @param string $reason
@@ -975,7 +975,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 	/**
 	 * This renames the folder
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 * @param string $newname
@@ -1043,7 +1043,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * $new_folder = $root->add_folder("New test folder");
 	 * $res = $folder->copy($new_folder, "Test copy");
 	 * </code>
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 * @param KTAPI_Folder $ktapi_target_folder
@@ -1113,6 +1113,30 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	}
 
 	/**
+	 * Get the role allocation for the folder
+	 *
+	 * @return KTAPI_RoleAllocation Instance of the role allocation object
+	 */
+	public function getRoleAllocation()
+	{
+	    $allocation = KTAPI_RoleAllocation::getAllocation($this->ktapi, $this);
+
+	    return $allocation;
+	}
+
+	/**
+	 * Get the permission allocation for the folder
+	 *
+	 * @return KTAPI_PermissionAllocation Instance of the permission allocation object
+	 */
+	public function getPermissionAllocation()
+	{
+	    $allocation = KTAPI_PermissionAllocation::getAllocation($this->ktapi, $this);
+
+	    return $allocation;
+	}
+
+	/**
 	 * Determines whether the currently logged on user is subscribed
 	 *
 	 * @author KnowledgeTree Team
@@ -1129,10 +1153,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	}
 
 	/**
-	 * 
+	 *
 	 * @author KnowledgeTree Team
 	 * @access public
-	 * 
+	 *
 	 */
 	public function unsubscribe()
 	{
@@ -1154,7 +1178,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 *
 	 * @author KnowledgeTree Team
 	 * @access public
-	 * 
+	 *
 	 */
 	public function subscribe()
 	{

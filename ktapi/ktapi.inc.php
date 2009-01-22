@@ -96,6 +96,10 @@ abstract class KTAPI_FolderItem
 
 	public abstract function getObject();
 
+	public abstract function getRoleAllocation();
+
+	public abstract function getPermissionAllocation();
+
 	public abstract function isSubscribed();
 
 	public abstract function unsubscribe();

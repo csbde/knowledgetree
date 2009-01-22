@@ -2257,6 +2257,30 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
+	 * Get the role allocation for the document
+	 *
+	 * @return KTAPI_RoleAllocation Instance of the role allocation object
+	 */
+	public function getRoleAllocation()
+	{
+	    $allocation = KTAPI_RoleAllocation::getAllocation($this->ktapi, $this);
+
+	    return $allocation;
+	}
+
+	/**
+	 * Get the permission allocation for the document
+	 *
+	 * @return KTAPI_PermissionAllocation Instance of the permission allocation object
+	 */
+	public function getPermissionAllocation()
+	{
+	    $allocation = KTAPI_PermissionAllocation::getAllocation($this->ktapi, $this);
+
+	    return $allocation;
+	}
+
+	/**
 	 * Checks if the user is subscribed to the document
 	 *
 	 * @author KnowledgeTree Team

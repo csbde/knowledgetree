@@ -1,5 +1,5 @@
 <?php
-require_once (KTAPI_TEST_DIR . '/test.php');
+require_once (KT_DIR . '/tests/test.php');
 require_once (KT_DIR . '/ktapi/ktapi.inc.php');
 
 class APIAclTestCase extends KTUnitTestCase {
@@ -123,8 +123,10 @@ class APIAclTestCase extends KTUnitTestCase {
     function testRoleAllocation()
     {
         $root = $this->ktapi->get_root_folder();
-        $folder = $this->ktapi->get_folder_by_name('/test123');
-
+        $folder = $this->ktapi->get_folder_by_name('test123');
+        if(!$folder instanceof KTAPI_Folder){
+            $folder = $root->add_folder('test123');
+        }
         $allocation = KTAPI_RoleAllocation::getAllocation($this->ktapi, $folder);
 
         $role2 = KTAPI_Role::getByName('Reviewer');
@@ -133,27 +135,27 @@ class APIAclTestCase extends KTUnitTestCase {
         $user2 = KTAPI_User::getByUsername('anonymous');
         $group = KTAPI_Group::getByName('System Administrators');
 
-//        $this->assertFalse($allocation->doesRoleHaveMember($role, $user));
-//        $this->assertTrue($allocation->doesRoleHaveMember($role2, $user));
+        $this->assertFalse($allocation->doesRoleHaveMember($role, $user));
+        $this->assertFalse($allocation->doesRoleHaveMember($role2, $user));
 
-
-
+        // Add Admin user to Reviewer role
         $allocation->add($role2, $user);
+        // Add Admin user to Publisher role
         $allocation->add($role, $user);
+        // Add Sys admin group to Publisher role
         $allocation->add($role, $group);
+        // Add Anonymous to Publisher role - duplicate to test
+        $allocation->add($role, $user2);
+        $allocation->add($role, $user2);
         $allocation->save();
-/*        $allocation->add($role, $user2);
-        $allocation->add($role, $user2); // yup. this is a dup. just to test.
-        $allocation->add($role, $group);
 
         $this->assertTrue($allocation->doesRoleHaveMember($role, $user));
+        $this->assertTrue($allocation->doesRoleHaveMember($role, $group));
 
         $allocation->remove($role, $user);
-
         $this->assertFalse($allocation->doesRoleHaveMember($role, $user));
 
         $allocation->remove($role, $user2);
-
         $this->assertFalse($allocation->doesRoleHaveMember($role, $user2));
 
         $allocation->save();
@@ -162,8 +164,9 @@ class APIAclTestCase extends KTUnitTestCase {
 
         $allocation = KTAPI_RoleAllocation::getAllocation($this->ktapi, $root);
         $this->assertFalse($allocation->doesRoleHaveMember($role, $user));
-        $this->assertFalse($allocation->doesRoleHaveMember($role, $user2));*/
+        $this->assertFalse($allocation->doesRoleHaveMember($role, $user2));
 
+        $folder->delete('Testing role allocation');
     }
 
     /**
@@ -173,12 +176,16 @@ class APIAclTestCase extends KTUnitTestCase {
     function testPermissionAllocation()
     {
         $root = $this->ktapi->get_root_folder();
-        $folder = $this->ktapi->get_folder_by_name('/test123');
+        $folder = $this->ktapi->get_folder_by_name('test123');
+        if(!$folder instanceof KTAPI_Folder){
+            $folder = $root->add_folder('test123');
+        }
 
-        $allocation = KTAPI_PermissionAllocation::getAllocation($this->ktapi, $root);
+        $allocation = KTAPI_PermissionAllocation::getAllocation($this->ktapi, $folder);
 
         $group = KTAPI_Group::getByName('System Administrators');
         $user = KTAPI_User::getByUsername('anonymous');
+        $role = KTAPI_Role::getByName('Publisher');
         $read = KTAPI_Permission::getByNamespace('ktcore.permissions.read');
         $write = KTAPI_Permission::getByNamespace('ktcore.permissions.write');
         $addFolder = KTAPI_Permission::getByNamespace('ktcore.permissions.addFolder');
@@ -188,21 +195,22 @@ class APIAclTestCase extends KTUnitTestCase {
         $allocation->add($user, $write);
         $allocation->add($user, $addFolder);
         $allocation->add($user, $security);
+        $allocation->add($role, $read);
+        $allocation->add($role, $write);
         $allocation->remove($group, $write);
 
         $allocation->save();
 
+        // refresh object and check permission allocations
+        $folder2 = $this->ktapi->get_folder_by_name('test123');
 
-        $root2 = $this->ktapi->get_root_folder();
-
-        $allocation = KTAPI_PermissionAllocation::getAllocation($this->ktapi, $root2);
+        $allocation = KTAPI_PermissionAllocation::getAllocation($this->ktapi, $folder2);
         $this->assertTrue($allocation->isMemberPermissionSet($user, $read));
         $this->assertTrue($allocation->isMemberPermissionSet($user, $write));
-
+        $this->assertTrue($allocation->isMemberPermissionSet($role, $write));
         $this->assertFalse($allocation->isMemberPermissionSet($group, $write));
 
+        $folder->delete('Testing permission allocation');
     }
-
 }
 ?>
-

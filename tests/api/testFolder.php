@@ -1,5 +1,5 @@
 <?php
-require_once (dirname(__FILE__) . '/../test.php');
+require_once (KT_DIR . '/tests/test.php');
 require_once (KT_DIR . '/ktapi/ktapi.inc.php');
 class APIFolderTestCase extends KTUnitTestCase {
     /**
@@ -26,36 +26,36 @@ class APIFolderTestCase extends KTUnitTestCase {
             $folder2->delete('because');
         }
     }
-    
+
     function testAddDocument() {
     	$tmpfname = tempnam("/tmp", "KTUNIT");
     	$fp = fopen($tmpfname, "w");
     	fwrite($fp, "Hello");
     	fclose($fp);
-    	
+
     	$folder = $this->ktapi->get_root_folder();
     	$res = $folder->add_document("Test Document", "test.txt", "Default", $tmpfname);
     	$this->assertEntity($res, 'KTAPI_Document');
-    	
-    	
-    	
+
+
+
     	$res = $res->delete("Test deletion");
-    	
-    	
-    	
+
+
+
     }
-    
+
     function testDeleteFolder() {
     	$folder = $this->ktapi->get_root_folder();
     	$folder = $folder->add_folder('temp1');
         $this->assertEntity($folder, 'KTAPI_Folder');
         $folder->delete('because');
-        
+
         $folder = $this->ktapi->get_folder_by_name('temp1');
         $this->assertError($folder);
     }
-    
-   
+
+
 /*    function testRename() {
         $root = $this->ktapi->get_root_folder();
         $this->assertEntity($root, 'KTAPI_Folder');
@@ -77,26 +77,26 @@ class APIFolderTestCase extends KTUnitTestCase {
 		$root = $this->ktapi->get_root_folder();
 		$folder = $root->get_folder();
 		$this->assertEntity($folder, 'Folder');
-		
+
 		$folder = $this->ktapi->get_folder_by_name("NONAMEFOLDER");
 		$this->assertError($folder);
-		
+
 		$junk = pack("H*", "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F");
 		$junk = $junk.$junk.$junk.$junk.$junk.$junk.$junk.$junk.$junk;
 		$folder = $this->ktapi->get_folder_by_name($junk);
 		$this->assertError($folder);
-		
+
 	}
-	
+
 	function testListing() {
 		$root = $this->ktapi->get_root_folder();
 		$listing = $root->get_listing();
 		$this->assertExpectedResults(true, is_array($listing));
 		foreach($listing as $key => $val) {
-				
+
 		}
 	}
-	
+
 	 function testCreateFolders() {
         $root = $this->ktapi->get_root_folder();
         $this->assertEntity($root, 'KTAPI_Folder');
@@ -132,8 +132,8 @@ class APIFolderTestCase extends KTUnitTestCase {
             $this->assertEntity($folder, 'PEAR_Error');
         }
     }
-	
-	
+
+
 	function testPermission() {
 		$root = $this->ktapi->get_root_folder();
 		$perm = $root->get_permissions();
@@ -142,43 +142,63 @@ class APIFolderTestCase extends KTUnitTestCase {
 
     function getSystemListing() {
         // TODO .. can do anything as admin...
-        
+
     }
     function getAnonymousListing() {
         // TODO
         // probably won't be able to do unless the api caters for setting up anonymous...
-        
+
     }
     function getUserListing() {
         // TODO
-        
+
     }
     function testCopy() {
     	$root = $this->ktapi->get_root_folder();
     	$folder = $root->add_folder("Test folder2");
     	$new_folder = $root->add_folder("New test folder2");
     	$res = $folder->copy($new_folder, "Unit test copy2");
-    	
+
     	$folder->delete("Clean up test");
     	$new_folder->delete("Clean up test");
-    	
+
     	$this->assertNull($res, "Error returned");
-        
-        
+
+
     }
    function testMove() {
     	$root = $this->ktapi->get_root_folder();
     	$folder = $root->add_folder("Test folder2");
     	$new_folder = $root->add_folder("New test folder2");
     	$res = $folder->move($new_folder, "Unit test copy2");
-    	
+
     	$folder->delete("Clean up test");
     	$new_folder->delete("Clean up test");
-    	
+
     	$this->assertNull($res, "Error returned");
-        
-        
+
+
     }
 
+    /**
+     * Test role allocation and permission allocation
+     */
+    function testPermissions()
+    {
+        $root = $this->ktapi->get_root_folder();
+        $folder = $root->add_folder('testX');
+        $this->assertEntity($folder, 'KTAPI_Folder');
+        if(PEAR::isError($folder)) return;
+
+        $permAllocation = $folder->getPermissionAllocation();
+        $this->assertNotNull($permAllocation);
+        $this->assertEntity($permAllocation, KTAPI_PermissionAllocation);
+
+        $roleAllocation = $folder->getRoleAllocation();
+        $this->assertNotNull($roleAllocation);
+        $this->assertEntity($roleAllocation, KTAPI_RoleAllocation);
+
+        $folder->delete('Testing');
+    }
 }
 ?>

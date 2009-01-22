@@ -271,6 +271,31 @@ class APIDocumentTestCase extends KTUnitTestCase {
     }
 
     /**
+     * Test role allocation and permission allocation
+     */
+    function testPermissions()
+    {
+        $randomFile = APIDocumentHelper::createRandomFile();
+        $this->assertTrue(is_file($randomFile));
+
+        $document = $this->root->add_document('testtitle', 'testname', 'Default', $randomFile);
+        @unlink($randomFile);
+        $this->assertNotError($document);
+        if(PEAR::isError($document)) return;
+
+        $permAllocation = $document->getPermissionAllocation();
+        $this->assertNotNull($permAllocation);
+        $this->assertEntity($permAllocation, KTAPI_PermissionAllocation);
+
+        $roleAllocation = $document->getRoleAllocation();
+        $this->assertNotNull($roleAllocation);
+        $this->assertEntity($roleAllocation, KTAPI_RoleAllocation);
+
+        $document->delete('Testing');
+        $document->expunge();
+    }
+
+    /**
      * Tests the adding of a duplicate document title
      *
     function testAddingDuplicateTitle()
