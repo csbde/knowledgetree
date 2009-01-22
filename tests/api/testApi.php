@@ -139,7 +139,7 @@ class APITestCase extends KTUnitTestCase {
         $user = $this->ktapi->can_user_access_object_requiring_permission($internalDocObject2, $permission);
 
         $this->assertNotNull($user);
-        $this->assertEqual($user, PEAR::isError($user));
+        $this->assertIsA($user, 'PEAR_Error');
         $this->assertNoErrors();
 
         // clean up
@@ -302,6 +302,7 @@ class APITestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('title_5.txt', 'name_5.txt', 'Default', $randomFile);
+        @unlink($randomFile);
 
         $documentID = $document->get_documentid();
 
@@ -310,7 +311,9 @@ class APITestCase extends KTUnitTestCase {
         $this->assertNotNull($docObject);
         $this->assertIsA($docObject, 'KTAPI_Document');
         $this->assertNoErrors();
-        @unlink($randomFile);
+
+        $document->delete('Testing');
+        $document->expunge();
     }
 
     /**
@@ -421,81 +424,6 @@ class APITestCase extends KTUnitTestCase {
         $this->assertNotNull($workflows);
         $this->assertNoErrors();
     }
-
-    /**
-    * This method tests the creation of the saved search
-    *
-    */
-    public function testCreate()
-    {
-        $searchID = $this->ktapi->create(rand(1,1000), '(GeneralText contains "title")');
-
-        $this->assertNotNull($searchID);
-        $this->assertNoErrors();
-    }
-
-    /**
-    * This method tests the retrieval for the saved search by it's id
-    *
-    */
-    public function testGetSavedSearch()
-    {
-        $list = $this->ktapi->getList();
-
-        $searchID = $list[0]['id'];
-        $search = $this->ktapi->getSavedSearch($searchID);
-
-        $this->assertNotNull($search);
-        $this->assertNoErrors();
-    }
-
-    /**
-    * This method tests the list of the saved search
-    *
-    */
-    public function testList()
-    {
-        $list = $this->ktapi->getList();
-
-        $this->assertNotNull($list);
-        $this->assertNoErrors();
-    }
-
-    /**
-    * This method tests the deleting of the saved search
-    *
-    */
-    public function testDelete()
-    {
-        $searchID = $this->ktapi->create(rand(1,1000), '(GeneralText contains "title")');
-        $this->ktapi->delete($searchID);
-        $result = $this->ktapi->getSavedSearch($searchID);
-
-        $this->assertTrue(empty($result));
-        $this->assertEqual($result, PEAR::isError($result));
-        $this->assertNoErrors();
-    }
-
-    /**
-    * This method tests the processing of the saved search
-    *
-    */
-    public function testRunSavedSearch()
-    {
-        // create the document object
-        $randomFile = $this->createRandomFile();
-        $document = $this->root->add_document('title_1.txt', 'name_1.txt', 'Default', $randomFile);
-
-        $searchID = $this->ktapi->create(rand(1,1000), '(GeneralText contains "title")');
-
-        $result = $this->ktapi->runSavedSearch($searchID);
-
-        $this->assertNotNull($result);
-        $this->assertNotEqual($result, PEAR::isError($result));
-        $this->assertNoErrors();
-        @unlink($randomFile);
-    }
-
 
     function createRandomFile($content = 'this is some text') {
         $temp = tempnam(dirname(__FILE__), 'myfile');
