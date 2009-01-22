@@ -678,7 +678,7 @@ function processSearchExpression($query)
 		                'oem_document_no' => (string) $hit->OemDocumentNo,
 
 						'relevance' => (float) $hit->Rank,
-        				'text' => (string)  $noText?'':$hit->Text,
+        				'text' => (string)  $noText?'':urlencode($hit->Text),
 
         				'title' => (string) $hit->Title,
         				'document_type'=> $hit->DocumentType,
