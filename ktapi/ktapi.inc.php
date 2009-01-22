@@ -822,8 +822,38 @@ class KTAPI
 		}
 		return $results;
 	}
+}
 
-	/**
+/**
+* This class handles the saved search functionality within the API
+*
+* @author KnowledgeTree Team
+* @package KTAPI
+* @version Version 0.9
+*/
+class savedSearches
+{
+     /**
+     * Instance of the KTAPI object
+     *
+     * @access private
+     */
+    private $ktapi;
+
+    /**
+     * Constructs the bulk actions object
+     *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param KTAPI $ktapi Instance of the KTAPI object
+     */
+    function __construct(&$ktapi)
+    {
+//        $this->ktapi = new KTAPI();
+        $this->ktapi = $ktapi;
+    }
+
+   /**
 	* This method creates the saved search
 	*
 	* @author KnowledgeTree Team
@@ -834,7 +864,7 @@ class KTAPI
 	*/
 	public function create($name, $query)
 	{
-		$user = KTAPI::get_user();
+		$user = $this->ktapi->get_user();
 		if (is_null($user) || PEAR::isError($user))
 		{
 			$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
@@ -869,7 +899,7 @@ class KTAPI
 	*/
 	public function getList()
 	{
-		$user = KTAPI::get_user();
+		$user = $this->ktapi->get_user();
 		if (is_null($user) || PEAR::isError($user))
 		{
 			$list =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
@@ -878,6 +908,11 @@ class KTAPI
 		$userID = $user->getId();
 
 		$list = SearchHelper::getSavedSearches($userID);
+		if (PEAR::isError($list))
+		{
+			$list =  new PEAR_Error('Invalid saved search result');
+			return $list;
+		}
 		return $list;
 	}
 
@@ -904,7 +939,7 @@ class KTAPI
 	*/
 	public function runSavedSearch($searchID)
 	{
-		$search = KTAPI::getSavedSearch($searchID);
+		$search = $this->getSavedSearch($searchID);
 		if(is_null($search) || PEAR::isError($search)){
 		    $results = new PEAR_Error('Invalid saved search');
 		    return $results;
