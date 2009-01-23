@@ -10,11 +10,11 @@ class UnitTests extends TestSuite {
         // KTAPI
         $this->addFile('api/testApi.php');
         $this->addFile('api/testSavedSearches.php');
-//        $this->addFile('api/testAcl.php');
+        $this->addFile('api/testAcl.php');
         $this->addFile('api/testAuthentication.php');
         $this->addFile('api/testDocument.php');
         $this->addFile('api/testFolder.php');
-//        $this->addFile('api/testBulkActions.php');
+        $this->addFile('api/testBulkActions.php');
         $this->addFile('api/testCollection.php');
 
 //        $this->addFile('SQLFile/test_sqlfile.php');

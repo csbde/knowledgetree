@@ -1420,10 +1420,44 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
      * @param array $options
      * @return array of KTAPIMember
      */
-    public static
+    public
     function getMembership($filter = null, $options = array())
     {
-        return array(); // array of (role=>array(user=>array(), group=>array()))
+        $membership = array();
+        $map = $this->map;
+
+        if(empty($map['role']['role'])) return array();
+
+        foreach ($map['role']['role'] as $roleId => $role){
+
+            // If the filter doesn't match, skip
+            if(!is_null($filter) && strpos($role, $filter) === false || strpos($role, $filter) != 0){
+                continue;
+            }
+
+            $users = array();
+            $groups = array();
+
+            // Get users in role
+            if(isset($map['role']['userAllocation'][$roleId])){
+                foreach ($map['role']['userAllocation'][$roleId] as $userId){
+                    $users[$userId] = $map['user'][$userId];
+                }
+            }
+
+            // Get groups in role
+            if(isset($map['role']['groupAllocation'][$roleId])){
+                foreach($map['role']['groupAllocation'][$roleId] as $groupId){
+                    $groups[$groupId] = $map['group'][$groupId];
+                }
+            }
+
+            // Assign to membership array
+            $membership[$role]['user'] = $users;
+            $membership[$role]['group'] = $groups;
+        }
+
+        return $membership; // array of (role=>array(user=>array(), group=>array()))
     }
 
     /**

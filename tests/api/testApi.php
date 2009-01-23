@@ -425,6 +425,30 @@ class APITestCase extends KTUnitTestCase {
         $this->assertNoErrors();
     }
 
+    /**
+     * Testing the getSubscriptions function
+     */
+    public function testGetSubscriptions()
+    {
+        // Create a document and subscribe to it
+        $randomFile = $this->createRandomFile();
+        $document = $this->root->add_document('test title 1', 'testfile1.txt', 'Default', $randomFile);
+        @unlink($randomFile);
+
+        $this->assertEntity($document, 'KTAPI_Document');
+        if(PEAR::isError($document)) return;
+
+        $document->subscribe();
+
+        $subscriptions = $this->ktapi->getSubscriptions();
+        $this->assertIsA($subscriptions, 'array', 'Subscriptions should return an array');
+        $this->assertEntity($subscriptions[0], 'Subscription');
+
+        $document->unsubscribe();
+        $document->delete('Testing');
+        $document->expunge();
+    }
+
     function createRandomFile($content = 'this is some text') {
         $temp = tempnam(dirname(__FILE__), 'myfile');
         $fp = fopen($temp, 'wt');

@@ -822,6 +822,24 @@ class KTAPI
 		}
 		return $results;
 	}
+
+   /**
+	 * Get the users subscriptions
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $filter
+	 * @return array of Subscription
+	 */
+	public function getSubscriptions($filter=null)
+	{
+	    $user = $this->get_user();
+	    $userId = $user->getID();
+
+	    $subscriptions = SubscriptionManager::listSubscriptions($userId);
+
+	    return $subscriptions;
+	}
 }
 
 /**
@@ -853,7 +871,7 @@ class savedSearches
         $this->ktapi = $ktapi;
     }
 
-   /**
+	/**
 	* This method creates the saved search
 	*
 	* @author KnowledgeTree Team

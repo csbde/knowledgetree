@@ -129,6 +129,9 @@ class APIAclTestCase extends KTUnitTestCase {
         }
         $allocation = KTAPI_RoleAllocation::getAllocation($this->ktapi, $folder);
 
+        $membership = $allocation->getMembership();
+        $this->assertTrue(empty($membership));
+
         $role2 = KTAPI_Role::getByName('Reviewer');
         $role = KTAPI_Role::getByName('Publisher');
         $user = KTAPI_User::getByUsername('admin');
@@ -149,9 +152,24 @@ class APIAclTestCase extends KTUnitTestCase {
         $allocation->add($role, $user2);
         $allocation->save();
 
+        // Test membership function
+        $membership = $allocation->getMembership();
+        $this->assertFalse(empty($membership));
+        $this->assertIsA($membership, 'array', 'getMembership should return an array');
+
+        $this->assertTrue($membership['Reviewer']['user'][1] == 'Administrator');
+        $this->assertTrue($membership['Publisher']['group'][1] == 'System Administrators');
+
+        $membership = $allocation->getMembership('Rev');
+        $this->assertFalse(empty($membership));
+
+        $this->assertTrue($membership['Reviewer']['user'][1] == 'Administrator');
+        $this->assertFalse(isset($membership['Publisher']));
+
         $this->assertTrue($allocation->doesRoleHaveMember($role, $user));
         $this->assertTrue($allocation->doesRoleHaveMember($role, $group));
 
+        // Test role removal
         $allocation->remove($role, $user);
         $this->assertFalse($allocation->doesRoleHaveMember($role, $user));
 
