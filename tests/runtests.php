@@ -35,8 +35,8 @@ class UnitTests extends TestSuite {
 
 $test = &new UnitTests();
 if (SimpleReporter::inCli()) {
-    exit ($test->run(new TextReporter()) ? 0 : 1);
+    exit ($test->run(new KTTextReporter()) ? 0 : 1);
 }
-$test->run(new HtmlReporter());
+$test->run(new KTHtmlReporter());
 
 ?>

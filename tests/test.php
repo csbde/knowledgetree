@@ -35,7 +35,7 @@ class KTUnitTestCase extends UnitTestCase {
         }
         return $this->pass(sprintf('Object is not a PEAR Error'));
     }
-    
+
     function assertError($oObject) {
         if(PEAR::isError($oObject)) {
             return $this->pass(sprintf('Object is a PEAR Error: '.$oObject->getMessage() ));
@@ -45,5 +45,88 @@ class KTUnitTestCase extends UnitTestCase {
 
     function assertGroup($oGroup) {
         return $this->assertEntity($oGroup, 'Group');
+    }
+}
+
+/**
+ * Extends the HTML reporter to display more information
+ *
+ */
+class KTHtmlReporter extends HtmlReporter {
+    /**
+     * Display the passed tests
+     *
+     * @param string $message Display a custom message for the test
+     */
+    function paintPass($message) {
+        parent::paintPass($message);
+
+        print "<span class=\"pass\">Pass</span>: ";
+        $breadcrumb = $this->getTestList();
+        array_shift($breadcrumb);
+        print implode("->", $breadcrumb);
+        print "->$message<br />\n";
+    }
+
+    /**
+     * Display the start of each method
+     *
+     * @param string $test_name
+     */
+    function paintMethodStart($test_name) {
+        parent::paintMethodStart($test_name);
+        print "<br /><span class=\"method\"><b>Method start:</b> $test_name</span><br />";
+    }
+
+    /**
+     * Display the start of each test case
+     *
+     * @param string $test_case
+     * @param int $size
+     */
+    function paintGroupStart($test_case, $size) {
+        parent::paintGroupStart($test_case, $size);
+        print "<br /><div class=\"group\"><b>Test Case:</b> $test_case</div>";
+    }
+
+    /**
+     *    Paints the CSS. Add additional styles here.
+     *    @return string            CSS code as text.
+     *    @access protected
+     */
+    function _getCss() {
+        return ".fail { background-color: inherit; color: red; }" .
+                ".pass { background-color: inherit; color: green; }" .
+                " pre { background-color: lightgray; color: inherit; }" .
+                ".group { background-color: lightblue; padding: 4px; }" .
+                ".method { background-color: inherit; }";
+    }
+}
+
+/**
+ * Extends the text (CLI) reporter to display more information
+ *
+ */
+class KTTextReporter extends TextReporter {
+
+    /**
+     * Display the start of each test case
+     *
+     * @param string $test_case
+     * @param int $size
+     */
+    function paintGroupStart($test_case, $size) {
+        parent::paintGroupStart($test_case, $size);
+        print "\nTest Case: $test_case\n";
+    }
+
+    /**
+     * Display the start of each method
+     *
+     * @param string $test_name
+     */
+    function paintMethodStart($test_name) {
+        parent::paintMethodStart($test_name);
+        print "Method: $test_name\n";
     }
 }
