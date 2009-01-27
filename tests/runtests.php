@@ -37,6 +37,9 @@ $test = &new UnitTests();
 if (SimpleReporter::inCli()) {
     exit ($test->run(new KTTextReporter()) ? 0 : 1);
 }
-$test->run(new KTHtmlReporter());
+
+// pass parameter ?show=all to display all passes
+$param = (isset($_REQUEST['show']) && $_REQUEST['show'] == 'all') ? true : false;
+$test->run(new KTHtmlReporter($param));
 
 ?>

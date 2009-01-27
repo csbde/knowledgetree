@@ -53,6 +53,26 @@ class KTUnitTestCase extends UnitTestCase {
  *
  */
 class KTHtmlReporter extends HtmlReporter {
+
+    /**
+     * Display all test output
+     *
+     * @var bool
+     */
+    protected $show;
+
+    /**
+     *    Does nothing yet. The first output will
+     *    be sent on the first test start. For use
+     *    by a web browser.
+     *    @access public
+     */
+    function KTHtmlReporter($show = false) {
+        $this->HtmlReporter();
+        $this->show = $show;
+    }
+
+
     /**
      * Display the passed tests
      *
@@ -61,11 +81,46 @@ class KTHtmlReporter extends HtmlReporter {
     function paintPass($message) {
         parent::paintPass($message);
 
-        print "<span class=\"pass\">Pass</span>: ";
+        if($this->show){
+            print "<span class=\"pass\">PASS</span>: ";
+            $breadcrumb = $this->getTestList();
+            array_shift($breadcrumb);
+            print implode("->", $breadcrumb);
+            print "->$message<br />\n";
+        }
+    }
+
+    /**
+     *    Paints the test failure with a breadcrumbs
+     *    trail of the nesting test suites below the
+     *    top level test.
+     *    @param string $message    Failure message displayed in
+     *                              the context of the other tests.
+     *    @access public
+     */
+    function paintFail($message) {
+        SimpleScorer::paintFail($message);
+
+        print "<span class=\"fail\"><b>FAIL</b></span>: ";
         $breadcrumb = $this->getTestList();
         array_shift($breadcrumb);
-        print implode("->", $breadcrumb);
-        print "->$message<br />\n";
+        print implode(" -&gt; ", $breadcrumb);
+        print " -&gt; " . $this->_htmlEntities($message) . "<br />\n";
+    }
+
+    /**
+     *    Paints a PHP error.
+     *    @param string $message        Message is ignored.
+     *    @access public
+     */
+    function paintError($message) {
+        SimpleScorer::paintError($message);
+
+        print "<span class=\"fail\"><b>EXCEPTION</b></span>: ";
+        $breadcrumb = $this->getTestList();
+        array_shift($breadcrumb);
+        print implode(" -&gt; ", $breadcrumb);
+        print " -&gt; <strong>" . $this->_htmlEntities($message) . "</strong><br />\n";
     }
 
     /**
@@ -75,7 +130,8 @@ class KTHtmlReporter extends HtmlReporter {
      */
     function paintMethodStart($test_name) {
         parent::paintMethodStart($test_name);
-        print "<br /><span class=\"method\"><b>Method start:</b> $test_name</span><br />";
+        if($this->show) print "<br />";
+        print "<span class=\"method\"><b>Method:</b> $test_name</span><br />";
     }
 
     /**
