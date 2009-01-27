@@ -81,22 +81,33 @@ class savedSearchTestCase extends KTUnitTestCase {
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
         $list = $this->savedSearch->getList();
 
-        $searchID = $list[0]['id'];
-        $search = $this->savedSearch->getSavedSearch($searchID);
+        foreach($list as $item){
+            if($item['id'] == $searchID){
+                $search = $item['id'];
+                break;
+            }
+        }
+        $savedSearch = $this->savedSearch->getSavedSearch($search);
 
-        $this->assertNotNull($search);
+        $this->assertNotNull($savedSearch);
         $this->assertNoErrors();
-
         $this->savedSearch->delete($searchID);
 
         // case 2: search does NOT exists
-        $array = array();
         $list = $this->savedSearch->getList();
+        $inList = FALSE;
+        foreach($list as $item){
+            if($item['id'] == $searchID){
+                $inList = TRUE;
+                break;
+            }
+        }
 
         $this->assertNotA($list, 'PEAR_Error');
-        $this->assertEqual($list, $array);
+        $this->assertFalse($inList);
         $this->assertNoErrors();
-   }
+
+    }
 
     /**
     * This method tests the list of the saved search
@@ -115,11 +126,18 @@ class savedSearchTestCase extends KTUnitTestCase {
 
         $this->savedSearch->delete($searchID);
 
-        // case 2: saved searches do NOT exist
+        // case 2: saved search does NOT exist
         $list = $this->savedSearch->getList();
 
+        $inList = FALSE;
+        foreach($list as $item){
+            if($item['id'] == $searchID){
+                $inList = TRUE;
+                break;
+            }
+        }
         $this->assertNotA($list, 'PEAR_Error');
-        $this->assertEqual($list, $array);
+        $this->assertFalse($inList);
         $this->assertNoErrors();
 }
 
