@@ -75,7 +75,7 @@ href="{ktLink base="admin.php" subpath="/documents/fieldmanagement2" query="acti
     <a title="{i18n}Enable document type.{/i18n}" 
     class="ktAction ktAdd" href="{addQS}action=enable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Enable{/i18n}</a>
 {else}
-    <a title="{i18n}Disable document type.{/i18n}"class="ktAction ktDelete" 
+    <a title="{i18n}Disable document type.{/i18n}"class="ktAction ktDenied" 
     kt:deleteMessage="{i18n}Are you sure you wish to disable this document type?{/i18n}" 
     href="{addQS}action=disable&fDocumentTypeId={$oDocumentType->getId()}{/addQS}">{i18n}Disable{/i18n}</a>
 {/if}
