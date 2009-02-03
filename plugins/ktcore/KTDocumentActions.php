@@ -541,7 +541,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
     function getButton() {
         $btn = array();
-        $btn['display_text'] = _kt('Check Document In');
+        $btn['display_text'] = _kt('Checkin Document');
         $btn['arrow_class'] = 'arrow_upload';
         return $btn;
     }
