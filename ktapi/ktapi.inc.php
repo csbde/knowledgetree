@@ -237,7 +237,107 @@ class KTAPI
 		return $permissions;
  	}
 
- 	/**
+	/**
+	* Returns an associative array of permission namespaces and their names 
+	*
+	* @access public
+	* @return array
+	*/
+
+	public function get_permission_types() {
+		$types = array();
+		$list = KTAPI_Permission::getList();
+		foreach($list as $val) {
+			$types[$val->getNameSpace()] = $val->getName();
+		}
+		return $types;
+	}
+
+	/**
+	* Returns folder permissions
+	* 
+	* @access public
+	* @param string 
+	* @param int
+	*
+	*/
+	public function get_folder_permissions($username, $folder_id) {
+		if (is_null($this->session))
+		{
+			$error = new PEAR_Error('A session is not active');
+			return $error;
+		}
+		/* We need to create a new instance of KTAPI to get another user */
+		$user_ktapi = new KTAPI();
+		$user_ktapi->start_system_session($username);
+
+		$folder = KTAPI_Folder::get($user_ktapi, $folder_id);
+		
+		$permissions = $folder->getPermissionAllocation();
+		
+		$user_ktapi->session_logout();
+		
+		return $permissions->permissions;
+	}
+	
+	/**
+	* Add folder permission
+	* 
+	* @access public
+	* @param string
+	* @param string 
+	* @param int
+	*
+	*/
+	public function add_folder_permissions($username, $folder_id, $namespace) {
+		if (is_null($this->session))
+		{
+			$error = new PEAR_Error('A session is not active');
+			return $error;
+		}
+		
+		/* First check that user trying to add permission can actually do so */
+		$folder = KTAPI_Folder::get($this, $folder_id);
+		$permissions = $folder->getPermissionAllocation();
+		$detail = $permissions->permissions;
+		if(!in_array("Manage security", $detail)) {
+			return new PEAR_Error("User does not have permission to manage security");
+		}
+		
+		/* We need to create a new instance of KTAPI to get another user */
+		$user_ktapi = new KTAPI();
+		$user_ktapi->start_system_session($username);
+
+		$folder = KTAPI_Folder::get($user_ktapi, $folder_id);
+		if(PEAR::isError($folder))
+		{
+			$user_ktapi->session_logout();
+			return $folder;
+		}
+		
+		$permission = KTAPI_Permission::getByNamespace($namespace);
+		if(PEAR::isError($permission)) {
+			$user_ktapi->session_logout();
+			return $permission;
+		}
+		
+		
+		$user = KTAPI_User::getByUsername($username);
+		if(PEAR::isError($user)) {
+			$user_ktapi->session_logout();
+			return $user;
+		}
+		
+		$permissions = $folder->getPermissionAllocation();
+		
+		$permissions->add($user, $permissions);
+		$permissions->save();
+	}
+	
+	
+	
+	
+	/**
  	* This checks if a user can access an object with a certain permission.
  	*
  	* @author KnowledgeTree Team
@@ -283,6 +383,38 @@ class KTAPI
 		}
 
 		return $user;
+ 	}
+ 	
+ 	/**
+ 	 * Returns the version id for the associated version number
+ 	 *
+ 	 * @param int $document_id
+ 	 * @param string $version_number
+ 	 * @return int
+ 	 */
+ 	function get_url_version_number($document_id, $version_number) {
+ 		$ktapi_session = $this->get_session();
+		if (is_null($ktapi_session) || PEAR::isError($ktapi_session))
+		{
+			$error = new PEAR_Error(KTAPI_ERROR_SESSION_INVALID);
+			return $error;
+		}
+		
+		$document_id = sanitizeForSQL($document_id);
+		$version_number = sanitizeForSQL($version_number);
+		
+		$pos = strpos($version_number, ".");
+		$major = substr($version_number, 0, $pos);
+		$minor = substr($version_number, ($pos+1));
+		
+ 		$sql = "SELECT id FROM document_content_version WHERE document_id = {$document_id} AND major_version = '{$major}' AND minor_version = '{$minor}'";
+ 		$row = DBUtil::getOneResult($sql);
+ 		$row = (int)$row['id'];
+ 		if (is_null($row) || PEAR::isError($row))
+		{
+			$row = new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $row);
+		}
+		return $row;
  	}
 
  	/**
@@ -391,9 +523,18 @@ class KTAPI
 	* @access public
 	* @return object $session The KTAPI_SystemSession
 	*/
-	public function & start_system_session()
+	public function & start_system_session($username = null)
 	{
-		$user = User::get(1);
+		if(is_null($username))
+		{
+			$user = User::get(1);
+		} else {
+			$user = User::getByUserName($username);
+		}
+		
+		if(PEAR::isError($user)) {
+			return new PEAR_Error('Username invalid');
+		}
 
 		$session = & new KTAPI_SystemSession($this, $user);
 		$this->session = &$session;
