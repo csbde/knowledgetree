@@ -238,7 +238,7 @@ class KTAPI
  	}
 
 	/**
-	* Returns an associative array of permission namespaces and their names 
+	* Returns an associative array of permission namespaces and their names
 	*
 	* @access public
 	* @return array
@@ -255,9 +255,9 @@ class KTAPI
 
 	/**
 	* Returns folder permissions
-	* 
+	*
 	* @access public
-	* @param string 
+	* @param string
 	* @param int
 	*
 	*/
@@ -272,20 +272,20 @@ class KTAPI
 		$user_ktapi->start_system_session($username);
 
 		$folder = KTAPI_Folder::get($user_ktapi, $folder_id);
-		
+
 		$permissions = $folder->getPermissionAllocation();
-		
+
 		$user_ktapi->session_logout();
-		
+
 		return $permissions->permissions;
 	}
-	
+
 	/**
 	* Add folder permission
-	* 
+	*
 	* @access public
 	* @param string
-	* @param string 
+	* @param string
 	* @param int
 	*
 	*/
@@ -295,7 +295,7 @@ class KTAPI
 			$error = new PEAR_Error('A session is not active');
 			return $error;
 		}
-		
+
 		/* First check that user trying to add permission can actually do so */
 		$folder = KTAPI_Folder::get($this, $folder_id);
 		$permissions = $folder->getPermissionAllocation();
@@ -303,7 +303,7 @@ class KTAPI
 		if(!in_array("Manage security", $detail)) {
 			return new PEAR_Error("User does not have permission to manage security");
 		}
-		
+
 		/* We need to create a new instance of KTAPI to get another user */
 		$user_ktapi = new KTAPI();
 		$user_ktapi->start_system_session($username);
@@ -314,29 +314,29 @@ class KTAPI
 			$user_ktapi->session_logout();
 			return $folder;
 		}
-		
+
 		$permission = KTAPI_Permission::getByNamespace($namespace);
 		if(PEAR::isError($permission)) {
 			$user_ktapi->session_logout();
 			return $permission;
 		}
-		
-		
+
+
 		$user = KTAPI_User::getByUsername($username);
 		if(PEAR::isError($user)) {
 			$user_ktapi->session_logout();
 			return $user;
 		}
-		
+
 		$permissions = $folder->getPermissionAllocation();
-		
+
 		$permissions->add($user, $permissions);
 		$permissions->save();
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
  	* This checks if a user can access an object with a certain permission.
  	*
@@ -384,7 +384,7 @@ class KTAPI
 
 		return $user;
  	}
- 	
+
  	/**
  	 * Returns the version id for the associated version number
  	 *
@@ -399,14 +399,14 @@ class KTAPI
 			$error = new PEAR_Error(KTAPI_ERROR_SESSION_INVALID);
 			return $error;
 		}
-		
+
 		$document_id = sanitizeForSQL($document_id);
 		$version_number = sanitizeForSQL($version_number);
-		
+
 		$pos = strpos($version_number, ".");
 		$major = substr($version_number, 0, $pos);
 		$minor = substr($version_number, ($pos+1));
-		
+
  		$sql = "SELECT id FROM document_content_version WHERE document_id = {$document_id} AND major_version = '{$major}' AND minor_version = '{$minor}'";
  		$row = DBUtil::getOneResult($sql);
  		$row = (int)$row['id'];
@@ -531,7 +531,7 @@ class KTAPI
 		} else {
 			$user = User::getByUserName($username);
 		}
-		
+
 		if(PEAR::isError($user)) {
 			return new PEAR_Error('Username invalid');
 		}
@@ -981,6 +981,333 @@ class KTAPI
 
 	    return $subscriptions;
 	}
+
+
+	/* *** Refactored web services functions *** */
+
+
+    /**
+     * Creates a new anonymous session.
+     *
+     * @param string $ip
+     */
+    function anonymous_login($ip=null)
+    {
+        $session = $this->start_anonymous_session($ip);
+        if(PEAR::isError($session)){
+            return new KTAPI_Error($session);
+        }
+
+        $session= $session->get_session();
+        return $session;
+    }
+
+    /**
+     * Creates a new session for the user.
+     *
+     * @param string $username
+     * @param string $password
+     * @param string $ip
+     * @return string
+     */
+    function login($username, $password, $ip=null)
+    {
+        $session = $this->start_session($username,$password, $ip);
+        if(PEAR::isError($session)){
+            return new KTAPI_Error($session);
+        }
+
+        $session = $session->get_session();
+        return $session;
+    }
+
+    /**
+     * Closes an active session.
+     *
+     * @return KTAPI_Error on failure
+     */
+    function logout()
+    {
+        $session = &$this->get_session();
+        if(PEAR::isError($session)){
+            return new KTAPI_Error($session);
+        }
+        $session->logout();
+    }
+
+    /**
+     * Returns folder detail given a folder_id.
+     *
+     * @param int $folder_id
+     * @return kt_folder_detail.
+     */
+    function get_folder_detail($folder_id)
+    {
+    	$folder = &$this->get_folder_by_id($folder_id);
+		if (PEAR::isError($folder))
+    	{
+    	    return new KTAPI_Error($folder);
+    	}
+    	$detail = $folder->get_detail();
+    	return $detail;
+    }
+
+    /**
+     * Retrieves all shortcuts linking to a specific document
+     *
+     * @param ing $document_id
+	 * @return kt_document_shortcuts
+     *
+     */
+    function get_folder_shortcuts($folder_id)
+    {
+        $folder = $this->get_folder_by_id($folder_id);
+        if(PEAR::isError($folder)){
+            return new KTAPI_Error($folder);
+        }
+
+        $shortcuts = $folder->get_shortcuts();
+    	if(PEAR::isError($shortcuts)){
+    	    return new KTAPI_Error($shortcuts);
+    	}
+
+    	return $shortcuts;
+    }
+
+    /**
+     * Returns folder detail given a folder name which could include a full path.
+     *
+     * @param string $folder_name
+     * @return kt_folder_detail.
+     */
+    function get_folder_detail_by_name($folder_name)
+    {
+        $folder = &$this->get_folder_by_name($folder_name);
+        if(PEAR::isError($folder)){
+            return new KTAPI_Error($folder);
+        }
+
+        $detail = $folder->get_detail();
+        return $detail;
+    }
+
+    /**
+     * Returns the contents of a folder.
+     *
+     * @param int $folder_id
+     * @param int $depth
+     * @param string $what
+     * @return kt_folder_contents
+     */
+    function get_folder_contents($folder_id, $depth=1, $what='DFS')
+    {
+        $folder = &$this->get_folder_by_id($folder_id);
+        if(PEAR::isError($folder)){
+            return new KTAPI_Error($folder);
+        }
+        $listing = $folder->get_listing($depth, $what);
+
+    	$contents = array(
+    		'folder_id' => $folder_id+0,
+    		'folder_name'=>$folder->get_folder_name(),
+    		'full_path'=>$folder->get_full_path(),
+    		'items'=>$listing
+    	);
+
+    	return $contents;
+    }
+
+    /**
+     * Creates a new folder.
+     *
+     * @param int $folder_id
+     * @param string $folder_name
+     * @return kt_folder_detail.
+     */
+    function create_folder($folder_id, $folder_name)
+    {
+        $folder = &$this->get_folder_by_id($folder_id);
+    	if (PEAR::isError($folder))
+    	{
+    	    return new KTAPI_Error($folder);
+    	}
+    	$newfolder = &$folder->add_folder($folder_name);
+    	$detail = $newfolder->get_detail();
+    	return $detail;
+    }
+
+    /**
+     * Creates a shortcut to an existing folder
+     *
+     * @param int $target_folder_id Folder to place the shortcut in
+     * @param int $source_folder_id Folder to create the shortcut to
+     * @return kt_folder_detail.
+     */
+    function create_folder_shortcut($target_folder_id, $source_folder_id)
+    {
+        $folder = &$this->get_folder_by_id($target_folder_id);
+    	if (PEAR::isError($folder))
+    	{
+    	    return new KTAPI_Error($folder);
+    	}
+
+    	$source_folder = &$kt->get_folder_by_id($source_folder_id);
+    	if (PEAR::isError($source_folder))
+    	{
+    	    return new KTAPI_Error($source_folder);
+    	}
+
+    	$shortcut = &$folder->add_folder_shortcut($source_folder_id);
+    	if (PEAR::isError($shortcut))
+    	{
+    	    return new KTAPI_Error($shortcut);
+    	}
+
+    	$detail = $shortcut->get_detail();
+    	return $detail;
+    }
+
+	/**
+     * Creates a shortcut to an existing document
+     *
+     * @param int $target_folder_id Folder to place the shortcut in
+     * @param int $source_document_id Document to create the shortcut to
+     * @return kt_document_detail.
+     */
+    function create_document_shortcut($target_folder_id, $source_document_id)
+    {
+        $folder = &$this->get_folder_by_id($target_folder_id);
+    	if (PEAR::isError($folder))
+    	{
+    	    return new KTAPI_Error($folder);
+    	}
+
+    	$source_document = &$kt->get_document_by_id($source_document_id);
+    	if (PEAR::isError($source_document))
+    	{
+    	    return new KTAPI_Error($source_document);
+    	}
+
+    	$shortcut = &$folder->add_document_shortcut($source_document_id);
+    	if (PEAR::isError($shortcut))
+    	{
+    	    return new KTAPI_Error($shortcut);
+    	}
+
+    	$detail = $shortcut->get_detail();
+    	return $detail;
+    }
+
+    /**
+     * Deletes a folder.
+     *
+     * @param int $folder_id
+     * @param string $reason
+     * @return kt_response.
+     */
+    function delete_folder($folder_id, $reason)
+    {
+        $folder = &$this->get_folder_by_id($folder_id);
+		if (PEAR::isError($folder))
+    	{
+    	    return new KTAPI_Error($folder);
+    	}
+
+    	$result = $folder->delete($reason);
+    	if (PEAR::isError($result))
+    	{
+    	    return new KTAPI_Error($result);
+    	}
+    }
+
+    /**
+     * Renames a folder.
+     *
+     * @param int $folder_id
+     * @param string $newname
+     * @return kt_response.
+     */
+    function rename_folder($folder_id, $newname)
+    {
+        $folder = &$this->get_folder_by_id($folder_id);
+		if (PEAR::isError($folder))
+    	{
+    	    return new KTAPI_Error($folder);
+    	}
+    	$result = $folder->rename($newname);
+    	if (PEAR::isError($result))
+    	{
+    	    return new KTAPI_Error($result);
+    	}
+    }
+
+    /**
+     * Makes a copy of a folder in another location.
+     *
+     * @param int $sourceid
+     * @param int $targetid
+     * @param string $reason
+     * @return kt_response
+     */
+    function copy_folder($source_id, $target_id, $reason)
+    {
+    	$src_folder = &$this->get_folder_by_id($source_id);
+    	if (PEAR::isError($src_folder))
+    	{
+    	    return new KTAPI_Error($src_folder);
+    	}
+
+    	$tgt_folder = &$this->get_folder_by_id($target_id);
+    	if (PEAR::isError($tgt_folder))
+    	{
+    	    return new KTAPI_Error($tgt_folder);
+    	}
+
+    	$result= $src_folder->copy($tgt_folder, $reason);
+    	if (PEAR::isError($result))
+    	{
+    	    return new KTAPI_Error($result);
+    	}
+
+    	$sourceName = $src_folder->get_folder_name();
+    	$targetPath = $tgt_folder->get_full_path();
+
+    	$response = $this->get_folder_detail_by_name($targetPath . '/' . $sourceName);
+		return $response;
+    }
+
+    /**
+     * Moves a folder to another location.
+     *
+     * @param int $sourceid
+     * @param int $targetid
+     * @param string $reason
+     * @return kt_response.
+     */
+    function move_folder($source_id, $target_id, $reason)
+    {
+    	$src_folder = &$this->get_folder_by_id($source_id);
+    	if (PEAR::isError($src_folder))
+    	{
+    	    return new KTAPI_Error($src_folder);
+    	}
+
+    	$tgt_folder = &$this->get_folder_by_id($target_id);
+    	if (PEAR::isError($tgt_folder))
+    	{
+    	    return new KTAPI_Error($tgt_folder);
+    	}
+
+    	$result = $src_folder->move($tgt_folder, $reason);
+    	if (PEAR::isError($result))
+    	{
+    	    return new KTAPI_Error($result);
+    	}
+
+    	$response = $this->get_folder_detail($source_id);
+		return $response;
+    }
+
 }
 
 /**
