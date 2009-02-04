@@ -60,6 +60,7 @@ require_once(KTAPI_DIR .'/KTAPIAcl.inc.php');
 require_once(KTAPI_DIR .'/KTAPICollection.inc.php');
 require_once(KTAPI_DIR .'/KTAPIBulkActions.inc.php');
 
+
 /**
 * This class defines functions that MUST exist in the inheriting class
 *
@@ -1275,6 +1276,123 @@ class KTAPI
     	$response = $this->get_folder_detail_by_name($targetPath . '/' . $sourceName);
 		return $response;
     }
+    
+    
+	/**
+	 * Returns a list of available transitions on a give document with a workflow.
+	 *
+	 * @param int $document_id
+	 * @return array
+	 */
+	function get_document_workflow_transitions($document_id)
+	{
+		
+    	$document = &$this->get_document_by_id($document_id);
+		if (PEAR::isError($document))
+    	{
+    		return new KTAPI_Error($document);
+    	}
+
+    	$result = $document->get_workflow_transitions();
+    	if (PEAR::isError($result))
+    	{
+    		return new KTAPI_Error($result);
+    	}
+
+		return $result;
+	}
+    
+	/**
+	 * Returns the current state that the document is in.
+	 *
+	 * @param int $document_id
+	 * @return array
+	 */
+	function get_document_workflow_state($document_id)
+	{
+    	$document = &$this->get_document_by_id($document_id);
+		if (PEAR::isError($document))
+    	{
+    		return new KTAPI_Error($document);
+    	}
+
+    	$result = $document->get_workflow_state();
+    	if (PEAR::isError($result))
+    	{
+    		return new KTAPI_Error($result);
+    	}
+
+    	return $result;
+	}
+    
+	/**
+	 * Returns the document transaction history.
+	 *
+	 * @param int $document_id
+	 * @return array
+	 */
+	function get_document_transaction_history($document_id)
+	{
+
+    	$document = &$this->get_document_by_id($document_id);
+		if (PEAR::isError($document))
+    	{
+    		return new KTAPI_Error($document);
+    	}
+
+    	$result = $document->get_transaction_history();
+    	if (PEAR::isError($result))
+    	{
+    		return new KTAPI_Error($result);
+    	}
+
+    	return $result;
+	}
+    
+	/**
+	 * Returns the version history.
+	 *
+	 * @param int $document_id
+	 * @return kt_document_version_history_response
+	 */
+	function get_document_version_history($document_id)
+	{
+    	$document = &$this->get_document_by_id($document_id);
+		if (PEAR::isError($document))
+    	{
+    		return new KTAPI_Error($document);
+    	}
+
+    	$result = $document->get_version_history();
+    	if (PEAR::isError($result))
+    	{
+    		return new KTAPI_Error($result);
+    	}
+
+    	return $result;
+	}
+    
+	/**
+	 * Returns a list of linked documents
+	 *
+	 * @param string $session_id
+	 * @param int $document_id
+	 * @return array
+	 *
+	 *
+	 */
+	function get_document_links($document_id)
+	{
+    	$document = &$this->get_document_by_id($document_id);
+		if (PEAR::isError($document))
+    	{
+    		return new KTAPI_Error($document);
+    	}
+
+    	$links = $document->get_linked_documents();
+    	
+		return $links;
+	}
 
     /**
      * Moves a folder to another location.
@@ -1307,6 +1425,148 @@ class KTAPI
     	$response = $this->get_folder_detail($source_id);
 		return $response;
     }
+    
+	/**
+	 * Removes a link between documents
+	 *
+	 * @param int $parent_document_id
+	 * @param int $child_document_id
+	 * @return kt_response
+	 */
+	function unlink_documents($parent_document_id, $child_document_id)
+	{
+    	$document = &$this->get_document_by_id($parent_document_id);
+		if (PEAR::isError($document))
+    	{
+    		return new KTAPI_Error($document);
+    	}
+
+    	$child_document = &$this->get_document_by_id($child_document_id);
+		if (PEAR::isError($child_document))
+    	{
+    		return new KTAPI_Error($child_document);
+    	}
+
+    	$result = $document->unlink_document($child_document);
+    	if (PEAR::isError($result))
+    	{
+    		return new KTAPI_Error($result);
+    	}
+
+    	return true;
+	}
+    
+	/**
+	 * Creates a link between documents
+	 *
+	 * @param int $parent_document_id
+	 * @param int $child_document_id
+	 * @param string $type
+	 * @return boolean
+	 */
+	function link_documents($parent_document_id, $child_document_id, $type)
+	{
+
+    	$document = &$this->get_document_by_id($parent_document_id);
+		if (PEAR::isError($document))
+    	{
+    		return new KTAPI_Error($document);
+    	}
+
+    	$child_document = &$this->get_document_by_id($child_document_id);
+		if (PEAR::isError($child_document))
+    	{
+    		return new KTAPI_Error($child_document);
+    	}
+
+    	$result = $document->link_document($child_document, $type);
+    	if (PEAR::isError($result))
+    	{
+    		return new KTAPI_Error($result);
+    	}
+
+    	return true;
+	}
+	    
+	/**
+	 * Retrieves the server policies for this server
+	 *
+	 * @return array
+	 */
+	function get_client_policies($client=null)
+	{
+		$config = KTConfig::getSingleton();
+
+		$policies = array(
+					array(
+						'name' => 'explorer_metadata_capture',
+						'value' => bool2str($config->get('clientToolPolicies/explorerMetadataCapture')),
+						'type' => 'boolean'
+					),
+					array(
+						'name' => 'office_metadata_capture',
+						'value' => bool2str($config->get('clientToolPolicies/officeMetadataCapture')),
+						'type' => 'boolean'
+					),
+					array(
+						'name' => 'capture_reasons_delete',
+						'value' => bool2str($config->get('clientToolPolicies/captureReasonsDelete')),
+						'type' => 'boolean'
+					),
+					array(
+						'name' => 'capture_reasons_checkin',
+						'value' => bool2str($config->get('clientToolPolicies/captureReasonsCheckin')),
+						'type' => 'boolean'
+					),
+					array(
+						'name' => 'capture_reasons_checkout',
+						'value' => bool2str($config->get('clientToolPolicies/captureReasonsCheckout')),
+						'type' => 'boolean'
+					),
+					array(
+						'name' => 'capture_reasons_cancelcheckout',
+						'value' => bool2str($config->get('clientToolPolicies/captureReasonsCancelCheckout')),
+						'type' => 'boolean'
+					),
+					array(
+						'name' => 'capture_reasons_copyinkt',
+						'value' => bool2str($config->get('clientToolPolicies/captureReasonsCopyInKT')),
+						'type' => 'boolean'
+					),
+					array(
+						'name' => 'capture_reasons_moveinkt',
+						'value' => bool2str($config->get('clientToolPolicies/captureReasonsMoveInKT')),
+						'type' => 'boolean'
+					),
+					array(
+						'name' => 'allow_remember_password',
+						'value' => bool2str($config->get('clientToolPolicies/allowRememberPassword')),
+						'type' => 'boolean'
+					),
+				);
+
+		
+
+		return $response['policies'];
+	}
+    
+	/**
+	 * This is the search interface
+	 *
+	 * @param string $query
+	 * @param string $options
+	 * @return kt_search_response
+	 */
+	function search($query, $options)
+	{
+		$results = processSearchExpression($query);
+		if (PEAR::isError($results))
+		{
+			return new KTAPI_Error($results);
+		}
+	
+		return $results;
+	}
 
 }
 
