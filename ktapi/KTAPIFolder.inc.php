@@ -1088,16 +1088,36 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		return new PEAR_Error('TODO');
 	}
 
+
 	/**
-	 * This returns a transaction history listing.
+	 * This returns the transaction history for the document.
 	 *
 	 * @author KnowledgeTree Team
 	 * @access public
-	 * @return array
+	 * @return array The list of transactions | a PEAR_Error on failure
 	 */
 	function get_transaction_history()
 	{
-		return new PEAR_Error('TODO');
+        $sQuery = 'SELECT DTT.name AS transaction_name, U.name AS username, DT.comment AS comment, DT.datetime AS datetime ' .
+            'FROM ' . KTUtil::getTableName('folder_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('users') . ' AS U ON DT.user_id = U.id ' .
+            'INNER JOIN ' . KTUtil::getTableName('transaction_types') . ' AS DTT ON DTT.namespace = DT.transaction_namespace ' .
+            'WHERE DT.folder_id = ? ORDER BY DT.datetime DESC';
+        $aParams = array($this->folderid);
+
+        $transactions = DBUtil::getResultArray(array($sQuery, $aParams));
+        if (is_null($transactions) || PEAR::isError($transactions))
+        {
+        	return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $transactions  );
+        }
+
+        $config = KTConfig::getSingleton();
+		$wsversion = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
+		foreach($transactions as $key=>$transaction)
+		{
+			$transactions[$key]['version'] = (float) $transaction['version'];
+		}
+
+        return $transactions;
 	}
 
 	/**

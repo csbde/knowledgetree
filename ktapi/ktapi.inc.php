@@ -267,8 +267,10 @@ class KTAPI
 	public function get_folder_permissions($username, $folder_id) {
 		if (is_null($this->session))
 		{
-			$error = new PEAR_Error('A session is not active');
-			return $error;
+			return array(
+				"status_code" => 1,
+				"message" => "Your session is not active"
+			);
 		}
 		/* We need to create a new instance of KTAPI to get another user */
 		$user_ktapi = new KTAPI();
@@ -280,7 +282,11 @@ class KTAPI
 
 		$user_ktapi->session_logout();
 
-		return $permissions->permissions;
+		return array(
+			"status_code" => 0,
+			"results" => $permissions->permissions
+		);
+		
 	}
 
 	/**
@@ -295,8 +301,10 @@ class KTAPI
 	public function add_folder_permissions($username, $folder_id, $namespace) {
 		if (is_null($this->session))
 		{
-			$error = new PEAR_Error('A session is not active');
-			return $error;
+			return array(
+				"status_code" => 1,
+				"message" => "Your session is not active"
+			);
 		}
 
 		/* First check that user trying to add permission can actually do so */
@@ -304,7 +312,10 @@ class KTAPI
 		$permissions = $folder->getPermissionAllocation();
 		$detail = $permissions->permissions;
 		if(!in_array("Manage security", $detail)) {
-			return new PEAR_Error("User does not have permission to manage security");
+			return array(
+				"status_code" => 1,
+				"message" => "User does not have permission to manage security"
+			);
 		}
 
 		/* We need to create a new instance of KTAPI to get another user */
@@ -315,20 +326,29 @@ class KTAPI
 		if(PEAR::isError($folder))
 		{
 			$user_ktapi->session_logout();
-			return $folder;
+			return array(
+				"status_code" => 1,
+				"message" => $folder->getMessage()
+			);
 		}
 
 		$permission = KTAPI_Permission::getByNamespace($namespace);
 		if(PEAR::isError($permission)) {
 			$user_ktapi->session_logout();
-			return $permission;
+			return array(
+				"status_code" => 1,
+				"message" => $permission->getMessage()
+			);
 		}
 
 
 		$user = KTAPI_User::getByUsername($username);
 		if(PEAR::isError($user)) {
 			$user_ktapi->session_logout();
-			return $user;
+			return array(
+				"status_code" => 1,
+				"message" => $user->getMessage()
+			);
 		}
 
 		$permissions = $folder->getPermissionAllocation();
@@ -2656,6 +2676,36 @@ class KTAPI
     	}
 
     	$result = $document->get_transaction_history();
+    	if (PEAR::isError($result))
+    	{
+    		$response['status_code'] = 1;
+    		$response['message'] = $result->getMessage();
+			return $response;
+    	}
+
+    	$response['status_code'] = 0;
+    	$response['history'] = $result;
+		return $response;
+	}
+	
+	/**
+	 * Returns the folder transaction history.
+	 *
+	 * @param int $folder_id
+	 * @return array
+	 */
+	function get_folder_transaction_history($folder_id)
+	{
+
+    	$folder = &$this->get_folder_by_id($folder_id);
+		if (PEAR::isError($folder))
+    	{
+    		$response['status_code'] = 1;
+    		$response['message'] = $folder->getMessage();
+			return $response;
+    	}
+
+    	$result = $folder->get_transaction_history();
     	if (PEAR::isError($result))
     	{
     		$response['status_code'] = 1;
