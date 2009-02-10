@@ -1037,7 +1037,8 @@ class KTAPI
         }
 
         $session= $session->get_session();
-        $response['message'] = $session;
+        $response['results'] = $session;
+        $response['message'] = '';
 
         $response['status_code'] = 0;
         return $response;
@@ -1064,7 +1065,8 @@ class KTAPI
 
         $session = $session->get_session();
         $response['status_code'] = 0;
-        $response['message'] = $session;
+        $response['message'] = '';
+        $response['results'] = $session;
         return $response;
     }
 
@@ -1106,10 +1108,10 @@ class KTAPI
     	    $response['message']= $folder->getMessage();
     	    return $response;
     	}
-    	$detail = $folder->get_detail();
-        $detail['status_code'] = 0;
-        $detail['message'] = '';
-    	return $detail;
+        $response['status_code'] = 0;
+        $response['message'] = '';
+        $response['results'] = $folder->get_detail();
+    	return $response;
     }
 
     /**
@@ -1139,7 +1141,7 @@ class KTAPI
 
         $response['status_code'] = 0;
         $response['message'] = '';
-        $response['shortcuts'] = $shortcuts;
+        $response['results'] = $shortcuts;
     	return $response;
     }
 
@@ -1160,10 +1162,10 @@ class KTAPI
     	    return $response;
         }
 
-        $detail = $folder->get_detail();
-        $detail['status_code'] = 0;
-        $detail['message'] = '';
-        return $detail;
+        $response['status_code'] = 0;
+        $response['message'] = '';
+        $response['results'] = $folder->get_detail();
+        return $response;
     }
 
     /**
@@ -1193,10 +1195,11 @@ class KTAPI
     		'items'=>$listing
     	);
 
-    	$contents['status_code'] = 0;
-    	$contents['message'] = '';
+    	$response['status_code'] = 0;
+    	$response['message'] = '';
+    	$response['results'] = $contents;
 
-    	return $contents;
+    	return $response;
     }
 
     /**
@@ -1215,11 +1218,11 @@ class KTAPI
     	    $response['message']= $folder->getMessage();
     	    return $response;
     	}
-    	$newfolder = &$folder->add_folder($folder_name);
-    	$detail = $newfolder->get_detail();
-    	$detail['status_code'] = 0;
-    	$detail['message'] = '';
-    	return $detail;
+    	$newfolder = $folder->add_folder($folder_name);
+    	$response['status_code'] = 0;
+    	$response['message'] = '';
+    	$response['results'] = $newfolder->get_detail();
+    	return $response;
     }
 
     /**
@@ -1239,7 +1242,7 @@ class KTAPI
     	    return $response;
     	}
 
-    	$source_folder = &$kt->get_folder_by_id($source_folder_id);
+    	$source_folder = &$this->get_folder_by_id($source_folder_id);
     	if (PEAR::isError($source_folder))
     	{
     	    $response['status_code'] = 1;
@@ -1255,10 +1258,10 @@ class KTAPI
     	    return $response;
     	}
 
-    	$detail = $shortcut->get_detail();
-    	$detail['status_code'] = 0;
-    	$detail['message'] = '';
-    	return $detail;
+    	$response['status_code'] = 0;
+    	$response['message'] = '';
+    	$response['results'] = $shortcut->get_detail();
+    	return $response;
     }
 
 	/**
@@ -1278,7 +1281,7 @@ class KTAPI
     	    return $response;
     	}
 
-    	$source_document = &$kt->get_document_by_id($source_document_id);
+    	$source_document = &$this->get_document_by_id($source_document_id);
     	if (PEAR::isError($source_document))
     	{
     	    $response['status_code'] = 1;
@@ -1294,10 +1297,10 @@ class KTAPI
     	    return $response;
     	}
 
-    	$detail = $shortcut->get_detail();
-    	$detail['status_code'] = 0;
-    	$detail['message'] = '';
-    	return $detail;
+    	$response['status_code'] = 0;
+    	$response['message'] = '';
+    	$response['results'] = $shortcut->get_detail();
+    	return $response;
     }
 
     /**
@@ -1391,15 +1394,16 @@ class KTAPI
     	    return $response;
     	}
 
+    	$response['status_code'] = 0;
+
     	if($this->version >= 2){
         	$sourceName = $src_folder->get_folder_name();
         	$targetPath = $tgt_folder->get_full_path();
 
-        	$response = $this->get_folder_detail_by_name($targetPath . '/' . $sourceName);
+        	$response['results'] = $this->get_folder_detail_by_name($targetPath . '/' . $sourceName);
         	return $response;
     	}
 
-    	$response['status_code'] = 0;
 		return $response;
     }
 
@@ -1437,12 +1441,13 @@ class KTAPI
     	    return $response;
     	}
 
+    	$response['status_code'] = 0;
+
     	if($this->version >= 2){
-        	$response = $this->get_folder_detail($source_id);
+        	$response['results'] = $this->get_folder_detail($source_id);
     		return $response;
     	}
 
-    	$response['status_code'] = 0;
 		return $response;
 
     }
@@ -1464,12 +1469,29 @@ class KTAPI
     	}
 
    		$response['status_code']= 0;
-   		$response['document_types']= $result;
+   		$response['results']= $result;
 
     	return $response;
 
     }
 
+    public function get_document_link_types_list($session_id)
+    {
+    	$result = $this->get_document_link_types();
+    	if (PEAR::isError($result))
+    	{
+    	    $response['status_code'] = 1;
+    	    $response['message']= $result->getMessage();
+
+    		return $response;
+    	}
+
+   		$response['status_code']= 0;
+   		$response['results'] = $result;
+
+    	return $response;
+
+    }
 
     /**
      * Returns document detail given a document_id.
@@ -1484,6 +1506,7 @@ class KTAPI
     	{
     	    $response['status_code'] = 1;
     	    $response['message']= $document->getMessage();
+    	    return $response;
     	}
 
     	$detail = $document->get_detail();
@@ -1491,10 +1514,11 @@ class KTAPI
     	{
     	    $response['status_code'] = 1;
     	    $response['message']= $detail->getMessage();
+    	    return $response;
     	}
 
-    	$detail['status_code'] = 0;
-    	$detail['message'] = '';
+    	$response['status_code'] = 0;
+    	$response['message'] = '';
 
     	if ($this->version >= 2)
     	{
@@ -1507,40 +1531,41 @@ class KTAPI
     		if (stripos($detailstr,'M') !== false)
     		{
     			$response = $this->get_document_metadata($document_id);
-    			$detail['metadata'] = $response['metadata'];
+    			$detail['metadata'] = $response['results'];
     			$detail['name'] = 'metadata';
     		}
 
     		if (stripos($detailstr,'L') !== false)
     		{
     			$response = $this->get_document_links($document_id);
-    			$detail['links'] = $response['links'];
+    			$detail['links'] = $response['results'];
     			$detail['name'] = 'links';
     		}
 
     		if (stripos($detailstr,'T') !== false)
     		{
     			$response = $this->get_document_workflow_transitions($document_id);
-    			$detail['transitions'] =  $response['transitions'] ;
+    			$detail['transitions'] =  $response['results'] ;
     			$detail['name'] = 'transitions';
     		}
 
     		if (stripos($detailstr,'V') !== false)
     		{
     			$response = $this->get_document_version_history($document_id);
-    			$detail['version_history'] =  $response['history'];
+    			$detail['version_history'] =  $response['results'];
     			$detail['name'] = 'version_history';
     		}
 
     		if (stripos($detailstr,'H') !== false)
     		{
     			$response = $this->get_document_transaction_history($document_id);
-    			$detail['transaction_history'] =  $response['history'];
+    			$detail['transaction_history'] =  $response['results'];
     			$detail['name'] = 'transaction_history';
     		}
     	}
 
-    	return $detail;
+    	$response['results'] = $detail;
+    	return $response;
     }
 
     function get_document_detail_by_filename($folder_id, $filename, $detail='')
@@ -1626,7 +1651,7 @@ class KTAPI
 
 	    $response['status_code'] = 0;
 	    $response['message'] = '';
-	    $response['shortcuts'] = $shortcuts;
+	    $response['results'] = $shortcuts;
     	return $response;
     }
 
@@ -1668,10 +1693,10 @@ class KTAPI
     		return $response;
 		}
 
-    	$detail = $document->get_detail();
-    	$detail['status_code'] = 0;
-		$detail['message'] = '';
-    	return $detail;
+    	$response['status_code'] = 0;
+		$response['message'] = '';
+		$response['results'] = $document->get_detail();
+    	return $response;
     }
 
     function add_small_document_with_metadata($folder_id,  $title, $filename, $documenttype, $base64, $metadata, $sysdata)
@@ -1682,7 +1707,7 @@ class KTAPI
 		    return $add_result;
 		}
 
-		$document_id = $add_result->value['document_id'];
+		$document_id = $add_result['results']['document_id'];
 
 		$update_result = $this->update_document_metadata($document_id, $metadata, $sysdata);
 		if($update_result['status_code'] != 0){
@@ -1713,7 +1738,7 @@ class KTAPI
 		    return $add_result;
 		}
 
-		$document_id = $add_result->value['document_id'];
+		$document_id = $add_result['results']['document_id'];
 
 		$update_result = $this->update_document_metadata($document_id, $metadata, $sysdata);
 		if($update_result['status_code'] != 0){
@@ -1763,7 +1788,7 @@ class KTAPI
     	$response=array();
     	$response['status_code'] = 0;
 		$response['message'] = empty($collection) ? _kt('No documents were found matching the specified document no') : '';
-    	$response['collection'] = $collection;
+    	$response['results'] = $collection;
     	return $collection;
 	}
 
@@ -1809,10 +1834,10 @@ class KTAPI
 			return $response;
 		}
 
-    	$detail = $document->get_detail();
-    	$detail['status_code'] = 0;
-    	$detail['message'] = '';
-    	return $detail;
+    	$response['status_code'] = 0;
+    	$response['message'] = '';
+    	$response['results'] = $document->get_detail();
+    	return $response;
     }
 
     /**
@@ -1996,16 +2021,18 @@ class KTAPI
     		$url = $download_manager->allow_download($document);
     	}
 
+
 		if ($this->version >= 2)
 		{
-			$result = $this->get_document_detail($session_id, $document_id);
-			$result['message'] = $url;
+			$response = $this->get_document_detail($document_id);
+			$response['results']['url'] = $url;
 
-			return $result;
+			return $response;
 		}
 
     	$response['status_code'] = 0;
-		$response['message'] = $url;
+		$response['message'] = '';
+		$response['results'] = $url;
 
     	return $response;
     }
@@ -2059,13 +2086,13 @@ class KTAPI
 		if ($this->version >= 2)
 		{
 			$result = $this->get_document_detail($document_id);
-			$result['message'] = $content;
+			$result['results']['content'] = $content;
 
 			return $result;
 		}
 
 		$response['status_code'] = 0;
-		$response['message'] = $content;
+		$response['results'] = $content;
     	return $response;
     }
 
@@ -2134,7 +2161,7 @@ class KTAPI
     	$url = $download_manager->allow_download($document);
 
     	$response['status_code'] = 0;
-		$response['message'] = $url;
+		$response['results'] = $url;
 
     	return $response;
     }
@@ -2183,7 +2210,7 @@ class KTAPI
 
 
     	$response['status_code'] = 0;
-		$response['message'] = $content;
+		$response['results'] = $content;
 
     	return $response;
     }
