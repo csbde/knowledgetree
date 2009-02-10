@@ -186,8 +186,8 @@ class APIFolderTestCase extends KTUnitTestCase {
     function testPermissions()
     {
         $root = $this->ktapi->get_root_folder();
-        $folder = $root->add_folder('testX');
-        $this->assertEntity($folder, 'KTAPI_Folder');
+        $folder = $root->add_folder('testXXXXX');
+        $this->assertIsA($folder, 'KTAPI_Folder');
         if(PEAR::isError($folder)) return;
 
         $permAllocation = $folder->getPermissionAllocation();
@@ -198,7 +198,12 @@ class APIFolderTestCase extends KTUnitTestCase {
         $this->assertNotNull($roleAllocation);
         $this->assertEntity($roleAllocation, KTAPI_RoleAllocation);
 
-        $folder->delete('Testing');
+        $folder->delete('testXXXXX');
+    }
+    
+    function testTransactionHistory() {
+    	$transactions = $this->ktapi->get_folder_transaction_history(1);
+    	$this->assertIsA($transactions, 'array');
     }
 }
 ?>
