@@ -140,6 +140,7 @@ function sendExternalEmails($aEmailAddresses, $iDocumentID, $sDocumentName, $sCo
     $oSendingUser = User::get($_SESSION['userID']);
 
     // Create email content
+/*
     $sMessage = '<font face="arial" size="2">';
 	$sMessage .= sprintf(_kt("Your colleague, %s, wishes you to view the document entitled '%s'."), $oSendingUser->getName(), $sDocumentName);
 	$sMessage .= " \n";
@@ -148,6 +149,25 @@ function sendExternalEmails($aEmailAddresses, $iDocumentID, $sDocumentName, $sCo
 	$sMsgEnd .= '</font>';
 
 	$sTitle = sprintf(_kt("Link (ID %s): %s from %s"), $iDocumentID, $sDocumentName, $oSendingUser->getName());
+*/
+	$sTitle = sprintf(_kt("%s wants to share a document using KnowledgeTree"), $oSendingUser->getName());
+
+	$sMessage = '<br>
+	               &#160;&#160;&#160;&#160;'._kt('Hello').',
+	               <br />
+	               <br />
+	               &#160;&#160;&#160;&#160;'.sprintf(_kt('A KnowledgeTree user, %s, wants to share a document with you entitled "%s".'), $oSendingUser->getName(), $sDocumentName).'
+	               <br />
+	               <br />
+	               &#160;&#160;&#160;&#160;<b>'._kt('Message').':</b>
+	               <br />
+	               <br />
+	               &#160;&#160;&#160;&#160;'.$sComment.'
+	               <br />
+	               <br />
+	               &#160;&#160;&#160;&#160;'._kt('<b>KnowledgeTree is easy to use open source document management software</b><br />&#160;&#160;&#160;&#160;that helps businesses collaborate, securely store all critical documents, address<br />&#160;&#160;&#160;&#160;compliance challenges, and improve business processes.').'
+	               <br />
+	               <br />';
 
 	$sEmail = null;
     $sEmailFrom = null;
@@ -172,9 +192,13 @@ function sendExternalEmails($aEmailAddresses, $iDocumentID, $sDocumentName, $sCo
             $oDownloadManager->set_session($session);
             $link = $oDownloadManager->allow_download($iDocumentID);
 
-            $link = "<a href=\"{$link}\">{$link}</a>";
+//            $link = "<a href=\"{$link}\">{$link}</a>";
+            $links = '&#160;&#160;&#160;&#160;<a href="http://www.knowledgetree.com/products">'._kt('Learn More').'</a>';
+            $links.= "&#160;|&#160;<a href=\"{$link}\">"._kt('View Document')."</a>";
+            $links .= '&#160;|&#160;<a href="http://www.knowledgetree.com/node/39">'._kt('Download Free Trial').'</a><br /><br />';
 
-            $sMsg = $sMessage.$link.$sMsgEnd;
+//            $sMsg = $sMessage.$link.$sMsgEnd;
+            $sMsg = $sMessage.$links;
             $res = $oEmail->send(array($sAddress), $sTitle, $sMsg);
 
             if (PEAR::isError($res)) {
