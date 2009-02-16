@@ -52,8 +52,8 @@ body
     min-height: 800px;
     min-width: 600px;
     height: auto;
-    background-image: url(../../resources/graphics/page_bg.png);
-    background-repeat: repeat-x;
+/*    background-image: url(../../resources/graphics/page_bg.png);*/
+/*    background-repeat: repeat-x;*/
     z-index: 1;
 }
 
