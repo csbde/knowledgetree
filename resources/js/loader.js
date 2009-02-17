@@ -32,21 +32,4 @@ window.onload = function()
     	    footerBlock.applyCornersToAll();
 	    }
 	}
-	Loader();
   }
-
-  window.onsubmit = function(){
-  	if(typeof disable_loader == "undefined"){
-	  	var myElem = document.getElementById("modalDiv");
-	  	if(myElem != null){
-		    myElem.style.display = "block";
-	  	}
-	}
-  }
-  function Loader()
-{
-	var myElem = document.getElementById("modalDiv");
-	if(myElem != null){
-	     myElem.style.display = "none";
-	}
-}

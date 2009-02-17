@@ -247,11 +247,6 @@
 		                    {/if}
 		                {/foreach}
 			            </div>
-			            <div class="modalDiv" id="modalDiv">
-						<img src="{$rootUrl}/resources/graphics/thirdparty/loader.gif" border="0"/><br>
-						<div style="width: 60px; padding-left: 80px;"> Loading... </div>
-
- 						</div>
 		            </td>
 		            <td valign="top" width="100%">
 			            <div id="content" {if $page->content_class}class="{$page->content_class}"{/if}>

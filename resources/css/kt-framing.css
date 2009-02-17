@@ -2217,21 +2217,6 @@ body #content #add_dashlet
     margin-right: 3em;
 }
 
-.modalDiv{
-	filter:alpha(opacity=80);
-    -moz-opacity:0.8;
-	padding-left: 30px;
-	padding-top: 5px;
-    width: 260px;
-    height: 50px;
-    background-color: #CCCCCC;
-    position: absolute;
-    top: 400px;
-    left: 500px;
-    display: block;
-    z-index: 2;
-}
-
 /*contenttype_href class style is used to stop underline error on a hyperlink in IE*/
 .contenttype_href
 {
