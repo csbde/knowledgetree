@@ -118,13 +118,14 @@ class savedSearchTestCase extends KTUnitTestCase {
         // case 1: Saved searches exist
         $array = array();
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
+        $searchID_1 = $this->savedSearch->create('test_search_1', '(GeneralText contains "title")');
         $list = $this->savedSearch->getList();
-
         $this->assertNotA($list, 'PEAR_Error');
         $this->assertNotEqual($list, $array);
         $this->assertNoErrors();
 
         $this->savedSearch->delete($searchID);
+        $this->savedSearch->delete($searchID_1);
 
         // case 2: saved search does NOT exist
         $list = $this->savedSearch->getList();
@@ -139,7 +140,7 @@ class savedSearchTestCase extends KTUnitTestCase {
         $this->assertNotA($list, 'PEAR_Error');
         $this->assertFalse($inList);
         $this->assertNoErrors();
-}
+    }
 
     /**
     * This method tests the deleting of the saved search
@@ -182,7 +183,133 @@ class savedSearchTestCase extends KTUnitTestCase {
         $this->savedSearch->delete($searchID);
     }
 
+    /**
+    * This method tests the creation of the saved search
+    *
+    */
+    public function testCreate_KTAPI()
+    {
+        //case 1: user logged in
+        $response = $this->ktapi->createSavedSearch('test_search', '(GeneralText contains "title")');
 
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertNoErrors();
+
+        $this->savedSearch->delete($response['results']['search_id']);
+
+        //case 2: user NOT logged in
+        $this->ktapi->session_logout();
+        $response = $this->ktapi->createSavedSearch('test_search', '(GeneralText contains "title")');
+
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['status_code'], 1);
+        $this->assertNoErrors();
+    }
+
+    /**
+    * This method tests the retrieval for the saved search by it's id
+    *
+    */
+    public function testGetSavedSearch_KTAPI()
+    {
+        // case 1: search exists
+        $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
+        $list = $this->savedSearch->getList();
+
+        foreach($list as $item){
+            if($item['id'] == $searchID){
+                $search = $item['id'];
+                break;
+            }
+        }
+        $response = $this->ktapi->getSavedSearch($search);
+
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertNoErrors();
+        $this->savedSearch->delete($searchID);
+
+        // case 2: search does NOT exists
+        $response = $this->ktapi->getSavedSearch($searchID);
+
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['status_code'], 1);
+        $this->assertNoErrors();
+
+    }
+
+    /**
+    * This method tests the list of the saved search
+    *
+    */
+    public function testList_KTAPI()
+    {
+        // case 1: Saved searches exist
+        $array = array();
+        $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
+
+        $response = $this->ktapi->getSavedSearchList();
+
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertNoErrors();
+        $this->savedSearch->delete($searchID);
+
+        // case 2: saved search does NOT exist
+        $response = $this->ktapi->getSavedSearchList();
+
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['status_code'], 1);
+        $this->assertNoErrors();
+    }
+
+    /**
+    * This method tests the deleting of the saved search
+    *
+    */
+    public function testDelete_KTAPI()
+    {
+        $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
+        $response = $this->ktapi->deleteSavedSearch($searchID);
+        $result = $this->savedSearch->getSavedSearch($searchID);
+
+        $array = array();
+        $this->assertEqual($result, $array);
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['results'], 0);
+        $this->assertNoErrors();
+    }
+
+    /**
+    * This method tests the processing of the saved search
+    *
+    */
+    public function testRunSavedSearch_KTAPI()
+    {
+        // create the document object
+        $randomFile = $this->createRandomFile();
+        $document = $this->root->add_document('title.txt', 'name_1.txt', 'Default', $randomFile);
+        @unlink($randomFile);
+
+        $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
+
+        $response = $this->ktapi->runSavedSearch($searchID);
+
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertNoErrors();
+
+        $document->delete('Testing');
+        $document->expunge();
+
+        $this->savedSearch->delete($searchID);
+    }
+
+    /*
+    * Method to create a random file for testing
+    *
+    */
     function createRandomFile($content = 'this is some text') {
         $temp = tempnam(dirname(__FILE__), 'myfile');
         $fp = fopen($temp, 'wt');
