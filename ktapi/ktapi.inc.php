@@ -286,7 +286,7 @@ class KTAPI
 			"status_code" => 0,
 			"results" => $permissions->permissions
 		);
-		
+
 	}
 
 	/**
@@ -752,13 +752,13 @@ class KTAPI
 		if (is_null($rows) || PEAR::isError($rows))
 		{
 			$response['status_code'] = 1;
-			if(is_null($rows)) 
+			if(is_null($rows))
 			{
 				$response['message'] = "No types";
 			} else {
 				$response['message'] = $rows->getMessage();
 			}
-			
+
 			return $response;
 		}
 		else
@@ -2309,10 +2309,10 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-    	
+
     	$new_document_id = $result->documentid;
     	return $this->get_document_detail($new_document_id, '');
-    	
+
  	}
 
  	/**
@@ -2354,12 +2354,12 @@ class KTAPI
     			$response['message'] = $result->getMessage();
     			return $response;
     		}
-    		 
+
     	}
 
-    	
+
     	return $this->get_document_detail($document_id, '');
-    	
+
  	}
 
  	/**
@@ -2386,10 +2386,10 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-    	
-    	
+
+
     	return $this->get_document_detail($document_id);
-    	
+
  	}
 
  	/**
@@ -2416,9 +2416,9 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-    	
+
     	return $this->get_document_detail($document_id);
-    	
+
  	}
 
     /**
@@ -2446,11 +2446,11 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-    	
 
-    	
+
+
     	return $this->get_document_detail($document_id);
-    	
+
     }
 
     /**
@@ -2477,7 +2477,7 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-    	
+
 
    		return $this->get_document_detail($document_id);
     }
@@ -2505,8 +2505,8 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-    	
-    	
+
+
     	return $this->get_document_detail($document_id);
     }
 
@@ -2535,9 +2535,9 @@ class KTAPI
     		$response['message'] = $result>getMessage();
 			return $response;
     	}
-    	
+
     	return $this->get_document_detail($document_id);
-    	
+
     }
 
 
@@ -2581,7 +2581,7 @@ class KTAPI
 				$metadata[$i]['fields'][$j]['selection'] = $new;
 			}
 		}
-		
+
 		$response['status_code'] = 0;
 		$response['result'] = $metadata;
     	return $response;
@@ -2623,7 +2623,7 @@ class KTAPI
     	}
 
     	return $this->get_document_detail($document_id, 'M');
-    	 
+
 	}
 
 	/**
@@ -2714,7 +2714,7 @@ class KTAPI
     	$response['history'] = $result;
 		return $response;
 	}
-	
+
 	/**
 	 * Returns the folder transaction history.
 	 *
@@ -2957,7 +2957,7 @@ class KTAPI
 	function search($query, $options)
 	{
     	$response['status_code'] = 1;
-		$response['hits'] = array();
+		$response['results'] = array();
 
 		$results = processSearchExpression($query);
 		if (PEAR::isError($results))
@@ -2967,15 +2967,185 @@ class KTAPI
 		}
 
 		$response['message'] = '';
+		if(empty($results)){
+    		$response['message'] = _kt('Your search did not return any results');
+		}
 		$response['status_code'] = 0;
-		$response['hits'] = $results;
+		$response['results'] = $results;
 
 		return $response;
 	}
 
+	/**
+	* Method to create a saved search
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $name The name of the saved search
+	* @param string $query The saved search query
+	* @return array $response The formatted response array
+	*/
+	public function createSavedSearch($name, $query)
+	{
+	    $savedSearch = new savedSearches($this);
+	    if(PEAR::isError($savedSearch)){
+	        $response['status_code'] = 1;
+	        $response['message'] = $savedSearch->getMessage();
+	        return $response;
+	    }
+
+	    $result = $savedSearch->create($name, $query);
+	    if(PEAR::isError($result)){
+	        $response['status_code'] = 1;
+	        $response['message'] = $result->getMessage();
+	        return $response;
+	    }
+
+	    $response['message'] = '';
+	    $response['status_code'] = 0;
+	    $response['results']['search_id'] = $result;
+
+	    return $response;
+	}
+
+	/**
+	* Method to retrieve a saved search
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $searchID The id of the saved search
+	* @return array $response The formatted response array
+	*/
+	public function getSavedSearch($searchID)
+	{
+	    $savedSearch = new savedSearches($this);
+	    if(PEAR::isError($savedSearch)){
+	        $response['status_code'] = 1;
+	        $response['message'] = $savedSearch->getMessage();
+	        return $response;
+	    }
+
+	    $result = $savedSearch->getSavedSearch($searchID);
+	    if(PEAR::isError($result)){
+	        $response['status_code'] = 1;
+	        $response['message'] = $result->getMessage();
+	        return $response;
+	    }
+
+	    if(empty($result)){
+	        $response['status_code'] = 1;
+	        $response['message'] = _kt('No saved searches found');
+	        return $response;
+	    }
+
+	    $response['message'] = '';
+	    $response['status_code'] = 0;
+	    $response['results'] = $result[0];
+
+	    return $response;
+	}
+
+	/**
+	* Method to retrieve a list of saved searches
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @return array $response The formatted response array
+	*/
+	public function getSavedSearchList()
+	{
+	    $savedSearch = new savedSearches($this);
+	    if(PEAR::isError($savedSearch)){
+	        $response['status_code'] = 1;
+	        $response['message'] = $savedSearch->getMessage();
+	        return $response;
+	    }
+
+	    $result = $savedSearch->getList();
+	    if(PEAR::isError($result)){
+	        $response['status_code'] = 1;
+	        $response['message'] = $result->getMessage();
+	        return $response;
+	    }
+
+	    if(empty($result)){
+	        $response['status_code'] = 1;
+	        $response['message'] = _kt('No saved searches found');
+	        return $response;
+	    }
+
+	    $response['message'] = '';
+	    $response['status_code'] = 0;
+	    $response['results'] = $result;
+
+	    return $response;
+	}
+
+	/**
+	* Method to delete a saved searche
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $searchID The id of the saved search to delete
+	* @return array $response The formatted response array
+	*/
+	public function deleteSavedSearch($searchID)
+	{
+	    $savedSearch = new savedSearches($this);
+	    if(PEAR::isError($savedSearch)){
+	        $response['status_code'] = 1;
+	        $response['message'] = $savedSearch->getMessage();
+	        return $response;
+	    }
+
+	    $result = $savedSearch->delete($searchID);
+	    if(PEAR::isError($result)){
+	        $response['status_code'] = 1;
+	        $response['message'] = $result->getMessage();
+	        return $response;
+	    }
+
+	    $response['message'] = '';
+	    $response['status_code'] = 0;
+
+	    return $response;
+	}
+
+	/**
+	* Method to retrieve a list of saved searches
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $searchID The id of the saved search to delete
+	* @return array $response The formatted response array
+	*/
+	public function runSavedSearch($searchID)
+	{
+	    $savedSearch = new savedSearches($this);
+	    if(PEAR::isError($savedSearch)){
+	        $response['status_code'] = 1;
+	        $response['message'] = $savedSearch->getMessage();
+	        return $response;
+	    }
+
+	    $results = $savedSearch->runSavedSearch($searchID);
+	    if(PEAR::isError($results)){
+	        $response['status_code'] = 1;
+	        $response['message'] = $results->getMessage();
+	        return $response;
+	    }
+
+	    $response['message'] = '';
+	    if(empty($results)){
+	        $response['message'] = _kt('Your saved search did not return any results');
+	    }
+	    $response['status_code'] = 0;
+	    $response['results'] = $results;
+
+	    return $response;
+	}
 }
-	
- 
+
 
 /**
 * This class handles the saved search functionality within the API
