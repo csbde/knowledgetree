@@ -298,7 +298,7 @@ class KTAPI
 	* @param int
 	*
 	*/
-	public function add_folder_permissions($username, $folder_id, $namespace) {
+	public function add_folder_user_permissions($username, $folder_id, $namespace) {
 		if (is_null($this->session))
 		{
 			return array(
@@ -354,6 +354,128 @@ class KTAPI
 		$permissions = $folder->getPermissionAllocation();
 
 		$permissions->add($user, $permissions);
+		$permissions->save();
+	}
+	
+	/**
+	* Add folder role permission
+	*
+	* @access public
+	* @param string
+	* @param string
+	* @param int
+	*
+	*/
+	public function add_folder_role_permissions($role, $folder_id, $namespace) {
+		if (is_null($this->session))
+		{
+			return array(
+				"status_code" => 1,
+				"message" => "Your session is not active"
+			);
+		}
+
+		/* First check that user trying to add permission can actually do so */
+		$folder = KTAPI_Folder::get($this, $folder_id);
+		$permissions = $folder->getPermissionAllocation();
+		$detail = $permissions->permissions;
+		if(!in_array("Manage security", $detail)) {
+			return array(
+				"status_code" => 1,
+				"message" => "User does not have permission to manage security"
+			);
+		}
+
+		$folder = KTAPI_Folder::get($this, $folder_id);
+		if(PEAR::isError($folder))
+		{
+			return array(
+				"status_code" => 1,
+				"message" => $folder->getMessage()
+			);
+		}
+
+		$permission = KTAPI_Permission::getByNamespace($namespace);
+		if(PEAR::isError($permission)) {
+			return array(
+				"status_code" => 1,
+				"message" => $permission->getMessage()
+			);
+		}
+
+
+		$role = KTAPI_Role::getByName($role);
+		if(PEAR::isError($role)) {
+			return array(
+				"status_code" => 1,
+				"message" => $role->getMessage()
+			);
+		}
+
+		$permissions = $folder->getPermissionAllocation();
+
+		$permissions->add($role, $permissions);
+		$permissions->save();
+	}
+	
+	/**
+	* Add folder group permission
+	*
+	* @access public
+	* @param string
+	* @param string
+	* @param int
+	*
+	*/
+	public function add_folder_group_permissions($group, $folder_id, $namespace) {
+		if (is_null($this->session))
+		{
+			return array(
+				"status_code" => 1,
+				"message" => "Your session is not active"
+			);
+		}
+
+		/* First check that user trying to add permission can actually do so */
+		$folder = KTAPI_Folder::get($this, $folder_id);
+		$permissions = $folder->getPermissionAllocation();
+		$detail = $permissions->permissions;
+		if(!in_array("Manage security", $detail)) {
+			return array(
+				"status_code" => 1,
+				"message" => "User does not have permission to manage security"
+			);
+		}
+
+		$folder = KTAPI_Folder::get($this, $folder_id);
+		if(PEAR::isError($folder))
+		{
+			return array(
+				"status_code" => 1,
+				"message" => $folder->getMessage()
+			);
+		}
+
+		$permission = KTAPI_Permission::getByNamespace($namespace);
+		if(PEAR::isError($permission)) {
+			return array(
+				"status_code" => 1,
+				"message" => $permission->getMessage()
+			);
+		}
+
+
+		$group = KTAPI_Role::getByName($group);
+		if(PEAR::isError($group)) {
+			return array(
+				"status_code" => 1,
+				"message" => $group->getMessage()
+			);
+		}
+
+		$permissions = $folder->getPermissionAllocation();
+
+		$permissions->add($group, $permissions);
 		$permissions->save();
 	}
 
