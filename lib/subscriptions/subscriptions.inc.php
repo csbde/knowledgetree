@@ -431,10 +431,171 @@ class SubscriptionContent {
         );
 	}
 
+	/**
+	* This function generates the email that will be sent for subscription notifications
+	*
+ 	* @author KnowledgeTree Team
+	* @access public
+	* @param object $oKTNotification: The notification object
+	* @return string $str: The html string that will be sent via email
+	*/
 	function getEmailAlertContent($oKTNotification) {
-	    // we can re-use the normal template.
+        // set up logo and title
+        $rootUrl = KTUtil::kt_url();
+
+        $info = $this->_getSubscriptionData($oKTNotification);
+
+        // set up email text
+        $addFolderText = _kt('The folder "').$info['object_name']._kt('" was added');
+        $removeSubscribedFolderText = _kt('The folder "').$info['object_name']._kt('" to which you were subscribed, has been removed');
+        $removeChildFolderText = _kt('The folder "').$info['object_name']._kt('" has been removed');
+        $addDocumentText = _kt('The document "').$info['object_name']._kt('" was added');
+        $removeSubscribedDocumentText = _kt('The document "').$info['object_name']._kt('" to which you were subscribed, has been removed');
+        $removeChildDocumentText = _kt('The document "').$info['object_name']._kt('" has been removed');
+        $modifyDocumentText = _kt('The document "').$info['object_name']._kt('" has been changed');
+        $checkInDocumentText = _kt('The document "').$info['object_name']._kt('" has been checked in');
+        $checkOutDocumentText = _kt('The document "').$info['object_name']._kt('" has been checked out');
+        $moveDocumentText = _kt('The document "').$info['object_name']._kt('" has been moved');
+        $copiedDocumentText = _kt('The document "').$info['object_name']._kt('" has been copied');
+        $archivedDocumentText = _kt('The document "').$info['object_name']._kt('"');
+        $restoreArchivedDocumentText = _kt('The document "').$info['object_name']._kt('" has been restored by an administrator');
+        $downloadDocumentText = _kt('The document "').$info['object_name']._kt('"');
+        $documentAlertText = _kt('An alert on the document "').$info['object_name']._kt('" has been added or modified');
+
+        if($info['location_name'] !== NULL){
+            $addFolderText .= _kt(' to "').$info['location_name']._kt('"');
+            $removeChildFolderText .= _kt(' from the folder "').$info['location_name']._kt('"');
+            $addDocumentText .= _kt(' to "').$info['location_name']._kt('"');
+            $removeChildDocumentText .= _kt(' from the folder "').$info['location_name']._kt('" to which you are subscribed');
+            $modifyDocumentText .= _kt(' in the folder "').$info['location_name']._kt('"');
+            $checkInDocumentText .= _kt(', in the folder "').$info['location_name']._kt('"');
+            $checkOutDocumentText .= _kt(', from the folder "').$info['location_name']._kt('"');
+            $moveDocumentText .= _kt(' to the folder "').$info['location_name']._kt('"');
+            $copiedDocumentText .= _kt(' to the folder "').$info['location_name']._kt('"');
+            $archivedDocumentText .= _kt(' in the folder "').$info['location_name']._kt('" has been archived');
+            $downloadDocumentText .= _kt(' in the folder "').$info['location_name']._kt('" has been downloaded');
+            $documentAlertText .= _kt(' in the folder "').$info['location_name']._kt('"');
+        }
+
+        // set up links
+        switch($info['event_type']){
+            case 'AddFolder':
+                $text = $addFolderText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
+                $links = '<a href="'.$url.'">'._kt('View New Folder').'</a>';
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
+            case 'RemoveSubscribedFolder':
+                $text = $removeSubscribedFolderText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links = '<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
+            case 'RemoveChildFolder':
+                $text = $removeChildFolderText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
+                $links = '<a href="'.$url.'">'._kt('View Folder').'</a>';
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
+            case 'AddDocument':
+                $text = $addDocumentText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
+                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
+            case 'RemoveSubscribedDocument':
+                $text = $removeSubscribedDocumentText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links = '<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
+            case 'RemoveChildDocument':
+                $text = $removeChildDocumentText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links = '<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
+            case 'ModifyDocument':
+                $text = $modifyDocumentText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
+                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
+            case 'CheckInDocument':
+                $text = $checkInDocumentText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
+                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
+            case 'CheckOutDocument':
+                $text = $checkOutDocumentText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
+                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
+            case 'MovedDocument':
+                $text = $modifyDocumentText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
+                $links = '<a href="'.$url.'">'._kt('View New Location').'</a>';
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
+            case 'CopiedDocument':
+                $text = $copiedDocumentText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
+                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
+            case 'ArchivedDocument':
+                $text = $archivedDocumentText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links = '<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
+            case 'RestoreArchivedDocument':
+                $text = $restoreArchivedDocumentText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
+                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
+            case 'DownloadDocument':
+                $text = $downloadDocumentText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
+                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
+            case 'ModifyDocumentAlert':
+                $text = $documentAlertText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
+                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=viewall';
+                $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('View all alerts on this document').'</a>';
+        }
+
+        if($info['actor_name'] !== NULL && $info['event_type'] != 'RestoredArchivedDocument'){
+            $text .= _kt(', by ').$info['actor_name'];
+        }
+
+        // we can re-use the normal template.
 		// however, we need to wrap it - no need for a second template here.
-		$str = '<html><body>' . $this->getNotificationAlertContent($oKTNotification) . '</body></html>';
+		//$str = '<html><body>' . $this->getNotificationAlertContent($oKTNotification) . '</body></html>';
+		$str = '<br />
+		          &#160;&#160;&#160;&#160;<b>'._kt('Subscription notification').': '.$this->_eventTypeNames[$info['event_type']].'</b>
+		          <br />
+		          <br />
+		          &#160;&#160;&#160;&#160;'.$text.'
+		          <br />
+		          <br />
+		          &#160;&#160;&#160;&#160;'.$links.'
+		          <br />
+		          <br />';
 		return $str;
 	}
 
@@ -450,7 +611,7 @@ class SubscriptionContent {
 	    $oTemplate = $oTemplating->loadTemplate("kt3/notifications/subscriptions." . $info['event_type']);
 	    // if, for some reason, this doesn't actually work, use the "generic" title.
 	    if (PEAR::isError($oTemplate)) {
-		$oTemplate = $oTemplating->loadTemplate("kt3/notifications/subscriptions.generic");
+            $oTemplate = $oTemplating->loadTemplate("kt3/notifications/subscriptions.generic");
 	    }
 	    // FIXME we need to specify the i18n by user.
 
@@ -487,7 +648,9 @@ class SubscriptionContent {
 
 
 	function _getSubscriptionData($oKTNotification) {
-		$info = array(
+        $appName = APP_NAME;
+
+        $info = array(
 			'object_name' => $oKTNotification->getLabel(),
 			'event_type' => $oKTNotification->getStrData1(),
 			'location_name' => $oKTNotification->getStrData2(),
@@ -497,7 +660,9 @@ class SubscriptionContent {
 			'notify_id' => $oKTNotification->getId(),
 		);
 
-		$info['title'] = KTUtil::arrayGet($this->_eventTypeNames, $info['event_type'], 'Subscription alert:') .': ' . $info['object_name'];
+//		$info['title'] = KTUtil::arrayGet($this->_eventTypeNames, $info['event_type'], 'Subscription alert:') .': ' . $info['object_name'];
+        $info['title'] = $appName.': '._kt('Subscription notification for').' "'.$info['object_name'].'" - '.$this->_eventTypeNames[$info['event_type']];
+
 
 		if ($info['actor_id'] !== null) {
 			$oTempUser = User::get($info['actor_id']);
