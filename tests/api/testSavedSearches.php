@@ -118,14 +118,12 @@ class savedSearchTestCase extends KTUnitTestCase {
         // case 1: Saved searches exist
         $array = array();
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
-        $searchID_1 = $this->savedSearch->create('test_search_1', '(GeneralText contains "title")');
         $list = $this->savedSearch->getList();
         $this->assertNotA($list, 'PEAR_Error');
         $this->assertNotEqual($list, $array);
         $this->assertNoErrors();
 
         $this->savedSearch->delete($searchID);
-        $this->savedSearch->delete($searchID_1);
 
         // case 2: saved search does NOT exist
         $list = $this->savedSearch->getList();
