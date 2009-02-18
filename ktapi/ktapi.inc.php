@@ -356,7 +356,7 @@ class KTAPI
 		$permissions->add($user, $permissions);
 		$permissions->save();
 	}
-	
+
 	/**
 	* Add folder role permission
 	*
@@ -417,7 +417,7 @@ class KTAPI
 		$permissions->add($role, $permissions);
 		$permissions->save();
 	}
-	
+
 	/**
 	* Add folder group permission
 	*
@@ -3107,7 +3107,7 @@ class KTAPI
 	* @param string $query The saved search query
 	* @return array $response The formatted response array
 	*/
-	public function createSavedSearch($name, $query)
+	public function create_saved_search($name, $query)
 	{
 	    $savedSearch = new savedSearches($this);
 	    if(PEAR::isError($savedSearch)){
@@ -3138,7 +3138,7 @@ class KTAPI
 	* @param string $searchID The id of the saved search
 	* @return array $response The formatted response array
 	*/
-	public function getSavedSearch($searchID)
+	public function get_saved_search($searchID)
 	{
 	    $savedSearch = new savedSearches($this);
 	    if(PEAR::isError($savedSearch)){
@@ -3147,7 +3147,7 @@ class KTAPI
 	        return $response;
 	    }
 
-	    $result = $savedSearch->getSavedSearch($searchID);
+	    $result = $savedSearch->get_saved_search($searchID);
 	    if(PEAR::isError($result)){
 	        $response['status_code'] = 1;
 	        $response['message'] = $result->getMessage();
@@ -3174,7 +3174,7 @@ class KTAPI
 	* @access public
 	* @return array $response The formatted response array
 	*/
-	public function getSavedSearchList()
+	public function get_saved_search_list()
 	{
 	    $savedSearch = new savedSearches($this);
 	    if(PEAR::isError($savedSearch)){
@@ -3183,7 +3183,7 @@ class KTAPI
 	        return $response;
 	    }
 
-	    $result = $savedSearch->getList();
+	    $result = $savedSearch->get_list();
 	    if(PEAR::isError($result)){
 	        $response['status_code'] = 1;
 	        $response['message'] = $result->getMessage();
@@ -3211,7 +3211,7 @@ class KTAPI
 	* @param string $searchID The id of the saved search to delete
 	* @return array $response The formatted response array
 	*/
-	public function deleteSavedSearch($searchID)
+	public function delete_saved_search($searchID)
 	{
 	    $savedSearch = new savedSearches($this);
 	    if(PEAR::isError($savedSearch)){
@@ -3241,7 +3241,7 @@ class KTAPI
 	* @param string $searchID The id of the saved search to delete
 	* @return array $response The formatted response array
 	*/
-	public function runSavedSearch($searchID)
+	public function run_saved_search($searchID)
 	{
 	    $savedSearch = new savedSearches($this);
 	    if(PEAR::isError($savedSearch)){
@@ -3250,7 +3250,7 @@ class KTAPI
 	        return $response;
 	    }
 
-	    $results = $savedSearch->runSavedSearch($searchID);
+	    $results = $savedSearch->run_saved_search($searchID);
 	    if(PEAR::isError($results)){
 	        $response['status_code'] = 1;
 	        $response['message'] = $results->getMessage();
@@ -3265,6 +3265,126 @@ class KTAPI
 	    $response['results'] = $results;
 
 	    return $response;
+	}
+
+	/**
+	* Method to get the details of a user
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @param object $oUser The user object
+	* @return array $results The user details in an array
+	*/
+	private function _get_user_details($oUser)
+	{
+	    $results['user_id'] = $oUser->getId();
+	    $results['username'] = $oUser->getUsername();
+	    $results['name'] = $oUser->getName();
+	    $results['email'] = $oUser->getEmail();
+
+	    return $results;
+	}
+
+	/**
+	* Method to return a user based on the userID
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $userID The id of the user
+	* @return array $response The formatted response array
+	*/
+	public function get_user_by_id($userID)
+	{
+        $user = KTAPI_User::getById($userID);
+        if(PEAR::isError($user)){
+            $response['status_code'] = 1;
+            $response['message'] = $user->getMessage();
+            return $response;
+        }
+
+        $results = $this->_get_user_details($user);
+        $response['message'] = '';
+        $response['status_code'] = 0;
+        $response['results'] = $results;
+
+        return $response;
+	}
+
+	/**
+	* Method to return a user based on the username
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $username The username of the user
+	* @return array $response The formatted response array
+	*/
+	public function get_user_by_username($username)
+	{
+        $user = KTAPI_User::getByUsername($username);
+        if(PEAR::isError($user)){
+            $response['status_code'] = 1;
+            $response['message'] = $user->getMessage();
+            return $response;
+        }
+
+        $results = $this->_get_user_details($user);
+        $response['message'] = '';
+        $response['status_code'] = 0;
+        $response['results'] = $results;
+
+        return $response;
+	}
+
+	/**
+	* Method to return a user based on the name
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $name The name of the user
+	* @return array $response The formatted response array
+	*/
+	public function get_user_by_name($name)
+	{
+        $user = KTAPI_User::getByName($name);
+        if(PEAR::isError($user)){
+            $response['status_code'] = 1;
+            $response['message'] = $user->getMessage();
+            return $response;
+        }
+
+        $results = $this->_get_user_details($user);
+        $response['message'] = '';
+        $response['status_code'] = 0;
+        $response['results'] = $results;
+
+        return $response;
+	}
+
+	/**
+	* Method to return a list of users matching the filter criteria
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $filter
+	* @param string $options
+	* @return array $response The formatted response array
+	*/
+	public function get_user_list($filter = NULL, $options = NULL)
+	{
+        $users = KTAPI_User::getList($filter, $options);
+        if(PEAR::isError($users)){
+            $response['status_code'] = 1;
+            $response['message'] = $users->getMessage();
+            return $response;
+        }
+        foreach($users as $user){
+            $results[] = $this->_get_user_details($user);
+        }
+        $response['message'] = '';
+        $response['status_code'] = 0;
+        $response['results'] = $results;
+
+        return $response;
 	}
 }
 
@@ -3329,7 +3449,7 @@ class savedSearches
 	* @param integer $searchID The id of the saved search
 	* @return array|object $search SUCESS - The saved search data | FAILURE - a pear error object
 	*/
-	public function getSavedSearch($searchID)
+	public function get_saved_search($searchID)
 	{
 		$search = SearchHelper::getSavedSearch($searchID);
 		return $search;
@@ -3342,7 +3462,7 @@ class savedSearches
 	* @access public
 	* @return array|object $list SUCESS - The list of saved searches | FAILURE - an error object
 	*/
-	public function getList()
+	public function get_list()
 	{
 		$user = $this->ktapi->get_user();
 		if (is_null($user) || PEAR::isError($user))
@@ -3382,9 +3502,9 @@ class savedSearches
 	* @param integer $searchID The id of the saved search
 	* @return array|object $results SUCCESS - The results of the saved serach | FAILURE - a pear error object
 	*/
-	public function runSavedSearch($searchID)
+	public function run_saved_search($searchID)
 	{
-		$search = $this->getSavedSearch($searchID);
+		$search = $this->get_saved_search($searchID);
 		if(is_null($search) || PEAR::isError($search)){
 		    $results = new PEAR_Error('Invalid saved search');
 		    return $results;
