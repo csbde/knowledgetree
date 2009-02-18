@@ -356,7 +356,7 @@ class KTAPI
 		$permissions->add($user, $permissions);
 		$permissions->save();
 	}
-	
+
 	/**
 	* Add folder role permission
 	*
@@ -417,7 +417,7 @@ class KTAPI
 		$permissions->add($role, $permissions);
 		$permissions->save();
 	}
-	
+
 	/**
 	* Add folder group permission
 	*
@@ -1137,8 +1137,646 @@ class KTAPI
 	    return $subscriptions;
 	}
 
+    /**
+     * Perform a bulk action on a list of folders and documents
+     * Available actions are copy, move, delete, archive, checkout, undo_checkout and immute.
+     *
+     * <code>
+     * $ktapi = new KTAPI();
+     * $session = $ktapi->start_system_session();
+     *
+     * $items = array();
+     * $items['documents'][] = $document_id;
+     * $items['folders'][] = $folder_id;
+     *
+     * $response = $ktapi->performBulkAction('move', $items, 'Reason for moving', $target_folder_id);
+     * if($response['status_code'] != 0) return 'ERROR';
+     *
+     * </code>
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param string $action The action to be performed
+     * @param array $items A list of id's and item type in the format array('documents' => array(1,6), 'folders' => array(3,4))
+     * @param string $reason The reason for performing the action - only immute does not require a reason.
+     * @param integer $target_folder_id The id of the target folder if required - copy and move require this.
+     * @return array The response array. On success response['results'] will be empty | contain an array of failed items.
+     */
+    public function performBulkAction($action, $items, $reason = '', $target_folder_id = null)
+    {
+        $response['status_code'] = 1;
 
-	/* *** Refactored web services functions *** */
+        if(!is_array($items)){
+            $response['message'] = _kt("The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: {$items}");
+            return $response;
+        }
+
+        if(empty($items)){
+            $response['message'] = _kt('No items found to perform the action on.');
+            return $response;
+        }
+
+        if(!is_string($action)){
+            $response['message'] = _kt("The bulk action to perform must be a string. Received: {$action}");
+            return $response;
+        }
+
+        // Check that the action exists in the bulk actions class
+        $bulkActions = new ReflectionClass('KTAPI_BulkActions');
+        $methods = $bulkActions->getMethods();
+
+        $exists = false;
+        foreach ($methods as $method){
+            if($method->getName() == $action){
+                $actionMethod = $method;
+                $exists = true;
+                break;
+            }
+        }
+
+        if(!$exists) {
+            $response['message'] = _kt("The requested action has not been implemented: {$action}");
+            return $response;
+        }
+
+        // Create the document and folder objects
+        $objects = array();
+        if(isset($items['folders'])){
+            foreach($items['folders'] as $item) {
+                $folder = $this->get_folder_by_id($item);
+                $objects[] = $folder;
+            }
+        }
+
+        if(isset($items['documents'])){
+            foreach($items['documents'] as $item) {
+                $document = $this->get_document_by_id($item);
+                $objects[] = $document;
+            }
+        }
+
+        if(empty($objects)){
+            $response['message'] = _kt('No folder or document items found to perform the action on.');
+            return $response;
+        }
+
+        // perform the action
+        $ktapi_bulkactions = new KTAPI_BulkActions($this);
+
+        // Get target folder object if required
+        if(in_array($action, array('move', 'copy'))){
+            if(!is_int($target_folder_id) || empty($target_folder_id)){
+                $response['message'] = _kt('No target folder has been specified.');
+                return $response;
+            }
+            $target = $this->get_folder_by_id($target_folder_id);
+
+            // call the action
+            $result = $ktapi_bulkactions->$action($objects, $target, $reason);
+        }else if($action == 'immute'){
+            // call the action
+            $result = $ktapi_bulkactions->$action($objects);
+        }else {
+            // call the action
+            $result = $ktapi_bulkactions->$action($objects, $reason);
+        }
+
+        if(PEAR::isError($result)) {
+            $response['message'] = _kt("The bulk action failed: {$result->getMessage()}");
+            return $response;
+        }
+
+        // if failed items are returned - flatten the objects
+        if(is_array($result)){
+            if(isset($result['docs'])){
+                foreach ($result['docs'] as $key => $item){
+                    $result['docs'][$key]['object'] = $item['object']->get_detail();
+                }
+            }
+            if(isset($result['folders'])){
+                foreach ($result['folders'] as $key => $item){
+                    $result['folders'][$key]['object'] = $item['object']->get_detail();
+                }
+            }
+        }
+
+        // For a successful action
+        $response['status_code'] = 0;
+        $response['results'] = $result;
+        return $response;
+    }
+
+    /* *** ACL Roles and Role_Allocation *** */
+
+    /**
+     * Get a list of available roles
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param string $filter The beginning letter(s) of the role being searched for
+     * @return array Response.
+     */
+    public function get_roles($filter = null)
+    {
+        $response['status_code'] = 1;
+
+        // check the filter
+        if(!empty($filter)) {
+            if(!is_string($filter)){
+                $response['message'] = _kt('Filter should be a string.');
+                return $response;
+            }
+
+            // escape filter string - prevent sql injection
+            $filter = addslashes($filter);
+            $filter = "name like '{$filter}%'";
+        }
+
+        $listing = KTAPI_Role::getList($filter);
+
+        if(PEAR::isError($listing)){
+            $response['message'] = $listing->getMessage();
+            return $response;
+        }
+
+        // flatten role objects
+        $roles = array();
+        foreach ($listing as $ktapi_roll) {
+            $roles[] = array(
+               'id' => $ktapi_roll->getId(),
+               'name' => $ktapi_roll->getName(),
+            );
+        }
+
+        $response['status_code'] = 0;
+        $response['results'] = $roles;
+        return $response;
+    }
+
+    /**
+     * Get a role using its id
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param integer $role_id The id of the role
+     * @return array Response
+     */
+    public function get_role_by_id($role_id)
+    {
+        $response['status_code'] = 1;
+        if(!is_numeric($role_id)){
+            $response['message'] = _kt('Role id must be numeric.');
+            return $response;
+
+        }
+
+        $role = KTAPI_Role::getById($role_id);
+
+        if(PEAR::isError($role)) {
+            $response['message'] = $role->getMessage();
+            return $response;
+        }
+
+        $response['status_code'] = 0;
+        $response['results'] = array(
+           'id' => $role->getId(),
+           'name' => $role->getName()
+        );
+
+       return $response;
+    }
+
+    /**
+     * Get a role based on its name
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param string $role_name The name of the role
+     * @return array Response
+     */
+    public function get_role_by_name($role_name)
+    {
+        $response['status_code'] = 1;
+        if(!is_string($role_name)){
+            $response['message'] = _kt('Role name must be a string.');
+            return $response;
+
+        }
+
+        $role = KTAPI_Role::getByName($role_name);
+
+        if(PEAR::isError($role)) {
+            $response['message'] = $role->getMessage();
+            return $response;
+        }
+
+        $response['status_code'] = 0;
+        $response['results'] = array(
+           'id' => $role->getId(),
+           'name' => $role->getName()
+        );
+
+       return $response;
+    }
+
+    /**
+     * Get the list of role allocations on a folder
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param integar $folder_id The id of the folder
+     * @return array Response
+     */
+    public function get_role_allocation_for_folder($folder_id)
+    {
+        $response['status_code'] = 1;
+        if(!is_numeric($folder_id)){
+            $response['message'] = _kt('Folder id must be numeric.');
+            return $response;
+
+        }
+
+        $folder = $this->get_folder_by_id($folder_id);
+
+        if(PEAR::isError($folder)) {
+            $response['message'] = $folder->getMessage();
+            return $response;
+        }
+
+        $role_allocation = $folder->getRoleAllocation();
+
+        // flatten object
+        $membership = $role_allocation->getMembership();
+
+        $response['status_code'] = 0;
+        $response['results'] = $membership;
+        return $response;
+    }
+
+    /**
+     * Add a user to a role on a folder
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param integer $folder_id The folder id
+     * @param integer $role_id The id of the role being modified
+     * @param integer $user_id The id of the user to be added
+     * @return array Response
+     */
+    public function add_user_to_role_on_folder($folder_id, $role_id, $user_id)
+    {
+        $response['status_code'] = 1;
+        if(!is_numeric($user_id)){
+            $response['message'] = _kt('User id must be numeric.');
+            return $response;
+        }
+        $member['users'][] = $user_id;
+
+        return $this->add_members_to_role_on_folder($folder_id, $role_id, $member);
+    }
+
+    /**
+     * Add a group to a role on a folder
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param integer $folder_id The folder id
+     * @param integer $role_id The id of the role being modified
+     * @param integer $group_id The id of the group to be added
+     * @return array Response
+     */
+    public function add_group_to_role_on_folder($folder_id, $role_id, $group_id)
+    {
+        $response['status_code'] = 1;
+        if(!is_numeric($group_id)){
+            $response['message'] = _kt('Group id must be numeric.');
+            return $response;
+        }
+        $member['groups'][] = $group_id;
+
+        return $this->add_members_to_role_on_folder($folder_id, $role_id, $member);
+    }
+
+    /**
+     * Remove a user from a role on a folder
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param integer $folder_id The folder id
+     * @param integer $role_id The id of the role being modified
+     * @param integer $user_id The id of the user to be removed
+     * @return array Response
+     */
+    public function remove_user_from_role_on_folder($folder_id, $role_id, $user_id)
+    {
+        $response['status_code'] = 1;
+        if(!is_numeric($user_id)){
+            $response['message'] = _kt('User id must be numeric.');
+            return $response;
+        }
+        $member['users'][] = $user_id;
+
+        return $this->remove_members_from_role_on_folder($folder_id, $role_id, $member);
+    }
+
+    /**
+     * Remove a group from a role on a folder
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param integer $folder_id The folder id
+     * @param integer $role_id The id of the role being modified
+     * @param integer $group_id The id of the group to be removied
+     * @return array Response
+     */
+    public function remove_group_from_role_on_folder($folder_id, $role_id, $group_id)
+    {
+        $response['status_code'] = 1;
+        if(!is_numeric($group_id)){
+            $response['message'] = _kt('Group id must be numeric.');
+            return $response;
+        }
+        $member['groups'][] = $group_id;
+
+        return $this->remove_members_from_role_on_folder($folder_id, $role_id, $member);
+    }
+
+    /**
+     * Remove members (user, group) from a role on a folder
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param integer $folder_id The folder id
+     * @param integer $role_id The id of the role being modified
+     * @param array $members The list of id's of members to be removed - array('users' => array(1,2), 'groups' => array(2,4))
+     * @return array Response
+     */
+    public function remove_members_from_role_on_folder($folder_id, $role_id, $members)
+    {
+        return $this->update_members_on_role_on_folder($folder_id, $role_id, $members, 'remove');
+    }
+
+    /**
+     * Add members (user, group) to a role on a folder
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param integer $folder_id The folder id
+     * @param integer $role_id The id of the role being modified
+     * @param array $members The list of id's of members to be added - array('users' => array(1,2), 'groups' => array(2,4))
+     * @return array Response
+     */
+    public function add_members_to_role_on_folder($folder_id, $role_id, $members)
+    {
+        return $this->update_members_on_role_on_folder($folder_id, $role_id, $members, 'add');
+    }
+
+    /**
+     * Add / remove members (user, group) to / from a role on a folder
+     *
+     * @author KnowledgeTree Team
+     * @access private
+     * @param integer $folder_id The folder id
+     * @param integer $role_id The id of the role being modified
+     * @param array $members The list of id's of members to be updated - array('users' => array(1,2), 'groups' => array(2,4))
+     * @param string $update The type of modification - add | remove
+     * @return array Response
+     */
+    private function update_members_on_role_on_folder($folder_id, $role_id, $members, $update = 'add')
+    {
+        // Check input information
+        $response['status_code'] = 1;
+        if(!is_numeric($folder_id)){
+            $response['message'] = _kt('Folder id must be numeric.');
+            return $response;
+        }
+
+        if(!is_numeric($role_id)){
+            $response['message'] = _kt('Role id must be numeric.');
+            return $response;
+        }
+
+        if(!is_array($members)){
+            $response['message'] = _kt("The list of members must be in the format: array('users' => array(1,2), 'groups' => array(2,4)).')");
+            return $response;
+        }
+
+        if(!isset($members['users']) && !isset($members['groups'])){
+            $response['message'] = _kt("The list of members must be in the format: array('users' => array(1,2), 'groups' => array(2,4)).')");
+            return $response;
+        }
+
+        // Get folder and role objects
+        $folder = $this->get_folder_by_id($folder_id);
+        if(PEAR::isError($folder)) {
+            $response['message'] = $folder->getMessage();
+            return $response;
+        }
+
+        $role = KTAPI_Role::getById($role_id);
+        if(PEAR::isError($role)) {
+            $response['message'] = $role->getMessage();
+            return $response;
+        }
+
+        // Get the role allocation for the folder
+        $role_allocation = $folder->getRoleAllocation();
+
+        // Get member objects and add them to the role
+        // Users
+        if(isset($members['users'])){
+
+            foreach($members['users'] as $user_id){
+                // Get the user object
+                $member = KTAPI_User::getById($user_id);
+
+                if(PEAR::isError($member)) {
+                    $response['message'] = $member->getMessage();
+                    return $response;
+                }
+
+                // Add to / remove from the role
+                $role_allocation->$update($role, $member);
+            }
+        }
+
+        // Groups
+        if(isset($members['groups'])){
+
+            foreach($members['groups'] as $group_id){
+                // Get the group object
+                $member = KTAPI_Group::getById($group_id);
+
+                if(PEAR::isError($member)) {
+                    $response['message'] = $member->getMessage();
+                    return $response;
+                }
+
+                // Add to / remove from the role
+                $role_allocation->$update($role, $member);
+            }
+        }
+
+        // Save the new allocations
+        $role_allocation->save();
+
+        $response['status_code'] = 0;
+        return $response;
+    }
+
+    /**
+     * Check if a user or group is allocated to a role on the folder
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param integer $folder_id The folder id
+     * @param integer $role_id The id of the role being checked
+     * @param integer $member_id The id of the user or group
+     * @param string $member_type user | group
+     * @return array Response
+     */
+    public function is_member_in_role_on_folder($folder_id, $role_id, $member_id, $member_type = 'user')
+    {
+        $response['status_code'] = 1;
+
+        // Get folder and role objects
+        $folder = $this->get_folder_by_id($folder_id);
+        if(PEAR::isError($folder)) {
+            $response['message'] = $folder->getMessage();
+            return $response;
+        }
+
+        $role = KTAPI_Role::getById($role_id);
+        if(PEAR::isError($role)) {
+            $response['message'] = $role->getMessage();
+            return $response;
+        }
+
+        // get the member object
+        switch($member_type){
+            case 'user':
+                $member = KTAPI_User::getById($member_id);
+                break;
+            case 'group':
+                $member = KTAPI_Group::getById($member_id);
+                break;
+            default:
+                $response['message'] = _kt('Unrecognised member type. Must be group or user.');
+               return $response;
+        }
+
+        if(PEAR::isError($member)) {
+            $response['message'] = $member->getMessage();
+            return $response;
+        }
+
+        // Get the role allocation for the folder
+        $role_allocation = $folder->getRoleAllocation();
+        $check = $role_allocation->doesRoleHaveMember($role, $member);
+        $result = ($check) ? 'YES' : 'NO';
+
+        $response['status_code'] = 0;
+        $response['results'] = $result;
+        return $response;
+    }
+
+    /**
+     * Removes all members (users, groups) from all roles or from the specified role on the folder
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param integer $folder_id The folder id
+     * @param integer $role_id Optional. The id of the role being reset.
+     * @return array Response
+     */
+    public function remove_all_role_allocation_from_folder($folder_id, $role_id = null)
+    {
+        $response['status_code'] = 1;
+
+        // Get folder and role objects
+        $folder = $this->get_folder_by_id($folder_id);
+        if(PEAR::isError($folder)) {
+            $response['message'] = $folder->getMessage();
+            return $response;
+        }
+
+        $role = null;
+        if(!empty($role_id)){
+            $role = KTAPI_Role::getById($role_id);
+            if(PEAR::isError($role)) {
+                $response['message'] = $role->getMessage();
+                return $response;
+            }
+        }
+
+        // Get the role allocation for the folder
+        $role_allocation = $folder->getRoleAllocation();
+        $role_allocation->removeAll($role);
+        $role_allocation->save();
+
+        $response['status_code'] = 0;
+        $response['results'] = $result;
+        return $response;
+    }
+
+    /**
+     * Overrides the parents role allocation
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param integer $folder_id The folder id
+     * @return array Response
+     */
+    public function override_role_allocation_on_folder($folder_id)
+    {
+        $response['status_code'] = 1;
+
+        // Get folder object
+        $folder = $this->get_folder_by_id($folder_id);
+        if(PEAR::isError($folder)) {
+            $response['message'] = $folder->getMessage();
+            return $response;
+        }
+
+        // Get the role allocation for the folder
+        $role_allocation = $folder->getRoleAllocation();
+        $result = $role_allocation->overrideAllocation();
+
+        $response['status_code'] = 0;
+        $response['results'] = $result;
+        return $response;
+    }
+
+    /**
+     * Inherits the role allocation from the parent
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param integer $folder_id The folder id
+     * @return array Response
+     */
+    public function inherit_role_allocation_on_folder($folder_id)
+    {
+        $response['status_code'] = 1;
+
+        // Get folder object
+        $folder = $this->get_folder_by_id($folder_id);
+        if(PEAR::isError($folder)) {
+            $response['message'] = $folder->getMessage();
+            return $response;
+        }
+
+        // Get the role allocation for the folder
+        $role_allocation = $folder->getRoleAllocation();
+        $result = $role_allocation->inheritAllocation();
+
+        $response['status_code'] = 0;
+        $response['results'] = $result;
+        return $response;
+    }
+
+
+    /* *** Refactored web services functions *** */
 
 
     /**

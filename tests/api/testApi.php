@@ -449,8 +449,186 @@ class APITestCase extends KTUnitTestCase {
         $document->expunge();
     }
 
-    function createRandomFile($content = 'this is some text') {
-        $temp = tempnam(dirname(__FILE__), 'myfile');
+    /* *** Test webservice functions *** */
+
+    /**
+     * Testing folder creation and deletion, add document, get folder contents, folder detail
+     * Folder shortcuts and actions
+     */
+    public function testFolderApiFunctions()
+    {
+        // check for a negative result
+        $result = $this->ktapi->create_folder(0, 'New test error api folder');
+        $this->assertNotEqual($result['status_code'], 0);
+
+        // Create a folder
+        $result1 = $this->ktapi->create_folder(1, 'New test api folder');
+        $folder_id = $result1['results']['id'];
+
+        $this->assertEqual($result1['status_code'], 0);
+        $this->assertTrue($result1['results']['parent_id'] == 1);
+
+        // Create a sub folder
+        $result2 = $this->ktapi->create_folder($folder_id, 'New test api sub-folder');
+        $folder_id2 = $result2['results']['id'];
+        $this->assertEqual($result2['status_code'], 0);
+
+        // Add a document
+        global $default;
+        $dir = $default->uploadDirectory;
+        $tempfilename = $this->createRandomFile('some text', $dir);
+        $doc = $this->ktapi->add_document($folder_id,  'New API test doc', 'testdoc1.txt', 'Default', $tempfilename);
+
+        $this->assertEqual($doc['status_code'], 0);
+        $this->assertEqual($doc['results']['title'], 'New API test doc');
+
+        // Get folder 1 contents
+        $contents = $this->ktapi->get_folder_contents($folder_id, $depth=1, $what='DFS');
+        $this->assertEqual($contents['status_code'], 0);
+        $this->assertEqual(count($contents['results']['items']), 2);
+
+        $detail = $this->ktapi->get_folder_detail($folder_id2);
+        $this->assertEqual($detail['status_code'], 0);
+        $this->assertTrue($detail['results']['parent_id'] == $folder_id);
+
+        // Create a shortcut to the subfolder from the root folder
+        $shortcut = $this->ktapi->create_folder_shortcut(1, $folder_id2);
+        $this->assertEqual($shortcut['status_code'], 0);
+        $this->assertEqual($shortcut['results']['folder_name'], 'New test api sub-folder');
+        $this->assertEqual($shortcut['results']['parent_id'], 1);
+
+        $shortcut_list = $this->ktapi->get_folder_shortcuts($folder_id2);
+        $this->assertEqual($shortcut['status_code'], 0);
+        $this->assertEqual(count($shortcut_list['results']), 1);
+
+        // Rename the folder
+        $renamed = $this->ktapi->rename_folder($folder_id, 'Renamed test folder');
+        $this->assertEqual($renamed['status_code'], 0);
+
+        $renamed_detail = $this->ktapi->get_folder_detail_by_name('Renamed test folder');
+        $this->assertEqual($renamed_detail['status_code'], 0);
+        $this->assertEqual($renamed_detail['results']['id'], $folder_id);
+
+//        $this->ktapi->copy_folder($source_id, $target_id, $reason);
+//        $this->ktapi->move_folder($source_id, $target_id, $reason);
+
+
+        // Clean up - delete the folder
+        $this->ktapi->delete_folder($folder_id, 'Testing API');
+        $detail2 = $this->ktapi->get_folder_detail($folder_id);
+        $this->assertNotEqual($detail2['status_code'], 0);
+    }
+
+    /**
+     * Testing document get, update, actions, delete, shortcuts and detail
+     */
+    public function testDocumentApiFunctions()
+    {
+        // Create a folder
+        $result1 = $this->ktapi->create_folder(1, 'New test api folder');
+        $folder_id = $result1['results']['id'];
+        $this->assertEqual($result1['status_code'], 0);
+
+        // Create a sub folder
+        $result2 = $this->ktapi->create_folder($folder_id, 'New test api sub-folder');
+        $folder_id2 = $result2['results']['id'];
+        $this->assertEqual($result2['status_code'], 0);
+
+        // Add a document
+        global $default;
+        $dir = $default->uploadDirectory;
+        $tempfilename = $this->createRandomFile('some text', $dir);
+        $doc = $this->ktapi->add_document($folder_id,  'New API test doc', 'testdoc1.txt', 'Default', $tempfilename);
+
+        $doc_id = $doc['results']['document_id'];
+        $this->assertEqual($doc['status_code'], 0);
+
+        // Get document detail
+        $detail = $this->ktapi->get_document_detail($doc_id);//, 'MLTVH');
+        $this->assertEqual($detail['status_code'], 0);
+        $this->assertEqual($detail['results']['document_type'], 'Default');
+        $this->assertEqual($detail['results']['folder_id'], $folder_id);
+
+        // Get document detail - filename
+        $detail2 = $this->ktapi->get_document_detail_by_filename($folder_id, 'testdoc1.txt');
+        $this->assertEqual($detail2['status_code'], 0);
+        $this->assertEqual($detail2['results']['title'], 'New API test doc');
+
+        // Get document detail - title
+        $detail3 = $this->ktapi->get_document_detail_by_title($folder_id, 'New API test doc');
+        $this->assertEqual($detail3['status_code'], 0);
+        $this->assertEqual($detail3['results']['filename'], 'testdoc1.txt');
+
+        // Get document detail - name
+        $detail4 = $this->ktapi->get_document_detail_by_name($folder_id, 'New API test doc');
+        $this->assertEqual($detail4['status_code'], 0);
+        $this->assertEqual($detail4['results']['title'], 'New API test doc');
+
+        // Checkout the document
+        $result1 = $this->ktapi->checkout_document($doc_id, 'Testing API', true);
+        $this->assertEqual($result1['status_code'], 0);
+        $this->assertTrue(!empty($result1['results']));
+
+        // Checkin the document
+        $dir = $default->uploadDirectory;
+        $tempfilename = $this->createRandomFile('some text', $dir);
+        $result2 = $this->ktapi->checkin_document($doc_id,  'testdoc1.txt', 'Testing API', $tempfilename, false);
+
+        $this->assertEqual($result2['status_code'], 0);
+        $this->assertEqual($result2['results']['document_id'], $doc_id);
+
+        // Create document shortcut
+        $shortcut = $this->ktapi->create_document_shortcut(1, $doc_id);
+        $this->assertEqual($shortcut['status_code'], 0);
+        $this->assertEqual($shortcut['results']['title'], 'New API test doc');
+        $this->assertEqual($shortcut['results']['folder_id'], $folder_id);
+
+        // Delete the document
+        $result3 = $this->ktapi->delete_document($doc_id, 'Testing API');
+        $this->assertEqual($result3['status_code'], 0);
+
+        // Clean up - delete the folder
+        $this->ktapi->delete_folder($folder_id, 'Testing API');
+        $detail2 = $this->ktapi->get_folder_detail($folder_id);
+        $this->assertNotEqual($detail2['status_code'], 0);
+    }
+
+    /**
+     * Helper function to create a document
+     */
+    function createDocument($title, $filename, $folder = null)
+    {
+        if(is_null($folder)){
+            $folder = $this->root;
+        }
+
+        // Create a new document
+        $randomFile = $this->createRandomFile();
+        $this->assertTrue(is_file($randomFile));
+
+        $document = $folder->add_document($title, $filename, 'Default', $randomFile);
+        $this->assertNotError($document);
+
+        @unlink($randomFile);
+        if(PEAR::isError($document)) return false;
+
+        return $document;
+    }
+
+    /**
+     * Helper function to delete docs
+     */
+    function deleteDocument($document)
+    {
+        $document->delete('Testing API');
+        $document->expunge();
+    }
+
+    function createRandomFile($content = 'this is some text', $uploadDir = null) {
+        if(is_null($uploadDir)){
+           $uploadDir = dirname(__FILE__);
+        }
+        $temp = tempnam($uploadDir, 'myfile');
         $fp = fopen($temp, 'wt');
         fwrite($fp, $content);
         fclose($fp);

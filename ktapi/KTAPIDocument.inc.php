@@ -2417,7 +2417,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
         $config = KTConfig::getSingleton();
         $allowAttachment = $config->get('email/allowAttachment', false);
-        $allowEmailAddresses = $oConfig->get('email/allowEmailAddresses', false);
+        $allowEmailAddresses = $config->get('email/allowEmailAddresses', false);
 
         $emailErrors = array();
         $userEmails = array();

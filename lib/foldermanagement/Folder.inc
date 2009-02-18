@@ -130,6 +130,11 @@ class Folder extends KTEntity {
     	//now load fields from the folder this folder is linking to, if any.
     	if($this->isSymbolicLink()){
     		$oLinkedFolder = $this->getLinkedFolder();
+
+            if(PEAR::isError($oLinkedFolder)){
+                return PEAR::raiseError(_kt("Linked folder can't be found: ") . $oLinkedFolder->getMessage());
+            }
+
     		$this->sName = $oLinkedFolder->getName();
     		$this->sDescription = $oLinkedFolder->getDescription();
     	}

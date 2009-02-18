@@ -118,6 +118,7 @@ class JsonEncoder extends EncoderBase
      */
     public function encode($input)
     {
+        $input = array('response' => $input);
         return json_encode($input);
     }
 }
@@ -150,11 +151,12 @@ class XmlEncoder extends EncoderBase
             return false;
         }
 
-        $xml = '<?xml version="1.0">'."\n";
-        $xml .= '<response-status="ok">'."\n";
+        $xml = '<?xml version="1.0"  encoding="utf-8" ?>'."\n";
+        $xml .= '<response>'."\n";
+//        $xml .= '<response status="ok">'."\n";
 
         $xml .= XmlEncoder::createXmlFromArray($input);
-
+        $xml .= '</response>'."\n";
         return $xml;
     }
 
@@ -170,6 +172,10 @@ class XmlEncoder extends EncoderBase
     {
         $xml = '';
         foreach ($input as $key => $value) {
+
+            if(is_numeric($key)){
+                $key = 'item';
+            }
 
             if(is_array($value)){
                 $value = XmlEncoder::createXmlFromArray($value);
@@ -383,6 +389,13 @@ class Response extends ResponseBase
 
         // instantiate KTAPI and invoke method
         $ktapi = $this->get_ktapi($session_id);
+
+        if(PEAR::isError($ktapi)){
+            $this->error = 'API could not be authenticated: '.$ktapi->getMessage();
+            $this->error_code = 404;
+            return false;
+        }
+
         $result = $reflectMethod->invokeArgs($ktapi, $orderedParams);
 
         return $result;
@@ -409,10 +422,10 @@ class Response extends ResponseBase
     	if(!empty($session_id)){
         	$session = $kt->get_active_session($session_id, null);
 
-        	if ( PEAR::isError($session))
+        	if (PEAR::isError($session))
         	{
         	    // return error / exception
-                return false;
+                return $session;
         	}
     	}
     	$this->ktapi = $kt;
@@ -477,6 +490,18 @@ class Response extends ResponseBase
      */
     protected function _post($args)
     {
+        $result = $this->callMethod($args);
+
+        // if an error occurred, initiate the error response
+        if($result === false){
+            return false;
+        }
+
+        $result = $this->flattenInput($result);
+
+        $encoder = EncoderBase::getEncoder($this->responseType);
+        $this->output = $encoder->encode($result);
+        $this->headers = $encoder->getHeaders();
     }
 
     /**
@@ -489,6 +514,18 @@ class Response extends ResponseBase
      */
     protected function _put($args)
     {
+        $result = $this->callMethod($args);
+
+        // if an error occurred, initiate the error response
+        if($result === false){
+            return false;
+        }
+
+        $result = $this->flattenInput($result);
+
+        $encoder = EncoderBase::getEncoder($this->responseType);
+        $this->output = $encoder->encode($result);
+        $this->headers = $encoder->getHeaders();
     }
 
     /**
@@ -501,6 +538,18 @@ class Response extends ResponseBase
      */
     protected function _delete($args)
     {
+        $result = $this->callMethod($args);
+
+        // if an error occurred, initiate the error response
+        if($result === false){
+            return false;
+        }
+
+        $result = $this->flattenInput($result);
+
+        $encoder = EncoderBase::getEncoder($this->responseType);
+        $this->output = $encoder->encode($result);
+        $this->headers = $encoder->getHeaders();
     }
 
     /**
@@ -512,9 +561,12 @@ class Response extends ResponseBase
     public function output()
     {
         if(!empty($this->error)){
+            $response = array('message' => $this->error, 'status_code' => 1);
+            $encoder = EncoderBase::getEncoder($this->responseType);
+            $this->output = $encoder->encode($response);
+            $this->headers = $encoder->getHeaders();
+
             $this->_respondError($this->error_code);
-            echo $this->error;
-            exit;
         }
 
         $this->_respond($this->output, $this->headers);

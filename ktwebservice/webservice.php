@@ -1455,7 +1455,7 @@ class KTWebService
     	}
 
     	$folder = $kt->get_folder_by_id($folder_id);
-    	if(PEAR::isError($document)){
+    	if(PEAR::isError($folder)){
     		$response=array(
     			'status_code'=>KTWS_ERR_INVALID_FOLDER,
     			'message'=>$folder->getMessage()
@@ -1699,7 +1699,7 @@ class KTWebService
     	}
 
     	$source_document = &$kt->get_document_by_id($source_document_id);
-    	if (PEAR::isError($source_folder))
+    	if (PEAR::isError($source_document))
     	{
     		$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT,$source_document);
 
@@ -2454,7 +2454,7 @@ class KTWebService
     	if (PEAR::isError($tempfilename))
     	{
     		$reason = $tempfilename->getMessage();
-    		$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT,'Cannot write to temp file: ' + $tempfilename . ". Reason: $reason");
+    		$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT,'Cannot write to temp file: ' . $tempfilename . ". Reason: $reason");
 			$this->debug("add_small_document - cannot write $tempfilename. Reason: $reason", $session_id);
 
 			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
@@ -2639,7 +2639,7 @@ class KTWebService
     	if (PEAR::isError($tempfilename))
     	{
 			$reason = $tempfilename->getMessage();
-			$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT,'Cannot write to temp file: ' + $tempfilename . ". Reason: $reason");
+			$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT,'Cannot write to temp file: ' . $tempfilename . ". Reason: $reason");
 			$this->debug("checkin_small_document - cannot write $tempfilename. Reason: $reason", $session_id);
 
 			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);

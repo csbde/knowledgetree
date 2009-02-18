@@ -1031,6 +1031,15 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			DBUtil::rollback();
 			return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $result);
 		}
+
+        // regenerate internal folder object
+        $res = $this->updateObject();
+
+        if (PEAR::isError($res))
+        {
+            DBUtil::rollback();
+            return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $result);
+        }
 		DBUtil::commit();
 	}
 
@@ -1131,6 +1140,20 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	{
 	    return $this->folder;
 	}
+
+    /**
+     * Updates the Folder object
+     */
+    private function updateObject()
+    {
+        $folder = &Folder::get($this->folderid);
+        if (is_null($folder) || PEAR::isError($folder))
+        {
+            return new KTAPI_Error(KTAPI_ERROR_FOLDER_INVALID, $folder);
+        }
+
+        $this->folder = $folder;
+    }
 
 	/**
 	 * Get the role allocation for the folder

@@ -48,6 +48,147 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
         $this->session->logout();
     }
 
+    /* *** Test KTAPI functions *** */
+
+    /**
+     * Testing the bulk actions - copy, move, delete
+     */
+    public function testApiBulkCopyMoveDelete()
+    {
+        // Create folder and documents
+        $doc1 = $this->createDocument('Test Doc One', 'testdoc1.txt');
+        $doc2 = $this->createDocument('Test Doc Two', 'testdoc2.txt');
+        $folder1 = $this->root->add_folder("New test folder");
+        $this->assertNotError($newFolder);
+        if(PEAR::isError($newFolder)) return;
+
+        $doc4 = $this->createDocument('Test Doc Four', 'testdoc4.txt', $folder1);
+
+        $target_folder = $this->root->add_folder("New target folder");
+        $this->assertNotError($target_folder);
+        if(PEAR::isError($target_folder)) return;
+        $target_folder_id = $target_folder->get_folderid();
+
+        $aItems = array();
+        $aItems['documents'][] = $doc1->get_documentid();
+        $aItems['documents'][] = $doc2->get_documentid();
+        $aItems['folders'][] = $folder1->get_folderid();
+
+        // Call bulk action - copy
+        $response = $this->ktapi->performBulkAction('copy', $aItems, 'Testing API', $target_folder_id);
+
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertTrue(empty($response['results']));
+
+        // Test move action - delete and recreate target folder
+        $target_folder->delete('Testing API');
+
+        $target_folder = $this->root->add_folder("New target folder");
+        $this->assertNotError($target_folder);
+        if(PEAR::isError($target_folder)) return;
+        $target_folder_id = $target_folder->get_folderid();
+
+        $response = $this->ktapi->performBulkAction('move', $aItems, 'Testing API', $target_folder_id);
+
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertTrue(empty($response['results']));
+
+        $response = $this->ktapi->performBulkAction('delete', $aItems, 'Testing API');
+
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertTrue(empty($response['results']));
+
+        // Delete and expunge documents and folder
+        $target_folder->delete('Testing API');
+    }
+
+    /**
+     * Testing the bulk actions - checkout and cancel check out
+     */
+    public function testApiBulkCheckout()
+    {
+        // Create folder and documents
+        $doc1 = $this->createDocument('Test Doc One', 'testdoc1.txt');
+        $doc2 = $this->createDocument('Test Doc Two', 'testdoc2.txt');
+        $folder1 = $this->root->add_folder("New test folder");
+        $this->assertNotError($newFolder);
+        if(PEAR::isError($newFolder)) return;
+
+        $doc4 = $this->createDocument('Test Doc Four', 'testdoc4.txt', $folder1);
+
+        $doc1_id = $doc1->get_documentid();
+        $doc2_id = $doc2->get_documentid();
+
+        $aItems = array();
+        $aItems['documents'][] = $doc1_id;
+        $aItems['documents'][] = $doc2_id;
+        $aItems['folders'][] = $folder1->get_folderid();
+
+        // Call bulk action - checkout
+        $response = $this->ktapi->performBulkAction('checkout', $aItems, 'Testing API');
+
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertTrue(empty($response['results']));
+
+        // update document object
+        $doc1 = $this->ktapi->get_document_by_id($doc1_id);
+        $this->assertTrue($doc1->is_checked_out());
+
+        // cancel the checkout
+        $response = $this->ktapi->performBulkAction('undo_checkout', $aItems, 'Testing API');
+
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertTrue(empty($response['results']));
+
+        // delete items
+        $response = $this->ktapi->performBulkAction('delete', $aItems, 'Testing API');
+        $this->assertEqual($response['status_code'], 0);
+    }
+
+    /**
+     * Testing the bulk actions - checkout and cancel check out
+     */
+    public function testApiBulkImmute()
+    {
+        // Create folder and documents
+        $doc1 = $this->createDocument('Test Doc One', 'testdoc1.txt');
+        $doc2 = $this->createDocument('Test Doc Two', 'testdoc2.txt');
+        $folder1 = $this->root->add_folder("New test folder");
+        $this->assertNotError($newFolder);
+        if(PEAR::isError($newFolder)) return;
+
+        $doc4 = $this->createDocument('Test Doc Four', 'testdoc4.txt', $folder1);
+
+        $doc1_id = $doc1->get_documentid();
+        $doc2_id = $doc2->get_documentid();
+
+        $aItems = array();
+        $aItems['documents'][] = $doc1_id;
+        $aItems['documents'][] = $doc2_id;
+        $aItems['folders'][] = $folder1->get_folderid();
+
+        // Call bulk action - checkout
+        $response = $this->ktapi->performBulkAction('immute', $aItems);
+
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertTrue(empty($response['results']));
+
+        // update document object
+        $doc1 = $this->ktapi->get_document_by_id($doc1_id);
+        $this->assertTrue($doc1->isImmutable());
+
+        // remove immutability for deletion
+        $doc1->unimmute();
+        $doc2->unimmute();
+        $doc4->unimmute();
+
+        // delete items
+        $response = $this->ktapi->performBulkAction('delete', $aItems, 'Testing API');
+        $this->assertEqual($response['status_code'], 0);
+    }
+
+    /* *** Test Bulk actions class *** */
+
     /**
      * Test the bulk copy functionality
      */
@@ -182,6 +323,9 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
         $this->assertTrue($doc1->is_checked_out());
         $this->assertTrue($doc2->is_checked_out());
         $this->assertTrue($doc3->is_checked_out());
+
+        // refresh the doc4 document object to reflect changes
+        $doc4 = KTAPI_Document::get($this->ktapi, $doc4->get_documentid());
         $this->assertTrue($doc4->is_checked_out());
 
         $res = $this->bulk->undo_checkout($aItems, 'Testing bulk undo / cancel checkout');
@@ -191,6 +335,9 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
         $this->assertFalse($doc1->is_checked_out());
         $this->assertFalse($doc2->is_checked_out());
         $this->assertFalse($doc3->is_checked_out());
+
+        // refresh the doc4 document object to reflect changes
+        $doc4 = KTAPI_Document::get($this->ktapi, $doc4->get_documentid());
         $this->assertFalse($doc4->is_checked_out());
 
         // Delete and expunge documents and folder
@@ -226,6 +373,9 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
         $this->assertTrue($doc1->isImmutable());
         $this->assertTrue($doc2->isImmutable());
         $this->assertTrue($doc3->isImmutable());
+
+        // refresh the doc4 document object to reflect changes
+        $doc4 = KTAPI_Document::get($this->ktapi, $doc4->get_documentid());
         $this->assertTrue($doc4->isImmutable());
 
         // remove immutability for deletion
@@ -268,6 +418,9 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
         $this->assertTrue($doc1->is_deleted());
         $this->assertTrue($doc2->is_deleted());
         $this->assertTrue($doc3->is_deleted());
+
+        // refresh the doc4 document object to reflect changes
+        $doc4 = KTAPI_Document::get($this->ktapi, $doc4->get_documentid());
         $this->assertTrue($doc4->is_deleted());
 
         // Check folder has been deleted
@@ -305,6 +458,9 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
 
         $document1 = $doc1->getObject();
         $this->assertTrue($document1->getStatusID() == 4);
+
+        // refresh the doc4 document object to reflect changes
+        $doc4 = KTAPI_Document::get($this->ktapi, $doc4->get_documentid());
         $document4 = $doc4->getObject();
         $this->assertTrue($document4->getStatusID() == 4);
 

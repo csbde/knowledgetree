@@ -241,12 +241,13 @@ class KTFolderUtil {
         // First, deal with SQL, as it, at least, is guaranteed to be atomic
         $table = "folders";
 
-        if ($oFolder->getId() == 1) {
+        if ($oFolder->getId() == 1 || $oFolder->getParentID() == 1) {
             $sOldPath = $oFolder->getName();
             $sNewPath = $sNewName;
         } else {
             $sOldPath = $oFolder->getFullPath();
-            $sNewPath = dirname($oFolder->getFullPath()) . '/' . $sNewName;
+            $sNewPathDir = !empty($sOldPath) ? dirname($sOldPath) . '/' : '';
+            $sNewPath = $sNewPathDir . $sNewName;
         }
 
         $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)) WHERE full_path LIKE ? OR full_path = ?";
@@ -400,7 +401,7 @@ class KTFolderUtil {
         foreach($aFolderIds as $iFolder){
         	$oFolder = Folder::get($iFolder);
 	        $aLinks = $oFolder->getSymbolicLinks();
-	        array_merge($aSymlinks, $aLinks);
+	        $aSymlinks = array_merge($aSymlinks, $aLinks);
         }
 
         // documents all cleared.
@@ -423,11 +424,14 @@ class KTFolderUtil {
             $linkIds = implode(',', $links);
 
             $query = "DELETE FROM folders WHERE id IN ($linkIds)";
+            DBUtil::runQuery($query);
         }
 
+        /*
         foreach($aSymlinks as $aSymlink){
         	KTFolderUtil::deleteSymbolicLink($aSymlink['id']);
         }
+        */
 
         // purge caches
         KTEntityUtil::clearAllCaches('Folder');

@@ -9,6 +9,7 @@ class APIAclTestCase extends KTUnitTestCase {
      */
     var $ktapi;
     var $session;
+    var $root;
 
     /**
      * Setup the session
@@ -17,6 +18,7 @@ class APIAclTestCase extends KTUnitTestCase {
     function setUp() {
         $this->ktapi = new KTAPI();
         $this->session = $this->ktapi->start_system_session();
+        $this->root = $this->ktapi->get_root_folder();
     }
 
     /**
@@ -26,6 +28,140 @@ class APIAclTestCase extends KTUnitTestCase {
     function tearDown() {
         $this->session->logout();
     }
+
+
+    /* *** Testing KTAPI ACL functions *** */
+
+    /**
+     * Testing get list of roles
+     */
+    function testGetRoles()
+    {
+        $list = $this->ktapi->get_roles();
+
+        $this->assertEqual($list['status_code'], 0);
+        $this->assertTrue(!empty($list['results']));
+
+        // filter roles - should return the "Everyone" role
+        $list = $this->ktapi->get_roles('Ever');
+
+        $this->assertEqual($list['status_code'], 0);
+        $this->assertTrue(!empty($list['results']));
+        $this->assertEqual(count($list['results']), 1);
+        $this->assertEqual($list['results'][0]['name'], 'Everyone');
+    }
+
+    /**
+     * Testing get role by id and name
+     */
+    function testGetRole()
+    {
+        // get by id -2 - should return system role Owner
+        $role = $this->ktapi->get_role_by_id(-2);
+
+        $this->assertEqual($role['status_code'], 0);
+        $this->assertTrue(!empty($role['results']));
+        $this->assertEqual($role['results']['name'], 'Owner');
+
+        // get by name Authenticated
+        $role = $this->ktapi->get_role_by_name('Authenticated Users');
+
+        $this->assertEqual($role['status_code'], 0);
+        $this->assertTrue(!empty($role['results']));
+        $this->assertEqual($role['results']['name'], 'Authenticated Users');
+        $this->assertEqual($role['results']['id'], -4);
+    }
+
+    /**
+     * Test role allocation on folders
+     */
+    function testAllocatingMembersToRoles()
+    {
+        $folder = $this->ktapi->get_folder_by_name('test123');
+        if(!$folder instanceof KTAPI_Folder){
+            $folder = $this->root->add_folder('test123');
+        }
+        $folder_id = $folder->get_folderid();
+
+        $allocation = $this->ktapi->get_role_allocation_for_folder($folder_id);
+        $this->assertEqual($allocation['status_code'], 0);
+        $this->assertTrue(empty($allocation['results']));
+
+        // add a user to a role
+        $role_id = 2; // Publisher
+        $user_id = 1; // Admin
+        $result = $this->ktapi->add_user_to_role_on_folder($folder_id, $role_id, $user_id);
+        $this->assertEqual($result['status_code'], 0);
+
+        $allocation = $this->ktapi->get_role_allocation_for_folder($folder_id);
+        $this->assertEqual($allocation['status_code'], 0);
+        $this->assertTrue(isset($allocation['results']['Publisher']));
+        $this->assertEqual($allocation['results']['Publisher']['user'][1], 'Administrator');
+
+        // test check on members in the role
+        $check = $this->ktapi->is_member_in_role_on_folder($folder_id, $role_id, $user_id, 'user');
+        $this->assertEqual($check['status_code'], 0);
+        $this->assertEqual($check['results'], 'YES');
+
+        // remove user from a role
+        $result = $this->ktapi->remove_user_from_role_on_folder($folder_id, $role_id, $user_id);
+        $this->assertEqual($result['status_code'], 0);
+
+        $allocation = $this->ktapi->get_role_allocation_for_folder($folder_id);
+        $this->assertEqual($allocation['status_code'], 0);
+        $this->assertFalse(isset($allocation['results']['Publisher']));
+
+        // clean up
+        $folder->delete('Testing API');
+    }
+
+    /**
+     * Test inherit and override role allocation and remove all allocations
+     */
+    function testRoleAllocationInheritance()
+    {
+        $folder = $this->ktapi->get_folder_by_name('test123');
+        if(!$folder instanceof KTAPI_Folder){
+            $folder = $this->root->add_folder('test123');
+        }
+        $folder_id = $folder->get_folderid();
+
+        $allocation = $this->ktapi->get_role_allocation_for_folder($folder_id);
+        $this->assertEqual($allocation['status_code'], 0);
+
+        // Override
+        $result = $this->ktapi->override_role_allocation_on_folder($folder_id);
+        $this->assertEqual($result['status_code'], 0);
+
+        $role_id = 2; // Publisher
+        $user_id = 1; // Admin
+        $group_id = 1; // System Administrators
+        $members = array('users' => array($user_id), 'groups' => array($group_id));
+
+        $result = $this->ktapi->add_members_to_role_on_folder($folder_id, $role_id, $members);
+        $this->assertEqual($result['status_code'], 0);
+
+        $check = $this->ktapi->is_member_in_role_on_folder($folder_id, $role_id, $user_id, 'user');
+        $this->assertEqual($check['status_code'], 0);
+        $this->assertEqual($check['results'], 'YES');
+
+        // Remove all
+        $result = $this->ktapi->remove_all_role_allocation_from_folder($folder_id, $role_id);
+        $this->assertEqual($result['status_code'], 0);
+
+        $check = $this->ktapi->is_member_in_role_on_folder($folder_id, $role_id, $group_id, 'group');
+        $this->assertEqual($check['status_code'], 0);
+        $this->assertEqual($check['results'], 'NO');
+
+        // Inherit
+        $result = $this->ktapi->inherit_role_allocation_on_folder($folder_id);
+        $this->assertEqual($result['status_code'], 0);
+
+        // clean up
+        $folder->delete('Testing API');
+    }
+
+    /* *** Testing ACL classes *** */
 
     /**
      *

@@ -1719,7 +1719,7 @@ final class KTAPI_RoleAllocation extends KTAPI_AllocationBase
 
         $roleAllocation = RoleAllocation::getAllocationsForFolderAndRole($objectId, $roleId);
 
-        $res = $oRoleAllocation->delete();
+        $res = $roleAllocation->delete();
         if (PEAR::isError($res))
         {
             return $res;
