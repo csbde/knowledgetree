@@ -1233,4 +1233,5 @@ class KTAPI_Folder extends KTAPI_FolderItem
         return $_SESSION['errorMessage'];
 	}
 }
+
 ?>
