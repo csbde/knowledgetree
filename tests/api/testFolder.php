@@ -260,4 +260,5 @@ class APIFolderTestCase extends KTUnitTestCase {
         $folder->delete('testXXXXX');
     }
 }
+
 ?>
