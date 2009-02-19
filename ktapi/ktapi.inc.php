@@ -3687,4 +3687,5 @@ class savedSearches
 		return $results;
 	}
 }
+
 ?>
