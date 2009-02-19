@@ -1169,7 +1169,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
         $user = $this->ktapi->get_user();
         $folder = $this->folder;
 
-        return Subscription::exists($user->getId(), $folder->getId(), $subscriptionType);
+        $result = Subscription::exists($user->getId(), $folder->getId(), $subscriptionType);
+        return $result;
 	}
 
 	/**
@@ -1182,7 +1183,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	{
         if (!$this->isSubscribed())
         {
-            return;
+            return TRUE;
         }
 
         $subscriptionType = SubscriptionEvent::subTypes('Folder');
@@ -1190,7 +1191,16 @@ class KTAPI_Folder extends KTAPI_FolderItem
         $folder = $this->folder;
 
         $subscription = & Subscription::getByIDs($user->getId(), $folder->getId(), $subscriptionType);
-        $subscription->delete();
+        $result = $subscription->delete();
+
+        if(PEAR::isError($result)){
+            return $result->getMessage();
+        }
+        if($result){
+            return $result;
+        }
+
+        return $_SESSION['errorMessage'];
 	}
 
 	/**
@@ -1204,17 +1214,23 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	{
         if ($this->isSubscribed())
         {
-            return;
+            return TRUE;
         }
-
-        $subscriptionType = SubscriptionEvent::subTypes('Folder ');
+        $subscriptionType = SubscriptionEvent::subTypes('Folder');
         $user = $this->ktapi->get_user();
         $folder = $this->folder;
 
         $subscription = new Subscription($user->getId(), $folder->getId(), $subscriptionType);
-        $subscription->create();
+        $result = $subscription->create();
+
+        if(PEAR::isError($result)){
+            return $result->getMessage();
+        }
+        if($result){
+            return $result;
+        }
+
+        return $_SESSION['errorMessage'];
 	}
-
 }
-
 ?>
