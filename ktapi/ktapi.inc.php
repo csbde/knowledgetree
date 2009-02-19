@@ -288,6 +288,39 @@ class KTAPI
 		);
 
 	}
+	
+	/**
+	 * Returns folder permissions
+	 *
+	 * @access public
+	 * @param string
+	 * @param int
+	 *
+	 */
+	public function get_document_permissions($username, $document_id) {
+		if (is_null($this->session))
+		{
+			return array(
+				"status_code" => 1,
+				"message" => "Your session is not active"
+				);
+		}
+		/* We need to create a new instance of KTAPI to get another user */
+		$user_ktapi = new KTAPI();
+		$user_ktapi->start_system_session($username);
+
+		$document = KTAPI_Document::get($user_ktapi, $document_id);
+
+		$permissions = $document->getPermissionAllocation();
+
+		$user_ktapi->session_logout();
+
+		return array(
+			"status_code" => 0,
+			"results" => $permissions->permissions
+		);
+
+	}
 
 	/**
 	* Add folder permission
