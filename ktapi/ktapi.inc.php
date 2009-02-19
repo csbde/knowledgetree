@@ -3386,6 +3386,178 @@ class KTAPI
 
         return $response;
 	}
+
+	/**
+	* Method to check if a document is subscribed
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $documentID The id of the document
+	* @return array $response The formatted response array
+	*/
+	public function is_document_subscribed($documentID)
+	{
+	    $document = $this->get_document_by_id($documentID);
+	    if(PEAR::isError($document)){
+	        $response['message'] = $document->getMessage();
+	        $response['status_code'] = 1;
+	        return $response;
+	    }
+
+	    $result = $document->isSubscribed();
+        $response['message'] = '';
+        $response['status_code'] = 0;
+	    if($result){
+	        $response['results']['subscribed'] = 'TRUE';
+	    }else{
+	        $response['results']['subscribed'] = 'FALSE';
+	    }
+        return $response;
+	}
+
+	/**
+	* Method to subscribe to a document
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $documentID The id of the document
+	* @return array $response The formatted response array
+	*/
+	public function subscribe_to_document($documentID)
+	{
+	    $document = $this->get_document_by_id($documentID);
+	    if(PEAR::isError($document)){
+	        $response['message'] = $document->getMessage();
+	        $response['status_code'] = 1;
+	        return $response;
+	    }
+
+	    $result = $document->subscribe();
+	    if($result === TRUE){
+            $response['message'] = '';
+            $response['status_code'] = 0;
+	        $response['results']['action_result'] = 'TRUE';
+	    }else{
+            $response['message'] = $result;
+            $response['status_code'] = 1;
+	    }
+        return $response;
+	}
+
+	/**
+	* Method to unsubscribe from a document
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $documentID The id of the document
+	* @return array $response The formatted response array
+	*/
+	public function unsubscribe_from_document($documentID)
+	{
+	    $document = $this->get_document_by_id($documentID);
+	    if(PEAR::isError($document)){
+	        $response['message'] = $document->getMessage();
+	        $response['status_code'] = 1;
+	        return $response;
+	    }
+
+	    $result = $document->unsubscribe();
+	    if($result === TRUE){
+            $response['message'] = '';
+            $response['status_code'] = 0;
+	        $response['results']['action_result'] = 'TRUE';
+	    }else{
+            $response['message'] = $result;
+            $response['status_code'] = 1;
+	    }
+        return $response;
+	}
+
+	/**
+	* Method to check if a folder is subscribed
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $folderID The id of the folder
+	* @return array $response The formatted response array
+	*/
+	public function is_folder_subscribed($folderID)
+	{
+	    $folder = $this->get_folder_by_id($folderID);
+	    if(PEAR::isError($folder)){
+	        $response['message'] = $folder->getMessage();
+	        $response['status_code'] = 1;
+	        return $response;
+	    }
+
+	    $result = $folder->isSubscribed();
+        $response['message'] = '';
+        $response['status_code'] = 0;
+	    if($result){
+	        $response['results']['subscribed'] = 'TRUE';
+	    }else{
+	        $response['results']['subscribed'] = 'FALSE';
+	    }
+        return $response;
+	}
+
+	/**
+	* Method to subscribe to a folder
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $folderID The id of the folder
+	* @return array $response The formatted response array
+	*/
+	public function subscribe_to_folder($folderID)
+	{
+	    $folder = $this->get_folder_by_id($folderID);
+	    if(PEAR::isError($folder)){
+	        $response['message'] = $folder->getMessage();
+	        $response['status_code'] = 1;
+	        return $response;
+	    }
+
+	    $result = $folder->subscribe();
+	    if($result === TRUE){
+            $response['message'] = '';
+            $response['status_code'] = 0;
+	        $response['results']['action_result'] = 'TRUE';
+	    }else{
+            $response['message'] = $result;
+            $response['status_code'] = 1;
+	    }
+        return $response;
+	}
+
+	/**
+	* Method to unsubscribe from a folder
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $folderID The id of the folder
+	* @return array $response The formatted response array
+	*/
+	public function unsubscribe_from_folder($folderID)
+	{
+	    $folder = $this->get_folder_by_id($folderID);
+	    if(PEAR::isError($folder)){
+	        $response['message'] = $folder->getMessage();
+	        $response['status_code'] = 1;
+	        return $response;
+	    }
+
+	    $result = $folder->unsubscribe();
+	    if($result === TRUE){
+            $response['message'] = '';
+            $response['status_code'] = 0;
+	        $response['results']['action_result'] = 'TRUE';
+	    }else{
+            $response['message'] = $result;
+            $response['status_code'] = 1;
+	    }
+        return $response;
+	}
 }
 
 
