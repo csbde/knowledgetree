@@ -63,7 +63,7 @@ class KTAPI_BulkActions
 	 * @access public
 	 * @param KTAPI $ktapi Instance of the KTAPI object
      */
-    function __construct(&$ktapi)
+    public function __construct(&$ktapi)
     {
         $this->ktapi = $ktapi;
     }

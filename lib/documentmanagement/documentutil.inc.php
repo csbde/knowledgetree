@@ -995,6 +995,9 @@ $sourceDocument->getName(),
             return PEAR::raiseError(_kt('There was a problem deleting the document from storage.'));
         }
 
+        // get the user object
+        $oUser = User::get($_SESSION['userID']);
+
         //delete all shortcuts linking to this document
         $aSymlinks = $oDocument->getSymbolicLinks();
         foreach($aSymlinks as $aSymlink){
@@ -1005,7 +1008,7 @@ $sourceDocument->getName(),
 
         	//send an email to the owner of the shortcut
         	if($oOwnerUser->getEmail()!=null && $oOwnerUser->getEmailNotification() == true){
-        		$emailTemplate = new EmailTemplate("kt3/notifications/notification.SymbolicLinkDeleted",array('user_name'=>$this->oUser->getName(),
+        		$emailTemplate = new EmailTemplate("kt3/notifications/notification.SymbolicLinkDeleted",array('user_name'=>$oUser->getName(),
         			'url'=>KTUtil::ktLink(KTBrowseUtil::getUrlForDocument($oShortcutDocument)),
         			'title' =>$oShortcutDocument->getName()));
         		$email = new EmailAlert($oOwnerUser->getEmail(),_kt("KnowledgeTree Notification"),$emailTemplate->getBody());
