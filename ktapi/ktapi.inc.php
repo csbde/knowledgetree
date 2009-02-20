@@ -175,7 +175,7 @@ class KTAPI
  	* This returns the current session.
  	*
 	* @author KnowledgeTree Team
- 	* @access public
+ 	* @access protected
  	* @return object $session The KTAPI_Session object
  	*/
  	public function &get_session()
@@ -188,7 +188,7 @@ class KTAPI
 	* This returns the session user object or an error object.
  	*
 	* @author KnowledgeTree Team
- 	* @access public
+ 	* @access protected
  	* @return object $user SUCCESS - The User object | FAILURE - an error object
  	*/
  	public function & get_user()
@@ -209,6 +209,14 @@ class KTAPI
 		return $user;
  	}
 
+ 	/**
+ 	 * Get the available columns for the given view (browse | search)
+ 	 *
+	 * @author KnowledgeTree Team
+ 	 * @access public
+ 	 * @param string $view The namespace for the view - ktcore.views.browse | ktcore.views.search
+ 	 * @return unknown
+ 	 */
  	function get_columns_for_view($view = 'ktcore.views.browse') {
  		$ktapi_session = $this->get_session();
 		if (is_null($ktapi_session) || PEAR::isError($ktapi_session))
@@ -225,7 +233,7 @@ class KTAPI
  	* This returns a permission object or an error object.
  	*
 	* @author KnowledgeTree Team
- 	* @access public
+ 	* @access protected
  	* @param string $permission The permissions string
  	* @return object $permissions SUCCESS - The KTPermission object | FAILURE - an error object
  	*/
@@ -243,6 +251,7 @@ class KTAPI
 	/**
 	* Returns an associative array of permission namespaces and their names
 	*
+	* @author KnowledgeTree Team
 	* @access public
 	* @return array
 	*/
@@ -259,6 +268,7 @@ class KTAPI
 	/**
 	* Returns folder permissions
 	*
+	* @author KnowledgeTree Team
 	* @access public
 	* @param string
 	* @param int
@@ -292,6 +302,7 @@ class KTAPI
 	/**
 	* Add folder permission
 	*
+	* @author KnowledgeTree Team
 	* @access public
 	* @param string
 	* @param string
@@ -1785,7 +1796,7 @@ class KTAPI
 	 * @author KnowledgeTree Team
 	 * @access public
      * @param string $ip The users IP address
-	 * @return array Response
+     * @return array Response 'results' contain the session id | 'message' contains the error message on failure
      */
     function anonymous_login($ip=null)
     {
@@ -1809,10 +1820,10 @@ class KTAPI
      *
 	 * @author KnowledgeTree Team
 	 * @access public
-     * @param string $username
-     * @param string $password
-     * @param string $ip
-     * @return string
+     * @param string $username The users username
+     * @param string $password The users password
+     * @param string $ip Optional. The users IP address
+     * @return array Response 'results' contain the session id | 'message' contains the error message on failure
      */
     function login($username, $password, $ip=null)
     {
@@ -1835,7 +1846,7 @@ class KTAPI
      *
 	 * @author KnowledgeTree Team
 	 * @access public
-     * @return KTAPI_Error on failure
+     * @return array Response Empty on success | 'message' contains the error message on failure
      */
     function logout()
     {
@@ -1852,12 +1863,12 @@ class KTAPI
     }
 
     /**
-     * Returns folder detail given a folder_id.
+     * Returns the folder details for a given folder id.
      *
 	 * @author KnowledgeTree Team
 	 * @access public
-     * @param int $folder_id
-     * @return kt_folder_detail.
+     * @param integer $folder_id The id of the folder
+     * @return array Response 'results' contains kt_folder_detail | 'message' contains error message on failure
      */
     function get_folder_detail($folder_id)
     {
@@ -1875,12 +1886,12 @@ class KTAPI
     }
 
     /**
-     * Retrieves all shortcuts linking to a specific document
+     * Retrieves all shortcuts linking to a specific folder
      *
 	 * @author KnowledgeTree Team
 	 * @access public
-     * @param ing $document_id
-	 * @return kt_document_shortcuts
+     * @param integer $folder_id The id of the folder
+     * @return array Response 'results' contains kt_folder_shortcuts | 'message' contains error message on failure
      *
      */
     function get_folder_shortcuts($folder_id)
@@ -1910,8 +1921,8 @@ class KTAPI
      *
 	 * @author KnowledgeTree Team
 	 * @access public
-     * @param string $folder_name
-     * @return kt_folder_detail.
+     * @param string $folder_name The name of the folder
+     * @return array Response 'results' contains kt_folder_detail | 'message' contains error message on failure
      */
     function get_folder_detail_by_name($folder_name)
     {
@@ -1929,14 +1940,14 @@ class KTAPI
     }
 
     /**
-     * Returns the contents of a folder.
+     * Returns the contents of a folder - list of contained documents and folders
      *
 	 * @author KnowledgeTree Team
 	 * @access public
-     * @param int $folder_id
-     * @param int $depth
-     * @param string $what
-     * @return kt_folder_contents
+     * @param integer $folder_id The id of the folder
+     * @param integer $depth The depth to display - 1 = direct contents, 2 = include contents of the contained folders, etc
+     * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
+     * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
      */
     function get_folder_contents($folder_id, $depth=1, $what='DFS')
     {
@@ -1963,11 +1974,13 @@ class KTAPI
     }
 
     /**
-     * Creates a new folder.
+     * Creates a new folder inside the given folder
      *
-     * @param int $folder_id
-     * @param string $folder_name
-     * @return kt_folder_detail.
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param integer $folder_id The id of the parent folder
+     * @param string $folder_name The name of the new folder
+     * @return array Response 'results' contains kt_folder_detail | 'message' contains error message on failure
      */
     function create_folder($folder_id, $folder_name)
     {
@@ -1988,9 +2001,11 @@ class KTAPI
     /**
      * Creates a shortcut to an existing folder
      *
-     * @param int $target_folder_id Folder to place the shortcut in
-     * @param int $source_folder_id Folder to create the shortcut to
-     * @return kt_folder_detail.
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param integer $target_folder_id Id of the folder containing the shortcut.
+     * @param integer $source_folder_id Id of the folder to which the shortcut will point.
+     * @return array Response 'results' contains kt_shortcut_detail | 'message' contains error message on failure
      */
     function create_folder_shortcut($target_folder_id, $source_folder_id)
     {
@@ -2027,9 +2042,11 @@ class KTAPI
 	/**
      * Creates a shortcut to an existing document
      *
-     * @param int $target_folder_id Folder to place the shortcut in
-     * @param int $source_document_id Document to create the shortcut to
-     * @return kt_document_detail.
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param integer $target_folder_id Id of the parent folder containing the shortcut
+     * @param integer $source_document_id Id of the document to which the shortcut will point
+     * @return array Response 'results' contains kt_document_detail | 'message' contains error message on failure
      */
     function create_document_shortcut($target_folder_id, $source_document_id)
     {
@@ -2066,9 +2083,11 @@ class KTAPI
     /**
      * Deletes a folder.
      *
-     * @param int $folder_id
-     * @param string $reason
-     * @return kt_response.
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param integer $folder_id The id of the folder to delete
+     * @param string $reason The reason for performing the deletion
+     * @return array Response | 'message' contains error message on failure
      */
     function delete_folder($folder_id, $reason)
     {
@@ -2095,9 +2114,11 @@ class KTAPI
     /**
      * Renames a folder.
      *
-     * @param int $folder_id
-     * @param string $newname
-     * @return kt_response.
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param integer $folder_id The id of the folder
+     * @param string $newname The new name of the folder
+     * @return array Response | 'message' contains error message on failure
      */
     function rename_folder($folder_id, $newname)
     {
@@ -2123,10 +2144,12 @@ class KTAPI
     /**
      * Makes a copy of a folder in another location.
      *
-     * @param int $sourceid
-     * @param int $targetid
-     * @param string $reason
-     * @return kt_response
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param integer $sourceid The id of the folder to be copied
+     * @param integer $targetid The id of the folder in which the copy should be placed
+     * @param string $reason The reason for performing the copy
+     * @return array Response | 'message' contains error message on failure
      */
     function copy_folder($source_id, $target_id, $reason)
     {
@@ -2170,10 +2193,12 @@ class KTAPI
     /**
      * Moves a folder to another location.
      *
-     * @param int $sourceid
-     * @param int $targetid
-     * @param string $reason
-     * @return kt_response.
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param integer $sourceid The id of the folder to be moved
+     * @param integer $targetid The id of the folder into which the folder should be moved
+     * @param string $reason The reason for performing the move
+     * @return array Response | 'message' contains error message on failure
      */
     function move_folder($source_id, $target_id, $reason)
     {
@@ -2215,10 +2240,11 @@ class KTAPI
     /**
      * Returns a list of document types.
      *
-     * @param string $session_id
-     * @return kt_document_types_response. . status_code can be KTWS_ERR_INVALID_SESSION, KTWS_SUCCESS
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @return array Response 'results' contain kt_document_types_response | 'message' contains error message on failure
      */
-    public function get_document_types($session_id)
+    public function get_document_types()
     {
     	$result = $this->get_documenttypes();
     	if (PEAR::isError($result))
@@ -2235,7 +2261,12 @@ class KTAPI
 
     }
 
-    public function get_document_link_types_list($session_id)
+    /**
+     * Returns a list of document link types - Attachment, Reference, etc
+     *
+     * @return array Response 'results' contain kt_document_link_types_response | 'message' contains error message on failure
+     */
+    public function get_document_link_types_list()
     {
     	$result = $this->get_document_link_types();
     	if (PEAR::isError($result))
@@ -2254,12 +2285,17 @@ class KTAPI
     }
 
     /**
-     * Returns document detail given a document_id.
+     * Returns document details given a document_id.
+     * Details can be filtered using a combination of the following: M = metadata, L = links, T = workflow transitions,
+     * V = version history, H = transaction history
      *
-     * @param int $document_id
-     * @return kt_document_detail.
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param integer $document_id The id of the document
+     * @param string $detailstr Optional. Filter on the level of detail to return.
+     * @return array Response 'results' contain kt_document_detail | 'message' contains error message on failure
      */
-    function get_document_detail($document_id, $detailstr='')
+    public function get_document_detail($document_id, $detailstr='')
     {
         $document = $this->get_document_by_id($document_id);
     	if (PEAR::isError($document))
@@ -2328,25 +2364,54 @@ class KTAPI
     	return $response;
     }
 
-    function get_document_detail_by_filename($folder_id, $filename, $detail='')
+    /**
+     * Returns the document details given the filename of the document
+     * Details can be filtered using a combination of the following: M = metadata, L = links, T = workflow transitions,
+     * V = version history, H = transaction history
+     *
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param integer $folder_id The id of the folder in which to find the document
+     * @param string $filename The filename of the document
+     * @param string $detail Optional. Filter on the level of detail to return.
+     * @return array Response 'results' contain kt_document_detail | 'message' contains error message on failure
+     */
+    public function get_document_detail_by_filename($folder_id, $filename, $detail='')
     {
     	return $this->get_document_detail_by_name($folder_id, $filename, 'F', $detail);
     }
 
-    function get_document_detail_by_title($folder_id, $title, $detail='')
+    /**
+     * Returns the document details give the title of the document
+     * Details can be filtered using a combination of the following: M = metadata, L = links, T = workflow transitions,
+     * V = version history, H = transaction history
+     *
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param interger $folder_id The id of the folder in which to find the document
+     * @param string $title The title of the document
+     * @param string $detail Optional. Filter on the level of detail to return.
+     * @return array Response 'results' contain kt_document_detail | 'message' contains error message on failure
+     */
+    public function get_document_detail_by_title($folder_id, $title, $detail='')
     {
     	return $this->get_document_detail_by_name($folder_id,  $title, 'T', $detail);
     }
 
-
     /**
      * Returns document detail given a document name which could include a full path.
+     * Details can be filtered using a combination of the following: M = metadata, L = links, T = workflow transitions,
+     * V = version history, H = transaction history
      *
-     * @param string $document_name
-     * @param string @what
-     * @return kt_document_detail.
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param integer $folder_id The id of the folder in which to find the document
+     * @param string $document_name The name of the document
+     * @param string @what Optional. Defaults to T. The type of name - F = filename or T = title
+     * @param string $detail Optional. Filter on the level of detail to return.
+     * @return array Response 'results' contain kt_document_detail | 'message' contains error message on failure
      */
-    function get_document_detail_by_name($folder_id, $document_name, $what='T', $detail='')
+    public function get_document_detail_by_name($folder_id, $document_name, $what='T', $detail='')
     {
         $response['status_code'] = 1;
     	if (empty($document_name))
@@ -2387,13 +2452,117 @@ class KTAPI
     }
 
     /**
+     * Returns the role allocation on the document
+     *
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @author KnowledgeTree Team
+     * @access public
+     * @param integer $document_id The id of the document
+     * @return array Response
+     */
+    public function get_role_allocation_for_document($document_id)
+    {
+        $document = $this->get_document_by_id($document_id);
+        if(PEAR::isError($document)){
+            $response['status_code'] = 1;
+            $response['message'] = $document->getMessage();
+            return $response;
+        }
+
+        $allocation = $document->getRoleAllocation();
+
+        $response['status_code'] = 0;
+        $response['results'] = $allocation->getMembership();
+        return $response;
+    }
+
+    /**
+     * Emails a document as an attachment or hyperlink to a list of users, groups or external email addresses.
+	 * In the case of external addresses, if a hyperlink is used then a timed download link (via webservices) is sent allowing the recipient a window period in which to download the document.
+	 * The period is set through the webservices config option webservice/downloadExpiry. Defaults to 30 minutes.
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $document_id The id of the document
+	 * @param array $members The email recipients (users, groups, external) in the format: array('users' => array(1,2), 'groups' => array(3,1), 'external' => array('name@email.com'))
+	 * @param string $comment Content to be appended to the email
+	 * @param bool $attach TRUE if document is an attachment | FALSE if using a hyperlink to the document
+     * @return array Response
+     */
+    public function email_document($document_id, $members, $content = '', $attach = true)
+    {
+        $response['status_code'] = 1;
+        if(!isset($members['users']) && !isset($members['groups']) && !isset($members['external'])){
+            $response['message'] = _kt("No recipients were provided. The list of recipients should be in the format: array('users' => array(1,2), 'groups' => array(3,1), 'external' => array('name@email.com')).");
+            return $response;
+        }
+
+        $document = $this->get_document_by_id($document_id);
+        if(PEAR::isError($document)){
+            $response['message'] = $document->getMessage();
+            return $response;
+        }
+
+        $recipients = array();
+
+        // Get member objects and add them to the role
+        // Users
+        if(isset($members['users'])){
+            foreach($members['users'] as $user_id){
+                // Get the user object
+                $member = KTAPI_User::getById($user_id);
+
+                if(PEAR::isError($member)) {
+                    $response['message'] = $member->getMessage();
+                    return $response;
+                }
+
+                // Add to recipients list
+                $recipients[] = $member;
+            }
+        }
+
+        // Groups
+        if(isset($members['groups'])){
+            foreach($members['groups'] as $group_id){
+                // Get the group object
+                $member = KTAPI_Group::getById($group_id);
+
+                if(PEAR::isError($member)) {
+                    $response['message'] = $member->getMessage();
+                    return $response;
+                }
+
+                // Add to recipients list
+                $recipients[] = $member;
+            }
+        }
+
+        // External recipients
+        if(isset($members['external'])){
+            foreach ($members['external'] as $email_address){
+                // Add to recipients list
+                $recipients[] = $member;
+            }
+        }
+
+        $document->email($recipients, $content, $attach);
+
+        $response['status_code'] = 0;
+        return $response;
+    }
+
+    /**
      * Retrieves all shortcuts linking to a specific document
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param ing $document_id
 	 * @return kt_document_shortcuts.
      *
      */
-    function get_document_shortcuts($document_id)
+    public function get_document_shortcuts($document_id)
     {
     	$document = $this->get_document_by_id($document_id);
     	if(PEAR::isError($document)){
@@ -2418,6 +2587,8 @@ class KTAPI
     /**
      * Adds a document to the repository.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $folder_id
      * @param string $title
      * @param string $filename
@@ -2425,7 +2596,7 @@ class KTAPI
      * @param string $tempfilename
      * @return kt_document_detail.
      */
-    function add_document($folder_id,  $title, $filename, $documenttype, $tempfilename)
+    public function add_document($folder_id,  $title, $filename, $documenttype, $tempfilename)
     {
 		// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
 		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
@@ -2459,7 +2630,7 @@ class KTAPI
     	return $response;
     }
 
-    function add_small_document_with_metadata($folder_id,  $title, $filename, $documenttype, $base64, $metadata, $sysdata)
+    public function add_small_document_with_metadata($folder_id,  $title, $filename, $documenttype, $base64, $metadata, $sysdata)
     {
 		$add_result = $this->add_small_document($folder_id, $title, $filename, $documenttype, $base64);
 
@@ -2490,7 +2661,7 @@ class KTAPI
 		return $update_result;
     }
 
-    function add_document_with_metadata($folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata)
+    public function add_document_with_metadata($folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata)
     {
 		$add_result = $this->add_document($folder_id, $title, $filename, $documenttype, $tempfilename);
 
@@ -2526,11 +2697,13 @@ class KTAPI
     /**
      * Find documents matching the document oem (integration) no
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param string $oem_no
      * @param string $detail
      * @return kt_document_collection_response
      */
-	function get_documents_detail_by_oem_no($oem_no, $detail)
+	public function get_documents_detail_by_oem_no($oem_no, $detail)
 	{
     	$documents = $this->get_documents_by_oem_no($oem_no);
 
@@ -2555,6 +2728,8 @@ class KTAPI
     /**
      * Adds a document to the repository.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $folder_id
      * @param string $title
      * @param string $filename
@@ -2562,7 +2737,7 @@ class KTAPI
      * @param string $base64
      * @return kt_document_detail.
      */
-    function add_small_document($folder_id,  $title, $filename, $documenttype, $base64)
+    public function add_small_document($folder_id,  $title, $filename, $documenttype, $base64)
     {
     	$folder = &$this->get_folder_by_id($folder_id);
 		if (PEAR::isError($folder))
@@ -2603,6 +2778,8 @@ class KTAPI
     /**
      * Does a document checkin.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $folder_id
      * @param string $title
      * @param string $filename
@@ -2610,7 +2787,7 @@ class KTAPI
      * @param string $tempfilename
      * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      */
-    function checkin_document($document_id,  $filename, $reason, $tempfilename, $major_update )
+    public function checkin_document($document_id,  $filename, $reason, $tempfilename, $major_update )
     {
     	// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
 		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
@@ -2643,7 +2820,7 @@ class KTAPI
 		return $this->get_document_detail($document_id);
     }
 
-    function  checkin_small_document_with_metadata($document_id,  $filename, $reason, $base64, $major_update, $metadata, $sysdata)
+    public function  checkin_small_document_with_metadata($document_id,  $filename, $reason, $base64, $major_update, $metadata, $sysdata)
     {
        	$add_result = $this->checkin_small_document($document_id,  $filename, $reason, $base64, $major_update);
 
@@ -2672,7 +2849,7 @@ class KTAPI
        	return $update_result;
 	}
 
-    function  checkin_document_with_metadata($document_id,  $filename, $reason, $tempfilename, $major_update, $metadata, $sysdata)
+    public function  checkin_document_with_metadata($document_id,  $filename, $reason, $tempfilename, $major_update, $metadata, $sysdata)
     {
        	$add_result = $this->checkin_document($document_id,  $filename, $reason, $tempfilename, $major_update);
 
@@ -2704,6 +2881,8 @@ class KTAPI
     /**
      * Does a document checkin.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $document_id
      * @param string $filename
      * @param string $reason
@@ -2711,7 +2890,7 @@ class KTAPI
      * @param boolean $major_update
      * @return kt_document_detail.
      */
-    function checkin_small_document($document_id,  $filename, $reason, $base64, $major_update )
+    public function checkin_small_document($document_id,  $filename, $reason, $base64, $major_update )
     {
     	$upload_manager = new KTUploadManager();
     	$tempfilename = $upload_manager->store_base64_file($base64, 'su_');
@@ -2748,11 +2927,13 @@ class KTAPI
     /**
      * Does a document checkout.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $document_id
      * @param string $reason
      * @return kt_document_detail.
      */
-    function checkout_document($document_id, $reason, $download=true)
+    public function checkout_document($document_id, $reason, $download=true)
     {
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -2800,12 +2981,14 @@ class KTAPI
     /**
      * Does a document checkout.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $document_id
      * @param string $reason
      * @param boolean $download
      * @return kt_document_detail
      */
-    function checkout_small_document($document_id, $reason, $download)
+    public function checkout_small_document($document_id, $reason, $download)
     {
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -2859,11 +3042,13 @@ class KTAPI
     /**
      * Undoes a document checkout.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $document_id
      * @param string $reason
      * @return kt_document_detail.
      */
-    function undo_document_checkout($document_id, $reason)
+    public function undo_document_checkout($document_id, $reason)
     {
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -2893,10 +3078,12 @@ class KTAPI
     /**
      * Returns a reference to a file to be downloaded.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $document_id
      * @return kt_response.
      */
-    function download_document($document_id, $version=null)
+    public function download_document($document_id, $version=null)
     {
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -2929,10 +3116,12 @@ class KTAPI
     /**
      * Returns a reference to a file to be downloaded.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $document_id
      * @return kt_response.
      */
-    function download_small_document($document_id, $version=null)
+    public function download_small_document($document_id, $version=null)
     {
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -2978,11 +3167,13 @@ class KTAPI
     /**
      * Deletes a document.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $document_id
      * @param string $reason
      * @return kt_response
      */
-    function delete_document($document_id, $reason)
+    public function delete_document($document_id, $reason)
     {
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3008,11 +3199,13 @@ class KTAPI
 	/**
      * Change the document type.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $document_id
      * @param string $documenttype
      * @return array
      */
-    function change_document_type($document_id, $documenttype)
+    public function change_document_type($document_id, $documenttype)
     {
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3037,6 +3230,8 @@ class KTAPI
     /**
      * Copy a document to another folder.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $document_id
      * @param int $folder_id
      * @param string $reason
@@ -3044,7 +3239,7 @@ class KTAPI
      * @param string $newfilename
      * @return array
      */
- 	function copy_document($document_id,$folder_id,$reason,$newtitle=null,$newfilename=null)
+ 	public function copy_document($document_id,$folder_id,$reason,$newtitle=null,$newfilename=null)
  	{
       	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3078,6 +3273,8 @@ class KTAPI
  	/**
  	 * Move a folder to another location.
  	 *
+	 * @author KnowledgeTree Team
+	 * @access public
  	 * @param int $document_id
  	 * @param int $folder_id
  	 * @param string $reason
@@ -3085,7 +3282,7 @@ class KTAPI
  	 * @param string $newfilename
  	 * @return array
  	 */
- 	function move_document($document_id,$folder_id,$reason,$newtitle=null,$newfilename=null)
+ 	public function move_document($document_id,$folder_id,$reason,$newtitle=null,$newfilename=null)
  	{
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3125,11 +3322,13 @@ class KTAPI
  	/**
  	 * Changes the document title.
  	 *
+	 * @author KnowledgeTree Team
+	 * @access public
  	 * @param int $document_id
  	 * @param string $newtitle
  	 * @return arry
  	 */
- 	function rename_document_title($document_id,$newtitle)
+ 	public function rename_document_title($document_id,$newtitle)
  	{
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3155,11 +3354,13 @@ class KTAPI
  	/**
  	 * Renames the document filename.
  	 *
+	 * @author KnowledgeTree Team
+	 * @access public
  	 * @param int $document_id
  	 * @param string $newfilename
  	 * @return array
  	 */
- 	function rename_document_filename($document_id,$newfilename)
+ 	public function rename_document_filename($document_id,$newfilename)
  	{
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3184,12 +3385,14 @@ class KTAPI
     /**
      * Changes the owner of a document.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $document_id
      * @param string $username
      * @param string $reason
      * @return array
      */
-    function change_document_owner($document_id, $username, $reason)
+    public function change_document_owner($document_id, $username, $reason)
     {
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3216,11 +3419,13 @@ class KTAPI
     /**
      * Start a workflow on a document
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $document_id
      * @param string $workflow
      * @return array
      */
-    function start_document_workflow($document_id,$workflow)
+    public function start_document_workflow($document_id,$workflow)
     {
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3245,10 +3450,12 @@ class KTAPI
 	/**
 	 * Removes the workflow process on a document.
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
 	 * @param int $document_id
 	 * @return array
 	 */
-    function delete_document_workflow($document_id)
+    public function delete_document_workflow($document_id)
     {
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3273,12 +3480,14 @@ class KTAPI
     /**
      * Starts a transitions on a document with a workflow.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $document_id
      * @param string $transition
      * @param string $reason
      * @return array
      */
-    function perform_document_workflow_transition($document_id,$transition,$reason)
+    public function perform_document_workflow_transition($document_id,$transition,$reason)
     {
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3305,10 +3514,12 @@ class KTAPI
     /**
      * Returns the metadata on a document.
      *
+	 * @author KnowledgeTree Team
+	 * @access public
      * @param int $document_id
      * @return array
      */
-	function get_document_metadata($document_id)
+	public function get_document_metadata($document_id)
 	{
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3350,11 +3561,13 @@ class KTAPI
 	/**
 	 * Updates document metadata.
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
 	 * @param int $document_id
 	 * @param array $metadata
 	 * @return array
 	 */
-	function update_document_metadata($document_id,$metadata, $sysdata=null)
+	public function update_document_metadata($document_id,$metadata, $sysdata=null)
 	{
 
     	$document = &$this->get_document_by_id($document_id);
@@ -3389,10 +3602,12 @@ class KTAPI
 	/**
 	 * Returns a list of available transitions on a give document with a workflow.
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
 	 * @param int $document_id
 	 * @return array
 	 */
-	function get_document_workflow_transitions($document_id)
+	public function get_document_workflow_transitions($document_id)
 	{
 
     	$document = &$this->get_document_by_id($document_id);
@@ -3419,10 +3634,12 @@ class KTAPI
 	/**
 	 * Returns the current state that the document is in.
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
 	 * @param int $document_id
 	 * @return array
 	 */
-	function get_document_workflow_state($document_id)
+	public function get_document_workflow_state($document_id)
 	{
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3448,10 +3665,12 @@ class KTAPI
 	/**
 	 * Returns the document transaction history.
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
 	 * @param int $document_id
 	 * @return array
 	 */
-	function get_document_transaction_history($document_id)
+	public function get_document_transaction_history($document_id)
 	{
 
     	$document = &$this->get_document_by_id($document_id);
@@ -3478,10 +3697,12 @@ class KTAPI
 	/**
 	 * Returns the folder transaction history.
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
 	 * @param int $folder_id
 	 * @return array
 	 */
-	function get_folder_transaction_history($folder_id)
+	public function get_folder_transaction_history($folder_id)
 	{
 
     	$folder = &$this->get_folder_by_id($folder_id);
@@ -3508,10 +3729,12 @@ class KTAPI
 	/**
 	 * Returns the version history.
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
 	 * @param int $document_id
 	 * @return kt_document_version_history_response
 	 */
-	function get_document_version_history($document_id)
+	public function get_document_version_history($document_id)
 	{
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3537,13 +3760,15 @@ class KTAPI
 	/**
 	 * Returns a list of linked documents
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
 	 * @param string $session_id
 	 * @param int $document_id
 	 * @return array
 	 *
 	 *
 	 */
-	function get_document_links($document_id)
+	public function get_document_links($document_id)
 	{
 		$response['status_code'] = 1;
     	$response['message'] = '';
@@ -3569,11 +3794,13 @@ class KTAPI
 	/**
 	 * Removes a link between documents
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
 	 * @param int $parent_document_id
 	 * @param int $child_document_id
 	 * @return kt_response
 	 */
-	function unlink_documents($parent_document_id, $child_document_id)
+	public function unlink_documents($parent_document_id, $child_document_id)
 	{
     	$document = &$this->get_document_by_id($parent_document_id);
 		if (PEAR::isError($document))
@@ -3606,12 +3833,14 @@ class KTAPI
 	/**
 	 * Creates a link between documents
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
 	 * @param int $parent_document_id
 	 * @param int $child_document_id
 	 * @param string $type
 	 * @return boolean
 	 */
-	function link_documents($parent_document_id, $child_document_id, $type)
+	public function link_documents($parent_document_id, $child_document_id, $type)
 	{
 
     	$document = &$this->get_document_by_id($parent_document_id);
@@ -3645,9 +3874,11 @@ class KTAPI
 	/**
 	 * Retrieves the server policies for this server
 	 *
-	 * @return array
+	 * @author KnowledgeTree Team
+	 * @access public
+	* @return array $response The formatted response array
 	 */
-	function get_client_policies($client=null)
+	public function get_client_policies($client=null)
 	{
 		$config = KTConfig::getSingleton();
 
@@ -3710,11 +3941,13 @@ class KTAPI
 	/**
 	 * This is the search interface
 	 *
+	 * @author KnowledgeTree Team
+	 * @access public
 	 * @param string $query
 	 * @param string $options
-	 * @return kt_search_response
+	* @return array $response The formatted response array
 	 */
-	function search($query, $options)
+	public function search($query, $options)
 	{
     	$response['status_code'] = 1;
 		$response['results'] = array();

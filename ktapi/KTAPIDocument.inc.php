@@ -2419,6 +2419,16 @@ class KTAPI_Document extends KTAPI_FolderItem
         $allowAttachment = $config->get('email/allowAttachment', false);
         $allowEmailAddresses = $config->get('email/allowEmailAddresses', false);
 
+        // if attachments aren't allowed, set $attachDocument to false
+        if(!$allowAttachment){
+            $attachDocument = false;
+        }
+
+        // If sending to external email addresses is not allowed - set array of external recipients to empty
+        if(!$allowEmailAddresses){
+            $emailAddrs = array();
+        }
+
         $emailErrors = array();
         $userEmails = array();
         $listEmails = array();
@@ -2429,11 +2439,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 
         if ($attachDocument)
         {
-            sendManualEmails($aEmailAddresses, $userEmails, $emailErrors);
+            sendManualEmails($emailAddrs, $userEmails, $emailErrors);
         }
         else
         {
-            sendExternalEmails($aEmailAddresses, $this->document->getID(), $this->document->getName(), $comment, $emailErrors);
+            sendExternalEmails($emailAddrs, $this->documentid, $this->get_title(), $comment, $emailErrors);
         }
 
         if(empty($userEmails)){
@@ -2441,7 +2451,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         }
 
         $listEmails = array_keys($userEmails);
-        sendEmail($listEmails, $this->document->getID(), $this->document->getName(), $comment, (boolean)$fAttachDocument, $aEmailErrors);
+        sendEmail($listEmails, $this->documentid, $this->get_title(), $comment, (boolean)$attachDocument, $emailErrors);
 
     }
 }

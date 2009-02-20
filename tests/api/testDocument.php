@@ -60,6 +60,45 @@ class APIDocumentTestCase extends KTUnitTestCase {
         $this->session->logout();
     }
 
+    /* *** KTAPI functions *** */
+
+    function testGetRoleAllocation()
+    {
+        $randomFile = APIDocumentHelper::createRandomFile();
+        $this->assertTrue(is_file($randomFile));
+
+        $document = $this->root->add_document('testtitle', 'testname.txt', 'Default', $randomFile);
+        @unlink($randomFile);
+        $this->assertNotError($document);
+        if(PEAR::isError($document)) return;
+
+        $response = $this->ktapi->get_role_allocation_for_document($document->get_documentid());
+        $this->assertEqual($response['status_code'], 0);
+
+        $document->delete('Testing');
+        $document->expunge();
+    }
+
+    function testEmailDocument()
+    {
+        $randomFile = APIDocumentHelper::createRandomFile();
+        $this->assertTrue(is_file($randomFile));
+
+        $document = $this->root->add_document('testtitle', 'testname.txt', 'Default', $randomFile);
+        @unlink($randomFile);
+        $this->assertNotError($document);
+        if(PEAR::isError($document)) return;
+
+        $members = array('users' => array(1));
+        $response = $this->ktapi->email_document($document->get_documentid(), $members, 'Test Email', false);
+        $this->assertEqual($response['status_code'], 0);
+
+        $document->delete('Testing');
+        $document->expunge();
+    }
+
+    /* *** Class functions *** */
+
     /**
      * Tests the add and delete document functionality
      */
