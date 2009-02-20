@@ -79,7 +79,7 @@ class savedSearchTestCase extends KTUnitTestCase {
     {
         // case 1: search exists
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
-        $list = $this->savedSearch->getList();
+        $list = $this->savedSearch->get_list();
 
         foreach($list as $item){
             if($item['id'] == $searchID){
@@ -87,14 +87,14 @@ class savedSearchTestCase extends KTUnitTestCase {
                 break;
             }
         }
-        $savedSearch = $this->savedSearch->getSavedSearch($search);
+        $savedSearch = $this->savedSearch->get_saved_search($search);
 
         $this->assertNotNull($savedSearch);
         $this->assertNoErrors();
         $this->savedSearch->delete($searchID);
 
         // case 2: search does NOT exists
-        $list = $this->savedSearch->getList();
+        $list = $this->savedSearch->get_list();
         $inList = FALSE;
         foreach($list as $item){
             if($item['id'] == $searchID){
@@ -118,7 +118,7 @@ class savedSearchTestCase extends KTUnitTestCase {
         // case 1: Saved searches exist
         $array = array();
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
-        $list = $this->savedSearch->getList();
+        $list = $this->savedSearch->get_list();
         $this->assertNotA($list, 'PEAR_Error');
         $this->assertNotEqual($list, $array);
         $this->assertNoErrors();
@@ -126,7 +126,7 @@ class savedSearchTestCase extends KTUnitTestCase {
         $this->savedSearch->delete($searchID);
 
         // case 2: saved search does NOT exist
-        $list = $this->savedSearch->getList();
+        $list = $this->savedSearch->get_list();
 
         $inList = FALSE;
         foreach($list as $item){
@@ -148,7 +148,7 @@ class savedSearchTestCase extends KTUnitTestCase {
     {
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
         $this->savedSearch->delete($searchID);
-        $result = $this->savedSearch->getSavedSearch($searchID);
+        $result = $this->savedSearch->get_saved_search($searchID);
 
         $array = array();
         $this->assertEqual($result, $array);
@@ -169,7 +169,7 @@ class savedSearchTestCase extends KTUnitTestCase {
 
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
 
-        $result = $this->savedSearch->runSavedSearch($searchID);
+        $result = $this->savedSearch->run_saved_search($searchID);
 
         $this->assertNotNull($result);
         $this->assertNotA($result, 'PEAR_Error');
@@ -188,7 +188,7 @@ class savedSearchTestCase extends KTUnitTestCase {
     public function testCreate_KTAPI()
     {
         //case 1: user logged in
-        $response = $this->ktapi->createSavedSearch('test_search', '(GeneralText contains "title")');
+        $response = $this->ktapi->create_saved_search('test_search', '(GeneralText contains "title")');
 
         $this->assertIsA($response, 'array');
         $this->assertEqual($response['status_code'], 0);
@@ -198,7 +198,7 @@ class savedSearchTestCase extends KTUnitTestCase {
 
         //case 2: user NOT logged in
         $this->ktapi->session_logout();
-        $response = $this->ktapi->createSavedSearch('test_search', '(GeneralText contains "title")');
+        $response = $this->ktapi->create_saved_search('test_search', '(GeneralText contains "title")');
 
         $this->assertIsA($response, 'array');
         $this->assertEqual($response['status_code'], 1);
@@ -213,7 +213,7 @@ class savedSearchTestCase extends KTUnitTestCase {
     {
         // case 1: search exists
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
-        $list = $this->savedSearch->getList();
+        $list = $this->savedSearch->get_list();
 
         foreach($list as $item){
             if($item['id'] == $searchID){
@@ -221,7 +221,7 @@ class savedSearchTestCase extends KTUnitTestCase {
                 break;
             }
         }
-        $response = $this->ktapi->getSavedSearch($search);
+        $response = $this->ktapi->get_saved_search($search);
 
         $this->assertIsA($response, 'array');
         $this->assertEqual($response['status_code'], 0);
@@ -229,7 +229,7 @@ class savedSearchTestCase extends KTUnitTestCase {
         $this->savedSearch->delete($searchID);
 
         // case 2: search does NOT exists
-        $response = $this->ktapi->getSavedSearch($searchID);
+        $response = $this->ktapi->get_saved_search($searchID);
 
         $this->assertIsA($response, 'array');
         $this->assertEqual($response['status_code'], 1);
@@ -247,7 +247,7 @@ class savedSearchTestCase extends KTUnitTestCase {
         $array = array();
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
 
-        $response = $this->ktapi->getSavedSearchList();
+        $response = $this->ktapi->get_saved_search_list();
 
         $this->assertIsA($response, 'array');
         $this->assertEqual($response['status_code'], 0);
@@ -255,7 +255,7 @@ class savedSearchTestCase extends KTUnitTestCase {
         $this->savedSearch->delete($searchID);
 
         // case 2: saved search does NOT exist
-        $response = $this->ktapi->getSavedSearchList();
+        $response = $this->ktapi->get_saved_search_list();
 
         $this->assertIsA($response, 'array');
         $this->assertEqual($response['status_code'], 1);
@@ -269,8 +269,8 @@ class savedSearchTestCase extends KTUnitTestCase {
     public function testDelete_KTAPI()
     {
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
-        $response = $this->ktapi->deleteSavedSearch($searchID);
-        $result = $this->savedSearch->getSavedSearch($searchID);
+        $response = $this->ktapi->delete_saved_search($searchID);
+        $result = $this->savedSearch->get_saved_search($searchID);
 
         $array = array();
         $this->assertEqual($result, $array);
@@ -292,7 +292,7 @@ class savedSearchTestCase extends KTUnitTestCase {
 
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
 
-        $response = $this->ktapi->runSavedSearch($searchID);
+        $response = $this->ktapi->run_saved_search($searchID);
 
         $this->assertIsA($response, 'array');
         $this->assertEqual($response['status_code'], 0);

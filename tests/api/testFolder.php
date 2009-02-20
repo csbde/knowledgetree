@@ -200,10 +200,65 @@ class APIFolderTestCase extends KTUnitTestCase {
 
         $folder->delete('testXXXXX');
     }
-    
+
     function testTransactionHistory() {
     	$transactions = $this->ktapi->get_folder_transaction_history(1);
     	$this->assertIsA($transactions, 'array');
     }
+
+    /**
+    * Method to test the folder subscriptions for webservices
+    *
+    */
+    public function testSubscriptions_KTAPI()
+    {
+        $this->ktapi->session_logout();
+        $this->session = $this->ktapi->start_session('admin', 'admin');
+
+        $root = $this->ktapi->get_root_folder();
+        $folder = $root->add_folder('testXXXXX');
+        $this->assertIsA($folder, 'KTAPI_Folder');
+        $this->assertNotA($folder, 'PEAR_Error');
+        $this->assertNoErrors();
+
+        // case no subscription
+        $response = $this->ktapi->is_folder_subscribed($folder->get_folderid());
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['results']['subscribed'], 'FALSE');
+        $this->assertNoErrors();
+
+        //case add subscription
+        $response = $this->ktapi->subscribe_to_folder($folder->get_folderid());
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['results']['action_result'], 'TRUE');
+        $this->assertNoErrors();
+
+        //case add DUPLICATE subscription
+        $response = $this->ktapi->subscribe_to_folder($folder->get_folderid());
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['results']['action_result'], 'TRUE');
+        $this->assertNoErrors();
+
+        // case subscription exists
+        $response = $this->ktapi->is_folder_subscribed($folder->get_folderid());
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['results']['subscribed'], 'TRUE');
+        $this->assertNoErrors();
+
+        //case delete subscription
+        $response = $this->ktapi->unsubscribe_from_folder($folder->get_folderid());
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['results']['action_result'], 'TRUE');
+        $this->assertNoErrors();
+
+        //case delete NOT EXISTANT subscription
+        $response = $this->ktapi->unsubscribe_from_folder($folder->get_folderid());
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['results']['action_result'], 'TRUE');
+        $this->assertNoErrors();
+
+        $folder->delete('testXXXXX');
+    }
 }
+
 ?>

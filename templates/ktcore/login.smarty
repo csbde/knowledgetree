@@ -11,8 +11,10 @@
 
     <link rel="stylesheet" href="{$rootUrl}/resources/css/kt-ie-icons.css" type="text/css" />
 
-    <script type="text/javascript" src="{$rootUrl}/thirdpartyjs/curvycorners/rounded_corners.inc.js"> </script>
-    <script type="text/javascript" src="{$rootUrl}/resources/js/login_loader.js"> </script>
+    <!--
+        <script type="text/javascript" src="{$rootUrl}/thirdpartyjs/curvycorners/rounded_corners.inc.js"> </script>
+        <script type="text/javascript" src="{$rootUrl}/resources/js/login_loader.js"> </script>
+    -->
 </head>
 <body>
 	<div id="loginbox_outer" {if ($disclaimer)} class="hasDisclaimer" {/if}>

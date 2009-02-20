@@ -190,6 +190,36 @@ class APIAclTestCase extends KTUnitTestCase {
 
     }
 
+	/**
+    * Method to test the user webservice  fucntions
+    *
+    */
+    public function testUsers_KTAPI()
+    {
+        $response = $this->ktapi->get_user_list();
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertNoErrors();
+
+        $response = $this->ktapi->get_user_by_id(1);
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertEqual($response['results']['name'], 'Administrator');
+        $this->assertNoErrors();
+
+        $response = $this->ktapi->get_user_by_username('admin');
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertEqual($response['results']['name'], 'Administrator');
+        $this->assertNoErrors();
+
+        $response = $this->ktapi->get_user_by_name('Administrator');
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertEqual($response['results']['name'], 'Administrator');
+        $this->assertNoErrors();
+    }
+
     /**
      * Test KTAPI_Group getList(), getById(), getByName
      *

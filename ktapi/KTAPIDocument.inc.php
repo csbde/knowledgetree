@@ -2285,7 +2285,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @author KnowledgeTree Team
 	 * @access public
-	 * @return bool TRUE if subscribed | FALSE if not
+	 * @return bool $result TRUE if subscribed | FALSE if not
 	 */
 	public function isSubscribed()
 	{
@@ -2293,7 +2293,8 @@ class KTAPI_Document extends KTAPI_FolderItem
         $user = $this->ktapi->get_user();
         $document = $this->document;
 
-        return Subscription::exists($user->getId(), $document->getId(), $subscriptionType);
+        $result = Subscription::exists($user->getId(), $document->getId(), $subscriptionType);
+        return $result;
 	}
 
 	/**
@@ -2301,12 +2302,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @author KnowledgeTree Team
 	 * @access public
+	 * @return boolean|object $result SUCCESS Boolean result of operation | FAILURE - a pear error object
 	 */
 	public function unsubscribe()
 	{
         if (!$this->isSubscribed())
         {
-            return;
+            return TRUE;
         }
 
         $subscriptionType = SubscriptionEvent::subTypes('Document');
@@ -2314,7 +2316,16 @@ class KTAPI_Document extends KTAPI_FolderItem
         $document = $this->document;
 
         $subscription = & Subscription::getByIDs($user->getId(), $document->getId(), $subscriptionType);
-        $subscription->delete();
+        $result = $subscription->delete();
+
+        if(PEAR::isError($result)){
+            return $result->getMessage();
+        }
+        if($result){
+            return $result;
+        }
+
+        return $_SESSION['errorMessage'];
 	}
 
 	/**
@@ -2322,12 +2333,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 *
 	 * @author KnowledgeTree Team
 	 * @access public
+	 * @return boolean|object $result SUCCESS Boolean result of operation | FAILURE - a pear error object
 	 */
 	public function subscribe()
 	{
         if ($this->isSubscribed())
         {
-            return;
+            return TRUE;
         }
 
         $subscriptionType = SubscriptionEvent::subTypes('Document');
@@ -2335,7 +2347,16 @@ class KTAPI_Document extends KTAPI_FolderItem
         $document = $this->document;
 
         $subscription = new Subscription($user->getId(), $document->getId(), $subscriptionType);
-        $subscription->create();
+        $result = $subscription->create();
+
+        if(PEAR::isError($result)){
+            return $result->getMessage();
+        }
+        if($result){
+            return $result;
+        }
+
+        return $_SESSION['errorMessage'];
 	}
 
 	/**

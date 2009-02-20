@@ -395,5 +395,65 @@ class APIDocumentTestCase extends KTUnitTestCase {
         }
     }
     */
+
+    /**
+    * Method to test the document subscriptions for webservices
+    *
+    */
+    public function testSubscriptions_KTAPI()
+    {
+        $this->ktapi->session_logout();
+        $this->session = $this->ktapi->start_session('admin', 'admin');
+
+        $randomFile = APIDocumentHelper::createRandomFile();
+        $this->assertTrue(is_file($randomFile));
+
+        $document = $this->root->add_document('testtitle.txt', 'testname.txt', 'Default', $randomFile);
+        $this->assertIsA($document, 'KTAPI_Document');
+        $this->assertNoErrors();
+
+        @unlink($randomFile);
+        $documentid = $document->get_documentid();
+
+        // case no subscription
+        $response = $this->ktapi->is_document_subscribed($documentid);
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['results']['subscribed'], 'FALSE');
+        $this->assertNoErrors();
+
+        //case add subscription
+        $response = $this->ktapi->subscribe_to_document($documentid);
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['results']['action_result'], 'TRUE');
+        $this->assertNoErrors();
+
+        //case add DUPLICATE subscription
+        $response = $this->ktapi->subscribe_to_document($documentid);
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['results']['action_result'], 'TRUE');
+        $this->assertNoErrors();
+
+        // case subscription exists
+        $response = $this->ktapi->is_document_subscribed($documentid);
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['results']['subscribed'], 'TRUE');
+        $this->assertNoErrors();
+
+        //case delete subscription
+        $response = $this->ktapi->unsubscribe_from_document($documentid);
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['results']['action_result'], 'TRUE');
+        $this->assertNoErrors();
+
+        //case delete NOT EXISTANT subscription
+        $response = $this->ktapi->unsubscribe_from_document($documentid);
+        $this->assertIsA($response, 'array');
+        $this->assertEqual($response['results']['action_result'], 'TRUE');
+        $this->assertNoErrors();
+
+        $document->delete('Test');
+        $document->expunge();
+    }
 }
+
 ?>
