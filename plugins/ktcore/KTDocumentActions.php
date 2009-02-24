@@ -512,7 +512,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
             $aInfo = array(
-                'document' => $oDocument,
+                'document' => $this->oDocument,
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
