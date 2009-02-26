@@ -15,7 +15,9 @@
 
     <link rel='stylesheet' href='{$rootUrl}/resources/css/kt-ie-icons.css' type='text/css' />
 
-    <script type='text/javascript' src='{$rootUrl}/thirdpartyjs/curvycorners/rounded_corners.inc.js'> </script>
+    <!--
+        <script type='text/javascript' src='{$rootUrl}/thirdpartyjs/curvycorners/rounded_corners.inc.js'> </script>
+    -->
 
     {foreach from=$js item=item}
         <script type='text/javascript' src='{$rootUrl}{$item}'> </script>
