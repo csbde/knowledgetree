@@ -285,7 +285,8 @@ INSERT INTO `config_settings` VALUES
 (110, 'server', 'External Server port', 'The external port for the server.', 'server_port', 'default', '', 'numeric_string', NULL, 1),
 (111, 'KnowledgeTree', 'Root Url', 'The path to the web application from the root of the web server. For example, if KT is at http://example.org/foo/, then the root directory should be \'/foo\'.', 'rootUrl', '', '', 'string', NULL, 1),
 (112, 'urls', 'Var Directory', 'The path to the var directory.', 'varDirectory', 'default', '${fileSystemRoot}/var', 'string', NULL, 1),
-(113, 'tweaks','Increment version on rename','Defines whether to update the version number if a document filename is changed/renamed.','incrementVersionOnRename','default','true','boolean',NULL,1);
+(113, 'tweaks','Increment version on rename','Defines whether to update the version number if a document filename is changed/renamed.','incrementVersionOnRename','default','true','boolean',NULL,1),
+(114, 'ui', 'System URL', 'The system url, used in the main logo.', 'systemUrl', 'default', 'http://www.knowledgetree.com', 'string', '', 1);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
