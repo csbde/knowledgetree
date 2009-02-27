@@ -56,7 +56,8 @@ class Session {
         // Don't need to lock a user out the web interface if KT Tools exists and has no license.
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             if (!$oUser->isAnonymous()) {
-                require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+                $path = KTPluginUtil::getPluginPath('ktdms.wintools');
+                require_once($path .  'baobabkeyutil.inc.php');
                 $res = BaobabKeyUtil::isValidUser($oUser);
                 if (PEAR::isError($res)) {
                     return $res;
@@ -236,7 +237,7 @@ class Session {
         }
 
         // this should be an existing session, so check the db
-        $aRows = DBUtil::getResultArray(array("SELECT * FROM $default->sessions_table WHERE session_id = ?", $sessionID));
+        $aRows = DBUtil::getResultArray(array("SELECT * FROM $default->sessions_table WHERE session_id = ? ORDER BY id DESC", $sessionID));
 
         $numrows = count($aRows);
 

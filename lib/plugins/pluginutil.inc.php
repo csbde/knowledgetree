@@ -525,7 +525,7 @@ class KTPluginUtil {
         }
         return false;
     }
-    
+
     /* Get the priority of the plugin */
     function getPluginPriority($sFile) {
     	$defaultPriority = 10;
@@ -560,7 +560,7 @@ class KTPluginUtil {
 
         $files = array();
         $plugins = array();
-        
+
         KTPluginUtil::_walk(KT_DIR . '/plugins', $files);
         foreach ($files as $sFile) {
             $plugin_ending = "Plugin.php";
@@ -569,17 +569,17 @@ class KTPluginUtil {
             	$plugins[$sFile] = KTPluginUtil::getPluginPriority($sFile);
             }
         }
-        
+
         /* Sort the plugins by priority */
         asort($plugins);
-        
+
         foreach($plugins as $sFile => $priority) {
         	require_once($sFile);
         }
-        
-        
-       
-       
+
+
+
+
 
         $oRegistry =& KTPluginRegistry::getSingleton();
         $aRegistryList = $oRegistry->getPlugins();
@@ -687,15 +687,34 @@ class KTPluginUtil {
         }
     }
 
+    /**
+     * Get the full path to the plugin
+     *
+     * @param string $sNamespace The namespace of the plugin
+     * @param bool $relative Whether the path should be relative or full
+     * @return string
+     */
+    static function getPluginPath($sNamespace, $relative = false)
+    {
+        $oEntity = KTPluginEntity::getByNamespace($sNamespace);
+
+        if(PEAR::isError($oEntity)){
+            return $oEntity;
+        }
+        $dir = dirname($oEntity->getPath()) . DIRECTORY_SEPARATOR;
+
+        if(!$relative){
+            $dir = KT_DIR . DIRECTORY_SEPARATOR . $dir;
+        }
+
+        return $dir;
+    }
+
     // utility function to detect if the plugin is loaded and active.
     static function pluginIsActive($sNamespace) {
 
-
-
 		$oReg =& KTPluginRegistry::getSingleton();
 		$plugin = $oReg->getPlugin($sNamespace);
-
-
 
 		if (is_null($plugin) || PEAR::isError($plugin)) { return false; }  // no such plugin
 		else { // check if its active
