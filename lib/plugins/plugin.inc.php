@@ -713,6 +713,8 @@ class KTPlugin {
         $oEntity = KTPluginEntity::getByNamespace($this->sNamespace);
         $friendly_name = '';
         $iOrder = $this->iOrder;
+        global $default;
+
         if (!empty($this->sFriendlyName)) { $friendly_name = $this->sFriendlyName; }
         if (!PEAR::isError($oEntity)) {
 
@@ -724,6 +726,8 @@ class KTPlugin {
                 $iEndVersion = $this->upgradePlugin($oEntity->getVersion()+1, $this->iVersion);
 
                 if ($iEndVersion != $this->iVersion) {
+                    $default->log->error("Plugin register: {$friendly_name}, namespace: {$this->sNamespace} failed to upgrade properly. Original version: {$oEntity->getVersion()}, upgrading to version {$this->iVersion}, current version {$iEndVersion}");
+
                     // we obviously failed.
                     $oEntity->updateFromArray(array(
                     'path' => $this->stripKtDir($this->sFilename),
@@ -735,6 +739,8 @@ class KTPlugin {
                     // FIXME we -really- need to raise an error here, somehow.
 
                 } else {
+                    $default->log->debug("Plugin register: {$friendly_name}, namespace: {$this->sNamespace} upgraded. Original version: {$oEntity->getVersion()}, upgrading to version {$this->iVersion}, current version {$iEndVersion}");
+
                     $oEntity->updateFromArray(array(
                     'path' => $this->stripKtDir($this->sFilename),
                     'version' => $this->iVersion,
@@ -750,6 +756,7 @@ class KTPlugin {
             return $oEntity;
         }
         if(PEAR::isError($oEntity) && !is_a($oEntity, 'KTEntityNoObjects')){
+            $default->log->error("Plugin register: the plugin {$friendly_name}, namespace: {$this->sNamespace} returned an error: ".$oEntity->getMessage());
             return $oEntity;
         }
 
@@ -758,6 +765,8 @@ class KTPlugin {
         if ($this->bAlwaysInclude || $this->autoRegister) {
             $disabled = 0;
         }
+
+        $default->log->debug("Plugin register: creating {$friendly_name}, namespace: {$this->sNamespace}");
 
         $iEndVersion = $this->upgradePlugin(0, $this->iVersion);
         $oEntity = KTPluginEntity::createFromArray(array(
@@ -771,6 +780,7 @@ class KTPlugin {
             ));
 
         if (PEAR::isError($oEntity)) {
+            $default->log->error("Plugin register: the plugin, {$friendly_name}, namespace: {$this->sNamespace} returned an error on creation: ".$oEntity->getMessage());
             return $oEntity;
         }
 
