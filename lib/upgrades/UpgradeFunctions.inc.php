@@ -322,10 +322,20 @@ class UpgradeFunctions {
 		$sql = "update folders set name=?,description=?, full_path=?, parent_folder_ids=? where id=?";
 		DBUtil::runQuery(array($sql, array($name,$name, $full_path, $parent_ids, $folderid)));
 
-		// update documents
-		$sql = "update documents set full_path=?, parent_folder_ids=? where folder_id=?";
-		DBUtil::runQuery(array($sql, array($full_path, $parent_ids, $folderid)));
+		$sql = "Select id, metadata_version_id from documents where folder_id=$folderid";
+		$documents = DBUtil::getResultArray($sql);
 
+		foreach($documents as $document){
+		    $dId = $document['id'];
+		    $mId = $document['metadata_version_id'];
+
+            $sql = "Select name from document_metadata_version where id=$mId";
+    		$title = DBUtil::getOneResultKey($sql, 'name');
+
+			// update documents
+    		$sql = "update documents set full_path=CONCAT_WS('/',?,'$title'), parent_folder_ids=? where id=?";
+	        DBUtil::runQuery(array($sql, array($full_path, $parent_ids, $dId)));
+        }
 
 		// recurse subfolders
 		foreach($ids as $row)
