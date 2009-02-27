@@ -101,6 +101,9 @@ class KTPage {
         global $default;
         $oConfig = KTConfig::getSingleton();
 
+        // set the system url
+        $this->systemURL = $oConfig->get('ui/systemUrl');
+
         /* default css files initialisation */
         $aCSS = Array(
            "thirdpartyjs/extjs/resources/css/ext-all.css",
