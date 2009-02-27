@@ -636,7 +636,8 @@ if ($checkup !== true) {
 
 if ($checkup !== true) {
     if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
-        require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+        $path = KTPluginUtil::getPluginPath('ktdms.wintools');
+        require_once($path .  'baobabkeyutil.inc.php');
         $name = BaobabKeyUtil::getName();
         if ($name) {
             $default->versionName = sprintf('%s %s', $default->versionName, $name);

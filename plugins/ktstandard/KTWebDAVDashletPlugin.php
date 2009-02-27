@@ -76,8 +76,7 @@ class KTWebDAVDashlet extends KTBaseDashlet {
         // Shortcut: Check if the the wintools plugin exists and set to true.
         // Long way: Check that a license is installed - this is only text so having a license is not a requirement.
         $isComm = false;
-        $keyUtil = KT_DIR . '/plugins/wintools/baobabkeyutil.inc.php';
-        if(file_exists($keyUtil)){
+        if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             $isComm = true;
         }
         $webdavUrl = $sURL.'/ktwebdav/ktwebdav.php';

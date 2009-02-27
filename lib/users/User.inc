@@ -465,7 +465,8 @@ class User extends KTEntity {
         $this->setDisabled(1);
         $this->update();
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
-            require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+            $path = KTPluginUtil::getPluginPath('ktdms.wintools');
+            require_once($path . 'baobabkeyutil.inc.php');
             BaobabKeyUtil::deallocateUser($this);
         }
         return;
@@ -475,7 +476,8 @@ class User extends KTEntity {
         $this->setDisabled(0);
         $this->update();
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
-            require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+            $path = KTPluginUtil::getPluginPath('ktdms.wintools');
+            require_once($path . 'baobabkeyutil.inc.php');
             BaobabKeyUtil::allocateUser($this);
         }
         return;
@@ -483,7 +485,8 @@ class User extends KTEntity {
 
     function create() {
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
-            require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+            $path = KTPluginUtil::getPluginPath('ktdms.wintools');
+            require_once($path . 'baobabkeyutil.inc.php');
             $res = BaobabKeyUtil::canAddUser();
             if (PEAR::isError($res)) {
                 return $res;
@@ -516,7 +519,8 @@ class User extends KTEntity {
 
         $this->update();
         if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
-            require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+            $path = KTPluginUtil::getPluginPath('ktdms.wintools');
+            require_once($path . 'baobabkeyutil.inc.php');
             BaobabKeyUtil::deallocateUser($this);
         }
         return;
