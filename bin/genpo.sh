@@ -6,14 +6,14 @@ cd ..
 pwd
 
 #pull in comm stuff
-cp -a ../Commercial-Plugins-DEV-trunk/alerts plugins/
-cp -a ../Commercial-Plugins-DEV-trunk/conditional-metadata plugins/
-cp -a ../Commercial-Plugins-DEV-trunk/custom-numbering plugins/
-cp -a ../Commercial-Plugins-DEV-trunk/documentcomparison plugins/
-cp -a ../Commercial-Plugins-DEV-trunk/network plugins/
-cp -a ../Commercial-Plugins-DEV-trunk/professional-reporting plugins/
-cp -a ../Commercial-Plugins-DEV-trunk/shortcuts plugins/
-cp -a ../Commercial-Plugins-DEV-trunk/wintools plugins/
+cp -a ../Commercial-Plugins/alerts plugins/
+cp -a ../Commercial-Plugins/conditional-metadata plugins/
+cp -a ../Commercial-Plugins/custom-numbering plugins/
+cp -a ../Commercial-Plugins/documentcomparison plugins/
+cp -a ../Commercial-Plugins/network plugins/
+cp -a ../Commercial-Plugins/professional-reporting plugins/
+cp -a ../Commercial-Plugins/shortcuts plugins/
+cp -a ../Commercial-Plugins/wintools plugins/
 
 rm -f i18n/templates.c
 find resources -name "*.js" | sort | python ./bin/jsi18n.py > templates/ktcore/javascript_i18n.smarty

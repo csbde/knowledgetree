@@ -1891,6 +1891,27 @@ gettext("Are you sure you wish to clear the notification?");
 /* ./templates/kt3/notifications/subscriptions.CheckOutDocument.smarty */
 gettext("Clear Alert");
 
+/* ./templates/kt3/notifications/subscriptions.DownloadDocument.smarty */
+gettext("The document \"#object_name#\"");
+
+/* ./templates/kt3/notifications/subscriptions.DownloadDocument.smarty */
+gettext("in the folder \"#location_name#\" has been downloaded");
+
+/* ./templates/kt3/notifications/subscriptions.DownloadDocument.smarty */
+gettext("by #actor_name#");
+
+/* ./templates/kt3/notifications/subscriptions.DownloadDocument.smarty */
+gettext("View Document");
+
+/* ./templates/kt3/notifications/subscriptions.DownloadDocument.smarty */
+gettext("Document is no longer available");
+
+/* ./templates/kt3/notifications/subscriptions.DownloadDocument.smarty */
+gettext("Are you sure you wish to clear the notification?");
+
+/* ./templates/kt3/notifications/subscriptions.DownloadDocument.smarty */
+gettext("Clear Alert");
+
 /* ./templates/kt3/notifications/subscriptions.RemoveChildFolder.smarty */
 gettext("The folder \"#object_name#\" has been removed");
 
@@ -3433,6 +3454,147 @@ gettext("Type ZZ to save changes and exit.");
 /* ./templates/ktcore/dashlets/scheduler.smarty */
 gettext("Type :q! to exit without saving.");
 
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("OK");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Search");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Open");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("KnowledgeTree");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Find");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Filename");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Last modified");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Permissions");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("No permission");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Is immutable");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Checked out by");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Language");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Username");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Password");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Login");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Server selection");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Upload succeeded");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Your document was saved to the server");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Reload");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("OK");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Cancel");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Reset");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Save");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Default");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Reset");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Save");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Properties");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Default");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Select a document type");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("KnowledgeTree");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Next");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Title");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("File name");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Save");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("KnowledgeTree Server Address");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("OK");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Server selection");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Collaborate");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Settings");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Logged in as");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("KnowledgeTree");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Upload");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Upload cancelled");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Upload failed");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Your document was not saved to the server");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Upload succeeded");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Your document was saved to the server");
+
 /* ./templates/ktcore/forms/buttons.smarty */
 gettext("Cancel");
 
@@ -3692,28 +3854,40 @@ gettext("Search Criteria Editor");
 gettext("Manage Saved Search");
 
 /* ./templates/ktcore/search2/indexing_status.smarty */
-gettext("The #name# is not functioning correctly. This could be because:");
+gettext("External Resource Dependency Status");
 
 /* ./templates/ktcore/search2/indexing_status.smarty */
-gettext("The indexer is not configured correctly.");
+gettext("All Services are running normally");
 
 /* ./templates/ktcore/search2/indexing_status.smarty */
-gettext("The component on which the indexer depends is not available.");
+gettext("External Resource Dependency Status");
 
 /* ./templates/ktcore/search2/indexing_status.smarty */
-gettext("Text Extractor Status");
+gettext("The following service(s) are not functioning correctly and are impacting on the normal operations of the system");
 
 /* ./templates/ktcore/search2/indexing_status.smarty */
-gettext("KnowledgeTree has detected some issues with some of the text extractors used to index document text:");
+gettext("Message");
 
 /* ./templates/ktcore/search2/indexing_status.smarty */
-gettext("Text extractor(s)s affected:");
+gettext("Also affects");
 
 /* ./templates/ktcore/search2/indexing_status.smarty */
-gettext("Note:");
+gettext("File types");
 
 /* ./templates/ktcore/search2/indexing_status.smarty */
-gettext("Indexing will not continue until all issues have been resolved.");
+gettext("Extractors");
+
+/* ./templates/ktcore/search2/indexing_status.smarty */
+gettext("The following extractors are not available and may affect indexing of certain document types");
+
+/* ./templates/ktcore/search2/indexing_status.smarty */
+gettext("Message");
+
+/* ./templates/ktcore/search2/indexing_status.smarty */
+gettext("Affected file formats");
+
+/* ./templates/ktcore/search2/lucene_statistics.smarty */
+gettext("Document Indexer Statistics");
 
 /* ./templates/ktcore/search2/lucene_statistics.smarty */
 gettext("Last Optimization Date:");
@@ -3752,10 +3926,10 @@ gettext("Queue Coverage :");
 gettext("Queue coverage indicates percentage of documents currently queued for indexing in relation to total repository size.");
 
 /* ./templates/ktcore/search2/lucene_statistics.smarty */
-gettext("Refresh");
+gettext("To get the best performance out of Document Indexer, the indexes must be optimised periodically. This is managed by a background task. Please see the KnowledgeTree Administrator's Manual for more information.");
 
 /* ./templates/ktcore/search2/lucene_statistics.smarty */
-gettext("To get the best performance out of Document Indexer, the indexes must be optimised periodically. This is managed by a background task. Please see the KnowledgeTree Administrator's Manual for more information.");
+gettext("Indexing has not run yet. Please check that the KTScheduler is running.");
 
 /* ./templates/ktcore/search2/adv_query_search.smarty */
 gettext("Search Criteria Editor");
