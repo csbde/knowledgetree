@@ -455,7 +455,7 @@ gettext("#appname# Version");
 gettext("<a href=\"http://www.knowledgetree.com/\">Document Management Software</a>");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
-gettext("&copy; 2008 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
+gettext("&copy; 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
 gettext("This program is free software and published under the <a href=\" http://www.gnu.org/licenses/\">GNU General Public License version 3</a>");
@@ -1607,7 +1607,7 @@ gettext("#appname# Version: #version#");
 gettext("Request created in #timing#s");
 
 /* ./templates/kt3/standard_page.smarty */
-gettext("&copy; 2008 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>");
+gettext("&copy; 2009 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>");
 
 /* ./templates/kt3/standard_page.smarty */
 gettext("All rights reserved.");
@@ -6557,7 +6557,7 @@ gettext("#appname# #versionname#");
 gettext("Version #version#");
 
 /* ./templates/ktcore/principals/about.smarty */
-gettext("&copy; 2008 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
+gettext("&copy; 2009 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
 
 /* ./templates/ktcore/principals/about.smarty */
 gettext("All rights reserved.");
@@ -7145,7 +7145,7 @@ gettext("#appname# Version");
 gettext("<a href=\"http://www.knowledgetree.com/\">Document Management Software</a>");
 
 /* ./templates/ktcore/login.smarty */
-gettext("&copy; 2008 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
+gettext("&copy; 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
 
 /* ./templates/ktcore/login.smarty */
 gettext("This program is free software and published under the <a href=\" http://www.gnu.org/licenses/\">GNU General Public License version 3</a>");

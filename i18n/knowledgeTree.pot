@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-03 16:49+0200\n"
+"POT-Creation-Date: 2009-03-03 17:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -354,15 +354,15 @@ msgid "%s wants to share a document using KnowledgeTree"
 msgstr ""
 
 #: i18n/templates.c:6560
-msgid "&copy; 2008 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
+msgid "&copy; 2009 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
 msgstr ""
 
 #: i18n/templates.c:458 i18n/templates.c:7148
-msgid "&copy; 2008 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
+msgid "&copy; 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
 msgstr ""
 
 #: i18n/templates.c:1610
-msgid "&copy; 2008 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>"
+msgid "&copy; 2009 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>"
 msgstr ""
 
 #: i18n/templates.c:2258

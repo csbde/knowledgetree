@@ -256,17 +256,17 @@ msgid "%s successfully copied as %s"
 msgstr "%s correctement copié comme %s"
 
 #: i18n/templates.c:6371
-msgid "&copy; 2008 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
-msgstr "&copy; 2008 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
+msgid "&copy; 2009 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
+msgstr "&copy; 2009 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
 
 #: i18n/templates.c:458
 #: i18n/templates.c:6959
-msgid "&copy; 2008 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
-msgstr "&copy ; 2008 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
+msgid "&copy; 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
+msgstr "&copy ; 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
 
 #: i18n/templates.c:1610
-msgid "&copy; 2008 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>"
-msgstr "&copy ; 2008 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>"
+msgid "&copy; 2009 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>"
+msgstr "&copy ; 2009 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>"
 
 #: i18n/templates.c:2237
 msgid "(Closed at metadata version: #ver#)"
@@ -15959,11 +15959,11 @@ msgstr "vous ne pouvez pas établir de lien sur la source du document"
 #~ msgid "finished with this field"
 #~ msgstr "terminé avec ce champ"
 #~ msgid ""
-#~ "&copy; 2004-2008 <a href=\" http://www.knowledgetree.com/\">The Jam "
+#~ "&copy; 2004-2009 <a href=\" http://www.knowledgetree.com/\">The Jam "
 #~ "Warehouse Software (Pty) Limited</a> <a href=\"http://www.knowledgetree."
 #~ "com/About/legal/license\">View License Agreement</a>"
 #~ msgstr ""
-#~ "&copy; 2004-2008 <a href=\"http://www.knowledgetree.com/\">The Jam "
+#~ "&copy; 2004-2009 <a href=\"http://www.knowledgetree.com/\">The Jam "
 #~ "Warehouse Software (Pty) Ltd.</a><a href=\"http://www.knowledgetree.com/"
 #~ "About/legal/license\">Voir Licence d'Utilisation du Logiciel</a>"
 #~ msgid "Add extra email addresses here"

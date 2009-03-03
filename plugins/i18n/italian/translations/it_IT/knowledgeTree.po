@@ -257,17 +257,17 @@ msgid "%s successfully copied as %s"
 msgstr "%s copiati con successo come %s"
 
 #: i18n/templates.c:6386
-msgid "&copy; 2008 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
-msgstr "&copy; 2008 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
+msgid "&copy; 2009 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
+msgstr "&copy; 2009 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
 
 #: i18n/templates.c:458
 #: i18n/templates.c:6974
-msgid "&copy; 2008 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
-msgstr "&copy; 2008 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
+msgid "&copy; 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
+msgstr "&copy; 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
 
 #: i18n/templates.c:1610
-msgid "&copy; 2008 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>"
-msgstr "&copy; 2008 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>"
+msgid "&copy; 2009 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>"
+msgstr "&copy; 2009 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>"
 
 #: i18n/templates.c:2237
 msgid "(Closed at metadata version: #ver#)"
@@ -9842,7 +9842,7 @@ msgstr "RSS feed cancellato"
 msgid "RSS feed unavailable."
 msgstr "RSS feed non disponibile."
 
-# Copyright (C) 2004-2008
+# Copyright (C) 2004-2009
 # This file is distributed under the same license as the KnowledgeTree package.
 #: i18n/templates.c:161
 msgid "RSS for Document"
