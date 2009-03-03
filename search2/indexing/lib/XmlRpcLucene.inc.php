@@ -374,7 +374,41 @@ class XmlRpcLucene
         return $obj['metadata'];
     }
 
-	function shutdown()
+
+    /**
+     * Convert document to given format. Defaults to pdf
+     *
+     * @param $content
+     * @param $toExtension
+     * @return unknown_type
+     */
+    function convertDocument($content, $toExtension = 'pdf')
+    {
+        $function = new xmlrpcmsg('openoffice.convertDocument',
+            array(
+                new xmlrpcval($content, 'base64'),
+                php_xmlrpc_encode((string)$toExtension)
+            ));
+
+        $result=&$this->client->send($function);
+
+        unset($content);
+
+        if($result->faultCode()) {
+            $this->error($result, 'convertDocument');
+            return false;
+        }
+
+        $obj = php_xmlrpc_decode($result->value());
+
+        if($obj['status'] != '0') {
+            return false;
+        }
+
+        return $obj['data'];
+    }
+
+    function shutdown()
 	{
 		$function=new xmlrpcmsg('control.shutdown',array(
 				php_xmlrpc_encode((string) $this->ktid),
