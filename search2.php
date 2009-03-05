@@ -467,10 +467,39 @@ class SearchDispatcher extends KTStandardDispatcher {
 
         // NOTE: sorting results (when it is implemented) might have to be done per section, as it is done with the browse view
 
-        $resultArray = $results['docs'];
-        foreach($results['folders'] as $f) $resultArray[] = $f;
-        foreach($results['shortdocs'] as $d) $resultArray[] = $d;
-        foreach($results['shortfolders'] as $f) $resultArray[] = $f;
+        // Get the order of display - folders first / documents first
+
+		// Get the display order of the results - documents / folders first
+		$_SESSION['display_order'] = isset($_POST['display_order']) ? $_POST['display_order'] : $_SESSION['display_order'];
+
+        $display_order = $_SESSION['display_order'];
+        $selected_order = array('f' => '', 'd' => '', 's' => '');
+
+        switch ($display_order){
+            case 's':
+                $selected_order['s'] = 'selected';
+                $resultArray = $results['shortfolders'];
+                foreach($results['shortdocs'] as $f) $resultArray[] = $f;
+                foreach($results['folders'] as $d) $resultArray[] = $d;
+                foreach($results['docs'] as $f) $resultArray[] = $f;
+                break;
+
+            case 'd':
+                $selected_order['d'] = 'selected';
+                $resultArray = $results['docs'];
+                foreach($results['folders'] as $f) $resultArray[] = $f;
+                foreach($results['shortdocs'] as $d) $resultArray[] = $d;
+                foreach($results['shortfolders'] as $f) $resultArray[] = $f;
+                break;
+
+            case 'f':
+            default:
+                $selected_order['f'] = 'selected';
+                $resultArray = $results['folders'];
+                foreach($results['docs'] as $f) $resultArray[] = $f;
+                foreach($results['shortfolders'] as $d) $resultArray[] = $d;
+                foreach($results['shortdocs'] as $f) $resultArray[] = $f;
+        }
 
         $results = $resultArray;
 
@@ -536,6 +565,7 @@ class SearchDispatcher extends KTStandardDispatcher {
 
         $aTemplateData = array(
               "context" => $this,
+              'selected_order' => $selected_order,
               'bulkactions'=>$aBulkActions,
               'firstRec'=>$firstRec,
               'lastRec'=>$lastRec,

@@ -131,6 +131,17 @@ function onShowAll(showall)
 
 {else}
 
+	<form method=post action="{$rootUrl}/search2.php?action=searchResults">
+
+    <select name='display_order' onChange="submit();">
+        <option value='f' {$selected_order.f}>Show folders first</option>
+        <option value='d' {$selected_order.d}>Show documents first</option>
+        <option value='s' {$selected_order.s}>Show shortcuts first</option>
+    </select>
+
+    </form>
+    <br /><br />
+
 	<form method=post action="{$rootUrl}/action.php">
 	<table border=0 cellpadding="1" cellspacing="1" width="100%" align=center>
 	{assign var=cbid value=0}
