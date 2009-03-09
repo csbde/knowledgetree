@@ -133,6 +133,7 @@ class KTPage {
         $aJS[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
         $aJS[] = 'resources/js/search2widget.js';
+        $aJS[] = 'resources/js/signature.js';
 
         $this->requireJSResources($aJS);
 
@@ -153,11 +154,13 @@ class KTPage {
     	// FIXME:  we lost the getDefaultAction stuff - do we care?
     	// note that key == action. this is _important_, since we crossmatch the breadcrumbs against this for "active"
     	$sBaseUrl = KTUtil::kt_url();
+    	$heading = _kt('You are attempting to access DMS Administration');
 
     	$this->menu = array();
     	$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => $sBaseUrl.'/dashboard.php');
 		$this->menu['browse'] = array('label' => _kt("Browse Documents"), 'url' => $sBaseUrl.'/browse.php');
-		$this->menu['administration'] = array('label' => _kt("DMS Administration"), 'url' => $sBaseUrl.'/admin.php');
+		$this->menu['administration'] = array('label' => _kt("DMS Administration"), 'url' => '#',
+		              'onclick' => "javascript: showSignatureForm('{$heading}', 'dms.administration.access', 'system', '{$sBaseUrl}/admin.php', 'redirect');"); //$sBaseUrl.'/admin.php',
     }
 
 

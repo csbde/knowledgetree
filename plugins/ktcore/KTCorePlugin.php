@@ -354,6 +354,10 @@ class KTCorePlugin extends KTPlugin {
             _kt('Internationalization'), _kt('View and modify the default language.'),
             'admin/configSettings.php', null);
 
+        $this->registerAdminPage('securityconfigpage', 'SecurityConfigPageDispatcher', 'config',
+            _kt('Security'), _kt('View and modify the security settings.'),
+            'admin/configSettings.php', null);
+
         // misc
         $this->registerAdminPage('helpmanagement', 'ManageHelpDispatcher', 'misc',
             _kt('Edit Help files'), _kt('Change the help files that are displayed to users.'),

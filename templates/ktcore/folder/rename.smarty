@@ -6,7 +6,7 @@ folder.{/i18n}</p>
 {assign var=iFolderId value=$context->oFolder->getId()}
 {capture assign=link}{getUrlForFolder folder=$iFolderId}{/capture}
 
-<form method="POST" action="{$smarty.server.PHP_SELF}">
+<form name="rename_folder_form" id="rename_folder_form" method="POST" action="{$smarty.server.PHP_SELF}">
 <fieldset><legend>{i18n}Rename Folder{/i18n}</legend>
 <input type="hidden" name="action" value="rename" />
 <input type="hidden" name="fFolderId" value="{$iFolderId}" />
@@ -14,8 +14,14 @@ folder.{/i18n}</p>
   {$oWidget->render()}
 {/foreach}
 <div class="form_actions">
-<input type="submit" name="submit" value="{i18n}Rename{/i18n}" />
+<input type="button" name="btn_submit" value="{i18n}Rename{/i18n}"
+     onclick="javascript: showSignatureForm('{i18n}You are attempting to rename a folder{/i18n}', 'ktcore.transactions.rename', 'folder', 'rename_folder_form', 'submit', {$iFolderId});" />
+
 <input type="submit" name="kt_cancel[{$link}]" value="{i18n}Cancel{/i18n}" />
 </div>
 </fieldset>
 </form>
+
+
+<!-- onclick="javascript: showSignatureForm('rename_folder_form');"
+-->

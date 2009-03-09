@@ -339,4 +339,18 @@ class SearchAndIndexingConfigPageDispatcher extends BaseConfigDispatcher
         return parent::check();
     }
 }
+
+class SecurityConfigPageDispatcher extends BaseConfigDispatcher
+{
+    function check() {
+        $this->category = 'Security Settings';
+        $this->name = _kt('Security Settings');
+
+        $this->aBreadcrumbs[] = array(
+            'url' => $_SERVER['PHP_SELF'],
+            'name' => _kt('Security Settings'),
+        );
+        return parent::check();
+    }
+}
 ?>

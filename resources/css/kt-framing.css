@@ -2309,3 +2309,123 @@ body #content #add_dashlet
 	background: #FDFDFD;
 	padding: 2px;
 }
+
+
+/* ================= Electronic signature popup - override ExtJS CSS ================= */
+
+#signature-panel {
+    background: transparent;
+}
+
+#signature {
+    background: transparent;
+}
+
+#sign_here {
+    background: #FFF;
+    color: #000;
+    padding: 5px;
+    padding-bottom: 10px;
+}
+
+#sign_here h2 {
+    font-size: 110%;
+    margin-bottom: 5px;
+}
+
+#sign_here .input_field {
+    margin-bottom: 10px;
+}
+
+#sign_here .required {
+    margin-left: 0.5em;
+    padding-left: 10px;
+    color: transparent;
+    background: transparent url(../graphics/required.png) center left no-repeat;
+}
+
+#sign_here .descriptiveText {
+    color: #666;
+}
+
+#sign_here #form_actions a {
+    border: 1px solid #ccc;
+    background: #fdfdfd;
+    color: #333;
+    font-weight: normal;
+    padding: 2px;
+    padding-right: 5px;
+    text-decoration: none;
+}
+
+.x-window-tl .x-window-header {
+    color: #FFF;
+}
+
+.x-window-tc {
+	background: url(../graphics/portlet_bg.png) repeat-x 0 0;
+	overflow:hidden;
+    zoom:1;
+}
+
+.x-window-tl {
+	background: url(../graphics/portlet_corner_topleft.png) no-repeat 0 0;
+	padding-left:6px;
+    zoom:1;
+    z-index:1;
+    position:relative;
+}
+
+.x-window-tr {
+	background: url(../graphics/portlet_corner_topright_2.png) no-repeat right 0;
+	padding-right:6px;
+}
+
+.x-window-bc {
+	background: #FFF;
+    zoom:1;
+}
+.x-window-bl {
+    border-left:1px solid #AFAFAF;
+    border-bottom:1px solid #AFAFAF;
+	background:  #FFF;
+	padding-left:6px;
+    zoom:1;
+}
+.x-window-br {
+    border-right:1px solid #AFAFAF;
+	background:  #FFF;
+	padding-right:6px;
+    zoom:1;
+}
+
+.x-window-ml {
+    border-left:1px solid #AFAFAF;
+	background:  #FFF;
+	padding-left:6px;
+    zoom:1;
+}
+.x-window-mr {
+    border-right:1px solid #AFAFAF;
+	background:  #FFF;
+	padding-right:6px;
+    zoom:1;
+}
+
+.x-window-mc {
+    border:1px solid #FFF;
+    border-top:1px solid #FFF;
+    padding:0;
+    margin:0;
+    font: normal 11px tahoma,arial,helvetica,sans-serif;
+    background:#FFF;
+}
+
+.x-window-body {
+    border-left:1px solid #FFF;
+    border-top:1px solid #FFF;
+    border-bottom:1px solid #FFF;
+    border-right:1px solid #FFF;
+    background: transparent;
+    overflow: auto;
+}

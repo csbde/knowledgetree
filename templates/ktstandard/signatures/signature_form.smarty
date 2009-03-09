@@ -1,0 +1,31 @@
+<h2><span class="ktActionLink ktDenied" />{$head}</h2>
+
+<p class="descriptiveText">This action requires re-authentication.</p>
+<br />
+
+<form method="post">
+<p class="input_field">
+<label for="sign_username">Username</label><span class="required">required</span>
+<br />
+<input id="sign_username" />
+</p>
+
+<p class="input_field">
+<label for="sign_password">Password</label><span class="required">required</span>
+<br />
+<input id="sign_password" type="password" />
+</p>
+
+<p class="input_field">
+<label for="sign_comment">Comment</label><span class="required">required</span>
+<br />
+<input id="sign_comment" type="text" />
+</p>
+
+<div id="form_actions">
+
+<a href="#" onclick="javascript: submitForm();">{i18n}OK{/i18n}</a>&nbsp;
+<a href="#" onclick="javascript: panel_close();">{i18n}Cancel{/i18n}</a>
+
+</div>
+</form>

@@ -87,9 +87,9 @@
 	                            <!-- area menu -->
 	                            {foreach item=aMenuItem from=$page->menu}
 	                                {if ($aMenuItem.active == 1)}
-	                                    <li class="active"><a href="{$aMenuItem.url}">{$aMenuItem.label}</a></li>
+	                                    <li class="active"><a href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}">{$aMenuItem.label}</a></li>
 	                                {else}
-	                                    <li><a href="{$aMenuItem.url}">{$aMenuItem.label}</a></li>
+	                                    <li><a href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}">{$aMenuItem.label}</a></li>
 	                                {/if}
 	                                    <li><div id="menu_divider"></div></li>
 	                            {/foreach}
