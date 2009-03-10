@@ -113,7 +113,8 @@ class KTElectronicSignatures
         }
 
         if($this->lock){
-            return $this->eSignature->getLockMsg();
+            $this->error = $this->eSignature->getLockMsg();
+            return $this->getError();
         }
         return $oTemplate->render($aTemplateData);
     }
@@ -147,7 +148,7 @@ class KTElectronicSignatures
      */
     public function getError()
     {
-        return $this->error;
+        return '<div class="error">'.$this->error.'</div>';
     }
 
     /**

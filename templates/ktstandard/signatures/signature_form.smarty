@@ -22,7 +22,7 @@
 <input id="sign_comment" type="text" />
 </p>
 
-<div id="form_actions">
+<div class="form_actions">
 
 <a href="#" onclick="javascript: submitForm();">{i18n}OK{/i18n}</a>&nbsp;
 <a href="#" onclick="javascript: panel_close();">{i18n}Cancel{/i18n}</a>

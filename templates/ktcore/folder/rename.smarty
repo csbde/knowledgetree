@@ -14,14 +14,9 @@ folder.{/i18n}</p>
   {$oWidget->render()}
 {/foreach}
 <div class="form_actions">
-<input type="button" name="btn_submit" value="{i18n}Rename{/i18n}"
-     onclick="javascript: showSignatureForm('{i18n}You are attempting to rename a folder{/i18n}', 'ktcore.transactions.rename', 'folder', 'rename_folder_form', 'submit', {$iFolderId});" />
+<input type="{$input.type}" name="btn_submit" value="{i18n}Rename{/i18n}" onclick="{$input.onclick}" />
 
 <input type="submit" name="kt_cancel[{$link}]" value="{i18n}Cancel{/i18n}" />
 </div>
 </fieldset>
 </form>
-
-
-<!-- onclick="javascript: showSignatureForm('rename_folder_form');"
--->

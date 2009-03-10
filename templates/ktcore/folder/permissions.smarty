@@ -84,8 +84,7 @@
 <input type="hidden" name="action" value="update">
 <input type="hidden" name="fFolderId" value="{$iFolderId}">
 <div id="submitButtons" class="form_actions">
-  <input type="button" value="{i18n}Update Permission Assignments{/i18n}"
-    onclick="javascript: showSignatureForm('{i18n}You are attempting to modify permissions{/i18n}', 'ktcore.transactions.permissions_change', 'folder', 'update_permissions_form', 'submit', {$iFolderId});" />
+  <input type="{$input.type}" value="{i18n}Update Permission Assignments{/i18n}" onclick="{$input.onclick}" />
   <input type="submit" name="kt_cancel[{addQS}fFolderId={$iFolderId}{/addQS}]" value="{i18n}Cancel{/i18n}" />
 {/if}
 </div>

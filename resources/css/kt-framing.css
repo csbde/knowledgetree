@@ -2348,7 +2348,7 @@ body #content #add_dashlet
     color: #666;
 }
 
-#sign_here #form_actions a {
+#sign_here .form_actions a {
     border: 1px solid #ccc;
     background: #fdfdfd;
     color: #333;
@@ -2356,6 +2356,17 @@ body #content #add_dashlet
     padding: 2px;
     padding-right: 5px;
     text-decoration: none;
+}
+
+#sign_here .error {
+    padding: 0.5em 1em;
+    border: 1px solid #ffc21e;
+    margin-bottom: 10px;
+    padding-left: 25px;
+}
+
+#sign_here .error {
+    background: #ffdd80  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) 2px center no-repeat;
 }
 
 .x-window-tl .x-window-header {

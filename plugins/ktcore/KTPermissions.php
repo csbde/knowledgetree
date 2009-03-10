@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -541,14 +541,16 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 
     function do_editRoleUsers() {
 
+        $iFolderId = $this->oFolder->getId();
+
         $role_allocation_id = KTUtil::arrayGet($_REQUEST, 'alloc_id');
-        if (($this->oFolder->getId() == 1) && is_null($role_allocation_id)) {
+        if (($iFolderId == 1) && is_null($role_allocation_id)) {
             $oRoleAllocation = $this->rootoverride($_REQUEST['role_id']);
         } else {
             $oRoleAllocation = RoleAllocation::get($role_allocation_id);
         }
         if ((PEAR::isError($oRoleAllocation)) || ($oRoleAllocation=== false)) {
-            $this->errorRedirectToMain(_kt('No such role allocation.'), sprintf('fFolderId=%d',$this->oFolder->getId()));
+            $this->errorRedirectToMain(_kt('No such role allocation.'), sprintf('fFolderId=%d',$iFolderId));
         }
 
 
@@ -577,6 +579,17 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             }
         }
 
+        // Include the electronic signature on the permissions action
+        global $default;
+        if($default->enableESignatures){
+            $heading = _kt('You are attempting to modify roles');
+            $input['type'] = 'button';
+            $input['onclick'] = "javascript: showSignatureForm('{$heading}', 'ktcore.transactions.roles_modify_users', 'folder', 'userroleform', 'submit', {$iFolderId});";
+        }else{
+            $input['type'] = 'submit';
+            $input['onclick'] = '';
+        }
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/roles_manageusers");
         $aTemplateData = array(
@@ -584,20 +597,23 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             "edit_rolealloc" => $oRoleAllocation,
 			'unused_users' => $aFreeUsers,
 			'role_users' => $aRoleUsers,
+			'input' => $input
         );
         return $oTemplate->render($aTemplateData);
     }
 
     function do_editRoleGroups() {
 
+        $iFolderId = $this->oFolder->getId();
+
         $role_allocation_id = KTUtil::arrayGet($_REQUEST, 'alloc_id');
-        if (($this->oFolder->getId() == 1) && is_null($role_allocation_id)) {
+        if (($iFolderId == 1) && is_null($role_allocation_id)) {
             $oRoleAllocation = $this->rootoverride($_REQUEST['role_id']);
         } else {
             $oRoleAllocation = RoleAllocation::get($role_allocation_id);
         }
         if ((PEAR::isError($oRoleAllocation)) || ($oRoleAllocation=== false)) {
-            $this->errorRedirectToMain(_kt('No such role allocation.'), sprintf('fFolderId=%d',$this->oFolder->getId()));
+            $this->errorRedirectToMain(_kt('No such role allocation.'), sprintf('fFolderId=%d',$iFolderId));
         }
 
         $oRole = Role::get($oRoleAllocation->getRoleId());
@@ -627,7 +643,16 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             }
         }
 
-
+        // Include the electronic signature on the permissions action
+        global $default;
+        if($default->enableESignatures){
+            $heading = _kt('You are attempting to modify roles');
+            $input['type'] = 'button';
+            $input['onclick'] = "javascript: showSignatureForm('{$heading}', 'ktcore.transactions.roles_modify_groups', 'folder', 'grouproleform', 'submit', {$iFolderId});";
+        }else{
+            $input['type'] = 'submit';
+            $input['onclick'] = '';
+        }
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/roles_managegroups");
@@ -637,6 +662,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 			'unused_groups' => $aFreeUsers,
 			'role_groups' => $aRoleUsers,
 			'rolename' => $oRole->getName(),
+			'input' => $input
         );
         return $oTemplate->render($aTemplateData);
 	}

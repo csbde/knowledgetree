@@ -4,7 +4,7 @@
 
 <p class="descriptiveText">{i18n}Add or remove users for this role. {/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST" id="userroleform">
+<form action="{$smarty.server.PHP_SELF}" method="POST" id="userroleform" name="userroleform">
    <input type="hidden" name="action" value="setRoleUsers" />
    <input type="hidden" name="allocation_id" value="{$edit_rolealloc->getId()}" />
    <input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}" />
@@ -63,7 +63,7 @@ Use the Ctrl key to multi-select user names.{/i18n}</p>
 </tbody></table>
 
       <div class="form_actions">
-         <input type="submit" value="{i18n}save changes{/i18n}" />
+         <input type="{$input.type}" value="{i18n}save changes{/i18n}" onclick="{$input.onclick}" />
          {capture assign=link}{addQS}fFolderId={$context->oFolder->getId()}{/addQS}{/capture}
          <input type="submit" name="kt_cancel[{$link}]" value="{i18n}Cancel{/i18n}" />
       </div>

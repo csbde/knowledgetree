@@ -29,7 +29,7 @@ var showSignatureForm = function(head, action, type, request, request_type, deta
         applyTo     : 'signature',
         layout      : 'fit',
         width       : 360,
-        height      : 265,
+        height      : 310,
         closeAction :'destroy',
         y           : 150,
         shadow: false,
@@ -50,6 +50,7 @@ var showSignatureForm = function(head, action, type, request, request_type, deta
                 }else{
                     window.document.forms[this.request].submit();
                 }
+                return;
             }
             info.innerHTML = response.responseText;
         },
@@ -107,6 +108,7 @@ var submitForm = function() {
                 }else{
                     window.document.forms[this.request].submit();
                 }
+                return;
             }
 
             info.innerHTML = response.responseText;

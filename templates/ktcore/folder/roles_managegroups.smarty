@@ -4,15 +4,15 @@
 
 <p class="descriptiveText">{i18n}Groups must be allocated to roles to ensure that the workflow transition this role is supposed to support can be acted upon by a user.{/i18n}</p>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST" id="grouproleform">
+<form action="{$smarty.server.PHP_SELF}" method="POST" id="grouproleform" name="grouproleform">
    <input type="hidden" name="action" value="setRoleGroups" />
    <input type="hidden" name="allocation_id" value="{$edit_rolealloc->getId()}" />
    <input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}" />
    <!-- erk. FIXME clean up and remove OptionTransfer.js. -->
-   
+
    <input type="hidden" name="groupFinal" />
-   
-   
+
+
    <fieldset>
       <legend>{i18n}Allocate Groups{/i18n}</legend>
       <p class="descriptiveText">{i18n}Select the groups which should be part of this role.{/i18n}</p>
@@ -58,7 +58,7 @@
 </tbody></table>
 
       <div class="form_actions">
-         <input type="submit" value="{i18n}save changes{/i18n}" />
+         <input type="{$input.type}" value="{i18n}save changes{/i18n}" onclick="{$input.onclick}" />
          {capture assign=link}{addQS}fFolderId={$context->oFolder->getId()}{/addQS}{/capture}
          <input type="submit" name="kt_cancel[{$link}]" value="{i18n}Cancel{/i18n}" />
       </div>
