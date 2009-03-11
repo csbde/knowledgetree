@@ -2311,44 +2311,36 @@ body #content #add_dashlet
 }
 
 
-/* ================= Electronic signature popup - override ExtJS CSS ================= */
+/* ================= Ajax popup - override ExtJS CSS ================= */
 
-#signature-panel {
-    background: transparent;
-}
-
-#signature {
-    background: transparent;
-}
-
-#sign_here {
+#popup_content {
     background: #FFF;
     color: #000;
     padding: 5px;
     padding-bottom: 10px;
 }
 
-#sign_here h2 {
+#popup_content h2 {
     font-size: 110%;
     margin-bottom: 5px;
 }
 
-#sign_here .input_field {
+#popup_content .input_field {
     margin-bottom: 10px;
 }
 
-#sign_here .required {
+#popup_content .required {
     margin-left: 0.5em;
     padding-left: 10px;
     color: transparent;
     background: transparent url(../graphics/required.png) center left no-repeat;
 }
 
-#sign_here .descriptiveText {
+#popup_content .descriptiveText {
     color: #666;
 }
 
-#sign_here .form_actions a {
+#popup_content .form_actions a {
     border: 1px solid #ccc;
     background: #fdfdfd;
     color: #333;
@@ -2358,14 +2350,14 @@ body #content #add_dashlet
     text-decoration: none;
 }
 
-#sign_here .error {
+#popup_content .error {
     padding: 0.5em 1em;
     border: 1px solid #ffc21e;
     margin-bottom: 10px;
     padding-left: 25px;
 }
 
-#sign_here .error {
+#popup_content .error {
     background: #ffdd80  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) 2px center no-repeat;
 }
 

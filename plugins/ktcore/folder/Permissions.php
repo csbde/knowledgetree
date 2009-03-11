@@ -319,9 +319,10 @@ class KTFolderPermissionsAction extends KTFolderAction {
 
         global $default;
         if($default->enableESignatures){
+            $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
             $heading = _kt('You are attempting to modify permissions');
             $input['type'] = 'button';
-            $input['onclick'] = "javascript: showSignatureForm('{$heading}', 'ktcore.transactions.permissions_change', 'folder', 'update_permissions_form', 'submit', {$iFolderId});";
+            $input['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.permissions_change', 'folder', 'update_permissions_form', 'submit', {$iFolderId});";
         }else{
             $input['type'] = 'submit';
             $input['onclick'] = '';

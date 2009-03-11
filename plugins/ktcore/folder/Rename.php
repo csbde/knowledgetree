@@ -66,8 +66,9 @@ class KTFolderRenameAction extends KTFolderAction {
 
         global $default;
         if($default->enableESignatures){
+            $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
             $heading = _kt('You are attempting to rename a folder');
-            $input['onclick'] = "javascript: showSignatureForm('{$heading}', 'ktcore.transactions.rename', 'folder', 'rename_folder_form', 'submit', {$this->oFolder->getId()});";
+            $input['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.rename', 'folder', 'rename_folder_form', 'submit', {$this->oFolder->getId()});";
             $input['type'] = 'button';
         }else{
             $input['onclick'] = '';

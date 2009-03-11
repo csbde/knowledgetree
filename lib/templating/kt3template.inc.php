@@ -133,7 +133,6 @@ class KTPage {
         $aJS[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
         $aJS[] = 'resources/js/search2widget.js';
-        $aJS[] = 'resources/js/signature.js';
 
         $this->requireJSResources($aJS);
 
@@ -162,9 +161,10 @@ class KTPage {
 
     	global $default;
     	if($default->enableESignatures){
+    	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     	    $heading = _kt('You are attempting to access DMS Administration');
     	    $this->menu['administration']['url'] = '#';
-    	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$heading}', 'dms.administration.access', 'system', '{$sBaseUrl}/admin.php', 'redirect');";
+    	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_administration', 'system', '{$sBaseUrl}/admin.php', 'redirect');";
     	}else{
     	    $this->menu['administration']['url'] = $sBaseUrl.'/admin.php';
     	}
