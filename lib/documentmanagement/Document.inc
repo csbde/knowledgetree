@@ -169,7 +169,7 @@ class Document {
 
     function getStoragePath() { return $this->_oDocumentContentVersion->getStoragePath(); }
     function setStoragePath($sNewValue) { $this->_oDocumentContentVersion->setStoragePath($sNewValue); }
-    
+
 
 
     /**
@@ -177,7 +177,7 @@ class Document {
      *
      * @return Document the real document
      */
-    function getRealDocument() 
+    function getRealDocument()
     {
         return $this->_oDocumentCore->getRealDocument();
     }
@@ -187,7 +187,7 @@ class Document {
      *
      * @return boolean
      */
-    function isSymbolicLink() 
+    function isSymbolicLink()
     {
         $documentCore = KTDocumentCore::get($this->getId());
         return $documentCore->isSymbolicLink();
@@ -197,7 +197,7 @@ class Document {
      * Switches the core of this document to the core of the real doc.
      *
      */
-    function switchToRealCore() 
+    function switchToRealCore()
     {
         if ($this->isSymbolicLink())
         {
@@ -210,7 +210,7 @@ class Document {
      *
      * @return int the ID
      */
-    function getRealDocumentId() 
+    function getRealDocumentId()
     {
          $document = $this->getRealDocument();
          if (PEAR::isError($document)) { return $document; }
@@ -221,8 +221,8 @@ class Document {
      * Switches this documents core to the core of the document this document is linking to.
      *
      */
-    function switchToLinkedCore() 
-    { 
+    function switchToLinkedCore()
+    {
     	if ($this->isSymbolicLink())
         {
             $document = $this->getRealDocument();
@@ -232,7 +232,7 @@ class Document {
             $this->_oDocumentMetadataVersion = $document->_oDocumentMetadataVersion;
         }
     }
-    
+
     /**
      * Retrieves all symbolic links linking to this document
      *
@@ -241,9 +241,9 @@ class Document {
     	$sQuery = 'SELECT * FROM documents ' .
 				'WHERE documents.linked_document_id =  '.$this->getId();
     	return DButil::getResultArray($sQuery);
-    }  
-    
-    
+    }
+
+
     // }}}
 
     // {{{ getParentID
@@ -315,12 +315,12 @@ class Document {
         if (PEAR::isError($this->_oDocumentCore)) { return $this->_oDocumentCore; }
 
     	//Automatically load the information of the document this document links to, if any.
-        $res = $this->switchToLinkedCore();             
+        $res = $this->switchToLinkedCore();
         if (PEAR::isError($res))
         {
             return $res;
         }
-        
+
         // FIXME add error $res if MDV > $_oDC->getMDV
         if (is_null($iMetadataVersionId)) {
             $this->_oDocumentMetadataVersion = KTDocumentMetadataVersion::get($this->_oDocumentCore->getMetadataVersionId());
@@ -636,6 +636,8 @@ class Document {
     // {{{ startNewMetadataVersion
     function startNewMetadataVersion($oUser) {
         $iUserId = KTUtil::getId($oUser);
+        // ensure metadata version is up to date
+        $this->_oDocumentMetadataVersion = KTDocumentMetadataVersion::get($this->_oDocumentMetadataVersion->iId);
         $this->_oDocumentMetadataVersion =& $this->_oDocumentMetadataVersion->newCopy();
         if (PEAR::isError($this->_oDocumentMetadataVersion)) {
 		    return $this->_oDocumentMetadataVersion;
