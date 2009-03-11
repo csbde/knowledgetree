@@ -750,6 +750,7 @@ $sourceDocument->getName(),
                 return $ret;
             }
         }
+        // refresh the document object
 
         // NEW SEARCH
 
@@ -787,6 +788,9 @@ $sourceDocument->getName(),
         }
 
         DBUtil::commit();
+
+        // update document object with additional fields / data from the triggers
+        $oDocument = Document::get($oDocument->iId);
 
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Checking permissions...')));
 
