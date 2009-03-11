@@ -45,7 +45,7 @@ var gotSearchParseStatus = function callBack(o)
 			{
 				actionAfterParse = 'saveCompleted';
 				var txtQuery = document.getElementById('txtAdvQuery');
-				url='{/literal}{$rootUrl}{literal}/search2/ajax/saveExpr.php?iSavedId={/literal}{$iSavedSearchId}{literal}&txtQuery='+txtQuery.value;
+				url='{/literal}{$rootUrl}{literal}/search2/ajax/saveExpr.php?iSavedId={/literal}{$iSavedSearchId}{literal}';
 				//alert(url);
 
 				Ext.Ajax.request(
@@ -53,7 +53,10 @@ var gotSearchParseStatus = function callBack(o)
 				    url: url,
 				    method: 'GET',
 				    success:gotSearchParseStatus,
-	                failure:gotNoStatus
+	                failure:gotNoStatus,
+	                params: {
+	                   txtQuery: txtQuery.value
+	                }
 				});
 
 			}
@@ -89,14 +92,17 @@ function startParsing()
 		return;
 	}
 	var txtQuery = document.getElementById('txtAdvQuery');
-	url='{/literal}{$rootUrl}{literal}/search2/ajax/parseExpr.php?txtQuery='+txtQuery.value;
+	url='{/literal}{$rootUrl}{literal}/search2/ajax/parseExpr.php';
 
 	Ext.Ajax.request(
 	{
 	    url: url,
 	    method: 'GET',
 	    success:gotSearchParseStatus,
-	    failure:gotNoStatus
+	    failure:gotNoStatus,
+	    params: {
+	       txtQuery: txtQuery.value
+	    }
 	});
 }
 function butParseClick()
