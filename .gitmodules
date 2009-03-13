@@ -1,0 +1,3 @@
+[submodule "plugins/commercial"]
+	path = plugins/commercial
+	url = git@github.com:ktgit/commercial-plugins.git
