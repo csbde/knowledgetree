@@ -9,20 +9,20 @@
 
 {if !$oWorkflow}
     <h3>{i18n}No workflow{/i18n}</h3>
-    
+
     <p>{i18n}Document has no assigned workflow.{/i18n}</p>
 
 {else}
-    
+
     <h3>{i18n}Current workflow settings{/i18n}</h3>
-    
+
     <dl class="metadata">
         <dt>{i18n}Workflow{/i18n}</dt><dd>{$oWorkflow->getName()}</dd>
         <dt>{i18n}State{/i18n}</dt><dd>{$oState->getName()}</dd>
     </dl>
 
     {if $aTransitions}
-        <form action="{$smarty.server.PHP_SELF}" method="POST">
+        <form action="{$smarty.server.PHP_SELF}" method="POST" name="transition_wf_form">
             <input type="hidden" name="action" value="performTransition" />
             <input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
             <fieldset><legend>{i18n}Transition to another workflow state{/i18n}</legend>
@@ -30,7 +30,7 @@
                 {$oWidget->render()}
             {/foreach}
             <div class="form_actions">
-            <input type="submit" name="submit" value="{i18n}Perform Transition{/i18n}" />
+            <input type="{$submit.type}" onclick="{$submit2.onclick}" name="form_submit" value="{i18n}Perform Transition{/i18n}" />
             </div>
             </fieldset>
         </form>
@@ -52,19 +52,19 @@
     {/if}
     {if $aWorkflows}
         {if $bHasPerm}
-            <form action="{$smarty.server.PHP_SELF}" method="POST">
+            <form action="{$smarty.server.PHP_SELF}" method="POST" name="start_workflow_form">
                 <input type="hidden" name="action" value="startWorkflow" />
                 <input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
-                
+
                 <p class="descriptiveText">{i18n}Please note that changing the workflow on a document will start the workflow
                 at the beginning of the new workflow.  <strong>This is true even if the new workflow is identical to the old one.</strong>{/i18n}</p>
-                
+
                 {entity_select entities=$aWorkflows name=fWorkflowId none=$none}
                 <div class="form_actions">
                     {if !$oWorkflow}
-                        <input type="submit" name="submit" value="{i18n}Start Workflow{/i18n}" />
+                        <input type="{$submit.type}" onclick="{$submit.onclick}" name="form_submit" value="{i18n}Start Workflow{/i18n}" />
                     {else}
-                        <input type="submit" name="submit" value="{i18n}Change Workflow{/i18n}" />
+                        <input type="{$submit.type}" onclick="{$submit.onclick}" name="form_submit" value="{i18n}Change Workflow{/i18n}" />
                     {/if}
                 </div>
             </form>

@@ -5,7 +5,7 @@
 <p class='descriptiveText'>{i18n}Enter the URL to the external document or site.{/i18n}
 </p>
 
-<form method='POST' action="{$smarty.server.PHP_SELF}">
+<form method='POST' action="{$smarty.server.PHP_SELF}" name="document_add_ext_link_form">
 
 <label for='target_name'>{i18n}Link Name{/i18n}: </label><br />
 <input id='target_name' name='target_name' />
@@ -17,7 +17,7 @@
 <input type='hidden' name='action' value='type_select' />
 <input type='hidden' name='linktype' value='external' />
 <input type='hidden' name='fDocumentId' value='{$iDocId}' />
-<input type='submit' name='submit[move]' value='{i18n}Link{/i18n}' />
+<input type='{$submit.type}' name='submit[move]' value='{i18n}Link{/i18n}' onclick="{$submit.onclick}" />
 </div>
 </form>
 {else}

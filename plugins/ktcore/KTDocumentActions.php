@@ -1016,20 +1016,52 @@ class KTDocumentDeleteAction extends KTDocumentAction {
             'submit_label' => _kt('Delete Document'),
             'context' => &$this,
         ));
-        $oForm->setWidgets(array(
-            array('ktcore.widgets.reason', array(
+
+        // Electronic Signature if enabled
+        global $default;
+        if($default->enableESignatures){
+            $widgets[] = array('ktcore.widgets.info', array(
+                    'label' => _kt('This action requires authentication'),
+                    'description' => _kt('Please provide your user credentials as confirmation of this action.'),
+                    'name' => 'info'
+                ));
+            $widgets[] = array('ktcore.widgets.string', array(
+                    'label' => _kt('Username'),
+                    'name' => 'sign_username',
+                    'required' => true
+                ));
+            $widgets[] = array('ktcore.widgets.password', array(
+                    'label' => _kt('Password'),
+                    'name' => 'sign_password',
+                    'required' => true
+                ));
+        }
+
+        $widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Reason'),
                 'description' => _kt('Please specify why you are deleting this document.  Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
                 'name' => 'reason',
-            )),
-        ));
-        $oForm->setValidators(array(
-            array('ktcore.validators.string', array(
+            ));
+
+        $oForm->setWidgets($widgets);
+
+        $validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'max_length' => 250,
                 'output' => 'reason',
-            )),
-        ));
+            ));
+
+        if($default->enableESignatures){
+            $validators[] = array('electonic.signatures.validators.authenticate', array(
+                'object_id' => $this->oDocument->iId,
+                'type' => 'document',
+                'action' => 'ktcore.transactions.delete',
+                'test' => 'info',
+                'output' => 'info'
+            ));
+        }
+
+        $oForm->setValidators($validators);
 
         return $oForm;
     }
@@ -1144,34 +1176,66 @@ class KTDocumentMoveAction extends KTDocumentAction {
          *  This is still not the most elegant solution.
          */
 
-        $oForm->setWidgets(array(
-            array('ktcore.widgets.foldercollection', array(
+        $widgets[] = array('ktcore.widgets.foldercollection', array(
                 'label' => _kt('Target Folder'),
 			    'description' => _kt('Use the folder collection and path below select the folder into which you wish to move the document.'),
 			    'required' => true,
 			    'name' => 'browse',
-                'folder_id' => $this->oDocument->getFolderID(),
-                )),
-            array('ktcore.widgets.reason', array(
+                'folder_id' => $this->oDocument->getFolderID()
+        ));
+
+
+        // Electronic Signature if enabled
+        global $default;
+        if($default->enableESignatures){
+            $widgets[] = array('ktcore.widgets.info', array(
+                    'label' => _kt('This action requires authentication'),
+                    'description' => _kt('Please provide your user credentials as confirmation of this action.'),
+                    'name' => 'info'
+                ));
+            $widgets[] = array('ktcore.widgets.string', array(
+                    'label' => _kt('Username'),
+                    'name' => 'sign_username',
+                    'required' => true
+                ));
+            $widgets[] = array('ktcore.widgets.password', array(
+                    'label' => _kt('Password'),
+                    'name' => 'sign_password',
+                    'required' => true
+                ));
+        }
+
+
+        $widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Reason'),
                 'description' => _kt('Please specify why you are moving this document.  Bear in mind that you can use a maximum of <strong>250</strong> characters.'),
                 'name' => 'reason',
-            )),
         ));
 
+        $oForm->setWidgets($widgets);
 
-        $oForm->setValidators(array(
-            array('ktcore.validators.string', array(
+        $validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'max_length' => 250,
                 'output' => 'reason',
-            )),
-            array('ktcore.validators.entity', array(
+        ));
+        $validators[] = array('ktcore.validators.entity', array(
                 'class' => 'Folder',
                 'test' => 'browse',
                 'output' => 'browse',
-            )),
         ));
+
+        if($default->enableESignatures){
+            $validators[] = array('electonic.signatures.validators.authenticate', array(
+                'object_id' => $this->oDocument->iId,
+                'type' => 'document',
+                'action' => 'ktcore.transactions.move',
+                'test' => 'info',
+                'output' => 'info'
+            ));
+        }
+
+        $oForm->setValidators($validators);
 
         // here's the ugly bit.
 
@@ -1565,20 +1629,52 @@ class KTDocumentArchiveAction extends KTDocumentAction {
             'submit_label' => _kt('Archive Document'),
             'context' => &$this,
         ));
-        $oForm->setWidgets(array(
-            array('ktcore.widgets.reason', array(
+
+        // Electronic Signature if enabled
+        global $default;
+        if($default->enableESignatures){
+            $widgets[] = array('ktcore.widgets.info', array(
+                    'label' => _kt('This action requires authentication'),
+                    'description' => _kt('Please provide your user credentials as confirmation of this action.'),
+                    'name' => 'info'
+                ));
+            $widgets[] = array('ktcore.widgets.string', array(
+                    'label' => _kt('Username'),
+                    'name' => 'sign_username',
+                    'required' => true
+                ));
+            $widgets[] = array('ktcore.widgets.password', array(
+                    'label' => _kt('Password'),
+                    'name' => 'sign_password',
+                    'required' => true
+                ));
+        }
+
+        $widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Reason'),
                 'description' => _kt('Please specify why you are archiving this document.  Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
                 'name' => 'reason',
-            )),
-        ));
-        $oForm->setValidators(array(
-            array('ktcore.validators.string', array(
+            ));
+
+        $oForm->setWidgets($widgets);
+
+        $validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'max_length' => 250,
                 'output' => 'reason',
-            )),
-        ));
+            ));
+
+        if($default->enableESignatures){
+            $validators[] = array('electonic.signatures.validators.authenticate', array(
+                'object_id' => $this->oDocument->iId,
+                'type' => 'document',
+                'action' => 'ktcore.transactions.archive',
+                'test' => 'info',
+                'output' => 'info'
+            ));
+        }
+
+        $oForm->setValidators($validators);
 
         return $oForm;
     }
@@ -1710,6 +1806,22 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
             }
         }
 
+        // Add an electronic signature
+    	global $default;
+    	if($default->enableESignatures){
+    	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+    	    $heading = _kt('You are attempting to modify the document workflow');
+    	    $submit['type'] = 'button';
+    	    $submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.modify_workflow', 'document', 'start_workflow_form', 'submit', {$this->oDocument->iId});";
+
+    	    $heading2 = _kt('You are attempting to transition the document workflow');
+    	    $submit2['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading2}', 'ktcore.transactions.transition_workflow', 'document', 'transition_wf_form', 'submit', {$this->oDocument->iId});";
+    	}else{
+    	    $submit['type'] = 'submit';
+    	    $submit['onclick'] = '';
+    	    $submit2['onclick'] = '';
+    	}
+
         $aTemplateData = array(
             'oDocument' => $oDocument,
             'oWorkflow' => $oWorkflow,
@@ -1719,6 +1831,8 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
             'transition_fields' => $transition_fields,
             'bHasPerm' => $bHasPerm,
             'bIsCheckedOut' => $bIsCheckedOut,
+            'submit' => $submit,
+            'submit2' => $submit2
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -1779,14 +1893,37 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
                 'fail_action' => 'quicktransition',
                 'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
             ));
-            $oForm->setWidgets(array(
-                array('ktcore.widgets.reason', array(
+
+        // Electronic Signature if enabled
+        global $default;
+        if($default->enableESignatures){
+            $widgets[] = array('ktcore.widgets.info', array(
+                    'label' => _kt('This action requires authentication'),
+                    'description' => _kt('Please provide your user credentials as confirmation of this action.'),
+                    'name' => 'info'
+                ));
+            $widgets[] = array('ktcore.widgets.string', array(
+                    'label' => _kt('Username'),
+                    'name' => 'sign_username',
+                    'required' => true
+                ));
+            $widgets[] = array('ktcore.widgets.password', array(
+                    'label' => _kt('Password'),
+                    'name' => 'sign_password',
+                    'required' => true
+                ));
+        }
+
+
+        $widgets[] = array('ktcore.widgets.reason', array(
                     'label' => _kt('Reason'),
                     'description' => _kt('Specify your reason for performing this action.'),
                     'important_description' => _kt('Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
                     'name' => 'reason',
-                )),
-            ));
+                ));
+
+        $oForm->setWidgets($widgets);
+
             $oForm->setValidators(array(
                 array('ktcore.validators.string', array(
                     'test' => 'reason',
@@ -1794,6 +1931,17 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
                     'output' => 'reason',
                 )),
             ));
+
+        if($default->enableESignatures){
+            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+                'object_id' => $this->oDocument->iId,
+                'type' => 'document',
+                'action' => 'ktcore.transactions.transition_workflow',
+                'test' => 'info',
+                'output' => 'info'
+            )));
+        }
+
         }
 
         return $oForm;

@@ -29,7 +29,11 @@
         <tr>
             <td>
             {if $write_permission}
-                <a href="{addQS}action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+                {if $signatures}
+                    <a href="#" onclick="javascript: showSignatureForm('{$submit.sUrl}', '{$submit.heading}', 'ktcore.transactions.delete_link', 'document', '{addQS}action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}{/addQS}', 'redirect', {$iDocId});" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+                {else}
+                    <a href="{addQS}action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+                {/if}
             {else}
                 &nbsp;
             {/if}
@@ -50,7 +54,11 @@
         <tr>
             <td>
             {if $write_permission}
-                <a href="{addQS}action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+                {if $signatures}
+                    <a href="#" onclick="javascript: showSignatureForm('{$submit.sUrl}', '{$submit.heading}', 'ktcore.transactions.delete_link', 'document', '{addQS}action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}{/addQS}', 'redirect', {$iDocId});" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+                {else}
+                    <a href="{addQS}action=delete&fDocumentId={$context->oDocument->getId()}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+                {/if}
             {else}
                 &nbsp;
             {/if}
@@ -71,7 +79,11 @@
         <tr>
             <td>
             {if $write_permission}
-                <a href="{addQS}action=delete&fDocumentId={$iDocId}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+                {if $signatures}
+                    <a href="#" onclick="javascript: showSignatureForm('{$submit.sUrl}', '{$submit.heading}', 'ktcore.transactions.delete_link', 'document', '{addQS}action=delete&fDocumentId={$iDocId}&fDocumentLinkId={$link->getId()}{/addQS}', 'redirect', {$iDocId});" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+                {else}
+                    <a href="{addQS}action=delete&fDocumentId={$iDocId}&fDocumentLinkId={$link->getId()}{/addQS}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+                {/if}
             {else}
                 &nbsp;
             {/if}

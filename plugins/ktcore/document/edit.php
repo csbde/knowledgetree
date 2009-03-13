@@ -120,6 +120,39 @@ class KTDocumentEditAction extends KTDocumentAction {
             $validators = kt_array_merge($validators, $oFReg->validatorsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
         }
 
+        // Electronic Signature if enabled
+        global $default;
+        if($default->enableESignatures){
+            $widgets[] = array('ktcore.widgets.info', array(
+                    'label' => _kt('This action requires authentication'),
+                    'description' => _kt('Please provide your user credentials as confirmation of this action.'),
+                    'name' => 'info'
+                ));
+            $widgets[] = array('ktcore.widgets.string', array(
+                    'label' => _kt('Username'),
+                    'name' => 'sign_username',
+                    'required' => true
+                ));
+            $widgets[] = array('ktcore.widgets.password', array(
+                    'label' => _kt('Password'),
+                    'name' => 'sign_password',
+                    'required' => true
+                ));
+            $widgets[] = array('ktcore.widgets.reason', array(
+                    'label' => _kt('Reason'),
+                    'name' => 'reason',
+                    'required' => true
+                ));
+
+            $validators[] = array('electonic.signatures.validators.authenticate', array(
+                'object_id' => $this->oDocument->iId,
+                'type' => 'document',
+                'action' => 'ktcore.transactions.edit_metadata',
+                'test' => 'info',
+                'output' => 'info'
+            ));
+        }
+
         $oForm->setWidgets($widgets);
         $oForm->setValidators($validators);
 

@@ -13,12 +13,12 @@
     {/if}
 {/foreach}
 
-<form method="POST" action="{$smarty.server.PHP_SELF}">
+<form method="POST" action="{$smarty.server.PHP_SELF}" name="document_add_link_form">
 {$collection->render()}
 <div class="form_actions">
 <input type="hidden" name="action" value="type_select" />
 <input type="hidden" name="fDocumentId" value="{$parent->getId()}" />
-<input type="submit" name="submit[move]" value="{i18n}Link{/i18n}" />
+<input type="{$submit.type}" name="submit[move]" value="{i18n}Link{/i18n}" onclick="{$submit.onclick}" />
 </div>
 </form>
 {else}
