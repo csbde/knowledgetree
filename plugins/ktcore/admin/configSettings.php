@@ -227,10 +227,15 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 	 * @param array $currentSettings
 	 * @return array
 	 */
-	function saveSettings($currentSettings) {
+	function saveSettings($currentSettings, $log = false) {
 	    $newSettings = isset($_POST['configArray']) ? $_POST['configArray'] : '';
 	    if(!empty($newSettings)){
 	        $this->addInfoMessage(_kt('The configuration settings have been updated.'));
+
+	        if($log){
+	            $comment = array();
+	        }
+
 	         // If the value in the post array is different from the current value, then update the DB
 	         foreach ($currentSettings AS $setting){
 	             $new = $newSettings[$setting['id']];
@@ -242,7 +247,14 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 	                 if(PEAR::isError($res)){
 	                     $this->addErrorMessage(_kt("The setting {$setting['display_name']} could not be updated: ".$res->getMessage()));
 	                 }
+	                 if($log){
+	                     $comment[] = _kt("{$setting['display_name']} from {$setting['value']} to {$new}");
+	                 }
 	             }
+	         }
+
+	         if($log){
+	             $this->logTransaction($comment);
 	         }
 
 	         // Clear the cached settings
@@ -253,6 +265,25 @@ class BaseConfigDispatcher extends KTAdminDispatcher
         	 $currentSettings = $this->getSettings();
 	    }
 	    return $currentSettings;
+	}
+
+	protected function logTransaction($aComment = null)
+	{
+	    $comment = implode(', ', $aComment);
+	    $comment = _kt('Config settings modified: ').$comment;
+
+        // log the transaction
+        $date = date('Y-m-d H:i:s');
+
+        require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
+        $params = array(
+            'userid' => $_SESSION['userID'],
+            'datetime' => $date,
+            'actionnamespace' => 'ktcore.transactions.modifying_config_settings',
+            'comments' => $comment,
+            'sessionid' => $_SESSION['sessionID'],
+        );
+        KTUserHistory::createFromArray($params);
 	}
 }
 
@@ -351,6 +382,11 @@ class SecurityConfigPageDispatcher extends BaseConfigDispatcher
             'name' => _kt('Security Settings'),
         );
         return parent::check();
+    }
+
+    function saveSettings($currentSettings)
+    {
+        return parent::saveSettings($currentSettings, true);
     }
 }
 ?>

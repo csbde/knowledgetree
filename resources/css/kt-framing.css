@@ -2325,6 +2325,11 @@ body #content #add_dashlet
     margin-bottom: 5px;
 }
 
+#popup_content .warning {
+    padding-left: 20px;
+    background: url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) center left no-repeat;
+}
+
 #popup_content .input_field {
     margin-bottom: 10px;
 }
@@ -2332,7 +2337,7 @@ body #content #add_dashlet
 #popup_content .required {
     margin-left: 0.5em;
     padding-left: 10px;
-    color: transparent;
+    color: white;
     background: transparent url(../graphics/required.png) center left no-repeat;
 }
 
@@ -2358,7 +2363,7 @@ body #content #add_dashlet
 }
 
 #popup_content .error {
-    background: #ffdd80  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.gif) 2px center no-repeat;
+    background: #ffdd80  url(../../resources/graphics/denied.gif) 2px center no-repeat;
 }
 
 .x-window-tl .x-window-header {

@@ -63,6 +63,7 @@ class KTPage {
 	var $theme_ie_only_css = Array();
     var $js_standalone = Array();
     var $css_standalone = Array();
+    var $onload = false;
 
 	/** context-relevant information */
 	var $errStack = Array();
@@ -159,12 +160,13 @@ class KTPage {
 		$this->menu['browse'] = array('label' => _kt("Browse Documents"), 'url' => $sBaseUrl.'/browse.php');
 		$this->menu['administration'] = array('label' => _kt("DMS Administration"));
 
+		// Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
     	global $default;
-    	if($default->enableESignatures){
+    	if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < time()){
     	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     	    $heading = _kt('You are attempting to access DMS Administration');
     	    $this->menu['administration']['url'] = '#';
-    	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_administration', 'system', '{$sBaseUrl}/admin.php', 'redirect');";
+    	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_administration', 'admin', '{$sBaseUrl}/admin.php', 'redirect');";
     	}else{
     	    $this->menu['administration']['url'] = $sBaseUrl.'/admin.php';
     	}
@@ -225,6 +227,17 @@ class KTPage {
         foreach ($aResourceURLs as $sResourceURL) {
             $this->css_resources[$sResourceURL] = 1;
         }
+    }
+
+    // Adds an onload function - only one can be set
+    function setBodyOnload($onload)
+    {
+        $this->onload = $onload;
+    }
+
+    function getBodyOnload()
+    {
+        return $this->onload;
     }
 
     // list the distinct CSS resources.
@@ -374,7 +387,18 @@ class KTPage {
 	    if ($oConfig->get("user_prefs/restrictPreferences", false) && !Permission::userIsSystemAdministrator($this->user->getId())) {
 		    $this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
 	    } else {
-	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
+
+        	if($default->enableESignatures){
+        	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+        	    $heading = _kt('You are attempting to modify Preferences');
+        	    $this->userMenu['preferences']['url'] = '#';
+        	    $this->userMenu['preferences']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_preferences', 'system', '{$sBaseUrl}/preferences.php', 'redirect');";
+        	}else{
+        	    $this->userMenu['preferences']['url'] = $sBaseUrl.'/preferences.php';
+        	}
+
+//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
+	        $this->userMenu['preferences']['label'] = _kt('Preferences');
 	        $this->userMenu['aboutkt'] = array('label' => _kt('About'), 'url' => $sBaseUrl.'/about.php');
 	        $this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
 	    }

@@ -174,6 +174,7 @@ class KTCorePlugin extends KTPlugin {
 
 
         // widgets
+        $this->registerWidget('KTCoreInfoWidget', 'ktcore.widgets.info', 'KTWidgets.php');
         $this->registerWidget('KTCoreHiddenWidget', 'ktcore.widgets.hidden', 'KTWidgets.php');
         $this->registerWidget('KTCoreStringWidget', 'ktcore.widgets.string', 'KTWidgets.php');
         $this->registerWidget('KTCoreSelectionWidget', 'ktcore.widgets.selection', 'KTWidgets.php');

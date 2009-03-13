@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -46,12 +46,12 @@ require_once(KT_LIB_DIR . '/plugins/KTAdminNavigation.php');
 class AdminSplashDispatcher extends KTAdminDispatcher {
     var $category = '';
     var $sSection = 'administration';
-    
+
     function AdminSplashDispatcher() {
         $this->aBreadcrumbs = array(
             array('url' => KTUtil::getRequestScriptName($_SERVER), 'name' => _kt('Administration')),
         );
-    
+
         parent::KTAdminDispatcher();
     }
 
@@ -59,14 +59,14 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         if ($this->category !== '') {
             return $this->do_viewCategory();
         };
-    
-    
+
+
         // are we categorised, or not?
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
-        $categories = $oRegistry->getCategories();		
+        $categories = $oRegistry->getCategories();
 		$KTConfig =& KTConfig::getSingleton();
         $condensed_admin = $KTConfig->get('condensedAdminUI');
-        
+
         $aAllItems = array();
         // we need to investigate sub_url solutions.
         if ($condensed_admin) {
@@ -75,48 +75,48 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
                 $aAllItems[$aCategory['name']] = $aItems;
             }
         }
-        
+
         $this->oPage->title = _kt('DMS Administration') . ': ';
         $oTemplating =& KTTemplating::getSingleton();
-        
+
         if ($condensed_admin) {
             $oTemplate = $oTemplating->loadTemplate('kt3/admin_fulllist');
         } else {
             $oTemplate = $oTemplating->loadTemplate('kt3/admin_categories');
         }
-        
+
         $aTemplateData = array(
               'context' => $this,
               'categories' => $categories,
               'all_items' => $aAllItems,
               'baseurl' => $_SERVER['PHP_SELF'],
         );
-        return $oTemplate->render($aTemplateData);				
+        return $oTemplate->render($aTemplateData);
     }
 
     function do_viewCategory() {
         // are we categorised, or not?
-        
+
         $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
-        
+
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
-        $aCategory = $oRegistry->getCategory($category);		
-        
+        $aCategory = $oRegistry->getCategory($category);
+
         $aItems = $oRegistry->getItemsForCategory($category);
         asort($aItems);
         $this->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$category));
 
-        
+
         $this->oPage->title = _kt('DMS Administration') . ': ' . $aCategory['title'];
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/admin_items');
         $aTemplateData = array(
               'context' => $this,
               'category' => $aCategory,
-              'items' => $aItems, 
+              'items' => $aItems,
               'baseurl' =>  $_SERVER['PHP_SELF'],
         );
-        return $oTemplate->render($aTemplateData);				
+        return $oTemplate->render($aTemplateData);
     }
 }
 
@@ -131,22 +131,33 @@ if (empty($sub_url)) {
     $oRegistry =& KTAdminNavigationRegistry::getSingleton();
     if ($oRegistry->isRegistered($sub_url)) {
        $oDispatcher = $oRegistry->getDispatcher($sub_url);
-       
+
        $aParts = explode('/',$sub_url);
-        
+
        $oRegistry =& KTAdminNavigationRegistry::getSingleton();
-       $aCategory = $oRegistry->getCategory($aParts[0]);			   
-       
+       $aCategory = $oRegistry->getCategory($aParts[0]);
+
        $oDispatcher->aBreadcrumbs = array();
        $oDispatcher->aBreadcrumbs[] = array('action' => 'administration', 'name' => _kt('Administration'));
        $oDispatcher->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$aParts[0]));
-       
+
     } else {
        // FIXME (minor) redirect to no-suburl?
        $oDispatcher = new AdminSplashDispatcher();
        $oDispatcher->category = $sub_url;
     }
 }
+
+// Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
+global $main;
+global $default;
+if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < time()){
+    $sBaseUrl = KTUtil::kt_url();
+    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+    $heading = _kt('You are attempting to access DMS Administration');
+    $main->setBodyOnload("javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_administration', 'admin', '{$sBaseUrl}/browse.php', 'close');");
+}
+
 
 $oDispatcher->dispatch(); // we _may_ be redirected at this point (see KTAdminNavigation)
 
