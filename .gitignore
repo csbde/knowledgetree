@@ -1,14 +1,2 @@
-plugins/alerts/
-plugins/clienttools/
-plugins/conditional-metadata/
-plugins/custom-numbering/
-plugins/documentcomparison/
-plugins/i18n/japanese/
-plugins/network/
-plugins/professional-reporting/
-plugins/shortcuts/
-plugins/wintools/
-plugins/updatesandmessages/
 var/cache/configcache
 bin/luceneserver/lucene.pid
-plugins/.gitignore
