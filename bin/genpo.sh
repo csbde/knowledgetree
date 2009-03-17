@@ -18,6 +18,7 @@ cp -a ../Commercial-Plugins/guidInserter plugins/commercial/
 cp -a ../Commercial-Plugins/clienttools plugins/commercial/
 cp -a ../Commercial-Plugins/electronic-signatures plugins/commercial/
 cp -a ../Commercial-Plugins/officeaddin plugins/commercial/
+cp -a ../KTOfficeAddIn/ktoffice ktoffice
 
 rm -f i18n/templates.c
 find resources -name "*.js" | sort | python ./bin/jsi18n.py > templates/ktcore/javascript_i18n.smarty
@@ -27,6 +28,7 @@ echo i18n/templates.c i18n/transactions.c i18n/permissions.c | xargs -n 1 | sort
 
 #remove comm stuff again
 rm -rf plugins/commercial
+rm -rf ktoffice 
 
 #alerts  conditional-metadata  custom-numbering  documentcomparison  i18n  network  professional-reporting  shortcuts  wintools guidInserter clienttools electronic-signatures officeaddin
 

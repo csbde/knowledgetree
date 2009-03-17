@@ -412,273 +412,6 @@ gettext("OK");
 /* ./plugins/commercial/electronic-signatures/templates/signature_form.smarty */
 gettext("Cancel");
 
-/* ./plugins/commercial/alerts/templates/alertNotification.smarty */
-gettext("#app#: #name# alert triggered");
-
-/* ./plugins/commercial/alerts/templates/alertNotification.smarty */
-gettext("An alert was triggered on the following document");
-
-/* ./plugins/commercial/alerts/templates/alertNotification.smarty */
-gettext("Comment");
-
-/* ./plugins/commercial/alerts/templates/alertNotification.smarty */
-gettext("View document");
-
-/* ./plugins/commercial/alerts/templates/alertNotification.smarty */
-gettext("Document is no longer available");
-
-/* ./plugins/commercial/alerts/templates/alertNotification.smarty */
-gettext("Clear alert");
-
-/* ./plugins/commercial/alerts/templates/alertNotification.smarty */
-gettext("View all alerts on this document");
-
-/* ./plugins/commercial/alerts/templates/alertSubscription.smarty */
-gettext("An alert on the document \"#object_name#\" has been added or modified");
-
-/* ./plugins/commercial/alerts/templates/alertSubscription.smarty */
-gettext("in the folder \"#location_name#\"");
-
-/* ./plugins/commercial/alerts/templates/alertSubscription.smarty */
-gettext("by #actor_name#");
-
-/* ./plugins/commercial/alerts/templates/alertSubscription.smarty */
-gettext("View Document");
-
-/* ./plugins/commercial/alerts/templates/alertSubscription.smarty */
-gettext("Document is no longer available");
-
-/* ./plugins/commercial/alerts/templates/alertSubscription.smarty */
-gettext("Clear Alert");
-
-/* ./plugins/commercial/alerts/templates/alertSubscription.smarty */
-gettext("View all alerts on this document");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("Add an Alert on this Document");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("Create an alert to receive a dashboard notification and an email when action is required on this document.");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("Alert");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("Alert in");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("days");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("weeks");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("months");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("years");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("Alert on");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("Alert Message");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("Add a message for this alert");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("<a>Add other users to this alert...</a>");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("Save");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("Cancel");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("Existing Alerts");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("A list of existing alerts for this document");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("System alert");
-
-/* ./plugins/commercial/alerts/templates/alerts.smarty */
-gettext("No alerts have been configured for this document.");
-
-/* ./plugins/commercial/alerts/templates/archiveDeleteNotification.smarty */
-gettext("#app#: #name# has been deleted");
-
-/* ./plugins/commercial/alerts/templates/archiveDeleteNotification.smarty */
-gettext("#app#: #name# has been archived");
-
-/* ./plugins/commercial/alerts/templates/archiveDeleteNotification.smarty */
-gettext("#user# has deleted a document of which you are the owner");
-
-/* ./plugins/commercial/alerts/templates/archiveDeleteNotification.smarty */
-gettext("#user# has archived a document of which you are the owner");
-
-/* ./plugins/commercial/alerts/templates/archiveDeleteNotification.smarty */
-gettext("#user# has deleted a document on which you have an alert");
-
-/* ./plugins/commercial/alerts/templates/archiveDeleteNotification.smarty */
-gettext("#user# has archived a document on which you have an alert");
-
-/* ./plugins/commercial/alerts/templates/archiveDeleteNotification.smarty */
-gettext("Comment");
-
-/* ./plugins/commercial/alerts/templates/archiveDeleteNotification.smarty */
-gettext("Clear alert");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Alerts by Document Types");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Configure document alerts to recieve a notification when action is required on a document of a specific type.");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Frequency");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Notify");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Message");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Reset on<br />check-in");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Repeated after<br />notification");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Apply to all documents");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Edit");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Delete");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Day");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Days");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Enable reset alert on check-in");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Enable");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Disable reset alert on check-in");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Disable");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Enable repeat after action");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Enable");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Disable repeat after action");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Disable");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Apply to all existing documents");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Enable");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Apply to new documents only");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Disable");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Delete document type alert.");
-
-/* ./plugins/commercial/alerts/templates/list.smarty */
-gettext("Delete");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Document type");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Select document type for alert");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Alert date");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Enter number and select frequecy");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Days");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Weeks");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Months");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Years");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Alert message");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Add a message for this alert");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Add alert comment here ...");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("<a>Add other users to this alert...</a>");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Select additional members to be added to this alert");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Available Entities");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("--- Please filter ---");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Filter");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Show All");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Show All");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Add to assigned entities");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Remove from assigned entities");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Assigned Entities");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("OK");
-
-/* ./plugins/commercial/alerts/templates/add_edit.smarty */
-gettext("Cancel");
-
 /* ./plugins/commercial/network/quicklinks/templates/Quicklinks/dashlet.smarty */
 gettext("There are no quicklinks.");
 
@@ -1599,6 +1332,273 @@ gettext("no difference between content versions");
 
 /* ./plugins/commercial/documentcomparison/templates/comparison_content_version_select.smarty */
 gettext("Compare");
+
+/* ./plugins/commercial/templates/alertNotification.smarty */
+gettext("#app#: #name# alert triggered");
+
+/* ./plugins/commercial/templates/alertNotification.smarty */
+gettext("An alert was triggered on the following document");
+
+/* ./plugins/commercial/templates/alertNotification.smarty */
+gettext("Comment");
+
+/* ./plugins/commercial/templates/alertNotification.smarty */
+gettext("View document");
+
+/* ./plugins/commercial/templates/alertNotification.smarty */
+gettext("Document is no longer available");
+
+/* ./plugins/commercial/templates/alertNotification.smarty */
+gettext("Clear alert");
+
+/* ./plugins/commercial/templates/alertNotification.smarty */
+gettext("View all alerts on this document");
+
+/* ./plugins/commercial/templates/alertSubscription.smarty */
+gettext("An alert on the document \"#object_name#\" has been added or modified");
+
+/* ./plugins/commercial/templates/alertSubscription.smarty */
+gettext("in the folder \"#location_name#\"");
+
+/* ./plugins/commercial/templates/alertSubscription.smarty */
+gettext("by #actor_name#");
+
+/* ./plugins/commercial/templates/alertSubscription.smarty */
+gettext("View Document");
+
+/* ./plugins/commercial/templates/alertSubscription.smarty */
+gettext("Document is no longer available");
+
+/* ./plugins/commercial/templates/alertSubscription.smarty */
+gettext("Clear Alert");
+
+/* ./plugins/commercial/templates/alertSubscription.smarty */
+gettext("View all alerts on this document");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("Add an Alert on this Document");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("Create an alert to receive a dashboard notification and an email when action is required on this document.");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("Alert");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("Alert in");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("days");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("weeks");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("months");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("years");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("Alert on");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("Alert Message");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("Add a message for this alert");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("<a>Add other users to this alert...</a>");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("Save");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("Cancel");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("Existing Alerts");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("A list of existing alerts for this document");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("System alert");
+
+/* ./plugins/commercial/templates/alerts.smarty */
+gettext("No alerts have been configured for this document.");
+
+/* ./plugins/commercial/templates/archiveDeleteNotification.smarty */
+gettext("#app#: #name# has been deleted");
+
+/* ./plugins/commercial/templates/archiveDeleteNotification.smarty */
+gettext("#app#: #name# has been archived");
+
+/* ./plugins/commercial/templates/archiveDeleteNotification.smarty */
+gettext("#user# has deleted a document of which you are the owner");
+
+/* ./plugins/commercial/templates/archiveDeleteNotification.smarty */
+gettext("#user# has archived a document of which you are the owner");
+
+/* ./plugins/commercial/templates/archiveDeleteNotification.smarty */
+gettext("#user# has deleted a document on which you have an alert");
+
+/* ./plugins/commercial/templates/archiveDeleteNotification.smarty */
+gettext("#user# has archived a document on which you have an alert");
+
+/* ./plugins/commercial/templates/archiveDeleteNotification.smarty */
+gettext("Comment");
+
+/* ./plugins/commercial/templates/archiveDeleteNotification.smarty */
+gettext("Clear alert");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Alerts by Document Types");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Configure document alerts to recieve a notification when action is required on a document of a specific type.");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Frequency");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Notify");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Message");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Reset on<br />check-in");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Repeated after<br />notification");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Apply to all documents");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Edit");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Delete");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Day");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Days");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Enable reset alert on check-in");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Enable");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Disable reset alert on check-in");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Disable");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Enable repeat after action");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Enable");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Disable repeat after action");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Disable");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Apply to all existing documents");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Enable");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Apply to new documents only");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Disable");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Delete document type alert.");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("Delete");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Document type");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Select document type for alert");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Alert date");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Enter number and select frequecy");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Days");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Weeks");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Months");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Years");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Alert message");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Add a message for this alert");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Add alert comment here ...");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("<a>Add other users to this alert...</a>");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Select additional members to be added to this alert");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Available Entities");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("--- Please filter ---");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Filter");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Show All");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Show All");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Add to assigned entities");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Remove from assigned entities");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Assigned Entities");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("OK");
+
+/* ./plugins/commercial/templates/add_edit.smarty */
+gettext("Cancel");
 
 /* ./templates/kt3/browse_types.smarty */
 gettext("Select a document type");
