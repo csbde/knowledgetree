@@ -6,14 +6,18 @@ cd ..
 pwd
 
 #pull in comm stuff
-cp -a ../Commercial-Plugins/alerts plugins/
-cp -a ../Commercial-Plugins/conditional-metadata plugins/
-cp -a ../Commercial-Plugins/custom-numbering plugins/
-cp -a ../Commercial-Plugins/documentcomparison plugins/
-cp -a ../Commercial-Plugins/network plugins/
-cp -a ../Commercial-Plugins/professional-reporting plugins/
-cp -a ../Commercial-Plugins/shortcuts plugins/
-cp -a ../Commercial-Plugins/wintools plugins/
+cp -a ../Commercial-Plugins/alerts plugins/commercial/
+cp -a ../Commercial-Plugins/conditional-metadata plugins/commercial/
+cp -a ../Commercial-Plugins/custom-numbering plugins/commercial/
+cp -a ../Commercial-Plugins/documentcomparison plugins/commercial/
+cp -a ../Commercial-Plugins/network plugins/commercial/
+cp -a ../Commercial-Plugins/professional-reporting plugins/commercial/
+cp -a ../Commercial-Plugins/shortcuts plugins/commercial/
+cp -a ../Commercial-Plugins/wintools plugins/commercial/
+cp -a ../Commercial-Plugins/guidInserter plugins/commercial/
+cp -a ../Commercial-Plugins/clienttools plugins/commercial/
+cp -a ../Commercial-Plugins/electronic-signatures plugins/commercial/
+cp -a ../Commercial-Plugins/officeaddin plugins/commercial/
 
 rm -f i18n/templates.c
 find resources -name "*.js" | sort | python ./bin/jsi18n.py > templates/ktcore/javascript_i18n.smarty
@@ -22,16 +26,9 @@ find . -type f -name "*.php" -o -name "*.inc" | sort | xgettext --no-wrap -d kno
 echo i18n/templates.c i18n/transactions.c i18n/permissions.c | xargs -n 1 | sort | xgettext --no-wrap -d knowledgeTree -j -s -f - -o i18n/knowledgeTree.pot
 
 #remove comm stuff again
-rm -rf plugins/alerts
-rm -rf plugins/conditional-metadata
-rm -rf plugins/custom-numbering
-rm -rf plugins/documentcomparison
-rm -rf plugins/network
-rm -rf plugins/professional-reporting
-rm -rf plugins/shortcuts
-rm -rf plugins/wintools
+rm -rf plugins/commercial
 
-#alerts  conditional-metadata  custom-numbering  documentcomparison  i18n  network  professional-reporting  shortcuts  wintools
+#alerts  conditional-metadata  custom-numbering  documentcomparison  i18n  network  professional-reporting  shortcuts  wintools guidInserter clienttools electronic-signatures officeaddin
 
 # Manually append some strings with #appname# issues
 echo ' ' >> i18n/knowledgeTree.pot
