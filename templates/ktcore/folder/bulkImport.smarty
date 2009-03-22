@@ -50,7 +50,7 @@ addLoadEvent(startupMetadata);
 
 <h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Import files into{/i18n}:<br />{$context->oFolder->getName()|sanitize}</h2>
 
-<form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
+<form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data" name="bulk_import_form">
 <fieldset><legend>{i18n}Import from Server Location{/i18n}</legend>
 <p class="descriptiveText">{i18n}The bulk import facility allows for a number
 of documents to be added to the document management system easily.
@@ -72,7 +72,7 @@ you to set metadata on all imported documents. If there is no metadata
 associated, or you do not wish to modify it, you can simply click
 "Add" here to finish the process and import the documents.{/i18n}</p>
 
-<input type="submit" name="submit" value="{i18n}Add{/i18n}" />
+<input type="{$submit.type}" onclick="{$submit.onclick}" name="btn_submit" value="{i18n}Add{/i18n}" />
 
 <hr />
 
@@ -88,6 +88,6 @@ associated, or you do not wish to modify it, you can simply click
 </div>
 
 <div class="form_actions">
-  <input type="submit" name="submit" value="{i18n}Import{/i18n}">
+  <input type="{$submit.type}" onclick="{$submit.onclick}" name="btn_submit" value="{i18n}Import{/i18n}">
 </div>
 </form>

@@ -166,7 +166,7 @@ class KTPage {
     	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     	    $heading = _kt('You are attempting to access DMS Administration');
     	    $this->menu['administration']['url'] = '#';
-    	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_administration', 'admin', '{$sBaseUrl}/admin.php', 'redirect');";
+    	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/admin.php', 'redirect');";
     	}else{
     	    $this->menu['administration']['url'] = $sBaseUrl.'/admin.php';
     	}
@@ -192,6 +192,14 @@ class KTPage {
 
     // list the distinct js resources.
     function getJSResources() {
+    	// get js resources specified within the plugins
+    	// these need to be added to the session because KTPage is initialised after the plugins are loaded.
+    	if(isset($GLOBALS['page_js_resources']) && !empty($GLOBALS['page_js_resources'])){
+    		foreach($GLOBALS['page_js_resources'] as $js){
+    			$this->js_resources[$js] = 1;
+    		}
+    	}
+
         return array_keys($this->js_resources);
     }
 
@@ -381,9 +389,9 @@ class KTPage {
 	}
 
 	$this->userMenu = array();
-	if (!(PEAR::isError($this->user) || is_null($this->user) || $this->user->isAnonymous())) {
-	    $sBaseUrl = KTUtil::kt_url();
+	$sBaseUrl = KTUtil::kt_url();
 
+	if (!(PEAR::isError($this->user) || is_null($this->user) || $this->user->isAnonymous())) {
 	    if ($oConfig->get("user_prefs/restrictPreferences", false) && !Permission::userIsSystemAdministrator($this->user->getId())) {
 		    $this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
 	    } else {

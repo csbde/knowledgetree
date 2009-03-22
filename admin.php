@@ -155,7 +155,7 @@ if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < t
     $sBaseUrl = KTUtil::kt_url();
     $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
     $heading = _kt('You are attempting to access DMS Administration');
-    $main->setBodyOnload("javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_administration', 'admin', '{$sBaseUrl}/browse.php', 'close');");
+    $main->setBodyOnload("javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/browse.php', 'close');");
 }
 
 

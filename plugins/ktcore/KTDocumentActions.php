@@ -81,9 +81,9 @@ class KTDocumentTransactionHistoryAction extends KTDocumentAction {
         $aTransactions = array();
         // FIXME create a sane "view user information" page somewhere.
         // FIXME do we really need to use a raw db-access here?  probably...
-        $sQuery = 'SELECT DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime ' .
+        $sQuery = 'SELECT DTT.name AS transaction_name, DT.transaction_namespace, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime ' .
             'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('users') . ' AS U ON DT.user_id = U.id ' .
-            'INNER JOIN ' . KTUtil::getTableName('transaction_types') . ' AS DTT ON DTT.namespace = DT.transaction_namespace ' .
+            'LEFT JOIN ' . KTUtil::getTableName('transaction_types') . ' AS DTT ON DTT.namespace = DT.transaction_namespace ' .
             'WHERE DT.document_id = ? ORDER BY DT.datetime DESC';
         $aParams = array($this->oDocument->getId());
 
@@ -94,6 +94,13 @@ class KTDocumentTransactionHistoryAction extends KTDocumentAction {
         }
 
         $aTransactions = $res;
+
+        // Set the namespaces where not in the transactions lookup
+        foreach($aTransactions as $key => $transaction){
+            if(empty($transaction['transaction_name'])){
+                $aTransactions[$key]['transaction_name'] = $this->_getActionNameForNamespace($transaction['transaction_namespace']);
+            }
+        }
 
 
         // render pass.
@@ -108,6 +115,15 @@ class KTDocumentTransactionHistoryAction extends KTDocumentAction {
         );
         return $oTemplate->render($aTemplateData);
     }
+
+    function _getActionNameForNamespace($sNamespace) {
+        $aNames = split('\.', $sNamespace);
+        $sName = array_pop($aNames);
+        $sName = str_replace('_', ' ', $sName);
+        $sName = ucwords($sName);
+        return $sName;
+    }
+
 }
 // }}}
 

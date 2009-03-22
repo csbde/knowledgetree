@@ -42,7 +42,7 @@ role allocations may take a some time, depending on the number of folders below 
         <td class="centered"><a href="{addQS}action=editRoleUsers&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}&role_id={$role_id}{/addQS}" class="ktAction ktEdit" title="{i18n}Edit Users{/i18n}">{i18n}Edit Users{/i18n}</a></td>
         <td class="centered"><a href="{addQS}action=editRoleGroups&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}&role_id={$role_id}{/addQS}" class="ktAction ktEdit" title="{i18n}Edit Groups{/i18n}">{i18n}Edit Groups{/i18n}</a></td>
           {if !$is_root}
-            <td class="centered"><a href="{addQS}action=useParent&role_id={$role_id}&fFolderId={$context->oFolder->getId()}{/addQS}" class="ktAction ktDelete"
+            <td class="centered"><a href="{$aRole.href}" onclick="{$aRole.onclick}" class="ktAction ktDelete"
 	           kt:deleteMessage="{i18n}Are you sure you wish to remove this role allocation?{/i18n}"
 	           title="{i18n}Use parent's allocation{/i18n}">{i18n}Use parent's allocation{/i18n}</a></td>
           {/if}

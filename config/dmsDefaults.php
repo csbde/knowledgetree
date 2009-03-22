@@ -623,9 +623,6 @@ require_once(KT_LIB_DIR . '/session/control.inc');
 
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 
-require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
-$GLOBALS['main'] =new KTPage();
-
 if ($checkup !== true) {
     // Replace function later
     /* ** Get the page being loaded and load the plugins specific to the page ** */
@@ -653,6 +650,9 @@ if (!extension_loaded('mbstring'))
 {
 	require_once(KT_LIB_DIR . '/mbstring.inc.php');
 }
+
+require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
+$GLOBALS['main'] =new KTPage();
 
 
 ?>
