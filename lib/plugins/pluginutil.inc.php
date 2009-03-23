@@ -701,10 +701,10 @@ class KTPluginUtil {
         if(PEAR::isError($oEntity)){
             return $oEntity;
         }
-        $dir = dirname($oEntity->getPath()) . DIRECTORY_SEPARATOR;
+        $dir = dirname($oEntity->getPath()) . '/';
 
         if(!$relative){
-            $dir = KT_DIR . DIRECTORY_SEPARATOR . $dir;
+            $dir = KT_DIR . '/' . $dir;
         }
 
         return $dir;
