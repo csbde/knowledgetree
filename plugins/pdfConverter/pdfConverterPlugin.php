@@ -24,19 +24,52 @@
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
+class DeletePDFTrigger {
+    var $namespace = 'pdf.converter.triggers.delete';
+    var $aInfo = null;
+
+    function setInfo($aInfo) {
+        $this->aInfo = $aInfo;
+    }
+
+    /**
+     * On deleting a document, send the document owner and alert creator a notification email
+     */
+    function postValidate() {
+        $oDoc = $this->aInfo['document'];
+        $docId = $oDoc->getId();
+        $docInfo = array('id' => $docId, 'name' => $oDoc->getName());
+
+        // Delete the pdf document
+        global $default;
+        $pdfDirectory = $default->pdfDirectory;
+
+        $file = $pdfDirectory .'/'.$docId.'.pdf';
+
+        if(file_exists($file)){
+            @unlink($file);
+        }
+    }
+}
+
 class pdfConverterPlugin extends KTPlugin {
     var $sNamespace = 'pdf.converter.processor.plugin';
     var $iVersion = 0;
+    var $autoRegister = true;
+    var $createSQL = true;
 
     function pdfConverterPlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Document PDF Converter');
+        $this->dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+        $this->sSQLDir = $this->dir . 'sql' . DIRECTORY_SEPARATOR;
         return $res;
     }
 
     function setup() {
         $dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'pdfConverter.php';
         $this->registerProcessor('PDFConverter', 'pdf.converter.processor', $dir);
+        $this->registerTrigger('delete', 'postValidate', 'DeletePDFTrigger','pdf.converter.triggers.delete', __FILE__);
     }
 }
 
