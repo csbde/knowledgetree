@@ -77,22 +77,53 @@ class KTBulkDeleteAction extends KTBulkAction {
             'cancel_url' => $cancelUrl,
             'context' => $this,
         ));
-        $oForm->setWidgets(array(
-            array('ktcore.widgets.reason',array(
+
+        // Electronic Signature if enabled
+        global $default;
+        if($default->enableESignatures){
+            $widgets[] = array('ktcore.widgets.info', array(
+                    'label' => _kt('This action requires authentication'),
+                    'description' => _kt('Please provide your user credentials as confirmation of this action.'),
+                    'name' => 'info'
+                ));
+            $widgets[] = array('ktcore.widgets.string', array(
+                    'label' => _kt('Username'),
+                    'name' => 'sign_username',
+                    'required' => true
+                ));
+            $widgets[] = array('ktcore.widgets.password', array(
+                    'label' => _kt('Password'),
+                    'name' => 'sign_password',
+                    'required' => true
+                ));
+        }
+
+        $widgets[] = array('ktcore.widgets.reason',array(
                 'name' => 'reason',
                 'label' => _kt('Reason'),
                 'description' => _kt('The reason for the deletion of these documents and folders for historical purposes.'),
                 'value' => null,
                 'required' => true,
-            )),
-        ));
+            ));
 
-        $oForm->setValidators(array(
-            array('ktcore.validators.string', array(
+        $oForm->setWidgets($widgets);
+
+        $validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'output' => 'reason',
-            )),
-        ));
+            ));
+
+        if($default->enableESignatures){
+            $validators[] = array('electonic.signatures.validators.authenticate', array(
+                'object_id' => $this->oFolder->getID(),
+                'type' => 'bulk',
+                'action' => 'ktcore.transactions.bulk_delete',
+                'test' => 'info',
+                'output' => 'info'
+            ));
+        }
+
+        $oForm->setValidators($validators);
 
         return $oForm;
     }
@@ -261,6 +292,28 @@ class KTBulkMoveAction extends KTBulkAction {
 
 
         $oForm->addInitializedWidget($oWidget);
+
+        // Electronic Signature if enabled
+        global $default;
+        if($default->enableESignatures){
+            $oForm->addWidget(array('ktcore.widgets.info', array(
+                    'label' => _kt('This action requires authentication'),
+                    'description' => _kt('Please provide your user credentials as confirmation of this action.'),
+                    'name' => 'info'
+                )));
+            $oForm->addWidget(array('ktcore.widgets.string', array(
+                    'label' => _kt('Username'),
+                    'name' => 'sign_username',
+                    'required' => true
+                )));
+            $oForm->addWidget(array('ktcore.widgets.password', array(
+                    'label' => _kt('Password'),
+                    'name' => 'sign_password',
+                    'required' => true
+                )));
+        }
+
+
         $oForm->addWidget(
             array('ktcore.widgets.reason',array(
                 'name' => 'reason',
@@ -277,6 +330,17 @@ class KTBulkMoveAction extends KTBulkAction {
                 'output' => 'reason',
             )),
         ));
+
+        if($default->enableESignatures){
+            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+                'object_id' => $this->oFolder->getID(),
+                'type' => 'bulk',
+                'action' => 'ktcore.transactions.bulk_move',
+                'test' => 'info',
+                'output' => 'info'
+            )));
+        }
+
 
         return $oForm;
     }
@@ -414,9 +478,28 @@ class KTBulkCopyAction extends KTBulkAction {
                                    'folder_id' => $this->oFolder->iId,
 				   'collection' => $collection));
 
-
-
         $oForm->addInitializedWidget($oWidget);
+
+        // Electronic Signature if enabled
+        global $default;
+        if($default->enableESignatures){
+            $oForm->addWidget(array('ktcore.widgets.info', array(
+                    'label' => _kt('This action requires authentication'),
+                    'description' => _kt('Please provide your user credentials as confirmation of this action.'),
+                    'name' => 'info'
+                )));
+            $oForm->addWidget(array('ktcore.widgets.string', array(
+                    'label' => _kt('Username'),
+                    'name' => 'sign_username',
+                    'required' => true
+                )));
+            $oForm->addWidget(array('ktcore.widgets.password', array(
+                    'label' => _kt('Password'),
+                    'name' => 'sign_password',
+                    'required' => true
+                )));
+        }
+
         $oForm->addWidget(
             array('ktcore.widgets.reason',array(
                 'name' => 'reason',
@@ -433,6 +516,17 @@ class KTBulkCopyAction extends KTBulkAction {
                 'output' => 'reason',
             )),
         ));
+
+        if($default->enableESignatures){
+            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+                'object_id' => $this->oFolder->getID(),
+                'type' => 'bulk',
+                'action' => 'ktcore.transactions.bulk_copy',
+                'test' => 'info',
+                'output' => 'info'
+            )));
+        }
+
 
         return $oForm;
     }
@@ -517,6 +611,26 @@ class KTBulkArchiveAction extends KTBulkAction {
             'context' => $this,
         ));
 
+        // Electronic Signature if enabled
+        global $default;
+        if($default->enableESignatures){
+            $oForm->addWidget(array('ktcore.widgets.info', array(
+                    'label' => _kt('This action requires authentication'),
+                    'description' => _kt('Please provide your user credentials as confirmation of this action.'),
+                    'name' => 'info'
+                )));
+            $oForm->addWidget(array('ktcore.widgets.string', array(
+                    'label' => _kt('Username'),
+                    'name' => 'sign_username',
+                    'required' => true
+                )));
+            $oForm->addWidget(array('ktcore.widgets.password', array(
+                    'label' => _kt('Password'),
+                    'name' => 'sign_password',
+                    'required' => true
+                )));
+        }
+
         $oForm->addWidget(
             array('ktcore.widgets.reason',array(
                 'name' => 'reason',
@@ -533,6 +647,17 @@ class KTBulkArchiveAction extends KTBulkAction {
                 'output' => 'reason',
             )),
         ));
+
+        if($default->enableESignatures){
+            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+                'object_id' => $this->oFolder->getID(),
+                'type' => 'bulk',
+                'action' => 'ktcore.transactions.bulk_archive',
+                'test' => 'info',
+                'output' => 'info'
+            )));
+        }
+
 
         return $oForm;
     }
@@ -777,7 +902,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
                 function kt_bulkexport_redirect() {
                 document.location.href = "%s";
                 }
-                callLater(1, kt_bulkexport_redirect);
+                callLater(2, kt_bulkexport_redirect);
 
                 </script>', $url);
 
@@ -967,21 +1092,41 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
             'context' => $this,
         ));
 
-        $oForm-> setWidgets(array(
-            array('ktcore.widgets.reason',array(
+        // Electronic Signature if enabled
+        global $default;
+        if($default->enableESignatures){
+            $widgets[] = array('ktcore.widgets.info', array(
+                    'label' => _kt('This action requires authentication'),
+                    'description' => _kt('Please provide your user credentials as confirmation of this action.'),
+                    'name' => 'info'
+                ));
+            $widgets[] = array('ktcore.widgets.string', array(
+                    'label' => _kt('Username'),
+                    'name' => 'sign_username',
+                    'required' => true
+                ));
+            $widgets[] = array('ktcore.widgets.password', array(
+                    'label' => _kt('Password'),
+                    'name' => 'sign_password',
+                    'required' => true
+                ));
+        }
+
+        $widgets[] = array('ktcore.widgets.reason',array(
                 'name' => 'reason',
                 'label' => _kt('Reason'),
                 'description' => _kt('Please specify why you are checking out these documents. It will assist other users in understanding why you have locked these files.'),
                 'value' => null,
                 'required' => true,
-                )),
-            array('ktcore.widgets.boolean', array(
+                ));
+        $widgets[] = array('ktcore.widgets.boolean', array(
                 'label' => _kt('Download Files'),
                 'description' => _kt('Indicate whether you would like to download these file as part of the checkout.'),
                 'name' => 'download_file',
                 'value' => true,
-            )),
-        ));
+            ));
+
+        $oForm->setWidgets($widgets);
 
         $oForm->setValidators(array(
             array('ktcore.validators.string', array(
@@ -994,6 +1139,17 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                 'output' => 'download_file',
             )),
         ));
+
+        if($default->enableESignatures){
+            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+                'object_id' => $this->oFolder->getID(),
+                'type' => 'bulk',
+                'action' => 'ktcore.transactions.bulk_check_out',
+                'test' => 'info',
+                'output' => 'info'
+            )));
+        }
+
 
         return $oForm;
     }

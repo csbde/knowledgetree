@@ -363,6 +363,19 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 
         // final step.
 
+        // Include the electronic signature
+        global $default;
+		$iFolderId = $this->oFolder->getId() ;
+        if($default->enableESignatures){
+			$sign = true;
+            $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+            $heading = _kt('You are attempting to modify roles');
+            $input_href = '#';
+        }else{
+			$sign = false;
+			$input_onclick = '';
+        }
+
         // map to users, groups.
         foreach ($aRoles as $key => $role) {
             $_users = array();
@@ -390,6 +403,16 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 			} else {
 			    $aRoles[$key]['groups'] = join(', ',$_groups);
 			}
+
+			if($sign){
+				$redirect_url = KTUtil::addQueryStringSelf("action=useParent&role_id={$key}&fFolderId={$iFolderId}");
+				$input_onclick = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.role_allocations_change', 'folder', '{$redirect_url}', 'redirect', {$iFolderId});";
+			}else{
+				$input_href = KTUtil::addQueryStringSelf("action=useParent&role_id={$key}&fFolderId={$iFolderId}");
+			}
+
+			$aRoles[$key]['onclick'] =$input_onclick;
+			$aRoles[$key]['href'] =$input_href;
         }
 
         $aTemplateData = array(
@@ -585,7 +608,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
             $heading = _kt('You are attempting to modify roles');
             $input['type'] = 'button';
-            $input['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.roles_modify_users', 'folder', 'userroleform', 'submit', {$iFolderId});";
+            $input['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.role_allocations_change', 'folder', 'userroleform', 'submit', {$iFolderId});";
         }else{
             $input['type'] = 'submit';
             $input['onclick'] = '';
@@ -650,7 +673,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
             $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
             $heading = _kt('You are attempting to modify roles');
             $input['type'] = 'button';
-            $input['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.roles_modify_groups', 'folder', 'grouproleform', 'submit', {$iFolderId});";
+            $input['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.role_allocations_change', 'folder', 'grouproleform', 'submit', {$iFolderId});";
         }else{
             $input['type'] = 'submit';
             $input['onclick'] = '';

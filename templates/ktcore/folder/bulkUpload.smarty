@@ -50,7 +50,7 @@ addLoadEvent(startupMetadata);
 
 <h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Upload files into{/i18n}:<br />{$context->oFolder->getName()|sanitize}</h2>
 
-<form method="POST" action="{$smarty.server.PHP_SELF|addQueryString:"postExpected=1&fFolderId="}{$context->oFolder->getId()}" enctype="multipart/form-data">
+<form method="POST" action="{$smarty.server.PHP_SELF|addQueryString:"postExpected=1&fFolderId="}{$context->oFolder->getId()}" enctype="multipart/form-data" name="bulk_upload_form">
 <fieldset><legend>{i18n}Bulk upload{/i18n}</legend>
 <p class="descriptiveText">{i18n}The bulk upload facility allows for a number
 of documents to be added to the document management system.
@@ -69,7 +69,7 @@ management system.{/i18n}</p>
 <p class="descriptiveText">{i18n}If you do not need to modify any the metadata
 for this document (see below), then you can simply click "Add" here to finish the
 process and add the document.{/i18n}</p>
-<input type="submit" name="submit" value="{i18n}Add{/i18n}" />
+<input type="{$submit.type}" onclick="{$submit.onclick}" name="btn_submit" value="{i18n}Add{/i18n}" />
 
 <hr />
 
@@ -85,7 +85,7 @@ process and add the document.{/i18n}</p>
 </div>
 
 <div class="form_actions">
-  <input type="submit" name="submit" value="{i18n}Upload{/i18n}" />
+  <input type="{$submit.type}" onclick="{$submit.onclick}" name="btn_submit" value="{i18n}Upload{/i18n}" />
 </div>
 <input type="hidden" name="postReceived" value="1" />
 </form>

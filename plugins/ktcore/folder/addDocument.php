@@ -94,7 +94,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             'file_upload' => true,
         ));
 
-        $aTypes;
+        $aTypes = array();
         foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
             if(!$oDocumentType->getDisabled()) {
                 $aTypes[] = $oDocumentType;
@@ -149,6 +149,31 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             )),
         ));
 
+        // Electronic Signature if enabled
+        global $default;
+        if($default->enableESignatures){
+            $oForm->addWidget(array('ktcore.widgets.info', array(
+                    'label' => _kt('This action requires authentication'),
+                    'description' => _kt('Please provide your user credentials as confirmation of this action.'),
+                    'name' => 'info'
+                )));
+            $oForm->addWidget(array('ktcore.widgets.string', array(
+                    'label' => _kt('Username'),
+                    'name' => 'sign_username',
+                    'required' => true
+                )));
+            $oForm->addWidget(array('ktcore.widgets.password', array(
+                    'label' => _kt('Password'),
+                    'name' => 'sign_password',
+                    'required' => true
+                )));
+            $oForm->addWidget(array('ktcore.widgets.reason', array(
+                'label' => _kt('Reason'),
+                'description' => _kt('Please specify why you are checking out this document.  It will assist other users in understanding why you have locked this file.  Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
+                'name' => 'reason',
+                )));
+        }
+
         $oForm->setValidators(array(
             array('ktcore.validators.file', array(
                 'test' => 'file',
@@ -169,6 +194,16 @@ class KTFolderAddDocumentAction extends KTFolderAction {
                 'ids' => true,
             )),
         ));
+
+        if($default->enableESignatures){
+            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+                'object_id' => $this->oFolder->getId(),
+                'type' => 'folder',
+                'action' => 'ktcore.transactions.add_document',
+                'test' => 'info',
+                'output' => 'info'
+            )));
+        }
 
         return $oForm;
     }

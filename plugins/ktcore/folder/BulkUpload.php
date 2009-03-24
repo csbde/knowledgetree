@@ -96,8 +96,22 @@ class KTBulkUploadFolderAction extends KTFolderAction {
             array_push($fieldsets, new $displayClass($oFieldset));
         }
 
+        // Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
+        global $default;
+        $iFolderId = $this->oFolder->getId();
+        if($default->enableESignatures){
+            $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+            $heading = _kt('You are attempting to perform a bulk upload');
+            $submit['type'] = 'button';
+            $submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.bulk_upload', 'bulk', 'bulk_upload_form', 'submit', {$iFolderId});";
+        }else{
+            $submit['type'] = 'submit';
+            $submit['onclick'] = '';
+        }
+
         $oTemplate->setData(array(
             'context' => &$this,
+            'submit' => $submit,
             'add_fields' => $add_fields,
             'generic_fieldsets' => $fieldsets,
         ));
