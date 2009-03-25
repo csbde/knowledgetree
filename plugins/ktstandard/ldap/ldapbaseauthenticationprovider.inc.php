@@ -740,8 +740,9 @@ class KTLDAPBaseAuthenticator extends Authenticator {
      * @return boolean true if the password is correct, else false
      */
     function checkPassword($oUser, $sPassword) {
+        global $default;
         $dn = $oUser->getAuthenticationDetails();
-        if (is_null($dn))
+        if (empty($dn))
         {
             return new PEAR_Error(_kt('Please consult your system administrator. The authentication parameters are corrupt. (authentication_detail_s1 is null)'));
         }
@@ -753,13 +754,18 @@ class KTLDAPBaseAuthenticator extends Authenticator {
         );
         $this->oLdap =& Net_LDAP::connect($config);
         if (PEAR::isError($this->oLdap)) {
+            $default->log->error('LDAP Authentication: Failed to connect to LDAP: '.$this->oLdap->getMessage());
             return $this->oLdap;
         }
         $res = $this->oLdap->reBind($dn, $sPassword);
 
         if(PEAR::isError($res)){
-            // If bind returns false, do a search on the user using the SAMAccountName which should be unique
-            $res = $this->authenticateOnLDAPUsername($oUser, $sPassword);
+            $default->log->error('LDAP Authentication: Failed to authenticate user: '.$res->getMessage());
+
+            if($default->enableLdapUpdate){
+                // If bind returns false, do a search on the user using the SAMAccountName which should be unique
+                $res = $this->authenticateOnLDAPUsername($oUser, $sPassword);
+            }
         }
         return $res;
     }
@@ -774,6 +780,9 @@ class KTLDAPBaseAuthenticator extends Authenticator {
      */
     function authenticateOnLDAPUsername($oUser, $sPassword){
 
+        global $default;
+        $default->log->debug('LDAP Authentication: Attempting to authenticate using sAMAccountName');
+
         // Reconnect for the search.
         $config = array(
             'dn' => $this->sSearchUser,
@@ -787,18 +796,22 @@ class KTLDAPBaseAuthenticator extends Authenticator {
 
         $this->oLdap =& Net_LDAP::connect($config);
         if (PEAR::isError($this->oLdap)) {
+            $default->log->error('LDAP Authentication: Failed to connect to LDAP: '.$this->oLdap->getMessage());
             return $res;
         }
 
         // Get the users sAMAccountName and search LDAP
         $sName = $oUser->getAuthenticationDetails2();
         if(empty($sName)){
+            $default->log->debug('LDAP Authentication: User has no sAMAccountName, do not authenticate');
             return false;
         }
         $aResults = $this->searchUsers($sName);
         if(PEAR::isError($aResults) || empty($aResults)){
-            return $aResults;
+            $default->log->debug('LDAP Authentication: User cannot be found sAMAccountName: '.$sName);
+            return false;
         }
+        $newDn = '';
         foreach($aResults as $aEntry){
             if (strcasecmp($aEntry['sAMAccountName'], $sName) == 0) {
                 $newDn = $aEntry['dn'];
@@ -809,6 +822,8 @@ class KTLDAPBaseAuthenticator extends Authenticator {
         {
             return false;
         }
+
+        $default->log->debug('LDAP Authentication: New DN: '.$newDn);
 
         $res = $this->oLdap->reBind($newDn, $sPassword);
 
