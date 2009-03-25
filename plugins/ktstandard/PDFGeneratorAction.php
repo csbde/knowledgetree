@@ -46,6 +46,8 @@ require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
 require_once(KT_LIB_DIR . '/roles/Role.inc');
 
+require_once(KT_DIR . '/plugins/pdfConverter/pdfConverter.php');
+
 class PDFGeneratorAction extends KTDocumentAction {
     var $sName = 'ktstandard.pdf.generate';
     var $_sShowPermission = "ktcore.permissions.read";
@@ -60,7 +62,48 @@ class PDFGeneratorAction extends KTDocumentAction {
             'otg', 'std', 'asc');
 
     function getDisplayName() {
-		$cmdpath = KTUtil::findCommand('externalBinary/python');
+        global $default;
+        // The generation of the pdf is done through the PDF Converter plugin.
+        // The PDF's are generated in the background by the document processor
+
+        if(!empty($this->oDocument)){
+            $iDocId = $this->oDocument->iId;
+
+            // Build the display name and url
+            $sDisplayName = _kt('Generate PDF');
+
+            $sHostPath = KTUtil::kt_url();
+            $icon = "<img src='{$sHostPath}/resources/mimetypes/pdf.gif' alt='PDF' border=0 />";
+            $link = KTUtil::ktLink('action.php', 'ktstandard.pdf.generate', array( 'fDocumentId' => $this->oDocument->getId(), 'action' => 'pdfdownload'));
+            $sDisplayLink = "&nbsp;<a href=\"{$link}\">{$icon}</a>";
+
+            // First check if the pdf has already been generated
+            $dir = $default->pdfDirectory;
+            $file = $dir .'/'. $iDocId . '.pdf';
+
+            if(file_exists($file)){
+                // Display the download link
+                return $sDisplayName . $sDisplayLink;
+            }
+
+            // If the file does not exist, check if the document has the correct mimetype
+            $converter = new pdfConverter();
+            $mimeTypes = $converter->getSupportedMimeTypes();
+            $docType = $this->getMimeExtension();
+
+            if($mimeTypes === true || in_array($docType, $mimeTypes)){
+                // Display the download link
+                return $sDisplayName . $sDisplayLink;
+            }
+        }else{
+            // If the document is empty then we are probably in the workflow admin - action restrictions section, so we can display the name.
+            return $sDisplayName;
+        }
+
+        return '';
+
+        /*
+		//$cmdpath = KTUtil::findCommand('externalBinary/python');
         // Check if openoffice and python are available
 
         if($cmdpath != false && file_exists($cmdpath) && !empty($cmdpath)) {
@@ -82,6 +125,7 @@ class PDFGeneratorAction extends KTDocumentAction {
             }
         }
         return '';
+        */
     }
 
     function form_main() {
@@ -170,11 +214,66 @@ class PDFGeneratorAction extends KTDocumentAction {
     }
 
     /**
+     * Method to download the pdf.
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     */
+    public function do_pdfdownload()
+    {
+        global $default;
+        $iDocId = $this->oDocument->iId;
+
+        // Check if pdf has already been created
+        $dir = $default->pdfDirectory;
+        $file = $dir .'/'. $iDocId . '.pdf';
+        $mimetype = 'application/pdf';
+        $size = filesize($file);
+
+        // Set the filename
+        $name = $this->oDocument->getFileName();
+        $aName = explode('.', $name);
+        array_pop($aName);
+        $name = implode('.', $aName) . '.pdf';
+
+
+        if(file_exists($file)){
+            if(KTUtil::download($file, $mimetype, $size, $name) === false){
+                $default->log->error('PDF Generator: PDF file could not be downloaded because it doesn\'t exist');
+                $this->errorRedirectToMain(_kt('PDF file could not be downloaded because it doesn\'t exist'));
+            }
+            exit();
+        }
+
+        // If not - create one
+        $converter = new pdfConverter();
+        $converter->setDocument($this->oDocument);
+        $res = $converter->processDocument();
+
+        if(!$res){
+            $default->log->error('PDF Generator: PDF file could not be generated');
+            $this->errorRedirectToMain(_kt('PDF file could not be generated, the file may be of an unsupported mime type.'));
+            exit();
+        }
+
+        if(file_exists($file)){
+            if(KTUtil::download($file, $mimetype, $size, $name) === false){
+                $default->log->error('PDF Generator: PDF file could not be downloaded because it doesn\'t exist');
+                $this->errorRedirectToMain(_kt('PDF file could not be downloaded because it doesn\'t exist'));
+            }
+            exit();
+        }
+        $this->errorRedirectToMain(_kt('PDF file could not be generated'));
+        exit();
+    }
+
+    /**
      * Method for downloading the document as a pdf.
      *
+     * @deprecated
      * @return true on success else false
      */
-    function do_pdfdownload() {
+    function do_pdfdownload_deprecated() {
 
         $oDocument = $this->oDocument;
         $oStorage =& KTStorageManagerUtil::getSingleton();

@@ -70,28 +70,47 @@ class pdfConverter extends BaseProcessor
      */
 	public function getSupportedMimeTypes()
 	{
-	    // support all for now...
-		return true; //array();
+	    $aAcceptedMimeTypes = array('doc', 'ods', 'odt', 'ott', 'txt', 'rtf', 'sxw', 'stw',
+            //                                    'html', 'htm',
+            'xml' , 'pdb', 'psw', 'ods', 'ots', 'sxc',
+            'stc', 'dif', 'dbf', 'xls', 'xlt', 'slk', 'csv', 'pxl',
+            'odp', 'otp', 'sxi', 'sti', 'ppt', 'pot', 'sxd', 'odg',
+            'otg', 'std', 'asc');
+
+        return $aAcceptedMimeTypes;
 	}
 
 	function convertFile($filename)
 	{
+	    global $default;
+
 	    // Get contents and send to converter
         $buffer = file_get_contents($filename);
         $buffer = $this->xmlrpc->convertDocument($buffer, 'pdf');
 
         if($buffer === false){
+            $default->log->error('PDF Converter Plugin: Conversion to PDF Failed');
             return false;
         }
 
-        global $default;
-        $dir = $default->varDirectory . '/pdf/';
-        $filename = $dir . $this->document->iId.'.pdf';
+        $dir = $default->pdfDirectory;
 
-        file_put_contents($filename, $buffer);
+        // Ensure the PDF directory exists
+        if(!file_exists($dir)){
+            mkdir($dir, '0755');
+        }
+
+        $pdfFile = $dir .'/'. $this->document->iId.'.pdf';
+
+        // if a previous version of the pdf exists - delete it
+        if(file_exists($pdfFile)){
+            @unlink($pdfFile);
+        }
+
+        file_put_contents($pdfFile, $buffer);
         unset($buffer);
 
-        return $filename;
+        return $pdfFile;
 
     }
 }
