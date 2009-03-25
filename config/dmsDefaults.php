@@ -393,7 +393,7 @@ class KTInit {
 
     // {{{ guessRootUrl()
     function guessRootUrl() {
-        $urlpath = str_replace(KT_DIR, '', $_SERVER['SCRIPT_NAME']);
+        $urlpath = $_SERVER['SCRIPT_NAME'];
         $bFound = false;
         $rootUrl = '';
         while ($urlpath) {
@@ -415,6 +415,14 @@ class KTInit {
         if ($bFound) {
             if ($rootUrl) {
                 $rootUrl = '/' . $rootUrl;
+            }
+
+            // If the rootUrl contains KT_DIR then it is the full path and not relative to the apache document root
+            // We return an empty string which will work for all stack installs but might break source installs.
+            // However this situation should only crop up when running background scripts and can be avoided by setting
+            // the rootUrl in the config settings.
+            if(strpos($rootUrl, KT_DIR) !== false){
+                return '';
             }
             return $rootUrl;
         }
