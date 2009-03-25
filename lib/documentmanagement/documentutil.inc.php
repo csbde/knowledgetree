@@ -751,6 +751,9 @@ $sourceDocument->getName(),
             }
         }
         // refresh the document object
+        DBUtil::commit();
+
+        $oDocument->clearAllCaches();
 
         // NEW SEARCH
 
@@ -786,8 +789,6 @@ $sourceDocument->getName(),
             $ret = $oTrigger->postValidate();
 
         }
-
-        DBUtil::commit();
 
         // update document object with additional fields / data from the triggers
         $oDocument = Document::get($oDocument->iId);
