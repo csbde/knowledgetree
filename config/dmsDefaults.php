@@ -393,7 +393,7 @@ class KTInit {
 
     // {{{ guessRootUrl()
     function guessRootUrl() {
-        $urlpath = $_SERVER['SCRIPT_NAME'];
+        $urlpath = str_replace(KT_DIR, '', $_SERVER['SCRIPT_NAME']);
         $bFound = false;
         $rootUrl = '';
         while ($urlpath) {
