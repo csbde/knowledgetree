@@ -42,5 +42,5 @@ require_once(realpath('../../config/dmsDefaults.php'));
 
 KTUtil::call_page('search2/documentProcessor/bin/documentProcessor.php');
 
-
+exit(0);
 ?>

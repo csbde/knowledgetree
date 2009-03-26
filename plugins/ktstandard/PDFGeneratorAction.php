@@ -200,6 +200,10 @@ class PDFGeneratorAction extends KTDocumentAction {
         $iMimeTypeId = $oDocument->getMimeTypeID();
         $mimetypename = KTMime::getMimeTypeName($iMimeTypeId); // mime type name
 
+        // the pdf converter uses the mime type and not the extension.
+        return $mimetypename;
+
+        /*
         $sTable = KTUtil::getTableName('mimetypes');
         $sQuery = "SELECT filetypes FROM " . $sTable . " WHERE mimetypes = ?";
         $aQuery = array($sQuery, array($mimetypename));
@@ -211,6 +215,7 @@ class PDFGeneratorAction extends KTDocumentAction {
         }
 
         return _kt('Unknown Type');
+        */
     }
 
     /**

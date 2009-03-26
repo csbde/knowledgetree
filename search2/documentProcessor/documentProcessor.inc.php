@@ -180,8 +180,11 @@ class DocumentProcessor
             // loop through processors
             if($this->processors !== false){
                 foreach($this->processors as $processor){
+                    $default->log->debug('documentProcessor: running processor: '.$processor->getNamespace());
+
                     // Check document mime type against supported types
                     if(!$this->isSupportedMimeType($item['mimetypes'], $processor->getSupportedMimeTypes())){
+                        $default->log->debug('documentProcessor: not a supported mimetype: '.$item['mimetypes']);
                         continue;
                     }
 
@@ -191,6 +194,9 @@ class DocumentProcessor
                 }
             }
         }
+
+        // update the indexer statistics
+        $this->indexer->updateIndexStats();
 
         $default->log->debug('documentProcessor: stopping');
     }
@@ -220,10 +226,21 @@ abstract class BaseProcessor
 {
     public $order;
     protected $document;
+    protected $namespace;
 
     public function BaseProcessor()
     {
         // Constructor
+    }
+
+    /**
+     * Returns the namespace of the processor
+     *
+     * @return string
+     */
+    public function getNamespace()
+    {
+        return $this->namespace;
     }
 
     /**

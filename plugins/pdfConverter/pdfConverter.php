@@ -31,6 +31,7 @@ require_once(KT_DIR . '/search2/indexing/lib/XmlRpcLucene.inc.php');
 class pdfConverter extends BaseProcessor
 {
     public $order = 2;
+    protected $namespace = 'pdf.converter.processor';
 
     public function pdfConverter()
     {
@@ -70,14 +71,41 @@ class pdfConverter extends BaseProcessor
      */
 	public function getSupportedMimeTypes()
 	{
-	    $aAcceptedMimeTypes = array('doc', 'ods', 'odt', 'ott', 'txt', 'rtf', 'sxw', 'stw',
-            //                                    'html', 'htm',
-            'xml' , 'pdb', 'psw', 'ods', 'ots', 'sxc',
-            'stc', 'dif', 'dbf', 'xls', 'xlt', 'slk', 'csv', 'pxl',
-            'odp', 'otp', 'sxi', 'sti', 'ppt', 'pot', 'sxd', 'odg',
-            'otg', 'std', 'asc');
+//	    $aAcceptedMimeTypes = array('doc', 'ods', 'odt', 'ott', 'txt', 'rtf', 'sxw', 'stw',
+//            //                                    'html', 'htm',
+//            'xml' , 'pdb', 'psw', 'ods', 'ots', 'sxc',
+//            'stc', 'dif', 'dbf', 'xls', 'xlt', 'slk', 'csv', 'pxl',
+//            'odp', 'otp', 'sxi', 'sti', 'ppt', 'pot', 'sxd', 'odg',
+//            'otg', 'std', 'asc');
 
-        return $aAcceptedMimeTypes;
+        // taken from the original list of accepted types in the pdf generator action
+        $mime_types = array();
+        $mime_types[] = 'text/plain';
+        $mime_types[] = 'text/rtf';
+        $mime_types[] = 'text/xml';
+        $mime_types[] = 'text/csv';
+        $mime_types[] = 'chemical/x-pdb';
+        $mime_types[] = 'application/msword';
+        $mime_types[] = 'application/vnd.ms-powerpoint';
+        $mime_types[] = 'application/vnd.ms-excel';
+        $mime_types[] = 'application/vnd.sun.xml.writer';
+        $mime_types[] = 'application/vnd.sun.xml.writer.template';
+        $mime_types[] = 'application/vnd.sun.xml.calc';
+        $mime_types[] = 'application/vnd.sun.xml.calc.template';
+        $mime_types[] = 'application/vnd.sun.xml.draw';
+        $mime_types[] = 'application/vnd.sun.xml.draw.template';
+        $mime_types[] = 'application/vnd.sun.xml.impress';
+        $mime_types[] = 'application/vnd.sun.xml.impress.template';
+        $mime_types[] = 'application/vnd.oasis.opendocument.text';
+        $mime_types[] = 'application/vnd.oasis.opendocument.text-template';
+        $mime_types[] = 'application/vnd.oasis.opendocument.graphics';
+        $mime_types[] = 'application/vnd.oasis.opendocument.graphics-template';
+        $mime_types[] = 'application/vnd.oasis.opendocument.presentation';
+        $mime_types[] = 'application/vnd.oasis.opendocument.presentation-template';
+        $mime_types[] = 'application/vnd.oasis.opendocument.spreadsheet';
+        $mime_types[] = 'application/vnd.oasis.opendocument.spreadsheet-template';
+
+        return $mime_types;
 	}
 
 	function convertFile($filename)
@@ -97,7 +125,7 @@ class pdfConverter extends BaseProcessor
 
         // Ensure the PDF directory exists
         if(!file_exists($dir)){
-            mkdir($dir, '0755');
+            mkdir($dir, 0755);
         }
 
         $pdfFile = $dir .'/'. $this->document->iId.'.pdf';
