@@ -133,6 +133,21 @@ class KTDocumentUtil {
             }
         }
 
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('checkin', 'postValidate');
+
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                'document' => $oDocument,
+                'aOptions' => $aOrigOptions,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+
+        }
+
         Indexer::index($oDocument);
 
         // fire subscription alerts for the checked in document
