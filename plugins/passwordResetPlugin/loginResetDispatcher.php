@@ -80,7 +80,7 @@ class loginResetDispatcher extends KTDispatcher {
             $_REQUEST['errorMessage'] = join('. <br /> ', $_REQUEST['errorMessage']);
         }
 
-        if(!loginUtil::check()) { // bounce here, potentially.
+        if(!loginUtil::check() && $_SESSION['userID'] != -2) { // bounce here, potentially.
             // User is already logged in - get the redirect
             $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
@@ -169,7 +169,7 @@ class loginResetDispatcher extends KTDispatcher {
     function do_login() {
         $aExtra = array();
 
-        if(!loginUtil::check()) { // bounce here, potentially.
+        if(!loginUtil::check() && $_SESSION['userID'] != -2) { // bounce here, potentially.
             // User is already logged in - get the redirect
             $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
