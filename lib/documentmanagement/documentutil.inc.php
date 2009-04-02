@@ -1084,6 +1084,9 @@ $sourceDocument->getName(),
         if (!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.move')) {
             return false;
         }
+        if ($oDocument->getImmutable()) {
+            return false;
+        }
         return true;
     }
 
