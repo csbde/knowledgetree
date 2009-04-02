@@ -675,7 +675,34 @@ class SearchDispatcher extends KTStandardDispatcher {
 			$sql .= " AND user_id=$this->curUserId ";
 		}
 
-		DBUtil::runQuery($sql);
+		$res = DBUtil::runQuery($sql);
+
+        if (DBUtil::affectedRows( ) == 0)
+        {
+            $message = '';
+            // in case of database error, supply actual error as message
+            if (PEAR::isError($res))
+            {
+                $message = $res->getMessage();
+            }
+
+            if (!$this->sysAdmin)
+            {
+                if ($message == '') // generic failure message
+                {
+                    $message = 'You do not have permission to delete this search.';
+                }
+            }
+            else
+            {                
+                if ($message == '') // generic failure message
+                {
+                    $message = 'The saved search could not be deleted.';
+                }
+            }
+
+            $this->errorRedirectTo('manage', _kt($message));
+        }
 
         $this->successRedirectTo('manage', _kt('The saved search was deleted successfully.'));
 

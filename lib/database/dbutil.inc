@@ -223,6 +223,11 @@ class DBUtil {
         return $db->last_query;
     }
 
+    static function &affectedRows($db = null) {
+        $db =& DBUtil::getDB();
+        return $db->affectedRows();
+    }
+
     function autoDelete($sTable, $iId, $db = null) {
         global $default;
         // $default->log->debug('AutoDelete called for table ' . $sTable . ' with id ' . $iId);
