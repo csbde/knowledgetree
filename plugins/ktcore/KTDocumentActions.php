@@ -697,6 +697,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         $aValidators = array(
             array('ktcore.validators.string', array(
                 'test' => 'reason',
+                'min_length' => 1,
                 'max_length' => 250,
                 'output' => 'reason',
             )),
@@ -907,6 +908,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
 
         $validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
+                'min_length' => 1,
                 'max_length' => 250,
                 'output' => 'reason',
             ));
@@ -1063,6 +1065,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
 
         $validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
+                'min_length' => 1,
                 'max_length' => 250,
                 'output' => 'reason',
             ));
@@ -1232,6 +1235,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
 
         $validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
+                'min_length' => 1,
                 'max_length' => 250,
                 'output' => 'reason',
         ));
@@ -1466,6 +1470,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $validators = array();
         $validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
+                'min_length' => 1,
                 'max_length' => 250,
                 'output' => 'reason',
             ));
@@ -1676,6 +1681,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
 
         $validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
+                'min_length' => 1,
                 'max_length' => 250,
                 'output' => 'reason',
             ));
@@ -1943,6 +1949,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
             $oForm->setValidators(array(
                 array('ktcore.validators.string', array(
                     'test' => 'reason',
+                    'min_length' => 1,
                     'max_length' => 250,
                     'output' => 'reason',
                 )),
