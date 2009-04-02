@@ -62,7 +62,8 @@ function search2queryCompare($a, $b)
 		return 0;
 	}
 
-	$result = ($a->$search2queryColumn < $b->$search2queryColumn)?-1:1;
+    // convert to lowercase for comparison, else sorting will put all lowercase before/after all uppercase
+	$result = (strtolower($a->$search2queryColumn) < strtolower($b->$search2queryColumn)) ? -1 : 1;
 
 	if ($search2queryOrder == 'asc')
 		return $result;
@@ -124,10 +125,20 @@ function search2QuerySort($sSortColumn, $sSortOrder)
 
 	$results = unserialize($_SESSION['search2_results']);
 
-	usort($results, 'search2queryCompare');
-
-	$_SESSION['search2_results'] = serialize($results);
-
+    // Loop through to find and sort all possible result item types
+    foreach($results as $key => $result)
+    {
+        // force re-initialisation of $sortresults on each iteration
+        $sortresults = array();
+        $sortresults = $result;
+        // NOTE: usort may be sufficient here.
+        // uasort was used because results were disappearing,
+        // but this may have been related to not using the loop
+        uasort($sortresults, 'search2queryCompare');
+        $results[$key] = $sortresults;
+    }
+    
+    $_SESSION['search2_results'] = serialize($results);
 }
 
 /**
@@ -373,7 +384,10 @@ class SearchDispatcher extends KTStandardDispatcher {
 
 	function do_oldSearchResults()
 	{
-		$this->oPage->setBreadcrumbDetails(_kt("Search Results"));
+        // call the results sorting function in case of sort options selected
+        search2QuerySort(stripslashes($_GET['sort_on']), stripslashes($_GET['sort_order']));
+
+        $this->oPage->setBreadcrumbDetails(_kt("Search Results"));
         $this->oPage->title = _kt("Search Results");
 
         $collection = new AdvancedCollection;
@@ -661,9 +675,9 @@ class SearchDispatcher extends KTStandardDispatcher {
 			$sql .= " AND user_id=$this->curUserId ";
 		}
 
-
 		DBUtil::runQuery($sql);
-		$this->successRedirectTo('manage', _kt('The saved search was deleted successfully.'));
+
+        $this->successRedirectTo('manage', _kt('The saved search was deleted successfully.'));
 
 	}
 

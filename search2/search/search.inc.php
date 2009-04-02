@@ -51,7 +51,8 @@ function rank_compare($a, $b)
 		if ($a->Title == $b->Title)
 			return 0;
 		// we'll show docs in ascending order by name
-		return ($a->Title < $b->Title)?-1:1;
+        // strtolower to avoid case issues in sorting
+		return (strtolower($a->Title) < strtolower($b->Title)) ? -1 : 1;
 	}
 	// we want to be in descending order
 	return ($a->Rank > $b->Rank)?-1:1;
