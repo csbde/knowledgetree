@@ -53,14 +53,64 @@ class KTBulkDeleteAction extends KTBulkAction {
 
     function check_entity($oEntity) {
         if(is_a($oEntity, 'Document')) {
-            if($oEntity->getImmutable())
-            {
-            	return PEAR::raiseError(_kt('Document cannot be deleted as it is immutable'));
-            }
-            if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, 'ktcore.actions.document.delete')){
-                return PEAR::raiseError(_kt('Document cannot be deleted as it is restricted by the workflow.'));
+            if(!KTDocumentUtil::canBeDeleted($oEntity, $sError)) {
+                if (PEAR::isError($sError))
+                {
+                    return $sError;
+                }
+                return PEAR::raiseError(_kt('Document cannot be deleted'));
             }
         }
+
+        if(is_a($oEntity, 'Folder')) {
+            $aDocuments = array();
+            $aChildFolders = array();
+
+            $oFolder = $oEntity;
+
+            // Get folder id
+            $sFolderId = $oFolder->getID();
+
+            // Get documents in folder
+            $sDocuments = $oFolder->getDocumentIDs($sFolderId);
+            $aDocuments = (!empty($sDocuments)) ? explode(',', $sDocuments) : array();
+
+            // Loop through documents and send to this function for checking
+            if(!empty($aDocuments)){
+                foreach($aDocuments as $sDocID){
+                    $oDocument = Document::get($sDocID);
+                    $res = $this->check_entity($oDocument);
+                    if (PEAR::isError($res))
+                    {
+                        // NOTE: we may want to append the document reason to this
+                        // in order for the user to have some idea WHY the folder cannot be deleted
+                        return PEAR::raiseError(_kt('Folder cannot be deleted'));
+                    }
+                }
+            }
+
+            // If all documents at the current level may be deleted, we can continue
+            // Get any existing subfolders
+            $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
+            parent_folder_ids LIKE '{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId}'";
+            $aChildFolders = $this->oFolder->getList($sWhereClause);
+
+            // Loop through subfolders and check each in the same way as the parent
+            if(!empty($aChildFolders)){
+                foreach($aChildFolders as $oChild){
+                    $res = $this->check_entity($oChild);
+                    if (PEAR::isError($res))
+                    {
+                        // NOTE: we may want to append the document reason to this
+                        // in order for the user to have some idea WHY the folder cannot be deleted
+                        return PEAR::raiseError(_kt('Folder cannot be deleted'));
+                    }
+                }
+            }
+        }
+
         return parent::check_entity($oEntity);
     }
 
@@ -348,7 +398,11 @@ class KTBulkMoveAction extends KTBulkAction {
     function check_entity($oEntity) {
 
         if(is_a($oEntity, 'Document')) {
-            if(!KTDocumentUtil::canBeMoved($oEntity)) {
+            if(!KTDocumentUtil::canBeMoved($oEntity, $sError)) {
+                if (PEAR::isError($sError))
+                {
+                    return $sError;
+                }
                 return PEAR::raiseError(_kt('Document cannot be moved'));
             }
         }
@@ -373,6 +427,8 @@ class KTBulkMoveAction extends KTBulkAction {
                     $res = $this->check_entity($oDocument);
                     if (PEAR::isError($res))
                     {
+                        // NOTE: we may want to append the document reason to this
+                        // in order for the user to have some idea WHY the folder cannot be moved
                         return PEAR::raiseError(_kt('Folder cannot be moved'));
                     }
                 }
@@ -392,6 +448,8 @@ class KTBulkMoveAction extends KTBulkAction {
                     $res = $this->check_entity($oChild);
                     if (PEAR::isError($res))
                     {
+                        // NOTE: we may want to append the document reason to this
+                        // in order for the user to have some idea WHY the folder cannot be moved
                         return PEAR::raiseError(_kt('Folder cannot be moved'));
                     }
                 }
@@ -579,10 +637,64 @@ class KTBulkCopyAction extends KTBulkAction {
 
     function check_entity($oEntity) {
         if(is_a($oEntity, 'Document')) {
-            if(!KTDocumentUtil::canBeMoved($oEntity)) {
+            if(!KTDocumentUtil::canBeCopied($oEntity, $sError)) {
+                if (PEAR::isError($sError))
+                {
+                    return $sError;
+                }
                 return PEAR::raiseError(_kt('Document cannot be copied'));
             }
         }
+        
+        if(is_a($oEntity, 'Folder')) {
+            $aDocuments = array();
+            $aChildFolders = array();
+
+            $oFolder = $oEntity;
+
+            // Get folder id
+            $sFolderId = $oFolder->getID();
+
+            // Get documents in folder
+            $sDocuments = $oFolder->getDocumentIDs($sFolderId);
+            $aDocuments = (!empty($sDocuments)) ? explode(',', $sDocuments) : array();
+
+            // Loop through documents and send to this function for checking
+            if(!empty($aDocuments)){
+                foreach($aDocuments as $sDocID){
+                    $oDocument = Document::get($sDocID);
+                    $res = $this->check_entity($oDocument);
+                    if (PEAR::isError($res))
+                    {
+                        // NOTE: we may want to append the document reason to this
+                        // in order for the user to have some idea WHY the folder cannot be copied
+                        return PEAR::raiseError(_kt('Folder cannot be copied'));
+                    }
+                }
+            }
+
+            // If all documents at the current level may be copied, we can continue
+            // Get any existing subfolders
+            $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
+            parent_folder_ids LIKE '{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId}'";
+            $aChildFolders = $this->oFolder->getList($sWhereClause);
+
+            // Loop through subfolders and check each in the same way as the parent
+            if(!empty($aChildFolders)){
+                foreach($aChildFolders as $oChild){
+                    $res = $this->check_entity($oChild);
+                    if (PEAR::isError($res))
+                    {
+                        // NOTE: we may want to append the document reason to this
+                        // in order for the user to have some idea WHY the folder cannot be copied
+                        return PEAR::raiseError(_kt('Folder cannot be copied'));
+                    }
+                }
+            }
+        }
+
         return parent::check_entity($oEntity);
     }
 
@@ -709,17 +821,76 @@ class KTBulkArchiveAction extends KTBulkAction {
     }
 
     function check_entity($oEntity) {
+        // NOTE: these checks don't have an equivalent in the delete and move functions.
+        //       possibly they are no longer needed but I am leaving them here
+        //       to avoid any potential problems I may not be aware of
         if((!is_a($oEntity, 'Document')) && (!is_a($oEntity, 'Folder'))) {
-                return PEAR::raiseError(_kt('Document cannot be archived'));
+            return PEAR::raiseError(_kt('Document cannot be archived'));
         }
+
         if($oEntity->isSymbolicLink()){
         	return PEAR::raiseError(_kt("It is not possible to archive a shortcut. Please archive the target document or folder instead."));
         }
-        if(is_a($oEntity, 'Document')){
-            if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, 'ktcore.actions.document.archive')){
-                return PEAR::raiseError(_kt('Document cannot be archived as it is restricted by the workflow.'));
+
+        if(is_a($oEntity, 'Document')) {
+            if(!KTDocumentUtil::canBeArchived($oEntity, $sError)) {
+                if (PEAR::isError($sError))
+                {
+                    return $sError;
+                }
+                return PEAR::raiseError(_kt('Document cannot be archived'));
             }
         }
+
+        if(is_a($oEntity, 'Folder')) {
+            $aDocuments = array();
+            $aChildFolders = array();
+
+            $oFolder = $oEntity;
+
+            // Get folder id
+            $sFolderId = $oFolder->getID();
+
+            // Get documents in folder
+            $sDocuments = $oFolder->getDocumentIDs($sFolderId);
+            $aDocuments = (!empty($sDocuments)) ? explode(',', $sDocuments) : array();
+
+            // Loop through documents and send to this function for checking
+            if(!empty($aDocuments)){
+                foreach($aDocuments as $sDocID){
+                    $oDocument = Document::get($sDocID);
+                    $res = $this->check_entity($oDocument);
+                    if (PEAR::isError($res))
+                    {
+                        // NOTE: we may want to append the document reason to this
+                        // in order for the user to have some idea WHY the folder cannot be archived
+                        return PEAR::raiseError(_kt('Folder cannot be archived'));
+                    }
+                }
+            }
+
+            // If all documents at the current level may be archived, we can continue
+            // Get any existing subfolders
+            $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
+            parent_folder_ids LIKE '{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId}'";
+            $aChildFolders = $this->oFolder->getList($sWhereClause);
+
+            // Loop through subfolders and check each in the same way as the parent
+            if(!empty($aChildFolders)){
+                foreach($aChildFolders as $oChild){
+                    $res = $this->check_entity($oChild);
+                    if (PEAR::isError($res))
+                    {
+                        // NOTE: we may want to append the document reason to this
+                        // in order for the user to have some idea WHY the folder cannot be archived
+                        return PEAR::raiseError(_kt('Folder cannot be archived'));
+                    }
+                }
+            }
+        }
+
         return parent::check_entity($oEntity);
     }
 
@@ -871,6 +1042,7 @@ class KTBulkArchiveAction extends KTBulkAction {
     }
 }
 
+// NOTE: None of the new code for folder recursion is implemented for this action.
 class KTBrowseBulkExportAction extends KTBulkAction {
     var $sName = 'ktcore.actions.bulk.export';
     var $_sPermission = 'ktcore.permissions.read';
@@ -880,8 +1052,6 @@ class KTBrowseBulkExportAction extends KTBulkAction {
     function getDisplayName() {
         return _kt('Download All');
     }
-
-
 
     function check_entity($oEntity) {
         if((!is_a($oEntity, 'Document')) && (!is_a($oEntity, 'Folder'))) {
@@ -1081,6 +1251,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
     }
 }
 
+// NOTE: None of the new code for folder recursion is implemented for this action.
 class KTBrowseBulkCheckoutAction extends KTBulkAction {
     var $sName = 'ktcore.actions.bulk.checkout';
     var $_sPermission = 'ktcore.permissions.write';
