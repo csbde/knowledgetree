@@ -352,6 +352,52 @@ class KTBulkMoveAction extends KTBulkAction {
                 return PEAR::raiseError(_kt('Document cannot be moved'));
             }
         }
+
+        if(is_a($oEntity, 'Folder')) {
+            $aDocuments = array();
+            $aChildFolders = array();
+            
+            $oFolder = $oEntity;
+
+            // Get folder id
+            $sFolderId = $oFolder->getID();
+            
+            // Get documents in folder
+            $sDocuments = $oFolder->getDocumentIDs($sFolderId);
+            $aDocuments = (!empty($sDocuments)) ? explode(',', $sDocuments) : array();
+
+            // Loop through documents and send to this function for checking
+            if(!empty($aDocuments)){
+                foreach($aDocuments as $sDocID){
+                    $oDocument = Document::get($sDocID);
+                    $res = $this->check_entity($oDocument);
+                    if (PEAR::isError($res))
+                    {
+                        return PEAR::raiseError(_kt('Folder cannot be moved'));
+                    }
+                }
+            }
+
+            // If all documents at the current level may be moved, we can continue
+            // Get any existing subfolders
+            $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
+            parent_folder_ids LIKE '{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId},%' OR
+            parent_folder_ids LIKE '%,{$sFolderId}'";
+            $aChildFolders = $this->oFolder->getList($sWhereClause);
+
+            // Loop through subfolders and check each in the same way as the parent
+            if(!empty($aChildFolders)){
+                foreach($aChildFolders as $oChild){
+                    $res = $this->check_entity($oChild);
+                    if (PEAR::isError($res))
+                    {
+                        return PEAR::raiseError(_kt('Folder cannot be moved'));
+                    }
+                }
+            }
+        }
+
         return parent::check_entity($oEntity);
     }
 
@@ -359,8 +405,8 @@ class KTBulkMoveAction extends KTBulkAction {
     function do_collectinfo() {
         $this->store_lists();
         $this->get_lists();
-	$oTemplating =& KTTemplating::getSingleton();
-	$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_info');
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_info');
         return $oTemplate->render(array('context' => $this,
                                         'form' => $this->form_collectinfo()));
     }
