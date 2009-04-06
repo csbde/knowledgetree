@@ -8,31 +8,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  */
@@ -89,9 +89,12 @@ class KTBulkImportManager {
             return $aFolderPaths;
         }
         foreach ($aFolderPaths as $sFolderPath) {
-            if (Folder::folderExistsName(utf8_encode(basename($sFolderPath)), KTUtil::getId($oFolder))) {
-                $_SESSION['KTErrorMessage'][] = sprintf(_kt("The folder %s is already present in %s.  Adding files into pre-existing folder."), utf8_encode(basename($sFolderPath)), $oFolder->getName());
-                $aOptions = Folder::getList("parent_id = " . KTUtil::getId($oFolder) . ' AND name = "' . DBUtil::escapeSimple(utf8_encode(basename($sFolderPath))) . '"');
+            $sFolderBasePath = basename($sFolderPath);
+            $sFolderBasePath = ($this->is_utf8($sFolderBasePath)) ? $sFolderBasePath : utf8_encode($sFolderBasePath);
+
+            if (Folder::folderExistsName($sFolderPath, KTUtil::getId($oFolder))) {
+                $_SESSION['KTErrorMessage'][] = sprintf(_kt("The folder %s is already present in %s.  Adding files into pre-existing folder."), $sFolderBasePath, $oFolder->getName());
+                $aOptions = Folder::getList("parent_id = " . KTUtil::getId($oFolder) . ' AND name = "' . DBUtil::escapeSimple($sFolderBasePath) . '"');
                 if (PEAR::isError($aOptions)) {
                     return $aOptions;
                 }
@@ -104,7 +107,7 @@ class KTBulkImportManager {
 
                 if(KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $oFolder))
         		{
-                	$oThisFolder = KTFolderUtil::add($oFolder, utf8_encode(basename($sFolderPath)), $this->oUser);
+                	$oThisFolder = KTFolderUtil::add($oFolder, $sFolderBasePath, $this->oUser);
         		}
         		else
         		{
@@ -152,8 +155,24 @@ class KTBulkImportManager {
             'documenttype' => $this->oDocumentType,
         );
         $aOptions = array_merge($aOptions, $this->aOptions);
-        $oDocument =& KTDocumentUtil::add($oFolder, utf8_encode(basename($sPath)), $this->oUser, $aOptions);
+        $sPath = basename($sPath);
+        $sPath = ($this->is_utf8($sPath)) ? $sPath : utf8_encode($sPath);
+        $oDocument =& KTDocumentUtil::add($oFolder, $sPath, $this->oUser, $aOptions);
         return $oDocument;
+    }
+
+    function is_utf8($string) {
+        // From http://w3.org/International/questions/q ... utf-8.html
+        return preg_match('%^(?:
+            [\x09\x0A\x0D\x20-\x7E] # ASCII
+            | [\xC2-\xDF][\x80-\xBF] # non-overlong 2-byte
+            | \xE0[\xA0-\xBF][\x80-\xBF] # excluding overlongs
+            | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2} # straight 3-byte
+            | \xED[\x80-\x9F][\x80-\xBF] # excluding surrogates
+            | \xF0[\x90-\xBF][\x80-\xBF]{2} # planes 1-3
+            | [\xF1-\xF3][\x80-\xBF]{3} # planes 4-15
+            | \xF4[\x80-\x8F][\x80-\xBF]{2} # plane 16
+            )*$%xs', $string);
     }
 }
 

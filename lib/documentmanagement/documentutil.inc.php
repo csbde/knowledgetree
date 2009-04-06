@@ -1076,20 +1076,62 @@ $sourceDocument->getName(),
         Indexer::index($oDocument);
     }
 
-
-    function canBeMoved($oDocument) {
+    function canBeCopied($oDocument, &$sError) {
         if ($oDocument->getIsCheckedOut()) {
+            $sError = PEAR::raiseError(_kt('Document cannot be copied as it is checked out.'));
             return false;
         }
-        if (!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.move')) {
-            return false;
-        }
-        if ($oDocument->getImmutable()) {
+        if (!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.copy')) {
+            $sError = PEAR::raiseError(_kt('Document cannot be copied as it is restricted by the workflow.'));
             return false;
         }
         return true;
     }
 
+    function canBeMoved($oDocument, &$sError) {
+        if ($oDocument->getImmutable()) {
+            $sError = PEAR::raiseError(_kt('Document cannot be moved as it is immutable.'));
+            return false;
+        }
+        if ($oDocument->getIsCheckedOut()) {
+            $sError = PEAR::raiseError(_kt('Document cannot be moved as it is checked out.'));
+            return false;
+        }
+        if (!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.move')) {
+            $sError = PEAR::raiseError(_kt('Document cannot be moved as it is restricted by the workflow.'));
+            return false;
+        }
+        return true;
+    }
+
+    function canBeDeleted($oDocument, &$sError) {
+        if($oDocument->getImmutable())
+        {
+            $sError = PEAR::raiseError(_kt('Document cannot be deleted as it is immutable.'));
+            return false;
+        }
+        if ($oDocument->getIsCheckedOut()) {
+            $sError = PEAR::raiseError(_kt('Document cannot be deleted as it is checked out.'));
+            return false;
+        }
+        if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.delete')){
+            $sError = PEAR::raiseError(_kt('Document cannot be deleted as it is restricted by the workflow.'));
+            return false;
+        }
+        return true;
+    }
+
+    function canBeArchived($oDocument, &$sError) {
+        if ($oDocument->getIsCheckedOut()) {
+            $sError = PEAR::raiseError(_kt('Document cannot be archived as it is checked out.'));
+            return false;
+        }
+        if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.archive')){
+            $sError = PEAR::raiseError(_kt('Document cannot be archived as it is restricted by the workflow.'));
+            return false;
+        }
+        return true;
+    }
 
     function copy($oDocument, $oDestinationFolder, $sReason = null, $sDestinationDocName = null) {
         // 1. generate a new triad of content, metadata and core objects.
