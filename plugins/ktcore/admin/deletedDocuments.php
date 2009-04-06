@@ -171,13 +171,26 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
                 $oDocumentTransaction->create();
     
                 // delete this from the db now
-                if (!$oDoc->delete()) { $aErrorDocuments[] = $oDoc->getId(); } 
-                else {
+                if (!$oDoc->delete()) {
+                	$aErrorDocuments[] = $oDoc->getId(); 
+                } else {
                     // removed succesfully
                     $aSuccessDocuments[] = $oDoc->getDisplayPath();
         
                     // remove any document data
                     $oDoc->cleanupDocumentData($oDoc->getId()); // silly - why the redundancy?
+        
+                    $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        			$aTriggers = $oKTTriggerRegistry->getTriggers('expunge', 'finalised');
+			        foreach ($aTriggers as $aTrigger) {
+			            $sTrigger = $aTrigger[0];
+			            $oTrigger = new $sTrigger;
+			            $aInfo = array(
+			                'document' => $oDoc,
+			            );
+			            $oTrigger->setInfo($aInfo);
+			            $ret = $oTrigger->finalised();		
+			        }
                 }
             }
         }
