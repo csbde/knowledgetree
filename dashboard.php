@@ -95,8 +95,21 @@ class DashboardDispatcher extends KTStandardDispatcher {
             $i %= 2;
         }
 
-        // javascript
+        // javascript - broken input focus
+        // using this code causes focus problems in the Go To Document dashlet:
+        // while the input can be focused, it requires clicking the text to the LEFT
+        // of the input, which is not expected nor obvious nor user friendly
+        /*
         $this->oPage->requireJSResource('thirdpartyjs/extjs/adapter/yui/yui-utilities.js');
+        $this->oPage->requireJSResource('resources/js/DDList.js');
+        */
+
+        // javascript - working input focus - restoring yui fixes the focus problem
+        // yahoo
+        $this->oPage->requireJSResource('thirdpartyjs/yui/yahoo/yahoo.js');
+        $this->oPage->requireJSResource('thirdpartyjs/yui/event/event.js');
+        $this->oPage->requireJSResource('thirdpartyjs/yui/dom/dom.js');
+        $this->oPage->requireJSResource('thirdpartyjs/yui/dragdrop/dragdrop.js');
         $this->oPage->requireJSResource('resources/js/DDList.js');
 
         $this->oUser->refreshDashboadState();
