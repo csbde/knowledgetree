@@ -1450,7 +1450,7 @@ class SQLQueryBuilder implements QueryBuilder
 		$config = KTConfig::getSingleton();
 		$maxSqlResults = $config->get('search/maxSqlResults', 1000);
 
-		$sql .= "limit $maxSqlResults";
+		$sql .= " limit $maxSqlResults";
 
         return $sql;
 	}
