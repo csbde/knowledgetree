@@ -407,6 +407,10 @@ class DocumentShortcutResultItem extends ProxyResultItem
 
 class FolderShortcutResultItem extends ProxyResultItem
 {
+    var $parentId;
+    var $linkedId;
+    var $full_path;
+    
     public function getFolderID() { return $this->getId(); }
     public function getMimeIconPath() { return 'folder_shortcut'; }
 

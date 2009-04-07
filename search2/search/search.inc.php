@@ -764,7 +764,7 @@ function resolveSearchShortcuts($result)
     if (!empty($folderIds))
     {
 
-        $sql = "SELECT f.id, f.linked_folder_id from folders f ";
+        $sql = "SELECT f.id, f.parent_id, f.linked_folder_id, f.full_path from folders f ";
         $sql .= 'INNER JOIN permission_lookups AS PL ON f.permission_lookup_id = PL.id '. "\n";
         $sql .= 'INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = '.$permId. " \n";
         $sql .= " WHERE f.linked_folder_id in ($folderIds) AND PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
@@ -775,8 +775,13 @@ function resolveSearchShortcuts($result)
         {
             $id = $row['id'];
             $linked_id = $row['linked_folder_id'];
+            
+            $shortFolder = new FolderShortcutResultItem($id, $result['folders'][$linked_id]);
+            $shortFolder->parentId = $row['parent_id'];
+            $shortFolder->linkedId = $row['linked_folder_id'];
+            $shortFolder->full_path = $row['full_path'];
 
-            $result['shortfolders'][$id] = new FolderShortcutResultItem($id, $result['folders'][$linked_id]);
+            $result['shortfolders'][$id] = $shortFolder;
         }
     }
     return $result;
