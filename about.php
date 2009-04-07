@@ -69,7 +69,7 @@ class KTAbout extends KTStandardDispatcher {
               "context" => $this,
               "versionname" => $sVersionName,
 			  "versionnumber" => $sVersionNo,
-			  'smallVersion' => substr($default->versionName, -17),
+			  'smallVersion' => substr($default->versionName, -18, -1),
         );
         return $oTemplate->render($aTemplateData);    
     }
