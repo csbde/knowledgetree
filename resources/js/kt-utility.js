@@ -24,10 +24,10 @@ function getTarget() {
     
 
 function confirmDelete(e) {
-    var 
-    target = getTarget(),
-    msg = target.getAttribute('kt:deleteMessage');
-
+    var target = getTarget();
+    if(!isUndefinedOrNull(target)) {
+        var msg = target.getAttribute('kt:deleteMessage');
+    }
 
     if(!isUndefinedOrNull(msg)) {
 	var v = confirm(msg);

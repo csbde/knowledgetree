@@ -138,7 +138,7 @@ function sendManualEmails($aEmailAddresses, &$aUserEmails, &$aEmailErrors) {
 function sendExternalEmails($aEmailAddresses, $iDocumentID, $sDocumentName, $sComment, &$aEmailErrors){
     global $default;
     $oSendingUser = User::get($_SESSION['userID']);
-
+    
     // Create email content
 /*
     $sMessage = '<font face="arial" size="2">';
@@ -176,10 +176,10 @@ function sendExternalEmails($aEmailAddresses, $iDocumentID, $sDocumentName, $sCo
         $sEmail = $oSendingUser->getEmail();
         $sEmailFrom = $oSendingUser->getName();
     }
-    $oEmail = new Email($sEmail, $sEmailFrom);
 
     $iCounter = 0;
     foreach ($aEmailAddresses as $sAddress){
+        $oEmail = new Email($sEmail, $sEmailFrom);
         if(validateEmailAddress($sAddress)){
             // Add to list of addresses
             $sDestEmails .= (empty($sDestEmails)) ? $sAddress : ', '.$sAddress;
