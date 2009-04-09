@@ -2260,7 +2260,7 @@ body #content #add_dashlet
 .x-toolbar{
     border: none;
     display: block;
-	padding: 0 0 0 15px;
+	padding: 0 15px 0 15px;
     background: transparent;
     position: relative;
     zoom: 1;
