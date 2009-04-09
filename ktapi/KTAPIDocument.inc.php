@@ -785,9 +785,16 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return $result;
 		}
 
-		if (!KTDocumentUtil::canBeMoved($this->document))
+		if (!KTDocumentUtil::canBeMoved($this->document, $error))
 		{
-			return new PEAR_Error('Document cannot be moved.');
+            if (PEAR::isError($error))
+            {
+                return $error;
+            }
+            else
+            {
+                return new PEAR_Error('Document cannot be moved.');
+            }
 		}
 
 		$name = $this->document->getName();

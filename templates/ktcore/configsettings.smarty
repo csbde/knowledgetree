@@ -32,31 +32,35 @@
             {$group}
         </span></h3>
         <span class='descriptiveText'>{$groupItem.description}</span>
+            <div id='{$groupItem.id}' style='visibility: visible;'>
+                <fieldset>
 
-        <div id='{$groupItem.id}' style='visibility: visible;'>
-            <fieldset>
+                {* <!-- Display the settings, render the input according to the setting type (dropdown / radio / etc) --> *}
+                {foreach from=$groupSettings.$group item=settings}
 
-            {* <!-- Display the settings, render the input according to the setting type (dropdown / radio / etc) --> *}
-            {foreach from=$groupSettings.$group item=settings}
+                    <p style='padding-bottom: 15px;'>
+                        {$settings.display_name}<br>
+                        {if $settings.description}
+                            <span class='descriptiveText'>{$settings.description}</span><br>
+                        {/if}
+                        {$context->renderInput($settings.id, $settings.type, $settings.value, $settings.default_value, $settings.options)}<br>
+                    </p>
 
-                <p style='padding-bottom: 15px;'>
-                    {$settings.display_name}<br>
-                    {if $settings.description}
-                        <span class='descriptiveText'>{$settings.description}</span><br>
-                    {/if}
-                    {$context->renderInput($settings.id, $settings.type, $settings.value, $settings.default_value, $settings.options)}<br>
-                </p>
+                {/foreach}
 
-            {/foreach}
-
-            </fieldset>
-        </div>
-
+                </fieldset>
+            </div>
     {/foreach}
 
-{/if}
+    <br><hr>
+    <input type="submit" name="AlterConfig" value="{i18n}Save Config Settings{/i18n}" />
 
-<br><hr>
-<input type="submit" name="AlterConfig" value="{i18n}Save Config Settings{/i18n}" />
+{else}
+
+    <p style='padding-top: 15px;padding-bottom: 15px;'>
+        {i18n}This page defines configuration options which are currently reserved for future development.{/i18n}
+    </p>
+
+{/if}
 
 </form>

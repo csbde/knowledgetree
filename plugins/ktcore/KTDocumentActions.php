@@ -1611,7 +1611,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
 class KTDocumentArchiveAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.archive';
     var $_sShowPermission = 'ktcore.permissions.write';
-    var $_bMutator = true;
+    var $_bMutator = false;
 
     function getDisplayName() {
         return _kt('Archive');

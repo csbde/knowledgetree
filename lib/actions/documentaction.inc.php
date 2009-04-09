@@ -42,6 +42,13 @@ require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
+/**
+ * Base class for document actions within KnowledgeTree
+ *
+ * @author KnowledgeTree Team
+ * @package KTDocumentActions
+ */
+
 class KTDocumentAction extends KTStandardDispatcher {
     var $sName;
     var $sDescription;
@@ -53,6 +60,19 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     var $sSection = 'view_details';
 
+    /**
+ 	 * The _bMutator variable determines whether the action described by the class is considered a mutator.
+     * Mutators may not act on Immutable documents unless overridden in the code
+     * (e.g. by administrator action or permission)
+     *
+     * To be set in child class.
+     *
+     * Set this to false if you want an action to be available for immutable documents, 
+     * true if you want the action prevented for immutable documents.
+ 	 *
+ 	 * @access public
+ 	 * @var boolean
+ 	 */
     var $_bMutator = false;
     var $_bMutationAllowedByAdmin = true;
 
@@ -179,7 +199,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     function check() {
         $this->oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
 
-    if (!$this->_show()) { return false; }
+        if (!$this->_show()) { return false; }
 
         $aOptions = array('final' => false,
               'documentaction' => 'viewDocument',

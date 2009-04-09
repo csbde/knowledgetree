@@ -153,7 +153,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $this->oDocument =& $oDocument;
 
-        //Figure out if we came here by navigating trough a shortcut.
+        //Figure out if we came here by navigating through a shortcut.
         //If we came here from a shortcut, the breadcrumbspath should be relative
         //to the shortcut folder.
     	$iSymLinkFolderId = KTUtil::arrayGet($_REQUEST, 'fShortcutFolder', null);
@@ -249,8 +249,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $content_class = 'view withviewlets';
         }
         $this->oPage->setContentClass($content_class);
-
-
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/view');

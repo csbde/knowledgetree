@@ -65,6 +65,14 @@ class KTDocumentImmutableAction extends KTDocumentAction {
         return _kt('Make immutable');
     }
 
+    function getInfo() {
+        if ($this->oDocument->getIsCheckedOut()) {
+            return null;
+        }
+
+        return parent::getInfo();
+    }
+
     function do_main() {
         if(!$this->oDocument->getIsCheckedOut())
         {
