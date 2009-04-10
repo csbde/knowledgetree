@@ -287,7 +287,9 @@ INSERT INTO `config_settings` VALUES
 (112, 'urls', 'Var Directory', 'The path to the var directory.', 'varDirectory', 'default', '${fileSystemRoot}/var', 'string', NULL, 1),
 (113, 'tweaks','Increment version on rename','Defines whether to update the version number if a document filename is changed/renamed.','incrementVersionOnRename','default','true','boolean',NULL,1),
 (114, 'ui', 'System URL', 'The system url, used in the main logo.', 'systemUrl', 'default', 'http://www.knowledgetree.com', 'string', '', 1),
-(115, 'ldapAuthentication', 'Allow Moving Users in LDAP/AD', 'Moving users around within the LDAP or Active Directory structure will cause failed logins for these users. When this setting is enabled, a failed login will trigger a search for the user using their sAMAccountName setting and update their authentication details.', 'enableLdapUpdate', 'default', 'false', 'boolean', NULL, 1);
+(115, 'ldapAuthentication', 'Allow Moving Users in LDAP/AD', 'Moving users around within the LDAP or Active Directory structure will cause failed logins for these users. When this setting is enabled, a failed login will trigger a search for the user using their sAMAccountName setting and update their authentication details.', 'enableLdapUpdate', 'default', 'false', 'boolean', NULL, 1),
+(116, 'export', 'Use External Zip Binary', 'Utilises the external zip binary for compressing archives. The default is to use the PEAR archive class.', 'useBinary', 'default', 'false', 'boolean', NULL, 1),
+(117, 'export', 'Use Bulk Download Queue', 'The bulk download can be large and can prevent normal browsing. The download queue performs the bulk downloads in the background.', 'useDownloadQueue', 'default', 'true', 'boolean', NULL, 1);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1370,7 +1372,8 @@ INSERT INTO `scheduler_tasks` VALUES
 (7,'Cleanup Temporary Directory','search2/bin/cronCleanup.php','',0,'1min','2007-10-01 00:00:00',NULL,0,'enabled'),
 (8,'Disk Usage and Folder Utilisation Statistics','plugins/housekeeper/bin/UpdateStats.php','',0,'5mins','2007-10-01 00:00:00',NULL,0,'enabled'),
 (9,'Refresh Index Statistics','search2/bin/cronIndexStats.php','',0,'1min','2007-10-01',NULL,0,'enabled'),
-(10,'Refresh Resource Dependancies','search2/bin/cronResources.php','',0,'1min','2007-10-01',NULL,0,'enabled');
+(10,'Refresh Resource Dependancies','search2/bin/cronResources.php','',0,'1min','2007-10-01',NULL,0,'enabled'),
+(11,'Bulk Download Queue','lib/foldermanagement/downloadTask.php','',0,'1min','2007-10-01',NULL,0,'system');
 
 /*!40000 ALTER TABLE `scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;

@@ -410,12 +410,12 @@ class KTBulkMoveAction extends KTBulkAction {
         if(is_a($oEntity, 'Folder')) {
             $aDocuments = array();
             $aChildFolders = array();
-            
+
             $oFolder = $oEntity;
 
             // Get folder id
             $sFolderId = $oFolder->getID();
-            
+
             // Get documents in folder
             $sDocuments = $oFolder->getDocumentIDs($sFolderId);
             $aDocuments = (!empty($sDocuments)) ? explode(',', $sDocuments) : array();
@@ -645,7 +645,7 @@ class KTBulkCopyAction extends KTBulkAction {
                 return PEAR::raiseError(_kt('Document cannot be copied'));
             }
         }
-        
+
         if(is_a($oEntity, 'Folder')) {
             $aDocuments = array();
             $aChildFolders = array();
@@ -1068,18 +1068,42 @@ class KTBrowseBulkExportAction extends KTBulkAction {
                 return PEAR::raiseError(_kt('Document cannot be exported as it is restricted by the workflow.'));
             }
         }
+
         return parent::check_entity($oEntity);
     }
 
-
     function do_performaction() {
 
-        $folderName = $this->oFolder->getName();
-        $this->oZip = new ZipFolder($folderName);
-        $res = $this->oZip->checkConvertEncoding();
+        $config = KTConfig::getSingleton();
+        $useQueue = $config->get('export/useDownloadQueue', true);
+
+        // Create the export code
+        $this->sExportCode = KTUtil::randomString();
+        $_SESSION['exportcode'] = $this->sExportCode;
 
         $folderurl = $this->getReturnUrl();
         $sReturn = sprintf('<p>' . _kt('Return to the original <a href="%s">folder</a>') . "</p>\n", $folderurl);
+        $download_url = KTUtil::addQueryStringSelf("action=downloadZipFile&fFolderId={$this->oFolder->getId()}&exportcode={$this->sExportCode}");
+
+        if($useQueue){
+            $result = parent::do_performaction();
+
+            $url = KTUtil::kt_url() . '/lib/foldermanagement/downloadTask.php';
+
+          	$oTemplating =& KTTemplating::getSingleton();
+          	$oTemplate = $oTemplating->loadTemplate('ktcore/action/bulk_download');
+
+          	$aParams = array(
+                    'return' => $sReturn,
+                    'url' => $url,
+                    'code' => $this->sExportCode,
+                    'download_url' => $download_url
+                );
+            return $oTemplate->render($aParams);
+        }
+
+        $this->oZip = new ZipFolder('', $this->sExportCode);
+        $res = $this->oZip->checkConvertEncoding();
 
         if(PEAR::isError($res)){
             $this->addErrorMessage($res->getMessage());
@@ -1087,16 +1111,14 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         }
 
         $this->startTransaction();
-        $oKTConfig =& KTConfig::getSingleton();
-        $this->bNoisy = $oKTConfig->get("tweaks/noisyBulkOperations");
-
-        $this->bNotifications = ($oKTConfig->get('export/enablenotifications', 'on') == 'on') ? true : false;
 
         $result = parent::do_performaction();
+
         $sExportCode = $this->oZip->createZipFile();
 
         if(PEAR::isError($sExportCode)){
             $this->addErrorMessage($sExportCode->getMessage());
+            $this->rollbackTransaction();
             return $sReturn;
         }
 
@@ -1110,22 +1132,27 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 
         $this->commitTransaction();
 
-        $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $this->oFolder->getId(), $sExportCode));
-        $str = sprintf('<p>' . _kt('Your download will begin shortly. If you are not automatically redirected to your download, please click <a href="%s">here</a> ') . "</p>\n", $url);
+        $str = sprintf('<p>' . _kt('Your download will begin shortly. If you are not automatically redirected to your download, please click <a href="%s">here</a> ') . "</p>\n", $download_url);
         $str .= sprintf('<p>' . _kt('Once your download is complete, click <a href="%s">here</a> to return to the original folder') . "</p>\n", $folderurl);
-        //$str .= sprintf("</div></div></body></html>\n");
         $str .= sprintf('<script language="JavaScript">
                 function kt_bulkexport_redirect() {
-                document.location.href = "%s";
+                    document.location.href = "%s";
                 }
-                callLater(2, kt_bulkexport_redirect);
-
-                </script>', $url);
+                callLater(5, kt_bulkexport_redirect);
+                </script>', $download_url);
 
         return $str;
     }
 
     function perform_action($oEntity) {
+
+        $exportCode = $_SESSION['exportcode'];
+        $this->oZip = ZipFolder::get($exportCode);
+
+        $oQueue = new DownloadQueue();
+
+        $config = KTConfig::getSingleton();
+        $useQueue = $config->get('export/useDownloadQueue');
 
         if(is_a($oEntity, 'Document')) {
 
@@ -1134,19 +1161,12 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 	    		$oDocument->switchToLinkedCore();
 	    	}
 
-            if ($this->bNoisy) {
-                $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
-                $oDocumentTransaction->create();
-            }
+	    	if($useQueue){
+                DownloadQueue::addItem($this->sExportCode, $this->oFolder->getId(), $oDocument->iId, 'document');
+	    	}else{
+                $oQueue->addDocument($this->oZip, $oDocument->iId);
+	    	}
 
-            // fire subscription alerts for the downloaded document - if global config is set
-            if($this->bNotifications){
-                $oSubscriptionEvent = new SubscriptionEvent();
-                $oFolder = Folder::get($oDocument->getFolderID());
-                $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
-            }
-
-            $this->oZip->addDocumentToZip($oDocument);
 
         }else if(is_a($oEntity, 'Folder')) {
             $aDocuments = array();
@@ -1156,79 +1176,11 @@ class KTBrowseBulkExportAction extends KTBulkAction {
             	$oFolder = $oFolder->getLinkedFolder();
             }
             $sFolderId = $oFolder->getId();
-            $sFolderDocs = $oFolder->getDocumentIDs($sFolderId);
 
-            // Add folder to zip
-            $this->oZip->addFolderToZip($oFolder);
-
-            if(!empty($sFolderDocs)){
-                $aDocuments = explode(',', $sFolderDocs);
-            }
-
-            // Get all the folders within the current folder
-            $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
-            parent_folder_ids LIKE '{$sFolderId},%' OR
-            parent_folder_ids LIKE '%,{$sFolderId},%' OR
-            parent_folder_ids LIKE '%,{$sFolderId}'";
-            $aFolderList = $this->oFolder->getList($sWhereClause);
-			$aLinkingFolders = $this->getLinkingEntities($aFolderList);
-            $aFolderList = array_merge($aFolderList,$aLinkingFolders);
-
-            $aFolderObjects = array();
-            $aFolderObjects[$sFolderId] = $oFolder;
-
-            // Export the folder structure to ensure the export of empty directories
-            if(!empty($aFolderList)){
-                foreach($aFolderList as $k => $oFolderItem){
-                    if($oFolderItem->isSymbolicLink()){
-                    	$oFolderItem = $oFolderItem->getLinkedFolder();
-                    }
-                	if(Permission::userHasFolderReadPermission($oFolderItem)){
-	                    // Get documents for each folder
-	                    $sFolderItemId = $oFolderItem->getID();
-	                    $sFolderItemDocs = $oFolderItem->getDocumentIDs($sFolderItemId);
-
-	                    if(!empty($sFolderItemDocs)){
-	                        $aFolderDocs = explode(',', $sFolderItemDocs);
-	                        $aDocuments = array_merge($aDocuments, $aFolderDocs);
-	                    }
-	                    $this->oZip->addFolderToZip($oFolderItem);
-	                    $aFolderObjects[$oFolderItem->getId()] = $oFolderItem;
-                	}
-                }
-            }
-
-            // Add all documents to the export
-            if(!empty($aDocuments)){
-                foreach($aDocuments as $sDocumentId){
-                    $oDocument = Document::get($sDocumentId);
-                 	if($oDocument->isSymbolicLink()){
-	    				$oDocument->switchToLinkedCore();
-	    			}
-	    			if(Permission::userHasDocumentReadPermission($oDocument)){
-
-                        if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.view')){
-                            $this->addErrorMessage($oDocument->getName().': '._kt('Document cannot be exported as it is restricted by the workflow.'));
-                            continue;
-                        }
-
-                        $sDocFolderId = $oDocument->getFolderID();
-                        $oFolder = isset($aFolderObjects[$sDocFolderId]) ? $aFolderObjects[$sDocFolderId] : Folder::get($sDocFolderId);
-
-                        if ($this->bNoisy) {
-                            $oDocumentTransaction = new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
-                            $oDocumentTransaction->create();
-                        }
-
-                        // fire subscription alerts for the downloaded document
-                        if($this->bNotifications){
-                            $oSubscriptionEvent = new SubscriptionEvent();
-                            $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
-                        }
-
-                        $this->oZip->addDocumentToZip($oDocument, $oFolder);
-	    			}
-                }
+            if($useQueue){
+                DownloadQueue::addItem($this->sExportCode, $this->oFolder->getId(), $sFolderId, 'folder');
+            }else{
+                $oQueue->addFolder($this->oZip, $sFolderId);
             }
         }
         return true;
@@ -1237,9 +1189,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
     function do_downloadZipFile() {
         $sCode = $this->oValidator->validateString($_REQUEST['exportcode']);
 
-        $folderName = $this->oFolder->getName();
-        $this->oZip = new ZipFolder($folderName, $sCode);
-
+        $this->oZip = new ZipFolder('', $sCode);
         $res = $this->oZip->downloadZipFile($sCode);
 
         if(PEAR::isError($res)){

@@ -639,6 +639,22 @@ CREATE TABLE `download_files` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
+-- Table structure for table `download_queue`
+--
+
+CREATE TABLE `download_queue` (
+	`code` char(16) NOT NULL,
+	`folder_id` int(11) NOT NULL,
+	`object_id` int(11) NOT NULL,
+	`object_type` enum('document', 'folder') NOT NULL default 'folder',
+	`user_id` int(11) NOT NULL,
+	`date_added` timestamp NOT NULL default CURRENT_TIMESTAMP,
+	`status` tinyint(4) NOT NULL default 0,
+	`errors` mediumtext,
+	INDEX (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `field_behaviour_options`
 --
 

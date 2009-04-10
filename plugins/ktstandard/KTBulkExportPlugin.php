@@ -71,20 +71,44 @@ class KTBulkExportAction extends KTFolderAction {
     }
 
     function do_main() {
-        $folderName = $this->oFolder->getName();
-        $this->oZip = new ZipFolder($folderName);
+        $config = KTConfig::getSingleton();
+        $useQueue = $config->get('export/useDownloadQueue', true);
+
+        // Create the export code
+        $exportCode = KTUtil::randomString();
+        $this->oZip = new ZipFolder('', $exportCode);
 
         if(!$this->oZip->checkConvertEncoding()) {
             redirect(KTBrowseUtil::getUrlForFolder($this->oFolder));
             exit(0);
         }
 
-        $oKTConfig =& KTConfig::getSingleton();
-        $bNoisy = $oKTConfig->get("tweaks/noisyBulkOperations");
-        $bNotifications = ($oKTConfig->get('export/enablenotifications', 'on') == 'on') ? true : false;
+        $bNoisy = $config->get("tweaks/noisyBulkOperations");
+        $bNotifications = ($config->get('export/enablenotifications', 'on') == 'on') ? true : false;
+
+        $sCurrentFolderId = $this->oFolder->getId();
+        $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $sCurrentFolderId, $exportCode));
+        $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
+        $sReturn = '<p>' . _kt('Once your download is complete, click <a href="'.$folderurl.'">here</a> to return to the original folder') . "</p>\n";
+
+        if($useQueue){
+            DownloadQueue::addItem($exportCode, $sCurrentFolderId, $sCurrentFolderId, 'folder');
+
+            $task_url = KTUtil::kt_url() . '/lib/foldermanagement/downloadTask.php';
+
+          	$oTemplating =& KTTemplating::getSingleton();
+          	$oTemplate = $oTemplating->loadTemplate('ktcore/action/bulk_download');
+
+          	$aParams = array(
+                    'return' => $sReturn,
+                    'url' => $task_url,
+                    'code' => $exportCode,
+                    'download_url' => $url
+                );
+            return $oTemplate->render($aParams);
+        }
 
         // Get all folders and sub-folders
-        $sCurrentFolderId = $this->oFolder->getId();
         $sWhereClause = "parent_folder_ids = '{$sCurrentFolderId}' OR
         parent_folder_ids LIKE '{$sCurrentFolderId},%' OR
         parent_folder_ids LIKE '%,{$sCurrentFolderId},%' OR
@@ -173,16 +197,14 @@ class KTBulkExportAction extends KTFolderAction {
             'ip' => Session::getClientIP(),
         ));
 
-        $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $this->oFolder->getId(), $sExportCode));
         printf('<p>' . _kt('Your download will begin shortly. If you are not automatically redirected to your download, please click <a href="%s">here</a> ') . "</p>\n", $url);
-        $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
-        printf('<p>' . _kt('Once your download is complete, click <a href="%s">here</a> to return to the original folder') . "</p>\n", $folderurl);
+        print($sReturn);
         printf("</div></div></body></html>\n");
         printf('<script language="JavaScript">
                 function kt_bulkexport_redirect() {
                     document.location.href = "%s";
                 }
-                callLater(1, kt_bulkexport_redirect);
+                callLater(2, kt_bulkexport_redirect);
 
                 </script>', $url);
 
@@ -230,8 +252,7 @@ class KTBulkExportAction extends KTFolderAction {
     function do_downloadZipFile() {
         $sCode = $this->oValidator->validateString($_REQUEST['exportcode']);
 
-        $folderName = $this->oFolder->getName();
-        $this->oZip = new ZipFolder($folderName);
+        $this->oZip = new ZipFolder('', $sCode);
 
         $res = $this->oZip->downloadZipFile($sCode);
 

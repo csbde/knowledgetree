@@ -1,0 +1,47 @@
+<p style='margin-bottom: 10px;'>
+The documents you have selected are being compressed and archived, once the archive has been created a download link will be displayed.
+<br /><b>Please do not close the page.</b>
+</p>
+
+
+<div id='download_link' style='visibility: hidden'>
+<p style='margin-bottom: 5px;'>
+Click <a href="{$download_url}">here</a> to download the archive. {$str}
+</p>
+<p style='margin-bottom: 10px;'>
+{$return}
+<br />
+</p>
+</div>
+
+
+<script type='text/javascript'>
+{literal}
+function ping()
+{
+    Ext.Ajax.request({
+        url: {/literal}'{$url}'{literal},
+        success: function(response) {
+            if(response.responseText == 'wait'){
+                setTimeout("ping()", 2000);
+                return;
+            }
+
+            var div = document.getElementById('download_link');
+            div.style.visibility = 'visible';
+            div.innerHTML = div.innerHTML + response.responseText;
+        },
+        failure: function(response) {
+            alert({/literal}{i18n}'There was an error connecting to the server. Please refresh the page.'{/i18n}{literal});
+        },
+        params: {
+            ping: 'ping',
+            code: {/literal}'{$code}'{literal}
+        }
+    });
+
+}
+{/literal}
+
+ping();
+</script>
