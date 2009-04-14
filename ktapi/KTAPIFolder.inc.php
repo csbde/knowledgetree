@@ -42,7 +42,7 @@
 
 
 require_once(KT_DIR . '/ktwebservice/KTUploadManager.inc.php');
-
+require_once(KT_LIB_DIR . '/mime.inc.php');
 
 /**
  * This class handles folder related operations
