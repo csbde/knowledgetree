@@ -76,13 +76,40 @@ class KTUploadManager
 		return $tempfilename;
 	}
 
-	function is_valid_temporary_file($tempfilename)
-	{
-		$tempdir = substr($tempfilename,0,strlen($this->temp_dir));
+    function is_valid_temporary_file($tempfilename)
+    {
+        $tempdir = substr($tempfilename,0,strlen($this->temp_dir));
+        $tempdir = str_replace('\\','/', $tempdir);
+
+        $tempdir = preg_replace_callback(
+            '/\A(.*?):/i',
+            create_function(
+                // single quotes are essential here,
+                // or alternative escape all $ as \$
+                '$matches',
+                'return strtolower($matches[0]);'
+            ),
+            $tempdir
+        );
+
+        $main_temp_dir = preg_replace_callback(
+            '/\A(.*?):/i',
+            create_function(
+                // single quotes are essential here,
+                // or alternative escape all $ as \$
+                '$matches',
+                'return strtolower($matches[0]);'
+            ),
+            $this->temp_dir
+        );
+
+        return ($tempdir == $main_temp_dir);
+        /*
+        $tempdir = substr($tempfilename,0,strlen($this->temp_dir));
 		$tempdir = str_replace('\\','/', $tempdir);
 		return ($tempdir == $this->temp_dir);
-	}
-
+		*/
+    }
 	function store_base64_file($base64, $prefix= 'sa_')
 	{
 		$tempfilename = $this->get_temp_filename($prefix);
