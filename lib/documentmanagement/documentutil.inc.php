@@ -1148,7 +1148,8 @@ $sourceDocument->getName(),
         $aCoreRow = DBUtil::getOneResult(array($sQuery, $aParams));
         // we unset the id as a new one will be created on insert
         unset($aCoreRow['id']);
-
+        // we unset immutable since a new document will be created on insert
+        unset($aCoreRow['immutable']);
         // get a copy of the latest metadata version for the copied document
         $iOldMetadataId = $aCoreRow['metadata_version_id'];
         $sMetadataTable = KTUtil::getTableName('document_metadata_version');
