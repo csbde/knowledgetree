@@ -49,7 +49,6 @@ require_once(KT_LIB_DIR . '/help/help.inc.php');
 require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
-require_once('loginUtil.inc.php');
 
 class loginResetDispatcher extends KTDispatcher {
 
@@ -80,7 +79,7 @@ class loginResetDispatcher extends KTDispatcher {
             $_REQUEST['errorMessage'] = join('. <br /> ', $_REQUEST['errorMessage']);
         }
 
-        if(!loginUtil::check() && $_SESSION['userID'] != -2) { // bounce here, potentially.
+        if(!$this->check() && $_SESSION['userID'] != -2) { // bounce here, potentially.
             // User is already logged in - get the redirect
             $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
@@ -169,7 +168,7 @@ class loginResetDispatcher extends KTDispatcher {
     function do_login() {
         $aExtra = array();
 
-        if(!loginUtil::check() && $_SESSION['userID'] != -2) { // bounce here, potentially.
+        if(!$this->check() && $_SESSION['userID'] != -2) { // bounce here, potentially.
             // User is already logged in - get the redirect
             $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
@@ -210,7 +209,7 @@ class loginResetDispatcher extends KTDispatcher {
         $oUser =& User::getByUsername($username);
         if (PEAR::isError($oUser) || ($oUser === false)) {
             if (is_a($oUser, 'ktentitynoobjects')) {
-                loginUtil::handleUserDoesNotExist($username, $password, $aExtra);
+                $this->handleUserDoesNotExist($username, $password, $aExtra);
             }
             $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $queryParams);
             exit(0);
@@ -232,11 +231,112 @@ class loginResetDispatcher extends KTDispatcher {
             exit(0);
         }
 
-        $res = loginUtil::performLogin($oUser);
+        $res = $this->performLogin($oUser);
 
         if ($res) {
             $this->simpleRedirectToMain($res->getMessage(), $url, $queryParams);
             exit(0);
+        }
+    }
+
+    /**
+     * Check if the user is already logged in or if anonymous login is enabled
+     *
+     * @return boolean false if the user is logged in
+     */
+    function check() {
+        $session = new Session();
+        $sessionStatus = $session->verify();
+
+        if ($sessionStatus === true) { // the session is valid
+            if ($_SESSION['userID'] == -2 && $default->allowAnonymousLogin) {
+                // Anonymous user - we want to login
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Verify the user session
+     *
+     */
+    function do_providerVerify() {
+        $this->session = new Session();
+        $sessionStatus = $this->session->verify();
+        if ($sessionStatus !== true) { // the session is not valid
+            $this->redirectToMain();
+        }
+        $this->oUser =& User::get($_SESSION['userID']);
+        $oProvider =& KTAuthenticationUtil::getAuthenticationProviderForUser($this->oUser);
+        $oProvider->subDispatch($this);
+        exit(0);
+    }
+
+    /**
+     * Log the user into the system
+     *
+     * @param unknown_type $oUser
+     * @return unknown
+     */
+    function performLogin(&$oUser) {
+        if (!is_a($oUser, 'User')) {
+        }
+
+        $session = new Session();
+        $sessionID = $session->create($oUser);
+        if (PEAR::isError($sessionID)) {
+            return $sessionID;
+        }
+
+		$redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
+
+        // DEPRECATED initialise page-level authorisation array
+        $_SESSION["pageAccess"] = NULL;
+
+        $cookietest = KTUtil::randomString();
+        setcookie("CookieTestCookie", $cookietest, 0);
+
+        $this->redirectTo('checkCookie', array(
+            'cookieVerify' => $cookietest,
+            'redirect' => $redirect,
+        ));
+        exit(0);
+    }
+
+    function handleUserDoesNotExist($username, $password, $aExtra = null) {
+        if (empty($aExtra)) {
+            $aExtra = array();
+        }
+
+        // Check if the user has been deleted before allowing auto-signup
+        $delUser = User::checkDeletedUser($username);
+
+        if($delUser){
+            return ;
+        }
+
+        $oKTConfig = KTConfig::getSingleton();
+        $allow = $oKTConfig->get('session/allowAutoSignup', true);
+
+        if($allow){
+            $res = KTAuthenticationUtil::autoSignup($username, $password, $aExtra);
+            if (empty($res)) {
+                return $res;
+            }
+            if (is_a($res, 'User')) {
+                $this->performLogin($res);
+            }
+            if (is_a($res, 'KTAuthenticationSource')) {
+                $_SESSION['autosignup'] = $aExtra;
+                $this->redirectTo('autoSignup', array(
+                    'source_id' => $res->getId(),
+                    'username' => $username,
+                ));
+                exit(0);
+            }
         }
     }
 
