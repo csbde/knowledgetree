@@ -402,9 +402,12 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         $data = $res['results'];
         $errors = $res['errors'];
         $extra_errors = array();
+
+        // check that the fieldset name either hasn't changed, or doesn't exist.
         if ($data['name'] != $this->oFieldset->getName()) {
             $oOldFieldset = KTFieldset::getByName($data['name']);
-            if (!PEAR::isError($oOldFieldset)) {
+            // If the fieldset exists throw an error. Mysql doesn't distinguish between Ž and e so check the names are different in php.
+            if (!PEAR::isError($oOldFieldset) && $oOldFieldset->getName() == $data['name']) {
                 $extra_errors['name'][] = _kt("A fieldset with that name already exists.");
             }
         }

@@ -447,6 +447,12 @@ class User extends KTEntity {
         ), array('multi' => true));
     }
 
+    function getByLastLoginNever() {
+        $aOptions['orderby'] = 'name';
+        $sWhereClause = 'last_login is null';
+        return KTEntityUtil::getList2('User', $sWhereClause, $aOptions);
+    }
+
     function getByLastLoginAfter($dDateTime) {
         return KTEntityUtil::getByDict('User', array(
             'last_login' => array('type' => 'after', 'value' => $dDateTime),

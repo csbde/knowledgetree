@@ -152,7 +152,8 @@ class Session {
      */
     function removeStaleSessions($iUserId = null) {
         global $default;
-        $time = time() - $default->sessionTimeout;
+        $sessionTimeout = $default->sessionTimeout;
+        $time = time() - $sessionTimeout;
 
         // for web service sessions, we will expire after a month.
         $monthPeriod = 30 * 24 * 60 * 60;
@@ -172,7 +173,7 @@ class Session {
         $mintime = formatDateTime($time);
         $mintime2 = formatDateTime($wsTimeout);
         $aQuery = array(
-            sprintf("SELECT id, lastused, apptype FROM %s WHERE (user_id = $iUserId OR $iUserId = 0) AND ( (lastused <= '$mintime' and apptype = 'webapp') or (lastused <= '$mintime2' and apptype !='webapp') )", $sTable)
+            sprintf("SELECT id, user_id, lastused, apptype FROM %s WHERE (user_id = $iUserId OR $iUserId = 0) AND ( (lastused <= '$mintime' and apptype = 'webapp') or (lastused <= '$mintime2' and apptype !='webapp') )", $sTable)
         );
 
         $aSessions = DBUtil::getResultArray($aQuery);
@@ -182,12 +183,15 @@ class Session {
 
         foreach ($aSessions as $aSessionData) {
             $iId = $aSessionData['id'];
+            $user_id = $aSessionData['user_id'];
+            $app_type = $aSessionData['apptype'];
             $dLastUsed = $aSessionData['lastused'];
             $iTime = strtotime($dLastUsed);
 
-            $iTime = $iTime + ($aSessionData['apptype'] != 'webapp')?$monthPeriod:$default->sessionTimeout;
+            $timeoutPeriod = ($app_type != 'webapp') ? $monthPeriod : $sessionTimeout;
+            $iTime = $iTime + (int)$timeoutPeriod;
             $aParams = array(
-                'userid' => $iUserId,
+                'userid' => $user_id,
                 'datetime' => formatDateTime($iTime),
                 'actionnamespace' => 'ktcore.user_history.timeout',
                 'comments' => 'Session timed out',
