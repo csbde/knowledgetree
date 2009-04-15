@@ -186,7 +186,7 @@ class Group extends KTEntity {
                 $aMembers[] = $oUser;
             }
         }
-
+            
         return $aMembers;
     }
 
