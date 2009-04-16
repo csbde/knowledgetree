@@ -183,15 +183,16 @@ function createRange(groupid, fid, type)
 			html += "<option value=\"is not\">{/literal}{i18n}not on{/i18n}{literal}";
 			break;
 		default:
-			html += "<option value=\"is\">=";
-			html += "<option value=\"is not\">!=";
-			html += "<option value=\"\>\">\>";
-			html += "<option value=\"\>=\">\>=";
-			html += "<option value=\"\<\">\<";
-			html += "<option value=\"\<=\">\<=";
+			html += "<option value=\"is\">{/literal}{i18n}equal to{/i18n}";
+			html += "<option value=\"is not\">{i18n}not equal to{/i18n}";
+			html += "<option value=\"\>\">{i18n}greater than{/i18n}";
+			html += "<option value=\"\>=\">{i18n}greater than or equal to{/i18n}";
+			html += "<option value=\"\<\">{i18n}less than{/i18n}";
+			html += "<option value=\"\<=\">{i18n}less than or equal to{/i18n}";
 			html += "<option value=\"between\">{/literal}{i18n}between{/i18n}{literal}";
 			break;
 	}
+
 	html += "</SELECT>";
 
 	html += "<td valign=top width=\"100\"><div id=\"field"+ groupid + '_' + fid +"start\"></div>";
@@ -296,17 +297,16 @@ function onFilesizeChange(groupid, fid)
 
 function createFilesize(groupid, fid)
 {
-	var html = "<table><tr><td width=\"140\"";
+	var html = "<table><tr><td width=\"140\">";
 
 	html += "<SELECT style=\"width: 140px\" id=\"field" + groupid + "_" + fid + "op\">";
-	html += "<option value=\"\<\">\<";
-	html += "<option value=\"\<=\">\<=";
-	html += "<option value=\"\>\">\>";
-	html += "<option value=\"\>=\">\>=";
-	html += "<option value=\"=\">=";
-	html += "<option value=\"!=\">!=";
+	html += "<option value=\"\<\">{/literal}{i18n}less than{/i18n}"; // <
+	html += "<option value=\"\<=\">{i18n}less than or equal to{/i18n}"; // <=
+	html += "<option value=\"\>\">{i18n}greater than{/i18n}"; // >
+	html += "<option value=\"\>=\">{i18n}greater than or equal to{/i18n}"; // >=
+	html += "<option value=\"=\">{i18n}equal to{/i18n}"; // =
+	html += "<option value=\"!=\">{i18n}not equal to{/i18n}{literal}"; // !=
 	html += "</SELECT>"
-
 
 	html += "<td valign=top width=\"50px\"><div id=\"field"+ groupid + '_' + fid +"input\"></div>";
 	html += "<td>";
