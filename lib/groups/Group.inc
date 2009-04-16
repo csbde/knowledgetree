@@ -163,13 +163,16 @@ class Group extends KTEntity {
 
 	/**
 	 * Returns an array of Users in this group.
+     *
+	 * @param 	Boolean		Return Disabled Users or Not (defaults false)
+	 *
 	 */
-	function &getUsers() {
+	function &getUsers($disabled = false) {
 	    // legacy api.
-		return $this->getMembers();
+		return $this->getMembers($disabled);
 	}
 
-    function &getMembers() {
+    function &getMembers($disabled = false) {
         global $default;
         require_once(KT_LIB_DIR . '/users/User.inc');
         $sQuery = "SELECT user_id FROM $default->users_groups_table WHERE group_id = ?";
@@ -178,10 +181,12 @@ class Group extends KTEntity {
         $aMembers = array();
         foreach ($aUserIds as $iUserId) {
             $oUser = User::get($iUserId);
-            if ((!PEAR::isError($oUser)) && ($oUser !== false)) {
+            $is_disabled = ($disabled) ? false : $oUser->getDisabled();
+            if ((!PEAR::isError($oUser)) && ($oUser !== false) && !$is_disabled) {
                 $aMembers[] = $oUser;
             }
         }
+            
         return $aMembers;
     }
 
