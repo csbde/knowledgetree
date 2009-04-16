@@ -6779,7 +6779,7 @@ msgid "It is not possible to archive a shortcut. Please archive the target docum
 msgstr "Il est impossible d'archiver un raccourci. Veuillez archiver à la place le document ou le dossier ciblé."
 
 #: plugins/ktcore/admin/documentFieldsv2.php:115
-msgid "It is possibler to create different types of fieldsets.  The most common kind is a \"normal\" fieldset, which can be configured to have different kinds of fields.  The administrator may have installed additional plugins which provide different types of fieldsets."
+msgid "It is possible to create different types of fieldsets.  The most common kind is a \"normal\" fieldset, which can be configured to have different kinds of fields.  The administrator may have installed additional plugins which provide different types of fieldsets."
 msgstr "Il est possible de créer différents types de formulaires.  Le plus commun est un formulaire \"normal\" , qui peut être configuré de facon à disposer de différents types de champs. L'administrateur peut avoir installé des plugins supplémentaires qui fournissent différents types de formulaires."
 
 #: i18n/templates.c:7160
