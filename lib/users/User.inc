@@ -447,6 +447,20 @@ class User extends KTEntity {
         ), array('multi' => true));
     }
 
+    /**
+     * Get the number of users logged in between two dates
+     * @params   date $startDate
+     *           date $endDate
+     *
+     * @return Users Object array
+     */
+    function getByHaveNotLoggedIn($startDate, $endDate) {
+        if($startDate > $endDate) return false;
+        $sWhereClause = " last_login not between '$startDate' AND '$endDate'";
+
+        return KTEntityUtil::getList2('User', $sWhereClause);
+    }
+
     function getByLastLoginNever() {
         $aOptions['orderby'] = 'name';
         $sWhereClause = 'last_login is null';
