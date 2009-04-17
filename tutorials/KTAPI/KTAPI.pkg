@@ -15,8 +15,8 @@
     <refsect1 id="{@id intro}">
         <title>Introduction</title>
             <para>
-                <strong>PLEASE NOTE: This is currently just a place holder for the API documentation and tutorials that are to come.</strong><br>
-                <br>Many examples can already be found in the classes and methods documentation. We intend updating and adding to this documentation each iteration.
+                PLEASE NOTE: This is currently just a place holder for the API documentation and tutorials that are coming.
+                Many examples can already be found in the classes and methods documentation so have a look at the specific area you are interested in in the index. We intend updating and adding to this documentation each iteration.
             </para>
         <refsect2 id="{@id examples}">
             <title>Examples</title>
