@@ -567,7 +567,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
             $aListEmails = array_keys($aUserEmails);
             sendEmail($aListEmails, $iDocumentID, $sDocumentName, $fComment, (boolean)$fAttachDocument, $aEmailErrors);
         }
-        // Display success or error
+        // Display success or error, not both
         if (count($aEmailErrors)) {
             $_SESSION['KTErrorMessage'][] = join('<br />\n', $aEmailErrors);
         } else {
