@@ -66,6 +66,7 @@ function sendGroupEmails($aGroupIDs, &$aUserEmails, &$aEmailErrors) {
 		    $default->log->info('sendingEmail to group ' . $oDestGroup->getName());
 		    // for each group, retrieve all the users
 		    foreach($aDestinationGroups as $oGroup){
+                // Need to only retrieve users that are not diabled.
 		    	$aUsers = kt_array_merge($aUsers, $oGroup->getUsers());
 		    }
 
@@ -441,7 +442,6 @@ class KTDocumentEmailAction extends KTDocumentAction {
     function json_getGroups() {
         $oConfig = KTConfig::getSingleton();
         $bOnlyOwnGroup = $oConfig->get('email/onlyOwnGroups', false);
-
         $sFilter = KTUtil::arrayGet($_REQUEST, 'filter', false);
         $aGroupList = array('off'=> _kt('-- Please filter --'));
 
@@ -452,7 +452,6 @@ class KTDocumentEmailAction extends KTDocumentAction {
             } else {
                 $aGroups = GroupUtil::listGroupsForUser($this->oUser, array('where' => $sWhere));
             }
-
             $aGroupList = array();
             foreach($aGroups as $g) {
                 $aGroupList[$g->getId()] = $g->getName();
@@ -545,13 +544,12 @@ class KTDocumentEmailAction extends KTDocumentAction {
             $this->errorRedirectToMain(_kt('No recipients set'), sprintf('fDocumentId=%d', $this->oDocument->getId()));
             exit(0);
         }
-
+        
         $iDocumentID = $this->oDocument->getID();
         $sDocumentName = $this->oDocument->getName();
 
         $aEmailErrors = array();
         $aUserEmails = array();
-
         // send group emails
         sendGroupEmails($aGroupIDs, $aUserEmails, $aEmailErrors);
         // send user emails
@@ -569,12 +567,12 @@ class KTDocumentEmailAction extends KTDocumentAction {
             $aListEmails = array_keys($aUserEmails);
             sendEmail($aListEmails, $iDocumentID, $sDocumentName, $fComment, (boolean)$fAttachDocument, $aEmailErrors);
         }
-
+        // Display success or error
         if (count($aEmailErrors)) {
             $_SESSION['KTErrorMessage'][] = join('<br />\n', $aEmailErrors);
+        } else {
+            $_SESSION['KTInfoMessage'][] = _kt('Email sent');
         }
-
-        $_SESSION['KTInfoMessage'][] = _kt('Email sent');
         //go back to the document view page
         controllerRedirect('viewDocument', sprintf("fDocumentId=%d", $this->oDocument->getId()));
     }
