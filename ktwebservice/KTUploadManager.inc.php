@@ -147,6 +147,11 @@ class KTUploadManager
 		$now=date('Y-m-d H:i:s');
 		$now_str=date('YmdHis');
 
+		// Ensure the temp directory exists otherwise an error is thrown.
+        if (realpath($this->temp_dir) == FALSE) {
+            mkdir($this->temp_dir, 0777, true);
+        }
+
 		$newtempfile = realpath($this->temp_dir) . '/' . $_SESSION['userID'] . '-'. $now_str;
 		if (OS_WINDOWS)
 		{

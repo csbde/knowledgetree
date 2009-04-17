@@ -297,7 +297,7 @@ class XmlRpcLucene
             );
         $result =& $this->client->send($function);
 
-        unset($buffer);
+        unset($content);
 
         if($result->faultCode()) {
             $this->error($result, 'extractTextContent');

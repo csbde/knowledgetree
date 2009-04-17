@@ -112,7 +112,7 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
             $widgets[] = array('ktcore.widgets.selection', array(
                 'label' => _kt("Fieldset Type"),
                 'use_simple' => false,
-                'description' => _kt("It is possibler to create different types of fieldsets.  The most common kind is a \"normal\" fieldset, which can be configured to have different kinds of fields.  The administrator may have installed additional plugins which provide different types of fieldsets."),
+                'description' => _kt("It is possible to create different types of fieldsets.  The most common kind is a \"normal\" fieldset, which can be configured to have different kinds of fields.  The administrator may have installed additional plugins which provide different types of fieldsets."),
                 'important_description' => _kt('Note that it is not possible to convert between different types of fieldsets, so please choose carefully.'),
                 'name' => 'fieldset_type',
                 'required' => true,

@@ -289,7 +289,7 @@ class ZipFolder {
 
         if (!file_exists($sZipFile)) {
             return PEAR::raiseError(_kt('The zip file has not been created, if you are downloading a large number of documents
-            or a large document then it may take a few seconds to finish. Try refreshing the page.'));
+            or a large document then it may take a few minutes to finish.'));
         }
 
         $mimeType = 'application/zip; charset=utf-8;';

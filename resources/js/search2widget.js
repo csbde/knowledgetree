@@ -87,6 +87,8 @@ function populateSavedSearch(menu)
 	var item = menu.addMenuItem({
 		text: sSearchTranslations[5], /*Saved Searches*/
 		menu:	{
+		    shadow: false,
+		    minWidth: '150px',
 			items: []
 		}
 	});
@@ -118,6 +120,7 @@ function createSearchBar(div, suffix)
 	{
 		var menu = new Ext.menu.Menu({
 		    shadow: false,
+		    minWidth: '200px',
 			items: [
 				{
 					text: sSearchTranslations[6], /* Advanced Search */
@@ -131,6 +134,7 @@ function createSearchBar(div, suffix)
 					text: sSearchTranslations[8] , /*Quick Search Options*/
 					menu: {
 					    shadow: false,
+					    minWidth: '150px',
 						items: [
 							new Ext.menu.CheckItem({
 								text: sSearchTranslations[9], /* content and metadata */
@@ -153,6 +157,7 @@ function createSearchBar(div, suffix)
 					text: sSearchTranslations[13] , /*Toggle results format*/
 					menu: {
 					    shadow: false,
+					    minWidth: '150px',
 						items: [
 							new Ext.menu.CheckItem({
 								text: sSearchTranslations[14], /* search engine format */

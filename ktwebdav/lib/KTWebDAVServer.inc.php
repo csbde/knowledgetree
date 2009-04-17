@@ -7,31 +7,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -228,7 +228,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
         $ident = 'KTWEBDAV';
         $conf = array('mode' => 0644, 'timeFormat' => '%X %x');
-        $logger = &Log::singleton('file', '../var/log/ktwebdav-' . date('Y-m-d') . '.txt', $ident, $conf);
+        $logger = &Log::singleton('file', '../../var/log/ktwebdav-' . date('Y-m-d') . '.txt', $ident, $conf);
         if ($type == 'error') $logger->log($entry, PEAR_LOG_ERR);
         else $logger->log($entry, PEAR_LOG_INFO);
         return true;
@@ -270,6 +270,27 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
         if ($this->debugInfo == 'on') {
 
             $this->ktwebdavLog('_SERVER is ' . print_r($_SERVER, true), 'info', true);
+        }
+
+        // Check for electronic signatures - if enabled exit
+        $oConfig =& KTConfig::getSingleton();
+        $enabled = $oConfig->get('e_signatures/enableApiSignatures', false);
+        if($enabled){
+            $this->ktwebdavLog('Electronic Signatures have been enabled, disabling WebDAV.', 'info');
+
+            $data = "<html><head><title>KTWebDAV - The KnowledgeTree WebDAV Server</title></head>";
+            $data .= "<body>";
+            $data .= "<div align=\"center\"><IMG src=\"../resources/graphics/ktlogo-topbar_base.png\" width=\"308\" height=\"61\" border=\"0\"></div><br>";
+            $data .= "<div align=\"center\"><h2><strong>Welcome to KnowledgeTree WebDAV Server</strong></h2></div><br><br>";
+            $data .= "<div align=\"center\">The WebDAV Server has been disabled!</div><br><br>";
+            $data .= "<div align=\"center\">Electronic Signatures are enabled.</div><br><br>";
+            $data .= "</body>";
+
+            header('HTTP/1.1 403 Forbidden');
+            header('Content-Type: text/html; charset="utf-8"');
+            echo $data;
+
+            exit(0);
         }
 
         // Get the client info

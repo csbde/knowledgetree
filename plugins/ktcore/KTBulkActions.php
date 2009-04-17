@@ -1081,7 +1081,10 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         $this->sExportCode = KTUtil::randomString();
         $_SESSION['exportcode'] = $this->sExportCode;
 
+        // Save the return url in session so it is not lost when doing the download
         $folderurl = $this->getReturnUrl();
+        $_SESSION['export_return_url'] = $folderurl;
+
         $sReturn = sprintf('<p>' . _kt('Return to the original <a href="%s">folder</a>') . "</p>\n", $folderurl);
         $download_url = KTUtil::addQueryStringSelf("action=downloadZipFile&fFolderId={$this->oFolder->getId()}&exportcode={$this->sExportCode}");
 
@@ -1194,7 +1197,8 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 
         if(PEAR::isError($res)){
             $this->addErrorMessage($res->getMessage());
-            $redirectUrl = $this->getReturnUrl();
+            $redirectUrl = $_SESSION['export_return_url'];
+            unset($_SESSION['export_return_url']);
             redirect($redirectUrl);
         }
         exit(0);

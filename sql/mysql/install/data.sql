@@ -1459,7 +1459,7 @@ LOCK TABLES `system_settings` WRITE;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
 (2,'knowledgeTreeVersion','3.6.1'),
-(3,'databaseVersion','3.6.0'),
+(3,'databaseVersion','3.6.1'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1753,7 +1753,8 @@ INSERT INTO `upgrades` VALUES
 (214,'func*3.5.4a*0*removeOldFilesAndFolders354a','Remove old files and folders that are no longer needed.','2008-10-01 00:00:00',1,'upgrade*3.5.4a*99*upgrade3.5.4a'),
 (215,'func*3.5.4a*0*removeOldFilesAndFolders354a1','Remove old files and folders that are no longer needed.','2008-10-01 00:00:00',1,'upgrade*3.5.4a*99*upgrade3.5.4a'),
 (216,'upgrade*3.5.4a*99*upgrade3.5.4a','Upgrade from version 3.5.4 to 3.5.4a','2008-12-01 00:00:00',1,'upgrade*3.5.4a*99*upgrade3.5.4a'),
-(217,'upgrade*3.6.0*99*upgrade3.6.0','Upgrade from version 3.5.4a to 3.6.0','2009-01-01 00:00:00',1,'upgrade*3.6.0*99*upgrade3.6.0');
+(217,'upgrade*3.6.0*99*upgrade3.6.0','Upgrade from version 3.5.4a to 3.6.0','2009-01-01 00:00:00',1,'upgrade*3.6.0*99*upgrade3.6.0'),
+(218,'upgrade*3.6.1*99*upgrade3.6.1','Upgrade from version 3.6.0 to 3.6.1','2009-04-01 00:00:00',1,'upgrade*3.6.1*99*upgrade3.6.1');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
