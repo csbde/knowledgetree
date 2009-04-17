@@ -1217,15 +1217,15 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 .portlet_button a .arrow_download {
-    background: transparent url(../../resources/graphics/download_arrow.gif) top right no-repeat;
-    width: 27px;
+    background: transparent url(../../resources/graphics/download_arrow.gif) center right no-repeat;
+    width: 20px;
     height: 47px;
     float: right;
 }
 
 .portlet_button a .arrow_upload {
-    background: transparent url(../../resources/graphics/upload_arrow.gif) top right no-repeat;
-    width: 27px;
+    background: transparent url(../../resources/graphics/upload_arrow.gif) center right no-repeat;
+    width: 20px;
     height: 47px;
     float: right;
 }
