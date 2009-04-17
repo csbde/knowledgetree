@@ -6785,7 +6785,7 @@ msgid "It is not possible to archive a shortcut. Please archive the target docum
 msgstr "Verknüpfungen können nicht archiviert werden. Bitte archivieren Sie das Zieldokument oder den Zielordner."
 
 #: plugins/ktcore/admin/documentFieldsv2.php:115
-msgid "It is possibler to create different types of fieldsets.  The most common kind is a \"normal\" fieldset, which can be configured to have different kinds of fields.  The administrator may have installed additional plugins which provide different types of fieldsets."
+msgid "It is possible to create different types of fieldsets.  The most common kind is a \"normal\" fieldset, which can be configured to have different kinds of fields.  The administrator may have installed additional plugins which provide different types of fieldsets."
 msgstr "Es ist möglich verschiedene Typen von Feldgruppen zu erstellen. Die übliche Form ist eine \"normale\" Feldgruppe, welche unterschiedliche Felder beinhalten kann. Der Administrator hat eventuell weitere Plugins installiert die verschiedene Typen von Feldgruppen bereitstellen."
 
 #: i18n/templates.c:7160
