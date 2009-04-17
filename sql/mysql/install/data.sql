@@ -1407,8 +1407,9 @@ INSERT INTO `search_ranking` VALUES
 ('DocumentText','',100,'S'),
 ('document_content_version','filename',10,'T'),
 ('document_content_version','filesize',1,'T'),
+('document_fields_link','value',1,'T'),
 ('document_metadata_version','document_type_id',1,'T'),
-('document_metadata_version','name',1,'T'),
+('document_metadata_version','name',300,'T'),
 ('document_metadata_version','workflow_id',1,'T'),
 ('document_metadata_version','workflow_state_id',1,'T'),
 ('tag_words','tag',1,'T');

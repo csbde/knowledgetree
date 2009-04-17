@@ -39,6 +39,8 @@
 
 class TitleField extends DBFieldExpr
 {
+    public $general_op = ExprOp::CONTAINS;
+    
     public function __construct()
     {
         parent::__construct('name', 'document_metadata_version', _kt('Title'));
