@@ -185,7 +185,10 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         global $default;
 
         //get the path to the document on the server
-        $docRoot = $default->documentRoot;
+        //$docRoot = $default->documentRoot;
+        $oConfig =& KTConfig::getSingleton();
+        $docRoot  = $oConfig->get('urls/documentRoot');
+
         $path = $docRoot .'/'. $oDocument->getStoragePath();
 
         // Ensure the file exists

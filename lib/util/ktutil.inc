@@ -171,7 +171,7 @@ class KTUtil {
 	    $internal_url .= !empty($default->internal_server_port) ? ':' . $default->internal_server_port : '';
 	    $internal_url .= !empty($default->rootUrl) ? $default->rootUrl : '';
 
-	    $pos = strpos($internal_url, '://');
+	    $pos = strpos($internal_url, 'http');
         if($pos === false){
             $port = $default->internal_server_port;
             $internal_url = (($port == 443 || $port == 8443) ? 'https://' : 'http://') . $internal_url;
@@ -1184,6 +1184,11 @@ class KTUtil {
         }
     }
 
+    /**
+     * The system identifier is a unique ID defined in every installation of KnowledgeTree
+     *
+     * @return string The system identifier
+     */
     function getSystemIdentifier() {
         $sIdentifier = KTUtil::getSystemSetting('kt_system_identifier');
         if (empty($sIdentifier)) {
@@ -1343,7 +1348,7 @@ class KTUtil {
             return false;
         }
     }
-    
+
     static
     function camelize($string) {
     	$result = "";

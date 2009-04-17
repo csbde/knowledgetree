@@ -144,6 +144,16 @@ class DocumentProcessor
         global $default;
         $default->log->debug('documentProcessor: starting');
 
+        // Check for lock file to ensure processor is not currently running
+        $cacheDir = $default->cacheDirectory;
+        $lockFile = $cacheDir . DIRECTORY_SEPARATOR . 'document_processor.lock';
+
+        if(file_exists($lockFile)){
+            // lock file exists, exit
+            $default->log->debug('documentProcessor: stopping, lock file in place '.$lockFile);
+            return ;
+        }
+
         if($default->enableIndexing){
             // Setup indexing - load extractors, run diagnostics
             if($this->indexer->preIndexingSetup() === false){
@@ -159,6 +169,10 @@ class DocumentProcessor
             $default->log->debug('documentProcessor: stopping - no documents in processing queue');
             return ;
         }
+
+        // indexing starting - create lock file
+        touch($lockFile);
+
 
         // Process queue
         foreach($queue as $item){
@@ -197,6 +211,11 @@ class DocumentProcessor
 
         // update the indexer statistics
         $this->indexer->updateIndexStats();
+
+        // Remove lock file to indicate processing has completed
+        if(file_exists($lockFile)){
+            @unlink($lockFile);
+        }
 
         $default->log->debug('documentProcessor: stopping');
     }
