@@ -1,0 +1,7 @@
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Make Immutable{/i18n}:<br />{$context->oDocument->getName()|sanitize}</h2>
+
+<p class="descriptiveText">{i18n}Immutable documents content cannot be changed,
+and only administrators (in administration mode) can make changes to the metadata or can move or delete it.
+The documents immutable status cannot be reversed at a later stage.{/i18n}</p>
+
+{$form->render()}
