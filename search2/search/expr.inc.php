@@ -1079,6 +1079,7 @@ class SQLQueryBuilder implements QueryBuilder
 		        if (array_key_exists($tablename, $this->used_tables))
 		        {
 		            $this->used_tables[$tablename]++;
+                    if (isset($expr->references)) ++$expr->references;
 		        }
 		    }
 		}
@@ -1244,7 +1245,18 @@ class SQLQueryBuilder implements QueryBuilder
             }
             if ($this->used_tables['document_fields_link'] > 0)
             {
-                $sql .= ' LEFT JOIN document_fields_link pdfl ON dmv.id=pdfl.metadata_version_id ' . "\n";
+                // NOTE this is a bit of a hack, maybe? or maybe it really is the best way?
+                // ...what about using the loop below which checks the expression
+                // for a join table rather than this up here? - otherwise this only
+                // affects this particular query type - then again maybe that's what we want...
+                for ($i = 0; $i < $this->used_tables['document_fields_link']; ++$i)
+                {
+                    if ($i > 0) $counter = $i;
+                    else $counter = '';
+
+                    $sql .= ' LEFT JOIN document_fields_link pdfl' . $counter . ' '
+                         .  'ON dmv.id=pdfl' . $counter . '.metadata_version_id ' . "\n";
+                }
             }
 
             if ($this->used_tables['tag_words'] > 0)
@@ -1374,7 +1386,6 @@ class SQLQueryBuilder implements QueryBuilder
 
 	public function buildComplexQuery($expr)
 	{
-//		print "building complex \n\n";
 		$this->exploreExprs($expr);
 
 		$sql = $this->buildCoreSQL();
@@ -1396,7 +1407,6 @@ class SQLQueryBuilder implements QueryBuilder
 
 	public function buildSimpleQuery($op, $group)
 	{
-//		print "building simple \n\n";
 		$this->exploreGroup($group);
 
         $sql = $this->buildCoreSQL();
