@@ -5,7 +5,7 @@ require_once("../../config/dmsDefaults.php");
 require_once('File/Gettext.php');
 
 $aExpected = array(
-    '&copy; 2009 <a href="http://www.knowledgetree.com/">KnowledgeTree Inc.</a>' => '&copy; 2009 <a href="http://www.knowledgetree.com/">KnowledgeTree Inc.</a> Todos los Derechos Reservados - <a href="http://www.oriondatacenter.com/">Orion Datacenter.</a> Bussines Partner para Colombia',
+    '&copy; 2008, 2009 <a href="http://www.knowledgetree.com/">KnowledgeTree Inc.</a>' => '&copy; 2008, 2009 <a href="http://www.knowledgetree.com/">KnowledgeTree Inc.</a> Todos los Derechos Reservados - <a href="http://www.oriondatacenter.com/">Orion Datacenter.</a> Bussines Partner para Colombia',
     'Document "%s" renamed.' => 'El documento "%s" ha sido renombrado.',
     'Document archived: %s' => 'Documento archivados: %s',
     'Document checked in' => 'Documento liberado',

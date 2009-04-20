@@ -263,7 +263,7 @@ gettext("#appname# Version");
 gettext("<a href=\"http://www.knowledgetree.com/\">Document Management Software</a>");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
-gettext("&copy; 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
+gettext("&copy; 2008, 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
 gettext("This program is free software and published under the <a href=\" http://www.gnu.org/licenses/\">GNU General Public License version 3</a>");
@@ -407,10 +407,34 @@ gettext("Restore Document");
 gettext("Cancel");
 
 /* ./plugins/commercial/electronic-signatures/templates/signature_form.smarty */
+gettext("This action requires re-authentication.");
+
+/* ./plugins/commercial/electronic-signatures/templates/signature_form.smarty */
+gettext("Username");
+
+/* ./plugins/commercial/electronic-signatures/templates/signature_form.smarty */
+gettext("required");
+
+/* ./plugins/commercial/electronic-signatures/templates/signature_form.smarty */
+gettext("Password");
+
+/* ./plugins/commercial/electronic-signatures/templates/signature_form.smarty */
+gettext("required");
+
+/* ./plugins/commercial/electronic-signatures/templates/signature_form.smarty */
+gettext("Comment");
+
+/* ./plugins/commercial/electronic-signatures/templates/signature_form.smarty */
+gettext("required");
+
+/* ./plugins/commercial/electronic-signatures/templates/signature_form.smarty */
 gettext("OK");
 
 /* ./plugins/commercial/electronic-signatures/templates/signature_form.smarty */
 gettext("Cancel");
+
+/* ./plugins/commercial/electronic-signatures/templates/signature_form.smarty */
+gettext("Authenticating signature, please wait");
 
 /* ./plugins/commercial/network/quicklinks/templates/Quicklinks/dashlet.smarty */
 gettext("There are no quicklinks.");
@@ -1144,6 +1168,9 @@ gettext("Action");
 /* ./plugins/commercial/professional-reporting/templates/ktprofessional/reporting/userloginhistory.smarty */
 gettext("Comments");
 
+/* ./plugins/commercial/professional-reporting/templates/ktprofessional/reporting/userloginhistory.smarty */
+gettext("User has never logged in");
+
 /* ./plugins/commercial/professional-reporting/templates/ktprofessional/reporting/userreporting.smarty */
 gettext("User Reporting");
 
@@ -1293,6 +1320,9 @@ gettext("Last login");
 
 /* ./plugins/commercial/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
 gettext("Login history");
+
+/* ./plugins/commercial/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
+gettext("Never");
 
 /* ./plugins/commercial/professional-reporting/templates/ktprofessional/reporting/lastlogins.smarty */
 gettext("View");
@@ -1475,9 +1505,6 @@ gettext("Reset on<br />check-in");
 gettext("Repeated after<br />notification");
 
 /* ./plugins/commercial/templates/list.smarty */
-gettext("Apply to all documents");
-
-/* ./plugins/commercial/templates/list.smarty */
 gettext("Edit");
 
 /* ./plugins/commercial/templates/list.smarty */
@@ -1514,22 +1541,13 @@ gettext("Disable repeat after action");
 gettext("Disable");
 
 /* ./plugins/commercial/templates/list.smarty */
-gettext("Apply to all existing documents");
-
-/* ./plugins/commercial/templates/list.smarty */
-gettext("Enable");
-
-/* ./plugins/commercial/templates/list.smarty */
-gettext("Apply to new documents only");
-
-/* ./plugins/commercial/templates/list.smarty */
-gettext("Disable");
-
-/* ./plugins/commercial/templates/list.smarty */
 gettext("Delete document type alert.");
 
 /* ./plugins/commercial/templates/list.smarty */
 gettext("Delete");
+
+/* ./plugins/commercial/templates/list.smarty */
+gettext("No document type alerts have been configured at present");
 
 /* ./plugins/commercial/templates/add_edit.smarty */
 gettext("Document type");
@@ -1778,7 +1796,7 @@ gettext("#appname# Version: #version#");
 gettext("Request created in #timing#s");
 
 /* ./templates/kt3/standard_page.smarty */
-gettext("&copy; 2009 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>");
+gettext("&copy; 2008, 2009 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>");
 
 /* ./templates/kt3/standard_page.smarty */
 gettext("All rights reserved.");
@@ -4298,7 +4316,43 @@ gettext("on");
 gettext("not on");
 
 /* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("equal to");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("not equal to");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("greater than");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("greater than or equal to");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("less than");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("less than or equal to");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
 gettext("between");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("less than");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("less than or equal to");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("greater than");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("greater than or equal to");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("equal to");
+
+/* ./templates/ktcore/search2/adv_query_builder.smarty */
+gettext("not equal to");
 
 /* ./templates/ktcore/search2/adv_query_builder.smarty */
 gettext("bytes");
@@ -4549,6 +4603,9 @@ gettext("Fieldset cannot be made conditional. One of the fields must not be a lo
 /* ./templates/ktcore/configsettings.smarty */
 gettext("Save Config Settings");
 
+/* ./templates/ktcore/configsettings.smarty */
+gettext("This page defines configuration options which are currently reserved for future development.");
+
 /* ./templates/ktcore/workflowtriggers/roles.smarty */
 gettext("Guard Roles for Transition");
 
@@ -4608,6 +4665,9 @@ gettext("Specify which permissions the user will require in order to perform thi
 
 /* ./templates/ktcore/workflowtriggers/permissions.smarty */
 gettext("Save Trigger");
+
+/* ./templates/ktcore/action/bulk_download.smarty */
+gettext("'There was an error connecting to the server. Please refresh the page.'");
 
 /* ./templates/ktcore/action/checkout_final.smarty */
 gettext("Checkout Document");
@@ -6737,7 +6797,7 @@ gettext("#appname# #versionname#");
 gettext("Version #version#");
 
 /* ./templates/ktcore/principals/about.smarty */
-gettext("&copy; 2009 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
+gettext("&copy; 2008, 2009 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
 
 /* ./templates/ktcore/principals/about.smarty */
 gettext("All rights reserved.");
@@ -7325,7 +7385,7 @@ gettext("#appname# Version");
 gettext("<a href=\"http://www.knowledgetree.com/\">Document Management Software</a>");
 
 /* ./templates/ktcore/login.smarty */
-gettext("&copy; 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
+gettext("&copy; 2008, 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
 
 /* ./templates/ktcore/login.smarty */
 gettext("This program is free software and published under the <a href=\" http://www.gnu.org/licenses/\">GNU General Public License version 3</a>");
