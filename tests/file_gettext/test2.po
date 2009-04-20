@@ -14,10 +14,10 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 msgid ""
-"&copy; 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc. "
+"&copy; 2008, 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc. "
 "</a>"
 msgstr ""
-"&copy; 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc. "
+"&copy; 2008, 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc. "
 "</a> Todos los Derechos Reservados - <a href=\"http://www."
 "oriondatacenter.com/\">Orion Datacenter.</a> Bussines Partner para Colombia"
 

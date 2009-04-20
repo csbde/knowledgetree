@@ -1,7 +1,7 @@
 <h2>{i18n arg_appname="$appname" arg_versionname="$versionname"}#appname# #versionname#{/i18n}</h2>
 <p><strong>{i18n arg_version="$versionnumber"}Version #version#{/i18n}</strong></p>
 <img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" border="0" />
-<p>{i18n}&copy; 2009 <a href=" http://www.knowledgetree.com/">KnowledgeTree Inc.</a>{/i18n} &nbsp &nbsp &nbsp <a href="http://www.knowledgetree.com">http://www.knowledgetree.com</a><br />
+<p>{i18n}&copy; 2008, 2009 <a href=" http://www.knowledgetree.com/">KnowledgeTree Inc.</a>{/i18n} &nbsp &nbsp &nbsp <a href="http://www.knowledgetree.com">http://www.knowledgetree.com</a><br />
 {if ($smallVersion !== 'Community Edition')}
 	{i18n}All rights reserved.{/i18n}<br>
 {/if}

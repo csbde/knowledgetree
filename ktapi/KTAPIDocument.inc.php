@@ -1530,8 +1530,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 					$document_content['minor_version'] = $value;
 					break;
 				case 'version':
-					$version = number_format($value + 0,5);
-					list($major_version, $minor_version) = explode('.', $version);
+					list($major_version, $minor_version) = explode('.', $value);
 					$document_content['major_version'] = $major_version;
 					$document_content['minor_version'] = $minor_version;
 					break;

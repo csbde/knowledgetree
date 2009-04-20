@@ -256,17 +256,17 @@ msgid "%s successfully copied as %s"
 msgstr "%s correctement copié comme %s"
 
 #: i18n/templates.c:6371
-msgid "&copy; 2009 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
-msgstr "&copy; 2009 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
+msgid "&copy; 2008, 2009 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
+msgstr "&copy; 2008, 2009 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
 
 #: i18n/templates.c:458
 #: i18n/templates.c:6959
-msgid "&copy; 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
-msgstr "&copy ; 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
+msgid "&copy; 2008, 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
+msgstr "&copy ; 2008, 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>"
 
 #: i18n/templates.c:1610
-msgid "&copy; 2009 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>"
-msgstr "&copy ; 2009 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>"
+msgid "&copy; 2008, 2009 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>"
+msgstr "&copy ; 2008, 2009 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>"
 
 #: i18n/templates.c:2237
 msgid "(Closed at metadata version: #ver#)"
