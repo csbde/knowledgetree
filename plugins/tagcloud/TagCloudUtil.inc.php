@@ -120,7 +120,10 @@ function get_relevant_tags($oUser, $sTag)
 
         $aDocIds = DBUtil::getResultArrayKey($aQuery, 'document_id');
         $sDocs = implode(',', $aDocIds);
-
+        // Make sure user not opening a new window on tag cloud filters
+        if(!$sDocs) {
+            return array();
+        }
         // Don't display tags that have already been selected.
         $tagTree[] = $sTag;
         $cnt = count($tagTree);
@@ -135,7 +138,11 @@ function get_relevant_tags($oUser, $sTag)
         WHERE DT.document_id in ($sDocs) AND TW.tag NOT IN ($sIgnoreTags)
         GROUP BY TW.tag";
 
-        $tags = DBUtil::getResultArray(array($sQuery, $tagTree), null);
+        $tags = DBUtil::getResultArray(array($sQuery, $tagTree));
+
+        if(PEAR::isError($tags)){
+            echo $tags->getMessage();
+        }
 
         // Add new tag to the session
         if($sPrevTag != $sTag){
@@ -144,13 +151,14 @@ function get_relevant_tags($oUser, $sTag)
         }
     }
 
-    // Create tag / frequency array
     $aTags = array();
-    foreach($tags as $tag)
-    {
-        $word=$tag['tag'];
-        $freq=$tag['freq'];
-        $aTags[$word] = $freq;
+    if($tags) {
+        foreach($tags as $tag)
+        {
+            $word=$tag['tag'];
+            $freq=$tag['freq'];
+            $aTags[$word] = $freq;
+        }
     }
 
     return $aTags;
