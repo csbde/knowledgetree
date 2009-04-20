@@ -15,12 +15,13 @@
     <refsect1 id="{@id intro}">
         <title>Introduction</title>
             <para>
-                This is an introductory blurb about the KTAPI Package.
+                PLEASE NOTE: This is currently just a place holder for the API documentation and tutorials that are coming.
+                Many examples can already be found in the classes and methods documentation so have a look at the specific area you are interested in in the index. We intend updating and adding to this documentation each iteration.
             </para>
         <refsect2 id="{@id examples}">
             <title>Examples</title>
             <para>
-                This is a blurb about the KTAPI examples offered here.
+                KTAPI examples can be found here.
             </para>
             <refsect3 id="{@id example1}">
                 <title>Example 1</title>
