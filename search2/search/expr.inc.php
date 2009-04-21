@@ -271,10 +271,6 @@ class Expr
     	return $this instanceof MetadataField;
     }
 
-
-
-
-
     public function toViz(&$str, $phase)
     {
         throw new Exception('To be implemented' . get_class($this));
@@ -454,7 +450,6 @@ class DBFieldExpr extends FieldExpr
     protected $matchfield;
     protected $quotedvalue;
 
-
     /**
      * Constructor for the database field
      *
@@ -506,7 +501,6 @@ class DBFieldExpr extends FieldExpr
     {
     	return $value;
     }
-
 
     public function getJoinTable() { return $this->jointable; }
     public function getJoinField() { return $this->joinfield; }
@@ -629,9 +623,6 @@ class ValueExpr extends Expr
         }
     }
 
-
-
-
 	public function getSQL($field, $fieldname, $op, $not=false)
     {
     	$val = $this->getValue();
@@ -714,7 +705,7 @@ class ValueExpr extends Expr
             default:
                 throw new Exception(sprintf(_kt('Unknown op: %s'), $op));
         }
-
+        
         return $sql;
     }
 
@@ -968,7 +959,7 @@ class TextQueryBuilder implements QueryBuilder
 			else
 				$query .= "$not$fieldname:$value";
 		}
-
+        
 		return $query;
 	}
 
@@ -1066,7 +1057,7 @@ class SQLQueryBuilder implements QueryBuilder
 
 	private function exploreExprs($expr, $parent=null)
 	{
-		if ($expr->isMetadataField())
+        if ($expr->isMetadataField())
 		{
 			$this->metadata[] = & $parent;
 		}
@@ -1079,7 +1070,7 @@ class SQLQueryBuilder implements QueryBuilder
 		        if (array_key_exists($tablename, $this->used_tables))
 		        {
 		            $this->used_tables[$tablename]++;
-                    if (isset($expr->references)) ++$expr->references;
+//                    if (isset($expr->references)) ++$expr->references;
 		        }
 		    }
 		}
@@ -1144,6 +1135,7 @@ class SQLQueryBuilder implements QueryBuilder
 
 	private function getSQLEvalExpr($expr)
 	{
+        
 		$left = $expr->left();
 		$right = $expr->right();
 		$isNot = $expr->not();
@@ -1182,6 +1174,7 @@ class SQLQueryBuilder implements QueryBuilder
 			    $query = $right->getSQL($left, $left->modifyName($fieldname), $expr->op(), $isNot);
 		    }
 		}
+        
 		return $query;
 	}
 
@@ -1243,21 +1236,26 @@ class SQLQueryBuilder implements QueryBuilder
             {
                 $sql .= ' INNER JOIN document_content_version dcv ON dmv.content_version_id=dcv.id ' . "\n";
             }
-            if ($this->used_tables['document_fields_link'] > 0)
-            {
-                // NOTE this is a bit of a hack, maybe? or maybe it really is the best way?
-                // ...what about using the loop below which checks the expression
-                // for a join table rather than this up here? - otherwise this only
-                // affects this particular query type - then again maybe that's what we want...
-                for ($i = 0; $i < $this->used_tables['document_fields_link']; ++$i)
-                {
-                    if ($i > 0) $counter = $i;
-                    else $counter = '';
-
-                    $sql .= ' LEFT JOIN document_fields_link pdfl' . $counter . ' '
-                         .  'ON dmv.id=pdfl' . $counter . '.metadata_version_id ' . "\n";
-                }
-            }
+            // NOTE this was the old method of dealing with joining on the document_fields_link table;
+            // the new method incorporates previously set up joining code which was not completely understood
+            // at the time I modified this code; it allows everything to be more encapsulated within the classes and
+            // done in a more generic way which does not require a special case code snippet such as the one commented
+            // out below.
+//            if ($this->used_tables['document_fields_link'] > 0)
+//            {
+//                // NOTE this is a bit of a hack, maybe? or maybe it really is the best way?
+//                // ...what about using the loop below which checks the expression
+//                // for a join table rather than this up here? - otherwise this only
+//                // affects this particular query type - then again maybe that's what we want...
+//                for ($i = 0; $i < $this->used_tables['document_fields_link']; ++$i)
+//                {
+//                    if ($i > 0) $counter = $i;
+//                    else $counter = '';
+//
+//                    $sql .= ' LEFT JOIN document_fields_link pdfl' . $counter . ' '
+//                         .  'ON dmv.id=pdfl' . $counter . '.metadata_version_id ' . "\n";
+//                }
+//            }
 
             if ($this->used_tables['tag_words'] > 0)
             {
@@ -1325,6 +1323,7 @@ class SQLQueryBuilder implements QueryBuilder
             $sql .= "f.linked_folder_id is null";
         }
         $sql .= ' AND ';
+        
        	return $sql;
 	}
 
@@ -1380,7 +1379,7 @@ class SQLQueryBuilder implements QueryBuilder
 		        $query = 'false';
 		    }
 		}
-
+        
 		return $query;
 	}
 
@@ -1402,7 +1401,7 @@ class SQLQueryBuilder implements QueryBuilder
 
 		$sql .= " limit $maxSqlResults";
 
-		return $sql;
+        return $sql;
 	}
 
 	public function buildSimpleQuery($op, $group)
