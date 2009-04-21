@@ -23,7 +23,7 @@
 {if $bWin}
     <p>
     {i18n}Note: The stack install uses its own service for task scheduling. To check if this service has been installed and is running, open the <i>Control Panel</i>, go to
-    <i>Administrative Tools</i> and open the list of <i>Services</i>. The scheduler service is called <i>ktdmsScheduler</i>. For further information on this service,
+    <i>Administrative Tools</i> and open the list of <i>Services</i>. The scheduler service is called <i>ktScheduler</i>. For further information on this service,
     please refer to the documentation.{/i18n}
 
 {else}
