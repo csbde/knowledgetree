@@ -482,18 +482,29 @@ class KTDocumentLinkAction extends KTDocumentAction {
 
         // do deletion
         $this->startTransaction();
-
-        $res = $oDocumentLink->delete();
-
-        if (PEAR::isError($res)) {
-            $this->errorRedirectToMain(_kt('Could not delete document link'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
-            exit(0);
+        // Cannot call delete directly if no link exists.
+        if($oDocumentLink) {
+            $res = $oDocumentLink->delete();
+            if (PEAR::isError($res)) {
+                $this->errorRedirectToMain(_kt('Could not delete document link'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
+                exit(0);
+            }
+        } else {
+            $this->successRedirectToMain(_kt('Document link not deleted. Document link does not exists, or previously deleted.'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
         }
-
         $this->commitTransaction();
 
         $this->successRedirectToMain(_kt('Document link deleted'), sprintf('fDocumentId=%d', $oParentDocument->getId()));
         exit(0);
+    }
+
+    function check() {
+        $res = parent::check();
+        if ($res !== true) {
+            return $res;
+        }
+
+        return true;
     }
 }
 
