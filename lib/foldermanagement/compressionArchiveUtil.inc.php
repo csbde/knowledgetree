@@ -71,7 +71,11 @@ class ZipFolder {
         $this->sPattern = "[\*|\%|\\\|\/|\<|\>|\+|\:|\?|\||\'|\"]";
         $this->sFolderPattern = "[\*|\%|\<|\>|\+|\:|\?|\||\'|\"]";
 
-        $this->exportCode = $exportCode;
+        if(!empty($exportCode)){
+            $this->exportCode = $exportCode;
+        }else{
+            $this->exportCode = KTUtil::randomString();
+        }
 
         // Check if the temp directory has been created and stored in session
         $aData = KTUtil::arrayGet($_SESSION['zipcompression'], $exportCode);
