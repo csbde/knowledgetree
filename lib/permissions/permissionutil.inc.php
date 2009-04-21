@@ -511,23 +511,21 @@ class KTPermissionUtil {
         }
         // check if permission has been set
         // $permArr[permId] = array('folders' => array('id' => bool), 'docs' => array('id' => bool));
-        if(isset($permArr[$iPermId][$lookup][$iDocId])){
-            return $permArr[$iPermId][$lookup][$iDocId];
+        if(isset(KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId])){
+            return KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId];
         }
-
-
 
         $oPL = KTPermissionLookup::get($oFolderOrDocument->getPermissionLookupID());
         $oPLA = KTPermissionLookupAssignment::getByPermissionAndLookup($oPermission, $oPL);
         if (PEAR::isError($oPLA)) {
             //print $oPL->getID();
-            $permArr[$iPermId][$lookup][$iDocId] = false;
+            KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId] = false;
             return false;
         }
         $oPD = KTPermissionDescriptor::get($oPLA->getPermissionDescriptorID());
 
         // set permission array to true
-        $permArr[$iPermId][$lookup][$iDocId] = true;
+        KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId] = true;
 
         // check for permissions
         $aGroups = GroupUtil::listGroupsForUserExpand($oUser);
@@ -537,7 +535,7 @@ class KTPermissionUtil {
         else if ($oPD->hasRoles(array(-4)) && !$oUser->isAnonymous()) { return true; }
 
         // permission isn't true, set to false
-        $permArr[$iPermId][$lookup][$iDocId] = false;
+        KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId] = false;
         return false;
     }
     // }}}
