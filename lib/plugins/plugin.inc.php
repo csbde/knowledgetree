@@ -334,6 +334,11 @@ class KTPlugin {
         $sql = "SELECT id FROM plugin_helper WHERE namespace = '{$sNamespace}' AND classtype = '{$type}'";
         $res = DBUtil::getOneResult($sql);
 
+        // if record exists - ignore it.
+        if(!empty($res)){
+            return true;
+        }
+
         $aValues = array();
         $aValues['namespace'] = $sNamespace;
         $aValues['plugin'] = (!empty($this->sNamespace)) ? $this->sNamespace : $sNamespace;
@@ -342,16 +347,6 @@ class KTPlugin {
         $aValues['object'] = $object;
         $aValues['viewtype'] = $view;
         $aValues['classtype'] = $type;
-
-        // if record exists - update it.
-        if(!empty($res)){
-            $id = $res['id'];
-            $updateRes = DBUtil::autoUpdate('plugin_helper', $aValues, $id);
-            if(PEAR::isError($updateRes)){
-                return $updateRes;
-            }
-            return true;
-        }
 
         // Insert into DB
         $res = DBUtil::autoInsert('plugin_helper', $aValues);
@@ -426,6 +421,7 @@ class KTPlugin {
         if(!$res){
             return false;
         }
+        return true;
 
         // Get actions, portlets, etc, create arrays as part of plugin
         $query = "SELECT * FROM plugin_helper h WHERE plugin = '{$this->sNamespace}'";

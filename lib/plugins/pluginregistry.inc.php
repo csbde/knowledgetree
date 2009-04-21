@@ -60,8 +60,15 @@ class KTPluginRegistry {
         $sFilename = (!empty($sFilename)) ? KTPlugin::_fixFilename($sFilename) : '';
         $this->_aPluginDetails[$sNamespace] = array($sClassName, $sNamespace, $sFilename);
 
-        $object = $sClassName.'|'.$sNamespace.'|'.$sFilename;
-        KTPlugin::registerPluginHelper($sNamespace, $sClassName, $sFilename, $object, 'general', 'plugin');
+        /*
+        Check whether the system is registering or not. If true, register the plugin in plugin_helper.
+        If false, skip.
+        This check has been put in place to prevent the plugin being registered on every page load.
+        */
+        if(isset($_SESSION['plugins_registerplugins']) && $_SESSION['plugins_registerplugins']){
+            $object = $sClassName.'|'.$sNamespace.'|'.$sFilename;
+            KTPlugin::registerPluginHelper($sNamespace, $sClassName, $sFilename, $object, 'general', 'plugin');
+        }
     }
 
     function &getPlugin($sNamespace) {

@@ -161,7 +161,6 @@ class KTPluginUtil {
         if($sType != 'dashboard'){
           $sType = 'general';
         }
-        $GLOBALS['_KT_PLUGIN'] = array();
 
         $aPlugins = array();
         $aPluginHelpers = array();
@@ -573,13 +572,15 @@ class KTPluginUtil {
         /* Sort the plugins by priority */
         asort($plugins);
 
+        /*
+        Add a check to indicate that plugin registration is occuring.
+        This check has been put in place to prevent the plugin being registered on every page load.
+        */
+        $_SESSION['plugins_registerplugins'] = true;
         foreach($plugins as $sFile => $priority) {
         	require_once($sFile);
         }
-
-
-
-
+        $_SESSION['plugins_registerplugins'] = false;
 
         $oRegistry =& KTPluginRegistry::getSingleton();
         $aRegistryList = $oRegistry->getPlugins();
