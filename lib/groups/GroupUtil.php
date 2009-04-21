@@ -260,10 +260,13 @@ class GroupUtil {
         $sql = 'SELECT parent_group_id, member_group_id FROM '.$default->groups_groups_table;
         $aGroups = DBUtil::getResultArray($sql);
 
-        foreach ($aGroups as $aRow) {
-            $aList = KTUtil::arrayGet($aDirectGroups, $aRow['parent_group_id'], array());
-            $aList[] = $aRow['member_group_id'];
-            $aDirectGroups[$aRow['parent_group_id']] = $aList;
+        $aDirectGroups = array();
+        if(is_array($aGroups)){
+            foreach ($aGroups as $aRow) {
+                $aList = KTUtil::arrayGet($aDirectGroups, $aRow['parent_group_id'], array());
+                $aList[] = $aRow['member_group_id'];
+                $aDirectGroups[$aRow['parent_group_id']] = $aList;
+            }
         }
 
         return GroupUtil::expandGroupArray($aDirectGroups);
@@ -285,16 +288,22 @@ class GroupUtil {
         }
 
         // Get all subgroups
-        $aGroupArray = GroupUtil::_invertGroupArray(GroupUtil::_listSubGroups());
+        $aSubGroups = GroupUtil::_listSubGroups();
+        $aGroupArray = array();
+        if(!empty($aSubGroups)){
+            $aGroupArray = GroupUtil::_invertGroupArray($aSubGroups);
+        }
         //$aGroupArray = GroupUtil::_invertGroupArray(GroupUtil::buildGroupArray());
         //$aDirectGroups = GroupUtil::listGroupsForUser($oUser);
         $sQuery = "SELECT group_id FROM $default->users_groups_table WHERE user_id = ?";
         $aParams = array($iUserId);
         $aGroupIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), "group_id");
-        foreach ($aGroupIDs as $iGroupID) {
-            $aExtraIDs = KTUtil::arrayGet($aGroupArray, $iGroupID);
-            if (is_array($aExtraIDs)) {
-                $aGroupIDs = kt_array_merge($aGroupIDs, $aExtraIDs);
+        if(!empty($aGroupArray)){
+            foreach ($aGroupIDs as $iGroupID) {
+                $aExtraIDs = KTUtil::arrayGet($aGroupArray, $iGroupID);
+                if (is_array($aExtraIDs)) {
+                    $aGroupIDs = kt_array_merge($aGroupIDs, $aExtraIDs);
+                }
             }
         }
         $aGroupIDs = array_unique($aGroupIDs);
@@ -368,6 +377,10 @@ class GroupUtil {
     // {{{ expandGroupArray
     function expandGroupArray($aDirectGroups) {
         // XXX: PHP5 clone
+        if(!is_array($aDirectGroups)){
+            return array();
+        }
+
         $aExpandedGroups = $aDirectGroups;
         $iNum = 0;
         foreach ($aExpandedGroups as $k => $v) {
