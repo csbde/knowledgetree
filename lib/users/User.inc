@@ -463,13 +463,13 @@ class User extends KTEntity {
 
     /*
      * Modified : Jarrett Jordaan
-     * Added : Get new users and ignore any disabled or deleted users
+     * Added : Get new users
      * Date : 24/04/09
      *
      */
     function getByLastLoginNever() {
         $aOptions['orderby'] = 'name';
-        $sWhereClause = 'last_login is null and disabled = 0';
+        $sWhereClause = 'last_login is null';
         return KTEntityUtil::getList2('User', $sWhereClause, $aOptions);
     }
 
@@ -477,12 +477,13 @@ class User extends KTEntity {
      * Modified : Jarrett Jordaan
      * Added : Filter out disabled users
      * Date : 24/04/09
-     * 
+     * Added : Removed disabled users Filter
+     * Date : 24/04/09
      */
     function getByLastLoginAfter($dDateTime) {
         return KTEntityUtil::getByDict('User', array(
             'last_login' => array('type' => 'after', 'value' => $dDateTime),
-            'disabled' => 0,
+//            'disabled' => 0,
         ), array('multi' => true));
     }
 
