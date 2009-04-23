@@ -80,11 +80,11 @@ class pdfConverter extends BaseProcessor
 
         // taken from the original list of accepted types in the pdf generator action
         $mime_types = array();
-        $mime_types[] = 'text/plain';
+        //$mime_types[] = 'text/plain';
+        //$mime_types[] = 'text/xml';
+        //$mime_types[] = 'chemical/x-pdb';
+        //$mime_types[] = 'text/csv';
         $mime_types[] = 'text/rtf';
-        $mime_types[] = 'text/xml';
-        $mime_types[] = 'text/csv';
-        $mime_types[] = 'chemical/x-pdb';
         $mime_types[] = 'application/msword';
         $mime_types[] = 'application/vnd.ms-powerpoint';
         $mime_types[] = 'application/vnd.ms-excel';
