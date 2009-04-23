@@ -47,7 +47,6 @@ function selectorChange(groupid)
 function fieldChange(groupid)
 {
 	fields = $('fields' + groupid);
-
 	fid = fields.selectedIndex - 1;
 	if (fid<0) return;
 
@@ -72,14 +71,14 @@ function createUserList(groupid, fid)
 {
 	var html = "<table><tr><td width=\"140\">";
 
-	html += "<SELECT style=\"width: 140px \" id=\"field" + groupid + "_" + fid + "op\">";
+	html += "<SELECT style=\"width: 140px\" id=\"field" + groupid + "_" + fid + "op\">";
 	html += "<option value=\"is\">{/literal}{i18n}is{/i18n}{literal}";
 	html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
 	html += "</SELECT>"
 
 	html += "<td>"
 
-	html += "<SELECT  id=\"field" + groupid + "_" + fid + "start\">";
+	html += "<SELECT id=\"field" + groupid + "_" + fid + "start\">";
 	for(i=0;i<meta_users.length;i++)
 	{
 		html += "<option value=\"" + meta_users[i].name + "\">" + meta_users[i].name;
@@ -95,7 +94,7 @@ function createDocTypes(groupid, fid)
 {
 	var html = "<table><tr><td width=\"140\">";
 
-	html += "<SELECT style=\"width: 140px \" id=\"field" + groupid + "_" + fid + "op\">";
+	html += "<SELECT style=\"width: 140px\" id=\"field" + groupid + "_" + fid + "op\">";
 	html += "<option value=\"is\">{/literal}{i18n}is{/i18n}{literal}";
 	html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
 	html += "</SELECT>"
@@ -118,7 +117,7 @@ function createMimeTypes(groupid, fid)
 {
 	var html = "<table><tr><td width=\"140\">";
 
-	html += "<SELECT style=\"width: 140px \" id=\"field" + groupid + "_" + fid + "op\">";
+	html += "<SELECT style=\"width: 140px\" id=\"field" + groupid + "_" + fid + "op\">";
 	html += "<option value=\"is\">{/literal}{i18n}is{/i18n}{literal}";
 	html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
 	html += "</SELECT>"
@@ -355,7 +354,7 @@ function createSelect(groupid, fid, options)
 	html += "<select id=\"field"+ groupid + "_" + fid +"op\" style=\"width: 140px\">";
 	html += "<option value=\"is\">{/literal}{i18n}is{/i18n}{literal}";
 	html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
-	html += "</select>&nbsp;&nbsp;";
+	html += "</select>";
 
 	html += "<td valign=top>";
 
@@ -398,7 +397,7 @@ function createText(groupid, fid, type)
 			break;
 	}
 
-	html += "</select>&nbsp;&nbsp;";
+	html += "</select>";
 	html += "<td>"
 
 	html += "<input id=\"field"+  groupid + "_" + fid +"start\" " + readonly + ">";
@@ -413,11 +412,11 @@ function createBool(groupid, fid)
 	var html = "<select style=\"width: 140px\" id=\"field"+ groupid + "_" + fid +"op\"\>";
 	html += "<option value=\"is\">{/literal}{i18n}is{/i18n}{literal}";
 	html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
-	html += "</select>&nbsp;&nbsp;";
+	html += "</select>";
 	html += "<select id=\"field"+ groupid + "_" + fid +"start\"\>";
 	html += "<option value=\"true\">{/literal}{i18n}True{/i18n}{literal}";
 	html += "<option value=\"false\">{/literal}{i18n}False{/i18n}{literal}";
-	html += "</select>&nbsp;&nbsp;";
+	html += "</select>";
 
 	return html;
 }
@@ -427,6 +426,7 @@ function addFieldTypeSelection(groupid, fid, type, options)
 	var html = '';
 	var callback = null;
 	var params = null;
+alert(type);
 	switch(type)
 	{
 		case 'FILESIZE':
@@ -449,6 +449,7 @@ function addFieldTypeSelection(groupid, fid, type, options)
 			}
 			// want to fall through
 		case 'FULLTEXT':
+            
 		case 'STRINGMATCH':
 			html = createText(groupid, fid, type);
 			break;
@@ -470,6 +471,9 @@ function addFieldTypeSelection(groupid, fid, type, options)
 		default:
 			html += 'unknown: ' + type;
 	}
+    // Jarrett Jordaan
+    // Closing tags added
+    html += "</nobr></td>";
 
 	return {html: html, init: callback};
 
@@ -568,14 +572,19 @@ function addField(groupid, display, exprname, type)
 	html += "<td width=\"120\" valign=top>" + display;
 	html += "<div id=\"field" + groupid + "_" + fid + "expr\" style=\"display: none\">" + exprname + "</div>";
 	html += "<td valign=top><nobr>";
-
+//alert(html);
 	rec = addFieldTypeSelection(groupid, fid, type, null);
 
 	html += rec.html;
-
-	html += "<td width=\"55\" valign=top>";
-	html += "<input type=\"button\" value=\"{/literal}{i18n}remove{/i18n}{literal}\" onclick=\"delField(" + groupid + "," + fid + ")\">";
-	html += "</table>";
+//alert(rec.html);
+	//html += "<td width=\"55\" valign=top>";
+	//html += "<input type=\"button\" value=\"{/literal}{i18n}remove{/i18n}{literal}\" onclick=\"delField(" + groupid + "," + fid + ")\">";
+	//html += "</table>";
+back = "<td width=\"55\" valign=top>";
+back += "<input type=\"button\" value=\"{/literal}{i18n}remove{/i18n}{literal}\" onclick=\"delField(" + groupid + "," + fid + ")\">";
+back += "</td></tr></table>";
+    html += back;
+//alert(back);
 
 	var el = new Ext.Element(document.createElement('div'));
 	el.dom.id = "field" + groupid + "_" + fid;
