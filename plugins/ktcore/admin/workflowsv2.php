@@ -195,6 +195,26 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         return $oTemplate;
     }
 
+    /*
+     * Copies state notifications
+     *
+     * @params  KTWorkflowState $oldState to copy from
+     *          KTWorkflowState $newState to copy to
+     *
+     * @return true on success or PEAR error
+     */
+    function copyStateNotifications ($oldState, $newState) {
+        // we need the old one
+        $aAllowed = KTWorkflowUtil::getInformedForState($oldState);
+        // FIXME check that these are all users.
+        $res = KTWorkflowUtil::setInformedForState($newState, $aAllowed);
+        if (PEAR::isError($res)) {
+            return $oForm->handleError($res->getMessage());
+        }
+
+        return true;
+    }
+
     function do_confirmCopy(){
     	$oSelWorkflow = KTWorkflow::get(KTUtil::arrayGet($_REQUEST, 'workflowId' , array()));
     	$sWorkflowName = KTUtil::arrayGet($_REQUEST, 'workflowName' , array());
@@ -232,7 +252,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
                 $oForm->errorRedirectToMain(sprintf(_kt("Unexpected failure cloning state: %s"), $oNewState->getMessage()));
             }
 
-            // Get all state permission assignments for old workflow transitions and copy for copied workflow state permission assignments
+            // Get all state permission assignments for old workflow transitions
+            // and copy for copied workflow state permission assignments
 	        $aPermissionAssignments = KTWorkflowStatePermissionAssignment::getByState($oOldState);
 	        if(count($aPermissionAssignments) > 0){
 		        foreach ($aPermissionAssignments as $oPermAssign) {
@@ -265,6 +286,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 	        if (PEAR::isError($res)) {
             	return $this->errorRedirectToMain(sprintf(_kt("Unable to copy disabled state actions: %s"), $res->getMessage()));
         	}
+            
+            $this->copyStateNotifications ($oOldState, $oNewState);
         }
 
         // update workflow and set initial state
@@ -332,7 +355,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 	            $this->errorRedirectToMain(sprintf(_kt("Failed to set transition origins: %s"), $res->getMessage()));
 	        }
 
-	        // Get all triggers for old workflow transitions and copy for copied workflow transitions
+	        // Get all triggers for old workflow transitions and
+            // copy for copied workflow transitions
 	        $aTriggers = KTWorkflowTriggerInstance::getByTransition($oOldTransition);
 	        if(count($aTriggers) > 0){
 		        foreach ($aTriggers as $oTrigger) {
@@ -354,6 +378,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 	        	}
 	        }
         }
+
         return $this->successRedirectToMain(sprintf(_kt("%s successfully copied as %s"), $oSelWorkflow->getName(), $oNewWorkflow->getName()));
     }
 
@@ -2340,7 +2365,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
     	if (!empty($sFilter)) {
     	    $allowed = array();
-    	    $q = sprintf('name like "%%%s%%"', DBUtil::escapeSimple($sFilter));
+            // Modified Jarrett Jordaan Only notify enabled users
+    	    $q = sprintf('name like "%%%s%%" AND disabled = 0', DBUtil::escapeSimple($sFilter));
 
     	    $aUsers = User::getList($q);
         	$aGroups = Group::getList($q);
