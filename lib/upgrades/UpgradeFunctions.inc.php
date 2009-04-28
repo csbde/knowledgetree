@@ -120,12 +120,12 @@ class UpgradeFunctions {
             'dropIndexes'=>4,
             'createPrimaryKeys'=>5,
             'createForeignKeys'=>6,
-            'createIndexes'=>7
+            'createIndexes'=>7,
+            'addAutoIncrementToTables2'=>-1
             );
 
     var $priority = array(
             'addAutoIncrementToTables'=>1,
-            'addAutoIncrementToTables2'=>-1,
             'removeOldFilesAndFolders354a'=>1
             );
 
