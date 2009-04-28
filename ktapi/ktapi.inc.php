@@ -320,6 +320,13 @@ class KTAPI
 		$user_ktapi->start_system_session($username);
 
 		$document = KTAPI_Document::get($user_ktapi, $document_id);
+		
+		if (get_class($document) == 'PEAR_Error') {
+			return array(
+				"status_code" => 0,
+				"results" => null
+			);
+		}
 
 		$permissions = $document->getPermissionAllocation();
 
@@ -4461,6 +4468,27 @@ class KTAPI
             $response['status_code'] = 1;
 	    }
         return $response;
+	}
+	
+	public function is_latest_version($documentID, $contentID)
+	{
+		$sql = 'SELECT COUNT(document_content_version.id) AS newdocumentcount
+		FROM document_content_version
+		WHERE document_content_version.document_id ="'.$documentID.'" AND
+		document_content_version.id > "'.$contentID.'"';
+		
+		$row = DBUtil::getOneResult($sql);
+ 		$row = (int)$row['newdocumentcount'];
+		
+		if ($row > 0) {
+			$response['is_latest'] = 'FALSE';
+		} else {
+			$response['is_latest'] = 'TRUE';
+		}
+		
+		$response['status_code'] = 0;
+		
+		return $response;
 	}
 }
 

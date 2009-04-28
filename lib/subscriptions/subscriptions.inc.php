@@ -95,6 +95,72 @@ class SubscriptionEvent {
      * Every attempt is made to be as explicit as possible.
      */
 
+     /*
+      * Notification of bulk upload
+      * Author  :   Jarrett Jordaan
+      * Date    :   27/04/09
+      *
+      * @params :   KTDocumentUtil $oDocObjects
+      *             KTFolderUtil $oParentFolder
+      */
+    function notifyBulkDocumentUpload($oDocObjects, $oParentFolder) {
+        $content = new SubscriptionContent(); // needed for i18n
+        $parentId = $oParentFolder->getId();
+        $aUsers = $this->_getSubscribers($parentId, $this->subscriptionTypes["Folder"]);
+        $this->bulkNotification($aUsers, 'AddDocument', $oDocObjects, $parentId);
+    }
+
+     /*
+      * Bulk upload email notification handler
+      * Author  :    Jarrett Jordaan
+      * Date    :   27/04/09
+      *
+      * @params :   User $aUsers
+      *             string $eventType
+      *             KTDocumentUtil $oDocObjects
+      *             int $parentId
+      */
+    function bulkNotification($aUsers, $eventType, $oDocObjects, $parentId) {
+        $content = new SubscriptionContent(); // needed for i18n
+        $locationName = Folder::generateFullFolderPath($parentId);
+        $userId = $_SESSION['userID'];
+        foreach ($aUsers as $oSubscriber) {
+            $userNotifications = array();
+            $aNotificationOptions = array();
+            $userSubscriberId = $oSubscriber->getID();
+            $emailAddress = $oSubscriber->getEmail();
+            foreach($oDocObjects as $oDocObject) {
+                $targetName = $oDocObject->getName();
+                $objectId = $oDocObject->getId();
+                $aNotificationOptions['target_user'] = $userSubscriberId;
+                $aNotificationOptions['actor_id'] = $userId;
+                $aNotificationOptions['target_name'] = $targetName;
+                $aNotificationOptions['location_name'] = $locationName;
+                $aNotificationOptions['object_id'] = $objectId;
+                $aNotificationOptions['event_type'] = $eventType;
+                $oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
+                $userNotifications[] = $oNotification;
+            }
+            $eContent = '';
+            $eSubject = '';
+            // now the email content.
+            // might not be a good idea to notify on each file
+            //foreach($userNotifications as $userNotification) {
+            //    $eContent .= $content->getEmailAlertContent($userNotification)."<br/><br/>";
+                // Might be an over kill subject
+                //$eSubject .= $content->getEmailAlertSubject($userNotification)." ";
+            //}
+            // Better subject header with just the modified folder location
+            $eSubject = "KnowledgeTree: Subscription notification for Bulk Upload In Folder \"$locationName\"";
+            $eContent = "KnowledgeTree: Subscription notification for Bulk Upload In Folder \"$locationName\"";
+            if($eContent != '' && $eSubject != '') {
+                //echo $eContent;
+                $oEmail = new EmailAlert($emailAddress, $eSubject, $eContent);
+                $oEmail->send();
+            }
+        }
+    }
+
     // alerts users who are subscribed to $iParentFolderId.
     function AddFolder($oAddedFolder, $oParentFolder) {
         $content = new SubscriptionContent(); // needed for i18n
