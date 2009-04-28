@@ -786,10 +786,12 @@ $sourceDocument->getName(),
 
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Sending subscriptions')));
         // fire subscription alerts for the checked in document
-        $oSubscriptionEvent = new SubscriptionEvent();
-        $oFolder = Folder::get($oDocument->getFolderID());
-        $oSubscriptionEvent->AddDocument($oDocument, $oFolder);
-
+        // TODO : better way of checking if its a bulk upload
+        if($_SERVER['PATH_INFO'] != "ktcore.actions.folder.bulkUpload") {
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oFolder = Folder::get($oDocument->getFolderID());
+            $oSubscriptionEvent->AddDocument($oDocument, $oFolder);
+        }
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('add', 'postValidate');
 
