@@ -40,6 +40,8 @@
 require_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/filelike/filelikeutil.inc.php');
+// // Jarrett Jordaan: Deal with bulk uploads
+require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php');
 
 class KTBulkImportManager {
     var $oStorage;
@@ -78,12 +80,18 @@ class KTBulkImportManager {
         if (PEAR::isError($aDocPaths)) {
             return $aDocPaths;
         }
+        $oDocObjects = array();
         foreach ($aDocPaths as $sDocumentPath) {
             $res = $this->_importdocument($oFolder, $sDocumentPath);
             if (PEAR::isError($res)) {
                 return $res;
             }
+            $oDocObjects[] = $res;
         }
+        // Jarrett Jordaan: Deal with bulk uploads
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oSubscriptionEvent->notifyBulkDocumentUpload($oDocObjects, $oFolder);
+
         $aFolderPaths = $this->oStorage->listFolders($sPath);
         if (PEAR::isError($aFolderPaths)) {
             return $aFolderPaths;
