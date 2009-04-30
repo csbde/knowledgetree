@@ -422,6 +422,9 @@ class KTPlugin {
             return false;
         }
         return true;
+    }
+
+    function loadHelpers() {
 
         // Get actions, portlets, etc, create arrays as part of plugin
         $query = "SELECT * FROM plugin_helper h WHERE plugin = '{$this->sNamespace}'";

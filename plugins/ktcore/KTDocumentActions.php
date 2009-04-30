@@ -189,7 +189,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
             $oRegistry =& KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin('document.comparison.plugin');
 
-            if($oPlugin->load()){
+            if($oPlugin->loadHelpers()){
                 $sUrl = $oPlugin->getPagePath('DocumentComparison');
                 $file = $oPlugin->_aPages['document.comparison.plugin/DocumentComparison'][2];
 
