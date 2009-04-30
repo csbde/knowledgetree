@@ -249,7 +249,7 @@ class XmlRpcLucene
 				php_xmlrpc_encode((string) $this->authToken),
 				php_xmlrpc_encode((string) $query)));
 
-		$result=&$this->client->send($function);
+		$result=&$this->client->send($function, 60);
 		if($result->faultCode())
 		{
 			$this->error($result, 'query');
@@ -295,7 +295,7 @@ class XmlRpcLucene
             array(
                 new xmlrpcval($content, 'base64'))
             );
-        $result =& $this->client->send($function);
+        $result =& $this->client->send($function, 120);
 
         unset($content);
 
@@ -390,7 +390,7 @@ class XmlRpcLucene
                 php_xmlrpc_encode((string)$toExtension)
             ));
 
-        $result=&$this->client->send($function);
+        $result=&$this->client->send($function, 120);
 
         unset($content);
 
