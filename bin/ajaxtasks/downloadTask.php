@@ -2,7 +2,7 @@
 
 chdir(dirname(__FILE__));
 require_once('../../config/dmsDefaults.php');
-require_once('compressionArchiveUtil.inc.php');
+require_once(KT_LIB_DIR . '/foldermanagement/compressionArchiveUtil.inc.php');
 
 /**
  * The download task provides 2 pieces of functionality. The first is to process the download queue and the second is to "ping" the download queue.

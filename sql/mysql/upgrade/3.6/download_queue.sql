@@ -20,4 +20,4 @@ VALUES ('export', 'Use External Zip Binary', 'Utilises the external zip binary f
 the background.', 'useDownloadQueue', 'default', 'true', 'boolean', NULL, 1);
 
 INSERT INTO `scheduler_tasks` (task, script_url, frequency, run_time, status)
-VALUES ('Bulk Download Queue','lib/foldermanagement/downloadTask.php','1min','2007-10-01','system');
+VALUES ('Bulk Download Queue','bin/ajaxtasks/downloadTask.php','30secs','2007-10-01','system');

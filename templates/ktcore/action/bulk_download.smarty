@@ -1,15 +1,18 @@
+<p>
+{i18n}Creating zip file. Compressing and archiving in progress ...{/i18n}
+</p>
 <p style='margin-bottom: 10px;'>
-The documents you have selected are being compressed and archived, once the archive has been created a download link will be displayed.
-<br /><b>Please do not close the page.</b>
+<br /><b>{i18n}Warning! Please wait for archiving to complete before closing the page.{/i18n} </b>
+<br />{i18n}Note: Closing the page before the download link displays will cancel your Bulk Download.{/i18n}
 </p>
 
 
 <div id='download_link' style='visibility: hidden'>
 <p style='margin-bottom: 5px;'>
-Click <a href="{$download_url}">here</a> to download the archive. {$str}
+<a href="{$download_url}">{i18n}Download Zipped File{/i18n}</a>
 </p>
 <p style='margin-bottom: 10px;'>
-{$return}
+<a href="{$folder_url}">{i18n}Return to Folder{/i18n}</a>
 <br />
 </p>
 </div>

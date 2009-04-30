@@ -1085,19 +1085,18 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         $folderurl = $this->getReturnUrl();
         $_SESSION['export_return_url'] = $folderurl;
 
-        $sReturn = sprintf('<p>' . _kt('Return to the original <a href="%s">folder</a>') . "</p>\n", $folderurl);
         $download_url = KTUtil::addQueryStringSelf("action=downloadZipFile&fFolderId={$this->oFolder->getId()}&exportcode={$this->sExportCode}");
 
         if($useQueue){
             $result = parent::do_performaction();
 
-            $url = KTUtil::kt_url() . '/lib/foldermanagement/downloadTask.php';
+            $url = KTUtil::kt_url() . '/bin/ajaxtasks/downloadTask.php';
 
           	$oTemplating =& KTTemplating::getSingleton();
           	$oTemplate = $oTemplating->loadTemplate('ktcore/action/bulk_download');
 
           	$aParams = array(
-                    'return' => $sReturn,
+                    'folder_url' => $folderurl,
                     'url' => $url,
                     'code' => $this->sExportCode,
                     'download_url' => $download_url
@@ -1135,7 +1134,11 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 
         $this->commitTransaction();
 
-        $str = sprintf('<p>' . _kt('Your download will begin shortly. If you are not automatically redirected to your download, please click <a href="%s">here</a> ') . "</p>\n", $download_url);
+        $str = '<p>'._kt('Creating zip file. Compressing and archiving in progress ...').'</p>';
+        $str .= "<p style='margin-bottom: 10px;'><br /><b>".
+                _kt('Warning! Please wait for archiving to complete before closing the page.').'</b><br />'.
+                _kt('Note: Closing the page before the download link displays will cancel your Bulk Download.').'</p>';
+
         $str .= sprintf('<p>' . _kt('Once your download is complete, click <a href="%s">here</a> to return to the original folder') . "</p>\n", $folderurl);
         $str .= sprintf('<script language="JavaScript">
                 function kt_bulkexport_redirect() {

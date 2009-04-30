@@ -89,18 +89,17 @@ class KTBulkExportAction extends KTFolderAction {
         $sCurrentFolderId = $this->oFolder->getId();
         $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $sCurrentFolderId, $exportCode));
         $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
-        $sReturn = '<p>' . _kt('Once your download is complete, click <a href="'.$folderurl.'">here</a> to return to the original folder') . "</p>\n";
 
         if($useQueue){
             DownloadQueue::addItem($exportCode, $sCurrentFolderId, $sCurrentFolderId, 'folder');
 
-            $task_url = KTUtil::kt_url() . '/lib/foldermanagement/downloadTask.php';
+            $task_url = KTUtil::kt_url() . '/bin/ajaxtasks/downloadTask.php';
 
           	$oTemplating =& KTTemplating::getSingleton();
           	$oTemplate = $oTemplating->loadTemplate('ktcore/action/bulk_download');
 
           	$aParams = array(
-                    'return' => $sReturn,
+                    'folder_url' => $folderurl,
                     'url' => $task_url,
                     'code' => $exportCode,
                     'download_url' => $url
@@ -197,7 +196,13 @@ class KTBulkExportAction extends KTFolderAction {
             'ip' => Session::getClientIP(),
         ));
 
-        printf('<p>' . _kt('Your download will begin shortly. If you are not automatically redirected to your download, please click <a href="%s">here</a> ') . "</p>\n", $url);
+        $sReturn = '<p>'._kt('Creating zip file. Compressing and archiving in progress ...').'</p>';
+        $sReturn .= "<p style='margin-bottom: 10px;'><br /><b>".
+                _kt('Warning! Please wait for archiving to complete before closing the page.').'</b><br />'.
+                _kt('Note: Closing the page before the download link displays will cancel your Bulk Download.').'</p>';
+
+        $sReturn .= '<p>' . _kt('Once your download is complete, click <a href="'.$folderurl.'">here</a> to return to the original folder') . "</p>\n";
+
         print($sReturn);
         printf("</div></div></body></html>\n");
         printf('<script language="JavaScript">
