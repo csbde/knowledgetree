@@ -289,7 +289,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
     $aUserList = array('off' => _kt('-- Please filter --'));
 
     if($sFilter && trim($sFilter)) {
-        $aUsers = User::getList(sprintf('name like "%%%s%%"', $sFilter));
+        $aUsers = User::getList(sprintf('name like "%%%s%%" AND disabled = 0 AND id > 0', $sFilter));
         $aUserList = array();
         foreach($aUsers as $oUser) {
         $aUserList[$oUser->getId()] = $oUser->getName();
