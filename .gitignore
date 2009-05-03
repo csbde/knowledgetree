@@ -1,4 +1,6 @@
+*~
 var/cache/configcache
+var/log/
 bin/luceneserver/lucene.pid
 *.tmproj
 .DS_Store
