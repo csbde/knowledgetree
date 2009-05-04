@@ -119,7 +119,7 @@ if(OS_WINDOWS){
     }
 
     // Service is not running - log it and attempt to start
-	$default->log->debug('Check Open Office Task: Open office service is not running... trying to start it.');
+	$default->log->error('Check Open Office Task: Open office service is not running... trying to start it.');
 
 	// Use the win32 service start
 	$result2 = win32_start_service($OOService);
@@ -133,7 +133,7 @@ if(OS_WINDOWS){
         exit;
 	}
 
-	$default->log->debug('Check Open Office Task: Open office service could not be started. Error code '.$result2);
+	$default->log->error('Check Open Office Task: Open office service could not be started. Error code '.$result2);
 
 	// Attempt using the dmsctl batch script
 	$sPath = realpath('../../bin/dmsctl.bat');
@@ -163,7 +163,7 @@ if(OS_WINDOWS){
     if(file_exists($sPath)){
         // If Open office needs to be restarted - stop it here
         if($restartOO){
-            $sCmd = "\"$sPath\" restart soffice";
+            $sCmd = "\"$sPath\" restart soffice >/dev/null &";
             $default->log->debug('Check Open Office Task: ' . get_current_user());
             $default->log->debug('Check Open Office Task: ' . $sCmd);
 
@@ -171,7 +171,7 @@ if(OS_WINDOWS){
 
             $default->log->debug('Check Open Office Task: Attempted restart using dmsctl.sh.');
         }else{
-            $sCmd = "\"$sPath\" start soffice";
+            $sCmd = "\"$sPath\" start soffice >/dev/null &";
             $default->log->debug('Check Open Office Task: ' . get_current_user());
             $default->log->debug('Check Open Office Task: ' . $sCmd);
 
@@ -195,5 +195,5 @@ $default->log->debug('Check Open Office Task: Can\'t start Open office, this may
 if($sGiveOutput){
     echo 0;
 }
-exit;
+exit(0);
 ?>

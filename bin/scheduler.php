@@ -54,12 +54,12 @@ if(file_exists($lock)){
 // If this is *nix and we are root then make sure file permisions are correct
 if(!OS_WINDOWS && (get_current_user() == 'root'))
 {
-    // The log files... 
+    // The log files...
     try {
         $default->log->debug( 'Scheduler: setting owner to nobody on - '.$default->logDirectory);
         exec('chown -R nobody:0 '.escapeshellcmd($default->logDirectory));
     } catch(Exception $e) {
-        $default->log->debug('Scheduler: can\'t set owner to nobody - '.$e);
+        $default->log->error('Scheduler: can\'t set owner to nobody - '.$e);
     }
 }
 
@@ -229,7 +229,10 @@ if (empty($aList))
 		}
 		else
 		{
-			 $res = shell_exec($cmd." 2>&1");
+			 $cmd .= (strtolower($sTask) == 'openoffice test') ? ' >/dev/null &' : ' 2>&1';
+
+			 $default->log->debug("Scheduler cmd: $cmd");
+			 $res = shell_exec($cmd);
 		}
 
 		// On completion - reset run time
@@ -237,7 +240,7 @@ if (empty($aList))
         $iDuration = number_format($iEnd - $iStart,2);
 
 
-        $ignore = array('open office test');
+        $ignore = array('openoffice test');
 
 		if (!empty($res))
 		{
@@ -272,5 +275,5 @@ if (empty($aList))
     }
 
 $default->log->debug('Scheduler: stopping');
-
+exit(0);
 ?>
