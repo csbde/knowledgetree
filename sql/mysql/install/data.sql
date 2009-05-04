@@ -1373,7 +1373,7 @@ INSERT INTO `scheduler_tasks` VALUES
 (8,'Disk Usage and Folder Utilisation Statistics','plugins/housekeeper/bin/UpdateStats.php','',0,'5mins','2007-10-01 00:00:00',NULL,0,'enabled'),
 (9,'Refresh Index Statistics','search2/bin/cronIndexStats.php','',0,'1min','2007-10-01',NULL,0,'enabled'),
 (10,'Refresh Resource Dependancies','search2/bin/cronResources.php','',0,'1min','2007-10-01',NULL,0,'enabled'),
-(11,'Bulk Download Queue','lib/foldermanagement/downloadTask.php','',0,'1min','2007-10-01',NULL,0,'system');
+(11,'Bulk Download Queue','bin/ajaxtasks/downloadTask.php','',0,'1min','2007-10-01',NULL,0,'system');
 
 /*!40000 ALTER TABLE `scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
