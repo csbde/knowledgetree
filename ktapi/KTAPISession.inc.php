@@ -282,7 +282,7 @@ class KTAPI_UserSession extends KTAPI_Session
 
 		if ($validateSession)
 		{
-		    $sql = "SELECT count(*) >= u.max_sessions as over_limit FROM active_sessions ass INNER JOIN users u ON ass.user_id=u.id WHERE ass.user_id = $user_id AND ass.apptype != 'ws'";
+		    $sql = "SELECT count(*) >= u.max_sessions as over_limit FROM active_sessions ass INNER JOIN users u ON ass.user_id=u.id WHERE ass.user_id = $user_id AND ass.apptype = 'webapp'";
 		    $row = DBUtil::getOneResult($sql);
 
 		    if (PEAR::isError($row))
@@ -301,9 +301,9 @@ class KTAPI_UserSession extends KTAPI_Session
 
         $session = session_id();
         $newSessionRequired = false;
-		if ($app == 'ws')
+		if ($app != 'webapp')
 		{
-            $sql = "select id from active_sessions where user_id=$user_id AND apptype='ws' and ip='$ip'";
+            $sql = "select id from active_sessions where user_id=$user_id AND apptype='$app' and ip='$ip'";
 
             $row = DBUtil::getOneResult($sql);
             if (empty($row))

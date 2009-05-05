@@ -132,7 +132,7 @@ class KTDownloadManager
 	 *
 	 * @access public
 	 */
-	function download($document_id, $hash, $version = null)
+	function download($document_id, $hash, $version = null, $apptype = 'ws')
 	{
 		$sql = "SELECT 1 FROM download_files WHERE hash=? AND session=? AND document_id=?";
 		$rows = DBUtil::getResultArray(array($sql, array($hash, $this->session, $document_id)));
@@ -156,7 +156,7 @@ class KTDownloadManager
 		$storage =& KTStorageManagerUtil::getSingleton();
 
         $ktapi = &new KTAPI();
-        $res = $ktapi->get_active_session($this->session);
+        $res = $ktapi->get_active_session($this->session, null, $apptype);
         if (PEAR::isError($res))
         {
         	return $res;
