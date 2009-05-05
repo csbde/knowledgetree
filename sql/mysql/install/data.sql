@@ -1753,8 +1753,11 @@ INSERT INTO `upgrades` VALUES
 (214,'func*3.5.4a*0*removeOldFilesAndFolders354a','Remove old files and folders that are no longer needed.','2008-10-01 00:00:00',1,'upgrade*3.5.4a*99*upgrade3.5.4a'),
 (215,'func*3.5.4a*0*removeOldFilesAndFolders354a1','Remove old files and folders that are no longer needed.','2008-10-01 00:00:00',1,'upgrade*3.5.4a*99*upgrade3.5.4a'),
 (216,'upgrade*3.5.4a*99*upgrade3.5.4a','Upgrade from version 3.5.4 to 3.5.4a','2008-12-01 00:00:00',1,'upgrade*3.5.4a*99*upgrade3.5.4a'),
-(217,'upgrade*3.6.0*99*upgrade3.6.0','Upgrade from version 3.5.4a to 3.6.0','2009-01-01 00:00:00',1,'upgrade*3.6.0*99*upgrade3.6.0'),
-(218,'upgrade*3.6.1*99*upgrade3.6.1','Upgrade from version 3.6.0 to 3.6.1','2009-04-01 00:00:00',1,'upgrade*3.6.1*99*upgrade3.6.1');
+(217, 'sql*3.6*0*3.6.0/ldap_config_setting.sql', 'Database upgrade to version 3.6: Ldap config setting','2009-01-01 00:00:00',1,'upgrade*3.6.0*99*upgrade3.6.0'),
+(218, 'sql*3.6*0*3.6.0/download_queue.sql', 'Database upgrade to version 3.6: Download queue','2009-01-01 00:00:00',1,'upgrade*3.6.0*99*upgrade3.6.0'),
+(219,'upgrade*3.6.0*99*upgrade3.6.0','Upgrade from version 3.5.4a to 3.6.0','2009-01-01 00:00:00',1,'upgrade*3.6.0*99*upgrade3.6.0'),
+(220, 'sql*3.6.1*0*3.6.1/search_ranking.sql', 'Database upgrade to version 3.6.1: Search ranking','2009-04-01 00:00:00',1,'upgrade*3.6.1*99*upgrade3.6.1'),
+(221,'upgrade*3.6.1*99*upgrade3.6.1','Upgrade from version 3.6.0 to 3.6.1','2009-04-01 00:00:00',1,'upgrade*3.6.1*99*upgrade3.6.1');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
