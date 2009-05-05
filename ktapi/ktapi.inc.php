@@ -60,6 +60,10 @@ require_once(KTAPI_DIR .'/KTAPIAcl.inc.php');
 require_once(KTAPI_DIR .'/KTAPICollection.inc.php');
 require_once(KTAPI_DIR .'/KTAPIBulkActions.inc.php');
 
+//$dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..';
+//$dir = realpath($dir).DIRECTORY_SEPARATOR;
+//require_once($dir . 'plugins/wintools/baobabkeyutil.inc.php');
+//require_once($dir . 'plugins/electronic-signatures/Esignature.inc.php');
 
 /**
 * This class defines functions that MUST exist in the inheriting class
@@ -170,6 +174,13 @@ class KTAPI
 	protected $session = null;
 
 	protected $version = 3;
+
+    private $esig_enabled;
+
+    public function KTAPI()
+    {
+        $this->esig_enabled = $this->electronic_sig_enabled();
+    }
 
  	/**
  	* This returns the current session.
@@ -349,7 +360,12 @@ class KTAPI
 	* @param int
 	*
 	*/
-	public function add_folder_user_permissions($username, $folder_id, $namespace) {
+	public function add_folder_user_permissions($username, $folder_id, $namespace, $sig_username = '', $sig_password = '', $reason = '')
+    {
+        $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.permissions_change');
+        if ($response['status_code'] == 1) return $response;
+
 		if (is_null($this->session))
 		{
 			return array(
@@ -417,7 +433,12 @@ class KTAPI
 	* @param int
 	*
 	*/
-	public function add_folder_role_permissions($role, $folder_id, $namespace) {
+	public function add_folder_role_permissions($role, $folder_id, $namespace, $sig_username = '', $sig_password = '', $reason = '')
+    {
+        $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.permissions_change');
+        if ($response['status_code'] == 1) return $response;
+
 		if (is_null($this->session))
 		{
 			return array(
@@ -478,7 +499,12 @@ class KTAPI
 	* @param int
 	*
 	*/
-	public function add_folder_group_permissions($group, $folder_id, $namespace) {
+	public function add_folder_group_permissions($group, $folder_id, $namespace, $sig_username = '', $sig_password = '', $reason = '')
+    {
+        $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.permissions_change');
+        if ($response['status_code'] == 1) return $response;
+
 		if (is_null($this->session))
 		{
 			return array(
@@ -529,9 +555,6 @@ class KTAPI
 		$permissions->add($group, $permissions);
 		$permissions->save();
 	}
-
-
-
 
 	/**
  	* This checks if a user can access an object with a certain permission.
@@ -711,7 +734,6 @@ class KTAPI
 		return $session;
 	}
 
-
 	/**
 	* start a root session.
 	*
@@ -737,8 +759,6 @@ class KTAPI
 
 		return $session;
 	}
-
-
 
 	/**
 	* Starts an anonymous session.
@@ -1048,7 +1068,6 @@ class KTAPI
 		return $results;
 	}
 
-
 	/**
     * Returns an array of username/name combinations or an error object.
 	*
@@ -1213,8 +1232,13 @@ class KTAPI
      * @param integer $target_folder_id The id of the target folder if required - copy and move require this.
      * @return array The response array. On success response['results'] will be empty | contain an array of failed items.
      */
-    public function performBulkAction($action, $items, $reason = '', $target_folder_id = null)
+    public function performBulkAction($action, $items, $reason = '', $target_folder_id = null,
+                                      $sig_username = '', $sig_password = '')
     {
+        $response = $this->_check_electronic_signature($target_folder_id, $sig_username, $sig_password, $reason, $reason,
+                                                       'ktcore.transactions.permissions_change');
+        if ($response['status_code'] == 1) return $response;
+        
         $response['status_code'] = 1;
 
         if(!is_array($items)){
@@ -1474,8 +1498,12 @@ class KTAPI
      * @param integer $user_id The id of the user to be added
      * @return array Response
      */
-    public function add_user_to_role_on_folder($folder_id, $role_id, $user_id)
+    public function add_user_to_role_on_folder($folder_id, $role_id, $user_id, $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.role_allocations_change');
+        if ($response['status_code'] == 1) return $response;
+
         $response['status_code'] = 1;
         if(!is_numeric($user_id)){
             $response['message'] = _kt('User id must be numeric.');
@@ -1496,8 +1524,12 @@ class KTAPI
      * @param integer $group_id The id of the group to be added
      * @return array Response
      */
-    public function add_group_to_role_on_folder($folder_id, $role_id, $group_id)
+    public function add_group_to_role_on_folder($folder_id, $role_id, $group_id, $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.role_allocations_change');
+        if ($response['status_code'] == 1) return $response;
+
         $response['status_code'] = 1;
         if(!is_numeric($group_id)){
             $response['message'] = _kt('Group id must be numeric.');
@@ -1518,8 +1550,12 @@ class KTAPI
      * @param integer $user_id The id of the user to be removed
      * @return array Response
      */
-    public function remove_user_from_role_on_folder($folder_id, $role_id, $user_id)
+    public function remove_user_from_role_on_folder($folder_id, $role_id, $user_id, $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.role_allocations_change');
+        if ($response['status_code'] == 1) return $response;
+
         $response['status_code'] = 1;
         if(!is_numeric($user_id)){
             $response['message'] = _kt('User id must be numeric.');
@@ -1540,8 +1576,12 @@ class KTAPI
      * @param integer $group_id The id of the group to be removied
      * @return array Response
      */
-    public function remove_group_from_role_on_folder($folder_id, $role_id, $group_id)
+    public function remove_group_from_role_on_folder($folder_id, $role_id, $group_id, $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.role_allocations_change');
+        if ($response['status_code'] == 1) return $response;
+
         $response['status_code'] = 1;
         if(!is_numeric($group_id)){
             $response['message'] = _kt('Group id must be numeric.');
@@ -1593,8 +1633,13 @@ class KTAPI
      * @param string $update The type of modification - add | remove
      * @return array Response
      */
-    private function update_members_on_role_on_folder($folder_id, $role_id, $members, $update = 'add')
+    private function update_members_on_role_on_folder($folder_id, $role_id, $members, $update = 'add', 
+                                                      $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.role_allocations_change');
+        if ($response['status_code'] == 1) return $response;
+
         // Check input information
         $response['status_code'] = 1;
         if(!is_numeric($folder_id)){
@@ -1740,8 +1785,12 @@ class KTAPI
      * @param integer $role_id Optional. The id of the role being reset.
      * @return array Response
      */
-    public function remove_all_role_allocation_from_folder($folder_id, $role_id = null)
+    public function remove_all_role_allocation_from_folder($folder_id, $role_id = null, $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.role_allocations_change');
+        if ($response['status_code'] == 1) return $response;
+
         $response['status_code'] = 1;
 
         // Get folder and role objects
@@ -1778,8 +1827,12 @@ class KTAPI
      * @param integer $folder_id The folder id
      * @return array Response
      */
-    public function override_role_allocation_on_folder($folder_id)
+    public function override_role_allocation_on_folder($folder_id, $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.role_allocations_change');
+        if ($response['status_code'] == 1) return $response;
+
         $response['status_code'] = 1;
 
         // Get folder object
@@ -1828,7 +1881,6 @@ class KTAPI
 
 
     /* *** Refactored web services functions *** */
-
 
     /**
      * Creates a new anonymous session.
@@ -2022,8 +2074,12 @@ class KTAPI
      * @param string $folder_name The name of the new folder
      * @return array Response 'results' contains kt_folder_detail | 'message' contains error message on failure
      */
-    function create_folder($folder_id, $folder_name)
+    function create_folder($folder_id, $folder_name, $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.add');
+        if ($response['status_code'] == 1) return $response;
+
         $folder = &$this->get_folder_by_id($folder_id);
     	if (PEAR::isError($folder))
     	{
@@ -2047,8 +2103,12 @@ class KTAPI
      * @param integer $source_folder_id Id of the folder to which the shortcut will point.
      * @return array Response 'results' contains kt_shortcut_detail | 'message' contains error message on failure
      */
-    function create_folder_shortcut($target_folder_id, $source_folder_id)
+    function create_folder_shortcut($target_folder_id, $source_folder_id, $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.create_shortcut');
+        if ($response['status_code'] == 1) return $response;
+        
         $folder = &$this->get_folder_by_id($target_folder_id);
     	if (PEAR::isError($folder))
     	{
@@ -2088,8 +2148,12 @@ class KTAPI
      * @param integer $source_document_id Id of the document to which the shortcut will point
      * @return array Response 'results' contains kt_document_detail | 'message' contains error message on failure
      */
-    function create_document_shortcut($target_folder_id, $source_document_id)
+    function create_document_shortcut($target_folder_id, $source_document_id, $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.create_shortcut');
+        if ($response['status_code'] == 1) return $response;
+
         $folder = &$this->get_folder_by_id($target_folder_id);
     	if (PEAR::isError($folder))
     	{
@@ -2129,8 +2193,12 @@ class KTAPI
      * @param string $reason The reason for performing the deletion
      * @return array Response | 'message' contains error message on failure
      */
-    function delete_folder($folder_id, $reason)
+    function delete_folder($folder_id, $reason, $sig_username = '', $sig_password = '')
     {
+        $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.delete');
+        if ($response['status_code'] == 1) return $response;
+
         $folder = &$this->get_folder_by_id($folder_id);
 		if (PEAR::isError($folder))
     	{
@@ -2160,8 +2228,12 @@ class KTAPI
      * @param string $newname The new name of the folder
      * @return array Response | 'message' contains error message on failure
      */
-    function rename_folder($folder_id, $newname)
+    function rename_folder($folder_id, $newname, $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.rename');
+        if ($response['status_code'] == 1) return $response;
+
         $folder = &$this->get_folder_by_id($folder_id);
 		if (PEAR::isError($folder))
     	{
@@ -2191,8 +2263,12 @@ class KTAPI
      * @param string $reason The reason for performing the copy
      * @return array Response | 'message' contains error message on failure
      */
-    function copy_folder($source_id, $target_id, $reason)
+    function copy_folder($source_id, $target_id, $reason, $sig_username = '', $sig_password = '')
     {
+        $response = $this->_check_electronic_signature($source_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.copy');
+        if ($response['status_code'] == 1) return $response;
+        
     	$src_folder = &$this->get_folder_by_id($source_id);
     	if (PEAR::isError($src_folder))
     	{
@@ -2216,7 +2292,7 @@ class KTAPI
     	    $response['message']= $result->getMessage();
     	    return $response;
     	}
-
+        
     	$response['status_code'] = 0;
 
     	if($this->version >= 2){
@@ -2240,8 +2316,12 @@ class KTAPI
      * @param string $reason The reason for performing the move
      * @return array Response | 'message' contains error message on failure
      */
-    function move_folder($source_id, $target_id, $reason)
+    function move_folder($source_id, $target_id, $reason, $sig_username = '', $sig_password = '')
     {
+        $response = $this->_check_electronic_signature($source_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.move');
+        if ($response['status_code'] == 1) return $response;
+
     	$src_folder = &$this->get_folder_by_id($source_id);
     	if (PEAR::isError($src_folder))
     	{
@@ -2636,8 +2716,13 @@ class KTAPI
      * @param string $tempfilename
      * @return kt_document_detail.
      */
-    public function add_document($folder_id,  $title, $filename, $documenttype, $tempfilename)
+    public function add_document($folder_id,  $title, $filename, $documenttype, $tempfilename, 
+                                 $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.add');
+        if ($response['status_code'] == 1) return $response;
+
 		// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
 		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
     	$upload_manager = new KTUploadManager();
@@ -2682,7 +2767,7 @@ class KTAPI
 
 		$update_result = $this->update_document_metadata($document_id, $metadata, $sysdata);
 		if($update_result['status_code'] != 0){
-		    $this->delete_document($document_id, 'Rollback because metadata could not be added');
+		    $this->delete_document($document_id, 'Rollback because metadata could not be added', false);
 			return $update_result;
 		}
 
@@ -2713,7 +2798,7 @@ class KTAPI
 
 		$update_result = $this->update_document_metadata($document_id, $metadata, $sysdata);
 		if($update_result['status_code'] != 0){
-		    $this->delete_document($document_id, 'Rollback because metadata could not be added');
+		    $this->delete_document($document_id, 'Rollback because metadata could not be added', false);
 		    return $update_result;
 		}
 
@@ -2827,8 +2912,13 @@ class KTAPI
      * @param string $tempfilename
      * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      */
-    public function checkin_document($document_id,  $filename, $reason, $tempfilename, $major_update )
+    public function checkin_document($document_id,  $filename, $reason, $tempfilename, $major_update,
+                                     $sig_username = '', $sig_password = '' )
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.check_in');
+        if ($response['status_code'] == 1) return $response;
+        
     	// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
 		// possibly should change 'tempfilename' to be a hash or id of some sort if this is troublesome.
     	$upload_manager = new KTUploadManager();
@@ -2860,8 +2950,13 @@ class KTAPI
 		return $this->get_document_detail($document_id);
     }
 
-    public function  checkin_small_document_with_metadata($document_id,  $filename, $reason, $base64, $major_update, $metadata, $sysdata)
+    public function  checkin_small_document_with_metadata($document_id,  $filename, $reason, $base64, $major_update, 
+                                                          $metadata, $sysdata, $sig_username = '', $sig_password = '')
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.check_in');
+        if ($response['status_code'] == 1) return $response;
+
        	$add_result = $this->checkin_small_document($document_id,  $filename, $reason, $base64, $major_update);
 
        	if($add_result['status_code'] != 0){
@@ -2889,8 +2984,13 @@ class KTAPI
        	return $update_result;
 	}
 
-    public function  checkin_document_with_metadata($document_id,  $filename, $reason, $tempfilename, $major_update, $metadata, $sysdata)
+    public function  checkin_document_with_metadata($document_id,  $filename, $reason, $tempfilename, $major_update, 
+                                                    $metadata, $sysdata, $sig_username = '', $sig_password = '')
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.check_in');
+        if ($response['status_code'] == 1) return $response;
+
        	$add_result = $this->checkin_document($document_id,  $filename, $reason, $tempfilename, $major_update);
 
        	if($add_result['status_code'] != 0){
@@ -2917,7 +3017,6 @@ class KTAPI
        	return $update_result;
 	}
 
-
     /**
      * Does a document checkin.
      *
@@ -2930,8 +3029,12 @@ class KTAPI
      * @param boolean $major_update
      * @return kt_document_detail.
      */
-    public function checkin_small_document($document_id,  $filename, $reason, $base64, $major_update )
+    public function checkin_small_document($document_id,  $filename, $reason, $base64, $major_update, $sig_username = '', $sig_password = '' )
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.check_in');
+        if ($response['status_code'] == 1) return $response;
+
     	$upload_manager = new KTUploadManager();
     	$tempfilename = $upload_manager->store_base64_file($base64, 'su_');
     	if (PEAR::isError($tempfilename))
@@ -2973,8 +3076,12 @@ class KTAPI
      * @param string $reason
      * @return kt_document_detail.
      */
-    public function checkout_document($document_id, $reason, $download=true)
+    public function checkout_document($document_id, $reason, $download=true, $sig_username = '', $sig_password = '')
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.check_out');
+        if ($response['status_code'] == 1) return $response;
+
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3028,8 +3135,12 @@ class KTAPI
      * @param boolean $download
      * @return kt_document_detail
      */
-    public function checkout_small_document($document_id, $reason, $download)
+    public function checkout_small_document($document_id, $reason, $download, $sig_username = '', $sig_password = '')
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.check_out');
+        if ($response['status_code'] == 1) return $response;
+
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3088,8 +3199,12 @@ class KTAPI
      * @param string $reason
      * @return kt_document_detail.
      */
-    public function undo_document_checkout($document_id, $reason)
+    public function undo_document_checkout($document_id, $reason, $sig_username = '', $sig_password = '')
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.force_checkin');
+        if ($response['status_code'] == 1) return $response;
+
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3213,8 +3328,15 @@ class KTAPI
      * @param string $reason
      * @return kt_response
      */
-    public function delete_document($document_id, $reason)
+    public function delete_document($document_id, $reason, $sig_username = '', $sig_password = '', $auth_sig = true)
     {
+        if ($auth_sig)
+        {
+            $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                          'ktcore.transactions.delete');
+            if ($response['status_code'] == 1) return $response;
+        }
+        
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3245,8 +3367,12 @@ class KTAPI
      * @param string $documenttype
      * @return array
      */
-    public function change_document_type($document_id, $documenttype)
+    public function change_document_type($document_id, $documenttype, $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason, 
+                                                       'ktcore.transactions.document_type_change');
+        if ($response['status_code'] == 1) return $response;
+        
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3279,8 +3405,12 @@ class KTAPI
      * @param string $newfilename
      * @return array
      */
- 	public function copy_document($document_id,$folder_id,$reason,$newtitle=null,$newfilename=null)
+ 	public function copy_document($document_id,$folder_id,$reason,$newtitle=null,$newfilename=null, $sig_username = '', $sig_password = '')
  	{
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.copy');
+        if ($response['status_code'] == 1) return $response;
+        
       	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3311,7 +3441,7 @@ class KTAPI
  	}
 
  	/**
- 	 * Move a folder to another location.
+ 	 * Move a document to another location.
  	 *
 	 * @author KnowledgeTree Team
 	 * @access public
@@ -3322,8 +3452,12 @@ class KTAPI
  	 * @param string $newfilename
  	 * @return array
  	 */
- 	public function move_document($document_id,$folder_id,$reason,$newtitle=null,$newfilename=null)
+ 	public function move_document($document_id,$folder_id,$reason,$newtitle=null,$newfilename=null, $sig_username = '', $sig_password = '')
  	{
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.move');
+        if ($response['status_code'] == 1) return $response;
+
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3368,8 +3502,12 @@ class KTAPI
  	 * @param string $newtitle
  	 * @return arry
  	 */
- 	public function rename_document_title($document_id,$newtitle)
+ 	public function rename_document_title($document_id,$newtitle, $sig_username = '', $sig_password = '', $reason = '')
  	{
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.rename');
+        if ($response['status_code'] == 1) return $response;
+
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3400,8 +3538,12 @@ class KTAPI
  	 * @param string $newfilename
  	 * @return array
  	 */
- 	public function rename_document_filename($document_id,$newfilename)
+ 	public function rename_document_filename($document_id,$newfilename, $sig_username = '', $sig_password = '', $reason = '')
  	{
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.rename');
+        if ($response['status_code'] == 1) return $response;
+
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3432,8 +3574,12 @@ class KTAPI
      * @param string $reason
      * @return array
      */
-    public function change_document_owner($document_id, $username, $reason)
+    public function change_document_owner($document_id, $username, $reason, $sig_username = '', $sig_password = '')
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason, 
+                                                       'ktcore.transactions.document_owner_change');
+        if ($response['status_code'] == 1) return $response;
+
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3465,8 +3611,12 @@ class KTAPI
      * @param string $workflow
      * @return array
      */
-    public function start_document_workflow($document_id,$workflow)
+    public function start_document_workflow($document_id,$workflow, $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.workflow_state_transition');
+        if ($response['status_code'] == 1) return $response;
+
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3495,8 +3645,12 @@ class KTAPI
 	 * @param int $document_id
 	 * @return array
 	 */
-    public function delete_document_workflow($document_id)
+    public function delete_document_workflow($document_id, $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.workflow_state_transition');
+        if ($response['status_code'] == 1) return $response;
+
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3527,8 +3681,12 @@ class KTAPI
      * @param string $reason
      * @return array
      */
-    public function perform_document_workflow_transition($document_id,$transition,$reason)
+    public function perform_document_workflow_transition($document_id,$transition,$reason, $sig_username = '', $sig_password = '')
     {
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.workflow_state_transition');
+        if ($response['status_code'] == 1) return $response;
+
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3546,10 +3704,7 @@ class KTAPI
     	}
 
     	return $this->get_document_detail($document_id);
-
     }
-
-
 
     /**
      * Returns the metadata on a document.
@@ -3607,8 +3762,11 @@ class KTAPI
 	 * @param array $metadata
 	 * @return array
 	 */
-	public function update_document_metadata($document_id,$metadata, $sysdata=null)
+	public function update_document_metadata($document_id,$metadata, $sysdata=null, $sig_username = '', $sig_password = '', $reason = '')
 	{
+        $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.metadata_update');
+        if ($response['status_code'] == 1) return $response;
 
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
@@ -3649,7 +3807,6 @@ class KTAPI
 	 */
 	public function get_document_workflow_transitions($document_id)
 	{
-
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3712,7 +3869,6 @@ class KTAPI
 	 */
 	public function get_document_transaction_history($document_id)
 	{
-
     	$document = &$this->get_document_by_id($document_id);
 		if (PEAR::isError($document))
     	{
@@ -3744,7 +3900,6 @@ class KTAPI
 	 */
 	public function get_folder_transaction_history($folder_id)
 	{
-
     	$folder = &$this->get_folder_by_id($folder_id);
 		if (PEAR::isError($folder))
     	{
@@ -3840,8 +3995,12 @@ class KTAPI
 	 * @param int $child_document_id
 	 * @return kt_response
 	 */
-	public function unlink_documents($parent_document_id, $child_document_id)
+	public function unlink_documents($parent_document_id, $child_document_id, $sig_username = '', $sig_password = '', $reason = '')
 	{
+        $response = $this->_check_electronic_signature($parent_document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.unlink');
+        if ($response['status_code'] == 1) return $response;
+
     	$document = &$this->get_document_by_id($parent_document_id);
 		if (PEAR::isError($document))
     	{
@@ -3880,8 +4039,11 @@ class KTAPI
 	 * @param string $type
 	 * @return boolean
 	 */
-	public function link_documents($parent_document_id, $child_document_id, $type)
+	public function link_documents($parent_document_id, $child_document_id, $type, $sig_username = '', $sig_password = '', $reason = '')
 	{
+        $response = $this->_check_electronic_signature($parent_document_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.link');
+        if ($response['status_code'] == 1) return $response;
 
     	$document = &$this->get_document_by_id($parent_document_id);
 		if (PEAR::isError($document))
@@ -4490,6 +4652,67 @@ class KTAPI
 		
 		return $response;
 	}
+
+    /**
+     * Method to check whether electronic signatures are enabled
+     *
+     * @author KnowledgeTree Team
+	 * @access public
+     * @return bool $enabled true or false
+     */
+    public function electronic_sig_enabled()
+    {        
+        // Check config for api signatures enabled
+        $oConfig =& KTConfig::getSingleton();
+        $enabled = $oConfig->get('e_signatures/enableApiSignatures', false);
+        // Check that the license is valid
+        $enabled = (BaobabKeyUtil::getLicenseCount() >= MIN_LICENSES) & $enabled;
+
+        return $enabled;
+    }
+
+    /**
+     * Attempts authentication of the signature
+     *
+     * @author KnowledgeTree Team
+     * @access private
+     * @param string $username The users username.
+     * @param string $password The users password.
+     * @param string $comment A comment on the action performed.
+     * @param string $action The action performed.
+     * @param string $details Details about the action performed.
+     * @return bool True if authenticated | False if rejected
+     */
+    private function _authenticateSignature($username, $password, $comment, $action, $details)
+    {
+        $eSignature = new ESignature('api');
+        $result = $eSignature->sign($username, $password, $comment, $action, $details);
+        if(!$result){
+            $this->esig_error = $eSignature->getError();
+        }
+
+        return $result;
+    }
+
+    /**
+     * Method to execute electronic signature checks on action
+     */
+    private function _check_electronic_signature($item_id, $username, $password, $comment, $details, $action)
+    {
+        $response = array();
+        $response['status_code'] = 0;
+
+        // check electronic signature authentication, if on
+        if ($this->esig_enabled && !$this->_authenticateSignature($username, $password, $comment, $action, $item_id))
+        {
+            $response['status_code'] = 1;
+    	    $response['message'] = $this->esig_error;
+            
+    	    return $response;
+        }
+
+        return $response;
+    }
 }
 
 

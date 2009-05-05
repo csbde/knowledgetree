@@ -22,7 +22,7 @@ class APIAutoTestCase extends KTUnitTestCase {
      * @var object $root The KT folder object
      */
     var $root;
-
+    
     /**
     * This method sets up the KT session
     *
@@ -42,8 +42,6 @@ class APIAutoTestCase extends KTUnitTestCase {
         $this->session->logout();
     }
    
-
-
 	function testJunkanonymous_login() { 
 		$result = $this->ktapi->anonymous_login(null);
 		$this->assertIsA($result, 'array');
@@ -92,31 +90,29 @@ class APIAutoTestCase extends KTUnitTestCase {
 
 
 
-	function tesRealdelete_folder() { 
-		$result = $this->ktapi->delete_folder($folder_id, $reason);
-		$this->assertIsA($result, 'array');
+	function tesRealdelete_folder() {
+        $result = $this->ktapi->delete_folder($folder_id, $reason, 'admin', 'admin');
+        $this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
-
 	function tesRealrename_folder() { 
-		$result = $this->ktapi->rename_folder($folder_id, $newname);
-		$this->assertIsA($result, 'array');
+		$result = $this->ktapi->rename_folder($folder_id, $newname, 'admin', 'admin', 'Testing API');
+        $this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
 
 
 	function tesRealcopy_folder() { 
-		$result = $this->ktapi->copy_folder($source_id, $target_id, $reason);
-		$this->assertIsA($result, 'array');
+		$result = $this->ktapi->copy_folder($source_id, $target_id, $reason, 'admin', 'admin');
+        $this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
 
 
 	function tesRealmove_folder() { 
-		$result = $this->ktapi->move_folder($source_id, $target_id, $reason);
-		$this->assertIsA($result, 'array');
+		$result = $this->ktapi->move_folder($source_id, $target_id, $reason, 'admin', 'admin');
+        $this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
 
@@ -132,7 +128,7 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-	function testJunkget_document_detail_by_filename() { 
+	function testJunkget_document_detail_by_filename() {
 		$result = $this->ktapi->get_document_detail_by_filename(null, null, null);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 1);
@@ -168,26 +164,24 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
-	function tesRealget_document_shortcuts() { 
+	function tesRealget_document_shortcuts() {
 		$result = $this->ktapi->get_document_shortcuts($document_id);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-	function testJunkadd_document() { 
-		$result = $this->ktapi->add_document(null, null, null, null, null);
+	function testJunkadd_document() {
+		$result = $this->ktapi->add_document(null, null, null, null, null, 'admin', 'admin', 'Testing API');
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 1);
 	}
 
 	function tesRealadd_document() { 
-		$result = $this->ktapi->add_document($folder_id, $title, $filename, $documenttype, $tempfilename);
+		$result = $this->ktapi->add_document($folder_id, $title, $filename, $documenttype, $tempfilename,
+                                             'admin', 'admin', 'Testing API');
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
-
-
 
 	function tesRealadd_small_document_with_metadata() { 
 		$result = $this->ktapi->add_small_document_with_metadata($folder_id, $title, $filename, $documenttype, $base64, $metadata, $sysdata);
@@ -214,17 +208,16 @@ class APIAutoTestCase extends KTUnitTestCase {
 	}
 
 	function testJunkcheckin_document() { 
-		$result = $this->ktapi->checkin_document(null, null, null, null, null);
+		$result = $this->ktapi->checkin_document(null, null, null, null, null, 'admin', 'admin');
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 1);
 	}
 
 	function tesRealcheckin_document() { 
-		$result = $this->ktapi->checkin_document($document_id, $filename, $reason, $tempfilename, $major_update);
+		$result = $this->ktapi->checkin_document($document_id, $filename, $reason, $tempfilename, $major_update, 'admin', 'admin');
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
-
 
 	function tesRealcheckin_small_document_with_metadata() { 
 		$result = $this->ktapi->checkin_small_document_with_metadata($document_id, $filename, $reason, $base64, $major_update, $metadata, $sysdata);
@@ -238,15 +231,11 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
-
 	function tesRealcheckin_small_document() { 
 		$result = $this->ktapi->checkin_small_document($document_id, $filename, $reason, $base64, $major_update);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
-
-
 
 	function tesRealcheckout_document() { 
 		$result = $this->ktapi->checkout_document($document_id, $reason, $download);
@@ -254,22 +243,17 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
-
 	function tesRealcheckout_small_document() { 
 		$result = $this->ktapi->checkout_small_document($document_id, $reason, $download);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
 	function tesRealundo_document_checkout() { 
-		$result = $this->ktapi->undo_document_checkout($document_id, $reason);
+		$result = $this->ktapi->undo_document_checkout($document_id, $reason, 'admin', 'admin');
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
-
-
 
 	function tesRealdownload_document() { 
 		$result = $this->ktapi->download_document($document_id, $version);
@@ -277,22 +261,17 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
-
 	function tesRealdownload_small_document() { 
 		$result = $this->ktapi->download_small_document($document_id, $version);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
 	function tesRealdelete_document() { 
 		$result = $this->ktapi->delete_document($document_id, $reason);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
-
-
 
 	function tesRealchange_document_type() { 
 		$result = $this->ktapi->change_document_type($document_id, $documenttype);
@@ -306,15 +285,11 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
-
 	function tesRealrename_document_title() { 
 		$result = $this->ktapi->rename_document_title($document_id, $newtitle);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
-
-
 
 	function tesRealrename_document_filename() { 
 		$result = $this->ktapi->rename_document_filename($document_id, $newfilename);
@@ -322,13 +297,11 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
 	function tesRealchange_document_owner() { 
 		$result = $this->ktapi->change_document_owner($document_id, $username, $reason);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
-
 
 	function tesRealstart_document_workflow() { 
 		$result = $this->ktapi->start_document_workflow($document_id, $workflow);
@@ -336,13 +309,11 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
 	function tesRealdelete_document_workflow() { 
-		$result = $this->ktapi->delete_document_workflow($document_id);
+		$result = $this->ktapi->delete_document_workflow($document_id, 'Testing API', 'admin', 'admin', true);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
-
 
 	function tesRealperform_document_workflow_transition() { 
 		$result = $this->ktapi->perform_document_workflow_transition($document_id, $transition, $reason);
@@ -350,13 +321,11 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
 	function tesRealget_document_metadata() { 
 		$result = $this->ktapi->get_document_metadata($document_id);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
-
 
 	function tesRealupdate_document_metadata() { 
 		$result = $this->ktapi->update_document_metadata($document_id, $metadata, $sysdata);
@@ -364,13 +333,11 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
 	function tesRealget_document_workflow_state() { 
 		$result = $this->ktapi->get_document_workflow_state($document_id);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
-
 
 	function tesRealget_document_transaction_history() { 
 		$result = $this->ktapi->get_document_transaction_history($document_id);
@@ -378,13 +345,11 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
 	function tesRealget_document_version_history() { 
 		$result = $this->ktapi->get_document_version_history($document_id);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
-
 
 	function tesRealget_document_links() { 
 		$result = $this->ktapi->get_document_links($document_id);
