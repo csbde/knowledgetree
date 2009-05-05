@@ -182,6 +182,8 @@ class KTMime {
         	}
         }
 
+        /*
+        Removing this as it has been causing issues. It returns a word mimetype for unrecognised file types
         if (!$sType && OS_UNIX) {
             if (file_exists('/usr/bin/file')) {
                 $aCmd = array('/usr/bin/file', '-bi', $sFileName);
@@ -192,6 +194,7 @@ class KTMime {
                 }
             }
         }
+        */
 
         if ($sType) {
             $iSpacePos = strpos($sType, ' ');
