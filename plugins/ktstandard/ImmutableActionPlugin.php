@@ -97,7 +97,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'label' => _kt('Are you sure?'),
-            'description' => _kt(''),
+            'description' => '',
             'action' => 'main',
             'fail_action' => 'main',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
