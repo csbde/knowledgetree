@@ -6,19 +6,19 @@ cd ..
 pwd
 
 #pull in comm stuff
-cp -a ../Commercial-Plugins/alerts plugins/commercial/
-cp -a ../Commercial-Plugins/conditional-metadata plugins/commercial/
-cp -a ../Commercial-Plugins/custom-numbering plugins/commercial/
-cp -a ../Commercial-Plugins/documentcomparison plugins/commercial/
-cp -a ../Commercial-Plugins/network plugins/commercial/
-cp -a ../Commercial-Plugins/professional-reporting plugins/commercial/
-cp -a ../Commercial-Plugins/shortcuts plugins/commercial/
-cp -a ../Commercial-Plugins/wintools plugins/commercial/
-cp -a ../Commercial-Plugins/guidInserter plugins/commercial/
-cp -a ../Commercial-Plugins/clienttools plugins/commercial/
-cp -a ../Commercial-Plugins/electronic-signatures plugins/commercial/
-cp -a ../Commercial-Plugins/officeaddin plugins/commercial/
-cp -a ../KTOfficeAddIn/ktoffice ktoffice
+cp -R ../commercial-plugins/alerts plugins/commercial/
+cp -R ../commercial-plugins/conditional-metadata plugins/commercial/
+cp -R ../commercial-plugins/custom-numbering plugins/commercial/
+cp -R ../commercial-plugins/documentcomparison plugins/commercial/
+cp -R ../commercial-plugins/network plugins/commercial/
+cp -R ../commercial-plugins/professional-reporting plugins/commercial/
+cp -R ../commercial-plugins/shortcuts plugins/commercial/
+cp -R ../commercial-plugins/wintools plugins/commercial/
+cp -R ../commercial-plugins/guidInserter plugins/commercial/
+cp -R ../commercial-plugins/clienttools plugins/commercial/
+cp -R ../commercial-plugins/electronic-signatures plugins/commercial/
+cp -R ../commercial-plugins/officeaddin plugins/commercial/
+cp -R ../ktofficeAddIn/ktoffice ktoffice
 
 rm -f i18n/templates.c
 find resources -name "*.js" | sort | python ./bin/jsi18n.py > templates/ktcore/javascript_i18n.smarty
