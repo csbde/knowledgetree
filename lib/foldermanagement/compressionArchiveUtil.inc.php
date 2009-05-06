@@ -614,6 +614,7 @@ class DownloadQueue
         // Get all the folders within the current folder
         $sWhereClause = "parent_folder_ids like '%,{$folderId}'
             OR parent_folder_ids like '%,{$folderId},%'
+            OR parent_folder_ids like '{$folderId},%'
             OR parent_id = {$folderId}";
 
         $aFolderList = $oFolder->getList($sWhereClause);
