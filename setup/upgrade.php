@@ -183,10 +183,11 @@ if (PEAR::isError($dbSupport)) {
 
 
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN">
 <html>
   <head>
     <title><?php echo APP_NAME;?> Upgrade</title>
-    <style>
+    <style type="text/css">
 th { text-align: left; }
 td { vertical-align: top; }
 .foo { float: left; }
@@ -203,13 +204,13 @@ td { vertical-align: top; }
   		echo $oKTConfig->get('ui/mainLogo');
   	}else{
 	  	echo '../resources/graphics/ktlogo-topbar_base.png';
-	}?>">
+	}?>"/>
   <p>
-  <img src="upgrade-title.jpg">
-  <table width=800 height=500>
+  <img src="upgrade-title.jpg"/>
+  <table style="width:800; height:500">
 <tr><td>
 <P>
-   <script>
+   <script type="text/javascript">
 function do_start(action)
 {
 	document.location='?go=' + action;
@@ -458,8 +459,8 @@ function create_restore_stmt($targetfile)
 
 	$tmpdir=resolveTempDir();
 
-	$stmt = $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism drop  \"$dbName\"<br>";
-	$stmt .= $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism create  \"$dbName\"<br>";
+	$stmt = $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism drop  \"$dbName\"<br/>";
+	$stmt .= $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism create  \"$dbName\"<br/>";
 
 
 	$stmt .= $prefix ."mysql --user=\"$adminUser\" -p $mechanism \"$dbName\" < \"$targetfile\"\n";
@@ -478,7 +479,7 @@ function title($title)
 {
 	if (!isset($_SESSION['setup_user']))
 	{
-		print "<script>document.location='?go=Login'</script>";
+		print "<script type='text/javascript'>document.location='?go=Login'</script>";
 	}
 	print "<h1>$title</h1>";
 }
@@ -511,10 +512,10 @@ function upgradeConfirm()
 	if (!isset($_SESSION['backupStatus']) || $_SESSION['backupStatus'] === false)
 	{
 ?>
-<br>
+<br/>
 <font color="Red">Please ensure that you have made a backup before continuing with the upgrade process.</font>
 <p>
-<br>
+<br/>
 <?php
 	}
 ?>
@@ -550,7 +551,7 @@ Your mysql installation has been resolved. Manually, you would do the following:
 <tr>
 <td>
 <nobr>cd "<?php echo $dir;?>"</nobr>
-<br>
+<br/>
 <?php
 	}
 	else
@@ -617,7 +618,7 @@ function restoreSelect()
  	<P>
  	Select a backup to restore from the list below:
  	<P>
- 	<script>
+ 	<script type="text/javascript">
  	function selectRestore(filename)
  	{
  		document.location='?go=RestoreSelected&file=' + filename;
@@ -659,7 +660,7 @@ function restoreSelected()
 	$dir = resolveTempDir();
 	$_SESSION['backupFile'] = $dir . '/' . $file;
 ?>
-<script>
+<script type="text/javascript">
 document.location='?go=RestoreConfirm';
 </script>
 <?php
@@ -691,7 +692,7 @@ Manually, you would do the following to restore the backup:
 <tr>
 <td>
 <nobr>cd "<?php echo $dir;?>"</nobr>
-<br>
+<br/>
 <?php
 	}
 	else
@@ -709,6 +710,8 @@ You can continue to do the restore manually using the following command(s):
 	}
 ?>
 <nobr><?php echo $stmt['display'];?></nobr>
+</td>
+</tr>
 </table>
 <P>
 <?php
@@ -729,7 +732,7 @@ Press <i>continue to restore</i> to attempt the command(s) above.
 if ($dir != '')
 {
 ?>
-<script>
+<script type="text/javascript">
 function restore()
 {
 	if (confirm('Are you sure you want to restore? This is your last chance if the current data has not been backed up.'))
@@ -758,7 +761,7 @@ function backupDone()
 	{
 		$stmt=create_restore_stmt($filename);
 ?>
-		The backup file <nobr><I>"<?php echo $filename;?>"</i></nobr> has been created.
+		The backup file <nobr><i>"<?php echo $filename;?>"</i></nobr> has been created.
 		<P> It appears as though the <font color=green>backup has been successful</font>.
 		<P>
 		<?php
@@ -771,7 +774,7 @@ function backupDone()
 				<tr>
 					<td>
 						<nobr>cd <?php echo $stmt['dir'];?></nobr>
-						<br>
+						<br/>
 		<?php
 			}
 			else
@@ -809,7 +812,7 @@ We appologise for the inconvenience.
 
 	}
 ?>
-<br>
+<br/>
 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')">
 <?php
@@ -833,7 +836,7 @@ function restoreDone()
 	{
 
 ?>
-		The restore of <nobr><I>"<?php echo $filename;?>"</i></nobr> has been completed.
+		The restore of <nobr><i>"<?php echo $filename;?>"</i></nobr> has been completed.
 		<P>
 		It appears as though the <font color=green>restore has been successful</font>.
 		<P>
@@ -861,7 +864,7 @@ We appologise for the inconvenience.
 	}
 ?>
 
-<br>
+<br/>
 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')">
 
@@ -878,7 +881,7 @@ function check_state($value, $state='Home')
 	if ($_SESSION['state'] != $value)
 	{
 		?>
-			<script>
+			<script type="text/javascript">
 			document.location="?go=<?php echo $state;?>";
 			</script>
 			<?php
@@ -935,7 +938,7 @@ function backup()
 			$_SESSION['backupStatus'] = false;
 		}
 ?>
-			<script>
+			<script type="text/javascript">
 			document.location="?go=BackupDone";
 			</script>
 <?php
@@ -1007,7 +1010,7 @@ function restore()
 
 
 ?>
-			<script>
+			<script type="text/javascript">
 			document.location="?go=RestoreDone";
 			</script>
 <?php
@@ -1033,22 +1036,22 @@ function welcome()
 {
 	set_state(1);
 ?>
-<br>
+<br/>
 Welcome to the <?php echo APP_NAME;?> Database Upgrade Wizard.<P> If you have just updated
 your <?php echo APP_NAME;?> code base, you will need to complete the upgrade process in order to ensure your system is fully operational with the new version.
 <P>
 You will not be able to log into <?php echo APP_NAME;?> until your the database upgrade process is completed.
 <P>
-<font color=orange>!!NB!! You are advised to backup the database before attempting the upgrade. !!NB!!</font>
+<font color="#ffa500">!!NB!! You are advised to backup the database before attempting the upgrade. !!NB!!</font>
 <P>
 If you have already done this, you may skip this step can continue directly to the upgrade.
 <P>
 
 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="cancel" onclick="document.location='..';">
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="backup now" onclick="javascript:do_start('BackupConfirm');">
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('UpgradeConfirm');">
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="restore database" onclick="javascript:do_start('RestoreConfirm');">
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="cancel" onclick="document.location='..';"/>
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="backup now" onclick="javascript:do_start('BackupConfirm');"/>
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('UpgradeConfirm');"/>
+&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="restore database" onclick="javascript:do_start('RestoreConfirm');"/>
 
 
 <?php
@@ -1069,7 +1072,7 @@ function UpgradePreview()
         $upgradeTable = generateUpgradeTable();
 	print $upgradeTable;
 	?>
-	<br>
+	<br/>
 
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')">
 &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('Upgrade')">
@@ -1091,14 +1094,14 @@ function Upgrade()
 	if (PEAR::isError($pre_res))
 	{
 ?>
-<font color="red">Pre-Upgrade actions failed.</font><br>
+<font color="red">Pre-Upgrade actions failed.</font><br/>
 <?php
 	}
 	else
 	{
 ?>
 <p>
-<font color="green">Pre-Upgrade actions succeeded.</font><br>
+<font color="green">Pre-Upgrade actions succeeded.</font><br/>
 <?php
 	}
 ?>
@@ -1125,15 +1128,15 @@ function Upgrade()
 	if (PEAR::isError($post_res))
 	{
 ?>
-<font color="red">Post-Upgrade actions failed.</font><br><br>
+<font color="red">Post-Upgrade actions failed.</font><br/><br/>
 <?php
 	}
 	else
 	{
 ?>
 <p>
-<font color="green">Post-Upgrade actions succeeded.</font><br><br>
-<script>
+<font color="green">Post-Upgrade actions succeeded.</font><br/><br/>
+<script type="text/javascript">
     alert("To complete the upgrade please do the following before continuing:\n\n1. Restart the services as appropriate for your environment.\n\n\nOn first run of your upgraded installaton please do the following:\n\n1. Hard refresh your bowser (CTRL-F5) on first view of the Dashboard.\n2. Enable the new plugins you wish to use.\n\n\nSelect 'next' at the bottom of this page to continue.")
 </script>
 <?php
@@ -1151,6 +1154,6 @@ function Upgrade()
   	if($oKTConfig->get('ui/poweredByDisabled') == '0'){
   		?> align="right"><img src="<?php echo $oKTConfig->get('ui/powerLogo');?>"></td>
   	<?php }else{ ?>
-	  	background="../resources/graphics/ktbg.png">&nbsp;</td>
+	  	style="background:url('../resources/graphics/ktbg.png')>&nbsp;</td>
 	<?php }?>
 </table>

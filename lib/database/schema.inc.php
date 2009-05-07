@@ -1012,7 +1012,7 @@ class KTSchemaUtil
 
 		if (!$result)
 		{
-			print "...";
+			//print "...";
 		}
 
 		return $result;
