@@ -173,7 +173,6 @@ class DocumentProcessor
         // indexing starting - create lock file
         touch($lockFile);
 
-
         // Process queue
         foreach($queue as $item){
 

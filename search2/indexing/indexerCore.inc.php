@@ -1255,6 +1255,15 @@ abstract class Indexer
 	    // increment indexed documents count
 	    Indexer::incrementCount();
 
+        // if document is a zero byte file, let's just unqueue and return
+        if ($document->getFileSize() == 0)
+        {
+            Indexer::unqueueDocument($docinfo['document_id'],
+                                     sprintf(_kt("Zero Byte documents do not need to be indexed: %d"),
+                                             $docinfo['document_id']));
+            return;
+        }
+
 	    $docId = $docinfo['document_id'];
 	    $extension = $docinfo['filetypes'];
 	    $mimeType = $docinfo['mimetypes'];
@@ -1312,7 +1321,7 @@ abstract class Indexer
 	        Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: Filename for document id %d starts with a tilde (~). This is assumed to be a temporary file. This is ignored."),$docId), 'error');
 	        return ;
 	    }
-
+        
 	    $removeFromQueue = true;
 	    if ($indexDocument)
 	    {
