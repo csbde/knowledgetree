@@ -874,7 +874,7 @@ class KTDocumentRolesAction extends KTDocumentAction {
     function do_main() {
         $this->oPage->setTitle(_kt("View Roles"));
         $this->oPage->setBreadcrumbDetails(_kt("View Roles"));
-        $oTemplating = new KTTemplating;
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/action/view_roles");
 
         // we need to have:
