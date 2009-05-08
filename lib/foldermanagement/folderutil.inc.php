@@ -75,7 +75,17 @@ class KTFolderUtil {
         return $oFolder;
     }
 
-    function add($oParentFolder, $sFolderName, $oUser) {
+     /*
+      * Folder Add
+      * Author  :   Jarrett Jordaan
+      * Modified    :   28/04/09
+      *
+      * @params :   KTDocumentUtil $oParentFolder
+      *             string $sFolderName
+      *             KTUser $oUser
+      *             boolean $bulk_action
+      */
+    function add($oParentFolder, $sFolderName, $oUser, $bulk_action = false) {
 
 
         $folderid=$oParentFolder->getId();
@@ -97,15 +107,16 @@ class KTFolderUtil {
         'userid' => $oUser->getId(),
         'ip' => Session::getClientIP(),
         ));
-
-        // fire subscription alerts for the new folder
-        $oSubscriptionEvent = new SubscriptionEvent();
-        $oSubscriptionEvent->AddFolder($oFolder, $oParentFolder);
+        if(!$bulk_action) {
+            // fire subscription alerts for the new folder
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oSubscriptionEvent->AddFolder($oFolder, $oParentFolder);
+        }
 
         return $oFolder;
     }
 
-    function move($oFolder, $oNewParentFolder, $oUser, $sReason=null) {
+    function move($oFolder, $oNewParentFolder, $oUser, $sReason=null, $bulk_action = false) {
     	if ($oFolder->getId() == 1)
     	{
     		return PEAR::raiseError(_kt('Cannot move root folder!'));
@@ -312,7 +323,7 @@ class KTFolderUtil {
     *   - step-by-step delete.
     */
 
-    function delete($oStartFolder, $oUser, $sReason, $aOptions = null) {
+    function delete($oStartFolder, $oUser, $sReason, $aOptions = null, $bulk_action = false) {
         require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc');
 
         $oPerm = KTPermission::getByName('ktcore.permissions.delete');

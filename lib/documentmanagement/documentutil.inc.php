@@ -45,8 +45,6 @@ require_once(KT_LIB_DIR . '/documentmanagement/DocumentFieldLink.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 
-require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
-
 // NEW PATHS
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 require_once(KT_LIB_DIR . '/filelike/filelikeutil.inc.php');
@@ -62,7 +60,7 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 
 class KTDocumentUtil {
-    function checkin($oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false) {
+    function checkin($oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false, $bulk_action = false) {
         $oStorage =& KTStorageManagerUtil::getSingleton();
 
         $iFileSize = filesize($sFilename);
@@ -149,16 +147,17 @@ class KTDocumentUtil {
         }
 
         Indexer::index($oDocument);
-
-        // fire subscription alerts for the checked in document
-        $oSubscriptionEvent = new SubscriptionEvent();
-        $oFolder = Folder::get($oDocument->getFolderID());
-        $oSubscriptionEvent->CheckinDocument($oDocument, $oFolder);
+        if(!$bulk_action) {
+            // fire subscription alerts for the checked in document
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oFolder = Folder::get($oDocument->getFolderID());
+            $oSubscriptionEvent->CheckinDocument($oDocument, $oFolder);
+        }
 
         return true;
     }
 
-    function checkout($oDocument, $sCheckoutComment, $oUser) {
+    function checkout($oDocument, $sCheckoutComment, $oUser, $bulk_action = false) {
     	//automatically check out the linked document if this is a shortcut
 		if($oDocument->isSymbolicLink()){
     		$oDocument->switchToLinkedCore();
@@ -191,7 +190,7 @@ class KTDocumentUtil {
                 'document' => $oDocument,
             );
             $oTrigger->setInfo($aInfo);
-            $ret = $oTrigger->postValidate();
+            $ret = $oTrigger->postValidate(true);
             if (PEAR::isError($ret)) {
                 return $ret;
             }
@@ -200,15 +199,17 @@ class KTDocumentUtil {
         $oDocumentTransaction = new DocumentTransaction($oDocument, $sCheckoutComment, 'ktcore.transactions.check_out');
         $oDocumentTransaction->create();
 
-        // fire subscription alerts for the downloaded document
-        $oSubscriptionEvent = new SubscriptionEvent();
-        $oFolder = Folder::get($oDocument->getFolderID());
-        $oSubscriptionEvent->CheckOutDocument($oDocument, $oFolder);
+        if(!$bulk_action) {
+            // fire subscription alerts for the downloaded document
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oFolder = Folder::get($oDocument->getFolderID());
+            $oSubscriptionEvent->CheckOutDocument($oDocument, $oFolder);
+        }
 
         return true;
     }
 
-    function archive($oDocument, $sReason) {
+    function archive($oDocument, $sReason, $bulk_action = false) {
 
         if($oDocument->isSymbolicLink()){
         	return PEAR::raiseError(_kt("It is not possible to archive a shortcut. Please archive the target document."));
@@ -256,17 +257,18 @@ class KTDocumentUtil {
                 'document' => $oDocument,
             );
             $oTrigger->setInfo($aInfo);
-            $ret = $oTrigger->postValidate();
+            $ret = $oTrigger->postValidate(true);
             if (PEAR::isError($ret)) {
                 $oDocument->delete();
                 return $ret;
             }
         }
-
-        // fire subscription alerts for the archived document
-        $oSubscriptionEvent = new SubscriptionEvent();
-        $oFolder = Folder::get($oDocument->getFolderID());
-        $oSubscriptionEvent->ArchivedDocument($oDocument, $oFolder);
+        if(!$bulk_action) {
+            // fire subscription alerts for the archived document
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oFolder = Folder::get($oDocument->getFolderID());
+            $oSubscriptionEvent->ArchivedDocument($oDocument, $oFolder);
+        }
 
         return true;
     }
@@ -698,11 +700,21 @@ $sourceDocument->getName(),
         }
     }
     // }}}
-
+     /*
+      * Document Add
+      * Author      :   Jarrett Jordaan
+      * Modified    :   28/04/09
+      *
+      * @params     :   KTFolderUtil $oFolder
+      *                 string $sFilename
+      *                 KTUser $oUser
+      *                 array $aOptions
+      *                 boolean $bulk_action
+      */
     // {{{ add
-    function &add($oFolder, $sFilename, $oUser, $aOptions) {
+    function &add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action = false) {
         $GLOBALS['_IN_ADD'] = true;
-        $ret = KTDocumentUtil::_in_add($oFolder, $sFilename, $oUser, $aOptions);
+        $ret = KTDocumentUtil::_in_add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action);
         unset($GLOBALS['_IN_ADD']);
         return $ret;
     }
@@ -731,8 +743,19 @@ $sourceDocument->getName(),
         return $sFilename;
     }
 
+     /*
+      * Document Add
+      * Author      :   Jarrett Jordaan
+      * Modified    :   28/04/09
+      *
+      * @params     :   KTFolderUtil $oFolder
+      *                 string $sFilename
+      *                 KTUser $oUser
+      *                 array $aOptions
+      *                 boolean $bulk_action
+      */
     // {{{ _in_add
-    function &_in_add($oFolder, $sFilename, $oUser, $aOptions) {
+    function &_in_add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action = false) {
         $aOrigOptions = $aOptions;
 
         $sFilename = KTDocumentUtil::getUniqueFilename($oFolder, $sFilename);
@@ -785,9 +808,9 @@ $sourceDocument->getName(),
         }
 
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Sending subscriptions')));
-        // fire subscription alerts for the checked in document
         // TODO : better way of checking if its a bulk upload
-        if($_SERVER['PATH_INFO'] != "ktcore.actions.folder.bulkUpload") {
+        if(!$bulk_action) {
+            // fire subscription alerts for the checked in document
             $oSubscriptionEvent = new SubscriptionEvent();
             $oFolder = Folder::get($oDocument->getFolderID());
             $oSubscriptionEvent->AddDocument($oDocument, $oFolder);
@@ -939,8 +962,18 @@ $sourceDocument->getName(),
     }
     // }}}
 
+     /*
+      * Document Delete
+      * Author      :   Jarrett Jordaan
+      * Modified    :   28/04/09
+      *
+      * @params     :   KTDocumentUtil $oDocument
+      *                 string $sReason
+      *                 int $iDestFolderId
+      *                 boolean $bulk_action
+      */
     // {{{ delete
-    function delete($oDocument, $sReason, $iDestFolderId = null) {
+    function delete($oDocument, $sReason, $iDestFolderId = null, $bulk_action = false) {
     	// use the deleteSymbolicLink function is this is a symlink
         if ($oDocument->isSymbolicLink())
         {
@@ -1044,12 +1077,12 @@ $sourceDocument->getName(),
         $oDocument->setFolderID(1);
 
         DBUtil::commit();
-
-
-	// we weren't doing notifications on this one
-        $oSubscriptionEvent = new SubscriptionEvent();
-        $oSubscriptionEvent->RemoveDocument($oDocument, $oOrigFolder);
-
+        // TODO : better way of checking if its a bulk delete
+        if(!$bulk_action) {
+            // we weren't doing notifications on this one
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oSubscriptionEvent->RemoveDocument($oDocument, $oOrigFolder);
+        }
 
         // document is now deleted:  triggers are best-effort.
 
@@ -1062,7 +1095,7 @@ $sourceDocument->getName(),
                 'document' => $oDocument,
             );
             $oTrigger->setInfo($aInfo);
-            $ret = $oTrigger->postValidate();
+            $ret = $oTrigger->postValidate(true);
             if (PEAR::isError($ret)) {
                 $oDocument->delete();          // FIXME nbm: review that on-fail => delete is correct ?!
                 return $ret;
@@ -1135,7 +1168,7 @@ $sourceDocument->getName(),
         return true;
     }
 
-    function copy($oDocument, $oDestinationFolder, $sReason = null, $sDestinationDocName = null) {
+    function copy($oDocument, $oDestinationFolder, $sReason = null, $sDestinationDocName = null, $bulk_action = false) {
         // 1. generate a new triad of content, metadata and core objects.
         // 2. update the storage path.
 		//print '--------------------------------- BEFORE';
@@ -1284,11 +1317,12 @@ $sourceDocument->getName(),
                 return $ret;
             }
         }
-
-        // fire subscription alerts for the copied document
-        $oSubscriptionEvent = new SubscriptionEvent();
-        $oFolder = Folder::get($oDocument->getFolderID());
-        $oSubscriptionEvent->MoveDocument($oDocument, $oDestinationFolder, $oSrcFolder, 'CopiedDocument');
+        if(!$bulk_action) {
+            // fire subscription alerts for the copied document
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oFolder = Folder::get($oDocument->getFolderID());
+            $oSubscriptionEvent->MoveDocument($oDocument, $oDestinationFolder, $oSrcFolder, 'CopiedDocument');
+        }
 
         return $oNewDocument;
     }
@@ -1369,7 +1403,18 @@ $sourceDocument->getName(),
         return true;
     }
 
-    function move($oDocument, $oToFolder, $oUser = null, $sReason = null) {
+     /*
+      * Document Move
+      * Author      :   Jarrett Jordaan
+      * Modified    :   28/04/09
+      *
+      * @params     :   KTDocumentUtil $oDocument
+      *                 KTFolderUtil $oToFolder
+      *                 KTUser $oUser
+      *                 string $sReason
+      *                 boolean $bulk_action
+      */
+    function move($oDocument, $oToFolder, $oUser = null, $sReason = null, $bulk_action = false) {
     	//make sure we move the symlink, and the document it's linking to
 		if($oDocument->isSymbolicLink()){
     		$oDocument->switchToRealCore();
@@ -1425,9 +1470,9 @@ $sourceDocument->getName(),
         $oDocumentTransaction = new DocumentTransaction($oDocument, $sMoveMessage, 'ktcore.transactions.move');
         $oDocumentTransaction->create();
 
-
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('moveDocument', 'postValidate');
+
         foreach ($aTriggers as $aTrigger) {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
@@ -1437,15 +1482,17 @@ $sourceDocument->getName(),
                 'new_folder' => $oFolder,
             );
             $oTrigger->setInfo($aInfo);
-            $ret = $oTrigger->postValidate();
+            $ret = $oTrigger->postValidate(true);
             if (PEAR::isError($ret)) {
                 return $ret;
             }
         }
 
-        // fire subscription alerts for the moved document
-        $oSubscriptionEvent = new SubscriptionEvent();
-        $oSubscriptionEvent->MoveDocument($oDocument, $oFolder, $oOriginalFolder);
+        if(!$bulk_action) {
+            // fire subscription alerts for the moved document
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oSubscriptionEvent->MoveDocument($oDocument, $oFolder, $oOriginalFolder);
+        }
 
         return KTPermissionUtil::updatePermissionLookup($oDocument);
     }
