@@ -259,16 +259,34 @@ class KTBulkDeleteAction extends KTBulkAction {
         return parent::do_performaction();
     }
 
+     /*
+      * Bulk delete
+      * Author      :   Jarrett Jordaan
+      * Modified    :   28/04/09
+      *
+      * @params     :   KTDocumentUtil/KTFolderUtil $oEntity
+      *
+      * Description :   Since its a bulk operation, the delete function needs to
+      *                 know that. Added extra boolean param to the delete
+      *                 function.
+      */
     function perform_action($oEntity) {
         $sReason = $this->res['reason'];
 
         if(is_a($oEntity, 'Document')) {
-            $res = KTDocumentUtil::delete($oEntity, $sReason);
+            $res = KTDocumentUtil::delete($oEntity, $sReason, null, true);
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+            return "RemoveChildDocument";
         } else if(is_a($oEntity, 'Folder')) {
-            $res = KTFolderUtil::delete($oEntity, $this->oUser, $sReason);
+            $res = KTFolderUtil::delete($oEntity, $this->oUser, $sReason, null, true);
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+            return "RemoveChildFolder";
         }
 
-        return $res;
     }
 }
 
@@ -484,7 +502,8 @@ class KTBulkMoveAction extends KTBulkAction {
         $this->oTargetFolder = Folder::get($this->iTargetFolderId);
         $_REQUEST['fReturnData'] = '';
         $_REQUEST['fFolderId'] = $this->iTargetFolderId;
-
+        // Jarrett Jordaan : Store initial folder
+        $_REQUEST['fOriginalFolderId'] = $this->oFolder->getId();
         // does it exists
         if(PEAR::isError($this->oTargetFolder)) {
             $this->errorRedirectTo('collectinfo', _kt('Invalid target folder selected'));
@@ -507,12 +526,27 @@ class KTBulkMoveAction extends KTBulkAction {
         return parent::do_performaction();
     }
 
+     /*
+      * Bulk move
+      * Author      :   Jarrett Jordaan
+      * Modified    :   28/04/09
+      *
+      * @params     :   KTDocumentUtil/KTFolderUtil $oEntity
+      *
+      * Description :   Since its a bulk operation, the move function needs to
+      *                 know that. Added extra boolean param to the move
+      *                 function.
+      */
     function perform_action($oEntity) {
         if(is_a($oEntity, 'Document')) {
-            return KTDocumentUtil::move($oEntity, $this->oTargetFolder, $this->oUser, $this->sReason);
+            $res = KTDocumentUtil::move($oEntity, $this->oTargetFolder, $this->oUser, $this->sReason, true);
         } else if(is_a($oEntity, 'Folder')) {
-            return KTFolderUtil::move($oEntity, $this->oTargetFolder, $this->oUser, $this->sReason);
+            $res = KTFolderUtil::move($oEntity, $this->oTargetFolder, $this->oUser, $this->sReason, true);
         }
+        if (PEAR::isError($res))
+            return $res;
+
+        return 'MovedDocument';
     }
 }
 
@@ -737,12 +771,32 @@ class KTBulkCopyAction extends KTBulkAction {
         return parent::do_performaction();
     }
 
+     /*
+      * Bulk copy
+      * Author      :   Jarrett Jordaan
+      * Modified    :   28/04/09
+      *
+      * @params     :   KTDocumentUtil/KTFolderUtil $oEntity
+      *
+      * Description :   Since its a bulk operation, the copy function needs to
+      *                 know that. Added extra boolean param to the copy
+      *                 function.
+      */
     function perform_action($oEntity) {
         if(is_a($oEntity, 'Document')) {
-            return KTDocumentUtil::copy($oEntity, $this->oTargetFolder, $this->sReason);
+            $res = KTDocumentUtil::copy($oEntity, $this->oTargetFolder, null, $this->sReason, true);
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+
         } else if(is_a($oEntity, 'Folder')) {
-            return KTFolderUtil::copy($oEntity, $this->oTargetFolder, $this->oUser, $this->sReason);
+            $res = KTFolderUtil::copy($oEntity, $this->oTargetFolder, $this->oUser, $this->sReason, true);
+            if (PEAR::isError($res)) {
+                return $res;
+            }
         }
+
+        return 'CopiedDocument';
     }
 }
 
@@ -975,15 +1029,25 @@ class KTBulkArchiveAction extends KTBulkAction {
         return parent::do_performaction();
     }
 
+     /*
+      * Bulk archive
+      * Author      :   Jarrett Jordaan
+      * Modified    :   28/04/09
+      *
+      * @params     :   KTDocumentUtil/KTFolderUtil $oEntity
+      *
+      * Description :   Since its a bulk operation, the archive function needs
+      *                 to know that. Added extra boolean param to the archive
+      *                 function.
+      */
     function perform_action($oEntity) {
         if(is_a($oEntity, 'Document')) {
 
-            $res = KTDocumentUtil::archive($oEntity, $this->sReason);
+            $res = KTDocumentUtil::archive($oEntity, $this->sReason, true);
 
             if(PEAR::isError($res)){
                 return $res;
             }
-            return true;
         }else if(is_a($oEntity, 'Folder')) {
             $aDocuments = array();
             $aChildFolders = array();
@@ -1028,7 +1092,7 @@ class KTBulkArchiveAction extends KTBulkAction {
                         return $oDocument;
                     }
 
-                    $res = KTDocumentUtil::archive($oDocument, $this->sReason);
+                    $res = KTDocumentUtil::archive($oDocument, $this->sReason, true);
 
                     if(PEAR::isError($res)){
                         return $res;
@@ -1037,8 +1101,10 @@ class KTBulkArchiveAction extends KTBulkAction {
             }else {
                 return PEAR::raiseError(_kt('The folder contains no documents to archive.'));
             }
-            return true;
+
+            
         }
+        return "ArchivedDocument";
     }
 }
 
@@ -1150,8 +1216,19 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         return $str;
     }
 
+     /*
+      * Bulk export
+      * Author      :   Jarrett Jordaan
+      * Modified    :   28/04/09
+      *
+      * @params     :   KTDocumentUtil/KTFolderUtil $oEntity
+      *
+      * Description :   Since its a bulk operation, the export function needs
+      *                 to know that. Added extra boolean param to the export
+      *                 function.
+      */
     function perform_action($oEntity) {
-
+// TODO find a way to do bulk email
         $exportCode = $_SESSION['exportcode'];
         $this->oZip = ZipFolder::get($exportCode);
 
@@ -1189,7 +1266,8 @@ class KTBrowseBulkExportAction extends KTBulkAction {
                 $oQueue->addFolder($this->oZip, $sFolderId);
             }
         }
-        return true;
+
+        return "DownloadDocument";
     }
 
     function do_downloadZipFile() {
@@ -1411,6 +1489,17 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
         return $result;
     }
 
+     /*
+      * Bulk checkout
+      * Author      :   Jarrett Jordaan
+      * Modified    :   28/04/09
+      *
+      * @params     :   KTDocumentUtil/KTFolderUtil $oEntity
+      *
+      * Description :   Since its a bulk operation, the checkout function needs
+      *                 to know that. Added extra boolean param to the checkout
+      *                 function.
+      */
     function perform_action($oEntity) {
         // checkout document
         $sReason = $this->sReason;
@@ -1431,7 +1520,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                     return PEAR::raiseError($oEntity->getName().': '._kt('Document has already been checked out by ').$oCheckedOutUser->getName());
                 }
             }else{
-                $res = KTDocumentUtil::checkout($oEntity, $sReason, $this->oUser);
+                $res = KTDocumentUtil::checkout($oEntity, $sReason, $this->oUser, true);
 
                 if(PEAR::isError($res)) {
                     return PEAR::raiseError($oEntity->getName().': '.$res->getMessage());
@@ -1460,7 +1549,8 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                 }
                 $this->oZip->addDocumentToZip($oEntity);
             }
-
+            if(!PEAR::isError($res)) {
+            }
         }else if(is_a($oEntity, 'Folder')) {
             // get documents and subfolders
             $aDocuments = array();
@@ -1553,7 +1643,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                         }
                     }else{
                         // Check out document
-                        $res = KTDocumentUtil::checkout($oDocument, $sReason, $this->oUser);
+                        $res = KTDocumentUtil::checkout($oDocument, $sReason, $this->oUser, true);
 
                         if(PEAR::isError($res)) {
                             $this->addErrorMessage($oDocument->getName().': '._kt('Document could not be checked out. ').$res->getMessage());
@@ -1590,7 +1680,8 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                 }
             }
         }
-        return true;
+
+        return "CheckOutDocument";
     }
 
     function do_downloadZipFile() {
