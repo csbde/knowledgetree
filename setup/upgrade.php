@@ -1154,6 +1154,6 @@ function Upgrade()
   	if($oKTConfig->get('ui/poweredByDisabled') == '0'){
   		?> align="right"><img src="<?php echo $oKTConfig->get('ui/powerLogo');?>"></td>
   	<?php }else{ ?>
-	  	style="background:url('../resources/graphics/ktbg.png')>&nbsp;</td>
+	  	background="../resources/graphics/ktbg.png">&nbsp;</td>
 	<?php }?>
 </table>
