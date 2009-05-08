@@ -40,17 +40,22 @@
 require_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/filelike/filelikeutil.inc.php');
-// // Jarrett Jordaan: Deal with bulk uploads
+// // Jarrett Jordaan: Deal with bulk action
 require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php');
 
 class KTBulkImportManager {
     var $oStorage;
+    // Bulk Action Notification
+    var $uploadedDocs;
+    var $uploadedFolders;
 
     function KTBulkImportManager($oFolder, $oStorage, $oUser, $aOptions = null) {
         $this->oFolder =& $oFolder;
         $this->oStorage =& $oStorage;
         $this->oUser =& $oUser;
         $this->aOptions =& $aOptions;
+        $this->uploadedDocs = array();
+        $this->uploadedFolders = array();
         if (is_null($aOptions)) {
             $aOptions = array();
         }
@@ -69,13 +74,21 @@ class KTBulkImportManager {
             $this->oStorage->cleanup();
             return $res;
         }
+        if(count($this->uploadedDocs) > 0) {
+            // Bulk action subscription notification
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oSubscriptionEvent->notifyBulkDocumentAction($this->uploadedDocs, 'AddDocument', $this->oFolder);
+        } elseif(count($this->uploadedFolders) > 0) {
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oSubscriptionEvent->notifyBulkDocumentAction($this->uploadedFolders, 'AddFolder', $this->oFolder);
+        }
         $this->oStorage->cleanup();
+
         return;
     }
 
     function _importfolder($oFolder, $sPath) {
         $oPermission = KTPermission::getByName('ktcore.permissions.addFolder');
-
         $aDocPaths = $this->oStorage->listDocuments($sPath);
         if (PEAR::isError($aDocPaths)) {
             return $aDocPaths;
@@ -86,16 +99,15 @@ class KTBulkImportManager {
             if (PEAR::isError($res)) {
                 return $res;
             }
-            $oDocObjects[] = $res;
+            // Store document object
+            $this->uploadedDocs[] = $res;
         }
-        // Jarrett Jordaan: Deal with bulk uploads
-        $oSubscriptionEvent = new SubscriptionEvent();
-        $oSubscriptionEvent->notifyBulkDocumentUpload($oDocObjects, $oFolder);
 
         $aFolderPaths = $this->oStorage->listFolders($sPath);
         if (PEAR::isError($aFolderPaths)) {
             return $aFolderPaths;
         }
+        $oFolderObjects = array();
         foreach ($aFolderPaths as $sFolderPath) {
             $sFolderBasePath = basename($sFolderPath);
             $sFolderBasePath = ($this->is_utf8($sFolderBasePath)) ? $sFolderBasePath : utf8_encode($sFolderBasePath);
@@ -115,7 +127,7 @@ class KTBulkImportManager {
 
                 if(KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $oFolder))
         		{
-                	$oThisFolder = KTFolderUtil::add($oFolder, $sFolderBasePath, $this->oUser);
+                	$oThisFolder = KTFolderUtil::add($oFolder, $sFolderBasePath, $this->oUser, true);
         		}
         		else
         		{
@@ -135,7 +147,10 @@ class KTBulkImportManager {
             if (PEAR::isError($res)) {
                 return $res;
             }
+            // Store folder object
+            $this->uploadedFolders[] = $res;
         }
+
     }
 
     function _importdocument($oFolder, $sPath) {
@@ -165,7 +180,7 @@ class KTBulkImportManager {
         $aOptions = array_merge($aOptions, $this->aOptions);
         $sPath = basename($sPath);
         $sPath = ($this->is_utf8($sPath)) ? $sPath : utf8_encode($sPath);
-        $oDocument =& KTDocumentUtil::add($oFolder, $sPath, $this->oUser, $aOptions);
+        $oDocument =& KTDocumentUtil::add($oFolder, $sPath, $this->oUser, $aOptions, true);
         return $oDocument;
     }
 

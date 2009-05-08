@@ -178,8 +178,8 @@ class KTBulkExportAction extends KTFolderAction {
 
                 // fire subscription alerts for the downloaded document
                 if($bNotifications){
-                    $oSubscriptionEvent = new SubscriptionEvent();
-                    $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
+                    //$oSubscriptionEvent = new SubscriptionEvent();
+                    //$oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
                 }
 
                 $this->oZip->addDocumentToZip($oDocument, $oFolder);
