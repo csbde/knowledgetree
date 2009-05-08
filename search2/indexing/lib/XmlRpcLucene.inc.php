@@ -285,11 +285,37 @@ class XmlRpcLucene
 	}
 
 	/**
+	 * Extracts the text from a given document and writes it to the target file
+	 *
+	 * @param string $sourceFile The full path to the document
+	 * @param string $targetFile The full path to the target / output file
+	 * @return boolean true on success | false on failure
+	 */
+	function extractTextContent($sourceFile, $targetFile)
+    {
+        $function = new xmlrpcmsg('textextraction.getTextFromFile',
+            array(
+                php_xmlrpc_encode((string) $sourceFile),
+                php_xmlrpc_encode((string) $targetFile)
+            )
+        );
+
+        $result =& $this->client->send($function, 120);
+
+        if($result->faultCode()) {
+            $this->error($result, 'extractTextContent');
+            return false;
+        }
+		return php_xmlrpc_decode($result->value()) == 0;
+    }
+
+    /**
 	 * Extracts the text from a given document stream
 	 *
-	 * @return unknown
+	 * @param string $content The document content
+	 * @return string The extracted text on success | false on failure
 	 */
-	function extractTextContent($content)
+    function extractTextContentByStreaming($content)
     {
         $function = new xmlrpcmsg('textextraction.getText',
             array(

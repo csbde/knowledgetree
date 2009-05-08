@@ -103,11 +103,14 @@ class SubscriptionEvent {
       * @params :   KTDocumentUtil $oDocObjects
       *             KTFolderUtil $oParentFolder
       */
-    function notifyBulkDocumentUpload($oDocObjects, $oParentFolder) {
+    function notifyBulkDocumentAction($oDocObjects, $eventType, $oParentFolder) {
         $content = new SubscriptionContent(); // needed for i18n
-        $parentId = $oParentFolder->getId();
-        $aUsers = $this->_getSubscribers($parentId, $this->subscriptionTypes["Folder"]);
-        $this->bulkNotification($aUsers, 'AddDocument', $oDocObjects, $parentId);
+        // TODO Better way to check if this is a folder object
+        if (is_object($oParentFolder)) {
+            $parentId = $oParentFolder->getId();
+            $aUsers = $this->_getSubscribers($parentId, $this->subscriptionTypes["Folder"]);
+            $this->bulkNotification($aUsers, $eventType, $oDocObjects, $parentId);
+        }
     }
 
      /*
@@ -124,11 +127,25 @@ class SubscriptionEvent {
         $content = new SubscriptionContent(); // needed for i18n
         $locationName = Folder::generateFullFolderPath($parentId);
         $userId = $_SESSION['userID'];
+        $oUser = & User::get($userId);
+        $oUserName = $oUser->getName();
+
         foreach ($aUsers as $oSubscriber) {
             $userNotifications = array();
             $aNotificationOptions = array();
             $userSubscriberId = $oSubscriber->getID();
             $emailAddress = $oSubscriber->getEmail();
+            // Email type details
+            $actionTypeEmail = $this->actionTypeEmail($eventType);
+            // Better subject header with just the modified folder location
+            $eSubject = "Subscription Notification: Bulk {$actionTypeEmail['message']}";
+            // now the email content.
+            $eContent .= "You are receiving this notification because you are subscribed to the \"$locationName\"<br/>";
+            $eContent .= "Your colleague, {$oUser->getName()}, has performed a Bulk {$actionTypeEmail['type']} in the \"$locationName\" folder.<br/>";
+            // REMOVE: debugger
+            global $default;
+            // Get first document/folders details into a notification
+            $oNotification = false;
             foreach($oDocObjects as $oDocObject) {
                 $targetName = $oDocObject->getName();
                 $objectId = $oDocObject->getId();
@@ -139,25 +156,61 @@ class SubscriptionEvent {
                 $aNotificationOptions['object_id'] = $objectId;
                 $aNotificationOptions['event_type'] = $eventType;
                 $oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
-                $userNotifications[] = $oNotification;
+                break;
             }
-            $eContent = '';
-            $eSubject = '';
-            // now the email content.
-            // might not be a good idea to notify on each file
-            //foreach($userNotifications as $userNotification) {
-            //    $eContent .= $content->getEmailAlertContent($userNotification)."<br/><br/>";
-                // Might be an over kill subject
-                //$eSubject .= $content->getEmailAlertSubject($userNotification)." ";
-            //}
-            // Better subject header with just the modified folder location
-            $eSubject = "KnowledgeTree: Subscription notification for Bulk Upload In Folder \"$locationName\"";
-            $eContent = "KnowledgeTree: Subscription notification for Bulk Upload In Folder \"$locationName\"";
-            if($eContent != '' && $eSubject != '') {
-                //echo $eContent;
-                $oEmail = new EmailAlert($emailAddress, $eSubject, $eContent);
-                $oEmail->send();
-            }
+            $eContent .= $content->getEmailAlertContent($oNotification, $parentId);
+            $oEmail = new EmailAlert($emailAddress, $eSubject, $eContent);
+            $oEmail->send();
+        }
+    }
+
+    function actionTypeEmail($eventType) {
+        switch($eventType){
+            case 'AddFolder':
+                return array("message"=>"Folders/Documents Added", "type"=>"Add");
+            break;
+            case 'RemoveSubscribedFolder':
+                return array("message"=>"Removed Subscribed Folders/Documents", "type"=>"Remove");
+            break;
+            case 'RemoveChildFolder':
+                return array("message"=>"Removed Folders/Documents", "type"=>"Remove");
+            break;
+            case 'AddDocument':
+                return array("message"=>"Added Folders/Documents", "type"=>"Add");
+            break;
+            case 'RemoveSubscribedDocument':
+                return array("message"=>"Removed Subscribed Folders/Documents", "type"=>"Remove");
+            break;
+            case 'RemoveChildDocument':
+                return array("message"=>"Removed Folders/Documents", "type"=>"Remove");
+            break;
+            case 'ModifyDocument':
+                return array("message"=>"Modified Folders/Documents", "type"=>"Modify");
+            break;
+            case 'CheckInDocument':
+                return array("message"=>"Checked In Documents", "type"=>"Check In");
+            break;
+            case 'CheckOutDocument':
+                return array("message"=>"Checked Out Documents", "type"=>"Check Out");
+            break;
+            case 'MovedDocument':
+                return array("message"=>"Moved Documents/Folders", "type"=>"Move");
+            break;
+            case 'CopiedDocument':
+                return array("message"=>"Copied Folders/Documents", "type"=>"Copy");
+            break;
+            case 'ArchivedDocument':
+                return array("message"=>"Archived Folders/Documents", "type"=>"Archive");
+            break;
+            case 'RestoreArchivedDocument':
+                return array("message"=>"Restored Archived Documents", "type"=>"Archive Restore");
+            break;
+            case 'DownloadDocument':
+                return array("message"=>"Downloaded Folders/Documents", "type"=>"Download");
+            break;
+            default :
+                return array("message"=>"Unknown Operations", "type"=>"Unknown");
+            break;
         }
     }
 
@@ -505,7 +558,8 @@ class SubscriptionContent {
 	* @param object $oKTNotification: The notification object
 	* @return string $str: The html string that will be sent via email
 	*/
-	function getEmailAlertContent($oKTNotification) {
+	function getEmailAlertContent($oKTNotification, $bulk_action = 0) {
+        if($bulk_action == 0) $bulk_action = false;
         // set up logo and title
         $rootUrl = KTUtil::kt_url();
 
@@ -528,7 +582,7 @@ class SubscriptionContent {
         $downloadDocumentText = _kt('The document "').$info['object_name']._kt('"');
         $documentAlertText = _kt('An alert on the document "').$info['object_name']._kt('" has been added or modified');
 
-        if($info['location_name'] !== NULL){
+        if($info['location_name'] !== NULL && !$bulk_action){
             $addFolderText .= _kt(' to "').$info['location_name']._kt('"');
             $removeChildFolderText .= _kt(' from the folder "').$info['location_name']._kt('"');
             $addDocumentText .= _kt(' to "').$info['location_name']._kt('"');
@@ -542,13 +596,16 @@ class SubscriptionContent {
             $downloadDocumentText .= _kt(' in the folder "').$info['location_name']._kt('" has been downloaded');
             $documentAlertText .= _kt(' in the folder "').$info['location_name']._kt('"');
         }
-
+        if($bulk_action && $info['event_type']!="RemoveSubscribedFolder") {
+            $browse = "$rootUrl/browse.php?fFolderId=$bulk_action";
+            $subFolder = '<a href="'.$browse.'">'._kt('View Subscription Folder ').'</a>';
+        }
         // set up links
         switch($info['event_type']){
             case 'AddFolder':
                 $text = $addFolderText;
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
-                $links = '<a href="'.$url.'">'._kt('View New Folder').'</a>';
+                if(!$bulk_action) $links = '<a href="'.$url.'">'._kt('View New Folder').'</a>';
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
                 $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
                 break;
@@ -560,14 +617,14 @@ class SubscriptionContent {
             case 'RemoveChildFolder':
                 $text = $removeChildFolderText;
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
-                $links = '<a href="'.$url.'">'._kt('View Folder').'</a>';
+                if(!$bulk_action) $links = '<a href="'.$url.'">'._kt('View Folder').'</a>';
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
                 $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
                 break;
             case 'AddDocument':
                 $text = $addDocumentText;
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
-                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                if(!$bulk_action) $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
                 $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
                 break;
@@ -584,7 +641,7 @@ class SubscriptionContent {
             case 'ModifyDocument':
                 $text = $modifyDocumentText;
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
-                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                if(!$bulk_action) $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
                 $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
                 break;
@@ -598,21 +655,21 @@ class SubscriptionContent {
             case 'CheckOutDocument':
                 $text = $checkOutDocumentText;
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
-                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                if(!$bulk_action) $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
                 $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
                 break;
             case 'MovedDocument':
                 $text = $modifyDocumentText;
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
-                $links = '<a href="'.$url.'">'._kt('View New Location').'</a>';
+                if(!$bulk_action) $links = '<a href="'.$url.'">'._kt('View New Location').'</a>';
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
                 $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
                 break;
             case 'CopiedDocument':
                 $text = $copiedDocumentText;
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
-                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                if(!$bulk_action) $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
                 $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
                 break;
@@ -624,14 +681,14 @@ class SubscriptionContent {
             case 'RestoreArchivedDocument':
                 $text = $restoreArchivedDocumentText;
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
-                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                if(!$bulk_action) $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
                 $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
                 break;
             case 'DownloadDocument':
                 $text = $downloadDocumentText;
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
-                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                if(!$bulk_action) $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
                 $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
                 break;
@@ -652,16 +709,25 @@ class SubscriptionContent {
         // we can re-use the normal template.
 		// however, we need to wrap it - no need for a second template here.
 		//$str = '<html><body>' . $this->getNotificationAlertContent($oKTNotification) . '</body></html>';
-		$str = '<br />
-		          &#160;&#160;&#160;&#160;<b>'._kt('Subscription notification').': '.$this->_eventTypeNames[$info['event_type']].'</b>
-		          <br />
-		          <br />
-		          &#160;&#160;&#160;&#160;'.$text.'
-		          <br />
-		          <br />
-		          &#160;&#160;&#160;&#160;'.$links.'
-		          <br />
-		          <br />';
+        if(!$bulk_action) {
+            $str = '<br />
+                      &#160;&#160;&#160;&#160;<b>'._kt('Subscription notification').': '.$this->_eventTypeNames[$info['event_type']].'</b>
+                      <br />
+                      <br />
+                      &#160;&#160;&#160;&#160;'.$text.'
+                      <br />
+                      <br />
+                      &#160;&#160;&#160;&#160;'.$links.'
+                      <br />
+                      <br />';
+        } else {
+            $str = '<br />
+                    <br />
+                    '.$subFolder.'
+                    &#160;'.$links.'
+                    <br />
+                    <br />';
+        }
 		return $str;
 	}
 

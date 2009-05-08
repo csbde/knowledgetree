@@ -50,6 +50,9 @@ require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
+// // Jarrett Jordaan: Deal with bulk action
+require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php');
+
 class KTBulkAction extends KTStandardDispatcher {
     var $sName;
     var $sDescription;
@@ -69,12 +72,20 @@ class KTBulkAction extends KTStandardDispatcher {
     // this is used to check against individual entities
     var $_sPermission = 'ktcore.permissions.read';
 
+    // Bulk Action Notification
+    var $uploadedDocs;
+    var $uploadedFolders;
+    var $eventAction;
+
     function KTBulkAction($oUser = null, $oPlugin = null) {
         $this->oEntityList = null;
         $this->oActiveEntityList = null;
         $this->oUser =& $oUser;
         $this->oPlugin =& $oPlugin;
-
+        // Bulk Action Notification
+        $this->uploadedDocs = array();
+        $this->uploadedFolders = array();
+        $this->eventAction = null;
         $this->aBreadcrumbs = array(
             array('action' => 'browse', 'name' => _kt('Browse')),
         );
@@ -337,9 +348,10 @@ class KTBulkAction extends KTStandardDispatcher {
     // iterate over all entites to act on them
     function perform_action_on_list() {
         $this->aActionResults = array('folders'=>array(), 'documents'=>array());
-
         foreach($this->oActiveEntityList->getDocumentIds() as $iId) {
             $oDocument =& Document::get($iId);
+            // Store document
+            $this->uploadedDocs[] = $oDocument;
             if(!PEAR::isError($oDocument)) {
                 $sName = $oDocument->getName();
             } else {
@@ -357,12 +369,20 @@ class KTBulkAction extends KTStandardDispatcher {
             if(PEAR::isError($res)) {
                 $this->aActionResults['documents'][] = array($sName, $res->getMessage(), $notice);
             } else {
+                // TODO better way of getting the bulk action type
+                if($this->eventAction == null) {
+                    $this->eventAction = $res;
+                }
                 $this->aActionResults['documents'][] = array($sName, _kt('Success'), $notice);
             }
         }
 
+        // List of ducument objects
+        $oFolderObjects = array();
         foreach($this->oActiveEntityList->getFolderIds() as $iId) {
             $oFolder =& Folder::get($iId);
+            // Store folder
+            $this->uploadedFolders[] = $oFolder;
             if(!PEAR::isError($oFolder)) {
                 $sName = $oFolder->getName();
             } else {
@@ -380,9 +400,14 @@ class KTBulkAction extends KTStandardDispatcher {
             if(PEAR::isError($res)) {
                 $this->aActionResults['folders'][] = array($sName, $res->getMessage(), $notice);
             } else {
+                // // TODO better way of getting the bulk action type
+                if($this->eventAction == null) {
+                    $this->eventAction = $res;
+                }
                 $this->aActionResults['folders'][] = array($sName, _kt('Success'), $notice);
             }
         }
+
     }
 
 
@@ -550,16 +575,43 @@ class KTBulkAction extends KTStandardDispatcher {
     function do_performaction() {
         $this->get_lists();
         $this->aPersistParams = array();
+        $targetFolderId = $_REQUEST['fFolderId'];
+        $targetFolder =& Folder::get($targetFolderId);
         $this->perform_action_on_list();
-
-	$oTemplating =& KTTemplating::getSingleton();
-	$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_complete');
+        // Parse affected documents and folders
+        if(count($this->uploadedDocs) > 0)
+            $this->do_notification($this->uploadedDocs, $this->eventAction, $targetFolder);
+        elseif(count($this->uploadedFolders) > 0)
+            $this->do_notification($this->uploadedFolders, $this->eventAction, $targetFolder);
+        // Action specific Emails
+        // Check if its a move action
+        if($this->eventAction == "MovedDocument") {
+            // Notify the folder from which the action happened
+            $originalFolderId = $_REQUEST['fOriginalFolderId'];
+            $originalFolder =& Folder::get($originalFolderId);
+            if(count($this->uploadedDocs) > 0)
+                $this->do_notification($this->uploadedDocs, $this->eventAction, $originalFolder);
+            elseif(count($this->uploadedFolders) > 0)
+                $this->do_notification($this->uploadedFolders, $this->eventAction, $originalFolder);
+        }
+        
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_complete');
+        
         return $oTemplate->render(array('context' => $this,
                                         'list' => $this->aActionResults,
                                         'form' => $this->form_complete()));
     }
 
-
+    // Jarrett Jordaan: Deal with bulk actions
+    function do_notification($objects, $eventAction, $targetFolder) {
+        echo $eventAction." on folder ".$targetFolder->getId()."<br/>";
+        // Make sure there were documents/folders affected
+        if ($targetFolder && count($objects) > 0 && $eventAction != '') {
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oSubscriptionEvent->notifyBulkDocumentAction($objects, $eventAction, $targetFolder);
+        }
+    }
 
 
 

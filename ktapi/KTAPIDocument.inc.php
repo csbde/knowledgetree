@@ -1980,6 +1980,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			$detail['version'] = (float) $detail['version'];
 		}
+		//get the content_id
+        $detail['content_id'] = $document->getContentVersionId();
 
 		//might be unset at the bottom in case of old webservice version
 		//make sure we're using the real document for this one

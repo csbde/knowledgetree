@@ -56,6 +56,11 @@ class TikaApacheExtractor extends DocumentExtractor
         return _kt('Tika Apache Extractor');
     }
 
+	public function needsIntermediateSourceFile()
+	{
+		return true;
+	}
+
     /**
      * The mime types supported by the extractor
      *
@@ -64,10 +69,47 @@ class TikaApacheExtractor extends DocumentExtractor
     public function getSupportedMimeTypes()
     {
         return array(
+                // pdf
                 'application/pdf',
+                // office OLE2 format - 2003, xp, etc
                 'application/vnd.ms-excel',
                 'application/vnd.ms-powerpoint',
-                'application/msword'
+                'application/msword',
+                // rtf
+                'text/rtf',
+                // staroffice
+                'application/vnd.sun.xml.writer',
+                'application/vnd.sun.xml.writer.template',
+                'application/vnd.sun.xml.calc',
+                'application/vnd.sun.xml.calc.template',
+                // text
+    			'text/plain',
+    			'text/csv',
+    			'text/tab-separated-values',
+    			'text/css',
+    			// open xml
+    			/*
+    			'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    			'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
+    			'application/vnd.openxmlformats-officedocument.presentationml.template',
+    			'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+    			'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    			'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
+    			// openoffice
+           		'application/vnd.oasis.opendocument.presentation',
+           		'application/vnd.oasis.opendocument.presentation-template',
+           		'application/vnd.oasis.opendocument.spreadsheet',
+           		'application/vnd.oasis.opendocument.spreadsheet-template',
+        		'application/vnd.oasis.opendocument.text',
+        		'application/vnd.oasis.opendocument.text-template',
+        		'application/vnd.oasis.opendocument.text-master',
+        		// xml
+				'text/xml',
+				'application/xml',
+				'text/html',
+				'text/enriched'
+				*/
             );
     }
 
@@ -78,6 +120,18 @@ class TikaApacheExtractor extends DocumentExtractor
      */
     public function extractTextContent()
     {
+        $filename = $this->sourcefile;
+        $targetFile = $this->targetfile;
+
+        $result = $this->xmlrpc->extractTextContent($filename, $targetFile);
+
+        if($result === false){
+            $this->output = _kt('Tika Extractor: XML-RPC failed to extract text.');
+            return false;
+        }
+        return true;
+
+        /* Using streamed content
         // stream document content
         $filename = $this->sourcefile;
         $buffer = file_get_contents($filename);
@@ -99,6 +153,7 @@ class TikaApacheExtractor extends DocumentExtractor
         file_put_contents($this->targetfile, $extractedText);
         unset($extractedText);
         return true;
+        */
     }
 
     /**

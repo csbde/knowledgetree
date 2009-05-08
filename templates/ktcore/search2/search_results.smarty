@@ -156,10 +156,10 @@ function onShowAll(showall)
 	    <span class="contenttype {$hit->MimeIconPath}">
 
 		{if $hit->IsDocument}
-			&nbsp;&nbsp;<a href="{$rootUrl}/view.php?fDocumentId={$hit->Id}"><B>{$hit->Title|mb_truncate:30:'...':true}</b></a>
+			&nbsp;&nbsp;<a href="{$rootUrl}/view.php?fDocumentId={$hit->Id}" title="{$hit->Title}"><B>{$hit->Title|mb_truncate:80:'...':true}</b></a>
 			{if $hit->Title != $hit->Filename}
-				&nbsp;&nbsp;
-				<font style=" color: green "> - {i18n}Filename:{/i18n} {$hit->Filename|mb_truncate:30:'...':true}</font>
+				<br/>
+				<font style=" color: green ">{i18n}Filename:{/i18n} {$hit->Filename|mb_truncate:80:'...':true}</font>
 			{/if}
 			{if $hit->IsAvailable}
 		    	&nbsp;&nbsp;

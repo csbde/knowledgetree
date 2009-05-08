@@ -426,7 +426,7 @@ function addFieldTypeSelection(groupid, fid, type, options)
 	var html = '';
 	var callback = null;
 	var params = null;
-alert(type);
+
 	switch(type)
 	{
 		case 'FILESIZE':

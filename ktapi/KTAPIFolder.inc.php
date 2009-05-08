@@ -689,6 +689,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 							'owned_by' => is_null($owned_by)?'n/a':$owned_by->getName(),
 
 							'version' =>  $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber(),
+                            'content_id' => $document->getContentVersionId(),
 
 							'is_immutable'=> $document->getImmutable()?'true':'false',
 							'permissions' => KTAPI_Document::get_permission_string($document),

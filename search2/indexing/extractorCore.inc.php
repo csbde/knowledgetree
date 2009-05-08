@@ -695,7 +695,6 @@ abstract class TextExtractor extends DocumentExtractor
 	 */
 	public function extractTextContent()
 	{
-
 	    $config = KTConfig::getSingleton();
 		$maxTextSize = $config->get('indexer/maxTextSize', 1024 * 1024 * 10); // we'll only take 10 meg by default
 		$content = file_get_contents($this->sourcefile, null, null, null, $maxTextSize);

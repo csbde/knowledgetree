@@ -316,16 +316,16 @@ class KTCheckoutSubscriptionTrigger {
         $this->aInfo =& $aInfo;
     }
 
-    function postValidate() {
+    function postValidate($bulk_action = false) {
         global $default;
         $oDocument =& $this->aInfo["document"];
         // fire subscription alerts for the checked out document
 
-        // fire subscription alerts for the checked in document
-        $oSubscriptionEvent = new SubscriptionEvent();
-        $oFolder = Folder::get($oDocument->getFolderID());
-        $oSubscriptionEvent->CheckoutDocument($oDocument, $oFolder);
-
+        if(!$bulk_action) {
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oFolder = Folder::get($oDocument->getFolderID());
+            $oSubscriptionEvent->CheckoutDocument($oDocument, $oFolder);
+        }
     }
 }
 // }}}
@@ -359,16 +359,17 @@ class KTDeleteSubscriptionTrigger {
         $this->aInfo =& $aInfo;
     }
 
-    function postValidate() {
+    function postValidate($bulk_action = false) {
         global $default;
         $oDocument =& $this->aInfo["document"];
 
         // fire subscription alerts for the deleted document
-
-        // fire subscription alerts for the checked in document
-        $oSubscriptionEvent = new SubscriptionEvent();
-        $oFolder = Folder::get($oDocument->getFolderID());
-       // $oSubscriptionEvent->RemoveDocument($oDocument, $oFolder);
+        if(!$bulk_action) {
+            // fire subscription alerts for the checked in document
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oFolder = Folder::get($oDocument->getFolderID());
+            //$oSubscriptionEvent->RemoveDocument($oDocument, $oFolder);
+        }
     }
 }
 // }}}
@@ -380,16 +381,17 @@ class KTDocumentMoveSubscriptionTrigger {
         $this->aInfo =& $aInfo;
     }
 
-    function postValidate() {
+    function postValidate($bulk_action = false) {
         global $default;
         $oDocument =& $this->aInfo["document"];
         $oOldFolder =& $this->aInfo["old_folder"];
         $oNewFolder =& $this->aInfo["new_folder"];
 
-
-        // fire subscription alerts for the checked in document
-        $oSubscriptionEvent = new SubscriptionEvent();
-        $oSubscriptionEvent->MoveDocument($oDocument, $oNewFolder, $oNewFolder);
+        if(!$bulk_action) {
+            // fire subscription alerts for the checked in document
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oSubscriptionEvent->MoveDocument($oDocument, $oNewFolder, $oNewFolder);
+        }
     }
 }
 // }}}
@@ -401,14 +403,15 @@ class KTArchiveSubscriptionTrigger {
         $this->aInfo =& $aInfo;
     }
 
-    function postValidate() {
+    function postValidate($bulk_action = false) {
         global $default;
         $oDocument =& $this->aInfo["document"];
-
-        // fire subscription alerts for the checked in document
-        $oSubscriptionEvent = new SubscriptionEvent();
-        $oFolder = Folder::get($oDocument->getFolderID());
-        $oSubscriptionEvent->ArchivedDocument($oDocument, $oFolder);
+        if(!$bulk_action) {
+            // fire subscription alerts for the checked in document
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oFolder = Folder::get($oDocument->getFolderID());
+            $oSubscriptionEvent->ArchivedDocument($oDocument, $oFolder);
+        }
     }
 }
 // }}}
