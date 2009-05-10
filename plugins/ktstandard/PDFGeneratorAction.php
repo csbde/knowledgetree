@@ -257,7 +257,7 @@ class PDFGeneratorAction extends KTDocumentAction {
 
         if(!$res){
             $default->log->error('PDF Generator: PDF file could not be generated');
-            $this->errorRedirectToMain(_kt('PDF file could not be generated, the file may be of an unsupported mime type.'));
+            $this->errorRedirectToMain(_kt('PDF file could not be generated, the file may be of an unsupported mime type or the PDF Generator could not connect.'));
             exit();
         }
 

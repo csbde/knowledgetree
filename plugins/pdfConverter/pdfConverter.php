@@ -32,19 +32,34 @@ class pdfConverter extends BaseProcessor
 {
     public $order = 2;
     protected $namespace = 'pdf.converter.processor';
+    private $ooHost = '127.0.0.1';
+    private $ooPort = 8100;
 
+    /**
+     * Constructor gets the connection to the java server
+     *
+     * @return pdfConverter
+     */
     public function pdfConverter()
     {
         $config =& KTConfig::getSingleton();
 		$javaServerUrl = $config->get('indexer/javaLuceneURL');
+		$this->ooHost = $config->get('openoffice/host','127.0.0.1');
+		$this->ooPort = $config->get('openoffice/port','8100');
 
 		$this->xmlrpc = XmlRpcLucene::get($javaServerUrl);
     }
 
+    /**
+     * Gets the document path and calls the conversion function
+     *
+     * @return boolean
+     */
     public function processDocument()
     {
         $oStorage = KTStorageManagerUtil::getSingleton();
         $path = $oStorage->temporaryFile($this->document);
+        $ext = KTMime::getFileType($this->document->getMimeTypeID());
 
         if(!file_exists($path)){
             global $default;
@@ -53,7 +68,7 @@ class pdfConverter extends BaseProcessor
         }
 
         // do pdf conversion
-        $res = $this->convertFile($path);
+        $res = $this->convertFile($path, $ext);
 
         if($res === false){
             global $default;
@@ -80,14 +95,17 @@ class pdfConverter extends BaseProcessor
 
         // taken from the original list of accepted types in the pdf generator action
         $mime_types = array();
-        //$mime_types[] = 'text/plain';
-        //$mime_types[] = 'text/xml';
-        //$mime_types[] = 'chemical/x-pdb';
-        //$mime_types[] = 'text/csv';
+        $mime_types[] = 'text/plain';
+        $mime_types[] = 'text/html';
+        $mime_types[] = 'text/csv';
         $mime_types[] = 'text/rtf';
+
+        // Office OLE2 - 2003, XP, etc
         $mime_types[] = 'application/msword';
         $mime_types[] = 'application/vnd.ms-powerpoint';
         $mime_types[] = 'application/vnd.ms-excel';
+
+        // Star Office
         $mime_types[] = 'application/vnd.sun.xml.writer';
         $mime_types[] = 'application/vnd.sun.xml.writer.template';
         $mime_types[] = 'application/vnd.sun.xml.calc';
@@ -96,6 +114,8 @@ class pdfConverter extends BaseProcessor
         $mime_types[] = 'application/vnd.sun.xml.draw.template';
         $mime_types[] = 'application/vnd.sun.xml.impress';
         $mime_types[] = 'application/vnd.sun.xml.impress.template';
+
+        // Open Office
         $mime_types[] = 'application/vnd.oasis.opendocument.text';
         $mime_types[] = 'application/vnd.oasis.opendocument.text-template';
         $mime_types[] = 'application/vnd.oasis.opendocument.graphics';
@@ -105,39 +125,65 @@ class pdfConverter extends BaseProcessor
         $mime_types[] = 'application/vnd.oasis.opendocument.spreadsheet';
         $mime_types[] = 'application/vnd.oasis.opendocument.spreadsheet-template';
 
+        // Office 2007
+        $mime_types[] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    	$mime_types[] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.template';
+    	$mime_types[] = 'application/vnd.openxmlformats-officedocument.presentationml.template';
+    	$mime_types[] = 'application/vnd.openxmlformats-officedocument.presentationml.slideshow';
+    	$mime_types[] = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+    	$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    	$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.template';
+
         return $mime_types;
 	}
 
-	function convertFile($filename)
+	/**
+	 * Converts the given file to a pdf
+	 *
+	 * @param string $filename The full path to the file
+	 * @param string $ext The extension of the file
+	 * @return boolean
+	 */
+	function convertFile($filename, $ext)
 	{
 	    global $default;
+	    $tempDir = $default->tmpDirectory;
+
+	    // Create temporary copy of document
+	    $sourceFile = tempnam($tempDir, 'pdfconverter') . '.' .$ext;
+	    $res = @copy($filename, $sourceFile);
+
+	    // Create a temporary file to store the converted document
+	    $targetFile = tempnam($tempDir, 'pdfconverter') . '.pdf';
 
 	    // Get contents and send to converter
-        $buffer = file_get_contents($filename);
-        $buffer = $this->xmlrpc->convertDocument($buffer, 'pdf');
+        $result = $this->xmlrpc->convertDocument($sourceFile, $targetFile, $this->ooHost, $this->ooPort);
 
-        if($buffer === false){
+        if($result === false){
             $default->log->error('PDF Converter Plugin: Conversion to PDF Failed');
+            @unlink($sourceFile);
+            @unlink($targetFile);
             return false;
         }
 
-        $dir = $default->pdfDirectory;
+        $pdfDir = $default->pdfDirectory;
 
         // Ensure the PDF directory exists
-        if(!file_exists($dir)){
-            mkdir($dir, 0755);
+        if(!file_exists($pdfDir)){
+            mkdir($pdfDir, 0755);
         }
 
-        $pdfFile = $dir .'/'. $this->document->iId.'.pdf';
+        $pdfFile = $pdfDir .'/'. $this->document->iId.'.pdf';
 
         // if a previous version of the pdf exists - delete it
         if(file_exists($pdfFile)){
             @unlink($pdfFile);
         }
 
-        file_put_contents($pdfFile, $buffer);
-        unset($buffer);
-
+        // Copy the generated pdf into the pdf directory
+        $res = @copy($targetFile, $pdfFile);
+        @unlink($sourceFile);
+        @unlink($targetFile);
         return $pdfFile;
 
     }
