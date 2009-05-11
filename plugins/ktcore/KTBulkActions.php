@@ -784,7 +784,7 @@ class KTBulkCopyAction extends KTBulkAction {
       */
     function perform_action($oEntity) {
         if(is_a($oEntity, 'Document')) {
-            $res = KTDocumentUtil::copy($oEntity, $this->oTargetFolder, null, $this->sReason, true);
+            $res = KTDocumentUtil::copy($oEntity, $this->oTargetFolder, $this->sReason, null, true);
             if (PEAR::isError($res)) {
                 return $res;
             }
