@@ -400,15 +400,44 @@ class XmlRpcLucene
         return $obj['metadata'];
     }
 
+    /**
+     * Converts a document to the format of the given target file based on the extension of both files.
+     *
+     * @param string $sourceFile The full path of the document to be converted, with extension.
+     * @param string $targetFile The full path of the file to save the converted document with the desired extension.
+     * @param string $ooHost The host domain or IP address on which OpenOffice is running
+     * @param string $ooPort The port on which OpenOffice is listening.
+     * @return boolean
+     */
+    function convertDocument($sourceFile, $targetFile, $ooHost, $ooPort)
+    {
+        $function = new xmlrpcmsg('openoffice.convertDocument',
+            array(
+                php_xmlrpc_encode((string) $sourceFile),
+                php_xmlrpc_encode((string) $targetFile),
+                php_xmlrpc_encode((string) $ooHost),
+                php_xmlrpc_encode((int) $ooPort)
+            )
+        );
+
+        $result=&$this->client->send($function, 120);
+
+        if($result->faultCode()) {
+            $this->error($result, 'convertDocument');
+            return false;
+        }
+        return php_xmlrpc_decode($result->value()) == 0;
+    }
 
     /**
      * Convert document to given format. Defaults to pdf
      *
+     * @deprecated
      * @param $content
      * @param $toExtension
      * @return unknown_type
      */
-    function convertDocument($content, $toExtension = 'pdf')
+    function convertDocumentStreamed($content, $toExtension = 'pdf')
     {
         $function = new xmlrpcmsg('openoffice.convertDocument',
             array(
