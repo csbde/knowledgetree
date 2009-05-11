@@ -287,6 +287,20 @@ class KTMime {
         $res = DBUtil::getResultArray($aQuery);
         return $res;
     }
+
+    /**
+     * Gets the file type / extension based on the mimetype id
+     *
+     * @param int $iMimeTypeID
+     */
+    function getFileType($iMimeTypeID)
+    {
+    	$sTable = KTUtil::getTableName('mimetypes');
+        $sQuery = "SELECT filetypes FROM " . $sTable . " WHERE id = ?";
+        $aQuery = array($sQuery, array($iMimeTypeID));
+        $ext = DBUtil::getOneResultKey($aQuery, 'filetypes');
+        return $ext;
+    }
 }
 
 $_KT_icon_path_cache = array();
