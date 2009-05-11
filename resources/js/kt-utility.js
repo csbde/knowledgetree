@@ -107,3 +107,10 @@ function Set() {
     forEach(arguments, function(k) { set[k] = 1; });
     return set;
 }
+
+// Disable DnD on element
+// Element has to have a readOnly status set to readonly
+function disableDnd(el_id){
+    el = document.getElementById(el_id);
+    el.removeAttribute('readOnly');
+}
