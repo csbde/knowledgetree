@@ -594,10 +594,10 @@ class KTBulkAction extends KTStandardDispatcher {
             elseif(count($this->uploadedFolders) > 0)
                 $this->do_notification($this->uploadedFolders, $this->eventAction, $originalFolder);
         }
-        
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_complete');
-        
+
         return $oTemplate->render(array('context' => $this,
                                         'list' => $this->aActionResults,
                                         'form' => $this->form_complete()));
@@ -605,7 +605,6 @@ class KTBulkAction extends KTStandardDispatcher {
 
     // Jarrett Jordaan: Deal with bulk actions
     function do_notification($objects, $eventAction, $targetFolder) {
-        echo $eventAction." on folder ".$targetFolder->getId()."<br/>";
         // Make sure there were documents/folders affected
         if ($targetFolder && count($objects) > 0 && $eventAction != '') {
             $oSubscriptionEvent = new SubscriptionEvent();
