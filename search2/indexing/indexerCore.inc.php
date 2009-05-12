@@ -410,7 +410,7 @@ class FolderShortcutResultItem extends ProxyResultItem
     var $parentId;
     var $linkedId;
     var $full_path;
-    
+
     public function getFolderID() { return $this->getId(); }
     public function getMimeIconPath() { return 'folder_shortcut'; }
 
@@ -759,6 +759,11 @@ abstract class Indexer
     {
     	$content = file_get_contents($filename);
 
+    	// if the file is empty something went wrong with the text extraction
+    	if(empty($content)){
+    	    return false;
+    	}
+
     	$src = array("([\r\n])","([\n][\n])","([\n])","([\t])",'([ ][ ])');
     	$tgt = array("\n","\n",' ',' ',' ');
 
@@ -1057,7 +1062,7 @@ abstract class Indexer
 		return Indexer::getIndexingQueue(false);
 	}
 
-	public function updateIndexStats()
+	public function getIndexStatistics()
 	{
 	    $optimisationDate = KTUtil::getSystemSetting('luceneOptimisationDate', '');
 
@@ -1139,14 +1144,18 @@ abstract class Indexer
 	    'noOptimisation'=>$noOptimisation
 	    );
 
+	    return $stats;
+	}
+
+	public function updateIndexStats()
+	{
+	    $stats = $this->getIndexStatistics();
 	    KTUtil::setSystemSetting('indexerStats', serialize($stats));
 
-	    $indexer = Indexer::get();
-
-	    $diagnosis = $indexer->diagnose();
+	    $diagnosis = $this->diagnose();
 	    KTUtil::setSystemSetting('indexerDiagnostics', serialize($diagnosis));
 
-	    $extractorDiagnosis = $indexer->diagnoseExtractors();
+	    $extractorDiagnosis = $this->diagnoseExtractors();
 
 	    KTUtil::setSystemSetting('extractorDiagnostics', serialize($extractorDiagnosis));
 	}
@@ -1321,7 +1330,7 @@ abstract class Indexer
 	        Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: Filename for document id %d starts with a tilde (~). This is assumed to be a temporary file. This is ignored."),$docId), 'error');
 	        return ;
 	    }
-        
+
 	    $removeFromQueue = true;
 	    if ($indexDocument)
 	    {

@@ -337,54 +337,46 @@ class XmlRpcLucene
     }
 
     /**
-     * Write custom properties into the document content
+     * Writes a given set of custom properties to a document
      *
-     * @param stream $content
-     * @param array $properties
-     * @return boolean
+	 * @param string $sourceFile The full path to the document
+	 * @param string $targetFile The full path to the target / output file
+     * @param array $properties Associative array of the properties to be added
+	 * @return boolean true on success | false on failure
      */
-    function writeProperties($content, $properties)
+    function writeProperties($sourceFile, $targetFile, $properties)
     {
-        $function = new xmlrpcmsg('metadata.writeCustomProperties',
+        $function = new xmlrpcmsg('metadata.writeProperty',
         array(
-            new xmlrpcval($content, 'base64'),
-            new xmlrpcval("mimetype placeholder", "string"),
+            php_xmlrpc_encode((string) $sourceFile),
+            php_xmlrpc_encode((string) $targetFile),
             php_xmlrpc_encode($properties)
         ));
 
         $result =& $this->client->send($function);
-
-        unset($content);
 
         if($result->faultCode()) {
             $this->error($result, 'writeProperties');
             return false;
         }
 
-        $obj = php_xmlrpc_decode($result->value());
-
-        if($obj['status'] != '0') {
-            return false;
-        }
-        return $obj['data'];
+        return php_xmlrpc_decode($result->value()) == 0;
     }
 
     /**
-     * Read the document properties
+     * Read the custom document properties
      *
-     * @param stream $content
-     * @return unknown
+	 * @param string $sourceFile The full path to the document
+     * @return array The properties as an associative array | False on failure
      */
-    function readProperties($content)
+    function readProperties($sourceFile)
     {
-        $function = new xmlrpcmsg('metadata.readMetaData',
+        $function = new xmlrpcmsg('metadata.readMetadata',
         array(
-            new xmlrpcval($content, 'base64')
+            php_xmlrpc_encode((string) $sourceFile)
         ));
 
         $result =& $this->client->send($function);
-
-        unset($buffer);
 
         if($result->faultCode()) {
             $this->error($result, 'readProperties');
