@@ -452,6 +452,18 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		{
 			$perms .= 'A';
 		}
+
+		// root folder cannot be renamed or deleted.
+        if ($folder->iId != 1) {
+            if (Permission::userHasRenameFolderPermission($folder))
+            {
+                $perms .= 'N';
+            }
+            if (Permission::userHasDeleteFolderPermission($folder))
+            {
+                $perms .= 'D';
+            }
+        }
 		return $perms;
 	}
 
