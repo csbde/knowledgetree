@@ -89,12 +89,8 @@ class IndexingStatusDispatcher extends KTAdminDispatcher
         // ---------------------------
 
         // Do a run time check for extractors not working
-        Indexer::updateIndexStats();
-
-        // Get Results
-        $extractorDiagnosis = KTUtil::getSystemSetting('extractorDiagnostics');
-
-        if (!empty($extractorDiagnosis)) $extractorDiagnosis = unserialize($extractorDiagnosis);
+        $indexer = Indexer::get();
+        $extractorDiagnosis = $indexer->diagnoseExtractors();
 
         // Create an Array to store errors
         $this->extractorErrors = array();

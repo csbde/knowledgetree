@@ -38,6 +38,7 @@
 
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');
 
 class LuceneStatisticsDispatcher extends KTAdminDispatcher
 {
@@ -46,19 +47,18 @@ class LuceneStatisticsDispatcher extends KTAdminDispatcher
     */
     function do_main() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Indexer Statistics'));
-        
-        $stats = KTUtil::getSystemSetting('indexerStats');
-        
-        $this->stats = unserialize($stats);
+
+        $indexer = Indexer::get();
+        $stats = $indexer->getIndexStatistics();
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/search2/lucene_statistics');
-    
+
         $aTemplateData = array(
                 'context' => $this,
-                'stats'=>$this->stats
+                'stats' => $stats
             );
-    
+
         return $oTemplate->render($aTemplateData);
     }
 }
