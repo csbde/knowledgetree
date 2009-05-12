@@ -1,2 +1,3 @@
 var/cache/configcache
 bin/luceneserver/lucene.pid
+*.tmproj
