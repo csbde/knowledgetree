@@ -759,9 +759,11 @@ abstract class Indexer
     {
     	$content = file_get_contents($filename);
 
-    	// if the file is empty something went wrong with the text extraction
+    	// if the file is empty skip the filter - document was probably empty
     	if(empty($content)){
-    	    return false;
+    	    global $default;
+    	    $default->log->debug('No text was extracted from the document. Either it was empty or there was a problem with the extraction');
+    	    return true;
     	}
 
     	$src = array("([\r\n])","([\n][\n])","([\n])","([\t])",'([ ][ ])');
