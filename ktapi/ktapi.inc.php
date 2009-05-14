@@ -1230,6 +1230,12 @@ class KTAPI
     public function performBulkAction($action, $items, $reason = '', $target_folder_id = null,
                                       $sig_username = '', $sig_password = '')
     {
+        // NOTE at the moment this checks for the electronic signature on ANY bulk action
+        //      this is fine for now as the only actions defined are:
+        //      copy, move, delete, archive, checkout, undo_checkout and immute
+        //      ALL of which require signature checking when turned on
+        //      IF you are adding more actions. be sure they require signature checking
+        //      or EXCLUDE them from the check to prevent them being affected
         $response = $this->_check_electronic_signature($target_folder_id, $sig_username, $sig_password, $reason, $reason,
                                                        'ktcore.transactions.permissions_change');
         if ($response['status_code'] == 1) return $response;
@@ -1506,7 +1512,7 @@ class KTAPI
         }
         $member['users'][] = $user_id;
 
-        return $this->add_members_to_role_on_folder($folder_id, $role_id, $member);
+        return $this->add_members_to_role_on_folder($folder_id, $role_id, $member, $sig_username, $sig_password, $reason);
     }
 
     /**
@@ -1532,7 +1538,7 @@ class KTAPI
         }
         $member['groups'][] = $group_id;
 
-        return $this->add_members_to_role_on_folder($folder_id, $role_id, $member);
+        return $this->add_members_to_role_on_folder($folder_id, $role_id, $member, $sig_username, $sig_password, $reason);
     }
 
     /**
@@ -1558,7 +1564,7 @@ class KTAPI
         }
         $member['users'][] = $user_id;
 
-        return $this->remove_members_from_role_on_folder($folder_id, $role_id, $member);
+        return $this->remove_members_from_role_on_folder($folder_id, $role_id, $member, $sig_username, $sig_password, $reason);
     }
 
     /**
@@ -1584,7 +1590,7 @@ class KTAPI
         }
         $member['groups'][] = $group_id;
 
-        return $this->remove_members_from_role_on_folder($folder_id, $role_id, $member);
+        return $this->remove_members_from_role_on_folder($folder_id, $role_id, $member, $sig_username, $sig_password, $reason);
     }
 
     /**
@@ -1597,9 +1603,9 @@ class KTAPI
      * @param array $members The list of id's of members to be removed - array('users' => array(1,2), 'groups' => array(2,4))
      * @return array Response
      */
-    public function remove_members_from_role_on_folder($folder_id, $role_id, $members)
+    public function remove_members_from_role_on_folder($folder_id, $role_id, $members, $sig_username = '', $sig_password = '', $reason = '')
     {
-        return $this->update_members_on_role_on_folder($folder_id, $role_id, $members, 'remove');
+        return $this->update_members_on_role_on_folder($folder_id, $role_id, $members, 'remove', $sig_username, $sig_password, $reason);
     }
 
     /**
@@ -1612,9 +1618,9 @@ class KTAPI
      * @param array $members The list of id's of members to be added - array('users' => array(1,2), 'groups' => array(2,4))
      * @return array Response
      */
-    public function add_members_to_role_on_folder($folder_id, $role_id, $members)
+    public function add_members_to_role_on_folder($folder_id, $role_id, $members, $sig_username = '', $sig_password = '', $reason = '')
     {
-        return $this->update_members_on_role_on_folder($folder_id, $role_id, $members, 'add');
+        return $this->update_members_on_role_on_folder($folder_id, $role_id, $members, 'add', $sig_username, $sig_password, $reason);
     }
 
     /**
@@ -1854,8 +1860,12 @@ class KTAPI
      * @param integer $folder_id The folder id
      * @return array Response
      */
-    public function inherit_role_allocation_on_folder($folder_id)
+    public function inherit_role_allocation_on_folder($folder_id, $sig_username = '', $sig_password = '', $reason = '')
     {
+        $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
+                                                      'ktcore.transactions.role_allocations_change');
+        if ($response['status_code'] == 1) return $response;
+        
         $response['status_code'] = 1;
 
         // Get folder object
