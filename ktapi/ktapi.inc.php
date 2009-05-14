@@ -50,7 +50,7 @@ require_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
 require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
 require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");
 
-define('KTAPI_DIR',KT_DIR . '/ktapi');
+define('KTAPI_DIR', KT_DIR . '/ktapi');
 
 require_once(KTAPI_DIR .'/KTAPIConstants.inc.php');
 require_once(KTAPI_DIR .'/KTAPISession.inc.php');
@@ -2083,9 +2083,15 @@ class KTAPI
     	    return $response;
     	}
     	$newfolder = $folder->add_folder($folder_name);
+    	if (PEAR::isError($newfolder))
+        {
+            $response['status_code'] = 1;
+    	    $response['message']= $newfolder->getMessage();
+    	    return $response;
+        }
     	$response['status_code'] = 0;
     	$response['message'] = '';
-    	$response['results'] = $newfolder->get_detail();
+        $response['results'] = $newfolder->get_detail();
     	return $response;
     }
 
@@ -3519,9 +3525,7 @@ class KTAPI
 			return $response;
     	}
 
-
     	return $this->get_document_detail($document_id);
-
  	}
 
  	/**
@@ -4658,7 +4662,7 @@ class KTAPI
     public function electronic_sig_enabled()
     {
         // Check that the wintools plugin is active and available, return false if not.
-        if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+        if (!KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             return false;
         }
 
@@ -4676,11 +4680,11 @@ class KTAPI
      *
      * @author KnowledgeTree Team
      * @access private
-     * @param string $username The users username.
-     * @param string $password The users password.
-     * @param string $comment A comment on the action performed.
-     * @param string $action The action performed.
-     * @param string $details Details about the action performed.
+     * @param string $username The user's username
+     * @param string $password The user's password
+     * @param string $comment A comment on the action performed
+     * @param string $action The action performed
+     * @param string $details Details about the action performed
      * @return bool True if authenticated | False if rejected
      */
     private function _authenticateSignature($username, $password, $comment, $action, $details)
@@ -4696,6 +4700,16 @@ class KTAPI
 
     /**
      * Method to execute electronic signature checks on action
+     * 
+     * @author KnowledgeTree Team
+     * @access private
+     * @param string $item_id ID of document/folder which will be used as detail string in authentication records
+     * @param string $username The user's username
+     * @param string $password The user's password
+     * @param string $comment A comment on the action performed
+     * @param string $details Unused
+     * @param string $action The action performed
+     * @return array $response containing success/failure result and appropriate message
      */
     private function _check_electronic_signature($item_id, $username, $password, $comment, $details, $action)
     {
