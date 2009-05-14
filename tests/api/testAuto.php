@@ -2,10 +2,20 @@
 require_once (KT_DIR . '/tests/test.php');
 require_once (KT_DIR . '/ktapi/ktapi.inc.php');
 
+// username and password for authentication
+// must be set correctly for all of the tests to pass in all circumstances
+define (KT_TEST_USER, 'admin');
+define (KT_TEST_PASS, 'admin');
+
 /**
-* These are the unit tests for the main KTAPI class
-*
-*/
+ * These are the unit tests for the main KTAPI class
+ *
+ * NOTE All functions which require electronic signature checking need to send
+ * the username and password and reason arguments, else the tests WILL fail IF
+ * API Electronic Signatures are enabled.
+ * Tests will PASS when API Signatures NOT enabled whether or not
+ * username/password are sent.
+ */
 class APIAutoTestCase extends KTUnitTestCase {
 
     /**
@@ -29,7 +39,7 @@ class APIAutoTestCase extends KTUnitTestCase {
     */
     public function setUp() {
         $this->ktapi = new KTAPI();
-        $this->session = $this->ktapi->start_session('admin', 'admin');
+        $this->session = $this->ktapi->start_session(KT_TEST_USER, KT_TEST_PASS);
         $this->root = $this->ktapi->get_root_folder();
         $this->assertTrue($this->root instanceof KTAPI_Folder);
     }
@@ -66,7 +76,6 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
 	function testJunkget_folder_detail_by_name() { 
 		$result = $this->ktapi->get_folder_detail_by_name(null);
 		$this->assertIsA($result, 'array');
@@ -79,39 +88,33 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-	
-
-
 	function tesRealcreate_document_shortcut() { 
 		$result = $this->ktapi->create_document_shortcut($target_folder_id, $source_document_id);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
-
 	function tesRealdelete_folder() {
-        $result = $this->ktapi->delete_folder($folder_id, $reason, 'admin', 'admin');
+        $result = $this->ktapi->delete_folder($folder_id, $reason, KT_TEST_USER, KT_TEST_PASS);
         $this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
 
 	function tesRealrename_folder() { 
-		$result = $this->ktapi->rename_folder($folder_id, $newname, 'admin', 'admin', 'Testing API');
+		$result = $this->ktapi->rename_folder($folder_id, $newname, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-
 	function tesRealcopy_folder() { 
-		$result = $this->ktapi->copy_folder($source_id, $target_id, $reason, 'admin', 'admin');
+		$result = $this->ktapi->copy_folder($source_id, $target_id, $reason, KT_TEST_USER, KT_TEST_PASS);
         $this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
 
 
 	function tesRealmove_folder() { 
-		$result = $this->ktapi->move_folder($source_id, $target_id, $reason, 'admin', 'admin');
+		$result = $this->ktapi->move_folder($source_id, $target_id, $reason, KT_TEST_USER, KT_TEST_PASS);
         $this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
@@ -171,14 +174,14 @@ class APIAutoTestCase extends KTUnitTestCase {
 	}
 
 	function testJunkadd_document() {
-		$result = $this->ktapi->add_document(null, null, null, null, null, 'admin', 'admin', 'Testing API');
+		$result = $this->ktapi->add_document(null, null, null, null, null, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 1);
 	}
 
 	function tesRealadd_document() { 
 		$result = $this->ktapi->add_document($folder_id, $title, $filename, $documenttype, $tempfilename,
-                                             'admin', 'admin', 'Testing API');
+                                             KT_TEST_USER, KT_TEST_PASS, 'Testing API');
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
@@ -208,13 +211,13 @@ class APIAutoTestCase extends KTUnitTestCase {
 	}
 
 	function testJunkcheckin_document() { 
-		$result = $this->ktapi->checkin_document(null, null, null, null, null, 'admin', 'admin');
+		$result = $this->ktapi->checkin_document(null, null, null, null, null, KT_TEST_USER, KT_TEST_PASS);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 1);
 	}
 
 	function tesRealcheckin_document() { 
-		$result = $this->ktapi->checkin_document($document_id, $filename, $reason, $tempfilename, $major_update, 'admin', 'admin');
+		$result = $this->ktapi->checkin_document($document_id, $filename, $reason, $tempfilename, $major_update, KT_TEST_USER, KT_TEST_PASS);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
@@ -250,7 +253,7 @@ class APIAutoTestCase extends KTUnitTestCase {
 	}
 
 	function tesRealundo_document_checkout() { 
-		$result = $this->ktapi->undo_document_checkout($document_id, $reason, 'admin', 'admin');
+		$result = $this->ktapi->undo_document_checkout($document_id, $reason, KT_TEST_USER, KT_TEST_PASS);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}
@@ -310,7 +313,7 @@ class APIAutoTestCase extends KTUnitTestCase {
 	}
 
 	function tesRealdelete_document_workflow() { 
-		$result = $this->ktapi->delete_document_workflow($document_id, 'Testing API', 'admin', 'admin', true);
+		$result = $this->ktapi->delete_document_workflow($document_id, 'Testing API', KT_TEST_USER, KT_TEST_PASS, true);
 		$this->assertIsA($result, 'array');
 		$this->assertEqual($result['status_code'], 0);
 	}

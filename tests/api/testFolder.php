@@ -37,12 +37,7 @@ class APIFolderTestCase extends KTUnitTestCase {
     	$res = $folder->add_document("Test Document", "test.txt", "Default", $tmpfname);
     	$this->assertEntity($res, 'KTAPI_Document');
 
-
-
     	$res = $res->delete("Test deletion");
-
-
-
     }
 
     function testDeleteFolder() {
@@ -54,7 +49,6 @@ class APIFolderTestCase extends KTUnitTestCase {
         $folder = $this->ktapi->get_folder_by_name('temp1');
         $this->assertError($folder);
     }
-
 
 /*    function testRename() {
         $root = $this->ktapi->get_root_folder();
@@ -133,7 +127,6 @@ class APIFolderTestCase extends KTUnitTestCase {
         }
     }
 
-
 	function testPermission() {
 		$root = $this->ktapi->get_root_folder();
 		$perm = $root->get_permissions();
@@ -144,15 +137,18 @@ class APIFolderTestCase extends KTUnitTestCase {
         // TODO .. can do anything as admin...
 
     }
+
     function getAnonymousListing() {
         // TODO
         // probably won't be able to do unless the api caters for setting up anonymous...
 
     }
+
     function getUserListing() {
         // TODO
 
     }
+
     function testCopy() {
     	$root = $this->ktapi->get_root_folder();
     	$folder = $root->add_folder("Test folder2");
@@ -166,7 +162,8 @@ class APIFolderTestCase extends KTUnitTestCase {
 
 
     }
-   function testMove() {
+
+    function testMove() {
     	$root = $this->ktapi->get_root_folder();
     	$folder = $root->add_folder("Test folder2");
     	$new_folder = $root->add_folder("New test folder2");
@@ -176,8 +173,6 @@ class APIFolderTestCase extends KTUnitTestCase {
     	$new_folder->delete("Clean up test");
 
     	$this->assertNull($res, "Error returned");
-
-
     }
 
     /**
