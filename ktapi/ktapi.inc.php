@@ -2766,9 +2766,11 @@ class KTAPI
     	return $response;
     }
 
-    public function add_small_document_with_metadata($folder_id,  $title, $filename, $documenttype, $base64, $metadata, $sysdata)
+    public function add_small_document_with_metadata($folder_id,  $title, $filename, $documenttype, $base64, $metadata, $sysdata,
+                                                     $sig_username = '', $sig_password = '', $reason = '')
     {
-		$add_result = $this->add_small_document($folder_id, $title, $filename, $documenttype, $base64);
+		$add_result = $this->add_small_document($folder_id, $title, $filename, $documenttype, $base64,
+                                                $sig_username, $sig_password, $reason);
 
 		if($add_result['status_code'] != 0){
 		    return $add_result;
@@ -2776,7 +2778,7 @@ class KTAPI
 
 		$document_id = $add_result['results']['document_id'];
 
-		$update_result = $this->update_document_metadata($document_id, $metadata, $sysdata);
+		$update_result = $this->update_document_metadata($document_id, $metadata, $sysdata, $sig_username, $sig_password, $reason);
 		if($update_result['status_code'] != 0){
 		    $this->delete_document($document_id, 'Rollback because metadata could not be added', false);
 			return $update_result;
@@ -2797,9 +2799,11 @@ class KTAPI
 		return $update_result;
     }
 
-    public function add_document_with_metadata($folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata)
+    public function add_document_with_metadata($folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata,
+                                               $sig_username = '', $sig_password = '', $reason = '')
     {
-		$add_result = $this->add_document($folder_id, $title, $filename, $documenttype, $tempfilename);
+		$add_result = $this->add_document($folder_id, $title, $filename, $documenttype, $tempfilename,
+                                          $sig_username, $sig_password, $reason);
 
 		if($add_result['status_code'] != 0){
 		    return $add_result;
@@ -2807,7 +2811,7 @@ class KTAPI
 
 		$document_id = $add_result['results']['document_id'];
 
-		$update_result = $this->update_document_metadata($document_id, $metadata, $sysdata);
+		$update_result = $this->update_document_metadata($document_id, $metadata, $sysdata, $sig_username, $sig_password, $reason);
 		if($update_result['status_code'] != 0){
 		    $this->delete_document($document_id, 'Rollback because metadata could not be added', false);
 		    return $update_result;
@@ -2873,7 +2877,8 @@ class KTAPI
      * @param string $base64
      * @return kt_document_detail.
      */
-    public function add_small_document($folder_id,  $title, $filename, $documenttype, $base64)
+    public function add_small_document($folder_id,  $title, $filename, $documenttype, $base64,
+                                       $sig_username = '', $sig_password = '', $reason = '')
     {
     	$folder = &$this->get_folder_by_id($folder_id);
 		if (PEAR::isError($folder))
@@ -2924,7 +2929,7 @@ class KTAPI
      * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      */
     public function checkin_document($document_id,  $filename, $reason, $tempfilename, $major_update,
-                                     $sig_username = '', $sig_password = '' )
+                                     $sig_username = '', $sig_password = '')
     {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.check_in');
@@ -2968,13 +2973,14 @@ class KTAPI
                                                       'ktcore.transactions.check_in');
         if ($response['status_code'] == 1) return $response;
 
-       	$add_result = $this->checkin_small_document($document_id,  $filename, $reason, $base64, $major_update);
+       	$add_result = $this->checkin_small_document($document_id,  $filename, $reason, $base64, $major_update,
+                                                    $sig_username, $sig_password);
 
        	if($add_result['status_code'] != 0){
        		return $add_result;
        	}
 
-       	$update_result = $this->update_document_metadata($document_id, $metadata, $sysdata);
+       	$update_result = $this->update_document_metadata($document_id, $metadata, $sysdata, $sig_username, $sig_password, $reason);
 
        	if($update_result['status_code'] != 0){
        		return $update_result;
@@ -3002,13 +3008,14 @@ class KTAPI
                                                       'ktcore.transactions.check_in');
         if ($response['status_code'] == 1) return $response;
 
-       	$add_result = $this->checkin_document($document_id,  $filename, $reason, $tempfilename, $major_update);
+       	$add_result = $this->checkin_document($document_id,  $filename, $reason, $tempfilename, $major_update,
+                                              $sig_username, $sig_password);
 
        	if($add_result['status_code'] != 0){
        		return $add_result;
        	}
 
-       	$update_result = $this->update_document_metadata($session_id, $document_id, $metadata, $sysdata);
+       	$update_result = $this->update_document_metadata($session_id, $document_id, $metadata, $sysdata, $sig_username, $sig_password, $reason);
        	if($update_result['status_code'] != 0){
        		return $update_result;
        	}
@@ -3119,7 +3126,6 @@ class KTAPI
     		$download_manager->cleanup();
     		$url = $download_manager->allow_download($document);
     	}
-
 
 		if ($this->version >= 2)
 		{
@@ -3339,7 +3345,7 @@ class KTAPI
      * @param string $reason
      * @return kt_response
      */
-    public function delete_document($document_id, $reason, $sig_username = '', $sig_password = '', $auth_sig = true)
+    public function delete_document($document_id, $reason, $auth_sig = true, $sig_username = '', $sig_password = '')
     {
         if ($auth_sig)
         {
@@ -3448,7 +3454,6 @@ class KTAPI
 
     	$new_document_id = $result->documentid;
     	return $this->get_document_detail($new_document_id, '');
-
  	}
 
  	/**
@@ -3499,9 +3504,7 @@ class KTAPI
 
     	}
 
-
     	return $this->get_document_detail($document_id, '');
-
  	}
 
  	/**
@@ -3605,10 +3608,7 @@ class KTAPI
 			return $response;
     	}
 
-
-
     	return $this->get_document_detail($document_id);
-
     }
 
     /**
@@ -3642,7 +3642,6 @@ class KTAPI
 			return $response;
     	}
 
-
    		return $this->get_document_detail($document_id);
     }
 
@@ -3675,7 +3674,6 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-
 
     	return $this->get_document_detail($document_id);
     }
@@ -3993,7 +3991,6 @@ class KTAPI
     	$response['links'] = $links;
 		return $response;
 	}
-
 
 	/**
 	 * Removes a link between documents

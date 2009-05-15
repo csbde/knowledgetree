@@ -7,8 +7,45 @@ require_once (KT_DIR . '/ktapi/ktapi.inc.php');
 define (KT_TEST_USER, 'admin');
 define (KT_TEST_PASS, 'admin');
 
-// NOTE these tests may fail if the system isn't clean - i.e. if there are folders and documents
-// TODO change the assert checks to look for the esignature specific messages?
+// NOTE These tests may fail if the system isn't clean - i.e. if there are folders and documents
+// TODO Change the assert checks to look for the esignature specific messages?
+
+// TODO The following signature enabled functions are NOT currently tested:
+// add_folder_user_permissions($username, $folder_id, $namespace, $sig_username = '', $sig_password = '', $reason = '')
+// add_folder_role_permissions($role, $folder_id, $namespace, $sig_username = '', $sig_password = '', $reason = '')
+// add_folder_group_permissions($group, $folder_id, $namespace, $sig_username = '', $sig_password = '', $reason = '')
+// add_group_to_role_on_folder($folder_id, $role_id, $group_id, $sig_username = '', $sig_password = '', $reason = '')
+// remove_members_from_role_on_folder($folder_id, $role_id, $members, $sig_username = '', $sig_password = '', $reason = '')
+// update_members_on_role_on_folder($folder_id, $role_id, $members, $update = 'add', $sig_username = '', $sig_password = '', $reason = '')
+// create_folder_shortcut($target_folder_id, $source_folder_id, $sig_username = '', $sig_password = '', $reason = '')
+// create_document_shortcut($target_folder_id, $source_document_id, $sig_username = '', $sig_password = '', $reason = '')
+// checkin_document_with_metadata($document_id,  $filename, $reason, $tempfilename, $major_update, $metadata, $sysdata, $sig_username = '', $sig_password = '')
+// checkin_small_document($document_id,  $filename, $reason, $base64, $major_update, $sig_username, $sig_password)
+// checkin_small_document_with_metadata($document_id,  $filename, $reason, $base64, $major_update, $metadata, $sysdata, $sig_username = '', $sig_password = '')
+// update_document_metadata($document_id,$metadata, $sysdata=null, $sig_username = '', $sig_password = '', $reason = '')
+// add_document_with_metadata($folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata, $sig_username, $sig_password, $reason)
+// add_small_document($folder_id, $title, $filename, $documenttype, $base64, $sig_username, $sig_password, $reason);
+// checkout_small_document($document_id, $reason, $download, $sig_username = '', $sig_password = '')
+// undo_document_checkout($document_id, $reason, $sig_username = '', $sig_password = '')
+// change_document_type($document_id, $documenttype, $sig_username = '', $sig_password = '', $reason = '')
+// copy_document($document_id,$folder_id,$reason,$newtitle=null,$newfilename=null, $sig_username = '', $sig_password = '')
+// move_document($document_id,$folder_id,$reason,$newtitle=null,$newfilename=null, $sig_username = '', $sig_password = '')
+// rename_document_title($document_id,$newtitle, $sig_username = '', $sig_password = '', $reason = '')
+// rename_document_filename($document_id,$newfilename, $sig_username = '', $sig_password = '', $reason = '')
+// change_document_owner($document_id, $username, $reason, $sig_username = '', $sig_password = '')
+// start_document_workflow($document_id,$workflow, $sig_username = '', $sig_password = '', $reason = '')
+// delete_document_workflow($document_id, $sig_username = '', $sig_password = '', $reason = '')
+// perform_document_workflow_transition($document_id,$transition,$reason, $sig_username = '', $sig_password = '')
+// unlink_documents($parent_document_id, $child_document_id, $sig_username = '', $sig_password = '', $reason = '')
+// link_documents($parent_document_id, $child_document_id, $type, $sig_username = '', $sig_password = '', $reason = '')
+//
+// TODO The following are tested via other functions, may want to test directly:
+//
+// The following are only tested for failure.  They were not tested in the ktapi test code
+// I based these tests on and have given issues in the tests:
+//
+// copy_folder($source_id, $target_id, $reason, $sig_username = '', $sig_password = '')
+// move_folder($source_id, $target_id, $reason, $sig_username = '', $sig_password = '')
 
 /**
  * Unit tests specifically for testing the KTAPI functionality with API Electronic Signatures enabled
@@ -177,16 +214,18 @@ class APIElectronicSignaturesTestCase extends KTUnitTestCase {
         // test without authentication - should fail
         $moved = $this->ktapi->move_folder($source_id, $target_id, $reason);
         $this->assertEqual($moved['status_code'], 1);
-
-        // before we end up with 3 fails in a row (see note above the first copy attempt,) force a successful auth
-        $renamed = $this->ktapi->rename_folder($folder_id, 'A New Name', KT_TEST_USER, KT_TEST_PASS, 'Testing API');
+        
+        // force reset of the lockout so that remaining tests can run :)
+        unset($_SESSION['esignature_attempts']);
+        unset($_SESSION['esignature_lock']);
 
 //        // test with authentication
 //        $moved = $this->ktapi->move_folder($source_id, $target_id, $reason, KT_TEST_USER, KT_TEST_PASS);
 //        $this->assertEqual($moved['status_code'], 0);
 
-        // before we end up with 3 fails in a row (see note above the first copy attempt,) force a successful auth
-        $renamed = $this->ktapi->rename_folder($folder_id, 'A New Name', KT_TEST_USER, KT_TEST_PASS, 'Testing API');
+        // force reset of the lockout so that remaining tests can run :)
+        unset($_SESSION['esignature_attempts']);
+        unset($_SESSION['esignature_lock']);
 
         // Clean up - delete the folder
         // test without authentication - should fail
@@ -269,7 +308,7 @@ class APIElectronicSignaturesTestCase extends KTUnitTestCase {
         $this->assertEqual($result5['status_code'], 1);
         
         // test with authentication
-        $result6 = $this->ktapi->delete_document($doc_id, 'Testing API', KT_TEST_USER, KT_TEST_PASS, true);
+        $result6 = $this->ktapi->delete_document($doc_id, 'Testing API', true, KT_TEST_USER, KT_TEST_PASS);
         $this->assertEqual($result6['status_code'], 0);
 
         // Clean up - delete the folder

@@ -598,7 +598,7 @@ class APITestCase extends KTUnitTestCase {
         $this->assertEqual($shortcut['results']['folder_id'], $folder_id);
 
         // Delete the document
-        $result3 = $this->ktapi->delete_document($doc_id, 'Testing API', KT_TEST_USER, KT_TEST_PASS, true);
+        $result3 = $this->ktapi->delete_document($doc_id, 'Testing API', true, KT_TEST_USER, KT_TEST_PASS);
         $this->assertEqual($result3['status_code'], 0);
 
         // Clean up - delete the folder
