@@ -91,10 +91,11 @@
         }
 
         .logoimage {
-            margin-bottom: 2em;
+
+                        margin-bottom: 0.5em;
 			margin-left: auto;
 			margin-right: auto;
-			display: block;
+			
         }
 
         .form_actions {
@@ -127,7 +128,7 @@
 }
 
 #bottomspacer {
-    height: 50px;
+    height: 5px;
 
 }
 
