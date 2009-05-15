@@ -39,6 +39,7 @@
 
 class DocumentIdField extends DBFieldExpr
 {
+    // declare as part of GeneralText search
 	public $general_op = ExprOp::IS;
 
     public function __construct()

@@ -37,6 +37,26 @@
  *
  */
 
+/**
+ * Class to combine multiple search fields under the heading of GeneralText search
+ *
+ * Fields are added to the GeneralText search by declaring and initialising the
+ * ${fieldclass}->general_op variable within the field class you would like to
+ * include in the GeneralText search.  To do this, add the following class variable
+ * declaration:
+ * 
+ * public $general_op = ExprOp::CONTAINS;
+ *
+ * At the time of writing (2009/05/15) the following field classes are included:
+ * 
+ * AnyMetadataField
+ * DiscussionTextField
+ * DocumentIdField
+ * FilenameField
+ * FullPathField
+ * TitleField
+ * 
+ */
 class GeneralTextField extends SearchableText
 {
     public function __construct()
@@ -83,10 +103,7 @@ class GeneralTextField extends SearchableText
 				$right = new OpExpr($right, ExprOp::OP_OR, $newexpr);
     		}
     	}
-
     }
-
-
 }
 
 ?>

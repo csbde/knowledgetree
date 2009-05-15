@@ -2,6 +2,20 @@
 require_once (KT_DIR . '/tests/test.php');
 require_once (KT_DIR . '/ktapi/ktapi.inc.php');
 
+// username and password for authentication
+// must be set correctly for all of the tests to pass in all circumstances
+define (KT_TEST_USER, 'admin');
+define (KT_TEST_PASS, 'admin');
+
+/**
+ * These are the unit tests for the main KTAPI class
+ *
+ * NOTE All functions which require electronic signature checking need to send
+ * the username and password and reason arguments, else the tests WILL fail IF
+ * API Electronic Signatures are enabled.
+ * Tests will PASS when API Signatures NOT enabled whether or not
+ * username/password are sent.
+ */
 class APIAclTestCase extends KTUnitTestCase {
 
     /**
@@ -90,7 +104,7 @@ class APIAclTestCase extends KTUnitTestCase {
         // add a user to a role
         $role_id = 2; // Publisher
         $user_id = 1; // Admin
-        $result = $this->ktapi->add_user_to_role_on_folder($folder_id, $role_id, $user_id);
+        $result = $this->ktapi->add_user_to_role_on_folder($folder_id, $role_id, $user_id, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $this->assertEqual($result['status_code'], 0);
 
         $allocation = $this->ktapi->get_role_allocation_for_folder($folder_id);
@@ -104,7 +118,7 @@ class APIAclTestCase extends KTUnitTestCase {
         $this->assertEqual($check['results'], 'YES');
 
         // remove user from a role
-        $result = $this->ktapi->remove_user_from_role_on_folder($folder_id, $role_id, $user_id);
+        $result = $this->ktapi->remove_user_from_role_on_folder($folder_id, $role_id, $user_id, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $this->assertEqual($result['status_code'], 0);
 
         $allocation = $this->ktapi->get_role_allocation_for_folder($folder_id);
@@ -130,7 +144,7 @@ class APIAclTestCase extends KTUnitTestCase {
         $this->assertEqual($allocation['status_code'], 0);
 
         // Override
-        $result = $this->ktapi->override_role_allocation_on_folder($folder_id);
+        $result = $this->ktapi->override_role_allocation_on_folder($folder_id, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $this->assertEqual($result['status_code'], 0);
 
         $role_id = 2; // Publisher
@@ -138,7 +152,7 @@ class APIAclTestCase extends KTUnitTestCase {
         $group_id = 1; // System Administrators
         $members = array('users' => array($user_id), 'groups' => array($group_id));
 
-        $result = $this->ktapi->add_members_to_role_on_folder($folder_id, $role_id, $members);
+        $result = $this->ktapi->add_members_to_role_on_folder($folder_id, $role_id, $members, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $this->assertEqual($result['status_code'], 0);
 
         $check = $this->ktapi->is_member_in_role_on_folder($folder_id, $role_id, $user_id, 'user');
@@ -146,7 +160,7 @@ class APIAclTestCase extends KTUnitTestCase {
         $this->assertEqual($check['results'], 'YES');
 
         // Remove all
-        $result = $this->ktapi->remove_all_role_allocation_from_folder($folder_id, $role_id);
+        $result = $this->ktapi->remove_all_role_allocation_from_folder($folder_id, $role_id, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $this->assertEqual($result['status_code'], 0);
 
         $check = $this->ktapi->is_member_in_role_on_folder($folder_id, $role_id, $group_id, 'group');
@@ -154,7 +168,7 @@ class APIAclTestCase extends KTUnitTestCase {
         $this->assertEqual($check['results'], 'NO');
 
         // Inherit
-        $result = $this->ktapi->inherit_role_allocation_on_folder($folder_id);
+        $result = $this->ktapi->inherit_role_allocation_on_folder($folder_id, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $this->assertEqual($result['status_code'], 0);
 
         // clean up
@@ -177,7 +191,7 @@ class APIAclTestCase extends KTUnitTestCase {
 
         // getById()
         $user = KTAPI_User::getById(1);
-        $this->assertTrue($user->Username == 'admin');
+        $this->assertTrue($user->Username == KT_TEST_USER);
         $this->assertTrue($user->Name == 'Administrator');
 
         // getByName()
@@ -185,7 +199,7 @@ class APIAclTestCase extends KTUnitTestCase {
         $this->assertTrue($user->Id == -2);
 
         // getByUsername()
-        $user = KTAPI_User::getByUsername('admin');
+        $user = KTAPI_User::getByUsername(KT_TEST_USER);
         $this->assertTrue($user->Id == 1);
 
     }
@@ -207,7 +221,7 @@ class APIAclTestCase extends KTUnitTestCase {
         $this->assertEqual($response['results']['name'], 'Administrator');
         $this->assertNoErrors();
 
-        $response = $this->ktapi->get_user_by_username('admin');
+        $response = $this->ktapi->get_user_by_username(KT_TEST_USER);
         $this->assertIsA($response, 'array');
         $this->assertEqual($response['status_code'], 0);
         $this->assertEqual($response['results']['name'], 'Administrator');
@@ -300,7 +314,7 @@ class APIAclTestCase extends KTUnitTestCase {
 
         $role2 = KTAPI_Role::getByName('Reviewer');
         $role = KTAPI_Role::getByName('Publisher');
-        $user = KTAPI_User::getByUsername('admin');
+        $user = KTAPI_User::getByUsername(KT_TEST_USER);
         $user2 = KTAPI_User::getByUsername('anonymous');
         $group = KTAPI_Group::getByName('System Administrators');
 

@@ -39,45 +39,20 @@
 
 class AnyMetadataField extends DBFieldExpr
 {
+    // declare as part of GeneralText search
 	public $general_op = ExprOp::CONTAINS;
-//    public $references = 0;
 
     public function __construct()
     {
-//        parent::__construct('value', 'document_fields_link', _kt('Any Metadata'));
+        /*
+         * Constructing the object like this allows for easy multiple joins
+         * on the same column in the same table
+         */
         parent::__construct('id', 'document_metadata_version', _kt('Any Metadata'));
         $this->setAlias('Metadata');
         $this->joinTo('document_fields_link', 'metadata_version_id');
 		$this->matchField('value');
     }
-
-    /*
-     * Overridden function to adjust table alias in cases of
-     * the document_fields_link table being included more than once
-     *
-     * NOTE this only works in conjunction with code in expr.inc.php which adds the left joins to the db query.
-     *      I don't like this and think we should look for a way to make the table joining more generic
-     *      such that it can be controlled via these classes and thereby contained as a unit.
-     */
-//    public function modifyName($name)
-//    {
-//        if ($this->references > 0)
-//        {
-//            static $count = 0;
-//            if ($count >= $this->references)
-//            {
-//                $count = 0;
-//            }
-//
-//            if ((($pos = strpos($name, '.')) !== false) && ($count != 0))
-//            {
-//                $name = substr($name, 0, $pos) . $count . substr($name, $pos);
-//            }
-//            ++$count;
-//        }
-//
-//    	return $name;
-//    }
 
     public function getInputRequirements()
     {

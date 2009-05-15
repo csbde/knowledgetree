@@ -3,7 +3,7 @@
             font-size: small;
             margin-top: 8em;
             text-align: center;
-            background: #fefefe url(../graphics/loginbg.png) top left repeat-x; 
+            background: #fefefe url(../graphics/loginbg.png) top left repeat-x;
         }
 
         label {
@@ -11,8 +11,8 @@
             display: block;
             margin: 0.5em 0;
         }
-		
-		#loginbox_outer {  
+
+		#loginbox_outer {
            	position: relative;
             padding: 1em;
             border: 1px solid #B7B7B7;
@@ -21,11 +21,11 @@
             margin-right: auto;
             background-color: #FFFFFF;
         }
-        
-        #loginbox_outer.hasDisclaimer {  
+
+        #loginbox_outer.hasDisclaimer {
            	width: 580px;
         }
-		
+
         #loginbox {
             text-align: left;
             margin: 0 10px;
@@ -41,25 +41,25 @@
         #loginbox.hasDisclaimer {
 /*            background: white url(../graphics/ktbg.png) bottom left repeat-x;*/
         }
-        
+
         #loginbox_skin.hasDisclaimer {
 /*            background: white url(../graphics/ktbg.png) bottom left repeat-x;*/
         }
 
-        #formbox { 
-            border: 0; 
-            padding: 0; 
+        #formbox {
+            border: 0;
+            padding: 0;
             margin: 0;
             width: 252px;
             float: left;
         }
 
-        #loginbox.hasDisclaimer #formbox { 
+        #loginbox.hasDisclaimer #formbox {
             padding-right: 20px;
             border-right: 1px solid #eee;
         }
-        
-        #loginbox_skin.hasDisclaimer #formbox { 
+
+        #loginbox_skin.hasDisclaimer #formbox {
             padding-right: 20px;
             border-right: 1px solid #eee;
         }
@@ -73,7 +73,7 @@
             overflow: auto;
         }
 
-        #disclaimerbox p { 
+        #disclaimerbox p {
             margin-top: 0;
             margin-left: 5px;
             margin-bottom: 1em;
@@ -83,7 +83,7 @@
             border: 1px solid #666;
             width: 250px;
         }
-        
+
         select {
             border: 1px solid #666;
             margin: 0;
@@ -110,7 +110,7 @@
             width: auto;
         }
 
-.descriptiveText 
+.descriptiveText
 {
 	margin-top: 5px;
     color: #666;
@@ -124,7 +124,6 @@
 
 #bottomspacer {
     height: 0px;
-
 }
 
 /* block level. */
@@ -132,6 +131,7 @@
 	background-color: #ffdd80;
     border: 1px solid #FFC21E;
     margin: 20px auto;
+    padding: 10px;
 }
 
 .ktErrorMessage span {
@@ -150,5 +150,5 @@
 
 .communityLabel
 {
-	color: #919192;	
+	color: #919192;
 }

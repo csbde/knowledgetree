@@ -2,12 +2,23 @@
 require_once (KT_DIR . '/tests/test.php');
 require_once (KT_DIR . '/ktapi/ktapi.inc.php');
 
+// username and password for authentication
+// must be set correctly for all of the tests to pass in all circumstances
+define (KT_TEST_USER, 'admin');
+define (KT_TEST_PASS, 'admin');
+
 /**
  * Unit tests for the KTAPI_BulkActions class
  *
  * @author KnowledgeTree Team
  * @package KTAPI
  * @version 0.9
+ *
+ * NOTE All functions which require electronic signature checking need to send
+ * the username and password and reason arguments, else the tests WILL fail IF
+ * API Electronic Signatures are enabled.
+ * Tests will PASS when API Signatures NOT enabled whether or not
+ * username/password are sent.
  */
 class APIBulkActionsTestCase extends KTUnitTestCase {
 
@@ -75,7 +86,7 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
         $aItems['folders'][] = $folder1->get_folderid();
 
         // Call bulk action - copy
-        $response = $this->ktapi->performBulkAction('copy', $aItems, 'Testing API', $target_folder_id);
+        $response = $this->ktapi->performBulkAction('copy', $aItems, 'Testing API', $target_folder_id, KT_TEST_USER, KT_TEST_PASS);
 
         $this->assertEqual($response['status_code'], 0);
         $this->assertTrue(empty($response['results']));
@@ -88,12 +99,12 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
         if(PEAR::isError($target_folder)) return;
         $target_folder_id = $target_folder->get_folderid();
 
-        $response = $this->ktapi->performBulkAction('move', $aItems, 'Testing API', $target_folder_id);
+        $response = $this->ktapi->performBulkAction('move', $aItems, 'Testing API', $target_folder_id, KT_TEST_USER, KT_TEST_PASS);
 
         $this->assertEqual($response['status_code'], 0);
         $this->assertTrue(empty($response['results']));
 
-        $response = $this->ktapi->performBulkAction('delete', $aItems, 'Testing API');
+        $response = $this->ktapi->performBulkAction('delete', $aItems, 'Testing API', null, KT_TEST_USER, KT_TEST_PASS);
 
         $this->assertEqual($response['status_code'], 0);
         $this->assertTrue(empty($response['results']));
@@ -125,7 +136,7 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
         $aItems['folders'][] = $folder1->get_folderid();
 
         // Call bulk action - checkout
-        $response = $this->ktapi->performBulkAction('checkout', $aItems, 'Testing API');
+        $response = $this->ktapi->performBulkAction('checkout', $aItems, 'Testing API', null, KT_TEST_USER, KT_TEST_PASS);
 
         $this->assertEqual($response['status_code'], 0);
         $this->assertTrue(empty($response['results']));
@@ -135,13 +146,13 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
         $this->assertTrue($doc1->is_checked_out());
 
         // cancel the checkout
-        $response = $this->ktapi->performBulkAction('undo_checkout', $aItems, 'Testing API');
+        $response = $this->ktapi->performBulkAction('undo_checkout', $aItems, 'Testing API', null, KT_TEST_USER, KT_TEST_PASS);
 
         $this->assertEqual($response['status_code'], 0);
         $this->assertTrue(empty($response['results']));
 
         // delete items
-        $response = $this->ktapi->performBulkAction('delete', $aItems, 'Testing API');
+        $response = $this->ktapi->performBulkAction('delete', $aItems, 'Testing API', null, KT_TEST_USER, KT_TEST_PASS);
         $this->assertEqual($response['status_code'], 0);
     }
 
@@ -168,7 +179,7 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
         $aItems['folders'][] = $folder1->get_folderid();
 
         // Call bulk action - checkout
-        $response = $this->ktapi->performBulkAction('immute', $aItems);
+        $response = $this->ktapi->performBulkAction('immute', $aItems, 'Testing API', null, KT_TEST_USER, KT_TEST_PASS);
 
         $this->assertEqual($response['status_code'], 0);
         $this->assertTrue(empty($response['results']));
@@ -183,7 +194,7 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
         $doc4->unimmute();
 
         // delete items
-        $response = $this->ktapi->performBulkAction('delete', $aItems, 'Testing API');
+        $response = $this->ktapi->performBulkAction('delete', $aItems, 'Testing API', null, KT_TEST_USER, KT_TEST_PASS);
         $this->assertEqual($response['status_code'], 0);
     }
 

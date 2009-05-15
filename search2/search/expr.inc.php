@@ -40,7 +40,6 @@
 
 /**
  * This is the ideal case, but more complex
- *
  */
 
 // TODO: search expression evaluation needs some optimisation
@@ -49,6 +48,12 @@ require_once('indexing/indexerCore.inc.php');
 require_once('search/fieldRegistry.inc.php');
 require_once('search/exprConstants.inc.php');
 
+/**
+ * This class handles the ranking of search results
+ *
+ * @author KnowledgeTree Team
+ * @package Search
+ */
 class RankManager
 {
 	/**
@@ -76,6 +81,12 @@ class RankManager
 	 */
 	private $text;
 
+    /**
+     * Builds the RankManager object from the database
+     *
+     * @author KnowledgeTree Team
+     * @access private
+     */
 	private function __construct()
 	{
 		$this->dbfields=array();
@@ -107,9 +118,11 @@ class RankManager
 	}
 
 	/**
-	 * Enter description here...
+	 * Gets the RankManager object
 	 *
-	 * @return RankManager
+     * @author KnowledgeTree Team
+     * @access public
+	 * @return object RankManager
 	 */
 	public static function get()
 	{
@@ -121,6 +134,15 @@ class RankManager
 		return $singleton;
 	}
 
+    /**
+     * Applies the appropriate score to a matched field
+     *
+     * @author KnowledgeTree Team
+     * @access public
+	 * @param string $groupname The group to which the field belongs
+     * @return int The score for this field or 0 if not matched with
+     * any score
+     */
 	public function scoreField($groupname, $type='T', $itemname='')
 	{
 		switch($type)
@@ -145,7 +167,12 @@ class RankManager
 	}
 }
 
-
+/**
+ * This is the base class for parsing search expressions
+ *
+ * @author KnowledgeTree Team
+ * @package Search
+ */
 class Expr
 {
     /**
@@ -317,6 +344,12 @@ class Expr
     }
 }
 
+/**
+ * This is the base class for Field expressions
+ *
+ * @author KnowledgeTree Team
+ * @package Search
+ */
 class FieldExpr extends Expr
 {
     /**
@@ -428,6 +461,12 @@ class FieldExpr extends Expr
     }
 }
 
+/**
+ * This class defines the contexts to which a search expression may apply
+ *
+ * @author KnowledgeTree Team
+ * @package Search
+ */
 class ExprContext
 {
     const DOCUMENT = 1;
@@ -435,7 +474,12 @@ class ExprContext
     const DOCUMENT_AND_FOLDER = 3;
 }
 
-
+/**
+ * This is the base class for Database Field Expressions
+ *
+ * @author KnowledgeTree Team
+ * @package Search
+ */
 class DBFieldExpr extends FieldExpr
 {
     /**
@@ -515,6 +559,12 @@ class DBFieldExpr extends FieldExpr
     }
 }
 
+/**
+ * This is the base class for Metadata Field Expressions
+ *
+ * @author KnowledgeTree Team
+ * @package Search
+ */
 class MetadataField extends DBFieldExpr
 {
     protected $fieldset;
@@ -561,6 +611,12 @@ class MetadataField extends DBFieldExpr
 
 }
 
+/**
+ * This is the base class for Text Expressions
+ *
+ * @author KnowledgeTree Team
+ * @package Search
+ */
 class SearchableText extends FieldExpr
 {
 }
@@ -736,7 +792,6 @@ class ValueListExpr extends Expr
     	$this->values[] = $value;
     }
 
-
     public function getValue($param=null)
     {
     	if (!empty($param))
@@ -782,8 +837,6 @@ class ValueListExpr extends Expr
         }
     }
 
-
-
     public function rewrite(&$left, &$op, &$right, &$not)
     {
     	if (count($this->values) == 1)
@@ -812,7 +865,6 @@ class ValueListExpr extends Expr
     }
 
 }
-
 
 class BetweenValueExpr extends ValueExpr
 {
@@ -893,6 +945,13 @@ interface QueryBuilder
 
 }
 
+/**
+ * This class builds queries for text content searches
+ * which are run through the Lucene service
+ *
+ * @author KnowledgeTree Team
+ * @package Search
+ */
 class TextQueryBuilder implements QueryBuilder
 {
 	private $text;
@@ -984,6 +1043,12 @@ class TextQueryBuilder implements QueryBuilder
 	}
 }
 
+/**
+ * This class builds queries for database searches
+ *
+ * @author KnowledgeTree Team
+ * @package Search
+ */
 class SQLQueryBuilder implements QueryBuilder
 {
 	private $used_tables;
@@ -994,6 +1059,14 @@ class SQLQueryBuilder implements QueryBuilder
 	private $context;
 	private $incl_status = true;
 
+    /**
+     * Constructor for the SQL query builder
+     * Sets the database tables to be used in the search query
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param string $context The context to which the search applies
+     */
 	public function __construct($context)
 	{
 	    $this->context = $context;
@@ -1016,7 +1089,7 @@ class SQLQueryBuilder implements QueryBuilder
 	               'tag_words'=>'tw',
 	               'document_fields_link'=>'pdfl'
 	            );
-	            break;
+	        break;
 	        case ExprContext::FOLDER:
 	            $this->used_tables = array(
 	               'folders'=>1,
@@ -1025,7 +1098,7 @@ class SQLQueryBuilder implements QueryBuilder
 	            $this->aliases = array(
 	               'folders'=>'f',
 	            );
-	            break;
+	        break;
 	        default:
 	            throw new Exception('This was not expected - Context = ' . $context);
 	    }
@@ -1035,6 +1108,13 @@ class SQLQueryBuilder implements QueryBuilder
 		$this->metadata = array();
 	}
 
+    /**
+     * Sets the value which determines whether status must be 1 to return results
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param bool $incl
+     */
 	public function setIncludeStatus($incl)
 	{
 	    $this->incl_status = $incl;
@@ -1043,6 +1123,7 @@ class SQLQueryBuilder implements QueryBuilder
 	/**
 	 * This looks up a table name to find the appropriate alias.
 	 *
+     * @access private
 	 * @param string $tablename
 	 * @return string
 	 */
@@ -1055,6 +1136,15 @@ class SQLQueryBuilder implements QueryBuilder
 		throw new Exception("Unknown tablename '$tablename'");
 	}
 
+    /**
+     * This method parses an expression into simpler individual expressions
+     * (if not already as simple as possible)
+     * evaluates each individually to determine the query content and table usage
+     *
+     * @access private
+     * @param object $expr
+     * @param object $parent
+     */
 	private function exploreExprs($expr, $parent=null)
 	{
         if ($expr->isMetadataField())
@@ -1091,6 +1181,11 @@ class SQLQueryBuilder implements QueryBuilder
 		}
 	}
 
+    /**
+     * Determine table usage for a simple (metadata) query
+     *
+     * @param array $group
+     */
 	private function exploreGroup($group)
 	{
 		// split up metadata and determine table usage
@@ -1114,6 +1209,15 @@ class SQLQueryBuilder implements QueryBuilder
         }
 	}
 
+    /**
+     * Determines the field to be checked for an expression
+     * If joins are defined for this expression the function will
+     * modify the fieldname accordingly
+     *
+     * @access private
+     * @param string $expr
+     * @return string $fieldname
+     */
 	private function getFieldnameFromExpr($expr)
 	{
 		$field = $expr->left();
@@ -1133,9 +1237,15 @@ class SQLQueryBuilder implements QueryBuilder
 		return $fieldname;
 	}
 
+    /**
+     * Builds the part of the SQL query used for a particular simple expression
+     *
+     * @access private
+     * @param string $expr
+     * @return string $query
+     */
 	private function getSQLEvalExpr($expr)
 	{
-        
 		$left = $expr->left();
 		$right = $expr->right();
 		$isNot = $expr->not();
@@ -1178,6 +1288,11 @@ class SQLQueryBuilder implements QueryBuilder
 		return $query;
 	}
 
+    /**
+     * Builds the main SQL query
+     *
+     * @return string $sql
+     */
 	private function buildCoreSQL()
 	{
 		if (count($this->metadata) + count($this->db) == 0)
@@ -1186,8 +1301,7 @@ class SQLQueryBuilder implements QueryBuilder
             return '';
         }
 
-		$sql =
-            'SELECT ' . "\n";
+		$sql = 'SELECT ' . "\n";
 
         if ($this->context == ExprContext::DOCUMENT)
         {
@@ -1197,16 +1311,19 @@ class SQLQueryBuilder implements QueryBuilder
                 $this->used_tables['document_metadata_version']++;
             }
 
-            $sql .=
-            ' DISTINCT d.id, dmv.name as title';
+            $sql .= ' DISTINCT d.id, dmv.name as title';
         }
         else
         {
-            $sql .=
-            ' DISTINCT f.id, f.name as title';
+            $sql .= ' DISTINCT f.id, f.name as title';
         }
 
-
+        /*
+         * This section of code builds the part of the query which is used to
+         * determine ranking for db fields
+         *
+         * 0 = "does not match"
+         */
         $offset=0;
         foreach($this->db as $expr)
         {
@@ -1214,14 +1331,19 @@ class SQLQueryBuilder implements QueryBuilder
             $sql .= ", ifnull(" . $this->getSQLEvalExpr($expr) . ",0) as expr$offset ";
         }
 
+        /*
+         * This section of code builds the part of the query which is used to
+         * determine ranking for metadata fields
+         *
+         * 0 = "does not match"
+         */
         foreach($this->metadata as $expr)
         {
         	$offset++;
         	$sql .= ", ifnull(" . $this->getSQLEvalExpr($expr) . ",0) as expr$offset ";
         }
 
-        $sql .=
-            "\n" . 'FROM ' ."\n";
+        $sql .= "\n" . 'FROM ' ."\n";
 
         if ($this->context == ExprContext::DOCUMENT)
         {
@@ -1243,10 +1365,6 @@ class SQLQueryBuilder implements QueryBuilder
             // out below.
 //            if ($this->used_tables['document_fields_link'] > 0)
 //            {
-//                // NOTE this is a bit of a hack, maybe? or maybe it really is the best way?
-//                // ...what about using the loop below which checks the expression
-//                // for a join table rather than this up here? - otherwise this only
-//                // affects this particular query type - then again maybe that's what we want...
 //                for ($i = 0; $i < $this->used_tables['document_fields_link']; ++$i)
 //                {
 //                    if ($i > 0) $counter = $i;
@@ -1259,8 +1377,8 @@ class SQLQueryBuilder implements QueryBuilder
 
             if ($this->used_tables['tag_words'] > 0)
             {
-                $sql .= ' LEFT OUTER JOIN document_tags dt  ON dt.document_id=d.id ' . "\n" .
-                ' LEFT OUTER JOIN tag_words tw  ON dt.tag_id = tw.id ' . "\n";
+                $sql .= ' LEFT OUTER JOIN document_tags dt  ON dt.document_id=d.id ' . "\n" 
+                     .  ' LEFT OUTER JOIN tag_words tw  ON dt.tag_id = tw.id ' . "\n";
             }
         }
         else
@@ -1269,10 +1387,21 @@ class SQLQueryBuilder implements QueryBuilder
             $sql .= ' folders f ' ."\n";
         }
 
+        /*
+         * This builds the JOINs required to correctly select on multiple tables.
+         * 
+         * NOTE This is explicitly required for multi-selecting from the same table using multiple
+         * joins with different offset naming.
+         * This multi-selecting is necessary to avoid issues with complex queries
+         * requiring different results from a single column within a database table.
+         *
+         * For an example of how the field classes need to be set up to take advantage of this code
+         * look at the constructors for the AnyMetadataField class or the MimeTypeField class.
+         */
 		$offset = 0;
         foreach($this->db as $expr)
         {
-        	$field       = $expr->left();
+        	$field = $expr->left();
         	$jointable=$field->getJoinTable();
         	if (!is_null($jointable))
         	{
@@ -1360,6 +1489,13 @@ class SQLQueryBuilder implements QueryBuilder
 		throw new Exception('join field not found');
 	}
 
+    /**
+     * Creates the core SQL expression for a search expression
+     *
+     * @access private
+     * @param string $expr
+     * @return string $query
+     */
 	private function buildCoreSQLExpr($expr)
 	{
 		$left = $expr->left();
@@ -1383,6 +1519,15 @@ class SQLQueryBuilder implements QueryBuilder
 		return $query;
 	}
 
+    /**
+     * Creates the complex SQL query using the other query building functions
+     * to create the individual parts of the query and combining into the final
+     * query to be run on the database
+     *
+     * @access private
+     * @param string $expr
+     * @return string $sql
+     */
 	public function buildComplexQuery($expr)
 	{
 		$this->exploreExprs($expr);
@@ -1404,6 +1549,13 @@ class SQLQueryBuilder implements QueryBuilder
         return $sql;
 	}
 
+    /**
+     * Builds a simple database query
+     *
+     * @param string $op
+     * @param array $group
+     * @return string $sql
+     */
 	public function buildSimpleQuery($op, $group)
 	{
 		$this->exploreGroup($group);
@@ -1421,18 +1573,17 @@ class SQLQueryBuilder implements QueryBuilder
 			$field       = $expr->left();
 
 			if (is_null($field->getJoinTable()))
-				{
-	        	    $alias      = $this->resolveTableToAlias($field->getTable());
-    	        	$fieldname  = $alias . '.' . $field->getField();
-				}
-				else
-				{
-					$offset = $this->resolveJoinOffset($expr);
-					$matching = $field->getMatchingField();
-					$tablename = $field->getJoinTable();
-					$fieldname = "$tablename$offset.$matching";
-				}
-
+            {
+                $alias      = $this->resolveTableToAlias($field->getTable());
+                $fieldname  = $alias . '.' . $field->getField();
+            }
+            else
+            {
+                $offset = $this->resolveJoinOffset($expr);
+                $matching = $field->getMatchingField();
+                $tablename = $field->getJoinTable();
+                $fieldname = "$tablename$offset.$matching";
+            }
 
             $value      = $expr->right();
             $sql .= $value->getSQL($field, $left->modifyName($fieldname), $expr->op(), $expr->not());
@@ -1464,6 +1615,16 @@ class SQLQueryBuilder implements QueryBuilder
         return $sql;
 	}
 
+    /**
+     * Utilises the RankManager object to determine rankings for each result
+     * returned from the search query, based on the values returned by the
+     * sub-parts of the query as built in buildCoreSQL()
+     * (see comments in that function for the code sections responsible
+     * for setting these values)
+     *
+     * @param array $result
+     * @return int $score
+     */
 	public function getRanking($result)
 	{
 		$ranker = RankManager::get();
@@ -1526,8 +1687,6 @@ class SQLQueryBuilder implements QueryBuilder
 		return '(' . implode(') AND (', $text) . ')';
 	}
 }
-
-
 
 class OpExpr extends Expr
 {
@@ -2164,6 +2323,15 @@ class OpExpr extends Expr
 		$this->exploreItem($right,  $group, $interest);
     }
 
+    /**
+     * Executes a database query
+     *
+     * @access private
+     * @global object $default Default config settings
+     * @param string $op The operation to perform
+     * @param array $group
+     * @return array $results
+     */
     private function exec_db_query($op, $group)
     {
     	if (empty($group)) { return array(); }
@@ -2216,6 +2384,14 @@ class OpExpr extends Expr
 
     }
 
+    /**
+     * Executes a text search query against the Lucene indexer
+     *
+     * @global object $default Default config settings
+     * @param string $op The operation to perform
+     * @param array $group
+     * @return array $results
+     */
     private function exec_text_query($op, $group)
     {
     	global $default;
@@ -2262,6 +2438,12 @@ class OpExpr extends Expr
     	return $results;
     }
 
+    /**
+     * Evaluate a search query
+     *
+     * @param int $context The context to which the query applies (document/folder/both)
+     * @return array $permResults
+     */
 	public function evaluate($context = ExprContext::DOCUMENT_AND_FOLDER)
 	{
 	    if ($context == ExprContext::DOCUMENT_AND_FOLDER)
