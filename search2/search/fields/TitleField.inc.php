@@ -39,6 +39,7 @@
 
 class TitleField extends DBFieldExpr
 {
+    // declare as part of GeneralText search
     public $general_op = ExprOp::CONTAINS;
     
     public function __construct()

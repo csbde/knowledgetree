@@ -49,8 +49,6 @@ require_once('search/fieldRegistry.inc.php');
 require_once('search/exprConstants.inc.php');
 
 /**
- * 
- *
  * This class handles the ranking of search results
  *
  * @author KnowledgeTree Team
@@ -794,7 +792,6 @@ class ValueListExpr extends Expr
     	$this->values[] = $value;
     }
 
-
     public function getValue($param=null)
     {
     	if (!empty($param))
@@ -950,6 +947,7 @@ interface QueryBuilder
 
 /**
  * This class builds queries for text content searches
+ * which are run through the Lucene service
  *
  * @author KnowledgeTree Team
  * @package Search
@@ -1111,8 +1109,7 @@ class SQLQueryBuilder implements QueryBuilder
 	}
 
     /**
-     * Sets the value which determines whether archived/deleted documents
-     * are to be included in search results
+     * Sets the value which determines whether status must be 1 to return results
      *
      * @author KnowledgeTree Team
      * @access public

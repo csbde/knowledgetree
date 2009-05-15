@@ -776,7 +776,6 @@ class SearchDispatcher extends KTStandardDispatcher {
 	}
 }
 
-
 $oDispatcher = new SearchDispatcher();
 $oDispatcher->dispatch();
 
