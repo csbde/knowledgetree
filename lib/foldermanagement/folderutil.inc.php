@@ -264,7 +264,7 @@ class KTFolderUtil {
         $sQuery = "UPDATE $table SET full_path = CONCAT(?, SUBSTRING(full_path FROM ?)) WHERE full_path LIKE ? OR full_path = ?";
         $aParams = array(
         	"$sNewPath/",
-        	strlen($sOldPath) + 2,
+        	mb_strlen(utf8_decode($sOldPath)) + 2,
         	$sOldPath.'/%',
         	$sOldPath,
         );
