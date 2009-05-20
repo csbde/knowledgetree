@@ -908,10 +908,10 @@ gettext("Add a message for this alert");
 gettext("Add alert comment here ...");
 
 /* ./plugins/commercial/templates/add_edit.smarty */
-gettext("<a>Add other users to this alert...</a>");
+gettext("<a>Add users to this alert...</a>");
 
 /* ./plugins/commercial/templates/add_edit.smarty */
-gettext("Select additional members to be added to this alert");
+gettext("Select members to be added to this alert");
 
 /* ./plugins/commercial/templates/add_edit.smarty */
 gettext("Available Entities");
@@ -1512,105 +1512,6 @@ gettext("You can copy the following link into any RSS aggregator to create a fee
 
 /* ./plugins/rssplugin/templates/RSSPlugin/rssfolderaction.smarty */
 gettext("Another way of quickly accessing an RSS feed for a document or folder is by using the RSS icon #linkIcon#, which you will find in your actions portlet on the left.");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("Extractor Information");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("This report lists the text extractors and their supported mime types.");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("Active");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("Inactive");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("Description");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("Mime Types");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("Extensions");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("There are no extractors registered.");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Document Indexing Diagnostics");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("This report will help to diagnose problems with document indexing.");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Filename");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Extractor");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Index Date");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("n/a");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Reschedule");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Reschedule All");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Remove");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Remove All");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("There are no indexing issues.");
-
-/* ./plugins/search2/reporting/templates/managemimetypes.smarty */
-gettext("Manage Mime Types");
-
-/* ./plugins/search2/reporting/templates/managemimetypes.smarty */
-gettext("This report lists all mime types and extensions that can be identified by #appname#.");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("Pending Documents Indexing Queue");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("This report lists documents that are waiting to be indexed.");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("If a document is not associated with an extractor, no content will be added to the index. These documents can be identified in the list by the extractor column reflecting n/a.");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("There are no documents in the indexing queue.");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("Filename");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("Extractor");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("Index Date");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("n/a");
-
-/* ./plugins/search2/reporting/templates/rescheduledocuments.smarty */
-gettext("Reschedule All Documents");
-
-/* ./plugins/search2/reporting/templates/rescheduledocuments.smarty */
-gettext("This function allows you to re-index your entire repository.");
-
-/* ./plugins/search2/reporting/templates/rescheduledocuments.smarty */
-gettext("Please note that rescheduling all documents may take a long time, depending on the size of the repository.");
-
-/* ./plugins/search2/reporting/templates/rescheduledocuments.smarty */
-gettext("Reschedule All");
 
 /* ./plugins/tagcloud/templates/TagCloud/dashlet.smarty */
 gettext("There are no tags defined or accessible.");
@@ -4306,147 +4207,6 @@ gettext("close");
 /* ./templates/ktcore/javascript_i18n.smarty */
 gettext("Role or Group");
 
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("OK");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Search");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Open");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("KnowledgeTree");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Find");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Filename");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Last modified");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Permissions");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("No permission");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Is immutable");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Checked out by");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Language");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Username");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Password");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Login");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Server selection");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Upload succeeded");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Your document was saved to the server");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Reload");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("OK");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Cancel");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Reset");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Save");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Default");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Reset");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Save");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Properties");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Default");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Select a document type");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("KnowledgeTree");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Next");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Title");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("File name");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Save");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("KnowledgeTree Server Address");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("OK");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Server selection");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Collaborate");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Settings");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Logged in as");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("KnowledgeTree");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Upload");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Upload cancelled");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Upload failed");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Your document was not saved to the server");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Upload succeeded");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Your document was saved to the server");
-
 /* ./templates/ktcore/login.smarty */
 gettext("Login | #appname#");
 
@@ -6535,6 +6295,105 @@ gettext("Run Search");
 /* ./templates/ktcore/search2/manage_saved_search.smarty */
 gettext("No Saved Searches have been defined.");
 
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("Extractor Information");
+
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("This report lists the text extractors and their supported mime types.");
+
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("Active");
+
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("Inactive");
+
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("Description");
+
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("Mime Types");
+
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("Extensions");
+
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("There are no extractors registered.");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Document Indexing Diagnostics");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("This report will help to diagnose problems with document indexing.");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Filename");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Extractor");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Index Date");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("n/a");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Reschedule");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Reschedule All");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Remove");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Remove All");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("There are no indexing issues.");
+
+/* ./templates/ktcore/search2/reporting/managemimetypes.smarty */
+gettext("Manage Mime Types");
+
+/* ./templates/ktcore/search2/reporting/managemimetypes.smarty */
+gettext("This report lists all mime types and extensions that can be identified by #appname#.");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("Pending Documents Indexing Queue");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("This report lists documents that are waiting to be indexed.");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("If a document is not associated with an extractor, no content will be added to the index. These documents can be identified in the list by the extractor column reflecting n/a.");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("There are no documents in the indexing queue.");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("Filename");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("Extractor");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("Index Date");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("n/a");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("Reschedule All Documents");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("This function allows you to re-index your entire repository.");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("Please note that rescheduling all documents may take a long time, depending on the size of the repository.");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("Reschedule All");
+
 /* ./templates/ktcore/search2/search_portlet.smarty */
 gettext("Advanced Search");
 
@@ -7775,7 +7634,7 @@ gettext("Email");
 gettext("Make Immutable");
 
 /* ./templates/ktstandard/action/immutable.smarty */
-gettext("Immutable documents content cannot be changed, and only administrators (in administration mode) can make changes to the metadata or can move or delete it. The documents immutable status cannot be reversed at a later stage.");
+gettext("<img src=\"/thirdpartyjs/extjs/resources/images/default/window/icon-warning.gif\" widht=\"20\" height=\"20\"/> <b><i>Warning!</b></i> This action cannot be undone. No further content changes will be allowed, and only the system administrator, working in Administration Mode, may edit the metadata of an immutable document.");
 
 /* ./templates/ktstandard/action/immutable_confirm.smarty */
 gettext("Make Immutable");
