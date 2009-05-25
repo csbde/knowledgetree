@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-20 15:54+0200\n"
+"POT-Creation-Date: 2009-05-25 12:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -412,7 +412,7 @@ msgstr ""
 msgid "- Please select a document type -"
 msgstr ""
 
-#: plugins/commercial/alerts.php:866
+#: plugins/commercial/alerts.php:874
 #: plugins/ktcore/admin/groupManagement.php:289
 #: plugins/ktcore/admin/groupManagement.php:432
 #: plugins/ktcore/admin/userManagement.php:405
@@ -1160,15 +1160,15 @@ msgstr ""
 msgid "Alert Triggered for "
 msgstr ""
 
-#: plugins/commercial/alerts.php:602
+#: plugins/commercial/alerts.php:610
 msgid "Alert cannot be found: "
 msgstr ""
 
-#: plugins/commercial/alerts.php:475
+#: plugins/commercial/alerts.php:483
 msgid "Alert cleared."
 msgstr ""
 
-#: plugins/commercial/alerts.php:683
+#: plugins/commercial/alerts.php:691
 msgid "Alert created"
 msgstr ""
 
@@ -1184,11 +1184,11 @@ msgstr ""
 msgid "Alert message"
 msgstr ""
 
-#: plugins/commercial/alerts.php:674
+#: plugins/commercial/alerts.php:682
 msgid "Alert modified"
 msgstr ""
 
-#: plugins/commercial/alerts.php:341
+#: plugins/commercial/alerts.php:342
 msgid "Alert notification cleared."
 msgstr ""
 
@@ -1200,7 +1200,7 @@ msgstr ""
 msgid "Alert triggered"
 msgstr ""
 
-#: plugins/commercial/alerts.php:574 plugins/commercial/alerts.php:789
+#: plugins/commercial/alerts.php:582 plugins/commercial/alerts.php:797
 msgid "Alerts"
 msgstr ""
 
@@ -4175,7 +4175,7 @@ msgstr ""
 msgid "Document has already been checked out by "
 msgstr ""
 
-#: plugins/commercial/alerts.php:438
+#: plugins/commercial/alerts.php:310 plugins/commercial/alerts.php:446
 msgid "Document has been expunged"
 msgstr ""
 
@@ -4336,7 +4336,7 @@ msgstr ""
 msgid "Document type enabled"
 msgstr ""
 
-#: search2/ajax/metadata.php:49
+#: search2/ajax/metadata.php:51
 msgid "Document type id is not specified."
 msgstr ""
 
@@ -4407,7 +4407,7 @@ msgstr ""
 msgid "Don't show me this again."
 msgstr ""
 
-#: plugins/commercial/alerts.php:966
+#: plugins/commercial/alerts.php:974
 msgid "Done"
 msgstr ""
 
@@ -4953,7 +4953,7 @@ msgstr ""
 msgid "Enter your username and email address. A link will be mailed to you in order to verify your email address."
 msgstr ""
 
-#: plugins/commercial/alerts.php:805
+#: plugins/commercial/alerts.php:813
 msgid "Entities"
 msgstr ""
 
@@ -5573,7 +5573,7 @@ msgstr ""
 msgid "Field properties"
 msgstr ""
 
-#: search2/ajax/metadata.php:54
+#: search2/ajax/metadata.php:56
 msgid "Field set id is not specified."
 msgstr ""
 
@@ -5817,7 +5817,7 @@ msgstr ""
 msgid "Folder has no parent"
 msgstr ""
 
-#: search2/ajax/treeNodes.php:40
+#: search2/ajax/treeNodes.php:43
 msgid "Folder id is not specified."
 msgstr ""
 
@@ -6052,7 +6052,7 @@ msgstr ""
 
 #: plugins/commercial/KTDocTypeAlerts.php:187
 #: plugins/commercial/KTDocTypeAlerts.php:266
-#: plugins/commercial/alerts.php:891 plugins/ktcore/folder/Permissions.php:425
+#: plugins/commercial/alerts.php:899 plugins/ktcore/folder/Permissions.php:425
 #: plugins/ktcore/folder/Permissions.php:432 i18n/templates.c:1532
 #: i18n/templates.c:3191 i18n/templates.c:3761 i18n/templates.c:3779
 #: i18n/templates.c:3824 i18n/templates.c:4067 i18n/templates.c:4088
@@ -8231,7 +8231,7 @@ msgstr ""
 msgid "No results for your search."
 msgstr ""
 
-#: ktoffice/controllers/list.php:996
+#: ktoffice/controllers/list.php:994
 msgid "No results found"
 msgstr ""
 
@@ -8600,7 +8600,7 @@ msgstr ""
 msgid "Note:</b> <i>Search results will not be accurate until the migration process is complete."
 msgstr ""
 
-#: search2/ajax/metadata.php:57
+#: search2/ajax/metadata.php:59
 msgid "Nothing else is available"
 msgstr ""
 
@@ -9228,11 +9228,11 @@ msgstr ""
 msgid "Please reselect the file to upload."
 msgstr ""
 
-#: ktoffice/controllers/list.php:1000
+#: ktoffice/controllers/list.php:998
 msgid "Please retry your search"
 msgstr ""
 
-#: plugins/commercial/alerts.php:585
+#: plugins/commercial/alerts.php:593
 msgid "Please review this document."
 msgstr ""
 
@@ -9542,7 +9542,7 @@ msgstr ""
 msgid "Query Editor"
 msgstr ""
 
-#: search2/ajax/parseExpr.php:41 search2/ajax/saveExpr.php:42
+#: search2/ajax/parseExpr.php:43 search2/ajax/saveExpr.php:42
 msgid "Query is empty"
 msgstr ""
 
@@ -9921,7 +9921,7 @@ msgstr ""
 msgid "Restore"
 msgstr ""
 
-#: plugins/commercial/guidInserter/GuidInserter.php:389 i18n/templates.c:146
+#: plugins/commercial/guidInserter/GuidInserter.php:424 i18n/templates.c:146
 #: i18n/templates.c:155 i18n/templates.c:2393
 msgid "Restore Document"
 msgstr ""
@@ -10071,7 +10071,7 @@ msgid "Role: %s"
 msgstr ""
 
 #: plugins/commercial/KTDocTypeAlerts.php:279
-#: plugins/commercial/alerts.php:906 plugins/ktcore/KTCorePlugin.php:267
+#: plugins/commercial/alerts.php:914 plugins/ktcore/KTCorePlugin.php:267
 #: plugins/ktcore/admin/workflowsv2.php:2190 i18n/templates.c:7019
 #: i18n/templates.c:7130
 msgid "Roles"
@@ -10447,7 +10447,7 @@ msgstr ""
 msgid "Select members to be added to this alert"
 msgstr ""
 
-#: plugins/commercial/alerts.php:806
+#: plugins/commercial/alerts.php:814
 msgid "Select other users or groups to include in this alert"
 msgstr ""
 
@@ -11208,14 +11208,14 @@ msgstr ""
 msgid "The alert could not be added: "
 msgstr ""
 
-#: plugins/commercial/alerts.php:626 plugins/commercial/alerts.php:641
+#: plugins/commercial/alerts.php:634 plugins/commercial/alerts.php:649
 #: plugins/commercial/docTypeAlerts.inc.php:286
 #: plugins/commercial/docTypeAlerts.inc.php:301
 #: plugins/commercial/docTypeAlerts.inc.php:313
 msgid "The alert could not be deleted: "
 msgstr ""
 
-#: plugins/commercial/alerts.php:689 plugins/commercial/alerts.php:702
+#: plugins/commercial/alerts.php:697 plugins/commercial/alerts.php:710
 msgid "The alert could not be saved: "
 msgstr ""
 
@@ -11234,12 +11234,12 @@ msgstr ""
 msgid "The alert has been added"
 msgstr ""
 
-#: plugins/commercial/alerts.php:629
+#: plugins/commercial/alerts.php:637
 #: plugins/commercial/docTypeAlerts.inc.php:289
 msgid "The alert has been deleted"
 msgstr ""
 
-#: plugins/commercial/alerts.php:720
+#: plugins/commercial/alerts.php:728
 msgid "The alert has been saved for the date: "
 msgstr ""
 
@@ -11253,7 +11253,7 @@ msgstr ""
 msgid "The alert has been udated"
 msgstr ""
 
-#: plugins/commercial/alerts.php:1215
+#: plugins/commercial/alerts.php:1223
 msgid "The alerts on this document could not be deleted: "
 msgstr ""
 
@@ -11372,11 +11372,11 @@ msgstr ""
 msgid "The document <strong>#name#</strong> has changed to     state <strong>#state#</strong>, and you are specified as one of the users to inform     about documents in this state."
 msgstr ""
 
-#: plugins/commercial/guidInserter/GuidInserter.php:448
+#: plugins/commercial/guidInserter/GuidInserter.php:483
 msgid "The document backup could not be restored. Check that the backup exists and that the document can be overwritten."
 msgstr ""
 
-#: plugins/commercial/guidInserter/GuidInserter.php:446
+#: plugins/commercial/guidInserter/GuidInserter.php:481
 msgid "The document has been restored."
 msgstr ""
 
@@ -11698,7 +11698,7 @@ msgstr ""
 msgid "The new document type, "
 msgstr ""
 
-#: plugins/commercial/alerts.php:1201
+#: plugins/commercial/alerts.php:1209
 msgid "The notifications on this document could not be deleted: "
 msgstr ""
 
@@ -12619,7 +12619,7 @@ msgstr ""
 msgid "To start the process of creating a new document type, please enter a name for the type below."
 msgstr ""
 
-#: plugins/commercial/alerts.php:969
+#: plugins/commercial/alerts.php:977
 msgid "Today"
 msgstr ""
 
@@ -13504,7 +13504,7 @@ msgstr ""
 
 #: plugins/commercial/KTDocTypeAlerts.php:173
 #: plugins/commercial/KTDocTypeAlerts.php:253
-#: plugins/commercial/alerts.php:877 i18n/templates.c:92 i18n/templates.c:182
+#: plugins/commercial/alerts.php:885 i18n/templates.c:92 i18n/templates.c:182
 #: i18n/templates.c:245 i18n/templates.c:329 i18n/templates.c:422
 #: i18n/templates.c:530 i18n/templates.c:752 i18n/templates.c:2153
 #: i18n/templates.c:3140 i18n/templates.c:3227 i18n/templates.c:3290
@@ -13972,7 +13972,7 @@ msgstr ""
 msgid "What is admin mode?"
 msgstr ""
 
-#: search2/ajax/metadata.php:42
+#: search2/ajax/metadata.php:44
 msgid "What is required? fieldsets or fields?"
 msgstr ""
 
@@ -14254,7 +14254,7 @@ msgstr ""
 msgid "You are attempting to modify Preferences"
 msgstr ""
 
-#: plugins/commercial/alerts.php:823 plugins/commercial/alerts.php:991
+#: plugins/commercial/alerts.php:831 plugins/commercial/alerts.php:999
 msgid "You are attempting to modify alerts"
 msgstr ""
 
@@ -15023,7 +15023,7 @@ msgstr ""
 msgid "daily"
 msgstr ""
 
-#: plugins/commercial/alerts.php:976
+#: plugins/commercial/alerts.php:984
 msgid "day"
 msgstr ""
 
@@ -15039,7 +15039,7 @@ msgstr ""
 msgid "day(s) - Comment: "
 msgstr ""
 
-#: plugins/commercial/alerts.php:978
+#: plugins/commercial/alerts.php:986
 #: plugins/commercial/wintools/key.inc.php:86 i18n/templates.c:980
 #: i18n/templates.c:5897
 msgid "days"
@@ -15236,11 +15236,11 @@ msgstr ""
 msgid "has added to the discussion around document"
 msgstr ""
 
-#: plugins/commercial/alerts.php:407
+#: plugins/commercial/alerts.php:411
 msgid "has been archived"
 msgstr ""
 
-#: plugins/commercial/alerts.php:405
+#: plugins/commercial/alerts.php:409
 msgid "has been deleted"
 msgstr ""
 

@@ -28,7 +28,7 @@ echo i18n/templates.c i18n/transactions.c i18n/permissions.c | xargs -n 1 | sort
 
 # ktoffice js tamplate file generation
 cd ktoffice/pogenerator
-php generatepo.php > ../../templates/ktcore/ktoffice_i18n.smarty
+php generatetemplate.php > ../../templates/ktcore/ktoffice_i18n.smarty
 cd ../../
 
 #remove comm stuff again

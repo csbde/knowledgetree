@@ -1,533 +1,349 @@
 
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-msgid ""
-msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-10 12:20+0200\n"
-"PO-Revision-Date: 2009-02-13 09:41+0200\n"
-"Last-Translator: Tohir Solomons <tohir@knowledgetree.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+/*
+ *  Javascript (actual translations);
+ */
+ 
+{literal}
+var i18n = {};
 
+function _(trans_string) {
+    var newstr = i18n[trans_string];
+    if (!isUndefinedOrNull(newstr)) { return newstr; } 
+    else {
+       return trans_string;
+    }
+}
+{/literal}
 
 
+//strings for file: main.js
 
+i18n['Upload'] = '{i18n}Upload{/i18n}';
 
-#strings for file: main.js
+i18n['Upload cancelled'] = '{i18n}Upload cancelled{/i18n}';
 
-msgid "Upload succeeded"
-msgstr ""
+i18n['Upload failed'] = '{i18n}Upload failed{/i18n}';
 
-msgid "Document type changed"
-msgstr ""
+i18n['Your document has not been saved.'] = '{i18n}Your document has not been saved.{/i18n}';
 
-msgid "Upload"
-msgstr ""
+i18n['Upload succeeded'] = '{i18n}Upload succeeded{/i18n}';
 
-msgid "Upload cancelled"
-msgstr ""
+i18n['Your document has been saved.'] = '{i18n}Your document has been saved.{/i18n}';
 
-msgid "Upload failed"
-msgstr ""
+i18n['Download failed'] = '{i18n}Download failed{/i18n}';
 
-msgid "Your document has not been saved."
-msgstr ""
+i18n['Your document has not been downloaded.'] = '{i18n}Your document has not been downloaded.{/i18n}';
 
-msgid "Your document has been saved."
-msgstr ""
+i18n['Download succeeded'] = '{i18n}Download succeeded{/i18n}';
 
-msgid "Download failed"
-msgstr ""
+i18n['Your document has been downloaded.'] = '{i18n}Your document has been downloaded.{/i18n}';
 
-msgid "Your document has not been downloaded."
-msgstr ""
+i18n['Checkout failed'] = '{i18n}Checkout failed{/i18n}';
 
-msgid "Download succeeded"
-msgstr ""
+i18n['Your document has not been checked out.'] = '{i18n}Your document has not been checked out.{/i18n}';
 
-msgid "Your document has been downloaded."
-msgstr ""
+i18n['Checkout succeeded'] = '{i18n}Checkout succeeded{/i18n}';
 
-msgid "Checkout failed"
-msgstr ""
+i18n['Your document has been checked out.'] = '{i18n}Your document has been checked out.{/i18n}';
 
-msgid "Your document has not been checked out."
-msgstr ""
+i18n['Checkin failed'] = '{i18n}Checkin failed{/i18n}';
 
-msgid "Checkout succeeded"
-msgstr ""
+i18n['Your document has not been checked in.'] = '{i18n}Your document has not been checked in.{/i18n}';
 
-msgid "Your document has been checked out."
-msgstr ""
+i18n['Checkin succeeded'] = '{i18n}Checkin succeeded{/i18n}';
 
-msgid "Checkin failed"
-msgstr ""
+i18n['Your document has been checked in.'] = '{i18n}Your document has been checked in.{/i18n}';
 
-msgid "Your document has not been checked in."
-msgstr ""
+i18n['Document checked in.'] = '{i18n}Document checked in.{/i18n}';
 
-msgid "Checkin succeeded"
-msgstr ""
+i18n['Document checked out.'] = '{i18n}Document checked out.{/i18n}';
 
-msgid "Your document has been checked in."
-msgstr ""
+i18n['Cancel checkout failed'] = '{i18n}Cancel checkout failed{/i18n}';
 
-msgid "Document checked in."
-msgstr ""
+i18n['The check-out has not been cancelled.'] = '{i18n}The check-out has not been cancelled.{/i18n}';
 
-msgid "Document checked out."
-msgstr ""
+i18n['Cancel checkout succeeded'] = '{i18n}Cancel checkout succeeded{/i18n}';
 
-msgid "Cancel checkout failed"
-msgstr ""
+i18n['The check-out has been cancelled.'] = '{i18n}The check-out has been cancelled.{/i18n}';
 
-msgid "The check-out has not been cancelled."
-msgstr ""
+i18n['Properties could not be saved.'] = '{i18n}Properties could not be saved.{/i18n}';
 
-msgid "Cancel checkout succeeded"
-msgstr ""
+i18n['Properties has been saved.'] = '{i18n}Properties has been saved.{/i18n}';
 
-msgid "The check-out has been cancelled."
-msgstr ""
+i18n['Login failed'] = '{i18n}Login failed{/i18n}';
 
-msgid "Properties could not be saved."
-msgstr ""
+i18n['Login failed.'] = '{i18n}Login failed.{/i18n}';
 
-msgid "Properties have been saved."
-msgstr ""
+i18n['Unable to connect to server'] = '{i18n}Unable to connect to server{/i18n}';
 
-msgid "Login failed"
-msgstr ""
+i18n['Please verify your<br />Internet connection, <br /> and try again.'] = '{i18n}Please verify your<br />Internet connection, <br /> and try again.{/i18n}';
 
-msgid "Login failed."
-msgstr ""
+//strings for file: classes/actionMenu.js
 
-msgid "Unable to connect to server"
-msgstr ""
+//strings for file: classes/actionsEnum.js
 
-msgid "Please verify your<br />Internet connection, <br /> and try again."
-msgstr ""
+//strings for file: classes/commentsWindow.js
 
+i18n['Cancelling edit of document (check-in] = '{i18n}Cancelling edit of document (check-i{/i18n}n;
 
+i18n['Provide a reason for cancelling this edit.<br ><br >'] = '{i18n}Provide a reason for cancelling this edit.<br ><br >{/i18n}';
 
-#strings for file: classes/actionMenu.js
+i18n['Continue Editing (check-out] = '{i18n}Continue Editing (check-ou{/i18n}t;
 
+i18n['Provide a reason for this edit.<br ><br >'] = '{i18n}Provide a reason for this edit.<br ><br >{/i18n}';
 
+i18n['Editing Document (check-out] = '{i18n}Editing Document (check-ou{/i18n}t;
 
-#strings for file: classes/actionsEnum.js
+i18n['Provide a reason for editing this document.<br ><br >'] = '{i18n}Provide a reason for editing this document.<br ><br >{/i18n}';
 
+i18n['Saving Document (check-in] = '{i18n}Saving Document (check-i{/i18n}n;
 
+i18n['For historical purposes, describe the changes you made to this document.<br ><br >'] = '{i18n}For historical purposes, describe the changes you made to this document.<br ><br >{/i18n}';
 
-#strings for file: classes/commentsWindow.js
+i18n['OK'] = '{i18n}OK{/i18n}';
 
-msgid "Cancelling edit of document (check-i"
-msgstr ""
+i18n['Cancel'] = '{i18n}Cancel{/i18n}';
 
-msgid "Provide a reason for cancelling this edit.<br ><br >"
-msgstr ""
+i18n['Please enter a comment'] = '{i18n}Please enter a comment{/i18n}';
 
-msgid "Continue Editing (check-ou"
-msgstr ""
+i18n['Use this comment next time.'] = '{i18n}Use this comment next time.{/i18n}';
 
-msgid "Provide a reason for this edit.<br ><br >"
-msgstr ""
+i18n['Comment Required'] = '{i18n}Comment Required{/i18n}';
 
-msgid "Editing Document (check-ou"
-msgstr ""
+//strings for file: classes/confirmPanel.js
 
-msgid "Provide a reason for editing this document.<br ><br >"
-msgstr ""
+i18n['Yes'] = '{i18n}Yes{/i18n}';
 
-msgid "Saving Document (check-i"
-msgstr ""
+i18n['No'] = '{i18n}No{/i18n}';
 
-msgid "For historical purposes, describe the changes you made to this document.<br ><br >"
-msgstr ""
+//strings for file: classes/emailWindow.js
 
-msgid "OK"
-msgstr ""
+i18n['Send Email'] = '{i18n}Send Email{/i18n}';
 
-msgid "Cancel"
-msgstr ""
+i18n['Message:'] = '{i18n}Message:{/i18n}';
 
-msgid "Please enter a comment"
-msgstr ""
+i18n['Type your message here ...'] = '{i18n}Type your message here ...{/i18n}';
 
-msgid "Use this comment next time."
-msgstr ""
+i18n['To:'] = '{i18n}To:{/i18n}';
 
-msgid "Comment Required"
-msgstr ""
+i18n['Searching...'] = '{i18n}Searching...{/i18n}';
 
+i18n['Search'] = '{i18n}Search{/i18n}';
 
+i18n['Delete'] = '{i18n}Delete{/i18n}';
 
-#strings for file: classes/confirmPanel.js
+i18n['Please enter a message'] = '{i18n}Please enter a message{/i18n}';
 
-msgid "Yes"
-msgstr ""
+i18n['Please enter some recipients'] = '{i18n}Please enter some recipients{/i18n}';
 
-msgid "No"
-msgstr ""
+i18n['No Recipients'] = '{i18n}No Recipients{/i18n}';
 
+i18n['Document Sent'] = '{i18n}Document Sent{/i18n}';
 
+i18n['Document has been emailed to recipients'] = '{i18n}Document has been emailed to recipients{/i18n}';
 
-#strings for file: classes/emailWindow.js
+i18n['Unable to email document'] = '{i18n}Unable to email document{/i18n}';
 
-msgid "Send Email"
-msgstr ""
+i18n['Document has not been emailed to recipients.'] = '{i18n}Document has not been emailed to recipients.{/i18n}';
 
-msgid "Message:"
-msgstr ""
+i18n['Email Document'] = '{i18n}Email Document{/i18n}';
 
-msgid "Type your message here ..."
-msgstr ""
+//strings for file: classes/feedbackPanel.js
 
-msgid "To:"
-msgstr ""
+//strings for file: classes/floatingFeedbackPanel.js
 
-msgid "Searching..."
-msgstr ""
+//strings for file: classes/loginWindow.js
 
-msgid "Search"
-msgstr ""
+i18n['Server Settings'] = '{i18n}Server Settings{/i18n}';
 
-msgid "Delete"
-msgstr ""
+i18n['Display Language'] = '{i18n}Display Language{/i18n}';
 
-msgid "Please enter a message"
-msgstr ""
+i18n['Username'] = '{i18n}Username{/i18n}';
 
-msgid "Please enter some recipients"
-msgstr ""
+i18n['Password'] = '{i18n}Password{/i18n}';
 
-msgid "No Recipients"
-msgstr ""
+i18n['Login'] = '{i18n}Login{/i18n}';
 
-msgid "Document Sent"
-msgstr ""
+//strings for file: classes/mainWindow.js
 
-msgid "Document has been emailed to recipients"
-msgstr ""
+i18n['Document already open'] = '{i18n}Document already open{/i18n}';
 
-msgid "Unable to email document"
-msgstr ""
+i18n['Introduction'] = '{i18n}Introduction{/i18n}';
 
-msgid "Document has not been emailed to recipients."
-msgstr ""
+i18n['The requested action has not been implemented'] = '{i18n}The requested action has not been implemented{/i18n}';
 
-msgid "Email Document"
-msgstr ""
+i18n['Any unsaved changes will be lost! Are you sure you want to continue?'] = '{i18n}Any unsaved changes will be lost! Are you sure you want to continue?{/i18n}';
 
+i18n['Do you want to add the currently open Office document as a new version of [-doctitle-]?'] = '{i18n}Do you want to add the currently open Office document as a new version of [-doctitle-]?{/i18n}';
 
+i18n['Are you sure you want to cancel your edit?'] = '{i18n}Are you sure you want to cancel your edit?{/i18n}';
 
-#strings for file: classes/feedbackPanel.js
+i18n['This document is not saved to KnowledgeTree. Are you sure you want to cancel saving to KnowledgeTree?'] = '{i18n}This document is not saved to KnowledgeTree. Are you sure you want to cancel saving to KnowledgeTree?{/i18n}';
 
+i18n['Your document has been saved to KnowledgeTree'] = '{i18n}Your document has been saved to KnowledgeTree{/i18n}';
 
+i18n['No permission'] = '{i18n}No permission{/i18n}';
 
-#strings for file: classes/floatingFeedbackPanel.js
+i18n['You need to have permission to perform this action'] = '{i18n}You need to have permission to perform this action{/i18n}';
 
+i18n['Save'] = '{i18n}Save{/i18n}';
 
+i18n['Adds your open Office document to KnowledgeTree. You must have \'write\' permissions on the folder.'] = '{i18n}Adds your open Office document to KnowledgeTree. You must have \'write\' permissions on the folder.{/i18n}';
 
-#strings for file: classes/loginWindow.js
+i18n['New folder'] = '{i18n}New folder{/i18n}';
 
-msgid "Server Settings"
-msgstr ""
+i18n['Saves active document to a new folder. You must have \'write\' permissions on the folder.'] = '{i18n}Saves active document to a new folder. You must have \'write\' permissions on the folder.{/i18n}';
 
-msgid "Display Language"
-msgstr ""
+i18n['Edit'] = '{i18n}Edit{/i18n}';
 
-msgid "Username"
-msgstr ""
+i18n['Opens the selected KnowledgeTree document in Office for editing and sets the version in KnowledgeTree to \'read only\'. You must have \'write\' permissions.'] = '{i18n}Opens the selected KnowledgeTree document in Office for editing and sets the version in KnowledgeTree to \'read only\'. You must have \'write\' permissions.{/i18n}';
 
-msgid "Password"
-msgstr ""
+i18n['View a Copy'] = '{i18n}View a Copy{/i18n}';
 
-msgid "Login"
-msgstr ""
+i18n['Open the selected KnowledgeTree document for viewing in Office. Changing the local copy does not update the KnowledgeTree version.'] = '{i18n}Open the selected KnowledgeTree document for viewing in Office. Changing the local copy does not update the KnowledgeTree version.{/i18n}';
 
+i18n['Save As New Version'] = '{i18n}Save As New Version{/i18n}';
 
+i18n['Adds your open document as a new version of the KnowledgeTree document selected in the tree.'] = '{i18n}Adds your open document as a new version of the KnowledgeTree document selected in the tree.{/i18n}';
 
-#strings for file: classes/mainWindow.js
+i18n['Email Document to users.'] = '{i18n}Email Document to users.{/i18n}';
 
-msgid "Document already open"
-msgstr ""
+i18n['Save Properties'] = '{i18n}Save Properties{/i18n}';
 
-msgid "Introduction"
-msgstr ""
+i18n['Saves edited document properties to KnowledgeTree.'] = '{i18n}Saves edited document properties to KnowledgeTree.{/i18n}';
 
-msgid "The requested action has not been implemented"
-msgstr ""
+i18n['Saves your changes to KnowledgeTree and allows you to continue editing the document in Office.'] = '{i18n}Saves your changes to KnowledgeTree and allows you to continue editing the document in Office.{/i18n}';
 
-msgid "Any unsaved changes will be lost! Are you sure you want to continue?"
-msgstr ""
+i18n['Save and Close'] = '{i18n}Save and Close{/i18n}';
 
-msgid "Do you want to add the currently open Office document as a new version of [-doctitle-]?"
-msgstr ""
+i18n['Saves your changes to KnowledgeTree and closes the document in Office.'] = '{i18n}Saves your changes to KnowledgeTree and closes the document in Office.{/i18n}';
 
-msgid "Are you sure you want to cancel your edit?"
-msgstr ""
+i18n['Cancel Edit'] = '{i18n}Cancel Edit{/i18n}';
 
-msgid "This document is not saved to KnowledgeTree. Are you sure you want to cancel saving to KnowledgeTree?"
-msgstr ""
+i18n['Closes a KnowledgeTree document currently open in Office for editing. Your changes are not saved to KnowledgeTree.'] = '{i18n}Closes a KnowledgeTree document currently open in Office for editing. Your changes are not saved to KnowledgeTree.{/i18n}';
 
-msgid "Your document has been saved to KnowledgeTree"
-msgstr ""
+i18n['Undo Changes'] = '{i18n}Undo Changes{/i18n}';
 
-msgid "No permission"
-msgstr ""
+i18n['Restores document properties to previously saved values.'] = '{i18n}Restores document properties to previously saved values.{/i18n}';
 
-msgid "You need to have permission to perform this action"
-msgstr ""
+i18n['Open Another Document'] = '{i18n}Open Another Document{/i18n}';
 
-msgid "Save"
-msgstr ""
+i18n['View/edit another KnowledgeTree document in Office.'] = '{i18n}View/edit another KnowledgeTree document in Office.{/i18n}';
 
-msgid "Adds your open Office document to KnowledgeTree. You must have \'write\' permissions on the folder."
-msgstr ""
+i18n['Revert'] = '{i18n}Revert{/i18n}';
 
-msgid "New folder"
-msgstr ""
+i18n['Closes the currently open document in Office and opens the currently stored version from KnowledgeTree in Office. Any changes you make to the document may be saved only to the local copy, or add the edited document to KnowledgeTree as a new document.'] = '{i18n}Closes the currently open document in Office and opens the currently stored version from KnowledgeTree in Office. Any changes you make to the document may be saved only to the local copy, or add the edited document to KnowledgeTree as a new document.{/i18n}';
 
-msgid "Saves active document to a new folder. You must have \'write\' permissions on the folder."
-msgstr ""
+i18n['Save As'] = '{i18n}Save As{/i18n}';
 
-msgid "Edit"
-msgstr ""
+i18n['Saves a KnowledgeTree document currently open for viewing in Office as a new document in KnowledgeTree.'] = '{i18n}Saves a KnowledgeTree document currently open for viewing in Office as a new document in KnowledgeTree.{/i18n}';
 
-msgid "Opens the selected KnowledgeTree document in Office for editing and sets the version in KnowledgeTree to \'read only\'. You must have \'write\' permissions."
-msgstr ""
+i18n['Start Editing'] = '{i18n}Start Editing{/i18n}';
 
-msgid "View a Copy"
-msgstr ""
+i18n['Changes the status of a KnowledgeTree document opened for viewing in Office to \'read only\' so that you may edit the document in Office. You must have \'write\' permissions.'] = '{i18n}Changes the status of a KnowledgeTree document opened for viewing in Office to \'read only\' so that you may edit the document in Office. You must have \'write\' permissions.{/i18n}';
 
-msgid "Open the selected KnowledgeTree document for viewing in Office. Changing the local copy does not update the KnowledgeTree version."
-msgstr ""
+i18n['Restores previously saved document properties.'] = '{i18n}Restores previously saved document properties.{/i18n}';
 
-msgid "Save As New Version"
-msgstr ""
+i18n['Save as'] = '{i18n}Save as{/i18n}';
 
-msgid "Adds your open document as a new version of the KnowledgeTree document selected in the tree."
-msgstr ""
+i18n['Saves the document you downloaded from KnowledgeTree as a new document in KnowledgeTree.'] = '{i18n}Saves the document you downloaded from KnowledgeTree as a new document in KnowledgeTree.{/i18n}';
 
-msgid "Email Document to users."
-msgstr ""
+i18n['Closes the currently open document in Office and opens the currently stored version from KnowledgeTree in Office.  Any changes you make to the document may be saved only to the local copy, or add the edited document to KnowledgeTree as a new document.'] = '{i18n}Closes the currently open document in Office and opens the currently stored version from KnowledgeTree in Office.  Any changes you make to the document may be saved only to the local copy, or add the edited document to KnowledgeTree as a new document.{/i18n}';
 
-msgid "Save Properties"
-msgstr ""
+i18n['Opens a new instance of Microsoft Office and KnowledgeTree Office Add-in, where you can view / edit another KnowledgeTree document in Office.'] = '{i18n}Opens a new instance of Microsoft Office and KnowledgeTree Office Add-in, where you can view / edit another KnowledgeTree document in Office.{/i18n}';
 
-msgid "Saves edited document properties to KnowledgeTree."
-msgstr ""
+i18n['Adds your open Office document to KnowledgeTree, and closes the document in Office. You must have \'write\' permissions on the folder.'] = '{i18n}Adds your open Office document to KnowledgeTree, and closes the document in Office. You must have \'write\' permissions on the folder.{/i18n}';
 
-msgid "Saves your changes to KnowledgeTree and allows you to continue editing the document in Office."
-msgstr ""
+i18n['Closes the document currently open in Office. Any changes you made to the document are not saved to KnowledgeTree.'] = '{i18n}Closes the document currently open in Office. Any changes you made to the document are not saved to KnowledgeTree.{/i18n}';
 
-msgid "Save and Close"
-msgstr ""
+i18n['Loading'] = '{i18n}Loading{/i18n}';
 
-msgid "Saves your changes to KnowledgeTree and closes the document in Office."
-msgstr ""
+//strings for file: classes/modalFeedbackPanel.js
 
-msgid "Cancel Edit"
-msgstr ""
+i18n['Send'] = '{i18n}Send{/i18n}';
 
-msgid "Closes a KnowledgeTree document currently open in Office for editing. Your changes are not saved to KnowledgeTree."
-msgstr ""
+i18n['Error has been submitted. Thank you!'] = '{i18n}Error has been submitted. Thank you!{/i18n}';
 
-msgid "Undo Changes"
-msgstr ""
+i18n['Copy to clipboard'] = '{i18n}Copy to clipboard{/i18n}';
 
-msgid "Restores document properties to previously saved values."
-msgstr ""
+i18n['All error reports are submitted anonymously.\r\n\r\nTo help us resolve this error, please use this comment box to provide a brief description of the task you were performing when this error occurred.'] = '{i18n}All error reports are submitted anonymously.\r\n\r\nTo help us resolve this error, please use this comment box to provide a brief description of the task you were performing when this error occurred.{/i18n}';
 
-msgid "Open Another Document"
-msgstr ""
+//strings for file: classes/progressWindow.js
 
-msgid "View/edit another KnowledgeTree document in Office."
-msgstr ""
+//strings for file: classes/propertiesEnum.js
 
-msgid "Revert"
-msgstr ""
+//strings for file: classes/propertiesPanel.js
 
-msgid "Closes the currently open document in Office and opens the currently stored version from KnowledgeTree in Office. Any changes you make to the document may be saved only to the local copy, or add the edited document to KnowledgeTree as a new document."
-msgstr ""
+i18n['Viewing'] = '{i18n}Viewing{/i18n}';
 
-msgid "Save As"
-msgstr ""
+i18n["Click 'Save Properties' to save your changes."] = "{i18n}Click 'Save Properties' to save your changes.{/i18n}";
 
-msgid "Saves a KnowledgeTree document currently open for viewing in Office as a new document in KnowledgeTree."
-msgstr ""
+i18n['Document type changed'] = '{i18n}Document type changed{/i18n}';
 
-msgid "Start Editing"
-msgstr ""
+i18n['Document type could not be changed'] = '{i18n}Document type could not be changed{/i18n}';
 
-msgid "Changes the status of a KnowledgeTree document opened for viewing in Office to \'read only\' so that you may edit the document in Office. You must have \'write\' permissions."
-msgstr ""
+i18n['Document type could not be reset'] = '{i18n}Document type could not be reset{/i18n}';
 
-msgid "Restores previously saved document properties."
-msgstr ""
+i18n['Select...'] = '{i18n}Select...{/i18n}';
 
-msgid "Save as"
-msgstr ""
+i18n['Double-click to Select'] = '{i18n}Double-click to Select{/i18n}';
 
-msgid "Saves the document you downloaded from KnowledgeTree as a new document in KnowledgeTree."
-msgstr ""
+i18n['Double-click to Edit'] = '{i18n}Double-click to Edit{/i18n}';
 
-msgid "Closes the currently open document in Office and opens the currently stored version from KnowledgeTree in Office.  Any changes you make to the document may be saved only to the local copy, or add the edited document to KnowledgeTree as a new document."
-msgstr ""
+i18n['Error'] = '{i18n}Error{/i18n}';
 
-msgid "Opens a new instance of Microsoft Office and KnowledgeTree Office Add-in, where you can view / edit another KnowledgeTree document in Office."
-msgstr ""
+i18n['Please complete all required fields.'] = '{i18n}Please complete all required fields.{/i18n}';
 
-msgid "Adds your open Office document to KnowledgeTree, and closes the document in Office. You must have \'write\' permissions on the folder."
-msgstr ""
+i18n['Editing'] = '{i18n}Editing{/i18n}';
 
-msgid "Closes the document currently open in Office. Any changes you made to the document are not saved to KnowledgeTree."
-msgstr ""
+i18n['File Type'] = '{i18n}File Type{/i18n}';
 
-msgid "Loading"
-msgstr ""
+i18n['Type'] = '{i18n}Type{/i18n}';
 
+i18n['Some fields are required'] = '{i18n}Some fields are required{/i18n}';
 
+//strings for file: classes/runAction.js
 
-#strings for file: classes/modalFeedbackPanel.js
+//strings for file: classes/savePanel.js
 
-msgid "Send"
-msgstr ""
+i18n['Title'] = '{i18n}Title{/i18n}';
 
-msgid "Error has been submitted. Thank you!"
-msgstr ""
+i18n['Click to enter'] = '{i18n}Click to enter{/i18n}';
 
-msgid "Copy to clipboard"
-msgstr ""
+i18n['Default'] = '{i18n}Default{/i18n}';
 
-msgid "All error reports are submitted anonymously.\r\n\r\nTo help us resolve this error, please use this comment box to provide a brief description of the task you were performing when this error occurred."
-msgstr ""
+i18n['Select a document type'] = '{i18n}Select a document type{/i18n}';
 
+i18n['Click to select'] = '{i18n}Click to select{/i18n}';
 
+i18n['A document with the same title already exists in the target folder'] = '{i18n}A document with the same title already exists in the target folder{/i18n}';
 
-#strings for file: classes/progressWindow.js
+i18n['A document with the same title already exists in the folder.'] = '{i18n}A document with the same title already exists in the folder.{/i18n}';
 
+i18n['Your document was not saved to the server'] = '{i18n}Your document was not saved to the server{/i18n}';
 
+//strings for file: classes/searchPanel.js
 
-#strings for file: classes/propertiesEnum.js
+i18n['No text entered'] = '{i18n}No text entered{/i18n}';
 
+i18n['You need to enter text to be searched'] = '{i18n}You need to enter text to be searched{/i18n}';
 
+//strings for file: classes/serverWindow.js
 
-#strings for file: classes/propertiesPanel.js
+//strings for file: classes/toolTips.js
 
-msgid "Viewing"
-msgstr ""
+//strings for file: classes/topPanel.js
 
-msgid "Click 'Save Properties' to save your changes."
-msgstr ""
+i18n['Logout'] = '{i18n}Logout{/i18n}';
 
-msgid "Document type could not be changed"
-msgstr ""
+//strings for file: classes/treePanel.js
 
-msgid "Document type could not be reset"
-msgstr ""
+i18n['No Read permissions'] = '{i18n}No Read permissions{/i18n}';
 
-msgid "Select..."
-msgstr ""
+i18n['You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.', '', 60000] = '{i18n}You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.', '', 6000{/i18n}0;
 
-msgid "Double-click to Select"
-msgstr ""
+i18n['Search for documents'] = '{i18n}Search for documents{/i18n}';
 
-msgid "Double-click to Edit"
-msgstr ""
+// Total Language Strings: 143
 
-msgid "Error"
-msgstr ""
-
-msgid "Please complete all required fields."
-msgstr ""
-
-msgid "Editing"
-msgstr ""
-
-msgid "Type"
-msgstr ""
-
-msgid "Some fields are required"
-msgstr ""
-
-
-
-#strings for file: classes/runAction.js
-
-
-
-#strings for file: classes/savePanel.js
-
-msgid "Title"
-msgstr ""
-
-msgid "Click to enter"
-msgstr ""
-
-msgid "Default"
-msgstr ""
-
-msgid "Select a document type"
-msgstr ""
-
-msgid "Click to select"
-msgstr ""
-
-msgid "A document with the same title already exists in the target folder"
-msgstr ""
-
-msgid "A document with the same title already exists in the folder."
-msgstr ""
-
-msgid "Your document was not saved to the server"
-msgstr ""
-
-
-
-#strings for file: classes/searchPanel.js
-
-msgid "No text entered"
-msgstr ""
-
-msgid "You need to enter text to be searched"
-msgstr ""
-
-
-
-#strings for file: classes/serverWindow.js
-
-
-
-#strings for file: classes/toolTips.js
-
-
-
-#strings for file: classes/topPanel.js
-
-msgid "Logout"
-msgstr ""
-
-
-
-#strings for file: classes/treePanel.js
-
-msgid "No Read permissions"
-msgstr ""
-
-msgid "You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.', '', 6000"
-msgstr ""
-
-msgid "Search for documents"
-msgstr ""
-
-# Total Language Strings: 142
-
-# Unique Strings: 142
+// Unique Strings: 143
