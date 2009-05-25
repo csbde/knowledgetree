@@ -18,6 +18,10 @@ function _(trans_string) {
 
 //strings for file: main.js
 
+i18n['Upload succeeded'] = '{i18n}Upload succeeded{/i18n}';
+
+i18n['Document type changed'] = '{i18n}Document type changed{/i18n}';
+
 i18n['Upload'] = '{i18n}Upload{/i18n}';
 
 i18n['Upload cancelled'] = '{i18n}Upload cancelled{/i18n}';
@@ -25,8 +29,6 @@ i18n['Upload cancelled'] = '{i18n}Upload cancelled{/i18n}';
 i18n['Upload failed'] = '{i18n}Upload failed{/i18n}';
 
 i18n['Your document has not been saved.'] = '{i18n}Your document has not been saved.{/i18n}';
-
-i18n['Upload succeeded'] = '{i18n}Upload succeeded{/i18n}';
 
 i18n['Your document has been saved.'] = '{i18n}Your document has been saved.{/i18n}';
 
@@ -68,7 +70,7 @@ i18n['The check-out has been cancelled.'] = '{i18n}The check-out has been cancel
 
 i18n['Properties could not be saved.'] = '{i18n}Properties could not be saved.{/i18n}';
 
-i18n['Properties has been saved.'] = '{i18n}Properties has been saved.{/i18n}';
+i18n['Properties have been saved.'] = '{i18n}Properties have been saved.{/i18n}';
 
 i18n['Login failed'] = '{i18n}Login failed{/i18n}';
 
@@ -84,19 +86,19 @@ i18n['Please verify your<br />Internet connection, <br /> and try again.'] = '{i
 
 //strings for file: classes/commentsWindow.js
 
-i18n['Cancelling edit of document (check-in] = '{i18n}Cancelling edit of document (check-i{/i18n}n;
+i18n['Cancelling edit of document (check-in)'] = '{i18n}Cancelling edit of document (check-in){/i18n}';
 
 i18n['Provide a reason for cancelling this edit.<br ><br >'] = '{i18n}Provide a reason for cancelling this edit.<br ><br >{/i18n}';
 
-i18n['Continue Editing (check-out] = '{i18n}Continue Editing (check-ou{/i18n}t;
+i18n['Continue Editing (check-out)'] = '{i18n}Continue Editing (check-out){/i18n}';
 
 i18n['Provide a reason for this edit.<br ><br >'] = '{i18n}Provide a reason for this edit.<br ><br >{/i18n}';
 
-i18n['Editing Document (check-out] = '{i18n}Editing Document (check-ou{/i18n}t;
+i18n['Editing Document (check-out)'] = '{i18n}Editing Document (check-out){/i18n}';
 
 i18n['Provide a reason for editing this document.<br ><br >'] = '{i18n}Provide a reason for editing this document.<br ><br >{/i18n}';
 
-i18n['Saving Document (check-in] = '{i18n}Saving Document (check-i{/i18n}n;
+i18n['Saving Document (check-in)'] = '{i18n}Saving Document (check-in){/i18n}';
 
 i18n['For historical purposes, describe the changes you made to this document.<br ><br >'] = '{i18n}For historical purposes, describe the changes you made to this document.<br ><br >{/i18n}';
 
@@ -276,10 +278,6 @@ i18n['All error reports are submitted anonymously.\r\n\r\nTo help us resolve thi
 
 i18n['Viewing'] = '{i18n}Viewing{/i18n}';
 
-i18n["Click 'Save Properties' to save your changes."] = "{i18n}Click 'Save Properties' to save your changes.{/i18n}";
-
-i18n['Document type changed'] = '{i18n}Document type changed{/i18n}';
-
 i18n['Document type could not be changed'] = '{i18n}Document type could not be changed{/i18n}';
 
 i18n['Document type could not be reset'] = '{i18n}Document type could not be reset{/i18n}';
@@ -295,8 +293,6 @@ i18n['Error'] = '{i18n}Error{/i18n}';
 i18n['Please complete all required fields.'] = '{i18n}Please complete all required fields.{/i18n}';
 
 i18n['Editing'] = '{i18n}Editing{/i18n}';
-
-i18n['File Type'] = '{i18n}File Type{/i18n}';
 
 i18n['Type'] = '{i18n}Type{/i18n}';
 
@@ -340,10 +336,10 @@ i18n['Logout'] = '{i18n}Logout{/i18n}';
 
 i18n['No Read permissions'] = '{i18n}No Read permissions{/i18n}';
 
-i18n['You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.', '', 60000] = '{i18n}You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.', '', 6000{/i18n}0;
+i18n['You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.'] = '{i18n}You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.{/i18n}';
 
 i18n['Search for documents'] = '{i18n}Search for documents{/i18n}';
 
-// Total Language Strings: 143
+// Total Language Strings: 141
 
-// Unique Strings: 143
+// Unique Strings: 141
