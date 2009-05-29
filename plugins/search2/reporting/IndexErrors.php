@@ -90,9 +90,7 @@ class IndexErrorsDispatcher extends KTAdminDispatcher {
         }
 
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplating->addLocation('Index Errors', '/plugins/search2/reporting/templates');
-
-        $oTemplate =& $oTemplating->loadTemplate('indexerrors');
+        $oTemplate =& $oTemplating->loadTemplate('ktcore/search2/reporting/indexerrors');
 
         $aIndexerValues = Indexer::getIndexingQueue();
         foreach($aIndexerValues as $key=>$doc)

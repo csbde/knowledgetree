@@ -908,10 +908,10 @@ gettext("Add a message for this alert");
 gettext("Add alert comment here ...");
 
 /* ./plugins/commercial/templates/add_edit.smarty */
-gettext("<a>Add other users to this alert...</a>");
+gettext("<a>Add users to this alert...</a>");
 
 /* ./plugins/commercial/templates/add_edit.smarty */
-gettext("Select additional members to be added to this alert");
+gettext("Select members to be added to this alert");
 
 /* ./plugins/commercial/templates/add_edit.smarty */
 gettext("Available Entities");
@@ -1512,105 +1512,6 @@ gettext("You can copy the following link into any RSS aggregator to create a fee
 
 /* ./plugins/rssplugin/templates/RSSPlugin/rssfolderaction.smarty */
 gettext("Another way of quickly accessing an RSS feed for a document or folder is by using the RSS icon #linkIcon#, which you will find in your actions portlet on the left.");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("Extractor Information");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("This report lists the text extractors and their supported mime types.");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("Active");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("Inactive");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("Description");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("Mime Types");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("Extensions");
-
-/* ./plugins/search2/reporting/templates/extractorinfo.smarty */
-gettext("There are no extractors registered.");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Document Indexing Diagnostics");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("This report will help to diagnose problems with document indexing.");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Filename");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Extractor");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Index Date");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("n/a");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Reschedule");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Reschedule All");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Remove");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("Remove All");
-
-/* ./plugins/search2/reporting/templates/indexerrors.smarty */
-gettext("There are no indexing issues.");
-
-/* ./plugins/search2/reporting/templates/managemimetypes.smarty */
-gettext("Manage Mime Types");
-
-/* ./plugins/search2/reporting/templates/managemimetypes.smarty */
-gettext("This report lists all mime types and extensions that can be identified by #appname#.");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("Pending Documents Indexing Queue");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("This report lists documents that are waiting to be indexed.");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("If a document is not associated with an extractor, no content will be added to the index. These documents can be identified in the list by the extractor column reflecting n/a.");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("There are no documents in the indexing queue.");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("Filename");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("Extractor");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("Index Date");
-
-/* ./plugins/search2/reporting/templates/pendingdocuments.smarty */
-gettext("n/a");
-
-/* ./plugins/search2/reporting/templates/rescheduledocuments.smarty */
-gettext("Reschedule All Documents");
-
-/* ./plugins/search2/reporting/templates/rescheduledocuments.smarty */
-gettext("This function allows you to re-index your entire repository.");
-
-/* ./plugins/search2/reporting/templates/rescheduledocuments.smarty */
-gettext("Please note that rescheduling all documents may take a long time, depending on the size of the repository.");
-
-/* ./plugins/search2/reporting/templates/rescheduledocuments.smarty */
-gettext("Reschedule All");
 
 /* ./plugins/tagcloud/templates/TagCloud/dashlet.smarty */
 gettext("There are no tags defined or accessible.");
@@ -4307,40 +4208,190 @@ gettext("close");
 gettext("Role or Group");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Upload");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Upload cancelled");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Upload failed");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Your document has not been saved.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Upload succeeded");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Your document has been saved.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Download failed");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Your document has not been downloaded.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Download succeeded");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Your document has been downloaded.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Checkout failed");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Your document has not been checked out.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Checkout succeeded");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Your document has been checked out.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Checkin failed");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Your document has not been checked in.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Checkin succeeded");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Your document has been checked in.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Document checked in.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Document checked out.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Cancel checkout failed");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("The check-out has not been cancelled.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Cancel checkout succeeded");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("The check-out has been cancelled.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Properties could not be saved.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Properties has been saved.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Login failed");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Login failed.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Unable to connect to server");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Please verify your<br />Internet connection, <br /> and try again.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Cancelling edit of document (check-i");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Provide a reason for cancelling this edit.<br ><br >");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Continue Editing (check-ou");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Provide a reason for this edit.<br ><br >");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Editing Document (check-ou");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Provide a reason for editing this document.<br ><br >");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Saving Document (check-i");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("For historical purposes, describe the changes you made to this document.<br ><br >");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("OK");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Cancel");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Please enter a comment");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Use this comment next time.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Comment Required");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Yes");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("No");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Send Email");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Message:");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Type your message here ...");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("To:");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Searching...");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Search");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Open");
+gettext("Delete");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("KnowledgeTree");
+gettext("Please enter a message");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Find");
+gettext("Please enter some recipients");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Filename");
+gettext("No Recipients");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Last modified");
+gettext("Document Sent");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Permissions");
+gettext("Document has been emailed to recipients");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("No permission");
+gettext("Unable to email document");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Is immutable");
+gettext("Document has not been emailed to recipients.");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Checked out by");
+gettext("Email Document");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Language");
+gettext("Server Settings");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Display Language");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Username");
@@ -4352,40 +4403,202 @@ gettext("Password");
 gettext("Login");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Server selection");
+gettext("Document already open");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Upload succeeded");
+gettext("Introduction");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Your document was saved to the server");
+gettext("The requested action has not been implemented");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Reload");
+gettext("Any unsaved changes will be lost! Are you sure you want to continue?");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("OK");
+gettext("Do you want to add the currently open Office document as a new version of [-doctitle-]?");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Cancel");
+gettext("Are you sure you want to cancel your edit?");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Reset");
+gettext("This document is not saved to KnowledgeTree. Are you sure you want to cancel saving to KnowledgeTree?");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Your document has been saved to KnowledgeTree");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("No permission");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("You need to have permission to perform this action");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Save");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Default");
+gettext("Adds your open Office document to KnowledgeTree. You must have 'write' permissions on the folder.");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Reset");
+gettext("New folder");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Save");
+gettext("Saves active document to a new folder. You must have 'write' permissions on the folder.");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Properties");
+gettext("Edit");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Opens the selected KnowledgeTree document in Office for editing and sets the version in KnowledgeTree to 'read only'. You must have 'write' permissions.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("View a Copy");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Open the selected KnowledgeTree document for viewing in Office. Changing the local copy does not update the KnowledgeTree version.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Save As New Version");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Adds your open document as a new version of the KnowledgeTree document selected in the tree.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Email Document to users.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Save Properties");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Saves edited document properties to KnowledgeTree.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Saves your changes to KnowledgeTree and allows you to continue editing the document in Office.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Save and Close");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Saves your changes to KnowledgeTree and closes the document in Office.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Cancel Edit");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Closes a KnowledgeTree document currently open in Office for editing. Your changes are not saved to KnowledgeTree.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Undo Changes");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Restores document properties to previously saved values.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Open Another Document");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("View/edit another KnowledgeTree document in Office.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Revert");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Closes the currently open document in Office and opens the currently stored version from KnowledgeTree in Office. Any changes you make to the document may be saved only to the local copy, or add the edited document to KnowledgeTree as a new document.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Save As");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Saves a KnowledgeTree document currently open for viewing in Office as a new document in KnowledgeTree.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Start Editing");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Changes the status of a KnowledgeTree document opened for viewing in Office to 'read only' so that you may edit the document in Office. You must have 'write' permissions.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Restores previously saved document properties.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Save as");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Saves the document you downloaded from KnowledgeTree as a new document in KnowledgeTree.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Closes the currently open document in Office and opens the currently stored version from KnowledgeTree in Office.  Any changes you make to the document may be saved only to the local copy, or add the edited document to KnowledgeTree as a new document.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Opens a new instance of Microsoft Office and KnowledgeTree Office Add-in, where you can view / edit another KnowledgeTree document in Office.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Adds your open Office document to KnowledgeTree, and closes the document in Office. You must have 'write' permissions on the folder.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Closes the document currently open in Office. Any changes you made to the document are not saved to KnowledgeTree.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Loading");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Send");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Error has been submitted. Thank you!");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Copy to clipboard");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("All error reports are submitted anonymously.rnrnTo help us resolve this error, please use this comment box to provide a brief description of the task you were performing when this error occurred.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Viewing");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Click 'Save Properties' to save your changes.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Document type changed");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Document type could not be changed");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Document type could not be reset");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Select...");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Double-click to Select");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Double-click to Edit");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Error");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Please complete all required fields.");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Editing");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("File Type");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Type");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Some fields are required");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Title");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Click to enter");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Default");
@@ -4394,58 +4607,34 @@ gettext("Default");
 gettext("Select a document type");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("KnowledgeTree");
+gettext("Click to select");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Next");
+gettext("A document with the same title already exists in the target folder");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Title");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("File name");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Save");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("KnowledgeTree Server Address");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("OK");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Server selection");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Collaborate");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Settings");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Logged in as");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("KnowledgeTree");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Upload");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Upload cancelled");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Upload failed");
+gettext("A document with the same title already exists in the folder.");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Your document was not saved to the server");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Upload succeeded");
+gettext("No text entered");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Your document was saved to the server");
+gettext("You need to enter text to be searched");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Logout");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("No Read permissions");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.', '', 6000");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Search for documents");
 
 /* ./templates/ktcore/login.smarty */
 gettext("Login | #appname#");
@@ -6535,6 +6724,105 @@ gettext("Run Search");
 /* ./templates/ktcore/search2/manage_saved_search.smarty */
 gettext("No Saved Searches have been defined.");
 
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("Extractor Information");
+
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("This report lists the text extractors and their supported mime types.");
+
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("Active");
+
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("Inactive");
+
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("Description");
+
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("Mime Types");
+
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("Extensions");
+
+/* ./templates/ktcore/search2/reporting/extractorinfo.smarty */
+gettext("There are no extractors registered.");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Document Indexing Diagnostics");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("This report will help to diagnose problems with document indexing.");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Filename");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Extractor");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Index Date");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("n/a");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Reschedule");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Reschedule All");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Remove");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("Remove All");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("There are no indexing issues.");
+
+/* ./templates/ktcore/search2/reporting/managemimetypes.smarty */
+gettext("Manage Mime Types");
+
+/* ./templates/ktcore/search2/reporting/managemimetypes.smarty */
+gettext("This report lists all mime types and extensions that can be identified by #appname#.");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("Pending Documents Indexing Queue");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("This report lists documents that are waiting to be indexed.");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("If a document is not associated with an extractor, no content will be added to the index. These documents can be identified in the list by the extractor column reflecting n/a.");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("There are no documents in the indexing queue.");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("Filename");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("Extractor");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("Index Date");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("n/a");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("Reschedule All Documents");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("This function allows you to re-index your entire repository.");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("Please note that rescheduling all documents may take a long time, depending on the size of the repository.");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("Reschedule All");
+
 /* ./templates/ktcore/search2/search_portlet.smarty */
 gettext("Advanced Search");
 
@@ -7775,7 +8063,7 @@ gettext("Email");
 gettext("Make Immutable");
 
 /* ./templates/ktstandard/action/immutable.smarty */
-gettext("Immutable documents content cannot be changed, and only administrators (in administration mode) can make changes to the metadata or can move or delete it. The documents immutable status cannot be reversed at a later stage.");
+gettext("<img src=\"/thirdpartyjs/extjs/resources/images/default/window/icon-warning.gif\" widht=\"20\" height=\"20\"/> <b><i>Warning!</b></i> This action cannot be undone. No further content changes will be allowed, and only the system administrator, working in Administration Mode, may edit the metadata of an immutable document.");
 
 /* ./templates/ktstandard/action/immutable_confirm.smarty */
 gettext("Make Immutable");

@@ -75,6 +75,8 @@ class TikaApacheExtractor extends DocumentExtractor
                 'application/vnd.ms-excel',
                 'application/vnd.ms-powerpoint',
                 'application/msword',
+                // msg files
+                'application/vnd.ms-outlook',
                 // rtf
                 'text/rtf',
                 // staroffice

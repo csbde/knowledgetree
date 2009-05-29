@@ -65,7 +65,8 @@ class UpgradeFunctions {
             '3.5.0' => array('cleanupOldKTAdminVersionNotifier', 'updateConfigFile35', 'registerIndexingTasks'),
             '3.5.2' => array('setStorageEngine','dropForeignKeys','dropPrimaryKeys','dropIndexes','createPrimaryKeys','createForeignKeys','createIndexes', 'removeSlashesFromObjects'),
             '3.5.3' => array('moveConfigSettingsToDB','removeAdminVersionNotifier','removeOldSearchPlugins','addAutoIncrementToTables', 'addAutoIncrementToTables2'),
-            '3.5.4' => array('createIndexes', 'updateServerConfigSettings','removeOldFilesAndFolders354','removeOldFilesAndFolders354a','removeOldFilesAndFolders354a1')
+            '3.5.4' => array('createIndexes', 'updateServerConfigSettings','removeOldFilesAndFolders354','removeOldFilesAndFolders354a','removeOldFilesAndFolders354a1'),
+            '3.6.1' => array('removeSlashesFromObjects')
             );
 
     var $descriptions = array(

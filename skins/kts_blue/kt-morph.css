@@ -1,10 +1,10 @@
 
-.ktActionLink.ktDownload, .ktAction.ktDownload { 
-    background-image: url(download.png); 
+.ktActionLink.ktDownload, .ktAction.ktDownload {
+    background-image: url(download.png);
 }
 
 #pageBody {
-    background: url(page_bg.png) bottom left repeat-x;
+    /*background: url(page_bg.png) bottom left repeat-x;*/
 }
 
 #navbar
@@ -80,18 +80,18 @@
 
 /* Content */
 
-#content .dashboard_block .action_rollup 
-{ 
+#content .dashboard_block .action_rollup
+{
     background-image: url(bullet_toggle_minus.png);
 }
 
-#content .dashboard_block.rolled-up .action_rollup 
-{ 
+#content .dashboard_block.rolled-up .action_rollup
+{
     background-image: url(bullet_toggle_plus.png);
 }
 
-#content .dashboard_block .action_close 
-{ 
+#content .dashboard_block .action_close
+{
     background-image: url(bullet_toggle_close.png);
 }
 
@@ -159,8 +159,8 @@
     font-size:small;
 }
 
-#content .ktBlock h2 
-{ 
+#content .ktBlock h2
+{
     color: #FFFFFF;
 }
 */

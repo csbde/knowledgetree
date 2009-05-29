@@ -1458,8 +1458,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.6.1'),
-(3,'databaseVersion','3.6.1'),
+(2,'knowledgeTreeVersion','3.6.2'),
+(3,'databaseVersion','3.6.2'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1757,7 +1757,8 @@ INSERT INTO `upgrades` VALUES
 (218, 'sql*3.6*0*3.6.0/download_queue.sql', 'Database upgrade to version 3.6: Download queue','2009-01-01 00:00:00',1,'upgrade*3.6.0*99*upgrade3.6.0'),
 (219,'upgrade*3.6.0*99*upgrade3.6.0','Upgrade from version 3.5.4a to 3.6.0','2009-01-01 00:00:00',1,'upgrade*3.6.0*99*upgrade3.6.0'),
 (220, 'sql*3.6.1*0*3.6.1/search_ranking.sql', 'Database upgrade to version 3.6.1: Search ranking','2009-04-01 00:00:00',1,'upgrade*3.6.1*99*upgrade3.6.1'),
-(221,'upgrade*3.6.1*99*upgrade3.6.1','Upgrade from version 3.6.0 to 3.6.1','2009-04-01 00:00:00',1,'upgrade*3.6.1*99*upgrade3.6.1');
+(221,'upgrade*3.6.1*99*upgrade3.6.1','Upgrade from version 3.6.0 to 3.6.1','2009-04-01 00:00:00',1,'upgrade*3.6.1*99*upgrade3.6.1'),
+(222,'upgrade*3.6.2*99*upgrade3.6.2','Upgrade from version 3.6.1 to 3.6.2','2009-05-01 00:00:00',1,'upgrade*3.6.2*99*upgrade3.6.2');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2688,7 +2689,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
 INSERT INTO `zseq_upgrades` VALUES
-(217);
+(222);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
