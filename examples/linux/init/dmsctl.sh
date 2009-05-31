@@ -11,14 +11,16 @@ RETVAL=0
 PID=""
 ERROR=0
 SERVER=all
-USEXVFB=0
 VDISPLAY="99"
-INSTALL_PATH=@@BITROCK_INSTALLDIR@@
+INSTALL_PATH=/opt/ktdms
 JAVABIN=$INSTALL_PATH/java/jre/bin/java
 export MAGICK_HOME=$INSTALL_PATH/common
 export LD_LIBRARY_PATH="$INSTALL_PATH/apache2/lib:$INSTALL_PATH/common/lib:$INSTALL_PATH/mysql/lib:$LD_LIBRARY_PATH"
 export PATH=$PATH:$INSTALL_PATH/php/bin
 export PHPRC=$INSTALL_PATH/php/etc
+
+# LDAP
+export LDAPCONF=$INSTALL_PATH/common/etc/openldap/ldap.conf
 
 # Apache
 HTTPD_PIDFILE=$INSTALL_PATH/apache2/logs/httpd.pid
@@ -29,18 +31,18 @@ HTTPD_STATUS=""
 # MySQL
 MYSQL_PIDFILE=$INSTALL_PATH/mysql/data/mysqld.pid
 MYSQL_PID=""
-#MYSQL_START="$INSTALL_PATH/mysql/bin/safe_mysqld --port=@@BITROCK_MYSQL_PORT@@ --socket=$INSTALL_PATH/mysql/tmp/mysql.sock --old-passwords --datadir=$INSTALL_PATH/mysql/data --pid-file=$INSTALL_PATH/mysql/data/mysqld.pid"
-MYSQL_START="$INSTALL_PATH/mysql/bin/safe_mysqld --port=@@BITROCK_MYSQL_PORT@@ --socket=$INSTALL_PATH/mysql/tmp/mysql.sock --old-passwords --datadir=$INSTALL_PATH/mysql/data --log-error=$INSTALL_PATH/mysql/data/mysqld.log --pid-file=$INSTALL_PATH/mysql/data/mysqld.pid"
-MYSQL_STOP="$INSTALL_PATH/mysql/bin/mysqladmin --socket=$INSTALL_PATH/mysql/tmp/mysql.sock -u root -p shutdown"
+#MYSQL_START="$INSTALL_PATH/mysql/bin/safe_mysqld --port=3306 --socket=$INSTALL_PATH/mysql/tmp/mysql.sock --old-passwords --datadir=$INSTALL_PATH/mysql/data --pid-file=$INSTALL_PATH/mysql/data/mysqld.pid"
+MYSQL_START="$INSTALL_PATH/mysql/bin/safe_mysqld --defaults-file=${INSTALL_PATH}/mysql/my.cnf --old-passwords --datadir=$INSTALL_PATH/mysql/data --log-error=$INSTALL_PATH/mysql/data/mysqld.log --pid-file=$INSTALL_PATH/mysql/data/mysqld.pid"
+MYSQL_STOP="$INSTALL_PATH/mysql/bin/mysqladmin --defaults-file=${INSTALL_PATH}/mysql/my.cnf -u root -p shutdown"
 MYSQL_STATUS=""
 MYSQL_PASSWORD=""
 
-# Xvfb
-XVFB_PIDFILE=$INSTALL_PATH/Xvfb/xvfb.pid
-XVFB_PID=""
-XVFBBIN=$INSTALL_PATH/Xvfb/bin/Xvfb
-XVFB="$XVFBBIN :$VDISPLAY -screen 0 800x600x8 -fbdir $INSTALL_PATH/Xvfb/var/run -fp $INSTALL_PATH/Xvfb/misc"
-XVFB_STATUS=""
+# Agent
+AGENT_PIDFILE="$INSTALL_PATH/updates/agent.pid"
+AGENT_PID=""
+AGENT="$INSTALL_PATH/updates/agent.bin"
+AGENT_STATUS=""
+AGENT_BIN=agent.bin
 
 # OpenOffice
 SOFFICE_PATH="$INSTALL_PATH/openoffice/program"
@@ -48,17 +50,14 @@ SOFFICE_PIDFILE=$INSTALL_PATH/openoffice/soffice.bin.pid
 SOFFICE_PID=""
 SOFFICE_PORT="8100"
 SOFFICEBIN=$INSTALL_PATH/openoffice/program/soffice.bin
-if [ $USEXVFB -eq 1 ]; then
-    SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -display :$VDISPLAY -accept=socket,host=127.0.0.1,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
-else
-    SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -accept=socket,host=127.0.0.1,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
-fi
+#SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -accept=pipe,name=pypipe;urp;StarOffice.ServiceManager"
+SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -accept=socket,host=127.0.0.1,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
 SOFFICE_STATUS=""
 
 # Lucene
 LUCENE_PIDFILE=$INSTALL_PATH/knowledgeTree/bin/luceneserver/lucene.pid
 LUCENE_PID=""
-LUCENE="$JAVABIN -jar ktlucene.jar"
+LUCENE="$JAVABIN -Xms512M -Xmx512M -jar ktlucene.jar"
 LUCENE_STATUS=""
 
 # Scheduler
@@ -92,6 +91,16 @@ get_apache_pid() {
     fi
 }
 
+get_agent_pid() {
+    get_pid $AGENT_PIDFILE
+    if [ ! $PID ]; then
+        return 
+    fi
+    if [ $PID -gt 0 ]; then
+        AGENT_PID=$PID
+    fi
+}
+
 get_mysql_pid() {
     get_pid $MYSQL_PIDFILE
     if [ ! $PID ]; then
@@ -99,16 +108,6 @@ get_mysql_pid() {
     fi
     if [ $PID -gt 0 ]; then
         MYSQL_PID=$PID
-    fi
-}
-
-get_xvfb_pid() {
-    get_pid $XVFB_PIDFILE
-    if [ ! $PID ]; then
-        return 
-    fi
-    if [ $PID -gt 0 ]; then
-        XVFB_PID=$PID
     fi
 }
 
@@ -164,6 +163,18 @@ is_mysql_running() {
     return $RUNNING
 }
 
+is_agent_running() {
+    get_agent_pid
+    is_service_running $AGENT_PID
+    RUNNING=$?
+    if [ $RUNNING -eq 0 ]; then
+        AGENT_STATUS="agent not running"
+    else
+        AGENT_STATUS="agent already running"
+    fi
+    return $RUNNING
+}
+
 is_apache_running() {
     get_apache_pid
     is_service_running $HTTPD_PID
@@ -172,18 +183,6 @@ is_apache_running() {
         HTTPD_STATUS="apache not running"
     else
         HTTPD_STATUS="apache already running"
-    fi
-    return $RUNNING
-}
-
-is_xvfb_running() {
-    get_xvfb_pid
-    is_service_running $XVFB_PID
-    RUNNING=$?
-    if [ $RUNNING -eq 0 ]; then
-        XVFB_STATUS="Xvfb not running"
-    else
-        XVFB_STATUS="Xvfb already running"
     fi
     return $RUNNING
 }
@@ -242,7 +241,7 @@ start_mysql() {
     else
         $MYSQL_START &> $INSTALL_PATH/var/log/dmsctl.log &
         if [ $? -eq 0 ]; then
-            echo "$0 $ARG: mysql started at port @@BITROCK_MYSQL_PORT@@"
+            echo "$0 $ARG: mysql started at port 3306"
             sleep 2
         else
             echo "$0 $ARG: mysql could not be started"
@@ -276,6 +275,46 @@ stop_mysql() {
 	fi
 }
 
+start_agent() {
+    is_agent_running
+    RUNNING=$?
+    if [ $RUNNING -eq 1 ]; then
+        echo "$0 $ARG: agent (pid $AGENT_PID) already running"
+    else
+         $AGENT &> $INSTALL_PATH/var/log/dmsctl.log &
+         sleep 5
+         get_agent_pid
+         if [ $AGENT_PID -gt 0 ]; then
+             echo "$0 $ARG: agent started"
+         else
+             echo "$0 $ARG: agent could not be started"
+             ERROR=3
+         fi
+    fi
+}
+
+stop_agent() {
+    NO_EXIT_ON_ERROR=$1
+    is_agent_running
+    RUNNING=$?
+
+    if [ $RUNNING -eq 0 ]; then
+        echo "$0 $ARG: $AGENT_STATUS"
+        if [ "x$NO_EXIT_ON_ERROR" != "xno_exit" ]; then
+            exit
+        else
+            return
+        fi
+    fi
+    get_agent_pid
+    if kill $AGENT_PID ; then
+        echo "$0 $ARG: agent stopped"
+    else
+        echo "$0 $ARG: agent could not be stopped"
+        ERROR=4
+    fi
+}
+
 start_apache() {
     test_apache_config
     is_apache_running
@@ -285,7 +324,7 @@ start_apache() {
         echo "$0 $ARG: httpd (pid $HTTPD_PID) already running"
     else
         if $HTTPD &> $INSTALL_PATH/var/log/dmsctl.log; then
-            echo "$0 $ARG: httpd started at port @@BITROCK_APACHE_PORT@@"
+            echo "$0 $ARG: httpd started at port 8080"
         else
             echo "$0 $ARG: httpd could not be started"
             ERROR=3
@@ -316,51 +355,6 @@ stop_apache() {
 	fi
 }
 
-start_xvfb() {
-if [ $USEXVFB -eq 1 ]; then
-    is_xvfb_running
-    RUNNING=$?
-
-    if [ $RUNNING -eq 1 ]; then
-        echo "$0 $ARG: Xvfb (pid $XVFB_PID) already running"
-    else
-        nohup $XVFB  &> $INSTALL_PATH/var/log/dmsctl.log &
-        if [ $? -eq 0 ]; then
-            echo "$0 $ARG: Xvfb started on display $VDISPLAY"
-            ps ax | grep $XVFBBIN | awk {'print $1'} > $XVFB_PIDFILE
-            sleep 2
-        else
-            echo "$0 $ARG: xvfb could not be started"
-            ERROR=3
-        fi
-    fi
-fi
-}
-
-stop_xvfb() {
-if [ $USEXVFB -eq 1 ]; then
-    NO_EXIT_ON_ERROR=$1
-    is_xvfb_running
-    RUNNING=$?
-
-    if [ $RUNNING -eq 0 ]; then
-        echo "$0 $ARG: $XVFB_STATUS"
-        if [ "x$NO_EXIT_ON_ERROR" != "xno_exit" ]; then
-            exit
-        else
-            return
-        fi
-	fi
-    get_xvfb_pid
-	if kill $XVFB_PID ; then
-	    echo "$0 $ARG: Xvfb stopped"
-	else
-	    echo "$0 $ARG: Xvfb could not be stopped"
-	    ERROR=4
-	fi
-fi
-}
-
 start_soffice() {
     is_soffice_running
     RUNNING=$?
@@ -368,10 +362,6 @@ start_soffice() {
     if [ $RUNNING -eq 1 ]; then
         echo "$0 $ARG: openoffice (pid $SOFFICE_PID) already running"
     else
-	if [ $USEXVFB -eq 1 ]; then
-	    start_xvfb
-	    sleep 2
-	fi
         nohup $SOFFICE &> $INSTALL_PATH/var/log/dmsctl.log &
         if [ $? -eq 0 ]; then
             echo "$0 $ARG: openoffice started at port $SOFFICE_PORT"
@@ -396,9 +386,6 @@ stop_soffice() {
         else
             return
         fi
-    fi
-    if [ $USEXVFB -eq 1 ]; then
-	stop_xvfb
     fi
     get_soffice_pid
 	if killall $SOFFICEBIN ; then
@@ -446,6 +433,7 @@ stop_lucene() {
     get_lucene_pid
     cd $INSTALL_PATH/knowledgeTree/search2/indexing/bin
     $INSTALL_PATH/php/bin/php shutdown.php positive &> $INSTALL_PATH/var/log/dmsctl.log
+    sleep 5
     if [ $? -eq 0 ]; then
 	    echo "$0 $ARG: lucene stopped"
 	else
@@ -501,10 +489,10 @@ help() {
 	echo "       $0 (start|stop|restart)"
 	echo "       $0 (start|stop|restart) apache"
 	echo "       $0 (start|stop|restart) mysql"
+	echo "       $0 (start|stop|restart) agent"
 	echo "       $0 (start|stop|restart) scheduler"
 	echo "       $0 (start|stop|restart) soffice"
 	echo "       $0 (start|stop|restart) lucene"
-	echo "       $0 (start|stop|restart) xvfb"
 	cat <<EOF
 
 help       - this screen
@@ -517,14 +505,14 @@ exit 0
 }
 
 noserver() {
-       echo -e "ERROR: $1 is not a valid server. Please, select 'mysql', 'apache', 'scheduler', 'soffice', 'lucene' or 'xvfb'\n"
+       echo -e "ERROR: $1 is not a valid server. Please, select 'mysql', 'apache', 'agent', 'scheduler', 'soffice' or 'lucene'\n"
        help
 }
 
 [ $# -lt 1 ] && help
 
 if [ ! -z ${2} ]; then
-       [ "${2}" != "mysql" ] && [ "${2}" != "apache" ] && [ "${2}" != "scheduler" ] && [ "${2}" != "soffice" ] && [ "${2}" != "lucene" ] && [ "${2}" != "xvfb" ] && noserver $2
+       [ "${2}" != "mysql" ] && [ "${2}" != "apache" ] && [ "${2}" != "agent" ] && [ "${2}" != "scheduler" ] && [ "${2}" != "soffice" ] && [ "${2}" != "lucene" ] && noserver $2
        SERVER=$2
 fi
        
@@ -543,11 +531,7 @@ case $1 in
                else
                        start_mysql
                        start_apache
-		       if [ -x $INSTALL_PATH/bin/networkservice.sh ]; then
-			   $INSTALL_PATH/bin/networkservice.sh start
-		       fi
-                       start_xvfb
-                       sleep 2
+                       start_agent
                        start_soffice
                        start_lucene
                        start_scheduler
@@ -559,11 +543,8 @@ case $1 in
                        stop_scheduler "no_exit"
                        stop_lucene "no_exit"
                        stop_soffice "no_exit"
-                       stop_xvfb "no_exit"
                        stop_apache "no_exit"
-		       if [ -x $INSTALL_PATH/bin/networkservice.sh ]; then
-			   $INSTALL_PATH/bin/networkservice.sh stop			   
-		       fi
+                       stop_agent "no_exit"
                        stop_mysql
                fi
                ;;
@@ -575,19 +556,12 @@ case $1 in
                                stop_scheduler "no_exit"
                                stop_lucene "no_exit"
                                stop_soffice "no_exit"
-                               stop_xvfb "no_exit"
                                stop_apache "no_exit"
-			       if [ -x $INSTALL_PATH/bin/networkservice.sh ]; then
-				   $INSTALL_PATH/bin/networkservice.sh stop				   
-			       fi
+                               stop_agent "no_exit"
                                stop_mysql "no_exit"
                                start_mysql
                                start_apache
-			       if [ -x $INSTALL_PATH/bin/networkservice.sh ]; then
-				   $INSTALL_PATH/bin/networkservice.sh start				   
-			       fi
-                               start_xvfb
-                               sleep 2
+                               start_agent
                                start_soffice
                                start_lucene
                                start_scheduler
