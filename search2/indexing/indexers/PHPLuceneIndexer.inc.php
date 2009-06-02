@@ -299,7 +299,8 @@ class PHPLuceneIndexer extends Indexer
 	}
 }
 
-    public function isDocumentIndexed($documentId){
+    function isDocumentIndexed($documentId)
+	{
         // do something
     }
 ?>
