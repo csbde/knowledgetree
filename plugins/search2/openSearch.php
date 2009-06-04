@@ -422,6 +422,7 @@ class openSearch extends KTStandardDispatcher {
      * @return kt_response
      */
     public function login() {
+        if(isset($_REQUEST['type'])) { $this->setType($_REQUEST['type']); }
         if(isset($_REQUEST['username'])) { $this->setUsername($_REQUEST['username']); }
         if(isset($_REQUEST['password'])) { $this->setPassword($_REQUEST['password']); }
     	$kt = new KTAPI();
@@ -442,7 +443,14 @@ class openSearch extends KTStandardDispatcher {
     }
 
     private function login_fail() {
-        $response = $this->dom->appendChild($this->dom->createElement("response"));
+        if($this->type == 'atom') {
+            $response = $this->dom->appendChild($this->dom->createElement("response"));
+        } else {
+            $response = $this->dom->appendChild($this->dom->createElement("rss"));
+            $response->setAttribute("version", "2.0");
+            $response->setAttribute("xmlns:opensearch", "http://a9.com/-/spec/opensearch/1.1/");
+            $response->setAttribute("xmlns:atom", "http://www.w3.org/2005/Atom");
+        }
         $response_status = $response->appendChild($this->dom->createElement("status_code"));
         $response_status->appendChild($this->dom->createTextNode("{$this->status_code}"));
         $response_message = $response->appendChild($this->dom->createElement("message"));
@@ -455,7 +463,14 @@ class openSearch extends KTStandardDispatcher {
     }
 
     private function login_pass() {
-        $response = $this->dom->appendChild($this->dom->createElement("response"));
+        if($this->type == 'atom') {
+            $response = $this->dom->appendChild($this->dom->createElement("response"));
+        } else {
+            $response = $this->dom->appendChild($this->dom->createElement("rss"));
+            $response->setAttribute("version", "2.0");
+            $response->setAttribute("xmlns:opensearch", "http://a9.com/-/spec/opensearch/1.1/");
+            $response->setAttribute("xmlns:atom", "http://www.w3.org/2005/Atom");
+        }
         $response_status = $response->appendChild($this->dom->createElement("status_code"));
         $response_status->appendChild($this->dom->createTextNode("{$this->status_code}"));
         $response_results = $response->appendChild($this->dom->createElement("results"));
