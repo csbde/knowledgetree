@@ -333,6 +333,7 @@ class KTEntity {
         }
 
         $array = array_keys($this->_aFieldToSelect);
+        $array2 = array_flip($this->_aFieldToSelect);
 
         if (!$aCache) {
             $case = array();
@@ -341,6 +342,9 @@ class KTEntity {
             }
             foreach($case as $k => $v) {
                $case[substr($k, 1)] = $v;
+            }
+            foreach($array2 as $k => $v) {
+                $case[strtolower($k)] = $v;
             }
         } else {
             $case = $aCache['fieldnames'];
@@ -406,200 +410,117 @@ class KTEntityUtil {
         return KTEntityUtil::getList($sTable, $sClassName, $aWhereClause, $aOptions);
     }
 
+    /**
+     * Core function for KTEntityUtil, gets a list of all the objects according to the given where clause
+     *
+     * @param string $sTable
+     * @param string $sClassName
+     * @param array|string $aWhereClause
+     * @param array $aOptions
+     * @return array
+     */
     function &getList($sTable, $sClassName, $aWhereClause = null, $aOptions = null) {
         global $default;
-        if (is_null($aOptions)) {
-            $aOptions = array();
-        }
 
-        $aBaseOpts = call_user_func(array($sClassName, "_ktentityOptions"));
-        $aOptions = KTUtil::meldOptions($aBaseOpts, $aOptions);
-
-        $bIDs = false;
-        $bIDs = KTUtil::arrayGet($aOptions, "ids", false);
-        $sIDField = 'id';
-        $cache = KTUtil::arrayGet($aOptions, 'cache', false);
-
+        // Force the where clause to be an array
         if (!is_array($aWhereClause)) {
             $aWhereClause = array($aWhereClause, array());
         }
 
-
-        if (!$cache) { // && EVIL_CACHE_GRIND) {
-            $cache = 'auto';
+        // Force the options to be an array
+        if (is_null($aOptions)) {
+            $aOptions = array();
         }
 
-        if (isset($GLOBALS['_STOPCACHING'][$sClassName])) {
-            if ($GLOBALS['_STOPCACHING'][$sClassName] > 5) {
-                $cache = false;
-            }
+        // Merge in the standard options for the class
+        $aBaseOpts = call_user_func(array($sClassName, "_ktentityOptions"));
+        if(!is_array($aBaseOpts)){
+            $aBaseOpts = array();
+        }
+        $aOptions = array_merge($aBaseOpts, $aOptions);
+
+        /* ***  Check for all option values  *** */
+
+        // Check if only the id's have been requested
+        $bIDs = isset($aOptions['ids']) ? $aOptions['ids'] : false;
+
+        // Check if the id field differs from the standard
+        $sIDField = isset($aOptions['idfield']) ? $aOptions['idfield'] : 'id';
+
+        // Check for an order by clause
+        $sOrderBy = isset($aOptions['orderby']) ? $aOptions['orderby'] : false;
+
+        // Check for a limit and offset
+        $iLimit = isset($aOptions['limit']) ? $aOptions['limit'] : false;
+        $iOffset = isset($aOptions['offset']) ? $aOptions['offset'] : false;
+
+        // Check for the cache value
+        $cache = isset($aOptions['cache']) ? $aOptions['cache'] : 'getlist';
+
+        /* *** Construct the query *** */
+
+        $sQuery = '';
+        if($bIDs !== false){
+            $sQuery = "SELECT $sIDField FROM $sTable";
+        }else{
+            $oObject = new $sClassName;
+            $select = $oObject->_getSqlSelection();
+            $sQuery = "SELECT {$select} FROM $sTable";
         }
 
-        if (isset($aOptions['orderby'])) {
-            $sOrderBy = $aOptions['orderby'];
-            if (!empty($aWhereClause[0])) {
-                $aWhereClause[0] .= " ORDER BY " . $sOrderBy;
-            } else {
-                $aWhereClause[0] = "ORDER BY " . $sOrderBy;
+        // Append the where clause
+        $sWhere = '';
+        $aParams = array();
+        if(isset($aWhereClause[0]) && !empty($aWhereClause[0])){
+            // check whether the WHERE or ORDER has already been included in the query string
+            $check = substr($aWhereClause[0], 0, 5);
+
+            if($check != 'WHERE' && $check != 'ORDER'){
+                $sWhere = 'WHERE ';
             }
+            $sWhere .= $aWhereClause[0];
+            $aParams = isset($aWhereClause[1]) && !empty($aWhereClause[1]) ? $aWhereClause[1] : array();
+
+            $sQuery .= " $sWhere";
         }
 
-        $sIDField = KTUtil::arrayGet($aOptions, "idfield", 'id');
-        $aWhereClause[2] = $sIDField;
-
-        if (isset($aOptions['limit'])) {
-            if (isset($aOptions['offset'])) {
-                $iOffset = $aOptions['offset'];
-            } else {
-                $iOffset = 0;
-            }
-            $iLimit = $aOptions['limit'];
-
-            if ($iOffset) {
-                $aWhereClause[0] .= " LIMIT $iOffset, $iLimit";
-            } else {
-                $aWhereClause[0] .= " LIMIT $iLimit";
-            }
+        // Append the order by
+        if($sOrderBy != false){
+            $sQuery .= " ORDER BY $sOrderBy";
         }
 
-        $fullselect = KTUtil::arrayGet($aOptions, 'fullselect', false);
-
-        if ($cache) {
-            if ($cache === 'auto') {
-                $vals = serialize($aWhereClause);
-            } else if (is_array($aWhereClause)) {
-                $vals = serialize($aWhereClause[1]);
-            } else {
-                $vals = serialize($aWhereClause);
+        // Append a limit and offset
+        if($iLimit != false){
+            $sLimit = '';
+            if($iOffset != false){
+                $sLimit .= "$iOffset, ";
             }
-            if (KTLOG_CACHE) $default->log->debug(sprintf("Trying list cache for class %s, %s: %s", $sClassName, $cache, $vals));
+            $sLimit .= $iLimit;
 
-            $oCache =& KTCache::getSingleton();
-            $suffix = '';
-            if ($fullselect) {
-                $suffix = '_fullselect';
-            }
-            $group = sprintf("%s/%s%s", $sClassName, $cache, $suffix);
-            list($bCached, $mCached) = $oCache->get($group, $vals);
-        } else {
-            $bCached = false;
+            $sQuery .= " LIMIT $sLimit";
         }
 
-        if ($cache && !$bCached) {
-            global $default;
-            if (KTLOG_CACHE) $default->log->debug(sprintf("No list cache for class %s, %s: %s", $sClassName, $cache, $vals));
-        }
-        if ($bCached && EVIL_CACHE_GRIND) {
-            if (!empty($fullselect)) {
-                $oObject = new $sClassName;
-                $select = $oObject->_getSqlSelection();
-                $sQuery = "SELECT $select FROM " . $sTable;/*ok*/
-            } else {
-                $sIDField = KTUtil::arrayGet($aOptions, "idfield", 'id');
-                $sQuery = "SELECT $sIDField FROM " . $sTable;/*ok*/
-            }
-            $aParams = array();
-            if (!empty($aWhereClause[0])) {
-                if (is_string($aWhereClause)) {
-                    if (substr($aWhereClause, 0, 5) != 'WHERE') {
-                        if (substr($aWhereClause, 0, 5) != 'ORDER') {
-                            $sQuery .= ' WHERE';
-                        }
-                    }
-                    $sQuery .= ' ' . $aWhereClause;
-                } else if (is_array($aWhereClause)) {
-                    if (substr($aWhereClause[0], 0, 5) != 'WHERE') {
-                        if (substr($aWhereClause[0], 0, 5) != 'ORDER') {
-                            $sQuery .= ' WHERE';
-                        }
-                    }
-                    $sQuery .= ' ' . $aWhereClause[0];
-                    $aParams = $aWhereClause[1];
-                } else {
-                    return new PEAR_Error('Weird WhereClause passed');
-                }
-            }
+        /* *** Check the cache *** */
 
-            if (!empty($fullselect)) {
-                $aIDs = DBUtil::getResultArray(array($sQuery, $aParams));
-            } else {
-                $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), $sIDField);
-            }
-            // compare mcached == $aIds
+        $oCache = KTCache::getSingleton();
+        $vals = serialize(array($sQuery, $aParams));
+        $group = $sClassName.'/'.$cache;
 
-            if ($aIDs != $mCached) {
-                /*
-                print "==================\n\n\n\n\n";
-                var_dump($aIDs);
-                print "------\n";
-                var_dump($mCached);
-                */
-                $oCache->alertFailure($group, array('Stored IDS != Cache IDS'));
-            }
-        } else if ($bCached) {
-            if (KTLOG_CACHE) $default->log->debug(sprintf("Using object cache for class %s, %s: %s", $sClassName, $cache, $vals));
-            $aIDs = $mCached;
-        /* */
-        } else {
-            if (!empty($fullselect)) {
-                $oObject = new $sClassName;
-                $select = $oObject->_getSqlSelection();
-                $sQuery = "SELECT $select FROM " . $sTable;/*ok*/
-            } else {
-                $sIDField = KTUtil::arrayGet($aOptions, "idfield", 'id');
-                $sQuery = "SELECT $sIDField FROM " . $sTable;/*ok*/
-            }
-            $aParams = array();
-            if (!is_null($aWhereClause[0])) {
-                if (is_string($aWhereClause)) {
-                    if (substr($aWhereClause, 0, 5) != 'WHERE') {
-                        if (substr($aWhereClause, 0, 5) != 'ORDER') {
-                            $sQuery .= ' WHERE';
-                        }
-                    }
-                    $sQuery .= ' ' . $aWhereClause;
-                } else if (is_array($aWhereClause)) {
-                    if (substr($aWhereClause[0], 0, 5) != 'WHERE') {
-                        if (substr($aWhereClause[0], 0, 5) != 'ORDER') {
-                            $sQuery .= ' WHERE';
-                        }
-                    }
-                    $sQuery .= ' ' . $aWhereClause[0];
-                    $aParams = $aWhereClause[1];
-                } else {
-                    return new PEAR_Error('Weird WhereClause passed');
-                }
-            }
+        list($bCached, $mCached) = $oCache->get($group, $vals);
 
-            if (!empty($fullselect)) {
-                $aIDs = DBUtil::getResultArray(array($sQuery, $aParams));
-            } else {
-                $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), $sIDField);
-            }
-        }
 
-        if (PEAR::isError($aIDs)) {
+        /* *** Execute the query *** */
+
+        // If only id's are requested, return them
+        if($bIDs){
+            $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), $sIDField);
             return $aIDs;
         }
 
-        if ($cache && !$bCached) {
-            if (KTLOG_CACHE) $default->log->debug(sprintf("Setting object cache for class %s, %s, %s", $sClassName, $cache, $vals));
-            $oCache->set($group, $vals, $aIDs);
-        }
-
-        if ($bIDs === true) {
-            return $aIDs;
-        }
-
-        if (!empty($fullselect)) {
-            $aRet =& KTEntityUtil::loadFromArrayMulti($sClassName, $aIDs);
-            return $aRet;
-        }
-        $aRet = array();
-        foreach ($aIDs as $iId) {
-            $aRet[] = call_user_func(array($sClassName, 'get'), $iId);
-        }
-        return $aRet;
+        // Get the object data and load into objects
+        $results = DBUtil::getResultArray(array($sQuery, $aParams));
+        $aObjects = KTEntityUtil::loadFromArrayMulti($sClassName, $results);
+        return $aObjects;
     }
 
     function &createFromArray ($sClassName, $aOptions) {
@@ -650,7 +571,25 @@ class KTEntityUtil {
 
     function &loadFromArrayMulti($sClassName, $aMultiArray, $aOptions = null) {
         $aRet = array();
+        $config =& KTConfig::getSingleton();
+        //$useProxy = $config->get('cache/proxyCacheEnabled');
         foreach ($aMultiArray as $aArray) {
+
+            //if($useProxy){
+                $iId = (int)$aArray['id'];
+                if(empty($iId)){
+                    $iId = null;
+                }
+                $sProxyClass = KTEntityUtil::_getProxyClass($sClassName);
+                $oObject =new $sProxyClass($iId, $aArray);
+                $res = $oObject->getId();
+                if (PEAR::isError($res)) {
+                    return $res;
+                }
+                $aRet[] = $oObject;
+                continue;
+            //}
+
             $oObject =new $sClassName;
             $ret = $oObject->loadFromArray($aArray);
             if (PEAR::isError($ret)) {
@@ -666,15 +605,17 @@ class KTEntityUtil {
             return PEAR::raiseError(_kt('Non-numeric identifier'));
         }
         $iId = (int)$iId;
-        /* */
-        $sProxyClass = KTEntityUtil::_getProxyClass($sClassName);
-        $oObject =new $sProxyClass($iId);
-        $res = $oObject->getId();
-        if (PEAR::isError($res)) {
-            return $res;
-        }
-        return $oObject;
-        /* */
+        // Use a proxy class if enabled
+        $config =& KTConfig::getSingleton();
+        //if($config->get('cache/proxyCacheEnabled')){
+            $sProxyClass = KTEntityUtil::_getProxyClass($sClassName);
+            $oObject =new $sProxyClass($iId);
+            $res = $oObject->getId();
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+            return $oObject;
+        //}
         // XXX Object cache currently causes hard-to-trace inconsistencies in data.
         // $oObject =& KTUtil::arrayGet($GLOBALS['_OBJECTCACHE'][$sClassName], $iId);
         // if ($oObject) { return $oObject; }
@@ -736,11 +677,13 @@ class KTEntityUtil {
         }
         eval($code);
     }
+
     function _proxyBuild($sClassName, $sProxyClassName) {
         // var_dump("Building proxy for $sClassName");
         $methods = get_class_methods($sClassName);
         $allcode = array();
         $allcode[] = sprintf('var $cacheGlobal = null;%s', "\n");
+        $allcode[] = sprintf('var $aFieldArr = null;%s', "\n");
 
         foreach ($methods as $sMethod) {
         	if(substr($sMethod, 0, 2) == '__') {
@@ -765,13 +708,17 @@ class KTEntityUtil {
                 return $oObject;
             }
             $oObject =new %s;
-            $res = $oObject->load($this->iId);
+            if(!empty($this->aFieldArr)){
+                $res = $oObject->loadFromArray($this->aFieldArr);
+            }else{
+                $res = $oObject->load($this->iId);
+            }
             if (PEAR::isError($res)) {
                 return $res;
             }
             $this->cacheGlobal[$this->iId] =& $oObject;
             return $oObject;
-        }', $sClassName, $sClassName, $sClassName, $sClassName);
+        }', $sClassName, $sClassName, $sClassName, $sClassName, $sClassName);
 
         $allcode[] = sprintf('function _save(&$oObject) {
             $this->cacheGlobal[$this->iId] =& $oObject;
@@ -802,7 +749,7 @@ class KTEntityUtil {
             /* */
         }';
 
-        $allcode[] = sprintf('function %s ($iId) { $this->iId = $iId; $this->cacheGlobal =& $GLOBALS["_OBJECTCACHE"][%s]; }' . "\n", $sProxyClassName, $sClassName);
+        $allcode[] = sprintf('function %s ($iId, $aInfo = null) { $this->iId = $iId; $this->aFieldArr = $aInfo; $this->cacheGlobal =& $GLOBALS["_OBJECTCACHE"][%s]; }' . "\n", $sProxyClassName, $sClassName);
 
         $gen = sprintf("class %s extends %s {\n", $sProxyClassName, $sClassName);
         $gen .= "    " . join("\n    ", $allcode) . "\n";
