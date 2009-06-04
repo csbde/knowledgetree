@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : repositories.xml
+    Created on : 25 May 2009, 10:33 AM
+    Author     : KnowledgeTree Team
+    Description:
+        Contains definitions for all repositories accessible via the CMIS API.
+-->
+
+<root>
+    <repository>
+        <repositoryURI>http://127.0.0.1/</repositoryURI>
+        <repositoryInfo>
+            <repositoryId>1</repositoryId>
+            <repositoryName>KnowledgeTree</repositoryName>
+            <repositoryRelationship>self</repositoryRelationship>
+            <repositoryDescription>KnowledgeTree Repository</repositoryDescription>
+            <vendorName>KnowledgeTree</vendorName>
+            <productName>KnowledgeTree</productName>
+            <productVersion>3.6.2</productVersion>
+            <rootFolderId>1</rootFolderId>
+            <cmisVersionsSupported>cmis 0.61c</cmisVersionsSupported>
+        </repositoryInfo>
+        <repositoryCapabilities>
+            <capabilityMultifiling>false</capabilityMultifiling>
+            <capabilityUnfiling>false</capabilityUnfiling>
+            <capabilityVersionSpecificFiling>false</capabilityVersionSpecificFiling>
+            <capabilityPWCUpdateable>false</capabilityPWCUpdateable>
+            <capabilityPWCSearchable>false</capabilityPWCSearchable>
+            <capabilityAllVersionsSearchable>false</capabilityAllVersionsSearchable>
+            <capabilityQuery>None</capabilityQuery>
+            <capabilityFullText>None</capabilityFullText>
+            <capabilityJoin>NoJoin</capabilityJoin>
+        </repositoryCapabilities>
+        <supportedTypes>
+            <objectType>Document</objectType>
+            <objectType>Folder</objectType>
+        </supportedTypes>
+    </repository>
+    <repository>
+        <repositoryURI>http://12s7.w0.0.1/</repositoryURI>
+        <repositoryInfo>
+            <repositoryId>44</repositoryId>
+            <repositoryName>asdasdasd</repositoryName>
+            <repositoryRelationship>self</repositoryRelationship>
+            <repositoryDescription>KnowledgeTree Repository</repositoryDescription>
+            <vendorName>KnowledgeTree</vendorName>
+            <productName>KnowledgeTree</productName>
+            <productVersion>3.6.1</productVersion>
+            <rootFolderId>1</rootFolderId>
+            <cmisVersionsSupported>0.61</cmisVersionsSupported>
+        </repositoryInfo>
+        <repositoryCapabilities>
+            <capabilityMultifiling>false</capabilityMultifiling>
+            <capabilityUnfiling>false</capabilityUnfiling>
+            <capabilityVersionSpecificFiling>false</capabilityVersionSpecificFiling>
+            <capabilityPWCUpdateable>false</capabilityPWCUpdateable>
+            <capabilityPWCSearchable>false</capabilityPWCSearchable>
+            <capabilityAllVersionsSearchable>false</capabilityAllVersionsSearchable>
+            <capabilityQuery>None</capabilityQuery>
+            <capabilityFullText>None</capabilityFullText>
+            <capabilityJoin>NoJoin</capabilityJoin>
+        </repositoryCapabilities>
+        <supportedTypes>
+            <objectType>Document</objectType>
+            <objectType>Folder</objectType>
+        </supportedTypes>
+    </repository>
+</root>

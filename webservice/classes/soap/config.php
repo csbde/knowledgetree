@@ -3,8 +3,7 @@
 /* All the allowed webservice classes */
 $WSClasses = array(
 	"contactManager",
-	"RestService"
-
+    "CMISService"
 
 );
 
@@ -17,7 +16,13 @@ $WSClasses = array(
 $WSStructures = array(
 	"contact" => "contact",
 	"address" => "address",
-
+	"cmisRepositoryEntryType" => "cmisRepositoryEntryType",
+	"cmisRepositoryInfoType" => "cmisRepositoryInfoType",
+	"cmisRepositoryCapabilitiesType" => "cmisRepositoryCapabilitiesType",
+    "cmisTypeDefinitionType" => "cmisTypeDefinitionType",
+    "cmisPropertyDefinitionType" => "cmisPropertyDefinitionType",
+    "cmisObjectType" => "cmisObjectType",
+    "cmisPropertiesType" => "cmisPropertiesType",
 );
 
 ?>
