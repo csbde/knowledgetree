@@ -53,6 +53,12 @@ class Folder extends KTEntity {
 	var $iParentID;
 	/** primary key of user who created folder */
 	var $iCreatorID;
+    /** The creation time of the folder */
+    var $dCreated;
+    /** The user that last modified the folder */
+    var $iModifiedUserID;
+    /** The time of the last modification to the folder */
+    var $dModified;
 	/** public status of folder */
 	var $bIsPublic = false;
 	/** comma deliminated string of parent ids */
@@ -65,6 +71,8 @@ class Folder extends KTEntity {
     var $iPermissionLookupID;
     /** whether to restrict to only certain document types */
     var $bRestrictDocumentTypes = false;
+    /** ID of folder owner */
+    var $iOwnerID;
     /** ID of the folder this is a shortcut to(if any) */
     var $iLinkedFolderId;
 
@@ -75,6 +83,9 @@ class Folder extends KTEntity {
         'sDescription' => 'description',
         'iParentID' => 'parent_id',
         'iCreatorID' => 'creator_id',
+        'dCreated' => 'created',
+        'iModifiedUserID' => 'modified_user_id',
+        'dModified' => 'modified',
         'bIsPublic' => 'is_public',
         'sFullPath' => 'full_path',
         'sParentFolderIDs' => 'parent_folder_ids',
@@ -82,6 +93,7 @@ class Folder extends KTEntity {
         'iPermissionLookupID' => 'permission_lookup_id',
         'bRestrictDocumentTypes' => 'restrict_document_types',
     	'iLinkedFolderId' => 'linked_folder_id',
+    	'iOwnerID' => 'owner_id',
     );
     // }}}
 
@@ -94,6 +106,15 @@ class Folder extends KTEntity {
 	function setParentID($iNewValue) { $this->iParentID = $iNewValue; }
 	function getCreatorID() { return $this->iCreatorID; }
 	function setCreatorID($iNewValue) { $this->iCreatorID = $iNewValue; }
+
+    function getCreatedDateTime() { return $this->dCreated; }
+    function getModifiedUserID() { return $this->iModifiedUserID; }
+    function setModifiedUserID($iNewValue) { $this->iModifiedUserID = $iNewValue; }
+    function getLastModifiedDate() { return $this->dModified; }
+    function setLastModifiedDate($dNewValue) { $this->dModified = $dNewValue; }
+    function getOwnerID() { return $this->iOwnerID; }
+    function setOwnerID($iNewValue) { $this->iOwnerID = $iNewValue; }
+
 	function getIsPublic() { return $this->bIsPublic; }
 	function setIsPublic($bNewValue) { $this->bIsPublic = $bNewValue; }
 	function getFullPath() { return $this->sFullPath; }
@@ -110,12 +131,24 @@ class Folder extends KTEntity {
 	function getLinkedFolderId(){ return $this->iLinkedFolderId;}
 	function setLinkedFolderId($iNewValue){ $this->iLinkedFolderId = $iNewValue;}
 
-
-
     // {{{ create()
     function create () {
         $oParentFolder =& Folder::get($this->iParentID);
         $this->iPermissionObjectID = $oParentFolder->getPermissionObjectID();
+        
+        if (empty($this->dCreated)) {
+            $this->dCreated = getCurrentDateTime();
+        }
+        if (empty($this->dModified)) {
+            $this->dModified = getCurrentDateTime();
+        }
+        if (empty($this->iModifiedUserID)) {
+            $this->iModifiedUserID = $this->iCreatorID;
+        }
+        if (empty($this->iOwnerID)) {
+            $this->iOwnerID = $this->iCreatorID;
+        }
+
         $res = parent::create();
         if ($res === true) {
             KTPermissionUtil::updatePermissionLookup(Folder::get($this->getId()));
@@ -144,7 +177,7 @@ class Folder extends KTEntity {
         /**
          * Returns a comma delimited string containing the parent folder ids, strips leading /
          *
-         * @return String	comma delimited string containing the parent folder ids
+         * @return String  comma delimited string containing the parent folder ids
          */
         function generateFolderIDs($iFolderId) {
             if (empty($iFolderId)) {
@@ -225,11 +258,15 @@ class Folder extends KTEntity {
         	$this->sParentFolderIDs .= $this->iParentID;
     	}
         return parent::_fieldValues();
+        // NOTE below no longer needed?
         return array(
             'name' => $this->sName,
             'description' => $this->sDescription,
             'parent_id' => $this->iParentID,
             'creator_id' => $this->iCreatorID,
+            'created' => $this->dCreated,
+            'iModifiedUserId' => $this->iModifiedUserId,
+            'modified' => $this->dModified,
             'is_public' => KTUtil::anyToBool($this->bIsPublic),
             'full_path' => $this->sFullPath,
             'parent_folder_ids' => $this->sParentFolderIDs,
@@ -428,7 +465,6 @@ class Folder extends KTEntity {
     function getFolderPathNamesAsArray($iFolderID) {
 		global $default;
 
-
 		$oFolder = Folder::get($iFolderID);
 		$aPathArray = array();
 		if ($oFolder) {
@@ -534,7 +570,6 @@ class Folder extends KTEntity {
         $sQuery = "SELECT id, name FROM " . KTUtil::getTableName('folders') . " WHERE name = ? AND parent_id = ?";/*ok*/
         $aParams = array($sName, $iParentID);
 		$res = DBUtil::getResultArray(array($sQuery, $aParams));
-		//var_dump($res);
 		if (count($res) != 0) {
 
 		    // mysql is case-insensitive - check using php
@@ -580,7 +615,6 @@ class Folder extends KTEntity {
 		    return $oFolder->getName();
 		}
 	}
-
 
     function getByParentIDAndLookupID($iParentID, $iLookupID) {
         return KTEntityUtil::getByDict('Folder', array(

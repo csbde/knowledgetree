@@ -78,7 +78,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param int $folderid
 	 * @return KTAPI_Folder
 	 */
-	function &get(&$ktapi, $folderid)
+	function get(&$ktapi, $folderid)
 	{
 		assert(!is_null($ktapi));
 		assert(is_a($ktapi, 'KTAPI'));
@@ -157,14 +157,13 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @access protected
 	 * @return Folder
 	 */
-	function &get_folder()
+	function get_folder()
 	{
 		return $this->folder;
 	}
 
-
 	/**
-	 * This returns detailed information on the document.
+	 * This returns detailed information on the folder object.
 	 *
 	 * @author KnowledgeTree Team
 	 * @access public
@@ -190,10 +189,47 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			unset($detail['linked_folder_id']);
 		}
 
+        $folder = $this->folder;
+
+        // get the creator
+		$userid = $folder->getCreatorID();
+		$username='n/a';
+		if (is_numeric($userid))
+		{
+			$username = '* unknown *';
+			$user = User::get($userid);
+			if (!is_null($user) && !PEAR::isError($user))
+			{
+				$username = $user->getName();
+			}
+		}
+		$detail['created_by'] = $username;
+
+        // get the creation date
+		$detail['created_date'] = $folder->getCreatedDateTime();
+
+        // get the modified user
+		$userid = $folder->getModifiedUserId();
+		$username='n/a';
+		if (is_numeric($userid))
+		{
+			$username = '* unknown *';
+			$user = User::get($userid);
+			if (!is_null($user) && !PEAR::isError($user))
+			{
+				$username = $user->getName();
+			}
+		}
+		$detail['modified_by'] = $detail['updated_by'] = $username;
+
+		// get the modified date
+		$detail['updated_date'] = $detail['modified_date'] = $folder->getLastModifiedDate();
+
 		return $detail;
 	}
+    
 	/**
-	 * This clears the global object cashe of the folder class.
+	 * This clears the global object cache of the folder class.
 	 *
 	 * @author KnowledgeTree Team
 	 * @access public
@@ -255,7 +291,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param int $folderid
 	 * @return KTAPI_Folder
 	 */
-	function &_get_folder_by_name($ktapi, $foldername, $folderid)
+	function _get_folder_by_name($ktapi, $foldername, $folderid)
 	{
 		$foldername=trim($foldername);
 		if (empty($foldername))
@@ -296,7 +332,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $foldername
 	 * @return KTAPI_Folder
 	 */
-	function &get_folder_by_name($foldername)
+	function get_folder_by_name($foldername)
 	{
 		return KTAPI_Folder::_get_folder_by_name($this->ktapi, $foldername, $this->folderid);
 	}
@@ -325,7 +361,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $function
 	 * @return KTAPI_Document
 	 */
-	function &_get_document_by_name($documentname, $function='getByNameAndFolder')
+	function _get_document_by_name($documentname, $function='getByNameAndFolder')
 	{
 		$documentname=trim($documentname);
 		if (empty($documentname))
@@ -389,7 +425,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $documentname
 	 * @return KTAPI_Document
 	 */
-	function &get_document_by_name($documentname)
+	function get_document_by_name($documentname)
 	{
 		return $this->_get_document_by_name($documentname,'getByNameAndFolder');
 	}
@@ -402,7 +438,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $documentname
 	 * @return KTAPI_Document
 	 */
-	function &get_document_by_filename($documentname)
+	function get_document_by_filename($documentname)
 	{
 		return $this->_get_document_by_name($documentname,'getByFilenameAndFolder');
 	}
@@ -760,7 +796,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			}
 		}
 
-
 		return $contents;
 	}
 
@@ -773,7 +808,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @return KTAPI_Document
 	 *
 	 */
-	function &add_document_shortcut($document_id){
+	function add_document_shortcut($document_id){
 		$user = $this->can_user_access_object_requiring_permission($this->folder, KTAPI_PERMISSION_WRITE);
 		if (PEAR::isError($user))
 		{
@@ -806,7 +841,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param int $folder_id The ID of the folder to create a shortcut to
 	 * @return KTAPI_Folder
 	 */
-	function &add_folder_shortcut($folder_id){
+	function add_folder_shortcut($folder_id){
 		$user = $this->can_user_access_object_requiring_permission($this->folder, KTAPI_PERMISSION_WRITE);
 		if (PEAR::isError($user))
 		{
@@ -849,7 +884,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $tempfilename This is a reference to the file that is accessible locally on the file system.
 	 * @return KTAPI_Document
 	 */
-	function &add_document($title, $filename, $documenttype, $tempfilename)
+	function add_document($title, $filename, $documenttype, $tempfilename)
 	{
 		if (!is_file($tempfilename))
 		{
@@ -924,7 +959,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $foldername
 	 * @return KTAPI_Folder
 	 */
-	function &add_folder($foldername)
+	function add_folder($foldername)
 	{
 		$user = $this->can_user_access_object_requiring_permission($this->folder, KTAPI_PERMISSION_ADD_FOLDER);
 

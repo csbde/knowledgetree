@@ -58,12 +58,14 @@ class KTFolderUtil {
             return $oUser;
         }
         $oStorage =& KTStorageManagerUtil::getSingleton();
+
         $oFolder =& Folder::createFromArray(array(
 			'name' => ($sFolderName),
 			'description' => ($sFolderName),
 			'parentid' => $oParentFolder->getID(),
 			'creatorid' => $oUser->getID(),
         ));
+
         if (PEAR::isError($oFolder)) {
             return $oFolder;
         }
@@ -87,7 +89,6 @@ class KTFolderUtil {
       */
     function add($oParentFolder, $sFolderName, $oUser, $bulk_action = false) {
 
-
         $folderid=$oParentFolder->getId();
         // check for conflicts first
         if (Folder::folderExistsName($sFolderName,$folderid)) {
@@ -98,7 +99,6 @@ class KTFolderUtil {
         if (PEAR::isError($oFolder)) {
             return $oFolder;
         }
-
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
         'folderid' => $oFolder->getId(),
@@ -289,6 +289,9 @@ class KTFolderUtil {
 
         $oFolder->setName($sNewName);
         $oFolder->setDescription($sNewName);
+        $oFolder->setLastModifiedDate(getCurrentDateTime());
+        $oFolder->setModifiedUserId($oUser->getId());
+        
         $res = $oFolder->update();
 
         $oTransaction = KTFolderTransaction::createFromArray(array(
@@ -614,7 +617,6 @@ class KTFolderUtil {
         // now we can go ahead.
         foreach ($aDocuments as $oDocument) {
             $oChildDestinationFolder = Folder::get($aFolderMap[$oDocument->getFolderID()]['parent_id']);
-            //            var_dump($oDocument->getFolderID());
             $res = KTDocumentUtil::copy($oDocument, $oChildDestinationFolder);
             if (PEAR::isError($res) || ($res === false)) {
                 $oStorage->removeFolder($oNewBaseFolder);
