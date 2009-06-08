@@ -58,8 +58,8 @@ class CMISNavigationService {
      *
      * @param string $repositoryId
      * @param string $folderId
-     * @param bool $includeAllowableActions
-     * @param bool $includeRelationships
+     * @param boolean $includeAllowableActions
+     * @param boolean $includeRelationships
      * @param string $typeId
      * @param int $depth
      * @param string $filter
@@ -101,8 +101,8 @@ class CMISNavigationService {
      *
      * @param string $repositoryId
      * @param string $folderId
-     * @param bool $includeAllowableActions
-     * @param bool $includeRelationships
+     * @param boolean $includeAllowableActions
+     * @param boolean $includeRelationships
      * @param string $typeId
      * @param string $filter
      * @param int $maxItems
@@ -142,9 +142,9 @@ class CMISNavigationService {
      *
      * @param string $repositoryId
      * @param string $folderId
-     * @param bool $includeAllowableActions
-     * @param bool $includeRelationships
-     * @param bool $returnToRoot If TRUE, then the repository SHALL return all folder objects
+     * @param boolean $includeAllowableActions
+     * @param boolean $includeRelationships
+     * @param boolean $returnToRoot If TRUE, then the repository SHALL return all folder objects
      *                           that are ancestors of the specified folder.
      *                           If FALSE, the repository SHALL return only the parent folder of the specified folder.
      * @param string $filter
@@ -168,7 +168,6 @@ class CMISNavigationService {
 
         $ktapiFolder = $this->ktapi->get_folder_by_id($folderId);
 
-        // TODO return full ancestry on $returnToRoot == true
         if ($returnToRoot)
         {
             $folder = $ktapiFolder->get_folder();
@@ -200,11 +199,15 @@ class CMISNavigationService {
     }
 
     /**
+     * Fetches the parent(s) of the specified object
+     * Multiple parents may exist if a repository supports multi-filing
+     * It is also possible that linked documents/folders may qualify as having multiple parents
+     * as they are essentially the same object
      *
      * @param string $repositoryId
      * @param string $objectId
-     * @param bool $includeAllowableActions
-     * @param bool $includeRelationships
+     * @param boolean $includeAllowableActions
+     * @param boolean $includeRelationships
      * @param string $filter
      * @return array $parents
      */
@@ -231,19 +234,6 @@ class CMISNavigationService {
                 $ancestry[] = $parent;
                 break;
         }
-
-//        echo 'PARENT<BR><pre>'.print_r($parent, true).'</pre>';
-//
-//echo '<pre>'.print_r($ancestry, true).'</pre>';
-//        // need some info about the parent(s) in order to correctly create the hierarchy
-//        $tmpArray = array();
-//        foreach ($ancestry as $key => $ancestor)
-//        {
-//            echo '<pre>'.print_r($ancestor, true).'</pre>';
-//            $tmpArray[$key] = $this->ktapi->get_folder_by_id($ancestor);
-//        }
-//        $ancestry = $tmpArray;
-//        unset($tmpArray);
 
         $ancestry = CMISUtil::createParentObjectHierarchy($ancestry, $repository->getRepositoryURI, $this->ktapi);
 

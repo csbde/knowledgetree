@@ -259,8 +259,8 @@ class KTCMIS {
      *
      * @param string $repositoryId
      * @param string $folderId
-     * @param bool $includeAllowableActions
-     * @param bool $includeRelationships
+     * @param boolean $includeAllowableActions
+     * @param boolean $includeRelationships
      * @param string $typeID
      * @param int $depth
      * @param string $filter
@@ -301,8 +301,8 @@ class KTCMIS {
      *
      * @param string $repositoryId
      * @param string $folderId
-     * @param bool $includeAllowableActions
-     * @param bool $includeRelationships
+     * @param boolean $includeAllowableActions
+     * @param boolean $includeRelationships
      * @param string $typeID
      * @param string $filter
      * @param int $maxItems
@@ -339,9 +339,9 @@ class KTCMIS {
      *
      * @param string $repositoryId
      * @param string $folderId
-     * @param bool $includeAllowableActions
-     * @param bool $includeRelationships
-     * @param bool $returnToRoot
+     * @param boolean $includeAllowableActions
+     * @param boolean $includeRelationships
+     * @param boolean $returnToRoot
      * @param string $filter
      * @return ancestry[]
      */
@@ -373,8 +373,8 @@ class KTCMIS {
      *
      * @param string $repositoryId
      * @param string $folderId
-     * @param bool $includeAllowableActions
-     * @param bool $includeRelationships
+     * @param boolean $includeAllowableActions
+     * @param boolean $includeRelationships
      * @param string $filter
      * @return ancestry[]
      */
@@ -411,8 +411,8 @@ class KTCMIS {
      *
      * @param string $repositoryId
      * @param string $objectId
-     * @param bool $includeAllowableActions
-     * @param bool $includeRelationships
+     * @param boolean $includeAllowableActions
+     * @param boolean $includeRelationships
      * @param string $returnVersion
      * @param string $filter
      * @return properties[]

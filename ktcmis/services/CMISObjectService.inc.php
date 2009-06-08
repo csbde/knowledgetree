@@ -21,9 +21,9 @@ class CMISObjectService {
      *
      * @param string $repositoryId
      * @param string $objectId
-     * @param bool $includeAllowableActions
-     * @param bool $includeRelationships
-     * @param bool $returnVersion
+     * @param boolean $includeAllowableActions
+     * @param boolean $includeRelationships
+     * @param boolean $returnVersion
      * @param string $filter
      * @return object CMIS object properties
      */
