@@ -502,7 +502,7 @@ class KTBulkMoveAction extends KTBulkAction {
         $this->oTargetFolder = Folder::get($this->iTargetFolderId);
         $_REQUEST['fReturnData'] = '';
         $_REQUEST['fFolderId'] = $this->iTargetFolderId;
-        // Jarrett Jordaan : Store initial folder
+        // Store initial folder
         $_REQUEST['fOriginalFolderId'] = $this->oFolder->getId();
         // does it exists
         if(PEAR::isError($this->oTargetFolder)) {
