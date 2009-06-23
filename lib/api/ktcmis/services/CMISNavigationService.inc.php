@@ -48,7 +48,12 @@ class CMISNavigationService {
 
     protected $ktapi;
 
-    function CMISNavigationService(&$ktapi)
+    /**
+     * Sets the interface to be used to query the repository
+     *
+     * @param object $ktapi The KnowledgeTree API interface
+     */
+    function setInterface(&$ktapi)
     {
         $this->ktapi = $ktapi;
     }

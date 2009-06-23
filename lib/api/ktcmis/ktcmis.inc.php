@@ -40,38 +40,28 @@
 * @version Version 0.9
 */
 
+/**
+ * Split into individual classes to handle each section of functionality.
+ * This is really just a handling layer between CMIS and the web services.
+ */
+
 // TODO implement exceptions in various calls (in the underlying classes)
 // FIXME none of the error handling actually does anything, it's leftover from copy/paste of some ktapi code
 
-require_once(realpath(dirname(__FILE__) . '/../config/dmsDefaults.php'));
+require_once(realpath(dirname(__FILE__) . '/../../../config/dmsDefaults.php'));
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 
-define ('CMIS_DIR', KT_DIR . '/ktcmis');
+define ('CMIS_DIR', KT_LIB_DIR . '/api/ktcmis');
 require_once(CMIS_DIR . '/services/CMISRepositoryService.inc.php');
 require_once(CMIS_DIR . '/services/CMISNavigationService.inc.php');
 require_once(CMIS_DIR . '/services/CMISObjectService.inc.php');
 require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
-class KTCMIS {
+/**
+ * Handles authentication
+ */
+class KTCMISBase {
 
-    /**
-     * Class for CMIS Repository Services
-     *
-     * @var object
-     */
-    protected $RepositoryService;
-    /**
-     * Class for CMIS Navigation Services
-     *
-     * @var object
-     */
-    protected $NavigationService;
-    /**
-     * Class for CMIS Object Services
-     *
-     * @var object
-     */
-    protected $ObjectService;
     /**
      * KnowledgeTree API instance
      *
@@ -85,50 +75,40 @@ class KTCMIS {
      */
     protected $session;
 
-    function __construct(&$ktapi = null, $user = '', $password = '')
+    public function startSession($username, $password)
     {
-        // ktapi interface
+        global $default;
+        $default->log->debug("attempt auth with $username :: $password");
         $this->session = null;
-//        if (is_null($ktapi))
-//        {
-//            // TODO this should probably throw an exception instead
-//            return PEAR::RaiseError('Cannot continue without KTAPI instance');
-            // FIXME this CANNOT be allowed in a live environment
-            //       possibly we should insist on a ktapi instance being passed
-            //       or at least user/pass for logging in here, if one or other
-            //       not sent, return error
-            $user = 'admin';
-            $password = 'admin';
-            $this->ktapi = new KTAPI();
-            $this->session = $this->ktapi->start_session($user, $password);
-//        }
-//        else
-//        {
-//            $this->ktapi = $ktapi;
-//        }
-        
-        // instantiate services
-        $this->RepositoryService = new CMISRepositoryService();
-        $this->NavigationService = new CMISNavigationService($this->ktapi);
-        $this->ObjectService = new CMISObjectService($this->ktapi);
+        // remove as soon as actual auth code is in place
+        $username = 'admin';
+        $password = 'admin';
+        $this->ktapi = new KTAPI();
+        $this->session =& $this->ktapi->start_session($username, $password);
+
+        if (PEAR::isError($this->session))
+        {
+           $default->log->debug("FAILED $username :: $password FAILED");
+        }
+
+        return $this->session;
     }
 
-    function __destruct()
+    // TODO what about destroying sessions?
+}
+
+/**
+ * Handles low level repository information queries
+ */
+class KTRepositoryService extends KTCMISBase {
+
+    protected $RepositoryService;
+
+    public function __construct()
     {
-//        if ($this->session instanceOf KTAPI_UserSession)
-//        {
-//            try
-//            {
-//                $this->session->logout();
-//            }
-//            catch (Exception $e)
-//            {
-//                // no output
-//            }
-//        }
+        // instantiate underlying CMIS service
+        $this->RepositoryService = new CMISRepositoryService();
     }
-
-    // Repository service functions
 
     /**
      * Fetch a list of all available repositories
@@ -137,7 +117,7 @@ class KTCMIS {
      *
      * @return repositoryList[]
      */
-    function getRepositories()
+    public function getRepositories()
     {
         $repositories = $this->RepositoryService->getRepositories();
         if (PEAR::isError($repositories))
@@ -170,7 +150,7 @@ class KTCMIS {
      *
      * @param string $repositoryId
      */
-    function getRepositoryInfo($repositoryId)
+    public function getRepositoryInfo($repositoryId)
     {
         $repositoryInfo = $this->RepositoryService->getRepositoryInfo($repositoryId);
         if (PEAR::isError($repositoryInfo))
@@ -194,7 +174,7 @@ class KTCMIS {
      *
      * @param string $repositoryId
      */
-    function getTypes($repositoryId, $typeId = '', $returnPropertyDefinitions = false,
+    public function getTypes($repositoryId, $typeId = '', $returnPropertyDefinitions = false,
                       $maxItems = 0, $skipCount = 0, &$hasMoreItems = false)
     {
         $repositoryObjectTypeResult = $this->RepositoryService->getTypes($repositoryId, $typeId, $returnPropertyDefinitions,
@@ -229,10 +209,10 @@ class KTCMIS {
      * @param string $repositoryId
      * @param string $typeId
      */
-    function getTypeDefinition($repositoryId, $typeId)
+    public function getTypeDefinition($repositoryId, $typeId)
     {
         $typeDefinitionResult = $this->RepositoryService->getTypeDefinition($repositoryId, $typeId);
-        
+
         if (PEAR::isError($typeDefinitionResult))
         {
             return array(
@@ -252,7 +232,26 @@ class KTCMIS {
         );
     }
 
-    // Navigation service functions
+}
+
+/*
+ * Handles repository navigation
+ */
+class KTNavigationService extends KTCMISBase {
+
+    protected $NavigationService;
+
+    public function __construct()
+    {
+        // instantiate underlying CMIS service
+        $this->NavigationService = new CMISNavigationService();
+    }
+
+    public function startSession($username, $password)
+    {
+        parent::startSession($username, $password);
+        $this->NavigationService->setInterface($this->ktapi);
+    }
 
     /**
      * Get descendents of the specified folder, up to the depth indicated
@@ -266,7 +265,7 @@ class KTCMIS {
      * @param string $filter
      * @return array $descendants
      */
-    function getDescendants($repositoryId, $folderId, $includeAllowableActions, $includeRelationships,
+    public function getDescendants($repositoryId, $folderId, $includeAllowableActions, $includeRelationships,
                             $depth = 1, $typeID = 'Any', $filter = '')
     {
         // TODO optional parameters
@@ -284,11 +283,6 @@ class KTCMIS {
         // format for webservices consumption
         // NOTE this will almost definitely be changing in the future, this is just to get something working
         $descendants = CMISUtil::decodeObjectHierarchy($descendantsResult, 'child');
-//        $descendants = array(array('properties' => array('objectId' => 'D2', 'typeId' => 'Document', 'name' => 'test document'),
-//                                   'child' => array(array('properties' => array('objectId' => 'D7',
-//                                                          'typeId' => 'Document', 'name' => 'CHILD document'), 'child' => null),
-//                                                    array('properties' => array('objectId' => 'F34',
-//                                                          'typeId' => 'Folder', 'name' => 'CHILD FOLDER'), 'child' => null))));
 
         return array (
             "status_code" => 0,
@@ -309,7 +303,7 @@ class KTCMIS {
      * @param int $skipCount
      * @return array $descendants
      */
-    function getChildren($repositoryId, $folderId, $includeAllowableActions, $includeRelationships,
+    public function getChildren($repositoryId, $folderId, $includeAllowableActions, $includeRelationships,
                          $typeID = 'Any', $filter = '', $maxItems = 0, $skipCount = 0)
     {
         // TODO paging
@@ -325,8 +319,6 @@ class KTCMIS {
         }
 
         $children = CMISUtil::decodeObjectHierarchy($childrenResult, 'child');
-//        $children = array(array('properties' => array('objectId' => 'D2', 'typeId' => 'Document', 'name' => 'test document'),
-//                                'child' => null));
 
         return array(
 			"status_code" => 0,
@@ -345,7 +337,7 @@ class KTCMIS {
      * @param string $filter
      * @return ancestry[]
      */
-    function getFolderParent($repositoryId, $folderId, $includeAllowableActions, $includeRelationships, $returnToRoot, $filter = '')
+    public function getFolderParent($repositoryId, $folderId, $includeAllowableActions, $includeRelationships, $returnToRoot, $filter = '')
     {
         $ancestryResult = $this->NavigationService->getFolderParent($repositoryId, $folderId, $includeAllowableActions,
                                                               $includeRelationships, $returnToRoot);
@@ -359,8 +351,6 @@ class KTCMIS {
         }
 
         $ancestry = CMISUtil::decodeObjectHierarchy($ancestryResult, 'child');
-//        $ancestry = array(array('properties' => array('objectId' => 'D2', 'typeId' => 'Document', 'name' => 'test document'),
-//                                'child' => null));
 
         return array(
 			"status_code" => 0,
@@ -368,42 +358,19 @@ class KTCMIS {
 		);
     }
 
-    /**
-     * Gets the parents for the selected object
-     *
-     * @param string $repositoryId
-     * @param string $folderId
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
-     * @param string $filter
-     * @return ancestry[]
-     */
-    function getObjectParents($repositoryId, $objectId, $includeAllowableActions, $includeRelationships, $filter = '')
+}
+
+/**
+ * Handles requests for and actions on Folders and Documents
+ */
+class KTObjectService extends KTCMISBase {
+
+    protected $ObjectService;
+
+    public function __construct()
     {
-        $ancestryResult = $this->NavigationService->getObjectParents($repositoryId, $objectId, $includeAllowableActions,
-                                                                     $includeRelationships);
-
-        if (PEAR::isError($ancestryResult))
-        {
-            return array(
-                "status_code" => 1,
-                "message" => "Failed getting ancestry for object"
-            );
-        }
-
-        $ancestry = CMISUtil::decodeObjectHierarchy($ancestryResult, 'child');
-//        $ancestry = array(array('properties' => array('objectId' => 'D2', 'typeId' => 'Document', 'name' => 'test document'),
-//                                'child' => null));
-
-//        $ancestry = array(array('properties' => array(array('property' => array('name' => 'objectId', $value => 'D2')),
-//                                                      array('property' => array('name' => 'typeId', $value => 'Document')),
-//                                                      array('property' => array('name' => 'name', $value => 'test document')))),
-//                                'child' => null);
-
-        return array(
-			"status_code" => 0,
-			"results" => $ancestry
-		);
+        // instantiate underlying CMIS service
+        $this->ObjectService = new CMISObjectService();
     }
 
     /**
@@ -417,7 +384,7 @@ class KTCMIS {
      * @param string $filter
      * @return properties[]
      */
-    function getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships,
+    public function getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships,
                            $returnVersion = false, $filter = '')
     {
         $propertiesResult = $this->ObjectService->getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships);
@@ -429,7 +396,7 @@ class KTCMIS {
                 "message" => "Failed getting properties for object"
             );
         }
-//        echo '<pre>'.print_r($propertiesResult, true).'</pre>';
+
         // will need to convert to array format, so:
         $propertyCollection['objectId'] = $propertiesResult->getValue('objectId');
         $propertyCollection['URI'] = $propertiesResult->getValue('URI');
@@ -441,19 +408,13 @@ class KTCMIS {
         $propertyCollection['changeToken'] = $propertiesResult->getValue('changeToken');
 
         $properties = array(array('properties' => $propertyCollection, 'child' => null));
-//        echo '<pre>'.print_r($properties, true).'</pre>';
-//
-//        $properties = array(array('properties' => array('objectId' => 'F2', 'URI' => '', 'typeId' => 'Document',
-//                                                        'createdBy' => 'Administrator', 'creationDate' => '1 June 2009',
-//                                                        'lastModifiedBy' => 'Administrator', 'lastModificationDate' => '1 June 2009',
-//                                                        'changeToken' => ''),
-//                                  'child' => null));
 
         return array(
 			"status_code" => 0,
 			"results" => $properties
 		);
     }
+
 }
 
 ?>

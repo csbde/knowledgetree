@@ -40,10 +40,9 @@
  * @version Version 0.1
  */
 
-require_once(CMIS_DIR . '/classes/CMISObject.inc.php');
+//require_once(CMIS_DIR . '/classes/CMISObject.inc.php');
 
-// NOTE chemistry class was abstract but this has gone in a different direction anyway
-abstract class CMISBaseObject implements CMISObject {
+abstract class CMISBaseObject {
 
     protected $typeId;
     protected $queryName;
@@ -60,7 +59,7 @@ abstract class CMISBaseObject implements CMISObject {
 
     protected $properties; // list of property objects which define the additional properties for this object
 
-    // TODO all we have here so far is getAttributes & getProperties :)
+    // TODO all we have here so far is getAttributes & getProperties
     //      add all the other methods as we go along
 
     function __construct()

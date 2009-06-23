@@ -98,13 +98,13 @@ class CMISRepository {
         }
 
         // set capabilities
-        foreach($config->repositoryCapabilities->children() as $field => $value)
+        foreach($config->repositoryCapabilities[0] as $field => $value)
         {
             $this->setCapabilityField($field, (string)$value);
         }
 
         // set supported document types
-        foreach($config->supportedTypes->children() as $field => $value)
+        foreach($config->supportedTypes[0] as $field => $value)
         {
             $this->objectTypes[] = (string)$value;
         }

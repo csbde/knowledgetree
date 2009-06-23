@@ -11,10 +11,10 @@ class CMISObjectService {
 
     protected $ktapi;
 
-    function CMISObjectService(&$ktapi)
-    {
-        $this->ktapi = $ktapi;
-    }
+//    function CMISObjectService(&$ktapi)
+//    {
+//        $this->ktapi = $ktapi;
+//    }
 
     /**
      * Fetches the properties for the specified object

@@ -45,14 +45,26 @@
  */
 abstract class CMISPropertyCollection {
 
-    static $objectId;
+    static $ObjectId;
     static $URI;
-    static $typeId;
-    static $createdBy;
-    static $creationDate;
-    static $lastModifiedBy;
-    static $lastModificationDate;
-    static $changeToken;
+    static $ObjectTypeId;
+    static $CreatedBy;
+    static $CreationDate;
+    static $LastModifiedBy;
+    static $LastModificationDate;
+    static $ChangeToken;
+
+    // TODO these definitions probably belong elsewhere, but here will do for now
+    static $propertyTypes;
+
+    function __construct()
+    {
+        $this->propertyTypes = array('ObjectId' => 'propertyId', 'BaseType' => 'propertyString',
+                                  'ObjectTypeId' => 'propertyString', 'CreatedBy' => 'propertyString',
+                                  'CreationDate' => 'propertyDateTime', 'LastModifiedBy' => 'propertyString',
+                                  'LastModificationDate' => 'propertyDateTime', 'Name' => 'propertyString',
+                                  'ParentId' => 'propertyId');
+    }
 
     /**
      * Gets the property value.
@@ -69,6 +81,11 @@ abstract class CMISPropertyCollection {
     function setValue($field, $value)
     {
         $this->{$field} = $value;
+    }
+
+    function getFieldType($field)
+    {
+        return $this->propertyTypes[$field];
     }
 
 }

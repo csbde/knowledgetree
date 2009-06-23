@@ -107,7 +107,7 @@ class CMISDocumentObject extends CMISBaseObject {
 
         $objectProperties = $object->get_detail();
 
-        $this->_setPropertyInternal('objectId', CMISUtil::encodeObjectId($this->typeId, $objectProperties['document_id']));
+        $this->_setPropertyInternal('ObjectId', CMISUtil::encodeObjectId($this->typeId, $objectProperties['document_id']));
         // prevent doubled '/' chars
         $uri = preg_replace_callback('/([^:]\/)\//',
                                      create_function('$matches', 'return $matches[1];'),
@@ -116,28 +116,28 @@ class CMISDocumentObject extends CMISBaseObject {
                                      . $objectProperties['document_id']);
         // NOTE what about instead creating a downloadable version with appropriate link?  see ktapi::download_document
         //      also ktapidocument::get_download_url
-        $this->_setPropertyInternal('Uri', $uri);
+        $this->_setPropertyInternal('URI', $uri);
         // TODO what is this?  Assuming it is the object type id, and not OUR document type?
-        $this->_setPropertyInternal('typeId', $this->getAttribute('typeId'));
-        $this->_setPropertyInternal('createdBy', $objectProperties['created_by']);
-        $this->_setPropertyInternal('creationDate', $objectProperties['created_date']);
-        $this->_setPropertyInternal('lastModifiedBy', $objectProperties['modified_by']);
-        $this->_setPropertyInternal('lastModificationDate', $objectProperties['modified_date']);
-        $this->_setPropertyInternal('changeToken', null);
-        $this->_setPropertyInternal('name', $objectProperties['title']);
-        $this->_setPropertyInternal('isImmutable', $objectProperties['is_immutable']);
+        $this->_setPropertyInternal('ObjectTypeId', $this->getAttribute('typeId'));
+        $this->_setPropertyInternal('CreatedBy', $objectProperties['created_by']);
+        $this->_setPropertyInternal('CreationDate', $objectProperties['created_date']);
+        $this->_setPropertyInternal('LastModifiedBy', $objectProperties['modified_by']);
+        $this->_setPropertyInternal('LastModificationDate', $objectProperties['modified_date']);
+        $this->_setPropertyInternal('ChangeToken', null);
+        $this->_setPropertyInternal('Name', $objectProperties['title']);
+        $this->_setPropertyInternal('IsImmutable', $objectProperties['is_immutable']);
         // NOTE if access to older versions is allowed, this will need to be checked, else just set to yes
         //      see ktapi::get_document_version_history
         // NOTE see ktapi::is_latest_version
-        $this->_setPropertyInternal('isLatestVersion', true);
-        $this->_setPropertyInternal('isMajorVersion', (strstr($objectProperties['version'], '.') ? false : true));
+        $this->_setPropertyInternal('IsLatestVersion', true);
+        $this->_setPropertyInternal('IsMajorVersion', (strstr($objectProperties['version'], '.') ? false : true));
         // NOTE if access to older versions is allowed, this will need to be checked, else just set to yes
         //      see ktapi::get_document_version_history
         // NOTE see ktapi::is_latest_version
-        $this->_setPropertyInternal('isLatestMajorVersion', true);
-        $this->_setPropertyInternal('versionLabel', $objectProperties['version']);
+        $this->_setPropertyInternal('IsLatestMajorVersion', true);
+        $this->_setPropertyInternal('VersionLabel', $objectProperties['version']);
         // TODO what determines this, do we have anything?
-        $this->_setPropertyInternal('versionSeriesId', null);
+        $this->_setPropertyInternal('VersionSeriesId', null);
         if ($objectProperties['checked_out_by'] != 'n/a')
         {
             $checkedOut = true;
@@ -151,18 +151,18 @@ class CMISDocumentObject extends CMISBaseObject {
             $checkedOutBy = null;
             $checkedOutId = null;
         }
-        $this->_setPropertyInternal('isVersionSeriesCheckedOut', $checkedOut);
-        $this->_setPropertyInternal('versionSeriesCheckedOutBy', $checkedOutBy);
+        $this->_setPropertyInternal('IsVersionSeriesCheckedOut', $checkedOut);
+        $this->_setPropertyInternal('VersionSeriesCheckedOutBy', $checkedOutBy);
         // TODO presumably this is the ID of the Private Working Copy created on checkout?
         //      will find out more when we do checkout/checkin
-        $this->_setPropertyInternal('versionSeriesCheckedOutId', $checkedOutId);
+        $this->_setPropertyInternal('VersionSeriesCheckedOutId', $checkedOutId);
         // TODO currently not returned by KnowledgeTree?
-        $this->_setPropertyInternal('checkinComment', null);
+        $this->_setPropertyInternal('CheckinComment', null);
         // TODO if we implement content streams
-        $this->_setPropertyInternal('contentStreamLength', null);
-        $this->_setPropertyInternal('contentStreamMimeType', null);
-        $this->_setPropertyInternal('contentStreamFilename', null);
-        $this->_setPropertyInternal('contentStreamUri', null);
+        $this->_setPropertyInternal('ContentStreamLength', null);
+        $this->_setPropertyInternal('ContentStreamMimeType', null);
+        $this->_setPropertyInternal('ContentStreamFilename', null);
+        $this->_setPropertyInternal('ContentStreamUri', null);
     }
 
 }

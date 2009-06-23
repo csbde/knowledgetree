@@ -12,15 +12,15 @@
     <repository>
         <repositoryURI>http://127.0.0.1/</repositoryURI>
         <repositoryInfo>
-            <repositoryId>1</repositoryId>
+            <repositoryId>0ad7de04-7914-41b1-b5ee-be9f0b626437</repositoryId>
             <repositoryName>KnowledgeTree</repositoryName>
             <repositoryRelationship>self</repositoryRelationship>
             <repositoryDescription>KnowledgeTree Repository</repositoryDescription>
             <vendorName>KnowledgeTree</vendorName>
-            <productName>KnowledgeTree</productName>
+            <productName>KnowledgeTree Document Management System</productName>
             <productVersion>3.6.2</productVersion>
-            <rootFolderId>1</rootFolderId>
-            <cmisVersionsSupported>cmis 0.61c</cmisVersionsSupported>
+            <rootFolderId>F1</rootFolderId>
+            <cmisVersionsSupported>0.61c</cmisVersionsSupported>
         </repositoryInfo>
         <repositoryCapabilities>
             <capabilityMultifiling>false</capabilityMultifiling>
@@ -41,7 +41,7 @@
     <repository>
         <repositoryURI>http://12s7.w0.0.1/</repositoryURI>
         <repositoryInfo>
-            <repositoryId>44</repositoryId>
+            <repositoryId>b60bd6c5-e8f9-4776-b292-8d544468c9e4</repositoryId>
             <repositoryName>asdasdasd</repositoryName>
             <repositoryRelationship>self</repositoryRelationship>
             <repositoryDescription>KnowledgeTree Repository</repositoryDescription>
@@ -49,7 +49,7 @@
             <productName>KnowledgeTree</productName>
             <productVersion>3.6.1</productVersion>
             <rootFolderId>1</rootFolderId>
-            <cmisVersionsSupported>0.61</cmisVersionsSupported>
+            <cmisVersionsSupported>0.61c</cmisVersionsSupported>
         </repositoryInfo>
         <repositoryCapabilities>
             <capabilityMultifiling>false</capabilityMultifiling>

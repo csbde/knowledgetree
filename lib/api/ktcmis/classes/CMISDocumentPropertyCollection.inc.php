@@ -47,21 +47,26 @@ require_once(CMIS_DIR . '/classes/CMISPropertyCollection.inc.php');
  */
 class CMISDocumentPropertyCollection extends CMISPropertyCollection {
 
-    static $name;
-    static $isImmutable;
-    static $isLatestVersion;
-    static $isMajorVersion;
-    static $isLatestMajorVersion;
-    static $versionLabel;
-    static $versionSeriesId;
-    static $isVersionSeriesCheckedOut;
-    static $versionSeriesCheckedOutBy;
-    static $versionSeriesCheckedOutId;
-    static $checkinComment;
-    static $contentStreamLength;
-    static $contentStreamMimeType;
-    static $contentStreamFilename;
-    static $contentStreamUri;
+    static $Name;
+    static $IsImmutable;
+    static $IsLatestVersion;
+    static $IsMajorVersion;
+    static $IsLatestMajorVersion;
+    static $VersionLabel;
+    static $VersionSeriesId;
+    static $IsVersionSeriesCheckedOut;
+    static $VersionSeriesCheckedOutBy;
+    static $VersionSeriesCheckedOutId;
+    static $CheckinComment;
+    static $ContentStreamLength;
+    static $ContentStreamMimeType;
+    static $ContentStreamFilename;
+    static $ContentStreamUri;
+
+    function __construct()
+    {
+        parent::__construct();
+    }
 
 }
 

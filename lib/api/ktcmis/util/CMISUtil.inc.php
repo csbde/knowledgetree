@@ -139,6 +139,7 @@ class CMISUtil {
                             $CMISObject = new CMISFolderObject($ktapi, $repositoryURI);
                             break;
                     }
+                    
                     $CMISObject->get($object['id']);
                     $CMISArray[$count]['object'] = $CMISObject;
                     
@@ -220,9 +221,13 @@ class CMISUtil {
             $object = $entry['object'];
             $properties = $object->getProperties();
 
-            $hierarchy[$key]['properties']['objectId'] = $properties->getValue('objectId');
-            $hierarchy[$key]['properties']['typeId'] = $properties->getValue('typeId');
-            $hierarchy[$key]['properties']['name'] = $properties->getValue('name');
+            // TODO additional properties to be returned
+            $hierarchy[$key]['properties']['ObjectId'] = array('type' => $properties->getFieldType('ObjectId'),
+                                                               'value' => $properties->getValue('ObjectId'));
+            $hierarchy[$key]['properties']['ObjectTypeId'] = array('type' => $properties->getFieldType('ObjectTypeId'),
+                                                               'value' => $properties->getValue('ObjectTypeId'));
+            $hierarchy[$key]['properties']['Name'] = array('type' => $properties->getFieldType('Name'),
+                                                               'value' => $properties->getValue('Name'));
             
             // if we have found a child/parent with one or more children/parents, recurse into the child/parent object
             if (count($entry['items']) > 0)
@@ -270,6 +275,18 @@ class CMISUtil {
         eval($stringdata);
 
         return $array;
+    }
+
+    /**
+     * Converts a boolean value to string representation
+     * If input is not true or false, return unaltered
+     *
+     * @param boolean/other $input
+     * @return string
+     */
+    function boolToString($input)
+    {
+        return (($input === true) ? 'true' : (($input === false) ? 'false' : $input));
     }
 
 }
