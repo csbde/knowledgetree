@@ -34,7 +34,7 @@
 					{if $config->get('ui/mainLogo') != ''}
 						<img src="{$config->get("ui/mainLogo")}" alt="{$config->get("ui/mainLogoTitle")}" class='logoimage'/><br />
 					{else}
-						<img src='{$rootUrl}/resources/graphics/ktlogo-topbar-right.png' alt='{$appname}' class='logoimage' height='50' width='252'/><br />
+						<img src='{$rootUrl}/resources/graphics/ktlogo-topbar-right.png' alt='{$appname}' class='logoimage' /><br />
 					{/if}
 					{if $smallVersion == 'Community Edition'}
 						<span class='communityLabel'><h2>{i18n}Community Edition{/i18n}</h2></span>
