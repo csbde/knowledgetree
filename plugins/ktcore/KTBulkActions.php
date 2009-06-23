@@ -790,7 +790,7 @@ class KTBulkCopyAction extends KTBulkAction {
             }
 
         } else if(is_a($oEntity, 'Folder')) {
-            $res = KTFolderUtil::copy($oEntity, $this->oTargetFolder, $this->oUser, $this->sReason, true);
+            $res = KTFolderUtil::copy($oEntity, $this->oTargetFolder, $this->oUser, $this->sReason, null, true);
             if (PEAR::isError($res)) {
                 return $res;
             }
