@@ -110,6 +110,7 @@ class CMISFolderObject extends CMISBaseObject {
         $this->_setPropertyInternal('Name', $objectProperties['folder_name']);
         $this->_setPropertyInternal('ParentId', $objectProperties['parent_id']);
         $this->_setPropertyInternal('AllowedChildObjectTypeIds', array('Document', 'Folder'));
+        $this->_setPropertyInternal('Author', $objectProperties['created_by']);
     }
 
 }

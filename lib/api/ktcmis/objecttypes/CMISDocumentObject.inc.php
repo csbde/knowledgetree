@@ -83,7 +83,8 @@ class CMISDocumentObject extends CMISBaseObject {
         $this->controllable = false; // <repository-specific>
         $this->versionable = false; // <repository-specific>
         $this->contentStreamAllowed = false; // <repository-specific>
-
+        $this->contentStreamLength = 0;
+        $this->contentStreamMimeType = '';
         // properties
         $this->properties = new CMISDocumentPropertyCollection();
 
@@ -161,10 +162,11 @@ class CMISDocumentObject extends CMISBaseObject {
         // TODO currently not returned by KnowledgeTree?
         $this->_setPropertyInternal('CheckinComment', null);
         // TODO if we implement content streams
-        $this->_setPropertyInternal('ContentStreamLength', null);
-        $this->_setPropertyInternal('ContentStreamMimeType', null);
+        $this->_setPropertyInternal('ContentStreamLength', $objectProperties['filesize']);
+        $this->_setPropertyInternal('ContentStreamMimeType', $objectProperties['mime_type']);
         $this->_setPropertyInternal('ContentStreamFilename', null);
         $this->_setPropertyInternal('ContentStreamUri', null);
+        $this->_setPropertyInternal('Author', $objectProperties['created_by']);
     }
 
 }
