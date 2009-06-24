@@ -46,6 +46,7 @@
 abstract class CMISPropertyCollection {
 
     static $ObjectId;
+    static $BaseType;
     static $URI;
     static $ObjectTypeId;
     static $CreatedBy;
@@ -59,11 +60,15 @@ abstract class CMISPropertyCollection {
 
     function __construct()
     {
-        $this->propertyTypes = array('ObjectId' => 'propertyId', 'BaseType' => 'propertyString',
-                                  'ObjectTypeId' => 'propertyString', 'CreatedBy' => 'propertyString',
-                                  'CreationDate' => 'propertyDateTime', 'LastModifiedBy' => 'propertyString',
-                                  'LastModificationDate' => 'propertyDateTime', 'Name' => 'propertyString',
-                                  'ParentId' => 'propertyId');
+        $this->propertyTypes = array('ObjectId' => 'propertyId',
+                                    'BaseType' => 'propertyString',
+                                    'ObjectTypeId' => 'propertyString',
+                                    'CreatedBy' => 'propertyString',
+                                    'CreationDate' => 'propertyDateTime',
+                                    'LastModifiedBy' => 'propertyString',
+                                    'LastModificationDate' => 'propertyDateTime',
+                                    'Name' => 'propertyString',
+                                    'ParentId' => 'propertyId');
     }
 
     /**

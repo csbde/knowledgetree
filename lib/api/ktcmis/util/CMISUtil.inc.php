@@ -224,6 +224,8 @@ class CMISUtil {
             // TODO additional properties to be returned
             $hierarchy[$key]['properties']['ObjectId'] = array('type' => $properties->getFieldType('ObjectId'),
                                                                'value' => $properties->getValue('ObjectId'));
+            $hierarchy[$key]['properties']['BaseType'] = array('type' => $properties->getFieldType('BaseType'),
+                                                               'value' => $properties->getValue('BaseType'));
             $hierarchy[$key]['properties']['ObjectTypeId'] = array('type' => $properties->getFieldType('ObjectTypeId'),
                                                                'value' => $properties->getValue('ObjectTypeId'));
             $hierarchy[$key]['properties']['Name'] = array('type' => $properties->getFieldType('Name'),

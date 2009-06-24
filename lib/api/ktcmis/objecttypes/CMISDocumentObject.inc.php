@@ -119,6 +119,8 @@ class CMISDocumentObject extends CMISBaseObject {
         $this->_setPropertyInternal('URI', $uri);
         // TODO what is this?  Assuming it is the object type id, and not OUR document type?
         $this->_setPropertyInternal('ObjectTypeId', $this->getAttribute('typeId'));
+        // Needed to distinguish type
+        $this->_setPropertyInternal('BaseType', strtolower($this->getAttribute('typeId')));
         $this->_setPropertyInternal('CreatedBy', $objectProperties['created_by']);
         $this->_setPropertyInternal('CreationDate', $objectProperties['created_date']);
         $this->_setPropertyInternal('LastModifiedBy', $objectProperties['modified_by']);
