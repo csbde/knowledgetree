@@ -1,0 +1,455 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>jQuery Finder</title>
+<link rel="stylesheet" href="default.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<link href="ui.finder.css" rel="stylesheet" media="screen,print" type="text/css">
+<link rel="stylesheet" href="ui.theme.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+<!--[if lt IE 8]>
+	<link href="ui.finder.ie.css" rel="stylesheet" media="screen" type="text/css" />
+<![endif]-->
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="jquery.scrollTo-1.4.0-min.js"></script>
+<script src="http://ui.jquery.com/themeroller/themeswitchertool/" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript" src="ui.finder.js"></script>
+<style type="text/css">
+a {
+	color:blue;
+}
+
+.done {
+	text-decoration: line-through;
+}
+</style>
+<script type="text/javascript">
+$(function(){
+	
+	var initFinder = function() {
+	/*
+	 * Initialise Finder
+	 */
+	$('#finder').finder({
+		title : 'jQuery Finder v0.6a',
+		onRootReady: function(rootList,finderObj){
+			debug('Root ready',arguments)
+		},
+		onInit : function(finderObj) {
+			
+			debug('Finder initialised',arguments)
+			
+			$('.ui-finder-action-refresh').click(function() {
+				$('[name="refresh"]').click();
+			});
+			
+			
+			$('.ui-finder-action-open').click(function(){
+				$('[name="select"]').click();
+			});
+
+			$('.ui-finder-action-current').click(function(){
+				$('[name="getCurrent"]').click();
+			});
+
+			$('.ui-finder-action-destroy').click(function(){
+				$('[name="createFinder"]').click();
+			});
+
+		},
+		onItemSelect : function(listItem,eventTarget,finderObject){			
+			var anchor = $('a',listItem),
+				href = anchor.attr('rel');
+			
+		// Debug is a function specified in Finder script for debugging purposes
+		// Remove it if unnecessary
+			debug('onItemSelect - URL: ',href)
+		
+		// By returning false, the url specified is not fetched
+		// ie. Do not display new column if selected item is not an image
+			if(href.indexOf('.jpg') == -1) {return false;}
+			
+		},
+		onFolderSelect : function(listItem,eventTarget,finderObject){
+			var anchor = $('a',listItem),
+				href = anchor.attr('rel');
+				
+			debug('onFolderSelect - URL: ',href)
+		},
+		onItemOpen : function(listItem,newColumn,finderObject){
+			var anchor = $('a',listItem),
+				href = anchor.attr('href');
+			
+			debug('onItemOpen - Column source: ',newColumn.attr('data-finder-list-source'))
+
+		},
+		onFolderOpen : function(listItem,newColumn,finderObject){
+			var anchor = $('a',listItem),
+				href = anchor.attr('href');
+			
+			debug('onFolderOpen - Column source: ',newColumn.attr('data-finder-list-source'))
+		},
+		toolbarActions : function() {
+			return '\
+			<div class="ui-finder-button ui-state-default ui-corner-right ui-finder-action-refresh" title="Refresh">\
+				<span class="ui-icon ui-icon-refresh"/>\
+			</div>\
+			<div class="ui-finder-button ui-state-default ui-finder-action-open" title="Open ..">\
+				<span class="ui-icon ui-icon-folder-open"/>\
+			</div>\
+			<div class="ui-finder-button ui-state-default ui-finder-action-current ui-corner-left" title="Get current">\
+				<span class="ui-icon ui-icon-help"/>\
+			</div>\
+			<div class="ui-finder-button ui-state-default ui-finder-action-destroy ui-corner-all" title="Destroy">\
+				<span class="ui-icon ui-icon-closethick"/>\
+			</div>\
+			';
+		} 
+		
+	});
+	
+	
+};
+
+	$('[name="createFinder"]').toggle(function(){
+		initFinder();
+		$('button[disabled]').attr('disabled',false);
+		$(this)
+			.attr('data-code',$(this).next('code').text())
+			.text('Destroy Finder');
+		$(this).next('code').text('$(selector).finder(\'destroy\')')
+	},function(){
+		$('#finder').finder('destroy');
+		$('button').slice(1).attr('disabled',true);
+		$(this).text('Create Finder');
+		$(this).next('code').text( $(this).attr('data-code') )
+	});
+	
+/*
+ * Some events to allow API interaction with buttons
+ * Not a part of Finder script, they just show how to interact with API
+ */
+	$('[name="getCurrent"]').click(function(){
+		var current =  $('#finder').finder('current');
+		current = (current) ? current.attr('rel') : 'No item selected';
+		alert(current);
+	});
+
+
+	$('[name="select"]').click(function(){
+		var which = prompt('URL of item to select', $('a:first','#finder').attr('rel'));
+		if(which && which.length>0) {$('#finder').finder('select',which);}
+	});
+
+	$('[name="refresh"]').click(function(){$('#finder').finder('refresh');});
+	$('[name="test"]').click(function(){test();});
+	$('[name="test2"]').click(function(){test2();});
+
+
+	$('[name="createFinder"]').click();
+	
+	
+	$('#switcher').themeswitcher();
+
+/*
+ * A Click event to toggle the image preview, when viewing an image
+ * Not a part of Finder script 
+ */	
+	$(document)
+	.unbind('click.FinderPreview') // Click event to handle file previews etc
+	.bind('click.FinderPreview',function(e){
+		var title = $(e.target);
+		
+		if( !title.hasClass('ui-finder-preview-heading')
+			&& title.parent('.ui-finder-preview-heading').length === 0 )
+			{ return; }
+		
+		title = ( title.hasClass('ui-finder-preview-heading') )
+					? title
+					: title.parent('.ui-finder-preview-heading') ;
+		
+		var image = title.siblings('.ui-finder-image'),
+			span = $('span',title);
+		
+		if( image.length != 1  ) { return; }
+		
+		if(image.is(':visible')) {
+			image.slideUp();
+			title.addClass('ui-finder-preview-heading-closed');
+			span.removeClass('ui-icon-circle-triangle-s');
+			span.addClass('ui-icon-circle-triangle-e');
+		} else {
+			image.slideDown();
+			title.removeClass('ui-finder-preview-heading-closed');
+			span.removeClass('ui-icon-circle-triangle-e');
+			span.addClass('ui-icon-circle-triangle-s');
+		};
+		
+		return false;
+	});
+	
+	
+});
+var test = function(i) {
+	var finder = $('#finder'),
+		intervals = [],
+		interval = i || 500;
+	
+	for(var i =1;i<6;i++){ intervals.push(interval*i); };
+	
+	finder.finder('select','html/level2.html');
+	
+	setTimeout(function(){
+		finder.finder('select','html/somefile.html?0.jpg');
+	},intervals[0]);
+
+	setTimeout(function(){
+		finder.finder('select','html/level2.html');
+	},intervals[1]);
+
+	setTimeout(function(){
+		finder.finder('select','html/somefile.html?5.jpg');
+	},intervals[2]);
+
+	setTimeout(function(){
+		finder.finder('select','html/level3.html');
+	},intervals[3]);
+
+	setTimeout(function(){
+		finder.finder('select','html/somefile.html?0.jpg');
+	},intervals[4]);
+	
+};
+var test2 = function(i) {
+	var finder = $('#finder'),	
+		urls = [
+			'html/level2.html',
+			'html/level3.html',
+			'html/level4.html',
+			'html/level5.html?33',
+			'html/somefile.html?0939fjkl.jpg'
+		];
+	
+	finder.finder('select',urls);
+};
+</script>
+</head>
+
+<body>
+<h1>jQuery Finder .:. Mac OS X-like Column-view Navigation (alternative to treeview)</h1>
+<hr>
+<div id="switcher"></div>
+<br>
+<ol id="finder">
+	<li class="ui-finder-file"><a href="html/somefile.html?0.jpg" title="some title for this image">Lorem ipsum dolor sit amet</a></li>
+	<li class="ui-finder-file"><a href="html/somefile.html?1">Consectetur adipiscing elit</a></li>
+	<li><a>Nam auctor, lectus vulputate</a>
+		<!-- When sublevels are specified in source, like in this item,
+				you don't have to specify if each item is a file or folder.
+			Also, you don't have to specify a URL for the anchor element
+			but THE ANCHOR ELEMENT IS STILL REQUIRED
+		 -->
+		<ul>
+			<li><a>Some fileasd asd asdasd a</a></li>
+			<li><a href="html/somefile.html?4324432428.jpg">Some Imaged asd as</a></li>
+			<li><a>Some Folder</a>
+				<ul>
+					<li><a href="html/somefile.html?7321343">Some fileasd asd asdasd a</a></li>
+					<li><a href="html/somefile.html?433123248.jpg">Some Imaged asd as</a></li>
+					<li><a href="html/level4.html?fsdfs">Some file</a></li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+	<li class="ui-finder-file"><a href="html/somefile.html?2">Consequat luctus</a></li>
+	<li class="ui-finder-file"><a href="html/somefile.html?3">Nisl enim eleifend sem</a></li>
+	<li class="ui-finder-folder"><a href="html/level2.html">Nam auctor, lectus vulputate</a></li>	
+</ol>
+<br>
+<strong><a href="api.html">A better demo</a> (jQuery's API)</strong>
+
+<hr>
+<div style="float:left;width:45%">
+<h3>Public methods</h3>
+<ol>
+	<li><button name="createFinder">Create finder</button> <code>$(selector).finder([options])</code></li>
+	<li><button name="select" disabled>Select Item</button> <code>$(selector).finder('select',URL || DOM or jQuery object || Array of URLs)</code></li>
+	<li><button name="getCurrent" disabled>Get Current</button> <code>$(selector).finder('current')</code></li>
+	<li><button name="refresh" disabled>Refresh Current</button> <code>$(selector).finder('refresh')</code></li>
+</ol>
+You can also use the toolbar buttons for these actions.
+</div>
+<div style="float:right;width:45%">
+<h3>Testing methods</h3>
+<p>Just some methods to test the queue. Create finder before using testing methods</p>
+<ol>
+	<li><button name="test">Interval Test</button> <code>Calls 'select' method 6 times at an interval of 500ms</code></li>
+	<li><button name="test2">Queue Test</button> <code>Calls 'select' method for an array of URLs. Useful if you want to select an Item or Folder which is multiple levels down.</code></li>
+</ol>
+</div>
+<hr>
+<h3>Code used for this demo</h3>
+<pre><code>
+$('#finder').finder({
+	title : 'jQuery Finder v0.6a',
+	onRootReady: function(rootList,finderObj){
+		debug('Root ready',arguments)
+	},
+	onInit : function(finderObj) {
+		
+		debug('Finder initialised',arguments)
+		
+		$('.ui-finder-action-refresh').click(function() {
+			$('[name="refresh"]').click();
+		});
+		
+		
+		$('.ui-finder-action-open').click(function(){
+			$('[name="select"]').click();
+		});
+
+		$('.ui-finder-action-current').click(function(){
+			$('[name="getCurrent"]').click();
+		});
+
+		$('.ui-finder-action-destroy').click(function(){
+			$('[name="createFinder"]').click();
+		});
+
+	},
+	onItemSelect : function(listItem,eventTarget,finderObject){			
+		var anchor = $('a',listItem),
+			href = anchor.attr('rel');
+		
+	// Debug is a function specified in Finder script for debugging purposes
+	// Remove it if unnecessary
+		debug('onItemSelect - URL: ',href)
+	
+	// By returning false, the url specified is not fetched
+	// ie. Do not display new column if selected item is not an image
+		if(href.indexOf('.jpg') == -1) {return false;}
+		
+	},
+	onFolderSelect : function(listItem,eventTarget,finderObject){
+		var anchor = $('a',listItem),
+			href = anchor.attr('rel');
+			
+		debug('onFolderSelect - URL: ',href)
+	},
+	onItemOpen : function(listItem,newColumn,finderObject){
+		var anchor = $('a',listItem),
+			href = anchor.attr('href');
+		
+		debug('onItemOpen - Column source: ',newColumn.attr('data-finder-list-source'))
+
+	},
+	onFolderOpen : function(listItem,newColumn,finderObject){
+		var anchor = $('a',listItem),
+			href = anchor.attr('href');
+		
+		debug('onFolderOpen - Column source: ',newColumn.attr('data-finder-list-source'))
+	},
+
+	toolbarActions : function() {
+		return '\
+		&lt;div class="ui-finder-button ui-state-default ui-corner-left ui-finder-action-refresh" title="Refresh"&gt;\
+			&lt;span class="ui-icon ui-icon-refresh"/&gt;\
+		&lt;/div&gt;\
+		&lt;div class="ui-finder-button ui-state-default ui-finder-action-open" title="Open .."&gt;\
+			&gt;span class="ui-icon ui-icon-folder-open"/&gt;\
+		&lt;/div&gt;\
+		&lt;div class="ui-finder-button ui-state-default ui-finder-action-current ui-corner-right" title="Get current"&gt;\
+			&gt;span class="ui-icon ui-icon-help"/&gt;\
+		&lt;/div&gt;\
+		&lt;div class="ui-finder-button ui-state-default ui-finder-action-destroy ui-corner-all" title="Destroy"&gt;\
+			&gt;span class="ui-icon ui-icon-closethick"/&gt;\
+		&lt;/div&gt;\
+		';
+	} 
+	
+});
+</code></pre>
+<hr>
+
+<h3>Download</h3>
+<p><strong>This is an Alpha release</strong>. It is tested but not thoroughly. There may be bugs, but I haven't found them yet. <span class="done">There are some issues with Internet Explorer (see browser support below).</span> This release is (still) only for testing purposes and proof-of-concept.</p>
+<p>You are more than welcome to contribute with bug reports, code, and general ideas/comments. Please post at <a href="http://groups.google.com/group/jquery-en/browse_thread/thread/480bb6f722b66345">jQuery group</a> or e-mail me at <em>rudas</em> dot <em>n</em> at <em>gmail</em> dot <em>com</em>.</p>
+<p>Last update: <strong>9 Feb. 2009</strong></p>
+<ol>
+	<li><a href="ui.finder.js">ui.finder.js</a></li>
+	<li><a href="v0.6a.zip">v0.6a.zip</a> - Contains all files used in this page (js, css, img, etc)</li>
+</ol>
+
+<hr>
+
+<h3>Browser support</h3>
+
+
+<p class="done">There's a minor bug in most browsers: Each column's width is not calculated properly and so either a long item will collapse to two lines (or more) the column will be cut off. I need some help on this one. Possible cause: some browsers don't take into consideration the width of the scrollbars when calculating widths (?)</p>
+
+<p>Unless otherwise noted, the script looks and behaves correctly for the following browsers:</p>
+
+
+<ol>
+	<li>Firefox 2 &amp; 3</li>
+	<li>Opera 9.62</li>
+	<li>Safari 3.1.2 - <span class="done">Webkit browsers like to collapse columns</span></li>
+	<li>Chrome 1</li>
+	<li>IE 8b2</li>
+	<li>IE 7 - <span class="done">CSS Bug with width of list items (help please)</span></li>
+</ol>
+<hr>
+<h3>Options</h3>
+<p>(This section needs update, see source of ui.finder.js for options)</p>
+<dl>
+	<dt>title <code>String</code></dt>
+	<dd>The title to be displayed at the top of the Finder<p></p></dd>
+	<dt>url <code>String</code></dt>
+	<dd>URL of root list, used when list should be retrieved via ajax <p></p></dd>
+	<dt>onInit <code>Function</code></dt>
+	<dd>Callback function for when a Finder is initialised</p></dd>
+	<dt>onRootReady <code>Function</code></dt>
+	<dd>Callback function for when the root list of a Finder is ready</p></dd>
+	<dt>onItemSelect <code>Function</code></dt>
+	<dd>Callback function when an item is selected. <strong>Note</strong>: If <code>onItemSelect</code> returns <code>false</code>, default behaviour is ignored, i.e. the URL is <em>not</em> fetched, and the new level is <em>not</em> shown.</p> onItemOpen is also not called.</dd>
+	<dt>onItemOpen <code>Function</code></dt>
+	<dd>Callback function when an item is opened. Function is called when the user clicks on the <code>anchor</code> element (as opposed to the <code>li</code> element).<p></p></dd>
+	<dt>onFolderSelect <code>Function</code></dt>
+	<dd>Callback function when a folder is selected. To specify a folder, add a <code>class</code> "<em>folder</em>" to your list element. Function is called when the user clicks on the list (<code>li</code>) element.<p><strong>Note</strong>: If <code>onFolderSelect</code> returns <code>false</code>, default behaviour is ignored, i.e. the URL is <em>not</em> fetched, and the new level is <em>not</em> shown.</p></dd>
+	<dt>onFolderOpen <code>Function</code></dt>
+	<dd>Callback function when a folder is opened. Function is called when the user clicks on the <code>anchor</code> element (as opposed to the <code>li</code> element)<p></p></dd>
+	<dt>animate <code>Boolean</code></dt>
+	<dd>Slide in subsequent levels<p>Default: <code>true</code></p></dd>
+	<dt>cache <code>Boolean</code></dt>
+	<dd>If false, appends timestamp when retrieving subsequent levels (forcing browser to ignore cache). Useful if contents are updated frequently and user must always see new items. <p>Default: <code>false</code></p></dd>
+</dl>
+<hr>
+<h3>To do</h3>
+<ol>
+	<li class="done">Max width
+		<p>New column expands to fit available space.[optional]</p>
+	</li>
+	<li class="done">Support non-ajax functionality
+		<p>When lists &amp; file info already in dom. Display items several levels down.</p>
+	</li>
+	<li>Toolbar/Menubar
+		<p>Make public methods available via toolbar and/or menubar. (nearly there)</p>
+	</li>
+	<li>Search
+		<p>Search for specific items (coming next)</p>
+	</li>
+</ol>
+<hr>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-883806-21");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</body>
+</html>

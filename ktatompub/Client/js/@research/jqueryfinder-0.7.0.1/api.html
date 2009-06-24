@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>jQuery API Finder</title>
+<link rel="stylesheet" href="default.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<link href="ui.finder.css" rel="stylesheet" media="screen,print" type="text/css">
+<link rel="stylesheet" href="ui.theme.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+<!--[if lt IE 8]>
+	<link href="ui.finder.ie.css" rel="stylesheet" media="screen" type="text/css" />
+<![endif]-->
+
+
+<script src="json.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="jquery.scrollTo-1.4.0-min.js"></script>
+<script src="http://ui.jquery.com/themeroller/themeswitchertool/" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="ui.finder.js"></script>
+<style type="text/css">
+a {
+	color:blue;
+}
+.ui-finder-container  {
+	min-height:550px;
+}
+.ui-finder {
+	width:auto;
+}
+
+.ui-finder .api-content {
+	padding:0 10px;
+	line-height:1.5em;
+	/*display:none;*/
+	font-weight:normal !important;
+}
+.ui-finder .api-content pre {
+	font-size:1.1em;
+}
+.ui-finder .api-heading {
+	margin:15px 0 10px 0;
+	line-height:1.2em;
+	position:relative;
+	border:0px !important;
+}
+.ui-finder h1.api-heading {
+	padding-left:20px;
+}
+.ui-finder .api-content .ui-icon {
+	display:block;
+	position:absolute;
+	top:25%;
+	left:0;
+}
+
+.ui-finder .api-type {
+	font-weight:bold;
+	font-size:0.9em;
+}
+.ui-finder .api-options,
+.ui-finder .api-long-description,
+.ui-finder .api-params,
+.ui-finder .api-return  {
+	font-size:0.9em;
+	display:block !important;
+}
+.ui-finder .api-long-description {
+	margin-top:5px;
+}
+.ui-finder .api-long-description p,
+.ui-finder .api-params li {margin:0 0 5px 0;}
+
+.ui-finder .api-options li {margin:0 0 15px 0;}
+
+.ui-finder .api-options ul,
+.ui-finder .api-options p,
+.ui-finder .api-options pre,
+.ui-finder .api-params p,
+.ui-finder .api-params pre {
+	margin: 0 0 0 15px;
+}
+.ui-finder .ui-finder-file {
+	background-position: 0 0  !important;
+}
+</style>
+<script type="text/javascript">
+$(function(){
+	var finderObj;
+		
+	var createFinder = function() {
+	
+		/*
+		 * Initialise Finder
+		 */
+		$('#finder').finder({
+			animate:false,
+			title : 'jQuery API Finder',
+			onInit : function(o) {
+				finderObj = o;
+				
+				$('#switcher').themeswitcher({
+					onSelect : function() {
+						setTimeout(function() {
+
+							var bgc = $('.ui-widget-header').css('backgroundColor');
+
+							$('.ui-finder-list-item').css('borderColor',bgc);
+
+							finderObj.settings.listItemBorderColour = bgc;
+
+						}, 1000);
+					}
+				});
+				
+			},
+			toolbarActions : function() {
+				return ''
+			} 
+		});
+	}
+
+	$('#finder').hide();
+	
+	loadDocs = function(api) {
+		var f = $('#finder');
+		
+		if(window.sessionStorage) { window.sessionStorage.setItem('api', JSON.stringify(api) ); }
+		
+		
+		var buildCategories = function() {
+			var cats = api.categories;
+			
+			$.each(cats,function() {
+				var cat = this,
+					subcat = [];
+				
+				f.append('<li class="ui-finder-folder"><a>'+this.name+'</a><ul></ul></li>');
+			
+			
+			});
+			
+		};
+		
+		var buildData = function() {
+			var data = api.data,
+				dirThis;
+			
+			var fixLinks = function(text) {
+				text = text || '';
+				text = text
+					.replace(/\<a\s*href\=[\'\"]([^(http)](\w+.*?))[\'\"]/mgi,'<a href="http:\/\/docs.jquery.com\/$1"');
+				text = text
+					.replace(/\<a\s*href/mgi,'<a target="_blank" href');
+				return text;
+			};
+			
+			for(var i in data) {
+				var item = data[i],
+					name = item.name,
+					cat = item.category,
+					subcat = item.subcategory,
+					params = item.params,
+					paramsH = params,
+					desc = fixLinks(item.desc),
+					longdesc = fixLinks(item.longdesc),
+					options = item.options || [];
+				
+				dirThis = item;
+				
+				longdesc = (longdesc) ? '<div class="api-long-description">'+longdesc+'</div>' : '' ;
+				
+				if(name == '$.ajax' && window.console) {
+
+					
+				}
+				
+				if(params.length) {
+					var r = [],p = paramsH.reverse();
+					for (var i = p.length - 1; i >= 0; i--){
+						r.push(p[i].name);	};
+						
+					paramsH = '('+r.join(', ')+')';
+					
+					r = []; p = params.reverse();
+					for (var i = p.length - 1; i >= 0; i--){
+						var param = p[i];
+						r.push('<li><strong>'+param.name+'</strong> - '+param.type+'<p>'+fixLinks(param.desc)+'</p></li>'); };
+						
+					params = r;
+				}
+				else {	paramsH = ''; }
+				
+				if(options.length) {
+					var r = [],o = options.reverse();
+					
+					for (var i = o.length - 1; i >= 0; i--){
+						var option = o[i];
+						r.push('<li><strong>'+option.name+'</strong> - '+option.type+'\
+								<p>'+fixLinks(option.desc)+'</p><em>Default:</em> '+option['default']+'</li>'); };
+						
+					options = '<h3 class="api-heading ui-state-default">Options</h3><ol class="api-options">'+r.join('')+'</ol>';
+				}
+				else {	options = ''; }
+								
+				var findParentCat = $('li.ui-finder-folder > a:contains('+cat+')',f);
+								//	.parent('li.ui-finder-folder').find('li.ui-finder-folder > a:contains('+subcat+')');
+				
+				findParentCat.siblings('ul:first')
+					.append('<li class="ui-finder-file">\
+						<a>'+name+paramsH+'</a>\
+						<div class="api-content">\
+							<h1 class="api-heading"><span class="ui-icon ui-icon-bullet"/>'+name+paramsH+'</h1>\
+							<div class="ui-state-highlight">\
+								<span class="api-type">'+item.type+'</span>\
+								- <span class="api-description">'+desc+'</span>\
+							</div>\
+							'+longdesc+'\
+							<h3 class="api-heading ui-state-default">Returns</h3>\
+							<p class="api-return">'+item['return']+'</p>\
+							<h3 class="api-heading ui-state-default">Params</h3>\
+							<ol class="api-params">'+params.join('')+'</ol>\
+							'+options+'\
+						</div>\
+					</li>');
+				
+			}
+			
+		};
+		
+		buildCategories();
+		buildData();
+
+
+		setTimeout(function() {
+			$('#loading').remove();
+			f.show();
+			createFinder();
+			$('body').show()
+		}, 0);
+		
+	};
+	
+	if(window.sessionStorage && typeof window.sessionStorage.api !== 'undefined') {
+		var api = window.sessionStorage.getItem('api').value;
+		loadDocs(JSON.parse(api)); }
+	else {
+		$.getJSON('http://api.jquery.com/lib/docs/api-docs.js?jsoncallback=?'); }
+		
+});
+</script>
+</head>
+
+<body style="display:none">
+<div id="switcher"></div>
+<br>
+<span id="loading">Loading API ...</span>
+<ol id="finder">
+
+</ol>
+<hr>
+<p style="font-size:0.85em">
+This is a not fully functional (for now) version of the jQuery API build for demonstration purposes only. Only tested on a Mac. <strong>More about <a href="http://www.nicolas.rudas.info/jQuery/Finder/">jQuery Finder Plugin</a>.</strong> <a href="http://groups.google.com/group/jquery-en/browse_thread/thread/480bb6f722b66345">Comments ?</a></p>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-883806-21");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</body>
+</html>
