@@ -228,7 +228,12 @@ class CMISUtil {
                                                                'value' => $properties->getValue('ObjectTypeId'));
             $hierarchy[$key]['properties']['Name'] = array('type' => $properties->getFieldType('Name'),
                                                                'value' => $properties->getValue('Name'));
-            
+            if (strtolower($properties->getValue('ObjectTypeId')) == 'folder')
+            {
+                $hierarchy[$key]['properties']['ParentId'] = array('type' => $properties->getFieldType('ParentId'),
+                                                                   'value' => CMISUtil::encodeObjectId('Folder',
+                                                                                                       $properties->getValue('ParentId')));
+            }
             // if we have found a child/parent with one or more children/parents, recurse into the child/parent object
             if (count($entry['items']) > 0)
             {
