@@ -221,41 +221,55 @@ class CMISUtil {
             $object = $entry['object'];
             $properties = $object->getProperties();
 
-            // TODO additional properties to be returned
-            $hierarchy[$key]['properties']['ObjectId'] = array('type' => $properties->getFieldType('ObjectId'),
-                                                               'value' => $properties->getValue('ObjectId'));
-            $hierarchy[$key]['properties']['BaseType'] = array('type' => $properties->getFieldType('BaseType'),
-                                                               'value' => $properties->getValue('BaseType'));
-            $hierarchy[$key]['properties']['ObjectTypeId'] = array('type' => $properties->getFieldType('ObjectTypeId'),
-                                                               'value' => $properties->getValue('ObjectTypeId'));
-            $hierarchy[$key]['properties']['Name'] = array('type' => $properties->getFieldType('Name'),
-                                                               'value' => $properties->getValue('Name'));
-            $hierarchy[$key]['Author'] = array('value' => $properties->getValue('Author'));
-            if (strtolower($properties->getValue('ObjectTypeId')) == 'folder')
-            {
-                $hierarchy[$key]['properties']['ParentId'] = array('type' => $properties->getFieldType('ParentId'),
-                                                                   'value' => CMISUtil::encodeObjectId('Folder',
-                                                                                                       $properties->getValue('ParentId')));
-            } else {
-                $hierarchy[$key]['properties']['ContentStreamLength'] = array('type' => $properties->getFieldType('ContentStreamLength'),
-                                                               'value' => $properties->getValue('ContentStreamLength'));
-                $hierarchy[$key]['properties']['ContentStreamMimeType'] = array('type' => $properties->getFieldType('ContentStreamMimeType'),
-                                                               'value' => $properties->getValue('ContentStreamMimeType'));
-            }
-            // if we have found a child/parent with one or more children/parents, recurse into the child/parent object
-            if (count($entry['items']) > 0)
-            {
-                $hierarchy[$key][$linkText] = CMISUtil::decodeObjectHierarchy($entry['items'], $linkText);
-            }
-            // NOTE may need to set a null value here in case webservices don't like it unset
-            //      so we'll set it just in case...
-            else
-            {
-                $hierarchy[$key][$linkText] = null;
-            }
+            $hierarchy[$key] = CMISUtil::createObjectPropertiesEntry($properties);
         }
 
         return $hierarchy;
+    }
+
+    static function createObjectPropertiesEntry($properties)
+    {
+        $object = array();
+
+        // TODO additional properties to be returned
+        $object['properties']['ObjectId'] = array('type' => $properties->getFieldType('ObjectId'),
+                                                           'value' => $properties->getValue('ObjectId'));
+        $object['properties']['BaseType'] = array('type' => $properties->getFieldType('BaseType'),
+                                                           'value' => $properties->getValue('BaseType'));
+        $object['properties']['ObjectTypeId'] = array('type' => $properties->getFieldType('ObjectTypeId'),
+                                                           'value' => $properties->getValue('ObjectTypeId'));
+        $object['properties']['Name'] = array('type' => $properties->getFieldType('Name'),
+                                                           'value' => $properties->getValue('Name'));
+        $object['Author'] = array('value' => $properties->getValue('Author'));
+
+        if (strtolower($properties->getValue('ObjectTypeId')) == 'folder')
+        {
+            $object['properties']['ParentId'] = array('type' => $properties->getFieldType('ParentId'),
+                                                               'value' => CMISUtil::encodeObjectId('Folder',
+                                                                                                   $properties->getValue('ParentId')));
+        }
+        // TODO should check for content stream data before filling these in
+        else //if ()
+        {
+            $object['properties']['ContentStreamLength'] = array('type' => $properties->getFieldType('ContentStreamLength'),
+                                                           'value' => $properties->getValue('ContentStreamLength'));
+            $object['properties']['ContentStreamMimeType'] = array('type' => $properties->getFieldType('ContentStreamMimeType'),
+                                                           'value' => $properties->getValue('ContentStreamMimeType'));
+        }
+
+        // if we have found a child/parent with one or more children/parents, recurse into the child/parent object
+        if (count($entry['items']) > 0)
+        {
+            $object[$linkText] = CMISUtil::decodeObjectHierarchy($entry['items'], $linkText);
+        }
+        // NOTE may need to set a null value here in case webservices don't like it unset
+        //      so we'll set it just in case...
+        else
+        {
+            $object[$linkText] = null;
+        }
+
+        return $object;
     }
 
     /**

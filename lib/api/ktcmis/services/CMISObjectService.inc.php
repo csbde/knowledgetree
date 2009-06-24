@@ -11,10 +11,15 @@ class CMISObjectService {
 
     protected $ktapi;
 
-//    function CMISObjectService(&$ktapi)
-//    {
-//        $this->ktapi = $ktapi;
-//    }
+    /**
+     * Sets the interface to be used to query the repository
+     *
+     * @param object $ktapi The KnowledgeTree API interface
+     */
+    function setInterface(&$ktapi)
+    {
+        $this->ktapi = $ktapi;
+    }
 
     /**
      * Fetches the properties for the specified object

@@ -372,6 +372,12 @@ class KTObjectService extends KTCMISBase {
         // instantiate underlying CMIS service
         $this->ObjectService = new CMISObjectService();
     }
+    
+    public function startSession($username, $password)
+    {
+        parent::startSession($username, $password);
+        $this->ObjectService->setInterface($this->ktapi);
+    }
 
     /**
      * Gets the properties for the selected object
@@ -387,7 +393,7 @@ class KTObjectService extends KTCMISBase {
     public function getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships,
                            $returnVersion = false, $filter = '')
     {
-        $propertiesResult = $this->ObjectService->getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships);
+        $propertyCollection = $this->ObjectService->getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships);
 
         if (PEAR::isError($propertiesResult))
         {
@@ -397,17 +403,7 @@ class KTObjectService extends KTCMISBase {
             );
         }
 
-        // will need to convert to array format, so:
-        $propertyCollection['objectId'] = $propertiesResult->getValue('objectId');
-        $propertyCollection['URI'] = $propertiesResult->getValue('URI');
-        $propertyCollection['typeId'] = $propertiesResult->getValue('typeId');
-        $propertyCollection['createdBy'] = $propertiesResult->getValue('createdBy');
-        $propertyCollection['creationDate'] = $propertiesResult->getValue('creationDate');
-        $propertyCollection['lastModifiedBy'] = $propertiesResult->getValue('lastModifiedBy');
-        $propertyCollection['lastModificationDate'] = $propertiesResult->getValue('lastModificationDate');
-        $propertyCollection['changeToken'] = $propertiesResult->getValue('changeToken');
-
-        $properties = array(array('properties' => $propertyCollection, 'child' => null));
+        $properties = CMISUtil::createObjectPropertiesEntry($propertyCollection);
 
         return array(
 			"status_code" => 0,

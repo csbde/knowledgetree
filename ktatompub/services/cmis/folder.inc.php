@@ -5,30 +5,9 @@
  * Output returned as an AtomPub feed
  */
 
-include 'services/cmis/RepositoryService.inc.php';
-include 'services/cmis/NavigationService.inc.php';
-include 'services/cmis/ObjectService.inc.php';
+include 'services/cmis/ObjectFeed.inc.php';
 
-$RepositoryService = new RepositoryService();
-$repositories = $RepositoryService->getRepositories();
-$repositoryId = $repositories[0]['repositoryId'];
-
-if (isset($query[3]) && (($query[3] == 'children') || ($query[3] == 'descendants')))
-{
-    $NavigationService = new NavigationService();
-    $NavigationService->startSession($username, $password);
-    
-    $output = CMISFolderFeed::getFolderChildrenFeed($NavigationService, $repositoryId, $query[2], $query[3]);
-}
-else
-{
-    $ObjectService = new ObjectService();
-    $ObjectService->startSession($username, $password);
-
-    $output = CMISFolderFeed::getFolderFeed($ObjectService, $repositoryId, $query[2]);
-}
-
-class CMISFolderFeed {
+class CMISFolderFeed extends CMISObjectFeed {
 
     /**
      * Retrieves children/descendants of the specified folder
@@ -55,7 +34,7 @@ class CMISFolderFeed {
         }
 
         $feed = new KTCMISAPPFeed(KT_APP_BASE_URI, $folderName . ' Children', null, null, null,
-                                  'urn:' . $cmisEntry['properties']['ObjectId']['value'] . '-children');
+                                  'urn:uuid:' . $cmisEntry['properties']['ObjectId']['value'] . '-children');
 
         foreach($entries as $cmisEntry)
         {
@@ -501,86 +480,29 @@ class CMISFolderFeed {
         return $output;
     }
 
-    /**
-     * Creates an AtomPub entry for a CMIS entry and adds it to the supplied feed
-     *
-     * @param object $feed The feed to which we add the entry
-     * @param array $cmisEntry The entry data
-     * @param string $parent The parent folder
-     */
-    function createEntry(&$feed, $cmisEntry, $parent)
-    {
-        $entry = $feed->newEntry();
-        $feed->newId('urn:' . $cmisEntry['properties']['ObjectId']['value'] . '-'
-                            . strtolower($cmisEntry['properties']['ObjectTypeId']['value']), $entry);
+}
 
-                        /*
-<link rel="edit" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/e98319fa-76e4-478f-8ce8-a3a0fd683e2c"/>
-<link rel="cmis-allowableactions" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/e98319fa-76e4-478f-8ce8-a3a0fd683e2c/permissions"/>
-<link rel="cmis-relationships" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/e98319fa-76e4-478f-8ce8-a3a0fd683e2c/associations"/>
-                         */
+include 'services/cmis/RepositoryService.inc.php';
+include 'services/cmis/NavigationService.inc.php';
+include 'services/cmis/ObjectService.inc.php';
 
-        // links
-//            $link = $feed->newElement('link');
-//            $link->appendChild($feed->newAttr('rel','self'));
-//            $link->appendChild($feed->newAttr('href', CMIS_BASE_URI . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])
-//                                                                    . '/' . $cmisEntry['properties']['ObjectId']['value']));
-//            $entry->appendChild($link);
-        $link = $feed->newElement('link');
-        $link->appendChild($feed->newAttr('rel','cmis-parent'));
-        $link->appendChild($feed->newAttr('href', CMIS_BASE_URI . 'folder/' . $parent));
-        $entry->appendChild($link);
+$RepositoryService = new RepositoryService();
+$repositories = $RepositoryService->getRepositories();
+$repositoryId = $repositories[0]['repositoryId'];
 
-        if (strtolower($cmisEntry['properties']['ObjectTypeId']['value']) == 'folder')
-        {
-            $link = $feed->newElement('link');
-            $link->appendChild($feed->newAttr('rel','cmis-folderparent'));
-            $link->appendChild($feed->newAttr('href', CMIS_BASE_URI . 'folder/' . $parent));
-            $entry->appendChild($link);
-            $link = $feed->newElement('link');
-            $link->appendChild($feed->newAttr('rel','cmis-children'));
-            $link->appendChild($feed->newAttr('href', CMIS_BASE_URI
-                                                    . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])
-                                                    . '/' . $cmisEntry['properties']['ObjectId']['value'] . '/children'));
-            $entry->appendChild($link);
-            $link = $feed->newElement('link');
-            $link->appendChild($feed->newAttr('rel','cmis-descendants'));
-            $link->appendChild($feed->newAttr('href', CMIS_BASE_URI
-                                                    . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])
-                                                    . '/' . $cmisEntry['properties']['ObjectId']['value'] . '/descendants'));
-            $entry->appendChild($link);
-        }
+if (isset($query[3]) && (($query[3] == 'children') || ($query[3] == 'descendants')))
+{
+    $NavigationService = new NavigationService();
+    $NavigationService->startSession($username, $password);
+    
+    $output = CMISFolderFeed::getFolderChildrenFeed($NavigationService, $repositoryId, $query[2], $query[3]);
+}
+else
+{
+    $ObjectService = new ObjectService();
+    $ObjectService->startSession($username, $password);
 
-        $link = $feed->newElement('link');
-        $link->appendChild($feed->newAttr('rel','cmis-type'));
-        $link->appendChild($feed->newAttr('href', CMIS_BASE_URI . 'type/' . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])));
-        $entry->appendChild($link);
-        $link = $feed->newElement('link');
-        $link->appendChild($feed->newAttr('rel','cmis-repository'));
-        $link->appendChild($feed->newAttr('href', CMIS_BASE_URI . 'repository'));
-        $entry->appendChild($link);
-        // end links
-
-        $entry->appendChild($feed->newElement('summary', $cmisEntry['properties']['Name']['value']));
-        $entry->appendChild($feed->newElement('title', $cmisEntry['properties']['Name']['value']));
-
-        // main CMIS entry
-        $objectElement = $feed->newElement('cmis:object');
-        $propertiesElement = $feed->newElement('cmis:properties');
-        // <cmis:propertyId cmis:name="ObjectId"><cmis:value>D2</cmis:value></cmis:propertyId>
-
-        foreach($cmisEntry['properties'] as $propertyName => $property)
-        {
-            $propElement = $feed->newElement('cmis:' . $property['type']);
-            $propElement->appendChild($feed->newAttr('cmis:name', $propertyName));
-            $feed->newField('value', CMISUtil::boolToString($property['value']), $propElement);
-            $propertiesElement->appendChild($propElement);
-        }
-
-        $objectElement->appendChild($propertiesElement);
-        $entry->appendChild($objectElement);
-    }
-
+    $output = CMISFolderFeed::getFolderFeed($ObjectService, $repositoryId, $query[2]);
 }
 
 ?>

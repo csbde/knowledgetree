@@ -4,20 +4,9 @@
  * Document access/management functions for CMIS AtomPub
  * Output returned as an AtomPub feed
  */
+include 'services/cmis/ObjectFeed.inc.php';
 
-include 'services/cmis/RepositoryService.inc.php';
-include 'services/cmis/ObjectService.inc.php';
-
-$RepositoryService = new RepositoryService();
-$repositories = $RepositoryService->getRepositories();
-$repositoryId = $repositories[0]['repositoryId'];
-
-$ObjectService = new ObjectService();
-$ObjectService->startSession($username, $password);
-
-$output = CMISDocumentFeed::getDocumentFeed($ObjectService, $repositoryId, $query[2]);
-
-class CMISDocumentFeed {
+class CMISDocumentFeed extends CMISObjectFeed {
 
     /**
      * Retrieves data about a specific document
@@ -29,6 +18,17 @@ class CMISDocumentFeed {
      */
     static public function getDocumentFeed($ObjectService, $repositoryId, $documentId)
     {
+        $cmisEntry = $ObjectService->getProperties($repositoryId, $documentId, false, false);
+
+        $feed = new KTCMISAPPFeed(KT_APP_BASE_URI, $cmisEntry['properties']['ObjectTypeId']['value'], null, null, null,
+                                  'urn:uuid:' . $cmisEntry['properties']['ObjectId']['value']);
+
+        CMISDocumentFeed::createEntry($feed, $cmisEntry, $cmisEntry['properties']['ParentId']['value']);
+
+        // <cmis:hasMoreItems>false</cmis:hasMoreItems>
+
+        $output = $feed->getAPPdoc();
+
 //        $documentData = $ObjectService->getProperties($repositoryId, $documentId, false, false);
 //
 //        $feed = new KTCMISAPPFeed(KT_APP_BASE_URI, 'Root Folder Children', null, null, null,
@@ -88,7 +88,7 @@ class CMISDocumentFeed {
 //        // <cmis:hasMoreItems>false</cmis:hasMoreItems>
 //
 //        $output = $feed->getAPPdoc();
-    $output = '<?xml version="1.0" encoding="UTF-8"?>
+    $outputs = '<?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:cmis="http://www.cmis.org/2008/05">
 <entry>
 <author><name>admin</name></author>
@@ -141,5 +141,17 @@ class CMISDocumentFeed {
     }
 
 }
+
+include 'services/cmis/RepositoryService.inc.php';
+include 'services/cmis/ObjectService.inc.php';
+
+$RepositoryService = new RepositoryService();
+$repositories = $RepositoryService->getRepositories();
+$repositoryId = $repositories[0]['repositoryId'];
+
+$ObjectService = new ObjectService();
+$ObjectService->startSession($username, $password);
+
+$output = CMISDocumentFeed::getDocumentFeed($ObjectService, $repositoryId, $query[2]);
 
 ?>

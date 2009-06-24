@@ -32,7 +32,7 @@ switch($arg)
 		include('services/cmis/checkedout.inc.php');
 		break;
 	case 'document':
-        include('services/cmis/folder.inc.php');
+        include('services/cmis/document.inc.php');
         break;
 	case 'folder':
         include('services/cmis/folder.inc.php');
