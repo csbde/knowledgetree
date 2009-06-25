@@ -20,11 +20,11 @@ $NavigationService->startSession($username, $password);
 $repositories = $RepositoryService->getRepositories();
 $repositoryId = $repositories[0]['repositoryId'];
 
-$output = '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:cmis="http://www.cmis.org/2008/05">
-<id>urn:uuid:checkedout</id>
-<link rel="self" href="' . CMIS_BASE_URI . 'checkedout"/>
-<title>Checked out Documents</title>
-<cmis:hasMoreItems>false</cmis:hasMoreItems>
-</feed>';
+$feed = new KTCMISAPPFeed(KT_APP_BASE_URI, 'Checked out Documents', null, null, null, 'urn:uuid:checkedout');
+
+$entry = null;
+$feed->newField('hasMoreItems', 'false', $entry, true);
+
+$output = $feed->getAPPdoc();
 
 ?>

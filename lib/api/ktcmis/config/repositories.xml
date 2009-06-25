@@ -19,7 +19,7 @@
             <vendorName>KnowledgeTree</vendorName>
             <productName>KnowledgeTree Document Management System</productName>
             <productVersion>3.6.2</productVersion>
-            <rootFolderId>F1</rootFolderId>
+            <rootFolderId>Root%20Folder</rootFolderId>
             <cmisVersionsSupported>0.61c</cmisVersionsSupported>
         </repositoryInfo>
         <repositoryCapabilities>

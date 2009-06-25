@@ -9,10 +9,14 @@ class CMISObjectFeed {
      * @param array $cmisEntry The entry data
      * @param string $parent The parent folder
      */
-    static public function createEntry(&$feed, $cmisEntry, $parent)
+    static public function createEntry(&$feed, $cmisEntry, $parent, $path)
     {
+        preg_match('/^\/?cmis\/folder\/(.*)\/[^\/]*\/?$/', trim($_SERVER['QUERY_STRING'], '/'), $matches);
+        $path = $matches[1];
+        $parent = preg_replace('/\/[^\/]*$/', '', $path);
+        
         $entry = $feed->newEntry();
-        $feed->newId('urn:uuid:' . $cmisEntry['properties']['ObjectId']['value'] . '-'
+        $feed->newId('urn:uuid:' . $cmisEntry['properties']['Name']['value'] . '-'
                                  . strtolower($cmisEntry['properties']['ObjectTypeId']['value']), $entry);
 
                         /*
@@ -29,26 +33,28 @@ class CMISObjectFeed {
 //            $entry->appendChild($link);
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel','cmis-parent'));
-        $link->appendChild($feed->newAttr('href', CMIS_BASE_URI . 'folder/' . $parent));
+        $link->appendChild($feed->newAttr('href', CMIS_BASE_URI . 'folder/' . $path));
         $entry->appendChild($link);
 
         if (strtolower($cmisEntry['properties']['ObjectTypeId']['value']) == 'folder')
         {
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel','cmis-folderparent'));
-            $link->appendChild($feed->newAttr('href', CMIS_BASE_URI . 'folder/' . $parent));
+            $link->appendChild($feed->newAttr('href', CMIS_BASE_URI . 'folder/' . $path));
             $entry->appendChild($link);
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel','cmis-children'));
             $link->appendChild($feed->newAttr('href', CMIS_BASE_URI
                                                     . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])
-                                                    . '/' . $cmisEntry['properties']['ObjectId']['value'] . '/children'));
+                                                    . '/' . $path . '/' . urlencode($cmisEntry['properties']['Name']['value'])
+                                                    . '/children'));
             $entry->appendChild($link);
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel','cmis-descendants'));
             $link->appendChild($feed->newAttr('href', CMIS_BASE_URI
                                                     . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])
-                                                    . '/' . $cmisEntry['properties']['ObjectId']['value'] . '/descendants'));
+                                                    . '/' . $path . '/' . urlencode($cmisEntry['properties']['Name']['value']) 
+                                                    . '/descendants'));
             $entry->appendChild($link);
         }
 

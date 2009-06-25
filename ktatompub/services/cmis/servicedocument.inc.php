@@ -6,6 +6,9 @@
  * NOTE Includes the results of a repositoryInfo call as well as service links
  */
 
+// NOTE currently we only support one repository, which will be the first one found in the repositories.xml config
+// TODO multiple repositories as individual workspaces
+
 include 'services/cmis/RepositoryService.inc.php';
 $RepositoryService = new RepositoryService();
 

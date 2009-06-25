@@ -18,7 +18,7 @@ class CMISFolderFeed extends CMISObjectFeed {
      * @param string $feedType children or descendants
      * @return string CMIS AtomPub feed
      */
-    static public function getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $feedType)
+    static public function getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $feedType)
     {
         if ($feedType == 'children')
         {
@@ -30,25 +30,15 @@ class CMISFolderFeed extends CMISObjectFeed {
         }
         else
         {
-            // error, we shouldn't be here
-        }
-
-        // TODO dynamically get the requested folder's name to display correctly
-        if ($folderId == 'F1')
-        {
-            $folderName = 'Root Folder';
-        }
-        else
-        {
-            $folderName = 'Folder';
+            // error, we shouldn't be here, if we are then the wrong function was called
         }
 
         $feed = new KTCMISAPPFeed(KT_APP_BASE_URI, $folderName . ' ' . ucwords($feedType), null, null, null,
-                                  'urn:uuid:' . $folderId . '-' . $feedType);
+                                  'urn:uuid:' . $folderName . '-' . $feedType);
 
         foreach($entries as $cmisEntry)
         {
-            CMISFolderFeed::createEntry($feed, $cmisEntry, $folderId);
+            CMISFolderFeed::createEntry($feed, $cmisEntry, $folderName);
         }
 
         // <cmis:hasMoreItems>false</cmis:hasMoreItems>
@@ -490,6 +480,62 @@ class CMISFolderFeed extends CMISObjectFeed {
         return $output;
     }
 
+    static public function getFolderData($query, &$locationName, &$tree)
+    {
+        $folderId = null;
+
+        // TODO proper login credentials, or rather use the existing session available from the underlying CMIS code
+        $ktapi = new KTAPI();
+        $ktapi->start_session('admin', 'admin');
+
+        $numQ = count($query);
+
+        if($query[$numQ-1] == 'children' || $query[$numQ-1] == 'descendants') {
+            $offset = 1;
+            $tree = $query[$numQ-1];
+        }
+        
+        $folderName = urldecode($query[$numQ-($offset+1)]);
+
+        $locationName = $folderName;
+
+        if ($numQ <= 5)
+        {
+            $parentId = 1;
+        }
+        else
+        {
+            $count = 2;
+            $lastParent = 0;
+
+            while(++$count <= ($numQ - 3))
+            {
+                if ($lastParent == 0)
+                {
+                    $idUp = 1;
+                }
+                else
+                {
+                    $idUp = $lastParent;
+                }
+
+                $folderName = urldecode($query[$count]);
+                $folder = $ktapi->get_folder_by_name($folderName, $idUp);
+
+                if (PEAR::isError($folder)) break;
+
+                $currentId = $folder->get_folderid();
+                $lastParent = $currentId;
+            }
+
+            $parentId = $lastParent;
+        }
+
+        $folder = $ktapi->get_folder_by_name($locationName, $parentId);
+        $folderId = CMISUtil::encodeObjectId('Folder', $folder->get_folderid());
+
+        return $folderId;
+    }
 }
 
 include 'services/cmis/RepositoryService.inc.php';
@@ -500,19 +546,21 @@ $RepositoryService = new RepositoryService();
 $repositories = $RepositoryService->getRepositories();
 $repositoryId = $repositories[0]['repositoryId'];
 
-if (isset($query[3]) && (($query[3] == 'children') || ($query[3] == 'descendants')))
+$folderId = CMISFolderFeed::getFolderData($query, $folderName, $tree);
+
+if (isset($tree) && (($tree == 'children') || ($tree == 'descendants')))
 {
     $NavigationService = new NavigationService();
     $NavigationService->startSession($username, $password);
     
-    $output = CMISFolderFeed::getFolderChildrenFeed($NavigationService, $repositoryId, $query[2], $query[3]);
+    $output = CMISFolderFeed::getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $tree);
 }
 else
 {
     $ObjectService = new ObjectService();
     $ObjectService->startSession($username, $password);
 
-    $output = CMISFolderFeed::getFolderFeed($ObjectService, $repositoryId, $query[2]);
+    $output = CMISFolderFeed::getFolderFeed($ObjectService, $repositoryId, $folderId);
 }
 
 ?>

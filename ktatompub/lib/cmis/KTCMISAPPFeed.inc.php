@@ -56,6 +56,7 @@ class KTCMISAPPFeed extends KTAPDoc {
 	public function __construct($baseURI = NULL, $title = NULL, $link = NULL, $updated = NULL, $author = NULL, $id = NULL)
     {
 		parent::__construct();
+        
 		$this->baseURI = $baseURI;
         $this->id = $id;
         $this->title = $title;
@@ -65,6 +66,7 @@ class KTCMISAPPFeed extends KTAPDoc {
 	private function constructHeader()
     {
 		$feed = $this->newElement('feed');
+		$feed->appendChild($this->newAttr('xmlns','http://www.w3.org/2007/app'));
 		$feed->appendChild($this->newAttr('xmlns','http://www.w3.org/2005/Atom'));
 		$feed->appendChild($this->newAttr('xmlns:cmis','http://www.cmis.org/2008/05'));
 		$this->feed = &$feed;
@@ -76,7 +78,7 @@ class KTCMISAPPFeed extends KTAPDoc {
 
         $link = $this->newElement('link');
 		$link->appendChild($this->newAttr('rel','self'));
-		$link->appendChild($this->newAttr('href', $this->baseURI . $_SERVER['QUERY_STRING']));
+		$link->appendChild($this->newAttr('href', $this->baseURI . trim($_SERVER['QUERY_STRING'], '/')));
 		$feed->appendChild($link);
         
         if (!is_null($this->title))
@@ -103,8 +105,18 @@ class KTCMISAPPFeed extends KTAPDoc {
 	
 	public function &newField($name = NULL, $value = NULL, &$entry = NULL)
     {
-		$field = $this->newElement('cmis:' . $name,$value);
-		if(isset($entry))$entry->appendChild($field);
+        $append = false;
+
+        if(func_num_args() > 3)
+        {
+            $append = ((func_get_arg(3) === true) ? true : false);
+		}
+
+        $field = $this->newElement('cmis:' . $name,$value);
+
+		if (isset($entry)) $entry->appendChild($field);
+        else if ($append) $this->feed->appendChild($field);
+
 		return $field;
 	}
 	

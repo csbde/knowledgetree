@@ -7,7 +7,8 @@
 include_once('lib/cmis/KTCMISAPPServiceDoc.inc.php');
 include_once('lib/cmis/KTCMISAPPFeed.inc.php');
 
-define ('CMIS_BASE_URI', KT_APP_BASE_URI . 'cmis/');
+define ('CMIS_BASE_URI', trim(KT_APP_BASE_URI, '/') . 'cmis/');
+//echo KT_APP_BASE_URI;exit;
 // hack for links not yet working in KT, use Alfresco to move things forward
 //define ('CMIS_BASE_URI_ALF', 'http://127.0.0.1:8080/alfresco/service/api/');
 //define ('CMIS_BASE_URI', 'http://10.33.4.34:8080/alfresco/service/api/');
@@ -18,7 +19,7 @@ $username = $_SERVER['PHP_AUTH_USER'];
 $password = $_SERVER['PHP_AUTH_PW'];
 
 // NOTE this is just for demonstration purposes and attempting to auth with clients which send the username/password differently
-// TODO disable once we have Drupal compatible login working
+// TODO disable once we have at least Drupal compatible login working, can re-enable if necessary
 if (($username == '') && ($password == ''))
 {
     $username = $password = 'admin';

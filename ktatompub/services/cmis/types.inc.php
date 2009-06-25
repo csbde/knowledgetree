@@ -35,7 +35,8 @@ switch($arg)
         break;
     case 'types':
         $types = $RepositoryService->getTypes($repositoryId);
-        $output = CMISTypeFeed::getTypeFeed('All Types', $types);
+        $type = (($query[2] == '') ? 'all' : $query[2]);
+        $output = CMISTypeFeed::getTypeFeed($type, $types);
 		break;
 }
 
@@ -54,7 +55,23 @@ class CMISTypeFeed {
      */
     static public function getTypeFeed($typeDef, $types)
     {
-        $feed = new KTCMISAPPFeed(KT_APP_BASE_URI, $typeDef, null, null, null, 'urn:uuid:type-' . $query[2]);
+        $typesString = '';
+        $typesHeading = '';
+        switch($typeDef)
+        {
+            case 'all':
+            case 'children':
+            case 'descendants':
+                $typesString = 'types-' . $typeDef;
+                $typesHeading = 'All Types';
+                break;
+            default:
+                $typesString = 'type-' . $typeDef;
+                $typesHeading = $typeDef;
+                break;
+        }
+
+        $feed = new KTCMISAPPFeed(KT_APP_BASE_URI, $typesHeading, null, null, null, 'urn:uuid:' . $typesString);
 
         foreach($types as $type)
         {

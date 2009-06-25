@@ -834,9 +834,9 @@ class KTAPI
 	* @param string $foldername The folder name
 	* @return object $folder The KTAPI_Folder object
     */
-	public function &get_folder_by_name($foldername)
+	public function &get_folder_by_name($foldername, $parentId = 1)
 	{
-		$folder = KTAPI_Folder::_get_folder_by_name($this, $foldername, 1);
+		$folder = KTAPI_Folder::_get_folder_by_name($this, $foldername, $parentId);
 		return $folder;
 	}
 
