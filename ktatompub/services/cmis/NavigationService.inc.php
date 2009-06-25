@@ -22,7 +22,7 @@ class NavigationService extends KTNavigationService {
      * @return cmisObjectType[]
      */
     public function getDescendants($repositoryId, $folderId, $includeAllowableActions, $includeRelationships,
-                            $depth = 1, $typeID = 'Any', $filter = '')
+                                   $depth = 1, $typeID = 'Any', $filter = '')
     {
         $result = parent::getDescendants($repositoryId, $folderId, $includeAllowableActions,
                                          $includeRelationships, $depth, $typeID, $filter);

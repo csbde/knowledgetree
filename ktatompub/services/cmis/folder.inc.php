@@ -20,8 +20,18 @@ class CMISFolderFeed extends CMISObjectFeed {
      */
     static public function getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $feedType)
     {
-        // TODO distingush between getDescendents and getChildren calls, based on $feedType
-        $entries = $NavigationService->getChildren($repositoryId, $folderId, false, false);
+        if ($feedType == 'children')
+        {
+            $entries = $NavigationService->getChildren($repositoryId, $folderId, false, false);
+        }
+        else if ($feedType == 'descendants')
+        {
+            $entries = $NavigationService->getDescendants($repositoryId, $folderId, $includeAllowableActions, $includeRelationships);
+        }
+        else
+        {
+            // error, we shouldn't be here
+        }
 
         // TODO dynamically get the requested folder's name to display correctly
         if ($folderId == 'F1')
@@ -33,8 +43,8 @@ class CMISFolderFeed extends CMISObjectFeed {
             $folderName = 'Folder';
         }
 
-        $feed = new KTCMISAPPFeed(KT_APP_BASE_URI, $folderName . ' Children', null, null, null,
-                                  'urn:uuid:' . $cmisEntry['properties']['ObjectId']['value'] . '-children');
+        $feed = new KTCMISAPPFeed(KT_APP_BASE_URI, $folderName . ' ' . ucwords($feedType), null, null, null,
+                                  'urn:uuid:' . $folderId . '-' . $feedType);
 
         foreach($entries as $cmisEntry)
         {
