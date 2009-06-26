@@ -480,62 +480,28 @@ class CMISFolderFeed extends CMISObjectFeed {
         return $output;
     }
 
-    static public function getFolderData($query, &$locationName, &$tree)
+    static public function getFolderData($query, &$folderId, &$tree)
     {
-        $folderId = null;
-
-        // TODO proper login credentials, or rather use the existing session available from the underlying CMIS code
         $ktapi = new KTAPI();
         $ktapi->start_session('admin', 'admin');
-
+        $repositoryId = $repositories[0]['repositoryId'];
         $numQ = count($query);
-
+        $numFolders = $numQ-3;
+        $folderName = urldecode($query[$numQ-$numFolders]);
+        $folderId = 1;
         if($query[$numQ-1] == 'children' || $query[$numQ-1] == 'descendants') {
-            $offset = 1;
             $tree = $query[$numQ-1];
         }
-        
-        $folderName = urldecode($query[$numQ-($offset+1)]);
-
-        $locationName = $folderName;
-
-        if ($numQ <= 5)
-        {
-            $parentId = 1;
+        $start = 0;
+        while($start < $numFolders-1) {
+            $folder = $ktapi->get_folder_by_name($folderName, $folderId);
+            $folderId = $folder->get_folderid();
+            $start++;
+            $folderName = urldecode($query[$numQ-$numFolders+$start]);
         }
-        else
-        {
-            $count = 2;
-            $lastParent = 0;
+        return CMISUtil::encodeObjectId('Folder', $folderId);
 
-            while(++$count <= ($numQ - 3))
-            {
-                if ($lastParent == 0)
-                {
-                    $idUp = 1;
-                }
-                else
-                {
-                    $idUp = $lastParent;
-                }
-
-                $folderName = urldecode($query[$count]);
-                $folder = $ktapi->get_folder_by_name($folderName, $idUp);
-
-                if (PEAR::isError($folder)) break;
-
-                $currentId = $folder->get_folderid();
-                $lastParent = $currentId;
-            }
-
-            $parentId = $lastParent;
-        }
-
-        $folder = $ktapi->get_folder_by_name($locationName, $parentId);
-        $folderId = CMISUtil::encodeObjectId('Folder', $folder->get_folderid());
-
-        return $folderId;
-    }
+	}
 }
 
 include 'services/cmis/RepositoryService.inc.php';
@@ -547,6 +513,7 @@ $repositories = $RepositoryService->getRepositories();
 $repositoryId = $repositories[0]['repositoryId'];
 
 $folderId = CMISFolderFeed::getFolderData($query, $folderName, $tree);
+
 
 if (isset($tree) && (($tree == 'children') || ($tree == 'descendants')))
 {
