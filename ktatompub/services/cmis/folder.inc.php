@@ -480,27 +480,30 @@ class CMISFolderFeed extends CMISObjectFeed {
         return $output;
     }
 
-    static public function getFolderData($query, &$folderId, &$tree)
+    static public function getFolderData($query, &$folderName, &$tree)
     {
         $ktapi = new KTAPI();
         $ktapi->start_session('admin', 'admin');
-        $repositoryId = $repositories[0]['repositoryId'];
+        
         $numQ = count($query);
         $numFolders = $numQ-3;
-        $folderName = urldecode($query[$numQ-$numFolders]);
         $folderId = 1;
-        if($query[$numQ-1] == 'children' || $query[$numQ-1] == 'descendants') {
+
+        if ($query[$numQ-1] == 'children' || $query[$numQ-1] == 'descendants')
+        {
             $tree = $query[$numQ-1];
         }
+
         $start = 0;
-        while($start < $numFolders-1) {
+        while($start < $numFolders-1)
+        {
+            $folderName = urldecode($query[$numQ-$numFolders+$start]);
             $folder = $ktapi->get_folder_by_name($folderName, $folderId);
             $folderId = $folder->get_folderid();
-            $start++;
-            $folderName = urldecode($query[$numQ-$numFolders+$start]);
+            ++$start;
         }
-        return CMISUtil::encodeObjectId('Folder', $folderId);
 
+        return CMISUtil::encodeObjectId('Folder', $folderId);
 	}
 }
 
@@ -513,7 +516,6 @@ $repositories = $RepositoryService->getRepositories();
 $repositoryId = $repositories[0]['repositoryId'];
 
 $folderId = CMISFolderFeed::getFolderData($query, $folderName, $tree);
-
 
 if (isset($tree) && (($tree == 'children') || ($tree == 'descendants')))
 {
