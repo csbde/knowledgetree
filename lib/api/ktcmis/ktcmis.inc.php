@@ -77,19 +77,10 @@ class KTCMISBase {
 
     public function startSession($username, $password)
     {
-        global $default;
-        $default->log->debug("attempt auth with $username :: $password");
         $this->session = null;
-        // remove as soon as actual auth code is in place
-        $username = 'admin';
-        $password = 'admin';
+
         $this->ktapi = new KTAPI();
         $this->session =& $this->ktapi->start_session($username, $password);
-
-        if (PEAR::isError($this->session))
-        {
-           $default->log->debug("FAILED $username :: $password FAILED");
-        }
 
         return $this->session;
     }
@@ -358,6 +349,37 @@ class KTNavigationService extends KTCMISBase {
 		);
     }
 
+    /**
+     * Gets the parents for the selected object
+     *
+     * @param string $repositoryId
+     * @param string $folderId
+     * @param boolean $includeAllowableActions
+     * @param boolean $includeRelationships
+     * @param string $filter
+     * @return ancestry[]
+     */
+    function getObjectParents($repositoryId, $objectId, $includeAllowableActions, $includeRelationships, $filter = '')
+    {
+        $ancestryResult = $this->NavigationService->getObjectParents($repositoryId, $objectId, $includeAllowableActions,
+                                                                     $includeRelationships);
+
+        if (PEAR::isError($ancestryResult))
+        {
+            return array(
+                "status_code" => 1,
+                "message" => "Failed getting ancestry for object"
+            );
+        }
+
+        $ancestry = CMISUtil::decodeObjectHierarchy($ancestryResult, 'child');
+
+        return array(
+            "status_code" => 0,
+            "results" => $ancestry
+        );
+    }
+
 }
 
 /**
@@ -409,6 +431,35 @@ class KTObjectService extends KTCMISBase {
 			"status_code" => 0,
 			"results" => $properties
 		);
+    }
+
+    /**
+     * Function to create a folder
+     *
+     * @param string $repositoryId The repository to which the folder must be added
+     * @param string $typeId Object Type id for the folder object being created
+     * @param array $properties Array of properties which must be applied to the created folder object
+     * @param string $folderId The id of the folder which will be the parent of the created folder object
+     * @return string $objectId The id of the created folder object
+     */
+    function createFolder($repositoryId, $typeId, $properties, $folderId)
+    {
+        $objectId = null;
+
+        $objectId = $this->ObjectService->createFolder($repositoryId, $typeId, $properties, $folderId);
+
+        if (PEAR::isError($propertiesResult))
+        {
+            return array(
+                "status_code" => 1,
+                "message" => "Failed getting properties for object"
+            );
+        }
+
+        return array(
+            'status_code' => 0,
+            'results' => $objectId
+        );
     }
 
 }
