@@ -16,8 +16,6 @@ class RepositoryService extends KTRepositoryService {
     */
     public function getRepositories()
     {
-        global $default;
-        $default->log->debug('getRepositories');
         $result = parent::getRepositories();
 
         if ($result['status_code'] == 0)

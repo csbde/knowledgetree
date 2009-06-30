@@ -5,6 +5,10 @@
  * Output returned as an AtomPub feed
  */
 
+ // NOTE the static responses in the code are example responses and partial responses
+ // against which the dynamic response is being checked while we are still uncertain
+ // whether everything is as it should be
+
 include 'services/cmis/ObjectFeed.inc.php';
 
 class CMISFolderFeed extends CMISObjectFeed {
