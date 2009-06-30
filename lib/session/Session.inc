@@ -283,6 +283,7 @@ class Session {
         // now check if the timeout has been exceeded
         $lastused = $aRow["lastused"];
         $diff = time() - strtotime($lastused);
+        if($default->sessionTimeout<=0)$default->sessionTimeout=1200;
         if($diff <= $default->sessionTimeout) {
             // update last used timestamp
             $aFV = array(
