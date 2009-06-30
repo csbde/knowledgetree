@@ -97,9 +97,6 @@ switch(strtolower(trim($query[0]))){
 	case 'document':
 		include('services/document.inc.php');
 		break;
-	case 'cmis':
-        include('services/cmis/index.php');
-        break;
 	case 'servicedocument':
 	default:
 		include('services/servicedocument.inc.php');
