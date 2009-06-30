@@ -132,4 +132,18 @@ site.event_handlers=new function(){
 				'<p />The site will then generate an atompub formatted DELETE request, and clear it\'s own cache and the document tree cache before ' +
 				'switching to an empty panel.');
 	}
+	
+	
+	this.discovery=function(url){
+		var sdoc=url+'servicedocument';
+		if(typeof(url)!='string')sdoc=site.cfg('service');
+		site.cfg('service',sdoc);
+		if(lib.resources.resourceLoaded(sdoc)){
+			var data=lib.resources.getResourceFromUrl(sdoc);
+			ktApp.serviceDoc.parseXML($(data.data).find('service')[0],'DMS');
+			
+		}else{
+			lib.resources.getUrl(sdoc,site.event_handlers.discovery);
+		}
+	}
 }
