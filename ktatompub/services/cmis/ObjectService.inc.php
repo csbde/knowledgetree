@@ -25,7 +25,7 @@ class ObjectService extends KTObjectService {
     {
         $result = parent::getProperties($repositoryId, $objectId, $includeAllowableActions,
                                         $returnVersion, $filter);
-print_r($result);echo "<BR><BR>";
+
         if ($result['status_code'] == 0)
         {
             return $result['results'];
