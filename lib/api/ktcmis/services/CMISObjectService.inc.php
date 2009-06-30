@@ -60,6 +60,45 @@ class CMISObjectService {
         return $properties;
     }
 
+    /**
+     * Function to create a folder
+     *
+     * @param string $repositoryId The repository to which the folder must be added
+     * @param string $typeId Object Type id for the folder object being created
+     * @param array $properties Array of properties which must be applied to the created folder object
+     * @param string $folderId The id of the folder which will be the parent of the created folder object
+     * @return string $objectId The id of the created folder object
+     */
+    // TODO throw ConstraintViolationException if:
+    //      typeID is not an Object-Type whose baseType is “Folder”.
+    //      value of any of the properties violates the min/max/required/length constraints
+    //      specified in the property definition in the Object-Type.
+    //      typeID is NOT in the list of AllowedChildObjectTypeIds of the parent-folder specified by folderId
+    // TODO throw storageException under conditions specified in "specific exceptions" section
+    function createFolder($repositoryId, $typeId, $properties, $folderId)
+    {
+        $objectId = null;
+
+        // TODO determine whether this is in fact necessary or if we should require decoding in the calling code
+        // Attempt to decode $folderId, use as is if not detected as encoded
+        $objectId = $folderId;
+        $tmpTypeId = CMISUtil::decodeObjectId($objectId);
+        if ($tmpTypeId != 'Unknown')
+            $folderId = $objectId;
+
+        $response = $this->ktapi->create_folder($folderId, $properties['name'], $sig_username = '', $sig_password = '', $reason = '');
+        if ($response['status_code'] != 0)
+        {
+            // TODO add some error handling here
+        }
+        else
+        {
+            $objectId = CMISUtil::encodeObjectId('Folder', $response['results']['id']);
+        }
+
+        return $objectId;
+    }
+
 }
 
 ?>
