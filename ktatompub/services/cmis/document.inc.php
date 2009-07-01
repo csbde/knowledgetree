@@ -29,66 +29,7 @@ class CMISDocumentFeed extends CMISObjectFeed {
 
         $output = $feed->getAPPdoc();
 
-//        $documentData = $ObjectService->getProperties($repositoryId, $documentId, false, false);
-//
-//        $feed = new KTCMISAPPFeed(KT_APP_BASE_URI, 'Root Folder Children', null, null, null,
-//                                  'urn:uuid:' . $cmisEntry['properties']['ObjectId']['value'] . '-children');
-//
-//        foreach($entries as $cmisEntry)
-//        {
-//            $entry = $feed->newEntry();
-//            $feed->newId('urn:uuid:' . $cmisEntry['properties']['ObjectId']['value'] . '-'
-//                                . strtolower($cmisEntry['properties']['ObjectTypeId']['value']), $entry);
-//
-//            // links
-//            if (strtolower($cmisEntry['properties']['ObjectTypeId']['value']) == 'folder')
-//            {
-//                $link = $feed->newElement('link');
-//                $link->appendChild($feed->newAttr('rel','cmis-children'));
-//                $link->appendChild($feed->newAttr('href', CMIS_BASE_URI
-//                                                        . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])
-//                                                        . '/' . $cmisEntry['properties']['ObjectId']['value'] . '/children'));
-//                $entry->appendChild($link);
-//                $link = $feed->newElement('link');
-//                $link->appendChild($feed->newAttr('rel','cmis-descendants'));
-//                $link->appendChild($feed->newAttr('href', CMIS_BASE_URI
-//                                                        . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])
-//                                                        . '/' . $cmisEntry['properties']['ObjectId']['value'] . '/descendants'));
-//                $entry->appendChild($link);
-//            }
-//            $link = $feed->newElement('link');
-//            $link->appendChild($feed->newAttr('rel','cmis-type'));
-//            $link->appendChild($feed->newAttr('href', CMIS_BASE_URI . 'type/' . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])));
-//            $entry->appendChild($link);
-//            $link = $feed->newElement('link');
-//            $link->appendChild($feed->newAttr('rel','cmis-repository'));
-//            $link->appendChild($feed->newAttr('href', CMIS_BASE_URI . 'repository'));
-//            $entry->appendChild($link);
-//
-//            $entry->appendChild($feed->newElement('summary', $cmisEntry['properties']['Name']['value']));
-//            $entry->appendChild($feed->newElement('title', $cmisEntry['properties']['Name']['value']));
-//
-//            // main CMIS entry
-//            $objectElement = $feed->newElement('cmis:object');
-//            $propertiesElement = $feed->newElement('cmis:properties');
-//            // <cmis:propertyId cmis:name="ObjectId"><cmis:value>D2</cmis:value></cmis:propertyId>
-//
-//            foreach($cmisEntry['properties'] as $propertyName => $property)
-//            {
-//                $propElement = $feed->newElement('cmis:' . $property['type']);
-//                $propElement->appendChild($feed->newAttr('cmis:name', $propertyName));
-//                $feed->newField('value', CMISUtil::boolToString($property['value']), $propElement);
-//                $propertiesElement->appendChild($propElement);
-//            }
-//
-//            $objectElement->appendChild($propertiesElement);
-//            $entry->appendChild($objectElement);
-//        }
-//
-//        // <cmis:hasMoreItems>false</cmis:hasMoreItems>
-//
-//        $output = $feed->getAPPdoc();
-    $outputs = '<?xml version="1.0" encoding="UTF-8"?>
+        $outputs = '<?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:cmis="http://www.cmis.org/2008/05">
 <entry>
 <author><name>admin</name></author>

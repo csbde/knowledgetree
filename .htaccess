@@ -61,6 +61,10 @@ Options +SymLinksIfOwnerMatch
 #AcceptPathInfo On
 
 AddOutputFilter DEFLATE text/html text/plain text/xml text/javascript application/x-javascript text/css
+<<<<<<< HEAD:.htaccess
+=======
+# The following seems to breaking things on ZendServer - kgf
+>>>>>>> 3021d9ce95b467f66a2f65312d7db0e1f55c0d8c:.htaccess
 #ExpiresActive ON
 #ExpiresByType text/html "access plus 1 day"
 #ExpiresByType text/css "access plus 1 day"

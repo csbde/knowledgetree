@@ -5,6 +5,10 @@
  * Output returned as an AtomPub feed
  */
 
+ // NOTE the static responses in the code are example responses and partial responses
+ // against which the dynamic response is being checked while we are still uncertain
+ // whether everything is as it should be
+
 include 'services/cmis/ObjectFeed.inc.php';
 
 class CMISFolderFeed extends CMISObjectFeed {
@@ -440,6 +444,7 @@ class CMISFolderFeed extends CMISObjectFeed {
         // <cmis:hasMoreItems>false</cmis:hasMoreItems>
 
         $output = $feed->getAPPdoc();
+        
     $outputs = '<?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:cmis="http://www.cmis.org/2008/05">
 <entry>

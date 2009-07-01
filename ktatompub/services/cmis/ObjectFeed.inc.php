@@ -74,7 +74,6 @@ class CMISObjectFeed {
         // main CMIS entry
         $objectElement = $feed->newElement('cmis:object');
         $propertiesElement = $feed->newElement('cmis:properties');
-        // <cmis:propertyId cmis:name="ObjectId"><cmis:value>D2</cmis:value></cmis:propertyId>
 
         foreach($cmisEntry['properties'] as $propertyName => $property)
         {

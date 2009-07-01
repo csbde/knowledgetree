@@ -40,7 +40,6 @@
  * @version Version 0.1
  */
 
-// really wanted to keep KT code out of here but I don't see how
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
@@ -75,7 +74,6 @@ class CMISNavigationService {
     // NOTE If the Repository supports the optional “VersionSpecificFiling” capability,
     //      then the repository SHALL return the document versions filed in the specified folder or its descendant folders.
     //      Otherwise, the latest version of the documents SHALL be returned.
-
     // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
     function getDescendants($repositoryId, $folderId, $includeAllowableActions, $includeRelationships,
                             $depth = 1, $typeId = 'Any', $filter = '')
@@ -156,8 +154,8 @@ class CMISNavigationService {
      * @return array $ancestry
      */
     // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
+    // TODO If this service method is invoked on the root folder of the Repository, then the Repository SHALL return an empty result set.
     // NOTE SHOULD always include the “ObjectId” and “ParentId” properties for all objects returned
-    // NOTE If this service method is invoked on the root folder of the Repository, then the Repository shall return an empty result set.
     function getFolderParent($repositoryId, $folderId, $includeAllowableActions, $includeRelationships, $returnToRoot, $filter = '')
     {
         $ancestry = array();
@@ -217,7 +215,7 @@ class CMISNavigationService {
      * @return array $parents
      */
     // TODO ConstraintViolationException: The Repository SHALL throw this exception if this method is invoked
-    //      on an object who Object-Type Defintion specifies that it is not fileable.
+    //      on an object who Object-Type Definition specifies that it is not fileable.
     //      FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid.
     function getObjectParents($repositoryId, $objectId, $includeAllowableActions, $includeRelationships, $filter = '')
     {
@@ -243,6 +241,26 @@ class CMISNavigationService {
         $ancestry = CMISUtil::createParentObjectHierarchy($ancestry, $repository->getRepositoryURI, $this->ktapi);
 
         return $ancestry;
+    }
+
+    /**
+     * Returns a list of checked out documents from the selected repository
+     *
+     * @param string $repositoryId
+     * @param string $folderId The folder for which checked out docs are requested
+     * @param string $filter
+     * @param int $maxItems
+     * @param int $skipCount
+     * @return array $checkedout The collection of checked out documents
+     */
+    // NOTE NOT YET IMPLEMENTED (this function is just a place holder at the moment :))
+    function getCheckedoutDocs($repositoryId, $folderId = null, $filter = '', $maxItems = 0, $skipCount = 0)
+    {
+        $checkedout = array();
+
+        
+
+        return $checkedout();
     }
 
 }

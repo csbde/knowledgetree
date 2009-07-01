@@ -54,7 +54,7 @@ class CMISDocumentObject extends CMISBaseObject {
     private $uri;
 
     // TODO some of this should probably come from configuration files as it is repository specific
-    function CMISDocumentObject(&$ktapi = null, $uri = null)
+    function __construct($documentId = null, &$ktapi = null, $uri = null)
     {
         $this->ktapi = $ktapi;
         // uri to use for document links
@@ -92,12 +92,16 @@ class CMISDocumentObject extends CMISBaseObject {
 //        parent::__construct();
 
         // set document specific property definitions
-        
+
+        if (!is_null($documentId))
+        {
+            $this->_get($documentId);
+        }
     }
 
-    function get($objectId)
+    private function _get($documentId)
     {
-        $object = $this->ktapi->get_document_by_id($objectId);
+        $object = $this->ktapi->get_document_by_id($documentId);
 
         // error?
         if (PEAR::isError($object))

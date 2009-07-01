@@ -133,14 +133,13 @@ class CMISUtil {
                     switch($object['item_type'])
                     {
                         case 'D':
-                            $CMISObject = new CMISDocumentObject($ktapi, $repositoryURI);
+                            $CMISObject = new CMISDocumentObject($object['id'], $ktapi, $repositoryURI);
                             break;
                         case 'F':
-                            $CMISObject = new CMISFolderObject($ktapi, $repositoryURI);
+                            $CMISObject = new CMISFolderObject($object['id'], $ktapi, $repositoryURI);
                             break;
                     }
                     
-                    $CMISObject->get($object['id']);
                     $CMISArray[$count]['object'] = $CMISObject;
                     
                     // if sub-array
@@ -184,8 +183,7 @@ class CMISUtil {
 
         if (isset($detail['id']))
         {
-            $CMISObject = new CMISFolderObject($ktapi, $repositoryURI);
-            $CMISObject->get($detail['id']);
+            $CMISObject = new CMISFolderObject($detail['id'], $ktapi, $repositoryURI);
             $CMISElement['object'] = $CMISObject;
 
             // if more parent elements

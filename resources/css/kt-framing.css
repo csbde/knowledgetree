@@ -38,8 +38,8 @@ body
 	width: 80%;
 	min-height: 200px;
 	position: relative;
-	top:100;
-	left:100;
+	top:100px;
+	left:100px;
 }
 
 #pageBody {
@@ -52,9 +52,9 @@ body
     min-height: 800px;
     min-width: 600px;
     height: auto;
-/*    background-image: url(../../resources/graphics/page_bg.png);*/
+    /*background-image: url(../../resources/graphics/page_bg.gif);*/
 /*    background-repeat: repeat-x;*/
-    z-index: 1;
+    z-index: 0;
 }
 
 #bodyPad {
@@ -1066,11 +1066,13 @@ a.main_nav_item {
 	position: relative;
     padding: 0.1em 1em;
     margin: 1em 0 0 0.5em;
+    z-index:0; /*Added to accomadate pageBody background change*/
 }
 
 
 .ktInfo, .ktError {
 	position: relative;
+    z-index:0; /*Added to accomadate pageBody background change*/
 }
 
 #dashboardBox {

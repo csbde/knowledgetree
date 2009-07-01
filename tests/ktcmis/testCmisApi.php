@@ -1,11 +1,14 @@
 <?php
 require_once (KT_DIR . '/tests/test.php');
-require_once (KT_DIR . '/ktcmis/ktcmis.inc.php');
+require_once (KT_LIB_DIR . '/api/ktcmis/ktcmis.inc.php');
 
 // username and password for authentication
 // must be set correctly for all of the tests to pass in all circumstances
 define (KT_TEST_USER, 'admin');
 define (KT_TEST_PASS, 'admin');
+
+// set to true to print out results
+define (DEBUG_CMIS, false);
 
 /**
  * These are the unit tests for the main KTCMIS class
@@ -44,7 +47,6 @@ class CMISTestCase extends KTUnitTestCase {
     public function setUp() {
         $this->ktapi = new KTAPI();
         $this->session = $this->ktapi->start_session(KT_TEST_USER, KT_TEST_PASS);
-        $this->ktcmis = new KTCMIS($this->ktapi);
         $this->root = $this->ktapi->get_root_folder();
         $this->folders = array();
         $this->docs = array();
@@ -60,9 +62,11 @@ class CMISTestCase extends KTUnitTestCase {
     // Repository service functions
     function testRepositoryServices()
     {
+        $RepositoryService = new KTRepositoryService();
+
         // TEST 1
         // test get repositories
-        $response = $this->ktcmis->getRepositories();
+        $response = $RepositoryService->getRepositories();
 
         $this->assertEqual($response['status_code'], 0);
         $this->assertNotNull($response['results'][0]);
@@ -91,7 +95,7 @@ class CMISTestCase extends KTUnitTestCase {
         // test getting info for specified repository
 
         // get info
-        $response = $this->ktcmis->getRepositoryInfo($repositoryId);
+        $response = $RepositoryService->getRepositoryInfo($repositoryId);
 
         $this->assertEqual($response['status_code'], 0);
         $this->assertNotNull($response['results']);
@@ -119,7 +123,7 @@ class CMISTestCase extends KTUnitTestCase {
         // TEST 3
         // test get object types supported by specified repository
 
-        $response = $this->ktcmis->getTypes($repositoryId);
+        $response = $RepositoryService->getTypes($repositoryId);
 
         $this->assertEqual($response['status_code'], 0);
         $this->assertNotNull($response['results']);
@@ -148,7 +152,7 @@ class CMISTestCase extends KTUnitTestCase {
         // now get info
         foreach ($types as $typeId)
         {
-            $response = $this->ktcmis->getTypeDefinition($repositoryId, $typeId);
+            $response = $RepositoryService->getTypeDefinition($repositoryId, $typeId);
 
             $this->assertEqual($response['status_code'], 0);
             $this->assertNotNull($response['results']);
@@ -169,18 +173,20 @@ class CMISTestCase extends KTUnitTestCase {
         }
 
         // test printout
-        echo '<div>&nbsp;</div>';
+        if (DEBUG_CMIS) echo '<div>&nbsp;</div>';
     }
 
     // Navigation service functions
     function testNavigationServices()
     {
+        $NavigationService = new KTNavigationService();
+        $NavigationService->startSession(KT_TEST_USER, KT_TEST_PASS);
+
         // set up the folder/doc tree structure with which we will be testing
         $this->createFolderDocStructure();
 
-        // TEST 1
-        // test getting descendants
-        $response = $this->ktcmis->getRepositories();
+        $RepositoryService = new KTRepositoryService();
+        $response = $RepositoryService->getRepositories();
 
         $this->assertEqual($response['status_code'], 0);
         $this->assertNotNull($response['results'][0]);
@@ -189,12 +195,15 @@ class CMISTestCase extends KTUnitTestCase {
         $repository = $response['results'][0];
         $repositoryId = $repository['repositoryId'];
 
+        // TEST 1
+        // test getting descendants
         // test descendant functionality on first of created folders, should have depth 2;
         $folderid = 'F' . $this->folders[1];
+//        echo "FOLDER: $folderid<BR>";
 //        $folderid = 'F1';
 
         $depth = 2;
-        $result = $this->ktcmis->getDescendants($repositoryId, $folderid, false, false, $depth);
+        $result = $NavigationService->getDescendants($repositoryId, $folderid, false, false, $depth);
 //        echo '<pre>'.print_r($result, true).'</pre>';
 //        var_dump($result);
         $this->assertEqual($response['status_code'], 0);
@@ -217,7 +226,7 @@ class CMISTestCase extends KTUnitTestCase {
         // test getting direct children, using the second set of folders, should have a folder and a document as children
         $folderid_2 = 'F' . $this->folders[0];
 
-        $result = $this->ktcmis->getChildren($repositoryId, $folderid_2, false, false);
+        $result = $NavigationService->getChildren($repositoryId, $folderid_2, false, false);
         $this->assertNotNull($result['results']);
 
         $children = $result['results'];
@@ -234,7 +243,7 @@ class CMISTestCase extends KTUnitTestCase {
         // test getting folder parent, using first created folder, parent should be root folder
 
 //        echo "OUTPUT FROM FIRST TEST<BR>";
-        $ancestry = $this->ktcmis->getFolderParent($repositoryId, $folderid, false, false, false);
+        $ancestry = $NavigationService->getFolderParent($repositoryId, $folderid, false, false, false);
         $this->assertNotNull($ancestry['results']);
 //        echo "OUTPUT FROM FIRST TEST<BR>";
 //        echo '<pre>'.print_r($ancestry, true).'</pre>';
@@ -247,7 +256,7 @@ class CMISTestCase extends KTUnitTestCase {
 
 //        echo "OUTPUT FROM SECOND TEST<BR>";
         // TODO since here we are testing more than one level up, add check for depth as with testGetDescendants
-        $ancestry = $this->ktcmis->getFolderParent($repositoryId, $subfolder_id, false, false, true);
+        $ancestry = $NavigationService->getFolderParent($repositoryId, $subfolder_id, false, false, true);
         $this->assertNotNull($ancestry['results']);
 //        echo "OUTPUT FROM SECOND TEST<BR>";
 //        echo '<pre>'.print_r($ancestry, true).'</pre>';
@@ -262,7 +271,7 @@ class CMISTestCase extends KTUnitTestCase {
         // test getting object parent(s) with a document
 
         $objectId = 'D' . $this->docs[0]->get_documentid();
-        $ancestry = $this->ktcmis->getObjectParents($repositoryId, $objectId, false, false);
+        $ancestry = $NavigationService->getObjectParents($repositoryId, $objectId, false, false);
         $this->assertNotNull($ancestry);
 //        echo '<pre>'.print_r($ancestry, true).'</pre>';
 
@@ -273,7 +282,7 @@ class CMISTestCase extends KTUnitTestCase {
         // test getting object parent(s) with a folder
 
         $objectId = 'F' . $this->subfolders[0];
-        $ancestry = $this->ktcmis->getObjectParents($repositoryId, $objectId, false, false);
+        $ancestry = $NavigationService->getObjectParents($repositoryId, $objectId, false, false);
         $this->assertNotNull($ancestry);
 //        echo '<pre>'.print_r($ancestry, true).'</pre>';
 
@@ -284,20 +293,21 @@ class CMISTestCase extends KTUnitTestCase {
         $this->cleanupFolderDocStructure();
 
         // test printout
-        echo '<div>&nbsp;</div>';
+        if (DEBUG_CMIS) echo '<div>&nbsp;</div>';
     }
 
     // Object Services
 
     function testObjectServices()
     {
+        $ObjectService = new KTObjectService();
+        $ObjectService->startSession(KT_TEST_USER, KT_TEST_PASS);
+
         // set up the folder/doc tree structure with which we will be testing
         $this->createFolderDocStructure();
-        
-        // TEST 1
-        // test getting properties for a specific object
 
-        $response = $this->ktcmis->getRepositories();
+        $RepositoryService = new KTRepositoryService();
+        $response = $RepositoryService->getRepositories();
 
         $this->assertEqual($response['status_code'], 0);
         $this->assertNotNull($response['results'][0]);
@@ -305,10 +315,12 @@ class CMISTestCase extends KTUnitTestCase {
         // we only expect one repository
         $repository = $response['results'][0];
         $repositoryId = $repository['repositoryId'];
-
+        
+        // TEST 1
+        // test getting properties for a specific object
         $objectId = 'F'.$this->folders[0];
 
-        $properties = $this->ktcmis->getProperties($repositoryId, $objectId, false, false);
+        $properties = $ObjectService->getProperties($repositoryId, $objectId, false, false);
         $this->assertNotNull($properties['results']);
 //        echo '<pre>'.print_r($properties['results'], true).'</pre>';
 //
@@ -317,17 +329,41 @@ class CMISTestCase extends KTUnitTestCase {
 
         $objectId = 'D'.$this->docs[0]->get_documentid();
 
-        $properties = $this->ktcmis->getProperties($repositoryId, $objectId, false, false);
+        $properties = $ObjectService->getProperties($repositoryId, $objectId, false, false);
         $this->assertNotNull($properties['results']);
 
         // test printout
         $this->printTable($properties['results'][0], 'Properties for Folder Object ' . $objectId . ' (getProperties())');
 
+        // TEST 2
+        // test creation of a folder (random name so that we don't have to clean up after)
+        // TODO test invalid type
+        // TODO test invalid parent folder
+        // TODO other invalid parameters
+        $created = $ObjectService->createFolder($repositoryId, 'Folder', array('name' => 'My Test Folder ' . mt_rand()), 'F1');
+        $this->assertNotNull($created['results']);
+
+        if (!is_null($created['results']))
+        {
+            $folderId = $created['results'];
+
+            // check that folder object actually exists
+            $properties = $ObjectService->getProperties($repositoryId, $folderId, false, false);
+            $this->assertNotNull($properties['results']);
+            
+            // test printout
+            $this->printTable($properties['results'][0], 'Properties for CMIS Created Folder Object ' . $folderId . ' (getProperties())');
+
+            // delete
+            CMISUtil::decodeObjectId($folderId);
+            $this->ktapi->delete_folder($folderId, 'Testing API', KT_TEST_USER, KT_TEST_PASS);
+        }
+
         // tear down the folder/doc tree structure with which we were testing
         $this->cleanupFolderDocStructure();
 
         // test printout
-        echo '<div>&nbsp;</div>';
+        if (DEBUG_CMIS) echo '<div>&nbsp;</div>';
     }
 
     /**
@@ -493,8 +529,9 @@ class CMISTestCase extends KTUnitTestCase {
 
     function printTable($results, $header, $subheader = '', $depth = 1)
     {
-        // turn off for testing :)
-//        return null;
+        if (!DEBUG_CMIS) return null;
+        if (!is_array($results)) return null;
+
         ?><div>&nbsp;</div>
         <table border="2"><tr><td colspan="2"><div style="padding: 8px; background-color: green; color: white;"><?php
         echo $header;
@@ -542,6 +579,9 @@ class CMISTestCase extends KTUnitTestCase {
 
     function printTree($results, $header, $depth = 1)
     {
+        if (!DEBUG_CMIS) return null;
+        if (!is_array($results)) return null;
+        
         ?><div>&nbsp;</div>
         <table border="2"><tr><td colspan="<?php echo 1 + $depth; ?>"><div style="padding: 8px; background-color: green; color: white;"><?php
         echo $header;
