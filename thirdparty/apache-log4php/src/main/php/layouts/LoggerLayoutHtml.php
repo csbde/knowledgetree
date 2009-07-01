@@ -21,36 +21,11 @@
  */
 
 /**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
-
-if (!defined('LOG4PHP_LINE_SEP')) {
-    if (substr(php_uname(), 0, 7) == "Windows") { 
-        /**
-         * @ignore
-         */
-        define('LOG4PHP_LINE_SEP', "\r\n");
-    } else {
-        /**
-         * @ignore
-         */
-        define('LOG4PHP_LINE_SEP', "\n");
-    }
-}
- 
-/**
- */
-require_once(LOG4PHP_DIR . '/LoggerLayout.php');
-require_once(LOG4PHP_DIR . '/spi/LoggerLoggingEvent.php');
-
-/**
  * This layout outputs events in a HTML table.
  *
  * Parameters are: {@link $title}, {@link $locationInfo}.
  *
- * @author  Marco Vassura
- * @version $Revision: 635069 $
+ * @version $Revision: 777451 $
  * @package log4php
  * @subpackage layouts
  */
@@ -68,7 +43,7 @@ class LoggerLayoutHtml extends LoggerLayout {
      * <b>LocationInfo</b> option of that appender as well.
      * @var boolean
      */
-    var $locationInfo = false;
+    private $locationInfo = false;
     
     /**
      * The <b>Title</b> option takes a String value. This option sets the
@@ -76,14 +51,12 @@ class LoggerLayoutHtml extends LoggerLayout {
      * Defaults to 'Log4php Log Messages'.
      * @var string
      */
-    var $title = "Log4php Log Messages";
+    private $title = "Log4php Log Messages";
     
     /**
      * Constructor
      */
-    function LoggerLayoutHtml()
-    {
-        return;
+    public function __construct() {
     }
     
     /**
@@ -97,8 +70,7 @@ class LoggerLayoutHtml extends LoggerLayout {
      * or a {@link LoggerAppenderMailEvent} then make sure to set the
      * <b>LocationInfo</b> option of that appender as well.
      */
-    function setLocationInfo($flag)
-    {
+    public function setLocationInfo($flag) {
         if (is_bool($flag)) {
             $this->locationInfo = $flag;
         } else {
@@ -109,8 +81,7 @@ class LoggerLayoutHtml extends LoggerLayout {
     /**
      * Returns the current value of the <b>LocationInfo</b> option.
      */
-    function getLocationInfo()
-    {
+    public function getLocationInfo() {
         return $this->locationInfo;
     }
     
@@ -119,53 +90,38 @@ class LoggerLayoutHtml extends LoggerLayout {
      * document title of the generated HTML document.
      * Defaults to 'Log4php Log Messages'.
      */
-    function setTitle($title)
-    {
+    public function setTitle($title) {
         $this->title = $title;
     }
 
     /**
      * @return string Returns the current value of the <b>Title</b> option.
      */
-    function getTitle()
-    {
+    public function getTitle() {
         return $this->title;
     }
     
     /**
      * @return string Returns the content type output by this layout, i.e "text/html".
      */
-    function getContentType()
-    {
+    public function getContentType() {
         return "text/html";
-    }
-    
-    /**
-     * No options to activate.
-     */
-    function activateOptions()
-    {
-        return true;
     }
     
     /**
      * @param LoggerLoggingEvent $event
      * @return string
      */
-    function format($event)
-    {
-        $sbuf = LOG4PHP_LINE_SEP . "<tr>" . LOG4PHP_LINE_SEP;
+    public function format(LoggerLoggingEvent $event) {
+        $sbuf = PHP_EOL . "<tr>" . PHP_EOL;
     
         $sbuf .= "<td>";
-        
-        $eventTime = (float)$event->getTimeStamp();
-        $eventStartTime = (float)LoggerLoggingEvent::getStartTime();
-        $sbuf .= number_format(($eventTime - $eventStartTime) * 1000, 0, '', '');
-        $sbuf .= "</td>" . LOG4PHP_LINE_SEP;
+        $sbuf .= $event->getTime();
+        $sbuf .= "</td>" . PHP_EOL;
     
         $sbuf .= "<td title=\"" . $event->getThreadName() . " thread\">";
         $sbuf .= $event->getThreadName();
-        $sbuf .= "</td>" . LOG4PHP_LINE_SEP;
+        $sbuf .= "</td>" . PHP_EOL;
     
         $sbuf .= "<td title=\"Level\">";
         
@@ -175,71 +131,69 @@ class LoggerLayoutHtml extends LoggerLayout {
           $sbuf .= "<font color=\"#339933\">";
           $sbuf .= $level->toString();
           $sbuf .= "</font>";
-        }elseif($level->equals(LoggerLevel::getLevelWarn())) {
+        } else if ($level->equals(LoggerLevel::getLevelWarn())) {
           $sbuf .= "<font color=\"#993300\"><strong>";
           $sbuf .= $level->toString();
           $sbuf .= "</strong></font>";
         } else {
           $sbuf .= $level->toString();
         }
-        $sbuf .= "</td>" . LOG4PHP_LINE_SEP;
+        $sbuf .= "</td>" . PHP_EOL;
     
         $sbuf .= "<td title=\"" . htmlentities($event->getLoggerName(), ENT_QUOTES) . " category\">";
         $sbuf .= htmlentities($event->getLoggerName(), ENT_QUOTES);
-        $sbuf .= "</td>" . LOG4PHP_LINE_SEP;
+        $sbuf .= "</td>" . PHP_EOL;
     
         if ($this->locationInfo) {
             $locInfo = $event->getLocationInformation();
             $sbuf .= "<td>";
             $sbuf .= htmlentities($locInfo->getFileName(), ENT_QUOTES). ':' . $locInfo->getLineNumber();
-            $sbuf .= "</td>" . LOG4PHP_LINE_SEP;
+            $sbuf .= "</td>" . PHP_EOL;
         }
 
         $sbuf .= "<td title=\"Message\">";
         $sbuf .= htmlentities($event->getRenderedMessage(), ENT_QUOTES);
-        $sbuf .= "</td>" . LOG4PHP_LINE_SEP;
+        $sbuf .= "</td>" . PHP_EOL;
 
-        $sbuf .= "</tr>" . LOG4PHP_LINE_SEP;
+        $sbuf .= "</tr>" . PHP_EOL;
         
         if ($event->getNDC() != null) {
             $sbuf .= "<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" title=\"Nested Diagnostic Context\">";
             $sbuf .= "NDC: " . htmlentities($event->getNDC(), ENT_QUOTES);
-            $sbuf .= "</td></tr>" . LOG4PHP_LINE_SEP;
+            $sbuf .= "</td></tr>" . PHP_EOL;
         }
-
         return $sbuf;
     }
 
     /**
      * @return string Returns appropriate HTML headers.
      */
-    function getHeader()
-    {
-        $sbuf = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<html>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<head>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<title>" . $this->title . "</title>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<style type=\"text/css\">" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<!--" . LOG4PHP_LINE_SEP;
-        $sbuf .= "body, table {font-family: arial,sans-serif; font-size: x-small;}" . LOG4PHP_LINE_SEP;
-        $sbuf .= "th {background: #336699; color: #FFFFFF; text-align: left;}" . LOG4PHP_LINE_SEP;
-        $sbuf .= "-->" . LOG4PHP_LINE_SEP;
-        $sbuf .= "</style>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "</head>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<hr size=\"1\" noshade>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "Log session start time " . strftime('%c', time()) . "<br>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<br>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<tr>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<th>Time</th>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<th>Thread</th>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<th>Level</th>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<th>Category</th>" . LOG4PHP_LINE_SEP;
+    public function getHeader() {
+        $sbuf = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">" . PHP_EOL;
+        $sbuf .= "<html>" . PHP_EOL;
+        $sbuf .= "<head>" . PHP_EOL;
+        $sbuf .= "<title>" . $this->title . "</title>" . PHP_EOL;
+        $sbuf .= "<style type=\"text/css\">" . PHP_EOL;
+        $sbuf .= "<!--" . PHP_EOL;
+        $sbuf .= "body, table {font-family: arial,sans-serif; font-size: x-small;}" . PHP_EOL;
+        $sbuf .= "th {background: #336699; color: #FFFFFF; text-align: left;}" . PHP_EOL;
+        $sbuf .= "-->" . PHP_EOL;
+        $sbuf .= "</style>" . PHP_EOL;
+        $sbuf .= "</head>" . PHP_EOL;
+        $sbuf .= "<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">" . PHP_EOL;
+        $sbuf .= "<hr size=\"1\" noshade>" . PHP_EOL;
+        $sbuf .= "Log session start time " . strftime('%c', time()) . "<br>" . PHP_EOL;
+        $sbuf .= "<br>" . PHP_EOL;
+        $sbuf .= "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">" . PHP_EOL;
+        $sbuf .= "<tr>" . PHP_EOL;
+        $sbuf .= "<th>Time</th>" . PHP_EOL;
+        $sbuf .= "<th>Thread</th>" . PHP_EOL;
+        $sbuf .= "<th>Level</th>" . PHP_EOL;
+        $sbuf .= "<th>Category</th>" . PHP_EOL;
         if ($this->locationInfo)
-            $sbuf .= "<th>File:Line</th>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<th>Message</th>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "</tr>" . LOG4PHP_LINE_SEP;
+            $sbuf .= "<th>File:Line</th>" . PHP_EOL;
+        $sbuf .= "<th>Message</th>" . PHP_EOL;
+        $sbuf .= "</tr>" . PHP_EOL;
 
         return $sbuf;
     }
@@ -247,10 +201,9 @@ class LoggerLayoutHtml extends LoggerLayout {
     /**
      * @return string Returns the appropriate HTML footers.
      */
-    function getFooter()
-    {
-        $sbuf = "</table>" . LOG4PHP_LINE_SEP;
-        $sbuf .= "<br>" . LOG4PHP_LINE_SEP;
+    public function getFooter() {
+        $sbuf = "</table>" . PHP_EOL;
+        $sbuf .= "<br>" . PHP_EOL;
         $sbuf .= "</body></html>";
 
         return $sbuf;
