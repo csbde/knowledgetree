@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,52 +21,22 @@
  */
 
 /**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
-
-if (!defined('LOG4PHP_LINE_SEP')) {
-    if (substr(php_uname(), 0, 7) == "Windows") { 
-        define('LOG4PHP_LINE_SEP', "\r\n");
-    } else {
-        /**
-         * @ignore
-         */
-        define('LOG4PHP_LINE_SEP', "\n");
-    }
-}
-
- 
-/**
- */
-require_once(LOG4PHP_DIR . '/LoggerLayout.php');
-
-/**
  * A simple layout.
  *
  * Returns the log statement in a format consisting of the
  * <b>level</b>, followed by " - " and then the <b>message</b>. 
  * For example, 
- * <samp> INFO - "A message" </samp>
+ * <samp> INFO - A message </samp>
  *
- * @author  Marco Vassura
- * @version $Revision: 635069 $
+ * @version $Revision: 777451 $
  * @package log4php
  * @subpackage layouts
  */  
 class LoggerLayoutSimple extends LoggerLayout {
-    
     /**
      * Constructor
      */
-    function LoggerLayoutSimple()
-    {
-        return;
-    }
-
-    function activateOptions() 
-    {
-        return;
+    public function __construct() {
     }
 
     /**
@@ -78,9 +48,8 @@ class LoggerLayoutSimple extends LoggerLayout {
      * @param LoggerLoggingEvent $event
      * @return string
      */
-    function format($event)
-    {
+    public function format(LoggerLoggingEvent $event) {
         $level = $event->getLevel();
-        return $level->toString() . ' - ' . $event->getRenderedMessage(). LOG4PHP_LINE_SEP;
+        return $level->toString() . ' - ' . $event->getRenderedMessage(). PHP_EOL;
     }
 }

@@ -20,15 +20,6 @@
  * @subpackage appenders
  */
 
-/**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
- 
-require_once(LOG4PHP_DIR . '/LoggerAppenderSkeleton.php');
-require_once(LOG4PHP_DIR . '/helpers/LoggerOptionConverter.php');
-require_once(LOG4PHP_DIR . '/LoggerLog.php');
-
 require_once(ADODB_DIR . '/adodb.inc.php');
 
 /**
@@ -39,12 +30,12 @@ require_once(ADODB_DIR . '/adodb.inc.php');
  * {@link $database}, {@link $createTable}, {@link $table} and {@link $sql}.</p>
  * <p>See examples in test directory.</p>
  *
- * @author sbw <sbw@ibiblio.org>
+ * @deprecated Use LoggerAppenderPDO instead
  * @package log4php
  * @subpackage appenders
  * @since 0.9
  */
-class LoggerAppenderAdodb extends LoggerAppenderSkeleton {
+class LoggerAppenderAdodb extends LoggerAppender {
 
     /**
      * Create the log table if it does not exists (optional).
@@ -116,9 +107,9 @@ class LoggerAppenderAdodb extends LoggerAppenderSkeleton {
      *
      * @param string $name appender name
      */
-    function LoggerAppenderDb($name)
+    function __construct($name)
     {
-        $this->LoggerAppenderSkeleton($name);
+        parent::__construct($name);
     }
 
     /**
@@ -131,14 +122,13 @@ class LoggerAppenderAdodb extends LoggerAppenderSkeleton {
     {        
         $this->db = &ADONewConnection($this->type);
         if (! $this->db->PConnect($this->host, $this->user, $this->password, $this->database)) {
-          LoggerLog::debug("LoggerAppenderAdodb::activateOptions() DB Connect Error [".$this->db->ErrorMsg()."]");            
           $this->db = null;
           $this->closed = true;
           $this->canAppend = false;
           return;
         }
         
-        $this->layout = LoggerLayout::factory('LoggerPatternLayout');
+        $this->layout = LoggerReflectionUtils::createObject('LoggerLayoutPattern');
         $this->layout->setConversionPattern($this->getSql());
     
         // test if log table exists
@@ -147,11 +137,9 @@ class LoggerAppenderAdodb extends LoggerAppenderSkeleton {
         if ($dbrs == false and $this->getCreateTable()) {
             $query = "CREATE TABLE {$this->table} (timestamp varchar(32),logger varchar(32),level varchar(32),message varchar(64),thread varchar(32),file varchar(64),line varchar(4) );";
 
-            LoggerLog::debug("LoggerAppenderAdodb::activateOptions() creating table '{$this->table}'... using sql='$query'");
                      
             $result = $this->db->Execute($query);
             if (! $result) {
-                LoggerLog::debug("LoggerAppenderAdodb::activateOptions() error while creating '{$this->table}'. Error is ".$this->db->ErrorMsg());
                 $this->canAppend = false;
                 return;
             }
@@ -159,14 +147,9 @@ class LoggerAppenderAdodb extends LoggerAppenderSkeleton {
         $this->canAppend = true;
     }
     
-    function append($event)
-    {
+    function append($event) {
         if ($this->canAppend) {
-
             $query = $this->layout->format($event);
-
-            LoggerLog::debug("LoggerAppenderAdodb::append() query='$query'");
-
             $this->db->Execute($query);
         }
     }
