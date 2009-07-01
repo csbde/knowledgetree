@@ -468,7 +468,42 @@ class KTObjectService extends KTCMISBase {
     }
 
     /**
-     * Function to create a folder
+     * Creates a new document within the repository
+     *
+     * @param string $repositoryId The repository to which the document must be added
+     * @param string $typeId Object Type id for the document object being created
+     * @param array $properties Array of properties which must be applied to the created document object
+     * @param string $folderId The id of the folder which will be the parent of the created document object
+     *                         This parameter is optional IF unfilingCapability is supported
+     * @param contentStream $contentStream optional content stream data
+     * @param string $versioningState optional version state value: checkedout/major/minor
+     * @return string $objectId The id of the created folder object
+     */
+    function createDocument($repositoryId, $typeId, $properties, $folderId = null,
+                            $contentStream = null, $versioningState = 'Major')
+    {
+        $objectId = null;
+
+        try {
+            $objectId = $this->ObjectService->createDocument($repositoryId, $typeId, $properties, $folderId,
+                                                             $contentStream, $versioningState);
+        }
+        catch (Exception $e)
+        {
+            return array(
+                "status_code" => 1,
+                "message" => $e->getMessage()
+            );
+        }
+
+        return array(
+            'status_code' => 0,
+            'results' => $objectId
+        );
+    }
+
+    /**
+     * Creates a new folder within the repository
      *
      * @param string $repositoryId The repository to which the folder must be added
      * @param string $typeId Object Type id for the folder object being created
@@ -494,6 +529,41 @@ class KTObjectService extends KTCMISBase {
         return array(
             'status_code' => 0,
             'results' => $objectId
+        );
+    }
+
+    /**
+     * Sets the content stream data for an existing document
+     *
+     * if $overwriteFlag = TRUE, the new content stream is applied whether or not the document has an existing content stream
+     * if $overwriteFlag = FALSE, the new content stream is applied only if the document does not have an existing content stream
+     *
+     * NOTE A Repository MAY automatically create new Document versions as part of this service method.
+     *      Therefore, the documentId output NEED NOT be identical to the documentId input.
+     *
+     * @param string $repositoryId
+     * @param string $documentId
+     * @param boolean $overwriteFlag
+     * @param string $contentStream
+     * @param string $changeToken
+     * @return string $documentId
+     */
+    function setContentStream($repositoryId, $documentId, $overwriteFlag, $contentStream, $changeToken = null)
+    {
+        try {
+            $objectId = $this->ObjectService->setContentStream($repositoryId, $documentId, $overwriteFlag, $contentStream, $changeToken);
+        }
+        catch (Exception $e)
+        {
+            return array(
+                "status_code" => 1,
+                "message" => $e->getMessage()
+            );
+        }
+
+        return array(
+            'status_code' => 0,
+            'results' => $documentId
         );
     }
 
