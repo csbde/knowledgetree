@@ -52,9 +52,7 @@ body
     min-height: 800px;
     min-width: 600px;
     height: auto;
-    /*background-image: url(../../resources/graphics/large_bleach.jpg);*/
-    /*background-image: url(../../resources/graphics/page_bg.png);*/
-    background-image: url(../../resources/graphics/page_bg.gif);
+    /*background-image: url(../../resources/graphics/page_bg.gif);*/
 /*    background-repeat: repeat-x;*/
     z-index: 0;
 }
