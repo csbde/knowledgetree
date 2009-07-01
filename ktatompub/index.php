@@ -59,7 +59,7 @@ define('KT_APP_BASE_URI',"http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_S
 define('KT_APP_SYSTEM_URI',"http://".$_SERVER['HTTP_HOST']);
 
 // Define whether to use in debug mode for viewing generated structures
-define('KT_APP_WEB_OUTPUT',false); 
+//define('KT_APP_WEB_OUTPUT',false);  //defunct
 
 
 
@@ -67,61 +67,28 @@ define('KT_APP_WEB_OUTPUT',false);
  * Includes
  */
 include_once('../ktapi/ktapi.inc.php');
+include_once('lib/ktAPP.inc.php');
 include_once('lib/KTAPPHelper.inc.php');						//Containing helper bridge functions to KtAPI
 include_once('lib/KTAPDoc.inc.php');							//Containing the parent class allowing easy XML manipulation
 include_once('lib/KTAPPServiceDoc.inc.php');					//Containing the servicedoc class allowing easy ServiceDocument generation
 include_once('lib/KTAPPFeed.inc.php');							//Containing the response feed class allowing easy atom feed generation
+include_once('lib/ktAPP_Service.inc.php');
+include_once('lib/ktApp.default_dms_services.inc.php');
 include_once('auth.php');										//Containing the authentication protocols
 
 
+//Start the AtomPubProtocol Routing Engine
+$APP=new KTAPP();
 
-//Parse the query string
-$query=split('/',trim($_SERVER['QUERY_STRING'],'/'));
+//Register New Services (in the DMS workspace)
+$APP->registerService('DMS','fulltree','ktAPP_Service_fullTree','Full Document Tree');
+$APP->registerService('DMS','folder','ktAPP_Service_folder','Folder Detail');
+$APP->registerService('DMS','document','ktAPP_Service_document','Document Detail');
 
-//Initializing the $output variable. Everything rendered by the engine must be placed in this variable as it is the only thing that will be rendered
-$output='';
+//Execute the current url/header request
+$APP->execute();
 
-
-// Using the querystring to load the appropriate service
-
-switch(strtolower(trim($query[0]))){
-	case 'mimetypes':
-		include('services/mimetypes.inc.php');
-		break;
-	case 'fulltree':
-		include('services/fulltree.inc.php');
-		break;
-	case 'folder':
-		include('services/folder.inc.php');
-		break;
-	case 'document':
-		include('services/document.inc.php');
-		break;
-	case 'cmis':
-        include('services/cmis/index.php');
-        break;
-	case 'servicedocument':
-	default:
-		include('services/servicedocument.inc.php');
-		break;
-}
-
-
-
-
-/**
- * Writing the Output
- * 
- * To ensure we don't render illegal XML, we clean the output buffer and only use what is in the $ouput variable
- */
-ob_end_clean();
-if(KT_APP_WEB_OUTPUT){
-	echo '<pre>'.htmlentities($output).'</pre>';
-}else{
-	header('Content-type: text/xml');
-	echo $output;
-}
-
-
+//Render the resulting feed response
+$APP->render();
 
 ?>

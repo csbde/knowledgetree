@@ -2,544 +2,526 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <title>KnowlegeTree AtomPub Client</title>
-    <script src="js/jquery/jquery-1.3.2.min.js"></script>
-    <script src="js/jquery/plugins/jquery.cookie.js"></script>
-    <script src="js/jquery/plugins/jquery.xml2json.js"></script>
-    <script src="js/jquery/ui/ui.core.js"></script>
-    <script src="js/jquery/ui/ui.tabs.js"></script>
-    <script src="js/jquery/ui/ui.dialog.js"></script>
-    <script src="js/jquery/plugins/jquery.dynatree.min.js"></script>
-    <script src="js/site/site.js"></script>
-    <script src="js/site/site_cfg.js"></script>
-    <script src="js/lib/lib.js"></script>
-    <script src="js/lib/lib.dom.js"></script>
-    <script src="js/lib/lib.debug.js"></script>
-    <script src="js/lib/lib.utils.js"></script>
-    <script src="js/lib/lib.resources.js"></script>
-    <script src="js/lib/lib.data.js"></script>
-    <script src="js/lib/events.js"></script>
-    <script src="js/site/site.event_handlers.js"></script>
-    <script src="js/APP/ktApp.js"></script>
-    <script src="js/APP/app.js"></script>
-    <script type="text/javascript"> 
+<title>KnowlegeTree AtomPub Client</title>
+<script src="js/jquery/jquery-1.3.2.min.js"></script>
+<script src="js/jquery/plugins/jquery.cookie.js"></script>
+<script src="js/jquery/plugins/jquery.xml2json.js"></script>
+<script src="js/jquery/ui/ui.core.js"></script>
+<script src="js/jquery/ui/ui.tabs.js"></script>
+<script src="js/jquery/ui/ui.dialog.js"></script>
+<script src="js/jquery/plugins/jquery.dynatree.min.js"></script>
+<script src="js/site/site.js"></script>
+<script src="js/site/site_cfg.js"></script>
+<script src="js/lib/lib.js"></script>
+<script src="js/lib/lib.dom.js"></script>
+<script src="js/lib/lib.debug.js"></script>
+<script src="js/lib/lib.utils.js"></script>
+<script src="js/lib/lib.resources.js"></script>
+<script src="js/lib/lib.data.js"></script>
+<script src="js/lib/events.js"></script>
+<script src="js/site/site.event_handlers.js"></script>
+<script src="js/APP/ktApp.js"></script>
+<script src="js/APP/app.js"></script>
+<script type="text/javascript"> 
 //		site.bootStrap();	//If enabled then you don't need to have all the javascript installs above
 //								however, it breaks in Titanium
 		$(document).ready(function(){site.init();});
-    </script>      
-	<link type="text/css" href="js/jquery/ui/themes/start/ui.all.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="js/jquery/plugins/skin/ui.dynatree.css">
-    <style>
-    	body{
-    		margin: 5px;
-    		background-color: #EEEEEE;
-    	}
-        .mainTable{
-            width: 1024px;
-            background-color: #FFFFFF;
-        }
-        .header{
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 18px;
-            font-weight: bold;
-            color: #666666;
-            padding: 5px 5px 5px 5px;
-            margin-bottom:10px;
-        }
-        
-        .TabText{
-        	font-size: 11px;
-        	margin: 0px;
-        	padding: 0px;
-        }
-        
-        .settingsRow{
-        	margin-bottom: 5px;
-        	padding-bottom: 5px;
-        	border-bottom: 1px solid #EEEEEE;
-        }
-        .settingsRow_nodivider{
-        	margin-bottom: 5px;
-        	padding-bottom: 5px;
-        }
-		
-		.tree_panel_scrollbar_hider{
-			padding:1px;
-			width:400px;
-			height: 528px;
-			overflow: hidden;
-		}
-		.tree_panel_area{
-			width: 418px;
-			height: 548px;
-			overflow:scroll;
-		}
+    </script>
+<link type="text/css" href="js/jquery/ui/themes/start/ui.all.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="js/jquery/plugins/skin/ui.dynatree.css">
+<style>
+body {
+	margin: 5px;
+	background-color: #EEEEEE;
+}
+.mainTable {
+	width: 1024px;
+	background-color: #FFFFFF;
+}
+.header {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	color: #666666;
+	padding: 5px 5px 5px 5px;
+	margin-bottom:10px;
+}
+.TabText {
+	font-size: 11px;
+	margin: 0px;
+	padding: 0px;
+}
+.settingsRow {
+	margin-bottom: 5px;
+	padding-bottom: 5px;
+	border-bottom: 1px solid #EEEEEE;
+}
+.settingsRow_nodivider {
+	margin-bottom: 5px;
+	padding-bottom: 5px;
+}
+.tree_panel_scrollbar_hider {
+	padding:1px;
+	width:400px;
+	height: 528px;
+	overflow: hidden;
+}
+.tree_panel_area {
+	width: 418px;
+	height: 548px;
+	overflow:scroll;
+}
+.info_panel_scrollbar_hider {
+	width:515px;
+	height: 500px;
+	overflow: hidden;
+}
+.info_panel_area {
+	width: 535px;
+	height: 520px;
+	overflow:scroll;
+}
+.info_panel_toolbar {
+	width:510px;
+	padding: 3px;
+	margin-bottom:4px;
+}
+.info_panel_container {
+	width: 500px;
+}
+.info_panel_heading {
+	background-color:#DDDDDD;
+	padding: 4px;
+	font-weight: bold;
+	font-size:14px;
+}
+.info_panel_subheading {
+	background-color:#DDDDDD;
+	padding: 3px;
+	font-weight: bold;
+	font-size:12px;
+}
+.info_panel_field_name {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-weight: bold;
+	color:#333333;
+	padding: 2px 10px 2px 5px;
+	text-align:right;
+	background-color: #EEEEEE;
+}
+.info_panel_field_value {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight:normal;
+	color:#000000;
+	padding: 2px 5px 2px 10px;
+	text-align:left;
+}
+.info_panel_container input[type=text] {
+	width: 320px;
+	border: 1px solid #DDDDDD;
+	font-family:Tahoma, Arial, Helvetica, sans-serif;
+	font-size:14px;
+	font-weight: bold;
+	color:#333399;
+	padding: 2px;
+}
+.dialogs {
+	font-size: 11px;
+	color:#333399;
+	font-family:Verdana, Arial, Helvetica, sans-serif
+}
+.setttings_heading {
+	padding: 2px 10px 2px 2px;
+	text-align:right;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-weight: bold;
+	border-right:1px solid #3333CC;
+}
 
-		.info_panel_scrollbar_hider{
-			width:515px;
-			height: 500px;
-			overflow: hidden;
-		}
-		.info_panel_area{
-			width: 535px;
-			height: 520px;
-			overflow:scroll;
-		}
-		
-		.info_panel_toolbar{
-			width:510px;
-			padding: 3px;
-			margin-bottom:4px;
-		}
-		
-		.info_panel_container{
-			width: 500px;
-		}
-		
-		.info_panel_heading{
-			background-color:#DDDDDD;
-			padding: 4px;
-			font-weight: bold;
-			font-size:14px;
-		}
-		
-		.info_panel_subheading{
-			background-color:#DDDDDD;
-			padding: 3px;
-			font-weight: bold;
-			font-size:12px;
-		}
-		
-		.info_panel_field_name{
-			font-family: Arial, Helvetica, sans-serif;
-			font-size:12px;
-			font-weight: bold;
-			color:#333333;
-			padding: 2px 10px 2px 5px;
-			text-align:right;
-			background-color: #EEEEEE;
-		}
-		
-		.info_panel_field_value{
-			font-family:Arial, Helvetica, sans-serif;
-			font-size: 11px;
-			font-weight:normal;
-			color:#000000;
-			padding: 2px 5px 2px 10px;
-			text-align:left;
-		}
-		
-		.info_panel_container input[type=text]{
-			width: 320px;
-			border: 1px solid #DDDDDD;
-			font-family:Tahoma, Arial, Helvetica, sans-serif;
-			font-size:14px;
-			font-weight: bold;
-			color:#333399;
-			padding: 2px;
-		}
-		
-		.dialogs{
-			font-size: 11px;
-			color:#333399;
-			font-family:Verdana, Arial, Helvetica, sans-serif
-		}
-    </style>
+.settings_indicator{
+	padding:5px;
+	text-align:center;
+	width: 20px;
+}
+</style>
 </head>
 <body>
-    <table id="container" class="mainTable ui-tabs ui-widget ui-widget-content ui-corner-all" align="center">
-        <tr><td class="header">KnowledgeTree AtomPub Client</td></tr>
-        <tr><td class="perspectivesbar"></td></tr>
-        <tr>
-	        <td>
-			<div id="perspectives" style="display:block;">
-				<ul>
-					<li><a href="#perspective_Folders" class="TabText">Explore</a></li>
-					<li><a href="#perspective_Settings" class="TabText">Settings</a></li>
-					<li><a href="#perspective_Comms" class="TabText">Comms</a></li>
-				</ul>
-
-				<div id="perspective_Folders" class="info_panel_container">
-					<table width="100%" height="500" cellpadding="0" cellspacing="5">
-						<tr>
-						  <td width="402" id="" class="ui-widget-content ui-corner-all" style="font-size: 12px; font-weight:bold; vertical-align:top;  overflow:scroll;"><span id="folder_loading_icon" style="float:right; display:none; padding: 10px"><img src="js/skin/loading.gif" alt="Loading.. Please Wait" width="16" height="16"/></span>
-						    <div class="tree_panel_scrollbar_hider">
-                              <div id="perspective_folder_view" class="tree_panel_area"></div>
-				          </div></td>
-						  <td width="597" valign="top" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
-						  <div id="info_pane_toolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix info_panel_toolbar">
-                             <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix" style="font-size: 12px; padding:3px;">                             </div>
-                          </div>
-                          <div class="info_panel_scrollbar_hider">
-                          <div class="info_panel_area">
-
-
-
-
-<!--	FOLDER INFO PANE    -->
-                          <div id="panel_folder_info">
-                            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+<table id="container" class="mainTable ui-tabs ui-widget ui-widget-content ui-corner-all" align="center">
+  <tr>
+    <td class="header">KnowledgeTree AtomPub Client</td>
+  </tr>
+  <tr>
+    <td class="perspectivesbar"></td>
+  </tr>
+  <tr>
+    <td><div id="perspectives" style="display:block;">
+        <ul>
+          <li><a href="#perspective_Folders" class="TabText">Explore</a></li>
+          <li><a href="#perspective_Settings" class="TabText">Settings</a></li>
+          <li><a href="#perspective_Comms" class="TabText">Comms</a></li>
+        </ul>
+        <div id="perspective_Folders" class="info_panel_container">
+          <table width="100%" height="500" cellpadding="0" cellspacing="5">
+            <tr>
+              <td width="402" id="" class="ui-widget-content ui-corner-all" style="font-size: 12px; font-weight:bold; vertical-align:top;  overflow:scroll;"><span id="folder_loading_icon" style="float:right; display:none; padding: 10px"><img src="js/jquery/plugins/skin/loading.gif" alt="Loading.. Please Wait" width="16" height="16"/></span>                <div class="tree_panel_scrollbar_hider">
+                  <div id="perspective_folder_view" class="tree_panel_area"></div>
+                </div>
+</td>
+              <td width="597" valign="top" class="ui-tabs ui-widget ui-widget-content ui-corner-all"><div id="info_pane_toolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix info_panel_toolbar">
+                  <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix" style="font-size: 12px; padding:3px;"> </div>
+                </div>
+                <div class="info_panel_scrollbar_hider">
+                  <div class="info_panel_area">
+                    <!--	FOLDER INFO PANE    -->
+                    <div id="panel_folder_info">
+                      <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td class="info_panel_heading">Folder Info</td>
+                        </tr>
+                        <tr>
+                          <td><table width="100%" border="0" cellpadding="0" cellspacing="0">
                               <tr>
-                                <td class="info_panel_heading">Folder Info</td>
+                                <td width="150" class="info_panel_field_name">Id</td>
+                                <td class="info_panel_field_value folder_id">&nbsp;</td>
                               </tr>
                               <tr>
-                                <td><table width="100%" border="0" cellpadding="0" cellspacing="0">
-                                  <tr>
-                                    <td width="150" class="info_panel_field_name">Id</td>
-                                    <td class="info_panel_field_value folder_id">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name ">Name</td>
-                                    <td class="info_panel_field_value folder_name">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Full Path</td>
-                                    <td class="info_panel_field_value folder_path">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Permissions</td>
-                                    <td class="info_panel_field_value folder_permissions">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td>&nbsp;</td>
-                                    <td>&nbsp;</td>
-                                  </tr>
-                                </table></td>
-                              </tr>
-                            </table>
-                          </div>
-
-
-
-
-<!--	DOCUMENT INFO PANE     -->
-                          <div id="panel_document_info" class="info_panel_container">
-                            <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                              <tr>
-                                <td width="100%" class="info_panel_heading">Document Info</td>
+                                <td class="info_panel_field_name ">Name</td>
+                                <td class="info_panel_field_value folder_name">&nbsp;</td>
                               </tr>
                               <tr>
-                                <td><table width="100%" border="0" cellpadding="0" cellspacing="0">
-                                  <tr>
-                                    <td width="150" class="info_panel_field_name">Id</td>
-                                    <td class="info_panel_field_value document_id">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name ">Title</td>
-                                    <td class="info_panel_field_value document_title">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">File Name</td>
-                                    <td class="info_panel_field_value document_filename">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Document Type</td>
-                                    <td class="info_panel_field_value document_type">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Custom Document No.</td>
-                                    <td class="info_panel_field_value document_custom_no">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">OEM Document No.</td>
-                                    <td class="info_panel_field_value document_oem_no">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">File Size</td>
-                                    <td class="info_panel_field_value document_file_size">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Full Path</td>
-                                    <td class="info_panel_field_value document_full_path">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Created By</td>
-                                    <td class="info_panel_field_value document_created_by">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Created Date</td>
-                                    <td class="info_panel_field_value document_created_on">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Checked out By</td>
-                                    <td class="info_panel_field_value document_checkout_by">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Checkout Date</td>
-                                    <td class="info_panel_field_value document_checkout_on">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Modified By</td>
-                                    <td class="info_panel_field_value document_modified_by">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Modified Date</td>
-                                    <td class="info_panel_field_value document_modified_on">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Owned by</td>
-                                    <td class="info_panel_field_value document_owned_by">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Version</td>
-                                    <td class="info_panel_field_value document_version">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Content ID</td>
-                                    <td class="info_panel_field_value document_content_id">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Is Immutable</td>
-                                    <td class="info_panel_field_value document_immutable">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Permissions</td>
-                                    <td class="info_panel_field_value document_permissions">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Workflow</td>
-                                    <td class="info_panel_field_value document_workflow">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Workflow State</td>
-                                    <td class="info_panel_field_value document_workflow_state">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Mime Type</td>
-                                    <td class="info_panel_field_value document_mime_type">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Mime Display</td>
-                                    <td class="info_panel_field_value document_mime_display">&nbsp;</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Storage Path</td>
-                                    <td class="info_panel_field_value document_storage_path">&nbsp;</td>
-                                  </tr>
-                                  
-                                </table></td>
-                              </tr>
-                            </table>
-                          </div>
-
-
-
-
-<!--	DOCUMENT EDIT PANE    -->
-                          <div id="panel_document_info_edit" class="info_panel_container">
-                            <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                              <tr>
-                                <td width="585" class="info_panel_heading">Document Info</td>
+                                <td class="info_panel_field_name">Full Path</td>
+                                <td class="info_panel_field_value folder_path">&nbsp;</td>
                               </tr>
                               <tr>
-                                <td><table width="100%" border="0" cellpadding="0" cellspacing="0">
-                                  <tr>
-                                    <td width="150" class="info_panel_field_name">Id</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_id" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name ">Title</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_title" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">File Name</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_filename" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Document Type</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_type" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Custom Document No.</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_custom_no" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">OEM Document No.</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_oem_no" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">File Size</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_file_size" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Full Path</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_full_path" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Created By</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_created_by" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Created Date</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_created_on" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Checked out By</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_checkout_by" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Checkout Date</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_checkout_on" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Modified By</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_modified_by" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Modified Date</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_modified_on" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Owned by</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_owned_by" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Version</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_version" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Content ID</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_content_id" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Is Immutable</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_immutable" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Permissions</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_permissions" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Workflow</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_workflow" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Workflow State</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_workflow_state" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Mime Type</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_mime_type" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Mime Display</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_mime_display" type="text" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td class="info_panel_field_name">Storage Path</td>
-                                    <td class="info_panel_field_value"><input id="" class="document_storage_path" type="text" /></td>
-                                  </tr>
-                                  
-                                </table></td>
+                                <td class="info_panel_field_name">Permissions</td>
+                                <td class="info_panel_field_value folder_permissions">&nbsp;</td>
                               </tr>
-                            </table>
-                          </div>
-
-
-
-
-<!--	FOLDER EDIT PANE    -->
-
-
-
-
-<!--	FOLDER INFO PANE    -->
-
-
-
-
-<!--	FOLDER INFO PANE    -->
-						</div>
-                        </div>						</td>
-					  </tr>
-					</table>
-			  </div>
-
-
-
-
-				<div id="perspective_Settings" style=" padding: 5px;">
-					<div class="ui-widget-content ui-corner-all" style="height:500px; padding: 15px; font-size: 12px;">
-						<div class="settingsRow_nodivider">
-<div class="fg-buttonset fg-buttonset-single ui-helper-clearfix" style="width:100%;">
-									<div id="clear_settings_cache" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 20px;" class="ui-icon ui-icon-refresh"/></span><span>Clear Cache</span></div>
-								</div>						</div>
-						<div class="settingsRow">
-							<span style="width: 500px; text-align:right; padding: 5px 10px 5px 5px; margin-right: 10px; border-right: 1px solid #CCCCCC;">KT Atompub Server URL</span><input type="text" id="settings_baseurl" value="" style="width: 520px;" />
-						</div>
-						<div class="settingsRow">
-							<span style="width: 300px; text-align:right; padding: 5px 10px 5px 5px; margin-right: 10px; border-right: 1px solid #CCCCCC;">Document Tree Service</span>
-							<input type="text" id="settings_service_treestruct" value="" style="width: 520px;" />
-						</div>
-						<div class="settingsRow">
-							<span style="width: 300px; text-align:right; padding: 5px 10px 5px 5px; margin-right: 10px; border-right: 1px solid #CCCCCC;">Folder Info Service</span>
-							<input type="text" id="settings_service_folderinfo" value="" style="width: 520px;" />
-						</div>
-						<div class="settingsRow">
-							<span style="width: 300px; text-align:right; padding: 5px 10px 5px 5px; margin-right: 10px; border-right: 1px solid #CCCCCC;">Document Info Service</span>
-							<input type="text" id="settings_service_docinfo" value="" style="width: 520px;" />
-						</div>
-					</div>
-				</div>
-
-				<div id="perspective_Comms" style=" padding: 5px;">
-					<div class="ui-widget-content ui-corner-all" style="height:500px; padding: 15px; font-size: 12px;">
-						<div class="settingsRow_nodivider">
-							<div class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix" style="width:100%; padding: 3px;">
-								<div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
-									<div id="comms_clear_cache" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 220px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;" onclick="events.trigger('comms_clear_cache');"><span style="display: inline; padding-right: 20px;" class="ui-icon ui-icon-refresh"/></span><span>Clear all Communication Data</span></div>
-								</div>
-							</div>
-						</div>
-						<div style="height: 450px;">
-						  <textarea name="panel_comms" id="panel_comms" style="width:100%; height:448px; border: none; font-family:'Courier New', Courier, monospace; font-size: 10px;"></textarea>
-						</div>
-				  </div>
-				</div>
-			</div>	        </td>
-        </tr>
-    </table>
-
-
+                              <tr>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                              </tr>
+                            </table></td>
+                        </tr>
+                      </table>
+                    </div>
+                    <!--	DOCUMENT INFO PANE     -->
+                    <div id="panel_document_info" class="info_panel_container">
+                      <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td width="100%" class="info_panel_heading">Document Info</td>
+                        </tr>
+                        <tr>
+                          <td><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                              <tr>
+                                <td width="150" class="info_panel_field_name">Id</td>
+                                <td class="info_panel_field_value document_id">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name ">Title</td>
+                                <td class="info_panel_field_value document_title">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">File Name</td>
+                                <td class="info_panel_field_value document_filename">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Document Type</td>
+                                <td class="info_panel_field_value document_type">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Custom Document No.</td>
+                                <td class="info_panel_field_value document_custom_no">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">OEM Document No.</td>
+                                <td class="info_panel_field_value document_oem_no">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">File Size</td>
+                                <td class="info_panel_field_value document_file_size">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Full Path</td>
+                                <td class="info_panel_field_value document_full_path">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Created By</td>
+                                <td class="info_panel_field_value document_created_by">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Created Date</td>
+                                <td class="info_panel_field_value document_created_on">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Checked out By</td>
+                                <td class="info_panel_field_value document_checkout_by">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Checkout Date</td>
+                                <td class="info_panel_field_value document_checkout_on">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Modified By</td>
+                                <td class="info_panel_field_value document_modified_by">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Modified Date</td>
+                                <td class="info_panel_field_value document_modified_on">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Owned by</td>
+                                <td class="info_panel_field_value document_owned_by">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Version</td>
+                                <td class="info_panel_field_value document_version">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Content ID</td>
+                                <td class="info_panel_field_value document_content_id">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Is Immutable</td>
+                                <td class="info_panel_field_value document_immutable">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Permissions</td>
+                                <td class="info_panel_field_value document_permissions">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Workflow</td>
+                                <td class="info_panel_field_value document_workflow">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Workflow State</td>
+                                <td class="info_panel_field_value document_workflow_state">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Mime Type</td>
+                                <td class="info_panel_field_value document_mime_type">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Mime Display</td>
+                                <td class="info_panel_field_value document_mime_display">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Storage Path</td>
+                                <td class="info_panel_field_value document_storage_path">&nbsp;</td>
+                              </tr>
+                            </table></td>
+                        </tr>
+                      </table>
+                    </div>
+                    <!--	DOCUMENT EDIT PANE    -->
+                    <div id="panel_document_info_edit" class="info_panel_container">
+                      <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td width="585" class="info_panel_heading">Document Info</td>
+                        </tr>
+                        <tr>
+                          <td><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                              <tr>
+                                <td width="150" class="info_panel_field_name">Id</td>
+                                <td class="info_panel_field_value"><input id="" class="document_id" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name ">Title</td>
+                                <td class="info_panel_field_value"><input id="" class="document_title" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">File Name</td>
+                                <td class="info_panel_field_value"><input id="" class="document_filename" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Document Type</td>
+                                <td class="info_panel_field_value"><input id="" class="document_type" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Custom Document No.</td>
+                                <td class="info_panel_field_value"><input id="" class="document_custom_no" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">OEM Document No.</td>
+                                <td class="info_panel_field_value"><input id="" class="document_oem_no" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">File Size</td>
+                                <td class="info_panel_field_value"><input id="" class="document_file_size" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Full Path</td>
+                                <td class="info_panel_field_value"><input id="" class="document_full_path" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Created By</td>
+                                <td class="info_panel_field_value"><input id="" class="document_created_by" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Created Date</td>
+                                <td class="info_panel_field_value"><input id="" class="document_created_on" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Checked out By</td>
+                                <td class="info_panel_field_value"><input id="" class="document_checkout_by" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Checkout Date</td>
+                                <td class="info_panel_field_value"><input id="" class="document_checkout_on" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Modified By</td>
+                                <td class="info_panel_field_value"><input id="" class="document_modified_by" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Modified Date</td>
+                                <td class="info_panel_field_value"><input id="" class="document_modified_on" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Owned by</td>
+                                <td class="info_panel_field_value"><input id="" class="document_owned_by" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Version</td>
+                                <td class="info_panel_field_value"><input id="" class="document_version" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Content ID</td>
+                                <td class="info_panel_field_value"><input id="" class="document_content_id" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Is Immutable</td>
+                                <td class="info_panel_field_value"><input id="" class="document_immutable" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Permissions</td>
+                                <td class="info_panel_field_value"><input id="" class="document_permissions" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Workflow</td>
+                                <td class="info_panel_field_value"><input id="" class="document_workflow" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Workflow State</td>
+                                <td class="info_panel_field_value"><input id="" class="document_workflow_state" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Mime Type</td>
+                                <td class="info_panel_field_value"><input id="" class="document_mime_type" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Mime Display</td>
+                                <td class="info_panel_field_value"><input id="" class="document_mime_display" type="text" /></td>
+                              </tr>
+                              <tr>
+                                <td class="info_panel_field_name">Storage Path</td>
+                                <td class="info_panel_field_value"><input id="" class="document_storage_path" type="text" /></td>
+                              </tr>
+                            </table></td>
+                        </tr>
+                      </table>
+                    </div>
+                    <!--	FOLDER EDIT PANE    -->
+                    <!--	FOLDER INFO PANE    -->
+                    <!--	FOLDER INFO PANE    -->
+                  </div>
+                </div></td>
+            </tr>
+          </table>
+        </div>
+        <div id="perspective_Settings" style=" padding: 5px;">
+          <div class="ui-widget-content ui-corner-all" style="height:500px; padding: 15px; font-size: 12px;">
+            <div class="settingsRow_nodivider">
+              <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix" style="width:100%;">
+                <div id="clear_settings_cache" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 20px;" class="ui-icon ui-icon-refresh"/></span><span>Clear Cache</span></div>
+              </div>
+            </div>
+            <div class="settingsRow"> <span style="width: 500px; text-align:right; padding: 5px 10px 5px 5px; margin-right: 10px; border-right: 1px solid #CCCCCC;">KT Atompub Server URL</span>
+              <input type="text" id="settings_baseurl" value="" style="width: 520px;" />
+            </div>
+            <div class="settingsRow"> <span style="width: 300px; text-align:right; padding: 5px 10px 5px 5px; margin-right: 10px; border-right: 1px solid #CCCCCC;">Document Tree Service</span>
+              <input type="text" id="settings_service_treestruct" value="" style="width: 520px;" />
+            </div>
+            <div class="settingsRow"> <span style="width: 300px; text-align:right; padding: 5px 10px 5px 5px; margin-right: 10px; border-right: 1px solid #CCCCCC;">Folder Info Service</span>
+              <input type="text" id="settings_service_folderinfo" value="" style="width: 520px;" />
+            </div>
+            <div class="settingsRow"> <span style="width: 300px; text-align:right; padding: 5px 10px 5px 5px; margin-right: 10px; border-right: 1px solid #CCCCCC;">Document Info Service</span>
+              <input type="text" id="settings_service_docinfo" value="" style="width: 520px;" />
+            </div>
+          </div>
+        </div>
+        <div id="perspective_Comms" style=" padding: 5px;">
+          <div class="ui-widget-content ui-corner-all" style="height:500px; padding: 15px; font-size: 12px;">
+            <div class="settingsRow_nodivider">
+              <div class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix" style="width:100%; padding: 3px;">
+                <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
+                  <div id="comms_clear_cache" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 220px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;" onclick="events.trigger('comms_clear_cache');"><span style="display: inline; padding-right: 20px;" class="ui-icon ui-icon-refresh"/></span><span>Clear all Communication Data</span></div>
+                </div>
+              </div>
+            </div>
+            <div style="height: 450px;">
+              <textarea name="panel_comms" id="panel_comms" style="width:100%; height:448px; border: none; font-family:'Courier New', Courier, monospace; font-size: 10px;"></textarea>
+            </div>
+          </div>
+        </div>
+      </div></td>
+  </tr>
+</table>
 <!-- Toolbars -->
 <div id="toolbars" style="display:none;">
-	<!-- Visible on view document info -->
-    <div id="info_panel_toolbar_viewDocument">
-     <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix" style="font-size: 12px; padding:3px;">
-        <span id="" onclick="events.trigger('panel.document.edit.show')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-pencil"/></span><span style="padding-left:5px;">Edit</span></span>
-        <span id="" onclick="events.trigger('panel.document.action.checkout')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-cart"/></span><span style="padding-left:5px;">Checkout</span></span>
-        <span id="" onclick="events.trigger('panel.document.action.delete')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-circle-close"/></span><span style="padding-left:5px;">Delete</span></span>
-        <span id="" onclick="events.trigger('panel.document.action.download')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-circle-arrow-s"/></span><span style="padding-left:5px;">Download</span></span>
-     </div>
-    </div>
-	<!-- Visible on edit document info -->
-    <div id="info_panel_toolbar_editDocument">
-     <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix" style="font-size: 12px; padding:3px;">
-        <span id="" onclick="events.trigger('panel.document.info.show')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-cancel"/></span><span style="padding-left:5px;">Cancel Edit</span></span>
-        <span id="" onclick="events.trigger('panel.document.action.save')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-check"/></span><span style="padding-left:5px;">Save</span></span>
-        <span id="" onclick="events.trigger('panel.document.action.delete')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-circle-close"/></span><span style="padding-left:5px;">Delete</span></span>
-     </div>
-    </div>
-	<!-- Visible on view folder info -->
-    <div id="info_panel_toolbar_viewFolder">
-     <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix" style="font-size: 12px; padding:3px;">
-        <span id="" onclick="events.trigger('panel.folder.edit.show')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-pencil"/></span><span style="padding-left:5px;">Edit</span></span>
-        <span id="" onclick="events.trigger('panel.folder.action.move')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-circle-arrow-e"/></span><span style="padding-left:5px;">Move</span></span>
-     </div>
-    </div>
-	<!-- Visible on edit folder info -->
-    <div id="info_panel_toolbar_editFolder">
-     <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix" style="font-size: 12px; padding:3px;">
-        <span id="" onclick="events.trigger('panel.folder.info.show')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-cancel"/></span><span style="padding-left:5px;">Cancel Edit</span></span>
-        <span id="" onclick="events.trigger('panel.folder.action.save')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-check"/></span><span style="padding-left:5px;">Save</span></span>
-     </div>
-    </div>
+  <!-- Visible on view document info -->
+  <div id="info_panel_toolbar_viewDocument">
+    <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix" style="font-size: 12px; padding:3px;"> <span id="" onclick="events.trigger('panel.document.edit.show')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-pencil"/></span><span style="padding-left:5px;">Edit</span></span> <span id="" onclick="events.trigger('panel.document.action.checkout')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-cart"/></span><span style="padding-left:5px;">Checkout</span></span> <span id="" onclick="events.trigger('panel.document.action.delete')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-circle-close"/></span><span style="padding-left:5px;">Delete</span></span> <span id="" onclick="events.trigger('panel.document.action.download')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-circle-arrow-s"/></span><span style="padding-left:5px;">Download</span></span> </div>
+  </div>
+  <!-- Visible on edit document info -->
+  <div id="info_panel_toolbar_editDocument">
+    <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix" style="font-size: 12px; padding:3px;"> <span id="" onclick="events.trigger('panel.document.info.show')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-cancel"/></span><span style="padding-left:5px;">Cancel Edit</span></span> <span id="" onclick="events.trigger('panel.document.action.save')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-check"/></span><span style="padding-left:5px;">Save</span></span> <span id="" onclick="events.trigger('panel.document.action.delete')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-circle-close"/></span><span style="padding-left:5px;">Delete</span></span> </div>
+  </div>
+  <!-- Visible on view folder info -->
+  <div id="info_panel_toolbar_viewFolder">
+    <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix" style="font-size: 12px; padding:3px;"> <span id="" onclick="events.trigger('panel.folder.edit.show')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-pencil"/></span><span style="padding-left:5px;">Edit</span></span> <span id="" onclick="events.trigger('panel.folder.action.move')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-circle-arrow-e"/></span><span style="padding-left:5px;">Move</span></span> </div>
+  </div>
+  <!-- Visible on edit folder info -->
+  <div id="info_panel_toolbar_editFolder">
+    <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix" style="font-size: 12px; padding:3px;"> <span id="" onclick="events.trigger('panel.folder.info.show')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-cancel"/></span><span style="padding-left:5px;">Cancel Edit</span></span> <span id="" onclick="events.trigger('panel.folder.action.save')" class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 100px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 15px;" class="ui-icon ui-icon-check"/></span><span style="padding-left:5px;">Save</span></span> </div>
+  </div>
 </div>
-
-
 <!-- Dialog container-->
-<div id="dialog" style="display:none;">
+<div id="dialog" style="display:none;"> </div>
+<!-- Setup Container -->
+<div id="setup" class="dialogs" style="width: 400px; height: 300px;" title="Initial Configuration">
+  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td width="32%" class="setttings_heading" style="width:180px; border-right: none;">KT Atompub URL</td>
+      <td width="68%"><span class="settingsRow">
+        <input type="text" id="setting_discover" value="" style="width: 200px;" />
+        </span></td>
+    </tr>
+    <tr>
+      <td class="" style="width:180px">&nbsp;</td>
+      <td style="padding:10px; text-align:right;"><div onclick="events.trigger('setup.getservicedoc',$('#setting_discover').val());"class="fg-button ui-state-default ui-priority-primary ui-corner-all" style="width: 200px; border: 1px solid #BBBBBB; padding:2px; cursor:pointer;"><span style="display: inline; padding-right: 20px;" class="ui-icon ui-icon-refresh"/></span></span><span>Check ServiceDocument</span></div></td>
+    </tr>
+  </table>
+  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td width="85%" class="setttings_heading">Checking ServiceDocument</td>
+      <td width="15%" class="settings_indicator" >&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="setttings_heading">Document Tree Service</td>
+      <td class="settings_indicator">&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="setttings_heading">Folder Info Service</td>
+      <td class="settings_indicator">&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="setttings_heading">Document Info Service</td>
+      <td class="settings_indicator">&nbsp;</td>
+    </tr>
+  </table>
 </div>
-
 </body>
 </html>

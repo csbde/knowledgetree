@@ -11,11 +11,11 @@ site=new function(){
 	this.currentDocument=null;
 	
 	this._cfgDefaults={
-		'baseurl'					:'http://kt.dev/ktatompub/?',
-		'services'					:'servicedoc/',
-		'service.treestruct'		:'fulltree/',
-		'service.folderInfo'		:'folder/',
-		'service.docInfo'			:'document/'
+		'baseurl'					:'',
+		'services'					:'',
+		'service.treestruct'		:'',
+		'service.folderInfo'		:'',
+		'service.docInfo'			:''
 	};
 	
 	this.cfg=function(cfgName){
@@ -61,13 +61,20 @@ site=new function(){
 		this.setupTabEvents();
 		this.setupInspectors();
 		this.setupDisplay();
+		this.checkSettings();
 		events.trigger('perspective.folders.show');
+	}
+	
+	this.checkSettings=function(){
+		if(this.cfg('baseurl')==''){
+			$('#setup').dialog('open');
+		}else{
+		}
 	}
 	
 	this.bootStrap=function(){
 		for(var liburl in this.libraries){
 			this.includeJs(liburl);
-			//alert('loading '+ liburl)
 		}
 		$('document').ready(function(){site.init();});
 	}
@@ -83,6 +90,7 @@ site=new function(){
 	this.setupDisplay=function(){
 		events.trigger('panel.clear');
 		$('#dialog').dialog({autoOpen:false, modal:true, dialogClass:'dialogs', closeOnEscape:true, buttons:{'OK':function(){$(this).dialog('close');}}});
+		$('#setup').dialog({width: 400, height:200, modal: true, autoOpen:false, dialogClass: 'dialogs'});
 		$('.fg-button').each(function(){
 			$(this).mouseover(function(){
 				$(this).addClass('ui-state-hover');
@@ -142,6 +150,7 @@ site=new function(){
 		events.listen('panel.folder.action.save',site.event_handlers.folder_action_save,site.event_handlers);
 		events.listen('panel.folder.action.move',site.event_handlers.folder_action_move,site.event_handlers);
 		
+		events.listen('setup.getservicedoc',site.event_handlers.discovery,site.event_handlers);
 		
 		
 		

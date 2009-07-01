@@ -32,7 +32,7 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * Contributor( s): 
+ * Contributor( s):
  * 				Mark Holtzhausen <mark@knowledgetree.com>
  *
  */
@@ -43,7 +43,7 @@
  */
 include_once('KTAPDoc.inc.php');
 
-/*
+/* Remember to include support for feed attributes / nodes
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
@@ -69,40 +69,44 @@ include_once('KTAPDoc.inc.php');
 
 
 class KTAPPFeed extends KTAPDoc {
-	
+
 	private $baseURI=NULL;
 	private $feed=NULL;
 
-			
+
 	public function __construct($baseURI=NULL,$title=NULL,$link=NULL,$updated=NULL,$author=NULL,$id=NULL){
 		parent::__construct();
 		$this->constructHeader();
 		$this->baseURI=$baseURI;
 	}
-	
+
 	private function constructHeader(){
 		$feed=$this->newElement('feed');
 		$feed->appendChild($this->newAttr('xmlns','http://www.w3.org/2005/Atom'));
 		$this->feed=&$feed;
 		$this->DOM->appendChild($this->feed);
 	}
-	
+
 	public function &newEntry(){
 		$entry=$this->newElement('entry');
 		$this->feed->appendChild($entry);
-		return $entry;		
+		return $entry;
 	}
-	
+
 	public function &newField($name=NULL,$value=NULL,&$entry=NULL){
 		$field=$this->newElement($name,$value);
 		if(isset($entry))$entry->appendChild($field);
 		return $field;
 	}
-	
+
 	public function getAPPdoc(){
 		return $this->formatXmlString(trim($this->DOM->saveXML()));
 	}
-	
+
+	public function render(){
+		return $this->getAPPdoc();
+	}
+
 }
 
 

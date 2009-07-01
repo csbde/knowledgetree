@@ -79,6 +79,18 @@ ktApp.folder=new function(){
 	}
 }
 
+ktApp.serviceDoc=new function(){
+	this.parseXML=function(data,workspace){
+		$('workspace',data).each(function(){
+			var ws=$(this);
+			lib.debug.inspect($(ws[0].childNodes).);
+			if($('title',this)[0].textContent==workspace){
+				alert('found workspace '+workspace)
+			}
+		});
+	}
+}
+
 
 ktApp.document=new function(){
 	this.fieldList={
