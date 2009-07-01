@@ -167,44 +167,6 @@ class CMISRepository {
         return $this->objectTypes;
     }
 
-//    // TODO this function MUST accept the same arguments as the calling functions and respond accordingly
-//    // TODO consider moving this into the RepositoryService class:
-//    //      anything which requires a repository id seems like it does not belong in the repository class
-//    function getTypes()
-//    {
-//        $objectTypes = $this->objectTypes->getObjectTypes();
-//
-//        // fetch the attributes for each type
-//        foreach ($objectTypes as $key => $objectType)
-//        {
-//            $objectTypes[$key] = $this->getTypeDefinition($this->repositoryId, $objectType);
-//        }
-//
-//        return $objectTypes;
-//    }
-
-//    // TODO consider moving this into the RepositoryService class:
-//    //      anything which requires a repository id seems like it does not belong in the repository class
-//    function getTypeDefinition($repositoryId, $typeId)
-//    {
-//        // TODO is this the best way of doing this?
-//        switch ($typeId)
-//        {
-//            case 'Document':
-//                require_once(CMIS_DIR . '/objecttypes/CMISDocumentObject.inc.php');
-//                $tmpObject = new DocumentObject();
-//                $objectAttributes = $tmpObject->getProperties();
-//            break;
-//            case 'Folder':
-//                require_once(CMIS_DIR . '/objecttypes/CMISFolderObject.inc.php');
-//                $tmpObject = new FolderObject();
-//                $objectAttributes = $tmpObject->getProperties();
-//            break;
-//        }
-//
-//        return $objectAttributes;
-//    }
-
 }
 
 ?>

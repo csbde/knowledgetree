@@ -1,7 +1,10 @@
 <?php
 
-// really wanted to keep KT code out of here but I don't see how
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
+require_once(CMIS_DIR . '/exceptions/ConstraintViolationException.inc.php');
+require_once(CMIS_DIR . '/exceptions/ObjectNotFoundException.inc.php');
+require_once(CMIS_DIR . '/exceptions/StorageException.inc.php');
+require_once(CMIS_DIR . '/services/CMISRepositoryService.inc.php');
 require_once(CMIS_DIR . '/objecttypes/CMISDocumentObject.inc.php');
 require_once(CMIS_DIR . '/objecttypes/CMISFolderObject.inc.php');
 require_once(CMIS_DIR . '/classes/CMISRepository.inc.php');
@@ -44,17 +47,21 @@ class CMISObjectService {
 
         $typeId = CMISUtil::decodeObjectId($objectId);
 
+        if ($typeId == 'Unknown')
+        {
+            throw new ObjectNotFoundException('The type of the requested object could not be determined');
+        }
+
         switch($typeId)
         {
             case 'Document':
-                $CMISObject = new CMISDocumentObject($this->ktapi, $repository->getRepositoryURI());
+                $CMISObject = new CMISDocumentObject($objectId, $this->ktapi, $repository->getRepositoryURI());
                 break;
             case 'Folder':
-                $CMISObject = new CMISFolderObject($this->ktapi, $repository->getRepositoryURI());
+                $CMISObject = new CMISFolderObject($objectId, $this->ktapi, $repository->getRepositoryURI());
                 break;
         }
 
-        $CMISObject->get($objectId);
         $properties = $CMISObject->getProperties();
 
         return $properties;
@@ -70,14 +77,24 @@ class CMISObjectService {
      * @return string $objectId The id of the created folder object
      */
     // TODO throw ConstraintViolationException if:
-    //      typeID is not an Object-Type whose baseType is “Folder”.
     //      value of any of the properties violates the min/max/required/length constraints
     //      specified in the property definition in the Object-Type.
-    //      typeID is NOT in the list of AllowedChildObjectTypeIds of the parent-folder specified by folderId
-    // TODO throw storageException under conditions specified in "specific exceptions" section
     function createFolder($repositoryId, $typeId, $properties, $folderId)
     {
-        $objectId = null;
+        // fetch type definition of supplied type and check for base type "folder", if not true throw exception
+        $RepositoryService = new CMISRepositoryService();
+        try {
+            $typeDefinition = $RepositoryService->getTypeDefinition($repositoryId, $typeId);
+        }
+        catch (Exception $e)
+        {
+            throw new ConstraintViolationException('Object is not of base type folder.');
+        }
+        
+        if ($typeDefinition['attributes']['baseType'] != 'folder')
+        {
+            throw new ConstraintViolationException('Object is not of base type folder');
+        }
 
         // TODO determine whether this is in fact necessary or if we should require decoding in the calling code
         // Attempt to decode $folderId, use as is if not detected as encoded
@@ -85,11 +102,21 @@ class CMISObjectService {
         $tmpTypeId = CMISUtil::decodeObjectId($objectId);
         if ($tmpTypeId != 'Unknown')
             $folderId = $objectId;
+        
+        // if parent folder is not allowed to hold this type, throw exception
+        $CMISFolder = new CMISFolderObject($folderId, $this->ktapi);
+        $folderProperties = $CMISFolder->getProperties();
+        $allowed = $folderProperties->getValue('AllowedChildObjectTypeIds');
+        if (!is_array($allowed) || !in_array($typeId, $allowed))
+        {
+            throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
+        }
 
         $response = $this->ktapi->create_folder($folderId, $properties['name'], $sig_username = '', $sig_password = '', $reason = '');
         if ($response['status_code'] != 0)
         {
-            // TODO add some error handling here
+            // throw storageException
+            throw new StorageException('The repository was unable to create the folder - ' . $response['message']);
         }
         else
         {

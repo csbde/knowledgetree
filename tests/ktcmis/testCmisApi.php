@@ -7,6 +7,7 @@ require_once (KT_LIB_DIR . '/api/ktcmis/ktcmis.inc.php');
 define (KT_TEST_USER, 'admin');
 define (KT_TEST_PASS, 'admin');
 
+// set to true to print out results
 define (DEBUG_CMIS, false);
 
 /**
@@ -339,15 +340,23 @@ class CMISTestCase extends KTUnitTestCase {
         // TODO test invalid type
         // TODO test invalid parent folder
         // TODO other invalid parameters
-        $created = $ObjectService->createFolder($repositoryId, 'Folder', array('name' => 'My Test Folder ' . mt_rand()), 1);
+        $created = $ObjectService->createFolder($repositoryId, 'Folder', array('name' => 'My Test Folder ' . mt_rand()), 'F1');
         $this->assertNotNull($created['results']);
 
-        // delete created folder
         if (!is_null($created['results']))
         {
-            $folder_id = $created['results'];
-            CMISUtil::decodeObjectId($folder_id);
-            $this->ktapi->delete_folder($folder_id, 'Testing API', KT_TEST_USER, KT_TEST_PASS);
+            $folderId = $created['results'];
+
+            // check that folder object actually exists
+            $properties = $ObjectService->getProperties($repositoryId, $folderId, false, false);
+            $this->assertNotNull($properties['results']);
+            
+            // test printout
+            $this->printTable($properties['results'][0], 'Properties for CMIS Created Folder Object ' . $folderId . ' (getProperties())');
+
+            // delete
+            CMISUtil::decodeObjectId($folderId);
+            $this->ktapi->delete_folder($folderId, 'Testing API', KT_TEST_USER, KT_TEST_PASS);
         }
 
         // tear down the folder/doc tree structure with which we were testing

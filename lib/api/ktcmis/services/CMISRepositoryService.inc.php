@@ -43,6 +43,7 @@
 
 require_once(CMIS_DIR . '/classes/CMISRepository.inc.php');
 require_once(CMIS_DIR . '/classes/CMISObjectTypes.inc.php');
+require_once(CMIS_DIR . '/exceptions/InvalidArgumentException.inc.php');
 
 /**
  * CMIS Repository Service.
@@ -98,10 +99,21 @@ class CMISRepositoryService {
      * @return array $objectTypes
      */
     // NOTE this code may fit better within the Repository Class
+    // TODO return for specific type when $typeId is specified
+    // TODO other optional parameters
     function getTypes($repositoryId, $typeId = '', $returnPropertyDefinitions = false,
                       $maxItems = 0, $skipCount = 0, &$hasMoreItems = false)
     {        
-        // TODO throw invalidArgumentException if invalid typeId submitted
+        if ($typeId != '')
+        {
+            try {
+                $typeDefinition = $this->getTypeDefinition($repositoryId, $typeId);
+            }
+            catch (Exception $e)
+            {
+                throw new InvalidArgumentException('Type ' . $typeId . ' is not supported');
+            }
+        }
 
         $repository = new CMISRepository($repositoryId);
         $supportedTypes = $repository->getTypes();
@@ -140,15 +152,24 @@ class CMISRepositoryService {
      * @param string $typeId The ID of the object type requested
      * @return $array $typeDefinition
      */
+    // NOTE this code may fit better in the Repository Class
     function getTypeDefinition($repositoryId, $typeId)
     {
+        $object = 'CMIS' . $typeId . 'Object';
+        
+        // check whether the object type exists, return error if not
+        // consider throwing an exception instead (see General Exceptions)
+        if (!file_exists(CMIS_DIR . '/objecttypes/' . $object . '.inc.php'))
+        {
+            throw new InvalidArgumentException('Type ' . $typeId . ' is not supported');
+        }
+
         $typeDefinition = array();
 
-        require_once(CMIS_DIR . '/objecttypes/CMIS' . $typeId . 'Object.inc.php');
-        $object = 'CMIS' . $typeId . 'Object';
-        $tmpObject = new $object;
-        $typeDefinition['attributes'] = $tmpObject->getAttributes();
-        $typeDefinition['properties'] = $tmpObject->getProperties();
+        require_once(CMIS_DIR . '/objecttypes/' . $object . '.inc.php');
+        $cmisObject = new $object;
+        $typeDefinition['attributes'] = $cmisObject->getAttributes();
+        $typeDefinition['properties'] = $cmisObject->getProperties();
 
         return $typeDefinition;
     }

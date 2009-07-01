@@ -49,7 +49,7 @@ class CMISFolderObject extends CMISBaseObject {
     var $ktapi;
     var $uri;
 
-    function CMISFolderObject(&$ktapi = null, $uri = null)
+    function __construct($folderId = null, &$ktapi = null, $uri = null)
     {
         $this->ktapi = $ktapi;
         $this->uri = $uri;
@@ -69,11 +69,16 @@ class CMISFolderObject extends CMISBaseObject {
  
         // properties
         $this->properties = new CMISFolderPropertyCollection();
+
+        if (!is_null($folderId))
+        {
+            $this->_get($folderId);
+        }
     }
 
-    function get($objectId)
+    private function _get($folderId)
     {
-        $object = $this->ktapi->get_folder_by_id($objectId);
+        $object = $this->ktapi->get_folder_by_id($folderId);
 
         // error?
         if (PEAR::isError($object))

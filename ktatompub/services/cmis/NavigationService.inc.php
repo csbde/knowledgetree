@@ -99,6 +99,26 @@ class NavigationService extends KTNavigationService {
         }
     }
 
+    /**
+     * Returns a list of checked out documents from the selected repository
+     *
+     * @param string $repositoryId
+     * @param string $folderId The folder for which checked out docs are requested
+     * @param string $filter
+     * @param int $maxItems
+     * @param int $skipCount
+     * @return array $checkedout The collection of checked out documents
+     */
+    function getCheckedoutDocs($repositoryId, $folderId = null, $filter = '', $maxItems = 0, $skipCount = 0)
+    {
+        $checkedout = parent::getObjectParents($repositoryId, $folderId, $filter, $maxItems, $skipCount);
+
+        if ($result['status_code'] == 0)
+        {
+            return $result['results'];
+        }
+    }
+
 }
 
 ?>

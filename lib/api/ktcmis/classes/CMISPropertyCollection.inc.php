@@ -54,8 +54,6 @@ abstract class CMISPropertyCollection {
     static $LastModifiedBy;
     static $LastModificationDate;
     static $ChangeToken;
-    static $ContentStreamLength;
-    static $ContentStreamMimeType;
     // TODO these definitions probably belong elsewhere, but here will do for now
     static $propertyTypes;
 

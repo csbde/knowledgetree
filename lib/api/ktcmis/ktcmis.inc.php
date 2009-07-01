@@ -85,7 +85,7 @@ class KTCMISBase {
         return $this->session;
     }
 
-    // TODO what about destroying sessions?
+    // TODO what about destroying sessions? only on logout (which is not offered by the CMIS clients tested so far)
 }
 
 /**
@@ -152,8 +152,8 @@ class KTRepositoryService extends KTCMISBase {
             );
         }
 
-        // TODO output this manually, the function works but only for some objects so rather avoid it completely
-        // NOTE the fact that it works for this instance is irrelevant...
+        // TODO output this manually, the function works but only for some objects so rather avoid it completely?
+        // NOTE the problems appear to be due to recursive objects
         return array (
             "status_code" => 0,
             "results" => CMISUtil::objectToArray($repositoryInfo)
@@ -168,13 +168,15 @@ class KTRepositoryService extends KTCMISBase {
     public function getTypes($repositoryId, $typeId = '', $returnPropertyDefinitions = false,
                       $maxItems = 0, $skipCount = 0, &$hasMoreItems = false)
     {
-        $repositoryObjectTypeResult = $this->RepositoryService->getTypes($repositoryId, $typeId, $returnPropertyDefinitions,
-                                                                    $maxItems, $skipCount, $hasMoreItems);
-        if (PEAR::isError($repositoryObjectTypeResult))
+        try {
+            $repositoryObjectTypeResult = $this->RepositoryService->getTypes($repositoryId, $typeId, $returnPropertyDefinitions,
+                                                                             $maxItems, $skipCount, $hasMoreItems);
+        }
+        catch (Exception $e)
         {
             return array(
                 "status_code" => 1,
-                "message" => "Failed getting supported object types"
+                "message" => $e->getMessage()
             );
         }
 
@@ -202,13 +204,14 @@ class KTRepositoryService extends KTCMISBase {
      */
     public function getTypeDefinition($repositoryId, $typeId)
     {
-        $typeDefinitionResult = $this->RepositoryService->getTypeDefinition($repositoryId, $typeId);
-
-        if (PEAR::isError($typeDefinitionResult))
+        try {
+            $typeDefinitionResult = $this->RepositoryService->getTypeDefinition($repositoryId, $typeId);
+        }
+        catch (Exception $e)
         {
             return array(
                 "status_code" => 1,
-                "message" => "Failed getting object type definition for $typeId"
+                "message" => $e->getMessage()
             );
         }
 
@@ -380,6 +383,35 @@ class KTNavigationService extends KTCMISBase {
         );
     }
 
+    /**
+     * Returns a list of checked out documents from the selected repository
+     *
+     * @param string $repositoryId
+     * @param string $folderId The folder for which checked out docs are requested
+     * @param string $filter
+     * @param int $maxItems
+     * @param int $skipCount
+     * @return array $checkedout The collection of checked out documents
+     */
+    function getCheckedoutDocs($repositoryId, $folderId = null, $filter = '', $maxItems = 0, $skipCount = 0)
+    {
+        $checkedout = $this->NavigationService->getObjectParents($repositoryId, $objectId, $includeAllowableActions,
+                                                                 $includeRelationships);
+
+        if (PEAR::isError($ancestryResult))
+        {
+            return array(
+                "status_code" => 1,
+                "message" => "Failed getting list of checked out documents"
+            );
+        }
+
+        return array(
+            "status_code" => 0,
+            "results" => $checkedout
+        );
+    }
+
 }
 
 /**
@@ -415,13 +447,15 @@ class KTObjectService extends KTCMISBase {
     public function getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships,
                            $returnVersion = false, $filter = '')
     {
-        $propertyCollection = $this->ObjectService->getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships);
-
-        if (PEAR::isError($propertiesResult))
+        try {
+            $propertyCollection = $this->ObjectService->getProperties($repositoryId, $objectId, $includeAllowableActions,
+                                                                      $includeRelationships);
+        }
+        catch (Exception $e)
         {
             return array(
                 "status_code" => 1,
-                "message" => "Failed getting properties for object"
+                "message" => $e->getMessage()
             );
         }
 
@@ -446,13 +480,14 @@ class KTObjectService extends KTCMISBase {
     {
         $objectId = null;
 
-        $objectId = $this->ObjectService->createFolder($repositoryId, $typeId, $properties, $folderId);
-
-        if (PEAR::isError($propertiesResult))
+        try {
+            $objectId = $this->ObjectService->createFolder($repositoryId, $typeId, $properties, $folderId);
+        }
+        catch (Exception $e)
         {
             return array(
                 "status_code" => 1,
-                "message" => "Failed getting properties for object"
+                "message" => $e->getMessage()
             );
         }
 

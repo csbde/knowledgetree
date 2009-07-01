@@ -444,6 +444,7 @@ class CMISFolderFeed extends CMISObjectFeed {
         // <cmis:hasMoreItems>false</cmis:hasMoreItems>
 
         $output = $feed->getAPPdoc();
+        
     $outputs = '<?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:cmis="http://www.cmis.org/2008/05">
 <entry>
