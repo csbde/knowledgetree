@@ -27,74 +27,76 @@ class KTAPP{
 	private $services=array();
 	private $errors=array();
 	private $output='';
-	private $header='200';
-	
-	private $headerLibrary=array(
-		200		=>'OK',
-		201		=>'Created',
-		204		=>'No Content'
-	);
 	
 	public function __construct(){
-		$this->registerService('servicedocument',array($this,'serviceDocument'));
 	}
 	
 	public function switchBoard(){
 		$reqMethod=trim(strtoupper($_SERVER['REQUEST_METHOD']));
 		$queryArray=split('/',trim($_SERVER['QUERY_STRING'],'/'));
-		$service=strtolower(trim($queryArray[0]));
-		$requestParams=array_slice($queryArray,1);
+		$rawRequest=@file_get_contents('php://input');
+
+		$workspace=strtolower(trim($queryArray[0]));
+		$serviceName=strtolower(trim($queryArray[1]));
+		$requestParams=array_slice($queryArray,2);
 		$this->queryArray=$queryArray;
 		$this->serviceName=$service;
-		$service=$this->getRegisteredService($service);
+		
+		if($workspace=='servicedocument'){
+			$this->serviceDocument();
+			return;
+		}
+		
+		$service=$this->getRegisteredService($workspace,$serviceName);
+		
 		if(is_array($service)){
 			if($service['fileName'])require_once($service['fileName']);
 			if(is_array($service['serviceFunc'])){
-				$service['serviceFunc'][0]->$service['serviceFunc'][1]($reqMethod,$requestParams);
+				$service['serviceFunc'][0]->$service['serviceFunc'][1]($reqMethod,$requestParams,$rawRequest);
 			}else{
-				$this->output=$service['serviceFunc']($reqMethod,$requestParams);
+				$this->output=$service['serviceFunc']($reqMethod,$requestParams,$rawRequest);
 			}
 		}else{
-			echo 'service  not found'			;
+			echo "Could not find service:{$service['serviceFunc']} in $workspace"; //TODO: ERROR HERE
 		}
 	}
 
-	public function registerService($workspace=NULL,$serviceName=NULL,$serviceFunctionName=NULL,$fileName=NULL){
+	public function registerService($workspace=NULL,$serviceName=NULL,$serviceFunctionName=NULL,$title=NULL,$filename=NULL){
+		$workspace=strtolower(trim($workspace));
+		$serviceName=strtolower(trim($serviceName));
+		
 		$serviceRecord=array(
 			'fileName'		=>$fileName,
-			'serviceFunc'	=>$serviceFunctionName
+			'serviceFunc'	=>$serviceFunctionName,
+			'title'			=>$title
 		);
+		
 		$this->services[$workspace][$serviceName]=$serviceRecord;
 	}
 	
-	public function getRegisteredService($serviceName=NULL){
+	public function getRegisteredService($workspace,$serviceName=NULL){
 		$serviceName=strtolower(trim($serviceName));
-		if(isset($this->services[$serviceName]))return $this->services[$serviceName];
+		if(isset($this->services[$workspace][$serviceName]))return $this->services[$workspace][$serviceName];
 		return false;
 	}
 	
 	public function serviceDocument(){
 		$service=new KTAPPServiceDoc(KT_APP_BASE_URI);
 		
-		//Creating the Default Workspace for use with standard atomPub Clients
-		$ws=$service->newWorkspace('DMS');
-		
-		foreach($this->services as $serviceName=>$serviceInstance){
-			$col=$service->newCollection(KT_APP_BASE_URI.$serviceName.'/','',$ws);
+		foreach($this->services as $workspace=>$collection){
+			//Creating the Default Workspace for use with standard atomPub Clients
+			$ws=$service->newWorkspace($workspace);
+			
+			foreach($collection as $serviceName=>$serviceInstance){
+				$col=$service->newCollection(KT_APP_BASE_URI.$workspace.'/'.$serviceName.'/',$serviceInstance['title'],$ws);
+			}
 		}
 		
-/*
-		$col=$service->newCollection(KT_APP_BASE_URI.'fulltree/','Full Document Tree',$ws);
-		$col=$service->newCollection(KT_APP_BASE_URI.'folder/','Folder Detail',$ws);
-		$col=$service->newCollection(KT_APP_BASE_URI.'document/','Document Detail',$ws);
-		$col=$service->newCollection(KT_APP_BASE_URI.'mimetypes/','Supported Mime Types',$ws);
-*/
-	
 		$this->output=$service->getAPPdoc();
 	}
 
 	public function render(){
-		//ob_end_clean();
+		ob_end_clean();
 		header('Content-type: text/xml');
 		echo $this->output;
 	}
@@ -102,6 +104,7 @@ class KTAPP{
 
 
 function KTAPP_service_folder($reqMethod,$reqParams){
+	//print_r(array($reqMethod,$reqParams));
 	//Create a new response feed
 	$feed=new KTAPPFeed(KT_APP_BASE_URI);
 
@@ -171,14 +174,61 @@ function KTAPP_service_document($reqMethod,$reqParams){
 	return $feed->getAPPdoc();
 }
 
+/**
+ * 		200		=>'OK',
+		201		=>'Created',
+		204		=>'No Content'
+
+ *
+ */
+
+class ktAPP_Service{
+	const STATUS_OK					='200 OK';
+	const STATUS_NOT_FOUND			='204 No Content';
+	const STATUS_NOT_ALLOWED		='204 Not Allowed';
+	const STATUS_NOT_AUTHENTICATED	='204 Not Authenticated';
+	const STATUS_CREATED			='201 Created';
+	const STATUS_UPDATED			='200 Updated';
+	
+	public $responseFeed=NULL;
+	public $responseHeader=NULL;
+	
+	
+	public function __construct($method,$params,$content){
+		$this->method=$method;
+		$this->params=$params;
+		$this->rawContent=$content;
+	}
+	
+	public function GET_action(){
+		
+	}
+	
+	public function PUT_action(){
+		
+	}
+	
+	public function POST_action(){
+		
+	}
+	
+	public function DELETE_action(){
+		
+	}
+	
+	
+	private function setStatus($status=NULL){
+		
+	}
+}
+
 
 $APP=new KTAPP();
-$APP->registerService('fulltree','KTAPP_service_fullTree','fasdfasdfasdfasdfa');
-$APP->registerService('fulltree',array($obj,'KTAPP_service_fullTree'));
-$APP->registerService('folder','KTAPP_service_folder');
-$APP->registerService('document','KTAPP_service_document');
+$APP->registerService('DMS','fulltree','KTAPP_service_fullTree','Full Document Tree');
+$APP->registerService('DMS','folder','KTAPP_service_folder','Folder Detail');
+$APP->registerService('DMS','document','KTAPP_service_document','Document Detail');
+//echo '<pre>'.print_r($APP,true).'</pre>';
 $APP->switchBoard();
 $APP->render();
-//echo '<pre>'.print_r($APP,true).'</pre>';
 
 ?>
