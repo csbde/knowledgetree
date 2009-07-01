@@ -28,23 +28,22 @@ if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
 require_once(LOG4PHP_DIR . '/LoggerAppenderSkeleton.php');
 require_once(LOG4PHP_DIR . '/helpers/LoggerOptionConverter.php');
 require_once(LOG4PHP_DIR . '/LoggerLog.php');
-
-require_once(ADODB_DIR . '/adodb.inc.php');
+require_once('DB.php');
 
 /**
- * Appends log events to a db table using adodb class.
+ * Appends log events to a db table using PEAR::DB class.
  *
  * <p>This appender uses a table in a database to log events.</p>
- * <p>Parameters are {@link $host}, {@link $user}, {@link $password},
- * {@link $database}, {@link $createTable}, {@link $table} and {@link $sql}.</p>
+ * <p>Parameters are {@link $dsn}, {@link $createTable}, {@link table} and {@link $sql}.</p>
  * <p>See examples in test directory.</p>
  *
- * @author sbw <sbw@ibiblio.org>
+ * @author  Marco Vassura
+ * @version $Revision: 635069 $
  * @package log4php
  * @subpackage appenders
- * @since 0.9
+ * @since 0.3
  */
-class LoggerAppenderAdodb extends LoggerAppenderSkeleton {
+class LoggerAppenderDb extends LoggerAppenderSkeleton {
 
     /**
      * Create the log table if it does not exists (optional).
@@ -53,34 +52,10 @@ class LoggerAppenderAdodb extends LoggerAppenderSkeleton {
     var $createTable = true;
     
     /**
-     * The type of database to connect to
+     * PEAR::Db Data source name. Read PEAR::Db for dsn syntax (mandatory).
      * @var string
      */
-    var $type;
-    
-    /**
-     * Database user name
-     * @var string
-     */
-    var $user;
-    
-    /**
-     * Database password
-     * @var string
-     */
-    var $password;
-    
-    /**
-     * Database host to connect to
-     * @var string
-     */
-    var $host;
-    
-    /**
-     * Name of the database to connect to
-     * @var string
-     */
-    var $database;
+    var $dsn;
     
     /**
      * A {@link LoggerPatternLayout} string used to format a valid insert query (mandatory).
@@ -95,7 +70,7 @@ class LoggerAppenderAdodb extends LoggerAppenderSkeleton {
     var $table;
     
     /**
-     * @var object Adodb instance
+     * @var object PEAR::Db instance
      * @access private
      */
     var $db = null;
@@ -128,35 +103,39 @@ class LoggerAppenderAdodb extends LoggerAppenderSkeleton {
      * @return boolean true if all ok.
      */
     function activateOptions()
-    {        
-        $this->db = &ADONewConnection($this->type);
-        if (! $this->db->PConnect($this->host, $this->user, $this->password, $this->database)) {
-          LoggerLog::debug("LoggerAppenderAdodb::activateOptions() DB Connect Error [".$this->db->ErrorMsg()."]");            
-          $this->db = null;
-          $this->closed = true;
-          $this->canAppend = false;
-          return;
-        }
-        
-        $this->layout = LoggerLayout::factory('LoggerPatternLayout');
-        $this->layout->setConversionPattern($this->getSql());
-    
-        // test if log table exists
-        $sql = 'select * from ' . $this->table . ' where 1 = 0';
-        $dbrs = $this->db->Execute($sql);
-        if ($dbrs == false and $this->getCreateTable()) {
-            $query = "CREATE TABLE {$this->table} (timestamp varchar(32),logger varchar(32),level varchar(32),message varchar(64),thread varchar(32),file varchar(64),line varchar(4) );";
+    {
+        $this->db = DB::connect($this->dsn);
 
-            LoggerLog::debug("LoggerAppenderAdodb::activateOptions() creating table '{$this->table}'... using sql='$query'");
-                     
-            $result = $this->db->Execute($query);
-            if (! $result) {
-                LoggerLog::debug("LoggerAppenderAdodb::activateOptions() error while creating '{$this->table}'. Error is ".$this->db->ErrorMsg());
-                $this->canAppend = false;
-                return;
+        if (DB::isError($this->db)) {
+            LoggerLog::debug("LoggerAppenderDb::activateOptions() DB Connect Error [".$this->db->getMessage()."]");            
+            $this->db = null;
+            $this->closed = true;
+            $this->canAppend = false;
+
+        } else {
+        
+            $this->layout = LoggerLayout::factory('LoggerPatternLayout');
+            $this->layout->setConversionPattern($this->getSql());
+        
+            // test if log table exists
+            $tableInfo = $this->db->tableInfo($this->table, $mode = null);
+            if (DB::isError($tableInfo) and $this->getCreateTable()) {
+                $query = "CREATE TABLE {$this->table} (timestamp varchar(32),logger varchar(32),level varchar(32),message varchar(64),thread varchar(32),file varchar(64),line varchar(4) );";
+
+                LoggerLog::debug("LoggerAppenderDb::activateOptions() creating table '{$this->table}'... using sql='$query'");
+                         
+                $result = $this->db->query($query);
+                if (DB::isError($result)) {
+                    LoggerLog::debug("LoggerAppenderDb::activateOptions() error while creating '{$this->table}'. Error is ".$result->getMessage());
+                    $this->closed = true;
+                    $this->canAppend = false;
+                    return;
+                }
             }
+            $this->canAppend = true;
+            $this->closed = false;                        
         }
-        $this->canAppend = true;
+
     }
     
     function append($event)
@@ -165,16 +144,16 @@ class LoggerAppenderAdodb extends LoggerAppenderSkeleton {
 
             $query = $this->layout->format($event);
 
-            LoggerLog::debug("LoggerAppenderAdodb::append() query='$query'");
+            LoggerLog::debug("LoggerAppenderDb::append() query='$query'");
 
-            $this->db->Execute($query);
+            $this->db->query($query);
         }
     }
     
     function close()
     {
         if ($this->db !== null)
-            $this->db->Close();
+            $this->db->disconnect();
         $this->closed = true;
     }
     
@@ -184,6 +163,14 @@ class LoggerAppenderAdodb extends LoggerAppenderSkeleton {
     function getCreateTable()
     {
         return $this->createTable;
+    }
+    
+    /**
+     * @return string the defined dsn
+     */
+    function getDsn()
+    {
+        return $this->dsn;
     }
     
     /**
@@ -202,69 +189,14 @@ class LoggerAppenderAdodb extends LoggerAppenderSkeleton {
         return $this->table;
     }
     
-    /**
-     * @return string the database to connect to
-     */
-    function getDatabase() {
-        return $this->database;
-    }
-    
-    /**
-     * @return string the database to connect to
-     */
-    function getHost() {
-        return $this->host;
-    }
-    
-    /**
-     * @return string the user to connect with
-     */
-    function getUser() {
-        return $this->user;
-    }
-    
-    /**
-     * @return string the password to connect with
-     */
-    function getPassword() {
-        return $this->password;
-    }
-    
-    /**
-     * @return string the type of database to connect to
-     */
-    function getType() {
-        return $this->type;
-    }
-    
     function setCreateTable($flag)
     {
         $this->createTable = LoggerOptionConverter::toBoolean($flag, true);
     }
     
-    function setType($newType)
+    function setDsn($newDsn)
     {
-        $this->type = $newType;
-    }
-    
-    function setDatabase($newDatabase)
-    {
-        $this->database = $newDatabase;
-    }
-    
-    function setHost($newHost)
-    {
-        $this->host = $newHost;
-    }
-    
-    function setUser($newUser)
-    {
-        $this->user = $newUser;
-    }
-    
-    function setPassword($newPassword)
-    {
-        $this->password = $newPassword;
+        $this->dsn = $newDsn;
     }
     
     function setSql($sql)

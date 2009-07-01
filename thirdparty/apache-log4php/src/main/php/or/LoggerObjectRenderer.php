@@ -15,35 +15,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * 
+ *
  * @package log4php
+ * @subpackage or
  */
 
 /**
- * @ignore
+ * @ignore 
  */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__));
-
-require_once(LOG4PHP_DIR . '/spi/LoggerFactory.php');
-require_once(LOG4PHP_DIR . '/Logger.php');
-
+if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
+ 
 /**
- * Creates instances of {@link Logger} with a given name.
+ * Subclass this abstract class in order to render objects as strings.
  *
  * @author  Marco Vassura
  * @version $Revision: 635069 $
  * @package log4php
- * @since 0.5 
+ * @subpackage or
+ * @abstract
+ * @since 0.3
  */
-class LoggerDefaultCategoryFactory extends LoggerFactory {
-    
-    /**
-     * @param string $name
-     * @return Logger
-     */
-    public function makeNewLoggerInstance($name)
-    {
-        return new Logger($name);
-    }
-}
+abstract class LoggerObjectRenderer {
 
+    /**
+     * @param string $class classname
+     * @return LoggerObjectRenderer create LoggerObjectRenderer instances
+     */
+    public static function factory($class) {
+        if (!empty($class)) {
+            $class = basename($class);
+            include_once LOG4PHP_DIR."/or/{$class}.php";
+            if (class_exists($class)) {
+                return new $class();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Render the entity passed as parameter as a String.
+     * @param mixed $o entity to render
+     * @return string
+     */
+    abstract public function doRender($o);
+}

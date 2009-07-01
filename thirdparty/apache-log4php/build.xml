@@ -21,6 +21,8 @@
 	<property name="svnsite.url" value="${svnrepo.url}/incubator/log4php/site"/>
 	<available property="svn-available" file="target/site-deploy/.svn"/>	
 
+    <!--  Use Maven 2 to build or manually place ant-contrib (http://ant-contrib.sf.net) on path -->
+    <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach" />
         
     <target name="compile-file">
                 <exec executable="php" failonerror="true">
@@ -30,7 +32,6 @@
         </target>
         
         <target name="compile">
-                <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach" />
                 <foreach target="compile-file" param="src.php">
                         <path>
                                 <fileset dir="." includes="src/main/php/**/*.php"/>
@@ -39,7 +40,6 @@
         </target>
 
         <target name="test-compile">
-                <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach" />
                 <foreach target="compile-file" param="src.php">
                         <path>
                                 <fileset dir="." includes="src/test/php/**/*.php"/>
@@ -60,8 +60,10 @@
                          See http://www.phpunit.de  -->
             <!-- TODO: change dir to "target", needs changes in some tests -->
             <mkdir dir="target"/>
-            <exec executable="phpunit" failonerror="true" dir="src/test/php"/>
-            <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach" />
+            <exec executable="PHPUnit" failonerror="true" dir="src/test/php">
+                        <arg value="AllTests"/>
+                        <arg value="AllTests.php"/>
+            </exec>
             <foreach target="php-file" param="src.php">
                  <path>
                       <fileset dir="." includes="src/examples/php/**/*.php" excludes="**/server.php"/>
@@ -125,7 +127,6 @@
 		<exec executable="bash" dir="target/site-deploy" failonerror="true">
 			<arg line='-c "svn add --force *"'/>
 		</exec>
-        <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach" />
                 <foreach target="mime=html" param="src.html">
                         <path>
                                 <fileset dir="target/site-deploy" includes="**/*.html"/>
@@ -141,31 +142,5 @@
 		    <arg value="commit"/>
 		</exec>
 	</target>
-	
-	<target name="pear-package">
-		<delete dir="target/pear"/>
-		<mkdir dir="target/pear/log4php"/>
-		<copy file="package.php" todir="target/pear"/>
-		<copy file="package-config.php" todir="target/pear"/>
-		<copy file="CHANGELOG" todir="target/pear"/>
-		<copy file="LICENSE" todir="target/pear"/>
-		<copy file="README" todir="target/pear"/>
-		<copy todir="target/pear">
-			<fileset dir="src">
-				<include name="examples/**/*"/>
-			</fileset>
-		</copy>
-		<copy todir="target/pear/log4php">
-			<fileset dir="src/main/php">
-				<include name="**/*.php"/>
-			</fileset>
-		</copy>
-		<exec executable="php" dir="target/pear" output="package.xml">
-			<arg line="package.php"/>
-		</exec>
-		<exec executable="pear" dir="target/pear">
-			<arg line="package"/>
-		</exec>
-	</target>
-
+        
 </project>

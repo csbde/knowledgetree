@@ -15,8 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * 
+ *
  * @package log4php
+ * @subpackage spi
  */
 
 /**
@@ -24,26 +25,26 @@
  */
 if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__));
 
-require_once(LOG4PHP_DIR . '/spi/LoggerFactory.php');
-require_once(LOG4PHP_DIR . '/Logger.php');
+require_once(LOG4PHP_DIR . '/LoggerLog.php');
 
 /**
- * Creates instances of {@link Logger} with a given name.
+ * Extend and implement this abstract class to create new instances of 
+ * {@link Logger} or a sub-class of {@link Logger}.
  *
  * @author  Marco Vassura
  * @version $Revision: 635069 $
  * @package log4php
+ * @subpackage spi
  * @since 0.5 
+ * @abstract
  */
-class LoggerDefaultCategoryFactory extends LoggerFactory {
-    
+abstract class LoggerFactory {
+
     /**
+     * @abstract
      * @param string $name
      * @return Logger
      */
-    public function makeNewLoggerInstance($name)
-    {
-        return new Logger($name);
-    }
-}
+    abstract function makeNewLoggerInstance($name);
 
+}
