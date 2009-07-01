@@ -490,7 +490,6 @@ class KTPermissionUtil {
      * and so forth.
      */
     function userHasPermissionOnItem($oUser, $oPermission, $oFolderOrDocument) {
-
         if (is_string($oPermission)) {
              $oPermission =& KTPermission::getByName($oPermission);
         }
@@ -506,7 +505,7 @@ class KTPermissionUtil {
         $iPermId = $oPermission->getID();
         $iDocId = $oFolderOrDocument->getID();
         $lookup = 'folders';
-        if(is_a($oEntity, 'Document') || is_a($oEntity, 'DocumentProxy')){
+        if(is_a($oFolderOrDocument, 'Document') || is_a($oFolderOrDocument, 'DocumentProxy')){
             $lookup = 'docs';
         }
         // check if permission has been set
