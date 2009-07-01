@@ -32,13 +32,14 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * Contributor( s): 
+ * Contributor( s):
  * 				Mark Holtzhausen <mark@knowledgetree.com>
  *
  */
 
 /**
  * Automatic Login bypassing HTTP Basic Auth
+ * TODO: Thest HTTP Basic Auth - Try Library From Home
  */
 
 $SessionId=KTAPPHelper::login('admin','admin');
