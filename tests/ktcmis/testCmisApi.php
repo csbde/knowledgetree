@@ -592,14 +592,14 @@ class CMISTestCase extends KTUnitTestCase {
         foreach($results as $key => $value)
         {
             ?><tr><td colspan="<?php echo 1 + $depth; ?>"><div style="padding: 8px; background-color: lightblue; color: black;"><?php
-            echo $value['properties']['name'];
+            echo $value['properties']['name']['value'];
             ?></div></td></tr><?php
             // properties first
             foreach ($value['properties'] as $propkey => $propval)
             {
-                if ($propval == '') continue;
+                if ($propval['value'] == '') continue;
 
-                $this->printRow($propkey, $propval);
+                $this->printRow($propkey, $propval['value']);
             }
 
             // now any children

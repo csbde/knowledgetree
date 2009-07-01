@@ -81,10 +81,9 @@ class CMISDocumentObject extends CMISBaseObject {
         $this->includedInSupertypeQuery = true; //
         // TODO determine what these next 3 should be
         $this->controllable = false; // <repository-specific>
-        $this->versionable = false; // <repository-specific>
-        $this->contentStreamAllowed = false; // <repository-specific>
-        $this->contentStreamLength = 0;
-        $this->contentStreamMimeType = '';
+        $this->versionable = true; // <repository-specific>
+        $this->contentStreamAllowed = 'required'; // <repository-specific> notAllowed/allowed/required
+
         // properties
         $this->properties = new CMISDocumentPropertyCollection();
 
