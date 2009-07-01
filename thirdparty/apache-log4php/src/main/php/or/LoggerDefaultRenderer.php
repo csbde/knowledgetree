@@ -15,35 +15,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * 
+ *
  * @package log4php
+ * @subpackage or
  */
 
 /**
- * @ignore
+ * @ignore 
  */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__));
-
-require_once(LOG4PHP_DIR . '/spi/LoggerFactory.php');
-require_once(LOG4PHP_DIR . '/Logger.php');
+if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
+ 
+/**
+ */
+require_once LOG4PHP_DIR.'/or/LoggerObjectRenderer.php';
 
 /**
- * Creates instances of {@link Logger} with a given name.
+ * The default Renderer renders objects by type casting
  *
  * @author  Marco Vassura
- * @version $Revision: 635069 $
  * @package log4php
- * @since 0.5 
+ * @subpackage or
+ * @since 0.3
  */
-class LoggerDefaultCategoryFactory extends LoggerFactory {
-    
+class LoggerDefaultRenderer extends LoggerObjectRenderer{
+  
     /**
-     * @param string $name
-     * @return Logger
+     * Render objects by type casting
+     *
+     * @param mixed $o the object to render
+     * @return string
      */
-    public function makeNewLoggerInstance($name)
-    {
-        return new Logger($name);
+    public function doRender($o) {
+        return var_export($o, true);
     }
 }
-

@@ -15,35 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * 
- * @package log4php
- */
-
-/**
- * @ignore
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__));
-
-require_once(LOG4PHP_DIR . '/spi/LoggerFactory.php');
-require_once(LOG4PHP_DIR . '/Logger.php');
-
-/**
- * Creates instances of {@link Logger} with a given name.
  *
+ * @package log4php
+ * @subpackage config
+ */
+
+/**
+ * @ignore 
+ */
+if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
+
+/**
  * @author  Marco Vassura
  * @version $Revision: 635069 $
  * @package log4php
- * @since 0.5 
+ * @subpackage config
+ * @since 0.5
+ * @todo Ehm... try to guess...
  */
-class LoggerDefaultCategoryFactory extends LoggerFactory {
-    
-    /**
-     * @param string $name
-     * @return Logger
-     */
-    public function makeNewLoggerInstance($name)
-    {
-        return new Logger($name);
-    }
+class LoggerPropertyGetter {
+
 }
 

@@ -15,35 +15,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * 
+ *
  * @package log4php
+ * @subpackage varia
  */
 
 /**
- * @ignore
+ * @ignore 
  */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__));
-
-require_once(LOG4PHP_DIR . '/spi/LoggerFactory.php');
-require_once(LOG4PHP_DIR . '/Logger.php');
+if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
+ 
+/**
+ */
+require_once(LOG4PHP_DIR . '/spi/LoggerFilter.php');
 
 /**
- * Creates instances of {@link Logger} with a given name.
+ * This filter drops all logging events. 
+ * 
+ * <p>You can add this filter to the end of a filter chain to
+ * switch from the default "accept all unless instructed otherwise"
+ * filtering behaviour to a "deny all unless instructed otherwise"
+ * behaviour.</p>
  *
  * @author  Marco Vassura
  * @version $Revision: 635069 $
  * @package log4php
- * @since 0.5 
+ * @subpackage varia
+ * @since 0.3
  */
-class LoggerDefaultCategoryFactory extends LoggerFactory {
-    
-    /**
-     * @param string $name
-     * @return Logger
-     */
-    public function makeNewLoggerInstance($name)
-    {
-        return new Logger($name);
-    }
-}
+class LoggerDenyAllFilter extends LoggerFilter {
 
+  /**
+   * Always returns the integer constant {@link LOG4PHP_LOGGER_FILTER_DENY}
+   * regardless of the {@link LoggerLoggingEvent} parameter.
+   * 
+   * @param LoggerLoggingEvent $event The {@link LoggerLoggingEvent} to filter.
+   * @return LOG4PHP_LOGGER_FILTER_DENY Always returns {@link LOG4PHP_LOGGER_FILTER_DENY}
+   */
+  function decide($event)
+  {
+    return LOG4PHP_LOGGER_FILTER_DENY;
+  }
+}
