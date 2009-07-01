@@ -7,10 +7,14 @@ case $1 in
 '') db=dms-test ;;
 *) db=$1 ;;
 esac
+case $2 in
+'') pass=password ;;
+*) pass=$2 ;;
+esac
 
-mysqladmin -u root -f drop $db
-mysqladmin -u root create $db
-mysql -u root $db < structure.sql
-mysql -u root $db < data.sql
-mysql -u root $db < user.sql
+mysqladmin -u root -p$pass -f drop $db
+mysqladmin -u root -p$pass create $db
+mysql -u root -p$pass $db < structure.sql
+mysql -u root -p$pass $db < data.sql
+mysql -u root -p$pass $db < user.sql
 
