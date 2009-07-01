@@ -103,6 +103,10 @@ class KTAPPFeed extends KTAPDoc {
 		return $this->formatXmlString(trim($this->DOM->saveXML()));
 	}
 	
+	public function render(){
+		return $this->getAPPdoc();
+	}
+	
 }
 
 
