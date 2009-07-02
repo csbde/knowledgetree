@@ -72,6 +72,7 @@ include_once('lib/KTAPPHelper.inc.php');						//Containing helper bridge functio
 include_once('lib/KTAPDoc.inc.php');							//Containing the parent class allowing easy XML manipulation
 include_once('lib/KTAPPServiceDoc.inc.php');					//Containing the servicedoc class allowing easy ServiceDocument generation
 include_once('lib/KTAPPFeed.inc.php');							//Containing the response feed class allowing easy atom feed generation
+include_once('lib/KTAPP_ResponseFeed.inc.php');							//Containing the response feed class allowing easy atom feed generation
 include_once('lib/ktAPP_Service.inc.php');
 include_once('lib/ktApp.default_dms_services.inc.php');
 include_once('auth.php');										//Containing the authentication protocols
