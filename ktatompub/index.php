@@ -32,7 +32,7 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * Contributor( s): 
+ * Contributor( s):
  * 				Mark Holtzhausen <mark@knowledgetree.com>
  *
  */
@@ -51,7 +51,7 @@ ob_start();
  *
  * If URL rewrites are used, they should point any reference below
  * this folder to index.php?/
- * 
+ *
  * Because index.php is accessed as the default document, the url can be shortened to http://example.com/ktatompub/?/
  */
 
@@ -80,7 +80,16 @@ include_once('auth.php');										//Containing the authentication protocols
 //Start the AtomPubProtocol Routing Engine
 $APP=new KTAPP();
 
-//Register New Services (in the DMS workspace)
+/**
+ * Register Services
+ *
+ * Registered services are classes extended from ktAPP_Service
+ * The registration process takes the following parameters
+ * 		Workspace		:The workspace within which the service collection will be grouped
+ * 		ServiceName		:This is the name by which the service/collection is exposed
+ * 		ServiceClass	:This is the class name of the class to be instantiated when this service is accessed
+ * 		Title			:This is the title given to the service/collection in the servicedocument
+*/
 $APP->registerService('DMS','fulltree','ktAPP_Service_fullTree','Full Document Tree');
 $APP->registerService('DMS','folder','ktAPP_Service_folder','Folder Detail');
 $APP->registerService('DMS','document','ktAPP_Service_document','Document Detail');

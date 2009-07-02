@@ -32,7 +32,7 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * Contributor( s): 
+ * Contributor( s):
  * 				Mark Holtzhausen <mark@knowledgetree.com>
  *
  */
@@ -44,13 +44,13 @@
 class KTAPDoc{
 	const XML_ENCODING='utf-8';
 	const XML_VERSION='1.0';
-	
+
 	public $DOM=NULL;
-	
+
 	public function __construct(){
 		$this->DOM=new DOMDocument(self::XML_VERSION ,self::XML_ENCODING);
 	}
-	
+
 	public function &newAttr($name=NULL){
 		$node=$this->DOM->createAttribute($name);
 		if(func_num_args()>1){
@@ -59,7 +59,7 @@ class KTAPDoc{
 		}
 		return $node;
 	}
-	
+
 	public function &newElement($name=NULL){
 		if(func_num_args()>1){
 			$val=func_get_arg(1);
@@ -69,30 +69,39 @@ class KTAPDoc{
 		}
 		return $node;
 	}
-	
-	public function &newCDATA($data=NULL){
-		
-	}
-	
 
-	
-	public function formatXmlString($xml) {  
+	public function &newCDATA($data=NULL){
+		$this->DOM->createCDATASection($data);
+	}
+
+	public function &newB64Stream($tagName=NULL,$tagAttrs=array(),$streamString=NULL){
+		$e=$this->newElement($tagName,chunk_split(base64_encode($streamString),75));
+		foreach($tagAttrs as $attr=>$val){
+			$attr=$this->newAttr($attr,$val);
+			$e->appendChild($attr);
+		}
+		return $e;
+	}
+
+
+
+	public function formatXmlString($xml) {
 	  // add marker linefeeds to aid the pretty-tokeniser (adds a linefeed between all tag-end boundaries)
 	  $xml = preg_replace('/(>)(<)(\/*)/', "$1\n$2$3", $xml);
-	  
+
 	  // now indent the tags
 	  $token      = strtok($xml, "\n");
 	  $result     = ''; // holds formatted version as it is built
 	  $pad        = 0; // initial indent
 	  $matches    = array(); // returns from preg_matches()
-	  
+
 	  // scan each line and adjust indent based on opening/closing tags
-	  while ($token !== false) : 
-	  
+	  while ($token !== false) :
+
 	    // test for the various tag states
-	    
+
 	    // 1. open and closing tags on same line - no change
-	    if (preg_match('/.+<\/\w[^>]*>$/', $token, $matches)) : 
+	    if (preg_match('/.+<\/\w[^>]*>$/', $token, $matches)) :
 	      $indent=0;
 	    // 2. closing tag - outdent now
 	    elseif (preg_match('/^<\/\w/', $token, $matches)) :
@@ -102,18 +111,18 @@ class KTAPDoc{
 	      $indent=1;
 	    // 4. no indentation needed
 	    else :
-	      $indent = 0; 
+	      $indent = 0;
 	    endif;
-	    
+
 	    // pad the line with the required number of leading spaces
 	    $line    = str_pad($token, strlen($token)+$pad, ' ', STR_PAD_LEFT);
 	    $result .= $line . "\n"; // add to the cumulative result, with linefeed
 	    $token   = strtok("\n"); // get the next token
-	    $pad    += $indent; // update the pad size for subsequent lines    
-	  endwhile; 
-	  
+	    $pad    += $indent; // update the pad size for subsequent lines
+	  endwhile;
+
 	  return $result;
-	}	
+	}
 }
 
 ?>
