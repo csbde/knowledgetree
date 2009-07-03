@@ -62,7 +62,7 @@ abstract class CMISBaseObject {
     // TODO all we have here so far is getAttributes & getProperties
     //      add all the other methods as we go along
 
-    function __construct()
+    public function __construct()
     {
 //        $propertyDef = new PropertyDefinition();
 //        $this->properties[] = $propertyDef;
@@ -73,7 +73,7 @@ abstract class CMISBaseObject {
      *
      * @return array $attributes
      */
-    function getAttributes()
+    public function getAttributes()
     {
         $attributes = array();
 
@@ -95,7 +95,7 @@ abstract class CMISBaseObject {
         return $attributes;
     }
 
-    function getAttribute($field)
+    public function getAttribute($field)
     {
         return $this->{$field};
     }
@@ -104,7 +104,7 @@ abstract class CMISBaseObject {
      * Sets properties for this type
      * Obeys the rules as specified in the property definitions (once implemented)
      */
-    function setProperty($field, $value)
+    public function setProperty($field, $value)
     {
         $this->properties->setValue($field, $value);
     }
@@ -123,9 +123,24 @@ abstract class CMISBaseObject {
     /**
      * Fetches properties for this object type
      */
-    function getProperties()
+    public function getProperties()
     {
         return $this->properties;
+    }
+
+    public function getProperty($property)
+    {
+        return $this->properties->getValue($property);
+    }
+
+    public function reload($documentId)
+    {
+        $this->_get($documentId);
+    }
+
+    private function _get($documentId)
+    {
+        // override in child classes
     }
 
 }

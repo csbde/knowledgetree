@@ -83,7 +83,7 @@ class CMISNavigationService {
         $repository = new CMISRepository($repositoryId);
 
         // if this is not a folder, cannot get descendants
-        $type = CMISUtil::decodeObjectId($folderId);
+        $folderId = CMISUtil::decodeObjectId($folderId, $type);
         
         if ($type != 'Folder')
         {
@@ -125,7 +125,7 @@ class CMISNavigationService {
         $repository = new CMISRepository($repositoryId);
 
         // if this is not a folder, cannot get children
-        $type = CMISUtil::decodeObjectId($folderId);
+        $folderId = CMISUtil::decodeObjectId($folderId, $type);
         // NOTE this will quite possibly break the webservices
         if ($type != 'Folder')
         {
@@ -162,7 +162,7 @@ class CMISNavigationService {
         $repository = new CMISRepository($repositoryId);
 
         // if this is not a folder, cannot get folder parent :)
-        $type = CMISUtil::decodeObjectId($folderId);
+        $folderId = CMISUtil::decodeObjectId($folderId, $type);
         // NOTE this will quite possibly break the webservices
         if ($type != 'Folder')
         {
@@ -221,7 +221,7 @@ class CMISNavigationService {
     {
         $ancestry = array();
 
-        $typeId = CMISUtil::decodeObjectId($objectId);
+        $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
 
         // TODO - what about other types?  only implementing folders and documents at the moment so ignore for now
         switch($typeId)

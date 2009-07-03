@@ -53,7 +53,7 @@ class CMISUtil {
      * @param string $objectId
      * @return string $encoded
      */
-    static function encodeObjectId($typeId, $objectId)
+    static public function encodeObjectId($typeId, $objectId)
     {
         $encoded = null;
 
@@ -84,7 +84,7 @@ class CMISUtil {
      * @param string $objectId
      * @return string $typeId
      */
-    static function decodeObjectId(&$objectId)
+    static public function decodeObjectId($objectId, &$typeId = null)
     {
         $typeId = null;
 
@@ -105,7 +105,7 @@ class CMISUtil {
                 break;
         }
 
-        return $typeId;
+        return $objectId;
     }
 
     /**
@@ -118,7 +118,7 @@ class CMISUtil {
      * @param object $ktapi // reference to ktapi instance
      * @return array $CMISArray
      */
-    static function createChildObjectHierarchy($input, $repositoryURI, &$ktapi)
+    static public function createChildObjectHierarchy($input, $repositoryURI, &$ktapi)
     {
         $CMISArray = array();
 
@@ -172,7 +172,7 @@ class CMISUtil {
      * @return array $CMISArray
      */
     // NOTE this will have to change if we implement multi-filing
-    static function createParentObjectHierarchy($input, $repositoryURI, &$ktapi)
+    static public function createParentObjectHierarchy($input, $repositoryURI, &$ktapi)
     {
         $CMISArray = array();
 
@@ -209,7 +209,7 @@ class CMISUtil {
      * @param string $linkText // 'child' or 'parent' - indicates direction of hierarchy => descending or ascending
      * @return array $hierarchy
      */
-    static function decodeObjectHierarchy($input, $linkText)
+    static public function decodeObjectHierarchy($input, $linkText)
     {
         $hierarchy = array();
         
@@ -225,7 +225,7 @@ class CMISUtil {
         return $hierarchy;
     }
 
-    static function createObjectPropertiesEntry($properties)
+    static public function createObjectPropertiesEntry($properties)
     {
         $object = array();
 
@@ -281,7 +281,7 @@ class CMISUtil {
      * @param object $data
      * @return array $array
      */
-    static function objectToArray($data)
+    static public function objectToArray($data)
     {
         $array = array();
 
@@ -309,9 +309,33 @@ class CMISUtil {
      * @param boolean/other $input
      * @return string
      */
-    function boolToString($input)
+    static public function boolToString($input)
     {
         return (($input === true) ? 'true' : (($input === false) ? 'false' : $input));
+    }
+
+    /**
+     * Creates a temporary file
+     * Cleanup is the responsibility of the calling code
+     *
+     * @param string|binary $content The content to be written to the file.
+     * @param string $uploadDir Optional upload directory.  Will use the KnowledgeTree system tmp directory if not supplied.
+     * @return string The path to the created file (for reference and cleanup.)
+     */
+    static public function createTemporaryFile($content, $encoding = null, $uploadDir = null)
+    {
+        if(is_null($uploadDir))
+        {
+            $oKTConfig =& KTConfig::getSingleton();
+            $uploadDir = $oKTConfig->get('webservice/uploadDirectory');
+        }
+
+        $temp = tempnam($uploadDir, 'myfile');
+        $fp = fopen($temp, 'wb');
+        fwrite($fp, ($encoding == 'base64' ? base64_decode($content) : $content));
+        fclose($fp);
+
+        return $temp;
     }
 
 }

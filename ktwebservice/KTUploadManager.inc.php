@@ -110,6 +110,7 @@ class KTUploadManager
 		return ($tempdir == $this->temp_dir);
 		*/
     }
+    
 	function store_base64_file($base64, $prefix= 'sa_')
 	{
 		$tempfilename = $this->get_temp_filename($prefix);
