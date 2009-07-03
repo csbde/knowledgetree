@@ -361,7 +361,7 @@ class CMISTestCase extends KTUnitTestCase {
         // TEST 3
         // test creation of document
         $folderId = 'F'.$this->folders[0];
-        $folderId = 'F1';
+//        $folderId = 'F1';
         $properties = array('name' => 'Test CMIS Document 1', 'title' => 'test_cmis_doc_' . mt_rand() . '.txt');
         $contentStream = base64_encode('Some arbitrary text content');
         $created = $ObjectService->createDocument($repositoryId, 'Document', $properties, $folderId, $contentStream);
@@ -400,7 +400,7 @@ class CMISTestCase extends KTUnitTestCase {
 //        }
 
         // delete created document
-//        $this->ktapi->delete_document(CMISUtil::decodeObjectId($documentId), 'Testing API', false);
+        $this->ktapi->delete_document(CMISUtil::decodeObjectId($documentId), 'Testing API', false);
 
         // tear down the folder/doc tree structure with which we were testing
         $this->cleanupFolderDocStructure();
