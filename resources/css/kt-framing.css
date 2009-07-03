@@ -6,7 +6,9 @@ html {
 
 body
 {
-    padding: 1em ; border: 0; margin: 0;
+    /*padding: 1em ; */
+    border: 0;
+    margin: 0;
     font-size: smaller;
     font-family: sans-serif;
 }
@@ -21,12 +23,12 @@ body
 
 #kt-wrapper
 {
-    margin-top: 15px;
-    margin-left: 15px;
+    /*margin-top: 15px;*/
+    margin-left: 10px;
 }
 
 .copyright {
-    margin-top: 1em;
+    /*margin-top: 1em;*/
     color: #888;
     font-size: smaller;
     border-top: 1px solid #ccc;
@@ -43,24 +45,22 @@ body
 }
 
 #pageBody {
-    margin-top: 20px;
-    margin-bottom: 30px;
+    /*margin-top: 20px;*/
+    margin-bottom: 10px;
     margin-left: auto;
     margin-right: auto;
-    border: 1px solid #BBBBBB;
-    padding: 20px;
-    min-height: 800px;
+    /*padding: 20px;*/
+    min-height: 750px;
     min-width: 600px;
     height: auto;
-    /*background-image: url(../../resources/graphics/page_bg.gif);*/
-/*    background-repeat: repeat-x;*/
+    /*background: url(../../resources/graphics/page_bg.gif) repeat-x;*/
     z-index: 0;
 }
 
 #bodyPad {
-   margin-top:15px;
-   margin-left:15px;
-   margin-right:15px;
+   /*margin-top:15px;*/
+   margin-left:10px;
+   margin-right:10px;
 }
 
 #wrapper {
@@ -72,7 +72,7 @@ body
 {
     position: relative;
     width: 100%;
-    margin: 0.5em 0 0.5em 0;
+    margin: 0.2em 0 0.5em 0;
 }
 
 #logobar .secondary
@@ -191,8 +191,8 @@ a.main_nav_item {
 
 #breadcrumbs
 {
-    margin-top: 0.5em;
-    margin-bottom: 1em;
+    margin-top: 0.2em;
+    /*margin-bottom: 1em;*/
     margin-left: 0.5em;
     color: #333;
     text-transform: lowercase;
@@ -556,9 +556,9 @@ a.main_nav_item {
     width:auto;
     /*padding: 0 2em 1em 0;
     overflow: auto;*/
-    padding: 0.25em 2em 0em 0em;
+    /*padding: 0.25em 2em 0em 0em;*/
     overflow: hidden;
-    min-height: 600px;
+    min-height: 400px;
 }
 
 #content.view.withviewlets {
@@ -1065,7 +1065,7 @@ a.main_nav_item {
 .ktBlock {
 	position: relative;
     padding: 0.1em 1em;
-    margin: 1em 0 0 0.5em;
+    margin: 0 0 0 0.5em;
     z-index:0; /*Added to accomadate pageBody background change*/
 }
 
@@ -1848,8 +1848,8 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
 
 #copyrightbarBorder {
-    margin-top: 40px;
-    margin-bottom: 50px;
+    /*margin-top: 40px;
+    margin-bottom: 50px;*/
     border: 1px solid #BBBBBB;
     background-color: #D1D1D1;
 }
