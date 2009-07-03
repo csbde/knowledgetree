@@ -400,12 +400,19 @@ class DownloadQueue
     private $bNoisy;
     private $bNotifications;
     private $errors;
+    private $lockFile;
 
+    /**
+     * Construct download queue object
+     *
+     * @return DownloadQueue
+     */
     public function __construct()
     {
         $config = KTConfig::getSingleton();
         $this->bNoisy = $config->get('tweaks/noisyBulkOperations', false);
         $this->bNotifications = ($config->get('export/enablenotifications', 'on') == 'on') ? true : false;
+        $this->lockFile = $config->get('cache/cacheDirectory') . '/download_queue_lock.lock';
     }
 
     /**
@@ -428,6 +435,12 @@ class DownloadQueue
         $res = DBUtil::autoInsert('download_queue', $fields);
     }
 
+    /**
+     * Remove an item from the download queue
+     *
+     * @param string $code Identification string for the download item
+     * @return boolean | PEAR_Error
+     */
     public function removeItem($code)
     {
         $where = array('code' => $code);
@@ -435,9 +448,14 @@ class DownloadQueue
         return $res;
     }
 
+    /**
+     * Get all download items in the queue
+     *
+     * @return Queue array | PEAR_Error
+     */
     public function getQueue()
     {
-        $sql = 'SELECT * FROM download_queue d ORDER BY date_added, code';
+        $sql = 'SELECT * FROM download_queue d WHERE status = 0 ORDER BY date_added, code';
         $rows = DBUtil::getResultArray($sql);
 
         if(PEAR::isError($rows)){
@@ -451,6 +469,13 @@ class DownloadQueue
         return $queue;
     }
 
+    /**
+     * Get the status of an item in the queue
+     * 0 = new item; 1 = in progress; 2 = completed; 3 = error;
+     *
+     * @param string $code
+     * @return Queue array
+     */
     public function getItemStatus($code)
     {
         $sql = array();
@@ -460,6 +485,14 @@ class DownloadQueue
         return $result;
     }
 
+    /**
+     * Set the status of an item and any errors that may have occurred while trying to archive it.
+     *
+     * @param string $code The identification string
+     * @param integer $status The new status of the item
+     * @param string $error Optional. The error's generated during the archive
+     * @return boolean
+     */
     public function setItemStatus($code, $status = 1, $error = null)
     {
         $fields = array();
@@ -470,6 +503,11 @@ class DownloadQueue
         return $res;
     }
 
+    /**
+     * Loop through the queue and archive the items.
+     *
+     * @return unknown
+     */
     public function processQueue()
     {
         global $default;
@@ -481,6 +519,9 @@ class DownloadQueue
             return false;
         }
 
+        // Set queue as locked
+        touch($this->lockFile);
+
         // Loop through items and create downloads
         foreach ($queue as $code => $download){
             // reset the error messages
@@ -490,7 +531,7 @@ class DownloadQueue
             if(!isset($download[0]['user_id']) || empty($download[0]['user_id'])){
                 $default->log->debug('Download Queue: no user id set for download code '.$code);
                 $error = array(_kt('No user id has been set, the archive cannot be created.'));
-                $result = $this->setItemStatus($code, 2, $error);
+                $result = $this->setItemStatus($code, 3, $error);
                 continue;
             }
 
@@ -505,8 +546,13 @@ class DownloadQueue
             if(PEAR::isError($res)){
                 $default->log->error('Download Queue: Archive class check convert encoding error - '.$res->getMessage());
                 $error = array(_kt('The archive cannot be created. An error occurred in the encoding.'));
-                $result = $this->setItemStatus($code, 2, $error);
+                $result = $this->setItemStatus($code, 3, $error);
                 continue;
+            }
+
+            $result = $this->setItemStatus($code, 1);
+            if(PEAR::isError($result)){
+                $default->log->error('Download Queue: item status could not be set for user: '.$_SESSION['userID'].', code: '.$code.', error: '.$result->getMessage());
             }
 
             $default->log->debug('Download Queue: Creating download for user: '.$_SESSION['userID'].', code: '.$code);
@@ -532,7 +578,7 @@ class DownloadQueue
                 DBUtil::rollback();
 
                 $error = array(_kt('The archive could not be created.'));
-                $result = $this->setItemStatus($code, 2, $error);
+                $result = $this->setItemStatus($code, 3, $error);
                 continue;
             }
 
@@ -554,7 +600,7 @@ class DownloadQueue
 
             // Set status for the download
             $this->errors['archive'] = $_SESSION['zipcompression'];
-            $result = $this->setItemStatus($code, 1, $this->errors);
+            $result = $this->setItemStatus($code, 2, $this->errors);
             if(PEAR::isError($result)){
                 $default->log->error('Download Queue: item status could not be set for user: '.$_SESSION['userID'].', code: '.$code.', error: '.$result->getMessage());
             }
@@ -562,8 +608,18 @@ class DownloadQueue
             $this->errors = null;
             $_SESSION['zipcompression'] = null;
         }
+
+        // Remove lock file
+        @unlink($this->lockFile);
     }
 
+    /**
+     * Add a document to the archive
+     *
+     * @param unknown_type $zip
+     * @param unknown_type $docId
+     * @return unknown
+     */
     public function addDocument(&$zip, $docId)
     {
 
@@ -588,6 +644,13 @@ class DownloadQueue
         return $zip->addDocumentToZip($oDocument);
     }
 
+    /**
+     * Add a folder to the archive
+     *
+     * @param unknown_type $zip
+     * @param unknown_type $folderId
+     * @return unknown
+     */
     public function addFolder(&$zip, $folderId)
     {
         $oFolder = Folder::get($folderId);
@@ -679,6 +742,12 @@ class DownloadQueue
         }
     }
 
+    /**
+     * Fetch any linked folders
+     *
+     * @param Folder array $aFolderList
+     * @return unknown
+     */
     function getLinkingEntities($aFolderList){
     	$aSearchFolders = array();
     	if(!empty($aFolderList)){
@@ -723,19 +792,25 @@ class DownloadQueue
         return $aLinkingFolders;
     }
 
+    /**
+     * Check if the archive has been created and is ready for download
+     *
+     * @param string $code
+     * @return boolean
+     */
     public function isDownloadAvailable($code)
     {
         $check = $this->getItemStatus($code);
         $status = $check[0]['status'];
 
-        if($status < 1){
+        if($status < 2){
             return false;
         }
 
         $message = $check[0]['errors'];
         $message = json_decode($message, true);
 
-        if($status > 1){
+        if($status > 2){
             return $message;
         }
 
@@ -753,9 +828,14 @@ class DownloadQueue
         return false;
     }
 
+    /**
+     * Check if the queue is locked and busy processing
+     *
+     * @return boolean
+     */
     public function isLocked()
     {
-        return false;
+        return file_exists($this->lockFile);
     }
 }
 ?>
