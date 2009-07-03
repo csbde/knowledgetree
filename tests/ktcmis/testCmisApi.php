@@ -355,9 +355,52 @@ class CMISTestCase extends KTUnitTestCase {
             $this->printTable($properties['results'][0], 'Properties for CMIS Created Folder Object ' . $folderId . ' (getProperties())');
 
             // delete
-            CMISUtil::decodeObjectId($folderId);
-            $this->ktapi->delete_folder($folderId, 'Testing API', KT_TEST_USER, KT_TEST_PASS);
+            $this->ktapi->delete_folder(CMISUtil::decodeObjectId($folderId), 'Testing API', KT_TEST_USER, KT_TEST_PASS);
         }
+
+        // TEST 3
+        // test creation of document
+        $folderId = 'F'.$this->folders[0];
+        $folderId = 'F1';
+        $properties = array('name' => 'Test CMIS Document 1', 'title' => 'test_cmis_doc_' . mt_rand() . '.txt');
+        $contentStream = base64_encode('Some arbitrary text content');
+        $created = $ObjectService->createDocument($repositoryId, 'Document', $properties, $folderId, $contentStream);
+
+        $this->assertNotNull($created['results']);
+
+//        echo '<pre>'.print_r($created, true).'</pre>';
+
+        if (!is_null($created['results']))
+        {
+            $documentId = $created['results'];
+
+            // check that document object actually exists
+            $properties = $ObjectService->getProperties($repositoryId, $documentId, false, false);
+            $this->assertNotNull($properties['results']);
+
+            // test printout
+            $this->printTable($properties['results'][0], 'Properties for CMIS Created Document Object ' . $documentId . ' (getProperties())');
+        }
+
+//        // TEST 5
+//        // test updating content stream for existing document
+//        $contentStream = base64_encode('Some updated text content for the content stream');
+//        $updated = $ObjectService->setContentStream($repositoryId, $documentId, true, $contentStream);
+//
+//        $this->assertNotNull($updated['results']);
+//
+////        echo '<pre>'.print_r($created, true).'</pre>';
+//
+//        if (!is_null($updated['results']))
+//        {
+////            $documentId = $updated['results'];
+//
+//            // TODO test getContentStream here when we have it
+//
+//        }
+
+        // delete created document
+//        $this->ktapi->delete_document(CMISUtil::decodeObjectId($documentId), 'Testing API', false);
 
         // tear down the folder/doc tree structure with which we were testing
         $this->cleanupFolderDocStructure();

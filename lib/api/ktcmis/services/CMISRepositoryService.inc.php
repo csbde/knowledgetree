@@ -43,7 +43,6 @@
 
 require_once(CMIS_DIR . '/classes/CMISRepository.inc.php');
 require_once(CMIS_DIR . '/classes/CMISObjectTypes.inc.php');
-require_once(CMIS_DIR . '/exceptions/InvalidArgumentException.inc.php');
 
 /**
  * CMIS Repository Service.

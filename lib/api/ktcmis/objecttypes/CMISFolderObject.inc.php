@@ -46,10 +46,10 @@ require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
 class CMISFolderObject extends CMISBaseObject {
 
-    var $ktapi;
-    var $uri;
+    private $ktapi;
+    private $uri;
 
-    function __construct($folderId = null, &$ktapi = null, $uri = null)
+    public function __construct($folderId = null, &$ktapi = null, $uri = null)
     {
         $this->ktapi = $ktapi;
         $this->uri = $uri;
@@ -78,7 +78,7 @@ class CMISFolderObject extends CMISBaseObject {
 
     private function _get($folderId)
     {
-        $object = $this->ktapi->get_folder_by_id($folderId);
+        $object = $this->ktapi->get_folder_by_id((int)$folderId);
 
         // error?
         if (PEAR::isError($object))

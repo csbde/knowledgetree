@@ -48,8 +48,8 @@ require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
 class CMISDocumentObject extends CMISBaseObject {
 
-    private $versionable;
-    private $contentStreamAllowed;
+    protected $versionable;
+    protected $contentStreamAllowed;
     private $ktapi;
     private $uri;
 
@@ -100,7 +100,7 @@ class CMISDocumentObject extends CMISBaseObject {
 
     private function _get($documentId)
     {
-        $object = $this->ktapi->get_document_by_id($documentId);
+        $object = $this->ktapi->get_document_by_id((int)$documentId);
 
         // error?
         if (PEAR::isError($object))

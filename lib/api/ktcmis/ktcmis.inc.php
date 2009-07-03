@@ -480,7 +480,7 @@ class KTObjectService extends KTCMISBase {
      * @return string $objectId The id of the created folder object
      */
     function createDocument($repositoryId, $typeId, $properties, $folderId = null,
-                            $contentStream = null, $versioningState = 'Major')
+                            $contentStream = null, $versioningState = null)
     {
         $objectId = null;
 

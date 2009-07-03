@@ -1,6 +1,7 @@
 <?php
 
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
+require_once(KT_DIR . '/ktwebservice/KTUploadManager.inc.php');
 require_once(CMIS_DIR . '/exceptions/ConstraintViolationException.inc.php');
 require_once(CMIS_DIR . '/exceptions/ContentAlreadyExistsException.inc.php');
 require_once(CMIS_DIR . '/exceptions/ObjectNotFoundException.inc.php');
@@ -8,6 +9,7 @@ require_once(CMIS_DIR . '/exceptions/StorageException.inc.php');
 require_once(CMIS_DIR . '/exceptions/StreamNotSupportedException.inc.php');
 require_once(CMIS_DIR . '/exceptions/UpdateConflictException.inc.php');
 require_once(CMIS_DIR . '/exceptions/VersioningException.inc.php');
+require_once(CMIS_DIR . '/services/CMISNavigationService.inc.php');
 require_once(CMIS_DIR . '/services/CMISRepositoryService.inc.php');
 require_once(CMIS_DIR . '/objecttypes/CMISDocumentObject.inc.php');
 require_once(CMIS_DIR . '/objecttypes/CMISFolderObject.inc.php');
@@ -49,7 +51,7 @@ class CMISObjectService {
         // TODO a better default value?
         $properties = array();
 
-        $typeId = CMISUtil::decodeObjectId($objectId);
+        $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
 
         if ($typeId == 'Unknown')
         {
@@ -86,14 +88,8 @@ class CMISObjectService {
     // TODO throw ConstraintViolationException if:
     //      value of any of the properties violates the min/max/required/length constraints
     //      specified in the property definition in the Object-Type.
-    // TODO throw ConstraintViolationException if:
-    //      The Object-Type definition specified by the typeId parameter's "contentStreamAllowed" attribute
-    //      is set to "required" and no contentStream input parameter is provided
-    // TODO throw ConstraintViolationException if:
-    //      The Object-Type definition specified by the typeId parameter's "versionable" attribute
-    //      is set to "false" and a value for the versioningState input parameter is provided
     function createDocument($repositoryId, $typeId, $properties, $folderId = null,
-                            $contentStream = null, $versioningState = 'Major')
+                            $contentStream = null, $versioningState = null)
     {
         $objectId = null;
 
@@ -129,18 +125,36 @@ class CMISObjectService {
 
         // Attempt to decode $folderId, use as is if not detected as encoded
         $tmpObjectId = $folderId;
-        $tmpTypeId = CMISUtil::decodeObjectId($tmpObjectId);
+        $tmpObjectId = CMISUtil::decodeObjectId($tmpObjectId, $tmpTypeId);
         if ($tmpTypeId != 'Unknown')
             $folderId = $tmpObjectId;
 
         // if parent folder is not allowed to hold this type, throw exception
         $CMISFolder = new CMISFolderObject($folderId, $this->ktapi);
-        $folderProperties = $CMISFolder->getProperties();
-        $allowed = $folderProperties->getValue('AllowedChildObjectTypeIds');
+        $allowed = $CMISFolder->getProperty('AllowedChildObjectTypeIds');
         if (!is_array($allowed) || !in_array($typeId, $allowed))
         {
             throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
         }
+
+        // if content stream is required and no content stream is supplied, throw a ConstraintViolationException
+        if (($typeDefinition['attributes']['contentStreamAllowed'] == 'required') && empty($contentStream))
+        {
+            throw new ConstraintViolationException('This repository requires a content stream for document creation.  '
+                                                 . 'Refusing to create an empty document');
+        }
+        else if (($typeDefinition['attributes']['contentStreamAllowed'] == 'notAllowed') && !empty($contentStream))
+        {
+            throw new StreamNotSupportedException('Content Streams are not supported');
+        }
+
+        // if versionable attribute is set to false and versioningState is supplied, throw a ConstraintViolationException
+        if (!$typeDefinition['attributes']['versionable'] && !empty($versioningState))
+        {
+            throw new ConstraintViolationException('This repository does not support versioning');
+        }
+
+        // TODO deal with $versioningState when supplied
 
         // set title and name identical if only one submitted
         if ($properties['title'] == '')
@@ -152,41 +166,48 @@ class CMISObjectService {
             $properties['name'] = $properties['title'];
         }
 
+        // TODO also set to Default if a non-supported type is submitted
         if ($properties['type'] == '')
         {
-            $properties['type'] = $properties['Default'];
+            $properties['type'] = 'Default';
         }
 
-        // if content stream is required and no content stream is supplied, throw a ConstraintViolationException
-        if (($typeDefinition['attributes']['contentStreamAllowed'] == 'required') && empty($contentStream))
-        {
-            throw new ConstraintViolationException('The Knowledgetree Repository requires a content stream for document creation.  '
-                                                 . 'Refusing to create an empty document');
-        }
-        else if (($typeDefinition['attributes']['contentStreamAllowed'] == 'notAllowed') && !empty($contentStream))
-        {
-            throw new StreamNotSupportedException('Content Streams are not supported');
-        }
-
-        // TODO deal with $versioningState when supplied
-
-        // TODO Use add_document_with_metadata instead if metadata content submitted
-        $response = $this->ktapi->add_document($folderId, $properties['title'], $properties['name'], $properties['type'], $uploadedFile);
-        if ($response['status_code'] != 0)
-        {
-            throw new StorageException('The repository was unable to create the document - ' . $response['message']);
-        }
-        else
-        {
-            $objectId = CMISUtil::encodeObjectId('Document', $response['results']['id']);
-        }
-
-        // now that the document object exists, create the content stream from the supplied data
+        // create the content stream from the supplied data
+        // NOTE since the repository is set to require a content stream and we don't currently have another way to get the document data
+        //      this check isn't strictly necessary;  however it is needed for a repository which does not support content streams
         if (!empty($contentStream))
         {
-            // TODO changeToken support
-            $changeToken = null;
-            $this->setContentStream($repositoryId, $objectId, false, $contentStream, $changeToken);
+            // NOTE There is a function in CMISUtil to do this but since KTUploadManager exists and has more functionality
+            //      which could come in useful at some point I decided to go with that instead (did not know it existed when
+            //      I wrote the CMISUtil function)
+            $uploadManager = new KTUploadManager();
+            $file = $uploadManager->store_base64_file($contentStream, 'cmis_');
+            // create the document from this temporary file as per usual
+            // TODO Use add_document_with_metadata instead if metadata content submitted || update metadata separately?
+            $response = $this->ktapi->add_document((int)$folderId, $properties['title'], $properties['name'],
+                                                   $properties['type'], $file);
+            if ($response['status_code'] != 0)
+            {
+                throw new StorageException('The repository was unable to create the document.  ' . $response['message']);
+            }
+            else
+            {
+                $objectId = CMISUtil::encodeObjectId('Document', $response['results']['content_id']);
+            }
+
+            // remove temporary file
+            @unlink($file);
+        }
+        // else create the document object in the database but don't actually create any content since none was supplied
+        // NOTE perhaps this content could be supplied in the $properties array?
+        else
+        {
+            // TODO creation of document without content.  leaving this for now as we require content streams and any code
+            //      here will therefore never be executed; if we implement some form of template based document creation
+            //      then we may have something else to do here;
+            //      for now we just throw a general RuntimeException, since we should not
+            //      actually reach this code unless something is wrong; this may be removed or replaced later
+            throw new RuntimeException('Cannot create empty document');
         }
 
         return $objectId;
@@ -229,20 +250,19 @@ class CMISObjectService {
 
         // Attempt to decode $folderId, use as is if not detected as encoded
         $tmpObjectId = $folderId;
-        $tmpTypeId = CMISUtil::decodeObjectId($tmpObjectId);
+        $tmpObjectId = CMISUtil::decodeObjectId($tmpObjectId, $tmpTypeId);
         if ($tmpTypeId != 'Unknown')
             $folderId = $tmpObjectId;
         
         // if parent folder is not allowed to hold this type, throw exception
         $CMISFolder = new CMISFolderObject($folderId, $this->ktapi);
-        $folderProperties = $CMISFolder->getProperties();
-        $allowed = $folderProperties->getValue('AllowedChildObjectTypeIds');
+        $allowed = $CMISFolder->getProperty('AllowedChildObjectTypeIds');
         if (!is_array($allowed) || !in_array($typeId, $allowed))
         {
             throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
         }
 
-        $response = $this->ktapi->create_folder($folderId, $properties['name'], $sig_username = '', $sig_password = '', $reason = '');
+        $response = $this->ktapi->create_folder((int)$folderId, $properties['name'], $sig_username = '', $sig_password = '', $reason = '');
         if ($response['status_code'] != 0)
         {
             throw new StorageException('The repository was unable to create the folder - ' . $response['message']);
@@ -255,6 +275,14 @@ class CMISObjectService {
         return $objectId;
     }
 
+    // NOTE this function is presently incomplete and untested.  Completion deferred to implementation of Checkout/Checkin
+    //      functionality
+    // NOTE I am not sure yet when this function would ever be called - checkin would be able to update the content stream
+    //      already and the only easy method we have (via KTAPI as it stands) to update the content is on checkin anyway.
+    //      Additionally this function doesn't take a value for the versioning status (major/minor) and so cannot pass it
+    //      on to the ktapi checkin function.
+    //      I imagine this function may be called if we ever allow updating document content independent of checkin,
+    //      or if we change some of the underlying code and call direct to the document functions and not via KTAPI.
     /**
      * Sets the content stream data for an existing document
      *
@@ -277,6 +305,17 @@ class CMISObjectService {
     //      versioningException: The repository MAY throw this exception if the object is a non-current Document Version.
     function setContentStream($repositoryId, $documentId, $overwriteFlag, $contentStream, $changeToken = null)
     {
+        // if no document id was supplied, we are going to create the underlying physical document
+        // NOTE while it might have been nice to keep this out of here, KTAPI has no method for creating a document without
+        //      a physical upload, so we cannot create the document first and then add the upload as a content stream, the
+        //      entire creation step needs to happen here.
+        
+        // Attempt to decode $documentId, use as is if not detected as encoded
+        $tmpObjectId = $documentId;
+        $tmpObjectId = CMISUtil::decodeObjectId($tmpObjectId, $tmpTypeId);
+        if ($tmpTypeId != 'Unknown')
+            $documentId = $tmpObjectId;
+
         // fetch type definition of supplied document
         $CMISDocument = new CMISDocumentObject($documentId, $this->ktapi);
         
@@ -289,26 +328,34 @@ class CMISObjectService {
             throw new StreamNotSupportedException('Content Streams are not allowed for this object type');
         }
 
-        $properties = $CMISDocument->getProperties();
-        if (!empty($properties->getValue('ContentStreamFilename')) && (!$overwriteFlag))
+        $csFileName = $CMISDocument->getProperty('ContentStreamFilename');
+        if (!empty($csFileName) && (!$overwriteFlag))
         {
             throw new ContentAlreadyExistsException('Unable to overwrite existing content stream');
         }
 
-        // in order to set the stream we need to do the following:
-        // 1. decode the stream from the supplied base64 encoding
-        // 2. create a temporary file as if it were uploaded via a file upload dialog
-        // 3. create the document content as per usual
-        // 4. link to the created document object? this perhaps only happens on read anyway
-
-        // if there is any problem updating the content stream, throw StorageException
-        // TODO real test parameter instead of hard-coded FALSE
-        if (false)
+        // NOTE There is a function in CMISUtil to do this but since KTUploadManager exists and has more functionality
+        //      which could come in useful at some point I decided to go with that instead (did not know it existed when
+        //      I wrote the CMISUtil function)
+        $uploadManager = new KTUploadManager();
+        $file = $uploadManager->store_base64_file($contentStream, 'cmis_');
+        // update the document content from this temporary file as per usual
+        // TODO Use checkin_document_with_metadata instead if metadata content submitted || update metadata separately?
+        $response = $this->ktapi->checkin_document($documentId,  $csFileName, 'CMIS setContentStream action', $file, false);
+        if ($response['status_code'] != 0)
         {
-            throw new StorageException('Unable to update the content stream');
+            throw new StorageException('Unable to update the content stream.  ' . $response['message']);
         }
+//        else
+//        {
+//            $objectId = CMISUtil::encodeObjectId('Document', $response['results']['id']);
+//        }
 
-        return $documentId;
+        @unlink($csFile);
+        // update the CMIS document object with the content stream information
+//        $CMISDocument->reload($document['result']['document_id']);
+
+        return $CMISDocument->getProperty('ObjectId');
     }
 
 }
