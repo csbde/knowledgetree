@@ -6,13 +6,13 @@
  * Tree structure obtained by referencing parent id
  *
  */
-class ktAPP_Service_fullTree extends ktAPP_Service {
+class KT_atom_service_fulltree extends KT_atom_service {
 	public function GET_action(){
 		//Create a new response feed
-		$feed=new KTAPPFeed(KT_APP_BASE_URI);
+		$feed=new KT_atom_ResponseFeed_GET(KT_APP_BASE_URI);
 
 		//Invoke the KtAPI to get detail about the referenced document
-		$tree=KTAPPHelper::getFullTree();
+		$tree=KT_atom_service_helper::getFullTree();
 
 		//Create the atom response feed
 		foreach($tree as $item){
@@ -28,7 +28,7 @@ class ktAPP_Service_fullTree extends ktAPP_Service {
 	}
 
 	public function DELETE_action(){
-		$feed = new ktAPP_ResponseFeed_DELETE();
+		$feed = new KT_atom_ResponseFeed_DELETE();
 		$this->responseFeed=$feed;
 	}
 }
@@ -42,13 +42,13 @@ class ktAPP_Service_fullTree extends ktAPP_Service {
  * Returns detail on a particular folder
  *
  */
-class ktAPP_Service_folder extends ktAPP_Service {
+class KT_atom_service_folder extends KT_atom_service {
 	public function GET_action(){
 		//Create a new response feed
-		$feed=new KTAPPFeed(KT_APP_BASE_URI);
+		$feed=new KT_atom_responseFeed(KT_APP_BASE_URI);
 
 		//Invoke the KtAPI to get detail about the referenced document
-		$folderDetail=KTAPPHelper::getFolderDetail($this->params[0]?$this->params[0]:1);
+		$folderDetail=KT_atom_service_helper::getFolderDetail($this->params[0]?$this->params[0]:1);
 
 		//Create the atom response feed
 		$entry=$feed->newEntry();
@@ -70,13 +70,13 @@ class ktAPP_Service_folder extends ktAPP_Service {
  * Returns detail on a particular document
  *
  */
-class ktAPP_Service_document extends ktAPP_Service {
+class KT_atom_service_document extends KT_atom_service {
 	public function GET_action(){
 		//Create a new response feed
-		$feed=new KTAPPFeed(KT_APP_BASE_URI);
+		$feed=new KT_atom_responseFeed(KT_APP_BASE_URI);
 
 		//Invoke the KtAPI to get detail about the referenced document
-		$docDetail=KTAPPHelper::getDocumentDetail($this->params[0]);
+		$docDetail=KT_atom_service_helper::getDocumentDetail($this->params[0]);
 
 		//Create the atom response feed
 		$entry=$feed->newEntry();

@@ -41,7 +41,7 @@
  * Includes
  */
 
-class KTAPDoc{
+class KT_atom_baseDoc{
 	const XML_ENCODING='utf-8';
 	const XML_VERSION='1.0';
 

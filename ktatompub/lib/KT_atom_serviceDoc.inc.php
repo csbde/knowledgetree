@@ -41,10 +41,10 @@
 /**
  * Includes
  */
-include_once('KTAPDoc.inc.php');
+include_once('KT_atom_baseDoc.inc.php');
 
 
-class KTAPPServiceDoc extends KTAPDoc {
+class KT_atom_serviceDoc extends KT_atom_baseDoc {
 	
 	private $baseURI=NULL;
 	private $service=NULL;

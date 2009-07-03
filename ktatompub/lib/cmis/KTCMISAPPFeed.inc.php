@@ -40,13 +40,13 @@
 /**
  * Includes
  */
-include_once('../KTAPDoc.inc.php');
+include_once('../KT_atom_baseDoc.inc.php');
 
 /**
  * This class generates an AtomPub CMIS feed
  */
 
-class KTCMISAPPFeed extends KTAPDoc {
+class KTCMISAPPFeed extends KT_atom_baseDoc {
 	
 	private $baseURI = NULL;
 	private $id = NULL;

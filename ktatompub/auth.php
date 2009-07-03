@@ -42,7 +42,7 @@
  * TODO: Thest HTTP Basic Auth - Try Library From Home
  */
 
-$SessionId=KTAPPHelper::login('admin','admin');
+$SessionId=KT_atom_service_helper::login('admin','admin');
 $SessionId=$SessionId['session_id'];
 
 
