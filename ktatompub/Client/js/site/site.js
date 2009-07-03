@@ -38,7 +38,7 @@ site=new function(){
     <script src="js/ui/ui.core.js"></script>
     <script src="js/ui/ui.tabs.js"></script>
     <script src="js/jquery.dynatree.min.js"></script>
-    <script src="js/ktApp.js"></script>
+    <script src="js/KT_atom_server.js"></script>
 
  */	
 	this.libraries={
@@ -51,7 +51,7 @@ site=new function(){
 		'js/ui/ui.core.js'				:'jQuery UI Core',
 		'js/ui/ui.tabs.js'				:'jQuery UI Tabs Plugin',
 		'js/jquery.dynatree.min.js'		:'jQuery DynaTree Tree Menu Plugin',
-		'js/ktApp.js'					:'KT Atom Publishing Protocol Library'
+		'js/KT_atom_server.js'					:'KT Atom Publishing Protocol Library'
 	}
 	
 	this.init=function(){

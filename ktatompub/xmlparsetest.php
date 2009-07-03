@@ -1,30 +1,27 @@
 <?php
 
 class xml2array{
-	private $xml='<?xml version="1.0" encoding="utf-8"?>';
-	private $namespaces=array();
-
-	public function __construct($xml=NULL){
-		if($xml)$this->xml=simplexml_load_string($xml);
-		$this->namespaces=$this->xml->getNamespaces(true);
+	public static function parse($xml){
+		return self::parsetag(simplexml_load_string($xml));
 	}
 
-	public function parse2array(){
-		return $this->parseTag($this->xml);
-	}
-
-	private function parsetag($xml,$ns=NULL){
+	private static function parsetag($xml,$ns=NULL,$rootXML=NULL){
+		if(!$rootXML)$rootXML=$xml;
 		$tagName=$xml->getName();
 		if($ns)$tagName=$ns.':'.$tagName;
-		//$tagAttributes=(array)$xml->attributes(); $tagAttributes=isset($tagAttributes['@attributes'])?$tagAttributes['@attributes']:array();
 		$array=array();
-		$array[$tagName]['@attributes']=$this->getAttributes($xml);
-		if($this->hasChildren($xml)){
-			$children=$this->getChildren($xml);
-			foreach($children as $childName=>$child){
-				$childName=split(':',$childName);
-				$childParsed=$this->parsetag($child,$childName[0]);
-				$array[$tagName]=array_merge($array[$tagName],$childParsed);
+		$array[$tagName]['@attributes']=self::getAttributes($xml,$rootXML);
+		if(self::hasChildren($xml,$rootXML)){
+			$children=self::getChildren($xml,$rootXML);
+			echo '<b>'.$tagName.'</b><br /><pre>'.print_r($children,true).'</pre>';
+			foreach($children as $fullChildName=>$childCollection){
+				//$child=$childCollection;
+				$childName=split(':',$fullChildName);
+				foreach($childCollection as $child){
+					$childParsed=self::parsetag($child,$childName[0],$rootXML);
+					//$cIndex=count($array[$tagName][$childName]);
+					$array[$tagName][]=$childParsed;
+				}
 
 			}
 		}else{
@@ -33,13 +30,14 @@ class xml2array{
 		return $array;
 	}
 
-	private function hasChildren($xml){
-		return count($this->getChildren($xml))>0;
+	private static function hasChildren($xml,$rootXML){
+		return count(self::getChildren($xml,$rootXML))>0;
 	}
 
-	private function getAttributes($xml){
+	private static function getAttributes($xml,$rootXML){
 		$attr=array();
-		foreach($this->namespaces as $namespace=>$uri){
+		$namespaces=$rootXML->getNamespaces(true);
+		foreach($namespaces as $namespace=>$uri){
 			$nsAttrs=(array)$xml->attributes($uri);
 			$nsAttrs=isset($nsAttrs['@attributes'])?$nsAttrs['@attributes']:array();
 			foreach($nsAttrs as $nsAttr=>$nsAttrVal){ //TODO: Support for multiple same name tags
@@ -49,18 +47,23 @@ class xml2array{
 		return $attr;
 	}
 
-	private function getChildren($xml){
+	private static function getChildren($xml,$rootXML){
 		$children=array();
-		foreach($this->namespaces as $namespace=>$uri){
+		$namespaces=$rootXML->getNamespaces(true);
+		foreach($namespaces as $namespace=>$uri){
 			$nsChildren=$xml->children($uri);
 			foreach($nsChildren as $nsChild){ //TODO: Support for multiple same name tags
-				$children[$namespace.':'.$nsChild->getName()]=$nsChild;
+				$childRealName=$namespace.':'.$nsChild->getName();
+				if(!isset($children[$childRealName]))$children[$childRealName]=array();
+				if(!is_array($children[$childRealName]))$children[$childRealName]=array();
+				$children[$childRealName][]=$nsChild;
 			}
 		}
 		return $children;
 	}
 
 }
+
 
 
 $xml='<?xml version="1.0" encoding="utf-8"?>
@@ -121,15 +124,15 @@ $xml='<?xml version="1.0" encoding="utf-8"?>
 $sxml=simplexml_load_string($xml);
 $struct=json_decode(json_encode($sxml),true);
 
-$nxml=new xml2array($xml);
+
 
 echo '<pre>'.htmlentities($xml).'</pre>';
 //echo '<hr /><pre>'.print_r($struct,true).'</pre>';
 //echo '<hr /><pre>'.print_r($sxml,true).'</pre>';
 //cho '<hr /><pre>'.print_r(xml2array($xml),true).'</pre>';
-echo '<hr /><pre>'.print_r($nxml->parse2array(),true).'</pre>';
+echo '<hr /><pre>'.print_r(xml2array::parse($xml),true).'</pre>';
 
 
-echo http_get_request_headers();
+//echo http_get_request_headers();
 
 ?>

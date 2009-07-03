@@ -23,8 +23,8 @@ site.event_handlers=new function(){
 				var data=lib.resources.getResourceFromUrl(url);
 				events.trigger('panel.clear');
 				site.event_handlers.setInfoPaneToolbar('info_panel_toolbar_viewFolder');
-				ktApp.folder.parseXML($(data.data).find('entry')[0]);
-				ktApp.folder.renderContainer();
+				KT_atom_server.folder.parseXML($(data.data).find('entry')[0]);
+				KT_atom_server.folder.renderContainer();
 				$('#panel_folder_info').fadeIn(100);
 				
 			}else{
@@ -43,8 +43,8 @@ site.event_handlers=new function(){
 				var data=lib.resources.getResourceFromUrl(url);
 				events.trigger('panel.clear');
 				site.event_handlers.setInfoPaneToolbar('info_panel_toolbar_editFolder');
-				ktApp.folder.parseXML($(data.data).find('entry')[0]);
-				ktApp.folder.renderContainer();
+				KT_atom_server.folder.parseXML($(data.data).find('entry')[0]);
+				KT_atom_server.folder.renderContainer();
 				$('#panel_folder_edit').fadeIn(100);
 				
 			}else{
@@ -63,8 +63,8 @@ site.event_handlers=new function(){
 				var data=lib.resources.getResourceFromUrl(url);
 				events.trigger('panel.clear');
 				site.event_handlers.setInfoPaneToolbar('info_panel_toolbar_viewDocument');
-				ktApp.document.parseXML($(data.data).find('entry')[0]);
-				ktApp.document.renderContainer();
+				KT_atom_server.document.parseXML($(data.data).find('entry')[0]);
+				KT_atom_server.document.renderContainer();
 				$('#panel_document_info').fadeIn(100);
 				
 			}else{
@@ -83,8 +83,8 @@ site.event_handlers=new function(){
 				var data=lib.resources.getResourceFromUrl(url);
 				events.trigger('panel.clear');
 				site.event_handlers.setInfoPaneToolbar('info_panel_toolbar_editDocument');
-				ktApp.document.parseXML($(data.data).find('entry')[0]);
-				ktApp.document.renderContainer();
+				KT_atom_server.document.parseXML($(data.data).find('entry')[0]);
+				KT_atom_server.document.renderContainer();
 				$('#panel_document_info_edit').fadeIn(100);
 				
 			}else{
@@ -122,7 +122,7 @@ site.event_handlers=new function(){
 	this.document_action_download=function(){
 		//site.showDialog('Feature Not Yet Supported','In the future the document can be <b>downloaded</b> here.');
 		if(site.currentDocument!=undefined){
-			var url=unescape(ktApp.document.data.document_download_url);
+			var url=unescape(KT_atom_server.document.data.document_download_url);
 			window.document.location.replace(url);
 		}
 	}
@@ -140,7 +140,7 @@ site.event_handlers=new function(){
 		site.cfg('service',sdoc);
 		if(lib.resources.resourceLoaded(sdoc)){
 			var data=lib.resources.getResourceFromUrl(sdoc);
-			ktApp.serviceDoc.parseXML($(data.data).find('service')[0],'DMS');
+			KT_atom_server.serviceDoc.parseXML($(data.data).find('service')[0],'DMS');
 			
 		}else{
 			lib.resources.getUrl(sdoc,site.event_handlers.discovery);

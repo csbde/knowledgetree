@@ -1,6 +1,6 @@
 <?php
 /**
- * CMIS specific extension for AtomPub
+ * Framework for an Atom Publication Protocol Service
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
@@ -32,23 +32,23 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * Contributor( s): ______________________________________
+ * Contributor( s): 
+ * 				Mark Holtzhausen <mark@knowledgetree.com>
  *
  */
+
 
 /**
  * Includes
  */
-include_once('../KT_atom_baseDoc.inc.php');
+include_once('KT_atom_baseDoc.inc.php');
 
-/**
- * This class generates an AtomPub CMIS service document
- */
 
-class KTCMISAPPServiceDoc extends KT_atom_baseDoc {
+class KT_atom_serviceDoc extends KT_atom_baseDoc {
 	
 	private $baseURI=NULL;
 	private $service=NULL;
+
 			
 	public function __construct($baseURI=NULL){
 		parent::__construct();
@@ -60,7 +60,6 @@ class KTCMISAPPServiceDoc extends KT_atom_baseDoc {
 		$service=$this->newElement('service');
 		$service->appendChild($this->newAttr('xmlns','http://www.w3.org/2007/app'));
 		$service->appendChild($this->newAttr('xmlns:atom','http://www.w3.org/2005/Atom'));
-		$service->appendChild($this->newAttr('xmlns:cmis','http://www.cmis.org/2008/05'));
 		$this->service=&$service;
 		$this->DOM->appendChild($this->service);
 	}
@@ -72,11 +71,10 @@ class KTCMISAPPServiceDoc extends KT_atom_baseDoc {
 		return $ws;		
 	}
 	
-	public function &newCollection($url = NULL, $title = NULL, $cmisCollectionType = NULL, &$ws = NULL){
+	public function &newCollection($url=NULL,$title=NULL,&$ws=NULL){
 		$collection=$this->newElement('collection');
-		$collection->appendChild($this->newAttr('href', $url));
-		$collection->appendChild($this->newAttr('cmis:collectionType', $cmisCollectionType));
-		$collection->appendChild($this->newElement('atom:title', $title));
+		$collection->appendChild($this->newAttr('href',$url));
+		$collection->appendChild($this->newElement('atom:title',$title));
 		if(isset($ws))$ws->appendChild($collection);
 		return $collection;
 	}
@@ -91,11 +89,19 @@ class KTCMISAPPServiceDoc extends KT_atom_baseDoc {
 		return $accept;
 	}
 	
+	
 	public function getAPPdoc(){
 		return $this->formatXmlString(trim($this->DOM->saveXML()));
 	}
 	
 }
+
+
+
+
+
+
+
 
 /**
 <?xml version="1.0" encoding="utf-8"?>
@@ -125,5 +131,8 @@ class KTCMISAPPServiceDoc extends KT_atom_baseDoc {
     </collection>
   </workspace>
 </service>
+
  */
+
+
 ?>

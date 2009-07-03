@@ -32,25 +32,18 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * Contributor( s): 
+ * Contributor( s):
  * 				Mark Holtzhausen <mark@knowledgetree.com>
  *
  */
 
-	//Create a new response feed
-	$mimetypes=KTMime::getAllMimeTypes();
-	
-	//Invoke the KtAPI to get detail about the referenced document
-	$feed=new KTAPPFeed(KT_APP_BASE_URI);
-	
-	//Create the atom response feed
-	foreach($mimetypes as $mimeType){
-		$entry=$feed->newEntry();
-		foreach($mimeType as $property=>$value){
-			$feed->newField($property,$value,$entry);
-		}
-	}
+/**
+ * Automatic Login bypassing HTTP Basic Auth
+ * TODO: Thest HTTP Basic Auth - Try Library From Home
+ */
 
-	//Generate and set the output
-	$output=$feed->getAPPdoc();
+$SessionId=KT_atom_service_helper::login('admin','admin');
+$SessionId=$SessionId['session_id'];
+
+
 ?>

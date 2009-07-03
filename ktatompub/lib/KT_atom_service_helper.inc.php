@@ -37,7 +37,7 @@
  *
  */
 
-class KTAPPHelper{
+class KT_atom_service_helper{
 	private static $FOLDER_LIST_PROPERTIES=array('id','title','permissions','mime_icon_path');
 	private static $FILE_LIST_PROPERTIES=array('id','title','document_type','created_by','created_date','checked_out_by','checked_out_date','modified_by','modified_date','owned_by','mime_type','mime_icon_path','mime_display');
 	private static $FOLDER_RECURSION_LEVEL=100;
@@ -49,7 +49,7 @@ class KTAPPHelper{
 	 * @return void
 	 */
 	public function __construct(){
-		die('KTAPPHelper should not be instantiated. Only use as a static class');
+		die('KT_atom_service_helper should not be instantiated. Only use as a static class');
 	}
 
 	
@@ -181,11 +181,11 @@ class KTAPPHelper{
 	
 		$session = $kt->start_session($username,$password, $ip);
 		if (PEAR::isError($session)){
-			$response['status_code']=KTAPP_FAILURE;
+			$response['status_code']=KT_atom_server_FAILURE;
 			$response['session_id']='';
 		}else{
 			$session= $session->get_session();
-			$response['status_code'] = KTAPP_SUCCESS;
+			$response['status_code'] = KT_atom_server_SUCCESS;
 			$response['session_id'] = $session;
 		}
 		return $response;
@@ -203,10 +203,10 @@ class KTAPPHelper{
 		$session = $kt->get_active_session($session_id, null);
 	
 		if (PEAR::isError($session)){
-			$response['status_code']=KTAPP_FAILURE;
+			$response['status_code']=KT_atom_server_FAILURE;
 		}else{
 			$session->logout();
-			$response['status_code'] = KTAPP_SUCCESS;
+			$response['status_code'] = KT_atom_server_SUCCESS;
 		}
 		return $response;
 	}
