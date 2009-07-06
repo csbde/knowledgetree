@@ -66,6 +66,7 @@ class KT_atom_server{
 	}
 
 	public function addWorkspaceTag($workspaceCode=NULL,$TagName=NULL,$tagValue=NULL){
+		$workspaceCode=strtolower(trim($workspaceCode));
 		if(!isset($this->workspaceDetail[$workspaceCode]))$this->workspaceDetail[$workspaceCode]=array();
 		$this->workspaceDetail[$workspaceCode][$TagName]=$tagValue;
 	}
