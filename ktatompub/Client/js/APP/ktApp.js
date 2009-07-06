@@ -1,4 +1,4 @@
-ktApp=new function(){
+KT_atom_server=new function(){
 	this.xmlhelpers=new function(){
 		this.getTagContents=function(node,tagName){
 			return $(node).find(tagName)[0].textContent;
@@ -53,7 +53,7 @@ ktApp=new function(){
 			$('.document_storage_path',elem).html($(entry).find('storage_path')[0].textContent);
 
  */
-ktApp.folder=new function(){
+KT_atom_server.folder=new function(){
 	this.fieldList={
 		'folder_id'					:'id',
 		'folder_name'				:'folder_name',
@@ -65,7 +65,7 @@ ktApp.folder=new function(){
 	this.parseXML=function(entry){
 		this.data={};
 		for(var lFname in this.fieldList){
-			this.data[lFname]=ktApp.xmlhelpers.getTagContents(entry,this.fieldList[lFname]);
+			this.data[lFname]=KT_atom_server.xmlhelpers.getTagContents(entry,this.fieldList[lFname]);
 		}
 	}
 	
@@ -73,13 +73,13 @@ ktApp.folder=new function(){
 		var elem=lib.def(document.getElementById(containerId),window.document.body);
 		for(var field in this.fieldList){
 			$("."+field,elem).each(function(){
-				ktApp.set(this,ktApp.folder.data[field]);
+				KT_atom_server.set(this,KT_atom_server.folder.data[field]);
 			});
 		}
 	}
 }
 
-ktApp.serviceDoc=new function(){
+KT_atom_server.serviceDoc=new function(){
 	this.parseXML=function(data,workspace){
 		$('workspace',data).each(function(){
 			var ws=$(this);
@@ -92,7 +92,7 @@ ktApp.serviceDoc=new function(){
 }
 
 
-ktApp.document=new function(){
+KT_atom_server.document=new function(){
 	this.fieldList={
 		'document_id'				:'document_id',
 		'document_title'			:'title',
@@ -125,7 +125,7 @@ ktApp.document=new function(){
 	this.parseXML=function(entry){
 		this.data={};
 		for(var lFname in this.fieldList){
-			this.data[lFname]=ktApp.xmlhelpers.getTagContents(entry,this.fieldList[lFname]);
+			this.data[lFname]=KT_atom_server.xmlhelpers.getTagContents(entry,this.fieldList[lFname]);
 		}
 		
 	}
@@ -134,7 +134,7 @@ ktApp.document=new function(){
 		var elem=lib.def(document.getElementById(containerId),window.document.body);
 		for(var field in this.fieldList){
 			$("."+field,elem).each(function(){
-				ktApp.set(this,ktApp.document.data[field]);
+				KT_atom_server.set(this,KT_atom_server.document.data[field]);
 			});
 		}
 	}

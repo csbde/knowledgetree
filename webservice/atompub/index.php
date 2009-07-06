@@ -57,7 +57,7 @@ ob_start();
 
 define('KT_APP_BASE_URI',"http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/?/');
 define('KT_APP_SYSTEM_URI',"http://".$_SERVER['HTTP_HOST']);
-define('KT_ATOM_LIB_FOLDER','lib/');
+define('KT_ATOM_LIB_FOLDER','../classes/atompub/');
 
 // Define whether to use in debug mode for viewing generated structures
 //define('KT_APP_WEB_OUTPUT',false);  //defunct
@@ -67,14 +67,14 @@ define('KT_ATOM_LIB_FOLDER','lib/');
 /**
  * Includes
  */
-include_once('../ktapi/ktapi.inc.php');
+include_once('../../ktapi/ktapi.inc.php');
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_server.inc.php');
-include_once(KT_ATOM_LIB_FOLDER.'KT_atom_service_helper.inc.php');						//Containing helper bridge functions to KtAPI
+include_once('demodms/KT_atom_service_helper.inc.php');						//Containing helper bridge functions to KtAPI
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_baseDoc.inc.php');							//Containing the parent class allowing easy XML manipulation
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_serviceDoc.inc.php');					//Containing the servicedoc class allowing easy ServiceDocument generation
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_responseFeed.inc.php');							//Containing the response feed class allowing easy atom feed generation
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_service.inc.php');
-include_once(KT_ATOM_LIB_FOLDER.'KT_atom_server.default_dms_services.inc.php');
+include_once('demodms/KT_atom_server.default_dms_services.inc.php');
 include_once('auth.php');										//Containing the authentication protocols
 
 
