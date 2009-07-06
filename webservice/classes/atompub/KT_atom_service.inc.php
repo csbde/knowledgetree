@@ -60,7 +60,11 @@ class KT_atom_service{
 	}
 
 	protected function xml2array($xml){
-		$array=json_decode(json_encode(@simplexml_load_string($xml)),true); //TODO - XML2ARRAY Translation
+		if(class_exists('')){
+			$array=XMLns2array::parse($xml);
+		}else{
+			$array=json_decode(json_encode(@simplexml_load_string($xml)),true);
+		}
 		return $array;
 	}
 

@@ -68,6 +68,7 @@ define('KT_ATOM_LIB_FOLDER','../classes/atompub/');
  * Includes
  */
 include_once('../../ktapi/ktapi.inc.php');
+include_once(KT_ATOM_LIB_FOLDER.'XMLns2array.inc.php');
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_server.inc.php');
 include_once('demodms/KT_atom_service_helper.inc.php');						//Containing helper bridge functions to KtAPI
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_baseDoc.inc.php');							//Containing the parent class allowing easy XML manipulation
@@ -91,6 +92,8 @@ $APP=new KT_atom_server();
  * 		ServiceClass	:This is the class name of the class to be instantiated when this service is accessed
  * 		Title			:This is the title given to the service/collection in the servicedocument
 */
+$APP->addWorkspaceTag('dms','atom:title','Standard DMS');
+
 $APP->registerService('DMS','fulltree','KT_atom_service_fulltree','Full Document Tree');
 $APP->registerService('DMS','folder','KT_atom_service_folder','Folder Detail');
 $APP->registerService('DMS','document','KT_atom_service_document','Document Detail');
@@ -102,5 +105,6 @@ $APP->execute();
 
 //Render the resulting feed response
 $APP->render();
+//print_r($APP);
 
 ?>
