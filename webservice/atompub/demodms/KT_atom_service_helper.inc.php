@@ -38,10 +38,10 @@
  */
 
 class KT_atom_service_helper{
-	private static $FOLDER_LIST_PROPERTIES=array('id','title','permissions','mime_icon_path');
-	private static $FILE_LIST_PROPERTIES=array('id','title','document_type','created_by','created_date','checked_out_by','checked_out_date','modified_by','modified_date','owned_by','mime_type','mime_icon_path','mime_display');
-	private static $FOLDER_RECURSION_LEVEL=100;
-	private static $kt=NULL;
+	protected static $FOLDER_LIST_PROPERTIES=array('id','title','permissions','mime_icon_path');
+	protected static $FILE_LIST_PROPERTIES=array('id','title','document_type','created_by','created_date','checked_out_by','checked_out_date','modified_by','modified_date','owned_by','mime_type','mime_icon_path','mime_display');
+	protected static $FOLDER_RECURSION_LEVEL=100;
+	protected static $kt=NULL;
 	
 	/**
 	 * Make sure the class is always treated statically and never instantiated.

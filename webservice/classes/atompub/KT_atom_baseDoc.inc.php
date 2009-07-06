@@ -83,8 +83,6 @@ class KT_atom_baseDoc{
 		return $e;
 	}
 
-
-
 	public function formatXmlString($xml) {
 	  // add marker linefeeds to aid the pretty-tokeniser (adds a linefeed between all tag-end boundaries)
 	  $xml = preg_replace('/(>)(<)(\/*)/', "$1\n$2$3", $xml);

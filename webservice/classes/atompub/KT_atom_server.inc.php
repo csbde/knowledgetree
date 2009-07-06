@@ -1,12 +1,12 @@
 <?php
 class KT_atom_server{
-	private $services=array();
-	private $errors=array();
-	private $output='';
-	private $queryArray=array();
-	private $serviceName='';
-	private $method='';
-	private $workspace='';
+	protected $services=array();
+	protected $errors=array();
+	protected $output='';
+	protected $queryArray=array();
+	protected $serviceName='';
+	protected $method='';
+	protected $workspace='';
 
 
 	public function __construct(){
@@ -37,6 +37,8 @@ class KT_atom_server{
 			$serviceObject=new $serviceClass($reqMethod,$requestParams,$rawRequest);
 			$this->output=$serviceObject->render();
 		}else{
+//            $this->serviceDocument();
+//            return;
 			$serviceObject=new KT_atom_service($requestParams,$rawRequest);
 			$serviceObject->setStatus(KT_atom_service::STATUS_NOT_FOUND);
 			$this->output=$serviceObject->render();

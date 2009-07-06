@@ -46,8 +46,8 @@ include_once('KT_atom_baseDoc.inc.php');
 
 class KT_atom_serviceDoc extends KT_atom_baseDoc {
 	
-	private $baseURI=NULL;
-	private $service=NULL;
+	protected $baseURI=NULL;
+	protected $service=NULL;
 
 			
 	public function __construct($baseURI=NULL){
@@ -56,7 +56,7 @@ class KT_atom_serviceDoc extends KT_atom_baseDoc {
 		$this->baseURI=$baseURI;
 	}
 	
-	private function constructServiceDocumentHeaders(){
+	protected function constructServiceDocumentHeaders(){
 		$service=$this->newElement('service');
 		$service->appendChild($this->newAttr('xmlns','http://www.w3.org/2007/app'));
 		$service->appendChild($this->newAttr('xmlns:atom','http://www.w3.org/2005/Atom'));
