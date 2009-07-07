@@ -1,17 +1,22 @@
 <?php
 class KT_atom_server{
-	private $services=array();
-	private $errors=array();
-	private $output='';
-	private $queryArray=array();
-	private $serviceName='';
-	private $method='';
-	private $workspace='';
+	protected $services=array();
+	protected $workspaceDetail=array();
+	protected $errors=array();
+	protected $output='';
+	protected $queryArray=array();
+	protected $serviceName='';
+	protected $method='';
+	protected $workspace='';
 
 
 	public function __construct(){
 	}
 
+	/**
+	 * Run the server switchboard - find the correct service class to instantiate, execute & render that class with the passed parameteres
+	 *
+	 */
 	public function execute(){
 		$reqMethod=trim(strtoupper($_SERVER['REQUEST_METHOD']));
 		$queryArray=split('/',trim($_SERVER['QUERY_STRING'],'/'));
@@ -37,14 +42,18 @@ class KT_atom_server{
 			$serviceObject=new $serviceClass($reqMethod,$requestParams,$rawRequest);
 			$this->output=$serviceObject->render();
 		}else{
+//            $this->serviceDocument();
+//            return;
 			$serviceObject=new KT_atom_service($requestParams,$rawRequest);
 			$serviceObject->setStatus(KT_atom_service::STATUS_NOT_FOUND);
 			$this->output=$serviceObject->render();
 		}
+		$this->serviceObject=$serviceObject;
 	}
 
-	public function registerService($workspace=NULL,$serviceName=NULL,$serviceClass=NULL,$title=NULL){
-		$workspace=strtolower(trim($workspace));
+
+	public function registerService($workspaceCode=NULL,$serviceName=NULL,$serviceClass=NULL,$title=NULL){
+		$workspaceCode=strtolower(trim($workspaceCode));
 		$serviceName=strtolower(trim($serviceName));
 
 		$serviceRecord=array(
@@ -53,7 +62,13 @@ class KT_atom_server{
 			'title'			=>$title
 		);
 
-		$this->services[$workspace][$serviceName]=$serviceRecord;
+		$this->services[$workspaceCode][$serviceName]=$serviceRecord;
+	}
+
+	public function addWorkspaceTag($workspaceCode=NULL,$TagName=NULL,$tagValue=NULL){
+		$workspaceCode=strtolower(trim($workspaceCode));
+		if(!isset($this->workspaceDetail[$workspaceCode]))$this->workspaceDetail[$workspaceCode]=array();
+		$this->workspaceDetail[$workspaceCode][$TagName]=$tagValue;
 	}
 
 	public function getRegisteredService($workspace,$serviceName=NULL){
@@ -67,7 +82,18 @@ class KT_atom_server{
 
 		foreach($this->services as $workspace=>$collection){
 			//Creating the Default Workspace for use with standard atomPub Clients
-			$ws=$service->newWorkspace($workspace);
+			$ws=$service->newWorkspace();
+
+			$hadDetail=false;
+			if(isset($this->workspaceDetail[$workspace]))if(is_array($this->workspaceDetail[$workspace])){
+				foreach ($this->workspaceDetail[$workspace] as $wsTag=>$wsValue){
+					$ws->appendChild($service->newElement($wsTag,$wsValue));
+					$hadDetail=true;
+				}
+			}
+			if(!$hadDetail){
+				$ws->appendChild($service->newElement('atom:title',$workspace));
+			}
 
 			foreach($collection as $serviceName=>$serviceInstance){
 				$col=$service->newCollection(KT_APP_BASE_URI.$workspace.'/'.$serviceName.'/',$serviceInstance['title'],$ws);

@@ -59,12 +59,16 @@ class KT_atom_service{
 		return $this->responseFeed->render();
 	}
 
-	private function xml2array($xml){
-		$array=json_decode(json_encode(@simplexml_load_string($xml)),true); //TODO - XML2ARRAY Translation
+	protected function xml2array($xml){
+		if(class_exists('')){
+			$array=XMLns2array::parse($xml);
+		}else{
+			$array=json_decode(json_encode(@simplexml_load_string($xml)),true);
+		}
 		return $array;
 	}
 
-	private function parseHeaders(){
+	protected function parseHeaders(){
 		$headers=null;
 		if(function_exists('http_get_request_headers')){			//Try to use pcre_http library if it exists
 			$headers=http_get_request_headers();
@@ -82,7 +86,7 @@ class KT_atom_service{
 		header("HTTP/1.1 ".$status);
 	}
 
-	private function setEtag($etagValue=NULL){
+	protected function setEtag($etagValue=NULL){
 		if($etagValue)header('ETag: '.$etagValue);
 	}
 

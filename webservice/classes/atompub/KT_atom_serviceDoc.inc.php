@@ -32,7 +32,7 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * Contributor( s): 
+ * Contributor( s):
  * 				Mark Holtzhausen <mark@knowledgetree.com>
  *
  */
@@ -45,32 +45,32 @@ include_once('KT_atom_baseDoc.inc.php');
 
 
 class KT_atom_serviceDoc extends KT_atom_baseDoc {
-	
-	private $baseURI=NULL;
-	private $service=NULL;
 
-			
+	protected $baseURI=NULL;
+	protected $service=NULL;
+
+
 	public function __construct($baseURI=NULL){
 		parent::__construct();
 		$this->constructServiceDocumentHeaders();
 		$this->baseURI=$baseURI;
 	}
-	
-	private function constructServiceDocumentHeaders(){
+
+	protected function constructServiceDocumentHeaders(){
 		$service=$this->newElement('service');
 		$service->appendChild($this->newAttr('xmlns','http://www.w3.org/2007/app'));
 		$service->appendChild($this->newAttr('xmlns:atom','http://www.w3.org/2005/Atom'));
 		$this->service=&$service;
 		$this->DOM->appendChild($this->service);
 	}
-	
+
 	public function &newWorkspace($title=NULL){
 		$ws=$this->newElement('workspace');
-		$ws->appendChild($this->newElement('atom:title',$title));
+		if($title)$ws->appendChild($this->newElement('atom:title',$title));
 		$this->service->appendChild($ws);
-		return $ws;		
+		return $ws;
 	}
-	
+
 	public function &newCollection($url=NULL,$title=NULL,&$ws=NULL){
 		$collection=$this->newElement('collection');
 		$collection->appendChild($this->newAttr('href',$url));
@@ -78,7 +78,7 @@ class KT_atom_serviceDoc extends KT_atom_baseDoc {
 		if(isset($ws))$ws->appendChild($collection);
 		return $collection;
 	}
-	
+
 	public function &newAccept($docType=NULL,&$collection=NULL){
 		if($docType){
 			$accept=$this->newElement('accept',$docType);
@@ -88,12 +88,12 @@ class KT_atom_serviceDoc extends KT_atom_baseDoc {
 		if($collection)$collection->appendChild($accept);
 		return $accept;
 	}
-	
-	
+
+
 	public function getAPPdoc(){
 		return $this->formatXmlString(trim($this->DOM->saveXML()));
 	}
-	
+
 }
 
 
