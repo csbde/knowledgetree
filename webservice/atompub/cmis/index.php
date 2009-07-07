@@ -40,15 +40,14 @@
  */
 
 require_once('../../../config/dmsDefaults.php');
-//include_once('lib/cmis/KTCMISAPPFeed.inc.php');
 
 define('KT_APP_BASE_URI', "http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/?/');
 define('KT_APP_SYSTEM_URI', "http://".$_SERVER['HTTP_HOST']);
 define('KT_ATOM_LIB_FOLDER', '../../classes/atompub/');
-//echo KT_ATOM_LIB_FOLDER.'KT_atom_server.inc.php';exit;
-define ('CMIS_APP_BASE_URI', trim(KT_APP_BASE_URI, '/'));
+
+define('CMIS_APP_BASE_URI', trim(KT_APP_BASE_URI, '/'));
 define('CMIS_APP_SYSTEM_URI', KT_APP_SYSTEM_URI);
-define ('CMIS_ATOM_LIB_FOLDER', trim(KT_ATOM_LIB_FOLDER, '/') . '/cmis/');
+define('CMIS_ATOM_LIB_FOLDER', trim(KT_ATOM_LIB_FOLDER, '/') . '/cmis/');
 
 // fetch username and password for auth;  note that this apparently only works when PHP is run as an apache module
 // TODO method to fetch username and password when running PHP as CGI, if possible
@@ -67,11 +66,16 @@ include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_service.inc.php');          //Co
 
 include_once('KT_cmis_atom_server.services.inc.php');
 
-
 //Start the AtomPubProtocol Routing Engine
 $APP = new KT_cmis_atom_server();
+
+// FIXME HACK! this should not happen every time, ONLY on a service doc request
+// CMIS service document setup
 $APP->initServiceDocument();
+// FIXME HACK! this should not happen every time, ONLY on a service doc request
+// User defined title tag
 $APP->addWorkspaceTag('dms','atom:title','KnowledgeTree DMS');
+
 /**
  * Register Services
  *
@@ -85,43 +89,29 @@ $APP->addWorkspaceTag('dms','atom:title','KnowledgeTree DMS');
  *      http://ktatompub/?/folder/children/whatfoldertolookat
  *      http://ktatompub/{folder/folder2/folder3/}service/param1/param2
 */
-$APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection', array($APP->repositoryInfo['rootFolderId'], 'children'), 'root-children');
-$APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection', array($APP->repositoryInfo['rootFolderId'], 'descendants'), 'root-descendants');
+// TODO consider a registerServices function which will, dependant on what is requested, register the appropriate services, keep the logic out of the index file
+// FIXME HACK! this should not happen every time, ONLY on a service doc request, except for request specific collection links
+$APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',
+                      array($APP->repositoryInfo['rootFolderId'], 'children'), 'root-children');
+$APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',
+                      array($APP->repositoryInfo['rootFolderId'], 'descendants'), 'root-descendants');
 $APP->registerService('dms', 'checkedout', 'KT_cmis_atom_service_checkedout', 'Checked Out Document Collection', null, 'checkedout');
 $APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'types-children');
 $APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'types-descendants');
 
+// FIXME HACK! this should not happen every time, ONLY on a specific request, should NOT appear in service document as this is not definable at that time;
+//             SHOULD be appearing in types listing feed
+// NOTE $requestParams is meaningless if not actually requesting this service, so not a good way to register the service really
+$queryArray=split('/',trim($_SERVER['QUERY_STRING'],'/'));
+$requestParams=array_slice($queryArray,2);
+$APP->registerService('dms', 'type', 'KT_cmis_atom_service_type', 'Object Type Collection', explode('/', $requestParams), 'types-descendants');
+// FIXME HACK! see above, this one for documents
+$APP->registerService('dms', 'document', 'KT_cmis_atom_service_document', 'Object Type Collection', explode('/', $requestParams), 'types-descendants');
+
 //Execute the current url/header request
 $APP->execute();
 
-//echo '<pre>'.print_r($APP,true).'</pre>';
-
 //Render the resulting feed response
 $APP->render();
-
-// TODO response if failed auth, need generic response which can be used by all code
-
-//$arg = (isset($query[1]) ? $query[1] : '');
-//
-//switch($arg)
-//{
-//    case 'checkedout':
-//        include('services/cmis/checkedout.inc.php');
-//        break;
-//    case 'document':
-//        include('services/cmis/document.inc.php');
-//        break;
-//    case 'folder':
-//        include('services/cmis/folder.inc.php');
-//        break;
-//    case 'type':
-//    case 'types':
-//        include('services/cmis/types.inc.php');
-//        break;
-//    case 'repository':
-//    default:
-//        include('services/cmis/servicedocument.inc.php');
-//        break;
-//}
 
 ?>

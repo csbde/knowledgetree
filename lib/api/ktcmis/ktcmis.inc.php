@@ -62,27 +62,37 @@ require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
  */
 class KTCMISBase {
 
+    // we want all child classes to share the ktapi and session instances, no matter where they are set from,
+    // so we declare them as static
     /**
      * KnowledgeTree API instance
      *
      * @var object
      */
-    protected $ktapi;
+    static protected $ktapi;
     /**
      * KnowledgeTree API Session Identifier
      *
      * @var object
      */
-    protected $session;
+    static protected $session;
 
+    // TODO try to pick up existing session if possible, i.e. if the $session value is not empty
     public function startSession($username, $password)
     {
-        $this->session = null;
+        self::$session = null;
 
-        $this->ktapi = new KTAPI();
-        $this->session =& $this->ktapi->start_session($username, $password);
-
-        return $this->session;
+        if (is_null(self::$session))
+        {
+            self::$ktapi = new KTAPI();
+            self::$session =& self::$ktapi->start_session($username, $password);
+        }
+        else
+        {
+            // add session restart code here
+        }
+//var_dump(self::$ktapi);
+        return self::$session;
     }
 
     // TODO what about destroying sessions? only on logout (which is not offered by the CMIS clients tested so far)
@@ -244,7 +254,12 @@ class KTNavigationService extends KTCMISBase {
     public function startSession($username, $password)
     {
         parent::startSession($username, $password);
-        $this->NavigationService->setInterface($this->ktapi);
+        $this->setInterface();
+    }
+
+    function setInterface()
+    {
+        $this->NavigationService->setInterface(self::$ktapi);
     }
 
     /**
@@ -430,7 +445,13 @@ class KTObjectService extends KTCMISBase {
     public function startSession($username, $password)
     {
         parent::startSession($username, $password);
-        $this->ObjectService->setInterface($this->ktapi);
+        $this->setInterface();
+    }
+
+    function setInterface()
+    {
+//        var_dump(self::$ktapi);
+        $this->ObjectService->setInterface(self::$ktapi);
     }
 
     /**

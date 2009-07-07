@@ -102,6 +102,17 @@ class KT_cmis_atom_server extends KT_atom_server {
 		$this->services[$workspace][$serviceName][] = $serviceRecord;
 	}
 
+    public function getRegisteredService($workspace, $serviceName = NULL)
+    {
+		$serviceName = strtolower(trim($serviceName));
+		if(isset($this->services[$workspace][$serviceName]))
+        {
+            return $this->services[$workspace][$serviceName][0];
+        }
+
+		return false;
+	}
+
 }
 
 ?>
