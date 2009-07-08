@@ -5,13 +5,17 @@ include_once(KT_ATOM_LIB_FOLDER.'KT_atom_responseFeed.inc.php');
 class KT_cmis_atom_responseFeed extends KT_atom_responseFeed {
 
     // override and extend as needed
+    
+    public $workspace = null;
 
     public function __construct($baseURI = NULL, $title = NULL, $link = NULL, $updated = NULL, $author = NULL, $id = NULL)
     {
+        $queryArray = split('/', trim($_SERVER['QUERY_STRING'], '/'));
+        $this->workspace = strtolower(trim($queryArray[0]));
         $this->id = $id;
         $this->title = $title;
 
-        parent::__construct();
+        parent::__construct($baseURI, $title, $link, $updated, $author, $id);
 	}
 
     protected function constructHeader()

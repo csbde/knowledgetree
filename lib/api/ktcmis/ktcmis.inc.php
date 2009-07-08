@@ -64,24 +64,12 @@ class KTCMISBase {
 
     // we want all child classes to share the ktapi and session instances, no matter where they are set from,
     // so we declare them as static
-    /**
-     * KnowledgeTree API instance
-     *
-     * @var object
-     */
     static protected $ktapi;
-    /**
-     * KnowledgeTree API Session Identifier
-     *
-     * @var object
-     */
     static protected $session;
 
     // TODO try to pick up existing session if possible, i.e. if the $session value is not empty
     public function startSession($username, $password)
     {
-        self::$session = null;
-
         if (is_null(self::$session))
         {
             self::$ktapi = new KTAPI();
@@ -90,9 +78,16 @@ class KTCMISBase {
         else
         {
             // add session restart code here
+            self::$session =& self::$ktapi->get_active_session(self::$session->get_sessionid());
         }
-//var_dump(self::$ktapi);
+        
+        //var_dump(self::$ktapi);
         return self::$session;
+    }
+
+    public function getInterface()
+    {
+        return self::$ktapi;
     }
 
     // TODO what about destroying sessions? only on logout (which is not offered by the CMIS clients tested so far)
@@ -255,9 +250,10 @@ class KTNavigationService extends KTCMISBase {
     {
         parent::startSession($username, $password);
         $this->setInterface();
+        return self::$session;
     }
 
-    function setInterface()
+    public function setInterface()
     {
         $this->NavigationService->setInterface(self::$ktapi);
     }
@@ -441,16 +437,16 @@ class KTObjectService extends KTCMISBase {
         // instantiate underlying CMIS service
         $this->ObjectService = new CMISObjectService();
     }
-    
+
     public function startSession($username, $password)
     {
         parent::startSession($username, $password);
         $this->setInterface();
+        return self::$session;
     }
 
-    function setInterface()
+    public function setInterface()
     {
-//        var_dump(self::$ktapi);
         $this->ObjectService->setInterface(self::$ktapi);
     }
 

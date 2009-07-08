@@ -24,23 +24,31 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service
         $repositoryId = $repositories[0]['repositoryId'];
 //var_dump($RepositoryService->ktapi);
 //        $folderId = $this->getFolderData();
+
         if (urldecode($this->params[0]) == 'Root Folder')
         {
             $folderId = CMISUtil::encodeObjectId('Folder', 1);
             $folderName = urldecode($this->params[0]);
         }
+        // this is a bit of a hack, but then it's to accomodate a bit of a hack to work with the knowledgetree/drupal cmis modules...
+        else if ($this->params[0] == 'path')
+        {
+            $ktapi =& $RepositoryService->getInterface();
+            $folderId = KT_cmis_atom_service_helper::getFolderId($this->params, $ktapi);
+//            echo "DA FOLDER ID IS $folderId<BR>";
+        }
         else
         {
             $folderId = $this->params[0];
-            // get folder name from id, using the ObjectService methods
-            $ObjectService = new ObjectService();
-// var_dump($ObjectService->ktapi);
-            $ObjectService->setInterface();
-            $cmisProps = $ObjectService->getProperties($repositoryId, $folderId, false, false);
-//            var_dump($cmisObject);
-//            $props = $cmisObject->getProperties();
-//            var_dump($props);
-            $folderName = $cmisProps['properties']['Name']['value'];
+//            // get folder name from id, using the ObjectService methods
+//            $ObjectService = new ObjectService();
+//// var_dump($ObjectService->ktapi);
+//            $ObjectService->setInterface();
+//            $cmisProps = $ObjectService->getProperties($repositoryId, $folderId, false, false);
+////            var_dump($cmisObject);
+////            $props = $cmisObject->getProperties();
+////            var_dump($props);
+//            $folderName = $cmisProps['properties']['Name']['value'];
         }
 
         $username = $password = 'admin';
@@ -53,6 +61,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service
         }
         else
         {
+//            echo "UHUHUHUHUH: $folderId<BR>\n";
             $ObjectService = new ObjectService();
             $ObjectService->startSession($username, $password);
 

@@ -23,43 +23,45 @@ class KT_cmis_atom_service_helper {
 
         $id = $cmisEntry['properties']['ObjectId']['value'];
         $entry = $feed->newEntry();
-        $feed->newField('id', $id, $entry);
+        $feed->newField('id', 'urn:uuid:' . $id, $entry);
 
         // links
+        // TODO check parent link is correct, fix if needed
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel','cmis-parent'));
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'folder/' . $path));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/folder/' . $path));
         $entry->appendChild($link);
 
         if (strtolower($cmisEntry['properties']['ObjectTypeId']['value']) == 'folder')
         {
+            // TODO check parent link is correct, fix if needed
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel','cmis-folderparent'));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'folder/' . $path));
+            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/folder/' . $path));
             $entry->appendChild($link);
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel','cmis-children'));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI
+            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/'
                                                     . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])
-                                                    . '/' . $path . '/' . urlencode($cmisEntry['properties']['Name']['value'])
+                                                    . '/' . $path . '/' . rawurlencode($cmisEntry['properties']['Name']['value'])
                                                     . '/children'));
             $entry->appendChild($link);
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel','cmis-descendants'));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI
+            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/'
                                                     . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])
-                                                    . '/' . $path . '/' . urlencode($cmisEntry['properties']['Name']['value'])
+                                                    . '/' . $path . '/' . rawurlencode($cmisEntry['properties']['Name']['value'])
                                                     . '/descendants'));
             $entry->appendChild($link);
         }
 
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel','cmis-type'));
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'type/' . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])));
         $entry->appendChild($link);
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel','cmis-repository'));
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'servicedocument'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/servicedocument'));
         $entry->appendChild($link);
         // end links
 
@@ -118,23 +120,23 @@ class KT_cmis_atom_service_helper {
             // links
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel','self'));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'type/' . strtolower($type['typeId'])));
+            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . strtolower($type['typeId'])));
             $entry->appendChild($link);
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel','cmis-type'));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'type/' . strtolower($type['typeId'])));
+            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . strtolower($type['typeId'])));
             $entry->appendChild($link);
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel','cmis-children'));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'type/' . strtolower($type['typeId']) . '/children'));
+            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . strtolower($type['typeId']) . '/children'));
             $entry->appendChild($link);
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel','cmis-descendants'));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'type/' . strtolower($type['typeId']) . '/descendants'));
+            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . strtolower($type['typeId']) . '/descendants'));
             $entry->appendChild($link);
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel','cmis-repository'));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'servicedocument'));
+            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/servicedocument'));
             $entry->appendChild($link);
 
             $entry->appendChild($feed->newElement('summary', $type['typeId'] . ' Type'));
@@ -151,6 +153,47 @@ class KT_cmis_atom_service_helper {
         }
 
         return $feed;
+    }
+
+    /**
+     * Fetches the CMIS objectId based on the path
+     *
+     * @param array $path
+     * @param object $ktapi KTAPI instance
+     */
+    // TODO make this much more efficient than this messy method
+    static public function getFolderId($path, &$ktapi)
+    {
+//        static public function getFolderData($query, &$folderName, &$tree)
+//        $ktapi = new KTAPI();
+//        $ktapi->start_session('admin', 'admin');
+
+        // lose first item
+        array_shift($path);
+
+        $numQ = count($path);
+//        echo $numQ."<BR>";
+        $numFolders = $numQ;
+        $folderId = 1;
+//        echo $numFolders."<BR>";
+
+        $start = 0;
+        while($start < $numFolders)
+        {
+            $name = $path[$numQ-$numFolders+$start];
+            // hack to fix drupal url encoding issue
+            $name = str_replace('%2520', '%20', $name);
+
+//            echo $name."<BR>";
+
+            $folderName = urldecode($name);
+//            echo $folderName."<BR>";
+            $folder = $ktapi->get_folder_by_name($folderName, $folderId);
+            $folderId = $folder->get_folderid();
+            ++$start;
+        }
+        
+        return CMISUtil::encodeObjectId('Folder', $folderId);
     }
 
 }

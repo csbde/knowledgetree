@@ -45,6 +45,7 @@ define('KT_APP_BASE_URI', "http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_
 define('KT_APP_SYSTEM_URI', "http://".$_SERVER['HTTP_HOST']);
 define('KT_ATOM_LIB_FOLDER', '../../classes/atompub/');
 
+// should make the "dms" part dynamic but right now this is needed fast
 define('CMIS_APP_BASE_URI', trim(KT_APP_BASE_URI, '/'));
 define('CMIS_APP_SYSTEM_URI', KT_APP_SYSTEM_URI);
 define('CMIS_ATOM_LIB_FOLDER', trim(KT_ATOM_LIB_FOLDER, '/') . '/cmis/');
@@ -74,7 +75,7 @@ $APP = new KT_cmis_atom_server();
 $APP->initServiceDocument();
 // FIXME HACK! this should not happen every time, ONLY on a service doc request
 // User defined title tag
-$APP->addWorkspaceTag('dms','atom:title','KnowledgeTree DMS');
+$APP->addWorkspaceTag('dms','atom:title',$APP->repositoryInfo['repositoryName']);
 
 /**
  * Register Services
@@ -92,9 +93,9 @@ $APP->addWorkspaceTag('dms','atom:title','KnowledgeTree DMS');
 // TODO consider a registerServices function which will, dependant on what is requested, register the appropriate services, keep the logic out of the index file
 // FIXME HACK! this should not happen every time, ONLY on a service doc request, except for request specific collection links
 $APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',
-                      array($APP->repositoryInfo['rootFolderId'], 'children'), 'root-children');
+                      array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'children'), 'root-children');
 $APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',
-                      array($APP->repositoryInfo['rootFolderId'], 'descendants'), 'root-descendants');
+                      array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'descendants'), 'root-descendants');
 $APP->registerService('dms', 'checkedout', 'KT_cmis_atom_service_checkedout', 'Checked Out Document Collection', null, 'checkedout');
 $APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'types-children');
 $APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'types-descendants');

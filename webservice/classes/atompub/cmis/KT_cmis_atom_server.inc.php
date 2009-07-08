@@ -34,13 +34,19 @@ class KT_cmis_atom_server extends KT_atom_server {
 			$ws = $service->newWorkspace();
 
             $hadDetail=false;
-			if(isset($this->workspaceDetail[$workspace]))if(is_array($this->workspaceDetail[$workspace])){
-				foreach ($this->workspaceDetail[$workspace] as $wsTag=>$wsValue){
-					$ws->appendChild($service->newElement($wsTag,$wsValue));
-					$hadDetail=true;
-				}
-			}
-			if(!$hadDetail){
+			if(isset($this->workspaceDetail[$workspace]))
+            {
+                if(is_array($this->workspaceDetail[$workspace]))
+                {
+                    foreach ($this->workspaceDetail[$workspace] as $wsTag=>$wsValue)
+                    {
+                        $ws->appendChild($service->newElement($wsTag,$wsValue));
+                        $hadDetail=true;
+                    }
+                }
+            }
+
+			if(!$hadDetail) {
 				$ws->appendChild($service->newElement('atom:title',$workspace));
 			}
 
@@ -52,7 +58,7 @@ class KT_cmis_atom_server extends KT_atom_server {
             {
                 if ($key == 'rootFolderId')
                 {
-                    $repoData = CMIS_APP_BASE_URI . 'folder/' . $repoData;
+                    $repoData = CMIS_APP_BASE_URI . $workspace . '/folder/' . rawurlencode($repoData);
                 }
 
                 if (!is_array($repoData))
