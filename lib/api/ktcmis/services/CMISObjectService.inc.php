@@ -262,6 +262,12 @@ class CMISObjectService {
             throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
         }
 
+        // TODO if name is blank! throw another exception (check type) - using RuntimeException for now
+        if (trim($properties['name']) == '')
+        {
+            throw new RuntimeException('Refusing to create an un-named folder');
+        }
+
         $response = $this->ktapi->create_folder((int)$folderId, $properties['name'], $sig_username = '', $sig_password = '', $reason = '');
         if ($response['status_code'] != 0)
         {

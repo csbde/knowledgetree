@@ -59,6 +59,7 @@ $password = $_SERVER['PHP_AUTH_PW'];
 /**
  * Includes
  */
+include_once(KT_ATOM_LIB_FOLDER.'XMLns2array.inc.php');
 include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_server.inc.php');
 include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_baseDoc.inc.php');
 include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_responseFeed.inc.php');				//Containing the response feed class allowing easy atom feed generation
@@ -66,7 +67,6 @@ include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_serviceDoc.inc.php');          /
 include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_service.inc.php');          //Containing the servicedoc class allowing easy ServiceDocument generation
 
 include_once('KT_cmis_atom_server.services.inc.php');
-
 //Start the AtomPubProtocol Routing Engine
 $APP = new KT_cmis_atom_server();
 
@@ -91,7 +91,6 @@ $APP->addWorkspaceTag('dms','atom:title',$APP->repositoryInfo['repositoryName'])
  *      http://ktatompub/{folder/folder2/folder3/}service/param1/param2
 */
 // TODO consider a registerServices function which will, dependant on what is requested, register the appropriate services, keep the logic out of the index file
-// FIXME HACK! this should not happen every time, ONLY on a service doc request, except for request specific collection links
 $APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',
                       array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'children'), 'root-children');
 $APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',

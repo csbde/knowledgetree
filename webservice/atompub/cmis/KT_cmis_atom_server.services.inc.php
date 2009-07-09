@@ -17,14 +17,15 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service
 {
 	public function GET_action()
     {
-        $username = $password = 'admin';
         $RepositoryService = new RepositoryService();
-        $RepositoryService->startSession($username, $password);
+        $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
-//var_dump($RepositoryService->ktapi);
-//        $folderId = $this->getFolderData();
 
+        // TODO implement full path/node separation as with Alfresco - i.e. path requests come in on path/ and node requests come in on node/
+        //      path request e.g.: Root Folder/DroppedDocuments
+        //      node request e.g.: F1/children
+        //      node request e.g.: F2
         if (urldecode($this->params[0]) == 'Root Folder')
         {
             $folderId = CMISUtil::encodeObjectId('Folder', 1);
@@ -35,40 +36,111 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service
         {
             $ktapi =& $RepositoryService->getInterface();
             $folderId = KT_cmis_atom_service_helper::getFolderId($this->params, $ktapi);
-//            echo "DA FOLDER ID IS $folderId<BR>";
         }
         else
         {
             $folderId = $this->params[0];
-//            // get folder name from id, using the ObjectService methods
-//            $ObjectService = new ObjectService();
-//// var_dump($ObjectService->ktapi);
-//            $ObjectService->setInterface();
-//            $cmisProps = $ObjectService->getProperties($repositoryId, $folderId, false, false);
-////            var_dump($cmisObject);
-////            $props = $cmisObject->getProperties();
-////            var_dump($props);
-//            $folderName = $cmisProps['properties']['Name']['value'];
+            $ObjectService = new ObjectService();
+            $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+            $cmisEntry = $ObjectService->getProperties($repositoryId, $folderId, false, false);
+            $folderName = $cmisEntry['properties']['Name']['value'];
+//            $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $newObjectId, $cmisEntry['properties']['Name']['value']);
         }
 
-        $username = $password = 'admin';
         if (!empty($this->params[1]) && (($this->params[1] == 'children') || ($this->params[1] == 'descendants')))
         {
             $NavigationService = new NavigationService();
-            $NavigationService->startSession($username, $password);
+            $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
 
             $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $this->params[1]);
         }
         else
         {
-//            echo "UHUHUHUHUH: $folderId<BR>\n";
             $ObjectService = new ObjectService();
-            $ObjectService->startSession($username, $password);
+            $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
 
             $feed = $this->getFolderFeed($ObjectService, $repositoryId, $folderId);
         }
 
 		//Expose the responseFeed
+		$this->responseFeed = $feed;
+	}
+    
+	public function POST_action()
+    {
+//        $username = $password = 'admin';
+        $RepositoryService = new RepositoryService();
+        $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+        $repositories = $RepositoryService->getRepositories();
+        $repositoryId = $repositories[0]['repositoryId'];
+
+        $folderId = $this->params[0];
+        $title = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'title');
+        $summary = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'summary');
+        
+        $properties = array('name' => $title, 'summary' => $summary);
+
+        // determine whether this is a folder or a document create
+        // document create will have a content tag <atom:content> or <content> containing base64 encoding of the document
+        $content = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'content');
+        if (is_null($content))
+            $type = 'folder';
+        else
+            $type = 'document';
+
+        // TODO what if mime-type is incorrect?  CMISSpaces appears to be sending text/plain on an executable file.
+        //      perhaps because the content is text/plain once base64 encoded?
+        //      How to determine the actual content type?
+        /*
+         * <atom:entry xmlns:atom="http://www.w3.org/2005/Atom" xmlns:cmis="http://www.cmis.org/2008/05">
+         * <atom:title>setup.txt</atom:title>
+         * <atom:summary>setup.txt</atom:summary>
+         * <atom:content type="text/plain">dGhpcyBiZSBzb21lIHRlc3QgY29udGVudCBmb3IgYSBkb2N1bWVudCwgeWVzPw==</atom:content>
+         * <cmis:object>
+         * <cmis:properties>
+         * <cmis:propertyString cmis:name="ObjectTypeId"><cmis:value>document</cmis:value></cmis:propertyString>
+         * </cmis:properties>
+         * </cmis:object>
+         * </atom:entry>
+         */
+
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']['cmis:object']
+                                                                                                      [0]['@children']['cmis:properties']
+                                                                                                      [0]['@children']);
+
+        $ObjectService = new ObjectService();
+        $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+        if ($type == 'folder')
+            $newObjectId = $ObjectService->createFolder($repositoryId, ucwords($cmisObjectProperties['ObjectTypeId']), $properties, $folderId);
+        else
+            $newObjectId = $ObjectService->createDocument($repositoryId, ucwords($cmisObjectProperties['ObjectTypeId']), $properties, $folderId, $content);
+
+        // check if returned Object Id is a valid CMIS Object Id
+        $dummy = CMISUtil::decodeObjectId($newObjectId, $typeId);
+        if ($typeId != 'Unknown')
+        {
+            $this->setStatus(self::STATUS_CREATED);
+            if ($type == 'folder')
+            {
+                $feed = $this->getFolderFeed($ObjectService, $repositoryId, $newObjectId);
+            }
+            else
+            {
+                $NavigationService = new NavigationService();
+                $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
+                $cmisEntry = $ObjectService->getProperties($repositoryId, $folderId, false, false);
+                $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $cmisEntry['properties']['Name']['value']);
+            }
+        }
+        else
+        {
+            $this->setStatus(self::STATUS_SERVER_ERROR);
+            $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, 'Error: ' . self::STATUS_SERVER_ERROR);
+            $entry = $feed->newEntry();
+            $feed->newField('error', $newObjectId['message'], $entry);
+        }
+
+        //Expose the responseFeed
 		$this->responseFeed = $feed;
 	}
 
@@ -81,7 +153,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service
      * @param string $feedType children or descendants
      * @return string CMIS AtomPub feed
      */
-    private function getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $feedType)
+    private function getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $feedType = 'children')
     {
         if ($feedType == 'children')
         {
@@ -136,34 +208,6 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service
 
         return $feed;
     }
-
-    // FIXME change how the drupal module works so that we don't need this anymore
-    private function getFolderData($query, &$folderName)
-    {
-        // FIXME really need to to avoid this!
-        $ktapi = new KTAPI();
-        $ktapi->start_session('admin', 'admin');
-
-        $numQ = count($query);
-        $numFolders = $numQ-3;
-        $folderId = 1;
-
-        if ($query[$numQ-1] == 'children' || $query[$numQ-1] == 'descendants')
-        {
-            $tree = $query[$numQ-1];
-        }
-
-        $start = 0;
-        while($start < $numFolders-1)
-        {
-            $folderName = urldecode($query[$numQ-$numFolders+$start]);
-            $folder = $ktapi->get_folder_by_name($folderName, $folderId);
-            $folderId = $folder->get_folderid();
-            ++$start;
-        }
-
-        return CMISUtil::encodeObjectId('Folder', $folderId);
-	}
 }
 
 /**
@@ -176,11 +220,11 @@ class KT_cmis_atom_service_types extends KT_cmis_atom_service
 {
 	public function GET_action()
     {
-        $username = $password = 'admin';
+//        $username = $password = 'admin';
         $RepositoryService = new RepositoryService();
         // technically do not need to log in to access this information
         // TODO consider requiring authentication even to access basic repository information
-        $RepositoryService->startSession($username, $password);
+        $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
 
         // fetch repository id
         $repositories = $RepositoryService->getRepositories();
@@ -205,11 +249,11 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service
 {
 	public function GET_action()
     {
-        $username = $password = 'admin';
+//        $username = $password = 'admin';
         $RepositoryService = new RepositoryService();
         // technically do not need to log in to access this information
         // TODO consider requiring authentication even to access basic repository information
-        $RepositoryService->startSession($username, $password);
+        $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
 
         // fetch repository id
         $repositories = $RepositoryService->getRepositories();
@@ -303,11 +347,11 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service
 {
 	public function GET_action()
     {
-        $username = $password = 'admin';
+//        $username = $password = 'admin';
         $RepositoryService = new RepositoryService();
         $NavigationService = new NavigationService();
 
-        $NavigationService->startSession($username, $password);
+        $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
 
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
@@ -354,11 +398,11 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service
 {
 	public function GET_action()
     {
-        $username = $password = 'admin';
+//        $username = $password = 'admin';
         $RepositoryService = new RepositoryService();
 
         $ObjectService = new ObjectService();
-        $ObjectService->startSession($username, $password);
+        $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
         
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
