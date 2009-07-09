@@ -4,11 +4,10 @@ class KT_atom_responseFeed extends KT_atom_baseDoc {
 	protected $baseURI=NULL;
 	protected $feed=NULL;
 
-
-	public function __construct($baseURI=NULL,$title=NULL,$link=NULL,$updated=NULL,$author=NULL,$id=NULL){
+	public function __construct($baseURI=NULL,$title=NULL,$link=NULL,$updated=NULL,$author=NULL,$id=NULL, $workspace = null){
 		parent::__construct();
+		$this->baseURI = $baseURI;
 		$this->constructHeader();
-		$this->baseURI=$baseURI;
 	}
 
 	protected function constructHeader(){
