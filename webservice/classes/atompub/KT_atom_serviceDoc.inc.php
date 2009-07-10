@@ -49,7 +49,6 @@ class KT_atom_serviceDoc extends KT_atom_baseDoc {
 	protected $baseURI=NULL;
 	protected $service=NULL;
 
-
 	public function __construct($baseURI=NULL){
 		parent::__construct();
 		$this->constructServiceDocumentHeaders();

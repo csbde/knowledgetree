@@ -53,8 +53,8 @@ define('CMIS_ATOM_LIB_FOLDER', trim(KT_ATOM_LIB_FOLDER, '/') . '/cmis/');
 // fetch username and password for auth;  note that this apparently only works when PHP is run as an apache module
 // TODO method to fetch username and password when running PHP as CGI, if possible
 // HTTP Basic Auth:
-$username = $_SERVER['PHP_AUTH_USER'];
-$password = $_SERVER['PHP_AUTH_PW'];
+//$username = $_SERVER['PHP_AUTH_USER'];
+//$password = $_SERVER['PHP_AUTH_PW'];
 
 /**
  * Includes
