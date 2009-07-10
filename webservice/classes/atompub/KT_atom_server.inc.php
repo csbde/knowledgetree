@@ -1,14 +1,15 @@
 <?php
-class KT_atom_server{
+class KT_atom_server {
+
+    public $output='';
 	protected $services=array();
 	protected $workspaceDetail=array();
 	protected $errors=array();
-	public $output='';
 	protected $queryArray=array();
 	protected $serviceName='';
 	protected $method='';
 	protected $workspace='';
-
+    protected $serviceObject = null;
 
 	public function __construct(){
 	}

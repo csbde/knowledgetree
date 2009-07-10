@@ -52,12 +52,14 @@ require_once(realpath(dirname(__FILE__) . '/../../../config/dmsDefaults.php'));
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 
 define ('CMIS_DIR', KT_LIB_DIR . '/api/ktcmis');
+require_once(CMIS_DIR . '/exceptions/PermissionDeniedException.inc.php');
 require_once(CMIS_DIR . '/services/CMISRepositoryService.inc.php');
 require_once(CMIS_DIR . '/services/CMISNavigationService.inc.php');
 require_once(CMIS_DIR . '/services/CMISObjectService.inc.php');
 require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
 /**
+ * Base class for all KT CMIS classes
  * Handles authentication
  */
 class KTCMISBase {
@@ -66,6 +68,11 @@ class KTCMISBase {
     // so we declare them as static
     static protected $ktapi;
     static protected $session;
+
+//    public function __construct($username = null, $password = null)
+//    {
+//        $this->startSession($username, $password);
+//    }
 
     // TODO try to pick up existing session if possible, i.e. if the $session value is not empty
     public function startSession($username, $password)
@@ -84,6 +91,12 @@ class KTCMISBase {
 //            echo "ATTEMPT TO START NEW SESSION<BR>\n";
             self::$ktapi = new KTAPI();
             self::$session =& self::$ktapi->start_session($username, $password);
+        }
+
+        // failed authentication?
+        if (PEAR::isError(self::$session))
+        {
+            throw new PermissionDeniedException('You must be authenticated to perform this action');
         }
         
 //        print_r(self::$ktapi);
@@ -181,7 +194,7 @@ class KTRepositoryService extends KTCMISBase {
      * @param string $repositoryId
      */
     public function getTypes($repositoryId, $typeId = '', $returnPropertyDefinitions = false,
-                      $maxItems = 0, $skipCount = 0, &$hasMoreItems = false)
+                             $maxItems = 0, $skipCount = 0, &$hasMoreItems = false)
     {
         try {
             $repositoryObjectTypeResult = $this->RepositoryService->getTypes($repositoryId, $typeId, $returnPropertyDefinitions,
