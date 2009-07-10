@@ -110,6 +110,7 @@ class CMISDocumentObject extends CMISBaseObject {
         }
 
         $objectProperties = $object->get_detail();
+//        print_r($objectProperties);
 
         $this->_setPropertyInternal('ObjectId', CMISUtil::encodeObjectId($this->typeId, $objectProperties['document_id']));
         // prevent doubled '/' chars
@@ -131,6 +132,7 @@ class CMISDocumentObject extends CMISBaseObject {
         $this->_setPropertyInternal('LastModificationDate', $objectProperties['modified_date']);
         $this->_setPropertyInternal('ChangeToken', null);
         $this->_setPropertyInternal('Name', $objectProperties['title']);
+        $this->_setPropertyInternal('ParentId', $objectProperties['folder_id']);
         $this->_setPropertyInternal('IsImmutable', $objectProperties['is_immutable']);
         // NOTE if access to older versions is allowed, this will need to be checked, else just set to yes
         //      see ktapi::get_document_version_history
