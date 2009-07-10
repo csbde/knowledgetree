@@ -5,7 +5,7 @@ include_once CMIS_ATOM_LIB_FOLDER . 'NavigationService.inc.php';
 include_once CMIS_ATOM_LIB_FOLDER . 'ObjectService.inc.php';
 include_once 'KT_cmis_atom_service_helper.inc.php';
 
-// TODO response if failed auth, need generic response which can be used by all code
+// TODO auth failed response requires WWW-Authenticate: Basic realm="KnowledgeTree DMS" header
 
 /**
  * AtomPub Service: folder
@@ -13,12 +13,22 @@ include_once 'KT_cmis_atom_service_helper.inc.php';
  * Returns children, descendants (up to arbitrary depth) or detail for a particular folder
  *
  */
-class KT_cmis_atom_service_folder extends KT_cmis_atom_service
-{
-	public function GET_action()
+class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
+
+    public function GET_action()
     {
         $RepositoryService = new RepositoryService();
-        $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+        try {
+            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+        }
+        catch (Exception $e)
+        {
+            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+            $this->responseFeed = $feed;
+            return null;
+        }
+
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
 
@@ -31,7 +41,6 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service
             $folderId = CMISUtil::encodeObjectId('Folder', 1);
             $folderName = urldecode($this->params[0]);
         }
-        // this is a bit of a hack, but then it's to accomodate a bit of a hack to work with the knowledgetree/drupal cmis modules...
         else if ($this->params[0] == 'path')
         {
             $ktapi =& $RepositoryService->getInterface();
@@ -41,43 +50,84 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service
         {
             $folderId = $this->params[0];
             $ObjectService = new ObjectService();
-            $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+
+            try {
+                $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+            }
+            catch (Exception $e)
+            {
+                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+                $this->responseFeed = $feed;
+                return null;
+            }
+
             $cmisEntry = $ObjectService->getProperties($repositoryId, $folderId, false, false);
             $folderName = $cmisEntry['properties']['Name']['value'];
-//            $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $newObjectId, $cmisEntry['properties']['Name']['value']);
+        //            $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $newObjectId, $cmisEntry['properties']['Name']['value']);
         }
 
         if (!empty($this->params[1]) && (($this->params[1] == 'children') || ($this->params[1] == 'descendants')))
         {
             $NavigationService = new NavigationService();
-            $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
+
+            try {
+                $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
+            }
+            catch (Exception $e)
+            {
+                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+                $this->responseFeed = $feed;
+                return null;
+            }
 
             $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $this->params[1]);
         }
         else
         {
             $ObjectService = new ObjectService();
-            $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+
+            try {
+                $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+            }
+            catch (Exception $e)
+            {
+                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+                $this->responseFeed = $feed;
+                return null;
+            }
 
             $feed = $this->getFolderFeed($ObjectService, $repositoryId, $folderId);
         }
 
-		//Expose the responseFeed
-		$this->responseFeed = $feed;
-	}
-    
-	public function POST_action()
+        //Expose the responseFeed
+        $this->responseFeed = $feed;
+    }
+
+    public function POST_action()
     {
-//        $username = $password = 'admin';
         $RepositoryService = new RepositoryService();
-        $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+
+        try {
+            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+        }
+        catch (Exception $e)
+        {
+            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+            $this->responseFeed = $feed;
+            return null;
+        }
+
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
 
         $folderId = $this->params[0];
         $title = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'title');
         $summary = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'summary');
-        
+
         $properties = array('name' => $title, 'summary' => $summary);
 
         // determine whether this is a folder or a document create
@@ -109,7 +159,18 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service
                                                                                                       [0]['@children']);
 
         $ObjectService = new ObjectService();
-        $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+
+        try {
+            $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+        }
+        catch (Exception $e)
+        {
+            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+            $this->responseFeed = $feed;
+            return null;
+        }
+
         if ($type == 'folder')
             $newObjectId = $ObjectService->createFolder($repositoryId, ucwords($cmisObjectProperties['ObjectTypeId']), $properties, $folderId);
         else
@@ -127,22 +188,30 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service
             else
             {
                 $NavigationService = new NavigationService();
-                $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
+
+                try {
+                    $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
+                }
+                catch (Exception $e)
+                {
+                    $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+                    $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+                    $this->responseFeed = $feed;
+                    return null;
+                }
+
                 $cmisEntry = $ObjectService->getProperties($repositoryId, $folderId, false, false);
                 $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $cmisEntry['properties']['Name']['value']);
             }
         }
         else
         {
-            $this->setStatus(self::STATUS_SERVER_ERROR);
-            $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, 'Error: ' . self::STATUS_SERVER_ERROR);
-            $entry = $feed->newEntry();
-            $feed->newField('error', $newObjectId['message'], $entry);
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $newObjectId['message']);
         }
 
         //Expose the responseFeed
-		$this->responseFeed = $feed;
-	}
+        $this->responseFeed = $feed;
+    }
 
     /**
      * Retrieves children/descendants of the specified folder
@@ -169,7 +238,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service
         }
 
         // $baseURI=NULL,$title=NULL,$link=NULL,$updated=NULL,$author=NULL,$id=NULL
-		$feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, $folderName . ' ' . ucwords($feedType), null, null, null,
+        $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, $folderName . ' ' . ucwords($feedType), null, null, null,
                                               'urn:uuid:' . $folderName . '-' . $feedType);
 
         foreach($entries as $cmisEntry)
@@ -200,14 +269,15 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service
 
         $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, $cmisEntry['properties']['ObjectTypeId']['value'], null, null, null,
                                               'urn:uuid:' . $cmisEntry['properties']['ObjectId']['value']);
-        
+
         KT_cmis_atom_service_helper::createObjectEntry($feed, $cmisEntry, $folderName);
-//        // <cmis:hasMoreItems>false</cmis:hasMoreItems>
-//        // global $folderFeed;
-//        // $outputs =
+        //        // <cmis:hasMoreItems>false</cmis:hasMoreItems>
+        //        // global $folderFeed;
+        //        // $outputs =
 
         return $feed;
     }
+
 }
 
 /**
@@ -216,15 +286,22 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service
  * Returns a list of supported object types
  *
  */
-class KT_cmis_atom_service_types extends KT_cmis_atom_service
-{
-	public function GET_action()
+class KT_cmis_atom_service_types extends KT_cmis_atom_service {
+
+    public function GET_action()
     {
-//        $username = $password = 'admin';
         $RepositoryService = new RepositoryService();
-        // technically do not need to log in to access this information
-        // TODO consider requiring authentication even to access basic repository information
-        $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+
+        try {
+            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+        }
+        catch (Exception $e)
+        {
+            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+            $this->responseFeed = $feed;
+            return null;
+        }
 
         // fetch repository id
         $repositories = $RepositoryService->getRepositories();
@@ -234,9 +311,10 @@ class KT_cmis_atom_service_types extends KT_cmis_atom_service
         $type = ((empty($this->params[0])) ? 'all' : $this->params[0]);
         $feed = KT_cmis_atom_service_helper::getTypeFeed($type, $types);
 
-		//Expose the responseFeed
-		$this->responseFeed = $feed;
-	}
+        //Expose the responseFeed
+        $this->responseFeed = $feed;
+    }
+    
 }
 
 /**
@@ -245,42 +323,48 @@ class KT_cmis_atom_service_types extends KT_cmis_atom_service
  * Returns the type defintion for the selected type
  *
  */
-class KT_cmis_atom_service_type extends KT_cmis_atom_service
-{
-	public function GET_action()
+class KT_cmis_atom_service_type extends KT_cmis_atom_service {
+
+    public function GET_action()
     {
-//        $username = $password = 'admin';
         $RepositoryService = new RepositoryService();
-        // technically do not need to log in to access this information
-        // TODO consider requiring authentication even to access basic repository information
-        $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+
+        try {
+            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+        }
+        catch (Exception $e)
+        {
+            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+            $this->responseFeed = $feed;
+            return null;
+        }
 
         // fetch repository id
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
-        
-        if (!isset($this->params[1]))
-        {
-            // For easier return in the wanted format, we call getTypes instead of getTypeDefinition.
-            // Calling this with a single type specified returns an array containing the definition of
-            // just the requested type.
-            // NOTE could maybe be more efficient to call getTypeDefinition direct and then place in
-            //      an array on this side?  or directly expose the individual entry response code and
-            //      call directly from here rather than via getTypeFeed.
+
+        if (!isset($this->params[1])) {
+        // For easier return in the wanted format, we call getTypes instead of getTypeDefinition.
+        // Calling this with a single type specified returns an array containing the definition of
+        // just the requested type.
+        // NOTE could maybe be more efficient to call getTypeDefinition direct and then place in
+        //      an array on this side?  or directly expose the individual entry response code and
+        //      call directly from here rather than via getTypeFeed.
             $type = ucwords($this->params[0]);
             $types = $RepositoryService->getTypes($repositoryId, $type);
             $feed = KT_cmis_atom_service_helper::getTypeFeed($type, $types);
         }
-        else
-        {
-            // TODO dynamic dates, as needed everywhere
-            // NOTE children of types not yet implemented and we don't support any non-basic types at this time
+        else {
+        // TODO dynamic dates, as needed everywhere
+        // NOTE children of types not yet implemented and we don't support any non-basic types at this time
             $feed = $this->getTypeChildrenFeed($this->params[1]);
         }
 
-		//Expose the responseFeed
-		$this->responseFeed=$feed;
-	}
+        //Expose the responseFeed
+        $this->responseFeed=$feed;
+    }
+
     /**
      * Retrieves a list of child types for the supplied type
      *
@@ -292,10 +376,10 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service
      */
     private function getTypeChildrenFeed()
     {
-		//Create a new response feed
-        // $baseURI=NULL,$title=NULL,$link=NULL,$updated=NULL,$author=NULL,$id=NULL
-		$feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, 'Child Types of ' . ucwords($this->params[0]), null, null, null,
-                                              $this->params[0] . '-children');
+    //Create a new response feed
+    // $baseURI=NULL,$title=NULL,$link=NULL,$updated=NULL,$author=NULL,$id=NULL
+        $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, 'Child Types of ' . ucwords($this->params[0]), null, null, null,
+            $this->params[0] . '-children');
 
         // TODO actually fetch child types - to be implemented when we support child types in the API
 
@@ -316,8 +400,8 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service
         // TODO actual dynamic listing, currently we have no objects with which to test
 
         // TODO
-//        <updated>2009-06-23T13:40:32.786+02:00</updated>
-//        <cmis:hasMoreItems>false</cmis:hasMoreItems>
+        //        <updated>2009-06-23T13:40:32.786+02:00</updated>
+        //        <cmis:hasMoreItems>false</cmis:hasMoreItems>
 /*
         // TODO need to create this dynamically now, will no longer work with static output
         $output = '<?xml version="1.0" encoding="UTF-8"?>
@@ -343,23 +427,31 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service
  *
  */
 // NOTE this is always an empty document, underlying API code still to be implemented
-class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service
-{
-	public function GET_action()
+class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
+
+    public function GET_action()
     {
-//        $username = $password = 'admin';
         $RepositoryService = new RepositoryService();
         $NavigationService = new NavigationService();
 
-        $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
+        try {
+            $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
+        }
+        catch (Exception $e)
+        {
+            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+            $this->responseFeed = $feed;
+            return null;
+        }
 
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
 
         $checkedout = $NavigationService->getCheckedoutDocs($repositoryId);
 
-		//Create a new response feed
-		$feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, 'Checked out Documents', null, null, null, 'urn:uuid:checkedout');
+        //Create a new response feed
+        $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, 'Checked out Documents', null, null, null, 'urn:uuid:checkedout');
 
         foreach($checkedout as $document)
         {
@@ -382,9 +474,9 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service
         $entry = null;
         $feed->newField('hasMoreItems', 'false', $entry, true);
 
-		//Expose the responseFeed
-		$this->responseFeed = $feed;
-	}
+        //Expose the responseFeed
+        $this->responseFeed = $feed;
+    }
 
 }
 
@@ -394,35 +486,45 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service
  * Returns detail on a particular document
  *
  */
-class KT_cmis_atom_service_document extends KT_cmis_atom_service
-{
-	public function GET_action()
+class KT_cmis_atom_service_document extends KT_cmis_atom_service {
+
+    public function GET_action()
     {
-//        $username = $password = 'admin';
         $RepositoryService = new RepositoryService();
 
         $ObjectService = new ObjectService();
-        $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
-        
+
+        try {
+            $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+        }
+        catch (Exception $e)
+        {
+            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+            $this->responseFeed = $feed;
+            return null;
+        }
+
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
 
         $cmisEntry = $ObjectService->getProperties($repositoryId, $this->params[0], false, false);
 
         //Create a new response feed
-		$feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, $cmisEntry['properties']['ObjectTypeId']['value'], null, null, null,
-                                  'urn:uuid:' . $cmisEntry['properties']['ObjectId']['value']);
+        $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, $cmisEntry['properties']['ObjectTypeId']['value'], null, null, null,
+                                              'urn:uuid:' . $cmisEntry['properties']['ObjectId']['value']);
 
         KT_cmis_atom_service_helper::createObjectEntry($feed, $cmisEntry, $cmisEntry['properties']['ParentId']['value']);
 
         // <cmis:hasMoreItems>false</cmis:hasMoreItems>
 
-//        global $docFeed;
-//        $output = $docFeed;
+        //        global $docFeed;
+        //        $output = $docFeed;
 
-		//Expose the responseFeed
-		$this->responseFeed=$feed;
-	}
+        //Expose the responseFeed
+        $this->responseFeed=$feed;
+    }
+    
 }
 
 $childrenFeed[] = '<?xml version="1.0" encoding="utf-8"?>
@@ -532,7 +634,7 @@ $childrenFeed[] = '<?xml version="1.0" encoding="utf-8"?>
          </entry>
         </feed>';
 
-        $childrenFeed[] = '<?xml version="1.0" encoding="UTF-8"?>
+$childrenFeed[] = '<?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:cmis="http://www.cmis.org/2008/05" xmlns:alf="http://www.alfresco.org" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">
 <author><name>System</name></author>
 <generator version="3.0.0 (Stable 1526)">Alfresco (Labs)</generator>

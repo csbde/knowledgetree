@@ -166,6 +166,12 @@ class CMISObjectService {
             $properties['name'] = $properties['title'];
         }
 
+        // TODO if name is blank! throw another exception (check type) - using invalidArgument Exception for now
+        if (trim($properties['name']) == '')
+        {
+            throw new InvalidArgumentException('Refusing to create an un-named document');
+        }
+
         // TODO also set to Default if a non-supported type is submitted
         if ($properties['type'] == '')
         {
@@ -262,10 +268,10 @@ class CMISObjectService {
             throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
         }
 
-        // TODO if name is blank! throw another exception (check type) - using RuntimeException for now
+        // TODO if name is blank! throw another exception (check type) - using invalidArgument Exception for now
         if (trim($properties['name']) == '')
         {
-            throw new RuntimeException('Refusing to create an un-named folder');
+            throw new InvalidArgumentException('Refusing to create an un-named folder');
         }
 
         $response = $this->ktapi->create_folder((int)$folderId, $properties['name'], $sig_username = '', $sig_password = '', $reason = '');

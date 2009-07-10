@@ -32,7 +32,7 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * Contributor( s): 
+ * Contributor( s):
  * 				Mark Holtzhausen <mark@knowledgetree.com>
  * 				Paul Barrett <paul@knowledgetree.com>
  *
@@ -47,13 +47,13 @@ include_once(KT_ATOM_LIB_FOLDER.'KT_atom_serviceDoc.inc.php');
 
 class KT_cmis_atom_serviceDoc extends KT_atom_serviceDoc {
 
-    // override and extend as needed
+// override and extend as needed
 
     public $repositoryInfo = array();
 
     public function __construct($baseURI = NULL)
     {
-		parent::__construct();
+        parent::__construct();
 
         // get repositoryInfo
         // NOTE currently we only support one repository, which will be the first one found in the repositories.xml config
@@ -61,63 +61,65 @@ class KT_cmis_atom_serviceDoc extends KT_atom_serviceDoc {
 
         include 'services/cmis/RepositoryService.inc.php';
         $RepositoryService = new RepositoryService();
+        // TODO add auth requirement here, don't want to even supply service doc without auth
+//        $RepositoryService->startSession();
 
         // fetch data for response
         $repositories = $RepositoryService->getRepositories();
         // fetch for default first repo;  NOTE that this will probably have to change at some point, quick and dirty for now
         $this->repositoryInfo = $RepositoryService->getRepositoryInfo($repositories[0]['repositoryId']);
-	}
-	
-	protected function constructServiceDocumentHeaders()
+    }
+
+    protected function constructServiceDocumentHeaders()
     {
-		$service = $this->newElement('service');
-		$service->appendChild($this->newAttr('xmlns', 'http://www.w3.org/2007/app'));
-		$service->appendChild($this->newAttr('xmlns:atom', 'http://www.w3.org/2005/Atom'));
+        $service = $this->newElement('service');
+        $service->appendChild($this->newAttr('xmlns', 'http://www.w3.org/2007/app'));
+        $service->appendChild($this->newAttr('xmlns:atom', 'http://www.w3.org/2005/Atom'));
         $service->appendChild($this->newAttr('xmlns:cmis', 'http://www.cmis.org/2008/05'));
         $this->service =& $service;
-		$this->DOM->appendChild($this->service);
-	}
-	
-	public function &newCollection($url = NULL, $title = NULL, $cmisCollectionType = NULL, &$ws = NULL)
+        $this->DOM->appendChild($this->service);
+    }
+
+    public function &newCollection($url = NULL, $title = NULL, $cmisCollectionType = NULL, &$ws = NULL)
     {
-		$collection=$this->newElement('collection');
-		$collection->appendChild($this->newAttr('href', $url));
-		$collection->appendChild($this->newAttr('cmis:collectionType', $cmisCollectionType));
-		$collection->appendChild($this->newElement('atom:title', $title));
-		if(isset($ws))$ws->appendChild($collection);
-		return $collection;
-	}
-	
+        $collection=$this->newElement('collection');
+        $collection->appendChild($this->newAttr('href', $url));
+        $collection->appendChild($this->newAttr('cmis:collectionType', $cmisCollectionType));
+        $collection->appendChild($this->newElement('atom:title', $title));
+        if(isset($ws))$ws->appendChild($collection);
+        return $collection;
+    }
+
 }
 
 /**
-<?xml version="1.0" encoding="utf-8"?>
-<service xmlns="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom">
-  <workspace>
-    <atom:title>Main Site</atom:title>
-    <collection href="http://example.org/blog/main" >
-      <atom:title>My Blog Entries</atom:title>
-      <categories href="http://example.com/cats/forMain.cats" />
-    </collection>
-    <collection href="http://example.org/blog/pic" >
-      <atom:title>Pictures</atom:title>
-      <accept>image/png</accept>
-      <accept>image/jpeg</accept>
-      <accept>image/gif</accept>
-    </collection>
-  </workspace>
-  <workspace>
-    <atom:title>Sidebar Blog</atom:title>
-    <collection href="http://example.org/sidebar/list" >
-      <atom:title>Remaindered Links</atom:title>
-      <accept>application/atom+xml;type=entry</accept>
-      <categories fixed="yes">
-        <atom:category scheme="http://example.org/extra-cats/" term="joke" />
-        <atom:category scheme="http://example.org/extra-cats/" term="serious" />
-      </categories>
-    </collection>
-  </workspace>
-</service>
+ <?xml version="1.0" encoding="utf-8"?>
+ <service xmlns="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom">
+ <workspace>
+ <atom:title>Main Site</atom:title>
+ <collection href="http://example.org/blog/main" >
+ <atom:title>My Blog Entries</atom:title>
+ <categories href="http://example.com/cats/forMain.cats" />
+ </collection>
+ <collection href="http://example.org/blog/pic" >
+ <atom:title>Pictures</atom:title>
+ <accept>image/png</accept>
+ <accept>image/jpeg</accept>
+ <accept>image/gif</accept>
+ </collection>
+ </workspace>
+ <workspace>
+ <atom:title>Sidebar Blog</atom:title>
+ <collection href="http://example.org/sidebar/list" >
+ <atom:title>Remaindered Links</atom:title>
+ <accept>application/atom+xml;type=entry</accept>
+ <categories fixed="yes">
+ <atom:category scheme="http://example.org/extra-cats/" term="joke" />
+ <atom:category scheme="http://example.org/extra-cats/" term="serious" />
+ </categories>
+ </collection>
+ </workspace>
+ </service>
 
  */
 

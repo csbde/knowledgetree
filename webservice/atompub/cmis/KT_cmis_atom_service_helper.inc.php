@@ -112,7 +112,7 @@ class KT_cmis_atom_service_helper {
         }
 
         //Create a new response feed
-		$feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, $typesHeading, null, null, null, 'urn:uuid:' . $typesString);
+        $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, $typesHeading, null, null, null, 'urn:uuid:' . $typesString);
 
         foreach($types as $type)
         {
@@ -153,6 +153,16 @@ class KT_cmis_atom_service_helper {
 
             $entry->appendChild($feedElement);
         }
+
+        return $feed;
+    }
+
+    static public function getErrorFeed(&$service, $status, $message)
+    {
+        $service->setStatus($status);
+        $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, 'Error: ' . $status);
+        $entry = $feed->newEntry();
+        $feed->newField('error', $message, $entry);
 
         return $feed;
     }
