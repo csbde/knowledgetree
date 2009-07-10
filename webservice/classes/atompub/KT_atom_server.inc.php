@@ -21,11 +21,10 @@ class KT_atom_server{
 	 *
 	 */
 	public function execute(){
-//        $_SERVER['QUERY_STRING'] = urldecode($_SERVER['QUERY_STRING']);
 		$reqMethod=trim(strtoupper($_SERVER['REQUEST_METHOD']));
 		$queryArray=split('/',trim($_SERVER['QUERY_STRING'],'/'));
 		$rawRequest=@file_get_contents('php://input');
-//echo "\n\n".rawurldecode($_SERVER['QUERY_STRING'])."<BR><BR>\n\n";
+
         $workspace=strtolower(trim($queryArray[0]));
 		$serviceName=strtolower(trim($queryArray[1]));
 		$requestParams=array_slice($queryArray,2);
@@ -33,7 +32,7 @@ class KT_atom_server{
 		$this->serviceName=$serviceName;
 		$this->method=$reqMethod;
 		$this->workspace=$workspace;
-
+        
         if($workspace=='servicedocument'){
 			$this->serviceDocument();
 			return;

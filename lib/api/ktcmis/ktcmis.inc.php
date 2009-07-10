@@ -70,24 +70,34 @@ class KTCMISBase {
     // TODO try to pick up existing session if possible, i.e. if the $session value is not empty
     public function startSession($username, $password)
     {
-        if (is_null(self::$session))
+//        echo $username." :: ".$password."<BR>";
+        // attempt to recover session if one exists
+        if (!is_null(self::$session) && !PEAR::isError(self::$session))
         {
+//            echo "ATTEMPT TO RECOVER SESSION: ".print_r(self::$session, true)."<BR>\n";
+            self::$session =& self::$ktapi->get_active_session(self::$session->get_sessionid());
+        }
+
+        // start new session if no existing session or problem getting existing session (expired, etc...)
+        if (is_null(self::$session) || PEAR::isError(self::$session))
+        {
+//            echo "ATTEMPT TO START NEW SESSION<BR>\n";
             self::$ktapi = new KTAPI();
             self::$session =& self::$ktapi->start_session($username, $password);
         }
-        else
-        {
-            // add session restart code here
-            self::$session =& self::$ktapi->get_active_session(self::$session->get_sessionid());
-        }
         
-        //var_dump(self::$ktapi);
+//        print_r(self::$ktapi);
         return self::$session;
     }
 
     public function getInterface()
     {
         return self::$ktapi;
+    }
+
+    public function getSession()
+    {
+        return self::$session;
     }
 
     // TODO what about destroying sessions? only on logout (which is not offered by the CMIS clients tested so far)
