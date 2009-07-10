@@ -49,7 +49,7 @@ class stepAction {
 	* @var string
 	*/
     protected $stepName = '';
-    
+
 	/**
 	* Step names for classes
 	*
@@ -58,7 +58,7 @@ class stepAction {
 	* @var array
 	*/
     protected $stepClassNames = array();
-    
+
 	/**
 	* Flag if step needs confirmation
 	*
@@ -67,7 +67,7 @@ class stepAction {
 	* @var boolean
 	*/
     protected $displayConfirm = false;
-    
+
 	/**
 	* Reference to session object
 	*
@@ -85,7 +85,7 @@ class stepAction {
 	* @var object class Step
 	*/
     protected $action = null;
-    
+
 	/**
 	* Constructs step action object
 	*
@@ -137,7 +137,7 @@ class stepAction {
 		$step_class = $this->makeCamelCase($this->stepName);
 		return new $step_class();
     }
-    
+
 	/**
 	* Converts string to camel case
 	*
@@ -164,7 +164,7 @@ class stepAction {
     public function makeHeading($str) {
         $str = str_replace('_', ' ', $str);
         $str = ucwords($str);
-        
+
         return $str;
     }
 
@@ -204,7 +204,7 @@ class stepAction {
         return '<span class="top">'.$this->getCurrentStepName().'</span>';
     }
 
-	/** 
+	/**
 	* Returns current step name
 	*
 	* @author KnowledgeTree Team
@@ -216,7 +216,7 @@ class stepAction {
         return$this->step_names[$this->stepName];
     }
 
-	/** 
+	/**
 	* Returns left menu
 	*
 	* @author KnowledgeTree Team
@@ -226,10 +226,6 @@ class stepAction {
 	*/
     public function getLeftMenu()
     {
-        if($this->stepName == 'welcome'){
-            return '<img src="resources/graphics/tree.jpg" align="middle" style="padding-top: 20px;"/>';
-        }
-
         $menu = '<div class="menu">';
         $active = false;
 
@@ -257,7 +253,7 @@ class stepAction {
         return $menu;
     }
 
-	/** 
+	/**
 	* Returns confirmation page flag
 	*
 	* @author KnowledgeTree Team
@@ -269,7 +265,7 @@ class stepAction {
     	// TODO:No other way I can think of doing this
         return $this->displayConfirm;
     }
-    
+
 	/**
 	* Sets confirmation page flag
 	*
@@ -306,7 +302,7 @@ class stepAction {
         return $this->session;
     }
 
-	/** 
+	/**
 	* Returns step tenplate content
 	*
 	* @author KnowledgeTree Team
@@ -331,7 +327,7 @@ class stepAction {
             	$this->loadValueToSession($this->stepName, $key, $value);
             }
         }
-        
+
         $content = $step_tpl->fetch();
 		$tpl = new Template("templates/wizard.tpl");
 		$tpl->set('content', $content);
@@ -395,7 +391,7 @@ class stepAction {
             $this->loadErrorToSession($this->stepName, $key, $value); // Load values session
         }
      }
-     
+
    /**
      * Remove all class errors value to session
      *

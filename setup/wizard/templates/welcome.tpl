@@ -1,5 +1,6 @@
 <h1>Welcome to the KnowledgeTree Setup Wizard</h1>
 
+<div style='width:800px;'>
 <p>
 KnowledgeTreeTM is document management made simple - easily share, track, secure, and manage the documents and records your organization depends on.
 </p>
@@ -9,6 +10,7 @@ to small businesses, and many other types of organizations. KnowledgeTree's open
 integrate the document management system with their existing infrastructure, providing a more flexible, cost-effective alternative to proprietary
 applications.
 </p>
+</div>
 
 <form action="index.php?step_name=welcome" method="POST">
 <div class="buttons">

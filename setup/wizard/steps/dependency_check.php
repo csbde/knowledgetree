@@ -39,12 +39,14 @@
 * @package Installer
 * @version Version 0.1
 */
+
 require_once(WIZARD_DIR.'step.php');
 
 class dependencyCheck extends Step
 {
     private $maxPHPVersion = '6.0.0';
     private $minPHPVersion = '5.0.0';
+    private $done;
 
     /**
      * Constructor
@@ -53,39 +55,50 @@ class dependencyCheck extends Step
     public function __construct()
     {
         $this->temp_variables = array("step_name"=>"dependency_check");
+        $this->error = array();
+        $this->done = true;
     }
 
-    public function doStep() {
-        $passed = $this->doRun(); // Check dependencies
+    public function doStep()
+    {
+        // Check dependencies
+        $passed = $this->doRun();
         if($this->next()) {
             if($passed)
                 return 'next';
             else
                 return 'error';
         } else if($this->previous()) {
-			
-			
+
             return 'previous';
         }
 
         return 'landing';
     }
-    
+
     public function doRun()
     {
         $check = $this->checkPhpVersion();
         $this->temp_variables['version'] = $check;
+
         $configs = $this->checkPhpConfiguration();
         $this->temp_variables['configurations'] = $configs;
-        $list = $this->getRequiredExtensions(); // get the list of extensions
+
+        // get the list of extensions
+        $list = $this->getRequiredExtensions();
         $extensions = array();
+
         foreach($list as $ext){
+
             $ext['available'] = 'no';
             if($this->checkExtension($ext['extension'])){
                 $ext['available'] = 'yes';
             }else {
                 if($ext['required'] == 'no'){
                     $ext['available'] = 'optional';
+                }else{
+                    $this->done = false;
+                    $this->error[] = 'Missing required extension: '.$ext['name'];
                 }
             }
 
@@ -94,11 +107,11 @@ class dependencyCheck extends Step
 
         $this->temp_variables['extensions'] = $extensions;
 
-        return true;
+        return $this->done;
     }
 
     public function getErrors() {
-        return array();
+        return $this->error;
     }
 
     public function getStepVars()
@@ -157,13 +170,13 @@ class dependencyCheck extends Step
 
         $check['class'] = 'cross';
         if($phpversion5 != 1){
-            $this->continue = false;
+            $this->done = false;
             $check['version'] = "Your PHP version needs to be PHP 5.0 or higher. You are running version <b>{$phpversion}</b>.";
             return $check;
         }
 
         if($phpversion6 != 1){
-            $this->continue = false;
+            $this->done = false;
             $check['version'] = "KnowledgeTree is not supported on PHP 6.0 and higher. You are running version <b>{$phpversion}</b>.";
             return $check;
         }
@@ -214,6 +227,9 @@ class dependencyCheck extends Step
             array('extension' => 'xmlrpc', 'required' => 'yes', 'name' => 'XMLRPC', 'details' => ''),
             array('extension' => 'win32', 'required' => 'no', 'name' => 'Win32', 'details' => 'Allows control of Microsoft Windows services'),
             array('extension' => 'mbstring', 'required' => 'no', 'name' => 'Multi Byte Strings', 'details' => ''),
+            array('extension' => 'ldap', 'required' => 'no', 'name' => 'LDAP', 'details' => ''),
+            array('extension' => 'json', 'required' => 'no', 'name' => 'JSON', 'details' => ''),
+            array('extension' => 'openssl', 'required' => 'no', 'name' => 'Open SSL', 'details' => ''),
         );
     }
 

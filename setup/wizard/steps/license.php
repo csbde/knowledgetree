@@ -50,7 +50,7 @@ class license extends step {
     public function doStep() {
         if($this->next()) {
             if($this->doRun())
-            	
+
                 return 'next';
             else
                 return 'error';
@@ -69,7 +69,7 @@ class license extends step {
 
                 return true;
             } else {
-                $this->error = array("Error"=>"Please accept license agreement");
+                $this->error = array("Error"=>"Please accept the license agreement");
 
                 return false;
             }
