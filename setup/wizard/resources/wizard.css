@@ -1,0 +1,184 @@
+* { margin:0; padding:0; }
+
+body {
+    background: white;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    font-size: 80%;
+    color: #000;
+}
+
+h1 {
+    font-size: 3em;
+    font-weight: normal;
+    padding: 10px 0;
+    color: #555;
+}
+
+h2 {
+    font-size: 2em;
+    font-weight: normal;
+    padding: 10px 0;
+    color: #555;
+}
+
+h3 {
+    font-size: 1.5em;
+    font-weight: normal;
+    padding: 10px 0;
+    color: #555;
+}
+
+a {
+    color: #EC7725;
+}
+
+th {
+    font-weight: bold;
+    font-size: 1.1em;
+    padding: 5px 5px;
+}
+
+td {
+    padding: 2px 5px;
+}
+
+.container {
+    border: solid 1px #A1A1A1;
+    margin: 50px;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.header {
+    background: url("graphics/gradient.png") repeat-y;
+    background-position: top right;
+    height: 60px;
+}
+
+.logo {
+    background: url("graphics/logo.png") no-repeat;
+    background-position: top left;
+    height: inherit;
+    width: 200px;
+    margin-left: 10px;
+}
+
+.content {
+}
+
+.left {
+    float: left;
+    width: 200px;
+    text-align: center;
+    /*background: url("graphics/left.png") repeat-y;*/
+    background-position: top left;
+    height: inherit;
+    padding-bottom: 20px;
+    padding-top: 40px;
+}
+
+.right {
+    float: left;
+    padding: 20px;
+}
+
+.menu {
+    color: #616161;
+    text-align: left;
+    line-height: 3;
+    padding-left: 20px;
+}
+
+.indicator {
+    background: url("graphics/indicator.png") no-repeat;
+    height: 15px;
+    width: 15px;
+    padding-left: 20px;
+}
+
+.indicator a {
+    text-decoration: none;
+}
+
+.active {
+    background: url("graphics/active.png") no-repeat;
+    height: 15px;
+    width: 15px;
+    padding-left: 20px;
+}
+
+.inactive {
+    background: url("graphics/inactive.png") no-repeat;
+    height: 15px;
+    width: 15px;
+    padding-left: 20px;
+}
+
+.tick {
+    background: url("graphics/tick.png") no-repeat;
+    height: 15px;
+    width: 15px;
+}
+
+.cross {
+    background: url("graphics/cross.png") no-repeat;
+    height: 15px;
+    width: 15px;
+}
+
+.green {
+    color: green;
+    align: center;
+}
+
+.orange {
+    color: orange;
+    align: center;
+}
+
+.buttons {
+    margin-top: 20px;
+    position: relative;
+}
+
+.buttons input {
+    background: #DDDDDD;
+    border: solid 1px #888;
+    padding: 2px 8px 2px 5px;
+    text-decoration: none;
+    color: #EC7725;
+}
+
+.footer {
+    background: url("graphics/footer.png") repeat-x;
+    height: 50px;
+    clear: both;
+}
+
+.powered-by {
+    background: url("graphics/powered-by-kt.png") no-repeat;
+    background-position: center left;
+    height: inherit;
+    width: 140px;
+    margin-left: 10px;
+}
+
+.adv_options {
+
+}
+
+.description {
+    color:#898989;
+    line-height:150%;
+    margin-bottom:0.75em;
+}
+
+.top {
+    color:#EC7725;
+}
+
+.right_top {
+    height:45px;
+}

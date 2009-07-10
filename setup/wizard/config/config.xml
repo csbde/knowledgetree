@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : config.xml
+    Created on : 01 July 2009, 9:57 AM
+    Author     : jarrett
+    Description:
+        Purpose of the document follows.
+-->
+
+<install version="3.3">
+    <steps>
+        <step name="Welcome">welcome</step>
+        <step name="License Agreement">license</step>
+        <step name="Pre Check">dependency_check</step>
+        <step name="System Values">configuration</step>
+        <step name="Database Configuration">database</step>
+        <step name="Install">install</step>
+        <step name="Complete">complete</step>
+    </steps>
+ </install>
