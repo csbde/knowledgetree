@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : mysql.xml
+    Created on : 01 July 2009, 1:56 PM
+    Author     : jarrett
+    Description:
+        Purpose of the document follows.
+-->
+
+<mysql version="3.6">
+    <host>localhost</host>
+    <name>dms</name>
+    <username>root</username>
+    <password></password>
+    <port>3306</port>
+    <adminu>dmsadmin</adminu>
+    <adminp></adminp>
+</mysql>
