@@ -44,7 +44,7 @@
 ?>
 </table>
 
-<form action="index.php?step_name=configuration" method="POST">
+<form action="index.php?step_name=configuration" method="post">
 
 <div class="buttons">
     <!--<input type="submit" onclick="history.back();" name="Back" value="Back"/>

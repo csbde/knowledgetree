@@ -1,6 +1,6 @@
 <?php
 /**
-* Database Step Controller.
+* Database Step Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -123,6 +123,33 @@ class database extends Step
 	* @var string
 	*/
     private $dmspassword = '';
+
+	/**
+	* Default dms user username
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var boolean
+	*/
+    private $dmsusername = '';
+    
+	/**
+	* Default dms user password
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var boolean
+	*/
+	private $dmsuserpassword = '';
+	
+	/**
+	* Location of database binary.
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var string
+	*/
+    private $dbbinary = '';
     
 	/**
 	* Database table prefix
@@ -227,17 +254,17 @@ class database extends Step
         if($this->next()) {        	
             $this->setDBConfig(); // Set any posted variables
             $this->setDetails();
-            return 'confirm';
+            if($this->doTest()) { // Test
+				return 'confirm';
+            } else {
+                return 'error';
+            }
         } else if($this->previous()) {
             return 'previous';
         } else if($this->confirm()) {
             $this->setDataFromSession("database"); // Set Session Information
             $this->setDBConfig(); // Set any posted variables
-            if($this->doTest()) { // Test
-                return 'next';
-            } else {
-                return 'error';
-            }
+			return 'next';
         } else if($this->edit()) {
             $this->setDataFromSession("database"); // Set Session Information, since its an edit
             return 'landing';
@@ -253,6 +280,14 @@ class database extends Step
 	* @return boolean
 	*/
     public function doTest() {
+    	if($this->match($this->dmspassword, $this->getPassword1()) != 0) {
+    		$this->error = array("19"=>"Passwords do not match: " . $this->dmspassword." ". $this->getPassword1());
+    		return false;
+    	}
+    	if($this->match($this->dmsuserpassword, $this->getPassword2()) != 0) {
+    		$this->error = array("17"=>"Passwords do not match: " . $this->dmsuserpassword." ". $this->getPassword2());
+    		return false;
+    	}
         $con = @mysql_connect($this->dhost, $this->duname, $this->dpassword);
         if (!$con) {
             $this->error = array("1"=>"Could not connect: " . mysql_error());
@@ -262,6 +297,17 @@ class database extends Step
         }
     }
     
+    public function match($str1, $str2) {
+    	return strcmp($str1, $str2);
+    }
+    
+    public function getPassword1() {
+    	return $_POST['dmspassword2'];
+    }
+    
+    public function getPassword2() {
+    	return $_POST['dmsuserpassword2'];
+    }
 	/**
 	* Check if theres a database type
 	*
@@ -306,16 +352,19 @@ class database extends Step
 	*/
     public function setDBConfig() {
     	$this->dtype = $this->getPostSafe("dtype");
-    	$this->dtypes = array("0"=>"mysql");//$this->getPostSafe("dtypes");
+    	$this->dtypes = array("0"=>"mysql"); // TODO:multiple databases
         $this->dhost = $this->getPostSafe("dhost");
         $this->dport = $this->getPostSafe("dport");
         $this->dname = $this->getPostSafe("dname");
         $this->duname = $this->getPostSafe("duname");
         $this->dpassword = $this->getPostSafe("dpassword");
         $this->dmsname = $this->getPostSafe("dmsname");
+        $this->dmsusername = $this->getPostSafe("dmsusername");
         $this->dmspassword = $this->getPostSafe("dmspassword");
+        $this->dmsuserpassword = $this->getPostSafe("dmsuserpassword");
+        $this->dbbinary = $this->getPostSafe("dbbinary");
         $this->tprefix = $this->getPostSafe("tprefix");
-        $this->ddrop = $this->getPostSafe("ddrop");
+        $this->ddrop = $this->getPostBoolean("ddrop");
     }
 
 	/**
@@ -329,16 +378,19 @@ class database extends Step
     public function loadDefaults($simplexml) {
         if($simplexml) {
         	$this->temp_variables['dtype'] = "";
-            $this->temp_variables['dtypes'] = array("0"=>"mysql");//$this->getTypes($simplexml->dtypes);
+            $this->temp_variables['dtypes'] = array("0"=>"mysql"); // TODO:multiple databases
             $this->temp_variables['dname'] = (string) $simplexml->dname;
             $this->temp_variables['duname'] = (string) $simplexml->duname;
             $this->temp_variables['dhost'] = (string) $simplexml->dhost;
             $this->temp_variables['dport'] = (string) $simplexml->dport;
             $this->temp_variables['dpassword'] = '';
             $this->temp_variables['dmsname'] = '';
+            $this->temp_variables['dmsusername'] = '';
             $this->temp_variables['dmspassword'] = '';
+            $this->temp_variables['dmsuserpassword'] = '';
+            $this->temp_variables['dbbinary'] = '';
             $this->temp_variables['tprefix'] = '';
-            $this->temp_variables['ddrop'] = 0;
+            $this->temp_variables['ddrop'] = false;
         }
     }
 
@@ -352,16 +404,19 @@ class database extends Step
 	*/
    private function setDetails() {
    		$this->temp_variables['dtype'] = $this->getPostSafe('dtype');
-        $this->temp_variables['dtypes'] = array("0"=>"mysql");//$this->getPostSafe('dtypes');
+        $this->temp_variables['dtypes'] = array("0"=>"mysql"); // TODO:multiple databases;
         $this->temp_variables['dhost'] = $this->getPostSafe('dhost');
         $this->temp_variables['dport'] = $this->getPostSafe('dport');
         $this->temp_variables['dname'] = $this->getPostSafe('dname');
         $this->temp_variables['duname'] = $this->getPostSafe('duname');
         $this->temp_variables['dpassword'] = $this->getPostSafe('dpassword');
 		$this->temp_variables['dmsname'] = $this->getPostSafe('dmsname');
+		$this->temp_variables['dmsusername'] = $this->getPostSafe('dmsusername');
 		$this->temp_variables['dmspassword'] = $this->getPostSafe('dmspassword');
+		$this->temp_variables['dmsuserpassword'] = $this->getPostSafe('dmsuserpassword');;
+		$this->temp_variables['dbbinary'] = $this->getPostSafe('dbbinary');
         $this->temp_variables['tprefix'] = $this->getPostSafe('tprefix');
-        $this->temp_variables['ddrop'] = $this->getPostSafe('ddrop');
+        $this->temp_variables['ddrop'] = $this->getPostBoolean('ddrop');
     }
     
 	/**
@@ -474,23 +529,27 @@ class database extends Step
 	* @return object mysql connection
 	*/
     private function createDB($con) {
-       if($this->usedb($con)) { // attempt to use the db
-            if($this->dropdb($con)) { // attempt to drop the db
-                if($this->create($con)) { // attempt to create the db
-
-                }
-            }
-       } else {
-            if($this->create($con)) { // attempt to create the db
-
-            }
-       }
-       
+		if($this->usedb($con)) { // attempt to use the db
+		    if($this->dropdb($con)) { // attempt to drop the db
+		        if(!$this->create($con)) { // attempt to create the db
+					$this->error = array("15"=>"Could create database: " . mysql_error());
+					return false;// cannot overwrite database
+		        }
+		    } else {
+		    	$this->error = array("14"=>"Could not drop database: " . mysql_error());
+		    	return false;// cannot overwrite database
+		    }
+		} else {
+		    if(!$this->create($con)) { // attempt to create the db
+				$this->error = array("16"=>"Could create database: " . mysql_error());
+				return false;// cannot overwrite database
+		    }
+		}
 		$this->createDmsUser($con);
-        $this->createSchema($con);
-        $this->populateSchema($con);
-
-        return $con;
+		$this->createSchema($con);
+		$this->populateSchema($con);
+		
+		return true;
     }
 
 	/**
@@ -550,24 +609,8 @@ class database extends Step
 
             return false;
         }
-    }
-
-	/**
-	* Attempts to use a db
-	*
-	* @author KnowledgeTree Team
-	* @params mysql connection object $con
-	* @access private
-	* @return boolean
-	*/
-    private function usedb2($con) {
-        $sql = "USE {$this->dname};";
-        if (@mysql_query($sql, $con)) {
-            return $con;
-        } else {
-            $this->error = array("4"=>"Error using database: ".mysql_error()."");
-            return false;
-        }
+        
+        return true;
     }
         
 	/**
@@ -579,21 +622,20 @@ class database extends Step
 	* @return boolean
 	*/
     private function createDmsUser($con) {
-    	//TODO
-        $com = "mysql -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/user.sql";
-        exec($com, $output);
-//        $sql = @file_get_contents("sql/user.sql");
-//        if($sql) {
-//	        if (@mysql_query($sql, $con)) {
-//	            return true;
-//	        } else {
-//	            $this->error = array("7"=>"Error populating database : ".mysql_error()."");
-//	            return false;
-//	        }
-//        } else {
-//        	$this->error = array("8"=>"Error Reading sql File : ".mysql_error()."");
-//			return false;
-//        }
+    	if($this->dmsname == '' || $this->dmspassword == '') {
+        	$command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/user.sql";
+        	
+        	return exec($command, $output);
+    	} else {
+			$sql = "GRANT SELECT, INSERT, UPDATE, DELETE ON {$this->dname}.* TO {$this->dmsusername}@{$this->dhost} IDENTIFIED BY '{$this->dmsuserpassword}';GRANT ALL PRIVILEGES ON {$this->dname}.* TO {$this->dmsname}@{$this->dhost} IDENTIFIED BY '{$this->dmspassword}';";
+		    if (@mysql_query($sql, $con)) {
+            	return true;
+        	} else {
+        		$this->error = array("18"=>"Could not create users in database: ".mysql_error()."");
+        		return false;
+        	}
+		}
+        
     }
     
 	/**
@@ -605,25 +647,8 @@ class database extends Step
 	* @return boolean
 	*/
     private function createSchema($con) {
-    	// TODO : 
-        $com = "mysql -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/structure.sql";
-        exec($com, $output);
-//		$sql = "USE {$this->dname};";
-//        $sql .= file_get_contents("sql/structure.sql");
-//        echo $sql;die;
-//        if($sql) {
-//	        if (mysql_query($sql, $con)) {
-//
-//	            return true;
-//	        } else {
-//
-//	            $this->error = array("9"=>"Error creating database schema : ".mysql_error()."");
-//	            return false;
-//	        }
-//        } else {
-//        	$this->error = array("10"=>"Error Reading sql File : ".mysql_error()."");
-//			return false;
-//        }
+        $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/structure.sql";
+        exec($command, $output);
     }
 
 	/**
@@ -635,21 +660,8 @@ class database extends Step
 	* @return boolean
 	*/
     private function populateSchema($con) {
-    	// TODO :
-        $com = "mysql -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/data.sql";
-        exec($com, $output);
-//        $sql = @file_get_contents("sql/data.sql");
-//		if($sql) {
-//	        if (@mysql_query($sql, $con)) {
-//	            return true;
-//	        } else {
-//	            $this->error = array("11"=>"Error populating database : ".mysql_error()."");
-//	            return false;
-//	        }
-//		} else {
-//        	$this->error = array("12"=>"Error Reading sql File : ".mysql_error()."");
-//			return false;
-//        }
+        $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/data.sql";
+        return exec($command, $output);
     }
 
 	/**

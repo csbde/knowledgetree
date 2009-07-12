@@ -1,6 +1,6 @@
 <?php
 /**
-* License Step Controller.
+* License Step Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -50,7 +50,7 @@ class license extends step {
     public function doStep() {
         if($this->next()) {
             if($this->doRun())
-
+            	
                 return 'next';
             else
                 return 'error';
@@ -59,7 +59,7 @@ class license extends step {
             return 'previous';
         }
 
-        return 'landing'; // Just a welcome, so return "next" action
+        return 'landing'; // Just a license, so return "next" action
     }
 
     public function doRun() {

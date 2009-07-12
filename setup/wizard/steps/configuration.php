@@ -1,6 +1,6 @@
 <?php
 /**
-* Configuration Step Controller.
+* Configuration Step Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -58,12 +58,12 @@ class configuration extends Step
 	* @var array
 	*/
     protected $storeInSession = true;
-
+    
     public function __construct()
     {
         $this->done = true;
     }
-
+    
 	private function setDetails() {
 		$conf = $this->getDataFromSession("configuration");
 		if($conf) {
@@ -71,7 +71,7 @@ class configuration extends Step
 			$this->temp_variables['paths'] = $conf['paths'];
 		}
 	}
-
+	
     public function doStep() {
         if($this->next()) {
             if($this->doRun()){
@@ -97,7 +97,7 @@ class configuration extends Step
         $this->doRun();
         return 'landing';
     }
-
+    
     public function doRun()
     {
         $server = $this->getServerInfo();
@@ -120,7 +120,7 @@ class configuration extends Step
         $port = $_SERVER['SERVER_PORT'];
         $ssl_enabled = isset($_SERVER['HTTPS']) ? (strtolower($_SERVER['HTTPS']) === 'on' ? 'yes' : 'no') : true;
 
-        $pos = strpos($script, '/setup/wizard/');
+        $pos = strpos($script, '/wizard/');
         $root_url = substr($script, 0, $pos);
 
         $server = array();

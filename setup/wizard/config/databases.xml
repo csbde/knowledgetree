@@ -3,9 +3,8 @@
 <!--
     Document   : database.xml
     Created on : 01 July 2009, 1:13 PM
-    Author     : jarrett
-    Description:
-        Purpose of the document follows.
+    Author     : KnowledgeTree Team
+    Description: Installer Default MySql Database Configuration
 -->
 
 <database>

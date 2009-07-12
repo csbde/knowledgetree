@@ -1,6 +1,6 @@
 <?php
 /**
-* Install Step Controller.
+* Install Step Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple

@@ -1,6 +1,6 @@
 <h1>System Configuration</h1>
 
-<form action="index.php?step_name=configuration" method="POST">
+<form action="index.php?step_name=configuration" method="post">
 
 <h3>Server Settings</h3>
 

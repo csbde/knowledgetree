@@ -1,15 +1,5 @@
 <h1>PHP Dependencies Check</h1>
 
-<?php
-if($errors){
-    echo '<div class="error">';
-    foreach ($errors as $msg){
-        echo $msg . "<br />\n";
-    }
-    echo '</div>';
-}
-?>
-
 <h3>PHP Version Check</h3>
 
 <?php echo "<span class='{$version['class']}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{$version['version']}"; ?>
@@ -70,7 +60,7 @@ if($errors){
 ?>
 
 </table>
-<form action="index.php?step_name=dependency_check" method="POST">
+<form action="index.php?step_name=dependency_check" method="post">
 
 <div class="buttons">
     <input type="submit" name="Previous" value="Previous"/>

@@ -10,29 +10,24 @@ body {
 }
 
 h1 {
-    font-size: 2em;
+    font-size: 3em;
     font-weight: normal;
     padding: 10px 0;
-    color: #444;
+    color: #555;
 }
 
 h2 {
-    font-size: 1.5em;
+    font-size: 2em;
     font-weight: normal;
     padding: 10px 0;
     color: #555;
 }
 
 h3 {
-    font-size: 1.2em;
+    font-size: 1.5em;
     font-weight: normal;
     padding: 10px 0;
     color: #555;
-}
-
-p {
-    padding-bottom: 10px;
-    word-wrap: break-word;
 }
 
 a {
@@ -41,7 +36,7 @@ a {
 
 th {
     font-weight: bold;
-    text-align: left;
+    font-size: 1.1em;
     padding: 5px 5px;
 }
 
@@ -54,7 +49,6 @@ td {
     margin: 50px;
     margin-top: 20px;
     text-align: left;
-    z-index: -1;
 }
 
 .header {
@@ -72,32 +66,22 @@ td {
 }
 
 .content {
-    background: #F1F1F1;
 }
 
 .left {
-    position: relative;
     float: left;
     width: 200px;
     text-align: center;
     /*background: url("graphics/left.png") repeat-y;*/
     background-position: top left;
-    background: #F1F1F1;
     height: inherit;
     padding-bottom: 20px;
     padding-top: 40px;
 }
 
 .right {
-    position: relative;
     float: left;
     padding: 20px;
-    background: white;
-}
-
-.onclick {
-    color: #EC7725;
-    cursor: pointer;
 }
 
 .menu {
@@ -130,7 +114,6 @@ td {
     height: 15px;
     width: 15px;
     padding-left: 20px;
-    color: #919191;
 }
 
 .tick {
@@ -153,10 +136,6 @@ td {
 .orange {
     color: orange;
     align: center;
-}
-
-.error {
-    color: #9F0000;
 }
 
 .buttons {
@@ -187,7 +166,7 @@ td {
 }
 
 .adv_options {
-    display: none;
+
 }
 
 .description {
@@ -197,8 +176,13 @@ td {
 }
 
 .top {
-    font-size: 2em;
-    font-weight: normal;
-    padding: 10px 0;
-    color: #444;
+    color:#EC7725;
+}
+
+.right_top {
+    height:45px;
+}
+
+#database td {
+	width : 340px;
 }

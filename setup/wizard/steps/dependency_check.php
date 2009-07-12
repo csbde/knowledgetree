@@ -1,6 +1,6 @@
 <?php
 /**
-* Dependency Step Step Controller.
+* Dependency Step Step Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -39,7 +39,6 @@
 * @package Installer
 * @version Version 0.1
 */
-
 require_once(WIZARD_DIR.'step.php');
 
 class dependencyCheck extends Step
@@ -47,7 +46,15 @@ class dependencyCheck extends Step
     private $maxPHPVersion = '6.0.0';
     private $minPHPVersion = '5.0.0';
     private $done;
-
+	/**
+	* Flag to store class information in session
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    public $storeInSession = true;
+    
     /**
      * Constructor
      *
@@ -75,7 +82,7 @@ class dependencyCheck extends Step
 
         return 'landing';
     }
-
+    
     public function doRun()
     {
         $check = $this->checkPhpVersion();

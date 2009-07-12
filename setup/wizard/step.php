@@ -260,7 +260,7 @@ class Step
     }
     
 	/**
-	* Safer way to return post data helper
+	* Safer way to return post data
 	*
 	* @author KnowledgeTree Team
 	* @params SimpleXmlObject $simplexml
@@ -269,6 +269,18 @@ class Step
 	*/
     public function getPostSafe($key) {
     	return isset($_POST[$key]) ? $_POST[$key] : "";
+    }
+    
+	/**
+	* Safer way to return post data
+	*
+	* @author KnowledgeTree Team
+	* @params SimpleXmlObject $simplexml
+	* @access public
+	* @return void
+	*/
+    public function getPostBoolean($key) {
+    	return isset($_POST[$key]) ? $_POST[$key] : false;
     }
     
 	/**

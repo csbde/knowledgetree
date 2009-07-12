@@ -1,6 +1,6 @@
 <?php
 /**
-* Complete Step Controller.
+* Complete Step Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple

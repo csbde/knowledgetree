@@ -12,7 +12,7 @@ applications.
 </p>
 </div>
 
-<form action="index.php?step_name=welcome" method="POST">
+<form action="index.php?step_name=welcome" method="post">
 <div class="buttons">
     <input type="submit" name="Next" value="Next"/>
 </div>

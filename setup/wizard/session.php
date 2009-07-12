@@ -193,7 +193,9 @@ class Session
 	*/
 	public function get($fld) {
 		$this->startSession();
-		return $_SESSION [$fld];
+		if(isset($_SESSION [$fld]))
+			return $_SESSION [$fld];
+		return false;
 	}
 	
 	/**
