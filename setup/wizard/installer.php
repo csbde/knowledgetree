@@ -108,7 +108,7 @@ class Installer {
 	* @var object Session
 	*/
     protected $session = null;
-
+    
 	/**
 	* Constructs installation object
 	*

@@ -5,6 +5,7 @@
 		public $dbuname = '';
 		public $dbpassword = '';
 		public $dbconnection = '';
+		public $error = '';
 		
 		public function __construct() {
 		}
@@ -28,8 +29,10 @@
 			}
       		if($this->dbconnection)
       			return $this->dbconnection;
-      		else 
+      		else {
+      			$this->error = @mysql_error();
       			return false;
+      		}
 		}
 		
 		/**
@@ -46,8 +49,10 @@
 			
 			if(@mysql_select_db($this->dbname))
 				return true;
-			else 
+			else {
+				$this->error = @mysql_error();
 				return false;
+			}
 		}
 		
 		public function setDb($dbname) {
@@ -67,6 +72,7 @@
 			if($result) {
 				return $result;
 			} else {
+				$this->error = @mysql_error();
 				return false;
 			}
 	    }
@@ -83,11 +89,42 @@
 			if($result) {
 				return true;
 			} else {
+				$this->error = @mysql_error();
 				return false;
 			}
 	    }
 	    
-	   	/** 
+		/** Convenience method for mysql_fetch_object().
+		* @param $result The resource returned by query().
+		* @access public
+		* @return An object representing a data row.
+		*/
+	    public function fetchNextObject($result = NULL) {
+		      if ($result == NULL || mysql_num_rows($result) < 1)
+		        return NULL;
+		      else
+		        return mysql_fetch_object($result);
+	    }
+    
+		/** Convenience method for mysql_fetch_assoc().
+		* @param $result The resource returned by query().
+		* @access public
+		* @return array Returns an associative array of strings.
+		*/
+	    public function fetchAssoc($result = NULL) {
+	    	$r = array();
+		      if ($result == NULL || mysql_num_rows($result) < 1)
+		        return NULL;
+		      else {
+	   			while ($row = mysql_fetch_assoc($result)) {
+	   				$r[] = $row;
+	   			}
+	   			return $r;
+		      }
+	    }
+	    
+	    
+	   	/**
 	   	 * Close the connection with the database server.
 	   	 * 
 	     * @param none.
@@ -95,8 +132,18 @@
 	     * @return void.
 	     */
 	    public function close() {
-	      mysql_close();
+	      @mysql_close();
 	    }
 
+	   	/**
+	   	 * Get database errors.
+	   	 * 
+	     * @param none.
+	     * @access public
+	     * @return string.
+	     */
+	    public function getErrors() {
+	    	return $this->error;
+	    }
 	}
 ?>
