@@ -560,13 +560,10 @@ class database extends Step
 		    }
 		}
 		if(!$this->createDmsUser($con)) {
-			die('user');
 		}
 		if(!$this->createSchema($con)) {
-			die('schema');
 		}
 		if(!$this->populateSchema($con)) {
-			die('data');
 		}
 		
 		return true;

@@ -25,7 +25,7 @@
 	    </tr>
 	    <tr>
 	        <td><label for='dpassword'>Enter the password for the user: </label></td>
-	        <td><input type='text' value="<?php echo $dpassword?>" id='dpassword' name='dpassword' size='40' /></td>
+	        <td><input type='password' value="<?php echo $dpassword?>" id='dpassword' name='dpassword' size='40' /></td>
 	    </tr>
 	    <tr>
 	        <td><label for='ddrop'>Drop database if it exists:  </label></td>
@@ -73,11 +73,11 @@
 		</tr>
 	    <tr>
 	        <td><label for='dmspassword'>Enter the password for the DMS Admin User: </label></td>
-	        <td><input type='text' value="<?php echo $dmspassword; ?>" id='dmspassword' name='dmspassword' size='40' /></td>
+	        <td><input type='password' value="<?php echo $dmspassword; ?>" id='dmspassword' name='dmspassword' size='40' /></td>
 		</tr>
 	    <tr>
 	        <td><label for='dmspassword2'>Re Enter the password for the DMS Admin User: </label></td>
-	        <td><input type='text' value="" id='dmspassword2' name='dmspassword2' size='40' /></td>
+	        <td><input type='password' value="" id='dmspassword2' name='dmspassword2' size='40' /></td>
 		</tr>
 	</table>
 	
@@ -95,11 +95,11 @@
 		</tr>
 	    <tr>
 	        <td><label for='dmsuserpassword'>Enter the password for the DMS Default User: </label></td>
-	        <td><input type='text' value="<?php echo $dmsuserpassword?>" id='dmsuserpassword' name='dmsuserpassword' size='40' /></td>
+	        <td><input type='password' value="<?php echo $dmsuserpassword?>" id='dmsuserpassword' name='dmsuserpassword' size='40' /></td>
 		</tr>
 	    <tr>
 	        <td><label for='dmsuserpassword2'>Re Enter the password for the DMS Default User: </label></td>
-	        <td><input type='text' value="" id='dmsuserpassword2' name='dmsuserpassword2' size='40' /></td>
+	        <td><input type='password' value="" id='dmsuserpassword2' name='dmsuserpassword2' size='40' /></td>
 		</tr>
 	</table>
 		<div class="buttons">
