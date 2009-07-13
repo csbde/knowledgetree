@@ -5,23 +5,23 @@
 <table>
     <tr>
         <td><b>Host: </b></td>
-        <td><?php echo $server['host']; ?></td>
+        <td><?php echo $server['host']['value']; ?></td>
     </tr>
     <tr>
         <td><b>Port: </b></td>
-        <td><?php echo $server['port']; ?></td>
+        <td><?php echo $server['port']['value']; ?></td>
     </tr>
     <tr>
         <td><b>Root Url: </b></td>
-        <td><?php echo $server['root_url']; ?></td>
+        <td><?php echo $server['root_url']['value']; ?></td>
     </tr>
     <tr>
         <td><b>File System Root: </b></td>
-        <td><?php echo $server['file_system_root']; ?></td>
+        <td><?php echo $server['file_system_root']['value']; ?></td>
     </tr>
     <tr>
         <td><b>SSL Enabled: </b></td>
-        <td><?php echo $server['ssl_enabled']; ?></td>
+        <td><?php echo $server['ssl_enabled']['value']; ?></td>
     </tr>
 </table>
 

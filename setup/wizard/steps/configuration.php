@@ -1,6 +1,6 @@
 <?php
 /**
-* Configuration Step Controller. 
+* Configuration Step Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -58,12 +58,12 @@ class configuration extends Step
 	* @var array
 	*/
     protected $storeInSession = true;
-    
+
     public function __construct()
     {
         $this->done = true;
     }
-    
+
 	private function setDetails() {
 		$conf = $this->getDataFromSession("configuration");
 		if($conf) {
@@ -71,7 +71,7 @@ class configuration extends Step
 			$this->temp_variables['paths'] = $conf['paths'];
 		}
 	}
-	
+
     public function doStep() {
         if($this->next()) {
             if($this->doRun()){
@@ -97,19 +97,92 @@ class configuration extends Step
         $this->doRun();
         return 'landing';
     }
-    
+
     public function doRun()
     {
         $server = $this->getServerInfo();
         $this->temp_variables['server'] = $server;
 
-        $paths = $this->getPathInfo($server['file_system_root']);
+        $paths = $this->getPathInfo($server['file_system_root']['value']);
         $this->temp_variables['paths'] = $paths;
 
         // Running user
         // Logging
 
         return $this->done;
+    }
+
+    public function doInstall()
+    {
+        include_once('database.inc');
+
+        $iniClass = realpath('../../lib/upgrades/Ini.inc.php');
+        include_once($iniClass);
+
+        // get data from the server
+        $conf = $this->getDataFromSession("configuration");
+        $server = $conf['server'];
+        $paths = $conf['paths'];
+
+        // initialise writing to config.ini
+        $configPath = realpath('../../config/config.ini');
+
+        $ini = false;
+        if(file_exists($configPath)) {
+            $ini = new Ini($configPath);
+        }
+
+        // initialise the db
+        $db = new DBUtil();
+        $table = 'config_settings';
+
+        // write server settings to config_settings table and config.ini
+        foreach($server as $item){
+
+            switch($item['where']){
+                case 'file':
+                    $value = $item['value'];
+                    if($value == 'yes'){
+                        $value = 'true';
+                    }
+                    if($value == 'no'){
+                        $value = 'false';
+                    }
+                    if(!$ini === false){
+                        $ini->updateItem($item['section'], $item['setting'], $value);
+                    }
+                    break;
+
+                case 'db':
+                    $value = mysql_real_escape_string($item['value']);
+                    $setting = mysql_real_escape_string($item['setting']);
+
+                    $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
+                    $db->query($sql);
+                    break;
+            }
+        }
+
+        // write the paths to the config_settings table
+        foreach ($paths as $item){
+            if(empty($item['setting'])){
+                continue;
+            }
+
+            $value = mysql_real_escape_string($item['path']);
+            $setting = mysql_real_escape_string($item['setting']);
+
+            $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
+            $db->query($sql);
+        }
+
+        // write out the config.ini file
+        if(!$ini === false){
+            $ini->write();
+        }
+
+        // close the database connection
+        $db->close();
     }
 
     private function getServerInfo()
@@ -120,23 +193,29 @@ class configuration extends Step
         $port = $_SERVER['SERVER_PORT'];
         $ssl_enabled = isset($_SERVER['HTTPS']) ? (strtolower($_SERVER['HTTPS']) === 'on' ? 'yes' : 'no') : true;
 
-        $pos = strpos($script, '/wizard/');
+        $pos = strpos($script, '/setup/wizard/');
         $root_url = substr($script, 0, $pos);
 
-        $server = array();
-        $server['root_url'] = (isset($_POST['root_url'])) ? $_POST['root_url'] : $root_url;
-        $server['file_system_root'] = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root.$root_url;
-        $server['host'] = (isset($_POST['host'])) ? $_POST['host'] : $host;
-        $server['port'] = (isset($_POST['port'])) ? $_POST['port'] : $port;
-        $server['ssl_enabled'] = (isset($_POST['ssl_enabled'])) ? $_POST['ssl_enabled'] : $ssl_enabled;
+        $root_url = (isset($_POST['root_url'])) ? $_POST['root_url'] : $root_url;
+        $file_system_root = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root.$root_url;
+        $host = (isset($_POST['host'])) ? $_POST['host'] : $host;
+        $port = (isset($_POST['port'])) ? $_POST['port'] : $port;
+        $ssl_enabled = (isset($_POST['ssl_enabled'])) ? $_POST['ssl_enabled'] : $ssl_enabled;
 
-        if(empty($server['host']))
+        $server = array();
+        $server['root_url'] = array('name' => 'Root Url', 'setting' => 'rootUrl', 'where' => 'db', 'value' => $root_url);
+        $server['file_system_root'] = array('name' => 'File System Root', 'section' => 'KnowledgeTree', 'setting' => 'fileSystemRoot', 'where' => 'file', 'value' => $file_system_root);
+        $server['host'] = array('name' => 'Host', 'setting' => 'server_host', 'where' => 'db', 'value' => $host);
+        $server['port'] = array('name' => 'Port', 'setting' => 'server_port', 'where' => 'db', 'value' => $port);
+        $server['ssl_enabled'] = array('name' => 'SSL Enabled', 'section' => 'KnowledgeTree', 'setting' => 'sslEnabled', 'where' => 'file', 'value' => $ssl_enabled);
+
+        if(empty($server['host']['value']))
             $this->error[] = 'Please enter the server\'s host name';
 
-        if(empty($server['port']))
+        if(empty($server['port']['value']))
             $this->error[] = 'Please enter the server\'s port';
 
-        if(empty($server['file_system_root']))
+        if(empty($server['file_system_root']['value']))
             $this->error[] = 'Please enter the file system root';
 
         return $server;
@@ -206,6 +285,7 @@ class configuration extends Step
                 array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => '${varDirectory}/log', 'create' => true),
                 array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => '${varDirectory}/tmp', 'create' => true),
                 array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => '${varDirectory}/uploads', 'create' => true),
+                array('name' => 'Configuration File', 'setting' => '', 'path' => '${fileSystemRoot}/config/config.ini', 'create' => false),
             );
     }
 }
