@@ -63,7 +63,6 @@ define('KT_ATOM_LIB_FOLDER','../classes/atompub/');
 //define('KT_APP_WEB_OUTPUT',false);  //defunct
 
 
-
 /**
  * Includes
  */
@@ -76,7 +75,18 @@ include_once(KT_ATOM_LIB_FOLDER.'KT_atom_serviceDoc.inc.php');					//Containing 
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_responseFeed.inc.php');							//Containing the response feed class allowing easy atom feed generation
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_service.inc.php');
 include_once('demodms/KT_atom_server.default_dms_services.inc.php');
-include_once('auth.php');										//Containing the authentication protocols
+
+
+/**
+ * Check Realm Authentication
+ */
+require_once(KT_ATOM_LIB_FOLDER.'KT_atom_HTTPauth.inc.php');
+
+if(!KT_atom_HTTPauth::isLoggedIn()){
+	KT_atom_HTTPauth::login('KnowledgeTree AtomPub','You are not authorized to enter this realm');
+}
+
+
 
 
 //Start the AtomPubProtocol Routing Engine
@@ -97,14 +107,11 @@ $APP->addWorkspaceTag('dms','atom:title','Standard DMS');
 $APP->registerService('DMS','fulltree','KT_atom_service_fulltree','Full Document Tree');
 $APP->registerService('DMS','folder','KT_atom_service_folder','Folder Detail');
 $APP->registerService('DMS','document','KT_atom_service_document','Document Detail');
+$APP->registerService('DMS','logout','KT_atom_service_logout','Forceful Logout');
 
 //Execute the current url/header request
 $APP->execute();
 
-//echo '<pre>'.print_r($APP,true).'</pre>';
-
 //Render the resulting feed response
 $APP->render();
-//print_r($APP);
-
 ?>

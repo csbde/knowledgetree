@@ -40,9 +40,19 @@
 * @version Version 0.1
 */
 require_once(WIZARD_DIR.'step.php');
+require_once(WIZARD_DIR.'database.inc');
 
 class database extends Step 
 {
+	/**
+	* Database type
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var array
+	*/	
+    private $dbhandler = null;
+    	
 	/**
 	* Database type
 	*
@@ -213,6 +223,7 @@ class database extends Step
 	* @param none
  	*/
     public function __construct() {
+    	$this->dbhandler = new DBUtil();
     }
 
 	/**
@@ -288,9 +299,9 @@ class database extends Step
     		$this->error = array("17"=>"Passwords do not match: " . $this->dmsuserpassword." ". $this->getPassword2());
     		return false;
     	}
-        $con = @mysql_connect($this->dhost, $this->duname, $this->dpassword);
+    	$con = $this->dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
         if (!$con) {
-            $this->error = array("1"=>"Could not connect: " . mysql_error());
+            $this->error = array("1"=>"Could not connect: " . $this->dbhandler->getErrors());
             return false;
         } else {
             return true;
@@ -510,9 +521,9 @@ class database extends Step
 	* @return object mysql connection
 	*/
     private function connectMysql() {
-        $con = @mysql_connect($this->dhost, $this->duname, $this->dpassword);
+		$con = $this->dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
         if (!$con) {
-            $this->error = array("2"=>"Could not connect: " . mysql_error());
+            $this->error = array("2"=>"Could not connect: " . $this->dbhandler->getErrors());
 
             return false;
         }
@@ -532,16 +543,16 @@ class database extends Step
 		if($this->usedb($con)) { // attempt to use the db
 		    if($this->dropdb($con)) { // attempt to drop the db
 		        if(!$this->create($con)) { // attempt to create the db
-					$this->error = array("15"=>"Could create database: " . mysql_error());
+					$this->error = array("15"=>"Could create database: " . $this->dbhandler->getErrors());
 					return false;// cannot overwrite database
 		        }
 		    } else {
-		    	$this->error = array("14"=>"Could not drop database: " . mysql_error());
+		    	$this->error = array("14"=>"Could not drop database: " . $this->dbhandler->getErrors());
 		    	return false;// cannot overwrite database
 		    }
 		} else {
 		    if(!$this->create($con)) { // attempt to create the db
-				$this->error = array("16"=>"Could create database: " . mysql_error());
+				$this->error = array("16"=>"Could create database: " . $this->dbhandler->getErrors());
 				return false;// cannot overwrite database
 		    }
 		}
@@ -562,8 +573,8 @@ class database extends Step
 	*/
     private function create($con) {
         $sql = "CREATE DATABASE {$this->dname}";
-        if (@mysql_query($sql, $con)) {
-
+        if ($this->dbhandler->query($sql, $con)) {
+			
             return true;
         }
 
@@ -579,11 +590,12 @@ class database extends Step
 	* @return boolean
 	*/
     private function usedb($con) {
-        $sql = "USE {$this->dname};";
-        if (@mysql_query($sql, $con)) {
+//        $sql = "USE {$this->dname};";
+//        if (@mysql_query($sql, $con)) {
+		if($this->dbhandler->useBD($this->dname)) {
             return true;
         } else {
-            $this->error = array("4"=>"Error using database: ".mysql_error()."");
+            $this->error = array("4"=>"Error using database: ".$this->dbhandler->getErrors()."");
             return false;
         }
     }
@@ -599,17 +611,15 @@ class database extends Step
     private function dropdb($con) {
         if($this->ddrop) {
             $sql = "DROP DATABASE {$this->dname};";
-            if (!@mysql_query($sql, $con)) {
-                $this->error = array("5"=>"Cannot drop database: ".mysql_error()."");
-
+//            if (!@mysql_query($sql, $con)) {
+			if(!$this->dbhandler->query($sql)) {
+                $this->error = array("5"=>"Cannot drop database: ".$this->dbhandler->getErrors()."");
                 return false;
             }
         } else {
-            $this->error = array("6"=>"Cannot drop database: ".mysql_error()."");
-
+            $this->error = array("6"=>"Cannot drop database: ".$this->dbhandler->getErrors()."");
             return false;
         }
-        
         return true;
     }
         
@@ -628,10 +638,11 @@ class database extends Step
         	return exec($command, $output);
     	} else {
 			$sql = "GRANT SELECT, INSERT, UPDATE, DELETE ON {$this->dname}.* TO {$this->dmsusername}@{$this->dhost} IDENTIFIED BY '{$this->dmsuserpassword}';GRANT ALL PRIVILEGES ON {$this->dname}.* TO {$this->dmsname}@{$this->dhost} IDENTIFIED BY '{$this->dmspassword}';";
-		    if (@mysql_query($sql, $con)) {
+//		    if (@mysql_query($sql, $con)) {
+			if ($this->dbhandler->query($sql)) {
             	return true;
         	} else {
-        		$this->error = array("18"=>"Could not create users in database: ".mysql_error()."");
+        		$this->error = array("18"=>"Could not create users in database: ".$this->dbhandler->getErrors()."");
         		return false;
         	}
 		}
@@ -674,7 +685,7 @@ class database extends Step
 	*/
     private function closeMysql($con) {
         try {
-            @mysql_close($con);
+            $this->dbhandler->close();//@mysql_close($con);
         } catch (Exeption $e) {
             $this->error = array("13"=>"Could not close: " . $e);
         }
