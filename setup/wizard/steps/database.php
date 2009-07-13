@@ -159,7 +159,7 @@ class database extends Step
 	* @access private
 	* @var string
 	*/
-    private $dbbinary = '';
+    private $dbbinary = 'mysql'; // TODO:multiple databases
     
 	/**
 	* Database table prefix
@@ -399,7 +399,7 @@ class database extends Step
             $this->temp_variables['dmsusername'] = '';
             $this->temp_variables['dmspassword'] = '';
             $this->temp_variables['dmsuserpassword'] = '';
-            $this->temp_variables['dbbinary'] = '';
+            $this->temp_variables['dbbinary'] = 'mysql';
             $this->temp_variables['tprefix'] = '';
             $this->temp_variables['ddrop'] = false;
         }
@@ -507,7 +507,10 @@ class database extends Step
     private function mysql() {
         $con = $this->connectMysql();
         if($con) {
-            $this->createDB($con);
+            if(!$this->createDB($con)) {
+            	$this->error = array("20"=>"Could Create Database: " . $this->dbhandler->getErrors());
+            	return false;
+            }
             $this->closeMysql($con);
         }
     }
@@ -556,9 +559,15 @@ class database extends Step
 				return false;// cannot overwrite database
 		    }
 		}
-		$this->createDmsUser($con);
-		$this->createSchema($con);
-		$this->populateSchema($con);
+		if(!$this->createDmsUser($con)) {
+			die('user');
+		}
+		if(!$this->createSchema($con)) {
+			die('schema');
+		}
+		if(!$this->populateSchema($con)) {
+			die('data');
+		}
 		
 		return true;
     }
@@ -590,8 +599,6 @@ class database extends Step
 	* @return boolean
 	*/
     private function usedb($con) {
-//        $sql = "USE {$this->dname};";
-//        if (@mysql_query($sql, $con)) {
 		if($this->dbhandler->useBD($this->dname)) {
             return true;
         } else {
@@ -611,7 +618,6 @@ class database extends Step
     private function dropdb($con) {
         if($this->ddrop) {
             $sql = "DROP DATABASE {$this->dname};";
-//            if (!@mysql_query($sql, $con)) {
 			if(!$this->dbhandler->query($sql)) {
                 $this->error = array("5"=>"Cannot drop database: ".$this->dbhandler->getErrors()."");
                 return false;
@@ -634,12 +640,11 @@ class database extends Step
     private function createDmsUser($con) {
     	if($this->dmsname == '' || $this->dmspassword == '') {
         	$command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/user.sql";
-        	
         	return exec($command, $output);
     	} else {
-			$sql = "GRANT SELECT, INSERT, UPDATE, DELETE ON {$this->dname}.* TO {$this->dmsusername}@{$this->dhost} IDENTIFIED BY '{$this->dmsuserpassword}';GRANT ALL PRIVILEGES ON {$this->dname}.* TO {$this->dmsname}@{$this->dhost} IDENTIFIED BY '{$this->dmspassword}';";
-//		    if (@mysql_query($sql, $con)) {
-			if ($this->dbhandler->query($sql)) {
+			$user1 = "GRANT SELECT, INSERT, UPDATE, DELETE ON {$this->dname}.* TO {$this->dmsusername}@{$this->dhost} IDENTIFIED BY \"{$this->dmsuserpassword}\";";
+			$user2 = "GRANT ALL PRIVILEGES ON {$this->dname}.* TO {$this->dmsname}@{$this->dhost} IDENTIFIED BY \"{$this->dmspassword}\";";
+			if ($this->dbhandler->execute($user1) && $this->dbhandler->execute($user2)) {
             	return true;
         	} else {
         		$this->error = array("18"=>"Could not create users in database: ".$this->dbhandler->getErrors()."");
@@ -659,7 +664,7 @@ class database extends Step
 	*/
     private function createSchema($con) {
         $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/structure.sql";
-        exec($command, $output);
+        return exec($command, $output);
     }
 
 	/**
@@ -685,7 +690,7 @@ class database extends Step
 	*/
     private function closeMysql($con) {
         try {
-            $this->dbhandler->close();//@mysql_close($con);
+            $this->dbhandler->close();
         } catch (Exeption $e) {
             $this->error = array("13"=>"Could not close: " . $e);
         }

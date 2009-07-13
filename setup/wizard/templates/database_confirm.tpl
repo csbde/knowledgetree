@@ -13,7 +13,7 @@
 }
 ?>
 </div>
-<table>
+<table class="settings">
     <tr>
         <td><b>Name: </b></td>
         <td><?php echo $dname; ?></td>
@@ -39,7 +39,7 @@
 
 <h3>Database Advanced Settings</h3>
 
-<table>
+<table class="asettings">
     <tr>
         <td><b>Host: </b></td>
         <td><?php echo $dhost; ?></td>
@@ -60,7 +60,7 @@
 
 <h3>DMS Users</h3>
 
-<table>
+<table class="users">
     <tr>
         <td><b>DMS Admin Username: </b></td>
         <td><?php echo $dmsname; ?></td>

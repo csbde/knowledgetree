@@ -186,3 +186,15 @@ td {
 #database td {
 	width : 500px;
 }
+
+table.settings{
+	width : 500px;
+}
+
+table.asettings  {
+	width : 715px;
+}
+
+table.users  {
+	width : 650px;
+}
