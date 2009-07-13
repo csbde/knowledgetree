@@ -2,6 +2,8 @@
 
 class KT_cmis_atom_service_helper {
 
+    protected static $kt = null;
+
     /**
      * Creates an AtomPub entry for a CMIS entry and adds it to the supplied feed
      *
@@ -148,7 +150,7 @@ class KT_cmis_atom_service_helper {
             $feedElement = $feed->newElement('cmis:' . strtolower($type['typeId']) . 'Type');
             foreach($type as $property => $value)
             {
-                $feed->newField($property, CMISUtil::boolToString($value), $feedElement);
+                $feed->newField('cmis:' . $property, CMISUtil::boolToString($value), $feedElement);
             }
 
             $entry->appendChild($feedElement);
@@ -173,7 +175,7 @@ class KT_cmis_atom_service_helper {
      * @param array $path
      * @param object $ktapi KTAPI instance
      */
-    // TODO make this much more efficient than this messy method
+    // TODO make this much more efficient than this method
     static public function getFolderId($path, &$ktapi)
     {
         // lose first item
@@ -223,6 +225,64 @@ class KT_cmis_atom_service_helper {
 
         return null;
     }
+
+    /**
+	 * Log in to KT easily
+	 *
+	 * @param string $username
+	 * @param string $password
+	 * @param string $ip
+	 * @return object Containing the status_code of the login and session id
+	 */
+	function login($username, $password, $ip=null){
+		$kt = self::getKt();
+
+		$session = $kt->start_session($username,$password, $ip);
+		if (PEAR::isError($session)){
+			$response['status_code']=KT_atom_server_FAILURE;
+			$response['session_id']='';
+		}else{
+			$session= $session->get_session();
+			$response['status_code'] = KT_atom_server_SUCCESS;
+			$response['session_id'] = $session;
+		}
+		return $response;
+	}
+
+
+	/**
+	 * Log out of KT using the session id
+	 *
+	 * @param string $session_id
+	 * @return object Containing the status_code of the logout attempt
+	 */
+	function logout($session_id){
+		$kt = self::getKt();
+		$session = $kt->get_active_session($session_id, null);
+
+		if (PEAR::isError($session)){
+			$response['status_code']=KT_atom_server_FAILURE;
+		}else{
+			$session->logout();
+			$response['status_code'] = KT_atom_server_SUCCESS;
+		}
+		return $response;
+	}
+
+    /**
+	 * Get the KT singleton instance
+	 *
+	 * @return object
+	 */
+	public static function getKt()
+    {
+		if(!isset(self::$kt))
+        {
+			self::$kt = new KTAPI();
+			self::$kt->get_active_session(session_id());
+		}
+		return self::$kt;
+	}
 
 }
 

@@ -18,16 +18,16 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
     public function GET_action()
     {
         $RepositoryService = new RepositoryService();
-        try {
-            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
-        }
-        catch (Exception $e)
-        {
-            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
+//        try {
+//            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+//        }
+//        catch (Exception $e)
+//        {
+//            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//            $this->responseFeed = $feed;
+//            return null;
+//        }
 
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
@@ -43,24 +43,24 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         }
         else if ($this->params[0] == 'path')
         {
-            $ktapi =& $RepositoryService->getInterface();
+            $ktapi =& KT_cmis_atom_service_helper::getKt();
             $folderId = KT_cmis_atom_service_helper::getFolderId($this->params, $ktapi);
         }
         else
         {
             $folderId = $this->params[0];
-            $ObjectService = new ObjectService();
+            $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
-            try {
-                $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
-            }
-            catch (Exception $e)
-            {
-                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-                $this->responseFeed = $feed;
-                return null;
-            }
+//            try {
+//                $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+//            }
+//            catch (Exception $e)
+//            {
+//                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//                $this->responseFeed = $feed;
+//                return null;
+//            }
 
             $cmisEntry = $ObjectService->getProperties($repositoryId, $folderId, false, false);
             $folderName = $cmisEntry['properties']['Name']['value'];
@@ -69,35 +69,35 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
 
         if (!empty($this->params[1]) && (($this->params[1] == 'children') || ($this->params[1] == 'descendants')))
         {
-            $NavigationService = new NavigationService();
+            $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
 
-            try {
-                $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
-            }
-            catch (Exception $e)
-            {
-                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-                $this->responseFeed = $feed;
-                return null;
-            }
+//            try {
+//                $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
+//            }
+//            catch (Exception $e)
+//            {
+//                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//                $this->responseFeed = $feed;
+//                return null;
+//            }
 
             $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $this->params[1]);
         }
         else
         {
-            $ObjectService = new ObjectService();
+            $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
-            try {
-                $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
-            }
-            catch (Exception $e)
-            {
-                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-                $this->responseFeed = $feed;
-                return null;
-            }
+//            try {
+//                $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+//            }
+//            catch (Exception $e)
+//            {
+//                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//                $this->responseFeed = $feed;
+//                return null;
+//            }
 
             $feed = $this->getFolderFeed($ObjectService, $repositoryId, $folderId);
         }
@@ -110,16 +110,16 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
     {
         $RepositoryService = new RepositoryService();
 
-        try {
-            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
-        }
-        catch (Exception $e)
-        {
-            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
+//        try {
+//            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+//        }
+//        catch (Exception $e)
+//        {
+//            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//            $this->responseFeed = $feed;
+//            return null;
+//        }
 
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
@@ -158,18 +158,18 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                                                                                                       [0]['@children']['cmis:properties']
                                                                                                       [0]['@children']);
 
-        $ObjectService = new ObjectService();
+        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
-        try {
-            $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
-        }
-        catch (Exception $e)
-        {
-            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
+//        try {
+//            $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+//        }
+//        catch (Exception $e)
+//        {
+//            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//            $this->responseFeed = $feed;
+//            return null;
+//        }
 
         if ($type == 'folder')
             $newObjectId = $ObjectService->createFolder($repositoryId, ucwords($cmisObjectProperties['ObjectTypeId']), $properties, $folderId);
@@ -187,18 +187,18 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             }
             else
             {
-                $NavigationService = new NavigationService();
+                $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
 
-                try {
-                    $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
-                }
-                catch (Exception $e)
-                {
-                    $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-                    $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-                    $this->responseFeed = $feed;
-                    return null;
-                }
+//                try {
+//                    $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
+//                }
+//                catch (Exception $e)
+//                {
+//                    $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//                    $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//                    $this->responseFeed = $feed;
+//                    return null;
+//                }
 
                 $cmisEntry = $ObjectService->getProperties($repositoryId, $folderId, false, false);
                 $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $cmisEntry['properties']['Name']['value']);
@@ -292,16 +292,16 @@ class KT_cmis_atom_service_types extends KT_cmis_atom_service {
     {
         $RepositoryService = new RepositoryService();
 
-        try {
-            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
-        }
-        catch (Exception $e)
-        {
-            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
+//        try {
+//            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+//        }
+//        catch (Exception $e)
+//        {
+//            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//            $this->responseFeed = $feed;
+//            return null;
+//        }
 
         // fetch repository id
         $repositories = $RepositoryService->getRepositories();
@@ -329,16 +329,16 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service {
     {
         $RepositoryService = new RepositoryService();
 
-        try {
-            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
-        }
-        catch (Exception $e)
-        {
-            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
+//        try {
+//            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+//        }
+//        catch (Exception $e)
+//        {
+//            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//            $this->responseFeed = $feed;
+//            return null;
+//        }
 
         // fetch repository id
         $repositories = $RepositoryService->getRepositories();
@@ -432,18 +432,18 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
     public function GET_action()
     {
         $RepositoryService = new RepositoryService();
-        $NavigationService = new NavigationService();
+        $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
 
-        try {
-            $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
-        }
-        catch (Exception $e)
-        {
-            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
+//        try {
+//            $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
+//        }
+//        catch (Exception $e)
+//        {
+//            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//            $this->responseFeed = $feed;
+//            return null;
+//        }
 
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
@@ -491,19 +491,18 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
     public function GET_action()
     {
         $RepositoryService = new RepositoryService();
+        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
-        $ObjectService = new ObjectService();
-
-        try {
-            $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
-        }
-        catch (Exception $e)
-        {
-            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
+//        try {
+//            $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+//        }
+//        catch (Exception $e)
+//        {
+//            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//            $this->responseFeed = $feed;
+//            return null;
+//        }
 
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
