@@ -493,6 +493,10 @@ class database extends Step
 	* @return void
 	*/
     private function installDatabase() {
+    	if($this->dtype == '') {
+    		$this->error[] = 'No database type selected';
+    		return 'error';
+    	}
         $this->{$this->dtype}();
     }
 
@@ -560,10 +564,13 @@ class database extends Step
 		    }
 		}
 		if(!$this->createDmsUser($con)) {
+			// TODO:Way to catch errors
 		}
 		if(!$this->createSchema($con)) {
+			// TODO:Way to catch errors
 		}
 		if(!$this->populateSchema($con)) {
+			// TODO:Way to catch errors
 		}
 		
 		return true;

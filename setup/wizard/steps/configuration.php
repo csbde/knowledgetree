@@ -58,7 +58,15 @@ class configuration extends Step
 	* @var array
 	*/
     protected $storeInSession = true;
-
+	/**
+	* Flag if step needs to be installed
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $runInstall = true;
+    
     public function __construct()
     {
         $this->done = true;
@@ -112,7 +120,7 @@ class configuration extends Step
         return $this->done;
     }
 
-    public function doInstall()
+    public function installStep()
     {
         include_once('database.inc');
 
@@ -132,13 +140,15 @@ class configuration extends Step
             $ini = new Ini($configPath);
         }
 
-        // initialise the db
+        // initialise the db connection
         $db = new DBUtil();
+        // retrieve database information from session
+        $dbconf = $this->getDataFromSession("database");
+        // make db connection
+        $db->DBUtil($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']);
         $table = 'config_settings';
-
         // write server settings to config_settings table and config.ini
         foreach($server as $item){
-
             switch($item['where']){
                 case 'file':
                     $value = $item['value'];
@@ -154,10 +164,11 @@ class configuration extends Step
                     break;
 
                 case 'db':
+//                	echo '<pre>';print_r($item);echo '</pre>';
                     $value = mysql_real_escape_string($item['value']);
                     $setting = mysql_real_escape_string($item['setting']);
-
                     $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
+//                    echo "$sql <br/>";
                     $db->query($sql);
                     break;
             }
@@ -173,6 +184,7 @@ class configuration extends Step
             $setting = mysql_real_escape_string($item['setting']);
 
             $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
+//            echo "$sql <br/>";
             $db->query($sql);
         }
 

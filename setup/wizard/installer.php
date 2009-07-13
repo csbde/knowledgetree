@@ -156,12 +156,14 @@ class Installer {
             	
             case 'install':
                 $this->runStepsInstallers(); // Load landing
+                
             	break;
             	
             default:
                 die("That was unexpected!"); // No class response
             	break;
         }
+        
         $this->stepAction->paintAction(); // Display step
     }
 
@@ -180,7 +182,9 @@ class Installer {
     		if($class->runInstall()) { // Check if step needs to be installed
 				$class->setDataFromSession($className); // Set Session Information
 				$class->setDBConfig(); // Set any posted variables
-				$class->installStep(); // Run install step
+				$response = $class->installStep(); // Run install step
+
+				return $response;
     		}
     	}
     }
