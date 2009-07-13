@@ -75,6 +75,7 @@ class configuration extends Step
 	private function setDetails() {
 		$conf = $this->getDataFromSession("configuration");
 		if($conf) {
+//			var_dump($conf);
 			$this->temp_variables['server'] = $conf['server'];
 			$this->temp_variables['paths'] = $conf['paths'];
 		}
@@ -120,6 +121,18 @@ class configuration extends Step
         return $this->done;
     }
 
+    public function registerDBConfig($server, $dbconf) {
+        // Adjust server variables
+        $server['dbName'] = array('where'=>'file', 'name'=>ucwords($dbconf['dname']), 'section'=>'db', 'value'=>$dbconf['dname'], 'setting'=>'dbName');
+        $server['dbUser'] = array('where'=>'file', 'name'=>ucwords($dbconf['duname']), 'section'=>'db', 'value'=>$dbconf['duname'], 'setting'=>'dbUser');
+        $server['dbPass'] = array('where'=>'file', 'name'=>ucwords($dbconf['dpassword']), 'section'=>'db', 'value'=>$dbconf['dpassword'], 'setting'=>'dbPass');
+        $server['dbPort'] = array('where'=>'file', 'name'=>ucwords($dbconf['dport']), 'section'=>'db', 'value'=>$dbconf['dport'], 'setting'=>'dbPort');
+        $server['dbAdminUser'] = array('where'=>'file', 'name'=>ucwords($dbconf['dmsname']), 'section'=>'db', 'value'=>$dbconf['dmsname'], 'setting'=>'dbAdminUser');
+        $server['dbAdminPass'] = array('where'=>'file', 'name'=>ucwords($dbconf['dmspassword']), 'section'=>'db', 'value'=>$dbconf['dmspassword'], 'setting'=>'dbAdminPass');
+        
+        return $server;
+    }
+    
     public function installStep()
     {
         include_once('database.inc');
@@ -146,6 +159,9 @@ class configuration extends Step
         $dbconf = $this->getDataFromSession("database");
         // make db connection
         $db->DBUtil($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']);
+        // add db config to server variables
+		$server = $this->registerDBConfig($server, $dbconf);
+		
         $table = 'config_settings';
         // write server settings to config_settings table and config.ini
         foreach($server as $item){
@@ -159,16 +175,16 @@ class configuration extends Step
                         $value = 'false';
                     }
                     if(!$ini === false){
+//                    	echo "config ini {$item['section']}, {$item['setting']}, {$value}<br/>";
                         $ini->updateItem($item['section'], $item['setting'], $value);
                     }
                     break;
 
                 case 'db':
-//                	echo '<pre>';print_r($item);echo '</pre>';
                     $value = mysql_real_escape_string($item['value']);
                     $setting = mysql_real_escape_string($item['setting']);
                     $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
-//                    echo "$sql <br/>";
+//					echo "sql update $sql <br/>";
                     $db->query($sql);
                     break;
             }
@@ -184,7 +200,7 @@ class configuration extends Step
             $setting = mysql_real_escape_string($item['setting']);
 
             $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
-//            echo "$sql <br/>";
+//            echo "sql update $sql <br/>";
             $db->query($sql);
         }
 
@@ -203,7 +219,7 @@ class configuration extends Step
         $file_system_root = $_SERVER['DOCUMENT_ROOT'];
         $host = $_SERVER['SERVER_NAME'];
         $port = $_SERVER['SERVER_PORT'];
-        $ssl_enabled = isset($_SERVER['HTTPS']) ? (strtolower($_SERVER['HTTPS']) === 'on' ? 'yes' : 'no') : true;
+        $ssl_enabled = isset($_SERVER['HTTPS']) ? (strtolower($_SERVER['HTTPS']) === 'on' ? 'yes' : 'no') : 'no';
 
         $pos = strpos($script, '/setup/wizard/');
         $root_url = substr($script, 0, $pos);
@@ -217,7 +233,7 @@ class configuration extends Step
         $server = array();
         $server['root_url'] = array('name' => 'Root Url', 'setting' => 'rootUrl', 'where' => 'db', 'value' => $root_url);
         $server['file_system_root'] = array('name' => 'File System Root', 'section' => 'KnowledgeTree', 'setting' => 'fileSystemRoot', 'where' => 'file', 'value' => $file_system_root);
-        $server['host'] = array('name' => 'Host', 'setting' => 'server_host', 'where' => 'db', 'value' => $host);
+        $server['host'] = array('name' => 'Host', 'setting' => 'server_name', 'where' => 'db', 'value' => $host);
         $server['port'] = array('name' => 'Port', 'setting' => 'server_port', 'where' => 'db', 'value' => $port);
         $server['ssl_enabled'] = array('name' => 'SSL Enabled', 'section' => 'KnowledgeTree', 'setting' => 'sslEnabled', 'where' => 'file', 'value' => $ssl_enabled);
 

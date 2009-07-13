@@ -175,18 +175,31 @@ class Installer {
 	* @access public
 	* @return void
 	*/
-    function runStepsInstallers() {
-    	foreach ($this->getSteps() as $className) {
-    		$stepAction = new stepAction($className); // Instantiate a step action
-    		$class = $stepAction->createStep(); // Get step class
-    		if($class->runInstall()) { // Check if step needs to be installed
-				$class->setDataFromSession($className); // Set Session Information
-				$class->setDBConfig(); // Set any posted variables
-				$response = $class->installStep(); // Run install step
-
-				return $response;
-    		}
-    	}
+    function runStepsInstallers() {   	
+    	// TODO:Need to add install order
+    	$this->installHelper("database");
+		$this->installHelper("configuration");
+//    	foreach ($this->getSteps() as $className) {
+//    		$stepAction = new stepAction($className); // Instantiate a step action
+//    		$class = $stepAction->createStep(); // Get step class
+//    		if($class->runInstall()) { // Check if step needs to be installed
+//				$class->setDataFromSession($className); // Set Session Information
+//				$class->setDBConfig(); // Set any posted variables
+//				$response = $class->installStep(); // Run install step
+//
+//				return $response;
+//    		}
+//    	}
+    }
+    
+    function installHelper($className) {
+    	$stepAction = new stepAction($className); // Instantiate a step action
+    	$class = $stepAction->createStep(); // Get step class
+    	if($class->runInstall()) { // Check if step needs to be installed
+			$class->setDataFromSession($className); // Set Session Information
+			$class->setDBConfig(); // Set any posted variables
+			$response = $class->installStep(); // Run install step
+    	}    	
     }
     
 	/**
@@ -414,6 +427,17 @@ class Installer {
         $this->stepClassNames = $this->xmlStepsToArray();
     }
 
+	/**
+	* Set steps class names in string format
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return void
+	*/
+    private function setInstallSteps() {
+        $this->stepIClassNames = $this->xmlIStepsToArray();
+    }
 
 	/**
 	* Set steps as names
@@ -424,6 +448,25 @@ class Installer {
 	* @return array $steps
 	*/
     private function xmlStepsToArray() {
+        $steps = array();
+        foreach($this->simpleXmlObj->steps->step as $d_step) {
+            $step_name = (string) $d_step[0];
+            $steps[] = $step_name;
+            $this->stepNames[$step_name] = (string) $d_step['name'];
+        }
+
+        return $steps;
+    }
+    
+	/**
+	* Set steps as names
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return array $steps
+	*/
+    private function xmlIStepsToArray() {
         $steps = array();
         foreach($this->simpleXmlObj->steps->step as $d_step) {
             $step_name = (string) $d_step[0];
