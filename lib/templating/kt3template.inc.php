@@ -158,13 +158,13 @@ class KTPage {
     	$this->menu = array();
     	$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => $sBaseUrl.'/dashboard.php');
 		$this->menu['browse'] = array('label' => _kt("Browse Documents"), 'url' => $sBaseUrl.'/browse.php');
-		$this->menu['administration'] = array('label' => _kt("DMS Administration"));
+		$this->menu['administration'] = array('label' => _kt("Administration"));
 
 		// Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
     	global $default;
     	if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < time()){
     	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
-    	    $heading = _kt('You are attempting to access DMS Administration');
+    	    $heading = _kt('You are attempting to access Administration');
     	    $this->menu['administration']['url'] = '#';
     	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/admin.php', 'redirect');";
     	}else{
@@ -302,7 +302,7 @@ class KTPage {
     // assume this is admin for now.
     function setSection($sSection) {
 	    if ($sSection == 'administration') {
-			$this->componentLabel = _kt('DMS Administration');
+			$this->componentLabel = _kt('Administration');
 			$this->componentClass = 'administration';
 			$this->menu['administration']['active'] = 1;
 		} else if ($sSection == 'dashboard') {

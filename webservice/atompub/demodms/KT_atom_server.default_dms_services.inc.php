@@ -23,6 +23,7 @@ class KT_atom_service_fulltree extends KT_atom_service {
 				$feed->newField($property,$value,$entry);
 			}
 		}
+		$this->setStatus(self::STATUS_OK);
 		//Expose the responseFeed
 		$this->responseFeed=$feed;
 	}
@@ -89,5 +90,25 @@ class KT_atom_service_document extends KT_atom_service {
 		//Expose the responseFeed
 		$this->responseFeed=$feed;
 	}
+}
+
+class KT_atom_service_test extends KT_atom_service{
+	public function GET_action(){}
+	public function PUT_action(){}
+	public function POST_action(){}
+	public function DELETE_action(){}
+}
+
+class KT_atom_service_logout extends KT_atom_service{
+	public function GET_action(){
+		//$this->setStatus(self::STATUS_OK);
+		KT_atom_HTTPauth::logout();
+		ob_end_clean();
+		KT_atom_HTTPauth::login('KnowledgeTree AtomPub','You are not allowed on this realm');
+		exit;
+	}
+	public function PUT_action(){}
+	public function POST_action(){}
+	public function DELETE_action(){}
 }
 ?>

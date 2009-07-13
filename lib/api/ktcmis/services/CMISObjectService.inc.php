@@ -166,6 +166,12 @@ class CMISObjectService {
             $properties['name'] = $properties['title'];
         }
 
+        // if name is blank throw exception (check type) - using invalidArgument Exception for now
+        if (trim($properties['name']) == '')
+        {
+            throw new InvalidArgumentException('Refusing to create an un-named document');
+        }
+
         // TODO also set to Default if a non-supported type is submitted
         if ($properties['type'] == '')
         {
@@ -177,15 +183,108 @@ class CMISObjectService {
         //      this check isn't strictly necessary;  however it is needed for a repository which does not support content streams
         if (!empty($contentStream))
         {
-            // NOTE There is a function in CMISUtil to do this but since KTUploadManager exists and has more functionality
-            //      which could come in useful at some point I decided to go with that instead (did not know it existed when
-            //      I wrote the CMISUtil function)
+            // NOTE There is a function in CMISUtil to do this, written for the unit tests but since KTUploadManager exists
+            //      and has more functionality which could come in useful at some point I decided to go with that instead
+            //      (did not know this existed when I wrote the CMISUtil function)
             $uploadManager = new KTUploadManager();
-            $file = $uploadManager->store_base64_file($contentStream, 'cmis_');
-            // create the document from this temporary file as per usual
-            // TODO Use add_document_with_metadata instead if metadata content submitted || update metadata separately?
-            $response = $this->ktapi->add_document((int)$folderId, $properties['title'], $properties['name'],
-                                                   $properties['type'], $file);
+            $tempfilename = $uploadManager->store_base64_file($contentStream, 'cmis_');
+
+            // metadata
+            $metadata = array();
+            $metaFields = array();
+            $sysdata = array();
+
+            if (!empty($properties['summary']))
+            {
+                $metadata[] = array('fieldset' => 'Tag Cloud',
+                                    'fields' => array(
+                                                      array(
+                                                        'name' => 'Tag',
+                                                        'value' => $properties['summary']
+                                                      )
+                                                )
+                              );
+            }
+
+            // TODO fetch author name based on logged in user
+            $user = $this->ktapi->get_user();
+            if (!PEAR::isError($user))
+            {
+                $metaFields['General Information'][] = array(
+                                    'name' => 'Document Author',
+                                    'value' => $user->getName()
+                                );
+            }
+
+            if (!empty($properties['category']))
+            {
+                $category = $properties['category'];
+            }
+            else
+            {
+                $category = 'Miscellaneous';
+            }
+
+            $metaFields['General Information'][] =  array(
+                                 'name' => 'Category',
+                                 'value' => $category
+                             );
+
+            /**
+             * Try to determine mime type which maps to one of the following:
+             *
+             * Audio
+             * Image
+             * Text
+             * Video
+             *
+             * example mime types:
+             *
+             * text/plain
+             * image/gif
+             * application/x-dosexec
+             * application/pdf
+             * application/msword
+             * audio/mpeg
+             * application/octet-stream
+             * application/zip
+             */
+            // TODO check extension for types which are not obvious?  e.g. wmv video returns application/octet-stream
+            $mediatype = null;
+            include_once(KT_LIB_DIR . 'mime.inc.php');
+            $KTMime = new KTMime();
+            $mimetype = $KTMime->getMimeTypeFromFile($tempfilename);
+            preg_match('/^([^\/]*)\/([^\/]*)/', $mimetype, $matches);
+            if (($matches[1] == 'text') || ($matches[1] == 'image') || ($matches[1] == 'audio'))
+            {
+                $mediatype = ucwords($matches[1]);
+            }
+            else if (($matches[2] == 'pdf') || ($matches[2] == 'msword'))
+            {
+                $mediatype = 'Text';
+            }
+
+            if (!is_null($mediatype))
+            {
+                $metaFields['General Information'][] = array(
+                                 'name' => 'Media Type',
+                                 'value' => $mediatype
+                             );
+            }
+
+            if (count($metaFields['General Information']) > 0)
+            {
+                foreach($metaFields['General Information'] as $field)
+                {
+                    $fields[] = $field;
+                }
+
+                $metadata[] = array('fieldset' => 'General Information',
+                                    'fields' => $fields);
+            }
+
+            $response = $this->ktapi->add_document_with_metadata((int)$folderId, $properties['title'], $properties['name'],
+                                                                 $properties['type'], $tempfilename, $metadata, $sysdata);
             if ($response['status_code'] != 0)
             {
                 throw new StorageException('The repository was unable to create the document.  ' . $response['message']);
@@ -196,7 +295,7 @@ class CMISObjectService {
             }
 
             // remove temporary file
-            @unlink($file);
+            @unlink($tempfilename);
         }
         // else create the document object in the database but don't actually create any content since none was supplied
         // NOTE perhaps this content could be supplied in the $properties array?
@@ -260,6 +359,12 @@ class CMISObjectService {
         if (!is_array($allowed) || !in_array($typeId, $allowed))
         {
             throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
+        }
+
+        // TODO if name is blank! throw another exception (check type) - using invalidArgument Exception for now
+        if (trim($properties['name']) == '')
+        {
+            throw new InvalidArgumentException('Refusing to create an un-named folder');
         }
 
         $response = $this->ktapi->create_folder((int)$folderId, $properties['name'], $sig_username = '', $sig_password = '', $reason = '');
@@ -338,10 +443,10 @@ class CMISObjectService {
         //      which could come in useful at some point I decided to go with that instead (did not know it existed when
         //      I wrote the CMISUtil function)
         $uploadManager = new KTUploadManager();
-        $file = $uploadManager->store_base64_file($contentStream, 'cmis_');
+        $tempfilename = $uploadManager->store_base64_file($contentStream, 'cmis_');
         // update the document content from this temporary file as per usual
         // TODO Use checkin_document_with_metadata instead if metadata content submitted || update metadata separately?
-        $response = $this->ktapi->checkin_document($documentId,  $csFileName, 'CMIS setContentStream action', $file, false);
+        $response = $this->ktapi->checkin_document($documentId,  $csFileName, 'CMIS setContentStream action', $tempfilename, false);
         if ($response['status_code'] != 0)
         {
             throw new StorageException('Unable to update the content stream.  ' . $response['message']);

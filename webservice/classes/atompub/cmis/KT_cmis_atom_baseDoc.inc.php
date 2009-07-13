@@ -34,16 +34,20 @@
  * copyright notice.
  * Contributor( s):
  * 				Mark Holtzhausen <mark@knowledgetree.com>
+ * 				Paul Barrett <paul@knowledgetree.com>
  *
  */
 
 /**
- * Automatic Login bypassing HTTP Basic Auth
- * TODO: Thest HTTP Basic Auth - Try Library From Home
+ * Includes
  */
 
-$SessionId=KT_atom_service_helper::login('admin','admin');
-$SessionId=$SessionId['session_id'];
+include_once(KT_ATOM_LIB_FOLDER.'KT_atom_baseDoc.inc.php'); //Containing the parent class allowing easy XML manipulation
 
+class KT_cmis_atom_baseDoc extends KT_atom_baseDoc {
+
+    // override and extend as needed
+
+}
 
 ?>

@@ -32,7 +32,7 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- * Contributor( s): 
+ * Contributor( s):
  * 				Mark Holtzhausen <mark@knowledgetree.com>
  *
  */
@@ -42,17 +42,17 @@ class KT_atom_service_helper{
 	protected static $FILE_LIST_PROPERTIES=array('id','title','document_type','created_by','created_date','checked_out_by','checked_out_date','modified_by','modified_date','owned_by','mime_type','mime_icon_path','mime_display');
 	protected static $FOLDER_RECURSION_LEVEL=100;
 	protected static $kt=NULL;
-	
+
 	/**
 	 * Make sure the class is always treated statically and never instantiated.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function __construct(){
 		die('KT_atom_service_helper should not be instantiated. Only use as a static class');
 	}
 
-	
+
 	/**
 	 * Get the KT singleton instance
 	 *
@@ -65,8 +65,8 @@ class KT_atom_service_helper{
 		}
 		return self::$kt;
 	}
-	
-	
+
+
 	/**
 	 * Get the subfolders of the indicated folder
 	 *
@@ -82,10 +82,10 @@ class KT_atom_service_helper{
 				$subfolders[$item[id]]=self::extractFromArray($item,self::$FOLDER_LIST_PROPERTIES);
 			}
 		}
-		return $subfolders;		
+		return $subfolders;
 	}
-	
-	
+
+
 	/**
 	 * Get every folder & document in the repository
 	 *
@@ -109,20 +109,20 @@ class KT_atom_service_helper{
 		}
 		return $appTree;
 	}
-	
-	
+
+
 	/**
 	 * Get detail about the folder
 	 *
 	 * @param integer $folderId The id of the folder to get detail on.
-	 * @return array 
+	 * @return array
 	 */
 	public static function getFolderDetail($folderId=NULL){
 		$ktInfo=self::getKT()->get_folder_by_id($folderId);
 		return $ktInfo->get_detail();
 	}
-	
-	
+
+
 	/**
 	 * Get detail about the indicated document
 	 *
@@ -133,8 +133,8 @@ class KT_atom_service_helper{
 		$ktInfo=self::getKT()->get_document_detail($docId);
 		return $ktInfo;
 	}
-	
-	
+
+
 	/**
 	 * Get a list of all the documents in a folder.
 	 *
@@ -151,8 +151,8 @@ class KT_atom_service_helper{
 		}
 		return $folderFiles;
 	}
-	
-	
+
+
 	/**
 	 * Returns an array containing only the associated values from $array where the keys were found in $keyArray
 	 *
@@ -167,7 +167,7 @@ class KT_atom_service_helper{
 		}
 		return $newArray;
 	}
-	
+
 	/**
 	 * Log in to KT easily
 	 *
@@ -178,11 +178,12 @@ class KT_atom_service_helper{
 	 */
 	function login($username, $password, $ip=null){
 		$kt = self::getKt();
-	
+
 		$session = $kt->start_session($username,$password, $ip);
 		if (PEAR::isError($session)){
 			$response['status_code']=KT_atom_server_FAILURE;
 			$response['session_id']='';
+			$response['error']=$session;
 		}else{
 			$session= $session->get_session();
 			$response['status_code'] = KT_atom_server_SUCCESS;
@@ -190,8 +191,8 @@ class KT_atom_service_helper{
 		}
 		return $response;
 	}
-	
-	
+
+
 	/**
 	 * Log out of KT using the session id
 	 *
@@ -199,9 +200,9 @@ class KT_atom_service_helper{
 	 * @return object Containing the status_code of the logout attempt
 	 */
 	function logout($session_id){
-		$kt = self::getKt();	
+		$kt = self::getKt();
 		$session = $kt->get_active_session($session_id, null);
-	
+
 		if (PEAR::isError($session)){
 			$response['status_code']=KT_atom_server_FAILURE;
 		}else{
@@ -210,7 +211,16 @@ class KT_atom_service_helper{
 		}
 		return $response;
 	}
-	
+
+	function sessionLogout(){
+		$session=self::getKt()->get_session();
+		if($session){
+			try{
+				self::getKT()->session_logout();
+			}catch(Exception $e){};
+		}
+	}
+
 	/**
 	 * Check whether the session_id is logged into KT
 	 *
@@ -221,6 +231,10 @@ class KT_atom_service_helper{
 		$kt=self::getKt();
 		$session=$kt->get_active_session($session_id);
 		return !PEAR::isError($session);
+	}
+
+	function getSessionId(){
+		return self::getKt()->get_session()->session;
 	}
 
 }

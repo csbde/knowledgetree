@@ -86,6 +86,12 @@ class CMISUtil {
      */
     static public function decodeObjectId($objectId, &$typeId = null)
     {
+        if (!is_string($objectId))
+        {
+            $typeId = 'Unknown';
+            return null;
+        }
+        
         $typeId = null;
 
         preg_match('/(\D)(\d*)/', $objectId, $matches);
@@ -240,14 +246,11 @@ class CMISUtil {
                                                            'value' => $properties->getValue('Name'));
         $object['Author'] = array('value' => $properties->getValue('Author'));
 
-        if (strtolower($properties->getValue('ObjectTypeId')) == 'folder')
-        {
-            $object['properties']['ParentId'] = array('type' => $properties->getFieldType('ParentId'),
-                                                               'value' => CMISUtil::encodeObjectId('Folder',
-                                                                                                   $properties->getValue('ParentId')));
-        }
+        $object['properties']['ParentId'] = array('type' => $properties->getFieldType('ParentId'),
+                                                  'value' => CMISUtil::encodeObjectId('Folder',
+                                                  $properties->getValue('ParentId')));
         // TODO should check for content stream data before filling these in
-        else //if ()
+        if (strtolower($properties->getValue('ObjectTypeId')) == 'document')
         {
             $object['properties']['ContentStreamLength'] = array('type' => $properties->getFieldType('ContentStreamLength'),
                                                            'value' => $properties->getValue('ContentStreamLength'));

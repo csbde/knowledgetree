@@ -52,37 +52,65 @@ require_once(realpath(dirname(__FILE__) . '/../../../config/dmsDefaults.php'));
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 
 define ('CMIS_DIR', KT_LIB_DIR . '/api/ktcmis');
+require_once(CMIS_DIR . '/exceptions/PermissionDeniedException.inc.php');
 require_once(CMIS_DIR . '/services/CMISRepositoryService.inc.php');
 require_once(CMIS_DIR . '/services/CMISNavigationService.inc.php');
 require_once(CMIS_DIR . '/services/CMISObjectService.inc.php');
 require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
 /**
+ * Base class for all KT CMIS classes
  * Handles authentication
  */
 class KTCMISBase {
 
-    /**
-     * KnowledgeTree API instance
-     *
-     * @var object
-     */
-    protected $ktapi;
-    /**
-     * KnowledgeTree API Session Identifier
-     *
-     * @var object
-     */
-    protected $session;
+    // we want all child classes to share the ktapi and session instances, no matter where they are set from,
+    // so we declare them as static
+    static protected $ktapi;
+    static protected $session;
 
+//    public function __construct($username = null, $password = null)
+//    {
+//        $this->startSession($username, $password);
+//    }
+
+    // TODO try to pick up existing session if possible, i.e. if the $session value is not empty
     public function startSession($username, $password)
     {
-        $this->session = null;
+//        echo $username." :: ".$password."<BR>";
+        // attempt to recover session if one exists
+        if (!is_null(self::$session) && !PEAR::isError(self::$session))
+        {
+//            echo "ATTEMPT TO RECOVER SESSION: ".print_r(self::$session, true)."<BR>\n";
+            self::$session =& self::$ktapi->get_active_session(self::$session->get_sessionid());
+        }
 
-        $this->ktapi = new KTAPI();
-        $this->session =& $this->ktapi->start_session($username, $password);
+        // start new session if no existing session or problem getting existing session (expired, etc...)
+        if (is_null(self::$session) || PEAR::isError(self::$session))
+        {
+//            echo "ATTEMPT TO START NEW SESSION<BR>\n";
+            self::$ktapi = new KTAPI();
+            self::$session =& self::$ktapi->start_session($username, $password);
+        }
 
-        return $this->session;
+        // failed authentication?
+        if (PEAR::isError(self::$session))
+        {
+            throw new PermissionDeniedException('You must be authenticated to perform this action');
+        }
+        
+//        print_r(self::$ktapi);
+        return self::$session;
+    }
+
+    public function getInterface()
+    {
+        return self::$ktapi;
+    }
+
+    public function getSession()
+    {
+        return self::$session;
     }
 
     // TODO what about destroying sessions? only on logout (which is not offered by the CMIS clients tested so far)
@@ -166,7 +194,7 @@ class KTRepositoryService extends KTCMISBase {
      * @param string $repositoryId
      */
     public function getTypes($repositoryId, $typeId = '', $returnPropertyDefinitions = false,
-                      $maxItems = 0, $skipCount = 0, &$hasMoreItems = false)
+                             $maxItems = 0, $skipCount = 0, &$hasMoreItems = false)
     {
         try {
             $repositoryObjectTypeResult = $this->RepositoryService->getTypes($repositoryId, $typeId, $returnPropertyDefinitions,
@@ -244,7 +272,13 @@ class KTNavigationService extends KTCMISBase {
     public function startSession($username, $password)
     {
         parent::startSession($username, $password);
-        $this->NavigationService->setInterface($this->ktapi);
+        $this->setInterface();
+        return self::$session;
+    }
+
+    public function setInterface()
+    {
+        $this->NavigationService->setInterface(self::$ktapi);
     }
 
     /**
@@ -426,11 +460,17 @@ class KTObjectService extends KTCMISBase {
         // instantiate underlying CMIS service
         $this->ObjectService = new CMISObjectService();
     }
-    
+
     public function startSession($username, $password)
     {
         parent::startSession($username, $password);
-        $this->ObjectService->setInterface($this->ktapi);
+        $this->setInterface();
+        return self::$session;
+    }
+
+    public function setInterface()
+    {
+        $this->ObjectService->setInterface(self::$ktapi);
     }
 
     /**

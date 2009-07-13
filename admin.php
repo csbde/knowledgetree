@@ -76,7 +76,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             }
         }
 
-        $this->oPage->title = _kt('DMS Administration') . ': ';
+        $this->oPage->title = _kt('Administration') . ': ';
         $oTemplating =& KTTemplating::getSingleton();
 
         if ($condensed_admin) {
@@ -107,7 +107,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $this->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$category));
 
 
-        $this->oPage->title = _kt('DMS Administration') . ': ' . $aCategory['title'];
+        $this->oPage->title = _kt('Administration') . ': ' . $aCategory['title'];
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/admin_items');
         $aTemplateData = array(
@@ -154,7 +154,7 @@ global $default;
 if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < time()){
     $sBaseUrl = KTUtil::kt_url();
     $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
-    $heading = _kt('You are attempting to access DMS Administration');
+    $heading = _kt('You are attempting to access Administration');
     $main->setBodyOnload("javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/browse.php', 'close');");
 }
 

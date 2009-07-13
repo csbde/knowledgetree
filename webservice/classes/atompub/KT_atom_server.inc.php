@@ -1,18 +1,22 @@
 <?php
-class KT_atom_server{
+class KT_atom_server {
+
+    public $output='';
 	protected $services=array();
 	protected $workspaceDetail=array();
 	protected $errors=array();
-	protected $output='';
 	protected $queryArray=array();
 	protected $serviceName='';
 	protected $method='';
 	protected $workspace='';
-
+    protected $serviceObject = null;
 
 	public function __construct(){
 	}
 
+    protected function hook_beforeDocCreate($doc){return true;}
+    protected function hook_beforeDocRender($doc){return true;}
+    
 	/**
 	 * Run the server switchboard - find the correct service class to instantiate, execute & render that class with the passed parameteres
 	 *
@@ -22,23 +26,23 @@ class KT_atom_server{
 		$queryArray=split('/',trim($_SERVER['QUERY_STRING'],'/'));
 		$rawRequest=@file_get_contents('php://input');
 
-		$workspace=strtolower(trim($queryArray[0]));
+        $workspace=strtolower(trim($queryArray[0]));
 		$serviceName=strtolower(trim($queryArray[1]));
 		$requestParams=array_slice($queryArray,2);
 		$this->queryArray=$queryArray;
-		$this->serviceName=$service;
+		$this->serviceName=$serviceName;
 		$this->method=$reqMethod;
 		$this->workspace=$workspace;
-
-		if($workspace=='servicedocument'){
+        
+        if($workspace=='servicedocument'){
 			$this->serviceDocument();
 			return;
 		}
-
+        
 		$service=$this->getRegisteredService($workspace,$serviceName);
 		if(is_array($service)){
 			$serviceClass=$service['serviceClass'];
-			echo 'made it';
+//			echo 'made it';
 			$serviceObject=new $serviceClass($reqMethod,$requestParams,$rawRequest);
 			$this->output=$serviceObject->render();
 		}else{
@@ -46,9 +50,10 @@ class KT_atom_server{
 //            return;
 			$serviceObject=new KT_atom_service($requestParams,$rawRequest);
 			$serviceObject->setStatus(KT_atom_service::STATUS_NOT_FOUND);
-			$this->output=$serviceObject->render();
+            if($this->hook_beforeDocRender($serviceObject))	$this->output=$serviceObject->render();
 		}
 		$this->serviceObject=$serviceObject;
+        return $serviceObject;
 	}
 
 
