@@ -95,9 +95,9 @@ class Session
 		$this->startSession();
 		$classArray = $this->get($class);
 		if(isset($classArray[$k])) {
-			if($classArray[$k] != $v) {
+//			if($classArray[$k] != $v) {
 				$classArray[$k] = $v;
-				}
+//				}
 		} else {
 			$classArray[$k] = $v;
 		}
@@ -118,9 +118,9 @@ class Session
 		$this->startSession();
 		$classArray = $this->get($class);
 		if(isset($classArray[$k])) {
-			if($classArray[$k] != $v) {
+//			if($classArray[$k] != $v) {
 				$classArray[$k] = $v;
-			}
+//			}
 		} else {
 			$classArray[$k] = $v;
 		}
