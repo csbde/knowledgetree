@@ -1,5 +1,5 @@
-install
-<br/>
+<h1>Installing System</h1>
+
 <form action="index.php?step_name=install" method="post">
     <div class="buttons">
         <input type="submit" name="Previous" value="Previous"/>
