@@ -140,6 +140,7 @@ class Installer {
     public function step() {
         $this->readXml(); // Xml steps
         $this->xmlStepsToArray(); // String steps
+    	$this->resetSessions(); // Make sure 
         $response = $this->landing();
         switch($response) {
             case 'next':
@@ -177,43 +178,6 @@ class Installer {
     }
 
 	/**
-	* Install steps
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return void
-	*/
-    function runStepsInstallers() {
-    	$steps = $this->getInstallOrders();
-    	for ($i=1; $i< count($steps)+1; $i++) {
-    		$this->installHelper($steps[$i]);
-    	}
-    }
-    
-	/**
-	* Install steps helper
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return void
-	*/
-    function installHelper($className) {
-    	$stepAction = new stepAction($className); // Instantiate a step action
-    	$class = $stepAction->createStep(); // Get step class
-    	if($class) { // Check if class Exists
-	    	if($class->runInstall()) { // Check if step needs to be installed
-				$class->setDataFromSession($className); // Set Session Information
-				$class->setDBConfig(); // Set any posted variables
-				$response = $class->installStep(); // Run install step
-	    	}
-    	} else {
-    		die("$className : Class Files Missing");
-    	}
-    }
-    
-	/**
 	* Read xml configuration file
 	*
 	* @author KnowledgeTree Team
@@ -241,9 +205,27 @@ class Installer {
         if(isset($_GET['step_name'])) {
             return false;
         }
+        
         return true;
     }
 
+	/**
+	* Checks if first step of installer
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    public function _firstStepPeriod() {
+        if(isset($_GET['step_name'])) {
+        	if($_GET['step_name'] != 'welcome')
+            	return false;
+        }
+        
+        return true;
+    }
+    
 	/**
 	* Returns next step
 	*
@@ -444,9 +426,61 @@ class Installer {
         }
     }
     
-
+	/**
+	* Install steps
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return void
+	*/
+    function runStepsInstallers() {
+    	$steps = $this->getInstallOrders();
+    	for ($i=1; $i< count($steps)+1; $i++) {
+    		$this->installHelper($steps[$i]);
+    	}
+    }
+    
+	/**
+	* Install steps helper
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return void
+	*/
+    function installHelper($className) {
+    	$stepAction = new stepAction($className); // Instantiate a step action
+    	$class = $stepAction->createStep(); // Get step class
+    	if($class) { // Check if class Exists
+	    	if($class->runInstall()) { // Check if step needs to be installed
+				$class->setDataFromSession($className); // Set Session Information
+				$class->setDBConfig(); // Set any posted variables
+				$response = $class->installStep(); // Run install step
+	    	}
+    	} else {
+    		die("$className : Class Files Missing");
+    	}
+    }
+    
+	/**
+	* Reset all session information on welcome landing
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return void
+	*/
+    function resetSessions() {
+    	if($this->_firstStepPeriod()) {
+    		foreach ($this->getSteps() as $class) {
+    			$this->session->un_setClass($class);
+    		}
+    	}
+    }
+    
 }
 $ins = new installer(new Session()); // Instantiate the installer
 $ins->step(); // Run step
-//$ins->showSession();
+$ins->showSession();
 ?>

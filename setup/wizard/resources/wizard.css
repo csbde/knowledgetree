@@ -72,7 +72,7 @@ td {
 }
 
 .content {
-    background: #F1F1F1;
+    /*background: #F1F1F1;*/
 }
 
 .left {
@@ -82,7 +82,7 @@ td {
     text-align: center;
     /*background: url("graphics/left.png") repeat-y;*/
     background-position: top left;
-    background: #F1F1F1;
+    /*background: #F1F1F1;*/
     height: inherit;
     padding-bottom: 20px;
     padding-top: 40px;
