@@ -166,7 +166,7 @@ class Installer {
             	
             case 'install':
                 $this->runStepsInstallers(); // Load landing
-                
+                $this->proceed(); // Load next window
             	break;
             	
             default:

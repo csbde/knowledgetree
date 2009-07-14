@@ -299,7 +299,10 @@ class database extends Step
     		$this->error = array("17"=>"Passwords do not match: " . $this->dmsuserpassword." ". $this->getPassword2());
     		return false;
     	}
-    	$con = $this->dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
+    	if($this->dport == '') 
+    		$con = $this->dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
+    	else 
+    		$con = $this->dbhandler->DBUtil($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
         if (!$con) {
             $this->error = array("1"=>"Could not connect: " . $this->dbhandler->getErrors());
             return false;
@@ -572,7 +575,9 @@ class database extends Step
 		if(!$this->populateSchema($con)) {
 			// TODO:Way to catch errors
 		}
-		
+		if(!$this->applyUpgrades($con)) {
+			// TODO:Way to catch errors
+		}
 		return true;
     }
 
@@ -684,6 +689,13 @@ class database extends Step
         return exec($command, $output);
     }
 
+    private function applyUpgrades($con) {
+    	// Database upgrade to version 3.6.1: Search ranking
+        $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/upgrades/search_ranking.sql";
+        exec($command, $output);
+        $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/upgrades/folders.sql";
+        exec($command, $output);
+    }
 	/**
 	* Close connection if it exists
 	*

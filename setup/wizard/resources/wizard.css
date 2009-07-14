@@ -179,6 +179,14 @@ td {
     color: #EC7725;
 }
 
+.buttons a {
+    background: #DDDDDD;
+    border: solid 1px #888;
+    padding: 2px 8px 2px 5px;
+    text-decoration: none;
+    color: #EC7725;
+}
+
 .footer {
     background: url("graphics/footer.png") repeat-x;
     height: 50px;
