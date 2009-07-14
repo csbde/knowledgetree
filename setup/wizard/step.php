@@ -78,6 +78,15 @@ class Step
     protected $runInstall = false;
     
 	/**
+	* Step order
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var string
+	*/
+    protected $order = false;
+    
+	/**
 	* Returns step state
 	*
 	* @author KnowledgeTree Team

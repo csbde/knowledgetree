@@ -108,7 +108,9 @@ class stepAction {
     public function doAction() {
         if($this->stepName != '') {
 			$this->action = $this->createStep();
-			//secho $this->stepName;
+			if(!$this->action) {
+				die("{$this->stepName} : Class Files Missing");
+			}
             $response = $this->action->doStep();
             if($this->action->storeInSession()) { // Check if class values need to be stored in session
             	$this->loadStepToSession($this->stepName); // Send class to session
@@ -120,7 +122,7 @@ class stepAction {
             }
             return $response;
         } else {
-            die("Class Files Missing");
+            die("{$this->stepName} : Class Files Missing");
         }
     }
 
@@ -133,9 +135,13 @@ class stepAction {
 	* @return object Step
 	*/
     public function createStep() {
-		require_once(STEP_DIR."{$this->stepName}.php");
-		$step_class = $this->makeCamelCase($this->stepName);
-		return new $step_class();
+    	$filename = STEP_DIR."{$this->stepName}.php";
+    	if (file_exists($filename)) {
+			require_once($filename);
+			$step_class = $this->makeCamelCase($this->stepName);
+			return new $step_class();
+    	}
+		return false;
     }
 
 	/**
@@ -354,7 +360,7 @@ class stepAction {
                     $this->session->set($class , $v);
             }
          } else {
-             die("Where is the session?");
+             die("Where is the session");
          }
      }
 
@@ -373,7 +379,7 @@ class stepAction {
          if($this->session != null) {
             $this->session->setClass($class, $k, $v);
          } else {
-             die("Where is the session?");
+             die("Where is the session");
          }
      }
 
@@ -420,7 +426,7 @@ class stepAction {
          if($this->session != null) {
             $this->session->setClassError($class, $k, $v);
          } else {
-             die("Where is the session?");
+             die("Where is the session");
          }
      }
 

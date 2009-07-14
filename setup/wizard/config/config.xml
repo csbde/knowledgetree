@@ -12,8 +12,8 @@
         <step name="Welcome">welcome</step>
         <step name="License Agreement">license</step>
         <step name="PHP Dependencies">dependency_check</step>
-        <step name="System Configuration">configuration</step>
-        <step name="Database Configuration">database</step>
+        <step name="System Configuration" order="2">configuration</step>
+        <step name="Database Configuration" order="1">database</step>
         <step name="Install">install</step>
         <step name="Complete">complete</step>
     </steps>

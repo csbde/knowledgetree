@@ -175,7 +175,6 @@ class configuration extends Step
                         $value = 'false';
                     }
                     if(!$ini === false){
-//                    	echo "config ini {$item['section']}, {$item['setting']}, {$value}<br/>";
                         $ini->updateItem($item['section'], $item['setting'], $value);
                     }
                     break;
@@ -184,7 +183,6 @@ class configuration extends Step
                     $value = mysql_real_escape_string($item['value']);
                     $setting = mysql_real_escape_string($item['setting']);
                     $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
-//					echo "sql update $sql <br/>";
                     $db->query($sql);
                     break;
             }
@@ -200,7 +198,6 @@ class configuration extends Step
             $setting = mysql_real_escape_string($item['setting']);
 
             $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
-//            echo "sql update $sql <br/>";
             $db->query($sql);
         }
 

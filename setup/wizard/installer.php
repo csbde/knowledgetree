@@ -65,6 +65,15 @@ class Installer {
     protected $stepAction = null;
     
 	/**
+	* Reference to session object
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var object Session
+	*/
+    protected $session = null;
+    
+	/**
 	* List of installation steps as strings
 	*
 	* @author KnowledgeTree Team
@@ -81,15 +90,6 @@ class Installer {
 	* @var array string
 	*/
 	protected $stepNames = array();
-	
-	/**
-	* Flag if a step object needs confirmation
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var array boolean
-	*/
-    protected $stepConfirmation = false;
     
 	/**
 	* List of installation steps as human readable strings
@@ -99,15 +99,24 @@ class Installer {
 	* @var array string
 	*/
 	protected $stepObjects = array();
-	
+    
 	/**
-	* Reference to session object
+	* Order in which steps have to be installed
 	*
 	* @author KnowledgeTree Team
 	* @access protected
-	* @var object Session
+	* @var array string
 	*/
-    protected $session = null;
+	protected $installOrders = array();
+	
+	/**
+	* Flag if a step object needs confirmation
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var array boolean
+	*/
+    protected $stepConfirmation = false;
     
 	/**
 	* Constructs installation object
@@ -129,8 +138,8 @@ class Installer {
 	* @return void
 	*/
     public function step() {
-        $this->setXmlSteps(); // Xml steps
-        $this->setSteps(); // String steps
+        $this->readXml(); // Xml steps
+        $this->xmlStepsToArray(); // String steps
         $response = $this->landing();
         switch($response) {
             case 'next':
@@ -160,7 +169,7 @@ class Installer {
             	break;
             	
             default:
-                die("That was unexpected!"); // No class response
+                die("Response $response: That was unexpected"); // No class response
             	break;
         }
         
@@ -175,31 +184,33 @@ class Installer {
 	* @access public
 	* @return void
 	*/
-    function runStepsInstallers() {   	
-    	// TODO:Need to add install order
-    	$this->installHelper("database");
-		$this->installHelper("configuration");
-//    	foreach ($this->getSteps() as $className) {
-//    		$stepAction = new stepAction($className); // Instantiate a step action
-//    		$class = $stepAction->createStep(); // Get step class
-//    		if($class->runInstall()) { // Check if step needs to be installed
-//				$class->setDataFromSession($className); // Set Session Information
-//				$class->setDBConfig(); // Set any posted variables
-//				$response = $class->installStep(); // Run install step
-//
-//				return $response;
-//    		}
-//    	}
+    function runStepsInstallers() {
+    	$steps = $this->getInstallOrders();
+    	for ($i=1; $i< count($steps); $i++) {
+    		$this->installHelper($steps[$i]);
+    	}
     }
     
+	/**
+	* Install steps helper
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return void
+	*/
     function installHelper($className) {
     	$stepAction = new stepAction($className); // Instantiate a step action
     	$class = $stepAction->createStep(); // Get step class
-    	if($class->runInstall()) { // Check if step needs to be installed
-			$class->setDataFromSession($className); // Set Session Information
-			$class->setDBConfig(); // Set any posted variables
-			$response = $class->installStep(); // Run install step
-    	}    	
+    	if($class) { // Check if class Exists
+	    	if($class->runInstall()) { // Check if step needs to be installed
+				$class->setDataFromSession($className); // Set Session Information
+				$class->setDBConfig(); // Set any posted variables
+				$response = $class->installStep(); // Run install step
+	    	}
+    	} else {
+    		die("$className : Class Files Missing");
+    	}
     }
     
 	/**
@@ -212,9 +223,7 @@ class Installer {
 	*/
     public function readXml($name = "config.xml") {
     	try {
-        	$simplexml = @simplexml_load_file(CONF_DIR.$name);
-        	
-        	return $simplexml;
+        	$this->simpleXmlObj = @simplexml_load_file(CONF_DIR.$name);
     	} catch (Exception $e) {
     		return "Error loading file : $e";
     	}
@@ -404,18 +413,6 @@ class Installer {
     }
 
 	/**
-	* Set steps in xml format
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access private
-	* @return void
-	*/
-    private function setXmlSteps() {
-        $this->simpleXmlObj = $this->readXml();
-    }
-
-	/**
 	* Set steps class names in string format
 	*
 	* @author KnowledgeTree Team
@@ -423,39 +420,8 @@ class Installer {
 	* @access private
 	* @return void
 	*/
-    private function setSteps() {
-        $this->stepClassNames = $this->xmlStepsToArray();
-    }
-
-	/**
-	* Set steps class names in string format
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access private
-	* @return void
-	*/
-    private function setInstallSteps() {
-        $this->stepIClassNames = $this->xmlIStepsToArray();
-    }
-
-	/**
-	* Set steps as names
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access private
-	* @return array $steps
-	*/
-    private function xmlStepsToArray() {
-        $steps = array();
-        foreach($this->simpleXmlObj->steps->step as $d_step) {
-            $step_name = (string) $d_step[0];
-            $steps[] = $step_name;
-            $this->stepNames[$step_name] = (string) $d_step['name'];
-        }
-
-        return $steps;
+    private function getInstallOrders() {
+        return $this->installOrders;
     }
     
 	/**
@@ -464,18 +430,20 @@ class Installer {
 	* @author KnowledgeTree Team
 	* @param none
 	* @access private
-	* @return array $steps
+	* @return void
 	*/
-    private function xmlIStepsToArray() {
-        $steps = array();
+    private function xmlStepsToArray() {
         foreach($this->simpleXmlObj->steps->step as $d_step) {
-            $step_name = (string) $d_step[0];
-            $steps[] = $step_name;
-            $this->stepNames[$step_name] = (string) $d_step['name'];
+        	$step_name = (string) $d_step[0];
+            $this->stepClassNames[] = $step_name; // Store steps as strings
+            $this->stepNames[$step_name] = (string) $d_step['name']; // Store steps as human readable strings
+            if(isset($d_step['order'])) {
+				$order = (string) $d_step['order'];
+            	$this->installOrders[$order] = $step_name; // Store step install order
+            }
         }
-
-        return $steps;
     }
+    
 
 }
 $ins = new installer(new Session()); // Instantiate the installer
