@@ -261,36 +261,45 @@ class CMISUtil {
         // TODO additional properties to be returned
         $object['properties']['BaseType'] = array('type' => $properties->getFieldType('BaseType'),
                                                            'value' => $properties->getValue('BaseType'));
-        $object['properties']['ObjectId'] = array('type' => $properties->getFieldType('ObjectId'),
-                                                           'value' => $properties->getValue('ObjectId'));
-        $object['properties']['ObjectTypeId'] = array('type' => $properties->getFieldType('ObjectTypeId'),
-                                                           'value' => $properties->getValue('ObjectTypeId'));
-        $object['properties']['Name'] = array('type' => $properties->getFieldType('Name'),
+        
+		$object['properties']['Name'] = array('type' => $properties->getFieldType('Name'),
                                                            'value' => $properties->getValue('Name'));
-        // TODO ensure format of date is always correct
-        $object['properties']['LastModificationDate'] = array('type' => $properties->getFieldType('LastModificationDate'),
-                                                           'value' => $properties->getValue('LastModificationDate'));
-        $object['properties']['Uri'] = array('type' => $properties->getFieldType('Uri'),
-                               'value' => $properties->getValue('Uri'));
-
-        $object['properties']['ParentId'] = array('type' => $properties->getFieldType('ParentId'),
+        
+		$object['properties']['ParentId'] = array('type' => $properties->getFieldType('ParentId'),
                                                   'value' => CMISUtil::encodeObjectId('Folder',
                                                   $properties->getValue('ParentId')));
-
-        $object['properties']['AllowedChildObjectTypeIds'] = array('type' => $properties->getFieldType('AllowedChildObjectTypeIds'),
-                                                                   'value' => $properties->getValue('AllowedChildObjectTypeIds'));
-        
-//        $object['properties']['AllowedChildObjectTypeIds'] = array('type' => $properties->getFieldType('AllowedChildObjectTypeIds'),
-//                                                                   'value' => $properties->getValue('AllowedChildObjectTypeIds'));
+												  
+		$object['properties']['Uri'] = array('type' => $properties->getFieldType('Uri'),
+                               'value' => $properties->getValue('Uri'));	
+							   
+        // TODO ensure format of date is always correct
+        $object['properties']['LastModificationDate'] = array('type' => $properties->getFieldType('LastModificationDate'),
+                                                           'value' => $properties->getValue('LastModificationDate'));					   									  
 
         $object['properties']['CreatedBy'] = array('type' => $properties->getFieldType('CreatedBy'),
                                                    'value' => $properties->getValue('CreatedBy'));
+												   
+        $object['properties']['AllowedChildObjectTypeIds'] = array('type' => $properties->getFieldType('AllowedChildObjectTypeIds'),
+                                                                   'value' => $properties->getValue('AllowedChildObjectTypeIds'));
 
         $object['properties']['CreationDate'] = array('type' => $properties->getFieldType('CreationDate'),
                                                        'value' => $properties->getValue('CreationDate'));
 
+        $object['properties']['LastModifiedBy'] = array('type' => $properties->getFieldType('LastModifiedBy'),
+                                                       'value' => $properties->getValue('LastModifiedBy'));
+
         $object['properties']['ChangeToken'] = array('type' => $properties->getFieldType('ChangeToken'),
                                                        'value' => $properties->getValue('ChangeToken'));
+														   
+        $object['properties']['ObjectTypeId'] = array('type' => $properties->getFieldType('ObjectTypeId'),
+                                                           'value' => $properties->getValue('ObjectTypeId'));
+													   
+        $object['properties']['ObjectId'] = array('type' => $properties->getFieldType('ObjectId'),
+                                                           'value' => $properties->getValue('ObjectId'));
+        
+
+
+
 
         if (strtolower($properties->getValue('ObjectTypeId')) == 'document')
         {

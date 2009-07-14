@@ -268,13 +268,16 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         }
 
         // $baseURI=NULL,$title=NULL,$link=NULL,$updated=NULL,$author=NULL,$id=NULL
-        $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, $folderName . ' ' . ucwords($feedType), null, null, null,
-                                              'urn:uuid:' . $folderId . '-' . $feedType);
+        $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, $folderName . ' ' . ucwords($feedType), null, null, null, null);
+//                                              'urn:uuid:' . $folderId . '-' . $feedType);
 
         // TODO dynamic?
         $feedElement = $feed->newField('author');
         $element = $feed->newField('name', 'System', $feedElement);
         $feed->appendChild($feedElement);
+		
+		// id
+        $feed->appendChild($feed->newElement('id', 'urn:uuid:' . $folderId . '-' . $feedType));
 
         // TODO get actual most recent update time, only use current if no other available
         $feed->appendChild($feed->newElement('updated', KT_cmis_atom_service_helper::formatDatestamp()));
@@ -287,6 +290,9 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         foreach($entries as $cmisEntry)
         {
             KT_cmis_atom_service_helper::createObjectEntry($feed, $cmisEntry, $folderName);
+			
+			// after each entry, add app:edited tag
+           	$feed->appendChild($feed->newElement('app:edited', KT_cmis_atom_service_helper::formatDatestamp()));
         }
 
         // <cmis:hasMoreItems>false</cmis:hasMoreItems>
@@ -494,8 +500,19 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         $checkedout = $NavigationService->getCheckedoutDocs($repositoryId);
 
         //Create a new response feed
-        $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, 'Checked out Documents', null, null, null, 'urn:uuid:checkedout');
+        $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, 'Checked out Documents');
+		
+        // TODO dynamic?
+        $feedElement = $feed->newField('author');
+        $element = $feed->newField('name', 'admin', $feedElement);
+        $feed->appendChild($feedElement);
+		
+		$feed->appendChild($feed->newElement('id', 'urn:uuid:checkedout'));
 
+        // TODO get actual most recent update time, only use current if no other available
+        $feed->appendChild($feed->newElement('updated', KT_cmis_atom_service_helper::formatDatestamp()));
+		
+//'urn:uuid:checkedout'
         foreach($checkedout as $document)
         {
             $entry = $feed->newEntry();
@@ -515,7 +532,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         }
 
         $entry = null;
-        $feed->newField('hasMoreItems', 'false', $entry, true);
+        $feed->newField('cmis:hasMoreItems', 'false', $entry, true);
 
         //Expose the responseFeed
         $this->responseFeed = $feed;

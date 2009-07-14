@@ -21,9 +21,8 @@ class KT_cmis_atom_responseFeed extends KT_atom_responseFeed {
     protected function constructHeader()
     {
 		$feed = $this->newElement('feed');
-//		$feed->appendChild($this->newAttr('xmlns','http://www.w3.org/2007/app'));
-//		$feed->appendChild($this->newAttr('xmlns:atom','http://www.w3.org/2005/Atom'));
 		$feed->appendChild($this->newAttr('xmlns','http://www.w3.org/2005/Atom'));
+		$feed->appendChild($this->newAttr('xmlns:app','http://www.w3.org/2007/app'));
 		$feed->appendChild($this->newAttr('xmlns:cmis','http://docs.oasis-open.org/ns/cmis/core/200901'));
 		$this->feed = &$feed;
 

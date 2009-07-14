@@ -13,33 +13,18 @@ class KT_cmis_atom_service_helper {
      */
     static public function createObjectEntry(&$feed, $cmisEntry, $parent, $path)
     {
-        // TODO next two lots of code (1 commented 1 not) must be replaced with something better
-//        $feed->newId('urn:uuid:' . $cmisEntry['properties']['Name']['value'] . '-'
-//                                 . strtolower($cmisEntry['properties']['ObjectTypeId']['value']), $entry);
-
-//        echo $_SERVER['QUERY_STRING']."<BR>\n";
-//        preg_match('/^\/?[^\/]*\/folder\/(.*)\/[^\/]*\/?$/', trim($_SERVER['QUERY_STRING'], '/'), $matches);
-//        $path = $matches[1];
-//        $parent = preg_replace('/\/[^\/]*$/', '', $path);
-//        // TODO fix path to work on old method, after fixing drupal module to not require extended path
-//
-//        $path = '';
-
-        $id = $cmisEntry['properties']['ObjectId']['value'];
+    	// create entry
         $entry = $feed->newEntry();
-        $feed->newField('id', 'urn:uuid:' . $id, $entry);
-
+		
         // TODO dynamic actual creator name
         $feedElement = $feed->newField('author');
         $element = $feed->newField('name', 'admin', $feedElement);
         $entry->appendChild($feedElement);
-        
+		
+		// content & id tags
+        $id = $cmisEntry['properties']['ObjectId']['value'];
         $entry->appendChild($feed->newField('content', $id));
-        // TODO proper date
-        $entry->appendChild($feed->newField('published', self::formatDatestamp()));
-        $entry->appendChild($feed->newField('updated', self::formatDatestamp()));
-
-//        $entry->appendChild($feed->newField('summary', $cmisEntry['properties']['Name']['value']));
+        $feed->newField('id', 'urn:uuid:' . $id, $entry);
 
         // links
         /*
@@ -73,14 +58,6 @@ class KT_cmis_atom_service_helper {
         $link->appendChild($feed->newAttr('rel','edit'));
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/' . $type . '/' . $cmisEntry['properties']['ObjectId']['value']));
         $entry->appendChild($link);
-        
-        // TODO check parent link is correct, fix if needed
-        // TODO leave out if at root folder
-        $link = $feed->newElement('link');
-        $link->appendChild($feed->newAttr('rel', 'parents'));
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/folder/' 
-                                                . $cmisEntry['properties']['ObjectId']['value'] . '/parent'));
-        $entry->appendChild($link);
 
         // according to spec this MUST be present, but spec says that links for function which are not supported
         // do not need to be present, so unsure for the moment
@@ -88,6 +65,22 @@ class KT_cmis_atom_service_helper {
         $link->appendChild($feed->newAttr('rel', 'allowableactions'));
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/' . $type . '/' 
                                                 . $cmisEntry['properties']['ObjectId']['value'] . '/permissions'));
+        $entry->appendChild($link);
+
+        // according to spec this MUST be present, but spec says that links for function which are not supported
+        // do not need to be present, so unsure for the moment
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel', 'relationships'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/' . $type . '/' 
+                                                . $cmisEntry['properties']['ObjectId']['value'] . '/rels'));
+        $entry->appendChild($link);
+        
+        // TODO check parent link is correct, fix if needed
+        // TODO leave out if at root folder
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel', 'parents'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/folder/' 
+                                                . $cmisEntry['properties']['ObjectId']['value'] . '/parent'));
         $entry->appendChild($link);
 
         // Folder/Document specific links
@@ -150,17 +143,7 @@ class KT_cmis_atom_service_helper {
 //                $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/' . $type . '/' . $cmisEntry['properties']['ParentId']['value']));
 //                $entry->appendChild($link);
 //            }
-        }
-
-
-        // according to spec this MUST be present, but spec says that links for function which are not supported
-        // do not need to be present, so unsure for the moment
-          $link = $feed->newElement('link');
-          $link->appendChild($feed->newAttr('rel', 'relationships'));
-          $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/' . $type . '/' 
-                                                  . $cmisEntry['properties']['ObjectId']['value'] . '/rels'));
-          $entry->appendChild($link);
-        
+        }        
 
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel','type'));
@@ -180,8 +163,11 @@ class KT_cmis_atom_service_helper {
 //        $entry->appendChild($link);
         // end links
 
+        // TODO proper date
+        $entry->appendChild($feed->newField('published', self::formatDatestamp()));
         $entry->appendChild($feed->newElement('summary', $cmisEntry['properties']['Name']['value']));
         $entry->appendChild($feed->newElement('title', $cmisEntry['properties']['Name']['value']));
+        $entry->appendChild($feed->newField('updated', self::formatDatestamp()));
 
         // main CMIS entry
         $objectElement = $feed->newElement('cmis:object');
