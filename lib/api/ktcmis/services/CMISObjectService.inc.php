@@ -132,7 +132,21 @@ class CMISObjectService {
         // if parent folder is not allowed to hold this type, throw exception
         $CMISFolder = new CMISFolderObject($folderId, $this->ktapi);
         $allowed = $CMISFolder->getProperty('AllowedChildObjectTypeIds');
-        if (!is_array($allowed) || !in_array($typeId, $allowed))
+        $typeAllowed = false;
+
+        if (is_array($allowed))
+        {
+            foreach($allowed as $type)
+            {
+                if (strtolower($type) == strtolower($typeId))
+                {
+                    $typeAllowed = true;
+                    break;
+                }
+            }
+        }
+
+        if (!$typeAllowed)
         {
             throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
         }

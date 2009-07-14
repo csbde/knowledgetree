@@ -69,12 +69,22 @@ class KTCMISBase {
     static protected $ktapi;
     static protected $session;
 
-//    public function __construct($username = null, $password = null)
-//    {
-//        $this->startSession($username, $password);
-//    }
+    public function __construct(&$ktapi = null, $username = null, $password = null)
+    {
+        // TODO confirm KTAPI instance active??? shouldn't really be responsibility of this code
+        if (is_null($ktapi) && (!is_null($username) && !is_null($password))) {
+//            echo ":WGHWTWGWGHW";
+            $this->startSession($username, $password);
+        }
+        else {
+            self::$ktapi = $ktapi;
+            self::$session = self::$ktapi->get_session();
+        }
+    }
 
-    // TODO try to pick up existing session if possible, i.e. if the $session value is not empty
+    // TODO this probably does not belong here??? probably should require all auth external, handled by transport protocol.
+    //      perhaps simple refusal to execute without valid session?
+    // NOTE left in to allow transport protocol to delegate auth to this level, but not actually used in any code at present
     public function startSession($username, $password)
     {
 //        echo $username." :: ".$password."<BR>";
@@ -101,6 +111,13 @@ class KTCMISBase {
         
 //        print_r(self::$ktapi);
         return self::$session;
+    }
+
+    public function setInterface(&$ktapi = null)
+    {
+        if (!is_null($ktapi)) {
+            self::$ktapi = $ktapi;
+        }
     }
 
     public function getInterface()
@@ -263,10 +280,12 @@ class KTNavigationService extends KTCMISBase {
 
     protected $NavigationService;
 
-    public function __construct()
+    public function __construct(&$ktapi = null, $username = null, $password = null)
     {
+        parent::__construct($ktapi, $username, $password);
         // instantiate underlying CMIS service
         $this->NavigationService = new CMISNavigationService();
+        $this->setInterface();
     }
 
     public function startSession($username, $password)
@@ -276,8 +295,9 @@ class KTNavigationService extends KTCMISBase {
         return self::$session;
     }
 
-    public function setInterface()
+    public function setInterface(&$ktapi = null)
     {
+        parent::setInterface($ktapi);
         $this->NavigationService->setInterface(self::$ktapi);
     }
 
@@ -455,10 +475,12 @@ class KTObjectService extends KTCMISBase {
 
     protected $ObjectService;
 
-    public function __construct()
+    public function __construct(&$ktapi = null, $username = null, $password = null)
     {
+        parent::__construct($ktapi, $username, $password);
         // instantiate underlying CMIS service
         $this->ObjectService = new CMISObjectService();
+        $this->setInterface();
     }
 
     public function startSession($username, $password)
@@ -468,8 +490,9 @@ class KTObjectService extends KTCMISBase {
         return self::$session;
     }
 
-    public function setInterface()
+    public function setInterface(&$ktapi = null)
     {
+        parent::setInterface($ktapi);
         $this->ObjectService->setInterface(self::$ktapi);
     }
 

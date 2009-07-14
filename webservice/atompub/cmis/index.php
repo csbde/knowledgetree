@@ -40,6 +40,7 @@
  */
 
 require_once('../../../config/dmsDefaults.php');
+require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 
 define('KT_APP_BASE_URI', "http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/?/');
 define('KT_APP_SYSTEM_URI', "http://".$_SERVER['HTTP_HOST']);
@@ -49,12 +50,6 @@ define('KT_ATOM_LIB_FOLDER', '../../classes/atompub/');
 define('CMIS_APP_BASE_URI', trim(KT_APP_BASE_URI, '/'));
 define('CMIS_APP_SYSTEM_URI', KT_APP_SYSTEM_URI);
 define('CMIS_ATOM_LIB_FOLDER', trim(KT_ATOM_LIB_FOLDER, '/') . '/cmis/');
-
-// fetch username and password for auth;  note that this apparently only works when PHP is run as an apache module
-// TODO method to fetch username and password when running PHP as CGI, if possible
-// HTTP Basic Auth:
-//$username = $_SERVER['PHP_AUTH_USER'];
-//$password = $_SERVER['PHP_AUTH_PW'];
 
 /**
  * Includes
@@ -67,15 +62,21 @@ include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_serviceDoc.inc.php');          /
 include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_service.inc.php');          //Containing the servicedoc class allowing easy ServiceDocument generation
 
 include_once('KT_cmis_atom_server.services.inc.php');
+
+KT_cmis_atom_service_helper::login('admin', 'admin');
+
 //Start the AtomPubProtocol Routing Engine
 $APP = new KT_cmis_atom_server();
 
-// FIXME HACK! this should not happen every time, ONLY on a service doc request
-// CMIS service document setup
-$APP->initServiceDocument();
-// FIXME HACK! this should not happen every time, ONLY on a service doc request
-// User defined title tag
-$APP->addWorkspaceTag('dms','atom:title',$APP->repositoryInfo['repositoryName']);
+$queryArray = split('/', trim($_SERVER['QUERY_STRING'], '/'));
+$workspace = strtolower(trim($queryArray[0]));
+if ($workspace == 'servicedocument')
+{
+    // CMIS service document setup
+    $APP->initServiceDocument();
+    // User defined title tag
+    $APP->addWorkspaceTag('dms','atom:title',$APP->repositoryInfo['repositoryName']);
+}
 
 /**
  * Register Services
@@ -92,21 +93,22 @@ $APP->addWorkspaceTag('dms','atom:title',$APP->repositoryInfo['repositoryName'])
 */
 // TODO consider a registerServices function which will, dependant on what is requested, register the appropriate services, keep the logic out of the index file
 $APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',
-                      array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'children'), 'root-children');
+                      array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'children'), 'rootchildren');
 $APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',
-                      array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'descendants'), 'root-descendants');
-$APP->registerService('dms', 'checkedout', 'KT_cmis_atom_service_checkedout', 'Checked Out Document Collection', null, 'checkedout');
-$APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'types-children');
-$APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'types-descendants');
+                      array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'descendants'), 'rootdescendants');
+$APP->registerService('dms', 'checkedout', 'KT_cmis_atom_service_checkedout', 'Checked Out Document Collection', null, 
+                      'checkedout', 'application/atom+xml;type=entry');
+$APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'typeschildren');
+$APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'typesdescendants');
 
-// FIXME HACK! this should not happen every time, ONLY on a specific request, should NOT appear in service document as this is not definable at that time;
-//             SHOULD be appearing in types listing feed
 // NOTE $requestParams is meaningless if not actually requesting this service, so not a good way to register the service really
-$queryArray=split('/',trim($_SERVER['QUERY_STRING'],'/'));
-$requestParams=array_slice($queryArray,2);
-$APP->registerService('dms', 'type', 'KT_cmis_atom_service_type', 'Object Type Collection', explode('/', $requestParams), 'types-descendants');
-// FIXME HACK! see above, this one for documents
-$APP->registerService('dms', 'document', 'KT_cmis_atom_service_document', 'Object Type Collection', explode('/', $requestParams), 'types-descendants');
+if ($workspace != 'servicedocument')
+{
+    // should check this per workspace???
+    $APP->registerService('dms', 'type', 'KT_cmis_atom_service_type', 'Object Type Collection', explode('/', $requestParams), 'typesdescendants');
+    // FIXME HACK! see above, this one for documents
+    $APP->registerService('dms', 'document', 'KT_cmis_atom_service_document', 'Object Type Collection', explode('/', $requestParams), 'typesdescendants');
+}
 
 //Execute the current url/header request
 $APP->execute();

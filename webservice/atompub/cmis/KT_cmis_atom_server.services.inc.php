@@ -1,5 +1,35 @@
 <?php
 
+/**
+ * Any feed must be a valid atom Feed document and conform to the guidelines below:
+1.	Updated will be the latest time the folder or its contents was updated. If unknown by the underlying repository, it should be the current time.
+2.	Author/name will be the CMIS property createdBy
+3.	Title will be the CMIS property name
+4.	App:edited will be the CMIS property lastModifiedDate
+5.	Link with relation self will be generated to return the uri of the feed
+ */
+
+/**
+ * At any point where an Atom document of type Entry is sent or returned, it must be a valid Atom Entry document and conform to the guidelines below:
+1.	Atom:Title will be best efforts by the repository.  The repository should chose a property closest to Title.
+2.	App:edited will be CMIS:lastModifiedDate
+3.	Link with relation self will be the URI that returns the Atom Entry document
+4.	Published will be CMIS:createdDate
+5.	Atom:author will be CMIS:creator
+6.	For content tags
+7.	Documents with content
+a.	Leverage the src attribute to point to the same link as stream
+b.	The repository SHOULD populate the summary tag with text that at best efforts represents the documents.  For example, an HTML table containing the properties and their values for simple feed readers
+i.	Other (Content-less document, Folder, Relationship, Type, etc) – best efforts at generating HTML text that represents the object.  That text would normally go into the summary tag, but since there is no content, goes in the content tag.
+8.	If content src is specified, the summary SHOULD contain a text or html representation of the object.
+9.	Links will be used to provide URIs to CMIS functionality
+10.	Link relations may be omitted if the function is not allowed and that function would not show up on getAllowableActions.
+11.	Links may be omitted if the repository does not support that capability
+12.	All CMIS properties will be exposed in CMIS properties tag even if they are duplicated in an atom element
+
+When POSTing an Atom Document, the atom fields take precedence over the CMIS property field for writeable properties.  For example, atom:title will overwrite cmis:name
+ */
+
 include_once CMIS_ATOM_LIB_FOLDER . 'RepositoryService.inc.php';
 include_once CMIS_ATOM_LIB_FOLDER . 'NavigationService.inc.php';
 include_once CMIS_ATOM_LIB_FOLDER . 'ObjectService.inc.php';
@@ -18,16 +48,16 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
     public function GET_action()
     {
         $RepositoryService = new RepositoryService();
-        try {
-            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
-        }
-        catch (Exception $e)
-        {
-            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
+//        try {
+//            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+//        }
+//        catch (Exception $e)
+//        {
+//            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//            $this->responseFeed = $feed;
+//            return null;
+//        }
 
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
@@ -43,24 +73,24 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         }
         else if ($this->params[0] == 'path')
         {
-            $ktapi =& $RepositoryService->getInterface();
+            $ktapi =& KT_cmis_atom_service_helper::getKt();
             $folderId = KT_cmis_atom_service_helper::getFolderId($this->params, $ktapi);
         }
         else
         {
             $folderId = $this->params[0];
-            $ObjectService = new ObjectService();
+            $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
-            try {
-                $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
-            }
-            catch (Exception $e)
-            {
-                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-                $this->responseFeed = $feed;
-                return null;
-            }
+//            try {
+//                $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+//            }
+//            catch (Exception $e)
+//            {
+//                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//                $this->responseFeed = $feed;
+//                return null;
+//            }
 
             $cmisEntry = $ObjectService->getProperties($repositoryId, $folderId, false, false);
             $folderName = $cmisEntry['properties']['Name']['value'];
@@ -69,35 +99,35 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
 
         if (!empty($this->params[1]) && (($this->params[1] == 'children') || ($this->params[1] == 'descendants')))
         {
-            $NavigationService = new NavigationService();
+            $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
 
-            try {
-                $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
-            }
-            catch (Exception $e)
-            {
-                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-                $this->responseFeed = $feed;
-                return null;
-            }
+//            try {
+//                $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
+//            }
+//            catch (Exception $e)
+//            {
+//                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//                $this->responseFeed = $feed;
+//                return null;
+//            }
 
             $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $this->params[1]);
         }
         else
         {
-            $ObjectService = new ObjectService();
+            $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
-            try {
-                $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
-            }
-            catch (Exception $e)
-            {
-                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-                $this->responseFeed = $feed;
-                return null;
-            }
+//            try {
+//                $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+//            }
+//            catch (Exception $e)
+//            {
+//                $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//                $this->responseFeed = $feed;
+//                return null;
+//            }
 
             $feed = $this->getFolderFeed($ObjectService, $repositoryId, $folderId);
         }
@@ -110,16 +140,16 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
     {
         $RepositoryService = new RepositoryService();
 
-        try {
-            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
-        }
-        catch (Exception $e)
-        {
-            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
+//        try {
+//            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+//        }
+//        catch (Exception $e)
+//        {
+//            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//            $this->responseFeed = $feed;
+//            return null;
+//        }
 
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
@@ -142,7 +172,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         //      perhaps because the content is text/plain once base64 encoded?
         //      How to determine the actual content type?
         /*
-         * <atom:entry xmlns:atom="http://www.w3.org/2005/Atom" xmlns:cmis="http://www.cmis.org/2008/05">
+         * <atom:entry xmlns:atom="http://www.w3.org/2005/Atom" xmlns:cmis="http://docs.oasis-open.org/ns/cmis/core/200901">
          * <atom:title>setup.txt</atom:title>
          * <atom:summary>setup.txt</atom:summary>
          * <atom:content type="text/plain">dGhpcyBiZSBzb21lIHRlc3QgY29udGVudCBmb3IgYSBkb2N1bWVudCwgeWVzPw==</atom:content>
@@ -158,18 +188,18 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                                                                                                       [0]['@children']['cmis:properties']
                                                                                                       [0]['@children']);
 
-        $ObjectService = new ObjectService();
+        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
-        try {
-            $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
-        }
-        catch (Exception $e)
-        {
-            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
+//        try {
+//            $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+//        }
+//        catch (Exception $e)
+//        {
+//            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//            $this->responseFeed = $feed;
+//            return null;
+//        }
 
         if ($type == 'folder')
             $newObjectId = $ObjectService->createFolder($repositoryId, ucwords($cmisObjectProperties['ObjectTypeId']), $properties, $folderId);
@@ -187,18 +217,18 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             }
             else
             {
-                $NavigationService = new NavigationService();
+                $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
 
-                try {
-                    $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
-                }
-                catch (Exception $e)
-                {
-                    $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-                    $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-                    $this->responseFeed = $feed;
-                    return null;
-                }
+//                try {
+//                    $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
+//                }
+//                catch (Exception $e)
+//                {
+//                    $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//                    $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//                    $this->responseFeed = $feed;
+//                    return null;
+//                }
 
                 $cmisEntry = $ObjectService->getProperties($repositoryId, $folderId, false, false);
                 $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $cmisEntry['properties']['Name']['value']);
@@ -239,7 +269,20 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
 
         // $baseURI=NULL,$title=NULL,$link=NULL,$updated=NULL,$author=NULL,$id=NULL
         $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, $folderName . ' ' . ucwords($feedType), null, null, null,
-                                              'urn:uuid:' . $folderName . '-' . $feedType);
+                                              'urn:uuid:' . $folderId . '-' . $feedType);
+
+        // TODO dynamic?
+        $feedElement = $feed->newField('author');
+        $element = $feed->newField('name', 'System', $feedElement);
+        $feed->appendChild($feedElement);
+
+        // TODO get actual most recent update time, only use current if no other available
+        $feed->appendChild($feed->newElement('updated', KT_cmis_atom_service_helper::formatDatestamp()));
+        
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel','source'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/folder/' . $folderId));
+        $feed->appendChild($link);
 
         foreach($entries as $cmisEntry)
         {
@@ -292,16 +335,16 @@ class KT_cmis_atom_service_types extends KT_cmis_atom_service {
     {
         $RepositoryService = new RepositoryService();
 
-        try {
-            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
-        }
-        catch (Exception $e)
-        {
-            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
+//        try {
+//            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+//        }
+//        catch (Exception $e)
+//        {
+//            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//            $this->responseFeed = $feed;
+//            return null;
+//        }
 
         // fetch repository id
         $repositories = $RepositoryService->getRepositories();
@@ -329,16 +372,16 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service {
     {
         $RepositoryService = new RepositoryService();
 
-        try {
-            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
-        }
-        catch (Exception $e)
-        {
-            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
+//        try {
+//            $RepositoryService->startSession(self::$authData['username'], self::$authData['password']);
+//        }
+//        catch (Exception $e)
+//        {
+//            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//            $this->responseFeed = $feed;
+//            return null;
+//        }
 
         // fetch repository id
         $repositories = $RepositoryService->getRepositories();
@@ -405,7 +448,7 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service {
 /*
         // TODO need to create this dynamically now, will no longer work with static output
         $output = '<?xml version="1.0" encoding="UTF-8"?>
-                    <feed xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:cmis="http://www.cmis.org/2008/05">
+                    <feed xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:cmis="http://docs.oasis-open.org/ns/cmis/core/200901">
                     <id>urn:uuid:type-' . $type . '-children</id>
                     <link rel="self" href="' . CMIS_APP_BASE_URI . 'type/document/children"/>
                     <link rel="first" href="' . CMIS_APP_BASE_URI . 'type/document/children?pageNo=1&amp;pageSize=0&amp;guest=" type="application/atom+xml;type=feed"/>
@@ -432,18 +475,18 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
     public function GET_action()
     {
         $RepositoryService = new RepositoryService();
-        $NavigationService = new NavigationService();
+        $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
 
-        try {
-            $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
-        }
-        catch (Exception $e)
-        {
-            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
+//        try {
+//            $NavigationService->startSession(self::$authData['username'], self::$authData['password']);
+//        }
+//        catch (Exception $e)
+//        {
+//            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//            $this->responseFeed = $feed;
+//            return null;
+//        }
 
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
@@ -491,19 +534,18 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
     public function GET_action()
     {
         $RepositoryService = new RepositoryService();
+        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
-        $ObjectService = new ObjectService();
-
-        try {
-            $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
-        }
-        catch (Exception $e)
-        {
-            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
+//        try {
+//            $ObjectService->startSession(self::$authData['username'], self::$authData['password']);
+//        }
+//        catch (Exception $e)
+//        {
+//            $this->headers[] = 'WWW-Authenticate: Basic realm="KnowledgeTree Secure Area"';
+//            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_NOT_AUTHENTICATED, $e->getMessage());
+//            $this->responseFeed = $feed;
+//            return null;
+//        }
 
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
@@ -527,462 +569,4 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
     
 }
 
-$childrenFeed[] = '<?xml version="1.0" encoding="utf-8"?>
-        <feed xmlns="http://www.w3.org/2005/Atom" xmlns:cmis="http://www.cmis.org/2008/05">
-         <id>urn:uuid:28537649-8af2-4c74-aa92-5d8bbecac9ce-children</id>
-         <link rel="self" href="http://10.33.4.34/ktatompub/?/cmis/folder/F1/children"/>
-         <title>Root Folder Children</title>
-         <entry>
-          <id>urn:uuid:86224486-b7ae-4074-a793-82cd259b0026-folder</id>
-          <link rel="cmis-children" href="http://10.33.4.34/ktatompub/?cmis/folder/F2/children"/>
-
-          <link rel="cmis-descendants" href="http://10.33.4.34/ktatompub/?cmis/folder/F2/descendants"/>
-          <link rel="cmis-type" href="http://10.33.4.34:8080/alfresco/service/api/type/folder"/>
-          <link rel="cmis-repository" href="http://10.33.4.34:8080/alfresco/service/api/repository"/>
-          <summary>DroppedDocuments</summary>
-          <title>DroppedDocuments</title>
-          <cmis:object>
-           <cmis:properties>
-            <cmis:propertyId cmis:name="ObjectId">
-
-             <cmis:value>F2</cmis:value>
-            </cmis:propertyId>
-            <cmis:propertyString cmis:name="ObjectTypeId">
-             <cmis:value>Folder</cmis:value>
-            </cmis:propertyString>
-            <cmis:propertyString cmis:name="Name">
-             <cmis:value>DroppedDocuments</cmis:value>
-
-            </cmis:propertyString>
-           </cmis:properties>
-          </cmis:object>
-         </entry>
-         <entry>
-          <id>urn:uuid:86224486-b7ae-4074-a793-82cd259b0026-folder</id>
-          <link rel="cmis-children" href="http://10.33.4.34/ktatompub/?cmis/folder/F4/children"/>
-          <link rel="cmis-descendants" href="http://10.33.4.34/ktatompub/?cmis/folder/F4/descendants"/>
-
-          <link rel="cmis-type" href="http://10.33.4.34:8080/alfresco/service/api/type/folder"/>
-          <link rel="cmis-repository" href="http://10.33.4.34:8080/alfresco/service/api/repository"/>
-          <summary>Test KT Folder</summary>
-          <title>Test KT Folder</title>
-          <cmis:object>
-           <cmis:properties>
-            <cmis:propertyId cmis:name="ObjectId">
-             <cmis:value>F4</cmis:value>
-
-            </cmis:propertyId>
-            <cmis:propertyString cmis:name="ObjectTypeId">
-             <cmis:value>Folder</cmis:value>
-            </cmis:propertyString>
-            <cmis:propertyString cmis:name="Name">
-             <cmis:value>Test KT Folder</cmis:value>
-            </cmis:propertyString>
-           </cmis:properties>
-
-          </cmis:object>
-         </entry>
-        <entry>
-         <author><name>admin</name></author>
-        <content type="application/pdf" src="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf"/><id>urn:uuid:2df9d676-f173-47bb-8ec1-41fa1186b66d</id>
-        <link rel="self" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d"/>
-
-        <link rel="enclosure" type="application/pdf" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf"/><link rel="edit" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d"/>
-        <link rel="edit-media" type="application/pdf" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf"/><link rel="cmis-allowableactions" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/permissions"/>
-        <link rel="cmis-relationships" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/associations"/>
-        <link rel="cmis-parents" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/parents"/>
-        <link rel="cmis-allversions" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/versions"/>
-        <link rel="cmis-stream" type="application/pdf" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf"/><link rel="cmis-type" href="http://10.33.4.34:8080/alfresco/service/api/type/document"/>
-        <link rel="cmis-repository" href="http://10.33.4.34:8080/alfresco/service/api/repository"/>
-        <published>2009-06-23T09:40:47.889+02:00</published>
-        <summary></summary>
-        <title>h4555-cmis-so.pdf</title>
-        <updated>2009-06-23T09:40:58.524+02:00</updated>
-
-        <cmis:object>
-        <cmis:properties>
-        <cmis:propertyId cmis:name="ObjectId"><cmis:value>workspace://SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d</cmis:value></cmis:propertyId>
-        <cmis:propertyString cmis:name="BaseType"><cmis:value>document</cmis:value></cmis:propertyString>
-        <cmis:propertyString cmis:name="ObjectTypeId"><cmis:value>document</cmis:value></cmis:propertyString>
-        <cmis:propertyString cmis:name="CreatedBy"><cmis:value>admin</cmis:value></cmis:propertyString>
-
-        <cmis:propertyDateTime cmis:name="CreationDate"><cmis:value>2009-06-23T09:40:47.889+02:00</cmis:value></cmis:propertyDateTime>
-        <cmis:propertyString cmis:name="LastModifiedBy"><cmis:value>admin</cmis:value></cmis:propertyString>
-        <cmis:propertyDateTime cmis:name="LastModificationDate"><cmis:value>2009-06-23T09:40:58.524+02:00</cmis:value></cmis:propertyDateTime>
-        <cmis:propertyString cmis:name="Name"><cmis:value>h4555-cmis-so.pdf</cmis:value></cmis:propertyString>
-        <cmis:propertyBoolean cmis:name="IsImmutable"><cmis:value>false</cmis:value></cmis:propertyBoolean>
-
-        <cmis:propertyBoolean cmis:name="IsLatestVersion"><cmis:value>true</cmis:value></cmis:propertyBoolean>
-        <cmis:propertyBoolean cmis:name="IsMajorVersion"><cmis:value>false</cmis:value></cmis:propertyBoolean>
-        <cmis:propertyBoolean cmis:name="IsLatestMajorVersion"><cmis:value>false</cmis:value></cmis:propertyBoolean>
-        <cmis:propertyString cmis:name="VersionLabel"/>
-        <cmis:propertyId cmis:name="VersionSeriesId"><cmis:value>workspace://SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d</cmis:value></cmis:propertyId>
-
-        <cmis:propertyBoolean cmis:name="IsVersionSeriesCheckedOut"><cmis:value>false</cmis:value></cmis:propertyBoolean>
-        <cmis:propertyString cmis:name="VersionSeriesCheckedOutBy"/>
-        <cmis:propertyId cmis:name="VersionSeriesCheckedOutId"/>
-        <cmis:propertyString cmis:name="CheckinComment"/>
-        <cmis:propertyInteger cmis:name="ContentStreamLength"><cmis:value>343084</cmis:value></cmis:propertyInteger>
-        <cmis:propertyString cmis:name="ContentStreamMimeType"><cmis:value>application/pdf</cmis:value></cmis:propertyString>
-        <cmis:propertyString cmis:name="ContentStreamFilename"><cmis:value>h4555-cmis-so.pdf</cmis:value></cmis:propertyString>
-
-        <cmis:propertyString cmis:name="ContentStreamURI"><cmis:value>http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf</cmis:value></cmis:propertyString>
-        </cmis:properties>
-        </cmis:object>
-
-
-         </entry>
-        </feed>';
-
-$childrenFeed[] = '<?xml version="1.0" encoding="UTF-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:cmis="http://www.cmis.org/2008/05" xmlns:alf="http://www.alfresco.org" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">
-<author><name>System</name></author>
-<generator version="3.0.0 (Stable 1526)">Alfresco (Labs)</generator>
-<icon>http://10.33.4.34:8080/alfresco/images/logo/AlfrescoLogo16.ico</icon>
-<id>urn:uuid:28537649-8af2-4c74-aa92-5d8bbecac9ce-children</id>
-<link rel="self" href="http://10.33.4.34:8080/alfresco/service/api/path/workspace/SpacesStore/Company%20Home/children"/>
-<link rel="cmis-source" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce"/>
-<link rel="first" href="http://10.33.4.34:8080/alfresco/service/api/path/workspace/SpacesStore/Company%20Home/children?pageNo=1&amp;pageSize=0&amp;guest=&amp;format=atomfeed" type="application/atom+xml;type=feed"/>
-
-<link rel="last" href="http://10.33.4.34:8080/alfresco/service/api/path/workspace/SpacesStore/Company%20Home/children?pageNo=1&amp;pageSize=0&amp;guest=&amp;format=atomfeed" type="application/atom+xml;type=feed"/>
-<title>Company Home Children</title>
-<updated>2009-06-18T10:20:29.937+02:00</updated>
-<entry>
-<author><name>System</name></author>
-<content>e98319fa-76e4-478f-8ce8-a3a0fd683e2c</content>
-<id>urn:uuid:e98319fa-76e4-478f-8ce8-a3a0fd683e2c</id>
-
-<link rel="self" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/e98319fa-76e4-478f-8ce8-a3a0fd683e2c"/>
-<link rel="edit" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/e98319fa-76e4-478f-8ce8-a3a0fd683e2c"/>
-<link rel="cmis-allowableactions" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/e98319fa-76e4-478f-8ce8-a3a0fd683e2c/permissions"/>
-<link rel="cmis-relationships" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/e98319fa-76e4-478f-8ce8-a3a0fd683e2c/associations"/>
-<link rel="cmis-parent" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce"/>
-<link rel="cmis-folderparent" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/e98319fa-76e4-478f-8ce8-a3a0fd683e2c/parent"/>
-<link rel="cmis-children" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/e98319fa-76e4-478f-8ce8-a3a0fd683e2c/children"/>
-<link rel="cmis-descendants" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/e98319fa-76e4-478f-8ce8-a3a0fd683e2c/descendants"/>
-<link rel="cmis-type" href="http://10.33.4.34:8080/alfresco/service/api/type/F/st_sites"/>
-<link rel="cmis-repository" href="http://10.33.4.34:8080/alfresco/service/api/repository"/>
-<published>2009-06-18T10:20:37.788+02:00</published>
-<summary>Site Collaboration Spaces</summary>
-<title>Sites</title>
-<updated>2009-06-18T10:20:37.874+02:00</updated>
-
-<cmis:object>
-<cmis:properties>
-<cmis:propertyId cmis:name="ObjectId"><cmis:value>workspace://SpacesStore/e98319fa-76e4-478f-8ce8-a3a0fd683e2c</cmis:value></cmis:propertyId>
-<cmis:propertyString cmis:name="BaseType"><cmis:value>folder</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="ObjectTypeId"><cmis:value>F/st_sites</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="CreatedBy"><cmis:value>System</cmis:value></cmis:propertyString>
-
-<cmis:propertyDateTime cmis:name="CreationDate"><cmis:value>2009-06-18T10:20:37.788+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="LastModifiedBy"><cmis:value>System</cmis:value></cmis:propertyString>
-<cmis:propertyDateTime cmis:name="LastModificationDate"><cmis:value>2009-06-18T10:20:37.874+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="Name"><cmis:value>Sites</cmis:value></cmis:propertyString>
-<cmis:propertyId cmis:name="ParentId"><cmis:value>workspace://SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce</cmis:value></cmis:propertyId>
-
-</cmis:properties>
-</cmis:object>
-<cmis:terminator/>
-<app:edited>2009-06-18T10:20:37.874+02:00</app:edited>
-<alf:icon>http://10.33.4.34:8080/alfresco/images/icons/space-icon-default-16.gif</alf:icon>
-</entry>
-<entry>
-<author><name>System</name></author>
-<content>8c80a0f7-74b4-4bd8-bb76-a2464e4b2d10</content>
-<id>urn:uuid:8c80a0f7-74b4-4bd8-bb76-a2464e4b2d10</id>
-
-<link rel="self" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/8c80a0f7-74b4-4bd8-bb76-a2464e4b2d10"/>
-<link rel="edit" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/8c80a0f7-74b4-4bd8-bb76-a2464e4b2d10"/>
-<link rel="cmis-allowableactions" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/8c80a0f7-74b4-4bd8-bb76-a2464e4b2d10/permissions"/>
-<link rel="cmis-relationships" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/8c80a0f7-74b4-4bd8-bb76-a2464e4b2d10/associations"/>
-<link rel="cmis-parent" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce"/>
-<link rel="cmis-folderparent" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/8c80a0f7-74b4-4bd8-bb76-a2464e4b2d10/parent"/>
-<link rel="cmis-children" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/8c80a0f7-74b4-4bd8-bb76-a2464e4b2d10/children"/>
-<link rel="cmis-descendants" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/8c80a0f7-74b4-4bd8-bb76-a2464e4b2d10/descendants"/>
-<link rel="cmis-type" href="http://10.33.4.34:8080/alfresco/service/api/type/folder"/>
-<link rel="cmis-repository" href="http://10.33.4.34:8080/alfresco/service/api/repository"/>
-<published>2009-06-18T10:20:29.939+02:00</published>
-<summary>User managed definitions</summary>
-<title>Data Dictionary</title>
-<updated>2009-06-18T10:20:30.004+02:00</updated>
-
-<cmis:object>
-<cmis:properties>
-<cmis:propertyId cmis:name="ObjectId"><cmis:value>workspace://SpacesStore/8c80a0f7-74b4-4bd8-bb76-a2464e4b2d10</cmis:value></cmis:propertyId>
-<cmis:propertyString cmis:name="BaseType"><cmis:value>folder</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="ObjectTypeId"><cmis:value>folder</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="CreatedBy"><cmis:value>System</cmis:value></cmis:propertyString>
-
-<cmis:propertyDateTime cmis:name="CreationDate"><cmis:value>2009-06-18T10:20:29.939+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="LastModifiedBy"><cmis:value>System</cmis:value></cmis:propertyString>
-<cmis:propertyDateTime cmis:name="LastModificationDate"><cmis:value>2009-06-18T10:20:30.004+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="Name"><cmis:value>Data Dictionary</cmis:value></cmis:propertyString>
-<cmis:propertyId cmis:name="ParentId"><cmis:value>workspace://SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce</cmis:value></cmis:propertyId>
-
-</cmis:properties>
-</cmis:object>
-<cmis:terminator/>
-<app:edited>2009-06-18T10:20:30.004+02:00</app:edited>
-<alf:icon>http://10.33.4.34:8080/alfresco/images/icons/space-icon-default-16.gif</alf:icon>
-</entry>
-<entry>
-<author><name>System</name></author>
-<content>ba2524ef-7f3d-4ed4-84a0-8d99b6524737</content>
-<id>urn:uuid:ba2524ef-7f3d-4ed4-84a0-8d99b6524737</id>
-
-<link rel="self" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/ba2524ef-7f3d-4ed4-84a0-8d99b6524737"/>
-<link rel="edit" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/ba2524ef-7f3d-4ed4-84a0-8d99b6524737"/>
-<link rel="cmis-allowableactions" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/ba2524ef-7f3d-4ed4-84a0-8d99b6524737/permissions"/>
-<link rel="cmis-relationships" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/ba2524ef-7f3d-4ed4-84a0-8d99b6524737/associations"/>
-<link rel="cmis-parent" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce"/>
-<link rel="cmis-folderparent" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/ba2524ef-7f3d-4ed4-84a0-8d99b6524737/parent"/>
-<link rel="cmis-children" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/ba2524ef-7f3d-4ed4-84a0-8d99b6524737/children"/>
-<link rel="cmis-descendants" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/ba2524ef-7f3d-4ed4-84a0-8d99b6524737/descendants"/>
-<link rel="cmis-type" href="http://10.33.4.34:8080/alfresco/service/api/type/folder"/>
-<link rel="cmis-repository" href="http://10.33.4.34:8080/alfresco/service/api/repository"/>
-<published>2009-06-18T10:20:30.312+02:00</published>
-<summary>The guest root space</summary>
-<title>Guest Home</title>
-
-<updated>2009-06-18T10:20:30.400+02:00</updated>
-<cmis:object>
-<cmis:properties>
-<cmis:propertyId cmis:name="ObjectId"><cmis:value>workspace://SpacesStore/ba2524ef-7f3d-4ed4-84a0-8d99b6524737</cmis:value></cmis:propertyId>
-<cmis:propertyString cmis:name="BaseType"><cmis:value>folder</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="ObjectTypeId"><cmis:value>folder</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="CreatedBy"><cmis:value>System</cmis:value></cmis:propertyString>
-
-<cmis:propertyDateTime cmis:name="CreationDate"><cmis:value>2009-06-18T10:20:30.312+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="LastModifiedBy"><cmis:value>System</cmis:value></cmis:propertyString>
-<cmis:propertyDateTime cmis:name="LastModificationDate"><cmis:value>2009-06-18T10:20:30.400+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="Name"><cmis:value>Guest Home</cmis:value></cmis:propertyString>
-<cmis:propertyId cmis:name="ParentId"><cmis:value>workspace://SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce</cmis:value></cmis:propertyId>
-
-</cmis:properties>
-</cmis:object>
-<cmis:terminator/>
-<app:edited>2009-06-18T10:20:30.400+02:00</app:edited>
-<alf:icon>http://10.33.4.34:8080/alfresco/images/icons/space-icon-default-16.gif</alf:icon>
-</entry>
-<entry>
-<author><name>System</name></author>
-<content>86224486-b7ae-4074-a793-82cd259b0026</content>
-<id>urn:uuid:86224486-b7ae-4074-a793-82cd259b0026</id>
-
-<link rel="self" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/86224486-b7ae-4074-a793-82cd259b0026"/>
-<link rel="edit" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/86224486-b7ae-4074-a793-82cd259b0026"/>
-<link rel="cmis-allowableactions" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/86224486-b7ae-4074-a793-82cd259b0026/permissions"/>
-<link rel="cmis-relationships" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/86224486-b7ae-4074-a793-82cd259b0026/associations"/>
-<link rel="cmis-parent" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce"/>
-<link rel="cmis-folderparent" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/86224486-b7ae-4074-a793-82cd259b0026/parent"/>
-<link rel="cmis-children" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/86224486-b7ae-4074-a793-82cd259b0026/children"/>
-<link rel="cmis-descendants" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/86224486-b7ae-4074-a793-82cd259b0026/descendants"/>
-<link rel="cmis-type" href="http://10.33.4.34:8080/alfresco/service/api/type/folder"/>
-<link rel="cmis-repository" href="http://10.33.4.34:8080/alfresco/service/api/repository"/>
-<published>2009-06-18T10:20:30.402+02:00</published>
-<summary>User Homes</summary>
-<title>User Homes</title>
-<updated>2009-06-18T10:20:30.428+02:00</updated>
-
-<cmis:object>
-<cmis:properties>
-<cmis:propertyId cmis:name="ObjectId"><cmis:value>workspace://SpacesStore/86224486-b7ae-4074-a793-82cd259b0026</cmis:value></cmis:propertyId>
-<cmis:propertyString cmis:name="BaseType"><cmis:value>folder</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="ObjectTypeId"><cmis:value>folder</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="CreatedBy"><cmis:value>System</cmis:value></cmis:propertyString>
-
-<cmis:propertyDateTime cmis:name="CreationDate"><cmis:value>2009-06-18T10:20:30.402+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="LastModifiedBy"><cmis:value>System</cmis:value></cmis:propertyString>
-<cmis:propertyDateTime cmis:name="LastModificationDate"><cmis:value>2009-06-18T10:20:30.428+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="Name"><cmis:value>User Homes</cmis:value></cmis:propertyString>
-<cmis:propertyId cmis:name="ParentId"><cmis:value>workspace://SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce</cmis:value></cmis:propertyId>
-
-</cmis:properties>
-</cmis:object>
-<cmis:terminator/>
-<app:edited>2009-06-18T10:20:30.428+02:00</app:edited>
-<alf:icon>http://10.33.4.34:8080/alfresco/images/icons/space-icon-default-16.gif</alf:icon>
-</entry>
-<entry>
-<author><name>System</name></author>
-<content>0df9087f-e334-4890-a467-b60e3d6be92c</content>
-<id>urn:uuid:0df9087f-e334-4890-a467-b60e3d6be92c</id>
-
-<link rel="self" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/0df9087f-e334-4890-a467-b60e3d6be92c"/>
-<link rel="edit" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/0df9087f-e334-4890-a467-b60e3d6be92c"/>
-<link rel="cmis-allowableactions" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/0df9087f-e334-4890-a467-b60e3d6be92c/permissions"/>
-<link rel="cmis-relationships" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/0df9087f-e334-4890-a467-b60e3d6be92c/associations"/>
-<link rel="cmis-parent" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce"/>
-<link rel="cmis-folderparent" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/0df9087f-e334-4890-a467-b60e3d6be92c/parent"/>
-<link rel="cmis-children" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/0df9087f-e334-4890-a467-b60e3d6be92c/children"/>
-<link rel="cmis-descendants" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/0df9087f-e334-4890-a467-b60e3d6be92c/descendants"/>
-<link rel="cmis-type" href="http://10.33.4.34:8080/alfresco/service/api/type/folder"/>
-<link rel="cmis-repository" href="http://10.33.4.34:8080/alfresco/service/api/repository"/>
-<published>2009-06-18T10:20:45.115+02:00</published>
-<summary>Web Content Management Spaces</summary>
-<title>Web Projects</title>
-<updated>2009-06-18T10:20:45.137+02:00</updated>
-
-<cmis:object>
-<cmis:properties>
-<cmis:propertyId cmis:name="ObjectId"><cmis:value>workspace://SpacesStore/0df9087f-e334-4890-a467-b60e3d6be92c</cmis:value></cmis:propertyId>
-<cmis:propertyString cmis:name="BaseType"><cmis:value>folder</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="ObjectTypeId"><cmis:value>folder</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="CreatedBy"><cmis:value>System</cmis:value></cmis:propertyString>
-
-<cmis:propertyDateTime cmis:name="CreationDate"><cmis:value>2009-06-18T10:20:45.115+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="LastModifiedBy"><cmis:value>System</cmis:value></cmis:propertyString>
-<cmis:propertyDateTime cmis:name="LastModificationDate"><cmis:value>2009-06-18T10:20:45.137+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="Name"><cmis:value>Web Projects</cmis:value></cmis:propertyString>
-<cmis:propertyId cmis:name="ParentId"><cmis:value>workspace://SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce</cmis:value></cmis:propertyId>
-
-</cmis:properties>
-</cmis:object>
-<cmis:terminator/>
-<app:edited>2009-06-18T10:20:45.137+02:00</app:edited>
-<alf:icon>http://10.33.4.34:8080/alfresco/images/icons/space-icon-default-16.gif</alf:icon>
-</entry>
-<entry>
-<author><name>admin</name></author>
-<content type="application/pdf" src="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf"/><id>urn:uuid:2df9d676-f173-47bb-8ec1-41fa1186b66d</id>
-<link rel="self" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d"/>
-
-<link rel="enclosure" type="application/pdf" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf"/><link rel="edit" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d"/>
-<link rel="edit-media" type="application/pdf" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf"/><link rel="cmis-allowableactions" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/permissions"/>
-<link rel="cmis-relationships" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/associations"/>
-<link rel="cmis-parents" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/parents"/>
-<link rel="cmis-allversions" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/versions"/>
-<link rel="cmis-stream" type="application/pdf" href="http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf"/><link rel="cmis-type" href="http://10.33.4.34:8080/alfresco/service/api/type/document"/>
-<link rel="cmis-repository" href="http://10.33.4.34:8080/alfresco/service/api/repository"/>
-<published>2009-06-23T09:40:47.889+02:00</published>
-<summary></summary>
-<title>h4555-cmis-so.pdf</title>
-<updated>2009-06-23T09:40:58.524+02:00</updated>
-
-<cmis:object>
-<cmis:properties>
-<cmis:propertyId cmis:name="ObjectId"><cmis:value>workspace://SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d</cmis:value></cmis:propertyId>
-<cmis:propertyString cmis:name="BaseType"><cmis:value>document</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="ObjectTypeId"><cmis:value>document</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="CreatedBy"><cmis:value>admin</cmis:value></cmis:propertyString>
-
-<cmis:propertyDateTime cmis:name="CreationDate"><cmis:value>2009-06-23T09:40:47.889+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="LastModifiedBy"><cmis:value>admin</cmis:value></cmis:propertyString>
-<cmis:propertyDateTime cmis:name="LastModificationDate"><cmis:value>2009-06-23T09:40:58.524+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="Name"><cmis:value>h4555-cmis-so.pdf</cmis:value></cmis:propertyString>
-<cmis:propertyBoolean cmis:name="IsImmutable"><cmis:value>false</cmis:value></cmis:propertyBoolean>
-
-<cmis:propertyBoolean cmis:name="IsLatestVersion"><cmis:value>true</cmis:value></cmis:propertyBoolean>
-<cmis:propertyBoolean cmis:name="IsMajorVersion"><cmis:value>false</cmis:value></cmis:propertyBoolean>
-<cmis:propertyBoolean cmis:name="IsLatestMajorVersion"><cmis:value>false</cmis:value></cmis:propertyBoolean>
-<cmis:propertyString cmis:name="VersionLabel"/>
-<cmis:propertyId cmis:name="VersionSeriesId"><cmis:value>workspace://SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d</cmis:value></cmis:propertyId>
-
-<cmis:propertyBoolean cmis:name="IsVersionSeriesCheckedOut"><cmis:value>false</cmis:value></cmis:propertyBoolean>
-<cmis:propertyString cmis:name="VersionSeriesCheckedOutBy"/>
-<cmis:propertyId cmis:name="VersionSeriesCheckedOutId"/>
-<cmis:propertyString cmis:name="CheckinComment"/>
-<cmis:propertyInteger cmis:name="ContentStreamLength"><cmis:value>343084</cmis:value></cmis:propertyInteger>
-<cmis:propertyString cmis:name="ContentStreamMimeType"><cmis:value>application/pdf</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="ContentStreamFilename"><cmis:value>h4555-cmis-so.pdf</cmis:value></cmis:propertyString>
-
-<cmis:propertyString cmis:name="ContentStreamURI"><cmis:value>http://10.33.4.34:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf</cmis:value></cmis:propertyString>
-</cmis:properties>
-</cmis:object>
-<cmis:terminator/>
-<app:edited>2009-06-23T09:40:58.524+02:00</app:edited>
-<alf:icon>http://10.33.4.34:8080/alfresco/images/filetypes/pdf.gif</alf:icon>
-</entry>
-<cmis:hasMoreItems>false</cmis:hasMoreItems>
-<opensearch:totalResults>6</opensearch:totalResults>
-<opensearch:startIndex>0</opensearch:startIndex>
-
-<opensearch:itemsPerPage>0</opensearch:itemsPerPage>
-</feed>';
-
-$folderFeed = '<?xml version="1.0" encoding="UTF-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom" xmlns:cmis="http://www.cmis.org/2008/05">
-<entry>
-<author><name>System</name></author>
-<content>28537649-8af2-4c74-aa92-5d8bbecac9ce</content>
-<id>urn:uuid:28537649-8af2-4c74-aa92-5d8bbecac9ce</id>
-<link rel="self" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce"/>
-<link rel="edit" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce"/>
-<link rel="cmis-allowableactions" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce/permissions"/>
-<link rel="cmis-relationships" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce/associations"/>
-<link rel="cmis-children" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce/children"/>
-<link rel="cmis-descendants" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce/descendants"/>
-<link rel="cmis-type" href="http://127.0.0.1:8080/alfresco/service/api/type/folder"/>
-<link rel="cmis-repository" href="http://127.0.0.1:8080/alfresco/service/api/repository"/>
-<published>2009-06-18T10:20:29.871+02:00</published>
-<summary>The company root space</summary>
-<title>Company Home</title>
-<updated>2009-06-18T10:20:29.937+02:00</updated>
-<cmis:object>
-<cmis:properties>
-<cmis:propertyId cmis:name="ObjectId"><cmis:value>workspace://SpacesStore/28537649-8af2-4c74-aa92-5d8bbecac9ce</cmis:value></cmis:propertyId>
-<cmis:propertyString cmis:name="BaseType"><cmis:value>folder</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="ObjectTypeId"><cmis:value>folder</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="CreatedBy"><cmis:value>System</cmis:value></cmis:propertyString>
-<cmis:propertyDateTime cmis:name="CreationDate"><cmis:value>2009-06-18T10:20:29.871+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="LastModifiedBy"><cmis:value>System</cmis:value></cmis:propertyString>
-<cmis:propertyDateTime cmis:name="LastModificationDate"><cmis:value>2009-06-18T10:20:29.937+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="Name"><cmis:value>Company Home</cmis:value></cmis:propertyString>
-<cmis:propertyId cmis:name="ParentId"/>
-</cmis:properties>
-</cmis:object>
-<cmis:terminator/>
-<app:edited>2009-06-18T10:20:29.937+02:00</app:edited>
-<alf:icon>http://127.0.0.1:8080/alfresco/images/icons/space-icon-default-16.gif</alf:icon>
-</entry>
-</feed>';
-
-$docFeed = '<?xml version="1.0" encoding="UTF-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom" xmlns:cmis="http://www.cmis.org/2008/05">
-<entry>
-<author><name>admin</name></author>
-<content type="application/pdf" src="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf"/><id>urn:uuid:2df9d676-f173-47bb-8ec1-41fa1186b66d</id>
-<link rel="self" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d"/>
-<link rel="enclosure" type="application/pdf" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf"/><link rel="edit" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d"/>
-<link rel="edit-media" type="application/pdf" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf"/><link rel="cmis-allowableactions" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/permissions"/>
-<link rel="cmis-relationships" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/associations"/>
-<link rel="cmis-parents" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/parents"/>
-<link rel="cmis-allversions" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/versions"/>
-<link rel="cmis-stream" type="application/pdf" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf"/><link rel="cmis-type" href="http://127.0.0.1:8080/alfresco/service/api/type/document"/>
-<link rel="cmis-repository" href="http://127.0.0.1:8080/alfresco/service/api/repository"/>
-<published>2009-06-23T09:40:47.889+02:00</published>
-<summary></summary>
-<title>h4555-cmis-so.pdf</title>
-<updated>2009-06-23T09:40:58.524+02:00</updated>
-<cmis:object>
-<cmis:properties>
-<cmis:propertyId cmis:name="ObjectId"><cmis:value>workspace://SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d</cmis:value></cmis:propertyId>
-<cmis:propertyString cmis:name="BaseType"><cmis:value>document</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="ObjectTypeId"><cmis:value>document</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="CreatedBy"><cmis:value>admin</cmis:value></cmis:propertyString>
-<cmis:propertyDateTime cmis:name="CreationDate"><cmis:value>2009-06-23T09:40:47.889+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="LastModifiedBy"><cmis:value>admin</cmis:value></cmis:propertyString>
-<cmis:propertyDateTime cmis:name="LastModificationDate"><cmis:value>2009-06-23T09:40:58.524+02:00</cmis:value></cmis:propertyDateTime>
-<cmis:propertyString cmis:name="Name"><cmis:value>h4555-cmis-so.pdf</cmis:value></cmis:propertyString>
-<cmis:propertyBoolean cmis:name="IsImmutable"><cmis:value>false</cmis:value></cmis:propertyBoolean>
-<cmis:propertyBoolean cmis:name="IsLatestVersion"><cmis:value>true</cmis:value></cmis:propertyBoolean>
-<cmis:propertyBoolean cmis:name="IsMajorVersion"><cmis:value>false</cmis:value></cmis:propertyBoolean>
-<cmis:propertyBoolean cmis:name="IsLatestMajorVersion"><cmis:value>false</cmis:value></cmis:propertyBoolean>
-<cmis:propertyString cmis:name="VersionLabel"/>
-<cmis:propertyId cmis:name="VersionSeriesId"><cmis:value>workspace://SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d</cmis:value></cmis:propertyId>
-<cmis:propertyBoolean cmis:name="IsVersionSeriesCheckedOut"><cmis:value>false</cmis:value></cmis:propertyBoolean>
-<cmis:propertyString cmis:name="VersionSeriesCheckedOutBy"/>
-<cmis:propertyId cmis:name="VersionSeriesCheckedOutId"/>
-<cmis:propertyString cmis:name="CheckinComment"/>
-<cmis:propertyInteger cmis:name="ContentStreamLength"><cmis:value>343084</cmis:value></cmis:propertyInteger>
-<cmis:propertyString cmis:name="ContentStreamMimeType"><cmis:value>application/pdf</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="ContentStreamFilename"><cmis:value>h4555-cmis-so.pdf</cmis:value></cmis:propertyString>
-<cmis:propertyString cmis:name="ContentStreamURI"><cmis:value>http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/2df9d676-f173-47bb-8ec1-41fa1186b66d/content.h4555-cmis-so.pdf</cmis:value></cmis:propertyString>
-</cmis:properties>
-</cmis:object>
-<cmis:terminator/>
-<app:edited>2009-06-23T09:40:58.524+02:00</app:edited>
-<alf:icon>http://127.0.0.1:8080/alfresco/images/filetypes/pdf.gif</alf:icon>
-</entry>
-</feed>';
 ?>
