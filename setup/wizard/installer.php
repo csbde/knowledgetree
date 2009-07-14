@@ -186,7 +186,7 @@ class Installer {
 	*/
     function runStepsInstallers() {
     	$steps = $this->getInstallOrders();
-    	for ($i=1; $i< count($steps); $i++) {
+    	for ($i=1; $i< count($steps)+1; $i++) {
     		$this->installHelper($steps[$i]);
     	}
     }
