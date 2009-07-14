@@ -251,6 +251,9 @@ class KT_cmis_atom_service_helper {
             $feedElement = $feed->newField('content', $type['typeId']);
             $entry->appendChild($feedElement);
 
+            // hack, force to lower case
+            $type['typeId'] = strtolower($type['typeId']);
+
             // NOTE should this be strtolower?  thought so but maybe not always, Alfresco is not consistent...
             $feed->newId('urn:uuid:type-' . strtolower($type['typeId']), $entry);
 
