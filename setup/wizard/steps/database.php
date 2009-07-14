@@ -691,10 +691,10 @@ class database extends Step
 
     private function applyUpgrades($con) {
     	// Database upgrade to version 3.6.1: Search ranking
-        $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/upgrades/search_ranking.sql";
-        exec($command, $output);
-        $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/upgrades/folders.sql";
-        exec($command, $output);
+//        $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/upgrades/search_ranking.sql";
+//        exec($command, $output);
+//        $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/upgrades/folders.sql";
+//        exec($command, $output);
     }
 	/**
 	* Close connection if it exists
