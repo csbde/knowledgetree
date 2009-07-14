@@ -1,21 +1,29 @@
-<form action="index.php?step_name=<?php echo $step_name; ?>" method="post">
-<h1>Database Configuration</h1>
+<h1>Database Configuration Confirmation</h1>
+
+<div class="description">
+Please confirm that your database settings have been entered correctly before proceeding with the installation.
+</div>
 
 <h3>Database Settings</h3>
 
-<div class="dtype">
-<?php if($dtypes) {
+<form action="index.php?step_name=<?php echo $step_name; ?>" method="post">
+<table width="100%">
+<?php
+if($dtypes) {
+        $type = '';
         foreach($dtypes as $k=>$v) {
-    ?>
-        <input type="radio" name="dtype" value="<?php echo $v; ?>" <?php if(!$k)echo 'checked="checked"'; ?>/><?php echo $v; ?>
-        <br/>
-<?php }
+            $type = (!$k) ? $v : $type;
+        }
+        ?>
+    <tr>
+        <td width="40%"><b>Database type: </b></td>
+        <td><?php echo $type; ?></td>
+    </tr>
+    <?php
 }
 ?>
-</div>
-<table class="settings">
     <tr>
-        <td><b>Name: </b></td>
+        <td width="40%"><b>Name: </b></td>
         <td><?php echo $dname; ?></td>
     </tr>
     <tr>
@@ -30,18 +38,18 @@
         <td><b>Root Password: </b></td>
         <td><?php echo $dpassword; ?></td>
     </tr>
-    <?php if($ddrop) { ?> 
+    <?php if($ddrop) { ?>
     <tr>
-        <td><b>You are about to drop the database if it exists </b></td>
+        <td colspan="2"><b>You are about to drop the database if it exists </b></td>
     </tr>
     <?php } ?>
 </table>
 
-<h3>Database Advanced Settings</h3>
+<h3>Advanced Settings</h3>
 
-<table class="asettings">
+<table width="100%">
     <tr>
-        <td><b>Host: </b></td>
+        <td width="40%"><b>Host: </b></td>
         <td><?php echo $dhost; ?></td>
     </tr>
     <tr>
@@ -58,11 +66,11 @@
     </tr>
 </table>
 
-<h3>DMS Users</h3>
+<h3>Database Users</h3>
 
-<table class="users">
+<table width="100%">
     <tr>
-        <td><b>DMS Admin Username: </b></td>
+        <td width="40%"><b>DMS Admin Username: </b></td>
         <td><?php echo $dmsname; ?></td>
     </tr>
     <tr>

@@ -66,33 +66,46 @@ class configuration extends Step
 	* @var array
 	*/
     protected $runInstall = true;
-    
+
+    /**
+     * Class constructor
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     */
     public function __construct()
     {
         $this->done = true;
     }
 
+    /**
+     * Set the variables from those stored in the session.
+     * Used for stepping back to the step from a future step.
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     */
 	private function setDetails() {
 		$conf = $this->getDataFromSession("configuration");
 		if($conf) {
-//			var_dump($conf);
 			$this->temp_variables['server'] = $conf['server'];
 			$this->temp_variables['paths'] = $conf['paths'];
 		}
 	}
 
+	/**
+	 * Control function for position within the step
+	 *
+	 * @author KnowledgeTree Team
+     * @access public
+	 * @return string The position in the step
+	 */
     public function doStep() {
         if($this->next()) {
             if($this->doRun()){
                 return 'confirm';
             }
             return 'error';
-            /*
-            if($this->doRun())
-                return 'next';
-            else
-                return 'error';
-            */
         } else if($this->previous()) {
         	$this->setDetails();
             return 'previous';
@@ -107,6 +120,13 @@ class configuration extends Step
         return 'landing';
     }
 
+     /**
+     * Execute the step
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @return boolean True to continue | False if errors occurred
+     */
     public function doRun()
     {
         $server = $this->getServerInfo();
@@ -121,6 +141,15 @@ class configuration extends Step
         return $this->done;
     }
 
+    /**
+     * Get the database configuration settings
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @param array $server
+     * @param array $dbconf
+     * @return array
+     */
     public function registerDBConfig($server, $dbconf) {
         // Adjust server variables
         $server['dbName'] = array('where'=>'file', 'name'=>ucwords($dbconf['dname']), 'section'=>'db', 'value'=>$dbconf['dname'], 'setting'=>'dbName');
@@ -129,10 +158,17 @@ class configuration extends Step
         $server['dbPort'] = array('where'=>'file', 'name'=>ucwords($dbconf['dport']), 'section'=>'db', 'value'=>$dbconf['dport'], 'setting'=>'dbPort');
         $server['dbAdminUser'] = array('where'=>'file', 'name'=>ucwords($dbconf['dmsname']), 'section'=>'db', 'value'=>$dbconf['dmsname'], 'setting'=>'dbAdminUser');
         $server['dbAdminPass'] = array('where'=>'file', 'name'=>ucwords($dbconf['dmspassword']), 'section'=>'db', 'value'=>$dbconf['dmspassword'], 'setting'=>'dbAdminPass');
-        
+
         return $server;
     }
-    
+
+    /**
+     * Perform the installation associated with the step.
+     * Variables required by the installation are stored within the session.
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     */
     public function installStep()
     {
         include_once('database.inc');
@@ -155,16 +191,20 @@ class configuration extends Step
 
         // initialise the db connection
         $db = new DBUtil();
+
         // retrieve database information from session
         $dbconf = $this->getDataFromSession("database");
+
         // make db connection
         $db->DBUtil($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']);
+
         // add db config to server variables
 		$server = $this->registerDBConfig($server, $dbconf);
-		
+
         $table = 'config_settings';
         // write server settings to config_settings table and config.ini
         foreach($server as $item){
+
             switch($item['where']){
                 case 'file':
                     $value = $item['value'];
@@ -182,6 +222,7 @@ class configuration extends Step
                 case 'db':
                     $value = mysql_real_escape_string($item['value']);
                     $setting = mysql_real_escape_string($item['setting']);
+
                     $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
                     $db->query($sql);
                     break;
@@ -210,6 +251,13 @@ class configuration extends Step
         $db->close();
     }
 
+    /**
+     * Get the server settings information
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @return array Server settings
+     */
     private function getServerInfo()
     {
         $script = $_SERVER['SCRIPT_NAME'];
@@ -246,6 +294,15 @@ class configuration extends Step
         return $server;
     }
 
+    /**
+     * Get the path information for directories. Check permissions and existence of each.
+     * Expands any ${fileSystemRoot} and ${varDirectory} variables contained in the path.
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @param string $fileSystemRoot The file system root of the installation
+     * @return array The path information
+     */
     private function getPathInfo($fileSystemRoot)
     {
         $dirs = $this->getDirectories();
@@ -266,6 +323,15 @@ class configuration extends Step
         return $dirs;
     }
 
+    /**
+     * Check whether a given directory / file path exists and is writable
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @param string $dir The directory / file to check
+     * @param boolean $create Whether to create the directory if it doesn't exist
+     * @return array The message and css class to use
+     */
     private function checkPermission($dir, $create=false)
     {
         $exist = 'Directory does not exist';
@@ -302,6 +368,13 @@ class configuration extends Step
         return $ret;
     }
 
+     /**
+     * Get the list of directories that need to be checked
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @return array The directory list
+     */
     private function getDirectories()
     {
         return array(

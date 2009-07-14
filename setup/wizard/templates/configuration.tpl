@@ -1,8 +1,16 @@
 <h1>System Configuration</h1>
 
+<p class="description">
+This check ensures that KnowledgeTree is correctly configured to run.
+</p>
+
 <form action="index.php?step_name=configuration" method="post">
 
 <h3>Server Settings</h3>
+
+<p class="description">
+The settings below have been drawn from the system information. The host and port should reflect the host and port that will be used to access KnowledgeTree. The Root Url is only needed if your installation is in a directory off the main web server root.
+</p>
 
 <div class="error">
     <?php
@@ -40,6 +48,10 @@
 
 <br />
 <h3>Paths and Permissions</h3>
+
+<p class="description">
+The following folders must be writable for KnowledgeTree to be able to run. The permissions on the configuration file can be reset to read-only once the installation has completed.
+</p>
 
 <table>
 <?php
