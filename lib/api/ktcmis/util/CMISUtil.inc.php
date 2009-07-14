@@ -82,7 +82,8 @@ class CMISUtil {
      * The decoded object ID is returned by reference via the argument list
      *
      * @param string $objectId
-     * @return string $typeId
+     * @param string &$typeId
+     * @return string $objectId
      */
     static public function decodeObjectId($objectId, &$typeId = null)
     {
@@ -93,6 +94,25 @@ class CMISUtil {
         }
         
         $typeId = null;
+
+        // NOTE Not sure whether this really belongs here, but probably this is the safest and most reliable place
+        // If we find that the folderId is in fact the name of the repository root folder, we will not be able to
+        // decode it, but we still need to return a valid id :).  This is because the root folder name is returned
+        // by the repository configuration rather than the actual CMIS folder id.
+        // TODO consider just setting F1 as the root in the config?  Originally didn't based on Alfresco, but...
+        $RepositoryService = new CMISRepositoryService();
+        $repositories = $RepositoryService->getRepositories();
+        $repositoryInfo = $repositories[0]->getRepositoryInfo();
+        // the string replace is a hack for the drupal module, yay...
+        if ($repositoryInfo->getRootFolderId() == urldecode(str_replace('%2520', '%20', $objectId))) {
+            // NOTE that we may want to check the KnowledgeTree (not CMIS) repository for the root folder id.
+            //      This will be vital if we ever implement a way for people to have multiple roots depending
+            //      on who is logged in or what they select.  Obviously the CMIS API in general will need a
+            //      method of doing this.
+            //      meantime this minor hack will get things working for the existing system structure, as the root
+            //      folder should always be id 1.
+            return '1';
+        }
 
         preg_match('/(\D)(\d*)/', $objectId, $matches);
         $type = $matches[1];
@@ -233,29 +253,59 @@ class CMISUtil {
 
     static public function createObjectPropertiesEntry($properties)
     {
+        // TODO better dynamic style fetching of object properties into array for output
         $object = array();
 
+        $object['Author'] = array('value' => $properties->getValue('Author'));
+        
         // TODO additional properties to be returned
-        $object['properties']['ObjectId'] = array('type' => $properties->getFieldType('ObjectId'),
-                                                           'value' => $properties->getValue('ObjectId'));
         $object['properties']['BaseType'] = array('type' => $properties->getFieldType('BaseType'),
                                                            'value' => $properties->getValue('BaseType'));
+        $object['properties']['ObjectId'] = array('type' => $properties->getFieldType('ObjectId'),
+                                                           'value' => $properties->getValue('ObjectId'));
         $object['properties']['ObjectTypeId'] = array('type' => $properties->getFieldType('ObjectTypeId'),
                                                            'value' => $properties->getValue('ObjectTypeId'));
         $object['properties']['Name'] = array('type' => $properties->getFieldType('Name'),
                                                            'value' => $properties->getValue('Name'));
-        $object['Author'] = array('value' => $properties->getValue('Author'));
+        // TODO ensure format of date is always correct
+        $object['properties']['LastModificationDate'] = array('type' => $properties->getFieldType('LastModificationDate'),
+                                                           'value' => $properties->getValue('LastModificationDate'));
+        $object['properties']['Uri'] = array('type' => $properties->getFieldType('Uri'),
+                               'value' => $properties->getValue('Uri'));
 
         $object['properties']['ParentId'] = array('type' => $properties->getFieldType('ParentId'),
                                                   'value' => CMISUtil::encodeObjectId('Folder',
                                                   $properties->getValue('ParentId')));
-        // TODO should check for content stream data before filling these in
+
+        $object['properties']['AllowedChildObjectTypeIds'] = array('type' => $properties->getFieldType('AllowedChildObjectTypeIds'),
+                                                                   'value' => $properties->getValue('AllowedChildObjectTypeIds'));
+        
+//        $object['properties']['AllowedChildObjectTypeIds'] = array('type' => $properties->getFieldType('AllowedChildObjectTypeIds'),
+//                                                                   'value' => $properties->getValue('AllowedChildObjectTypeIds'));
+
+        $object['properties']['CreatedBy'] = array('type' => $properties->getFieldType('CreatedBy'),
+                                                   'value' => $properties->getValue('CreatedBy'));
+
+        $object['properties']['CreationDate'] = array('type' => $properties->getFieldType('CreationDate'),
+                                                       'value' => $properties->getValue('CreationDate'));
+
+        $object['properties']['ChangeToken'] = array('type' => $properties->getFieldType('ChangeToken'),
+                                                       'value' => $properties->getValue('ChangeToken'));
+
         if (strtolower($properties->getValue('ObjectTypeId')) == 'document')
         {
-            $object['properties']['ContentStreamLength'] = array('type' => $properties->getFieldType('ContentStreamLength'),
-                                                           'value' => $properties->getValue('ContentStreamLength'));
-            $object['properties']['ContentStreamMimeType'] = array('type' => $properties->getFieldType('ContentStreamMimeType'),
-                                                           'value' => $properties->getValue('ContentStreamMimeType'));
+
+        $object['properties']['ChangeToken'] = array('type' => $properties->getFieldType('ChangeToken'),
+                                                                   'value' => $properties->getValue('ChangeToken'));
+            $contentStreamLength = $properties->getValue('ContentStreamLength');
+            if (!empty($contentStreamLength))
+            {
+                $contentStreamLength = $properties->getValue('ContentStreamLength');
+                $object['properties']['ContentStreamLength'] = array('type' => $properties->getFieldType('ContentStreamLength'),
+                                                               'value' => $properties->getValue('ContentStreamLength'));
+                $object['properties']['ContentStreamMimeType'] = array('type' => $properties->getFieldType('ContentStreamMimeType'),
+                                                               'value' => $properties->getValue('ContentStreamMimeType'));
+            }
         }
 
         // if we have found a child/parent with one or more children/parents, recurse into the child/parent object

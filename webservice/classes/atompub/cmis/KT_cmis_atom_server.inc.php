@@ -77,13 +77,13 @@ class KT_cmis_atom_server extends KT_atom_server {
             }
             $ws->appendChild($element);
 
-			foreach($collection as $serviceName => $serviceInstance)
+            foreach($collection as $serviceName => $serviceInstance)
             {
                 foreach($serviceInstance as $instance)
                 {
                     $collectionStr = CMIS_APP_BASE_URI . $workspace . '/' . $serviceName . '/'
                                    . (is_array($instance['parameters']) ? implode('/', $instance['parameters']).'/' : '');
-                    $col = $service->newCollection($collectionStr, $instance['title'], $instance['collectionType'], $ws);
+                    $col = $service->newCollection($collectionStr, $instance['title'], $instance['collectionType'], $instance['accept'], $ws);
                 }
 			}
 		}
@@ -92,17 +92,18 @@ class KT_cmis_atom_server extends KT_atom_server {
 	}
 
     public function registerService($workspace = NULL, $serviceName = NULL, $serviceClass = NULL, $title = NULL, 
-                                    $serviceParameters = NULL, $collectionType = NULL)
+                                    $serviceParameters = NULL, $collectionType = NULL, $accept = null)
     {
 		$workspace = strtolower(trim($workspace));
 		$serviceName = strtolower(trim($serviceName));
 
 		$serviceRecord = array(
-			'fileName'		=> $fileName,
-			'serviceClass'	=> $serviceClass,
-			'title'			=> $title,
-            'parameters'    => $serviceParameters,
-            'collectionType'    => $collectionType
+			'fileName' => $fileName,
+			'serviceClass' => $serviceClass,
+			'title' => $title,
+            'parameters' => $serviceParameters,
+            'collectionType' => $collectionType,
+            'accept' => $accept
 		);
 
 		$this->services[$workspace][$serviceName][] = $serviceRecord;
@@ -119,23 +120,25 @@ class KT_cmis_atom_server extends KT_atom_server {
 		return false;
 	}
 
-    // TODO we probably want this version in the base class for auth purposes
-    public function render()
-    {
-		ob_end_clean();
-        // possible additional headers, e.g. basic auth request
-        // FIXME this won't work with the service document as no service object exists
-        if (!is_null($this->serviceObject))
-        {
-            $headers = $this->serviceObject->getHeaders();
-            foreach ($headers as $header)
-            {
-                header($header);
-            }
-        }
-		header('Content-type: text/xml');
-        echo $this->output;
-	}
+//    // TODO we probably want this version in the base class for auth purposes
+//    public function render()
+//    {
+//		ob_end_clean();
+////        // possible additional headers, e.g. basic auth request
+////        // FIXME this won't work with the service document as no service object exists
+////        if (!is_null($this->serviceObject))
+////        {
+////            $headers = $this->serviceObject->getHeaders();
+////            foreach ($headers as $header)
+////            {
+////                header($header);
+////            }
+////        }
+//
+//        // TODO header: application/atom+xml for service doc?  is how Alfresco does it but is it needed?
+//        header('Content-type: text/xml');
+//        echo $this->output;
+//	}
 
 }
 

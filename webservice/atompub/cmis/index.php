@@ -93,22 +93,21 @@ if ($workspace == 'servicedocument')
 */
 // TODO consider a registerServices function which will, dependant on what is requested, register the appropriate services, keep the logic out of the index file
 $APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',
-                      array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'children'), 'root-children');
+                      array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'children'), 'rootchildren');
 $APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',
-                      array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'descendants'), 'root-descendants');
-$APP->registerService('dms', 'checkedout', 'KT_cmis_atom_service_checkedout', 'Checked Out Document Collection', null, 'checkedout');
-$APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'types-children');
-$APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'types-descendants');
+                      array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'descendants'), 'rootdescendants');
+$APP->registerService('dms', 'checkedout', 'KT_cmis_atom_service_checkedout', 'Checked Out Document Collection', null, 
+                      'checkedout', 'application/atom+xml;type=entry');
+$APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'typeschildren');
+$APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'typesdescendants');
 
-// FIXME HACK! this should not happen every time, ONLY on a specific request, should NOT appear in service document as this is not definable at that time;
-//             SHOULD be appearing in types listing feed
 // NOTE $requestParams is meaningless if not actually requesting this service, so not a good way to register the service really
 if ($workspace != 'servicedocument')
 {
     // should check this per workspace???
-    $APP->registerService('dms', 'type', 'KT_cmis_atom_service_type', 'Object Type Collection', explode('/', $requestParams), 'types-descendants');
+    $APP->registerService('dms', 'type', 'KT_cmis_atom_service_type', 'Object Type Collection', explode('/', $requestParams), 'typesdescendants');
     // FIXME HACK! see above, this one for documents
-    $APP->registerService('dms', 'document', 'KT_cmis_atom_service_document', 'Object Type Collection', explode('/', $requestParams), 'types-descendants');
+    $APP->registerService('dms', 'document', 'KT_cmis_atom_service_document', 'Object Type Collection', explode('/', $requestParams), 'typesdescendants');
 }
 
 //Execute the current url/header request

@@ -28,45 +28,156 @@ class KT_cmis_atom_service_helper {
         $id = $cmisEntry['properties']['ObjectId']['value'];
         $entry = $feed->newEntry();
         $feed->newField('id', 'urn:uuid:' . $id, $entry);
-//        print_r($cmisEntry);
+
+        // TODO dynamic actual creator name
+        $feedElement = $feed->newField('author');
+        $element = $feed->newField('name', 'admin', $feedElement);
+        $entry->appendChild($feedElement);
+        
+        $entry->appendChild($feed->newField('content', $id));
+        // TODO proper date
+        $entry->appendChild($feed->newField('published', self::formatDatestamp()));
+        $entry->appendChild($feed->newField('updated', self::formatDatestamp()));
+
+//        $entry->appendChild($feed->newField('summary', $cmisEntry['properties']['Name']['value']));
+
         // links
-        // TODO check parent link is correct, fix if needed
+        /*
+<link rel="allowableactions" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/66f02c27-379e-4782-a0c4-b12f2d5bc543/permissions"/>
+<link rel="relationships" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/66f02c27-379e-4782-a0c4-b12f2d5bc543/rels"/>
+<link rel="parents" href="http://127.0.0.1:8080/alfresco/service/api/node/workspace/SpacesStore/66f02c27-379e-4782-a0c4-b12f2d5bc543/parent"/>
+
+        */
+        //
+
+        /*
+<cmis:propertyUri cmis:name="Uri"/>
+<cmis:propertyId cmis:name="AllowedChildObjectTypeIds"/>
+<cmis:propertyString cmis:name="CreatedBy"><cmis:value>System</cmis:value></cmis:propertyString>
+<cmis:propertyDateTime cmis:name="CreationDate"><cmis:value>2009-07-13T13:59:20.724+02:00</cmis:value></cmis:propertyDateTime>
+<cmis:propertyString cmis:name="ChangeToken"/>
+<cmis:propertyString cmis:name="LastModifiedBy"><cmis:value>System</cmis:value></cmis:propertyString>
+<cmis:propertyId cmis:name="ObjectTypeId"><cmis:value>folder</cmis:value></cmis:propertyId>
+
+<cmis:propertyId cmis:name="ObjectId"><cmis:value>workspace://SpacesStore/b30ea6e5-1e3f-4133-82f4-172bc240a9a2</cmis:value></cmis:propertyId>
+         */
+
+        $type = strtolower($cmisEntry['properties']['ObjectTypeId']['value']);
+
         $link = $feed->newElement('link');
-        $link->appendChild($feed->newAttr('rel','cmis-parent'));
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/folder/' . $cmisEntry['properties']['ParentId']['value']));
+        $link->appendChild($feed->newAttr('rel','self'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/' . $type . '/' . $cmisEntry['properties']['ObjectId']['value']));
         $entry->appendChild($link);
 
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel','edit'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/' . $type . '/' . $cmisEntry['properties']['ObjectId']['value']));
+        $entry->appendChild($link);
+        
+        // TODO check parent link is correct, fix if needed
+        // TODO leave out if at root folder
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel', 'parents'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/folder/' 
+                                                . $cmisEntry['properties']['ObjectId']['value'] . '/parent'));
+        $entry->appendChild($link);
+
+        // according to spec this MUST be present, but spec says that links for function which are not supported
+        // do not need to be present, so unsure for the moment
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel', 'allowableactions'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/' . $type . '/' 
+                                                . $cmisEntry['properties']['ObjectId']['value'] . '/permissions'));
+        $entry->appendChild($link);
+
+        // Folder/Document specific links
         if (strtolower($cmisEntry['properties']['ObjectTypeId']['value']) == 'folder')
         {
-            // TODO check parent link is correct, fix if needed
+            // no longer valid, remove...
+//            // TODO check parent link is correct, fix if needed
+//            $link = $feed->newElement('link');
+//            $link->appendChild($feed->newAttr('rel','folderparent'));
+//            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/folder/' . $cmisEntry['properties']['ParentId']['value']));
+//            $entry->appendChild($link);
+
             $link = $feed->newElement('link');
-            $link->appendChild($feed->newAttr('rel','cmis-folderparent'));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/folder/' . $cmisEntry['properties']['ParentId']['value']));
-            $entry->appendChild($link);
-            $link = $feed->newElement('link');
-            $link->appendChild($feed->newAttr('rel','cmis-children'));
+            $link->appendChild($feed->newAttr('rel','children'));
             $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/'
-                                                    . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])
+                                                    . $type
                                                     . '/' . $cmisEntry['properties']['ObjectId']['value']
                                                     . '/children'));
             $entry->appendChild($link);
             $link = $feed->newElement('link');
-            $link->appendChild($feed->newAttr('rel','cmis-descendants'));
+            $link->appendChild($feed->newAttr('rel','descendants'));
             $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/'
-                                                    . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])
+                                                    . $type
                                                     . '/' . $cmisEntry['properties']['ObjectId']['value']
                                                     . '/descendants'));
             $entry->appendChild($link);
         }
+        else if (strtolower($cmisEntry['properties']['ObjectTypeId']['value']) == 'document')
+        {
+            // according to spec this MUST be present, but spec says that links for function which are not supported
+            // do not need to be present, so unsure for the moment
+//            $link = $feed->newElement('link');
+//            $link->appendChild($feed->newAttr('rel', 'allversions'));
+//            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/' . $type . '/' . $cmisEntry['properties']['ParentId']['value']));
+//            $entry->appendChild($link);
+
+            // according to spec this MUST be present, but spec says that links for function which are not supported
+            // do not need to be present, so unsure for the moment
+//            $link = $feed->newElement('link');
+//            $link->appendChild($feed->newAttr('rel', 'latestversion'));
+//            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/' . $type . '/' . $cmisEntry['properties']['ParentId']['value']));
+//            $entry->appendChild($link);
+
+            // if there is a content stream, this link MUST be present
+            // not sure yet where it must point...
+            if (!empty($cmisEntry['properties']['ContentStreamLength']['value']))
+            {
+                $link = $feed->newElement('link');
+                $link->appendChild($feed->newAttr('rel', 'stream'));
+                $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/' . $type . '/'
+                                                        . $cmisEntry['properties']['ObjectId']['value']));
+                $entry->appendChild($link);
+            }
+
+            // if the document is checked out and this is NOT the PWC, this link MUST be present
+//            if (!empty($cmisEntry['properties']['ContentStreamLength']['value']))
+//            {
+//                $link = $feed->newElement('link');
+//                $link->appendChild($feed->newAttr('rel', 'stream'));
+//                $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/' . $type . '/' . $cmisEntry['properties']['ParentId']['value']));
+//                $entry->appendChild($link);
+//            }
+        }
+
+
+        // according to spec this MUST be present, but spec says that links for function which are not supported
+        // do not need to be present, so unsure for the moment
+          $link = $feed->newElement('link');
+          $link->appendChild($feed->newAttr('rel', 'relationships'));
+          $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/' . $type . '/' 
+                                                  . $cmisEntry['properties']['ObjectId']['value'] . '/rels'));
+          $entry->appendChild($link);
+        
 
         $link = $feed->newElement('link');
-        $link->appendChild($feed->newAttr('rel','cmis-type'));
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . strtolower($cmisEntry['properties']['ObjectTypeId']['value'])));
+        $link->appendChild($feed->newAttr('rel','type'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . $type));
         $entry->appendChild($link);
+
         $link = $feed->newElement('link');
-        $link->appendChild($feed->newAttr('rel','cmis-repository'));
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/servicedocument'));
+        $link->appendChild($feed->newAttr('rel','repository'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . '/servicedocument'));
         $entry->appendChild($link);
+
+        // according to spec this MUST be present, but spec says that links for function which are not supported
+        // do not need to be present, so unsure for the moment - policies are being abandoned, or so I thought...
+//        $link = $feed->newElement('link');
+//        $link->appendChild($feed->newAttr('rel', 'policies'));
+//        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/' . $type . '/' . $cmisEntry['properties']['ParentId']['value']));
+//        $entry->appendChild($link);
         // end links
 
         $entry->appendChild($feed->newElement('summary', $cmisEntry['properties']['Name']['value']));
@@ -86,6 +197,9 @@ class KT_cmis_atom_service_helper {
 
         $objectElement->appendChild($propertiesElement);
         $entry->appendChild($objectElement);
+        
+        // after every entry, append a cmis:terminator tag
+        $entry->appendChild($feed->newElement('cmis:terminator'));
     }
 
     /**
@@ -116,35 +230,67 @@ class KT_cmis_atom_service_helper {
         //Create a new response feed
         $feed = new KT_cmis_atom_responseFeed(CMIS_APP_BASE_URI, $typesHeading, null, null, null, 'urn:uuid:' . $typesString);
 
+        // TODO set page number correctly - to be done when we support paging the the API
+        
+        // author
+        // TODO generate this dynamically (based on???)\
+        $feedElement = $feed->newField('author');
+        $element = $feed->newField('name', 'admin', $feedElement);
+        $feed->appendChild($feedElement);
+
+        // NOTE spec says this link MUST be present but is vague on where it points
+        //      as of 0.61c:
+        //      "The source link relation points to the underlying CMIS Type Definition as Atom Entry"
+        //      so what is the underlying CMIS Type Definition for a collection of base types?
+        //      suspect that it only applies when not listing all types, i.e. a base type is asked for
+        /*
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel','source'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . strtolower($type['typeId'])));
+        $feed->appendChild($link);
+         */
+
+        // current time: format = 2009-07-13T14:49:27.659+02:00
+        $feed->appendChild($feed->newElement('updated', self::formatDatestamp()));
+
         foreach($types as $type)
         {
             $entry = $feed->newEntry();
+            
+            $feedElement = $feed->newField('author');
+            $element = $feed->newField('name', 'admin', $feedElement);
+            $entry->appendChild($feedElement);
+            $feedElement = $feed->newField('content', $type['typeId']);
+            $entry->appendChild($feedElement);
+
+            // NOTE should this be strtolower?  thought so but maybe not always, Alfresco is not consistent...
             $feed->newId('urn:uuid:type-' . strtolower($type['typeId']), $entry);
 
+            // TODO add parents link when not selecting a base type.
+            // TODO add children link when type has children
+            // TODO add descendants link when type has children
+            // NOTE KnowledgeTree currently only supports base types so these are not important at the present time.
+
             // links
+//            $link = $feed->newElement('link');
+//            $link->appendChild($feed->newAttr('rel','self'));
+//            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . strtolower($type['typeId'])));
+//            $entry->appendChild($link);
+            // TODO type link MUST point to base type
+            //      KnowledgeTree currently only supports base types so this is not important
+            //      at the present time as it will always point at the base type.
             $link = $feed->newElement('link');
-            $link->appendChild($feed->newAttr('rel','self'));
+            $link->appendChild($feed->newAttr('rel','type'));
             $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . strtolower($type['typeId'])));
             $entry->appendChild($link);
             $link = $feed->newElement('link');
-            $link->appendChild($feed->newAttr('rel','cmis-type'));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . strtolower($type['typeId'])));
-            $entry->appendChild($link);
-            $link = $feed->newElement('link');
-            $link->appendChild($feed->newAttr('rel','cmis-children'));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . strtolower($type['typeId']) . '/children'));
-            $entry->appendChild($link);
-            $link = $feed->newElement('link');
-            $link->appendChild($feed->newAttr('rel','cmis-descendants'));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . strtolower($type['typeId']) . '/descendants'));
-            $entry->appendChild($link);
-            $link = $feed->newElement('link');
-            $link->appendChild($feed->newAttr('rel','cmis-repository'));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/servicedocument'));
+            $link->appendChild($feed->newAttr('rel','repository'));
+            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . '/servicedocument'));
             $entry->appendChild($link);
 
             $entry->appendChild($feed->newElement('summary', $type['typeId'] . ' Type'));
             $entry->appendChild($feed->newElement('title', $type['typeId']));
+            $entry->appendChild($feed->newElement('updated', self::formatDatestamp()));
 
             // main CMIS entry
             $feedElement = $feed->newElement('cmis:' . strtolower($type['typeId']) . 'Type');
@@ -154,6 +300,9 @@ class KT_cmis_atom_service_helper {
             }
 
             $entry->appendChild($feedElement);
+            
+            // after every entry, append a cmis:terminator tag
+            $entry->appendChild($feed->newElement('cmis:terminator'));
         }
 
         return $feed;
@@ -234,7 +383,7 @@ class KT_cmis_atom_service_helper {
 	 * @param string $ip
 	 * @return object Containing the status_code of the login and session id
 	 */
-	function login($username, $password, $ip=null){
+	static public function login($username, $password, $ip=null){
 		$kt = self::getKt();
 
 		$session = $kt->start_session($username,$password, $ip);
@@ -256,7 +405,7 @@ class KT_cmis_atom_service_helper {
 	 * @param string $session_id
 	 * @return object Containing the status_code of the logout attempt
 	 */
-	function logout($session_id){
+	static public function logout($session_id){
 		$kt = self::getKt();
 		$session = $kt->get_active_session($session_id, null);
 
@@ -283,6 +432,13 @@ class KT_cmis_atom_service_helper {
 		}
 		return self::$kt;
 	}
+
+    // TODO adjust for time zones?
+    static public function formatDatestamp($time = null)
+    {
+        if (is_null($time)) $time = time();
+        return date('Y-m-d H:i:s', $time);
+    }
 
 }
 

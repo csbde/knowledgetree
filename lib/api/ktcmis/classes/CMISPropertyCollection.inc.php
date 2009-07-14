@@ -47,14 +47,14 @@ abstract class CMISPropertyCollection {
 
     static $ObjectId;
     static $BaseType;
-    static $URI;
+    static $Uri;
     static $ObjectTypeId;
     static $CreatedBy;
     static $CreationDate;
     static $LastModifiedBy;
     static $LastModificationDate;
     static $ChangeToken;
-    // TODO these definitions probably belong elsewhere, but here will do for now
+    // TODO these definitions belong in their own classe definition (see property type definions,) but here will do for now
     static $propertyTypes;
 
     function __construct()
@@ -69,6 +69,11 @@ abstract class CMISPropertyCollection {
                                     'Name' => 'propertyString',
                                     'ContentStreamLength' => 'propertyInteger',
                                     'ContentStreamMimeType' => 'propertyString',
+                                    'Uri' => 'propertyUri',
+                                    'AllowedChildObjectTypeIds' => 'propertyId',
+                                    'CreatedBy' => 'propertyString',
+                                    'CreationDate' => 'propertyDateTime',
+                                    'ChangeToken' => 'propertyString',
                                     'ParentId' => 'propertyId');
     }
 
