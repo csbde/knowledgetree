@@ -191,7 +191,9 @@ class KT_cmis_atom_service_helper {
         {
             $propElement = $feed->newElement('cmis:' . $property['type']);
             $propElement->appendChild($feed->newAttr('cmis:name', $propertyName));
-            $feed->newField('cmis:value', CMISUtil::boolToString($property['value']), $propElement);
+            if (!empty($property['value'])) {
+                $feed->newField('cmis:value', CMISUtil::boolToString($property['value']), $propElement);
+            }
             $propertiesElement->appendChild($propElement);
         }
 
