@@ -1,5 +1,5 @@
 <?php
-class KT_atom_responseFeed extends KT_atom_baseDoc {
+class KT_atom_response extends KT_atom_baseDoc {
 
 	protected $baseURI=NULL;
 	protected $feed=NULL;
@@ -7,16 +7,8 @@ class KT_atom_responseFeed extends KT_atom_baseDoc {
 	public function __construct($baseURI=NULL){
 		parent::__construct();
 		$this->baseURI = $baseURI;
-		$this->constructFeedHeader();
+		$this->feed =&$this->DOM;
 	}
-
-	protected function constructFeedHeader(){
-		$feed = $this->newElement('feed');
-		$feed->appendChild($this->newAttr('xmlns','http://www.w3.org/2005/Atom'));
-		$this->feed = &$feed;
-        $this->DOM->appendChild($this->feed);
-	}
-
 
 	public function &newEntry(){
 		$entry=$this->newElement('entry');
@@ -37,9 +29,9 @@ class KT_atom_responseFeed extends KT_atom_baseDoc {
 
 }
 
-class KT_atom_ResponseFeed_GET extends KT_atom_responseFeed{}
-class KT_atom_ResponseFeed_PUT extends KT_atom_responseFeed{}
-class KT_atom_ResponseFeed_POST extends KT_atom_responseFeed{}
-class KT_atom_ResponseFeed_DELETE extends KT_atom_responseFeed{}
+class KT_atom_Response_GET extends KT_atom_response{}
+class KT_atom_Response_PUT extends KT_atom_response{}
+class KT_atom_Response_POST extends KT_atom_response{}
+class KT_atom_Response_DELETE extends KT_atom_response{}
 
 ?>
