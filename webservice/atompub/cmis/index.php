@@ -55,8 +55,9 @@ define('CMIS_ATOM_LIB_FOLDER', trim(KT_ATOM_LIB_FOLDER, '/') . '/cmis/');
  * Includes
  */
 include_once(KT_ATOM_LIB_FOLDER.'XMLns2array.inc.php');
+include_once(KT_ATOM_LIB_FOLDER.'KT_atom_baseDoc.inc.php');
 include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_server.inc.php');
-include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_baseDoc.inc.php');
+include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_response.inc.php');				//Containing the response feed class allowing easy atom feed generation
 include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_responseFeed.inc.php');				//Containing the response feed class allowing easy atom feed generation
 include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_serviceDoc.inc.php');          //Containing the servicedoc class allowing easy ServiceDocument generation
 include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_service.inc.php');          //Containing the servicedoc class allowing easy ServiceDocument generation
