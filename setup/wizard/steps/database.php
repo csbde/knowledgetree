@@ -292,11 +292,11 @@ class database extends Step
 	*/
     public function doTest() {
     	if($this->match($this->dmspassword, $this->getPassword1()) != 0) {
-    		$this->error = array("19"=>"Passwords do not match: " . $this->dmspassword." ". $this->getPassword1());
+    		$this->error[] = "Passwords do not match: " . $this->dmspassword." ". $this->getPassword1();
     		return false;
     	}
     	if($this->match($this->dmsuserpassword, $this->getPassword2()) != 0) {
-    		$this->error = array("17"=>"Passwords do not match: " . $this->dmsuserpassword." ". $this->getPassword2());
+    		$this->error[] = "Passwords do not match: " . $this->dmsuserpassword." ". $this->getPassword2();
     		return false;
     	}
     	if($this->dport == '') 
@@ -304,7 +304,7 @@ class database extends Step
     	else 
     		$con = $this->dbhandler->DBUtil($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
         if (!$con) {
-            $this->error = array("1"=>"Could not connect: " . $this->dbhandler->getErrors());
+            $this->error[] = "Could not connect: " . $this->dbhandler->getErrors();
             return false;
         } else {
             return true;
@@ -500,7 +500,9 @@ class database extends Step
     		$this->error[] = 'No database type selected';
     		return 'error';
     	}
-        $this->{$this->dtype}();
+        if(!$this->{$this->dtype}()) {
+        	return 'error';
+        }
     }
 
 	/**
@@ -515,7 +517,7 @@ class database extends Step
         $con = $this->connectMysql();
         if($con) {
             if(!$this->createDB($con)) {
-            	$this->error = array("20"=>"Could Create Database: " . $this->dbhandler->getErrors());
+            	$this->error[] = "Could not Create Database: " . $this->dbhandler->getErrors();
             	return false;
             }
             $this->closeMysql($con);
@@ -533,7 +535,7 @@ class database extends Step
     private function connectMysql() {
 		$con = $this->dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
         if (!$con) {
-            $this->error = array("2"=>"Could not connect: " . $this->dbhandler->getErrors());
+            $this->error[] = "Could not connect: " . $this->dbhandler->getErrors();
 
             return false;
         }
@@ -553,31 +555,32 @@ class database extends Step
 		if($this->usedb($con)) { // attempt to use the db
 		    if($this->dropdb($con)) { // attempt to drop the db
 		        if(!$this->create($con)) { // attempt to create the db
-					$this->error = array("15"=>"Could create database: " . $this->dbhandler->getErrors());
+					$this->error[] = "Could create database: " . $this->dbhandler->getErrors();
 					return false;// cannot overwrite database
 		        }
 		    } else {
-		    	$this->error = array("14"=>"Could not drop database: " . $this->dbhandler->getErrors());
+		    	$this->error[] = "Could not drop database: " . $this->dbhandler->getErrors();
 		    	return false;// cannot overwrite database
 		    }
 		} else {
 		    if(!$this->create($con)) { // attempt to create the db
-				$this->error = array("16"=>"Could create database: " . $this->dbhandler->getErrors());
+				$this->error[] = "Could not create database: " . $this->dbhandler->getErrors();
 				return false;// cannot overwrite database
 		    }
 		}
 		if(!$this->createDmsUser($con)) {
-			// TODO:Way to catch errors
+			
 		}
 		if(!$this->createSchema($con)) {
-			// TODO:Way to catch errors
+			$this->error[] = "Could not create schema ";
 		}
 		if(!$this->populateSchema($con)) {
-			// TODO:Way to catch errors
+			$this->error[] = "Could not populate schema ";
 		}
 		if(!$this->applyUpgrades($con)) {
-			// TODO:Way to catch errors
+			$this->error[] = "Could not apply updates ";
 		}
+		
 		return true;
     }
 
@@ -611,7 +614,7 @@ class database extends Step
 		if($this->dbhandler->useBD($this->dname)) {
             return true;
         } else {
-            $this->error = array("4"=>"Error using database: ".$this->dbhandler->getErrors()."");
+            $this->error[] = "Error using database: ".$this->dbhandler->getErrors();
             return false;
         }
     }
@@ -628,11 +631,11 @@ class database extends Step
         if($this->ddrop) {
             $sql = "DROP DATABASE {$this->dname};";
 			if(!$this->dbhandler->query($sql)) {
-                $this->error = array("5"=>"Cannot drop database: ".$this->dbhandler->getErrors()."");
+                $this->error[] = "Cannot drop database: ".$this->dbhandler->getErrors();
                 return false;
             }
         } else {
-            $this->error = array("6"=>"Cannot drop database: ".$this->dbhandler->getErrors()."");
+            $this->error[] = "Cannot drop database: ".$this->dbhandler->getErrors();
             return false;
         }
         return true;
@@ -649,14 +652,15 @@ class database extends Step
     private function createDmsUser($con) {
     	if($this->dmsname == '' || $this->dmspassword == '') {
         	$command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/user.sql";
-        	return exec($command, $output);
+        	exec($command, $out, $ret);
+        	return $ret;
     	} else {
 			$user1 = "GRANT SELECT, INSERT, UPDATE, DELETE ON {$this->dname}.* TO {$this->dmsusername}@{$this->dhost} IDENTIFIED BY \"{$this->dmsuserpassword}\";";
 			$user2 = "GRANT ALL PRIVILEGES ON {$this->dname}.* TO {$this->dmsname}@{$this->dhost} IDENTIFIED BY \"{$this->dmspassword}\";";
 			if ($this->dbhandler->execute($user1) && $this->dbhandler->execute($user2)) {
             	return true;
         	} else {
-        		$this->error = array("18"=>"Could not create users in database: ".$this->dbhandler->getErrors()."");
+        		$this->error[] = "Could not create users in database: ".$this->dbhandler->getErrors();
         		return false;
         	}
 		}
@@ -673,7 +677,8 @@ class database extends Step
 	*/
     private function createSchema($con) {
         $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/structure.sql";
-        return exec($command, $output);
+    	exec($command, $out, $ret);
+    	return $ret;
     }
 
 	/**
@@ -686,7 +691,8 @@ class database extends Step
 	*/
     private function populateSchema($con) {
         $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/data.sql";
-        return exec($command, $output);
+    	exec($command, $out, $ret);
+    	return $ret;
     }
 
     private function applyUpgrades($con) {
@@ -708,7 +714,7 @@ class database extends Step
         try {
             $this->dbhandler->close();
         } catch (Exeption $e) {
-            $this->error = array("13"=>"Could not close: " . $e);
+            $this->error[] = "Could not close: " . $e;
         }
     }
 
@@ -724,5 +730,38 @@ class database extends Step
 
         return $this->error;
     }
+    
+	/**
+	* Test database connectivity
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    public function doAjaxTest($host, $uname, $dname) {
+    	echo 'asd';
+    	die;
+    	if($this->dport == '') 
+    		$con = $this->dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
+    	else 
+    		$con = $this->dbhandler->DBUtil($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
+        if (!$con) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    public function setPostValues() {
+    	foreach ($_POST as $k=>$v) {
+    		echo "$k=>$v<br/>";
+    	}
+    }
+}
+
+if(isset($_POST['ajax'])) {
+	$db = new database();
+	$db->setPostValues();
 }
 ?>

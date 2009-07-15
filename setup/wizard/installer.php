@@ -457,6 +457,12 @@ class Installer {
 				$class->setDataFromSession($className); // Set Session Information
 				$class->setDBConfig(); // Set any posted variables
 				$response = $class->installStep(); // Run install step
+				echo "$className==$response<br/>";
+				echo "<pre>";print_r($_SESSION['database']);echo "</pre>";
+//				echo $response;
+//				if($response == 'error') {
+//					return $this->landing();
+//				}
 	    	}
     	} else {
     		die("$className : Class Files Missing");

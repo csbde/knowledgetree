@@ -333,7 +333,6 @@ class stepAction {
             	$this->loadValueToSession($this->stepName, $key, $value);
             }
         }
-
         $content = $step_tpl->fetch();
 		$tpl = new Template("templates/wizard.tpl");
 		$tpl->set('content', $content);
