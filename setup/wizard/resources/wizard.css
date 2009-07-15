@@ -65,12 +65,12 @@ td {
 }
 
 #wrapper {
-    background: #f1f2ea url("graphics/background.gif") repeat-y left;
+    background: white url("graphics/background.gif") repeat-y left;
 }
 
 #container {
   width: 100%;
-  background: #f1f2ea url("graphics/background.gif") repeat-y left;
+  background: white url("graphics/background.gif") repeat-y left;
   float: right;
   margin-left: -200px;
 }
