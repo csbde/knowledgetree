@@ -386,49 +386,6 @@ class KT_cmis_atom_service_helper {
     }
 
     /**
-	 * Log in to KT easily
-	 *
-	 * @param string $username
-	 * @param string $password
-	 * @param string $ip
-	 * @return object Containing the status_code of the login and session id
-	 */
-	static public function login($username, $password, $ip=null){
-		$kt = self::getKt();
-
-		$session = $kt->start_session($username,$password, $ip);
-		if (PEAR::isError($session)){
-			$response['status_code']=KT_atom_server_FAILURE;
-			$response['session_id']='';
-		}else{
-			$session= $session->get_session();
-			$response['status_code'] = KT_atom_server_SUCCESS;
-			$response['session_id'] = $session;
-		}
-		return $response;
-	}
-
-
-	/**
-	 * Log out of KT using the session id
-	 *
-	 * @param string $session_id
-	 * @return object Containing the status_code of the logout attempt
-	 */
-	static public function logout($session_id){
-		$kt = self::getKt();
-		$session = $kt->get_active_session($session_id, null);
-
-		if (PEAR::isError($session)){
-			$response['status_code']=KT_atom_server_FAILURE;
-		}else{
-			$session->logout();
-			$response['status_code'] = KT_atom_server_SUCCESS;
-		}
-		return $response;
-	}
-
-    /**
 	 * Get the KT singleton instance
 	 *
 	 * @return object
