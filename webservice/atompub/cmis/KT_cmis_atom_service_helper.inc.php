@@ -263,10 +263,10 @@ class KT_cmis_atom_service_helper {
             // NOTE KnowledgeTree currently only supports base types so these are not important at the present time.
 
             // links
-//            $link = $feed->newElement('link');
-//            $link->appendChild($feed->newAttr('rel','self'));
-//            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . strtolower($type['typeId'])));
-//            $entry->appendChild($link);
+            $link = $feed->newElement('link');
+            $link->appendChild($feed->newAttr('rel','self'));
+            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $feed->workspace . '/type/' . strtolower($type['typeId'])));
+            $entry->appendChild($link);
             // TODO type link MUST point to base type
             //      KnowledgeTree currently only supports base types so this is not important
             //      at the present time as it will always point at the base type.
