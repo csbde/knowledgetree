@@ -29,9 +29,9 @@ class KT_atom_response extends KT_atom_baseDoc {
 
 }
 
-class KT_atom_ResponseFeed_GET extends KT_atom_responseFeed{}
-class KT_atom_ResponseFeed_PUT extends KT_atom_responseFeed{}
-class KT_atom_ResponseFeed_POST extends KT_atom_responseFeed{}
-class KT_atom_ResponseFeed_DELETE extends KT_atom_responseFeed{}
+class KT_atom_Response_GET extends KT_atom_response{}
+class KT_atom_Response_PUT extends KT_atom_response{}
+class KT_atom_Response_POST extends KT_atom_response{}
+class KT_atom_Response_DELETE extends KT_atom_response{}
 
 ?>

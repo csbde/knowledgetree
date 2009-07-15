@@ -72,6 +72,7 @@ include_once(KT_ATOM_LIB_FOLDER.'KT_atom_server.inc.php');
 include_once('demodms/KT_atom_service_helper.inc.php');						//Containing helper bridge functions to KtAPI
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_baseDoc.inc.php');							//Containing the parent class allowing easy XML manipulation
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_serviceDoc.inc.php');					//Containing the servicedoc class allowing easy ServiceDocument generation
+include_once(KT_ATOM_LIB_FOLDER.'KT_atom_response.inc.php');							//Containing the response feed class allowing easy atom feed generation
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_responseFeed.inc.php');							//Containing the response feed class allowing easy atom feed generation
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_service.inc.php');
 include_once('demodms/KT_atom_server.default_dms_services.inc.php');
@@ -108,6 +109,7 @@ $APP->registerService('DMS','fulltree','KT_atom_service_fulltree','Full Document
 $APP->registerService('DMS','folder','KT_atom_service_folder','Folder Detail');
 $APP->registerService('DMS','document','KT_atom_service_document','Document Detail');
 $APP->registerService('DMS','logout','KT_atom_service_logout','Forceful Logout');
+$APP->registerService('DMS','test','KT_atom_service_test','Test Service');
 
 //Execute the current url/header request
 $APP->execute();
