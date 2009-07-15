@@ -110,7 +110,6 @@ class CMISDocumentObject extends CMISBaseObject {
         }
 
         $objectProperties = $object->get_detail();
-//        print_r($objectProperties);
 
         $this->_setPropertyInternal('ObjectId', CMISUtil::encodeObjectId($this->typeId, $objectProperties['document_id']));
         // prevent doubled '/' chars

@@ -120,26 +120,6 @@ class KT_cmis_atom_server extends KT_atom_server {
 		return false;
 	}
 
-//    // TODO we probably want this version in the base class for auth purposes
-//    public function render()
-//    {
-//		ob_end_clean();
-////        // possible additional headers, e.g. basic auth request
-////        // FIXME this won't work with the service document as no service object exists
-////        if (!is_null($this->serviceObject))
-////        {
-////            $headers = $this->serviceObject->getHeaders();
-////            foreach ($headers as $header)
-////            {
-////                header($header);
-////            }
-////        }
-//
-//        // TODO header: application/atom+xml for service doc?  is how Alfresco does it but is it needed?
-//        header('Content-type: text/xml');
-//        echo $this->output;
-//	}
-
 }
 
 ?>

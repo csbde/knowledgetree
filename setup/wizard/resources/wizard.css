@@ -1,4 +1,4 @@
-* { margin:0; padding:0; }
+* { margin: 0; padding: 0; }
 
 body {
     background: white;
@@ -49,19 +49,57 @@ td {
     padding: 2px 5px;
 }
 
-.container {
+/* *** Layout Styles *** */
+
+#outer-wrapper {
+    text-align: left;
     border: solid 1px #A1A1A1;
     margin: 50px;
     margin-top: 20px;
-    text-align: left;
-    z-index: -1;
 }
 
-.header {
+#header {
     background: url("graphics/gradient.png") repeat-y;
     background-position: top right;
     height: 60px;
 }
+
+#wrapper {
+    background: white url("graphics/background.gif") repeat-y left;
+}
+
+#container {
+  width: 100%;
+  background: white url("graphics/background.gif") repeat-y left;
+  float: right;
+  margin-left: -200px;
+}
+
+#content {
+    margin-left: 200px;
+    padding: 10px;
+    padding-top: 0;
+}
+
+#sidebar {
+  width: 200px;
+  float: left;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+#footer {
+    background: url("graphics/footer.png") repeat-x;
+    height: 50px;
+    clear: both;
+}
+
+.clearing {
+    height: 0;
+    clear: both;
+}
+
+/* Content Styles */
 
 .logo {
     background: url("graphics/logo.png") no-repeat;
@@ -69,32 +107,6 @@ td {
     height: inherit;
     width: 200px;
     margin-left: 10px;
-}
-
-.content {
-    /*background: #F1F1F1;*/
-}
-
-.left {
-    position: relative;
-    float: left;
-    width: 200px;
-    text-align: center;
-    /*background: url("graphics/left.png") repeat-y;*/
-    background-position: top left;
-    /*background: #F1F1F1;*/
-    height: inherit;
-    padding-bottom: 20px;
-    padding-top: 40px;
-}
-
-.right {
-    position: relative;
-    float: left;
-    padding: 20px;
-    min-width: 600px;
-    width: 800px;
-    background: white;
 }
 
 .menu {
@@ -185,12 +197,6 @@ td {
     padding: 2px 8px 2px 5px;
     text-decoration: none;
     color: #EC7725;
-}
-
-.footer {
-    background: url("graphics/footer.png") repeat-x;
-    height: 50px;
-    clear: both;
 }
 
 .powered-by {

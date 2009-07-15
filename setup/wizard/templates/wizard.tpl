@@ -6,29 +6,29 @@
 </head>
 
 <body>
-<div class="container">
-    <div class="header">
+
+<div id="outer-wrapper">
+    <div id="header">
         <div class="logo"></div>
     </div>
-    <div class="content">
 
-        <div class="left">
+    <div id="wrapper">
+        <div id="container">
+            <div id="content">
+                <?php echo $content; ?>
+            </div>
+        </div>
+
+        <div id="sidebar">
             <?php echo $left; ?>
         </div>
-        <div class="right">
-        
-           <?php echo $content; ?>
-<!--
-            <div class="buttons">
-                <a href="index.php?step_name=&step=previous" class="next">Previous</a>
-                <a href="index.php?step_name=&step=next" class="next">Next</a>
-            </div>
-            -->
-        </div>
+        <div class="clearing">&nbsp;</div>
     </div>
-    <div class="footer">
+
+    <div id="footer">
         <div class="powered-by"></div>
     </div>
 </div>
+
 </body>
 </html>
