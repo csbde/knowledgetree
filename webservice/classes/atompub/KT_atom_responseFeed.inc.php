@@ -4,18 +4,19 @@ class KT_atom_responseFeed extends KT_atom_baseDoc {
 	protected $baseURI=NULL;
 	protected $feed=NULL;
 
-	public function __construct($baseURI=NULL,$title=NULL,$link=NULL,$updated=NULL,$author=NULL,$id=NULL, $workspace = null){
+	public function __construct($baseURI=NULL){
 		parent::__construct();
 		$this->baseURI = $baseURI;
-		$this->constructHeader();
+		$this->feed =&$this->DOM;
 	}
 
-	protected function constructHeader(){
-		$feed=$this->newElement('feed');
+	protected function addFeedTag(){
+		$feed = $this->newElement('feed');
 		$feed->appendChild($this->newAttr('xmlns','http://www.w3.org/2005/Atom'));
-		$this->feed=&$feed;
-		$this->DOM->appendChild($this->feed);
+		$this->feed = &$feed;
+        $this->DOM->appendChild($this->feed);
 	}
+
 
 	public function &newEntry(){
 		$entry=$this->newElement('entry');
