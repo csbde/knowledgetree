@@ -67,7 +67,6 @@ class CMISObjectService {
                 $CMISObject = new CMISFolderObject($objectId, $this->ktapi, $repository->getRepositoryURI());
                 break;
         }
-
         $properties = $CMISObject->getProperties();
 
         return $properties;
@@ -299,13 +298,14 @@ class CMISObjectService {
 
             $response = $this->ktapi->add_document_with_metadata((int)$folderId, $properties['title'], $properties['name'],
                                                                  $properties['type'], $tempfilename, $metadata, $sysdata);
+
             if ($response['status_code'] != 0)
             {
                 throw new StorageException('The repository was unable to create the document.  ' . $response['message']);
             }
             else
             {
-                $objectId = CMISUtil::encodeObjectId('Document', $response['results']['content_id']);
+                $objectId = CMISUtil::encodeObjectId('Document', $response['results']['document_id']);
             }
 
             // remove temporary file

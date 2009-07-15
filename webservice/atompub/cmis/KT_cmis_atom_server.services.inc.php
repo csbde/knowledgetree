@@ -125,16 +125,16 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
         if ($typeId != 'Unknown')
         {
             $this->setStatus(self::STATUS_CREATED);
-            if ($type == 'folder')
-            {
+//            if ($type == 'folder')
+//            {
                 $feed = KT_cmis_atom_service_helper::getObjectFeed($ObjectService, $repositoryId, $newObjectId, 'POST');
-            }
-            else
-            {
-                $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
-                $cmisEntry = $ObjectService->getProperties($repositoryId, $folderId, false, false);
-                $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $cmisEntry['properties']['Name']['value'], 'POST');
-            }
+//            }
+//            else
+//            {
+//                $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
+//                $cmisEntry = $ObjectService->getProperties($repositoryId, $folderId, false, false);
+//                $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $cmisEntry['properties']['Name']['value'], 'POST');
+//            }
         }
         else
         {
@@ -204,11 +204,7 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
            	$feed->newField('app:edited', KT_cmis_atom_service_helper::formatDatestamp(), $feed);
         }
 
-        // <cmis:hasMoreItems>false</cmis:hasMoreItems>
-
-        // global $childrenFeed
-        // $output = $childrenFeed[0];
-        // $output = $childrenFeed[1];
+        $feed->newField('cmis:hasMoreItems', 'false', $feed);
 
         return $feed;
     }

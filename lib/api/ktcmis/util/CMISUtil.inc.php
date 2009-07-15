@@ -111,6 +111,7 @@ class CMISUtil {
             //      method of doing this.
             //      meantime this minor hack will get things working for the existing system structure, as the root
             //      folder should always be id 1.
+            $typeId = 'Folder';
             return '1';
         }
 

@@ -25,7 +25,7 @@ class KT_cmis_atom_service_helper {
             $response = new KT_cmis_atom_response_POST(CMIS_APP_BASE_URI);
         }
 
-        KT_cmis_atom_service_helper::createObjectEntry($response, $cmisEntry, $folderName);
+        KT_cmis_atom_service_helper::createObjectEntry($response, $cmisEntry, $cmisEntry['properties']['ParentId']['value'], $method);
 
         if ($method == 'GET') {
             $response->newField('cmis:hasMoreItems', 'false', $response);
@@ -41,7 +41,7 @@ class KT_cmis_atom_service_helper {
      * @param array $cmisEntry The entry data
      * @param string $parent The parent folder
      */
-    static public function createObjectEntry(&$response, $cmisEntry, $parent, $method = 'POST')
+    static public function createObjectEntry(&$response, $cmisEntry, $parent, $method = 'GET')
     {
         $workspace = $response->getWorkspace();
 
