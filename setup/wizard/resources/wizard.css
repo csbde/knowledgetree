@@ -118,8 +118,8 @@ td {
 
 .indicator {
     background: url("graphics/indicator.png") no-repeat;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
     padding-left: 20px;
 }
 
@@ -129,35 +129,35 @@ td {
 
 .active {
     background: url("graphics/active.png") no-repeat;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
     padding-left: 20px;
 }
 
 .inactive {
     background: url("graphics/inactive.png") no-repeat;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
     padding-left: 20px;
     color: #919191;
 }
 
 .tick {
     background: url("graphics/tick.png") no-repeat;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
 }
 
 .cross {
     background: url("graphics/cross.png") no-repeat;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
 }
 
 .cross_orange {
     background: url("graphics/cross_orange.png") no-repeat;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
 }
 
 .green {
@@ -231,4 +231,20 @@ td {
 
 .right_top {
     height:45px;
+}
+
+table#dbconf tr td {
+	width:50%;
+}
+
+input#dname {
+	size:40px;
+}
+
+.options {
+	width:15%;
+}
+
+.adv_options {
+	padding: 5px 8px;
 }

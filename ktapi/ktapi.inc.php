@@ -1865,7 +1865,7 @@ class KTAPI
         $response = $this->_check_electronic_signature($folder_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.role_allocations_change');
         if ($response['status_code'] == 1) return $response;
-        
+
         $response['status_code'] = 1;
 
         // Get folder object
@@ -4415,6 +4415,19 @@ class KTAPI
 	}
 
 	/**
+	* Method to return a user based on the username
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $username The username of the user
+	* @return array $response The formatted response array
+	*/
+	public function get_user_object_by_username($username)
+	{
+        return KTAPI_User::getByUsername($username);
+	}
+
+	/**
 	* Method to return a user based on the name
 	*
 	* @author KnowledgeTree Team
@@ -4707,7 +4720,7 @@ class KTAPI
 
     /**
      * Method to execute electronic signature checks on action
-     * 
+     *
      * @author KnowledgeTree Team
      * @access private
      * @param string $item_id ID of document/folder which will be used as detail string in authentication records
