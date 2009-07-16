@@ -2,7 +2,7 @@
 
 <div style='width:800px;'>
 <p>
-KnowledgeTreeTM is document management made simple - easily share, track, secure, and manage the documents and records your organization depends on.
+KnowledgeTree<sup>TM</sup> is document management made simple - easily share, track, secure, and manage the documents and records your organization depends on.
 </p>
 <p>
 KnowledgeTree provides an easy-to-use, production-ready, enterprise document management solution for use by corporations, government institutions, medium

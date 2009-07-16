@@ -13,7 +13,7 @@ Please read and accept the license agreement below before continuing with the se
 </p>
 
 <form action="index.php?step_name=license" method="POST">
-<div style="overflow: scroll; height: 500px; width:800px;">
+<div style="overflow: scroll; height: 500px; width:800px; overflow-x:hidden;">
 <h2>KnowledgeTree On-premise Commercial End-User</h2>
 <p>
 License Agreement Version 2.3
@@ -330,13 +330,12 @@ Software. If any provision of this Agreement is deemed invalid or unenforceable 
 government agency having jurisdiction, that particular provision will be deemed modified to the extent
 necessary to make the provision valid and enforceable, and the remaining provisions will remain in full
 force and effect. The original of this Agreement has been written in English, and that version will
-govern. Les parties aux présentes confirment leur volonté que cette convention, de même que tous les
-documents, y compris tout avis, qui s?y rattachent, soient rédigés en langue anglaise.
+govern.
 </p>
 </div>
-
+<br/>
 <div class="agree">
-    <input type="radio" name="license" value="1" checked="checked"/>I accept the agreement
+    <input type="radio" name="license" value="1""/>I accept the agreement
     <br/>
     <input type="radio" name="license" value="0"/>I do not accept the agreement
 </div>

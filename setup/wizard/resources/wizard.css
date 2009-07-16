@@ -171,6 +171,7 @@ td {
 }
 
 .error {
+	font-weight: bold;
     color: #9F0000;
 }
 
@@ -247,4 +248,8 @@ input#dname {
 
 .adv_options {
 	padding: 5px 8px;
+}
+
+#section {
+	/*border:1px solid;*/
 }

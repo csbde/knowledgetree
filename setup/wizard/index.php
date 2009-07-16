@@ -44,7 +44,10 @@
 	// Bypass
 	if(isset($_GET['bypass'])) {
 		if($_GET['bypass'])
-			touch("install");
+			@touch("install");
+		else {
+			@unlink("install");
+		}
 	}
 
 	if(!$ui->isSystemInstalled()) {

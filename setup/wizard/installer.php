@@ -452,7 +452,7 @@ class Installer {
     }
     
     private function completeInstall() {
-    	unlink("install");
+    	@unlink("install");
     }
     
 	/**
