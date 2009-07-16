@@ -39,5 +39,12 @@
 * @package Installer
 * @version Version 0.1
 */
-	require("installer.php");
+	require_once("install_util.php");
+	$ui = new InstallUtil();
+	if(!$ui->isSystemInstalled()) {
+		require("installer.php");
+	} else {
+		echo "System has been installed <a href='../../'>Goto Login</a>";
+	}
+
 ?>

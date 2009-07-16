@@ -32,5 +32,4 @@
 </html>
 <script>
 	var w = new wizard();
-	w.disableDnd();
 </script>

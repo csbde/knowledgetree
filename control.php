@@ -38,7 +38,7 @@
 
 // main library routines and defaults
 require_once('config/dmsDefaults.php');
-
+require_once("setup/wizard/install_util.php");
 /**
  * Controller page -- controls the web application by responding to a set of
  * defined actions.  The controller performs session handling, page-level
@@ -49,6 +49,12 @@ require_once('config/dmsDefaults.php');
 // -------------------------------
 // page start
 // -------------------------------
+// Check if system has been installed
+$iu = new InstallUtil();
+if(!$iu->isSystemInstalled()) {
+	redirect("setup/wizard");
+	exit(0);
+}
 
 $action = $_REQUEST['action'];
 

@@ -1,5 +1,4 @@
 <h1>Database Configuration</h1>
-<!--onclick="javascript:{ldelim}disableDnd('input_period');{rdelim}" readOnly="readonly"-->
 
 <div class="errors">
     <?php if(isset($errors)) {

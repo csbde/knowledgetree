@@ -439,6 +439,12 @@ class Installer {
     	for ($i=1; $i< count($steps)+1; $i++) {
     		$this->installHelper($steps[$i]);
     	}
+    	
+    	$this->completeInstall();
+    }
+    
+    private function completeInstall() {
+    	unlink("install");
     }
     
 	/**
@@ -457,8 +463,8 @@ class Installer {
 				$class->setDataFromSession($className); // Set Session Information
 				$class->setDBConfig(); // Set any posted variables
 				$response = $class->installStep(); // Run install step
-				echo "$className==$response<br/>";
-				echo "<pre>";print_r($_SESSION['database']);echo "</pre>";
+//				echo "$className==$response<br/>";
+//				echo "<pre>";print_r($_SESSION['database']);echo "</pre>";
 //				echo $response;
 //				if($response == 'error') {
 //					return $this->landing();

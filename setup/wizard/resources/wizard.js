@@ -10,8 +10,8 @@ wizard.prototype.doFormCheck = function() {
 // Disable DnD on element
 // Element has to have a readOnly status set to readonly
 wizard.prototype.disableDnd = function(el_id) {
-    el = document.getElementById(el_id);
-    el.removeAttribute('readOnly');
+//    el = document.getElementById(el_id);
+//    el.removeAttribute('readOnly');
 }
 
 // Add readOnly access on all inputs of a form

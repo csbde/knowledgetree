@@ -740,17 +740,17 @@ class database extends Step
 	* @return boolean
 	*/
     public function doAjaxTest($host, $uname, $dname) {
-    	echo 'asd';
-    	die;
-    	if($this->dport == '') 
-    		$con = $this->dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
-    	else 
-    		$con = $this->dbhandler->DBUtil($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
-        if (!$con) {
-            return false;
-        } else {
-            return true;
-        }
+//    	echo 'asd';
+//    	die;
+//    	if($this->dport == '') 
+//    		$con = $this->dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
+//    	else 
+//    		$con = $this->dbhandler->DBUtil($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
+//        if (!$con) {
+//            return false;
+//        } else {
+//            return true;
+//        }
     }
     
     public function setPostValues() {
