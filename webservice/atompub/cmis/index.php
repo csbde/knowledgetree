@@ -46,7 +46,6 @@ define('KT_APP_BASE_URI', "http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_
 define('KT_APP_SYSTEM_URI', "http://".$_SERVER['HTTP_HOST']);
 define('KT_ATOM_LIB_FOLDER', '../../classes/atompub/');
 
-// should make the "dms" part dynamic but right now this is needed fast
 define('CMIS_APP_BASE_URI', trim(KT_APP_BASE_URI, '/'));
 define('CMIS_APP_SYSTEM_URI', KT_APP_SYSTEM_URI);
 define('CMIS_ATOM_LIB_FOLDER', trim(KT_ATOM_LIB_FOLDER, '/') . '/cmis/');
@@ -64,7 +63,19 @@ include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_service.inc.php');          //Co
 
 include_once('KT_cmis_atom_server.services.inc.php');
 
-KT_cmis_atom_service_helper::login('admin', 'admin');
+/**
+ * Check Realm Authentication
+ */
+require_once(KT_ATOM_LIB_FOLDER.'KT_atom_HTTPauth.inc.php');
+
+if(!KT_atom_HTTPauth::isLoggedIn()) {
+	KT_atom_HTTPauth::login('KnowledgeTree DMS', 'You must authenticate to enter this realm');
+}
+
+//$username = $_SERVER['PHP_AUTH_USER'];
+//$password = $_SERVER['PHP_AUTH_PW'];
+//// fetch user name and password (check auth include for proper method)
+//KT_cmis_atom_service_helper::login($username, $password);
 
 //Start the AtomPubProtocol Routing Engine
 $APP = new KT_cmis_atom_server();
