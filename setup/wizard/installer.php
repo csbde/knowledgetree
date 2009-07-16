@@ -129,6 +129,13 @@ class Installer {
         $this->session = $session;
     }
 
+    public function setSessionVars() {
+		if(isset($_GET['bypass'])) {
+			$bypass = $_GET['bypass'];
+			$this->session->set('bypass', $bypass);
+		}
+    }
+    
 	/**
 	* Main control to handle the flow of install
 	*
@@ -140,7 +147,8 @@ class Installer {
     public function step() {
         $this->readXml(); // Xml steps
         $this->xmlStepsToArray(); // String steps
-    	$this->resetSessions(); // Make sure 
+    	$this->resetSessions(); // Make sure
+    	$this->setSessionVars();
         $response = $this->landing();
         switch($response) {
             case 'next':
@@ -494,5 +502,5 @@ class Installer {
 }
 $ins = new installer(new Session()); // Instantiate the installer
 $ins->step(); // Run step
-//$ins->showSession();
+$ins->showSession();
 ?>

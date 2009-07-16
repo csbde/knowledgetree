@@ -41,7 +41,19 @@
 */
 	require_once("install_util.php");
 	$ui = new InstallUtil();
-	if(!$ui->isSystemInstalled()) {
+	$bypass = false;
+	// Bypass
+//	if(isset($_GET['bypass'])) {
+//		$bypass = $_GET['bypass'];
+//		$_SESSION['bypass'] = $bypass;
+//	}
+	
+//	if(isset($_SESSION['bypass'])) {
+//		
+//		$bypass = $_SESSION['bypass'];
+//	}
+
+	if(!$ui->isSystemInstalled() || $bypass) {
 		require("installer.php");
 	} else {
 		echo "System has been installed <a href='../../'>Goto Login</a>";
