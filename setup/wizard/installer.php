@@ -502,5 +502,5 @@ class Installer {
 }
 $ins = new installer(new Session()); // Instantiate the installer
 $ins->step(); // Run step
-$ins->showSession();
+//$ins->showSession();
 ?>
