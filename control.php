@@ -36,7 +36,7 @@
  *
  */
 
-// 
+// check if system has been installed
 require_once("setup/wizard/install_util.php");
 // Check if system has been installed
 $iu = new InstallUtil();
