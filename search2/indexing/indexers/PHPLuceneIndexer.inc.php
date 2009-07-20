@@ -297,10 +297,10 @@ class PHPLuceneIndexer extends Indexer
 	{
 		return _kt('Document Indexer Library');
 	}
-}
 
-    function isDocumentIndexed($documentId)
+    public function isDocumentIndexed($documentId)
 	{
         // do something
     }
+}
 ?>
