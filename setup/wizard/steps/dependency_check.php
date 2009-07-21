@@ -1,6 +1,6 @@
 <?php
 /**
-* Dependency Step Step Controller. 
+* Dependency Step Step Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -46,6 +46,7 @@ class dependencyCheck extends Step
     private $maxPHPVersion = '6.0.0';
     private $minPHPVersion = '5.0.0';
     private $done;
+
 	/**
 	* Flag to store class information in session
 	*
@@ -54,10 +55,12 @@ class dependencyCheck extends Step
 	* @var array
 	*/
     public $storeInSession = true;
-    
+
     /**
      * Constructor
      *
+	 * @author KnowledgeTree Team
+     * @access public
      */
     public function __construct()
     {
@@ -66,6 +69,13 @@ class dependencyCheck extends Step
         $this->done = true;
     }
 
+	/**
+	 * Control function for position within the step
+	 *
+	 * @author KnowledgeTree Team
+     * @access public
+	 * @return string The position in the step
+	 */
     public function doStep()
     {
         // Check dependencies
@@ -82,7 +92,14 @@ class dependencyCheck extends Step
 
         return 'landing';
     }
-    
+
+    /**
+     * Execute the step
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @return boolean True to continue | False if errors occurred
+     */
     public function doRun()
     {
         $check = $this->checkPhpVersion();
@@ -117,15 +134,36 @@ class dependencyCheck extends Step
         return $this->done;
     }
 
+    /**
+     * Get any errors that occurred
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @return array The error list
+     */
     public function getErrors() {
         return $this->error;
     }
 
+    /**
+     * Get the variables to be passed to the template
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @return array
+     */
     public function getStepVars()
     {
         return $this->temp_variables;
     }
 
+    /**
+     * Check the php configuration
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @return array The configurations list
+     */
     private function checkPhpConfiguration()
     {
         $configs = $this->getConfigurations();
@@ -168,6 +206,13 @@ class dependencyCheck extends Step
         return $configs;
     }
 
+    /**
+     * Check that the version of php is correct
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @return array Version check result
+     */
     private function checkPhpVersion()
     {
         $phpversion = phpversion();
@@ -192,6 +237,14 @@ class dependencyCheck extends Step
         return $check;
     }
 
+    /**
+     * Check whether the given extension is loaded
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @param string $extension
+     * @return boolean
+     */
     private function checkExtension($extension)
     {
         if(extension_loaded($extension)){
@@ -201,6 +254,14 @@ class dependencyCheck extends Step
         return false;
     }
 
+    /**
+     * Convert a formatted string to a size integer
+     *
+	 * @author KnowledgeTree Team
+     * @access string
+     * @param integer $pretty
+     * @return integer
+     */
     private function prettySizeToActualSize($pretty) {
         if (strtoupper(substr($pretty, strlen($pretty) - 1)) == 'G') {
             return (int)substr($pretty, 0, strlen($pretty)) * 1024 * 1024 * 1024;
@@ -214,6 +275,14 @@ class dependencyCheck extends Step
         return (int)$pretty;
     }
 
+    /**
+     * Convert a size integer to a formatted string
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @param integer $v
+     * @return string
+     */
     private function prettySize($v) {
         $v = (float)$v;
         foreach (array('B', 'K', 'M', 'G') as $unit) {
@@ -224,22 +293,36 @@ class dependencyCheck extends Step
         }
     }
 
+    /**
+     * Get the list of extensions used by the system
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @return array
+     */
     private function getRequiredExtensions()
     {
         return array(
-            array('extension' => 'fileinfo', 'required' => 'no', 'name' => 'Fileinfo', 'details' => 'Provides better file identification support - not necessary if you use file extensions'),
-            array('extension' => 'iconv', 'required' => 'no', 'name' => 'IconV', 'details' => ''),
-            array('extension' => 'mysql', 'required' => 'yes', 'name' => 'MySQL', 'details' => ''),
-            array('extension' => 'curl', 'required' => 'yes', 'name' => 'cURL', 'details' => ''),
-            array('extension' => 'xmlrpc', 'required' => 'yes', 'name' => 'XMLRPC', 'details' => ''),
-            array('extension' => 'win32', 'required' => 'no', 'name' => 'Win32', 'details' => 'Allows control of Microsoft Windows services'),
-            array('extension' => 'mbstring', 'required' => 'no', 'name' => 'Multi Byte Strings', 'details' => ''),
-            array('extension' => 'ldap', 'required' => 'no', 'name' => 'LDAP', 'details' => ''),
-            array('extension' => 'json', 'required' => 'no', 'name' => 'JSON', 'details' => ''),
-            array('extension' => 'openssl', 'required' => 'no', 'name' => 'Open SSL', 'details' => ''),
+            array('extension' => 'fileinfo', 'required' => 'no', 'name' => 'Fileinfo', 'details' => 'Provides better file identification support - not necessary if you use file extensions.'),
+            array('extension' => 'iconv', 'required' => 'no', 'name' => 'IconV', 'details' => 'Used for conversion between character sets.'),
+            array('extension' => 'mysql', 'required' => 'yes', 'name' => 'MySQL', 'details' => 'Used for accessing a MySQL database.'),
+            array('extension' => 'curl', 'required' => 'yes', 'name' => 'cURL', 'details' => 'Allows the connection and communication between different servers types using various protocols.'),
+            array('extension' => 'xmlrpc', 'required' => 'yes', 'name' => 'XMLRPC', 'details' => 'Used with XML-RPC servers and clients.'),
+            array('extension' => 'win32', 'required' => 'no', 'name' => 'Win32', 'details' => 'Allows control of Microsoft Windows services.'),
+            array('extension' => 'mbstring', 'required' => 'no', 'name' => 'Multi Byte Strings', 'details' => 'Used in the manipulation of multi-byte strings.'),
+            array('extension' => 'ldap', 'required' => 'no', 'name' => 'LDAP', 'details' => 'Used to access LDAP directory servers.'),
+            array('extension' => 'json', 'required' => 'yes', 'name' => 'JSON', 'details' => 'Implements the javascript object notation (json) data-interchange format.'),
+            array('extension' => 'openssl', 'required' => 'no', 'name' => 'Open SSL', 'details' => 'Used for the generation and verification of signatures and the encrypting and decrypting of data'),
         );
     }
 
+    /**
+     * Get the recommended configuration settings
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @return array
+     */
     private function getConfigurations()
     {
         return array(
@@ -259,6 +342,13 @@ class dependencyCheck extends Step
         );
     }
 
+    /**
+     * Get the recommended limits settings
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @return array
+     */
     private function getLimits()
     {
         return array(

@@ -110,7 +110,6 @@ class CMISDocumentObject extends CMISBaseObject {
         }
 
         $objectProperties = $object->get_detail();
-//        print_r($objectProperties);
 
         $this->_setPropertyInternal('ObjectId', CMISUtil::encodeObjectId($this->typeId, $objectProperties['document_id']));
         // prevent doubled '/' chars
@@ -121,7 +120,8 @@ class CMISDocumentObject extends CMISBaseObject {
                                      . $objectProperties['document_id']);
         // NOTE what about instead creating a downloadable version with appropriate link?  see ktapi::download_document
         //      also ktapidocument::get_download_url
-        $this->_setPropertyInternal('URI', $uri);
+//        $this->_setPropertyInternal('Uri', $uri);
+        $this->_setPropertyInternal('Uri', '');
         // TODO what is this?  Assuming it is the object type id, and not OUR document type?
         $this->_setPropertyInternal('ObjectTypeId', $this->getAttribute('typeId'));
         // Needed to distinguish type

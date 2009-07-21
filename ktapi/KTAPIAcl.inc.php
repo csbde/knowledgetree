@@ -275,6 +275,15 @@ class KTAPI_User extends KTAPI_Member
     public function getUsername() { return $this->user->getUserName(); }
 
     /**
+     * Return username property. (readonly)
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @return string
+     */
+    public function getPassword() { return $this->user->getPassword(); }
+
+    /**
      * Return display name property. (readonly)
      *
      * @author KnowledgeTree Team

@@ -9,6 +9,7 @@
 class KT_atom_service_fulltree extends KT_atom_service {
 	public function GET_action(){
 		//Create a new response feed
+
 		$feed=new KT_atom_ResponseFeed_GET(KT_APP_BASE_URI);
 
 		//Invoke the KtAPI to get detail about the referenced document
@@ -46,7 +47,7 @@ class KT_atom_service_fulltree extends KT_atom_service {
 class KT_atom_service_folder extends KT_atom_service {
 	public function GET_action(){
 		//Create a new response feed
-		$feed=new KT_atom_responseFeed(KT_APP_BASE_URI);
+		$feed=new KT_atom_Response_GET(KT_APP_BASE_URI);
 
 		//Invoke the KtAPI to get detail about the referenced document
 		$folderDetail=KT_atom_service_helper::getFolderDetail($this->params[0]?$this->params[0]:1);
@@ -92,12 +93,52 @@ class KT_atom_service_document extends KT_atom_service {
 	}
 }
 
+
+
+
+
+
+
+
 class KT_atom_service_test extends KT_atom_service{
-	public function GET_action(){}
-	public function PUT_action(){}
-	public function POST_action(){}
-	public function DELETE_action(){}
+	public function GET_action(){
+		$feed=new KT_atom_ResponseFeed_GET(KT_APP_BASE_URI);
+		$elem=$feed->newElement('test','Responding to a GET request');
+		$feed->DOM->appendChild($elem);
+		$this->setStatus(self::STATUS_OK);
+		$this->responseFeed=$feed;
+	}
+	public function PUT_action(){
+		$feed=new KT_atom_ResponseFeed_GET(KT_APP_BASE_URI);
+		$elem=$feed->newElement('test','Responding to a PUT request');
+		$feed->DOM->appendChild($elem);
+		$this->setStatus(self::STATUS_OK);
+		$this->responseFeed=$feed;
+	}
+	public function POST_action(){
+		$feed=new KT_atom_ResponseFeed_GET(KT_APP_BASE_URI);
+		$elem=$feed->newElement('test','Responding to a POST request');
+		$feed->DOM->appendChild($elem);
+		$this->setStatus(self::STATUS_OK);
+		$this->responseFeed=$feed;
+	}
+	public function DELETE_action(){
+		$feed=new KT_atom_ResponseFeed_GET(KT_APP_BASE_URI);
+		$elem=$feed->newElement('test','Responding to a DELETE request');
+		$feed->DOM->appendChild($elem);
+		$this->setStatus(self::STATUS_OK);
+		$this->responseFeed=$feed;
+	}
 }
+
+
+
+
+
+
+
+
+
 
 class KT_atom_service_logout extends KT_atom_service{
 	public function GET_action(){

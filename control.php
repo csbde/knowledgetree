@@ -36,6 +36,15 @@
  *
  */
 
+// check if system has been installed
+require_once("setup/wizard/install_util.php");
+// Check if system has been installed
+$iu = new InstallUtil();
+if(!$iu->isSystemInstalled()) {
+	$iu->redirect("setup/wizard");
+	exit(0);
+}
+
 // main library routines and defaults
 require_once('config/dmsDefaults.php');
 

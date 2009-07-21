@@ -5,28 +5,42 @@ include_once(KT_ATOM_LIB_FOLDER.'KT_atom_responseFeed.inc.php');
 class KT_cmis_atom_responseFeed extends KT_atom_responseFeed {
 
     // override and extend as needed
-    
-    public $workspace = null;
 
-    public function __construct($baseURI = NULL, $title = NULL, $link = NULL, $updated = NULL, $author = NULL, $id = NULL)
+    static protected $workspace = null;
+
+    /**
+     * Overridden constructor to allow easy adding of additional header attributes
+     *
+     * @param string $baseURI
+     */
+    public function __construct($baseURI = null)
     {
+        parent::__construct($baseURI);
+        
+        // append additional tags
+		$this->feed->appendChild($this->newAttr('xmlns:app', 'http://www.w3.org/2007/app'));
+		$this->feed->appendChild($this->newAttr('xmlns:cmis', 'http://docs.oasis-open.org/ns/cmis/core/200901'));
+        
+        // require the workspace for creating links within responses
         $queryArray = split('/', trim($_SERVER['QUERY_STRING'], '/'));
         $this->workspace = strtolower(trim($queryArray[0]));
-        $this->id = $id;
-        $this->title = $title;
-
-        parent::__construct($baseURI, $title, $link, $updated, $author, $id);
 	}
 
+    function getWorkspace()
+    {
+        return $this->workspace;
+    }
+
+    // TODO try to get rid of this function
+    function appendChild($element)
+    {
+        $this->feed->appendChild($element);
+    }
+
+    // this is ALL going away...adjust all calling code...
+    /*
     protected function constructHeader()
     {
-		$feed = $this->newElement('feed');
-//		$feed->appendChild($this->newAttr('xmlns','http://www.w3.org/2007/app'));
-//		$feed->appendChild($this->newAttr('xmlns:atom','http://www.w3.org/2005/Atom'));
-		$feed->appendChild($this->newAttr('xmlns','http://www.w3.org/2005/Atom'));
-		$feed->appendChild($this->newAttr('xmlns:cmis','http://www.cmis.org/2008/05'));
-		$this->feed = &$feed;
-
         if (!is_null($this->id))
         {
             $this->newId($this->id, $this->feed);
@@ -52,39 +66,7 @@ class KT_cmis_atom_responseFeed extends KT_atom_responseFeed {
 		return $id;
 	}
 
-//    public function &newField($name = NULL, $value = NULL, &$entry = NULL)
-//    {
-//        $append = false;
-//
-//        if(func_num_args() > 3)
-//        {
-//            $append = ((func_get_arg(3) === true) ? true : false);
-//		}
-//
-//        $field = $this->newElement('cmis:' . $name, $value);
-//
-//		if (isset($entry)) $entry->appendChild($field);
-//        else if ($append) $this->feed->appendChild($field);
-//
-//		return $field;
-//	}
-
-    /*
-	public function &newEntry()
-    {
-		$entry = $this->newElement('entry');
-		$this->feed->appendChild($entry);
-		return $entry;
-	}
-
-    public function &newId($id, $entry = null)
-    {
-		$id = $this->newElement('id', $id);
-        if(isset($entry))$entry->appendChild($id);
-		return $id;
-	}
-
-	public function &newField($name = NULL, $value = NULL, &$entry = NULL)
+    public function &newField($name = NULL, $value = NULL, &$entry = NULL)
     {
         $append = false;
 
@@ -93,13 +75,15 @@ class KT_cmis_atom_responseFeed extends KT_atom_responseFeed {
             $append = ((func_get_arg(3) === true) ? true : false);
 		}
 
-        $field = $this->newElement('cmis:' . $name,$value);
+        $field = $this->newElement($name, $value);
 
 		if (isset($entry)) $entry->appendChild($field);
         else if ($append) $this->feed->appendChild($field);
 
 		return $field;
 	}
+\
+     * 
      */
 
 }

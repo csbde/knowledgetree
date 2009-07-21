@@ -82,7 +82,8 @@ class CMISUtil {
      * The decoded object ID is returned by reference via the argument list
      *
      * @param string $objectId
-     * @return string $typeId
+     * @param string &$typeId
+     * @return string $objectId
      */
     static public function decodeObjectId($objectId, &$typeId = null)
     {
@@ -93,6 +94,26 @@ class CMISUtil {
         }
         
         $typeId = null;
+
+        // NOTE Not sure whether this really belongs here, but probably this is the safest and most reliable place
+        // If we find that the folderId is in fact the name of the repository root folder, we will not be able to
+        // decode it, but we still need to return a valid id :).  This is because the root folder name is returned
+        // by the repository configuration rather than the actual CMIS folder id.
+        // TODO consider just setting F1 as the root in the config?  Originally didn't based on Alfresco, but...
+        $RepositoryService = new CMISRepositoryService();
+        $repositories = $RepositoryService->getRepositories();
+        $repositoryInfo = $repositories[0]->getRepositoryInfo();
+        // the string replace is a hack for the drupal module, yay...
+        if ($repositoryInfo->getRootFolderId() == urldecode(str_replace('%2520', '%20', $objectId))) {
+            // NOTE that we may want to check the KnowledgeTree (not CMIS) repository for the root folder id.
+            //      This will be vital if we ever implement a way for people to have multiple roots depending
+            //      on who is logged in or what they select.  Obviously the CMIS API in general will need a
+            //      method of doing this.
+            //      meantime this minor hack will get things working for the existing system structure, as the root
+            //      folder should always be id 1.
+            $typeId = 'Folder';
+            return '1';
+        }
 
         preg_match('/(\D)(\d*)/', $objectId, $matches);
         $type = $matches[1];
@@ -233,29 +254,64 @@ class CMISUtil {
 
     static public function createObjectPropertiesEntry($properties)
     {
+        // TODO better dynamic style fetching of object properties into array for output
         $object = array();
 
+        $object['Author'] = array('value' => $properties->getValue('Author'));
+        
         // TODO additional properties to be returned
-        $object['properties']['ObjectId'] = array('type' => $properties->getFieldType('ObjectId'),
-                                                           'value' => $properties->getValue('ObjectId'));
         $object['properties']['BaseType'] = array('type' => $properties->getFieldType('BaseType'),
                                                            'value' => $properties->getValue('BaseType'));
-        $object['properties']['ObjectTypeId'] = array('type' => $properties->getFieldType('ObjectTypeId'),
-                                                           'value' => $properties->getValue('ObjectTypeId'));
-        $object['properties']['Name'] = array('type' => $properties->getFieldType('Name'),
+        
+		$object['properties']['Name'] = array('type' => $properties->getFieldType('Name'),
                                                            'value' => $properties->getValue('Name'));
-        $object['Author'] = array('value' => $properties->getValue('Author'));
-
-        $object['properties']['ParentId'] = array('type' => $properties->getFieldType('ParentId'),
+        
+		$object['properties']['ParentId'] = array('type' => $properties->getFieldType('ParentId'),
                                                   'value' => CMISUtil::encodeObjectId('Folder',
                                                   $properties->getValue('ParentId')));
-        // TODO should check for content stream data before filling these in
+												  
+		$object['properties']['Uri'] = array('type' => $properties->getFieldType('Uri'),
+                               'value' => $properties->getValue('Uri'));	
+							   
+        // TODO ensure format of date is always correct
+        $object['properties']['LastModificationDate'] = array('type' => $properties->getFieldType('LastModificationDate'),
+                                                           'value' => $properties->getValue('LastModificationDate'));					   									  
+
+        $object['properties']['CreatedBy'] = array('type' => $properties->getFieldType('CreatedBy'),
+                                                   'value' => $properties->getValue('CreatedBy'));
+												   
+        $object['properties']['AllowedChildObjectTypeIds'] = array('type' => $properties->getFieldType('AllowedChildObjectTypeIds'),
+                                                                   'value' => $properties->getValue('AllowedChildObjectTypeIds'));
+
+        $object['properties']['CreationDate'] = array('type' => $properties->getFieldType('CreationDate'),
+                                                       'value' => $properties->getValue('CreationDate'));
+
+        $object['properties']['LastModifiedBy'] = array('type' => $properties->getFieldType('LastModifiedBy'),
+                                                       'value' => $properties->getValue('LastModifiedBy'));
+
+        $object['properties']['ChangeToken'] = array('type' => $properties->getFieldType('ChangeToken'),
+                                                       'value' => $properties->getValue('ChangeToken'));
+														   
+        $object['properties']['ObjectTypeId'] = array('type' => $properties->getFieldType('ObjectTypeId'),
+                                                           'value' => $properties->getValue('ObjectTypeId'));
+													   
+        $object['properties']['ObjectId'] = array('type' => $properties->getFieldType('ObjectId'),
+                                                           'value' => $properties->getValue('ObjectId'));
+        
         if (strtolower($properties->getValue('ObjectTypeId')) == 'document')
         {
-            $object['properties']['ContentStreamLength'] = array('type' => $properties->getFieldType('ContentStreamLength'),
-                                                           'value' => $properties->getValue('ContentStreamLength'));
-            $object['properties']['ContentStreamMimeType'] = array('type' => $properties->getFieldType('ContentStreamMimeType'),
-                                                           'value' => $properties->getValue('ContentStreamMimeType'));
+
+        $object['properties']['ChangeToken'] = array('type' => $properties->getFieldType('ChangeToken'),
+                                                                   'value' => $properties->getValue('ChangeToken'));
+            $contentStreamLength = $properties->getValue('ContentStreamLength');
+            if (!empty($contentStreamLength))
+            {
+                $contentStreamLength = $properties->getValue('ContentStreamLength');
+                $object['properties']['ContentStreamLength'] = array('type' => $properties->getFieldType('ContentStreamLength'),
+                                                               'value' => $properties->getValue('ContentStreamLength'));
+                $object['properties']['ContentStreamMimeType'] = array('type' => $properties->getFieldType('ContentStreamMimeType'),
+                                                               'value' => $properties->getValue('ContentStreamMimeType'));
+            }
         }
 
         // if we have found a child/parent with one or more children/parents, recurse into the child/parent object
@@ -339,6 +395,117 @@ class CMISUtil {
         fclose($fp);
 
         return $temp;
+    }
+    
+    // TODO run evaluations on each of the following two functions and determine which 
+    //      is generally more efficienct
+    
+    /**
+     * Alternative function for decoding chunked streams, this will decode in blocks of 4.
+     * Not sure which method is more efficient, this or the function below (this does not
+     * re-encode but I am working on removing that step for the other function.)
+     * 
+     * NOTE The current one appears to be much slower (14/4/57 vs 1/0/3 on respective test files)
+     *  
+     * @param string $contentStream the base64 encoded content stream
+     * @return string $decoded the decoded content stream
+     */
+    static public function decodeContentStream($contentStream)
+    {
+        $decoded = '';
+        
+        $contentStream = preg_replace('/\r?\n+/', '', $contentStream);
+        
+        // decode in chunks or 4 chars at a time
+        for($i = 0, $len = strlen($contentStream); $i < $len; $i += 4) {
+            $decoded .= base64_decode(substr($contentStream, $i, 4));
+        }
+     
+        return $decoded;
+    }
+    
+    /**
+     * Checks the contentStream and ensures that it is a correct base64 string;
+     * This is purely for clients such as CMISSpaces breaking the content into 
+     * chunks before base64 encoding.
+     * 
+     * If the stream is chunked, it is decoded in chunks and sent back as a single stream.
+     * If it is not chunked it is decoded as is and sent back as a single stream.
+     * 
+     * NOTE this function and the above need to be checked for efficiency.
+     *      The current one appears to be miles better (1/0/3 vs 14/4/57 on respective test files)
+     * 
+     * @param object $contentStream
+     * @return string decoded
+     */
+    static public function decodeChunkedContentStream($contentStream)
+    {
+        // check the content stream for any lines of unusual length (except the last line, which can be any length)
+        $count = -1;
+        $length = 0;
+        $b64String = '';
+        $outputStream = '';
+        $decode = array();
+        $chunks = 1;
+        $decoded = '';
+        $chunked = '';
+
+        $splitStream = explode("\n", $contentStream);
+        foreach ($splitStream as $line)
+        {
+            $curlen = strlen($line);
+            
+            if ($length == 0) {
+                $length = $curlen;
+            }
+                
+            // if we find one we know that we must split the line here and end the previous base64 string
+            if ($curlen > $length)
+            {
+                // check for a new chunk
+                // either we have an equals sign (or two)
+                if (preg_match('/([^=]*={0,2})(.*)/', $line, $matches))
+                {
+                    $lastChunk = $matches[1];
+                    $nextChunk = $matches[2];
+                }
+                // or we need to try by line length
+                else {
+                    $lastChunk = substr($line, 0, $curlen - $length);
+                    $nextChunk = substr($line, $curlen - $length);
+                }
+
+                $decode[++$count] = $b64String . $lastChunk;
+        
+                $b64String = $nextChunk . "\n";
+                $length = strlen($nextChunk);
+
+                ++$chunks;
+            }
+            else {
+                $b64String .= $line . "\n";
+            }
+        }
+
+        // anything left over
+        if (!empty($b64String)) {
+            $decode[] = $b64String;
+        }
+
+        if ($chunks > 1)
+        {
+            foreach($decode as $code) {
+                // decode, append to output to be re-encoded
+                $chunked .= base64_decode($code);
+            }
+
+            $decoded = $chunked;
+        }
+        else {
+            $decoded = base64_decode($decode[0]);
+        }
+
+        return $decoded;
     }
 
 }

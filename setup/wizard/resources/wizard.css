@@ -1,4 +1,4 @@
-* { margin:0; padding:0; }
+* { margin: 0; padding: 0; }
 
 body {
     background: white;
@@ -10,24 +10,29 @@ body {
 }
 
 h1 {
-    font-size: 3em;
+    font-size: 2em;
     font-weight: normal;
     padding: 10px 0;
-    color: #555;
+    color: #444;
 }
 
 h2 {
-    font-size: 2em;
+    font-size: 1.5em;
     font-weight: normal;
     padding: 10px 0;
     color: #555;
 }
 
 h3 {
-    font-size: 1.5em;
+    font-size: 1.2em;
     font-weight: normal;
     padding: 10px 0;
     color: #555;
+}
+
+p {
+    padding-bottom: 10px;
+    word-wrap: break-word;
 }
 
 a {
@@ -36,7 +41,7 @@ a {
 
 th {
     font-weight: bold;
-    font-size: 1.1em;
+    text-align: left;
     padding: 5px 5px;
 }
 
@@ -44,18 +49,57 @@ td {
     padding: 2px 5px;
 }
 
-.container {
+/* *** Layout Styles *** */
+
+#outer-wrapper {
+    text-align: left;
     border: solid 1px #A1A1A1;
     margin: 50px;
     margin-top: 20px;
-    text-align: left;
 }
 
-.header {
+#header {
     background: url("graphics/gradient.png") repeat-y;
     background-position: top right;
     height: 60px;
 }
+
+#wrapper {
+    background: white url("graphics/background.gif") repeat-y left;
+}
+
+#container {
+  width: 100%;
+  background: white url("graphics/background.gif") repeat-y left;
+  float: right;
+  margin-left: -200px;
+}
+
+#content {
+    margin-left: 200px;
+    padding: 10px;
+    padding-top: 0;
+}
+
+#sidebar {
+  width: 200px;
+  float: left;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+#footer {
+    background: url("graphics/footer.png") repeat-x;
+    height: 50px;
+    clear: both;
+}
+
+.clearing {
+    height: 0;
+    clear: both;
+}
+
+/* Content Styles */
 
 .logo {
     background: url("graphics/logo.png") no-repeat;
@@ -63,25 +107,6 @@ td {
     height: inherit;
     width: 200px;
     margin-left: 10px;
-}
-
-.content {
-}
-
-.left {
-    float: left;
-    width: 200px;
-    text-align: center;
-    /*background: url("graphics/left.png") repeat-y;*/
-    background-position: top left;
-    height: inherit;
-    padding-bottom: 20px;
-    padding-top: 40px;
-}
-
-.right {
-    float: left;
-    padding: 20px;
 }
 
 .menu {
@@ -93,8 +118,8 @@ td {
 
 .indicator {
     background: url("graphics/indicator.png") no-repeat;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
     padding-left: 20px;
 }
 
@@ -104,28 +129,35 @@ td {
 
 .active {
     background: url("graphics/active.png") no-repeat;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
     padding-left: 20px;
 }
 
 .inactive {
     background: url("graphics/inactive.png") no-repeat;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
     padding-left: 20px;
+    color: #919191;
 }
 
 .tick {
     background: url("graphics/tick.png") no-repeat;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
 }
 
 .cross {
     background: url("graphics/cross.png") no-repeat;
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
+}
+
+.cross_orange {
+    background: url("graphics/cross_orange.png") no-repeat;
+    height: 16px;
+    width: 16px;
 }
 
 .green {
@@ -136,6 +168,15 @@ td {
 .orange {
     color: orange;
     align: center;
+}
+
+.error {
+	font-weight: bold;
+    color: #9F0000;
+}
+
+.errors {
+    color: #9F0000;
 }
 
 .buttons {
@@ -151,10 +192,12 @@ td {
     color: #EC7725;
 }
 
-.footer {
-    background: url("graphics/footer.png") repeat-x;
-    height: 50px;
-    clear: both;
+.buttons a {
+    background: #DDDDDD;
+    border: solid 1px #888;
+    padding: 2px 8px 2px 5px;
+    text-decoration: none;
+    color: #EC7725;
 }
 
 .powered-by {
@@ -169,6 +212,11 @@ td {
 
 }
 
+.onclick {
+     cursor: pointer;
+     color: #EC7725;
+}
+
 .description {
     color:#898989;
     line-height:150%;
@@ -176,25 +224,32 @@ td {
 }
 
 .top {
-    color:#EC7725;
+    font-size: 2em;
+    font-weight: normal;
+    padding: 10px 0;
+    color: #444;
 }
 
 .right_top {
     height:45px;
 }
 
-#database td {
-	width : 500px;
+table#dbconf tr td {
+	width:50%;
 }
 
-table.settings{
-	width : 500px;
+input#dname {
+	size:40px;
 }
 
-table.asettings  {
-	width : 715px;
+.options {
+	width:15%;
 }
 
-table.users  {
-	width : 650px;
+.adv_options {
+	padding: 5px 8px;
+}
+
+#section {
+	/*border:1px solid;*/
 }

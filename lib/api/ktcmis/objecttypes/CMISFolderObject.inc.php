@@ -99,7 +99,8 @@ class CMISFolderObject extends CMISBaseObject {
                                      . '/browse.php?fFolderId='
                                      . $objectProperties['id']);
         // TODO this url is probably incorrect...needs to be checked
-        $this->_setPropertyInternal('URI', $uri);
+//        $this->_setPropertyInternal('Uri', $uri);
+        $this->_setPropertyInternal('Uri', '');
         // TODO what is this?  Assuming it is the object type id, and not OUR document type?
         $this->_setPropertyInternal('ObjectTypeId', $this->getAttribute('typeId'));
         // Needed to distinguish type
