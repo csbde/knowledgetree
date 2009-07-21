@@ -217,6 +217,14 @@ class KTDocumentEditAction extends KTDocumentAction {
             foreach ($fields as $oField) {
                 $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
 
+                if($oField->getDataType() == "LARGE TEXT")
+                {
+                	if(strlen(strip_tags($val)) > $oField->getMaxLength())
+                	{
+            			$oForm->handleError(sprintf(_kt("Value exceeds max allowed length of %d characters for %s. Current value is %d characters."), $oField->getMaxLength(), $oField->getName(), strlen(strip_tags($val))));
+                	}
+                }
+                
                 // FIXME "null" has strange meanings here.
                 if (!is_null($val)) {
                     $MDPack[] = array(

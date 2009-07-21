@@ -190,6 +190,10 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWidget('KTCoreTreeMetadataWidget', 'ktcore.widgets.treemetadata', 'KTWidgets.php');
         $this->registerWidget('KTDescriptorSelectionWidget', 'ktcore.widgets.descriptorselection', 'KTWidgets.php');
         $this->registerWidget('KTCoreFolderCollectionWidget', 'ktcore.widgets.foldercollection', 'KTWidgets.php');
+        $this->registerWidget('KTCoreFolderCollectionWidget', 'ktcore.widgets.foldercollection', 'KTWidgets.php');
+
+        $this->registerWidget('KTCoreTextAreaWidget', 'ktcore.widgets.textarea', 'KTWidgets.php');
+        $this->registerWidget('KTCoreDateWidget', 'ktcore.widgets.date', 'KTWidgets.php');
 
         $this->registerWidget('KTCoreConditionalSelectionWidget', 'ktcore.widgets.conditionalselection', 'KTWidgets.php');
 
@@ -280,6 +284,13 @@ class KTCorePlugin extends KTPlugin {
              _kt('Document Fieldsets'),
             _kt('Manage the different types of information that can be associated with classes of documents.'),
             'admin/documentFieldsv2.php', null);
+        if(KTPluginUtil::pluginIsActive('ktdms.wintools'))
+        {
+            $this->registerAdminPage('emailtypemanagement', 'KTEmailDocumentTypeDispatcher', 'documents',
+                    _kt('Email Document Types'),
+                    _kt('Manage the addition of Email document types to the system.'),
+                    '../wintools/email/emailDocumentTypes.php', null);
+        }
         $this->registerAdminPage('workflows_2', 'KTWorkflowAdminV2', 'documents',
             _kt('Workflows'), _kt('Configure automated Workflows that map to document life-cycles.'),
             'admin/workflowsv2.php', null);
