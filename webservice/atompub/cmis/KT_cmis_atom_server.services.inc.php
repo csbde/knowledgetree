@@ -103,10 +103,17 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
         // determine whether this is a folder or a document create
         // document create will have a content tag <atom:content> or <content> containing base64 encoding of the document
         $content = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'content');
-        if (is_null($content))
+        
+        // check content for weird chars
+        $matches = array();
+        preg_match('/[^\w\d\/\+\n]*/', $content, $matches);
+        
+        if (is_null($content)) {
             $type = 'folder';
-        else
+        }
+        else {
             $type = 'document';
+        }
 
         $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']['cmis:object']
                                                                                                       [0]['@children']['cmis:properties']
@@ -124,20 +131,17 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
         
         if ($typeId != 'Unknown')
         {
+            /*$f = fopen('c:\kt-stuff\here.txt', 'w');
+            fwrite($f, 'fgfgfgfg');
+            fclose($f);*/
             $this->setStatus(self::STATUS_CREATED);
-//            if ($type == 'folder')
-//            {
-                $feed = KT_cmis_atom_service_helper::getObjectFeed($ObjectService, $repositoryId, $newObjectId, 'POST');
-//            }
-//            else
-//            {
-//                $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
-//                $cmisEntry = $ObjectService->getProperties($repositoryId, $folderId, false, false);
-//                $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $cmisEntry['properties']['Name']['value'], 'POST');
-//            }
+            $feed = KT_cmis_atom_service_helper::getObjectFeed($ObjectService, $repositoryId, $newObjectId, 'POST');
         }
         else
         {
+            /*$f = fopen('c:\kt-stuff\failed.txt', 'w');
+            fwrite($f, 'fgfgfgfg');
+            fclose($f);*/
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $newObjectId['message']);
         }
 

@@ -72,11 +72,6 @@ if(!KT_atom_HTTPauth::isLoggedIn()) {
 	KT_atom_HTTPauth::login('KnowledgeTree DMS', 'You must authenticate to enter this realm');
 }
 
-//$username = $_SERVER['PHP_AUTH_USER'];
-//$password = $_SERVER['PHP_AUTH_PW'];
-//// fetch user name and password (check auth include for proper method)
-//KT_cmis_atom_service_helper::login($username, $password);
-
 //Start the AtomPubProtocol Routing Engine
 $APP = new KT_cmis_atom_server();
 
