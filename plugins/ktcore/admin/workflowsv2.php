@@ -2367,11 +2367,10 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     	    $allowed = array();
             // Modified Jarrett Jordaan Only notify enabled users
     	    $q = sprintf('name like "%%%s%%" AND disabled = 0', DBUtil::escapeSimple($sFilter));
-
     	    $aUsers = User::getList($q);
+    	    $q = sprintf('name like "%%%s%%"', DBUtil::escapeSimple($sFilter));
         	$aGroups = Group::getList($q);
             $aRoles = Role::getList($q);
-
             $empty = true;
 
             if (!PEAR::isError($aUsers)) {
