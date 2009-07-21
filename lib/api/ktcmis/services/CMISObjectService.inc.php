@@ -80,16 +80,16 @@ class CMISObjectService {
      * @param array $properties Array of properties which must be applied to the created document object
      * @param string $folderId The id of the folder which will be the parent of the created document object
      *                         This parameter is optional IF unfilingCapability is supported
-     * @param contentStream $contentStream optional content stream data
+     * @param string $contentStream optional content stream data - expected as a base64 encoded string
      * @param string $versioningState optional version state value: checkedout/major/minor
      * @return string $objectId The id of the created folder object
      */
     // TODO throw ConstraintViolationException if:
     //      value of any of the properties violates the min/max/required/length constraints
-    //      specified in the property definition in the Object-Type.
+    //      specified in the property definition in the Object-Type. 
     function createDocument($repositoryId, $typeId, $properties, $folderId = null,
                             $contentStream = null, $versioningState = null)
-    {
+    {        
         $objectId = null;
 
         // fetch type definition of supplied type and check for base type "document", if not true throw exception
@@ -196,11 +196,17 @@ class CMISObjectService {
         //      this check isn't strictly necessary;  however it is needed for a repository which does not support content streams
         if (!empty($contentStream))
         {
+            // TODO consider checking whether content is encoded (currently we expect encoded)
+            // TODO choose between this and the alternative decode function (see CMISUtil class)
+            //      The current one appears to be miles better (1/0/3 vs 14/4/57 on respective test files)
+            $contentStream = CMISUtil::decodeChunkedContentStream($contentStream);
+         
             // NOTE There is a function in CMISUtil to do this, written for the unit tests but since KTUploadManager exists
             //      and has more functionality which could come in useful at some point I decided to go with that instead
             //      (did not know this existed when I wrote the CMISUtil function)
             $uploadManager = new KTUploadManager();
-            $tempfilename = $uploadManager->store_base64_file($contentStream, 'cmis_');
+            // assumes already decoded from base64, should use store_base64_file if not
+            $tempfilename = $uploadManager->store_file($contentStream, 'cmis_');
 
             // metadata
             $metadata = array();

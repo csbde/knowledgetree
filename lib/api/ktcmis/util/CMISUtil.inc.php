@@ -298,10 +298,6 @@ class CMISUtil {
         $object['properties']['ObjectId'] = array('type' => $properties->getFieldType('ObjectId'),
                                                            'value' => $properties->getValue('ObjectId'));
         
-
-
-
-
         if (strtolower($properties->getValue('ObjectTypeId')) == 'document')
         {
 
@@ -399,6 +395,117 @@ class CMISUtil {
         fclose($fp);
 
         return $temp;
+    }
+    
+    // TODO run evaluations on each of the following two functions and determine which 
+    //      is generally more efficienct
+    
+    /**
+     * Alternative function for decoding chunked streams, this will decode in blocks of 4.
+     * Not sure which method is more efficient, this or the function below (this does not
+     * re-encode but I am working on removing that step for the other function.)
+     * 
+     * NOTE The current one appears to be much slower (14/4/57 vs 1/0/3 on respective test files)
+     *  
+     * @param string $contentStream the base64 encoded content stream
+     * @return string $decoded the decoded content stream
+     */
+    static public function decodeContentStream($contentStream)
+    {
+        $decoded = '';
+        
+        $contentStream = preg_replace('/\r?\n+/', '', $contentStream);
+        
+        // decode in chunks or 4 chars at a time
+        for($i = 0, $len = strlen($contentStream); $i < $len; $i += 4) {
+            $decoded .= base64_decode(substr($contentStream, $i, 4));
+        }
+     
+        return $decoded;
+    }
+    
+    /**
+     * Checks the contentStream and ensures that it is a correct base64 string;
+     * This is purely for clients such as CMISSpaces breaking the content into 
+     * chunks before base64 encoding.
+     * 
+     * If the stream is chunked, it is decoded in chunks and sent back as a single stream.
+     * If it is not chunked it is decoded as is and sent back as a single stream.
+     * 
+     * NOTE this function and the above need to be checked for efficiency.
+     *      The current one appears to be miles better (1/0/3 vs 14/4/57 on respective test files)
+     * 
+     * @param object $contentStream
+     * @return string decoded
+     */
+    static public function decodeChunkedContentStream($contentStream)
+    {
+        // check the content stream for any lines of unusual length (except the last line, which can be any length)
+        $count = -1;
+        $length = 0;
+        $b64String = '';
+        $outputStream = '';
+        $decode = array();
+        $chunks = 1;
+        $decoded = '';
+        $chunked = '';
+
+        $splitStream = explode("\n", $contentStream);
+        foreach ($splitStream as $line)
+        {
+            $curlen = strlen($line);
+            
+            if ($length == 0) {
+                $length = $curlen;
+            }
+                
+            // if we find one we know that we must split the line here and end the previous base64 string
+            if ($curlen > $length)
+            {
+                // check for a new chunk
+                // either we have an equals sign (or two)
+                if (preg_match('/([^=]*={0,2})(.*)/', $line, $matches))
+                {
+                    $lastChunk = $matches[1];
+                    $nextChunk = $matches[2];
+                }
+                // or we need to try by line length
+                else {
+                    $lastChunk = substr($line, 0, $curlen - $length);
+                    $nextChunk = substr($line, $curlen - $length);
+                }
+
+                $decode[++$count] = $b64String . $lastChunk;
+        
+                $b64String = $nextChunk . "\n";
+                $length = strlen($nextChunk);
+
+                ++$chunks;
+            }
+            else {
+                $b64String .= $line . "\n";
+            }
+        }
+
+        // anything left over
+        if (!empty($b64String)) {
+            $decode[] = $b64String;
+        }
+
+        if ($chunks > 1)
+        {
+            foreach($decode as $code) {
+                // decode, append to output to be re-encoded
+                $chunked .= base64_decode($code);
+            }
+
+            $decoded = $chunked;
+        }
+        else {
+            $decoded = base64_decode($decode[0]);
+        }
+
+        return $decoded;
     }
 
 }

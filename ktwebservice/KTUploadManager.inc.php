@@ -134,6 +134,36 @@ class KTUploadManager
 
 		return $tempfilename;
 	}
+    
+    /**
+     * 
+     * @param string $content file content NOT base64 encoded (may be string, may be binary)
+     * @param string $prefix [optional]
+     * @return $tempfilename the name of the temporary file created
+     */
+    function store_file($content, $prefix= 'sa_')
+	{
+		$tempfilename = $this->get_temp_filename($prefix);
+		if (!is_writable($tempfilename))
+		{
+			return new PEAR_Error("Cannot write to file: $tempfilename");
+		}
+
+		if (!$this->is_valid_temporary_file($tempfilename))
+		{
+			return new PEAR_Error("Invalid temporary file: $tempfilename. There is a problem with the temporary storage path: $this->temp_dir.");
+		}
+
+		$fp=fopen($tempfilename, 'wb');
+		if ($fp === false)
+		{
+			return new PEAR_Error("Cannot write content to temporary file: $tempfilename.");
+		}
+		fwrite($fp, $content);
+		fclose($fp);
+
+		return $tempfilename;
+	}
 
 	/**
 	 * This tells the manager to manage a file that has been uploaded.
