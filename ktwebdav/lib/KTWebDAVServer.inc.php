@@ -350,12 +350,9 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
         if (method_exists($this, $wrapper) && ($method == 'options' || method_exists($this, $method))) {
             $this->$wrapper();  // call method by name
-        } else { // method not found/implemented or needs to be ignored for now
-            if (($_SERVER['REQUEST_METHOD'] == 'LOCK') || ($_SERVER['REQUEST_METHOD'] == 'UNLOCK')) {
-                //$this->http_status('412 Precondition failed');
-                // This is to get Finder to work for now.
-                $this->ktwebdavLog("Skipping $method request", 'info', true); 
-                $this->http_status("200 OK") ;
+        } else { // method not found/implemented
+            if ($_SERVER['REQUEST_METHOD'] == 'LOCK') {
+                $this->http_status('412 Precondition failed');
             } else {
                 $this->http_status('405 Method not allowed');
                 header('Allow: '.join(', ', $this->_allow()));  // tell client what's allowed
@@ -371,7 +368,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
      * check authentication if check is implemented
      *
      * @param  void
-     * @return bool  true if authentication succeeded or not necessary
+     * @return bool  true if authentication succeded or not necessary
      */
     function _check_auth()
     {
