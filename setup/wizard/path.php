@@ -41,6 +41,7 @@
 */
     define('DS', '/');
     define('WIZARD_DIR', dirname(__FILE__).DS);
+    define('SYSTEM_DIR', WIZARD_DIR."../../");
     define('SQL_DIR', WIZARD_DIR.DS."sql".DS);
     define('SQL_UPGRADE_DIR', SQL_DIR.DS."/upgrades/".DS);
     define('CONF_DIR', WIZARD_DIR.DS."config".DS);

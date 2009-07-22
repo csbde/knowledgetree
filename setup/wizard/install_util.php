@@ -1,19 +1,101 @@
 <?php
-
-class InstallUtil {
-	
+/**
+* Configuration Step Controller.
+*
+* KnowledgeTree Community Edition
+* Document Management Made Simple
+* Copyright(C) 2008,2009 KnowledgeTree Inc.
+* Portions copyright The Jam Warehouse Software(Pty) Limited
+*
+* This program is free software; you can redistribute it and/or modify it under
+* the terms of the GNU General Public License version 3 as published by the
+* Free Software Foundation.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+* FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+* details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+* You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+* California 94120-7775, or email info@knowledgetree.com.
+*
+* The interactive user interfaces in modified source and object code versions
+* of this program must display Appropriate Legal Notices, as required under
+* Section 5 of the GNU General Public License version 3.
+*
+* In accordance with Section 7(b) of the GNU General Public License version 3,
+* these Appropriate Legal Notices must retain the display of the "Powered by
+* KnowledgeTree" logo and retain the original copyright notice. If the display of the
+* logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
+* must display the words "Powered by KnowledgeTree" and retain the original
+* copyright notice.
+*
+* @copyright 2008-2009, KnowledgeTree Inc.
+* @license GNU General Public License version 3
+* @author KnowledgeTree Team
+* @package Installer
+* @version Version 0.1
+*/
+class InstallUtil {	
+	/**
+	* Constructs installation object
+	*
+	* @author KnowledgeTree Team
+	* @access public
+ 	*/
 	public function __construct() {
-		
 	}
 	
+	/**
+	* Check if system needs to be installed
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
 	public function isSystemInstalled() {
 		if (file_exists(dirname(__FILE__)."/install")) {
 			return false;
 		}
-
 		return true;
 	}
-	
+
+	/**
+	* Check if system needs to be installed
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return mixed
+ 	*/
+    public function checkStructurePermissions() {
+    	// Check if Wizard Directory is writable
+    	if(!$this->_checkPermission(WIZARD_DIR)) {
+    		return 'wizard';
+    	}
+    	if(!$this->_checkPermission(CONF_DIR)) {
+    		return 'wizard';
+    	}
+    	if(!$this->_checkPermission(SQL_DIR)) {
+    		return 'wizard';
+    	}
+    	if(!$this->_checkPermission(RES_DIR)) {
+    		return 'wizard';
+    	}
+    	if(!$this->_checkPermission(STEP_DIR)) {
+    		return 'wizard';
+    	}
+    	if(!$this->_checkPermission(TEMP_DIR)) {
+    		return 'wizard';
+    	}
+
+    	return true;
+    }
+
     /**
      * Redirect
      * 
@@ -23,14 +105,14 @@ class InstallUtil {
      * 
      * @static 
      * @access  public 
-     * @return  mixed   Returns true on succes (or exits) or false if headers
      *                  have already been sent.
      * @param   string  $url URL where the redirect should go to.
      * @param   bool    $exit Whether to exit immediately after redirection.
      * @param   bool    $rfc2616 Wheter to output a hypertext note where we're
      *                  redirecting to (Redirecting to <a href="...">...</a>.)
+     * @return  mixed   Returns true on succes (or exits) or false if headers
      */
-    function redirect($url, $exit = true, $rfc2616 = false)
+    public function redirect($url, $exit = true, $rfc2616 = false)
     {
         if (headers_sent()) {
             return false;
@@ -66,12 +148,12 @@ class InstallUtil {
      * @author  Philippe Jausions <Philippe.Jausions@11abacus.com> 
      * @static 
      * @access  public 
-     * @return  string  The absolute URI.
      * @param   string  $url Absolute or relative URI the redirect should go to.
      * @param   string  $protocol Protocol to use when redirecting URIs.
      * @param   integer $port A new port number.
+     * @return  string  The absolute URI.
      */
-    function absoluteURI($url = null, $protocol = null, $port = null)
+    public function absoluteURI($url = null, $protocol = null, $port = null)
     {
         // filter CR/LF
         $url = str_replace(array("\r", "\n"), ' ', $url);
@@ -141,5 +223,102 @@ class InstallUtil {
         
         return $server . $path . $url;
     }
+    
+    /**
+     * Check whether a given directory / file path exists and is writable
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @param string $dir The directory / file to check
+     * @param boolean $create Whether to create the directory if it doesn't exist
+     * @return array The message and css class to use
+     */
+    private function _checkPermission($dir)
+    {
+        if(is_writable($dir)){
+			return true;
+        } else {
+        	return false;
+        }
+
+    }
+    
+	 /**
+     * Change permissions on a directory helper
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @param string $folderPath The directory / file to check
+     * @return boolean
+     */
+    public function canChangePermissions($folderPath) {
+		return $this->_chmodRecursive($folderPath, 0755);
+    }
+    
+	/**
+     * Change permissions on a directory (recursive)
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @param string $folderPath The directory / file to check
+     * @param boolean $create Whether to create the directory if it doesn't exist
+     * @return boolean
+     */
+	private function _chmodRecursive($path, $filemode) {
+		if (!is_dir($path))
+			return chmod($path, $filemode);
+		$dh = opendir($path);
+		while (($file = readdir($dh)) !== false) {
+		if($file != '.' && $file != '..') {
+		    $fullpath = $path.'/'.$file;
+		    if(is_link($fullpath))
+		        return false;
+		    elseif(!is_dir($fullpath)) {
+		    	$perms = substr(sprintf('%o', fileperms($fullpath)), -4);
+		    	if($perms != $filemode)
+		        	if (!chmod($fullpath, $filemode))
+		            	return false;
+		    } elseif(!$this->chmodRecursive($fullpath, $filemode))
+		        return false;
+			}
+		}
+		closedir($dh);
+		$perms = substr(sprintf('%o', fileperms($path)), -4);
+		if($perms != $filemode) {
+			if(chmod($path, $filemode))
+				return true;
+			else
+				return false;
+		} else {
+			return true;
+		}
+	}
+	
+   /**
+     * Check if a file can be written to a folder
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @param string $filename the path to the file to create
+     * @return boolean
+     */
+    public function canWriteFile($filename) {
+    	$fh = fopen($filename, "w+");
+    	if($fr = fwrite($fh, 'test') === false) {
+    		return false;
+    	}
+    	
+    	fclose($fh);
+    	return true;
+    }
+    
+	function execInBackground($cmd) {
+	    if (substr(php_uname(), 0, 7) == "Windows"){
+	        pclose(popen("start /B ". $cmd, "r")); 
+	    }
+	    else {
+	        exec($cmd . " > /dev/null &");  
+	    }
+	}
 }
 ?>

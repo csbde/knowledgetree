@@ -113,12 +113,12 @@ class stepAction {
 			}
             $response = $this->action->doStep();
             if($this->action->storeInSession()) { // Check if class values need to be stored in session
-            	$this->loadStepToSession($this->stepName); // Send class to session
+            	$this->_loadStepToSession($this->stepName); // Send class to session
             }
             if ($response == 'error') {
-            	$this->handleErrors(); // Send Errors to session
+            	$this->_handleErrors(); // Send Errors to session
             } else {
-            	$this->clearErrors($this->stepName); // Send Errors to session
+            	$this->_clearErrors($this->stepName); // Send Errors to session
             }
             return $response;
         } else {
@@ -218,7 +218,7 @@ class stepAction {
 	* @access public
 	* @return string
 	*/
-    function getCurrentStepName() {
+    public function getCurrentStepName() {
         return$this->step_names[$this->stepName];
     }
 
@@ -267,7 +267,7 @@ class stepAction {
 	* @access public
 	* @return boolean
 	*/
-    function displayConfirm() {
+    public function displayConfirm() {
     	// TODO:No other way I can think of doing this
         return $this->displayConfirm;
     }
@@ -280,7 +280,7 @@ class stepAction {
 	* @access public
 	* @return void
 	*/
-    function setDisplayConfirm($displayConfirm) {
+    public function setDisplayConfirm($displayConfirm) {
         $this->displayConfirm = $displayConfirm;
     }
 
@@ -292,7 +292,7 @@ class stepAction {
 	* @access public
 	* @return void
 	*/
-    function loadSession($ses) {
+    public function loadSession($ses) {
         $this->session = $ses;
     }
 
@@ -302,9 +302,9 @@ class stepAction {
 	* @author KnowledgeTree Team
 	* @param object Session
 	* @access public
-	* @return void
+	* @return object
 	*/
-    function getSession() {
+    public function getSession() {
         return $this->session;
     }
 
@@ -316,7 +316,7 @@ class stepAction {
 	* @access public
 	* @return string
 	*/
-    function paintAction() {
+    public function paintAction() {
         $left = $this->getLeftMenu();
         $top = $this->getTop();
         $step_errors = $this->action->getErrors(); // Get errors
@@ -330,7 +330,7 @@ class stepAction {
         foreach ($step_vars as $key => $value) { // Set template variables
             $step_tpl->set($key, $value); // Load values to session
             if($this->action->storeInSession()) { // Check if class values need to be stored in session
-            	$this->loadValueToSession($this->stepName, $key, $value);
+            	$this->_loadValueToSession($this->stepName, $key, $value);
             }
         }
         $content = $step_tpl->fetch();
@@ -350,7 +350,7 @@ class stepAction {
      * @access private
      * @return void
      */
-     private function loadStepToSession($class, $v = array(), $overwrite = false) {
+     private function _loadStepToSession($class, $v = array(), $overwrite = false) {
          if($this->session != null) {
              if($overwrite) {
                  $this->session->set($class , $v);
@@ -359,7 +359,7 @@ class stepAction {
                     $this->session->set($class , $v);
             }
          } else {
-             die("Where is the session");
+             die("Where is the session?");
          }
      }
 
@@ -374,11 +374,11 @@ class stepAction {
      * @access private
      * @return void
      */
-     private function loadValueToSession($class, $k, $v, $overwrite = false) {
+     private function _loadValueToSession($class, $k, $v, $overwrite = false) {
          if($this->session != null) {
             $this->session->setClass($class, $k, $v);
          } else {
-             die("Where is the session");
+             die("Where is the session ?");
          }
      }
 
@@ -390,10 +390,10 @@ class stepAction {
      * @access private
      * @return void
      */
-     private function handleErrors() {// TODO: handle multiple errors
+     private function _handleErrors() {// TODO: handle multiple errors
         $step_errors = $this->action->getErrors(); // Get errors
         foreach ($step_errors as $key => $value) {
-            $this->loadErrorToSession($this->stepName, $key, $value); // Load values session
+            $this->_loadErrorToSession($this->stepName, $key, $value); // Load values session
         }
      }
 
@@ -405,8 +405,10 @@ class stepAction {
      * @access private
      * @return void
      */
-     private function clearErrors($class) {
-     	$this->session->clearErrors($class);
+     private function _clearErrors($class) {
+     	if($this->session) {
+     		$this->session->clearErrors($class);
+     	}
      }
 
     /**
@@ -420,15 +422,14 @@ class stepAction {
      * @access private
      * @return void
      */
-     private function loadErrorToSession($class, $k, $v, $overwrite = false) {
+     private function _loadErrorToSession($class, $k, $v, $overwrite = false) {
          $k = "errors";
          if($this->session != null) {
             $this->session->setClassError($class, $k, $v);
          } else {
-             die("Where is the session");
+             die("Where is the session  ?");
          }
      }
-
 }
 
 ?>

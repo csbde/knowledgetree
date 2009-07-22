@@ -87,12 +87,21 @@ class Step
     protected $order = false;
     
 	/**
+	* Flag if step needs to run silently
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $silent = false;
+    
+	/**
 	* Returns step state
 	*
 	* @author KnowledgeTree Team
 	* @param none
 	* @access public
-	* @return void
+	* @return string
 	*/
     public function doStep()
     {
@@ -134,7 +143,7 @@ class Step
 	* @return void
 	*/
     public function loadDefaults() {
-        return '';
+//        return '';
     }
 
 	/**
@@ -260,6 +269,14 @@ class Step
         return true;
     }
     
+	/**
+	* Get session data from post
+	*
+	* @author KnowledgeTree Team
+	* @params none
+	* @access private
+	* @return boolean
+	*/
     public function getDataFromSession($class) {
     	if(empty($_SESSION[$class])) {
     		return false;
@@ -304,16 +321,44 @@ class Step
 		return '';
     }
     
+    /**
+     * Return whether or not to store a step information in session
+     * 
+     * @author KnowledgeTree Team
+     * @param none
+     * @access public
+     * @return boolean
+     */
     public function storeInSession() {
     	return $this->storeInSession;
     }
     
+    /**
+     * Return whether or not to a step has to be installed
+     * 
+     * @author KnowledgeTree Team
+     * @param none
+     * @access public
+     * @return boolean
+     */
     public function runInstall() {
     	return $this->runInstall;
     }
     
-    public function setDBConfig() {
+    public function setPostConfig() {
     	return '';
+    }
+    
+	/**
+	* Set step errors
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return array
+	*/
+    public function setErrors($error) {
+        $this->error = $error;
     }
 }
 

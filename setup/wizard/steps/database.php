@@ -51,7 +51,7 @@ class database extends Step
 	* @access private
 	* @var array
 	*/	
-    private $dbhandler = null;
+    private $_dbhandler = null;
     	
 	/**
 	* Database type
@@ -223,7 +223,7 @@ class database extends Step
 	* @param none
  	*/
     public function __construct() {
-    	$this->dbhandler = new DBUtil();
+    	$this->_dbhandler = new DBUtil();
     }
 
 	/**
@@ -263,7 +263,7 @@ class database extends Step
 	*/
     public function doProcess() {
         if($this->next()) {        	
-            $this->setDBConfig(); // Set any posted variables
+            $this->setPostConfig(); // Set any posted variables
             $this->setDetails();
             if($this->doTest()) { // Test
 				return 'confirm';
@@ -274,7 +274,7 @@ class database extends Step
             return 'previous';
         } else if($this->confirm()) {
             $this->setDataFromSession("database"); // Set Session Information
-            $this->setDBConfig(); // Set any posted variables
+            $this->setPostConfig(); // Set any posted variables
 			return 'next';
         } else if($this->edit()) {
             $this->setDataFromSession("database"); // Set Session Information, since its an edit
@@ -300,11 +300,11 @@ class database extends Step
     		return false;
     	}
     	if($this->dport == '') 
-    		$con = $this->dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
+    		$con = $this->_dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
     	else 
-    		$con = $this->dbhandler->DBUtil($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
+    		$con = $this->_dbhandler->DBUtil($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
         if (!$con) {
-            $this->error[] = "Could not connect: " . $this->dbhandler->getErrors();
+            $this->error[] = "Could not connect: " . $this->_dbhandler->getErrors();
             return false;
         } else {
             return true;
@@ -364,7 +364,7 @@ class database extends Step
 	* @access public
 	* @return void
 	*/
-    public function setDBConfig() {
+    public function setPostConfig() {
     	$this->dtype = $this->getPostSafe("dtype");
     	$this->dtypes = array("0"=>"mysql"); // TODO:multiple databases
         $this->dhost = $this->getPostSafe("dhost");
@@ -385,7 +385,7 @@ class database extends Step
 	* Load default options on template from xml file
 	*
 	* @author KnowledgeTree Team
-	* @params simple xml object $simplexml
+	* @params object SimpleXmlObject
 	* @access public
 	* @return void
 	*/
@@ -412,7 +412,7 @@ class database extends Step
 	* Store options
 	*
 	* @author KnowledgeTree Team
-	* @params SimpleXmlObject $simplexml
+	* @params object SimpleXmlObject
 	* @access private
 	* @return void
 	*/
@@ -438,7 +438,7 @@ class database extends Step
 	*
 	* @author KnowledgeTree Team
 	* @access private
-	* @params simple xml object $simplexml
+	* @params object SimpleXmlObject
 	* @return array
 	*/
     private function getTypes($xmlTypes) {
@@ -517,7 +517,7 @@ class database extends Step
         $con = $this->connectMysql();
         if($con) {
             if(!$this->createDB($con)) {
-            	$this->error[] = "Could not Create Database: " . $this->dbhandler->getErrors();
+            	$this->error[] = "Could not Create Database: " . $this->_dbhandler->getErrors();
             	return false;
             }
             $this->closeMysql($con);
@@ -533,9 +533,9 @@ class database extends Step
 	* @return object mysql connection
 	*/
     private function connectMysql() {
-		$con = $this->dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
+		$con = $this->_dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
         if (!$con) {
-            $this->error[] = "Could not connect: " . $this->dbhandler->getErrors();
+            $this->error[] = "Could not connect: " . $this->_dbhandler->getErrors();
 
             return false;
         }
@@ -555,16 +555,16 @@ class database extends Step
 		if($this->usedb($con)) { // attempt to use the db
 		    if($this->dropdb($con)) { // attempt to drop the db
 		        if(!$this->create($con)) { // attempt to create the db
-					$this->error[] = "Could create database: " . $this->dbhandler->getErrors();
+					$this->error[] = "Could create database: " . $this->_dbhandler->getErrors();
 					return false;// cannot overwrite database
 		        }
 		    } else {
-		    	$this->error[] = "Could not drop database: " . $this->dbhandler->getErrors();
+		    	$this->error[] = "Could not drop database: " . $this->_dbhandler->getErrors();
 		    	return false;// cannot overwrite database
 		    }
 		} else {
 		    if(!$this->create($con)) { // attempt to create the db
-				$this->error[] = "Could not create database: " . $this->dbhandler->getErrors();
+				$this->error[] = "Could not create database: " . $this->_dbhandler->getErrors();
 				return false;// cannot overwrite database
 		    }
 		}
@@ -594,7 +594,7 @@ class database extends Step
 	*/
     private function create($con) {
         $sql = "CREATE DATABASE {$this->dname}";
-        if ($this->dbhandler->query($sql, $con)) {
+        if ($this->_dbhandler->query($sql, $con)) {
 			
             return true;
         }
@@ -611,10 +611,10 @@ class database extends Step
 	* @return boolean
 	*/
     private function usedb($con) {
-		if($this->dbhandler->useBD($this->dname)) {
+		if($this->_dbhandler->useBD($this->dname)) {
             return true;
         } else {
-            $this->error[] = "Error using database: ".$this->dbhandler->getErrors();
+            $this->error[] = "Error using database: ".$this->_dbhandler->getErrors();
             return false;
         }
     }
@@ -630,12 +630,12 @@ class database extends Step
     private function dropdb($con) {
         if($this->ddrop) {
             $sql = "DROP DATABASE {$this->dname};";
-			if(!$this->dbhandler->query($sql)) {
-                $this->error[] = "Cannot drop database: ".$this->dbhandler->getErrors();
+			if(!$this->_dbhandler->query($sql)) {
+                $this->error[] = "Cannot drop database: ".$this->_dbhandler->getErrors();
                 return false;
             }
         } else {
-            $this->error[] = "Cannot drop database: ".$this->dbhandler->getErrors();
+            $this->error[] = "Cannot drop database: ".$this->_dbhandler->getErrors();
             return false;
         }
         return true;
@@ -657,10 +657,10 @@ class database extends Step
     	} else {
 			$user1 = "GRANT SELECT, INSERT, UPDATE, DELETE ON {$this->dname}.* TO {$this->dmsusername}@{$this->dhost} IDENTIFIED BY \"{$this->dmsuserpassword}\";";
 			$user2 = "GRANT ALL PRIVILEGES ON {$this->dname}.* TO {$this->dmsname}@{$this->dhost} IDENTIFIED BY \"{$this->dmspassword}\";";
-			if ($this->dbhandler->execute($user1) && $this->dbhandler->execute($user2)) {
+			if ($this->_dbhandler->execute($user1) && $this->_dbhandler->execute($user2)) {
             	return true;
         	} else {
-        		$this->error[] = "Could not create users in database: ".$this->dbhandler->getErrors();
+        		$this->error[] = "Could not create users in database: ".$this->_dbhandler->getErrors();
         		return false;
         	}
 		}
@@ -695,13 +695,19 @@ class database extends Step
     	return $ret;
     }
 
+	/**
+	* Ammend any known database upgrades
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @params none
+	* @return boolean
+	*/
     private function applyUpgrades($con) {
     	// Database upgrade to version 3.6.1: Search ranking
-//        $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/upgrades/search_ranking.sql";
-//        exec($command, $output);
-//        $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/upgrades/folders.sql";
-//        exec($command, $output);
+    	return true;
     }
+    
 	/**
 	* Close connection if it exists
 	*
@@ -712,7 +718,7 @@ class database extends Step
 	*/
     private function closeMysql($con) {
         try {
-            $this->dbhandler->close();
+            $this->_dbhandler->close();
         } catch (Exeption $e) {
             $this->error[] = "Could not close: " . $e;
         }
@@ -740,28 +746,8 @@ class database extends Step
 	* @return boolean
 	*/
     public function doAjaxTest($host, $uname, $dname) {
-//    	echo 'asd';
-//    	die;
-//    	if($this->dport == '') 
-//    		$con = $this->dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
-//    	else 
-//    		$con = $this->dbhandler->DBUtil($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
-//        if (!$con) {
-//            return false;
-//        } else {
-//            return true;
-//        }
+		
     }
     
-    public function setPostValues() {
-    	foreach ($_POST as $k=>$v) {
-    		echo "$k=>$v<br/>";
-    	}
-    }
-}
-
-if(isset($_POST['ajax'])) {
-	$db = new database();
-	$db->setPostValues();
 }
 ?>

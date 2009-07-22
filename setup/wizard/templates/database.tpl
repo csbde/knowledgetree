@@ -39,6 +39,7 @@
 		        <td><label for='dpassword'>Enter the password for the user: </label></td>
 		        <td><input type='password' value="<?php echo $dpassword?>" id='dpassword' name='dpassword' size='40' /></td>
 		    </tr>
+		    
 	</table>
 
 	<div id="options" class="onclick" onclick="javascript:{w.showAO();}">Advanced Options</div>

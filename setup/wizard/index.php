@@ -39,21 +39,5 @@
 * @package Installer
 * @version Version 0.1
 */
-	require_once("install_util.php");
-	$ui = new InstallUtil();
-	// Bypass
-	if(isset($_GET['bypass'])) {
-		if($_GET['bypass'])
-			@touch("install");
-		else {
-			@unlink("install");
-		}
-	}
-
-	if(!$ui->isSystemInstalled()) {
-		require("installer.php");
-	} else {
-		echo "System has been installed <a href='../../'>Goto Login</a>";
-	}
-
+require_once("installwizard.php");
 ?>

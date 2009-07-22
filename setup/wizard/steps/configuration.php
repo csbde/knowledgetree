@@ -172,10 +172,7 @@ class configuration extends Step
     public function installStep()
     {
         include_once('database.inc');
-
-        $iniClass = realpath('../../lib/upgrades/Ini.inc.php');
-        include_once($iniClass);
-
+        include_once('Ini.inc');
         // get data from the server
         $conf = $this->getDataFromSession("configuration");
         $server = $conf['server'];
@@ -355,7 +352,7 @@ class configuration extends Step
                 $ret['msg'] = $exist;
                 return $ret;
             }
-            @mkdir($dir, '0755');
+            mkdir($dir, '0755');
         }
 
         if(is_writable($dir)){
