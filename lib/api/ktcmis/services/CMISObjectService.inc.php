@@ -21,11 +21,11 @@ class CMISObjectService {
     protected $ktapi;
 
     /**
-     * Sets the interface to be used to query the repository
+     * Sets the interface to be used to interact with the repository
      *
      * @param object $ktapi The KnowledgeTree API interface
      */
-    function setInterface(&$ktapi)
+    public function setInterface(&$ktapi)
     {
         $this->ktapi = $ktapi;
     }
@@ -43,8 +43,8 @@ class CMISObjectService {
      */
     // TODO optional parameter support
     // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
-    function getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships,
-                           $returnVersion = false, $filter = '')
+    public function getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships,
+                                  $returnVersion = false, $filter = '')
     {
         $repository = new CMISRepository($repositoryId);
 
@@ -87,8 +87,8 @@ class CMISObjectService {
     // TODO throw ConstraintViolationException if:
     //      value of any of the properties violates the min/max/required/length constraints
     //      specified in the property definition in the Object-Type. 
-    function createDocument($repositoryId, $typeId, $properties, $folderId = null,
-                            $contentStream = null, $versioningState = null)
+    public function createDocument($repositoryId, $typeId, $properties, $folderId = null,
+                                   $contentStream = null, $versioningState = null)
     {        
         $objectId = null;
 
@@ -344,7 +344,7 @@ class CMISObjectService {
     // TODO throw ConstraintViolationException if:
     //      value of any of the properties violates the min/max/required/length constraints
     //      specified in the property definition in the Object-Type.
-    function createFolder($repositoryId, $typeId, $properties, $folderId)
+    public function createFolder($repositoryId, $typeId, $properties, $folderId)
     {
         $objectId = null;
         
@@ -399,6 +399,148 @@ class CMISObjectService {
 
         return $objectId;
     }
+    
+    /**
+     * Deletes an object from the repository
+     * 
+     * @param string $repositoryId
+     * @param string $objectId
+     * @param string $changeToken [optional]
+     * @return boolean true on success (exception should be thrown otherwise)
+     */
+    // NOTE Invoking this service method on an object SHALL not delete the entire version series for a Document Object. 
+    //      To delete an entire version series, use the deleteAllVersions() service
+    public function deleteObject($repositoryId, $objectId, $changeToken = null)
+    {
+        // determine object type and internal id
+        $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
+        
+        // throw updateConflictException if the operation is attempting to update an object that is no longer current (as determined by the repository).
+        $exists = true;
+        if ($typeId == 'Folder') {
+            $object = $this->ktapi->get_folder_by_id($objectId);
+            if (PEAR::isError($object)) {
+                $exists = false;
+            }
+        }
+        else if ($typeId == 'Document') {
+            $object = $this->ktapi->get_document_by_id($objectId);
+            if (PEAR::isError($object)) {
+                $exists = false;
+            }
+        }
+        else {
+            $exists = false;
+        }
+
+        if (!$exists) {
+            throw new updateConflictException('Unable to delete the object as it cannot be found.');
+        }
+        
+        // throw ConstraintViolationException if method is invoked on a Folder object that contains one or more objects
+        if ($typeId == 'Folder')
+        {
+            $folderContent = $object->get_listing();
+            if (!PEAR::isError($folderContent))
+            {
+                if (count($folderContent) > 0) {
+                    throw new ConstraintViolationException('Unable to delete a folder with content.  Use deleteTree instead.');
+                }
+            }
+            
+            // now try the delete and throw an exception if there is an error
+            // TODO add a default reason
+            // TODO add the electronic signature capability
+            $result = $this->ktapi->delete_folder($objectId, $reason, $sig_username, $sig_password);
+        }
+        else if ($typeId == 'Document')
+        {
+            // since we do not allow deleting of only the latest version we must throw an exception when this function is called on any document
+            // which has more than one version.  Okay to delete if there is only the one version.
+            $versions = $object->get_version_history();
+            if (count($versions) > 1)
+            {
+                // NOTE possibly may want to just throw a RuntimeException rather than this CMIS specific exception.
+                throw new ConstraintViolationException('This function may not be used to delete an object which has multiple versions.  '
+                                                     . 'Since the repository does not allow deleting of only the latest version, nothing can be deleted.');
+            }
+            
+            // do not allow deletion of a checked out document - this is actually handled by the ktapi code, 
+            // but is possibly slightly more efficient to check before trying to delete 
+            if ($object->is_checked_out()) {
+                throw new RuntimeException('The object cannot be deleted as it is currently checked out');
+            }
+            
+            // now try the delete and throw an exception if there is an error
+            // TODO add a default reason
+            // TODO add the electronic signature capability
+            $auth_sig = true;
+            $result = $this->ktapi->delete_document($objectId, $reason, $auth_sig, $sig_username, $sig_password);
+        }
+        
+        // if there was an error performing the delete, throw exception
+        if ($result['status_code'] == 1) {
+            throw new RuntimeException('There was an error deleting the object: ' . $result['message']);
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Deletes an entire tree including all subfolders and other filed objects
+     * 
+     * @param string $repositoryId
+     * @param string $objectId
+     * @param string $changeToken [optional]
+     * @param boolean $unfileNonfolderObject [optional] - note that since KnowledgeTree does not allow unfiling this will be ignored
+     * @param boolean $continueOnFailure [optional] - note that since KnowledgeTree does not allow continue on failure this will be ignored
+     * @return array $failedToDelete A list of identifiers of objects in the folder tree that were not deleted.
+     */
+    // NOTE • A Repository MAY attempt to delete child- and descendant-objects of the specified folder in any order. 
+    //      • Any child- or descendant-object that the Repository cannot delete SHALL persist in a valid state in the CMIS domain model. 
+    //      • This is not transactional.
+    //      • However, if DeleteSingleFiled is chosen and some objects fail to delete, then single-filed objects are either deleted or kept, 
+    //        never just unfiled. This is so that a user can call this command again to recover from the error by using the same tree.
+    public function deleteTree($repositoryId, $objectId, $changeToken = null, $unfileNonfolderObject = 'delete', $continueOnFailure = false)
+    {
+        // NOTE since we do not currently allow partial deletes this will always be empty
+        //      (unless there is a failure at the requested folder level - what do we do then?  exception or array of all objects?)
+        $failedToDelete = array();
+        
+        // determine object type and internal id
+        $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
+        
+        // throw updateConflictException if the operation is attempting to update an object that is no longer current (as determined by the repository).
+        $exists = true;
+        if ($typeId == 'Folder') {
+            $object = $this->ktapi->get_folder_by_id($objectId);
+            if (PEAR::isError($object)) {
+                $exists = false;
+            }
+        }
+        // if not of type folder then we have a general problem, throw exception
+        else {
+            throw new RuntimeException('Cannot call deleteTree on a non-folder object.');
+        }
+
+        if (!$exists) {
+            throw new updateConflictException('Unable to delete the object as it cannot be found.');
+        }
+        
+        // attempt to delete tree, throw RuntimeException if failed
+        // TODO add a default reason
+        // TODO add the electronic signature capability
+        $result = $this->ktapi->delete_folder($objectId, $reason, $sig_username, $sig_password);
+        // if there was an error performing the delete, throw exception
+        // TODO list of objects which failed in $failedToDelete array;
+        //      since we do not delete the folder or any contents if anything cannot be deleted, this will contain the entire tree listing
+        // NOTE once we do this we will need to deal with it externally as well, since we can no longer just catch an exception.
+        if ($result['status_code'] == 1) {
+            throw new RuntimeException('There was an error deleting the object: ' . $result['message']);
+        }
+        
+        return $failedToDelete;
+    }
 
     // NOTE this function is presently incomplete and untested.  Completion deferred to implementation of Checkout/Checkin
     //      functionality
@@ -428,7 +570,7 @@ class CMISObjectService {
     //      updateConflictException: The operation is attempting to update an object that is no longer current
     //                               (as determined by the repository).
     //      versioningException: The repository MAY throw this exception if the object is a non-current Document Version.
-    function setContentStream($repositoryId, $documentId, $overwriteFlag, $contentStream, $changeToken = null)
+    public function setContentStream($repositoryId, $documentId, $overwriteFlag, $contentStream, $changeToken = null)
     {
         // if no document id was supplied, we are going to create the underlying physical document
         // NOTE while it might have been nice to keep this out of here, KTAPI has no method for creating a document without

@@ -33,18 +33,20 @@ When POSTing an Atom Document, the atom fields take precedence over the CMIS pro
 include_once CMIS_ATOM_LIB_FOLDER . 'RepositoryService.inc.php';
 include_once CMIS_ATOM_LIB_FOLDER . 'NavigationService.inc.php';
 include_once CMIS_ATOM_LIB_FOLDER . 'ObjectService.inc.php';
+include_once CMIS_ATOM_LIB_FOLDER . 'VersioningService.inc.php';
 include_once 'KT_cmis_atom_service_helper.inc.php';
 
 // TODO auth failed response requires WWW-Authenticate: Basic realm="KnowledgeTree DMS" header
 
 /**
  * AtomPub Service: folder
- *
- * Returns children, descendants (up to arbitrary depth) or detail for a particular folder
- *
  */
 class KT_cmis_atom_service_folder extends KT_atom_service {
 
+    /**
+     * Deals with GET actions for folders.
+     * This includes children and tree/descendant listings as well as individual folder retrieval 
+     */
     public function GET_action()
     {
         $RepositoryService = new RepositoryService();
@@ -88,6 +90,10 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
         $this->responseFeed = $feed;
     }
 
+    /**
+     * Deals with folder service POST actions.
+     * This includes creation of both folders and documents.
+     */
     public function POST_action()
     {
         $RepositoryService = new RepositoryService();
@@ -131,22 +137,49 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
         
         if ($typeId != 'Unknown')
         {
-            /*$f = fopen('c:\kt-stuff\here.txt', 'w');
-            fwrite($f, 'fgfgfgfg');
-            fclose($f);*/
             $this->setStatus(self::STATUS_CREATED);
             $feed = KT_cmis_atom_service_helper::getObjectFeed($ObjectService, $repositoryId, $newObjectId, 'POST');
         }
-        else
-        {
-            /*$f = fopen('c:\kt-stuff\failed.txt', 'w');
-            fwrite($f, 'fgfgfgfg');
-            fclose($f);*/
+        else {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $newObjectId['message']);
         }
 
         //Expose the responseFeed
         $this->responseFeed = $feed;
+    }
+    
+    /**
+     * Deals with DELETE actions for folders.
+     * This includes deleting a single folder (with no content) and deleting an entire folder tree
+     * 
+     * @return 204 on success, 500 on error
+     */
+    public function DELETE_action()
+    {
+        // NOTE due to the way KnowledgeTree works with folders this is always going to call deleteTree.
+        //      we COULD call deleteObject but when we delete a folder we expect to be trying to delete
+        //      the folder and all content.
+        
+        $RepositoryService = new RepositoryService();
+        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+
+        $repositories = $RepositoryService->getRepositories();
+        $repositoryId = $repositories[0]['repositoryId'];
+        
+        // attempt delete
+        $result = $ObjectService->deleteTree($repositoryId, $this->params[0]);
+
+        // error?
+        if (PEAR::isError($result))
+        {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $result->getMessage());
+           //Expose the responseFeed
+            $this->responseFeed = $feed;
+            return null;
+        }
+        
+        // success
+        $this->setStatus(self::STATUS_NO_CONTENT); 
     }
 
     /**
@@ -217,9 +250,6 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
 
 /**
  * AtomPub Service: types
- *
- * Returns a list of supported object types
- *
  */
 class KT_cmis_atom_service_types extends KT_atom_service {
 
@@ -241,9 +271,6 @@ class KT_cmis_atom_service_types extends KT_atom_service {
 
 /**
  * AtomPub Service: type
- *
- * Returns the type defintion for the selected type
- *
  */
 class KT_cmis_atom_service_type extends KT_atom_service {
 
@@ -318,13 +345,13 @@ class KT_cmis_atom_service_type extends KT_atom_service {
 
 /**
  * AtomPub Service: checkedout
- *
- * Returns a list of checked out documents for the logged in user
- *
  */
 // NOTE this is always an empty document, underlying API code still to be implemented
 class KT_cmis_atom_service_checkedout extends KT_atom_service {
-
+    
+    /**
+     * Deals with GET actions for checkedout documents. 
+     */
     public function GET_action()
     {
         $RepositoryService = new RepositoryService();
@@ -350,7 +377,6 @@ class KT_cmis_atom_service_checkedout extends KT_atom_service {
         // TODO get actual most recent update time, only use current if no other available
         $feed->appendChild($feed->newElement('updated', KT_cmis_atom_service_helper::formatDatestamp()));
 		
-//'urn:uuid:checkedout'
         foreach($checkedout as $document)
         {
             $entry = $feed->newEntry();
@@ -380,12 +406,13 @@ class KT_cmis_atom_service_checkedout extends KT_atom_service {
 
 /**
  * AtomPub Service: document
- *
- * Returns detail on a particular document
- *
  */
 class KT_cmis_atom_service_document extends KT_atom_service {
 
+    /**
+     * Deals with GET actions for documents.
+     * This includes individual document retrieval 
+     */
     public function GET_action()
     {
         $RepositoryService = new RepositoryService();
@@ -400,14 +427,46 @@ class KT_cmis_atom_service_document extends KT_atom_service {
         $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
         
         $feed->newField('title', $cmisEntry['properties']['ObjectTypeId']['value'], $feed);
-        $feed->newField('id', 'urn:uuid:' . $cmisEntry['properties']['ObjectId']['value'], $feed);                                              ;
+        $feed->newField('id', 'urn:uuid:' . $cmisEntry['properties']['ObjectId']['value'], $feed);
 
         KT_cmis_atom_service_helper::createObjectEntry($feed, $cmisEntry, $cmisEntry['properties']['ParentId']['value']);
 
-        // <cmis:hasMoreItems>false</cmis:hasMoreItems>
-
         //Expose the responseFeed
         $this->responseFeed=$feed;
+    }
+    
+    /**
+     * Deals with DELETE actions for documents.
+     * This includes deletion of a specific version of a document (latest version) via deleteObject 
+     * as well as deleteAllVersions
+     * 
+     * @return 204 on success, 500 on error
+     */
+    public function DELETE_action()
+    {
+        // NOTE due to the way KnowledgeTree works with documents this is always going to call deleteAllVersions.
+        //      we do not have support for deleting only specific versions (this may be added in the future.)
+        
+        $RepositoryService = new RepositoryService();
+        $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
+
+        $repositories = $RepositoryService->getRepositories();
+        $repositoryId = $repositories[0]['repositoryId'];
+        
+        // attempt delete
+        $result = $VersioningService->deleteAllVersions($repositoryId, $this->params[0]);
+
+        // error?
+        if (PEAR::isError($result))
+        {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $result->getMessage());
+           //Expose the responseFeed
+            $this->responseFeed = $feed;
+            return null;
+        }
+        
+        // success
+        $this->setStatus(self::STATUS_NO_CONTENT);        
     }
     
 }

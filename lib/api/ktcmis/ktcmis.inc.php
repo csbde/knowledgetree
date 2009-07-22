@@ -56,6 +56,7 @@ require_once(CMIS_DIR . '/exceptions/PermissionDeniedException.inc.php');
 require_once(CMIS_DIR . '/services/CMISRepositoryService.inc.php');
 require_once(CMIS_DIR . '/services/CMISNavigationService.inc.php');
 require_once(CMIS_DIR . '/services/CMISObjectService.inc.php');
+require_once(CMIS_DIR . '/services/CMISVersioningService.inc.php');
 require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
 /**
@@ -73,7 +74,6 @@ class KTCMISBase {
     {
         // TODO confirm KTAPI instance active??? shouldn't really be responsibility of this code
         if (is_null($ktapi) && (!is_null($username) && !is_null($password))) {
-//            echo ":WGHWTWGWGHW";
             $this->startSession($username, $password);
         }
         else {
@@ -87,18 +87,15 @@ class KTCMISBase {
     // NOTE left in to allow transport protocol to delegate auth to this level, but not actually used in any code at present
     public function startSession($username, $password)
     {
-//        echo $username." :: ".$password."<BR>";
         // attempt to recover session if one exists
         if (!is_null(self::$session) && !PEAR::isError(self::$session))
         {
-//            echo "ATTEMPT TO RECOVER SESSION: ".print_r(self::$session, true)."<BR>\n";
             self::$session =& self::$ktapi->get_active_session(self::$session->get_sessionid());
         }
 
         // start new session if no existing session or problem getting existing session (expired, etc...)
         if (is_null(self::$session) || PEAR::isError(self::$session))
         {
-//            echo "ATTEMPT TO START NEW SESSION<BR>\n";
             self::$ktapi = new KTAPI();
             self::$session =& self::$ktapi->start_session($username, $password);
         }
@@ -109,7 +106,6 @@ class KTCMISBase {
             throw new PermissionDeniedException('You must be authenticated to perform this action');
         }
         
-//        print_r(self::$ktapi);
         return self::$session;
     }
 
@@ -594,6 +590,54 @@ class KTObjectService extends KTCMISBase {
             'results' => $objectId
         );
     }
+    
+    /**
+     * Deletes an object from the repository
+     * 
+     * @param string $repositoryId
+     * @param string $objectId
+     * @param string $changeToken [optional]
+     * @return array
+     */
+    // NOTE Invoking this service method on an object SHALL not delete the entire version series for a Document Object. 
+    //      To delete an entire version series, use the deleteAllVersions() service
+    function deleteObject($repositoryId, $objectId, $changeToken = null)
+    {
+        try {
+            $result = $this->ObjectService->deleteObject($repositoryId, $objectId, $changeToken);
+        }
+        catch (Exception $e)
+        {
+            return array(
+                "status_code" => 1,
+                "message" => $e->getMessage()
+            );
+        }
+
+        return array(
+            'status_code' => 0,
+            'results' => $objectId
+        );
+    }
+    
+    public function deleteTree($repositoryId, $objectId, $changeToken = null, $unfileNonfolderObject = 'delete', $continueOnFailure = false)
+    {
+        try {
+            $result = $this->ObjectService->deleteTree($repositoryId, $objectId, $changeToken, $unfileNonfolderObject, $continueOnFailure);
+        }
+        catch (Exception $e)
+        {
+            return array(
+                "status_code" => 1,
+                "message" => $e->getMessage()
+            );
+        }
+
+        return array(
+            'status_code' => 0,
+            'results' => $objectId
+        );
+    }
 
     /**
      * Sets the content stream data for an existing document
@@ -614,7 +658,7 @@ class KTObjectService extends KTCMISBase {
     function setContentStream($repositoryId, $documentId, $overwriteFlag, $contentStream, $changeToken = null)
     {
         try {
-            $objectId = $this->ObjectService->setContentStream($repositoryId, $documentId, $overwriteFlag, $contentStream, $changeToken);
+            $documentId = $this->ObjectService->setContentStream($repositoryId, $documentId, $overwriteFlag, $contentStream, $changeToken);
         }
         catch (Exception $e)
         {
@@ -627,6 +671,62 @@ class KTObjectService extends KTCMISBase {
         return array(
             'status_code' => 0,
             'results' => $documentId
+        );
+    }
+
+}
+
+/**
+ * Handles requests for and actions on versionable objects
+ */
+class KTVersioningService extends KTCMISBase {
+
+    protected $VersioningService;
+
+    public function __construct(&$ktapi = null, $username = null, $password = null)
+    {
+        parent::__construct($ktapi, $username, $password);
+        // instantiate underlying CMIS service
+        $this->VersioningService = new CMISVersioningService();
+        $this->setInterface();
+    }
+
+    public function startSession($username, $password)
+    {
+        parent::startSession($username, $password);
+        $this->setInterface();
+        return self::$session;
+    }
+
+    public function setInterface(&$ktapi = null)
+    {
+        parent::setInterface($ktapi);
+        $this->VersioningService->setInterface(self::$ktapi);
+    }
+    
+    /**
+     * Deletes all Document Objects in the specified Version Series, including the Private Working Copy
+     * 
+     * @param string $repositoryId
+     * @param string $versionSeriesId
+     * @return boolean true if successful
+     */
+    public function deleteAllVersions($repositoryId, $versionSeriesId)
+    {
+        try {
+            $result = $this->VersioningService->deleteAllVersions($repositoryId, $versionSeriesId);
+        }
+        catch (Exception $e)
+        {
+            return array(
+                "status_code" => 1,
+                "message" => $e->getMessage()
+            );
+        }
+
+        return array(
+            'status_code' => 0,
+            'results' => $result
         );
     }
 

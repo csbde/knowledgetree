@@ -144,8 +144,9 @@ class CMISDocumentObject extends CMISBaseObject {
         // NOTE see ktapi::is_latest_version
         $this->_setPropertyInternal('IsLatestMajorVersion', true);
         $this->_setPropertyInternal('VersionLabel', $objectProperties['version']);
-        // TODO what determines this, do we have anything?
-        $this->_setPropertyInternal('VersionSeriesId', null);
+        // VersionSeriesId should be the id of the latest version
+        // NOTE this may change in the future but is easiest for the current implementation
+        $this->_setPropertyInternal('VersionSeriesId', $objectProperties['version']);
         if ($objectProperties['checked_out_by'] != 'n/a')
         {
             $checkedOut = true;

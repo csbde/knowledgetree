@@ -2,6 +2,7 @@
 class KT_atom_service{
 	const STATUS_OK					 = '200 OK';
 	const STATUS_NOT_FOUND			 = '204 No Content';
+	const STATUS_NO_CONTENT			 = '204 No Content';
 	const STATUS_NOT_ALLOWED		 = '204 Not Allowed';
 	const STATUS_CREATED			 = '201 Created';
 	const STATUS_UPDATED			 = '200 Updated';
