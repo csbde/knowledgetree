@@ -112,7 +112,6 @@ class InstallWizard {
 	* @return void
  	*/
 	private function setBypass($bypass) {
-		print_r($bypass);
 		$this->bypass = $bypass;
 	}
 	
