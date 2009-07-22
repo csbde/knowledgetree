@@ -226,9 +226,9 @@ class InstallWizard {
  	*/
 	public function dispatch() {
 		$this->load();
-		if($this->getBypass() === 1) {
+		if($this->getBypass() === "1") {
 			$this->createInstallFile();
-		} elseif ($this->getBypass() === 0) {
+		} elseif ($this->getBypass() === "0") {
 			$this->removeInstallFile();
 		}
 		if(!$this->isSystemInstalled()) { // Check if the systems not installed
