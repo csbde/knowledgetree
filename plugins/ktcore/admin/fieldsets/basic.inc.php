@@ -84,6 +84,8 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             'normal' => _kt("Normal (String)"),
             'lookup' => _kt("Lookup"),
             'tree' => _kt("Tree"),
+            'largetextbox' => _kt("Large Textbox"),
+            'date' => _kt("Date"),
         );
         return $types;
     }
@@ -185,17 +187,27 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $lookup = false;
         $tree = false;
 
+        //$largeField = false;
+
+        $DataType = 'STRING';
+        
         if ($data['field_type'] == 'lookup') {
             $lookup = true;
         } else if ($data['field_type'] == 'tree') {
             $lookup = true;
             $tree = true;
+        } else if ($data['field_type'] == 'largetextbox') {
+        	//$largeField = true;        	
+        	$DataType = 'LARGE TEXT';
+        } else if ($data['field_type'] == 'date') {
+        	//$largeField = true;        	
+        	$DataType = 'DATE';
         }
-
+        
         $oField = DocumentField::createFromArray(array(
             'Name' => $data['name'],
             'Description' => $data['description'],
-            'DataType' => 'STRING',
+            'DataType' => $DataType,
             'IsGeneric' => false,
             'HasLookup' => $lookup,
             'HasLookupTree' => $tree,
@@ -276,6 +288,31 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         ));
         return $oTemplate->render();
     }
+    
+    function do_updatelargetextoptions() {
+
+        $this->oField = DocumentField::get(KTUtil::arrayGet($_REQUEST, 'fFieldId'));
+    	
+        $oValues = KTUtil::arrayGet($_REQUEST, 'largefield');
+
+        if($oValues['size'] != "")
+    		$this->oField->setMaxLength($oValues['size']);
+    	
+    	$this->oField->setIsHTML($oValues['html']);
+    	//$this->oField->setIsHTML(true);
+    	
+    	//$oValue = $this->oField->_fieldValues();
+        //$this->successRedirectTo('managefield',_kt("Field updated. -> ") . $this->oField->getMaxLength() . " -> " . $oValue['max_length']);
+        
+        //$this->successRedirectTo('managefield',_kt("Field updated. -> ") . $oValues['html']);
+        
+        $res = $this->oField->update();
+        if (PEAR::isError($res)) {
+            return $oForm->handleError(sprintf(_kt("Failed to update field: %s"), $res->getMessage()));
+        }
+
+        $this->successRedirectTo('managefield',_kt("Field updated."));
+    }
 
     function do_updatefield() {
         $oForm = $this->form_editfield($this->oField);
@@ -287,7 +324,7 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         // check that the field name either hasn't changed, or doesn't exist.
         if ($data['name'] != $this->oField->getName()) {
             $oOldField = DocumentField::getByFieldsetAndName($this->oFieldset, $data['name']);
-            // If the field exists throw an error. Mysql doesn't distinguish between Ž and e so check the names are different in php.
+            // If the field exists throw an error. Mysql doesn't distinguish between Ã© and e so check the names are different in php.
             if (!PEAR::isError($oOldField) && $oOldField->getName() == $data['name']) {
                 $extra_errors['name'] = _kt("That name is already in use in this fieldset.  Please specify a unique name.");
             }

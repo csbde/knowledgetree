@@ -298,6 +298,10 @@ class Expr
     	return $this instanceof MetadataField;
     }
 
+
+
+
+
     public function toViz(&$str, $phase)
     {
         throw new Exception('To be implemented' . get_class($this));
@@ -494,6 +498,7 @@ class DBFieldExpr extends FieldExpr
     protected $matchfield;
     protected $quotedvalue;
 
+
     /**
      * Constructor for the database field
      *
@@ -545,6 +550,7 @@ class DBFieldExpr extends FieldExpr
     {
     	return $value;
     }
+
 
     public function getJoinTable() { return $this->jointable; }
     public function getJoinField() { return $this->joinfield; }
@@ -679,6 +685,9 @@ class ValueExpr extends Expr
         }
     }
 
+
+
+
 	public function getSQL($field, $fieldname, $op, $not=false)
     {
     	$val = $this->getValue();
@@ -761,7 +770,7 @@ class ValueExpr extends Expr
             default:
                 throw new Exception(sprintf(_kt('Unknown op: %s'), $op));
         }
-        
+
         return $sql;
     }
 
@@ -791,6 +800,7 @@ class ValueListExpr extends Expr
     {
     	$this->values[] = $value;
     }
+
 
     public function getValue($param=null)
     {
@@ -837,6 +847,8 @@ class ValueListExpr extends Expr
         }
     }
 
+
+
     public function rewrite(&$left, &$op, &$right, &$not)
     {
     	if (count($this->values) == 1)
@@ -865,6 +877,7 @@ class ValueListExpr extends Expr
     }
 
 }
+
 
 class BetweenValueExpr extends ValueExpr
 {
@@ -1018,7 +1031,7 @@ class TextQueryBuilder implements QueryBuilder
 			else
 				$query .= "$not$fieldname:$value";
 		}
-        
+
 		return $query;
 	}
 
@@ -1089,7 +1102,7 @@ class SQLQueryBuilder implements QueryBuilder
 	               'tag_words'=>'tw',
 	               'document_fields_link'=>'pdfl'
 	            );
-	        break;
+	            break;
 	        case ExprContext::FOLDER:
 	            $this->used_tables = array(
 	               'folders'=>1,
@@ -1098,7 +1111,7 @@ class SQLQueryBuilder implements QueryBuilder
 	            $this->aliases = array(
 	               'folders'=>'f',
 	            );
-	        break;
+	            break;
 	        default:
 	            throw new Exception('This was not expected - Context = ' . $context);
 	    }
@@ -1123,7 +1136,7 @@ class SQLQueryBuilder implements QueryBuilder
 	/**
 	 * This looks up a table name to find the appropriate alias.
 	 *
-     * @access private
+	 * @access private
 	 * @param string $tablename
 	 * @return string
 	 */
@@ -1147,7 +1160,7 @@ class SQLQueryBuilder implements QueryBuilder
      */
 	private function exploreExprs($expr, $parent=null)
 	{
-        if ($expr->isMetadataField())
+		if ($expr->isMetadataField())
 		{
 			$this->metadata[] = & $parent;
 		}
@@ -1180,7 +1193,6 @@ class SQLQueryBuilder implements QueryBuilder
 			}
 		}
 	}
-
     /**
      * Determine table usage for a simple (metadata) query
      *
@@ -1284,7 +1296,6 @@ class SQLQueryBuilder implements QueryBuilder
 			    $query = $right->getSQL($left, $left->modifyName($fieldname), $expr->op(), $isNot);
 		    }
 		}
-        
 		return $query;
 	}
 
@@ -1374,11 +1385,10 @@ class SQLQueryBuilder implements QueryBuilder
 //                         .  'ON dmv.id=pdfl' . $counter . '.metadata_version_id ' . "\n";
 //                }
 //            }
-
             if ($this->used_tables['tag_words'] > 0)
             {
-                $sql .= ' LEFT OUTER JOIN document_tags dt  ON dt.document_id=d.id ' . "\n" 
-                     .  ' LEFT OUTER JOIN tag_words tw  ON dt.tag_id = tw.id ' . "\n";
+                $sql .= ' LEFT OUTER JOIN document_tags dt  ON dt.document_id=d.id ' . "\n" .
+                ' LEFT OUTER JOIN tag_words tw  ON dt.tag_id = tw.id ' . "\n";
             }
         }
         else
@@ -1452,7 +1462,7 @@ class SQLQueryBuilder implements QueryBuilder
             $sql .= "f.linked_folder_id is null";
         }
         $sql .= ' AND ';
-        
+
        	return $sql;
 	}
 
@@ -1515,7 +1525,7 @@ class SQLQueryBuilder implements QueryBuilder
 		        $query = 'false';
 		    }
 		}
-        
+
 		return $query;
 	}
 
@@ -1537,7 +1547,7 @@ class SQLQueryBuilder implements QueryBuilder
 		{
 		    return '';
 		}
-
+		
 		$expr = $this->buildCoreSQLExpr($expr);
 		$sql .= $expr;
 
@@ -1546,7 +1556,7 @@ class SQLQueryBuilder implements QueryBuilder
 
 		$sql .= " limit $maxSqlResults";
 
-        return $sql;
+		return $sql;
 	}
 
     /**
@@ -1573,17 +1583,18 @@ class SQLQueryBuilder implements QueryBuilder
 			$field       = $expr->left();
 
 			if (is_null($field->getJoinTable()))
-            {
-                $alias      = $this->resolveTableToAlias($field->getTable());
-                $fieldname  = $alias . '.' . $field->getField();
-            }
-            else
-            {
-                $offset = $this->resolveJoinOffset($expr);
-                $matching = $field->getMatchingField();
-                $tablename = $field->getJoinTable();
-                $fieldname = "$tablename$offset.$matching";
-            }
+			{
+	            $alias      = $this->resolveTableToAlias($field->getTable());
+    	       	$fieldname  = $alias . '.' . $field->getField();
+			}
+			else
+			{
+				$offset = $this->resolveJoinOffset($expr);
+				$matching = $field->getMatchingField();
+				$tablename = $field->getJoinTable();
+				$fieldname = "$tablename$offset.$matching";
+			}
+
 
             $value      = $expr->right();
             $sql .= $value->getSQL($field, $left->modifyName($fieldname), $expr->op(), $expr->not());
@@ -1687,6 +1698,8 @@ class SQLQueryBuilder implements QueryBuilder
 		return '(' . implode(') AND (', $text) . ')';
 	}
 }
+
+
 
 class OpExpr extends Expr
 {
@@ -2323,6 +2336,107 @@ class OpExpr extends Expr
 		$this->exploreItem($right,  $group, $interest);
     }
 
+	public function checkComplexQuery($expr)
+	{		
+		$left = $expr->left();
+        $right = $expr->right();
+        
+    	$oCriteria = array();
+        
+		if (DefaultOpCollection::isBoolean($expr))
+		{			
+			//$query = '(' . $this->buildComplexQuery($left) . ' ' . $expr->op() . ' ' . $this->buildComplexQuery($right)  . ')';
+			$iCriteria = $this->checkComplexQuery($left);
+			if(!empty($iCriteria))
+				//$oCriteria = $iCriteria;
+				$oCriteria[] = $iCriteria;
+
+			$iCriteria = $this->checkComplexQuery($right);
+			if(!empty($iCriteria))
+				//$oCriteria = array_merge($oCriteria, $iCriteria);
+				$oCriteria[] = $iCriteria;
+			
+			/*if ($expr->not())
+			{
+				$query = "NOT $query";
+			}*/
+		}
+		else
+		{
+			$fieldname = $left->getField();
+            $value = addslashes($right->getValue());
+
+            //$not = $expr->not()?' NOT ':'';
+            if (empty($value))
+            {
+                // minor hack to prevent the case of 'field:'. results are no 'field:""'
+                $value = ' ';
+            }
+
+            $rsField = DBUtil::getResultArray("SELECT * FROM document_fields WHERE name = \"$fieldname\";");
+
+            if($rsField[0]['data_type'] == 'LARGE TEXT')
+            {
+            	$iCriteria = array();
+            	
+            	$iCriteria[0] = array();
+            	
+            	$iCriteria[0]['field'] = $fieldname;
+            	$iCriteria[0]['value'] = $value;
+            	$iCriteria[0]['not'] = $expr->not();
+	
+            	$oCriteria[] = $iCriteria[0];
+            }
+            
+    		//global $default;
+            //$default->log->debug("FIELD-TYPE: " . $iCriteria[0]['field']);
+            //$default->log->debug("FIELD-TYPE: " . $oCriteria[0]['field']);
+            
+            /*if (strpos($value, ' ') === false)
+            {
+            	$query = "$not$fieldname:$value";
+            }
+            else
+            {
+            	$query = "$not$fieldname:\"$value\"";
+            }*/
+		}
+
+		return $oCriteria;
+	}
+
+	public function checkValues($document_id, $oColumns)
+	{
+		
+		foreach($oColumns as $column)
+		{
+			$rsField = DBUtil::getResultArray("SELECT df.name, dfl.value FROM documents d 
+				INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id 
+				INNER JOIN document_fields_link dfl ON dfl.metadata_version_id=d.metadata_version_id 
+				INNER JOIN document_fields df ON df.id = dfl.document_field_id AND df.name = '" . $column['field'] . "' 
+				WHERE d.id = $document_id;");
+			
+    		/*global $default;
+    		$default->log->debug("MATCH QUERY: SELECT df.name, dfl.value FROM documents d 
+				INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id 
+				INNER JOIN document_fields_link dfl ON dfl.metadata_version_id=d.metadata_version_id 
+				INNER JOIN document_fields df ON df.id = dfl.document_field_id AND df.name = '" . $column['field'] . "' 
+				WHERE d.id = $document_id;");
+
+    		$default->log->debug("MATCH: $document_id, " . $column['field'] . ", " . $rsField[0]['value'] . ", " . $column['value'] . " - "
+    			. strip_tags($rsField[0]['value']));*/
+
+    		$position = strpos(strtolower(strip_tags($rsField[0]['value'])), strtolower($column['value']));
+
+    		//$default->log->debug("POSITION: " . $position);
+    		
+    		if($position === false)
+    			return false;
+		}
+		
+		return true;
+	}
+
     /**
      * Executes a database query
      *
@@ -2337,7 +2451,7 @@ class OpExpr extends Expr
     	if (empty($group)) { return array(); }
 
     	$exprbuilder = new SQLQueryBuilder($this->getContext());
-    	$exprbuilder->setIncludeStatus($this->incl_status);
+        $exprbuilder->setIncludeStatus($this->incl_status);
 
     	if (count($group) == 1)
     	{
@@ -2363,15 +2477,66 @@ class OpExpr extends Expr
     		throw new Exception($rs->getMessage());
     	}
 
+    	if (count($group) == 1)
+    	{
+           	//$default->log->debug("CASE 1");
+
+			$oCriteria = $this->checkComplexQuery($group[0]);
+    	}
+    	else
+    	{
+           	//$default->log->debug("CASE 2");
+           	
+			foreach($group as $expr)
+			{
+				$left = $expr->left();
+            	$right = $expr->right();
+
+           		$default->log->debug("FIELD-IS: " . $left->isOpExpr());
+
+				$fieldname = $left->getField();
+            	$value = addslashes($right->getValue());
+
+            	$rsField = DBUtil::getResultArray("SELECT * FROM document_fields WHERE name = \"$fieldname\";");
+
+            	if($rsField[0]['data_type'] == 'LARGE TEXT')
+            	{
+            		$iCriteria = array();
+
+					$iCriteria[0] = array();
+
+            		$iCriteria[0]['field'] = $fieldname;
+            		$iCriteria[0]['value'] = $value;
+            		$iCriteria[0]['not'] = $expr->not();
+
+            		$oCriteria[] = $iCriteria[0];
+
+            		/*$not = $expr->not()?' NOT ':'';
+
+            		if (strpos($value, ' ') !== false)
+						$default->log->debug("CRITERION: $not$fieldname:\"$value\"");
+					else
+						$default->log->debug("CRITERION: $not$fieldname:$value");*/
+            	}
+            
+            	//$default->log->debug("FIELD-TYPE: " . $oCriteria[0]['field']);
+			}
+		}
+
+        //$default->log->debug("TOTAL CRITERIA: " . count($oCriteria));
+		
     	foreach($rs as $item)
     	{
     		$id = $item['id'];
     		$rank = $exprbuilder->getRanking($item);
     		if (!array_key_exists($id, $results) || $rank > $results[$id]->Rank)
     		{
-    		    if ($this->context == ExprContext::DOCUMENT)
+				if ($this->context == ExprContext::DOCUMENT)
     		    {
-    		        $results[$id] = new DocumentResultItem($id, $rank, $item['title'], $exprbuilder->getResultText($item), null, $this->incl_status);
+    				if((count($oCriteria) > 0 && $this->checkValues($id, $oCriteria)) || count($oCriteria) == 0)
+    				{
+		    			$results[$id] = new DocumentResultItem($id, $rank, $item['title'], $exprbuilder->getResultText($item), null, $this->incl_status);
+    				}
     		    }
     		    else
     		    {
@@ -2379,9 +2544,8 @@ class OpExpr extends Expr
     		    }
     		}
     	}
-
+    	
     	return $results;
-
     }
 
     /**
@@ -2425,6 +2589,7 @@ class OpExpr extends Expr
     	$indexer = Indexer::get();
     	$indexer->setIncludeStatus($this->incl_status);
 
+    	global $default;
     	$default->log->debug("SEARCH LUCENE: $query");
 
     	$results = $indexer->query($query);
@@ -2446,8 +2611,12 @@ class OpExpr extends Expr
      */
 	public function evaluate($context = ExprContext::DOCUMENT_AND_FOLDER)
 	{
-	    if ($context == ExprContext::DOCUMENT_AND_FOLDER)
-	    {
+
+    	global $default;
+    	$default->log->debug("START EVALUATE");
+		
+		if ($context == ExprContext::DOCUMENT_AND_FOLDER)
+	    {	    	
 	       $docs = $this->evaluate(ExprContext::DOCUMENT);
  	       $folders = $this->evaluate(ExprContext::FOLDER);
 
@@ -2455,7 +2624,8 @@ class OpExpr extends Expr
 	           'docs' => $docs['docs'],
 	           'folders' => $folders['folders']);
 	    }
-	    $this->setContext($context);
+
+		$this->setContext($context);
 
 		$left = $this->left();
 		$left->setIncludeStatus($this->incl_status);
@@ -2469,7 +2639,7 @@ class OpExpr extends Expr
         	$point = 'point';
         }
 		$resultContext = ($this->getContext() == ExprContext::DOCUMENT)?'docs':'folders';
-
+		
 		if ($point == 'merge')
 		{
 			$leftres = $left->evaluate($context);

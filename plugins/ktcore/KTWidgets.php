@@ -927,9 +927,30 @@ class KTCoreConditionalSelectionWidget extends KTCoreSelectionWidget {
         );
         return $oTemplate->render($aTemplateData);
     }
-
-
-
 }
 
+class KTCoreTextAreaWidget extends KTWidget {
+    var $sNamespace = 'ktcore.widgets.textarea';
+    var $sTemplate = 'ktcore/forms/widgets/textarea';
 
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+
+        // FIXME make required *either* per-action property
+        // FIXME or a global pref.
+        $global_required_default = true;
+        $this->bRequired = KTUtil::arrayGet($aOptions, 'required', $global_required_default, false);
+
+        $this->aOptions['cols'] = KTUtil::arrayGet($aOptions, 'cols', 60);
+        $this->aOptions['rows'] = KTUtil::arrayGet($aOptions, 'rows', 3);
+        $this->aOptions['field'] = KTUtil::arrayGet($aOptions, 'field');
+    }
+}
+
+class KTCoreDateWidget extends KTWidget {
+    var $sNamespace = 'ktcore.widgets.date';
+    var $sTemplate = 'ktcore/forms/widgets/date';
+}

@@ -172,6 +172,16 @@ class KTFieldsetRegistry {
                 } else {
                     $type = 'ktcore.fields.string';
                 }
+                
+				/*	------------------------------------
+					---- Changes for Custom Fields -----
+					------------------------------------	*/
+                
+                if ($oField->getDataType() == 'LARGE TEXT') {
+                    $type = 'ktcore.fields.largetext';                	
+                } else if ($oField->getDataType() == 'DATE') {
+                    $type = 'ktcore.fields.date';
+                }
 
                 if ($type == 'ktcore.fields.string') {
                     $widgets[] = $this->oWF->get('ktcore.widgets.string', array(
@@ -203,6 +213,29 @@ class KTFieldsetRegistry {
                         'description' => $oField->getDescription(),
                         'vocab' => MetaData::getEnabledByDocumentField($oField),
                         'field_id' => $oField->getId(),
+                    ));
+                } else if ($type == 'ktcore.fields.largetext') {                	
+					/*	------------------------------------
+						---- Changes for Custom Fields -----
+						------------------------------------	*/
+                    $widgets[] = $this->oWF->get('ktcore.widgets.textarea', array(
+                        'label' => $oField->getName(),
+                        'required' => $oField->getIsMandatory(),
+                        'name' => $fname,
+                        'value' => $value,
+                        'description' => $oField->getDescription(),
+                        'field' => $oField,
+                    ));
+                } else if ($type == 'ktcore.fields.date') {                	
+					/*	------------------------------------
+						---- Changes for Custom Fields -----
+						------------------------------------	*/
+                    $widgets[] = $this->oWF->get('ktcore.widgets.date', array(
+                        'label' => $oField->getName(),
+                        'required' => $oField->getIsMandatory(),
+                        'name' => $fname,
+                        'value' => $value,
+                        'description' => $oField->getDescription(),
                     ));
                 }
             }

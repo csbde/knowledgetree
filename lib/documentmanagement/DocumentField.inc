@@ -70,6 +70,8 @@ class DocumentField extends KTEntity {
     var $bHasLookupTree;
     var $bIsMandatory;
     var $iPosition;
+    var $bIsHTML;
+    var $iMax;
 
     var $_aFieldToSelect = array(
         'iId' => 'id',
@@ -82,10 +84,12 @@ class DocumentField extends KTEntity {
         'iParentFieldset' => 'parent_fieldset',
         'bIsMandatory' => 'is_mandatory',
         'iPosition' => 'position',
+        'bIsHTML' => 'is_html',
+        'iMax' => 'max_length',
     );
 
     // FIXME deprecate constructor use.  Use DocumentField::createFromArray instead.
-	function DocumentField($sNewName = null, $sNewDataType = null, $bNewIsGeneric = null, $bNewHasLookup = null, $iParentFieldset = null, $bHasLookupTree = null) {
+	function DocumentField($sNewName = null, $sNewDataType = null, $bNewIsGeneric = null, $bNewHasLookup = null, $iParentFieldset = null, $bHasLookupTree = null, $bNewIsHTML = null, $iNewMaxLength = null) {
 
 		$this->iId = -1;
 		$this->sName = $sNewName;
@@ -95,6 +99,8 @@ class DocumentField extends KTEntity {
 		$this->iParentFieldset = $iParentFieldset;
 		$this->bHasLookupTree = $bHasLookupTree;
 		$this->iPosition = $this->getNextFieldPosition($iParentFieldset);
+		$this->bIsHTML = $bNewIsHTML;
+		$this->iMax = $iNewMaxLength;
 	}
 
 	function getID() { return $this->iId; }
@@ -118,6 +124,10 @@ class DocumentField extends KTEntity {
 	function setIsMandatory($iNewValue) { $this->bIsMandatory = KTUtil::anyToBool($iNewValue); }
     function getPosition() { return $this->iPosition; }
 	function setPosition($iNewValue) { $this->iPosition = $iNewValue; }
+    function getIsHTML() { return $this->bIsHTML; }
+	function setIsHTML($iNewValue) { $this->bIsHTML = $iNewValue; }
+	function getMaxLength() { return $this->iMax; }
+	function setMaxLength($iNewValue) { $this->iMax = $iNewValue; }
 
     function _fieldValues () {
         return array(
@@ -130,6 +140,8 @@ class DocumentField extends KTEntity {
             'has_lookuptree' => KTUtil::anyToBool($this->bHasLookupTree),
             'is_mandatory' => KTUtil::anyToBool($this->bIsMandatory),
             'position' => $this->iPosition,
+            'is_html' => KTUtil::anyToBool($this->bIsHTML),
+            'max_length' => $this->iMax,
         );
     }
 

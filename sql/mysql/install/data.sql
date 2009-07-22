@@ -313,7 +313,9 @@ INSERT INTO `data_types` VALUES
 (2,'CHAR'),
 (3,'TEXT'),
 (4,'INT'),
-(5,'FLOAT');
+(5,'FLOAT'),
+(6,'LARGE TEXT'),
+(7,'DATE');
 /*!40000 ALTER TABLE `data_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -360,10 +362,10 @@ UNLOCK TABLES;
 LOCK TABLES `document_fields` WRITE;
 /*!40000 ALTER TABLE `document_fields` DISABLE KEYS */;
 INSERT INTO `document_fields` VALUES
-(2,'Tag','STRING',0,0,0,2,0,'Tag Words',0),
-(3,'Document Author','STRING',0,0,0,3,0,'Please add a document author',0),
-(4,'Category','STRING',0,1,0,3,0,'Please select a category',1),
-(5,'Media Type','STRING',0,1,0,3,0,'Please select a media type',2);
+(2,'Tag','STRING',0,0,0,2,0,'Tag Words',0,null,null),
+(3,'Document Author','STRING',0,0,0,3,0,'Please add a document author',0,null,null),
+(4,'Category','STRING',0,1,0,3,0,'Please select a category',1,null,null),
+(5,'Media Type','STRING',0,1,0,3,0,'Please select a media type',2,null,null);
 /*!40000 ALTER TABLE `document_fields` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1758,8 +1760,10 @@ INSERT INTO `upgrades` VALUES
 (219,'upgrade*3.6.0*99*upgrade3.6.0','Upgrade from version 3.5.4a to 3.6.0','2009-01-01 00:00:00',1,'upgrade*3.6.0*99*upgrade3.6.0'),
 (220, 'sql*3.6.1*0*3.6.1/search_ranking.sql', 'Database upgrade to version 3.6.1: Search ranking','2009-04-01 00:00:00',1,'upgrade*3.6.1*99*upgrade3.6.1'),
 (221,'upgrade*3.6.1*99*upgrade3.6.1','Upgrade from version 3.6.0 to 3.6.1','2009-04-01 00:00:00',1,'upgrade*3.6.1*99*upgrade3.6.1'),
-(222,'upgrade*3.6.2*99*upgrade3.6.2','Upgrade from version 3.6.1 to 3.6.2','2009-05-01 00:00:00',1,'upgrade*3.6.2*99*upgrade3.6.2'),
-(223,'upgrade*3.6.3*99*upgrade3.6.3','Upgrade from version 3.6.2 to 3.6.3','2009-06-01 00:00:00',1,'upgrade*3.6.3*99*upgrade3.6.3');
+(222, 'sql*3.6.2*0*3.6.2/folders.sql', 'Folder created and modified timestamp fix','2009-05-01 00:00:00',1,'upgrade*3.6.2*99*upgrade3.6.2'),
+(223, 'sql*3.6.2*0*3.6.2/data_types.sql', 'Add large text and date fields','2009-05-01 00:00:00',1,'upgrade*3.6.2*99*upgrade3.6.2'),
+(224,'upgrade*3.6.2*99*upgrade3.6.2','Upgrade from version 3.6.1 to 3.6.2','2009-05-01 00:00:00',1,'upgrade*3.6.2*99*upgrade3.6.2'),
+(225,'upgrade*3.6.3*99*upgrade3.6.3','Upgrade from version 3.6.2 to 3.6.3','2009-06-01 00:00:00',1,'upgrade*3.6.3*99*upgrade3.6.3');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2690,7 +2694,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
 INSERT INTO `zseq_upgrades` VALUES
-(223);
+(225);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 

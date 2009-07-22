@@ -314,6 +314,8 @@ CREATE TABLE `document_fields` (
   `is_mandatory` tinyint(1) NOT NULL default '0',
   `description` mediumtext NOT NULL,
   `position` int(11) NOT NULL default '0',
+  `is_html` tinyint(1) default null,
+  `max_length` int default null,
   PRIMARY KEY  (`id`),
   KEY `parent_fieldset` (`parent_fieldset`),
   CONSTRAINT `document_fields_ibfk_1` FOREIGN KEY (`parent_fieldset`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
