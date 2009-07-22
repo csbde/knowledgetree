@@ -93,17 +93,15 @@ class Template
     public function fetch($file = null) 
 	{
         if (is_null($file)) $file = $this->file;
-		
 		if (!file_exists($file)) {
-			trigger_error('Template file '.$file.' does not exist ', E_USER_ERROR);	
+			trigger_error('Template file '.$file.' does not exist ', E_USER_ERROR);
 		}
         extract($this->template_vars); // Extract the vars to local namespace
-        ob_start();                    
-		include($file);                
+        ob_start();
+		include($file);
         $contents = ob_get_contents(); 
-        ob_end_clean();                
-        return $contents;              
-		
+        ob_end_clean();              
+        return $contents;
     }
 	
 }
