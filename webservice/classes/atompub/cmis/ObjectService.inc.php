@@ -26,8 +26,7 @@ class ObjectService extends KTObjectService {
         $result = parent::getProperties($repositoryId, $objectId, $includeAllowableActions,
                                         $returnVersion, $filter);
 
-        if ($result['status_code'] == 0)
-        {
+        if ($result['status_code'] == 0) {
             return $result['results'];
         }
     }
@@ -45,12 +44,10 @@ class ObjectService extends KTObjectService {
     {
         $result = parent::createFolder($repositoryId, $typeId, $properties, $folderId);
 
-        if ($result['status_code'] == 0)
-        {
+        if ($result['status_code'] == 0) {
             return $result['results'];
         }
-        else
-        {
+        else {
             return $result;
         }
     }
@@ -75,13 +72,55 @@ class ObjectService extends KTObjectService {
     {
         $result = parent::createDocument($repositoryId, $typeId, $properties, $folderId, $contentStream, $versioningState);
 
-        if ($result['status_code'] == 0)
-        {
+        if ($result['status_code'] == 0) {
             return $result['results'];
         }
-        else
-        {
+        else {
             return $result;
+        }
+    }
+    
+    /**
+     * Deletes an object from the repository
+     * 
+     * @param string $repositoryId
+     * @param string $objectId
+     * @param string $changeToken [optional]
+     * @return boolean true on success, false on failure
+     */
+    // NOTE Invoking this service method on an object SHALL not delete the entire version series for a Document Object. 
+    //      To delete an entire version series, use the deleteAllVersions() service
+    function deleteObject($repositoryId, $objectId, $changeToken = null)
+    {
+        $result = parent::deleteObject($repositoryId, $objectId, $changeToken);
+
+        if ($result['status_code'] == 0) {
+            return $result['results'];
+        }
+        else {
+            return new PEAR_Error($result['message']);
+        }
+    }
+    
+    /**
+     * Deletes an entire tree including all subfolders and other filed objects
+     * 
+     * @param string $repositoryId
+     * @param string $objectId
+     * @param string $changeToken [optional]
+     * @param boolean $unfileNonfolderObject [optional] - note that since KnowledgeTree does not allow unfiling this will be ignored
+     * @param boolean $continueOnFailure [optional] - note that since KnowledgeTree does not allow continue on failure this will be ignored
+     * @return array $failedToDelete A list of identifiers of objects in the folder tree that were not deleted.
+     */
+    public function deleteTree($repositoryId, $objectId, $changeToken = null, $unfileNonfolderObject = 'delete', $continueOnFailure = false)
+    {
+        $result = parent::deleteTree($repositoryId, $objectId, $changeToken, $unfileNonfolderObject, $continueOnFailure);
+
+        if ($result['status_code'] == 0) {
+            return $result['results'];
+        }
+        else {
+            return new PEAR_Error($result['message']);
         }
     }
 
