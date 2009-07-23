@@ -633,6 +633,15 @@ class KTObjectService extends KTCMISBase {
             );
         }
 
+        // check whether there is a list of items which did not delete
+        if (count($result) > 0)
+        {
+            return array(
+                "status_code" => 1,
+                "message" => $result
+            );          
+        }
+        
         return array(
             'status_code' => 0,
             'results' => $objectId

@@ -535,8 +535,25 @@ class CMISObjectService {
         // TODO list of objects which failed in $failedToDelete array;
         //      since we do not delete the folder or any contents if anything cannot be deleted, this will contain the entire tree listing
         // NOTE once we do this we will need to deal with it externally as well, since we can no longer just catch an exception.
-        if ($result['status_code'] == 1) {
-            throw new RuntimeException('There was an error deleting the object: ' . $result['message']);
+        if ($result['status_code'] == 1)
+        {
+            // TODO consider sending back full properties on each object?
+            //      Not sure yet what this output may be used for by a client, and the current specification (0.61c) says:
+            //      "A list of identifiers of objects in the folder tree that were not deleted", so let's leave it returning just ids for now.
+            $failedToDelete[] = CMISUtil::encodeObjectId('Folder', $objectId);
+            $folderContents = $object->get_full_listing();
+            foreach($folderContents as $folderObject)
+            {
+                if ($folderObject['item_type'] == 'F') $type = 'Folder';
+                else if ($folderObject['item_type'] == 'D') $type = 'Document';
+                // TODO deal with non-folder and non-document content
+                else continue;
+                
+                // TODO find out whether this is meant to be a hierarchical list or simply a list.
+                //      for now we are just returning the list in non-hierarchical form 
+                //      (seeing as we don't really know how CMIS AtomPub is planning to deal with hierarchies at this time.)
+                $failedToDelete[] = CMISUtil::encodeObjectId($type, $folderObject['id']); 
+            }
         }
         
         return $failedToDelete;

@@ -119,6 +119,9 @@ class ObjectService extends KTObjectService {
         if ($result['status_code'] == 0) {
             return $result['results'];
         }
+        else if (is_array($result['message'])) {
+            return $result['message'];
+        }
         else {
             return new PEAR_Error($result['message']);
         }

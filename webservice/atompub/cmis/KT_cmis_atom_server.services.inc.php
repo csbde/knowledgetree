@@ -177,9 +177,34 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
             $this->responseFeed = $feed;
             return null;
         }
+        // list of failed objects?
+        if (is_array($result))
+        {
+            $this->setStatus(self::STATUS_SERVER_ERROR);
+            
+            $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
+            $feed->newField('title', 'Error: Failed to delete all objects in tree: ' . self::STATUS_SERVER_ERROR, $feed);
+            
+            foreach($result as $failed)
+            {            
+                $entry = $feed->newEntry();
+                $objectElement = $feed->newElement('cmis:object');
+                $propertiesElement = $feed->newElement('cmis:properties');
+                $propElement = $feed->newElement('cmis:propertyId');
+                $propElement->appendChild($feed->newAttr('cmis:name', 'ObjectId'));
+                $feed->newField('cmis:value', $failed, $propElement);
+                $propertiesElement->appendChild($propElement);
+                $objectElement->appendChild($propertiesElement);
+                $entry->appendChild($objectElement);
+                $entry->appendChild($feed->newElement('cmis:terminator'));
+            }
+            
+            $this->responseFeed = $feed;
+            return null;
+        }
         
         // success
-        $this->setStatus(self::STATUS_NO_CONTENT); 
+        $this->setStatus(self::STATUS_NO_CONTENT);
     }
 
     /**
