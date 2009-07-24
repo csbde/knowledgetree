@@ -54,5 +54,5 @@ if(!empty($tables)){
 }
 
 $default->log->info('Done.');
-
+exit;
 ?>

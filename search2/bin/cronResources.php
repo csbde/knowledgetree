@@ -95,4 +95,5 @@ class ResourceChecker
 $checker = new ResourceChecker();
 $checker->check();
 
+exit;
 ?>

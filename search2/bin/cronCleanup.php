@@ -81,5 +81,5 @@ function cleanupTempDirectory($dir, $force = false)
 }
 
 
-
+exit;
 ?>

@@ -50,5 +50,6 @@ require_once('indexing/indexerCore.inc.php');
 $indexer = Indexer::get();
 $indexer->indexDocuments();
 $indexer->updateIndexStats();
+
 exit;
 ?>

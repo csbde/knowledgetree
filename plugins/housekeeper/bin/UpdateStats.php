@@ -44,4 +44,5 @@ require_once('../HouseKeeper.inc.php');
 HouseKeeper::getDiskUsageStats();
 HouseKeeper::getKTUsageStats();
 
+exit;
 ?>
