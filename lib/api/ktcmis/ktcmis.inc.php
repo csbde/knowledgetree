@@ -538,7 +538,7 @@ class KTObjectService extends KTCMISBase {
      * @param string $versioningState optional version state value: checkedout/major/minor
      * @return string $objectId The id of the created folder object
      */
-    function createDocument($repositoryId, $typeId, $properties, $folderId = null,
+    public function createDocument($repositoryId, $typeId, $properties, $folderId = null,
                             $contentStream = null, $versioningState = null)
     {
         $objectId = null;
@@ -570,12 +570,40 @@ class KTObjectService extends KTCMISBase {
      * @param string $folderId The id of the folder which will be the parent of the created folder object
      * @return string $objectId The id of the created folder object
      */
-    function createFolder($repositoryId, $typeId, $properties, $folderId)
+    public function createFolder($repositoryId, $typeId, $properties, $folderId)
     {
         $objectId = null;
 
         try {
             $objectId = $this->ObjectService->createFolder($repositoryId, $typeId, $properties, $folderId);
+        }
+        catch (Exception $e)
+        {
+            return array(
+                "status_code" => 1,
+                "message" => $e->getMessage()
+            );
+        }
+
+        return array(
+            'status_code' => 0,
+            'results' => $objectId
+        );
+    }
+    
+    /**
+     * Moves a fileable object from one folder to another.
+     * 
+     * @param object $repositoryId
+     * @param object $objectId
+     * @param object $changeToken [optional]
+     * @param object $targetFolderId
+     * @param object $sourceFolderId [optional] 
+     */
+    public function moveObject($repositoryId, $objectId, $changeToken = '', $targetFolderId, $sourceFolderId = null)
+    {
+        try {
+            $this->ObjectService->moveObject($repositoryId, $objectId, $changeToken, $targetFolderId, $sourceFolderId);
         }
         catch (Exception $e)
         {
@@ -601,10 +629,10 @@ class KTObjectService extends KTCMISBase {
      */
     // NOTE Invoking this service method on an object SHALL not delete the entire version series for a Document Object. 
     //      To delete an entire version series, use the deleteAllVersions() service
-    function deleteObject($repositoryId, $objectId, $changeToken = null)
+    public function deleteObject($repositoryId, $objectId, $changeToken = null)
     {
         try {
-            $result = $this->ObjectService->deleteObject($repositoryId, $objectId, $changeToken);
+            $this->ObjectService->deleteObject($repositoryId, $objectId, $changeToken);
         }
         catch (Exception $e)
         {
@@ -633,6 +661,15 @@ class KTObjectService extends KTCMISBase {
             );
         }
 
+        // check whether there is a list of items which did not delete
+        if (count($result) > 0)
+        {
+            return array(
+                "status_code" => 1,
+                "message" => $result
+            );          
+        }
+        
         return array(
             'status_code' => 0,
             'results' => $objectId

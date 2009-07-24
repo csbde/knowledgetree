@@ -67,6 +67,13 @@ class CMISObjectService {
                 $CMISObject = new CMISFolderObject($objectId, $this->ktapi, $repository->getRepositoryURI());
                 break;
         }
+        
+        // check that we were actually able to retrieve a real object
+        $objectId = $CMISObject->getProperty('ObjectId');
+        if (empty($objectId)) {
+            throw new ObjectNotFoundException('The requested object could not be found');
+        }
+        
         $properties = $CMISObject->getProperties();
 
         return $properties;
@@ -198,7 +205,7 @@ class CMISObjectService {
         {
             // TODO consider checking whether content is encoded (currently we expect encoded)
             // TODO choose between this and the alternative decode function (see CMISUtil class)
-            //      The current one appears to be miles better (1/0/3 vs 14/4/57 on respective test files)
+            //      this will require some basic benchmarking
             $contentStream = CMISUtil::decodeChunkedContentStream($contentStream);
          
             // NOTE There is a function in CMISUtil to do this, written for the unit tests but since KTUploadManager exists
@@ -390,7 +397,7 @@ class CMISObjectService {
         $response = $this->ktapi->create_folder((int)$folderId, $properties['name'], $sig_username = '', $sig_password = '', $reason = '');
         if ($response['status_code'] != 0)
         {
-            throw new StorageException('The repository was unable to create the folder - ' . $response['message']);
+            throw new StorageException('The repository was unable to create the folder: ' . $response['message']);
         }
         else
         {
@@ -398,6 +405,74 @@ class CMISObjectService {
         }
 
         return $objectId;
+    }
+    
+    /**
+     * Moves a fileable object from one folder to another.
+     * 
+     * @param object $repositoryId
+     * @param object $objectId
+     * @param object $changeToken [optional]
+     * @param object $targetFolderId
+     * @param object $sourceFolderId [optional] 
+     */
+    // TODO versioningException: The repository MAY throw this exception if the object is a non-current Document Version.
+    // TODO check whether object is in fact fileable?  not strictly needed, but possibly should be here.
+    public function moveObject($repositoryId, $objectId, $changeToken = '', $targetFolderId, $sourceFolderId = null)
+    {
+        // The $sourceFolderId parameter SHALL be specified if the Repository supports the optional 'unfiling' capability
+        if (is_null($sourceFolderId))
+        {
+            $RepositoryService = new CMISRepositoryService();
+            $info = $RepositoryService->getRepositoryInfo($repositoryId);
+            $capabilities = $info->getCapabilities();
+            // check for unfiling capability
+            // NOTE this is only required once/if KnowledgeTree allows the source folder id to be optional, 
+            //      but it is required for CMIS specification compliance.
+            if ($capabilities->hasCapabilityUnfiling() === 'true') {
+                throw new RuntimeException('The source folder id MUST be supplied when unfiling is supported.');
+            }
+        }
+        
+        // Attempt to decode $objectId, use as is if not detected as encoded
+        $tmpObjectId = $objectId;
+        $tmpObjectId = CMISUtil::decodeObjectId($tmpObjectId, $typeId);
+        if ($tmpTypeId != 'Unknown') $objectId = $tmpObjectId;
+        
+        $targetFolderId = CMISUtil::decodeObjectId($targetFolderId);
+            
+        // check type id of object against allowed child types for destination folder
+        $CMISFolder = new CMISFolderObject($targetFolderId, $this->ktapi);
+        $allowed = $CMISFolder->getProperty('AllowedChildObjectTypeIds');
+        if (!is_array($allowed) || !in_array($typeId, $allowed))
+        {
+            throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
+        }
+        
+        // throw updateConflictException if the operation is attempting to update an object that is no longer current (as determined by the repository).
+        $exists = CMISUtil::contentExists($typeId, $objectId, $this->ktapi);
+        if (!$exists) {
+            throw new updateConflictException('Unable to move the object as it cannot be found.');
+        }
+        
+        // TODO add reasons and sig data
+        // attempt to move object
+        if ($typeId == 'Folder') {
+            $response = $this->ktapi->move_folder($objectId, $targetFolderId, $reason, $sig_username, $sig_password);
+        }
+        else if ($typeId == 'Document') {
+            $response = $this->ktapi->move_document($objectId, $targetFolderId, $reason, null, null, $sig_username, $sig_password);
+        }
+        else {
+            $response['status_code'] = 1;
+            $response['message'] = 'The object type could not be determined.';
+        }
+
+        // if failed, throw StorageException
+        if ($response['status_code'] != 0)
+        {
+            throw new StorageException('The repository was unable to move the object: ' . $response['message']);
+        } 
     }
     
     /**
@@ -415,6 +490,7 @@ class CMISObjectService {
         // determine object type and internal id
         $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
         
+        // TODO this should probably be a function, it is now used in two places...
         // throw updateConflictException if the operation is attempting to update an object that is no longer current (as determined by the repository).
         $exists = true;
         if ($typeId == 'Folder') {
@@ -428,6 +504,7 @@ class CMISObjectService {
             if (PEAR::isError($object)) {
                 $exists = false;
             }
+            // TODO check deleted status?
         }
         else {
             $exists = false;
@@ -482,8 +559,6 @@ class CMISObjectService {
         if ($result['status_code'] == 1) {
             throw new RuntimeException('There was an error deleting the object: ' . $result['message']);
         }
-        
-        return true;
     }
     
     /**
@@ -535,8 +610,25 @@ class CMISObjectService {
         // TODO list of objects which failed in $failedToDelete array;
         //      since we do not delete the folder or any contents if anything cannot be deleted, this will contain the entire tree listing
         // NOTE once we do this we will need to deal with it externally as well, since we can no longer just catch an exception.
-        if ($result['status_code'] == 1) {
-            throw new RuntimeException('There was an error deleting the object: ' . $result['message']);
+        if ($result['status_code'] == 1)
+        {
+            // TODO consider sending back full properties on each object?
+            //      Not sure yet what this output may be used for by a client, and the current specification (0.61c) says:
+            //      "A list of identifiers of objects in the folder tree that were not deleted", so let's leave it returning just ids for now.
+            $failedToDelete[] = CMISUtil::encodeObjectId('Folder', $objectId);
+            $folderContents = $object->get_full_listing();
+            foreach($folderContents as $folderObject)
+            {
+                if ($folderObject['item_type'] == 'F') $type = 'Folder';
+                else if ($folderObject['item_type'] == 'D') $type = 'Document';
+                // TODO deal with non-folder and non-document content
+                else continue;
+                
+                // TODO find out whether this is meant to be a hierarchical list or simply a list.
+                //      for now we are just returning the list in non-hierarchical form 
+                //      (seeing as we don't really know how CMIS AtomPub is planning to deal with hierarchies at this time.)
+                $failedToDelete[] = CMISUtil::encodeObjectId($type, $folderObject['id']); 
+            }
         }
         
         return $failedToDelete;

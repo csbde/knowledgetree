@@ -12,9 +12,16 @@ class KT_cmis_atom_service_helper {
      * @param string $folderId
      * @return string CMIS AtomPub feed
      */
-    static public function getObjectFeed($ObjectService, $repositoryId, $objectId, $method = 'GET')
+    static public function getObjectFeed(&$service, $ObjectService, $repositoryId, $objectId, $method = 'GET')
     {
-        $cmisEntry = $ObjectService->getProperties($repositoryId, $objectId, false, false);
+        $response = $ObjectService->getProperties($repositoryId, $objectId, false, false);
+
+        if (PEAR::isError($response)) {
+            return KT_cmis_atom_service_helper::getErrorFeed($service, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response->getMessage());
+        }
+        
+        $cmisEntry = $response;
+        $response = null;
 
         if ($method == 'GET') {
             $response = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
@@ -27,9 +34,10 @@ class KT_cmis_atom_service_helper {
 
         KT_cmis_atom_service_helper::createObjectEntry($response, $cmisEntry, $cmisEntry['properties']['ParentId']['value'], $method);
 
-        if ($method == 'GET') {
+        // Don't think this should be here...only one item so why would we need to say there are no more?
+        /*if ($method == 'GET') {
             $response->newField('cmis:hasMoreItems', 'false', $response);
-        }
+        }*/
         
         return $response;
     }

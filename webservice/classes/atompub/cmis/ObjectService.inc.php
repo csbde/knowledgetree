@@ -29,26 +29,8 @@ class ObjectService extends KTObjectService {
         if ($result['status_code'] == 0) {
             return $result['results'];
         }
-    }
-
-    /**
-     * Creates a new folder within the repository
-     *
-     * @param string $repositoryId The repository to which the folder must be added
-     * @param string $typeId Object Type id for the folder object being created
-     * @param array $properties Array of properties which must be applied to the created folder object
-     * @param string $folderId The id of the folder which will be the parent of the created folder object
-     * @return string $objectId The id of the created folder object
-     */
-    function createFolder($repositoryId, $typeId, $properties, $folderId)
-    {
-        $result = parent::createFolder($repositoryId, $typeId, $properties, $folderId);
-
-        if ($result['status_code'] == 0) {
-            return $result['results'];
-        }
         else {
-            return $result;
+            return new PEAR_Error($result['message']);
         }
     }
 
@@ -67,8 +49,8 @@ class ObjectService extends KTObjectService {
     // TODO throw ConstraintViolationException if:
     //      value of any of the properties violates the min/max/required/length constraints
     //      specified in the property definition in the Object-Type.
-    function createDocument($repositoryId, $typeId, $properties, $folderId = null,
-                            $contentStream = null, $versioningState = null)
+    public function createDocument($repositoryId, $typeId, $properties, $folderId = null,
+                                   $contentStream = null, $versioningState = null)
     {
         $result = parent::createDocument($repositoryId, $typeId, $properties, $folderId, $contentStream, $versioningState);
 
@@ -77,6 +59,48 @@ class ObjectService extends KTObjectService {
         }
         else {
             return $result;
+        }
+    }
+
+    /**
+     * Creates a new folder within the repository
+     *
+     * @param string $repositoryId The repository to which the folder must be added
+     * @param string $typeId Object Type id for the folder object being created
+     * @param array $properties Array of properties which must be applied to the created folder object
+     * @param string $folderId The id of the folder which will be the parent of the created folder object
+     * @return string $objectId The id of the created folder object
+     */
+    public function createFolder($repositoryId, $typeId, $properties, $folderId)
+    {
+        $result = parent::createFolder($repositoryId, $typeId, $properties, $folderId);
+
+        if ($result['status_code'] == 0) {
+            return $result['results'];
+        }
+        else {
+            return $result;
+        }
+    }
+    
+    /**
+     * Moves a fileable object from one folder to another.
+     * 
+     * @param object $repositoryId
+     * @param object $objectId
+     * @param object $changeToken [optional]
+     * @param object $targetFolderId
+     * @param object $sourceFolderId [optional] 
+     */
+    public function moveObject($repositoryId, $objectId, $changeToken = '', $targetFolderId, $sourceFolderId = null)
+    {
+        $result = parent::moveObject($repositoryId, $objectId, $changeToken, $targetFolderId, $sourceFolderId);
+
+        if ($result['status_code'] == 0) {
+            return $result['results'];
+        }
+        else {
+            return new PEAR_Error($result['message']);
         }
     }
     
@@ -90,7 +114,7 @@ class ObjectService extends KTObjectService {
      */
     // NOTE Invoking this service method on an object SHALL not delete the entire version series for a Document Object. 
     //      To delete an entire version series, use the deleteAllVersions() service
-    function deleteObject($repositoryId, $objectId, $changeToken = null)
+    public function deleteObject($repositoryId, $objectId, $changeToken = null)
     {
         $result = parent::deleteObject($repositoryId, $objectId, $changeToken);
 
@@ -118,6 +142,9 @@ class ObjectService extends KTObjectService {
 
         if ($result['status_code'] == 0) {
             return $result['results'];
+        }
+        else if (is_array($result['message'])) {
+            return $result['message'];
         }
         else {
             return new PEAR_Error($result['message']);

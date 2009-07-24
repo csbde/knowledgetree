@@ -798,6 +798,294 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 		return $contents;
 	}
+    
+    /**
+	 * Get's a folder listing, recursing to the maximum depth.
+	 * Derived from the get_listing function.
+	 *
+	 * <code>
+	 * $root = $this->ktapi->get_root_folder();
+	 * $listing = $root->get_full_listing();
+	 * foreach($listing as $val) {
+	 * 	if($val['item_type'] == 'F') {
+	 *   // It's a folder
+	 *   echo $val['title'];
+	 *  }
+	 * }
+	 * </code>
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @param string $what
+	 * @return array
+	 */
+	function get_full_listing($what='DFS')
+	{
+		$what = strtoupper($what);
+		$read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
+		$folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
+
+		$config = KTConfig::getSingleton();
+
+		$wsversion = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
+
+		$user = $this->ktapi->get_user();
+
+		$contents = array();
+
+		if (strpos($what,'F') !== false)
+		{
+
+			$folder_children = Folder::getList(array('parent_id = ?', $this->folderid));
+
+			foreach ($folder_children as $folder)
+			{
+				if(KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder) ||
+				   KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $folder))
+				{
+					$sub_folder = &$this->ktapi->get_folder_by_id($folder->getId());
+					if (!PEAR::isError($sub_folder))
+					{
+						$items = $sub_folder->get_full_listing($what);
+					}
+					else
+					{
+						$items = array();
+					}
+
+					$creator = $this->_resolve_user($folder->getCreatorID());
+
+
+					if ($wsversion >= 2)
+					{
+						$array =  array(
+							'id' => (int) $folder->getId(),
+							'item_type' => 'F',
+
+							'custom_document_no'=>'n/a',
+							'oem_document_no'=>'n/a',
+
+							'title' => $folder->getName(),
+							'document_type' => 'n/a',
+							'filename' => $folder->getName(),
+							'filesize' => 'n/a',
+
+							'created_by' => is_null($creator)?'n/a':$creator->getName(),
+							'created_date' => 'n/a',
+
+							'checked_out_by' => 'n/a',
+							'checked_out_date' => 'n/a',
+
+							'modified_by' => 'n/a',
+							'modified_date' => 'n/a',
+
+							'owned_by' => 'n/a',
+
+							'version' => 'n/a',
+
+							'is_immutable'=> 'n/a',
+							'permissions' => KTAPI_Folder::get_permission_string($folder),
+
+							'workflow'=>'n/a',
+							'workflow_state'=>'n/a',
+
+							'mime_type' => 'folder',
+							'mime_icon_path' => 'folder',
+							'mime_display' => 'Folder',
+
+							'storage_path' => 'n/a',
+					    );
+
+						if($wsversion>=3)
+                        {
+							$array['linked_folder_id'] = $folder->getLinkedFolderId();
+							if($folder->isSymbolicLink()) {
+								$array['item_type'] = "S";
+							}
+						}
+                        
+						$array['items']=$items;
+						if($wsversion<3 || (strpos($what,'F') !== false && !$folder->isSymbolicLink()) || 
+                           ($folder->isSymbolicLink() && strpos($what,'S') !== false)) {
+							$contents[] = $array;
+						}
+					}
+					else
+					{
+    					$contents[] = array(
+    						'id' => (int) $folder->getId(),
+    						'item_type'=>'F',
+    						'title'=>$folder->getName(),
+    						'creator'=>is_null($creator)?'n/a':$creator->getName(),
+    						'checkedoutby'=>'n/a',
+    						'modifiedby'=>'n/a',
+    						'filename'=>$folder->getName(),
+    						'size'=>'n/a',
+    						'major_version'=>'n/a',
+    						'minor_version'=>'n/a',
+    						'storage_path'=>'n/a',
+    						'mime_type'=>'folder',
+    						'mime_icon_path'=>'folder',
+    						'mime_display'=>'Folder',
+    						'items'=>$items,
+    						'workflow'=>'n/a',
+    						'workflow_state'=>'n/a'
+    					);
+					}
+
+				}
+			}
+
+		}
+
+		if (strpos($what,'D') !== false)
+		{
+			$document_children = Document::getList(array('folder_id = ? AND status_id = 1',  $this->folderid));
+
+			// I hate that KT doesn't cache things nicely...
+			$mime_cache = array();
+
+			foreach ($document_children as $document)
+			{
+				if (KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $document))
+				{
+					$created_by=$this->_resolve_user($document->getCreatorID());
+					$created_date = $document->getCreatedDateTime();
+					if (empty($created_date)) $created_date = 'n/a';
+
+					$checked_out_by=$this->_resolve_user($document->getCheckedOutUserID());
+					$checked_out_date = $document->getCheckedOutDate();
+					if (empty($checked_out_date)) $checked_out_date = 'n/a';
+
+					$modified_by=$this->_resolve_user($document->getCreatorID());
+					$modified_date = $document->getLastModifiedDate();
+					if (empty($modified_date)) $modified_date = 'n/a';
+
+					$owned_by =$this->_resolve_user($document->getOwnerID());
+
+					$mimetypeid=$document->getMimeTypeID();
+					if (!array_key_exists($mimetypeid, $mime_cache))
+					{
+
+						$type=KTMime::getMimeTypeName($mimetypeid);
+						$icon=KTMime::getIconPath($mimetypeid);
+						$display=KTMime::getFriendlyNameForString($type);
+						$mime_cache[$mimetypeid] = array(
+							'type'=>$type,
+							'icon'=>$icon,
+							'display'=>$display
+
+						);
+					}
+					$mimeinfo=$mime_cache[$mimetypeid];
+
+					$workflow='n/a';
+					$state='n/a';
+
+					$wf = KTWorkflowUtil::getWorkflowForDocument($document);
+
+					if (!is_null($wf) && !PEAR::isError($wf))
+					{
+						$workflow=$wf->getHumanName();
+
+						$ws=KTWorkflowUtil::getWorkflowStateForDocument($document);
+						if (!is_null($ws) && !PEAR::isError($ws))
+						{
+							$state=$ws->getHumanName();
+						}
+					}
+
+					if ($wsversion >= 2)
+					{
+						$docTypeId = $document->getDocumentTypeID();
+						$documentType = DocumentType::get($docTypeId);
+
+						$oemDocumentNo = $document->getOemNo();
+						if (empty($oemDocumentNo)) $oemDocumentNo = 'n/a';
+
+
+						$array = array(
+							'id' => (int) $document->getId(),
+							'item_type' => 'D',
+
+							'custom_document_no'=>'n/a',
+							'oem_document_no'=>$oemDocumentNo,
+
+							'title' => $document->getName(),
+							'document_type'=>$documentType->getName(),
+							'filename' => $document->getFileName(),
+							'filesize' => $document->getFileSize(),
+
+							'created_by' => is_null($created_by)?'n/a':$created_by->getName(),
+							'created_date' => $created_date,
+
+							'checked_out_by' => is_null($checked_out_by)?'n/a':$checked_out_by->getName(),
+							'checked_out_date' => $checked_out_date,
+
+							'modified_by' => is_null($modified_by)?'n/a':$modified_by->getName(),
+							'modified_date' => $modified_date,
+
+							'owned_by' => is_null($owned_by)?'n/a':$owned_by->getName(),
+
+							'version' =>  $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber(),
+                            'content_id' => $document->getContentVersionId(),
+
+							'is_immutable'=> $document->getImmutable()?'true':'false',
+							'permissions' => KTAPI_Document::get_permission_string($document),
+
+							'workflow'=> $workflow,
+							'workflow_state'=> $state,
+
+							'mime_type' => $mime_cache[$mimetypeid]['type'],
+							'mime_icon_path' => $mime_cache[$mimetypeid]['icon'],
+							'mime_display' => $mime_cache[$mimetypeid]['display'],
+
+							'storage_path' => $document->getStoragePath(),
+					    );
+						if($wsversion>=3){
+							$document->switchToRealCore();
+							$array['linked_document_id'] = $document->getLinkedDocumentId();
+							$document->switchToLinkedCore();
+							if($document->isSymbolicLink()){
+								$array['item_type'] = "S";
+							}
+						}
+
+						$array['items']=array();
+
+
+						if($wsversion<3 || (strpos($what,'D') !== false && !$document->isSymbolicLink()) || ($document->isSymbolicLink() && strpos($what,'S') !== false)){
+							$contents[] = $array;
+						}
+					}
+					else
+					{
+    					$contents[] = array(
+    						'id' => (int) $document->getId(),
+    						'item_type'=>'D',
+    						'title'=>$document->getName(),
+    						'creator'=>is_null($created_by)?'n/a':$created_by->getName(),
+    						'checkedoutby'=>is_null($checked_out_by)?'n/a':$checked_out_by->getName(),
+    						'modifiedby'=>is_null($modified_by)?'n/a':$modified_by->getName(),
+    						'filename'=>$document->getFileName(),
+    						'size'=>$document->getFileSize(),
+    						'major_version'=>$document->getMajorVersionNumber(),
+    						'minor_version'=>$document->getMinorVersionNumber(),
+    						'storage_path'=>$document->getStoragePath(),
+    						'mime_type'=>$mime_cache[$mimetypeid]['type'],
+    						'mime_icon_path'=>$mime_cache[$mimetypeid]['icon'],
+    						'mime_display'=>$mime_cache[$mimetypeid]['display'],
+    						'items'=>array(),
+    						'workflow'=>$workflow,
+    						'workflow_state'=>$state
+    					);
+					}
+				}
+			}
+		}
+
+		return $contents;
+	}
 
 	/**
 	 * This adds a shortcut to an existing document to the current folder
