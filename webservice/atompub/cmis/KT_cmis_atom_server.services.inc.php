@@ -160,9 +160,6 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
         // now check for content stream
         $content = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'content');        
         
-        // check content for weird chars - don't think this serves a purpose any longer, should probably be removed.
-        // was meant to check for any non-base64 characters in the content string.
-        // preg_match('/[^\w\d\/\+=\n]*/', $content);
         // TODO this will possibly need to change somewhat once Relationship Objects come into play.
         if ((($action == 'create') && (is_null($content))) || ($typeId == 'Folder')) {
             $type = 'folder';
