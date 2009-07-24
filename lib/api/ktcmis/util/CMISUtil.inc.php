@@ -397,30 +397,33 @@ class CMISUtil {
         return $temp;
     }
     
-    // TODO run evaluations on each of the following two functions and determine which 
-    //      is generally more efficienct
-    
     /**
-     * Alternative function for decoding chunked streams, this will decode in blocks of 4.
-     * Not sure which method is more efficient, this or the function below (this does not
-     * re-encode but I am working on removing that step for the other function.)
+     * Checks the contentStream and ensures that it is a correct base64 string;
+     * This is purely for clients such as CMISSpaces breaking the content into 
+     * chunks before base64 encoding.
      * 
-     * NOTE The current one appears to be much slower (14/4/57 vs 1/0/3 on respective test files)
-     *  
-     * @param string $contentStream the base64 encoded content stream
-     * @return string $decoded the decoded content stream
+     * If the stream is chunked, it is decoded in chunks and sent back as a single stream.
+     * If it is not chunked it is decoded as is and sent back as a single stream.
+     * 
+     * NOTE there is an alternative version of this function called decodeChunkedContentStreamLong.
+     *      that version checks line lengths, which should not be necessary.
+     *      this version merely splits on one or two "=" which is less complex and possibly faster (test this assumption)
+     *      (one or two "=" signs is the specified padding used for base64 encoding at the end of an encoded string, when needed)
+     * 
+     * @param object $contentStream
+     * @return string decoded
      */
-    static public function decodeContentStream($contentStream)
+    static public function decodeChunkedContentStream($contentStream)
     {
         $decoded = '';
         
-        $contentStream = preg_replace('/\r?\n+/', '', $contentStream);
-        
-        // decode in chunks or 4 chars at a time
-        for($i = 0, $len = strlen($contentStream); $i < $len; $i += 4) {
-            $decoded .= base64_decode(substr($contentStream, $i, 4));
+        // split the content stream on ={1,2}
+        $parts = preg_split('/={1,2}/', $contentStream, null, PREG_SPLIT_NO_EMPTY);
+        foreach($parts as $part) {
+            // decode, append to output to be re-encoded
+            $decoded .= base64_decode($part);
         }
-     
+
         return $decoded;
     }
     
@@ -438,7 +441,7 @@ class CMISUtil {
      * @param object $contentStream
      * @return string decoded
      */
-    static public function decodeChunkedContentStream($contentStream)
+    static public function decodeChunkedContentStreamLong($contentStream)
     {
         // check the content stream for any lines of unusual length (except the last line, which can be any length)
         $count = -1;
@@ -464,7 +467,7 @@ class CMISUtil {
             {
                 // check for a new chunk
                 // either we have an equals sign (or two)
-                if (preg_match('/([^=]*={0,2})(.*)/', $line, $matches))
+                if (preg_match('/([^=]*={1,2})(.*)/', $line, $matches))
                 {
                     $lastChunk = $matches[1];
                     $nextChunk = $matches[2];
@@ -506,6 +509,39 @@ class CMISUtil {
         }
 
         return $decoded;
+    }
+    
+    /**
+     * Function to check whether a specified object exists within the KnowledgeTree system
+     * 
+     * @param string $typeId
+     * @param string $objectId
+     * @param object $ktapi
+     * @return boolean
+     */
+    public function contentExists($typeId, $objectId, &$ktapi)
+    {
+        $exists = true;
+        if ($typeId == 'Folder')
+        {
+            $object = $ktapi->get_folder_by_id($objectId);
+            if (PEAR::isError($object)) {
+                $exists = false;
+            }
+        }
+        else if ($typeId == 'Document')
+        {
+            $object = $ktapi->get_document_by_id($objectId);
+            if (PEAR::isError($object)) {
+                $exists = false;
+            }
+            // TODO check deleted status?
+        }
+        else {
+            $exists = false;
+        }
+        
+        return $exists;
     }
 
 }
