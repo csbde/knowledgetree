@@ -42,8 +42,6 @@ include_once 'KT_cmis_atom_service_helper.inc.php';
 /**
  * AtomPub Service: folder
  */
-// TODO implement failure responses for documents and folders not found. (KTS-4364: http://issues.knowledgetree.com/browse/KTS-4364)
-// NOTE what about documents which are deleted, need to respond that those are also not found.
 class KT_cmis_atom_service_folder extends KT_atom_service {
 
     /**
@@ -70,12 +68,22 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
             $ktapi =& KT_cmis_atom_service_helper::getKt();
             $folderId = KT_cmis_atom_service_helper::getFolderId($this->params, $ktapi);
         }
-        else
+        else if (($this->params[1] == 'children') || ($this->params[1] == 'descendants'))
         {
             $folderId = $this->params[0];
             $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
-            $cmisEntry = $ObjectService->getProperties($repositoryId, $folderId, false, false);
-            $folderName = $cmisEntry['properties']['Name']['value'];
+            $response = $ObjectService->getProperties($repositoryId, $folderId, false, false);
+    
+            if (PEAR::isError($response)) {
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response->getMessage());
+                $this->responseFeed = $feed;
+                return null;
+            }
+            
+            $folderName = $response['properties']['Name']['value'];
+        }
+        else {
+            $folderId = $this->params[0];
         }
 
         if (!empty($this->params[1]) && (($this->params[1] == 'children') || ($this->params[1] == 'descendants')))
@@ -86,7 +94,7 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
         else
         {
             $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
-            $feed = KT_cmis_atom_service_helper::getObjectFeed($ObjectService, $repositoryId, $folderId);
+            $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $folderId);
         }
 
         //Expose the responseFeed
@@ -181,10 +189,10 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
         }
         else if ($action == 'move')
         {
-            $result = $ObjectService->moveObject($repositoryId, $objectId, '', $folderId);
+            $response = $ObjectService->moveObject($repositoryId, $objectId, '', $folderId);
             
-            if (!PEAR::isError($result)) $success = true;
-            else $error = $result->getMessage();
+            if (!PEAR::isError($response)) $success = true;
+            else $error = $response->getMessage();
             
             // same object as before
             $newObjectId = $objectId;
@@ -194,7 +202,7 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
         if ($success)
         {
             $this->setStatus(($action == 'create') ? self::STATUS_CREATED : self::STATUS_UPDATED);
-            $feed = KT_cmis_atom_service_helper::getObjectFeed($ObjectService, $repositoryId, $newObjectId, 'POST');
+            $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $newObjectId, 'POST');
         }
         else {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $error);
@@ -223,25 +231,25 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
         $repositoryId = $repositories[0]['repositoryId'];
         
         // attempt delete
-        $result = $ObjectService->deleteTree($repositoryId, $this->params[0]);
+        $response = $ObjectService->deleteTree($repositoryId, $this->params[0]);
 
         // error?
-        if (PEAR::isError($result))
+        if (PEAR::isError($response))
         {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $result->getMessage());
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response->getMessage());
            //Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
         }
         // list of failed objects?
-        if (is_array($result))
+        if (is_array($response))
         {
             $this->setStatus(self::STATUS_SERVER_ERROR);
             
             $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
             $feed->newField('title', 'Error: Failed to delete all objects in tree: ' . self::STATUS_SERVER_ERROR, $feed);
             
-            foreach($result as $failed)
+            foreach($response as $failed)
             {            
                 $entry = $feed->newEntry();
                 $objectElement = $feed->newElement('cmis:object');
@@ -488,7 +496,8 @@ class KT_cmis_atom_service_checkedout extends KT_atom_service {
 /**
  * AtomPub Service: document
  */
-class KT_cmis_atom_service_document extends KT_atom_service {
+// TODO confirm that an error response is sent when a document has status "deleted"
+class KT_cmis_atom_service_document extends KT_cmis_atom_service {
 
     /**
      * Deals with GET actions for documents.
@@ -502,18 +511,10 @@ class KT_cmis_atom_service_document extends KT_atom_service {
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
 
-        $cmisEntry = $ObjectService->getProperties($repositoryId, $this->params[0], false, false);
-
-        //Create a new response feed
-        $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
-        
-        $feed->newField('title', $cmisEntry['properties']['ObjectTypeId']['value'], $feed);
-        $feed->newField('id', 'urn:uuid:' . $cmisEntry['properties']['ObjectId']['value'], $feed);
-
-        KT_cmis_atom_service_helper::createObjectEntry($feed, $cmisEntry, $cmisEntry['properties']['ParentId']['value']);
+        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $this->params[0]);
 
         //Expose the responseFeed
-        $this->responseFeed=$feed;
+        $this->responseFeed = $feed;
     }
     
     /**
@@ -535,13 +536,13 @@ class KT_cmis_atom_service_document extends KT_atom_service {
         $repositoryId = $repositories[0]['repositoryId'];
         
         // attempt delete
-        $result = $VersioningService->deleteAllVersions($repositoryId, $this->params[0]);
+        $response = $VersioningService->deleteAllVersions($repositoryId, $this->params[0]);
 
         // error?
-        if (PEAR::isError($result))
+        if (PEAR::isError($response))
         {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $result->getMessage());
-           //Expose the responseFeed
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response->getMessage());
+            //Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
         }

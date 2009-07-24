@@ -67,6 +67,13 @@ class CMISObjectService {
                 $CMISObject = new CMISFolderObject($objectId, $this->ktapi, $repository->getRepositoryURI());
                 break;
         }
+        
+        // check that we were actually able to retrieve a real object
+        $objectId = $CMISObject->getProperty('ObjectId');
+        if (empty($objectId)) {
+            throw new ObjectNotFoundException('The requested object could not be found');
+        }
+        
         $properties = $CMISObject->getProperties();
 
         return $properties;
