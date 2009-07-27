@@ -1,6 +1,6 @@
 <?php
 /**
-* Install Step Controller. 
+* Services Step Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -40,30 +40,112 @@
 * @version Version 0.1
 */
 
-class install extends step 
+
+//require_once('../../thirdparty/xmlrpc-2.2/xmlrpc.inc');
+
+class services extends Step 
 {
-
-    function __construct() {
-        $this->temp_variables = array("step_name"=>"install");
+	/**
+	* List of errors encountered
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    public $error = array();
+    
+	/**
+	* Flag if step needs to be installed
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $runInstall = true;
+    
+    
+	/**
+	* Constructs database object
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+ 	*/
+    public function __construct() {
+    	
     }
-
-    public function doStep() {
-        if($this->install()) {
-
-            return 'install';
+    
+	/**
+	* Main control of services setup
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return string
+	*/
+    public function doStep()
+    {
+        // Check dependencies
+        $passed = $this->doRun();
+        if($this->next()) {
+            if($passed)
+                return 'next';
+            else
+                return 'error';
         } else if($this->previous()) {
 
             return 'previous';
         }
 
-        return 'landing'; 
+        return 'landing';
+    }
+    
+    private function doRun() {
+    	$util = new InstallUtil();
+//    	$response = $util->pexec("java"); // Java Runtime Check
+    	$response = $util->pexec("java -version"); // Java Runtime Check
+    	if(empty($response['out'])) {
+    		$this->error[] = "Java runtime environment required";
+//    		return false;
+    	}
+		$this->installStep();
+		return true;
+    }
+    
+    
+    /**
+	* Runs step install if required
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return void
+	*/
+    public function installStep() {
+		$util = new InstallUtil();
+		if(WINDOWS_OS) { // Add service to tasks list if needed
+			$lucene = new windowsLucene();
+		// Start service
+		} else { // Unix based systems
+			$lucene = new unixLucene();
+			$lucene->load();
+		}
+
+
+		
+		
     }
 
-    public function getStepVars()
-    {
-        return $this->temp_variables;
-    }
-
+  
+		
+	/**
+	* Returns database errors
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @params none
+	* @return array
+	*/
     public function getErrors() {
         return $this->error;
     }

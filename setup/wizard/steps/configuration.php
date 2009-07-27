@@ -39,7 +39,6 @@
 * @package Installer
 * @version Version 0.1
 */
-require_once(WIZARD_DIR.'step.php');
 
 class configuration extends Step
 {
@@ -171,8 +170,6 @@ class configuration extends Step
      */
     public function installStep()
     {
-        include_once('database.inc');
-        include_once('Ini.inc');
         // get data from the server
         $conf = $this->getDataFromSession("configuration");
         $server = $conf['server'];

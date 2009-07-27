@@ -109,7 +109,7 @@ class Installer {
 	*
 	* @author KnowledgeTree Team
 	* @access protected
-	* @var array boolean
+	* @var boolean
 	*/
     protected $stepConfirmation = false;
     
@@ -124,21 +124,6 @@ class Installer {
         $this->session = $session;
     }
     
-	/**
-	* Sets any variables passed through for testing purposes
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param none
-	* @return void
- 	*/
-    private function _setSessionVars() {
-		if(isset($_GET['bypass'])) {
-			$bypass = $_GET['bypass'];
-			$this->session->set('bypass', $bypass);
-		}
-    }
-
 	/**
 	* Read xml configuration file
 	*
@@ -282,6 +267,7 @@ class Installer {
 	* @return string
 	*/
     private function _runStepAction($stepName) {
+    	//echo $stepName."==";
         $this->stepAction = new stepAction($stepName);
         $this->stepAction->setSteps($this->getSteps());
         $this->stepAction->setStepNames($this->getStepNames());
@@ -314,13 +300,44 @@ class Installer {
     private function _xmlStepsToArray() {
         foreach($this->simpleXmlObj->steps->step as $d_step) {
         	$step_name = (string) $d_step[0];
-            $this->stepClassNames[] = $step_name; // Store steps as strings
-            $this->stepNames[$step_name] = (string) $d_step['name']; // Store steps as human readable strings
-            if(isset($d_step['order'])) {
+            $this->stepClassNames[] = $step_name;
+        }
+        $this->_loadToSession('stepClassNames', $this->stepClassNames);
+    }
+    
+	/**
+	* Set steps as human readable strings
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return void
+	*/
+    private function _xmlStepsNames() {
+        foreach($this->simpleXmlObj->steps->step as $d_step) {
+        	$step_name = (string) $d_step[0];
+            $this->stepNames[$step_name] = (string) $d_step['name'];
+        }
+        $this->_loadToSession('stepNames', $this->stepNames);
+    }
+    
+	/**
+	* Set steps install order
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return void
+	*/
+    private function _xmlStepsOrders() {
+        foreach($this->simpleXmlObj->steps->step as $d_step) {
+			if(isset($d_step['order'])) {
+				$step_name = (string) $d_step[0];
 				$order = (string) $d_step['order'];
             	$this->installOrders[$order] = $step_name; // Store step install order
             }
         }
+        $this->_loadToSession('installOrders', $this->installOrders);
     }
     
 	/**
@@ -349,7 +366,7 @@ class Installer {
 	* @return void
 	*/
     private function _completeInstall() {
-    	unlink("install");
+    	touch("install");
     }
     
 	/**
@@ -371,7 +388,7 @@ class Installer {
 				// TODO : Break on error response
 	    	}
     	} else {
-    		die("$className : Class Files Missing");
+    		die("$className : Class Files Missing : Install Helper");
     	}
     }
     
@@ -389,10 +406,32 @@ class Installer {
 	    		foreach ($this->getSteps() as $class) {
 	    			$this->session->un_setClass($class);
 	    		}
+	    		foreach ($this->getStepNames() as $class) {
+	    			$this->session->un_setClass($class);
+	    		}
+	    		foreach ($this->_getInstallOrders() as $class) {
+	    			$this->session->un_setClass($class);
+	    		}
 	    	}
     	}
     }
 
+    private function loadNeeded() {
+        $this->_readXml(); // Xml steps
+        $this->_resetSessions(); // Make sure
+        $this->stepClassNames = $this->session->get('stepClassNames');
+        if(!$this->stepClassNames) {
+    		$this->_xmlStepsToArray(); // String steps
+    	}
+    	$this->stepNames = $this->session->get('stepNames');
+    	if(!$this->stepNames) {
+    		$this->_xmlStepsNames();
+    	}
+    	$this->installOrders = $this->session->get('installOrders');
+    	if(!$this->installOrders) {
+    		$this->_xmlStepsOrders();
+    	}
+    }
 	/**
 	* Main control to handle the flow of install
 	*
@@ -402,10 +441,7 @@ class Installer {
 	* @return void
 	*/
     public function step() {
-        $this->_readXml(); // Xml steps
-        $this->_xmlStepsToArray(); // String steps
-    	$this->_resetSessions(); // Make sure
-    	$this->_setSessionVars();
+		$this->loadNeeded();
         $response = $this->_landing();
         switch($response) {
             case 'next':
@@ -518,7 +554,13 @@ class Installer {
     public function resolveErrors($errors) {
     	echo $errors;
     	exit();
-    }    
+    }
+    
+    private function _loadToSession($type, $values) {
+    	if($values) {
+    		$this->session->set($type , $values);
+    	}
+    }
 }
 
 ?>

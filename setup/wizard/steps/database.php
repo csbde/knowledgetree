@@ -39,8 +39,6 @@
 * @package Installer
 * @version Version 0.1
 */
-require_once(WIZARD_DIR.'step.php');
-require_once(WIZARD_DIR.'database.inc');
 
 class database extends Step 
 {

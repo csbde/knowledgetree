@@ -39,10 +39,8 @@
 * @package Installer
 * @version Version 0.1
 */
-require_once(WIZARD_DIR.'step.php');
 
 class welcome extends step {
-
 
     function __construct() {
         $this->temp_variables = array("step_name"=>"license");

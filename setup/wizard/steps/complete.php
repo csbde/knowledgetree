@@ -39,7 +39,6 @@
 * @package Installer
 * @version Version 0.1
 */
-require_once(WIZARD_DIR.'step.php');
 
 class complete extends Step 
 {
@@ -48,5 +47,8 @@ class complete extends Step
         $this->temp_variables = array("step_name"=>"complete");
     }
 
+    function doStep() {
+    	return 'landing';
+    }
 }
 ?>
