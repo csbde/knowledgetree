@@ -10,13 +10,15 @@ class KT_atom_server {
 	protected $method='';
 	protected $workspace='';
     protected $serviceObject = null;
+    protected $renderBody=true;
+
 
 	public function __construct(){
 	}
 
     protected function hook_beforeDocCreate($doc){return true;}
     protected function hook_beforeDocRender($doc){return true;}
-    
+
 	/**
 	 * Run the server switchboard - find the correct service class to instantiate, execute & render that class with the passed parameteres
 	 *
@@ -33,21 +35,18 @@ class KT_atom_server {
 		$this->serviceName=$serviceName;
 		$this->method=$reqMethod;
 		$this->workspace=$workspace;
-        
+
         if($workspace=='servicedocument'){
 			$this->serviceDocument();
 			return;
 		}
-        
+
 		$service=$this->getRegisteredService($workspace,$serviceName);
 		if(is_array($service)){
 			$serviceClass=$service['serviceClass'];
-//			echo 'made it';
 			$serviceObject=new $serviceClass($reqMethod,$requestParams,$rawRequest);
-			$this->output=$serviceObject->render();
+            if($this->hook_beforeDocRender($serviceObject))	$this->output=$serviceObject->render();
 		}else{
-//            $this->serviceDocument();
-//            return;
 			$serviceObject=new KT_atom_service($requestParams,$rawRequest);
 			$serviceObject->setStatus(KT_atom_service::STATUS_NOT_FOUND);
             if($this->hook_beforeDocRender($serviceObject))	$this->output=$serviceObject->render();
@@ -111,8 +110,13 @@ class KT_atom_server {
 	public function render(){
 		ob_end_clean();
 		header('Content-type: text/xml');
-		echo $this->output;
+		if($this->renderBody)echo $this->output;
 	}
+
+	public function setNoContent($flag=false){
+		$this->renderBody=$flag?false:true;
+	}
+
 }
 
 ?>
