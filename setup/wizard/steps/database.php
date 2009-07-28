@@ -39,8 +39,6 @@
 * @package Installer
 * @version Version 0.1
 */
-require_once(WIZARD_DIR.'step.php');
-require_once(WIZARD_DIR.'database.inc');
 
 class database extends Step 
 {
@@ -223,7 +221,7 @@ class database extends Step
 	* @param none
  	*/
     public function __construct() {
-    	$this->_dbhandler = new DBUtil();
+    	$this->_dbhandler = new dbUtil();
     }
 
 	/**
@@ -300,9 +298,9 @@ class database extends Step
     		return false;
     	}
     	if($this->dport == '') 
-    		$con = $this->_dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
+    		$con = $this->_dbhandler->dbUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
     	else 
-    		$con = $this->_dbhandler->DBUtil($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
+    		$con = $this->_dbhandler->dbUtil($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
         if (!$con) {
             $this->error[] = "Could not connect: " . $this->_dbhandler->getErrors();
             return false;
@@ -533,7 +531,7 @@ class database extends Step
 	* @return object mysql connection
 	*/
     private function connectMysql() {
-		$con = $this->_dbhandler->DBUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
+		$con = $this->_dbhandler->dbUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
         if (!$con) {
             $this->error[] = "Could not connect: " . $this->_dbhandler->getErrors();
 

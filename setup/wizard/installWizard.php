@@ -40,10 +40,17 @@
 * @version Version 0.1
 */
 include("path.php"); // Paths
-require_once("install_util.php"); // Utility functions
-require_once("session.php"); // Session management
-require_once("template.inc"); // Template management
-require_once("step_action.php"); // Step actions control
+
+function __autoload($class) { // Attempt and autoload classes
+	$class = strtolower(substr($class,0,1)).substr($class,1); // Linux Systems.
+	if(file_exists(WIZARD_DIR."$class.php")) {
+		require(WIZARD_DIR."$class.php");
+	} elseif (file_exists(STEP_DIR."$class.php")) {
+		require(STEP_DIR."$class.php");
+	} else {
+		return false;
+	}
+}
 
 class InstallWizard {
 	/**
@@ -63,7 +70,7 @@ class InstallWizard {
 	* @var boolean
 	*/
 	protected $iutil = null;
-	
+
 	/**
 	* Constructs installation wizard object
 	*
@@ -93,7 +100,6 @@ class InstallWizard {
 	* @return void
  	*/
 	public function displayInstaller($response = null) {
-		require("installer.php");
 		if($response) {
 			$ins = new Installer(); // Instantiate the installer
 			$ins->resolveErrors($response); // Run step
@@ -227,9 +233,9 @@ class InstallWizard {
 	public function dispatch() {
 		$this->load();
 		if($this->getBypass() === "1") {
-			$this->createInstallFile();
-		} elseif ($this->getBypass() === "0") {
 			$this->removeInstallFile();
+		} elseif ($this->getBypass() === "0") {
+			$this->createInstallFile();
 		}
 		if(!$this->isSystemInstalled()) { // Check if the systems not installed
 			$response = $this->systemChecks();

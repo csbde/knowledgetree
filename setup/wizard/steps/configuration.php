@@ -39,7 +39,6 @@
 * @package Installer
 * @version Version 0.1
 */
-require_once(WIZARD_DIR.'step.php');
 
 class configuration extends Step
 {
@@ -171,8 +170,6 @@ class configuration extends Step
      */
     public function installStep()
     {
-        include_once('database.inc');
-        include_once('Ini.inc');
         // get data from the server
         $conf = $this->getDataFromSession("configuration");
         $server = $conf['server'];
@@ -187,13 +184,13 @@ class configuration extends Step
         }
 
         // initialise the db connection
-        $db = new DBUtil();
+        $db = new dbUtil();
 
         // retrieve database information from session
         $dbconf = $this->getDataFromSession("database");
 
         // make db connection
-        $db->DBUtil($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']);
+        $db->dbUtil($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']);
 
         // add db config to server variables
 		$server = $this->registerDBConfig($server, $dbconf);

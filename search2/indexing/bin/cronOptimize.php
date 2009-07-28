@@ -39,4 +39,5 @@
 
 require_once('optimise.php');
 
+exit;
 ?>

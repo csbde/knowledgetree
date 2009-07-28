@@ -39,7 +39,7 @@
 * @package Installer
 * @version Version 0.1
 */
-class DBUtil {
+class dbUtil {
 	/**
 	* Host
 	*
@@ -112,7 +112,7 @@ class DBUtil {
 	 * @access public
 	 * @return boolean
   	*/
-	public function DBUtil($dhost = 'localhost', $duname, $dpassword, $dbname = '') {
+	public function dbUtil($dhost = 'localhost', $duname, $dpassword, $dbname = '') {
 		$this->dbhost = $dhost;
 		$this->dbuname = $duname;
 		$this->dbpassword = $dpassword;

@@ -210,7 +210,9 @@ if (empty($aList))
 
         if ($ext == 'php')
         {
-        	$phpPath = KTUtil::findCommand('externalBinary/php');
+            $oKTConfig = KTConfig::getSingleton();
+    	    $phpPath = $oKTConfig->get('externalBinary/php', 'php');
+        	//$phpPath = KTUtil::findCommand('externalBinary/php');
 
         	// being protective as some scripts work on relative paths
         	$dirname = dirname($file);

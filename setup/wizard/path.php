@@ -39,13 +39,30 @@
 * @package Installer
 * @version Version 0.1
 */
-    define('DS', '/');
+	// Define installer environment
+	if (substr(php_uname(), 0, 7) == "Windows"){
+    	define('WINDOWS_OS', true);
+    	define('UNIX_OS', false);
+	} else {
+    	define('WINDOWS_OS', false);
+    	define('UNIX_OS', true);
+	}
+	if(WINDOWS_OS) {
+		define('DS', '\\');
+	} else {
+		define('DS', '/');
+	}
     define('WIZARD_DIR', dirname(__FILE__).DS);
-    define('SYSTEM_DIR', WIZARD_DIR."../../");
+    define('SYSTEM_DIR', WIZARD_DIR."..".DS."..".DS);
+    define('SYS_BIN_DIR', WIZARD_DIR."..".DS."..".DS."bin".DS);
+    define('SYS_LOG_DIR', WIZARD_DIR."..".DS."..".DS."var".DS."log".DS);
     define('SQL_DIR', WIZARD_DIR.DS."sql".DS);
-    define('SQL_UPGRADE_DIR', SQL_DIR.DS."/upgrades/".DS);
+    define('SQL_UPGRADE_DIR', SQL_DIR.DS."upgrades".DS);
     define('CONF_DIR', WIZARD_DIR.DS."config".DS);
     define('RES_DIR', WIZARD_DIR.DS."resources".DS);
     define('STEP_DIR', WIZARD_DIR.DS."steps".DS);
     define('TEMP_DIR', WIZARD_DIR.DS."templates".DS);
+    
+    
+
 ?>

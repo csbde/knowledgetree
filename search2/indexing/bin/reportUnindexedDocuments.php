@@ -125,4 +125,5 @@ else
     print  "-----END-----\n\nDone\n";
 }
 
+exit;
 ?>

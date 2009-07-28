@@ -49,3 +49,6 @@ if ($verbose) print _kt("Cache index stats and diagnostics") . "...\n";
 
 $indexer = Indexer::get();
 $indexer->updateIndexStats();
+
+exit;
+?>

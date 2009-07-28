@@ -109,7 +109,7 @@ class stepAction {
         if($this->stepName != '') {
 			$this->action = $this->createStep();
 			if(!$this->action) {
-				die("{$this->stepName} : Class Files Missing");
+				die("{$this->stepName} : Class Files Missing : Create Step");
 			}
             $response = $this->action->doStep();
             if($this->action->storeInSession()) { // Check if class values need to be stored in session
@@ -122,7 +122,7 @@ class stepAction {
             }
             return $response;
         } else {
-            die("{$this->stepName} : Class Files Missing");
+            die("{$this->stepName} : Class Files Missing : Do Action");
         }
     }
 
@@ -135,13 +135,8 @@ class stepAction {
 	* @return object Step
 	*/
     public function createStep() {
-    	$filename = STEP_DIR."{$this->stepName}.php";
-    	if (file_exists($filename)) {
-			require_once($filename);
-			$step_class = $this->makeCamelCase($this->stepName);
-			return new $step_class();
-    	}
-		return false;
+		$step_class = $this->makeCamelCase($this->stepName);
+		return new $step_class();
     }
 
 	/**
@@ -219,7 +214,7 @@ class stepAction {
 	* @return string
 	*/
     public function getCurrentStepName() {
-        return$this->step_names[$this->stepName];
+        return $this->step_names[$this->stepName];
     }
 
 	/**

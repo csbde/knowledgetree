@@ -37,7 +37,7 @@
  */
 
 // check if system has been installed
-require_once("setup/wizard/install_util.php");
+require_once("setup/wizard/installUtil.php");
 // Check if system has been installed
 $iu = new InstallUtil();
 if(!$iu->isSystemInstalled()) {
