@@ -82,7 +82,7 @@ if ($workspace == 'servicedocument')
     // CMIS service document setup
     $APP->initServiceDocument();
     // User defined title tag
-    $APP->addWorkspaceTag('dms','atom:title',$APP->repositoryInfo['repositoryName']);
+    $APP->addWorkspaceTag('dms','atom:title', $APP->repositoryInfo['repositoryName']);
 }
 
 /**
@@ -108,13 +108,10 @@ $APP->registerService('dms', 'checkedout', 'KT_cmis_atom_service_checkedout', 'C
 $APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'typeschildren');
 $APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'typesdescendants');
 
-// NOTE $requestParams is meaningless if not actually requesting this service, so not a good way to register the service really
 if ($workspace != 'servicedocument')
 {
-    // should check this per workspace???
-    $APP->registerService('dms', 'type', 'KT_cmis_atom_service_type', 'Object Type Collection', explode('/', $requestParams), 'typesdescendants');
-    // FIXME HACK! see above, this one for documents
-    $APP->registerService('dms', 'document', 'KT_cmis_atom_service_document', 'Object Type Collection', explode('/', $requestParams), 'typesdescendants');
+    $APP->registerService('dms', 'type', 'KT_cmis_atom_service_type', 'Object Type Entry', null, 'type');
+    $APP->registerService('dms', 'document', 'KT_cmis_atom_service_document', 'Document Entry', null, 'document');
 }
 
 //Execute the current url/header request

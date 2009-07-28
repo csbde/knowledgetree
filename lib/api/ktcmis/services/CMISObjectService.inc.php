@@ -31,55 +31,6 @@ class CMISObjectService {
     }
 
     /**
-     * Fetches the properties for the specified object
-     *
-     * @param string $repositoryId
-     * @param string $objectId
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
-     * @param boolean $returnVersion
-     * @param string $filter
-     * @return object CMIS object properties
-     */
-    // TODO optional parameter support
-    // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
-    public function getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships,
-                                  $returnVersion = false, $filter = '')
-    {
-        $repository = new CMISRepository($repositoryId);
-
-        // TODO a better default value?
-        $properties = array();
-
-        $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
-
-        if ($typeId == 'Unknown')
-        {
-            throw new ObjectNotFoundException('The type of the requested object could not be determined');
-        }
-
-        switch($typeId)
-        {
-            case 'Document':
-                $CMISObject = new CMISDocumentObject($objectId, $this->ktapi, $repository->getRepositoryURI());
-                break;
-            case 'Folder':
-                $CMISObject = new CMISFolderObject($objectId, $this->ktapi, $repository->getRepositoryURI());
-                break;
-        }
-        
-        // check that we were actually able to retrieve a real object
-        $objectId = $CMISObject->getProperty('ObjectId');
-        if (empty($objectId)) {
-            throw new ObjectNotFoundException('The requested object could not be found');
-        }
-        
-        $properties = $CMISObject->getProperties();
-
-        return $properties;
-    }
-
-    /**
      * Creates a new document within the repository
      *
      * @param string $repositoryId The repository to which the document must be added
@@ -232,7 +183,6 @@ class CMISObjectService {
                               );
             }
 
-            // TODO fetch author name based on logged in user
             $user = $this->ktapi->get_user();
             if (!PEAR::isError($user))
             {
@@ -257,7 +207,7 @@ class CMISObjectService {
                              );
 
             /**
-             * Try to determine mime type which maps to one of the following:
+             * Try to determine mime type which maps to one of the following KnowledgetTree document types:
              *
              * Audio
              * Image
@@ -405,6 +355,104 @@ class CMISObjectService {
         }
 
         return $objectId;
+    }
+    
+    /**
+     * Fetches the properties for the specified object
+     *
+     * @param string $repositoryId
+     * @param string $objectId
+     * @param boolean $includeAllowableActions
+     * @param boolean $includeRelationships
+     * @param boolean $returnVersion
+     * @param string $filter
+     * @return object CMIS object properties
+     */
+    // TODO optional parameter support
+    // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
+    public function getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships,
+                                  $returnVersion = false, $filter = '')
+    {
+        $repository = new CMISRepository($repositoryId);
+
+        // TODO a better default value?
+        $properties = array();
+
+        $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
+
+        if ($typeId == 'Unknown')
+        {
+            throw new ObjectNotFoundException('The type of the requested object could not be determined');
+        }
+
+        switch($typeId)
+        {
+            case 'Document':
+                $CMISObject = new CMISDocumentObject($objectId, $this->ktapi, $repository->getRepositoryURI());
+                break;
+            case 'Folder':
+                $CMISObject = new CMISFolderObject($objectId, $this->ktapi, $repository->getRepositoryURI());
+                break;
+        }
+        
+        // check that we were actually able to retrieve a real object
+        $objectId = $CMISObject->getProperty('ObjectId');
+        if (empty($objectId)) {
+            throw new ObjectNotFoundException('The requested object could not be found');
+        }
+        
+        $properties = $CMISObject->getProperties();
+
+        return $properties;
+    }
+    
+    /**
+     * Fetches the content stream data for an object
+     *  
+     * @param string $repositoryId
+     * @param string $objectId
+     * @return string $contentStream (binary or text data)
+     */
+    // NOTE streamNotSupportedException: The Repository SHALL throw this exception if the Object-Type definition 
+    //      specified by the objectId parameter’s “contentStreamAllowed” attribute is set to “not allowed”.
+    //      
+    function getContentStream($repositoryId, $objectId)
+    {
+        $contentStream = null;
+        
+        // decode $objectId
+        $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
+        
+        // unknown object type?
+        if ($typeId == 'Unknown') {
+            throw new ObjectNotFoundException('The type of the requested object could not be determined');
+        }
+        
+        // fetch type definition of supplied object type
+        $objectClass = 'CMIS' . $typeId . 'Object';
+        $CMISObject = new $objectClass($objectId, $this->ktapi);
+        
+        // if content stream is not allowed for this object type definition, throw a ConstraintViolationException
+        if (($CMISObject->getAttribute('contentStreamAllowed') == 'notAllowed'))
+        {
+            // NOTE spec version 0.61c specifies both a ConstraintViolationException and a StreamNotSupportedException
+            //      for this case.  Choosing to throw StreamNotSupportedException until the specification is clarified
+            //      as it is a more specific exception
+            throw new StreamNotSupportedException('Content Streams are not allowed for this object type');
+        }
+        
+        // now go on to fetching the content stream
+        // TODO allow fetching of partial streams
+        //      from the CMIS specification (0.61):
+        //      "Each CMIS protocol binding SHALL provide a way for fetching a sub-range within a content stream, in a manner appropriate to that protocol."
+        
+        // steps to fetch content stream:
+        // 1. find actual physical document (see zip/download code)
+        // TODO move this into a ktapi function
+        $document = $this->ktapi->get_document_by_id($objectId);
+        $contentStream = $document->get_document_content();
+        
+        return  $contentStream;
     }
     
     /**
@@ -674,6 +722,8 @@ class CMISObjectService {
         $tmpObjectId = CMISUtil::decodeObjectId($tmpObjectId, $tmpTypeId);
         if ($tmpTypeId != 'Unknown')
             $documentId = $tmpObjectId;
+
+        // TODO deal with other types except documents
 
         // fetch type definition of supplied document
         $CMISDocument = new CMISDocumentObject($documentId, $this->ktapi);

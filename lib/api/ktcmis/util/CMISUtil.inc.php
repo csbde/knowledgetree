@@ -252,14 +252,21 @@ class CMISUtil {
         return $hierarchy;
     }
 
+    /**
+     * Creates a properties entry array for the given entry
+     * 
+     * TODO make this just dynamically convert all properties instead of selected.
+     * NOTE current version is a legacy of how we thought things needed to be for the SOAP webservices.
+     * 
+     * @param object $properties
+     * @return 
+     */
     static public function createObjectPropertiesEntry($properties)
     {
-        // TODO better dynamic style fetching of object properties into array for output
         $object = array();
 
         $object['Author'] = array('value' => $properties->getValue('Author'));
         
-        // TODO additional properties to be returned
         $object['properties']['BaseType'] = array('type' => $properties->getFieldType('BaseType'),
                                                            'value' => $properties->getValue('BaseType'));
         
@@ -300,29 +307,32 @@ class CMISUtil {
         
         if (strtolower($properties->getValue('ObjectTypeId')) == 'document')
         {
-
-        $object['properties']['ChangeToken'] = array('type' => $properties->getFieldType('ChangeToken'),
+            $object['properties']['ChangeToken'] = array('type' => $properties->getFieldType('ChangeToken'),
                                                                    'value' => $properties->getValue('ChangeToken'));
             $contentStreamLength = $properties->getValue('ContentStreamLength');
             if (!empty($contentStreamLength))
             {
                 $contentStreamLength = $properties->getValue('ContentStreamLength');
+                $object['properties']['ContentStreamAllowed'] = array('type' => $properties->getFieldType('ContentStreamAllowed'),
+                                                               'value' => $properties->getValue('ContentStreamAllowed'));
                 $object['properties']['ContentStreamLength'] = array('type' => $properties->getFieldType('ContentStreamLength'),
                                                                'value' => $properties->getValue('ContentStreamLength'));
                 $object['properties']['ContentStreamMimeType'] = array('type' => $properties->getFieldType('ContentStreamMimeType'),
                                                                'value' => $properties->getValue('ContentStreamMimeType'));
+                $object['properties']['ContentStreamFilename'] = array('type' => $properties->getFieldType('ContentStreamFilename'),
+                                                               'value' => $properties->getValue('ContentStreamFilename'));
+                $object['properties']['ContentStreamUri'] = array('type' => $properties->getFieldType('ContentStreamUri'),
+                                                               'value' => $properties->getValue('ContentStreamUri'));
             }
         }
 
         // if we have found a child/parent with one or more children/parents, recurse into the child/parent object
-        if (count($entry['items']) > 0)
-        {
+        if (count($entry['items']) > 0) {
             $object[$linkText] = CMISUtil::decodeObjectHierarchy($entry['items'], $linkText);
         }
         // NOTE may need to set a null value here in case webservices don't like it unset
         //      so we'll set it just in case...
-        else
-        {
+        else {
             $object[$linkText] = null;
         }
 
