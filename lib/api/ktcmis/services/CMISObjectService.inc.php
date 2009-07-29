@@ -227,7 +227,7 @@ class CMISObjectService {
              */
             // TODO check extension for types which are not obvious?  e.g. wmv video returns application/octet-stream
             $mediatype = null;
-            include_once(KT_LIB_DIR . 'mime.inc.php');
+            include_once(KT_LIB_DIR . '/mime.inc.php');
             $KTMime = new KTMime();
             $mimetype = $KTMime->getMimeTypeFromFile($tempfilename);
             preg_match('/^([^\/]*)\/([^\/]*)/', $mimetype, $matches);
@@ -537,7 +537,7 @@ class CMISObjectService {
     {
         // determine object type and internal id
         $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
-        
+
         // TODO this should probably be a function, it is now used in two places...
         // throw updateConflictException if the operation is attempting to update an object that is no longer current (as determined by the repository).
         $exists = true;
@@ -572,7 +572,7 @@ class CMISObjectService {
                     throw new ConstraintViolationException('Unable to delete a folder with content.  Use deleteTree instead.');
                 }
             }
-            
+
             // now try the delete and throw an exception if there is an error
             // TODO add a default reason
             // TODO add the electronic signature capability
