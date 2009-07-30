@@ -109,7 +109,7 @@ class CMISObjectService {
         }
 
         // if content stream is required and no content stream is supplied, throw a ConstraintViolationException
-        if (($typeDefinition['attributes']['contentStreamAllowed'] == 'required') && empty($contentStream))
+        if (($typeDefinition['attributes']['contentStreamAllowed'] == 'required') && is_null($contentStream))
         {
             throw new ConstraintViolationException('This repository requires a content stream for document creation.  '
                                                  . 'Refusing to create an empty document');
@@ -152,7 +152,7 @@ class CMISObjectService {
         // create the content stream from the supplied data
         // NOTE since the repository is set to require a content stream and we don't currently have another way to get the document data
         //      this check isn't strictly necessary;  however it is needed for a repository which does not support content streams
-        if (!empty($contentStream))
+        if (!is_null($contentStream))
         {
             // TODO consider checking whether content is encoded (currently we expect encoded)
             // TODO choose between this and the alternative decode function (see CMISUtil class)
@@ -283,7 +283,7 @@ class CMISObjectService {
             //      then we may have something else to do here;
             //      for now we just throw a general RuntimeException, since we should not
             //      actually reach this code unless something is wrong; this may be removed or replaced later
-            throw new RuntimeException('Cannot create empty document');
+            throw new RuntimeException('Cannot create document without a content stream');
         }
 
         return $objectId;

@@ -42,6 +42,14 @@
 
 class configuration extends Step
 {
+	/**
+	* Database object
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var array
+	*/	
+    private $_dbhandler = null;
     private $host;
     private $port;
     private $root_url;
@@ -74,6 +82,7 @@ class configuration extends Step
      */
     public function __construct()
     {
+    	$this->_dbhandler = new dbUtil();
         $this->done = true;
     }
 
@@ -184,13 +193,12 @@ class configuration extends Step
         }
 
         // initialise the db connection
-        $db = new dbUtil();
 
         // retrieve database information from session
         $dbconf = $this->getDataFromSession("database");
 
         // make db connection
-        $db->dbUtil($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']);
+        $this->_dbhandler->dbUtil($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']);
 
         // add db config to server variables
 		$server = $this->registerDBConfig($server, $dbconf);
@@ -218,7 +226,7 @@ class configuration extends Step
                     $setting = mysql_real_escape_string($item['setting']);
 
                     $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
-                    $db->query($sql);
+                    $this->_dbhandler->query($sql);
                     break;
             }
         }
@@ -233,7 +241,7 @@ class configuration extends Step
             $setting = mysql_real_escape_string($item['setting']);
 
             $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
-            $db->query($sql);
+            $this->_dbhandler->query($sql);
         }
 
         // write out the config.ini file
@@ -242,7 +250,7 @@ class configuration extends Step
         }
 
         // close the database connection
-        $db->close();
+        $this->_dbhandler->close();
     }
 
     /**

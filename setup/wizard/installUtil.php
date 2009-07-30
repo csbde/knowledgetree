@@ -77,21 +77,21 @@ class InstallUtil {
     	if(!$this->_checkPermission(WIZARD_DIR)) {
     		return 'wizard';
     	}
-    	if(!$this->_checkPermission(CONF_DIR)) {
-    		return 'wizard';
-    	}
-    	if(!$this->_checkPermission(SQL_DIR)) {
-    		return 'wizard';
-    	}
-    	if(!$this->_checkPermission(RES_DIR)) {
-    		return 'wizard';
-    	}
-    	if(!$this->_checkPermission(STEP_DIR)) {
-    		return 'wizard';
-    	}
-    	if(!$this->_checkPermission(TEMP_DIR)) {
-    		return 'wizard';
-    	}
+//    	if(!$this->_checkPermission(CONF_DIR)) {
+//    		return 'wizard';
+//    	}
+//    	if(!$this->_checkPermission(SQL_DIR)) {
+//    		return 'wizard';
+//    	}
+//    	if(!$this->_checkPermission(RES_DIR)) {
+//    		return 'wizard';
+//    	}
+//    	if(!$this->_checkPermission(STEP_DIR)) {
+//    		return 'wizard';
+//    	}
+//    	if(!$this->_checkPermission(TEMP_DIR)) {
+//    		return 'wizard';
+//    	}
 
     	return true;
     }
@@ -339,6 +339,7 @@ class InstallUtil {
     	if(WINDOWS_OS) {
     	    $sCmd = 'call '.$sCmd;
     	}
+//    	echo "===".$sCmd."===<br/>";
     	exec($sCmd, $aOutput, $iRet);
     	$aRet['ret'] = $iRet;
     	$aRet['out'] = $aOutput;
