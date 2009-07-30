@@ -93,7 +93,7 @@ class unixScheduler extends Service {
 		if(file_exists($this->schedulerSourceLoc)) {
 			return $this->schedulerSourceLoc;
 		}
-		die('File');
+//		die('File Expected Error');
 		return false;
 	}
 	

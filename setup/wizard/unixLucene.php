@@ -170,25 +170,37 @@ class unixLucene extends Service {
 		} else {
     		$cmd = "pkill -f ".$this->getLuceneSource();
 		}
-		$cmd = "pkill -f ".$this->getLuceneSource();
-    	$response = $this->util->pexec($cmd);
-		return $response;
+		$state = $this->status();
+		if($state == 'STARTED') {
+			$cmd = "pkill -f ".$this->getLuceneSource();
+    		$response = $this->util->pexec($cmd);
+			return $response;
+		}
+
     }
 
     public function install() {
-    	$cmd = "cd ".$this->getLuceneDir()."; ";
-    	$cmd .= "nohup java -jar ".$this->getLuceneSource()." &> ".SYS_LOG_DIR."lucene.log &";
-    	echo $cmd;
-    	die;
-    	$response = $this->util->pexec($cmd);
-    	return $response;
+    	$state = $this->status();
+//    	die;
+    	if($state != 'STARTED') {
+	    	$cmd = "cd ".$this->getLuceneDir()."; ";
+	    	$cmd .= "nohup java -jar ".$this->getLuceneSource()." &> ".SYS_LOG_DIR."lucene.log &";
+	    	$response = $this->util->pexec($cmd);
+	    	return $response;
+    	} elseif ($state == 'STOPPED') {
+    		// start her up
+    		
+    	}
     }
     
     public function status() {
     	$cmd = "ps ax | grep ".$this->getLuceneSource()." | awk {'print $1'}";
+//    	echo $cmd;
     	$response = $this->util->pexec($cmd);
+//    	var_dump($response);
     	if(is_array($response['out'])) {
     		if(count($response['out']) > 1) {
+//    			var_dump($response['out']);
     			return 'STARTED';
     		} else {
     			return 'STOPPED';
