@@ -40,9 +40,6 @@
 * @version Version 0.1
 */
 
-
-//require_once('../../thirdparty/xmlrpc-2.2/xmlrpc.inc');
-
 class services extends Step 
 {
 	/**
@@ -63,7 +60,11 @@ class services extends Step
 	*/
     protected $runInstall = true;
     
+    protected $services = array('Lucene', 'Scheduler');
     
+    protected $java;
+    
+    protected $util;
 	/**
 	* Constructs database object
 	*
@@ -72,7 +73,51 @@ class services extends Step
 	* @param none
  	*/
     public function __construct() {
-    	
+    	$this->util = new InstallUtil();
+    	$this->setJava();
+    }
+    
+    function tryJava1() {
+    	$response = $this->util->pexec("java"); // Java Runtime Check
+    	if(empty($response['out'])) {
+    		return false;
+    	}
+    	$this->java = 'java';
+    	return true;
+    }
+    
+    function tryJava2() {
+    	$response = $this->util->pexec("java -version"); // Java Runtime Check
+    	if(empty($response['out'])) {
+    		return false;
+    	}
+    	$this->java = 'java';
+    	return true;
+    }
+    
+    function tryJava3() {
+    	$response = $this->util->pexec("whereis java"); // Java Runtime Check
+    	if(empty($response['out'])) {
+    		return false;
+    	}
+    	$broke = explode(' ', $response['out'][0]);
+		foreach ($broke as $r) {
+			$match = preg_match('/bin/', $r);
+			if($match) {
+				$this->java = preg_replace('/java:/', '', $r);
+				return true;
+			}
+		}
+    }
+    
+    function setJava() {
+    	$response = $this->tryJava1();
+    	if(!$response) {
+    		$response = $this->tryJava2();
+    		if(!$response) {
+    			$response = $this->tryJava3();
+    		}
+    	}
     }
     
 	/**
@@ -101,14 +146,12 @@ class services extends Step
     }
     
     private function doRun() {
-    	$util = new InstallUtil();
-//    	$response = $util->pexec("java"); // Java Runtime Check
-    	$response = $util->pexec("java -version"); // Java Runtime Check
-    	if(empty($response['out'])) {
-    		$this->error[] = "Java runtime environment required";
-//    		return false;
+    	if($this->java == '') {
+			$this->error[] = "Java runtime environment required";
+			return false;
     	}
-		$this->installStep();
+    	
+		$this->installService();
 		return true;
     }
     
@@ -121,23 +164,61 @@ class services extends Step
 	* @access public
 	* @return void
 	*/
-    public function installStep() {
-		$util = new InstallUtil();
-		if(WINDOWS_OS) { // Add service to tasks list if needed
-			$lucene = new windowsLucene();
-		// Start service
-		} else { // Unix based systems
-			$lucene = new unixLucene();
-			$lucene->load();
+    public function installService() {
+		foreach ($this->services as $serviceName) {
+			$className = OS.$serviceName;
+			$service = new $className();
+			$status = $this->serviceHelper($service);
 		}
-
-
 		
-		
+		return true;
     }
 
   
+	public function serviceHelper($service) {
+		$service->load(); // Load Defaults
+		$response = $service->uninstall(); // Uninstall service if it exists
+		$response = $service->install(); // Install service
+		$statusCheck = OS."Status";
+		return $this->$statusCheck($service);
 		
+	}
+	
+	function serviceStart($service) {
+		if(OS == 'windows') {
+			$service->load(); // Load Defaults
+			$service->start(); // Start Service
+			$this->windowsStatus($service); // Get service status
+		}
+	}
+	
+	function windowsStatus($service) {
+		$status = $service->status(); // Check if service has been installed
+		if($status != 'STOPPED') { // Check service status
+			$this->error[] = $service->getName()." Could not be added as a Service";
+			return false;
+		}
+		return true;
+	}
+	
+	function unixStatus($service) {
+		$status = $service->status(); // Check if service has been installed
+		if($status != 'STARTED') { // Check service status
+			$this->error[] = $service->getName()." Could not be added as a Service";
+			return false;
+		}
+		return true;
+	}
+	
+	function installStep() {
+		foreach ($this->services as $serviceName) {
+			$className = OS.$serviceName;
+			$service = new $className();
+			$status = $this->serviceStart($service);
+		}
+		
+		return true;
+	}
 	/**
 	* Returns database errors
 	*

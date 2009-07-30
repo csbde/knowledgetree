@@ -40,18 +40,17 @@
 * @version Version 0.1
 */
 
-define('LUCENE_SOURCE_DIR', SYSTEM_DIR."bin".DS."luceneserver".DS);
-define('LUCENE_SOURCE_FILE', SYSTEM_DIR."bin".DS."luceneserver".DS."ktlucene.jar");
-require_once("service.php");
-
 class unixLucene extends Service {
-	private $name;
-//	private $javaBin;
-//	private $javaSystem;
-//	protected $lucene_pid_file="";
-//	protected $lucene_dir="";
-//	protected $lucene_message="";
-	protected $lucene_options = " -Xms512M -Xmx512M -jar ";
+	public $name;
+	public $phpDir;
+	private  $shutdownScript;
+	protected $indexerDir;
+	protected $lucenePidFile;
+	protected $luceneDir;
+	protected $luceneSource;
+	protected $luceneSourceLoc;
+	protected $javaXms;
+	protected $javaXmx;
 	private $util = null;
 	
 	public function __construct() {
@@ -60,168 +59,154 @@ class unixLucene extends Service {
 	function load() {
 		$this->name = "KTLuceneTest";
 		$this->util = new InstallUtil();
-//		$this->javaSystem = new Java('java.lang.System');
-//		$this->setJavaBin($this->javaSystem->getProperty('java.home').DS."bin");
+		$this->setLuceneDir(SYSTEM_DIR."bin".DS."luceneserver".DS);
+		$this->setIndexerDir(SYSTEM_DIR."search2".DS."indexing".DS."bin".DS);
+		$this->setLucenePidFile("lucene_test.pid");
+		$this->setJavaXms(512);
+		$this->setJavaXmx(512);
+		$this->setLuceneSource("ktlucene.jar");
+		$this->setLuceneSourceLoc("ktlucene.jar");
+		$this->setPhpDir();
+		$this->setShutdownScript("shutdown.php");
 	}
 	
-	private function setJavaBin($javaBin) {
-		$this->javaBin = $javaBin;
+	public function setIndexerDir($indexerDir) {
+		$this->indexerDir = $indexerDir;
 	}
 	
-	public function getJavaBin() {
-		return $this->javaBin;
+	private function getIndexerDir() {
+		return $this->indexerDir;
 	}
 	
-	// Load default settings
-//	public function load() {
-//		$this->util = new InstallUtil();
-// 		$this->lucene_dir = SYSTEM_DIR."bin".DS."luceneserver".DS;
-// 		$this->lucene_pid_file = SYSTEM_DIR."bin".DS."luceneserver".DS."lucene.pid";
-// 		$this->lucene_pid = '';
-//	}
+	private function setShutdownScript($shutdownScript) {
+		$this->shutdownScript = $shutdownScript;
+	}
 	
-	// Stop lucene
+	public function getShutdownScript() {
+		return $this->shutdownScript;
+	}
+	
+	private function setPhpDir($phpdir = '') {
+		if($phpdir == '') {
+			$cmd = "whereis php";
+			$response = $this->util->pexec($cmd);
+			if(is_array($response['out'])) {
+				$broke = explode(' ', $response['out'][0]);
+				foreach ($broke as $r) {
+					$match = preg_match('/bin/', $r);
+					if($match) {
+						$this->phpDir = preg_replace('/php:/', '', $r);
+					}
+				}
+			}
+//			echo $this->phpDir;
+//			die;
+			return ;
+		} else {
+			$this->phpDir = $phpdir;
+		}
+	}
+	
+	public function getPhpDir() {
+		return $this->phpDir;
+	}
+	
+	private function setLucenePidFile($lucenePidFile) {
+		$this->lucenePidFile = $lucenePidFile;
+	}
+	
+	private function getLucenePidFile() {
+		return $this->lucenePidFile;
+	}
+	
+	private function setLuceneDir($luceneDir) {
+		$this->luceneDir = $luceneDir;
+	}
+	
+	public function getLuceneDir() {
+		return $this->luceneDir;
+	}
+	
+	private function setJavaXms($javaXms) {
+		$this->javaXms = "-Xms$javaXms";
+	}
+	
+	public function getJavaXms() {
+		return $this->javaXms;
+	}
+	
+	private function setJavaXmx($javaXmx) {
+		$this->javaXmx = "-Xmx$javaXmx";
+	}
+	
+	public function getJavaXmx() {
+		return $this->javaXmx;
+	}
+	
+	private function setLuceneSource($luceneSource) {
+		$this->luceneSource = $luceneSource;
+	}
+	
+	public function getLuceneSource() {
+		return $this->luceneSource;
+	}
+	
+	private function setLuceneSourceLoc($luceneSourceLoc) {
+		$this->luceneSourceLoc = $this->getLuceneDir().$luceneSourceLoc;
+	}
+	
+	public function getLuceneSourceLoc() {
+		return $this->luceneSourceLoc;
+	}
+	
+	public function getJavaOptions() {
+		return " {$this->getJavaXmx()} {$this->getJavaXmx()} -jar ";
+	}
+	
   	public function stop() {
-    	// TODO:Still need to figure out xmlrpc shutdown()
-    	$cmd = "pkill -f lucene<br/>";
-    	$response = $util->pexec($cmd);
-		echo 'Stop lucene';
+  		// TODO: Breaks things
+		if($this->getPhpDir() != "") {
+//    		$cmd = $this->getPhpDir()." ".$this->getIndexerDir().$this->getShutdownScript()." positive &> ".SYS_LOG_DIR."dmsctl.log";
+		} else {
+    		$cmd = "pkill -f ".$this->getLuceneSource();
+		}
+		$cmd = "pkill -f ".$this->getLuceneSource();
+    	$response = $this->util->pexec($cmd);
+		return $response;
     }
 
     public function install() {
+    	$cmd = "cd ".$this->getLuceneDir()."; ";
+    	$cmd .= "nohup java -jar ".$this->getLuceneSource()." &> ".SYS_LOG_DIR."lucene.log &";
+    	echo $cmd;
+    	die;
+    	$response = $this->util->pexec($cmd);
+    	return $response;
+    }
+    
+    public function status() {
+    	$cmd = "ps ax | grep ".$this->getLuceneSource()." | awk {'print $1'}";
+    	$response = $this->util->pexec($cmd);
+    	if(is_array($response['out'])) {
+    		if(count($response['out']) > 1) {
+    			return 'STARTED';
+    		} else {
+    			return 'STOPPED';
+    		}
+    	}
     	
+    	return 'STOPPED';
+    }
+    
+    public function uninstall() {
+    	$this->stop();
     }
     
     // Start lucene
     public function start() {
-    	// TODO:A shot in the dark here
-    	$this->util = new InstallUtil();
-		$cmd = "nohup java".$this->lucene_options.LUCENE_SOURCE_FILE." &> ".SYS_LOG_DIR."lucene.log";
-    	$response = $this->util->pexec($cmd);
-    	$this->status = $this->on;
-    	echo 'Start lucene';
+		
     }
     
-    
-    	public function _start_lucene() {
-			if($this->is_lucene_running()) { // Is service running
-				echo 'Already Running<br/>';
-			} else {
-				// Get to  
-				//echo 'Install service';
-				$this->is_lucene_running();
-				//nohup $LUCENE  &> $INSTALL_PATH/var/log/dmsctl.log &
-				
-			}
-			
-/*
- is_lucene_running
-    RUNNING=$?
-
-    if [ $RUNNING -eq 1 ]; then
-        echo "$0 $ARG: lucene (pid $LUCENE_PID) already running"
-    else
-        cd $INSTALL_PATH/knowledgeTree/bin/luceneserver
-        nohup $LUCENE  &> $INSTALL_PATH/var/log/dmsctl.log &
-        if [ $? -eq 0 ]; then
-            echo "$0 $ARG: lucene started"
-            ps ax | grep ktlucene.jar | awk {'print $1'} > $LUCENE_PIDFILE
-            sleep 2
-        else
-            echo "$0 $ARG: lucene could not be started"
-            ERROR=3
-        fi
-        cd $INSTALL_PATH
-fi
-*/
-		}
-		
-		public function is_lucene_running() {
-			
-			$pid = $this->get_lucene_pid();
-			if($this->is_service_running($pid)) {
-				echo 'Service is running';
-			} else {
-				
-			}
-
-/*			is_lucene_running() {
-    get_lucene_pid
-    is_service_running $LUCENE_PID
-    RUNNING=$?
-    if [ $RUNNING -eq 0 ]; then
-        LUCENE_STATUS="lucene not running"
-    else
-        LUCENE_STATUS="lucene already running"
-    fi
-    return $RUNNING*/
-		}
-		
-		public function is_service_running($pid) {
-			$cmd = "kill -0 $pid 2>/dev/null";
-			$response = $this->util->pexec($cmd);
-			
-			/*
-is_service_running() {
-    PID=$1
-    if [ "x$PID" != "x" ] && kill -0 $PID 2>/dev/null ; then
-        RUNNING=1
-    else
-        RUNNING=0
-    fi
-    return $RUNNING
+	
 }
-*/
-		}
-		
-		public function get_lucene_pid() {
-			// TODO: PID FILE
-/*get_lucene_pid() {
-    get_pid $LUCENE_PIDFILE
-    if [ ! $PID ]; then
-        return 
-    fi
-    if [ $PID -gt 0 ]; then
-        LUCENE_PID=$PID
-    fi
-}*/
-		}
-		
-		public function get_pid() {
-			
-/*get_pid() {
-    PID=""
-    PIDFILE=$1
-    # check for pidfile
-    if [ -f $PIDFILE ] ; then
-        exec 6<&0
-        exec < $PIDFILE
-        read pid
-        PID=$pid
-        exec 0<&6 6<&-
-    fi
-}*/
-		}
-		
- function shutdown()
-	{
-		
-		$function=new xmlrpcmsg('control.shutdown',array(
-				php_xmlrpc_encode((string) $this->ktid),
-				php_xmlrpc_encode((string) $this->authToken)));
-
-		$result=&$this->client->send($function);
-		if($result->faultCode())
-		{
-			$this->error($result, 'shutdown');
-			return false;
-		}
-		return true;
-	}
-}
-
-//$luc = new Lucene();
-//$luc->load();
-//$luc->start();
-//$luc->stop();
 ?>

@@ -44,9 +44,9 @@ include("path.php"); // Paths
 function __autoload($class) { // Attempt and autoload classes
 	$class = strtolower(substr($class,0,1)).substr($class,1); // Linux Systems.
 	if(file_exists(WIZARD_DIR."$class.php")) {
-		require(WIZARD_DIR."$class.php");
+		require_once(WIZARD_DIR."$class.php");
 	} elseif (file_exists(STEP_DIR."$class.php")) {
-		require(STEP_DIR."$class.php");
+		require_once(STEP_DIR."$class.php");
 	} else {
 		return false;
 	}
@@ -209,7 +209,7 @@ class InstallWizard {
 		if($res === true) return $res;
 		switch ($res) {
 			case "wizard":
-					return 'Installer directory is not writable<br/>';
+					return 'Installer directory is not writable (Installation/setup/wizard/)<br/>';
 				break;
 			case "/":
 					return 'System root is not writable<br/>';

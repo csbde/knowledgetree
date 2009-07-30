@@ -43,7 +43,7 @@
 class database extends Step 
 {
 	/**
-	* Database type
+	* Database object
 	*
 	* @author KnowledgeTree Team
 	* @access private

@@ -1,11 +1,49 @@
 <?php
-require_once("service.php");
-
-class Lucene {
+/**
+* Windows Lucene Service Controller.
+*
+* KnowledgeTree Community Edition
+* Document Management Made Simple
+* Copyright (C) 2008,2009 KnowledgeTree Inc.
+* Portions copyright The Jam Warehouse Software (Pty) Limited
+*
+* This program is free software; you can redistribute it and/or modify it under
+* the terms of the GNU General Public License version 3 as published by the
+* Free Software Foundation.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+* FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+* details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+* You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+* California 94120-7775, or email info@knowledgetree.com.
+*
+* The interactive user interfaces in modified source and object code versions
+* of this program must display Appropriate Legal Notices, as required under
+* Section 5 of the GNU General Public License version 3.
+*
+* In accordance with Section 7(b) of the GNU General Public License version 3,
+* these Appropriate Legal Notices must retain the display of the "Powered by
+* KnowledgeTree" logo and retain the original copyright notice. If the display of the
+* logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
+* must display the words "Powered by KnowledgeTree" and retain the original
+* copyright notice.
+*
+* @copyright 2008-2009, KnowledgeTree Inc.
+* @license GNU General Public License version 3
+* @author KnowledgeTree Team
+* @package Installer
+* @version Version 0.1
+*/
+class windowsLucene extends Service {
 	private $javaBin;
 	private $javaJVM;
 	private $javaSystem;
-	private $name;
+//	private $name;
 	private $luceneExe;
 	private $luceneSource;
 	private $luceneServer;
@@ -19,9 +57,10 @@ class Lucene {
 	
 	function load() {
 		$this->name = "KTLuceneTest";
+		$this->util = new InstallUtil();
 		$this->javaSystem = new Java('java.lang.System');
 		$this->setJavaBin($this->javaSystem->getProperty('java.home').DS."bin");
-		$this->setLuceneDIR(SYS_DIR.DS."bin".DS."luceneserver");
+		$this->setLuceneDIR(SYSTEM_DIR."bin".DS."luceneserver");
 		$this->setLuceneExe("KTLuceneService.exe");
 		$this->setJavaJVM();
 		$this->setLuceneSource("ktlucene.jar");
@@ -72,7 +111,7 @@ class Lucene {
 	}
 	
 	private function setLuceneOut($luceneOut) {
-		$this->luceneOut = SYS_LOG_DIR.DS.$luceneOut;
+		$this->luceneOut = SYS_LOG_DIR.$luceneOut;
 	}
 	
 	public function getLuceneOut() {
@@ -80,7 +119,7 @@ class Lucene {
 	}
 	
 	private function setLuceneError($luceneError) {
-		$this->luceneError = SYS_LOG_DIR.DS.$luceneError;
+		$this->luceneError = SYS_LOG_DIR.$luceneError;
 	}
 	
 	public function getLuceneError() {
@@ -100,36 +139,43 @@ class Lucene {
 	}
 	
 	function start() {
-		// windows
 		$cmd = "sc start {$this->name}";
-//		echo "start\n$cmd<br/>";
-		$response = exec($cmd);
-		// linux
-		// zend
+		$response = $this->util->pexec($cmd);
+		
+		return $response;
 	}
 	
 	function stop() {
 		$cmd = "sc stop {$this->name}";
-		echo "stop\n$cmd<br/>";
-		$response = exec($cmd);
+		$response = $this->util->pexec($cmd);
+		
+		return $response;
 	}
 	
 	function install() {
-		$cmd = $this->luceneExe." -install \"".$this->name."\" \"".$this->javaJVM. "\" -Djava.class.path=\"". $this->luceneSource."\"". " -start ".$this->luceneServer. " -out \"".$this->luceneOut."\" -err \"".$this->luceneError."\" -current \"".$this->luceneDir."\" -auto";
-//		echo "install\n$cmd<br/>";
-		$response = exec($cmd);
+		$cmd = "\"$this->luceneExe\""." -install \"".$this->name."\" \"".$this->javaJVM. "\" -Djava.class.path=\"". $this->luceneSource."\"". " -start ".$this->luceneServer. " -out \"".$this->luceneOut."\" -err \"".$this->luceneError."\" -current \"".$this->luceneDir."\" -auto";
+		$response = $this->util->pexec($cmd);
+		
+		return $response;
 	}
 	
 	function uninstall() {
 		$cmd = "sc delete {$this->name}";
-//		echo "uninstall\n$cmd<br/>";
-		$response = exec($cmd);
+		$response = $this->util->pexec($cmd);
+		
+		return $response;
 	}
+	
+	function status() {
+		$cmd = "sc query {$this->name}";
+		$response = $this->util->pexec($cmd);
+		if($response['out']) {
+//preg_match('/^STATE *\: *(\d) *(\w+)/', trim($response['out'][3]), $matches);
+			$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
+			return $state;
+		}
+	}
+	
+	
 }
-$lucene = new Lucene();
-$lucene->load();
-$lucene->install();
-$lucene->start();
-$lucene->stop();
-$lucene->uninstall();
 ?>

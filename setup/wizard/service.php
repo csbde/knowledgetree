@@ -41,29 +41,29 @@
 */
 
 class Service {
-	private static $on = 1;
-	private static $off = 0;
-	public $pid;
 	public $status;
+	public $name;
+	
+	public function getName() {
+		return $this->name;
+	}
+	
+	public function load() {
+		
+	}
 	
 	public function start() {
 		
-//		$this->status = $this->on;
 	}
 	
 	public function stop() {
-		
-//		$this->status = $this->off;
 	}
 	
 	public function install() {
-		
 	}
 	
 	public function restart() {
-//		$this->status = $this->off;
-		
-//		$this->status = $this->on;
+
 	}
 	
 	public function uninstall() {
@@ -71,7 +71,16 @@ class Service {
 	}
 	
 	public function status() {
-//		return $this->status;
+// [SC] DeleteService SUCCESS
+//The KTLuceneTest automatic service was successfully installed
+	}
+	
+	public function pause() {
+
+	}
+	
+	public function cont() {
+
 	}
 }
 ?>

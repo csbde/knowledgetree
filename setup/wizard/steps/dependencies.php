@@ -300,18 +300,33 @@ class dependencies extends Step
      */
     private function getRequiredExtensions()
     {
-        return array(
-            array('extension' => 'fileinfo', 'required' => 'no', 'name' => 'Fileinfo', 'details' => 'Provides better file identification support - not necessary if you use file extensions.'),
-            array('extension' => 'iconv', 'required' => 'no', 'name' => 'IconV', 'details' => 'Used for conversion between character sets.'),
-            array('extension' => 'mysql', 'required' => 'yes', 'name' => 'MySQL', 'details' => 'Used for accessing a MySQL database.'),
-            array('extension' => 'curl', 'required' => 'yes', 'name' => 'cURL', 'details' => 'Allows the connection and communication between different servers types using various protocols.'),
-            array('extension' => 'xmlrpc', 'required' => 'yes', 'name' => 'XMLRPC', 'details' => 'Used with XML-RPC servers and clients.'),
-            array('extension' => 'win32', 'required' => 'no', 'name' => 'Win32', 'details' => 'Allows control of Microsoft Windows services.'),
-            array('extension' => 'mbstring', 'required' => 'no', 'name' => 'Multi Byte Strings', 'details' => 'Used in the manipulation of multi-byte strings.'),
-            array('extension' => 'ldap', 'required' => 'no', 'name' => 'LDAP', 'details' => 'Used to access LDAP directory servers.'),
-            array('extension' => 'json', 'required' => 'yes', 'name' => 'JSON', 'details' => 'Implements the javascript object notation (json) data-interchange format.'),
-            array('extension' => 'openssl', 'required' => 'no', 'name' => 'Open SSL', 'details' => 'Used for the generation and verification of signatures and the encrypting and decrypting of data'),
-        );
+    	// TODO: Better
+    	if(WINDOWS_OS) {
+	        return array(
+	            array('extension' => 'fileinfo', 'required' => 'no', 'name' => 'Fileinfo', 'details' => 'Provides better file identification support - not necessary if you use file extensions.'),
+	            array('extension' => 'iconv', 'required' => 'no', 'name' => 'IconV', 'details' => 'Used for conversion between character sets.'),
+	            array('extension' => 'mysql', 'required' => 'yes', 'name' => 'MySQL', 'details' => 'Used for accessing a MySQL database.'),
+	            array('extension' => 'curl', 'required' => 'yes', 'name' => 'cURL', 'details' => 'Allows the connection and communication between different servers types using various protocols.'),
+	            array('extension' => 'xmlrpc', 'required' => 'yes', 'name' => 'XMLRPC', 'details' => 'Used with XML-RPC servers and clients.'),
+	            array('extension' => 'win32', 'required' => 'no', 'name' => 'Win32', 'details' => 'Allows control of Microsoft Windows services.'),
+	            array('extension' => 'mbstring', 'required' => 'no', 'name' => 'Multi Byte Strings', 'details' => 'Used in the manipulation of multi-byte strings.'),
+	            array('extension' => 'ldap', 'required' => 'no', 'name' => 'LDAP', 'details' => 'Used to access LDAP directory servers.'),
+	            array('extension' => 'json', 'required' => 'yes', 'name' => 'JSON', 'details' => 'Implements the javascript object notation (json) data-interchange format.'),
+	            array('extension' => 'openssl', 'required' => 'no', 'name' => 'Open SSL', 'details' => 'Used for the generation and verification of signatures and the encrypting and decrypting of data'),
+	        );
+    	} else {
+	        return array(
+	            array('extension' => 'fileinfo', 'required' => 'no', 'name' => 'Fileinfo', 'details' => 'Provides better file identification support - not necessary if you use file extensions.'),
+	            array('extension' => 'iconv', 'required' => 'no', 'name' => 'IconV', 'details' => 'Used for conversion between character sets.'),
+	            array('extension' => 'mysql', 'required' => 'yes', 'name' => 'MySQL', 'details' => 'Used for accessing a MySQL database.'),
+	            array('extension' => 'curl', 'required' => 'yes', 'name' => 'cURL', 'details' => 'Allows the connection and communication between different servers types using various protocols.'),
+	            array('extension' => 'xmlrpc', 'required' => 'yes', 'name' => 'XMLRPC', 'details' => 'Used with XML-RPC servers and clients.'),
+	            array('extension' => 'mbstring', 'required' => 'no', 'name' => 'Multi Byte Strings', 'details' => 'Used in the manipulation of multi-byte strings.'),
+	            array('extension' => 'ldap', 'required' => 'no', 'name' => 'LDAP', 'details' => 'Used to access LDAP directory servers.'),
+	            array('extension' => 'json', 'required' => 'yes', 'name' => 'JSON', 'details' => 'Implements the javascript object notation (json) data-interchange format.'),
+	            array('extension' => 'openssl', 'required' => 'no', 'name' => 'Open SSL', 'details' => 'Used for the generation and verification of signatures and the encrypting and decrypting of data'),
+	        );
+    	}
     }
 
     /**
