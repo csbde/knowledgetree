@@ -1,11 +1,11 @@
 <?php
 /**
-* Installer Index.
+* Service Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
-* Portions copyright The Jam Warehouse Software (Pty) Limited
+* Copyright(C) 2008,2009 KnowledgeTree Inc.
+* Portions copyright The Jam Warehouse Software(Pty) Limited
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -39,5 +39,110 @@
 * @package Installer
 * @version Version 0.1
 */
-require_once("installWizard.php");
+
+class windowsService extends Service {
+	public $status;
+	public $name;
+	public $util;
+	
+	/**
+	* Retrieve Service name
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/
+	public function getName() {
+		return $this->name;
+	}
+	
+	public function load() {}
+	
+	/**
+	* Start Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return array
+ 	*/
+	public function start() {
+
+	}
+	
+	/**
+	* Stop Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return array
+ 	*/
+	public function stop() {
+
+	}
+	
+	public function install() {}
+	
+	/**
+	* Restart Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return array
+ 	*/
+	public function restart() {
+
+	}
+	
+	/**
+	* Uninstall Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return array
+ 	*/
+	public function uninstall() {
+
+	}
+	
+	/**
+	* Retrieve Status Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return array
+ 	*/
+	public function status() {
+
+	}
+	
+	/**
+	* Pause Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return array
+ 	*/
+	public function pause() {
+
+	}
+	
+	/**
+	* Continue Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return array
+ 	*/
+	public function cont() {
+
+	}
+}
 ?>

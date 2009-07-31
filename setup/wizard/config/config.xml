@@ -11,11 +11,11 @@
     <steps>
         <step name="Welcome">welcome</step>
         <step name="License Agreement">license</step>
-        <step name="PHP Dependencies">dependencies</step>
-        <step name="Service Dependencies" order="3">services</step>
+        <step name="PHP Dependencies" mode="silent">dependencies</step>
         <step name="System Configuration" order="1">configuration</step>
+        <step name="Service Dependencies" order="3" mode="silent">services</step>
         <step name="Database Configuration" order="2">database</step>
-        <step name="Install">install</step>
+        <step name="Install" mode="silent">install</step>
         <step name="Complete">complete</step>
     </steps>
  </install>

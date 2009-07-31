@@ -68,7 +68,7 @@ class license extends step {
 
                 return true;
             } else {
-                $this->error = array("Error"=>"Please accept the license agreement");
+                $this->error[] = "Please accept the license agreement";
 
                 return false;
             }

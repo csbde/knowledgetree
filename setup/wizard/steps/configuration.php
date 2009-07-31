@@ -74,6 +74,14 @@ class configuration extends Step
 	*/
     protected $runInstall = true;
 
+	/**
+	* Flag if step needs to run silently
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $silent = true;
     /**
      * Class constructor
      *
@@ -198,7 +206,7 @@ class configuration extends Step
         $dbconf = $this->getDataFromSession("database");
 
         // make db connection
-        $this->_dbhandler->dbUtil($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']);
+        $this->_dbhandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']);
 
         // add db config to server variables
 		$server = $this->registerDBConfig($server, $dbconf);

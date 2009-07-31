@@ -145,6 +145,14 @@ class services extends Step
         return 'landing';
     }
     
+    /**
+	* Run step
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
     private function doRun() {
     	if($this->java == '') {
 			$this->error[] = "Java runtime environment required";
@@ -157,12 +165,12 @@ class services extends Step
     
     
     /**
-	* Runs step install if required
+	* Installs services
 	*
 	* @author KnowledgeTree Team
 	* @param none
 	* @access public
-	* @return void
+	* @return boolean
 	*/
     public function installService() {
 		foreach ($this->services as $serviceName) {
@@ -174,25 +182,32 @@ class services extends Step
 		return true;
     }
 
-  
-	public function serviceHelper($service) {
+   	/**
+	* Executes services
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access private
+	* @return string
+	*/
+	private function serviceHelper($service) {
 		$service->load(); // Load Defaults
 		$response = $service->uninstall(); // Uninstall service if it exists
 		$response = $service->install(); // Install service
-		$statusCheck = OS."Status";
+		$statusCheck = OS."ServiceInstalled";
 		return $this->$statusCheck($service);
 		
 	}
 	
-	function serviceStart($service) {
-		if(OS == 'windows') {
-			$service->load(); // Load Defaults
-			$service->start(); // Start Service
-			$this->windowsStatus($service); // Get service status
-		}
-	}
-	
-	function windowsStatus($service) {
+   	/**
+	* Check if windows service installed
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access public
+	* @return boolean
+	*/
+	public function windowsServiceInstalled($service) {
 		$status = $service->status(); // Check if service has been installed
 		if($status != 'STOPPED') { // Check service status
 			$this->error[] = $service->getName()." Could not be added as a Service";
@@ -201,7 +216,15 @@ class services extends Step
 		return true;
 	}
 	
-	function unixStatus($service) {
+   	/**
+	* Check if unix service installed
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access public
+	* @return boolean
+	*/
+	public function unixServiceInstalled($service) {
 		$status = $service->status(); // Check if service has been installed
 		if($status != 'STARTED') { // Check service status
 			$this->error[] = $service->getName()." Could not be added as a Service";
@@ -210,15 +233,41 @@ class services extends Step
 		return true;
 	}
 	
-	function installStep() {
+   	/**
+	* Starts all services
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access public
+	* @return mixed
+	*/
+	public function installStep() {
 		foreach ($this->services as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
 			$status = $this->serviceStart($service);
+			
 		}
 		
 		return true;
 	}
+	
+   	/**
+	* Starts service
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access private
+	* @return string
+	*/
+	private function serviceStart($service) {
+		if(OS == 'windows') {
+			$service->load(); // Load Defaults
+			$service->start(); // Start Service
+			return $service->status(); // Get service status
+		}
+	}
+	
 	/**
 	* Returns database errors
 	*

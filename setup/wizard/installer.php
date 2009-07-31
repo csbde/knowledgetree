@@ -403,6 +403,8 @@ class Installer {
     private function _resetSessions() {
     	if($this->session) {
 	    	if($this->_firstStepPeriod()) {
+	    		$this->session->destroy();
+/*	    		
 	    		foreach ($this->getSteps() as $class) {
 	    			$this->session->un_setClass($class);
 	    		}
@@ -412,6 +414,7 @@ class Installer {
 	    		foreach ($this->_getInstallOrders() as $class) {
 	    			$this->session->un_setClass($class);
 	    		}
+*/
 	    	}
     	}
     }

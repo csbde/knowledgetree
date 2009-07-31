@@ -1,11 +1,11 @@
 <?php
 /**
-* Installer Index.
+* Lucene Service Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
-* Portions copyright The Jam Warehouse Software (Pty) Limited
+* Copyright(C) 2008,2009 KnowledgeTree Inc.
+* Portions copyright The Jam Warehouse Software(Pty) Limited
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -39,5 +39,28 @@
 * @package Installer
 * @version Version 0.1
 */
-require_once("installWizard.php");
+
+class windowsAgent extends windowsService {
+
+	
+	public function __construct() {
+	}
+	
+	function load() {
+
+	}
+	
+  	public function stop() {
+  		
+    }
+
+    public function install() {
+
+    }
+    
+    public function start() {
+
+    }
+    
+}
 ?>

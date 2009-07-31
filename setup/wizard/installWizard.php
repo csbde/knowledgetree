@@ -41,14 +41,24 @@
 */
 include("path.php"); // Paths
 
+/**
+ * Auto loader to bind installer package
+ *
+ * @param string $class
+ * @return void
+ */
 function __autoload($class) { // Attempt and autoload classes
 	$class = strtolower(substr($class,0,1)).substr($class,1); // Linux Systems.
 	if(file_exists(WIZARD_DIR."$class.php")) {
 		require_once(WIZARD_DIR."$class.php");
 	} elseif (file_exists(STEP_DIR."$class.php")) {
 		require_once(STEP_DIR."$class.php");
+	} elseif (file_exists(WIZARD_LIB."$class.php")) {
+		require_once(WIZARD_LIB."$class.php");
+	} elseif (file_exists(SERVICE_LIB."$class.php")) {
+		require_once(SERVICE_LIB."$class.php");
 	} else {
-		return false;
+		return null;
 	}
 }
 
@@ -202,7 +212,7 @@ class InstallWizard {
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
-	* @return void
+	* @return mixed
  	*/
 	public function systemChecks() {
 		$res = $this->iutil->checkStructurePermissions();

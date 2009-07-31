@@ -1,11 +1,11 @@
 <?php
 /**
-* Installer Index.
+* Service Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
-* Portions copyright The Jam Warehouse Software (Pty) Limited
+* Copyright(C) 2008,2009 KnowledgeTree Inc.
+* Portions copyright The Jam Warehouse Software(Pty) Limited
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -39,5 +39,30 @@
 * @package Installer
 * @version Version 0.1
 */
-require_once("installWizard.php");
+
+class service {
+	public $status;
+	public $name;
+	public $util;
+	
+	public function getName() {}
+	
+	public function load() {}
+	
+	public function start() {}
+	
+	public function stop() {}
+	
+	public function install() {}
+	
+	public function restart() {}
+	
+	public function uninstall() {}
+	
+	public function status() {}
+	
+	public function pause() {}
+	
+	public function cont() {}
+}
 ?>

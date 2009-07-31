@@ -54,26 +54,31 @@
 	} else {
 		define('DS', '/');
 	}
-	$wizard_dir = realpath(dirname(__FILE__));
-	$xdir = explode(DS, $wizard_dir);
+	// Define environment root
+	$wizard = realpath(dirname(__FILE__));
+	$xdir = explode(DS, $wizard);
 	array_pop($xdir);
 	array_pop($xdir);
 	$sys = '';
 	foreach ($xdir as $k=>$v) {
 		$sys .= $v.DS;
 	}
-	
-    define('WIZARD_DIR', $wizard_dir.DS);
-    define('SYSTEM_DIR', $sys);
-    define('SYS_BIN_DIR', $sys."bin".DS);
-    define('SYS_LOG_DIR', $sys."var".DS."log".DS);
-    define('SQL_DIR', WIZARD_DIR.DS."sql".DS);
-    define('SQL_UPGRADE_DIR', SQL_DIR.DS."upgrades".DS);
-    define('CONF_DIR', WIZARD_DIR.DS."config".DS);
-    define('RES_DIR', WIZARD_DIR.DS."resources".DS);
-    define('STEP_DIR', WIZARD_DIR.DS."steps".DS);
-    define('TEMP_DIR', WIZARD_DIR.DS."templates".DS);
-    preg_match('/Zend/', $sys, $matches);// Install Type
+	// Define paths to wizard
+    define('WIZARD_DIR', $wizard.DS);
+    define('WIZARD_LIB', WIZARD_DIR."lib".DS);
+    define('SERVICE_LIB', WIZARD_LIB."services".DS);
+    define('SQL_DIR', WIZARD_DIR."sql".DS);
+    define('SQL_UPGRADE_DIR', SQL_DIR."upgrades".DS);
+    define('CONF_DIR', WIZARD_DIR."config".DS);
+    define('RES_DIR', WIZARD_DIR."resources".DS);
+    define('STEP_DIR', WIZARD_DIR."steps".DS);
+    define('TEMP_DIR', WIZARD_DIR."templates".DS);
+    // Define paths to system
+	define('SYSTEM_DIR', $sys);
+    define('SYS_BIN_DIR', SYSTEM_DIR."bin".DS);
+    define('SYS_LOG_DIR', SYSTEM_DIR."var".DS."log".DS);
+    // Install Type
+    preg_match('/Zend/', $sys, $matches);
     if($matches) {
 		$sysdir = explode(DS, $sys);
 		array_pop($sysdir);
@@ -86,6 +91,18 @@
 		}
     	define('INSTALL_TYPE', 'Zend');
     	define('PHP_DIR', $zendsys."ZendServer".DS."bin".DS);
+    } else {
+    	// TODO: Other types
     }
+    // Other
     date_default_timezone_set('Africa/Johannesburg');
+    // Mysql bin
+    $serverPaths = explode(';',$_SERVER['PATH']);
+    foreach ($serverPaths as $apath) {
+    	preg_match('/mysql/i', $apath, $matches);
+    	if($matches) {
+    		define('MYSQL_BIN', $apath.DS);
+    		break;
+    	}
+    }
 ?>

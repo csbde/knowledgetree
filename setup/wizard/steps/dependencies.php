@@ -55,6 +55,15 @@ class dependencies extends Step
 	*/
     public $storeInSession = true;
 
+	/**
+	* Flag if step needs to run silently
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $silent = true;
+    
     /**
      * Constructor
      *
@@ -102,16 +111,12 @@ class dependencies extends Step
     {
         $check = $this->checkPhpVersion();
         $this->temp_variables['version'] = $check;
-
         $configs = $this->checkPhpConfiguration();
         $this->temp_variables['configurations'] = $configs;
-
         // get the list of extensions
         $list = $this->getRequiredExtensions();
         $extensions = array();
-
         foreach($list as $ext){
-
             $ext['available'] = 'no';
             if($this->checkExtension($ext['extension'])){
                 $ext['available'] = 'yes';
