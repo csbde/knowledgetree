@@ -139,7 +139,6 @@ wizard.prototype.onSubmitValidate = function() {
 		document.getElementById('sendAll').value = 'next';
 		document.getElementById('dbsettings').submit();
 	} else {
-		alert('asd');
 		return false;
 		/*
 		document.getElementById('sendAll').name = 'Previous'; // Force the previous step
