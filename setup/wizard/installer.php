@@ -438,6 +438,10 @@ class Installer {
     		$this->response = 'next';
     	} elseif (isset($_POST['Install'])) {
     		$this->response = 'next';
+    	} elseif (isset($_POST['Edit'])) {
+    		$this->response = 'next';
+    	} else {
+    		$this->response = '';
     	}
     }
     
@@ -463,6 +467,8 @@ class Installer {
                 } elseif ($res == 'confirm') {
                 	$this->stepConfirmation = true;
                 	$this->_landing();
+                } elseif ($res == 'landing') {
+					$this->_landing();
                 } else {
 //                	die("Unmet parameters");
                 }

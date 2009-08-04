@@ -4,7 +4,7 @@ function wizard() {
 
 // Does a form check on every new page load
 wizard.prototype.doFormCheck = function() {
-	w.addReadOnly();	
+	w.addReadOnly();
 }
 
 // Disable DnD on element
@@ -51,7 +51,7 @@ wizard.prototype.toggleElement = function(el) {
     	var ueq = 0;
     	if(p == 2) { // Check User 1
     		ueq = w.validateUsers('dmsname', 'dmspassword', 'dmspassword2');
-    	} else if(p == 3) { // Check User 1
+    	} else if(p == 3) { // Check User 2
     		ueq = w.validateUsers('dmsusername', 'dmsuserpassword', 'dmsuserpassword2');
     	}
     	if(ueq != 0) {
@@ -101,6 +101,7 @@ wizard.prototype.toggleElement = function(el) {
 wizard.prototype.display = function(elname, er) {
 	var el = document.getElementById(elname);
 	w.showElement(el);
+	return 'display';
 }
 
 // Hide Errors
@@ -134,19 +135,17 @@ wizard.prototype.focusElement = function(el) {
 wizard.prototype.onSubmitValidate = function() {
 	var response = w.showStep(3, 'n');
 	if(response == true) {
-		alert(response);
 		document.getElementById('sendAll').name = 'Next'; // Force the next step
 		document.getElementById('sendAll').value = 'next';
 		document.getElementById('dbsettings').submit();
-	} else {
-		return false;
-		/*
-		document.getElementById('sendAll').name = 'Previous'; // Force the previous step
-		document.getElementById('sendAll').value = 'previous';
-		document.getElementById('dbsettings').submit();
-		*/
+	} else if(response == 'display') {
+		var el = document.getElementsByClassName("step1");
+		if(el[0].style.display == 'block') {
+			document.getElementById('sendAll').name = 'Previous'; // Force the previous step
+			document.getElementById('sendAll').value = 'previous';
+			document.getElementById('dbsettings').submit();
+		} else {
+			return false;
+		}
 	}
-	
-
-
 }
