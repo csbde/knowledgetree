@@ -364,10 +364,15 @@ class windowsLucene extends windowsService {
 	* @return array
  	*/
 	function install() {
-		$cmd = "\"{$this->getLuceneExe()}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"". $this->getLuceneSource()."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$this->getluceneDir()."\" -auto";
-		$response = $this->util->pexec($cmd);
+		$state = $this->status();
+		if($state == '') {
+			$cmd = "\"{$this->getLuceneExe()}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"". $this->getLuceneSource()."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$this->getluceneDir()."\" -auto";
+			$response = $this->util->pexec($cmd);
 		
-		return $response;
+			return $response;
+		}
+		
+		return $state;
 	}
 	
 }

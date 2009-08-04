@@ -125,7 +125,7 @@ class windowsService extends Service {
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
-	* @return array
+	* @return string
  	*/
 	public function status() {
 		$cmd = "sc query {$this->name}";
@@ -134,6 +134,8 @@ class windowsService extends Service {
 			$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
 			return $state;
 		}
+		
+		return '';
 	}
 	
 	/**

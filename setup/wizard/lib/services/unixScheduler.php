@@ -108,19 +108,19 @@ class unixScheduler extends Service {
 	}
 	
 	function install() {
-//		$source = $this->getSchedulerSourceLoc();
-//		if($source) {
-//			$cmd = "nohup ".$source." &> ".SYS_LOG_DIR."dmsctl.log";
-//	    	$response = $this->util->pexec($cmd);
-//    		return $response;
-//		} else {
-//			$source = $this->getSystemDir().$this->schedulerSource;
-//			if(file_exists($source)) {
-//				$cmd = "nohup ".$source." &> ".SYS_LOG_DIR."dmsctl.log";
-//		    	$response = $this->util->pexec($cmd);
-//	    		return $response;
-//			}
-//		}
+		$source = $this->getSchedulerSourceLoc();
+		if($source) {
+			$cmd = "nohup ".$source." &> ".SYS_LOG_DIR."dmsctl.log";
+	    	$response = $this->util->pexec($cmd);
+    		return $response;
+		} else { // Could be Stack
+			$source = $this->getSystemDir().$this->schedulerSource;
+			if(file_exists($source)) {
+				$cmd = "nohup ".$source." &> ".SYS_LOG_DIR."dmsctl.log";
+		    	$response = $this->util->pexec($cmd);
+	    		return $response;
+			}
+		}
 		return false;
 	}
 	

@@ -66,6 +66,15 @@ class services extends Step
     
     protected $util;
     
+	/**
+	* Flag to store class information in session
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var boolean
+	*/
+    protected $storeInSession = false;
+    
     public $temp_variables;
     
 	/**
