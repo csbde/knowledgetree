@@ -15,9 +15,11 @@ if($errors){
 ?>
 <?php
 if($step_vars){
-    foreach ($step_vars['services'] as $msg){
-        echo $msg . "<br />\n";
-    }
+	if(isset($step_vars['services'])) {
+	    foreach ($step_vars['services'] as $msg){
+	        echo $msg . "<br />\n";
+	    }
+	}
 }
 ?>
 

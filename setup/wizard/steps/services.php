@@ -66,6 +66,10 @@ class services extends Step
     
     protected $util;
     
+    protected $response;
+    
+    protected $javaVersion = '1.5';
+    
 	/**
 	* Flag to store class information in session
 	*
@@ -91,20 +95,22 @@ class services extends Step
     }
     
     function tryJava1() {
-    	$response = $this->util->pexec("java"); // Java Runtime Check
-    	if(empty($response['out'])) {
-    		return false;
-    	}
-    	$this->java = 'java';
-    	return true;
-    }
-    
-    function tryJava2() {
     	$response = $this->util->pexec("java -version"); // Java Runtime Check
     	if(empty($response['out'])) {
     		return false;
     	}
     	$this->java = 'java';
+    	$this->response = $response;
+    	return true;
+    }
+    
+    function tryJava2() {
+    	$response = $this->util->pexec("java"); // Java Runtime Check
+    	if(empty($response['out'])) {
+    		return false;
+    	}
+    	$this->java = 'java';
+    	$this->response = $response;
     	return true;
     }
     
@@ -118,7 +124,8 @@ class services extends Step
 			$match = preg_match('/bin/', $r);
 			if($match) {
 				$this->java = preg_replace('/java:/', '', $r);
-				return true;
+		    	$this->response = $response;
+		    	return true;
 			}
 		}
     }
@@ -131,6 +138,10 @@ class services extends Step
     			$response = $this->tryJava3();
     		}
     	}
+    }
+    
+    function getJavaResponse() {
+    	return $this->response;
     }
     
 	/**
@@ -149,7 +160,6 @@ class services extends Step
     	}
         // Check dependencies
         $passed = $this->doRun();
-//        die;
         if($this->next()) {
             if($passed)
                 return 'next';
@@ -170,11 +180,28 @@ class services extends Step
 	* @return boolean
 	*/
     private function doRun() {
+		$java = false;
+		$mods = get_loaded_extensions();
+		foreach ($mods as $k=>$v) {
+			if($v == 'Zend Java Bridge') {
+				$java = true;
+			}
+		}
+		if(!$java) {
+    		$this->error[] = "Zend Java Bridge Required ";
+    		return false;			
+		}
     	if($this->java == '') {
 			$this->error[] = "Java runtime environment required";
 			return false;
     	}
-    	
+    	$javaSystem = new Java('java.lang.System');
+    	$version = $javaSystem->getProperty('java.version');
+    	$ver = substr($version, 0, 3);
+    	if($ver < $this->javaVersion) {
+			$this->error[] = "This requires Java 1.5+ to be installed";
+			return false;
+    	}
 		$this->installService();
 //		if(count($this->getErrors() > 0))
 //			return false;
