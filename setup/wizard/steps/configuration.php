@@ -117,8 +117,12 @@ class configuration extends Step
 	 * @return string The position in the step
 	 */
     public function doStep() {
+    	if(!$this->inStep("configuration")) {
+    		$this->doRun();
+    		return 'landing';
+    	}
         if($this->next()) {
-            if($this->doRun()){
+            if($this->doRun()) {
                 return 'confirm';
             }
             return 'error';

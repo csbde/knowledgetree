@@ -65,14 +65,18 @@ class services extends Step
     protected $java;
     
     protected $util;
+    
+    public $temp_variables;
+    
 	/**
-	* Constructs database object
+	* Constructs services object
 	*
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
  	*/
     public function __construct() {
+    	$this->temp_variables = array("step_name"=>"services");
     	$this->util = new InstallUtil();
     	$this->setJava();
     }
@@ -130,18 +134,21 @@ class services extends Step
 	*/
     public function doStep()
     {
+    	if(!$this->inStep("services")) {
+    		$this->doRun();
+    		return 'landing';
+    	}
         // Check dependencies
         $passed = $this->doRun();
+//        die;
         if($this->next()) {
             if($passed)
                 return 'next';
             else
                 return 'error';
         } else if($this->previous()) {
-
             return 'previous';
         }
-
         return 'landing';
     }
     
@@ -160,6 +167,8 @@ class services extends Step
     	}
     	
 		$this->installService();
+//		if(count($this->getErrors() > 0))
+//			return false;
 		return true;
     }
     
@@ -177,6 +186,9 @@ class services extends Step
 			$className = OS.$serviceName;
 			$service = new $className();
 			$status = $this->serviceHelper($service);
+			if ($status) {
+				$this->temp_variables['services'][] = $service->getName()." has been added as a Service";
+			}
 		}
 		
 		return true;
@@ -192,11 +204,9 @@ class services extends Step
 	*/
 	private function serviceHelper($service) {
 		$service->load(); // Load Defaults
-		$response = $service->uninstall(); // Uninstall service if it exists
 		$response = $service->install(); // Install service
 		$statusCheck = OS."ServiceInstalled";
 		return $this->$statusCheck($service);
-		
 	}
 	
    	/**
@@ -278,6 +288,18 @@ class services extends Step
 	*/
     public function getErrors() {
         return $this->error;
+    }
+    
+    /**
+     * Get the variables to be passed to the template
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @return array
+     */
+    public function getStepVars()
+    {
+        return $this->temp_variables;
     }
 }
 ?>

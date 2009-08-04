@@ -322,6 +322,7 @@ class stepAction {
         $step_tpl = new Template($template);
         $step_tpl->set("errors", $step_errors); // Set template errors
         $step_vars = $this->action->getStepVars(); // Get template variables
+        $step_tpl->set("step_vars", $step_vars); // Set template errors
         foreach ($step_vars as $key => $value) { // Set template variables
             $step_tpl->set($key, $value); // Load values to session
             if($this->action->storeInSession()) { // Check if class values need to be stored in session

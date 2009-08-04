@@ -73,10 +73,17 @@
     define('RES_DIR', WIZARD_DIR."resources".DS);
     define('STEP_DIR', WIZARD_DIR."steps".DS);
     define('TEMP_DIR', WIZARD_DIR."templates".DS);
-    // Define paths to system
+    // Define paths to system webroot
 	define('SYSTEM_DIR', $sys);
     define('SYS_BIN_DIR', SYSTEM_DIR."bin".DS);
     define('SYS_LOG_DIR', SYSTEM_DIR."var".DS."log".DS);
+    // Define paths to system
+    array_pop($xdir);
+	$asys = '';
+	foreach ($xdir as $k=>$v) {
+		$asys .= $v.DS;
+	}
+    define('SYSTEM_ROOT', $asys);
     // Install Type
     preg_match('/Zend/', $sys, $matches);
     if($matches) {
@@ -96,13 +103,16 @@
     }
     // Other
     date_default_timezone_set('Africa/Johannesburg');
-    // Mysql bin
-    $serverPaths = explode(';',$_SERVER['PATH']);
-    foreach ($serverPaths as $apath) {
-    	preg_match('/mysql/i', $apath, $matches);
-    	if($matches) {
-    		define('MYSQL_BIN', $apath.DS);
-    		break;
-    	}
+    // Mysql bin [Windows]
+    if(WINDOWS_OS) {
+	    $serverPaths = explode(';',$_SERVER['PATH']);
+	    foreach ($serverPaths as $apath) {
+	    	preg_match('/mysql/i', $apath, $matches);
+	    	if($matches) {
+	    		define('MYSQL_BIN', $apath.DS);
+	    		break;
+	    	}
+	    }
     }
+    
 ?>

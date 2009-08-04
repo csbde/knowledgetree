@@ -40,21 +40,31 @@
 * @version Version 0.1
 */
 
-class license extends step {
 
+class license extends step {
+	/**
+	* List of errors encountered by step
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var array
+	*/
+    protected $error = array();
+    
     function __construct() {
         $this->temp_variables = array("step_name"=>"license");
     }
 
     public function doStep() {
+    	if(!$this->inStep("license")) {
+    		return 'landing';
+    	}
         if($this->next()) {
             if($this->doRun())
-            	
                 return 'next';
             else
                 return 'error';
         } else if($this->previous()) {
-
             return 'previous';
         }
 
@@ -65,14 +75,14 @@ class license extends step {
         if(isset($_POST['license'])) {
             // check if agree
             if($_POST['license']) {
-
                 return true;
             } else {
                 $this->error[] = "Please accept the license agreement";
-
                 return false;
             }
         }
+        $this->error[] = "Please accept the license agreement";
+        return false;
     }
 
     public function getStepVars()

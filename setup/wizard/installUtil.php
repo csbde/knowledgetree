@@ -330,7 +330,7 @@ class InstallUtil {
     	if(WINDOWS_OS) {
     	    $sCmd = 'call '.$sCmd;
     	}
-    	echo $sCmd."<br/>";
+
     	exec($sCmd, $aOutput, $iRet);
     	$aRet['ret'] = $iRet;
     	$aRet['out'] = $aOutput;

@@ -267,7 +267,6 @@ class Installer {
 	* @return string
 	*/
     private function _runStepAction($stepName) {
-    	//echo $stepName."==";
         $this->stepAction = new stepAction($stepName);
         $this->stepAction->setSteps($this->getSteps());
         $this->stepAction->setStepNames($this->getStepNames());
@@ -403,8 +402,6 @@ class Installer {
     private function _resetSessions() {
     	if($this->session) {
 	    	if($this->_firstStepPeriod()) {
-	    		$this->session->destroy();
-/*	    		
 	    		foreach ($this->getSteps() as $class) {
 	    			$this->session->un_setClass($class);
 	    		}
@@ -414,7 +411,6 @@ class Installer {
 	    		foreach ($this->_getInstallOrders() as $class) {
 	    			$this->session->un_setClass($class);
 	    		}
-*/
 	    	}
     	}
     }
@@ -434,7 +430,17 @@ class Installer {
     	if(!$this->installOrders) {
     		$this->_xmlStepsOrders();
     	}
+    	if(isset($_POST['Next'])) {
+    		$this->response = 'next';
+    	} elseif (isset($_POST['Previous'])) {
+    		$this->response = 'previous';
+   	  	} elseif (isset($_POST['Confirm'])) {
+    		$this->response = 'next';
+    	} elseif (isset($_POST['Install'])) {
+    		$this->response = 'next';
+    	}
     }
+    
 	/**
 	* Main control to handle the flow of install
 	*
@@ -445,39 +451,29 @@ class Installer {
 	*/
     public function step() {
 		$this->loadNeeded();
-        $response = $this->_landing();
-        switch($response) {
+        switch($this->response) {
             case 'next':
-                $this->_proceed(); // Load next window
+        		$step_name = $this->_getStepName();
+        		$res = $this->_runStepAction($step_name);
+				if($res == 'next')
+                	$this->_proceed(); // Load next window
+                elseif ($res == 'install') {
+                	$this->_runStepsInstallers(); // Load landing
+                	$this->_proceed(); // Load next window
+                } elseif ($res == 'confirm') {
+                	$this->stepConfirmation = true;
+                	$this->_landing();
+                } else {
+//                	die("Unmet parameters");
+                }
             	break;
-
             case 'previous':
-                $this->_backward(); // Load previous window
-            	break;
-            	
-            case 'confirm':
-                $this->stepConfirmation = true;
-                $this->_landing();
-            	break;
-            	
-            case 'error':
-                $this->_landing(); // Load landing with errors
-            	break;
-            	
-            case 'landing':
-                $this->_landing(); // Load landing
-            	break;
-            	
-            case 'install':
-                $this->_runStepsInstallers(); // Load landing
-                $this->_proceed(); // Load next window
-            	break;
-            	
+                $this->_backward(); // Load previous page
+            	break;           	
             default:
-                die("Response $response: That was unexpected"); // No class response
+            	$this->_landing();
             	break;
         }
-
         $this->stepAction->paintAction(); // Display step
     }
 

@@ -241,8 +241,8 @@ class database extends Step
     public function __construct() {
     	$this->_dbhandler = new dbUtil();
     	$this->_util = new InstallUtil();
-		$this->mysqlDir = MYSQL_BIN;
-		echo $this->mysqlDir;
+    	if(WINDOWS_OS)
+			$this->mysqlDir = MYSQL_BIN;
     }
 
 	/**
@@ -323,7 +323,7 @@ class database extends Step
     	else 
     		$con = $this->_dbhandler->load($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
         if (!$con) {
-            $this->error[] = "Could not connect: " . $this->_dbhandler->getErrors();
+            $this->error[] = "Could not connect";
             return false;
         } else {
         	$this->error = array(); // Reset usage errors
@@ -541,7 +541,7 @@ class database extends Step
         $con = $this->connectMysql();
         if($con) {
             if(!$this->createDB($con)) {
-            	$this->error[] = "Could not Create Database: " . $this->_dbhandler->getErrors();
+            	$this->error[] = "Could not Create Database: ";
             	return false;
             }
             $this->closeMysql($con);
@@ -559,7 +559,7 @@ class database extends Step
     private function connectMysql() {
 		$con = $this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
         if (!$con) {
-            $this->error[] = "Could not connect: " . $this->_dbhandler->getErrors();
+            $this->error[] = "Could not connect: ";
 
             return false;
         }
@@ -579,16 +579,16 @@ class database extends Step
 		if($this->usedb($con)) { // attempt to use the db
 		    if($this->dropdb($con)) { // attempt to drop the db
 		        if(!$this->create($con)) { // attempt to create the db
-					$this->error[] = "Could create database: " . $this->_dbhandler->getErrors();
+					$this->error[] = "Could create database: ";
 					return false;// cannot overwrite database
 		        }
 		    } else {
-		    	$this->error[] = "Could not drop database: " . $this->_dbhandler->getErrors();
+		    	$this->error[] = "Could not drop database: ";
 		    	return false;// cannot overwrite database
 		    }
 		} else {
 		    if(!$this->create($con)) { // attempt to create the db
-				$this->error[] = "Could not create database: " . $this->_dbhandler->getErrors();
+				$this->error[] = "Could not create database: ";
 				return false;// cannot overwrite database
 		    }
 		}
@@ -638,7 +638,7 @@ class database extends Step
 		if($this->_dbhandler->useBD($this->dname)) {
             return true;
         } else {
-            $this->error[] = "Error using database: ".$this->_dbhandler->getErrors();
+            $this->error[] = "Error using database: ";
             return false;
         }
     }
@@ -655,11 +655,11 @@ class database extends Step
         if($this->ddrop) {
             $sql = "DROP DATABASE {$this->dname};";
 			if(!$this->_dbhandler->query($sql)) {
-                $this->error[] = "Cannot drop database: ".$this->_dbhandler->getErrors();
+                $this->error[] = "Cannot drop database: ";
                 return false;
             }
         } else {
-            $this->error[] = "Cannot drop database: ".$this->_dbhandler->getErrors();
+            $this->error[] = "Cannot drop database: ";
             return false;
         }
         return true;
@@ -688,7 +688,7 @@ class database extends Step
 			if ($this->_dbhandler->execute($user1) && $this->_dbhandler->execute($user2)) {
             	return true;
         	} else {
-        		$this->error[] = "Could not create users in database: ".$this->_dbhandler->getErrors();
+        		$this->error[] = "Could not create users in database: ";
         		return false;
         	}
 		}
@@ -785,30 +785,4 @@ class database extends Step
 		
     }
 }
-
-/*$db = new database();
-$db->doProcess();
-$dhost = 'localhost';
-$dbbinary = "C:\Program Files\Zend\MySQL51\bin\mysql.exe";
-$dbbinary = "mysql";
-$dbbinary = MYSQL_BIN."mysql.exe";
-$duname = "root";
-$dpassword = "root";
-$dname = "dms_install";
-$sql1 = "DROP DATABASE {$dname}";
-$sql2 = "CREATE DATABASE {$dname}";
-$con = $db->_dbhandler->load($dhost, $duname, $dpassword, $dname);
-$db->_dbhandler->query($sql1, $con);
-$db->_dbhandler->query($sql2, $con);
-//die;
-$command = "\"$dbbinary\" -u{$duname} -p{$dpassword} {$dname} < \"".SQL_DIR."structure.sql\"";
-//echo $command."<br>";
-$db->_util->pexec($command);
-$command = "\"$dbbinary\" -u{$duname} -p{$dpassword} {$dname} < \"".SQL_DIR."data.sql\"";
-$db->_util->pexec($command);
-echo $command."<br>";
-$db->setName("dms".rand());
-$db->installStep();
-var_dump($db);
-die;*/
 ?>

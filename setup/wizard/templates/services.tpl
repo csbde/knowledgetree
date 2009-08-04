@@ -13,7 +13,13 @@ if($errors){
     echo '</div>';
 }
 ?>
-
+<?php
+if($step_vars){
+    foreach ($step_vars['services'] as $msg){
+        echo $msg . "<br />\n";
+    }
+}
+?>
 
 <form action="index.php?step_name=services" method="post">
 

@@ -1,6 +1,6 @@
 <?php
 /**
-* Lucene Service Controller. 
+* Complete Step Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -40,27 +40,40 @@
 * @version Version 0.1
 */
 
-class windowsAgent extends windowsService {
+class registration extends Step 
+{
 
-	
-	public function __construct() {
-	}
-	
-	function load() {
-
-	}
-	
-  	public function stop() {
-  		
+    function configure() {
+        $this->temp_variables = array("step_name"=>"registration");
     }
 
-    public function install() {
-
+    function doStep() {
+		if(!$this->inStep("registration")) {
+			
+			return 'landing';
+		}
+		if($this->next()) {
+		    if($this->doRun())
+		        return 'next';
+		    else
+		        return 'error';
+		} else if($this->previous()) {
+		    return 'previous';
+		}
+		
+		return 'landing';
     }
     
-    public function start() {
-
+	public function doRun() {
+		return true; // TODO: Bypass for now
+        if(isset($_POST['email'])) {
+            if($_POST['email']) { // check email is valid
+                return true;
+            } else {
+                $this->error[] = "Please accept the license agreement";
+                return false;
+            }
+        }
     }
-    
 }
 ?>

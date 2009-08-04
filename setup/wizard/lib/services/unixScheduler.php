@@ -47,6 +47,7 @@ class unixScheduler extends Service {
 	protected $schedulerDir;
 	protected $schedulerSource;
 	protected $schedulerSourceLoc;
+	protected $systemDir;
 	private $util = null;
 	
 	public function __construct() {
@@ -55,6 +56,7 @@ class unixScheduler extends Service {
 	function load() {
 		$this->name = "KTSchedulerTest";
 		$this->util = new InstallUtil();
+		$this->setSystemDir(SYSTEM_ROOT."bin".DS);
 		$this->setSchedulerDir(SYSTEM_DIR."bin".DS);
 		$this->setSchedulerSource('schedulerTask.sh');
 		$this->setSchedulerSourceLoc('schedulerTask.sh');
@@ -67,6 +69,16 @@ class unixScheduler extends Service {
 	
 	private function getSchedulerPidFile() {
 		return $this->schedulerPidFile;
+	}
+	
+	function setSystemDir($systemDir) {
+		$this->systemDir = $systemDir;
+	}
+	
+	function getSystemDir() {
+		if(file_exists($this->systemDir))
+			return $this->systemDir;
+		return false;
 	}
 	
 	function setSchedulerDir($schedulerDir) {
@@ -90,21 +102,25 @@ class unixScheduler extends Service {
 	}
 	
 	function getSchedulerSourceLoc() {
-		if(file_exists($this->schedulerSourceLoc)) {
+		if(file_exists($this->schedulerSourceLoc))
 			return $this->schedulerSourceLoc;
-		}
-//		die('File Expected Error');
 		return false;
 	}
 	
 	function install() {
-		$source = $this->getSchedulerSourceLoc();
-		if($source) {
-			$cmd = "nohup ".$source." &> ".SYS_LOG_DIR."dmsctl.log";
-	    	$response = $this->util->pexec($cmd);
-    		return $response;
-		}
-		
+//		$source = $this->getSchedulerSourceLoc();
+//		if($source) {
+//			$cmd = "nohup ".$source." &> ".SYS_LOG_DIR."dmsctl.log";
+//	    	$response = $this->util->pexec($cmd);
+//    		return $response;
+//		} else {
+//			$source = $this->getSystemDir().$this->schedulerSource;
+//			if(file_exists($source)) {
+//				$cmd = "nohup ".$source." &> ".SYS_LOG_DIR."dmsctl.log";
+//		    	$response = $this->util->pexec($cmd);
+//	    		return $response;
+//			}
+//		}
 		return false;
 	}
 	
@@ -113,23 +129,40 @@ class unixScheduler extends Service {
 	}
 	
 	function stop() {
-    	$cmd = "pkill -f ".$this->name;
+    	$cmd = "pkill -f ".$this->schedulerSource;
     	$response = $this->util->pexec($cmd);
 		return $response;
 	}
 	
 	function status() {
-    	$cmd = "ps ax | grep ".$this->getSchedulerSource()." | awk {'print $1'}";
+    	$cmd = "ps ax | grep ".$this->getSchedulerSource();
     	$response = $this->util->pexec($cmd);
-    	if(is_array($response['out'])) {
+      	if(is_array($response['out'])) {
     		if(count($response['out']) > 1) {
-    			return 'STARTED';
+    			foreach ($response['out'] as $r) {
+    				preg_match('/grep/', $r, $matches); // Ignore grep
+    				if(!$matches) {
+    					return 'STARTED';
+    				}
+    			}
     		} else {
     			return 'STOPPED';
     		}
     	}
     	
     	return 'STOPPED';
+	}
+	
+	function writeSchedulerTask() {
+		$fp = fopen($this->getSchedulerDir().$this->getSchedulerSource(), "w+");
+		$content = "#!/bin/sh\n";
+		$content .= "cd ".$this->getSchedulerDir()."\n";
+		$content .= "while true; do\n";
+		$content .= "php "."\"{$this->getSchedulerDir()}{$this->getSchedulerSource()}\"";
+		$content .= "sleep 30\n";
+		$content .= "done";
+		fwrite($fp, $content);
+		fclose($fp);
 	}
 }
 ?>

@@ -48,11 +48,12 @@ class install extends step
     }
 
     public function doStep() {
+    	if(!$this->inStep("install")) {
+    		return 'landing';
+    	}
         if($this->install()) {
-
             return 'install';
         } else if($this->previous()) {
-
             return 'previous';
         }
 

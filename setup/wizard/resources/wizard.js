@@ -47,13 +47,11 @@ wizard.prototype.toggleElement = function(el) {
 
 // Handle steps within database page
  wizard.prototype.showStep = function(p, d) {
-	// Don't check if previous is clicked
-	if(d != 'p') {
-    	// Check for errors
+	if(d != 'p') { // Don't check if previous is clicked
     	var ueq = 0;
-    	if(p == 2) {
+    	if(p == 2) { // Check User 1
     		ueq = w.validateUsers('dmsname', 'dmspassword', 'dmspassword2');
-    	} else if(p == 3) {
+    	} else if(p == 3) { // Check User 1
     		ueq = w.validateUsers('dmsusername', 'dmsuserpassword', 'dmsuserpassword2');
     	}
     	if(ueq != 0) {
@@ -136,8 +134,20 @@ wizard.prototype.focusElement = function(el) {
 wizard.prototype.onSubmitValidate = function() {
 	var response = w.showStep(3, 'n');
 	if(response == true) {
+		alert(response);
 		document.getElementById('sendAll').name = 'Next'; // Force the next step
 		document.getElementById('sendAll').value = 'next';
 		document.getElementById('dbsettings').submit();
+	} else {
+		alert('asd');
+		return false;
+		/*
+		document.getElementById('sendAll').name = 'Previous'; // Force the previous step
+		document.getElementById('sendAll').value = 'previous';
+		document.getElementById('dbsettings').submit();
+		*/
 	}
+	
+
+
 }

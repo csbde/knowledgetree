@@ -71,7 +71,7 @@ class dependencies extends Step
      * @access public
      */
     public function __construct() {
-        $this->temp_variables = array("step_name"=>"dependencyCheck");
+        $this->temp_variables = array("step_name"=>"dependencies");
         $this->error = array();
         $this->done = true;
     }
@@ -85,6 +85,10 @@ class dependencies extends Step
 	 */
     public function doStep()
     {
+    	if(!$this->inStep("dependencies")) {
+    		$this->doRun();
+    		return 'landing';
+    	}
         // Check dependencies
         $passed = $this->doRun();
         if($this->next()) {
