@@ -1,6 +1,6 @@
 <?php
 /**
-* Lucene Service Controller. 
+* Unix Agent Service Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -42,25 +42,10 @@
 
 class unixAgent extends unixService {
 
-	
 	public function __construct() {
+		$this->name = "KTAgentTest";
 	}
 	
-	function load() {
 
-	}
-	
-  	public function stop() {
-  		
-    }
-
-    public function install() {
-
-    }
-    
-    public function start() {
-
-    }
-    
 }
 ?>

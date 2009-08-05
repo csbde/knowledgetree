@@ -206,7 +206,8 @@ class dbUtil {
 	      if ($result == NULL || mysql_num_rows($result) < 1)
 	        return NULL;
 	      else {
-   			while ($row = mysql_fetch_assoc($result)) {
+	      	$row = mysql_fetch_assoc($result);
+   			while ($row) {
    				$r[] = $row;
    			}
    			return $r;

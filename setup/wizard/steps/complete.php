@@ -40,7 +40,7 @@
 * @version Version 0.1
 */
 
-class complete extends Step 
+class complete extends Step
 {
 
     function configure() {

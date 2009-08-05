@@ -1,6 +1,6 @@
 <?php
 /**
-* Lucene Service Controller. 
+* Unix Scheduler Service Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -41,21 +41,18 @@
 */
 
 class unixScheduler extends Service {
-	public $name;
-	public $phpDir;
-	protected $schedulerPidFile;
-	protected $schedulerDir;
-	protected $schedulerSource;
-	protected $schedulerSourceLoc;
-	protected $systemDir;
-	private $util = null;
+	private $phpDir;
+	private $schedulerPidFile;
+	private $schedulerDir;
+	private $schedulerSource;
+	private $schedulerSourceLoc;
+	private $systemDir;
 	
 	public function __construct() {
+		$this->name = "KTSchedulerTest";
 	}
 	
 	function load() {
-		$this->name = "KTSchedulerTest";
-		$this->util = new InstallUtil();
 		$this->setSystemDir(SYSTEM_ROOT."bin".DS);
 		$this->setSchedulerDir(SYSTEM_DIR."bin".DS);
 		$this->setSchedulerSource('schedulerTask.sh');
@@ -107,21 +104,20 @@ class unixScheduler extends Service {
 		return false;
 	}
 	
+	function writeSchedulerTask() {
+		$fp = fopen($this->getSchedulerDir().$this->getSchedulerSource(), "w+");
+		$content = "#!/bin/sh\n";
+		$content .= "cd ".$this->getSchedulerDir()."\n";
+		$content .= "while true; do\n";
+		$content .= "php "."\"{$this->getSchedulerDir()}{$this->getSchedulerSource()}\"";
+		$content .= "sleep 30\n";
+		$content .= "done";
+		fwrite($fp, $content);
+		fclose($fp);
+	}
+	
 	function install() {
-		$source = $this->getSchedulerSourceLoc();
-		if($source) {
-			$cmd = "nohup ".$source." &> ".SYS_LOG_DIR."dmsctl.log";
-	    	$response = $this->util->pexec($cmd);
-    		return $response;
-		} else { // Could be Stack
-			$source = $this->getSystemDir().$this->schedulerSource;
-			if(file_exists($source)) {
-				$cmd = "nohup ".$source." &> ".SYS_LOG_DIR."dmsctl.log";
-		    	$response = $this->util->pexec($cmd);
-	    		return $response;
-			}
-		}
-		return false;
+
 	}
 	
 	function uninstall() {
@@ -153,16 +149,23 @@ class unixScheduler extends Service {
     	return 'STOPPED';
 	}
 	
-	function writeSchedulerTask() {
-		$fp = fopen($this->getSchedulerDir().$this->getSchedulerSource(), "w+");
-		$content = "#!/bin/sh\n";
-		$content .= "cd ".$this->getSchedulerDir()."\n";
-		$content .= "while true; do\n";
-		$content .= "php "."\"{$this->getSchedulerDir()}{$this->getSchedulerSource()}\"";
-		$content .= "sleep 30\n";
-		$content .= "done";
-		fwrite($fp, $content);
-		fclose($fp);
+	function start() {
+		$source = $this->getSchedulerSourceLoc();
+		if($source) {
+			$cmd = "nohup ".$source." &> ".SYS_LOG_DIR."dmsctl.log";
+	    	$response = $this->util->pexec($cmd);
+    		return $response;
+		} else { // Could be Stack
+			$source = $this->getSystemDir().$this->schedulerSource;
+			if(file_exists($source)) {
+				$cmd = "nohup ".$source." &> ".SYS_LOG_DIR."dmsctl.log";
+		    	$response = $this->util->pexec($cmd);
+	    		return $response;
+			}
+		}
+		return false;
 	}
+	
+	
 }
 ?>

@@ -1,6 +1,6 @@
 <?php
 /**
-* Service Controller.
+* Error Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -39,48 +39,16 @@
 * @package Installer
 * @version Version 0.1
 */
+class Errors extends Step {
+	public $error = array();
+	
+    function doStep() {
+    	return 'landing';
+    }
+    
+    function getErrors() {
+    	return $this->error;
+    }
 
-class Service {
-	public $status;
-	public $name;
-	
-	public function getName() {
-		return $this->name;
-	}
-	
-	public function load() {
-		
-	}
-	
-	public function start() {
-		
-	}
-	
-	public function stop() {
-	}
-	
-	public function install() {
-	}
-	
-	public function restart() {
-
-	}
-	
-	public function uninstall() {
-		
-	}
-	
-	public function status() {
-// [SC] DeleteService SUCCESS
-//The KTLuceneTest automatic service was successfully installed
-	}
-	
-	public function pause() {
-
-	}
-	
-	public function cont() {
-
-	}
 }
 ?>

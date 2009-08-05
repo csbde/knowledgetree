@@ -1,6 +1,6 @@
 <?php
 /**
-* Lucene Service Controller. 
+* Unix Lucene Service Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -41,24 +41,21 @@
 */
 
 class unixLucene extends Service {
-	public $name;
-	public $phpDir;
-	private  $shutdownScript;
-	protected $indexerDir;
-	protected $lucenePidFile;
-	protected $luceneDir;
-	protected $luceneSource;
-	protected $luceneSourceLoc;
-	protected $javaXms;
-	protected $javaXmx;
-	private $util = null;
+	private $phpDir;
+	private $shutdownScript;
+	private $indexerDir;
+	private $lucenePidFile;
+	private $luceneDir;
+	private $luceneSource;
+	private $luceneSourceLoc;
+	private $javaXms;
+	private $javaXmx;
 	
 	public function __construct() {
+		$this->name = "KTLuceneTest";
 	}
 	
 	function load() {
-		$this->name = "KTLuceneTest";
-		$this->util = new InstallUtil();
 		$this->setLuceneDir(SYSTEM_DIR."bin".DS."luceneserver".DS);
 		$this->setIndexerDir(SYSTEM_DIR."search2".DS."indexing".DS."bin".DS);
 		$this->setLucenePidFile("lucene_test.pid");
@@ -173,22 +170,7 @@ class unixLucene extends Service {
     }
 
     public function install() {
-    	$state = $this->status();
-    	if($state != 'STARTED') {
-	    	$cmd = "cd ".$this->getLuceneDir()."; ";
-	    	$cmd .= "nohup java -jar ".$this->getLuceneSource()." &> ".SYS_LOG_DIR."lucene.log &";
-	    	$response = $this->util->pexec($cmd);
-	    	
-	    	return $response;
-    	} elseif ($state == 'STOPPED') {
-    		// Start Service
-    		return true;
-    	} else {
-    		// Service Running Already
-    		return true;
-    	}
-    	
-    	return false;
+
     }
     
     public function status() {
@@ -214,9 +196,23 @@ class unixLucene extends Service {
     	$this->stop();
     }
     
-    // Start lucene
     public function start() {
-		
+    	$state = $this->status();
+    	if($state != 'STARTED') {
+	    	$cmd = "cd ".$this->getLuceneDir()."; ";
+	    	$cmd .= "nohup java -jar ".$this->getLuceneSource()." &> ".SYS_LOG_DIR."lucene.log &";
+	    	$response = $this->util->pexec($cmd);
+	    	
+	    	return $response;
+    	} elseif ($state == 'STOPPED') {
+    		// Start Service
+    		return true;
+    	} else {
+    		// Service Running Already
+    		return true;
+    	}
+    	
+    	return false;
     }
     
 	

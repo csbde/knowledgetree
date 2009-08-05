@@ -219,10 +219,12 @@ class InstallWizard {
 		if($res === true) return $res;
 		switch ($res) {
 			case "wizard":
-					return 'Installer directory is not writable (Installation/setup/wizard/)<br/>';
+					$this->iutil->error("Installer directory is not writable (KT_Installation_Directory/setup/wizard/)");
+					return 'Installer directory is not writable (KT_Installation_Directory/setup/wizard/)';
 				break;
 			case "/":
-					return 'System root is not writable<br/>';
+					$this->iutil->error("System root is not writable (KT_Installation_Directory/)");
+					return "System root is not writable (KT_Installation_Directory/)";
 				break;
 			default:
 					return true;
@@ -252,11 +254,11 @@ class InstallWizard {
 			if($response === true) {
 				$this->displayInstaller();
 			} else {
-				$this->displayInstaller($response);
+				exit();
 			}
 		} else {
 			// TODO: Die gracefully
-			echo "System has been installed <a href='../../'>Goto Login</a>";
+			$this->iutil->error("System has been installed <div class=\"buttons\"><a href='../../'>Goto Login</a></div>");
 		}
 	}
 }

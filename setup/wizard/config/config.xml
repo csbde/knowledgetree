@@ -13,7 +13,7 @@
         <step name="License Agreement">license</step>
         <step name="PHP Dependencies" mode="silent">dependencies</step>
         <step name="System Configuration" order="2">configuration</step>
-        <step name="Service Dependencies" order="3" mode="silent">services</step>
+        <step name="Service Dependency" order="3" mode="silent">services</step>
         <step name="Database Configuration" order="1">database</step>
         <step name="Registration">registration</step>
         <step name="Install" mode="silent">install</step>

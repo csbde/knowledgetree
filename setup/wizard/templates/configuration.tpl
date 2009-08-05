@@ -14,9 +14,11 @@ The settings below have been drawn from the system information. The host and por
 
 <div class="error">
     <?php
-        foreach ($errors as $error){
-            echo $error.'<br />';
-        }
+    	if(isset($errors)) {
+	        foreach ($errors as $error){
+	            echo $error.'<br />';
+	        }
+    	}
     ?>
 </div>
 

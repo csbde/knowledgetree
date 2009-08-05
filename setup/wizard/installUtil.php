@@ -59,11 +59,26 @@ class InstallUtil {
  	*/
 	public function isSystemInstalled() {
 		if (file_exists(dirname(__FILE__)."/install")) {
+
 			return true;
 		}
+		
 		return false;
 	}
 
+	public function error($error) {
+		$template_vars['error'] = $error;
+		$file = "templates/error.tpl";
+		if (!file_exists($file)) {
+			return false;
+		}
+		extract($template_vars); // Extract the vars to local namespace
+		ob_start();
+		include($file);
+        $contents = ob_get_contents();
+        ob_end_clean();
+        echo $contents;
+	}
 	/**
 	* Check if system needs to be installed
 	*

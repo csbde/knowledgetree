@@ -1,6 +1,6 @@
 <?php
 /**
-* Service Controller.
+* Unix Service Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -41,10 +41,6 @@
 */
 
 class windowsService extends Service {
-	public $status;
-	public $name;
-	public $util;
-	
 	/**
 	* Retrieve Service name
 	*
@@ -65,7 +61,7 @@ class windowsService extends Service {
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
-	* @return array
+	* @return mixed
  	*/
 	public function start() {
 
@@ -77,7 +73,7 @@ class windowsService extends Service {
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
-	* @return array
+	* @return mixed
  	*/
 	public function stop() {
 
@@ -91,7 +87,7 @@ class windowsService extends Service {
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
-	* @return array
+	* @return mixed
  	*/
 	public function restart() {
 
@@ -103,7 +99,7 @@ class windowsService extends Service {
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
-	* @return array
+	* @return mixed
  	*/
 	public function uninstall() {
 
@@ -115,7 +111,7 @@ class windowsService extends Service {
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
-	* @return array
+	* @return mixed
  	*/
 	public function status() {
 
@@ -127,7 +123,7 @@ class windowsService extends Service {
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
-	* @return array
+	* @return mixed
  	*/
 	public function pause() {
 
@@ -139,10 +135,10 @@ class windowsService extends Service {
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
-	* @return array
+	* @return mixed
  	*/
 	public function cont() {
-
+		
 	}
 }
 ?>

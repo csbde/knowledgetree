@@ -41,9 +41,12 @@
 */
 
 class windowsService extends Service {
-	public $status;
 	public $name;
 	public $util;
+	
+	public function __construct() {
+		$this->util = new InstallUtil();
+	}
 	
 	/**
 	* Retrieve Service name
@@ -56,8 +59,6 @@ class windowsService extends Service {
 	public function getName() {
 		return $this->name;
 	}
-	
-	public function load() {}
 	
 	/**
 	* Start Service

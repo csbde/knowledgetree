@@ -1,6 +1,6 @@
 <?php
 /**
-* Lucene Service Controller. 
+* Windows Agent Service Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -44,23 +44,8 @@ class windowsAgent extends windowsService {
 
 	
 	public function __construct() {
+		$this->name = "KTAgentTest";
 	}
-	
-	function load() {
-
-	}
-	
-  	public function stop() {
-  		
-    }
-
-    public function install() {
-
-    }
-    
-    public function start() {
-
-    }
     
 }
 ?>

@@ -40,12 +40,8 @@
 * @version Version 0.1
 */
 
-class service {
-	public $status;
-	public $name;
-	public $util;
-	
-	public function getName() {}
+class Service {	
+	public function __construct() {}
 	
 	public function load() {}
 	

@@ -122,14 +122,6 @@ class windowsLucene extends windowsService {
 	private $luceneDir;
 	
 	/**
-	* Constructs windows lucene object
-	*
-	* @author KnowledgeTree Team
-	* @access public
- 	*/
-	public function __construct() {}
-	
-	/**
 	* Load defaults needed by service
 	*
 	* @author KnowledgeTree Team
@@ -139,7 +131,6 @@ class windowsLucene extends windowsService {
  	*/
 	public function load() {
 		$this->name = "KTLuceneTest";
-		$this->util = new InstallUtil();
 		$this->javaSystem = new Java('java.lang.System');
 		$this->setJavaBin($this->javaSystem->getProperty('java.home').DS."bin");
 		$this->setLuceneDIR(SYSTEM_DIR."bin".DS."luceneserver");
@@ -366,10 +357,15 @@ class windowsLucene extends windowsService {
 	function install() {
 		$state = $this->status();
 		if($state == '') {
-			$cmd = "\"{$this->getLuceneExe()}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"". $this->getLuceneSource()."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$this->getluceneDir()."\" -auto";
-			$response = $this->util->pexec($cmd);
-		
-			return $response;
+			$luceneExe = $this->getLuceneExe();
+			$luceneSource = $this->getLuceneSource();
+			$luceneDir = $this->getluceneDir();
+			if($luceneExe && $luceneSource && $luceneDir) {
+				$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
+				$response = $this->util->pexec($cmd);
+				return $response;
+			}
+			return $state;
 		}
 		
 		return $state;
