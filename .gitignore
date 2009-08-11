@@ -7,3 +7,4 @@ bin/luceneserver/lucene.pid
 .settings/
 dummy.php
 var/*
+plugins/commercial

@@ -49,7 +49,6 @@ require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 class CMISDocumentObject extends CMISBaseObject {
 
     protected $versionable;
-    protected $contentStreamAllowed;
     private $ktapi;
     private $uri;
 
@@ -167,11 +166,10 @@ class CMISDocumentObject extends CMISBaseObject {
         $this->_setPropertyInternal('VersionSeriesCheckedOutId', $checkedOutId);
         // TODO currently not returned by KnowledgeTree?
         $this->_setPropertyInternal('CheckinComment', null);
-        // TODO if we implement content streams
         $this->_setPropertyInternal('ContentStreamLength', $objectProperties['filesize']);
         $this->_setPropertyInternal('ContentStreamMimeType', $objectProperties['mime_type']);
-        $this->_setPropertyInternal('ContentStreamFilename', null);
-        $this->_setPropertyInternal('ContentStreamUri', null);
+        $this->_setPropertyInternal('ContentStreamFilename', $objectProperties['filename']);
+        $this->_setPropertyInternal('ContentStreamUri', $this->getProperty('ObjectId') . '/' . $objectProperties['filename']);
         $this->_setPropertyInternal('Author', $objectProperties['created_by']);
     }
 

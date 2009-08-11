@@ -1564,6 +1564,40 @@ $sourceDocument->getName(),
 
         DBUtil::commit();
     }
+    
+    public static function getDocumentContent($oDocument)
+    {
+        global $default;
+
+        //get the path to the document on the server
+        //$docRoot = $default->documentRoot;
+        $oConfig =& KTConfig::getSingleton();
+        $docRoot  = $oConfig->get('urls/documentRoot');
+
+        $path = $docRoot .'/'. $oDocument->getStoragePath();
+
+        // Ensure the file exists
+        if (file_exists($path))
+        {
+            // Get the mime type - this is not relevant at the moment...
+            $mimeId = $oDocument->getMimeTypeID();
+            $mimetype = KTMime::getMimeTypeName($mimeId);
+
+            if ($bIsCheckout && $default->fakeMimetype) {
+                // note this does not work for "image" types in some browsers
+                $mimetype = 'application/x-download';
+            }
+
+            $sFileName = $oDocument->getFileName( );
+            $iFileSize = $oDocument->getFileSize();
+        } else {
+            return null;
+        }
+
+        $content = file_get_contents($path);
+        
+        return $content;
+    }
 }
 
 class KTMetadataValidationError extends PEAR_Error {

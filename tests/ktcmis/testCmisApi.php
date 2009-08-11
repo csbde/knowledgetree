@@ -1,4 +1,7 @@
 <?php
+
+// TODO use CMISUtil::encodeObjectId to create testing ids, as we may change how the encoding works in future
+
 require_once (KT_DIR . '/tests/test.php');
 require_once (KT_LIB_DIR . '/api/ktcmis/ktcmis.inc.php');
 
@@ -60,7 +63,7 @@ class CMISTestCase extends KTUnitTestCase {
     }
 
     // Repository service functions
-    function testRepositoryServices()
+    function testRepositoryService()
     {
         $RepositoryService = new KTRepositoryService();
 
@@ -177,10 +180,10 @@ class CMISTestCase extends KTUnitTestCase {
     }
 
     // Navigation service functions
-    function testNavigationServices()
+    function testNavigationService()
     {
-        $NavigationService = new KTNavigationService();
-        $NavigationService->startSession(KT_TEST_USER, KT_TEST_PASS);
+        $NavigationService = new KTNavigationService($this->ktapi);
+//        $NavigationService->startSession(KT_TEST_USER, KT_TEST_PASS);
 
         // set up the folder/doc tree structure with which we will be testing
         $this->createFolderDocStructure();
@@ -289,6 +292,8 @@ class CMISTestCase extends KTUnitTestCase {
         // test printout
         $this->printTree($ancestry['results'], 'Parent for (Folder) Object ' . $objectId . ' (getObjectParents())');
         
+        // TODO test checked out documents listing (not yet implemented)
+        
         // tear down the folder/doc tree structure with which we were testing
         $this->cleanupFolderDocStructure();
 
@@ -298,10 +303,10 @@ class CMISTestCase extends KTUnitTestCase {
 
     // Object Services
 
-    function testObjectServices()
+    function testObjectService()
     {
-        $ObjectService = new KTObjectService();
-        $ObjectService->startSession(KT_TEST_USER, KT_TEST_PASS);
+        $ObjectService = new KTObjectService($this->ktapi);
+//        $ObjectService->startSession(KT_TEST_USER, KT_TEST_PASS);
 
         // set up the folder/doc tree structure with which we will be testing
         $this->createFolderDocStructure();
@@ -401,12 +406,96 @@ class CMISTestCase extends KTUnitTestCase {
 
         // delete created document
         $this->ktapi->delete_document(CMISUtil::decodeObjectId($documentId), 'Testing API', false);
+        
+        // TEST
+        $folderId = 'F'.$this->folders[0];
+        $objectId = 'D'.$this->docs[0]->get_documentid();
+        // test attempted delete via single object delete on folder which contains content - should fail
+        $response = $ObjectService->deleteObject($repositoryId, $folderId);
+        $this->assertEqual($response['status_code'], 1);
+        $this->assertNotNull($response['message']);
+        
+        // test deletion of folder tree - should succeed unless there are non-deletable objects (checked out) (not testing latter)
+        $response = $ObjectService->deleteTree($repositoryId, $folderId);
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertNotNull($response['results']);
+        
+        // TODO test deleteTree with checkedout documents
+        
+        // test attempted delete of document with single version via single object delete.
+        // should succeed unless there is a valid reason (checked out/immutable) (not testing latter)
+        // TODO test failure on attempt to delete document with more than one version
+        $response = $ObjectService->deleteObject($repositoryId, $objectId);
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertNotNull($response['results']);
+        
+        // TEST
+        // TODO test failed moves (checked out, etc)
+        // folder to move - folder 2
+        $folderId = 'F'.$this->folders[1];
+        // document to move - document 3
+        $objectId = 'D'.$this->docs[1]->get_documentid();
+        // target folder for all moves
+        $root = $this->ktapi->get_root_folder();
+        $targetFolderId = 'F'.$root->get_folderid();
+        
+        // test moving of object (document)
+        $response = $ObjectService->moveObject($repositoryId, $objectId, null, $targetFolderId);
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertNotNull($response['results']);
+        
+        // test moving of object (folder)
+        $response = $ObjectService->moveObject($repositoryId, $folderId, null, $targetFolderId);
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertNotNull($response['results']);
+        
+        // TEST
+        // TODO test failure conditions
+        // TODO test fetching of content stream
+        $response = $ObjectService->getContentStream($repositoryId, $objectId);
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertNotNull($response['results']);
+        
+        // TEST
+        // TODO test setContentStream?  unused at the moment
 
         // tear down the folder/doc tree structure with which we were testing
         $this->cleanupFolderDocStructure();
 
         // test printout
         if (DEBUG_CMIS) echo '<div>&nbsp;</div>';
+    }
+    
+    function testVersioningService()
+    {
+        $VersioningService = new KTVersioningService($this->ktapi);
+//        $ObjectService->startSession(KT_TEST_USER, KT_TEST_PASS);
+
+        // set up the folder/doc tree structure with which we will be testing
+        $this->createFolderDocStructure();
+
+        $RepositoryService = new KTRepositoryService();
+        $response = $RepositoryService->getRepositories();
+
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertNotNull($response['results'][0]);
+
+        // we only expect one repository
+        $repository = $response['results'][0];
+        $repositoryId = $repository['repositoryId'];
+        
+        // TEST 1
+        // test deletion of document via deleteAllVersions
+        $versionSeriesId = 'D'.$this->docs[0]->get_documentid();
+        $result = $VersioningService->deleteAllVersions($repositoryId, $versionSeriesId);
+        
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertNotNull($response['results'][0]);
+        
+        // TODO add testing of failure conditions - e.g. checked out/immutable document
+        
+        // tear down the folder/doc tree structure with which we were testing
+        $this->cleanupFolderDocStructure();
     }
 
     /**

@@ -56,6 +56,7 @@ abstract class CMISBaseObject {
     protected $queryable;
     protected $includedInSupertypeQuery;
     protected $controllable; // NOTE deprecated?  part of policy objects specification, policy objects are indicated as TODO remove
+    protected $contentStreamAllowed = 'notAllowed';
 
     protected $properties; // list of property objects which define the additional properties for this object
 

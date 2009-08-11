@@ -43,26 +43,76 @@
 	if (substr(php_uname(), 0, 7) == "Windows"){
     	define('WINDOWS_OS', true);
     	define('UNIX_OS', false);
+    	define('OS', 'windows');
 	} else {
     	define('WINDOWS_OS', false);
     	define('UNIX_OS', true);
+    	define('OS', 'unix');
 	}
 	if(WINDOWS_OS) {
 		define('DS', '\\');
 	} else {
 		define('DS', '/');
 	}
-    define('WIZARD_DIR', dirname(__FILE__).DS);
-    define('SYSTEM_DIR', WIZARD_DIR."..".DS."..".DS);
-    define('SYS_BIN_DIR', WIZARD_DIR."..".DS."..".DS."bin".DS);
-    define('SYS_LOG_DIR', WIZARD_DIR."..".DS."..".DS."var".DS."log".DS);
-    define('SQL_DIR', WIZARD_DIR.DS."sql".DS);
-    define('SQL_UPGRADE_DIR', SQL_DIR.DS."upgrades".DS);
-    define('CONF_DIR', WIZARD_DIR.DS."config".DS);
-    define('RES_DIR', WIZARD_DIR.DS."resources".DS);
-    define('STEP_DIR', WIZARD_DIR.DS."steps".DS);
-    define('TEMP_DIR', WIZARD_DIR.DS."templates".DS);
+	// Define environment root
+	$wizard = realpath(dirname(__FILE__));
+	$xdir = explode(DS, $wizard);
+	array_pop($xdir);
+	array_pop($xdir);
+	$sys = '';
+	foreach ($xdir as $k=>$v) {
+		$sys .= $v.DS;
+	}
+	// Define paths to wizard
+    define('WIZARD_DIR', $wizard.DS);
+    define('WIZARD_LIB', WIZARD_DIR."lib".DS);
+    define('SERVICE_LIB', WIZARD_LIB."services".DS);
+    define('SQL_DIR', WIZARD_DIR."sql".DS);
+    define('SQL_UPGRADE_DIR', SQL_DIR."upgrades".DS);
+    define('CONF_DIR', WIZARD_DIR."config".DS);
+    define('RES_DIR', WIZARD_DIR."resources".DS);
+    define('STEP_DIR', WIZARD_DIR."steps".DS);
+    define('TEMP_DIR', WIZARD_DIR."templates".DS);
+    // Define paths to system webroot
+	define('SYSTEM_DIR', $sys);
+    define('SYS_BIN_DIR', SYSTEM_DIR."bin".DS);
+    define('SYS_LOG_DIR', SYSTEM_DIR."var".DS."log".DS);
+    // Define paths to system
+    array_pop($xdir);
+	$asys = '';
+	foreach ($xdir as $k=>$v) {
+		$asys .= $v.DS;
+	}
+    define('SYSTEM_ROOT', $asys);
+    // Install Type
+    preg_match('/Zend/', $sys, $matches);
+    if($matches) {
+		$sysdir = explode(DS, $sys);
+		array_pop($sysdir);
+		array_pop($sysdir);
+		array_pop($sysdir);
+		array_pop($sysdir);
+		$zendsys = '';
+		foreach ($sysdir as $k=>$v) {
+			$zendsys .= $v.DS;
+		}
+    	define('INSTALL_TYPE', 'Zend');
+    	define('PHP_DIR', $zendsys."ZendServer".DS."bin".DS);
+    } else {
+    	// TODO: Other types
+    }
+    // Other
+    date_default_timezone_set('Africa/Johannesburg');
+    // Mysql bin [Windows]
+    if(WINDOWS_OS) {
+	    $serverPaths = explode(';',$_SERVER['PATH']);
+	    foreach ($serverPaths as $apath) {
+	    	preg_match('/mysql/i', $apath, $matches);
+	    	if($matches) {
+	    		define('MYSQL_BIN', $apath.DS);
+	    		break;
+	    	}
+	    }
+    }
     
-    
-
 ?>

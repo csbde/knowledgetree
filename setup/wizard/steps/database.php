@@ -43,14 +43,23 @@
 class database extends Step 
 {
 	/**
-	* Database type
+	* Reference to Database object
 	*
 	* @author KnowledgeTree Team
-	* @access private
-	* @var array
+	* @access public
+	* @var object
 	*/	
-    private $_dbhandler = null;
+    public $_dbhandler = null;
     	
+	/**
+	* Reference to Database object
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var object
+	*/	
+    public $_util = null;
+    
 	/**
 	* Database type
 	*
@@ -151,13 +160,22 @@ class database extends Step
 	private $dmsuserpassword = '';
 	
 	/**
-	* Location of database binary.
+	* Location of database binaries.
 	*
 	* @author KnowledgeTree Team
 	* @access private
 	* @var string
 	*/
-    private $dbbinary = 'mysql'; // TODO:multiple databases
+    private $mysqlDir; // TODO:multiple databases
+    
+	/**
+	* Name of database binary.
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var string
+	*/
+    private $dbbinary = ''; // TODO:multiple databases
     
 	/**
 	* Database table prefix
@@ -222,6 +240,9 @@ class database extends Step
  	*/
     public function __construct() {
     	$this->_dbhandler = new dbUtil();
+    	$this->_util = new InstallUtil();
+    	if(WINDOWS_OS)
+			$this->mysqlDir = MYSQL_BIN;
     }
 
 	/**
@@ -260,7 +281,7 @@ class database extends Step
 	* @return string
 	*/
     public function doProcess() {
-        if($this->next()) {        	
+        if($this->next()) {
             $this->setPostConfig(); // Set any posted variables
             $this->setDetails();
             if($this->doTest()) { // Test
@@ -298,13 +319,14 @@ class database extends Step
     		return false;
     	}
     	if($this->dport == '') 
-    		$con = $this->_dbhandler->dbUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
+    		$con = $this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
     	else 
-    		$con = $this->_dbhandler->dbUtil($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
+    		$con = $this->_dbhandler->load($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
         if (!$con) {
-            $this->error[] = "Could not connect: " . $this->_dbhandler->getErrors();
+            $this->error[] = "Could not connect";
             return false;
         } else {
+        	$this->error = array(); // Reset usage errors
             return true;
         }
     }
@@ -400,7 +422,11 @@ class database extends Step
             $this->temp_variables['dmsusername'] = '';
             $this->temp_variables['dmspassword'] = '';
             $this->temp_variables['dmsuserpassword'] = '';
-            $this->temp_variables['dbbinary'] = 'mysql';
+            if(WINDOWS_OS) {
+            	$this->temp_variables['dbbinary'] = 'mysql.exe';
+            } else {
+            	$this->temp_variables['dbbinary'] = 'mysql';
+            }
             $this->temp_variables['tprefix'] = '';
             $this->temp_variables['ddrop'] = false;
         }
@@ -515,7 +541,7 @@ class database extends Step
         $con = $this->connectMysql();
         if($con) {
             if(!$this->createDB($con)) {
-            	$this->error[] = "Could not Create Database: " . $this->_dbhandler->getErrors();
+            	$this->error[] = "Could not Create Database: ";
             	return false;
             }
             $this->closeMysql($con);
@@ -531,9 +557,9 @@ class database extends Step
 	* @return object mysql connection
 	*/
     private function connectMysql() {
-		$con = $this->_dbhandler->dbUtil($this->dhost, $this->duname, $this->dpassword, $this->dname);
+		$con = $this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
         if (!$con) {
-            $this->error[] = "Could not connect: " . $this->_dbhandler->getErrors();
+            $this->error[] = "Could not connect: ";
 
             return false;
         }
@@ -553,16 +579,16 @@ class database extends Step
 		if($this->usedb($con)) { // attempt to use the db
 		    if($this->dropdb($con)) { // attempt to drop the db
 		        if(!$this->create($con)) { // attempt to create the db
-					$this->error[] = "Could create database: " . $this->_dbhandler->getErrors();
+					$this->error[] = "Could create database: ";
 					return false;// cannot overwrite database
 		        }
 		    } else {
-		    	$this->error[] = "Could not drop database: " . $this->_dbhandler->getErrors();
+		    	$this->error[] = "Could not drop database: ";
 		    	return false;// cannot overwrite database
 		    }
 		} else {
 		    if(!$this->create($con)) { // attempt to create the db
-				$this->error[] = "Could not create database: " . $this->_dbhandler->getErrors();
+				$this->error[] = "Could not create database: ";
 				return false;// cannot overwrite database
 		    }
 		}
@@ -612,7 +638,7 @@ class database extends Step
 		if($this->_dbhandler->useBD($this->dname)) {
             return true;
         } else {
-            $this->error[] = "Error using database: ".$this->_dbhandler->getErrors();
+            $this->error[] = "Error using database: ";
             return false;
         }
     }
@@ -629,11 +655,11 @@ class database extends Step
         if($this->ddrop) {
             $sql = "DROP DATABASE {$this->dname};";
 			if(!$this->_dbhandler->query($sql)) {
-                $this->error[] = "Cannot drop database: ".$this->_dbhandler->getErrors();
+                $this->error[] = "Cannot drop database: ";
                 return false;
             }
         } else {
-            $this->error[] = "Cannot drop database: ".$this->_dbhandler->getErrors();
+            $this->error[] = "Cannot drop database: ";
             return false;
         }
         return true;
@@ -649,16 +675,20 @@ class database extends Step
 	*/
     private function createDmsUser($con) {
     	if($this->dmsname == '' || $this->dmspassword == '') {
-        	$command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/user.sql";
-        	exec($command, $out, $ret);
-        	return $ret;
+    		if($this->dpassword == '') {
+    			$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_DIR."user.sql\"";
+    		} else {
+        		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_DIR."user.sql\"";
+    		}
+        	$response = $this->_util->pexec($command);
+        	return $response;
     	} else {
 			$user1 = "GRANT SELECT, INSERT, UPDATE, DELETE ON {$this->dname}.* TO {$this->dmsusername}@{$this->dhost} IDENTIFIED BY \"{$this->dmsuserpassword}\";";
 			$user2 = "GRANT ALL PRIVILEGES ON {$this->dname}.* TO {$this->dmsname}@{$this->dhost} IDENTIFIED BY \"{$this->dmspassword}\";";
 			if ($this->_dbhandler->execute($user1) && $this->_dbhandler->execute($user2)) {
             	return true;
         	} else {
-        		$this->error[] = "Could not create users in database: ".$this->_dbhandler->getErrors();
+        		$this->error[] = "Could not create users in database: ";
         		return false;
         	}
 		}
@@ -674,9 +704,13 @@ class database extends Step
 	* @return boolean
 	*/
     private function createSchema($con) {
-        $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/structure.sql";
-    	exec($command, $out, $ret);
-    	return $ret;
+    	if($this->dpassword == '') {
+    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_DIR."structure.sql\"";
+    	} else {
+        	$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_DIR."structure.sql\"";
+    	}
+    	$response = $this->_util->pexec($command);
+    	return $response;
     }
 
 	/**
@@ -688,9 +722,13 @@ class database extends Step
 	* @return boolean
 	*/
     private function populateSchema($con) {
-        $command = "{$this->dbbinary} -u{$this->duname} -p{$this->dpassword} {$this->dname} < sql/data.sql";
-    	exec($command, $out, $ret);
-    	return $ret;
+    	if($this->dpassword == '') {
+    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_DIR."data.sql\"";
+    	} else {
+    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_DIR."data.sql\"";
+    	}
+    	$response = $this->_util->pexec($command);
+    	return $response;
     }
 
 	/**
@@ -746,6 +784,5 @@ class database extends Step
     public function doAjaxTest($host, $uname, $dname) {
 		
     }
-    
 }
 ?>

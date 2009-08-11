@@ -592,6 +592,32 @@ class KTObjectService extends KTCMISBase {
     }
     
     /**
+     * Fetches the content stream data for an object
+     *  
+     * @param string $repositoryId
+     * @param string $objectId
+     * @return string $contentStream (binary or text data)
+     */
+    function getContentStream($repositoryId, $objectId)
+    {
+        try {
+            $contentStream = $this->ObjectService->getContentStream($repositoryId, $objectId);
+        }
+        catch (Exception $e)
+        {
+            return array(
+                "status_code" => 1,
+                "message" => $e->getMessage()
+            );
+        }
+
+        return array(
+            'status_code' => 0,
+            'results' => $contentStream
+        );
+    }
+    
+    /**
      * Moves a fileable object from one folder to another.
      * 
      * @param object $repositoryId

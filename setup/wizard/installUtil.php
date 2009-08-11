@@ -1,6 +1,6 @@
 <?php
 /**
-* Configuration Step Controller.
+* Installer Utilities Library
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -59,11 +59,26 @@ class InstallUtil {
  	*/
 	public function isSystemInstalled() {
 		if (file_exists(dirname(__FILE__)."/install")) {
+
 			return true;
 		}
+		
 		return false;
 	}
 
+	public function error($error) {
+		$template_vars['error'] = $error;
+		$file = "templates/error.tpl";
+		if (!file_exists($file)) {
+			return false;
+		}
+		extract($template_vars); // Extract the vars to local namespace
+		ob_start();
+		include($file);
+        $contents = ob_get_contents();
+        ob_end_clean();
+        echo $contents;
+	}
 	/**
 	* Check if system needs to be installed
 	*
@@ -75,21 +90,6 @@ class InstallUtil {
     public function checkStructurePermissions() {
     	// Check if Wizard Directory is writable
     	if(!$this->_checkPermission(WIZARD_DIR)) {
-    		return 'wizard';
-    	}
-    	if(!$this->_checkPermission(CONF_DIR)) {
-    		return 'wizard';
-    	}
-    	if(!$this->_checkPermission(SQL_DIR)) {
-    		return 'wizard';
-    	}
-    	if(!$this->_checkPermission(RES_DIR)) {
-    		return 'wizard';
-    	}
-    	if(!$this->_checkPermission(STEP_DIR)) {
-    		return 'wizard';
-    	}
-    	if(!$this->_checkPermission(TEMP_DIR)) {
     		return 'wizard';
     	}
 
@@ -314,8 +314,14 @@ class InstallUtil {
     
    /**
      * Portably execute a command on any of the supported platforms.
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @param string $aCmd
+     * @param array $aOptions
+     * @return array
      */
-    function pexec($aCmd, $aOptions = null) {
+    public function pexec($aCmd, $aOptions = null) {
     	if (is_array($aCmd)) {
     		$sCmd = $this->safeShellString($aCmd);
     	} else {
@@ -339,6 +345,7 @@ class InstallUtil {
     	if(WINDOWS_OS) {
     	    $sCmd = 'call '.$sCmd;
     	}
+
     	exec($sCmd, $aOutput, $iRet);
     	$aRet['ret'] = $iRet;
     	$aRet['out'] = $aOutput;
@@ -346,7 +353,14 @@ class InstallUtil {
     	return $aRet;
     }
     
- 	function arrayGet($aArray, $sKey, $mDefault = null, $bDefaultIfEmpty = true) {
+	/**
+	* 
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @return string
+	*/
+ 	public function arrayGet($aArray, $sKey, $mDefault = null, $bDefaultIfEmpty = true) {
         if (!is_array($aArray)) {
             $aArray = (array) $aArray;
         }
@@ -364,7 +378,14 @@ class InstallUtil {
         return $mDefault;
     }
     
-	function safeShellString () {
+	/**
+	* 
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @return string
+	*/
+	public function safeShellString () {
         $aArgs = func_get_args();
         $aSafeArgs = array();
         if (is_array($aArgs[0])) {

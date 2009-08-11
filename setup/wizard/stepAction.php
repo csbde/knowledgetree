@@ -109,7 +109,9 @@ class stepAction {
         if($this->stepName != '') {
 			$this->action = $this->createStep();
 			if(!$this->action) {
-				die("{$this->stepName} : Class Files Missing : Create Step");
+	        	$this->stepName = 'errors';
+	        	$this->action = $this->createStep();
+	        	$this->action->error = array('Class Files Missing in Step Directory');
 			}
             $response = $this->action->doStep();
             if($this->action->storeInSession()) { // Check if class values need to be stored in session
@@ -122,7 +124,9 @@ class stepAction {
             }
             return $response;
         } else {
-            die("{$this->stepName} : Class Files Missing : Do Action");
+        	$this->stepName = 'errors';
+        	$this->action = $this->createStep();
+        	$this->action->error = array('Class File Missing in Step Directory');
         }
     }
 
@@ -214,7 +218,9 @@ class stepAction {
 	* @return string
 	*/
     public function getCurrentStepName() {
-        return $this->step_names[$this->stepName];
+    	if($this->stepName != 'errors')
+        	return $this->step_names[$this->stepName];
+        return '';
     }
 
 	/**
@@ -229,27 +235,28 @@ class stepAction {
     {
         $menu = '<div class="menu">';
         $active = false;
-
-        foreach ($this->stepClassNames as $k=>$step){
-            if($this->step_names[$step] != '') {
-                $item = $this->step_names[$step];
-            } else {
-                $item = $this->makeHeading($step);
-            }
-            if($step == $this->stepName) {
-                $class = 'active';
-                $active = true;
-            } else {
-                if($active){
-                    $class = 'inactive';
-                }else{
-                    $class = 'indicator';
-                    $item = "<a href=\"index.php?step_name={$step}\">{$item}</a>";
-                }
-            }
-
-            $menu .= "<span class='{$class}'>$item</span><br />";
-        }
+		if($this->stepClassNames) {
+	        foreach ($this->stepClassNames as $k=>$step) {
+	            if($this->step_names[$step] != '') {
+	                $item = $this->step_names[$step];
+	            } else {
+	                $item = $this->makeHeading($step);
+	            }
+	            if($step == $this->stepName) {
+	                $class = 'active';
+	                $active = true;
+	            } else {
+	                if($active){
+	                    $class = 'inactive';
+	                }else{
+	                    $class = 'indicator';
+	                    $item = "<a href=\"index.php?step_name={$step}\">{$item}</a>";
+	                }
+	            }
+	
+	            $menu .= "<span class='{$class}'>$item</span><br />";
+	        }
+		}
         $menu .= '</div>';
         return $menu;
     }
@@ -322,6 +329,7 @@ class stepAction {
         $step_tpl = new Template($template);
         $step_tpl->set("errors", $step_errors); // Set template errors
         $step_vars = $this->action->getStepVars(); // Get template variables
+        $step_tpl->set("step_vars", $step_vars); // Set template errors
         foreach ($step_vars as $key => $value) { // Set template variables
             $step_tpl->set($key, $value); // Load values to session
             if($this->action->storeInSession()) { // Check if class values need to be stored in session
@@ -354,7 +362,9 @@ class stepAction {
                     $this->session->set($class , $v);
             }
          } else {
-             die("Where is the session?");
+			$this->stepName = 'errors';
+        	$this->action = $this->createStep();
+        	$this->action->error = array('Sessions Are Disabled');
          }
      }
 
@@ -373,7 +383,9 @@ class stepAction {
          if($this->session != null) {
             $this->session->setClass($class, $k, $v);
          } else {
-             die("Where is the session ?");
+			$this->stepName = 'errors';
+        	$this->action = $this->createStep();
+        	$this->action->error = array('Sessions Are Disabled');
          }
      }
 
@@ -422,7 +434,9 @@ class stepAction {
          if($this->session != null) {
             $this->session->setClassError($class, $k, $v);
          } else {
-             die("Where is the session  ?");
+			$this->stepName = 'errors';
+        	$this->action = $this->createStep();
+        	$this->action->error = array('Sessions Are Disabled');
          }
      }
 }

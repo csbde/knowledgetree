@@ -136,7 +136,9 @@ class Installer {
     	try {
         	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.$name);
     	} catch (Exception $e) {
-    		echo "Error loading file : $e";
+    		$iutil = new InstallUtil();
+    		$iutil->error("Error reading configuration file: $name");
+    		die;
     	}
     }
 
@@ -267,7 +269,6 @@ class Installer {
 	* @return string
 	*/
     private function _runStepAction($stepName) {
-    	//echo $stepName."==";
         $this->stepAction = new stepAction($stepName);
         $this->stepAction->setSteps($this->getSteps());
         $this->stepAction->setStepNames($this->getStepNames());
@@ -298,11 +299,13 @@ class Installer {
 	* @return void
 	*/
     private function _xmlStepsToArray() {
-        foreach($this->simpleXmlObj->steps->step as $d_step) {
-        	$step_name = (string) $d_step[0];
-            $this->stepClassNames[] = $step_name;
-        }
-        $this->_loadToSession('stepClassNames', $this->stepClassNames);
+    	if(isset($this->simpleXmlObj)) {
+	        foreach($this->simpleXmlObj->steps->step as $d_step) {
+	        	$step_name = (string) $d_step[0];
+	            $this->stepClassNames[] = $step_name;
+	        }
+	        $this->_loadToSession('stepClassNames', $this->stepClassNames);
+    	}
     }
     
 	/**
@@ -314,11 +317,13 @@ class Installer {
 	* @return void
 	*/
     private function _xmlStepsNames() {
-        foreach($this->simpleXmlObj->steps->step as $d_step) {
-        	$step_name = (string) $d_step[0];
-            $this->stepNames[$step_name] = (string) $d_step['name'];
-        }
-        $this->_loadToSession('stepNames', $this->stepNames);
+    	if(isset($this->simpleXmlObj)) {
+	        foreach($this->simpleXmlObj->steps->step as $d_step) {
+	        	$step_name = (string) $d_step[0];
+	            $this->stepNames[$step_name] = (string) $d_step['name'];
+	        }
+	        $this->_loadToSession('stepNames', $this->stepNames);
+    	}
     }
     
 	/**
@@ -330,14 +335,16 @@ class Installer {
 	* @return void
 	*/
     private function _xmlStepsOrders() {
-        foreach($this->simpleXmlObj->steps->step as $d_step) {
-			if(isset($d_step['order'])) {
-				$step_name = (string) $d_step[0];
-				$order = (string) $d_step['order'];
-            	$this->installOrders[$order] = $step_name; // Store step install order
-            }
-        }
-        $this->_loadToSession('installOrders', $this->installOrders);
+    	if(isset($this->simpleXmlObj)) {
+	        foreach($this->simpleXmlObj->steps->step as $d_step) {
+				if(isset($d_step['order'])) {
+					$step_name = (string) $d_step[0];
+					$order = (string) $d_step['order'];
+	            	$this->installOrders[$order] = $step_name; // Store step install order
+	            }
+	        }
+	        $this->_loadToSession('installOrders', $this->installOrders);
+    	}
     }
     
 	/**
@@ -388,7 +395,9 @@ class Installer {
 				// TODO : Break on error response
 	    	}
     	} else {
-    		die("$className : Class Files Missing : Install Helper");
+    		$iutil = new InstallUtil();
+    		$iutil->error("Class File Missing in Step Directory: $className");
+    		die;
     	}
     }
     
@@ -416,9 +425,7 @@ class Installer {
     	}
     }
 
-    private function loadNeeded() {
-        $this->_readXml(); // Xml steps
-        $this->_resetSessions(); // Make sure
+    function _loadFromSessions() {
         $this->stepClassNames = $this->session->get('stepClassNames');
         if(!$this->stepClassNames) {
     		$this->_xmlStepsToArray(); // String steps
@@ -430,8 +437,28 @@ class Installer {
     	$this->installOrders = $this->session->get('installOrders');
     	if(!$this->installOrders) {
     		$this->_xmlStepsOrders();
+    	}    	
+    }
+    
+    private function loadNeeded() {
+    	$this->_readXml(); // Xml steps
+        $this->_resetSessions(); // Make sure session is cleared
+        $this->_loadFromSessions(); // Make sure session is cleared
+    	if(isset($_POST['Next'])) {
+    		$this->response = 'next';
+    	} elseif (isset($_POST['Previous'])) {
+    		$this->response = 'previous';
+   	  	} elseif (isset($_POST['Confirm'])) {
+    		$this->response = 'next';
+    	} elseif (isset($_POST['Install'])) {
+    		$this->response = 'next';
+    	} elseif (isset($_POST['Edit'])) {
+    		$this->response = 'next';
+    	} else {
+    		$this->response = '';
     	}
     }
+    
 	/**
 	* Main control to handle the flow of install
 	*
@@ -442,39 +469,30 @@ class Installer {
 	*/
     public function step() {
 		$this->loadNeeded();
-        $response = $this->_landing();
-        switch($response) {
+        switch($this->response) {
             case 'next':
-                $this->_proceed(); // Load next window
+        		$step_name = $this->_getStepName();
+        		$res = $this->_runStepAction($step_name);
+				if($res == 'next')
+                	$this->_proceed(); // Load next window
+                elseif ($res == 'install') {
+                	$this->_runStepsInstallers(); // Load landing
+                	$this->_proceed(); // Load next window
+                } elseif ($res == 'confirm') {
+                	$this->stepConfirmation = true;
+                	$this->_landing();
+                } elseif ($res == 'landing') {
+					$this->_landing();
+                } else {
+                }
             	break;
-
             case 'previous':
-                $this->_backward(); // Load previous window
-            	break;
-            	
-            case 'confirm':
-                $this->stepConfirmation = true;
-                $this->_landing();
-            	break;
-            	
-            case 'error':
-                $this->_landing(); // Load landing with errors
-            	break;
-            	
-            case 'landing':
-                $this->_landing(); // Load landing
-            	break;
-            	
-            case 'install':
-                $this->_runStepsInstallers(); // Load landing
-                $this->_proceed(); // Load next window
-            	break;
-            	
+                $this->_backward(); // Load previous page
+            	break;           	
             default:
-                die("Response $response: That was unexpected"); // No class response
+            	$this->_landing();
             	break;
         }
-
         $this->stepAction->paintAction(); // Display step
     }
 

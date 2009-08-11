@@ -207,22 +207,4 @@ class Ini {
     }
 
 }
-/*
-// USAGE EXAMPLE
-
-if(file_exists('../../config.ini')) {
-
-    $ini = new Ini();
-    $ini->addItem('Section1', 'NewItem1', 'Some Text1', 'Item1 Comment', 'Section1 Comment');
-    $ini->addItem('Section1', 'NewItem1.2', 'Some Text1.2', 'Item1.2 Comment');
-    $ini->addItem('Section1', 'NewItem1.3', 'Some Text1.3', 'Item1.3 Comment');
-    $ini->addItem('Section1', 'NewItem1.4', 'Some Text1.4', 'Item1.4 Comment');
-    $ini->addItem('Section2', 'NewItem2', 'Some Text2', 'Item2 Comment');
-    $ini->addItem('Section2', 'NewItem2.1', 'Some Text2.1');
-    $ini->addItem('Section3', 'NewItem3', 'Some Text3', 'Item3 Comment', 'Section3 Comment');
-    $ini->addItem('Section4', 'NewItem4', 'Some Text4', 'Item4 Comment');
-    $ini->write();
-
-}
-*/
 ?>

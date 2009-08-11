@@ -75,7 +75,10 @@ class Template
 	*/
     public function set($name, $value) 
 	{
-		if(is_a($value, 'Template')) {
+		//if(is_a($value, 'Template')) {
+		$class = 'Template';
+		$isA = $value instanceof $class;
+		if($isA) {
 			$value = $value->fetch();	
 		}
 		$this->template_vars[$name] = $value;        

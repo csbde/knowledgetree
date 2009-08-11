@@ -90,9 +90,9 @@ class dbUtil {
 	*
 	* @author KnowledgeTree Team
 	* @access protected
-	* @var string 
+	* @var array 
 	*/
-	protected $error = '';
+	protected $error = array();
 	
 	/**
 	* Constructs database connection object
@@ -101,18 +101,10 @@ class dbUtil {
 	* @access public
  	*/
 	public function __construct() {
+
 	}
 	
-	/** 
-	 * Connect to a MySQL database
-	 * 
-	 * @param string $dhost host
-	 * @param string $duname database username
-	 * @param string $dpassword database password
-	 * @access public
-	 * @return boolean
-  	*/
-	public function dbUtil($dhost = 'localhost', $duname, $dpassword, $dbname = '') {
+	public function load($dhost = 'localhost', $duname, $dpassword, $dbname) {
 		$this->dbhost = $dhost;
 		$this->dbuname = $duname;
 		$this->dbpassword = $dpassword;
@@ -124,11 +116,11 @@ class dbUtil {
   		if($this->dbconnection)
   			return $this->dbconnection;
   		else {
-  			$this->error = mysql_error();
+  			$this->error[] = mysql_error($this->dbconnection);
   			return false;
-  		}
+  		}		
 	}
-	
+
 	/**
 	* Choose a database to use
 	*
@@ -141,10 +133,10 @@ class dbUtil {
 			$this->setDb($dbname);
 		}
 		
-		if(mysql_select_db($this->dbname))
+		if(mysql_select_db($this->dbname, $this->dbconnection))
 			return true;
 		else {
-			$this->error = mysql_error();
+			$this->error[] = mysql_error($this->dbconnection);
 			return false;
 		}
 	}
@@ -162,11 +154,11 @@ class dbUtil {
     */
     public function query($query)
     {
-      $result = mysql_query($query);
+      $result = mysql_query($query, $this->dbconnection);
 		if($result) {
 			return $result;
 		} else {
-			$this->error = mysql_error();
+			$this->error[] = mysql_error($this->dbconnection);
 			return false;
 		}
     }
@@ -179,11 +171,11 @@ class dbUtil {
     * @return boolean
     */
     public function execute($query) {
-      $result = mysql_query($query);
+      $result = mysql_query($query, $this->dbconnection);
 		if($result) {
 			return true;
 		} else {
-			$this->error = mysql_error();
+			$this->error[] = mysql_error($this->dbconnection);
 			return false;
 		}
     }
@@ -214,7 +206,8 @@ class dbUtil {
 	      if ($result == NULL || mysql_num_rows($result) < 1)
 	        return NULL;
 	      else {
-   			while ($row = mysql_fetch_assoc($result)) {
+	      	$row = mysql_fetch_assoc($result);
+   			while ($row) {
    				$r[] = $row;
    			}
    			return $r;
@@ -229,7 +222,7 @@ class dbUtil {
      * @return void.
      */
     public function close() {
-      mysql_close();
+      mysql_close($this->dbconnection);
     }
 
    	/**

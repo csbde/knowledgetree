@@ -7,6 +7,37 @@ class KT_cmis_atom_server extends KT_atom_server {
 
     // override and extend as needed
     public $repositoryInfo;
+    public $headersSet = false;
+    
+    protected function hook_beforeDocRender($doc)
+    {
+        if ($doc->isContentDownload())
+        {
+            // not going to create a feed/entry response, just returning the raw data
+            $this->output = $doc->getOutput(); 
+            
+            // generic headers for all content downloads
+            header('Cache-Control: must-revalidate');
+            // these two are to override the default header values
+            header('Expires:');
+            header('Pragma:');
+            
+            // prevent output of standard text/xml header
+            $this->headersSet = true;
+            
+            return false;
+        }
+        else if ($doc->notModified())
+        {
+            // prevent output of standard text/xml header
+            $this->headersSet = true;
+            $this->setNoContent(true);
+            
+            return false;
+        }
+        
+        return true;
+    }
 
     public function initServiceDocument()
     {
@@ -56,13 +87,11 @@ class KT_cmis_atom_server extends KT_atom_server {
             $element = $service->newElement('cmis:repositoryInfo');
             foreach($this->repositoryInfo as $key => $repoData)
             {
-                if ($key == 'rootFolderId')
-                {
+                if ($key == 'rootFolderId') {
                     $repoData = CMIS_APP_BASE_URI . $workspace . '/folder/' . rawurlencode($repoData);
                 }
 
-                if (!is_array($repoData))
-                {
+                if (!is_array($repoData)) {
                     $element->appendChild($service->newElement('cmis:' . $key, $repoData));
                 }
                 else
@@ -112,12 +141,18 @@ class KT_cmis_atom_server extends KT_atom_server {
     public function getRegisteredService($workspace, $serviceName = NULL)
     {
 		$serviceName = strtolower(trim($serviceName));
-		if(isset($this->services[$workspace][$serviceName]))
-        {
+		if(isset($this->services[$workspace][$serviceName])) {
             return $this->services[$workspace][$serviceName][0];
         }
 
 		return false;
+	}
+    
+    public function render()
+    {
+		ob_end_clean();
+        if (!$this->headersSet) header('Content-type: text/xml');
+		if ($this->renderBody) echo $this->output;
 	}
 
 }

@@ -41,14 +41,24 @@
 */
 include("path.php"); // Paths
 
+/**
+ * Auto loader to bind installer package
+ *
+ * @param string $class
+ * @return void
+ */
 function __autoload($class) { // Attempt and autoload classes
 	$class = strtolower(substr($class,0,1)).substr($class,1); // Linux Systems.
 	if(file_exists(WIZARD_DIR."$class.php")) {
-		require(WIZARD_DIR."$class.php");
+		require_once(WIZARD_DIR."$class.php");
 	} elseif (file_exists(STEP_DIR."$class.php")) {
-		require(STEP_DIR."$class.php");
+		require_once(STEP_DIR."$class.php");
+	} elseif (file_exists(WIZARD_LIB."$class.php")) {
+		require_once(WIZARD_LIB."$class.php");
+	} elseif (file_exists(SERVICE_LIB."$class.php")) {
+		require_once(SERVICE_LIB."$class.php");
 	} else {
-		return false;
+		return null;
 	}
 }
 
@@ -202,17 +212,19 @@ class InstallWizard {
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
-	* @return void
+	* @return mixed
  	*/
 	public function systemChecks() {
 		$res = $this->iutil->checkStructurePermissions();
 		if($res === true) return $res;
 		switch ($res) {
 			case "wizard":
-					return 'Installer directory is not writable<br/>';
+					$this->iutil->error("Installer directory is not writable (KT_Installation_Directory/setup/wizard/)");
+					return 'Installer directory is not writable (KT_Installation_Directory/setup/wizard/)';
 				break;
 			case "/":
-					return 'System root is not writable<br/>';
+					$this->iutil->error("System root is not writable (KT_Installation_Directory/)");
+					return "System root is not writable (KT_Installation_Directory/)";
 				break;
 			default:
 					return true;
@@ -242,11 +254,11 @@ class InstallWizard {
 			if($response === true) {
 				$this->displayInstaller();
 			} else {
-				$this->displayInstaller($response);
+				exit();
 			}
 		} else {
 			// TODO: Die gracefully
-			echo "System has been installed <a href='../../'>Goto Login</a>";
+			$this->iutil->error("System has been installed <div class=\"buttons\"><a href='../../'>Goto Login</a></div>");
 		}
 	}
 }

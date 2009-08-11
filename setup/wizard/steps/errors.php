@@ -1,6 +1,6 @@
 <?php
 /**
-* Service Controller.
+* Error Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -39,39 +39,16 @@
 * @package Installer
 * @version Version 0.1
 */
+class Errors extends Step {
+	public $error = array();
+	
+    function doStep() {
+    	return 'landing';
+    }
+    
+    function getErrors() {
+    	return $this->error;
+    }
 
-class Service {
-	private static $on = 1;
-	private static $off = 0;
-	public $pid;
-	public $status;
-	
-	public function start() {
-		
-//		$this->status = $this->on;
-	}
-	
-	public function stop() {
-		
-//		$this->status = $this->off;
-	}
-	
-	public function install() {
-		
-	}
-	
-	public function restart() {
-//		$this->status = $this->off;
-		
-//		$this->status = $this->on;
-	}
-	
-	public function uninstall() {
-		
-	}
-	
-	public function status() {
-//		return $this->status;
-	}
 }
 ?>

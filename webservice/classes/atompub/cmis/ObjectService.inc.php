@@ -84,6 +84,25 @@ class ObjectService extends KTObjectService {
     }
     
     /**
+     * Fetches the content stream data for an object
+     *  
+     * @param string $repositoryId
+     * @param string $objectId
+     * @return string $contentStream (binary or text data)
+     */
+    function getContentStream($repositoryId, $objectId)
+    {
+        $result = parent::getContentStream($repositoryId, $objectId);
+
+        if ($result['status_code'] == 0) {
+            return $result['results'];
+        }
+        else {
+            return  new PEAR_Error($result['message']);
+        }
+    }
+    
+    /**
      * Moves a fileable object from one folder to another.
      * 
      * @param object $repositoryId

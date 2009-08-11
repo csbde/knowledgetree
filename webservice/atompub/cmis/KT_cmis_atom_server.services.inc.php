@@ -42,7 +42,7 @@ include_once 'KT_cmis_atom_service_helper.inc.php';
 /**
  * AtomPub Service: folder
  */
-class KT_cmis_atom_service_folder extends KT_atom_service {
+class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
 
     /**
      * Deals with GET actions for folders.
@@ -160,9 +160,6 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
         // now check for content stream
         $content = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'content');        
         
-        // check content for weird chars - don't think this serves a purpose any longer, should probably be removed.
-        // was meant to check for any non-base64 characters in the content string.
-        // preg_match('/[^\w\d\/\+=\n]*/', $content);
         // TODO this will possibly need to change somewhat once Relationship Objects come into play.
         if ((($action == 'create') && (is_null($content))) || ($typeId == 'Folder')) {
             $type = 'folder';
@@ -340,7 +337,7 @@ class KT_cmis_atom_service_folder extends KT_atom_service {
 /**
  * AtomPub Service: types
  */
-class KT_cmis_atom_service_types extends KT_atom_service {
+class KT_cmis_atom_service_types extends KT_cmis_atom_service {
 
     public function GET_action()
     {
@@ -361,7 +358,7 @@ class KT_cmis_atom_service_types extends KT_atom_service {
 /**
  * AtomPub Service: type
  */
-class KT_cmis_atom_service_type extends KT_atom_service {
+class KT_cmis_atom_service_type extends KT_cmis_atom_service {
 
     public function GET_action()
     {
@@ -436,7 +433,7 @@ class KT_cmis_atom_service_type extends KT_atom_service {
  * AtomPub Service: checkedout
  */
 // NOTE this is always an empty document, underlying API code still to be implemented
-class KT_cmis_atom_service_checkedout extends KT_atom_service {
+class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
     
     /**
      * Deals with GET actions for checkedout documents. 
@@ -510,6 +507,14 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
 
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
+        
+        // determine whether we want the document entry feed or the actual physical document content.
+        // this depends on $this->params[1]
+        if (!empty($this->params[1]))
+        {
+            $this->getContentStream($ObjectService, $repositoryId);
+            return null;
+        }
 
         $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $this->params[0]);
 
@@ -549,6 +554,46 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
         
         // success
         $this->setStatus(self::STATUS_NO_CONTENT);        
+    }
+    
+    private function getContentStream(&$ObjectService, $repositoryId)
+    {
+        $response = $ObjectService->getProperties($repositoryId, $this->params[0], false, false);
+        if (PEAR::isError($response)) {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response->getMessage());
+            $this->responseFeed = $feed;
+            return null;
+        }
+        
+        // TODO also check If-Modified-Since?
+//        $this->headers['If-Modified-Since'] => 2009-07-24 17:16:54
+
+        $this->contentDownload = true;
+        $eTag = md5($response['properties']['LastModificationDate']['value'] . $response['properties']['ContentStreamLength']['value']);
+        
+        if ($this->headers['If-None-Match'] == $eTag)
+        {
+            $this->setStatus(self::STATUS_NOT_MODIFIED);
+            $this->contentDownload = false;
+            return null;
+        }
+        
+        $contentStream = $ObjectService->getContentStream($repositoryId, $this->params[0]);
+        
+        // headers specific to output
+        $this->setEtag($eTag);
+        $this->setHeader('Last-Modified', $response['properties']['LastModificationDate']['value']);
+
+        if (!empty($response['properties']['ContentStreamMimeType']['value'])) {
+    		$this->setHeader('Content-type', $response['properties']['ContentStreamMimeType']['value'] . ';charset=utf-8');
+        }
+        else {
+    		$this->setHeader('Content-type', 'text/plain;charset=utf-8');
+        }
+        
+        $this->setHeader('Content-Disposition', 'attachment;filename="' . $response['properties']['ContentStreamFilename']['value'] . '"');
+		$this->setHeader('Content-Length', $response['properties']['ContentStreamLength']['value']);
+        $this->output = $contentStream;
     }
     
 }

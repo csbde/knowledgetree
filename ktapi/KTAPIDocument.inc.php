@@ -2099,6 +2099,25 @@ class KTAPI_Document extends KTAPI_FolderItem
         $oDocumentTransaction = new DocumentTransaction($this->document, 'Document downloaded', 'ktcore.transactions.download', $aOptions);
         $oDocumentTransaction->create();
 	}
+    
+    /**
+     * Function to fetch the actual file content of a document
+     * 
+     * @return $content the document file content 
+     */
+    function get_document_content()
+    {
+        // fetch the content
+        $content = KTDocumentUtil::getDocumentContent($this->document);
+        
+        // TODO what if the file could not be found?
+        
+    	// Log the transaction
+    	$this->download();
+        
+        // return the document content
+        return $content;
+    }
 
 	/**
 	 * This returns the transaction history for the document.

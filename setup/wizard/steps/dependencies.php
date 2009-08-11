@@ -55,6 +55,15 @@ class dependencies extends Step
 	*/
     public $storeInSession = true;
 
+	/**
+	* Flag if step needs to run silently
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $silent = true;
+    
     /**
      * Constructor
      *
@@ -62,7 +71,7 @@ class dependencies extends Step
      * @access public
      */
     public function __construct() {
-        $this->temp_variables = array("step_name"=>"dependencyCheck");
+        $this->temp_variables = array("step_name"=>"dependencies");
         $this->error = array();
         $this->done = true;
     }
@@ -76,6 +85,10 @@ class dependencies extends Step
 	 */
     public function doStep()
     {
+    	if(!$this->inStep("dependencies")) {
+    		$this->doRun();
+    		return 'landing';
+    	}
         // Check dependencies
         $passed = $this->doRun();
         if($this->next()) {
@@ -102,16 +115,12 @@ class dependencies extends Step
     {
         $check = $this->checkPhpVersion();
         $this->temp_variables['version'] = $check;
-
         $configs = $this->checkPhpConfiguration();
         $this->temp_variables['configurations'] = $configs;
-
         // get the list of extensions
         $list = $this->getRequiredExtensions();
         $extensions = array();
-
         foreach($list as $ext){
-
             $ext['available'] = 'no';
             if($this->checkExtension($ext['extension'])){
                 $ext['available'] = 'yes';
@@ -298,20 +307,25 @@ class dependencies extends Step
      * @access private
      * @return array
      */
-    private function getRequiredExtensions()
-    {
-        return array(
-            array('extension' => 'fileinfo', 'required' => 'no', 'name' => 'Fileinfo', 'details' => 'Provides better file identification support - not necessary if you use file extensions.'),
-            array('extension' => 'iconv', 'required' => 'no', 'name' => 'IconV', 'details' => 'Used for conversion between character sets.'),
-            array('extension' => 'mysql', 'required' => 'yes', 'name' => 'MySQL', 'details' => 'Used for accessing a MySQL database.'),
-            array('extension' => 'curl', 'required' => 'yes', 'name' => 'cURL', 'details' => 'Allows the connection and communication between different servers types using various protocols.'),
-            array('extension' => 'xmlrpc', 'required' => 'yes', 'name' => 'XMLRPC', 'details' => 'Used with XML-RPC servers and clients.'),
-            array('extension' => 'win32', 'required' => 'no', 'name' => 'Win32', 'details' => 'Allows control of Microsoft Windows services.'),
-            array('extension' => 'mbstring', 'required' => 'no', 'name' => 'Multi Byte Strings', 'details' => 'Used in the manipulation of multi-byte strings.'),
-            array('extension' => 'ldap', 'required' => 'no', 'name' => 'LDAP', 'details' => 'Used to access LDAP directory servers.'),
-            array('extension' => 'json', 'required' => 'yes', 'name' => 'JSON', 'details' => 'Implements the javascript object notation (json) data-interchange format.'),
-            array('extension' => 'openssl', 'required' => 'no', 'name' => 'Open SSL', 'details' => 'Used for the generation and verification of signatures and the encrypting and decrypting of data'),
-        );
+    private function getRequiredExtensions() {
+    	$ext = array(
+	            array('extension' => 'fileinfo', 'required' => 'no', 'name' => 'Fileinfo', 'details' => 'Provides better file identification support - not necessary if you use file extensions.'),
+	            array('extension' => 'iconv', 'required' => 'no', 'name' => 'IconV', 'details' => 'Used for conversion between character sets.'),
+	            array('extension' => 'mysql', 'required' => 'yes', 'name' => 'MySQL', 'details' => 'Used for accessing a MySQL database.'),
+	            array('extension' => 'curl', 'required' => 'yes', 'name' => 'cURL', 'details' => 'Allows the connection and communication between different servers types using various protocols.'),
+	            array('extension' => 'xmlrpc', 'required' => 'yes', 'name' => 'XMLRPC', 'details' => 'Used with XML-RPC servers and clients.'),
+	            array('extension' => 'win32', 'required' => 'no', 'name' => 'Win32', 'details' => 'Allows control of Microsoft Windows services.'),
+	            array('extension' => 'mbstring', 'required' => 'no', 'name' => 'Multi Byte Strings', 'details' => 'Used in the manipulation of multi-byte strings.'),
+	            array('extension' => 'ldap', 'required' => 'no', 'name' => 'LDAP', 'details' => 'Used to access LDAP directory servers.'),
+	            array('extension' => 'json', 'required' => 'yes', 'name' => 'JSON', 'details' => 'Implements the javascript object notation (json) data-interchange format.'),
+	            array('extension' => 'openssl', 'required' => 'no', 'name' => 'Open SSL', 'details' => 'Used for the generation and verification of signatures and the encrypting and decrypting of data'),
+	        );
+    	if(WINDOWS_OS) {
+	        return $ext;
+    	} else {
+    		unset($ext[5]);
+	        return $ext;
+    	}
     }
 
     /**

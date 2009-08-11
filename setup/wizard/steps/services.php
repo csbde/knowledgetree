@@ -40,9 +40,6 @@
 * @version Version 0.1
 */
 
-
-//require_once('../../thirdparty/xmlrpc-2.2/xmlrpc.inc');
-
 class services extends Step 
 {
 	/**
@@ -63,16 +60,88 @@ class services extends Step
 	*/
     protected $runInstall = true;
     
+    protected $services = array('Lucene', 'Scheduler');
+    
+    protected $java;
+    
+    protected $util;
+    
+    protected $response;
+    
+    private $javaVersion = '1.5';
     
 	/**
-	* Constructs database object
+	* Flag to store class information in session
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var boolean
+	*/
+    protected $storeInSession = false;
+    
+    public $temp_variables;
+    
+	/**
+	* Constructs services object
 	*
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
  	*/
     public function __construct() {
-    	
+    	$this->temp_variables = array("step_name"=>"services");
+    	$this->util = new InstallUtil();
+    	$this->setJava();
+    }
+    
+    function tryJava1() {
+    	$response = $this->util->pexec("java -version"); // Java Runtime Check
+    	if(empty($response['out'])) {
+    		return false;
+    	}
+    	$this->java = 'java';
+    	$this->response = $response;
+    	return true;
+    }
+    
+    function tryJava2() {
+    	$response = $this->util->pexec("java"); // Java Runtime Check
+    	if(empty($response['out'])) {
+    		return false;
+    	}
+    	$this->java = 'java';
+    	$this->response = $response;
+    	return true;
+    }
+    
+    function tryJava3() {
+    	$response = $this->util->pexec("whereis java"); // Java Runtime Check
+    	if(empty($response['out'])) {
+    		return false;
+    	}
+    	$broke = explode(' ', $response['out'][0]);
+		foreach ($broke as $r) {
+			$match = preg_match('/bin/', $r);
+			if($match) {
+				$this->java = preg_replace('/java:/', '', $r);
+		    	$this->response = $response;
+		    	return true;
+			}
+		}
+    }
+    
+    function setJava() {
+    	$response = $this->tryJava1();
+    	if(!$response) {
+    		$response = $this->tryJava2();
+    		if(!$response) {
+    			$response = $this->tryJava3();
+    		}
+    	}
+    }
+    
+    function getJavaResponse() {
+    	return $this->response;
     }
     
 	/**
@@ -85,6 +154,10 @@ class services extends Step
 	*/
     public function doStep()
     {
+    	if(!$this->inStep("services")) {
+    		$this->doRun();
+    		return 'landing';
+    	}
         // Check dependencies
         $passed = $this->doRun();
         if($this->next()) {
@@ -93,51 +166,177 @@ class services extends Step
             else
                 return 'error';
         } else if($this->previous()) {
-
             return 'previous';
         }
-
         return 'landing';
     }
     
+    /**
+	* Run step
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
     private function doRun() {
-    	$util = new InstallUtil();
-//    	$response = $util->pexec("java"); // Java Runtime Check
-    	$response = $util->pexec("java -version"); // Java Runtime Check
-    	if(empty($response['out'])) {
-    		$this->error[] = "Java runtime environment required";
-//    		return false;
-    	}
-		$this->installStep();
+		if($this->javaChecks()) {
+			$this->installService();
+		}
+		$errors = $this->getErrors();
+		if(!empty($errors))
+			return false;
 		return true;
     }
     
-    
+    public function javaChecks() {
+		$java = false;
+		$mods = get_loaded_extensions();
+		foreach ($mods as $k=>$v) {
+			if($v == 'Zend Java Bridge') {
+				$java = true;
+			}
+		}
+		if($java) {
+			$this->temp_variables['extensions']['class'] = 'tick';
+			$this->temp_variables['extensions']['found'] = "Java Bridge Installed";
+		} else {
+			$this->temp_variables['extensions']['class'] = 'cross';
+			$this->temp_variables['extensions']['found'] = "Zend Java Bridge Required";
+		}
+    	if($this->java == '') {
+    		$this->temp_variables['version']['class'] = 'cross';
+			$this->temp_variables['version']['found'] = "Java runtime environment required";
+    	} else {
+    		$this->temp_variables['java']['class'] = 'tick';
+    		$this->temp_variables['java']['found'] = "Java Runtime Installed";
+    	}
+    	if($java) {
+	    	$javaSystem = new Java('java.lang.System');
+	    	$version = $javaSystem->getProperty('java.version');
+	    	$ver = substr($version, 0, 3);
+	    	if($ver < $this->javaVersion) {
+				$this->temp_variables['version']['class'] = 'cross';
+				$this->temp_variables['version']['found'] = "Requires Java 1.5+ to be installed";
+	    	} else {
+	    		$this->temp_variables['version']['class'] = 'tick';
+	    		$this->temp_variables['version']['found'] = "Java Version 1.5+ Installed";
+	    	}
+    	} else {
+			$this->temp_variables['version']['class'] = 'cross';
+			$this->temp_variables['version']['found'] = "Cannot detect Java system settings";
+			return false;
+    	}
+    	
+    	return true;
+    }
     /**
-	* Runs step install if required
+	* Installs services
 	*
 	* @author KnowledgeTree Team
 	* @param none
 	* @access public
-	* @return void
+	* @return boolean
 	*/
-    public function installStep() {
-		$util = new InstallUtil();
-		if(WINDOWS_OS) { // Add service to tasks list if needed
-			$lucene = new windowsLucene();
-		// Start service
-		} else { // Unix based systems
-			$lucene = new unixLucene();
-			$lucene->load();
+    public function installService() {
+		foreach ($this->services as $serviceName) {
+			$className = OS.$serviceName;
+			$service = new $className();
+			$status = $this->serviceHelper($service);
+			if ($status) {
+				$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$service->getName()." has been added as a Service");
+			} else {
+				$this->temp_variables['services'][] = array('class'=>'cross', 'msg'=>$service->getName()." Could not be added as a Service");
+			}
 		}
-
-
 		
-		
+		return true;
     }
 
-  
+   	/**
+	* Executes services
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access private
+	* @return string
+	*/
+	private function serviceHelper($service) {
+		$service->load(); // Load Defaults
+		$response = $service->install(); // Install service
+		$statusCheck = OS."ServiceInstalled";
+		return $this->$statusCheck($service);
+	}
+	
+   	/**
+	* Check if windows service installed
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access public
+	* @return boolean
+	*/
+	public function windowsServiceInstalled($service) {
+		$status = $service->status(); // Check if service has been installed
+		if($status != 'STOPPED') { // Check service status
+			$this->error[] = $service->getName()." Could not be added as a Service";
+			return false;
+		}
+		return true;
+	}
+	
+   	/**
+	* Check if unix service installed
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access public
+	* @return boolean
+	*/
+	public function unixServiceInstalled($service) {
+		$status = $service->status(); // Check if service has been installed
+		if($status != 'STARTED') { // Check service status
+			$this->error[] = $service->getName()." Could not be added as a Service";
+			return false;
+		}
+		return true;
+	}
+	
+   	/**
+	* Starts all services
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access public
+	* @return mixed
+	*/
+	public function installStep() {
+		foreach ($this->services as $serviceName) {
+			$className = OS.$serviceName;
+			$service = new $className();
+			$status = $this->serviceStart($service);
+			
+		}
 		
+		return true;
+	}
+	
+   	/**
+	* Starts service
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access private
+	* @return string
+	*/
+	private function serviceStart($service) {
+		if(OS == 'windows') {
+			$service->load(); // Load Defaults
+			$service->start(); // Start Service
+			return $service->status(); // Get service status
+		}
+	}
+	
 	/**
 	* Returns database errors
 	*
@@ -148,6 +347,18 @@ class services extends Step
 	*/
     public function getErrors() {
         return $this->error;
+    }
+    
+    /**
+     * Get the variables to be passed to the template
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @return array
+     */
+    public function getStepVars()
+    {
+        return $this->temp_variables;
     }
 }
 ?>
