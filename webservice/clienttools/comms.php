@@ -1,139 +1,59 @@
 <?php
 include_once('../../ktapi/ktapi.inc.php');
+require_once("../../config/dmsDefaults.php");
+error_reporting(E_ERROR&~E_WARNING);
 
 /**
- * Expected structure of the json-decoded request object
- * [auth]
- * 		[user]
- * 		[passhash]
- * 		[session]
- * 		[appType]
- * [request]
- * 		[service]
- * 		[function]
- * 		[parameters]
+ * Intercept Errors and Exceptions and provide a json response in return.
+ * TODO: Make the json response 1. an object of its own and 2. versionable.
  *
- *
+ * @param unknown_type $e
+ * @param unknown_type $errstr
+ * @param unknown_type $errfile
+ * @param unknown_type $errline
+ * 
+ * return json Error Response
  */
-
-class ktjapi{
-	protected $kt;
-	protected $raw;
-	protected $request=array(
-	'auth'		=>array(
-		'user'			=>'',
-		'passhash'		=>'',
-		'session'		=>'',
-		'appType'		=>''
-	),
-	'request'	=>array(
-		'service'		=>'',
-		'function'		=>'',
-		'parameters'	=>''
-	)
-	);
-	protected $session_id;
-	protected $session;
-	protected $token;
-	protected $response=array(
-		'error'				=>array(
-			'code'				=>0,
-			'message'			=>''
-		),
-		'status'			=>array(
-			'session_id'		=>'',
-			'random_token'		=>''
-		),
-		'data'				=>array()
-	);
-
-	public function __construct(){
-		$this->kt=new KTAPI();
-		$this->parseRequest();
-		if($this->auth()){
-			$this->dispatch();
-			$this->setAuthResponse();
-		}
-		echo json_encode($this->response);
-	}
-
-	protected function parseRequest(){
-		$this->raw=@file_get_contents('php://input');
-		$this->req=@json_decode($this->raw,true);
-		if(!is_array($this->req))$this->req=array();
-
-		$this->checkSession();
-		$this->token=$_SESSION['token']?$_SESSION['token']:md5(rand()*rand());
-		$this->response['status']['random_token']=$this->token;
-	}
-
-	protected function checkSession(){
-		$this->session_id=isset($this->request['auth']['session'])?$this->request['auth']['session']:session_id();
-		$this->session=$this->getSession($this->session_id);
-	}
-
-	protected function auth(){
-		if(!$this->isLoggedIn()){
-			$this->login();
-			if(!$this->isLoggedIn()){
-				$this->response['error']['code']=100;
-				$this->response['error']['message']='Invalid credentials. You are not authorised on this repository.';
-				return false;
-			}else{
-				return true;
-			}
-		}else{
-			return true;
-		}
-	}
-
-	protected function setAuthResponse(){
-		$this->checkSession();
-		if(rand(0,100)>50)$this->token=md5(rand()*rand());
-		$_SESSION['ktjapi_token']=$this->token;
-		$this->response['status']['session_id']=$this->session_id;
-		$this->response['status']['random_token']=$this->token;
-	}
-
-	protected function getSession($sessId=null){
-		$session=$this->kt->get_active_session($sessId?$sessId:session_id());
-		return PEAR::isError($session)?null:$session;
-	}
-
-	public  function isLoggedIn(){
-		return !is_null($session);
-	}
-
-	public  function logout(){
-		if($this->isLoggedIn()){
-			$this->session->logout();
-			$this->checkSession();
-		}
-	}
-
-	public  function login(){
-		if(!$this->isLoggedIn()){
-			$user=$this->kt->get_user_object_by_username($this->request['auth']['user']);
-			if(!PEAR::isError($user)){
-				$pass=$user->getPassword();
-				$passHash=md5($pass.$this->token);
-				if($passHash==$this->request['auth']['passhash']){
-					$uSession=KTAPI_UserSession::_check_session($user, null, $this->request['auth']['appType']);
-					if(!PEAR::isError($uSession)){
-						$session= &new KTAPI_UserSession($this->kt, $user, $uSession[0], $uSession[1], NULL);
-					}else{
-						//handle the session error
-					}
-				}
-			}
-			$this->checkSession();
-		}
-	}
-
-	protected function dispatch(){
-
-	}
+function error_handler($e,$errstr=null,$errfile=null,$errline=null){
+	if($GLOBALS['RET']){
+		$GLOBALS['RET']->addError($errfile?$errstr:$e->getmessage());
+		$GLOBALS['RET']->setDebug('',$errfile?(array('error_number'=>$e,'error_string'=>$errstr,'error_file'=>$errfile,'error_line'=>$errline)):$e);
+		echo $GLOBALS['RET']->getJson();
+		exit;
+	};
 }
 
-$k=new ktjapi();
+/**
+ * Set the error & exception handlers
+ */
+$old_exception_handler=set_exception_handler('error_handler');
+$old_error_handler=set_error_handler('error_handler',E_ALL);
+
+
+
+/**
+ * Load additional generic libaries
+ */
+require_once("../../config/dmsDefaults.php");
+
+
+//Interpret the Json Object that was passed
+include_once('jsonWrapper.php');
+include_once('ajaxhandler.php');
+
+//Instantiate base classes
+$RET=new jsonResponseObject();
+$handler=new ajaxHandler($RET);
+
+
+
+
+//Determine the requested comms version & Load related libraries
+
+
+/**
+ * Reset the error & exception handlers
+ */
+set_exception_handler($old_exception_handler);
+set_error_handler($old_error_handler,E_ALL);
 ?>
