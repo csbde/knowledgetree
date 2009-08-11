@@ -289,8 +289,8 @@ class AdvancedUserColumn extends AdvancedColumn {
     var $document_field_function;
     var $folder_field_function;
     var $sortable = false; // by default
-    var $document_sort_column;
-    var $folder_sort_column;
+    var $document_sort_column = 'creator_id';
+    var $folder_sort_column = 'creator_id';
     var $namespace = 'ktcore.columns.genericuser';
 
     function AdvancedUserColumn() {
@@ -321,11 +321,15 @@ class AdvancedUserColumn extends AdvancedColumn {
     }
 
     function addToFolderQuery() {
-        return array(null, null, null);
+        $sUsersTable = KTUtil::getTableName('users');
+        $sJoinSQL = "LEFT JOIN {$sUsersTable} AS users_order_join ON F.{$this->folder_sort_column} = users_order_join.id";
+        return array($sJoinSQL, null, 'users_order_join.name');
     }
 
     function addToDocumentQuery() {
-        return array(null, null, null);
+        $sUsersTable = KTUtil::getTableName('users');
+        $sJoinSQL = "LEFT JOIN {$sUsersTable} AS users_order_join ON D.{$this->document_sort_column} = users_order_join.id";
+        return array($sJoinSQL, null, 'users_order_join.name');
     }
 }
 
@@ -333,6 +337,8 @@ class CreatorColumn extends AdvancedUserColumn {
     var $document_field_function = "getCreatorID";
     var $folder_field_function = "getCreatorID";
     var $sortable = true; // by default
+    var $document_sort_column = 'creator_id';
+    var $folder_sort_column = 'creator_id';
     var $namespace = 'ktcore.columns.creator';
 
     function CreatorColumn() {

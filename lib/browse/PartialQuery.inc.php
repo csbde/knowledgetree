@@ -191,16 +191,14 @@ class BrowseQuery extends PartialQuery{
 	        	$sWhere .= ' AND ';
 
 	        $sWhere .= 'F.id NOT IN (' . implode(',',$this->exclude_folders) . ')';
-	     //   print $sWhere;
         }
-
-
 
         $sSelect = KTUtil::arrayGet($aOptions, 'select', 'F.id');
 
-        $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName('folders') . " AS F $sPermissionJoin $sWhere ";
+        $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName('folders') . " AS F {$this->sFolderJoinClause} $sPermissionJoin $sWhere ";
         $aParams = array();
-        $aParams = kt_array_merge($aParams,  $aPermissionParams);
+        $aParams = kt_array_merge($aParams, $this->aFolderJoinParams);
+        $aParams = kt_array_merge($aParams, $aPermissionParams);
         $aParams[] = $this->folder_id;
         return array($sQuery, $aParams);
     }
@@ -227,6 +225,8 @@ class BrowseQuery extends PartialQuery{
     }
 
     function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) {
+        $this->sFolderJoinClause = $sJoinClause;
+        $this->aFolderJoinParams = $aJoinParams;
         $res = $this->_getFolderQuery();
         if (PEAR::isError($res)) { return array(); }
         list($sQuery, $aParams) = $res;
