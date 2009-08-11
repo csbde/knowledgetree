@@ -323,7 +323,7 @@ class dependencies extends Step
     	if(WINDOWS_OS) {
 	        return $ext;
     	} else {
-    		unset($ext['extension']['win32']);
+    		unset($ext[5]);
 	        return $ext;
     	}
     }

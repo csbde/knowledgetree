@@ -61,12 +61,13 @@ wizard.prototype.toggleElement = function(el) {
 	w.hideErrors(); // If theres no errors, hide the ones displaying
 	var el = document.getElementsByClassName("step"+p);
 	el[0].style.display = 'none';
+	var j = 0;
 	if(d == "n") {
-		var j = p+1;
+		j = p+1;
 	} else if(d == "p") {
-		var j = p-1;
+		j = p-1;
 	}
-	var el = document.getElementsByClassName("step"+j);
+	el = document.getElementsByClassName("step"+j);
 	el[0].style.display = 'block';
 	
 	return true;
@@ -148,4 +149,5 @@ wizard.prototype.onSubmitValidate = function() {
 			return false;
 		}
 	}
+	return true;
 }
