@@ -511,7 +511,7 @@ class KTPermissionUtil {
         // check if permission has been set
         // $permArr[permId] = array('folders' => array('id' => bool), 'docs' => array('id' => bool));
         if(isset(KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId])){
-            return KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId];
+            //return KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId];
         }
 
         $oPL = KTPermissionLookup::get($oFolderOrDocument->getPermissionLookupID());
