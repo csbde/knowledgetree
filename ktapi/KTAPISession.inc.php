@@ -379,7 +379,8 @@ class KTAPI_UserSession extends KTAPI_Session
 
         if (PEAR::isError($authenticated) || $authenticated === false)
         {
-        	return new KTAPI_Error(_kt("The password is invalid."),$authenticated);
+        	$ret=new KTAPI_Error(_kt("The password is invalid."),$authenticated);
+        	return $ret;
         }
 
         if (is_null($ip))
@@ -424,7 +425,8 @@ class KTAPI_UserSession extends KTAPI_Session
 		$row = DBUtil::getOneResult($sql);
 		if (is_null($row) || PEAR::isError($row))
 		{
-			return new KTAPI_Error(KTAPI_ERROR_SESSION_INVALID, $row);
+			$ret= new KTAPI_Error(KTAPI_ERROR_SESSION_INVALID, $row);
+			return $ret;
 		}
 
 		$sessionid = $row['id'];

@@ -168,7 +168,8 @@ class DBUtil {
             if ($bNoId)
                 return;
             else
-                return $db->getLastId();
+            	$ret=$db->getLastId();
+                return $ret;
         }
         if (PEAR::isError($res)) {
         	DBUtil::logQueryError(DBUtil::lastQuery($db), $res);

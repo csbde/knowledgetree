@@ -749,7 +749,7 @@ class KTEntityUtil {
             /* */
         }';
 
-        $allcode[] = sprintf('function %s ($iId, $aInfo = null) { $this->iId = $iId; $this->aFieldArr = $aInfo; $this->cacheGlobal =& $GLOBALS["_OBJECTCACHE"][%s]; }' . "\n", $sProxyClassName, $sClassName);
+        $allcode[] = sprintf('function %s ($iId, $aInfo = null) { $this->iId = $iId; $this->aFieldArr = $aInfo; $this->cacheGlobal =& $GLOBALS["_OBJECTCACHE"]["%s"]; }' . "\n", $sProxyClassName, $sClassName);
 
         $gen = sprintf("class %s extends %s {\n", $sProxyClassName, $sClassName);
         $gen .= "    " . join("\n    ", $allcode) . "\n";
