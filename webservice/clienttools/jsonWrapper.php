@@ -5,6 +5,7 @@ class jsonContentException extends Exception{
 }
 
 class jsonResponseObject{
+	protected $title='';
 	protected $errors=array();
 	protected $status=array('session_id'=>'','random_token'=>'');
 	protected $data=array();
@@ -13,6 +14,7 @@ class jsonResponseObject{
 	public $additional=array();
 	
 	public $response=array(
+		'requestName'		=>'',
 		'errors'			=>array(
 			'hadErrors'			=>0 ,
 			'errors'			=>array()
@@ -39,6 +41,10 @@ class jsonResponseObject{
 		$this->data[$varName]=$value;
 	}
 	
+	public function overwriteData($value=NULL){
+		$this->data=$value;
+	}
+	
 	public function setDebug($varName=NULL,$value=NULL){
 		$this->debug[$varName]=$value;
 	}
@@ -47,8 +53,14 @@ class jsonResponseObject{
 		$this->request=$request;
 	}
 	
+	public function setTitle($title=NULL){
+		$title=(string)$title;
+		$this->title=$title;
+	}
+	
 	public function getJson(){
 		$response=array_merge(array(
+			'title'		=>$this->title,
 			'errors'	=>array(
 				'hadErrors'		=>(count($this->errors)>0?1:0),
 				'errors'		=>$this->errors
@@ -63,6 +75,8 @@ class jsonResponseObject{
 		return $response;
 	}
 }
+
+
 
 class jsonWrapper{
 	public $raw='';

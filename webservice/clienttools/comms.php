@@ -1,7 +1,6 @@
 <?php
 include_once('../../ktapi/ktapi.inc.php');
-require_once("../../config/dmsDefaults.php");
-error_reporting(E_ERROR&~E_WARNING);
+error_reporting(E_ERROR);
 
 /**
  * Intercept Errors and Exceptions and provide a json response in return.
@@ -17,7 +16,7 @@ error_reporting(E_ERROR&~E_WARNING);
 function error_handler($e,$errstr=null,$errfile=null,$errline=null){
 	if($GLOBALS['RET']){
 		$GLOBALS['RET']->addError($errfile?$errstr:$e->getmessage());
-		$GLOBALS['RET']->setDebug('',$errfile?(array('error_number'=>$e,'error_string'=>$errstr,'error_file'=>$errfile,'error_line'=>$errline)):$e);
+		$GLOBALS['RET']->setDebug($errfile?'ERR':'EXC',$errfile?(array('error_number'=>$e,'error_string'=>$errstr,'error_file'=>$errfile,'error_line'=>$errline)):$e);
 		echo $GLOBALS['RET']->getJson();
 		exit;
 	};
@@ -27,23 +26,24 @@ function error_handler($e,$errstr=null,$errfile=null,$errline=null){
  * Set the error & exception handlers
  */
 $old_exception_handler=set_exception_handler('error_handler');
-$old_error_handler=set_error_handler('error_handler',E_ALL);
+$old_error_handler=set_error_handler('error_handler',E_ERROR);
 
 
 
 /**
  * Load additional generic libaries
  */
-require_once("../../config/dmsDefaults.php");
 
 
 //Interpret the Json Object that was passed
 include_once('jsonWrapper.php');
 include_once('ajaxhandler.php');
+include_once('client_service.php');
 
 //Instantiate base classes
+$KT = new KTAPI();
 $RET=new jsonResponseObject();
-$handler=new ajaxHandler($RET);
+$handler=new ajaxHandler($RET,$KT);
 
 
 
