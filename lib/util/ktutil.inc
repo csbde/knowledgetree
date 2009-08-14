@@ -106,7 +106,7 @@ class KTUtil {
         return true;
     }
 
-    static function getServerName()
+    static function getServerName($disallow_localhost = FALSE)
     {
         static $host = null;
 
@@ -116,7 +116,7 @@ class KTUtil {
 
         $host = $_SERVER['HTTP_HOST'];
 
-        if(empty($host)){
+        if(empty($host) || ($disallow_localhost && $host == 'localhost')){
             global $default;
             $host = (!empty($default->server_name)) ? $default->server_name : '127.0.0.1';
             $host .= !empty($default->server_port) ? ':'.$default->server_port : '';
