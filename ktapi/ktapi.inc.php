@@ -415,7 +415,7 @@ class KTAPI
 
 		$permissions = $folder->getPermissionAllocation();
 
-		$permissions->add($user, $permissions);
+		$permissions->add($user, $permission);
 		$permissions->save();
 	}
 
@@ -481,7 +481,7 @@ class KTAPI
 
 		$permissions = $folder->getPermissionAllocation();
 
-		$permissions->add($role, $permissions);
+		$permissions->add($role, $permission);
 		$permissions->save();
 	}
 
@@ -547,7 +547,7 @@ class KTAPI
 
 		$permissions = $folder->getPermissionAllocation();
 
-		$permissions->add($group, $permissions);
+		$permissions->add($group, $permission);
 		$permissions->save();
 	}
 
