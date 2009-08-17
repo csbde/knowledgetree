@@ -312,6 +312,59 @@ class InstallUtil {
     	return true;
     }
     
+    public function javaBridge() {
+		try {
+    		$javaSystem = new Java('java.lang.System');
+		} catch (JavaException $e) {
+			return false;
+		}
+		return true;
+    }
+		
+    function tryJava1() {
+    	$response = $this->pexec("java -version"); // Java Runtime Check
+    	if(empty($response['out'])) {
+    		return false;
+    	}
+
+    	return array('response'=>$response, 'java'=>'java');
+    }
+    
+    function tryJava2() {
+    	$response = $this->pexec("java"); // Java Runtime Check
+    	if(empty($response['out'])) {
+    		return false;
+    	}
+
+    	return array('response'=>$response, 'java'=>'java');
+    }
+    
+    function tryJava3() {
+    	$response = $this->pexec("whereis java"); // Java Runtime Check
+    	if(empty($response['out'])) {
+    		return false;
+    	}
+    	$broke = explode(' ', $response['out'][0]);
+		foreach ($broke as $r) {
+			$match = preg_match('/bin/', $r);
+			if($match) {
+		    	return array('response'=>$response, 'java'=>preg_replace('/java:/', '', $r));
+			}
+		}
+    }
+    
+    function getJava() {
+    	$response = $this->tryJava1();
+    	if(!is_array($response)) {
+    		$response = $this->tryJava2();
+    		if(!is_array($response)) {
+    			$response = $this->tryJava3();
+    		}
+    	}
+    	
+    	return $response;
+    }
+    
    /**
      * Portably execute a command on any of the supported platforms.
      *
