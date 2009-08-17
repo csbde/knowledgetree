@@ -64,7 +64,9 @@ class SubscriptionEvent {
         "CheckInDocument",
         "CheckOutDocument",
         "MovedDocument",
+        "MovedDocument2",
         "CopiedDocument",
+        "CopiedDocument2",
         "ArchivedDocument",
         "RestoredArchivedDocument",
         "DownloadDocument",
@@ -364,15 +366,16 @@ class SubscriptionEvent {
     }
 
     function MoveDocument($oMovedDocument, $oToFolder, $oFromFolder, $moveOrCopy = "MovedDocument")  {
-        $content = new SubscriptionContent(); // needed for i18n
-	    // OK:  two actions:  document registrants, folder registrants.
+        $parentId = $oToFolder->getId();
+
+        // Document registrants
         $aDocUsers = $this->_getSubscribers($oMovedDocument->getId(), $this->subscriptionTypes["Document"]);
+        $this->sendNotification($aDocUsers, $moveOrCopy.'2', $oMovedDocument->getName(), $oMovedDocument->getId(), $parentId);
+
+	    // Folder registrants
         $aFromUsers = $this->_getSubscribers($oFromFolder->getId(), $this->subscriptionTypes["Folder"]);
         $aFolderUsers = $this->_getSubscribers($oToFolder->getId(), $this->subscriptionTypes["Folder"]);
-        $aUsers = array_merge($aDocUsers, $aFromUsers);
-        $aUsers = array_merge($aUsers, $aFolderUsers);
-
-        $parentId = $oToFolder->getId();
+        $aUsers = array_merge($aFromUsers, $aFolderUsers);
         $this->sendNotification($aUsers, $moveOrCopy, $oMovedDocument->getName(), $oToFolder->getId(), $parentId);
     }
 
@@ -542,7 +545,9 @@ class SubscriptionContent {
             "CheckInDocument" => _kt('Document checked in'),
             "CheckOutDocument" => _kt('Document checked out'),
             "MovedDocument" => _kt('Document moved'),
+            "MovedDocument2" => _kt('Document moved'),
             "CopiedDocument" => _kt('Document copied'),
+            "CopiedDocument2" => _kt('Document copied'),
             "ArchivedDocument" => _kt('Document archived'), // can go through and request un-archival (?)
             "DownloadDocument" => _kt('Document downloaded'),
             "RestoredArchivedDocument" => _kt('Document restored'),
@@ -660,6 +665,7 @@ class SubscriptionContent {
                 $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
                 break;
             case 'MovedDocument':
+            case 'MovedDocument2':
                 $text = $modifyDocumentText;
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
                 if(!$bulk_action) $links = '<a href="'.$url.'">'._kt('View New Location').'</a>';
@@ -667,6 +673,7 @@ class SubscriptionContent {
                 $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
                 break;
             case 'CopiedDocument':
+            case 'CopiedDocument2':
                 $text = $copiedDocumentText;
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
                 if(!$bulk_action) $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
@@ -770,8 +777,10 @@ class SubscriptionContent {
         "ModifyDocument" => 'document',
         "CheckInDocument" => 'document',
         "CheckOutDocument" => 'document',
-        "MovedDocument" => 'document',
-        "CopiedDocument" => 'document',
+        "MovedDocument" => 'folder',
+        "MovedDocument2" => 'document',
+        "CopiedDocument" => 'folder',
+        "CopiedDocument2" => 'document',
         "ArchivedDocument" => 'document', // can go through and request un-archival (?)
         "DownloadDocument" => 'document',
         "RestoredArchivedDocument" => 'document',
