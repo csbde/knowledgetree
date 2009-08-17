@@ -40,7 +40,8 @@
 * @version Version 0.1
 */
 
-class unixLucene extends Service {
+class unixLucene extends unixService {
+	public $util;
 	private $phpDir;
 	private $shutdownScript;
 	private $indexerDir;
@@ -53,6 +54,7 @@ class unixLucene extends Service {
 	
 	public function __construct() {
 		$this->name = "KTLuceneTest";
+		$this->util = new InstallUtil();
 	}
 	
 	function load() {
@@ -63,7 +65,7 @@ class unixLucene extends Service {
 		$this->setJavaXmx(512);
 		$this->setLuceneSource("ktlucene.jar");
 		$this->setLuceneSourceLoc("ktlucene.jar");
-		$this->setPhpDir();
+//		$this->setPhpDir();
 		$this->setShutdownScript("shutdown.php");
 	}
 	
@@ -170,7 +172,7 @@ class unixLucene extends Service {
     }
 
     public function install() {
-
+		$this->start();
     }
     
     public function status() {
@@ -201,6 +203,7 @@ class unixLucene extends Service {
     	if($state != 'STARTED') {
 	    	$cmd = "cd ".$this->getLuceneDir()."; ";
 	    	$cmd .= "nohup java -jar ".$this->getLuceneSource()." &> ".SYS_LOG_DIR."lucene.log &";
+	    	echo $cmd;die;
 	    	$response = $this->util->pexec($cmd);
 	    	
 	    	return $response;

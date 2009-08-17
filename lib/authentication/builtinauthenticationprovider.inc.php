@@ -51,7 +51,8 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
     function &getAuthenticator($oSource) {
         // $oSource is null, since the built-in authentication provider
         // only has a single, non-registered, instance.
-        return new BuiltinAuthenticator;
+        $ret= new BuiltinAuthenticator();
+        return $ret;
     }
     
     function showUserSource($oUser, $oSource) {
