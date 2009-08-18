@@ -40,9 +40,8 @@
 * @version Version 0.1
 */
 
-class unixScheduler extends Service {
+class unixScheduler extends unixService {
 	private $phpDir;
-	private $schedulerPidFile;
 	private $schedulerDir;
 	private $schedulerSource;
 	private $schedulerSourceLoc;
@@ -50,6 +49,7 @@ class unixScheduler extends Service {
 	
 	public function __construct() {
 		$this->name = "KTSchedulerTest";
+		$this->util = new InstallUtil();
 	}
 	
 	function load() {
@@ -57,15 +57,6 @@ class unixScheduler extends Service {
 		$this->setSchedulerDir(SYSTEM_DIR."bin".DS);
 		$this->setSchedulerSource('schedulerTask.sh');
 		$this->setSchedulerSourceLoc('schedulerTask.sh');
-		$this->setSchedulerPidFile("scheduler_test.pid");
-	}
-	
-	private function setSchedulerPidFile($schedulerPidFile) {
-		$this->schedulerPidFile = $schedulerPidFile;
-	}
-	
-	private function getSchedulerPidFile() {
-		return $this->schedulerPidFile;
 	}
 	
 	function setSystemDir($systemDir) {
@@ -109,7 +100,8 @@ class unixScheduler extends Service {
 		$content = "#!/bin/sh\n";
 		$content .= "cd ".$this->getSchedulerDir()."\n";
 		$content .= "while true; do\n";
-		$content .= "php "."\"{$this->getSchedulerDir()}{$this->getSchedulerSource()}\"";
+		// TODO : This will not work without CLI
+		$content .= "php -Cq scheduler.php\n";
 		$content .= "sleep 30\n";
 		$content .= "done";
 		fwrite($fp, $content);
@@ -117,7 +109,7 @@ class unixScheduler extends Service {
 	}
 	
 	function install() {
-
+		$this->start();
 	}
 	
 	function uninstall() {
@@ -151,18 +143,22 @@ class unixScheduler extends Service {
 	
 	function start() {
 		$source = $this->getSchedulerSourceLoc();
-		if($source) {
-			$cmd = "nohup ".$source." &> ".SYS_LOG_DIR."dmsctl.log";
+		if($source) { // Source
+			$cmd = "nohup ".$source." > ".SYS_LOG_DIR."scheduler.log 2>&1 & echo $!";
 	    	$response = $this->util->pexec($cmd);
     		return $response;
 		} else { // Could be Stack
-			$source = $this->getSystemDir().$this->schedulerSource;
+			$source = SYS_BIN_DIR.$this->schedulerSource;
 			if(file_exists($source)) {
-				$cmd = "nohup ".$source." &> ".SYS_LOG_DIR."dmsctl.log";
+				$cmd = "nohup ".$source." > ".SYS_LOG_DIR."scheduler.log 2>&1 & echo $!";
 		    	$response = $this->util->pexec($cmd);
 	    		return $response;
+			} else {
+				// Write it
+				$this->writeSchedulerTask();
 			}
 		}
+		
 		return false;
 	}
 	

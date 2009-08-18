@@ -40,7 +40,7 @@
 * @version Version 0.1
 */
 
-class windowsService extends Service {
+class unixService extends Service {
 	/**
 	* Retrieve Service name
 	*

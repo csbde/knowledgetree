@@ -49,7 +49,7 @@ class services extends Step
 	* @access public
 	* @var array
 	*/
-    public $error = array();
+    protected $error = array();
     
 	/**
 	* Flag if step needs to be installed
@@ -60,13 +60,13 @@ class services extends Step
 	*/
     protected $runInstall = true;
     
-    protected $services = array('Lucene', 'Scheduler');
+    private $services = array('Lucene', 'Scheduler');
     
     protected $java;
     
     protected $util;
     
-    protected $response;
+    private $response;
     
     private $javaVersion = '1.5';
     
@@ -79,7 +79,7 @@ class services extends Step
 	*/
     protected $storeInSession = false;
     
-    public $temp_variables;
+    protected $temp_variables;
     
 	/**
 	* Constructs services object
@@ -91,54 +91,9 @@ class services extends Step
     public function __construct() {
     	$this->temp_variables = array("step_name"=>"services");
     	$this->util = new InstallUtil();
-    	$this->setJava();
     }
     
-    function tryJava1() {
-    	$response = $this->util->pexec("java -version"); // Java Runtime Check
-    	if(empty($response['out'])) {
-    		return false;
-    	}
-    	$this->java = 'java';
-    	$this->response = $response;
-    	return true;
-    }
-    
-    function tryJava2() {
-    	$response = $this->util->pexec("java"); // Java Runtime Check
-    	if(empty($response['out'])) {
-    		return false;
-    	}
-    	$this->java = 'java';
-    	$this->response = $response;
-    	return true;
-    }
-    
-    function tryJava3() {
-    	$response = $this->util->pexec("whereis java"); // Java Runtime Check
-    	if(empty($response['out'])) {
-    		return false;
-    	}
-    	$broke = explode(' ', $response['out'][0]);
-		foreach ($broke as $r) {
-			$match = preg_match('/bin/', $r);
-			if($match) {
-				$this->java = preg_replace('/java:/', '', $r);
-		    	$this->response = $response;
-		    	return true;
-			}
-		}
-    }
-    
-    function setJava() {
-    	$response = $this->tryJava1();
-    	if(!$response) {
-    		$response = $this->tryJava2();
-    		if(!$response) {
-    			$response = $this->tryJava3();
-    		}
-    	}
-    }
+
     
     function getJavaResponse() {
     	return $this->response;
@@ -180,8 +135,15 @@ class services extends Step
 	* @return boolean
 	*/
     private function doRun() {
+    	$javaSettings = $this->util->getJava();
+    	$this->response = $javaSettings['response'];
+    	$this->java = $javaSettings['java'];
 		if($this->javaChecks()) {
 			$this->installService();
+		} else { // Services not installed
+			foreach ($this->services as $serviceName) {
+				$this->temp_variables['services'][] = array('class'=>'cross', 'msg'=>$serviceName." Could not be added as a Service");
+			}
 		}
 		$errors = $this->getErrors();
 		if(!empty($errors))
@@ -192,10 +154,12 @@ class services extends Step
     public function javaChecks() {
 		$java = false;
 		$mods = get_loaded_extensions();
+		$mods = array_reverse($mods);
 		foreach ($mods as $k=>$v) {
 			if($v == 'Zend Java Bridge') {
 				$java = true;
 			}
+			if($java) break;
 		}
 		if($java) {
 			$this->temp_variables['extensions']['class'] = 'tick';
@@ -203,31 +167,35 @@ class services extends Step
 		} else {
 			$this->temp_variables['extensions']['class'] = 'cross';
 			$this->temp_variables['extensions']['found'] = "Zend Java Bridge Required";
+			$this->error[] = "Zend Java Bridge Required";
 		}
     	if($this->java == '') {
     		$this->temp_variables['version']['class'] = 'cross';
 			$this->temp_variables['version']['found'] = "Java runtime environment required";
+			$this->error[] = "Java runtime environment required";
     	} else {
     		$this->temp_variables['java']['class'] = 'tick';
     		$this->temp_variables['java']['found'] = "Java Runtime Installed";
     	}
-    	if($java) {
-	    	$javaSystem = new Java('java.lang.System');
+    	if($this->util->javaBridge()) { // Check if java bridge is functional
+    		$javaSystem = new Java('java.lang.System');
 	    	$version = $javaSystem->getProperty('java.version');
 	    	$ver = substr($version, 0, 3);
 	    	if($ver < $this->javaVersion) {
 				$this->temp_variables['version']['class'] = 'cross';
 				$this->temp_variables['version']['found'] = "Requires Java 1.5+ to be installed";
+				$this->error[] = "Requires Java 1.5+ to be installed";
 	    	} else {
 	    		$this->temp_variables['version']['class'] = 'tick';
 	    		$this->temp_variables['version']['found'] = "Java Version 1.5+ Installed";
 	    	}
     	} else {
-			$this->temp_variables['version']['class'] = 'cross';
+    		$this->temp_variables['version']['class'] = 'cross';
 			$this->temp_variables['version']['found'] = "Cannot detect Java system settings";
+			$this->error[] = "Cannot detect Java system settings";
 			return false;
     	}
-    	
+
     	return true;
     }
     /**

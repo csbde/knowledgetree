@@ -4,15 +4,6 @@
 This checkup ensures that your environment is ready to support KnowledgeTree's background services. 
 </p>
 
-<?php
-if($errors){
-    echo '<div class="error">';
-    foreach ($errors as $msg){
-        echo $msg . "<br />\n";
-    }
-    echo '</div>';
-}
-?>
 <h3>Java Version Check</h3>
 <p class="description">
 The Java version must be higher than 1.5.

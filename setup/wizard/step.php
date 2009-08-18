@@ -349,6 +349,18 @@ class Step
     	return '';
     }
     
+    /**
+     * Return whether or not to a step has to be in silent mode
+     * 
+     * @author KnowledgeTree Team
+     * @param none
+     * @access public
+     * @return boolean
+     */
+    public function silentMode() {
+    	return $this->silent;
+    }
+    
 	/**
 	* Set step errors
 	*
