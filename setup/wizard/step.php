@@ -60,6 +60,15 @@ class Step
     protected $error = array();
 
 	/**
+	* List of warnings encountered by step
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var array
+	*/
+    protected $warnings = array();
+    
+	/**
 	* Flag to store class information in session
 	*
 	* @author KnowledgeTree Team
@@ -134,6 +143,18 @@ class Step
         return $this->error;
     }
 
+	/**
+	* Returns step errors
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return array
+	*/
+    public function getWarnings() {
+        return $this->warnings;
+    }
+    
 	/**
 	* Load default step values
 	*

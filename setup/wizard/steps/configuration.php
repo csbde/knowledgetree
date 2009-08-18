@@ -90,6 +90,7 @@ class configuration extends Step
      */
     public function __construct()
     {
+    	$this->temp_variables = array("step_name"=>"configuration", "silent"=>$this->silent);
     	$this->_dbhandler = new dbUtil();
         $this->done = true;
     }
@@ -321,7 +322,7 @@ class configuration extends Step
     {
         $dirs = $this->getDirectories();
         $varDirectory = $fileSystemRoot . DIRECTORY_SEPARATOR . 'var';
-
+		$this->temp_variables['paths_perms'] = 'tick';
         foreach ($dirs as $key => $dir){
             $path = (isset($_POST[$dir['setting']])) ? $_POST[$dir['setting']] : $dir['path'];
 
@@ -331,6 +332,9 @@ class configuration extends Step
 
             $dirs[$key]['path'] = $path;
             $class = $this->checkPermission($path, $dir['create']);
+			if($class['class'] != 'tick') {
+				$this->temp_variables['paths_perms'] = $class['class'];
+			}
             $dirs[$key] = array_merge($dirs[$key], $class);
         }
 

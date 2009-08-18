@@ -82,6 +82,15 @@ class services extends Step
     protected $temp_variables;
     
 	/**
+	* Flag if step needs to run silently
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $silent = true;
+    
+	/**
 	* Constructs services object
 	*
 	* @author KnowledgeTree Team
@@ -89,7 +98,7 @@ class services extends Step
 	* @param none
  	*/
     public function __construct() {
-    	$this->temp_variables = array("step_name"=>"services");
+    	$this->temp_variables = array("step_name"=>"services", "silent"=>$this->silent);
     	$this->util = new InstallUtil();
     }
     
@@ -138,6 +147,7 @@ class services extends Step
     	$javaSettings = $this->util->getJava();
     	$this->response = $javaSettings['response'];
     	$this->java = $javaSettings['java'];
+    	$this->temp_variables['service_check'] = 'tick';
 		if($this->javaChecks()) {
 			$this->installService();
 		} else { // Services not installed
@@ -151,32 +161,15 @@ class services extends Step
 		return true;
     }
     
-    public function javaChecks() {
-		$java = false;
+    public function zendBridge() {
 		$mods = get_loaded_extensions();
-		$mods = array_reverse($mods);
-		foreach ($mods as $k=>$v) {
-			if($v == 'Zend Java Bridge') {
-				$java = true;
-			}
-			if($java) break;
-		}
-		if($java) {
-			$this->temp_variables['extensions']['class'] = 'tick';
-			$this->temp_variables['extensions']['found'] = "Java Bridge Installed";
-		} else {
-			$this->temp_variables['extensions']['class'] = 'cross';
-			$this->temp_variables['extensions']['found'] = "Zend Java Bridge Required";
-			$this->error[] = "Zend Java Bridge Required";
-		}
-    	if($this->java == '') {
-    		$this->temp_variables['version']['class'] = 'cross';
-			$this->temp_variables['version']['found'] = "Java runtime environment required";
-			$this->error[] = "Java runtime environment required";
-    	} else {
-    		$this->temp_variables['java']['class'] = 'tick';
-    		$this->temp_variables['java']['found'] = "Java Runtime Installed";
-    	}
+		if(in_array('Zend Java Bridge', $mods)) 
+			return true;
+		else 
+			return false;
+    }
+    
+    public function checkZendBridge() {
     	if($this->util->javaBridge()) { // Check if java bridge is functional
     		$javaSystem = new Java('java.lang.System');
 	    	$version = $javaSystem->getProperty('java.version');
@@ -190,14 +183,42 @@ class services extends Step
 	    		$this->temp_variables['version']['found'] = "Java Version 1.5+ Installed";
 	    	}
     	} else {
-    		$this->temp_variables['version']['class'] = 'cross';
-			$this->temp_variables['version']['found'] = "Cannot detect Java system settings";
-			$this->error[] = "Cannot detect Java system settings";
+    		$this->warnings[] = "Zend Java Bridge Error";
+			$this->temp_variables['version']['class'] = 'cross_orange';
+			$this->temp_variables['version']['found'] = "Java Runtime Version Cannot be detected";
+    		$this->temp_variables['extensions']['class'] = 'cross_orange';
+			$this->temp_variables['extensions']['found'] = "Zend Java Bridge Error";
 			return false;
+    	}    	
+    }
+    
+    public function javaChecks() {
+		$zendBridge = $this->zendBridge(); // Find Zend Bridge
+		$this->temp_variables['java_check'] = 'tick';
+		$this->temp_variables['java_ext_check'] = 'tick';
+		$this->temp_variables['extensions']['class'] = 'cross';
+		$this->temp_variables['extensions']['found'] = "Zend Java Bridge Required";
+		$this->temp_variables['version']['class'] = 'cross';
+		$this->temp_variables['version']['found'] = "Java Runtime Version Incorrect";
+		$this->temp_variables['java']['class'] = 'cross';
+		$this->temp_variables['java']['found'] = "Java runtime environment required";
+		if($zendBridge) {
+			$this->temp_variables['extensions']['class'] = 'tick';
+			$this->temp_variables['extensions']['found'] = "Java Bridge Installed";
+			$this->checkZendBridge(); // Make sure the Zend Bridge is functional
+		} else {
+			$this->warnings[] = "Zend Java Bridge Required";
+		}
+    	if($this->java != '') { // Find Java JRE
+    		$this->temp_variables['java']['class'] = 'tick';
+    		$this->temp_variables['java']['found'] = "Java Runtime Installed";
+    	} else {
+    		$this->error[] = "Java runtime environment required";
     	}
 
     	return true;
     }
+    
     /**
 	* Installs services
 	*
@@ -215,6 +236,7 @@ class services extends Step
 				$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$service->getName()." has been added as a Service");
 			} else {
 				$this->temp_variables['services'][] = array('class'=>'cross', 'msg'=>$service->getName()." Could not be added as a Service");
+				$this->temp_variables['service_check'] = 'cross';
 			}
 		}
 		
@@ -306,7 +328,7 @@ class services extends Step
 	}
 	
 	/**
-	* Returns database errors
+	* Returns service errors
 	*
 	* @author KnowledgeTree Team
 	* @access public

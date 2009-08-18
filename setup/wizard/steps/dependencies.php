@@ -128,8 +128,10 @@ class dependencies extends Step
                 $ext['available'] = 'yes';
             } else {
                 if($ext['required'] == 'no') {
-                	$this->temp_variables['php_ext'] = 'cross_orange';
+                	if($this->temp_variables['php_ext'] != 'cross')
+                		$this->temp_variables['php_ext'] = 'cross_orange';
                     $ext['available'] = 'optional';
+                    $this->warnings[] = 'Missing optional extension: '.$ext['name'];
                 } else {
                     $this->done = false;
                     $this->temp_variables['php_ext'] = 'cross';
@@ -156,6 +158,17 @@ class dependencies extends Step
         return $this->error;
     }
 
+  	/**
+     * Get any warnings that occurred
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @return array The error list
+     */
+    public function getWarnings() {
+        return $this->warnings;
+    }
+    
     /**
      * Get the variables to be passed to the template
      *
@@ -197,6 +210,7 @@ class dependencies extends Step
             $class = ($value == $config['recommended']) ? 'green' : 'orange';
 			if($class == 'orange') {
 				$this->temp_variables['php_con'] = 'cross_orange';
+				$this->warnings[] = "$value";
 			}
             $configs[$key]['setting'] = $value;
             $configs[$key]['class'] = $class;

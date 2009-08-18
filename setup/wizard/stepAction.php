@@ -325,12 +325,14 @@ class stepAction {
         $left = $this->getLeftMenu();
         $top = $this->getTop();
         $step_errors = $this->action->getErrors(); // Get errors
+        $step_warnings = $this->action->getWarnings(); // Get warnings
         if($this->displayConfirm()) // Check if theres a confirm step
             $template = "templates/{$this->stepName}_confirm.tpl";
         else
             $template = "templates/{$this->stepName}.tpl";
         $step_tpl = new Template($template);
         $step_tpl->set("errors", $step_errors); // Set template errors
+        $step_tpl->set("warnings", $step_warnings); // Set template warnings
         $step_vars = $this->action->getStepVars(); // Get template variables
         $step_tpl->set("step_vars", $step_vars); // Set template errors
         foreach ($step_vars as $key => $value) { // Set template variables

@@ -49,31 +49,32 @@ The settings below have been drawn from the system information. The host and por
 </table>
 
 <br />
-<h3>Paths and Permissions</h3>
-
+<h3><?php echo "<span class='{$paths_perms}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Paths and Permissions</h3>
+<?php if($silent) { ?>
+	<div id="options" class="onclick" onclick="javascript:{w.toggleClass('paths_perms');}">Show Details</div>
+	<div class="paths_perms" style="display:none">
+<?php } ?>
 <p class="description">
 The following folders must be writable for KnowledgeTree to be able to run. The permissions on the configuration file can be reset to read-only once the installation has completed.
 </p>
-
 <table>
 <?php
     foreach ($paths as $key => $path){
         $row = '<tr>';
-
         $row .= "<td><div class='{$path['class']}'></div></td>\n";
         $row .= "<td><label for='{$path['setting']}'>{$path['name']}: </label></td>\n";
         $row .= "<td><input name='{$path['setting']}' id='{$path['setting']}' size='60' value='{$path['path']}' /></td>\n";
         $row .= '<td class="error">';
         $row .= (isset($path['msg'])) ? $path['msg'] : '';
         $row .= "</td>\n";
-
         $row .= "</tr>\n";
-
         echo $row;
     }
 ?>
 </table>
-
+<?php if($silent) { ?>
+	</div>
+<?php } ?>
 <div class="buttons">
     <input type="submit" name="Previous" value="Previous"/>
     <input type="submit" name="Next" value="Next"/>

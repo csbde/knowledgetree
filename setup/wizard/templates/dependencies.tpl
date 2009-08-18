@@ -6,7 +6,7 @@ Settings marked in green are available, settings marked in orange are optional a
 </p>
 
 <?php
-if($errors){
+if($errors || $warnings){
     echo '<div>'
        . '<a href="http://wiki.knowledgetree.com/Web_Based_Installer#PHP_Dependencies" target="_blank">'
        . 'Click Here for help on overcoming dependency issues</a></div><br/>';

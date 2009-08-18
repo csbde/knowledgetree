@@ -49,6 +49,9 @@ class Errors extends Step {
     function getErrors() {
     	return $this->error;
     }
-
+	
+    function getName() {
+    	return 'error';
+    }
 }
 ?>

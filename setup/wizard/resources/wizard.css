@@ -215,6 +215,7 @@ td {
 .onclick {
      cursor: pointer;
      color: #EC7725;
+     width: 120px;
 }
 
 .description {
