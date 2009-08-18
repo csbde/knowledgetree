@@ -1,6 +1,6 @@
 <?php
 /**
-* Dependency Step Step Controller.
+* Dependency Step Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -129,7 +129,7 @@ class dependencies extends Step
                     $ext['available'] = 'optional';
                 }else{
                     $this->done = false;
-                    $this->error[] = 'Missing required extension: '.$ext['name'];
+                    $this->error[$ext['extension']] = 'Missing required extension: '.$ext['name'];
                 }
             }
 

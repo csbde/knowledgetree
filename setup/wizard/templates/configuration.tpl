@@ -77,5 +77,6 @@ The following folders must be writable for KnowledgeTree to be able to run. The 
 <div class="buttons">
     <input type="submit" name="Previous" value="Previous"/>
     <input type="submit" name="Next" value="Next"/>
+    <input type="submit" name="Refresh" value="Refresh"/>
 </div>
 </form>

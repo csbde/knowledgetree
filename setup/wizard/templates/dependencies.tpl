@@ -7,12 +7,19 @@ settings marked in orange are optional and settings marked in red are required.
 
 <?php
 if($errors){
+    echo '<div>'
+       . '<a href="http://wiki.knowledgetree.com/Web_Based_Installer#PHP_Dependencies" target="_blank">'
+       . 'Click Here for help on overcoming dependency issues</a></div><br/>';
+}
+/*
+if($errors){
     echo '<div class="error">';
     foreach ($errors as $msg){
         echo $msg . "<br />\n";
     }
     echo '</div>';
 }
+*/
 ?>
 
 <h3>PHP Version Check</h3>
@@ -49,6 +56,7 @@ The following determines your PHP installation environment. The extensions are r
         $row .= "<td><div class='{$class}'></div></td>";
         $row .= "<td>{$ext['name']}</td>";
         $row .= ($ext['available'] != 'yes') ? "<td>{$ext['details']}</td>" : '<td></td>';
+        $row .= isset($errors[$ext['extension']]) ? "<td><span class='error'>{$errors[$ext['extension']]}</span></td>" : '<td></td>';
 
         $row .= '</tr>';
 
@@ -88,9 +96,9 @@ The following is the recommended PHP configuration for KnowledgeTree to perform 
 
 </table>
 <form action="index.php?step_name=dependencies" method="post">
-
 <div class="buttons">
     <input type="submit" name="Previous" value="Previous"/>
     <input type="submit" name="Next" value="Next"/>
+    <input type="submit" name="Refresh" value="Refresh"/>
 </div>
 </form>
