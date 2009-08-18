@@ -29,8 +29,8 @@ wizard.prototype.addReadOnly = function() {
 }
 
 // Toggle Advance Database options
-wizard.prototype.showAO = function() {
-	var el = document.getElementsByClassName("adv_options");
+wizard.prototype.toggleClass = function(el) {
+	var el = document.getElementsByClassName(el); //adv_options|php_details|php_ext_details|php_con_details
 	if(el[0].style.display == 'none')
 	    el[0].style.display = 'block';
 	else

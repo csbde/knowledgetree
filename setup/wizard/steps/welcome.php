@@ -42,6 +42,8 @@
 
 class welcome extends step {
 
+	protected $silent = true;
+	
     function __construct() {
         $this->temp_variables = array("step_name"=>"license");
     }
@@ -53,6 +55,11 @@ class welcome extends step {
 
         return 'landing';
     }
+    
+//    function getErrors() {
+//    	return array();
+//    	return array('error'=>'error');
+//    }
 
 }
 

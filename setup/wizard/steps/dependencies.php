@@ -71,7 +71,7 @@ class dependencies extends Step
      * @access public
      */
     public function __construct() {
-        $this->temp_variables = array("step_name"=>"dependencies");
+        $this->temp_variables = array("step_name"=>"dependencies", "silent"=>$this->silent);
         $this->error = array();
         $this->done = true;
     }
@@ -115,21 +115,25 @@ class dependencies extends Step
     {
         $check = $this->checkPhpVersion();
         $this->temp_variables['version'] = $check;
+        $this->temp_variables['php'] = $check['class'];
         $configs = $this->checkPhpConfiguration();
         $this->temp_variables['configurations'] = $configs;
         // get the list of extensions
         $list = $this->getRequiredExtensions();
         $extensions = array();
+        $this->temp_variables['php_ext'] = 'tick';
         foreach($list as $ext){
             $ext['available'] = 'no';
             if($this->checkExtension($ext['extension'])){
                 $ext['available'] = 'yes';
-            }else {
-                if($ext['required'] == 'no'){
+            } else {
+                if($ext['required'] == 'no') {
+                	$this->temp_variables['php_ext'] = 'cross_orange';
                     $ext['available'] = 'optional';
-                }else{
+                } else {
                     $this->done = false;
-                    $this->error[$ext['extension']] = 'Missing required extension: '.$ext['name'];
+                    $this->temp_variables['php_ext'] = 'cross';
+                    $this->error[] = 'Missing required extension: '.$ext['name'];
                 }
             }
 
@@ -171,13 +175,12 @@ class dependencies extends Step
      * @access private
      * @return array The configurations list
      */
-    private function checkPhpConfiguration()
+   private function checkPhpConfiguration()
     {
         $configs = $this->getConfigurations();
-
+		$this->temp_variables['php_con'] = 'tick';
         foreach($configs as $key => $config) {
             $setting = ini_get($config['configuration']);
-
             switch($config['type']){
                 case 'bool':
                     $value = ($setting == 1) ? 'ON' : 'OFF';
@@ -192,6 +195,9 @@ class dependencies extends Step
             }
 
             $class = ($value == $config['recommended']) ? 'green' : 'orange';
+			if($class == 'orange') {
+				$this->temp_variables['php_con'] = 'cross_orange';
+			}
             $configs[$key]['setting'] = $value;
             $configs[$key]['class'] = $class;
         }
@@ -204,7 +210,9 @@ class dependencies extends Step
             $setting = $this->prettySizeToActualSize($setting);
             $recommended = $this->prettySizeToActualSize($limit['recommended']);
             $class = ($recommended < $setting || $setting = -1) ? 'green' : 'orange';
-
+			if($class == 'orange') {
+				$this->temp_variables['php_con'] = 'cross_orange';
+			}
             $limits[$key]['setting'] = $this->prettySize($setting);
             $limits[$key]['class'] = $class;
         }

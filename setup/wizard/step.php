@@ -91,7 +91,7 @@ class Step
 	*
 	* @author KnowledgeTree Team
 	* @access public
-	* @var array
+	* @var boolean
 	*/
     protected $silent = false;
     

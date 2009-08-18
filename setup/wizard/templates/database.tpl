@@ -42,7 +42,7 @@
 		    
 	</table>
 
-	<div id="options" class="onclick" onclick="javascript:{w.showAO();}">Advanced Options</div>
+	<div id="options" class="onclick" onclick="javascript:{w.toggleClass('adv_options');}">Advanced Options</div>
 
 	<div id="database" class="adv_options" style="display:none;">
 	    <div class="description">

@@ -122,6 +122,9 @@ class stepAction {
             } else {
             	$this->_clearErrors($this->stepName); // Send Errors to session
             }
+//            if($this->action->silentMode()) {
+//				return 'silent';
+//            }
             return $response;
         } else {
         	$this->stepName = 'errors';

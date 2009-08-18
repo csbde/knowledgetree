@@ -442,8 +442,9 @@ class Installer {
     
     private function loadNeeded() {
     	$this->_readXml(); // Xml steps
-        $this->_resetSessions(); // Make sure session is cleared
-        $this->_loadFromSessions(); // Make sure session is cleared
+    	// Make sure session is cleared
+        $this->_resetSessions(); 
+        $this->_loadFromSessions();
     	if(isset($_POST['Next'])) {
     		$this->response = 'next';
     	} elseif (isset($_POST['Previous'])) {
@@ -488,8 +489,9 @@ class Installer {
             	break;
             case 'previous':
                 $this->_backward(); // Load previous page
-            	break;           	
+            	break;
             default:
+            	// TODO : handle silent
             	$this->_landing();
             	break;
         }
