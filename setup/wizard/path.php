@@ -73,6 +73,8 @@
     define('RES_DIR', WIZARD_DIR."resources".DS);
     define('STEP_DIR', WIZARD_DIR."steps".DS);
     define('TEMP_DIR', WIZARD_DIR."templates".DS);
+    define('SHELL_DIR', WIZARD_DIR."shells".DS);
+    define('OUTPUT_DIR', WIZARD_DIR."output".DS);
     // Define paths to system webroot
 	define('SYSTEM_DIR', $sys);
     define('SYS_BIN_DIR', SYSTEM_DIR."bin".DS);

@@ -327,7 +327,8 @@ class InstallUtil {
     		return false;
     	}
 
-    	return array('response'=>$response, 'java'=>'java');
+    	return 'java';
+//    	return array('response'=>$response, 'java'=>'java');
     }
     
     function tryJava2() {
@@ -336,7 +337,8 @@ class InstallUtil {
     		return false;
     	}
 
-    	return array('response'=>$response, 'java'=>'java');
+    	return 'java';
+//    	return array('response'=>$response, 'java'=>'java');
     }
     
     function tryJava3() {
@@ -348,20 +350,54 @@ class InstallUtil {
 		foreach ($broke as $r) {
 			$match = preg_match('/bin/', $r);
 			if($match) {
-		    	return array('response'=>$response, 'java'=>preg_replace('/java:/', '', $r));
+				return preg_replace('/java:/', '', $r);
+//		    	return array('response'=>$response, 'java'=>preg_replace('/java:/', '', $r));
 			}
 		}
     }
     
-    function getJava() {
-    	$response = $this->tryJava1();
-    	if(!is_array($response)) {
-    		$response = $this->tryJava2();
-    		if(!is_array($response)) {
-    			$response = $this->tryJava3();
+    /**
+	* Check if user entered location of JRE
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return mixed
+	*/
+    public function javaSpecified() {
+    	if(isset($_POST['java'])) {
+    		if($_POST['java'] != '') {
+    			return $_POST['java'];
+    		} else {
+    			return false;
     		}
+    	} else {
+    		return false;
     	}
-    	
+    }
+    
+    /**
+	* Determine the location of JAVA_HOME
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return mixed
+	*/
+    function getJava() {
+//    	$javaSpecified = $this->javaSpecified();
+//		if($javaSpecified) {
+//			return $javaSpecified;
+//		} else {
+	    	$response = $this->tryJava1();
+	    	if(!is_array($response)) {
+	    		$response = $this->tryJava2();
+	    		if(!is_array($response)) {
+	    			$response = $this->tryJava3();
+	    		}
+	    	}
+//		}
+		
     	return $response;
     }
     

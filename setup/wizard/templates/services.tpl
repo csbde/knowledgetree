@@ -1,3 +1,4 @@
+<form action="index.php?step_name=services" method="post">
 <h1>Services Dependencies Check</h1>
 
 <p class="description">
@@ -11,7 +12,7 @@ if($errors || $warnings){
 }
 ?>
 
-<h3><?php echo "<span class='{$java_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Version Check</h3>
+<h3><?php echo "<span class='{$java_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Check</h3>
 <?php if($silent) { ?>
 	<div id="options" class="onclick" onclick="javascript:{w.toggleClass('java_details');}">Show Details</div>
 	<div class="java_details" style="display:none">
@@ -35,6 +36,12 @@ A PHP Java Bridge is required for KnowledgeTree to perform at an optimal level.
 </p>
 <?php echo "<span class='{$step_vars['extensions']['class']}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{$step_vars['extensions']['found']}"; ?>
 <br />
+<?php if($java_ext_check != 'tick') { ?>
+<br />
+One is not needed, if you specify the location of you JRE installation
+<br />
+<input name='java' id='port' size='25' value=''/>
+<?php } ?>
 <?php if($silent) { ?>
 	</div>
 <?php } ?>
@@ -58,9 +65,10 @@ if($step_vars){
 <?php if($silent) { ?>
 	</div>
 <?php } ?>
-<form action="index.php?step_name=services" method="post">
+
 <div class="buttons">
     <input type="submit" name="Previous" value="Previous"/>
+    <input type="submit" name="Refresh" value="Refresh"/>
     <input type="submit" name="Next" value="Next"/>
 </div>
 </form>

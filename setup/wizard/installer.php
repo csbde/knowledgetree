@@ -138,7 +138,7 @@ class Installer {
     	} catch (Exception $e) {
     		$iutil = new InstallUtil();
     		$iutil->error("Error reading configuration file: $name");
-    		die;
+    		exit();
     	}
     }
 
@@ -397,7 +397,7 @@ class Installer {
     	} else {
     		$iutil = new InstallUtil();
     		$iutil->error("Class File Missing in Step Directory: $className");
-    		die;
+    		exit();
     	}
     }
     
