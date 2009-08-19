@@ -52,6 +52,7 @@ The following determines your PHP installation environment. The extensions are r
         $row .= "<td><div class='{$class}'></div></td>";
         $row .= "<td>{$ext['name']}</td>";
         $row .= ($ext['available'] != 'yes') ? "<td>{$ext['details']}</td>" : '<td></td>';
+        $row .= isset($errors[$ext['extension']]) ? "<td><span class='error'>{$errors[$ext['extension']]}</span></td>" : '<td></td>';
         $row .= '</tr>';
         echo $row."\n";
     }

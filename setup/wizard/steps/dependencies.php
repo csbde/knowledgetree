@@ -136,6 +136,7 @@ class dependencies extends Step
                     $this->done = false;
                     $this->temp_variables['php_ext'] = 'cross';
                     $this->error[] = 'Missing required extension: '.$ext['name'];
+                    $this->error[$ext['extension']] = 'Missing required extension: '.$ext['name'];
                 }
             }
 
