@@ -49,6 +49,10 @@ td {
     padding: 2px 5px;
 }
 
+select {
+    width: 320px;
+}
+
 /* *** Layout Styles *** */
 
 #outer-wrapper {
@@ -104,7 +108,7 @@ td {
 .logo {
     background: url("graphics/logo.png") no-repeat;
     background-position: top left;
-    height: inherit;
+    height: 50px;
     width: 200px;
     margin-left: 10px;
 }
@@ -203,7 +207,7 @@ td {
 .powered-by {
     background: url("graphics/powered-by-kt.png") no-repeat;
     background-position: center left;
-    height: inherit;
+    height: 50px;
     width: 140px;
     margin-left: 10px;
 }
@@ -222,6 +226,13 @@ td {
     color:#898989;
     line-height:150%;
     margin-bottom:0.75em;
+}
+
+.disclaimer {
+    border: solid 1px #EFBE87;
+    margin: 0 20px;
+    padding: 5px;
+    font-size: 85%;
 }
 
 .top {
