@@ -192,7 +192,7 @@ function onShowAll(showall)
 		{if $hit->IsDocument}
 		      <font style=" color: green "><a href="{$rootUrl}/browse.php?fFolderId={$hit->FolderId}" tag="{$hit->FullPath}">{$hit->FullPath|mb_truncate:30:'...':true}</a>/{$hit->Title|mb_truncate:30:'...':true} - {$hit->Filesize}</font>
 		{else}
-		      <font style=" color: green "><a href="{$rootUrl}/browse.php?{if $hit->IsProxy}fFolderId={$hit->linkedId}&fShortcutFolder={$hit->parentId}{else}fFolderId={$hit->FolderId}{/if}" tag="{if $hit->IsProxy}{$hit-full_path}{else}{$hit->FullPath}{/if}">{if $hit->IsProxy}/{$hit->full_path|mb_truncate:30:'...':true}{else}{$hit->FullPath|mb_truncate:30:'...':true}{/if}{}</a></font>
+		      <font style=" color: green "><a href="{$rootUrl}/browse.php?{if $hit->IsProxy}fFolderId={$hit->linkedId}&fShortcutFolder={$hit->parentId}{else}fFolderId={$hit->FolderId}{/if}" tag="{if $hit->IsProxy}{$hit-full_path}{else}{$hit->FullPath}{/if}">{if $hit->IsProxy}/{$hit->full_path|mb_truncate:30:'...':true}{else}{$hit->FullPath|mb_truncate:30:'...':true}{/if}</a></font>
 		{/if}
 		</td>
 			<td align=right><nobr>
