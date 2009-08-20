@@ -385,18 +385,13 @@ class InstallUtil {
 	* @return mixed
 	*/
     function getJava() {
-//    	$javaSpecified = $this->javaSpecified();
-//		if($javaSpecified) {
-//			return $javaSpecified;
-//		} else {
-	    	$response = $this->tryJava1();
-	    	if(!is_array($response)) {
-	    		$response = $this->tryJava2();
-	    		if(!is_array($response)) {
-	    			$response = $this->tryJava3();
-	    		}
-	    	}
-//		}
+    	$response = $this->tryJava1();
+    	if(!is_array($response)) {
+    		$response = $this->tryJava2();
+    		if(!is_array($response)) {
+    			$response = $this->tryJava3();
+    		}
+    	}
 		
     	return $response;
     }

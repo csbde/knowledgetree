@@ -635,7 +635,7 @@ class database extends Step
 	* @return boolean
 	*/
     private function usedb($con) {
-		if($this->_dbhandler->useBD($this->dname)) {
+		if($this->_dbhandler->useDb($this->dname)) {
             return true;
         } else {
             $this->error[] = "Error using database: ";

@@ -111,7 +111,7 @@ class dbUtil {
 		$this->dbconnection = mysql_connect($dhost, $duname, $dpassword);
 		if($dbname != '') {
 			$this->setDb($dbname);
-			$this->useBD($dbname);
+			$this->useDb($dbname);
 		}
   		if($this->dbconnection)
   			return $this->dbconnection;
@@ -128,7 +128,7 @@ class dbUtil {
 	* @access public
 	* @return boolean
 	*/
-	public function useBD($dbname) {
+	public function useDb($dbname) {
 		if($dbname != '') {
 			$this->setDb($dbname);
 		}
@@ -152,8 +152,7 @@ class dbUtil {
     * @access public
     * @return object The result of the query.
     */
-    public function query($query)
-    {
+    public function query($query) {
       $result = mysql_query($query, $this->dbconnection);
 		if($result) {
 			return $result;
@@ -230,10 +229,33 @@ class dbUtil {
    	 * 
      * @param none.
      * @access public
-     * @return string.
+     * @return array.
      */
     public function getErrors() {
     	return $this->error;
+    }
+    
+    /**
+     * Fetches the last generated error
+     
+     * @return string 
+     */
+    function getLastError() {
+        return end($this->error);
+    }
+    
+    /**
+     * Start a database transaction 
+     */
+    public function startTransaction() {
+        $this->query("START TRANSACTION");
+    }
+    
+    /**
+     * Roll back a database transaction 
+     */
+    public function rollback() {
+        $this->query("ROLLBACK");
     }
 }
 ?>
