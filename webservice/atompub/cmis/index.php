@@ -42,8 +42,9 @@
 require_once('../../../config/dmsDefaults.php');
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 
-define('KT_APP_BASE_URI', "http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/?/');
-define('KT_APP_SYSTEM_URI', "http://".$_SERVER['HTTP_HOST']);
+$accessProtocol = (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on')) ? 'https' : 'http' ;
+define('KT_APP_BASE_URI', $accessProtocol . '://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/?/');
+define('KT_APP_SYSTEM_URI', $accessProtocol . '://'.$_SERVER['HTTP_HOST']);
 define('KT_ATOM_LIB_FOLDER', '../../classes/atompub/');
 
 define('CMIS_APP_BASE_URI', trim(KT_APP_BASE_URI, '/'));
