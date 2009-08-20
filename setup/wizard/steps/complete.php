@@ -99,18 +99,18 @@ class complete extends Step {
         $paths = $config['paths'];
 
         $html = '<td><div class="%s"></div></td>'
-              . '<td>%s</td>'
-              . '<td class="%s">%s</td>';
+              . '<td %s>%s</td>';
+        $pathhtml = '<td><div class="%s"></div></td>'
+                  . '<td>%s</td>'
+                  . '<td %s>%s</td>';
 
         // check paths are writeable
         foreach ($paths as $path)
         {
             $output = '';
-            
             $result = $this->checkPermission($path['path']);
-            $output = sprintf($html, $result['class'], 
-                                     $path['path'], 
-                                     (($result['class'] == 'tick') ? '' : 'error' ), 
+            $output = sprintf($pathhtml, $result['class'], $path['path'], 
+                                     (($result['class'] == 'tick') ? 'class="green"' : 'class="error"' ), 
                                      (($result['class'] == 'tick') ? 'Writeable' : 'Not Writeable' ));
             
             $this->temp_variables[($path['setting'] != '') ? $path['setting'] : 'config'] = $output;
@@ -123,17 +123,17 @@ class complete extends Step {
         
         // check document path internal/external to web root
         // compare SYSTEM_DIR to root path of documentRoot
+        // NOTE preg_replace is to ensure all slash separators are the same (forward slash)
         $sysDir = preg_replace('/\\\\+|\/+/', '\/', SYSTEM_DIR);
         $docRoot = preg_replace('/\\\\+|\/+/', '\/', $docRoot);
         if (($pos = strpos($docRoot, $sysDir)) !== false) {
-            $this->temp_variables['docLocation'] = '<td><div class="cross_orange"></div></td>'
-                                                 . '<td class="warning" colspan="2">Your document directory is set to the default, which is inside the web root. '
-                                                 . 'This may present a security problem if your documents can be accessed from the web, '
-                                                 . 'working around the permission system in KnowledgeTree.</td>';
+            $this->temp_variables['docLocation'] = sprintf($html, 'cross_orange', 'class="orange" colspan="2"', 
+                                                                  'Your document directory is inside the web root. '
+                                                                . 'This may present a security problem if your documents can be accessed from the web, '
+                                                                . 'working around the permission system in KnowledgeTree.');
         }
         else {
-            $this->temp_variables['docLocation'] = '<td><div class="tick"></div></td>'
-                                                 . '<td>Your document directory is outside the web root.</td>';
+            $this->temp_variables['docLocation'] = sprintf($html, 'tick', '', 'Your document directory is outside the web root.');
         }
     }
     
@@ -145,9 +145,8 @@ class complete extends Step {
         $this->temp_variables['dbPrivileges'] = '';
         $this->temp_variables['dbTransaction'] = '';
         
-//        $html = '<td><div class="%s"></div></td>'
-//              . '<td>%s</td>'
-//              . '<td class="%s">%s</td>';
+        $html = '<td><div class="%s"></div></td>'
+              . '<td %s>%s</td>';
         
         // retrieve database information from session
         $dbconf = $this->getDataFromSession("database");
@@ -155,17 +154,11 @@ class complete extends Step {
         // make db connection - admin
         $loaded = $this->_dbhandler->load($dbconf['dhost'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
         if (!$loaded) {
-            $this->temp_variables['dbConnectAdmin'] .= /*sprintf($html, 'cross', 
-                                     $path['path'], 
-                                     (($result['class'] == 'tick') ? '' : 'error' ), 
-                                     (($result['class'] == 'tick') ? 'Writeable' : 'Not Writeable' ));*/
-                                     '<td><div class="cross"></div></td>'
-                                               .  '<td class="error">Unable to connect to database (user: ' . $dbconf['dmsname'] . ')</td>';
+            $this->temp_variables['dbConnectAdmin'] .= sprintf($html, 'cross', 'class="error"', 'Unable to connect to database (user: ' . $dbconf['dmsname'] . ')');
         }
         else
         {
-            $this->temp_variables['dbConnectAdmin'] .= '<td><div class="tick" style="float:left;"></div></td>'
-                                               .  '<td>Database connectivity successful (user: ' . $dbconf['dmsname'] . ')</td>';
+            $this->temp_variables['dbConnectAdmin'] .= sprintf($html, 'tick', '', 'Database connectivity successful (user: ' . $dbconf['dmsname'] . ')');
         }
         
         // make db connection - user
@@ -174,20 +167,17 @@ class complete extends Step {
         // TODO check write access?
         if ($loaded)
         {
-            $this->temp_variables['dbConnectUser'] .= '<td><div class="tick" style="float:left;"></div></td>'
-                                               .  '<td>Database connectivity successful (user: ' . $dbconf['dmsusername'] . ')</td>';
+            $this->temp_variables['dbConnectUser'] .= sprintf($html, 'tick', '', 'Database connectivity successful (user: ' . $dbconf['dmsusername'] . ')');
 
             $qresult = $this->_dbhandler->query('SELECT COUNT(id) FROM documents');
             if (!$qresult)
             {
-                $this->temp_variables['dbPrivileges'] .= '<td><div class="cross" style="float:left;"></div></td>'
-                                                      .  '<td class="error">'
-                                                      .  'Unable to do a basic database query<br/>Error: ' . $this->_dbhandler->getLastError()
-                                                      .  '</td>';
+                $this->temp_variables['dbPrivileges'] .= sprintf($html, 'cross', 'class="error"', 'Unable to do a basic database query<br/>Error: ' 
+                                                                                        . $this->_dbhandler->getLastError());
             }
             else
             {
-                $this->temp_variables['dbPrivileges'] .= '<td><div class="tick" style="float:left;"></div></td><td>Basic database query successful</td>';
+                $this->temp_variables['dbPrivileges'] .= sprintf($html, 'tick', '', 'Basic database query successful');
             }
             
             // check transaction support
@@ -197,17 +187,15 @@ class complete extends Step {
             $this->_dbhandler->rollback();
             $res = $this->_dbhandler->query("SELECT id FROM $sTable WHERE name = 'transactionTest' LIMIT 1");
             if (!$res) {
-                $this->temp_variables['dbTransaction'] = '<td><div class="cross_orange" style="float:left;"></div></td>'
-                                                       . '<span class="error">Transaction support not available in database</span></td>';
+                $this->temp_variables['dbTransaction'] .= sprintf($html, 'cross_orange', 'class="orange"', 'Transaction support not available in database');
             } else {
-                $this->temp_variables['dbTransaction'] = '<td><div class="tick" style="float:left;"></div></td><td>Database has transaction support</td>';
+                $this->temp_variables['dbTransaction'] .= sprintf($html, 'tick', '', 'Database has transaction support');
             }
             $this->_dbhandler->query('DELETE FROM ' . $sTable . ' WHERE name = "transactionTest"');
         }
         else
         {
-            $this->temp_variables['dbConnectUser'] .= '<td><div class="cross" style="float:left;"></div></td>'
-                                               .  '<span class="error">Unable to connect to database (user: ' . $dbconf['dmsusername'] . ')</span></td>';
+            $this->temp_variables['dbConnectUser'] .= sprintf($html, 'cross', 'class="error"', 'Unable to connect to database (user: ' . $dbconf['dmsusername'] . ')');
         }
     }
     
@@ -262,8 +250,8 @@ class complete extends Step {
         }
     }
     
-    // these next function are dupes of ones in steps/service.php and steps/configuration.php - abstract these to another class (parent or helper)
-    // and remove from here and original classes
+    // FIXME these remaining functions are dupes of ones in steps/service.php and steps/configuration.php - abstract these to another class (parent or helper)
+    //       and remove from here and original classes
     
     /**
      * Check whether a given directory / file path exists and is writable
