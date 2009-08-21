@@ -243,6 +243,51 @@ class InstallUtil {
 
     }
     
+    /**
+     * Check whether a given directory / file path exists and is writable
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @param string $dir The directory / file to check
+     * @param boolean $create Whether to create the directory if it doesn't exist
+     * @return array The message and css class to use
+     */
+    public function checkPermission($dir, $create=false)
+    {
+        $exist = 'Directory does not exist';
+        $write = 'Directory is not writable';
+        $ret = array('class' => 'cross');
+
+        if(!file_exists($dir)){
+            if($create === false){
+                $this->done = false;
+                $ret['msg'] = $exist;
+                return $ret;
+            }
+            $par_dir = dirname($dir);
+            if(!file_exists($par_dir)){
+                $this->done = false;
+                $ret['msg'] = $exist;
+                return $ret;
+            }
+            if(!is_writable($par_dir)){
+                $this->done = false;
+                $ret['msg'] = $exist;
+                return $ret;
+            }
+            mkdir($dir, '0755');
+        }
+
+        if(is_writable($dir)){
+            $ret['class'] = 'tick';
+            return $ret;
+        }
+
+        $this->done = false;
+        $ret['msg'] = $write;
+        return $ret;
+    }
+    
 	 /**
      * Change permissions on a directory helper
      *

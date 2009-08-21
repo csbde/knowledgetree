@@ -82,6 +82,8 @@ class configuration extends Step
 	* @var array
 	*/
     protected $silent = true;
+    
+    protected $util = null;
     /**
      * Class constructor
      *
@@ -92,6 +94,7 @@ class configuration extends Step
     {
     	$this->temp_variables = array("step_name"=>"configuration", "silent"=>$this->silent);
     	$this->_dbhandler = new dbUtil();
+    	$this->util = new InstallUtil();
         $this->done = true;
     }
 
@@ -245,16 +248,18 @@ class configuration extends Step
         }
 
         // write the paths to the config_settings table
-        foreach ($paths as $item){
-            if(empty($item['setting'])){
-                continue;
-            }
-
-            $value = mysql_real_escape_string($item['path']);
-            $setting = mysql_real_escape_string($item['setting']);
-
-            $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
-            $this->_dbhandler->query($sql);
+        if(is_array($paths)) {
+	        foreach ($paths as $item){
+	            if(empty($item['setting'])){
+	                continue;
+	            }
+	
+	            $value = mysql_real_escape_string($item['path']);
+	            $setting = mysql_real_escape_string($item['setting']);
+	
+	            $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
+	            $this->_dbhandler->query($sql);
+	        }
         }
 
         // write out the config.ini file
@@ -331,7 +336,7 @@ class configuration extends Step
             }
 
             $dirs[$key]['path'] = $path;
-            $class = $this->checkPermission($path, $dir['create']);
+            $class = $this->util->checkPermission($path, $dir['create']);
 			if($class['class'] != 'tick') {
 				$this->temp_variables['paths_perms'] = $class['class'];
 			}
@@ -341,50 +346,7 @@ class configuration extends Step
         return $dirs;
     }
 
-    /**
-     * Check whether a given directory / file path exists and is writable
-     *
-	 * @author KnowledgeTree Team
-     * @access private
-     * @param string $dir The directory / file to check
-     * @param boolean $create Whether to create the directory if it doesn't exist
-     * @return array The message and css class to use
-     */
-    private function checkPermission($dir, $create=false)
-    {
-        $exist = 'Directory does not exist';
-        $write = 'Directory is not writable';
-        $ret = array('class' => 'cross');
 
-        if(!file_exists($dir)){
-            if($create === false){
-                $this->done = false;
-                $ret['msg'] = $exist;
-                return $ret;
-            }
-            $par_dir = dirname($dir);
-            if(!file_exists($par_dir)){
-                $this->done = false;
-                $ret['msg'] = $exist;
-                return $ret;
-            }
-            if(!is_writable($par_dir)){
-                $this->done = false;
-                $ret['msg'] = $exist;
-                return $ret;
-            }
-            mkdir($dir, '0755');
-        }
-
-        if(is_writable($dir)){
-            $ret['class'] = 'tick';
-            return $ret;
-        }
-
-        $this->done = false;
-        $ret['msg'] = $write;
-        return $ret;
-    }
 
      /**
      * Get the list of directories that need to be checked

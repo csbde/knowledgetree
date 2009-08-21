@@ -42,7 +42,7 @@
 class Step
 {
 	/**
-	* List of variables needed by step
+	* List of variables to be loaded to template
 	*
 	* @author KnowledgeTree Team
 	* @access protected

@@ -84,7 +84,7 @@ An administrative user is required for creating tables within the database.
 	        <td id="error_1_2" class="error" style="display:none">Please Enter A Username</td>
 		</tr>
 	    <tr>
-	        <td><label for='dmspassword'>Enter a password: </label></td>
+	        <td><label for='dmspassword'>Enter a password for the Database Administrative User: </label></td>
 	        <td><input type='password' value="<?php echo $dmspassword; ?>" id='dmspassword' name='dmspassword' size='40' /></td>
 	        <td id="error_2_2" class="error" style="display:none">Please Enter A Password</td>
 		</tr>

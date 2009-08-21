@@ -66,8 +66,6 @@ class services extends Step
     
     protected $util;
     
-    //private $response;
-    
     private $javaVersion = '1.5';
     
 	/**
@@ -156,6 +154,13 @@ class services extends Step
         return 'landing';
     }
     
+    /*
+    Get service names
+    */
+    public function getServices() {
+    	return $this->services;
+    }
+    
     /**
 	* Run step
 	*
@@ -165,24 +170,25 @@ class services extends Step
 	* @return boolean
 	*/
     private function doRun() {
-    	$this->java = $this->util->getJava();
-		if($this->javaChecks()) {
+    	$this->java = $this->util->getJava(); // Get java, if it exists
+    	$this->javaChecks(); // Run Pre Checks
+    	$errors = $this->getErrors(); // Get errors
+		if(empty($errors)) { // Install Service if there is no errors
 			$this->installService();
 		} else { // Services not installed
-			foreach ($this->services as $serviceName) {
-				$this->temp_variables['services'][] = array('class'=>'cross', 'msg'=>$serviceName." Could not be added as a Service");
+			foreach ($this->getServices() as $serviceName) {
+				$this->temp_variables['services'][] = array('class'=>'cross_orange', 'msg'=>$serviceName." Could not be added as a Service");
 			}
+			$this->service_check = 'cross_orange';
 		}
-		$this->storeSilent();
-
-		$errors = $this->getErrors();
+		$this->storeSilent(); // Store info needed for silent mode
 		if(!empty($errors))
 			return false;
 		return true;
     }
     
     public function javaChecks() {
-		$this->zendBridgeNotInstalled();
+		$this->zendBridgeNotInstalled(); // Set bridge not installed
 		$this->javaVersionInCorrect(); // Set version to incorrect
 		$this->javaNotInstalled(); // Set java to not installed
     	if($this->util->javaSpecified()) {
@@ -190,9 +196,12 @@ class services extends Step
     	} else {
 			$this->useBridge(); // Use Bridge to get java settings
     	}
-
+		
     }
 
+    /*
+    Attempts to use user input and configure java settings
+    */
     private function detSettings() {
     	$javaExecutable = $this->util->javaSpecified();// Retrieve java bin
     	$cmd = "$javaExecutable -version > output/outJV 2>&1 echo $!";
@@ -203,45 +212,49 @@ class services extends Step
     		if($matches[1] < $this->javaVersion) { // Check Version of java
 				$this->javaVersionInCorrect();
 				$this->error[] = "Requires Java 1.5+ to be installed";
+				return false;
     		} else {
 				$this->javaVersionCorrect();
 				$this->javaInstalled();
 				$this->java_check = 'tick';
+				return true;
     		}
     	}
     }
     
+    /*
+    Attempts to use bridge and configure java settings
+    */
     private function useBridge() {
 		$zendBridge = $this->zendBridge(); // Find Zend Bridge
-		if($zendBridge) {
+		if($zendBridge) { // Bridge installed implies java exists
 			$this->zendBridgeInstalled();
 			if($this->checkZendBridge()) { // Make sure the Zend Bridge is functional
+				$this->java_ext_check = 'tick'; // Set bridge to functional
+		    	$this->javaInstalled(); // Set java to installed
 	    		$javaSystem = new Java('java.lang.System');
 		    	$version = $javaSystem->getProperty('java.version');
 		    	$ver = substr($version, 0, 3);
 		    	if($ver < $this->javaVersion) {
 					$this->javaVersionInCorrect();
 					$this->error[] = "Requires Java 1.5+ to be installed";
+					return false;
 		    	} else {
-					$this->javaVersionCorrect();
+					$this->javaVersionCorrect(); // Set version to correct
+					$this->java_check = 'tick';
+					return true;
 		    	}
 			} else {
 				$this->javaVersionWarning();
 				$this->zendBridgeWarning();
-				$this->warnings[] = "Zend Java Bridge Error";
+				$this->warnings[] = "Zend Java Bridge Not Functional";
 				$this->java_ext_check = 'cross_orange';
+				return false;
 			}
 		} else {
-			$this->warnings[] = "Zend Java Bridge Required";
+			$this->warnings[] = "Zend Java Bridge Not Found";
+			return false;
 		}
-    	if($this->java != '') { // Find Java JRE
-			$this->javaInstalled();
-			$this->java_check = 'tick';
-    	} else {
-    		$this->error[] = "Java runtime environment required";
-    	}
-
-    	return true;
     }
     
     /**
@@ -286,14 +299,15 @@ class services extends Step
 	* @return boolean
 	*/
     public function installService() {
-		foreach ($this->services as $serviceName) {
+		foreach ($this->getServices() as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
 			$status = $this->serviceHelper($service);
 			if ($status) {
 				$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$service->getName()." has been added as a Service");
 			} else {
-				$this->temp_variables['services'][] = array('class'=>'cross', 'msg'=>$service->getName()." Could not be added as a Service");
+				$this->temp_variables['services'][] = array('class'=>'cross_orange', 'msg'=>$service->getName()." Could not be added as a Service");
+				$this->service_check = 'cross_orange';
 			}
 		}
 		
@@ -358,7 +372,7 @@ class services extends Step
 	* @return mixed
 	*/
 	public function installStep() {
-		foreach ($this->services as $serviceName) {
+		foreach ($this->getServices() as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
 			$status = $this->serviceStart($service);
@@ -421,47 +435,82 @@ class services extends Step
     }
     
     /* Helpers */
-    
+    /**
+     * Store Java state as installed
+     *
+     */
     private function javaInstalled() {
 		$this->temp_variables['java']['class'] = 'tick';
 		$this->temp_variables['java']['found'] = "Java Runtime Installed";
     }
     
+    /**
+     * Store Java state as not installed
+     *
+     */
     private function javaNotInstalled() {
 		$this->temp_variables['java']['class'] = 'cross';
 		$this->temp_variables['java']['found'] = "Java runtime environment required";
     }
     
+    /**
+     * Store Java version state as correct
+     *
+     */
     private function javaVersionCorrect() {
 		$this->temp_variables['version']['class'] = 'tick';
 		$this->temp_variables['version']['found'] = "Java Version 1.5+ Installed";
     }
     
+    /**
+     * Store Java version state as warning
+     *
+     */
     private function javaVersionWarning() {
 		$this->temp_variables['version']['class'] = 'cross_orange';
 		$this->temp_variables['version']['found'] = "Java Runtime Version Cannot be detected";
     }
     
+    /**
+     * Store Java version as state incorrect
+     *
+     */
     private function javaVersionInCorrect() {
 		$this->temp_variables['version']['class'] = 'cross';
 		$this->temp_variables['version']['found'] = "Requires Java 1.5+ to be installed";
     }
     
+    /**
+     * Store Zend Bridge state as installed
+     *
+     */
     private function zendBridgeInstalled() {
 		$this->temp_variables['extensions']['class'] = 'tick';
 		$this->temp_variables['extensions']['found'] = "Java Bridge Installed";
     }
     
+    /**
+     * Store Zend Bridge state as not installed
+     *
+     */
     private function zendBridgeNotInstalled() {
 		$this->temp_variables['extensions']['class'] = 'cross_orange';
 		$this->temp_variables['extensions']['found'] = "Zend Java Bridge Not Installed";
     }
     
+    /**
+     * Store Zend Bridge state as warning
+     *
+     */
     private function zendBridgeWarning() {
 		$this->temp_variables['extensions']['class'] = 'cross_orange';
-		$this->temp_variables['extensions']['found'] = "Zend Java Bridge Error";
+		$this->temp_variables['extensions']['found'] = "Zend Java Bridge Not Functional";
     }
     
+    /**
+     * Set all silent mode varibles
+     *
+     */
     private function storeSilent() {
     	$this->temp_variables['java_check'] = $this->java_check;
     	$this->temp_variables['java_ext_check'] = $this->java_ext_check;
