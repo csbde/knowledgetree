@@ -11,8 +11,17 @@ if($errors || $warnings){
        . 'Click Here for help on overcoming service issues</a></div><br/>';
 }
 ?>
+<?php if($javaExtCheck != 'tick') { ?>
+Specify the location of your Java executable
+<br />
+<input name='java' id='port' size='25' value=''/>&nbsp;&nbsp;&nbsp;<input type="submit" name="Refresh" value="Submit"/>
+<br />
+<?php if($javaExeError) { ?>
+	<span class="error"><?php echo $javaExeError; ?></span>
+<?php } ?>
 
-<h3><?php echo "<span class='{$java_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Check</h3>
+<?php } ?>
+<h3><?php echo "<span class='{$javaCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Check</h3>
 <?php if($silent) { ?>
 	<div id="options" class="onclick" onclick="javascript:{w.toggleClass('java_details');}">Show Details</div>
 	<div class="java_details" style="display:none">
@@ -26,7 +35,8 @@ The Java version must be higher than 1.5.
 <?php if($silent) { ?>
 	</div>
 <?php } ?>
-<h3><?php echo "<span class='{$java_ext_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Extensions</h3>
+<?php if (!$disableExtension) {?>
+<h3><?php echo "<span class='{$javaExtCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Extensions</h3>
 <?php if($silent) { ?>
 	<div id="options" class="onclick" onclick="javascript:{w.toggleClass('java_ext_details');}">Show Details</div>
 	<div class="java_ext_details" style="display:none">
@@ -36,16 +46,11 @@ A PHP Java Bridge is required for KnowledgeTree to perform at an optimal level.
 </p>
 <?php echo "<span class='{$step_vars['extensions']['class']}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{$step_vars['extensions']['found']}"; ?>
 <br />
-<?php if($java_ext_check != 'tick') { ?>
-<br />
-One is not needed, if you specify the location of you JRE installation
-<br />
-<input name='java' id='port' size='25' value=''/>
-<?php } ?>
 <?php if($silent) { ?>
 	</div>
 <?php } ?>
-<h3><?php echo "<span class='{$service_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services Check</h3>
+<?php } ?>
+<h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services Check</h3>
 <?php if($silent) { ?>
 	<div id="options" class="onclick" onclick="javascript:{w.toggleClass('service_details');}">Show Details</div>
 	<div class="service_details" style="display:none">
