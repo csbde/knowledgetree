@@ -51,6 +51,14 @@ class complete extends Step {
 	*/	
     private $_dbhandler = null;
     
+    private $services_check = 'cross_orange';
+    private $paths_check = 'tick';
+    private $privileges_check = 'cross';
+    private $database_check = 'tick';
+    protected $silent = true;
+    
+    protected $util = null;
+    
     /**
      * List of services to check
      * 
@@ -60,11 +68,9 @@ class complete extends Step {
     private $_services = array('Lucene', 'Scheduler');
     
     public function __construct() {
+    	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
         $this->_dbhandler = new dbUtil();
-    }
-
-    function configure() {
-        $this->temp_variables = array("step_name"=>"complete");
+    	$this->util = new InstallUtil();
     }
 
     function doStep() {
@@ -79,6 +85,7 @@ class complete extends Step {
         $this->checkDb();
         // check services
         $this->checkServices();
+        $this->storeSilent();// Set silent mode variables
     }
     
     private function checkFileSystem()
@@ -91,9 +98,7 @@ class complete extends Step {
         $this->temp_variables['uploadDirectory'] = '';
         $this->temp_variables['config'] = '';
         $this->temp_variables['docLocation'] = '';
-        
         $docRoot = '';
-
         // retrieve path information from session
         $config = $this->getDataFromSession("configuration");
         $paths = $config['paths'];
@@ -105,20 +110,26 @@ class complete extends Step {
                   . '<td %s>%s</td>';
 
         // check paths are writeable
-        foreach ($paths as $path)
-        {
-            $output = '';
-            $result = $this->checkPermission($path['path']);
-            $output = sprintf($pathhtml, $result['class'], $path['path'], 
-                                     (($result['class'] == 'tick') ? 'class="green"' : 'class="error"' ), 
-                                     (($result['class'] == 'tick') ? 'Writeable' : 'Not Writeable' ));
-            
-            $this->temp_variables[($path['setting'] != '') ? $path['setting'] : 'config'] = $output;
-            
-            // for document location check
-            if ($path['setting'] == 'documentRoot') {
-                $docRoot = $path['path']; 
-            }
+        if(is_array($paths)) {
+	        foreach ($paths as $path)
+	        {
+	            $output = '';
+	            $result = $this->util->checkPermission($path['path']);
+	            $output = sprintf($html, $result['class'], 
+	                                     $path['path'], 
+	                                     (($result['class'] == 'tick') ? '' : 'error' ), 
+	                                     (($result['class'] == 'tick') ? 'Writeable' : 'Not Writeable' ));
+	            
+	            $this->temp_variables[($path['setting'] != '') ? $path['setting'] : 'config'] = $output;
+	            if($result['class'] != 'tick') {
+					$this->paths_check = $result['class'];
+	            }
+	            // for document location check
+	            if ($path['setting'] == 'documentRoot') {
+	                $docRoot = $path['path']; 
+	            }
+	        }
+
         }
         
         // check document path internal/external to web root
@@ -127,10 +138,11 @@ class complete extends Step {
         $sysDir = preg_replace('/\\\\+|\/+/', '\/', SYSTEM_DIR);
         $docRoot = preg_replace('/\\\\+|\/+/', '\/', $docRoot);
         if (($pos = strpos($docRoot, $sysDir)) !== false) {
-            $this->temp_variables['docLocation'] = sprintf($html, 'cross_orange', 'class="orange" colspan="2"', 
-                                                                  'Your document directory is inside the web root. '
-                                                                . 'This may present a security problem if your documents can be accessed from the web, '
-                                                                . 'working around the permission system in KnowledgeTree.');
+            $this->temp_variables['docLocation'] = '<td><div class="cross_orange"></div></td>'
+                                                 . '<td class="warning" colspan="2">Your document directory is set to the default, which is inside the web root. '
+                                                 . 'This may present a security problem if your documents can be accessed from the web, '
+                                                 . 'working around the permission system in KnowledgeTree.</td>';
+                                                 $this->paths_check = 'cross_orange';
         }
         else {
             $this->temp_variables['docLocation'] = sprintf($html, 'tick', '', 'Your document directory is outside the web root.');
@@ -154,6 +166,13 @@ class complete extends Step {
         // make db connection - admin
         $loaded = $this->_dbhandler->load($dbconf['dhost'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
         if (!$loaded) {
+            $this->temp_variables['dbConnectAdmin'] .= /*sprintf($html, 'cross', 
+                                     $path['path'], 
+                                     (($result['class'] == 'tick') ? '' : 'error' ), 
+                                     (($result['class'] == 'tick') ? 'Writeable' : 'Not Writeable' ));*/
+                                     '<td><div class="cross"></div></td>'
+                                               .  '<td class="error">Unable to connect to database (user: ' . $dbconf['dmsname'] . ')</td>';
+                                               $this->database_check = 'cross';
             $this->temp_variables['dbConnectAdmin'] .= sprintf($html, 'cross', 'class="error"', 'Unable to connect to database (user: ' . $dbconf['dmsname'] . ')');
         }
         else
@@ -172,6 +191,11 @@ class complete extends Step {
             $qresult = $this->_dbhandler->query('SELECT COUNT(id) FROM documents');
             if (!$qresult)
             {
+                $this->temp_variables['dbPrivileges'] .= '<td><div class="cross" style="float:left;"></div></td>'
+                                                      .  '<td class="error">'
+                                                      .  'Unable to do a basic database query<br/>Error: ' . $this->_dbhandler->getLastError()
+                                                      .  '</td>';
+                                                      $this->database_check = 'cross';
                 $this->temp_variables['dbPrivileges'] .= sprintf($html, 'cross', 'class="error"', 'Unable to do a basic database query<br/>Error: ' 
                                                                                         . $this->_dbhandler->getLastError());
             }
@@ -187,6 +211,9 @@ class complete extends Step {
             $this->_dbhandler->rollback();
             $res = $this->_dbhandler->query("SELECT id FROM $sTable WHERE name = 'transactionTest' LIMIT 1");
             if (!$res) {
+                $this->temp_variables['dbTransaction'] = '<td><div class="cross_orange" style="float:left;"></div></td>'
+                                                       . '<span class="error">Transaction support not available in database</span></td>';
+                                                       $this->database_check = 'cross';
                 $this->temp_variables['dbTransaction'] .= sprintf($html, 'cross_orange', 'class="orange"', 'Transaction support not available in database');
             } else {
                 $this->temp_variables['dbTransaction'] .= sprintf($html, 'tick', '', 'Database has transaction support');
@@ -201,188 +228,34 @@ class complete extends Step {
     
     private function checkServices()
     {
+    	
         // defaults
-        $this->temp_variables['luceneServiceStatus'] = '';
-        $this->temp_variables['schedulerServiceStatus'] = '';
-        
-        return null;
-        
-        $processOrder = array();
-        if (strtolower(OS) == 'windows')
-        {
-            $processOrder[] = 'Start';
-            $processOrder[] = 'Stop';
-        }
-        else if (strtolower(OS) == 'unix')
-        {
-            $processOrder[] = 'Stop';
-            $processOrder[] = 'Start';   
-        }
-            
-        // loop through services and attempt to stop and then start them (in the case of Linux,) or start and stop them (in the case of Windows)
-        // (Linux service is started after install, Windows is not)
-        foreach ($this->_services as $serviceName)
-        {
-            // check installed
-            $statusCheck = OS."ServiceInstalled";
-            $className = OS.$serviceName;
-			$service = new $className();
-    		$installed = $this->$statusCheck($service);
-            if ($installed) {
-                
-            }
-            else {
-                
-            }
-            
-            // check start/stop - different orders dependant on system
-            foreach($processOrder as $operation)
-            {
-//                $opExec = 'service' . $operation;
-//                $opSuccess = $this->$opExec();
-//                if ($opSuccess) {
-//                    
-//                }
-//                else {
-//                    
-//                }
-            }
-        }
-    }
-    
-    // FIXME these remaining functions are dupes of ones in steps/service.php and steps/configuration.php - abstract these to another class (parent or helper)
-    //       and remove from here and original classes
-    
-    /**
-     * Check whether a given directory / file path exists and is writable
-     *
-	 * @author KnowledgeTree Team
-     * @access private
-     * @param string $dir The directory / file to check
-     * @param boolean $create Whether to create the directory if it doesn't exist
-     * @return array The message and css class to use
-     */
-    private function checkPermission($dir, $create=false)
-    {
-        $exist = 'Directory does not exist';
-        $write = 'Directory is not writable';
-        $ret = array('class' => 'cross');
-
-        if(!file_exists($dir)){
-            if($create === false){
-                $this->done = false;
-                $ret['msg'] = $exist;
-                return $ret;
-            }
-            $par_dir = dirname($dir);
-            if(!file_exists($par_dir)){
-                $this->done = false;
-                $ret['msg'] = $exist;
-                return $ret;
-            }
-            if(!is_writable($par_dir)){
-                $this->done = false;
-                $ret['msg'] = $exist;
-                return $ret;
-            }
-            mkdir($dir, '0755');
-        }
-
-        if(is_writable($dir)){
-            $ret['class'] = 'tick';
-            return $ret;
-        }
-
-        $this->done = false;
-        $ret['msg'] = $write;
-        return $ret;
-    }
-    
-    /**
-	* Check if windows service installed
-	*
-	* @author KnowledgeTree Team
-	* @param object
-	* @access public
-	* @return boolean
-	*/
-	public function windowsServiceInstalled($service) {
-//	    print_r($service, true)."<BR>";
-		$status = $service->status(); // Check if service has been installed
-		echo "STAT: ".$status."<BR>";
-		if($status != 'STOPPED') { // Check service status
-			$this->error[] = $service->getName()." Could not be added as a WINDOWS Service";
-			return false;
-		}
-		return true;
-	}
-	
-   	/**
-	* Check if unix service installed
-	*
-	* @author KnowledgeTree Team
-	* @param object
-	* @access public
-	* @return boolean
-	*/
-	public function unixServiceInstalled($service) {
-		$status = $service->status(); // Check if service has been installed
-		if($status != 'STARTED') { // Check service status
-			$this->error[] = $service->getName()." Could not be added as a UNIX Service";
-			return false;
-		}
-		return true;
-	}
-	
-   	/**
-	* Starts all services
-	*
-	* @author KnowledgeTree Team
-	* @param object
-	* @access public
-	* @return mixed
-	*/
-	public function installStep() {
-		foreach ($this->services as $serviceName) {
+//        $this->temp_variables['LuceneServiceStatus'] = 'cross';
+//        $this->temp_variables['SchedulerServiceStatus'] = 'cross';
+        $services = new services();
+        foreach ($services->getServices() as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
-			$status = $this->serviceStart($service);
-			
-		}
-		
+			$service->load();
+			if($service->status() != 'RUNNING') {
+				$this->temp_variables[$serviceName."ServiceStatus"] = 'tick';
+			} else {
+				$this->temp_variables[$serviceName."ServiceStatus"] = 'cross_orange';
+				$this->services_check = 'cross_orange';
+			}
+        }     
 		return true;
-	}
-	
-   	/**
-	* Starts service
-	*
-	* @author KnowledgeTree Team
-	* @param object
-	* @access private
-	* @return string
-	*/
-	private function serviceStart($service) {
-		if(OS == 'windows') {
-			$service->load(); // Load Defaults
-			$service->start(); // Start Service
-			return $service->status(); // Get service status
-		}
-	}
-   	/**
-	* Stops service
-	*
-	* @author KnowledgeTree Team
-	* @param object
-	* @access private
-	* @return string
-	*/
-	private function serviceStop($service) {
-		if(OS == 'windows') {
-			$service->load(); // Load Defaults
-			$service->stop(); // Stop Service
-			return $service->status(); // Get service status
-		}
-	}
+    }
     
+    /**
+     * Set all silent mode varibles
+     *
+     */
+    private function storeSilent() {
+    	$this->temp_variables['services_check'] = $this->services_check;
+    	$this->temp_variables['paths_check'] = $this->paths_check;
+    	$this->temp_variables['privileges_check'] = $this->privileges_check;
+    	$this->temp_variables['database_check'] = $this->database_check;
+    }
 }
 ?>
