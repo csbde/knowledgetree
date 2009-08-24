@@ -57,6 +57,7 @@ class configuration extends Step
     private $ssl_enabled;
     private $done;
 	public $temp_variables = array("step_name"=>"configuration");
+	public $displayFirst = true;
 	/**
 	* Flag to store class information in session
 	*
@@ -125,6 +126,7 @@ class configuration extends Step
     		$this->doRun();
     		return 'landing';
     	}
+    	$this->loadTemplateDefaults();
         if($this->next()) {
             if($this->doRun()) {
                 return 'confirm';
@@ -144,6 +146,10 @@ class configuration extends Step
         return 'landing';
     }
 
+    public function loadTemplateDefaults() {
+    	$this->temp_variables['paths_perms'] = 'tick';
+    }
+    
      /**
      * Execute the step
      *
@@ -327,7 +333,6 @@ class configuration extends Step
     {
         $dirs = $this->getDirectories();
         $varDirectory = $fileSystemRoot . DIRECTORY_SEPARATOR . 'var';
-		$this->temp_variables['paths_perms'] = 'tick';
         foreach ($dirs as $key => $dir){
             $path = (isset($_POST[$dir['setting']])) ? $_POST[$dir['setting']] : $dir['path'];
 
@@ -337,6 +342,7 @@ class configuration extends Step
 
             $dirs[$key]['path'] = $path;
             $class = $this->util->checkPermission($path, $dir['create']);
+            
 			if($class['class'] != 'tick') {
 				$this->temp_variables['paths_perms'] = $class['class'];
 			}

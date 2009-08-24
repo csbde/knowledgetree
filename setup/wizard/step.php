@@ -104,6 +104,7 @@ class Step
 	*/
     protected $silent = false;
     
+    public $displayFirst = false;
 	/**
 	* Returns step state
 	*
@@ -117,6 +118,9 @@ class Step
         return '';
     }
 
+    public function displayFirst() {
+    	return $this->displayFirst;
+    }
     
     /**
 	* Returns step variables

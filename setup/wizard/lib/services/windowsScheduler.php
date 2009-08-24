@@ -171,11 +171,15 @@ class windowsScheduler extends windowsService {
 	public function install() {
 		$state = $this->status();
 		if($state == '') {
-			$fp = fopen($this->getSchedulerScriptPath(), "w+");
-			$content = "@echo off\n";
-			$content .= "\"".PHP_DIR."php.exe\" "."\"{$this->getSchedulerSource()}\"";
-			fwrite($fp, $content);
-			fclose($fp);
+			if(is_readable(SYS_BIN_DIR)) {
+				if(!file_exists($this->getSchedulerScriptPath())) {
+					$fp = fopen($this->getSchedulerScriptPath(), "w+");
+					$content = "@echo off\n";
+					$content .= "\"".PHP_DIR."php.exe\" "."\"{$this->getSchedulerSource()}\"";
+					fwrite($fp, $content);
+					fclose($fp);
+				}
+			}
 			$response = win32_create_service(array(
 	            'service' => $this->name,
 	            'display' => $this->name,

@@ -214,6 +214,15 @@ class database extends Step
     public $error = array();
     
 	/**
+	* List of errors used in template
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    public $templateErrors = array('dmspassword', 'dmsuserpassword', 'con', 'dname', 'dtype', 'duname', 'dpassword');
+    
+	/**
 	* Flag to store class information in session
 	*
 	* @author KnowledgeTree Team
@@ -232,6 +241,15 @@ class database extends Step
     protected $runInstall = true;
     
 	/**
+	* Flag if step needs to run silently
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $silent = true;
+    
+	/**
 	* Constructs database object
 	*
 	* @author KnowledgeTree Team
@@ -239,6 +257,7 @@ class database extends Step
 	* @param none
  	*/
     public function __construct() {
+    	$this->temp_variables = array("step_name"=>"database", "silent"=>$this->silent);
     	$this->_dbhandler = new dbUtil();
     	$this->_util = new InstallUtil();
     	if(WINDOWS_OS)
@@ -262,10 +281,8 @@ class database extends Step
         	}
         }
         if($this->setDataFromSession("database")) { // Attempt to set values from session
-        	
             $this->setDetails(); // Set any posted variables
         } else {
-        	
             $this->loadDefaults($this->readXml()); // Load default variables from file
         }
         
@@ -281,6 +298,7 @@ class database extends Step
 	* @return string
 	*/
     public function doProcess() {
+    	$this->initErrors(); // Load template errors
         if($this->next()) {
             $this->setPostConfig(); // Set any posted variables
             $this->setDetails();
@@ -311,24 +329,34 @@ class database extends Step
 	*/
     public function doTest() {
     	if($this->match($this->dmspassword, $this->getPassword1()) != 0) {
-    		$this->error[] = "Passwords do not match: " . $this->dmspassword." ". $this->getPassword1();
+    		$this->error['dmspassword'] = "Passwords do not match: " . $this->dmspassword." ". $this->getPassword1();
     		return false;
     	}
     	if($this->match($this->dmsuserpassword, $this->getPassword2()) != 0) {
-    		$this->error[] = "Passwords do not match: " . $this->dmsuserpassword." ". $this->getPassword2();
+    		$this->error['dmsuserpassword'] = "Passwords do not match: " . $this->dmsuserpassword." ". $this->getPassword2();
     		return false;
     	}
-    	if($this->dport == '') 
+    	if($this->dport == '')  {
     		$con = $this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
-    	else 
+    	} else {
     		$con = $this->_dbhandler->load($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
+    	}
         if (!$con) {
-            $this->error[] = "Could not connect";
+            $this->error['con'] = "Could not connect, please check username and password";
             return false;
         } else {
-        	$this->error = array(); // Reset usage errors
-            return true;
+        	if ($this->dbExists()) { // Check if database Exists
+        		$this->error['dname'] = 'Database Already Exists, please specify a different name'; // Reset usage errors
+            	return false;
+        	} else {
+        		$this->error = array(); // Reset usage errors
+            	return true;
+        	}
         }
+    }
+    
+    public function dbExists() {
+    	return $this->_dbhandler->useDb();
     }
     
     public function match($str1, $str2) {
@@ -418,10 +446,10 @@ class database extends Step
             $this->temp_variables['dhost'] = (string) $simplexml->dhost;
             $this->temp_variables['dport'] = (string) $simplexml->dport;
             $this->temp_variables['dpassword'] = '';
-            $this->temp_variables['dmsname'] = '';
-            $this->temp_variables['dmsusername'] = '';
-            $this->temp_variables['dmspassword'] = '';
-            $this->temp_variables['dmsuserpassword'] = '';
+            $this->temp_variables['dmsname'] = (string) $simplexml->dmsadminuser;
+            $this->temp_variables['dmsusername'] = (string) $simplexml->dmsuser;
+            $this->temp_variables['dmspassword'] = (string) $simplexml->dmsaupass;
+            $this->temp_variables['dmsuserpassword'] = (string) $simplexml->dmsupass;
             if(WINDOWS_OS) {
             	$this->temp_variables['dbbinary'] = 'mysql.exe';
             } else {
@@ -521,7 +549,7 @@ class database extends Step
 	*/
     private function installDatabase() {
     	if($this->dtype == '') {
-    		$this->error[] = 'No database type selected';
+    		$this->error['dtype'] = 'No database type selected';
     		return 'error';
     	}
         if(!$this->{$this->dtype}()) {
@@ -541,7 +569,7 @@ class database extends Step
         $con = $this->connectMysql();
         if($con) {
             if(!$this->createDB($con)) {
-            	$this->error[] = "Could not Create Database: ";
+            	$this->error['con'] = "Could not Create Database: ";
             	return false;
             }
             $this->closeMysql($con);
@@ -559,7 +587,7 @@ class database extends Step
     private function connectMysql() {
 		$con = $this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
         if (!$con) {
-            $this->error[] = "Could not connect: ";
+            $this->error['con'] = "Could not connect: ";
 
             return false;
         }
@@ -579,16 +607,16 @@ class database extends Step
 		if($this->usedb($con)) { // attempt to use the db
 		    if($this->dropdb($con)) { // attempt to drop the db
 		        if(!$this->create($con)) { // attempt to create the db
-					$this->error[] = "Could create database: ";
+					$this->error['con'] = "Could not create database: ";
 					return false;// cannot overwrite database
 		        }
 		    } else {
-		    	$this->error[] = "Could not drop database: ";
+		    	$this->error['con'] = "Could not drop database: ";
 		    	return false;// cannot overwrite database
 		    }
 		} else {
 		    if(!$this->create($con)) { // attempt to create the db
-				$this->error[] = "Could not create database: ";
+				$this->error['con'] = "Could not create database: ";
 				return false;// cannot overwrite database
 		    }
 		}
@@ -596,13 +624,13 @@ class database extends Step
 			
 		}
 		if(!$this->createSchema($con)) {
-			$this->error[] = "Could not create schema ";
+			$this->error['con'] = "Could not create schema ";
 		}
 		if(!$this->populateSchema($con)) {
-			$this->error[] = "Could not populate schema ";
+			$this->error['con'] = "Could not populate schema ";
 		}
 		if(!$this->applyUpgrades($con)) {
-			$this->error[] = "Could not apply updates ";
+			$this->error['con'] = "Could not apply updates ";
 		}
 		
 		return true;
@@ -638,7 +666,7 @@ class database extends Step
 		if($this->_dbhandler->useDb($this->dname)) {
             return true;
         } else {
-            $this->error[] = "Error using database: ";
+            $this->error['con'] = "Error using database: {$this->dname}";
             return false;
         }
     }
@@ -655,11 +683,11 @@ class database extends Step
         if($this->ddrop) {
             $sql = "DROP DATABASE {$this->dname};";
 			if(!$this->_dbhandler->query($sql)) {
-                $this->error[] = "Cannot drop database: ";
+                $this->error['con'] = "Cannot drop database: {$this->dname}";
                 return false;
             }
         } else {
-            $this->error[] = "Cannot drop database: ";
+            $this->error['con'] = "Cannot drop database: {$this->dname}";
             return false;
         }
         return true;
@@ -688,7 +716,7 @@ class database extends Step
 			if ($this->_dbhandler->execute($user1) && $this->_dbhandler->execute($user2)) {
             	return true;
         	} else {
-        		$this->error[] = "Could not create users in database: ";
+        		$this->error['con'] = "Could not create users for database: {$this->dname}";
         		return false;
         	}
 		}
@@ -756,7 +784,7 @@ class database extends Step
         try {
             $this->_dbhandler->close();
         } catch (Exeption $e) {
-            $this->error[] = "Could not close: " . $e;
+            $this->error['con'] = "Could not close: " . $e;
         }
     }
 
@@ -783,6 +811,20 @@ class database extends Step
 	*/
     public function doAjaxTest($host, $uname, $dname) {
 		
+    }
+    
+	/**
+	* Initialize errors to false
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
+    private function initErrors() {
+    	foreach ($this->templateErrors as $e) {
+    		$this->error[$e] = false;
+    	}
     }
 }
 ?>

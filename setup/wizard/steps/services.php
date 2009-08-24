@@ -414,7 +414,7 @@ class services extends Step
 	*/
 	public function windowsServiceInstalled($service) {
 		$status = $service->status(); // Check if service has been installed
-		if($status != 'STOPPED') { // Check service status
+		if($status == '') { // Check service status
 			$this->error[] = $service->getName()." Could not be added as a Service";
 			return false;
 		}

@@ -68,8 +68,12 @@ if($errors || $warnings){
 	<div class="services_check" style="display:none">
 <?php } ?>
     <table>
-        <tr><?php echo $LuceneServiceStatus; ?></tr> 
-        <tr><?php echo $SchedulerServiceStatus; ?></tr>
+        <tr>
+        	<td><?php echo "<span class='{$LuceneStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Lucene Service</td>
+        </tr> 
+        <tr>
+        	<td><?php echo "<span class='{$SchedulerStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Scheduler Service</td>
+        </tr>
     </table>
 <?php if($silent) { ?>
 	</div>

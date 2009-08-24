@@ -51,9 +51,9 @@ class complete extends Step {
 	*/	
     private $_dbhandler = null;
     
-    private $services_check = 'cross_orange';
+    private $services_check = 'tick';
     private $paths_check = 'tick';
-    private $privileges_check = 'cross';
+    private $privileges_check = 'tick';
     private $database_check = 'tick';
     protected $silent = true;
     
@@ -108,18 +108,15 @@ class complete extends Step {
         $pathhtml = '<td><div class="%s"></div></td>'
                   . '<td>%s</td>'
                   . '<td %s>%s</td>';
-
         // check paths are writeable
         if(is_array($paths)) {
 	        foreach ($paths as $path)
 	        {
 	            $output = '';
 	            $result = $this->util->checkPermission($path['path']);
-	            $output = sprintf($html, $result['class'], 
-	                                     $path['path'], 
-	                                     (($result['class'] == 'tick') ? '' : 'error' ), 
-	                                     (($result['class'] == 'tick') ? 'Writeable' : 'Not Writeable' ));
-	            
+            	$output = sprintf($pathhtml, $result['class'], $path['path'], 
+                                     (($result['class'] == 'tick') ? 'class="green"' : 'class="error"' ), 
+                                     (($result['class'] == 'tick') ? 'Writeable' : 'Not Writeable' ));
 	            $this->temp_variables[($path['setting'] != '') ? $path['setting'] : 'config'] = $output;
 	            if($result['class'] != 'tick') {
 					$this->paths_check = $result['class'];
@@ -129,7 +126,6 @@ class complete extends Step {
 	                $docRoot = $path['path']; 
 	            }
 	        }
-
         }
         
         // check document path internal/external to web root
@@ -198,10 +194,12 @@ class complete extends Step {
                                                       $this->database_check = 'cross';
                 $this->temp_variables['dbPrivileges'] .= sprintf($html, 'cross', 'class="error"', 'Unable to do a basic database query<br/>Error: ' 
                                                                                         . $this->_dbhandler->getLastError());
+				$this->privileges_check = 'cross';
             }
             else
             {
                 $this->temp_variables['dbPrivileges'] .= sprintf($html, 'tick', '', 'Basic database query successful');
+                
             }
             
             // check transaction support
@@ -228,19 +226,15 @@ class complete extends Step {
     
     private function checkServices()
     {
-    	
-        // defaults
-//        $this->temp_variables['LuceneServiceStatus'] = 'cross';
-//        $this->temp_variables['SchedulerServiceStatus'] = 'cross';
         $services = new services();
         foreach ($services->getServices() as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
 			$service->load();
-			if($service->status() != 'RUNNING') {
-				$this->temp_variables[$serviceName."ServiceStatus"] = 'tick';
+			if($service->status() == 'RUNNING') {
+				$this->temp_variables[$serviceName."Status"] = 'tick';
 			} else {
-				$this->temp_variables[$serviceName."ServiceStatus"] = 'cross_orange';
+				$this->temp_variables[$serviceName."Status"] = 'cross_orange';
 				$this->services_check = 'cross_orange';
 			}
         }     

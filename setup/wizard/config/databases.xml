@@ -15,4 +15,8 @@
     <dport>3306</dport>
     <dname>dms</dname>
     <duname>root</duname>
+    <dmsadminuser>dmsadminuser</dmsadminuser>
+    <dmsaupass>js9281djw</dmsaupass>
+    <dmsuser>dmsuser</dmsuser>
+    <dmsupass>djw9281js</dmsupass>
 </database>

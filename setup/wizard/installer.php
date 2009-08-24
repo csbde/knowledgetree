@@ -114,6 +114,17 @@ class Installer {
     protected $stepConfirmation = false;
     
 	/**
+	* Flag if a step object needs confirmation
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var boolean
+	*/
+    protected $stepDisplayFirst = false;
+
+    private $installerAction = '';
+    
+	/**
 	* Constructs installation object
 	*
 	* @author KnowledgeTree Team
@@ -273,11 +284,19 @@ class Installer {
         $this->stepAction->setSteps($this->getSteps());
         $this->stepAction->setStepNames($this->getStepNames());
         $this->stepAction->setDisplayConfirm($this->stepConfirmation);
+        $this->stepAction->setDisplayFirst($this->stepDisplayFirst());
         $this->stepAction->loadSession($this->session);
         
         return $this->stepAction->doAction();
     }
 
+    private function stepDisplayFirst() {
+    	if($this->installerAction == 'edit')
+    		return false; //
+    	$class = $this->stepAction->createStep(); // Get step class
+    	return $class->displayFirst(); // Check if class needs to display first
+    }
+    
 	/**
 	* Set steps class names in string format
 	*
@@ -443,20 +462,26 @@ class Installer {
     private function loadNeeded() {
     	$this->_readXml(); // Xml steps
     	// Make sure session is cleared
-        $this->_resetSessions(); 
+        $this->_resetSessions();
         $this->_loadFromSessions();
     	if(isset($_POST['Next'])) {
+    		$this->installerAction = 'next';
     		$this->response = 'next';
     	} elseif (isset($_POST['Previous'])) {
+    		$this->installerAction = 'previous';
     		$this->response = 'previous';
    	  	} elseif (isset($_POST['Confirm'])) {
+   	  		$this->installerAction = 'confirm';
     		$this->response = 'next';
     	} elseif (isset($_POST['Install'])) {
+    		$this->installerAction = 'install';
     		$this->response = 'next';
     	} elseif (isset($_POST['Edit'])) {
+    		$this->installerAction = 'edit';
     		$this->response = 'next';
     	} else {
     		$this->response = '';
+    		$this->installerAction = '';
     	}
     }
     
@@ -480,7 +505,8 @@ class Installer {
                 	$this->_runStepsInstallers(); // Load landing
                 	$this->_proceed(); // Load next window
                 } elseif ($res == 'confirm') {
-                	$this->stepConfirmation = true;
+                	if(!$this->stepDisplayFirst())
+                		$this->stepConfirmation = true;
                 	$this->_landing();
                 } elseif ($res == 'landing') {
 					$this->_landing();

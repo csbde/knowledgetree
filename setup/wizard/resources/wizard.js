@@ -133,9 +133,9 @@ wizard.prototype.focusElement = function(el) {
 }
 
 // Catch form submit and validate
-wizard.prototype.onSubmitValidate = function() {
+wizard.prototype.onSubmitValidate = function(silent) {
 	var response = w.showStep(3, 'n');
-	if(response == true) {
+	if(response == true || silent == true) {
 		document.getElementById('sendAll').name = 'Next'; // Force the next step
 		document.getElementById('sendAll').value = 'next';
 		document.getElementById('dbsettings').submit();

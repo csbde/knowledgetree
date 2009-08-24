@@ -430,7 +430,7 @@ class registration extends Step
             'RO' => 'ROMANIA',
             'RU' => 'RUSSIAN FEDERATION',
             'RW' => 'RWANDA',
-            'BL' => 'SAINT BARTHƒLEMY',
+            'BL' => 'SAINT BARTHï¿½LEMY',
             'SH' => 'SAINT HELENA',
             'KN' => 'SAINT KITTS AND NEVIS',
             'LC' => 'SAINT LUCIA',
