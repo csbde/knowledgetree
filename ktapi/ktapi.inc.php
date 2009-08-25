@@ -3094,7 +3094,7 @@ class KTAPI
      * @param string $reason
      * @return kt_document_detail.
      */
-    public function checkout_document($document_id, $reason, $download=true, $sig_username = '', $sig_password = '')
+    public function checkout_document($document_id, $reason, $download = true, $sig_username = '', $sig_password = '')
     {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.check_out');
@@ -3109,7 +3109,8 @@ class KTAPI
     	}
 
     	$result = $document->checkout($reason);
-		if (PEAR::isError($result))
+        
+        if (PEAR::isError($result))
     	{
     		$response['status_code'] = 1;
     		$response['message'] = $result->getMessage();
@@ -3232,7 +3233,7 @@ class KTAPI
 
     	$result = $document->undo_checkout($reason);
 		if (PEAR::isError($result))
-    	{
+        {
     		$response['status_code'] = 1;
     		$response['message'] = $result->getMessage();
 			return $response;
@@ -3245,6 +3246,29 @@ class KTAPI
 
 		$response['status_code'] = 0;
     	return $response;
+    }
+    
+    /**
+     * Fetches a list of checked out documents (optionally limited to the logged in user)
+     * 
+     * @param boolean $userSpecific limit to current user
+     * @return $checkedout An array of checked out documents 
+     */
+    public function get_checkedout_docs($userSpecific = true)
+    {
+        $checkedout = array();
+       
+        $where = null;
+        // limit to current user?
+        if ($userSpecific) {
+            $where = array('checked_out_user_id = ?', $this->get_user()->getId());
+        }
+        else {
+            $where = array('is_checked_out = ?', 1);
+        }
+        $checkedout = KTAPI_Document::getList($where);
+
+        return $checkedout;
     }
 
     /**

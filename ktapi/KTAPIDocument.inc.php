@@ -484,7 +484,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			return $user;
 		}
-
+        
 		//if the document is checked-out by the current user, just return
 		//as no need to check-out again BUT we do need to download
 		//returning here will allow download, but skip check-out
@@ -2501,6 +2501,17 @@ class KTAPI_Document extends KTAPI_FolderItem
         $listEmails = array_keys($userEmails);
         sendEmail($listEmails, $this->documentid, $this->get_title(), $comment, (boolean)$attachDocument, $emailErrors);
 
+    }
+    
+    /**
+     * Get a list of Documents
+     *
+     * @param  String  Where clause (not required)
+     * @return Array array of Documents objects, false otherwise.
+     */
+    static public function getList($whereClause = null)
+    {
+        return Document::getList($whereClause);
     }
 }
 
