@@ -136,9 +136,15 @@ class configuration extends Step
         	$this->setDetails();
             return 'previous';
         } else if($this->confirm()) {
-            return 'next';
+        	if($this->doRun()) {
+            	return 'next';
+        	}
+        	return 'error';
         } else if($this->edit()) {
         	$this->setDetails();
+        	if($this->doRun()) {
+        		
+        	}
         	return 'landing';
         }
 
@@ -345,6 +351,7 @@ class configuration extends Step
             
 			if($class['class'] != 'tick') {
 				$this->temp_variables['paths_perms'] = $class['class'];
+				$this->done = false;
 			}
             $dirs[$key] = array_merge($dirs[$key], $class);
         }

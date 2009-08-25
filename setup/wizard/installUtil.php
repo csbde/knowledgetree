@@ -373,7 +373,6 @@ class InstallUtil {
     	}
 
     	return 'java';
-//    	return array('response'=>$response, 'java'=>'java');
     }
     
     function tryJava2() {
@@ -383,7 +382,6 @@ class InstallUtil {
     	}
 
     	return 'java';
-//    	return array('response'=>$response, 'java'=>'java');
     }
     
     function tryJava3() {
@@ -396,7 +394,6 @@ class InstallUtil {
 			$match = preg_match('/bin/', $r);
 			if($match) {
 				return preg_replace('/java:/', '', $r);
-//		    	return array('response'=>$response, 'java'=>preg_replace('/java:/', '', $r));
 			}
 		}
     }
@@ -413,6 +410,26 @@ class InstallUtil {
     	if(isset($_POST['java'])) {
     		if($_POST['java'] != '') {
     			return $_POST['java'];
+    		} else {
+    			return false;
+    		}
+    	} else {
+    		return false;
+    	}
+    }
+    
+    /**
+	* Check if user entered location of PHP
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return mixed
+	*/
+    public function phpSpecified() {
+    	if(isset($_POST['php'])) {
+    		if($_POST['php'] != '') {
+    			return $_POST['php'];
     		} else {
     			return false;
     		}
@@ -439,6 +456,30 @@ class InstallUtil {
     	}
 		
     	return $response;
+    }
+    
+    /**
+	* Determine the location of PHP
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return mixed
+	*/
+    function getPhp() {
+		$cmd = "whereis php";
+		$response = $this->pexec($cmd);
+		if(is_array($response['out'])) {
+			$broke = explode(' ', $response['out'][0]);
+			foreach ($broke as $r) {
+				$match = preg_match('/bin/', $r);
+				if($match) {
+					return preg_replace('/php:/', '', $r);
+				}
+			}
+		}
+		
+		return '';
     }
     
    /**

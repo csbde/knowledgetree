@@ -237,7 +237,7 @@ class complete extends Step {
 			$className = OS.$serviceName;
 			$service = new $className();
 			$service->load();
-			if($service->status() == 'RUNNING') {
+			if($service->status() == 'RUNNING' || $service->status() == 'STARTED') {
 				$this->temp_variables[$serviceName."Status"] = 'tick';
 			} else {
 				$this->temp_variables[$serviceName."Status"] = 'cross_orange';

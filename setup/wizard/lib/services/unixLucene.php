@@ -147,7 +147,12 @@ class unixLucene extends unixService {
     }
 
     public function install() {
-		$this->start();
+    	$status = $this->status();
+    	if($status == '') {
+			return $this->start();
+    	} else {
+    		return $status;
+    	}
     }
     
     public function status() {
@@ -162,11 +167,11 @@ class unixLucene extends unixService {
     				}
     			}
     		} else {
-    			return 'STOPPED';
+    			return '';
     		}
     	}
     	
-    	return 'STOPPED';
+    	return '';
     }
     
     public function uninstall() {

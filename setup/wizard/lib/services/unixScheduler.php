@@ -108,7 +108,12 @@ class unixScheduler extends unixService {
 	}
 	
 	function install() {
-		$this->start();
+    	$status = $this->status();
+    	if($status == '') {
+			return $this->start();
+    	} else {
+    		return $status;
+    	}
 	}
 	
 	function uninstall() {
@@ -133,7 +138,7 @@ class unixScheduler extends unixService {
     				}
     			}
     		} else {
-    			return 'STOPPED';
+    			return '';
     		}
     	}
     	
