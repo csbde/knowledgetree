@@ -50,7 +50,13 @@ class complete extends Step {
 	* @var object
 	*/	
     private $_dbhandler = null;
-    
+
+    /**
+     * List of services to check
+     * 
+     * @access private
+     * @var array
+     */
     private $services_check = 'tick';
     private $paths_check = 'tick';
     private $privileges_check = 'tick';

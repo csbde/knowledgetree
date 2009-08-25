@@ -143,6 +143,14 @@ class services extends Step
     private $javaExeError = false;
     
 	/**
+	* Holds path error, if java is specified
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var mixed
+	*/
+    private $phpExeError = false;
+	/**
 	* Constructs services object
 	*
 	* @author KnowledgeTree Team
@@ -217,6 +225,7 @@ class services extends Step
 	* @return boolean
 	*/
     private function doRun() {
+    	$this->setPhpDir(); // Get php, if it exists
     	$this->java = $this->util->getJava(); // Get java, if it exists
     	$this->javaChecks(); // Run Pre Checks
     	$errors = $this->getErrors(); // Get errors
@@ -622,10 +631,40 @@ class services extends Step
     */
     private function storeSilent() {
     	$this->temp_variables['javaExeError'] = $this->javaExeError;
+    	$this->temp_variables['phpExeError'] = $this->phpExeError;
     	$this->temp_variables['javaCheck'] = $this->javaCheck;
     	$this->temp_variables['javaExtCheck'] = $this->javaExtCheck;
     	$this->temp_variables['serviceCheck'] = $this->serviceCheck;
     	$this->temp_variables['disableExtension'] = $this->disableExtension;
     }
+    
+	private function setPhpDir($phpdir = '') {
+		if(PHP_DIR != '') {
+			$this->php = PHP_DIR;
+		}
+		if($phpdir == '') {
+			$cmd = "whereis php";
+			$response = $this->util->pexec($cmd);
+			if(is_array($response['out'])) {
+				$broke = explode(' ', $response['out'][0]);
+				foreach ($broke as $r) {
+					$match = preg_match('/bin/', $r);
+					if($match) {
+						$this->php = preg_replace('/php:/', '', $r);
+						return true;
+					}
+				}
+			}
+		} else {
+			$this->php = $phpdir;
+		}
+		if($this->php == '') {
+			$this->phpExeError = "Incorrect path specified";
+		}
+	}
+	
+	private function getPhpDir() {
+		return $this->php;
+	}
 }
 ?>

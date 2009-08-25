@@ -176,7 +176,7 @@ class InstallWizard {
 	* @return void
  	*/
 	private function createInstallFile() {
-		touch("install");
+		@touch("install");
 	}
 	
 	/**
@@ -188,7 +188,7 @@ class InstallWizard {
 	* @return void
  	*/
 	private function removeInstallFile() {
-		unlink("install");
+		@unlink("install");
 	}
 	
 	/**

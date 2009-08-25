@@ -104,6 +104,7 @@
     	$modules = get_loaded_extensions();
     	if(in_array('Zend Monitor', $modules)) { // TODO: Dirty
     		define('INSTALL_TYPE', 'Zend');
+    		define('PHP_DIR', '');
     	} else {
     		define('INSTALL_TYPE', '');
     		define('PHP_DIR', '');

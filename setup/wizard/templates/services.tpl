@@ -14,11 +14,16 @@ if($errors || $warnings){
 <?php if($javaExtCheck != 'tick') { ?>
 Specify the location of your Java executable
 <br />
-<input name='java' id='port' size='25' value=''/>&nbsp;&nbsp;&nbsp;<input type="submit" name="Refresh" value="Submit"/>
+<input name='java' id='port' size='25' value=''/>
+&nbsp;&nbsp;&nbsp;
+<?php if($phpExtCheck != 'tick') { ?>
+Specify the location of your PHP executable
 <br />
-<?php if($javaExeError) { ?>
-	<span class="error"><?php echo $javaExeError; ?></span>
+<input name='php' id='port' size='25' value=''/>
 <?php } ?>
+<input type="submit" name="Refresh" value="Submit"/>
+<br />
+<?php if($javaExeError) { ?><span class="error"><?php echo $javaExeError; ?></span><?php } ?>
 
 <?php } ?>
 <h3><?php echo "<span class='{$javaCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Check</h3>

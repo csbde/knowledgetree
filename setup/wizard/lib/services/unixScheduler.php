@@ -41,7 +41,6 @@
 */
 
 class unixScheduler extends unixService {
-	private $phpDir;
 	private $schedulerDir;
 	private $schedulerSource;
 	private $schedulerSourceLoc;
@@ -162,6 +161,7 @@ class unixScheduler extends unixService {
 		return false;
 	}
 	
+
 	
 }
 ?>

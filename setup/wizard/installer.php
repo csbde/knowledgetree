@@ -392,7 +392,7 @@ class Installer {
 	* @return void
 	*/
     private function _completeInstall() {
-    	touch("install");
+    	@touch("install");
     }
     
 	/**

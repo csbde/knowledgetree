@@ -274,6 +274,7 @@ class database extends Step
 	*/
     public function doStep() {
     	$this->setErrorsFromSession();
+    	$this->initErrors(); // Load template errors
         if($this->inStep("database")) {
             $res = $this->doProcess();
         	if($res) { // If theres a response, return it
@@ -298,7 +299,6 @@ class database extends Step
 	* @return string
 	*/
     public function doProcess() {
-    	$this->initErrors(); // Load template errors
         if($this->next()) {
             $this->setPostConfig(); // Set any posted variables
             $this->setDetails();
