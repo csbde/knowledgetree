@@ -33,7 +33,6 @@ if($errors || $warnings){
 	</div>
 <?php } ?>
 </div>
-<br/>
 <div>
     <h3><?php echo "<span class='{$database_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Database connectivity</h3>
 <?php if($silent) { ?>
@@ -60,7 +59,6 @@ if($errors || $warnings){
 	</div>
 <?php } ?>
 </div>
-<br/>
 <div>
     <h3><?php echo "<span class='{$services_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services</h3>
 <?php if($silent) { ?>

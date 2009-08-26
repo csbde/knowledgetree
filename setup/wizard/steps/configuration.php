@@ -338,15 +338,17 @@ class configuration extends Step
     private function getPathInfo($fileSystemRoot)
     {
         $dirs = $this->getDirectories();
-        $varDirectory = $fileSystemRoot . DIRECTORY_SEPARATOR . 'var';
+        $varDirectory = $fileSystemRoot . DS . 'var';
         foreach ($dirs as $key => $dir){
             $path = (isset($_POST[$dir['setting']])) ? $_POST[$dir['setting']] : $dir['path'];
 
             while(preg_match('/\$\{([^}]+)\}/', $path, $matches)){
                 $path = str_replace($matches[0], $$matches[1], $path);
             }
+			if(WINDOWS_OS)
+            	$path = preg_replace('/\//', '\\',$path);
 
-            $dirs[$key]['path'] = $path;
+            	$dirs[$key]['path'] = $path;
             $class = $this->util->checkPermission($path, $dir['create']);
             
 			if($class['class'] != 'tick') {
@@ -376,8 +378,9 @@ class configuration extends Step
                 array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => '${varDirectory}/log', 'create' => true),
                 array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => '${varDirectory}/tmp', 'create' => true),
                 array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => '${varDirectory}/uploads', 'create' => true),
+                array('name' => 'Executables Directory', 'setting' => 'binDirectory', 'path' => '${fileSystemRoot}/bin', 'create' => false),
                 array('name' => 'Configuration File', 'setting' => '', 'path' => '${fileSystemRoot}/config/config.ini', 'create' => false),
-            );
+                );
     }
 }
 ?>

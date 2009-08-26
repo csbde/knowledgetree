@@ -279,7 +279,11 @@ class services extends Step
 				$this->temp_variables['services'][] = array('class'=>'cross_orange', 'msg'=>$service->getName()." Could not be added as a Service");
 				$this->serviceCheck = 'cross_orange';
 			} else {
-				$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$service->getName()." has been added as a Service");
+				if(WINDOWS_OS) {
+					$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$service->getName()." has been added as a Service"); }
+				else {
+					$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$service->getName()." has been added and Started as a Service");
+				}
 			}
 		}
     }

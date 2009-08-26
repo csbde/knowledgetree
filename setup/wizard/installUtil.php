@@ -470,11 +470,13 @@ class InstallUtil {
 		$cmd = "whereis php";
 		$response = $this->pexec($cmd);
 		if(is_array($response['out'])) {
-			$broke = explode(' ', $response['out'][0]);
-			foreach ($broke as $r) {
-				$match = preg_match('/bin/', $r);
-				if($match) {
-					return preg_replace('/php:/', '', $r);
+			if (isset($response['out'][0])) {
+				$broke = explode(' ', $response['out'][0]);
+				foreach ($broke as $r) {
+					$match = preg_match('/bin/', $r);
+					if($match) {
+						return preg_replace('/php:/', '', $r);
+					}
 				}
 			}
 		}

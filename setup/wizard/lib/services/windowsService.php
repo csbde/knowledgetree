@@ -69,10 +69,13 @@ class windowsService extends Service {
 	* @return array
  	*/
 	public function start() {
-		$cmd = "sc start {$this->name}";
-		$response = $this->util->pexec($cmd);
-		
-		return $response;
+		$status = $this->status();
+		if ($status != 'RUNNING') {
+			$cmd = "sc start {$this->name}";
+			$response = $this->util->pexec($cmd);
+			return $response;
+		}
+		return $status;
 	}
 	
 	/**
@@ -84,9 +87,13 @@ class windowsService extends Service {
 	* @return array
  	*/
 	public function stop() {
-		$cmd = "sc stop {$this->name}";
-		$response = $this->util->pexec($cmd);
-		return $response;
+		$status = $this->status();
+		if ($status != 'STOPPED') {
+			$cmd = "sc stop {$this->name}";
+			$response = $this->util->pexec($cmd);
+			return $response;
+		}
+		return $status;
 	}
 	
 	public function install() {}
@@ -101,7 +108,7 @@ class windowsService extends Service {
  	*/
 	public function restart() {
 		$response = $this->stop();
-		sleep(1);
+		sleep(10);
 		$this->start();
 	}
 	
@@ -114,10 +121,14 @@ class windowsService extends Service {
 	* @return array
  	*/
 	public function uninstall() {
-		$cmd = "sc delete {$this->name}";
-		$response = $this->util->pexec($cmd);
-		sleep(1);
-		return $response;
+		$status = $this->status();
+		if ($status != '') {
+			$cmd = "sc delete {$this->name}";
+			$response = $this->util->pexec($cmd);
+			sleep(10);
+			return $response;
+		}
+		return $status;
 	}
 	
 	/**

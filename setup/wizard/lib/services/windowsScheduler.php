@@ -78,7 +78,8 @@ class windowsScheduler extends windowsService {
 	function load() {
 		$this->name = "KTSchedulerTest";
 		$this->setSchedulerDIR(SYSTEM_DIR."bin".DS."win32");
-		$this->setSchedulerScriptPath("taskrunner_test.bat");
+//		$this->setSchedulerScriptPath("taskrunner_test.bat");
+		$this->setSchedulerScriptPath("taskrunner.bat");
 		$this->setSchedulerSource("schedulerService.php");
 	}
 
