@@ -87,7 +87,7 @@
 	}
     define('SYSTEM_ROOT', $asys);
     // Install Type
-    preg_match('/Zend/', $sys, $matches);
+    preg_match('/Zend/', $sys, $matches); // TODO: Dirty
     if($matches) {
 		$sysdir = explode(DS, $sys);
 		array_pop($sysdir);
@@ -101,12 +101,18 @@
     	define('INSTALL_TYPE', 'Zend');
     	define('PHP_DIR', $zendsys."ZendServer".DS."bin".DS);
     } else {
-    	// TODO: Other types
+    	$modules = get_loaded_extensions();
+    	if(in_array('Zend Monitor', $modules)) { // TODO: Dirty
+    		define('INSTALL_TYPE', 'Zend');
+    		define('PHP_DIR', '');
+    	} else {
+    		define('INSTALL_TYPE', '');
+    		define('PHP_DIR', '');
+    	}
     }
     // Other
     date_default_timezone_set('Africa/Johannesburg');
-    // Mysql bin [Windows]
-    if(WINDOWS_OS) {
+    if(WINDOWS_OS) { // Mysql bin [Windows]
 	    $serverPaths = explode(';',$_SERVER['PATH']);
 	    foreach ($serverPaths as $apath) {
 	    	preg_match('/mysql/i', $apath, $matches);
@@ -115,6 +121,8 @@
 	    		break;
 	    	}
 	    }
+    } else {
+    	define('MYSQL_BIN', ''); // Assume its linux and can be executed from command line
     }
     
 ?>

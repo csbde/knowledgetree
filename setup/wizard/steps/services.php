@@ -80,6 +80,24 @@ class services extends Step
     private $javaCheck = 'cross';
     
 	/**
+	* Flag if services are already Installed
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    private $alreadyInstalled = false;
+    
+	/**
+	* PHP Installed 
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    private $phpCheck = 'cross_orange';
+    
+	/**
 	* Java Bridge Installed 
 	*
 	* @author KnowledgeTree Team
@@ -104,7 +122,7 @@ class services extends Step
 	* @access public
 	* @var boolean
 	*/
-    protected $storeInSession = false;
+    protected $storeInSession = true;
     
 	/**
 	* List of variables to be loaded to template
@@ -140,8 +158,16 @@ class services extends Step
 	* @access public
 	* @var mixed
 	*/
-    private $javaExeError = false;
+    private $javaExeError = '';
     
+	/**
+	* Holds path error, if php is specified
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var mixed
+	*/
+    private $phpExeError = '';
 	/**
 	* Constructs services object
 	*
@@ -205,6 +231,7 @@ class services extends Step
 		if($this->java != '') { // Java JRE Found
 			$this->javaCheck = 'tick';
 			$this->javaInstalled();
+			$this->temp_variables['java']['location'] = $this->java;
 		}
     }
     
@@ -217,20 +244,61 @@ class services extends Step
 	* @return boolean
 	*/
     private function doRun() {
-    	$this->java = $this->util->getJava(); // Get java, if it exists
-    	$this->javaChecks(); // Run Pre Checks
-    	$errors = $this->getErrors(); // Get errors
-		if(empty($errors)) { // Install Service if there is no errors
-			$this->installService();
-		} else { // Services not installed
-			foreach ($this->getServices() as $serviceName) {
-				$this->temp_variables['services'][] = array('class'=>'cross_orange', 'msg'=>$serviceName." Could not be added as a Service");
+    	if($this->alreadyInstalled()) {
+    		$this->alreadyInstalled = true;
+    		$this->serviceCheck = 'tick';
+    	} else {
+	    	$this->php = $this->util->getPhp(); // Get java, if it exists
+	    	$this->java = $this->util->getJava(); // Get java, if it exists
+	    	$passedPhp = $this->phpChecks(); // Run Java Pre Checks
+	    	$passedJava = $this->javaChecks(); // Run Java Pre Checks
+	    	$errors = $this->getErrors(); // Get errors
+			if(empty($errors) && $passedJava && $passedPhp) { // Install Service if there is no errors
+				$this->installServices();
+			} elseif ($passedPhp) { // Install Scheduler
+				$this->installService('Scheduler');
+			} elseif ($passedJava) { // Install Lucene
+				$this->installService('Lucene');
+			} else { // All Services not installed
 			}
-			$this->serviceCheck = 'cross_orange';
-		}
+    	}
+		$this->checkServiceStatus();
 		$this->storeSilent(); // Store info needed for silent mode
 		if(!empty($errors))
 			return false;
+		return true;
+    }
+    
+    function checkServiceStatus() {
+    	$serverDetails = $this->getServices();
+		foreach ($serverDetails as $serviceName) {
+			$className = OS.$serviceName;
+			$service = new $className();
+			$status = $this->serviceStatus($service);
+			if($status != 'STARTED') {
+				$this->temp_variables['services'][] = array('class'=>'cross_orange', 'msg'=>$service->getName()." Could not be added as a Service");
+				$this->serviceCheck = 'cross_orange';
+			} else {
+				if(WINDOWS_OS) {
+					$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$service->getName()." has been added as a Service"); }
+				else {
+					$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$service->getName()." has been added and Started as a Service");
+				}
+			}
+		}
+    }
+    
+    function alreadyInstalled() {
+    	$installed = true;
+    	$serverDetails = $this->getServices();
+		foreach ($serverDetails as $serviceName) {
+			$className = OS.$serviceName;
+			$service = new $className();
+			$status = $this->serviceStatus($service);
+			if($status != 'STARTED') {
+				return false;
+			}
+		}
 		return true;
     }
     
@@ -251,10 +319,36 @@ class services extends Step
     		$this->disableExtension = true; // Disable the use of the php bridge extension
     		return $this->detSettings(); // AutoDetect java settings
     	} else {
-			return $this->useBridge(); // Use Bridge to get java settings
+    		$auto = $this->useBridge(); // Use Bridge to get java settings
+    		if($auto) {
+				return $auto;
+    		} else {
+				$this->specifyJava(); // Ask for settings
+    		}
+			return $auto;
     	}
     }
-
+	
+    private function specifyJava() {
+    	$this->javaExeError = true;
+    }
+    
+    private function specifyPhp() {
+    	$this->phpExeError = true;
+    }
+    
+    private function phpChecks() {
+    	// TODO: Better detection
+    	return true;
+    	$this->setPhp();
+    	if($this->util->phpSpecified()) {
+			return $this->detPhpSettings();
+    	} else {
+    		$this->specifyPhp();// Ask for settings
+			return false;
+    	}
+    }
+    
     /**
 	* Attempts to use user input and configure java settings
 	*
@@ -280,18 +374,41 @@ class services extends Step
 					$this->javaVersionCorrect();
 					$this->javaInstalled();
 					$this->javaCheck = 'tick';
+					
 					return true;
 	    		}
     		} else {
     			$this->javaVersionWarning();
     			$this->javaCheck = 'cross_orange';
-    			$this->javaExeError = "Incorrect path specified";
+    			$this->javaExeError = "Java : Incorrect path specified";
 				$this->error[] = "Requires Java 1.5+ to be installed";
 				return false;
     		}
     	}
     }
     
+    function detPhpSettings() {
+    	// TODO: Better php handling
+    	return true;
+    	$phpExecutable = $this->util->phpSpecified();// Retrieve java bin
+    	$cmd = "$phpExecutable -version > output/outPHP 2>&1 echo $!";
+    	$response = $this->util->pexec($cmd);
+    	if(file_exists(OUTPUT_DIR.'outPHP')) {
+    		$tmp = file_get_contents(OUTPUT_DIR.'outPHP');
+    		preg_match('/PHP/',$tmp, $matches);
+    		if($matches) {
+				$this->phpCheck = 'tick';
+				
+				return true;
+    		} else {
+    			$this->phpCheck = 'cross_orange';
+    			$this->phpExeError = "PHP : Incorrect path specified";
+				$this->error[] = "PHP executable required";
+				
+				return false;
+    		}
+    	}
+    }
     /**
 	* Attempts to use bridge and configure java settings
 	*
@@ -320,6 +437,7 @@ class services extends Step
 					return true;
 		    	}
 			} else {
+				$this->javaCheck = 'cross_orange';
 				$this->javaVersionWarning();
 				$this->zendBridgeWarning();
 				$this->warnings[] = "Zend Java Bridge Not Functional";
@@ -370,27 +488,36 @@ class services extends Step
 	*
 	* @author KnowledgeTree Team
 	* @param none
-	* @access public
+	* @access private
 	* @return boolean
 	*/
-    public function installService() {
+    private function installServices() {
 		foreach ($this->getServices() as $serviceName) {
-			$className = OS.$serviceName;
-			$service = new $className();
-			$status = $this->serviceHelper($service);
-			if ($status) {
-				$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$service->getName()." has been added as a Service");
-			} else {
-				$this->temp_variables['services'][] = array('class'=>'cross_orange', 'msg'=>$service->getName()." Could not be added as a Service");
-				$this->serviceCheck = 'cross_orange';
-			}
+			$this->installService($serviceName);
 		}
 		
 		return true;
     }
 
+    /**
+	* Installs services helper
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
+    private function installService($serviceName) {
+		$className = OS.$serviceName;
+		$service = new $className();
+		$status = $this->serviceHelper($service);
+		if (!$status) {
+			$this->serviceCheck = 'cross_orange';
+		}
+    }
+    
    	/**
-	* Executes services
+	* Installs services
 	*
 	* @author KnowledgeTree Team
 	* @param object
@@ -405,6 +532,20 @@ class services extends Step
 	}
 	
    	/**
+	* Returns service status
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access private
+	* @return string
+	*/
+	private function serviceStatus($service) {
+		$service->load(); // Load Defaults
+		$statusCheck = OS."ServiceInstalled";
+		return $this->$statusCheck($service);
+	}
+	
+   	/**
 	* Check if windows service installed
 	*
 	* @author KnowledgeTree Team
@@ -414,8 +555,7 @@ class services extends Step
 	*/
 	public function windowsServiceInstalled($service) {
 		$status = $service->status(); // Check if service has been installed
-		if($status != 'STOPPED') { // Check service status
-			$this->error[] = $service->getName()." Could not be added as a Service";
+		if($status == '') { // Check service status
 			return false;
 		}
 		return true;
@@ -432,7 +572,6 @@ class services extends Step
 	public function unixServiceInstalled($service) {
 		$status = $service->status(); // Check if service has been installed
 		if($status != 'STARTED') { // Check service status
-			$this->error[] = $service->getName()." Could not be added as a Service";
 			return false;
 		}
 		return true;
@@ -451,9 +590,7 @@ class services extends Step
 			$className = OS.$serviceName;
 			$service = new $className();
 			$status = $this->serviceStart($service);
-			
 		}
-		
 		return true;
 	}
 	
@@ -621,11 +758,29 @@ class services extends Step
 	* @return void
     */
     private function storeSilent() {
-    	$this->temp_variables['javaExeError'] = $this->javaExeError;
-    	$this->temp_variables['javaCheck'] = $this->javaCheck;
-    	$this->temp_variables['javaExtCheck'] = $this->javaExtCheck;
-    	$this->temp_variables['serviceCheck'] = $this->serviceCheck;
-    	$this->temp_variables['disableExtension'] = $this->disableExtension;
+    	$this->temp_variables['alreadyInstalled'] = $this->alreadyInstalled;
+		$this->temp_variables['javaExeError'] = $this->javaExeError;
+		$this->temp_variables['javaCheck'] = $this->javaCheck;
+		$this->temp_variables['javaExtCheck'] = $this->javaExtCheck;
+		$this->temp_variables['phpCheck'] = 'tick';//$this->phpCheck;
+		$this->temp_variables['phpExeError'] = '';//$this->phpExeError;
+		$this->temp_variables['serviceCheck'] = $this->serviceCheck;
+		$this->temp_variables['disableExtension'] = $this->disableExtension;
     }
+
+    private function setPhp() {
+		if($this->php != '') { // PHP Found
+			$this->phpCheck = 'tick';
+		} elseif (PHP_DIR != '') { // Use System Defined Settings
+			$this->php = PHP_DIR;
+		} else {
+
+		}
+		$this->temp_variables['php']['location'] = $this->php;
+    }
+	
+	public function getPhpDir() {
+		return $this->php;
+	}
 }
 ?>

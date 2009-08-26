@@ -55,7 +55,7 @@ The settings below have been drawn from the system information. The host and por
 	<div class="paths_perms" style="display:none">
 <?php } ?>
 <p class="description">
-The following folders must be writable for KnowledgeTree to be able to run. The permissions on the configuration file can be reset to read-only once the installation has completed.
+The following folders must be writable for KnowledgeTree to be able to run. The permissions on the configuration file may be reset to read-only once the installation has completed.
 </p>
 <table>
 <?php

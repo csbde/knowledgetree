@@ -69,6 +69,15 @@ class stepAction {
     protected $displayConfirm = false;
 
 	/**
+	* Returns whether or not to display the confirmation page first
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var boolean
+	*/
+    protected $displayFirst = false;
+    
+	/**
 	* Reference to session object
 	*
 	* @author KnowledgeTree Team
@@ -122,9 +131,6 @@ class stepAction {
             } else {
             	$this->_clearErrors($this->stepName); // Send Errors to session
             }
-//            if($this->action->silentMode()) {
-//				return 'silent';
-//            }
             return $response;
         } else {
         	$this->stepName = 'errors';
@@ -278,6 +284,18 @@ class stepAction {
     }
 
 	/**
+	* Returns whether or not to display the confirmation page first
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    public function displayFirst() {
+    	return $this->displayFirst;
+    }
+    
+	/**
 	* Sets confirmation page flag
 	*
 	* @author KnowledgeTree Team
@@ -289,6 +307,18 @@ class stepAction {
         $this->displayConfirm = $displayConfirm;
     }
 
+	/**
+	* Sets confirmation page first flag
+	*
+	* @author KnowledgeTree Team
+	* @param boolean
+	* @access public
+	* @return void
+	*/
+    public function setDisplayFirst($displayFirst) {
+        $this->displayFirst = $displayFirst;
+    }
+    
 	/**
 	* Sets session object
 	*
@@ -326,10 +356,15 @@ class stepAction {
         $top = $this->getTop();
         $step_errors = $this->action->getErrors(); // Get errors
         $step_warnings = $this->action->getWarnings(); // Get warnings
-        if($this->displayConfirm()) // Check if theres a confirm step
+        if($this->displayConfirm()) { // Check if theres a confirm step
             $template = "templates/{$this->stepName}_confirm.tpl";
-        else
-            $template = "templates/{$this->stepName}.tpl";
+    	} else {
+        	if($this->displayFirst()) {
+            	$template = "templates/{$this->stepName}_confirm.tpl";
+        	} else {
+        		$template = "templates/{$this->stepName}.tpl";
+        	}
+    	}
         $step_tpl = new Template($template);
         $step_tpl->set("errors", $step_errors); // Set template errors
         $step_tpl->set("warnings", $step_warnings); // Set template warnings

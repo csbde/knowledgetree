@@ -11,15 +11,29 @@ if($errors || $warnings){
        . 'Click Here for help on overcoming service issues</a></div><br/>';
 }
 ?>
-<?php if($javaExtCheck != 'tick') { ?>
+<?php if(!$alreadyInstalled) { ?>
+<?php if($javaExeError != '') { ?>
 Specify the location of your Java executable
 <br />
-<input name='java' id='port' size='25' value=''/>&nbsp;&nbsp;&nbsp;<input type="submit" name="Refresh" value="Submit"/>
-<br />
-<?php if($javaExeError) { ?>
-	<span class="error"><?php echo $javaExeError; ?></span>
+<input name='java' id='port' size='25' value='<?php echo $java['location']; ?>'/>
+&nbsp;&nbsp;&nbsp;
+<?php if($javaExeError != true) { ?><span class="error"><?php echo $javaExeError; ?></span><?php } ?>
 <?php } ?>
-
+<?php if($phpExeError != '') { ?>
+<br />
+Specify the location of your PHP executable
+<br />
+<?php if($php['location'] == '') { ?>
+	<input name='php' id='port' size='25' value='<?php echo $php['location']; ?>'/>
+<?php } else {?>
+	<input type="hidden" name='php' id='port' size='25' value='<?php echo $php['location']; ?>'/>
+<?php } ?>
+&nbsp;&nbsp;&nbsp;
+<?php if($phpExeError != true) { ?><span class="error"><?php echo $phpExeError; ?></span><?php } ?>
+<?php } ?>
+<?php if($javaExeError != '' || $phpExeError != '') { ?>
+<br />
+<input type="submit" name="Refresh" value="Submit"/>
 <?php } ?>
 <h3><?php echo "<span class='{$javaCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Check</h3>
 <?php if($silent) { ?>
@@ -49,6 +63,11 @@ A PHP Java Bridge is required for KnowledgeTree to perform at an optimal level.
 <?php if($silent) { ?>
 	</div>
 <?php } ?>
+<?php } ?>
+<?php } else { ?>
+<p class="description">
+All services are already installed.
+</p>
 <?php } ?>
 <h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services Check</h3>
 <?php if($silent) { ?>

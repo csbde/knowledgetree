@@ -42,7 +42,6 @@
 
 class unixLucene extends unixService {
 	public $util;
-	private $phpDir;
 	private $shutdownScript;
 	private $indexerDir;
 	private $lucenePidFile;
@@ -65,7 +64,6 @@ class unixLucene extends unixService {
 		$this->setJavaXmx(512);
 		$this->setLuceneSource("ktlucene.jar");
 		$this->setLuceneSourceLoc("ktlucene.jar");
-//		$this->setPhpDir();
 		$this->setShutdownScript("shutdown.php");
 	}
 	
@@ -83,29 +81,6 @@ class unixLucene extends unixService {
 	
 	public function getShutdownScript() {
 		return $this->shutdownScript;
-	}
-	
-	private function setPhpDir($phpdir = '') {
-		if($phpdir == '') {
-			$cmd = "whereis php";
-			$response = $this->util->pexec($cmd);
-			if(is_array($response['out'])) {
-				$broke = explode(' ', $response['out'][0]);
-				foreach ($broke as $r) {
-					$match = preg_match('/bin/', $r);
-					if($match) {
-						$this->phpDir = preg_replace('/php:/', '', $r);
-					}
-				}
-			}
-			return ;
-		} else {
-			$this->phpDir = $phpdir;
-		}
-	}
-	
-	public function getPhpDir() {
-		return $this->phpDir;
 	}
 	
 	private function setLucenePidFile($lucenePidFile) {
@@ -172,7 +147,12 @@ class unixLucene extends unixService {
     }
 
     public function install() {
-		$this->start();
+    	$status = $this->status();
+    	if($status == '') {
+			return $this->start();
+    	} else {
+    		return $status;
+    	}
     }
     
     public function status() {
@@ -187,11 +167,11 @@ class unixLucene extends unixService {
     				}
     			}
     		} else {
-    			return 'STOPPED';
+    			return '';
     		}
     	}
     	
-    	return 'STOPPED';
+    	return '';
     }
     
     public function uninstall() {

@@ -57,6 +57,7 @@ class configuration extends Step
     private $ssl_enabled;
     private $done;
 	public $temp_variables = array("step_name"=>"configuration");
+	public $displayFirst = true;
 	/**
 	* Flag to store class information in session
 	*
@@ -125,6 +126,7 @@ class configuration extends Step
     		$this->doRun();
     		return 'landing';
     	}
+    	$this->loadTemplateDefaults();
         if($this->next()) {
             if($this->doRun()) {
                 return 'confirm';
@@ -134,9 +136,15 @@ class configuration extends Step
         	$this->setDetails();
             return 'previous';
         } else if($this->confirm()) {
-            return 'next';
+        	if($this->doRun()) {
+            	return 'next';
+        	}
+        	return 'error';
         } else if($this->edit()) {
         	$this->setDetails();
+        	if($this->doRun()) {
+        		
+        	}
         	return 'landing';
         }
 
@@ -144,6 +152,10 @@ class configuration extends Step
         return 'landing';
     }
 
+    public function loadTemplateDefaults() {
+    	$this->temp_variables['paths_perms'] = 'tick';
+    }
+    
      /**
      * Execute the step
      *
@@ -326,19 +338,22 @@ class configuration extends Step
     private function getPathInfo($fileSystemRoot)
     {
         $dirs = $this->getDirectories();
-        $varDirectory = $fileSystemRoot . DIRECTORY_SEPARATOR . 'var';
-		$this->temp_variables['paths_perms'] = 'tick';
+        $varDirectory = $fileSystemRoot . DS . 'var';
         foreach ($dirs as $key => $dir){
             $path = (isset($_POST[$dir['setting']])) ? $_POST[$dir['setting']] : $dir['path'];
 
             while(preg_match('/\$\{([^}]+)\}/', $path, $matches)){
                 $path = str_replace($matches[0], $$matches[1], $path);
             }
+			if(WINDOWS_OS)
+            	$path = preg_replace('/\//', '\\',$path);
 
-            $dirs[$key]['path'] = $path;
+            	$dirs[$key]['path'] = $path;
             $class = $this->util->checkPermission($path, $dir['create']);
+            
 			if($class['class'] != 'tick') {
 				$this->temp_variables['paths_perms'] = $class['class'];
+				$this->done = false;
 			}
             $dirs[$key] = array_merge($dirs[$key], $class);
         }
@@ -363,8 +378,9 @@ class configuration extends Step
                 array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => '${varDirectory}/log', 'create' => true),
                 array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => '${varDirectory}/tmp', 'create' => true),
                 array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => '${varDirectory}/uploads', 'create' => true),
+                array('name' => 'Executables Directory', 'setting' => 'binDirectory', 'path' => '${fileSystemRoot}/bin', 'create' => false),
                 array('name' => 'Configuration File', 'setting' => '', 'path' => '${fileSystemRoot}/config/config.ini', 'create' => false),
-            );
+                );
     }
 }
 ?>

@@ -108,7 +108,7 @@ class dbUtil {
 		$this->dbhost = $dhost;
 		$this->dbuname = $duname;
 		$this->dbpassword = $dpassword;
-		$this->dbconnection = mysql_connect($dhost, $duname, $dpassword);
+		$this->dbconnection = @mysql_connect($dhost, $duname, $dpassword);
 		if($dbname != '') {
 			$this->setDb($dbname);
 			$this->useDb($dbname);
@@ -116,7 +116,7 @@ class dbUtil {
   		if($this->dbconnection)
   			return $this->dbconnection;
   		else {
-  			$this->error[] = mysql_error($this->dbconnection);
+  			$this->error[] = @mysql_error($this->dbconnection);
   			return false;
   		}		
 	}
@@ -128,15 +128,15 @@ class dbUtil {
 	* @access public
 	* @return boolean
 	*/
-	public function useDb($dbname) {
+	public function useDb($dbname = '') {
 		if($dbname != '') {
 			$this->setDb($dbname);
 		}
 		
-		if(mysql_select_db($this->dbname, $this->dbconnection))
+		if(@mysql_select_db($this->dbname, $this->dbconnection))
 			return true;
 		else {
-			$this->error[] = mysql_error($this->dbconnection);
+			$this->error[] = @mysql_error($this->dbconnection);
 			return false;
 		}
 	}
@@ -153,11 +153,11 @@ class dbUtil {
     * @return object The result of the query.
     */
     public function query($query) {
-      $result = mysql_query($query, $this->dbconnection);
+      $result = @mysql_query($query, $this->dbconnection);
 		if($result) {
 			return $result;
 		} else {
-			$this->error[] = mysql_error($this->dbconnection);
+			$this->error[] = @mysql_error($this->dbconnection);
 			return false;
 		}
     }
@@ -170,11 +170,11 @@ class dbUtil {
     * @return boolean
     */
     public function execute($query) {
-      $result = mysql_query($query, $this->dbconnection);
+      $result = @mysql_query($query, $this->dbconnection);
 		if($result) {
 			return true;
 		} else {
-			$this->error[] = mysql_error($this->dbconnection);
+			$this->error[] = @mysql_error($this->dbconnection);
 			return false;
 		}
     }
@@ -187,10 +187,10 @@ class dbUtil {
 	* @return object An object representing a data row.
 	*/
     public function fetchNextObject($result = NULL) {
-	      if ($result == NULL || mysql_num_rows($result) < 1)
+	      if ($result == NULL || @mysql_num_rows($result) < 1)
 	        return NULL;
 	      else
-	        return mysql_fetch_object($result);
+	        return @mysql_fetch_object($result);
     }
 
 	/** 
@@ -202,10 +202,10 @@ class dbUtil {
 	*/
     public function fetchAssoc($result = NULL) {
     	$r = array();
-	      if ($result == NULL || mysql_num_rows($result) < 1)
+	      if ($result == NULL || @mysql_num_rows($result) < 1)
 	        return NULL;
 	      else {
-	      	$row = mysql_fetch_assoc($result);
+	      	$row = @mysql_fetch_assoc($result);
    			while ($row) {
    				$r[] = $row;
    			}
@@ -221,7 +221,7 @@ class dbUtil {
      * @return void.
      */
     public function close() {
-      mysql_close($this->dbconnection);
+      @mysql_close($this->dbconnection);
     }
 
    	/**

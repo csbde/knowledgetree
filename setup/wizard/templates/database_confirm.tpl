@@ -20,9 +20,7 @@ if($dtypes) {
         <td><b>Database type: </b></td>
         <td><?php echo $type; ?></td>
     </tr>
-    <?php
-}
-?>
+<?php } ?>
     <tr>
         <td><b>Name: </b></td>
         <td><?php echo $dname; ?></td>
@@ -61,27 +59,33 @@ if($dtypes) {
         <td><b>Mysql Binary: </b></td>
         <td><?php echo $dbbinary; ?></td>
     </tr>
+    <?php if (!$silent) { ?>
     <tr>
         <td><b>Table Prefix: </b></td>
         <td><?php echo $tprefix; ?></td>
     </tr>
+<?php } ?>
 </table>
 
 <h3>Database Users</h3>
 
-<table width="16%" class="dbconf">
+<table width="46%" class="dbconf">
+    <?php //if (!$silent) { ?>
     <tr>
         <td><b>DMS Admin Username: </b></td>
         <td><?php echo $dmsname; ?></td>
     </tr>
+    <?php //} ?>
     <tr>
         <td><b>DMS Admin Password: </b></td>
         <td><?php echo $dmspassword; ?></td>
     </tr>
+    <?php //if (!$silent) { ?>
     <tr>
         <td><b>DMS User Username: </b></td>
         <td><?php echo $dmsusername; ?></td>
     </tr>
+    <?php //} ?>
     <tr>
         <td><b>DMS User Password: </b></td>
         <td><?php echo $dmsuserpassword; ?></td>
