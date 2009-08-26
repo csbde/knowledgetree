@@ -9,8 +9,8 @@ that things are still set up correctly.</p>
 <?php
 if($errors || $warnings){
     echo '<div>'
-       . '<a href="http://wiki.knowledgetree.com/Web_Based_Installer#PHP_Dependencies" target="_blank">'
-       . 'Click Here for help on overcoming dependency issues</a></div><br/>';
+       . '<a href="http://wiki.knowledgetree.com/Web_Based_Installer#Post_Install" target="_blank">'
+       . 'Click Here for help on overcoming post install issues</a></div><br/>';
 }
 ?>
 
@@ -80,7 +80,7 @@ if($errors || $warnings){
 <form>
 	<div class="buttons">
 <!--	    <a href="index.php?step_name=complete&step=previous" class="previous">Previous</a>-->
-<!--	    <a href="">Refresh</a>-->
+	    <a href="">Refresh</a>
 	    <a href="../../">Goto Login</a>
 	    <?php
 	        if (INSTALL_TYPE == 'Zend') {
