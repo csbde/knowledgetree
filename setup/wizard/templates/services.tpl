@@ -8,7 +8,7 @@ This checkup ensures that your environment is ready to support KnowledgeTree's b
 if($errors || $warnings){
     echo '<div>'
        . '<a href="http://wiki.knowledgetree.com/Web_Based_Installer#Service_Dependencies" target="_blank">'
-       . 'Click Here for help on overcoming service issues</a></div><br/>';
+       . 'Click Here for help on overcoming services issues</a></div><br/>';
 }
 ?>
 <?php if(!$alreadyInstalled) { ?>

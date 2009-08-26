@@ -145,6 +145,7 @@ class complete extends Step {
                                                  . 'This may present a security problem if your documents can be accessed from the web, '
                                                  . 'working around the permission system in KnowledgeTree.</td>';
                                                  $this->paths_check = 'cross_orange';
+                                                 $this->warnings[] = 'Move var directory';
         }
         else {
             $this->temp_variables['docLocation'] = sprintf($html, 'tick', '', 'Your document directory is outside the web root.');
