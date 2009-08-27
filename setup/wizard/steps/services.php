@@ -89,6 +89,24 @@ class services extends Step
     private $alreadyInstalled = false;
     
 	/**
+	* Flag if services are already Installed
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    private $luceneInstalled = false;
+    
+	/**
+	* Flag if services are already Installed
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    private $schedulerInstalled = false;
+    
+	/**
 	* PHP Installed 
 	*
 	* @author KnowledgeTree Team
@@ -301,6 +319,7 @@ class services extends Step
 		}
 		return true;
     }
+    
     
     /**
 	* Do some basic checks to help the user overcome java problems
@@ -759,9 +778,12 @@ class services extends Step
     */
     private function storeSilent() {
     	$this->temp_variables['alreadyInstalled'] = $this->alreadyInstalled;
+    	$this->temp_variables['luceneInstalled'] = $this->luceneInstalled;
+    	$this->temp_variables['schedulerInstalled'] = $this->schedulerInstalled;
 		$this->temp_variables['javaExeError'] = $this->javaExeError;
 		$this->temp_variables['javaCheck'] = $this->javaCheck;
 		$this->temp_variables['javaExtCheck'] = $this->javaExtCheck;
+		// TODO : PHP detection
 		$this->temp_variables['phpCheck'] = 'tick';//$this->phpCheck;
 		$this->temp_variables['phpExeError'] = '';//$this->phpExeError;
 		$this->temp_variables['serviceCheck'] = $this->serviceCheck;

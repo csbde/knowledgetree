@@ -7,27 +7,6 @@ wizard.prototype.doFormCheck = function() {
 	w.addReadOnly();
 }
 
-// Disable DnD on element
-// Element has to have a readOnly status set to readonly
-wizard.prototype.disableDnd = function(el_id) {
-//    el = document.getElementById(el_id);
-//    el.removeAttribute('readOnly');
-}
-
-// Add readOnly access on all inputs of a form
-wizard.prototype.addReadOnly = function() {
-	inputs = document.getElementsByTagName('input');
-	for(i=0;i<inputs.length;i++) {
-		var input_id = inputs[i].id;
-		if(input_id != '') {
-//    		inputs[i].setAttribute('readOnly', 'readonly');
-//    		inputs[i].setAttribute('onfocus', "javascript:{w.disableDnd('"+ input_id +"')}");
-//    		inputs[i].focus();
-//    		w.focusElement(inputs[i]);
-		}
-	}
-}
-
 // Toggle Advance Database options
 wizard.prototype.toggleClass = function(el) {
 	var el = document.getElementsByClassName(el); //adv_options|php_details|php_ext_details|php_con_details
@@ -150,4 +129,34 @@ wizard.prototype.onSubmitValidate = function(silent) {
 		}
 	}
 	return true;
+}
+
+// Validate Registration Page
+wizard.prototype.validateRegistration = function() {
+	var first = document.getElementById('first');
+	var last = document.getElementById('last');
+	var email = document.getElementById('email');
+	
+	return false;
+}
+
+// Disable DnD on element
+// Element has to have a readOnly status set to readonly
+wizard.prototype.disableDnd = function(el_id) {
+//    el = document.getElementById(el_id);
+//    el.removeAttribute('readOnly');
+}
+
+// Add readOnly access on all inputs of a form
+wizard.prototype.addReadOnly = function() {
+	inputs = document.getElementsByTagName('input');
+	for(i=0;i<inputs.length;i++) {
+		var input_id = inputs[i].id;
+		if(input_id != '') {
+//    		inputs[i].setAttribute('readOnly', 'readonly');
+//    		inputs[i].setAttribute('onfocus', "javascript:{w.disableDnd('"+ input_id +"')}");
+//    		inputs[i].focus();
+//    		w.focusElement(inputs[i]);
+		}
+	}
 }

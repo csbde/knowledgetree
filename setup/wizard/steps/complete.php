@@ -143,7 +143,7 @@ class complete extends Step {
             $this->temp_variables['docLocation'] = '<td><div class="cross_orange"></div></td>'
                                                  . '<td class="warning" colspan="2">Your document directory is set to the default, which is inside the web root. '
                                                  . 'This may present a security problem if your documents can be accessed from the web, '
-                                                 . 'working around the permission system in KnowledgeTree.</td>';
+                                                 . 'working around the permission system in KnowledgeTree<sup>&#174;</sup>.</td>';
                                                  $this->paths_check = 'cross_orange';
                                                  $this->warnings[] = 'Move var directory';
         }

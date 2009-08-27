@@ -3,11 +3,10 @@
 <div class="description">
 Please confirm that your database settings have been entered correctly before proceeding with the installation.
 </div>
-<div id="section">
-<h3>Database Settings</h3>
+<!--<div id="section">-->
 
 <form action="index.php?step_name=<?php echo $step_name; ?>" method="post">
-
+<h3><b>Database Settings</b></h3>
 <table width="20%" class="dbconf">
 <?php
 if($dtypes) {
@@ -17,24 +16,24 @@ if($dtypes) {
         }
         ?>
     <tr>
-        <td><b>Database type: </b></td>
+        <td>Database type: </td>
         <td><?php echo $type; ?></td>
     </tr>
 <?php } ?>
     <tr>
-        <td><b>Name: </b></td>
+        <td>Name: </td>
         <td><?php echo $dname; ?></td>
     </tr>
     <tr>
-        <td><b>Root Username: </b></td>
+        <td>Root Username: </td>
         <td><?php echo $duname; ?></td>
     </tr>
     <tr>
-        <td><b>Root Username: </b></td>
+        <td>Root Username: </td>
         <td><?php echo $duname; ?></td>
     </tr>
     <tr>
-        <td><b>Root Password: </b></td>
+        <td>Root Password: </td>
         <td><?php echo $dpassword; ?></td>
     </tr>
     <?php if($ddrop) { ?>
@@ -43,51 +42,51 @@ if($dtypes) {
     </tr>
     <?php } ?>
 </table>
-</div>
-<h3>Advanced Settings</h3>
+<!--</div>-->
+<h3><b>Advanced Settings</b></h3>
 
-<table width="46%" class="dbconf">
+<table width="23%" class="dbconf">
     <tr>
-        <td><b>Host: </b></td>
+        <td>Host: </td>
         <td><?php echo $dhost; ?></td>
     </tr>
     <tr>
-        <td><b>Port: </b></td>
+        <td>Port: </td>
         <td><?php echo $dport; ?></td>
     </tr>
     <tr>
-        <td><b>Mysql Binary: </b></td>
+        <td>Mysql Binary: </td>
         <td><?php echo $dbbinary; ?></td>
     </tr>
     <?php if (!$silent) { ?>
     <tr>
-        <td><b>Table Prefix: </b></td>
+        <td><b>Table Prefix: </td>
         <td><?php echo $tprefix; ?></td>
     </tr>
 <?php } ?>
 </table>
 
-<h3>Database Users</h3>
+<h3><b>Database Users</b></h3>
 
-<table width="46%" class="dbconf">
+<table width="23%" class="dbconf">
     <?php //if (!$silent) { ?>
     <tr>
-        <td><b>DMS Admin Username: </b></td>
+        <td>DMS Admin Username: </td>
         <td><?php echo $dmsname; ?></td>
     </tr>
     <?php //} ?>
     <tr>
-        <td><b>DMS Admin Password: </b></td>
+        <td>DMS Admin Password: </td>
         <td><?php echo $dmspassword; ?></td>
     </tr>
     <?php //if (!$silent) { ?>
     <tr>
-        <td><b>DMS User Username: </b></td>
+        <td>DMS User Username: </td>
         <td><?php echo $dmsusername; ?></td>
     </tr>
     <?php //} ?>
     <tr>
-        <td><b>DMS User Password: </b></td>
+        <td>DMS User Password: </td>
         <td><?php echo $dmsuserpassword; ?></td>
     </tr>
 </table>
