@@ -1,6 +1,6 @@
-<h1>Register your KnowledgeTree Installation</h1>
+<h1>Register your KnowledgeTree<sup>&#174;</sup> Installation</h1>
 
-<div class="errors">
+<div class="error">
     <?php if(isset($errors)) {
         foreach($errors as $k=>$e) {
                 echo $e;
@@ -9,23 +9,23 @@
 </div>
 
 <p>
-Register your KnowledgeTree Installation and receive the KnowledgeTree Drop Box for Windows software, a drag and drop tool that makes
-placing documents into KnowledgeTree even easier.
+Register your KnowledgeTree<sup>&#174;</sup> Installation and receive the KnowledgeTree<sup>&#174;</sup> Drop Box for Windows software, a drag and drop tool that makes
+placing documents into KnowledgeTree<sup>&#174;</sup> even easier.
 </p>
 
 <p class='disclaimer'>
-We will not share your information with 3rd-parties, nor will we send you information not directly related to KnowledgeTree Inc.'s products
-and services. Please see our <a href="http://www.knowledgetree.com/about/legal">Privacy and Data Retention policies</a> for more information.
+We will not share your information with 3rd-parties, nor will we send you information not directly related to KnowledgeTree<sup>&#174;</sup>'s products
+and services. Please see our <a href="http://www.knowledgetree.com/about/legal" target="_blank">Privacy and Data Retention policies</a> for more information.
 </p>
-
-<form action="index.php?step_name=registration" method="post">
+<!--<form action="index.php?step_name=registration" method="post">-->
+<form id="registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.validateRegistration();return false;">
 <p>
 
 <table>
     <tr>
         <td><label for='first'>First Name</label></td>
         <td rowspan='6' width='5%'>&nbsp;</td>
-        <td><input name='submitted[first_name]' id='first' size='44' /></td>
+        <td><input name='submitted[first_name]' id='first' size='37' /></td>
         <td rowspan='6' width='5%'>&nbsp;</td>
         <td rowspan='6'>
             <img src='resources/graphics/dropbox.png' />
@@ -33,11 +33,11 @@ and services. Please see our <a href="http://www.knowledgetree.com/about/legal">
     </tr>
     <tr>
         <td><label for='last'>Last Name</label></td>
-        <td><input name='submitted[last_name]' id='last' size='44' /></td>
+        <td><input name='submitted[last_name]' id='last' size='37' /></td>
     </tr>
     <tr>
         <td><label for='email'>Email Address</label></td>
-        <td><input name='submitted[email_address]' id='email' size='44' /></td>
+        <td><input name='submitted[email_address]' id='email' size='37' /></td>
     </tr>
     <tr>
         <td><label for='country'>Country</label></td>

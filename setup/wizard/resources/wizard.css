@@ -176,7 +176,7 @@ select {
 
 .error {
 	font-weight: bold;
-    color: #9F0000;
+    color: red;
 }
 
 .errors {
@@ -264,4 +264,8 @@ input#dname {
 
 #section {
 	/*border:1px solid;*/
+}
+
+sup {
+	font-size: 11px;
 }

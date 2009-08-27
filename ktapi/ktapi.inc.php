@@ -3304,7 +3304,7 @@ class KTAPI
     	$url = $download_manager->allow_download($document);
 
     	$response['status_code'] = 0;
-		$response['results'] = $url;
+		$response['results'] = urlencode($url);
 
     	return $response;
     }

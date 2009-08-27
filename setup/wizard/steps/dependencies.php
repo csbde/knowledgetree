@@ -259,7 +259,7 @@ class dependencies extends Step
 
         if($phpversion6 != 1){
             $this->done = false;
-            $check['version'] = "KnowledgeTree is not supported on PHP 6.0 and higher. You are running version <b>{$phpversion}</b>.";
+            $check['version'] = "KnowledgeTree<sup>&#174;</sup> is not supported on PHP 6.0 and higher. You are running version <b>{$phpversion}</b>.";
             return $check;
         }
         $check['class'] = 'tick';

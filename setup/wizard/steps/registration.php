@@ -42,13 +42,16 @@
 
 class registration extends Step
 {
+	
+	public $temp_variables = array("step_name"=>"registration");
+	
     /**
      * Initialise the registration step
      *
      * @author KnowledgeTree Team
      * @access public
      */
-    public function configure()
+    public function __construct()
     {
         $this->temp_variables = array("step_name"=>"registration");
     }
@@ -430,7 +433,8 @@ class registration extends Step
             'RO' => 'ROMANIA',
             'RU' => 'RUSSIAN FEDERATION',
             'RW' => 'RWANDA',
-            'BL' => 'SAINT BARTH�LEMY',
+//            TODO: Special Character for the e
+            'BL' => 'SAINT BARTHELEMY',
             'SH' => 'SAINT HELENA',
             'KN' => 'SAINT KITTS AND NEVIS',
             'LC' => 'SAINT LUCIA',

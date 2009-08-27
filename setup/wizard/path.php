@@ -102,7 +102,8 @@
     	define('PHP_DIR', $zendsys."ZendServer".DS."bin".DS);
     } else {
     	$modules = get_loaded_extensions();
-    	if(in_array('Zend Monitor', $modules)) { // TODO: Dirty
+    	// TODO: Dirty
+    	if(in_array('Zend Download Server', $modules) || in_array('Zend Monitor', $modules) || in_array('Zend Utils', $modules) || in_array('Zend Page Cache', $modules)) {
     		define('INSTALL_TYPE', 'Zend');
     		define('PHP_DIR', '');
     	} else {
