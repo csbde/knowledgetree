@@ -559,7 +559,6 @@ class services extends Step
 	* @return string
 	*/
 	private function serviceStatus($service) {
-		$service->load(); // Load Defaults
 		$statusCheck = OS."ServiceInstalled";
 		return $this->$statusCheck($service);
 	}

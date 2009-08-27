@@ -56,7 +56,7 @@ class unixLucene extends unixService {
 		$this->util = new InstallUtil();
 	}
 	
-	function load() {
+	public function load() {
 		$this->setLuceneDir(SYSTEM_DIR."bin".DS."luceneserver".DS);
 		$this->setIndexerDir(SYSTEM_DIR."search2".DS."indexing".DS."bin".DS);
 		$this->setLucenePidFile("lucene_test.pid");
@@ -138,7 +138,7 @@ class unixLucene extends unixService {
   	public function stop() {
   		// TODO: Breaks things
 		$state = $this->status();
-		if($state != 'STOPPED') {
+		if($state != '') {
 			$cmd = "pkill -f ".$this->getLuceneSource();
     		$response = $this->util->pexec($cmd);
 			return $response;
@@ -186,7 +186,7 @@ class unixLucene extends unixService {
 	    	$response = $this->util->pexec($cmd);
 	    	
 	    	return $response;
-    	} elseif ($state == 'STOPPED') {
+    	} elseif ($state == '') {
     		// Start Service
     		return true;
     	} else {

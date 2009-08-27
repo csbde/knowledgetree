@@ -14,7 +14,7 @@ Please read and accept the license agreement below before continuing with the se
 
 <form action="index.php?step_name=license" method="POST">
 <div style="overflow: scroll; height: 500px; width:800px; overflow-x:hidden;">
-<h2>KnowledgeTree<sup>&#174;</sup> On-premise Commercial End-User</h2>
+<h2>KnowledgeTree On-premise Commercial End-User</h2>
 <p>
 License Agreement Version 2.3
 </p>
@@ -25,9 +25,9 @@ THIS AGREEMENT AND THAT YOU HAVE THE NECESSARY AUTHORITY TO BIND THE COMPANY TO 
 THE AGREEMENT, DO NOT INSTALL OR USE THE SOFTWARE.
 </p>
 <p>
-This is an agreement entered into by and between you (the "Company") and KnowledgeTree<sup>&#174;</sup> and
+This is an agreement entered into by and between you (the "Company") and KnowledgeTree and
 its subsidiaries ("KT"). This Agreement states the terms and conditions upon which KT offers to
-license the KnowledgeTree<sup>&#174;</sup> Commercial Editions software provided in this package together with all
+license the KnowledgeTree Commercial Editions software provided in this package together with all
 related documentation and accompanying items including, but not limited to, the executable programs,
 drivers, libraries and data files associated with such programs (collectively, the "Software").
 </p>
@@ -134,9 +134,9 @@ User accounts cannot be shared or used by more than one individual End User but 
 new End Users replacing former End Users.
 </p>
 <p>
-License fee: The Company shall pay to KT an amount specified on the KnowledgeTree<sup>&#174;</sup> website for the
+License fee: The Company shall pay to KT an amount specified on the KnowledgeTree website for the
 number of End Users that Company selects. Payment of the license fee shall be due and payable as set
-forth in the terms and conditions on the KnowledgeTree<sup>&#174;</sup> website. All fees paid to KT are non-
+forth in the terms and conditions on the KnowledgeTree website. All fees paid to KT are non-
 refundable. The Company will also pay all applicable taxes, including sales, use, personal property,
 value-added, excise, customs fees, import duties, stamp duties and any other similar taxes and duties,
 including penalties and interest, imposed by any federal, state, provincial or other government entity on
@@ -309,7 +309,7 @@ defined in FAR 52.227-14, Rights in Data - General, including Alternate III (Jun
 <p>
 <h3>CONTRACTOR/MANUFACTURER</h3>
 The Contractor/Manufacturer for the Software is:
-KnowledgeTree<sup>&#174;</sup>
+KnowledgeTree
 c/o DLA Piper US LLP
 2000 University Avenue
 East Palo Alto, CA 94303

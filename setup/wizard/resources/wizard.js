@@ -133,9 +133,11 @@ wizard.prototype.onSubmitValidate = function(silent) {
 
 // Validate Registration Page
 wizard.prototype.validateRegistration = function() {
+	return true;
 	var first = document.getElementById('first');
 	var last = document.getElementById('last');
 	var email = document.getElementById('email');
+	
 	if(first.value < 2) {
 		
 		return false;

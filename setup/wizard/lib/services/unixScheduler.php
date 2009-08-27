@@ -51,7 +51,7 @@ class unixScheduler extends unixService {
 		$this->util = new InstallUtil();
 	}
 	
-	function load() {
+	public function load() {
 		$this->setSystemDir(SYSTEM_ROOT."bin".DS);
 		$this->setSchedulerDir(SYSTEM_DIR."bin".DS);
 		$this->setSchedulerSource('schedulerTask.sh');
@@ -95,7 +95,8 @@ class unixScheduler extends unixService {
 	}
 	
 	function writeSchedulerTask() {
-		$fp = @fopen($this->getSchedulerDir().$this->getSchedulerSource(), "w+");
+		$fLoc = $this->getSchedulerDir().$this->getSchedulerSource();
+		$fp = @fopen($fLoc, "w+");
 		$content = "#!/bin/sh\n";
 		$content .= "cd ".$this->getSchedulerDir()."\n";
 		$content .= "while true; do\n";
@@ -105,7 +106,7 @@ class unixScheduler extends unixService {
 		$content .= "done";
 		@fwrite($fp, $content);
 		@fclose($fp);
-		@chmod($this->getSchedulerDir().$this->getSchedulerSource(), '644');
+		@chmod($fLoc, '0644');
 	}
 	
 	function install() {
@@ -143,12 +144,11 @@ class unixScheduler extends unixService {
     		}
     	}
     	
-    	return 'STOPPED';
+    	return '';
 	}
 	
 	function start() {
 		// TODO : Write sh on the fly? Not sure the reasoning here
-		$this->writeSchedulerTask();
 		$source = $this->getSchedulerSourceLoc();
 		if($source) { // Source
 			$cmd = "nohup ".$source." > ".SYS_LOG_DIR."scheduler.log 2>&1 & echo $!";
@@ -156,14 +156,13 @@ class unixScheduler extends unixService {
     		return $response;
 		} else { // Could be Stack
 			$source = SYS_BIN_DIR.$this->schedulerSource;
-			if(file_exists($source)) {
-				$cmd = "nohup ".$source." > ".SYS_LOG_DIR."scheduler.log 2>&1 & echo $!";
-		    	$response = $this->util->pexec($cmd);
-	    		return $response;
-			} else {
+			if(!file_exists($source)) {
 				// Write it
 				$this->writeSchedulerTask();
 			}
+			$cmd = "nohup ".$source." > ".SYS_LOG_DIR."scheduler.log 2>&1 & echo $!";
+	    	$response = $this->util->pexec($cmd);
+    		return $response;
 		}
 		
 		return false;
