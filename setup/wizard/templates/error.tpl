@@ -1,5 +1,5 @@
 <head>
-		<title>KnowledgeTree Installer</title>
+		<title>KnowledgeTree&#174; Installer</title>
 		<script type="text/javascript" src="resources/wizard.js"></script>
 		<link rel="stylesheet" type="text/css" href="resources/wizard.css">
 	</head><body onload="w.doFormCheck();">
@@ -11,7 +11,7 @@
 		    <div id="wrapper">
 		        <div id="container">
 		            <div id="content">
-		                <h1>Welcome to the KnowledgeTree Setup Wizard</h1>
+		                <h1>Welcome to the KnowledgeTree<sup>&#174;</sup> Setup Wizard</h1>
 
 <div style="width: 800px;">
 <?php if(isset($error)) echo '';echo "<div class='error'>".$error."</div>"; ?>

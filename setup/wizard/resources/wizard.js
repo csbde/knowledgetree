@@ -7,27 +7,6 @@ wizard.prototype.doFormCheck = function() {
 	w.addReadOnly();
 }
 
-// Disable DnD on element
-// Element has to have a readOnly status set to readonly
-wizard.prototype.disableDnd = function(el_id) {
-//    el = document.getElementById(el_id);
-//    el.removeAttribute('readOnly');
-}
-
-// Add readOnly access on all inputs of a form
-wizard.prototype.addReadOnly = function() {
-	inputs = document.getElementsByTagName('input');
-	for(i=0;i<inputs.length;i++) {
-		var input_id = inputs[i].id;
-		if(input_id != '') {
-//    		inputs[i].setAttribute('readOnly', 'readonly');
-//    		inputs[i].setAttribute('onfocus', "javascript:{w.disableDnd('"+ input_id +"')}");
-//    		inputs[i].focus();
-//    		w.focusElement(inputs[i]);
-		}
-	}
-}
-
 // Toggle Advance Database options
 wizard.prototype.toggleClass = function(el) {
 	var el = document.getElementsByClassName(el); //adv_options|php_details|php_ext_details|php_con_details
@@ -150,4 +129,83 @@ wizard.prototype.onSubmitValidate = function(silent) {
 		}
 	}
 	return true;
+}
+
+// Validate Registration Page
+wizard.prototype.validateRegistration = function() {
+	var first = document.getElementById('first');
+	var last = document.getElementById('last');
+	var email = document.getElementById('email');
+	if(first.value < 2) {
+		
+		return false;
+	}
+	if(last.value < 2) {
+		
+		
+	}
+	if(w.emailCheck(email.value)) {
+		
+	}
+	
+	return false;
+}
+
+// Validate Registration Page Courtesy of SmartWebby.com (http://www.smartwebby.com/dhtml/)
+wizard.prototype.emailCheck = function() { 
+	var at="@";
+	var dot=".";
+	var lat=str.indexOf(at);
+	var lstr=str.length;
+	var ldot=str.indexOf(dot);
+	if (str.indexOf(at)==-1) {
+	//		   alert("Invalid E-mail ID")
+		return false;
+	}
+	if (str.indexOf(at)==-1 || str.indexOf(at)==0 || str.indexOf(at)==lstr) {
+	//		   alert("Invalid E-mail ID")
+		return false;
+	}
+	if (str.indexOf(dot)==-1 || str.indexOf(dot)==0 || str.indexOf(dot)==lstr) {
+	//		    alert("Invalid E-mail ID")
+		return false;
+	}
+	if (str.indexOf(at,(lat+1))!=-1) {
+	//		    alert("Invalid E-mail ID")
+		return false;
+	}
+	if (str.substring(lat-1,lat)==dot || str.substring(lat+1,lat+2)==dot){
+	//		    alert("Invalid E-mail ID")
+		return false;
+	}
+	if (str.indexOf(dot,(lat+2))==-1){
+	//		    alert("Invalid E-mail ID")
+		return false;
+	}
+	if (str.indexOf(" ")!=-1){
+	//		    alert("Invalid E-mail ID")
+		return false;
+	}
+	return true;
+}
+
+// Disable DnD on element
+// Element has to have a readOnly status set to readonly
+wizard.prototype.disableDnd = function(el_id) {
+//    el = document.getElementById(el_id);
+//    el.removeAttribute('readOnly');
+}
+
+// Add readOnly access on all inputs of a form
+wizard.prototype.addReadOnly = function() {
+	inputs = document.getElementsByTagName('input');
+	for(i=0;i<inputs.length;i++) {
+		var input_id = inputs[i].id;
+		if(input_id != '') {
+//    		inputs[i].setAttribute('readOnly', 'readonly');
+//    		inputs[i].setAttribute('onfocus', "javascript:{w.disableDnd('"+ input_id +"')}");
+//    		inputs[i].focus();
+//    		w.focusElement(inputs[i]);
+		}
+	}
 }

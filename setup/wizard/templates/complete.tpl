@@ -1,16 +1,16 @@
 <h1>Installation Completed</h1>
 
-<h2>KnowledgeTree post-configuration checkup</h2>
+<h2>KnowledgeTree<sup>&#174;</sup> post-configuration checkup</h2>
 
-<p>This allows you to check that your KnowledgeTree configuration is set
+<p>This allows you to check that your KnowledgeTree<sup>&#174;</sup> configuration is set
 up correctly.  You can run this at any time after configuration to check
 that things are still set up correctly.</p>
 
 <?php
 if($errors || $warnings){
     echo '<div>'
-       . '<a href="http://wiki.knowledgetree.com/Web_Based_Installer#PHP_Dependencies" target="_blank">'
-       . 'Click Here for help on overcoming dependency issues</a></div><br/>';
+       . '<a href="http://wiki.knowledgetree.com/Web_Based_Installer#Post_Install" target="_blank">'
+       . 'Click Here for help on overcoming post install issues</a></div><br/>';
 }
 ?>
 
@@ -80,7 +80,7 @@ if($errors || $warnings){
 <form>
 	<div class="buttons">
 <!--	    <a href="index.php?step_name=complete&step=previous" class="previous">Previous</a>-->
-<!--	    <a href="">Refresh</a>-->
+	    <a href="">Refresh</a>
 	    <a href="../../">Goto Login</a>
 	    <?php
 	        if (INSTALL_TYPE == 'Zend') {

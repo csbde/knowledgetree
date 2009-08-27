@@ -95,7 +95,7 @@ class unixScheduler extends unixService {
 	}
 	
 	function writeSchedulerTask() {
-		$fp = fopen($this->getSchedulerDir().$this->getSchedulerSource(), "w+");
+		$fp = @fopen($this->getSchedulerDir().$this->getSchedulerSource(), "w+");
 		$content = "#!/bin/sh\n";
 		$content .= "cd ".$this->getSchedulerDir()."\n";
 		$content .= "while true; do\n";
@@ -103,8 +103,9 @@ class unixScheduler extends unixService {
 		$content .= "php -Cq scheduler.php\n";
 		$content .= "sleep 30\n";
 		$content .= "done";
-		fwrite($fp, $content);
-		fclose($fp);
+		@fwrite($fp, $content);
+		@fclose($fp);
+		@chmod($this->getSchedulerDir().$this->getSchedulerSource(), '644');
 	}
 	
 	function install() {
@@ -146,6 +147,8 @@ class unixScheduler extends unixService {
 	}
 	
 	function start() {
+		// TODO : Write sh on the fly? Not sure the reasoning here
+		$this->writeSchedulerTask();
 		$source = $this->getSchedulerSourceLoc();
 		if($source) { // Source
 			$cmd = "nohup ".$source." > ".SYS_LOG_DIR."scheduler.log 2>&1 & echo $!";

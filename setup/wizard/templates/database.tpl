@@ -12,10 +12,14 @@
 	user on the database server are required in order to be able to configure and install the installation database.
 	</div>
 	<table class="dbconf">
+<!--	TODO: Different Databases-->
 	    <tr><td>Your current database type is: </td>
 		<?php if($dtypes) {
 		        foreach($dtypes as $k=>$v) {
-		    ?><td><input type="hidden" name="dtype" value="<?php echo $v; ?>" <?php if(!$k)echo 'checked="checked"'; ?>/>&nbsp;&nbsp;<?php echo ucwords($v); ?></td>
+		    ?><td>
+		    	<?php echo ucwords($v);?>
+<!--		    	<input type="hidden" name="dtype" value="<?php //echo $v; ?>" <?php //if(!$k)echo 'checked="checked"'; ?>/>&nbsp;&nbsp;<?php //echo ucwords($v); ?>-->
+		    	</td>
 		<?php }
 		}
 		?>
