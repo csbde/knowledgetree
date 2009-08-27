@@ -63,7 +63,7 @@ class CMISTestCase extends KTUnitTestCase {
     }
 
     // Repository service functions
-    function testRepositoryService()
+    function tedstRepositoryService()
     {
         $RepositoryService = new KTRepositoryService();
 
@@ -180,7 +180,7 @@ class CMISTestCase extends KTUnitTestCase {
     }
 
     // Navigation service functions
-    function testNavigationService()
+    function tedstNavigationService()
     {
         $NavigationService = new KTNavigationService($this->ktapi);
 
@@ -302,7 +302,7 @@ class CMISTestCase extends KTUnitTestCase {
 
     // Object Services
 
-    function testObjectService()
+    function tedstObjectService()
     {
         $ObjectService = new KTObjectService($this->ktapi);
 //        $ObjectService->startSession(KT_TEST_USER, KT_TEST_PASS);
@@ -478,7 +478,7 @@ class CMISTestCase extends KTUnitTestCase {
 
         $this->assertEqual($response['status_code'], 0);
         $this->assertNotNull($response['results'][0]);
-
+//
         // we only expect one repository
         $repository = $response['results'][0];
         $repositoryId = $repository['repositoryId'];
@@ -491,10 +491,14 @@ class CMISTestCase extends KTUnitTestCase {
         $this->assertNotNull($response['results']);
                 
         // TODO test checkout of document
-        $documentId = CMISUtil::encodeObjectId('Document', '6');
+        $documentId = CMISUtil::encodeObjectId('Document', $this->docs[1]->get_documentid());
         $response = $VersioningService->checkOut($repositoryId, $documentId);
         $this->assertEqual($response['status_code'], 0);
         $this->assertNotNull($response['results']);
+
+////        // use this id for cancel checkout and checkin, not the original document id
+////        $pwcId = $response['results'];
+        $pwcId = CMISUtil::encodeObjectId(DOCUMENT, $this->docs[1]->get_documentid());
         
         // try again, this time it should fail - not working at the moment as ktapi registers the same user for download 
         // even if already checked out, so no error is generated unless a different user attempts to do a checkout
@@ -504,17 +508,18 @@ class CMISTestCase extends KTUnitTestCase {
         $this->assertNotNull($response['message']);
         */
         
-        // TODO test cancel checkout
-        $response = $VersioningService->cancelCheckOut($repositoryId, $documentId);
+        // test cancel checkout
+//        echo "WITH: $pwcId<BR>";
+        $response = $VersioningService->cancelCheckOut($repositoryId, $pwcId);
         $this->assertEqual($response['status_code'], 0);
         $this->assertNotNull($response['results']);
         
-        // TODO test cancel checkout of document no longer checked out
-        $response = $VersioningService->cancelCheckOut($repositoryId, $documentId);
+        // test cancel checkout of document no longer checked out
+        $response = $VersioningService->cancelCheckOut($repositoryId, $pwcId);
         $this->assertEqual($response['status_code'], 1);
         $this->assertNotNull($response['message']);
         
-        // TODO test listing of checked out documents
+        // test listing of checked out documents
         // first check out the document again :)
         $response = $VersioningService->checkOut($repositoryId, $documentId);
         // now check that it appears in the listing
@@ -523,7 +528,7 @@ class CMISTestCase extends KTUnitTestCase {
         $this->assertNotNull($response['results']);
         $this->assertTrue(in_array($documentId, $response['results']));
         // now let's cancel the checkout so that we can delete later during cleanup :)
-        $response = $VersioningService->cancelCheckOut($repositoryId, $documentId);
+        $response = $VersioningService->cancelCheckOut($repositoryId, $pwcId);
                
         // TODO test checkin
         

@@ -40,6 +40,10 @@
  * @version Version 0.1
  */
 
+define('UNKNOWN', -1);
+define('DOCUMENT', 1);
+define('FOLDER', 2);
+
 require_once(CMIS_DIR . '/objecttypes/CMISDocumentObject.inc.php');
 require_once(CMIS_DIR . '/objecttypes/CMISFolderObject.inc.php');
 
@@ -61,10 +65,12 @@ class CMISUtil {
         {
             case 'D':
             case 'Document':
+            case DOCUMENT:
                 $encoded = 'D' . $objectId;
                 break;
             case 'F':
             case 'Folder':
+            case FOLDER:
                 $encoded = 'F' . $objectId;
                 break;
             default:
