@@ -136,8 +136,57 @@ wizard.prototype.validateRegistration = function() {
 	var first = document.getElementById('first');
 	var last = document.getElementById('last');
 	var email = document.getElementById('email');
+	if(first.value < 2) {
+		
+		return false;
+	}
+	if(last.value < 2) {
+		
+		
+	}
+	if(w.emailCheck(email.value)) {
+		
+	}
 	
 	return false;
+}
+
+// Validate Registration Page Courtesy of SmartWebby.com (http://www.smartwebby.com/dhtml/)
+wizard.prototype.emailCheck = function() { 
+	var at="@";
+	var dot=".";
+	var lat=str.indexOf(at);
+	var lstr=str.length;
+	var ldot=str.indexOf(dot);
+	if (str.indexOf(at)==-1) {
+	//		   alert("Invalid E-mail ID")
+		return false;
+	}
+	if (str.indexOf(at)==-1 || str.indexOf(at)==0 || str.indexOf(at)==lstr) {
+	//		   alert("Invalid E-mail ID")
+		return false;
+	}
+	if (str.indexOf(dot)==-1 || str.indexOf(dot)==0 || str.indexOf(dot)==lstr) {
+	//		    alert("Invalid E-mail ID")
+		return false;
+	}
+	if (str.indexOf(at,(lat+1))!=-1) {
+	//		    alert("Invalid E-mail ID")
+		return false;
+	}
+	if (str.substring(lat-1,lat)==dot || str.substring(lat+1,lat+2)==dot){
+	//		    alert("Invalid E-mail ID")
+		return false;
+	}
+	if (str.indexOf(dot,(lat+2))==-1){
+	//		    alert("Invalid E-mail ID")
+		return false;
+	}
+	if (str.indexOf(" ")!=-1){
+	//		    alert("Invalid E-mail ID")
+		return false;
+	}
+	return true;
 }
 
 // Disable DnD on element

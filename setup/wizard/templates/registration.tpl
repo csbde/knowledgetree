@@ -18,7 +18,7 @@ We will not share your information with 3rd-parties, nor will we send you inform
 and services. Please see our <a href="http://www.knowledgetree.com/about/legal" target="_blank">Privacy and Data Retention policies</a> for more information.
 </p>
 <!--<form action="index.php?step_name=registration" method="post">-->
-<form id="registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.onSubmitValidate();return false;">
+<form id="registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.validateRegistration();return false;">
 <p>
 
 <table>
