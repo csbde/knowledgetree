@@ -1,8 +1,8 @@
 <h1>Installation Completed</h1>
 
-<h2>KnowledgeTree<sup>&#174;</sup> post-configuration checkup</h2>
+<h2>KnowledgeTree post-configuration checkup</h2>
 
-<p>This allows you to check that your KnowledgeTree<sup>&#174;</sup> configuration is set
+<p>This allows you to check that your KnowledgeTree configuration is set
 up correctly.  You can run this at any time after configuration to check
 that things are still set up correctly.</p>
 

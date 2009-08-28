@@ -202,7 +202,7 @@ class database extends Step
 	* @access public
 	* @var array
 	*/
-    public $temp_variables = array();
+    public $temp_variables = array("step_name"=>"database");
     
 	/**
 	* List of errors encountered

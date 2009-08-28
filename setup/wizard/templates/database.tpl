@@ -18,7 +18,7 @@
 		        foreach($dtypes as $k=>$v) {
 		    ?><td>
 		    	<?php echo ucwords($v);?>
-<!--		    	<input type="hidden" name="dtype" value="<?php //echo $v; ?>" <?php //if(!$k)echo 'checked="checked"'; ?>/>&nbsp;&nbsp;<?php //echo ucwords($v); ?>-->
+		    	<input type="hidden" name="dtype" value="<?php echo $v; ?>" <?php if(!$k)echo 'checked="checked"'; ?>/>&nbsp;&nbsp;<?php //echo ucwords($v); ?>
 		    	</td>
 		<?php }
 		}

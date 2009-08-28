@@ -11,7 +11,7 @@
 		    <div id="wrapper">
 		        <div id="container">
 		            <div id="content">
-		                <h1>Welcome to the KnowledgeTree<sup>&#174;</sup> Setup Wizard</h1>
+		                <h1>Welcome to the KnowledgeTree Setup Wizard</h1>
 
 <div style="width: 800px;">
 <?php if(isset($error)) echo '';echo "<div class='error'>".$error."</div>"; ?>

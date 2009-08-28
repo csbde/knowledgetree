@@ -2,7 +2,7 @@
 <h1>Services Dependencies Check</h1>
 
 <p class="description">
-This checkup ensures that your environment is ready to support KnowledgeTree<sup>&#174;</sup>'s background services. 
+This checkup ensures that your environment is ready to support KnowledgeTree's background services. 
 </p>
 <?php
 if($errors || $warnings){
@@ -55,7 +55,7 @@ if($errors || $warnings){
 			<div class="java_ext_details" style="display:none">
 		<?php } ?>
 		<p class="description">
-		A PHP Java Bridge is required for KnowledgeTree<sup>&#174;</sup> to perform at an optimal level.
+		A PHP Java Bridge is required for KnowledgeTree to perform at an optimal level.
 		</p>
 		<?php echo "<span class='{$step_vars['extensions']['class']}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{$step_vars['extensions']['found']}"; ?>
 		<br />

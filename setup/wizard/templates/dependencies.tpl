@@ -1,7 +1,7 @@
 <h1>PHP Dependencies Check</h1>
 
 <p class="description">
-This checkup ensures that your environment is ready to support a KnowledgeTree<sup>&#174;</sup> installation. <br/>
+This checkup ensures that your environment is ready to support a KnowledgeTree installation. <br/>
 Settings marked in green are available, settings marked in orange are optional and settings marked in red are required.
 </p>
 
@@ -32,7 +32,7 @@ if($silent) { ?>
 	<div class="php_ext_details" style="display:none">
 <?php } ?>
 <p class="description">
-The following determines your PHP installation environment. The extensions are required for KnowledgeTree<sup>&#174;</sup> to perform at an optimal level.
+The following determines your PHP installation environment. The extensions are required for KnowledgeTree to perform at an optimal level.
 </p>
 <table>
 <?php
@@ -69,7 +69,7 @@ if($silent) { ?>
 	<div class="php_con_details" style="display:none">
 <?php } ?>
 <p class="description">
-The following is the recommended PHP configuration for KnowledgeTree<sup>&#174;</sup> to perform at an optimal level.
+The following is the recommended PHP configuration for KnowledgeTree to perform at an optimal level.
 </p>
 <table>
 <tr>
