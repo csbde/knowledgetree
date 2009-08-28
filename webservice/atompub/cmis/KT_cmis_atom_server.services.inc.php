@@ -136,9 +136,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $objectId = $this->params[2];
         }
         
-        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']['cmis:object']
-                                                                                                      [0]['@children']['cmis:properties']
-                                                                                                      [0]['@children']);
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']['cmis:object']);
         
         // check for existing object id as property of submitted object data
         if (!empty($cmisObjectProperties['ObjectId']))
@@ -486,6 +484,85 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
 
         //Expose the responseFeed
         $this->responseFeed = $feed;
+    }
+    
+    public function POST_action()
+    {
+        $RepositoryService = new RepositoryService();
+        $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
+        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+
+        $repositories = $RepositoryService->getRepositories();
+        $repositoryId = $repositories[0]['repositoryId'];
+        
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']['cmis:object']);
+                                                                                                      
+        // check for existing object id as property of submitted object data
+        if (empty($cmisObjectProperties['ObjectId']))
+        {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
+            //Expose the responseFeed
+            $this->responseFeed = $feed;
+            return null;
+        }
+        
+        $response = $VersioningService->checkOut($repositoryId, $cmisObjectProperties['ObjectId']);
+        
+        if (PEAR::isError($response))
+        {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
+            //Expose the responseFeed
+            $this->responseFeed = $feed;
+            return null;
+        }
+        
+        $this->setStatus(self::STATUS_CREATED);
+        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['ObjectId'], 'POST');
+//        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $newObjectId, 'POST');
+
+        //Expose the responseFeed
+        $this->responseFeed = $feed;
+        
+//        $checkedout = $NavigationService->getCheckedoutDocs($repositoryId);
+//
+//        //Create a new response feed
+//        $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
+//        
+//        $feed->newField('title', 'Checked out Documents', $feed);
+//		
+//        // TODO dynamic?
+//        $feedElement = $feed->newField('author');
+//        $element = $feed->newField('name', 'admin', $feedElement);
+//        $feed->appendChild($feedElement);
+//		
+//		$feed->appendChild($feed->newElement('id', 'urn:uuid:checkedout'));
+//
+//        // TODO get actual most recent update time, only use current if no other available
+//        $feed->appendChild($feed->newElement('updated', KT_cmis_atom_service_helper::formatDatestamp()));
+//		
+//        foreach($checkedout as $document)
+//        {
+//            $entry = $feed->newEntry();
+//            $objectElement = $feed->newElement('cmis:object');
+//            $propertiesElement = $feed->newElement('cmis:properties');
+//
+//            foreach($cmisEntry['properties'] as $propertyName => $property)
+//            {
+//                $propElement = $feed->newElement('cmis:' . $property['type']);
+//                $propElement->appendChild($feed->newAttr('cmis:name', $propertyName));
+//                $feed->newField('cmis:value', CMISUtil::boolToString($property['value']), $propElement);
+//                $propertiesElement->appendChild($propElement);
+//            }
+//
+//            $objectElement->appendChild($propertiesElement);
+//            $entry->appendChild($objectElement);
+//        }
+//
+//        $entry = null;
+//        $feed->newField('cmis:hasMoreItems', 'false', $entry, true);
+//
+//        //Expose the responseFeed
+//        $this->responseFeed = $feed;
     }
 
 }
