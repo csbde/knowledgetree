@@ -249,18 +249,29 @@ class CMISNavigationService {
      * @param string $repositoryId
      * @param string $folderId The folder for which checked out docs are requested
      * @param string $filter
+     * @param boolean $includeAllowableActions
+     * @param boolean $includeRelationships
      * @param int $maxItems
      * @param int $skipCount
-     * @return array $checkedout The collection of checked out documents
+     * @return array $checkedout The collection of checked out document objects
      */
     // NOTE NOT YET IMPLEMENTED (this function is just a place holder at the moment :))
-    function getCheckedoutDocs($repositoryId, $folderId = null, $filter = '', $maxItems = 0, $skipCount = 0)
+    // TODO exceptions: •	FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid.
+    // TODO filter by folder id
+    // TODO $filter and paging
+    function getCheckedOutDocs($repositoryId, $folderId = null, $filter = '', $includeAllowableActions, $includeRelationships, 
+                               $maxItems = 0, $skipCount = 0)
     {
         $checkedout = array();
 
-        
+        $results = $this->ktapi->get_checkedout_docs(false);
+        foreach($results as $document)
+        {
+            $CMISDocument = new CMISDocumentObject($document->getId(), $this->ktapi);
+            $checkedout[] = $CMISDocument;
+        }
 
-        return $checkedout();
+        return $checkedout;
     }
 
 }

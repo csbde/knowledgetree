@@ -40,13 +40,13 @@
  * @version Version 0.1
  */
 
-require_once(CMIS_DIR . '/classes/CMISBaseObject.inc.php');
+require_once(CMIS_DIR . '/classes/CMISObject.inc.php');
 require_once(CMIS_DIR . '/classes/CMISDocumentPropertyCollection.inc.php');
 require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
 // TODO Property Type Definitions (only done Attributes up to now)
 
-class CMISDocumentObject extends CMISBaseObject {
+class CMISDocumentObject extends CMISObject {
 
     protected $versionable;
     private $ktapi;
@@ -93,19 +93,24 @@ class CMISDocumentObject extends CMISBaseObject {
 
         if (!is_null($documentId))
         {
-            $this->_get($documentId);
+            try {
+                $this->get($documentId);
+            }
+            catch (exception $e) {
+                throw new ObjectNotFoundException($e->getMessage());
+            }
         }
+        
+        // TODO throw exception if unable to create?
     }
 
-    private function _get($documentId)
+    private function get($documentId)
     {
         $object = $this->ktapi->get_document_by_id((int)$documentId);
 
-        // error?
-        if (PEAR::isError($object))
-        {
-            // throw an exception?
-            return $object;
+        // document does not exist?
+        if (PEAR::isError($object)) {
+            throw new ObjectNotFoundException('The document you are trying to access does not exist or is inaccessible');
         }
 
         $objectProperties = $object->get_detail();

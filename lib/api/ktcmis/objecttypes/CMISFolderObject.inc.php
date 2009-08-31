@@ -40,11 +40,11 @@
  * @version Version 0.1
  */
 
-require_once(CMIS_DIR . '/classes/CMISBaseObject.inc.php');
+require_once(CMIS_DIR . '/classes/CMISObject.inc.php');
 require_once(CMIS_DIR . '/classes/CMISFolderPropertyCollection.inc.php');
 require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
-class CMISFolderObject extends CMISBaseObject {
+class CMISFolderObject extends CMISObject {
 
     private $ktapi;
     private $uri;
@@ -72,11 +72,11 @@ class CMISFolderObject extends CMISBaseObject {
 
         if (!is_null($folderId))
         {
-            $this->_get($folderId);
+            $this->get($folderId);
         }
     }
 
-    private function _get($folderId)
+    private function get($folderId)
     {
         $object = $this->ktapi->get_folder_by_id((int)$folderId);
 

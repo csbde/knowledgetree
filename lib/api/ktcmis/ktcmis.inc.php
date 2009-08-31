@@ -439,26 +439,36 @@ class KTNavigationService extends KTCMISBase {
      * @param string $repositoryId
      * @param string $folderId The folder for which checked out docs are requested
      * @param string $filter
+     * @param boolean $includeAllowableActions
+     * @param boolean $includeRelationships
      * @param int $maxItems
      * @param int $skipCount
      * @return array $checkedout The collection of checked out documents
      */
-    function getCheckedoutDocs($repositoryId, $folderId = null, $filter = '', $maxItems = 0, $skipCount = 0)
+    function getCheckedOutDocs($repositoryId, $includeAllowableActions, $includeRelationships, $folderId = null, $filter = '', 
+                               $maxItems = 0, $skipCount = 0)
     {
-        $checkedout = $this->NavigationService->getObjectParents($repositoryId, $objectId, $includeAllowableActions,
-                                                                 $includeRelationships);
+        $checkedout = $this->NavigationService->getCheckedOutDocs($repositoryId, $includeAllowableActions, $includeRelationships, 
+                                                                  $folderId, $filter, $maxItems, $skipCount);
 
-        if (PEAR::isError($ancestryResult))
+        if (PEAR::isError($checkedout))
         {
             return array(
                 "status_code" => 1,
                 "message" => "Failed getting list of checked out documents"
             );
         }
+        
+        // convert to array format for external code
+        $co = array();
+        foreach ($checkedout as $document)
+        {
+            $co[] = $document->getProperty('ObjectId');
+        }
 
         return array(
             "status_code" => 0,
-            "results" => $checkedout
+            "results" => $co
         );
     }
 
@@ -790,6 +800,65 @@ class KTVersioningService extends KTCMISBase {
         return array(
             'status_code' => 0,
             'results' => $result
+        );
+    }
+    
+    /**
+     * Checks out a document and creates the PWC (Private Working Copy) which will represent the checked out document
+     * 
+     * @param string $repositoryId
+     * @param string $documentId
+     * @param string $changeToken [optional]
+     * @return array results
+     */
+    // TODO set up delivery of content stream? or is that up to the CMIS client?
+    public function checkOut($repositoryId, $documentId, $changeToken = '')
+    {
+        try {
+            $result = $this->VersioningService->checkOut($repositoryId, $documentId, $changeToken);
+        }
+        catch (Exception $e)
+        {
+            return array(
+                "status_code" => 1,
+                "message" => $e->getMessage()
+            );
+        }
+
+        return array(
+            'status_code' => 0,
+            'results' => (!empty($result) ? $result : 'Document Checked Out')
+        );
+    }
+    
+    /**
+     * Reverses the effect of a checkout: I.E. deletes the PWC (Private Working Copy) and re-sets the status of the document to "not checked out" 
+     * 
+     * @param string $repositoryId
+     * @param string $documentId
+     * @param string $changeToken [optional]
+     */
+    // TODO exceptions:
+    //      •	ConstraintViolationException: The Repository SHALL throw this exception if ANY of the following conditions are met:
+    //      o	The Document’s Object-Type definition’s versionable attribute is FALSE. 
+    //      •	updateConflictException
+    //      •	versioningException
+    public function cancelCheckOut($repositoryId, $documentId, $changeToken = '')
+    {
+        try {
+            $result = $this->VersioningService->cancelCheckOut($repositoryId, $documentId, $changeToken);
+        }
+        catch (Exception $e)
+        {
+            return array(
+                "status_code" => 1,
+                "message" => $e->getMessage()
+            );
+        }
+
+        return array(
+            'status_code' => 0,
+            'results' => (!empty($result) ? $result : 'Document Checkout Cancelled')
         );
     }
 

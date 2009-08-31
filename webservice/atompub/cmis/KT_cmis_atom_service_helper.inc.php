@@ -28,6 +28,7 @@ class KT_cmis_atom_service_helper {
             $response->newField('title', $cmisEntry['properties']['ObjectTypeId']['value'], $response);
             $response->newField('id', 'urn:uuid:' . $cmisEntry['properties']['ObjectId']['value'], $response);
         }
+        // POST responses only send back an entry, not a feed
         else if ($method == 'POST') {
             $response = new KT_cmis_atom_response_POST(CMIS_APP_BASE_URI);
         }
@@ -414,11 +415,20 @@ class KT_cmis_atom_service_helper {
     {
         $properties = array();
         
-        foreach($xmlArray as $cmisPropertyDefinition)
+        foreach($xmlArray as $xmlElement)
         {
-            foreach($cmisPropertyDefinition as $propertyType => $propertyDefinition)
+            foreach($xmlElement['@children'] as $key => $childElement)
             {
-                $properties[$propertyDefinition['@attributes']['cmis:name']] = $propertyDefinition['@children']['cmis:value'][0]['@value'];
+                if ($key == 'cmis:properties')
+                {
+                    foreach($childElement[0]['@children'] as $cmisPropertyDefinition)
+                    {
+                        foreach($cmisPropertyDefinition as $propertyType => $propertyDefinition)
+                        {
+                            $properties[$propertyDefinition['@attributes']['cmis:name']] = $propertyDefinition['@children']['cmis:value'][0]['@value'];
+                        }
+                    }
+                }
             }
         }
 
