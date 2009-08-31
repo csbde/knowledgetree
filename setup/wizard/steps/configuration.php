@@ -82,7 +82,7 @@ class configuration extends Step
 	* @access public
 	* @var array
 	*/
-    protected $silent = true;
+    protected $silent = false;
     
     protected $util = null;
     /**

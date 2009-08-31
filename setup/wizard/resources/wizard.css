@@ -156,12 +156,14 @@ select {
     background: url("graphics/cross.png") no-repeat;
     height: 16px;
     width: 16px;
+    color:#A30000;
 }
 
 .cross_orange {
     background: url("graphics/cross_orange.png") no-repeat;
     height: 16px;
     width: 16px;
+    color:#EC7725;
 }
 
 .green {
@@ -268,4 +270,36 @@ input#dname {
 
 sup {
 	font-size: 11px;
+}
+
+refresh {
+	/*
+	style="color: #000000; 
+	font-weight: normal;
+	*/
+}
+
+.php_ext_details table {
+	width:800px;
+}
+
+.php_con_details table {
+	width:800px;
+}
+
+.error_message {
+	border:none;
+	background-color:#FFCCCC;
+	color:#A30000;
+	width:550px;
+	padding:0px;
+}
+
+.continue_message {
+	border:none;
+	background:transparent url("graphics/big-ok.png") no-repeat scroll 0 50%;
+	/*background-color:#339933;*/
+	/*color:#339933;*/
+	width:550px;
+	padding:0px;
 }
