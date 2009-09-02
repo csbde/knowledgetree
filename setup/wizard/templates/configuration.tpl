@@ -4,23 +4,36 @@
 The wizard will review your system to determine whether KnowledgeTree is correctly configured. You&rsquo;ll see whether KnowledgeTree has the correct settings or whether changes are required.
 </p>
 
-<form action="index.php?step_name=configuration" method="post">
+<div class="continue_message">
+<?php
+	if(!$errors && !$warnings) {
+		?>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;All configuration settings are correctly set. Please click next to continue.
+		<?php
+	}
+?>
+</div>
+<div class="error_message">
+<?php if($errors) { ?>
+	<span class='cross'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your system is not quite ready to run KnowledgeTree. See the list below to determine which areas you need to address. <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Once you&rsquo;ve fixed these items, return to this wizard and try again.</span><br/>
+<?php } elseif ($warnings) {
+	?>
+	<span class='cross_orange'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;KnowledgeTree Optional Dependencies not met, but you will be able to continue.</span><br/>
+	<?php
+}?>
+<?php
+	if($errors || $warnings) {
+		?>
+	    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Installer#System_Configuration" target="_blank">Click here for help on overcoming configuration issues</a>
+<?php } ?>
+</div>
 
+<form action="index.php?step_name=configuration" method="post">
 <h3>Server Settings</h3>
 
 <p class="description">
 The settings below have been drawn from the system information. The host and port should reflect the host and port that will be used to access KnowledgeTree. The Root Url is only needed if your installation is in a directory off the main web server root.
 </p>
-
-<div class="error">
-    <?php
-    	if(isset($errors)) {
-	        foreach ($errors as $error){
-	            echo $error.'<br />';
-	        }
-    	}
-    ?>
-</div>
 
 <table>
     <tr>
@@ -48,7 +61,6 @@ The settings below have been drawn from the system information. The host and por
     </tr>
 </table>
 
-<br />
 <h3><?php echo "<span class='{$paths_perms}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Paths and Permissions</h3>
 <?php if($silent) { ?>
 	<div id="options" class="onclick" onclick="javascript:{w.toggleClass('paths_perms');}">Show Details</div>
@@ -60,15 +72,20 @@ The following folders must be writable for KnowledgeTree to be able to run. The 
 <table>
 <?php
     foreach ($paths as $key => $path){
-        $row = '<tr>';
-        $row .= "<td><div class='{$path['class']}'></div></td>\n";
-        $row .= "<td><label for='{$path['setting']}'>{$path['name']}: </label></td>\n";
-        $row .= "<td><input name='{$path['setting']}' id='{$path['setting']}' size='60' value='{$path['path']}' /></td>\n";
-        $row .= '<td class="error">';
-        $row .= (isset($path['msg'])) ? $path['msg'] : '';
-        $row .= "</td>\n";
-        $row .= "</tr>\n";
-        echo $row;
+    	?>
+    	<tr>
+    		<td> <div class='<?php echo $path['class']; ?>'></div> </td>
+    		<td> <label for='<?php echo $path['setting']; ?>'> <?php echo $path['name']; ?>: </label> </td>
+    		<td><input name='<?php echo $path['setting']; ?>' id='<?php echo $path['setting']; ?>' size='60' value='<?php echo $path['path']; ?>' /></td>
+    		<?php if(isset($path['msg'])) {
+    			?>
+    			<td class="error"> <?php echo $path['msg']; ?> </td>
+    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+    			<?php
+    		}
+    		?>
+    	</tr>
+    	<?php
     }
 ?>
 </table>
@@ -78,6 +95,5 @@ The following folders must be writable for KnowledgeTree to be able to run. The 
 <div class="buttons">
     <input type="submit" name="Previous" value="Previous"/>
     <input type="submit" name="Next" value="Next"/>
-    <input type="submit" name="Refresh" value="Refresh"/>
 </div>
 </form>

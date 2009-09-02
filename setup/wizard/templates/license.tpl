@@ -13,7 +13,7 @@ Please read and accept the license agreement below before continuing with the se
 </p>
 
 <form action="index.php?step_name=license" method="POST">
-<div style="overflow: scroll; height: 500px; width:800px; overflow-x:hidden;">
+<div class="license_agreement">
 <h2>KnowledgeTree On-premise Commercial End-User</h2>
 <p>
 License Agreement Version 2.3
@@ -339,7 +339,7 @@ govern.
     <br/>
     <input type="radio" name="license" value="0"/>I do not accept the agreement
 </div>
-<div class="buttons">
+<div class="buttons" style="top:3px">
     <input type="submit" name="Previous" value="Previous"/>
     <input type="submit" name="Next" value="Next"/>
 </div>

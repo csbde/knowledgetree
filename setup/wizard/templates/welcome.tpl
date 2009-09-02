@@ -7,7 +7,7 @@ This wizard will lead you through the steps needed to install and configure Know
 </div>
 
 <form action="index.php?step_name=welcome" method="post">
-<div class="buttons">
+<div class="buttons" style="top:325px;">
     <input type="submit" name="Next" value="Next"/>
 </div>
 </form>

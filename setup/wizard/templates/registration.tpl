@@ -1,24 +1,16 @@
-<h1>Register your KnowledgeTree Installation</h1>
-
-<div class="error">
-    <?php if(isset($errors)) {
-        foreach($errors as $k=>$e) {
-                echo $e;
-        }
-    }?>
-</div>
+<form action="index.php?step_name=registration" method="post">
+<h1>Registering KnowledgeTree</h1>
 
 <p>
-Register your KnowledgeTree Installation and receive the KnowledgeTree Drop Box for Windows software, a drag and drop tool that makes
-placing documents into KnowledgeTree even easier.
+Register with KnowledgeTree to receive important product updates. We respect your privacy and will not share your information with third parties. For more information, please refer to our Privacy and Data Retention Policies. 
+<input type="submit" name="Confirm" value="Skip Registration" class="regSubmit"/>
 </p>
 
 <p class='disclaimer'>
 We will not share your information with 3rd-parties, nor will we send you information not directly related to KnowledgeTree's products
 and services. Please see our <a href="http://www.knowledgetree.com/about/legal" target="_blank">Privacy and Data Retention policies</a> for more information.
 </p>
-<form action="index.php?step_name=registration" method="post">
-<!--<form id="registration" action="index.php?step_name=<?php //echo $step_name; ?>" method="post" onsubmit="w.validateRegistration();return false;">-->
+
 <p>
 
 <table>
@@ -70,7 +62,7 @@ and services. Please see our <a href="http://www.knowledgetree.com/about/legal" 
         </td>
     </tr>
     <tr>
-        <td><label for='size'>Organisation Size</label></td>
+        <td><label for='size'>Organization Size</label></td>
         <td>
             <select id='size' name='submitted[organization_size]'>
                 <?php
@@ -87,17 +79,6 @@ and services. Please see our <a href="http://www.knowledgetree.com/about/legal" 
 </table>
 </p>
 
-<?php
-/*
-<input type='hidden' name='submitted[telephone]' value='12345' />
-<input type='hidden' name='submitted[company]' value='empty' />
-<input type='hidden' name='submitted[contact]' value='12345' />
-<input type='hidden' name='submitted[partner]' value='empty' />
-<input type='hidden' name='submitted[hear_about_us]' value='empty' />
-<input type='hidden' name='submitted[installation_guid]' value='123456' />
-*/
-?>
-
 <input type='hidden' name='form_id' value='webform_client_form_242' />
 <input type='hidden' name='op' value='Submit' />
 
@@ -105,6 +86,6 @@ and services. Please see our <a href="http://www.knowledgetree.com/about/legal" 
 <div class="buttons">
     <input type="submit" name="Previous" value="Previous"/>
     <input type="submit" name="Next" value="Register"/>
-    <input type="submit" name="Confirm" value="Skip Registration"/>
+    <!--<input type="submit" name="Confirm" value="Skip Registration"/>-->
 </div>
 </form>

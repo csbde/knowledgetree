@@ -4,42 +4,39 @@
 
 <table>
     <tr>
-        <td><b>Host: </b></td>
+        <td>Host: </td>
         <td><?php echo $server['host']['value']; ?></td>
     </tr>
     <tr>
-        <td><b>Port: </b></td>
+        <td>Port: </td>
         <td><?php echo $server['port']['value']; ?></td>
     </tr>
     <tr>
-        <td><b>Root Url: </b></td>
+        <td>Root Url: </td>
         <td><?php echo $server['root_url']['value']; ?></td>
     </tr>
     <tr>
-        <td><b>File System Root: </b></td>
+        <td>File System Root: </td>
         <td><?php echo $server['file_system_root']['value']; ?></td>
     </tr>
     <tr>
-        <td><b>SSL Enabled: </b></td>
+        <td>SSL Enabled: </td>
         <td><?php echo $server['ssl_enabled']['value']; ?></td>
     </tr>
 </table>
 
-<br />
 <h3>Paths and Permissions</h3>
 
 <table>
 <?php
     foreach ($paths as $key => $path){
-        $row = '<tr>';
-
-        $row .= "<td><div class='{$path['class']}'></div></td>\n";
-        $row .= "<td><b>{$path['name']}:</b></td>\n";
-        $row .= "<td>{$path['path']}</td>\n";
-
-        $row .= "</tr>\n";
-
-        echo $row;
+?>
+	<tr>
+		<td><div class='<?php echo $path['class']; ?>'></div></td>
+		<td><?php echo $path['name']; ?>:</td>
+		<td><?php echo $path['path']; ?></td>
+	</tr>
+<?php
     }
 ?>
 </table>

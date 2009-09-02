@@ -1,4 +1,4 @@
-<h1>Database Configuration</h1>
+<h1>Confirming Database Configurations</h1>
 <!-- Check For immediate Errors -->
 <span class="error"> <?php if($errors['con']) { echo $errors['con']; } ?> </span>
 <form id="dbsettings" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.onSubmitValidate(<?php if ($silent) echo 'true'; else echo 'false'; ?>);return false;">
@@ -66,11 +66,11 @@
 	    </p>
 	</div>
 	<div class="buttons">
-	    <input type="submit" name="Previous" value="previous" />
+	    <input type="submit" name="Previous" value="Previous" />
 	    <?php if ($silent) { ?>
-	    <input type="submit" name="Next" value="next" />
+	    <input type="submit" name="Next" value="Next" />
 	    <?php } else { ?>
-	    <input type="button" name="Next" value="next" onclick="javascript:{w.showStep(1, 'n');}"/>
+	    <input type="button" name="Next" value="Next" onclick="javascript:{w.showStep(1, 'n');}"/>
 	    <?php } ?>
 	</div>
 </div>
@@ -100,8 +100,8 @@ An administrative user is required for creating tables within the database.
 	</table>
 
 	<div class="buttons">
-	    <input type="button" name="Previous" value="previous" onclick="javascript:{w.showStep(2, 'p');}"/>
-	    <input type="button" name="Next" value="next" onclick="javascript:{w.showStep(2, 'n');}"/>
+	    <input type="button" name="Previous" value="Previous" onclick="javascript:{w.showStep(2, 'p');}"/>
+	    <input type="button" name="Next" value="Next" onclick="javascript:{w.showStep(2, 'n');}"/>
 	</div>
 </div>
 

@@ -17,11 +17,11 @@ Once the scan is completed, you&rsquo;ll see whether your system has met the req
 
 <div class="error_message">
 <?php if($errors) { ?>
-	<span class='cross'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your system is not quite ready to run KnowledgeTree. See the list below to determine which areas you need to address. Once you&rsquo;ve fixed these items, return to this wizard and try again.</span><br/>
-<?php } ?>
-<?php if($warnings) {?>
+	<span class='cross'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your system is not quite ready to run KnowledgeTree. See the list below to determine which areas you need to address. <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Once you&rsquo;ve fixed these items, return to this wizard and try again.</span><br/>
+<?php } elseif ($warnings) { ?>
 	<span class='cross_orange'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;KnowledgeTree Optional Dependencies not met, but you will be able to continue.</span><br/>
 <?php } ?>
+
 <?php
 	if($errors || $warnings) {
 		?>
@@ -129,7 +129,7 @@ B = Bytes, K = Kilobytes, M = Megabytes, G = Gigabytes
 	</div>
 <?php } ?>
 <form action="index.php?step_name=dependencies" method="post">
-<div class="buttons">
+<div class="buttons" style="top:14px;">
     <input type="submit" name="Previous" value="Previous"/>
     <input type="submit" name="Next" value="Next"/>
 </div>

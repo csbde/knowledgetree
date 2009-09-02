@@ -70,6 +70,7 @@ select {
 
 #wrapper {
     background: white url("graphics/background.gif") repeat-y left;
+    height:465px;
 }
 
 #container {
@@ -83,6 +84,7 @@ select {
     margin-left: 200px;
     padding: 10px;
     padding-top: 0;
+    width:950px;
 }
 
 #sidebar {
@@ -291,7 +293,7 @@ refresh {
 	border:none;
 	background-color:#FFCCCC;
 	color:#A30000;
-	width:550px;
+/*	width:550px; */
 	padding:0px;
 }
 
@@ -302,4 +304,15 @@ refresh {
 	/*color:#339933;*/
 	width:550px;
 	padding:0px;
+}
+
+.license_agreement {
+	overflow: scroll;
+	height: 255px;
+	width:800px;
+	overflow-x:hidden;
+}
+
+.regSubmit {
+
 }

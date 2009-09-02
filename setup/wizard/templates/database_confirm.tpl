@@ -1,13 +1,13 @@
-<h1>Database Configuration Confirmation</h1>
+<h1>Confirming Database Configurations</h1>
 
 <div class="description">
-Please confirm that your database settings have been entered correctly before proceeding with the installation.
+Please confirm whether KnowledgeTree has correctly determined your database settings before proceeding.
 </div>
 <!--<div id="section">-->
 
 <form action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 <h3><b>Database Settings</b></h3>
-<table width="20%" class="dbconf">
+<table width="33%" class="dbconf">
 <?php
 if($dtypes) {
         $type = '';
@@ -29,10 +29,6 @@ if($dtypes) {
         <td><?php echo $duname; ?></td>
     </tr>
     <tr>
-        <td>Root Username: </td>
-        <td><?php echo $duname; ?></td>
-    </tr>
-    <tr>
         <td>Root Password: </td>
         <td><?php echo $dpassword; ?></td>
     </tr>
@@ -45,7 +41,7 @@ if($dtypes) {
 <!--</div>-->
 <h3><b>Advanced Settings</b></h3>
 
-<table width="23%" class="dbconf">
+<table width="35%" class="dbconf">
     <tr>
         <td>Host: </td>
         <td><?php echo $dhost; ?></td>
@@ -68,7 +64,7 @@ if($dtypes) {
 
 <h3><b>Database Users</b></h3>
 
-<table width="23%" class="dbconf">
+<table width="35%" class="dbconf">
     <?php //if (!$silent) { ?>
     <tr>
         <td>DMS Admin Username: </td>
@@ -91,7 +87,7 @@ if($dtypes) {
     </tr>
 </table>
 
-<div class="buttons">
+<div class="buttons" style="top:0px;">
     <input type="submit" name="Edit" value="Edit"/>
     <input type="submit" name="Confirm" value="Confirm"/>
 </div>

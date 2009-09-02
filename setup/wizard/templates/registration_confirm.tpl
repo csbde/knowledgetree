@@ -1,13 +1,5 @@
 <h1>Thank you for registering</h1>
 
-<div class="error">
-    <?php if(isset($errors)) {
-        foreach($errors as $k=>$e) {
-                echo $e;
-        }
-    }?>
-</div>
-
 <p>
 Thank you for signing up. You'll receive an email from us shortly with download instructions for the KnowledgeTree Drop Box software.
 </p>

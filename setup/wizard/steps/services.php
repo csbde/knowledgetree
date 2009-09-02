@@ -60,7 +60,7 @@ class services extends Step
 	*/
     protected $runInstall = true;
     
-    private $services = array('Lucene', 'Scheduler');
+    private $services = array('Lucene', 'Scheduler', 'OpenOffice');
     
     protected $java;
     
@@ -68,7 +68,7 @@ class services extends Step
     
     protected $util;
     
-    private $javaVersion = '1.5';
+    private $javaVersion = '1.7';
     
 	/**
 	* Java Installed 
@@ -342,12 +342,23 @@ class services extends Step
     		if($auto) {
 				return $auto;
     		} else {
-				$this->specifyJava(); // Ask for settings
+    			// Check if auto detected java works
+    			$auto = $this->useDetected();
+    			if($auto) {
+    				$this->disableExtension = true; // Disable the use of the php bridge extension
+    				return $auto;
+    			} else {
+					$this->specifyJava(); // Ask for settings
+    			}
     		}
 			return $auto;
     	}
     }
 	
+    private function useDetected() {
+    	return $this->detSettings();
+    }
+    
     private function specifyJava() {
     	$this->javaExeError = true;
     }

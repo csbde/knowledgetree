@@ -354,6 +354,7 @@ class configuration extends Step
 			if($class['class'] != 'tick') {
 				$this->temp_variables['paths_perms'] = $class['class'];
 				$this->done = false;
+				$this->error[] = "path error";
 			}
             $dirs[$key] = array_merge($dirs[$key], $class);
         }
