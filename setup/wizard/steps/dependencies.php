@@ -341,7 +341,7 @@ class dependencies extends Step
 	            array('extension' => 'mbstring', 'required' => 'no', 'name' => 'Multi Byte Strings', 'details' => 'Used in the manipulation of multi-byte strings.'),
 	            array('extension' => 'ldap', 'required' => 'no', 'name' => 'LDAP', 'details' => 'Used to access LDAP directory servers.'),
 	            array('extension' => 'json', 'required' => 'yes', 'name' => 'JSON', 'details' => 'Implements the javascript object notation (json) data-interchange format.'),
-	            array('extension' => 'openssl', 'required' => 'no', 'name' => 'Open SSL', 'details' => 'Used for the generation and verification of signatures and the encrypting and decrypting of data'),
+	            array('extension' => 'openssl', 'required' => 'no', 'name' => 'Open SSL', 'details' => 'Used for the generation and verification of signatures and the encrypting and decrypting of data.'),
 	        );
     	if(WINDOWS_OS) {
 	        return $ext;

@@ -1,16 +1,28 @@
 <form action="index.php?step_name=services" method="post">
-<h1>Services Dependencies Check</h1>
+<h1>Checking Service Dependencies</h1>
 
 <p class="description">
-This checkup ensures that your environment is ready to support KnowledgeTree's background services. 
+The wizard will review your system to determine whether you can run KnowledgeTree background services. Once the scan is completed, you’ll see whether your system has met the requirements or whether there are areas you need to address. 
 </p>
+
+<div class="continue_message">
 <?php
-if($errors || $warnings){
-    echo '<div>'
-       . '<a href="http://wiki.knowledgetree.com/Web_Based_Installer#Service_Dependencies" target="_blank">'
-       . 'Click Here for help on overcoming services issues</a></div><br/>';
-}
+	if(!$errors && $warnings) {
+		?>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;All services have been installed. Please press Next to continue.
+		<?php
+	}
 ?>
+</div>
+
+<div class="error_message">
+<?php
+	if($errors || $warnings) {
+		?>
+	    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Installer#Service_Dependencies" target="_blank">Click here for help on overcoming dependency issues</a>
+<?php } ?>
+</div>
+
 <?php if(!$alreadyInstalled) { ?>
 	<?php if($javaExeError != '') { ?>
 		Specify the location of your Java executable

@@ -1,7 +1,7 @@
-<h1>System Configuration</h1>
+<h1>Checking System Configuration</h1>
 
 <p class="description">
-This check ensures that KnowledgeTree is correctly configured to run.
+The wizard will review your system to determine whether KnowledgeTree is correctly configured. You&rsquo;ll see whether KnowledgeTree has the correct settings or whether changes are required.
 </p>
 
 <form action="index.php?step_name=configuration" method="post">
@@ -32,15 +32,15 @@ The settings below have been drawn from the system information. The host and por
         <td><input name='port' id='port' size='5' value='<?php echo $server['port']['value']; ?>' /></td>
     </tr>
     <tr>
-        <td><label for='root_url'>Root Url: </label></td>
+        <td><label for='root_url'>Root URL: </label></td>
         <td><input name='root_url' id='root_url' size='60' value='<?php echo $server['root_url']['value']; ?>' /></td>
     </tr>
     <tr>
-        <td><label for='file_system_root'>File System Root: </label></td>
+        <td><label for='file_system_root'>Web Root: </label></td>
         <td><input name='file_system_root' id='file_system_root' size='60' value='<?php echo $server['file_system_root']['value']; ?>' /></td>
     </tr>
     <tr>
-        <td><label for='yes'>SSL Enabled: </label></td>
+        <td><label for='yes'>Do you have SSL Enabled?: </label></td>
         <td>
             <label for='yes'>Yes: </label><input type='radio' name='ssl_enabled' id='yes' value='yes' <?php echo $server['ssl_enabled']['value'] == 'yes' ? 'CHECKED' : ''; ?> />&nbsp;&nbsp;
             <label for='no'>No: </label><input type='radio' name='ssl_enabled' id='no' value='no' <?php echo $server['ssl_enabled']['value'] == 'no' ? 'CHECKED' : ''; ?> />

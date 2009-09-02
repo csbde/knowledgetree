@@ -1,5 +1,5 @@
 <head>
-		<title>KnowledgeTree&#174; Installer</title>
+		<title>KnowledgeTree Installer</title>
 		<script type="text/javascript" src="resources/wizard.js"></script>
 		<link rel="stylesheet" type="text/css" href="resources/wizard.css">
 	</head><body onload="w.doFormCheck();">
