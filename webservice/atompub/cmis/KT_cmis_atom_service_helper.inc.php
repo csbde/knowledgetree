@@ -75,7 +75,7 @@ class KT_cmis_atom_service_helper {
         {
             $field = $response->newElement('content');
             $field->appendChild($response->newAttr('type', $cmisEntry['properties']['ContentStreamMimeType']['value']));
-            $field->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type 
+            $field->appendChild($response->newAttr('src', CMIS_APP_BASE_URI . $workspace . '/' . $type 
                                                           . '/' . $cmisEntry['properties']['ObjectId']['value'] 
                                                           . '/' . $cmisEntry['properties']['ContentStreamFilename']['value']));
             $entry->appendChild($field);
@@ -190,14 +190,24 @@ class KT_cmis_atom_service_helper {
             }
 
             // if the document is checked out and this is NOT the PWC, this link MUST be present
-//            if (!empty($cmisEntry['properties']['ContentStreamLength']['value']))
-//            {
-//                $link = $response->newElement('link');
-//                $link->appendChild($response->newAttr('rel', 'stream'));
-//                $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type . '/' . $cmisEntry['properties']['ParentId']['value']));
-//                $entry->appendChild($link);
-//            }
-//
+            // NOTE at the moment the document and the PWC are the same object, so we always show it for a checked out document
+            // TODO separated code for PWC and actual document object
+            if (!empty($cmisEntry['properties']['VersionSeriesCheckedOutId']['value']))
+            {
+                $link = $response->newElement('link');
+                $link->appendChild($response->newAttr('rel', 'pwc'));
+                $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type 
+                                                                                . '/' . $cmisEntry['properties']['ObjectId']['value'] 
+                                                                                . '/' . $cmisEntry['properties']['ContentStreamFilename']['value']));
+                $entry->appendChild($link);
+                $link = $response->newElement('link');
+                $link->appendChild($response->newAttr('rel', 'source'));
+                $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type 
+                                                                                . '/' . $cmisEntry['properties']['ObjectId']['value'] 
+                                                                                . '/' . $cmisEntry['properties']['ContentStreamFilename']['value']));
+                $entry->appendChild($link);
+            }
+
 //            $link = $response->newElement('link');
 //            $link->appendChild($response->newAttr('rel', 'stream'));
 //            $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type 
@@ -253,9 +263,10 @@ class KT_cmis_atom_service_helper {
         // after every entry, append a cmis:terminator tag
         $entry->appendChild($response->newElement('cmis:terminator'));
         
-        if ($method == 'POST') {
+        // TODO check determination of when to add app:edited tag
+//        if ($method == 'POST') {
             $entry->appendChild($response->newElement('app:edited', self::formatDatestamp()));
-        }
+//        }
     }
 
     /**
@@ -415,9 +426,17 @@ class KT_cmis_atom_service_helper {
     {
         $properties = array();
         
-        foreach($xmlArray as $xmlElement)
+        // find cmis:object tag
+        $baseCmisObject = KT_cmis_atom_service_helper::findTag('cmis:object', $xmlArray, null, false);
+        if(count($baseCmisObject) <= 0)
         {
-            foreach($xmlElement['@children'] as $key => $childElement)
+            $entryObject = KT_cmis_atom_service_helper::findTag('entry', $xmlArray, null, false);
+            $baseCmisObject = KT_cmis_atom_service_helper::findTag('cmis:object', $entryObject['@children'], null, true);
+        }
+        
+        if(count($baseCmisObject)>0)
+        {
+            foreach($baseCmisObject['@children'] as $key => $childElement)
             {
                 if ($key == 'cmis:properties')
                 {
@@ -465,6 +484,34 @@ class KT_cmis_atom_service_helper {
     {
         if (is_null($time)) $time = time();
         return date('Y-m-d H:i:s', $time);
+    }
+    
+    //TODO: Add key information to be able to find the same tag in the original struct (MarkH)
+    static public function findTag($tagName=NULL,$xml=array(),$tagArray=NULL,$deep=false){
+        $tagArray=is_array($tagArray)?$tagArray:array();
+        foreach($xml as $xmlTag=>$content){
+            if($xmlTag===$tagName){
+                $tagArray[]=$content;
+            }
+            if($deep){
+                foreach($content as $contentTags){
+                    if(is_array($contentTags['@children'])) {
+                        if(count($contentTags['@children'])>0) $tagArray=self::findTag($tagName,$contentTags['@children'],$tagArray);
+                    }
+                }
+            }
+        }
+        //TODO: this is very ugly. Change it. (MarkH)
+        return self::rebaseArray($tagArray);
+    }
+    
+    static public function rebaseArray($arr=array()){
+        //Force Array
+        $arr=is_array($arr)?$arr:array();
+        
+        //Rebase recursively
+        if(count($arr)===1)$arr=self::rebaseArray($arr[0]);
+        return $arr;
     }
 
 }

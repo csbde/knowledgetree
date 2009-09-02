@@ -48,6 +48,30 @@ class VersioningService extends KTVersioningService {
             return new PEAR_Error($result['message']);
         }
     }
+    
+    /**
+     * Reverses the effect of a checkout: I.E. deletes the PWC (Private Working Copy) and re-sets the status of the document to "not checked out" 
+     * 
+     * @param string $repositoryId
+     * @param string $documentId
+     * @param string $changeToken [optional]
+     */
+    // TODO exceptions:
+    //      •	ConstraintViolationException: The Repository SHALL throw this exception if ANY of the following conditions are met:
+    //      o	The Document’s Object-Type definition’s versionable attribute is FALSE. 
+    //      •	updateConflictException
+    //      •	versioningException
+    public function cancelCheckOut($repositoryId, $documentId, $changeToken = '')
+    {
+        $result = parent::cancelCheckOut($repositoryId, $documentId, $changeToken);
+
+        if ($result['status_code'] == 0) {
+            return $result['results'];
+        }
+        else {
+            return new PEAR_Error($result['message']);
+        }
+    }
 
 }
 

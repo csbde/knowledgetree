@@ -109,9 +109,9 @@ class NavigationService extends KTNavigationService {
      * @param int $skipCount
      * @return array $checkedout The collection of checked out documents
      */
-    function getCheckedoutDocs($repositoryId, $folderId = null, $filter = '', $maxItems = 0, $skipCount = 0)
+    function getCheckedOutDocs($repositoryId, $folderId = null, $filter = '', $maxItems = 0, $skipCount = 0)
     {
-        $checkedout = parent::getObjectParents($repositoryId, $folderId, $filter, $maxItems, $skipCount);
+        $result = parent::getCheckedOutDocs($repositoryId, $folderId, $filter, $maxItems, $skipCount);
 
         if ($result['status_code'] == 0)
         {

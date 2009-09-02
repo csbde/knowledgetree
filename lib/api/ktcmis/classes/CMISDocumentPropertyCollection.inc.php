@@ -66,6 +66,14 @@ class CMISDocumentPropertyCollection extends CMISPropertyCollection {
     function __construct()
     {
         parent::__construct();
+        self::$propertyTypes = array_merge(self::$propertyTypes, array('ContentStreamAllowed' => 'propertyString',
+                                     'ContentStreamLength' => 'propertyInteger',
+                                     'ContentStreamMimeType' => 'propertyString',
+                                     'ContentStreamFilename' => 'propertyString',
+                                     'ContentStreamUri' => 'propertyUri',
+                                     'IsVersionSeriesCheckedOut' => 'propertyBoolean',
+                                     'VersionSeriesCheckedOutBy' => 'propertyString',
+                                     'VersionSeriesCheckedOutId' => 'propertyId'));
     }
 
 }

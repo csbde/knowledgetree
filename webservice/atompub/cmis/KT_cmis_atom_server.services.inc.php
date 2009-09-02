@@ -37,7 +37,11 @@ include_once CMIS_ATOM_LIB_FOLDER . 'VersioningService.inc.php';
 include_once 'KT_cmis_atom_service_helper.inc.php';
 
 // TODO consider changing all responses from the webservice layer to return PEAR errors or success results instead of the half/half we have at the moment.
-//      the half/half occurred because on initial services PEAR Error seemed unnecessary, but it has proven useful for some of the newer functions :)
+//      the half/half occurred because on initial services PEAR Error seemed unnecessary, but it has proven useful for some of the newer functions
+
+// TODO proper first/last links
+// FIXME any incorrect or missing links
+// FIXME ContentStreamAllowed tag is empty (at least sometimes)
 
 /**
  * AtomPub Service: folder
@@ -236,6 +240,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $this->responseFeed = $feed;
             return null;
         }
+        
         // list of failed objects?
         if (is_array($response))
         {
@@ -277,16 +282,13 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
      */
     private function getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $feedType = 'children')
     {
-        if ($feedType == 'children')
-        {
+        if ($feedType == 'children') {
             $entries = $NavigationService->getChildren($repositoryId, $folderId, false, false);
         }
-        else if ($feedType == 'descendants')
-        {
+        else if ($feedType == 'descendants') {
             $entries = $NavigationService->getDescendants($repositoryId, $folderId, false, false);
         }
-        else
-        {
+        else {
             // error, we shouldn't be here, if we are then the wrong service/function was called
         }
 
@@ -430,7 +432,6 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service {
 /**
  * AtomPub Service: checkedout
  */
-// NOTE this is always an empty document, underlying API code still to be implemented
 class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
     
     /**
@@ -444,10 +445,11 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
 
-        $checkedout = $NavigationService->getCheckedoutDocs($repositoryId);
+        $checkedout = $NavigationService->getCheckedOutDocs($repositoryId);
 
         //Create a new response feed
         $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
+        $workspace = $feed->getWorkspace();
         
         $feed->newField('title', 'Checked out Documents', $feed);
 		
@@ -460,27 +462,37 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
 
         // TODO get actual most recent update time, only use current if no other available
         $feed->appendChild($feed->newElement('updated', KT_cmis_atom_service_helper::formatDatestamp()));
-		
-        foreach($checkedout as $document)
+        
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel', 'self'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/checkedout'));
+        $feed->appendChild($link);
+        
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel','first'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/checkedout/pageNo=1&amp;pageSize=0'));
+        $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
+        $feed->appendChild($link);
+
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel','last'));
+        // TODO set page number correctly - to be done when we support paging the the API
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/checkedout/pageNo=1&amp;pageSize=0'));
+        $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
+        $feed->appendChild($link);
+
+        foreach($checkedout as $cmisEntry)
         {
-            $entry = $feed->newEntry();
-            $objectElement = $feed->newElement('cmis:object');
-            $propertiesElement = $feed->newElement('cmis:properties');
-
-            foreach($cmisEntry['properties'] as $propertyName => $property)
-            {
-                $propElement = $feed->newElement('cmis:' . $property['type']);
-                $propElement->appendChild($feed->newAttr('cmis:name', $propertyName));
-                $feed->newField('cmis:value', CMISUtil::boolToString($property['value']), $propElement);
-                $propertiesElement->appendChild($propElement);
-            }
-
-            $objectElement->appendChild($propertiesElement);
-            $entry->appendChild($objectElement);
+            KT_cmis_atom_service_helper::createObjectEntry($feed, $cmisEntry, $folderName);
+			
+//			// after each entry, add app:edited tag
+//           	$feed->newField('app:edited', KT_cmis_atom_service_helper::formatDatestamp(), $feed);
         }
 
-        $entry = null;
-        $feed->newField('cmis:hasMoreItems', 'false', $entry, true);
+        $feed->newField('cmis:hasMoreItems', 'false', $feed);
+
+//        $entry = null;
+//        $feed->newField('cmis:hasMoreItems', 'false', $entry, true);
 
         //Expose the responseFeed
         $this->responseFeed = $feed;
@@ -495,8 +507,8 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
         
-        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']['cmis:object']);
-                                                                                                      
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']);
+        
         // check for existing object id as property of submitted object data
         if (empty($cmisObjectProperties['ObjectId']))
         {
@@ -518,51 +530,9 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         
         $this->setStatus(self::STATUS_CREATED);
         $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['ObjectId'], 'POST');
-//        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $newObjectId, 'POST');
 
         //Expose the responseFeed
         $this->responseFeed = $feed;
-        
-//        $checkedout = $NavigationService->getCheckedoutDocs($repositoryId);
-//
-//        //Create a new response feed
-//        $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
-//        
-//        $feed->newField('title', 'Checked out Documents', $feed);
-//		
-//        // TODO dynamic?
-//        $feedElement = $feed->newField('author');
-//        $element = $feed->newField('name', 'admin', $feedElement);
-//        $feed->appendChild($feedElement);
-//		
-//		$feed->appendChild($feed->newElement('id', 'urn:uuid:checkedout'));
-//
-//        // TODO get actual most recent update time, only use current if no other available
-//        $feed->appendChild($feed->newElement('updated', KT_cmis_atom_service_helper::formatDatestamp()));
-//		
-//        foreach($checkedout as $document)
-//        {
-//            $entry = $feed->newEntry();
-//            $objectElement = $feed->newElement('cmis:object');
-//            $propertiesElement = $feed->newElement('cmis:properties');
-//
-//            foreach($cmisEntry['properties'] as $propertyName => $property)
-//            {
-//                $propElement = $feed->newElement('cmis:' . $property['type']);
-//                $propElement->appendChild($feed->newAttr('cmis:name', $propertyName));
-//                $feed->newField('cmis:value', CMISUtil::boolToString($property['value']), $propElement);
-//                $propertiesElement->appendChild($propElement);
-//            }
-//
-//            $objectElement->appendChild($propertiesElement);
-//            $entry->appendChild($objectElement);
-//        }
-//
-//        $entry = null;
-//        $feed->newField('cmis:hasMoreItems', 'false', $entry, true);
-//
-//        //Expose the responseFeed
-//        $this->responseFeed = $feed;
     }
 
 }
@@ -671,6 +641,66 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
         $this->setHeader('Content-Disposition', 'attachment;filename="' . $response['properties']['ContentStreamFilename']['value'] . '"');
 		$this->setHeader('Content-Length', $response['properties']['ContentStreamLength']['value']);
         $this->output = $contentStream;
+    }
+    
+}
+
+class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
+
+    /**
+     * Deals with GET actions for Private Working Copies.
+     * This includes individual Private Working Copy retrieval 
+     */
+    public function GET_action()
+    {
+        $RepositoryService = new RepositoryService();
+        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+
+        $repositories = $RepositoryService->getRepositories();
+        $repositoryId = $repositories[0]['repositoryId'];
+        
+        // determine whether we want the Private Working Copy entry feed or the actual physical Private Working Copy content.
+        // this depends on $this->params[1]
+        if (!empty($this->params[1]))
+        {
+            $this->getContentStream($ObjectService, $repositoryId);
+            return null;
+        }
+
+        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $this->params[0]);
+
+        //Expose the responseFeed
+        $this->responseFeed = $feed;
+    }
+    
+    /**
+     * Deals with DELETE actions for Private Working Copies.
+     * This includes deletion of a specific version of a document (latest version) via deleteObject 
+     * as well as deleteAllVersions
+     * 
+     * @return 204 on success, 500 on error
+     */
+    public function DELETE_action()
+    {
+        // call the cancel checkout function
+        $RepositoryService = new RepositoryService();
+        $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
+
+        $repositories = $RepositoryService->getRepositories();
+        $repositoryId = $repositories[0]['repositoryId'];
+        
+        $response = $VersioningService->cancelCheckout($repositoryId, $this->params[0]);
+
+        if (PEAR::isError($response))
+        {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response->getMessage());
+           //Expose the responseFeed
+            $this->responseFeed = $feed;
+            return null;
+        }
+        
+        $this->setStatus(self::STATUS_NO_CONTENT);
+        $this->responseFeed = null;
     }
     
 }

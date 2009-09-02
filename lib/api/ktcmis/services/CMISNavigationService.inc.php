@@ -268,7 +268,7 @@ class CMISNavigationService {
         foreach($results as $document)
         {
             $CMISDocument = new CMISDocumentObject($document->getId(), $this->ktapi);
-            $checkedout[] = $CMISDocument;
+            $checkedout[] = $CMISDocument->getProperties();
         }
 
         return $checkedout;

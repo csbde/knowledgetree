@@ -113,6 +113,7 @@ if ($workspace != 'servicedocument')
 {
     $APP->registerService('dms', 'type', 'KT_cmis_atom_service_type', 'Object Type Entry', null, 'type');
     $APP->registerService('dms', 'document', 'KT_cmis_atom_service_document', 'Document Entry', null, 'document');
+    $APP->registerService('dms', 'pwc', 'KT_cmis_atom_service_pwc', 'Private Working Copy', null, 'pwc');
 }
 
 //Execute the current url/header request

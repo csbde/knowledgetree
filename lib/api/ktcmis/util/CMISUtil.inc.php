@@ -270,7 +270,20 @@ class CMISUtil {
     static public function createObjectPropertiesEntry($properties)
     {
         $object = array();
+        
+        foreach(CMISPropertyCollection::$propertyTypes as $property => $type)
+        {
+            // hack for Author property
+            if ($property == 'Author') {
+                $object[$property] = array('value' => $properties->getValue($property));
+            }
+            else {
+                $object['properties'][$property] = array('type' => $type, 'value' => $properties->getValue($property));
+            }
+        }
 
+        /* old static method */
+        /*
         $object['Author'] = array('value' => $properties->getValue('Author'));
         
         $object['properties']['BaseType'] = array('type' => $properties->getFieldType('BaseType'),
@@ -331,7 +344,10 @@ class CMISUtil {
                                                                'value' => $properties->getValue('ContentStreamUri'));
             }
         }
+        */
 
+        /* what on earth was this for? */
+        /*
         // if we have found a child/parent with one or more children/parents, recurse into the child/parent object
         if (count($entry['items']) > 0) {
             $object[$linkText] = CMISUtil::decodeObjectHierarchy($entry['items'], $linkText);
@@ -341,6 +357,7 @@ class CMISUtil {
         else {
             $object[$linkText] = null;
         }
+        */
 
         return $object;
     }

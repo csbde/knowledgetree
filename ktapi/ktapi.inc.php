@@ -3254,6 +3254,8 @@ class KTAPI
      * @param boolean $userSpecific limit to current user
      * @return $checkedout An array of checked out documents 
      */
+    // TODO determine whether the listing is showing docs the user should not be able to see
+    //     (when not restricting to docs checked out by that user)
     public function get_checkedout_docs($userSpecific = true)
     {
         $checkedout = array();

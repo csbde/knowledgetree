@@ -458,12 +458,12 @@ class KTNavigationService extends KTCMISBase {
                 "message" => "Failed getting list of checked out documents"
             );
         }
-        
+
         // convert to array format for external code
         $co = array();
-        foreach ($checkedout as $document)
+        foreach ($checkedout as $documentProperties)
         {
-            $co[] = $document->getProperty('ObjectId');
+            $co[] = CMISUtil::createObjectPropertiesEntry($documentProperties);;
         }
 
         return array(
