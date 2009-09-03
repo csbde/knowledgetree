@@ -30,7 +30,6 @@ if(isset($errors)) {
 
 <form action="index.php?step_name=welcome" method="post">
 <div class="buttons">
-<!--    <input name="Next" value="Next" type="submit">-->
 </div>
 </form>		            </div>
 		        </div>

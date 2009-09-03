@@ -252,7 +252,7 @@ class stepAction {
 	                $item = $this->makeHeading($step);
 	            }
 	            if($step == $this->stepName) {
-	                $class = 'active';
+	                $class = 'current';
 	                $active = true;
 	            } else {
 	                if($active){
@@ -270,6 +270,10 @@ class stepAction {
         return $menu;
     }
 
+    public function getActions() {
+    	
+    }
+    
 	/**
 	* Returns confirmation page flag
 	*

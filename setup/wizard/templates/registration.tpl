@@ -2,8 +2,8 @@
 <h1>Registering KnowledgeTree</h1>
 
 <p>
-Register with KnowledgeTree to receive important product updates. We respect your privacy and will not share your information with third parties. For more information, please refer to our Privacy and Data Retention Policies. 
-<input type="submit" name="Confirm" value="Skip Registration" class="regSubmit"/>
+Register with KnowledgeTree to receive important product updates. We respect your privacy and will not share your information with third parties. For more information, please refer to our Privacy and Data Retention Policies.
+<a href="index.php?step_name=install">Skip Registration</a>
 </p>
 
 <p class='disclaimer'>
@@ -20,7 +20,7 @@ and services. Please see our <a href="http://www.knowledgetree.com/about/legal" 
         <td><input name='submitted[first_name]' id='first' size='37' /></td>
         <td rowspan='6' width='5%'>&nbsp;</td>
         <td rowspan='6'>
-            <img src='resources/graphics/dropbox.png' />
+            <img src='resources/graphics/dropbox.png' width="100%" height="100%"/>
         </td>
     </tr>
     <tr>
@@ -86,6 +86,5 @@ and services. Please see our <a href="http://www.knowledgetree.com/about/legal" 
 <div class="buttons">
     <input type="submit" name="Previous" value="Previous"/>
     <input type="submit" name="Next" value="Register"/>
-    <!--<input type="submit" name="Confirm" value="Skip Registration"/>-->
 </div>
 </form>

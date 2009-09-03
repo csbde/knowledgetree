@@ -150,7 +150,7 @@ if($step_vars) {
 	</div>
 <?php } ?>
 <div class="buttons">
-    <input type="submit" name="Previous" value="Previous"/>
+    <input type="submit" name="Previous" value="Back"/>
     <input type="submit" name="Next" value="Next"/>
 </div>
 </form>

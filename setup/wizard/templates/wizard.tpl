@@ -2,30 +2,34 @@
 <html>
 	<head>
 		<title>KnowledgeTree Installer</title>
+<!--		<script type="text/javascript" src="resources/jquery-tooltip/lib/jquery.js"></script>-->
+<!--		<script type="text/javascript" src="resources/jquery-tooltip/lib/jquery.bgiframe.js"></script>-->
+<!--		<script type="text/javascript" src=".resources/jquery-tooltip/lib/jquery.dimensions.js"></script>-->
+<!--		<script type="text/javascript" src="resources/jquery-tooltip/lib/jquery.tooltip.js"></script>-->
 		<script type="text/javascript" src="resources/wizard.js" ></script>
 		<link rel="stylesheet" type="text/css" href="resources/wizard.css" />
+		
 	</head>
 	<body onload="w.doFormCheck();">
 		<div id="outer-wrapper">
-		    <div id="header">
-		        <div class="logo"></div>
-		    </div>
-		
+		    <div id="header"></div>
+		    
 		    <div id="wrapper">
 		        <div id="container">
+		        	<div id="sidebar">
+		            	<?php echo $left; ?>
+		        	</div>
 		            <div id="content">
-		                <?php echo $content; ?>
+		            	<div id="content_container">
+		                	<?php echo $content; ?>
+		                </div>
 		            </div>
-		        </div>
-		
-		        <div id="sidebar">
-		            <?php echo $left; ?>
 		        </div>
 		        <div class="clearing">&nbsp;</div>
 		    </div>
-		
+			
 		    <div id="footer">
-		        <div class="powered-by"></div>
+		    	<img width="105" height="23" align="right" src="resources/graphics/dame/powered-by-kt.png" style="padding: 5px;"/>
 		    </div>
 		</div>
 	</body>

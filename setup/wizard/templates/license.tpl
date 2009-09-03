@@ -1,18 +1,17 @@
-<h1>License Agreement</h1>
+<form action="index.php?step_name=license" method="POST">
+<p class="title">License Agreement</p>
 
-<div class="error">
+<div class="error_message">
     <?php if(isset($errors)) {
         foreach($errors as $k=>$e) {
                 echo $e;
         }
     }?>
 </div>
-
 <p class="description">
 Please read and accept the license agreement below before continuing with the setup.
 </p>
 
-<form action="index.php?step_name=license" method="POST">
 <div class="license_agreement">
 <h2>KnowledgeTree On-premise Commercial End-User</h2>
 <p>
@@ -333,14 +332,8 @@ force and effect. The original of this Agreement has been written in English, an
 govern.
 </p>
 </div>
-<br/>
-<div class="agree">
-    <input type="radio" name="license" value="1""/>I accept the agreement
-    <br/>
-    <input type="radio" name="license" value="0"/>I do not accept the agreement
-</div>
-<div class="buttons" style="top:3px">
-    <input type="submit" name="Previous" value="Previous"/>
-    <input type="submit" name="Next" value="Next"/>
-</div>
+	<input id="accept" type="hidden" name="license" value=""/>
+	<input class="back" type="submit" name="Previous" value="Back"/>
+    <input class="input" type="submit" name="Next" value="I Disagree" onclick="javascript:{document.getElementById('accept').value = 0;}"/>
+    <input class="input" type="submit" name="Next" value="I Agree" onclick="javascript:{document.getElementById('accept').value = 1;}"/>
 </form>

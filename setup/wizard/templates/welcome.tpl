@@ -1,13 +1,13 @@
-<h1>Welcome to KnowledgeTree</h1>
+<form action="index.php?step_name=welcome" method="post">
+<p class="title">Welcome to KnowledgeTree</p>
 
-<div style='width:800px;'>
+<div id="step_content">
 <p>
 This wizard will lead you through the steps needed to install and configure KnowledgeTree on your server.
 </p>
 </div>
 
-<form action="index.php?step_name=welcome" method="post">
-<div class="buttons" style="top:325px;">
-    <input type="submit" name="Next" value="Next"/>
-</div>
+<!--<div class="buttons" id="buttons_single">-->
+    <input class="next" type="submit" name="Next" value="Next"/>
+<!--</div>-->
 </form>

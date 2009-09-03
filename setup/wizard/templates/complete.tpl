@@ -68,9 +68,15 @@ if($errors || $warnings){
     <table>
         <tr>
         	<td><?php echo "<span class='{$LuceneStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Lucene Service</td>
+        	<?php if ($LuceneStatus != 'tick') { ?>
+        		<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+        	<?php } ?>
         </tr> 
         <tr>
         	<td><?php echo "<span class='{$SchedulerStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Scheduler Service</td>
+        	<?php if ($SchedulerStatus != 'tick') { ?>
+        		<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+        	<?php } ?>
         </tr>
     </table>
 <?php if($silent) { ?>
@@ -80,7 +86,7 @@ if($errors || $warnings){
 <form>
 	<div class="buttons">
 <!--	    <a href="index.php?step_name=complete&step=previous" class="previous">Previous</a>-->
-	    <a href="">Refresh</a>
+<!--	    <a href="">Refresh</a>-->
 	    <a href="../../">Goto Login</a>
 	    <?php
 	        if (INSTALL_TYPE == 'Zend') {

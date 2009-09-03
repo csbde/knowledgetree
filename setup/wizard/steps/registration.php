@@ -66,7 +66,10 @@ class registration extends Step
     public function doStep()
     {
         $this->setFormInfo();
-
+//		die('a');
+//print_r($_POST);
+//print_r($_GET);
+return 'next';
 		if(!$this->inStep("registration")) {
 			return 'landing';
 		}
@@ -77,6 +80,7 @@ class registration extends Step
 		} else if($this->previous()) {
 		    return 'previous';
 		}else if($this->confirm()) {
+			
 		    return 'next';
 		}
 		return 'landing';

@@ -1,4 +1,4 @@
-<h1>PHP Dependencies Check</h1>
+<h1>Checking PHP Dependencies</h1>
 
 <p class="description">
 The wizard will review your system to determine whether you have the right PHP components in place to run KnowledgeTree. <br/>
@@ -9,7 +9,7 @@ Once the scan is completed, you&rsquo;ll see whether your system has met the req
 <?php
 	if(!$errors && $warnings) {
 		?>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Congratulations! Your system is ready to run KnowledgeTree. Press Next to continue.
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Congratulations! Your system is ready to run KnowledgeTree. Click Next to continue.
 		<?php
 	}
 ?>
@@ -129,8 +129,8 @@ B = Bytes, K = Kilobytes, M = Megabytes, G = Gigabytes
 	</div>
 <?php } ?>
 <form action="index.php?step_name=dependencies" method="post">
-<div class="buttons" style="top:14px;">
-    <input type="submit" name="Previous" value="Previous"/>
+<div class="buttons">
+    <input type="submit" name="Previous" value="Back"/>
     <input type="submit" name="Next" value="Next"/>
 </div>
 </form>

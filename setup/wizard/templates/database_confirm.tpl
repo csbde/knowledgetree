@@ -87,7 +87,7 @@ if($dtypes) {
     </tr>
 </table>
 
-<div class="buttons" style="top:0px;">
+<div class="buttons">
     <input type="submit" name="Edit" value="Edit"/>
     <input type="submit" name="Confirm" value="Confirm"/>
 </div>

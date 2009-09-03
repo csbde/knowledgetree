@@ -144,7 +144,8 @@ class complete extends Step {
                                                  . '<td class="warning" colspan="2">Your document directory is set to the default, which is inside the web root. '
                                                  . 'This may present a security problem if your documents can be accessed from the web, '
                                                  . 'working around the permission system in KnowledgeTree.</td>';
-                                                 $this->paths_check = 'cross_orange';
+                                                 if($this->paths_check == 'tick')
+                                                 	$this->paths_check = 'cross_orange';
                                                  $this->warnings[] = 'Move var directory';
         }
         else {
