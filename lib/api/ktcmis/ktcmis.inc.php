@@ -861,6 +861,37 @@ class KTVersioningService extends KTCMISBase {
             'results' => (!empty($result) ? $result : 'Document Checkout Cancelled')
         );
     }
+    
+    /**
+     * Checks in a checked out document
+     * 
+     * @param string $repositoryId
+     * @param string $documentId
+     * @param boolean $major
+     * @param string $changeToken [optional]
+     * @param array $properties [optional]
+     * @param contentStream $contentStream [optional]
+     * @param string $checkinComment [optional]
+     * @return string $documentId
+     */
+    public function checkIn($repositoryId, $documentId, $major, $changeToken = '', $properties = array(), $contentStream = null, $checkinComment = '')
+    {
+        try {
+            $result = $this->VersioningService->checkIn($repositoryId, $documentId, $major, $changeToken, $properties, $contentStream, $checkinComment);
+        }
+        catch (Exception $e)
+        {
+            return array(
+                "status_code" => 1,
+                "message" => $e->getMessage()
+            );
+        }
+
+        return array(
+            'status_code' => 0,
+            'results' => (!empty($result) ? $result : 'Document Checked In Successfully')
+        );
+    }
 
 }
 

@@ -62,7 +62,7 @@ abstract class CMISPropertyCollection {
         self::$propertyTypes = array('ObjectId' => 'propertyId',
                                      'Author' => 'propertyString',
                                      'BaseType' => 'propertyString',
-                                     'ObjectTypeId' => 'propertyString',
+                                     'ObjectTypeId' => 'propertyId',
                                      'CreatedBy' => 'propertyString',
                                      'CreationDate' => 'propertyDateTime',
                                      'LastModifiedBy' => 'propertyString',

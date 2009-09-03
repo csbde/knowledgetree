@@ -169,6 +169,46 @@ class CMISVersioningService {
         }
     }
     
+    /**
+     * Checks in a checked out document
+     * 
+     * @param string $repositoryId
+     * @param string $documentId
+     * @param boolean $major
+     * @param string $changeToken [optional]
+     * @param array $properties [optional]
+     * @param contentStream $contentStream [optional]
+     * @param string $checkinComment [optional]
+     * @return string $documentId
+     */
+    // TODO Exceptions:
+    //        •	ConstraintViolationException - SHALL throw if o	The Document’s Object-Type definition’s versionable attribute is FALSE. 
+    //        •	storageException - MAY throw
+    //        •	streamNotSupportedException -  The Repository SHALL throw this exception if the Object-Type definition specified by the typeId 
+    //                                         parameter’s “contentStreamAllowed” attribute is set to “not allowed” and a contentStream input 
+    //                                         parameter is provided.
+    //        •	updateConflictException - MAY throw
+    //        •	versioningException - The repository MAY throw this exception if the object is a non-current Document Version
+    public function checkIn($repositoryId, $documentId, $major, $changeToken = '', $properties = array(), $contentStream = null, $checkinComment = '')
+    {
+        $documentId = CMISUtil::decodeObjectId($documentId, $typeId);
+        
+        // throw updateConflictException if the operation is attempting to update an object that is no longer current (as determined by the repository).
+        try {
+            $pwc = new CMISDocumentObject($documentId, $this->ktapi);
+        }
+        catch (exception $e) {
+            throw new UpdateConflictException($e->getMessage());
+        }
+        
+        // throw exception if the object is not versionable
+        if (!$pwc->getAttribute('versionable')) {
+            throw new ConstraintViolationException('This document is not versionable and may not be checked in');
+        }
+        
+        return $documentId;
+    }
+    
 }
 
 ?>
