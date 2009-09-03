@@ -268,6 +268,8 @@ class CMISNavigationService {
         foreach($results as $document)
         {
             $CMISDocument = new CMISDocumentObject($document->getId(), $this->ktapi);
+            // set version label property - possibly belongs in document class
+            $CMISDocument->setProperty('VersionLabel', $CMISDocument->getProperty('VersionSeriesCheckedOutId'));
             $checkedout[] = $CMISDocument->getProperties();
         }
 

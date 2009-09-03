@@ -14,6 +14,7 @@ class KT_cmis_atom_service_helper {
      */
     static public function getObjectFeed(&$service, $ObjectService, $repositoryId, $objectId, $method = 'GET')
     {
+        $serviceType = $service->getServiceType();
         $response = $ObjectService->getProperties($repositoryId, $objectId, false, false);
 
         if (PEAR::isError($response)) {
@@ -22,18 +23,24 @@ class KT_cmis_atom_service_helper {
         
         $cmisEntry = $response;
         $response = null;
-
-        if ($method == 'GET') {
+        
+        // POST/PWC responses only send back an entry, not a feed
+        if (($serviceType == 'PWC') || ($method == 'POST')) {
+            if ($method == 'POST') {
+                $response = new KT_cmis_atom_response_POST(CMIS_APP_BASE_URI);
+            }
+            else {
+                $response = new KT_cmis_atom_response_GET(CMIS_APP_BASE_URI);
+            }
+        }
+        else if ($method == 'GET') {
             $response = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
             $response->newField('title', $cmisEntry['properties']['ObjectTypeId']['value'], $response);
             $response->newField('id', 'urn:uuid:' . $cmisEntry['properties']['ObjectId']['value'], $response);
         }
-        // POST responses only send back an entry, not a feed
-        else if ($method == 'POST') {
-            $response = new KT_cmis_atom_response_POST(CMIS_APP_BASE_URI);
-        }
 
-        KT_cmis_atom_service_helper::createObjectEntry($response, $cmisEntry, $cmisEntry['properties']['ParentId']['value'], $method);
+        if ($serviceType == 'PWC') $pwc = true; else $pwc = false;
+        KT_cmis_atom_service_helper::createObjectEntry($response, $cmisEntry, $cmisEntry['properties']['ParentId']['value'], $pwc, $method);
 
         // Don't think this should be here...only one item so why would we need to say there are no more?
         /*if ($method == 'GET') {
@@ -50,7 +57,7 @@ class KT_cmis_atom_service_helper {
      * @param array $cmisEntry The entry data
      * @param string $parent The parent folder
      */
-    static public function createObjectEntry(&$response, $cmisEntry, $parent, $method = 'GET')
+    static public function createObjectEntry(&$response, $cmisEntry, $parent, $pwc = false, $method = 'GET')
     {
         $workspace = $response->getWorkspace();
         $type = strtolower($cmisEntry['properties']['ObjectTypeId']['value']);
@@ -58,7 +65,8 @@ class KT_cmis_atom_service_helper {
     	// create entry
         $entry = $response->newEntry();
 
-        if ($method == 'POST')
+        // FIXME this maybe belongs in the response feed class only how?
+        if (($method == 'POST') || $pwc)
         {
             // append attributes
             $entry->appendChild($response->newAttr('xmlns', 'http://www.w3.org/2005/Atom'));
@@ -89,7 +97,7 @@ class KT_cmis_atom_service_helper {
         // links
         $link = $response->newElement('link');
         $link->appendChild($response->newAttr('rel', 'self'));
-        $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type . '/' . $cmisEntry['properties']['ObjectId']['value']));
+        $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . (!$pwc ? $type : 'pwc') . '/' . $cmisEntry['properties']['ObjectId']['value']));
         $entry->appendChild($link);
 
         $link = $response->newElement('link');

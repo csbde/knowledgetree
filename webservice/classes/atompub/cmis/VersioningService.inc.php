@@ -72,6 +72,30 @@ class VersioningService extends KTVersioningService {
             return new PEAR_Error($result['message']);
         }
     }
+    
+    /**
+     * Checks in a checked out document
+     * 
+     * @param string $repositoryId
+     * @param string $documentId
+     * @param boolean $major
+     * @param string $changeToken [optional]
+     * @param array $properties [optional]
+     * @param contentStream $contentStream [optional]
+     * @param string $checkinComment [optional]
+     * @return string $documentId
+     */
+    public function checkIn($repositoryId, $documentId, $major, $changeToken = '', $properties = array(), $contentStream = null, $checkinComment = '')
+    {
+        $result = parent::checkIn($repositoryId, $documentId, $major, $changeToken, $properties, $contentStream, $checkinComment);
+
+        if ($result['status_code'] == 0) {
+            return $result['results'];
+        }
+        else {
+            return new PEAR_Error($result['message']);
+        }
+    }
 
 }
 

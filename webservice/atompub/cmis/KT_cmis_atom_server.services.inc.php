@@ -446,7 +446,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         $repositoryId = $repositories[0]['repositoryId'];
 
         $checkedout = $NavigationService->getCheckedOutDocs($repositoryId);
-
+//print_r($checkedout);exit;
         //Create a new response feed
         $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
         $workspace = $feed->getWorkspace();
@@ -483,7 +483,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
 
         foreach($checkedout as $cmisEntry)
         {
-            KT_cmis_atom_service_helper::createObjectEntry($feed, $cmisEntry, $folderName);
+            KT_cmis_atom_service_helper::createObjectEntry($feed, $cmisEntry, $folderName, true);
 			
 //			// after each entry, add app:edited tag
 //           	$feed->newField('app:edited', KT_cmis_atom_service_helper::formatDatestamp(), $feed);
@@ -506,7 +506,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
 
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
-        
+
         $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']);
         
         // check for existing object id as property of submitted object data
@@ -646,6 +646,8 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
 }
 
 class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
+    
+    protected $serviceType = 'PWC';
 
     /**
      * Deals with GET actions for Private Working Copies.
@@ -690,6 +692,29 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
         $repositoryId = $repositories[0]['repositoryId'];
         
         $response = $VersioningService->cancelCheckout($repositoryId, $this->params[0]);
+
+        if (PEAR::isError($response))
+        {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response->getMessage());
+           //Expose the responseFeed
+            $this->responseFeed = $feed;
+            return null;
+        }
+        
+        $this->setStatus(self::STATUS_NO_CONTENT);
+        $this->responseFeed = null;
+    }
+    
+    public function PUT_action()
+    {
+        // call the checkin function
+        $RepositoryService = new RepositoryService();
+        $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
+
+        $repositories = $RepositoryService->getRepositories();
+        $repositoryId = $repositories[0]['repositoryId'];
+        
+        $response = $VersioningService->checkIn($repositoryId, $this->params[0]);
 
         if (PEAR::isError($response))
         {

@@ -73,7 +73,8 @@ class CMISDocumentPropertyCollection extends CMISPropertyCollection {
                                      'ContentStreamUri' => 'propertyUri',
                                      'IsVersionSeriesCheckedOut' => 'propertyBoolean',
                                      'VersionSeriesCheckedOutBy' => 'propertyString',
-                                     'VersionSeriesCheckedOutId' => 'propertyId'));
+                                     'VersionSeriesCheckedOutId' => 'propertyId', 
+                                     'VersionLabel' => 'propertyString'));
     }
 
 }
