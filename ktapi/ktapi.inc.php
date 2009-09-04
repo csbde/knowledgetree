@@ -2928,7 +2928,7 @@ class KTAPI
      * @param string $tempfilename
      * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      */
-    public function checkin_document($document_id,  $filename, $reason, $tempfilename, $major_update,
+    public function checkin_document($document_id, $filename, $reason, $tempfilename, $major_update,
                                      $sig_username = '', $sig_password = '')
     {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,

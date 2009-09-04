@@ -418,7 +418,7 @@ class KT_cmis_atom_service_helper {
         while($start < $numFolders)
         {
             $name = $path[$numQ-$numFolders+$start];
-            // hack to fix drupal url encoding issue
+            // fix for possible url encoding issue
             $name = str_replace('%2520', '%20', $name);
 
             $folderName = urldecode($name);
@@ -492,6 +492,71 @@ class KT_cmis_atom_service_helper {
     {
         if (is_null($time)) $time = time();
         return date('Y-m-d H:i:s', $time);
+    }
+    
+    /**
+     * Fetches the document content stream for internal use
+     * 
+     * @param object $ObjectService
+     * @param string $repositoryId
+     * @return null | string $contentStream
+     */
+    static public function getContentStream(&$service, &$ObjectService, $repositoryId)
+    {
+        $response = $ObjectService->getProperties($repositoryId, $service->params[0], false, false);
+        if (PEAR::isError($response)) {
+            return null;
+        }
+        
+        $contentStream = $ObjectService->getContentStream($repositoryId, $service->params[0]);
+        
+        return $contentStream;
+    }
+    /**
+     * Fetches and prepares the document content stream for download/viewing
+     * 
+     * @param object $ObjectService
+     * @param string $repositoryId
+     * @return null | nothing
+     */
+    static public function downloadContentStream(&$service, &$ObjectService, $repositoryId)
+    {
+        $response = $ObjectService->getProperties($repositoryId, $service->params[0], false, false);
+        if (PEAR::isError($response)) {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($service, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response->getMessage());
+            $service->responseFeed = $feed;
+            return null;
+        }
+        
+        // TODO also check If-Modified-Since?
+//        $service->headers['If-Modified-Since'] => 2009-07-24 17:16:54
+
+        $service->setContentDownload(true);
+        $eTag = md5($response['properties']['LastModificationDate']['value'] . $response['properties']['ContentStreamLength']['value']);
+        
+        if ($service->headers['If-None-Match'] == $eTag)
+        {
+            $service->setStatus(KT_cmis_atom_service::STATUS_NOT_MODIFIED);
+            $service->setContentDownload(false);
+            return null;
+        }
+        
+        $contentStream = $ObjectService->getContentStream($repositoryId, $service->params[0]);
+        
+        // headers specific to output
+        $service->setEtag($eTag);
+        $service->setHeader('Last-Modified', $response['properties']['LastModificationDate']['value']);
+
+        if (!empty($response['properties']['ContentStreamMimeType']['value'])) {
+    		$service->setHeader('Content-type', $response['properties']['ContentStreamMimeType']['value'] . ';charset=utf-8');
+        }
+        else {
+    		$service->setHeader('Content-type', 'text/plain;charset=utf-8');
+        }
+        
+        $service->setHeader('Content-Disposition', 'attachment;filename="' . $response['properties']['ContentStreamFilename']['value'] . '"');
+		$service->setHeader('Content-Length', $response['properties']['ContentStreamLength']['value']);
+        $service->setOutput($contentStream);
     }
     
     //TODO: Add key information to be able to find the same tag in the original struct (MarkH)

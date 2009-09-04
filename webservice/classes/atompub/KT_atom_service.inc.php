@@ -147,7 +147,7 @@ class KT_atom_service{
 		header("HTTP/1.1 ".$status);
 	}
 
-	protected function setEtag($etagValue=NULL){
+	public function setEtag($etagValue=NULL){
 		if($etagValue)header('ETag: '.$etagValue);
 	}
 

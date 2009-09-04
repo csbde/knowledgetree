@@ -874,10 +874,10 @@ class KTVersioningService extends KTCMISBase {
      * @param string $checkinComment [optional]
      * @return string $documentId
      */
-    public function checkIn($repositoryId, $documentId, $major, $changeToken = '', $properties = array(), $contentStream = null, $checkinComment = '')
+    public function checkIn($repositoryId, $documentId, $major, $contentStream = null, $changeToken = '', $properties = array(), $checkinComment = '')
     {
         try {
-            $result = $this->VersioningService->checkIn($repositoryId, $documentId, $major, $changeToken, $properties, $contentStream, $checkinComment);
+            $result = $this->VersioningService->checkIn($repositoryId, $documentId, $major, $contentStream, $changeToken, $properties, $checkinComment);
         }
         catch (Exception $e)
         {
