@@ -61,7 +61,7 @@ class CMISObjectService {
         // NOTE The latter method has been adopted for the moment
         catch (Exception $e)
         {
-            throw new ConstraintViolationException('Object is not of base type document. ' . $e->getMessage());
+            throw new ConstraintViolationException('Object base type could not be determined. ' . $e->getMessage());
         }
 
         if ($typeDefinition['attributes']['baseType'] != 'document')
@@ -103,49 +103,41 @@ class CMISObjectService {
             }
         }
 
-        if (!$typeAllowed)
-        {
+        if (!$typeAllowed) {
             throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
         }
 
         // if content stream is required and no content stream is supplied, throw a ConstraintViolationException
-        if (($typeDefinition['attributes']['contentStreamAllowed'] == 'required') && is_null($contentStream))
-        {
+        if (($typeDefinition['attributes']['contentStreamAllowed'] == 'required') && is_null($contentStream)) {
             throw new ConstraintViolationException('This repository requires a content stream for document creation.  '
                                                  . 'Refusing to create an empty document');
         }
-        else if (($typeDefinition['attributes']['contentStreamAllowed'] == 'notAllowed') && !empty($contentStream))
-        {
+        else if (($typeDefinition['attributes']['contentStreamAllowed'] == 'notAllowed') && !empty($contentStream)) {
             throw new StreamNotSupportedException('Content Streams are not supported');
         }
 
         // if versionable attribute is set to false and versioningState is supplied, throw a ConstraintViolationException
-        if (!$typeDefinition['attributes']['versionable'] && !empty($versioningState))
-        {
+        if (!$typeDefinition['attributes']['versionable'] && !empty($versioningState)) {
             throw new ConstraintViolationException('This repository does not support versioning');
         }
 
         // TODO deal with $versioningState when supplied
 
         // set title and name identical if only one submitted
-        if ($properties['title'] == '')
-        {
+        if ($properties['title'] == '') {
             $properties['title'] = $properties['name'];
         }
-        else if ($properties['name'] == '')
-        {
+        else if ($properties['name'] == '') {
             $properties['name'] = $properties['title'];
         }
 
         // if name is blank throw exception (check type) - using invalidArgument Exception for now
-        if (trim($properties['name']) == '')
-        {
+        if (trim($properties['name']) == '') {
             throw new InvalidArgumentException('Refusing to create an un-named document');
         }
 
         // TODO also set to Default if a non-supported type is submitted
-        if ($properties['type'] == '')
-        {
+        if ($properties['type'] == '') {
             $properties['type'] = 'Default';
         }
 
@@ -154,17 +146,7 @@ class CMISObjectService {
         //      this check isn't strictly necessary;  however it is needed for a repository which does not support content streams
         if (!is_null($contentStream))
         {
-            // TODO consider checking whether content is encoded (currently we expect encoded)
-            // TODO choose between this and the alternative decode function (see CMISUtil class)
-            //      this will require some basic benchmarking
-            $contentStream = CMISUtil::decodeChunkedContentStream($contentStream);
-         
-            // NOTE There is a function in CMISUtil to do this, written for the unit tests but since KTUploadManager exists
-            //      and has more functionality which could come in useful at some point I decided to go with that instead
-            //      (did not know this existed when I wrote the CMISUtil function)
-            $uploadManager = new KTUploadManager();
-            // assumes already decoded from base64, should use store_base64_file if not
-            $tempfilename = $uploadManager->store_file($contentStream, 'cmis_');
+            $tempfilename = CMISUtil::createTemporaryFile($contentStream);
 
             // metadata
             $metadata = array();
@@ -192,12 +174,10 @@ class CMISObjectService {
                                 );
             }
 
-            if (!empty($properties['category']))
-            {
+            if (!empty($properties['category'])) {
                 $category = $properties['category'];
             }
-            else
-            {
+            else {
                 $category = 'Miscellaneous';
             }
 
@@ -231,12 +211,10 @@ class CMISObjectService {
             $KTMime = new KTMime();
             $mimetype = $KTMime->getMimeTypeFromFile($tempfilename);
             preg_match('/^([^\/]*)\/([^\/]*)/', $mimetype, $matches);
-            if (($matches[1] == 'text') || ($matches[1] == 'image') || ($matches[1] == 'audio'))
-            {
+            if (($matches[1] == 'text') || ($matches[1] == 'image') || ($matches[1] == 'audio')) {
                 $mediatype = ucwords($matches[1]);
             }
-            else if (($matches[2] == 'pdf') || ($matches[2] == 'msword'))
-            {
+            else if (($matches[2] == 'pdf') || ($matches[2] == 'msword')) {
                 $mediatype = 'Text';
             }
 
@@ -262,12 +240,10 @@ class CMISObjectService {
             $response = $this->ktapi->add_document_with_metadata((int)$folderId, $properties['title'], $properties['name'],
                                                                  $properties['type'], $tempfilename, $metadata, $sysdata);
 
-            if ($response['status_code'] != 0)
-            {
+            if ($response['status_code'] != 0) {
                 throw new StorageException('The repository was unable to create the document.  ' . $response['message']);
             }
-            else
-            {
+            else {
                 $objectId = CMISUtil::encodeObjectId('Document', $response['results']['document_id']);
             }
 
@@ -314,13 +290,11 @@ class CMISObjectService {
         //      exception propogate upward...
         //      Alternatively: throw new exception with original exception message appended
         // NOTE The latter method has been adopted for the moment
-        catch (Exception $e)
-        {
+        catch (Exception $e) {
             throw new ConstraintViolationException('Object is not of base type folder. ' . $e->getMessage());
         }
         
-        if ($typeDefinition['attributes']['baseType'] != 'folder')
-        {
+        if ($typeDefinition['attributes']['baseType'] != 'folder') {
             throw new ConstraintViolationException('Object is not of base type folder');
         }
 
@@ -333,20 +307,17 @@ class CMISObjectService {
         // if parent folder is not allowed to hold this type, throw exception
         $CMISFolder = new CMISFolderObject($folderId, $this->ktapi);
         $allowed = $CMISFolder->getProperty('AllowedChildObjectTypeIds');
-        if (!is_array($allowed) || !in_array($typeId, $allowed))
-        {
+        if (!is_array($allowed) || !in_array($typeId, $allowed)) {
             throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
         }
 
         // TODO if name is blank! throw another exception (check type) - using invalidArgument Exception for now
-        if (trim($properties['name']) == '')
-        {
+        if (trim($properties['name']) == '') {
             throw new InvalidArgumentException('Refusing to create an un-named folder');
         }
 
         $response = $this->ktapi->create_folder((int)$folderId, $properties['name'], $sig_username = '', $sig_password = '', $reason = '');
-        if ($response['status_code'] != 0)
-        {
+        if ($response['status_code'] != 0) {
             throw new StorageException('The repository was unable to create the folder: ' . $response['message']);
         }
         else
@@ -380,8 +351,7 @@ class CMISObjectService {
 
         $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
 
-        if ($typeId == 'Unknown')
-        {
+        if ($typeId == 'Unknown') {
             throw new ObjectNotFoundException('The type of the requested object could not be determined');
         }
 
@@ -492,8 +462,7 @@ class CMISObjectService {
         // check type id of object against allowed child types for destination folder
         $CMISFolder = new CMISFolderObject($targetFolderId, $this->ktapi);
         $allowed = $CMISFolder->getProperty('AllowedChildObjectTypeIds');
-        if (!is_array($allowed) || !in_array($typeId, $allowed))
-        {
+        if (!is_array($allowed) || !in_array($typeId, $allowed)) {
             throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
         }
         
@@ -517,8 +486,7 @@ class CMISObjectService {
         }
 
         // if failed, throw StorageException
-        if ($response['status_code'] != 0)
-        {
+        if ($response['status_code'] != 0) {
             throw new StorageException('The repository was unable to move the object: ' . $response['message']);
         } 
     }
@@ -541,13 +509,15 @@ class CMISObjectService {
         // TODO this should probably be a function, it is now used in two places...
         // throw updateConflictException if the operation is attempting to update an object that is no longer current (as determined by the repository).
         $exists = true;
-        if ($typeId == 'Folder') {
+        if ($typeId == 'Folder')
+        {
             $object = $this->ktapi->get_folder_by_id($objectId);
             if (PEAR::isError($object)) {
                 $exists = false;
             }
         }
-        else if ($typeId == 'Document') {
+        else if ($typeId == 'Document')
+        {
             $object = $this->ktapi->get_document_by_id($objectId);
             if (PEAR::isError($object)) {
                 $exists = false;
@@ -743,11 +713,7 @@ class CMISObjectService {
             throw new ContentAlreadyExistsException('Unable to overwrite existing content stream');
         }
 
-        // NOTE There is a function in CMISUtil to do this but since KTUploadManager exists and has more functionality
-        //      which could come in useful at some point I decided to go with that instead (did not know it existed when
-        //      I wrote the CMISUtil function)
-        $uploadManager = new KTUploadManager();
-        $tempfilename = $uploadManager->store_base64_file($contentStream, 'cmis_');
+        $tempfilename = CMISUtil::createTemporaryFile($contentStream);
         // update the document content from this temporary file as per usual
         // TODO Use checkin_document_with_metadata instead if metadata content submitted || update metadata separately?
         $response = $this->ktapi->checkin_document($documentId,  $csFileName, 'CMIS setContentStream action', $tempfilename, false);

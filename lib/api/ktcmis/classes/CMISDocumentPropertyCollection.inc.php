@@ -71,6 +71,7 @@ class CMISDocumentPropertyCollection extends CMISPropertyCollection {
                                      'ContentStreamMimeType' => 'propertyString',
                                      'ContentStreamFilename' => 'propertyString',
                                      'ContentStreamUri' => 'propertyUri',
+                                     'IsLatestVersion' => 'propertyBoolean',
                                      'IsVersionSeriesCheckedOut' => 'propertyBoolean',
                                      'VersionSeriesCheckedOutBy' => 'propertyString',
                                      'VersionSeriesCheckedOutId' => 'propertyId', 
