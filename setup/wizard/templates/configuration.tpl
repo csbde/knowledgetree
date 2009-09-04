@@ -1,4 +1,5 @@
-<h1>Checking System Configuration</h1>
+<form action="index.php?step_name=configuration" method="post">
+<p class="title">Checking System Configuration</p>
 
 <p class="description">
 The wizard will review your system to determine whether KnowledgeTree is correctly configured. You&rsquo;ll see whether KnowledgeTree has the correct settings or whether changes are required.
@@ -28,40 +29,42 @@ The wizard will review your system to determine whether KnowledgeTree is correct
 <?php } ?>
 </div>
 
-<form action="index.php?step_name=configuration" method="post">
+<div id="step_content_configuration">
 <h3>Server Settings</h3>
 
 <p class="description">
 The settings below have been drawn from the system information. The host and port should reflect the host and port that will be used to access KnowledgeTree. The Root Url is only needed if your installation is in a directory off the main web server root.
 </p>
 
-<table>
+<table class="dbconf">
     <tr>
         <td><label for='host'>Host: </label></td>
-        <td><input name='host' id='host' size='60' value='<?php echo $server['host']['value']; ?>' /></td>
+        <td><input name='host' id='host' size='40' value='<?php echo $server['host']['value']; ?>' /></td>
     </tr>
     <tr>
         <td><label for='port'>Port: </label></td>
-        <td><input name='port' id='port' size='5' value='<?php echo $server['port']['value']; ?>' /></td>
+        <td><input name='port' id='port' size='5' value='<?php echo $server['port']['value']; ?>' style="float:left;"/></td>
     </tr>
     <tr>
         <td><label for='root_url'>Root URL: </label></td>
-        <td><input name='root_url' id='root_url' size='60' value='<?php echo $server['root_url']['value']; ?>' /></td>
+        <td><input name='root_url' id='root_url' size='40' value='<?php echo $server['root_url']['value']; ?>' /></td>
     </tr>
     <tr>
         <td><label for='file_system_root'>Web Root: </label></td>
-        <td><input name='file_system_root' id='file_system_root' size='60' value='<?php echo $server['file_system_root']['value']; ?>' /></td>
+        <td><input name='file_system_root' id='file_system_root' size='40' value='<?php echo $server['file_system_root']['value']; ?>' /></td>
     </tr>
     <tr>
-        <td><label for='yes'>Do you have SSL Enabled?: </label></td>
-        <td>
-            <label for='yes'>Yes: </label><input type='radio' name='ssl_enabled' id='yes' value='yes' <?php echo $server['ssl_enabled']['value'] == 'yes' ? 'CHECKED' : ''; ?> />&nbsp;&nbsp;
-            <label for='no'>No: </label><input type='radio' name='ssl_enabled' id='no' value='no' <?php echo $server['ssl_enabled']['value'] == 'no' ? 'CHECKED' : ''; ?> />
-        </td>
+        <td> <label for='yes'>Do you have SSL Enabled?: </label> </td>
+        <td> 
+        	<label for='yes'>Yes: </label> 
+        	<input class="radio" type='radio' name='ssl_enabled' id='yes' value='yes' <?php echo $server['ssl_enabled']['value'] == 'yes' ? 'CHECKED' : ''; ?> />
+        	<label for='no'>No: </label>
+        	<input class="radio" type='radio' name='ssl_enabled' id='no' value='no' <?php echo $server['ssl_enabled']['value'] == 'no' ? 'CHECKED' : ''; ?> />
+		</td>
     </tr>
 </table>
 
-<h3><?php echo "<span class='{$paths_perms}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Paths and Permissions</h3>
+<h3><?php echo "<span class='{$paths_perms}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Directory Paths and Permissions</h3>
 <?php if($silent) { ?>
 	<div id="options" class="onclick" onclick="javascript:{w.toggleClass('paths_perms');}">Show Details</div>
 	<div class="paths_perms" style="display:none">
@@ -76,7 +79,7 @@ The following folders must be writable for KnowledgeTree to be able to run. The 
     	<tr>
     		<td> <div class='<?php echo $path['class']; ?>'></div> </td>
     		<td> <label for='<?php echo $path['setting']; ?>'> <?php echo $path['name']; ?>: </label> </td>
-    		<td><input name='<?php echo $path['setting']; ?>' id='<?php echo $path['setting']; ?>' size='60' value='<?php echo $path['path']; ?>' /></td>
+    		<td><input name='<?php echo $path['setting']; ?>' id='<?php echo $path['setting']; ?>' size='40' value='<?php echo $path['path']; ?>' /></td>
     		<?php if(isset($path['msg'])) {
     			?>
     			<td class="error"> <?php echo $path['msg']; ?> </td>
@@ -92,8 +95,7 @@ The following folders must be writable for KnowledgeTree to be able to run. The 
 <?php if($silent) { ?>
 	</div>
 <?php } ?>
-<div class="buttons">
-    <input type="submit" name="Previous" value="Previous"/>
-    <input type="submit" name="Next" value="Next"/>
-</div>
+	</div>
+    <input type="submit" name="Previous" value="Previous" class="back"/>
+    <input type="submit" name="Next" value="Next" class="input"/>
 </form>

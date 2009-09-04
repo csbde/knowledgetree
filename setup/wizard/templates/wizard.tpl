@@ -12,12 +12,14 @@
 	</head>
 	<body onload="w.doFormCheck();">
 		<div id="outer-wrapper">
-		    <div id="header"></div>
-		    
+		    <div id="header">
+				<span style="font-size:120%;"> <?php echo $vars['install_version']; ?> </span><br>
+				<span style="font-size:80%;"><?php echo $vars['install_type']; ?></span>
+		    </div>
 		    <div id="wrapper">
 		        <div id="container">
 		        	<div id="sidebar">
-		            	<?php echo $left; ?>
+		            	<?php echo $vars['left']; ?>
 		        	</div>
 		            <div id="content">
 		            	<div id="content_container">

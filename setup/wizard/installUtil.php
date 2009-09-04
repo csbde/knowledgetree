@@ -254,8 +254,8 @@ class InstallUtil {
      */
     public function checkPermission($dir, $create=false)
     {
-        $exist = 'Directory does not exist';
-        $write = 'Directory is not writable';
+        $exist = 'Directory doesn\'t exist';
+        $write = 'Directory not writable';
         $ret = array('class' => 'cross');
 
         if(!file_exists($dir)){
