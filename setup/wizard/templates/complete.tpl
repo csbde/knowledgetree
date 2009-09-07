@@ -14,7 +14,7 @@
 	       . 'Click Here for help on overcoming post install issues</a></div><br/>';
 	}
 	?>
-	<div id="step_content">
+	<div id="step_content_complete">
 	<div>
 	    <h3><?php echo "<span class='{$paths_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Paths and Permissions</h3>
 	<?php if($silent) { ?>

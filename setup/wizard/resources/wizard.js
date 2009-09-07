@@ -5,6 +5,7 @@ function wizard() {
 // Does a form check on every new page load
 wizard.prototype.doFormCheck = function() {
 	w.addReadOnly();
+	w.load();
 }
 
 // Toggle Advance Database options
@@ -213,4 +214,9 @@ wizard.prototype.addReadOnly = function() {
 //    		w.focusElement(inputs[i]);
 		}
 	}
+}
+
+/* */
+wizard.prototype.load = function() {
+//	$('#tooltips').tooltip();
 }

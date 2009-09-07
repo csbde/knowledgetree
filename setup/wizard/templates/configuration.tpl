@@ -16,7 +16,7 @@ The wizard will review your system to determine whether KnowledgeTree is correct
 </div>
 <div class="error_message">
 <?php if($errors) { ?>
-	<span class='cross'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your system is not quite ready to run KnowledgeTree. See the list below to determine which areas you need to address. <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Once you&rsquo;ve fixed these items, return to this wizard and try again.</span><br/>
+	<span class='cross'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your system is not quite ready to run KnowledgeTree. See the list below to determine which areas you need &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to address. Once you&rsquo;ve fixed these items, return to this wizard and try again.</span><br/>
 <?php } elseif ($warnings) {
 	?>
 	<span class='cross_orange'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;KnowledgeTree Optional Dependencies not met, but you will be able to continue.</span><br/>
@@ -38,23 +38,28 @@ The settings below have been drawn from the system information. The host and por
 
 <table class="dbconf">
     <tr>
-        <td><label for='host'>Host: </label></td>
-        <td><input name='host' id='host' size='40' value='<?php echo $server['host']['value']; ?>' /></td>
+        <td width="150px"><label for='host'>Host: </label></td>
+        <td> <div id="tooltips" title="Location of your web root">&nbsp;</div> </td>
+        <td><input name='host' id='host' size='35' value='<?php echo $server['host']['value']; ?>' /></td>
     </tr>
     <tr>
         <td><label for='port'>Port: </label></td>
+        <td> <div id="tooltips" title="The port that the web server listens on.">&nbsp;</div> </td>
         <td><input name='port' id='port' size='5' value='<?php echo $server['port']['value']; ?>' style="float:left;"/></td>
     </tr>
     <tr>
         <td><label for='root_url'>Root URL: </label></td>
-        <td><input name='root_url' id='root_url' size='40' value='<?php echo $server['root_url']['value']; ?>' /></td>
+        <td> <div id="tooltips" title="Relative path to KnowledgeTree Source directory">&nbsp;</div> </td>
+        <td><input name='root_url' id='root_url' size='35' value='<?php echo $server['root_url']['value']; ?>' /></td>
     </tr>
     <tr>
         <td><label for='file_system_root'>Web Root: </label></td>
-        <td><input name='file_system_root' id='file_system_root' size='40' value='<?php echo $server['file_system_root']['value']; ?>' /></td>
+        <td> <div id="tooltips" title="Absolute path to KnowledgeTree Source directory">&nbsp;</div> </td>
+        <td><input name='file_system_root' id='file_system_root' size='35' value='<?php echo $server['file_system_root']['value']; ?>' /></td>
     </tr>
     <tr>
         <td> <label for='yes'>Do you have SSL Enabled?: </label> </td>
+        <td> <div id="tooltips" title="Whether or not you have SSL installed">&nbsp;</div> </td>
         <td> 
         	<label for='yes'>Yes: </label> 
         	<input class="radio" type='radio' name='ssl_enabled' id='yes' value='yes' <?php echo $server['ssl_enabled']['value'] == 'yes' ? 'CHECKED' : ''; ?> />
@@ -79,11 +84,16 @@ The following folders must be writable for KnowledgeTree to be able to run. The 
     	<tr>
     		<td> <div class='<?php echo $path['class']; ?>'></div> </td>
     		<td> <label for='<?php echo $path['setting']; ?>'> <?php echo $path['name']; ?>: </label> </td>
-    		<td><input name='<?php echo $path['setting']; ?>' id='<?php echo $path['setting']; ?>' size='40' value='<?php echo $path['path']; ?>' /></td>
+    		<td><input name='<?php echo $path['setting']; ?>' id='<?php echo $path['setting']; ?>' style="float:left;width:290px;" value='<?php echo $path['path']; ?>' /></td>
     		<?php if(isset($path['msg'])) {
     			?>
     			<td class="error"> <?php echo $path['msg']; ?> </td>
     			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+    			<?php
+    		} else {
+    			?>
+    			<td class="error"> </td>
+    			<td> </td>
     			<?php
     		}
     		?>

@@ -68,7 +68,7 @@ class services extends Step
     
     protected $util;
     
-    private $javaVersion = '1.7';
+    private $javaVersion = '1.5';
     
 	/**
 	* Java Installed 
@@ -294,8 +294,10 @@ class services extends Step
 			$service = new $className();
 			$status = $this->serviceStatus($service);
 			if($status != 'STARTED') {
-				$this->temp_variables['services'][] = array('class'=>'cross_orange', 'msg'=>$service->getName()." Could not be added as a Service");
+				$msg = $service->getName()." Could not be added as a Service";
+				$this->temp_variables['services'][] = array('class'=>'cross_orange', 'msg'=>$msg);
 				$this->serviceCheck = 'cross_orange';
+				$this->warnings[] = $msg;
 			} else {
 				if(WINDOWS_OS) {
 					$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$service->getName()." has been added as a Service"); }

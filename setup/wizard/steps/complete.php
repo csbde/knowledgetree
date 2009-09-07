@@ -65,14 +65,6 @@ class complete extends Step {
     
     protected $util = null;
     
-    /**
-     * List of services to check
-     * 
-     * @access private
-     * @var array
-     */
-    private $_services = array('Lucene', 'Scheduler');
-    
     public function __construct() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
         $this->_dbhandler = new dbUtil();

@@ -17,7 +17,7 @@
 	</div>
 	<div class="error_message">
 	<?php if($errors) { ?>
-		<span class='cross'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your system is not quite ready to run KnowledgeTree. See the list below to determine which areas you need to address. <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Once you&rsquo;ve fixed these items, return to this wizard and try again.</span><br/>
+		<span class='cross'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your system is not quite ready to run KnowledgeTree. See the list below to determine which areas you need &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to address. Once you&rsquo;ve fixed these items, return to this wizard and try again.</span><br/>
 	<?php } elseif ($warnings) { ?>
 		<span class='cross_orange'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;KnowledgeTree Optional Dependencies are not met, but you will be able to continue.</span><br/>
 	<?php } ?>

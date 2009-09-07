@@ -118,7 +118,37 @@ select {
 #step_content_configuration {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:265px;
+	min-height:290px;
+}
+
+#step_content_registration {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	height:295px;
+}
+
+#step_content_install {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	height:290px;
+}
+
+#step_content_database {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	min-height:355px;
+}
+
+#step_content_database_confirm {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	height:375px;
+}
+
+#step_content_complete {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	min-height:355px;
 }
 
 .radio {
@@ -232,9 +262,11 @@ select {
     color: red;
 }
 
+/*
 td.error {
 	width:190px;
 }
+*/
 
 .conf_paths {
 	width:755px;
@@ -329,6 +361,10 @@ input {
     height:45px;
 }
 
+#dbconf {
+	width:755px;
+}
+
 table#dbconf tr td {
 	width:50%;
 }
@@ -394,9 +430,10 @@ td.dir_description {
 	border:none;
 	color:#A30000;
 	padding:0px;
-	color:#898989;
+	color:red;
 	font-size:90%;
 	margin-bottom:0.75em;
+	font-weight:bold;
 }
 
 .continue_message {
@@ -426,4 +463,11 @@ td.dir_description {
 .adv_option {
 	height:65px;
 	width:720px;
+}
+
+#tooltips {
+	background: url("graphics/question.gif") no-repeat;
+	width:16px;
+	height:16px;
+	cursor:pointer;
 }

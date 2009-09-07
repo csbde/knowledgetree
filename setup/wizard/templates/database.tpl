@@ -11,7 +11,7 @@
 	This step configures the connection to the database server and installs the database. The details for an administrative <br/>
 	user on the database server are required in order to be able to configure and install the installation database.
 	</div>
-	<div id="step_content">
+	<div id="step_content_database">
 	<table class="dbconf">
 <!--	TODO: Different Databases-->
 	    <tr><td>Your current database type is: </td>
@@ -43,7 +43,7 @@
 	</table>
 
 	<div id="options" class="onclick" onclick="javascript:{w.toggleClass('adv_options');}">Advanced Options</div>
-	<div id="database" class="adv_options" style="display:block;">
+	<div id="database" class="adv_options" style="display:none;">
 	    <div class="description">
 	        These options are only necessary for some sites. If you're not sure what you should enter here, leave the default settings.
 	    </div>
@@ -56,11 +56,11 @@
 	    	<div class="adv_option">
 	    		<label for='dport'>Port: </label><br>
 	    		<span class="description">The port on which your database server is listening, if it is a non-standard port please enter the number here.</span>
-	    		<input type="text" value="<?php echo $dbbinary?>" id="dbbinary" name="dbbinary" size='45' class="textinput"/>
+	    		<input type="text" value="<?php echo $dport?>" id="dport" name="dport" size='10' class="textinput"/>
 	    	</div>
 	    	<div class="adv_option">
 	    		<label for='dport'>Socket: </label><br>
-	    		<span class="description">The path to the database binary. If it is not on your system path then please enter it here.</span>	    				<input type="text" value="<?php echo $dport?>" id="dport" name="dport" size='10' class="textinput"/>
+	    		<span class="description">The path to the database binary. If it is not on your system path then please enter it here.</span>	    				<input type="text" value="<?php echo $dbbinary?>" id="dbbinary" name="dbbinary" size='45' class="textinput"/>
 	    	</div>
 	    </div>
 	</div>
