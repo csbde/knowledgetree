@@ -120,10 +120,18 @@ function do_addNewCriteria(destination_cell, crit_id, table_id, req) {
     for (var i=0; i<inputs.length; i++) {
         var obj = inputs[i];
         obj.name = "boolean_search[subgroup]["+table_id+"][values]["+crit_id+"][data]["+obj.name+"]";
+        if(obj.getAttribute("type") == "checkbox" && obj.getAttribute("class") == "multiple")
+        {
+            obj.name = obj.name+"[]";
+        }
     }
     for (var i=0; i<selects.length; i++) {
         var obj = selects[i];
         obj.name = "boolean_search[subgroup]["+table_id+"][values]["+crit_id+"][data]["+obj.name+"]";
+        if(obj.getAttribute("multiple") == "multiple")
+        {
+            obj.name = obj.name+"[]";
+        }
     }
     simpleLog('DEBUG','criteria addition complete.');
 }

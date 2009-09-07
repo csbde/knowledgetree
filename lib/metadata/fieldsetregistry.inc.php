@@ -169,13 +169,11 @@ class KTFieldsetRegistry {
                     } else {
                         $type = 'ktcore.fields.lookup';
                     }
-                } else {
+                } else if($oField->getHasInetLookup()) {
+			$type = 'ktcore.fields.multiselect';
+		} else {
                     $type = 'ktcore.fields.string';
                 }
-                
-				/*	------------------------------------
-					---- Changes for Custom Fields -----
-					------------------------------------	*/
                 
                 if ($oField->getDataType() == 'LARGE TEXT') {
                     $type = 'ktcore.fields.largetext';                	
@@ -215,9 +213,6 @@ class KTFieldsetRegistry {
                         'field_id' => $oField->getId(),
                     ));
                 } else if ($type == 'ktcore.fields.largetext') {                	
-					/*	------------------------------------
-						---- Changes for Custom Fields -----
-						------------------------------------	*/
                     $widgets[] = $this->oWF->get('ktcore.widgets.textarea', array(
                         'label' => $oField->getName(),
                         'required' => $oField->getIsMandatory(),
@@ -227,15 +222,68 @@ class KTFieldsetRegistry {
                         'field' => $oField,
                     ));
                 } else if ($type == 'ktcore.fields.date') {                	
-					/*	------------------------------------
-						---- Changes for Custom Fields -----
-						------------------------------------	*/
                     $widgets[] = $this->oWF->get('ktcore.widgets.date', array(
                         'label' => $oField->getName(),
                         'required' => $oField->getIsMandatory(),
                         'name' => $fname,
                         'value' => $value,
                         'description' => $oField->getDescription(),
+                    ));
+                } else if ($type == 'ktcore.fields.multiselect') {
+                	if($oField->getInetLookupType() == "multiwithlist") {
+						$widgets[] = $this->oWF->get('ktcore.widgets.entityselection', array(
+	                        'label' => $oField->getName(),
+	                        'required' => $oField->getIsMandatory(),
+	                        'name' => $fname,
+	                        'value' => explode(", ",$value),
+	                        'description' => $oField->getDescription(),
+	                        'vocab' => MetaData::getEnabledByDocumentField($oField),
+	                        'id_method' => 'getName',
+	                        'label_method' => 'getName',
+	                        'unselected_label' => false,
+	                        'simple_select' => false,
+							'multi'=> true,
+	                    ));
+			} else if($oField->getInetLookupType() == "multiwithcheckboxes") {
+						$widgets[] = $this->oWF->get('ktcore.widgets.entityselection', array(
+	                        'label' => $oField->getName(),
+	                        'required' => $oField->getIsMandatory(),
+	                        'name' => $fname,
+	                        'value' => explode(", ",$value),
+	                        'description' => $oField->getDescription(),
+	                        'vocab' => MetaData::getEnabledByDocumentField($oField),
+                                'field_id' => $oField->getId(),
+	                        'id_method' => 'getName',
+	                        'label_method' => 'getName',
+	                        'unselected_label' => false,
+	                        'simple_select' => true,
+							'multi'=> true,
+	                    ));
+			} else {
+				                $widgets[] = $this->oWF->get('ktcore.widgets.entityselection', array(
+	                        'label' => $oField->getName(),
+	                        'required' => $oField->getIsMandatory(),
+	                        'name' => $fname,
+	                        'value' => $value,
+	                        'description' => $oField->getDescription(),
+                                'field' => $oField,
+	                        'vocab' => MetaData::getEnabledByDocumentField($oField),
+	                        'id_method' => 'getName',
+	                        'label_method' => 'getName',
+	                        'unselected_label' => _kt("No selection."),
+	                        'simple_select' => false,
+	                    ));
+			}
+                   
+                } else if ($type == 'ktcore.fields.tree') {
+                    $widgets[] = $this->oWF->get('ktcore.widgets.treemetadata', array(
+                        'label' => $oField->getName(),
+                        'required' => $oField->getIsMandatory(),
+                        'name' => $fname,
+                        'value' => $value,
+                        'description' => $oField->getDescription(),
+                        'vocab' => MetaData::getEnabledByDocumentField($oField),
+                        'field_id' => $oField->getId(),
                     ));
                 }
             }
@@ -310,7 +358,9 @@ class KTFieldsetRegistry {
                     } else {
                         $type = 'ktcore.fields.lookup';
                     }
-                } else {
+                } else if($oField->getHasInetLookup()) {
+			$type = 'ktcore.fields.multiselect';
+		} else {
                     $type = 'ktcore.fields.string';
                 }
 
@@ -336,6 +386,37 @@ class KTFieldsetRegistry {
                         'vocab' => MetaData::getEnabledValuesByDocumentField($oField),
                         'id_method' => 'getName',
                     ));
+                } else if ($type == 'ktcore.fields.multiselect') {
+                	if($oField->getInetLookupType() == "multiwithlist")
+					{
+						$validators[] = $this->oVF->get('ktcore.validators.membership',array(
+	                        'test' => $fname,
+	                        'output' => $fname,
+	                        'vocab' => MetaData::getEnabledValuesByDocumentField($oField),
+	                        'id_method' => 'getName',
+							'multi' => true,
+	                    ));
+					}
+					else if($oField->getInetLookupType() == "multiwithcheckboxes")
+					{
+						$validators[] = $this->oVF->get('ktcore.validators.membership',array(
+	                        'test' => $fname,
+	                        'output' => $fname,
+	                        'vocab' => MetaData::getEnabledValuesByDocumentField($oField),
+	                        'id_method' => 'getName',
+							'multi' => true,
+	                    ));
+					}
+					else
+					{
+						$validators[] = $this->oVF->get('ktcore.validators.membership',array(
+	                        'test' => $fname,
+	                        'output' => $fname,
+	                        'vocab' => MetaData::getEnabledValuesByDocumentField($oField),
+	                        'id_method' => 'getName',
+	                    ));
+					}
+                   
                 } else {
                     $validators[] = PEAR::raiseError(sprintf(_kt("Unable to deal with field: id %d"), $oField->getId()));
                 }

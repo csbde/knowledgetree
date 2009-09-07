@@ -1,0 +1,1001 @@
+
+
+{literal}
+<style>
+fieldset { border: 1px dotted #999; }
+legend { border: 1px dotted #999;}
+.metadatadate { width: 80px; font-size;12px }
+.datediff { width: 30px}
+.filesize { width: 60px }
+</style>
+<script>
+var meta_workflows = {/literal}{$metainfo.workflow_str}{literal};
+var meta_fieldsets = {/literal}{$metainfo.fieldset_str}{literal};
+var meta_fields = {/literal}{$metainfo.fields_str}{literal};
+var meta_users = {/literal}{$metainfo.users_str}{literal};
+var meta_mimetypes = {/literal}{$metainfo.mimetypes_str}{literal};
+var meta_documenttypes = {/literal}{$metainfo.documenttypes_str}{literal};
+var criteria = [ {fields: 0, visible: 0}];
+
+function selectorChange(groupid)
+{
+	var fields = $('fields'  + groupid);
+	var workflows = $('workflows' + groupid);
+	var fieldsets = $('fieldsets' + groupid);
+	var selector = $('selector' + groupid);
+
+	switch(selector.selectedIndex)
+	{
+		case 0: fields.selectedIndex=0; break;
+		case 1: fieldsets.selectedIndex=0; break;
+		case 2: workflows.selectedIndex=0; break;
+	}
+
+	workflows.style.display = (selector.selectedIndex == 2)?'block':'none';
+	fieldsets.style.display = (selector.selectedIndex == 1)?'block':'none';
+	fields.style.display = (selector.selectedIndex == 0)?'block':'none';
+
+	var wlist = $('workflow_states' + groupid);
+	wlist.selectedIndex = 0;
+	$('workflow_states_wrapper' + groupid).style.display = 'none';
+
+	var fslist = $('fieldset_fields' + groupid);
+	fslist.selectedIndex = 0;
+	$('fieldset_fields_wrapper' + groupid).style.display = 'none';
+}
+
+function fieldChange(groupid)
+{
+	fields = $('fields' + groupid);
+
+	fid = fields.selectedIndex - 1;
+	if (fid<0) return;
+
+	name = meta_fields[fid].name;
+	alias = meta_fields[fid].alias;
+	type = meta_fields[fid].type;
+
+	addField(groupid, name, alias, type);
+}
+
+function delField(groupid, fid)
+{
+	el = $('field' + groupid + '_' + fid);
+	el.innerHTML = '';
+	if (--criteria[groupid].visible == 0)
+	{
+		$('criteria_nofields' + groupid).style.display = 'block';
+	}
+}
+
+function createUserList(groupid, fid)
+{
+	var html = "<table><tr><td width=\"140\">";
+
+	html += "<SELECT style=\"width: 140px \" id=\"field" + groupid + "_" + fid + "op\">";
+	html += "<option value=\"is\">{/literal}{i18n}is{/i18n}{literal}";
+	html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
+	html += "</SELECT>"
+
+	html += "<td>"
+
+	html += "<SELECT  id=\"field" + groupid + "_" + fid + "start\">";
+	for(i=0;i<meta_users.length;i++)
+	{
+		html += "<option value=\"" + meta_users[i].name + "\">" + meta_users[i].name;
+	}
+	html += "</SELECT>";
+	html += "<td width=\"100%\">&nbsp;";
+	html += "</table>";
+
+	return html;
+}
+
+function createDocTypes(groupid, fid)
+{
+	var html = "<table><tr><td width=\"140\">";
+
+	html += "<SELECT style=\"width: 140px \" id=\"field" + groupid + "_" + fid + "op\">";
+	html += "<option value=\"is\">{/literal}{i18n}is{/i18n}{literal}";
+	html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
+	html += "</SELECT>"
+
+	html += "<td>"
+
+	html += "<SELECT  id=\"field" + groupid + "_" + fid + "start\">";
+	for(i=0;i<meta_documenttypes.length;i++)
+	{
+		html += "<option value=\"" + meta_documenttypes[i].name + "\">" + meta_documenttypes[i].name;
+	}
+	html += "</SELECT>";
+	html += "<td width=\"100%\">&nbsp;";
+	html += "</table>";
+
+	return html;
+}
+
+function createMimeTypes(groupid, fid)
+{
+	var html = "<table><tr><td width=\"140\">";
+
+	html += "<SELECT style=\"width: 140px \" id=\"field" + groupid + "_" + fid + "op\">";
+	html += "<option value=\"is\">{/literal}{i18n}is{/i18n}{literal}";
+	html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
+	html += "</SELECT>"
+
+	html += "<td>"
+
+	html += "<SELECT  id=\"field" + groupid + "_" + fid + "start\">";
+	for(i=0;i<meta_mimetypes.length;i++)
+	{
+		html += "<option value=\"" + meta_mimetypes[i] + "\">" + meta_mimetypes[i];
+	}
+	html += "</SELECT>";
+	html += "<td width=\"100%\">&nbsp;";
+	html += "</table>";
+
+	return html;
+}
+
+function onBetweenOpChange(groupid, fid)
+{
+	var op = document.getElementById('field' + groupid + '_' + fid + 'op');
+	var end = document.getElementById('field' + groupid + '_' + fid + 'end');
+	var range1 = document.getElementById('field' + groupid + '_' + fid + 'range1');
+	var range2 = document.getElementById('field' + groupid + '_' + fid + 'range2');
+	switch (op.value)
+	{
+		case 'between':
+		case 'not between':
+				range2.style.visibility = range1.style.visibility = 'visible';
+				break;
+		default:
+				range2.style.visibility = range1.style.visibility = 'hidden';
+				break;
+	}
+}
+
+function initDate(groupid, fid)
+{
+	var startname = "field"+ groupid + '_' + fid +"start";
+	var endname = "field"+ groupid + '_' + fid +"end";
+	var now = new Date();
+	var yesterday = now.getTime() - 60 * 60 * 24 * 1000;
+	var df = new Ext.form.DateField({format : "Y-m-d", fieldClass: 'metadatadate', name: startname, value: new Date(yesterday)});
+	var df2 = new Ext.form.DateField({format : "Y-m-d", fieldClass: 'metadatadate', name: endname, value: now});
+	df.render(startname);
+	df2.render(endname);
+}
+
+function createRange(groupid, fid, type)
+{
+	var html = "<table><tr><td width=\"140\">";
+
+	html += "<SELECT style=\"width: 140px\" id=\"field" + groupid + "_" + fid + "op\"  onchange=\"onBetweenOpChange("+  groupid + "," + fid +")\">";
+
+	switch(type)
+	{
+		case 'DATE':
+			html += "<option value=\"\>\">{/literal}{i18n}after{/i18n}{literal}";
+			html += "<option value=\"between\">{/literal}{i18n}between{/i18n}{literal}";
+			html += "<option value=\"<\">{/literal}{i18n}before{/i18n}{literal}";
+			html += "<option value=\"is\">{/literal}{i18n}on{/i18n}{literal}";
+			html += "<option value=\"is not\">{/literal}{i18n}not on{/i18n}{literal}";
+			break;
+		default:
+			html += "<option value=\"is\">=";
+			html += "<option value=\"is not\">!=";
+			html += "<option value=\"\>\">\>";
+			html += "<option value=\"\>=\">\>=";
+			html += "<option value=\"\<\">\<";
+			html += "<option value=\"\<=\">\<=";
+			html += "<option value=\"between\">{/literal}{i18n}between{/i18n}{literal}";
+			break;
+	}
+	html += "</SELECT>";
+
+	html += "<td valign=top width=\"100\"><div id=\"field"+ groupid + '_' + fid +"start\"></div>";
+	html += "<td valign=top width=\"50\" id=\"field"+ groupid + '_' + fid+"range1\" style=\"visibility: hidden\">&nbsp;and&nbsp;";
+	html += "<td valign=top width=\"100\" id=\"field"+ groupid + '_' + fid+"range2\" style=\"visibility: hidden\">";
+	html += "<div id=\"field"+ groupid + '_' + fid + "end\"></div>";
+	html += "<td width=\"100%\">&nbsp;";
+	html += "</table>";
+	return html;
+}
+
+function createDate(groupid, fid)
+{
+	return createRange(groupid, fid, 'DATE');
+}
+
+function initInt(groupid, fid)
+{
+	var startname = "field"+ groupid + '_' + fid +"start";
+	var endname = "field"+ groupid + '_' + fid +"end";
+
+	var nf = new Ext.form.NumberField( {allowNegative: false, decimalPrecision : 0, name: startname});
+	nf.render(startname);
+	var nf2 = new Ext.form.NumberField( {allowNegative: false, decimalPrecision : 0, name: endname});
+	nf2.render(endname);
+}
+
+function createInt(groupid, fid)
+{
+	return createRange(groupid, fid, 'INT');
+}
+
+function createFloat(groupid, fid)
+{
+	return createRange(groupid, fid, 'FLOAT');
+}
+
+function getElByName(groupid, name)
+{
+	form = $('form' + groupid)
+	for(var i=0;i<form.elements.length;i++)
+	{
+		if (form.elements[i].name == name)
+		{
+			return form.elements[i];
+		}
+	}
+
+	var item = $(name);
+	if (item != null)
+	{
+		return item;
+	}
+
+	return null;
+}
+
+function onDateDiffChange(groupid, fid)
+{
+	var prefix = 'field' + groupid + '_' + fid;
+	var period=1;
+	switch($(prefix + 'period').selectedIndex)
+	{
+		case 1: period = 30; break;
+		case 2: period = 365; break;
+	}
+
+	$(prefix + 'start').value = parseInt(getElByName(groupid, prefix + 'input').value) * period;
+}
+
+function initDateDiff(groupid, fid)
+{
+	var startname = "field"+ groupid + '_' + fid +"input";
+	var nf = new Ext.form.NumberField( {allowNegative: false, fieldClass: 'datediff', decimalPrecision : 0, name: startname, value: "1"});
+	nf.render(startname);
+
+	nf.on('change', function(){ onDateDiffChange(groupid, fid); });
+}
+
+function initFilesize(groupid, fid)
+{
+	var startname = "field"+ groupid + '_' + fid +"input";
+	var nf = new Ext.form.NumberField( {allowNegative: false, fieldClass: 'filesize', decimalPrecision : 0, name: startname, value: "0"});
+	nf.render(startname);
+
+	nf.on('change', function(){ onFilesizeChange(groupid, fid); });
+}
+
+function onFilesizeChange(groupid, fid)
+{
+	var prefix = 'field' + groupid + '_' + fid;
+	var factor=1;
+	switch($(prefix + 'factor').selectedIndex)
+	{
+		case 1: factor = 1024; break;
+		case 2: factor = 1024*1024; break;
+		case 3: factor = 1024*1024*1024; break;
+	}
+
+	$(prefix + 'start').value = parseInt(getElByName(groupid, prefix + 'input').value) * factor;
+}
+
+function createFilesize(groupid, fid)
+{
+	var html = "<table><tr><td width=\"140\"";
+
+	html += "<SELECT style=\"width: 140px\" id=\"field" + groupid + "_" + fid + "op\">";
+	html += "<option value=\"\<\">\<";
+	html += "<option value=\"\<=\">\<=";
+	html += "<option value=\"\>\">\>";
+	html += "<option value=\"\>=\">\>=";
+	html += "<option value=\"=\">=";
+	html += "<option value=\"!=\">!=";
+	html += "</SELECT>"
+
+
+	html += "<td valign=top width=\"50px\"><div id=\"field"+ groupid + '_' + fid +"input\"></div>";
+	html += "<td>";
+	html += "<SELECT  id=\"field" + groupid + "_" + fid + "factor\" onchange=\"onFilesizeChange( " + groupid + "," + fid + ")\">";
+	html += "<option>{/literal}{i18n}bytes{/i18n}{literal}";
+	html += "<option>{/literal}{i18n}kilobytes{/i18n}{literal}";
+	html += "<option>{/literal}{i18n}megabytes{/i18n}{literal}";
+	html += "<option>{/literal}{i18n}gigabytes{/i18n}{literal}";
+	html += "</SELECT>";
+	html += "<input style=\"display: none\" value=\"0\" id=\"field" + groupid + "_" + fid + "start\">";
+	html += "<td width=\"100%\">&nbsp;";
+
+	html += "</table>";
+	return html;
+}
+
+function createDateDiff(groupid, fid)
+{
+	var html = "<table><tr><td width=\"140\">";
+
+	html += "<SELECT style=\"width: 140px\" id=\"field" + groupid + "_" + fid + "op\">";
+	html += "<option value=\"\<\">{/literal}{i18n}less than{/i18n}{literal}";
+	html += "<option value=\"\>\">{/literal}{i18n}greater than{/i18n}{literal}";
+	html += "</SELECT>"
+
+
+	html += "<td valign=top width=\"50px\"><div id=\"field"+ groupid + '_' + fid +"input\"></div>";
+	html += "<td>";
+	html += "<SELECT  id=\"field" + groupid + "_" + fid + "period\" onchange=\"onDateDiffChange( " + groupid + "," + fid + ")\">";
+	html += "<option>{/literal}{i18n}days{/i18n}{literal}";
+	html += "<option>{/literal}{i18n}months{/i18n}{literal}";
+	html += "<option>{/literal}{i18n}years{/i18n}{literal}";
+	html += "</SELECT>";
+	html += "<td>ago"
+	html += "<input style=\"display: none\" value=\"1\" id=\"field" + groupid + "_" + fid + "start\">";
+	html += "<td width=\"100%\">&nbsp;";
+
+	html += "</table>";
+	return html;
+}
+
+function createSelect(groupid, fid, options)
+{
+	var html = "<table><tr><td width=\"90\" valign=top>";
+	
+	// by dp start // to create the select element with multiselect functionality
+	var fieldsetid=$('fieldsets' + groupid).selectedIndex-1;
+	var fieldid=$('fieldset_fields' + groupid).selectedIndex;
+	if(meta_fieldsets[fieldsetid].fields[fieldid].control == "inetlookup")
+	{
+		html += "<select id=\"field"+ groupid + "_" + fid +"op\" style=\"width: 140px\">";
+		html += "<option value=\"contains\">{/literal}{i18n}is{/i18n}{literal}";
+		html += "<option value=\"does not contain\">{/literal}{i18n}is not{/i18n}{literal}";
+		html += "</select>&nbsp;&nbsp;";
+	
+		html += "</td>";
+		
+		html += "<td valign=top>";
+		html += "<select id=\"field"+ groupid + "_" + fid +"join\" style=\"width: 80px\">";
+		html += "<option value=\"AND\">{/literal}{i18n}all{/i18n}{literal}";
+		html += "<option value=\"OR\">{/literal}{i18n}any{/i18n}{literal}";
+		html += "</select>&nbsp;&nbsp;";
+		html += "</td>";
+		
+		html += "<td valign=top>";
+		if(meta_fieldsets[fieldsetid].fields[fieldid].inetlookup_type == "multiwithlist")
+		{
+			html += "<select class=\"inetlookup\" multiple=\"multiple\" size=\"4\" name=\"field"+ groupid + "_" + fid +"start[]\" id=\"field"+ groupid + "_" + fid +"start\">";
+			for(i=0;i<options.length;i++)
+			{
+				html += "<option value=\"" + options[i].name + "\">" + options[i].name;
+			}
+			html += "</select>";
+		}
+		else if(meta_fieldsets[fieldsetid].fields[fieldid].inetlookup_type == "multiwithcheckboxes")
+		{
+			
+			for(i=0;i<options.length;i++)
+			{
+				html += "<input class=\"inetlookup\" type=\"checkbox\" name=\"field"+ groupid + "_" + fid +"start[]\" id=\"field"+ groupid + "_" + fid +"start\" value=\""+options[i].name+"\" /> "+options[i].name+"<BR />";
+				//html += "<option value=\"" + options[i].name + "\">" + options[i].name;
+			}
+			//html += "</select>";
+		}
+			
+		html += "</td></tr></table>";
+	}// by dp end // to create the select element with multiselect functionality
+	else
+	{
+		html += "<select id=\"field"+ groupid + "_" + fid +"op\" style=\"width: 140px\">";
+		html += "<option value=\"is\">{/literal}{i18n}is{/i18n}{literal}";
+		html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
+		html += "</select>&nbsp;&nbsp;";
+	
+		html += "</td>";
+		
+		html += "<td valign=top>";
+		html += "<select name=\"field"+ groupid + "_" + fid +"start\" id=\"field"+ groupid + "_" + fid +"start\">";
+		for(i=0;i<options.length;i++)
+		{
+			html += "<option value=\"" + options[i].name + "\">" + options[i].name;
+		}
+		html += "</select>";
+		html += "</td></tr></table>";
+	}
+		
+
+	return html;
+}
+
+function createText(groupid, fid, type)
+{
+	var html = "<table><tr><td width=\"140\">";
+	html += "<select style=\"width: 140px\" id=\"field"+ groupid + "_" + fid +"op\"\>";
+	var readonly = '';
+	switch(type)
+	{
+		case 'STRINGMATCH':
+			readonly = 'readonly';
+			html += "<option value=\"is\">{/literal}{i18n}is{/i18n}{literal}";
+			html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
+			break;
+		case 'STRING':
+			html += "<option value=\"is\">{/literal}{i18n}is{/i18n}{literal}";
+			html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
+			html += "<option value=\"contains\">{/literal}{i18n}contains{/i18n}{literal}";
+			html += "<option value=\"does not contain\">{/literal}{i18n}does not contain{/i18n}{literal}";
+			html += "<option value=\"like\">{/literal}{i18n}like{/i18n}{literal}";
+			html += "<option value=\"not like\">{/literal}{i18n}not like{/i18n}{literal}";
+			html += "<option value=\"starts with\">{/literal}{i18n}starts with{/i18n}{literal}";
+			html += "<option value=\"ends with\">{/literal}{i18n}ends with{/i18n}{literal}";
+			break;
+		case 'FULLTEXT':
+			html += "<option value=\"contains\">{/literal}{i18n}contains{/i18n}{literal}";
+			html += "<option value=\"does not contain\">{/literal}{i18n}does not contain{/i18n}{literal}";
+			break;
+	}
+
+	html += "</select>&nbsp;&nbsp;";
+	html += "<td>"
+
+	html += "<input id=\"field"+  groupid + "_" + fid +"start\" " + readonly + ">";
+
+	html += "</table>";
+
+	return html;
+}
+
+function createBool(groupid, fid)
+{
+	var html = "<select style=\"width: 140px\" id=\"field"+ groupid + "_" + fid +"op\"\>";
+	html += "<option value=\"is\">{/literal}{i18n}is{/i18n}{literal}";
+	html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
+	html += "</select>&nbsp;&nbsp;";
+	html += "<select id=\"field"+ groupid + "_" + fid +"start\"\>";
+	html += "<option value=\"true\">{/literal}{i18n}True{/i18n}{literal}";
+	html += "<option value=\"false\">{/literal}{i18n}False{/i18n}{literal}";
+	html += "</select>&nbsp;&nbsp;";
+
+	return html;
+}
+
+function addFieldTypeSelection(groupid, fid, type, options)
+{
+	var html = '';
+	var callback = null;
+	var params = null;
+	switch(type)
+	{
+		case 'FILESIZE':
+			html = createFilesize(groupid, fid);
+			return {html: html, init: initFilesize};
+		case 'MIMETYPES':
+			html = createMimeTypes(groupid, fid);
+			break;
+		case 'DOCTYPES':
+			html = createDocTypes(groupid, fid);
+			break;
+		case 'BOOL':
+			html = createBool(groupid, fid);
+			break;
+		case 'STRING':
+			if (options != null && options.length != 0)
+			{
+				html = createSelect(groupid, fid, options);
+				break;
+			}
+			// want to fall through
+		case 'FULLTEXT':
+		case 'STRINGMATCH':
+			html = createText(groupid, fid, type);
+			break;
+		case 'USERLIST':
+			html = createUserList(groupid, fid);
+			break;
+		case 'DATE':
+			html = createDate(groupid, fid);
+			return {html: html, init: initDate};
+		case 'INT':
+			html = createInt(groupid, fid);
+			return {html: html, init: initInt};
+		case 'FLOAT':
+			html = createFloat(groupid, fid);
+			return {html: html, init: initFloat};
+		case 'DATEDIFF':
+			html = createDateDiff(groupid, fid);
+			return {html: html, init: initDateDiff};
+		default:
+			html += 'unknown: ' + type;
+	}
+
+	return {html: html, init: callback};
+
+}
+
+function removeCriteriaGroup(groupid)
+{
+	$("groupwrapper" + groupid).innerHTML = '';
+
+	criteria[groupid].fields = 0;
+}
+
+function initAddField(groupid)
+{
+	if (criteria[groupid].visible == 0)
+	{
+		$('criteria_nofields' + groupid).style.display = 'none';
+		if (groupid > 0)
+		{
+			$('removeCriteriaGroup' + groupid).style.display = 'block';
+		}
+	}
+	var fid = ++criteria[groupid].fields;
+	criteria[groupid].visible++;
+	return fid;
+}
+
+
+function addMetadataField(groupid)
+{
+	var fid = initAddField(groupid);
+
+	var fieldsetid=$('fieldsets' + groupid).selectedIndex-1;
+	var fieldid=$('fieldset_fields' + groupid).selectedIndex;
+
+	var fieldsetname = meta_fieldsets[fieldsetid].name;
+	var fieldname = meta_fieldsets[fieldsetid].fields[fieldid].name;
+	var fieldtype = meta_fieldsets[fieldsetid].fields[fieldid].datatype;
+	var fieldoptions = meta_fieldsets[fieldsetid].fields[fieldid].options;
+
+	var html = "<table  width=\"650\">";
+	html += "<tr>";
+	html += "<td width=\"120\" valign=top><nobr><B>" + fieldsetname + ':</B></nobr><br><nobr><i>' + fieldname + '</i></nobr>';
+	html += "<div id=\"field" + groupid + "_" + fid + "expr\" style=\"display: none\">[\"" + fieldsetname + "\"][\""+fieldname + "\"]</div>";
+	html += "<td><nobr>";
+
+	var rec = addFieldTypeSelection(groupid, fid, fieldtype, fieldoptions);
+
+	html += rec.html;
+
+	html += "<td width=\"55\">";
+
+	html += "<input type=\"button\" value=\"{/literal}{i18n}remove{/i18n}{literal}\" onclick=\"delField(" + groupid + "," + fid + ")\">";
+
+	html += "</table>";
+
+	var el = new Ext.Element(document.createElement('div'));
+	el.dom.id = "field" + groupid + "_" + fid;
+	el.id = el.dom.id;
+	el.dom.innerHTML = html;
+	el.appendTo('criteria_fields' + groupid);
+
+	if (rec.init != null)
+	{
+		rec.init(groupid, fid);
+	}
+	return fid;
+}
+
+function addWorkflowStateField(groupid)
+{
+	var wid=$('workflows' + groupid).selectedIndex-1;
+	var sid=$('workflow_states' + groupid).selectedIndex;
+
+	var workflowname = meta_workflows[wid].name;
+	var statename = meta_workflows[wid].states[sid].name;
+
+	var fid = addField(groupid, 'Workflow', 'Workflow', 'STRINGMATCH');
+	$('field' + groupid + '_' + fid + 'start').value = workflowname;
+
+
+	fid = addField(groupid, 'Workflow State', 'WorkflowState', 'STRINGMATCH');
+	$('field' + groupid + '_' + fid + 'start').value = statename;
+
+	$('groupop' + groupid).selectedIndex = 0;
+}
+
+
+function addField(groupid, display, exprname, type)
+{
+	var fid = initAddField(groupid);
+	var rec = {init:null};
+
+	var html = "<table  width=\"650\">";
+	html += "<tr>";
+	html += "<td width=\"120\" valign=top>" + display;
+	html += "<div id=\"field" + groupid + "_" + fid + "expr\" style=\"display: none\">" + exprname + "</div>";
+	html += "<td valign=top><nobr>";
+
+	rec = addFieldTypeSelection(groupid, fid, type, null);
+
+	html += rec.html;
+
+	html += "<td width=\"55\" valign=top>";
+	html += "<input type=\"button\" value=\"{/literal}{i18n}remove{/i18n}{literal}\" onclick=\"delField(" + groupid + "," + fid + ")\">";
+	html += "</table>";
+
+	var el = new Ext.Element(document.createElement('div'));
+	el.dom.id = "field" + groupid + "_" + fid;
+	el.id = el.dom.id;
+	el.dom.innerHTML = html;
+	el.appendTo('criteria_fields' + groupid);
+
+	var el = $('field' + groupid + '_' + fid + 'start');
+
+    if (el != null)
+    {
+		var map = new Ext.KeyMap(el,
+				{
+				    stopEvent: true,
+					key: Ext.EventObject.ENTER,
+					fn: function() {
+					    butSearchClick();
+					}
+				});
+    }
+
+    var el = $('field' + groupid + '_' + fid + 'end');
+
+    if (el != null)
+    {
+		var map = new Ext.KeyMap(el,
+				{
+				    stopEvent: true,
+					key: Ext.EventObject.ENTER,
+					fn: function() {
+					    butSearchClick();
+					}
+				});
+    }
+
+
+	if (rec.init != null)
+	{
+		rec.init(groupid, fid);
+	}
+	return fid;
+}
+
+
+
+function fieldsetsChange(groupid)
+{
+	var fieldsets = $('fieldsets' + groupid);
+	var fsid = fieldsets.selectedIndex -1;
+	if (fsid < 0)
+	{
+		$('fieldset_fields_wrapper' + groupid).style.display = 'none';
+		return;
+	}
+
+	$('fieldset_fields_wrapper' + groupid).style.display = 'block';
+	$('fieldset_name' + groupid).innerHTML = '<nobr><B>' + meta_fieldsets[fsid].name + ' Fields:</b></nobr>';
+
+	var fslist = $('fieldset_fields' + groupid);
+
+	for(i=fslist.options.length-1;i>=0;i--)
+	{
+		fslist.remove(i);
+	}
+	var fields = meta_fieldsets[fsid].fields;
+	for (i=0;i<fields.length;i++)
+	{
+		var opt = new Option(fields[i].name, fields[i].id);
+		fslist.options[fslist.options.length] = opt;
+	}
+}
+function workflowsChange(groupid)
+{
+	var workflows = $('workflows' + groupid);
+	var wid = workflows.selectedIndex -1;
+
+	if (wid < 0)
+	{
+		$('workflow_states_wrapper' + groupid).style.display = 'none';
+		return;
+	}
+
+	$('workflow_states_wrapper' + groupid).style.display = 'block';
+	$('workflow_name' + groupid).innerHTML = '<nobr><B>' +meta_workflows[wid].name + ' States:</b></nobr>';
+
+	var wlist = $('workflow_states' + groupid);
+
+	for(i=wlist.options.length-1;i>=0;i--)
+	{
+		wlist.remove(i);
+	}
+	var states = meta_workflows[wid].states;
+	for (i=0;i<states.length;i++)
+	{
+		var opt = new Option(states[i].name, states[i].id);
+		wlist.options[wlist.options.length] = opt;
+	}
+}
+function addCriteriaSet()
+{
+	cs = criteria.length;
+
+	criteria[cs] = {fields:0, visible:0};
+
+	var wrapping = $('groupwrapping');
+	var wrapperTemplate = $('groupwrapper0');
+
+	var content = wrapperTemplate.innerHTML;
+
+	var words = ['groupwrapper0','groupop0','criteria0','criteria_nofields0','criteria_fields0','fieldsets0','selector0','workflows0',
+			'fieldset_fields_wrapper0','fieldset_name0','fieldset_fields0','workflow_states_wrapper0','workflow_name0','workflow_states0',
+			'selectorChange(0)','fieldChange(0)','fieldsetsChange(0)','workflowsChange(0)', 'fields0', 'form0', 'addMetadataField(0)', 'addWorkflowStateField(0)',
+			'removeCriteriaGroup0', 'removeCriteriaGroup(0)'];
+
+	for(i=0;i<words.length;i++)
+	{
+		var oldword = words[i];
+		var newword = oldword.replace('0', cs);
+		content = content.replace(oldword, newword);
+	}
+
+	var el = new Ext.Element(document.createElement('div'));
+	el.dom.id = "groupwrapper" + cs;
+	el.id = el.dom.id;
+	el.dom.innerHTML = content;
+	el.appendTo(wrapping);
+
+	$('selector' + cs).selectedIndex = 0;
+	$('groupop' + cs).selectedIndex = 1;
+	$('criteria_fields' + cs).innerHTML = '';
+	$('criteria_nofields' + cs).style.display = 'block';
+	$('removeCriteriaGroup' + cs).style.display = 'block';
+
+	selectorChange(cs);
+}
+
+function buildExpression()
+{
+	mainOp = $('allop').value;
+
+	var main_str = '';
+	var gv = 0;
+	for(var gid=0;gid<criteria.length;gid++)
+	{
+		if (criteria[gid].fields == 0)
+		{
+			continue;
+		}
+
+		criteriaOp = $('groupop' + gid).value;
+		var set_str = '';
+
+		var fv =0;
+		for(fid=1;fid<=criteria[gid].fields;fid++)
+		{
+			if ($('field' + gid + '_' + fid).innerHTML == '')
+			{
+				continue;
+			}
+			// by dp start // to build the expression with the multiselect field values
+			if (document.getElementById('field' + gid + '_' + fid + 'start').className == "inetlookup") {
+				var innerOp = $('field' + gid + '_' + fid + 'join').value;
+				
+				if (fv++ > 0) set_str += ' ' + criteriaOp + ' ';
+	
+				var fieldname = $('field' + gid + '_' + fid + 'expr').innerHTML;
+				var fieldop = $('field' + gid + '_' + fid + 'op').value;
+	
+				var start = getElByName(gid, 'field' + gid + '_' + fid + 'start');
+				
+				var count = 0;
+				var expr = expr = "";
+				if(typeof(start.options) == "undefined")
+				{
+					var chkMultiElems = document.getElementsByTagName("input");
+					for (ii = 0; ii < chkMultiElems.length; ii++) {
+						if(chkMultiElems[ii].type == "checkbox" && chkMultiElems[ii].className == "inetlookup" && chkMultiElems[ii].checked == true)
+						{
+							start = chkMultiElems[ii];
+							if ((count) > 0) expr += ' ' + innerOp + ' ';
+							
+							expr += fieldname + ' ' + fieldop + ' "' + start.value.replace(/\"/g, "'") + '"';
+							
+							count++;
+						}
+					}
+				}
+				else
+				{
+					for (ii = 0; ii < start.options.length; ii++) {
+						if (start.options[ii].selected) {
+							if ((count) > 0) expr += ' ' + innerOp + ' ';
+							
+							expr += fieldname + ' ' + fieldop + ' "' + start.options[ii].value.replace(/\"/g, "'") + '"';
+							count++;
+						}
+					}
+				}
+				if (expr != '')
+				{
+					expr = '(' + expr + ')';			
+				}
+			}// by dp start // to build the expression with the multiselect field values
+			else {
+				if (fv++ > 0) set_str += ' ' + criteriaOp + ' ';
+	
+				var fieldname = $('field' + gid + '_' + fid + 'expr').innerHTML;
+				var fieldop = $('field' + gid + '_' + fid + 'op').value;
+	
+				var start = getElByName(gid, 'field' + gid + '_' + fid + 'start');
+				var end = getElByName(gid, 'field' + gid + '_' + fid + 'end');
+	
+				var expr = expr = fieldname + ' ' + fieldop + ' "' + start.value.replace(/\"/g, "'") + '"';
+				switch (fieldop)
+				{
+					case 'between':
+					case 'BETWEEN':
+						expr += ' AND "' + end.value.replace(/\"/g, "'") + '"';
+						break;
+					default:
+						break;
+				}
+			}	
+
+			set_str += expr;
+		}
+
+		if (set_str != '')
+		{
+			set_str = '(' + set_str + ')';
+
+			if (gv++ > 0) main_str += ' ' + mainOp + ' ';
+
+			main_str += set_str;
+		}
+	}
+	return main_str;
+}
+
+function butSearchClick()
+{
+	var expr = buildExpression();
+	
+	if (expr == '')
+	{
+		alert('{/literal}{i18n}Please select some search criteria{/i18n}{literal}');
+		return;
+	}
+
+	var txtQuery = document.getElementById('txtQuery');
+	txtQuery.value=expr;
+
+
+	var frm = document.getElementById('frmQuickSearch');
+	frm.submit();
+}
+
+</script>
+{/literal}
+
+<fieldset>
+	<legend>{i18n}Advanced Search{/i18n}</legend>
+
+{capture assign=options}
+<a href="{$rootUrl}/search2.php?action=queryBuilder">{i18n}Search Criteria Editor{/i18n}</a>
+{/capture}
+
+{i18n arg_options=$options}The #options# may also be used to create more complex search criteria expressions.{/i18n}
+<br><br>
+{capture assign=options}
+<select id="allop">
+<option value="AND">{i18n}all{/i18n}
+<option value="OR" SELECTED>{i18n}any{/i18n}
+</select>
+{/capture}
+
+
+{i18n arg_options=$options}Return items which match #options# of the criteria groups specified.{/i18n}
+
+<div id="groupwrapping">
+<div id="groupwrapper0">
+	<fieldset>
+    	<legend>{i18n}Criteria Group{/i18n}</legend>
+
+    	{capture assign=options}
+    		<select id="groupop0">
+				<option value="AND">{i18n}all{/i18n}
+				<option value="OR" SELECTED>{i18n}any{/i18n}
+			</select>
+    	{/capture}
+
+        {i18n arg_options=$options}Return items which match #options# of the criteria specified below.{/i18n}
+		<br>
+
+		<div id="criteria0">
+		<form id="form0" onsubmit="return false;">
+
+			<table width="100%">
+			<tr>
+				<td width="50%" valign="top">
+					<br>
+					<div id="criteria_nofields0" style="color: brown">{i18n}No criteria have been selected for the criteria group.{/i18n}
+					<p>
+					<input type=button value="{i18n}Remove Criteria Group{/i18n}" onclick="removeCriteriaGroup(0)" id="removeCriteriaGroup0" style="display: none">
+					</div>
+					<div id="criteria_fields0">
+
+					</div>
+				</td>
+				<td valign="top">
+					<table >
+					<tr>
+						<td valign=top>
+							<select id="selector0" style="width: 200px" onchange="selectorChange(0)">
+								<option value="0">{i18n}Available Criteria{/i18n}
+								<option value="1">{i18n}Available Fieldsets{/i18n}
+								<option value="2">{i18n}Available Workflows{/i18n}
+							</select>
+							<br>
+							<div>
+							<select id="fields0" size="5" style="width: 200px; height: 100px; display: block" onclick="fieldChange(0)">
+							<option value="" selected>--- {i18n}Select some criteria{/i18n} ---
+							{foreach from=$metainfo.fields item=field}
+								<option>{$field.display}
+							{/foreach}
+							</select>
+							<select id="fieldsets0" size="5" style="width: 200px;   height: 100px; display: none" onclick="fieldsetsChange(0)">
+							<option value="" selected>--- {i18n}Select a fieldset{/i18n} ---
+							{foreach from=$metainfo.fieldsets item=fieldset}
+								<option>{$fieldset.name}
+							{/foreach}
+							</select>
+							<select id="workflows0" size="5" style="width: 200px;   height: 100px; display: none" onclick="workflowsChange(0)" >
+							<option value="" selected>--- {i18n}Select a workflow{/i18n} ---
+							{foreach from=$metainfo.workflows item=workflow}
+								<option>{$workflow.name}
+							{/foreach}
+							</select>
+							</div>
+
+						<td valign=top>
+							<div id="fieldset_fields_wrapper0" style="display: none"">
+								<div id="fieldset_name0"></div>
+								<select id="fieldset_fields0" size=5 style="width: 150px" onclick="addMetadataField(0)">
+								</select>
+
+							</div>
+							<div id="workflow_states_wrapper0" style="display: none">
+								<div id="workflow_name0"></div>
+								<select id="workflow_states0" size=5 style="width: 150px" onclick="addWorkflowStateField(0)">
+								</select>
+
+							</div>
+						</td>
+					<tr>
+						<td colspan=5>
+							{i18n}Click on a field above to add it to the criteria group.{/i18n}
+						</td>
+					</tr>
+					</table>
+				</td>
+			</tr>
+			</table>
+		</form>
+		</div>
+	</fieldset>
+</div>
+</div>
+<div id="">
+<input type=button value="{i18n}Add another set of criteria{/i18n}" onclick="addCriteriaSet()">
+<input type=button value="{i18n}Search{/i18n}" onclick="butSearchClick()">
+</div>
+
+
+</fieldset>
+</div>

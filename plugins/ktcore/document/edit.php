@@ -227,6 +227,9 @@ class KTDocumentEditAction extends KTDocumentAction {
                 
                 // FIXME "null" has strange meanings here.
                 if (!is_null($val)) {
+                    if(KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin') && is_array($val) && $oField->getHasInetLookup()) {
+			$val = join(", ",$val);
+		    }
                     $MDPack[] = array(
                         $oField,
                         $val

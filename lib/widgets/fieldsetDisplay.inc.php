@@ -112,6 +112,20 @@ function getWidgetForMetadataField($field, $current_value, $page, $errors = null
 
             $oField = new KTTreeWidget($fieldLabel, $fieldDescription, $fieldName, $fieldValue, $page, $fieldRequired, null, $fieldErrors, $fieldOptions);
         }
+    } else if(KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin') && $field->getHasInetLookup()){
+		require_once(KT_DIR."/plugins/multiselect/InetWidgets.php");
+		if ($vocab === null) { // allow override
+            $lookups = MetaData::getEnabledByDocumentField($field);
+            $fieldOptions['vocab'] = array(); // FIXME handle lookups
+            foreach ($lookups as $md) {
+                $fieldOptions['vocab'][$md->getName()] = $md->getName();
+            }
+        } else {
+            $fieldOptions['vocab'] = $vocab;
+        }
+		$fieldOptions['multi'] = true;
+		$fieldOptions['lookup_type'] = $field->getInetLookupType();
+        $oField = new InetMultiselectWidget($fieldLabel, $fieldDescription, $fieldName, $fieldValue, $page, $fieldRequired, null, $fieldErrors, $fieldOptions);
     } else {
         $oField = new KTBaseWidget($fieldLabel, $fieldDescription, $fieldName, $fieldValue, $page, $fieldRequired, null, $fieldErrors, $fieldOptions);
     }

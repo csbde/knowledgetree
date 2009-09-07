@@ -72,6 +72,8 @@ class DocumentField extends KTEntity {
     var $iPosition;
     var $bIsHTML;
     var $iMax;
+    var $bHasInetLookup;
+    var $sInetLookupType;
 
     var $_aFieldToSelect = array(
         'iId' => 'id',
@@ -86,10 +88,12 @@ class DocumentField extends KTEntity {
         'iPosition' => 'position',
         'bIsHTML' => 'is_html',
         'iMax' => 'max_length',
+        'bHasInetLookup' => 'has_inetlookup',
+        'sInetLookupType' => 'inetlookup_type',
     );
 
     // FIXME deprecate constructor use.  Use DocumentField::createFromArray instead.
-	function DocumentField($sNewName = null, $sNewDataType = null, $bNewIsGeneric = null, $bNewHasLookup = null, $iParentFieldset = null, $bHasLookupTree = null, $bNewIsHTML = null, $iNewMaxLength = null) {
+	function DocumentField($sNewName = null, $sNewDataType = null, $bNewIsGeneric = null, $bNewHasLookup = null, $iParentFieldset = null, $bHasLookupTree = null, $bNewIsHTML = null, $iNewMaxLength = null, $bHasNewInetLookup = null, $sNewInetLookupType = null) {
 
 		$this->iId = -1;
 		$this->sName = $sNewName;
@@ -101,6 +105,8 @@ class DocumentField extends KTEntity {
 		$this->iPosition = $this->getNextFieldPosition($iParentFieldset);
 		$this->bIsHTML = $bNewIsHTML;
 		$this->iMax = $iNewMaxLength;
+		$this->sInetLookupType = $bHasNewInetLookup;
+		$this->sInetLookupType = $sNewInetLookupType;
 	}
 
 	function getID() { return $this->iId; }
@@ -127,7 +133,33 @@ class DocumentField extends KTEntity {
     function getIsHTML() { return $this->bIsHTML; }
 	function setIsHTML($iNewValue) { $this->bIsHTML = $iNewValue; }
 	function getMaxLength() { return $this->iMax; }
-	function setMaxLength($iNewValue) { $this->iMax = $iNewValue; }
+	function setMaxLength($iNewValue) { $this->iMax = $iNewValue; }	
+	function getHasInetLookup() { return $this->bHasInetLookup; }
+	function setHasInetLookup($iNewValue) {	$this->bHasInetLookup = $iNewValue; }
+	function getInetLookupType() { return $this->sInetLookupType; }
+	function setInetLookupType($sNewValue) {	$this->sInetLookupType = $sNewValue; }
+	function getInetLookupTypeFriendlyName()
+	{
+		$aDescriptors = array();
+		if($this->getInetLookupType() == "multiwithlist")
+		{
+			$aDescriptors[] = _kt("Multiselect with a list");
+		}
+		elseif($this->getInetLookupType() == "multiwithcheckboxes")
+		{
+			$aDescriptors[] = _kt("Multiselect with checkboxes");
+		}
+		
+        // required
+        if ($this->getIsMandatory()) {
+            $aDescriptors[] = _kt("Required");
+        } else {
+            $aDescriptors[] = _kt("Not Required");
+        }
+
+        return implode(', ', $aDescriptors);
+	}
+
 
     function _fieldValues () {
         return array(
@@ -141,7 +173,9 @@ class DocumentField extends KTEntity {
             'is_mandatory' => KTUtil::anyToBool($this->bIsMandatory),
             'position' => $this->iPosition,
             'is_html' => KTUtil::anyToBool($this->bIsHTML),
-            'max_length' => $this->iMax,
+            'max_length' => $this->iMax,  
+            'has_inetlookup' => $this->bHasInetLookup,
+            'inetlookup_type' => $this->sInetLookupType,
         );
     }
 
@@ -210,6 +244,9 @@ class DocumentField extends KTEntity {
 	}
 
     function getType() {
+    	if($this->bHasInetLookup){
+            return  _kt('Multiselect');
+	}
         if (empty($this->bHasLookup)) {
             return _kt("Normal");
         }
