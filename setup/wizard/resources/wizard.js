@@ -135,61 +135,87 @@ wizard.prototype.onSubmitValidate = function(silent) {
 	return true;
 }
 
+wizard.prototype.pClick = function() {
+	var state = document.getElementById('state');
+	if(state != "undefined") {
+		state.name = 'previous';
+	}
+}
+
+wizard.prototype.nClick = function() {
+	var state = document.getElementById('state');
+	if(state != "undefined") {
+		state.name = 'next';
+	}
+}
+
 // Validate Registration Page
 wizard.prototype.validateRegistration = function() {
-	return true;
+	// See if next or previous is clicked.
+	var state = document.getElementById('state').name;
+	if(state == 'next') {
+		if(w.valRegHelper()) {
+			document.getElementById('sendAll').name = 'Next'; // Force the next step
+			document.getElementById('sendAll').value = 'next';
+			document.getElementById('registration').submit();
+		}
+	} else if(state == 'previous') {
+		document.getElementById('sendAll').name = 'Previous'; // Force the previous step
+		document.getElementById('sendAll').value = 'previous';
+		document.getElementById('registration').submit();
+	}
+}
+
+wizard.prototype.valRegHelper = function() {
 	var first = document.getElementById('first');
 	var last = document.getElementById('last');
 	var email = document.getElementById('email');
 	
-	if(first.value < 2) {
-		
+	if(first.value.length < 2) {
+		document.getElementById("reg_error").innerHTML = "Please enter a First Name";
+		w.focusElement(first);
 		return false;
 	}
-	if(last.value < 2) {
-		
-		
+	if(last.value.length < 2) {
+		document.getElementById("reg_error").innerHTML = "Please enter a Last Name";
+		w.focusElement(last);
+		return false;
 	}
-	if(w.emailCheck(email.value)) {
-		
+	if(!w.emailCheck(email.value)) {
+		document.getElementById("reg_error").innerHTML = "Please enter a valid email address";
+		w.focusElement(email);
+		return false;
 	}
 	
-	return false;
+	return true;
 }
 
 // Validate Registration Page Courtesy of SmartWebby.com (http://www.smartwebby.com/dhtml/)
-wizard.prototype.emailCheck = function() { 
+wizard.prototype.emailCheck = function(str) { 
 	var at="@";
 	var dot=".";
 	var lat=str.indexOf(at);
 	var lstr=str.length;
 	var ldot=str.indexOf(dot);
 	if (str.indexOf(at)==-1) {
-	//		   alert("Invalid E-mail ID")
 		return false;
 	}
 	if (str.indexOf(at)==-1 || str.indexOf(at)==0 || str.indexOf(at)==lstr) {
-	//		   alert("Invalid E-mail ID")
 		return false;
 	}
 	if (str.indexOf(dot)==-1 || str.indexOf(dot)==0 || str.indexOf(dot)==lstr) {
-	//		    alert("Invalid E-mail ID")
 		return false;
 	}
 	if (str.indexOf(at,(lat+1))!=-1) {
-	//		    alert("Invalid E-mail ID")
 		return false;
 	}
 	if (str.substring(lat-1,lat)==dot || str.substring(lat+1,lat+2)==dot){
-	//		    alert("Invalid E-mail ID")
 		return false;
 	}
 	if (str.indexOf(dot,(lat+2))==-1){
-	//		    alert("Invalid E-mail ID")
 		return false;
 	}
 	if (str.indexOf(" ")!=-1){
-	//		    alert("Invalid E-mail ID")
 		return false;
 	}
 	return true;

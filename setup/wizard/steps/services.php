@@ -61,6 +61,7 @@ class services extends Step
     protected $runInstall = true;
     
     private $services = array('Lucene', 'Scheduler', 'OpenOffice');
+//    private $services = array('OpenOffice');
     
     protected $java;
     
@@ -358,7 +359,7 @@ class services extends Step
     }
 	
     private function useDetected() {
-    	return $this->detSettings();
+    	return $this->detSettings(true);
     }
     
     private function specifyJava() {
@@ -389,7 +390,7 @@ class services extends Step
 	* @access private
 	* @return boolean
 	*/
-    private function detSettings() {
+    private function detSettings($attempt) {
     	$javaExecutable = $this->util->javaSpecified();// Retrieve java bin
     	$cmd = "$javaExecutable -version > output/outJV 2>&1 echo $!";
     	$response = $this->util->pexec($cmd);
@@ -400,7 +401,7 @@ class services extends Step
 	    		if($matches[1] < $this->javaVersion) { // Check Version of java
 					$this->javaVersionInCorrect();
 					$this->javaCheck = 'cross';
-					$this->error[] = "Requires Java 1.5+ to be installed";
+					if(!$attempt) $this->error[] = "Requires Java 1.5+ to be installed";
 					return false;
 	    		} else {
 					$this->javaVersionCorrect();
@@ -413,10 +414,12 @@ class services extends Step
     			$this->javaVersionWarning();
     			$this->javaCheck = 'cross_orange';
     			$this->javaExeError = "Java : Incorrect path specified";
-				$this->error[] = "Requires Java 1.5+ to be installed";
+				if(!$attempt) $this->error[] = "Requires Java 1.5+ to be installed";
 				return false;
     		}
     	}
+    	
+    	return false;
     }
     
     function detPhpSettings() {
