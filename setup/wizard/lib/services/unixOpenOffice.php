@@ -46,6 +46,6 @@ class unixOpenOffice extends unixService {
 		$this->name = "KTOpenOfficeTest";
 	}
 	
-
+	
 }
 ?>
