@@ -3,11 +3,12 @@
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(CMIS_DIR . '/exceptions/ConstraintViolationException.inc.php');
 require_once(CMIS_DIR . '/exceptions/StorageException.inc.php');
+require_once(CMIS_DIR . '/exceptions/StreamNotSupportedException.inc.php');
 require_once(CMIS_DIR . '/exceptions/UpdateConflictException.inc.php');
 require_once(CMIS_DIR . '/exceptions/VersioningException.inc.php');
 require_once(CMIS_DIR . '/services/CMISObjectService.inc.php');
 require_once(CMIS_DIR . '/objecttypes/CMISDocumentObject.inc.php');
-//require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
+require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
 class CMISVersioningService {
 
@@ -182,14 +183,8 @@ class CMISVersioningService {
      * @return string $documentId
      */
     // TODO Exceptions:
-    //        •	ConstraintViolationException - SHALL throw if o	The Document’s Object-Type definition’s versionable attribute is FALSE. 
-    //        •	storageException - MAY throw
-    //        •	streamNotSupportedException -  The Repository SHALL throw this exception if the Object-Type definition specified by the typeId 
-    //                                         parameter’s “contentStreamAllowed” attribute is set to “not allowed” and a contentStream input 
-    //                                         parameter is provided.
-    //        •	updateConflictException - MAY throw
     //        •	versioningException - The repository MAY throw this exception if the object is a non-current Document Version
-    public function checkIn($repositoryId, $documentId, $major, $changeToken = '', $properties = array(), $contentStream = null, $checkinComment = '')
+    public function checkIn($repositoryId, $documentId, $major, $contentStream = null, $changeToken = '', $properties = array(), $checkinComment = '')
     {
         $documentId = CMISUtil::decodeObjectId($documentId, $typeId);
         
@@ -206,7 +201,35 @@ class CMISVersioningService {
             throw new ConstraintViolationException('This document is not versionable and may not be checked in');
         }
         
-        return $documentId;
+        $RepositoryService = new CMISRepositoryService();
+        try {
+            $typeDefinition = $RepositoryService->getTypeDefinition($repositoryId, $typeId);
+        }
+        catch (exception $e) {
+            // if we can't get the type definition, then we can't store the content
+            throw new StorageException($e->getMessage());
+        }
+        
+        if (($typeDefinition['attributes']['contentStreamAllowed'] == 'notAllowed') && !empty($contentStream)) {
+            throw new StreamNotSupportedException('Content Streams are not supported');
+        }
+        
+        // check that this is the latest version
+        if ($pwc->getProperty('IsLatestVersion') != true) {
+            throw new VersioningException('The document is not the latest version and cannot be checked in');
+        }
+        
+        // now do the checkin
+        $tempfilename = CMISUtil::createTemporaryFile($contentStream);
+        $response = $this->ktapi->checkin_document($documentId, $pwc->getProperty('ContentStreamFilename'), $reason, $tempfilename, $major,
+                                                   $sig_username, $sig_password);
+                                       
+        // if there was any error in cancelling the checkout
+        if ($response['status_code'] == 1) {
+            throw new RuntimeException('There was an error checking in the document: ' . $response['message']);
+        }
+        
+        return CMISUtil::encodeObjectId(DOCUMENT, $documentId);
     }
     
 }

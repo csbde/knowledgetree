@@ -1,6 +1,6 @@
 <?php
 
-require_once KT_LIB_DIR . '/api/ktcmis/ktcmis.inc.php';
+require_once KT_LIB_DIR . '/api/ktcmis/ktVersioningService.inc.php';
 
 /**
  * CMIS Service class which hooks into the KnowledgeTree interface
@@ -85,9 +85,9 @@ class VersioningService extends KTVersioningService {
      * @param string $checkinComment [optional]
      * @return string $documentId
      */
-    public function checkIn($repositoryId, $documentId, $major, $changeToken = '', $properties = array(), $contentStream = null, $checkinComment = '')
+    public function checkIn($repositoryId, $documentId, $major, $contentStream = null, $changeToken = '', $properties = array(), $checkinComment = '')
     {
-        $result = parent::checkIn($repositoryId, $documentId, $major, $changeToken, $properties, $contentStream, $checkinComment);
+        $result = parent::checkIn($repositoryId, $documentId, $major, $contentStream, $changeToken, $properties, $checkinComment);
 
         if ($result['status_code'] == 0) {
             return $result['results'];

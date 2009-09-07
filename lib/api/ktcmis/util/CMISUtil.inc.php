@@ -406,30 +406,6 @@ class CMISUtil {
         return (($input === true) ? 'true' : (($input === false) ? 'false' : $input));
     }
 
-    /**
-     * Creates a temporary file
-     * Cleanup is the responsibility of the calling code
-     *
-     * @param string|binary $content The content to be written to the file.
-     * @param string $uploadDir Optional upload directory.  Will use the KnowledgeTree system tmp directory if not supplied.
-     * @return string The path to the created file (for reference and cleanup.)
-     */
-    static public function createTemporaryFile($content, $encoding = null, $uploadDir = null)
-    {
-        if(is_null($uploadDir))
-        {
-            $oKTConfig =& KTConfig::getSingleton();
-            $uploadDir = $oKTConfig->get('webservice/uploadDirectory');
-        }
-
-        $temp = tempnam($uploadDir, 'myfile');
-        $fp = fopen($temp, 'wb');
-        fwrite($fp, ($encoding == 'base64' ? base64_decode($content) : $content));
-        fclose($fp);
-
-        return $temp;
-    }
-    
     // TODO more robust base64 encoding detection, if possible
     
     /**
@@ -609,6 +585,33 @@ class CMISUtil {
         }
         
         return $exists;
+    }
+    
+    /**
+     * Creates a temporary file
+     * Cleanup is the responsibility of the calling code
+     *
+     * @param string $contentStream The content to be stored (assumed to be base64)
+     * @return string The path to the created file (for reference and cleanup.)
+     */
+    static public function createTemporaryFile($contentStream)
+    {
+        // if contentStream is empty, cannot create file
+        if (empty($contentStream)) return null;
+        
+        // TODO consider checking whether content is encoded (currently we expect encoded)
+        // TODO choose between this and the alternative decode function (see CMISUtil class)
+        //      this will require some basic benchmarking
+        $contentStream = CMISUtil::decodeChunkedContentStream($contentStream);
+     
+        // NOTE There is a function in CMISUtil to do this, written for the unit tests but since KTUploadManager exists
+        //      and has more functionality which could come in useful at some point I decided to go with that instead
+        //      (did not know this existed when I wrote the CMISUtil function)
+        $uploadManager = new KTUploadManager();
+        // assumes already decoded from base64, should use store_base64_file if not
+        $tempfilename = $uploadManager->store_file($contentStream, 'cmis_');
+        
+        return $tempfilename;
     }
 
 }

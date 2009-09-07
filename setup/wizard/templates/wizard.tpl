@@ -2,22 +2,24 @@
 <html>
 	<head>
 		<title>KnowledgeTree Installer</title>
-<!--		<script type="text/javascript" src="resources/jquery-tooltip/lib/jquery.js"></script>-->
-<!--		<script type="text/javascript" src="resources/jquery-tooltip/lib/jquery.bgiframe.js"></script>-->
-<!--		<script type="text/javascript" src=".resources/jquery-tooltip/lib/jquery.dimensions.js"></script>-->
-<!--		<script type="text/javascript" src="resources/jquery-tooltip/lib/jquery.tooltip.js"></script>-->
+		<script type="text/javascript" src="resources/jquery-tooltip/lib/jquery.js"></script>
 		<script type="text/javascript" src="resources/wizard.js" ></script>
 		<link rel="stylesheet" type="text/css" href="resources/wizard.css" />
 		
 	</head>
 	<body onload="w.doFormCheck();">
 		<div id="outer-wrapper">
-		    <div id="header"></div>
-		    
+		    <div id="header">
+		    <div id="logo"><img src="resources/graphics/dame/installer-header_logo.png"/></div>
+		    <div id="install_details">
+				<span style="font-size:120%;"> <?php echo $vars['install_version']; ?> </span><br>
+				<span style="font-size:80%;"><?php echo $vars['install_type']; ?></span>
+				</div>
+		    </div>
 		    <div id="wrapper">
 		        <div id="container">
 		        	<div id="sidebar">
-		            	<?php echo $left; ?>
+		            	<?php echo $vars['left']; ?>
 		        	</div>
 		            <div id="content">
 		            	<div id="content_container">

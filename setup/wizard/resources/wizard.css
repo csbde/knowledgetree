@@ -66,7 +66,7 @@ select {
 	border:1px solid #B7B7B7;
 	left:215px;
 	position:relative;
-	top:25px;
+	top:20px;
 	width:1024px;
 }
 
@@ -92,9 +92,8 @@ select {
 }
 
 #content {
-    margin-left: 200px;
+    margin-left: 220px;
     height:515px;
-    
 }
 
 #content_container {
@@ -110,13 +109,65 @@ select {
 	height: 400px;
 }
 
+#step_content_dependencies {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	min-height:265px;
+}
+
+#step_content_configuration {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	min-height:290px;
+}
+
+#step_content_registration {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	height:295px;
+}
+
+#step_content_registration_confirm {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	height:400px;
+}
+
+#step_content_install {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	height:290px;
+}
+
+#step_content_database {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	min-height:355px;
+}
+
+#step_content_database_confirm {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	height:375px;
+}
+
+#step_content_complete {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	min-height:355px;
+}
+
+.radio {
+	float:none;
+}
+
 #sidebar {
 	background: rgb(239, 239, 239) none repeat scroll 0% 0%;
-	font-size: 75%;
+	font-size: 90%;
 	color: grey; 
 	font-family: sans-serif; 
 	margin-top: 0px;
-	width: 200px;
+	width: 235px;
 	float: left;
 	padding-top: 20px;
 	padding-bottom: 20px;
@@ -141,6 +192,18 @@ select {
     height: 50px;
     width: 200px;
     margin-left: 10px;
+}
+
+#logo {
+	position:relative;
+	right:760px;
+	top:20px;
+}
+
+#install_details {
+	bottom:30px;
+	position:relative;
+	right:10px;
 }
 
 .menu {
@@ -217,6 +280,16 @@ select {
     color: red;
 }
 
+/*
+td.error {
+	width:190px;
+}
+*/
+
+.conf_paths {
+	width:755px;
+}
+
 .errors {
     color: #9F0000;
 }
@@ -227,31 +300,6 @@ select {
     position: absolute;
     width:120px;
 }
-
-/*
-#buttons_double input {
-	float: left;
-	margin-top: 10px;
-	margin-left: 5px;
-	font-size: 12px;
-	font-weight: bold;	
-	background-image: url("graphics/dame/kt_gradient.jpg");
-	background-repeat: repeat-x;
-	background-position-y: 0%;
-	border: 1px solid #cecece;
-}
-
-#buttons_single input {
-	float: right;
-	margin-top: 10px;
-	margin-left: 5px;
-	font-size: 12px;
-	font-weight: bold;	
-	background-image: url("graphics/dame/kt_gradient.jpg");
-	background-repeat: repeat-x;
-	background-position-y: 0%;
-	border: 1px solid #cecece;
-}*/
 
 .back {
 	background-image: url("graphics/dame/kt_gradient.jpg");
@@ -273,6 +321,11 @@ input {
 	font-weight:bold;
 	margin-left:5px;
 	margin-top:10px;
+}
+
+.textinput {
+	margin-top:0px;
+	float:left;
 }
 
 .buttons a {
@@ -326,12 +379,16 @@ input {
     height:45px;
 }
 
+#dbconf {
+	width:755px;
+}
+
 table#dbconf tr td {
 	width:50%;
 }
 
-input#dname {
-	size:40px;
+table#dbconf tr td input{
+	
 }
 
 .options {
@@ -343,48 +400,92 @@ input#dname {
 }
 
 #section {
-	/*border:1px solid;*/
-}
 
-sup {
-	font-size: 11px;
-}
-
-refresh {
-	/*
-	style="color: #000000; 
-	font-weight: normal;
-	*/
 }
 
 .php_ext_details table {
-	width:800px;
+	width:745px;
+}
+
+.php_ext_details table tr {
+	
+}
+
+td.ext_indicator {
+	width:10px;
+}
+
+td.ext_name {
+	width:110p;
+}
+
+td.ext_description {
+	width:360px;
+}
+
+td.ext_error {
+	width:350px;
+}
+
+td.ext_refresh {
+	width:10px;
+}
+
+td.dir_name {
+	width:200px;
+}
+
+td.dir_description {
+	width:200px;
 }
 
 .php_con_details table {
-	width:800px;
+	width:745px;
+	/*border:1px solid;*/
 }
 
 .error_message {
 	border:none;
-	background-color:#FFCCCC;
 	color:#A30000;
-/*	width:550px; */
 	padding:0px;
+	color:red;
+	font-size:90%;
+	margin-bottom:0.75em;
+	font-weight:bold;
 }
 
 .continue_message {
+	background: url("graphics/big-ok.png") no-repeat;
 	border:none;
-	background:transparent url("graphics/big-ok.png") no-repeat scroll 0 50%;
 	width:550px;
 	padding:0px;
+	color:#898989;
+	font-size:90%;
+	margin-bottom:0.75em;
 }
 
 .license_agreement {
 	overflow: scroll;
 	height: 255px;
-	width:785px;
+	width:765px;
 	height:370px;
 	overflow-x:hidden;
 	border:1px solid #CFCFCF;
+}
+
+.db_adv_options {
+	height:200px;
+	width:720px;
+}
+
+.adv_option {
+	height:65px;
+	width:720px;
+}
+
+#tooltips {
+	background: url("graphics/question.gif") no-repeat;
+	width:16px;
+	height:16px;
+	cursor:pointer;
 }

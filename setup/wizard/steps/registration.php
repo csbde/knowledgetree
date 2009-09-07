@@ -42,9 +42,6 @@
 
 class registration extends Step
 {
-	
-	public $temp_variables = array("step_name"=>"registration");
-	
     /**
      * Initialise the registration step
      *
@@ -66,10 +63,6 @@ class registration extends Step
     public function doStep()
     {
         $this->setFormInfo();
-//		die('a');
-//print_r($_POST);
-//print_r($_GET);
-return 'next';
 		if(!$this->inStep("registration")) {
 			return 'landing';
 		}
@@ -98,7 +91,7 @@ return 'next';
         if(isset($_POST['registered']) && $_POST['registered'] == 'yes'){
             return true;
         }
-
+return true;
 	    //$this->postForm($_POST);
 	    //$this->sendToHost($_POST);
 

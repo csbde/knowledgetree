@@ -30,6 +30,7 @@ i.	Other (Content-less document, Folder, Relationship, Type, etc) – best effor
 When POSTing an Atom Document, the atom fields take precedence over the CMIS property field for writeable properties.  For example, atom:title will overwrite cmis:name
  */
 
+// load all available CMIS services
 include_once CMIS_ATOM_LIB_FOLDER . 'RepositoryService.inc.php';
 include_once CMIS_ATOM_LIB_FOLDER . 'NavigationService.inc.php';
 include_once CMIS_ATOM_LIB_FOLDER . 'ObjectService.inc.php';
@@ -101,7 +102,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $folderId);
         }
 
-        //Expose the responseFeed
+        // Expose the responseFeed
         $this->responseFeed = $feed;
     }
 
@@ -140,7 +141,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $objectId = $this->params[2];
         }
         
-        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']['cmis:object']);
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']);
         
         // check for existing object id as property of submitted object data
         if (!empty($cmisObjectProperties['ObjectId']))
@@ -159,7 +160,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             CMISUtil::decodeObjectId($objectId, $typeId);
         }
         
-        // now check for content stream
+        // check for content stream
         $content = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'content');        
         
         // TODO this will possibly need to change somewhat once Relationship Objects come into play.
@@ -207,7 +208,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $error);
         }
 
-        //Expose the responseFeed
+        // Expose the responseFeed
         $this->responseFeed = $feed;
     }
     
@@ -236,7 +237,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         if (PEAR::isError($response))
         {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response->getMessage());
-           //Expose the responseFeed
+            // Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
         }
@@ -349,7 +350,7 @@ class KT_cmis_atom_service_types extends KT_cmis_atom_service {
         $type = ((empty($this->params[0])) ? 'all' : $this->params[0]);
         $feed = KT_cmis_atom_service_helper::getTypeFeed($type, $types);
 
-        //Expose the responseFeed
+        // Expose the responseFeed
         $this->responseFeed = $feed;
     }
     
@@ -385,7 +386,7 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service {
             $feed = $this->getTypeChildrenFeed($this->params[1]);
         }
 
-        //Expose the responseFeed
+        // Expose the responseFeed
         $this->responseFeed=$feed;
     }
 
@@ -494,7 +495,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
 //        $entry = null;
 //        $feed->newField('cmis:hasMoreItems', 'false', $entry, true);
 
-        //Expose the responseFeed
+        // Expose the responseFeed
         $this->responseFeed = $feed;
     }
     
@@ -513,7 +514,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         if (empty($cmisObjectProperties['ObjectId']))
         {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
-            //Expose the responseFeed
+            // Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
         }
@@ -523,7 +524,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         if (PEAR::isError($response))
         {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
-            //Expose the responseFeed
+            // Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
         }
@@ -531,7 +532,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         $this->setStatus(self::STATUS_CREATED);
         $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['ObjectId'], 'POST');
 
-        //Expose the responseFeed
+        // Expose the responseFeed
         $this->responseFeed = $feed;
     }
 
@@ -559,13 +560,13 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
         // this depends on $this->params[1]
         if (!empty($this->params[1]))
         {
-            $this->getContentStream($ObjectService, $repositoryId);
+            KT_cmis_atom_service_helper::downloadContentStream($this, $ObjectService, $repositoryId);
             return null;
         }
 
         $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $this->params[0]);
 
-        //Expose the responseFeed
+        // Expose the responseFeed
         $this->responseFeed = $feed;
     }
     
@@ -594,53 +595,13 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
         if (PEAR::isError($response))
         {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response->getMessage());
-            //Expose the responseFeed
+            // Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
         }
         
         // success
         $this->setStatus(self::STATUS_NO_CONTENT);        
-    }
-    
-    private function getContentStream(&$ObjectService, $repositoryId)
-    {
-        $response = $ObjectService->getProperties($repositoryId, $this->params[0], false, false);
-        if (PEAR::isError($response)) {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response->getMessage());
-            $this->responseFeed = $feed;
-            return null;
-        }
-        
-        // TODO also check If-Modified-Since?
-//        $this->headers['If-Modified-Since'] => 2009-07-24 17:16:54
-
-        $this->contentDownload = true;
-        $eTag = md5($response['properties']['LastModificationDate']['value'] . $response['properties']['ContentStreamLength']['value']);
-        
-        if ($this->headers['If-None-Match'] == $eTag)
-        {
-            $this->setStatus(self::STATUS_NOT_MODIFIED);
-            $this->contentDownload = false;
-            return null;
-        }
-        
-        $contentStream = $ObjectService->getContentStream($repositoryId, $this->params[0]);
-        
-        // headers specific to output
-        $this->setEtag($eTag);
-        $this->setHeader('Last-Modified', $response['properties']['LastModificationDate']['value']);
-
-        if (!empty($response['properties']['ContentStreamMimeType']['value'])) {
-    		$this->setHeader('Content-type', $response['properties']['ContentStreamMimeType']['value'] . ';charset=utf-8');
-        }
-        else {
-    		$this->setHeader('Content-type', 'text/plain;charset=utf-8');
-        }
-        
-        $this->setHeader('Content-Disposition', 'attachment;filename="' . $response['properties']['ContentStreamFilename']['value'] . '"');
-		$this->setHeader('Content-Length', $response['properties']['ContentStreamLength']['value']);
-        $this->output = $contentStream;
     }
     
 }
@@ -665,13 +626,13 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
         // this depends on $this->params[1]
         if (!empty($this->params[1]))
         {
-            $this->getContentStream($ObjectService, $repositoryId);
+            KT_cmis_atom_service_helper::downloadContentStream($this, $ObjectService, $repositoryId);
             return null;
         }
 
         $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $this->params[0]);
 
-        //Expose the responseFeed
+        // Expose the responseFeed
         $this->responseFeed = $feed;
     }
     
@@ -696,7 +657,7 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
         if (PEAR::isError($response))
         {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response->getMessage());
-           //Expose the responseFeed
+           // Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
         }
@@ -707,25 +668,58 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
     
     public function PUT_action()
     {
-        // call the checkin function
         $RepositoryService = new RepositoryService();
         $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
 
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
         
-        $response = $VersioningService->checkIn($repositoryId, $this->params[0]);
+        // check for content stream
+        // NOTE this is a hack!  will not work with CMISSpaces at least, probably not with any client except RestTest and similar
+        //      where we can manually modify the input
+        // first we try for an atom content tag
+        $content = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'content');
+        if (!empty($content)) {
+            $contentStream = $content;
+        }
+        // not found? try for a regular content tag
+        else {
+            $content = KT_cmis_atom_service_helper::findTag('content', $this->parsedXMLContent['@children'], null, false); 
+            $contentStream = $content['@value'];
+        }
+        
+        // if we haven't found it now, the real hack begins - retrieve the EXISTING content and submit this as the contentStream
+        // this is needed because KnowledgeTree will not accept a checkin without a content stream but CMISSpaces (and possibly 
+        // other CMIS clients are the same, does not send a content stream on checkin nor does it offer the user a method to choose one)
+        // NOTE that if the content is INTENDED to be empty this and all the above checks will FAIL!
+        // FIXME this is horrible, terrible, ugly and bad!
+        if (empty($contentStream))
+        {
+            $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+            $contentStream = base64_encode(KT_cmis_atom_service_helper::getContentStream($this, $ObjectService, $repositoryId));
+        }
+        
+        // and if we don't have it by now, we give up...but leave the error to be generated by the underlying KnowledgeTree code
+        
+        // checkin function call
+        // TODO dynamically detect version change type - leaving this for now as the CMIS clients tested do not appear to 
+        //      offer the choice to the user - perhaps it will turn out that this will come from somewhere else but for now
+        //      we assume minor version updates only
+        $major = false;
+        $response = $VersioningService->checkIn($repositoryId, $this->params[0], $major, $contentStream);
 
         if (PEAR::isError($response))
         {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response->getMessage());
-           //Expose the responseFeed
+            // Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
         }
         
-        $this->setStatus(self::STATUS_NO_CONTENT);
-        $this->responseFeed = null;
+        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $this->params[0]);
+
+        // Expose the responseFeed
+        $this->responseFeed = $feed;
     }
     
 }

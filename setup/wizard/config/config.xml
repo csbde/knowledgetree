@@ -7,7 +7,7 @@
     Description: Installer steps
 -->
 
-<install version="3.3">
+<install version="3.7" type="Commercial Edition">
     <steps>
         <step name="Welcome">welcome</step>
         <step name="License Agreement">license</step>
