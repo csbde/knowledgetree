@@ -30,6 +30,7 @@ i.	Other (Content-less document, Folder, Relationship, Type, etc) – best effor
 When POSTing an Atom Document, the atom fields take precedence over the CMIS property field for writeable properties.  For example, atom:title will overwrite cmis:name
  */
 
+// load all available CMIS services
 include_once CMIS_ATOM_LIB_FOLDER . 'RepositoryService.inc.php';
 include_once CMIS_ATOM_LIB_FOLDER . 'NavigationService.inc.php';
 include_once CMIS_ATOM_LIB_FOLDER . 'ObjectService.inc.php';
@@ -667,7 +668,6 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
     
     public function PUT_action()
     {
-        // call the checkin function
         $RepositoryService = new RepositoryService();
         $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
 

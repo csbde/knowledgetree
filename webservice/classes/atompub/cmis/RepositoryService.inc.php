@@ -5,7 +5,7 @@
  * for processing of CMIS queries and responses via atompub/webservices
  */
 
-require_once KT_LIB_DIR . '/api/ktcmis/ktcmis.inc.php';
+require_once KT_LIB_DIR . '/api/ktcmis/ktRepositoryService.inc.php';
 
 class RepositoryService extends KTRepositoryService {
 
