@@ -63,7 +63,7 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 		{
 			$js = "<script src='plugins/multiselect/js/jquery-1.2.6.js' type='text/javascript'></script>";
 			$js .= "<script src='plugins/multiselect/js/hidelink.js' type='text/javascript'></script>";
-	        return $js._kt('Bulk Upload (RATP)');
+	        return $js._kt('Bulk Upload');
 		}
 		else
 		{

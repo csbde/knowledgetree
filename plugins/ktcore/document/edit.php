@@ -219,17 +219,17 @@ class KTDocumentEditAction extends KTDocumentAction {
 
                 if($oField->getDataType() == "LARGE TEXT")
                 {
-                	if(strlen(strip_tags($val)) > $oField->getMaxLength())
-                	{
-            			$oForm->handleError(sprintf(_kt("Value exceeds max allowed length of %d characters for %s. Current value is %d characters."), $oField->getMaxLength(), $oField->getName(), strlen(strip_tags($val))));
-                	}
+                    if(strlen(strip_tags($val)) > $oField->getMaxLength())
+                    {
+                        $oForm->handleError(sprintf(_kt("Value exceeds max allowed length of %d characters for %s. Current value is %d characters."), $oField->getMaxLength(), $oField->getName(), strlen(strip_tags($val))));
+                    }
                 }
                 
                 // FIXME "null" has strange meanings here.
                 if (!is_null($val)) {
                     if(KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin') && is_array($val) && $oField->getHasInetLookup()) {
-			$val = join(", ",$val);
-		    }
+            $val = join(", ",$val);
+            }
                     $MDPack[] = array(
                         $oField,
                         $val

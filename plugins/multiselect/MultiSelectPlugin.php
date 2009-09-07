@@ -52,7 +52,7 @@ class MultiSelectPlugin extends KTPlugin {
 	 */
     function MultiSelectPlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);
-        $this->sFriendlyName = _kt('Permits multiselect or single select choices.');
+        $this->sFriendlyName = _kt('Multi-select Plugin');
         return $res;
     }            
 	
@@ -62,7 +62,7 @@ class MultiSelectPlugin extends KTPlugin {
 	 */
 	function setup() {
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplating->addLocation('Multiselect in  metadata Part {lookup Value}', '/plugins/multiselect/templates');
+        $oTemplating->addLocation('Multiselect in metadata Part {lookup Value}', '/plugins/multiselect/templates');
 		
 		$dir = dirname(__FILE__);
 		$this->applySQL(realpath($dir . '/sql/script.sql'));
@@ -116,7 +116,7 @@ class MultiSelectPlugin extends KTPlugin {
 		$js = "<script src='plugins/multiselect/js/jquery-1.2.6.js' type='text/javascript'></script>";
 		$js .= "<script src='plugins/multiselect/js/hideadminlink.js' type='text/javascript'></script>";
 		$this->registerAdminPage('ratpfieldset', 'InetDocumentFieldDispatcher', 'documents',
-             $js._kt('Document Fieldsets (RATP)'),
+             $js._kt('Document Fieldsets'),
             _kt('Manage the different types of information with multiselect functionality that can be associated with classes of documents.'),
             'InetdocumentFieldsv2.php', null);
 	}

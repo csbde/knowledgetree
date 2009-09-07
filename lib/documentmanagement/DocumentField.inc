@@ -78,7 +78,7 @@ class DocumentField extends KTEntity {
     var $_aFieldToSelect = array(
         'iId' => 'id',
         'sName' => 'name',
-	    'sDescription' => 'description',
+        'sDescription' => 'description',
         'sDataType' => 'data_type',
         'bIsGeneric' => 'is_generic',
         'bHasLookup' => 'has_lookup',
@@ -93,63 +93,63 @@ class DocumentField extends KTEntity {
     );
 
     // FIXME deprecate constructor use.  Use DocumentField::createFromArray instead.
-	function DocumentField($sNewName = null, $sNewDataType = null, $bNewIsGeneric = null, $bNewHasLookup = null, $iParentFieldset = null, $bHasLookupTree = null, $bNewIsHTML = null, $iNewMaxLength = null, $bHasNewInetLookup = null, $sNewInetLookupType = null) {
+    function DocumentField($sNewName = null, $sNewDataType = null, $bNewIsGeneric = null, $bNewHasLookup = null, $iParentFieldset = null, $bHasLookupTree = null, $bNewIsHTML = null, $iNewMaxLength = null, $bHasNewInetLookup = null, $sNewInetLookupType = null) {
 
-		$this->iId = -1;
-		$this->sName = $sNewName;
-		$this->sDataType = $sNewDataType;
-		$this->bIsGeneric = $bNewIsGeneric;
-		$this->bHasLookup = $bNewHasLookup;
-		$this->iParentFieldset = $iParentFieldset;
-		$this->bHasLookupTree = $bHasLookupTree;
-		$this->iPosition = $this->getNextFieldPosition($iParentFieldset);
-		$this->bIsHTML = $bNewIsHTML;
-		$this->iMax = $iNewMaxLength;
-		$this->sInetLookupType = $bHasNewInetLookup;
-		$this->sInetLookupType = $sNewInetLookupType;
-	}
+        $this->iId = -1;
+        $this->sName = $sNewName;
+        $this->sDataType = $sNewDataType;
+        $this->bIsGeneric = $bNewIsGeneric;
+        $this->bHasLookup = $bNewHasLookup;
+        $this->iParentFieldset = $iParentFieldset;
+        $this->bHasLookupTree = $bHasLookupTree;
+        $this->iPosition = $this->getNextFieldPosition($iParentFieldset);
+        $this->bIsHTML = $bNewIsHTML;
+        $this->iMax = $iNewMaxLength;
+        $this->sInetLookupType = $bHasNewInetLookup;
+        $this->sInetLookupType = $sNewInetLookupType;
+    }
 
-	function getID() { return $this->iId; }
-	function getName() { return $this->sName; }
-	function setName($sNewValue) { $this->sName = $sNewValue; }
-	function setDescription($sNewValue) { $this->sDescription = $sNewValue; }
-	function getDescription() { return $this->sDescription; }
-	function getDataType() { return $this->sDataType; }
+    function getID() { return $this->iId; }
+    function getName() { return $this->sName; }
+    function setName($sNewValue) { $this->sName = $sNewValue; }
+    function setDescription($sNewValue) { $this->sDescription = $sNewValue; }
+    function getDescription() { return $this->sDescription; }
+    function getDataType() { return $this->sDataType; }
     function setDataType($sNewValue) { $this->sDataType = $sNewValue; }
-	function getIsGeneric() { return $this->bIsGeneric; }
-	function setIsGeneric($sNewValue) { 	$this->bIsGeneric = $sNewValue;	}
+    function getIsGeneric() { return $this->bIsGeneric; }
+    function setIsGeneric($sNewValue) {     $this->bIsGeneric = $sNewValue; }
     function getHasLookup() { return $this->bHasLookup; }
-	function setHasLookup($iNewValue) {	$this->bHasLookup = $iNewValue; }
+    function setHasLookup($iNewValue) { $this->bHasLookup = $iNewValue; }
     function getParentFieldset() { return $this->iParentFieldset; }
-	function setParentFieldset($iNewValue) { $this->iParentFieldset = $iNewValue; }
+    function setParentFieldset($iNewValue) { $this->iParentFieldset = $iNewValue; }
     function getParentFieldsetId() { return $this->iParentFieldset; }
-	function setParentFieldsetId($iNewValue) { $this->iParentFieldset = $iNewValue; }
+    function setParentFieldsetId($iNewValue) { $this->iParentFieldset = $iNewValue; }
     function getHasLookupTree() { return $this->bHasLookupTree; }
-	function setHasLookupTree($iNewValue) { $this->bHasLookupTree = KTUtil::anyToBool($iNewValue); }
+    function setHasLookupTree($iNewValue) { $this->bHasLookupTree = KTUtil::anyToBool($iNewValue); }
     function getIsMandatory() { return $this->bIsMandatory; }
-	function setIsMandatory($iNewValue) { $this->bIsMandatory = KTUtil::anyToBool($iNewValue); }
+    function setIsMandatory($iNewValue) { $this->bIsMandatory = KTUtil::anyToBool($iNewValue); }
     function getPosition() { return $this->iPosition; }
-	function setPosition($iNewValue) { $this->iPosition = $iNewValue; }
+    function setPosition($iNewValue) { $this->iPosition = $iNewValue; }
     function getIsHTML() { return $this->bIsHTML; }
-	function setIsHTML($iNewValue) { $this->bIsHTML = $iNewValue; }
-	function getMaxLength() { return $this->iMax; }
-	function setMaxLength($iNewValue) { $this->iMax = $iNewValue; }	
-	function getHasInetLookup() { return $this->bHasInetLookup; }
-	function setHasInetLookup($iNewValue) {	$this->bHasInetLookup = $iNewValue; }
-	function getInetLookupType() { return $this->sInetLookupType; }
-	function setInetLookupType($sNewValue) {	$this->sInetLookupType = $sNewValue; }
-	function getInetLookupTypeFriendlyName()
-	{
-		$aDescriptors = array();
-		if($this->getInetLookupType() == "multiwithlist")
-		{
-			$aDescriptors[] = _kt("Multiselect with a list");
-		}
-		elseif($this->getInetLookupType() == "multiwithcheckboxes")
-		{
-			$aDescriptors[] = _kt("Multiselect with checkboxes");
-		}
-		
+    function setIsHTML($iNewValue) { $this->bIsHTML = $iNewValue; }
+    function getMaxLength() { return $this->iMax; }
+    function setMaxLength($iNewValue) { $this->iMax = $iNewValue; } 
+    function getHasInetLookup() { return $this->bHasInetLookup; }
+    function setHasInetLookup($iNewValue) { $this->bHasInetLookup = $iNewValue; }
+    function getInetLookupType() { return $this->sInetLookupType; }
+    function setInetLookupType($sNewValue) {    $this->sInetLookupType = $sNewValue; }
+    function getInetLookupTypeFriendlyName()
+    {
+        $aDescriptors = array();
+        if($this->getInetLookupType() == "multiwithlist")
+        {
+            $aDescriptors[] = _kt("Multiselect with a list");
+        }
+        elseif($this->getInetLookupType() == "multiwithcheckboxes")
+        {
+            $aDescriptors[] = _kt("Multiselect with checkboxes");
+        }
+        
         // required
         if ($this->getIsMandatory()) {
             $aDescriptors[] = _kt("Required");
@@ -158,13 +158,13 @@ class DocumentField extends KTEntity {
         }
 
         return implode(', ', $aDescriptors);
-	}
+    }
 
 
     function _fieldValues () {
         return array(
             'name' => $this->sName,
-	        'description' => $this->sDescription,
+            'description' => $this->sDescription,
             'data_type' => $this->sDataType,
             'is_generic' => KTUtil::anyToBool($this->bIsGeneric),
             'has_lookup' => KTUtil::anyToBool($this->bHasLookup),
@@ -185,7 +185,7 @@ class DocumentField extends KTEntity {
     }
 
     function &getList($sWhereClause = null) {
-	return KTEntityUtil::getList2('DocumentField', $sWhereClause);
+    return KTEntityUtil::getList2('DocumentField', $sWhereClause);
     }
 
     function &createFromArray($aOptions) {
@@ -226,27 +226,27 @@ class DocumentField extends KTEntity {
         return KTEntityUtil::get('DocumentField', $iId);
     }
 
-	// FIXME: add a data type class!
-	/* Static function.  Given a documenttype...will find all fields belongin to it
-	*
-	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function getLookupCount($iDocumentFieldID){
-	    $sTable = 'metadata';
-		$sQuery = "SELECT COUNT(*) AS count FROM " . $sTable . " WHERE document_field_id = ?";
-		$aParams = array($iDocumentFieldID);
+    // FIXME: add a data type class!
+    /* Static function.  Given a documenttype...will find all fields belongin to it
+    *
+    * @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
+    */
+    function getLookupCount($iDocumentFieldID){
+        $sTable = 'metadata';
+        $sQuery = "SELECT COUNT(*) AS count FROM " . $sTable . " WHERE document_field_id = ?";
+        $aParams = array($iDocumentFieldID);
 
         $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'count');
         if (PEAR::isError($res)) {
             return false; // return $res;
         }
         return $res;
-	}
+    }
 
     function getType() {
-    	if($this->bHasInetLookup){
+        if($this->bHasInetLookup){
             return  _kt('Multiselect');
-	}
+    }
         if (empty($this->bHasLookup)) {
             return _kt("Normal");
         }
@@ -312,148 +312,148 @@ class DocumentField extends KTEntity {
     function reorderFields($iFieldsetId) {
         // Get the fields in the order they'll appear - first by position then by id
         $sql = "SELECT id, position FROM document_fields
-	       WHERE parent_fieldset = ?
-	       ORDER BY position, id ASC";
-	    $aParams = array($iFieldsetId);
+           WHERE parent_fieldset = ?
+           ORDER BY position, id ASC";
+        $aParams = array($iFieldsetId);
 
-	    $result = DBUtil::getResultArray(array($sql, $aParams));
+        $result = DBUtil::getResultArray(array($sql, $aParams));
 
-	    if(PEAR::isError($result) || empty($result)){
-	        return false;
-	    }
+        if(PEAR::isError($result) || empty($result)){
+            return false;
+        }
 
-	    // Set all positions to be unique and in order
-	    foreach($result as $key => $field){
-	        $position = $field['position'];
+        // Set all positions to be unique and in order
+        foreach($result as $key => $field){
+            $position = $field['position'];
 
-	        // If the fields position is correct in the order, continue
-	        if($position == $key){
-	            continue;
-	        }
+            // If the fields position is correct in the order, continue
+            if($position == $key){
+                continue;
+            }
 
-	        // Reset the position
-	        $aFields = array();
-	        $aFields['position'] = $key;
+            // Reset the position
+            $aFields = array();
+            $aFields['position'] = $key;
 
-	        $res = DBUtil::autoUpdate('document_fields', $aFields, $field['id']);
-	    }
-	    return true;
+            $res = DBUtil::autoUpdate('document_fields', $aFields, $field['id']);
+        }
+        return true;
     }
 
-	/**
-	 * Get the postion of the last field
-	 */
-	function getNextFieldPosition($iFieldsetId){
-	    $sql = "SELECT position FROM document_fields
-	       WHERE parent_fieldset = ?
-	       ORDER BY position DESC LIMIT 1";
-	    $aParams = array($iFieldsetId);
+    /**
+     * Get the postion of the last field
+     */
+    function getNextFieldPosition($iFieldsetId){
+        $sql = "SELECT position FROM document_fields
+           WHERE parent_fieldset = ?
+           ORDER BY position DESC LIMIT 1";
+        $aParams = array($iFieldsetId);
 
-	    $result = DBUtil::getResultArray(array($sql, $aParams));
+        $result = DBUtil::getResultArray(array($sql, $aParams));
 
-	    if(PEAR::isError($result) || empty($result)){
-	        return 0;
-	    }
-	    return $result[0]['position'] + 1;
-	}
+        if(PEAR::isError($result) || empty($result)){
+            return 0;
+        }
+        return $result[0]['position'] + 1;
+    }
 
-	/**
-	 * Get the next postion up / down
-	 */
-	function getNextPosition($iFieldsetId, $iId, $position, $dir = 'up') {
-	    switch($dir){
-	        case 'down':
-	            $comp = '>';
-	            $order = 'ASC';
-	            break;
-	        default:
-	            $comp = '<';
-	            $order = 'DESC';
-	    }
+    /**
+     * Get the next postion up / down
+     */
+    function getNextPosition($iFieldsetId, $iId, $position, $dir = 'up') {
+        switch($dir){
+            case 'down':
+                $comp = '>';
+                $order = 'ASC';
+                break;
+            default:
+                $comp = '<';
+                $order = 'DESC';
+        }
 
-	    // Get the column above / below to swop position
-	    $sql = "SELECT id, position FROM document_fields
-	       WHERE parent_fieldset = ? AND (position {$comp} ? || (position = ? AND id {$comp} ?))
-	       ORDER BY position {$order} LIMIT 1";
-	    $aParams = array($iFieldsetId, $position, $position, $iId);
+        // Get the column above / below to swop position
+        $sql = "SELECT id, position FROM document_fields
+           WHERE parent_fieldset = ? AND (position {$comp} ? || (position = ? AND id {$comp} ?))
+           ORDER BY position {$order} LIMIT 1";
+        $aParams = array($iFieldsetId, $position, $position, $iId);
 
-	    $result = DBUtil::getOneResult(array($sql, $aParams));
+        $result = DBUtil::getOneResult(array($sql, $aParams));
 
-	    if(PEAR::isError($result) || empty($result)){
-	        return false;
-	    }
-	    return $result;
-	}
+        if(PEAR::isError($result) || empty($result)){
+            return false;
+        }
+        return $result;
+    }
 
-	/**
-	 * Get the updated position of the field
-	 *
-	 * @param int $iId
-	 * @return int
-	 */
-	function getNewPosition($iId){
-	    // Get the new position
-	    $sql = "SELECT id, position FROM document_fields
-    	       WHERE id = ?";
-	    $aParams = array($iId);
-	    $result = DBUtil::getOneResult(array($sql, $aParams));
+    /**
+     * Get the updated position of the field
+     *
+     * @param int $iId
+     * @return int
+     */
+    function getNewPosition($iId){
+        // Get the new position
+        $sql = "SELECT id, position FROM document_fields
+               WHERE id = ?";
+        $aParams = array($iId);
+        $result = DBUtil::getOneResult(array($sql, $aParams));
 
-	    if(PEAR::isError($result) || empty($result)){
-	        return false;
-	    }
-	    return $result['position'];
-	}
+        if(PEAR::isError($result) || empty($result)){
+            return false;
+        }
+        return $result['position'];
+    }
 
-	/**
-	 * Update the position of a field
-	 */
-	function updatePosition($iId, $position) {
-	    $aFields = array('position' => $position);
-	    DBUtil::autoUpdate('document_fields', $aFields, $iId);
-	}
+    /**
+     * Update the position of a field
+     */
+    function updatePosition($iId, $position) {
+        $aFields = array('position' => $position);
+        DBUtil::autoUpdate('document_fields', $aFields, $iId);
+    }
 
-	/**
-	 * Move the display position of the field up
-	 */
-	function movePosition($iFieldsetId, $iId, $dir = 'up') {
-	    $position = $this->getPosition();
+    /**
+     * Move the display position of the field up
+     */
+    function movePosition($iFieldsetId, $iId, $dir = 'up') {
+        $position = $this->getPosition();
 
-	    // Get the field to swop position with
-	    $next = $this->getNextPosition($iFieldsetId, $iId, $position, $dir);
-	    if($next === false){
-	        return false;
-	    }
+        // Get the field to swop position with
+        $next = $this->getNextPosition($iFieldsetId, $iId, $position, $dir);
+        if($next === false){
+            return false;
+        }
 
-	    // Get position of the next field up / down
-	    $newPos = $next['position'];
-	    $iNextId = $next['id'];
+        // Get position of the next field up / down
+        $newPos = $next['position'];
+        $iNextId = $next['id'];
 
-	    if($newPos == $position){
-	        // 2 fields have the same position - reorder them
-	        $res = $this->reorderFields($iFieldsetId);
-	        if($res === false){
-	            return false;
-	        }
+        if($newPos == $position){
+            // 2 fields have the same position - reorder them
+            $res = $this->reorderFields($iFieldsetId);
+            if($res === false){
+                return false;
+            }
 
-    	    $position = $this->getNewPosition($iId);
-    	    if($position === false){
-	            return false;
-	        }
+            $position = $this->getNewPosition($iId);
+            if($position === false){
+                return false;
+            }
 
-    	    // Get the field to swop with
-    	    $next = $this->getNextPosition($iFieldsetId, $iId, $position, $dir);
-    	    if($next === false){
-    	        return false;
-    	    }
-    	    $newPos = $next['position'];
-    	    $iNextId = $next['id'];
-	    }
+            // Get the field to swop with
+            $next = $this->getNextPosition($iFieldsetId, $iId, $position, $dir);
+            if($next === false){
+                return false;
+            }
+            $newPos = $next['position'];
+            $iNextId = $next['id'];
+        }
 
-	    // update the fields
-	    $this->updatePosition($iId, $newPos);
-	    $this->updatePosition($iNextId, $position);
-	    return true;
-	}
+        // update the fields
+        $this->updatePosition($iId, $newPos);
+        $this->updatePosition($iNextId, $position);
+        return true;
+    }
 }
 
 /**
@@ -461,13 +461,13 @@ class DocumentField extends KTEntity {
 *
 * Creates a document type object from an array
 *
-* @param 	Array		Array of parameters.  Must match order of parameters in constructor
+* @param    Array       Array of parameters.  Must match order of parameters in constructor
 *
 * @return User user object
 */
 function & documentfieldCreateFromArray($aParameters) {
-	$oDocField = new DocumentField($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
-	return $oDocField;
+    $oDocField = new DocumentField($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
+    return $oDocField;
 }
 
 

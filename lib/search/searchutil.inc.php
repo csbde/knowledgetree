@@ -63,7 +63,7 @@ class KTSearchUtil {
             $type = KTUtil::arrayGet($dataset, "type");
             $sql = KTUtil::arrayGet($dataset, "sql");
             if (!empty($type)) {
-				$oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();		
+                $oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();       
                 $oCriterion = $oCriteriaRegistry->getCriterion($dataset['type']);
                 if (PEAR::isError($oCriterion)) {
                     return PEAR::raiseError(_kt('Invalid criteria specified.'));
@@ -84,46 +84,46 @@ class KTSearchUtil {
             $aReq = $oCriterionPair[1];
             
             if (is_object($oCriterion)) {
-				if(is_array($aReq[$oCriterion->sNamespace]) && KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin'))
-				{
-					//$newAReq = $aReq;
-					$aNewSQL = array();
-					foreach($aReq[$oCriterion->sNamespace] as $kkey => $vval)
-					{
-						$newAReq = $aReq;
-						$newAReq[$oCriterion->sNamespace] = $vval;
-						$res = $oCriterion->searchSQL($newAReq);
-						if (!is_null($res)) {
-		                    $aNewSQL[] = $res;
-		                }
-					}
+                if(is_array($aReq[$oCriterion->sNamespace]) && KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin'))
+                {
+                    //$newAReq = $aReq;
+                    $aNewSQL = array();
+                    foreach($aReq[$oCriterion->sNamespace] as $kkey => $vval)
+                    {
+                        $newAReq = $aReq;
+                        $newAReq[$oCriterion->sNamespace] = $vval;
+                        $res = $oCriterion->searchSQL($newAReq);
+                        if (!is_null($res)) {
+                            $aNewSQL[] = $res;
+                        }
+                    }
 
-					$aNewSQL0 = array();
-					$aNewSQL1 = array();
-					foreach($aNewSQL as $ind=>$sQ)
-					{
-						$aNewSQL0[] = $sQ[0];
-						$aNewSQL1 = array_merge($aNewSQL1,$sQ[1]);
-					}
-					
-					$aSQL[] = array(" ( ".join(" ) ".$aReq[$oCriterion->sNamespace."_join"]." ( ", $aNewSQL0)." ) ",$aNewSQL1 );
-					
-					$res = $oCriterion->searchJoinSQL();
-	                if (!is_null($res)) {
-	                    $aJoinSQL[] = $res;
-					}
-				}
-				else
-				{
-					$res = $oCriterion->searchSQL($aReq);
-	                if (!is_null($res)) {
-	                    $aSQL[] = $res;
-	                }
-	                $res = $oCriterion->searchJoinSQL();
-	                if (!is_null($res)) {
-	                    $aJoinSQL[] = $res;
-					}
-				}
+                    $aNewSQL0 = array();
+                    $aNewSQL1 = array();
+                    foreach($aNewSQL as $ind=>$sQ)
+                    {
+                        $aNewSQL0[] = $sQ[0];
+                        $aNewSQL1 = array_merge($aNewSQL1,$sQ[1]);
+                    }
+                    
+                    $aSQL[] = array(" ( ".join(" ) ".$aReq[$oCriterion->sNamespace."_join"]." ( ", $aNewSQL0)." ) ",$aNewSQL1 );
+                    
+                    $res = $oCriterion->searchJoinSQL();
+                    if (!is_null($res)) {
+                        $aJoinSQL[] = $res;
+                    }
+                }
+                else
+                {
+                    $res = $oCriterion->searchSQL($aReq);
+                    if (!is_null($res)) {
+                        $aSQL[] = $res;
+                    }
+                    $res = $oCriterion->searchJoinSQL();
+                    if (!is_null($res)) {
+                        $aJoinSQL[] = $res;
+                    }
+                }
             } else {
                 $aSQL[] = array($oCriterion, $aReq);
             }
@@ -152,137 +152,137 @@ class KTSearchUtil {
     }
     // }}}
 
-	/**
-	 * All for folders only
+    /**
+     * All for folders only
      * Handles leaf criteria set (ie, no subgroups), generating SQL for
      * the values in the criteria.
      *
      * (This would be the place to extend criteria to support contains,
      * starts with, ends with, greater than, and so forth.)
      */
-	 function _oneCriteriaFolderSetToSQL($aOneCriteriaSet) {
-	        $aSQL = array();
-	        $aJoinSQL = array();
-	        $criteria_set = array();
-	        
-	        /*
-	         * First phase: get criterion object for search or the direct
-	         * SQL to use.
-	         *
-	         * XXX: Why is there $order there? 
-	         */
-	        foreach ($aOneCriteriaSet as $order => $dataset) {
-	            $type = KTUtil::arrayGet($dataset, "type");
-	            $sql = KTUtil::arrayGet($dataset, "sql");
-	            if (!empty($type)) {
-					$oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();		
-	                $oCriterion = $oCriteriaRegistry->getCriterion($dataset['type']);
-					
-	                if (PEAR::isError($oCriterion)) {
-	                    return PEAR::raiseError(_kt('Invalid criteria specified.'));
-	                }
-	                $criteria_set[] = array($oCriterion, $dataset["data"]);
-	            } else if (!empty($sql)) {
-	                $criteria_set[] = $sql;
-	            } else {
-	                return PEAR::raiseError(_kt('Invalid criteria specified.'));
-	            }
-	        }
-	
-	        /*
-	         * Second phase: Create an individual SQL query per criteria.
-	         */
-	        foreach ($criteria_set as $oCriterionPair) {
-	        		$oCriterion->aLookup[table]='folder_field_links';
-					
-	            $oCriterion = $oCriterionPair[0];
-	            $aReq = $oCriterionPair[1];
-			
-	          
-	
-	
-	            if (is_object($oCriterion)) {
-	                // changed by dp start // for multiselect search for folders
-					if(is_array($aReq[$oCriterion->sNamespace]) && KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin'))
-					{
-						$aNewSQL = array();
-						foreach($aReq[$oCriterion->sNamespace] as $kkey => $vval)
-						{
-							$newAReq = $aReq;
-							$newAReq[$oCriterion->sNamespace] = $vval;
-							$res = $oCriterion->searchSQL($newAReq);
-							if (!is_null($res)) {
-			                    $aNewSQL[] = $res;
-			                }
-						}
-	
-						$aNewSQL0 = array();
-						$aNewSQL1 = array();
-						foreach($aNewSQL as $ind=>$sQ)
-						{
-							$aNewSQL0[] = $sQ[0];
-							$aNewSQL1 = array_merge($aNewSQL1,$sQ[1]);
-						}
-						$aSQL[] = array(" ( ".join(" ) ".$aReq[$oCriterion->sNamespace."_join"]." ( ", $aNewSQL0)." ) ",$aNewSQL1 );
-						$res = $oCriterion->searchJoinSQL();
-		                if (!is_null($res)) {
-		                	if(strstr($res,'D.metadata_version_id')){
-								$res=str_replace('D.metadata_version_id','F.metadata_version_id',$res);
-		                	}
-							if(strstr($res,'document_fields_link')){
-								$res=str_replace('document_fields_link','folder_fields_link',$res);
-		                	}
-		                    $aJoinSQL[] = $res;
-		                }
-					}// changed by dp end // for multiselect search for folders
-					else
-					{
-						$res = $oCriterion->searchSQL($aReq);
-		                if (!is_null($res)) {
-		                    $aSQL[] = $res;
-		                }
-		                $res = $oCriterion->searchJoinSQL();
-		                if (!is_null($res)) {
-		
-		                	if(strstr($res,'D.metadata_version_id')){
-								$res=str_replace('D.metadata_version_id','F.metadata_version_id',$res);
-		                	}
-							if(strstr($res,'document_fields_link')){
-								$res=str_replace('document_fields_link','folder_fields_link',$res);
-		                	}
-		                    $aJoinSQL[] = $res;
-		                }
-					}	
-					
-	            } else {
-	                $aSQL[] = array($oCriterion, $aReq);
-	            }
-	        }
-			
-	        /*
-	         * Third phase: build up $aCritQueries and $aCritParams, and put
-	         * parentheses around them.
-	         */
-	        $aCritParams = array();
-	        $aCritQueries = array();
-	        foreach ($aSQL as $sSQL) {
-	            if (is_array($sSQL)) {
-	                $aCritQueries[] = '('.$sSQL[0].')';
-	                $aCritParams = kt_array_merge($aCritParams , $sSQL[1]);
-	            } else {
-	                $aCritQueries[] = '('.$sSQL.')';
-	            }
-	        }
-			
-			
-	        if (count($aCritQueries) == 0) {
-	            return PEAR::raiseError(_kt("No search criteria were specified"));
-	        }
-	
-	        return array($aCritQueries, $aCritParams, $aJoinSQL);
-	    }
-	/**
-	 * All for folders
+     function _oneCriteriaFolderSetToSQL($aOneCriteriaSet) {
+            $aSQL = array();
+            $aJoinSQL = array();
+            $criteria_set = array();
+            
+            /*
+             * First phase: get criterion object for search or the direct
+             * SQL to use.
+             *
+             * XXX: Why is there $order there? 
+             */
+            foreach ($aOneCriteriaSet as $order => $dataset) {
+                $type = KTUtil::arrayGet($dataset, "type");
+                $sql = KTUtil::arrayGet($dataset, "sql");
+                if (!empty($type)) {
+                    $oCriteriaRegistry =& KTCriteriaRegistry::getSingleton();       
+                    $oCriterion = $oCriteriaRegistry->getCriterion($dataset['type']);
+                    
+                    if (PEAR::isError($oCriterion)) {
+                        return PEAR::raiseError(_kt('Invalid criteria specified.'));
+                    }
+                    $criteria_set[] = array($oCriterion, $dataset["data"]);
+                } else if (!empty($sql)) {
+                    $criteria_set[] = $sql;
+                } else {
+                    return PEAR::raiseError(_kt('Invalid criteria specified.'));
+                }
+            }
+    
+            /*
+             * Second phase: Create an individual SQL query per criteria.
+             */
+            foreach ($criteria_set as $oCriterionPair) {
+                    $oCriterion->aLookup[table]='folder_field_links';
+                    
+                $oCriterion = $oCriterionPair[0];
+                $aReq = $oCriterionPair[1];
+            
+              
+    
+    
+                if (is_object($oCriterion)) {
+                    // changed by dp start // for multiselect search for folders
+                    if(is_array($aReq[$oCriterion->sNamespace]) && KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin'))
+                    {
+                        $aNewSQL = array();
+                        foreach($aReq[$oCriterion->sNamespace] as $kkey => $vval)
+                        {
+                            $newAReq = $aReq;
+                            $newAReq[$oCriterion->sNamespace] = $vval;
+                            $res = $oCriterion->searchSQL($newAReq);
+                            if (!is_null($res)) {
+                                $aNewSQL[] = $res;
+                            }
+                        }
+    
+                        $aNewSQL0 = array();
+                        $aNewSQL1 = array();
+                        foreach($aNewSQL as $ind=>$sQ)
+                        {
+                            $aNewSQL0[] = $sQ[0];
+                            $aNewSQL1 = array_merge($aNewSQL1,$sQ[1]);
+                        }
+                        $aSQL[] = array(" ( ".join(" ) ".$aReq[$oCriterion->sNamespace."_join"]." ( ", $aNewSQL0)." ) ",$aNewSQL1 );
+                        $res = $oCriterion->searchJoinSQL();
+                        if (!is_null($res)) {
+                            if(strstr($res,'D.metadata_version_id')){
+                                $res=str_replace('D.metadata_version_id','F.metadata_version_id',$res);
+                            }
+                            if(strstr($res,'document_fields_link')){
+                                $res=str_replace('document_fields_link','folder_fields_link',$res);
+                            }
+                            $aJoinSQL[] = $res;
+                        }
+                    }// changed by dp end // for multiselect search for folders
+                    else
+                    {
+                        $res = $oCriterion->searchSQL($aReq);
+                        if (!is_null($res)) {
+                            $aSQL[] = $res;
+                        }
+                        $res = $oCriterion->searchJoinSQL();
+                        if (!is_null($res)) {
+        
+                            if(strstr($res,'D.metadata_version_id')){
+                                $res=str_replace('D.metadata_version_id','F.metadata_version_id',$res);
+                            }
+                            if(strstr($res,'document_fields_link')){
+                                $res=str_replace('document_fields_link','folder_fields_link',$res);
+                            }
+                            $aJoinSQL[] = $res;
+                        }
+                    }   
+                    
+                } else {
+                    $aSQL[] = array($oCriterion, $aReq);
+                }
+            }
+            
+            /*
+             * Third phase: build up $aCritQueries and $aCritParams, and put
+             * parentheses around them.
+             */
+            $aCritParams = array();
+            $aCritQueries = array();
+            foreach ($aSQL as $sSQL) {
+                if (is_array($sSQL)) {
+                    $aCritQueries[] = '('.$sSQL[0].')';
+                    $aCritParams = kt_array_merge($aCritParams , $sSQL[1]);
+                } else {
+                    $aCritQueries[] = '('.$sSQL.')';
+                }
+            }
+            
+            
+            if (count($aCritQueries) == 0) {
+                return PEAR::raiseError(_kt("No search criteria were specified"));
+            }
+    
+            return array($aCritQueries, $aCritParams, $aJoinSQL);
+        }
+    /**
+     * All for folders
      * Converts a criteria set to the SQL joins, where clause, and
      * parameters necessary to ensure that the criteria listed restrict
      * the folders returned to those that match the criteria.
@@ -295,7 +295,7 @@ class KTSearchUtil {
      *      - Array of parameters that go with the where clause
      *      - String with the SQL necessary to join with the tables in the
      *        where clause
-     */	
+     */ 
      function criteriaFolderSetToSQL($aCriteriaSet, $iRecurseLevel = 0) {
         $aJoinSQL = array();
         $aSearchStrings = array();
@@ -315,18 +315,18 @@ class KTSearchUtil {
             $aSubgroup = KTUtil::arrayGet($aOneCriteriaSet, "subgroup");
             if (!empty($aValues)) {
 
-				$res = KTSearchUtil::_oneCriteriaFolderSetToSQL($aOneCriteriaSet["values"]);
-				
-				if(PEAR::isError($res)) {
-		    		return $res;
-				}
-	            list($aThisCritQueries, $aThisParams, $aThisJoinSQL) = $res;
-	            $aJoinSQL = kt_array_merge($aJoinSQL, $aThisJoinSQL);
-	            $aParams = kt_array_merge($aParams, $aThisParams);
-	            $tabs = str_repeat("\t", ($iRecurseLevel + 2));
-	            $aSearchStrings[] = "\n$tabs(\n$tabs\t" . join("\n " . KTUtil::arrayGet($aOneCriteriaSet, 'join', "AND") . " ", $aThisCritQueries) . "\n$tabs)";
+                $res = KTSearchUtil::_oneCriteriaFolderSetToSQL($aOneCriteriaSet["values"]);
+                
+                if(PEAR::isError($res)) {
+                    return $res;
+                }
+                list($aThisCritQueries, $aThisParams, $aThisJoinSQL) = $res;
+                $aJoinSQL = kt_array_merge($aJoinSQL, $aThisJoinSQL);
+                $aParams = kt_array_merge($aParams, $aThisParams);
+                $tabs = str_repeat("\t", ($iRecurseLevel + 2));
+                $aSearchStrings[] = "\n$tabs(\n$tabs\t" . join("\n " . KTUtil::arrayGet($aOneCriteriaSet, 'join', "AND") . " ", $aThisCritQueries) . "\n$tabs)";
             } else if (!empty($aSubgroup)) {
-            	
+                
                 /*
                  * Recurse if we have a criteria set with subgroups.
                  * Recurselevel makes the tabs increase as we recurse so
@@ -346,9 +346,9 @@ class KTSearchUtil {
 
         return array($sSearchString, $aParams, $sJoinSQL);
     }
-	
-	/**
-	 * All for folders
+    
+    /**
+     * All for folders
      * Converts a criteria set into a SQL query that (by default)
      * returns the ids of documents that fulfil the criteria.
      *
@@ -362,7 +362,7 @@ class KTSearchUtil {
      *      - String containing the parameterised SQL query
      *      - Array containing the parameters for the SQL query
      */
-	 function criteriaToFolderQuery($aCriteriaSet, $oUser, $sPermissionName, $aOptions = null) {
+     function criteriaToFolderQuery($aCriteriaSet, $oUser, $sPermissionName, $aOptions = null) {
         global $default;
         $sSelect = KTUtil::arrayGet($aOptions, 'select', 'F.id AS folder_id');
         $sInitialJoin = KTUtil::arrayGet($aOptions, 'join', '');
@@ -371,15 +371,15 @@ class KTSearchUtil {
             $sInitialJoin = $sInitialJoin[0];
         }
 
-	$res = KTSearchUtil::criteriaFolderSetToSQL($aCriteriaSet);
+    $res = KTSearchUtil::criteriaFolderSetToSQL($aCriteriaSet);
 
-	if(PEAR::isError($res)) return $res;
+    if(PEAR::isError($res)) return $res;
         list($sSQLSearchString, $aCritParams, $sCritJoinSQL) = $res;
       
         $sToSearch = KTUtil::arrayGet($aOrigReq, 'fToSearch', 'Live'); // actually never present in this version.
 
         $res = KTSearchUtil::permissionToSQL($oUser, $sPermissionName);
- 		
+        
         if (PEAR::isError($res)) {        // only occurs if the group has no permissions.
             return $res;
         } else {
@@ -433,17 +433,17 @@ class KTSearchUtil {
         $aParams = kt_array_merge($aParams, $aInitialJoinParams);
         $aParams = kt_array_merge($aParams, $aPermissionParams);
 
-		if($sToSearch!='Live')
+        if($sToSearch!='Live')
         $aParams[] = $sToSearch;
         $aParams = kt_array_merge($aParams, $aCritParams);
-		
-		
-		if(strstr($sQuery,'document_field_id')){
-			$sQuery=str_replace('document_field_id','folder_field_id',$sQuery);
-    	}
-		if(strstr($sQuery,'D.creator_id')){
-			$sQuery=str_replace('D.creator_id','F.creator_id',$sQuery);
-    	}
+        
+        
+        if(strstr($sQuery,'document_field_id')){
+            $sQuery=str_replace('document_field_id','folder_field_id',$sQuery);
+        }
+        if(strstr($sQuery,'D.creator_id')){
+            $sQuery=str_replace('D.creator_id','F.creator_id',$sQuery);
+        }
         return array($sQuery, $aParams);
     }
     // {{{ criteriaSetToSQL
@@ -479,15 +479,15 @@ class KTSearchUtil {
             $aValues = KTUtil::arrayGet($aOneCriteriaSet, "values");
             $aSubgroup = KTUtil::arrayGet($aOneCriteriaSet, "subgroup");
             if (!empty($aValues)) {
-				$res = KTSearchUtil::_oneCriteriaSetToSQL($aOneCriteriaSet["values"]);
-				if(PEAR::isError($res)) {
-		    		return $res;
-				}
-	            list($aThisCritQueries, $aThisParams, $aThisJoinSQL) = $res;
-	            $aJoinSQL = kt_array_merge($aJoinSQL, $aThisJoinSQL);
-	            $aParams = kt_array_merge($aParams, $aThisParams);
-	            $tabs = str_repeat("\t", ($iRecurseLevel + 2));
-	            $aSearchStrings[] = "\n$tabs(\n$tabs\t" . join("\n " . KTUtil::arrayGet($aOneCriteriaSet, 'join', "AND") . " ", $aThisCritQueries) . "\n$tabs)";
+                $res = KTSearchUtil::_oneCriteriaSetToSQL($aOneCriteriaSet["values"]);
+                if(PEAR::isError($res)) {
+                    return $res;
+                }
+                list($aThisCritQueries, $aThisParams, $aThisJoinSQL) = $res;
+                $aJoinSQL = kt_array_merge($aJoinSQL, $aThisJoinSQL);
+                $aParams = kt_array_merge($aParams, $aThisParams);
+                $tabs = str_repeat("\t", ($iRecurseLevel + 2));
+                $aSearchStrings[] = "\n$tabs(\n$tabs\t" . join("\n " . KTUtil::arrayGet($aOneCriteriaSet, 'join', "AND") . " ", $aThisCritQueries) . "\n$tabs)";
             } else if (!empty($aSubgroup)) {
                 /*
                  * Recurse if we have a criteria set with subgroups.
@@ -595,15 +595,15 @@ class KTSearchUtil {
             $sInitialJoin = $sInitialJoin[0];
         }
 
-	$res = KTSearchUtil::criteriaSetToSQL($aCriteriaSet);
+    $res = KTSearchUtil::criteriaSetToSQL($aCriteriaSet);
 
-	if(PEAR::isError($res)) return $res;
+    if(PEAR::isError($res)) return $res;
         list($sSQLSearchString, $aCritParams, $sCritJoinSQL) = $res;
       
         $sToSearch = KTUtil::arrayGet($aOrigReq, 'fToSearch', 'Live'); // actually never present in this version.
 
         $res = KTSearchUtil::permissionToSQL($oUser, $sPermissionName);
- 		
+        
         if (PEAR::isError($res)) {        // only occurs if the group has no permissions.
             return $res;
         } else {
@@ -715,8 +715,8 @@ class KTSearchUtil {
         return $cnt > 0;
     }
     // }}}
-	
-	
+    
+    
 function testConditionOnFolder($oSearch, $oFolder) {
         $oSearch =& KTUtil::getObject('KTSavedSearch', $oSearch);
         $iFolderId = KTUtil::getId($oFolder);
@@ -741,7 +741,7 @@ function testConditionOnFolder($oSearch, $oFolder) {
             ),
         );
         $aOptions = array('select' => 'COUNT(DISTINCT(F.id)) AS cnt');
-      	$aQuery = KTSearchUtil::criteriaToFolderQuery($aCriteriaSet, null, null, $aOptions);
+        $aQuery = KTSearchUtil::criteriaToFolderQuery($aCriteriaSet, null, null, $aOptions);
 
 
 
@@ -759,8 +759,8 @@ function testConditionOnFolder($oSearch, $oFolder) {
         if (!is_numeric($cnt)) {
             return PEAR::raiseError(_kt("Non-integer returned when looking for count"));
         }
-		
+        
         return $cnt > 0;
     }
-	 
+     
 }

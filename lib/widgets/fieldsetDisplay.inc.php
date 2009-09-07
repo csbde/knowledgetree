@@ -108,13 +108,13 @@ function getWidgetForMetadataField($field, $current_value, $page, $errors = null
             $fieldTree = new MDTree();
             $fieldTree->buildForField($field->getId());
             $fieldTree->setActiveItem($current_value);
-			$fieldOptions['tree'] = $fieldTree->_evilTreeRenderer($fieldTree, $fieldName);
+            $fieldOptions['tree'] = $fieldTree->_evilTreeRenderer($fieldTree, $fieldName);
 
             $oField = new KTTreeWidget($fieldLabel, $fieldDescription, $fieldName, $fieldValue, $page, $fieldRequired, null, $fieldErrors, $fieldOptions);
         }
     } else if(KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin') && $field->getHasInetLookup()){
-		require_once(KT_DIR."/plugins/multiselect/InetWidgets.php");
-		if ($vocab === null) { // allow override
+        require_once(KT_DIR."/plugins/multiselect/InetWidgets.php");
+        if ($vocab === null) { // allow override
             $lookups = MetaData::getEnabledByDocumentField($field);
             $fieldOptions['vocab'] = array(); // FIXME handle lookups
             foreach ($lookups as $md) {
@@ -123,8 +123,8 @@ function getWidgetForMetadataField($field, $current_value, $page, $errors = null
         } else {
             $fieldOptions['vocab'] = $vocab;
         }
-		$fieldOptions['multi'] = true;
-		$fieldOptions['lookup_type'] = $field->getInetLookupType();
+        $fieldOptions['multi'] = true;
+        $fieldOptions['lookup_type'] = $field->getInetLookupType();
         $oField = new InetMultiselectWidget($fieldLabel, $fieldDescription, $fieldName, $fieldValue, $page, $fieldRequired, null, $fieldErrors, $fieldOptions);
     } else {
         $oField = new KTBaseWidget($fieldLabel, $fieldDescription, $fieldName, $fieldValue, $page, $fieldRequired, null, $fieldErrors, $fieldOptions);
@@ -184,8 +184,8 @@ class KTFieldsetDisplay {
         if (!empty($res['friendly_name'])) {
             return _kt($res['friendly_name']);
         } else {
-		    return sprintf(_kt('%s File'), strtoupper($res['filetypes']));
-		}
+            return sprintf(_kt('%s File'), strtoupper($res['filetypes']));
+        }
 
     }
 
@@ -261,7 +261,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
             'document_data' => $aDocumentData,
             'document' => $aDocumentData['document'],
 
-			'filename' => $document->getFileName(),
+            'filename' => $document->getFileName(),
 
             'creator' => $creator_name,
             'owner' => $owner_name,
@@ -337,11 +337,11 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
             'document_data' => $aDocumentData,
             'document' => $aDocumentData['document'],
 
-	    'title' => $document->getName(),
-	    'comparison_title' => $comparison_document->getName(),
+        'title' => $document->getName(),
+        'comparison_title' => $comparison_document->getName(),
 
-	    'filename' => $document->getFileName(),
-	    'comparison_filename' => $comparison_document->getFileName(),
+        'filename' => $document->getFileName(),
+        'comparison_filename' => $comparison_document->getFileName(),
 
             'creator' => $creator,
             'creation_date' => $creation_date,
@@ -424,7 +424,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
             'document' => $aDocumentData['document'],
             'fieldset' => $this->fieldset,
             'fieldset_values' => $fieldset_values,
-			'description' => $this->fieldset->getDescription(),
+            'description' => $this->fieldset->getDescription(),
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -533,25 +533,25 @@ class ConditionalFieldsetDisplay extends SimpleFieldsetDisplay {
         // how?
 
         $fieldset_name = $this->fieldset->getName();
-		$fieldset_description = _kt($this->fieldset->getDescription()); // need a better approach.  how do we handle database-resident translations?
+        $fieldset_description = _kt($this->fieldset->getDescription()); // need a better approach.  how do we handle database-resident translations?
         $fieldset_description .= _kt('Note that the options which are available depends on previous choices within this fieldset.');
 
         // FIXME handle the editable case _with_ values.
 
         if ($have_values) {
-			$oTemplating =& KTTemplating::getSingleton();
-			$oTemplate = $oTemplating->loadTemplate('kt3/fieldsets/conditional_editable_values');
-			$aTemplateData = array(
-				'context' => $this,
-				'fields' => $fields =& $this->fieldset->getFields(),
-				'fieldset_id' => $this->fieldset->getId(),
-				'title' => $fieldset_name,
-				'description' => $fieldset_description,
-				'values' => $values,
+            $oTemplating =& KTTemplating::getSingleton();
+            $oTemplate = $oTemplating->loadTemplate('kt3/fieldsets/conditional_editable_values');
+            $aTemplateData = array(
+                'context' => $this,
+                'fields' => $fields =& $this->fieldset->getFields(),
+                'fieldset_id' => $this->fieldset->getId(),
+                'title' => $fieldset_name,
+                'description' => $fieldset_description,
+                'values' => $values,
                 'errors' => $errors,
-			);
+            );
 
-		    return $oTemplate->render($aTemplateData);
+            return $oTemplate->render($aTemplateData);
         } // else {
 
         $oTemplating =& KTTemplating::getSingleton();

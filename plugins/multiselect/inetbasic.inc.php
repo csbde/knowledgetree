@@ -107,7 +107,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             'normal' => _kt("Normal (String)"),
             'lookup' => _kt("Lookup"),
             'tree' => _kt("Tree"),
-			'Multiselect' => _kt("Multiselect (RATP)"),
+			'Multiselect' => _kt("Multiselect"),
         );
         return $types;
     }
