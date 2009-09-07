@@ -52,6 +52,7 @@ class KTRepositoryService extends KTCMISBase {
 
     public function __construct()
     {
+        // we don't need to call the parent constructor here as there is no ktapi involved
         // instantiate underlying CMIS service
         $this->RepositoryService = new CMISRepositoryService();
     }
