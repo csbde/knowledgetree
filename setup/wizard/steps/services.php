@@ -60,7 +60,8 @@ class services extends Step
 	*/
     protected $runInstall = true;
     
-    private $services = array('Lucene', 'Scheduler', 'OpenOffice');
+    //private $services = array('Lucene', 'Scheduler', 'OpenOffice');
+    private $services = array('OpenOffice');
     
     protected $java;
     

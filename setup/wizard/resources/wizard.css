@@ -127,6 +127,12 @@ select {
 	height:295px;
 }
 
+#step_content_registration_confirm {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	height:400px;
+}
+
 #step_content_install {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
@@ -186,6 +192,18 @@ select {
     height: 50px;
     width: 200px;
     margin-left: 10px;
+}
+
+#logo {
+	position:relative;
+	right:760px;
+	top:20px;
+}
+
+#install_details {
+	bottom:30px;
+	position:relative;
+	right:10px;
 }
 
 .menu {
