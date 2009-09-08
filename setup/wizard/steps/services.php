@@ -61,7 +61,6 @@ class services extends Step
     protected $runInstall = true;
     
     private $services = array('Lucene', 'Scheduler', 'OpenOffice');
-//    private $services = array('OpenOffice');
     
     protected $java;
     
@@ -70,7 +69,7 @@ class services extends Step
     protected $util;
     
     private $javaVersion = '1.5';
-    
+//    private $javaVersion = '1.7';
 	/**
 	* Java Installed 
 	*
@@ -390,7 +389,7 @@ class services extends Step
 	* @access private
 	* @return boolean
 	*/
-    private function detSettings($attempt) {
+    private function detSettings($attempt = false) {
     	$javaExecutable = $this->util->javaSpecified();// Retrieve java bin
     	$cmd = "$javaExecutable -version > output/outJV 2>&1 echo $!";
     	$response = $this->util->pexec($cmd);

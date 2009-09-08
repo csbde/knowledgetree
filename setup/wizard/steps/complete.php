@@ -187,13 +187,11 @@ class complete extends Step {
             $qresult = $this->_dbhandler->query('SELECT COUNT(id) FROM documents');
             if (!$qresult)
             {
-                $this->temp_variables['dbPrivileges'] .= '<td><div class="cross" style="float:left;"></div></td>'
-                                                      .  '<td class="error">'
-                                                      .  'Unable to do a basic database query<br/>Error: ' . $this->_dbhandler->getLastError()
+                $this->temp_variables['dbPrivileges'] .= '<td style="width:15px;"><div class="cross" style="float:left;"></div></td>'
+                                                      .  '<td class="error" style="width:500px;">'
+                                                      .  'Unable to do a basic database query. Error: ' . $this->_dbhandler->getLastError()
                                                       .  '</td>';
-                                                      $this->database_check = 'cross';
-                $this->temp_variables['dbPrivileges'] .= sprintf($html, 'cross', 'class="error"', 'Unable to do a basic database query<br/>Error: ' 
-                                                                                        . $this->_dbhandler->getLastError());
+                                                      $this->privileges_check = 'cross';
 				$this->privileges_check = 'cross';
             }
             else
@@ -209,10 +207,8 @@ class complete extends Step {
             $this->_dbhandler->rollback();
             $res = $this->_dbhandler->query("SELECT id FROM $sTable WHERE name = 'transactionTest' LIMIT 1");
             if (!$res) {
-                $this->temp_variables['dbTransaction'] = '<td><div class="cross_orange" style="float:left;"></div></td>'
-                                                       . '<span class="error">Transaction support not available in database</span></td>';
-                                                       $this->database_check = 'cross';
-                $this->temp_variables['dbTransaction'] .= sprintf($html, 'cross_orange', 'class="orange"', 'Transaction support not available in database');
+                $this->temp_variables['dbTransaction'] .= sprintf($html, 'cross', 'class="error"', 'Transaction support not available in database');
+                $this->privileges_check = 'cross';
             } else {
                 $this->temp_variables['dbTransaction'] .= sprintf($html, 'tick', '', 'Database has transaction support');
             }

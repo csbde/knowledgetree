@@ -1,9 +1,7 @@
 <form>
 	<p class="title">Installation Completed</p>
-	
-<!--	<h2>KnowledgeTree post-configuration checkup</h2>-->
 
-	<p>This allows you to check that your KnowledgeTree configuration is set
+	<p class="description">This allows you to check that your KnowledgeTree configuration is set
 	up correctly.  You can run this at any time after configuration to check
 	that things are still set up correctly.</p>
 	
@@ -14,7 +12,8 @@
 	       . 'Click Here for help on overcoming post install issues</a></div><br/>';
 	}
 	?>
-	<div id="step_content_complete">
+	<div id="step_content_complete" class="step">
+<!--	Paths and Permissions	-->
 	<div>
 	    <h3><?php echo "<span class='{$paths_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Paths and Permissions</h3>
 	<?php if($silent) { ?>
@@ -34,7 +33,9 @@
 		</div>
 	<?php } ?>
 	</div>
+	<br/><br/>
 	<div>
+<!--	Database connectivity	-->
 	    <h3><?php echo "<span class='{$database_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Database connectivity</h3>
 	<?php if($silent) { ?>
 		<div id="options" class="onclick" onclick="javascript:{w.toggleClass('database_check');}">Show Details</div>
@@ -45,14 +46,17 @@
 	        <tr><?php echo $dbConnectUser; ?></tr>
 	    </table>
 	<?php if($silent) { ?>
-		</div>
+	</div>
+<!--	Privileges	-->
+	<br/><br/>
+<!--	<div>-->
 	<?php } ?>
 	    <h3><?php echo "<span class='{$privileges_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Privileges</h3>
 	<?php if($silent) { ?>
 		<div id="options" class="onclick" onclick="javascript:{w.toggleClass('privileges_check');}">Show Details</div>
 		<div class="privileges_check" style="display:none">
 	<?php } ?>
-	    <table>
+	    <table style="width:755px;">
 	        <tr><?php echo $dbPrivileges; ?></tr>
 	        <tr><?php echo $dbTransaction; ?></tr>
 	    </table>
@@ -60,22 +64,33 @@
 		</div>
 	<?php } ?>
 	</div>
+<!--	Services	-->
+	<br/><br/>
 	<div>
 	    <h3><?php echo "<span class='{$services_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services</h3>
 	<?php if($silent) { ?>
 		<div id="options" class="onclick" onclick="javascript:{w.toggleClass('services_check');}">Show Details</div>
 		<div class="services_check" style="display:none">
 	<?php } ?>
-	    <table>
+	    <table style="width:755px;">
 	        <tr>
-	        	<td><?php echo "<span class='{$LuceneStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Lucene Service</td>
+	        	<td style="width:15px;"> <?php echo "<span class='{$LuceneStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?> </td>
+	        	<td style="width:640px;"> Lucene Service <?php if ($LuceneStatus != 'tick') { ?> Could not be started <?php } else { ?> Started <?php } ?></td>
 	        	<?php if ($LuceneStatus != 'tick') { ?>
 	        		<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
 	        	<?php } ?>
 	        </tr> 
 	        <tr>
-	        	<td><?php echo "<span class='{$SchedulerStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Scheduler Service</td>
+	        	<td> <?php echo "<span class='{$SchedulerStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?> </td>
+	        	<td> Scheduler Service <?php if ($LuceneStatus != 'tick') { ?> Could not be started <?php } else { ?> Started <?php } ?></td>
 	        	<?php if ($SchedulerStatus != 'tick') { ?>
+	        		<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+	        	<?php } ?>
+	        </tr>
+	        <tr>
+	        	<td> <?php echo "<span class='{$OpenOfficeStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?> </td>
+	        	<td> OpenOffice Service <?php if ($OpenOfficeStatus != 'tick') { ?> Could not be started <?php } else { ?> Started <?php } ?></td>
+	        	<?php if ($OpenOfficeStatus != 'tick') { ?>
 	        		<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
 	        	<?php } ?>
 	        </tr>

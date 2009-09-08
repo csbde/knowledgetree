@@ -11,15 +11,16 @@
 	This step configures the connection to the database server and installs the database. The details for an administrative <br/>
 	user on the database server are required in order to be able to configure and install the installation database.
 	</div>
-	<div id="step_content_database">
+	<div id="step_content_database" class="step">
 	<table class="dbconf">
 <!--	TODO: Different Databases-->
 	    <tr><td>Your current database type is: </td>
 		<?php if($dtypes) {
 		        foreach($dtypes as $k=>$v) {
 		    ?><td>
+		    	&nbsp;
 		    	<?php echo ucwords($v);?>
-		    	<input type="hidden" name="dtype" value="<?php echo $v; ?>" <?php if(!$k)echo 'checked="checked"'; ?>/>&nbsp;&nbsp;<?php //echo ucwords($v); ?>
+		    	<input type="hidden" name="dtype" value="<?php echo $v; ?>" <?php if(!$k)echo 'checked="checked"'; ?>/>
 		    	</td>
 		<?php }
 		}
@@ -42,34 +43,55 @@
 		    </tr>
 	</table>
 
-	<div id="options" class="onclick" onclick="javascript:{w.toggleClass('adv_options');}">Advanced Options</div>
-	<div id="database" class="adv_options" style="display:none;">
+	<div id="options" class="onclick" onclick="javascript:{w.toggleClass('adv_options');}">&nbsp;&nbsp;Advanced Options</div>
+	<div id="database" class="adv_options" style="display:block;">
 	    <div class="description">
 	        These options are only necessary for some sites. If you're not sure what you should enter here, leave the default settings.
 	    </div>
-	    <div class="db_adv_options">
-	    	<div class="adv_option">
-	    		<label for='dhost'>Host: </label><br>
-				<span class="description">The address of the server where the database is located, if different to the current server.</span>
-				<input type="text" value="<?php echo $dhost?>" id="dhost" name="dhost" size='45' class="textinput"/>
-	    	</div>
-	    	<div class="adv_option">
-	    		<label for='dport'>Port: </label><br>
-	    		<span class="description">The port on which your database server is listening, if it is a non-standard port please enter the number here.</span>
-	    		<input type="text" value="<?php echo $dport?>" id="dport" name="dport" size='10' class="textinput"/>
-	    	</div>
-	    	<div class="adv_option">
-	    		<label for='dport'>Socket: </label><br>
-	    		<span class="description">The path to the database binary. If it is not on your system path then please enter it here.</span>	    				<input type="text" value="<?php echo $dbbinary?>" id="dbbinary" name="dbbinary" size='45' class="textinput"/>
-	    	</div>
-	    </div>
+	    <table>
+	    	<tr>
+	    		<td width="10px"> <label for='dhost'>Host: </label> </td>
+	    		<td width="210px"> <div id="tooltips" title="The address of the server where the database is located, if different to the current server">&nbsp;</div> </td>
+	    		<td width="10px"> <input type="text" value="<?php echo $dhost?>" id="dhost" name="dhost" size='45' class="textinput"/> </td>
+	    	</tr>
+	    	<tr>
+	    		<td> <label for='dport'>Port: </label> </td>
+	    		<td> <div id="tooltips" title="The port on which your database server is listening, if it is a non-standard port please enter the number here">&nbsp;</div> </td>
+	    		<td> <input type="text" value="<?php echo $dport?>" id="dport" name="dport" size='10' class="textinput" style="float:left"/> </td>
+	    	</tr>
+	    	<tr>
+	    		<td> <label for='dbbinary'>Socket: </label> </td>
+	    		<td> <div id="tooltips" title="The path to the database binary. If it is not on your system path then please enter it here">&nbsp;</div> </td>
+	    		<td> <input type="text" value="<?php echo $dbbinary?>" id="dbbinary" name="dbbinary" size='45' class="textinput"/> </td>
+	    	</tr>
+	    </table>
+<!--	    <div class="db_adv_options">-->
+<!--	    	<div class="adv_option">-->
+<!--	    		<label for='dhost'>Host: </label>-->
+<!--	    		<br>-->
+<!--				<span class="description">The address of the server where the database is located, if different to the current server.</span>-->
+<!--				<input type="text" value="<?php //echo $dhost?>" id="dhost" name="dhost" size='45' class="textinput"/>-->
+<!--	    	</div>-->
+<!--	    	<div class="adv_option">-->
+<!--	    		<label for='dport'>Port: </label>-->
+<!--	    		<br>-->
+<!--	    		<span class="description">The port on which your database server is listening, if it is a non-standard port please enter the number here.</span>-->
+<!--	    		<input type="text" value="<?php //echo $dport?>" id="dport" name="dport" size='10' class="textinput"/>-->
+<!--	    	</div>-->
+<!--	    	<div class="adv_option">-->
+<!--	    		<label for='dport'>Socket: </label>-->
+<!--	    		<br>-->
+<!--	    		<span class="description">The path to the database binary. If it is not on your system path then please enter it here.</span>-->
+<!--	    		<input type="text" value="<?php //echo $dbbinary?>" id="dbbinary" name="dbbinary" size='45' class="textinput"/>-->
+<!--	    	</div>-->
+<!--	    </div>-->
 	</div>
 	</div>
-	    <input type="submit" class="back" name="Previous" value="Previous" />
+	    <input type="submit" name="Previous" value="Previous" class="button_previous" />
 	    <?php if ($silent) { ?>
-	    <input type="submit" class="input" name="Next" value="Next" />
+	    <input type="submit" name="Next" value="Next" class="button_next"/>
 	    <?php } else { ?>
-	    <input type="button" class="input" name="Next" value="Next" onclick="javascript:{w.showStep(1, 'n');}"/>
+	    <input type="button" name="Next" value="Next" onclick="javascript:{w.showStep(1, 'n');}" class="button_next"/>
 	    <?php } ?>
 </div>
 
@@ -97,8 +119,8 @@ An administrative user is required for creating tables within the database.
 		</tr>
 	</table>
 
-	    <input type="button" name="Previous" class="back" value="Previous" onclick="javascript:{w.showStep(2, 'p');}"/>
-	    <input type="button" name="Next" class="input" value="Next" onclick="javascript:{w.showStep(2, 'n');}"/>
+	    <input type="button" name="Previous" value="Previous" onclick="javascript:{w.showStep(2, 'p');}" class="button_previous"/>
+	    <input type="button" name="Next" value="Next" onclick="javascript:{w.showStep(2, 'n');}" class="button_next"/>
 </div>
 
 <!-- STEP 3 of the database configuration - default user password settings -->
@@ -125,7 +147,7 @@ An second user is required for normal database interaction, the reading and writ
 	        <td id="error_4_3" class="error" style="display:none">Passwords Do Not Match</td>
 		</tr>
 	</table>
-	    <input type="button" name="Previous" value="previous" onclick="javascript:{w.showStep(3, 'p');}" class="back"/>
-		<input type="submit" name="Next" value="next" class="input"/>
+	    <input type="button" name="Previous" value="previous" onclick="javascript:{w.showStep(3, 'p');}" class="button_previous"/>
+		<input type="submit" name="Next" value="next" class="button_next"/>
 </div>
 </form>

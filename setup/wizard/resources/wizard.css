@@ -157,21 +157,21 @@ select {
 	min-height:355px;
 }
 
-.radio {
-	float:none;
-}
-
 #sidebar {
-	background: rgb(239, 239, 239) none repeat scroll 0% 0%;
+	/*background: rgb(239, 239, 239) none repeat scroll 0% 0%;*/
 	font-size: 90%;
 	color: grey; 
 	font-family: sans-serif; 
 	margin-top: 0px;
-	width: 235px;
+	/*width: 235px;*/
 	float: left;
 	padding-top: 20px;
 	padding-bottom: 20px;
-	height:475px;
+	/*height:475px;*/
+	/*color:#616161;*/
+	line-height:3;
+	padding-left:20px;
+	text-align:left;
 }
 
 #footer {
@@ -201,16 +201,9 @@ select {
 }
 
 #install_details {
-	bottom:30px;
+	bottom:20px;
 	position:relative;
 	right:10px;
-}
-
-.menu {
-    color: #616161;
-    text-align: left;
-    line-height: 3;
-    padding-left: 20px;
 }
 
 .indicator a {
@@ -280,12 +273,6 @@ select {
     color: red;
 }
 
-/*
-td.error {
-	width:190px;
-}
-*/
-
 .conf_paths {
 	width:755px;
 }
@@ -312,7 +299,7 @@ td.error {
 	margin-top:10px;
 }
 
-input {
+.step input {
 	background-image: url("graphics/dame/kt_gradient.jpg");
 	background-repeat:repeat-x;
 	border:1px solid #CECECE;
@@ -320,6 +307,22 @@ input {
 	font-size:13px;
 	font-weight:bold;
 	margin-left:5px;
+	margin-top:10px;
+}
+
+.step .radio {
+	float:none;
+}
+
+.button_next {
+	float:right;
+	margin-left:5px;
+	margin-top:10px;
+}
+
+.button_previous {
+	float:left;
+	margin-left:0px;
 	margin-top:10px;
 }
 
@@ -351,13 +354,13 @@ input {
 .onclick {
      cursor: pointer;
      color: #EC7725;
-     width: 120px;
+     width: 130px;
 }
 
 .description {
     color:#898989;
     line-height:150%;
-    margin-bottom:0.75em;
+    /*margin-bottom:0.75em;*/
     font-size:90%;
 }
 
@@ -454,14 +457,30 @@ td.dir_description {
 	font-weight:bold;
 }
 
+.warning_message{
+	border:none;
+	color:#A30000;
+	padding:0px;
+	color:#EC7725;
+	font-size:90%;
+	margin-bottom:0.75em;
+	font-weight:bold;
+}
+	
 .continue_message {
-	background: url("graphics/big-ok.png") no-repeat;
 	border:none;
 	width:550px;
 	padding:0px;
 	color:#898989;
 	font-size:90%;
 	margin-bottom:0.75em;
+	height:16px;
+}
+
+.big_ok {
+	background: url("graphics/big-ok.png") no-repeat;
+	width:16px;
+	height:16px;
 }
 
 .license_agreement {
@@ -488,4 +507,14 @@ td.dir_description {
 	width:16px;
 	height:16px;
 	cursor:pointer;
+}
+
+.empty_space {
+	font-size:12pt;
+}
+
+.demo {
+	left:75px;
+	position:relative;
+	width:600px
 }

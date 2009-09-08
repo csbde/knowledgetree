@@ -30,7 +30,6 @@
 					</div>
 				</div>
 		        <div id="sidebar">
-		            <div class="menu">
 		            	<span class="active">Welcome</span><br>
 		            	<span class="inactive">License Agreement</span><br>
 		            	<span class="inactive">PHP Dependencies</span><br>
@@ -40,7 +39,6 @@
 		            	<span class="inactive">Registration</span><br>
 		            	<span class="inactive">Install</span><br>
 		            	<span class="inactive">Complete</span><br>
-		            </div>
 				</div>
 		        <div class="clearing">&nbsp;</div>
 		    </div>

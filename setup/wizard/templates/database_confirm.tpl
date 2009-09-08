@@ -4,7 +4,7 @@
 	<div class="description">
 	Please confirm whether KnowledgeTree has correctly determined your database settings before proceeding.
 	</div>
-	<div id="step_content_database_confirm">
+	<div id="step_content_database_confirm" class="step">
 		<h3><b>Database Settings</b></h3>
 		<table class="dbconf">
 		<?php
@@ -15,8 +15,8 @@
 		        }
 		        ?>
 		    <tr>
-		        <td width="160px">Database Type: </td>
-		        <td width="150px"> <div id="tooltips" title="Type of database being used.">&nbsp;</div> </td>
+		        <td width="153px">Database Type: </td>
+		        <td width="15px"> <div id="tooltips" title="Type of database being used.">&nbsp;</div> </td>
 		        <td><?php echo $type; ?></td>
 		    </tr>
 		<?php } ?>
@@ -46,8 +46,8 @@
 		
 		<table class="dbconf">
 		    <tr>
-		        <td width="160px">Host: </td>
-		        <td width="150px"> <div id="tooltips" title="The address of the server where the database is located">&nbsp;</div> </td>
+		        <td width="153px">Host: </td>
+		        <td width="15px"> <div id="tooltips" title="The address of the server where the database is located">&nbsp;</div> </td>
 		        <td><?php echo $dhost; ?></td>
 		    </tr>
 		    <tr>
@@ -74,8 +74,8 @@
 		<table class="dbconf">
 		    <?php //if (!$silent) { ?>
 		    <tr>
-		        <td width="160px">DMS Admin Username: </td>
-		        <td width="150px"> <div id="tooltips" title="Database Administrative User for KnowledgeTree System">&nbsp;</div> </td>
+		        <td width="153px">DMS Admin Username: </td>
+		        <td width="15px"> <div id="tooltips" title="Database Administrative User for KnowledgeTree System">&nbsp;</div> </td>
 		        <td><?php echo $dmsname; ?></td>
 		    </tr>
 		    <?php //} ?>
@@ -98,6 +98,6 @@
 		    </tr>
 		</table>
 	</div>
-    <input type="submit" name="Edit" value="Edit" class="back"/>
-    <input type="submit" name="Confirm" value="Confirm" class="input"/>
+    <input type="submit" name="Edit" value="Edit" class="button_previous"/>
+    <input type="submit" name="Confirm" value="Confirm" class="button_next"/>
 </form>

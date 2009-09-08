@@ -342,7 +342,7 @@ class database extends Step
     		$con = $this->_dbhandler->load($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
     	}
         if (!$con) {
-            $this->error['con'] = "Could not connect, please check username and password";
+            $this->error['con'] = "Could not connect to the database, please check username and password";
             return false;
         } else {
         	if ($this->dbExists()) { // Check if database Exists

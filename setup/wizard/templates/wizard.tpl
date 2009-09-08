@@ -12,7 +12,7 @@
 		    <div id="header">
 		    <div id="logo"><img src="resources/graphics/dame/installer-header_logo.png"/></div>
 		    <div id="install_details">
-				<span style="font-size:120%;"> <?php echo $vars['install_version']; ?> </span><br>
+				<span style="font-size:120%;"> <?php echo $vars['install_version']; ?> </span>
 				<span style="font-size:80%;"><?php echo $vars['install_type']; ?></span>
 				</div>
 		    </div>

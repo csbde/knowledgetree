@@ -304,7 +304,7 @@ class stepAction {
 	*/
     public function getLeftMenu()
     {
-        $menu = '<div class="menu">';
+        $menu = '';
         $active = false;
 		if($this->stepClassNames) {
 	        foreach ($this->stepClassNames as $k=>$step) {
@@ -328,7 +328,7 @@ class stepAction {
 	            $menu .= "<span class='{$class}'>$item</span><br />";
 	        }
 		}
-        $menu .= '</div>';
+//        $menu .= '</div>';
         return $menu;
     }
 
