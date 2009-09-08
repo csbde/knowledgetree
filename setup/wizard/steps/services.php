@@ -268,15 +268,19 @@ class services extends Step
     	} else {
 	    	$this->php = $this->util->getPhp(); // Get java, if it exists
 	    	$this->java = $this->util->getJava(); // Get java, if it exists
+	    	$this->soffice = $this->util->getOpenOffice(); // Get java, if it exists
 	    	$passedPhp = $this->phpChecks(); // Run Java Pre Checks
 	    	$passedJava = $this->javaChecks(); // Run Java Pre Checks
+	    	$passedOpenOffice = $this->openOfficeChecks(); // Run Java Pre Checks
 	    	$errors = $this->getErrors(); // Get errors
-			if(empty($errors) && $passedJava && $passedPhp) { // Install Service if there is no errors
+			if(empty($errors) && $passedJava && $passedPhp && $passedOpenOffice) { // Install Service if there is no errors
 				$this->installServices();
 			} elseif ($passedPhp) { // Install Scheduler
-				$this->installService('Scheduler');
+				//$this->installService('Scheduler');
 			} elseif ($passedJava) { // Install Lucene
-				$this->installService('Lucene');
+				//$this->installService('Lucene');
+			} elseif ($passedOpenOffice) { //Install OpenOffice
+				$this->installService('OpenOffice');
 			} else { // All Services not installed
 			}
     	}
@@ -379,6 +383,10 @@ class services extends Step
     		$this->specifyPhp();// Ask for settings
 			return false;
     	}
+    }
+    
+    private function openOfficeChecks() {
+    	return true;
     }
     
     /**

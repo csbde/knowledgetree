@@ -484,6 +484,23 @@ class InstallUtil {
 		return '';
     }
     
+    function getOpenOffice() {
+    	$cmd = "whereis soffice";
+		$response = $this->pexec($cmd);
+		if(is_array($response['out'])) {
+			if (isset($response['out'][0])) {
+				$broke = explode(' ', $response['out'][0]);
+				foreach ($broke as $r) {
+					$match = preg_match('/bin/', $r);
+					if($match) {
+						return preg_replace('/php:/', '', $r);
+					}
+				}
+			}
+		}
+		
+		return '';
+    }
    /**
      * Portably execute a command on any of the supported platforms.
      *
