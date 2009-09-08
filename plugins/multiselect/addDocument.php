@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -53,7 +53,7 @@ class MultiDocumentAddAction extends KTFolderAction {
     var $sName = 'inet.multiselect.actions.document.addDocument';
     var $_sShowPermission = "ktcore.permissions.write";
     var $oDocumentType = null;
-	
+
 	/**
 	 * returns a display name 'Add Document' 
 	 * @return 
@@ -63,7 +63,7 @@ class MultiDocumentAddAction extends KTFolderAction {
     function getDisplayName() {
         return _kt('Add Document');
     }
-	
+
 	/**
 	 * get the button
 	 * @return 
@@ -112,6 +112,7 @@ class MultiDocumentAddAction extends KTFolderAction {
             'label' => _kt("Add a document"),
             'action' => 'processInitialData',
             'actionparams' => 'postExpected=1&fFolderId='.$this->oFolder->getId(),
+        //    'cancel_action' => KTBrowseUtil::getUrlForFolder($this->oFolder),
             'fail_action' => 'main',
             'context' => &$this,
             'extraargs' => $this->meldPersistQuery("","",true),
@@ -119,7 +120,7 @@ class MultiDocumentAddAction extends KTFolderAction {
             'file_upload' => true,
         ));
 
-        $aTypes;
+        $aTypes = array();
         foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
             if(!$oDocumentType->getDisabled()) {
                 $aTypes[] = $oDocumentType;
@@ -174,6 +175,31 @@ class MultiDocumentAddAction extends KTFolderAction {
             )),
         ));
 
+        // Electronic Signature if enabled
+        global $default;
+        if($default->enableESignatures){
+            $oForm->addWidget(array('ktcore.widgets.info', array(
+                    'label' => _kt('This action requires authentication'),
+                    'description' => _kt('Please provide your user credentials as confirmation of this action.'),
+                    'name' => 'info'
+                )));
+            $oForm->addWidget(array('ktcore.widgets.string', array(
+                    'label' => _kt('Username'),
+                    'name' => 'sign_username',
+                    'required' => true
+                )));
+            $oForm->addWidget(array('ktcore.widgets.password', array(
+                    'label' => _kt('Password'),
+                    'name' => 'sign_password',
+                    'required' => true
+                )));
+            $oForm->addWidget(array('ktcore.widgets.reason', array(
+                'label' => _kt('Reason'),
+                'description' => _kt('Please specify why you are checking out this document.  It will assist other users in understanding why you have locked this file.  Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
+                'name' => 'reason',
+                )));
+        }
+
         $oForm->setValidators(array(
             array('ktcore.validators.file', array(
                 'test' => 'file',
@@ -194,6 +220,16 @@ class MultiDocumentAddAction extends KTFolderAction {
                 'ids' => true,
             )),
         ));
+
+        if($default->enableESignatures){
+            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
+                'object_id' => $this->oFolder->getId(),
+                'type' => 'folder',
+                'action' => 'ktcore.transactions.add_document',
+                'test' => 'info',
+                'output' => 'info'
+            )));
+        }
 
         return $oForm;
     }
@@ -250,6 +286,15 @@ class MultiDocumentAddAction extends KTFolderAction {
 
         $sFilename = tempnam($sBasedir, 'kt_storecontents');
 
+        //$oContents = new KTFSFileLike($data['file']['tmp_name']);
+        //$oOutputFile = new KTFSFileLike($sFilename);
+        //$res = KTFileLikeUtil::copy_contents($oContents, $oOutputFile);
+
+        //if (PEAR::isError($res)) {
+        //    $oForm->handleError(sprintf(_kt("Failed to store file: %s"), $res->getMessage()));
+        //}
+
+
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $oStorage->uploadTmpFile($data['file']['tmp_name'], $sFilename);
 
@@ -281,6 +326,7 @@ class MultiDocumentAddAction extends KTFolderAction {
             'submit_label' => _kt('Save Document'),
             'action' => 'finalise',
             'fail_action' => 'metadata',
+         //   'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
             'context' => &$this,
             'extraargs' => $this->meldPersistQuery("","",true),
         ));
@@ -375,6 +421,7 @@ class MultiDocumentAddAction extends KTFolderAction {
         $oUploadChannel->addObserver($mpo);
 
         require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
+        //require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
         require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
         require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
         require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
@@ -389,6 +436,7 @@ class MultiDocumentAddAction extends KTFolderAction {
 
         $iFolderId = $this->oFolder->getId();
         $aOptions = array(
+            // 'contents' => new KTFSFileLike($aFile['tmp_name']),
             'temp_file' => $aFile['tmp_name'],
             'documenttype' => DocumentType::get($extra_d['document_type']),
             'metadata' => $MDPack,
@@ -397,6 +445,7 @@ class MultiDocumentAddAction extends KTFolderAction {
         );
 
         $mpo->start();
+        //$this->startTransaction();
         $oDocument =& KTDocumentUtil::add($this->oFolder, $aFile['name'], $this->oUser, $aOptions);
         if (PEAR::isError($oDocument)) {
             $message = $oDocument->getMessage();
@@ -405,6 +454,7 @@ class MultiDocumentAddAction extends KTFolderAction {
         }
         $this->addInfoMessage(_kt("Document added"));
 
+        //$this->commitTransaction();
         $mpo->redirectToDocument($oDocument->getId());
         exit(0);
 
