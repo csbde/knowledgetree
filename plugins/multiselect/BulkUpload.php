@@ -51,31 +51,31 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 
     var $_sShowPermission = "ktcore.permissions.write";
     var $bAutomaticTransaction = false;
-	/**
-	 * returns the string
-	 * @return 
-	 * loads the necessary javascripts too.
-	 * 
-	 * iNET Process
-	 */
+    /**
+     * returns the string
+     * @return 
+     * loads the necessary javascripts too.
+     * 
+     * iNET Process
+     */
     function getDisplayName() {
-    	if(!KTPluginUtil::pluginIsActive('inet.foldermetadata.plugin'))
-		{
-			$js = "<script src='plugins/multiselect/js/jquery-1.2.6.js' type='text/javascript'></script>";
-			$js .= "<script src='plugins/multiselect/js/hidelink.js' type='text/javascript'></script>";
-	        return $js._kt('Bulk Upload');
+        if(!KTPluginUtil::pluginIsActive('inet.foldermetadata.plugin'))
+        {
+            $js = "<script src='plugins/multiselect/js/jquery-1.2.6.js' type='text/javascript'></script>";
+            $js .= "<script src='plugins/multiselect/js/hidelink.js' type='text/javascript'></script>";
+            return $js._kt('Bulk Upload');
     }
-		else
-		{
-			return null;
-		}
+        else
+        {
+            return null;
+        }
     }
-	/**
-	 * Checks for bulk uploads
-	 * @return 
-	 * 
-	 * iNET Process
-	 */
+    /**
+     * Checks for bulk uploads
+     * @return 
+     * 
+     * iNET Process
+     */
     function check() {
         $res = parent::check();
         if (empty($res)) {
@@ -92,7 +92,7 @@ class InetBulkUploadFolderAction extends KTFolderAction {
         }
         return true;
     }
-	/**
+    /**
      * default and basic function
      * @return template
      * @param.
@@ -142,12 +142,12 @@ class InetBulkUploadFolderAction extends KTFolderAction {
         ));
         return $oTemplate->render();
     }
-	/**
-	 * make uploads
-	 * @return 
-	 * 
-	 * iNET Process
-	 */
+    /**
+     * make uploads
+     * @return 
+     * 
+     * iNET Process
+     */
     function do_upload() {
         set_time_limit(0);
         $aErrorOptions = array(
@@ -165,15 +165,15 @@ class InetBulkUploadFolderAction extends KTFolderAction {
         foreach ($_REQUEST as $k => $v) {
             if (preg_match('/^metadata_(\d+)$/', $k, $matches)) {
                 // multiselect change start
-				$oDocField = DocumentField::get($matches[1]);
-				if(KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin') && $oDocField->getHasInetLookup() && is_array($v))
-				{
-					$v = join(", ", $v);
-				}
+                $oDocField = DocumentField::get($matches[1]);
+                if(KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin') && $oDocField->getHasInetLookup() && is_array($v))
+                {
+                    $v = join(", ", $v);
+                }
                 $aFields[] = array($oDocField, $v);
-				
-				// previously it was just one line which is commented, just above line
-				// multiselect change end
+                
+                // previously it was just one line which is commented, just above line
+                // multiselect change end
             }
         }
 
@@ -190,15 +190,15 @@ class InetBulkUploadFolderAction extends KTFolderAction {
             exit;
         }
 
-		if(KTPluginUtil::pluginIsActive('inet.foldermetadata.plugin'))
-		{
-			require_once(KT_DIR . "/plugins/foldermetadata/import/bulkimport.inc.php");
-			$bm =& new KTINETBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
-		}
-		else
-		{
+        if(KTPluginUtil::pluginIsActive('inet.foldermetadata.plugin'))
+        {
+            require_once(KT_DIR . "/plugins/foldermetadata/import/bulkimport.inc.php");
+            $bm =& new KTINETBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
+        }
+        else
+        {
         $bm =& new KTBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
-		}
+        }
         
         $this->startTransaction();
         $res = $bm->import();
