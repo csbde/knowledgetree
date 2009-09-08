@@ -125,7 +125,7 @@ class pdfConverter extends BaseProcessor
         $mime_types[] = 'application/vnd.oasis.opendocument.spreadsheet';
         $mime_types[] = 'application/vnd.oasis.opendocument.spreadsheet-template';
 
-        /* OO3
+        /* OO3 */
         // Office 2007
         $mime_types[] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.template';
@@ -134,7 +134,7 @@ class pdfConverter extends BaseProcessor
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.template';
-    	*/
+    	/* */
 
         return $mime_types;
 	}
