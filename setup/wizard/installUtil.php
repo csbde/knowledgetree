@@ -235,7 +235,7 @@ class InstallUtil {
      */
     private function _checkPermission($dir)
     {
-        if(is_readable($dir)){
+        if(is_readable($dir) && is_writable($dir)) {
 			return true;
         } else {
         	return false;

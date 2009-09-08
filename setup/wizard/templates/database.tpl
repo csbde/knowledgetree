@@ -44,7 +44,7 @@
 	</table>
 
 	<div id="options" class="onclick" onclick="javascript:{w.toggleClass('adv_options');}">&nbsp;&nbsp;Advanced Options</div>
-	<div id="database" class="adv_options" style="display:block;">
+	<div id="database" class="adv_options" style="display:none;">
 	    <div class="description">
 	        These options are only necessary for some sites. If you're not sure what you should enter here, leave the default settings.
 	    </div>
