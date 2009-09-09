@@ -60,7 +60,6 @@ class windowsOpenOffice extends windowsService {
 	private $log;
 	private $options;
     private $winservice;
-    private $installPath;
 	
 	public function __construct() {
 		$this->name = "openoffice";
@@ -69,14 +68,13 @@ class windowsOpenOffice extends windowsService {
 	
 	public function load() {
         // hack for testing
-        $this->installPath = 'C:\Program Files (x86)\ktdms';
 		$this->setPort("8100");
 		$this->setHost("127.0.0.1");
 		$this->setLog("openoffice.log");
 		$this->setBin("C:\Program Files (x86)\OpenOffice.org 3\program\soffice.bin");
-		$this->setBin("C:\Program Files (x86)\ktdms\openoffice.2.4\program\soffice.bin");
 		$this->setBin("C:\Program Files (x86)\ktdms\openoffice\program\soffice.bin");
-		$this->setWinservice("\bin\winserv.exe");
+		$this->setBin("C:\Program Files (x86)\ktdms\openoffice.2.4\program\soffice.bin");
+		$this->setWinservice("winserv.exe");
 		$this->setOption();
 	}
 	
@@ -112,8 +110,8 @@ class windowsOpenOffice extends windowsService {
 		return $this->bin;
 	}
     
-	private function setWinservice($winservice = "\bin\winserv.exe") {
-		$this->winservice = $this->installPath . $winservice;
+	private function setWinservice($winservice = "winserv.exe") {
+		$this->winservice = SYS_BIN_DIR . $winservice;
 	}
 	
 	public function getWinservice() {
@@ -131,14 +129,12 @@ class windowsOpenOffice extends windowsService {
 	
     public function install() {
     	$status = $this->status();
+        
     	if($status == '') {
             $cmd = "\"{$this->winservice}\" install $this->name $this->options";
             $response = $this->util->pexec($cmd);
-			return $this->start();
+            return $response;
     	}
-        else if ($status != 'STARTED') {
-            return $this->start();
-        }
         else {
     		return $status;
     	}
