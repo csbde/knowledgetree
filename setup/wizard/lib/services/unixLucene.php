@@ -157,7 +157,6 @@ class unixLucene extends unixService {
     
     public function status() {
     	$cmd = "ps ax | grep ".$this->getLuceneSource();
-    	echo $cmd.'<br/>';
     	$response = $this->util->pexec($cmd);
     	if(is_array($response['out'])) {
     		if(count($response['out']) > 1) {
