@@ -74,9 +74,9 @@
 	    </tr>
 	</table>
 	
-	<h3><?php echo "<span class='{$paths_perms}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Directory Paths and Permissions</h3>
+	<h3><?php echo "<span class='{$paths_perms}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Paths and Permissions</h3>
 	<?php if($silent) { ?>
-		<div id="options" class="onclick" onclick="javascript:{w.toggleClass('paths_perms');}">Show Details</div>
+		<div id="option7" class="onclick" onclick="javascript:{w.toggleClass('paths_perms', 'option7');}">Show Details</div>
 		<div class="paths_perms" style="display:none">
 	<?php } ?>
 	<p class="description">

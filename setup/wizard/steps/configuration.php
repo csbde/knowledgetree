@@ -133,7 +133,7 @@ class configuration extends Step
             }
             return 'error';
         } else if($this->previous()) {
-        	$this->setDetails();
+//        	$this->setDetails();
             return 'previous';
         } else if($this->confirm()) {
         	if($this->doRun()) {
@@ -141,10 +141,11 @@ class configuration extends Step
         	}
         	return 'error';
         } else if($this->edit()) {
-        	$this->setDetails();
+        	//$this->setDetails();
         	if($this->doRun()) {
         		
         	}
+//        	die;
         	return 'landing';
         }
 

@@ -9,15 +9,15 @@ wizard.prototype.doFormCheck = function() {
 }
 
 // Toggle Advance Database options
-wizard.prototype.toggleClass = function(el) {
+wizard.prototype.toggleClass = function(el, option) {
 	var el = document.getElementsByClassName(el); //adv_options|php_details|php_ext_details|php_con_details
-	if (el == 'adv_options') {
-		
-	}
-	if(el[0].style.display == 'none')
+	if(el[0].style.display == 'none') {
 	    el[0].style.display = 'block';
-	else
+	    document.getElementById(option).innerHTML = "Hide Details";
+	} else {
 	    el[0].style.display = 'none';
+	    document.getElementById(option).innerHTML = "Show Details";
+	}
 }
 
 // Toggle display of an element
