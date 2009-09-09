@@ -181,12 +181,17 @@ class windowsScheduler extends windowsService {
 					fclose($fp);
 				}
 			}
-			$response = win32_create_service(array(
-	            'service' => $this->name,
-	            'display' => $this->name,
-	            'path' => $this->getSchedulerScriptPath()
-	            ));
-			return $response;
+            
+            // TODO what if it does not exist? check how the dmsctl.bat does this
+            if (function_exists('win32_create_service'))
+            {
+    			$response = win32_create_service(array(
+    	            'service' => $this->name,
+    	            'display' => $this->name,
+    	            'path' => $this->getSchedulerScriptPath()
+    	            ));
+    			return $response;
+            }
 		}
 		return $state;
 	}

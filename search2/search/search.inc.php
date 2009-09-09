@@ -253,12 +253,19 @@ class SearchHelper
         	foreach($fields as $field)
         	{
         		if ($fo++ >0) $fieldset_str .= ',';
-				$fid = $field['id'];
-				$name= searchfix($field['name']);
-				$desc = searchfix($field['description']);
-				$datatype=$field['datatype'];
-				$control=$field['control'];
-        		$fieldset_str .= "\n\t\t{id:\"$fid\", name:\"$name\", description:\"$desc\", datatype:\"$datatype\", control:\"$control\", options: [";
+			$fid = $field['id'];
+			$name= searchfix($field['name']);
+			$desc = searchfix($field['description']);
+			$datatype=$field['datatype'];
+			$control=$field['control'];
+				
+			if(KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin') && isset($field['inetlookup_type']) && $field['inetlookup_type'] != "") {
+				$inetlookup_type=$field['inetlookup_type'];
+				$fieldset_str .= "\n\t\t{id:\"$fid\", name:\"$name\", description:\"$desc\", datatype:\"$datatype\", control:\"$control\", inetlookup_type:\"$inetlookup_type\" , options: [";
+			} else {
+				$fieldset_str .= "\n\t\t{id:\"$fid\", name:\"$name\", description:\"$desc\", datatype:\"$datatype\", control:\"$control\", options: [";		
+			}
+				
         		$options = $field['options'];
         		$oo = 0;
         		if (!is_array($options))
@@ -453,20 +460,40 @@ class SearchHelper
 		if ($fieldsetID < 0)
 		{
 			$documentTypeID = sanitizeForSQL(-$fieldsetID);
-			$sql = "SELECT
-						df.id, df.name, df.data_type, df.has_lookup, df.has_lookuptree, df.description
+
+			if(KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin')) {
+				$sql = "SELECT
+						df.id, df.name, df.data_type, df.has_lookup,df.has_inetlookup, df.inetlookup_type , df.has_lookuptree, df.description
 					FROM
 						document_type_fields_link dtfl
-						INNER JOIN  document_fields df on dtfl.field_id=df.id
+				        	INNER JOIN  document_fields df on dtfl.field_id=df.id
 					WHERE
 						dtfl.document_type_id=$documentTypeID
 					ORDER BY
 						df.name";
-		}
+			} else {	
+					
+						$sql = "SELECT
+									df.id, df.name, df.data_type, df.has_lookup, df.has_lookuptree, df.description
+								FROM
+									document_type_fields_link dtfl
+									INNER JOIN  document_fields df on dtfl.field_id=df.id
+								WHERE
+									dtfl.document_type_id=$documentTypeID
+								ORDER BY
+									df.name";		
+					}
+		}			
 		else
 		{
 			$fieldsetID = sanitizeForSQL($fieldsetID);
-			$sql = "SELECT id, name, data_type, has_lookup, has_lookuptree, description FROM document_fields WHERE parent_fieldset=$fieldsetID ORDER BY name";
+			if(KTPluginUtil::pluginIsActive('inet.multiselect.lookupvalue.plugin'))
+			{	
+				$sql = "SELECT id, name, data_type, has_lookup,has_inetlookup, inetlookup_type, has_lookuptree, description FROM document_fields WHERE parent_fieldset=$fieldsetID ORDER BY name";
+			} else {
+				$sql = "SELECT id, name, data_type, has_lookup, has_lookuptree, description FROM document_fields WHERE parent_fieldset=$fieldsetID ORDER BY name";		
+			}
+			
 		}
 
 		$rs = DBUtil::getResultArray($sql);
@@ -487,14 +514,23 @@ class SearchHelper
 			$options = array();
 			$haslookup =$item['has_lookup'] + 0 > 0;
 			$hastree = ($item['has_lookuptree']+0 > 1);
-
-			if ($haslookup || $hastree)
+			$hasinetlookup=$item['has_inetlookup'] + 0 > 0;
+			
+			if ($haslookup || $hastree || $hasinetlookup)
 			{
 				$type = 'lookup';
 				$sql = "select id, name from metadata_lookup where document_field_id=$fieldid";
 				$options = DBUtil::getResultArray($sql);
 
 			}
+			
+			$inetlookup_type = "";
+			if($hasinetlookup)
+			{
+				$type = 'inetlookup';
+				$inetlookup_type = $item['inetlookup_type'];
+			}
+			
 			/*if ($hastree)
 			{
 				$type = 'lookup';
@@ -515,6 +551,7 @@ class SearchHelper
 				'description'=>$item['description'],
 				'datatype'=>$item['data_type'],
 				'control'=>$type,
+				'inetlookup_type' => $inetlookup_type,
 				'options'=>$options
 			);
 
@@ -775,7 +812,7 @@ function resolveSearchShortcuts($result)
         {
             $id = $row['id'];
             $linked_id = $row['linked_folder_id'];
-            
+
             $shortFolder = new FolderShortcutResultItem($id, $result['folders'][$linked_id]);
             $shortFolder->parentId = $row['parent_id'];
             $shortFolder->linkedId = $row['linked_folder_id'];
