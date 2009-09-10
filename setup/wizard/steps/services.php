@@ -46,7 +46,7 @@ class services extends Step
 	* List of errors encountered
 	*
 	* @author KnowledgeTree Team
-	* @access public
+	* @access protected
 	* @var array
 	*/
     protected $error = array();
@@ -55,21 +55,66 @@ class services extends Step
 	* Flag if step needs to be installed
 	*
 	* @author KnowledgeTree Team
-	* @access public
+	* @access protected
 	* @var array
 	*/
     protected $runInstall = true;
     
+	/**
+	* List of services to be installed
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var array
+	*/
     private $services = array('Lucene', 'Scheduler', 'OpenOffice');
     
+	/**
+	* Path to java executable
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
     protected $java;
     
+	/**
+	* Path to php executable
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
     protected $php;
     
+	/**
+	* Path to open office executable
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+	protected $soffice;
+
+	/**
+	* Reference to utility object
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
     protected $util;
-    
+
+	/**
+	* Minumum Java Version
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
     private $javaVersion = '1.5';
 //    private $javaVersion = '1.7';
+
 	/**
 	* Java Installed 
 	*
@@ -276,12 +321,13 @@ class services extends Step
 			if(empty($errors) && $passedJava && $passedPhp && $passedOpenOffice) { // Install Service if there is no errors
 				$this->installServices();
 			} elseif ($passedPhp) { // Install Scheduler
-				//$this->installService('Scheduler');
+				$this->installService('Scheduler');
 			} elseif ($passedJava) { // Install Lucene
-				//$this->installService('Lucene');
+				$this->installService('Lucene');
 			} elseif ($passedOpenOffice) { //Install OpenOffice
 				$this->installService('OpenOffice');
 			} else { // All Services not installed
+				// TODO: What todo now?
 			}
     	}
 		$this->checkServiceStatus();
@@ -291,7 +337,16 @@ class services extends Step
 		return true;
     }
     
-    function checkServiceStatus() {
+	/**
+	* A final check to see if services are still running,
+	* incase they switched on and turned off.
+	* 
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return void
+	*/
+    private function checkServiceStatus() {
     	$serverDetails = $this->getServices();
 		foreach ($serverDetails as $serviceName) {
 			$className = OS.$serviceName;
@@ -312,14 +367,23 @@ class services extends Step
 		}
     }
     
-    function alreadyInstalled() {
+	/**
+	* Checks if all services have been started already, 
+	* incase the user lands on service page multiple times
+	* 
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    public function alreadyInstalled() {
     	$installed = true;
     	$serverDetails = $this->getServices();
 		foreach ($serverDetails as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
 			$status = $this->serviceStatus($service);
-			if($status != 'STARTED') {
+			if(!$status) {
 				return false;
 			}
 		}
@@ -361,6 +425,14 @@ class services extends Step
     	}
     }
 	
+	/**
+	* Attempt detection without logging errors
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
     private function useDetected() {
     	return $this->detSettings(true);
     }

@@ -479,8 +479,10 @@ td.dir_description {
 
 .big_ok {
 	background: url("graphics/big-ok.png") no-repeat;
-	width:16px;
+	padding:4px;
+	/*width:16px;
 	height:16px;
+	padding-bottom:1px;*/
 }
 
 .license_agreement {
@@ -517,4 +519,13 @@ td.dir_description {
 	left:75px;
 	position:relative;
 	width:600px
+}
+
+.text_message {
+
+}
+
+.description_click {
+    line-height:150%;
+    font-size:90%;
 }

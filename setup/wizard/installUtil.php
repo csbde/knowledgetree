@@ -493,7 +493,7 @@ class InstallUtil {
 				foreach ($broke as $r) {
 					$match = preg_match('/bin/', $r);
 					if($match) {
-						return preg_replace('/php:/', '', $r);
+						return preg_replace('/soffice:/', '', $r);
 					}
 				}
 			}

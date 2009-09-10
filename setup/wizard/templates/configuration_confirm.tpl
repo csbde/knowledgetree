@@ -45,12 +45,12 @@
 		        <td><?php echo $server['root_url']['value']; ?></td>
 		    </tr>
 		    <tr>
-		        <td>File System Root: </td>
+		        <td>Web Root: </td>
 		        <td> <div id="tooltips" title="Absolute path to KnowledgeTree Source directory">&nbsp;</div> </td>
 		        <td><?php echo $server['file_system_root']['value']; ?></td>
 		    </tr>
 		    <tr>
-		        <td>SSL Enabled: </td>
+		        <td>Do you have SSL Enabled?: </td>
 		        <td> <div id="tooltips" title="Whether or not you have SSL installed">&nbsp;</div> </td>
 		        <td><?php echo $server['ssl_enabled']['value']; ?></td>
 		    </tr>
