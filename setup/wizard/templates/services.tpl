@@ -23,7 +23,7 @@
 <!--Warning and Error Messages-->
 	<?php if($errors) { ?>
 		<span class='cross'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-		<span class='error_message'>Your system is not quite ready to run KnowledgeTree. See the list below to determine which areas you need to address. Once you&rsquo;ve fixed these items, return to this wizard and try again.</span>
+		<span class='error_message'>Your system is not quite ready to run KnowledgeTree. See the list below to determine which areas you need to address.</span>
 		<br/>
 	<?php } elseif ($warnings) {
 		?>
