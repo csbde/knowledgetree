@@ -125,6 +125,7 @@ class unixOpenOffice extends unixService {
     
     public function start() {
     	$state = $this->status();
+    	return ;
     	if($state != 'STARTED') {
 			$cmd = "nohup {$this->getBin()} ".$this->getOption()." > ".SYS_LOG_DIR."{$this->getLog()} 2>&1 & echo $!";
 	    	$response = $this->util->pexec($cmd);

@@ -180,6 +180,7 @@ class unixLucene extends unixService {
     
     public function start() {
     	$state = $this->status();
+    	return ;
     	if($state != 'STARTED') {
 	    	$cmd = "cd ".$this->getLuceneDir()."; ";
 	    	$cmd .= "nohup java -jar ".$this->getLuceneSource()." > ".SYS_LOG_DIR."lucene.log 2>&1 & echo $!";

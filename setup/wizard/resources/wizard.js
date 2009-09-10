@@ -5,12 +5,12 @@ function wizard() {
 // Does a form check on every new page load
 wizard.prototype.doFormCheck = function() {
 	w.addReadOnly();
-	w.load();
+	w.preload();
 }
 
 // Toggle Advance Database options
-wizard.prototype.toggleClass = function(el, option) {
-	var el = document.getElementsByClassName(el); //adv_options|php_details|php_ext_details|php_con_details
+wizard.prototype.toggleClass = function(ele, option) {
+	var el = document.getElementsByClassName(ele); //adv_options|php_details|php_ext_details|php_con_details
 	if(el[0].style.display == 'none') {
 	    el[0].style.display = 'block';
 	    if(document.getElementById(option).innerHTML != '&nbsp;&nbsp;Advanced Options')
@@ -279,6 +279,6 @@ wizard.prototype.addReadOnly = function() {
 }
 
 /* */
-wizard.prototype.load = function() {
+wizard.prototype.preload = function() {
 //	$('#tooltips').tooltip();
 }
