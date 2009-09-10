@@ -8,5 +8,3 @@ bin/luceneserver/lucene.pid
 dummy.php
 var/*
 plugins/commercial
-clienttools/*
-.gitmodules
