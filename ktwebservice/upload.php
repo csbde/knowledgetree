@@ -117,6 +117,7 @@ foreach($_FILES as $key =>$file)
 	$tempfile=$file['tmp_name'];
 
 	$error=$file['error'];
+    $extra = $filename.'-'.$tempfile.'-'.$error;
 	if ($error == UPLOAD_ERR_OK)
 	{
 		$result = $upload_manager->uploaded($filename, $tempfile, $action);
@@ -145,7 +146,7 @@ if ($failed)
 }
 else
 {
-	respond(0, '', $added);
+	respond(0, 'It worked'.$extra, $added);
 }
 
 function respond($code, $msg, $uploads=array())

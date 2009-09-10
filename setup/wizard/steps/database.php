@@ -196,15 +196,6 @@ class database extends Step
     private $ddrop = false;
     
 	/**
-	* List of variables needed
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var array
-	*/
-    public $temp_variables = array("step_name"=>"database");
-    
-	/**
 	* List of errors encountered
 	*
 	* @author KnowledgeTree Team
@@ -315,6 +306,8 @@ class database extends Step
 			return 'next';
         } else if($this->edit()) {
             $this->setDataFromSession("database"); // Set Session Information, since its an edit
+            $this->temp_variables['state'] = 'edit';
+            
             return 'landing';
         }
     }
@@ -469,6 +462,11 @@ class database extends Step
 	* @return void
 	*/
    private function setDetails() {
+   		if($this->edit()) {
+   			$this->temp_variables['state'] = 'edit';
+   		} else {
+   			$this->temp_variables['state'] = '';
+   		}
    		$this->temp_variables['dtype'] = $this->getPostSafe('dtype');
         $this->temp_variables['dtypes'] = array("0"=>"mysql"); // TODO:multiple databases;
         $this->temp_variables['dhost'] = $this->getPostSafe('dhost');

@@ -123,6 +123,9 @@ class services extends Step
 	* @var mixed
 	*/
     private $javaCheck = 'cross';
+
+    
+    public $providedJava = false;
     
 	/**
 	* Flag if services are already Installed
@@ -215,13 +218,22 @@ class services extends Step
     private $disableExtension = false;
     
 	/**
-	* Holds path error, if java is specified
+	* Flag, if java is specified and an error has been encountered
 	*
 	* @author KnowledgeTree Team
 	* @access public
 	* @var mixed
 	*/
     private $javaExeError = '';
+    
+	/**
+	* Holds path error, if java is specified
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var mixed
+	*/
+    private $javaExeMessage = '';
     
 	/**
 	* Holds path error, if php is specified
@@ -257,16 +269,21 @@ class services extends Step
     		$this->doRun();
     		return 'landing';
     	}
-        // Check dependencies
-        $passed = $this->doRun();
         if($this->next()) {
-            if($passed)
+	        // Check dependencies
+	        $passed = $this->doRun();
+	        $serv = $this->getDataFromSession("services");
+//	        var_dump($conf);
+//	        die;
+            if($passed || $serv['providedJava'])
                 return 'next';
             else
                 return 'error';
         } else if($this->previous()) {
             return 'previous';
         }
+        
+        $passed = $this->doRun();
         return 'landing';
     }
     
@@ -406,14 +423,17 @@ class services extends Step
 		$this->setJava(); // Check if java has been auto detected
     	if($this->util->javaSpecified()) {
     		$this->disableExtension = true; // Disable the use of the php bridge extension
-    		return $this->detSettings(); // AutoDetect java settings
+    		if($this->detSettings(true)) { // AutoDetect java settings
+    			return true;
+    		} else {
+    			$this->specifyJava(); // Ask for settings
+    		}
     	} else {
     		$auto = $this->useBridge(); // Use Bridge to get java settings
     		if($auto) {
 				return $auto;
     		} else {
-    			// Check if auto detected java works
-    			$auto = $this->useDetected();
+    			$auto = $this->useDetected(); // Check if auto detected java works
     			if($auto) {
     				$this->disableExtension = true; // Disable the use of the php bridge extension
     				return $auto;
@@ -434,7 +454,7 @@ class services extends Step
 	* @return boolean
 	*/
     private function useDetected() {
-    	return $this->detSettings(true);
+    	return $this->detSettings();
     }
     
     private function specifyJava() {
@@ -480,24 +500,34 @@ class services extends Step
 	    		if($matches[1] < $this->javaVersion) { // Check Version of java
 					$this->javaVersionInCorrect();
 					$this->javaCheck = 'cross';
-					if(!$attempt) $this->error[] = "Requires Java 1.5+ to be installed";
+					$this->error[] = "Requires Java 1.5+ to be installed";
+					
 					return false;
 	    		} else {
 					$this->javaVersionCorrect();
 					$this->javaInstalled();
 					$this->javaCheck = 'tick';
+					$this->providedJava = true;
 					
 					return true;
 	    		}
     		} else {
     			$this->javaVersionWarning();
     			$this->javaCheck = 'cross_orange';
-    			$this->javaExeError = "Java : Incorrect path specified";
-				if(!$attempt) $this->error[] = "Requires Java 1.5+ to be installed";
+    			if($attempt) {
+	    			$this->javaExeMessage = "Incorrect java path specified";
+	    			$this->javaExeError = true;
+	    			$this->error[] = "Requires Java 1.5+ to be installed";
+    			}
+				
+				
 				return false;
     		}
     	}
     	
+		$this->javaVersionInCorrect();
+		$this->javaCheck = 'cross';
+		$this->error[] = "Requires Java 1.5+ to be installed";
     	return false;
     }
     
@@ -875,6 +905,7 @@ class services extends Step
     	$this->temp_variables['luceneInstalled'] = $this->luceneInstalled;
     	$this->temp_variables['schedulerInstalled'] = $this->schedulerInstalled;
 		$this->temp_variables['javaExeError'] = $this->javaExeError;
+		$this->temp_variables['javaExeMessage'] = $this->javaExeMessage;
 		$this->temp_variables['javaCheck'] = $this->javaCheck;
 		$this->temp_variables['javaExtCheck'] = $this->javaExtCheck;
 		// TODO : PHP detection
@@ -882,6 +913,8 @@ class services extends Step
 		$this->temp_variables['phpExeError'] = '';//$this->phpExeError;
 		$this->temp_variables['serviceCheck'] = $this->serviceCheck;
 		$this->temp_variables['disableExtension'] = $this->disableExtension;
+		// TODO: Java checks are gettign intense
+		$this->temp_variables['providedJava'] = $this->providedJava;
     }
 
     private function setPhp() {

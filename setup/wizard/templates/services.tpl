@@ -1,4 +1,10 @@
-<form action="index.php?step_name=services" method="post">
+<form action="index.php?step_name=services" method="post" id="services">
+	<?php //if($javaExeError != '' || $phpExeError != '') { 
+		//var_dump($javaExeError);
+		//if($errors) $top = "185px"; elseif ($warnings) $top = "185px"; else $top = "168px";
+		?>
+<!--		<input type="submit" name="Next" value="Submit" id="inner_button" style="top:<?php //echo $top; ?>"/>-->
+	<?php //} ?>
 	<p class="title">Checking Service Dependencies</p>
 	
 	<p class="description">
@@ -17,7 +23,7 @@
 <!--Warning and Error Messages-->
 	<?php if($errors) { ?>
 		<span class='cross'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-		<span class='error_message'>Your system is not quite ready to run KnowledgeTree. See the list below to determine which areas you need to address. Once you&rsquo;ve fixed these items, return to this wizard and try again.</span>
+		<span class='error_message'>Your system is not quite ready to run KnowledgeTree. See the list below to determine which areas you need to address.</span>
 		<br/>
 	<?php } elseif ($warnings) {
 		?>
@@ -28,18 +34,22 @@
 	}?>
 	<?php
 		if($errors || $warnings) {
+//			var_dump($errors);
 			?>
 		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Installer#Service_Dependencies" target="_blank">Click here for help on overcoming service issues</a>
 	<?php } ?>
 <!--Content-->
 	<div id="step_content_configuration" style="width:755px;" class="step">
 		<?php if(!$alreadyInstalled) { ?>
-			<?php if($javaExeError != '') { ?>
+			<?php //var_dump($javaExeError); ?>
+			<?php if($javaExeError) { ?>
 				Specify the location of your Java executable
 				&nbsp;&nbsp;&nbsp;
 				<input name='java' id='port' size='25' value='<?php echo $java['location']; ?>' style="float:none;"/>
 				&nbsp;&nbsp;&nbsp;
-				<?php if($javaExeError != true) { ?><span class="error"><?php echo $javaExeError; ?></span><?php } ?>
+				<a href="javascript:{document.getElementById('services').submit();}" class="specify">Submit</a>
+				<br/>
+				<?php if($javaExeError != '') { ?><span class="error"><?php echo $javaExeMessage; ?></span><?php } ?>
 			<?php } ?>
 			<?php if($phpExeError != '') { ?>
 				<br />
@@ -52,9 +62,6 @@
 				<?php } ?>
 				&nbsp;&nbsp;&nbsp;
 				<?php if($phpExeError != true) { ?><span class="error"><?php echo $phpExeError; ?></span><?php } ?>
-			<?php } ?>
-			<?php if($javaExeError != '' || $phpExeError != '') { ?>
-<!--				<input type="submit" name="Refresh" value="Submit" style="float:none;background-image:url('a');font-size:10pt;font-weight:normal;border:none;"/>-->
 			<?php } ?>
 			<h3><?php echo "<span class='{$javaCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Check</h3>
 			<?php if($silent) { ?>

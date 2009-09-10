@@ -12,37 +12,44 @@
 	user on the database server are required in order to be able to configure and install the installation database.
 	</div>
 	<div id="step_content_database" class="step">
+	
 	<table class="dbconf">
+	<?php
+		$input_size = '45';
+		$align = 'left';
+	?>
 <!--	TODO: Different Databases-->
+<?php if($state != 'edit') { ?>
 	    <tr><td>Your current database type is: </td>
 		<?php if($dtypes) {
 		        foreach($dtypes as $k=>$v) {
 		    ?><td>
 		    	&nbsp;
-		    	<?php echo ucwords($v);?>
+		    	<?php echo ucwords($v)." (Currently the only supported database.)";?>
 		    	<input type="hidden" name="dtype" value="<?php echo $v; ?>" <?php if(!$k)echo 'checked="checked"'; ?>/>
 		    	</td>
 		<?php }
 		}
 		?>
 		</tr>
+<?php } ?>
 		    <tr>
 		        <td><label for='dname'>Enter a name for the database: </label></td>
-		        <td><input type='text' value="<?php echo $dname?>" id='dname' name='dname' size='45'/></td>
+		        <td><input type='text' value="<?php echo $dname?>" id='dname' name='dname' size='<?php echo $input_size; ?>' style="float:left"/></td>
 		        <td id="error" class="error"><?php if($errors['dname']) echo $errors['dname']; ?></td>
 		    </tr>
 		    <tr>
 		        <td><label for='duname'>Enter Database Administrative username: </label></td>
-		        <td><input type='text' value="<?php echo $duname?>" id='duname' name='duname' size='45' /></td>
+		        <td><input type='text' value="<?php echo $duname?>" id='duname' name='duname' size='<?php echo $input_size; ?>' style="float:left"/></td>
 		        <td id="error" class="error"><?php if($errors['duname']) echo $errors['duname']; ?></td>
 		    </tr>
 		    <tr>
 		        <td><label for='dpassword'>Enter the password for the user: </label></td>
-		        <td><input type='password' value="<?php echo $dpassword?>" id='dpassword' name='dpassword' size='45' /></td>
+		        <td><input type='password' value="<?php echo $dpassword?>" id='dpassword' name='dpassword' size='<?php echo $input_size; ?>' style="float:left"/></td>
 		        <td id="error" class="error"><?php if($errors['dpassword']) echo $errors['dpassword']; ?></td>
 		    </tr>
 	</table>
-
+<br/><br/>
 	<div id="option3" class="onclick" onclick="javascript:{w.toggleClass('adv_options', 'option3');}">&nbsp;&nbsp;Advanced Options</div>
 	<div id="database" class="adv_options" style="display:none;">
 	    <div class="description">
@@ -52,7 +59,7 @@
 	    	<tr>
 	    		<td width="10px"> <label for='dhost'>Host: </label> </td>
 	    		<td width="205px"> <div id="tooltips" title="The address of the server where the database is located, if different to the current server">&nbsp;</div> </td>
-	    		<td width="10px"> <input type="text" value="<?php echo $dhost?>" id="dhost" name="dhost" size='45' class="textinput"/> </td>
+	    		<td width="10px"> <input type="text" value="<?php echo $dhost?>" id="dhost" name="dhost" size='<?php echo $input_size; ?>' class="textinput"/> </td>
 	    	</tr>
 	    	<tr>
 	    		<td> <label for='dport'>Port: </label> </td>
@@ -62,7 +69,7 @@
 	    	<tr>
 	    		<td> <label for='dbbinary'>Socket: </label> </td>
 	    		<td> <div id="tooltips" title="The path to the database binary. If it is not on your system path then please enter it here">&nbsp;</div> </td>
-	    		<td> <input type="text" value="<?php echo $dbbinary?>" id="dbbinary" name="dbbinary" size='45' class="textinput"/> </td>
+	    		<td> <input type="text" value="<?php echo $dbbinary?>" id="dbbinary" name="dbbinary" size='<?php echo $input_size; ?>' class="textinput"/> </td>
 	    	</tr>
 	    </table>
 	</div>

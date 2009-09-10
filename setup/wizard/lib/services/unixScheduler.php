@@ -150,6 +150,7 @@ class unixScheduler extends unixService {
 	function start() {
 		// TODO : Write sh on the fly? Not sure the reasoning here
 		$source = $this->getSchedulerSourceLoc();
+		return ;
 		if($source) { // Source
 			$cmd = "nohup ".$source." > ".SYS_LOG_DIR."scheduler.log 2>&1 & echo $!";
 	    	$response = $this->util->pexec($cmd);

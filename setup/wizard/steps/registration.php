@@ -42,6 +42,15 @@
 
 class registration extends Step
 {
+	/**
+	* Flag to store class information in session
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    public $storeInSession = true;
+    
     /**
      * Initialise the registration step
      *
@@ -63,7 +72,9 @@ class registration extends Step
     public function doStep()
     {
         $this->setFormInfo();
+        $this->loadFromSession();
 		if(!$this->inStep("registration")) {
+			$this->loadFromSession();
 			return 'landing';
 		}
 		if($this->next()) {
@@ -71,14 +82,48 @@ class registration extends Step
 		        return 'confirm';
 	        return 'error';
 		} else if($this->previous()) {
+
 		    return 'previous';
 		}else if($this->confirm()) {
 			
 		    return 'next';
 		}
+		
 		return 'landing';
     }
 
+    public function loadFromSession() {
+    	$reg = $this->getDataFromSession('registration');
+        $this->temp_variables['first_name'] = $this->getPostSafe($reg['first_name']);
+    	$this->temp_variables['last_name'] = $this->getPostSafe($reg['last_name']);
+    	$this->temp_variables['email_address'] = $this->getPostSafe($reg['email_address']);
+    	$this->temp_variables['sel_country'] = $this->getPostSafe($reg['sel_country']);
+    	$this->temp_variables['sel_industry'] = $this->getPostSafe($reg['sel_industry']);
+    	$this->temp_variables['sel_organization_size'] = $this->getPostSafe($reg['sel_organization_size']);
+    }
+    
+	/**
+	* Safer way to return post data
+	*
+	* @author KnowledgeTree Team
+	* @params SimpleXmlObject $simplexml
+	* @access public
+	* @return void
+	*/
+    public function getPostSafe($key) {
+    	$value = isset($key) ? $key : "";
+    	return $value;
+    }
+    
+    public function setInSession() {
+        $this->temp_variables['first_name'] = $_POST['submitted']['first_name'];
+    	$this->temp_variables['last_name'] = $_POST['submitted']['last_name'];
+    	$this->temp_variables['email_address'] = $_POST['submitted']['email_address'];
+    	$this->temp_variables['sel_country'] = $_POST['submitted']['country'];
+    	$this->temp_variables['sel_industry'] = $_POST['submitted']['industry'];
+    	$this->temp_variables['sel_organization_size'] = $_POST['submitted']['organization_size'];
+    }
+    
     /**
      * Execute the step action to register the user. If the user has already registered then the step will return.
      *
@@ -91,13 +136,14 @@ class registration extends Step
         if(isset($_POST['registered']) && $_POST['registered'] == 'yes'){
             return true;
         }
-return true;
+		$this->setInSession();
+		return true;
 	    //$this->postForm($_POST);
 	    //$this->sendToHost($_POST);
 
 	    // Post the form using curl
         $this->curlForm($_POST);
-
+		
         // Prevent the form being reposted.
         $_POST['registered'] = 'yes';
 	    return true;
@@ -499,6 +545,18 @@ return true;
         $this->temp_variables['countries'] = $countries;
         $this->temp_variables['industries'] = $industries;
         $this->temp_variables['org_size'] = $sizes;
+    }
+    
+    /**
+     * Return whether or not to store a step information in session
+     * 
+     * @author KnowledgeTree Team
+     * @param none
+     * @access public
+     * @return boolean
+     */
+    public function storeInSession() {
+    	return $this->storeInSession;
     }
 }
 ?>

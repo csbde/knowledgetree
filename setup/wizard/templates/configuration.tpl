@@ -17,7 +17,7 @@
 	<!--Warning and Error Messages-->
 	<?php if($errors) { ?>
 		<span class='cross'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-		<span class='error_message'>Your system is not quite ready to run KnowledgeTree. See the list below to determine which areas you need to address. Once you&rsquo;ve fixed these items, return to this wizard and try again.</span>
+		<span class='error_message'>Your system is not quite ready to run KnowledgeTree. See the list below to determine which areas you need to address. </span>
 		<br/>
 	<?php } elseif ($warnings) {
 		?>
@@ -84,7 +84,7 @@
 	</p>
 	<table>
 	<?php
-		if($errors && $warnings) {
+		if($errors || $warnings) {
 			$width = "290px";
 		} else {
 			$width = "520px";
@@ -98,7 +98,7 @@
 	    		<?php if(isset($path['msg'])) {
 	    			?>
 	    			<td class="error"> <?php echo $path['msg']; ?> </td>
-	    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+<!--	    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>-->
 	    			<?php
 	    		} else {
 	    			?>

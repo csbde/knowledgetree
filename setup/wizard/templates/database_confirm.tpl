@@ -2,7 +2,7 @@
 <p class="title">Confirming Database Configurations</p>
 
 	<div class="description">
-	Please confirm whether KnowledgeTree has correctly determined your database settings before proceeding.
+	Please confirm whether KnowledgeTree has correctly determined your database settings before proceeding. Print this page for future use. <a href="javascript:window.print()">Click to Print This Page</a>
 	</div>
 	<div id="step_content_database_confirm" class="step">
 		<h3><b>Database Settings</b></h3>
@@ -17,7 +17,7 @@
 		    <tr>
 		        <td width="153px">Database Type: </td>
 		        <td width="15px"> <div id="tooltips" title="Type of database being used.">&nbsp;</div> </td>
-		        <td><?php echo $type; ?></td>
+		        <td><?php echo $type." (Currently the only supported database.)"; ?></td>
 		    </tr>
 		<?php } ?>
 		    <tr>
@@ -69,7 +69,7 @@
 		<?php } ?>
 		</table>
 		
-		<h3><b>Database Users</b></h3>
+		<h3><b>Database Users (System Generated)</b></h3>
 		
 		<table class="dbconf">
 		    <?php //if (!$silent) { ?>
