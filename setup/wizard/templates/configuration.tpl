@@ -84,7 +84,7 @@
 	</p>
 	<table>
 	<?php
-		if($errors && $warnings) {
+		if($errors || $warnings) {
 			$width = "290px";
 		} else {
 			$width = "520px";

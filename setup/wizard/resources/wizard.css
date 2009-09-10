@@ -299,6 +299,11 @@ select {
 	margin-top:10px;
 }
 
+.textinput {
+	margin-top:0px;
+	float:left;
+}
+
 .step input {
 	background-image: url("graphics/dame/kt_gradient.jpg");
 	background-repeat:repeat-x;
@@ -324,11 +329,6 @@ select {
 	float:left;
 	margin-left:0px;
 	margin-top:10px;
-}
-
-.textinput {
-	margin-top:0px;
-	float:left;
 }
 
 .buttons a {
@@ -528,4 +528,12 @@ td.dir_description {
 .description_click {
     line-height:150%;
     font-size:90%;
+}
+
+.specify {
+    background: #DDDDDD;
+    border: solid 1px #888;
+    padding: 2px 8px 2px 5px;
+    text-decoration: none;
+    color: #EC7725;
 }

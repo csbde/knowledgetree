@@ -13,10 +13,12 @@ wizard.prototype.toggleClass = function(el, option) {
 	var el = document.getElementsByClassName(el); //adv_options|php_details|php_ext_details|php_con_details
 	if(el[0].style.display == 'none') {
 	    el[0].style.display = 'block';
-	    document.getElementById(option).innerHTML = "Hide Details";
+	    if(document.getElementById(option).innerHTML != '&nbsp;&nbsp;Advanced Options')
+	    	document.getElementById(option).innerHTML = "Hide Details";
 	} else {
 	    el[0].style.display = 'none';
-	    document.getElementById(option).innerHTML = "Show Details";
+	    if(document.getElementById(option).innerHTML != '&nbsp;&nbsp;Advanced Options')
+	    	document.getElementById(option).innerHTML = "Show Details";
 	}
 }
 
@@ -51,8 +53,9 @@ wizard.prototype.toggleElement = function(el) {
 		j = p-1;
 	}
 	el = document.getElementsByClassName("step"+j);
-	el[0].style.display = 'block';
-	
+	if(el != 'undefined') {
+		el[0].style.display = 'block';
+	}
 	return true;
 }
 
@@ -170,14 +173,23 @@ wizard.prototype.valRegHelper = function() {
 	var first = document.getElementById('first');
 	var last = document.getElementById('last');
 	var email = document.getElementById('email');
-	
-	if(first.value.length < 2) {
+	if(first.value.length < 1) {
 		document.getElementById("reg_error").innerHTML = "Please enter a First Name";
 		w.focusElement(first);
 		return false;
 	}
-	if(last.value.length < 2) {
+	if(!w.nameCheck(first.value)) {
+		document.getElementById("reg_error").innerHTML = "Please enter a valid First Name";
+		w.focusElement(first);
+		return false;
+	}
+	if(last.value.length < 1) {
 		document.getElementById("reg_error").innerHTML = "Please enter a Last Name";
+		w.focusElement(last);
+		return false;
+	}
+	if(!w.nameCheck(last.value)) {
+		document.getElementById("reg_error").innerHTML = "Please enter a valid Last Name";
 		w.focusElement(last);
 		return false;
 	}
@@ -190,8 +202,18 @@ wizard.prototype.valRegHelper = function() {
 	return true;
 }
 
+wizard.prototype.nameCheck = function(str) {
+	var nameRegxp = /^([a-zA-Z]+)$/;
+	if(str.match(nameRegxp)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 // Validate Registration Page Courtesy of SmartWebby.com (http://www.smartwebby.com/dhtml/)
 wizard.prototype.emailCheck = function(str) { 
+	str = w.trim(str);
 	var at="@";
 	var dot=".";
 	var lat=str.indexOf(at);
@@ -219,6 +241,20 @@ wizard.prototype.emailCheck = function(str) {
 		return false;
 	}
 	return true;
+}
+
+wizard.prototype.trim = function (str, chars) {
+	return w.ltrim(w.rtrim(str, chars), chars);
+}
+ 
+wizard.prototype.ltrim = function (str, chars) {
+	chars = chars || "\\s";
+	return str.replace(new RegExp("^[" + chars + "]+", "g"), "");
+}
+ 
+wizard.prototype.rtrim = function (str, chars) {
+	chars = chars || "\\s";
+	return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
 }
 
 // Disable DnD on element
