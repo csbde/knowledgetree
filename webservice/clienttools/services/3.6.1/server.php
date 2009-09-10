@@ -1,7 +1,7 @@
 <?php
 class server extends client_service {
 		public function status(){
-
+			$this->setResponse(array('online'=>true));
 		}
 		
 		public function ping(){
