@@ -7,12 +7,19 @@ class ajaxHandler{
 	public $request=NULL;
 	public $kt=NULL;
 	public $authenticator=NULL;
+	public $noAuthRequireList=array();
 
-	public function __construct(&$ret=NULL,&$kt){
+	public function __construct(&$ret=NULL,&$kt,$noAuthRequests=''){
 		// set a local copy of the json request wrapper
+		$noAuthRequests=is_array($noAuthRequests)?$noAuthRequests:split(',',(string)$noAuthRequests);
+		$this->registerNoAuthRequest($noAuthRequests);
 		$this->req=new jsonWrapper(isset($_GET['request'])?$_GET['request']:(isset($_POST['request'])?$_POST['request']:''));
-		$this->auth=$this->req->jsonArray['auth'];
-		$this->request=$this->req->jsonArray['request'];
+		$this->auth=$this->structArray('user,pass,passhash,appType,session,token,version',$this->req->jsonArray['auth']);
+		$this->request=$this->structArray('service,function,parameters',$this->req->jsonArray['request']);
+
+		$add_params=array_merge($_GET,$_POST);
+		unset($add_params['request'],$add_params['datasource']);
+		$this->request['parameters']=array_merge($this->request['parameters'],$add_params);
 
 
 		// set the response object
@@ -22,6 +29,7 @@ class ajaxHandler{
 			$this->ret=new jsonResponseObject();
 		}
 		$this->ret->setRequest($this->req->jsonArray);
+		$this->ret->setTitle($this->request['service'].'::'.$this->request['function']);
 
 		if(get_class($kt)=='KTAPI'){
 			$this->kt=&$kt;
@@ -41,21 +49,32 @@ class ajaxHandler{
 
 		if(!$this->verifySession()){
 			$this->doLogin();
-			if(!$this->isAuthenticated())return $this->render();
+			$isAuthRequired=$this->isNoAuthRequiredRequest();
+			$isAuthenticated=$this->isAuthenticated();
+			if(!$isAuthRequired && !$isAuthenticated)return $this->render();
 		}
 		
 		$this->dispatch();
 
 		return $this->render();
 	}
+	
+	private function structArray($structString=NULL,$arr=NULL){
+		$struct=array_flip(split(',',(string)$structString));
+		return array_merge($struct,is_array($arr)?$arr:array());
+	}
 
 	public function dispatch(){
 		$request=$this->request;
-		$this->loadService($request['service']);
-		$service=new $request['service']($this->ret,$this->kt,$this->request,$this->auth);
-		$this->ret->setTitle($request['service'].'::'.$request['function']);
+		if($request['auth']){
+			$service=$this->authenticator;
+		}else{
+			$this->loadService($request['service']);
+			$service=new $request['service']($this->ret,$this->kt,$this->request,$this->auth);
+		}
+		$this->ret->setdebug('dispatch_request','The service class loaded');
 		if(method_exists($service,$request['function'])){
-			//$this->ret->setDebug('got here');
+			$this->ret->setdebug('dispatch_execution','The service method was found. Executing');
 			$service->$request['function']($request['parameters']);
 		}else{
 			$this->ret->addError("Service {$request['service']} does not contain the method: {$request['function']}");
@@ -97,7 +116,7 @@ class ajaxHandler{
 	}
 
 	protected function isAuthenticated(){
-		return true;
+		return $this->authenticator->pickup_session();
 	}
 
 	protected function doLogin(){
@@ -112,6 +131,26 @@ class ajaxHandler{
 	public function render(){
 		echo $this->ret->getJson();
 		return true;
+	}
+	
+	public function registerNoAuthRequest($requestString=''){
+		if($requestString){
+			if(is_array($requestString)){
+				foreach ($requestString as $rString){
+					$rString=strtolower((string)$rString);
+					$this->noAuthRequireList[$rString]=$rString;
+				}
+			}else{
+				$requestString=strtolower((string)$requestString);
+				$this->noAuthRequireList[$requestString]=(string)$requestString;
+			}
+		}
+	}
+	
+	public function isNoAuthRequiredRequest(){
+		$req=$this->request;
+		$reqString=strtolower("{$req['service']}.{$req['function']}");
+		return in_array($reqString,$this->noAuthRequireList);
 	}
 
 }

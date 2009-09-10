@@ -60,10 +60,8 @@ class KTDownloadManager
 		$this->age = $config->get('webservice/downloadExpiry',5);
 
 		$protocol = $config->get('KnowledgeTree/sslEnabled')?'https':'http';
-		$server = KTUtil::getServerName(TRUE);
-		$url = $config->get('webservice/downloadUrl');
 
-		$this->download_url = $protocol . '://' . $server . $url;
+		$this->download_url = $protocol . '://' . $_SERVER['HTTP_HOST'] . $config->get('webservice/downloadUrl');
 		$this->random=$config->get('webservice/randomKeyText','jhsdf8q1jkjpoiudfs7sd3ds1');
 	}
 

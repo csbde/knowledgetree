@@ -12,6 +12,7 @@ class jsonResponseObject{
 	protected $request=array();
 	protected $debug=array();
 	public $additional=array();
+	public $isDataSource=false;
 	
 	public $response=array(
 		'requestName'		=>'',
@@ -60,7 +61,7 @@ class jsonResponseObject{
 	
 	public function getJson(){
 		$response=array_merge(array(
-			'title'		=>$this->title,
+			'requestName'		=>$this->title,
 			'errors'	=>array(
 				'hadErrors'		=>(count($this->errors)>0?1:0),
 				'errors'		=>$this->errors
@@ -71,7 +72,11 @@ class jsonResponseObject{
 			'debug'		=>$this->debug,
 		),$this->additional);
 		
-		$response=json_encode($response);
+		if($this->isDataSource){
+			$response=json_encode($response['data']);
+		}else{
+			$response=json_encode($response);
+		}
 		return $response;
 	}
 }

@@ -38,12 +38,23 @@ $old_error_handler=set_error_handler('error_handler',E_ERROR);
 //Interpret the Json Object that was passed
 include_once('jsonWrapper.php');
 include_once('ajaxhandler.php');
+include_once('serviceHelper.php');
 include_once('client_service.php');
 
 //Instantiate base classes
 $KT = new KTAPI();
 $RET=new jsonResponseObject();
-$handler=new ajaxHandler($RET,$KT);
+if($_GET['datasource'])$RET->isDataSource=true;
+
+$noAuthRequests=array(
+	'auth.ping',
+	'auth.japiLogin',
+	'kt.get_all_client_policies',
+	'kt.get_languages',
+	'kt.switchlang'
+);
+
+$handler=new ajaxHandler($RET,$KT,$noAuthRequests);
 
 
 
