@@ -43,7 +43,7 @@
 		    </tr>
 	</table>
 
-	<div id="options" class="onclick" onclick="javascript:{w.toggleClass('adv_options');}">&nbsp;&nbsp;Advanced Options</div>
+	<div id="option3" class="onclick" onclick="javascript:{w.toggleClass('adv_options', 'option3');}">&nbsp;&nbsp;Advanced Options</div>
 	<div id="database" class="adv_options" style="display:none;">
 	    <div class="description">
 	        These options are only necessary for some sites. If you're not sure what you should enter here, leave the default settings.
@@ -65,26 +65,6 @@
 	    		<td> <input type="text" value="<?php echo $dbbinary?>" id="dbbinary" name="dbbinary" size='45' class="textinput"/> </td>
 	    	</tr>
 	    </table>
-<!--	    <div class="db_adv_options">-->
-<!--	    	<div class="adv_option">-->
-<!--	    		<label for='dhost'>Host: </label>-->
-<!--	    		<br>-->
-<!--				<span class="description">The address of the server where the database is located, if different to the current server.</span>-->
-<!--				<input type="text" value="<?php //echo $dhost?>" id="dhost" name="dhost" size='45' class="textinput"/>-->
-<!--	    	</div>-->
-<!--	    	<div class="adv_option">-->
-<!--	    		<label for='dport'>Port: </label>-->
-<!--	    		<br>-->
-<!--	    		<span class="description">The port on which your database server is listening, if it is a non-standard port please enter the number here.</span>-->
-<!--	    		<input type="text" value="<?php //echo $dport?>" id="dport" name="dport" size='10' class="textinput"/>-->
-<!--	    	</div>-->
-<!--	    	<div class="adv_option">-->
-<!--	    		<label for='dport'>Socket: </label>-->
-<!--	    		<br>-->
-<!--	    		<span class="description">The path to the database binary. If it is not on your system path then please enter it here.</span>-->
-<!--	    		<input type="text" value="<?php //echo $dbbinary?>" id="dbbinary" name="dbbinary" size='45' class="textinput"/>-->
-<!--	    	</div>-->
-<!--	    </div>-->
 	</div>
 	</div>
 	    <input type="submit" name="Previous" value="Previous" class="button_previous" />

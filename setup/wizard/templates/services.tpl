@@ -58,7 +58,7 @@
 			<?php } ?>
 			<h3><?php echo "<span class='{$javaCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Check</h3>
 			<?php if($silent) { ?>
-				<div id="options" class="onclick" onclick="javascript:{w.toggleClass('java_details');}">Show Details</div>
+				<div id="option4" class="onclick" onclick="javascript:{w.toggleClass('java_details', 'option4');}">Show Details</div>
 				<div class="java_details" style="display:none">
 			<?php } ?>
 <!--			<p class="description">-->
@@ -94,7 +94,7 @@
 			<?php if (!$disableExtension) { ?>
 				<h3><?php echo "<span class='{$javaExtCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Extensions</h3>
 				<?php if($silent) { ?>
-					<div id="options" class="onclick" onclick="javascript:{w.toggleClass('java_ext_details');}">Show Details</div>
+					<div id="option5" class="onclick" onclick="javascript:{w.toggleClass('java_ext_details', 'option5');}">Show Details</div>
 					<div class="java_ext_details" style="display:none">
 				<?php } ?>
 <!--				<p class="description">-->
@@ -123,7 +123,7 @@
 		<?php } ?>
 		<h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services Check</h3>
 		<?php if($silent) { ?>
-			<div id="options" class="onclick" onclick="javascript:{w.toggleClass('service_details');}">Show Details</div>
+			<div id="option6" class="onclick" onclick="javascript:{w.toggleClass('service_details', 'option6');}">Show Details</div>
 			<div class="service_details" style="display:none">
 		<?php } ?>
 <!--		<p class="description">-->

@@ -8,9 +8,9 @@
 	<?php
 		if(!$errors && $warnings) {
 			?>
-				<span class='big_ok'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-				Congratulations! Your system is ready to run KnowledgeTree. Click Next to continue.
-				<br/>
+				<span class='big_ok'>&nbsp;&nbsp;&nbsp;</span>
+				<span class='description'>Congratulations! Your system is ready to run KnowledgeTree. Click Next to continue.</span>
+				<br/><br/>
 			<?php
 		}
 	?>
@@ -26,13 +26,13 @@
 	<?php
 		if($errors || $warnings) {
 			?>
-		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Installer#PHP_Dependencies" target="_blank">Click here for help on overcoming dependency issues</a>
+		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Installer#PHP_Dependencies" target="_blank" class="description_click">Click here for help on overcoming dependency issues</span></a>
 	<?php } ?>
 <!--Content-->
 	<div id="step_content_dependencies" class="step">
 		<h3><?php echo "<span class='{$php}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>PHP Version Check</h3>
 		<?php if($silent) { ?>
-			<div id="options" class="onclick" onclick="javascript:{w.toggleClass('php_details');}">Show Details</div>
+			<div id="option1" class="onclick" onclick="javascript:{w.toggleClass('php_details', 'option1');}">Show Details</div>
 			<div class="php_details" style="display:none">
 		<?php } ?>
 		<p class="description">
@@ -49,11 +49,11 @@
 		<h3><?php echo "<span class='{$php_ext}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>PHP Extensions</h3>
 		<?php
 		if($silent) { ?>
-			<div id="options" class="onclick" onclick="javascript:{w.toggleClass('php_ext_details');}">Show Details</div>
+			<div id="option2" class="onclick" onclick="javascript:{w.toggleClass('php_ext_details', 'option2');}">Show Details</div>
 			<div class="php_ext_details" style="display:none">
 		<?php } ?>
 		<p class="description">
-			The extensions shown in red below are required for KnowledgeTree to run optimally. Items shown in yellow are optional, but recommended.
+			The extensions shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.
 		</p>
 		<table class="description">
 		<?php
@@ -95,11 +95,11 @@
 		<h3><?php echo "<span class='{$php_con}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>PHP Configuration</h3>
 		<?php
 		if($silent) { ?>
-			<div id="options" class="onclick" onclick="javascript:{w.toggleClass('php_con_details');}">Show Details</div>
+			<div id="option3" class="onclick" onclick="javascript:{w.toggleClass('php_con_details', 'option3');}">Show Details</div>
 			<div class="php_con_details" style="display:none">
 		<?php } ?>
 		<p class="description">
-		The configurations shown in red below are required for KnowledgeTree to run optimally. Items shown in yellow are optional, but recommended.
+		The configurations shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.
 		</p>
 		<table class="description">
 		<tr>

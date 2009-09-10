@@ -17,7 +17,7 @@
 	<div>
 	    <h3><?php echo "<span class='{$paths_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Paths and Permissions</h3>
 	<?php if($silent) { ?>
-		<div id="options" class="onclick" onclick="javascript:{w.toggleClass('paths_check');}">Show Details</div>
+		<div id="option8" class="onclick" onclick="javascript:{w.toggleClass('paths_check', 'option8');}">Show Details</div>
 		<div class="paths_check" style="display:none">
 	<?php } ?>
 	    <table>
@@ -38,7 +38,7 @@
 <!--	Database connectivity	-->
 	    <h3><?php echo "<span class='{$database_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Database connectivity</h3>
 	<?php if($silent) { ?>
-		<div id="options" class="onclick" onclick="javascript:{w.toggleClass('database_check');}">Show Details</div>
+		<div id="option9" class="onclick" onclick="javascript:{w.toggleClass('database_check', 'option9');}">Show Details</div>
 		<div class="database_check" style="display:none">
 	<?php } ?>
 	    <table>
@@ -53,7 +53,7 @@
 	<?php } ?>
 	    <h3><?php echo "<span class='{$privileges_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Privileges</h3>
 	<?php if($silent) { ?>
-		<div id="options" class="onclick" onclick="javascript:{w.toggleClass('privileges_check');}">Show Details</div>
+		<div id="option1" class="onclick" onclick="javascript:{w.toggleClass('privileges_check', 'option1');}">Show Details</div>
 		<div class="privileges_check" style="display:none">
 	<?php } ?>
 	    <table style="width:755px;">
@@ -69,7 +69,7 @@
 	<div>
 	    <h3><?php echo "<span class='{$services_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services</h3>
 	<?php if($silent) { ?>
-		<div id="options" class="onclick" onclick="javascript:{w.toggleClass('services_check');}">Show Details</div>
+		<div id="option2" class="onclick" onclick="javascript:{w.toggleClass('services_check', 'option2');}">Show Details</div>
 		<div class="services_check" style="display:none">
 	<?php } ?>
 	    <table style="width:755px;">
