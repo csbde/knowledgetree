@@ -84,7 +84,7 @@ class BasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             'normal' => _kt("Normal (String)"),
             'lookup' => _kt("Lookup"),
             'tree' => _kt("Tree"),
-            'largetextbox' => _kt("Large Textbox"),
+            'largetextbox' => _kt("Large Text"),
             'date' => _kt("Date"),
         );
         return $types;
