@@ -41,6 +41,17 @@ class client_service{
 		return $var;
 	}
 	
+	protected function checkPearError($obj,$errMsg,$debug=NULL,$response=NULL){
+		if (PEAR::isError($obj)){
+			if($response===NULL)$response=array('status_code' => 1);
+			$this->addError($errMsg);
+			if((isset($debug) || $debug==NULL) && $debug!=='')$this->addDebug('',$debug!==NULL?$debug:$obj);
+    		$this->setResponse($response);
+    		return false;
+    	}
+    	return true;	
+	}
+	
 }
 
 ?>

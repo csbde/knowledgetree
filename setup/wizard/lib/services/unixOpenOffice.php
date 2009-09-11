@@ -42,10 +42,104 @@
 
 class unixOpenOffice extends unixService {
 
+	// utility
+	public $util;
+	// path to office
+	private $path;
+	// host
+	private $host;
+	// pid running
+	private $pidFile;
+	// port to bind to
+	private $port;
+	// bin folder
+	private $bin;
+	// office executable
+	private $soffice;
+	// office log file
+	private $log;
+	private $options;
+	
+	# nohup /home/jarrett/ktdms/openoffice/program/soffice.bin -nofirststartwizard -nologo -headless -accept=socket,host=127.0.0.1,port=8100;urp;StarOffice.ServiceManager &> /home/jarrett/ktdms/var/log/dmsctl.log &
 	public function __construct() {
-		$this->name = "KTOpenOfficeTest";
+		$this->name = "openoffice";
+		$this->util = new InstallUtil();
 	}
 	
-
+	public function load() {
+		$this->setPort("8100");
+		$this->setHost("localhost");
+		$this->setLog("openoffice.log");
+		$this->setBin("soffice");
+		$this->setOption();
+	}
+	
+	private function setPort($port = "8100") {
+		$this->port = $port;
+	}
+	
+	public function getPort() {
+		return $this->port;
+	}
+	
+	private function setHost($host = "localhost") {
+		$this->host = $host;
+	}
+	
+	public function getHost() {
+		return $this->host;
+	}
+	
+	private function setLog($log = "openoffice.log") {
+		$this->log = $log;
+	}
+	
+	public function getLog() {
+		return $this->log;
+	}
+	
+	private function setBin($bin = "soffice") {
+		$this->bin = $bin;
+	}
+	
+	public function getBin() {
+		return $this->bin;
+	}
+	
+	private function setOption() {
+		$this->options = "-nofirststartwizard -nologo -headless -accept=\"socket,host={$this->getHost()},port={$this->getPort()};urp;StarOffice.ServiceManager\"";
+	}
+	
+	public function getOption() {
+		return $this->options;
+	}
+	
+    public function install() {
+    	$status = $this->status();
+    	if($status == '') {
+			return $this->start();
+    	} else {
+    		return $status;
+    	}
+    }
+    
+    public function start() {
+    	$state = $this->status();
+    	return ;
+    	if($state != 'STARTED') {
+			$cmd = "nohup {$this->getBin()} ".$this->getOption()." > ".SYS_LOG_DIR."{$this->getLog()} 2>&1 & echo $!";
+	    	$response = $this->util->pexec($cmd);
+	    	
+	    	return $response;
+    	} elseif ($state == '') {
+    		// Start Service
+    		return true;
+    	} else {
+    		// Service Running Already
+    		return true;
+    	}
+    	
+    	return false;
+    }
 }
 ?>

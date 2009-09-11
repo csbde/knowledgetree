@@ -77,7 +77,7 @@ $response = $download_manager->download($document_id, $hash, null, $apptype);
 if (PEAR::isError($response))
 {
 	$msg = urlencode($response->getMessage());
-	print "status_code=4&msg=$msg";
+	print "status_code=4&msg=$msg:".$_GET["u"].":".$_GET["d"].":".$_GET["code"].":".$_GET["apptype"].":";
 	exit;
 }
 

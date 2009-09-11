@@ -172,7 +172,7 @@ class windowsScheduler extends windowsService {
 	public function install() {
 		$state = $this->status();
 		if($state == '') {
-			if(is_readable(SYS_BIN_DIR)) {
+			if(is_readable(SYS_BIN_DIR) && is_writable(SYS_BIN_DIR)) {
 				if(!file_exists($this->getSchedulerScriptPath())) {
 					$fp = fopen($this->getSchedulerScriptPath(), "w+");
 					$content = "@echo off\n";
@@ -181,12 +181,17 @@ class windowsScheduler extends windowsService {
 					fclose($fp);
 				}
 			}
-			$response = win32_create_service(array(
-	            'service' => $this->name,
-	            'display' => $this->name,
-	            'path' => $this->getSchedulerScriptPath()
-	            ));
-			return $response;
+            
+            // TODO what if it does not exist? check how the dmsctl.bat does this
+            if (function_exists('win32_create_service'))
+            {
+    			$response = win32_create_service(array(
+    	            'service' => $this->name,
+    	            'display' => $this->name,
+    	            'path' => $this->getSchedulerScriptPath()
+    	            ));
+    			return $response;
+            }
 		}
 		return $state;
 	}

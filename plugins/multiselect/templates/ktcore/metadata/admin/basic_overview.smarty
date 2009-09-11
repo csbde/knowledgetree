@@ -1,0 +1,47 @@
+<p class="descriptiveText">{i18n}Fieldsets bring together different fields into a collection
+of related information.{/i18n}</p>
+
+<p><a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}fieldset_action=newfield{/addQS}">{i18n}Add New Field{/i18n}</a>
+<a href="{addQS context=$context}fieldset_action=newfield{/addQS}">{i18n}Add New Field{/i18n}</a></p>
+
+{if (!empty($fields))}
+<table class="kt_collection narrow" cellspacing="0">
+    <thead>
+        <tr>
+            <th>{i18n}Field Name{/i18n}</th>
+            <th class="centered">{i18n}Edit{/i18n}</th>
+            <th class="centered">{i18n}Delete{/i18n}</th>
+            <th>{i18n}Type Description{/i18n}</th>
+            <th colspan="2">{i18n}Position{/i18n}</th>
+        </tr>
+    </thead>
+    <tbody>
+      {foreach name=fieldlist from=$fields item=oField}
+        <tr>
+            <td class="title">
+                {$oField->getName()}
+            </td>
+            <td class="centered">
+                <a href="{addQS context=$context}fieldset_action=managefield&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktEdit">{i18n}edit{/i18n}</a>
+            </td>
+            <td class="centered">
+                <a href="{addQS context=$context}fieldset_action=deletefield&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktDelete">{i18n}delete{/i18n}</a>
+            </td>
+            <td>
+                <span class="descriptiveText">{if $oField->getHasInetLookup()}{$oField->getInetLookupTypeFriendlyName()}{else}{$oField->getTypeDescription()}{/if}</span>
+            </td>
+            <td>
+                {if !$smarty.foreach.fieldlist.first}
+                    <a href="{addQS context=$context}fieldset_action=orderUp&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktMoveUp">{i18n}Reorder up{/i18n}</a>
+                {/if}
+            </td>
+            <td>
+                {if !$smarty.foreach.fieldlist.last}
+                    <a href="{addQS context=$context}fieldset_action=orderDown&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktMoveDown">{i18n}Reorder down{/i18n}</a>
+                {/if}
+            </td>
+        </tr>
+      {/foreach}
+    </tbody>
+</table>
+{/if}

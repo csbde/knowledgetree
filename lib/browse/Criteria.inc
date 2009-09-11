@@ -621,12 +621,69 @@ class GenericMetadataCriterion extends BrowseCriterion {
         }
 
         // If there's no lookup, just use the standard text input
-        if ($this->oField->getHasLookup() == false) {
+        if ($this->oField->getHasLookup() == false && $this->oField->getHasInetLookup() == false) {
             $this->bContains = true; // contains
             return parent::searchWidget($aRequest, $aPreValue);
         }
+        
+        if($this->oField->getHasInetLookup() == true)
+        {
+
+            //$this->bContains = true;
+            $this->bString = false;
+            $sRet = $this->getNotWidget($aPreValue);
+            
+            $innerJoin = $aPreValue[$this->getWidgetBase()."_join"];
+            
+            $andSelected = "";
+            $orSelected = "";
+            if($innerJoin == "AND")
+            {
+                $andSelected = "selected=\"selected\"";
+            }
+            elseif($innerJoin == "OR")
+            {
+                $orSelected = "selected=\"selected\"";
+            }
+            
+            $sRet .= "<select size=\"1\" name=\"".$this->getWidgetBase()."_join\">\n";
+            $sRet .= "<option value=\"AND\" ".$andSelected.">all</option>\n";
+            $sRet .= "<option value=\"OR\" ".$orSelected.">any</option>\n";
+            $sRet .= "</select>\n";
+            
+            if($this->oField->getInetLookupType() == "multiwithlist")
+            {
+                $sRet .= "<select size=\"4\" name=\"" . $this->getWidgetBase() . "\" multiple=\"multiple\">\n";
+                $aSearch = array('document_field_id = ?', $this->getID());
+                $aMetaData = MetaData::getByDocumentField(DocumentField::get($this->getID()));/*ok*/
+
+                foreach ($aMetaData as $oMetaData) {
+
+                    $sSelStr = '';
+                    if (in_array($oMetaData->getName(), $preval)) { $sSelStr = ' selected="true"'; }
+                    $sRet .= "<option value=\"" . $oMetaData->getName() . "\" " . $sSelStr . ">" . $oMetaData->getName() . "</option>\n";
+                }
+                $sRet .= "</select>\n"; 
+            }
+            elseif($this->oField->getInetLookupType() == "multiwithcheckboxes")
+            {
+                $sRet .= "<div style=\"float:right;\">";
+                $aSearch = array('document_field_id = ?', $this->getID());
+                $aMetaData = MetaData::getByDocumentField(DocumentField::get($this->getID()));/*ok*/
+
+                foreach ($aMetaData as $oMetaData) {
+                    $sSelStr = '';
+                    if (in_array($oMetaData->getName(), $preval)) { $sSelStr = ' checked="true"'; }
+                    $sRet .= "<input type=\"checkbox\" name=\"" . $this->getWidgetBase() . "\" class=\"multiple\" value=\"" . $oMetaData->getName() . "\"" . $sSelStr . " /> ". $oMetaData->getName()."<br />";
+                }
+                $sRet .= "</div>";
+            }
+            return $sRet;
+        }
+        
         $this->bContains = false; // is
         $sRet = $this->getNotWidget($aPreValue);
+        
         $sRet .= "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aSearch = array('document_field_id = ?', $this->getID());
         $aMetaData = MetaData::getByDocumentField(DocumentField::get($this->getID()));/*ok*/

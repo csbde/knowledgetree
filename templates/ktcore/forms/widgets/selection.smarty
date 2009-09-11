@@ -9,8 +9,17 @@
     <option value="">{$options.initial_string}</option>
     {/if}
   {foreach item=lookup key=lookup_key from=$vocab}
-
-       <option value="{$lookup_key|sanitize}" {if $context->selected($lookup_key)}selected="selected"{/if}>{$lookup|sanitize}</option>
+  	{if $options.multi}
+		{capture assign=selected}{""}{/capture}
+		{foreach item=value1 key=key from=$value}
+			{if $value1 == $lookup_key}
+				{capture assign=selected}selected='selected'{/capture}
+			{/if}
+		{/foreach}
+		<option value="{$lookup_key|sanitize}" {$selected} >{$lookup|sanitize}</option>
+	{else}
+		<option value="{$lookup_key|sanitize}" {if ($value == $lookup_key)}selected="selected"{/if}>{$lookup|sanitize}</option>
+	{* multiselect change start *}{/if}
   {/foreach}
   </select>
 {/if}

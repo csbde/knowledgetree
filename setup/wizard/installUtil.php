@@ -235,7 +235,7 @@ class InstallUtil {
      */
     private function _checkPermission($dir)
     {
-        if(is_readable($dir)){
+        if(is_readable($dir) && is_writable($dir)) {
 			return true;
         } else {
         	return false;
@@ -280,6 +280,7 @@ class InstallUtil {
 
         if(is_writable($dir)){
             $ret['class'] = 'tick';
+            
             return $ret;
         }
 
@@ -357,6 +358,14 @@ class InstallUtil {
     	return true;
     }
     
+    /**
+     * Attempt using the php-java bridge
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @param none
+     * @return boolean
+     */
     public function javaBridge() {
 		try {
     		$javaSystem = new Java('java.lang.System');
@@ -365,8 +374,16 @@ class InstallUtil {
 		}
 		return true;
     }
-		
-    function tryJava1() {
+	
+    /**
+     * Attempt java detection
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @param none
+     * @return boolean
+     */
+    public function tryJava1() {
     	$response = $this->pexec("java -version"); // Java Runtime Check
     	if(empty($response['out'])) {
     		return false;
@@ -375,7 +392,15 @@ class InstallUtil {
     	return 'java';
     }
     
-    function tryJava2() {
+    /**
+     * Attempt java detection
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @param none
+     * @return boolean
+     */
+    public function tryJava2() {
     	$response = $this->pexec("java"); // Java Runtime Check
     	if(empty($response['out'])) {
     		return false;
@@ -384,7 +409,15 @@ class InstallUtil {
     	return 'java';
     }
     
-    function tryJava3() {
+    /**
+     * Attempt java detection
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @param none
+     * @return boolean
+     */
+    public function tryJava3() {
     	$response = $this->pexec("whereis java"); // Java Runtime Check
     	if(empty($response['out'])) {
     		return false;
@@ -454,7 +487,7 @@ class InstallUtil {
     			$response = $this->tryJava3();
     		}
     	}
-		
+//		return false;
     	return $response;
     }
     
@@ -468,7 +501,16 @@ class InstallUtil {
 	*/
     function getPhp() {
 		$cmd = "whereis php";
-		$response = $this->pexec($cmd);
+		$res = $this->getPhpHelper($cmd);
+		if($res != '') {
+			return $res;
+		}
+		$cmd = "which php";
+		return $this->getPhpHelper($cmd);
+    }
+    
+    function getPhpHelper($cmd) {
+    	$response = $this->pexec($cmd);
 		if(is_array($response['out'])) {
 			if (isset($response['out'][0])) {
 				$broke = explode(' ', $response['out'][0]);
@@ -481,9 +523,26 @@ class InstallUtil {
 			}
 		}
 		
-		return '';
+		return '';    	
     }
     
+    function getOpenOffice() {
+    	$cmd = "whereis soffice";
+		$response = $this->pexec($cmd);
+		if(is_array($response['out'])) {
+			if (isset($response['out'][0])) {
+				$broke = explode(' ', $response['out'][0]);
+				foreach ($broke as $r) {
+					$match = preg_match('/bin/', $r);
+					if($match) {
+						return preg_replace('/soffice:/', '', $r);
+					}
+				}
+			}
+		}
+		
+		return '';
+    }
    /**
      * Portably execute a command on any of the supported platforms.
      *

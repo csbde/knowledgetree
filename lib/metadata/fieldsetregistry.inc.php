@@ -102,19 +102,19 @@ class KTFieldsetRegistry {
             $widgets = array();
             $fields = $oFieldset->getFields();
 
-	if ($oFieldset->getIsConditional()) {
-	    $iMasterId = $oFieldset->getMasterFieldId();
+    if ($oFieldset->getIsConditional()) {
+        $iMasterId = $oFieldset->getMasterFieldId();
 
-	    $oMasterField = DocumentField::get($iMasterId);
-	    
-	    $newfields = array();
-	    $newfields[] = $oMasterField;
-	    foreach($fields as $oField) {
-		if($oField->getId() != $iMasterId) {
-		    $newfields[] = $oField;
-		}
-	    }
-	    
+        $oMasterField = DocumentField::get($iMasterId);
+        
+        $newfields = array();
+        $newfields[] = $oMasterField;
+        foreach($fields as $oField) {
+        if($oField->getId() != $iMasterId) {
+            $newfields[] = $oField;
+        }
+        }
+        
             foreach ($newfields as $oField) {
                 $fname = 'metadata_' . $oField->getId(); 
                 $value = null;
@@ -126,23 +126,23 @@ class KTFieldsetRegistry {
                     }
                 }
                 
-		$widgets[] = $this->oWF->get('ktcore.widgets.conditionalselection', 
-					     array(
-						   'label' => $oField->getName(),
-						   'required' => $oField->getIsMandatory(),
-						   'name' => $fname,
-						   'value' => $value,
-						   'description' => $oField->getDescription(),
-						   'vocab' => MetaData::getEnabledByDocumentField($oField),
-						   'id_method' => 'getName',
-						   'label_method' => 'getName',
-						   'unselected_label' => _kt("No selection."),
-						   'simple_select' => false,
-						   'master' => ($oField->getId() == $iMasterId),
-						   'masterid' => $iMasterId,
-						   'fieldset' => $oFieldset->getId(),
-						   'field' => $oField->getId(),
-						   ));
+        $widgets[] = $this->oWF->get('ktcore.widgets.conditionalselection', 
+                         array(
+                           'label' => $oField->getName(),
+                           'required' => $oField->getIsMandatory(),
+                           'name' => $fname,
+                           'value' => $value,
+                           'description' => $oField->getDescription(),
+                           'vocab' => MetaData::getEnabledByDocumentField($oField),
+                           'id_method' => 'getName',
+                           'label_method' => 'getName',
+                           'unselected_label' => _kt("No selection."),
+                           'simple_select' => false,
+                           'master' => ($oField->getId() == $iMasterId),
+                           'masterid' => $iMasterId,
+                           'fieldset' => $oFieldset->getId(),
+                           'field' => $oField->getId(),
+                           ));
             }
         } else {
             foreach ($fields as $oField) {
@@ -169,16 +169,14 @@ class KTFieldsetRegistry {
                     } else {
                         $type = 'ktcore.fields.lookup';
                     }
-                } else {
+                } else if($oField->getHasInetLookup()) {
+            $type = 'ktcore.fields.multiselect';
+        } else {
                     $type = 'ktcore.fields.string';
                 }
                 
-				/*	------------------------------------
-					---- Changes for Custom Fields -----
-					------------------------------------	*/
-                
                 if ($oField->getDataType() == 'LARGE TEXT') {
-                    $type = 'ktcore.fields.largetext';                	
+                    $type = 'ktcore.fields.largetext';                  
                 } else if ($oField->getDataType() == 'DATE') {
                     $type = 'ktcore.fields.date';
                 }
@@ -214,10 +212,7 @@ class KTFieldsetRegistry {
                         'vocab' => MetaData::getEnabledByDocumentField($oField),
                         'field_id' => $oField->getId(),
                     ));
-                } else if ($type == 'ktcore.fields.largetext') {                	
-					/*	------------------------------------
-						---- Changes for Custom Fields -----
-						------------------------------------	*/
+                } else if ($type == 'ktcore.fields.largetext') {                    
                     $widgets[] = $this->oWF->get('ktcore.widgets.textarea', array(
                         'label' => $oField->getName(),
                         'required' => $oField->getIsMandatory(),
@@ -226,10 +221,7 @@ class KTFieldsetRegistry {
                         'description' => $oField->getDescription(),
                         'field' => $oField,
                     ));
-                } else if ($type == 'ktcore.fields.date') {                	
-					/*	------------------------------------
-						---- Changes for Custom Fields -----
-						------------------------------------	*/
+                } else if ($type == 'ktcore.fields.date') {                 
                     $widgets[] = $this->oWF->get('ktcore.widgets.date', array(
                         'label' => $oField->getName(),
                         'required' => $oField->getIsMandatory(),
@@ -237,20 +229,76 @@ class KTFieldsetRegistry {
                         'value' => $value,
                         'description' => $oField->getDescription(),
                     ));
+                } else if ($type == 'ktcore.fields.multiselect') {
+                    if($oField->getInetLookupType() == "multiwithlist") {
+                        $widgets[] = $this->oWF->get('ktcore.widgets.entityselection', array(
+                            'label' => $oField->getName(),
+                            'required' => $oField->getIsMandatory(),
+                            'name' => $fname,
+                            'value' => explode(", ",$value),
+                            'description' => $oField->getDescription(),
+                            'vocab' => MetaData::getEnabledByDocumentField($oField),
+                            'id_method' => 'getName',
+                            'label_method' => 'getName',
+                            'unselected_label' => false,
+                            'simple_select' => false,
+                            'multi'=> true,
+                        ));
+            } else if($oField->getInetLookupType() == "multiwithcheckboxes") {
+                        $widgets[] = $this->oWF->get('ktcore.widgets.entityselection', array(
+                            'label' => $oField->getName(),
+                            'required' => $oField->getIsMandatory(),
+                            'name' => $fname,
+                            'value' => explode(", ",$value),
+                            'description' => $oField->getDescription(),
+                            'vocab' => MetaData::getEnabledByDocumentField($oField),
+                                'field_id' => $oField->getId(),
+                            'id_method' => 'getName',
+                            'label_method' => 'getName',
+                            'unselected_label' => false,
+                            'simple_select' => true,
+                            'multi'=> true,
+                        ));
+            } else {
+                                $widgets[] = $this->oWF->get('ktcore.widgets.entityselection', array(
+                            'label' => $oField->getName(),
+                            'required' => $oField->getIsMandatory(),
+                            'name' => $fname,
+                            'value' => $value,
+                            'description' => $oField->getDescription(),
+                                'field' => $oField,
+                            'vocab' => MetaData::getEnabledByDocumentField($oField),
+                            'id_method' => 'getName',
+                            'label_method' => 'getName',
+                            'unselected_label' => _kt("No selection."),
+                            'simple_select' => false,
+                        ));
+            }
+                   
+                } else if ($type == 'ktcore.fields.tree') {
+                    $widgets[] = $this->oWF->get('ktcore.widgets.treemetadata', array(
+                        'label' => $oField->getName(),
+                        'required' => $oField->getIsMandatory(),
+                        'name' => $fname,
+                        'value' => $value,
+                        'description' => $oField->getDescription(),
+                        'vocab' => MetaData::getEnabledByDocumentField($oField),
+                        'field_id' => $oField->getId(),
+                    ));
                 }
             }
 
 
         }
-	
-	return array($this->oWF->get('ktcore.widgets.fieldset',
-				     array(
+    
+    return array($this->oWF->get('ktcore.widgets.fieldset',
+                     array(
                 'label' => $oFieldset->getName(),
                 'description' => $oFieldset->getDescription(),
                 'name' => $sContainerName,
                 'widgets' => $widgets,
             )));
-	
+    
     }
 
 
@@ -274,15 +322,15 @@ class KTFieldsetRegistry {
             foreach ($fields as $oField) {
                 $fname = 'metadata_' . $oField->getId();
 
-		// Change back to 'membership'
-		$validators[] = $this->oVF->get('ktcore.validators.membership',
-						array(
-						      'test' => $fname,
-						      'output' => $fname,
-						      'vocab' => MetaData::getEnabledValuesByDocumentField($oField),
-						      'id_method' => 'getName',
-						      ));
-	    }
+        // Change back to 'membership'
+        $validators[] = $this->oVF->get('ktcore.validators.membership',
+                        array(
+                              'test' => $fname,
+                              'output' => $fname,
+                              'vocab' => MetaData::getEnabledValuesByDocumentField($oField),
+                              'id_method' => 'getName',
+                              ));
+        }
         } else {
             $validators = array();
             $fields = $oFieldset->getFields();
@@ -310,7 +358,9 @@ class KTFieldsetRegistry {
                     } else {
                         $type = 'ktcore.fields.lookup';
                     }
-                } else {
+                } else if($oField->getHasInetLookup()) {
+            $type = 'ktcore.fields.multiselect';
+        } else {
                     $type = 'ktcore.fields.string';
                 }
 
@@ -336,14 +386,45 @@ class KTFieldsetRegistry {
                         'vocab' => MetaData::getEnabledValuesByDocumentField($oField),
                         'id_method' => 'getName',
                     ));
+                } else if ($type == 'ktcore.fields.multiselect') {
+                    if($oField->getInetLookupType() == "multiwithlist")
+                    {
+                        $validators[] = $this->oVF->get('ktcore.validators.membership',array(
+                            'test' => $fname,
+                            'output' => $fname,
+                            'vocab' => MetaData::getEnabledValuesByDocumentField($oField),
+                            'id_method' => 'getName',
+                            'multi' => true,
+                        ));
+                    }
+                    else if($oField->getInetLookupType() == "multiwithcheckboxes")
+                    {
+                        $validators[] = $this->oVF->get('ktcore.validators.membership',array(
+                            'test' => $fname,
+                            'output' => $fname,
+                            'vocab' => MetaData::getEnabledValuesByDocumentField($oField),
+                            'id_method' => 'getName',
+                            'multi' => true,
+                        ));
+                    }
+                    else
+                    {
+                        $validators[] = $this->oVF->get('ktcore.validators.membership',array(
+                            'test' => $fname,
+                            'output' => $fname,
+                            'vocab' => MetaData::getEnabledValuesByDocumentField($oField),
+                            'id_method' => 'getName',
+                        ));
+                    }
+                   
                 } else {
                     $validators[] = PEAR::raiseError(sprintf(_kt("Unable to deal with field: id %d"), $oField->getId()));
                 }
             }
 
         }
-	return array($this->oVF->get('ktcore.validators.fieldset',
-				     array(
+    return array($this->oVF->get('ktcore.validators.fieldset',
+                     array(
                 'test' => $sContainerName,
                 'output' => $sContainerName,
                 'validators' => $validators,

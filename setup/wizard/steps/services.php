@@ -46,7 +46,7 @@ class services extends Step
 	* List of errors encountered
 	*
 	* @author KnowledgeTree Team
-	* @access public
+	* @access protected
 	* @var array
 	*/
     protected $error = array();
@@ -55,21 +55,66 @@ class services extends Step
 	* Flag if step needs to be installed
 	*
 	* @author KnowledgeTree Team
-	* @access public
+	* @access protected
 	* @var array
 	*/
     protected $runInstall = true;
     
+	/**
+	* List of services to be installed
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var array
+	*/
     private $services = array('Lucene', 'Scheduler', 'OpenOffice');
     
+	/**
+	* Path to java executable
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
     protected $java;
     
+	/**
+	* Path to php executable
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
     protected $php;
     
+	/**
+	* Path to open office executable
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+	protected $soffice;
+
+	/**
+	* Reference to utility object
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
     protected $util;
-    
+
+	/**
+	* Minumum Java Version
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
     private $javaVersion = '1.5';
-    
+//    private $javaVersion = '1.7';
+
 	/**
 	* Java Installed 
 	*
@@ -78,6 +123,9 @@ class services extends Step
 	* @var mixed
 	*/
     private $javaCheck = 'cross';
+
+    
+    public $providedJava = false;
     
 	/**
 	* Flag if services are already Installed
@@ -170,13 +218,22 @@ class services extends Step
     private $disableExtension = false;
     
 	/**
-	* Holds path error, if java is specified
+	* Flag, if java is specified and an error has been encountered
 	*
 	* @author KnowledgeTree Team
 	* @access public
 	* @var mixed
 	*/
     private $javaExeError = '';
+    
+	/**
+	* Holds path error, if java is specified
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var mixed
+	*/
+    private $javaExeMessage = '';
     
 	/**
 	* Holds path error, if php is specified
@@ -212,16 +269,21 @@ class services extends Step
     		$this->doRun();
     		return 'landing';
     	}
-        // Check dependencies
-        $passed = $this->doRun();
         if($this->next()) {
-            if($passed)
+	        // Check dependencies
+	        $passed = $this->doRun();
+	        $serv = $this->getDataFromSession("services");
+//	        var_dump($conf);
+//	        die;
+            if($passed || $serv['providedJava'])
                 return 'next';
             else
                 return 'error';
         } else if($this->previous()) {
             return 'previous';
         }
+        
+        $passed = $this->doRun();
         return 'landing';
     }
     
@@ -268,16 +330,21 @@ class services extends Step
     	} else {
 	    	$this->php = $this->util->getPhp(); // Get java, if it exists
 	    	$this->java = $this->util->getJava(); // Get java, if it exists
+	    	$this->soffice = $this->util->getOpenOffice(); // Get java, if it exists
 	    	$passedPhp = $this->phpChecks(); // Run Java Pre Checks
 	    	$passedJava = $this->javaChecks(); // Run Java Pre Checks
+	    	$passedOpenOffice = $this->openOfficeChecks(); // Run Java Pre Checks
 	    	$errors = $this->getErrors(); // Get errors
-			if(empty($errors) && $passedJava && $passedPhp) { // Install Service if there is no errors
+			if(empty($errors) && $passedJava && $passedPhp && $passedOpenOffice) { // Install Service if there is no errors
 				$this->installServices();
 			} elseif ($passedPhp) { // Install Scheduler
 				$this->installService('Scheduler');
 			} elseif ($passedJava) { // Install Lucene
 				$this->installService('Lucene');
+			} elseif ($passedOpenOffice) { //Install OpenOffice
+				$this->installService('OpenOffice');
 			} else { // All Services not installed
+				// TODO: What todo now?
 			}
     	}
 		$this->checkServiceStatus();
@@ -287,7 +354,16 @@ class services extends Step
 		return true;
     }
     
-    function checkServiceStatus() {
+	/**
+	* A final check to see if services are still running,
+	* incase they switched on and turned off.
+	* 
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return void
+	*/
+    private function checkServiceStatus() {
     	$serverDetails = $this->getServices();
 		foreach ($serverDetails as $serviceName) {
 			$className = OS.$serviceName;
@@ -308,14 +384,23 @@ class services extends Step
 		}
     }
     
-    function alreadyInstalled() {
+	/**
+	* Checks if all services have been started already, 
+	* incase the user lands on service page multiple times
+	* 
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    public function alreadyInstalled() {
     	$installed = true;
     	$serverDetails = $this->getServices();
 		foreach ($serverDetails as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
 			$status = $this->serviceStatus($service);
-			if($status != 'STARTED') {
+			if(!$status) {
 				return false;
 			}
 		}
@@ -338,14 +423,17 @@ class services extends Step
 		$this->setJava(); // Check if java has been auto detected
     	if($this->util->javaSpecified()) {
     		$this->disableExtension = true; // Disable the use of the php bridge extension
-    		return $this->detSettings(); // AutoDetect java settings
+    		if($this->detSettings(true)) { // AutoDetect java settings
+    			return true;
+    		} else {
+    			$this->specifyJava(); // Ask for settings
+    		}
     	} else {
     		$auto = $this->useBridge(); // Use Bridge to get java settings
     		if($auto) {
 				return $auto;
     		} else {
-    			// Check if auto detected java works
-    			$auto = $this->useDetected();
+    			$auto = $this->useDetected(); // Check if auto detected java works
     			if($auto) {
     				$this->disableExtension = true; // Disable the use of the php bridge extension
     				return $auto;
@@ -357,6 +445,14 @@ class services extends Step
     	}
     }
 	
+	/**
+	* Attempt detection without logging errors
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
     private function useDetected() {
     	return $this->detSettings();
     }
@@ -381,6 +477,10 @@ class services extends Step
     	}
     }
     
+    private function openOfficeChecks() {
+    	return true;
+    }
+    
     /**
 	* Attempts to use user input and configure java settings
 	*
@@ -389,7 +489,7 @@ class services extends Step
 	* @access private
 	* @return boolean
 	*/
-    private function detSettings() {
+    private function detSettings($attempt = false) {
     	$javaExecutable = $this->util->javaSpecified();// Retrieve java bin
     	$cmd = "$javaExecutable -version > output/outJV 2>&1 echo $!";
     	$response = $this->util->pexec($cmd);
@@ -401,22 +501,34 @@ class services extends Step
 					$this->javaVersionInCorrect();
 					$this->javaCheck = 'cross';
 					$this->error[] = "Requires Java 1.5+ to be installed";
+					
 					return false;
 	    		} else {
 					$this->javaVersionCorrect();
 					$this->javaInstalled();
 					$this->javaCheck = 'tick';
+					$this->providedJava = true;
 					
 					return true;
 	    		}
     		} else {
     			$this->javaVersionWarning();
     			$this->javaCheck = 'cross_orange';
-    			$this->javaExeError = "Java : Incorrect path specified";
-				$this->error[] = "Requires Java 1.5+ to be installed";
+    			if($attempt) {
+	    			$this->javaExeMessage = "Incorrect java path specified";
+	    			$this->javaExeError = true;
+	    			$this->error[] = "Requires Java 1.5+ to be installed";
+    			}
+				
+				
 				return false;
     		}
     	}
+    	
+		$this->javaVersionInCorrect();
+		$this->javaCheck = 'cross';
+		$this->error[] = "Requires Java 1.5+ to be installed";
+    	return false;
     }
     
     function detPhpSettings() {
@@ -793,6 +905,7 @@ class services extends Step
     	$this->temp_variables['luceneInstalled'] = $this->luceneInstalled;
     	$this->temp_variables['schedulerInstalled'] = $this->schedulerInstalled;
 		$this->temp_variables['javaExeError'] = $this->javaExeError;
+		$this->temp_variables['javaExeMessage'] = $this->javaExeMessage;
 		$this->temp_variables['javaCheck'] = $this->javaCheck;
 		$this->temp_variables['javaExtCheck'] = $this->javaExtCheck;
 		// TODO : PHP detection
@@ -800,6 +913,8 @@ class services extends Step
 		$this->temp_variables['phpExeError'] = '';//$this->phpExeError;
 		$this->temp_variables['serviceCheck'] = $this->serviceCheck;
 		$this->temp_variables['disableExtension'] = $this->disableExtension;
+		// TODO: Java checks are gettign intense
+		$this->temp_variables['providedJava'] = $this->providedJava;
     }
 
     private function setPhp() {

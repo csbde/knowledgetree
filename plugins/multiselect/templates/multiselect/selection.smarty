@@ -1,0 +1,30 @@
+<div class="field {if ($has_errors)}error{/if}">
+      <label for="{$name}">{$label}{if ($required === true)}<span class="required">({i18n}Required{/i18n})</span>{/if}</label>
+      <p class="descriptiveText">{$description}</p>
+	{if empty($vocab)}
+	    <div class="ktInfoMessage"><span>{$context->sEmptyMessage}</span></div>
+	{else}
+	  <select name="{$name}{* multiselect change start *}{if $options.multi}[]{/if}{* multiselect change end *}"
+	    {if $has_id}id="{$id}"{/if}
+	    {if $options.multi}multiple="true"{/if}
+	    >
+	    {if $options.initial_string}
+	    <option value="">{$options.initial_string}</option>
+	    {/if}
+	  {foreach item=lookup key=lookup_key from=$vocab}
+	  	{* multiselect change start *}
+	  	{if $options.multi}
+			{capture assign=selected}{""}{/capture}
+			{foreach item=value1 key=key from=$value}
+				{if $value1 == $lookup_key}
+					{capture assign=selected}selected='selected'{/capture}
+				{/if}
+			{/foreach}
+			<option value="{$lookup_key|sanitize}" {$selected} >{$lookup|sanitize}</option>
+		{else}{* multiselect change end *}
+			<option value="{$lookup_key|sanitize}" {if ($value == $lookup_key)}selected="selected"{/if}>{$lookup|sanitize}</option>
+		{* multiselect change start *}{/if}{* multiselect change end *}
+	  {/foreach}
+	  </select>
+{/if}
+ </div>

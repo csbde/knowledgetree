@@ -37,12 +37,20 @@ function processRow(tablerow, parent_table) {
         for (var i=1; i<inputs.length-1; i++) {
             var obj = inputs[i];
             obj.name = "boolean_search[subgroup]["+table_id+"][values]["+crit_id+"][data]["+obj.name+"]";
+            if(obj.getAttribute("type") == "checkbox" && obj.getAttribute("class") == "multiple")
+            {
+                obj.name = obj.name+"[]";
+            }
         }
         
         for (var i=0; i<selects.length; i++) {
             var obj = selects[i];
             obj.name = "boolean_search[subgroup]["+table_id+"][values]["+crit_id+"][data]["+obj.name+"]";
-        }        
+            if(obj.getAttribute("multiple") == "multiple")
+            {
+                obj.name = obj.name+"[]";
+            }
+        }
     }
     
 }

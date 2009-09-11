@@ -47,17 +47,73 @@ class configuration extends Step
 	*
 	* @author KnowledgeTree Team
 	* @access private
-	* @var array
-	*/	
+	* @var object
+	*/
     private $_dbhandler = null;
+    
+	/**
+	* Database host
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var string
+	*/
     private $host;
+    
+	/**
+	* Database port
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var string
+	*/
     private $port;
+    
+	/**
+	* Relative path to knowledge tree directory
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var string
+	*/
     private $root_url;
+    
+	/**
+	* Absolute path to knowledge tree directory
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var string
+	*/
     private $file_system_root;
+    
+	/**
+	* Whether or not ssl is enabled
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var string
+	*/
     private $ssl_enabled;
+    
+	/**
+	* Whether or not the step is complete
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var string
+	*/
     private $done;
-	public $temp_variables = array("step_name"=>"configuration");
+	
+	/**
+	* Flag to store class information in session
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
 	public $displayFirst = true;
+	
 	/**
 	* Flag to store class information in session
 	*
@@ -66,6 +122,7 @@ class configuration extends Step
 	* @var array
 	*/
     protected $storeInSession = true;
+    
 	/**
 	* Flag if step needs to be installed
 	*
@@ -84,7 +141,26 @@ class configuration extends Step
 	*/
     protected $silent = false;
     
+	/**
+	* Flag if step needs to run silently
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $error = array();
+    
+	/**
+	* List of paths
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $paths = array();
+    
     protected $util = null;
+    
     /**
      * Class constructor
      *
@@ -99,21 +175,6 @@ class configuration extends Step
         $this->done = true;
     }
 
-    /**
-     * Set the variables from those stored in the session.
-     * Used for stepping back to the step from a future step.
-     *
-	 * @author KnowledgeTree Team
-     * @access private
-     */
-	private function setDetails() {
-		$conf = $this->getDataFromSession("configuration");
-		if($conf) {
-			$this->temp_variables['server'] = $conf['server'];
-			$this->temp_variables['paths'] = $conf['paths'];
-		}
-	}
-
 	/**
 	 * Control function for position within the step
 	 *
@@ -123,6 +184,7 @@ class configuration extends Step
 	 */
     public function doStep() {
     	if(!$this->inStep("configuration")) {
+    		$this->setDetails();
     		$this->doRun();
     		return 'landing';
     	}
@@ -133,25 +195,51 @@ class configuration extends Step
             }
             return 'error';
         } else if($this->previous()) {
-        	$this->setDetails();
             return 'previous';
         } else if($this->confirm()) {
+        	$this->setDetails();
         	if($this->doRun()) {
             	return 'next';
         	}
         	return 'error';
         } else if($this->edit()) {
         	$this->setDetails();
-        	if($this->doRun()) {
-        		
+			if($this->doRun(true)) {
+        		return 'landing';
+        	} else {
+        		return 'error';
         	}
-        	return 'landing';
         }
 
         $this->doRun();
         return 'landing';
     }
-
+#/var/www/installers/knowledgetree/config/config.ini
+    /**
+     * Set the variables from those stored in the session.
+     * Used for stepping back to the step from a future step.
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @param none
+	 * @return void
+     */
+	private function setDetails() {
+		$conf = $this->getDataFromSession("configuration");
+		if($conf) {
+			$this->temp_variables['server'] = $conf['server'];
+			$this->temp_variables['paths'] = $conf['paths'];
+		}
+	}
+	
+	/**
+	 * Default Template settings
+	 * 
+	 * @author KnowledgeTree Team
+     * @access public
+     * @param none
+	 * @return void
+	 */
     public function loadTemplateDefaults() {
     	$this->temp_variables['paths_perms'] = 'tick';
     }
@@ -163,13 +251,13 @@ class configuration extends Step
      * @access public
      * @return boolean True to continue | False if errors occurred
      */
-    public function doRun()
+    public function doRun($edit = false)
     {
         $server = $this->getServerInfo();
-        $this->temp_variables['server'] = $server;
+        if(!$edit) $this->temp_variables['server'] = $server;
 
         $paths = $this->getPathInfo($server['file_system_root']['value']);
-        $this->temp_variables['paths'] = $paths;
+        if(!$edit) $this->temp_variables['paths'] = $paths;
 
         // Running user
         // Logging
@@ -337,7 +425,11 @@ class configuration extends Step
      */
     private function getPathInfo($fileSystemRoot)
     {
-        $dirs = $this->getDirectories();
+        if(isset($this->temp_variables['paths'])) {
+        	$dirs = $this->temp_variables['paths']; // Pull from temp
+        } else {
+        	$dirs = $this->getDirectories(); // Get detected
+        }
         $varDirectory = $fileSystemRoot . DS . 'var';
         foreach ($dirs as $key => $dir){
             $path = (isset($_POST[$dir['setting']])) ? $_POST[$dir['setting']] : $dir['path'];
@@ -347,14 +439,16 @@ class configuration extends Step
             }
 			if(WINDOWS_OS)
             	$path = preg_replace('/\//', '\\',$path);
-
             	$dirs[$key]['path'] = $path;
             $class = $this->util->checkPermission($path, $dir['create']);
-            
 			if($class['class'] != 'tick') {
 				$this->temp_variables['paths_perms'] = $class['class'];
 				$this->done = false;
-				$this->error[] = "path error";
+				$this->error[] = "Path error";
+			}
+			if(isset($class['msg'])) {
+				$this->done = false;
+				$this->error[] = $class['msg'];
 			}
             $dirs[$key] = array_merge($dirs[$key], $class);
         }
@@ -380,8 +474,24 @@ class configuration extends Step
                 array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => '${varDirectory}/tmp', 'create' => true),
                 array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => '${varDirectory}/uploads', 'create' => true),
                 array('name' => 'Executables Directory', 'setting' => 'binDirectory', 'path' => '${fileSystemRoot}/bin', 'create' => false),
-                array('name' => 'Configuration File', 'setting' => '', 'path' => '${fileSystemRoot}/config/config.ini', 'create' => false),
+                array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => '${fileSystemRoot}/config/config.ini', 'create' => false),
                 );
+    }
+    
+    private function setFromPost() {
+    	$this->paths = array(
+                array('name' => 'Var Directory', 'setting' => 'varDirectory', 'path' => $_POST['varDirectory'], 'create' => false),
+                array('name' => 'Document Directory', 'setting' => 'documentRoot', 'path' => $_POST['documentRoot'], 'create' => true),
+                array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => $_POST['logDirectory'], 'create' => true),
+                array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => $_POST['tmpDirectory'], 'create' => true),
+                array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => $_POST['uploadDirectory'], 'create' => true),
+                array('name' => 'Executables Directory', 'setting' => 'binDirectory', 'path' => $_POST['binDirectory'], 'create' => false),
+                array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => $_POST['configFile'], 'create' => false),
+    	);
+    }
+    
+    public function getFromPost() {
+    	return $this->paths;
     }
 }
 ?>

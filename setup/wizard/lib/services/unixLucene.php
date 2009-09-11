@@ -53,6 +53,7 @@ class unixLucene extends unixService {
 	
 	public function __construct() {
 		$this->name = "KTLuceneTest";
+		$this->setLuceneSource("ktlucene.jar");
 		$this->util = new InstallUtil();
 	}
 	
@@ -62,7 +63,6 @@ class unixLucene extends unixService {
 		$this->setLucenePidFile("lucene_test.pid");
 		$this->setJavaXms(512);
 		$this->setJavaXmx(512);
-		$this->setLuceneSource("ktlucene.jar");
 		$this->setLuceneSourceLoc("ktlucene.jar");
 		$this->setShutdownScript("shutdown.php");
 	}
@@ -180,6 +180,7 @@ class unixLucene extends unixService {
     
     public function start() {
     	$state = $this->status();
+    	return ;
     	if($state != 'STARTED') {
 	    	$cmd = "cd ".$this->getLuceneDir()."; ";
 	    	$cmd .= "nohup java -jar ".$this->getLuceneSource()." > ".SYS_LOG_DIR."lucene.log 2>&1 & echo $!";

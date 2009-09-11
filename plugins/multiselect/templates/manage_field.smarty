@@ -1,0 +1,88 @@
+{capture assign=sCSS}
+{literal}
+.twocolumn {
+    width: 60%;
+    margin-right: 1em;
+    float: left;
+    min-width: 28em;
+}
+
+.second {
+    width: 30%;
+    margin-right: 0;
+}
+
+{/literal}
+{/capture}
+{$context->oPage->requireCSSStandalone($sCSS)}
+
+<h2>{i18n arg_field_name=$field_name}Manage Field: #field_name#{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}This page will allow you to manage the different 
+aspects of this particular field.{/i18n}</p>
+
+{if ($field->getHasLookup() or $field->getHasInetLookup())}
+<div class="twocolumn">
+{/if}
+{if ($field->getDataType() == "LARGE TEXT")}
+<div class="twocolumn">
+{/if}
+{$form->render()}
+{if ($field->getHasLookup() or $field->getHasInetLookup())}
+</div>
+<div class="twocolumn second">
+<fieldset>
+<legend>{i18n}Extra Options{/i18n}</legend>
+
+<p class="descriptiveText">{i18n}Different fields have different actions and options
+available.{/i18n}</p>
+
+<p><a class="ktAction ktAdd ktActionDescribed" href="{addQS context=$context}fieldset_action=addlookupvalues{/addQS}">{i18n}Add Lookup Values{/i18n}</a>
+<a href="{addQS context=$context}fieldset_action=addlookupvalues{/addQS}">{i18n}Add Lookup Values{/i18n}</a></p>
+
+
+<p><a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}fieldset_action=managelookups{/addQS}">{i18n}Manage Lookup Values{/i18n}</a>
+<a href="{addQS context=$context}fieldset_action=managelookups{/addQS}">{i18n}Manage Lookup Values{/i18n}</a></p>
+
+{if $field->getHasLookupTree()}
+<p><a class="ktAction ktEdit ktActionDescribed" href="{addQS context=$context}fieldset_action=managetree{/addQS}">{i18n}Manage Lookup Tree Structure{/i18n}</a>
+<a href="{addQS context=$context}fieldset_action=managetree{/addQS}">{i18n}Manage Lookup Tree Structure{/i18n}</a></p>
+{/if}
+</fieldset>
+</div>
+{/if}
+{if ($field->getDataType() == "LARGE TEXT")}
+</div>
+<div class="twocolumn second">
+<fieldset>
+<legend>{i18n}Extra Options{/i18n}</legend>
+
+<p class="descriptiveText">{i18n}Different fields have different actions and options
+available.{/i18n}</p>
+
+<form method="POST" action="/admin.php?kt_path_info=documents/fieldmanagement2&fieldset_action=updatelargetextoptions&fFieldId={$field_id}&fFieldsetId={$field->getParentFieldsetId()}&action=edit">
+
+<div class="field">
+<label for="largefield[size]">Max Length</label>
+<p class="descriptiveText">Maximum length allowed for the field.</p>
+<p class="errorMessage"></p>
+<input type="text" name="largefield[size]" value="{$field->getMaxLength()}" size="3" />
+</div>
+
+<div class="field ">
+<label for="largefield[html]">HTML</label>
+<p class="descriptiveText">Defines the format of the field.</p>
+<p class="errorMessage"></p>
+<input type="checkbox" name="largefield[html]" {if $field->getIsHTML()==1}checked="true"{/if} class="noborder"/>
+</div>
+
+<div class="form_actions">
+<input type="submit" name="" value="Update Options" /> 
+</div>
+
+</form>
+
+</fieldset>
+</div>
+{/if}
+<hr class="floatClear" />

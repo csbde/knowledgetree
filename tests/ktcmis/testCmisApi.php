@@ -66,7 +66,7 @@ class CMISTestCase extends KTUnitTestCase {
     }
 
     // Repository service functions
-    function tedstRepositoryService()
+    function testRepositoryService()
     {
         $RepositoryService = new KTRepositoryService();
 
@@ -183,7 +183,7 @@ class CMISTestCase extends KTUnitTestCase {
     }
 
     // Navigation service functions
-    function tedstNavigationService()
+    function testNavigationService()
     {
         $NavigationService = new KTNavigationService($this->ktapi);
 
@@ -305,7 +305,7 @@ class CMISTestCase extends KTUnitTestCase {
 
     // Object Services
 
-    function tedstObjectService()
+    function testObjectService()
     {
         $ObjectService = new KTObjectService($this->ktapi);
 //        $ObjectService->startSession(KT_TEST_USER, KT_TEST_PASS);

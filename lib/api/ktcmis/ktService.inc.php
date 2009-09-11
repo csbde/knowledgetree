@@ -66,7 +66,7 @@ class KTCMISBase {
         if (is_null($ktapi) && (!is_null($username) && !is_null($password))) {
             $this->startSession($username, $password);
         }
-        else {
+        else if (!is_null($ktapi)) {
             self::$ktapi = $ktapi;
             self::$session = self::$ktapi->get_session();
         }
