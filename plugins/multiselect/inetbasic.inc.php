@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -6,31 +7,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -46,7 +47,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
     var $bHaveConditional = null;
     var $sHelpPage = 'ktcore/admin/document fieldsets.html';
-	
+
 	/**
 	 * @param.
 	 * @return.
@@ -93,7 +94,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     function do_main () {
         return _kt("Something very unexpected happened.");
     }
-	
+
 	/**
 	 * returns array of field type.
 	 *
@@ -107,6 +108,8 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             'normal' => _kt("Normal (String)"),
             'lookup' => _kt("Lookup"),
             'tree' => _kt("Tree"),
+            'largetextbox' => _kt("Large Text"),
+            'date' => _kt("Date"),
 			'Multiselect' => _kt("Multiselect"),
         );
         return $types;
@@ -127,7 +130,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         );
         return $types;
     }
-	
+
 	/**
 	 * returns lookup type
 	 * @return string
@@ -231,7 +234,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 
         return $oForm->render();
     }
-	
+
 	/**
 	 * Creats a new field->multiselect
 	 * @return 
@@ -258,16 +261,26 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 
         $lookup = false;
         $tree = false;
+
+        //$largeField = false;
+
+        $DataType = 'STRING';
 		// multiselect change start
 		$inetlookup = false;
 		$inetlookupvalue = '';
 		// multiselect change end
-
+        
         if ($data['field_type'] == 'lookup') {
             $lookup = true;
         } else if ($data['field_type'] == 'tree') {
             $lookup = true;
             $tree = true;
+        } else if ($data['field_type'] == 'largetextbox') {
+        	//$largeField = true;        	
+        	$DataType = 'LARGE TEXT';
+        } else if ($data['field_type'] == 'date') {
+        	//$largeField = true;        	
+        	$DataType = 'DATE';
         }
 		// multiselect change start
 		else if($data['field_type'] == 'Multiselect')
@@ -276,11 +289,11 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 			$inetlookupvalue = $this->getDefaultLookupType();
 		}
 		// multiselect change end
-		
+        
         $oField = DocumentField::createFromArray(array(
             'Name' => $data['name'],
             'Description' => $data['description'],
-            'DataType' => 'STRING',
+            'DataType' => $DataType,
             'IsGeneric' => false,
             'HasLookup' => $lookup,
             'HasLookupTree' => $tree,
@@ -434,6 +447,32 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         ));
         return $oTemplate->render();
     }
+    
+    function do_updatelargetextoptions() {
+
+        $this->oField = DocumentField::get(KTUtil::arrayGet($_REQUEST, 'fFieldId'));
+    	
+        $oValues = KTUtil::arrayGet($_REQUEST, 'largefield');
+
+        if($oValues['size'] != "")
+    		$this->oField->setMaxLength($oValues['size']);
+    	
+    	$this->oField->setIsHTML($oValues['html']);
+    	//$this->oField->setIsHTML(true);
+    	
+    	//$oValue = $this->oField->_fieldValues();
+        //$this->successRedirectTo('managefield',_kt("Field updated. -> ") . $this->oField->getMaxLength() . " -> " . $oValue['max_length']);
+        
+        //$this->successRedirectTo('managefield',_kt("Field updated. -> ") . $oValues['html']);
+        
+        $res = $this->oField->update();
+        if (PEAR::isError($res)) {
+            return $oForm->handleError(sprintf(_kt("Failed to update field: %s"), $res->getMessage()));
+        }
+
+        $this->successRedirectTo('managefield',_kt("Field updated."));
+    }
+
 	/**
 	 * Updates a field
 	 * @return.
@@ -451,7 +490,8 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         // check that the field name either hasn't changed, or doesn't exist.
         if ($data['name'] != $this->oField->getName()) {
             $oOldField = DocumentField::getByFieldsetAndName($this->oFieldset, $data['name']);
-            if (!PEAR::isError($oOldField)) {
+            // If the field exists throw an error. Mysql doesn't distinguish between é and e so check the names are different in php.
+            if (!PEAR::isError($oOldField) && $oOldField->getName() == $data['name']) {
                 $extra_errors['name'] = _kt("That name is already in use in this fieldset.  Please specify a unique name.");
             }
         }
@@ -516,7 +556,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 
         return $oForm;
     }
-	
+
 	/**
 	 * Add lookup values
 	 * @return 
@@ -729,7 +769,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 
     /**
      * Save the edited lookup values
-	 *
+     *
 	 * @param.
 	 * @return.
 	 *
@@ -748,7 +788,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             if (PEAR::isError($oMetaData)) {
                 $this->addErrorMessage(_kt('Invalid lookup selected').': '.$sValue);
                 continue;
-                
+                //$this->errorRedirectTo('managelookups', _kt('Invalid lookup selected'));
             }
             if(empty($sValue)){
                 $this->addErrorMessage(_kt('Lookup cannot be empty').': '.$oMetaData->getName());
@@ -857,7 +897,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 
         // under here we do the subaction rendering.
         // we do this so we don't have to do _very_ strange things with multiple actions.
-        
+        //$default->log->debug("Subaction: " . $subaction);
         $fieldTree =& new MDTree();
         $fieldTree->buildForField($oField->getId());
 
@@ -962,7 +1002,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $constructedTree->deleteNode($current_node);
         return true;
     }
-	
+
 	/**
 	 * 
 	 * @param $constructedTree object
@@ -1002,7 +1042,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
      *  This whole thing needs to replaced, as soon as I work out how
      *  to non-sucking Smarty recursion.
      */
-	 
+
  	/**
 	 * render to subnode of tree
 	 *
@@ -1066,13 +1106,13 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $treeStr .= ' (<a href="' . KTUtil::addQueryStringSelf($this->meldPersistQuery('current_node=0', 'managetree')) . '">' . _kt('attach keywords') . '</a>)';
         $treeStr .= '<ul>';
 
-        
+        //$default->log->debug("EVILRENDER: " . print_r($treeToRender, true));
         foreach ($treeToRender->getRoot() as $node_id => $subtree_nodes)
         {
-            
+            //$default->log->debug("EVILRENDER: ".$node_id." => ".$subtree_nodes." (".($node_id === "leaves").")");
             // leaves are handled differently.
             if ($node_id !== "leaves") {
-                
+                // $default->log->debug("EVILRENDER: " . print_r($subtree_nodes, true));
                 $treeStr .= '<li class="treenode active"><a class="pathnode" onclick="toggleElementClass(\'active\', this.parentNode);toggleElementClass(\'inactive\', this.parentNode);">' . $treeToRender->mapnodes[$subtree_nodes]->getName() . '</a>';
                 $treeStr .= $this->_evilActionHelper($iFieldsetId, $iFieldId, false, $subtree_nodes);
                 $treeStr .= $this->_evilTreeRecursion($subtree_nodes, $treeToRender);
