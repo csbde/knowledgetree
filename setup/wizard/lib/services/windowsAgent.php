@@ -42,10 +42,16 @@
 
 class windowsAgent extends windowsService {
 
-	
-	public function __construct() {
-		$this->name = "KTAgentTest";
-	}
+	/**
+	* Service name
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/	
+	public $name = "KTAgentTest";
+
     
 }
 ?>

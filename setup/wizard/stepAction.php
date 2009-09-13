@@ -324,11 +324,10 @@ class stepAction {
 	                    $item = "<a href=\"index.php?step_name={$step}\">{$item}</a>";
 	                }
 	            }
-	
-	            $menu .= "<span class='{$class}'>$item</span><br />";
+	            $menu .= "<span id = '{$step}' class='{$class}'>$item</span><br />";
 	        }
 		}
-//        $menu .= '</div>';
+
         return $menu;
     }
 
@@ -377,7 +376,6 @@ class stepAction {
 	* @return string
 	*/
     public function paintAction() {
-        
         $step_errors = $this->action->getErrors(); // Get errors
         $step_warnings = $this->action->getWarnings(); // Get warnings
         if($this->displayConfirm()) { // Check if theres a confirm step
@@ -400,12 +398,17 @@ class stepAction {
             	$this->_loadValueToSession($this->stepName, $key, $value);
             }
         }
-        $content = $step_tpl->fetch();
-		$tpl = new Template("templates/wizard.tpl");
-        $vars = $this->getVars(); // Get template variables
-        $tpl->set("vars", $vars); // Set template errors
-		$tpl->set('content', $content);
-		echo $tpl->fetch();
+        // TODO: Force because it does not always recognize ajax request
+		if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+    		echo $step_tpl->fetch();
+		} else { 
+	        $content = $step_tpl->fetch();
+			$tpl = new Template("templates/wizard.tpl");
+	        $vars = $this->getVars(); // Get template variables
+	        $tpl->set("vars", $vars); // Set template errors
+			$tpl->set('content', $content);
+			echo $tpl->fetch();
+		}
 	}
 
 	public function getVars() {

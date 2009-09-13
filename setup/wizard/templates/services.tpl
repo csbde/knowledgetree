@@ -1,4 +1,4 @@
-<form action="index.php?step_name=services" method="post" id="services">
+<form id="configuration_services_database" action="index.php?step_name=services" method="post" id="services">
 	<?php //if($javaExeError != '' || $phpExeError != '') { 
 		//var_dump($javaExeError);
 		//if($errors) $top = "185px"; elseif ($warnings) $top = "185px"; else $top = "168px";
@@ -161,6 +161,7 @@
 			</div>
 		<?php } ?>
 	</div>
-    <input type="submit" name="Previous" value="Back" class="button_previous"/>
+    <input type="submit" name="Previous" value="Previous" class="button_previous"/>
     <input type="submit" name="Next" value="Next" class="button_next"/>
 </form>
+<script type="text/javascript" src="resources/form.js"></script>

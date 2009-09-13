@@ -1,4 +1,4 @@
-<form id="dbsettings" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.onSubmitValidate(<?php if ($silent) echo 'true'; else echo 'false'; ?>);return false;">
+<form id="services_database_registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 <p class="title">Confirming Database Configurations</p>
 <!-- Check For immediate Errors -->
 <span class="error"> <?php if($errors['con']) { echo $errors['con']; } ?> </span>
@@ -138,3 +138,4 @@ An second user is required for normal database interaction, the reading and writ
 		<input type="submit" name="Next" value="next" class="button_next"/>
 </div>
 </form>
+<script type="text/javascript" src="resources/form.js"></script>

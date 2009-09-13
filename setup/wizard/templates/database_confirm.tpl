@@ -1,4 +1,4 @@
-<form action="index.php?step_name=<?php echo $step_name; ?>" method="post">
+<form id="services_database_registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 <p class="title">Confirming Database Configurations</p>
 
 	<div class="description">
@@ -101,3 +101,4 @@
     <input type="submit" name="Edit" value="Edit" class="button_previous"/>
     <input type="submit" name="Confirm" value="Confirm" class="button_next"/>
 </form>
+<script type="text/javascript" src="resources/form.js"></script>

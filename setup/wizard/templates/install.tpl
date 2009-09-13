@@ -1,4 +1,4 @@
-<form action="index.php?step_name=install" method="post">
+<form id="registration_install_complete" action="index.php?step_name=install" method="post">
 	<p class="title">Finalizing System Installation</p>
 
 	<div id="step_content" class="step">
@@ -12,3 +12,4 @@
 	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
 	<input type="submit" name="Install" value="Install" class="button_next"/>
 </form>
+<script type="text/javascript" src="resources/form.js"></script>
