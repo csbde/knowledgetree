@@ -175,3 +175,42 @@ wizard.prototype.showResponse = function (responseText, statusText)  {
 	$.unblockUI();
 	$('#loading').attr('style', 'display:none;');
 }
+
+wizard.prototype.refresh = function (page)  {
+	var address = "index.php?step_name="+page;
+	var div = 'content_container';
+	$.ajax({
+		url: address,
+		dataType: "html",
+		type: "GET",
+		cache: false,
+		beforeSubmit: w.showRequest,
+		success: function(data){
+					$("#"+div).empty();
+					$("#"+div).append(data);
+					w.showResponse;
+					return;
+				}
+	});
+}
+
+wizard.prototype.getUrl = function (address, div)  {
+	$("#"+div).empty();
+	$.ajax({
+		url: address,
+		dataType: "html",
+		type: "GET",
+		cache: false,
+		success: function(data){
+			$("#"+div).empty();
+			$("#"+div).append(data);
+			return;
+		}
+	});
+}
+
+wizard.prototype.sendJavaLocation = function ()  {
+	// TODO: Why does it not work?
+	//$('#services').submit();
+	$('form').submit();
+}

@@ -363,7 +363,7 @@ class dependencies extends Step
         return array(
             array('name' => 'Safe Mode', 'configuration' => 'safe_mode', 'recommended' => 'OFF', 'type' => 'bool'),
             array('name' => 'Display Errors', 'configuration' => 'display_errors', 'recommended' => 'OFF', 'type' => 'bool'),
-            array('name' => 'Display Startup Errors', 'configuration' => 'display_startup_errors', 'recommended' => 'ON', 'type' => 'bool'),
+            array('name' => 'Display Startup Errors', 'configuration' => 'display_startup_errors', 'recommended' => 'OFF', 'type' => 'bool'),
             array('name' => 'File Uploads', 'configuration' => 'file_uploads', 'recommended' => 'ON', 'type' => 'bool'),
             array('name' => 'Magic Quotes GPC', 'configuration' => 'magic_quotes_gpc', 'recommended' => 'OFF', 'type' => 'bool'),
             array('name' => 'Magic Quotes Runtime', 'configuration' => 'magic_quotes_runtime', 'recommended' => 'OFF', 'type' => 'bool'),

@@ -101,4 +101,4 @@
     <input type="submit" name="Edit" value="Edit" class="button_previous"/>
     <input type="submit" name="Confirm" value="Confirm" class="button_next"/>
 </form>
-<script type="text/javascript" src="resources/form.js"></script>
+<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>

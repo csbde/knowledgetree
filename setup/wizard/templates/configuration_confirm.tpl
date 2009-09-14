@@ -73,7 +73,13 @@
 				<td width="<?php echo $width; ?>"><?php echo $path['path']; ?></td>
 	    		<?php if(isset($path['msg'])) {	?>
 	    			<td class="error" width="27%"> <?php echo $path['msg']; ?> </td>
-	    			<td width="10"><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+	    			<td width="10">
+					<?php if (AJAX) { ?>
+						<a href="#" class="refresh" onclick="w.refresh('configuration')">Refresh</a>
+					<?php } else { ?>
+						<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+					<?php } ?>
+	    			</td>
 	    		<?php } else { ?>
 	    			<td class="error" width="27%"> </td>
 	    			<td width="10"> </td>
@@ -88,4 +94,4 @@
     <input type="submit" name="Edit" value="Edit"  class="button_previous"/>
     <input type="submit" name="Confirm" value="Confirm" class="button_next"/>
 </form>
-<script type="text/javascript" src="resources/form.js"></script>
+<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>

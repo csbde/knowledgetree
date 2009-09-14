@@ -1,4 +1,8 @@
+<?php if (AJAX) { ?>
 <form id="database_registration_install" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.dummy();">
+<?php } else { ?>
+<form id="registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.validateRegistration();return false;">
+<?php } ?>
 	<p class="title">Registering KnowledgeTree</p>
 	<?php
 		//echo $sel_country;
@@ -17,7 +21,7 @@
 	<br/>
 	<div id="step_content_registration" class="step">
 		<span class="error" id="reg_error"></span>
-		<?php $input_width = 40; ?>
+		<?php if(WINDOWS_OS) $input_width = 40; else { $input_width = 32; } ?>
 		<table>
 		    <tr>
 		        <td><label for='first'>First Name</label></td>
@@ -102,4 +106,4 @@
 	<input type="submit" name="Previous" value="Previous" onclick="w.pClick()" class="button_previous"/>
 	<input type="submit" name="Next" value="Register" onclick="w.nClick()" class="button_next"/>
 </form>
-<script type="text/javascript" src="resources/form.js"></script>
+<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>

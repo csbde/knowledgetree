@@ -43,8 +43,8 @@
 if(isset($_GET['action'])) {
 	$func = $_GET['action'];
 	if($func != '') {
-		require_once("../Step.php");
-		require_once("../InstallUtil.php");
+		require_once("../step.php");
+		require_once("../installUtil.php");
 		require_once("../path.php");
 	}
 }
@@ -166,7 +166,7 @@ class services extends Step
 	* @access protected
 	* @var string
 	*/
-    protected $java;
+    protected $java = "";
     
 	/**
 	* Minumum Java Version
@@ -257,6 +257,15 @@ class services extends Step
 	* @var mixed
 	*/
     private $schedulerInstalled = false;
+    
+	/**
+	* Path to php executable
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+    private $openOfficeInstalled;
     
 	/**
 	* Service Installed 
@@ -385,30 +394,55 @@ class services extends Step
     		$this->alreadyInstalled = true;
     		$this->serviceCheck = 'tick';
     	} else {
-	    	$this->php = $this->util->getPhp(); // Get java, if it exists
-	    	$this->java = $this->util->getJava(); // Get java, if it exists
-	    	$this->soffice = $this->util->getOpenOffice(); // Get java, if it exists
-	    	$passedPhp = $this->phpChecks(); // Run Java Pre Checks
-	    	$passedJava = $this->javaChecks(); // Run Java Pre Checks
-	    	$passedOpenOffice = $this->openOfficeChecks(); // Run Java Pre Checks
-	    	$errors = $this->getErrors(); // Get errors
-			if(empty($errors) && $passedJava && $passedPhp && $passedOpenOffice) { // Install Service if there is no errors
-				$this->installServices();
-			} elseif ($passedPhp) { // Install Scheduler
-				$this->installService('Scheduler');
-			} elseif ($passedJava) { // Install Lucene
-				$this->installService('Lucene');
-			} elseif ($passedOpenOffice) { //Install OpenOffice
-				$this->installService('OpenOffice');
-			} else { // All Services not installed
-				// TODO: What todo now?
-			}
+    		$this->presetJava();
+    		if(!$this->schedulerInstalled) {
+    			$this->php = $this->util->getPhp(); // Get java, if it exists
+    			$passedPhp = $this->phpChecks(); // Run Java Pre Checks
+    			if ($passedPhp) { // Install Scheduler
+    				$this->installService('Scheduler');
+    			}
+    		} else {
+    			$this->schedulerInstalled();
+    		}
+    		if(!$this->luceneInstalled) {
+    			$this->java = $this->util->getJava(); // Get java, if it exists
+    			$passedJava = $this->javaChecks(); // Run Java Pre Checks
+    			if ($passedJava) { // Install Lucene
+    				$this->installService('Lucene');
+    			}
+    		} else {
+				$this->luceneInstalled();
+    		}
+    		if(!$this->openOfficeInstalled) {
+    			$this->soffice = $this->util->getOpenOffice(); // Get java, if it exists
+    			$passedOpenOffice = $this->openOfficeChecks(); // Run Java Pre Checks
+    			if ($passedOpenOffice) { //Install OpenOffice
+    				$this->installService('OpenOffice');
+    			}
+    		} else {
+    			$this->openOfficeInstalled();
+    		}
     	}
 		$this->checkServiceStatus();
 		$this->storeSilent(); // Store info needed for silent mode
 		if(!empty($errors))
 			return false;
 		return true;
+    }
+    
+    private function openOfficeInstalled() {
+    	
+    }
+    
+    private function schedulerInstalled() {
+    	
+    }
+    
+    private function luceneInstalled() {
+		$this->disableExtension = true; // Disable the use of the php bridge extension
+		$this->javaVersionCorrect();
+		$this->javaInstalled();
+		$this->javaCheck = 'tick';
     }
     
 	/**
@@ -425,6 +459,7 @@ class services extends Step
 		foreach ($serverDetails as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
+			$service->load();
 			$status = $this->serviceStatus($service);
 			if($status != 'STARTED') {
 				$msg = $service->getName()." Could not be added as a Service";
@@ -451,19 +486,30 @@ class services extends Step
 	* @return boolean
 	*/
     public function alreadyInstalled() {
-    	$installed = true;
+    	$allInstalled = true;
     	$serverDetails = $this->getServices();
 		foreach ($serverDetails as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
 			$status = $this->serviceStatus($service);
+			$flag = strtolower(substr($serviceName,0,1)).substr($serviceName,1)."Installed";
 			if(!$status) {
-				return false;
+				$allInstalled = false;
+				$this->$flag = false;
+			} else {
+				$this->$flag = true;
 			}
 		}
-		return true;
+
+		return $allInstalled;
     }
     
+    private function presetJava() {
+		$this->zendBridgeNotInstalled(); // Set bridge not installed
+		$this->javaVersionInCorrect(); // Set version to incorrect
+		$this->javaNotInstalled(); // Set java to not installed
+		$this->setJava(); // Check if java has been auto detected    	
+    }
     
     /**
 	* Do some basic checks to help the user overcome java problems
@@ -474,10 +520,6 @@ class services extends Step
 	* @return boolean
 	*/
     private function javaChecks() {
-		$this->zendBridgeNotInstalled(); // Set bridge not installed
-		$this->javaVersionInCorrect(); // Set version to incorrect
-		$this->javaNotInstalled(); // Set java to not installed
-		$this->setJava(); // Check if java has been auto detected
     	if($this->util->javaSpecified()) {
     		$this->disableExtension = true; // Disable the use of the php bridge extension
     		if($this->detSettings(true)) { // AutoDetect java settings
@@ -576,6 +618,12 @@ class services extends Step
 	*/
     private function detSettings($attempt = false) {
     	$javaExecutable = $this->util->javaSpecified();// Retrieve java bin
+    	if($javaExecutable == '') {
+    		if($this->java == '') {
+    			return false;
+    		}
+    		$javaExecutable = $this->java;
+    	}
     	$cmd = "$javaExecutable -version > output/outJV 2>&1 echo $!";
     	$response = $this->util->pexec($cmd);
     	if(file_exists(OUTPUT_DIR.'outJV')) {
@@ -989,6 +1037,7 @@ class services extends Step
     	$this->temp_variables['alreadyInstalled'] = $this->alreadyInstalled;
     	$this->temp_variables['luceneInstalled'] = $this->luceneInstalled;
     	$this->temp_variables['schedulerInstalled'] = $this->schedulerInstalled;
+    	$this->temp_variables['openOfficeInstalled'] = $this->openOfficeInstalled;
 		$this->temp_variables['javaExeError'] = $this->javaExeError;
 		$this->temp_variables['javaExeMessage'] = $this->javaExeMessage;
 		$this->temp_variables['javaCheck'] = $this->javaCheck;
@@ -1022,9 +1071,10 @@ class services extends Step
 		foreach ($serverDetails as $serviceName) {
 			$className = OS.$serviceName;
 			require_once("../lib/services/service.php");
-			require_once("../lib/services/".OS."service.php");
+			require_once("../lib/services/".OS."Service.php");
 			require_once("../lib/services/$className.php");
 			$service = new $className();
+			
 			echo "Delete Service {$service->getName()}<br/>";
 			$service->uninstall();
 		}
@@ -1035,11 +1085,13 @@ class services extends Step
 		foreach ($serverDetails as $serviceName) {
 			$className = OS.$serviceName;
 			require_once("../lib/services/service.php");
-			require_once("../lib/services/".OS."service.php");
+			require_once("../lib/services/".OS."Service.php");
 			require_once("../lib/services/$className.php");
 			$service = new $className();
+			$service->load();
+			$service->install();
 			echo "Install Service {$service->getName()}<br/>";
-			echo "Status of service ".$service->install()."<br/>";
+			echo "Status of service ".$service->status()."<br/>";
 		}
 	}
 }

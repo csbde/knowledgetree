@@ -12,4 +12,4 @@
 	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
 	<input type="submit" name="Install" value="Install" class="button_next"/>
 </form>
-<script type="text/javascript" src="resources/form.js"></script>
+<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>
