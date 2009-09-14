@@ -1,4 +1,4 @@
-<form action="index.php?step_name=dependencies" method="post">
+<form id="license_dependencies_configuration" action="index.php?step_name=dependencies" method="post">
 	<p class="title">Checking PHP Dependencies</p>
 	<p class="description">
 	The wizard will review your system to determine whether you have the right PHP components in place to run KnowledgeTree. <br/>
@@ -40,7 +40,11 @@
 		</p>
 		<?php echo "<span class='{$version['class']}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{$version['version']}"; ?>
 		<?php if($version['class'] != 'tick') { ?>
-			<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+			<?php if (AJAX) { ?>
+				<a href="#" class="refresh" onclick="w.refresh('dependencies')">Refresh</a>
+			<?php } else { ?>
+				<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+			<?php } ?>
 		<?php } ?>
 		<?php if($silent) { ?>
 			</div>
@@ -80,7 +84,13 @@
 		    <?php
 		    	if ($class == 'orange' || $class == 'cross') {
 		    		?>
-		    		<td class="ext_refresh"><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+		    		<td class="ext_refresh">
+					<?php if (AJAX) { ?>
+						<a href="#" class="refresh" onclick="w.refresh('dependencies')">Refresh</a>
+					<?php } else { ?>
+						<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+					<?php } ?>
+		    		</td>
 		    		<?php
 		    	}
 		    ?>
@@ -113,11 +123,17 @@
 		    	<tr>
 		    		<td class="dir_name"><?php echo $config['name']; ?></td>
 		    		<td class="dir_description"><?php echo $config['recommended']; ?></td>
-		    		<td class="<?php echo $config['class']; ?>"><?php echo $config['name']; ?></td>
+		    		<td class="<?php echo $config['class']; ?>"><?php echo $config['setting']; ?></td>
 		    <?php
 		    	if ($config['class'] == 'orange' || $config['class'] == 'cross') {
 		    		?>
-		    		<td class="ext_refresh"><a href="javascript:this.location.reload();">Refresh</a></td>
+		    		<td class="ext_refresh">
+					<?php if (AJAX) { ?>
+						<a href="#" class="refresh" onclick="w.refresh('dependencies')">Refresh</a>
+					<?php } else { ?>
+						<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+					<?php } ?>
+		    		</td>
 		    		<?php
 		    	}
 		    ?>
@@ -132,6 +148,7 @@
 			</div>
 		<?php } ?>
 	</div>
-    <input type="submit" name="Previous" value="Back" class="button_previous"/>
+    <input type="submit" name="Previous" value="Previous" class="button_previous"/>
     <input type="submit" name="Next" value="Next" class="button_next"/>
 </form>
+<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>

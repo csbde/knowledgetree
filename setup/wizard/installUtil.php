@@ -386,7 +386,7 @@ class InstallUtil {
     public function tryJava1() {
     	$response = $this->pexec("java -version"); // Java Runtime Check
     	if(empty($response['out'])) {
-    		return false;
+    		return '';
     	}
 
     	return 'java';
@@ -403,7 +403,7 @@ class InstallUtil {
     public function tryJava2() {
     	$response = $this->pexec("java"); // Java Runtime Check
     	if(empty($response['out'])) {
-    		return false;
+    		return '';
     	}
 
     	return 'java';
@@ -420,7 +420,7 @@ class InstallUtil {
     public function tryJava3() {
     	$response = $this->pexec("whereis java"); // Java Runtime Check
     	if(empty($response['out'])) {
-    		return false;
+    		return '';
     	}
     	$broke = explode(' ', $response['out'][0]);
 		foreach ($broke as $r) {
@@ -487,7 +487,7 @@ class InstallUtil {
     			$response = $this->tryJava3();
     		}
     	}
-//		return false;
+
     	return $response;
     }
     

@@ -42,42 +42,118 @@
 
 class windowsOpenOffice extends windowsService {
 
-	// utility
+	/**
+	* Reference to utility object
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
 	public $util;
-	// path to office
+	
+	/**
+	* Path to office executable
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
 	private $path;
-	// host
+	
+	/**
+	* Web server
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
 	private $host;
-	// pid running
+	
+	/**
+	* Path to temp pid file
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
 	private $pidFile;
-	// port to bind to
+	
+	/**
+	* Web server Port
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
 	private $port;
-	// bin folder
+	
+	/**
+	* Web server
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
 	private $bin;
-	// office executable
+	
+	/**
+	* Office executable name
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
 	private $soffice;
-	// office log file
+
+	/**
+	* Log file
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
 	private $log;
+	
+	/**
+	* Open office options
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
 	private $options;
+	
+	/**
+	* Path to win service
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
     private $winservice;
-	
-	public function __construct() {
-		$this->name = "openoffice";
-		$this->util = new InstallUtil();
-	}
-	
+
+	/**
+	* Service name
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/	
+    public $name = "KTOpenOfficeTest";
+    
 	public function load() {
         // hack for testing
 		$this->setPort("8100");
 		$this->setHost("127.0.0.1");
 		$this->setLog("openoffice.log");
-		$this->setBin("C:\Program Files (x86)\OpenOffice.org 3\program\soffice.bin");
-		$this->setBin("C:\Program Files (x86)\ktdms\openoffice\program\soffice.bin");
-		$this->setBin("C:\Program Files (x86)\ktdms\openoffice.2.4\program\soffice.bin");
+//		$this->setBin("C:\Program Files (x86)\OpenOffice.org 3\program\soffice.bin");
+//		$this->setBin("C:\Program Files (x86)\ktdms\openoffice\program\soffice.bin");
+//		$this->setBin("C:\Program Files (x86)\ktdms\openoffice.2.4\program\soffice.bin");
 		$this->setWinservice("winserv.exe");
-		$this->setOption();
+//		$this->setOption();
 	}
-	
+	#rem "%INSTALL_PATH%\bin\winserv.exe" install %OpenofficeServiceName% -displayname "%OpenofficeServiceName%" -start auto %SOFFICE_BIN% -headless -invisible -accept=pipe,name=pypipe;urp;
 	private function setPort($port = "8100") {
 		$this->port = $port;
 	}
@@ -139,24 +215,5 @@ class windowsOpenOffice extends windowsService {
     		return $status;
     	}
     }
-    
-//    public function start() {
-//    	$state = $this->status();
-//    	if($state != 'STARTED') {
-//			$cmd = 'sc start ' . $this->name;
-//	    	$response = $this->util->pexec($cmd);
-//	    	
-//	    	return $response;
-//    	} elseif ($state == '') {
-//    		// Start Service
-//    		return true;
-//    	} else {
-//    		// Service Running Already
-//    		return true;
-//    	}
-//    	
-//    	return false;
-//    }
-    
 }
 ?>

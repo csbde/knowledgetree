@@ -122,6 +122,16 @@ class windowsLucene extends windowsService {
 	private $luceneDir;
 	
 	/**
+	* Service name
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/	
+	public $name = "KTLuceneTest";
+	
+	/**
 	* Load defaults needed by service
 	*
 	* @author KnowledgeTree Team
@@ -130,7 +140,7 @@ class windowsLucene extends windowsService {
 	* @return void
  	*/
 	public function load() {
-		$this->name = "KTLuceneTest";
+//		$this->name = "KTLuceneTest";
 		$this->javaSystem = new Java('java.lang.System');
 		$this->setJavaBin($this->javaSystem->getProperty('java.home').DS."bin");
 		$this->setLuceneDIR(SYSTEM_DIR."bin".DS."luceneserver");
@@ -352,11 +362,12 @@ class windowsLucene extends windowsService {
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
-	* @return array
+	* @return string
  	*/
-	function install() {
+	public function install() {
 		$state = $this->status();
 		if($state == '') {
+			$this->writeLuceneProperties();
 			$luceneExe = $this->getLuceneExe();
 			$luceneSource = $this->getLuceneSource();
 			$luceneDir = $this->getluceneDir();
@@ -371,5 +382,29 @@ class windowsLucene extends windowsService {
 		return $state;
 	}
 	
+	/**
+	* Write Lucene Service property file
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/
+	private function writeLuceneProperties() {
+		// Check if bin is readable and writable
+		if(is_readable(SYS_BIN_DIR) && is_writable(SYS_BIN_DIR)) {
+			if($this->getluceneDir()) {
+				$fp = fopen($this->getluceneDir()."KnowledgeTreeIndexer.properties", "w+");
+				$content = "server.port=8875\n";
+				$content .= "server.paranoid=false\n";
+				$content .= "server.accept=127.0.0.1\n";
+				$content .= "server.deny=\n";
+				$content .= "indexer.directory=../../var/indexes\n";
+				$content .= "indexer.analyzer=org.apache.lucene.analysis.standard.StandardAnalyzer\n";
+				fwrite($fp, $content);
+				fclose($fp);
+			}
+		}
+	}
 }
 ?>
