@@ -1074,9 +1074,9 @@ class services extends Step
 			require_once("../lib/services/".OS."Service.php");
 			require_once("../lib/services/$className.php");
 			$service = new $className();
-			
-			echo "Delete Service {$service->getName()}<br/>";
 			$service->uninstall();
+			echo "Delete Service {$service->getName()}<br/>";
+			echo "Status of service ".$service->status()."<br/>";
 		}
 	}
 	
