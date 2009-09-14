@@ -49,14 +49,13 @@
 	</div>
 <!--	Privileges	-->
 	<br/><br/>
-<!--	<div>-->
 	<?php } ?>
 	    <h3><?php echo "<span class='{$privileges_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Privileges</h3>
 	<?php if($silent) { ?>
 		<div id="option1" class="onclick" onclick="javascript:{w.toggleClass('privileges_check', 'option1');}">Show Details</div>
 		<div class="privileges_check" style="display:none">
 	<?php } ?>
-	    <table style="width:755px;">
+	    <table style="width:265px;">
 	        <tr><?php echo $dbPrivileges; ?></tr>
 	        <tr><?php echo $dbTransaction; ?></tr>
 	    </table>

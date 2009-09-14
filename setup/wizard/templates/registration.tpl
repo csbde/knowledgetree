@@ -1,7 +1,7 @@
 <?php if (AJAX) { ?>
 <form id="database_registration_install" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.dummy();">
 <?php } else { ?>
-<form id="registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.validateRegistration();return false;">
+<form id="registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="javascript:{ if(w.validateRegistration()) { w.sendRegistration() };return false;}">
 <?php } ?>
 	<p class="title">Registering KnowledgeTree</p>
 	<?php

@@ -813,10 +813,10 @@ class services extends Step
 	*
 	* @author KnowledgeTree Team
 	* @param object
-	* @access private
+	* @access public
 	* @return string
 	*/
-	private function serviceStatus($service) {
+	public function serviceStatus($service) {
 		$statusCheck = OS."ServiceInstalled";
 		return $this->$statusCheck($service);
 	}
@@ -1092,6 +1092,19 @@ class services extends Step
 			$service->install();
 			echo "Install Service {$service->getName()}<br/>";
 			echo "Status of service ".$service->status()."<br/>";
+		}
+	}
+	
+	public function doStatusAll() {
+    	$serverDetails = $this->getServices();
+		foreach ($serverDetails as $serviceName) {
+			$className = OS.$serviceName;
+			require_once("../lib/services/service.php");
+			require_once("../lib/services/".OS."Service.php");
+			require_once("../lib/services/$className.php");
+			$service = new $className();
+			$service->load();
+			echo "{$service->getName()} : Status of service = ".$service->status()."<br/>";
 		}
 	}
 }

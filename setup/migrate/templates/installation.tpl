@@ -1,5 +1,5 @@
 <form action="index.php?step_name=migrate" method="post">
-	<p class="title">Finalizing System Migrateation</p>
+	<p class="title">Finalizing System Migration</p>
 
 	<div id="step_content" class="step">
 		<br/>
@@ -10,5 +10,5 @@
 		<div class="demo"><img src="resources/graphics/kt_browse.png" /></div>
 	</div>
 	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
-	<input type="submit" name="Migrate" value="Migrate" class="button_next"/>
+	<input type="submit" name="Next" value="Next" class="button_next"/>
 </form>

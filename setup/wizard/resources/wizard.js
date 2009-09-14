@@ -210,7 +210,9 @@ wizard.prototype.getUrl = function (address, div)  {
 }
 
 wizard.prototype.sendJavaLocation = function ()  {
-	// TODO: Why does it not work?
-	//$('#services').submit();
+	$('form').submit();
+}
+
+wizard.prototype.sendRegistration = function ()  {
 	$('form').submit();
 }

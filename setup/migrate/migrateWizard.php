@@ -42,7 +42,7 @@
 include("path.php"); // Paths
 
 /**
- * Auto loader to bind migrateer package
+ * Auto loader to bind migrater package
  *
  * @param string $class
  * @return void
@@ -73,7 +73,7 @@ class MigrateWizard {
 	protected $bypass = null;
 
 	/**
-	* Reference to migrateer utility object
+	* Reference to migrater utility object
 	*
 	* @author KnowledgeTree Team
 	* @access protected
@@ -111,10 +111,10 @@ class MigrateWizard {
  	*/
 	public function displayMigrater($response = null) {
 		if($response) {
-			$ins = new Migrater(); // Instantiate the migrateer
+			$ins = new Migrater(); // Instantiate the migrater
 			$ins->resolveErrors($response); // Run step
 		} else {
-			$ins = new Migrater(new Session()); // Instantiate the migrateer and pass the session class
+			$ins = new Migrater(new Session()); // Instantiate the migrater and pass the session class
 			$ins->step(); // Run step
 		}
 	}
@@ -136,7 +136,7 @@ class MigrateWizard {
 	*
 	* @author KnowledgeTree Team
 	* @access private
-	* @param object migrateer utility
+	* @param object migrater utility
 	* @return void
  	*/
 	private function setIUtil($iutil) {
@@ -219,12 +219,12 @@ class MigrateWizard {
 		if($res === true) return $res;
 		switch ($res) {
 			case "wizard":
-					$this->iutil->error("Migrater directory is not writable (KT_Migrateation_Directory/setup/wizard/)");
-					return 'Migrater directory is not writable (KT_Migrateation_Directory/setup/wizard/)';
+					$this->iutil->error("Migrater directory is not writable (KT_Installation_Directory/setup/migrate/)");
+					return 'Migrater directory is not writable (KT_Installation_Directory/setup/migrate/)';
 				break;
 			case "/":
-					$this->iutil->error("System root is not writable (KT_Migrateation_Directory/)");
-					return "System root is not writable (KT_Migrateation_Directory/)";
+					$this->iutil->error("System root is not writable (KT_Installation_Directory/)");
+					return "System root is not writable (KT_Installation_Directory/)";
 				break;
 			default:
 					return true;
@@ -249,7 +249,7 @@ class MigrateWizard {
 		} elseif ($this->getBypass() === "0") {
 			$this->createMigrateFile();
 		}
-		if(!$this->isSystemMigrateed()) { // Check if the systems not migrateed
+		if(!$this->isSystemMigrateed()) { // Check if the systems not migrated
 			$response = $this->systemChecks();
 			if($response === true) {
 				$this->displayMigrater();
@@ -258,7 +258,7 @@ class MigrateWizard {
 			}
 		} else {
 			// TODO: Die gracefully
-			$this->iutil->error("System has been migrateed <div class=\"buttons\"><a href='../../'>Goto Login</a></div>");
+			$this->iutil->error("System has been migrated <div class=\"buttons\"><a href='../../'>Goto Login</a></div>");
 		}
 	}
 }
