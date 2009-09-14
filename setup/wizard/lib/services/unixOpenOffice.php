@@ -64,7 +64,7 @@ class unixOpenOffice extends unixService {
 	public function __construct() {
 		$this->name = "KTOpenOffice";
 		$this->util = new InstallUtil();
-		$this->office = 'office';
+		$this->office = 'openoffice';
 	}
 	
 	public function load() {
