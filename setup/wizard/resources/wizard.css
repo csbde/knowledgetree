@@ -537,3 +537,11 @@ td.dir_description {
     text-decoration: none;
     color: #EC7725;
 }
+
+#loading {
+	bottom:250px;
+	left:500px;
+	position:relative;
+	height:0px;
+	width:0px;
+}

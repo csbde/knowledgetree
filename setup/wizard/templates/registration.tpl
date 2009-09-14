@@ -1,4 +1,4 @@
-<form id="registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.validateRegistration();return false;">
+<form id="database_registration_install" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.dummy();">
 	<p class="title">Registering KnowledgeTree</p>
 	<?php
 		//echo $sel_country;
@@ -17,7 +17,7 @@
 	<br/>
 	<div id="step_content_registration" class="step">
 		<span class="error" id="reg_error"></span>
-		<?php $input_width = 32; ?>
+		<?php $input_width = 40; ?>
 		<table>
 		    <tr>
 		        <td><label for='first'>First Name</label></td>
@@ -102,3 +102,4 @@
 	<input type="submit" name="Previous" value="Previous" onclick="w.pClick()" class="button_previous"/>
 	<input type="submit" name="Next" value="Register" onclick="w.nClick()" class="button_next"/>
 </form>
+<script type="text/javascript" src="resources/form.js"></script>

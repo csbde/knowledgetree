@@ -1,4 +1,4 @@
-<form action="index.php?step_name=dependencies" method="post">
+<form id="license_dependencies_configuration" action="index.php?step_name=dependencies" method="post">
 	<p class="title">Checking PHP Dependencies</p>
 	<p class="description">
 	The wizard will review your system to determine whether you have the right PHP components in place to run KnowledgeTree. <br/>
@@ -132,6 +132,7 @@
 			</div>
 		<?php } ?>
 	</div>
-    <input type="submit" name="Previous" value="Back" class="button_previous"/>
+    <input type="submit" name="Previous" value="Previous" class="button_previous"/>
     <input type="submit" name="Next" value="Next" class="button_next"/>
 </form>
+<script type="text/javascript" src="resources/form.js"></script>

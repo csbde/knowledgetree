@@ -2,18 +2,19 @@
 <html>
 	<head>
 		<title>KnowledgeTree Installer</title>
-		<script type="text/javascript" src="resources/jquery-tooltip/lib/jquery.js"></script>
+		<script type="text/javascript" src="resources/jquery.js"></script>
+		<script type="text/javascript" src="resources/jquery.form.js"></script>
+		<script type="text/javascript" src="resources/jquery.blockUI.js"></script>
 		<script type="text/javascript" src="resources/wizard.js" ></script>
 		<link rel="stylesheet" type="text/css" href="resources/wizard.css" />
-		
 	</head>
-	<body onload="w.doFormCheck();">
+	<body onload="">
 		<div id="outer-wrapper">
 		    <div id="header">
-		    <div id="logo"><img src="resources/graphics/dame/installer-header_logo.png"/></div>
-		    <div id="install_details">
-				<span style="font-size:120%;"> <?php echo $vars['install_version']; ?> </span>
-				<span style="font-size:120%;"><?php echo $vars['install_type']; ?></span>
+			    <div id="logo"><img src="resources/graphics/dame/installer-header_logo.png"/></div>
+			    <div id="install_details">
+					<span style="font-size:120%;"> <?php echo $vars['install_version']; ?> </span>
+					<span style="font-size:120%;"><?php echo $vars['install_type']; ?></span>
 				</div>
 		    </div>
 		    <div id="wrapper">
@@ -26,6 +27,7 @@
 		                	<?php echo $content; ?>
 		                </div>
 		            </div>
+		            <div id="loading" style="display:none;"> <img src="resources/graphics/loading.gif" height="32px" width="32px"> </div>
 		        </div>
 		        <div class="clearing">&nbsp;</div>
 		    </div>

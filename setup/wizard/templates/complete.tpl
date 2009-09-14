@@ -1,4 +1,4 @@
-<form>
+<form id="install_complete_none">
 	<p class="title">Installation Completed</p>
 
 	<p class="description">This allows you to check that your KnowledgeTree configuration is set
@@ -109,3 +109,4 @@
         }
     ?>
 </form>
+<script type="text/javascript" src="resources/form.js"></script>

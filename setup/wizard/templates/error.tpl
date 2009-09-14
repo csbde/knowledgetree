@@ -8,7 +8,7 @@
 		
 	</head>
 
-	<body onload="w.doFormCheck();">
+	<body onload="">
 		<div id="outer-wrapper">
 		    <div id="header">
 		    <div id="logo"><img src="resources/graphics/dame/installer-header_logo.png"/></div>
@@ -30,7 +30,6 @@
 									<?php if(isset($error)) { 
 											echo "<span class='error'>".$error."</span>";
 											?>
-												<a style="width:100px;" href="javascript:this.location.reload();" class="refresh">Refresh</a>
 											<?php
 										}
 									?>

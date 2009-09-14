@@ -40,6 +40,15 @@
 * @version Version 0.1
 */
 
+if(isset($_GET['action'])) {
+	$func = $_GET['action'];
+	if($func != '') {
+		require_once("../Step.php");
+		require_once("../InstallUtil.php");
+		require_once("../path.php");
+	}
+}
+
 class services extends Step 
 {
 	/**
@@ -70,15 +79,6 @@ class services extends Step
     private $services = array('Lucene', 'Scheduler', 'OpenOffice');
     
 	/**
-	* Path to java executable
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var string
-	*/
-    protected $java;
-    
-	/**
 	* Path to php executable
 	*
 	* @author KnowledgeTree Team
@@ -86,6 +86,42 @@ class services extends Step
 	* @var string
 	*/
     protected $php;
+    
+	/**
+	* Flag if php already provided
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    public $providedPhp = false;
+    
+	/**
+	* PHP Installed 
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    private $phpCheck = 'cross_orange';
+
+	/**
+	* Flag, if php is specified and an error has been encountered
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var boolean
+	*/
+    private $phpExeError = false;
+    
+	/**
+	* Holds path error, if php is specified
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var string
+	*/
+    private $phpExeMessage = '';
     
 	/**
 	* Path to open office executable
@@ -97,14 +133,41 @@ class services extends Step
 	protected $soffice;
 
 	/**
-	* Reference to utility object
+	* Flag if open office already provided
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    public $providedOpenOffice = false;
+    
+	/**
+	* Flag, if open office is specified and an error has been encountered
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var boolean
+	*/
+    private $openOfficeExeError = false;
+    
+	/**
+	* Holds path error, if open office is specified
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var string
+	*/
+    private $openOfficeExeMessage = '';
+
+	/**
+	* Path to java executable
 	*
 	* @author KnowledgeTree Team
 	* @access protected
 	* @var string
 	*/
-    protected $util;
-
+    protected $java;
+    
 	/**
 	* Minumum Java Version
 	*
@@ -113,7 +176,6 @@ class services extends Step
 	* @var string
 	*/
     private $javaVersion = '1.5';
-//    private $javaVersion = '1.7';
 
 	/**
 	* Java Installed 
@@ -124,8 +186,50 @@ class services extends Step
 	*/
     private $javaCheck = 'cross';
 
-    
+	/**
+	* Flag if java already provided
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
     public $providedJava = false;
+    
+	/**
+	* Java Bridge Installed 
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    private $javaExtCheck = 'cross_orange';
+
+	/**
+	* Flag if bridge extension needs to be disabled
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var boolean
+	*/
+    private $disableExtension = false;
+    
+	/**
+	* Flag, if java is specified and an error has been encountered
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var booelean
+	*/
+    private $javaExeError = false;
+    
+	/**
+	* Holds path error, if java is specified
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var string
+	*/
+    private $javaExeMessage = '';
     
 	/**
 	* Flag if services are already Installed
@@ -153,24 +257,6 @@ class services extends Step
 	* @var mixed
 	*/
     private $schedulerInstalled = false;
-    
-	/**
-	* PHP Installed 
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var mixed
-	*/
-    private $phpCheck = 'cross_orange';
-    
-	/**
-	* Java Bridge Installed 
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var mixed
-	*/
-    private $javaExtCheck = 'cross_orange';
     
 	/**
 	* Service Installed 
@@ -209,40 +295,14 @@ class services extends Step
     protected $silent = true;
     
 	/**
-	* Flag if bridge extension needs to be disabled
+	* Reference to utility object
 	*
 	* @author KnowledgeTree Team
-	* @access public
-	* @var boolean
+	* @access protected
+	* @var string
 	*/
-    private $disableExtension = false;
+    protected $util;
     
-	/**
-	* Flag, if java is specified and an error has been encountered
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var mixed
-	*/
-    private $javaExeError = '';
-    
-	/**
-	* Holds path error, if java is specified
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var mixed
-	*/
-    private $javaExeMessage = '';
-    
-	/**
-	* Holds path error, if php is specified
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var mixed
-	*/
-    private $phpExeError = '';
 	/**
 	* Constructs services object
 	*
@@ -273,8 +333,6 @@ class services extends Step
 	        // Check dependencies
 	        $passed = $this->doRun();
 	        $serv = $this->getDataFromSession("services");
-//	        var_dump($conf);
-//	        die;
             if($passed || $serv['providedJava'])
                 return 'next';
             else
@@ -282,7 +340,6 @@ class services extends Step
         } else if($this->previous()) {
             return 'previous';
         }
-        
         $passed = $this->doRun();
         return 'landing';
     }
@@ -457,12 +514,40 @@ class services extends Step
     	return $this->detSettings();
     }
     
+	/**
+	* Set template view to specify java
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
     private function specifyJava() {
     	$this->javaExeError = true;
     }
     
+	/**
+	* Set template view to specify php
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
     private function specifyPhp() {
     	$this->phpExeError = true;
+    }
+    
+	/**
+	* Set template view to specify open office
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
+    private function specifyOpenOffice() {
+    	$this->openOfficeExeError = true;
     }
     
     private function phpChecks() {
@@ -930,6 +1015,42 @@ class services extends Step
 	
 	public function getPhpDir() {
 		return $this->php;
+	}
+	
+	public function doDeleteAll() {
+    	$serverDetails = $this->getServices();
+		foreach ($serverDetails as $serviceName) {
+			$className = OS.$serviceName;
+			require_once("../lib/services/service.php");
+			require_once("../lib/services/".OS."service.php");
+			require_once("../lib/services/$className.php");
+			$service = new $className();
+			echo "Delete Service {$service->getName()}<br/>";
+			$service->uninstall();
+		}
+	}
+	
+	public function doInstallAll() {
+    	$serverDetails = $this->getServices();
+		foreach ($serverDetails as $serviceName) {
+			$className = OS.$serviceName;
+			require_once("../lib/services/service.php");
+			require_once("../lib/services/".OS."service.php");
+			require_once("../lib/services/$className.php");
+			$service = new $className();
+			echo "Install Service {$service->getName()}<br/>";
+			echo "Status of service ".$service->install()."<br/>";
+		}
+	}
+}
+
+if(isset($_GET['action'])) {
+	$func = $_GET['action'];
+	if($func != '') {
+		$serv = new services();
+		$func_call = strtoupper(substr($func,0,1)).substr($func,1);
+		$method = "do$func";
+		$serv->$method();
 	}
 }
 ?>
