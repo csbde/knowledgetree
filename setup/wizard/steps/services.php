@@ -445,7 +445,7 @@ class services extends Step
     }
     
     private function openOfficeInstalled() {
-    	
+    	$this->openOfficeExeError = false;
     }
     
     private function schedulerInstalled() {
