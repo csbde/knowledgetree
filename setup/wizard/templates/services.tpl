@@ -40,7 +40,6 @@
 <!--Content-->
 	<div id="step_content_configuration" style="width:755px;" class="step">
 		<?php if(!$alreadyInstalled) { ?>
-			<?php //var_dump($javaExeError); ?>
 			<?php if($javaExeError) { ?>
 				Specify the location of your Java executable
 				&nbsp;&nbsp;&nbsp;
@@ -49,6 +48,7 @@
 				<a href="javascript:{w.sendJavaLocation();}" class="specify">Submit</a>
 				<br/>
 				<?php if($javaExeError != '') { ?><span class="error"><?php echo $javaExeMessage; ?></span><?php } ?>
+				<br/>
 			<?php } ?>
 			<?php if($phpExeError != '') { ?>
 				<br />
@@ -61,6 +61,15 @@
 				<?php } ?>
 				&nbsp;&nbsp;&nbsp;
 				<?php if($phpExeError != true) { ?><span class="error"><?php echo $phpExeError; ?></span><?php } ?>
+			<?php } ?>
+			<?php if($openOfficeExeError) { ?>
+				Specify the location of your Open Office executable
+				&nbsp;&nbsp;&nbsp;
+				<input name='soffice' id='port' size='25' value='<?php echo $soffice['location']; ?>' style="float:none;"/>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:{w.sendJavaLocation();}" class="specify">Submit</a>
+				<br/>
+				<?php if($openOfficeExeError != '') { ?><span class="error"><?php echo $openOfficeExeMessage; ?></span><?php } ?>
 			<?php } ?>
 			<h3><?php echo "<span class='{$javaCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Check</h3>
 			<?php if($silent) { ?>

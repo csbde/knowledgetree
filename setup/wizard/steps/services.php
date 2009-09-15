@@ -187,6 +187,15 @@ class services extends Step
     private $javaCheck = 'cross';
 
 	/**
+	* Open Office Installed 
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    private $openOfficeCheck = 'cross';
+    
+	/**
 	* Flag if java already provided
 	*
 	* @author KnowledgeTree Team
@@ -395,6 +404,7 @@ class services extends Step
     		$this->serviceCheck = 'tick';
     	} else {
     		$this->presetJava();
+    		$this->presetOpenOffice();
     		if(!$this->schedulerInstalled) {
     			$this->php = $this->util->getPhp(); // Get java, if it exists
     			$passedPhp = $this->phpChecks(); // Run Java Pre Checks
@@ -417,6 +427,10 @@ class services extends Step
     			$this->soffice = $this->util->getOpenOffice(); // Get java, if it exists
     			$passedOpenOffice = $this->openOfficeChecks(); // Run Java Pre Checks
     			if ($passedOpenOffice) { //Install OpenOffice
+//    				$this->temp_variables['openOfficeExe'] = $this->soffice;
+    				// TODO : Why, O, why?
+    				$this->openOfficeExeError = false;
+    				$_SESSION['services']['openOfficeExe'] = $this->soffice;
     				$this->installService('OpenOffice');
     			}
     		} else {
@@ -508,9 +522,16 @@ class services extends Step
 		$this->zendBridgeNotInstalled(); // Set bridge not installed
 		$this->javaVersionInCorrect(); // Set version to incorrect
 		$this->javaNotInstalled(); // Set java to not installed
-		$this->setJava(); // Check if java has been auto detected    	
+		$this->setJava(); // Check if java has been auto detected
     }
     
+    private function presetOpenOffice() {
+    	$this->specifyOpenOffice();
+    }
+    
+    private function setOpenOffice() {
+    	
+    }
     /**
 	* Do some basic checks to help the user overcome java problems
 	*
@@ -544,6 +565,16 @@ class services extends Step
     	}
     }
 	
+    private function openOfficeChecks() {
+    	if($this->util->openOfficeSpecified()) {
+    		$this->soffice = $this->util->openOfficeSpecified();
+
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
 	/**
 	* Attempt detection without logging errors
 	*
@@ -604,9 +635,7 @@ class services extends Step
     	}
     }
     
-    private function openOfficeChecks() {
-    	return true;
-    }
+
     
     /**
 	* Attempts to use user input and configure java settings
@@ -624,7 +653,7 @@ class services extends Step
     		}
     		$javaExecutable = $this->java;
     	}
-    	$cmd = "$javaExecutable -version > output/outJV 2>&1 echo $!";
+    	$cmd = "\"$javaExecutable\" -version > output/outJV 2>&1 echo $!";
     	$response = $this->util->pexec($cmd);
     	if(file_exists(OUTPUT_DIR.'outJV')) {
     		$tmp = file_get_contents(OUTPUT_DIR.'outJV');
@@ -695,7 +724,7 @@ class services extends Step
 	* @return boolean
 	*/
     private function useBridge() {
-		$zendBridge = $this->zendBridge(); // Find Zend Bridge
+		$zendBridge = $this->util->zendBridge(); // Find Zend Bridge
 		if($zendBridge) { // Bridge installed implies java exists
 			$this->zendBridgeInstalled();
 			if($this->checkZendBridge()) { // Make sure the Zend Bridge is functional
@@ -725,22 +754,6 @@ class services extends Step
 			$this->warnings[] = "Zend Java Bridge Not Found";
 			return false;
 		}
-    }
-    
-    /**
-	* Check if Zend Bridge is enabled
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return boolean
-	*/
-    public function zendBridge() {
-		$mods = get_loaded_extensions();
-		if(in_array('Zend Java Bridge', $mods)) 
-			return true;
-		else 
-			return false;
     }
     
     /**
@@ -1034,14 +1047,19 @@ class services extends Step
 	* @return void
     */
     private function storeSilent() {
+    	// Servics
     	$this->temp_variables['alreadyInstalled'] = $this->alreadyInstalled;
     	$this->temp_variables['luceneInstalled'] = $this->luceneInstalled;
     	$this->temp_variables['schedulerInstalled'] = $this->schedulerInstalled;
     	$this->temp_variables['openOfficeInstalled'] = $this->openOfficeInstalled;
+    	// Java
 		$this->temp_variables['javaExeError'] = $this->javaExeError;
 		$this->temp_variables['javaExeMessage'] = $this->javaExeMessage;
 		$this->temp_variables['javaCheck'] = $this->javaCheck;
 		$this->temp_variables['javaExtCheck'] = $this->javaExtCheck;
+		// Open Office
+		$this->temp_variables['openOfficeExeError'] = $this->openOfficeExeError;
+		$this->temp_variables['openOfficeExeMessage'] = $this->openOfficeExeMessage;
 		// TODO : PHP detection
 		$this->temp_variables['phpCheck'] = 'tick';//$this->phpCheck;
 		$this->temp_variables['phpExeError'] = '';//$this->phpExeError;
@@ -1050,7 +1068,7 @@ class services extends Step
 		// TODO: Java checks are gettign intense
 		$this->temp_variables['providedJava'] = $this->providedJava;
     }
-
+    
     private function setPhp() {
 		if($this->php != '') { // PHP Found
 			$this->phpCheck = 'tick';
