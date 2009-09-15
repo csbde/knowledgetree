@@ -39,7 +39,7 @@
 * @package Migrater
 * @version Version 0.1
 */
-	// Define migrateer environment
+	// Define migrater environment
 	if (substr(php_uname(), 0, 7) == "Windows"){
     	define('WINDOWS_OS', true);
     	define('UNIX_OS', false);

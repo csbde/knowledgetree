@@ -1,4 +1,4 @@
-<form action="index.php?step_name=welcome" method="post">
+<form id="welcome_license" action="index.php?step_name=welcome" method="post">
 	<p class="title">Welcome to KnowledgeTree</p>
 	<div id="step_content" class="step">
 		<br/>
@@ -8,3 +8,4 @@
 	</div>
 	<input type="submit" name="Next" value="Next" class="button_next"/>
 </form>
+<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>

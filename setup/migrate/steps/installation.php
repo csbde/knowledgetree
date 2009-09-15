@@ -40,7 +40,7 @@
 * @version Version 0.1
 */
 
-class migrate extends step 
+class installation extends step 
 {
 
     function __construct() {

@@ -1,4 +1,4 @@
-<form action="index.php?step_name=configuration" method="post">
+<form id="dependencies_configuration_services" action="index.php?step_name=configuration" method="post">
 	<p class="title">Checking System Configuration</p>
 	
 	<p class="description">
@@ -85,7 +85,7 @@
 	<table>
 	<?php
 		if($errors || $warnings) {
-			$width = "290px";
+			$width = "390px";
 		} else {
 			$width = "520px";
 		}
@@ -98,7 +98,6 @@
 	    		<?php if(isset($path['msg'])) {
 	    			?>
 	    			<td class="error"> <?php echo $path['msg']; ?> </td>
-<!--	    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>-->
 	    			<?php
 	    		} else {
 	    			?>
@@ -119,3 +118,4 @@
     <input type="submit" name="Previous" value="Previous" class="button_previous"/>
     <input type="submit" name="Next" value="Next" class="button_next"/>
 </form>
+<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>

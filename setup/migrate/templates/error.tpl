@@ -26,7 +26,7 @@
 		            	<div id="content_container">
 		                	<form action="index.php?step_name=welcome" method="post">
 		                		<div id="step_content" class="step">
-					                <p class="title">Welcome to the KnowledgeTree Setup Wizard</p>
+					                <p class="title">Welcome to the KnowledgeTree Migration Wizard</p>
 									<?php if(isset($error)) { 
 											echo "<span class='error'>".$error."</span>";
 											?>

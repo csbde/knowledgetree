@@ -78,7 +78,7 @@ class Step
     protected $storeInSession = false;
     
 	/**
-	* Flag if step needs to be migrateed
+	* Flag if step needs to be migrated
 	*
 	* @author KnowledgeTree Team
 	* @access public
@@ -105,6 +105,8 @@ class Step
     protected $silent = false;
     
     public $displayFirst = false;
+    
+    private $salt = 'migrate';
 	/**
 	* Returns step state
 	*
@@ -286,10 +288,10 @@ class Step
 	* @return boolean
 	*/
     public function setDataFromSession($class) {
-        if(empty($_SESSION[$class])) {
+        if(empty($_SESSION[$this->salt][$class])) {
             return false;
         }
-        $_POST = $_SESSION[$class];
+        $_POST = isset($_SESSION[$this->salt]['migrate'][$class]) ? $_SESSION[$this->salt]['migrate'][$class]: '';
 		
         return true;
     }
@@ -303,11 +305,11 @@ class Step
 	* @return boolean
 	*/
     public function getDataFromSession($class) {
-    	if(empty($_SESSION[$class])) {
+    	if(empty($_SESSION[$this->salt][$class])) {
     		return false;
     	}
     	
-    	return $_SESSION[$class];
+    	return $_SESSION[$this->salt][$class];
     }
     
 	/**
@@ -359,7 +361,7 @@ class Step
     }
     
     /**
-     * Return whether or not to a step has to be migrateed
+     * Return whether or not to a step has to be migrated
      * 
      * @author KnowledgeTree Team
      * @param none

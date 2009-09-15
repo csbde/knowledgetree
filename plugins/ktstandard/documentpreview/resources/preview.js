@@ -1,7 +1,7 @@
 /*
     Create the preview / info box using an ExtJS Dialog window
 */
-var showInfo = function(iDocId, sUrl, sDir, loading){
+var showInfo = function(iDocId, sUrl, sDir, loading, mwidth){
 
     // Create the info box container div
     createPanel();
@@ -14,7 +14,7 @@ var showInfo = function(iDocId, sUrl, sDir, loading){
             shadow: false,
             modal: true,
             plain: false,
-            width: 500,
+            width: mwidth,
             height: 360,
             minWidth: 300,
             minHeight: 250
