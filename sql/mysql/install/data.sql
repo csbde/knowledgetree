@@ -1460,8 +1460,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.6.3'),
-(3,'databaseVersion','3.6.3'),
+(2,'knowledgeTreeVersion','3.7.0'),
+(3,'databaseVersion','3.7.0'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1763,7 +1763,8 @@ INSERT INTO `upgrades` VALUES
 (222, 'sql*3.6.2*0*3.6.2/folders.sql', 'Folder created and modified timestamp fix','2009-05-01 00:00:00',1,'upgrade*3.6.2*99*upgrade3.6.2'),
 (223, 'sql*3.6.2*0*3.6.2/data_types.sql', 'Add large text and date fields','2009-05-01 00:00:00',1,'upgrade*3.6.2*99*upgrade3.6.2'),
 (224,'upgrade*3.6.2*99*upgrade3.6.2','Upgrade from version 3.6.1 to 3.6.2','2009-05-01 00:00:00',1,'upgrade*3.6.2*99*upgrade3.6.2'),
-(225,'upgrade*3.6.3*99*upgrade3.6.3','Upgrade from version 3.6.2 to 3.6.3','2009-06-01 00:00:00',1,'upgrade*3.6.3*99*upgrade3.6.3');
+(225,'upgrade*3.6.3*99*upgrade3.6.3','Upgrade from version 3.6.2 to 3.6.3','2009-06-01 00:00:00',1,'upgrade*3.6.3*99*upgrade3.6.3'),
+(226,'upgrade*3.7.0*99*upgrade3.7.0','Upgrade from version 3.6.3 to 3.7.0','2009-09-01 00:00:00',1,'upgrade*3.7.0*99*upgrade3.7.0');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2694,7 +2695,7 @@ UNLOCK TABLES;
 LOCK TABLES `zseq_upgrades` WRITE;
 /*!40000 ALTER TABLE `zseq_upgrades` DISABLE KEYS */;
 INSERT INTO `zseq_upgrades` VALUES
-(225);
+(226);
 /*!40000 ALTER TABLE `zseq_upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
