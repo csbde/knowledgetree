@@ -68,14 +68,23 @@ class PreviewColumn extends AdvancedColumn {
         $sTitle = _kt('Property Preview');
         $sLoading = _kt('Loading...');
 
-
+        $width = 500;
+        
+		// Check for existence of thumbnail plugin
+        if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin')) {
+            // hook into thumbnail plugin to get display for thumbnail
+            include_once(KT_DIR . '/plugins/thumbnails/thumbnails.php');
+            $thumbnailer = new ThumbnailViewlet();
+            $width += $thumbnailer->get_width($iDocumentId);
+        }
+        
         $link = '<a href = "#" class="ktAction ktPreview" id = "box_'.$iDocumentId.'" ';
 
         if($this->sActivation == 'mouse-over'){
-            $sJs = "javascript: this.t = setTimeout('showInfo(\'$iDocumentId\', \'$sUrl\', \'$sDir\', \'$sLoading\')', $iDelay);";
+            $sJs = "javascript: this.t = setTimeout('showInfo(\'$iDocumentId\', \'$sUrl\', \'$sDir\', \'$sLoading\', $width)', $iDelay);";
             $link .= 'onmouseover = "'.$sJs.'" onmouseout = "clearTimeout(this.t);">';
         }else{
-            $sJs = "javascript: showInfo('$iDocumentId', '$sUrl', '$sDir', '$sLoading');";
+            $sJs = "javascript: showInfo('$iDocumentId', '$sUrl', '$sDir', '$sLoading', $width);";
             $link .= 'onclick = "'.$sJs.'" title="'.$sTitle.'">';
         }
 

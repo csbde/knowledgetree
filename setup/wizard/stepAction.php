@@ -321,7 +321,12 @@ class stepAction {
 	                    $class = 'inactive';
 	                }else{
 	                    $class = 'indicator';
-	                    $item = "<a href=\"index.php?step_name={$step}\">{$item}</a>";
+	                    if (AJAX) {
+							$options = "\"index.php?step_name={$step}\", \"content_container\"";
+		                    $item = "<a href='#' onclick='javascript:{w.getUrl(".$options.");}' >{$item}</a>";
+	                    } else {
+	                    	$item = "<a href=\"index.php?step_name={$step}\">{$item}</a>";
+	                    }
 	                }
 	            }
 	            $menu .= "<span id = '{$step}' class='{$class}'>$item</span><br />";
@@ -399,7 +404,7 @@ class stepAction {
             }
         }
         // TODO: Force because it does not always recognize ajax request
-		if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+		if(AJAX && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
     		echo $step_tpl->fetch();
 		} else { 
 	        $content = $step_tpl->fetch();

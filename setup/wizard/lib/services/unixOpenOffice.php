@@ -59,11 +59,12 @@ class unixOpenOffice extends unixService {
 	// office log file
 	private $log;
 	private $options;
+	private $office;
 	
-	# nohup /home/jarrett/ktdms/openoffice/program/soffice.bin -nofirststartwizard -nologo -headless -accept=socket,host=127.0.0.1,port=8100;urp;StarOffice.ServiceManager &> /home/jarrett/ktdms/var/log/dmsctl.log &
 	public function __construct() {
-		$this->name = "openoffice";
+		$this->name = "KTOpenOffice";
 		$this->util = new InstallUtil();
+		$this->office = 'openoffice';
 	}
 	
 	public function load() {
@@ -123,9 +124,36 @@ class unixOpenOffice extends unixService {
     	}
     }
     
+    private function setOfficeName($office) {
+    	$this->office = $office;
+    }
+    
+    public function getOfficeName() {
+    	return $this->office;
+    }
+    
+    public function status() {
+    	sleep(1);
+    	$cmd = "ps ax | grep ".$this->getOfficeName();
+    	$response = $this->util->pexec($cmd);
+    	if(is_array($response['out'])) {
+    		if(count($response['out']) > 1) {
+    			foreach ($response['out'] as $r) {
+    				preg_match('/grep/', $r, $matches); // Ignore grep
+    				if(!$matches) {
+    					return 'STARTED';
+    				}
+    			}
+    		} else {
+    			return '';
+    		}
+    	}
+    	
+    	return '';
+    }
+    
     public function start() {
     	$state = $this->status();
-    	return ;
     	if($state != 'STARTED') {
 			$cmd = "nohup {$this->getBin()} ".$this->getOption()." > ".SYS_LOG_DIR."{$this->getLog()} 2>&1 & echo $!";
 	    	$response = $this->util->pexec($cmd);
@@ -141,5 +169,15 @@ class unixOpenOffice extends unixService {
     	
     	return false;
     }
+    
+    function stop() {
+    	$cmd = "pkill -f ".$this->office;
+    	$response = $this->util->pexec($cmd);
+		return $response;
+	}
+	
+	function uninstall() {
+		$this->stop();
+	}
 }
 ?>

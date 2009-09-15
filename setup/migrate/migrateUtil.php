@@ -50,7 +50,7 @@ class MigrateUtil {
 	}
 	
 	/**
-	* Check if system needs to be migrateed
+	* Check if system needs to be migrated
 	*
 	* @author KnowledgeTree Team
 	* @access public
@@ -80,7 +80,7 @@ class MigrateUtil {
         echo $contents;
 	}
 	/**
-	* Check if system needs to be migrateed
+	* Check if system needs to be migrated
 	*
 	* @author KnowledgeTree Team
 	* @access public

@@ -275,6 +275,7 @@ class database extends Step
         if($this->setDataFromSession("database")) { // Attempt to set values from session
             $this->setDetails(); // Set any posted variables
         } else {
+        	$this->temp_variables['state'] = '';
             $this->loadDefaults($this->readXml()); // Load default variables from file
         }
         

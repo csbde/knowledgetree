@@ -376,6 +376,22 @@ class InstallUtil {
     }
 	
     /**
+	* Check if Zend Bridge is enabled
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    public function zendBridge() {
+		$mods = get_loaded_extensions();
+		if(in_array('Zend Java Bridge', $mods)) 
+			return true;
+		else 
+			return false;
+    }
+    
+    /**
      * Attempt java detection
      *
 	 * @author KnowledgeTree Team
@@ -386,7 +402,7 @@ class InstallUtil {
     public function tryJava1() {
     	$response = $this->pexec("java -version"); // Java Runtime Check
     	if(empty($response['out'])) {
-    		return false;
+    		return '';
     	}
 
     	return 'java';
@@ -403,7 +419,7 @@ class InstallUtil {
     public function tryJava2() {
     	$response = $this->pexec("java"); // Java Runtime Check
     	if(empty($response['out'])) {
-    		return false;
+    		return '';
     	}
 
     	return 'java';
@@ -420,7 +436,7 @@ class InstallUtil {
     public function tryJava3() {
     	$response = $this->pexec("whereis java"); // Java Runtime Check
     	if(empty($response['out'])) {
-    		return false;
+    		return '';
     	}
     	$broke = explode(' ', $response['out'][0]);
 		foreach ($broke as $r) {
@@ -471,6 +487,34 @@ class InstallUtil {
     	}
     }
     
+    public function openOfficeSpecified() {
+    	if(isset($_POST['soffice'])) {
+    		if($_POST['soffice'] != '') {
+    			return $_POST['soffice'];
+    		} else {
+    			return false;
+    		}
+    	} else {
+    		return false;
+    	}
+    }
+    
+	/**
+	* Get session data from post
+	*
+	* @author KnowledgeTree Team
+	* @params none
+	* @access private
+	* @return boolean
+	*/
+    public function getDataFromSession($class) {
+    	if(empty($_SESSION[$class])) {
+    		return false;
+    	}
+    	
+    	return $_SESSION[$class];
+    }
+    
     /**
 	* Determine the location of JAVA_HOME
 	*
@@ -487,7 +531,7 @@ class InstallUtil {
     			$response = $this->tryJava3();
     		}
     	}
-//		return false;
+
     	return $response;
     }
     
@@ -528,6 +572,15 @@ class InstallUtil {
     
     function getOpenOffice() {
     	$cmd = "whereis soffice";
+		$res = $this->getOpenOfficeHelper($cmd);
+		if($res != '') {
+			return $res;
+		}
+		$cmd = "which soffice";
+		return $this->getOpenOfficeHelper($cmd);
+    }
+    
+    function getOpenOfficeHelper($cmd) {
 		$response = $this->pexec($cmd);
 		if(is_array($response['out'])) {
 			if (isset($response['out'][0])) {
@@ -543,6 +596,8 @@ class InstallUtil {
 		
 		return '';
     }
+    
+    
    /**
      * Portably execute a command on any of the supported platforms.
      *

@@ -1,10 +1,9 @@
-<form id="configuration_services_database" action="index.php?step_name=services" method="post" id="services">
-	<?php //if($javaExeError != '' || $phpExeError != '') { 
-		//var_dump($javaExeError);
-		//if($errors) $top = "185px"; elseif ($warnings) $top = "185px"; else $top = "168px";
-		?>
-<!--		<input type="submit" name="Next" value="Submit" id="inner_button" style="top:<?php //echo $top; ?>"/>-->
-	<?php //} ?>
+<?php if (AJAX) { ?>
+	<form id="configuration_services_database" action="index.php?step_name=services" method="post" id="services">
+<?php } else { ?>
+	<form action="index.php?step_name=services" method="post" id="services">
+<?php } ?>
+
 	<p class="title">Checking Service Dependencies</p>
 	
 	<p class="description">
@@ -41,15 +40,15 @@
 <!--Content-->
 	<div id="step_content_configuration" style="width:755px;" class="step">
 		<?php if(!$alreadyInstalled) { ?>
-			<?php //var_dump($javaExeError); ?>
 			<?php if($javaExeError) { ?>
 				Specify the location of your Java executable
 				&nbsp;&nbsp;&nbsp;
 				<input name='java' id='port' size='25' value='<?php echo $java['location']; ?>' style="float:none;"/>
 				&nbsp;&nbsp;&nbsp;
-				<a href="javascript:{document.getElementById('services').submit();}" class="specify">Submit</a>
+				<a href="javascript:{w.sendJavaLocation();}" class="specify">Submit</a>
 				<br/>
 				<?php if($javaExeError != '') { ?><span class="error"><?php echo $javaExeMessage; ?></span><?php } ?>
+				<br/>
 			<?php } ?>
 			<?php if($phpExeError != '') { ?>
 				<br />
@@ -62,6 +61,15 @@
 				<?php } ?>
 				&nbsp;&nbsp;&nbsp;
 				<?php if($phpExeError != true) { ?><span class="error"><?php echo $phpExeError; ?></span><?php } ?>
+			<?php } ?>
+			<?php if($openOfficeExeError) { ?>
+				Specify the location of your Open Office executable
+				&nbsp;&nbsp;&nbsp;
+				<input name='soffice' id='port' size='25' value='<?php echo $soffice['location']; ?>' style="float:none;"/>
+				&nbsp;&nbsp;&nbsp;
+				<a href="javascript:{w.sendJavaLocation();}" class="specify">Submit</a>
+				<br/>
+				<?php if($openOfficeExeError != '') { ?><span class="error"><?php echo $openOfficeExeMessage; ?></span><?php } ?>
 			<?php } ?>
 			<h3><?php echo "<span class='{$javaCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Check</h3>
 			<?php if($silent) { ?>
@@ -78,7 +86,13 @@
 					<?php 
 					if ($step_vars['java']['class'] != 'tick') {
 					?>
-						<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+						<td>
+							<?php if (AJAX) { ?>
+								<a href="#" class="refresh" onclick="w.refresh('services')">Refresh</a>
+							<?php } else { ?>
+								<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+							<?php } ?>
+						</td>
 					<?php
 					} else { ?>
 						<td> </td>
@@ -89,7 +103,13 @@
 					<td> <?php echo $step_vars['version']['found']; ?> </td>
 					<?php if ($step_vars['version']['class'] != 'tick') {
 						?>
-							<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+							<td>
+							<?php if (AJAX) { ?>
+								<a href="#" class="refresh" onclick="w.refresh('services')">Refresh</a>
+							<?php } else { ?>
+								<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+							<?php } ?>
+							</td>
 						<?php
 					}
 					?>			
@@ -113,7 +133,13 @@
 						<td style="width:645px;"> <?php echo $step_vars['extensions']['found']; ?> </td>
 						<?php if ($step_vars['extensions']['class'] != 'tick') {
 							?>
-								<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+								<td>
+								<?php if (AJAX) { ?>
+									<a href="#" class="refresh" onclick="w.refresh('services')">Refresh</a>
+								<?php } else { ?>
+									<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+								<?php } ?>
+								</td>
 							<?php
 						}
 						?>
@@ -147,7 +173,13 @@
 			    		<td style="width:645px;"> <?php echo $ser['msg']; ?> </td>
 			    		<?php if ($ser['class'] != 'tick') {
 			    			?>
-			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+			    			<td>
+							<?php if (AJAX) { ?>
+								<a href="#" class="refresh" onclick="w.refresh('services')">Refresh</a>
+							<?php } else { ?>
+								<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+							<?php } ?>
+			    			</td>
 			    			<?php
 			    		} ?>
 			    	</tr>
@@ -164,4 +196,4 @@
     <input type="submit" name="Previous" value="Previous" class="button_previous"/>
     <input type="submit" name="Next" value="Next" class="button_next"/>
 </form>
-<script type="text/javascript" src="resources/form.js"></script>
+<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>

@@ -337,4 +337,4 @@ govern.
     <input type="submit" name="Next" value="I Disagree" onclick="javascript:{document.getElementById('accept').value = 0;}" class="button_next"/>
     <input type="submit" name="Next" value="I Agree" onclick="javascript:{document.getElementById('accept').value = 1;}" class="button_next"/>
 </form>
-<script type="text/javascript" src="resources/form.js"></script>
+<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>

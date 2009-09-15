@@ -210,7 +210,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             array_push($fieldsets, new $displayClass($oFieldset));
         }
 
-
         $checkout_user = 'Unknown user';
         if ($oDocument->getIsCheckedOut() == 1) {
             $oCOU = User::get($oDocument->getCheckedOutUserId());
@@ -249,6 +248,18 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $content_class = 'view withviewlets';
         }
         $this->oPage->setContentClass($content_class);
+        
+        // check for a thumbnail
+        $thumbnail = '';
+        if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin')) {
+            // hook into thumbnail plugin to get display for thumbnail
+            include_once(KT_DIR . '/plugins/thumbnails/thumbnails.php');
+            $thumbnailer = new ThumbnailViewlet();
+            $thumbnailDisplay = $thumbnailer->display_viewlet($document_id);
+            if ($thumbnailDisplay != '') {
+        		$thumbnail = $thumbnailDisplay;
+        	}
+        }
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/view');
@@ -263,6 +274,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
               'document_data' => $document_data,
               'fieldsets' => $fieldsets,
               'viewlet_data' => $viewlet_data,
+              'thumbnail' => $thumbnail,
         );
         //return '<pre>' . print_r($aTemplateData, true) . '</pre>';
         return $oTemplate->render($aTemplateData);

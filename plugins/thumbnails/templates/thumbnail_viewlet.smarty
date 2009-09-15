@@ -1,0 +1,3 @@
+<div>
+	<div><img src="{$thumbnail}" height="200px"/></div>
+</div>

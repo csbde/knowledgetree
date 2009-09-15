@@ -36,23 +36,26 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Migrateer
+* @package Migrater
 * @version Version 0.1
 */
 
-class migrate extends step 
+class installation extends step 
 {
 
+	private $location = '';
+	
     function __construct() {
         $this->temp_variables = array("step_name"=>"migrate");
     }
 
     public function doStep() {
-    	if(!$this->inStep("migrate")) {
+    	$this->doRun();
+    	if(!$this->inStep("installation")) {
     		return 'landing';
     	}
-        if($this->migrate()) {
-            return 'migrate';
+        if($this->next()) {
+            return 'next';
         } else if($this->previous()) {
             return 'previous';
         }
@@ -60,6 +63,15 @@ class migrate extends step
         return 'landing'; 
     }
 
+    public function doRun() {
+    	if(WINDOWS_OS) {
+    		$this->location = '';
+    	} else {
+    		$this->location = '/opt/ktdms';
+    	}
+    	$this->storeSilent();
+    }
+    
     public function getStepVars()
     {
         return $this->temp_variables;
@@ -67,6 +79,10 @@ class migrate extends step
 
     public function getErrors() {
         return $this->error;
+    }
+    
+    public function storeSilent() {
+    	$this->temp_variables['location'] = $this->location;
     }
 }
 ?>

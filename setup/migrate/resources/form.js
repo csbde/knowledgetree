@@ -10,3 +10,4 @@ $(document).ready(function() {
 	    $('form').ajaxForm(options);
  	}
 });
+

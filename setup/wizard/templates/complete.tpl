@@ -49,14 +49,13 @@
 	</div>
 <!--	Privileges	-->
 	<br/><br/>
-<!--	<div>-->
 	<?php } ?>
 	    <h3><?php echo "<span class='{$privileges_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Privileges</h3>
 	<?php if($silent) { ?>
 		<div id="option1" class="onclick" onclick="javascript:{w.toggleClass('privileges_check', 'option1');}">Show Details</div>
 		<div class="privileges_check" style="display:none">
 	<?php } ?>
-	    <table style="width:755px;">
+	    <table style="width:265px;">
 	        <tr><?php echo $dbPrivileges; ?></tr>
 	        <tr><?php echo $dbTransaction; ?></tr>
 	    </table>
@@ -77,21 +76,39 @@
 	        	<td style="width:15px;"> <?php echo "<span class='{$LuceneStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?> </td>
 	        	<td style="width:640px;"> Lucene Service <?php if ($LuceneStatus != 'tick') { ?> Could not be started <?php } else { ?> Started <?php } ?></td>
 	        	<?php if ($LuceneStatus != 'tick') { ?>
-	        		<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+	        		<td>
+					<?php if (AJAX) { ?>
+						<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>
+					<?php } else { ?>
+						<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+					<?php } ?>
+	        		</td>
 	        	<?php } ?>
 	        </tr> 
 	        <tr>
 	        	<td> <?php echo "<span class='{$SchedulerStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?> </td>
 	        	<td> Scheduler Service <?php if ($LuceneStatus != 'tick') { ?> Could not be started <?php } else { ?> Started <?php } ?></td>
 	        	<?php if ($SchedulerStatus != 'tick') { ?>
-	        		<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+	        		<td>
+					<?php if (AJAX) { ?>
+						<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>
+					<?php } else { ?>
+						<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+					<?php } ?>
+	        		</td>
 	        	<?php } ?>
 	        </tr>
 	        <tr>
 	        	<td> <?php echo "<span class='{$OpenOfficeStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?> </td>
 	        	<td> OpenOffice Service <?php if ($OpenOfficeStatus != 'tick') { ?> Could not be started <?php } else { ?> Started <?php } ?></td>
 	        	<?php if ($OpenOfficeStatus != 'tick') { ?>
-	        		<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+	        		<td>
+					<?php if (AJAX) { ?>
+						<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>
+					<?php } else { ?>
+						<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+					<?php } ?>
+	        		</td>
 	        	<?php } ?>
 	        </tr>
 	    </table>
@@ -109,4 +126,4 @@
         }
     ?>
 </form>
-<script type="text/javascript" src="resources/form.js"></script>
+<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>

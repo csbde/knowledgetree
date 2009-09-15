@@ -1345,6 +1345,324 @@ gettext("cleanup");
 /* ./plugins/housekeeper/templates/FolderUsage.smarty */
 gettext("N/A");
 
+/* ./plugins/multiselect/templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("Fieldsets bring together different fields into a collection of related information.");
+
+/* ./plugins/multiselect/templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("Add New Field");
+
+/* ./plugins/multiselect/templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("Add New Field");
+
+/* ./plugins/multiselect/templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("Field Name");
+
+/* ./plugins/multiselect/templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("Edit");
+
+/* ./plugins/multiselect/templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("Delete");
+
+/* ./plugins/multiselect/templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("Type Description");
+
+/* ./plugins/multiselect/templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("Position");
+
+/* ./plugins/multiselect/templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("edit");
+
+/* ./plugins/multiselect/templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("delete");
+
+/* ./plugins/multiselect/templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("Reorder up");
+
+/* ./plugins/multiselect/templates/ktcore/metadata/admin/basic_overview.smarty */
+gettext("Reorder down");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is not");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is not");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is not");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("after");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("between");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("before");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("on");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("not on");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("equal to");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("not equal to");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("greater than");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("greater than or equal to");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("less than");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("less than or equal to");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("between");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("less than");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("less than or equal to");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("greater than");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("greater than or equal to");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("equal to");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("not equal to");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("bytes");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("kilobytes");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("megabytes");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("gigabytes");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("less than");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("greater than");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("days");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("months");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("years");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is not");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("all");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("any");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is not");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is not");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is not");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("contains");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("does not contain");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("like");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("not like");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("starts with");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("ends with");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("contains");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("does not contain");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("is not");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("True");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("False");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("remove");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("remove");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("remove");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Please select some search criteria");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Advanced Search");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Search Criteria Editor");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("The #options# may also be used to create more complex search criteria expressions.");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("all");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("any");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Return items which match #options# of the criteria groups specified.");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Criteria Group");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("all");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("any");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Return items which match #options# of the criteria specified below.");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("No criteria have been selected for the criteria group.");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Remove Criteria Group");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Available Criteria");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Available Fieldsets");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Available Workflows");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Select some criteria");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Select a fieldset");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Select a workflow");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Click on a field above to add it to the criteria group.");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Add another set of criteria");
+
+/* ./plugins/multiselect/templates/ktcore/search2/adv_query_builder.smarty */
+gettext("Search");
+
+/* ./plugins/multiselect/templates/manage_field.smarty */
+gettext("Manage Field: #field_name#");
+
+/* ./plugins/multiselect/templates/manage_field.smarty */
+gettext("This page will allow you to manage the different aspects of this particular field.");
+
+/* ./plugins/multiselect/templates/manage_field.smarty */
+gettext("Extra Options");
+
+/* ./plugins/multiselect/templates/manage_field.smarty */
+gettext("Different fields have different actions and options available.");
+
+/* ./plugins/multiselect/templates/manage_field.smarty */
+gettext("Add Lookup Values");
+
+/* ./plugins/multiselect/templates/manage_field.smarty */
+gettext("Add Lookup Values");
+
+/* ./plugins/multiselect/templates/manage_field.smarty */
+gettext("Manage Lookup Values");
+
+/* ./plugins/multiselect/templates/manage_field.smarty */
+gettext("Manage Lookup Values");
+
+/* ./plugins/multiselect/templates/manage_field.smarty */
+gettext("Manage Lookup Tree Structure");
+
+/* ./plugins/multiselect/templates/manage_field.smarty */
+gettext("Manage Lookup Tree Structure");
+
+/* ./plugins/multiselect/templates/manage_field.smarty */
+gettext("Extra Options");
+
+/* ./plugins/multiselect/templates/manage_field.smarty */
+gettext("Different fields have different actions and options available.");
+
+/* ./plugins/multiselect/templates/multiselect/selection.smarty */
+gettext("Required");
+
+/* ./plugins/multiselect/templates/multiselect/simple_selection.smarty */
+gettext("Required");
+
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
 gettext("Login | #appname#");
 
@@ -4208,6 +4526,12 @@ gettext("close");
 gettext("Role or Group");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Upload succeeded");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
+gettext("Document type changed");
+
+/* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Upload");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
@@ -4218,9 +4542,6 @@ gettext("Upload failed");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Your document has not been saved.");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Upload succeeded");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Your document has been saved.");
@@ -4283,7 +4604,7 @@ gettext("The check-out has been cancelled.");
 gettext("Properties could not be saved.");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Properties has been saved.");
+gettext("Properties have been saved.");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Login failed");
@@ -4298,25 +4619,25 @@ gettext("Unable to connect to server");
 gettext("Please verify your<br />Internet connection, <br /> and try again.");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Cancelling edit of document (check-i");
+gettext("Cancelling edit of document (check-in)");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Provide a reason for cancelling this edit.<br ><br >");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Continue Editing (check-ou");
+gettext("Continue Editing (check-out)");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Provide a reason for this edit.<br ><br >");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Editing Document (check-ou");
+gettext("Editing Document (check-out)");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Provide a reason for editing this document.<br ><br >");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Saving Document (check-i");
+gettext("Saving Document (check-in)");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("For historical purposes, describe the changes you made to this document.<br ><br >");
@@ -4556,12 +4877,6 @@ gettext("All error reports are submitted anonymously.rnrnTo help us resolve this
 gettext("Viewing");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Click 'Save Properties' to save your changes.");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("Document type changed");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Document type could not be changed");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
@@ -4584,9 +4899,6 @@ gettext("Please complete all required fields.");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Editing");
-
-/* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("File Type");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Type");
@@ -4631,7 +4943,7 @@ gettext("Logout");
 gettext("No Read permissions");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.', '', 6000");
+gettext("You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Search for documents");
@@ -4971,6 +5283,12 @@ gettext("Manage Lookup Tree Structure");
 
 /* ./templates/ktcore/metadata/admin/manage_field.smarty */
 gettext("Manage Lookup Tree Structure");
+
+/* ./templates/ktcore/metadata/admin/manage_field.smarty */
+gettext("Extra Options");
+
+/* ./templates/ktcore/metadata/admin/manage_field.smarty */
+gettext("Different fields have different actions and options available.");
 
 /* ./templates/ktcore/metadata/admin/manage_lookups.smarty */
 gettext("Manage Lookups for  \"#field_name#\"");

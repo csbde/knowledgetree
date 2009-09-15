@@ -36,7 +36,7 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Migrateer
+* @package Migrater
 * @version Version 0.1
 */
 
@@ -223,7 +223,7 @@ class database extends Step
     public $storeInSession = true;
     
 	/**
-	* Flag if step needs to be migrateed
+	* Flag if step needs to be migrated
 	*
 	* @author KnowledgeTree Team
 	* @access public
@@ -264,193 +264,18 @@ class database extends Step
 	* @return string
 	*/
     public function doStep() {
-    	$this->setErrorsFromSession();
-    	$this->initErrors(); // Load template errors
-        if($this->inStep("database")) {
-            $res = $this->doProcess();
-        	if($res) { // If theres a response, return it
-            	return $res;
-        	}
-        }
-        if($this->setDataFromSession("database")) { // Attempt to set values from session
-            $this->setDetails(); // Set any posted variables
-        } else {
-            $this->loadDefaults($this->readXml()); // Load default variables from file
-        }
+    	$this->initErrors();
+    	$this->setDetails(); // Set any posted variables
+    	if(!$this->inStep("database")) {
+    		return 'landing';
+    	}
+		if($this->next()) {
+			return 'next';
+		} else if($this->previous()) {
+			return 'previous';
+		}
         
         return 'landing';
-    }
-
-	/**
-	* Controls setup helper
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return string
-	*/
-    public function doProcess() {
-        if($this->next()) {
-            $this->setPostConfig(); // Set any posted variables
-            $this->setDetails();
-            if($this->doTest()) { // Test
-				return 'confirm';
-            } else {
-                return 'error';
-            }
-        } else if($this->previous()) {
-            return 'previous';
-        } else if($this->confirm()) {
-            $this->setDataFromSession("database"); // Set Session Information
-            $this->setPostConfig(); // Set any posted variables
-			return 'next';
-        } else if($this->edit()) {
-            $this->setDataFromSession("database"); // Set Session Information, since its an edit
-            $this->temp_variables['state'] = 'edit';
-            
-            return 'landing';
-        }
-    }
-
-	/**
-	* Test database connectivity
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return boolean
-	*/
-    public function doTest() {
-    	if($this->match($this->dmspassword, $this->getPassword1()) != 0) {
-    		$this->error['dmspassword'] = "Passwords do not match: " . $this->dmspassword." ". $this->getPassword1();
-    		return false;
-    	}
-    	if($this->match($this->dmsuserpassword, $this->getPassword2()) != 0) {
-    		$this->error['dmsuserpassword'] = "Passwords do not match: " . $this->dmsuserpassword." ". $this->getPassword2();
-    		return false;
-    	}
-    	if($this->dport == '')  {
-    		$con = $this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
-    	} else {
-    		$con = $this->_dbhandler->load($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
-    	}
-        if (!$con) {
-            $this->error['con'] = "Could not connect to the database, please check username and password";
-            return false;
-        } else {
-        	if ($this->dbExists()) { // Check if database Exists
-        		$this->error['dname'] = 'Database Already Exists, please specify a different name'; // Reset usage errors
-            	return false;
-        	} else {
-        		$this->error = array(); // Reset usage errors
-            	return true;
-        	}
-        }
-    }
-    
-    public function dbExists() {
-    	return $this->_dbhandler->useDb();
-    }
-    
-    public function match($str1, $str2) {
-    	return strcmp($str1, $str2);
-    }
-    
-    public function getPassword1() {
-    	return $_POST['dmspassword2'];
-    }
-    
-    public function getPassword2() {
-    	return $_POST['dmsuserpassword2'];
-    }
-	/**
-	* Check if theres a database type
-	*
-	* @author KnowledgeTree Team
-	* @params none
-	* @access private
-	* @return boolean database type or false
-	*/
-    private function getType() {
-        if(isset($_POST['dtype'])) {
-            return $_POST['dtype'];
-        }
-
-        return false;
-    }
-
-	/**
-	* Set Errors if any were encountered
-	*
-	* @author KnowledgeTree Team
-	* @params none
-	* @access private
-	* @return boolean
-	*/
-    private function setErrorsFromSession() {
-        if(isset($_SESSION['database']['errors'])) {
-            $this->error[] = $_SESSION['database']['errors'];
-            
-            return true;
-        }
-
-        return false;
-    }
-
-	/**
-	* Set POST information
-	*
-	* @author KnowledgeTree Team
-	* @params none
-	* @access public
-	* @return void
-	*/
-    public function setPostConfig() {
-    	$this->dtype = $this->getPostSafe("dtype");
-    	$this->dtypes = array("0"=>"mysql"); // TODO:multiple databases
-        $this->dhost = $this->getPostSafe("dhost");
-        $this->dport = $this->getPostSafe("dport");
-        $this->dname = $this->getPostSafe("dname");
-        $this->duname = $this->getPostSafe("duname");
-        $this->dpassword = $this->getPostSafe("dpassword");
-        $this->dmsname = $this->getPostSafe("dmsname");
-        $this->dmsusername = $this->getPostSafe("dmsusername");
-        $this->dmspassword = $this->getPostSafe("dmspassword");
-        $this->dmsuserpassword = $this->getPostSafe("dmsuserpassword");
-        $this->dbbinary = $this->getPostSafe("dbbinary");
-        $this->tprefix = $this->getPostSafe("tprefix");
-        $this->ddrop = $this->getPostBoolean("ddrop");
-    }
-
-	/**
-	* Load default options on template from xml file
-	*
-	* @author KnowledgeTree Team
-	* @params object SimpleXmlObject
-	* @access public
-	* @return void
-	*/
-    public function loadDefaults($simplexml) {
-        if($simplexml) {
-        	$this->temp_variables['dtype'] = "";
-            $this->temp_variables['dtypes'] = array("0"=>"mysql"); // TODO:multiple databases
-            $this->temp_variables['dname'] = (string) $simplexml->dname;
-            $this->temp_variables['duname'] = (string) $simplexml->duname;
-            $this->temp_variables['dhost'] = (string) $simplexml->dhost;
-            $this->temp_variables['dport'] = (string) $simplexml->dport;
-            $this->temp_variables['dpassword'] = '';
-            $this->temp_variables['dmsname'] = (string) $simplexml->dmsadminuser;
-            $this->temp_variables['dmsusername'] = (string) $simplexml->dmsuser;
-            $this->temp_variables['dmspassword'] = (string) $simplexml->dmsaupass;
-            $this->temp_variables['dmsuserpassword'] = (string) $simplexml->dmsupass;
-            if(WINDOWS_OS) {
-            	$this->temp_variables['dbbinary'] = 'mysql.exe';
-            } else {
-            	$this->temp_variables['dbbinary'] = 'mysql';
-            }
-            $this->temp_variables['tprefix'] = '';
-            $this->temp_variables['ddrop'] = false;
-        }
     }
 
 	/**
@@ -462,57 +287,25 @@ class database extends Step
 	* @return void
 	*/
    private function setDetails() {
-   		if($this->edit()) {
-   			$this->temp_variables['state'] = 'edit';
-   		} else {
-   			$this->temp_variables['state'] = '';
-   		}
-   		$this->temp_variables['dtype'] = $this->getPostSafe('dtype');
-        $this->temp_variables['dtypes'] = array("0"=>"mysql"); // TODO:multiple databases;
         $this->temp_variables['dhost'] = $this->getPostSafe('dhost');
         $this->temp_variables['dport'] = $this->getPostSafe('dport');
-        $this->temp_variables['dname'] = $this->getPostSafe('dname');
         $this->temp_variables['duname'] = $this->getPostSafe('duname');
         $this->temp_variables['dpassword'] = $this->getPostSafe('dpassword');
-		$this->temp_variables['dmsname'] = $this->getPostSafe('dmsname');
-		$this->temp_variables['dmsusername'] = $this->getPostSafe('dmsusername');
-		$this->temp_variables['dmspassword'] = $this->getPostSafe('dmspassword');
-		$this->temp_variables['dmsuserpassword'] = $this->getPostSafe('dmsuserpassword');;
 		$this->temp_variables['dbbinary'] = $this->getPostSafe('dbbinary');
-        $this->temp_variables['tprefix'] = $this->getPostSafe('tprefix');
-        $this->temp_variables['ddrop'] = $this->getPostBoolean('ddrop');
     }
     
 	/**
-	* Extract database types
+	* Safer way to return post data
 	*
 	* @author KnowledgeTree Team
-	* @access private
-	* @params object SimpleXmlObject
-	* @return array
+	* @params SimpleXmlObject $simplexml
+	* @access public
+	* @return void
 	*/
-    private function getTypes($xmlTypes) {
-        $t = array();
-        foreach ($xmlTypes->dtype as $key=>$val) {
-            $t[] = (string) $val;
-        }
-        return $t;
+    public function getPostSafe($key) {
+    	return isset($_POST[$key]) ? $_POST[$key] : "";
     }
-
-	/**
-	* Read xml config file
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @params none
-	* @return object SimpleXmlObject
-	*/
-    private function readXml() {
-        $simplexml = simplexml_load_file(CONF_DIR."databases.xml");
-
-        return $simplexml;
-    }
-
+    
 	/**
 	* Stores varibles used by template
 	*
@@ -523,267 +316,6 @@ class database extends Step
 	*/
     public function getStepVars() {
         return $this->temp_variables;
-    }
-
-	/**
-	* Runs step migrate if required
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return void
-	*/
-    public function migrateStep() {
-		return $this->migrateDatabase();
-    }
-    
-	/**
-	* Helper
-	*
-	* @author KnowledgeTree Team
-	* @params none
-	* @access private
-	* @return void
-	*/
-    private function migrateDatabase() {
-    	if($this->dtype == '') {
-    		$this->error['dtype'] = 'No database type selected';
-    		return 'error';
-    	}
-        if(!$this->{$this->dtype}()) {
-        	return 'error';
-        }
-    }
-
-	/**
-	* Helper
-	*
-	* @author KnowledgeTree Team
-	* @params none
-	* @access private
-	* @return void
-	*/
-    private function mysql() {
-        $con = $this->connectMysql();
-        if($con) {
-            if(!$this->createDB($con)) {
-            	$this->error['con'] = "Could not Create Database: ";
-            	return false;
-            }
-            $this->closeMysql($con);
-        }
-    }
-
-	/**
-	* Connect to mysql
-	*
-	* @author KnowledgeTree Team
-	* @params none
-	* @access private
-	* @return object mysql connection
-	*/
-    private function connectMysql() {
-		$con = $this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
-        if (!$con) {
-            $this->error['con'] = "Could not connect: ";
-
-            return false;
-        }
-
-        return $con;
-    }
-
-	/**
-	* Helper
-	*
-	* @author KnowledgeTree Team
-	* @params object mysql connection object $con
-	* @access private
-	* @return object mysql connection
-	*/
-    private function createDB($con) {
-		if($this->usedb($con)) { // attempt to use the db
-		    if($this->dropdb($con)) { // attempt to drop the db
-		        if(!$this->create($con)) { // attempt to create the db
-					$this->error['con'] = "Could not create database: ";
-					return false;// cannot overwrite database
-		        }
-		    } else {
-		    	$this->error['con'] = "Could not drop database: ";
-		    	return false;// cannot overwrite database
-		    }
-		} else {
-		    if(!$this->create($con)) { // attempt to create the db
-				$this->error['con'] = "Could not create database: ";
-				return false;// cannot overwrite database
-		    }
-		}
-		if(!$this->createDmsUser($con)) {
-			
-		}
-		if(!$this->createSchema($con)) {
-			$this->error['con'] = "Could not create schema ";
-		}
-		if(!$this->populateSchema($con)) {
-			$this->error['con'] = "Could not populate schema ";
-		}
-		if(!$this->applyUpgrades($con)) {
-			$this->error['con'] = "Could not apply updates ";
-		}
-		
-		return true;
-    }
-
-	/**
-	* Create database
-	*
-	* @author KnowledgeTree Team
-	* @params object mysql connection object $con
-	* @access private
-	* @return boolean
-	*/
-    private function create($con) {
-        $sql = "CREATE DATABASE {$this->dname}";
-        if ($this->_dbhandler->query($sql, $con)) {
-			
-            return true;
-        }
-
-		return false;
-    }
-
-	/**
-	* Attempts to use a db
-	*
-	* @author KnowledgeTree Team
-	* @params mysql connection object $con
-	* @access private
-	* @return boolean
-	*/
-    private function usedb($con) {
-		if($this->_dbhandler->useDb($this->dname)) {
-            return true;
-        } else {
-            $this->error['con'] = "Error using database: {$this->dname}";
-            return false;
-        }
-    }
-
-	/**
-	* Attempts to drop table
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @params mysql connection object $con
-	* @return boolean
-	*/
-    private function dropdb($con) {
-        if($this->ddrop) {
-            $sql = "DROP DATABASE {$this->dname};";
-			if(!$this->_dbhandler->query($sql)) {
-                $this->error['con'] = "Cannot drop database: {$this->dname}";
-                return false;
-            }
-        } else {
-            $this->error['con'] = "Cannot drop database: {$this->dname}";
-            return false;
-        }
-        return true;
-    }
-        
-	/**
-	* Create dms user
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @params none
-	* @return boolean
-	*/
-    private function createDmsUser($con) {
-    	if($this->dmsname == '' || $this->dmspassword == '') {
-    		if($this->dpassword == '') {
-    			$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_DIR."user.sql\"";
-    		} else {
-        		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_DIR."user.sql\"";
-    		}
-        	$response = $this->_util->pexec($command);
-        	return $response;
-    	} else {
-			$user1 = "GRANT SELECT, INSERT, UPDATE, DELETE ON {$this->dname}.* TO {$this->dmsusername}@{$this->dhost} IDENTIFIED BY \"{$this->dmsuserpassword}\";";
-			$user2 = "GRANT ALL PRIVILEGES ON {$this->dname}.* TO {$this->dmsname}@{$this->dhost} IDENTIFIED BY \"{$this->dmspassword}\";";
-			if ($this->_dbhandler->execute($user1) && $this->_dbhandler->execute($user2)) {
-            	return true;
-        	} else {
-        		$this->error['con'] = "Could not create users for database: {$this->dname}";
-        		return false;
-        	}
-		}
-        
-    }
-    
-	/**
-	* Create schema
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @params none
-	* @return boolean
-	*/
-    private function createSchema($con) {
-    	if($this->dpassword == '') {
-    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_DIR."structure.sql\"";
-    	} else {
-        	$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_DIR."structure.sql\"";
-    	}
-    	$response = $this->_util->pexec($command);
-    	return $response;
-    }
-
-	/**
-	* Populate database
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @params none
-	* @return boolean
-	*/
-    private function populateSchema($con) {
-    	if($this->dpassword == '') {
-    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_DIR."data.sql\"";
-    	} else {
-    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_DIR."data.sql\"";
-    	}
-    	$response = $this->_util->pexec($command);
-    	return $response;
-    }
-
-	/**
-	* Ammend any known database upgrades
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @params none
-	* @return boolean
-	*/
-    private function applyUpgrades($con) {
-    	// Database upgrade to version 3.6.1: Search ranking
-    	return true;
-    }
-    
-	/**
-	* Close connection if it exists
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @params mysql connection object $con
-	* @return void
-	*/
-    private function closeMysql($con) {
-        try {
-            $this->_dbhandler->close();
-        } catch (Exeption $e) {
-            $this->error['con'] = "Could not close: " . $e;
-        }
     }
 
 	/**
@@ -798,19 +330,7 @@ class database extends Step
 
         return $this->error;
     }
-    
-	/**
-	* Test database connectivity
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return boolean
-	*/
-    public function doAjaxTest($host, $uname, $dname) {
-		
-    }
-    
+
 	/**
 	* Initialize errors to false
 	*
