@@ -147,11 +147,9 @@ class windowsOpenOffice extends windowsService {
 		$this->setPort("8100");
 		$this->setHost("127.0.0.1");
 		$this->setLog("openoffice.log");
-//		$this->setBin("C:\Program Files (x86)\OpenOffice.org 3\program\soffice.bin");
-//		$this->setBin("C:\Program Files (x86)\ktdms\openoffice\program\soffice.bin");
-//		$this->setBin("C:\Program Files (x86)\ktdms\openoffice.2.4\program\soffice.bin");
+		$this->setBin("C:\Program Files (x86)\OpenOffice.org 3\program\soffice.exe");
 		$this->setWinservice("winserv.exe");
-//		$this->setOption();
+		$this->setOption();
 	}
 	#rem "%INSTALL_PATH%\bin\winserv.exe" install %OpenofficeServiceName% -displayname "%OpenofficeServiceName%" -start auto %SOFFICE_BIN% -headless -invisible -accept=pipe,name=pypipe;urp;
 	private function setPort($port = "8100") {
@@ -178,7 +176,7 @@ class windowsOpenOffice extends windowsService {
 		return $this->log;
 	}
 	
-	private function setBin($bin = "soffice") {
+	private function setBin($bin = "soffice.exe") {
 		$this->bin = $bin;
 	}
 	
@@ -195,8 +193,8 @@ class windowsOpenOffice extends windowsService {
 	}
 	
 	private function setOption() {
-		$this->options = "-displayname {$this->name} -start auto \"{$this->bin}\" -headless -invisible "
-                       . "-accept=socket,host={$this->host},port={$this->port};urp;";
+		$this->options = "-displayname {$this->name} -start auto \"{$this->bin}\" -nologo -headless -invisible -nofirststartwizard "
+                       . "-accept=\"socket,host={$this->host},port={$this->port};urp;StarOffice.ServiceManager\"";
 	}
 	
 	public function getOption() {
