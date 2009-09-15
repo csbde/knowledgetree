@@ -36,7 +36,7 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Migrateer
+* @package Migrater
 * @version Version 0.1
 */
 
@@ -85,14 +85,7 @@ class complete extends Step {
     {
         $services = new services();
         foreach ($services->getServices() as $serviceName) {
-			$className = OS.$serviceName;
-			$service = new $className();
-			if($service->status() == 'RUNNING' || $service->status() == 'STARTED') {
-				$this->temp_variables[$serviceName."Status"] = 'tick';
-			} else {
-				$this->temp_variables[$serviceName."Status"] = 'cross_orange';
-				$this->services_check = 'cross_orange';
-			}
+			$this->temp_variables[$serviceName."Status"] = 'tick';
         }     
 		return true;
     }

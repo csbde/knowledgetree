@@ -36,7 +36,7 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Migrateer
+* @package Migrater
 * @version Version 0.1
 */
 
@@ -52,14 +52,9 @@ class welcome extends step {
         if($this->next()) {
             return 'next'; // Just a welcome, so return "next" action
         }
-
+		
         return 'landing';
     }
-    
-//    function getErrors() {
-//    	return array();
-//    	return array('error'=>'error');
-//    }
 
 }
 
