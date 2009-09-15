@@ -35,9 +35,20 @@ these tasks, use the Request Assistance action.{/i18n}
 </div>
 {/if}
 
-{foreach item=oFieldset from=$fieldsets}
-{$oFieldset->render($document_data)}
-{/foreach}
+{if $thumbnail eq ''}
+    <div>
+    {foreach item=oFieldset from=$fieldsets}
+    {$oFieldset->render($document_data)}
+    {/foreach}
+    </div>
+{else}
+    <div style="float:left;width:85%;">
+    {foreach item=oFieldset from=$fieldsets}
+    {$oFieldset->render($document_data)}
+    {/foreach}
+    </div>
+    <div style="padding-top:45px;">{$thumbnail}</div>
+{/if}
 
 {if !empty($viewlet_data)}
 
