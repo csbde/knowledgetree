@@ -11,3 +11,4 @@ plugins/commercial
 clienttools/Karoo
 clienttools/Office
 .gitmodules
+*.out
