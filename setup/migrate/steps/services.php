@@ -36,7 +36,7 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Migrateer
+* @package Migrater
 * @version Version 0.1
 */
 
@@ -172,9 +172,9 @@ class services extends Step
 	*/
     public function doStep()
     {
+    	$this->doRun();
     	$this->storeSilent();
     	if(!$this->inStep("services")) {
-    		$this->doRun();
     		return 'landing';
     	}
         if($this->next()) {
@@ -183,7 +183,6 @@ class services extends Step
             return 'previous';
         }
         
-        $passed = $this->doRun();
         return 'landing';
     }
     
@@ -208,6 +207,7 @@ class services extends Step
 	* @return boolean
 	*/
     private function doRun() {
+    	$this->checkServiceStatus();
 		return true;
     }
     
@@ -223,21 +223,7 @@ class services extends Step
     private function checkServiceStatus() {
     	$serverDetails = $this->getServices();
 		foreach ($serverDetails as $serviceName) {
-			$className = OS.$serviceName;
-			$service = new $className();
-			$status = $this->serviceStatus($service);
-			if($status != 'STARTED') {
-				$msg = $service->getName()." Could not be added as a Service";
-				$this->temp_variables['services'][] = array('class'=>'cross_orange', 'msg'=>$msg);
-				$this->serviceCheck = 'cross_orange';
-				$this->warnings[] = $msg;
-			} else {
-				if(WINDOWS_OS) {
-					$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$service->getName()." has been added as a Service"); }
-				else {
-					$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$service->getName()." has been added and Started as a Service");
-				}
-			}
+			$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$serviceName." has been shut down");
 		}
     }
     

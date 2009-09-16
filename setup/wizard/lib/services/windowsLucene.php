@@ -141,8 +141,7 @@ class windowsLucene extends windowsService {
  	*/
 	public function load() {
 //		$this->name = "KTLuceneTest";
-		$this->javaSystem = new Java('java.lang.System');
-		$this->setJavaBin($this->javaSystem->getProperty('java.home').DS."bin");
+		$this->setJavaBin();
 		$this->setLuceneDIR(SYSTEM_DIR."bin".DS."luceneserver");
 		$this->setLuceneExe("KTLuceneService.exe");
 		$this->setJavaJVM();
@@ -160,8 +159,39 @@ class windowsLucene extends windowsService {
 	* @param string
 	* @return void
  	*/
-	private function setJavaBin($javaBin) {
-		$this->javaBin = $javaBin;
+	private function setJavaBin($javaBin = '') {
+		if($this->util->zendBridge()) {
+			if($this->util->javaBridge()) {
+				$this->javaSystem = new Java('java.lang.System');
+				$this->javaBin = $this->javaSystem->getProperty('java.home').DS."bin";
+				
+				return true;
+			}
+		}
+		// TODO: Will not detect, but a java pre-check is done in services, before this
+		if ($this->util->getJava()) {
+		} else {
+		}
+		$this->javaBin = 'java';
+	}
+	
+	/**
+	* Retrieve Status Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/
+	public function status() {
+		$cmd = "sc query {$this->name}";
+		$response = $this->util->pexec($cmd);
+		if($response['out']) {
+			$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
+			return $state;
+		}
+		
+		return '';
 	}
 	
 	/**
@@ -373,6 +403,10 @@ class windowsLucene extends windowsService {
 			$luceneDir = $this->getluceneDir();
 			if($luceneExe && $luceneSource && $luceneDir) {
 				$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
+            	if(DEBUG) {
+            		echo "$cmd<br/>";
+            		return ;
+            	}
 				$response = $this->util->pexec($cmd);
 				return $response;
 			}
@@ -394,7 +428,8 @@ class windowsLucene extends windowsService {
 		// Check if bin is readable and writable
 		if(is_readable(SYS_BIN_DIR) && is_writable(SYS_BIN_DIR)) {
 			if($this->getluceneDir()) {
-				$fp = fopen($this->getluceneDir()."KnowledgeTreeIndexer.properties", "w+");
+				$propPath = $this->getluceneDir().DS."KnowledgeTreeIndexer.properties";
+				$fp = fopen($propPath, "w+");
 				$content = "server.port=8875\n";
 				$content .= "server.paranoid=false\n";
 				$content .= "server.accept=127.0.0.1\n";
@@ -404,6 +439,8 @@ class windowsLucene extends windowsService {
 				fwrite($fp, $content);
 				fclose($fp);
 			}
+		} else {
+			//TODO: Should not get here
 		}
 	}
 }

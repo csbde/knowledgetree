@@ -147,11 +147,10 @@ class windowsOpenOffice extends windowsService {
 		$this->setPort("8100");
 		$this->setHost("127.0.0.1");
 		$this->setLog("openoffice.log");
-		$this->setBin("C:\Program Files (x86)\OpenOffice.org 3\program\soffice.exe");
 		$this->setWinservice("winserv.exe");
 		$this->setOption();
 	}
-	#rem "%INSTALL_PATH%\bin\winserv.exe" install %OpenofficeServiceName% -displayname "%OpenofficeServiceName%" -start auto %SOFFICE_BIN% -headless -invisible -accept=pipe,name=pypipe;urp;
+	
 	private function setPort($port = "8100") {
 		$this->port = $port;
 	}
@@ -176,8 +175,8 @@ class windowsOpenOffice extends windowsService {
 		return $this->log;
 	}
 	
-	private function setBin($bin = "soffice.exe") {
-		$this->bin = $bin;
+	private function setBin($bin) {
+		$this->bin = "\"".$bin."\"";
 	}
 	
 	public function getBin() {
@@ -193,7 +192,7 @@ class windowsOpenOffice extends windowsService {
 	}
 	
 	private function setOption() {
-		$this->options = "-displayname {$this->name} -start auto \"{$this->bin}\" -nologo -headless -invisible -nofirststartwizard "
+		$this->options = "-displayname {$this->name} -start auto {$this->getBin()} -headless -invisible -nofirststartwizard"
                        . "-accept=\"socket,host={$this->host},port={$this->port};urp;StarOffice.ServiceManager\"";
 	}
 	
@@ -203,9 +202,15 @@ class windowsOpenOffice extends windowsService {
 	
     public function install() {
     	$status = $this->status();
-        
     	if($status == '') {
-            $cmd = "\"{$this->winservice}\" install $this->name $this->options";
+    		$services = $this->util->getDataFromSession('services');
+    		$this->setBin("{$services['openOfficeExe']}");
+    		$this->setOption();
+            $cmd = "\"{$this->winservice}\" install $this->name {$this->getOption()}";
+        	if(DEBUG) {
+        		echo "$cmd<br/>";
+        		return ;
+        	}
             $response = $this->util->pexec($cmd);
             return $response;
     	}
@@ -213,5 +218,24 @@ class windowsOpenOffice extends windowsService {
     		return $status;
     	}
     }
+    
+	/**
+	* Retrieve Status Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/
+	public function status() {
+		$cmd = "sc query {$this->name}";
+		$response = $this->util->pexec($cmd);
+		if($response['out']) {
+			$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
+			return $state;
+		}
+		
+		return '';
+	}
 }
 ?>

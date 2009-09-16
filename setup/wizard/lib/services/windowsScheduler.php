@@ -171,6 +171,25 @@ class windowsScheduler extends windowsService {
 	}
 	
 	/**
+	* Retrieve Status Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/
+	public function status() {
+		$cmd = "sc query {$this->name}";
+		$response = $this->util->pexec($cmd);
+		if($response['out']) {
+			$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
+			return $state;
+		}
+		
+		return '';
+	}
+	
+	/**
 	* Install Scheduler Service
 	*
 	* @author KnowledgeTree Team
@@ -182,6 +201,7 @@ class windowsScheduler extends windowsService {
 		$state = $this->status();
 		if($state == '') {
 			$this->writeSchedulerTask();
+			$this->writeTaskRunner();
             // TODO what if it does not exist? check how the dmsctl.bat does this
             if (function_exists('win32_create_service')) {
     			$response = win32_create_service(array(
@@ -191,10 +211,41 @@ class windowsScheduler extends windowsService {
     	            ));
     			return $response;
             } else { // Attempt to use the winserv
-            	
+            	// TODO: Add service using winserv
+            	$this->setWinservice();
+            	$this->setOptions();
+            	$cmd = "\"{$this->winservice}\" install $this->name $this->options";
+            	if(DEBUG) {
+            		echo "$cmd<br/>";
+            		return ;
+            	}
+            	$response = $this->util->pexec($cmd);
+            	return $response;
             }
 		}
 		return $state;
+	}
+	
+	private function setWinservice($winservice = "winserv.exe") {
+		$this->winservice = SYS_BIN_DIR . $winservice;
+	}
+	
+	private function setOptions() {
+		$this->options = "-displayname {$this->name} -start auto -binary \"{$this->getSchedulerScriptPath()}\" -headless -invisible "
+                       . "";
+	}
+	
+	private function writeTaskRunner() {
+		// Check if bin is readable and writable
+		if(is_readable(SYS_BIN_DIR."win32") && is_writable(SYS_BIN_DIR."win32")) {
+			$fp = fopen($this->getSchedulerDir().""."\\taskrunner.bat", "w+");
+			$content = "@echo off \n";
+			$content .= "\"".PHP_DIR."php.exe\" "."\"{$this->getSchedulerSource()}\"";
+			fwrite($fp, $content);
+			fclose($fp);
+		} else {
+			// TODO: Should not reach this point
+		}
 	}
 	
 	private function writeSchedulerTask() {
@@ -207,6 +258,8 @@ class windowsScheduler extends windowsService {
 				fwrite($fp, $content);
 				fclose($fp);
 			}
+		} else {
+			// TODO: Should not reach this point
 		}
 	}
 }

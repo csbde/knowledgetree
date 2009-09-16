@@ -20,7 +20,7 @@
 		    <div id="wrapper">
 		        <div id="container">
 		        	<div id="sidebar">
-		            	<span class='current'>Welcome</span><br /><span class='inactive'>License Agreement</span><br /><span class='inactive'>PHP Dependencies</span><br /><span class='inactive'>System Configuration</span><br /><span class='inactive'>Service Dependency</span><br /><span class='inactive'>Database Configuration</span><br /><span class='inactive'>Registration</span><br /><span class='inactive'>Install</span><br /><span class='inactive'>Complete</span><br />		        	</div>
+		            	<span class="current">Welcome</span><br><span class="inactive">Current Installation</span><br><span class="inactive">Deactivate Services</span><br><span class="inactive">Database Migration</span><br><span class="inactive">Complete</span><br></div>
 
 		            <div id="content">
 		            	<div id="content_container">

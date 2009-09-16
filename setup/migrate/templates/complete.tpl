@@ -8,7 +8,7 @@
 	<?php
 	if($errors || $warnings){
 	    echo '<div>'
-	       . '<a href="http://wiki.knowledgetree.com/Web_Based_Migrateer#Post_Migrate" target="_blank">'
+	       . '<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Post_Migrate" target="_blank">'
 	       . 'Click Here for help on overcoming post migrate issues</a></div><br/>';
 	}
 	?>
