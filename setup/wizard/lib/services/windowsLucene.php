@@ -403,6 +403,10 @@ class windowsLucene extends windowsService {
 			$luceneDir = $this->getluceneDir();
 			if($luceneExe && $luceneSource && $luceneDir) {
 				$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
+            	if(DEBUG) {
+            		echo "$cmd<br/>";
+            		return ;
+            	}
 				$response = $this->util->pexec($cmd);
 				return $response;
 			}
@@ -424,7 +428,8 @@ class windowsLucene extends windowsService {
 		// Check if bin is readable and writable
 		if(is_readable(SYS_BIN_DIR) && is_writable(SYS_BIN_DIR)) {
 			if($this->getluceneDir()) {
-				$fp = fopen($this->getluceneDir()."KnowledgeTreeIndexer.properties", "w+");
+				$propPath = $this->getluceneDir().DS."KnowledgeTreeIndexer.properties";
+				$fp = fopen($propPath, "w+");
 				$content = "server.port=8875\n";
 				$content .= "server.paranoid=false\n";
 				$content .= "server.accept=127.0.0.1\n";
@@ -434,6 +439,8 @@ class windowsLucene extends windowsService {
 				fwrite($fp, $content);
 				fclose($fp);
 			}
+		} else {
+			//TODO: Should not get here
 		}
 	}
 }
