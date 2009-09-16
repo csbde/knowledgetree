@@ -445,7 +445,7 @@ class services extends Step
     }
     
     private function openOfficeInstalled() {
-    	$this->openOfficeExeError = false;
+    	
     }
     
     private function schedulerInstalled() {
@@ -474,7 +474,7 @@ class services extends Step
 			$className = OS.$serviceName;
 			$service = new $className();
 			$service->load();
-			$status = $this->serviceStatus($service);
+			$status = $this->serviceInstalled($service);
 			if($status != 'STARTED') {
 				$msg = $service->getName()." Could not be added as a Service";
 				$this->temp_variables['services'][] = array('class'=>'cross_orange', 'msg'=>$msg);
@@ -505,7 +505,7 @@ class services extends Step
 		foreach ($serverDetails as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
-			$status = $this->serviceStatus($service);
+			$status = $this->serviceInstalled($service);
 			$flag = strtolower(substr($serviceName,0,1)).substr($serviceName,1)."Installed";
 			if(!$status) {
 				$allInstalled = false;
@@ -822,16 +822,61 @@ class services extends Step
 	}
 	
    	/**
-	* Returns service status
+	* Helper to check if service is installed
 	*
 	* @author KnowledgeTree Team
 	* @param object
 	* @access public
 	* @return string
 	*/
-	public function serviceStatus($service) {
+	public function serviceInstalled($service) {
 		$statusCheck = OS."ServiceInstalled";
 		return $this->$statusCheck($service);
+	}
+	
+   	/**
+	* Helper to check if service is started
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access public
+	* @return string
+	*/
+	public function serviceStarted($service) {
+		$statusCheck = OS."ServiceStarted";
+		return $this->$statusCheck($service);
+	}
+	
+   	/**
+	* Check if windows service installed
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access public
+	* @return boolean
+	*/
+	public function windowsServiceStarted($service) {
+		$status = $service->status(); // Check if service has been installed
+		if($status != 'RUNNING') { // Check service status
+			return false;
+		}
+		return true;
+	}
+	
+   	/**
+	* Check if unix service installed
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access public
+	* @return boolean
+	*/
+	public function unixServiceStarted($service) {
+		$status = $service->status(); // Check if service has been installed
+		if($status != 'STARTED') { // Check service status
+			return false;
+		}
+		return true;
 	}
 	
    	/**

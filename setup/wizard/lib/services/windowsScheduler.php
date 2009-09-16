@@ -215,6 +215,10 @@ class windowsScheduler extends windowsService {
             	$this->setWinservice();
             	$this->setOptions();
             	$cmd = "\"{$this->winservice}\" install $this->name $this->options";
+            	if(DEBUG) {
+            		echo "$cmd<br/>";
+            		return ;
+            	}
             	$response = $this->util->pexec($cmd);
             	return $response;
             }
