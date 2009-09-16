@@ -1,4 +1,4 @@
 #!/bin/sh
 
 cd ../search2/indexing/bin
-../../../../scripts/php.sh -Cq cronSavedSearch.php
+../../../scripts/php.sh -Cq cronSavedSearch.php
