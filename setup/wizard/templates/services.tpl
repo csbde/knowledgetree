@@ -65,7 +65,7 @@
 			<?php if($openOfficeExeError) { ?>
 				Specify the location of your Open Office executable
 				&nbsp;&nbsp;&nbsp;
-				<input name='soffice' id='port' size='25' value='<?php echo $soffice['location']; ?>' style="float:none;"/>
+				<input name='soffice' id='port' size='25' value='<?php if(isset($soffice['location'])) echo $soffice['location']; ?>' style="float:none;"/>
 				&nbsp;&nbsp;&nbsp;
 				<a href="javascript:{w.sendJavaLocation();}" class="specify">Submit</a>
 				<br/>

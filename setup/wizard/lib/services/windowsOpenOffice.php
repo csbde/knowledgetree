@@ -192,7 +192,7 @@ class windowsOpenOffice extends windowsService {
 	}
 	
 	private function setOption() {
-		$this->options = "-displayname {$this->name} -start auto -binary {$this->getBin()} -headless -invisible -nofirststartwizard"
+		$this->options = "-displayname {$this->name} -start auto {$this->getBin()} -headless -invisible -nofirststartwizard"
                        . "-accept=\"socket,host={$this->host},port={$this->port};urp;StarOffice.ServiceManager\"";
 	}
 	
@@ -207,6 +207,10 @@ class windowsOpenOffice extends windowsService {
     		$this->setBin("{$services['openOfficeExe']}");
     		$this->setOption();
             $cmd = "\"{$this->winservice}\" install $this->name {$this->getOption()}";
+        	if(DEBUG) {
+        		echo "$cmd<br/>";
+        		return ;
+        	}
             $response = $this->util->pexec($cmd);
             return $response;
     	}
