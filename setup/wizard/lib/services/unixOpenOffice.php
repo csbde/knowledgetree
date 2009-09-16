@@ -133,6 +133,7 @@ class unixOpenOffice extends unixService {
     }
     
     public function status() {
+    	sleep(1);
     	$cmd = "ps ax | grep ".$this->getOfficeName();
     	$response = $this->util->pexec($cmd);
     	if(is_array($response['out'])) {

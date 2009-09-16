@@ -36,7 +36,7 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Migrateer
+* @package Migrater
 * @version Version 0.1
 */
 
@@ -264,6 +264,11 @@ class database extends Step
 	* @return string
 	*/
     public function doStep() {
+    	$this->initErrors();
+    	$this->setDetails(); // Set any posted variables
+    	if(!$this->inStep("database")) {
+    		return 'landing';
+    	}
 		if($this->next()) {
 			return 'next';
 		} else if($this->previous()) {
@@ -273,6 +278,34 @@ class database extends Step
         return 'landing';
     }
 
+	/**
+	* Store options
+	*
+	* @author KnowledgeTree Team
+	* @params object SimpleXmlObject
+	* @access private
+	* @return void
+	*/
+   private function setDetails() {
+        $this->temp_variables['dhost'] = $this->getPostSafe('dhost');
+        $this->temp_variables['dport'] = $this->getPostSafe('dport');
+        $this->temp_variables['duname'] = $this->getPostSafe('duname');
+        $this->temp_variables['dpassword'] = $this->getPostSafe('dpassword');
+		$this->temp_variables['dbbinary'] = $this->getPostSafe('dbbinary');
+    }
+    
+	/**
+	* Safer way to return post data
+	*
+	* @author KnowledgeTree Team
+	* @params SimpleXmlObject $simplexml
+	* @access public
+	* @return void
+	*/
+    public function getPostSafe($key) {
+    	return isset($_POST[$key]) ? $_POST[$key] : "";
+    }
+    
 	/**
 	* Stores varibles used by template
 	*
@@ -298,5 +331,18 @@ class database extends Step
         return $this->error;
     }
 
+	/**
+	* Initialize errors to false
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
+    private function initErrors() {
+    	foreach ($this->templateErrors as $e) {
+    		$this->error[$e] = false;
+    	}
+    }
 }
 ?>
