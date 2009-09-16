@@ -1,4 +1,4 @@
 #!/bin/sh
 
 cd ../search2/indexing/bin
-/usr/local/zend/bin/php -c /use/local/zend/etc -Cq cronSavedSearch.php
+../../../../scritps/php.sh -Cq cronSavedSearch.php
