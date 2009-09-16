@@ -1,4 +1,4 @@
 #!/bin/sh
 
 cd ../search2/indexing/bin
-/usr/local/zend/bin/php -Cq optimise.php
+/usr/local/zend/bin/php -c /use/local/zend/etc -Cq optimise.php
