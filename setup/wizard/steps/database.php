@@ -240,6 +240,8 @@ class database extends Step
 	*/
     protected $silent = true;
     
+    private $salt = 'install';
+    
 	/**
 	* Constructs database object
 	*
@@ -389,8 +391,8 @@ class database extends Step
 	* @return boolean
 	*/
     private function setErrorsFromSession() {
-        if(isset($_SESSION['database']['errors'])) {
-            $this->error[] = $_SESSION['database']['errors'];
+        if(isset($_SESSION[$this->salt]['database']['errors'])) {
+            $this->error[] = $_SESSION[$this->salt]['database']['errors'];
             
             return true;
         }

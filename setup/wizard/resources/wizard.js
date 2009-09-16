@@ -158,11 +158,6 @@ wizard.prototype.adjustMenu = function (form_id, previous) {
 		$('#'+current_step).attr('class', 'current');
 		$('#'+next_step).attr('class', 'inactive');
 	}
-
-}
-
-wizard.prototype.dummy = function () {
-
 }
 
 wizard.prototype.dummy = function () {
@@ -220,4 +215,14 @@ wizard.prototype.sendJavaLocation = function ()  {
 
 wizard.prototype.sendRegistration = function ()  {
 	$('form').submit();
+}
+
+wizard.prototype.clearSessions = function ()  {
+	var address = 'session.php?action=destroyInstall';
+	$.ajax({
+		url: address,
+		dataType: "html",
+		type: "POST",
+		cache: false,
+	});
 }

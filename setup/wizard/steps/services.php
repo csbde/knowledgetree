@@ -250,7 +250,7 @@ class services extends Step
     private $alreadyInstalled = false;
     
 	/**
-	* Flag if lucene service are already Installed
+	* Flag if services are already Installed
 	*
 	* @author KnowledgeTree Team
 	* @access private
@@ -259,16 +259,16 @@ class services extends Step
     private $luceneInstalled = false;
     
 	/**
-	* Flag if scheduler service are already Installed
+	* Flag if services are already Installed
 	*
 	* @author KnowledgeTree Team
-	* @access protected
-	* @var string
+	* @access private
+	* @var mixed
 	*/
     private $schedulerInstalled = false;
-
+    
 	/**
-	* Flag if Open Office service are already Installed
+	* Path to php executable
 	*
 	* @author KnowledgeTree Team
 	* @access protected
@@ -320,6 +320,7 @@ class services extends Step
 	* @var string
 	*/
     protected $util;
+    private $salt = 'install';
     
 	/**
 	* Constructs services object
@@ -387,7 +388,10 @@ class services extends Step
 			$this->javaCheck = 'tick';
 			$this->javaInstalled();
 			$this->temp_variables['java']['location'] = $this->java;
+			return ;
 		}
+		
+		$this->temp_variables['java']['location'] = $this->java;
     }
     
     /**
@@ -406,7 +410,7 @@ class services extends Step
     		$this->presetJava();
     		$this->presetOpenOffice();
     		if(!$this->schedulerInstalled) {
-    			if(!WINDOWS_OS) $this->php = $this->util->getPhp(); // Get java, if it exists
+    			$this->php = $this->util->getPhp(); // Get java, if it exists
     			$passedPhp = $this->phpChecks(); // Run Java Pre Checks
     			if ($passedPhp) { // Install Scheduler
     				$this->installService('Scheduler');
@@ -415,7 +419,7 @@ class services extends Step
     			$this->schedulerInstalled();
     		}
     		if(!$this->luceneInstalled) {
-    			if(!WINDOWS_OS) $this->java = $this->util->getJava(); // Get java, if it exists
+    			$this->java = $this->util->getJava(); // Get java, if it exists
     			$passedJava = $this->javaChecks(); // Run Java Pre Checks
     			if ($passedJava) { // Install Lucene
     				$this->installService('Lucene');
@@ -424,13 +428,13 @@ class services extends Step
 				$this->luceneInstalled();
     		}
     		if(!$this->openOfficeInstalled) {
-    			if(!WINDOWS_OS) $this->soffice = $this->util->getOpenOffice(); // Get java, if it exists
+    			$this->soffice = $this->util->getOpenOffice(); // Get java, if it exists
     			$passedOpenOffice = $this->openOfficeChecks(); // Run Java Pre Checks
     			if ($passedOpenOffice) { //Install OpenOffice
 //    				$this->temp_variables['openOfficeExe'] = $this->soffice;
     				// TODO : Why, O, why?
     				$this->openOfficeExeError = false;
-    				$_SESSION['services']['openOfficeExe'] = $this->soffice;
+    				$_SESSION[$this->salt]['services']['openOfficeExe'] = $this->soffice;
     				$this->installService('OpenOffice');
     			}
     		} else {
@@ -568,8 +572,10 @@ class services extends Step
     private function openOfficeChecks() {
     	if($this->util->openOfficeSpecified()) {
     		$this->soffice = $this->util->openOfficeSpecified();
-
-    		return true;
+			if(file_exists($this->soffice)) 
+				return true;
+			else 
+				return false;
     	} else {
     		return false;
     	}

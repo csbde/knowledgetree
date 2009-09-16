@@ -40,7 +40,7 @@
 * @version Version 0.1
 */
 	// Define installer environment
-	define('DEBUG', 1);
+	define('DEBUG', 0);
 	define('AJAX', 0);
 	if (substr(php_uname(), 0, 7) == "Windows"){
     	define('WINDOWS_OS', true);

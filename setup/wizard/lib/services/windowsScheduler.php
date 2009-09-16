@@ -211,6 +211,7 @@ class windowsScheduler extends windowsService {
     	            ));
     			return $response;
             } else { // Attempt to use the winserv
+            	// TODO: Add service using winserv
             	$this->setWinservice();
             	$this->setOptions();
             	$cmd = "\"{$this->winservice}\" install $this->name $this->options";
