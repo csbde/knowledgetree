@@ -240,7 +240,7 @@ class database extends Step
 	*/
     protected $silent = true;
     
-    private $salt = 'install';
+    private $salt = 'installers';
     
 	/**
 	* Constructs database object

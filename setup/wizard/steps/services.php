@@ -320,7 +320,7 @@ class services extends Step
 	* @var string
 	*/
     protected $util;
-    private $salt = 'install';
+    private $salt = 'installers';
     
 	/**
 	* Constructs services object

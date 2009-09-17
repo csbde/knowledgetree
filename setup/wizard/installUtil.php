@@ -41,7 +41,7 @@
 */
 class InstallUtil {	
 	
-	private $salt = 'install';
+	private $salt = 'installers';
 	/**
 	* Constructs installation object
 	*
