@@ -150,7 +150,7 @@ class windowsOpenOffice extends windowsService {
 		$this->setWinservice("winserv.exe");
 		$this->setOption();
 	}
-	
+
 	private function setPort($port = "8100") {
 		$this->port = $port;
 	}
@@ -184,7 +184,10 @@ class windowsOpenOffice extends windowsService {
 	}
     
 	private function setWinservice($winservice = "winserv.exe") {
-		$this->winservice = SYS_BIN_DIR . $winservice;
+		if(file_exists(SYS_BIN_DIR . $winservice))
+			$this->winservice = SYS_BIN_DIR . $winservice;
+		else if(file_exists(SYS_BIN_DIR . "win32" . DS. $winservice))
+			$this->winservice = SYS_BIN_DIR . "win32" . DS. $winservice;
 	}
 	
 	public function getWinservice() {

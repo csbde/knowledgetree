@@ -320,6 +320,7 @@ class services extends Step
 	* @var string
 	*/
     protected $util;
+    private $salt = 'install';
     
 	/**
 	* Constructs services object
@@ -387,7 +388,10 @@ class services extends Step
 			$this->javaCheck = 'tick';
 			$this->javaInstalled();
 			$this->temp_variables['java']['location'] = $this->java;
+			return ;
 		}
+		
+		$this->temp_variables['java']['location'] = $this->java;
     }
     
     /**
@@ -430,7 +434,7 @@ class services extends Step
 //    				$this->temp_variables['openOfficeExe'] = $this->soffice;
     				// TODO : Why, O, why?
     				$this->openOfficeExeError = false;
-    				$_SESSION['services']['openOfficeExe'] = $this->soffice;
+    				$_SESSION[$this->salt]['services']['openOfficeExe'] = $this->soffice;
     				$this->installService('OpenOffice');
     			}
     		} else {
@@ -568,8 +572,10 @@ class services extends Step
     private function openOfficeChecks() {
     	if($this->util->openOfficeSpecified()) {
     		$this->soffice = $this->util->openOfficeSpecified();
-
-    		return true;
+			if(file_exists($this->soffice)) 
+				return true;
+			else 
+				return false;
     	} else {
     		return false;
     	}

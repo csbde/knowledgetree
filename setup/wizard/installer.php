@@ -646,7 +646,7 @@ class Installer {
 	*/
     public function showSession() {
         echo '<pre>';
-        print_r($_SESSION);
+        print_r($_SESSION['install']);
         echo '</pre>';
     }
     
