@@ -195,7 +195,7 @@ class windowsOpenOffice extends windowsService {
 	}
 	
 	private function setOption() {
-		$this->options = "-displayname {$this->name} -start auto {$this->getBin()} -headless -invisible -nofirststartwizard"
+		$this->options = "-displayname {$this->name} -start auto {$this->getBin()} -headless -nofirststartwizard "
                        . "-accept=\"socket,host={$this->host},port={$this->port};urp;StarOffice.ServiceManager\"";
 	}
 	
