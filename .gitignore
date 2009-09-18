@@ -12,3 +12,4 @@ clienttools/Karoo
 clienttools/Office
 .gitmodules
 *.out
+baobab/

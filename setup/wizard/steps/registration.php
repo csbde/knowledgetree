@@ -137,7 +137,7 @@ class registration extends Step
             return true;
         }
 		$this->setInSession();
-		return true;
+//		return true;
 	    //$this->postForm($_POST);
 	    //$this->sendToHost($_POST);
 

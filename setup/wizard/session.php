@@ -36,11 +36,12 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Installer
+* @package Migrater
 * @version Version 0.1
 */
 class Session
 {
+	private $salt = 'installers';
 	/**
 	* Constructs session object
 	*
@@ -61,9 +62,9 @@ class Session
 	* @return void
 	*/
 	public function startSession() {
-		if(!isset($_SESSION['ready'])) {
+		if(!isset($_SESSION[$this->salt]['ready'])) {
 			session_start();
-			$_SESSION ['ready'] = TRUE;
+			$_SESSION[$this->salt] ['ready'] = TRUE;
 		}
 	}
 
@@ -78,7 +79,7 @@ class Session
 	*/
 	public function set($fld, $val) {
 		$this->startSession();
-		$_SESSION [$fld] = $val;
+		$_SESSION[$this->salt] [$fld] = $val;
 	}
 	
 	/**
@@ -99,7 +100,7 @@ class Session
 		} else {
 			$classArray[$k] = $v;
 		}
-		$_SESSION [ $class] = $classArray;
+		$_SESSION[$this->salt] [ $class] = $classArray;
 	}
 	
 	/**
@@ -120,7 +121,7 @@ class Session
 		} else {
 			$classArray[$k] = $v;
 		}
-		$_SESSION [ $class] = $classArray;
+		$_SESSION[$this->salt] [ $class] = $classArray;
 	}
 	
 	/**
@@ -136,7 +137,7 @@ class Session
 	public function clearErrors($class) {
 		$classArray = $this->get($class);
 		unset($classArray['errors']);
-		$_SESSION [ $class] = $classArray;
+		$_SESSION[$this->salt] [ $class] = $classArray;
 	}
 	
 	/**
@@ -149,7 +150,7 @@ class Session
 	*/
 	public function un_set($fld) {
 		$this->startSession();
-		unset($_SESSION [$fld]);
+		unset($_SESSION[$this->salt] [$fld]);
 	}
 	
 	/**
@@ -162,8 +163,8 @@ class Session
 	*/
 	public function un_setClass($class) {
 		$this->startSession();
-		if(isset($_SESSION [$class]))
-			unset($_SESSION [$class]);
+		if(isset($_SESSION[$this->salt] [$class]))
+			unset($_SESSION[$this->salt] [$class]);
 	}
 	
 	/**
@@ -176,7 +177,7 @@ class Session
 	*/
 	public function destroy() {
 		$this->startSession();
-		unset($_SESSION);
+		unset($_SESSION[$this->salt]);
 		session_destroy();
 	}
 	
@@ -190,8 +191,8 @@ class Session
 	*/
 	public function get($fld) {
 		$this->startSession();
-		if(isset($_SESSION [$fld]))
-			return $_SESSION [$fld];
+		if(isset($_SESSION[$this->salt] [$fld]))
+			return $_SESSION[$this->salt] [$fld];
 		return false;
 	}
 	
@@ -205,7 +206,7 @@ class Session
 	*/
 	public function is_set($fld) {
 		$this->startSession();
-		return isset($_SESSION [$fld]);
+		return isset($_SESSION[$this->salt] [$fld]);
 	}
 	
 	/**
@@ -217,7 +218,21 @@ class Session
 	* @return string
 	*/
 	public function getClass($class) {
-		return $_SESSION[$class];
+		return $_SESSION[$this->salt][$class];
+	}
+	
+	public function destroyInstall() {
+		$_SESSION[$this->salt] = '';
+		$this->destroy();
+	}
+}
+
+if(isset($_GET['action'])) {
+	$func = $_GET['action'];
+	if($func != '') {
+		$ses = new Session();
+		$method = "$func";
+		$ses->$method();
 	}
 }
 ?>

@@ -40,6 +40,8 @@
 * @version Version 0.1
 */
 class InstallUtil {	
+	
+	private $salt = 'installers';
 	/**
 	* Constructs installation object
 	*
@@ -508,11 +510,11 @@ class InstallUtil {
 	* @return boolean
 	*/
     public function getDataFromSession($class) {
-    	if(empty($_SESSION[$class])) {
+    	if(empty($_SESSION[$this->salt][$class])) {
     		return false;
     	}
     	
-    	return $_SESSION[$class];
+    	return $_SESSION[$this->salt][$class];
     }
     
     /**

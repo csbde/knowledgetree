@@ -216,3 +216,13 @@ wizard.prototype.sendJavaLocation = function ()  {
 wizard.prototype.sendRegistration = function ()  {
 	$('form').submit();
 }
+
+wizard.prototype.clearSessions = function ()  {
+	var address = 'session.php?action=destroyInstall';
+	$.ajax({
+		url: address,
+		dataType: "html",
+		type: "POST",
+		cache: false,
+	});
+}
