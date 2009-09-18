@@ -218,7 +218,7 @@ class kt extends client_service  {
 				}
 				
 				$extensions=explode(',', $arr['extensions']);
-				if(!in_array(strtolower($ext), $extensions)){
+				if(!in_array(strtolower($ext), $extensions) && !in_array('*',$extensions)){
 					$includeMe=false;
 				}else{
 					$qtip .= $this->xlate('Filename') . ": {$filename}<br>";
@@ -439,6 +439,8 @@ class kt extends client_service  {
     	$kt=&$this->KT;
     	$params['session_id']=$params['session_id']?$params['session_id']:$this->AuthInfo['session'];
     	$params['app_type']=$params['app_type']?$params['app_type']:$this->AuthInfo['appType'];
+    	$params['app_type']='air';
+    	
     	
     	$this->addDebug('parameters',$params);
     	
@@ -471,12 +473,18 @@ class kt extends client_service  {
     	$download_manager->cleanup();
     	$url=$download_manager->allow_download($document);
     	//http://ktair.dev?code=750f7a09d40a3d855f2897f417baf0bbb9a1f615&d=16&u=evm2pdkkhfagon47eh2b9slqj6
+    	/*
+    	$this->addDebug('url before split',$url);
     	$url=split('\?',$url);
+    	$this->addDebug('url after split',$url);
     	$url=$url[0].'/ktwebservice/download.php?'.$url[1];
+    	$this->addDebug('url after recombo',$url);
+    	*/
 
     	$response['status_code']=0;
 		$response['message']=$url;
         $response['filename']=$docname;
+        $this->addDebug('effective params',$params);
     	$this->setResponse($response);
     }
 
