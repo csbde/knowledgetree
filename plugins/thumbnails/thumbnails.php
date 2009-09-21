@@ -131,33 +131,63 @@ class thumbnailGenerator extends BaseProcessor
                - check out ktcore/KTDocumentViewlets.php
                - viewlet class is below
 	    */
-
+		global $default;
 	    $pdfDir = $default->pdfDirectory;
         $pdfFile = $pdfDir .'/'. $this->document->iId.'.pdf';
+        $thumbnaildir = $pdfDir."/thumbnails";
+        $thumbnailfile = $thumbnaildir.'/'.$this->document->iId.'.jpg';
+        
+        //if thumbail dir does not exist, generate one
+        if (!file_exists($thumbnaildir)) {
+        	 mkdir($thumbnaildir, 0755);
+        }
 
-        // if a previous version of the pdf exists - delete it
+        // if there is no pdf that exists - hop out
         if(!file_exists($pdfFile)){
             global $default;
             $default->log->debug('Thumbnail Generator Plugin: PDF file does not exist, cannot generate a thumbnail');
             return false;
         }
-
+		// if a previous version of the thumbnail exists - delete it
+		if (file_exists($thumbnailfile)) {
+			@unlink($thumbnailfile);
+		}
         // do generation
-        return true;
+        if (extension_loaded('imagick')) {
+        	$result= shell_exec("convert -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile");
+        	return true;
+        }else{
+        	$default->log->debug('Thumbnail Generator Plugin: Imagemagick not installed, cannot generate a thumbnail');
+            return false;
+        }
+        
     }
 }
-
 
 class ThumbnailViewlet extends KTDocumentViewlet {
     var $sName = 'thumbnail.viewlets';
 
-    function display_viewlet() {
+    public function display_viewlet($documentId) {
+    	global $default;
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate('thumbnail_viewlet');
         if (is_null($oTemplate)) return '';
-
-        $oTemplate->setData(array());
+		$pdfDir = $default->pdfDirectory;
+		$thumbnailfile = $pdfDir . '/thumbnails/'.$documentId.'.jpg';
+		// check that file exists
+		if (!file_exists($thumbnailfile)) return '';
+        // NOTE this is to turn the config setting for the PDF directory into a proper URL and not a path
+		$thumbnailUrl = str_replace($default->varDirectory, 'var/', $thumbnailfile);
+        $oTemplate->setData(array('thumbnail' => $thumbnailUrl));
         return $oTemplate->render();
+    }
+    
+    public function get_width($documentId){
+    	global $default;
+    	$pdfDir = $default->pdfDirectory;
+		$thumbnailfile = $pdfDir . '/thumbnails/'.$documentId.'.jpg';
+		$size = getimagesize($thumbnailfile);
+		return $size[0];
     }
 }
 

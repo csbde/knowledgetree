@@ -8,3 +8,8 @@ bin/luceneserver/lucene.pid
 dummy.php
 var/*
 plugins/commercial
+clienttools/Karoo
+clienttools/Office
+.gitmodules
+*.out
+baobab/

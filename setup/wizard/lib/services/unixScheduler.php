@@ -45,16 +45,18 @@ class unixScheduler extends unixService {
 	private $schedulerSource;
 	private $schedulerSourceLoc;
 	private $systemDir;
+	private $scheduler;
 	
 	public function __construct() {
 		$this->name = "KTSchedulerTest";
 		$this->util = new InstallUtil();
+		$this->scheduler = 'scheduler';
+		$this->setSchedulerSource('schedulerTask.sh');
 	}
 	
 	public function load() {
 		$this->setSystemDir(SYSTEM_ROOT."bin".DS);
 		$this->setSchedulerDir(SYSTEM_DIR."bin".DS);
-		$this->setSchedulerSource('schedulerTask.sh');
 		$this->setSchedulerSourceLoc('schedulerTask.sh');
 	}
 	
@@ -106,7 +108,8 @@ class unixScheduler extends unixService {
 		$content .= "done";
 		@fwrite($fp, $content);
 		@fclose($fp);
-		@chmod($fLoc, '0644');
+		@chmod($fLoc, '0777');
+		$this->util->pexec("chmod 777 $fLoc");
 	}
 	
 	function install() {
@@ -123,7 +126,7 @@ class unixScheduler extends unixService {
 	}
 	
 	function stop() {
-    	$cmd = "pkill -f ".$this->schedulerSource;
+    	$cmd = "pkill -f ".$this->scheduler;
     	$response = $this->util->pexec($cmd);
 		return $response;
 	}
@@ -150,16 +153,13 @@ class unixScheduler extends unixService {
 	function start() {
 		// TODO : Write sh on the fly? Not sure the reasoning here
 		$source = $this->getSchedulerSourceLoc();
+		$this->writeSchedulerTask();
 		if($source) { // Source
 			$cmd = "nohup ".$source." > ".SYS_LOG_DIR."scheduler.log 2>&1 & echo $!";
 	    	$response = $this->util->pexec($cmd);
     		return $response;
 		} else { // Could be Stack
 			$source = SYS_BIN_DIR.$this->schedulerSource;
-			if(!file_exists($source)) {
-				// Write it
-				$this->writeSchedulerTask();
-			}
 			$cmd = "nohup ".$source." > ".SYS_LOG_DIR."scheduler.log 2>&1 & echo $!";
 	    	$response = $this->util->pexec($cmd);
     		return $response;

@@ -41,7 +41,25 @@
 */
 
 class windowsService extends Service {
+	/**
+	* Service name
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/
 	public $name;
+	
+	/**
+	* Reference to utility object
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/
+
 	public $util;
 	
 	public function __construct() {

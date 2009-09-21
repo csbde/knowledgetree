@@ -1,6 +1,6 @@
 <?php
 
-require_once KT_LIB_DIR . '/api/ktcmis/ktcmis.inc.php';
+require_once KT_LIB_DIR . '/api/ktcmis/ktVersioningService.inc.php';
 
 /**
  * CMIS Service class which hooks into the KnowledgeTree interface

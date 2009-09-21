@@ -1,0 +1,23 @@
+{literal}
+<style>
+.thumb-shadow {
+  float:left;
+  background: url(plugins/thumbnails/templates/shadowAlpha.png) no-repeat bottom right !important;
+  background: url(plugins/thumbnails/templates/shadow.gif) no-repeat bottom right;
+  margin: 10px 0 0 10px !important;
+  margin: 10px 0 0 5px;
+  }
+
+.thumb-shadow img {
+  display: block;
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #a9a9a9;
+  margin: -6px 6px 6px -6px;
+  padding: 4px;
+  }
+</style>
+{/literal}
+<div class="thumb-shadow">
+    <div><img src="{$thumbnail}" height="200px"/></div>
+</div>

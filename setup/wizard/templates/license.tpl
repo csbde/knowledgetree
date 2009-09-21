@@ -1,4 +1,4 @@
-<form action="index.php?step_name=license" method="POST">
+<form id="welcome_license_dependencies" action="index.php?step_name=license" method="POST">
 <p class="title">License Agreement</p>
 
 <div class="error_message">
@@ -333,7 +333,8 @@ govern.
 </p>
 </div>
 	<input id="accept" type="hidden" name="license" value=""/>
-	<input class="back" type="submit" name="Previous" value="Back"/>
-    <input class="input" type="submit" name="Next" value="I Disagree" onclick="javascript:{document.getElementById('accept').value = 0;}"/>
-    <input class="input" type="submit" name="Next" value="I Agree" onclick="javascript:{document.getElementById('accept').value = 1;}"/>
+	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
+    <input type="submit" name="Next" value="I Disagree" onclick="javascript:{document.getElementById('accept').value = 0;}" class="button_next"/>
+    <input type="submit" name="Next" value="I Agree" onclick="javascript:{document.getElementById('accept').value = 1;}" class="button_next"/>
 </form>
+<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>

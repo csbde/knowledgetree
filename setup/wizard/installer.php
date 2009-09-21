@@ -105,6 +105,15 @@ class Installer {
 	protected $installOrders = array();
 	
 	/**
+	* List of installation properties
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var array string
+	*/
+	protected $installProperties = array();
+	
+	/**
 	* Flag if a step object needs confirmation
 	*
 	* @author KnowledgeTree Team
@@ -281,11 +290,7 @@ class Installer {
 	*/
     private function _runStepAction($stepName) {
         $this->stepAction = new stepAction($stepName);
-        $this->stepAction->setSteps($this->getSteps());
-        $this->stepAction->setStepNames($this->getStepNames());
-        $this->stepAction->setDisplayConfirm($this->stepConfirmation);
-        $this->stepAction->setDisplayFirst($this->stepDisplayFirst());
-        $this->stepAction->loadSession($this->session);
+        $this->stepAction->setUpStepAction($this->getSteps(), $this->getStepNames(), $this->getStepConfirmation(), $this->stepDisplayFirst(), $this->getSession(), $this->getInstallProperties());
         
         return $this->stepAction->doAction();
     }
@@ -363,6 +368,22 @@ class Installer {
 	            }
 	        }
 	        $this->_loadToSession('installOrders', $this->installOrders);
+    	}
+    }
+    
+	/**
+	* Set install properties
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return void
+	*/
+    private function _xmlInstallProperties() {
+    	if(isset($this->simpleXmlObj)) {
+    		$this->installProperties['install_version'] = (string) $this->simpleXmlObj['version'];
+    		$this->installProperties['install_type'] = (string) $this->simpleXmlObj['type'];
+			$this->_loadToSession('installProperties', $this->installProperties);
     	}
     }
     
@@ -456,7 +477,11 @@ class Installer {
     	$this->installOrders = $this->session->get('installOrders');
     	if(!$this->installOrders) {
     		$this->_xmlStepsOrders();
-    	}    	
+    	}
+    	$this->installProperties = $this->session->get('installProperties');
+    	if(!$this->installProperties) {
+    		$this->_xmlInstallProperties();
+    	}
     }
     
     private function loadNeeded() {
@@ -576,6 +601,42 @@ class Installer {
     }
 
 	/**
+	* Returns whether or not a confirmation step is needed
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    public function getStepConfirmation() {
+    	return $this->stepConfirmation;
+    }
+    
+	/**
+	* Return install properties
+	*
+	* @author KnowledgeTree Team
+	* @param string
+	* @access public
+	* @return string
+	*/    
+    public function getInstallProperties() {
+    	return $this->installProperties;
+    }
+    
+	/**
+	* Returns session
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    public function getSession() {
+    	return $this->session;
+    }
+    
+	/**
 	* Dump of SESSION 
 	*
 	* @author KnowledgeTree Team
@@ -585,7 +646,7 @@ class Installer {
 	*/
     public function showSession() {
         echo '<pre>';
-        print_r($_SESSION);
+        print_r($_SESSION['installers']);
         echo '</pre>';
     }
     

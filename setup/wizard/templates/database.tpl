@@ -1,7 +1,11 @@
-<h1>Confirming Database Configurations</h1>
+<?php if (AJAX) { ?>
+	<form id="services_database_registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
+<?php } else { ?>
+	<form id="dbsettings" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.onSubmitValidate(<?php if ($silent) echo 'true'; else echo 'false'; ?>);return false;">
+<?php } ?>
+<p class="title">Confirming Database Configurations</p>
 <!-- Check For immediate Errors -->
 <span class="error"> <?php if($errors['con']) { echo $errors['con']; } ?> </span>
-<form id="dbsettings" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.onSubmitValidate(<?php if ($silent) echo 'true'; else echo 'false'; ?>);return false;">
 <!-- Hidden Fields -->
 <input type="hidden" id='ddrop' name="ddrop" <?php echo ($ddrop) ? 'CHECKED' : ''; ?>/>
 <input type="hidden" id="sendAll" name="" value="" />
@@ -11,68 +15,75 @@
 	This step configures the connection to the database server and installs the database. The details for an administrative <br/>
 	user on the database server are required in order to be able to configure and install the installation database.
 	</div>
+	<div id="step_content_database" class="step">
+	
 	<table class="dbconf">
+	<?php
+		$input_size = '45';
+		$align = 'left';
+	?>
 <!--	TODO: Different Databases-->
+<?php if($state != 'edit') { ?>
 	    <tr><td>Your current database type is: </td>
 		<?php if($dtypes) {
 		        foreach($dtypes as $k=>$v) {
 		    ?><td>
-		    	<?php echo ucwords($v);?>
-		    	<input type="hidden" name="dtype" value="<?php echo $v; ?>" <?php if(!$k)echo 'checked="checked"'; ?>/>&nbsp;&nbsp;<?php //echo ucwords($v); ?>
+		    	&nbsp;
+		    	<?php echo ucwords($v)." (Currently the only supported database.)";?>
+		    	<input type="hidden" name="dtype" value="<?php echo $v; ?>" <?php if(!$k)echo 'checked="checked"'; ?>/>
 		    	</td>
 		<?php }
 		}
 		?>
 		</tr>
+<?php } ?>
 		    <tr>
 		        <td><label for='dname'>Enter a name for the database: </label></td>
-		        <td><input type='text' value="<?php echo $dname?>" id='dname' name='dname' size='40'/></td>
+		        <td><input type='text' value="<?php echo $dname?>" id='dname' name='dname' size='<?php echo $input_size; ?>' style="float:left"/></td>
 		        <td id="error" class="error"><?php if($errors['dname']) echo $errors['dname']; ?></td>
 		    </tr>
 		    <tr>
 		        <td><label for='duname'>Enter Database Administrative username: </label></td>
-		        <td><input type='text' value="<?php echo $duname?>" id='duname' name='duname' size='40' /></td>
+		        <td><input type='text' value="<?php echo $duname?>" id='duname' name='duname' size='<?php echo $input_size; ?>' style="float:left"/></td>
 		        <td id="error" class="error"><?php if($errors['duname']) echo $errors['duname']; ?></td>
 		    </tr>
 		    <tr>
 		        <td><label for='dpassword'>Enter the password for the user: </label></td>
-		        <td><input type='password' value="<?php echo $dpassword?>" id='dpassword' name='dpassword' size='40' /></td>
+		        <td><input type='password' value="<?php echo $dpassword?>" id='dpassword' name='dpassword' size='<?php echo $input_size; ?>' style="float:left"/></td>
 		        <td id="error" class="error"><?php if($errors['dpassword']) echo $errors['dpassword']; ?></td>
 		    </tr>
 	</table>
-
-	<div id="options" class="onclick" onclick="javascript:{w.toggleClass('adv_options');}">Advanced Options</div>
-
+<br/><br/>
+	<div id="option3" class="onclick" onclick="javascript:{w.toggleClass('adv_options', 'option3');}">&nbsp;&nbsp;Advanced Options</div>
 	<div id="database" class="adv_options" style="display:none;">
 	    <div class="description">
 	        These options are only necessary for some sites. If you're not sure what you should enter here, leave the default settings.
 	    </div>
-	    <p>
-	    <label for='dhost'>Host: </label><br />
-	    <span class="description">The address of the server where the database is located, if different to the current server.</span><br/>
-	    <input type="text" value="<?php echo $dhost?>" id="dhost" name="dhost" size='60'/>
-	    </p>
-
-	    <p>
-	    <label for='dport'>Port: </label><br />
-	    <span class="description">The port on which your database server is listening, if it is a non-standard port please enter the number here.</span><br/>
-	    <input type="text" value="<?php echo $dport?>" id="dport" name="dport" size='10'/>
-	    </p>
-
-	    <p>
-	    <label for='dbbinary'>Socket: </label><br />
-	    <span class="description">The path to the database binary. If it is not on your system path then please enter it here.</span><br/>
-	    <input type="text" value="<?php echo $dbbinary?>" id="dbbinary" name="dbbinary" size='60'/>
-	    </p>
+	    <table>
+	    	<tr>
+	    		<td width="10px"> <label for='dhost'>Host: </label> </td>
+	    		<td width="205px"> <div id="tooltips" title="The address of the server where the database is located, if different to the current server">&nbsp;</div> </td>
+	    		<td width="10px"> <input type="text" value="<?php echo $dhost?>" id="dhost" name="dhost" size='<?php echo $input_size; ?>' class="textinput"/> </td>
+	    	</tr>
+	    	<tr>
+	    		<td> <label for='dport'>Port: </label> </td>
+	    		<td> <div id="tooltips" title="The port on which your database server is listening, if it is a non-standard port please enter the number here">&nbsp;</div> </td>
+	    		<td> <input type="text" value="<?php echo $dport?>" id="dport" name="dport" size='10' class="textinput" style="float:left"/> </td>
+	    	</tr>
+	    	<tr>
+	    		<td> <label for='dbbinary'>Socket: </label> </td>
+	    		<td> <div id="tooltips" title="The path to the database binary. If it is not on your system path then please enter it here">&nbsp;</div> </td>
+	    		<td> <input type="text" value="<?php echo $dbbinary?>" id="dbbinary" name="dbbinary" size='<?php echo $input_size; ?>' class="textinput"/> </td>
+	    	</tr>
+	    </table>
 	</div>
-	<div class="buttons">
-	    <input type="submit" name="Previous" value="Previous" />
+	</div>
+	    <input type="submit" name="Previous" value="Previous" class="button_previous" />
 	    <?php if ($silent) { ?>
-	    <input type="submit" name="Next" value="Next" />
+	    <input type="submit" name="Next" value="Next" class="button_next"/>
 	    <?php } else { ?>
-	    <input type="button" name="Next" value="Next" onclick="javascript:{w.showStep(1, 'n');}"/>
+	    <input type="button" name="Next" value="Next" onclick="javascript:{w.showStep(1, 'n');}" class="button_next"/>
 	    <?php } ?>
-	</div>
 </div>
 
 <!-- STEP 2 of the database configuration - Admin user password settings -->
@@ -99,10 +110,8 @@ An administrative user is required for creating tables within the database.
 		</tr>
 	</table>
 
-	<div class="buttons">
-	    <input type="button" name="Previous" value="Previous" onclick="javascript:{w.showStep(2, 'p');}"/>
-	    <input type="button" name="Next" value="Next" onclick="javascript:{w.showStep(2, 'n');}"/>
-	</div>
+	    <input type="button" name="Previous" value="Previous" onclick="javascript:{w.showStep(2, 'p');}" class="button_previous"/>
+	    <input type="button" name="Next" value="Next" onclick="javascript:{w.showStep(2, 'n');}" class="button_next"/>
 </div>
 
 <!-- STEP 3 of the database configuration - default user password settings -->
@@ -129,10 +138,8 @@ An second user is required for normal database interaction, the reading and writ
 	        <td id="error_4_3" class="error" style="display:none">Passwords Do Not Match</td>
 		</tr>
 	</table>
-		<div class="buttons">
-	    <input type="button" name="Previous" value="previous" onclick="javascript:{w.showStep(3, 'p');}"/>
-<!--	    <input type="button" name="Next" value="next" onclick="showStep(3, 'n');"/>-->
-		<input type="submit" name="Next" value="next" />
-	</div>
+	    <input type="button" name="Previous" value="previous" onclick="javascript:{w.showStep(3, 'p');}" class="button_previous"/>
+		<input type="submit" name="Next" value="next" class="button_next"/>
 </div>
 </form>
+<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>

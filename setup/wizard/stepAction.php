@@ -78,6 +78,15 @@ class stepAction {
     protected $displayFirst = false;
     
 	/**
+	* List of install properties
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var boolean
+	*/
+    protected $installProperties = array();
+    
+	/**
 	* Reference to session object
 	*
 	* @author KnowledgeTree Team
@@ -106,6 +115,95 @@ class stepAction {
         $this->stepName = $step;
     }
 
+	/**
+	* Helper to initialize step actions
+	*
+	* @author KnowledgeTree Team
+	* @param string
+	* @access public
+	* @return string
+	*/
+    public function setUpStepAction($steps, $stepNames, $stepConfirmation, $stepDisplayFirst, $session, $installProperties) {
+        $this->setSteps($steps);
+        $this->setStepNames($stepNames);
+        $this->setDisplayConfirm($stepConfirmation);
+        $this->setDisplayFirst($stepDisplayFirst);
+        $this->loadSession($session);
+        $this->setInstallProperties($installProperties);
+    }
+    
+	/**
+	* Sets steps class names in string format
+	*
+	* @author KnowledgeTree Team
+	* @param array
+	* @access public
+	* @return void
+	*/
+    public function setSteps($stepClassNames) {
+        $this->stepClassNames = $stepClassNames;
+    }
+
+	/**
+	* Sets steps in human readable string format
+	*
+	* @author KnowledgeTree Team
+	* @param array
+	* @access public
+	* @return void
+	*/
+    public function setStepNames($step_names) {
+        $this->step_names = $step_names;
+    }
+
+	/**
+	* Sets confirmation page flag
+	*
+	* @author KnowledgeTree Team
+	* @param boolean
+	* @access public
+	* @return void
+	*/
+    public function setDisplayConfirm($displayConfirm) {
+        $this->displayConfirm = $displayConfirm;
+    }
+
+	/**
+	* Sets confirmation page first flag
+	*
+	* @author KnowledgeTree Team
+	* @param boolean
+	* @access public
+	* @return void
+	*/
+    public function setDisplayFirst($displayFirst) {
+        $this->displayFirst = $displayFirst;
+    }
+    
+	/**
+	* Sets session object
+	*
+	* @author KnowledgeTree Team
+	* @param object Session
+	* @access public
+	* @return void
+	*/
+    public function loadSession($ses) {
+        $this->session = $ses;
+    }
+    
+	/**
+	* Sets install properties
+	*
+	* @author KnowledgeTree Team
+	* @param array
+	* @access public
+	* @return void
+	*/
+    public function setInstallProperties($installProperties) {
+    	$this->installProperties = $installProperties;
+    }
+    
 	/**
 	* Main control to handle the steps actions
 	*
@@ -181,43 +279,7 @@ class stepAction {
 
         return $str;
     }
-
-	/**
-	* Sets steps class names in string format
-	*
-	* @author KnowledgeTree Team
-	* @param array
-	* @access public
-	* @return void
-	*/
-    public function setSteps($stepClassNames) {
-        $this->stepClassNames = $stepClassNames;
-    }
-
-	/**
-	* Sets steps in human readable string format
-	*
-	* @author KnowledgeTree Team
-	* @param array
-	* @access public
-	* @return void
-	*/
-    public function setStepNames($step_names) {
-        $this->step_names = $step_names;
-    }
-
-	/**
-	* Returns a message to display at the top of template
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return string
-	*/
-    public function getTop() {
-        return '<span class="top">'.$this->getCurrentStepName().'</span>';
-    }
-
+    
 	/**
 	* Returns current step name
 	*
@@ -242,7 +304,7 @@ class stepAction {
 	*/
     public function getLeftMenu()
     {
-        $menu = '<div class="menu">';
+        $menu = '';
         $active = false;
 		if($this->stepClassNames) {
 	        foreach ($this->stepClassNames as $k=>$step) {
@@ -259,21 +321,21 @@ class stepAction {
 	                    $class = 'inactive';
 	                }else{
 	                    $class = 'indicator';
-	                    $item = "<a href=\"index.php?step_name={$step}\">{$item}</a>";
+	                    if (AJAX) {
+							$options = "\"index.php?step_name={$step}\", \"content_container\"";
+		                    $item = "<a href='#' onclick='javascript:{w.getUrl(".$options.");}' >{$item}</a>";
+	                    } else {
+	                    	$item = "<a href=\"index.php?step_name={$step}\">{$item}</a>";
+	                    }
 	                }
 	            }
-	
-	            $menu .= "<span class='{$class}'>$item</span><br />";
+	            $menu .= "<span id = '{$step}' class='{$class}'>$item</span><br />";
 	        }
 		}
-        $menu .= '</div>';
+
         return $menu;
     }
 
-    public function getActions() {
-    	
-    }
-    
 	/**
 	* Returns confirmation page flag
 	*
@@ -283,7 +345,6 @@ class stepAction {
 	* @return boolean
 	*/
     public function displayConfirm() {
-    	// TODO:No other way I can think of doing this
         return $this->displayConfirm;
     }
 
@@ -299,42 +360,6 @@ class stepAction {
     	return $this->displayFirst;
     }
     
-	/**
-	* Sets confirmation page flag
-	*
-	* @author KnowledgeTree Team
-	* @param boolean
-	* @access public
-	* @return void
-	*/
-    public function setDisplayConfirm($displayConfirm) {
-        $this->displayConfirm = $displayConfirm;
-    }
-
-	/**
-	* Sets confirmation page first flag
-	*
-	* @author KnowledgeTree Team
-	* @param boolean
-	* @access public
-	* @return void
-	*/
-    public function setDisplayFirst($displayFirst) {
-        $this->displayFirst = $displayFirst;
-    }
-    
-	/**
-	* Sets session object
-	*
-	* @author KnowledgeTree Team
-	* @param object Session
-	* @access public
-	* @return void
-	*/
-    public function loadSession($ses) {
-        $this->session = $ses;
-    }
-
 	/**
 	* Returns session object
 	*
@@ -356,8 +381,6 @@ class stepAction {
 	* @return string
 	*/
     public function paintAction() {
-        $left = $this->getLeftMenu();
-        $top = $this->getTop();
         $step_errors = $this->action->getErrors(); // Get errors
         $step_warnings = $this->action->getWarnings(); // Get warnings
         if($this->displayConfirm()) { // Check if theres a confirm step
@@ -380,13 +403,26 @@ class stepAction {
             	$this->_loadValueToSession($this->stepName, $key, $value);
             }
         }
-        $content = $step_tpl->fetch();
-		$tpl = new Template("templates/wizard.tpl");
-		$tpl->set('content', $content);
-		$tpl->set('left', $left);
-		echo $tpl->fetch();
+        // TODO: Force because it does not always recognize ajax request
+		if(AJAX && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+    		echo $step_tpl->fetch();
+		} else { 
+	        $content = $step_tpl->fetch();
+			$tpl = new Template("templates/wizard.tpl");
+	        $vars = $this->getVars(); // Get template variables
+	        $tpl->set("vars", $vars); // Set template errors
+			$tpl->set('content', $content);
+			echo $tpl->fetch();
+		}
 	}
 
+	public function getVars() {
+		$left = $this->getLeftMenu();
+		$vars['left'] = $left; // Set left menu
+		$vars['install_version'] = $this->installProperties['install_version']; // Set version
+		$vars['install_type'] = $this->installProperties['install_type']; // Set type
+		return $vars;
+	}
     /**
      * Load class to session
      *

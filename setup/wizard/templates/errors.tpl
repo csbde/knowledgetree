@@ -1,4 +1,4 @@
-<h1>Welcome to the KnowledgeTree Setup Wizard</h1>
+<p class="title">Welcome to the KnowledgeTree Setup Wizard</p>
 
 <div style="width: 800px;">
 <?php if(isset($error)) echo $error; ?>

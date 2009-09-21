@@ -3,7 +3,10 @@
 // TODO use CMISUtil::encodeObjectId to create testing ids, as we may change how the encoding works in future
 
 require_once (KT_DIR . '/tests/test.php');
-require_once (KT_LIB_DIR . '/api/ktcmis/ktcmis.inc.php');
+require_once (KT_LIB_DIR . '/api/ktcmis/ktNavigationService.inc.php');
+require_once (KT_LIB_DIR . '/api/ktcmis/ktObjectService.inc.php');
+require_once (KT_LIB_DIR . '/api/ktcmis/ktRepositoryService.inc.php');
+require_once (KT_LIB_DIR . '/api/ktcmis/ktVersioningService.inc.php');
 
 // username and password for authentication
 // must be set correctly for all of the tests to pass in all circumstances
@@ -63,7 +66,7 @@ class CMISTestCase extends KTUnitTestCase {
     }
 
     // Repository service functions
-    function tedstRepositoryService()
+    function testRepositoryService()
     {
         $RepositoryService = new KTRepositoryService();
 
@@ -180,7 +183,7 @@ class CMISTestCase extends KTUnitTestCase {
     }
 
     // Navigation service functions
-    function tedstNavigationService()
+    function testNavigationService()
     {
         $NavigationService = new KTNavigationService($this->ktapi);
 
@@ -302,7 +305,7 @@ class CMISTestCase extends KTUnitTestCase {
 
     // Object Services
 
-    function tedstObjectService()
+    function testObjectService()
     {
         $ObjectService = new KTObjectService($this->ktapi);
 //        $ObjectService->startSession(KT_TEST_USER, KT_TEST_PASS);
@@ -526,7 +529,7 @@ class CMISTestCase extends KTUnitTestCase {
         $response = $NavigationService->getCheckedOutDocs($repositoryId, false, false);
         $this->assertEqual($response['status_code'], 0);
         $this->assertNotNull($response['results']);
-        $this->assertTrue(in_array($documentId, $response['results']));
+        $this->assertTrue($this->findInPropertiesArray('ObjectId', $documentId, $response['results']));
         // now let's cancel the checkout so that we can delete later during cleanup :)
         $response = $VersioningService->cancelCheckOut($repositoryId, $pwcId);
                
@@ -537,7 +540,46 @@ class CMISTestCase extends KTUnitTestCase {
         // tear down the folder/doc tree structure with which we were testing
         $this->cleanupFolderDocStructure();
     }
+    
+    /**
+     * Searches a CMIS properties array for a specific value
+     * 
+     * @param string $key The CMIS property key to look for
+     * @param string $needle The value to check
+     * @param array $haystack The CMIS properties array
+     * @param int $propeLevel -1 or positive value -> -1 = not yet found | positive = found
+     * @return boolean
+     */
+    function findInPropertiesArray($key, $needle, $haystack, $propLevel = null)
+    {
+        $found = false;
+        
+        if (empty($propLevel)) $propLevel = -1;
 
+        foreach($haystack as $elKey => $elValue)
+        {
+            if (($propLevel == -1) && ((string)$elKey != 'properties')) {
+                $found = $this->findInPropertiesArray($key, $needle, $elValue, $propLevel);
+                if ($found) break;
+            }
+            else if ((string)$elKey == 'properties') {
+                $propLevel = 1;
+            }
+            
+            // now check through actual properties array
+            $properties = $elValue;
+            foreach($properties as $propKey => $property)
+            {
+                if (($propKey == $key) && ($property['value'] == $needle)) {
+                    $found = true;
+                    break;
+                }
+            }
+        }
+        
+        return $found;
+    }
+    
     /**
      * Helper function to create a document
      */

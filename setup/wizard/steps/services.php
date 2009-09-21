@@ -40,13 +40,22 @@
 * @version Version 0.1
 */
 
+if(isset($_GET['action'])) {
+	$func = $_GET['action'];
+	if($func != '') {
+		require_once("../step.php");
+		require_once("../installUtil.php");
+		require_once("../path.php");
+	}
+}
+
 class services extends Step 
 {
 	/**
 	* List of errors encountered
 	*
 	* @author KnowledgeTree Team
-	* @access public
+	* @access protected
 	* @var array
 	*/
     protected $error = array();
@@ -55,21 +64,119 @@ class services extends Step
 	* Flag if step needs to be installed
 	*
 	* @author KnowledgeTree Team
-	* @access public
+	* @access protected
 	* @var array
 	*/
     protected $runInstall = true;
     
+	/**
+	* List of services to be installed
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var array
+	*/
     private $services = array('Lucene', 'Scheduler', 'OpenOffice');
     
-    protected $java;
-    
+	/**
+	* Path to php executable
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
     protected $php;
     
-    protected $util;
+	/**
+	* Flag if php already provided
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    public $providedPhp = false;
     
-    private $javaVersion = '1.7';
+	/**
+	* PHP Installed 
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    private $phpCheck = 'cross_orange';
+
+	/**
+	* Flag, if php is specified and an error has been encountered
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var boolean
+	*/
+    private $phpExeError = false;
     
+	/**
+	* Holds path error, if php is specified
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var string
+	*/
+    private $phpExeMessage = '';
+    
+	/**
+	* Path to open office executable
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+	protected $soffice;
+
+	/**
+	* Flag if open office already provided
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    public $providedOpenOffice = false;
+    
+	/**
+	* Flag, if open office is specified and an error has been encountered
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var boolean
+	*/
+    private $openOfficeExeError = false;
+    
+	/**
+	* Holds path error, if open office is specified
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var string
+	*/
+    private $openOfficeExeMessage = '';
+
+	/**
+	* Path to java executable
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+    protected $java = "";
+    
+	/**
+	* Minumum Java Version
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+    private $javaVersion = '1.5';
+
 	/**
 	* Java Installed 
 	*
@@ -78,6 +185,60 @@ class services extends Step
 	* @var mixed
 	*/
     private $javaCheck = 'cross';
+
+	/**
+	* Open Office Installed 
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    private $openOfficeCheck = 'cross';
+    
+	/**
+	* Flag if java already provided
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    public $providedJava = false;
+    
+	/**
+	* Java Bridge Installed 
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var mixed
+	*/
+    private $javaExtCheck = 'cross_orange';
+
+	/**
+	* Flag if bridge extension needs to be disabled
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var boolean
+	*/
+    private $disableExtension = false;
+    
+	/**
+	* Flag, if java is specified and an error has been encountered
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var booelean
+	*/
+    private $javaExeError = false;
+    
+	/**
+	* Holds path error, if java is specified
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var string
+	*/
+    private $javaExeMessage = '';
     
 	/**
 	* Flag if services are already Installed
@@ -107,22 +268,13 @@ class services extends Step
     private $schedulerInstalled = false;
     
 	/**
-	* PHP Installed 
+	* Path to php executable
 	*
 	* @author KnowledgeTree Team
-	* @access private
-	* @var mixed
+	* @access protected
+	* @var string
 	*/
-    private $phpCheck = 'cross_orange';
-    
-	/**
-	* Java Bridge Installed 
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var mixed
-	*/
-    private $javaExtCheck = 'cross_orange';
+    private $openOfficeInstalled;
     
 	/**
 	* Service Installed 
@@ -161,31 +313,15 @@ class services extends Step
     protected $silent = true;
     
 	/**
-	* Flag if bridge extension needs to be disabled
+	* Reference to utility object
 	*
 	* @author KnowledgeTree Team
-	* @access public
-	* @var boolean
+	* @access protected
+	* @var string
 	*/
-    private $disableExtension = false;
+    protected $util;
+    private $salt = 'installers';
     
-	/**
-	* Holds path error, if java is specified
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var mixed
-	*/
-    private $javaExeError = '';
-    
-	/**
-	* Holds path error, if php is specified
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var mixed
-	*/
-    private $phpExeError = '';
 	/**
 	* Constructs services object
 	*
@@ -212,16 +348,18 @@ class services extends Step
     		$this->doRun();
     		return 'landing';
     	}
-        // Check dependencies
-        $passed = $this->doRun();
         if($this->next()) {
-            if($passed)
+	        // Check dependencies
+	        $passed = $this->doRun();
+	        $serv = $this->getDataFromSession("services");
+            if($passed || $serv['providedJava'])
                 return 'next';
             else
                 return 'error';
         } else if($this->previous()) {
             return 'previous';
         }
+        $passed = $this->doRun();
         return 'landing';
     }
     
@@ -250,7 +388,10 @@ class services extends Step
 			$this->javaCheck = 'tick';
 			$this->javaInstalled();
 			$this->temp_variables['java']['location'] = $this->java;
+			return ;
 		}
+		
+		$this->temp_variables['java']['location'] = $this->java;
     }
     
     /**
@@ -266,19 +407,39 @@ class services extends Step
     		$this->alreadyInstalled = true;
     		$this->serviceCheck = 'tick';
     	} else {
-	    	$this->php = $this->util->getPhp(); // Get java, if it exists
-	    	$this->java = $this->util->getJava(); // Get java, if it exists
-	    	$passedPhp = $this->phpChecks(); // Run Java Pre Checks
-	    	$passedJava = $this->javaChecks(); // Run Java Pre Checks
-	    	$errors = $this->getErrors(); // Get errors
-			if(empty($errors) && $passedJava && $passedPhp) { // Install Service if there is no errors
-				$this->installServices();
-			} elseif ($passedPhp) { // Install Scheduler
-				$this->installService('Scheduler');
-			} elseif ($passedJava) { // Install Lucene
-				$this->installService('Lucene');
-			} else { // All Services not installed
-			}
+    		$this->presetJava();
+    		$this->presetOpenOffice();
+    		if(!$this->schedulerInstalled) {
+    			if(!WINDOWS_OS) $this->php = $this->util->getPhp(); // Get java, if it exists
+    			$passedPhp = $this->phpChecks(); // Run Java Pre Checks
+    			if ($passedPhp) { // Install Scheduler
+    				$this->installService('Scheduler');
+    			}
+    		} else {
+    			$this->schedulerInstalled();
+    		}
+    		if(!$this->luceneInstalled) {
+    			if(!WINDOWS_OS) $this->java = $this->util->getJava(); // Get java, if it exists
+    			$passedJava = $this->javaChecks(); // Run Java Pre Checks
+    			if ($passedJava) { // Install Lucene
+    				$this->installService('Lucene');
+    			}
+    		} else {
+				$this->luceneInstalled();
+    		}
+    		if(!$this->openOfficeInstalled) {
+    			if(!WINDOWS_OS) $this->soffice = $this->util->getOpenOffice(); // Get java, if it exists
+    			$passedOpenOffice = $this->openOfficeChecks(); // Run Java Pre Checks
+    			if ($passedOpenOffice) { //Install OpenOffice
+//    				$this->temp_variables['openOfficeExe'] = $this->soffice;
+    				// TODO : Why, O, why?
+    				$this->openOfficeExeError = false;
+    				$_SESSION[$this->salt]['services']['openOfficeExe'] = $this->soffice;
+    				$this->installService('OpenOffice');
+    			}
+    		} else {
+    			$this->openOfficeInstalled();
+    		}
     	}
 		$this->checkServiceStatus();
 		$this->storeSilent(); // Store info needed for silent mode
@@ -287,15 +448,42 @@ class services extends Step
 		return true;
     }
     
-    function checkServiceStatus() {
+    private function openOfficeInstalled() {
+    	$this->openOfficeExeError = false;
+    }
+    
+    private function schedulerInstalled() {
+    	
+    }
+    
+    private function luceneInstalled() {
+		$this->disableExtension = true; // Disable the use of the php bridge extension
+		$this->javaVersionCorrect();
+		$this->javaInstalled();
+		$this->javaCheck = 'tick';
+    }
+    
+	/**
+	* A final check to see if services are still running,
+	* incase they switched on and turned off.
+	* 
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return void
+	*/
+    private function checkServiceStatus() {
     	$serverDetails = $this->getServices();
 		foreach ($serverDetails as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
-			$status = $this->serviceStatus($service);
+			$service->load();
+			$status = $this->serviceInstalled($service);
 			if($status != 'STARTED') {
-				$this->temp_variables['services'][] = array('class'=>'cross_orange', 'msg'=>$service->getName()." Could not be added as a Service");
+				$msg = $service->getName()." Could not be added as a Service";
+				$this->temp_variables['services'][] = array('class'=>'cross_orange', 'msg'=>$msg);
 				$this->serviceCheck = 'cross_orange';
+				$this->warnings[] = $msg;
 			} else {
 				if(WINDOWS_OS) {
 					$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$service->getName()." has been added as a Service"); }
@@ -306,21 +494,48 @@ class services extends Step
 		}
     }
     
-    function alreadyInstalled() {
-    	$installed = true;
+	/**
+	* Checks if all services have been started already, 
+	* incase the user lands on service page multiple times
+	* 
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    public function alreadyInstalled() {
+    	$allInstalled = true;
     	$serverDetails = $this->getServices();
 		foreach ($serverDetails as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
-			$status = $this->serviceStatus($service);
-			if($status != 'STARTED') {
-				return false;
+			$status = $this->serviceInstalled($service);
+			$flag = strtolower(substr($serviceName,0,1)).substr($serviceName,1)."Installed";
+			if(!$status) {
+				$allInstalled = false;
+				$this->$flag = false;
+			} else {
+				$this->$flag = true;
 			}
 		}
-		return true;
+
+		return $allInstalled;
     }
     
+    private function presetJava() {
+		$this->zendBridgeNotInstalled(); // Set bridge not installed
+		$this->javaVersionInCorrect(); // Set version to incorrect
+		$this->javaNotInstalled(); // Set java to not installed
+		$this->setJava(); // Check if java has been auto detected
+    }
     
+    private function presetOpenOffice() {
+    	$this->specifyOpenOffice();
+    }
+    
+    private function setOpenOffice() {
+    	
+    }
     /**
 	* Do some basic checks to help the user overcome java problems
 	*
@@ -330,20 +545,19 @@ class services extends Step
 	* @return boolean
 	*/
     private function javaChecks() {
-		$this->zendBridgeNotInstalled(); // Set bridge not installed
-		$this->javaVersionInCorrect(); // Set version to incorrect
-		$this->javaNotInstalled(); // Set java to not installed
-		$this->setJava(); // Check if java has been auto detected
     	if($this->util->javaSpecified()) {
     		$this->disableExtension = true; // Disable the use of the php bridge extension
-    		return $this->detSettings(); // AutoDetect java settings
+    		if($this->detSettings(true)) { // AutoDetect java settings
+    			return true;
+    		} else {
+    			$this->specifyJava(); // Ask for settings
+    		}
     	} else {
     		$auto = $this->useBridge(); // Use Bridge to get java settings
     		if($auto) {
 				return $auto;
     		} else {
-    			// Check if auto detected java works
-    			$auto = $this->useDetected();
+    			$auto = $this->useDetected(); // Check if auto detected java works
     			if($auto) {
     				$this->disableExtension = true; // Disable the use of the php bridge extension
     				return $auto;
@@ -355,16 +569,64 @@ class services extends Step
     	}
     }
 	
+    private function openOfficeChecks() {
+    	if($this->util->openOfficeSpecified()) {
+    		$this->soffice = $this->util->openOfficeSpecified();
+			if(file_exists($this->soffice)) 
+				return true;
+			else 
+				return false;
+    	} else {
+    		return false;
+    	}
+    }
+    
+	/**
+	* Attempt detection without logging errors
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
     private function useDetected() {
     	return $this->detSettings();
     }
     
+	/**
+	* Set template view to specify java
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
     private function specifyJava() {
     	$this->javaExeError = true;
     }
     
+	/**
+	* Set template view to specify php
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
     private function specifyPhp() {
     	$this->phpExeError = true;
+    }
+    
+	/**
+	* Set template view to specify open office
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
+    private function specifyOpenOffice() {
+    	$this->openOfficeExeError = true;
     }
     
     private function phpChecks() {
@@ -379,6 +641,8 @@ class services extends Step
     	}
     }
     
+
+    
     /**
 	* Attempts to use user input and configure java settings
 	*
@@ -387,9 +651,15 @@ class services extends Step
 	* @access private
 	* @return boolean
 	*/
-    private function detSettings() {
+    private function detSettings($attempt = false) {
     	$javaExecutable = $this->util->javaSpecified();// Retrieve java bin
-    	$cmd = "$javaExecutable -version > output/outJV 2>&1 echo $!";
+    	if($javaExecutable == '') {
+    		if($this->java == '') {
+    			return false;
+    		}
+    		$javaExecutable = $this->java;
+    	}
+    	$cmd = "\"$javaExecutable\" -version > output/outJV 2>&1 echo $!";
     	$response = $this->util->pexec($cmd);
     	if(file_exists(OUTPUT_DIR.'outJV')) {
     		$tmp = file_get_contents(OUTPUT_DIR.'outJV');
@@ -399,22 +669,34 @@ class services extends Step
 					$this->javaVersionInCorrect();
 					$this->javaCheck = 'cross';
 					$this->error[] = "Requires Java 1.5+ to be installed";
+					
 					return false;
 	    		} else {
 					$this->javaVersionCorrect();
 					$this->javaInstalled();
 					$this->javaCheck = 'tick';
+					$this->providedJava = true;
 					
 					return true;
 	    		}
     		} else {
     			$this->javaVersionWarning();
     			$this->javaCheck = 'cross_orange';
-    			$this->javaExeError = "Java : Incorrect path specified";
-				$this->error[] = "Requires Java 1.5+ to be installed";
+    			if($attempt) {
+	    			$this->javaExeMessage = "Incorrect java path specified";
+	    			$this->javaExeError = true;
+	    			$this->error[] = "Requires Java 1.5+ to be installed";
+    			}
+				
+				
 				return false;
     		}
     	}
+    	
+		$this->javaVersionInCorrect();
+		$this->javaCheck = 'cross';
+		$this->error[] = "Requires Java 1.5+ to be installed";
+    	return false;
     }
     
     function detPhpSettings() {
@@ -448,7 +730,7 @@ class services extends Step
 	* @return boolean
 	*/
     private function useBridge() {
-		$zendBridge = $this->zendBridge(); // Find Zend Bridge
+		$zendBridge = $this->util->zendBridge(); // Find Zend Bridge
 		if($zendBridge) { // Bridge installed implies java exists
 			$this->zendBridgeInstalled();
 			if($this->checkZendBridge()) { // Make sure the Zend Bridge is functional
@@ -478,22 +760,6 @@ class services extends Step
 			$this->warnings[] = "Zend Java Bridge Not Found";
 			return false;
 		}
-    }
-    
-    /**
-	* Check if Zend Bridge is enabled
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return boolean
-	*/
-    public function zendBridge() {
-		$mods = get_loaded_extensions();
-		if(in_array('Zend Java Bridge', $mods)) 
-			return true;
-		else 
-			return false;
     }
     
     /**
@@ -562,16 +828,61 @@ class services extends Step
 	}
 	
    	/**
-	* Returns service status
+	* Helper to check if service is installed
 	*
 	* @author KnowledgeTree Team
 	* @param object
-	* @access private
+	* @access public
 	* @return string
 	*/
-	private function serviceStatus($service) {
+	public function serviceInstalled($service) {
 		$statusCheck = OS."ServiceInstalled";
 		return $this->$statusCheck($service);
+	}
+	
+   	/**
+	* Helper to check if service is started
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access public
+	* @return string
+	*/
+	public function serviceStarted($service) {
+		$statusCheck = OS."ServiceStarted";
+		return $this->$statusCheck($service);
+	}
+	
+   	/**
+	* Check if windows service installed
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access public
+	* @return boolean
+	*/
+	public function windowsServiceStarted($service) {
+		$status = $service->status(); // Check if service has been installed
+		if($status != 'RUNNING') { // Check service status
+			return false;
+		}
+		return true;
+	}
+	
+   	/**
+	* Check if unix service installed
+	*
+	* @author KnowledgeTree Team
+	* @param object
+	* @access public
+	* @return boolean
+	*/
+	public function unixServiceStarted($service) {
+		$status = $service->status(); // Check if service has been installed
+		if($status != 'STARTED') { // Check service status
+			return false;
+		}
+		return true;
 	}
 	
    	/**
@@ -787,19 +1098,28 @@ class services extends Step
 	* @return void
     */
     private function storeSilent() {
+    	// Servics
     	$this->temp_variables['alreadyInstalled'] = $this->alreadyInstalled;
     	$this->temp_variables['luceneInstalled'] = $this->luceneInstalled;
     	$this->temp_variables['schedulerInstalled'] = $this->schedulerInstalled;
+    	$this->temp_variables['openOfficeInstalled'] = $this->openOfficeInstalled;
+    	// Java
 		$this->temp_variables['javaExeError'] = $this->javaExeError;
+		$this->temp_variables['javaExeMessage'] = $this->javaExeMessage;
 		$this->temp_variables['javaCheck'] = $this->javaCheck;
 		$this->temp_variables['javaExtCheck'] = $this->javaExtCheck;
+		// Open Office
+		$this->temp_variables['openOfficeExeError'] = $this->openOfficeExeError;
+		$this->temp_variables['openOfficeExeMessage'] = $this->openOfficeExeMessage;
 		// TODO : PHP detection
 		$this->temp_variables['phpCheck'] = 'tick';//$this->phpCheck;
 		$this->temp_variables['phpExeError'] = '';//$this->phpExeError;
 		$this->temp_variables['serviceCheck'] = $this->serviceCheck;
 		$this->temp_variables['disableExtension'] = $this->disableExtension;
+		// TODO: Java checks are gettign intense
+		$this->temp_variables['providedJava'] = $this->providedJava;
     }
-
+    
     private function setPhp() {
 		if($this->php != '') { // PHP Found
 			$this->phpCheck = 'tick';
@@ -813,6 +1133,58 @@ class services extends Step
 	
 	public function getPhpDir() {
 		return $this->php;
+	}
+	
+	public function doDeleteAll() {
+    	$serverDetails = $this->getServices();
+		foreach ($serverDetails as $serviceName) {
+			$className = OS.$serviceName;
+			require_once("../lib/services/service.php");
+			require_once("../lib/services/".OS."Service.php");
+			require_once("../lib/services/$className.php");
+			$service = new $className();
+			$service->uninstall();
+			echo "Delete Service {$service->getName()}<br/>";
+			echo "Status of service ".$service->status()."<br/>";
+		}
+	}
+	
+	public function doInstallAll() {
+    	$serverDetails = $this->getServices();
+		foreach ($serverDetails as $serviceName) {
+			$className = OS.$serviceName;
+			require_once("../lib/services/service.php");
+			require_once("../lib/services/".OS."Service.php");
+			require_once("../lib/services/$className.php");
+			$service = new $className();
+			$service->load();
+			$service->install();
+			echo "Install Service {$service->getName()}<br/>";
+			echo "Status of service ".$service->status()."<br/>";
+		}
+	}
+	
+	public function doStatusAll() {
+    	$serverDetails = $this->getServices();
+		foreach ($serverDetails as $serviceName) {
+			$className = OS.$serviceName;
+			require_once("../lib/services/service.php");
+			require_once("../lib/services/".OS."Service.php");
+			require_once("../lib/services/$className.php");
+			$service = new $className();
+			$service->load();
+			echo "{$service->getName()} : Status of service = ".$service->status()."<br/>";
+		}
+	}
+}
+
+if(isset($_GET['action'])) {
+	$func = $_GET['action'];
+	if($func != '') {
+		$serv = new services();
+		$func_call = strtoupper(substr($func,0,1)).substr($func,1);
+		$method = "do$func";
+		$serv->$method();
 	}
 }
 ?>

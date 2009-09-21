@@ -42,10 +42,203 @@
 
 class windowsOpenOffice extends windowsService {
 
+	/**
+	* Reference to utility object
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+	public $util;
 	
-	public function __construct() {
-		$this->name = "KTOpenOfficeTest";
+	/**
+	* Path to office executable
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+	private $path;
+	
+	/**
+	* Web server
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+	private $host;
+	
+	/**
+	* Path to temp pid file
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+	private $pidFile;
+	
+	/**
+	* Web server Port
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+	private $port;
+	
+	/**
+	* Web server
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+	private $bin;
+	
+	/**
+	* Office executable name
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+	private $soffice;
+
+	/**
+	* Log file
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+	private $log;
+	
+	/**
+	* Open office options
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+	private $options;
+	
+	/**
+	* Path to win service
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var string
+	*/
+    private $winservice;
+
+	/**
+	* Service name
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/	
+    public $name = "KTOpenOfficeTest";
+    
+	public function load() {
+        // hack for testing
+		$this->setPort("8100");
+		$this->setHost("127.0.0.1");
+		$this->setLog("openoffice.log");
+		$this->setWinservice("winserv.exe");
+		$this->setOption();
+	}
+
+	private function setPort($port = "8100") {
+		$this->port = $port;
+	}
+	
+	public function getPort() {
+		return $this->port;
+	}
+	
+	private function setHost($host = "127.0.0.1") {
+		$this->host = $host;
+	}
+	
+	public function getHost() {
+		return $this->host;
+	}
+	
+	private function setLog($log = "openoffice.log") {
+		$this->log = $log;
+	}
+	
+	public function getLog() {
+		return $this->log;
+	}
+	
+	private function setBin($bin) {
+		$this->bin = "\"".$bin."\"";
+	}
+	
+	public function getBin() {
+		return $this->bin;
 	}
     
+	private function setWinservice($winservice = "winserv.exe") {
+		if(file_exists(SYS_BIN_DIR . $winservice))
+			$this->winservice = SYS_BIN_DIR . $winservice;
+		else if(file_exists(SYS_BIN_DIR . "win32" . DS. $winservice))
+			$this->winservice = SYS_BIN_DIR . "win32" . DS. $winservice;
+	}
+	
+	public function getWinservice() {
+		return $this->winservice;
+	}
+	
+	private function setOption() {
+		$this->options = "-displayname {$this->name} -start auto {$this->getBin()} -headless -nofirststartwizard "
+                       . "-accept=\"socket,host={$this->host},port={$this->port};urp;StarOffice.ServiceManager\"";
+	}
+	
+	public function getOption() {
+		return $this->options;
+	}
+	
+    public function install() {
+    	$status = $this->status();
+    	if($status == '') {
+    		$services = $this->util->getDataFromSession('services');
+    		$this->setBin("{$services['openOfficeExe']}");
+    		$this->setOption();
+            $cmd = "\"{$this->winservice}\" install $this->name {$this->getOption()}";
+        	if(DEBUG) {
+        		echo "$cmd<br/>";
+        		return ;
+        	}
+            $response = $this->util->pexec($cmd);
+            return $response;
+    	}
+        else {
+    		return $status;
+    	}
+    }
+    
+	/**
+	* Retrieve Status Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/
+	public function status() {
+		$cmd = "sc query {$this->name}";
+		$response = $this->util->pexec($cmd);
+		if($response['out']) {
+			$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
+			return $state;
+		}
+		
+		return '';
+	}
 }
 ?>

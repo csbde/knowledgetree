@@ -1,13 +1,14 @@
-<h1>Thank you for registering</h1>
-
-<p>
-Thank you for signing up. You'll receive an email from us shortly with download instructions for the KnowledgeTree Drop Box software.
-</p>
-
-<form action="index.php?step_name=registration" method="post">
-
-<div class="buttons">
-    <input type="submit" name="Previous" value="Previous"/>
-    <input type="submit" name="Confirm" value="Next"/>
-</div>
+<form id="database_registration_install" action="index.php?step_name=install" method="post">
+	<p class="title">Thank you for registering</p>
+	<div id="step_content_registration_confirm" class="step">
+		<br/>
+		<br/>
+		<p class="empty_space">
+			Thank you for signing up. You'll receive an email from us shortly with download instructions for the KnowledgeTree Drop Box software.
+		</p>
+		<div class="demo"><img src="resources/graphics/kt_browse.png" /></div>
+	</div>
+	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
+	<input type="submit" name="Confirm" value="Next" class="button_next"/>
 </form>
+<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>

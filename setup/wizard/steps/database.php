@@ -196,15 +196,6 @@ class database extends Step
     private $ddrop = false;
     
 	/**
-	* List of variables needed
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var array
-	*/
-    public $temp_variables = array("step_name"=>"database");
-    
-	/**
 	* List of errors encountered
 	*
 	* @author KnowledgeTree Team
@@ -249,6 +240,8 @@ class database extends Step
 	*/
     protected $silent = true;
     
+    private $salt = 'installers';
+    
 	/**
 	* Constructs database object
 	*
@@ -284,6 +277,7 @@ class database extends Step
         if($this->setDataFromSession("database")) { // Attempt to set values from session
             $this->setDetails(); // Set any posted variables
         } else {
+        	$this->temp_variables['state'] = '';
             $this->loadDefaults($this->readXml()); // Load default variables from file
         }
         
@@ -315,6 +309,8 @@ class database extends Step
 			return 'next';
         } else if($this->edit()) {
             $this->setDataFromSession("database"); // Set Session Information, since its an edit
+            $this->temp_variables['state'] = 'edit';
+            
             return 'landing';
         }
     }
@@ -342,7 +338,7 @@ class database extends Step
     		$con = $this->_dbhandler->load($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
     	}
         if (!$con) {
-            $this->error['con'] = "Could not connect, please check username and password";
+            $this->error['con'] = "Could not connect to the database, please check username and password";
             return false;
         } else {
         	if ($this->dbExists()) { // Check if database Exists
@@ -395,8 +391,8 @@ class database extends Step
 	* @return boolean
 	*/
     private function setErrorsFromSession() {
-        if(isset($_SESSION['database']['errors'])) {
-            $this->error[] = $_SESSION['database']['errors'];
+        if(isset($_SESSION[$this->salt]['database']['errors'])) {
+            $this->error[] = $_SESSION[$this->salt]['database']['errors'];
             
             return true;
         }
@@ -469,6 +465,11 @@ class database extends Step
 	* @return void
 	*/
    private function setDetails() {
+   		if($this->edit()) {
+   			$this->temp_variables['state'] = 'edit';
+   		} else {
+   			$this->temp_variables['state'] = '';
+   		}
    		$this->temp_variables['dtype'] = $this->getPostSafe('dtype');
         $this->temp_variables['dtypes'] = array("0"=>"mysql"); // TODO:multiple databases;
         $this->temp_variables['dhost'] = $this->getPostSafe('dhost');
