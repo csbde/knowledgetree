@@ -170,8 +170,6 @@ class Document {
     function getStoragePath() { return $this->_oDocumentContentVersion->getStoragePath(); }
     function setStoragePath($sNewValue) { $this->_oDocumentContentVersion->setStoragePath($sNewValue); }
     
-    function getContentVersion(){return $this->_oDocumentContentVersion->getVersion();}
-
 
 
     /**
