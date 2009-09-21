@@ -482,7 +482,7 @@ class kt extends client_service  {
     	*/
 
     	$response['status_code']=0;
-		$response['message']=$url;
+		$response['message']=$url.'&apptype='.$params['app_type'];
         $response['filename']=$docname;
         $this->addDebug('effective params',$params);
     	$this->setResponse($response);
@@ -651,8 +651,7 @@ class kt extends client_service  {
 		$this->response= array('status_code'=>0, 'document_id'=>$document_id, 'content_id'=>$content_id);
     }
 
-
-	function get_all_client_policies(){
+    function get_all_client_policies(){
 		$config=KTConfig::getSingleton();
 		$this->addDebug('KTConfig Singleton',$config);
 		

@@ -105,6 +105,8 @@ class KTDownloadManager
 				'document_id'=>$doc_id,
 				'session'=>$this->session,
 				'download_date'=>date('Y-m-d H:i:s'),
+				'content_version'=>$document->document->getContentVersionId(),
+				'filesize'=>$document->document->getFileSize(),
 				'hash'=>$hash
 				),
 				array('noid'=>true)
