@@ -3,7 +3,7 @@
 <p class="descriptiveText">{i18n}This page provides details of all activities that have been carried out on the document.{/i18n}</p>
 
 
-    <table class="document_history" summary="{i18n arg_appname="$appname"}Document History for #appname# New UI Presentation{/i18n}" cellspacing="0">
+    <table class="document_history" summary="{i18n arg_appname="$appname"}Document History for #appname# New UI Presentation{/i18n}" cellspacing="0" width="100%">
 
         <thead>
             <tr>
@@ -21,7 +21,7 @@
                 <td class="action">{i18n}{$aTransactionRow.transaction_name}{/i18n}</td>
                 <td class="date">{$aTransactionRow.datetime}</td>
                 <td class="contentversion">{$aTransactionRow.version}</td>
-                <td class="comment">{$aTransactionRow.comment|sanitize}</td>
+                <td class="comment" style="width:20%;">{$aTransactionRow.comment|sanitize}</td>
             </tr>
             {/foreach}
         </tbody>
