@@ -447,7 +447,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         $repositoryId = $repositories[0]['repositoryId'];
 
         $checkedout = $NavigationService->getCheckedOutDocs($repositoryId);
-//print_r($checkedout);exit;
+
         //Create a new response feed
         $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
         $workspace = $feed->getWorkspace();
@@ -491,9 +491,6 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         }
 
         $feed->newField('cmis:hasMoreItems', 'false', $feed);
-
-//        $entry = null;
-//        $feed->newField('cmis:hasMoreItems', 'false', $entry, true);
 
         // Expose the responseFeed
         $this->responseFeed = $feed;

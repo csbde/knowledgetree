@@ -82,7 +82,7 @@ select {
 }
 
 #wrapper {
-    background: white url("graphics/background.gif") repeat-y left;
+    /*background: white url("graphics/background.gif") repeat-y left;*/
 }
 
 #container {

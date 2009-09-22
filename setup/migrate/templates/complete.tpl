@@ -24,21 +24,21 @@
 	    <table style="width:755px;">
 	        <tr>
 	        	<td style="width:15px;"> <?php echo "<span class='{$LuceneStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?> </td>
-	        	<td style="width:640px;"> Lucene Service <?php if ($LuceneStatus != 'tick') { ?> Could not be started <?php } else { ?> Started <?php } ?></td>
+	        	<td style="width:640px;"> Lucene Service <?php if ($LuceneStatus != 'tick') { ?> Could not be stopped <?php } else { ?> Stopped <?php } ?></td>
 	        	<?php if ($LuceneStatus != 'tick') { ?>
 	        		<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
 	        	<?php } ?>
 	        </tr> 
 	        <tr>
 	        	<td> <?php echo "<span class='{$SchedulerStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?> </td>
-	        	<td> Scheduler Service <?php if ($LuceneStatus != 'tick') { ?> Could not be started <?php } else { ?> Started <?php } ?></td>
+	        	<td> Scheduler Service <?php if ($LuceneStatus != 'tick') { ?> Could not be stopped <?php } else { ?> Stopped <?php } ?></td>
 	        	<?php if ($SchedulerStatus != 'tick') { ?>
 	        		<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
 	        	<?php } ?>
 	        </tr>
 	        <tr>
 	        	<td> <?php echo "<span class='{$OpenOfficeStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?> </td>
-	        	<td> OpenOffice Service <?php if ($OpenOfficeStatus != 'tick') { ?> Could not be started <?php } else { ?> Started <?php } ?></td>
+	        	<td> OpenOffice Service <?php if ($OpenOfficeStatus != 'tick') { ?> Could not be stopped <?php } else { ?> Stopped <?php } ?></td>
 	        	<?php if ($OpenOfficeStatus != 'tick') { ?>
 	        		<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
 	        	<?php } ?>

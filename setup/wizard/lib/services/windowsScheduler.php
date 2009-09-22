@@ -227,7 +227,7 @@ class windowsScheduler extends windowsService {
 	}
 	
 	private function setWinservice($winservice = "winserv.exe") {
-		$this->winservice = SYS_BIN_DIR . $winservice;
+		$this->winservice = SYS_BIN_DIR .  "win32" . DS . $winservice;
 	}
 	
 	private function setOptions() {

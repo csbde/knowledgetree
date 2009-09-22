@@ -41,7 +41,7 @@
 */
 class Session
 {
-	private $salt = 'install';
+	private $salt = 'installers';
 	/**
 	* Constructs session object
 	*
