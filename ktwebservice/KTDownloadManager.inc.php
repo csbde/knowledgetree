@@ -86,13 +86,20 @@ class KTDownloadManager
 	{
 		assert(!is_null($document));
 
-	   if ($document instanceof KTAPI_Document )
+		$content_version = 0;
+		$filesize = 0;
+
+	   if ($document instanceof KTAPI_Document ){
 	       $doc_id = $document->documentid;
-	   else if ($document instanceof Document || $document instanceof DocumentProxy)
+	       $content_version = $document->document->getContentVersionId();
+	       $filesize = $document->document->getFileSize();
+	   }else if ($document instanceof Document || $document instanceof DocumentProxy){
 	       $doc_id = $document->getId();
-	   else if (is_numeric($document))
+	       $content_version = $document->getContentVersionId();
+	       $filesize = $document->getFileSize();
+	   }else if (is_numeric($document)){
 	       $doc_id = $document;
-	   else die('gracefully');
+	   }else die('gracefully');
 
 
 		//assert(is_a($document, 'KTAPI_Document'));
@@ -105,8 +112,8 @@ class KTDownloadManager
 				'document_id'=>$doc_id,
 				'session'=>$this->session,
 				'download_date'=>date('Y-m-d H:i:s'),
-				'content_version'=>$document->document->getContentVersionId(),
-				'filesize'=>$document->document->getFileSize(),
+				'content_version'=>$content_version,
+				'filesize'=>$filesize,
 				'hash'=>$hash
 				),
 				array('noid'=>true)
