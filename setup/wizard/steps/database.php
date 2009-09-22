@@ -240,7 +240,7 @@ class database extends Step
 	*/
     protected $silent = true;
     
-    private $salt = 'installers';
+    private $salt = 'install';
     
 	/**
 	* Constructs database object
@@ -621,9 +621,13 @@ class database extends Step
 				return false;// cannot overwrite database
 		    }
 		}
-		if(!$this->createDmsUser($con)) {
+		if(!$this->createDmsUser($con)) { // Create dms users
 			
 		}
+		if(!$this->loadUpgraded($con)) {
+			$this->error['con'] = "Could not load upgraded database";
+		}
+		/*
 		if(!$this->createSchema($con)) {
 			$this->error['con'] = "Could not create schema ";
 		}
@@ -633,6 +637,7 @@ class database extends Step
 		if(!$this->applyUpgrades($con)) {
 			$this->error['con'] = "Could not apply updates ";
 		}
+		*/
 		
 		return true;
     }
@@ -722,6 +727,16 @@ class database extends Step
         	}
 		}
         
+    }
+    
+    private function loadUpgraded($con) {
+    	if($this->dpassword == '') {
+    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_DIR."dms.sql\"";
+    	} else {
+        	$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_DIR."dms.sql\"";
+    	}
+    	$response = $this->_util->pexec($command);
+    	return $response;
     }
     
 	/**

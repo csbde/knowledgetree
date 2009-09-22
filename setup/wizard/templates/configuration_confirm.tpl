@@ -71,7 +71,7 @@
 				<td width="10"><div class='<?php echo $path['class']; ?>'></div></td>
 				<td width="22%"><?php echo $path['name']; ?>:</td>
 				<td width="<?php echo $width; ?>"><?php echo $path['path']; ?></td>
-	    		<?php if(isset($path['msg'])) {	?>
+	    		<?php if($path['class'] != 'tick') {	?>
 	    			<td class="error" width="27%"> <?php echo $path['msg']; ?> </td>
 	    			<td width="10">
 					<?php if (AJAX) { ?>

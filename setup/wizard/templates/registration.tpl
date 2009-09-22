@@ -108,3 +108,6 @@
 	<input type="submit" name="Next" value="Register" onclick="w.nClick()" class="button_next"/>
 </form>
 <?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>
+<script type="text/javascript">
+	$('#first').focus();
+</script>
