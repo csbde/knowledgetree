@@ -39,7 +39,7 @@
  * @package KTAPI
  * @version Version 0.9
  */
-//
+
 require_once(KT_DIR . '/ktwebservice/KTDownloadManager.inc.php');
 
 /**
