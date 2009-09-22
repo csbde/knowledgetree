@@ -580,6 +580,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
 
 class KTEmailPlugin extends KTPlugin {
     var $sNamespace = 'ktstandard.email.plugin';
+    var $autoRegister = true;
 
 	function KTEmailPlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);

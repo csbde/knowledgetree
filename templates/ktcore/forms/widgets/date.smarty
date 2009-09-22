@@ -1,0 +1,33 @@
+<!--------------------------------------
+	---- Changes for Custom Fields -----
+	-------------------------------------->
+<div name="div_{$name}" id="div_{$name}"></div>
+
+{literal}
+<link rel="stylesheet" type="text/css" href="/thirdpartyjs/extjs/resources/css/ext-all.css">
+
+<script type="text/javascript" src="/thirdpartyjs/extjs/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="/thirdpartyjs/extjs/ext-all.js"></script>
+<script type="text/javascript">
+
+Ext.BLANK_IMAGE_URL = '/thirdpartyjs/extjs/resources/images/default/s.gif';
+
+Ext.onReady(function(){
+
+    Ext.QuickTips.init();
+
+	var dp = new Ext.form.DateField({
+        name: '{/literal}{$name}{literal}',
+        allowBlank:false,
+        size:10,
+        format: 'Y-m-d',
+        fieldClass: 'metadatadate'
+        {/literal}{if $has_value},value: '{$value|sanitize_input}'{/if}{literal}
+        });
+
+    dp.render('div_{/literal}{$name}{literal}');
+});
+
+</script>
+
+{/literal}

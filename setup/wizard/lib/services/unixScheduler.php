@@ -51,12 +51,12 @@ class unixScheduler extends unixService {
 		$this->name = "KTSchedulerTest";
 		$this->util = new InstallUtil();
 		$this->scheduler = 'scheduler';
+		$this->setSchedulerSource('schedulerTask.sh');
 	}
 	
 	public function load() {
 		$this->setSystemDir(SYSTEM_ROOT."bin".DS);
 		$this->setSchedulerDir(SYSTEM_DIR."bin".DS);
-		$this->setSchedulerSource('schedulerTask.sh');
 		$this->setSchedulerSourceLoc('schedulerTask.sh');
 	}
 	

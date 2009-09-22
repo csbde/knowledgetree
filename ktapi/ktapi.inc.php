@@ -2678,7 +2678,12 @@ class KTAPI
             }
         }
 
-        $document->email($recipients, $content, $attach);
+        $result = $document->email($recipients, $content, $attach);
+        
+        if (PEAR::isError($result)) {
+            $response['message'] = $result->getMessage();
+            return $response;
+        }
 
         $response['status_code'] = 0;
         return $response;
