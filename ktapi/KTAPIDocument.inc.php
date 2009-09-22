@@ -665,7 +665,8 @@ class KTAPI_Document extends KTAPI_FolderItem
             }
             else
             {
-                return new PEAR_Error('A document with this title already exists in your chosen folder.  Please choose a different folder, or specify a new title for the copied document.');
+                return new PEAR_Error('A document with this title already exists in your chosen folder.  '
+                                    . 'Please choose a different folder, or specify a new title for the copied document.');
             }
         }
 
@@ -685,7 +686,8 @@ class KTAPI_Document extends KTAPI_FolderItem
             }
             else
             {
-        	   return new PEAR_Error('A document with this filename already exists in your chosen folder.  Please choose a different folder, or specify a new filename for the copied document.');
+        	   return new PEAR_Error('A document with this filename already exists in your chosen folder.  '
+                                   . 'Please choose a different folder, or specify a new filename for the copied document.');
             }
         }
 
@@ -806,7 +808,8 @@ class KTAPI_Document extends KTAPI_FolderItem
         }
         if ($clash)
         {
-        	return new PEAR_Error('A document with this title already exists in your chosen folder.  Please choose a different folder, or specify a new title for the moved document.');
+        	return new PEAR_Error('A document with this title already exists in your chosen folder.  '
+                                . 'Please choose a different folder, or specify a new title for the moved document.');
         }
 
         $filename=$this->document->getFilename();
@@ -819,7 +822,8 @@ class KTAPI_Document extends KTAPI_FolderItem
         }
         if ($clash)
         {
-        	return new PEAR_Error('A document with this filename already exists in your chosen folder.  Please choose a different folder, or specify a new filename for the moved document.');
+        	return new PEAR_Error('A document with this filename already exists in your chosen folder.  '
+                                . 'Please choose a different folder, or specify a new filename for the moved document.');
         }
 
 		DBUtil::startTransaction();
@@ -2427,7 +2431,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 	/**
 	 * Emails a document as an attachment or hyperlink to a list of users, groups or external email addresses.
-	 * In the case of external addresses, if a hyperlink is used then a timed download link (via webservices) is sent allowing the recipient a window period in which to download the document.
+	 * In the case of external addresses, if a hyperlink is used then a timed download link (via webservices) is sent 
+	 * allowing the recipient a window period in which to download the document.
 	 * The period is set through the webservices config option webservice/downloadExpiry. Defaults to 30 minutes.
 	 *
 	 * @author KnowledgeTree Team
@@ -2435,12 +2440,18 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param array $members The email recipients - KTPAI_Users, KTAPI_Groups or email addresses
 	 * @param string $comment Content to be appended to the email
 	 * @param bool $attachDocument TRUE if document is an attachment | FALSE if using a hyperlink to the document
+	 * 
+	 * NOTE this function requires that the Email Plugin be active.
+	 *      It seems that it is possible for this to be unintentionally turned off during a plugin re-read. 
 	 */
 	public function email($members, $comment, $attachDocument = true)
 	{
-	    if (empty($members))
-	    {
-	        return;
+	    // check for active email plugin
+        if (!KTPluginUtil::pluginIsActive('ktstandard.email.plugin')) {
+            return new PEAR_Error('Email Plugin is not active');
+        }
+	    if (empty($members)) {
+	        return new PEAR_Error('No recipients specified');
 	    }
 
 	    $userIds = array();
@@ -2449,16 +2460,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 	    foreach($members as $member)
 	    {
-	        if ($member instanceof KTAPI_User)
-	        {
+	        if ($member instanceof KTAPI_User) {
 	            $userIds[] = $member->Id;
 	        }
-	        elseif ($member instanceof KTAPI_Group)
-	        {
+	        else if ($member instanceof KTAPI_Group) {
 	            $groupIds[] = $member->Id;
 	        }
-	        elseif (is_string($member))
-	        {
+	        else if (is_string($member)) {
 	            $emailAddrs[] = $member;
 	        }
 	    }
@@ -2468,12 +2476,12 @@ class KTAPI_Document extends KTAPI_FolderItem
         $allowEmailAddresses = $config->get('email/allowEmailAddresses', false);
 
         // if attachments aren't allowed, set $attachDocument to false
-        if(!$allowAttachment){
+        if(!$allowAttachment) {
             $attachDocument = false;
         }
 
         // If sending to external email addresses is not allowed - set array of external recipients to empty
-        if(!$allowEmailAddresses){
+        if(!$allowEmailAddresses) {
             $emailAddrs = array();
         }
 
@@ -2482,19 +2490,16 @@ class KTAPI_Document extends KTAPI_FolderItem
         $listEmails = array();
 
         sendGroupEmails($groupIds, $userEmails, $emailErrors);
-
         sendUserEmails($userIds, $userEmails, $emailErrors);
 
-        if ($attachDocument)
-        {
+        if ($attachDocument) {
             sendManualEmails($emailAddrs, $userEmails, $emailErrors);
         }
-        else
-        {
+        else {
             sendExternalEmails($emailAddrs, $this->documentid, $this->get_title(), $comment, $emailErrors);
         }
 
-        if(empty($userEmails)){
+        if(empty($userEmails)) {
             return;
         }
 
