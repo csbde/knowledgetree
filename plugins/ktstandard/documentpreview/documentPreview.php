@@ -280,12 +280,21 @@ class DocumentPreview {
         $sInfo .= " </table></div>";
         
         // Check for existence of thumbnail plugin
-        if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin')) {
+        if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin'))
+        {
             // hook into thumbnail plugin to get display for thumbnail
             include_once(KT_DIR . '/plugins/thumbnails/thumbnails.php');
             $thumbnailer = new ThumbnailViewlet();
             $thumbnailDisplay = $thumbnailer->display_viewlet($sId);
-            if ($thumbnailDisplay != '') {
+            if ($thumbnailDisplay != '')
+            {
+                // check for existence and status of instant view plugin
+                if (KTPluginUtil::pluginIsActive('instaview.processor.plugin'))
+                {
+                    require_once KTPluginUtil::getPluginPath('instaview.processor.plugin') . 'instaViewLinkAction.php';
+                    $ivLinkAction = new instaViewLinkAction();
+                    $thumbnailDisplay = '<a href="' . $ivLinkAction->getViewLink($sId, 'document') . '" target="_blank">' . $thumbnailDisplay . '</a>';
+                }
         		$sInfo .= "<div>$thumbnailDisplay</div>";
         	}
         }

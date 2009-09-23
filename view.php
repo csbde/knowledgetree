@@ -251,12 +251,22 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         
         // check for a thumbnail
         $thumbnail = '';
-        if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin')) {
+        if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin'))
+        {
             // hook into thumbnail plugin to get display for thumbnail
             include_once(KT_DIR . '/plugins/thumbnails/thumbnails.php');
             $thumbnailer = new ThumbnailViewlet();
             $thumbnailDisplay = $thumbnailer->display_viewlet($document_id);
-            if ($thumbnailDisplay != '') {
+            if ($thumbnailDisplay != '')
+            {
+                // check for existence and status of instant view plugin
+                if (KTPluginUtil::pluginIsActive('instaview.processor.plugin'))
+                {
+                    require_once KTPluginUtil::getPluginPath('instaview.processor.plugin') . 'instaViewLinkAction.php';
+                    $ivLinkAction = new instaViewLinkAction();
+                    $thumbnailDisplay = '<a href="' . $ivLinkAction->getViewLink($document_id, 'document') . '" target="_blank">' . $thumbnailDisplay . '</a>';
+                }
+                
         		$thumbnail = $thumbnailDisplay;
         	}
         }

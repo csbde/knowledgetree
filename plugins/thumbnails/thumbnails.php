@@ -28,8 +28,8 @@ require_once(KT_DIR . '/search2/documentProcessor/documentProcessor.inc.php');
  * Generates thumbnails of documents using the pdf converter output
  * Dependent on the pdfConverter
  */
-class thumbnailGenerator extends BaseProcessor
-{
+class thumbnailGenerator extends BaseProcessor {
+    
     public $order = 3;
     protected $namespace = 'thumbnails.generator.processor';
 
@@ -38,9 +38,7 @@ class thumbnailGenerator extends BaseProcessor
      *
      * @return thumbnailGenerator
      */
-    public function thumbnailGenerator()
-    {
-    }
+    public function thumbnailGenerator() {    }
 
     /**
      * Gets the document path and calls the generator function
@@ -100,7 +98,6 @@ class thumbnailGenerator extends BaseProcessor
         $mime_types[] = 'application/vnd.oasis.opendocument.spreadsheet';
         $mime_types[] = 'application/vnd.oasis.opendocument.spreadsheet-template';
 
-        /* OO3
         // Office 2007
         $mime_types[] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.template';
@@ -109,7 +106,6 @@ class thumbnailGenerator extends BaseProcessor
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.template';
-    	*/
 
         return $mime_types;
 	}
@@ -131,8 +127,10 @@ class thumbnailGenerator extends BaseProcessor
                - check out ktcore/KTDocumentViewlets.php
                - viewlet class is below
 	    */
+       
 		global $default;
-	    $pdfDir = $default->pdfDirectory;
+	   
+        $pdfDir = $default->pdfDirectory;
         $pdfFile = $pdfDir .'/'. $this->document->iId.'.pdf';
         $thumbnaildir = $pdfDir."/thumbnails";
         $thumbnailfile = $thumbnaildir.'/'.$this->document->iId.'.jpg';
@@ -162,33 +160,45 @@ class thumbnailGenerator extends BaseProcessor
         }
         
     }
+    
 }
 
 class ThumbnailViewlet extends KTDocumentViewlet {
+    
     var $sName = 'thumbnail.viewlets';
 
-    public function display_viewlet($documentId) {
+    public function display_viewlet($documentId)
+    {
     	global $default;
+        
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate('thumbnail_viewlet');
+        
         if (is_null($oTemplate)) return '';
-		$pdfDir = $default->pdfDirectory;
+		
+        $pdfDir = $default->pdfDirectory;
 		$thumbnailfile = $pdfDir . '/thumbnails/'.$documentId.'.jpg';
-		// check that file exists
+		
+        // check that file exists
 		if (!file_exists($thumbnailfile)) return '';
         // NOTE this is to turn the config setting for the PDF directory into a proper URL and not a path
 		$thumbnailUrl = str_replace($default->varDirectory, 'var/', $thumbnailfile);
         $oTemplate->setData(array('thumbnail' => $thumbnailUrl));
+        
         return $oTemplate->render();
     }
     
-    public function get_width($documentId){
+    public function get_width($documentId)
+    {
     	global $default;
-    	$pdfDir = $default->pdfDirectory;
+    	
+        $pdfDir = $default->pdfDirectory;
 		$thumbnailfile = $pdfDir . '/thumbnails/'.$documentId.'.jpg';
 		$size = getimagesize($thumbnailfile);
-		return $size[0];
+		
+        return $size[0];
     }
+    
 }
 
 ?>
