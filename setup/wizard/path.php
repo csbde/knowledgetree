@@ -69,8 +69,6 @@
     define('WIZARD_DIR', $wizard.DS);
     define('WIZARD_LIB', WIZARD_DIR."lib".DS);
     define('SERVICE_LIB', WIZARD_LIB."services".DS);
-    define('SQL_DIR', WIZARD_DIR."sql".DS);
-    define('SQL_UPGRADE_DIR', SQL_DIR."upgrades".DS);
     define('CONF_DIR', WIZARD_DIR."config".DS);
     define('RES_DIR', WIZARD_DIR."resources".DS);
     define('STEP_DIR', WIZARD_DIR."steps".DS);
@@ -88,6 +86,8 @@
 		$asys .= $v.DS;
 	}
     define('SYSTEM_ROOT', $asys);
+    define('SQL_DIR', SYSTEM_DIR."sql".DS);
+    define('SQL_INSTALL_DIR', SQL_DIR."mysql".DS."install".DS);
     // Install Type
     preg_match('/Zend/', $sys, $matches); // TODO: Dirty
     if($matches) {

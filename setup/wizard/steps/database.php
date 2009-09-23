@@ -634,10 +634,11 @@ class database extends Step
 		if(!$this->createDmsUser($con)) { // Create dms users
 			
 		}
+/*
 		if(!$this->loadUpgraded($con)) {
 			$this->error['con'] = "Could not load upgraded database";
 		}
-/*
+*/
 		if(!$this->createSchema($con)) {
 			$this->error['con'] = "Could not create schema ";
 		}
@@ -647,7 +648,7 @@ class database extends Step
 		if(!$this->applyUpgrades($con)) {
 			$this->error['con'] = "Could not apply updates ";
 		}
-*/
+
 		return true;
     }
 
@@ -719,9 +720,9 @@ class database extends Step
     private function createDmsUser($con) {
     	if($this->dmsname == '' || $this->dmspassword == '') {
     		if($this->dpassword == '') {
-    			$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_DIR."user.sql\"";
+    			$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_INSTALL_DIR."user.sql\"";
     		} else {
-        		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_DIR."user.sql\"";
+        		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_INSTALL_DIR."user.sql\"";
     		}
         	$response = $this->_util->pexec($command);
         	return $response;
@@ -740,9 +741,9 @@ class database extends Step
     
     private function loadUpgraded($con) {
     	if($this->dpassword == '') {
-    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_DIR."dms.sql\"";
+    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_INSTALL_DIR."dms.sql\"";
     	} else {
-        	$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_DIR."dms.sql\"";
+        	$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_INSTALL_DIR."dms.sql\"";
     	}
     	$response = $this->_util->pexec($command);
     	return $response;
@@ -758,11 +759,10 @@ class database extends Step
 	*/
     private function createSchema($con) {
     	if($this->dpassword == '') {
-    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_DIR."structure.sql\"";
+    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_INSTALL_DIR."structure.sql\"";
     	} else {
-        	$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_DIR."structure.sql\"";
+        	$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_INSTALL_DIR."structure.sql\"";
     	}
-    	echo $command;die;
     	$response = $this->_util->pexec($command);
     	return $response;
     }
@@ -777,9 +777,9 @@ class database extends Step
 	*/
     private function populateSchema($con) {
     	if($this->dpassword == '') {
-    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_DIR."data.sql\"";
+    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_INSTALL_DIR."data.sql\"";
     	} else {
-    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_DIR."data.sql\"";
+    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_INSTALL_DIR."data.sql\"";
     	}
     	$response = $this->_util->pexec($command);
     	return $response;
@@ -858,8 +858,10 @@ class database extends Step
     	$this->duname = 'root';
     	$this->dpassword = 'root';
     	$this->dname = 'dms_install';
+    	$this->dbbinary = 'mysql';
     	$con = $this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
     	$this->createSchema($con);
+    	echo 'Schema loaded<br>';
     }
 }
 
