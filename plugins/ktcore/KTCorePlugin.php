@@ -44,6 +44,7 @@ class KTCorePlugin extends KTPlugin {
     var $sNamespace = 'ktcore.plugin';
     var $iOrder = -25;
     var $sFriendlyName = null;
+    var $showInAdmin = false;
 
     function KTCorePlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);

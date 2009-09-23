@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  *
@@ -41,8 +41,9 @@ require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
 class MultiSelectPlugin extends KTPlugin {
     var $sNamespace = "inet.multiselect.lookupvalue.plugin";
-    var $autoRegister = false;
-    
+    var $autoRegister = true;
+    var $showInAdmin = false;
+
 	/**
 	 * returns plugin name
 	 * @param string.
@@ -54,8 +55,8 @@ class MultiSelectPlugin extends KTPlugin {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Multi-select Plugin');
         return $res;
-    }            
-	
+    }
+
 	/**
 	 *  Register the action, location, call adminsetup function and sql function
 	 *	iNET Process
@@ -63,13 +64,13 @@ class MultiSelectPlugin extends KTPlugin {
 	function setup() {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplating->addLocation('Multiselect in metadata Part {lookup Value}', '/plugins/multiselect/templates');
-		
+
 		$dir = dirname(__FILE__);
 		$this->applySQL(realpath($dir . '/sql/script.sql'));
-		
+
 		//For adding documents
 		$this->registerAction('folderaction', 'MultiDocumentAddAction', 'inet.multiselect.actions.document.addDocument', 'addDocument.php');
-		
+
 		//For bulk upload
 		$this->registerAction('folderaction', 'InetBulkUploadFolderAction', 'inet.actions.folder.bulkUpload', 'BulkUpload.php');
 		/**
@@ -85,7 +86,7 @@ class MultiSelectPlugin extends KTPlugin {
     }
 	/**
 	 * applies queries to the database
-	 * @return 
+	 * @return
 	 * @param $filename Object
 	 */
 	function applySQL($filename)
@@ -93,7 +94,7 @@ class MultiSelectPlugin extends KTPlugin {
 		global $default;
 		DBUtil::setupAdminDatabase();
 		$db = $default->_admindb;
-		
+
 		$content = file_get_contents($filename);
 		$aQueries = SQLFile::splitSQL($content);
 
@@ -109,7 +110,7 @@ class MultiSelectPlugin extends KTPlugin {
     }
 	/**
 	 * Sets up an admin
-	 * @return 
+	 * @return
 	 */
 	function setupAdmin()
 	{
