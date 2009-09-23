@@ -1,0 +1,2 @@
+ALTER TABLE `plugins` ADD COLUMN `list_admin` INTEGER NOT NULL DEFAULT 1 AFTER `orderby`;
+UPDATE plugins set list_admin = 0 WHERE namespace in ('ktcore.plugin', 'inet.multiselect.lookupvalue.plugin', 'ktcore.language.plugin');

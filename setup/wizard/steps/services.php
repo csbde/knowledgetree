@@ -320,6 +320,7 @@ class services extends Step
 	* @var string
 	*/
     protected $util;
+
     private $salt = 'installers';
     
 	/**
@@ -1187,4 +1188,8 @@ if(isset($_GET['action'])) {
 		$serv->$method();
 	}
 }
+<<<<<<< HEAD:setup/wizard/steps/services.php
 ?>
+=======
+?>
+>>>>>>> bb8b00362ae27eed89d718700b4c5fb24edeb6b6:setup/wizard/steps/services.php

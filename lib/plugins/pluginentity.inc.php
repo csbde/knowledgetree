@@ -59,7 +59,8 @@ class KTPluginEntity extends KTEntity {
         'sData' => 'data',
         'bUnavailable' => 'unavailable',
         'sFriendlyName' => 'friendly_name',
-        'iOrderBy' => 'orderby'
+        'iOrderBy' => 'orderby',
+        'iList_Admin' => 'list_admin'
     );
 
     function _table() {
@@ -112,7 +113,11 @@ class KTPluginEntity extends KTEntity {
     // STATIC
     function &getAvailable() {
         $aOptions = array('multi' => true, 'orderby' => 'friendly_name');
-        return KTEntityUtil::getBy('KTPluginEntity', 'unavailable', false, $aOptions);
+        // return KTEntityUtil::getBy('KTPluginEntity', 'unavailable', false, $aOptions);
+        // Ignore those plugins that are unavailable or set as invisible
+        $aKeys = array('unavailable', 'list_admin');
+        $aValues = array(false, true);
+        return KTEntityUtil::getBy('KTPluginEntity', $aKeys, $aValues, $aOptions);
     }
 
     function &getEnabledPlugins() {

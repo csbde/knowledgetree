@@ -1299,28 +1299,28 @@ UNLOCK TABLES;
 LOCK TABLES `plugins` WRITE;
 /*!40000 ALTER TABLE `plugins` DISABLE KEYS */;
 INSERT INTO `plugins` VALUES
-(1,'ktcore.tagcloud.plugin','plugins/tagcloud/TagCloudPlugin.php',0,0,NULL,0,'Tag Cloud Plugin',0),
-(2,'ktcore.rss.plugin','plugins/rssplugin/RSSPlugin.php',0,0,NULL,0,'RSS Plugin',0),
-(3,'ktcore.language.plugin','plugins/ktcore/KTCoreLanguagePlugin.php',0,0,NULL,0,'Core Language Support',-75),
-(4,'ktcore.plugin','plugins/ktcore/KTCorePlugin.php',0,0,NULL,0,'Core Application Functionality',-25),
-(5,'ktstandard.ldapauthentication.plugin','plugins/ktstandard/KTLDAPAuthenticationPlugin.php',0,0,NULL,0,'LDAP Authentication Plugin',0),
-(6,'ktstandard.pdf.plugin','plugins/ktstandard/PDFGeneratorPlugin.php',0,0,NULL,0,'PDF Generator Plugin',0),
-(7,'ktstandard.bulkexport.plugin','plugins/ktstandard/KTBulkExportPlugin.php',0,0,NULL,0,'Bulk Export Plugin',0),
-(8,'ktstandard.immutableaction.plugin','plugins/ktstandard/ImmutableActionPlugin.php',0,0,NULL,0,'Immutable action plugin',0),
-(9,'ktstandard.subscriptions.plugin','plugins/ktstandard/KTSubscriptions.php',0,0,NULL,0,'Subscription Plugin',0),
-(10,'ktstandard.discussion.plugin','plugins/ktstandard/KTDiscussion.php',0,0,NULL,0,'Document Discussions Plugin',0),
-(11,'ktstandard.email.plugin','plugins/ktstandard/KTEmail.php',0,0,NULL,0,'Email Plugin',0),
-(12,'ktstandard.indexer.plugin','plugins/ktstandard/KTIndexer.php',0,0,NULL,0,'Full-text Content Indexing',0),
-(13,'ktstandard.documentlinks.plugin','plugins/ktstandard/KTDocumentLinks.php',0,0,NULL,0,'Inter-document linking',0),
-(14,'ktstandard.workflowassociation.plugin','plugins/ktstandard/KTWorkflowAssociation.php',0,0,NULL,0,'Workflow Association Plugin',0),
-(15,'ktstandard.workflowassociation.documenttype.plugin','plugins/ktstandard/workflow/TypeAssociator.php',0,0,NULL,0,'Workflow allocation by document type',0),
-(16,'ktstandard.workflowassociation.folder.plugin','plugins/ktstandard/workflow/FolderAssociator.php',0,0,NULL,0,'Workflow allocation by location',0),
-(17,'ktstandard.disclaimers.plugin','plugins/ktstandard/KTDisclaimers.php',0,0,NULL,0,'Disclaimers Plugin',0),
-(18,'nbm.browseable.plugin','plugins/browseabledashlet/BrowseableDashletPlugin.php',0,0,NULL,0,'Orphaned Folders Plugin',0),
-(19,'ktstandard.ktwebdavdashlet.plugin','plugins/ktstandard/KTWebDAVDashletPlugin.php',0,0,NULL,0,'WebDAV Dashlet Plugin',0),
-(20,'ktcore.housekeeper.plugin','plugins/housekeeper/HouseKeeperPlugin.php',0,0,NULL,0,'Housekeeper',0),
-(21,'ktstandard.preview.plugin','plugins/ktstandard/documentpreview/documentPreviewPlugin.php',0,0,NULL,0,'Property Preview Plugin',0),
-(22,'ktlive.mydropdocuments.plugin','plugins/MyDropDocumentsPlugin/MyDropDocumentsPlugin.php',0,0,NULL,0,'Drop Documents Plugin',0);
+(1,'ktcore.tagcloud.plugin','plugins/tagcloud/TagCloudPlugin.php',0,0,NULL,0,'Tag Cloud Plugin',0,1),
+(2,'ktcore.rss.plugin','plugins/rssplugin/RSSPlugin.php',0,0,NULL,0,'RSS Plugin',0,1),
+(3,'ktcore.language.plugin','plugins/ktcore/KTCoreLanguagePlugin.php',0,0,NULL,0,'Core Language Support',-75,0),
+(4,'ktcore.plugin','plugins/ktcore/KTCorePlugin.php',0,0,NULL,0,'Core Application Functionality',-25,0),
+(5,'ktstandard.ldapauthentication.plugin','plugins/ktstandard/KTLDAPAuthenticationPlugin.php',0,0,NULL,0,'LDAP Authentication Plugin',0,1),
+(6,'ktstandard.pdf.plugin','plugins/ktstandard/PDFGeneratorPlugin.php',0,0,NULL,0,'PDF Generator Plugin',0,1),
+(7,'ktstandard.bulkexport.plugin','plugins/ktstandard/KTBulkExportPlugin.php',0,0,NULL,0,'Bulk Export Plugin',0,1),
+(8,'ktstandard.immutableaction.plugin','plugins/ktstandard/ImmutableActionPlugin.php',0,0,NULL,0,'Immutable action plugin',0,1),
+(9,'ktstandard.subscriptions.plugin','plugins/ktstandard/KTSubscriptions.php',0,0,NULL,0,'Subscription Plugin',0,1),
+(10,'ktstandard.discussion.plugin','plugins/ktstandard/KTDiscussion.php',0,0,NULL,0,'Document Discussions Plugin',0,1),
+(11,'ktstandard.email.plugin','plugins/ktstandard/KTEmail.php',0,0,NULL,0,'Email Plugin',0,1),
+(12,'ktstandard.indexer.plugin','plugins/ktstandard/KTIndexer.php',0,0,NULL,0,'Full-text Content Indexing',0,1),
+(13,'ktstandard.documentlinks.plugin','plugins/ktstandard/KTDocumentLinks.php',0,0,NULL,0,'Inter-document linking',0,1),
+(14,'ktstandard.workflowassociation.plugin','plugins/ktstandard/KTWorkflowAssociation.php',0,0,NULL,0,'Workflow Association Plugin',0,1),
+(15,'ktstandard.workflowassociation.documenttype.plugin','plugins/ktstandard/workflow/TypeAssociator.php',0,0,NULL,0,'Workflow allocation by document type',0,1),
+(16,'ktstandard.workflowassociation.folder.plugin','plugins/ktstandard/workflow/FolderAssociator.php',0,0,NULL,0,'Workflow allocation by location',0,1),
+(17,'ktstandard.disclaimers.plugin','plugins/ktstandard/KTDisclaimers.php',0,0,NULL,0,'Disclaimers Plugin',0,1),
+(18,'nbm.browseable.plugin','plugins/browseabledashlet/BrowseableDashletPlugin.php',0,0,NULL,0,'Orphaned Folders Plugin',0,1),
+(19,'ktstandard.ktwebdavdashlet.plugin','plugins/ktstandard/KTWebDAVDashletPlugin.php',0,0,NULL,0,'WebDAV Dashlet Plugin',0,1),
+(20,'ktcore.housekeeper.plugin','plugins/housekeeper/HouseKeeperPlugin.php',0,0,NULL,0,'Housekeeper',0,1),
+(21,'ktstandard.preview.plugin','plugins/ktstandard/documentpreview/documentPreviewPlugin.php',0,0,NULL,0,'Property Preview Plugin',0,1),
+(22,'ktlive.mydropdocuments.plugin','plugins/MyDropDocumentsPlugin/MyDropDocumentsPlugin.php',0,0,NULL,0,'Drop Documents Plugin',0,1);
 /*!40000 ALTER TABLE `plugins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1764,7 +1764,8 @@ INSERT INTO `upgrades` VALUES
 (223, 'sql*3.6.2*0*3.6.2/data_types.sql', 'Add large text and date fields','2009-05-01 00:00:00',1,'upgrade*3.6.2*99*upgrade3.6.2'),
 (224,'upgrade*3.6.2*99*upgrade3.6.2','Upgrade from version 3.6.1 to 3.6.2','2009-05-01 00:00:00',1,'upgrade*3.6.2*99*upgrade3.6.2'),
 (225,'upgrade*3.6.3*99*upgrade3.6.3','Upgrade from version 3.6.2 to 3.6.3','2009-06-01 00:00:00',1,'upgrade*3.6.3*99*upgrade3.6.3'),
-(226,'upgrade*3.7.0*99*upgrade3.7.0','Upgrade from version 3.6.3 to 3.7.0','2009-09-01 00:00:00',1,'upgrade*3.7.0*99*upgrade3.7.0');
+(226,'sql*3.7.0*0*3.7.0/plugins_admin.sql','Database upgrade to version 3.7.0: Plugins admin','2009-09-01 00:00:00',1,'upgrade*3.7.0*99*upgrade3.7.0'),
+(227,'upgrade*3.7.0*99*upgrade3.7.0','Upgrade from version 3.6.3 to 3.7.0','2009-09-01 00:00:00',1,'upgrade*3.7.0*99*upgrade3.7.0');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 

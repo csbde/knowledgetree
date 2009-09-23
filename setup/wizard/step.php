@@ -107,6 +107,7 @@ class Step
     public $displayFirst = false;
     
     private $salt = 'installers';
+    
 	/**
 	* Returns step state
 	*

@@ -1320,6 +1320,7 @@ CREATE TABLE `plugins` (
   `unavailable` tinyint(1) NOT NULL default '0',
   `friendly_name` varchar(255) default '',
   `orderby` int(11) NOT NULL default '0',
+  `list_admin` int(11) NOT NULL default '1',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `namespace` (`namespace`),
   KEY `disabled` (`disabled`)

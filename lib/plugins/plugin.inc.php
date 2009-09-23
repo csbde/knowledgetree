@@ -48,6 +48,7 @@ class KTPlugin {
     var $sSQLDir = null;
 
     var $autoRegister = false;
+    var $showInAdmin = true;
 
     var $_aPortlets = array();
     var $_aTriggers = array();
@@ -746,6 +747,7 @@ class KTPlugin {
                     'unavailable' => false,
                     'friendlyname' => $friendly_name,
                     'orderby' => $iOrder,
+                    'list_admin' => $this->showInAdmin,
                     ));
 
                 }
@@ -776,6 +778,7 @@ class KTPlugin {
             'unavailable' => false,
             'friendlyname' => $friendly_name,
             'orderby' => $iOrder,
+            'list_admin' => $this->showInAdmin,
             ));
 
         if (PEAR::isError($oEntity)) {

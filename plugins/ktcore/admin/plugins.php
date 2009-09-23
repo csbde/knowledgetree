@@ -78,7 +78,7 @@ class KTPluginDispatcher extends KTAdminDispatcher {
 
         // Update disabled plugins
         $sIds = implode(',', $aIds);
-        $sQuery = "UPDATE $sTable SET disabled = 1 WHERE id NOT IN ($sIds)";
+        $sQuery = "UPDATE $sTable SET disabled = 1 WHERE list_admin = 1 AND id NOT IN ($sIds)";
         DBUtil::runQuery(array($sQuery));
 
         // Select disabled plugins that have been enabled
