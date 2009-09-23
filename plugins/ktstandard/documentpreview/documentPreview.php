@@ -258,7 +258,7 @@ class DocumentPreview {
 
         /* Create table */
  		
-        $sInfo = "<div style='float:left;width:415px;'><table cellspacing='3px' cellpadding='3px'>
+        $sInfo = "<div style='float:left;width:405px;'><table cellspacing='3px' cellpadding='3px'>
             <tr><td>{$sFilenameLb}</td><td><b>{$sFilename}</b></td></tr>
             <tr><td>{$sMimeTypeLb}</td><td><b>{$sMimeType}</b></td></tr>
             <tr><td>{$sVersionLb}</td><td><b>{$iVersion}</b></td></tr>
