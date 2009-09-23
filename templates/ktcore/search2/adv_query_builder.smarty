@@ -188,7 +188,7 @@ function createRange(groupid, fid, type)
 			html += "<option value=\"\>=\">{i18n}greater than or equal to{/i18n}";
 			html += "<option value=\"\<\">{i18n}less than{/i18n}";
 			html += "<option value=\"\<=\">{i18n}less than or equal to{/i18n}";
-			html += "<option value=\"between\">{/literal}{i18n}between{/i18n}{literal}";
+			html += "<option value=\"between\">{i18n}between{/i18n}{literal}";
 			break;
 	}
 
@@ -449,7 +449,7 @@ function addFieldTypeSelection(groupid, fid, type, options)
 			}
 			// want to fall through
 		case 'FULLTEXT':
-            
+
 		case 'STRINGMATCH':
 			html = createText(groupid, fid, type);
 			break;
