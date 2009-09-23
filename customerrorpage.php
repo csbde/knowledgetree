@@ -73,7 +73,7 @@ $error = strip_tags($error);
 		<div id="error-container">
 			<div id="acc-error">
 
-				<h1>An Has Error Occurred</h1>
+				<h1>An Error Has Occurred</h1>
 				<p>You have encountered a problem with your document management system.</p>
 				<p>Please contact your systems administrator.</p>
 				<p>For more information on the error click here: <img src="<?php echo $sRootUrl ?>/resources/graphics/info.gif" style="cursor: pointer;" onclick="Click()" />
