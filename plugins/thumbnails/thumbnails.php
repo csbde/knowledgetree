@@ -146,10 +146,12 @@ class thumbnailGenerator extends BaseProcessor {
             $default->log->debug('Thumbnail Generator Plugin: PDF file does not exist, cannot generate a thumbnail');
             return false;
         }
+        
 		// if a previous version of the thumbnail exists - delete it
 		if (file_exists($thumbnailfile)) {
 			@unlink($thumbnailfile);
 		}
+        
         // do generation
         if (extension_loaded('imagick')) {
         	$result= shell_exec("convert -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile");
@@ -179,8 +181,18 @@ class ThumbnailViewlet extends KTDocumentViewlet {
         $pdfDir = $default->pdfDirectory;
 		$thumbnailfile = $pdfDir . '/thumbnails/'.$documentId.'.jpg';
 		
-        // check that file exists
-		if (!file_exists($thumbnailfile)) return '';
+        // check that file exists, attempt to create if not
+		if (!file_exists($thumbnailfile))
+        {
+            // try to create, return on failure
+            $thumbnailer = new thumbnailGenerator();
+            $thumbnailer->setDocument($this->oDocument);
+            $thumbnailer->processDocument();
+            if (!file_exists($thumbnailfile)) {
+                return '';
+            }
+        }
+        
         // NOTE this is to turn the config setting for the PDF directory into a proper URL and not a path
 		$thumbnailUrl = str_replace($default->varDirectory, 'var/', $thumbnailfile);
         $oTemplate->setData(array('thumbnail' => $thumbnailUrl));
