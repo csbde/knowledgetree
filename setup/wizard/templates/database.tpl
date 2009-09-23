@@ -143,3 +143,6 @@ An second user is required for normal database interaction, the reading and writ
 </div>
 </form>
 <?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>
+<script type="text/javascript">
+	$('#dname').focus();
+</script>
