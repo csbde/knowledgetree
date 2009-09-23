@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `active_sessions` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `session_id` (`session_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `active_sessions`
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `archive_restoration_request` (
   KEY `document_id` (`document_id`),
   KEY `request_user_id` (`request_user_id`),
   KEY `admin_user_id` (`admin_user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `archive_restoration_request`
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `archiving_settings` (
   PRIMARY KEY (`id`),
   KEY `archiving_type_id` (`archiving_type_id`),
   KEY `time_period_id` (`time_period_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `archiving_settings`
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `archiving_type_lookup` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `archiving_type_lookup`
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `authentication_sources` (
   `is_group_source` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `namespace` (`namespace`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `authentication_sources`
@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS `baobab_keys` (
   `company_name` varchar(255) NOT NULL,
   `tier` enum('community','evaluation','basic','plus','premium') NOT NULL DEFAULT 'community',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `baobab_keys`
@@ -186,7 +186,7 @@ CREATE TABLE IF NOT EXISTS `baobab_user_keys` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `key_id` (`key_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `baobab_user_keys`
@@ -208,7 +208,7 @@ CREATE TABLE IF NOT EXISTS `column_entries` (
   `required` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `view_namespace` (`view_namespace`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `column_entries`
@@ -265,7 +265,7 @@ CREATE TABLE IF NOT EXISTS `config_groups` (
   `category` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=30 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `config_groups`
@@ -320,7 +320,7 @@ CREATE TABLE IF NOT EXISTS `config_settings` (
   `options` mediumtext,
   `can_edit` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=139 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `config_settings`
@@ -499,7 +499,7 @@ CREATE TABLE IF NOT EXISTS `dashlet_disables` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `dashlet_namespace` (`dashlet_namespace`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `dashlet_disables`
@@ -516,7 +516,7 @@ CREATE TABLE IF NOT EXISTS `data_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `data_types`
@@ -549,7 +549,7 @@ CREATE TABLE IF NOT EXISTS `discussion_comments` (
   KEY `thread_id` (`thread_id`),
   KEY `user_id` (`user_id`),
   KEY `in_reply_to` (`in_reply_to`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `discussion_comments`
@@ -578,7 +578,7 @@ CREATE TABLE IF NOT EXISTS `discussion_threads` (
   KEY `first_comment_id` (`first_comment_id`),
   KEY `last_comment_id` (`last_comment_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `discussion_threads`
@@ -630,7 +630,7 @@ CREATE TABLE IF NOT EXISTS `documents` (
   KEY `immutable` (`immutable`),
   KEY `checkedout` (`checkedout`),
   KEY `oem_no` (`oem_no`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `documents`
@@ -656,7 +656,7 @@ CREATE TABLE IF NOT EXISTS `document_alerts` (
   `date_modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `document_id` (`document_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_alerts`
@@ -695,7 +695,7 @@ CREATE TABLE IF NOT EXISTS `document_archiving_link` (
   PRIMARY KEY (`id`),
   KEY `document_id` (`document_id`),
   KEY `archiving_settings_id` (`archiving_settings_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_archiving_link`
@@ -724,7 +724,7 @@ CREATE TABLE IF NOT EXISTS `document_content_version` (
   KEY `storage_path` (`storage_path`(255)),
   KEY `filename` (`filename`(255)),
   KEY `size` (`size`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `document_content_version`
@@ -754,7 +754,7 @@ CREATE TABLE IF NOT EXISTS `document_fields` (
   `inetlookup_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `parent_fieldset` (`parent_fieldset`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_fields`
@@ -780,7 +780,7 @@ CREATE TABLE IF NOT EXISTS `document_fields_link` (
   PRIMARY KEY (`id`),
   KEY `document_field_id` (`document_field_id`),
   KEY `metadata_version_id` (`metadata_version_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_fields_link`
@@ -798,7 +798,7 @@ CREATE TABLE IF NOT EXISTS `document_incomplete` (
   `contents` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `metadata` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_incomplete`
@@ -822,7 +822,7 @@ CREATE TABLE IF NOT EXISTS `document_link` (
   KEY `parent_document_id` (`parent_document_id`),
   KEY `child_document_id` (`child_document_id`),
   KEY `link_type_id` (`link_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_link`
@@ -841,7 +841,7 @@ CREATE TABLE IF NOT EXISTS `document_link_types` (
   `reverse_name` varchar(100) NOT NULL,
   `description` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_link_types`
@@ -883,7 +883,7 @@ CREATE TABLE IF NOT EXISTS `document_metadata_version` (
   KEY `workflow_id` (`workflow_id`),
   KEY `workflow_state_id` (`workflow_state_id`),
   KEY `version_created` (`version_created`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_metadata_version`
@@ -905,7 +905,7 @@ CREATE TABLE IF NOT EXISTS `document_role_allocations` (
   KEY `role_id` (`role_id`),
   KEY `permission_descriptor_id` (`permission_descriptor_id`),
   KEY `document_id_role_id` (`document_id`,`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_role_allocations`
@@ -944,7 +944,7 @@ CREATE TABLE IF NOT EXISTS `document_subscriptions` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `document_id` (`document_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `document_subscriptions`
@@ -1010,7 +1010,7 @@ CREATE TABLE IF NOT EXISTS `document_transactions` (
   KEY `document_id` (`document_id`),
   KEY `user_id` (`user_id`),
   KEY `datetime` (`datetime`,`transaction_namespace`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_transactions`
@@ -1047,7 +1047,7 @@ CREATE TABLE IF NOT EXISTS `document_transaction_types_lookup` (
   `namespace` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `namespace` (`namespace`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_transaction_types_lookup`
@@ -1092,7 +1092,7 @@ CREATE TABLE IF NOT EXISTS `document_types_lookup` (
   `regen_on_checkin` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_types_lookup`
@@ -1122,7 +1122,7 @@ CREATE TABLE IF NOT EXISTS `document_type_alerts` (
   `update_processed` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `document_type_id` (`document_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_type_alerts`
@@ -1142,7 +1142,7 @@ CREATE TABLE IF NOT EXISTS `document_type_fieldsets_link` (
   PRIMARY KEY (`id`),
   KEY `document_type_id` (`document_type_id`),
   KEY `fieldset_id` (`fieldset_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_type_fieldsets_link`
@@ -1163,7 +1163,7 @@ CREATE TABLE IF NOT EXISTS `document_type_fields_link` (
   PRIMARY KEY (`id`),
   KEY `document_type_id` (`document_type_id`),
   KEY `field_id` (`field_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `document_type_fields_link`
@@ -1239,7 +1239,7 @@ CREATE TABLE IF NOT EXISTS `fieldsets` (
   KEY `is_generic` (`is_generic`),
   KEY `is_complete` (`is_complete`),
   KEY `is_system` (`is_system`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `fieldsets`
@@ -1263,7 +1263,7 @@ CREATE TABLE IF NOT EXISTS `field_behaviours` (
   PRIMARY KEY (`id`),
   KEY `field_id` (`field_id`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `field_behaviours`
@@ -1325,7 +1325,7 @@ CREATE TABLE IF NOT EXISTS `field_value_instances` (
   KEY `field_value_id` (`field_value_id`),
   KEY `behaviour_id` (`behaviour_id`),
   KEY `field_id` (`field_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `field_value_instances`
@@ -1360,7 +1360,7 @@ CREATE TABLE IF NOT EXISTS `folders` (
   KEY `permission_object_id` (`permission_object_id`),
   KEY `permission_lookup_id` (`permission_lookup_id`),
   KEY `parent_id_name` (`parent_id`,`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `folders`
@@ -1389,7 +1389,7 @@ CREATE TABLE IF NOT EXISTS `folders_users_roles_link` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `document_id` (`document_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `folders_users_roles_link`
@@ -1427,7 +1427,7 @@ CREATE TABLE IF NOT EXISTS `folder_doctypes_link` (
   PRIMARY KEY (`id`),
   KEY `folder_id` (`folder_id`),
   KEY `document_type_id` (`document_type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `folder_doctypes_link`
@@ -1471,7 +1471,7 @@ CREATE TABLE IF NOT EXISTS `folder_subscriptions` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `folder_id` (`folder_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `folder_subscriptions`
@@ -1497,7 +1497,7 @@ CREATE TABLE IF NOT EXISTS `folder_transactions` (
   PRIMARY KEY (`id`),
   KEY `folder_id` (`folder_id`),
   KEY `session_id` (`session_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `folder_transactions`
@@ -1538,7 +1538,7 @@ CREATE TABLE IF NOT EXISTS `groups_groups_link` (
   PRIMARY KEY (`id`),
   KEY `parent_group_id` (`parent_group_id`),
   KEY `member_group_id` (`member_group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `groups_groups_link`
@@ -1564,7 +1564,7 @@ CREATE TABLE IF NOT EXISTS `groups_lookup` (
   UNIQUE KEY `name` (`name`),
   KEY `unit_id` (`unit_id`),
   KEY `authentication_source_id_authentication_details_s1` (`authentication_source_id`,`authentication_details_s1`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `groups_lookup`
@@ -1584,7 +1584,7 @@ CREATE TABLE IF NOT EXISTS `help` (
   `fSection` varchar(100) NOT NULL DEFAULT '',
   `help_info` mediumtext NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=101 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `help`
@@ -1704,7 +1704,7 @@ CREATE TABLE IF NOT EXISTS `help_replacement` (
   `description` mediumtext NOT NULL,
   `title` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `help_replacement`
@@ -1746,7 +1746,7 @@ CREATE TABLE IF NOT EXISTS `interceptor_instances` (
   `config` text,
   PRIMARY KEY (`id`),
   KEY `interceptor_namespace` (`interceptor_namespace`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `interceptor_instances`
@@ -1770,7 +1770,7 @@ CREATE TABLE IF NOT EXISTS `links` (
   `url` varchar(100) NOT NULL,
   `rank` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `links`
@@ -1793,7 +1793,7 @@ CREATE TABLE IF NOT EXISTS `metadata_lookup` (
   PRIMARY KEY (`id`),
   KEY `document_field_id` (`document_field_id`),
   KEY `disabled` (`disabled`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `metadata_lookup`
@@ -1825,7 +1825,7 @@ CREATE TABLE IF NOT EXISTS `metadata_lookup_tree` (
   PRIMARY KEY (`id`),
   KEY `document_field_id` (`document_field_id`),
   KEY `metadata_lookup_tree_parent` (`metadata_lookup_tree_parent`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `metadata_lookup_tree`
@@ -1843,7 +1843,7 @@ CREATE TABLE IF NOT EXISTS `mime_documents` (
   `mime_doc` varchar(100) DEFAULT NULL,
   `icon_path` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `mime_documents`
@@ -1879,7 +1879,7 @@ CREATE TABLE IF NOT EXISTS `mime_extractors` (
   `name` varchar(50) NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `mime_extractors`
@@ -1905,7 +1905,7 @@ CREATE TABLE IF NOT EXISTS `mime_types` (
   KEY `extractor_id` (`extractor_id`),
   KEY `filetypes` (`filetypes`),
   KEY `mimetypes` (`mimetypes`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=172 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `mime_types`
@@ -2101,7 +2101,7 @@ CREATE TABLE IF NOT EXISTS `news` (
   `active` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `image_mime_type_id` (`image_mime_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `news`
@@ -2128,7 +2128,7 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `data_int_1` (`data_int_1`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `notifications`
@@ -2146,7 +2146,7 @@ CREATE TABLE IF NOT EXISTS `organisations_lookup` (
   `name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `organisations_lookup`
@@ -2168,7 +2168,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   `built_in` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `permissions`
@@ -2199,7 +2199,7 @@ CREATE TABLE IF NOT EXISTS `permission_assignments` (
   UNIQUE KEY `permission_object_id_permission_id` (`permission_object_id`,`permission_id`),
   KEY `permission_id` (`permission_id`),
   KEY `permission_descriptor_id` (`permission_descriptor_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `permission_assignments`
@@ -2243,7 +2243,7 @@ CREATE TABLE IF NOT EXISTS `permission_descriptors` (
   `descriptor_text` mediumtext NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `descriptor` (`descriptor`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `permission_descriptors`
@@ -2352,7 +2352,7 @@ CREATE TABLE IF NOT EXISTS `permission_dynamic_conditions` (
   KEY `permission_object_id` (`permission_object_id`),
   KEY `group_id` (`group_id`),
   KEY `condition_id` (`condition_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `permission_dynamic_conditions`
@@ -2368,7 +2368,7 @@ CREATE TABLE IF NOT EXISTS `permission_dynamic_conditions` (
 CREATE TABLE IF NOT EXISTS `permission_lookups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `permission_lookups`
@@ -2401,7 +2401,7 @@ CREATE TABLE IF NOT EXISTS `permission_lookup_assignments` (
   UNIQUE KEY `permission_lookup_id_permission_id` (`permission_lookup_id`,`permission_id`),
   KEY `permission_id` (`permission_id`),
   KEY `permission_descriptor_id` (`permission_descriptor_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=65 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `permission_lookup_assignments`
@@ -2482,7 +2482,7 @@ INSERT INTO `permission_lookup_assignments` (`id`, `permission_id`, `permission_
 CREATE TABLE IF NOT EXISTS `permission_objects` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `permission_objects`
@@ -2509,46 +2509,62 @@ CREATE TABLE IF NOT EXISTS `plugins` (
   `unavailable` tinyint(1) NOT NULL DEFAULT '0',
   `friendly_name` varchar(255) DEFAULT '',
   `orderby` int(11) NOT NULL DEFAULT '0',
+  `list_admin` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `namespace` (`namespace`),
   KEY `disabled` (`disabled`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=76 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `plugins`
 --
 
-INSERT INTO `plugins` (`id`, `namespace`, `path`, `version`, `disabled`, `data`, `unavailable`, `friendly_name`, `orderby`) VALUES
-(46, 'ktcore.language.plugin', 'plugins/ktcore/KTCoreLanguagePlugin.php', 0, 0, NULL, 0, 'Core Language Support', -75),
-(47, 'ktcore.i18.fr_FR.plugin', 'plugins/i18n/french/FrenchPlugin.php', 0, 0, NULL, 0, 'French translation', -50),
-(48, 'ktcore.i18.it_IT.plugin', 'plugins/i18n/italian/ItalianPlugin.php', 0, 0, NULL, 0, 'Italian translation plugin', -50),
-(49, 'ktcore.i18.de_DE.plugin', 'plugins/i18n/german/GermanPlugin.php', 0, 0, NULL, 0, 'German translation plugin', -50),
-(50, 'ktcore.plugin', 'plugins/ktcore/KTCorePlugin.php', 0, 0, NULL, 0, 'Core Application Functionality', -25),
-(51, 'ktstandard.subscriptions.plugin', 'plugins/ktstandard/KTSubscriptions.php', 0, 0, NULL, 0, 'Subscription Plugin', 0),
-(52, 'ktstandard.discussion.plugin', 'plugins/ktstandard/KTDiscussion.php', 0, 0, NULL, 0, 'Document Discussions Plugin', 0),
-(53, 'ktstandard.email.plugin', 'plugins/ktstandard/KTEmail.php', 0, 1, NULL, 0, 'Email Plugin', 0),
-(54, 'ktstandard.indexer.plugin', 'plugins/ktstandard/KTIndexer.php', 0, 0, NULL, 0, 'Full-text Content Indexing', 0),
-(55, 'ktstandard.documentlinks.plugin', 'plugins/ktstandard/KTDocumentLinks.php', 0, 1, NULL, 0, 'Inter-document linking', 0),
-(56, 'ktstandard.workflowassociation.plugin', 'plugins/ktstandard/KTWorkflowAssociation.php', 0, 1, NULL, 0, 'Workflow Association Plugin', 0),
-(57, 'ktstandard.workflowassociation.documenttype.plugin', 'plugins/ktstandard/workflow/TypeAssociator.php', 0, 1, NULL, 0, 'Workflow allocation by document type', 0),
-(58, 'ktstandard.workflowassociation.folder.plugin', 'plugins/ktstandard/workflow/FolderAssociator.php', 0, 1, NULL, 0, 'Workflow allocation by location', 0),
-(59, 'ktstandard.disclaimers.plugin', 'plugins/ktstandard/KTDisclaimers.php', 0, 1, NULL, 0, 'Disclaimers Plugin', 0),
-(60, 'ktstandard.immutableaction.plugin', 'plugins/ktstandard/ImmutableActionPlugin.php', 0, 1, NULL, 0, 'Immutable action plugin', 0),
-(61, 'ktstandard.ktwebdavdashlet.plugin', 'plugins/ktstandard/KTWebDAVDashletPlugin.php', 0, 0, NULL, 0, 'WebDAV Dashlet Plugin', 0),
-(62, 'ktstandard.preview.plugin', 'plugins/ktstandard/documentpreview/documentPreviewPlugin.php', 0, 1, NULL, 0, 'Property Preview Plugin', 0),
-(63, 'ktstandard.bulkexport.plugin', 'plugins/ktstandard/KTBulkExportPlugin.php', 0, 1, NULL, 0, 'Bulk Export Plugin', 0),
-(64, 'ktstandard.pdf.plugin', 'plugins/ktstandard/PDFGeneratorPlugin.php', 0, 0, NULL, 0, 'PDF Generator Plugin', 0),
-(65, 'ktstandard.ldapauthentication.plugin', 'plugins/ktstandard/KTLDAPAuthenticationPlugin.php', 0, 0, NULL, 0, 'LDAP Authentication Plugin', 0),
-(66, 'ktcore.housekeeper.plugin', 'plugins/housekeeper/HouseKeeperPlugin.php', 0, 0, NULL, 0, 'Housekeeper', 0),
-(67, 'nbm.browseable.plugin', 'plugins/browseabledashlet/BrowseableDashletPlugin.php', 0, 1, NULL, 0, 'Orphaned Folders Plugin', 0),
-(68, 'ktcore.rss.plugin', 'plugins/rssplugin/RSSPlugin.php', 0, 0, NULL, 0, 'RSS Plugin', 0),
-(69, 'password.reset.plugin', 'plugins/passwordResetPlugin/passwordResetPlugin.php', 0, 1, NULL, 0, 'Password Reset Plugin', 0),
-(70, 'document.alerts.plugin', 'plugins/commercial-plugins/alerts/alertPlugin.php', 1, 0, NULL, 0, 'Document Alerts Plugin', 0),
-(71, 'pdf.converter.processor.plugin', 'plugins/pdfConverter/pdfConverterPlugin.php', 0, 0, NULL, 0, 'Document PDF Converter', 0),
-(72, 'thumbnails.generator.processor.plugin', 'plugins/thumbnails/thumbnailsPlugin.php', 0, 0, NULL, 0, 'Thumbnail Generator', 0),
-(73, 'ktcore.tagcloud.plugin', 'plugins/tagcloud/TagCloudPlugin.php', 1, 1, NULL, 0, 'Tag Cloud Plugin', 0),
-(74, 'inet.multiselect.lookupvalue.plugin', 'plugins/multiselect/MultiSelectPlugin.php', 0, 1, NULL, 0, 'Multi-select Plugin', 0),
-(75, 'ktlive.mydropdocuments.plugin', 'plugins/MyDropDocumentsPlugin/MyDropDocumentsPlugin.php', 0, 0, NULL, 0, 'My Drop Documents', 0);
+INSERT INTO `plugins` (`id`, `namespace`, `path`, `version`, `disabled`, `data`, `unavailable`, `friendly_name`, `orderby`, `list_admin`) VALUES
+(1, 'ktcore.tagcloud.plugin', 'plugins/tagcloud/TagCloudPlugin.php', 1, 0, NULL, 0, 'Tag Cloud Plugin', 0, 1),
+(2, 'ktcore.rss.plugin', 'plugins/rssplugin/RSSPlugin.php', 0, 0, NULL, 0, 'RSS Plugin', 0, 1),
+(3, 'ktcore.language.plugin', 'plugins/ktcore/KTCoreLanguagePlugin.php', 0, 0, NULL, 0, 'Core Language Support', -75, 0),
+(4, 'ktcore.plugin', 'plugins/ktcore/KTCorePlugin.php', 0, 0, NULL, 0, 'Core Application Functionality', -25, 0),
+(5, 'ktstandard.ldapauthentication.plugin', 'plugins/ktstandard/KTLDAPAuthenticationPlugin.php', 0, 0, NULL, 0, 'LDAP Authentication Plugin', 0, 1),
+(6, 'ktstandard.pdf.plugin', 'plugins/ktstandard/PDFGeneratorPlugin.php', 0, 0, NULL, 0, 'PDF Generator Plugin', 0, 1),
+(7, 'ktstandard.bulkexport.plugin', 'plugins/ktstandard/KTBulkExportPlugin.php', 0, 0, NULL, 0, 'Bulk Export Plugin', 0, 1),
+(8, 'ktstandard.immutableaction.plugin', 'plugins/ktstandard/ImmutableActionPlugin.php', 0, 0, NULL, 0, 'Immutable action plugin', 0, 1),
+(9, 'ktstandard.subscriptions.plugin', 'plugins/ktstandard/KTSubscriptions.php', 0, 0, NULL, 0, 'Subscription Plugin', 0, 1),
+(10, 'ktstandard.discussion.plugin', 'plugins/ktstandard/KTDiscussion.php', 0, 0, NULL, 0, 'Document Discussions Plugin', 0, 1),
+(11, 'ktstandard.email.plugin', 'plugins/ktstandard/KTEmail.php', 0, 0, NULL, 0, 'Email Plugin', 0, 1),
+(12, 'ktstandard.indexer.plugin', 'plugins/ktstandard/KTIndexer.php', 0, 0, NULL, 0, 'Full-text Content Indexing', 0, 1),
+(13, 'ktstandard.documentlinks.plugin', 'plugins/ktstandard/KTDocumentLinks.php', 0, 0, NULL, 0, 'Inter-document linking', 0, 1),
+(14, 'ktstandard.workflowassociation.plugin', 'plugins/ktstandard/KTWorkflowAssociation.php', 0, 0, NULL, 0, 'Workflow Association Plugin', 0, 1),
+(15, 'ktstandard.workflowassociation.documenttype.plugin', 'plugins/ktstandard/workflow/TypeAssociator.php', 0, 0, NULL, 0, 'Workflow allocation by document type', 0, 1),
+(16, 'ktstandard.workflowassociation.folder.plugin', 'plugins/ktstandard/workflow/FolderAssociator.php', 0, 0, NULL, 0, 'Workflow allocation by location', 0, 1),
+(17, 'ktstandard.disclaimers.plugin', 'plugins/ktstandard/KTDisclaimers.php', 0, 0, NULL, 0, 'Disclaimers Plugin', 0, 1),
+(18, 'nbm.browseable.plugin', 'plugins/browseabledashlet/BrowseableDashletPlugin.php', 0, 0, NULL, 0, 'Orphaned Folders Plugin', 0, 1),
+(19, 'ktstandard.ktwebdavdashlet.plugin', 'plugins/ktstandard/KTWebDAVDashletPlugin.php', 0, 0, NULL, 0, 'WebDAV Dashlet Plugin', 0, 1),
+(20, 'ktcore.housekeeper.plugin', 'plugins/housekeeper/HouseKeeperPlugin.php', 0, 0, NULL, 0, 'Housekeeper', 0, 1),
+(21, 'ktstandard.preview.plugin', 'plugins/ktstandard/documentpreview/documentPreviewPlugin.php', 0, 0, NULL, 0, 'Property Preview Plugin', 0, 1),
+(22, 'ktlive.mydropdocuments.plugin', 'plugins/MyDropDocumentsPlugin/MyDropDocumentsPlugin.php', 0, 0, NULL, 0, 'Drop Documents Plugin', 0, 1),
+(23, 'ktcore.i18.de_DE.plugin', 'plugins/i18n/german/GermanPlugin.php', 0, 0, NULL, 0, 'German translation plugin', -50, 1),
+(24, 'ktcore.i18.ja_JA.plugin', 'plugins/commercial-plugins/i18n/japanese/JapanesePlugin.php', 0, 0, NULL, 0, 'Commercial Japanese translation plugin', -50, 1),
+(25, 'ktcore.i18.it_IT.plugin', 'plugins/i18n/italian/ItalianPlugin.php', 0, 0, NULL, 0, 'Italian translation plugin', -50, 1),
+(26, 'ktcore.i18.fr_FR.plugin', 'plugins/i18n/french/FrenchPlugin.php', 0, 0, NULL, 0, 'French translation', -50, 1),
+(27, 'ktdms.wintools', 'plugins/commercial-plugins/wintools/BaobabPlugin.php', 2, 0, NULL, 0, 'Windows Tools:  Key Management', -20, 1),
+(28, 'password.reset.plugin', 'plugins/passwordResetPlugin/passwordResetPlugin.php', 0, 1, NULL, 0, 'Password Reset Plugin', 0, 1),
+(29, 'pdf.converter.processor.plugin', 'plugins/pdfConverter/pdfConverterPlugin.php', 0, 0, NULL, 0, 'Document PDF Converter', 0, 1),
+(30, 'office.addin.plugin', 'plugins/commercial-plugins/officeaddin/officeaddinPlugin.php', 0, 0, NULL, 0, 'Office Add-In Plugin', 0, 1),
+(31, 'document.alerts.plugin', 'plugins/commercial-plugins/alerts/alertPlugin.php', 1, 0, NULL, 0, 'Document Alerts Plugin', 0, 1),
+(32, 'client.tools.plugin', 'plugins/commercial-plugins/clienttools/clientToolsPlugin.php', 0, 0, NULL, 0, 'Client Tools Plugin', 0, 1),
+(33, 'custom-numbering.plugin', 'plugins/commercial-plugins/custom-numbering/CustomNumberingPlugin.php', 0, 0, NULL, 1, 'Custom Numbering', 0, 1),
+(34, 'guid.inserter.plugin', 'plugins/commercial-plugins/guidInserter/guidInserterPlugin.php', 0, 1, NULL, 0, 'Document GUID Inserter (Experimental)', 0, 1),
+(35, 'ktextra.conditionalmetadata.plugin', 'plugins/commercial-plugins/conditional-metadata/ConditionalMetadataPlugin.php', 0, 0, NULL, 0, 'Conditional Metadata Plugin', 0, 1),
+(36, 'shortcuts.plugin', 'plugins/commercial-plugins/shortcuts/ShortcutsPlugin.php', 0, 0, NULL, 0, 'Shortcuts', 0, 1),
+(37, 'electronic.signatures.plugin', 'plugins/commercial-plugins/electronic-signatures/KTElectronicSignaturesPlugin.php', 0, 0, NULL, 0, 'Electronic Signatures', 0, 1),
+(38, 'document.comparison.plugin', 'plugins/commercial-plugins/documentcomparison/DocumentComparisonPlugin.php', 0, 0, NULL, 1, 'Document Comparison Plugin', 0, 1),
+(39, 'ktnetwork.inlineview.plugin', 'plugins/commercial-plugins/network/inlineview/InlineViewPlugin.php', 0, 0, NULL, 0, 'Inline View of Documents', 0, 1),
+(40, 'ktnetwork.GoToDocumentId.plugin', 'plugins/commercial-plugins/network/gotodocumentid/GoToDocumentIdPlugin.php', 0, 0, NULL, 0, 'Document Jump Dashlet', 0, 1),
+(41, 'ktprofessional.reporting.plugin', 'plugins/commercial-plugins/professional-reporting/ProfessionalReportingPlugin.php', 0, 0, NULL, 0, 'Professional Reporting', 0, 1),
+(42, 'ktnetwork.TopDownloads.plugin', 'plugins/commercial-plugins/network/topdownloads/TopDownloadsPlugin.php', 0, 0, NULL, 0, 'Top Downloads for the last Week', 0, 1),
+(43, 'ktnetwork.ExtendedDocumentTransactionInfo.plugin', 'plugins/commercial-plugins/network/extendedtransactioninfo/ExtendedTransactionInfoPlugin.php', 0, 0, NULL, 0, 'Extended Transaction Information', 0, 1),
+(44, 'bd.Quicklinks.plugin', 'plugins/commercial-plugins/network/quicklinks/QuicklinksPlugin.php', 2, 0, NULL, 0, 'Quicklinks Plugin', 0, 1),
+(45, 'brad.UserHistory.plugin', 'plugins/commercial-plugins/network/userhistory/UserHistoryPlugin.php', 0, 0, NULL, 0, 'User History', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -2569,292 +2585,7 @@ CREATE TABLE IF NOT EXISTS `plugin_helper` (
   KEY `name` (`namespace`),
   KEY `parent` (`plugin`),
   KEY `view` (`viewtype`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=279 ;
-
---
--- Dumping data for table `plugin_helper`
---
-
-INSERT INTO `plugin_helper` (`id`, `namespace`, `plugin`, `classname`, `pathname`, `object`, `classtype`, `viewtype`) VALUES
-(1, 'ktcore.language.plugin', 'ktcore.language.plugin', 'KTCoreLanguagePlugin', 'plugins/ktcore/KTCoreLanguagePlugin.php', 'KTCoreLanguagePlugin|ktcore.language.plugin|plugins/ktcore/KTCoreLanguagePlugin.php', 'plugin', 'general'),
-(2, 'ktcore.plugin', 'ktcore.plugin', 'KTCorePlugin', 'plugins/ktcore/KTCorePlugin.php', 'KTCorePlugin|ktcore.plugin|plugins/ktcore/KTCorePlugin.php', 'plugin', 'general'),
-(3, 'ktstandard.subscriptions.plugin', 'ktstandard.subscriptions.plugin', 'KTSubscriptionPlugin', 'plugins/ktstandard/KTSubscriptions.php', 'KTSubscriptionPlugin|ktstandard.subscriptions.plugin|plugins/ktstandard/KTSubscriptions.php', 'plugin', 'general'),
-(4, 'ktstandard.discussion.plugin', 'ktstandard.discussion.plugin', 'KTDiscussionPlugin', 'plugins/ktstandard/KTDiscussion.php', 'KTDiscussionPlugin|ktstandard.discussion.plugin|plugins/ktstandard/KTDiscussion.php', 'plugin', 'general'),
-(5, 'ktstandard.email.plugin', 'ktstandard.email.plugin', 'KTEmailPlugin', 'plugins/ktstandard/KTEmail.php', 'KTEmailPlugin|ktstandard.email.plugin|plugins/ktstandard/KTEmail.php', 'plugin', 'general'),
-(6, 'ktstandard.indexer.plugin', 'ktstandard.indexer.plugin', 'KTIndexerPlugin', 'plugins/ktstandard/KTIndexer.php', 'KTIndexerPlugin|ktstandard.indexer.plugin|plugins/ktstandard/KTIndexer.php', 'plugin', 'general'),
-(7, 'ktstandard.documentlinks.plugin', 'ktstandard.documentlinks.plugin', 'KTDocumentLinks', 'plugins/ktstandard/KTDocumentLinks.php', 'KTDocumentLinks|ktstandard.documentlinks.plugin|plugins/ktstandard/KTDocumentLinks.php', 'plugin', 'general'),
-(8, 'ktstandard.workflowassociation.plugin', 'ktstandard.workflowassociation.plugin', 'KTWorkflowAssociationPlugin', 'plugins/ktstandard/KTWorkflowAssociation.php', 'KTWorkflowAssociationPlugin|ktstandard.workflowassociation.plugin|plugins/ktstandard/KTWorkflowAssociation.php', 'plugin', 'general'),
-(9, 'ktstandard.workflowassociation.documenttype.plugin', 'ktstandard.workflowassociation.documenttype.plugin', 'KTDocTypeWorkflowAssociationPlugin', 'plugins/ktstandard/workflow/TypeAssociator.php', 'KTDocTypeWorkflowAssociationPlugin|ktstandard.workflowassociation.documenttype.plugin|plugins/ktstandard/workflow/TypeAssociator.php', 'plugin', 'general'),
-(10, 'ktstandard.workflowassociation.folder.plugin', 'ktstandard.workflowassociation.folder.plugin', 'KTFolderWorkflowAssociationPlugin', 'plugins/ktstandard/workflow/FolderAssociator.php', 'KTFolderWorkflowAssociationPlugin|ktstandard.workflowassociation.folder.plugin|plugins/ktstandard/workflow/FolderAssociator.php', 'plugin', 'general'),
-(11, 'ktstandard.disclaimers.plugin', 'ktstandard.disclaimers.plugin', 'KTDisclaimersPlugin', 'plugins/ktstandard/KTDisclaimers.php', 'KTDisclaimersPlugin|ktstandard.disclaimers.plugin|plugins/ktstandard/KTDisclaimers.php', 'plugin', 'general'),
-(12, 'ktstandard.immutableaction.plugin', 'ktstandard.immutableaction.plugin', 'KTImmutableActionPlugin', 'plugins/ktstandard/ImmutableActionPlugin.php', 'KTImmutableActionPlugin|ktstandard.immutableaction.plugin|plugins/ktstandard/ImmutableActionPlugin.php', 'plugin', 'general'),
-(13, 'ktstandard.ktwebdavdashlet.plugin', 'ktstandard.ktwebdavdashlet.plugin', 'KTWebDAVDashletPlugin', 'plugins/ktstandard/KTWebDAVDashletPlugin.php', 'KTWebDAVDashletPlugin|ktstandard.ktwebdavdashlet.plugin|plugins/ktstandard/KTWebDAVDashletPlugin.php', 'plugin', 'general'),
-(14, 'ktstandard.preview.plugin', 'ktstandard.preview.plugin', 'DocumentPreviewPlugin', 'plugins/ktstandard/documentpreview/documentPreviewPlugin.php', 'DocumentPreviewPlugin|ktstandard.preview.plugin|plugins/ktstandard/documentpreview/documentPreviewPlugin.php', 'plugin', 'general'),
-(15, 'ktstandard.bulkexport.plugin', 'ktstandard.bulkexport.plugin', 'KTBulkExportPlugin', 'plugins/ktstandard/KTBulkExportPlugin.php', 'KTBulkExportPlugin|ktstandard.bulkexport.plugin|plugins/ktstandard/KTBulkExportPlugin.php', 'plugin', 'general'),
-(16, 'ktstandard.pdf.plugin', 'ktstandard.pdf.plugin', 'PDFGeneratorPlugin', 'plugins/ktstandard/PDFGeneratorPlugin.php', 'PDFGeneratorPlugin|ktstandard.pdf.plugin|plugins/ktstandard/PDFGeneratorPlugin.php', 'plugin', 'general'),
-(17, 'ktstandard.ldapauthentication.plugin', 'ktstandard.ldapauthentication.plugin', 'KTLDAPAuthenticationPlugin', 'plugins/ktstandard/KTLDAPAuthenticationPlugin.php', 'KTLDAPAuthenticationPlugin|ktstandard.ldapauthentication.plugin|plugins/ktstandard/KTLDAPAuthenticationPlugin.php', 'plugin', 'general'),
-(18, 'ktcore.i18.fr_FR.plugin', 'ktcore.i18.fr_FR.plugin', 'FrenchPlugin', 'plugins/i18n/french/FrenchPlugin.php', 'FrenchPlugin|ktcore.i18.fr_FR.plugin|plugins/i18n/french/FrenchPlugin.php', 'plugin', 'general'),
-(19, 'ktcore.i18.it_IT.plugin', 'ktcore.i18.it_IT.plugin', 'ItalianPlugin', 'plugins/i18n/italian/ItalianPlugin.php', 'ItalianPlugin|ktcore.i18.it_IT.plugin|plugins/i18n/italian/ItalianPlugin.php', 'plugin', 'general'),
-(20, 'ktcore.i18.de_DE.plugin', 'ktcore.i18.de_DE.plugin', 'GermanPlugin', 'plugins/i18n/german/GermanPlugin.php', 'GermanPlugin|ktcore.i18.de_DE.plugin|plugins/i18n/german/GermanPlugin.php', 'plugin', 'general'),
-(21, 'ktcore.housekeeper.plugin', 'ktcore.housekeeper.plugin', 'HouseKeeperPlugin', 'plugins/housekeeper/HouseKeeperPlugin.php', 'HouseKeeperPlugin|ktcore.housekeeper.plugin|plugins/housekeeper/HouseKeeperPlugin.php', 'plugin', 'general'),
-(22, 'nbm.browseable.plugin', 'nbm.browseable.plugin', 'BrowseableDashletPlugin', 'plugins/browseabledashlet/BrowseableDashletPlugin.php', 'BrowseableDashletPlugin|nbm.browseable.plugin|plugins/browseabledashlet/BrowseableDashletPlugin.php', 'plugin', 'general'),
-(23, 'ktcore.rss.plugin', 'ktcore.rss.plugin', 'RSSPlugin', 'plugins/rssplugin/RSSPlugin.php', 'RSSPlugin|ktcore.rss.plugin|plugins/rssplugin/RSSPlugin.php', 'plugin', 'general'),
-(24, 'password.reset.plugin', 'password.reset.plugin', 'PasswordResetPlugin', 'plugins/passwordResetPlugin/passwordResetPlugin.php', 'PasswordResetPlugin|password.reset.plugin|plugins/passwordResetPlugin/passwordResetPlugin.php', 'plugin', 'general'),
-(25, 'document.alerts.plugin', 'document.alerts.plugin', 'AlertPlugin', 'plugins/commercial-plugins/alerts/alertPlugin.php', 'AlertPlugin|document.alerts.plugin|plugins/commercial-plugins/alerts/alertPlugin.php', 'plugin', 'general'),
-(26, 'pdf.converter.processor.plugin', 'pdf.converter.processor.plugin', 'pdfConverterPlugin', 'plugins/pdfConverter/pdfConverterPlugin.php', 'pdfConverterPlugin|pdf.converter.processor.plugin|plugins/pdfConverter/pdfConverterPlugin.php', 'plugin', 'general'),
-(27, 'thumbnails.generator.processor.plugin', 'thumbnails.generator.processor.plugin', 'thumbnailsPlugin', 'plugins/thumbnails/thumbnailsPlugin.php', 'thumbnailsPlugin|thumbnails.generator.processor.plugin|plugins/thumbnails/thumbnailsPlugin.php', 'plugin', 'general'),
-(28, 'ktcore.tagcloud.plugin', 'ktcore.tagcloud.plugin', 'TagCloudPlugin', 'plugins/tagcloud/TagCloudPlugin.php', 'TagCloudPlugin|ktcore.tagcloud.plugin|plugins/tagcloud/TagCloudPlugin.php', 'plugin', 'general'),
-(29, 'inet.multiselect.lookupvalue.plugin', 'inet.multiselect.lookupvalue.plugin', 'MultiSelectPlugin', 'plugins/multiselect/MultiSelectPlugin.php', 'MultiSelectPlugin|inet.multiselect.lookupvalue.plugin|plugins/multiselect/MultiSelectPlugin.php', 'plugin', 'general'),
-(30, 'ktlive.mydropdocuments.plugin', 'ktlive.mydropdocuments.plugin', 'MyDropDocumentsPlugin', 'plugins/MyDropDocumentsPlugin/MyDropDocumentsPlugin.php', 'MyDropDocumentsPlugin|ktlive.mydropdocuments.plugin|plugins/MyDropDocumentsPlugin/MyDropDocumentsPlugin.php', 'plugin', 'general'),
-(31, 'knowledgeTree', 'ktcore.language.plugin', 'knowledgeTree', 'i18n', 'knowledgeTree|i18n', 'i18n', 'general'),
-(32, 'knowledgeTree/en', 'ktcore.language.plugin', 'knowledgeTree', 'default', 'knowledgeTree|en|default', 'i18nlang', 'general'),
-(33, 'en', 'ktcore.language.plugin', NULL, NULL, 'en|English (United States)', 'language', 'general'),
-(34, 'en', 'ktcore.language.plugin', NULL, '', 'ktcore|en|kthelp/ktcore/EN', 'help_language', 'general'),
-(35, 'knowledgeTree/fr_FR', 'ktcore.i18.fr_FR.plugin', 'knowledgeTree', 'plugins/i18n/french/translations', 'knowledgeTree|fr_FR|plugins/i18n/french/translations', 'i18nlang', 'general'),
-(36, 'fr_FR', 'ktcore.i18.fr_FR.plugin', NULL, NULL, 'fr_FR|French (France)', 'language', 'general'),
-(37, 'fr_FR', 'ktcore.i18.fr_FR.plugin', NULL, '', 'ktcore|fr_FR|plugins/i18n/french/help/ktcore', 'help_language', 'general'),
-(38, 'knowledgeTree/it_IT', 'ktcore.i18.it_IT.plugin', 'knowledgeTree', 'plugins/i18n/italian/translations', 'knowledgeTree|it_IT|plugins/i18n/italian/translations', 'i18nlang', 'general'),
-(39, 'it_IT', 'ktcore.i18.it_IT.plugin', NULL, NULL, 'it_IT|Italiano (Italia)', 'language', 'general'),
-(40, 'it_IT', 'ktcore.i18.it_IT.plugin', NULL, '', 'ktcore|it_IT|plugins/i18n/italian/help/ktcore', 'help_language', 'general'),
-(41, 'knowledgeTree/de_DE', 'ktcore.i18.de_DE.plugin', 'knowledgeTree', 'plugins/i18n/german/translations', 'knowledgeTree|de_DE|plugins/i18n/german/translations', 'i18nlang', 'general'),
-(42, 'de_DE', 'ktcore.i18.de_DE.plugin', NULL, NULL, 'de_DE|Deutsch (Deutschland)', 'language', 'general'),
-(43, 'de_DE', 'ktcore.i18.de_DE.plugin', NULL, '', 'ktcore|de_DE|plugins/i18n/german/help/ktcore', 'help_language', 'general'),
-(44, 'ktcore.actions.document.displaydetails', 'ktcore.plugin', 'KTDocumentDetailsAction', 'plugins/ktcore/KTDocumentActions.php', 'documentinfo|KTDocumentDetailsAction|ktcore.actions.document.displaydetails|plugins/ktcore/KTDocumentActions.php|ktcore.plugin', 'action', 'general'),
-(45, 'ktcore.actions.document.view', 'ktcore.plugin', 'KTDocumentViewAction', 'plugins/ktcore/KTDocumentActions.php', 'documentaction|KTDocumentViewAction|ktcore.actions.document.view|plugins/ktcore/KTDocumentActions.php|ktcore.plugin', 'action', 'general'),
-(46, 'ktcore.actions.document.ownershipchange', 'ktcore.plugin', 'KTOwnershipChangeAction', 'plugins/ktcore/KTDocumentActions.php', 'documentaction|KTOwnershipChangeAction|ktcore.actions.document.ownershipchange|plugins/ktcore/KTDocumentActions.php|ktcore.plugin', 'action', 'general'),
-(47, 'ktcore.actions.document.checkout', 'ktcore.plugin', 'KTDocumentCheckOutAction', 'plugins/ktcore/KTDocumentActions.php', 'documentaction|KTDocumentCheckOutAction|ktcore.actions.document.checkout|plugins/ktcore/KTDocumentActions.php|ktcore.plugin', 'action', 'general'),
-(48, 'ktcore.actions.document.cancelcheckout', 'ktcore.plugin', 'KTDocumentCancelCheckOutAction', 'plugins/ktcore/KTDocumentActions.php', 'documentaction|KTDocumentCancelCheckOutAction|ktcore.actions.document.cancelcheckout|plugins/ktcore/KTDocumentActions.php|ktcore.plugin', 'action', 'general'),
-(49, 'ktcore.actions.document.checkin', 'ktcore.plugin', 'KTDocumentCheckInAction', 'plugins/ktcore/KTDocumentActions.php', 'documentaction|KTDocumentCheckInAction|ktcore.actions.document.checkin|plugins/ktcore/KTDocumentActions.php|ktcore.plugin', 'action', 'general'),
-(50, 'ktcore.actions.document.edit', 'ktcore.plugin', 'KTDocumentEditAction', 'plugins/ktcore/document/edit.php', 'documentaction|KTDocumentEditAction|ktcore.actions.document.edit|plugins/ktcore/document/edit.php|ktcore.plugin', 'action', 'general'),
-(51, 'ktcore.actions.document.delete', 'ktcore.plugin', 'KTDocumentDeleteAction', 'plugins/ktcore/KTDocumentActions.php', 'documentaction|KTDocumentDeleteAction|ktcore.actions.document.delete|plugins/ktcore/KTDocumentActions.php|ktcore.plugin', 'action', 'general'),
-(52, 'ktcore.actions.document.move', 'ktcore.plugin', 'KTDocumentMoveAction', 'plugins/ktcore/KTDocumentActions.php', 'documentaction|KTDocumentMoveAction|ktcore.actions.document.move|plugins/ktcore/KTDocumentActions.php|ktcore.plugin', 'action', 'general'),
-(53, 'ktcore.actions.document.copy', 'ktcore.plugin', 'KTDocumentCopyAction', 'plugins/ktcore/KTDocumentActions.php', 'documentaction|KTDocumentCopyAction|ktcore.actions.document.copy|plugins/ktcore/KTDocumentActions.php|ktcore.plugin', 'action', 'general'),
-(54, 'ktcore.actions.document.rename', 'ktcore.plugin', 'KTDocumentRenameAction', 'plugins/ktcore/document/Rename.php', 'documentaction|KTDocumentRenameAction|ktcore.actions.document.rename|plugins/ktcore/document/Rename.php|ktcore.plugin', 'action', 'general'),
-(55, 'ktcore.search2.index.action', 'ktcore.plugin', 'DocumentIndexAction', 'plugins/search2/DocumentIndexAction.php', 'documentaction|DocumentIndexAction|ktcore.search2.index.action|plugins/search2/DocumentIndexAction.php|ktcore.plugin', 'action', 'general'),
-(56, 'ktcore.actions.document.transactionhistory', 'ktcore.plugin', 'KTDocumentTransactionHistoryAction', 'plugins/ktcore/KTDocumentActions.php', 'documentinfo|KTDocumentTransactionHistoryAction|ktcore.actions.document.transactionhistory|plugins/ktcore/KTDocumentActions.php|ktcore.plugin', 'action', 'general'),
-(57, 'ktcore.actions.document.versionhistory', 'ktcore.plugin', 'KTDocumentVersionHistoryAction', 'plugins/ktcore/KTDocumentActions.php', 'documentinfo|KTDocumentVersionHistoryAction|ktcore.actions.document.versionhistory|plugins/ktcore/KTDocumentActions.php|ktcore.plugin', 'action', 'general'),
-(58, 'ktcore.actions.document.archive', 'ktcore.plugin', 'KTDocumentArchiveAction', 'plugins/ktcore/KTDocumentActions.php', 'documentaction|KTDocumentArchiveAction|ktcore.actions.document.archive|plugins/ktcore/KTDocumentActions.php|ktcore.plugin', 'action', 'general'),
-(59, 'ktcore.actions.document.workflow', 'ktcore.plugin', 'KTDocumentWorkflowAction', 'plugins/ktcore/KTDocumentActions.php', 'documentaction|KTDocumentWorkflowAction|ktcore.actions.document.workflow|plugins/ktcore/KTDocumentActions.php|ktcore.plugin', 'action', 'general'),
-(60, 'ktcore.actions.folder.view', 'ktcore.plugin', 'KTFolderViewAction', 'plugins/ktcore/KTFolderActions.php', 'folderinfo|KTFolderViewAction|ktcore.actions.folder.view|plugins/ktcore/KTFolderActions.php|ktcore.plugin', 'action', 'general'),
-(61, 'ktcore.actions.folder.addDocument', 'ktcore.plugin', 'KTFolderAddDocumentAction', 'plugins/ktcore/folder/addDocument.php', 'folderaction|KTFolderAddDocumentAction|ktcore.actions.folder.addDocument|plugins/ktcore/folder/addDocument.php|ktcore.plugin', 'action', 'general'),
-(62, 'ktcore.actions.folder.addFolder', 'ktcore.plugin', 'KTFolderAddFolderAction', 'plugins/ktcore/KTFolderActions.php', 'folderaction|KTFolderAddFolderAction|ktcore.actions.folder.addFolder|plugins/ktcore/KTFolderActions.php|ktcore.plugin', 'action', 'general'),
-(63, 'ktcore.actions.folder.rename', 'ktcore.plugin', 'KTFolderRenameAction', 'plugins/ktcore/folder/Rename.php', 'folderaction|KTFolderRenameAction|ktcore.actions.folder.rename|plugins/ktcore/folder/Rename.php|ktcore.plugin', 'action', 'general'),
-(64, 'ktcore.actions.folder.permissions', 'ktcore.plugin', 'KTFolderPermissionsAction', 'plugins/ktcore/folder/Permissions.php', 'folderaction|KTFolderPermissionsAction|ktcore.actions.folder.permissions|plugins/ktcore/folder/Permissions.php|ktcore.plugin', 'action', 'general'),
-(65, 'ktcore.actions.folder.bulkImport', 'ktcore.plugin', 'KTBulkImportFolderAction', 'plugins/ktcore/folder/BulkImport.php', 'folderaction|KTBulkImportFolderAction|ktcore.actions.folder.bulkImport|plugins/ktcore/folder/BulkImport.php|ktcore.plugin', 'action', 'general'),
-(66, 'ktcore.actions.folder.bulkUpload', 'ktcore.plugin', 'KTBulkUploadFolderAction', 'plugins/ktcore/folder/BulkUpload.php', 'folderaction|KTBulkUploadFolderAction|ktcore.actions.folder.bulkUpload|plugins/ktcore/folder/BulkUpload.php|ktcore.plugin', 'action', 'general'),
-(67, 'ktcore.search2.index.folder.action', 'ktcore.plugin', 'FolderIndexAction', 'plugins/search2/FolderIndexAction.php', 'folderaction|FolderIndexAction|ktcore.search2.index.folder.action|plugins/search2/FolderIndexAction.php|ktcore.plugin', 'action', 'general'),
-(68, 'ktcore.actions.folder.transactions', 'ktcore.plugin', 'KTFolderTransactionsAction', 'plugins/ktcore/folder/Transactions.php', 'folderinfo|KTFolderTransactionsAction|ktcore.actions.folder.transactions|plugins/ktcore/folder/Transactions.php|ktcore.plugin', 'action', 'general'),
-(69, 'ktcore.actions.document.assist', 'ktcore.plugin', 'KTDocumentAssistAction', 'plugins/ktcore/KTAssist.php', 'documentaction|KTDocumentAssistAction|ktcore.actions.document.assist|plugins/ktcore/KTAssist.php|ktcore.plugin', 'action', 'general'),
-(70, 'ktcore.viewlets.document.workflow', 'ktcore.plugin', 'KTWorkflowViewlet', 'plugins/ktcore/KTDocumentViewlets.php', 'documentviewlet|KTWorkflowViewlet|ktcore.viewlets.document.workflow|plugins/ktcore/KTDocumentViewlets.php|ktcore.plugin', 'action', 'general'),
-(71, 'ktcore/assist', 'ktcore.plugin', 'KTAssistNotification', 'plugins/ktcore/KTAssist.php', 'ktcore/assist|KTAssistNotification|plugins/ktcore/KTAssist.php', 'notification_handler', 'general'),
-(72, 'ktcore/subscriptions', 'ktcore.plugin', 'KTSubscriptionNotification', 'lib/dashboard/Notification.inc.php', 'ktcore/subscriptions|KTSubscriptionNotification|lib/dashboard/Notification.inc.php', 'notification_handler', 'general'),
-(73, 'ktcore/workflow', 'ktcore.plugin', 'KTWorkflowNotification', 'lib/dashboard/Notification.inc.php', 'ktcore/workflow|KTWorkflowNotification|lib/dashboard/Notification.inc.php', 'notification_handler', 'general'),
-(74, 'ktcore.actions.document.permissions', 'ktcore.plugin', 'KTDocumentPermissionsAction', 'plugins/ktcore/KTPermissions.php', 'documentinfo|KTDocumentPermissionsAction|ktcore.actions.document.permissions|plugins/ktcore/KTPermissions.php|ktcore.plugin', 'action', 'general'),
-(75, 'ktcore.actions.folder.roles', 'ktcore.plugin', 'KTRoleAllocationPlugin', 'plugins/ktcore/KTPermissions.php', 'folderaction|KTRoleAllocationPlugin|ktcore.actions.folder.roles|plugins/ktcore/KTPermissions.php|ktcore.plugin', 'action', 'general'),
-(76, 'ktcore.actions.document.roles', 'ktcore.plugin', 'KTDocumentRolesAction', 'plugins/ktcore/KTPermissions.php', 'documentinfo|KTDocumentRolesAction|ktcore.actions.document.roles|plugins/ktcore/KTPermissions.php|ktcore.plugin', 'action', 'general'),
-(77, 'ktcore.actions.bulk.delete', 'ktcore.plugin', 'KTBulkDeleteAction', 'plugins/ktcore/KTBulkActions.php', 'bulkaction|KTBulkDeleteAction|ktcore.actions.bulk.delete|plugins/ktcore/KTBulkActions.php|ktcore.plugin', 'action', 'general'),
-(78, 'ktcore.actions.bulk.move', 'ktcore.plugin', 'KTBulkMoveAction', 'plugins/ktcore/KTBulkActions.php', 'bulkaction|KTBulkMoveAction|ktcore.actions.bulk.move|plugins/ktcore/KTBulkActions.php|ktcore.plugin', 'action', 'general'),
-(79, 'ktcore.actions.bulk.copy', 'ktcore.plugin', 'KTBulkCopyAction', 'plugins/ktcore/KTBulkActions.php', 'bulkaction|KTBulkCopyAction|ktcore.actions.bulk.copy|plugins/ktcore/KTBulkActions.php|ktcore.plugin', 'action', 'general'),
-(80, 'ktcore.actions.bulk.archive', 'ktcore.plugin', 'KTBulkArchiveAction', 'plugins/ktcore/KTBulkActions.php', 'bulkaction|KTBulkArchiveAction|ktcore.actions.bulk.archive|plugins/ktcore/KTBulkActions.php|ktcore.plugin', 'action', 'general'),
-(81, 'ktcore.actions.bulk.export', 'ktcore.plugin', 'KTBrowseBulkExportAction', 'plugins/ktcore/KTBulkActions.php', 'bulkaction|KTBrowseBulkExportAction|ktcore.actions.bulk.export|plugins/ktcore/KTBulkActions.php|ktcore.plugin', 'action', 'general'),
-(82, 'ktcore.actions.bulk.checkout', 'ktcore.plugin', 'KTBrowseBulkCheckoutAction', 'plugins/ktcore/KTBulkActions.php', 'bulkaction|KTBrowseBulkCheckoutAction|ktcore.actions.bulk.checkout|plugins/ktcore/KTBulkActions.php|ktcore.plugin', 'action', 'general'),
-(83, 'ktcore.dashlet.info', 'ktcore.plugin', 'KTInfoDashlet', 'plugins/ktcore/KTDashlets.php', 'KTInfoDashlet|ktcore.dashlet.info|plugins/ktcore/KTDashlets.php|ktcore.plugin', 'dashlet', 'dashboard'),
-(84, 'ktcore.dashlet.notifications', 'ktcore.plugin', 'KTNotificationDashlet', 'plugins/ktcore/KTDashlets.php', 'KTNotificationDashlet|ktcore.dashlet.notifications|plugins/ktcore/KTDashlets.php|ktcore.plugin', 'dashlet', 'dashboard'),
-(85, 'ktcore.dashlet.checkout', 'ktcore.plugin', 'KTCheckoutDashlet', 'plugins/ktcore/KTDashlets.php', 'KTCheckoutDashlet|ktcore.dashlet.checkout|plugins/ktcore/KTDashlets.php|ktcore.plugin', 'dashlet', 'dashboard'),
-(86, 'ktcore.dashlet.mail_server', 'ktcore.plugin', 'KTMailServerDashlet', 'plugins/ktcore/KTDashlets.php', 'KTMailServerDashlet|ktcore.dashlet.mail_server|plugins/ktcore/KTDashlets.php|ktcore.plugin', 'dashlet', 'dashboard'),
-(87, 'ktcore.dashlet.lucene_migration', 'ktcore.plugin', 'LuceneMigrationDashlet', 'plugins/search2/MigrationDashlet.php', 'LuceneMigrationDashlet|ktcore.dashlet.lucene_migration|plugins/search2/MigrationDashlet.php|ktcore.plugin', 'dashlet', 'dashboard'),
-(88, 'ktcore.schedulerdashlet.plugin', 'ktcore.plugin', 'schedulerDashlet', 'plugins/ktcore/scheduler/schedulerDashlet.php', 'schedulerDashlet|ktcore.schedulerdashlet.plugin|plugins/ktcore/scheduler/schedulerDashlet.php|ktcore.plugin', 'dashlet', 'dashboard'),
-(89, 'misc/scheduler', 'ktcore.plugin', 'manageSchedulerDispatcher', 'plugins/ktcore/scheduler/taskScheduler.php', 'scheduler|manageSchedulerDispatcher|misc|Manage Task Scheduler|Manage the task scheduler|plugins/ktcore/scheduler/taskScheduler.php||ktcore.plugin', 'admin_page', 'general'),
-(90, 'principals/authentication', 'ktcore.plugin', 'KTAuthenticationAdminPage', 'plugins/ktcore/authentication/authenticationadminpage.inc.php', 'authentication|KTAuthenticationAdminPage|principals|Authentication|By default, KnowledgeTree controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data.|plugins/ktcore/authentication/authenticationadminpage.inc.php||ktcore.plugin', 'admin_page', 'general'),
-(91, 'ktcore.search2.portlet', 'ktcore.plugin', 'Search2Portlet', 'plugins/search2/Search2Portlet.php', 'a:2:{i:0;s:6:"browse";i:1;s:9:"dashboard";}|Search2Portlet|ktcore.search2.portlet|plugins/search2/Search2Portlet.php|ktcore.plugin', 'portlet', 'general'),
-(92, 'ktcore.portlets.admin_mode', 'ktcore.plugin', 'KTAdminModePortlet', 'plugins/ktcore/KTPortlets.php', 'a:1:{i:0;s:6:"browse";}|KTAdminModePortlet|ktcore.portlets.admin_mode|plugins/ktcore/KTPortlets.php|ktcore.plugin', 'portlet', 'general'),
-(93, 'ktcore.portlets.browsemodes', 'ktcore.plugin', 'KTBrowseModePortlet', 'plugins/ktcore/KTPortlets.php', 'a:1:{i:0;s:6:"browse";}|KTBrowseModePortlet|ktcore.portlets.browsemodes|plugins/ktcore/KTPortlets.php|ktcore.plugin', 'portlet', 'general'),
-(94, 'ktcore.portlets.adminnavigation', 'ktcore.plugin', 'KTAdminSectionNavigation', 'plugins/ktcore/KTPortlets.php', 'a:1:{i:0;s:14:"administration";}|KTAdminSectionNavigation|ktcore.portlets.adminnavigation|plugins/ktcore/KTPortlets.php|ktcore.plugin', 'portlet', 'general'),
-(95, 'ktcore.columns.title', 'ktcore.plugin', 'AdvancedTitleColumn', 'plugins/ktcore/KTColumns.inc.php', 'Title|ktcore.columns.title|AdvancedTitleColumn|plugins/ktcore/KTColumns.inc.php', 'column', 'general'),
-(96, 'ktcore.columns.selection', 'ktcore.plugin', 'AdvancedSelectionColumn', 'plugins/ktcore/KTColumns.inc.php', 'Selection|ktcore.columns.selection|AdvancedSelectionColumn|plugins/ktcore/KTColumns.inc.php', 'column', 'general'),
-(97, 'ktcore.columns.singleselection', 'ktcore.plugin', 'AdvancedSingleSelectionColumn', 'plugins/ktcore/KTColumns.inc.php', 'Single Selection|ktcore.columns.singleselection|AdvancedSingleSelectionColumn|plugins/ktcore/KTColumns.inc.php', 'column', 'general'),
-(98, 'ktcore.columns.workflow_state', 'ktcore.plugin', 'AdvancedWorkflowColumn', 'plugins/ktcore/KTColumns.inc.php', 'Workflow State|ktcore.columns.workflow_state|AdvancedWorkflowColumn|plugins/ktcore/KTColumns.inc.php', 'column', 'general'),
-(99, 'ktcore.columns.checkedout_by', 'ktcore.plugin', 'CheckedOutByColumn', 'plugins/ktcore/KTColumns.inc.php', 'Checked Out By|ktcore.columns.checkedout_by|CheckedOutByColumn|plugins/ktcore/KTColumns.inc.php', 'column', 'general'),
-(100, 'ktcore.columns.creationdate', 'ktcore.plugin', 'CreationDateColumn', 'plugins/ktcore/KTColumns.inc.php', 'Creation Date|ktcore.columns.creationdate|CreationDateColumn|plugins/ktcore/KTColumns.inc.php', 'column', 'general'),
-(101, 'ktcore.columns.modificationdate', 'ktcore.plugin', 'ModificationDateColumn', 'plugins/ktcore/KTColumns.inc.php', 'Modification Date|ktcore.columns.modificationdate|ModificationDateColumn|plugins/ktcore/KTColumns.inc.php', 'column', 'general'),
-(102, 'ktcore.columns.creator', 'ktcore.plugin', 'CreatorColumn', 'plugins/ktcore/KTColumns.inc.php', 'Creator|ktcore.columns.creator|CreatorColumn|plugins/ktcore/KTColumns.inc.php', 'column', 'general'),
-(103, 'ktcore.columns.download', 'ktcore.plugin', 'AdvancedDownloadColumn', 'plugins/ktcore/KTColumns.inc.php', 'Download File|ktcore.columns.download|AdvancedDownloadColumn|plugins/ktcore/KTColumns.inc.php', 'column', 'general'),
-(104, 'ktcore.columns.docid', 'ktcore.plugin', 'DocumentIDColumn', 'plugins/ktcore/KTColumns.inc.php', 'Document ID|ktcore.columns.docid|DocumentIDColumn|plugins/ktcore/KTColumns.inc.php', 'column', 'general'),
-(105, 'ktcore.columns.containing_folder', 'ktcore.plugin', 'ContainingFolderColumn', 'plugins/ktcore/KTColumns.inc.php', 'Open Containing Folder|ktcore.columns.containing_folder|ContainingFolderColumn|plugins/ktcore/KTColumns.inc.php', 'column', 'general'),
-(106, 'ktcore.columns.document_type', 'ktcore.plugin', 'DocumentTypeColumn', 'plugins/ktcore/KTColumns.inc.php', 'Document Type|ktcore.columns.document_type|DocumentTypeColumn|plugins/ktcore/KTColumns.inc.php', 'column', 'general'),
-(107, 'ktcore.views.browse', 'ktcore.plugin', '', '', 'Browse Documents|ktcore.views.browse', 'view', 'general'),
-(108, 'ktcore.views.search', 'ktcore.plugin', '', '', 'Search|ktcore.views.search', 'view', 'general'),
-(109, 'ktcore.workflowtriggers.permissionguard', 'ktcore.plugin', 'PermissionGuardTrigger', 'plugins/ktcore/KTWorkflowTriggers.inc.php', 'ktcore.workflowtriggers.permissionguard|PermissionGuardTrigger|plugins/ktcore/KTWorkflowTriggers.inc.php', 'workflow_trigger', 'general'),
-(110, 'ktcore.workflowtriggers.roleguard', 'ktcore.plugin', 'RoleGuardTrigger', 'plugins/ktcore/KTWorkflowTriggers.inc.php', 'ktcore.workflowtriggers.roleguard|RoleGuardTrigger|plugins/ktcore/KTWorkflowTriggers.inc.php', 'workflow_trigger', 'general'),
-(111, 'ktcore.workflowtriggers.groupguard', 'ktcore.plugin', 'GroupGuardTrigger', 'plugins/ktcore/KTWorkflowTriggers.inc.php', 'ktcore.workflowtriggers.groupguard|GroupGuardTrigger|plugins/ktcore/KTWorkflowTriggers.inc.php', 'workflow_trigger', 'general'),
-(112, 'ktcore.workflowtriggers.conditionguard', 'ktcore.plugin', 'ConditionGuardTrigger', 'plugins/ktcore/KTWorkflowTriggers.inc.php', 'ktcore.workflowtriggers.conditionguard|ConditionGuardTrigger|plugins/ktcore/KTWorkflowTriggers.inc.php', 'workflow_trigger', 'general'),
-(113, 'ktcore.workflowtriggers.checkoutguard', 'ktcore.plugin', 'CheckoutGuardTrigger', 'plugins/ktcore/KTWorkflowTriggers.inc.php', 'ktcore.workflowtriggers.checkoutguard|CheckoutGuardTrigger|plugins/ktcore/KTWorkflowTriggers.inc.php', 'workflow_trigger', 'general'),
-(114, 'ktcore.workflowtriggers.copyaction', 'ktcore.plugin', 'CopyActionTrigger', 'plugins/ktcore/KTWorkflowTriggers.inc.php', 'ktcore.workflowtriggers.copyaction|CopyActionTrigger|plugins/ktcore/KTWorkflowTriggers.inc.php', 'workflow_trigger', 'general'),
-(115, 'ktcore.workflowtriggers.moveaction', 'ktcore.plugin', 'MoveActionTrigger', 'plugins/ktcore/KTWorkflowTriggers.inc.php', 'ktcore.workflowtriggers.moveaction|MoveActionTrigger|plugins/ktcore/KTWorkflowTriggers.inc.php', 'workflow_trigger', 'general'),
-(116, 'ktcore.search2.savedsearch.subscription.edit', 'ktcore.plugin', 'SavedSearchSubscriptionTrigger', 'plugins/search2/Search2Triggers.php', 'edit|postValidate|SavedSearchSubscriptionTrigger|ktcore.search2.savedsearch.subscription.edit|plugins/search2/Search2Triggers.php|ktcore.plugin', 'trigger', 'general'),
-(117, 'ktcore.search2.savedsearch.subscription.add', 'ktcore.plugin', 'SavedSearchSubscriptionTrigger', 'plugins/search2/Search2Triggers.php', 'add|postValidate|SavedSearchSubscriptionTrigger|ktcore.search2.savedsearch.subscription.add|plugins/search2/Search2Triggers.php|ktcore.plugin', 'trigger', 'general'),
-(118, 'ktcore.search2.savedsearch.subscription.discussion', 'ktcore.plugin', 'SavedSearchSubscriptionTrigger', 'plugins/search2/Search2Triggers.php', 'discussion|postValidate|SavedSearchSubscriptionTrigger|ktcore.search2.savedsearch.subscription.discussion|plugins/search2/Search2Triggers.php|ktcore.plugin', 'trigger', 'general'),
-(119, 'ktcore.triggers.tagcloud.add', 'ktcore.plugin', 'KTAddDocumentTrigger', 'plugins/tagcloud/TagCloudTriggers.php', 'add|postValidate|KTAddDocumentTrigger|ktcore.triggers.tagcloud.add|plugins/tagcloud/TagCloudTriggers.php|ktcore.plugin', 'trigger', 'general'),
-(120, 'ktcore.triggers.tagcloud.edit', 'ktcore.plugin', 'KTEditDocumentTrigger', 'plugins/tagcloud/TagCloudTriggers.php', 'edit|postValidate|KTEditDocumentTrigger|ktcore.triggers.tagcloud.edit|plugins/tagcloud/TagCloudTriggers.php|ktcore.plugin', 'trigger', 'general'),
-(121, 'ktcore.widgets.info', 'ktcore.plugin', 'KTCoreInfoWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreInfoWidget|ktcore.widgets.info|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(122, 'ktcore.widgets.hidden', 'ktcore.plugin', 'KTCoreHiddenWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreHiddenWidget|ktcore.widgets.hidden|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(123, 'ktcore.widgets.string', 'ktcore.plugin', 'KTCoreStringWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreStringWidget|ktcore.widgets.string|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(124, 'ktcore.widgets.selection', 'ktcore.plugin', 'KTCoreSelectionWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreSelectionWidget|ktcore.widgets.selection|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(125, 'ktcore.widgets.entityselection', 'ktcore.plugin', 'KTCoreEntitySelectionWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreEntitySelectionWidget|ktcore.widgets.entityselection|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(126, 'ktcore.widgets.boolean', 'ktcore.plugin', 'KTCoreBooleanWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreBooleanWidget|ktcore.widgets.boolean|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(127, 'ktcore.widgets.password', 'ktcore.plugin', 'KTCorePasswordWidget', 'plugins/ktcore/KTWidgets.php', 'KTCorePasswordWidget|ktcore.widgets.password|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(128, 'ktcore.widgets.text', 'ktcore.plugin', 'KTCoreTextWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreTextWidget|ktcore.widgets.text|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(129, 'ktcore.widgets.reason', 'ktcore.plugin', 'KTCoreReasonWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreReasonWidget|ktcore.widgets.reason|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(130, 'ktcore.widgets.file', 'ktcore.plugin', 'KTCoreFileWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreFileWidget|ktcore.widgets.file|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(131, 'ktcore.widgets.fieldset', 'ktcore.plugin', 'KTCoreFieldsetWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreFieldsetWidget|ktcore.widgets.fieldset|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(132, 'ktcore.widgets.transparentfieldset', 'ktcore.plugin', 'KTCoreTransparentFieldsetWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreTransparentFieldsetWidget|ktcore.widgets.transparentfieldset|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(133, 'ktcore.widgets.collection', 'ktcore.plugin', 'KTCoreCollectionWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreCollectionWidget|ktcore.widgets.collection|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(134, 'ktcore.widgets.treemetadata', 'ktcore.plugin', 'KTCoreTreeMetadataWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreTreeMetadataWidget|ktcore.widgets.treemetadata|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(135, 'ktcore.widgets.descriptorselection', 'ktcore.plugin', 'KTDescriptorSelectionWidget', 'plugins/ktcore/KTWidgets.php', 'KTDescriptorSelectionWidget|ktcore.widgets.descriptorselection|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(136, 'ktcore.widgets.foldercollection', 'ktcore.plugin', 'KTCoreFolderCollectionWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreFolderCollectionWidget|ktcore.widgets.foldercollection|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(137, 'ktcore.widgets.textarea', 'ktcore.plugin', 'KTCoreTextAreaWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreTextAreaWidget|ktcore.widgets.textarea|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(138, 'ktcore.widgets.date', 'ktcore.plugin', 'KTCoreDateWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreDateWidget|ktcore.widgets.date|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(139, 'ktcore.widgets.conditionalselection', 'ktcore.plugin', 'KTCoreConditionalSelectionWidget', 'plugins/ktcore/KTWidgets.php', 'KTCoreConditionalSelectionWidget|ktcore.widgets.conditionalselection|plugins/ktcore/KTWidgets.php', 'widget', 'general'),
-(140, 'ktcore.plugin/collection', 'ktcore.plugin', 'KTCoreCollectionPage', 'plugins/ktcore/KTWidgets.php', 'ktcore.plugin/collection|KTCoreCollectionPage|plugins/ktcore/KTWidgets.php|ktcore.plugin', 'page', 'general'),
-(141, 'ktcore.plugin/notifications', 'ktcore.plugin', 'KTNotificationOverflowPage', 'plugins/ktcore/KTMiscPages.php', 'ktcore.plugin/notifications|KTNotificationOverflowPage|plugins/ktcore/KTMiscPages.php|ktcore.plugin', 'page', 'general'),
-(142, 'ktcore.validators.string', 'ktcore.plugin', 'KTStringValidator', 'plugins/ktcore/KTValidators.php', 'KTStringValidator|ktcore.validators.string|plugins/ktcore/KTValidators.php', 'validator', 'general'),
-(143, 'ktcore.validators.illegal_char', 'ktcore.plugin', 'KTIllegalCharValidator', 'plugins/ktcore/KTValidators.php', 'KTIllegalCharValidator|ktcore.validators.illegal_char|plugins/ktcore/KTValidators.php', 'validator', 'general'),
-(144, 'ktcore.validators.entity', 'ktcore.plugin', 'KTEntityValidator', 'plugins/ktcore/KTValidators.php', 'KTEntityValidator|ktcore.validators.entity|plugins/ktcore/KTValidators.php', 'validator', 'general'),
-(145, 'ktcore.validators.required', 'ktcore.plugin', 'KTRequiredValidator', 'plugins/ktcore/KTValidators.php', 'KTRequiredValidator|ktcore.validators.required|plugins/ktcore/KTValidators.php', 'validator', 'general'),
-(146, 'ktcore.validators.emailaddress', 'ktcore.plugin', 'KTEmailValidator', 'plugins/ktcore/KTValidators.php', 'KTEmailValidator|ktcore.validators.emailaddress|plugins/ktcore/KTValidators.php', 'validator', 'general'),
-(147, 'ktcore.validators.boolean', 'ktcore.plugin', 'KTBooleanValidator', 'plugins/ktcore/KTValidators.php', 'KTBooleanValidator|ktcore.validators.boolean|plugins/ktcore/KTValidators.php', 'validator', 'general'),
-(148, 'ktcore.validators.password', 'ktcore.plugin', 'KTPasswordValidator', 'plugins/ktcore/KTValidators.php', 'KTPasswordValidator|ktcore.validators.password|plugins/ktcore/KTValidators.php', 'validator', 'general'),
-(149, 'ktcore.validators.membership', 'ktcore.plugin', 'KTMembershipValidator', 'plugins/ktcore/KTValidators.php', 'KTMembershipValidator|ktcore.validators.membership|plugins/ktcore/KTValidators.php', 'validator', 'general'),
-(150, 'ktcore.validators.fieldset', 'ktcore.plugin', 'KTFieldsetValidator', 'plugins/ktcore/KTValidators.php', 'KTFieldsetValidator|ktcore.validators.fieldset|plugins/ktcore/KTValidators.php', 'validator', 'general'),
-(151, 'ktcore.validators.file', 'ktcore.plugin', 'KTFileValidator', 'plugins/ktcore/KTValidators.php', 'KTFileValidator|ktcore.validators.file|plugins/ktcore/KTValidators.php', 'validator', 'general'),
-(152, 'ktcore.validators.requiredfile', 'ktcore.plugin', 'KTRequiredFileValidator', 'plugins/ktcore/KTValidators.php', 'KTRequiredFileValidator|ktcore.validators.requiredfile|plugins/ktcore/KTValidators.php', 'validator', 'general'),
-(153, 'ktcore.validators.fileillegalchar', 'ktcore.plugin', 'KTFileIllegalCharValidator', 'plugins/ktcore/KTValidators.php', 'KTFileIllegalCharValidator|ktcore.validators.fileillegalchar|plugins/ktcore/KTValidators.php', 'validator', 'general'),
-(154, 'ktcore.validators.array', 'ktcore.plugin', 'KTArrayValidator', 'plugins/ktcore/KTValidators.php', 'KTArrayValidator|ktcore.validators.array|plugins/ktcore/KTValidators.php', 'validator', 'general'),
-(155, 'ktcore.criteria.name', 'ktcore.plugin', 'NameCriterion', 'lib/browse/Criteria.inc', 'NameCriterion|ktcore.criteria.name|lib/browse/Criteria.inc|', 'criterion', 'general'),
-(156, 'ktcore.criteria.id', 'ktcore.plugin', 'IDCriterion', 'lib/browse/Criteria.inc', 'IDCriterion|ktcore.criteria.id|lib/browse/Criteria.inc|', 'criterion', 'general'),
-(157, 'ktcore.criteria.title', 'ktcore.plugin', 'TitleCriterion', 'lib/browse/Criteria.inc', 'TitleCriterion|ktcore.criteria.title|lib/browse/Criteria.inc|', 'criterion', 'general'),
-(158, 'ktcore.criteria.creator', 'ktcore.plugin', 'CreatorCriterion', 'lib/browse/Criteria.inc', 'CreatorCriterion|ktcore.criteria.creator|lib/browse/Criteria.inc|', 'criterion', 'general'),
-(159, 'ktcore.criteria.datecreated', 'ktcore.plugin', 'DateCreatedCriterion', 'lib/browse/Criteria.inc', 'DateCreatedCriterion|ktcore.criteria.datecreated|lib/browse/Criteria.inc|', 'criterion', 'general'),
-(160, 'ktcore.criteria.documenttype', 'ktcore.plugin', 'DocumentTypeCriterion', 'lib/browse/Criteria.inc', 'DocumentTypeCriterion|ktcore.criteria.documenttype|lib/browse/Criteria.inc|', 'criterion', 'general'),
-(161, 'ktcore.criteria.datemodified', 'ktcore.plugin', 'DateModifiedCriterion', 'lib/browse/Criteria.inc', 'DateModifiedCriterion|ktcore.criteria.datemodified|lib/browse/Criteria.inc|', 'criterion', 'general'),
-(162, 'ktcore.criteria.size', 'ktcore.plugin', 'SizeCriterion', 'lib/browse/Criteria.inc', 'SizeCriterion|ktcore.criteria.size|lib/browse/Criteria.inc|', 'criterion', 'general'),
-(163, 'ktcore.criteria.workflowstate', 'ktcore.plugin', 'WorkflowStateCriterion', 'lib/browse/Criteria.inc', 'WorkflowStateCriterion|ktcore.criteria.workflowstate|lib/browse/Criteria.inc|', 'criterion', 'general'),
-(164, 'ktcore.criteria.datecreateddelta', 'ktcore.plugin', 'DateCreatedDeltaCriterion', 'lib/browse/Criteria.inc', 'DateCreatedDeltaCriterion|ktcore.criteria.datecreateddelta|lib/browse/Criteria.inc|', 'criterion', 'general'),
-(165, 'ktcore.criteria.datemodifieddelta', 'ktcore.plugin', 'DateModifiedDeltaCriterion', 'lib/browse/Criteria.inc', 'DateModifiedDeltaCriterion|ktcore.criteria.datemodifieddelta|lib/browse/Criteria.inc|', 'criterion', 'general'),
-(166, 'ktcore.criteria.generalmetadata', 'ktcore.plugin', 'GeneralMetadataCriterion', 'lib/browse/Criteria.inc', 'GeneralMetadataCriterion|ktcore.criteria.generalmetadata|lib/browse/Criteria.inc|', 'criterion', 'general'),
-(167, 'principals', 'ktcore.plugin', 'Users and Groups', 'principals', 'principals|Users and Groups|Control which users can log in, and are part of which groups and organisational units, from these management panels.', 'admin_category', 'general'),
-(168, 'security', 'ktcore.plugin', 'Security Management', 'security', 'security|Security Management|Assign permissions to users and groups, and specify which permissions are required to interact with various parts of the Document Management System.', 'admin_category', 'general'),
-(169, 'storage', 'ktcore.plugin', 'Document Storage', 'storage', 'storage|Document Storage|Manage checked-out, archived and deleted documents.', 'admin_category', 'general'),
-(170, 'documents', 'ktcore.plugin', 'Document Metadata and Workflow Configuration', 'documents', 'documents|Document Metadata and Workflow Configuration|Configure the document metadata: Document Types, Document Fieldsets, Link Types and Workflows.', 'admin_category', 'general'),
-(171, 'search', 'ktcore.plugin', 'Search and Indexing', 'search', 'search|Search and Indexing|Search and Indexing Settings', 'admin_category', 'general'),
-(172, 'config', 'ktcore.plugin', 'System Configuration', 'config', 'config|System Configuration|System Configuration Settings', 'admin_category', 'general'),
-(173, 'misc', 'ktcore.plugin', 'Miscellaneous', 'misc', 'misc|Miscellaneous|Various settings which do not fit into the other categories, including managing help and saved searches.', 'admin_category', 'general'),
-(174, 'principals/users', 'ktcore.plugin', 'KTUserAdminDispatcher', 'plugins/ktcore/admin/userManagement.php', 'users|KTUserAdminDispatcher|principals|Manage Users|Add or remove users from the system.|plugins/ktcore/admin/userManagement.php||ktcore.plugin', 'admin_page', 'general'),
-(175, 'principals/groups', 'ktcore.plugin', 'KTGroupAdminDispatcher', 'plugins/ktcore/admin/groupManagement.php', 'groups|KTGroupAdminDispatcher|principals|Manage Groups|Add or remove groups from the system.|plugins/ktcore/admin/groupManagement.php||ktcore.plugin', 'admin_page', 'general'),
-(176, 'principals/units', 'ktcore.plugin', 'KTUnitAdminDispatcher', 'plugins/ktcore/admin/unitManagement.php', 'units|KTUnitAdminDispatcher|principals|Control Units|Specify which organisational units are available within the repository.|plugins/ktcore/admin/unitManagement.php||ktcore.plugin', 'admin_page', 'general'),
-(177, 'security/permissions', 'ktcore.plugin', 'ManagePermissionsDispatcher', 'plugins/ktcore/admin/managePermissions.php', 'permissions|ManagePermissionsDispatcher|security|Permissions|Create or delete permissions.|plugins/ktcore/admin/managePermissions.php||ktcore.plugin', 'admin_page', 'general'),
-(178, 'security/roles', 'ktcore.plugin', 'RoleAdminDispatcher', 'plugins/ktcore/admin/roleManagement.php', 'roles|RoleAdminDispatcher|security|Roles|Create or delete roles|plugins/ktcore/admin/roleManagement.php||ktcore.plugin', 'admin_page', 'general'),
-(179, 'security/conditions', 'ktcore.plugin', 'KTConditionDispatcher', 'plugins/ktcore/admin/conditions.php', 'conditions|KTConditionDispatcher|security|Dynamic Conditions|Manage criteria which determine whether a user is permitted to perform a system action.|plugins/ktcore/admin/conditions.php||ktcore.plugin', 'admin_page', 'general'),
-(180, 'documents/typemanagement', 'ktcore.plugin', 'KTDocumentTypeDispatcher', 'plugins/ktcore/admin/documentTypes.php', 'typemanagement|KTDocumentTypeDispatcher|documents|Document Types|Manage the different classes of document which can be added to the system.|plugins/ktcore/admin/documentTypes.php||ktcore.plugin', 'admin_page', 'general'),
-(181, 'documents/fieldmanagement2', 'ktcore.plugin', 'KTDocumentFieldDispatcher', 'plugins/ktcore/admin/documentFieldsv2.php', 'fieldmanagement2|KTDocumentFieldDispatcher|documents|Document Fieldsets|Manage the different types of information that can be associated with classes of documents.|plugins/ktcore/admin/documentFieldsv2.php||ktcore.plugin', 'admin_page', 'general'),
-(182, 'documents/workflows_2', 'ktcore.plugin', 'KTWorkflowAdminV2', 'plugins/ktcore/admin/workflowsv2.php', 'workflows_2|KTWorkflowAdminV2|documents|Workflows|Configure automated Workflows that map to document life-cycles.|plugins/ktcore/admin/workflowsv2.php||ktcore.plugin', 'admin_page', 'general'),
-(183, 'storage/checkout', 'ktcore.plugin', 'KTCheckoutAdminDispatcher', 'plugins/ktcore/admin/documentCheckout.php', 'checkout|KTCheckoutAdminDispatcher|storage|Checked Out Document Control|Override the checked-out status of documents if a user has failed to do so.|plugins/ktcore/admin/documentCheckout.php||ktcore.plugin', 'admin_page', 'general'),
-(184, 'storage/archived', 'ktcore.plugin', 'ArchivedDocumentsDispatcher', 'plugins/ktcore/admin/archivedDocuments.php', 'archived|ArchivedDocumentsDispatcher|storage|Archived Document Restoration|Restore old (archived) documents, usually at a user''s request.|plugins/ktcore/admin/archivedDocuments.php||ktcore.plugin', 'admin_page', 'general'),
-(185, 'storage/expunge', 'ktcore.plugin', 'DeletedDocumentsDispatcher', 'plugins/ktcore/admin/deletedDocuments.php', 'expunge|DeletedDocumentsDispatcher|storage|Restore or Expunge Deleted Documents|Restore previously deleted documents, or permanently expunge them.|plugins/ktcore/admin/deletedDocuments.php||ktcore.plugin', 'admin_page', 'general'),
-(186, 'search/managemimetypes', 'ktcore.plugin', 'ManageMimeTypesDispatcher', 'plugins/search2/reporting/ManageMimeTypes.php', 'managemimetypes|ManageMimeTypesDispatcher|search|Mime Types|This report lists all mime types and extensions that can be identified by KnowledgeTree.|plugins/search2/reporting/ManageMimeTypes.php||ktcore.plugin', 'admin_page', 'general'),
-(187, 'search/extractorinfo', 'ktcore.plugin', 'ExtractorInfoDispatcher', 'plugins/search2/reporting/ExtractorInfo.php', 'extractorinfo|ExtractorInfoDispatcher|search|Extractor Information|This report lists the text extractors and their supported mime types.|plugins/search2/reporting/ExtractorInfo.php||ktcore.plugin', 'admin_page', 'general'),
-(188, 'search/indexerrors', 'ktcore.plugin', 'IndexErrorsDispatcher', 'plugins/search2/reporting/IndexErrors.php', 'indexerrors|IndexErrorsDispatcher|search|Document Indexing Diagnostics|This report will help to diagnose problems with document indexing.|plugins/search2/reporting/IndexErrors.php||ktcore.plugin', 'admin_page', 'general'),
-(189, 'search/pendingdocuments', 'ktcore.plugin', 'PendingDocumentsDispatcher', 'plugins/search2/reporting/PendingDocuments.php', 'pendingdocuments|PendingDocumentsDispatcher|search|Pending Documents Indexing Queue|This report lists documents that are waiting to be indexed.|plugins/search2/reporting/PendingDocuments.php||ktcore.plugin', 'admin_page', 'general'),
-(190, 'search/reschedulealldocuments', 'ktcore.plugin', 'RescheduleDocumentsDispatcher', 'plugins/search2/reporting/RescheduleDocuments.php', 'reschedulealldocuments|RescheduleDocumentsDispatcher|search|Reschedule all documents|This function allows you to re-index your entire repository.|plugins/search2/reporting/RescheduleDocuments.php||ktcore.plugin', 'admin_page', 'general'),
-(191, 'search/indexingstatus', 'ktcore.plugin', 'IndexingStatusDispatcher', 'plugins/search2/reporting/IndexingStatus.php', 'indexingstatus|IndexingStatusDispatcher|search|Document Indexer and External Resource Dependancy Status|This report will show the status of external dependencies and the document indexer.|plugins/search2/reporting/IndexingStatus.php||ktcore.plugin', 'admin_page', 'general'),
-(192, 'search/lucenestatistics', 'ktcore.plugin', 'LuceneStatisticsDispatcher', 'plugins/search2/reporting/LuceneStatistics.php', 'lucenestatistics|LuceneStatisticsDispatcher|search|Document Indexer Statistics|This report will show the Lucene Document Indexing Statistics |plugins/search2/reporting/LuceneStatistics.php||ktcore.plugin', 'admin_page', 'general'),
-(193, 'config/emailconfigpage', 'ktcore.plugin', 'EmailConfigPageDispatcher', 'plugins/ktcore/admin/configSettings.php', 'emailconfigpage|EmailConfigPageDispatcher|config|Email|Define the sending email server address, email password, email port, and user name, and view and modify policies for emailing documents and attachments from KnowledgeTree.|plugins/ktcore/admin/configSettings.php||ktcore.plugin', 'admin_page', 'general'),
-(194, 'config/uiconfigpage', 'ktcore.plugin', 'UIConfigPageDispatcher', 'plugins/ktcore/admin/configSettings.php', 'uiconfigpage|UIConfigPageDispatcher|config|User Interface|View and modify settings on Browse View actions, OEM name, automatic refresh, search results restrictions, custom logo details, paths to dot binary, graphics, and log directory, and whether to enable/disable condensed UI, ''open'' from downloads, sort metadata, and skinning.|plugins/ktcore/admin/configSettings.php||ktcore.plugin', 'admin_page', 'general'),
-(195, 'config/searchandindexingconfigpage', 'ktcore.plugin', 'SearchAndIndexingConfigPageDispatcher', 'plugins/ktcore/admin/configSettings.php', 'searchandindexingconfigpage|SearchAndIndexingConfigPageDispatcher|config|Search and Indexing|View and modify the number of documents indexed / migrated in a cron session, core indexing class, paths to the extractor hook, text extractors, indexing engine, Lucene indexes, and the Java Lucene URL. View and modify search date format, paths to search, indexing fields and libraries, results display format, and results per page.|plugins/ktcore/admin/configSettings.php||ktcore.plugin', 'admin_page', 'general'),
-(196, 'config/clientconfigpage', 'ktcore.plugin', 'ClientSettingsConfigPageDispatcher', 'plugins/ktcore/admin/configSettings.php', 'clientconfigpage|ClientSettingsConfigPageDispatcher|config|Client Tools|View and change settings for the KnowledgeTree Tools Server, Client Tools Policies, WebDAV, and the OpenOffice.org service.|plugins/ktcore/admin/configSettings.php||ktcore.plugin', 'admin_page', 'general'),
-(197, 'config/generalconfigpage', 'ktcore.plugin', 'GeneralConfigPageDispatcher', 'plugins/ktcore/admin/configSettings.php', 'generalconfigpage|GeneralConfigPageDispatcher|config|General Settings|View and modify settings for the KnowledgeTree cache, custom error message handling, Disk Usage threshold percentages, location of zip binary, paths to external binaries, general server configuration, LDAP authentication, session management, KnowledgeTree storage manager, miscellaneous tweaks, and whether to always display ''Your Checked-out Documents'' dashlet.|plugins/ktcore/admin/configSettings.php||ktcore.plugin', 'admin_page', 'general'),
-(198, 'config/i18nconfigpage', 'ktcore.plugin', 'i18nConfigPageDispatcher', 'plugins/ktcore/admin/configSettings.php', 'i18nconfigpage|i18nConfigPageDispatcher|config|Internationalization|View and modify the default language.|plugins/ktcore/admin/configSettings.php||ktcore.plugin', 'admin_page', 'general');
-INSERT INTO `plugin_helper` (`id`, `namespace`, `plugin`, `classname`, `pathname`, `object`, `classtype`, `viewtype`) VALUES
-(199, 'config/securityconfigpage', 'ktcore.plugin', 'SecurityConfigPageDispatcher', 'plugins/ktcore/admin/configSettings.php', 'securityconfigpage|SecurityConfigPageDispatcher|config|Security|View and modify the security settings.|plugins/ktcore/admin/configSettings.php||ktcore.plugin', 'admin_page', 'general'),
-(200, 'misc/helpmanagement', 'ktcore.plugin', 'ManageHelpDispatcher', 'plugins/ktcore/admin/manageHelp.php', 'helpmanagement|ManageHelpDispatcher|misc|Edit Help files|Change the help files that are displayed to users.|plugins/ktcore/admin/manageHelp.php||ktcore.plugin', 'admin_page', 'general'),
-(201, 'misc/plugins', 'ktcore.plugin', 'KTPluginDispatcher', 'plugins/ktcore/admin/plugins.php', 'plugins|KTPluginDispatcher|misc|Manage plugins|Register new plugins, disable plugins, and so forth|plugins/ktcore/admin/plugins.php||ktcore.plugin', 'admin_page', 'general'),
-(202, 'misc/techsupport', 'ktcore.plugin', 'KTSupportDispatcher', 'plugins/ktcore/admin/techsupport.php', 'techsupport|KTSupportDispatcher|misc|Support and System information|Information about this system and how to get support.|plugins/ktcore/admin/techsupport.php||ktcore.plugin', 'admin_page', 'general'),
-(203, 'storage/cleanup', 'ktcore.plugin', 'ManageCleanupDispatcher', 'plugins/ktcore/admin/manageCleanup.php', 'cleanup|ManageCleanupDispatcher|storage|Verify Document Storage|Performs a check to see if the documents in your repositories all are stored on the back-end storage (usually on disk).|plugins/ktcore/admin/manageCleanup.php||ktcore.plugin', 'admin_page', 'general'),
-(204, 'misc/views', 'ktcore.plugin', 'ManageViewDispatcher', 'plugins/ktcore/admin/manageViews.php', 'views|ManageViewDispatcher|misc|Manage views|Allows you to specify the columns that are to be used by a particular view (e.g. Browse documents, Search)|plugins/ktcore/admin/manageViews.php||ktcore.plugin', 'admin_page', 'general'),
-(205, 'ktcore.portlets.subscription', 'ktstandard.subscriptions.plugin', 'KTSubscriptionPortlet', 'plugins/ktstandard/KTSubscriptions.php', 'browse|KTSubscriptionPortlet|ktcore.portlets.subscription|plugins/ktstandard/KTSubscriptions.php|ktstandard.subscriptions.plugin', 'portlet', 'general'),
-(206, 'ktstandard.subscription.documentsubscription', 'ktstandard.subscriptions.plugin', 'KTDocumentSubscriptionAction', 'plugins/ktstandard/KTSubscriptions.php', 'documentsubscriptionaction|KTDocumentSubscriptionAction|ktstandard.subscription.documentsubscription|plugins/ktstandard/KTSubscriptions.php|ktstandard.subscriptions.plugin', 'action', 'general'),
-(207, 'ktstandard.subscription.documentunsubscription', 'ktstandard.subscriptions.plugin', 'KTDocumentUnsubscriptionAction', 'plugins/ktstandard/KTSubscriptions.php', 'documentsubscriptionaction|KTDocumentUnsubscriptionAction|ktstandard.subscription.documentunsubscription|plugins/ktstandard/KTSubscriptions.php|ktstandard.subscriptions.plugin', 'action', 'general'),
-(208, 'ktstandard.triggers.subscription.checkout', 'ktstandard.subscriptions.plugin', 'KTCheckoutSubscriptionTrigger', 'plugins/ktstandard/KTSubscriptions.php', 'checkout|postValidate|KTCheckoutSubscriptionTrigger|ktstandard.triggers.subscription.checkout|plugins/ktstandard/KTSubscriptions.php|ktstandard.subscriptions.plugin', 'trigger', 'general'),
-(209, 'ktstandard.triggers.subscription.delete', 'ktstandard.subscriptions.plugin', 'KTDeleteSubscriptionTrigger', 'plugins/ktstandard/KTSubscriptions.php', 'delete|postValidate|KTDeleteSubscriptionTrigger|ktstandard.triggers.subscription.delete|plugins/ktstandard/KTSubscriptions.php|ktstandard.subscriptions.plugin', 'trigger', 'general'),
-(210, 'ktstandard.triggers.subscription.moveDocument', 'ktstandard.subscriptions.plugin', 'KTDocumentMoveSubscriptionTrigger', 'plugins/ktstandard/KTSubscriptions.php', 'moveDocument|postValidate|KTDocumentMoveSubscriptionTrigger|ktstandard.triggers.subscription.moveDocument|plugins/ktstandard/KTSubscriptions.php|ktstandard.subscriptions.plugin', 'trigger', 'general'),
-(211, 'ktstandard.triggers.subscription.archive', 'ktstandard.subscriptions.plugin', 'KTArchiveSubscriptionTrigger', 'plugins/ktstandard/KTSubscriptions.php', 'archive|postValidate|KTArchiveSubscriptionTrigger|ktstandard.triggers.subscription.archive|plugins/ktstandard/KTSubscriptions.php|ktstandard.subscriptions.plugin', 'trigger', 'general'),
-(212, 'ktstandard.subscription.foldersubscription', 'ktstandard.subscriptions.plugin', 'KTFolderSubscriptionAction', 'plugins/ktstandard/KTSubscriptions.php', 'foldersubscriptionaction|KTFolderSubscriptionAction|ktstandard.subscription.foldersubscription|plugins/ktstandard/KTSubscriptions.php|ktstandard.subscriptions.plugin', 'action', 'general'),
-(213, 'ktstandard.subscription.folderunsubscription', 'ktstandard.subscriptions.plugin', 'KTFolderUnsubscriptionAction', 'plugins/ktstandard/KTSubscriptions.php', 'foldersubscriptionaction|KTFolderUnsubscriptionAction|ktstandard.subscription.folderunsubscription|plugins/ktstandard/KTSubscriptions.php|ktstandard.subscriptions.plugin', 'action', 'general'),
-(214, 'ktstandard.subscriptions.plugin/manage', 'ktstandard.subscriptions.plugin', 'KTSubscriptionManagePage', 'plugins/ktstandard/KTSubscriptions.php', 'ktstandard.subscriptions.plugin/manage|KTSubscriptionManagePage|plugins/ktstandard/KTSubscriptions.php|ktstandard.subscriptions.plugin', 'page', 'general'),
-(215, 'ktcore.actions.document.discussion', 'ktstandard.discussion.plugin', 'KTDocumentDiscussionAction', 'plugins/ktstandard/KTDiscussion.php', 'documentaction|KTDocumentDiscussionAction|ktcore.actions.document.discussion|plugins/ktstandard/KTDiscussion.php|ktstandard.discussion.plugin', 'action', 'general'),
-(216, 'ktcore.actions.document.email', 'ktstandard.email.plugin', 'KTDocumentEmailAction', 'plugins/ktstandard/KTEmail.php', 'documentaction|KTDocumentEmailAction|ktcore.actions.document.email|plugins/ktstandard/KTEmail.php|ktstandard.email.plugin', 'action', 'general'),
-(217, 'ktcore.actions.document.link', 'ktstandard.documentlinks.plugin', 'KTDocumentLinkAction', 'plugins/ktstandard/KTDocumentLinks.php', 'documentaction|KTDocumentLinkAction|ktcore.actions.document.link|plugins/ktstandard/KTDocumentLinks.php|ktstandard.documentlinks.plugin', 'action', 'general'),
-(218, 'ktcore.viewlets.document.link', 'ktstandard.documentlinks.plugin', 'KTDocumentLinkViewlet', 'plugins/ktstandard/KTDocumentLinks.php', 'documentviewlet|KTDocumentLinkViewlet|ktcore.viewlets.document.link|plugins/ktstandard/KTDocumentLinks.php|ktstandard.documentlinks.plugin', 'action', 'general'),
-(219, 'ktdocumentlinks.columns.title', 'ktstandard.documentlinks.plugin', 'KTDocumentLinkTitle', 'plugins/ktstandard/KTDocumentLinksColumns.php', 'Link Title|ktdocumentlinks.columns.title|KTDocumentLinkTitle|plugins/ktstandard/KTDocumentLinksColumns.php', 'column', 'general'),
-(220, 'documents/linkmanagement', 'ktstandard.documentlinks.plugin', 'KTDocLinkAdminDispatcher', 'plugins/ktstandard/KTDocumentLinks.php', 'linkmanagement|KTDocLinkAdminDispatcher|documents|Link Type Management|Manage the different ways documents can be associated with one another.|plugins/ktstandard/KTDocumentLinks.php||ktstandard.documentlinks.plugin', 'admin_page', 'general'),
-(221, 'ktstandard.triggers.workflowassociation.addDocument', 'ktstandard.workflowassociation.plugin', 'KTWADAddTrigger', 'plugins/ktstandard/KTWorkflowAssociation.php', 'add|postValidate|KTWADAddTrigger|ktstandard.triggers.workflowassociation.addDocument|plugins/ktstandard/KTWorkflowAssociation.php|ktstandard.workflowassociation.plugin', 'trigger', 'general'),
-(222, 'ktstandard.triggers.workflowassociation.moveDocument', 'ktstandard.workflowassociation.plugin', 'KTWADMoveTrigger', 'plugins/ktstandard/KTWorkflowAssociation.php', 'moveDocument|postValidate|KTWADMoveTrigger|ktstandard.triggers.workflowassociation.moveDocument|plugins/ktstandard/KTWorkflowAssociation.php|ktstandard.workflowassociation.plugin', 'trigger', 'general'),
-(223, 'ktstandard.triggers.workflowassociation.copyDocument', 'ktstandard.workflowassociation.plugin', 'KTWADCopyTrigger', 'plugins/ktstandard/KTWorkflowAssociation.php', 'copyDocument|postValidate|KTWADCopyTrigger|ktstandard.triggers.workflowassociation.copyDocument|plugins/ktstandard/KTWorkflowAssociation.php|ktstandard.workflowassociation.plugin', 'trigger', 'general'),
-(224, 'ktstandard.triggers.workflowassociation.editDocument', 'ktstandard.workflowassociation.plugin', 'KTWADEditTrigger', 'plugins/ktstandard/KTWorkflowAssociation.php', 'edit|postValidate|KTWADEditTrigger|ktstandard.triggers.workflowassociation.editDocument|plugins/ktstandard/KTWorkflowAssociation.php|ktstandard.workflowassociation.plugin', 'trigger', 'general'),
-(225, 'documents/workflow_allocation', 'ktstandard.workflowassociation.plugin', 'WorkflowAllocationSelection', 'plugins/ktstandard/workflow/adminpage.php', 'workflow_allocation|WorkflowAllocationSelection|documents|Automatic Workflow Assignments|Configure how documents are allocated to workflows.|plugins/ktstandard/workflow/adminpage.php||ktstandard.workflowassociation.plugin', 'admin_page', 'general'),
-(226, 'ktstandard.triggers.workflowassociation.documenttype.handler', 'ktstandard.workflowassociation.documenttype.plugin', 'DocumentTypeWorkflowAssociator', 'plugins/ktstandard/workflow/TypeAssociator.php', 'workflow|objectModification|DocumentTypeWorkflowAssociator|ktstandard.triggers.workflowassociation.documenttype.handler|plugins/ktstandard/workflow/TypeAssociator.php|ktstandard.workflowassociation.documenttype.plugin', 'trigger', 'general'),
-(227, 'ktstandard.triggers.workflowassociation.folder.handler', 'ktstandard.workflowassociation.folder.plugin', 'FolderWorkflowAssociator', 'plugins/ktstandard/workflow/FolderAssociator.php', 'workflow|objectModification|FolderWorkflowAssociator|ktstandard.triggers.workflowassociation.folder.handler|plugins/ktstandard/workflow/FolderAssociator.php|ktstandard.workflowassociation.folder.plugin', 'trigger', 'general'),
-(228, 'misc/disclaimers', 'ktstandard.disclaimers.plugin', 'ManageDisclaimersDispatcher', 'plugins/ktstandard/admin/manageDisclaimers.php', 'disclaimers|ManageDisclaimersDispatcher|misc|Edit Disclaimers|Change disclaimers displayed on login and at the bottom of each page.|plugins/ktstandard/admin/manageDisclaimers.php||ktstandard.disclaimers.plugin', 'admin_page', 'general'),
-(229, 'ktcore.actions.document.immutable', 'ktstandard.immutableaction.plugin', 'KTDocumentImmutableAction', 'plugins/ktstandard/ImmutableActionPlugin.php', 'documentaction|KTDocumentImmutableAction|ktcore.actions.document.immutable|plugins/ktstandard/ImmutableActionPlugin.php|ktstandard.immutableaction.plugin', 'action', 'general'),
-(230, 'ktstandard.ktwebdavdashlet.dashlet', 'ktstandard.ktwebdavdashlet.plugin', 'KTWebDAVDashlet', 'plugins/ktstandard/KTWebDAVDashletPlugin.php', 'KTWebDAVDashlet|ktstandard.ktwebdavdashlet.dashlet|plugins/ktstandard/KTWebDAVDashletPlugin.php|ktstandard.ktwebdavdashlet.plugin', 'dashlet', 'dashboard'),
-(231, 'ktcore.columns.preview', 'ktstandard.preview.plugin', 'PreviewColumn', 'plugins/ktstandard/documentpreview/documentPreviewPlugin.php', 'Property Preview|ktcore.columns.preview|PreviewColumn|plugins/ktstandard/documentpreview/documentPreviewPlugin.php', 'column', 'general'),
-(232, 'ktstandard.preview.plugin', 'ktstandard.preview.plugin', 'ktstandard.preview.plugin', '/plugins/ktstandard/documentpreview/templates', 'documentpreview|/plugins/ktstandard/documentpreview/templates', 'locations', 'general'),
-(233, 'ktstandard.bulkexport.action', 'ktstandard.bulkexport.plugin', 'KTBulkExportAction', 'plugins/ktstandard/KTBulkExportPlugin.php', 'folderaction|KTBulkExportAction|ktstandard.bulkexport.action|plugins/ktstandard/KTBulkExportPlugin.php|ktstandard.bulkexport.plugin', 'action', 'general'),
-(234, 'ktstandard.pdf.generate', 'ktstandard.pdf.plugin', 'PDFGeneratorAction', 'plugins/ktstandard/PDFGeneratorPlugin.php', 'documentaction|PDFGeneratorAction|ktstandard.pdf.generate|plugins/ktstandard/PDFGeneratorPlugin.php|ktstandard.pdf.plugin', 'action', 'general'),
-(235, 'ktstandard.authentication.ldapprovider', 'ktstandard.ldapauthentication.plugin', 'KTLDAPAuthenticationProvider', 'plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php', 'LDAP Authentication|KTLDAPAuthenticationProvider|ktstandard.authentication.ldapprovider|plugins/ktstandard/ldap/ldapauthenticationprovider.inc.php|ktstandard.ldapauthentication.plugin', 'authentication_provider', 'general'),
-(236, 'ktstandard.authentication.adprovider', 'ktstandard.ldapauthentication.plugin', 'KTActiveDirectoryAuthenticationProvider', 'plugins/ktstandard/ldap/activedirectoryauthenticationprovider.inc.php', 'ActiveDirectory Authentication|KTActiveDirectoryAuthenticationProvider|ktstandard.authentication.adprovider|plugins/ktstandard/ldap/activedirectoryauthenticationprovider.inc.php|ktstandard.ldapauthentication.plugin', 'authentication_provider', 'general'),
-(237, 'ktcore.diskusage.dashlet', 'ktcore.housekeeper.plugin', 'DiskUsageDashlet', 'plugins/housekeeper/DiskUsageDashlet.inc.php', 'DiskUsageDashlet|ktcore.diskusage.dashlet|plugins/housekeeper/DiskUsageDashlet.inc.php|ktcore.housekeeper.plugin', 'dashlet', 'dashboard'),
-(238, 'ktcore.folderusage.dashlet', 'ktcore.housekeeper.plugin', 'FolderUsageDashlet', 'plugins/housekeeper/FolderUsageDashlet.inc.php', 'FolderUsageDashlet|ktcore.folderusage.dashlet|plugins/housekeeper/FolderUsageDashlet.inc.php|ktcore.housekeeper.plugin', 'dashlet', 'dashboard'),
-(239, 'ktcore.housekeeper.plugin', 'ktcore.housekeeper.plugin', 'ktcore.housekeeper.plugin', '/plugins/housekeeper/templates', 'housekeeper|/plugins/housekeeper/templates', 'locations', 'general'),
-(240, 'nbm.browseable.dashlet', 'nbm.browseable.plugin', 'BrowseableFolderDashlet', 'plugins/browseabledashlet/BrowseableDashlet.php', 'BrowseableFolderDashlet|nbm.browseable.dashlet|plugins/browseabledashlet/BrowseableDashlet.php|nbm.browseable.plugin', 'dashlet', 'dashboard'),
-(241, 'nbm.browseable.plugin', 'nbm.browseable.plugin', 'nbm.browseable.plugin', '/plugins/browseabledashlet/templates', 'browseabledashlet|/plugins/browseabledashlet/templates', 'locations', 'general'),
-(242, 'ktcore.rss.plugin.folder.link', 'ktcore.rss.plugin', 'RSSFolderLinkAction', 'plugins/rssplugin/RSSPlugin.php', 'folderaction|RSSFolderLinkAction|ktcore.rss.plugin.folder.link|plugins/rssplugin/RSSPlugin.php|ktcore.rss.plugin', 'action', 'general'),
-(243, 'ktcore.rss.plugin.document.link', 'ktcore.rss.plugin', 'RSSDocumentLinkAction', 'plugins/rssplugin/RSSPlugin.php', 'documentaction|RSSDocumentLinkAction|ktcore.rss.plugin.document.link|plugins/rssplugin/RSSPlugin.php|ktcore.rss.plugin', 'action', 'general'),
-(244, 'ktcore.rss.feed.dashlet', 'ktcore.rss.plugin', 'RSSDashlet', 'plugins/rssplugin/RSSDashlet.php', 'RSSDashlet|ktcore.rss.feed.dashlet|plugins/rssplugin/RSSDashlet.php|ktcore.rss.plugin', 'dashlet', 'dashboard'),
-(245, 'ktcore.dedicated.rss.feed.dashlet', 'ktcore.rss.plugin', 'RSSDedicatedDashlet', 'plugins/rssplugin/RSSDedicatedDashlet.php', 'RSSDedicatedDashlet|ktcore.dedicated.rss.feed.dashlet|plugins/rssplugin/RSSDedicatedDashlet.php|ktcore.rss.plugin', 'dashlet', 'dashboard'),
-(246, 'ktcore.rss.plugin/managerssfeeds', 'ktcore.rss.plugin', 'ManageRSSFeedsDispatcher', 'plugins/rssplugin/RSSPlugin.php', 'ktcore.rss.plugin/managerssfeeds|ManageRSSFeedsDispatcher|plugins/rssplugin/RSSPlugin.php|ktcore.rss.plugin', 'page', 'general'),
-(247, 'ktcore.rss.plugin', 'ktcore.rss.plugin', 'ktcore.rss.plugin', '/plugins/rssplugin/templates', 'RSS Plugin|/plugins/rssplugin/templates', 'locations', 'general'),
-(248, 'password.reset.login.interceptor', 'password.reset.plugin', 'PasswordResetInterceptor', 'plugins/passwordResetPlugin/passwordResetPlugin.php', 'PasswordResetInterceptor|password.reset.login.interceptor|plugins/passwordResetPlugin/passwordResetPlugin.php', 'interceptor', 'general'),
-(249, 'password.reset.plugin', 'password.reset.plugin', 'password.reset.plugin', '/var/www/installers/knowledgetree/plugins/passwordResetPlugin/templates', 'passwordResetPlugin|/var/www/installers/knowledgetree/plugins/passwordResetPlugin/templates', 'locations', 'general'),
-(250, 'documents/typealertmanagement', 'document.alerts.plugin', 'KTDocTypeAlertDispatcher', 'plugins/commercial-plugins/alerts/docTypeAlerts.inc.php', 'typealertmanagement|KTDocTypeAlertDispatcher|documents|Alerts by Document Types|Manage alerts for the different document types within the system.|plugins/commercial-plugins/alerts/docTypeAlerts.inc.php||document.alerts.plugin', 'admin_page', 'general'),
-(251, 'alerts.action.document.alert', 'document.alerts.plugin', 'AlertAction', 'plugins/commercial-plugins/alerts/alerts.php', 'documentaction|AlertAction|alerts.action.document.alert|plugins/commercial-plugins/alerts/alerts.php|document.alerts.plugin', 'action', 'general'),
-(252, 'alerts.triggers.alert.delete', 'document.alerts.plugin', 'DeleteAlertTrigger', 'plugins/commercial-plugins/alerts/alerts.php', 'delete|postValidate|DeleteAlertTrigger|alerts.triggers.alert.delete|plugins/commercial-plugins/alerts/alerts.php|document.alerts.plugin', 'trigger', 'general'),
-(253, 'alerts.triggers.alert.archive', 'document.alerts.plugin', 'ArchiveAlertTrigger', 'plugins/commercial-plugins/alerts/alerts.php', 'archive|postValidate|ArchiveAlertTrigger|alerts.triggers.alert.archive|plugins/commercial-plugins/alerts/alerts.php|document.alerts.plugin', 'trigger', 'general'),
-(254, 'alerts.triggers.add.document.alert', 'document.alerts.plugin', 'AddDocumentAlertTrigger', 'plugins/commercial-plugins/alerts/docTypeAlerts.inc.php', 'add|postValidate|AddDocumentAlertTrigger|alerts.triggers.add.document.alert|plugins/commercial-plugins/alerts/docTypeAlerts.inc.php|document.alerts.plugin', 'trigger', 'general'),
-(255, 'alerts.triggers.checkin.document.alert', 'document.alerts.plugin', 'CheckinDocumentAlertTrigger', 'plugins/commercial-plugins/alerts/docTypeAlerts.inc.php', 'checkin|postValidate|CheckinDocumentAlertTrigger|alerts.triggers.checkin.document.alert|plugins/commercial-plugins/alerts/docTypeAlerts.inc.php|document.alerts.plugin', 'trigger', 'general'),
-(256, 'alerts.triggers.expuge.document', 'document.alerts.plugin', 'ExpungedDocumentTrigger', 'plugins/commercial-plugins/alerts/alerts.php', 'expunge|finalised|ExpungedDocumentTrigger|alerts.triggers.expuge.document|plugins/commercial-plugins/alerts/alerts.php|document.alerts.plugin', 'trigger', 'general'),
-(257, 'alerts/alertnotification', 'document.alerts.plugin', 'AlertNotification', 'plugins/commercial-plugins/alerts/alerts.php', 'alerts/alertnotification|AlertNotification|plugins/commercial-plugins/alerts/alerts.php', 'notification_handler', 'general'),
-(258, 'alerts/alertsubscription', 'document.alerts.plugin', 'AlertSubscriptionNotification', 'plugins/commercial-plugins/alerts/alerts.php', 'alerts/alertsubscription|AlertSubscriptionNotification|plugins/commercial-plugins/alerts/alerts.php', 'notification_handler', 'general'),
-(259, 'alerts/archivedelete', 'document.alerts.plugin', 'ArchiveDeleteNotification', 'plugins/commercial-plugins/alerts/alerts.php', 'alerts/archivedelete|ArchiveDeleteNotification|plugins/commercial-plugins/alerts/alerts.php', 'notification_handler', 'general'),
-(260, 'document.alerts.plugin', 'document.alerts.plugin', 'document.alerts.plugin', 'plugins/commercial-plugins/alerts/templates', 'alerts|plugins/commercial-plugins/alerts/templates', 'locations', 'general'),
-(261, 'pdf.converter.processor', 'pdf.converter.processor.plugin', 'PDFConverter', 'plugins/pdfConverter/pdfConverter.php', 'PDFConverter|pdf.converter.processor|plugins/pdfConverter/pdfConverter.php', 'processor', ''),
-(262, 'pdf.converter.triggers.delete', 'pdf.converter.processor.plugin', 'DeletePDFTrigger', 'plugins/pdfConverter/pdfConverterPlugin.php', 'delete|postValidate|DeletePDFTrigger|pdf.converter.triggers.delete|plugins/pdfConverter/pdfConverterPlugin.php|pdf.converter.processor.plugin', 'trigger', 'general'),
-(263, 'thumbnails.generator.processor', 'thumbnails.generator.processor.plugin', 'thumbnailGenerator', 'plugins/thumbnails/thumbnails.php', 'thumbnailGenerator|thumbnails.generator.processor|plugins/thumbnails/thumbnails.php', 'processor', ''),
-(264, 'thumbnail.viewlets', 'thumbnails.generator.processor.plugin', 'ThumbnailViewlet', 'plugins/thumbnails/thumbnails.php', 'documentviewlet|ThumbnailViewlet|thumbnail.viewlets|plugins/thumbnails/thumbnails.php|thumbnails.generator.processor.plugin', 'action', 'general'),
-(265, 'thumbnails.generator.processor.plugin', 'thumbnails.generator.processor.plugin', 'thumbnails.generator.processor.plugin', '/var/www/installers/knowledgetree/plugins/thumbnails/templates', 'thumbnails|/var/www/installers/knowledgetree/plugins/thumbnails/templates', 'locations', 'general'),
-(266, 'ktcore.criteria.tagcloud', 'ktcore.tagcloud.plugin', 'TagCloudCriterion', 'lib/browse/Criteria.inc', 'TagCloudCriterion|ktcore.criteria.tagcloud|lib/browse/Criteria.inc|', 'criterion', 'general'),
-(267, 'ktcore.tagcloud.feed.dashlet', 'ktcore.tagcloud.plugin', 'TagCloudDashlet', 'plugins/tagcloud/TagCloudDashlet.php', 'TagCloudDashlet|ktcore.tagcloud.feed.dashlet|plugins/tagcloud/TagCloudDashlet.php|ktcore.tagcloud.plugin', 'dashlet', 'dashboard'),
-(268, 'ktcore.tagcloud.plugin/TagCloudRedirection', 'ktcore.tagcloud.plugin', 'TagCloudRedirectPage', 'plugins/tagcloud/TagCloudPlugin.php', 'ktcore.tagcloud.plugin/TagCloudRedirection|TagCloudRedirectPage|plugins/tagcloud/TagCloudPlugin.php|ktcore.tagcloud.plugin', 'page', 'general'),
-(269, 'tagcloud.portlet', 'ktcore.tagcloud.plugin', 'TagCloudPortlet', 'plugins/tagcloud/TagCloudPortlet.php', 'a:0:{}|TagCloudPortlet|tagcloud.portlet|plugins/tagcloud/TagCloudPortlet.php|ktcore.tagcloud.plugin', 'portlet', 'general'),
-(270, 'ktcore.tagcloud.plugin', 'ktcore.tagcloud.plugin', 'ktcore.tagcloud.plugin', '/plugins/tagcloud/templates', 'Tag Cloud Plugin|/plugins/tagcloud/templates', 'locations', 'general'),
-(271, 'inet.multiselect.lookupvalue.plugin', 'inet.multiselect.lookupvalue.plugin', 'inet.multiselect.lookupvalue.plugin', '/plugins/multiselect/templates', 'Multiselect in metadata Part {lookup Value}|/plugins/multiselect/templates', 'locations', 'general'),
-(272, 'inet.multiselect.actions.document.addDocument', 'inet.multiselect.lookupvalue.plugin', 'MultiDocumentAddAction', 'plugins/multiselect/addDocument.php', 'folderaction|MultiDocumentAddAction|inet.multiselect.actions.document.addDocument|plugins/multiselect/addDocument.php|inet.multiselect.lookupvalue.plugin', 'action', 'general'),
-(273, 'inet.actions.folder.bulkUpload', 'inet.multiselect.lookupvalue.plugin', 'InetBulkUploadFolderAction', 'plugins/multiselect/BulkUpload.php', 'folderaction|InetBulkUploadFolderAction|inet.actions.folder.bulkUpload|plugins/multiselect/BulkUpload.php|inet.multiselect.lookupvalue.plugin', 'action', 'general'),
-(274, 'inet.actions.folder.bulkImport.multiselect', 'inet.multiselect.lookupvalue.plugin', 'InetBulkImportFolderMultiSelectAction', 'plugins/multiselect/BulkImport.php', 'folderaction|InetBulkImportFolderMultiSelectAction|inet.actions.folder.bulkImport.multiselect|plugins/multiselect/BulkImport.php|inet.multiselect.lookupvalue.plugin', 'action', 'general'),
-(275, 'documents/ratpfieldset', 'inet.multiselect.lookupvalue.plugin', 'InetDocumentFieldDispatcher', 'plugins/multiselect/InetdocumentFieldsv2.php', 'ratpfieldset|InetDocumentFieldDispatcher|documents|<script src=''plugins/multiselect/js/jquery-1.2.6.js'' type=''text/javascript''></script><script src=''plugins/multiselect/js/hideadminlink.js'' type=''text/javascript''></script>Document Fieldsets|Manage the different types of information with multiselect functionality that can be associated with classes of documents.|plugins/multiselect/InetdocumentFieldsv2.php||inet.multiselect.lookupvalue.plugin', 'admin_page', 'general'),
-(276, 'klive.mydropdocuments.dashlet', 'ktlive.mydropdocuments.plugin', 'MyDropDocumentsDashlet', 'plugins/MyDropDocumentsPlugin/MyDropDocumentsDashlet.php', 'MyDropDocumentsDashlet|klive.mydropdocuments.dashlet|plugins/MyDropDocumentsPlugin/MyDropDocumentsDashlet.php|ktlive.mydropdocuments.plugin', 'dashlet', 'dashboard'),
-(277, 'ktlive.mydropdocuments.plugin/MyDropDocuments', 'ktlive.mydropdocuments.plugin', 'MyDropDocumentsPage', 'plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php', 'ktlive.mydropdocuments.plugin/MyDropDocuments|MyDropDocumentsPage|plugins/MyDropDocumentsPlugin/MyDropDocumentsPage.php|ktlive.mydropdocuments.plugin', 'page', 'general'),
-(278, 'ktlive.mydropdocuments.plugin', 'ktlive.mydropdocuments.plugin', 'ktlive.mydropdocuments.plugin', '/plugins/MyDropDocumentsPlugin/templates', 'MyDropDocumentsDashlet|/plugins/MyDropDocumentsPlugin/templates', 'locations', 'general');
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2869,12 +2600,11 @@ CREATE TABLE IF NOT EXISTS `plugin_rss` (
   `title` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `plugin_rss`
 --
-
 
 -- --------------------------------------------------------
 
@@ -2890,7 +2620,7 @@ CREATE TABLE IF NOT EXISTS `quicklinks` (
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `user_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `quicklinks`
@@ -2908,7 +2638,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `roles`
@@ -2938,7 +2668,7 @@ CREATE TABLE IF NOT EXISTS `role_allocations` (
   KEY `folder_id` (`folder_id`),
   KEY `role_id` (`role_id`),
   KEY `permission_descriptor_id` (`permission_descriptor_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `role_allocations`
@@ -2965,7 +2695,7 @@ CREATE TABLE IF NOT EXISTS `saved_searches` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `namespace` (`namespace`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `saved_searches`
@@ -2991,7 +2721,7 @@ CREATE TABLE IF NOT EXISTS `scheduler_tasks` (
   `status` enum('enabled','disabled','system') NOT NULL DEFAULT 'disabled',
   PRIMARY KEY (`id`),
   UNIQUE KEY `task` (`task`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `scheduler_tasks`
@@ -3083,7 +2813,7 @@ CREATE TABLE IF NOT EXISTS `search_saved` (
   `shared` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `search_saved`
@@ -3116,7 +2846,7 @@ CREATE TABLE IF NOT EXISTS `status_lookup` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `status_lookup`
@@ -3142,7 +2872,7 @@ CREATE TABLE IF NOT EXISTS `system_settings` (
   `value` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `system_settings`
@@ -3165,7 +2895,7 @@ CREATE TABLE IF NOT EXISTS `tag_words` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tag` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `tag_words`
@@ -3184,7 +2914,7 @@ CREATE TABLE IF NOT EXISTS `time_period` (
   `units` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `time_unit_id` (`time_unit_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `time_period`
@@ -3201,7 +2931,7 @@ CREATE TABLE IF NOT EXISTS `time_unit_lookup` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `time_unit_lookup`
@@ -3260,7 +2990,7 @@ CREATE TABLE IF NOT EXISTS `units_lookup` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `folder_id` (`folder_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `units_lookup`
@@ -3280,7 +3010,7 @@ CREATE TABLE IF NOT EXISTS `units_organisations_link` (
   PRIMARY KEY (`id`),
   KEY `unit_id` (`unit_id`),
   KEY `organisation_id` (`organisation_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `units_organisations_link`
@@ -3303,7 +3033,7 @@ CREATE TABLE IF NOT EXISTS `upgrades` (
   PRIMARY KEY (`id`),
   KEY `descriptor` (`descriptor`),
   KEY `parent` (`parent`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=226 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `upgrades`
@@ -3593,7 +3323,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `authentication_source_id` (`authentication_source_id`),
   KEY `last_login` (`last_login`),
   KEY `disabled` (`disabled`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `users`
@@ -3616,7 +3346,7 @@ CREATE TABLE IF NOT EXISTS `users_groups_link` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `group_id` (`group_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `users_groups_link`
@@ -3643,7 +3373,7 @@ CREATE TABLE IF NOT EXISTS `user_history` (
   KEY `action_namespace` (`action_namespace`),
   KEY `datetime` (`datetime`),
   KEY `session_id` (`session_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `user_history`
@@ -3671,7 +3401,7 @@ CREATE TABLE IF NOT EXISTS `user_history_documents` (
   `touched` datetime NOT NULL DEFAULT '1999-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `user_history_documents`
@@ -3691,7 +3421,7 @@ CREATE TABLE IF NOT EXISTS `user_history_folders` (
   `touched` datetime NOT NULL DEFAULT '1999-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `user_history_folders`
@@ -3713,7 +3443,7 @@ CREATE TABLE IF NOT EXISTS `workflows` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `start_state_id` (`start_state_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `workflows`
@@ -3778,7 +3508,7 @@ CREATE TABLE IF NOT EXISTS `workflow_states` (
   KEY `workflow_id` (`workflow_id`),
   KEY `name` (`name`),
   KEY `inform_descriptor_id` (`inform_descriptor_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `workflow_states`
@@ -3841,7 +3571,7 @@ CREATE TABLE IF NOT EXISTS `workflow_state_permission_assignments` (
   KEY `permission_id` (`permission_id`),
   KEY `permission_descriptor_id` (`permission_descriptor_id`),
   KEY `workflow_state_id` (`workflow_state_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `workflow_state_permission_assignments`
@@ -3896,7 +3626,7 @@ CREATE TABLE IF NOT EXISTS `workflow_transitions` (
   KEY `guard_role_id` (`guard_role_id`),
   KEY `name` (`name`),
   KEY `guard_permission_id` (`guard_permission_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `workflow_transitions`
@@ -3923,7 +3653,7 @@ CREATE TABLE IF NOT EXISTS `workflow_trigger_instances` (
   PRIMARY KEY (`id`),
   KEY `workflow_transition_id` (`workflow_transition_id`),
   KEY `namespace` (`namespace`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `workflow_trigger_instances`
@@ -3939,7 +3669,7 @@ CREATE TABLE IF NOT EXISTS `workflow_trigger_instances` (
 CREATE TABLE IF NOT EXISTS `zseq_active_sessions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_active_sessions`
@@ -3957,7 +3687,7 @@ INSERT INTO `zseq_active_sessions` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_archive_restoration_request` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_archive_restoration_request`
@@ -3975,7 +3705,7 @@ INSERT INTO `zseq_archive_restoration_request` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_archiving_settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_archiving_settings`
@@ -3993,7 +3723,7 @@ INSERT INTO `zseq_archiving_settings` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_archiving_type_lookup` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_archiving_type_lookup`
@@ -4011,7 +3741,7 @@ INSERT INTO `zseq_archiving_type_lookup` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_authentication_sources` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_authentication_sources`
@@ -4029,7 +3759,7 @@ INSERT INTO `zseq_authentication_sources` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_baobab_keys` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_baobab_keys`
@@ -4045,7 +3775,7 @@ CREATE TABLE IF NOT EXISTS `zseq_baobab_keys` (
 CREATE TABLE IF NOT EXISTS `zseq_baobab_user_keys` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_baobab_user_keys`
@@ -4061,7 +3791,7 @@ CREATE TABLE IF NOT EXISTS `zseq_baobab_user_keys` (
 CREATE TABLE IF NOT EXISTS `zseq_column_entries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_column_entries`
@@ -4079,7 +3809,7 @@ INSERT INTO `zseq_column_entries` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_config_settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_config_settings`
@@ -4095,7 +3825,7 @@ CREATE TABLE IF NOT EXISTS `zseq_config_settings` (
 CREATE TABLE IF NOT EXISTS `zseq_dashlet_disables` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_dashlet_disables`
@@ -4113,7 +3843,7 @@ INSERT INTO `zseq_dashlet_disables` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_data_types` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_data_types`
@@ -4131,7 +3861,7 @@ INSERT INTO `zseq_data_types` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_discussion_comments` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_discussion_comments`
@@ -4149,7 +3879,7 @@ INSERT INTO `zseq_discussion_comments` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_discussion_threads` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_discussion_threads`
@@ -4167,7 +3897,7 @@ INSERT INTO `zseq_discussion_threads` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_documents` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_documents`
@@ -4185,7 +3915,7 @@ INSERT INTO `zseq_documents` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_document_archiving_link` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_document_archiving_link`
@@ -4203,7 +3933,7 @@ INSERT INTO `zseq_document_archiving_link` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_document_content_version` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_document_content_version`
@@ -4221,7 +3951,7 @@ INSERT INTO `zseq_document_content_version` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_document_fields` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_document_fields`
@@ -4239,7 +3969,7 @@ INSERT INTO `zseq_document_fields` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_document_fields_link` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_document_fields_link`
@@ -4257,7 +3987,7 @@ INSERT INTO `zseq_document_fields_link` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_document_link` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_document_link`
@@ -4275,7 +4005,7 @@ INSERT INTO `zseq_document_link` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_document_link_types` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_document_link_types`
@@ -4293,7 +4023,7 @@ INSERT INTO `zseq_document_link_types` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_document_metadata_version` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_document_metadata_version`
@@ -4311,7 +4041,7 @@ INSERT INTO `zseq_document_metadata_version` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_document_role_allocations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_document_role_allocations`
@@ -4327,7 +4057,7 @@ CREATE TABLE IF NOT EXISTS `zseq_document_role_allocations` (
 CREATE TABLE IF NOT EXISTS `zseq_document_subscriptions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_document_subscriptions`
@@ -4345,7 +4075,7 @@ INSERT INTO `zseq_document_subscriptions` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_document_tags` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `zseq_document_tags`
@@ -4363,7 +4093,7 @@ INSERT INTO `zseq_document_tags` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_document_transactions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_document_transactions`
@@ -4381,7 +4111,7 @@ INSERT INTO `zseq_document_transactions` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_document_transaction_types_lookup` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_document_transaction_types_lookup`
@@ -4399,7 +4129,7 @@ INSERT INTO `zseq_document_transaction_types_lookup` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_document_types_lookup` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_document_types_lookup`
@@ -4417,7 +4147,7 @@ INSERT INTO `zseq_document_types_lookup` (`id`) VALUES
 CREATE TABLE IF NOT EXISTS `zseq_document_type_fieldsets_link` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 --
 -- Dumping data for table `zseq_document_type_fieldsets_link`

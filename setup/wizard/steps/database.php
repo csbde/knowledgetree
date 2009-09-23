@@ -40,6 +40,16 @@
 * @version Version 0.1
 */
 
+if(isset($_GET['action'])) {
+	$func = $_GET['action'];
+	if($func != '') {
+		require_once("../step.php");
+		require_once("../installUtil.php");
+		require_once("../path.php");
+		require_once("../dbUtil.php");
+	}
+}
+
 class database extends Step 
 {
 	/**
@@ -627,7 +637,7 @@ class database extends Step
 		if(!$this->loadUpgraded($con)) {
 			$this->error['con'] = "Could not load upgraded database";
 		}
-		/*
+/*
 		if(!$this->createSchema($con)) {
 			$this->error['con'] = "Could not create schema ";
 		}
@@ -637,8 +647,7 @@ class database extends Step
 		if(!$this->applyUpgrades($con)) {
 			$this->error['con'] = "Could not apply updates ";
 		}
-		*/
-		
+*/
 		return true;
     }
 
@@ -753,6 +762,7 @@ class database extends Step
     	} else {
         	$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_DIR."structure.sql\"";
     	}
+    	echo $command;die;
     	$response = $this->_util->pexec($command);
     	return $response;
     }
@@ -842,5 +852,24 @@ class database extends Step
     		$this->error[$e] = false;
     	}
     }
+    
+    public function doCreateSchema() {
+    	$this->dhost = '127.0.0.1';
+    	$this->duname = 'root';
+    	$this->dpassword = 'root';
+    	$this->dname = 'dms_install';
+    	$con = $this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
+    	$this->createSchema($con);
+    }
+}
+
+if(isset($_GET['action'])) {
+	$func = $_GET['action'];
+	if($func != '') {
+		$serv = new database();
+		$func_call = strtoupper(substr($func,0,1)).substr($func,1);
+		$method = "do$func";
+		$serv->$method();
+	}
 }
 ?>
