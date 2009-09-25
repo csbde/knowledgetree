@@ -1,4 +1,4 @@
-INSERT INTO `dms`.`config_settings` (
+INSERT INTO `config_settings` (
 `id` ,
 `group_name` ,
 `display_name` ,
@@ -14,7 +14,7 @@ VALUES (
 NULL , 'externalBinary', 'image magick', 'Path to binary', 'imagemagick', 'default', 'convert', 'string', NULL , '1'
 );
 
-INSERT INTO `dms`.`config_settings` (
+INSERT INTO `config_settings` (
 `id` ,
 `group_name` ,
 `display_name` ,
