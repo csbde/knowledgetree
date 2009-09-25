@@ -73,7 +73,8 @@ class KTConfig {
     }
 
     // FIXME nbm:  how do we cache errors here?
-    function loadCache() {
+    function loadCache()
+    {
         $filename = $this->getCacheFilename();
         if($filename === false){
             return false;
@@ -93,7 +94,8 @@ class KTConfig {
         return true;
     }
 
-    function createCache() {
+    function createCache()
+    {
         $filename = $this->getCacheFilename();
 
         $config_cache = array();
@@ -119,20 +121,21 @@ class KTConfig {
     }
 
 	// {{{ readConfig
-    function readConfig () {
+    function readConfig ()
+    {
         //Load config data from the database
         $sQuery = 'select group_name, item, value, default_value from config_settings';
         $confResult = DBUtil::getResultArray($sQuery);
 
-        if(PEAR::isError($confResult)){
+        if(PEAR::isError($confResult)) {
             return $confResult;
         }
 
         // Update the config array - overwrite the current settings with the settings in the database.
-        foreach ($confResult as $confItem)
-        {
+        foreach ($confResult as $confItem) {
             $this->setns($confItem['group_name'], $confItem['item'], $confItem['value'], $confItem['default_value']);
         }
+        
         $this->populateDefault();
     }
     // }}}
