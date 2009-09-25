@@ -660,10 +660,10 @@ class services extends Step
     		}
     		$javaExecutable = $this->java;
     	}
-    	$cmd = "\"$javaExecutable\" -version > output/outJV 2>&1 echo $!";
+    	$cmd = "\"$javaExecutable\" -version > ".SYS_OUT_DIR."/outJV 2>&1 echo $!";
     	$response = $this->util->pexec($cmd);
-    	if(file_exists(OUTPUT_DIR.'outJV')) {
-    		$tmp = file_get_contents(OUTPUT_DIR.'outJV');
+    	if(file_exists(SYS_OUT_DIR.'outJV')) {
+    		$tmp = file_get_contents(SYS_OUT_DIR.'outJV');
     		preg_match('/"(.*)"/',$tmp, $matches);
     		if($matches) {
 	    		if($matches[1] < $this->javaVersion) { // Check Version of java
@@ -704,10 +704,10 @@ class services extends Step
     	// TODO: Better php handling
     	return true;
     	$phpExecutable = $this->util->phpSpecified();// Retrieve java bin
-    	$cmd = "$phpExecutable -version > output/outPHP 2>&1 echo $!";
+    	$cmd = "$phpExecutable -version > ".SYS_OUT_DIR."/outPHP 2>&1 echo $!";
     	$response = $this->util->pexec($cmd);
-    	if(file_exists(OUTPUT_DIR.'outPHP')) {
-    		$tmp = file_get_contents(OUTPUT_DIR.'outPHP');
+    	if(file_exists(SYS_OUT_DIR.'outPHP')) {
+    		$tmp = file_get_contents(SYS_OUT_DIR.'outPHP');
     		preg_match('/PHP/',$tmp, $matches);
     		if($matches) {
 				$this->phpCheck = 'tick';

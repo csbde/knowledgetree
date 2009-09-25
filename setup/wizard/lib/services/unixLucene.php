@@ -181,9 +181,13 @@ class unixLucene extends unixService {
     public function start() {
     	$state = $this->status();
     	if($state != 'STARTED') {
-    		$this->writeLuceneProperties();
+    		//$this->writeLuceneProperties();
 	    	$cmd = "cd ".$this->getLuceneDir()."; ";
 	    	$cmd .= "nohup java -jar ".$this->getLuceneSource()." > ".SYS_LOG_DIR."lucene.log 2>&1 & echo $!";
+	    	if(DEBUG) {
+	    		echo "$cmd<br/>";
+	    		return ;
+	    	}
 	    	$response = $this->util->pexec($cmd);
 	    	
 	    	return $response;

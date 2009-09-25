@@ -434,7 +434,8 @@ class windowsLucene extends windowsService {
 				$content .= "server.paranoid=false\n";
 				$content .= "server.accept=127.0.0.1\n";
 				$content .= "server.deny=\n";
-				$content .= "indexer.directory=../../var/indexes\n";
+				$content .= "indexer.directory=".SYS_VAR_DIR."indexes\n";
+				//$content .= "indexer.directory=../../var/indexes\n";
 				$content .= "indexer.analyzer=org.apache.lucene.analysis.standard.StandardAnalyzer\n";
 				fwrite($fp, $content);
 				fclose($fp);
