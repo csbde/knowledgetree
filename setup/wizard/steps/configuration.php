@@ -40,6 +40,17 @@
 * @version Version 0.1
 */
 
+if(isset($_GET['action'])) {
+	$func = $_GET['action'];
+	if($func != '') {
+		require_once("../ini.php");
+		require_once("../step.php");
+		require_once("../path.php");
+		require_once("../dbUtil.php");
+		require_once("../installUtil.php");
+	}
+}
+
 class configuration extends Step
 {
 	/**
@@ -158,9 +169,17 @@ class configuration extends Step
 	* @var array
 	*/
     protected $paths = array();
-    
+
+	/**
+	* Reference to utility object
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var object
+	*/
     protected $util = null;
     
+    protected $confpaths = array();
     /**
      * Class constructor
      *
@@ -214,7 +233,7 @@ class configuration extends Step
         $this->doRun();
         return 'landing';
     }
-#/var/www/installers/knowledgetree/config/config.ini
+
     /**
      * Set the variables from those stored in the session.
      * Used for stepping back to the step from a future step.
@@ -369,6 +388,9 @@ class configuration extends Step
 
         // close the database connection
         $this->_dbhandler->close();
+        
+        // Write config file
+        $this->writeConfigPath();
     }
 
     /**
@@ -428,7 +450,9 @@ class configuration extends Step
         if(isset($this->temp_variables['paths'])) {
         	$dirs = $this->temp_variables['paths']; // Pull from temp
         } else {
-        	$dirs = $this->getDirectories(); // Get detected
+//        	$dirs = $this->getDirectories();
+			$this->readConfigPath();
+			$dirs = $this->getFromConfigPath();
         }
         $varDirectory = $fileSystemRoot . DS . 'var';
         foreach ($dirs as $key => $dir){
@@ -478,6 +502,10 @@ class configuration extends Step
                 );
     }
     
+    /**
+     * Store contents of edited settings
+     *
+     */
     private function setFromPost() {
     	$this->paths = array(
                 array('name' => 'Var Directory', 'setting' => 'varDirectory', 'path' => $_POST['varDirectory'], 'create' => false),
@@ -490,8 +518,102 @@ class configuration extends Step
     	);
     }
     
+    /**
+     * Store contents of edited settings
+     *
+     */
+    private function getFromConfigPath() {
+        return array(
+        		array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => $this->confpaths['configIni'], 'create' => false),
+                array('name' => 'Document Directory', 'setting' => 'documentRoot', 'path' => $this->confpaths['Documents'], 'create' => true),
+                array('name' => 'Cache Directory', 'setting' => 'cacheDirectory', 'path' => $this->confpaths['cache'], 'create' => true),
+                array('name' => 'Index Directory', 'setting' => 'indexDirectory', 'path' => $this->confpaths['indexes'], 'create' => true),
+                array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => $this->confpaths['log'], 'create' => true),
+                array('name' => 'Proxy Directory', 'setting' => 'proxiesDirectory', 'path' => $this->confpaths['proxies'], 'create' => true),
+                array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => $this->confpaths['tmp'], 'create' => true),
+                array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => $this->confpaths['uploads'], 'create' => true),
+                );
+    }
+    
     public function getFromPost() {
     	return $this->paths;
     }
+    
+    /**
+     * Read contents of config path file
+     *
+     */
+    private function readConfigPath() {
+        $configPath = realpath('../../../config/config-path');
+        if($configPath == '')
+         	$configPath = realpath('../../config/config-path');
+        $ini = new Ini($configPath);
+        $data = $ini->read($configPath);
+        $data = $data[''];
+        foreach ($data as $k=>$v) {
+        	if(preg_match('/config.ini/', $k)) {
+				$this->confpaths['configIni'] = $k;
+        	} elseif (preg_match('/Documents/', $k)) {
+				$this->confpaths['Documents'] = $k;
+        	} elseif (preg_match('/cache/', $k)) {
+				$this->confpaths['cache'] = $k;
+        	} elseif (preg_match('/indexes/', $k)) {
+				$this->confpaths['indexes'] = $k;
+        	} elseif (preg_match('/log/', $k)) {
+				$this->confpaths['log'] = $k;
+        	} elseif (preg_match('/proxies/', $k)) {
+				$this->confpaths['proxies'] = $k;
+        	} elseif (preg_match('/tmp/', $k)) {
+				$this->confpaths['tmp'] = $k;
+        	} elseif (preg_match('/uploads/', $k)) {
+				$this->confpaths['uploads'] = $k;
+        	}
+        }
+
+        return false;
+    }
+    
+    /**
+     * Read contents of config path file
+     *
+     */
+    private function writeConfigPath() {
+    	$configPath = realpath('../../../config/config-path');
+        if($configPath == '')
+         	$configPath = realpath('../../config/config-path');
+        $ini = new Ini($configPath);
+        $data = $ini->read($configPath);
+        $data = $data[''];
+        $configContent = '';
+        foreach ($data as $k=>$v) {
+        	if(preg_match('/config.ini/', $k)) {
+        		$configContent = $k;
+        		break;
+        	}
+        }
+        $fp = fopen($configPath, 'w');
+        if(fwrite($fp, $configContent))
+        	return true;
+    	return true;
+    }
+    
+    public function doReadConfig() {
+    	$this->readConfigPath();
+//    	$this->writeConfigPath();
+    	$configPaths = $this->getFromConfigPath();
+//    	echo '<pre>';
+//    	print_r($configPaths);
+//    	echo '</pre>';
+    }
+}
+
+if(isset($_GET['action'])) {
+	$func = $_GET['action'];
+	if($func != '') {
+		$serv = new configuration();
+		$func_call = strtoupper(substr($func,0,1)).substr($func,1);
+		$method = "do$func_call";
+		$serv->$method();
+	}
 }
 ?>

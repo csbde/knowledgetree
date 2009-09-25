@@ -215,7 +215,7 @@ class unixLucene extends unixService {
 				$content = "server.port=8875\n";
 				$content .= "server.paranoid=false\n";
 				$content .= "server.accept=127.0.0.1\n";
-				$content .= "server.deny=\n";
+				$content .= "server.deny=";
 				$content .= "indexer.directory=../../var/indexes\n";
 				$content .= "indexer.analyzer=org.apache.lucene.analysis.standard.StandardAnalyzer\n";
 				fwrite($fp, $content);

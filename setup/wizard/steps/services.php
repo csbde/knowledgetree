@@ -317,7 +317,7 @@ class services extends Step
 	*
 	* @author KnowledgeTree Team
 	* @access protected
-	* @var string
+	* @var object
 	*/
     protected $util;
 
@@ -1184,7 +1184,7 @@ if(isset($_GET['action'])) {
 	if($func != '') {
 		$serv = new services();
 		$func_call = strtoupper(substr($func,0,1)).substr($func,1);
-		$method = "do$func";
+		$method = "do$func_call";
 		$serv->$method();
 	}
 }
