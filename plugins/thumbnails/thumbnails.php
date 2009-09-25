@@ -141,8 +141,7 @@ class thumbnailGenerator extends BaseProcessor {
         }
 
         // if there is no pdf that exists - hop out
-        if(!file_exists($pdfFile)){
-            global $default;
+        if(!file_exists($pdfFile)) {
             $default->log->debug('Thumbnail Generator Plugin: PDF file does not exist, cannot generate a thumbnail');
             return false;
         }
@@ -154,7 +153,7 @@ class thumbnailGenerator extends BaseProcessor {
         
         // do generation
         if (extension_loaded('imagick')) {
-        	$result= shell_exec("convert -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile");
+        	$result= KTUtil::pexec("\"{$default->imagemagick}\" -size 200x200 \"{$pdfFile}[0]\" -resize 230x200 \"$thumbnailfile\"");
         	return true;
         }else{
         	$default->log->debug('Thumbnail Generator Plugin: Imagemagick not installed, cannot generate a thumbnail');
