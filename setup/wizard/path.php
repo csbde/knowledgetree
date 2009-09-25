@@ -74,11 +74,13 @@
     define('STEP_DIR', WIZARD_DIR."steps".DS);
     define('TEMP_DIR', WIZARD_DIR."templates".DS);
     define('SHELL_DIR', WIZARD_DIR."shells".DS);
-    define('OUTPUT_DIR', WIZARD_DIR."output".DS);
     // Define paths to system webroot
 	define('SYSTEM_DIR', $sys);
+	define('SYS_VAR_DIR', SYSTEM_DIR."var".DS);
     define('SYS_BIN_DIR', SYSTEM_DIR."bin".DS);
-    define('SYS_LOG_DIR', SYSTEM_DIR."var".DS."log".DS);
+    define('SYS_LOG_DIR', SYS_VAR_DIR."log".DS);
+    define('SYS_OUT_DIR', SYS_VAR_DIR);
+    define('VAR_BIN_DIR', SYS_VAR_DIR."bin".DS);
     // Define paths to system
     array_pop($xdir);
 	$asys = '';

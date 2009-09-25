@@ -205,6 +205,10 @@ class Ini {
         unset($this->cleanArray[$delSection]);
         return true;
     }
-
+    
+    public function getFileByLine() {
+        $data = $this->read($this->iniFile);
+        return $data[''];
+    }
 }
 ?>
