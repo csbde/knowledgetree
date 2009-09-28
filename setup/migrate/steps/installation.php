@@ -42,38 +42,158 @@
 
 class installation extends step 
 {
+	/**
+	* Flag to display confirmation page first
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+	public $displayFirst = false;
+	
+	/**
+	* Flag to store class information in session
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $storeInSession = true;
 
+	/**
+	* List of paths
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $paths = array();
+
+	/**
+	* Flag if step needs to run silently
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $silent = false;
+    
 	private $location = '';
+	private $dbSettings = array();
+	private $ktSettings = array();
+	private $urlPaths = array();
 	
     function __construct() {
-        $this->temp_variables = array("step_name"=>"migrate");
+        $this->temp_variables = array("step_name"=>"installation", "silent"=>$this->silent);
     }
 
     public function doStep() {
-    	$this->doRun();
+    	$this->detectInstallation();
     	if(!$this->inStep("installation")) {
+    		$this->setDetails();
+    		$this->doRun();
+    		
     		return 'landing';
     	}
         if($this->next()) {
-            return 'next';
+        	if($this->doRun()) {
+        	
+            	return 'next';
+        	} else {
+            
+            	return 'error';
+        	}
         } else if($this->previous()) {
+        	
             return 'previous';
+        } else if($this->confirm()) {
+        	$this->setDetails();
+        	if($this->doRun()) {
+            	return 'next';
+        	}
+        	return 'error';
         }
-
+		$this->doRun();
+        
         return 'landing'; 
     }
 
-    public function doRun() {
+    public function detectInstallation() {
     	if(WINDOWS_OS) {
-    		$this->location = '';
+    		$path1 = "'C:\\Program Files\ktdms'";
+    		$path2 = "'C:\\Program Files x86\ktdms'";
+    		if(file_exists($path1))
+    			$this->location = "C:\\Program Files\ktdms";
+    		elseif (file_exists($path2))
+    			$this->location = "C:\\Program Files x86\ktdms";
     	} else {
-    		$this->location = '/opt/ktdms';
+    		$path1 = "/opt/ktdms";
+    		$path2 = "/var/www/ktdms";
+    		if(file_exists($path1))
+    			$this->location = $path1;
+			elseif(file_exists($path2))
+				$this->location = $path2;
     	}
-    	$this->storeSilent();
     }
     
-    public function getStepVars()
-    {
+    public function doRun() {
+		$ktInstallPath = isset($_POST['location']) ? $_POST['location']: '';
+		if($ktInstallPath != '') {
+			$this->location = $ktInstallPath;
+			if(file_exists($ktInstallPath)) {
+				$configPath = $ktInstallPath.DS."knowledgeTree".DS."config".DS."config-path";
+				if(file_exists($configPath)) {
+					$configFilePath = file_get_contents($configPath);
+					if(file_exists($configFilePath)) {
+						$this->readConfig($configFilePath);
+						return true;
+					} else {
+						$this->error[] = "KT installation configuration file empty";
+					}
+				} else {
+					$this->error[] = "KT installation configuration file not found";
+				}
+			} else {
+				$this->error[] = "KT installation not found";
+			}
+		}
+		$this->storeSilent();
+		
+		return false;
+    }
+    
+    private function readConfig($path) {
+    	$ini = new Ini($path);
+    	$dbSettings = $ini->getSection('db');
+    	$this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
+    								'dbName'=> $dbSettings['dbName'],
+    								'dbUser'=> $dbSettings['dbUser'],
+    								'dbPass'=> $dbSettings['dbPass'],
+    								'dbPort'=> $dbSettings['dbPort'],
+    								'dbAdminUser'=> $dbSettings['dbAdminUser'],
+    								'dbAdminPass'=> $dbSettings['dbAdminPass'],
+    	);
+		$ktSettings = $ini->getSection('KnowledgeTree');
+		$this->ktSettings = array('fileSystemRoot'=> $ktSettings['fileSystemRoot'],
+    	);
+    	$urlPaths = $ini->getSection('urls');
+		$this->urlPaths = array('varDirectory'=> $ktSettings['fileSystemRoot'].DS.'var',
+    								'logDirectory'=> $ktSettings['fileSystemRoot'].DS.'var'.DS.'log',
+    								'documentRoot'=> $ktSettings['fileSystemRoot'].DS.'var'.DS.'documentRoot',
+    								'uiDirectory'=> $ktSettings['fileSystemRoot'].DS.'presentation'.DS.'lookAndFeel'.DS.'knowledgeTree',
+    								'tmpDirectory'=> $ktSettings['fileSystemRoot'].DS.'var'.DS.'tmp',
+    								'cacheDirectory' => $ktSettings['fileSystemRoot'].DS.'var'.DS.'cache',
+    	);
+    }
+    
+    private function setDetails() {
+    	$inst = $this->getDataFromSession("installation");
+    	if ($inst) {
+    		$this->location = $inst['location'];
+    	}
+    }
+    
+    public function getStepVars() {
         return $this->temp_variables;
     }
 
@@ -83,6 +203,8 @@ class installation extends step
     
     public function storeSilent() {
     	$this->temp_variables['location'] = $this->location;
+    	
     }
+    
 }
 ?>

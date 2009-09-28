@@ -117,7 +117,7 @@ class configuration extends Step
     private $done;
 	
 	/**
-	* Flag to store class information in session
+	* Flag to display confirmation page first
 	*
 	* @author KnowledgeTree Team
 	* @access public
@@ -180,6 +180,7 @@ class configuration extends Step
     protected $util = null;
     
     protected $confpaths = array();
+    
     /**
      * Class constructor
      *
@@ -450,9 +451,7 @@ class configuration extends Step
         if(isset($this->temp_variables['paths'])) {
         	$dirs = $this->temp_variables['paths']; // Pull from temp
         } else {
-			if(!$this->readConfigPath()) { // Read the configuration
-				
-			}
+			$this->readConfigPath();
 			$dirs = $this->getFromConfigPath();
         }
         $varDirectory = $fileSystemRoot . DS . 'var';

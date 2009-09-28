@@ -36,12 +36,14 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Migrater
+* @package Installer
 * @version Version 0.1
 */
 class Session
 {
+	
 	private $salt = 'installers';
+	
 	/**
 	* Constructs session object
 	*
@@ -51,6 +53,10 @@ class Session
  	*/
 	public function __construct() {
 		$this->startSession();
+	}
+	
+	public function setSalt($salt) {
+		$this->salt = $salt;
 	}
 	
 	/**

@@ -31,7 +31,17 @@
 			Please verify the location of your current installation.
 		</p>
 		
-		<input type="text" style="width:430px; float:left" value="<?php echo $location; ?>">
+		<input name="location" type="text" style="width:430px; float:left" value="<?php echo $location; ?>">
+		<br/><br/>
+		<?php
+		if($errors) {
+			foreach ($errors as $error) {
+				?>
+				<span class="error"> <?php echo $error; ?> </span>
+				<?php
+			}
+		}
+		?>
 	</div>
 	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
 	<input type="submit" name="Next" value="Next" class="button_next"/>

@@ -207,6 +207,11 @@ class services extends Step
 	* @return boolean
 	*/
     private function doRun() {
+    	$serverDetails = $this->getServices();
+		foreach ($serverDetails as $serviceName) {
+			
+		}
+		
     	$this->checkServiceStatus();
 		return true;
     }

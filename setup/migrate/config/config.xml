@@ -10,9 +10,9 @@
 <migrate version="3.7" type="Commercial Edition">
     <steps>
         <step name="Welcome">welcome</step>
-        <step name="Current Installation" mode="silent">installation</step>
-       	<step name="Deactivate Services" order="3" mode="silent">services</step>
-        <step name="Database Migration" order="1">database</step>
+        <step name="Current Installation">installation</step>
+       	<step name="Deactivate Services">services</step>
+        <step name="Database Migration">database</step>
         <step name="Complete">complete</step>
     </steps>
  </migrate>
