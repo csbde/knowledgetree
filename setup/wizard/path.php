@@ -74,6 +74,7 @@
     define('STEP_DIR', WIZARD_DIR."steps".DS);
     define('TEMP_DIR', WIZARD_DIR."templates".DS);
     define('SHELL_DIR', WIZARD_DIR."shells".DS);
+    define('HELPER_DIR', WIZARD_LIB."helpers".DS);
     // Define paths to system webroot
 	define('SYSTEM_DIR', $sys);
 	define('SYS_VAR_DIR', SYSTEM_DIR."var".DS);

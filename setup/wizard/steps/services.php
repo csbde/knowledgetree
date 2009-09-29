@@ -660,44 +660,85 @@ class services extends Step
     		}
     		$javaExecutable = $this->java;
     	}
-    	$cmd = "\"$javaExecutable\" -version > ".SYS_OUT_DIR."/outJV 2>&1 echo $!";
+    	if(WINDOWS_OS) { 
+    		$cmd .= "\"$javaExecutable\" -cp \"".HELPER_DIR.";\" javaVersion \"".SYS_OUT_DIR."outJV\""." \"".SYS_OUT_DIR."outJVHome\"";
+    		if($this->OS."ReadJVFromFile()") return true;
+    	} else {
+    		$cmd = "\"$javaExecutable\" -version > ".SYS_OUT_DIR."outJV 2>&1 echo $!";
+    		if($this->OS."ReadJVFromFile()") return true;
+    	}
+
+		$this->javaVersionInCorrect();
+		$this->javaCheck = 'cross';
+		$this->error[] = "Requires Java 1.5+ to be installed";
+    	return false;
+    }
+    
+    function windowsReadJVFromFile($cmd) {
     	$response = $this->util->pexec($cmd);
-    	if(file_exists(SYS_OUT_DIR.'outJV')) {
-    		$tmp = file_get_contents(SYS_OUT_DIR.'outJV');
-    		preg_match('/"(.*)"/',$tmp, $matches);
-    		if($matches) {
-	    		if($matches[1] < $this->javaVersion) { // Check Version of java
+		if(file_exists(SYS_OUT_DIR.'outJV')) {
+			$version = file_get_contents(SYS_OUT_DIR.'outJV');
+			if($version != '') {
+				if($version < $this->javaVersion) { // Check Version of java
 					$this->javaVersionInCorrect();
 					$this->javaCheck = 'cross';
 					$this->error[] = "Requires Java 1.5+ to be installed";
 					
 					return false;
-	    		} else {
+				} else {
 					$this->javaVersionCorrect();
 					$this->javaInstalled();
 					$this->javaCheck = 'tick';
 					$this->providedJava = true;
 					
 					return true;
-	    		}
-    		} else {
-    			$this->javaVersionWarning();
-    			$this->javaCheck = 'cross_orange';
-    			if($attempt) {
-	    			$this->javaExeMessage = "Incorrect java path specified";
-	    			$this->javaExeError = true;
-	    			$this->error[] = "Requires Java 1.5+ to be installed";
-    			}
-				
+				}
+			} else {
+				$this->javaVersionWarning();
+				$this->javaCheck = 'cross_orange';
+				if($attempt) {
+					$this->javaExeMessage = "Incorrect java path specified";
+					$this->javaExeError = true;
+					$this->error[] = "Requires Java 1.5+ to be installed";
+				}
 				
 				return false;
-    		}
-    	}
-    	
-		$this->javaVersionInCorrect();
-		$this->javaCheck = 'cross';
-		$this->error[] = "Requires Java 1.5+ to be installed";
-    	return false;
+			}
+		}
+    }
+    
+    function unixReadJVFromFile($cmd) {
+    	$response = $this->util->pexec($cmd);
+		if(file_exists(SYS_OUT_DIR.'outJV')) {
+			$tmp = file_get_contents(SYS_OUT_DIR.'outJV');
+			preg_match('/"(.*)"/',$tmp, $matches);
+			if($matches) {
+				if($matches[1] < $this->javaVersion) { // Check Version of java
+					$this->javaVersionInCorrect();
+					$this->javaCheck = 'cross';
+					$this->error[] = "Requires Java 1.5+ to be installed";
+					
+					return false;
+				} else {
+					$this->javaVersionCorrect();
+					$this->javaInstalled();
+					$this->javaCheck = 'tick';
+					$this->providedJava = true;
+					
+					return true;
+				}
+			} else {
+				$this->javaVersionWarning();
+				$this->javaCheck = 'cross_orange';
+				if($attempt) {
+					$this->javaExeMessage = "Incorrect java path specified";
+					$this->javaExeError = true;
+					$this->error[] = "Requires Java 1.5+ to be installed";
+				}
+				
+				return false;
+			}
+		}
     }
     
     function detPhpSettings() {
