@@ -228,6 +228,11 @@ class services extends Step
     private function checkServiceStatus() {
     	$serverDetails = $this->getServices();
 		foreach ($serverDetails as $serviceName) {
+			$className = OS.$serviceName;
+			$service = new $className();
+			$service->load();
+			$status = $this->serviceInstalled($service);
+			echo "$status<br/>";
 			$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$serviceName." has been shut down");
 		}
     }

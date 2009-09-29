@@ -524,9 +524,9 @@ class Migrater {
             case 'next':
         		$step_name = $this->_getStepName();
         		$res = $this->_runStepAction($step_name);
-				if($res == 'next')
+				if($res == 'next') {
                 	$this->_proceed(); // Load next window
-                elseif ($res == 'migrate') {
+        		} elseif ($res == 'migrate') {
                 	$this->_runStepsMigraters(); // Load landing
                 	$this->_proceed(); // Load next window
                 } elseif ($res == 'confirm') {

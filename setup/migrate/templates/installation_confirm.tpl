@@ -5,7 +5,7 @@
 		if(!$errors && !$warnings) {
 			?>
 				<span class='big_ok'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-				Installation has been detected. Please click next to continue.
+				Installation has been detected. Please confirm system settings.
 				<br/><br/>
 			<?php
 		}
@@ -33,27 +33,23 @@
 		</p>
 		
 		<h3>Database Settings</h3>
+		<table class="conf_paths">
+			<tr>
+				<td width="22%"">Database Name: </td>
+				<td width="50%"><?php echo $dbSettings['dbName']; ?></td>
+			</tr>
+			<tr>
+				<td width="22%"">Database Name: </td>
+				<td width="50%"><?php echo $dbSettings['dbName']; ?></td>
+			</tr>
+		</table>
 		
 		<h3>System Paths</h3>
 		<table class="conf_paths">
-		<?php foreach ($paths as $key => $path) { ?>
+		<?php foreach ($urlPaths as $key => $path) { ?>
 			<tr>
-<!--				<td width="10"><div class='<?php //echo $path['class']; ?>'></div></td>-->
 				<td width="22%"><?php echo $path['name']; ?>:</td>
-				<td width="50%"<?php //echo $width; ?>"><?php echo $path['path']; ?></td>
-	    		<?php //if($path['class'] != 'tick') {	?>
-<!--	    			<td class="error" width="27%"> <?php //echo $path['msg']; ?> </td>-->
-	    			<td width="10">
-					<?php //if (AJAX) { ?>
-<!--						<a href="#" class="refresh" onclick="w.refresh('configuration')">Refresh</a>-->
-					<?php //} else { ?>
-<!--						<a href="javascript:this.location.reload();" class="refresh">Refresh</a>-->
-					<?php //} ?>
-	    			</td>
-	    		<?php //} else { ?>
-<!--	    			<td class="error" width="27%"> </td>-->
-<!--	    			<td width="10"> </td>-->
-	    		<?php //} ?>
+				<td width="50%""><?php echo $path['path']; ?></td>
 			</tr>
 		<?php
 		    }

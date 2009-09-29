@@ -1,7 +1,7 @@
 <?php if (AJAX) { ?>
 	<form id="services_database_registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 <?php } else { ?>
-	<form id="dbsettings" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.onSubmitValidate(<?php if ($silent) echo 'true'; else echo 'false'; ?>);return false;">
+	<form id="dbsettings" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 <?php } ?>
 <p class="title">Confirming Database Configurations</p>
 <!-- Check For immediate Errors -->

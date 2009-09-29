@@ -92,26 +92,19 @@ class installation extends step
     	if(!$this->inStep("installation")) {
     		$this->setDetails();
     		$this->doRun();
-    		
     		return 'landing';
     	}
         if($this->next()) {
         	if($this->doRun()) {
-        	
-            	return 'next';
+        		$this->setDetails();
+            	return 'confirm';
         	} else {
-            
             	return 'error';
         	}
         } else if($this->previous()) {
-        	
             return 'previous';
         } else if($this->confirm()) {
-        	$this->setDetails();
-        	if($this->doRun()) {
             	return 'next';
-        	}
-        	return 'error';
         }
 		$this->doRun();
         
@@ -140,12 +133,15 @@ class installation extends step
 		$ktInstallPath = isset($_POST['location']) ? $_POST['location']: '';
 		if($ktInstallPath != '') {
 			$this->location = $ktInstallPath;
+			//echo $ktInstallPath;die;
 			if(file_exists($ktInstallPath)) {
 				$configPath = $ktInstallPath.DS."knowledgeTree".DS."config".DS."config-path";
 				if(file_exists($configPath)) {
 					$configFilePath = file_get_contents($configPath);
 					if(file_exists($configFilePath)) {
 						$this->readConfig($configFilePath);
+						$this->storeSilent();
+						
 						return true;
 					} else {
 						$this->error[] = "KT installation configuration file empty";
@@ -174,16 +170,23 @@ class installation extends step
     								'dbAdminPass'=> $dbSettings['dbAdminPass'],
     	);
 		$ktSettings = $ini->getSection('KnowledgeTree');
-		$this->ktSettings = array('fileSystemRoot'=> $ktSettings['fileSystemRoot'],
+		$froot = $ktSettings['fileSystemRoot'];
+		if ($froot == 'default') {
+			$froot = $this->location;
+		}
+		$this->ktSettings = array('fileSystemRoot'=> $froot,
     	);
     	$urlPaths = $ini->getSection('urls');
-		$this->urlPaths = array('varDirectory'=> $ktSettings['fileSystemRoot'].DS.'var',
-    								'logDirectory'=> $ktSettings['fileSystemRoot'].DS.'var'.DS.'log',
-    								'documentRoot'=> $ktSettings['fileSystemRoot'].DS.'var'.DS.'documentRoot',
-    								'uiDirectory'=> $ktSettings['fileSystemRoot'].DS.'presentation'.DS.'lookAndFeel'.DS.'knowledgeTree',
-    								'tmpDirectory'=> $ktSettings['fileSystemRoot'].DS.'var'.DS.'tmp',
-    								'cacheDirectory' => $ktSettings['fileSystemRoot'].DS.'var'.DS.'cache',
+		$this->urlPaths = array(array('name'=> 'Var Directory', 'path'=> $froot.DS.'var'),
+									array('name'=> 'Log Directory', 'path'=> $froot.DS.'log'),
+									array('name'=> 'Document Root', 'path'=> $froot.DS.'Documents'),
+									array('name'=> 'UI Directory', 'path'=> $froot.DS.'presentation'.DS.'lookAndFeel'.DS.'knowledgeTree'),
+									array('name'=> 'Temporary Directory', 'path'=> $froot.DS.'tmp'),
+									array('name'=> 'Cache Directory', 'path'=> $froot.DS.'cache'),
     	);
+    	$this->temp_variables['urlPaths'] = $this->urlPaths;
+    	$this->temp_variables['ktSettings'] = $this->ktSettings;
+    	$this->temp_variables['dbSettings'] = $this->dbSettings;
     }
     
     private function setDetails() {
