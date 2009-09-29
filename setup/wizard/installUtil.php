@@ -60,7 +60,7 @@ class InstallUtil {
 	* @return boolean
  	*/
 	public function isSystemInstalled() {
-		if (file_exists(dirname(__FILE__)."/install")) {
+		if (file_exists(dirname(__FILE__)."/install.lock")) {
 
 			return true;
 		}
