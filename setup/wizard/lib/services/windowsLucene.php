@@ -140,7 +140,6 @@ class windowsLucene extends windowsService {
 	* @return void
  	*/
 	public function load() {
-//		$this->name = "KTLuceneTest";
 		$this->setJavaBin();
 		$this->setLuceneDIR(SYSTEM_DIR."bin".DS."luceneserver");
 		$this->setLuceneExe("KTLuceneService.exe");
@@ -151,6 +150,25 @@ class windowsLucene extends windowsService {
 		$this->setLuceneError("lucene-err.txt");
 	}
 
+	/**
+	* Retrieve Status Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/
+	public function status() {
+		$cmd = "sc query {$this->name}";
+		$response = $this->util->pexec($cmd);
+		if($response['out']) {
+			$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
+			return $state;
+		}
+		
+		return '';
+	}
+	
 	/**
 	* Set Java Directory path
 	*
@@ -169,29 +187,12 @@ class windowsLucene extends windowsService {
 			}
 		}
 		// TODO: Will not detect, but a java pre-check is done in services, before this
-		if ($this->util->getJava()) {
-		} else {
-		}
-		$this->javaBin = 'java';
-	}
-	
-	/**
-	* Retrieve Status Service
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return string
- 	*/
-	public function status() {
-		$cmd = "sc query {$this->name}";
-		$response = $this->util->pexec($cmd);
-		if($response['out']) {
-			$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
-			return $state;
+		if(file_exists(SYS_OUT_DIR.'outJVHome')) {
+			$this->javaBin = file_get_contents(SYS_OUT_DIR.'outJVHome');
+			if($this->javaBin != '') return true;
 		}
 		
-		return '';
+		return false;
 	}
 	
 	/**
@@ -369,6 +370,10 @@ class windowsLucene extends windowsService {
 			$this->javaJVM = $this->getJavaBin().DS."client".DS."jvm.dll";
 		} elseif (file_exists($this->getJavaBin().DS."server".DS."jvm.dll")) {
 			$this->javaJVM = $this->getJavaBin().DS."server".DS."jvm.dll";
+		} elseif (file_exists($this->getJavaBin().DS."bin".DS."client".DS."jvm.dll")) {
+			$this->javaJVM = $this->getJavaBin().DS."bin".DS."client".DS."jvm.dll";
+		} elseif (file_exists($this->getJavaBin().DS."bin".DS."server".DS."jvm.dll")) {
+			$this->javaJVM = $this->getJavaBin().DS."bin".DS."server".DS."jvm.dll";
 		} else {
 			return false;
 		}
@@ -397,10 +402,11 @@ class windowsLucene extends windowsService {
 	public function install() {
 		$state = $this->status();
 		if($state == '') {
-			$this->writeLuceneProperties();
+			//$this->writeLuceneProperties();
 			$luceneExe = $this->getLuceneExe();
 			$luceneSource = $this->getLuceneSource();
 			$luceneDir = $this->getluceneDir();
+			$javaJVM = $this->getJavaJVM();
 			if($luceneExe && $luceneSource && $luceneDir) {
 				$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
             	if(DEBUG) {
