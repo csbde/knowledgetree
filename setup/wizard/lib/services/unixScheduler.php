@@ -59,6 +59,7 @@ class unixScheduler extends unixService {
 		$this->setSchedulerDir(VAR_BIN_DIR);
 		$this->setSchedulerSourceLoc('schedulerTask.sh');
 	}
+
 	
 	function setSystemDir($systemDir) {
 		$this->systemDir = $systemDir;
@@ -155,10 +156,10 @@ class unixScheduler extends unixService {
 		$source = $this->getSchedulerSourceLoc();
 		$this->writeSchedulerTask();
 		if($source) { // Source
-			$cmd = "nohup ".$source." > ".SYS_LOG_DIR."scheduler.log 2>&1 & echo $!";
+			$cmd = "nohup ".$source." > ".$this->outputDir."scheduler.log 2>&1 & echo $!";
 		} else { // Could be Stack
 			$source = SYS_BIN_DIR.$this->schedulerSource;
-			$cmd = "nohup ".$source." > ".SYS_LOG_DIR."scheduler.log 2>&1 & echo $!";
+			$cmd = "nohup ".$source." > ".$this->outputDir."scheduler.log 2>&1 & echo $!";
 		}
     	if(DEBUG) {
     		echo "Command : $cmd<br/>";

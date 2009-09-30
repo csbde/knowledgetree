@@ -59,11 +59,21 @@ class windowsService extends Service {
 	* @param none
 	* @return string
  	*/
-
 	public $util;
+	
+	public $outputDir;
+	
+	public $varDir;
 	
 	public function __construct() {
 		$this->util = new InstallUtil();
+		$this->setSystemDirs();
+	}
+	
+	function setSystemDirs() {
+		$conf = $this->util->getDataFromSession('configuration');
+		$this->outputDir = $conf['paths']['logDirectory']['path'].DS;
+		$this->varDir = $conf['paths']['varDirectory']['path'].DS;
 	}
 	
 	/**

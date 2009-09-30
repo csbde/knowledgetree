@@ -142,7 +142,7 @@ An second user is required for normal database interaction, the reading and writ
 		<input type="submit" name="Next" value="next" class="button_next"/>
 </div>
 </form>
-<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>
+<?php if (AJAX) { echo $html->js('form.js'); } ?>
 <script type="text/javascript">
 	$('#dname').focus();
 </script>

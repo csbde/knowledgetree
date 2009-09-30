@@ -334,7 +334,7 @@ govern.
 </div>
 	<input id="accept" type="hidden" name="license" value=""/>
 	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
+	<input type="submit" name="Next" value="I Agree" onclick="javascript:{document.getElementById('accept').value = 1;}" class="button_next"/>
     <input type="submit" name="Next" value="I Disagree" onclick="javascript:{document.getElementById('accept').value = 0;}" class="button_next"/>
-    <input type="submit" name="Next" value="I Agree" onclick="javascript:{document.getElementById('accept').value = 1;}" class="button_next"/>
 </form>
-<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>
+<?php if (AJAX) { echo $html->js('form.js'); } ?>

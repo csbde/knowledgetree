@@ -42,6 +42,7 @@
 
 class unixLucene extends unixService {
 	public $util;
+
 	private $shutdownScript;
 	private $indexerDir;
 	private $lucenePidFile;
@@ -58,7 +59,6 @@ class unixLucene extends unixService {
 	}
 	
 	public function load() {
-		$this->setSystemOutputDir();
 		$this->setLuceneDir(SYSTEM_DIR."bin".DS."luceneserver".DS);
 		$this->setIndexerDir(SYSTEM_DIR."search2".DS."indexing".DS."bin".DS);
 		$this->setLucenePidFile("lucene_test.pid");
@@ -68,12 +68,6 @@ class unixLucene extends unixService {
 		$this->setShutdownScript("shutdown.php");
 	}
 	
-	function setSystemOutputDir() {
-		$conf = $this->util->getDataFromSession('configuration');
-		print_r($conf);
-		die;
-//		$conf['path'][''];
-	}
 	
 	public function setIndexerDir($indexerDir) {
 		$this->indexerDir = $indexerDir;
@@ -190,7 +184,7 @@ class unixLucene extends unixService {
     	$state = $this->status();
     	if($state != 'STARTED') {
 	    	$cmd = "cd ".$this->getLuceneDir()."; ";
-	    	$cmd .= "nohup java  {$this->getJavaXmx()} {$this->getJavaXmx()} -jar ".$this->getLuceneSource()." > ".SYS_LOG_DIR."lucene.log 2>&1 & echo $!";
+	    	$cmd .= "nohup java  {$this->getJavaXmx()} {$this->getJavaXmx()} -jar ".$this->getLuceneSource()." > ".$this->outputDir."lucene.log 2>&1 & echo $!";
 	    	if(DEBUG) {
 	    		echo "Command : $cmd<br/>";
 	    		return ;

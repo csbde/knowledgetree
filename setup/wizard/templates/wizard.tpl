@@ -2,16 +2,17 @@
 <html>
 	<head>
 		<title>KnowledgeTree Installer</title>
-		<script type="text/javascript" src="resources/jquery.js"></script>
-		<script type="text/javascript" src="resources/jquery.form.js"></script>
-		<script type="text/javascript" src="resources/jquery.blockUI.js"></script>
-		<script type="text/javascript" src="resources/wizard.js" ></script>
-		<link rel="stylesheet" type="text/css" href="resources/wizard.css" />
+		<?php echo $html->js('jquery.js'); ?>
+		<?php echo $html->js('jquery.form.js'); ?>
+		<?php echo $html->js('jquery.blockUI.js'); ?>
+		<?php echo $html->js('jquery.hotkeys.js'); ?>
+		<?php echo $html->js('wizard.js'); ?>
+		<?php echo $html->css('wizard.css'); ?>
 	</head>
 	<body onload="">
 		<div id="outer-wrapper">
 		    <div id="header">
-			    <div id="logo"><img src="resources/graphics/dame/installer-header_logo.png"/></div>
+			    <div id="logo"><?php echo $html->image('dame/installer-header_logo.png'); ?> </div>
 			    <div id="install_details">
 					<span style="font-size:120%;"> <?php echo $vars['install_version']; ?> </span>
 					<span style="font-size:120%;"><?php echo $vars['install_type']; ?></span>
@@ -27,13 +28,13 @@
 		                	<?php echo $content; ?>
 		                </div>
 		            </div>
-		            <div id="loading" style="display:none;"> <img src="resources/graphics/loading.gif" height="32px" width="32px"> </div>
+		            <div id="loading" style="display:none;"> <?php echo $html->image('loading.gif', array("height"=>"32px", "width"=>"32px")); ?> </div>
 		        </div>
 		        <div class="clearing">&nbsp;</div>
 		    </div>
 			
 		    <div id="footer">
-		    	<img width="105" height="23" align="right" src="resources/graphics/dame/powered-by-kt.png" style="padding: 5px;"/>
+		    	<?php echo $html->image('dame/powered-by-kt.png', array("height"=>"23px", "width"=>"105px", "style"=>"padding: 5px;")); ?>
 		    </div>
 		</div>
 	</body>

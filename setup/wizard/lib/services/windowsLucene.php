@@ -121,6 +121,7 @@ class windowsLucene extends windowsService {
 	*/
 	private $luceneDir;
 	
+
 	/**
 	* Service name
 	*
@@ -140,7 +141,7 @@ class windowsLucene extends windowsService {
 	* @return void
  	*/
 	public function load() {
-		$this->setSystemOutputDir();
+
 		$this->setJavaBin();
 		$this->setLuceneDIR(SYSTEM_DIR."bin".DS."luceneserver");
 		$this->setLuceneExe("KTLuceneService.exe");
@@ -151,12 +152,6 @@ class windowsLucene extends windowsService {
 		$this->setLuceneError("lucene-err.txt");
 	}
 
-	function setSystemOutputDir() {
-		$conf = $this->util->getDataFromSession('configuration');
-		print_r($conf);
-		die;
-//		$conf['path'][''];
-	}
 	
 	/**
 	* Retrieve Status Service
@@ -195,8 +190,8 @@ class windowsLucene extends windowsService {
 			}
 		}
 		// TODO: Will not detect, but a java pre-check is done in services, before this
-		if(file_exists(SYS_OUT_DIR.'outJVHome')) {
-			$this->javaBin = file_get_contents(SYS_OUT_DIR.'outJVHome');
+		if(file_exists($this->varDir.'outJVHome')) {
+			$this->javaBin = file_get_contents($this->varDir.'outJVHome');
 			if($this->javaBin != '') return true;
 		}
 		
@@ -326,7 +321,7 @@ class windowsLucene extends windowsService {
 	* @return void
  	*/
 	private function setLuceneOut($luceneOut) {
-		$this->luceneOut = SYS_LOG_DIR.$luceneOut;
+		$this->luceneOut = $this->outputDir.$luceneOut;
 	}
 	
 	/**
@@ -350,7 +345,7 @@ class windowsLucene extends windowsService {
 	* @return void
  	*/
 	private function setLuceneError($luceneError) {
-		$this->luceneError = SYS_LOG_DIR.$luceneError;
+		$this->luceneError = $this->outputDir.$luceneError;
 	}
 	
 	/**

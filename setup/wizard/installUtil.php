@@ -254,9 +254,12 @@ class InstallUtil {
      * @param boolean $create Whether to create the directory if it doesn't exist
      * @return array The message and css class to use
      */
-    public function checkPermission($dir, $create=false)
+    public function checkPermission($dir, $create=false, $file = false)
     {
-        $exist = 'Directory doesn\'t exist';
+    	if(!$file)
+        	$exist = 'Directory doesn\'t exist';
+        else 
+        	$exist = 'File doesn\'t exist';
         $write = 'Directory not writable';
         $ret = array('class' => 'cross');
 

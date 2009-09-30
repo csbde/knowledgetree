@@ -3,7 +3,7 @@
 body {
 	background-attachment:scroll;
 	background-color:transparent;
-	background-image:url("graphics/dame/loginbg.png");
+	background-image:url("../graphics/dame/loginbg.png");
 	background-position:0 0;
 	background-repeat:repeat-x;
 	font-family:sans-serif;
@@ -71,7 +71,7 @@ select {
 }
 
 #header {
-	background: transparent url("graphics/dame/installer_head.png") repeat scroll 0% 0%;
+	background: transparent url("../graphics/dame/installer_head.png") repeat scroll 0% 0%;
 	text-align: right; 
 	font-size: 100%; 
 	color: rgb(167, 167, 167); 
@@ -82,12 +82,12 @@ select {
 }
 
 #wrapper {
-    /*background: white url("graphics/background.gif") repeat-y left;*/
+    /*background: white url("../graphics/background.gif") repeat-y left;*/
 }
 
 #container {
   width: 100%;
-  background: white url("graphics/background.gif") repeat-y left;
+  background: white url("../graphics/background.gif") repeat-y left;
   float: right;
 }
 
@@ -175,7 +175,7 @@ select {
 }
 
 #footer {
-	background-image:url("graphics/dame/navbar.png");
+	background-image:url("../graphics/dame/navbar.png");
 	height:35px;
 }
 
@@ -187,7 +187,7 @@ select {
 /* Content Styles */
 
 .logo {
-    background: url("graphics/logo.png") no-repeat;
+    background: url("../graphics/logo.png") no-repeat;
     background-position: top left;
     height: 50px;
     width: 200px;
@@ -207,7 +207,7 @@ select {
 }
 
 .indicator a {
-	background:url("graphics/dame/tick1.png") no-repeat left; 
+	background:url("../graphics/dame/tick1.png") no-repeat left; 
 	padding-top:15px;			
 	padding-bottom:10px;		
 	padding-left:30px;			
@@ -215,7 +215,7 @@ select {
 }
 
 .active {
-	background:url("graphics/dame/tick1.png") no-repeat left; 
+	background:url("../graphics/dame/tick1.png") no-repeat left; 
 	padding-top:15px;			
 	padding-bottom:10px;		
 	padding-left:30px;			
@@ -223,7 +223,7 @@ select {
 }
 
 .inactive {
-	background:url("graphics/dame/tick2.png") no-repeat left;
+	background:url("../graphics/dame/tick2.png") no-repeat left;
 	padding-top:15px;
 	padding-bottom:10px;
 	padding-left:30px; 
@@ -231,7 +231,7 @@ select {
 }
 
 .current {
-	background:url("graphics/dame/dot.png") no-repeat left;
+	background:url("../graphics/dame/dot.png") no-repeat left;
 	padding-top:15px;
 	padding-bottom:10px;
 	padding-left:30px;
@@ -239,20 +239,20 @@ select {
 }
 	
 .tick {
-    background: url("graphics/tick.png") no-repeat;
+    background: url("../graphics/tick.png") no-repeat;
     height: 16px;
     width: 16px;
 }
 
 .cross {
-    background: url("graphics/cross.png") no-repeat;
+    background: url("../graphics/cross.png") no-repeat;
     height: 16px;
     width: 16px;
     color:#A30000;
 }
 
 .cross_orange {
-    background: url("graphics/cross_orange.png") no-repeat;
+    background: url("../graphics/cross_orange.png") no-repeat;
     height: 16px;
     width: 16px;
     color:#EC7725;
@@ -289,7 +289,7 @@ select {
 }
 
 .back {
-	background-image: url("graphics/dame/kt_gradient.jpg");
+	background-image: url("../graphics/dame/kt_gradient.jpg");
 	background-repeat:repeat-x;
 	border:1px solid #CECECE;
 	float:left;
@@ -305,7 +305,7 @@ select {
 }
 
 .step input {
-	background-image: url("graphics/dame/kt_gradient.jpg");
+	background-image: url("../graphics/dame/kt_gradient.jpg");
 	background-repeat:repeat-x;
 	border:1px solid #CECECE;
 	float:right;
@@ -340,7 +340,7 @@ select {
 }
 
 .powered-by {
-    background: url("graphics/powered-by-kt.png") no-repeat;
+    background: url("../graphics/powered-by-kt.png") no-repeat;
     background-position: center left;
     height: 50px;
     width: 140px;
@@ -478,7 +478,7 @@ td.dir_description {
 }
 
 .big_ok {
-	background: url("graphics/big-ok.png") no-repeat;
+	background: url("../graphics/big-ok.png") no-repeat;
 	padding:4px;
 	/*width:16px;
 	height:16px;
@@ -505,7 +505,7 @@ td.dir_description {
 }
 
 #tooltips {
-	background: url("graphics/question.gif") no-repeat;
+	background: url("../graphics/question.gif") no-repeat;
 	width:16px;
 	height:16px;
 	cursor:pointer;

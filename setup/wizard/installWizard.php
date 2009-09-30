@@ -73,7 +73,7 @@ class InstallWizard {
 	protected $bypass = null;
 
 	/**
-	* Install bypass flag
+	* Level of debugger
 	*
 	* @author KnowledgeTree Team
 	* @access protected
@@ -228,7 +228,7 @@ class InstallWizard {
 		if(isset($_GET['debug'])) {
 			$this->setDebugLevel($_GET['debug']);
 		} else {
-			$this->setDebugLevel(0);
+			$this->setDebugLevel($this->debugLevel);
 		}
 		$this->setIUtil(new InstallUtil());
 	}

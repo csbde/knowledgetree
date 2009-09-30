@@ -70,6 +70,9 @@
     define('SERVICE_LIB', WIZARD_LIB."services".DS);
     define('CONF_DIR', WIZARD_DIR."config".DS);
     define('RES_DIR', WIZARD_DIR."resources".DS);
+    define('JS_DIR', RES_DIR."js".DS);
+    define('CSS_DIR', RES_DIR."css".DS);
+    define('IMG_DIR', RES_DIR."graphics".DS);
     define('STEP_DIR', WIZARD_DIR."steps".DS);
     define('TEMP_DIR', WIZARD_DIR."templates".DS);
     define('SHELL_DIR', WIZARD_DIR."shells".DS);

@@ -76,7 +76,7 @@ class windowsScheduler extends windowsService {
 	* @return string
  	*/	
 	public $name = "KTSchedulerTest";
-	
+
 	/**
 	* Load defaults needed by service
 	*
@@ -86,12 +86,14 @@ class windowsScheduler extends windowsService {
 	* @return void
  	*/
 	function load() {
-		$this->setSchedulerDIR(SYS_OUT_DIR."bin");
+		$this->setSchedulerDIR($this->varDir."bin");
 		$this->setSchedulerScriptPath("taskrunner.bat");
 		$this->setSchedulerSource("schedulerService.php");
 		
 	}
 
+
+	
 	/**
 	* Set Scheduler Directory path
 	*
@@ -101,6 +103,9 @@ class windowsScheduler extends windowsService {
 	* @return string
  	*/
 	private function setSchedulerDIR($schedulerDIR) {
+		if(!file_exists($schedulerDIR)) {
+			@mkdir($schedulerDIR);
+		}
 		$this->schedulerDir = $schedulerDIR;
 	}
 	
@@ -243,10 +248,10 @@ class windowsScheduler extends windowsService {
 	
 	private function writeTaskRunner() {
 		// Check if bin is readable and writable
-		if(is_readable(SYS_OUT_DIR."bin") && is_writable(SYS_OUT_DIR."bin")) {
-			if(DEBUG) {
-				echo "Create {$this->getSchedulerDir()}\\taskrunner.bat<br>";
-			}
+		if(DEBUG) {
+			echo "Attempt to Create {$this->getSchedulerDir()}\\taskrunner.bat<br>";
+		}
+		if(is_readable($this->varDir."bin") && is_writable($this->varDir."bin")) {
 			$fp = fopen($this->getSchedulerDir().""."\\taskrunner.bat", "w+");
 			$content = "@echo off \n";
 			$content .= "\"".PHP_DIR."php.exe\" "."\"{$this->getSchedulerSource()}\"";
