@@ -457,7 +457,6 @@ class configuration extends Step
     private function getPathInfo($fileSystemRoot)
     {
         if(isset($this->temp_variables['paths'])) {
-        	
         	$dirs = $this->temp_variables['paths']; // Pull from temp
         } else {
 			$this->readConfigPath();
@@ -502,17 +501,28 @@ class configuration extends Step
     private function getDirectories()
     {
     	if(isset($this->confpaths['configIni'])) {
-    		$configPath = $this->confpaths['configIni'];
+	        if(isset($this->confpaths['configIni'])) { // Check if theres a config path
+	        	$configPath = realpath("../../{$this->confpaths['configIni']}"); // Relative to Config Path File
+	        	if($configPath == '') { // Absolute path probably entered
+	        		$configPath = realpath("{$this->confpaths['configIni']}"); // Get relative path
+	        	}
+	        } else {
+	        	$configPath = realpath('../../config/config.ini');
+	        }
     	} else {
     		$configPath = '${fileSystemRoot}/config/config.ini';
     	}
+    	if(isset($this->confpaths['var'])) {
+    		$varPath = $this->confpaths['var'];
+    	} else {
+    		$varPath = '${fileSystemRoot}/var';
+    	}
         return array(
-                array('name' => 'Var Directory', 'setting' => 'varDirectory', 'path' => '${fileSystemRoot}/var', 'create' => false),
+                array('name' => 'Var Directory', 'setting' => 'varDirectory', 'path' => $varPath, 'create' => false),
                 array('name' => 'Document Directory', 'setting' => 'documentRoot', 'path' => '${varDirectory}/Documents', 'create' => true),
                 array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => '${varDirectory}/log', 'create' => true),
                 array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => '${varDirectory}/tmp', 'create' => true),
                 array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => '${varDirectory}/uploads', 'create' => true),
-                array('name' => 'Executables Directory', 'setting' => 'binDirectory', 'path' => '${varDirectory}/bin', 'create' => false),
                 array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => $configPath, 'create' => false),
                 );
     }
@@ -532,7 +542,6 @@ class configuration extends Step
                 array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => $_POST['logDirectory'], 'create' => true),
                 array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => $_POST['tmpDirectory'], 'create' => true),
                 array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => $_POST['uploadDirectory'], 'create' => true),
-                array('name' => 'Executables Directory', 'setting' => 'binDirectory', 'path' => $_POST['uploadDirectory'], 'create' => true),
                 array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => $_POST['configFile'], 'create' => false),
     	);
     }
@@ -587,10 +596,17 @@ class configuration extends Step
 		if(!$configPath) return false;
         $ini = new Ini($configPath);
         $data = $ini->getFileByLine();
+        $firstline = true; 
         foreach ($data as $k=>$v) {
-        	if(preg_match('/config.ini/', $k)) {
+        	if($firstline) { // First line holds the var directory
+        		$firstline = false;
+        		if(!preg_match('/config.ini/', $k)) { // Make sure it is not the old config.ini
+        			$this->confpaths['var'] = $k; // Store var directory
+        		}
+        	}
+        	if(preg_match('/config.ini/', $k)) { // Find config.ini
 				$this->confpaths['configIni'] = $k;
-        	} elseif (preg_match('/Documents/', $k)) {
+        	} elseif (preg_match('/Documents/', $k)) { // Find documents directory
 				$this->confpaths['Documents'] = $k;
         	} elseif (preg_match('/cache/', $k)) {
 				$this->confpaths['cache'] = $k;
