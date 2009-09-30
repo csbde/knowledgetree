@@ -579,7 +579,12 @@ class InstallUtil {
 			return $res;
 		}
 		$cmd = "which soffice";
-		return $this->getOpenOfficeHelper($cmd);
+		$res = $this->getOpenOfficeHelper($cmd);
+		if($res != '') {
+			return $res;
+		}
+		
+		return 'soffice';
     }
     
     function getOpenOfficeHelper($cmd) {
