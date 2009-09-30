@@ -321,8 +321,16 @@ class configuration extends Step
         $paths = $conf['paths'];
 
         // initialise writing to config.ini
-        $configPath = realpath('../../config/config.ini');
-
+		$this->readConfigPath();
+		$dirs = $this->getFromConfigPath();
+        if(isset($this->confpaths['configIni'])) { // Check if theres a config path
+        	$configPath = realpath("../../{$this->confpaths['configIni']}"); // Relative to Config Path File
+        	if($configPath == '') { // Absolute path probably entered
+        		$configPath = realpath("{$this->confpaths['configIni']}"); // Get relative path
+        	}
+        } else {
+        	$configPath = realpath('../../config/config.ini');
+        }
         $ini = false;
         if(file_exists($configPath)) {
             $ini = new Ini($configPath);
@@ -449,10 +457,12 @@ class configuration extends Step
     private function getPathInfo($fileSystemRoot)
     {
         if(isset($this->temp_variables['paths'])) {
+        	
         	$dirs = $this->temp_variables['paths']; // Pull from temp
         } else {
 			$this->readConfigPath();
 			$dirs = $this->getFromConfigPath();
+			
         }
         $varDirectory = $fileSystemRoot . DS . 'var';
         foreach ($dirs as $key => $dir){
@@ -491,6 +501,11 @@ class configuration extends Step
      */
     private function getDirectories()
     {
+    	if(isset($this->confpaths['configIni'])) {
+    		$configPath = $this->confpaths['configIni'];
+    	} else {
+    		$configPath = '${fileSystemRoot}/config/config.ini';
+    	}
         return array(
                 array('name' => 'Var Directory', 'setting' => 'varDirectory', 'path' => '${fileSystemRoot}/var', 'create' => false),
                 array('name' => 'Document Directory', 'setting' => 'documentRoot', 'path' => '${varDirectory}/Documents', 'create' => true),
@@ -498,7 +513,7 @@ class configuration extends Step
                 array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => '${varDirectory}/tmp', 'create' => true),
                 array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => '${varDirectory}/uploads', 'create' => true),
                 array('name' => 'Executables Directory', 'setting' => 'binDirectory', 'path' => '${varDirectory}/bin', 'create' => false),
-                array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => '${fileSystemRoot}/config/config.ini', 'create' => false),
+                array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => $configPath, 'create' => false),
                 );
     }
     
