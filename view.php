@@ -5,7 +5,6 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- *  
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -248,28 +247,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $content_class = 'view withviewlets';
         }
         $this->oPage->setContentClass($content_class);
-        
-        // check for a thumbnail
-        $thumbnail = '';
-        if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin'))
-        {
-            // hook into thumbnail plugin to get display for thumbnail
-            include_once(KT_DIR . '/plugins/thumbnails/thumbnails.php');
-            $thumbnailer = new ThumbnailViewlet();
-            $thumbnailDisplay = $thumbnailer->display_viewlet($document_id);
-            if ($thumbnailDisplay != '')
-            {
-                // check for existence and status of instant view plugin
-                if (KTPluginUtil::pluginIsActive('instaview.processor.plugin'))
-                {
-                    require_once KTPluginUtil::getPluginPath('instaview.processor.plugin') . 'instaViewLinkAction.php';
-                    $ivLinkAction = new instaViewLinkAction();
-                    $thumbnailDisplay = '<a href="' . $ivLinkAction->getViewLink($document_id, 'document') . '" target="_blank">' . $thumbnailDisplay . '</a>';
-                }
-                
-        		$thumbnail = $thumbnailDisplay;
-        	}
-        }
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/view');
@@ -284,9 +261,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
               'document_data' => $document_data,
               'fieldsets' => $fieldsets,
               'viewlet_data' => $viewlet_data,
-              'thumbnail' => $thumbnail,
         );
-        //return '<pre>' . print_r($aTemplateData, true) . '</pre>';
         return $oTemplate->render($aTemplateData);
     }
 

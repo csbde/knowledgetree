@@ -28,8 +28,8 @@ require_once(KT_DIR . '/search2/documentProcessor/documentProcessor.inc.php');
  * Generates thumbnails of documents using the pdf converter output
  * Dependent on the pdfConverter
  */
-class thumbnailGenerator extends BaseProcessor {
-    
+class thumbnailGenerator extends BaseProcessor
+{
     public $order = 3;
     protected $namespace = 'thumbnails.generator.processor';
 
@@ -38,7 +38,9 @@ class thumbnailGenerator extends BaseProcessor {
      *
      * @return thumbnailGenerator
      */
-    public function thumbnailGenerator() {    }
+    public function thumbnailGenerator()
+    {
+    }
 
     /**
      * Gets the document path and calls the generator function
@@ -98,6 +100,7 @@ class thumbnailGenerator extends BaseProcessor {
         $mime_types[] = 'application/vnd.oasis.opendocument.spreadsheet';
         $mime_types[] = 'application/vnd.oasis.opendocument.spreadsheet-template';
 
+        // OO3
         // Office 2007
         $mime_types[] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.template';
@@ -106,6 +109,9 @@ class thumbnailGenerator extends BaseProcessor {
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.template';
+
+    	// In addition PDF files are also supported
+    	$mime_types[] = 'application/pdf';
 
         return $mime_types;
 	}
@@ -127,90 +133,115 @@ class thumbnailGenerator extends BaseProcessor {
                - check out ktcore/KTDocumentViewlets.php
                - viewlet class is below
 	    */
-       
 		global $default;
-	   
-        $pdfDir = $default->pdfDirectory;
-        $pdfFile = $pdfDir .'/'. $this->document->iId.'.pdf';
-        $thumbnaildir = $pdfDir."/thumbnails";
+
+        $mimeTypeId = $this->document->getMimeTypeID();
+        $mimeType = KTMime::getMimeTypeName($mimeTypeId);
+
+	    // Get the pdf source file - if the document is a pdf then use the document as the source
+	    if($mimeType == 'application/pdf'){
+	        $pdfDir = $default->documentRoot;
+            $pdfFile = $pdfDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
+	    }else{
+    	    $pdfDir = $default->pdfDirectory;
+            $pdfFile = $pdfDir .'/'. $this->document->iId.'.pdf';
+	    }
+
+        $thumbnaildir = $default->internalVarDirectory.'/thumbnails';
         $thumbnailfile = $thumbnaildir.'/'.$this->document->iId.'.jpg';
-        
-        //if thumbail dir does not exist, generate one
+
+        //if thumbail dir does not exist, generate one and add an index file to block access
         if (!file_exists($thumbnaildir)) {
         	 mkdir($thumbnaildir, 0755);
+        	 touch($thumbnaildir.'/index.html');
+        	 file_put_contents($thumbnaildir.'/index.html', 'You do not have permission to access this directory.');
         }
 
         // if there is no pdf that exists - hop out
         if(!file_exists($pdfFile)){
-            global $default;
             $default->log->debug('Thumbnail Generator Plugin: PDF file does not exist, cannot generate a thumbnail');
             return false;
         }
-        
 		// if a previous version of the thumbnail exists - delete it
 		if (file_exists($thumbnailfile)) {
 			@unlink($thumbnailfile);
 		}
-        
         // do generation
         if (extension_loaded('imagick')) {
-        	$result= shell_exec("convert -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile");
+            $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
+        	$result = shell_exec("{$pathConvert} -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile");
         	return true;
         }else{
         	$default->log->debug('Thumbnail Generator Plugin: Imagemagick not installed, cannot generate a thumbnail');
             return false;
         }
-        
+
     }
-    
 }
 
 class ThumbnailViewlet extends KTDocumentViewlet {
-    
     var $sName = 'thumbnail.viewlets';
 
-    public function display_viewlet($documentId)
-    {
-    	global $default;
-        
+    public function display_viewlet() {
+        // Get the document id
+    	$documentId = $this->oDocument->getId();
+    	if(!is_numeric($documentId)){
+    	    return '';
+    	}
+
+    	return $this->renderThumbnail($documentId);
+    }
+
+    public function renderThumbnail($documentId) {
+        // Set up the template
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate('thumbnail_viewlet');
-        
-        if (is_null($oTemplate)) return '';
-		
-        $pdfDir = $default->pdfDirectory;
-		$thumbnailfile = $pdfDir . '/thumbnails/'.$documentId.'.jpg';
-		
-        // check that file exists, attempt to create if not
-		if (!file_exists($thumbnailfile))
-        {
-            // try to create, return on failure
+        if (is_null($oTemplate)){
+            return '';
+        }
+
+        // Check for the thumbnail
+        global $default;
+		$varDir = $default->internalVarDirectory;
+		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
+
+		// if the thumbnail doesn't exist try to create it
+		if (!file_exists($thumbnailfile)){
             $thumbnailer = new thumbnailGenerator();
             $thumbnailer->setDocument($this->oDocument);
             $thumbnailer->processDocument();
+
+            // if it still doesn't exist, return an empty string
             if (!file_exists($thumbnailfile)) {
                 return '';
             }
-        }
-        
-        // NOTE this is to turn the config setting for the PDF directory into a proper URL and not a path
-		$thumbnailUrl = str_replace($default->varDirectory, 'var/', $thumbnailfile);
-        $oTemplate->setData(array('thumbnail' => $thumbnailUrl));
-        
+		}
+
+		// check for existence and status of instant view plugin
+		$url = '';
+        if (KTPluginUtil::pluginIsActive('instaview.processor.plugin'))
+        {
+             require_once KTPluginUtil::getPluginPath('instaview.processor.plugin') . 'instaViewLinkAction.php';
+             $ivLinkAction = new instaViewLinkAction();
+             $url = $ivLinkAction->getViewLink($documentId, 'document');
+         }
+
+        // Get the url to the thumbnail and render it
+		$thumbnailUrl = str_replace($default->internalVarDirectory, 'var', $thumbnailfile);
+        $oTemplate->setData(array(
+            'thumbnail' => $thumbnailUrl,
+            'url' => $url
+            ));
         return $oTemplate->render();
     }
-    
-    public function get_width($documentId)
-    {
+
+    public function get_width($documentId){
     	global $default;
-    	
-        $pdfDir = $default->pdfDirectory;
-		$thumbnailfile = $pdfDir . '/thumbnails/'.$documentId.'.jpg';
+    	$varDir = $default->internalVarDirectory;
+		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
 		$size = getimagesize($thumbnailfile);
-		
-        return $size[0];
+		return $size[0];
     }
-    
 }
 
 ?>
