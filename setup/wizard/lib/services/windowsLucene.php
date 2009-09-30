@@ -140,6 +140,7 @@ class windowsLucene extends windowsService {
 	* @return void
  	*/
 	public function load() {
+		$this->setSystemOutputDir();
 		$this->setJavaBin();
 		$this->setLuceneDIR(SYSTEM_DIR."bin".DS."luceneserver");
 		$this->setLuceneExe("KTLuceneService.exe");
@@ -150,6 +151,13 @@ class windowsLucene extends windowsService {
 		$this->setLuceneError("lucene-err.txt");
 	}
 
+	function setSystemOutputDir() {
+		$conf = $this->util->getDataFromSession('configuration');
+		print_r($conf);
+		die;
+//		$conf['path'][''];
+	}
+	
 	/**
 	* Retrieve Status Service
 	*

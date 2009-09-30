@@ -500,30 +500,13 @@ class configuration extends Step
      */
     private function getDirectories()
     {
-    	if(isset($this->confpaths['configIni'])) {
-	        if(isset($this->confpaths['configIni'])) { // Check if theres a config path
-	        	$configPath = realpath("../../{$this->confpaths['configIni']}"); // Relative to Config Path File
-	        	if($configPath == '') { // Absolute path probably entered
-	        		$configPath = realpath("{$this->confpaths['configIni']}"); // Get relative path
-	        	}
-	        } else {
-	        	$configPath = realpath('../../config/config.ini');
-	        }
-    	} else {
-    		$configPath = '${fileSystemRoot}/config/config.ini';
-    	}
-    	if(isset($this->confpaths['var'])) {
-    		$varPath = $this->confpaths['var'];
-    	} else {
-    		$varPath = '${fileSystemRoot}/var';
-    	}
         return array(
-                array('name' => 'Var Directory', 'setting' => 'varDirectory', 'path' => $varPath, 'create' => false),
+                array('name' => 'Var Directory', 'setting' => 'varDirectory', 'path' => '${varDirectory}', 'create' => false),
                 array('name' => 'Document Directory', 'setting' => 'documentRoot', 'path' => '${varDirectory}/Documents', 'create' => true),
                 array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => '${varDirectory}/log', 'create' => true),
                 array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => '${varDirectory}/tmp', 'create' => true),
                 array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => '${varDirectory}/uploads', 'create' => true),
-                array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => $configPath, 'create' => false),
+                array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => '${fileSystemRoot}/config/config.ini', 'create' => false),
                 );
     }
     
@@ -555,20 +538,51 @@ class configuration extends Step
      * @return array The path information
      */
     private function getFromConfigPath() {
-    	if(isset($this->confpaths['Documents'])) { // Simple check to see if any paths were written
-	        return array (
-	        		array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => $this->confpaths['configIni'], 'create' => false),
-	                array('name' => 'Document Directory', 'setting' => 'documentRoot', 'path' => $this->confpaths['Documents'], 'create' => true),
-	                array('name' => 'Cache Directory', 'setting' => 'cacheDirectory', 'path' => $this->confpaths['cache'], 'create' => true),
-	                array('name' => 'Index Directory', 'setting' => 'indexDirectory', 'path' => $this->confpaths['indexes'], 'create' => true),
-	                array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => $this->confpaths['log'], 'create' => true),
-	                array('name' => 'Proxy Directory', 'setting' => 'proxiesDirectory', 'path' => $this->confpaths['proxies'], 'create' => true),
-	                array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => $this->confpaths['tmp'], 'create' => true),
-	                array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => $this->confpaths['uploads'], 'create' => true),
-	                );
+    	$configs = array();
+    	if(isset($this->confpaths['configIni'])) { // Simple check to see if any paths were written
+			$configPath = realpath("../../{$this->confpaths['configIni']}"); // Relative to Config Path File
+        	if($configPath == '') { // Absolute path probably entered
+        		$configPath = realpath("{$this->confpaths['configIni']}"); // Get absolute path
+        		if($configPath == '') {
+        			$configPath = realpath('../../config/config.ini');
+        		}
+        	}
     	} else {
-    		return $this->getDirectories();
+    		$configPath = '${fileSystemRoot}/config/config.ini';
     	}
+		$configs['configFile'] = array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => $configPath, 'create' => false);
+    	if(isset($this->confpaths['Documents'])) {
+    		$docsPath = $this->confpaths['Documents'];
+    	} else {
+    		$docsPath = '${varDirectory}/Documents';
+    	}
+    	$configs['documentRoot'] = array('name' => 'Document Directory', 'setting' => 'documentRoot', 'path' => $docsPath, 'create' => true);
+    	if(isset($this->confpaths['log'])) {
+			$logPath = $this->confpaths['log'];
+    	} else {
+    		$logPath = '${varDirectory}/log';
+    	}
+    	$configs['logDirectory'] = array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => $logPath, 'create' => true);
+    	if(isset($this->confpaths['tmp'])) {
+			$tmpPath = $this->confpaths['tmp'];
+    	} else {
+    		$tmpPath = '${varDirectory}/tmp';
+    	}
+    	$configs['tmpDirectory'] = array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => $tmpPath, 'create' => true);
+    	if(isset($this->confpaths['uploads'])) {
+			$uploadsPath = $this->confpaths['uploads'];
+    	} else {
+    		$uploadsPath = '${varDirectory}/uploads';
+    	}
+    	$configs['uploadDirectory'] = array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => $uploadsPath, 'create' => true);
+    	if(isset($this->confpaths['var'])) {
+    		$varPath = $this->confpaths['var'];
+    	} else {
+    		$varPath = '${fileSystemRoot}/var';
+    	}
+    	$configs['varDirectory'] = array('name' => 'Var Directory', 'setting' => 'varDirectory', 'path' => $varPath, 'create' => false);
+    	
+    	return $configs;
     }
     
     /**

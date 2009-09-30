@@ -58,6 +58,7 @@ class unixLucene extends unixService {
 	}
 	
 	public function load() {
+		$this->setSystemOutputDir();
 		$this->setLuceneDir(SYSTEM_DIR."bin".DS."luceneserver".DS);
 		$this->setIndexerDir(SYSTEM_DIR."search2".DS."indexing".DS."bin".DS);
 		$this->setLucenePidFile("lucene_test.pid");
@@ -65,6 +66,13 @@ class unixLucene extends unixService {
 		$this->setJavaXmx(512);
 		$this->setLuceneSourceLoc("ktlucene.jar");
 		$this->setShutdownScript("shutdown.php");
+	}
+	
+	function setSystemOutputDir() {
+		$conf = $this->util->getDataFromSession('configuration');
+		print_r($conf);
+		die;
+//		$conf['path'][''];
 	}
 	
 	public function setIndexerDir($indexerDir) {

@@ -68,6 +68,7 @@ class unixOpenOffice extends unixService {
 	}
 	
 	public function load() {
+		
 		$this->setPort("8100");
 		$this->setHost("localhost");
 		$this->setLog("openoffice.log");
