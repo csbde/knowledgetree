@@ -32,6 +32,7 @@ class thumbnailsPlugin extends KTPlugin {
     function thumbnailsPlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Thumbnail Generator');
+        $this->sSQLDir = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR;
         return $res;
     }
 

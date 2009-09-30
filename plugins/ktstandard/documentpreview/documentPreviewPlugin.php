@@ -69,15 +69,16 @@ class PreviewColumn extends AdvancedColumn {
         $sLoading = _kt('Loading...');
 
         $width = 500;
-        
+
 		// Check for existence of thumbnail plugin
         if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin')) {
             // hook into thumbnail plugin to get display for thumbnail
             include_once(KT_DIR . '/plugins/thumbnails/thumbnails.php');
             $thumbnailer = new ThumbnailViewlet();
-            $width += $thumbnailer->get_width($iDocumentId);
+            $thumbnailwidth = $thumbnailer->get_width($iDocumentId);
+            $width += $thumbnailwidth + 30;
         }
-        
+
         $link = '<a href = "#" class="ktAction ktPreview" id = "box_'.$iDocumentId.'" ';
 
         if($this->sActivation == 'mouse-over'){

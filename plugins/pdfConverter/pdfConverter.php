@@ -173,6 +173,8 @@ class pdfConverter extends BaseProcessor
         // Ensure the PDF directory exists
         if(!file_exists($pdfDir)){
             mkdir($pdfDir, 0755);
+            touch($pdfDir.'/index.html');
+            file_put_contents($pdfDir.'/index.html', 'You do not have permission to access this directory.');
         }
 
         $pdfFile = $pdfDir .'/'. $this->document->iId.'.pdf';
