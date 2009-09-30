@@ -71,7 +71,7 @@ class unixOpenOffice extends unixService {
 		$this->setPort("8100");
 		$this->setHost("localhost");
 		$this->setLog("openoffice.log");
-		$this->setBin("soffice");
+		$this->setBin($this->soffice = $this->util->getOpenOffice());
 		$this->setOption();
 	}
 	

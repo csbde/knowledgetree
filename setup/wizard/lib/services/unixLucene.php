@@ -181,9 +181,8 @@ class unixLucene extends unixService {
     public function start() {
     	$state = $this->status();
     	if($state != 'STARTED') {
-    		//$this->writeLuceneProperties();
 	    	$cmd = "cd ".$this->getLuceneDir()."; ";
-	    	$cmd .= "nohup java -jar ".$this->getLuceneSource()." > ".SYS_LOG_DIR."lucene.log 2>&1 & echo $!";
+	    	$cmd .= "nohup java  {$this->getJavaXmx()} {$this->getJavaXmx()} -jar ".$this->getLuceneSource()." > ".SYS_LOG_DIR."lucene.log 2>&1 & echo $!";
 	    	if(DEBUG) {
 	    		echo "Command : $cmd<br/>";
 	    		return ;
@@ -202,31 +201,6 @@ class unixLucene extends unixService {
     	return false;
     }
     
-	/**
-	* Write Lucene Service property file
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return string
- 	*/
-	private function writeLuceneProperties() {
-		// Check if bin is readable and writable
-		if(is_readable(SYS_BIN_DIR) && is_writable(SYS_BIN_DIR)) {
-			if($this->getluceneDir()) {
-				$fileLoc = $this->getluceneDir()."KnowledgeTreeIndexer.properties";
-				$fp = fopen($fileLoc, "w+");
-				$content = "server.port=8875\n";
-				$content .= "server.paranoid=false\n";
-				$content .= "server.accept=127.0.0.1\n";
-				$content .= "server.deny=";
-				$content .= "indexer.directory=../../var/indexes\n";
-				$content .= "indexer.analyzer=org.apache.lucene.analysis.standard.StandardAnalyzer\n";
-				fwrite($fp, $content);
-				fclose($fp);
-				$this->util->pexec("chmod 777 $fileLoc");
-			}
-		}
-	}
+
 }
 ?>

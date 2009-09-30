@@ -1224,6 +1224,8 @@ if(isset($_GET['action'])) {
 	$func = $_GET['action'];
 	if(isset($_GET['debug'])) {
 		define('DEBUG', $_GET['debug']);
+	} else {
+		define('DEBUG', 0);
 	}
 	if($func != '') {
 		$serv = new services();
