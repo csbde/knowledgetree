@@ -1222,6 +1222,9 @@ class services extends Step
 
 if(isset($_GET['action'])) {
 	$func = $_GET['action'];
+	if(isset($_GET['debug'])) {
+		define('DEBUG', $_GET['debug']);
+	}
 	if($func != '') {
 		$serv = new services();
 		$func_call = strtoupper(substr($func,0,1)).substr($func,1);

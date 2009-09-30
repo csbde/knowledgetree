@@ -161,7 +161,7 @@ class unixScheduler extends unixService {
 			$cmd = "nohup ".$source." > ".SYS_LOG_DIR."scheduler.log 2>&1 & echo $!";
 		}
     	if(DEBUG) {
-    		echo "$cmd<br/>";
+    		echo "Command : $cmd<br/>";
     		return ;
     	}
     	$response = $this->util->pexec($cmd);

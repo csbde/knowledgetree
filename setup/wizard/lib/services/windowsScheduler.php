@@ -222,7 +222,7 @@ class windowsScheduler extends windowsService {
             	$this->setOptions();
             	$cmd = "\"{$this->winservice}\" install $this->name $this->options";
             	if(DEBUG) {
-            		echo "$cmd<br/>";
+            		echo "Command : $cmd<br/>";
             		return ;
             	}
             	$response = $this->util->pexec($cmd);
@@ -257,26 +257,5 @@ class windowsScheduler extends windowsService {
 			echo 'Could not write task runner<br>';
 		}
 	}
-	
-	/*
-	private function writeSchedulerTask() {
-		// Check if bin is readable and writable
-		if(is_readable(SYS_OUT_DIR."bin") && is_writable(SYS_OUT_DIR."bin")) {
-			if(!$this->getSchedulerScriptPath()) {
-				if(DEBUG) {
-					echo "Create {$this->getSchedulerScriptPath()} <br/>";
-				}
-				$fp = fopen($this->getSchedulerScriptPath(), "w+");
-				$content = "@echo off\n";
-				$content .= "\"".PHP_DIR."php.exe\" "."\"{$this->getSchedulerSource()}\"";
-				fwrite($fp, $content);
-				fclose($fp);
-			}
-		} else {
-			// TODO: Should not reach this point
-			echo 'Could not write scheduler task<br>';
-		}
-	}
-	*/
 }
 ?>

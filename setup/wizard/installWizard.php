@@ -73,6 +73,15 @@ class InstallWizard {
 	protected $bypass = null;
 
 	/**
+	* Install bypass flag
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var mixed
+	*/
+	protected $debugLevel = 0;
+	
+	/**
 	* Reference to installer utility object
 	*
 	* @author KnowledgeTree Team
@@ -129,6 +138,19 @@ class InstallWizard {
  	*/
 	private function setBypass($bypass) {
 		$this->bypass = $bypass;
+	}
+	
+	/**
+	* Set debug level
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @param boolean
+	* @return void
+ 	*/
+	private function setDebugLevel($debug) {
+		define('DEBUG', $debug);
+		$this->debugLevel = $debug;
 	}
 	
 	/**
@@ -202,6 +224,11 @@ class InstallWizard {
 	function load() {
 		if(isset($_GET['bypass'])) {
 			$this->setBypass($_GET['bypass']);
+		}
+		if(isset($_GET['debug'])) {
+			$this->setDebugLevel($_GET['debug']);
+		} else {
+			$this->setDebugLevel(0);
 		}
 		$this->setIUtil(new InstallUtil());
 	}
