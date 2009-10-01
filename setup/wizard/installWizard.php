@@ -58,6 +58,9 @@ function __autoload($class) { // Attempt and autoload classes
 	} elseif (file_exists(SERVICE_LIB."$class.php")) {
 		require_once(SERVICE_LIB."$class.php");
 	} else {
+		if(preg_match('/Helper/', $class)) {
+			require_once(HELPER_DIR."$class.php");
+		}
 		return null;
 	}
 }

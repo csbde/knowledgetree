@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>KnowledgeTree Installer</title>
-		<script type="text/javascript" src="resources/jquery-tooltip/lib/jquery.js"></script>
+		<script type="text/javascript" src="resources/jquery.js"></script>
 		<script type="text/javascript" src="resources/wizard.js" ></script>
 		<link rel="stylesheet" type="text/css" href="resources/wizard.css" />
 		

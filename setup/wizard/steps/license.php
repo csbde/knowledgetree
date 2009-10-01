@@ -56,6 +56,7 @@ class license extends step {
     }
 
     public function doStep() {
+    	$this->temp_variables['licensePath'] = realpath('resources/license/license.txt');
     	if(!$this->inStep("license")) {
     		return 'landing';
     	}
