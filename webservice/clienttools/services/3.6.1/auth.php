@@ -20,13 +20,32 @@ class auth extends client_service {
         $kt =& $this->KT;
         
         if ($username != 'admin') {
-            require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+			//$this->addDebug('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@','');
+        	if(!file_exists(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php')){
+        		$this->setResponse(array('authenticated'=> false, 'message'=> 'baobabkeyutil not found - this appears to be a community install.'));
+        		$this->addError('baobabkeyutil not found - this appears to be a community install.');
+        		return;
+        	}
+        	try{
+            	require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
+
+        	}catch(Exception $e){
+        		$this->addError('could not include plugins/wintools/baobabkeyutil.inc.php');
+        		$this->setResponse(array('authenticated'=> false, 'message'=> 'Baobab load error'));
+        		return;
+        	}
             
-            if (!BaobabKeyUtil::checkIfLicensed(true)) {
-                $this->setResponse(array('authenticated'=> false, 'message'=> 'license_expired'));
-                $this->addError('Licence Expired');
-                return false;
-            }
+        	try{
+	            if (!BaobabKeyUtil::checkIfLicensed(true)) {
+	                $this->setResponse(array('authenticated'=> false, 'message'=> 'license_expired'));
+	                $this->addError('Licence Expired');
+	                return false;
+	            }
+        	}catch(Exception $e){
+        		$this->addError('could not execute BaobabKeyUtil::checkIfLicensed');
+        		$this->setResponse(array('authenticated'=> false, 'message'=> 'BaobabKeyUtil::checkIfLicensed error'));
+        		return;
+        	}
         }
 	
         $user=$kt->get_user_object_by_username($username);
@@ -60,6 +79,7 @@ class auth extends client_service {
 	
 	public function japiLogin(){
 		global $default;
+		
        	$user=$this->KT->get_user_object_by_username($this->AuthInfo['user']);
 		$ret=array(
 			'fullName'			=>PEAR::isError($user)?'':$user->getName()
