@@ -118,4 +118,4 @@
     <input type="submit" name="Previous" value="Previous" class="button_previous"/>
     <input type="submit" name="Next" value="Next" class="button_next"/>
 </form>
-<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>
+<?php if (AJAX) { echo $html->js('form.js'); } ?>

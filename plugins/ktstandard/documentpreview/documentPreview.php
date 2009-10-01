@@ -257,8 +257,9 @@ class DocumentPreview {
         $sId = $this->_IDocId;
 
         /* Create table */
- 		
-        $sInfo = "<div style='float:left;'><table cellspacing='3px' cellpadding='3px'>
+
+        $sInfo = "<div style='float:left; width:405px;'>
+            <table cellspacing='3px' cellpadding='3px' width='405px'>
             <tr><td>{$sFilenameLb}</td><td><b>{$sFilename}</b></td></tr>
             <tr><td>{$sMimeTypeLb}</td><td><b>{$sMimeType}</b></td></tr>
             <tr><td>{$sVersionLb}</td><td><b>{$iVersion}</b></td></tr>
@@ -276,20 +277,30 @@ class DocumentPreview {
             $sInfo .= "<tr><td>{$sCheckedLb}</td><td><b>{$sCheckedOutBy}</b></td></tr>";
         }
 
-        $sInfo .= "<tr><td>{$sIdLb}</td><td><b>{$sId}</b></td></tr>";        
+        $sInfo .= "<tr><td>{$sIdLb}</td><td><b>{$sId}</b></td></tr>";
         $sInfo .= " </table></div>";
-        
+
+        $sInfo .= $this->getThumbnail();
+
+        return $sInfo;
+    }
+
+    private function getThumbnail()
+    {
+        $sInfo = '';
         // Check for existence of thumbnail plugin
-        if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin')) {
+        if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin'))
+        {
             // hook into thumbnail plugin to get display for thumbnail
             include_once(KT_DIR . '/plugins/thumbnails/thumbnails.php');
             $thumbnailer = new ThumbnailViewlet();
-            $thumbnailDisplay = $thumbnailer->display_viewlet($sId);
-            if ($thumbnailDisplay != '') {
-        		$sInfo .= "<div>$thumbnailDisplay</div>";
+            $thumbnailer->setDocument($this->_oDocument);
+            $thumbnailDisplay = $thumbnailer->renderThumbnail($this->_IDocId);
+            if ($thumbnailDisplay != '')
+            {
+        		$sInfo = "<div>$thumbnailDisplay</div>";
         	}
         }
-
         return $sInfo;
     }
 }

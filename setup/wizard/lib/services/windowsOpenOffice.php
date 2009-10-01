@@ -211,7 +211,7 @@ class windowsOpenOffice extends windowsService {
     		$this->setOption();
             $cmd = "\"{$this->winservice}\" install $this->name {$this->getOption()}";
         	if(DEBUG) {
-        		echo "$cmd<br/>";
+        		echo "Command : $cmd<br/>";
         		return ;
         	}
             $response = $this->util->pexec($cmd);

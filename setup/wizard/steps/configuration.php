@@ -40,6 +40,17 @@
 * @version Version 0.1
 */
 
+if(isset($_GET['action'])) {
+	$func = $_GET['action'];
+	if($func != '') {
+		require_once("../ini.php");
+		require_once("../step.php");
+		require_once("../path.php");
+		require_once("../dbUtil.php");
+		require_once("../installUtil.php");
+	}
+}
+
 class configuration extends Step
 {
 	/**
@@ -106,7 +117,7 @@ class configuration extends Step
     private $done;
 	
 	/**
-	* Flag to store class information in session
+	* Flag to display confirmation page first
 	*
 	* @author KnowledgeTree Team
 	* @access public
@@ -158,8 +169,17 @@ class configuration extends Step
 	* @var array
 	*/
     protected $paths = array();
-    
+
+	/**
+	* Reference to utility object
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var object
+	*/
     protected $util = null;
+    
+    protected $confpaths = array();
     
     /**
      * Class constructor
@@ -214,7 +234,7 @@ class configuration extends Step
         $this->doRun();
         return 'landing';
     }
-#/var/www/installers/knowledgetree/config/config.ini
+
     /**
      * Set the variables from those stored in the session.
      * Used for stepping back to the step from a future step.
@@ -274,8 +294,7 @@ class configuration extends Step
      * @param array $dbconf
      * @return array
      */
-    public function registerDBConfig($server, $dbconf) {
-        // Adjust server variables
+    public function registerDBConfig($server, $dbconf) { // Adjust server variables
         $server['dbName'] = array('where'=>'file', 'name'=>ucwords($dbconf['dname']), 'section'=>'db', 'value'=>$dbconf['dname'], 'setting'=>'dbName');
         $server['dbUser'] = array('where'=>'file', 'name'=>ucwords($dbconf['duname']), 'section'=>'db', 'value'=>$dbconf['duname'], 'setting'=>'dbUser');
         $server['dbPass'] = array('where'=>'file', 'name'=>ucwords($dbconf['dpassword']), 'section'=>'db', 'value'=>$dbconf['dpassword'], 'setting'=>'dbPass');
@@ -286,6 +305,17 @@ class configuration extends Step
         return $server;
     }
 
+    private function registerDirs() { // Adjust directories variables
+    	$this->readConfigPath();
+    	$dirs = $this->getFromConfigPath();
+    	$directories['varDirectory'] = array('section'=>'urls', 'value'=>mysql_real_escape_string($dirs['varDirectory']['path']), 'setting'=>'varDirectory');
+    	$directories['logDirectory'] = array('section'=>'urls', 'value'=>mysql_real_escape_string($dirs['logDirectory']['path']), 'setting'=>'logDirectory');
+    	$directories['documentRoot'] = array('section'=>'urls', 'value'=>mysql_real_escape_string($dirs['documentRoot']['path']), 'setting'=>'documentRoot');
+    	$directories['uiDirectory'] = array('section'=>'urls', 'value'=>'${fileSystemRoot}/presentation/lookAndFeel/knowledgeTree', 'setting'=>'uiDirectory');
+    	$directories['tmpDirectory'] = array('section'=>'urls', 'value'=>mysql_real_escape_string($dirs['tmpDirectory']['path']), 'setting'=>'tmpDirectory');
+    	
+    	return $directories;
+    }
     /**
      * Perform the installation associated with the step.
      * Variables required by the installation are stored within the session.
@@ -295,38 +325,67 @@ class configuration extends Step
      */
     public function installStep()
     {
-        // get data from the server
-        $conf = $this->getDataFromSession("configuration");
+        $conf = $this->getDataFromSession("configuration"); // get data from the server
         $server = $conf['server'];
         $paths = $conf['paths'];
-
-        // initialise writing to config.ini
-        $configPath = realpath('../../config/config.ini');
-
+		$this->readConfigPath(); // initialise writing to config.ini
+		$dirs = $this->getFromConfigPath();
+        if(isset($this->confpaths['configIni'])) { // Check if theres a config path
+        	$configPath = realpath("../../{$this->confpaths['configIni']}"); // Relative to Config Path File
+        	if($configPath == '') { // Absolute path probably entered
+        		$configPath = realpath("{$this->confpaths['configIni']}"); // Get relative path
+        	}
+        } else {
+        	$configPath = realpath('../../config/config.ini');
+        }
         $ini = false;
         if(file_exists($configPath)) {
             $ini = new Ini($configPath);
         }
+        $this->writeUrlSection($ini);
+        $this->writeDBSection($ini, $server);
+		$this->writeDBPathSection($ini, $paths);
+        if(!$ini === false){ // write out the config.ini file
+            $ini->write();
+        }
+        $this->_dbhandler->close(); // close the database connection
+        $this->writeConfigPath(); // Write config file
+    }
 
-        // initialise the db connection
-
-        // retrieve database information from session
-        $dbconf = $this->getDataFromSession("database");
-
-        // make db connection
-        $this->_dbhandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']);
-
-        // add db config to server variables
-		$server = $this->registerDBConfig($server, $dbconf);
-
+    private function writeUrlSection($ini) {
+    	$directories = $this->registerDirs();
+        foreach($directories as $item) { // write server settings to config_settings table and config.ini
+	    	if(!$ini === false) {
+	    		$ini->updateItem($item['section'], $item['setting'], $item['value']);
+	    	}
+        }
+    }
+    
+    private function writeDBPathSection($ini, $paths) {
+    	$table = 'config_settings';
+       if(is_array($paths)) { // write the paths to the config_settings table
+	        foreach ($paths as $item){
+	            if(empty($item['setting'])){
+	                continue;
+	            }
+	            $value = mysql_real_escape_string($item['path']);
+	            $setting = mysql_real_escape_string($item['setting']);
+	            $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
+	            $this->_dbhandler->query($sql);
+	        }
+        }
+    }
+    
+    private function writeDBSection($ini, $server) {
+        $dbconf = $this->getDataFromSession("database"); // retrieve database information from session
+        $this->_dbhandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
+		$server = $this->registerDBConfig($server, $dbconf); // add db config to server variables
         $table = 'config_settings';
-        // write server settings to config_settings table and config.ini
-        foreach($server as $item){
-
-            switch($item['where']){
+        foreach($server as $item) { // write server settings to config_settings table and config.ini
+            switch($item['where']) {
                 case 'file':
                     $value = $item['value'];
-                    if($value == 'yes'){
+                    if($value == 'yes') {
                         $value = 'true';
                     }
                     if($value == 'no'){
@@ -336,7 +395,6 @@ class configuration extends Step
                         $ini->updateItem($item['section'], $item['setting'], $value);
                     }
                     break;
-
                 case 'db':
                     $value = mysql_real_escape_string($item['value']);
                     $setting = mysql_real_escape_string($item['setting']);
@@ -346,31 +404,8 @@ class configuration extends Step
                     break;
             }
         }
-
-        // write the paths to the config_settings table
-        if(is_array($paths)) {
-	        foreach ($paths as $item){
-	            if(empty($item['setting'])){
-	                continue;
-	            }
-	
-	            $value = mysql_real_escape_string($item['path']);
-	            $setting = mysql_real_escape_string($item['setting']);
-	
-	            $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
-	            $this->_dbhandler->query($sql);
-	        }
-        }
-
-        // write out the config.ini file
-        if(!$ini === false){
-            $ini->write();
-        }
-
-        // close the database connection
-        $this->_dbhandler->close();
     }
-
+    
     /**
      * Get the server settings information
      *
@@ -428,7 +463,9 @@ class configuration extends Step
         if(isset($this->temp_variables['paths'])) {
         	$dirs = $this->temp_variables['paths']; // Pull from temp
         } else {
-        	$dirs = $this->getDirectories(); // Get detected
+			$this->readConfigPath();
+			$dirs = $this->getFromConfigPath();
+			
         }
         $varDirectory = $fileSystemRoot . DS . 'var';
         foreach ($dirs as $key => $dir){
@@ -440,7 +477,10 @@ class configuration extends Step
 			if(WINDOWS_OS)
             	$path = preg_replace('/\//', '\\',$path);
             	$dirs[$key]['path'] = $path;
-            $class = $this->util->checkPermission($path, $dir['create']);
+            	if(isset($dir['file']))
+            		$class = $this->util->checkPermission($path, $dir['create'], true);
+            	else 
+            		$class = $this->util->checkPermission($path, $dir['create']);
 			if($class['class'] != 'tick') {
 				$this->temp_variables['paths_perms'] = $class['class'];
 				$this->done = false;
@@ -468,16 +508,23 @@ class configuration extends Step
     private function getDirectories()
     {
         return array(
-                array('name' => 'Var Directory', 'setting' => 'varDirectory', 'path' => '${fileSystemRoot}/var', 'create' => false),
+                array('name' => 'Var Directory', 'setting' => 'varDirectory', 'path' => '${varDirectory}', 'create' => false),
                 array('name' => 'Document Directory', 'setting' => 'documentRoot', 'path' => '${varDirectory}/Documents', 'create' => true),
                 array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => '${varDirectory}/log', 'create' => true),
                 array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => '${varDirectory}/tmp', 'create' => true),
                 array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => '${varDirectory}/uploads', 'create' => true),
-                array('name' => 'Executables Directory', 'setting' => 'binDirectory', 'path' => '${fileSystemRoot}/bin', 'create' => false),
                 array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => '${fileSystemRoot}/config/config.ini', 'create' => false),
                 );
     }
     
+    /**
+     * Store contents of edited settings
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @param none
+     * @return array The path information
+     */
     private function setFromPost() {
     	$this->paths = array(
                 array('name' => 'Var Directory', 'setting' => 'varDirectory', 'path' => $_POST['varDirectory'], 'create' => false),
@@ -485,13 +532,169 @@ class configuration extends Step
                 array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => $_POST['logDirectory'], 'create' => true),
                 array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => $_POST['tmpDirectory'], 'create' => true),
                 array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => $_POST['uploadDirectory'], 'create' => true),
-                array('name' => 'Executables Directory', 'setting' => 'binDirectory', 'path' => $_POST['binDirectory'], 'create' => false),
-                array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => $_POST['configFile'], 'create' => false),
+                array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => $_POST['configFile'], 'create' => false, 'file'=>true),
     	);
     }
     
+    /**
+     * Store contents of edited settings
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @param none
+     * @return array The path information
+     */
+    private function getFromConfigPath() {
+    	$configs = array();
+    	if(isset($this->confpaths['configIni'])) { // Simple check to see if any paths were written
+    		$configPath = $this->confpaths['configIni']; // Get absolute path
+    	} else {
+    		$configPath = '${fileSystemRoot}/config/config.ini';
+    	}
+		$configs['configFile'] = array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => $configPath, 'create' => false, 'file'=>true);
+    	if(isset($this->confpaths['Documents'])) {
+    		$docsPath = $this->confpaths['Documents'];
+    	} else {
+    		$docsPath = '${varDirectory}/Documents';
+    	}
+    	$configs['documentRoot'] = array('name' => 'Document Directory', 'setting' => 'documentRoot', 'path' => $docsPath, 'create' => true);
+    	if(isset($this->confpaths['log'])) {
+			$logPath = $this->confpaths['log'];
+    	} else {
+    		$logPath = '${varDirectory}/log';
+    	}
+    	$configs['logDirectory'] = array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => $logPath, 'create' => true);
+    	if(isset($this->confpaths['tmp'])) {
+			$tmpPath = $this->confpaths['tmp'];
+    	} else {
+    		$tmpPath = '${varDirectory}/tmp';
+    	}
+    	$configs['tmpDirectory'] = array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => $tmpPath, 'create' => true);
+    	if(isset($this->confpaths['uploads'])) {
+			$uploadsPath = $this->confpaths['uploads'];
+    	} else {
+    		$uploadsPath = '${varDirectory}/uploads';
+    	}
+    	$configs['uploadDirectory'] = array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => $uploadsPath, 'create' => true);
+    	if(isset($this->confpaths['var'])) {
+    		$varPath = $this->confpaths['var'];
+    	} else {
+    		$varPath = '${fileSystemRoot}/var';
+    	}
+    	$configs['varDirectory'] = array('name' => 'Var Directory', 'setting' => 'varDirectory', 'path' => $varPath, 'create' => false);
+    	
+    	return $configs;
+    }
+    
+    /**
+     * Path information
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @param string $fileSystemRoot The file system root of the installation
+     * @return array The path information
+     */
     public function getFromPost() {
     	return $this->paths;
     }
+    
+    /**
+     * Read contents of config path file
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @param none
+     * @return array The path information
+     */
+    private function readConfigPath() {
+		$configPath = $this->getContentPath();
+		if(!$configPath) return false;
+        $ini = new Ini($configPath);
+        $data = $ini->getFileByLine();
+        $firstline = true;
+        foreach ($data as $k=>$v) {
+        	if($firstline) { // First line holds the var directory
+        		$firstline = false;
+        		if(!preg_match('/config.ini/', $k)) { // Make sure it is not the old config.ini
+        			$this->confpaths['var'] = $k; // Store var directory
+        		}
+        	}
+        	if(preg_match('/config.ini/', $k)) { // Find config.ini
+				$this->confpaths['configIni'] = $k;
+        	} elseif (preg_match('/Documents/', $k)) { // Find documents directory
+				$this->confpaths['Documents'] = $k;
+        	} elseif (preg_match('/cache/', $k)) {
+				$this->confpaths['cache'] = $k;
+        	} elseif (preg_match('/indexes/', $k)) {
+				$this->confpaths['indexes'] = $k;
+        	} elseif (preg_match('/log/', $k)) {
+				$this->confpaths['log'] = $k;
+        	} elseif (preg_match('/proxies/', $k)) {
+				$this->confpaths['proxies'] = $k;
+        	} elseif (preg_match('/tmp/', $k)) {
+				$this->confpaths['tmp'] = $k;
+        	} elseif (preg_match('/uploads/', $k)) {
+				$this->confpaths['uploads'] = $k;
+        	}
+        }
+
+        return true;
+    }
+    
+    /**
+     * Read contents of config path file
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @param none
+     * @return boolean 
+     */
+    private function writeConfigPath() {
+		$configPath = $this->getContentPath();
+		if(!$configPath) return false;
+        $ini = new Ini($configPath);
+        $data = $ini->getFileByLine();
+        $configContent = '';
+        foreach ($data as $k=>$v) {
+        	if(preg_match('/config.ini/', $k)) {
+        		$configContent = $k;
+        		break;
+        	}
+        }
+        $fp = fopen($configPath, 'w');
+        if(fwrite($fp, $configContent))
+        	return true;
+    	return true;
+    }
+    
+    /**
+     * Attempt to locate config-path file in system
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @param none
+     * @return mixed
+     */
+	public function getContentPath() {
+    	$configPath = realpath('../../../config/config-path');
+        if($configPath == '')
+         	$configPath = realpath('../../config/config-path');
+        if(!$configPath) return false;
+        return $configPath;
+	}
+	
+    public function doReadConfig() {
+		
+    }
+}
+
+if(isset($_GET['action'])) {
+	$func = $_GET['action'];
+	if($func != '') {
+		$serv = new configuration();
+		$func_call = strtoupper(substr($func,0,1)).substr($func,1);
+		$method = "do$func_call";
+		$serv->$method();
+	}
 }
 ?>

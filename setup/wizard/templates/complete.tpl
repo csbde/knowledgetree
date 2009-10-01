@@ -87,7 +87,7 @@
 		        </tr> 
 		        <tr>
 		        	<td> <?php echo "<span class='{$SchedulerStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?> </td>
-		        	<td> Scheduler Service <?php if ($LuceneStatus != 'tick') { ?> Could not be started <?php } else { ?> Started <?php } ?></td>
+		        	<td> Scheduler Service <?php if ($SchedulerStatus != 'tick') { ?> Could not be started <?php } else { ?> Started <?php } ?></td>
 		        	<?php if ($SchedulerStatus != 'tick') { ?>
 		        		<td>
 						<?php if (AJAX) { ?>
@@ -126,4 +126,4 @@
         }
     ?>
 </form>
-<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>
+<?php if (AJAX) { echo $html->js('form.js'); } ?>

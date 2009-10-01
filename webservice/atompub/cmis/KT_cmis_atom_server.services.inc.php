@@ -667,6 +667,7 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
     {
         $RepositoryService = new RepositoryService();
         $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
+        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
@@ -690,9 +691,7 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
         // other CMIS clients are the same, does not send a content stream on checkin nor does it offer the user a method to choose one)
         // NOTE that if the content is INTENDED to be empty this and all the above checks will FAIL!
         // FIXME this is horrible, terrible, ugly and bad!
-        if (empty($contentStream))
-        {
-            $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+        if (empty($contentStream)) {
             $contentStream = base64_encode(KT_cmis_atom_service_helper::getContentStream($this, $ObjectService, $repositoryId));
         }
         

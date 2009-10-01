@@ -6,9 +6,9 @@
 		<p class="empty_space">
 			Thank you for signing up. You'll receive an email from us shortly with download instructions for the KnowledgeTree Drop Box software.
 		</p>
-		<div class="demo"><img src="resources/graphics/kt_browse.png" /></div>
+		<div class="demo"><?php echo $html->image('kt_browse.png'); ?></div>
 	</div>
 	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
 	<input type="submit" name="Confirm" value="Next" class="button_next"/>
 </form>
-<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>
+<?php if (AJAX) { echo $html->js('form.js'); } ?>

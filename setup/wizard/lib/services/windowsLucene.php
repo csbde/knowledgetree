@@ -121,6 +121,7 @@ class windowsLucene extends windowsService {
 	*/
 	private $luceneDir;
 	
+
 	/**
 	* Service name
 	*
@@ -140,7 +141,7 @@ class windowsLucene extends windowsService {
 	* @return void
  	*/
 	public function load() {
-//		$this->name = "KTLuceneTest";
+
 		$this->setJavaBin();
 		$this->setLuceneDIR(SYSTEM_DIR."bin".DS."luceneserver");
 		$this->setLuceneExe("KTLuceneService.exe");
@@ -151,29 +152,6 @@ class windowsLucene extends windowsService {
 		$this->setLuceneError("lucene-err.txt");
 	}
 
-	/**
-	* Set Java Directory path
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param string
-	* @return void
- 	*/
-	private function setJavaBin($javaBin = '') {
-		if($this->util->zendBridge()) {
-			if($this->util->javaBridge()) {
-				$this->javaSystem = new Java('java.lang.System');
-				$this->javaBin = $this->javaSystem->getProperty('java.home').DS."bin";
-				
-				return true;
-			}
-		}
-		// TODO: Will not detect, but a java pre-check is done in services, before this
-		if ($this->util->getJava()) {
-		} else {
-		}
-		$this->javaBin = 'java';
-	}
 	
 	/**
 	* Retrieve Status Service
@@ -192,6 +170,32 @@ class windowsLucene extends windowsService {
 		}
 		
 		return '';
+	}
+	
+	/**
+	* Set Java Directory path
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @param string
+	* @return void
+ 	*/
+	private function setJavaBin($javaBin = '') {
+		if($this->util->zendBridge()) {
+			if($this->util->javaBridge()) {
+				$this->javaSystem = new Java('java.lang.System');
+				$this->javaBin = $this->javaSystem->getProperty('java.home').DS."bin";
+				
+				return true;
+			}
+		}
+		// TODO: Will not detect, but a java pre-check is done in services, before this
+		if(file_exists($this->varDir.'outJVHome')) {
+			$this->javaBin = file_get_contents($this->varDir.'outJVHome');
+			if($this->javaBin != '') return true;
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -317,7 +321,7 @@ class windowsLucene extends windowsService {
 	* @return void
  	*/
 	private function setLuceneOut($luceneOut) {
-		$this->luceneOut = SYS_LOG_DIR.$luceneOut;
+		$this->luceneOut = $this->outputDir.$luceneOut;
 	}
 	
 	/**
@@ -341,7 +345,7 @@ class windowsLucene extends windowsService {
 	* @return void
  	*/
 	private function setLuceneError($luceneError) {
-		$this->luceneError = SYS_LOG_DIR.$luceneError;
+		$this->luceneError = $this->outputDir.$luceneError;
 	}
 	
 	/**
@@ -369,6 +373,10 @@ class windowsLucene extends windowsService {
 			$this->javaJVM = $this->getJavaBin().DS."client".DS."jvm.dll";
 		} elseif (file_exists($this->getJavaBin().DS."server".DS."jvm.dll")) {
 			$this->javaJVM = $this->getJavaBin().DS."server".DS."jvm.dll";
+		} elseif (file_exists($this->getJavaBin().DS."bin".DS."client".DS."jvm.dll")) {
+			$this->javaJVM = $this->getJavaBin().DS."bin".DS."client".DS."jvm.dll";
+		} elseif (file_exists($this->getJavaBin().DS."bin".DS."server".DS."jvm.dll")) {
+			$this->javaJVM = $this->getJavaBin().DS."bin".DS."server".DS."jvm.dll";
 		} else {
 			return false;
 		}
@@ -397,14 +405,15 @@ class windowsLucene extends windowsService {
 	public function install() {
 		$state = $this->status();
 		if($state == '') {
-			$this->writeLuceneProperties();
+			//$this->writeLuceneProperties();
 			$luceneExe = $this->getLuceneExe();
 			$luceneSource = $this->getLuceneSource();
 			$luceneDir = $this->getluceneDir();
+			$javaJVM = $this->getJavaJVM();
 			if($luceneExe && $luceneSource && $luceneDir) {
 				$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
             	if(DEBUG) {
-            		echo "$cmd<br/>";
+            		echo "Command : $cmd<br/>";
             		return ;
             	}
 				$response = $this->util->pexec($cmd);
@@ -434,7 +443,8 @@ class windowsLucene extends windowsService {
 				$content .= "server.paranoid=false\n";
 				$content .= "server.accept=127.0.0.1\n";
 				$content .= "server.deny=\n";
-				$content .= "indexer.directory=../../var/indexes\n";
+				$content .= "indexer.directory=".SYS_VAR_DIR."indexes\n";
+				//$content .= "indexer.directory=../../var/indexes\n";
 				$content .= "indexer.analyzer=org.apache.lucene.analysis.standard.StandardAnalyzer\n";
 				fwrite($fp, $content);
 				fclose($fp);

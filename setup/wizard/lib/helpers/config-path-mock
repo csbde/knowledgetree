@@ -1,0 +1,8 @@
+/var/lib/knowledgetree
+/var/www/installers/knowledgetree/config/config.ini
+/var/log/knowledgetree
+/var/tmp/knowledgetree
+/var/lib/knowledgetree/Documents
+/var/lib/knowledgetree/indexes
+/var/lib/knowledgetree/proxies
+/var/lib/knowledgetree/uploads

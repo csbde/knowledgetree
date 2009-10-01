@@ -29,7 +29,7 @@
 		        <td rowspan='6' width='5%'>&nbsp;</td>
 		        <td><input value="<?php echo $first_name; ?>" name='submitted[first_name]' id='first' size='<?php echo $input_width; ?>' style="float:left;"/></td>
 		        <td rowspan='6' width='5%'>&nbsp;</td>
-		        <td rowspan='6'> <img src='resources/graphics/dropbox.png' /> </td>
+		        <td rowspan='6'> <?php echo $html->image('dropbox.png'); ?> </td>
 		    </tr>
 		    
 		    <tr>
@@ -107,7 +107,7 @@
 	<input type="submit" name="Previous" value="Previous" onclick="w.pClick()" class="button_previous"/>
 	<input type="submit" name="Next" value="Register" onclick="w.nClick()" class="button_next"/>
 </form>
-<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>
+<?php if (AJAX) { echo $html->js('form.js'); } ?>
 <script type="text/javascript">
 	$('#first').focus();
 </script>

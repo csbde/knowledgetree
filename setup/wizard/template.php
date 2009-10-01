@@ -81,7 +81,7 @@ class Template
 		if($isA) {
 			$value = $value->fetch();	
 		}
-		$this->template_vars[$name] = $value;        
+		$this->template_vars[$name] = $value;
     }
 
     
@@ -99,7 +99,9 @@ class Template
 		if (!file_exists($file)) {
 			trigger_error('Template file '.$file.' does not exist ', E_USER_ERROR);
 		}
+		$this->template_vars['html'] = new htmlHelper();
         extract($this->template_vars); // Extract the vars to local namespace
+		
         ob_start();
 		include($file);
         $contents = ob_get_contents(); 

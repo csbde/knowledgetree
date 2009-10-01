@@ -19,5 +19,13 @@
 </style>
 {/literal}
 <div class="thumb-shadow">
-    <div><img src="{$thumbnail}" height="200px"/></div>
+    <div>
+        {if $url}
+            <a href='{$url}' target='_blank'>
+        {/if}
+        <img src="{$thumbnail}" height="200px"/>
+        {if $url}
+            </a>
+        {/if}
+    </div>
 </div>

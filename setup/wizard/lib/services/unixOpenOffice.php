@@ -68,12 +68,15 @@ class unixOpenOffice extends unixService {
 	}
 	
 	public function load() {
+
 		$this->setPort("8100");
 		$this->setHost("localhost");
 		$this->setLog("openoffice.log");
-		$this->setBin("soffice");
+		$this->setBin($this->soffice = $this->util->getOpenOffice());
 		$this->setOption();
 	}
+	
+
 	
 	private function setPort($port = "8100") {
 		$this->port = $port;
@@ -155,7 +158,11 @@ class unixOpenOffice extends unixService {
     public function start() {
     	$state = $this->status();
     	if($state != 'STARTED') {
-			$cmd = "nohup {$this->getBin()} ".$this->getOption()." > ".SYS_LOG_DIR."{$this->getLog()} 2>&1 & echo $!";
+			$cmd = "nohup {$this->getBin()} ".$this->getOption()." > ".$this->outputDir."{$this->getLog()} 2>&1 & echo $!";
+	    	if(DEBUG) {
+	    		echo "Command : $cmd<br/>";
+	    		return ;
+	    	}
 	    	$response = $this->util->pexec($cmd);
 	    	
 	    	return $response;

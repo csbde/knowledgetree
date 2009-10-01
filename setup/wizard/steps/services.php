@@ -317,7 +317,7 @@ class services extends Step
 	*
 	* @author KnowledgeTree Team
 	* @access protected
-	* @var string
+	* @var object
 	*/
     protected $util;
 
@@ -660,54 +660,95 @@ class services extends Step
     		}
     		$javaExecutable = $this->java;
     	}
-    	$cmd = "\"$javaExecutable\" -version > output/outJV 2>&1 echo $!";
-    	$response = $this->util->pexec($cmd);
-    	if(file_exists(OUTPUT_DIR.'outJV')) {
-    		$tmp = file_get_contents(OUTPUT_DIR.'outJV');
-    		preg_match('/"(.*)"/',$tmp, $matches);
-    		if($matches) {
-	    		if($matches[1] < $this->javaVersion) { // Check Version of java
-					$this->javaVersionInCorrect();
-					$this->javaCheck = 'cross';
-					$this->error[] = "Requires Java 1.5+ to be installed";
-					
-					return false;
-	    		} else {
-					$this->javaVersionCorrect();
-					$this->javaInstalled();
-					$this->javaCheck = 'tick';
-					$this->providedJava = true;
-					
-					return true;
-	    		}
-    		} else {
-    			$this->javaVersionWarning();
-    			$this->javaCheck = 'cross_orange';
-    			if($attempt) {
-	    			$this->javaExeMessage = "Incorrect java path specified";
-	    			$this->javaExeError = true;
-	    			$this->error[] = "Requires Java 1.5+ to be installed";
-    			}
-				
-				
-				return false;
-    		}
+    	if(WINDOWS_OS) { 
+    		$cmd .= "\"$javaExecutable\" -cp \"".HELPER_DIR.";\" javaVersion \"".SYS_OUT_DIR."outJV\""." \"".SYS_OUT_DIR."outJVHome\"";
+    		if($this->OS."ReadJVFromFile()") return true;
+    	} else {
+    		$cmd = "\"$javaExecutable\" -version > ".SYS_OUT_DIR."outJV 2>&1 echo $!";
+    		if($this->OS."ReadJVFromFile()") return true;
     	}
-    	
+
 		$this->javaVersionInCorrect();
 		$this->javaCheck = 'cross';
 		$this->error[] = "Requires Java 1.5+ to be installed";
     	return false;
     }
     
+    function windowsReadJVFromFile($cmd) {
+    	$response = $this->util->pexec($cmd);
+		if(file_exists(SYS_OUT_DIR.'outJV')) {
+			$version = file_get_contents(SYS_OUT_DIR.'outJV');
+			if($version != '') {
+				if($version < $this->javaVersion) { // Check Version of java
+					$this->javaVersionInCorrect();
+					$this->javaCheck = 'cross';
+					$this->error[] = "Requires Java 1.5+ to be installed";
+					
+					return false;
+				} else {
+					$this->javaVersionCorrect();
+					$this->javaInstalled();
+					$this->javaCheck = 'tick';
+					$this->providedJava = true;
+					
+					return true;
+				}
+			} else {
+				$this->javaVersionWarning();
+				$this->javaCheck = 'cross_orange';
+				if($attempt) {
+					$this->javaExeMessage = "Incorrect java path specified";
+					$this->javaExeError = true;
+					$this->error[] = "Requires Java 1.5+ to be installed";
+				}
+				
+				return false;
+			}
+		}
+    }
+    
+    function unixReadJVFromFile($cmd) {
+    	$response = $this->util->pexec($cmd);
+		if(file_exists(SYS_OUT_DIR.'outJV')) {
+			$tmp = file_get_contents(SYS_OUT_DIR.'outJV');
+			preg_match('/"(.*)"/',$tmp, $matches);
+			if($matches) {
+				if($matches[1] < $this->javaVersion) { // Check Version of java
+					$this->javaVersionInCorrect();
+					$this->javaCheck = 'cross';
+					$this->error[] = "Requires Java 1.5+ to be installed";
+					
+					return false;
+				} else {
+					$this->javaVersionCorrect();
+					$this->javaInstalled();
+					$this->javaCheck = 'tick';
+					$this->providedJava = true;
+					
+					return true;
+				}
+			} else {
+				$this->javaVersionWarning();
+				$this->javaCheck = 'cross_orange';
+				if($attempt) {
+					$this->javaExeMessage = "Incorrect java path specified";
+					$this->javaExeError = true;
+					$this->error[] = "Requires Java 1.5+ to be installed";
+				}
+				
+				return false;
+			}
+		}
+    }
+    
     function detPhpSettings() {
     	// TODO: Better php handling
     	return true;
     	$phpExecutable = $this->util->phpSpecified();// Retrieve java bin
-    	$cmd = "$phpExecutable -version > output/outPHP 2>&1 echo $!";
+    	$cmd = "$phpExecutable -version > ".SYS_OUT_DIR."/outPHP 2>&1 echo $!";
     	$response = $this->util->pexec($cmd);
-    	if(file_exists(OUTPUT_DIR.'outPHP')) {
-    		$tmp = file_get_contents(OUTPUT_DIR.'outPHP');
+    	if(file_exists(SYS_OUT_DIR.'outPHP')) {
+    		$tmp = file_get_contents(SYS_OUT_DIR.'outPHP');
     		preg_match('/PHP/',$tmp, $matches);
     		if($matches) {
 				$this->phpCheck = 'tick';
@@ -1181,10 +1222,15 @@ class services extends Step
 
 if(isset($_GET['action'])) {
 	$func = $_GET['action'];
+	if(isset($_GET['debug'])) {
+		define('DEBUG', $_GET['debug']);
+	} else {
+		define('DEBUG', 0);
+	}
 	if($func != '') {
 		$serv = new services();
 		$func_call = strtoupper(substr($func,0,1)).substr($func,1);
-		$method = "do$func";
+		$method = "do$func_call";
 		$serv->$method();
 	}
 }

@@ -7,9 +7,9 @@
 		<p class="empty_space">
 			The wizard will now complete the installation and run a final check on the system. 
 		</p>
-		<div class="demo"><img src="resources/graphics/kt_browse.png" /></div>
+		<div class="demo"><?php echo $html->image('dame/kt_browse.png'); ?></div>
 	</div>
 	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
 	<input type="submit" name="Install" value="Install" class="button_next"/>
 </form>
-<?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>
+<?php if (AJAX) { echo $html->js('form.js'); } ?>

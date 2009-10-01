@@ -60,7 +60,7 @@ class InstallUtil {
 	* @return boolean
  	*/
 	public function isSystemInstalled() {
-		if (file_exists(dirname(__FILE__)."/install")) {
+		if (file_exists(dirname(__FILE__)."/install.lock")) {
 
 			return true;
 		}
@@ -254,9 +254,12 @@ class InstallUtil {
      * @param boolean $create Whether to create the directory if it doesn't exist
      * @return array The message and css class to use
      */
-    public function checkPermission($dir, $create=false)
+    public function checkPermission($dir, $create=false, $file = false)
     {
-        $exist = 'Directory doesn\'t exist';
+    	if(!$file)
+        	$exist = 'Directory doesn\'t exist';
+        else 
+        	$exist = 'File doesn\'t exist';
         $write = 'Directory not writable';
         $ret = array('class' => 'cross');
 
@@ -579,7 +582,12 @@ class InstallUtil {
 			return $res;
 		}
 		$cmd = "which soffice";
-		return $this->getOpenOfficeHelper($cmd);
+		$res = $this->getOpenOfficeHelper($cmd);
+		if($res != '') {
+			return $res;
+		}
+		
+		return 'soffice';
     }
     
     function getOpenOfficeHelper($cmd) {

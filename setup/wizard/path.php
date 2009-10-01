@@ -40,7 +40,6 @@
 * @version Version 0.1
 */
 	// Define installer environment
-	define('DEBUG', 0);
 	define('AJAX', 0);
 	if (substr(php_uname(), 0, 7) == "Windows"){
     	define('WINDOWS_OS', true);
@@ -71,14 +70,20 @@
     define('SERVICE_LIB', WIZARD_LIB."services".DS);
     define('CONF_DIR', WIZARD_DIR."config".DS);
     define('RES_DIR', WIZARD_DIR."resources".DS);
+    define('JS_DIR', RES_DIR."js".DS);
+    define('CSS_DIR', RES_DIR."css".DS);
+    define('IMG_DIR', RES_DIR."graphics".DS);
     define('STEP_DIR', WIZARD_DIR."steps".DS);
     define('TEMP_DIR', WIZARD_DIR."templates".DS);
     define('SHELL_DIR', WIZARD_DIR."shells".DS);
-    define('OUTPUT_DIR', WIZARD_DIR."output".DS);
+    define('HELPER_DIR', WIZARD_LIB."helpers".DS);
     // Define paths to system webroot
 	define('SYSTEM_DIR', $sys);
+	define('SYS_VAR_DIR', SYSTEM_DIR."var".DS);
     define('SYS_BIN_DIR', SYSTEM_DIR."bin".DS);
-    define('SYS_LOG_DIR', SYSTEM_DIR."var".DS."log".DS);
+    define('SYS_LOG_DIR', SYS_VAR_DIR."log".DS);
+    define('SYS_OUT_DIR', SYS_VAR_DIR);
+    define('VAR_BIN_DIR', SYS_VAR_DIR."bin".DS);
     // Define paths to system
     array_pop($xdir);
 	$asys = '';

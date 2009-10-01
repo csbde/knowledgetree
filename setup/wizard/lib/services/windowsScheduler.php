@@ -76,7 +76,7 @@ class windowsScheduler extends windowsService {
 	* @return string
  	*/	
 	public $name = "KTSchedulerTest";
-	
+
 	/**
 	* Load defaults needed by service
 	*
@@ -86,12 +86,14 @@ class windowsScheduler extends windowsService {
 	* @return void
  	*/
 	function load() {
-		$this->setSchedulerDIR(SYSTEM_DIR."bin".DS."win32");
+		$this->setSchedulerDIR($this->varDir."bin");
 		$this->setSchedulerScriptPath("taskrunner.bat");
 		$this->setSchedulerSource("schedulerService.php");
 		
 	}
 
+
+	
 	/**
 	* Set Scheduler Directory path
 	*
@@ -101,6 +103,9 @@ class windowsScheduler extends windowsService {
 	* @return string
  	*/
 	private function setSchedulerDIR($schedulerDIR) {
+		if(!file_exists($schedulerDIR)) {
+			@mkdir($schedulerDIR);
+		}
 		$this->schedulerDir = $schedulerDIR;
 	}
 	
@@ -153,7 +158,7 @@ class windowsScheduler extends windowsService {
 	* @return string
  	*/
 	private function setSchedulerSource($schedulerSource) {
-		$this->schedulerSource = $this->getSchedulerDir().DS.$schedulerSource;
+		$this->schedulerSource = SYS_BIN_DIR."win32".DS.$schedulerSource;
 	}
 	
 	/**
@@ -200,10 +205,16 @@ class windowsScheduler extends windowsService {
 	public function install() {
 		$state = $this->status();
 		if($state == '') {
-			$this->writeSchedulerTask();
+//			$this->writeSchedulerTask();
 			$this->writeTaskRunner();
             // TODO what if it does not exist? check how the dmsctl.bat does this
             if (function_exists('win32_create_service')) {
+            	if(DEBUG) {
+            		echo '<pre>';
+            		print_r(array('service' => $this->name, 'display' => $this->name, 'path' => $this->getSchedulerScriptPath()));
+    	            echo '</pre>';
+            		return ;
+            	}
     			$response = win32_create_service(array(
     	            'service' => $this->name,
     	            'display' => $this->name,
@@ -216,7 +227,7 @@ class windowsScheduler extends windowsService {
             	$this->setOptions();
             	$cmd = "\"{$this->winservice}\" install $this->name $this->options";
             	if(DEBUG) {
-            		echo "$cmd<br/>";
+            		echo "Command : $cmd<br/>";
             		return ;
             	}
             	$response = $this->util->pexec($cmd);
@@ -237,7 +248,10 @@ class windowsScheduler extends windowsService {
 	
 	private function writeTaskRunner() {
 		// Check if bin is readable and writable
-		if(is_readable(SYS_BIN_DIR."win32") && is_writable(SYS_BIN_DIR."win32")) {
+		if(DEBUG) {
+			echo "Attempt to Create {$this->getSchedulerDir()}\\taskrunner.bat<br>";
+		}
+		if(is_readable($this->varDir."bin") && is_writable($this->varDir."bin")) {
 			$fp = fopen($this->getSchedulerDir().""."\\taskrunner.bat", "w+");
 			$content = "@echo off \n";
 			$content .= "\"".PHP_DIR."php.exe\" "."\"{$this->getSchedulerSource()}\"";
@@ -245,21 +259,7 @@ class windowsScheduler extends windowsService {
 			fclose($fp);
 		} else {
 			// TODO: Should not reach this point
-		}
-	}
-	
-	private function writeSchedulerTask() {
-		// Check if bin is readable and writable
-		if(is_readable(SYS_BIN_DIR) && is_writable(SYS_BIN_DIR)) {
-			if(!$this->getSchedulerScriptPath()) {
-				$fp = fopen($this->getSchedulerScriptPath(), "w+");
-				$content = "@echo off\n";
-				$content .= "\"".PHP_DIR."php.exe\" "."\"{$this->getSchedulerSource()}\"";
-				fwrite($fp, $content);
-				fclose($fp);
-			}
-		} else {
-			// TODO: Should not reach this point
+			echo 'Could not write task runner<br>';
 		}
 	}
 }

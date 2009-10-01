@@ -250,7 +250,7 @@ class database extends Step
 	*/
     protected $silent = true;
     
-    private $salt = 'install';
+    private $salt = 'installers';
     
 	/**
 	* Constructs database object
@@ -870,7 +870,7 @@ if(isset($_GET['action'])) {
 	if($func != '') {
 		$serv = new database();
 		$func_call = strtoupper(substr($func,0,1)).substr($func,1);
-		$method = "do$func";
+		$method = "do$func_call";
 		$serv->$method();
 	}
 }
