@@ -434,7 +434,16 @@ class kt extends client_service  {
 
 	}
 
-	function download_document($params) {
+	/**
+	 * Get a url for downloading the specified document
+	 * Parameters:
+	 * 		session_id
+	 * 		app_type
+	 *		document_id
+	 *
+	 * @param unknown_type $params
+	 */
+	function download_document($params,$returnResult=false) {
 
     	$kt=&$this->KT;
     	$params['session_id']=$params['session_id']?$params['session_id']:$this->AuthInfo['session'];
@@ -484,10 +493,37 @@ class kt extends client_service  {
     	$response['status_code']=0;
 		$response['message']=$url.'&apptype='.$params['app_type'];
         $response['filename']=$docname;
+        
         $this->addDebug('effective params',$params);
+        
+        if($returnResult){
+        	return $response;	
+        }else{
+    		$this->setResponse($response);
+        }
+    }
+    
+    /**
+     * Get download URLS for multiple documents
+     * params contains:
+     * 		app_type
+     * 		documents = array of doc_id
+     *
+     * @param unknown_type $params
+     */
+    public function download_multiple_documents($params){
+    	$response=array();
+    	foreach($params['documents'] as $docId){
+    		$ret=$this->download_document(array('document_id'=>$docId,'app_type'=>$params['app_type']),true);
+    		$rec=array(
+    			'filename'	=>$ret['filename'],
+    			'url'		=>$ret['message'],
+    			'succeeded'	=>$ret['status_code']==0?true:false
+    		);
+    		if(is_array($ret))$response[$docId]=$rec;
+    	}
     	$this->setResponse($response);
     }
-
     
 	/**
 	 * Checkout a Document
