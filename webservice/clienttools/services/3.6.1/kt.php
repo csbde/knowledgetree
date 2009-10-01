@@ -982,7 +982,11 @@ class kt extends client_service  {
 			$this->setResponse(array('status'=>'norecipients'));
 			return false;
 		}else{
-			$document->email($recipientsList, $message, TRUE); // true to attach document
+			$result = $document->email($recipientsList, $message, TRUE); // true to attach document
+			if (PEAR::isError($result)) {
+                $this->setResponse(array('status'=>$result->getMessage()));;
+                return false;
+            }
 			$this->setResponse(array('status'=>'documentemailed'));
 		}
 		return true;
