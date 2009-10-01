@@ -96,27 +96,32 @@
     // Install Type
     preg_match('/Zend/', $sys, $matches); // TODO: Dirty
     if($matches) {
-		$sysdir = explode(DS, $sys);
-		array_pop($sysdir);
-		array_pop($sysdir);
-		array_pop($sysdir);
-		array_pop($sysdir);
-		$zendsys = '';
-		foreach ($sysdir as $k=>$v) {
-			$zendsys .= $v.DS;
-		}
     	define('INSTALL_TYPE', 'Zend');
-    	define('PHP_DIR', $zendsys."ZendServer".DS."bin".DS);
     } else {
     	$modules = get_loaded_extensions();
-    	// TODO: Dirty
     	if(in_array('Zend Download Server', $modules) || in_array('Zend Monitor', $modules) || in_array('Zend Utils', $modules) || in_array('Zend Page Cache', $modules)) {
     		define('INSTALL_TYPE', 'Zend');
-    		define('PHP_DIR', '');
     	} else {
-    		define('INSTALL_TYPE', '');
-    		define('PHP_DIR', '');
+    		define('INSTALL_TYPE', 'Source');
     	}
+    }
+    if(INSTALL_TYPE == 'Zend') {
+    	if(WINDOWS_OS) {
+			$sysdir = explode(DS, $sys);
+			array_pop($sysdir);
+			array_pop($sysdir);
+			array_pop($sysdir);
+			array_pop($sysdir);
+			$zendsys = '';
+			foreach ($sysdir as $k=>$v) {
+				$zendsys .= $v.DS;
+			}
+			define('PHP_DIR', $zendsys."ZendServer".DS."bin".DS);
+    	} else {
+    		define('PHP_DIR', DS."usr".DS."local".DS."zend".DS."bin".DS);
+    	}
+    } else {
+    	define('PHP_DIR', '');
     }
     // Other
     date_default_timezone_set('Africa/Johannesburg');

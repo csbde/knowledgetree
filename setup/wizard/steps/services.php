@@ -412,7 +412,7 @@ class services extends Step
     		$this->presetOpenOffice();
     		if(!$this->schedulerInstalled) {
     			if(!WINDOWS_OS) $this->php = $this->util->getPhp(); // Get java, if it exists
-    			$passedPhp = $this->phpChecks(); // Run Java Pre Checks
+    			$passedPhp = $this->phpChecks(); // Run Php Pre Checks
     			if ($passedPhp) { // Install Scheduler
     				$this->installService('Scheduler');
     			}
@@ -430,11 +430,11 @@ class services extends Step
     		}
     		if(!$this->openOfficeInstalled) {
     			if(!WINDOWS_OS) $this->soffice = $this->util->getOpenOffice(); // Get java, if it exists
-    			$passedOpenOffice = $this->openOfficeChecks(); // Run Java Pre Checks
+    			$passedOpenOffice = $this->openOfficeChecks(); // Run Office Pre Checks
     			if ($passedOpenOffice) { //Install OpenOffice
 //    				$this->temp_variables['openOfficeExe'] = $this->soffice;
     				// TODO : Why, O, why?
-    				$this->openOfficeExeError = false;
+    				$this->openOfficeInstalled();
     				$_SESSION[$this->salt]['services']['openOfficeExe'] = $this->soffice;
     				$this->installService('OpenOffice');
     			}
@@ -510,6 +510,7 @@ class services extends Step
 		foreach ($serverDetails as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
+			$service->load();
 			$status = $this->serviceInstalled($service);
 			$flag = strtolower(substr($serviceName,0,1)).substr($serviceName,1)."Installed";
 			if(!$status) {

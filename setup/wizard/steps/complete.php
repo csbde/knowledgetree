@@ -226,6 +226,7 @@ class complete extends Step {
         foreach ($services->getServices() as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
+			$service->load();
 			$status = $services->serviceStarted($service);
 			if($status) {
 				$this->temp_variables[$serviceName."Status"] = 'tick';

@@ -42,7 +42,6 @@
 
 class unixLucene extends unixService {
 	public $util;
-
 	private $shutdownScript;
 	private $indexerDir;
 	private $lucenePidFile;
@@ -51,14 +50,11 @@ class unixLucene extends unixService {
 	private $luceneSourceLoc;
 	private $javaXms;
 	private $javaXmx;
-	
-	public function __construct() {
-		$this->name = "KTLuceneTest";
-		$this->setLuceneSource("ktlucene.jar");
-		$this->util = new InstallUtil();
-	}
+	public $name = "KTLuceneTest";
 	
 	public function load() {
+		$this->util = new InstallUtil();
+		$this->setLuceneSource("ktlucene.jar");
 		$this->setLuceneDir(SYSTEM_DIR."bin".DS."luceneserver".DS);
 		$this->setIndexerDir(SYSTEM_DIR."search2".DS."indexing".DS."bin".DS);
 		$this->setLucenePidFile("lucene_test.pid");

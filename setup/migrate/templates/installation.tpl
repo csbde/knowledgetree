@@ -31,7 +31,7 @@
 			Please verify the location of your current installation.
 		</p>
 		
-		<input name="location" type="text" style="width:430px; float:left" value="<?php echo $location; ?>">
+		<input id="location" name="location" type="text" style="width:430px; float:left" value="<?php echo $location; ?>">
 		<br/><br/>
 		<?php
 		if($errors) {
@@ -46,3 +46,6 @@
 	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
 	<input type="submit" name="Next" value="Next" class="button_next"/>
 </form>
+<script type="text/javascript">
+	$("#location").focus();
+</script>
