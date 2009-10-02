@@ -1,6 +1,6 @@
 <?php
 /**
-* Unix Agent Service Controller. 
+* Install Step Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -40,10 +40,35 @@
 * @version Version 0.1
 */
 
-class unixAgent extends unixService {
+class installType extends step 
+{
 
-	public $name = "KTAgentTest";
-	
+    function __construct() {
+        $this->temp_variables = array("step_name"=>"installtype");
+    }
 
+    public function doStep() {
+    	if(!$this->inStep("installtype")) {
+    		return 'landing';
+    	}
+        if($this->migrate()) {
+            return 'migrate';
+        } if($this->next()) {
+            return 'next';
+        } else if($this->previous()) {
+            return 'previous';
+        }
+
+        return 'landing'; 
+    }
+
+    public function getStepVars()
+    {
+        return $this->temp_variables;
+    }
+
+    public function getErrors() {
+        return $this->error;
+    }
 }
 ?>

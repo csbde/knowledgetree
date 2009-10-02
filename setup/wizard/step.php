@@ -251,7 +251,7 @@ class Step
     }
 
 	/**
-	* Checks if Confirm button has been clicked
+	* Checks if Install button has been clicked
 	*
 	* @author KnowledgeTree Team
 	* @param none
@@ -266,6 +266,22 @@ class Step
         return false;
     }
 
+	/**
+	* Checks if Clean install button has been clicked
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    function migrate() {
+        if(isset($_POST['Migrate'])) {
+            return true;
+        }
+
+        return false;
+    }
+    
 	/**
 	* Checks if we are currently in this class step
 	*

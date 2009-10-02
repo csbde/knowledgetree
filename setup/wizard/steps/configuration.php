@@ -308,11 +308,14 @@ class configuration extends Step
     private function registerDirs() { // Adjust directories variables
     	$this->readConfigPath();
     	$dirs = $this->getFromConfigPath();
-    	$directories['varDirectory'] = array('section'=>'urls', 'value'=>mysql_real_escape_string($dirs['varDirectory']['path']), 'setting'=>'varDirectory');
-    	$directories['logDirectory'] = array('section'=>'urls', 'value'=>mysql_real_escape_string($dirs['logDirectory']['path']), 'setting'=>'logDirectory');
-    	$directories['documentRoot'] = array('section'=>'urls', 'value'=>mysql_real_escape_string($dirs['documentRoot']['path']), 'setting'=>'documentRoot');
+    	$dbconf = $this->getDataFromSession("database"); // retrieve database information from session
+        $this->_dbhandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
+        //$this->_dbhandler->getDatabaseLink()
+    	$directories['varDirectory'] = array('section'=>'urls', 'value'=>addslashes($dirs['varDirectory']['path']), 'setting'=>'varDirectory');
+    	$directories['logDirectory'] = array('section'=>'urls', 'value'=>addslashes($dirs['logDirectory']['path']), 'setting'=>'logDirectory');
+    	$directories['documentRoot'] = array('section'=>'urls', 'value'=>addslashes($dirs['documentRoot']['path']), 'setting'=>'documentRoot');
     	$directories['uiDirectory'] = array('section'=>'urls', 'value'=>'${fileSystemRoot}/presentation/lookAndFeel/knowledgeTree', 'setting'=>'uiDirectory');
-    	$directories['tmpDirectory'] = array('section'=>'urls', 'value'=>mysql_real_escape_string($dirs['tmpDirectory']['path']), 'setting'=>'tmpDirectory');
+    	$directories['tmpDirectory'] = array('section'=>'urls', 'value'=>addslashes($dirs['tmpDirectory']['path']), 'setting'=>'tmpDirectory');
     	
     	return $directories;
     }

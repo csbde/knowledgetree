@@ -32,11 +32,19 @@
 	<div id="step_content_dependencies" class="step">
 		<h3><?php echo "<span class='{$php}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>PHP Version Check</h3>
 		<?php if($silent) { ?>
-			<div id="option1" class="onclick" onclick="javascript:{w.toggleClass('php_details', 'option1');}">Show Details</div>
-			<div class="php_details" style="display:none">
+			<?php if($versionSection) {
+				$details = 'Hide Details';
+				$display = 'block';
+			} else {
+				$details = 'Show Details';
+				$display = 'none';
+			}
+			?>
+			<div id="option1" class="onclick" onclick="javascript:{w.toggleClass('php_details', 'option1');}"><?php echo $details; ?></div>
+			<div class="php_details" style="display:<?php echo $display; ?>">
 		<?php } ?>
 		<p class="description">
-		Your version of PHP must be between 5.0 and 5.3.2 to run optimally. Versions higher than 5.3.2 are not recommended.
+		Your version of PHP must be between 5.0 and 5.2.11 to run optimally. Versions higher than 5.3.2 are not recommended.
 		</p>
 		<?php echo "<span class='{$version['class']}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{$version['version']}"; ?>
 		<?php if($version['class'] != 'tick') { ?>
@@ -53,8 +61,16 @@
 		<h3><?php echo "<span class='{$php_ext}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>PHP Extensions</h3>
 		<?php
 		if($silent) { ?>
-			<div id="option2" class="onclick" onclick="javascript:{w.toggleClass('php_ext_details', 'option2');}">Show Details</div>
-			<div class="php_ext_details" style="display:none">
+			<?php if($extensionSection) {
+				$details = 'Hide Details';
+				$display = 'block';
+			} else {
+				$details = 'Show Details';
+				$display = 'none';
+			}
+			?>
+			<div id="option2" class="onclick" onclick="javascript:{w.toggleClass('php_ext_details', 'option2');}"><?php echo $details; ?></div>
+			<div class="php_ext_details" style="display:<?php echo $display; ?>">
 		<?php } ?>
 		<p class="description">
 			The extensions shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.
@@ -105,8 +121,16 @@
 		<h3><?php echo "<span class='{$php_con}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>PHP Configuration</h3>
 		<?php
 		if($silent) { ?>
-			<div id="option3" class="onclick" onclick="javascript:{w.toggleClass('php_con_details', 'option3');}">Show Details</div>
-			<div class="php_con_details" style="display:none">
+			<?php if($configurationSection) {
+				$details = 'Hide Details';
+				$display = 'block';
+			} else {
+				$details = 'Show Details';
+				$display = 'none';
+			}
+			?>
+			<div id="option3" class="onclick" onclick="javascript:{w.toggleClass('php_con_details', 'option3');}"><?php echo $details; ?></div>
+			<div class="php_con_details" style="display:<?php echo $display; ?>">
 		<?php } ?>
 		<p class="description">
 		The configurations shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.

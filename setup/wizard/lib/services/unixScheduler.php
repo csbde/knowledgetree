@@ -46,20 +46,22 @@ class unixScheduler extends unixService {
 	private $schedulerSourceLoc;
 	private $systemDir;
 	private $scheduler;
-	
-	public function __construct() {
-		$this->name = "KTSchedulerTest";
-		$this->util = new InstallUtil();
-		$this->scheduler = 'scheduler';
-		$this->setSchedulerSource('schedulerTask.sh');
-	}
+	private $phpCli;
+	public $name = "KTSchedulerTest";
 	
 	public function load() {
+		$this->util = new InstallUtil();
+		$this->setPhpCli();
+		$this->scheduler = 'scheduler';
+		$this->setSchedulerSource('schedulerTask.sh');
 		$this->setSystemDir(SYSTEM_ROOT."bin".DS);
 		$this->setSchedulerDir(VAR_BIN_DIR);
 		$this->setSchedulerSourceLoc('schedulerTask.sh');
 	}
 
+	function setPhpCli() {
+		$this->phpCli = $this->util->getPhp();
+	}
 	
 	function setSystemDir($systemDir) {
 		$this->systemDir = $systemDir;
@@ -104,7 +106,7 @@ class unixScheduler extends unixService {
 		$content .= "cd ".$this->getSchedulerDir()."\n";
 		$content .= "while true; do\n";
 		// TODO : This will not work without CLI
-		$content .= "php -Cq scheduler.php\n";
+		$content .= "{$this->phpCli} -Cq scheduler.php\n";
 		$content .= "sleep 30\n";
 		$content .= "done";
 		@fwrite($fp, $content);
@@ -155,11 +157,13 @@ class unixScheduler extends unixService {
 		// TODO : Write sh on the fly? Not sure the reasoning here
 		$source = $this->getSchedulerSourceLoc();
 		$this->writeSchedulerTask();
+		$logFile = $this->outputDir."scheduler.log";
+		@unlink($logFile);
 		if($source) { // Source
-			$cmd = "nohup ".$source." > ".$this->outputDir."scheduler.log 2>&1 & echo $!";
+			$cmd = "nohup ".$source." > ".$logFile." 2>&1 & echo $!";
 		} else { // Could be Stack
 			$source = SYS_BIN_DIR.$this->schedulerSource;
-			$cmd = "nohup ".$source." > ".$this->outputDir."scheduler.log 2>&1 & echo $!";
+			$cmd = "nohup ".$source." > ".$logFile." 2>&1 & echo $!";
 		}
     	if(DEBUG) {
     		echo "Command : $cmd<br/>";
@@ -169,8 +173,6 @@ class unixScheduler extends unixService {
     	
 		return $response;
 	}
-	
-
-	
+		
 }
 ?>

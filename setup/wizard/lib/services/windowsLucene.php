@@ -141,7 +141,6 @@ class windowsLucene extends windowsService {
 	* @return void
  	*/
 	public function load() {
-
 		$this->setJavaBin();
 		$this->setLuceneDIR(SYSTEM_DIR."bin".DS."luceneserver");
 		$this->setLuceneExe("KTLuceneService.exe");

@@ -121,6 +121,9 @@ class dbUtil {
   		}		
 	}
 
+	public function getDatabaseLink() {
+		return $this->dbconnection;
+	}
 	/**
 	* Choose a database to use
 	*

@@ -38,10 +38,6 @@
 				<td width="22%"">Database Name: </td>
 				<td width="50%"><?php echo $dbSettings['dbName']; ?></td>
 			</tr>
-			<tr>
-				<td width="22%"">Database Name: </td>
-				<td width="50%"><?php echo $dbSettings['dbName']; ?></td>
-			</tr>
 		</table>
 		
 		<h3>System Paths</h3>

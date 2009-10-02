@@ -266,6 +266,21 @@ class Step
     }
 
 	/**
+	* Checks if Confirm button has been clicked
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    function installer() {
+        if(isset($_POST['Install'])) {
+            return true;
+        }
+
+        return false;
+    }
+	/**
 	* Checks if we are currently in this class step
 	*
 	* @author KnowledgeTree Team

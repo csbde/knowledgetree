@@ -51,6 +51,8 @@ class welcome extends step {
     function doStep() {
         if($this->next()) {
             return 'next'; // Just a welcome, so return "next" action
+        } elseif ($this->installer()) {
+        	return 'install'; // Just a welcome, so return "next" action
         }
 		
         return 'landing';

@@ -60,23 +60,17 @@ class unixOpenOffice extends unixService {
 	private $log;
 	private $options;
 	private $office;
-	
-	public function __construct() {
-		$this->name = "KTOpenOffice";
-		$this->util = new InstallUtil();
-		$this->office = 'openoffice';
-	}
+	public $name = "KTOpenOffice";
 	
 	public function load() {
-
+		$this->util = new InstallUtil();
+		$this->office = 'openoffice';
 		$this->setPort("8100");
 		$this->setHost("localhost");
 		$this->setLog("openoffice.log");
 		$this->setBin($this->soffice = $this->util->getOpenOffice());
 		$this->setOption();
 	}
-	
-
 	
 	private function setPort($port = "8100") {
 		$this->port = $port;
@@ -163,6 +157,7 @@ class unixOpenOffice extends unixService {
 	    		echo "Command : $cmd<br/>";
 	    		return ;
 	    	}
+	    	$cmd .= "\"{$this->util->getJava()}\" -cp \"".SYS_DIR.";\" openOffice \"";
 	    	$response = $this->util->pexec($cmd);
 	    	
 	    	return $response;

@@ -555,7 +555,15 @@ class InstallUtil {
 			return $res;
 		}
 		$cmd = "which php";
-		return $this->getPhpHelper($cmd);
+		$res = $this->getPhpHelper($cmd);
+		if($res != '') {
+			return $res;
+		}
+		if(file_exists(PHP_DIR."php")) {
+			return PHP_DIR."php";
+		}
+		
+		return 'php';
     }
     
     function getPhpHelper($cmd) {
