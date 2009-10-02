@@ -1766,7 +1766,8 @@ INSERT INTO `upgrades` VALUES
 (224,'upgrade*3.6.2*99*upgrade3.6.2','Upgrade from version 3.6.1 to 3.6.2','2009-05-01 00:00:00',1,'upgrade*3.6.2*99*upgrade3.6.2'),
 (225,'upgrade*3.6.3*99*upgrade3.6.3','Upgrade from version 3.6.2 to 3.6.3','2009-06-01 00:00:00',1,'upgrade*3.6.3*99*upgrade3.6.3'),
 (226,'sql*3.7.0*0*3.7.0/plugins_admin.sql','Database upgrade to version 3.7.0: Plugins admin','2009-09-01 00:00:00',1,'upgrade*3.7.0*99*upgrade3.7.0'),
-(227,'upgrade*3.7.0*99*upgrade3.7.0','Upgrade from version 3.6.3 to 3.7.0','2009-09-01 00:00:00',1,'upgrade*3.7.0*99*upgrade3.7.0');
+(227,'sql*3.7.0*0*3.7.0/config_settings.sql','Database upgrade to version 3.7.0: Config settings','2009-09-01 00:00:00',1,'upgrade*3.7.0*99*upgrade3.7.0'),
+(228,'upgrade*3.7.0*99*upgrade3.7.0','Upgrade from version 3.6.3 to 3.7.0','2009-09-01 00:00:00',1,'upgrade*3.7.0*99*upgrade3.7.0');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
