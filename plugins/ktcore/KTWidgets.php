@@ -101,7 +101,7 @@ class KTCoreReasonWidget extends KTWidget {
         // FIXME make required *either* per-action property
         // FIXME or a global pref.
         $global_required_default = true;
-        $this->bRequired = KTUtil::arrayGet($aOptions, 'required', $global_required_default, false);
+        $this->bRequired = (KTUtil::arrayGet($aOptions, 'required', $global_required_default, false) == true);
 
         $this->aOptions['cols'] = KTUtil::arrayGet($aOptions, 'cols', 60);
         $this->aOptions['rows'] = KTUtil::arrayGet($aOptions, 'rows', 3);
@@ -942,7 +942,7 @@ class KTCoreTextAreaWidget extends KTWidget {
         // FIXME make required *either* per-action property
         // FIXME or a global pref.
         $global_required_default = true;
-        $this->bRequired = KTUtil::arrayGet($aOptions, 'required', $global_required_default, false);
+        $this->bRequired = (KTUtil::arrayGet($aOptions, 'required', $global_required_default, false) == true);
 
         $this->aOptions['cols'] = KTUtil::arrayGet($aOptions, 'cols', 60);
         $this->aOptions['rows'] = KTUtil::arrayGet($aOptions, 'rows', 3);
