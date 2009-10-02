@@ -54,6 +54,13 @@ $noAuthRequests=array(
 	'kt.switchlang'
 );
 
+if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+           $path = KTPluginUtil::getPluginPath('ktdms.wintools');
+           require_once($path . 'baobabkeyutil.inc.php');
+}
+
+
+
 $handler=new ajaxHandler($RET,$KT,$noAuthRequests);
 
 
