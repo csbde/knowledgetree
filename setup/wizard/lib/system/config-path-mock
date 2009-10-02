@@ -6,3 +6,4 @@
 /var/lib/knowledgetree/indexes
 /var/lib/knowledgetree/proxies
 /var/lib/knowledgetree/uploads
+/var/lib/knowledgetree/cache
