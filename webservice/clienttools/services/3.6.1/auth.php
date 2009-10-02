@@ -21,26 +21,24 @@ class auth extends client_service {
         
         if ($username != 'admin') {
 			//$this->addDebug('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@','');
-        	if(!file_exists(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php')){
-        		$this->setResponse(array('authenticated'=> false, 'message'=> 'baobabkeyutil not found - this appears to be a community install.'));
-        		$this->addError('baobabkeyutil not found - this appears to be a community install.');
-        		return;
-        	}
-        	try{
-            	require_once(KT_DIR .  '/plugins/wintools/baobabkeyutil.inc.php');
 
-        	}catch(Exception $e){
-        		$this->addError('could not include plugins/wintools/baobabkeyutil.inc.php');
-        		$this->setResponse(array('authenticated'=> false, 'message'=> 'Baobab load error'));
-        		return;
-        	}
-            
+			if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+			           $path = KTPluginUtil::getPluginPath('ktdms.wintools');
+			           require_once($path . 'baobabkeyutil.inc.php');
+			}
+			            
         	try{
-	            if (!BaobabKeyUtil::checkIfLicensed(true)) {
-	                $this->setResponse(array('authenticated'=> false, 'message'=> 'license_expired'));
-	                $this->addError('Licence Expired');
-	                return false;
-	            }
+        		//if(class_exists('BaobabKeyUtil')){
+		            if (!BaobabKeyUtil::checkIfLicensed(true)) {
+		                $this->setResponse(array('authenticated'=> false, 'message'=> 'license_expired'));
+		                $this->addError('Licence Expired');
+		                return false;
+		            }
+//        		}else{
+//        			$this->addError('Licence Utility could not be loaded. Appears to be a Community version.');
+//        			$this->setResponse(array('authenticated'=> false, 'message'=> 'Licence Utility could not be loaded. Appears to be a Community version.'));
+//        			return false;
+//				}
         	}catch(Exception $e){
         		$this->addError('could not execute BaobabKeyUtil::checkIfLicensed');
         		$this->setResponse(array('authenticated'=> false, 'message'=> 'BaobabKeyUtil::checkIfLicensed error'));
