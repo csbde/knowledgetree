@@ -12,7 +12,7 @@ Ext.onReady(function(){
 
 	var dp = new Ext.form.DateField({
         name: '{/literal}{$name}{literal}',
-        allowBlank:false,
+        {/literal}{if $required}allowBlank:false,{/if}{literal}
         size:10,
         format: 'Y-m-d',
         invalidText : "{0} is not a valid date - it must be in the format YYYY-MM-DD",
