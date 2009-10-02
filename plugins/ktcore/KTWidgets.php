@@ -953,4 +953,22 @@ class KTCoreTextAreaWidget extends KTWidget {
 class KTCoreDateWidget extends KTWidget {
     var $sNamespace = 'ktcore.widgets.date';
     var $sTemplate = 'ktcore/forms/widgets/date';
+
+    function getValidators() {
+        if (!$this->bAutoValidate) {
+            return null;
+        }
+        $validators = parent::getValidators(); // required, etc.
+
+        $oVF =& KTValidatorFactory::getSingleton();
+
+        $val = array();
+        if(!empty($validators) && !PEAR::isError($validators)) $val[] = $validators;
+        $val[] = $oVF->get('ktcore.validators.date', array(
+            'test' => $this->sOrigname,
+            'basename' => $this->sBasename
+        ));
+
+        return $val;
+    }
 }

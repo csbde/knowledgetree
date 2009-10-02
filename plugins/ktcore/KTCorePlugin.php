@@ -216,6 +216,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerValidator('KTRequiredFileValidator', 'ktcore.validators.requiredfile', 'KTValidators.php');
         $this->registerValidator('KTFileIllegalCharValidator', 'ktcore.validators.fileillegalchar', 'KTValidators.php');
         $this->registerValidator('KTArrayValidator', 'ktcore.validators.array', 'KTValidators.php');
+        $this->registerValidator('KTDateValidator', 'ktcore.validators.date', 'KTValidators.php');
 
         // criterion
         $this->registerCriterion('NameCriterion', 'ktcore.criteria.name', KT_LIB_DIR . '/browse/Criteria.inc');

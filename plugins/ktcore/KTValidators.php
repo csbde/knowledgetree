@@ -6,31 +6,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  */
@@ -434,6 +434,9 @@ class KTFieldsetValidator extends KTValidator {
         $d = (array) KTUtil::arrayGet($data, $this->sInputVariable);
         //var_dump($this); exit(0);
         foreach ($this->_validators as $v) {
+            if(is_null($v)){
+                continue;
+            }
             $res = $v->validate($d);
 
             // results comes out with a set of names and values.
@@ -551,6 +554,60 @@ class KTArrayValidator extends KTValidator {
         // otherwise, its ok.
         $val = KTUtil::arrayGet($data, $this->sInputVariable);
         //var_dump($data); exit(0);
+        if ($this->bProduceOutput) {
+            $results[$this->sOutputVariable] = $val;
+        }
+
+        return array(
+            'errors' => $errors,
+            'results' => $results,
+        );
+    }
+}
+
+class KTDateValidator extends KTValidator {
+    var $sNamespace = 'ktcore.validators.date';
+
+    var $sFormat;
+    var $sFormatWarning;
+
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+
+        $this->sFormat = KTUtil::arrayGet($aOptions, 'format', 'YYYY-MM-DD');
+
+        $this->sFormatWarning = KTUtil::arrayGet($aOptions, 'format_warning',
+            sprintf(_kt('The date entered must be in the format "%s".'), $this->sFormat));
+
+        $this->bTrim = KTUtil::arrayGet($aOptions, 'trim', true, false);
+    }
+
+    function validate($data) {
+        $results = array();
+        $errors = array();
+
+        // very simple if we're required and not present, fail
+        // otherwise, its ok.
+        $val = KTUtil::arrayGet($data, $this->sInputVariable);
+
+        if ($this->bTrim) {
+            $val = trim($val);
+        }
+
+        if (preg_match ("/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/", $val, $parts))
+        {
+            //check weather the date is valid of not
+            if(checkdate($parts[2],$parts[3],$parts[1])){
+            }else{
+                $errors[$this->sBasename] = $this->sFormatWarning;
+            }
+        }else {
+            $errors[$this->sBasename] = $this->sFormatWarning;
+        }
+
         if ($this->bProduceOutput) {
             $results[$this->sOutputVariable] = $val;
         }
