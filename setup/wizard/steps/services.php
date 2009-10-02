@@ -442,7 +442,9 @@ class services extends Step
     			$this->openOfficeInstalled();
     		}
     	}
-		$this->checkServiceStatus();
+		if($this->checkServiceStatus()) {
+			$this->alreadyInstalled = true;
+		}
 		$this->storeSilent(); // Store info needed for silent mode
 		if(!empty($errors))
 			return false;
@@ -475,6 +477,7 @@ class services extends Step
 	*/
     private function checkServiceStatus() {
     	$serverDetails = $this->getServices();
+    	$allInstalled = true;
 		foreach ($serverDetails as $serviceName) {
 			$className = OS.$serviceName;
 			$service = new $className();
@@ -485,6 +488,7 @@ class services extends Step
 				$this->temp_variables['services'][] = array('class'=>'cross_orange', 'msg'=>$msg);
 				$this->serviceCheck = 'cross_orange';
 				$this->warnings[] = $msg;
+				$allInstalled = false;
 			} else {
 				if(WINDOWS_OS) {
 					$this->temp_variables['services'][] = array('class'=>'tick', 'msg'=>$service->getName()." has been added as a Service"); }
@@ -493,6 +497,8 @@ class services extends Step
 				}
 			}
 		}
+		
+		return $allInstalled;
     }
     
 	/**
@@ -661,7 +667,7 @@ class services extends Step
     		$javaExecutable = $this->java;
     	}
     	if(WINDOWS_OS) { 
-    		$cmd .= "\"$javaExecutable\" -cp \"".HELPER_DIR.";\" javaVersion \"".SYS_OUT_DIR."outJV\""." \"".SYS_OUT_DIR."outJVHome\"";
+    		$cmd .= "\"$javaExecutable\" -cp \"".SYS_DIR.";\" javaVersion \"".SYS_OUT_DIR."outJV\""." \"".SYS_OUT_DIR."outJVHome\"";
     		if($this->OS."ReadJVFromFile()") return true;
     	} else {
     		$cmd = "\"$javaExecutable\" -version > ".SYS_OUT_DIR."outJV 2>&1 echo $!";

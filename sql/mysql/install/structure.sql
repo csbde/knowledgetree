@@ -1285,7 +1285,7 @@ CREATE TABLE `plugin_helper` (
   `pathname` varchar(255) default NULL,
   `object` varchar(1000) NOT NULL,
   `classtype` varchar(120) NOT NULL,
-  `viewtype` enum('general','dashboard','plugin','folder','document','admindispatcher','dispatcher') NOT NULL default 'general',
+  `viewtype` enum('general','dashboard','plugin','folder','document','admindispatcher','dispatcher','process') NOT NULL default 'general',
   PRIMARY KEY  (`id`),
   KEY `name` (`namespace`),
   KEY `parent` (`plugin`),

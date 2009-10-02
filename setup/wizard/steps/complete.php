@@ -152,23 +152,17 @@ class complete extends Step {
         $this->temp_variables['dbConnectUser'] = '';
         $this->temp_variables['dbPrivileges'] = '';
         $this->temp_variables['dbTransaction'] = '';
-        
         $html = '<td><div class="%s"></div></td>'
               . '<td %s>%s</td>';
-        
         // retrieve database information from session
         $dbconf = $this->getDataFromSession("database");
-        //print_r($dbconf);
         // make db connection - admin
         $loaded = $this->_dbhandler->load($dbconf['dhost'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
         if (!$loaded) {
-            $this->temp_variables['dbConnectAdmin'] .= /*sprintf($html, 'cross', 
-                                     $path['path'], 
-                                     (($result['class'] == 'tick') ? '' : 'error' ), 
-                                     (($result['class'] == 'tick') ? 'Writeable' : 'Not Writeable' ));*/
-                                     '<td><div class="cross"></div></td>'
-                                               .  '<td class="error">Unable to connect to database (user: ' . $dbconf['dmsname'] . ')</td>';
-                                               $this->database_check = 'cross';
+            $this->temp_variables['dbConnectAdmin'] .= '<td><div class="cross"></div></td>'
+                                               		.  '<td class="error">Unable to connect to database (user: ' 
+                                               		. $dbconf['dmsname'] . ')</td>';
+			$this->database_check = 'cross';
             $this->temp_variables['dbConnectAdmin'] .= sprintf($html, 'cross', 'class="error"', 'Unable to connect to database (user: ' . $dbconf['dmsname'] . ')');
         }
         else

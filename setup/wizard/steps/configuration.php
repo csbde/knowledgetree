@@ -349,6 +349,7 @@ class configuration extends Step
             $ini->write();
         }
         $this->_dbhandler->close(); // close the database connection
+        $this->writeCachePath(); // Write cache path file
         $this->writeConfigPath(); // Write config file
     }
 
@@ -512,6 +513,7 @@ class configuration extends Step
                 array('name' => 'Document Directory', 'setting' => 'documentRoot', 'path' => '${varDirectory}/Documents', 'create' => true),
                 array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => '${varDirectory}/log', 'create' => true),
                 array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => '${varDirectory}/tmp', 'create' => true),
+                array('name' => 'Cache Directory', 'setting' => 'cacheDirectory', 'path' => '${varDirectory}/cache', 'create' => true),
                 array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => '${varDirectory}/uploads', 'create' => true),
                 array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => '${fileSystemRoot}/config/config.ini', 'create' => false),
                 );
@@ -531,6 +533,7 @@ class configuration extends Step
                 array('name' => 'Document Directory', 'setting' => 'documentRoot', 'path' => $_POST['documentRoot'], 'create' => true),
                 array('name' => 'Log Directory', 'setting' => 'logDirectory', 'path' => $_POST['logDirectory'], 'create' => true),
                 array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => $_POST['tmpDirectory'], 'create' => true),
+                array('name' => 'Cache Directory', 'setting' => 'cacheDirectory', 'path' => $_POST['cacheDirectory'], 'create' => true),
                 array('name' => 'Uploads Directory', 'setting' => 'uploadDirectory', 'path' => $_POST['uploadDirectory'], 'create' => true),
                 array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => $_POST['configFile'], 'create' => false, 'file'=>true),
     	);
@@ -570,6 +573,12 @@ class configuration extends Step
     		$tmpPath = '${varDirectory}/tmp';
     	}
     	$configs['tmpDirectory'] = array('name' => 'Temporary Directory', 'setting' => 'tmpDirectory', 'path' => $tmpPath, 'create' => true);
+    	if(isset($this->confpaths['cache'])) {
+			$cachePath = $this->confpaths['cache'];
+    	} else {
+    		$cachePath = '${varDirectory}/cache';
+    	}
+    	$configs['cacheDirectory'] = array('name' => 'Cache Directory', 'setting' => 'cacheDirectory', 'path' => $cachePath, 'create' => true);
     	if(isset($this->confpaths['uploads'])) {
 			$uploadsPath = $this->confpaths['uploads'];
     	} else {
@@ -664,7 +673,29 @@ class configuration extends Step
         $fp = fopen($configPath, 'w');
         if(fwrite($fp, $configContent))
         	return true;
-    	return true;
+    	return false;
+    }
+    
+    private function writeCachePath() {
+		$cachePath = $this->getCachePath();
+		if(!$cachePath) return false;
+		$configPath = $this->getContentPath();
+		if(!$configPath) return false;
+        $ini = new Ini($configPath);
+        $data = $ini->getFileByLine();
+        $cacheContent = '';
+        foreach ($data as $k=>$v) {
+        	if(preg_match('/cache/', $k)) {
+        		$cacheContent = $k;
+        		break;
+        	}
+        }
+        $fp = fopen($cachePath, 'w');
+        if($cacheContent != '') {
+	        if(fwrite($fp, $cacheContent))
+	        	return true;
+        }
+    	return false;
     }
     
     /**
@@ -681,6 +712,14 @@ class configuration extends Step
          	$configPath = realpath('../../config/config-path');
         if(!$configPath) return false;
         return $configPath;
+	}
+	
+	public function getCachePath() {
+    	$cachePath = realpath('../../../config/cache-path');
+        if($cachePath == '')
+         	$cachePath = realpath('../../config/cache-path');
+        if(!$cachePath) return false;
+        return $cachePath;
 	}
 	
     public function doReadConfig() {
