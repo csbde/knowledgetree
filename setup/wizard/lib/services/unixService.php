@@ -62,7 +62,13 @@ class unixService extends Service {
 	function setSystemDirs() {
 		$conf = $this->util->getDataFromSession('configuration');
 		$this->outputDir = $conf['paths']['logDirectory']['path'].DS;
+		if($this->outputDir == '') {
+			$this->outputDir = SYS_OUT_DIR;
+		}
 		$this->varDir = $conf['paths']['varDirectory']['path'].DS;
+		if($this->varDir == '') {
+			$this->varDir = SYS_VAR_DIR;
+		}
 	}
 	
 	/**
