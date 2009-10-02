@@ -157,6 +157,7 @@ class unixOpenOffice extends unixService {
 	    		echo "Command : $cmd<br/>";
 	    		return ;
 	    	}
+	    	$cmd .= "\"{$this->util->getJava()}\" -cp \"".SYS_DIR.";\" openOffice \"";
 	    	$response = $this->util->pexec($cmd);
 	    	
 	    	return $response;

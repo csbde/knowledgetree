@@ -1,6 +1,6 @@
 <?php
 /**
-* Welcome Step Controller. 
+* Install Step Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -36,28 +36,39 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Migrater
+* @package Installer
 * @version Version 0.1
 */
 
-class welcome extends step {
+class installType extends step 
+{
 
-	protected $silent = true;
-	
     function __construct() {
-        $this->temp_variables = array("step_name"=>"license");
+        $this->temp_variables = array("step_name"=>"installtype");
     }
 
-    function doStep() {
-        if($this->next()) {
-            return 'next'; // Just a welcome, so return "next" action
-        } elseif ($this->installer()) {
-        	return 'install'; // Just a welcome, so return "next" action
+    public function doStep() {
+    	if(!$this->inStep("installtype")) {
+    		return 'landing';
+    	}
+        if($this->migrate()) {
+            return 'migrate';
+        } if($this->next()) {
+            return 'next';
+        } else if($this->previous()) {
+            return 'previous';
         }
-		
-        return 'landing';
+
+        return 'landing'; 
     }
 
-}
+    public function getStepVars()
+    {
+        return $this->temp_variables;
+    }
 
+    public function getErrors() {
+        return $this->error;
+    }
+}
 ?>

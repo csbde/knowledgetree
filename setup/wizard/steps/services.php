@@ -322,7 +322,9 @@ class services extends Step
     protected $util;
 
     private $salt = 'installers';
-    
+	public $outputDir;
+	public $varDir;
+	    
 	/**
 	* Constructs services object
 	*
@@ -333,7 +335,14 @@ class services extends Step
     public function __construct() {
     	$this->temp_variables = array("step_name"=>"services", "silent"=>$this->silent);
     	$this->util = new InstallUtil();
-    }
+		$this->setSystemDirs();
+	}
+	
+	function setSystemDirs() {
+		$conf = $this->util->getDataFromSession('configuration');
+		$this->outputDir = $conf['paths']['logDirectory']['path'].DS;
+		$this->varDir = $conf['paths']['varDirectory']['path'].DS;
+	}
     
 	/**
 	* Main control of services setup
@@ -668,11 +677,13 @@ class services extends Step
     		$javaExecutable = $this->java;
     	}
     	if(WINDOWS_OS) { 
-    		$cmd .= "\"$javaExecutable\" -cp \"".SYS_DIR.";\" javaVersion \"".SYS_OUT_DIR."outJV\""." \"".SYS_OUT_DIR."outJVHome\"";
-    		if($this->OS."ReadJVFromFile()") return true;
+    		$cmd .= "\"$javaExecutable\" -cp \"".SYS_DIR.";\" javaVersion \"".$this->outputDir."outJV\""." \"".$this->outputDir."outJVHome\"";
+    		$func = OS."ReadJVFromFile";
+    		if($this->$func($cmd)) return true;
     	} else {
-    		$cmd = "\"$javaExecutable\" -version > ".SYS_OUT_DIR."outJV 2>&1 echo $!";
-    		if($this->OS."ReadJVFromFile()") return true;
+    		$cmd = "\"$javaExecutable\" -version > ".$this->outputDir."outJV 2>&1 echo $!";
+    		$func = OS."ReadJVFromFile";
+    		if($this->$func($cmd)) return true;
     	}
 
 		$this->javaVersionInCorrect();
@@ -683,8 +694,8 @@ class services extends Step
     
     function windowsReadJVFromFile($cmd) {
     	$response = $this->util->pexec($cmd);
-		if(file_exists(SYS_OUT_DIR.'outJV')) {
-			$version = file_get_contents(SYS_OUT_DIR.'outJV');
+		if(file_exists($this->outputDir.'outJV')) {
+			$version = file_get_contents($this->outputDir.'outJV');
 			if($version != '') {
 				if($version < $this->javaVersion) { // Check Version of java
 					$this->javaVersionInCorrect();
@@ -716,8 +727,8 @@ class services extends Step
     
     function unixReadJVFromFile($cmd) {
     	$response = $this->util->pexec($cmd);
-		if(file_exists(SYS_OUT_DIR.'outJV')) {
-			$tmp = file_get_contents(SYS_OUT_DIR.'outJV');
+		if(file_exists($this->outputDir.'outJV')) {
+			$tmp = file_get_contents($this->outputDir.'outJV');
 			preg_match('/"(.*)"/',$tmp, $matches);
 			if($matches) {
 				if($matches[1] < $this->javaVersion) { // Check Version of java
@@ -752,10 +763,10 @@ class services extends Step
     	// TODO: Better php handling
     	return true;
     	$phpExecutable = $this->util->phpSpecified();// Retrieve java bin
-    	$cmd = "$phpExecutable -version > ".SYS_OUT_DIR."/outPHP 2>&1 echo $!";
+    	$cmd = "$phpExecutable -version > ".$this->outputDir."/outPHP 2>&1 echo $!";
     	$response = $this->util->pexec($cmd);
-    	if(file_exists(SYS_OUT_DIR.'outPHP')) {
-    		$tmp = file_get_contents(SYS_OUT_DIR.'outPHP');
+    	if(file_exists($this->outputDir.'outPHP')) {
+    		$tmp = file_get_contents($this->outputDir.'outPHP');
     		preg_match('/PHP/',$tmp, $matches);
     		if($matches) {
 				$this->phpCheck = 'tick';

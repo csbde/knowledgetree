@@ -504,6 +504,9 @@ class Installer {
     	} elseif (isset($_POST['Edit'])) {
     		$this->installerAction = 'edit';
     		$this->response = 'next';
+    	} elseif (isset($_POST['Migrate'])) {
+    		$this->installerAction = 'migrate';
+    		$this->response = 'migrate';
     	} else {
     		$this->response = '';
     		$this->installerAction = '';
@@ -540,6 +543,10 @@ class Installer {
             	break;
             case 'previous':
                 $this->_backward(); // Load previous page
+            	break;
+            case 'migrate':
+                $iutil = new InstallUtil();
+                $iutil->redirect('../migrate');
             	break;
             default:
             	// TODO : handle silent

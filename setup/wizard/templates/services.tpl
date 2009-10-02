@@ -73,8 +73,16 @@
 			<?php } ?>
 			<h3><?php echo "<span class='{$javaCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Check</h3>
 			<?php if($silent) { ?>
-				<div id="option4" class="onclick" onclick="javascript:{w.toggleClass('java_details', 'option4');}">Show Details</div>
-				<div class="java_details" style="display:none">
+				<?php if($javaExeError) {
+					$details = 'Hide Details';
+					$display = 'block';
+				} else {
+					$details = 'Show Details';
+					$display = 'none';
+				}
+				?>
+				<div id="option4" class="onclick" onclick="javascript:{w.toggleClass('java_details', 'option4');}"><?php echo $details; ?></div>
+				<div class="java_details" style="display:<?php echo $display; ?>">
 			<?php } ?>
 <!--			<p class="description">-->
 			The Java version must be higher than 1.5.
@@ -121,12 +129,18 @@
 			<?php if (!$disableExtension) { ?>
 				<h3><?php echo "<span class='{$javaExtCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Extensions</h3>
 				<?php if($silent) { ?>
-					<div id="option5" class="onclick" onclick="javascript:{w.toggleClass('java_ext_details', 'option5');}">Show Details</div>
-					<div class="java_ext_details" style="display:none">
+					<?php if($javaExeError) {
+						$details = 'Hide Details';
+						$display = 'block';
+					} else {
+						$details = 'Show Details';
+						$display = 'none';
+					}
+					?>
+					<div id="option5" class="onclick" onclick="javascript:{w.toggleClass('java_ext_details', 'option5');}"><?php echo $details; ?></div>
+					<div class="java_ext_details" style="display:<?php echo $display; ?>">
 				<?php } ?>
-<!--				<p class="description">-->
 				A PHP Java Bridge is required for KnowledgeTree to perform at an optimal level.
-<!--				</p>-->
 				<table>
 					<tr>
 						<td> <span class='<?php echo $step_vars['extensions']['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> </td>
@@ -156,8 +170,16 @@
 		<?php } ?>
 		<h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services Check</h3>
 		<?php if($silent) { ?>
-			<div id="option6" class="onclick" onclick="javascript:{w.toggleClass('service_details', 'option6');}">Show Details</div>
-			<div class="service_details" style="display:none">
+			<?php if($serviceCheck != 'tick') {
+				$details = 'Hide Details';
+				$display = 'block';
+			} else {
+				$details = 'Show Details';
+				$display = 'none';
+			}
+			?>
+			<div id="option6" class="onclick" onclick="javascript:{w.toggleClass('service_details', 'option6');}"><?php echo $details; ?></div>
+			<div class="service_details" style="display:<?php echo $display; ?>">
 		<?php } ?>
 <!--		<p class="description">-->
 		Preload Services if posibble.

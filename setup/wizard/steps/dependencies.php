@@ -42,10 +42,13 @@
 
 class dependencies extends Step
 {
-    private $maxPHPVersion = '6.0.0';
+    private $maxPHPVersion = '5.2.11';
     private $minPHPVersion = '5.0.0';
     private $done;
-
+	private $versionSection = false;
+	private $extensionSection = false;
+	private $configurationSection = false;
+	
 	/**
 	* Flag to store class information in session
 	*
@@ -87,20 +90,20 @@ class dependencies extends Step
     {
     	if(!$this->inStep("dependencies")) {
     		$this->doRun();
+    		$this->storeSilent();
     		return 'landing';
     	}
         // Check dependencies
         $passed = $this->doRun();
+        $this->storeSilent();
         if($this->next()) {
             if($passed)
                 return 'next';
             else
                 return 'error';
         } else if($this->previous()) {
-
             return 'previous';
         }
-
         return 'landing';
     }
 
@@ -122,11 +125,13 @@ class dependencies extends Step
         $list = $this->getRequiredExtensions();
         $extensions = array();
         $this->temp_variables['php_ext'] = 'tick';
-        foreach($list as $ext){
+        $extSec = false;
+        foreach($list as $ext) {
             $ext['available'] = 'no';
             if($this->checkExtension($ext['extension'])){
                 $ext['available'] = 'yes';
             } else {
+            	$extSec = true; // Mark failed extension
                 if($ext['required'] == 'no') {
                 	if($this->temp_variables['php_ext'] != 'cross')
                 		$this->temp_variables['php_ext'] = 'cross_orange';
@@ -142,7 +147,9 @@ class dependencies extends Step
 
             $extensions[] = $ext;
         }
-
+		if($extSec) {
+			$this->extensionSection = true;
+		}
         $this->temp_variables['extensions'] = $extensions;
 
         return $this->done;
@@ -210,6 +217,7 @@ class dependencies extends Step
 
             $class = ($value == $config['recommended']) ? 'green' : 'orange';
 			if($class == 'orange') {
+				$this->configurationSection = true;
 				$this->temp_variables['php_con'] = 'cross_orange';
 				$this->warnings[] = "$value";
 			}
@@ -246,24 +254,24 @@ class dependencies extends Step
     private function checkPhpVersion()
     {
         $phpversion = phpversion();
-
         $phpversion5 = version_compare($phpversion, $this->minPHPVersion, '>=');
         $phpversion6 = version_compare($phpversion, $this->maxPHPVersion, '<');
-
         $check['class'] = 'cross';
         if($phpversion5 != 1){
+        	$this->versionSection = true; // Mark failed version
             $this->done = false;
             $check['version'] = "Your PHP version needs to be PHP 5.0 or higher. You are running version <b>{$phpversion}</b>.";
             return $check;
         }
-
         if($phpversion6 != 1){
+        	$this->versionSection = true; // Mark failed version
             $this->done = false;
             $check['version'] = "KnowledgeTree is not supported on PHP 6.0 and higher. You are running version <b>{$phpversion}</b>.";
             return $check;
         }
         $check['class'] = 'tick';
         $check['version'] =  "You are running version <b>{$phpversion}</b>.";
+		
         return $check;
     }
 
@@ -391,6 +399,12 @@ class dependencies extends Step
             array('name' => 'Maximum upload size', 'configuration' => 'upload_max_filesize', 'recommended' => '32M', 'type' => 'int'),
             array('name' => 'Memory limit', 'configuration' => 'memory_limit', 'recommended' => '32M', 'type' => 'int'),
         );
+    }
+    
+    public function storeSilent() {
+	  	$this->temp_variables['versionSection'] = $this->versionSection;
+		$this->temp_variables['extensionSection'] = $this->extensionSection;
+		$this->temp_variables['configurationSection'] = $this->configurationSection;
     }
 }
 ?>

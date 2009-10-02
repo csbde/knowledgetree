@@ -504,6 +504,9 @@ class Migrater {
     	} elseif (isset($_POST['Edit'])) {
     		$this->migraterAction = 'edit';
     		$this->response = 'next';
+    	} elseif (isset($_POST['Install'])) {
+    		$this->migraterAction = 'install';
+    		$this->response = 'install';
     	} else {
     		$this->response = '';
     		$this->migraterAction = '';
@@ -540,6 +543,10 @@ class Migrater {
             	break;
             case 'previous':
                 $this->_backward(); // Load previous page
+            	break;
+            case 'install':
+                $iutil = new MigrateUtil();
+                $iutil->redirect('../wizard/index.php?step_name=installtype');
             	break;
             default:
             	// TODO : handle silent
