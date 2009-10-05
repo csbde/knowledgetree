@@ -134,6 +134,7 @@ class migrateServices extends Step
     public function __construct() {
     	$this->temp_variables = array("step_name"=>"migrateServices", "silent"=>$this->silent);
     	$this->util = new MigrateUtil();
+    	$this->installServices = $this->util->getInstallServices();
     }
     
 	/**
@@ -146,7 +147,6 @@ class migrateServices extends Step
 	*/
     public function doStep()
     {
-    	$this->installServices = $this->util->getInstallerServices();
     	$this->services = $this->installServices->migrateGetServices();
     	$this->doRun();
     	$this->storeSilent();
@@ -158,7 +158,6 @@ class migrateServices extends Step
         } else if($this->previous()) {
             return 'previous';
         }
-        
         return 'landing';
     }
     
@@ -201,16 +200,18 @@ class migrateServices extends Step
      *
      */
     private function stopServices() {
-    	// Try the dmsctl
-    	$cmd = "./dmsctl.sh stop";
-    	$this->util->pexec($cmd);
-    	// probably will not work.
-    	foreach ($this->services as $service) {
-    		$sStatus = $service->status();
-    		if($sStatus != '') {
-    			$res = $service->uninstall();
-    			print_r($res);
-    		}
+    	$conf = $this->getDataFromSession("installation"); // Get installation directory
+    	if($conf['location'] != '') {
+	    	$cmd = $conf['location']."/dmsctl.sh stop"; // Try the dmsctl
+	    	// echo $cmd;
+	    	$this->util->pexec($cmd);
+    	} else { // probably will not work, but worth a try.
+	    	foreach ($this->services as $service) {
+	    		$sStatus = $service->status();
+	    		if($sStatus != '') {
+	    			$res = $service->uninstall();
+	    		}
+	    	}
     	}
     }
     
@@ -219,6 +220,7 @@ class migrateServices extends Step
     		$sStatus = $service->status();
     		if($sStatus == 'STARTED') {
     			$state = 'cross';
+    			$this->error[] = "Service : {$service->getName()} could not be stopped.<br/>";
     		} else {
     			$state = 'tick';
     		}

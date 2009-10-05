@@ -98,7 +98,7 @@ class MigrateUtil {
     }
 
     
-    function getInstallerServices() {
+    function getInstallServices() {
     	require_once("../wizard/installUtil.php");
     	require_once("../wizard/steps/services.php");
 		

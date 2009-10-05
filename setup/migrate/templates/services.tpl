@@ -44,8 +44,10 @@
 			$details = 'Hide Details';
 			$display = 'block';
 		} else {
-			$details = 'Show Details';
-			$display = 'none';
+			$details = 'Hide Details';
+			$display = 'block';
+//			$details = 'Show Details';
+//			$display = 'none';
 		}
 		?>
 			<div id="option6" class="onclick" onclick="javascript:{w.toggleClass('service_details', 'option6');}"><?php echo $details; ?></div>
