@@ -60,12 +60,6 @@ p.MsoList2CxSpLast, li.MsoList2CxSpLast, div.MsoList2CxSpLast
     text-indent:-18.0pt;
     font-size:10.0pt;
     font-family:"Times","serif";}
-a:link, span.MsoHyperlink
-    {color:blue;
-    text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-    {color:blue;
-    text-decoration:underline;}
 p
     {margin-right:0cm;
     margin-left:0cm;
@@ -110,10 +104,6 @@ div.Section1
  /* List Definitions */
  -->
 </style>
-
-</head>
-
-<body lang=EN-ZA link=blue vlink=blue>
 
 <div class=Section1>
 
