@@ -134,7 +134,21 @@ class migrateServices extends Step
     public function __construct() {
     	$this->temp_variables = array("step_name"=>"migrateServices", "silent"=>$this->silent);
     	$this->util = new MigrateUtil();
-    	$this->installServices = $this->util->getInstallServices();
+    }
+    
+    public function loadInstallUtil() {
+    	require("../wizard/installUtil.php");
+    	require("../wizard/steps/services.php");
+    	$this->installServices = new services();
+    }
+    
+    public function loadInstallServices() {
+    	$this->services = $this->installServices->getServices();
+    }
+    
+    private function loadInstallService($serviceName) {
+    	require_once("../wizard/lib/services/$serviceName.php");
+    	return new $serviceName();
     }
     
 	/**
@@ -147,17 +161,23 @@ class migrateServices extends Step
 	*/
     public function doStep()
     {
-    	$this->services = $this->installServices->migrateGetServices();
-    	$this->doRun();
+    	$this->loadInstallUtil(); // Use installer utility class
+    	$this->loadInstallServices(); // Use installer services class
     	$this->storeSilent();
     	if(!$this->inStep("services")) {
+    		$this->doRun();
+    		$this->storeSilent();
     		return 'landing';
     	}
         if($this->next()) {
-			return 'next';
+        	if($this->doRun())
+				return 'next';
         } else if($this->previous()) {
             return 'previous';
         }
+        $this->doRun();
+        $this->storeSilent();
+        
         return 'landing';
     }
     
@@ -174,10 +194,10 @@ class migrateServices extends Step
 			$this->stopServices();
 			
 		}
-		
+		$this->stopServices();
 		return $this->checkServices();
     }
-    
+    	
     /**
      * Pre-check service status
      *
@@ -185,8 +205,11 @@ class migrateServices extends Step
      */
     public function alreadyUninstalled() {
     	$alreadyUninstalled = true;
-    	foreach ($this->services as $service) {
-    		$sStatus = $service->status();
+    	foreach ($this->services as $serviceName) {
+    		$className = OS.$serviceName;
+    		$serv = $this->loadInstallService($className);
+    		$serv->load();
+    		$sStatus = $serv->status();
     		if($sStatus != '') {
     			return false;
     		}
@@ -194,7 +217,7 @@ class migrateServices extends Step
     	
     	return $alreadyUninstalled;
     }
-    
+
     /**
      * Attempt to stop services
      *
@@ -203,30 +226,46 @@ class migrateServices extends Step
     	$conf = $this->getDataFromSession("installation"); // Get installation directory
     	if($conf['location'] != '') {
 	    	$cmd = $conf['location']."/dmsctl.sh stop"; // Try the dmsctl
-	    	// echo $cmd;
-	    	$this->util->pexec($cmd);
-    	} else { // probably will not work, but worth a try.
-	    	foreach ($this->services as $service) {
-	    		$sStatus = $service->status();
-	    		if($sStatus != '') {
-	    			$res = $service->uninstall();
-	    		}
-	    	}
+
+	    	$res = $this->util->pexec($cmd);
+    	}
+		$this->shutdown();
+    }
+
+    public function shutdown() {
+    	foreach ($this->services as $serviceName) {
+    		$className = OS.$serviceName;
+    		$serv = $this->loadInstallService($className);
+    		$serv->load();
+    		$sStatus = $serv->status();
+    		if($sStatus != '') {
+    			$res = $serv->uninstall();
+    		}
     	}
     }
     
     public function checkServices() {
-    	foreach ($this->services as $service) {
-    		$sStatus = $service->status();
+    	foreach ($this->services as $serviceName) {
+    		$className = OS.$serviceName;
+    		$serv = $this->loadInstallService($className);
+    		$serv->load();
+    		$sStatus = $serv->status();
     		if($sStatus == 'STARTED') {
     			$state = 'cross';
-    			$this->error[] = "Service : {$service->getName()} could not be stopped.<br/>";
+    			$this->error[] = "Service : {$serv->getName()} could not be stopped.<br/>";
+    			$this->serviceCheck = 'cross';
+    			
     		} else {
     			$state = 'tick';
     		}
-    		$this->temp_variables['services'][$service->getName()]['class'] = $state;
-    		$this->temp_variables['services'][$service->getName()]['msg'] = $service->getName();
+    		$this->temp_variables['services'][$serv->getName()]['class'] = $state;
+    		$this->temp_variables['services'][$serv->getName()]['msg'] = $serv->getName();
     	}
+    	if ($this->serviceCheck != 'tick') {
+    		return false;
+    	}
+    	
+    	return true;
     }
 	/**
 	* Returns services errors

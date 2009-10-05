@@ -764,6 +764,7 @@ class database extends Step
         	$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_INSTALL_DIR."structure.sql\"";
     	}
     	$response = $this->_util->pexec($command);
+
     	return $response;
     }
 

@@ -59,12 +59,12 @@ class unixOpenOffice extends unixService {
 	// office log file
 	private $log;
 	private $options;
-	private $office;
+//	private $office;
 	public $name = "KTOpenOffice";
 	
 	public function load() {
 		$this->util = new InstallUtil();
-		$this->office = 'openoffice';
+//		$this->office = 'openoffice';
 		$this->setPort("8100");
 		$this->setHost("localhost");
 		$this->setLog("openoffice.log");
@@ -121,13 +121,13 @@ class unixOpenOffice extends unixService {
     	}
     }
     
-    private function setOfficeName($office) {
-    	$this->office = $office;
-    }
+//    private function setOfficeName($office) {
+//    	$this->office = $office;
+//    }
     
-    public function getOfficeName() {
-    	return $this->office;
-    }
+//    public function getOfficeName() {
+//    	return $this->office;
+//    }
     
     public function status() {
     	sleep(1);
@@ -173,9 +173,9 @@ class unixOpenOffice extends unixService {
     }
     
     function stop() {
-    	$cmd = "pkill -f ".$this->office;
-    	$response = $this->util->pexec($cmd);
-		return $response;
+//    	$cmd = "pkill -f ".$this->office;
+//    	$response = $this->util->pexec($cmd);
+//		return $response;
 	}
 	
 	function uninstall() {

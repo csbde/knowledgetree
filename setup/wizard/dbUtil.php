@@ -156,7 +156,7 @@ class dbUtil {
     * @return object The result of the query.
     */
     public function query($query) {
-      $result = @mysql_query($query, $this->dbconnection);
+      $result = mysql_query($query, $this->dbconnection);
 		if($result) {
 			return $result;
 		} else {
