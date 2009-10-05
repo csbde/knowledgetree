@@ -130,7 +130,7 @@ class windowsLucene extends windowsService {
 	* @param none
 	* @return string
  	*/	
-	public $name = "KTLuceneTest";
+	public $name = "KTLucene";
 	
 	/**
 	* Load defaults needed by service

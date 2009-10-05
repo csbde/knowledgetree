@@ -140,7 +140,7 @@ class windowsOpenOffice extends windowsService {
 	* @param none
 	* @return string
  	*/	
-    public $name = "KTOpenOfficeTest";
+    public $name = "KTOpenOffice";
     
 	public function load() {
         // hack for testing

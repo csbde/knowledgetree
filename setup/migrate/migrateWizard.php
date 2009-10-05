@@ -49,8 +49,8 @@ include("path.php"); // Paths
  */
 function __autoload($class) { // Attempt and autoload classes
 	$class = strtolower(substr($class,0,1)).substr($class,1); // Linux Systems.
-	if(file_exists(WIZARD_DIR."$class.php")) {
-		require_once(WIZARD_DIR."$class.php");
+	if(file_exists(MIGRATE_DIR."$class.php")) {
+		require_once(MIGRATE_DIR."$class.php");
 	} elseif (file_exists(STEP_DIR."$class.php")) {
 		require_once(STEP_DIR."$class.php");
 	} elseif (file_exists(WIZARD_LIB."$class.php")) {

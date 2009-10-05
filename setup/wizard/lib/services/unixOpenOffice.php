@@ -131,16 +131,16 @@ class unixOpenOffice extends unixService {
     
     public function status() {
     	sleep(1);
-    	$cmd = "ps ax | grep ".$this->getOfficeName();
+    	$cmd = "netstat -npa | grep ".$this->getPort();
     	$response = $this->util->pexec($cmd);
     	if(is_array($response['out'])) {
-    		if(count($response['out']) > 1) {
-    			foreach ($response['out'] as $r) {
-    				preg_match('/grep/', $r, $matches); // Ignore grep
-    				if(!$matches) {
+    		if(count($response['out']) > 0) {
+    			preg_match('/8100/', $response['out'][0], $matches); // Ignore grep
+				if($matches) {
+    				if($matches[0] == '8100') {
     					return 'STARTED';
     				}
-    			}
+				}
     		} else {
     			return '';
     		}
@@ -180,6 +180,10 @@ class unixOpenOffice extends unixService {
 	
 	function uninstall() {
 		$this->stop();
+	}
+	
+	public function getName() {
+		return $this->name;
 	}
 }
 ?>

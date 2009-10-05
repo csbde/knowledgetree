@@ -79,6 +79,7 @@ class MigrateUtil {
         ob_end_clean();
         echo $contents;
 	}
+	
 	/**
 	* Check if system needs to be migrated
 	*
@@ -89,13 +90,20 @@ class MigrateUtil {
  	*/
     public function checkStructurePermissions() {
     	// Check if Wizard Directory is writable
-    	if(!$this->_checkPermission(WIZARD_DIR)) {
+    	if(!$this->_checkPermission(MIGRATE_DIR)) {
     		return 'wizard';
     	}
 
     	return true;
     }
 
+    
+    function getInstallerServices() {
+    	require_once("../wizard/installUtil.php");
+    	require_once("../wizard/steps/services.php");
+		
+    	return new services();
+    }
     /**
      * Redirect
      * 

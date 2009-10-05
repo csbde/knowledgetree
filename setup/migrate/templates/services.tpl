@@ -33,15 +33,23 @@
 	<?php } ?>
 <!--Content-->
 	<div id="step_content_configuration" style="width:755px;" class="step">
-		<?php if(!$alreadyStopped) { ?>
+		<?php if(!$alreadyUninstalled) { ?>
 			
 		<?php } else { ?>
-			All services are already shut down.
+			All services are uninstalled.
 		<?php } ?>
 		<h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services Check</h3>
 		<?php if($silent) { ?>
-			<div id="option6" class="onclick" onclick="javascript:{w.toggleClass('service_details', 'option6');}">Show Details</div>
-			<div class="service_details" style="display:none">
+		<?php if($serviceCheck != 'tick') {
+			$details = 'Hide Details';
+			$display = 'block';
+		} else {
+			$details = 'Show Details';
+			$display = 'none';
+		}
+		?>
+			<div id="option6" class="onclick" onclick="javascript:{w.toggleClass('service_details', 'option6');}"><?php echo $details; ?></div>
+			<div class="service_details" style="display:<?php echo $display; ?>">
 		<?php } ?>
 		<table>
 		<?php

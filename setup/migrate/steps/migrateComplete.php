@@ -1,6 +1,6 @@
 <?php
 /**
-* Unix Agent Service Controller. 
+* Complete Step Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -36,14 +36,66 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Installer
+* @package Migrater
 * @version Version 0.1
 */
 
-class unixAgent extends unixService {
+class migrateComplete extends Step {
 
-	public $name = "KTAgent";
-	
+    /**
+	* Reference to Database object
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var object
+	*/	
+    private $_dbhandler = null;
 
+    /**
+     * List of services to check
+     * 
+     * @access private
+     * @var array
+     */
+    private $services_check = 'tick';
+    private $paths_check = 'tick';
+    private $privileges_check = 'tick';
+    private $database_check = 'tick';
+    protected $silent = true;
+    
+    protected $util = null;
+    
+    public function __construct() {
+    	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
+        $this->_dbhandler = new dbUtil();
+    	$this->util = new MigrateUtil();
+    }
+
+    function doStep() {
+        $this->doRun();
+    	return 'landing';
+    }
+    
+    function doRun() {
+        $this->checkServices();
+        $this->storeSilent();// Set silent mode variables
+    }
+    
+    private function checkServices()
+    {
+        $services = new services();
+        foreach ($services->getServices() as $serviceName) {
+			$this->temp_variables[$serviceName."Status"] = 'tick';
+        }     
+		return true;
+    }
+    
+    /**
+     * Set all silent mode varibles
+     *
+     */
+    private function storeSilent() {
+    	$this->temp_variables['services_check'] = $this->services_check;
+    }
 }
 ?>

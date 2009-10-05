@@ -50,7 +50,7 @@ class unixLucene extends unixService {
 	private $luceneSourceLoc;
 	private $javaXms;
 	private $javaXmx;
-	public $name = "KTLuceneTest";
+	public $name = "KTLucene";
 	
 	public function load() {
 		$this->util = new InstallUtil();
@@ -143,7 +143,7 @@ class unixLucene extends unixService {
 		}
 
     }
-
+  
     public function install() {
     	$status = $this->status();
     	if($status == '') {
@@ -201,6 +201,8 @@ class unixLucene extends unixService {
     	return false;
     }
     
-
+	public function getName() {
+		return $this->name;
+	}
 }
 ?>

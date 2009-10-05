@@ -1,6 +1,6 @@
 <?php
 /**
-* Unix Agent Service Controller. 
+* Error Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -36,14 +36,22 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Installer
+* @package Migrater
 * @version Version 0.1
 */
-
-class unixAgent extends unixService {
-
-	public $name = "KTAgent";
+class migrateErrors extends Step {
+	public $error = array();
 	
-
+    function doStep() {
+    	return 'landing';
+    }
+    
+    function getErrors() {
+    	return $this->error;
+    }
+	
+    function getName() {
+    	return 'error';
+    }
 }
 ?>

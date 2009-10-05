@@ -41,6 +41,8 @@
 */
 
 class unixService extends Service {
+	public $name;
+	
 	/**
 	* Retrieve Service name
 	*

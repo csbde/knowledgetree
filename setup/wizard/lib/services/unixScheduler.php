@@ -47,7 +47,7 @@ class unixScheduler extends unixService {
 	private $systemDir;
 	private $scheduler;
 	private $phpCli;
-	public $name = "KTSchedulerTest";
+	public $name = "KTScheduler";
 	
 	public function load() {
 		$this->util = new InstallUtil();
@@ -173,6 +173,9 @@ class unixScheduler extends unixService {
     	
 		return $response;
 	}
-		
+
+	public function getName() {
+		return $this->name;
+	}
 }
 ?>

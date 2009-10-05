@@ -1,6 +1,6 @@
 <?php
 /**
-* Unix Agent Service Controller. 
+* Welcome Step Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -36,14 +36,28 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Installer
+* @package Migrater
 * @version Version 0.1
 */
 
-class unixAgent extends unixService {
+class migrateWelcome extends step {
 
-	public $name = "KTAgent";
+	protected $silent = true;
 	
+    function __construct() {
+        $this->temp_variables = array("step_name"=>"welcome");
+    }
+
+    function doStep() {
+        if($this->next()) {
+            return 'next'; // Just a welcome, so return "next" action
+        } elseif ($this->installer()) {
+        	return 'install'; // Just a welcome, so return "next" action
+        }
+		
+        return 'landing';
+    }
 
 }
+
 ?>

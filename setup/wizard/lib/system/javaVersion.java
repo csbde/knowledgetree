@@ -3,7 +3,6 @@ import java.lang.System;
 import java.util.Properties;
 
 public class javaVersion {
-
 	public static void main(String args[]) throws Exception {
 		String outJV = args[0];
 		String outJVHome = args[1];

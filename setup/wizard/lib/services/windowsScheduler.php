@@ -75,7 +75,7 @@ class windowsScheduler extends windowsService {
 	* @param none
 	* @return string
  	*/	
-	public $name = "KTSchedulerTest";
+	public $name = "KTScheduler";
 
 	/**
 	* Load defaults needed by service

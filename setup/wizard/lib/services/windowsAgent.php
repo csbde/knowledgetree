@@ -50,7 +50,7 @@ class windowsAgent extends windowsService {
 	* @param none
 	* @return string
  	*/	
-	public $name = "KTAgentTest";
+	public $name = "KTAgent";
 
     
 }

@@ -1195,6 +1195,20 @@ class services extends Step
 		return $this->php;
 	}
 	
+	/** Migrate Access **/
+	public function migrateGetServices() {
+		$services = array();
+		foreach ($this->getServices() as $serviceName) {
+			$className = OS.$serviceName;
+			$service = new $className();
+			$service->load();
+			$services[] = $service;
+		}
+		
+		return $services;
+	}
+	
+	/** External Access **/
 	public function doDeleteAll() {
     	$serverDetails = $this->getServices();
 		foreach ($serverDetails as $serviceName) {
