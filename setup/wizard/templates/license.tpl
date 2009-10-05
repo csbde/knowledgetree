@@ -13,7 +13,6 @@ Please read and accept the license agreement below before continuing with the se
 </p>
 
 <div class="license_agreement">
-<h2>KnowledgeTree On-premise Commercial End-User</h2>
 <?php echo file_get_contents($licensePath); ?>
 </div>
 	<input id="accept" type="hidden" name="license" value=""/>
