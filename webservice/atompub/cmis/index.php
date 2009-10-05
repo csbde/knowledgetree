@@ -95,9 +95,9 @@ if ($workspace == 'servicedocument')
  * 		ServiceName		:This is the name by which the service/collection is exposed
  * 		ServiceClass	:This is the class name of the class to be instantiated when this service is accessed
  * 		Title			:This is the title given to the service/collection in the servicedocument
- *      http://ktatompub/index.php?/service/param1/param2
- *      http://ktatompub/?/folder/children/whatfoldertolookat
- *      http://ktatompub/{folder/folder2/folder3/}service/param1/param2
+ *      http://webservice/atompub/cmis/index.php?/service/param1/param2
+ *      http://webservice/atompub/cmis/?/folder/children/whatfoldertolookat
+ *      http://webservice/atompub/cmis/{folder/folder2/folder3/}service/param1/param2
 */
 // TODO consider a registerServices function which will, dependant on what is requested, register the appropriate services, keep the logic out of the index file
 $APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',

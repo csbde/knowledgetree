@@ -8,6 +8,7 @@
 		<?php echo $html->js('jquery.hotkeys.js'); ?>
 		<?php echo $html->js('wizard.js'); ?>
 		<?php echo $html->css('wizard.css'); ?>
+        <meta http-equiv=Content-Type content="text/html; charset=utf-8">
 	</head>
 	<body onload="">
 		<div id="outer-wrapper">

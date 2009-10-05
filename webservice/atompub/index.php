@@ -46,13 +46,13 @@ ob_start();
 /**
  * To sidestep url rewrites but still retain the atomPub URL convention,
  * the entry point is: index.php?/
- * eg. 1. Accessing the servicedocument: http://example.com/ktatompub/index.php?/servicedocument
- *     2. Accessing the folder service: http://example.com/ktatompub/index.php?/folder/1
+ * eg. 1. Accessing the servicedocument: http://example.com/webservice/atompub/index.php?/servicedocument
+ *     2. Accessing the folder service: http://example.com/webservice/atompub/index.php?/folder/1
  *
  * If URL rewrites are used, they should point any reference below
  * this folder to index.php?/
  *
- * Because index.php is accessed as the default document, the url can be shortened to http://example.com/ktatompub/?/
+ * Because index.php is accessed as the default document, the url can be shortened to http://example.com/webservice/atompub/?/
  */
 
 define('KT_APP_BASE_URI',"http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/?/');
