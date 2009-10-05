@@ -94,6 +94,7 @@
     define('SYSTEM_ROOT', $asys);
     define('SQL_DIR', SYSTEM_DIR."sql".DS);
     define('SQL_INSTALL_DIR', SQL_DIR."mysql".DS."install".DS);
+    define('SQL_MIGRATE_DIR', SQL_DIR."mysql".DS."migrate".DS);
     // Install Type
     preg_match('/Zend/', $sys, $matches); // TODO: Dirty
     if($matches) {

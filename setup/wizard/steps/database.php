@@ -579,9 +579,18 @@ class database extends Step
     private function mysql() {
         $con = $this->connectMysql();
         if($con) {
-            if(!$this->createDB($con)) {
-            	$this->error['con'] = "Could not Create Database: ";
-            	return false;
+            // check for migrate.lock file which indicates this is a migration and not a clean install
+            if (file_exists('migrate.lock')) {
+                if(!$this->migrateDB($con)) {
+                    $this->error['con'] = "Could not Create Database: ";
+                    return false;
+                }
+            }
+            else {
+                if(!$this->createDB($con)) {
+                	$this->error['con'] = "Could not Create Database: ";
+                	return false;
+                }
             }
             $this->closeMysql($con);
         }
@@ -604,6 +613,47 @@ class database extends Step
         }
 
         return $con;
+    }
+    
+    /**
+    * Helper
+    *
+    * @author KnowledgeTree Team
+    * @params object mysql connection object $con
+    * @access private
+    * @return object mysql connection
+    */
+    private function migrateDB($con) {
+        if($this->usedb($con)) { // attempt to use the db
+            if($this->dropdb($con)) { // attempt to drop the db
+                if(!$this->create($con)) { // attempt to create the db
+                    $this->error['con'] = "Could not create database: ";
+                    return false;// cannot overwrite database
+                }
+            } else {
+                $this->error['con'] = "Could not drop database: ";
+                return false;// cannot overwrite database
+            }
+        } else {
+            if(!$this->create($con)) { // attempt to create the db
+                $this->error['con'] = "Could not create database: ";
+                return false;// cannot overwrite database
+            }
+        }
+        
+        if(!$this->createDmsUser($con)) { // Create dms users
+            
+        }
+
+        if(!$this->loadUpgraded($con)) {
+            $this->error['con'] = "Could not load upgraded database";
+        }
+
+        if(!$this->applyUpgrades($con)) {
+            $this->error['con'] = "Could not apply updates ";
+        }
+
+        return true;
     }
 
 	/**
@@ -634,11 +684,7 @@ class database extends Step
 		if(!$this->createDmsUser($con)) { // Create dms users
 			
 		}
-/*
-		if(!$this->loadUpgraded($con)) {
-			$this->error['con'] = "Could not load upgraded database";
-		}
-*/
+
 		if(!$this->createSchema($con)) {
 			$this->error['con'] = "Could not create schema ";
 		}
@@ -741,9 +787,9 @@ class database extends Step
     
     private function loadUpgraded($con) {
     	if($this->dpassword == '') {
-    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_INSTALL_DIR."dms.sql\"";
+    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_MIGRATE_DIR."dms.sql\"";
     	} else {
-        	$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_INSTALL_DIR."dms.sql\"";
+        	$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_MIGRATE_DIR."dms.sql\"";
     	}
     	$response = $this->_util->pexec($command);
     	return $response;

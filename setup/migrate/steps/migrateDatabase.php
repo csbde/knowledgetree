@@ -253,6 +253,7 @@ class migrateDatabase extends Step
     	$this->_util = new MigrateUtil();
     	if(WINDOWS_OS)
 			$this->mysqlDir = MYSQL_BIN;
+        $this->wizardLocation = '../wizard';
     }
 
 	/**
@@ -292,6 +293,19 @@ class migrateDatabase extends Step
         $this->temp_variables['duname'] = $this->getPostSafe('duname');
         $this->temp_variables['dpassword'] = $this->getPostSafe('dpassword');
 		$this->temp_variables['dbbinary'] = $this->getPostSafe('dbbinary');
+        // create lock file to indicate migration mode
+        $this->createMigrateFile();
+    }
+    
+    /**
+     * Creates migration lock file so that system knows it is supposed to run an upgrade installation
+     * 
+     * @author KnowledgeTree Team
+     * @access private
+     * @return void
+     */
+    private function createMigrateFile() {
+        @touch($this->wizardLocation . DIRECTORY_SEPARATOR . "migrate.lock");
     }
     
 	/**
