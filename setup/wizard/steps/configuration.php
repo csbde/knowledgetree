@@ -643,10 +643,10 @@ class configuration extends Step
 				$this->confpaths['log'] = $k;
         	} elseif (preg_match('/proxies/', $k)) {
 				$this->confpaths['proxies'] = $k;
-        	} elseif (preg_match('/tmp/', $k)) {
-				$this->confpaths['tmp'] = $k;
         	} elseif (preg_match('/uploads/', $k)) {
 				$this->confpaths['uploads'] = $k;
+        	} elseif (preg_match('/tmp/', $k)) {
+				$this->confpaths['tmp'] = $k;
         	}
         }
 
