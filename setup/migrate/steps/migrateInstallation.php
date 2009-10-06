@@ -82,6 +82,8 @@ class migrateInstallation extends step
 	private $dbSettings = array();
 	private $ktSettings = array();
 	private $urlPaths = array();
+	private $knownWindowsLocations = array("C:\Program Files\ktdms"=>"C:\Program Files\ktdms\knowledgeTree\config\config-path","C:\Program Files x86\ktdms"=>"C:\Program Files x86\ktdms\knowledgeTree\config\config-path","C:\ktdms"=>"C:\ktdms\knowledgeTree\config\config-path");
+	private $knownUnixLocations = array("/opt/ktdms","/var/www/ktdms");
 	
     function __construct() {
         $this->temp_variables = array("step_name"=>"installation", "silent"=>$this->silent);
@@ -113,19 +115,15 @@ class migrateInstallation extends step
 
     public function detectInstallation() {
     	if(WINDOWS_OS) {
-    		$path1 = "'C:\\Program Files\ktdms'";
-    		$path2 = "'C:\\Program Files x86\ktdms'";
-    		if(file_exists($path1))
-    			$this->location = "C:\\Program Files\ktdms";
-    		elseif (file_exists($path2))
-    			$this->location = "C:\\Program Files x86\ktdms";
+    		foreach ($this->knownWindowsLocations as $loc=>$configPath) {
+    			if(file_exists($configPath))
+    				$this->location = $loc;
+    		}
     	} else {
-    		$path1 = "/opt/ktdms";
-    		$path2 = "/var/www/ktdms";
-    		if(file_exists($path1))
-    			$this->location = $path1;
-			elseif(file_exists($path2))
-				$this->location = $path2;
+    		foreach ($this->knownUnixLocations as $loc) {
+    			if(file_exists($configPath))
+    				$this->location = $loc;
+    		}
     	}
     }
     
@@ -133,17 +131,24 @@ class migrateInstallation extends step
 		$ktInstallPath = isset($_POST['location']) ? $_POST['location']: '';
 		if($ktInstallPath != '') {
 			$this->location = $ktInstallPath;
-			//echo $ktInstallPath;die;
 			if(file_exists($ktInstallPath)) {
 				$configPath = $ktInstallPath.DS."knowledgeTree".DS."config".DS."config-path";
 				if(file_exists($configPath)) {
 					$configFilePath = file_get_contents($configPath);
-					if(file_exists($configFilePath)) {
+					if(file_exists($configFilePath)) { // For 3.7 and after
 						$this->readConfig($configFilePath);
 						$this->storeSilent();
 						
 						return true;
 					} else {
+						$configFilePath = $ktInstallPath.DS."knowledgeTree".DS.$configFilePath; // For older than 3.6.2
+						$configFilePath = trim($configFilePath);
+						if(file_exists($configFilePath)) {
+							$this->readConfig($configFilePath);
+							$this->storeSilent();
+						
+							return true;
+						}
 						$this->error[] = "KT installation configuration file empty";
 					}
 				} else {

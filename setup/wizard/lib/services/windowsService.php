@@ -142,7 +142,7 @@ class windowsService extends Service {
  	*/
 	public function restart() {
 		$response = $this->stop();
-		sleep(10);
+		sleep(1);
 		$this->start();
 	}
 	
@@ -157,9 +157,11 @@ class windowsService extends Service {
 	public function uninstall() {
 		$status = $this->status();
 		if ($status != '') {
+			$this->stop();
+			sleep(1);
 			$cmd = "sc delete {$this->name}";
 			$response = $this->util->pexec($cmd);
-			sleep(10);
+			sleep(1);
 			return $response;
 		}
 		return $status;

@@ -148,7 +148,7 @@ class migrateDatabase extends Step
 
     public function exportDatabase() {
     	if(WINDOWS_OS) {
-    		
+    		$tmpFolder = "../";
     	} else {
     		$tmpFolder = "/tmp/knowledgtree";
     	}
@@ -160,6 +160,7 @@ class migrateDatabase extends Step
 		$sqlFile = $tmpFolder."dms.sql";
 		$dbName = $dbSettings['dbName'];
 		$cmd = "mysqldump -u{$uname} -p{$pwrd} {$dbName} > ".$sqlFile;
+		echo $cmd;
 		$response = $this->util->pexec($cmd);
 		if(file_exists($sqlFile)) {
 			return true;
