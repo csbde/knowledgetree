@@ -1,4 +1,4 @@
-<form>
+<form action="index.php?step_name=complete" method="post">
 	<p class="title">Migration Completed</p>
 
 	<p class="description">This allows you to check that your KnowledgeTree configuration is set
@@ -14,40 +14,33 @@
 	?>
 	<div id="step_content_complete" class="step">
 <!--	Services	-->
-	<br/><br/>
-	<div>
-	    <h3><?php echo "<span class='{$services_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services</h3>
-	<?php if($silent) { ?>
-		<div id="option2" class="onclick" onclick="javascript:{w.toggleClass('services_check', 'option2');}">Show Details</div>
-		<div class="services_check" style="display:none">
-	<?php } ?>
-	    <table style="width:755px;">
-	        <tr>
-	        	<td style="width:15px;"> <?php echo "<span class='{$LuceneStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?> </td>
-	        	<td style="width:640px;"> Lucene Service <?php if ($LuceneStatus != 'tick') { ?> Could not be stopped <?php } else { ?> Stopped <?php } ?></td>
-	        	<?php if ($LuceneStatus != 'tick') { ?>
-	        		<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
-	        	<?php } ?>
-	        </tr> 
-	        <tr>
-	        	<td> <?php echo "<span class='{$SchedulerStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?> </td>
-	        	<td> Scheduler Service <?php if ($LuceneStatus != 'tick') { ?> Could not be stopped <?php } else { ?> Stopped <?php } ?></td>
-	        	<?php if ($SchedulerStatus != 'tick') { ?>
-	        		<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
-	        	<?php } ?>
-	        </tr>
-	        <tr>
-	        	<td> <?php echo "<span class='{$OpenOfficeStatus}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?> </td>
-	        	<td> OpenOffice Service <?php if ($OpenOfficeStatus != 'tick') { ?> Could not be stopped <?php } else { ?> Stopped <?php } ?></td>
-	        	<?php if ($OpenOfficeStatus != 'tick') { ?>
-	        		<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
-	        	<?php } ?>
-	        </tr>
-	    </table>
-	<?php if($silent) { ?>
-		</div>
-	<?php } ?>
+		<table>
+	    	<tr>
+	    		<td> <span class='<?php echo $sql['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> </td>
+	    		<td style="width:20%;"> <?php echo $sql['name']; ?> </td>
+	    		<td style="width:75%;"> <?php echo $sql['msg']; ?> </td>
+	    	<tr>
+		<?php
+		if($step_vars) {
+			if(isset($step_vars['services'])) {
+			    foreach ($step_vars['services'] as $ser){
+			    	?>
+			    	<tr>
+			    		<td> <span class='<?php echo $ser['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> </td>
+			    		<td style="width:20%;"> <?php echo $ser['name']; ?> </td>
+			    		<td style="width:75%;"> <?php echo $ser['msg']; ?> </td>
+			    		<?php if ($ser['class'] != 'tick') {
+			    			?>
+			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+			    			<?php
+			    		} ?>
+			    	</tr>
+			    	<?php
+			    }
+			}
+		}
+		?>
+		</table>
 	</div>
-	</div>
-    <a href="../wizard" class="buttons back" style="width:100px;">Goto Installer</a>
+    <input class="button_next" type="submit" value="Back To Installer" name="BInstall"/>
 </form>

@@ -507,6 +507,9 @@ class Migrater {
     	} elseif (isset($_POST['Install'])) {
     		$this->migraterAction = 'install';
     		$this->response = 'install';
+    	} elseif (isset($_POST['BInstall'])) {
+    		$this->migraterAction = 'binstall';
+    		$this->response = 'binstall';
     	} else {
     		$this->response = '';
     		$this->migraterAction = '';
@@ -547,6 +550,10 @@ class Migrater {
             case 'install':
                 $iutil = new MigrateUtil();
                 $iutil->redirect('../wizard/index.php?step_name=installtype');
+            	break;
+            case 'binstall':
+                $iutil = new MigrateUtil();
+                $iutil->redirect('../wizard/index.php?step_name=dependencies');
             	break;
             default:
             	// TODO : handle silent

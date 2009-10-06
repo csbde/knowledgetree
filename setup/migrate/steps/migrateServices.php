@@ -137,21 +137,6 @@ class migrateServices extends Step
     	$this->util = new MigrateUtil();
     }
     
-    public function loadInstallUtil() {
-    	require("../wizard/installUtil.php");
-    	require("../wizard/steps/services.php");
-    	$this->installServices = new services();
-    }
-    
-    public function loadInstallServices() {
-    	$this->services = $this->installServices->getServices();
-    }
-    
-    private function loadInstallService($serviceName) {
-    	require_once("../wizard/lib/services/$serviceName.php");
-    	return new $serviceName();
-    }
-    
 	/**
 	* Main control of services setup
 	*
@@ -162,8 +147,8 @@ class migrateServices extends Step
 	*/
     public function doStep()
     {
-    	$this->loadInstallUtil(); // Use installer utility class
-    	$this->loadInstallServices(); // Use installer services class
+    	$this->installServices = $this->util->loadInstallUtil(); // Use installer utility class
+    	$this->services = $this->util->loadInstallServices(); // Use installer services class
     	$this->storeSilent();
     	if(!$this->inStep("services")) {
     		$this->doRun();
@@ -191,11 +176,10 @@ class migrateServices extends Step
 	* @return boolean
 	*/
     private function doRun() {
-		if(!$this->alreadyUninstalled()) { // Pre-check if services are stopped
-			$this->stopServices();
-			
+		if(!$this->alreadyUninstalled()) { // Pre-check if services are uninstalled
+			$this->uninstallServices();
 		}
-		$this->stopServices();
+		$this->uninstallServices();
 		return $this->checkServices();
     }
     	
@@ -208,7 +192,7 @@ class migrateServices extends Step
     	$alreadyUninstalled = true;
     	foreach ($this->services as $serviceName) {
     		$className = OS.$serviceName;
-    		$serv = $this->loadInstallService($className);
+    		$serv = $this->util->loadInstallService($className);
     		$serv->load();
     		$sStatus = $serv->status();
     		if($sStatus != '') {
@@ -220,23 +204,52 @@ class migrateServices extends Step
     }
 
     /**
-     * Attempt to stop services
+     * Attempt to uninstall services
      *
      */
-    private function stopServices() {
+    private function uninstallServices() {
     	$this->conf = $this->getDataFromSession("installation"); // Get installation directory
     	if($this->conf['location'] != '') {
-	    	$cmd = $this->conf['location']."/dmsctl.sh stop"; // Try the dmsctl
-
-	    	$res = $this->util->pexec($cmd);
+			$func = OS."Stop";// Try the dmsctl
+			$this->$func();
     	}
 		$this->shutdown();
     }
 
+    /**
+     * Attempt to uninstall unix services
+     *
+     */
+    public function unixStop() {
+    	$cmd = $this->conf['location']."/dmsctl.sh stop lucene";
+    	$res = $this->util->pexec($cmd);
+    	$cmd = $this->conf['location']."/dmsctl.sh stop scheduler";
+    	$res = $this->util->pexec($cmd);
+    	$cmd = $this->conf['location']."/dmsctl.sh stop soffice";
+    	$res = $this->util->pexec($cmd);
+    }
+    
+    /**
+     * Attempt to uninstall windows services
+     *
+     */
+    public function windowsStop() {
+    	$cmd = "sc delete KTLucene";
+    	$res = $this->util->pexec($cmd);
+    	$cmd = "sc delete KTScheduler";
+    	$res = $this->util->pexec($cmd);
+    	$cmd = "sc delete KTOpenoffice";
+    	$res = $this->util->pexec($cmd);
+    }
+    
+    /**
+     * Attempt to uninstall services created by webserver
+     *
+     */
     public function shutdown() {
     	foreach ($this->services as $serviceName) {
     		$className = OS.$serviceName;
-    		$serv = $this->loadInstallService($className);
+    		$serv = $this->util->loadInstallService($className);
     		$serv->load();
     		$sStatus = $serv->status();
     		if($sStatus != '') {
@@ -245,24 +258,28 @@ class migrateServices extends Step
     	}
     }
     
+    /**
+     * Check if services are uninstall
+     *
+     */    
     public function checkServices() {
     	foreach ($this->services as $serviceName) {
     		$className = OS.$serviceName;
-    		$serv = $this->loadInstallService($className);
+    		$serv = $this->util->loadInstallService($className);
     		$serv->load();
-    		$sStatus = $serv->status();
+    		$sStatus = $serv->status(true);
     		if($sStatus == 'STARTED') {
     			$state = 'cross';
-    			$this->error[] = "Service : {$serv->getName()} could not be stopped.<br/>";
+    			$this->error[] = "Service : {$serv->getName()} could not be uninstalled.<br/>";
     			$this->serviceCheck = 'cross';
-    			
+    			$stopmsg = OS.'GetStopMsg';
+    			$this->temp_variables['services'][$serv->getName()]['msg'] = $serv->$stopmsg($this->conf['location']);
     		} else {
     			$state = 'tick';
+    			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service has been uninstalled";
     		}
     		$this->temp_variables['services'][$serv->getName()]['class'] = $state;
     		$this->temp_variables['services'][$serv->getName()]['name'] = $serv->getName();
-    		$stopmsg = OS.'GetStopMsg';
-    		$this->temp_variables['services'][$serv->getName()]['msg'] = $serv->$stopmsg($this->conf['location']);
     	}
     	if ($this->serviceCheck != 'tick') {
     		return false;
@@ -270,6 +287,7 @@ class migrateServices extends Step
     	
     	return true;
     }
+    
 	/**
 	* Returns services errors
 	*

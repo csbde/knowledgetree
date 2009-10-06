@@ -56,7 +56,18 @@
 		define('DS', '/');
 	}
 	// Define environment root
-	$wizard = realpath(dirname(__FILE__));
+	if($_GET['type'] == 'migrate') {
+		$wizard = realpath(dirname(__FILE__));
+		$xdir = explode(DS, $wizard);
+		array_pop($xdir);
+		$sys = '';
+		foreach ($xdir as $k=>$v) {
+			$sys .= $v.DS;
+		}
+		$wizard = $sys.'migrate';
+	} else {
+		$wizard = realpath(dirname(__FILE__));
+	}
 	$xdir = explode(DS, $wizard);
 	array_pop($xdir);
 	array_pop($xdir);
@@ -94,7 +105,7 @@
     define('SYSTEM_ROOT', $asys);
     define('SQL_DIR', SYSTEM_DIR."sql".DS);
     define('SQL_INSTALL_DIR', SQL_DIR."mysql".DS."install".DS);
-    define('SQL_MIGRATE_DIR', SYS_VAR_DIR."tmp".DS);
+    define('SQL_MIGRATE_DIR', SQL_DIR."mysql".DS."migrate".DS);
     // Install Type
     preg_match('/Zend/', $sys, $matches); // TODO: Dirty
     if($matches) {

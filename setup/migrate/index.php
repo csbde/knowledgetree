@@ -39,5 +39,6 @@
 * @package Migrater
 * @version Version 0.1
 */
+$_GET['type'] = 'migrate';
 require_once("migrateWizard.php");
 ?>

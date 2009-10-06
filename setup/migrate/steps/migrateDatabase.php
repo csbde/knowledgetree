@@ -60,141 +60,7 @@ class migrateDatabase extends Step
 	*/	
     public $_util = null;
     
-	/**
-	* Database type
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var array
-	*/	
-    private $dtype = '';
-    
-	/**
-	* Database types
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var array
-	*/	
-    private $dtypes = array();
-    
-	/**
-	* Database host
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var string
-	*/
-    private $dhost = '';
-    
-	/**
-	* Database port
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var string
-	*/
-    private $dport = '';
-    
-	/**
-	* Database name
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var string
-	*/
-    private $dname = '';
-    
-	/**
-	* Database root username
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var string
-	*/
-    private $duname = '';
-    
-	/**
-	* Database root password
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var string
-	*/
-    private $dpassword = '';
-    
-	/**
-	* Database dms username
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var string
-	*/
-    private $dmsname = '';
-    
-	/**
-	* Database dms password
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var string
-	*/
-    private $dmspassword = '';
-
-	/**
-	* Default dms user username
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var boolean
-	*/
-    private $dmsusername = '';
-    
-	/**
-	* Default dms user password
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var boolean
-	*/
-	private $dmsuserpassword = '';
-	
-	/**
-	* Location of database binaries.
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var string
-	*/
-    private $mysqlDir; // TODO:multiple databases
-    
-	/**
-	* Name of database binary.
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var string
-	*/
-    private $dbbinary = ''; // TODO:multiple databases
-    
-	/**
-	* Database table prefix
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var string
-	*/
-    private $tprefix = '';
-    
-	/**
-	* Flag to drop database
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var boolean
-	*/
-    private $ddrop = false;
-    
+   
 	/**
 	* List of errors encountered
 	*
@@ -203,15 +69,6 @@ class migrateDatabase extends Step
 	* @var array
 	*/
     public $error = array();
-    
-	/**
-	* List of errors used in template
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var array
-	*/
-    public $templateErrors = array('dmspassword', 'dmsuserpassword', 'con', 'dname', 'dtype', 'duname', 'dpassword');
     
 	/**
 	* Flag to store class information in session
@@ -239,6 +96,15 @@ class migrateDatabase extends Step
 	* @var array
 	*/
     protected $silent = true;
+
+	/**
+	* List of errors used in template
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    public $templateErrors = array('dmspassword', 'dmsuserpassword', 'con', 'dname', 'dtype', 'duname', 'dpassword');
     
 	/**
 	* Constructs database object
@@ -249,8 +115,7 @@ class migrateDatabase extends Step
  	*/
     public function __construct() {
     	$this->temp_variables = array("step_name"=>"database", "silent"=>$this->silent);
-    	$this->_dbhandler = new dbUtil();
-    	$this->_util = new MigrateUtil();
+    	$this->util = new MigrateUtil();
     	if(WINDOWS_OS)
 			$this->mysqlDir = MYSQL_BIN;
         $this->wizardLocation = '../wizard';
@@ -265,13 +130,15 @@ class migrateDatabase extends Step
 	* @return string
 	*/
     public function doStep() {
-    	$this->initErrors();
+    	$this->initErrors(); // Load template errors
     	$this->setDetails(); // Set any posted variables
     	if(!$this->inStep("database")) {
     		return 'landing';
     	}
 		if($this->next()) {
-			return 'next';
+			if($this->exportDatabase()) {
+				return 'next';
+			}
 		} else if($this->previous()) {
 			return 'previous';
 		}
@@ -279,6 +146,28 @@ class migrateDatabase extends Step
         return 'landing';
     }
 
+    public function exportDatabase() {
+    	if(WINDOWS_OS) {
+    		
+    	} else {
+    		$tmpFolder = "/tmp/knowledgtree";
+    	}
+    	@mkdir($tmpFolder);
+    	$installation = $this->getDataFromSession("installation"); // Get installation directory
+    	$dbSettings = $installation['dbSettings'];
+		$uname = $this->temp_variables['duname'];
+		$pwrd = $this->temp_variables['dpassword'];
+		$sqlFile = $tmpFolder."dms.sql";
+		$dbName = $dbSettings['dbName'];
+		$cmd = "mysqldump -u{$uname} -p{$pwrd} {$dbName} > ".$sqlFile;
+		$response = $this->util->pexec($cmd);
+		if(file_exists($sqlFile)) {
+			return true;
+		} else {
+			return false;
+		}
+    }
+    
 	/**
 	* Store options
 	*
@@ -288,11 +177,8 @@ class migrateDatabase extends Step
 	* @return void
 	*/
    private function setDetails() {
-        $this->temp_variables['dhost'] = $this->getPostSafe('dhost');
-        $this->temp_variables['dport'] = $this->getPostSafe('dport');
         $this->temp_variables['duname'] = $this->getPostSafe('duname');
         $this->temp_variables['dpassword'] = $this->getPostSafe('dpassword');
-		$this->temp_variables['dbbinary'] = $this->getPostSafe('dbbinary');
         // create lock file to indicate migration mode
         $this->createMigrateFile();
     }
@@ -344,7 +230,7 @@ class migrateDatabase extends Step
 
         return $this->error;
     }
-
+    
 	/**
 	* Initialize errors to false
 	*

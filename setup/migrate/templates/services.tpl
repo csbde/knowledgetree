@@ -44,10 +44,8 @@
 			$details = 'Hide Details';
 			$display = 'block';
 		} else {
-			$details = 'Hide Details';
-			$display = 'block';
-//			$details = 'Show Details';
-//			$display = 'none';
+			$details = 'Show Details';
+			$display = 'none';
 		}
 		?>
 			<div id="option6" class="onclick" onclick="javascript:{w.toggleClass('service_details', 'option6');}"><?php echo $details; ?></div>
@@ -65,7 +63,7 @@
 			    		<td style="width:75%;"> <?php echo $ser['msg']; ?> </td>
 			    		<?php if ($ser['class'] != 'tick') {
 			    			?>
-<!--			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>-->
+			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
 			    			<?php
 			    		} ?>
 			    	</tr>

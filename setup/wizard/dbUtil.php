@@ -109,6 +109,9 @@ class dbUtil {
 		$this->dbuname = $duname;
 		$this->dbpassword = $dpassword;
 		$this->dbconnection = @mysql_connect($dhost, $duname, $dpassword);
+		if(!$this->dbconnection) {
+			$this->error[] = @mysql_error();
+		}
 		$this->dbname = $dbname;
 	}
 

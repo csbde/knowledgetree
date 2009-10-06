@@ -67,7 +67,6 @@ class migrateComplete extends Step {
     
     public function __construct() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
-        $this->_dbhandler = new dbUtil();
     	$this->util = new MigrateUtil();
     }
 
@@ -78,16 +77,52 @@ class migrateComplete extends Step {
     
     function doRun() {
         $this->checkServices();
+        $this->checkSqlDump();
         $this->storeSilent();// Set silent mode variables
+    }
+    
+    private function checkSqlDump() {
+    	$tmpFolder = "/tmp/knowledgtree";
+    	$sqlFile = $tmpFolder."dms.sql";
+		if(file_exists($sqlFile)) {
+			$this->temp_variables['sql']['class'] = "tick";
+			$this->temp_variables['sql']['name'] = "dms.sql";
+			$this->temp_variables['sql']['msg'] = "Data file created";
+			return true;
+		} else {
+			$this->temp_variables['sql']['class'] = "cross";
+			$this->temp_variables['sql']['name'] = "dms.sql";
+			$this->temp_variables['sql']['msg'] = "Data file has not been created";
+			return false;
+		}
     }
     
     private function checkServices()
     {
-        $services = new services();
-        foreach ($services->getServices() as $serviceName) {
-			$this->temp_variables[$serviceName."Status"] = 'tick';
-        }     
-		return true;
+    	$services = $this->util->loadInstallServices(); // Use installer services class
+		foreach ($services as $serviceName) {
+    		$className = OS.$serviceName;
+    		$serv = $this->util->loadInstallService($className);
+    		$serv->load();
+    		$sStatus = $serv->status(true);
+    		if($sStatus == 'STARTED') {
+    			$state = 'cross';
+    			$this->error[] = "Service : {$serv->getName()} could not be uninstalled.<br/>";
+    			$this->services_check = 'cross';
+    			$stopmsg = OS.'GetStopMsg';
+    			$this->temp_variables['services'][$serv->getName()]['msg'] = $serv->$stopmsg($this->conf['location']);
+    		} else {
+    			$state = 'tick';
+    			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service has been uninstalled";
+    		}
+    		$this->temp_variables['services'][$serv->getName()]['class'] = $state;
+    		$this->temp_variables['services'][$serv->getName()]['name'] = $serv->getName();
+    	}
+    	if ($this->services_check != 'tick') {
+    		return false;
+    	}
+    	
+    	return true;
     }
     
     /**
@@ -95,7 +130,7 @@ class migrateComplete extends Step {
      *
      */
     private function storeSilent() {
-    	$this->temp_variables['services_check'] = $this->services_check;
+    	$this->temp_variables['servicesCheck'] = $this->services_check;
     }
 }
 ?>
