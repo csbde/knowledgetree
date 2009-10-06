@@ -204,5 +204,13 @@ class unixLucene extends unixService {
 	public function getName() {
 		return $this->name;
 	}
+	
+	public function unixGetStopMsg($installDir) {
+		return "Execute from terminal : $installDir/dmsctl.sh stop lucene";
+	}
+	
+	public function windowsGetStopMsg($installDir) {
+		return "Execute from terminal : $installDir/dmsctl.sh stop lucene";
+	}
 }
 ?>

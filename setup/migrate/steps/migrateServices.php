@@ -124,6 +124,7 @@ class migrateServices extends Step
 	*/
     protected $silent = true;
     
+    protected $conf = array();
 	/**
 	* Constructs services object
 	*
@@ -223,9 +224,9 @@ class migrateServices extends Step
      *
      */
     private function stopServices() {
-    	$conf = $this->getDataFromSession("installation"); // Get installation directory
-    	if($conf['location'] != '') {
-	    	$cmd = $conf['location']."/dmsctl.sh stop"; // Try the dmsctl
+    	$this->conf = $this->getDataFromSession("installation"); // Get installation directory
+    	if($this->conf['location'] != '') {
+	    	$cmd = $this->conf['location']."/dmsctl.sh stop"; // Try the dmsctl
 
 	    	$res = $this->util->pexec($cmd);
     	}
@@ -259,7 +260,9 @@ class migrateServices extends Step
     			$state = 'tick';
     		}
     		$this->temp_variables['services'][$serv->getName()]['class'] = $state;
-    		$this->temp_variables['services'][$serv->getName()]['msg'] = $serv->getName();
+    		$this->temp_variables['services'][$serv->getName()]['name'] = $serv->getName();
+    		$stopmsg = OS.'GetStopMsg';
+    		$this->temp_variables['services'][$serv->getName()]['msg'] = $serv->$stopmsg($this->conf['location']);
     	}
     	if ($this->serviceCheck != 'tick') {
     		return false;

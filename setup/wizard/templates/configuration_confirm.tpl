@@ -91,7 +91,8 @@
 		</table>
 		<br/>
 	</div>
-    <input type="submit" name="Edit" value="Edit"  class="button_previous"/>
+	<input class="button_previous" type="submit" value="Previous" name="Previous"/>
     <input type="submit" name="Confirm" value="Confirm" class="button_next"/>
+    <input type="submit" name="Edit" value="Edit"  class="button_next"/>
 </form>
 <?php if (AJAX) { echo $html->js('form.js'); } ?>

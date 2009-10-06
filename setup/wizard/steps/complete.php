@@ -157,7 +157,8 @@ class complete extends Step {
         // retrieve database information from session
         $dbconf = $this->getDataFromSession("database");
         // make db connection - admin
-        $loaded = $this->_dbhandler->load($dbconf['dhost'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
+        $this->_dbhandler->load($dbconf['dhost'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
+        $loaded = $this->_dbhandler->getDatabaseLink();
         if (!$loaded) {
             $this->temp_variables['dbConnectAdmin'] .= '<td><div class="cross"></div></td>'
                                                		.  '<td class="error">Unable to connect to database (user: ' 

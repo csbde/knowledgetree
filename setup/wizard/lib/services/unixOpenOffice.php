@@ -185,5 +185,13 @@ class unixOpenOffice extends unixService {
 	public function getName() {
 		return $this->name;
 	}
+	
+	public function unixGetStopMsg($installDir) {
+		return "Execute from terminal : $installDir/dmsctl.sh stop soffice";
+	}
+	
+	public function windowsGetStopMsg($installDir) {
+		return "Execute from terminal : $installDir/dmsctl.sh stop soffice";
+	}
 }
 ?>

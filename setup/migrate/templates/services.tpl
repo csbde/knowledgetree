@@ -61,10 +61,11 @@
 			    	?>
 			    	<tr>
 			    		<td> <span class='<?php echo $ser['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> </td>
-			    		<td style="width:645px;"> <?php echo $ser['msg']; ?> </td>
+			    		<td style="width:20%;"> <?php echo $ser['name']; ?> </td>
+			    		<td style="width:75%;"> <?php echo $ser['msg']; ?> </td>
 			    		<?php if ($ser['class'] != 'tick') {
 			    			?>
-			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+<!--			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>-->
 			    			<?php
 			    		} ?>
 			    	</tr>
