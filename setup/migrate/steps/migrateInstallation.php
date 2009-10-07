@@ -83,7 +83,7 @@ class migrateInstallation extends step
 	private $ktSettings = array();
 	private $urlPaths = array();
 	private $knownWindowsLocations = array("C:\Program Files\ktdms"=>"C:\Program Files\ktdms\knowledgeTree\config\config-path","C:\Program Files x86\ktdms"=>"C:\Program Files x86\ktdms\knowledgeTree\config\config-path","C:\ktdms"=>"C:\ktdms\knowledgeTree\config\config-path");
-	private $knownUnixLocations = array("/opt/ktdms","/var/www/ktdms");
+	private $knownUnixLocations = array("/opt/ktdms"=>"/opt/ktdms/knowledgeTree/config/config-path","/var/www/ktdms"=>"/var/www/ktdms/knowledgeTree/config/config-path");
 	
     function __construct() {
         $this->temp_variables = array("step_name"=>"installation", "silent"=>$this->silent);
@@ -120,7 +120,7 @@ class migrateInstallation extends step
     				$this->location = $loc;
     		}
     	} else {
-    		foreach ($this->knownUnixLocations as $loc) {
+    		foreach ($this->knownUnixLocations as $loc=>$configPath) {
     			if(file_exists($configPath))
     				$this->location = $loc;
     		}
