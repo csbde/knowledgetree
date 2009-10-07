@@ -1,5 +1,5 @@
-<form action="index.php?step_name=backup" method="post">
-	<p class="title">Confirm Backup</p>
+<?php echo $action; ?><form action="index.php?step_name=backup" method="post">
+	<p class="title"><?php echo $title; ?></p>
 
 	<?php
 	if($errors || $warnings){
@@ -49,7 +49,12 @@ You can continue to do the backup manually using the following process:
         <?php
 if ($dir != '')
 {
-?><input type="submit" name="Next" value="Next" class="button_next"><?php
+    if (($action == '') || ($action == 'confirm')) {
+    ?><input type="submit" name="BackupNow" value="Next" class="button_next"><?php
+    }
+    else {
+    ?><input type="submit" name="Next" value="Next" class="button_next"><?php
+    }
 }
 
     ?>

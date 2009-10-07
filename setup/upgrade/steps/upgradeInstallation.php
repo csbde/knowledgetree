@@ -52,16 +52,32 @@ class UpgradeInstallation extends step
     protected $silent = false;
     
     function __construct() {
-        $this->temp_variables = array("step_name"=>"welcome");
+        $this->temp_variables = array("step_name"=>"installation");
     }
 
     function doStep() {
         parent::doStep();
         if($this->next()) {
-            return 'next'; // Just a welcome, so return "next" action
+            return 'next';
+        }
+        else if ($this->restore()) {
+            header('Location: index.php?step_name=restore');
+            exit;
+        }
+        else if ($this->upgrade()) {
+            header('Location: index.php?step_name=database');
+            exit;
         }
         
         return 'landing';
+    }
+    
+    function backup() {
+        return isset($_POST['Backup']);
+    }
+     
+    function restore() {
+        return isset($_POST['Restore']);
     }
     
 }

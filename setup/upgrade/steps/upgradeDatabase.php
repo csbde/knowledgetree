@@ -43,6 +43,7 @@
 // include defaults
 require '../../config/dmsDefaults.php';
 require_once KT_LIB_DIR . '/config/config.inc.php';
+require_once KT_LIB_DIR . '/plugins/pluginutil.inc.php';
 include KT_LIB_DIR . '/upgrades/upgrade.inc.php';
 
 class upgradeDatabase extends Step 
@@ -272,29 +273,21 @@ class upgradeDatabase extends Step
         parent::doStep();
     	$this->initErrors();
     	$this->setDetails(); // Set any posted variables
-    	if(!$this->inStep("database")) {
-    	    $this->doRun();
-    		return 'landing';
-    	}
+//    	if(!$this->inStep("database")) {
+//    	    $this->doRun();
+//    		return 'landing';
+//    	}
 		if($this->next()) {
-		    if ($this->doRun()) {
-    			return 'next';
-            }
+			return 'next';
 		} else if($this->previous()) {
 			return 'previous';
 		}
-        else if ($this->backup()) {
-            return 'backup';
-        }
-        else if ($this->restore()) {
-            return 'restore';
-        }
-        else if ($this->upgrading()) {
-            $this->doRun('runUpgrade');
+        else if ($this->confirmUpgrade()) {
+            $this->doRun('confirm');
             return 'next';
         }
-        else if ($this->confirm()) {
-            if ($this->doRun('confirm')) {
+        else if ($this->upgrading()) {
+            if ($this->doRun('runUpgrade')) {
                 return 'next';
             }
             return 'error';
@@ -304,14 +297,10 @@ class upgradeDatabase extends Step
         return 'landing';
     }
     
-    function backup() {
-        return isset($_POST['Backup']);
+    function confirmUpgrade() {
+        return isset($_POST['ConfirmUpgrade']);
     }
-     
-    function restore() {
-        return isset($_POST['Restore']);
-    } 
-     
+    
     function upgrading() {
         return isset($_POST['RunUpgrade']);
     } 
@@ -327,21 +316,19 @@ class upgradeDatabase extends Step
                                            $this->dbSettings['dbPass'], $this->dbSettings['dbName']);
         }
         
+        $this->temp_variables['action'] = $action;
         if (is_null($action) || ($action == 'preview')) {
-            $this->temp_variables['action'] = 'preview';
             $this->temp_variables['title'] = 'Preview Upgrade';
             $this->temp_variables['upgradeTable'] = $this->generateUpgradeTable();
         }
-        else if ($action == 'runUpgrade') {
-            $this->temp_variables['action'] = 'runUpgrade';
+        else if ($action == 'confirm') {
             $this->temp_variables['title'] = 'Confirm Upgrade';
             $this->temp_variables['upgradeTable'] = $this->upgradeConfirm();
         }
-        else if ($action == 'confirm') {
-            $this->temp_variables['action'] = 'confirm';
+        else if ($action == 'runUpgrade') {
             $this->temp_variables['title'] = 'Upgrade In Progress';
             if (!$this->upgrade()) {
-                $this->temp_variables['upgradeTable'] = $this->upgradeErrors();
+//                $this->temp_variables['upgradeTable'] = '';//$this->upgradeErrors();
                 return false;
             }
         }
@@ -465,31 +452,16 @@ class upgradeDatabase extends Step
                                     'dbAdminUser'=> $dbSettings['dbAdminUser'],
                                     'dbAdminPass'=> $dbSettings['dbAdminPass'],
         );
-//        $ktSettings = $ini->getSection('KnowledgeTree');
-//        $froot = $ktSettings['fileSystemRoot'];
-//        if ($froot == 'default') {
-//            $froot = $this->location;
-//        }
-//        $this->ktSettings = array('fileSystemRoot'=> $froot,
-//        );
-//        $urlPaths = $ini->getSection('urls');
-//        $this->urlPaths = array(array('name'=> 'Var Directory', 'path'=> $froot.DS.'var'),
-//                                    array('name'=> 'Log Directory', 'path'=> $froot.DS.'log'),
-//                                    array('name'=> 'Document Root', 'path'=> $froot.DS.'Documents'),
-//                                    array('name'=> 'UI Directory', 'path'=> $froot.DS.'presentation'.DS.'lookAndFeel'.DS.'knowledgeTree'),
-//                                    array('name'=> 'Temporary Directory', 'path'=> $froot.DS.'tmp'),
-//                                    array('name'=> 'Cache Directory', 'path'=> $froot.DS.'cache'),
-//        );
-//        $this->temp_variables['urlPaths'] = $this->urlPaths;
-//        $this->temp_variables['ktSettings'] = $this->ktSettings;
         $this->temp_variables['dbSettings'] = $this->dbSettings;
     }
     
     function upgradeConfirm()
     {
-        if (!isset($_SESSION['backupStatus']) || $_SESSION['backupStatus'] === false)
-        {
+        if (!isset($_SESSION['backupStatus']) || $_SESSION['backupStatus'] === false) {
             $this->temp_variables['backupStatus'] = false;
+        }
+        else {
+            $this->temp_variables['backupStatus'] = true;
         }
     }
 
@@ -497,67 +469,153 @@ class upgradeDatabase extends Step
 function upgrade()
 {
     global $default;
+    
+    $this->temp_variables['detail'] = '<p>The table below describes the upgrades that have occurred to
+        upgrade your KnowledgeTree installation to <strong>' . $default->systemVersion . '</strong>';
 ?>
-        <p>The table below describes the upgrades that have occurred to
-        upgrade your <?php echo APP_NAME;?> installation to <strong><?php echo $default->systemVersion;?></strong>.
+    <p>
 
-  <?php
-    $pre_res = performPreUpgradeActions();
-    if (PEAR::isError($pre_res))
-    {
-?>
-<font color="red">Pre-Upgrade actions failed.</font><br/>
 <?php
+  
+    $pre_res = $this->performPreUpgradeActions();
+    if (PEAR::isError($pre_res)) {
+        $this->temp_variables['preUpgrade'] = '<font color="red">Pre-Upgrade actions failed.</font>';
     }
-    else
-    {
-?>
-<p>
-<font color="green">Pre-Upgrade actions succeeded.</font><br/>
-<?php
-    }
-?>
-<p>
-  <?php
-    $res = performAllUpgrades();
-    if (PEAR::isError($res) || PEAR::isError($pres))
-    {
-?>
-<font color="red">Upgrade failed.</font>
-<?php
-    }
-    else
-    {
-?>
-<p>
-<font color="green">Upgrade succeeded.</font>
-<?php
-    }
-?>
-<p>
-  <?php
-    $post_pres = performPostUpgradeActions();
-    if (PEAR::isError($post_res))
-    {
-?>
-<font color="red">Post-Upgrade actions failed.</font><br/><br/>
-<?php
-    }
-    else
-    {
-?>
-<p>
-<font color="green">Post-Upgrade actions succeeded.</font><br/><br/>
-<script type="text/javascript">
-    alert("To complete the upgrade please do the following before continuing:\n\n1. Restart the services as appropriate for your environment.\n\n\nOn first run of your upgraded installaton please do the following:\n\n1. Hard refresh your bowser (CTRL-F5) on first view of the Dashboard.\n2. Enable the new plugins you wish to use.\n\n\nSelect 'next' at the bottom of this page to continue.")
-</script>
-<?php
-    }
-?>
+    else {
+        $this->temp_variables['preUpgrade'] = '<font color="green">Pre-Upgrade actions succeeded.</font>';
 
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('home')">
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:document.location='..';">
+    }
+            ?>
+    <br/>
+
+<p>
+  <?php
+?>
+<p>
 <?php
+    $res = $this->performAllUpgrades();
+    if (PEAR::isError($res) || PEAR::isError($pres)) {
+        $this->temp_variables['upgradeStatus'] = '<font color="red">Upgrade failed.</font>';
+    }
+    else {
+        $this->temp_variables['upgradeStatus'] = '<font color="green">Upgrade succeeded.</font>';
+    }
+?>
+<p>
+    
+<p>
+  <?php
+    $post_pres = $this->performPostUpgradeActions();
+    if (PEAR::isError($post_res)) {
+        $this->temp_variables['postUpgrade'] = '<font color="red">Post-Upgrade actions failed.</font>';
+    }
+    else {
+        $this->temp_variables['postUpgrade'] = '<font color="green">Post-Upgrade actions succeeded.</font>';
+    }
+}
+
+function performPreUpgradeActions() {
+
+    // This is just to test and needs to be updated to a more sane and error resistent architrcture if it works.
+    // It should idealy work the same as the upgrades.
+
+    global $default;
+
+    // Lock the scheduler
+    $lockFile = $default->cacheDirectory . DIRECTORY_SEPARATOR . 'scheduler.lock';
+    touch($lockFile);
+    return true;
+
+}
+
+function performPostUpgradeActions() {
+
+    // This is just to test and needs to be updated to a more sane and error resistent architrcture if it works.
+    // It should idealy work the same as the upgrades.
+
+    global $default;
+
+    // Ensure all plugins are re-registered.
+    $sql = "TRUNCATE plugin_helper";
+    $res = DBUtil::runQuery($sql);
+
+    // Clear out all caches and proxies - they need to be regenerated with the new code
+    $proxyDir = $default->proxyCacheDirectory;
+    KTUtil::deleteDirectory($proxyDir);
+
+    $oKTCache = new KTCache();
+    $oKTCache->deleteAllCaches();
+
+    // Clear the configuration cache, it'll regenerate on next load
+    $oKTConfig = new KTConfig();
+    $oKTConfig->clearCache();
+
+    // Unlock the scheduler
+    $lockFile = $default->cacheDirectory . DIRECTORY_SEPARATOR . 'scheduler.lock';
+    if(file_exists($lockFile)){
+        @unlink($lockFile);
+    }
+
+    return true;
+
+}
+
+function performAllUpgrades () {
+    global $default;
+    $query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', $default->system_settings_table);
+    $lastVersion = DBUtil::getOneResultKey($query, 'value');
+    $currentVersion = $default->systemVersion;
+
+    $upgrades = describeUpgrade($lastVersion, $currentVersion);
+    
+    $this->temp_variables['upgradeTable'] = '';
+
+    foreach ($upgrades as $upgrade) {
+        if (($GLOBALS['row'] % 2) == 1) {
+            $class = "odd";
+        } else {
+            $class = "even";
+        }
+        $this->temp_variables['upgradeTable'] .= sprintf('<div class="row %s"><div class="foo">%s</div>' . "\n", $class, htmlspecialchars($upgrade->getDescription()));
+        $GLOBALS['row']++;
+        ob_flush();
+        flush();
+        $res = $upgrade->performUpgrade();
+        $this->temp_variables['upgradeTable'] .= sprintf('<div class="bar">%s</div>', $this->showResult($res));
+        $this->temp_variables['upgradeTable'] .= '<br style="clear: both">' . "\n";
+        ob_flush();
+        flush();
+        $this->temp_variables['upgradeTable'] .= "</div>\n";
+        if (PEAR::isError($res)) {
+            if (!is_a($res, 'Upgrade_Already_Applied')) {
+                break;
+            } else {
+                $res = true;
+            }
+        }
+        if ($res === false) {
+            $res = PEAR::raiseError("Upgrade returned false");
+            break;
+        }
+    }
+
+    return $res;
+}
+
+function showResult($res) {
+    if (PEAR::isError($res)) {
+        if (is_a($res, 'Upgrade_Already_Applied')) {
+            return '<span style="color: orange">Already applied</span>';
+        }
+        return sprintf('<span style="color: red">%s</span>', htmlspecialchars($res->toString()));
+    }
+    if ($res === true) {
+        return '<span style="color: green">Success</span>';
+    }
+    if ($res === false) {
+        return '<span style="color: red">Failure</span>';
+    }
+    return $res;
 }
 
 }

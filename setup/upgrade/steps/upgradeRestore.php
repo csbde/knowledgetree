@@ -84,8 +84,10 @@ class upgradeRestore extends Step {
     }
     
     function doRun() {
+        $this->temp_variables['selected'] = false;
         if ($this->select()) {
             $this->restoreSelected();
+            $this->temp_variables['selected'] = true;
         }
         $this->restoreConfirm();
         $this->storeSilent();// Set silent mode variables
@@ -104,6 +106,24 @@ class upgradeRestore extends Step {
     private function storeSilent() {
     }
     
+    // these belong in a shared lib
+    function set_state($value)
+{
+    $_SESSION['state'] = $value;
+}
+function check_state($value, $state='Home')
+{
+    if ($_SESSION['state'] != $value)
+    {
+        ?>
+            <script type="text/javascript">
+            document.location="?go=<?php echo $state;?>";
+            </script>
+            <?php
+            exit;
+    }
+}
+
     function restore()
 {
     check_state(1);
@@ -346,58 +366,19 @@ function restoreSelect()
     {
         while (($file = readdir($dh)) !== false)
         {
-            if (!preg_match('/kt-backup.+\.sql/',$file))
-            {
+            if (!preg_match('/kt-backup.+\.sql/',$file)) {
                 continue;
             }
             $files[] = $file;
         }
         closedir($dh);
     }
-
-    if (count($files) == 0)
-    {
- ?>
-    There don't seem to be any backups to restore from the <i>"<?php echo $dir;?>"</i> directory.
- <?php
+    
+    $this->temp_variables['availableBackups'] = false;
+    $this->temp_variables['dir'] = $dir;
+    if (count($files) != 0) {
+        $this->temp_variables['availableBackups'] = true;
     }
-    else
-    {
- ?>
-    <P>
-    Select a backup to restore from the list below:
-    <P>
-        <form action="index.php?step_name=restore" method="post">
-
-    <table border=1 cellpadding=1 cellspacing=1>
-            <tr bgcolor="darkgrey">
-            <td>Filename
-            <td>File Size
-            <td>Action
-<?php
-    $i=0;
-    foreach($files as $file)
-    {
-        $color=((($i++)%2)==0)?'white':'lightgrey';
-?>
-        <tr bgcolor="<?php echo $color;?>">
-            <td><?php echo $file;?>
-            <td><?php echo filesize($dir . '/'.$file);?>
-            <td><input type="submit" name="RestoreSelect" value="restore">
-<?php
-    }
-?>
-    </table>
-    <input type="hidden" name="file" value="<?php echo $file; ?>" />
-    </form>
- <?php
-    }
-   ?>
-
-   <p>
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')">
-   <?php
-
 }
 
 function restoreSelected()
@@ -416,7 +397,7 @@ function restoreConfirm()
     if (!isset($_SESSION['backupFile']) || !is_file($_SESSION['backupFile']) || filesize($_SESSION['backupFile']) == 0)
     {
         $this->restoreSelect();
-        exit;
+        return;
     }
 
     $status = $_SESSION['backupStatus'];

@@ -12,7 +12,40 @@
     <br/><br/>
     <div>
     <?php
-if ($dir != '') {
+    if (!$availableBackups) {
+        ?>There don't seem to be any backups to restore from the <i>"<?php echo $dir;?>"</i> directory.<?php
+    }
+    else if (!$selected) {
+    ?>
+    <P>
+    Select a backup to restore from the list below:
+    <P>
+        <form action="index.php?step_name=restore" method="post">
+
+    <table border=1 cellpadding=1 cellspacing=1>
+            <tr bgcolor="darkgrey">
+            <td>Filename
+            <td>File Size
+            <td>Action
+<?php
+    $i=0;
+    foreach($files as $file)
+    {
+        $color=((($i++)%2)==0)?'white':'lightgrey';
+?>
+        <tr bgcolor="<?php echo $color;?>">
+            <td><?php echo $file;?>
+            <td><?php echo filesize($dir . '/'.$file);?>
+            <td><input type="submit" name="RestoreSelect" value="restore">
+<?php
+    }
+?>
+    </table>
+    <input type="hidden" name="file" value="<?php echo $file; ?>" />
+    </form>
+    <?php
+    }
+else if ($dir != '') {
 ?>
 <P>
 <P>
@@ -46,7 +79,7 @@ You can continue to do the restore manually using the following command(s):
         </div>
     <?php } ?>
             <?php
-if ($dir != '')
+if (($dir != '') && ($selected))
 {
 ?>
 Press <i>Next</i> to attempt the command(s) above.
@@ -59,6 +92,8 @@ Press <i>Next</i> to attempt the command(s) above.
 
 
     <input type="submit" name="Previous" value="Back" class="button_previous">
+    <?php if (($dir != '') && ($selected)) { ?>
     <input type="submit" name="Next" value="Next" class="button_next">
+    <?php } ?>
     </div>
 </form>

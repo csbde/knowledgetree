@@ -40,27 +40,16 @@
 * @version Version 0.1
 */
 
+require '../../config/dmsDefaults.php';
+
 class upgradeComplete extends Step {
 
-    /**
-	* Reference to Database object
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var object
-	*/	
-    private $_dbhandler = null;
-
-    private $privileges_check = 'tick';
-    private $database_check = 'tick';
     protected $silent = true;
     
     protected $util = null;
     
     public function __construct() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
-        $this->_dbhandler = new dbUtil();
-    	$this->util = new UpgradeUtil();
     }
 
     function doStep() {
@@ -78,5 +67,6 @@ class upgradeComplete extends Step {
      */
     private function storeSilent() {
     }
+
 }
 ?>

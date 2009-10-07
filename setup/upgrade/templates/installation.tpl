@@ -20,6 +20,3 @@
     <input type="submit" name="Restore" value="Restore Database" class="button_next"/>
     <input type="submit" name="Next" value="Backup Now" class="button_next"/>
 </form>
-<script type="text/javascript">
-	$("#location").focus();
-</script>

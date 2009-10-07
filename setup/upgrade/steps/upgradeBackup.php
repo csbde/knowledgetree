@@ -75,7 +75,21 @@ class upgradeBackup extends Step {
             if ($this->doRun()) {
                 return 'next';
             }
-        } else if($this->previous()) {
+        }
+        else if ($this->confirm()) {
+            if ($this->doRun('confirm')) {
+                return 'confirm';
+            }
+        }
+        else if ($this->backupNow()) {
+            if ($this->doRun('backupNow')) {
+                return 'next';
+            }
+            else {
+                return 'error';
+            }
+        }
+        else if($this->previous()) {
             return 'previous';
         }
         
@@ -83,8 +97,22 @@ class upgradeBackup extends Step {
         return 'landing';
     }
     
-    function doRun() {
-        $this->backupConfirm();
+    function backupNow()
+    {
+        return isset($_POST['BackupNow']);
+    }
+    
+    function doRun($action = null) {
+        $this->temp_variables['action'] = $action;
+        
+        if (is_null($action) || ($action == 'confirm')) {
+            $this->temp_variables['title'] = 'Confirm Backup';
+            $this->backupConfirm();
+        }
+        else {
+            $this->temp_variables['title'] = 'Backup In Progress';
+            $this->backup();
+        }
         $this->storeSilent();// Set silent mode variables
         
         return true;
@@ -97,16 +125,30 @@ class upgradeBackup extends Step {
     private function storeSilent() {
     }
     
+    // these belong in a shared lib
+    function set_state($value)
+{
+    $_SESSION['state'] = $value;
+}
+function check_state($value, $state='Home')
+{
+    if ($_SESSION['state'] != $value)
+    {
+        ?>
+            <script type="text/javascript">
+            document.location="?go=<?php echo $state;?>";
+            </script>
+            <?php
+            exit;
+    }
+}
+    
     private function backup() {
-        check_state(1);
-        set_state(2);
-        title('Backup In Progress');
+//        $this->check_state(1);
+//        $this->set_state(2);
         $targetfile=$_SESSION['backupFile'];
-        $stmt=create_backup_stmt($targetfile);
-        $dir=$stmt['dir'];
-    
-    
-    
+        $stmt = $this->create_backup_stmt($targetfile);
+        $dir = $stmt['dir'];
     
         if (is_file($dir . '/mysqladmin') || is_file($dir . '/mysqladmin.exe'))
         {
@@ -130,27 +172,16 @@ class upgradeBackup extends Step {
             $dir=$this->resolveTempDir();
             $_SESSION['backupFile'] =   $stmt['target'];
     
-                if (OS_UNIX)
-                {
-                    chmod($stmt['target'],0600);
-                }
-    
-            if (is_file($stmt['target']) && filesize($stmt['target']) > 0)
-            {
-                $_SESSION['backupStatus'] = true;
-    
+            if (OS_UNIX) {
+                chmod($stmt['target'],0600);
             }
-            else
-            {
+    
+            if (is_file($stmt['target']) && filesize($stmt['target']) > 0) {
+                $_SESSION['backupStatus'] = true;
+            }
+            else {
                 $_SESSION['backupStatus'] = false;
             }
-    ?>
-                <script type="text/javascript">
-                document.location="?go=BackupDone";
-                </script>
-    <?php
-    
-    
         }
         else
         {
@@ -161,14 +192,11 @@ class upgradeBackup extends Step {
     &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')">
     <?php
         }
-    
-    
-    
     }
     
     private function backupDone() {
-        check_state(2);
-        set_state(3);
+//        $this->check_state(2);
+//        $this->set_state(3);
         title('Backup Status');
         $status = $_SESSION['backupStatus'];
         $filename=$_SESSION['backupFile'];
@@ -334,20 +362,16 @@ function resolveMysqlDir()
 
 function resolveTempDir()
 {
-
-    if (OS_UNIX)
-    {
+    if (OS_UNIX) {
         $dir='/tmp/kt-db-backup';
     }
-    else
-    {
+    else {
         $dir='c:/kt-db-backup';
     }
     $oKTConfig =& KTConfig::getSingleton();
     $dir = $oKTConfig->get('backup/backupDirectory',$dir);
 
-    if (!is_dir($dir))
-    {
+    if (!is_dir($dir)) {
             mkdir($dir);
     }
     return $dir;
