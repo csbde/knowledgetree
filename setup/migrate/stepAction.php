@@ -246,7 +246,8 @@ class stepAction {
 	* @return object Step
 	*/
     public function createStep() {
-		$step_class = $this->makeCamelCase($this->stepName);
+		$step_class = "migrate".$this->makeCamelCase($this->stepName);
+		
 		return new $step_class();
     }
 

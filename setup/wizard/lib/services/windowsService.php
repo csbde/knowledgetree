@@ -73,7 +73,13 @@ class windowsService extends Service {
 	function setSystemDirs() {
 		$conf = $this->util->getDataFromSession('configuration');
 		$this->outputDir = $conf['paths']['logDirectory']['path'].DS;
+		if($this->outputDir == '') {
+			$this->outputDir = SYS_OUT_DIR;
+		}
 		$this->varDir = $conf['paths']['varDirectory']['path'].DS;
+		if($this->varDir == '') {
+			$this->varDir = SYS_VAR_DIR;
+		}
 	}
 	
 	/**
@@ -136,7 +142,7 @@ class windowsService extends Service {
  	*/
 	public function restart() {
 		$response = $this->stop();
-		sleep(10);
+		sleep(1);
 		$this->start();
 	}
 	
@@ -151,9 +157,11 @@ class windowsService extends Service {
 	public function uninstall() {
 		$status = $this->status();
 		if ($status != '') {
+			$this->stop();
+			sleep(1);
 			$cmd = "sc delete {$this->name}";
 			$response = $this->util->pexec($cmd);
-			sleep(10);
+			sleep(1);
 			return $response;
 		}
 		return $status;

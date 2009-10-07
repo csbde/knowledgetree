@@ -130,7 +130,7 @@ class windowsLucene extends windowsService {
 	* @param none
 	* @return string
  	*/	
-	public $name = "KTLuceneTest";
+	public $name = "KTLucene";
 	
 	/**
 	* Load defaults needed by service
@@ -141,7 +141,6 @@ class windowsLucene extends windowsService {
 	* @return void
  	*/
 	public function load() {
-
 		$this->setJavaBin();
 		$this->setLuceneDIR(SYSTEM_DIR."bin".DS."luceneserver");
 		$this->setLuceneExe("KTLuceneService.exe");

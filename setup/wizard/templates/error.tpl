@@ -20,8 +20,7 @@
 		    <div id="wrapper">
 		        <div id="container">
 		        	<div id="sidebar">
-		            	<span class='current'>Welcome</span><br /><span class='inactive'>License Agreement</span><br /><span class='inactive'>PHP Dependencies</span><br /><span class='inactive'>System Configuration</span><br /><span class='inactive'>Service Dependency</span><br /><span class='inactive'>Database Configuration</span><br /><span class='inactive'>Registration</span><br /><span class='inactive'>Install</span><br /><span class='inactive'>Complete</span><br />		        	</div>
-
+		            	<span id="welcome" class="current">Welcome</span><br><span id="license" class="inactive">License Agreement</span><br><span id="installtype" class="inactive">Install Type</span><br><span id="dependencies" class="inactive">PHP Dependencies</span><br><span id="configuration" class="inactive">System Configuration</span><br><span id="services" class="inactive">Service Dependency</span><br><span id="database" class="inactive">Database Configuration</span><br><span id="registration" class="inactive">Registration</span><br><span id="install" class="inactive">Install</span><br><span id="complete" class="inactive">Complete</span><br></div>
 		            <div id="content">
 		            	<div id="content_container">
 		                	<form action="index.php?step_name=welcome" method="post">

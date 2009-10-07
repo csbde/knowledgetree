@@ -109,18 +109,15 @@ class dbUtil {
 		$this->dbuname = $duname;
 		$this->dbpassword = $dpassword;
 		$this->dbconnection = @mysql_connect($dhost, $duname, $dpassword);
-		if($dbname != '') {
-			$this->setDb($dbname);
-			$this->useDb($dbname);
+		if(!$this->dbconnection) {
+			$this->error[] = @mysql_error();
 		}
-  		if($this->dbconnection)
-  			return $this->dbconnection;
-  		else {
-  			$this->error[] = @mysql_error($this->dbconnection);
-  			return false;
-  		}		
+		$this->dbname = $dbname;
 	}
 
+	public function getDatabaseLink() {
+		return $this->dbconnection;
+	}
 	/**
 	* Choose a database to use
 	*
@@ -128,11 +125,7 @@ class dbUtil {
 	* @access public
 	* @return boolean
 	*/
-	public function useDb($dbname = '') {
-		if($dbname != '') {
-			$this->setDb($dbname);
-		}
-		
+	public function useDb() {
 		if(@mysql_select_db($this->dbname, $this->dbconnection))
 			return true;
 		else {
@@ -153,7 +146,8 @@ class dbUtil {
     * @return object The result of the query.
     */
     public function query($query) {
-      $result = @mysql_query($query, $this->dbconnection);
+    	$this->useDb();
+      $result = mysql_query($query, $this->dbconnection);
 		if($result) {
 			return $result;
 		} else {
@@ -170,6 +164,7 @@ class dbUtil {
     * @return boolean
     */
     public function execute($query) {
+    	$this->useDb();
       $result = @mysql_query($query, $this->dbconnection);
 		if($result) {
 			return true;
@@ -233,6 +228,10 @@ class dbUtil {
      */
     public function getErrors() {
     	return $this->error;
+    }
+    
+    public function clearErrors() {
+    	return $this->error = array();
     }
     
     /**

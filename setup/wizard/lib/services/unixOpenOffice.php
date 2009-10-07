@@ -56,27 +56,18 @@ class unixOpenOffice extends unixService {
 	private $bin;
 	// office executable
 	private $soffice;
-	// office log file
-	private $log;
-	private $options;
-	private $office;
 	
-	public function __construct() {
-		$this->name = "KTOpenOffice";
-		$this->util = new InstallUtil();
-		$this->office = 'openoffice';
-	}
+	private $options;
+	public $name = "KTOpenOffice";
 	
 	public function load() {
-
+		$this->util = new InstallUtil();
 		$this->setPort("8100");
 		$this->setHost("localhost");
-		$this->setLog("openoffice.log");
-		$this->setBin($this->soffice = $this->util->getOpenOffice());
+		$this->soffice = $this->util->getOpenOffice();
+		$this->setBin($this->soffice);
 		$this->setOption();
 	}
-	
-
 	
 	private function setPort($port = "8100") {
 		$this->port = $port;
@@ -92,14 +83,6 @@ class unixOpenOffice extends unixService {
 	
 	public function getHost() {
 		return $this->host;
-	}
-	
-	private function setLog($log = "openoffice.log") {
-		$this->log = $log;
-	}
-	
-	public function getLog() {
-		return $this->log;
 	}
 	
 	private function setBin($bin = "soffice") {
@@ -127,26 +110,22 @@ class unixOpenOffice extends unixService {
     	}
     }
     
-    private function setOfficeName($office) {
-    	$this->office = $office;
-    }
-    
-    public function getOfficeName() {
-    	return $this->office;
-    }
-    
-    public function status() {
+    public function status($updrade = false) {
     	sleep(1);
-    	$cmd = "ps ax | grep ".$this->getOfficeName();
+    	if($updrade) {
+    		$cmd = "ps ax | grep soffice";
+    	} else {
+    		$cmd = "netstat -npa | grep ".$this->getPort();
+    	}
     	$response = $this->util->pexec($cmd);
     	if(is_array($response['out'])) {
-    		if(count($response['out']) > 1) {
-    			foreach ($response['out'] as $r) {
-    				preg_match('/grep/', $r, $matches); // Ignore grep
-    				if(!$matches) {
+    		if(count($response['out']) > 0) {
+    			preg_match('/8100/', $response['out'][0], $matches); // Ignore grep
+				if($matches) {
+    				if($matches[0] == '8100') {
     					return 'STARTED';
     				}
-    			}
+				}
     		} else {
     			return '';
     		}
@@ -158,11 +137,12 @@ class unixOpenOffice extends unixService {
     public function start() {
     	$state = $this->status();
     	if($state != 'STARTED') {
-			$cmd = "nohup {$this->getBin()} ".$this->getOption()." > ".$this->outputDir."{$this->getLog()} 2>&1 & echo $!";
+			$cmd = "nohup {$this->getBin()} ".$this->getOption()." > ".$this->outputDir."openoffice.log 2>&1 & echo $!";
 	    	if(DEBUG) {
 	    		echo "Command : $cmd<br/>";
 	    		return ;
 	    	}
+	    	$cmd .= "\"{$this->util->getJava()}\" -cp \"".SYS_DIR.";\" openOffice \"";
 	    	$response = $this->util->pexec($cmd);
 	    	
 	    	return $response;
@@ -178,13 +158,25 @@ class unixOpenOffice extends unixService {
     }
     
     function stop() {
-    	$cmd = "pkill -f ".$this->office;
+    	$cmd = "pkill -f ".$this->soffice;
     	$response = $this->util->pexec($cmd);
 		return $response;
 	}
 	
 	function uninstall() {
 		$this->stop();
+	}
+	
+	public function getName() {
+		return $this->name;
+	}
+	
+	public function unixGetStopMsg($installDir) {
+		return "Execute from terminal : $installDir/dmsctl.sh stop soffice";
+	}
+	
+	public function windowsGetStopMsg($installDir) {
+		return "Execute from terminal : $installDir/dmsctl.sh stop soffice";
 	}
 }
 ?>

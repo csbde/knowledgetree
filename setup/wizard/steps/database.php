@@ -343,11 +343,11 @@ class database extends Step
     		return false;
     	}
     	if($this->dport == '')  {
-    		$con = $this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
+    		$this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
     	} else {
-    		$con = $this->_dbhandler->load($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
+    		$this->_dbhandler->load($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
     	}
-        if (!$con) {
+        if (!$this->_dbhandler->getDatabaseLink()) {
             $this->error['con'] = "Could not connect to the database, please check username and password";
             return false;
         } else {
@@ -578,13 +578,20 @@ class database extends Step
 	*/
     private function mysql() {
         $con = $this->connectMysql();
-        if($con) {
-            if(!$this->createDB($con)) {
+        // check for migrate.lock file which indicates this is a migration and not a clean install
+        if (file_exists('migrate.lock')) {
+            if(!$this->migrateDB($con)) {
+                $this->error['con'] = "Could not Create Database: ";
+                return false;
+            }
+        }
+        else {
+            if(!$this->createDB()) {
             	$this->error['con'] = "Could not Create Database: ";
             	return false;
             }
-            $this->closeMysql($con);
         }
+        $this->closeMysql();
     }
 
 	/**
@@ -596,14 +603,40 @@ class database extends Step
 	* @return object mysql connection
 	*/
     private function connectMysql() {
-		$con = $this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
-        if (!$con) {
-            $this->error['con'] = "Could not connect: ";
-
-            return false;
+		$this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
+    }
+    
+    /**
+    * Helper
+    *
+    * @author KnowledgeTree Team
+    * @params object mysql connection object $con
+    * @access private
+    * @return object mysql connection
+    */
+    private function migrateDB($con) {
+        if($this->usedb()) { // attempt to use the db
+            if($this->dropdb()) { // attempt to drop the db
+                if(!$this->create()) { // attempt to create the db
+                    $this->error['con'] = "Could not create database: ";
+                    return false;// cannot overwrite database
+                }
+            } else {
+                $this->error['con'] = "Could not drop database: ";
+                return false;// cannot overwrite database
+            }
+        } else {
+            if(!$this->create()) { // attempt to create the db
+                $this->error['con'] = "Could not create database: ";
+                return false;// cannot overwrite database
+            }
+        }
+        
+        if(!$this->createDmsUser()) { // Create dms users
+            
         }
 
-        return $con;
+        return true;
     }
 
 	/**
@@ -614,39 +647,32 @@ class database extends Step
 	* @access private
 	* @return object mysql connection
 	*/
-    private function createDB($con) {
-		if($this->usedb($con)) { // attempt to use the db
-		    if($this->dropdb($con)) { // attempt to drop the db
-		        if(!$this->create($con)) { // attempt to create the db
+    private function createDB() {
+		if($this->usedb()) { // attempt to use the db
+		    if($this->dropdb()) { // attempt to drop the db
+		        if(!$this->create()) { // attempt to create the db
 					$this->error['con'] = "Could not create database: ";
-					return false;// cannot overwrite database
+//					return false;// cannot overwrite database
 		        }
 		    } else {
 		    	$this->error['con'] = "Could not drop database: ";
-		    	return false;// cannot overwrite database
+//		    	return false;// cannot overwrite database
 		    }
 		} else {
-		    if(!$this->create($con)) { // attempt to create the db
+		    if(!$this->create()) { // attempt to create the db
 				$this->error['con'] = "Could not create database: ";
 				return false;// cannot overwrite database
 		    }
 		}
-		if(!$this->createDmsUser($con)) { // Create dms users
-			
+		$this->_dbhandler->clearErrors();
+		if(!$this->createDmsUser()) { // Create dms users
+			$this->error['con'] = "Could not create database users ";
 		}
-/*
-		if(!$this->loadUpgraded($con)) {
-			$this->error['con'] = "Could not load upgraded database";
-		}
-*/
-		if(!$this->createSchema($con)) {
+		if(!$this->createSchema()) {
 			$this->error['con'] = "Could not create schema ";
 		}
-		if(!$this->populateSchema($con)) {
+		if(!$this->populateSchema()) {
 			$this->error['con'] = "Could not populate schema ";
-		}
-		if(!$this->applyUpgrades($con)) {
-			$this->error['con'] = "Could not apply updates ";
 		}
 
 		return true;
@@ -660,9 +686,9 @@ class database extends Step
 	* @access private
 	* @return boolean
 	*/
-    private function create($con) {
+    private function create() {
         $sql = "CREATE DATABASE {$this->dname}";
-        if ($this->_dbhandler->query($sql, $con)) {
+        if ($this->_dbhandler->query($sql)) {
 			
             return true;
         }
@@ -678,8 +704,8 @@ class database extends Step
 	* @access private
 	* @return boolean
 	*/
-    private function usedb($con) {
-		if($this->_dbhandler->useDb($this->dname)) {
+    private function usedb() {
+		if($this->_dbhandler->useDb()) {
             return true;
         } else {
             $this->error['con'] = "Error using database: {$this->dname}";
@@ -695,7 +721,7 @@ class database extends Step
 	* @params mysql connection object $con
 	* @return boolean
 	*/
-    private function dropdb($con) {
+    private function dropdb() {
         if($this->ddrop) {
             $sql = "DROP DATABASE {$this->dname};";
 			if(!$this->_dbhandler->query($sql)) {
@@ -717,7 +743,7 @@ class database extends Step
 	* @params none
 	* @return boolean
 	*/
-    private function createDmsUser($con) {
+    private function createDmsUser() {
     	if($this->dmsname == '' || $this->dmspassword == '') {
     		if($this->dpassword == '') {
     			$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_INSTALL_DIR."user.sql\"";
@@ -739,16 +765,6 @@ class database extends Step
         
     }
     
-    private function loadUpgraded($con) {
-    	if($this->dpassword == '') {
-    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_INSTALL_DIR."dms.sql\"";
-    	} else {
-        	$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_INSTALL_DIR."dms.sql\"";
-    	}
-    	$response = $this->_util->pexec($command);
-    	return $response;
-    }
-    
 	/**
 	* Create schema
 	*
@@ -757,15 +773,25 @@ class database extends Step
 	* @params none
 	* @return boolean
 	*/
-    private function createSchema($con) {
-    	if($this->dpassword == '') {
-    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_INSTALL_DIR."structure.sql\"";
-    	} else {
-        	$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_INSTALL_DIR."structure.sql\"";
-    	}
-    	$response = $this->_util->pexec($command);
-    	return $response;
+    private function createSchema() {
+    	return $this->parse_mysql_dump(SQL_INSTALL_DIR."structure.sql");
     }
+
+	private function parse_mysql_dump($url) {
+	    $handle = @fopen($url, "r");
+	    $query = "";
+		if ($handle) {
+			while (!feof($handle)) {
+    			$query.= fgets($handle, 4096);
+    				if (substr(rtrim($query), -1) == ';') {
+     					$this->_dbhandler->execute($query);
+     					$query = '';
+    				}
+			}
+			fclose($handle);
+		}
+		return true;
+	}
 
 	/**
 	* Populate database
@@ -775,29 +801,10 @@ class database extends Step
 	* @params none
 	* @return boolean
 	*/
-    private function populateSchema($con) {
-    	if($this->dpassword == '') {
-    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_INSTALL_DIR."data.sql\"";
-    	} else {
-    		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_INSTALL_DIR."data.sql\"";
-    	}
-    	$response = $this->_util->pexec($command);
-    	return $response;
+    private function populateSchema() {
+    	return $this->parse_mysql_dump(SQL_INSTALL_DIR."data.sql");
     }
 
-	/**
-	* Ammend any known database upgrades
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @params none
-	* @return boolean
-	*/
-    private function applyUpgrades($con) {
-    	// Database upgrade to version 3.6.1: Search ranking
-    	return true;
-    }
-    
 	/**
 	* Close connection if it exists
 	*
@@ -806,7 +813,7 @@ class database extends Step
 	* @params mysql connection object $con
 	* @return void
 	*/
-    private function closeMysql($con) {
+    private function closeMysql() {
         try {
             $this->_dbhandler->close();
         } catch (Exeption $e) {
@@ -859,8 +866,8 @@ class database extends Step
     	$this->dpassword = 'root';
     	$this->dname = 'dms_install';
     	$this->dbbinary = 'mysql';
-    	$con = $this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
-    	$this->createSchema($con);
+    	$this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
+    	$this->createSchema();
     	echo 'Schema loaded<br>';
     }
 }

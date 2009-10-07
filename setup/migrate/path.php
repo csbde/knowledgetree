@@ -67,21 +67,24 @@
 		$sys .= $v.DS;
 	}
 	// Define paths to wizard
-    define('WIZARD_DIR', $wizard.DS);
-    define('WIZARD_LIB', WIZARD_DIR."lib".DS);
+    define('MIGRATE_DIR', $wizard.DS);
+    define('WIZARD_LIB', MIGRATE_DIR."lib".DS);
     define('SERVICE_LIB', WIZARD_LIB."services".DS);
-    define('SQL_DIR', WIZARD_DIR."sql".DS);
+    define('SQL_DIR', MIGRATE_DIR."sql".DS);
     define('SQL_UPGRADE_DIR', SQL_DIR."upgrades".DS);
-    define('CONF_DIR', WIZARD_DIR."config".DS);
-    define('RES_DIR', WIZARD_DIR."resources".DS);
-    define('STEP_DIR', WIZARD_DIR."steps".DS);
-    define('TEMP_DIR', WIZARD_DIR."templates".DS);
-    define('SHELL_DIR', WIZARD_DIR."shells".DS);
-    define('OUTPUT_DIR', WIZARD_DIR."output".DS);
+    define('CONF_DIR', MIGRATE_DIR."config".DS);
+    define('RES_DIR', MIGRATE_DIR."resources".DS);
+    define('STEP_DIR', MIGRATE_DIR."steps".DS);
+    define('TEMP_DIR', MIGRATE_DIR."templates".DS);
+    define('SHELL_DIR', MIGRATE_DIR."shells".DS);
+    define('OUTPUT_DIR', MIGRATE_DIR."output".DS);
     // Define paths to system webroot
 	define('SYSTEM_DIR', $sys);
+	define('SYS_VAR_DIR', SYSTEM_DIR."var".DS);
     define('SYS_BIN_DIR', SYSTEM_DIR."bin".DS);
-    define('SYS_LOG_DIR', SYSTEM_DIR."var".DS."log".DS);
+    define('SYS_LOG_DIR', SYS_VAR_DIR."log".DS);
+    define('SYS_OUT_DIR', SYS_VAR_DIR);
+    define('VAR_BIN_DIR', SYS_VAR_DIR."bin".DS);
     // Define paths to system
     array_pop($xdir);
 	$asys = '';

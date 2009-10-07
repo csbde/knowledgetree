@@ -101,7 +101,7 @@ class KTCoreReasonWidget extends KTWidget {
         // FIXME make required *either* per-action property
         // FIXME or a global pref.
         $global_required_default = true;
-        $this->bRequired = KTUtil::arrayGet($aOptions, 'required', $global_required_default, false);
+        $this->bRequired = (KTUtil::arrayGet($aOptions, 'required', $global_required_default, false) == true);
 
         $this->aOptions['cols'] = KTUtil::arrayGet($aOptions, 'cols', 60);
         $this->aOptions['rows'] = KTUtil::arrayGet($aOptions, 'rows', 3);
@@ -942,7 +942,7 @@ class KTCoreTextAreaWidget extends KTWidget {
         // FIXME make required *either* per-action property
         // FIXME or a global pref.
         $global_required_default = true;
-        $this->bRequired = KTUtil::arrayGet($aOptions, 'required', $global_required_default, false);
+        $this->bRequired = (KTUtil::arrayGet($aOptions, 'required', $global_required_default, false) == true);
 
         $this->aOptions['cols'] = KTUtil::arrayGet($aOptions, 'cols', 60);
         $this->aOptions['rows'] = KTUtil::arrayGet($aOptions, 'rows', 3);
@@ -953,4 +953,22 @@ class KTCoreTextAreaWidget extends KTWidget {
 class KTCoreDateWidget extends KTWidget {
     var $sNamespace = 'ktcore.widgets.date';
     var $sTemplate = 'ktcore/forms/widgets/date';
+
+    function getValidators() {
+        if (!$this->bAutoValidate) {
+            return null;
+        }
+        $validators = parent::getValidators(); // required, etc.
+
+        $oVF =& KTValidatorFactory::getSingleton();
+
+        $val = array();
+        if(!empty($validators) && !PEAR::isError($validators)) $val[] = $validators;
+        $val[] = $oVF->get('ktcore.validators.date', array(
+            'test' => $this->sOrigname,
+            'basename' => $this->sBasename
+        ));
+
+        return $val;
+    }
 }

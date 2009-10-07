@@ -39,5 +39,6 @@
 * @package Installer
 * @version Version 0.1
 */
+$_GET['type'] = 'install';
 require_once("installWizard.php");
 ?>

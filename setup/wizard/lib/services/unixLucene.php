@@ -42,7 +42,6 @@
 
 class unixLucene extends unixService {
 	public $util;
-
 	private $shutdownScript;
 	private $indexerDir;
 	private $lucenePidFile;
@@ -51,14 +50,11 @@ class unixLucene extends unixService {
 	private $luceneSourceLoc;
 	private $javaXms;
 	private $javaXmx;
-	
-	public function __construct() {
-		$this->name = "KTLuceneTest";
-		$this->setLuceneSource("ktlucene.jar");
-		$this->util = new InstallUtil();
-	}
+	public $name = "KTLucene";
 	
 	public function load() {
+		$this->util = new InstallUtil();
+		$this->setLuceneSource("ktlucene.jar");
 		$this->setLuceneDir(SYSTEM_DIR."bin".DS."luceneserver".DS);
 		$this->setIndexerDir(SYSTEM_DIR."search2".DS."indexing".DS."bin".DS);
 		$this->setLucenePidFile("lucene_test.pid");
@@ -147,7 +143,7 @@ class unixLucene extends unixService {
 		}
 
     }
-
+  
     public function install() {
     	$status = $this->status();
     	if($status == '') {
@@ -183,8 +179,10 @@ class unixLucene extends unixService {
     public function start() {
     	$state = $this->status();
     	if($state != 'STARTED') {
+    		$logFile = $this->outputDir."lucene.log";
+    		@unlink($logFile);
 	    	$cmd = "cd ".$this->getLuceneDir()."; ";
-	    	$cmd .= "nohup java  {$this->getJavaXmx()} {$this->getJavaXmx()} -jar ".$this->getLuceneSource()." > ".$this->outputDir."lucene.log 2>&1 & echo $!";
+	    	$cmd .= "nohup java  {$this->getJavaXmx()} {$this->getJavaXmx()} -jar ".$this->getLuceneSource()." > ".$logFile." 2>&1 & echo $!";
 	    	if(DEBUG) {
 	    		echo "Command : $cmd<br/>";
 	    		return ;
@@ -203,6 +201,16 @@ class unixLucene extends unixService {
     	return false;
     }
     
-
+	public function getName() {
+		return $this->name;
+	}
+	
+	public function unixGetStopMsg($installDir) {
+		return "Execute from terminal : $installDir/dmsctl.sh stop lucene";
+	}
+	
+	public function windowsGetStopMsg($installDir) {
+		return "Execute from terminal : $installDir/dmsctl.sh stop lucene";
+	}
 }
 ?>

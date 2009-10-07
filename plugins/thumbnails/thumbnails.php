@@ -167,14 +167,14 @@ class thumbnailGenerator extends BaseProcessor
 			@unlink($thumbnailfile);
 		}
         // do generation
-        if (extension_loaded('imagick')) {
+       // if (extension_loaded('imagick')) {
             $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
         	$result = shell_exec("{$pathConvert} -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile");
         	return true;
-        }else{
-        	$default->log->debug('Thumbnail Generator Plugin: Imagemagick not installed, cannot generate a thumbnail');
-            return false;
-        }
+        //}else{
+        	//$default->log->debug('Thumbnail Generator Plugin: Imagemagick not installed, cannot generate a thumbnail');
+           // return false;
+        //}
 
     }
 }

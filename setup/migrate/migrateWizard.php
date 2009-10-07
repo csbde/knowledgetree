@@ -39,7 +39,7 @@
 * @package Migrater
 * @version Version 0.1
 */
-include("path.php"); // Paths
+include("../wizard/path.php"); // Paths
 
 /**
  * Auto loader to bind migrater package

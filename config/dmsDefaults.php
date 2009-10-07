@@ -38,6 +38,9 @@
  *
  */
 
+// stuff in the new installer section database upgrade fails without this
+global $default;
+
 if (defined('DMS_DEFAULTS_INCLUDED'))
 {
 	return;
@@ -661,6 +664,5 @@ if (!extension_loaded('mbstring'))
 
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 $GLOBALS['main'] =new KTPage();
-
 
 ?>

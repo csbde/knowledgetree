@@ -52,12 +52,12 @@ class KTSmartyTemplate extends KTTemplate {
         $sVarDirectory = $oConfig->get('urls/varDirectory');
         $smarty->compile_dir = $oConfig->get('urls/tmpDirectory');
 
-        foreach (array($sVarDirectory . '/tmp', '/tmp') as $sPath) {
-            if (is_writeable($sPath)) {
-                $smarty->compile_dir = $sPath;
-                break;
-            }
-        }
+//        foreach (array($sVarDirectory . '/tmp', '/tmp') as $sPath) {
+//            if (is_writeable($sPath)) {
+//                $smarty->compile_dir = $sPath;
+//                break;
+//            }
+//        }
         if (is_array($aDict)) {
             $iLen = count($aDict);
             $aKeys = array_keys($aDict);

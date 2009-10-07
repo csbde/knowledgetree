@@ -42,9 +42,7 @@
 
 class unixAgent extends unixService {
 
-	public function __construct() {
-		$this->name = "KTAgentTest";
-	}
+	public $name = "KTAgent";
 	
 
 }

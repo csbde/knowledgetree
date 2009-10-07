@@ -28,3 +28,6 @@
     <input type="button" name="Previous" value="previous" class="button_previous"/>
 	<input type="submit" name="Next" value="next" class="button_next"/>
 </form>
+<script type="text/javascript">
+	$("#duname").focus();
+</script>
