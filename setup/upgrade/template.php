@@ -1,6 +1,6 @@
 <?php
 /**
-* Upgrader Index.
+* Template Engine.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -39,5 +39,73 @@
 * @package Upgrader
 * @version Version 0.1
 */
-require_once("upgradeWizard.php");
+
+class Template 
+{
+	/**
+	* Hold all the variables that are going to be imported into the template file
+	* @var array
+	*/
+    var $template_vars = Array(); 
+
+	
+    /**
+	* Constructor
+	* 
+	* @author KnowledgeTree Team
+	* @param string $file the file name you want to load
+	* @access public
+	* @return void
+	*/
+    public function Template($file = null) 
+	{
+        $this->file = $file;
+    }
+
+	
+	/**
+	* Set a variable into the template
+	* If the variable is a template object, go and call its template::fetch() method
+	* 
+	* @author KnowledgeTree Team
+	* @param string $name The name for this value in the template file
+	* @param string $value The value to show in the template file
+	* @access public
+	* @return void
+	*/
+    public function set($name, $value) 
+	{
+		//if(is_a($value, 'Template')) {
+		$class = 'Template';
+		$isA = $value instanceof $class;
+		if($isA) {
+			$value = $value->fetch();	
+		}
+		$this->template_vars[$name] = $value;        
+    }
+
+    
+	/**
+	* Create the template and import its variables
+	* 
+	* @author KnowledgeTree Team
+	* @param string $file The file to use as the template
+	* @access public
+	* @return string The parsed template
+	*/
+    public function fetch($file = null) 
+	{
+        if (is_null($file)) $file = $this->file;
+		if (!file_exists($file)) {
+			trigger_error('Template file '.$file.' does not exist ', E_USER_ERROR);
+		}
+        extract($this->template_vars); // Extract the vars to local namespace
+        ob_start();
+		include($file);
+        $contents = ob_get_contents(); 
+        ob_end_clean();              
+        return $contents;
+    }
+	
+}
 ?>

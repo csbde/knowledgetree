@@ -1,11 +1,11 @@
 <?php
 /**
-* Upgrader Index.
+* Complete Step Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
-* Portions copyright The Jam Warehouse Software (Pty) Limited
+* Copyright(C) 2008,2009 KnowledgeTree Inc.
+* Portions copyright The Jam Warehouse Software(Pty) Limited
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -39,5 +39,44 @@
 * @package Upgrader
 * @version Version 0.1
 */
-require_once("upgradeWizard.php");
+
+class upgradeComplete extends Step {
+
+    /**
+	* Reference to Database object
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @var object
+	*/	
+    private $_dbhandler = null;
+
+    private $privileges_check = 'tick';
+    private $database_check = 'tick';
+    protected $silent = true;
+    
+    protected $util = null;
+    
+    public function __construct() {
+    	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
+        $this->_dbhandler = new dbUtil();
+    	$this->util = new UpgradeUtil();
+    }
+
+    function doStep() {
+        $this->doRun();
+    	return 'landing';
+    }
+    
+    function doRun() {
+        $this->storeSilent();// Set silent mode variables
+    }
+    
+    /**
+     * Set all silent mode varibles
+     *
+     */
+    private function storeSilent() {
+    }
+}
 ?>

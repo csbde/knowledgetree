@@ -1,11 +1,11 @@
 <?php
 /**
-* Upgrader Index.
+* Error Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
-* Portions copyright The Jam Warehouse Software (Pty) Limited
+* Copyright(C) 2008,2009 KnowledgeTree Inc.
+* Portions copyright The Jam Warehouse Software(Pty) Limited
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -36,8 +36,22 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Upgrader
+* @package Upgrade
 * @version Version 0.1
 */
-require_once("upgradeWizard.php");
+class UpgradeErrors extends Step {
+	public $error = array();
+	
+    function doStep() {
+    	return 'landing';
+    }
+    
+    function getErrors() {
+    	return $this->error;
+    }
+	
+    function getName() {
+    	return 'error';
+    }
+}
 ?>

@@ -1,11 +1,11 @@
 <?php
 /**
-* Upgrader Index.
+* Upgrade Step Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
-* Portions copyright The Jam Warehouse Software (Pty) Limited
+* Copyright(C) 2008,2009 KnowledgeTree Inc.
+* Portions copyright The Jam Warehouse Software(Pty) Limited
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -36,8 +36,33 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Upgrader
+* @package Upgrade
 * @version Version 0.1
 */
-require_once("upgradeWizard.php");
+
+class UpgradeInstallation extends step 
+{
+	/**
+	* Flag if step needs to run silently
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $silent = false;
+    
+    function __construct() {
+        $this->temp_variables = array("step_name"=>"welcome");
+    }
+
+    function doStep() {
+        parent::doStep();
+        if($this->next()) {
+            return 'next'; // Just a welcome, so return "next" action
+        }
+        
+        return 'landing';
+    }
+    
+}
 ?>
