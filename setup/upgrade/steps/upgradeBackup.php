@@ -110,8 +110,10 @@ class upgradeBackup extends Step {
             $this->backupConfirm();
         }
         else {
-            $this->temp_variables['title'] = 'Backup In Progress';
+            $this->temp_variables['title'] = 'Backup Created';
             $this->backup();
+            // TODO error checking (done in backupDone at the moment)
+            $this->backupDone();
         }
         $this->storeSilent();// Set silent mode variables
         
@@ -125,6 +127,7 @@ class upgradeBackup extends Step {
     private function storeSilent() {
     }
     
+    /*
     // these belong in a shared lib
     function set_state($value)
 {
@@ -142,34 +145,25 @@ function check_state($value, $state='Home')
             exit;
     }
 }
+*/
     
     private function backup() {
 //        $this->check_state(1);
 //        $this->set_state(2);
-        $targetfile=$_SESSION['backupFile'];
+        $targetfile = $_SESSION['backupFile'];
         $stmt = $this->create_backup_stmt($targetfile);
         $dir = $stmt['dir'];
     
         if (is_file($dir . '/mysqladmin') || is_file($dir . '/mysqladmin.exe'))
         {
-            ob_flush();
-            flush();
-    ?>
-            The backup is now underway. Please wait till it completes.
-    <?php
-    
-            ob_flush();
-            flush();
             $curdir=getcwd();
             chdir($dir);
-            ob_flush();
-            flush();
-    
+            
             $handle = popen($stmt['cmd'], 'r');
             $read = fread($handle, 10240);
             pclose($handle);
             $_SESSION['backupOutput']=$read;
-            $dir=$this->resolveTempDir();
+            $dir = $this->resolveTempDir();
             $_SESSION['backupFile'] =   $stmt['target'];
     
             if (OS_UNIX) {
@@ -197,75 +191,52 @@ function check_state($value, $state='Home')
     private function backupDone() {
 //        $this->check_state(2);
 //        $this->set_state(3);
-        title('Backup Status');
+//        title('Backup Status');
         $status = $_SESSION['backupStatus'];
-        $filename=$_SESSION['backupFile'];
+        $filename = $_SESSION['backupFile'];
+        
+        $this->temp_variables['backupStatus'] = $status;
     
         if ($status)
         {
-            $stmt=create_restore_stmt($filename);
-    ?>
-            The backup file <nobr><i>"<?php echo $filename;?>"</i></nobr> has been created.
+            $stmt = $this->util->create_restore_stmt($filename);
+            $this->temp_variables['display'] = 'The backup file <nobr><i>"<?php echo $filename;?>"</i></nobr> has been created.
             <P> It appears as though the <font color=green>backup has been successful</font>.
-            <P>
-            <?php
+            <P>';
                 if ($stmt['dir'] != '')
                 {
-            ?>
-                    Manually, you would do the following to restore the backup:
+                    $this->temp_variables['dir'] = $stmt['dir'];
+                    $this->temp_variables['display'] .= 'Manually, you would do the following to restore the backup:
                     <P>
                     <table bgcolor="lightgrey">
                     <tr>
                         <td>
-                            <nobr>cd <?php echo $stmt['dir'];?></nobr>
-                            <br/>
-            <?php
+                            <nobr>cd ' . $stmt['dir'] . '</nobr>
+                            <br/>';
                 }
                 else
                 {
-            ?>
-                The mysql backup utility could not be found automatically. Please edit the config.ini and update the backup/mysql Directory entry.
+                    $this->temp_variables['display'] .= 'The mysql backup utility could not be found automatically. Please edit the config.ini and update the backup/mysql Directory entry.
                     <P>
                     If you need to restore from this backup, you should be able to use the following statements:
                     <P>
                     <table bgcolor="lightgrey">
                     <tr>
-                        <td>
-            <?php
+                        <td>';
                 }
-            ?>
-                            <nobr><?php echo $stmt['display'];?></nobr>
-                    </table>
-    
-    <?php
+            $this->temp_variables['display'] .= '<nobr>' . $stmt['display'] . '</nobr>
+                    </table>';
         }
         else
         {
-    ?>
-    It appears as though <font color=red>the backup process has failed</font>.<P></P> Unfortunately, it is difficult to diagnose these problems automatically
+            $this->temp_variables['display'] .= 'It appears as though <font color=red>the backup process has failed</font>.<P></P> Unfortunately, it is difficult to diagnose these problems automatically
     and would recommend that you try to do the backup process manually.
     <P>
     We appologise for the inconvenience.
     <P>
     <table bgcolor="lightgrey">
     <tr>
-    <td>
-    <?php echo $_SESSION['backupOutput'];?>
-    </table>
-    <?php
-    
-        }
-    ?>
-    <br/>
-    
-    &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')">
-    <?php
-        if ($status)
-        {
-            ?>
-    &nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="next" onclick="javascript:do_start('UpgradeConfirm')">
-    
-    <?php
+    <td>' . $_SESSION['backupOutput'] . '</table>';
         }
 }
 
