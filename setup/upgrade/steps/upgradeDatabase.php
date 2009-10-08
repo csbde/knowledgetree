@@ -225,7 +225,7 @@ class upgradeDatabase extends Step
             $ret .= sprintf("<tr bgcolor='$color'><td>%s</td><td>%s</td><td>%s</td></tr>\n",
             htmlspecialchars($upgrade->getDescriptor()),
             htmlspecialchars($upgrade->getDescription()),
-            $upgrade->isAlreadyApplied() ? "Yes" : "No"
+                $upgrade->isAlreadyApplied() ? "Yes" : "No"
             );
         }
         $ret .= '</table>';
@@ -313,7 +313,14 @@ class upgradeDatabase extends Step
         
         $res = $this->performAllUpgrades();
         if (PEAR::isError($res) || PEAR::isError($pres)) {
-            $this->temp_variables['upgradeStatus'] = '<font color="red">Upgrade failed.</font>';
+            // TODO instantiate error details hideable section
+            $this->temp_variables['upgradeStatus'] = '<font color="red">Database upgrade failed</font><!--: 
+                                                      click here for error details-->
+                                                      <br/><br/>
+                                                      Please restore from your backup and ensure that the database does not contain 
+                                                      any unsupported modifications and try the upgrade process again.
+                                                      <br/><br/>
+                                                      If the problem persists, contact KnowledgeTree Support.';
         }
         else {
             $this->temp_variables['upgradeStatus'] = '<font color="green">Upgrade succeeded.</font>';
