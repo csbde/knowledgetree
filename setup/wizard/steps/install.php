@@ -1,6 +1,6 @@
 <?php
 /**
-* Install Step Controller. 
+* Install Step Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -40,8 +40,26 @@
 * @version Version 0.1
 */
 
-class install extends step 
+class install extends step
 {
+
+	/**
+	* Flag to store class information in session
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $storeInSession = true;
+
+	/**
+	* Flag if step needs to be installed
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var array
+	*/
+    protected $runInstall = true;
 
     function __construct() {
         $this->temp_variables = array("step_name"=>"install");
@@ -52,12 +70,14 @@ class install extends step
     		return 'landing';
     	}
         if($this->install()) {
+            $this->doRun();
             return 'install';
         } else if($this->previous()) {
             return 'previous';
         }
 
-        return 'landing'; 
+        $this->doRun();
+        return 'landing';
     }
 
     public function getStepVars()
@@ -67,6 +87,42 @@ class install extends step
 
     public function getErrors() {
         return $this->error;
+    }
+
+    public function doRun()
+    {
+        if(isset($_POST['Install'])) {
+            if(isset($_POST['call_home'])){
+                $value = $_POST['call_home'];
+            }else{
+                $value = 'disable';
+            }
+            $this->temp_variables['call_home'] = $value;
+
+            // Force a set session
+            // TODO: fix this to correctly set the session
+            $_SESSION['installers'] ['install']['call_home'] = $value;
+        }
+    }
+
+    public function installStep()
+    {
+        $conf = $this->getDataFromSession("install");
+        // retrieve database information from session
+        // initialise the db connection
+        $this->_dbhandler = new dbUtil();
+        $dbconf = $this->getDataFromSession("database");
+        $this->_dbhandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']);
+
+        $complete = 1;
+        if($conf['call_home'] == 'enable'){
+            $complete = 0;
+        }
+        $query = "UPDATE scheduler_tasks SET is_complete = {$complete} WHERE task = 'Call Home'";
+        $this->_dbhandler->query($query);
+
+        // close the database connection
+        $this->_dbhandler->close();
     }
 }
 ?>

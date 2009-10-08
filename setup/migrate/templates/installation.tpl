@@ -25,13 +25,11 @@
 		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Current_Installation" target="_blank">Click here for help on overcoming installation detection issues</a>
 	<?php } ?>
 	<div id="step_content" class="step">
-		<br/>
-		<br/>
 		<p class="empty_space">
 			Please verify the location of your current installation.
 		</p>
 		
-		<input id="location" name="location" type="text" style="width:430px; float:left" value="<?php echo $location; ?>">
+		<input id="location" name="location" type="text" style="width:430px; float:left" value="<?php if($location) echo $location; ?>">
 		<br/><br/>
 		<?php
 		if($errors) {

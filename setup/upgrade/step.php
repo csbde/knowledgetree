@@ -1,6 +1,6 @@
 <?php
 /**
-* Step .
+* Step Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -119,10 +119,10 @@ class Step
     {
         // if not authenticated, return to step 1
         if (!isset($_SESSION['setup_user'])) {
-            header('index.php?step=welcome');
+            header('Location: index.php?step=welcome');
             exit;
         }
-            
+
         return '';
     }
 
@@ -254,38 +254,31 @@ class Step
 
         return false;
     }
-
-	/**
-	* Checks if Confirm button has been clicked
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return boolean
-	*/
+    
+    /**
+    * Checks if Upgrade button has been clicked
+    *
+    * @author KnowledgeTree Team
+    * @param none
+    * @access public
+    * @return boolean
+    */
     function upgrade() {
-        if(isset($_POST['Upgrade'])) {
-            return true;
-        }
-
-        return false;
+        return isset($_POST['Upgrade']);
+    }
+    
+    /**
+    * Checks if Upgrade button has been clicked
+    *
+    * @author KnowledgeTree Team
+    * @param none
+    * @access public
+    * @return boolean
+    */
+    function restore() {
+        return isset($_POST['Restore']);
     }
 
-	/**
-	* Checks if Confirm button has been clicked
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return boolean
-	*/
-    function installer() {
-        if(isset($_POST['Install'])) {
-            return true;
-        }
-
-        return false;
-    }
 	/**
 	* Checks if we are currently in this class step
 	*

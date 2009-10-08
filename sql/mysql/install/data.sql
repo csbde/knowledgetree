@@ -1376,7 +1376,8 @@ INSERT INTO `scheduler_tasks` VALUES
 (8,'Disk Usage and Folder Utilisation Statistics','plugins/housekeeper/bin/UpdateStats.php','',0,'5mins','2007-10-01 00:00:00',NULL,0,'enabled'),
 (9,'Refresh Index Statistics','search2/bin/cronIndexStats.php','',0,'1min','2007-10-01',NULL,0,'enabled'),
 (10,'Refresh Resource Dependancies','search2/bin/cronResources.php','',0,'1min','2007-10-01',NULL,0,'enabled'),
-(11,'Bulk Download Queue','bin/ajaxtasks/downloadTask.php','',0,'1min','2007-10-01',NULL,0,'system');
+(11,'Bulk Download Queue','bin/ajaxtasks/downloadTask.php','',0,'1min','2007-10-01',NULL,0,'system'),
+(12,'Call Home','bin/system_info.php','',0,'daily','2009-10-01',NULL,0,'system');
 
 /*!40000 ALTER TABLE `scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1767,7 +1768,9 @@ INSERT INTO `upgrades` VALUES
 (225,'upgrade*3.6.3*99*upgrade3.6.3','Upgrade from version 3.6.2 to 3.6.3','2009-06-01 00:00:00',1,'upgrade*3.6.3*99*upgrade3.6.3'),
 (226,'sql*3.7.0*0*3.7.0/plugins_admin.sql','Database upgrade to version 3.7.0: Plugins admin','2009-09-01 00:00:00',1,'upgrade*3.7.0*99*upgrade3.7.0'),
 (227,'sql*3.7.0*0*3.7.0/config_settings.sql','Database upgrade to version 3.7.0: Config settings','2009-09-01 00:00:00',1,'upgrade*3.7.0*99*upgrade3.7.0'),
-(228,'upgrade*3.7.0*99*upgrade3.7.0','Upgrade from version 3.6.3 to 3.7.0','2009-09-01 00:00:00',1,'upgrade*3.7.0*99*upgrade3.7.0');
+(228,'sql*3.7.0*0*3.7.0/plugin_helper.sql','Database upgrade to version 3.7.0: Plugin helper','2009-09-01 00:00:00',1,'upgrade*3.7.0*99*upgrade3.7.0'),
+(229,'sql*3.7.0*0*3.7.0/call_home_task.sql','Database upgrade to version 3.7.0: Call home task','2009-09-01 00:00:00',1,'upgrade*3.7.0*99*upgrade3.7.0'),
+(230,'upgrade*3.7.0*99*upgrade3.7.0','Upgrade from version 3.6.3 to 3.7.0','2009-09-01 00:00:00',1,'upgrade*3.7.0*99*upgrade3.7.0');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 

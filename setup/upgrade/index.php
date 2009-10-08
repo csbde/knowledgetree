@@ -1,6 +1,6 @@
 <?php
 /**
-* Upgrader Index.
+* Database Upgrader Index.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple

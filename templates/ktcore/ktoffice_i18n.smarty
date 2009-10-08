@@ -22,15 +22,13 @@ i18n['Upload succeeded'] = '{i18n}Upload succeeded{/i18n}';
 
 i18n['Document type changed'] = '{i18n}Document type changed{/i18n}';
 
-i18n['Upload failed'] = '{i18n}Upload failed{/i18n}';
-
-i18n['Your document has not been saved.'] = '{i18n}Your document has not been saved.{/i18n}';
-
-i18n['A newer version of this document is available. Would you like to open it instead?'] = '{i18n}A newer version of this document is available. Would you like to open it instead?{/i18n}';
-
 i18n['Upload'] = '{i18n}Upload{/i18n}';
 
 i18n['Upload cancelled'] = '{i18n}Upload cancelled{/i18n}';
+
+i18n['Upload failed'] = '{i18n}Upload failed{/i18n}';
+
+i18n['Your document has not been saved.'] = '{i18n}Your document has not been saved.{/i18n}';
 
 i18n['Your document has been saved.'] = '{i18n}Your document has been saved.{/i18n}';
 
@@ -62,13 +60,13 @@ i18n['Document checked in.'] = '{i18n}Document checked in.{/i18n}';
 
 i18n['Document checked out.'] = '{i18n}Document checked out.{/i18n}';
 
-i18n['Cancel edit failed'] = '{i18n}Cancel edit failed{/i18n}';
+i18n['Cancel checkout failed'] = '{i18n}Cancel checkout failed{/i18n}';
 
-i18n['The edit has not been cancelled.'] = '{i18n}The edit has not been cancelled.{/i18n}';
+i18n['The check-out has not been cancelled.'] = '{i18n}The check-out has not been cancelled.{/i18n}';
 
-i18n['Cancel edit succeeded'] = '{i18n}Cancel edit succeeded{/i18n}';
+i18n['Cancel checkout succeeded'] = '{i18n}Cancel checkout succeeded{/i18n}';
 
-i18n['The edit has been cancelled.'] = '{i18n}The edit has been cancelled.{/i18n}';
+i18n['The check-out has been cancelled.'] = '{i18n}The check-out has been cancelled.{/i18n}';
 
 i18n['Properties could not be saved.'] = '{i18n}Properties could not be saved.{/i18n}';
 
@@ -172,16 +170,6 @@ i18n['Login'] = '{i18n}Login{/i18n}';
 
 i18n['Document already open'] = '{i18n}Document already open{/i18n}';
 
-i18n['Unable to delete folder'] = '{i18n}Unable to delete folder{/i18n}';
-
-i18n['Delete Folder'] = '{i18n}Delete Folder{/i18n}';
-
-i18n['This will delete this folder.<br/>Are you sure you want to continue?'] = '{i18n}This will delete this folder.<br/>Are you sure you want to continue?{/i18n}';
-
-i18n['Unable to Delete Folder'] = '{i18n}Unable to Delete Folder{/i18n}';
-
-i18n['This folder contains other documents/folders<br/>and may not be deleted.'] = '{i18n}This folder contains other documents/folders<br/>and may not be deleted.{/i18n}';
-
 i18n['Introduction'] = '{i18n}Introduction{/i18n}';
 
 i18n['The requested action has not been implemented'] = '{i18n}The requested action has not been implemented{/i18n}';
@@ -203,16 +191,6 @@ i18n['You need to have permission to perform this action'] = '{i18n}You need to 
 i18n['Save'] = '{i18n}Save{/i18n}';
 
 i18n['Adds your open Office document to KnowledgeTree. You must have \'write\' permissions on the folder.'] = '{i18n}Adds your open Office document to KnowledgeTree. You must have \'write\' permissions on the folder.{/i18n}';
-
-i18n['Add Folder'] = '{i18n}Add Folder{/i18n}';
-
-i18n['Provides an interface to create a new folder under the current folder. You must have \'add\' permissions on the folder.'] = '{i18n}Provides an interface to create a new folder under the current folder. You must have \'add\' permissions on the folder.{/i18n}';
-
-i18n['Rename Folder'] = '{i18n}Rename Folder{/i18n}';
-
-i18n['Provides an interface to rename the current folder. You must have \'rename\' permissions on the folder.'] = '{i18n}Provides an interface to rename the current folder. You must have \'rename\' permissions on the folder.{/i18n}';
-
-i18n['Provides an interface to delete the current folder. You must have \'delete\' permissions on the folder.'] = '{i18n}Provides an interface to delete the current folder. You must have \'delete\' permissions on the folder.{/i18n}';
 
 i18n['New folder'] = '{i18n}New folder{/i18n}';
 
@@ -316,8 +294,6 @@ i18n['Please complete all required fields.'] = '{i18n}Please complete all requir
 
 i18n['Editing'] = '{i18n}Editing{/i18n}';
 
-i18n['File Type'] = '{i18n}File Type{/i18n}';
-
 i18n['Type'] = '{i18n}Type{/i18n}';
 
 i18n['Some fields are required'] = '{i18n}Some fields are required{/i18n}';
@@ -364,6 +340,6 @@ i18n['You do not have the required permissions to view the root folder. Please c
 
 i18n['Search for documents'] = '{i18n}Search for documents{/i18n}';
 
-// Total Language Strings: 153
+// Total Language Strings: 141
 
-// Unique Strings: 153
+// Unique Strings: 141

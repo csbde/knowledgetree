@@ -142,6 +142,11 @@ class MigrateUtil {
     	return new $serviceName();
     }
     
+    public function loadInstallIni($path) {
+    	require_once("../wizard/ini.php");
+    	return new Ini($path);
+    }
+    
     public function redirect($url, $exit = true, $rfc2616 = false)
     {
 		return $this->bootstrap->redirect($url, $exit = true, $rfc2616 = false);

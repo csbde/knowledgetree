@@ -1,5 +1,5 @@
 <form action="index.php?step_name=backup" method="post">
-	<p class="title">Confirm Backup</p>
+	<p class="title"><?php echo $title; ?></p>
 
 	<?php
 	if($errors || $warnings){
@@ -12,20 +12,22 @@
 	<br/><br/>
 	<div>
     <?php
-if ($dir != '') {
-?>
-        Are you sure you want to perform the backup?
-
-<p>
-Your mysql installation has been resolved. Manually, you would do the following:
-    </p>
-<p>
-<table bgcolor="lightgrey">
-<tr>
-<td>
-<nobr>cd "<?php echo $dir; ?>"</nobr>
-<br/>
-</p><?php
+    if ($dir != '') {
+        if (!$backupStatus) {
+            ?>
+                    Are you sure you want to perform the backup?
+            
+            <p>
+            Your mysql installation has been resolved. Manually, you would do the following:
+                </p>
+            <p>
+            <table bgcolor="lightgrey">
+            <tr>
+            <td>
+            <nobr>cd "<?php echo $dir; ?>"</nobr>
+            <br/>
+            </p><?php
+        }
     }
     else
     {
@@ -42,17 +44,23 @@ You can continue to do the backup manually using the following process:
 ?><nobr><?php echo $display; ?></nobr>
 </table>
 <P>
-	<?php if($silent) { ?>
-		</div>
-	<?php } ?>
 	</div>
-        <?php
+	</div>
+    <?php
 if ($dir != '')
 {
-?><input type="submit" name="Next" value="Next" class="button_next"><?php
+    if (($action == '') || ($action == 'confirm')) {
+        ?><input type="submit" name="BackupNow" value="Next" class="button_next"><?php
+    }
+    else if ($backupStatus) {
+        ?><input type="submit" name="Next" value="Restore" class="button_next">
+        <input type="submit" name="Upgrade" value="Upgrade" class="button_next"><?php
+    }
+    else {
+        ?><input type="submit" name="Next" value="Next" class="button_next"><?php
+    }
 }
 
     ?>
     <input type="submit" name="Previous" value="Back" class="button_previous">
-	</div>
 </form>

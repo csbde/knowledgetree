@@ -175,7 +175,7 @@ class Session
 	* @access public
 	* @return void
 	*/
-	public function destroy() {
+	public function destroyMigrate() {
 		$this->startSession();
 		unset($_SESSION[$this->salt]);
 		session_destroy();
