@@ -17,7 +17,7 @@
         <step name="Service Dependency" order="3" mode="silent">services</step>
         <step name="Database Configuration" order="1">database</step>
         <step name="Registration">registration</step>
-        <step name="Install" mode="silent">install</step>
+        <step name="Install" order="4" mode="silent">install</step>
         <step name="Complete">complete</step>
     </steps>
  </install>

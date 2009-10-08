@@ -39,8 +39,8 @@
 * @package Installer
 * @version Version 0.1
 */
-class InstallUtil {	
-	
+class InstallUtil {
+
 	private $salt = 'installers';
 	/**
 	* Constructs installation object
@@ -50,7 +50,7 @@ class InstallUtil {
  	*/
 	public function __construct() {
 	}
-	
+
 	/**
 	* Check if system needs to be installed
 	*
@@ -64,7 +64,7 @@ class InstallUtil {
 
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -100,13 +100,13 @@ class InstallUtil {
 
     /**
      * Redirect
-     * 
+     *
      * This function redirects the client. This is done by issuing
      * a "Location" header and exiting if wanted.  If you set $rfc2616 to true
      * HTTP will output a hypertext note with the location of the redirect.
-     * 
-     * @static 
-     * @access  public 
+     *
+     * @static
+     * @access  public
      *                  have already been sent.
      * @param   string  $url URL where the redirect should go to.
      * @param   bool    $exit Whether to exit immediately after redirection.
@@ -119,10 +119,10 @@ class InstallUtil {
         if (headers_sent()) {
             return false;
         }
-        
+
         $url = $this->absoluteURI($url);
         header('Location: '. $url);
-        
+
         if (    $rfc2616 && isset($_SERVER['REQUEST_METHOD']) &&
                 $_SERVER['REQUEST_METHOD'] != 'HEAD') {
             printf('Redirecting to: <a href="%s">%s</a>.', $url, $url);
@@ -135,21 +135,21 @@ class InstallUtil {
 
    /**
      * Absolute URI
-     * 
+     *
      * This function returns the absolute URI for the partial URL passed.
      * The current scheme (HTTP/HTTPS), host server, port, current script
      * location are used if necessary to resolve any relative URLs.
-     * 
+     *
      * Offsets potentially created by PATH_INFO are taken care of to resolve
      * relative URLs to the current script.
-     * 
-     * You can choose a new protocol while resolving the URI.  This is 
-     * particularly useful when redirecting a web browser using relative URIs 
+     *
+     * You can choose a new protocol while resolving the URI.  This is
+     * particularly useful when redirecting a web browser using relative URIs
      * and to switch from HTTP to HTTPS, or vice-versa, at the same time.
-     * 
-     * @author  Philippe Jausions <Philippe.Jausions@11abacus.com> 
-     * @static 
-     * @access  public 
+     *
+     * @author  Philippe Jausions <Philippe.Jausions@11abacus.com>
+     * @static
+     * @access  public
      * @param   string  $url Absolute or relative URI the redirect should go to.
      * @param   string  $protocol Protocol to use when redirecting URIs.
      * @param   integer $port A new port number.
@@ -159,7 +159,7 @@ class InstallUtil {
     {
         // filter CR/LF
         $url = str_replace(array("\r", "\n"), ' ', $url);
-        
+
         // Mess around with already absolute URIs
         if (preg_match('!^([a-z0-9]+)://!i', $url)) {
             if (empty($protocol) && empty($port)) {
@@ -169,12 +169,12 @@ class InstallUtil {
                 $url = $protocol .':'. end($array = explode(':', $url, 2));
             }
             if (!empty($port)) {
-                $url = preg_replace('!^(([a-z0-9]+)://[^/:]+)(:[\d]+)?!i', 
+                $url = preg_replace('!^(([a-z0-9]+)://[^/:]+)(:[\d]+)?!i',
                     '\1:'. $port, $url);
             }
             return $url;
         }
-            
+
         $host = 'localhost';
         if (!empty($_SERVER['HTTP_HOST'])) {
             list($host) = explode(':', $_SERVER['HTTP_HOST']);
@@ -192,7 +192,7 @@ class InstallUtil {
                 $port = isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : 80;
             }
         }
-        
+
         if ($protocol == 'http' && $port == 80) {
             unset($port);
         }
@@ -201,31 +201,31 @@ class InstallUtil {
         }
 
         $server = $protocol .'://'. $host . (isset($port) ? ':'. $port : '');
-        
+
         if (!strlen($url)) {
-            $url = isset($_SERVER['REQUEST_URI']) ? 
+            $url = isset($_SERVER['REQUEST_URI']) ?
                 $_SERVER['REQUEST_URI'] : $_SERVER['PHP_SELF'];
         }
-        
+
         if ($url{0} == '/') {
             return $server . $url;
         }
-        
+
         // Check for PATH_INFO
-        if (isset($_SERVER['PATH_INFO']) && strlen($_SERVER['PATH_INFO']) && 
+        if (isset($_SERVER['PATH_INFO']) && strlen($_SERVER['PATH_INFO']) &&
                 $_SERVER['PHP_SELF'] != $_SERVER['PATH_INFO']) {
             $path = dirname(substr($_SERVER['PHP_SELF'], 0, -strlen($_SERVER['PATH_INFO'])));
         } else {
             $path = dirname($_SERVER['PHP_SELF']);
         }
-        
+
         if (substr($path = strtr($path, '\\', '/'), -1) != '/') {
             $path .= '/';
         }
-        
+
         return $server . $path . $url;
     }
-    
+
     /**
      * Check whether a given directory / file path exists and is writable
      *
@@ -244,7 +244,7 @@ class InstallUtil {
         }
 
     }
-    
+
     /**
      * Check whether a given directory / file path exists and is writable
      *
@@ -258,7 +258,7 @@ class InstallUtil {
     {
     	if(!$file)
         	$exist = 'Directory doesn\'t exist';
-        else 
+        else
         	$exist = 'File doesn\'t exist';
         $write = 'Directory not writable';
         $ret = array('class' => 'cross');
@@ -280,12 +280,12 @@ class InstallUtil {
                 $ret['msg'] = $exist;
                 return $ret;
             }
-            mkdir($dir, '0755');
+            mkdir($dir, 0755);
         }
 
         if(is_writable($dir)){
             $ret['class'] = 'tick';
-            
+
             return $ret;
         }
 
@@ -293,7 +293,7 @@ class InstallUtil {
         $ret['msg'] = $write;
         return $ret;
     }
-    
+
 	 /**
      * Change permissions on a directory helper
      *
@@ -305,7 +305,7 @@ class InstallUtil {
     public function canChangePermissions($folderPath) {
 		return $this->_chmodRecursive($folderPath, 0755);
     }
-    
+
 	/**
      * Change permissions on a directory (recursive)
      *
@@ -344,7 +344,7 @@ class InstallUtil {
 			return true;
 		}
 	}
-	
+
    /**
      * Check if a file can be written to a folder
      *
@@ -358,11 +358,11 @@ class InstallUtil {
     	if($fr = fwrite($fh, 'test') === false) {
     		return false;
     	}
-    	
+
     	fclose($fh);
     	return true;
     }
-    
+
     /**
      * Attempt using the php-java bridge
      *
@@ -379,7 +379,7 @@ class InstallUtil {
 		}
 		return true;
     }
-	
+
     /**
 	* Check if Zend Bridge is enabled
 	*
@@ -390,12 +390,12 @@ class InstallUtil {
 	*/
     public function zendBridge() {
 		$mods = get_loaded_extensions();
-		if(in_array('Zend Java Bridge', $mods)) 
+		if(in_array('Zend Java Bridge', $mods))
 			return true;
-		else 
+		else
 			return false;
     }
-    
+
     /**
      * Attempt java detection
      *
@@ -412,7 +412,7 @@ class InstallUtil {
 
     	return 'java';
     }
-    
+
     /**
      * Attempt java detection
      *
@@ -429,7 +429,7 @@ class InstallUtil {
 
     	return 'java';
     }
-    
+
     /**
      * Attempt java detection
      *
@@ -451,7 +451,7 @@ class InstallUtil {
 			}
 		}
     }
-    
+
     /**
 	* Check if user entered location of JRE
 	*
@@ -471,7 +471,7 @@ class InstallUtil {
     		return false;
     	}
     }
-    
+
     /**
 	* Check if user entered location of PHP
 	*
@@ -491,7 +491,7 @@ class InstallUtil {
     		return false;
     	}
     }
-    
+
     public function openOfficeSpecified() {
     	if(isset($_POST['soffice'])) {
     		if($_POST['soffice'] != '') {
@@ -503,7 +503,7 @@ class InstallUtil {
     		return false;
     	}
     }
-    
+
 	/**
 	* Get session data from post
 	*
@@ -516,10 +516,10 @@ class InstallUtil {
     	if(empty($_SESSION[$this->salt][$class])) {
     		return false;
     	}
-    	
+
     	return $_SESSION[$this->salt][$class];
     }
-    
+
     /**
 	* Determine the location of JAVA_HOME
 	*
@@ -539,7 +539,7 @@ class InstallUtil {
 
     	return $response;
     }
-    
+
     /**
 	* Determine the location of PHP
 	*
@@ -562,10 +562,10 @@ class InstallUtil {
 		if(file_exists(PHP_DIR."php")) {
 			return PHP_DIR."php";
 		}
-		
+
 		return 'php';
     }
-    
+
     function getPhpHelper($cmd) {
     	$response = $this->pexec($cmd);
 		if(is_array($response['out'])) {
@@ -579,10 +579,10 @@ class InstallUtil {
 				}
 			}
 		}
-		
-		return '';    	
+
+		return '';
     }
-    
+
     function getOpenOffice() {
     	$cmd = "whereis soffice";
 		$res = $this->getOpenOfficeHelper($cmd);
@@ -594,10 +594,10 @@ class InstallUtil {
 		if($res != '') {
 			return $res;
 		}
-		
+
 		return 'soffice';
     }
-    
+
     function getOpenOfficeHelper($cmd) {
 		$response = $this->pexec($cmd);
 		if(is_array($response['out'])) {
@@ -611,11 +611,11 @@ class InstallUtil {
 				}
 			}
 		}
-		
+
 		return '';
     }
-    
-    
+
+
    /**
      * Portably execute a command on any of the supported platforms.
      *
@@ -656,9 +656,9 @@ class InstallUtil {
 
     	return $aRet;
     }
-    
+
 	/**
-	* 
+	*
 	*
 	* @author KnowledgeTree Team
 	* @access public
@@ -681,9 +681,9 @@ class InstallUtil {
         }
         return $mDefault;
     }
-    
+
 	/**
-	* 
+	*
 	*
 	* @author KnowledgeTree Team
 	* @access public
