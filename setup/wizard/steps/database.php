@@ -755,7 +755,7 @@ class database extends Step
     	} else {
 			$user1 = "GRANT SELECT, INSERT, UPDATE, DELETE ON {$this->dname}.* TO {$this->dmsusername}@{$this->dhost} IDENTIFIED BY \"{$this->dmsuserpassword}\";";
 			$user2 = "GRANT ALL PRIVILEGES ON {$this->dname}.* TO {$this->dmsname}@{$this->dhost} IDENTIFIED BY \"{$this->dmspassword}\";";
-			if ($this->_dbhandler->execute($user1) && $this->_dbhandler->execute($user2)) {
+			if ($this->_dbhandler->query($user1) && $this->_dbhandler->query($user2)) {
             	return true;
         	} else {
         		$this->error['con'] = "Could not create users for database: {$this->dname}";
@@ -784,7 +784,7 @@ class database extends Step
 			while (!feof($handle)) {
     			$query.= fgets($handle, 4096);
     				if (substr(rtrim($query), -1) == ';') {
-     					$this->_dbhandler->execute($query);
+     					$this->_dbhandler->query($query);
      					$query = '';
     				}
 			}

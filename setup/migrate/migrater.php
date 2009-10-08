@@ -510,6 +510,9 @@ class Migrater {
     	} elseif (isset($_POST['BInstall'])) {
     		$this->migraterAction = 'binstall';
     		$this->response = 'binstall';
+//    	} elseif (isset($_POST['Backup'])) {
+//    		$this->migraterAction = 'backup';
+//    		$this->response = 'backup';
     	} else {
     		$this->response = '';
     		$this->migraterAction = '';
@@ -545,8 +548,8 @@ class Migrater {
                 }
             	break;
             case 'previous':
-                $this->_backward(); // Load previous page
-            	break;
+				$this->_backward(); // Load previous page
+				break;
             case 'install':
                 $iutil = new MigrateUtil();
                 $iutil->redirect('../wizard/index.php?step_name=installtype');
@@ -555,6 +558,11 @@ class Migrater {
                 $iutil = new MigrateUtil();
                 $iutil->redirect('../wizard/index.php?step_name=dependencies');
             	break;
+//            case 'backup':
+//                $iutil = new MigrateUtil();
+//                $iutil->redirect('../upgrade/index.php?step_name=backup');
+//                $iutil->redirect("..".DS."upgrade".DS."index.php?step_name=backup");
+//            	break;
             default:
             	// TODO : handle silent
             	$this->_landing();

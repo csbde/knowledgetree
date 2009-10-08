@@ -206,9 +206,18 @@ class Ini {
         return true;
     }
     
+    // Return file line by line
     public function getFileByLine() {
         $data = $this->read($this->iniFile);
         return $data[''];
+    }
+    
+    public function getSection($section) {
+    	if (isset($this->cleanArray[$section])) {
+    		return $this->cleanArray[$section];
+    	}
+    	
+    	return false;
     }
 }
 ?>

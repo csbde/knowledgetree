@@ -6,6 +6,12 @@
 		user on the database server are required in order to be able to configure and migrate the database.
 		</div>
 		<div id="step_content_database" class="step">
+		<span class="error"> <?php if($errors['con']) { echo $errors['con']."<br/><br/>"; } ?> </span>
+		<span class="error">!!NB!! You are advised to backup your database before proceeding. !!NB!!</span>
+		<br/><br/>
+		<p class="empty_space">
+			Database Details
+		</p>
 			<table class="dbconf">
 			<?php
 				$input_size = '35';
@@ -25,8 +31,9 @@
 			</table>
 		</div>
 	</div>
-    <input type="button" name="Previous" value="previous" class="button_previous"/>
-	<input type="submit" name="Next" value="next" class="button_next"/>
+	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
+	<input type="submit" name="Next" value="Next" class="button_next"/>
+<!--	<input type="submit" name="Backup" value="Backup" class="button_next"/>-->
 </form>
 <script type="text/javascript">
 	$("#duname").focus();
