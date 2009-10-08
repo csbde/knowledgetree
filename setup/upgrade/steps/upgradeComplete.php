@@ -44,20 +44,20 @@ require '../../config/dmsDefaults.php';
 
 class upgradeComplete extends Step {
 
-    protected $silent = true;
-    
     protected $util = null;
+    protected $silent = false;
+    protected $temp_variables = array();
     
     public function __construct() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
     }
 
-    function doStep() {
+    public function doStep() {
         $this->doRun();
     	return 'landing';
     }
     
-    function doRun() {
+    private function doRun() {
         $this->storeSilent();// Set silent mode variables
     }
     

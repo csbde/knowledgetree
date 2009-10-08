@@ -1,6 +1,6 @@
 <?php
 /**
-* Upgrade Step Controller. 
+* Notification Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -50,12 +50,13 @@ class UpgradeInstallation extends step
 	* @var array
 	*/
     protected $silent = false;
+    protected $temp_variables = array();
     
-    function __construct() {
+    public function __construct() {
         $this->temp_variables = array("step_name"=>"installation");
     }
 
-    function doStep() {
+    public function doStep() {
         parent::doStep();
         if($this->next()) {
             return 'next';
@@ -70,14 +71,6 @@ class UpgradeInstallation extends step
         }
         
         return 'landing';
-    }
-    
-    function backup() {
-        return isset($_POST['Backup']);
-    }
-     
-    function restore() {
-        return isset($_POST['Restore']);
     }
     
 }

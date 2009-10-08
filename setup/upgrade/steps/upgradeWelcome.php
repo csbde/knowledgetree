@@ -40,14 +40,13 @@
 * @version Version 0.1
 */
 
-global $default;
-// include defaults
 include '../../config/dmsDefaults.php';
 require_once KT_LIB_DIR . '/authentication/authenticationutil.inc.php';
 
 class upgradeWelcome extends step {
 
-	protected $silent = true;
+    protected $silent = false;
+    protected $temp_variables = array();
 	
     public function __construct() {
         $this->temp_variables = array("step_name"=>"welcome");
@@ -76,7 +75,6 @@ class upgradeWelcome extends step {
         if (!$authenticated)
         {
             session_unset();
-//            loginFailed(_kt('Could not authenticate administrative user'));
             return false;
         }
 
