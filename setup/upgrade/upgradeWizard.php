@@ -186,6 +186,9 @@ class UpgradeWizard {
 	* @return mixed
  	*/
 	public function systemChecks() {
+	    // for now we don't write to any of these locations
+        return true;
+        
 		$res = $this->iutil->checkStructurePermissions();
 		if($res === true) return $res;
 		switch ($res) {
