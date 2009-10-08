@@ -153,18 +153,21 @@ class migrateDatabase extends Step
 	    	$location = $installation['location'];
 			$uname = $this->temp_variables['duname'];
 			$pwrd = $this->temp_variables['dpassword'];
+			$tmpFolder = $this->resolveTempDir();
 	    	if(WINDOWS_OS) {
-	    		$tmpFolder = "tmp/";
+//	    		$tmpFolder = "tmp/";
 	    		$exe = "\"$location\mysql\bin\mysqldump.exe\""; // Location of dump
 	    	} else {
-	    		$tmpFolder = "/tmp/";
+//	    		$tmpFolder = "/tmp/";
 	    		$exe = "'$location/mysql/bin/mysqldump'"; // Location of dump
 	    	}
-			$sqlFile = $tmpFolder."dms.sql";
+			$sqlFile = $tmpFolder."/dms_migrate.sql";
 			$dbAdminUser = $dbSettings['dbAdminUser'];
 			$dbAdminPass = $dbSettings['dbAdminPass'];
 			$dbName = $dbSettings['dbName'];
 			$cmd = "$exe -u{$dbAdminUser} -p{$dbAdminPass} $dbName > ".$sqlFile;
+//			echo $cmd;
+//			die;
 			$response = $this->util->pexec($cmd);
 			if(file_exists($sqlFile)) {
 				$fileContents = file_get_contents($sqlFile);
@@ -178,6 +181,28 @@ class migrateDatabase extends Step
 		return false;
     }
     
+    // TODO
+function resolveTempDir()
+{
+
+    if (!WINDOWS_OS)
+    {
+        $dir='/tmp/kt-db-backup';
+    }
+    else
+    {
+        $dir='c:/kt-db-backup';
+    }
+//    $oKTConfig =& KTConfig::getSingleton();
+//    $dir = $oKTConfig->get('backup/backupDirectory',$dir);
+
+    if (!is_dir($dir))
+    {
+            mkdir($dir);
+    }
+    return $dir;
+}
+
     public function doTest() {
     	return true;
     	$installation = $this->getDataFromSession("installation"); // Get installation directory
