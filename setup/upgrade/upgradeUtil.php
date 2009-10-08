@@ -666,115 +666,106 @@ class UpgradeUtil {
         return join(" ", $aSafeArgs);
     }
     
-    function create_restore_stmt($targetfile)
-{
-    $oKTConfig =& KTConfig::getSingleton();
-
-    $adminUser = $oKTConfig->get('db/dbAdminUser');
-    $adminPwd = $oKTConfig->get('db/dbAdminPass');
-    $dbHost = $oKTConfig->get('db/dbHost');
-    $dbName = $oKTConfig->get('db/dbName');
-    $dbPort = trim($oKTConfig->get('db/dbPort'));
-    if ($dbPort=='' || $dbPort=='default')$dbPort = get_cfg_var('mysql.default_port');
-    if (empty($dbPort)) $dbPort='3306';
-    $dbSocket = trim($oKTConfig->get('db/dbSocket'));
-    if (empty($dbSocket) || $dbSocket=='default') $dbSocket = get_cfg_var('mysql.default_socket');
-    if (empty($dbSocket)) $dbSocket='../tmp/mysql.sock';
-
-    $dir = $this->resolveMysqlDir();
-
-    $info['dir']=$dir;
-
-    $prefix='';
-    if (OS_UNIX)
+    public function create_restore_stmt($targetfile)
     {
-        $prefix .= "./";
-    }
-
-    if (@stat($dbSocket) !== false)
-    {
-        $mechanism="--socket=\"$dbSocket\"";
-    }
-    else
-    {
-        $mechanism="--port=\"$dbPort\"";
-    }
-
-    $tmpdir = $this->resolveTempDir();
-
-    $stmt = $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism drop  \"$dbName\"<br/>";
-    $stmt .= $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism create  \"$dbName\"<br/>";
-
-
-    $stmt .= $prefix ."mysql --user=\"$adminUser\" -p $mechanism \"$dbName\" < \"$targetfile\"\n";
-    $info['display']=$stmt;
-
-
-    $stmt = $prefix ."mysqladmin --user=\"$adminUser\" --force --password=\"$adminPwd\" $mechanism drop  \"$dbName\"\n";
-    $stmt .= $prefix ."mysqladmin --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism create  \"$dbName\"\n";
-
-    $stmt .=  $prefix ."mysql --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism \"$dbName\" < \"$targetfile\"";
-    $info['cmd']=$stmt;
-    return $info;
-}
-
-function resolveMysqlDir()
-{
-    // possibly detect existing installations:
-
-    if (OS_UNIX)
-    {
-        $dirs = array('/opt/mysql/bin','/usr/local/mysql/bin');
-        $mysqlname ='mysql';
-    }
-    else
-    {
-        $dirs = explode(';', $_SERVER['PATH']);
-        $dirs[] ='c:/Program Files/MySQL/MySQL Server 5.0/bin';
-        $dirs[] = 'c:/program files/ktdms/mysql/bin';
-        $mysqlname ='mysql.exe';
-    }
-
-    $oKTConfig =& KTConfig::getSingleton();
-    $mysqldir = $oKTConfig->get('backup/mysqlDirectory',$mysqldir);
-    $dirs[] = $mysqldir;
-
-    if (strpos(__FILE__,'knowledgeTree') !== false && strpos(__FILE__,'ktdms') != false)
-    {
-        $dirs [] = realpath(dirname($FILE) . '/../../mysql/bin');
-    }
-
-    foreach($dirs as $dir)
-    {
-        if (is_file($dir . '/' . $mysqlname))
-        {
-            return $dir;
+        $oKTConfig =& KTConfig::getSingleton();
+    
+        $adminUser = $oKTConfig->get('db/dbAdminUser');
+        $adminPwd = $oKTConfig->get('db/dbAdminPass');
+        $dbHost = $oKTConfig->get('db/dbHost');
+        $dbName = $oKTConfig->get('db/dbName');
+        $dbPort = trim($oKTConfig->get('db/dbPort'));
+        if ($dbPort=='' || $dbPort=='default')$dbPort = get_cfg_var('mysql.default_port');
+        if (empty($dbPort)) $dbPort='3306';
+        $dbSocket = trim($oKTConfig->get('db/dbSocket'));
+        if (empty($dbSocket) || $dbSocket=='default') $dbSocket = get_cfg_var('mysql.default_socket');
+        if (empty($dbSocket)) $dbSocket='../tmp/mysql.sock';
+    
+        $dir = $this->resolveMysqlDir();
+    
+        $info['dir']=$dir;
+    
+        $prefix='';
+        if (OS_UNIX) {
+            $prefix .= "./";
         }
+    
+        if (@stat($dbSocket) !== false) {
+            $mechanism="--socket=\"$dbSocket\"";
+        }
+        else {
+            $mechanism="--port=\"$dbPort\"";
+        }
+    
+        $tmpdir = $this->resolveTempDir();
+    
+        $stmt = $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism drop  \"$dbName\"<br/>";
+        $stmt .= $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism create  \"$dbName\"<br/>";
+    
+    
+        $stmt .= $prefix ."mysql --user=\"$adminUser\" -p $mechanism \"$dbName\" < \"$targetfile\"\n";
+        $info['display']=$stmt;
+    
+    
+        $stmt = $prefix ."mysqladmin --user=\"$adminUser\" --force --password=\"$adminPwd\" $mechanism drop  \"$dbName\"\n";
+        $stmt .= $prefix ."mysqladmin --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism create  \"$dbName\"\n";
+    
+        $stmt .=  $prefix ."mysql --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism \"$dbName\" < \"$targetfile\"";
+        $info['cmd']=$stmt;
+        return $info;
     }
-
-    return '';
-}
-
-function resolveTempDir()
-{
-
-    if (OS_UNIX)
+    
+    public function resolveMysqlDir()
     {
-        $dir='/tmp/kt-db-backup';
+        // possibly detect existing installations:
+    
+        if (OS_UNIX) {
+            $dirs = array('/opt/mysql/bin','/usr/local/mysql/bin');
+            $mysqlname ='mysql';
+        }
+        else
+        {
+            $dirs = explode(';', $_SERVER['PATH']);
+            $dirs[] ='c:/Program Files/MySQL/MySQL Server 5.0/bin';
+            $dirs[] = 'c:/program files/ktdms/mysql/bin';
+            $mysqlname ='mysql.exe';
+        }
+    
+        $oKTConfig =& KTConfig::getSingleton();
+        $mysqldir = $oKTConfig->get('backup/mysqlDirectory',$mysqldir);
+        $dirs[] = $mysqldir;
+    
+        if (strpos(__FILE__,'knowledgeTree') !== false && strpos(__FILE__,'ktdms') != false) {
+            $dirs [] = realpath(dirname($FILE) . '/../../mysql/bin');
+        }
+    
+        foreach($dirs as $dir)
+        {
+            if (is_file($dir . '/' . $mysqlname))
+            {
+                return $dir;
+            }
+        }
+    
+        return '';
     }
-    else
+    
+    public function resolveTempDir()
     {
-        $dir='c:/kt-db-backup';
+        if (OS_UNIX) {
+            $dir='/tmp/kt-db-backup';
+        }
+        else {
+            $dir='c:/kt-db-backup';
+        }
+        $oKTConfig =& KTConfig::getSingleton();
+        $dir = $oKTConfig->get('backup/backupDirectory',$dir);
+    
+        if (!is_dir($dir)) {
+                mkdir($dir);
+        }
+        return $dir;
     }
-    $oKTConfig =& KTConfig::getSingleton();
-    $dir = $oKTConfig->get('backup/backupDirectory',$dir);
-
-    if (!is_dir($dir))
-    {
-            mkdir($dir);
-    }
-    return $dir;
-}
 
 }
 ?>

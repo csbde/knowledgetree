@@ -2,7 +2,6 @@
 	<p class="title">Current Installation</p>
 	<div id="step_content" class="step">
 		<p class="empty_space">
-        <?php // set_state(1); ?>
         <p class="empty_space"> If you have just updated
         your KnowledgeTree code base, you will need to complete the upgrade process in order to ensure your system is fully operational with the new version.
         <p class="empty_space">

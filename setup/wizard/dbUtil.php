@@ -146,8 +146,8 @@ class dbUtil {
     * @return object The result of the query.
     */
     public function query($query) {
-    	$this->useDb();
-      $result = mysql_query($query, $this->dbconnection);
+		$this->useDb();
+      	$result = mysql_query($query, $this->dbconnection);
 		if($result) {
 			return $result;
 		} else {
@@ -165,13 +165,12 @@ class dbUtil {
     */
     public function execute($query) {
     	$this->useDb();
-      $result = @mysql_query($query, $this->dbconnection);
-		if($result) {
-			return true;
-		} else {
+      	$result = @mysql_query($query, $this->dbconnection);
+		if(!$result) {
 			$this->error[] = @mysql_error($this->dbconnection);
-			return false;
 		}
+		
+		return $result;
     }
     
 	/** 
@@ -200,10 +199,7 @@ class dbUtil {
 	      if ($result == NULL || @mysql_num_rows($result) < 1)
 	        return NULL;
 	      else {
-	      	$row = @mysql_fetch_assoc($result);
-   			while ($row) {
-   				$r[] = $row;
-   			}
+	      	while(($r[] = mysql_fetch_assoc($result)) || array_pop($r)); 
    			return $r;
 	      }
     }

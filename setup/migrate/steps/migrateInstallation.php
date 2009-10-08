@@ -78,15 +78,37 @@ class migrateInstallation extends step
 	*/
     protected $silent = false;
     
+	/**
+	* Reference to Utility object
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var object
+	*/	
+    public $util = null;
+    
 	private $location = '';
 	private $dbSettings = array();
 	private $ktSettings = array();
 	private $urlPaths = array();
 	private $knownWindowsLocations = array("C:\Program Files\ktdms"=>"C:\Program Files\ktdms\knowledgeTree\config\config-path","C:\Program Files x86\ktdms"=>"C:\Program Files x86\ktdms\knowledgeTree\config\config-path","C:\ktdms"=>"C:\ktdms\knowledgeTree\config\config-path");
-	private $knownUnixLocations = array("/opt/ktdms"=>"/opt/ktdms/knowledgeTree/config/config-path","/var/www/ktdms"=>"/var/www/ktdms/knowledgeTree/config/config-path");
-	
+	private $knownUnixLocations = array("/opt/ktdms","/var/www/ktdms");
+
+	/**
+	* Installation Settings
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var object
+	*/	
+    private $settings = array();
+    private $supportedVersion = '3.6.1';
+    private $foundVersion = 'Unknown';
+    private $versionError = false;
+    
     function __construct() {
         $this->temp_variables = array("step_name"=>"installation", "silent"=>$this->silent);
+        $this->util = new MigrateUtil();
     }
 
     public function doStep() {
@@ -128,6 +150,44 @@ class migrateInstallation extends step
     }
     
     public function doRun() {
+		if(!$this->readConfig()) {
+			$this->storeSilent();
+			return false;
+		} else {
+			if($this->readVersion()) {
+				$this->checkVersion();
+			}
+			$this->storeSilent();
+			return true;
+		}
+		
+    }
+    
+    
+    
+    
+    public function checkVersion() {
+		if($this->foundVersion <= $this->supportedVersion) {
+			$this->versionError = true;
+			$this->error[] = "KT installation needs to be 3.6.1 or higher";
+		} else {
+			return true;
+		}
+    }
+    
+    public function readVersion() {
+    	$verFile = $this->location."/knowledgeTree/docs/VERSION.txt";
+    	if(file_exists($verFile)) {
+			$this->foundVersion = file_get_contents($verFile);
+			return true;
+    	} else {
+			$this->error[] = "KT installation version not found";
+    	}
+
+		return false;    	
+    }
+    
+    public function readConfig() {
 		$ktInstallPath = isset($_POST['location']) ? $_POST['location']: '';
 		if($ktInstallPath != '') {
 			$this->location = $ktInstallPath;
@@ -136,7 +196,7 @@ class migrateInstallation extends step
 				if(file_exists($configPath)) {
 					$configFilePath = file_get_contents($configPath);
 					if(file_exists($configFilePath)) { // For 3.7 and after
-						$this->readConfig($configFilePath);
+						$this->loadConfig($configFilePath);
 						$this->storeSilent();
 						
 						return true;
@@ -144,7 +204,7 @@ class migrateInstallation extends step
 						$configFilePath = $ktInstallPath.DS."knowledgeTree".DS.$configFilePath; // For older than 3.6.2
 						$configFilePath = trim($configFilePath);
 						if(file_exists($configFilePath)) {
-							$this->readConfig($configFilePath);
+							$this->loadConfig($configFilePath);
 							$this->storeSilent();
 						
 							return true;
@@ -158,19 +218,18 @@ class migrateInstallation extends step
 				$this->error[] = "KT installation not found";
 			}
 		}
-		$this->storeSilent();
 		
 		return false;
     }
     
-    private function readConfig($path) {
-    	$ini = new Ini($path);
+    private function loadConfig($path) {
+    	$ini = $this->util->loadInstallIni($path);//new Ini($path);
     	$dbSettings = $ini->getSection('db');
     	$this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
     								'dbName'=> $dbSettings['dbName'],
     								'dbUser'=> $dbSettings['dbUser'],
     								'dbPass'=> $dbSettings['dbPass'],
-    								'dbPort'=> $dbSettings['dbPort'],
+    								'dbPort'=> $dbSettings['dbPort'] == 'default' ? "3306":"",
     								'dbAdminUser'=> $dbSettings['dbAdminUser'],
     								'dbAdminPass'=> $dbSettings['dbAdminPass'],
     	);
@@ -197,7 +256,9 @@ class migrateInstallation extends step
     private function setDetails() {
     	$inst = $this->getDataFromSession("installation");
     	if ($inst) {
-    		$this->location = $inst['location'];
+    		if(file_exists($this->location)) {
+    			$this->location = $inst['location'];
+    		}
     	}
     }
     
@@ -210,9 +271,11 @@ class migrateInstallation extends step
     }
     
     public function storeSilent() {
+    	if($this->location==1) { $this->location = '';}
     	$this->temp_variables['location'] = $this->location;
-    	
-    }
-    
+    	$this->temp_variables['foundVersion'] = $this->foundVersion;
+    	$this->temp_variables['versionError'] = $this->versionError;
+    	$this->temp_variables['settings'] = $this->settings;
+    }  
 }
 ?>

@@ -44,18 +44,17 @@ You can continue to do the backup manually using the following process:
 ?><nobr><?php echo $display; ?></nobr>
 </table>
 <P>
-	<?php if($silent) { ?>
-		</div>
-	<?php } ?>
 	</div>
-        <?php
+	</div>
+    <?php
 if ($dir != '')
 {
     if (($action == '') || ($action == 'confirm')) {
         ?><input type="submit" name="BackupNow" value="Next" class="button_next"><?php
     }
     else if ($backupStatus) {
-        ?><input type="submit" name="Next" value="Next" class="button_next"><?php
+        ?><input type="submit" name="Next" value="Restore" class="button_next">
+        <input type="submit" name="Upgrade" value="Upgrade" class="button_next"><?php
     }
     else {
         ?><input type="submit" name="Next" value="Next" class="button_next"><?php
@@ -64,5 +63,4 @@ if ($dir != '')
 
     ?>
     <input type="submit" name="Previous" value="Back" class="button_previous">
-	</div>
 </form>

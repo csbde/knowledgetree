@@ -26,11 +26,26 @@
 	<?php } ?>
 	<!--Content-->
 	<div id="step_content" class="step">
-		<br/>
-		<br/>
 		<p class="empty_space">
 			Please verify your current installation settings.
 		</p>
+		<h3>Installation Settings</h3>
+		<table class="conf_paths">
+			<tr>
+			<?php
+				if($versionError) {
+					$w = '26%';
+					$x = '10%';
+				} else {
+					$w = '22%';
+					$x = '50%';
+				}
+			?>
+				<td width="<?php echo $w; ?>">KnowledgeTree Version: </td>
+				<td width="<?php echo $x; ?>"><?php echo $foundVersion; ?></td>
+				<?php if($versionError) { ?> <td class="error" width="50%"> KnowledgeTree installation needs to be 3.6.1 or higher </td> <?php } ?>
+			</tr>
+		</table>
 		
 		<h3>Database Settings</h3>
 		<table class="conf_paths">

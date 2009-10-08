@@ -1,6 +1,6 @@
 <?php
 /**
-* Complete Step Controller. 
+* Restore Step Controller. 
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -53,10 +53,8 @@ class upgradeRestore extends Step {
 	*/	
     private $_dbhandler = null;
 
-    private $privileges_check = 'tick';
-    private $database_check = 'tick';
-    protected $silent = true;
-    
+    protected $silent = false;
+    protected $temp_variables = array();    
     protected $util = null;
     
     public function __construct() {
@@ -65,8 +63,10 @@ class upgradeRestore extends Step {
     	$this->util = new UpgradeUtil();
     }
 
-    function doStep() {
+    public function doStep() {
         parent::doStep();
+        $this->temp_variables['restore'] = false;
+        
         if(!$this->inStep("restore")) {
             $this->doRun();
             return 'landing';
@@ -78,24 +78,40 @@ class upgradeRestore extends Step {
         } else if($this->previous()) {
             return 'previous';
         }
+        else if ($this->restoreNow()) {
+            $this->temp_variables['restoreSuccessful'] = false;
+            $this->doRun(true);
+            return 'next';
+        }
         
         $this->doRun();
         return 'landing';
     }
     
-    function doRun() {
-        $this->temp_variables['selected'] = false;
-        if ($this->select()) {
-            $this->restoreSelected();
-            $this->temp_variables['selected'] = true;
+    private function restoreNow() {
+        return isset($_POST['RunRestore']);
+    } 
+    
+    private function doRun($restore = false) {
+        if (!$restore) {
+            $this->temp_variables['selected'] = false;
+            if ($this->select()) {
+                $this->restoreSelected();
+                $this->temp_variables['selected'] = true;
+                $this->temp_variables['availableBackups'] = true;
+            }
+            $this->restoreConfirm();
+        } // end not running a restore, just setting up
+        else {
+            $this->restoreDatabase();
         }
-        $this->restoreConfirm();
+            
         $this->storeSilent();// Set silent mode variables
         
         return true;
     }
     
-    function select() {
+    private function select() {
         return isset($_POST['RestoreSelect']);
     } 
     
@@ -105,183 +121,126 @@ class upgradeRestore extends Step {
      */
     private function storeSilent() {
     }
- /*   
-    // these belong in a shared lib
-    function set_state($value)
-{
-    $_SESSION['state'] = $value;
-}
-function check_state($value, $state='Home')
-{
-    if ($_SESSION['state'] != $value)
+
+    private function restoreDatabase()
     {
-        ?>
-            <script type="text/javascript">
-            document.location="?go=<?php echo $state;?>";
-            </script>
-            <?php
-            exit;
-    }
-}
-*/
-    function restore()
-{
-//    check_state(1);
-//    set_state(5);
-//    title('Restore In Progress');
-    $status = $_SESSION['backupStatus'];
-    $filename = $_SESSION['backupFile']; 
-    $stmt = $this->util->create_restore_stmt($filename);
-    $dir = $stmt['dir'];
-
-    if (is_file($dir . '/mysql') || is_file($dir . '/mysql.exe'))
-    {
-
-?>
-        The restore is now underway. Please wait till it completes.
-<?php
-        print "\n";
-
-
-        $curdir=getcwd();
-        chdir($dir);
-
-
-        $ok=true;
-        $stmts=explode("\n",$stmt['cmd']);
-        foreach($stmts as $stmt)
+        $this->temp_variables['restore'] = true;
+        $status = $_SESSION['backupStatus'];
+        $filename = $_SESSION['backupFile']; 
+        $stmt = $this->util->create_restore_stmt($filename);
+        $dir = $stmt['dir'];
+    
+        if (is_file($dir . '/mysql') || is_file($dir . '/mysql.exe'))
         {
-
-            $handle = popen($stmt, 'r');
-            if ($handle=='false')
+            $curdir=getcwd();
+            chdir($dir);
+    
+            $ok=true;
+            $stmts=explode("\n",$stmt['cmd']);
+            foreach($stmts as $stmt)
             {
-                $ok=false;
-                break;
+    
+                $handle = popen($stmt, 'r');
+                if ($handle=='false')
+                {
+                    $ok=false;
+                    break;
+                }
+                $read = fread($handle, 10240);
+                pclose($handle);
+                $_SESSION['restoreOutput']=$read;
             }
-            $read = fread($handle, 10240);
-            pclose($handle);
-            $_SESSION['restoreOutput']=$read;
-        }
-
+    
             $_SESSION['restoreStatus'] = $ok;
-
-    }
-    else
-    {
-?>
-<P>
-    The <i>mysql</i> utility was not found in the <?php echo $dir;?> subdirectory.
-
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')">
-<?php
-    }
-
-}
-
-
-function restoreDone()
-{
-//    check_state(5);
-//    set_state(6);
-//    title('Restore Status');
-    $status = $_SESSION['restoreStatus'];
-    $filename = $_SESSION['backupFile'];
-
-    if ($status)
-    {
-
-?>
-        The restore of <nobr><i>"<?php echo $filename;?>"</i></nobr> has been completed.
-        <P>
-        It appears as though the <font color=green>restore has been successful</font>.
-        <P>
-
-
-
-<?php
-    }
-    else
-    {
-?>
-It appears as though <font color=red>the restore process has failed</font>. <P>
-Unfortunately, it is difficult to diagnose these problems automatically
-and would recommend that you try to do the backup process manually.
-<P>
-We appologise for the inconvenience.
-<P>
-<table bgcolor="lightgrey">
-<tr>
-<td>
-<?php echo $_SESSION['restoreOutput'];?>
-</table>
-<?php
-
-    }
-?>
-
-<br/>
-
-&nbsp;&nbsp; &nbsp; &nbsp;  <input type=button value="back" onclick="javascript:do_start('welcome')">
-
-<?php
-
-}
-
-function restoreSelect()
-{
-    $this->temp_variables['availableBackups'] = false;
-//    title('Select Backup to Restore');
-    $dir = $this->util->resolveTempDir();
-
-    $files = array();
-    if ($dh = opendir($dir))
-    {
-        while (($file = readdir($dh)) !== false)
-        {
-            if (!preg_match('/kt-backup.+\.sql/',$file)) {
-                continue;
-            }
-            $files[] = $file;
+            // should be some sort of error checking, really
+            $this->restoreDone();
         }
-        closedir($dh);
+    }
+
+    private function restoreDone()
+    {
+        $status = $_SESSION['restoreStatus'];
+        $filename = $_SESSION['backupFile'];
+    
+        if ($status)
+        {
+            $this->temp_variables['display'] = 'The restore of <nobr><i>"' . $filename . '"</i></nobr> has been completed.
+            <P>
+            It appears as though the <font color=green>restore has been successful</font>.
+            <P>';
+            
+            $this->temp_variables['title'] = 'Restore Complete'; 
+            $this->temp_variables['restoreSuccessful'] = true;
+        }
+        else
+        {
+            $this->temp_variables['display'] = 'It appears as though <font color=red>the restore process has failed</font>. <P>
+            Unfortunately, it is difficult to diagnose these problems automatically
+            and would recommend that you try to do the backup process manually.
+            <P>
+            We appologise for the inconvenience.
+            <P>
+            <table bgcolor="lightgrey">
+            <tr>
+            <td>' . $_SESSION['restoreOutput'] . '
+            </table>';
+            $this->temp_variables['title'] = 'Restore Failed';
+            $this->temp_variables['restoreSuccessful'] = false;
+        }
     }
     
-    $this->temp_variables['dir'] = $dir;
-    if (count($files) != 0) {
-        $this->temp_variables['availableBackups'] = true;
-        $this->temp_variables['files'] = $files;
-    }
-}
-
-function restoreSelected()
-{
-    $file=$_REQUEST['file'];
-
-    $dir = $this->util->resolveTempDir();
-    $_SESSION['backupFile'] = $dir . '/' . $file;
-?>
-<?php
-
-}
-
-function restoreConfirm()
-{
-    if (!isset($_SESSION['backupFile']) || !is_file($_SESSION['backupFile']) || filesize($_SESSION['backupFile']) == 0)
+    private function restoreSelect()
     {
-        $this->restoreSelect();
-        return;
+        $this->temp_variables['availableBackups'] = false;
+        $dir = $this->util->resolveTempDir();
+    
+        $files = array();
+        if ($dh = opendir($dir))
+        {
+            while (($file = readdir($dh)) !== false)
+            {
+                if (!preg_match('/kt-backup.+\.sql/',$file)) {
+                    continue;
+                }
+                $files[] = $file;
+            }
+            closedir($dh);
+        }
+        
+        $this->temp_variables['title'] = 'Select Backup to Restore';
+        $this->temp_variables['dir'] = $dir;
+        if (count($files) != 0) {
+            $this->temp_variables['availableBackups'] = true;
+            $this->temp_variables['files'] = $files;
+        }
     }
-
-    $status = $_SESSION['backupStatus'];
-    $filename = $_SESSION['backupFile'];
-    $stmt = $this->util->create_restore_stmt($filename);
-
-    $this->temp_variables['dir'] = $stmt['dir'];
-    $this->temp_variables['display'] = $stmt['display'];
-}
-
-
-
+    
+    private function restoreSelected()
+    {
+        $file=$_REQUEST['file'];
+    
+        $dir = $this->util->resolveTempDir();
+        $_SESSION['backupFile'] = $dir . '/' . $file;
+    }
+    
+    private function restoreConfirm()
+    {
+        if (!isset($_SESSION['backupFile']) || !is_file($_SESSION['backupFile']) || filesize($_SESSION['backupFile']) == 0)
+        {
+            $this->restoreSelect();
+            return;
+        }
+    
+        $status = $_SESSION['backupStatus'];
+        $filename = $_SESSION['backupFile'];
+        $stmt = $this->util->create_restore_stmt($filename);
+        
+        $this->temp_variables['title'] = 'Confirm Restore';
+        $this->temp_variables['dir'] = $stmt['dir'];
+        $this->temp_variables['display'] = $stmt['display'];
+        $this->temp_variables['availableBackups'] = true;
+        $this->temp_variables['selected'] = true;
+    }
 
 }
 ?>

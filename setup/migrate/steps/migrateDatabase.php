@@ -52,14 +52,13 @@ class migrateDatabase extends Step
     public $_dbhandler = null;
     	
 	/**
-	* Reference to Database object
+	* Reference to Utility object
 	*
 	* @author KnowledgeTree Team
 	* @access public
 	* @var object
 	*/	
-    public $_util = null;
-    
+    public $util = null;
    
 	/**
 	* List of errors encountered
@@ -95,7 +94,7 @@ class migrateDatabase extends Step
 	* @access public
 	* @var array
 	*/
-    protected $silent = true;
+    protected $silent = false;
 
 	/**
 	* List of errors used in template
@@ -105,7 +104,7 @@ class migrateDatabase extends Step
 	* @var array
 	*/
     public $templateErrors = array('dmspassword', 'dmsuserpassword', 'con', 'dname', 'dtype', 'duname', 'dpassword');
-    
+    private $sqlDumpFile = '';
 	/**
 	* Constructs database object
 	*
@@ -137,6 +136,7 @@ class migrateDatabase extends Step
     	}
 		if($this->next()) {
 			if($this->exportDatabase()) {
+				$this->storeSilent();
 				return 'next';
 			}
 		} else if($this->previous()) {
@@ -147,26 +147,78 @@ class migrateDatabase extends Step
     }
 
     public function exportDatabase() {
-    	if(WINDOWS_OS) {
-    		$tmpFolder = "../";
-    	} else {
-    		$tmpFolder = "/tmp/knowledgtree";
+    	if($this->doTest()) {
+	    	$installation = $this->getDataFromSession("installation"); // Get installation directory
+	    	$dbSettings = $installation['dbSettings'];
+	    	$location = $installation['location'];
+			$uname = $this->temp_variables['duname'];
+			$pwrd = $this->temp_variables['dpassword'];
+			$tmpFolder = $this->resolveTempDir();
+	    	if(WINDOWS_OS) {
+//	    		$tmpFolder = "tmp/";
+	    		$exe = "\"$location\mysql\bin\mysqldump.exe\""; // Location of dump
+	    	} else {
+//	    		$tmpFolder = "/tmp/";
+	    		$exe = "'$location/mysql/bin/mysqldump'"; // Location of dump
+	    	}
+			$sqlFile = $tmpFolder."/dms_migrate.sql";
+			$dbAdminUser = $dbSettings['dbAdminUser'];
+			$dbAdminPass = $dbSettings['dbAdminPass'];
+			$dbName = $dbSettings['dbName'];
+			$cmd = "$exe -u{$dbAdminUser} -p{$dbAdminPass} $dbName > ".$sqlFile;
+//			echo $cmd;
+//			die;
+			$response = $this->util->pexec($cmd);
+			if(file_exists($sqlFile)) {
+				$fileContents = file_get_contents($sqlFile);
+				if(!empty($fileContents)) {
+					$this->sqlDumpFile = realpath($sqlFile); // Store location of dump
+					return true;
+				}
+			}
     	}
-    	@mkdir($tmpFolder);
+    	
+		return false;
+    }
+    
+    // TODO
+function resolveTempDir()
+{
+
+    if (!WINDOWS_OS)
+    {
+        $dir='/tmp/kt-db-backup';
+    }
+    else
+    {
+        $dir='c:/kt-db-backup';
+    }
+//    $oKTConfig =& KTConfig::getSingleton();
+//    $dir = $oKTConfig->get('backup/backupDirectory',$dir);
+
+    if (!is_dir($dir))
+    {
+            mkdir($dir);
+    }
+    return $dir;
+}
+
+    public function doTest() {
+    	return true;
     	$installation = $this->getDataFromSession("installation"); // Get installation directory
     	$dbSettings = $installation['dbSettings'];
+    	$location = $installation['location'];
 		$uname = $this->temp_variables['duname'];
 		$pwrd = $this->temp_variables['dpassword'];
-		$sqlFile = $tmpFolder."dms.sql";
-		$dbName = $dbSettings['dbName'];
-		$cmd = "mysqldump -u{$uname} -p{$pwrd} {$dbName} > ".$sqlFile;
-		echo $cmd;
-		$response = $this->util->pexec($cmd);
-		if(file_exists($sqlFile)) {
-			return true;
-		} else {
-			return false;
-		}
+		//dmsadmin	//clean1 // 3316 // TODO
+		$dbhandler = $this->util->loadInstallDBUtil();
+		$dbhandler->load("localhost:3316",$uname, $pwrd, "dms");
+    	if (!$dbhandler->getDatabaseLink()) {
+        	$this->error['con'] = "Could not connect to the database, please check username and password";
+        	return false;
+    	}
+    	
+    	return true;
     }
     
 	/**
@@ -180,6 +232,7 @@ class migrateDatabase extends Step
    private function setDetails() {
         $this->temp_variables['duname'] = $this->getPostSafe('duname');
         $this->temp_variables['dpassword'] = $this->getPostSafe('dpassword');
+        $this->temp_variables['dumpLocation'] = $this->getPostSafe('dumpLocation');
         // create lock file to indicate migration mode
         $this->createMigrateFile();
     }
@@ -245,5 +298,12 @@ class migrateDatabase extends Step
     		$this->error[$e] = false;
     	}
     }
+    
+    private function storeSilent() {
+    	// TODO
+    	$_SESSION['database']['dumpLocation'] = $this->sqlDumpFile;
+    	$this->temp_variables['dumpLocation'] = $this->sqlDumpFile;
+    }
+    
 }
 ?>
