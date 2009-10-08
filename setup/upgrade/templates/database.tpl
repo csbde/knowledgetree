@@ -21,7 +21,6 @@
                 <font color="Red">Please ensure that you have made a backup before continuing with the upgrade process.</font>
                 <p>
                 <?php } ?>
-                <br/>
             <?php }
             else if ($action == 'runUpgrade') {
                 echo $preUpgrade;

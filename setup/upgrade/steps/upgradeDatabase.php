@@ -314,8 +314,7 @@ class upgradeDatabase extends Step
         $res = $this->performAllUpgrades();
         if (PEAR::isError($res) || PEAR::isError($pres)) {
             // TODO instantiate error details hideable section
-            $this->temp_variables['upgradeStatus'] = '<font color="red">Database upgrade failed</font><!--: 
-                                                      click here for error details-->
+            $this->temp_variables['upgradeStatus'] = '<font color="red">Database upgrade failed</font>
                                                       <br/><br/>
                                                       Please restore from your backup and ensure that the database does not contain 
                                                       any unsupported modifications and try the upgrade process again.
@@ -400,7 +399,8 @@ class upgradeDatabase extends Step
             } else {
                 $class = "even";
             }
-            $this->temp_variables['upgradeTable'] .= sprintf('<div class="row %s"><div class="foo">%s</div>' . "\n", $class, htmlspecialchars($upgrade->getDescription()));
+            $this->temp_variables['upgradeTable'] .= sprintf('<div class="row %s"><div class="foo">%s</div>' . "\n", $class, 
+                                                             htmlspecialchars($upgrade->getDescription()));
             ++$row;
             $res = $upgrade->performUpgrade();
             $this->temp_variables['upgradeTable'] .= sprintf('<div class="bar">%s</div>', $this->showResult($res));
