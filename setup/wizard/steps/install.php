@@ -91,7 +91,7 @@ class install extends step
 
     public function doRun()
     {
-        if(isset($_POST['Install'])){
+        if(isset($_POST['Install'])) {
             if(isset($_POST['call_home'])){
                 $value = $_POST['call_home'];
             }else{

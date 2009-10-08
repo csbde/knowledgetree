@@ -301,7 +301,7 @@ function resolveTempDir()
     
     private function storeSilent() {
     	// TODO
-    	$_SESSION['database']['dumpLocation'] = $this->sqlDumpFile;
+    	$_SESSION['migrate']['database']['dumpLocation'] = $this->sqlDumpFile;
     	$this->temp_variables['dumpLocation'] = $this->sqlDumpFile;
     }
     

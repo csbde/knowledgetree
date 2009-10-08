@@ -84,6 +84,7 @@ class complete extends Step {
         // check services
         $this->checkServices();
         $this->storeSilent();// Set silent mode variables
+        
     }
     
     private function checkFileSystem()
@@ -172,7 +173,8 @@ class complete extends Step {
         }
         
         // make db connection - user
-        $loaded = $this->_dbhandler->load($dbconf['dhost'], $dbconf['dmsusername'], $dbconf['dmsuserpassword'], $dbconf['dname']);
+        $this->_dbhandler->load($dbconf['dhost'], $dbconf['dmsusername'], $dbconf['dmsuserpassword'], $dbconf['dname']);
+        $loaded = $this->_dbhandler->getDatabaseLink();
         // if we can log in to the database, check access
         // TODO check write access?
         if ($loaded)
@@ -242,6 +244,11 @@ class complete extends Step {
     	$this->temp_variables['paths_check'] = $this->paths_check;
     	$this->temp_variables['privileges_check'] = $this->privileges_check;
     	$this->temp_variables['database_check'] = $this->database_check;
+    	if (file_exists('migrate.lock')) {
+    		$this->temp_variables['migrate_check'] = true;
+    	} else {
+    		$this->temp_variables['migrate_check'] = false;
+    	}
     }
 }
 ?>

@@ -636,6 +636,10 @@ class database extends Step
             
         }
 
+		if(!$this->importExportedDB()) {
+			$this->error['con'] = "Could not Import ";
+		}
+		
         return true;
     }
 
@@ -805,6 +809,20 @@ class database extends Step
     	return $this->parse_mysql_dump(SQL_INSTALL_DIR."data.sql");
     }
 
+    private function importExportedDB() {
+		if (!WINDOWS_OS) {
+            $dir='/tmp/kt-db-backup';
+        }
+        else {
+            $dir='c:/kt-db-backup';
+        }
+    	$sqlFile = $dir."/dms_migrate.sql";
+    	$this->parse_mysql_dump($sqlFile);
+    	$this->_dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
+//    	$this->_dbhandler->query("TRUNCATE plugins;");
+    	$this->_dbhandler->query("TRUNCATE plugin_helper;");
+    	return true;
+    }
 	/**
 	* Close connection if it exists
 	*

@@ -112,37 +112,68 @@ class unixOpenOffice extends unixService {
     
     public function status($updrade = false) {
     	sleep(1);
-    	if($updrade) {
-    		$cmd = "ps ax | grep soffice";
-    	} else {
-    		$cmd = "netstat -npa | grep ".$this->getPort();
-    	}
-    	$response = $this->util->pexec($cmd);
+		$cmd = "ps ax | grep soffice";
+		$response = $this->util->pexec($cmd);
     	if(is_array($response['out'])) {
-    		if(count($response['out']) > 0) {
-    			preg_match('/8100/', $response['out'][0], $matches); // Ignore grep
-				if($matches) {
-    				if($matches[0] == '8100') {
+    		if(count($response['out']) > 1) {
+    			foreach ($response['out'] as $r) {
+    				preg_match('/grep/', $r, $matches); // Ignore grep
+    				if(!$matches) {
     					return 'STARTED';
     				}
-				}
+    			}
     		} else {
     			return '';
     		}
     	}
-    	
+    	/*
+    	if($updrade) {
+    		$cmd = "ps ax | grep soffice";
+    		$response = $this->util->pexec($cmd);
+	    	if(is_array($response['out'])) {
+	    		if(count($response['out']) > 1) {
+	    			foreach ($response['out'] as $r) {
+	    				preg_match('/grep/', $r, $matches); // Ignore grep
+	    				if(!$matches) {
+	    					return 'STARTED';
+	    				}
+	    			}
+	    		} else {
+	    			return '';
+	    		}
+	    	}
+    	} else {
+    		$cmd = "netstat -npa | grep ".$this->getPort();
+	    	$response = $this->util->pexec($cmd);
+	    	if(is_array($response['out'])) {
+	    		if(count($response['out']) > 0) {
+	    			preg_match('/8100/', $response['out'][0], $matches); // Ignore grep
+					if($matches) {
+	    				if($matches[0] == '8100') {
+	    					return 'STARTED';
+	    				}
+					}
+	    		} else {
+	    			return '';
+	    		}
+	    	}
+    	}
+    	*/
     	return '';
     }
     
     public function start() {
     	$state = $this->status();
     	if($state != 'STARTED') {
-			$cmd = "nohup {$this->getBin()} ".$this->getOption()." > ".$this->outputDir."openoffice.log 2>&1 & echo $!";
+			//$cmd = "nohup {$this->getBin()} ".$this->getOption()." > ".$this->outputDir."openoffice.log 2>&1 & echo $!";
+//			$cmd = "{$this->getBin()} ".$this->getOption();
+//"/usr/bin/java" openOffice -cp "/var/www/installers/knowledgetree/setup/wizard/lib/system/;" /usr/bin/soffice
+//"/usr/bin/java" -cp "/var/www/installers/knowledgetree/setup/wizard/lib/system/;" openOffice /usr/bin/soffice
+	    	$cmd = "\"{$this->util->getJava()}\" -cp \"".SYS_DIR."\" openOffice ".$this->getBin();
 	    	if(DEBUG) {
 	    		echo "Command : $cmd<br/>";
 	    		return ;
 	    	}
-	    	$cmd .= "\"{$this->util->getJava()}\" -cp \"".SYS_DIR.";\" openOffice \"";
 	    	$response = $this->util->pexec($cmd);
 	    	
 	    	return $response;
