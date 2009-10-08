@@ -105,7 +105,7 @@ class upgradeRestore extends Step {
      */
     private function storeSilent() {
     }
-    
+ /*   
     // these belong in a shared lib
     function set_state($value)
 {
@@ -123,19 +123,16 @@ function check_state($value, $state='Home')
             exit;
     }
 }
-
+*/
     function restore()
 {
-    check_state(1);
-    set_state(5);
+//    check_state(1);
+//    set_state(5);
 //    title('Restore In Progress');
     $status = $_SESSION['backupStatus'];
-    $filename=$_SESSION['backupFile'];
-    $stmt=create_restore_stmt($filename);
-    $dir=$stmt['dir'];
-
-
-
+    $filename = $_SESSION['backupFile']; 
+    $stmt = $this->util->create_restore_stmt($filename);
+    $dir = $stmt['dir'];
 
     if (is_file($dir . '/mysql') || is_file($dir . '/mysql.exe'))
     {
@@ -166,19 +163,7 @@ function check_state($value, $state='Home')
             $_SESSION['restoreOutput']=$read;
         }
 
-
-
-
-
             $_SESSION['restoreStatus'] = $ok;
-
-
-?>
-            <script type="text/javascript">
-            document.location="?go=RestoreDone";
-            </script>
-<?php
-
 
     }
     else
@@ -191,18 +176,16 @@ function check_state($value, $state='Home')
 <?php
     }
 
-
-
 }
 
 
 function restoreDone()
 {
-    check_state(5);
-    set_state(6);
+//    check_state(5);
+//    set_state(6);
 //    title('Restore Status');
     $status = $_SESSION['restoreStatus'];
-     $filename=$_SESSION['backupFile'];
+    $filename = $_SESSION['backupFile'];
 
     if ($status)
     {
@@ -246,9 +229,9 @@ We appologise for the inconvenience.
 
 function restoreSelect()
 {
+    $this->temp_variables['availableBackups'] = false;
 //    title('Select Backup to Restore');
-
-    $dir = $this->resolveTempDir();
+    $dir = $this->util->resolveTempDir();
 
     $files = array();
     if ($dh = opendir($dir))
@@ -263,10 +246,10 @@ function restoreSelect()
         closedir($dh);
     }
     
-    $this->temp_variables['availableBackups'] = false;
     $this->temp_variables['dir'] = $dir;
     if (count($files) != 0) {
         $this->temp_variables['availableBackups'] = true;
+        $this->temp_variables['files'] = $files;
     }
 }
 
@@ -274,7 +257,7 @@ function restoreSelected()
 {
     $file=$_REQUEST['file'];
 
-    $dir = $this->resolveTempDir();
+    $dir = $this->util->resolveTempDir();
     $_SESSION['backupFile'] = $dir . '/' . $file;
 ?>
 <?php
@@ -290,8 +273,8 @@ function restoreConfirm()
     }
 
     $status = $_SESSION['backupStatus'];
-    $filename=$_SESSION['backupFile'];
-    $stmt = $this->create_restore_stmt($filename);
+    $filename = $_SESSION['backupFile'];
+    $stmt = $this->util->create_restore_stmt($filename);
 
     $this->temp_variables['dir'] = $stmt['dir'];
     $this->temp_variables['display'] = $stmt['display'];

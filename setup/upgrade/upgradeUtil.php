@@ -39,6 +39,9 @@
 * @package Upgrader
 * @version Version 0.1
 */
+
+require '../../config/dmsDefaults.php';
+
 class UpgradeUtil {	
 	/**
 	* Constructs upgradeation object
