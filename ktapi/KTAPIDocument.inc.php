@@ -1238,7 +1238,11 @@ class KTAPI_Document extends KTAPI_FolderItem
                 	$value = $fieldvalue->getValue();
                 }
 
-                $controltype = 'string';
+                // Old
+                //$controltype = 'string';
+                // Replace with true
+                $controltype = strtolower($field->getDataType());
+                
                 if ($field->getHasLookup())
                 {
                 	$controltype = 'lookup';
@@ -1247,7 +1251,10 @@ class KTAPI_Document extends KTAPI_FolderItem
                     	$controltype = 'tree';
                     }
                 }
-
+                
+                // Options - Required for Custom Properties
+                $options = array();
+                
                 switch ($controltype)
                 {
                 	case 'lookup':
@@ -1256,6 +1263,13 @@ class KTAPI_Document extends KTAPI_FolderItem
                 	case 'tree':
                 		$selection = KTAPI::get_metadata_tree($field->getId());
                 		break;
+                    case 'large text':
+                        $options = array(
+                                'ishtml' => $field->getIsHTML(),
+                                'maxlength' => $field->getMaxLength()
+                            );
+                        $selection= array();
+                        break;
                 	default:
                 		$selection= array();
                 }
@@ -1268,7 +1282,8 @@ class KTAPI_Document extends KTAPI_FolderItem
                     'blankvalue' => $value=='' ? '1' : '0',
                     'description' => $field->getDescription(),
                     'control_type' => $controltype,
-                    'selection' => $selection
+                    'selection' => $selection,
+                    'options' => $options,  
 
                 );
 

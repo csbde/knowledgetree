@@ -1024,7 +1024,10 @@ class KTAPI
 				$value = 'n/a';
 
 
-				$controltype = 'string';
+				//$controltype = 'string';
+                
+                // Replace with true
+				$controltype = strtolower($field->getDataType());
 				if ($field->getHasLookup())
 				{
 					$controltype = 'lookup';
@@ -1033,7 +1036,8 @@ class KTAPI
 						$controltype = 'tree';
 					}
 				}
-
+                
+                $options = array();
 				switch ($controltype)
 				{
 					case 'lookup':
@@ -1042,6 +1046,13 @@ class KTAPI
 					case 'tree':
 						$selection = KTAPI::get_metadata_tree($field->getId());
 						break;
+                    case 'large text':
+                        $options = array(
+                                'ishtml' => $field->getIsHTML(),
+                                'maxlength' => $field->getMaxLength()
+                            );
+                        $selection= array();
+                        break;
 					default:
 						$selection= array();
 				}
@@ -1053,7 +1064,8 @@ class KTAPI
 					'value' => $value,
 					'description' => $field->getDescription(),
 					'control_type' => $controltype,
-					'selection' => $selection
+					'selection' => $selection,
+					'options' => $options,
 				);
 			}
 			$result['fields'] = $fieldsresult;

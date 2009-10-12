@@ -435,6 +435,12 @@ class KTWebService
                         'item' => "{urn:$this->namespace}kt_metadata_selection_item"
                   )
          	);
+            
+    $this->__typedef["{urn:$this->namespace}kt_metadata_options"] =
+         	array(
+				'ishtml' => 'string',
+        		'maxlength' => 'string'
+         	);
 
     	$this->__typedef["{urn:$this->namespace}kt_metadata_field"] =
          	array(
@@ -443,7 +449,8 @@ class KTWebService
         		'value' => 'string' ,
         		'description' => 'string' ,
         		'control_type' => 'string' ,
-        		'selection' => "{urn:$this->namespace}kt_metadata_selection"
+        		'selection' => "{urn:$this->namespace}kt_metadata_selection",
+                'options' => "{urn:$this->namespace}kt_metadata_options"
          	);
 
         $this->__typedef["{urn:$this->namespace}kt_metadata_fields"] =
