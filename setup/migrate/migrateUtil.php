@@ -156,7 +156,6 @@ class MigrateUtil {
     {
 		return $this->bootstrap->absoluteURI($url = null, $protocol = null, $port = null);
     }
-    
 
    /**
      * Portably execute a command on any of the supported platforms.

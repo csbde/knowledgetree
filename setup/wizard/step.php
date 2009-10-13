@@ -116,8 +116,7 @@ class Step
 	* @access public
 	* @return string
 	*/
-    public function doStep()
-    {
+    public function doStep() {
         return '';
     }
 
@@ -133,8 +132,7 @@ class Step
 	* @access public
 	* @return array
 	*/
-    public function getStepVars()
-    {
+    public function getStepVars() {
         return $this->temp_variables;
     }
 
@@ -291,6 +289,7 @@ class Step
 	* @return boolean
 	*/
     public function inStep($name) {
+    	if(!isset($_GET['step_name'])) return false;
         if($_GET['step_name'] == $name)
             return true;
         return false;
@@ -314,7 +313,23 @@ class Step
     }
     
 	/**
-	* Get session data from post
+	* Get session data from package
+	*
+	* @author KnowledgeTree Team
+	* @params none
+	* @access private
+	* @return boolean
+	*/
+    public function getDataFromPackage($package, $class) {
+    	if(empty($_SESSION[$package][$class])) {
+    		return false;
+    	}
+    	
+    	return $_SESSION[$package][$class];
+    }
+    
+	/**
+	* Get session data from class
 	*
 	* @author KnowledgeTree Team
 	* @params none

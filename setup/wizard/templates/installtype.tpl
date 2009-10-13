@@ -7,7 +7,7 @@
 		<p class="empty_space">
 			The wizard will require you choose between an upgrade of an existing sytem or a clean install. 
 		</p>
-		<div class="demo"><?php echo $html->image('dame/kt_browse.png'); ?></div>
+		<div class="demo"><?php echo $html->image('kt_browse.png'); ?></div>
 	</div>
 	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
 	<input type="submit" name="Next" value="Clean Install" class="button_next"/>

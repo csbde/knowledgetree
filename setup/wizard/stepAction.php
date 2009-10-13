@@ -304,38 +304,37 @@ class stepAction {
 	*/
     public function getLeftMenu()
     {
-        $menu = '';
+    	$sideMenuElements = array();
         $active = false;
 		if($this->stepClassNames) {
+			$ele = array();
 	        foreach ($this->stepClassNames as $k=>$step) {
+	        	$ele['step'] = $step;
 	            if($this->step_names[$step] != '') {
-	                $item = $this->step_names[$step];
+	            	$ele['name'] = $this->step_names[$step];
 	            } else {
-	                $item = $this->makeHeading($step);
+	            	$ele['name'] = $this->makeHeading($step);
 	            }
 	            if($step == $this->stepName) {
-	                $class = 'current';
-	                $active = true;
+	            	$ele['class'] = 'current';
+	            	$active = true;
 	            } else {
-	                if($active){
-	                    $class = 'inactive';
-	                }else{
-	                    $class = 'indicator';
-	                    if (AJAX) {
-							$options = "\"index.php?step_name={$step}\", \"content_container\"";
-		                    $item = "<a href='#' onclick='javascript:{w.getUrl(".$options.");}' >{$item}</a>";
-	                    } else {
-	                    	$item = "<a href=\"index.php?step_name={$step}\">{$item}</a>";
-	                    }
+	                if($active) {
+	                	$ele['class'] = 'inactive';
+	                } else {
+	                	$ele['class'] = 'indicator';
 	                }
 	            }
-	            $menu .= "<span id = '{$step}' class='{$class}'>$item</span><br />";
+	            $sideMenuElements[] = $ele;
 	        }
 		}
+		$step_tpl = new Template("templates/sidemenu.tpl"); // Create template
+		$step_tpl->set("sideMenuElements", $sideMenuElements); // Set side menu elements
+		$step_tpl->set("ajax", AJAX); // Set ajax state
 
-        return $menu;
+        return $step_tpl->fetch();
     }
-
+    
 	/**
 	* Returns confirmation page flag
 	*

@@ -188,7 +188,7 @@ class Migrater {
 	*/
     private function _firstStepPeriod() {
         if(isset($_GET['step_name'])) {
-        	if($_GET['step_name'] != 'welcome')
+        	if($_GET['step_name'] != 'installation')
             	return false;
         }
         
@@ -510,9 +510,6 @@ class Migrater {
     	} elseif (isset($_POST['BInstall'])) {
     		$this->migraterAction = 'binstall';
     		$this->response = 'binstall';
-//    	} elseif (isset($_POST['Backup'])) {
-//    		$this->migraterAction = 'backup';
-//    		$this->response = 'backup';
     	} else {
     		$this->response = '';
     		$this->migraterAction = '';
@@ -558,11 +555,6 @@ class Migrater {
                 $iutil = new MigrateUtil();
                 $iutil->redirect('../wizard/index.php?step_name=dependencies');
             	break;
-//            case 'backup':
-//                $iutil = new MigrateUtil();
-//                $iutil->redirect('../upgrade/index.php?step_name=backup');
-//                $iutil->redirect("..".DS."upgrade".DS."index.php?step_name=backup");
-//            	break;
             default:
             	// TODO : handle silent
             	$this->_landing();

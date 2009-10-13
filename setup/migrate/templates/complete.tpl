@@ -13,15 +13,15 @@
 	}
 	?>
 	<div id="step_content_complete" class="step">
-<!--	Services	-->
+<!--	SQL	-->
 		<table>
 	    	<tr>
 	    		<td> <span class='<?php echo $sql['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> </td>
 	    		<td style="width:20%;"> <?php echo $sql['name']; ?> </td>
 	    		<td style="width:75%;"> <?php echo $sql['msg']; ?> </td>
 	    	<tr>
+<!--	Services	-->
 		<?php
-		if($step_vars) {
 			if(isset($step_vars['services'])) {
 			    foreach ($step_vars['services'] as $ser){
 			    	?>
@@ -38,7 +38,25 @@
 			    	<?php
 			    }
 			}
-		}
+		?>
+<!--	Paths		-->
+		<?php
+		if(isset($step_vars['paths'])) {
+			    foreach ($step_vars['paths'] as $path){
+			    	?>
+			    	<tr>
+			    		<td> <span class='<?php echo $path['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> </td>
+			    		<td style="width:20%;"> <?php echo $path['name']; ?> </td>
+			    		<td style="width:75%;"> <?php echo $path['msg']; ?> </td>
+			    		<?php if ($path['class'] != 'tick') {
+			    			?>
+			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+			    			<?php
+			    		} ?>
+			    	</tr>
+			    	<?php
+			    }
+			}
 		?>
 		</table>
 	</div>

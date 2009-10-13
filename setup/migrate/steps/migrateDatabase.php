@@ -155,10 +155,8 @@ class migrateDatabase extends Step
 			$pwrd = $this->temp_variables['dpassword'];
 			$tmpFolder = $this->resolveTempDir();
 	    	if(WINDOWS_OS) {
-//	    		$tmpFolder = "tmp/";
 	    		$exe = "\"$location\mysql\bin\mysqldump.exe\""; // Location of dump
 	    	} else {
-//	    		$tmpFolder = "/tmp/";
 	    		$exe = "'$location/mysql/bin/mysqldump'"; // Location of dump
 	    	}
 			$sqlFile = $tmpFolder."/dms_migrate.sql";
@@ -166,8 +164,6 @@ class migrateDatabase extends Step
 			$dbAdminPass = $dbSettings['dbAdminPass'];
 			$dbName = $dbSettings['dbName'];
 			$cmd = "$exe -u{$dbAdminUser} -p{$dbAdminPass} $dbName > ".$sqlFile;
-//			echo $cmd;
-//			die;
 			$response = $this->util->pexec($cmd);
 			if(file_exists($sqlFile)) {
 				$fileContents = file_get_contents($sqlFile);
@@ -182,26 +178,18 @@ class migrateDatabase extends Step
     }
     
     // TODO
-function resolveTempDir()
-{
-
-    if (!WINDOWS_OS)
-    {
-        $dir='/tmp/kt-db-backup';
-    }
-    else
-    {
-        $dir='c:/kt-db-backup';
-    }
-//    $oKTConfig =& KTConfig::getSingleton();
-//    $dir = $oKTConfig->get('backup/backupDirectory',$dir);
-
-    if (!is_dir($dir))
-    {
-            mkdir($dir);
-    }
-    return $dir;
-}
+	function resolveTempDir() {
+	    if (!WINDOWS_OS) {
+	        $dir='/tmp/kt-db-backup';
+	    } else {
+	        $dir='c:/kt-db-backup';
+	    }
+	    if (!is_dir($dir)) {
+			mkdir($dir);
+	    }
+	    
+	    return $dir;
+	}
 
     public function doTest() {
     	return true;
@@ -210,7 +198,6 @@ function resolveTempDir()
     	$location = $installation['location'];
 		$uname = $this->temp_variables['duname'];
 		$pwrd = $this->temp_variables['dpassword'];
-		//dmsadmin	//clean1 // 3316 // TODO
 		$dbhandler = $this->util->loadInstallDBUtil();
 		$dbhandler->load("localhost:3316",$uname, $pwrd, "dms");
     	if (!$dbhandler->getDatabaseLink()) {
@@ -233,8 +220,7 @@ function resolveTempDir()
         $this->temp_variables['duname'] = $this->getPostSafe('duname');
         $this->temp_variables['dpassword'] = $this->getPostSafe('dpassword');
         $this->temp_variables['dumpLocation'] = $this->getPostSafe('dumpLocation');
-        // create lock file to indicate migration mode
-        $this->createMigrateFile();
+        $this->createMigrateFile(); // create lock file to indicate migration mode
     }
     
     /**

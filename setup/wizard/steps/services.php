@@ -986,11 +986,14 @@ class services extends Step
 	* @return mixed
 	*/
 	public function installStep() {
-		foreach ($this->getServices() as $serviceName) {
-			$className = OS.$serviceName;
-			$service = new $className();
-			$status = $this->serviceStart($service);
+		if (!file_exists('migrate.lock')) { // Check if it is a migration
+			foreach ($this->getServices() as $serviceName) {
+				$className = OS.$serviceName;
+				$service = new $className();
+				$status = $this->serviceStart($service);
+			}
 		}
+		
 		return true;
 	}
 	

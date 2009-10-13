@@ -68,7 +68,7 @@
 		</table>
 		
 	</div>
-    <input type="submit" name="Edit" value="Edit"  class="button_previous"/>
+    <input type="submit" name="Edit" value="Back"  class="button_previous"/>
     <input type="submit" name="Confirm" value="Confirm" class="button_next"/>
 </form>
 <?php if (AJAX) { ?> <script type="text/javascript" src="resources/form.js"></script> <?php } ?>

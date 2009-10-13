@@ -505,6 +505,22 @@ class InstallUtil {
     }
 
 	/**
+	* Get session data from package
+	*
+	* @author KnowledgeTree Team
+	* @params none
+	* @access private
+	* @return boolean
+	*/
+    public function getDataFromPackage($package, $class) {
+    	if(empty($_SESSION[$package][$class])) {
+    		return false;
+    	}
+    	
+    	return $_SESSION[$package][$class];
+    }
+    
+	/**
 	* Get session data from post
 	*
 	* @author KnowledgeTree Team
