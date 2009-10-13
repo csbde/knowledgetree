@@ -360,20 +360,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
         }
 
         $this->ktwebdavLog("Exiting $method request", 'info', true);
-
-            if (method_exists($this, $wrapper) && ($method == 'options' || method_exists($this, $method))) {
-                $this->$wrapper(); // call method by name
-            } else { // method not found/implemented
-                if ($_SERVER['REQUEST_METHOD'] == 'LOCK') {
-                    $this->http_status('412 Precondition failed');
-                } else {
-                    $this->http_status('405 Method not allowed');
-                    header('Allow: '.join(', ', $this->_allow())); // tell client what's allowed
-                }
-        }
-
-$this->ktwebdavLog("Exiting $method request", 'info', true); 
-}
+    }
 
     /**
      * check authentication if check is implemented
