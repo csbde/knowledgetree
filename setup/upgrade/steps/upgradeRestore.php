@@ -58,7 +58,8 @@ class upgradeRestore extends Step {
     protected $util = null;
     
     public function __construct() {
-    	$this->temp_variables = array("step_name"=>"restore", "silent"=>$this->silent);
+    	$this->temp_variables = array("step_name"=>"restore", "silent"=>$this->silent, 
+                                      "loadingText"=>"The database restore is under way.  Please wait until it completes");
         $this->_dbhandler = new UpgradedbUtil();
     	$this->util = new UpgradeUtil();
     }

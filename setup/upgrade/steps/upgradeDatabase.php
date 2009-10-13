@@ -121,7 +121,8 @@ class upgradeDatabase extends Step
 	* @param none
  	*/
     public function __construct() {
-        $this->temp_variables = array("step_name"=>"database", "silent"=>$this->silent);
+        $this->temp_variables = array("step_name"=>"database", "silent"=>$this->silent, 
+                                      "loadingText"=>"The database upgrade is under way.  Please wait until it completes");
     	$this->_dbhandler = new UpgradedbUtil();
         $this->_util = new UpgradeUtil();
     	if(WINDOWS_OS)
@@ -195,8 +196,10 @@ class upgradeDatabase extends Step
         else if ($action == 'runUpgrade') {
             $this->temp_variables['title'] = 'Upgrade In Progress';
             if (!$this->upgradeDatabase()) {
+                $this->temp_variables['backupSuccessful'] = false;
                 return false;
             }
+            $this->temp_variables['backupSuccessful'] = true;
         }
         
         return true;
@@ -221,7 +224,7 @@ class upgradeDatabase extends Step
         $ret .= "<tr bgcolor='darkgrey'><th width='10'>Code</th><th width='100%'>Description</th><th width='30'>Applied</th></tr>\n";
         $i=0;
         foreach ($upgrades as $upgrade) {
-            $color=((($i++)%2)==0)?'white':'lightgrey';
+            $color = ((($i++)%2)==0) ? 'white' : 'lightgrey';
             $ret .= sprintf("<tr bgcolor='$color'><td>%s</td><td>%s</td><td>%s</td></tr>\n",
             htmlspecialchars($upgrade->getDescriptor()),
             htmlspecialchars($upgrade->getDescription()),
@@ -299,11 +302,14 @@ class upgradeDatabase extends Step
     {
         global $default;
         
+        $errors = false;
+        
         $this->temp_variables['detail'] = '<p>The table below describes the upgrades that have occurred to
             upgrade your KnowledgeTree installation to <strong>' . $default->systemVersion . '</strong>';
       
         $pre_res = $this->performPreUpgradeActions();
         if (PEAR::isError($pre_res)) {
+            $errors = true;
             $this->temp_variables['preUpgrade'] = '<font color="red">Pre-Upgrade actions failed.</font>';
         }
         else {
@@ -313,7 +319,8 @@ class upgradeDatabase extends Step
         
         $res = $this->performAllUpgrades();
         if (PEAR::isError($res) || PEAR::isError($pres)) {
-            // TODO instantiate error details hideable section
+            $errors = true;
+            // TODO instantiate error details hideable section?
             $this->temp_variables['upgradeStatus'] = '<font color="red">Database upgrade failed</font>
                                                       <br/><br/>
                                                       Please restore from your backup and ensure that the database does not contain 
@@ -327,11 +334,14 @@ class upgradeDatabase extends Step
     
         $post_pres = $this->performPostUpgradeActions();
         if (PEAR::isError($post_res)) {
+            $errors = true;
             $this->temp_variables['postUpgrade'] = '<font color="red">Post-Upgrade actions failed.</font>';
         }
         else {
             $this->temp_variables['postUpgrade'] = '<font color="green">Post-Upgrade actions succeeded.</font>';
         }
+        
+        return !$errors;
     }
 
     private function performPreUpgradeActions() {
@@ -404,7 +414,7 @@ class upgradeDatabase extends Step
             ++$row;
             $res = $upgrade->performUpgrade();
             $this->temp_variables['upgradeTable'] .= sprintf('<div class="bar">%s</div>', $this->showResult($res));
-            $this->temp_variables['upgradeTable'] .= '<br style="clear: both">' . "\n";
+            $this->temp_variables['upgradeTable'] .= '<br>' . "\n";
             $this->temp_variables['upgradeTable'] .= "</div>\n";
             if (PEAR::isError($res)) {
                 if (!is_a($res, 'Upgrade_Already_Applied')) {
