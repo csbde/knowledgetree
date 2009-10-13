@@ -288,6 +288,7 @@ class Step
 	* @return boolean
 	*/
     public function inStep($name) {
+    	if(!isset($_GET['step_name'])) return false;
         if($_GET['step_name'] == $name)
             return true;
         return false;
