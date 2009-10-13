@@ -1,4 +1,4 @@
-<form action="index.php?step_name=restore" method="post">
+<form action="index.php?step_name=restore" method="post" name="dbForm" id="dbForm">
     <p class="title"><?php echo $title; ?></p>
 
     <?php
@@ -92,11 +92,14 @@ Press <i>Next</i> to attempt the command(s) above.
     ?>
     </div>
     </div>
+	<?php include 'templates/loading.tpl'; ?>
+	<div id="buttonBar">
     <input type="submit" name="Previous" value="Back" class="button_previous">
     <?php if (($dir != '') && ($selected)) { ?>
-    <input type="submit" name="RunRestore" value="Next" class="button_next">
+    <input type="button" name="RunRestore" value="Next" class="button_next" onclick="doSubmit(this);">
     <?php }
     else { ?>
     <input type="submit" name="Next" value="Next" class="button_next">
     <?php } ?>
+	</div>
 </form>

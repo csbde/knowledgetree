@@ -1,16 +1,16 @@
-<form action="index.php?step_name=backup" method="post">
-	<p class="title"><?php echo $title; ?></p>
+<form action="index.php?step_name=backup" method="post" name="dbForm" id="dbForm">
+    <p class="title"><?php echo $title; ?></p>
 
-	<?php
-	if($errors || $warnings){
-	    echo '<div>'
-	       . '<a href="http://wiki.knowledgetree.com/Web_Based_Upgrader#Post_Upgrade" target="_blank">'
-	       . 'Click Here for help on overcoming backup issues</a></div><br/>';
-	}
-	?>
-	<div id="step_content_complete" class="step">
-	<br/><br/>
-	<div>
+    <?php
+    if($errors || $warnings){
+        echo '<div>'
+           . '<a href="http://wiki.knowledgetree.com/Web_Based_Upgrader#Post_Upgrade" target="_blank">'
+           . 'Click Here for help on overcoming backup issues</a></div><br/>';
+    }
+    ?>
+    <div id="step_content_complete" class="step">
+    <br/><br/>
+    <div>
     <?php
     if ($dir != '') {
         if (!$backupStatus) {
@@ -44,23 +44,26 @@ You can continue to do the backup manually using the following process:
 ?><nobr><?php echo $display; ?></nobr>
 </table>
 <P>
-	</div>
-	</div>
+    </div>
+    </div>
+    <?php include 'templates/loading.tpl'; ?>
+	<div id="buttonBar">
+    <input type="submit" name="Previous" value="Back" class="button_previous">
     <?php
 if ($dir != '')
 {
     if (($action == '') || ($action == 'confirm')) {
-        ?><input type="submit" name="BackupNow" value="Next" class="button_next"><?php
+        ?><input type="button" name="BackupNow" value="Next" class="button_next" onclick="doSubmit(this);"><?php
     }
     else if ($backupStatus) {
         ?><input type="submit" name="Next" value="Restore" class="button_next">
         <input type="submit" name="Upgrade" value="Upgrade" class="button_next"><?php
     }
     else {
-        ?><input type="submit" name="Next" value="Next" class="button_next"><?php
+        ?><input type="submit" name="Next" value="Next" class="button_next""><?php
     }
 }
 
     ?>
-    <input type="submit" name="Previous" value="Back" class="button_previous">
+    </div>
 </form>

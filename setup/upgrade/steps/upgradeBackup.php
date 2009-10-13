@@ -57,7 +57,8 @@ class upgradeBackup extends Step {
     protected $temp_variables = array();
     
     public function __construct() {
-    	$this->temp_variables = array("step_name"=>"backup", "silent"=>$this->silent);
+    	$this->temp_variables = array("step_name"=>"backup", "silent"=>$this->silent, 
+                                      "loadingText"=>"Your backup is under way.  Please wait until it completes");
         $this->_dbhandler = new UpgradedbUtil();
     	$this->util = new UpgradeUtil();
     }
