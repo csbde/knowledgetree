@@ -107,22 +107,29 @@ class install extends step
 
     public function installStep()
     {
-        $conf = $this->getDataFromSession("install");
-        // retrieve database information from session
-        // initialise the db connection
+		$this->callHome();
+		$this->clearSeesions();
+    }
+    
+    public function clearSeesions() {
+    	// TODO
+    	$_SESSION['installers'] = '';
+    	$_SESSION['migrate'] = '';
+    }
+    
+    public function callHome() {
+        $conf = $this->getDataFromSession("install"); // retrieve database information from session
         $this->_dbhandler = new dbUtil();
         $dbconf = $this->getDataFromSession("database");
-        $this->_dbhandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']);
-
+        $this->_dbhandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
         $complete = 1;
         if($conf['call_home'] == 'enable'){
             $complete = 0;
         }
         $query = "UPDATE scheduler_tasks SET is_complete = {$complete} WHERE task = 'Call Home'";
         $this->_dbhandler->query($query);
-
         // close the database connection
-        $this->_dbhandler->close();
+        $this->_dbhandler->close();    	
     }
 }
 ?>

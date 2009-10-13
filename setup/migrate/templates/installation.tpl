@@ -41,7 +41,7 @@
 		}
 		?>
 	</div>
-	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
+	<input type="submit" name="Install" value="Back To Installer" class="button_previous"/>
 	<input type="submit" name="Next" value="Next" class="button_next"/>
 </form>
 <script type="text/javascript">

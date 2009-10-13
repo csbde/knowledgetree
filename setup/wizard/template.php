@@ -101,7 +101,6 @@ class Template
 		}
 		$this->template_vars['html'] = new htmlHelper();
         extract($this->template_vars); // Extract the vars to local namespace
-		
         ob_start();
 		include($file);
         $contents = ob_get_contents(); 

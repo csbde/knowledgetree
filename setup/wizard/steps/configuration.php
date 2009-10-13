@@ -308,9 +308,6 @@ class configuration extends Step
     private function registerDirs() { // Adjust directories variables
     	$this->readConfigPath();
     	$dirs = $this->getFromConfigPath();
-    	$dbconf = $this->getDataFromSession("database"); // retrieve database information from session
-        $this->_dbhandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
-        //$this->_dbhandler->getDatabaseLink()
     	$directories['varDirectory'] = array('section'=>'urls', 'value'=>addslashes($dirs['varDirectory']['path']), 'setting'=>'varDirectory');
     	$directories['logDirectory'] = array('section'=>'urls', 'value'=>addslashes($dirs['logDirectory']['path']), 'setting'=>'logDirectory');
     	$directories['documentRoot'] = array('section'=>'urls', 'value'=>addslashes($dirs['documentRoot']['path']), 'setting'=>'documentRoot');
@@ -331,7 +328,12 @@ class configuration extends Step
         $conf = $this->getDataFromSession("configuration"); // get data from the server
         $server = $conf['server'];
         $paths = $conf['paths'];
-		$this->readConfigPath(); // initialise writing to config.ini
+        // TODO
+        if (file_exists('migrate.lock')) { // Check if its an upgrade
+        	$this->readInstallation();
+        } else {
+        	$this->readConfigPath(); // initialise writing to config.ini
+        }
 		$dirs = $this->getFromConfigPath();
         if(isset($this->confpaths['configIni'])) { // Check if theres a config path
         	$configPath = realpath("../../{$this->confpaths['configIni']}"); // Relative to Config Path File
@@ -467,9 +469,12 @@ class configuration extends Step
         if(isset($this->temp_variables['paths'])) {
         	$dirs = $this->temp_variables['paths']; // Pull from temp
         } else {
-			$this->readConfigPath();
-			$dirs = $this->getFromConfigPath();
-			
+        	if (file_exists('migrate.lock')) { // Check if its an upgrade
+        		$this->readInstallation(); // Read values from config.ini of other installation
+        	} else {
+        		$this->readConfigPath(); // Read contents of config-path file
+        	}
+			$dirs = $this->getFromConfigPath(); // Store contents
         }
         $varDirectory = $fileSystemRoot . DS . 'var';
         foreach ($dirs as $key => $dir){
@@ -611,12 +616,42 @@ class configuration extends Step
     }
     
     /**
+     * Migration Path finder
+     *
+	 * @author KnowledgeTree Team
+     * @access private
+     * @param none
+     * @return boolean
+     */
+    private function readInstallation() {
+		$inst = $this->getDataFromPackage('migrate', 'installation');
+		foreach ($inst['urlPaths'] as $name=>$path) {
+			$k = $path['path'];
+			if($path['name'] == 'Var Directory') {
+				$this->confpaths['var'] = $k;
+			} elseif($path['name'] == 'Log Directory') {
+				$this->confpaths['log'] = $k;
+			} elseif($path['name'] == 'Document Root') {
+				$this->confpaths['Documents'] = $k;
+			} elseif($path['name'] == 'UI Directory') {
+				
+			} elseif($path['name'] == 'Temporary Directory') {
+				$this->confpaths['tmp'] = $k;
+			} elseif($path['name'] == 'Cache Directory') {
+				$this->confpaths['cache'] = $k;
+			}
+		}
+		
+		return true;
+    }
+    
+    /**
      * Read contents of config path file
      *
 	 * @author KnowledgeTree Team
      * @access private
      * @param none
-     * @return array The path information
+     * @return boolean
      */
     private function readConfigPath() {
 		$configPath = $this->getContentPath();

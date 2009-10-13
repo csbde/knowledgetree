@@ -14,7 +14,7 @@
     <dhost>localhost</dhost>
     <dport>3306</dport>
     <dname>dms</dname>
-    <duname>dms</duname>
+    <duname>root</duname>
     <dmsadminuser>dmsadmin</dmsadminuser>
     <dmsaupass>js9281djw</dmsaupass>
     <dmsuser>dmsuser</dmsuser>

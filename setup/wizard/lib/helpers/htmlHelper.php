@@ -1,7 +1,46 @@
 <?php
-	require_once("path.php");
+/**
+* HTML Helper Class.
+*
+* KnowledgeTree Community Edition
+* Document Management Made Simple
+* Copyright(C) 2008,2009 KnowledgeTree Inc.
+* Portions copyright The Jam Warehouse Software(Pty) Limited
+*
+* This program is free software; you can redistribute it and/or modify it under
+* the terms of the GNU General Public License version 3 as published by the
+* Free Software Foundation.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+* FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+* details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+* You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+* California 94120-7775, or email info@knowledgetree.com.
+*
+* The interactive user interfaces in modified source and object code versions
+* of this program must display Appropriate Legal Notices, as required under
+* Section 5 of the GNU General Public License version 3.
+*
+* In accordance with Section 7(b) of the GNU General Public License version 3,
+* these Appropriate Legal Notices must retain the display of the "Powered by
+* KnowledgeTree" logo and retain the original copyright notice. If the display of the
+* logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
+* must display the words "Powered by KnowledgeTree" and retain the original
+* copyright notice.
+*
+* @copyright 2008-2009, KnowledgeTree Inc.
+* @license GNU General Public License version 3
+* @author KnowledgeTree Team
+* @package Installer
+* @version Version 0.1
+*/
+class htmlHelper {
 	
-	class htmlHelper {
 	var $tags = array(
 		'meta' => '<meta%s/>',
 		'metalink' => '<link href="%s"%s/>',
@@ -61,19 +100,18 @@
 		}
 		
 		function js($name) {
-			return "<script type=\"text/javascript\" src=\"resources/js/$name\"></script>";
+			return "<script type=\"text/javascript\" src=\"../wizard/resources/js/$name\"></script>";
 		}
 		
 		function css($name) {
-			return "<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/css/$name\" />";
+			return "<link rel=\"stylesheet\" type=\"text/css\" href=\"../wizard/resources/css/$name\" />";
 		}
 		
 		function image($name, $options = array()) {
-			$path = "resources/graphics/$name";
+			$path = "../wizard/resources/graphics/$name";
 			$image = sprintf($this->tags['image'], $path, $this->_parseAttributes($options, null, '', ' '));
 			
 			return $image; 
-			//return "<img src=\"resources/graphics/$name\"/>";
 		}
 		
 		function _parseAttributes($options, $exclude = null, $insertBefore = ' ', $insertAfter = null) {
@@ -105,7 +143,7 @@
 		if (is_array($value)) {
 			$value = '';
 		}
-
+	
 		if (in_array($key, $minimizedAttributes)) {
 			if ($value === 1 || $value === true || $value === 'true' || $value == $key) {
 				$attribute = sprintf($attributeFormat, $key, $key);
@@ -128,6 +166,6 @@
 			return array_map('h', $text);
 		}
 		return htmlspecialchars($text, ENT_QUOTES, $charset);
-	}
-	}
+}
+}
 ?>
