@@ -43,11 +43,8 @@
 class installType extends step 
 {
 
-    function __construct() {
-        $this->temp_variables = array("step_name"=>"installtype");
-    }
-
-    public function doStep() {
+	public function doStep() {
+    	$this->temp_variables = array("step_name"=>"installtype");
     	if(!$this->inStep("installtype")) {
     		return 'landing';
     	}

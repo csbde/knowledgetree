@@ -396,12 +396,8 @@ class stepAction {
         $step_tpl->set("warnings", $step_warnings); // Set template warnings
         $step_vars = $this->action->getStepVars(); // Get template variables
         $step_tpl->set("step_vars", $step_vars); // Set template errors
-        foreach ($step_vars as $key => $value) { // Set template variables
-            $step_tpl->set($key, $value); // Load values to session
-            if($this->action->storeInSession()) { // Check if class values need to be stored in session
-            	$this->_loadValueToSession($this->stepName, $key, $value);
-            }
-        }
+		$this->loadToSes($step_vars);
+		$this->loadToTpl($step_tpl, $step_vars);
         // TODO: Force because it does not always recognize ajax request
 		if(AJAX && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
     		echo $step_tpl->fetch();
@@ -415,6 +411,24 @@ class stepAction {
 		}
 	}
 
+	public function loadToSes($step_vars) {
+		if($this->action->storeInSession()) { // Check if class values need to be stored in session
+        	foreach ($step_vars as $key => $value) { // Set template variables
+				$this->_loadValueToSession($this->stepName, $key, $value);
+            }
+        }
+	}
+	
+	public function loadToTpl($step_tpl, $step_vars) {
+		foreach ($step_vars as $key => $value) { // Set template variables
+			$step_tpl->set($key, $value); // Load values to session
+		}
+	}
+	
+	public function getStepVars() {
+		return $this->action->getStepVars();
+	}
+	
 	public function getVars() {
 		$left = $this->getLeftMenu();
 		$vars['left'] = $left; // Set left menu

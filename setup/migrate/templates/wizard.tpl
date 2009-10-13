@@ -8,6 +8,7 @@
 		<?php echo $html->js('jquery.hotkeys.js'); ?>
 		<?php echo $html->js('wizard.js'); ?>
 		<?php echo $html->css('wizard.css'); ?>
+		<?php echo $html->css('migrate.css'); ?>
         <meta http-equiv=Content-Type content="text/html; charset=utf-8">
 	</head>
 	<body onload="">
@@ -15,8 +16,8 @@
 		    <div id="header">
 			    <div id="logo"><?php echo $html->image('dame/installer-header_logo.png'); ?> </div>
 			    <div id="install_details">
-					<span style="font-size:120%;"> <?php echo $vars['migrate_version']; ?> </span>
-					<span style="font-size:120%;"><?php echo $vars['migrate_type']; ?></span>
+					<span style="font-size:120%;"> <?php if (isset($vars['migrate_version'])) echo $vars['migrate_version']; ?> </span>
+					<span style="font-size:120%;"> <?php if (isset($vars['migrate_version'])) echo $vars['migrate_type']; ?></span>
 				</div>
 		    </div>
 		    <div id="wrapper">

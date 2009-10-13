@@ -164,6 +164,7 @@ class migrateDatabase extends Step
 			$dbAdminPass = $dbSettings['dbAdminPass'];
 			$dbName = $dbSettings['dbName'];
 			$cmd = "$exe -u{$dbAdminUser} -p{$dbAdminPass} $dbName > ".$sqlFile;
+			echo $cmd;
 			$response = $this->util->pexec($cmd);
 			if(file_exists($sqlFile)) {
 				$fileContents = file_get_contents($sqlFile);

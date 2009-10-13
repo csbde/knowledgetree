@@ -109,6 +109,28 @@ class Step
     private $salt = 'installers';
     
 	/**
+	* Reference to utility object
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var object
+	*/
+    public $util;
+    
+	/**
+	* Reference to utility object
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var object
+	*/
+    public $dbhandler;
+    
+    public function __construct() {
+    	$this->dbhandler = new dbUtil();
+    	$this->util = new InstallUtil();
+    }
+	/**
 	* Returns step state
 	*
 	* @author KnowledgeTree Team

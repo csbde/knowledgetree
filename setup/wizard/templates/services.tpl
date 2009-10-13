@@ -38,7 +38,7 @@
 		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Installer#Service_Dependencies" target="_blank">Click here for help on overcoming service issues</a>
 	<?php } ?>
 <!--Content-->
-	<div id="step_content_configuration" style="width:755px;" class="step">
+	<div id="step_content_configuration" class="step">
 		<?php if(!$alreadyInstalled) { ?>
 			<?php if($javaExeError) { ?>
 				Specify the location of your Java executable

@@ -133,7 +133,7 @@ class migrateServices extends Step
 	* @param none
  	*/
     public function __construct() {
-    	$this->temp_variables = array("step_name"=>"migrateServices", "silent"=>$this->silent);
+    	$this->temp_variables = array("step_name"=>"services", "silent"=>$this->silent);
     	$this->util = new MigrateUtil();
     }
     
@@ -267,7 +267,7 @@ class migrateServices extends Step
     		$className = OS.$serviceName;
     		$serv = $this->util->loadInstallService($className);
     		$serv->load();
-    		$sStatus = $serv->status(true);
+    		$sStatus = $serv->status();
     		if($sStatus == 'STARTED') {
     			$state = 'cross';
     			$this->error[] = "Service : {$serv->getName()} could not be uninstalled.<br/>";

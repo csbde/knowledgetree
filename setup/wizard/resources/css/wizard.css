@@ -81,10 +81,6 @@ select {
 	padding-right:15px;
 }
 
-#wrapper {
-    /*background: white url("../graphics/background.gif") repeat-y left;*/
-}
-
 #container {
   width: 100%;
   background: white url("../graphics/background.gif") repeat-y left;
@@ -118,37 +114,37 @@ select {
 #step_content_configuration {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:290px;
+	min-height:320px;
 }
 
 #step_content_registration {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	height:295px;
+	min-height:320px;
 }
 
 #step_content_registration_confirm {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	height:400px;
+	min-height:400px;
 }
 
 #step_content_install {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	height:290px;
+	min-height:290px;
 }
 
 #step_content_database {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:355px;
+	min-height:365px;
 }
 
 #step_content_database_confirm {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	height:375px;
+	min-height:370px;
 }
 
 #step_content_complete {
@@ -158,17 +154,13 @@ select {
 }
 
 #sidebar {
-	/*background: rgb(239, 239, 239) none repeat scroll 0% 0%;*/
 	font-size: 90%;
 	color: grey; 
 	font-family: sans-serif; 
 	margin-top: 0px;
-	/*width: 235px;*/
 	float: left;
 	padding-top: 20px;
 	padding-bottom: 20px;
-	/*height:475px;*/
-	/*color:#616161;*/
 	line-height:3;
 	padding-left:20px;
 	text-align:left;
@@ -480,16 +472,13 @@ td.dir_description {
 .big_ok {
 	background: url("../graphics/big-ok.png") no-repeat;
 	padding:4px;
-	/*width:16px;
-	height:16px;
-	padding-bottom:1px;*/
 }
 
 .license_agreement {
 	overflow: scroll;
 	height: 255px;
 	width:765px;
-	height:370px;
+	height:375px;
 	overflow-x:hidden;
 	border:1px solid #CFCFCF;
 }

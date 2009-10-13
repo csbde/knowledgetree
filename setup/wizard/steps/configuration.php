@@ -54,15 +54,6 @@ if(isset($_GET['action'])) {
 class configuration extends Step
 {
 	/**
-	* Database object
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var object
-	*/
-    private $_dbhandler = null;
-    
-	/**
 	* Database host
 	*
 	* @author KnowledgeTree Team
@@ -177,24 +168,10 @@ class configuration extends Step
 	* @access protected
 	* @var object
 	*/
-    protected $util = null;
+    public $util;
     
     protected $confpaths = array();
     
-    /**
-     * Class constructor
-     *
-	 * @author KnowledgeTree Team
-     * @access public
-     */
-    public function __construct()
-    {
-    	$this->temp_variables = array("step_name"=>"configuration", "silent"=>$this->silent);
-    	$this->_dbhandler = new dbUtil();
-    	$this->util = new InstallUtil();
-        $this->done = true;
-    }
-
 	/**
 	 * Control function for position within the step
 	 *
@@ -203,6 +180,8 @@ class configuration extends Step
 	 * @return string The position in the step
 	 */
     public function doStep() {
+    	$this->temp_variables = array("step_name"=>"configuration", "silent"=>$this->silent);
+        $this->done = true;
     	if(!$this->inStep("configuration")) {
     		$this->setDetails();
     		$this->doRun();
@@ -326,6 +305,8 @@ class configuration extends Step
     public function installStep()
     {
         $conf = $this->getDataFromSession("configuration"); // get data from the server
+        $dbconf = $this->getDataFromSession("database"); 
+        $this->dbhandler->load($dbconf['dhost'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
         $server = $conf['server'];
         $paths = $conf['paths'];
         // TODO
@@ -353,7 +334,7 @@ class configuration extends Step
         if(!$ini === false){ // write out the config.ini file
             $ini->write();
         }
-        $this->_dbhandler->close(); // close the database connection
+        $this->dbhandler->close(); // close the database connection
         $this->writeCachePath(); // Write cache path file
         $this->writeConfigPath(); // Write config file
     }
@@ -377,14 +358,14 @@ class configuration extends Step
 	            $value = mysql_real_escape_string($item['path']);
 	            $setting = mysql_real_escape_string($item['setting']);
 	            $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
-	            $this->_dbhandler->query($sql);
+	            $this->dbhandler->query($sql);
 	        }
         }
     }
     
     private function writeDBSection($ini, $server) {
         $dbconf = $this->getDataFromSession("database"); // retrieve database information from session
-        $this->_dbhandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
+        $this->dbhandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
 		$server = $this->registerDBConfig($server, $dbconf); // add db config to server variables
         $table = 'config_settings';
         foreach($server as $item) { // write server settings to config_settings table and config.ini
@@ -406,7 +387,7 @@ class configuration extends Step
                     $setting = mysql_real_escape_string($item['setting']);
 
                     $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
-                    $this->_dbhandler->query($sql);
+                    $this->dbhandler->query($sql);
                     break;
             }
         }
@@ -625,20 +606,24 @@ class configuration extends Step
      */
     private function readInstallation() {
 		$inst = $this->getDataFromPackage('migrate', 'installation');
-		foreach ($inst['urlPaths'] as $name=>$path) {
-			$k = $path['path'];
-			if($path['name'] == 'Var Directory') {
-				$this->confpaths['var'] = $k;
-			} elseif($path['name'] == 'Log Directory') {
-				$this->confpaths['log'] = $k;
-			} elseif($path['name'] == 'Document Root') {
-				$this->confpaths['Documents'] = $k;
-			} elseif($path['name'] == 'UI Directory') {
-				
-			} elseif($path['name'] == 'Temporary Directory') {
-				$this->confpaths['tmp'] = $k;
-			} elseif($path['name'] == 'Cache Directory') {
-				$this->confpaths['cache'] = $k;
+		if(isset($inst['urlPaths'])) {
+			foreach ($inst['urlPaths'] as $name=>$path) {
+				$k = $path['path'];
+				if($path['name'] == 'Var Directory') {
+					$this->confpaths['var'] = $k;
+				} elseif($path['name'] == 'Log Directory') {
+					$this->confpaths['log'] = $k;
+				} elseif($path['name'] == 'Document Root') {
+					$this->confpaths['Documents'] = $k;
+				} elseif($path['name'] == 'UI Directory') {
+					
+				} elseif($path['name'] == 'Temporary Directory') {
+					$this->confpaths['tmp'] = $k;
+				} elseif($path['name'] == 'Cache Directory') {
+					$this->confpaths['cache'] = $k;
+				} elseif ($path['name'] == 'Upload Directory') {
+					$this->confpaths['uploads'] = $k;
+				}
 			}
 		}
 		

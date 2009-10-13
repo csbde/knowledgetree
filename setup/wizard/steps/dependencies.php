@@ -66,18 +66,6 @@ class dependencies extends Step
 	* @var array
 	*/
     protected $silent = true;
-    
-    /**
-     * Constructor
-     *
-	 * @author KnowledgeTree Team
-     * @access public
-     */
-    public function __construct() {
-        $this->temp_variables = array("step_name"=>"dependencies", "silent"=>$this->silent);
-        $this->error = array();
-        $this->done = true;
-    }
 
 	/**
 	 * Control function for position within the step
@@ -88,6 +76,9 @@ class dependencies extends Step
 	 */
     public function doStep()
     {
+        $this->temp_variables = array("step_name"=>"dependencies", "silent"=>$this->silent);
+        $this->error = array();
+        $this->done = true;
     	if(!$this->inStep("dependencies")) {
     		$this->doRun();
     		$this->storeSilent();

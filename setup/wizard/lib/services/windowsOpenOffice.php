@@ -41,16 +41,6 @@
 */
 
 class windowsOpenOffice extends windowsService {
-
-	/**
-	* Reference to utility object
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var string
-	*/
-	public $util;
-	
 	/**
 	* Path to office executable
 	*
@@ -142,13 +132,20 @@ class windowsOpenOffice extends windowsService {
  	*/	
     public $name = "KTOpenOffice";
     
+	/**
+	* Load defaults needed by service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string
+	* @return void
+ 	*/
 	public function load() {
         // hack for testing
 		$this->setPort("8100");
 		$this->setHost("127.0.0.1");
 		$this->setLog("openoffice.log");
 		$this->setWinservice("winserv.exe");
-		$this->setOption();
 	}
 
 	private function setPort($port = "8100") {
@@ -194,11 +191,6 @@ class windowsOpenOffice extends windowsService {
 		return $this->winservice;
 	}
 	
-	private function setOption() {
-		$this->options = "-displayname {$this->name} -start auto {$this->getBin()} -headless -nofirststartwizard "
-                       . "-accept=\"socket,host={$this->host},port={$this->port};urp;StarOffice.ServiceManager\"";
-	}
-	
 	public function getOption() {
 		return $this->options;
 	}
@@ -207,9 +199,8 @@ class windowsOpenOffice extends windowsService {
     	$status = $this->status();
     	if($status == '') {
     		$services = $this->util->getDataFromSession('services');
-    		$this->setBin("{$services['openOfficeExe']}");
-    		$this->setOption();
-            $cmd = "\"{$this->winservice}\" install $this->name {$this->getOption()}";
+    		$this->setBin($services['openOfficeExe']);
+            $cmd = "\"{$this->winservice}\" install $this->name "."-displayname {$this->name} -start auto {$this->getBin()} -headless -invisible -accept=socket,host={$this->host},port={$this->port};urp;";;
         	if(DEBUG) {
         		echo "Command : $cmd<br/>";
         		return ;

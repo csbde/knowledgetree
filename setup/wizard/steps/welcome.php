@@ -44,11 +44,8 @@ class welcome extends step {
 
 	protected $silent = true;
 	
-    function __construct() {
-        $this->temp_variables = array("step_name"=>"welcome");
-    }
-
     function doStep() {
+    	$this->temp_variables = array("step_name"=>"welcome");
         if($this->next()) {
             return 'next'; // Just a welcome, so return "next" action
         }

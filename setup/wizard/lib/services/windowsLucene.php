@@ -404,7 +404,6 @@ class windowsLucene extends windowsService {
 	public function install() {
 		$state = $this->status();
 		if($state == '') {
-			//$this->writeLuceneProperties();
 			$luceneExe = $this->getLuceneExe();
 			$luceneSource = $this->getLuceneSource();
 			$luceneDir = $this->getluceneDir();
@@ -424,33 +423,6 @@ class windowsLucene extends windowsService {
 		return $state;
 	}
 	
-	/**
-	* Write Lucene Service property file
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return string
- 	*/
-	private function writeLuceneProperties() {
-		// Check if bin is readable and writable
-		if(is_readable(SYS_BIN_DIR) && is_writable(SYS_BIN_DIR)) {
-			if($this->getluceneDir()) {
-				$propPath = $this->getluceneDir().DS."KnowledgeTreeIndexer.properties";
-				$fp = fopen($propPath, "w+");
-				$content = "server.port=8875\n";
-				$content .= "server.paranoid=false\n";
-				$content .= "server.accept=127.0.0.1\n";
-				$content .= "server.deny=\n";
-				$content .= "indexer.directory=".SYS_VAR_DIR."indexes\n";
-				//$content .= "indexer.directory=../../var/indexes\n";
-				$content .= "indexer.analyzer=org.apache.lucene.analysis.standard.StandardAnalyzer\n";
-				fwrite($fp, $content);
-				fclose($fp);
-			}
-		} else {
-			//TODO: Should not get here
-		}
-	}
+	
 }
 ?>

@@ -118,7 +118,6 @@
 		</div>
 	</div>
 	<?php if($migrate_check) { ?>
-<!--    <a href="../upgrade" class="buttons back" style="width:62px;" onclick="javascript:{w.clearSessions();}">Upgrade</a>-->
 		<a href="../../login.php" class="buttons back upgrade" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
     <?php } else { ?>
     <a href="../../login.php" class="buttons back upgrade" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>

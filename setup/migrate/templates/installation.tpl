@@ -1,4 +1,4 @@
-<form action="index.php?step_name=installation" method="post">
+<form action="index.php?step_name=<?php echo $step_name; ?>" method="post" id="<?php echo $step_name; ?>">
 	<p class="title">Current Installation</p>
 <!--Continue Message-->
 	<?php
@@ -24,7 +24,7 @@
 			?>
 		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Current_Installation" target="_blank">Click here for help on overcoming installation detection issues</a>
 	<?php } ?>
-	<div id="step_content" class="step">
+	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<p class="empty_space">
 			Please verify the location of your current installation.
 		</p>

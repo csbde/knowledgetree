@@ -1,4 +1,4 @@
-<form id="dbsettings" action="index.php?step_name=database" method="post">
+<form id="<?php echo $step_name; ?>" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 	<p class="title">Migrate Database</p>
 	<div id="database" class="step1" style="display:block;">
 		<div class="description">
@@ -6,32 +6,11 @@
 <!--		The details for an administrative <br/>-->
 <!--		user on the database server are required in order to be able to configure and migrate the database.-->
 		</div>
-		<div id="step_content_database" class="step">
-		<br/><br/>
-		<span class="error">!!NB!! You are advised to backup your database before proceeding. !!NB!!</span>
-<!--		<span class="error"> <?php if($errors['con']) { echo $errors['con']."<br/><br/>"; } ?> </span>
-		
-		
-		<p class="empty_space">
-			Database Details
-		</p>
-			<table class="dbconf">
-			<?php
-//				$input_size = '35';
-//				$align = 'left';
-			?>
-				    <tr>
-				        <td><label for='duname'>Enter Database Administrative username: </label></td>
-				        <td><input type='text' value="<?php //echo $duname?>" id='duname' name='duname' size='<?php //echo $input_size; ?>' style="float:left"/></td>
-				        <td id="error" class="error"><?php //if($errors['duname']) echo $errors['duname']; ?></td>
-				    </tr>
-				    <tr>
-				        <td><label for='dpassword'>Enter the password for the Administrator: </label></td>
-				        <td><input type='password' value="<?php //echo $dpassword?>" id='dpassword' name='dpassword' size='<?php //echo $input_size; ?>' style="float:left"/></td>
-				        <td id="error" class="error"><?php //if($errors['dpassword']) echo $errors['dpassword']; ?></td>
-				    </tr>
-			</table>
-		</div>-->
+		<div id="step_content_<?php echo $step_name; ?>" class="step">
+			<br/><br/>
+			<span class="error">!!NB!! You are advised to backup your database before proceeding. !!NB!!</span>
+			<?php if($errors['con']) { echo $errors['con']."<br/><br/>"; } ?>
+		</div>
 	</div>
 	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
 	<input type="submit" name="Next" value="Next" class="button_next"/>

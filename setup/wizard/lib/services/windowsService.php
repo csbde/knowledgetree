@@ -61,10 +61,32 @@ class windowsService extends Service {
  	*/
 	public $util;
 	
+	/**
+	* Service output log file directory
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/
 	public $outputDir;
 	
+	/**
+	* System output log file directory
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/
 	public $varDir;
 	
+    /**
+     * Class constructor
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     */
 	public function __construct() {
 		$this->util = new InstallUtil();
 		$this->setSystemDirs();
@@ -100,7 +122,7 @@ class windowsService extends Service {
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
-	* @return array
+	* @return mixed
  	*/
 	public function start() {
 		$status = $this->status();

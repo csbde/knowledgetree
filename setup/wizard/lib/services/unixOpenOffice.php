@@ -41,9 +41,6 @@
 */
 
 class unixOpenOffice extends unixService {
-
-	// utility
-	public $util;
 	// path to office
 	private $path;
 	// host
@@ -60,13 +57,19 @@ class unixOpenOffice extends unixService {
 	private $options;
 	public $name = "KTOpenOffice";
 	
+	/**
+	* Load defaults needed by service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string
+	* @return void
+ 	*/
 	public function load() {
-		$this->util = new InstallUtil();
 		$this->setPort("8100");
 		$this->setHost("localhost");
 		$this->soffice = $this->util->getOpenOffice();
 		$this->setBin($this->soffice);
-		$this->setOption();
 	}
 	
 	private function setPort($port = "8100") {
@@ -91,10 +94,6 @@ class unixOpenOffice extends unixService {
 	
 	public function getBin() {
 		return $this->bin;
-	}
-	
-	private function setOption() {
-		$this->options = "-nofirststartwizard -nologo -headless -accept=\"socket,host={$this->getHost()},port={$this->getPort()};urp;StarOffice.ServiceManager\"";
 	}
 	
 	public function getOption() {
@@ -126,7 +125,7 @@ class unixOpenOffice extends unixService {
     			return '';
     		}
     	}
-    	/*
+    	/*	
     	if($updrade) {
     		$cmd = "ps ax | grep soffice";
     		$response = $this->util->pexec($cmd);
@@ -162,13 +161,17 @@ class unixOpenOffice extends unixService {
     	return '';
     }
     
+	/**
+	* Start Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
     public function start() {
     	$state = $this->status();
     	if($state != 'STARTED') {
-			//$cmd = "nohup {$this->getBin()} ".$this->getOption()." > ".$this->outputDir."openoffice.log 2>&1 & echo $!";
-//			$cmd = "{$this->getBin()} ".$this->getOption();
-//"/usr/bin/java" openOffice -cp "/var/www/installers/knowledgetree/setup/wizard/lib/system/;" /usr/bin/soffice
-//"/usr/bin/java" -cp "/var/www/installers/knowledgetree/setup/wizard/lib/system/;" openOffice /usr/bin/soffice
 	    	$cmd = "\"{$this->util->getJava()}\" -cp \"".SYS_DIR."\" openOffice ".$this->getBin();
 	    	if(DEBUG) {
 	    		echo "Command : $cmd<br/>";
@@ -188,6 +191,14 @@ class unixOpenOffice extends unixService {
     	return false;
     }
     
+	/**
+	* Stop Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return array
+ 	*/
     function stop() {
     	$cmd = "pkill -f ".$this->soffice;
     	$response = $this->util->pexec($cmd);

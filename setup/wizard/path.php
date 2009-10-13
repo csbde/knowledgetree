@@ -89,6 +89,7 @@
     define('SHELL_DIR', WIZARD_DIR."shells".DS);
     define('SYS_DIR', WIZARD_LIB."system".DS);
     define('HELPER_DIR', WIZARD_LIB."helpers".DS);
+    define('VALID_DIR', WIZARD_LIB."validation".DS);
     // Define paths to system webroot
 	define('SYSTEM_DIR', $sys);
 	define('SYS_VAR_DIR', SYSTEM_DIR."var".DS);

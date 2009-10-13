@@ -51,11 +51,8 @@ class license extends step {
 	*/
     protected $error = array();
     
-    function __construct() {
-        $this->temp_variables = array("step_name"=>"license");
-    }
-
     public function doStep() {
+    	$this->temp_variables = array("step_name"=>"license");
     	$this->temp_variables['licensePath'] = realpath('resources/license/license.txt');
     	if(!$this->inStep("license")) {
     		return 'landing';

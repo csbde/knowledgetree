@@ -85,10 +85,10 @@ class migrateComplete extends Step {
     private function checkPaths() {
     	$installation = $this->getDataFromSession("installation"); // Get installation directory
     	foreach ($installation['urlPaths'] as $path) {
-    		if(is_writable($path['path']) || is_readable($path['path'])) {
+    		if(is_writable($path['path']) && is_readable($path['path'])) {
     			$this->temp_variables['paths'][$path['name']]['class'] = "tick";
     		} else {
-    			$this->temp_variables['paths'][$path['name']]['class'] = "cross";
+    			$this->temp_variables['paths'][$path['name']]['class'] = "cross_orange";
     		}
 			$this->temp_variables['paths'][$path['name']]['name'] = $path['name'];
 			$this->temp_variables['paths'][$path['name']]['msg'] = $path['path'];
@@ -119,7 +119,7 @@ class migrateComplete extends Step {
     		$className = OS.$serviceName;
     		$serv = $this->util->loadInstallService($className);
     		$serv->load();
-    		$sStatus = $serv->status(true);
+    		$sStatus = $serv->status();
     		if($sStatus == 'STARTED') {
     			$state = 'cross';
     			$this->error[] = "Service : {$serv->getName()} could not be uninstalled.<br/>";

@@ -218,13 +218,7 @@ wizard.prototype.sendRegistration = function ()  {
 }
 
 wizard.prototype.clearSessions = function ()  {
-	var address = 'session.php?action=destroyInstall';
-	w.clearASession(address);
-	var address = 'session.php?action=destroyMigrate';
-	w.clearASession(address);
-}
-
-wizard.prototype.clearASession = function (address)  {
+	var address = 'session.php?action=destroyAll';
 	$.ajax({
 		url: address,
 		dataType: "html",

@@ -57,6 +57,8 @@ function __autoload($class) { // Attempt and autoload classes
 		require_once(WIZARD_LIB."$class.php");
 	} elseif (file_exists(SERVICE_LIB."$class.php")) {
 		require_once(SERVICE_LIB."$class.php");
+	} elseif (file_exists(VALID_DIR."$class.php")) {
+		require_once(VALID_DIR."$class.php");
 	} else {
 		if(preg_match('/Helper/', $class)) {
 			require_once(HELPER_DIR."$class.php");
@@ -91,7 +93,7 @@ class InstallWizard {
 	* @access protected
 	* @var boolean
 	*/
-	protected $iutil = null;
+	protected $util = null;
 
 	/**
 	* Constructs installation wizard object
@@ -110,7 +112,19 @@ class InstallWizard {
 	* @return boolean
  	*/
 	private function isSystemInstalled() {
-		return $this->iutil->isSystemInstalled();
+		return $this->util->isSystemInstalled();
+	}
+	
+	/**
+	* Check if system has to be migrated
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @param none
+	* @return boolean
+ 	*/
+	private function isMigration() {
+		return $this->util->isMigration();
 	}
 	
 	/**
@@ -165,7 +179,7 @@ class InstallWizard {
 	* @return void
  	*/
 	private function setIUtil($iutil) {
-		$this->iutil = $iutil;
+		$this->util = $iutil;
 	}
 	
 	/**
@@ -213,7 +227,8 @@ class InstallWizard {
 	* @return void
  	*/
 	private function removeInstallFile() {
-		@unlink("install.lock");
+		if(file_exists("install.lock"))
+			unlink("install.lock");
 	}
 	
 	/**
@@ -245,15 +260,15 @@ class InstallWizard {
 	* @return mixed
  	*/
 	public function systemChecks() {
-		$res = $this->iutil->checkStructurePermissions();
+		$res = $this->util->checkStructurePermissions();
 		if($res === true) return $res;
 		switch ($res) {
 			case "wizard":
-					$this->iutil->error("Installer directory is not writable (KT_Installation_Directory/setup/wizard/)");
+					$this->util->error("Installer directory is not writable (KT_Installation_Directory/setup/wizard/)");
 					return 'Installer directory is not writable (KT_Installation_Directory/setup/wizard/)';
 				break;
 			case "/":
-					$this->iutil->error("System root is not writable (KT_Installation_Directory/)");
+					$this->util->error("System root is not writable (KT_Installation_Directory/)");
 					return "System root is not writable (KT_Installation_Directory/)";
 				break;
 			default:
@@ -274,12 +289,15 @@ class InstallWizard {
  	*/
 	public function dispatch() {
 		$this->load();
-		if($this->getBypass() === "1") {
-			$this->removeInstallFile();
+		if($this->getBypass() === "1") { // Helper to force install
+			$this->removeInstallFile(); // TODO: Remove
 		} elseif ($this->getBypass() === "0") {
 			$this->createInstallFile();
 		}
 		if(!$this->isSystemInstalled()) { // Check if the systems not installed
+			if($this->isMigration()) { // Check if the migrator needs to be accessed
+				$this->util->redirect('../migrate');
+			}
 			$response = $this->systemChecks();
 			if($response === true) {
 				$this->displayInstaller();
@@ -288,7 +306,7 @@ class InstallWizard {
 			}
 		} else {
 			// TODO: Die gracefully
-			$this->iutil->error("System has been installed <div class=\"buttons\"><a href='../../'>Goto Login</a></div>");
+			$this->util->error("System has been installed <div class=\"buttons\"><a href='../../'>Goto Login</a></div>");
 		}
 	}
 }

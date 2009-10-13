@@ -41,7 +41,6 @@
 */
 
 class unixLucene extends unixService {
-	public $util;
 	private $shutdownScript;
 	private $indexerDir;
 	private $lucenePidFile;
@@ -52,8 +51,15 @@ class unixLucene extends unixService {
 	private $javaXmx;
 	public $name = "KTLucene";
 	
+	/**
+	* Load defaults needed by service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string
+	* @return void
+ 	*/
 	public function load() {
-		$this->util = new InstallUtil();
 		$this->setLuceneSource("ktlucene.jar");
 		$this->setLuceneDir(SYSTEM_DIR."bin".DS."luceneserver".DS);
 		$this->setIndexerDir(SYSTEM_DIR."search2".DS."indexing".DS."bin".DS);
@@ -133,6 +139,14 @@ class unixLucene extends unixService {
 		return " {$this->getJavaXmx()} {$this->getJavaXmx()} -jar ";
 	}
 	
+	/**
+	* Stop Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return array
+ 	*/
   	public function stop() {
   		// TODO: Breaks things
 		$state = $this->status();
@@ -176,6 +190,14 @@ class unixLucene extends unixService {
     	$this->stop();
     }
     
+	/**
+	* Start Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
     public function start() {
     	$state = $this->status();
     	if($state != 'STARTED') {

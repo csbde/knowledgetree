@@ -227,9 +227,11 @@ class Session
 		return $_SESSION[$this->salt][$class];
 	}
 	
-	public function destroyInstall() {
-		$_SESSION[$this->salt] = '';
-		$this->destroy();
+	public function destroyAll() {
+		echo 'All Clear';
+    	$_SESSION['installers'] = '';
+    	$_SESSION['migrate'] = '';
+    	$_SESSION['upgrade'] = '';
 	}
 }
 

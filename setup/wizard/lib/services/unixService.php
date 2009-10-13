@@ -44,6 +44,7 @@ class unixService extends Service {
 	
 	public $outputDir;
 	public $varDir;
+	
 	/**
 	* Reference to utility object
 	*
@@ -54,6 +55,12 @@ class unixService extends Service {
  	*/
 	public $util;
 	
+    /**
+     * Class constructor
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     */
 	public function __construct() {
 		$this->util = new InstallUtil();
 		$this->setSystemDirs();
@@ -83,6 +90,14 @@ class unixService extends Service {
 		return $this->name;
 	}
 	
+	/**
+	* Load defaults needed by service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string
+	* @return void
+ 	*/
 	public function load() {}
 	
 	/**
@@ -91,7 +106,7 @@ class unixService extends Service {
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
-	* @return mixed
+	* @return void
  	*/
 	public function start() {
 
@@ -103,7 +118,7 @@ class unixService extends Service {
 	* @author KnowledgeTree Team
 	* @access public
 	* @param none
-	* @return mixed
+	* @return void
  	*/
 	public function stop() {
 

@@ -49,8 +49,15 @@ class unixScheduler extends unixService {
 	private $phpCli;
 	public $name = "KTScheduler";
 	
+	/**
+	* Load defaults needed by service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string
+	* @return void
+ 	*/
 	public function load() {
-		$this->util = new InstallUtil();
 		$this->setPhpCli();
 		$this->scheduler = 'scheduler';
 		$this->setSchedulerSource('schedulerTask.sh');
@@ -128,6 +135,14 @@ class unixScheduler extends unixService {
 		$this->stop();
 	}
 	
+	/**
+	* Stop Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return array
+ 	*/
 	function stop() {
     	$cmd = "pkill -f ".$this->scheduler;
     	$response = $this->util->pexec($cmd);
@@ -153,6 +168,14 @@ class unixScheduler extends unixService {
     	return '';
 	}
 	
+	/**
+	* Start Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return array
+ 	*/
 	function start() {
 		// TODO : Write sh on the fly? Not sure the reasoning here
 		$source = $this->getSchedulerSourceLoc();

@@ -88,10 +88,15 @@ class migrateInstallation extends step
     public $util = null;
     
 	private $location = '';
+	
 	private $dbSettings = array();
+	
 	private $ktSettings = array();
+	
 	private $urlPaths = array();
+	
 	private $knownWindowsLocations = array("C:\Program Files\ktdms"=>"C:\Program Files\ktdms\knowledgeTree\config\config-path","C:\Program Files x86\ktdms"=>"C:\Program Files x86\ktdms\knowledgeTree\config\config-path","C:\ktdms"=>"C:\ktdms\knowledgeTree\config\config-path");
+	
 	private $knownUnixLocations = array("/opt/ktdms","/var/www/ktdms");
 
 	/**
@@ -102,8 +107,11 @@ class migrateInstallation extends step
 	* @var object
 	*/	
     private $settings = array();
+    
     private $supportedVersion = '3.6.1';
+    
     private $foundVersion = 'Unknown';
+    
     private $versionError = false;
     
     function __construct() {
@@ -247,6 +255,7 @@ class migrateInstallation extends step
 									array('name'=> 'UI Directory', 'path'=> $froot.DS.'presentation'.DS.'lookAndFeel'.DS.'knowledgeTree'),
 									array('name'=> 'Temporary Directory', 'path'=> $froot.DS.'tmp'),
 									array('name'=> 'Cache Directory', 'path'=> $froot.DS.'cache'),
+									array('name'=> 'Upload Directory', 'path'=> $froot.DS.'uploads'),
     	);
     	$this->temp_variables['urlPaths'] = $this->urlPaths;
     	$this->temp_variables['ktSettings'] = $this->ktSettings;

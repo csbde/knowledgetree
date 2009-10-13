@@ -52,17 +52,6 @@ class registration extends Step
     public $storeInSession = true;
     
     /**
-     * Initialise the registration step
-     *
-     * @author KnowledgeTree Team
-     * @access public
-     */
-    public function __construct()
-    {
-        $this->temp_variables = array("step_name"=>"registration");
-    }
-
-    /**
      * Controller function for determining the position within the step
      *
      * @author KnowledgeTree Team
@@ -71,6 +60,7 @@ class registration extends Step
      */
     public function doStep()
     {
+    	$this->temp_variables = array("step_name"=>"registration");
         $this->setFormInfo();
         $this->loadFromSession();
 		if(!$this->inStep("registration")) {

@@ -61,13 +61,26 @@ class InstallUtil {
  	*/
 	public function isSystemInstalled() {
 		if (file_exists(dirname(__FILE__)."/install.lock")) {
-
 			return true;
 		}
-
 		return false;
 	}
 
+	/**
+	* Check if system needs to be migrated
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
+	public function isMigration() {
+ 		if (isset($_POST['Migrate'])) {
+			return true;
+    	}
+    	return false;
+	}
+	
 	public function error($error) {
 		$template_vars['error'] = $error;
 		$file = "templates/error.tpl";

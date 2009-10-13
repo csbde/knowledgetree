@@ -61,11 +61,8 @@ class install extends step
 	*/
     protected $runInstall = true;
 
-    function __construct() {
-        $this->temp_variables = array("step_name"=>"install");
-    }
-
     public function doStep() {
+    	$this->temp_variables = array("step_name"=>"install");
     	if(!$this->inStep("install")) {
     		return 'landing';
     	}
@@ -91,45 +88,33 @@ class install extends step
 
     public function doRun()
     {
+    	$value = 'disable';
         if(isset($_POST['Install'])) {
             if(isset($_POST['call_home'])){
                 $value = $_POST['call_home'];
-            }else{
-                $value = 'disable';
             }
             $this->temp_variables['call_home'] = $value;
-
-            // Force a set session
-            // TODO: fix this to correctly set the session
-            $_SESSION['installers'] ['install']['call_home'] = $value;
+            return true;
         }
+        $this->temp_variables['call_home'] = $value;
     }
 
     public function installStep()
     {
 		$this->callHome();
-		$this->clearSeesions();
     }
-    
-    public function clearSeesions() {
-    	// TODO
-    	$_SESSION['installers'] = '';
-    	$_SESSION['migrate'] = '';
-    }
-    
+
     public function callHome() {
         $conf = $this->getDataFromSession("install"); // retrieve database information from session
-        $this->_dbhandler = new dbUtil();
         $dbconf = $this->getDataFromSession("database");
-        $this->_dbhandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
+        $this->dbhandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
         $complete = 1;
         if($conf['call_home'] == 'enable'){
             $complete = 0;
         }
         $query = "UPDATE scheduler_tasks SET is_complete = {$complete} WHERE task = 'Call Home'";
-        $this->_dbhandler->query($query);
-        // close the database connection
-        $this->_dbhandler->close();    	
+        $this->dbhandler->query($query);
+        $this->dbhandler->close(); // close the database connection
     }
 }
 ?>

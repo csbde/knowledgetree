@@ -92,8 +92,6 @@ class windowsScheduler extends windowsService {
 		
 	}
 
-
-	
 	/**
 	* Set Scheduler Directory path
 	*
@@ -205,10 +203,8 @@ class windowsScheduler extends windowsService {
 	public function install() {
 		$state = $this->status();
 		if($state == '') {
-//			$this->writeSchedulerTask();
 			$this->writeTaskRunner();
-            // TODO what if it does not exist? check how the dmsctl.bat does this
-            if (function_exists('win32_create_service')) {
+            if (function_exists('win32_create_service')) { // TODO what if it does not exist? check how the dmsctl.bat does this
             	if(DEBUG) {
             		echo '<pre>';
             		print_r(array('service' => $this->name, 'display' => $this->name, 'path' => $this->getSchedulerScriptPath()));
@@ -242,13 +238,11 @@ class windowsScheduler extends windowsService {
 	}
 	
 	private function setOptions() {
-		$this->options = "-displayname {$this->name} -start auto -binary \"{$this->getSchedulerScriptPath()}\" -headless -invisible "
-                       . "";
+		$this->options = "-displayname {$this->name} -start auto -binary \"{$this->getSchedulerScriptPath()}\" -headless -invisible ";
 	}
 	
 	private function writeTaskRunner() {
-		// Check if bin is readable and writable
-		if(DEBUG) {
+		if(DEBUG) { // Check if bin is readable and writable
 			echo "Attempt to Create {$this->getSchedulerDir()}\\taskrunner.bat<br>";
 		}
 		if(is_readable($this->varDir."bin") && is_writable($this->varDir."bin")) {
@@ -258,8 +252,7 @@ class windowsScheduler extends windowsService {
 			fwrite($fp, $content);
 			fclose($fp);
 		} else {
-			// TODO: Should not reach this point
-			echo 'Could not write task runner<br>';
+			echo 'Could not write task runner<br>'; // TODO: Should not reach this point
 		}
 	}
 }

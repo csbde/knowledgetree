@@ -40,13 +40,43 @@
 * @version Version 0.1
 */
 
-class Service {	
+class Service {
+    /**
+     * Class constructor
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     */
 	public function __construct() {}
 	
+	/**
+	* Load defaults needed by service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string
+	* @return void
+ 	*/
 	public function load() {}
 	
+	/**
+	* Start Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return void
+ 	*/
 	public function start() {}
 	
+	/**
+	* Stop Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return void
+ 	*/
 	public function stop() {}
 	
 	public function install() {}

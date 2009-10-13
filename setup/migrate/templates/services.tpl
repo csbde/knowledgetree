@@ -1,4 +1,4 @@
-<form action="index.php?step_name=services" method="post" id="services">
+<form action="index.php?step_name=<?php echo $step_name; ?>" method="post" id="<?php echo $step_name; ?>">
 	<p class="title">Deactivate Services</p>
 	
 	<p class="description">
@@ -32,7 +32,7 @@
 		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Deactivate_Services" target="_blank">Click here for help on overcoming service issues</a>
 	<?php } ?>
 <!--Content-->
-	<div id="step_content_configuration" style="width:755px;" class="step">
+	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<?php if(!$alreadyUninstalled) { ?>
 			
 		<?php } else { ?>
