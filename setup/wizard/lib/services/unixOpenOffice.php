@@ -53,8 +53,6 @@ class unixOpenOffice extends unixService {
 	private $bin;
 	// office executable
 	private $soffice;
-	
-	private $options;
 	public $name = "KTOpenOffice";
 	
 	/**
@@ -96,10 +94,6 @@ class unixOpenOffice extends unixService {
 		return $this->bin;
 	}
 	
-	public function getOption() {
-		return $this->options;
-	}
-	
     public function install() {
     	$status = $this->status();
     	if($status == '') {
@@ -125,39 +119,7 @@ class unixOpenOffice extends unixService {
     			return '';
     		}
     	}
-    	/*	
-    	if($updrade) {
-    		$cmd = "ps ax | grep soffice";
-    		$response = $this->util->pexec($cmd);
-	    	if(is_array($response['out'])) {
-	    		if(count($response['out']) > 1) {
-	    			foreach ($response['out'] as $r) {
-	    				preg_match('/grep/', $r, $matches); // Ignore grep
-	    				if(!$matches) {
-	    					return 'STARTED';
-	    				}
-	    			}
-	    		} else {
-	    			return '';
-	    		}
-	    	}
-    	} else {
-    		$cmd = "netstat -npa | grep ".$this->getPort();
-	    	$response = $this->util->pexec($cmd);
-	    	if(is_array($response['out'])) {
-	    		if(count($response['out']) > 0) {
-	    			preg_match('/8100/', $response['out'][0], $matches); // Ignore grep
-					if($matches) {
-	    				if($matches[0] == '8100') {
-	    					return 'STARTED';
-	    				}
-					}
-	    		} else {
-	    			return '';
-	    		}
-	    	}
-    	}
-    	*/
+
     	return '';
     }
     

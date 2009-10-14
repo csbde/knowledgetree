@@ -170,6 +170,17 @@ class migrateDatabase extends Step
 				if(!empty($fileContents)) {
 					$this->sqlDumpFile = realpath($sqlFile); // Store location of dump
 					return true;
+				} else { // Attempt root, and no password
+					$sqlFile = $tmpFolder."/dms_migrate_".rand().".sql";
+					$cmd = "$exe -uroot $dbName > ".$sqlFile;
+					$response = $this->util->pexec($cmd);
+					if(file_exists($sqlFile)) {
+						$fileContents = file_get_contents($sqlFile);
+						if(!empty($fileContents)) {
+							$this->sqlDumpFile = realpath($sqlFile); // Store location of dump
+							return true;
+						}
+					}
 				}
 			}
     	}

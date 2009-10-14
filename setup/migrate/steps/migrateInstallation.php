@@ -170,12 +170,9 @@ class migrateInstallation extends step
 		}
 		
     }
-    
-    
-    
-    
+
     public function checkVersion() {
-		if($this->foundVersion <= $this->supportedVersion) {
+		if($this->foundVersion < $this->supportedVersion) {
 			$this->versionError = true;
 			$this->error[] = "KT installation needs to be 3.6.1 or higher";
 		} else {
