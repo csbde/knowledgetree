@@ -227,12 +227,6 @@ class Session
 		return $_SESSION[$this->salt][$class];
 	}
 	
-	public function destroyAll() {
-		echo 'All Clear';
-    	$_SESSION['installers'] = '';
-    	$_SESSION['migrate'] = '';
-    	$_SESSION['upgrade'] = '';
-	}
 }
 
 if(isset($_GET['action'])) {

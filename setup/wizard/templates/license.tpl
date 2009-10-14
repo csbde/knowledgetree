@@ -12,7 +12,7 @@
 Please read and accept the license agreement below before continuing with the setup.
 </p>
 
-<div class="license_agreement">
+<div class="license_agreement" tabindex="-1">
 <?php echo file_get_contents($licensePath); ?>
 </div>
 	<input id="accept" type="hidden" name="license" value=""/>

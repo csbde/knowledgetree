@@ -60,7 +60,7 @@ available.{/i18n}</p>
 <p class="descriptiveText">{i18n}Different fields have different actions and options
 available.{/i18n}</p>
 
-<form method="POST" action="/admin.php?kt_path_info=documents/fieldmanagement2&fieldset_action=updatelargetextoptions&fFieldId={$field_id}&fFieldsetId={$field->getParentFieldsetId()}&action=edit">
+<form method="POST" action="admin.php?kt_path_info=documents/fieldmanagement2&fieldset_action=updatelargetextoptions&fFieldId={$field_id}&fFieldsetId={$field->getParentFieldsetId()}&action=edit">
 
 <div class="field">
 <label for="largefield[size]">Max Length</label>

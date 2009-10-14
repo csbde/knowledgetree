@@ -448,7 +448,12 @@ class configuration extends Step
     private function getPathInfo($fileSystemRoot)
     {
         if(isset($this->temp_variables['paths'])) {
-        	$dirs = $this->temp_variables['paths']; // Pull from temp
+        	if (file_exists('migrate.lock')) { // Check if its an upgrade
+        		$this->readInstallation(); // Read values from config.ini of other installation
+        		$dirs = $this->getFromConfigPath(); // Store contents
+        	} else {
+        		$dirs = $this->temp_variables['paths']; // Pull from temp
+        	}
         } else {
         	if (file_exists('migrate.lock')) { // Check if its an upgrade
         		$this->readInstallation(); // Read values from config.ini of other installation
