@@ -598,16 +598,13 @@ class database extends Step
             if($this->dropdb()) { // attempt to drop the db
                 if(!$this->create()) { // attempt to create the db
                     $this->error['con'] = "Could not create database: ";
-                    return false;// cannot overwrite database
                 }
             } else {
                 $this->error['con'] = "Could not drop database: ";
-                return false;// cannot overwrite database
             }
         } else {
             if(!$this->create()) { // attempt to create the db
                 $this->error['con'] = "Could not create database: ";
-                return false;// cannot overwrite database
             }
         }
         
@@ -642,7 +639,6 @@ class database extends Step
 		} else {
 		    if(!$this->create()) { // attempt to create the db
 				$this->error['con'] = "Could not create database: ";
-				return false;// cannot overwrite database
 		    }
 		}
 		$this->dbhandler->clearErrors();
@@ -759,7 +755,7 @@ class database extends Step
     }
 
 	private function parse_mysql_dump($url) {
-	    $handle = @fopen($url, "r");
+	    $handle = fopen($url, "r");
 	    $query = "";
 		if ($handle) {
 			while (!feof($handle)) {
@@ -771,6 +767,7 @@ class database extends Step
 			}
 			fclose($handle);
 		}
+	    
 		return true;
 	}
 
@@ -787,13 +784,8 @@ class database extends Step
     }
 
     private function importExportedDB() {
-		if (!WINDOWS_OS) {
-            $dir='/tmp/kt-db-backup';
-        }
-        else {
-            $dir='c:/kt-db-backup';
-        }
-    	$sqlFile = $dir."/dms_migrate.sql";
+        $dbMigrate = $this->util->getDataFromPackage('migrate', 'database');
+        $sqlFile = $dbMigrate['dumpLocation'];
     	$this->parse_mysql_dump($sqlFile);
     	$this->dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
     	$this->dbhandler->query("TRUNCATE plugin_helper;");

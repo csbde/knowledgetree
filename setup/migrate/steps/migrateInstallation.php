@@ -227,6 +227,17 @@ class migrateInstallation extends step
 		return false;
     }
     
+    public function getPort() {
+    	$dbConfigPath = $this->location.DS."mysql".DS."my.ini";
+    	if(file_exists($dbConfigPath)) {
+    		$ini = $this->util->loadInstallIni($dbConfigPath); //new Ini($path);
+    		$dbSettings = $ini->getSection('mysqladmin');
+    		return $dbSettings['port'];
+    	}
+    	
+    	return '3306';
+    }
+    
     private function loadConfig($path) {
     	$ini = $this->util->loadInstallIni($path);//new Ini($path);
     	$dbSettings = $ini->getSection('db');
@@ -234,7 +245,7 @@ class migrateInstallation extends step
     								'dbName'=> $dbSettings['dbName'],
     								'dbUser'=> $dbSettings['dbUser'],
     								'dbPass'=> $dbSettings['dbPass'],
-    								'dbPort'=> $dbSettings['dbPort'] == 'default' ? "3306":"",
+    								'dbPort'=> $this->getPort(),
     								'dbAdminUser'=> $dbSettings['dbAdminUser'],
     								'dbAdminPass'=> $dbSettings['dbAdminPass'],
     	);

@@ -153,34 +153,25 @@ class migrateDatabase extends Step
 	    	$location = $installation['location'];
 			$uname = $this->temp_variables['duname'];
 			$pwrd = $this->temp_variables['dpassword'];
+			$port = $dbSettings['dbPort'];
 			$tmpFolder = $this->resolveTempDir();
 	    	if(WINDOWS_OS) {
 	    		$exe = "\"$location\mysql\bin\mysqldump.exe\""; // Location of dump
 	    	} else {
 	    		$exe = "'$location/mysql/bin/mysqldump'"; // Location of dump
 	    	}
-			$sqlFile = $tmpFolder."/dms_migrate.sql";
+	    	$date = date('Y-m-d-H-i-s');
+			$sqlFile = $tmpFolder."/kt-backup-$date.sql";
 			$dbAdminUser = $dbSettings['dbAdminUser'];
 			$dbAdminPass = $dbSettings['dbAdminPass'];
 			$dbName = $dbSettings['dbName'];
-			$cmd = "$exe -u{$dbAdminUser} -p{$dbAdminPass} $dbName > ".$sqlFile;
+			$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
 			$response = $this->util->pexec($cmd);
 			if(file_exists($sqlFile)) {
 				$fileContents = file_get_contents($sqlFile);
 				if(!empty($fileContents)) {
 					$this->sqlDumpFile = realpath($sqlFile); // Store location of dump
 					return true;
-				} else { // Attempt root, and no password
-					$sqlFile = $tmpFolder."/dms_migrate_".rand().".sql";
-					$cmd = "$exe -uroot $dbName > ".$sqlFile;
-					$response = $this->util->pexec($cmd);
-					if(file_exists($sqlFile)) {
-						$fileContents = file_get_contents($sqlFile);
-						if(!empty($fileContents)) {
-							$this->sqlDumpFile = realpath($sqlFile); // Store location of dump
-							return true;
-						}
-					}
 				}
 			}
     	}

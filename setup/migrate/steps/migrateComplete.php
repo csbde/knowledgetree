@@ -97,8 +97,7 @@ class migrateComplete extends Step {
     
     private function checkSqlDump() {
     	$database = $this->getDataFromSession("database"); // Get installation directory
-    	// TODO
-    	$sqlFile = $_SESSION['migrate']['database']['dumpLocation'];
+    	$sqlFile = $database['dumpLocation'];
 		if(file_exists($sqlFile)) {
 			$this->temp_variables['sql']['class'] = "tick";
 			$this->temp_variables['sql']['name'] = "dms.sql";
