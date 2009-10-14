@@ -1036,8 +1036,13 @@ class KTAPI
 						$controltype = 'tree';
 					}
 				}
-                
                 $options = array();
+                
+                if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
+                    $controltype = 'multiselect';
+                }
+                
+                
 				switch ($controltype)
 				{
 					case 'lookup':
@@ -1053,6 +1058,12 @@ class KTAPI
                             );
                         $selection= array();
                         break;
+                    case 'multiselect':
+                        $selection = KTAPI::get_metadata_lookup($field->getId());
+                        $options = array(
+                                'type' => $field->getInetLookupType()
+                            );
+                        break;
 					default:
 						$selection= array();
 				}
@@ -1065,7 +1076,7 @@ class KTAPI
 					'description' => $field->getDescription(),
 					'control_type' => $controltype,
 					'selection' => $selection,
-					'options' => $options,
+					'options' => $options
 				);
 			}
 			$result['fields'] = $fieldsresult;
