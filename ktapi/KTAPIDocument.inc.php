@@ -1255,6 +1255,10 @@ class KTAPI_Document extends KTAPI_FolderItem
                 // Options - Required for Custom Properties
                 $options = array();
                 
+                if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
+                    $controltype = 'multiselect';
+                }
+                
                 switch ($controltype)
                 {
                 	case 'lookup':
@@ -1269,6 +1273,12 @@ class KTAPI_Document extends KTAPI_FolderItem
                                 'maxlength' => $field->getMaxLength()
                             );
                         $selection= array();
+                        break;
+                    case 'multiselect':
+                        $selection = KTAPI::get_metadata_lookup($field->getId());
+                        $options = array(
+                                'type' => $field->getInetLookupType()
+                            );
                         break;
                 	default:
                 		$selection= array();
