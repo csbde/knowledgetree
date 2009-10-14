@@ -56,17 +56,21 @@
 		define('DS', '/');
 	}
 	// Define environment root
-	if($_GET['type'] == 'migrate') {
-		$wizard = realpath(dirname(__FILE__));
-		$xdir = explode(DS, $wizard);
-		array_pop($xdir);
-		$sys = '';
-		foreach ($xdir as $k=>$v) {
-			$sys .= $v.DS;
+	if(isset($_GET['type'])) {
+		if($_GET['type'] == 'migrate') {
+			$wizard = realpath(dirname(__FILE__));
+			$xdir = explode(DS, $wizard);
+			array_pop($xdir);
+			$sys = '';
+			foreach ($xdir as $k=>$v) {
+				$sys .= $v.DS;
+			}
+			$wizard = $sys.'migrate';
+		} else {
+			$wizard = realpath(dirname(__FILE__));
 		}
-		$wizard = $sys.'migrate';
 	} else {
-		$wizard = realpath(dirname(__FILE__));
+			$wizard = realpath(dirname(__FILE__));
 	}
 	$xdir = explode(DS, $wizard);
 	array_pop($xdir);

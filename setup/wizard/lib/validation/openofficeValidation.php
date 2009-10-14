@@ -61,7 +61,7 @@ class openofficeValidation extends serviceValidation {
 	* @access private
 	* @var mixed
 	*/
-    private $unixLocations = array("");
+    private $unixLocations = array("/usr/local/bin", "/usr/bin");
 
     
     public function preset() {
