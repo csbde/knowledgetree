@@ -1,7 +1,7 @@
 <?php if (AJAX) { ?>
-	<form id="configuration_services_database" action="index.php?step_name=services" method="post" id="services">
+	<form id="configuration_services_database" action="index.php?step_name=<?php echo $step_name; ?>" method="post" id="services">
 <?php } else { ?>
-	<form action="index.php?step_name=services" method="post" id="services">
+	<form action="index.php?step_name=<?php echo $step_name; ?>" method="post" id="_<?php echo $step_name; ?>">
 <?php } ?>
 
 	<p class="title">Checking Service Dependencies</p>

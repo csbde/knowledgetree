@@ -63,7 +63,7 @@ class unixOpenOffice extends unixService {
 	* @param string
 	* @return void
  	*/
-	public function load() {
+	public function load($options = null) {
 		$this->setPort("8100");
 		$this->setHost("localhost");
 		$this->soffice = $this->util->getOpenOffice();

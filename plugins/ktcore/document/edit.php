@@ -216,6 +216,31 @@ class KTDocumentEditAction extends KTDocumentAction {
             $values = (array) KTUtil::arrayGet($data, 'fieldset_' . $oFieldset->getId());
             foreach ($fields as $oField) {
                 $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
+                
+                // for html fields we want to do some stripping :)
+                if ($oField->getIsHTML())
+                {
+                    // NOTE this works great...once the text is saved a first time
+                    //      but the first time the <script> tags come through encoded, so decode first
+                    // HOWEVER html_entity_decode decodes too much (e.g. &nbsp; - which causes a DB error for some reason)!  use this instead
+                    // NOTE I considered a preg_replace_callback but str_replace is probably more efficient in this case as we only have 
+                    //      two symbols to replace
+                    $val = str_replace('&lt;', '<', $val);
+                    $val = str_replace('&gt;', '>', $val);
+                    //$val = preg_replace_callback('/&lt;([^&]*)&gt;/', create_function('$matches', 'return "<" . $matches[1] . ">";'), $val);
+                    // in case of script which does not yet contain <!-- //--> around the actual code (i.e. first submission again)
+                    // these will not be correctly removed by strip_tags
+                    $val = preg_replace('/<script[^>]*>([^<]*)<\/script>/', '', $val);
+                    // remove any attempts to call an onclick/onmouseover/onwhatever call
+                    $val = preg_replace_callback('/on[^= ]*=[^; \/>]*;?"? *\/? *(>?)/', 
+                                                 create_function('$matches', 'if (isset($matches[1])) return $matches[1]; else return null;'), 
+                                                 $val);
+                    // now strip remaining tags including script tags with code surrounded by <!-- //-->, 
+					// which would not be stripped by the previous regex
+                    $val = strip_tags($val, '<p><a><b><strong><ol><ul><li><p><br><i><em><u><span>');
+                    // remove empty <p> tags?
+                    $val = preg_replace('/<p><\/p>\r?\n?/', '', $val);
+                }
 
                 if($oField->getDataType() == "LARGE TEXT" && !is_null($oField->getMaxLength()))
                 {

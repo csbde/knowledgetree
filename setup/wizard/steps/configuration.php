@@ -310,7 +310,7 @@ class configuration extends Step
         $server = $conf['server'];
         $paths = $conf['paths'];
         // TODO
-        if (file_exists('migrate.lock')) { // Check if its an upgrade
+        if ($this->util->isMigration()) { // Check if its an upgrade
         	$this->readInstallation();
         } else {
         	$this->readConfigPath(); // initialise writing to config.ini
@@ -448,14 +448,14 @@ class configuration extends Step
     private function getPathInfo($fileSystemRoot)
     {
         if(isset($this->temp_variables['paths'])) {
-        	if (file_exists('migrate.lock')) { // Check if its an upgrade
+        	if ($this->util->isMigration()) { // Check if its an upgrade
         		$this->readInstallation(); // Read values from config.ini of other installation
         		$dirs = $this->getFromConfigPath(); // Store contents
         	} else {
         		$dirs = $this->temp_variables['paths']; // Pull from temp
         	}
         } else {
-        	if (file_exists('migrate.lock')) { // Check if its an upgrade
+        	if ($this->util->isMigration()) { // Check if its an upgrade
         		$this->readInstallation(); // Read values from config.ini of other installation
         	} else {
         		$this->readConfigPath(); // Read contents of config-path file

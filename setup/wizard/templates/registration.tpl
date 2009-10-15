@@ -20,7 +20,7 @@
 	and services. Please see our <a href="http://www.knowledgetree.com/about/legal" target="_blank">Privacy and Data Retention policies</a> for more information.
 	</p>
 	<br/>
-	<div id="step_content_registration" class="step">
+	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<span class="error" id="reg_error"></span>
 		<?php if(WINDOWS_OS) $input_width = 40; else { $input_width = 32; } ?>
 		<table>

@@ -382,6 +382,7 @@ function createText(groupid, fid, type)
 			html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
 			break;
 		case 'STRING':
+        case 'LARGE TEXT':
 			html += "<option value=\"is\">{/literal}{i18n}is{/i18n}{literal}";
 			html += "<option value=\"is not\">{/literal}{i18n}is not{/i18n}{literal}";
 			html += "<option value=\"contains\">{/literal}{i18n}contains{/i18n}{literal}";
@@ -449,7 +450,7 @@ function addFieldTypeSelection(groupid, fid, type, options)
 			}
 			// want to fall through
 		case 'FULLTEXT':
-
+        case 'LARGE TEXT':
 		case 'STRINGMATCH':
 			html = createText(groupid, fid, type);
 			break;

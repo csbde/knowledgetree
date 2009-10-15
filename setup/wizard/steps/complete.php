@@ -52,6 +52,7 @@ class complete extends Step {
     private $paths_check = 'tick';
     private $privileges_check = 'tick';
     private $database_check = 'tick';
+    private $migrate_check = false;
     protected $silent = true;
     
     function doStep() {
@@ -61,14 +62,11 @@ class complete extends Step {
     }
     
     function doRun() {
-        // check filesystem (including location of document directory and logging)
-        $this->checkFileSystem();
-        // check database
-        $this->checkDb();
-        // check services
-        $this->checkServices();
+        $this->checkFileSystem(); // check filesystem (including location of document directory and logging)
+        $this->checkDb(); // check database
+        $this->checkServices(); // check services
+        $this->checkInstallType();// Set silent mode variables
         $this->storeSilent();// Set silent mode variables
-        
     }
     
     private function checkFileSystem()
@@ -219,6 +217,14 @@ class complete extends Step {
 		return true;
     }
     
+    function checkInstallType() {
+    	if ($this->util->isMigration()) {
+    		$this->migrate_check = true;
+    	} else {
+    		$this->migrate_check = false;
+    	}
+    }
+    
     /**
      * Set all silent mode varibles
      *
@@ -228,11 +234,7 @@ class complete extends Step {
     	$this->temp_variables['paths_check'] = $this->paths_check;
     	$this->temp_variables['privileges_check'] = $this->privileges_check;
     	$this->temp_variables['database_check'] = $this->database_check;
-    	if (file_exists('migrate.lock')) {
-    		$this->temp_variables['migrate_check'] = true;
-    	} else {
-    		$this->temp_variables['migrate_check'] = false;
-    	}
+    	$this->temp_variables['migrate_check'] = $this->migrate_check;
     }
 }
 ?>
