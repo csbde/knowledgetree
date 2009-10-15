@@ -68,6 +68,14 @@ class thumbnailGenerator extends BaseProcessor
 //            'odp', 'otp', 'sxi', 'sti', 'ppt', 'pot', 'sxd', 'odg',
 //            'otg', 'std', 'asc');
 
+        // work around for ms office xp and 2003 templates - the mime type is identical but the templates aren't supported
+        if(!empty($fileType)){
+            $types = array('dot', 'xlt', 'pot');
+            if(in_array($fileType, $types)){
+                return false;
+            }
+        }
+
         // taken from the original list of accepted types in the pdf generator action
         $mime_types = array();
         $mime_types[] = 'text/plain';
@@ -82,33 +90,33 @@ class thumbnailGenerator extends BaseProcessor
 
         // Star Office
         $mime_types[] = 'application/vnd.sun.xml.writer';
-        $mime_types[] = 'application/vnd.sun.xml.writer.template';
+        //$mime_types[] = 'application/vnd.sun.xml.writer.template';
         $mime_types[] = 'application/vnd.sun.xml.calc';
-        $mime_types[] = 'application/vnd.sun.xml.calc.template';
+        //$mime_types[] = 'application/vnd.sun.xml.calc.template';
         $mime_types[] = 'application/vnd.sun.xml.draw';
-        $mime_types[] = 'application/vnd.sun.xml.draw.template';
+        //$mime_types[] = 'application/vnd.sun.xml.draw.template';
         $mime_types[] = 'application/vnd.sun.xml.impress';
-        $mime_types[] = 'application/vnd.sun.xml.impress.template';
+        //$mime_types[] = 'application/vnd.sun.xml.impress.template';
 
         // Open Office
         $mime_types[] = 'application/vnd.oasis.opendocument.text';
-        $mime_types[] = 'application/vnd.oasis.opendocument.text-template';
+        //$mime_types[] = 'application/vnd.oasis.opendocument.text-template';
         $mime_types[] = 'application/vnd.oasis.opendocument.graphics';
-        $mime_types[] = 'application/vnd.oasis.opendocument.graphics-template';
+        //$mime_types[] = 'application/vnd.oasis.opendocument.graphics-template';
         $mime_types[] = 'application/vnd.oasis.opendocument.presentation';
-        $mime_types[] = 'application/vnd.oasis.opendocument.presentation-template';
+        //$mime_types[] = 'application/vnd.oasis.opendocument.presentation-template';
         $mime_types[] = 'application/vnd.oasis.opendocument.spreadsheet';
-        $mime_types[] = 'application/vnd.oasis.opendocument.spreadsheet-template';
+        //$mime_types[] = 'application/vnd.oasis.opendocument.spreadsheet-template';
 
         // OO3
         // Office 2007
         $mime_types[] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-    	$mime_types[] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.template';
-    	$mime_types[] = 'application/vnd.openxmlformats-officedocument.presentationml.template';
-    	$mime_types[] = 'application/vnd.openxmlformats-officedocument.presentationml.slideshow';
+    	//$mime_types[] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.template';
+    	//$mime_types[] = 'application/vnd.openxmlformats-officedocument.presentationml.template';
+    	//$mime_types[] = 'application/vnd.openxmlformats-officedocument.presentationml.slideshow';
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-    	$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.template';
+    	//$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.template';
 
     	// In addition PDF files are also supported
     	$mime_types[] = 'application/pdf';
