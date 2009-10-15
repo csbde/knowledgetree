@@ -220,17 +220,15 @@ class UpgradeWizard {
 		$this->load();
         // is this necessary?
     	$this->createUpgradeFile();
-//		if(!$this->isSystemUpgradeed()) { // Check if the systems not upgraded
-			$response = $this->systemChecks();
-			if($response === true) {
-				$this->displayUpgrader();
-			} else {
-				exit();
-			}
-//		} else {
-//			// TODO: Die gracefully
-//			$this->iutil->error("System has been upgraded <div class=\"buttons\"><a href='../../'>Goto Login</a></div>");
-//		}
+		$response = $this->systemChecks();
+		if($this->util->installationSpecified()) { // Check if the migrator needs to be accessed
+			$this->util->redirect('../wizard/index.php?step_name=install_type');
+		}
+		if($response === true) {
+			$this->displayUpgrader();
+		} else {
+			exit();
+		}
 	}
 }
 

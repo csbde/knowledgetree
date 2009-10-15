@@ -14,5 +14,14 @@
             </table>
         </div>
 	</div>
+	<?php
+	if(isset($_GET['action'])) {
+		if($_GET['action']) {
+			?>
+				<input type="submit" name="Return" value="Return To Installation" class="button_previous"/>
+			<?php
+		}
+	}
+	?>
 	<input type="submit" name="Next" value="Next" class="button_next"/>
 </form>

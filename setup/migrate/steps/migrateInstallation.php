@@ -257,13 +257,14 @@ class migrateInstallation extends step
 		$this->ktSettings = array('fileSystemRoot'=> $froot,
     	);
     	$urlPaths = $ini->getSection('urls');
-		$this->urlPaths = array(array('name'=> 'Var Directory', 'path'=> $froot.DS.'var'),
-									array('name'=> 'Log Directory', 'path'=> $froot.DS.'log'),
-									array('name'=> 'Document Root', 'path'=> $froot.DS.'Documents'),
+    	$varDir = $froot.DS.'var';
+		$this->urlPaths = array(array('name'=> 'Var Directory', 'path'=> $varDir),
+									array('name'=> 'Log Directory', 'path'=> $varDir.DS.'log'),
+									array('name'=> 'Document Root', 'path'=> $varDir.DS.'Documents'),
 									array('name'=> 'UI Directory', 'path'=> $froot.DS.'presentation'.DS.'lookAndFeel'.DS.'knowledgeTree'),
-									array('name'=> 'Temporary Directory', 'path'=> $froot.DS.'tmp'),
-									array('name'=> 'Cache Directory', 'path'=> $froot.DS.'cache'),
-									array('name'=> 'Upload Directory', 'path'=> $froot.DS.'uploads'),
+									array('name'=> 'Temporary Directory', 'path'=> $varDir.DS.'tmp'),
+									array('name'=> 'Cache Directory', 'path'=> $varDir.DS.'cache'),
+									array('name'=> 'Upload Directory', 'path'=> $varDir.DS.'uploads'),
     	);
     	$this->temp_variables['urlPaths'] = $this->urlPaths;
     	$this->temp_variables['ktSettings'] = $this->ktSettings;

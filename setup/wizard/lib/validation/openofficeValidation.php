@@ -98,6 +98,7 @@ class openofficeValidation extends serviceValidation {
     		$auto = $this->detectOpenOffice();
     		if($auto) {
     			$this->soffice = $auto;
+    			$this->openOfficeExeError = true;
     			return $this->soffice;
     		}
     		return false;

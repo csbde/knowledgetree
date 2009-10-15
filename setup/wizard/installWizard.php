@@ -286,7 +286,7 @@ class InstallWizard {
 			if($this->util->migrationSpecified()) { // Check if the migrator needs to be accessed
 				$this->util->redirect('../migrate');
 			} elseif ($this->util->upgradeSpecified()) {
-				$this->util->redirect('../upgrade');
+				$this->util->redirect('../upgrade/index.php?action=installer');
 			}
 			$response = $this->systemChecks();
 			if($response === true) {
