@@ -554,8 +554,8 @@ class KTPluginUtil {
         $oCache->deleteAllCaches();
 
         // Remove all entries from the plugin_helper table and refresh it.
-        $query = "TRUNCATE plugin_helper";
-        DBUtil::runQuery($query);
+        $query = "DELETE FROM plugin_helper";
+        $res = DBUtil::runQuery($query);
 
         $files = array();
         $plugins = array();
