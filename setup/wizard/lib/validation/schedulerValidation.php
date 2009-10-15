@@ -99,8 +99,8 @@ class schedulerValidation extends serviceValidation {
     private function setPhp() {
 		if($this->php != '') { // PHP Found
 			$this->phpCheck = 'tick';
-		} elseif (PHP_DIR != '') { // Use System Defined Settings
-			$this->php = PHP_DIR;
+		} elseif ($phpDir = $this->util->useZendPhp()) { // Use System Defined Settings
+			$this->php = $phpDir;
 		} else {
 
 		}

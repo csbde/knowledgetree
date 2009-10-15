@@ -70,16 +70,6 @@ class migrateServices extends Step
     private $services = array();
     
 	/**
-	* Reference to utility object
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var string
-	*/
-    protected $util;
-
-    
-	/**
 	* Flag if services are already uninstalled
 	*
 	* @author KnowledgeTree Team
@@ -125,17 +115,6 @@ class migrateServices extends Step
     protected $silent = true;
     
     protected $conf = array();
-	/**
-	* Constructs services object
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
- 	*/
-    public function __construct() {
-    	$this->temp_variables = array("step_name"=>"services", "silent"=>$this->silent);
-    	$this->util = new MigrateUtil();
-    }
     
 	/**
 	* Main control of services setup
@@ -147,6 +126,7 @@ class migrateServices extends Step
 	*/
     public function doStep()
     {
+    	$this->temp_variables = array("step_name"=>"services", "silent"=>$this->silent);
     	$this->installServices = $this->util->loadInstallUtil(); // Use installer utility class
     	$this->services = $this->util->loadInstallServices(); // Use installer services class
     	$this->storeSilent();

@@ -125,8 +125,6 @@ class upgradeDatabase extends Step
                                       "loadingText"=>"The database upgrade is under way.  Please wait until it completes");
     	$this->_dbhandler = new UpgradedbUtil();
         $this->_util = new UpgradeUtil();
-    	if(WINDOWS_OS)
-			$this->mysqlDir = MYSQL_BIN;
     }
 
 	/**

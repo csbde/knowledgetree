@@ -39,20 +39,9 @@
 * @package Migrater
 * @version Version 0.1
 */
+require_once("../wizard/installUtil.php");
 
-class MigrateUtil {	
-	private $bootstrap = null;
-	/**
-	* Constructs migrateation object
-	*
-	* @author KnowledgeTree Team
-	* @access public
- 	*/
-	public function __construct() {
-		require_once("../wizard/installUtil.php");
-		$this->bootstrap = new InstallUtil();
-	}
-	
+class MigrateUtil extends InstallUtil {	
 	/**
 	* Check if system needs to be migrated
 	*
@@ -100,26 +89,7 @@ class MigrateUtil {
 
     	return true;
     }
-
-    /**
-     * Check whether a given directory / file path exists and is writable
-     *
-	 * @author KnowledgeTree Team
-     * @access private
-     * @param string $dir The directory / file to check
-     * @param boolean $create Whether to create the directory if it doesn't exist
-     * @return array The message and css class to use
-     */
-    private function _checkPermission($dir)
-    {
-        if(is_readable($dir) && is_writable($dir)) {
-			return true;
-        } else {
-        	return false;
-        }
-
-    }
-    
+   
     public function loadInstallDBUtil() {
     	require_once("../wizard/dbUtil.php");
     	return new dbUtil();
@@ -145,20 +115,6 @@ class MigrateUtil {
     public function loadInstallIni($path) {
     	require_once("../wizard/ini.php");
     	return new Ini($path);
-    }
-    
-    public function redirect($url, $exit = true, $rfc2616 = false)
-    {
-		return $this->bootstrap->redirect($url, $exit = true, $rfc2616 = false);
-    }
-
-    public function absoluteURI($url = null, $protocol = null, $port = null)
-    {
-		return $this->bootstrap->absoluteURI($url = null, $protocol = null, $port = null);
-    }
-
-    public function pexec($aCmd, $aOptions = null) {
-		return $this->bootstrap->pexec($aCmd, $aOptions = null);
     }
 }
 ?>

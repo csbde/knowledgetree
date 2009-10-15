@@ -39,7 +39,7 @@
 * @package Upgrader
 * @version Version 0.1
 */
-include("path.php"); // Paths
+include("../wizard/path.php"); // Paths
 
 /**
  * Auto loader to bind upgrader package
@@ -49,8 +49,13 @@ include("path.php"); // Paths
  */
 function __autoload($class) { // Attempt and autoload classes
 	$class = strtolower(substr($class,0,1)).substr($class,1); // Linux Systems.
-	if(file_exists(UPGRADE_DIR."$class.php")) {
-		require_once(UPGRADE_DIR."$class.php");
+	if ($class == "template") { // Load existing templating classes
+		require_once("../wizard/template.php");
+		require_once("../wizard/lib/helpers/htmlHelper.php");
+		return ;
+	}
+	if(file_exists(WIZARD_DIR."$class.php")) {
+		require_once(WIZARD_DIR."$class.php");
 	} elseif (file_exists(STEP_DIR."$class.php")) {
 		require_once(STEP_DIR."$class.php");
 	} elseif (file_exists(WIZARD_LIB."$class.php")) {
@@ -77,7 +82,7 @@ class UpgradeWizard {
 	* @access protected
 	* @var boolean
 	*/
-	protected $iutil = null;
+	protected $util = null;
 
 	/**
 	* Constructs upgradeation wizard object
@@ -95,8 +100,8 @@ class UpgradeWizard {
 	* @param none
 	* @return boolean
  	*/
-	private function isSystemUpgradeed() {
-		return $this->iutil->isSystemUpgradeed();
+	private function isSystemUpgraded() {
+		return $this->util->isSystemUpgraded();
 	}
 	
 	/**
@@ -138,7 +143,7 @@ class UpgradeWizard {
 	* @return void
  	*/
 	private function setIUtil($iutil) {
-		$this->iutil = $iutil;
+		$this->util = $iutil;
 	}
 	
 	/**
@@ -162,7 +167,7 @@ class UpgradeWizard {
 	* @return void
  	*/
 	private function removeUpgradeFile() {
-		@unlink("upgrade");
+		@unlink("upgrade.lock");
 	}
 	
 	/**
@@ -189,15 +194,15 @@ class UpgradeWizard {
 	    // for now we don't write to any of these locations
         return true;
         
-		$res = $this->iutil->checkStructurePermissions();
+		$res = $this->util->checkStructurePermissions();
 		if($res === true) return $res;
 		switch ($res) {
 			case "wizard":
-					$this->iutil->error("Upgrader directory is not writable (KT_Installation_Directory/setup/upgrade/)");
+					$this->util->error("Upgrader directory is not writable (KT_Installation_Directory/setup/upgrade/)");
 					return 'Upgrader directory is not writable (KT_Installation_Directory/setup/upgrade/)';
 				break;
 			case "/":
-					$this->iutil->error("System root is not writable (KT_Installation_Directory/)");
+					$this->util->error("System root is not writable (KT_Installation_Directory/)");
 					return "System root is not writable (KT_Installation_Directory/)";
 				break;
 			default:

@@ -253,8 +253,6 @@ class database extends Step
 	*/
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"database", "silent"=>$this->silent);
-    	if(WINDOWS_OS)
-			$this->mysqlDir = MYSQL_BIN;
     	$this->setErrorsFromSession();
     	$this->initErrors(); // Load template errors
         if($this->inStep("database")) {
@@ -721,25 +719,7 @@ class database extends Step
 	* @return boolean
 	*/
     private function createDmsUser() {
-    	if($this->dmsname == '' || $this->dmspassword == '') {
-    		if($this->dpassword == '') {
-    			$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} {$this->dname} < \"".SQL_INSTALL_DIR."user.sql\"";
-    		} else {
-        		$command = "\"".$this->mysqlDir."{$this->dbbinary}\" -u{$this->duname} -p{$this->dpassword} {$this->dname} < \"".SQL_INSTALL_DIR."user.sql\"";
-    		}
-        	$response = $this->util->pexec($command);
-        	return $response;
-    	} else {
-			$user1 = "GRANT SELECT, INSERT, UPDATE, DELETE ON {$this->dname}.* TO {$this->dmsusername}@{$this->dhost} IDENTIFIED BY \"{$this->dmsuserpassword}\";";
-			$user2 = "GRANT ALL PRIVILEGES ON {$this->dname}.* TO {$this->dmsname}@{$this->dhost} IDENTIFIED BY \"{$this->dmspassword}\";";
-			if ($this->dbhandler->query($user1) && $this->dbhandler->query($user2)) {
-            	return true;
-        	} else {
-        		$this->error['con'] = "Could not create users for database: {$this->dname}";
-        		return false;
-        	}
-		}
-        
+		return $this->parse_mysql_dump($this->util->sqlInstallDir()."user.sql");
     }
     
 	/**
@@ -751,7 +731,7 @@ class database extends Step
 	* @return boolean
 	*/
     private function createSchema() {
-    	return $this->parse_mysql_dump(SQL_INSTALL_DIR."structure.sql");
+    	return $this->parse_mysql_dump($this->util->sqlInstallDir()."structure.sql");
     }
 
 	private function parse_mysql_dump($url) {
@@ -780,7 +760,7 @@ class database extends Step
 	* @return boolean
 	*/
     private function populateSchema() {
-    	return $this->parse_mysql_dump(SQL_INSTALL_DIR."data.sql");
+    	return $this->parse_mysql_dump($this->util->sqlInstallDir()."data.sql");
     }
 
     private function importExportedDB() {

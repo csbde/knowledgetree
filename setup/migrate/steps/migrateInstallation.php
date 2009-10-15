@@ -78,15 +78,6 @@ class migrateInstallation extends step
 	*/
     protected $silent = false;
     
-	/**
-	* Reference to Utility object
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var object
-	*/	
-    public $util = null;
-    
 	private $location = '';
 	
 	private $dbSettings = array();
@@ -114,12 +105,8 @@ class migrateInstallation extends step
     
     private $versionError = false;
     
-    function __construct() {
-        $this->temp_variables = array("step_name"=>"installation", "silent"=>$this->silent);
-        $this->util = new MigrateUtil();
-    }
-
     public function doStep() {
+		$this->temp_variables = array("step_name"=>"installation", "silent"=>$this->silent);
     	$this->detectInstallation();
     	if(!$this->inStep("installation")) {
     		$this->setDetails();

@@ -43,24 +43,6 @@
 class migrateDatabase extends Step 
 {
 	/**
-	* Reference to Database object
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var object
-	*/	
-    public $_dbhandler = null;
-    	
-	/**
-	* Reference to Utility object
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var object
-	*/	
-    public $util = null;
-   
-	/**
 	* List of errors encountered
 	*
 	* @author KnowledgeTree Team
@@ -105,20 +87,6 @@ class migrateDatabase extends Step
 	*/
     public $templateErrors = array('dmspassword', 'dmsuserpassword', 'con', 'dname', 'dtype', 'duname', 'dpassword');
     private $sqlDumpFile = '';
-	/**
-	* Constructs database object
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
- 	*/
-    public function __construct() {
-    	$this->temp_variables = array("step_name"=>"database", "silent"=>$this->silent);
-    	$this->util = new MigrateUtil();
-    	if(WINDOWS_OS)
-			$this->mysqlDir = MYSQL_BIN;
-        $this->wizardLocation = '../wizard';
-    }
 
 	/**
 	* Main control of database setup
@@ -129,6 +97,8 @@ class migrateDatabase extends Step
 	* @return string
 	*/
     public function doStep() {
+    	$this->temp_variables = array("step_name"=>"database", "silent"=>$this->silent);
+        $this->wizardLocation = '../wizard';
     	$this->initErrors(); // Load template errors
     	$this->setDetails(); // Set any posted variables
     	if(!$this->inStep("database")) {
@@ -147,34 +117,32 @@ class migrateDatabase extends Step
     }
 
     public function exportDatabase() {
-    	if($this->doTest()) {
-	    	$installation = $this->getDataFromSession("installation"); // Get installation directory
-	    	$dbSettings = $installation['dbSettings'];
-	    	$location = $installation['location'];
-			$uname = $this->temp_variables['duname'];
-			$pwrd = $this->temp_variables['dpassword'];
-			$port = $dbSettings['dbPort'];
-			$tmpFolder = $this->resolveTempDir();
-	    	if(WINDOWS_OS) {
-	    		$exe = "\"$location\mysql\bin\mysqldump.exe\""; // Location of dump
-	    	} else {
-	    		$exe = "'$location/mysql/bin/mysqldump'"; // Location of dump
-	    	}
-	    	$date = date('Y-m-d-H-i-s');
-			$sqlFile = $tmpFolder."/kt-backup-$date.sql";
-			$dbAdminUser = $dbSettings['dbAdminUser'];
-			$dbAdminPass = $dbSettings['dbAdminPass'];
-			$dbName = $dbSettings['dbName'];
-			$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
-			$response = $this->util->pexec($cmd);
-			if(file_exists($sqlFile)) {
-				$fileContents = file_get_contents($sqlFile);
-				if(!empty($fileContents)) {
-					$this->sqlDumpFile = realpath($sqlFile); // Store location of dump
-					return true;
-				}
-			}
+    	$installation = $this->getDataFromSession("installation"); // Get installation directory
+    	$dbSettings = $installation['dbSettings'];
+    	$location = $installation['location'];
+		$uname = $this->temp_variables['duname'];
+		$pwrd = $this->temp_variables['dpassword'];
+		$port = $dbSettings['dbPort'];
+		$tmpFolder = $this->resolveTempDir();
+    	if(WINDOWS_OS) {
+    		$exe = "\"$location\mysql\bin\mysqldump.exe\""; // Location of dump
+    	} else {
+    		$exe = "'$location/mysql/bin/mysqldump'"; // Location of dump
     	}
+    	$date = date('Y-m-d-H-i-s');
+		$sqlFile = $tmpFolder."/kt-backup-$date.sql";
+		$dbAdminUser = $dbSettings['dbAdminUser'];
+		$dbAdminPass = $dbSettings['dbAdminPass'];
+		$dbName = $dbSettings['dbName'];
+		$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
+		$response = $this->util->pexec($cmd);
+		if(file_exists($sqlFile)) {
+			$fileContents = file_get_contents($sqlFile);
+			if(!empty($fileContents)) {
+				$this->sqlDumpFile = realpath($sqlFile); // Store location of dump
+				return true;
+			}
+		}
     	
 		return false;
     }
@@ -193,23 +161,6 @@ class migrateDatabase extends Step
 	    return $dir;
 	}
 
-    public function doTest() {
-    	return true;
-    	$installation = $this->getDataFromSession("installation"); // Get installation directory
-    	$dbSettings = $installation['dbSettings'];
-    	$location = $installation['location'];
-		$uname = $this->temp_variables['duname'];
-		$pwrd = $this->temp_variables['dpassword'];
-		$dbhandler = $this->util->loadInstallDBUtil();
-		$dbhandler->load("localhost:3316",$uname, $pwrd, "dms");
-    	if (!$dbhandler->getDatabaseLink()) {
-        	$this->error['con'] = "Could not connect to the database, please check username and password";
-        	return false;
-    	}
-    	
-    	return true;
-    }
-    
 	/**
 	* Store options
 	*
@@ -218,7 +169,7 @@ class migrateDatabase extends Step
 	* @access private
 	* @return void
 	*/
-   private function setDetails() {
+	private function setDetails() {
         $this->temp_variables['duname'] = $this->getPostSafe('duname');
         $this->temp_variables['dpassword'] = $this->getPostSafe('dpassword');
         $this->temp_variables['dumpLocation'] = $this->getPostSafe('dumpLocation');
@@ -269,7 +220,6 @@ class migrateDatabase extends Step
 	* @return array
 	*/
     public function getErrors() {
-
         return $this->error;
     }
     

@@ -248,7 +248,7 @@ class windowsScheduler extends windowsService {
 		if(is_readable($this->varDir."bin") && is_writable($this->varDir."bin")) {
 			$fp = fopen($this->getSchedulerDir().""."\\taskrunner.bat", "w+");
 			$content = "@echo off \n";
-			$content .= "\"".PHP_DIR."php.exe\" "."\"{$this->getSchedulerSource()}\"";
+			$content .= "\"".$this->util->useZendPhp()."php.exe\" "."\"{$this->getSchedulerSource()}\"";
 			fwrite($fp, $content);
 			fclose($fp);
 		} else {

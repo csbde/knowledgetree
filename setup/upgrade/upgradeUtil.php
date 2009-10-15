@@ -41,20 +41,9 @@
 */
 
 require '../../config/dmsDefaults.php';
+require_once("../wizard/installUtil.php");
 
-class UpgradeUtil {	
-	private $bootstrap = null;
-	/**
-	* Constructs migrateation object
-	*
-	* @author KnowledgeTree Team
-	* @access public
- 	*/
-	public function __construct() {
-		require_once("../wizard/installUtil.php");
-		$this->bootstrap = new InstallUtil();
-	}
-	
+class UpgradeUtil extends InstallUtil {	
 	/**
 	* Check if system needs to be upgraded
 	*
@@ -63,8 +52,8 @@ class UpgradeUtil {
 	* @param none
 	* @return boolean
  	*/
-	public function isSystemUpgradeed() {
-		if (file_exists(dirname(__FILE__)."/upgrade")) {
+	public function isSystemUpgraded() {
+		if (file_exists(dirname(__FILE__)."/upgrade.lock")) {
 
 			return true;
 		}
@@ -121,47 +110,13 @@ class UpgradeUtil {
  	*/
     public function checkStructurePermissions() {
     	// Check if Wizard Directory is writable
-    	if(!$this->_checkPermission(UPGRADE_DIR)) {
+    	if(!$this->_checkPermission(WIZARD_DIR)) {
     		return 'wizard';
     	}
 
     	return true;
     }
 
-    
-	public function redirect($url, $exit = true, $rfc2616 = false)
-    {
-		return $this->bootstrap->redirect($url, $exit = true, $rfc2616 = false);
-    }
-
-    public function absoluteURI($url = null, $protocol = null, $port = null)
-    {
-		return $this->bootstrap->absoluteURI($url = null, $protocol = null, $port = null);
-    }
-    
-    /**
-     * Check whether a given directory / file path exists and is writable
-     *
-	 * @author KnowledgeTree Team
-     * @access private
-     * @param string $dir The directory / file to check
-     * @param boolean $create Whether to create the directory if it doesn't exist
-     * @return array The message and css class to use
-     */
-    private function _checkPermission($dir)
-    {
-        if(is_readable($dir) && is_writable($dir)) {
-			return true;
-        } else {
-        	return false;
-        }
-
-    }
-    
-    public function pexec($aCmd, $aOptions = null) {
-		return $this->bootstrap->pexec($aCmd, $aOptions = null);
-    }
-    
     public function create_restore_stmt($targetfile)
     {
         $oKTConfig =& KTConfig::getSingleton();
