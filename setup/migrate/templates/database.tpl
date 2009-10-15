@@ -19,3 +19,4 @@
 <script type="text/javascript">
 	$("#duname").focus();
 </script>
+<?php if (AJAX) { echo $html->js('form.js'); } ?>

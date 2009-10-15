@@ -85,7 +85,7 @@ class windowsScheduler extends windowsService {
 	* @param string
 	* @return void
  	*/
-	function load() {
+	function load($options = null) {
 		$this->setSchedulerDIR($this->varDir."bin");
 		$this->setSchedulerScriptPath("taskrunner.bat");
 		$this->setSchedulerSource("schedulerService.php");

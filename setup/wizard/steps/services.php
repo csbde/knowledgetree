@@ -216,10 +216,10 @@ class services extends Step
 	    		$class = strtolower($service)."Validation";
 				$this->$class->preset(); // Sets defaults
 				if(!$this->$class->installed) {
-					if(!WINDOWS_OS) { $this->$class->getBinary(); } // Get binary, if it exists
+					if(!WINDOWS_OS) { $binary = $this->$class->getBinary(); } // Get binary, if it exists
 					$passed = $this->$class->binaryChecks(); // Run Binary Pre Checks
 	    			if ($passed) { // Install Service
-	    				$this->installService($service);
+	    				$this->installService($service, $passed);
 	    			}
 				} else {
 					$this->$class->installed();
@@ -323,10 +323,10 @@ class services extends Step
 	* @access private
 	* @return boolean
 	*/
-    private function installService($serviceName) {
+    private function installService($serviceName, $binary) {
 		$className = OS.$serviceName;
 		$service = new $className();
-		$status = $this->serviceHelper($service);
+		$status = $this->serviceHelper($service, $binary);
 		if (!$status) {
 			$this->serviceCheck = 'cross_orange';
 		}
@@ -340,8 +340,8 @@ class services extends Step
 	* @access private
 	* @return string
 	*/
-	private function serviceHelper($service) {
-		$service->load(); // Load Defaults
+	private function serviceHelper($service, $binary) {
+		$service->load(array('binary'=>$binary)); // Load Defaults
 		$response = $service->install(); // Install service
 		$statusCheck = OS."ServiceInstalled";
 		return $this->$statusCheck($service);
@@ -446,7 +446,7 @@ class services extends Step
 	* @return mixed
 	*/
 	public function installStep() {
-		if (!file_exists('migrate.lock')) { // Check if it is a migration
+		if (!$this->util->isMigration()) { // Check if it is a migration
 			foreach ($this->getServices() as $serviceName) {
 				$className = OS.$serviceName;
 				$service = new $className();

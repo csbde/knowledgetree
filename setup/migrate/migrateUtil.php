@@ -157,15 +157,6 @@ class MigrateUtil {
 		return $this->bootstrap->absoluteURI($url = null, $protocol = null, $port = null);
     }
 
-   /**
-     * Portably execute a command on any of the supported platforms.
-     *
-	 * @author KnowledgeTree Team
-     * @access public
-     * @param string $aCmd
-     * @param array $aOptions
-     * @return array
-     */
     public function pexec($aCmd, $aOptions = null) {
 		return $this->bootstrap->pexec($aCmd, $aOptions = null);
     }

@@ -1,4 +1,4 @@
-<form id="dependencies_configuration_services" action="index.php?step_name=configuration" method="post">
+<form id="dependencies_configuration_services" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 	<p class="title">System Configuration</p>
 <!--Continue Message-->
 	<?php
@@ -26,7 +26,7 @@
 		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Installer#System_Configuration" target="_blank">Click here for help on overcoming configuration issues</a>
 	<?php } ?>
 <!--Content-->
-	<div id="step_content_configuration" class="step">
+	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<h3>Server Settings</h3>
 		<table>
 		    <tr>

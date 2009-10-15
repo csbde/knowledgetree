@@ -102,13 +102,13 @@ select {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
 	overflow: auto;
-	height: 400px;
+	min-height: 400px;
 }
 
 #step_content_dependencies {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:265px;
+	min-height:285px;
 }
 
 #step_content_configuration {
@@ -323,6 +323,12 @@ select {
 	margin-top:10px;
 }
 
+.button_radio_next {
+	float:none;
+	margin-left:0px;
+	margin-top:0px;
+}
+
 .buttons a {
     background: #DDDDDD;
     border: solid 1px #888;
@@ -533,4 +539,10 @@ td.dir_description {
 	position:relative;
 	height:0px;
 	width:0px;
+}
+
+#install_options {
+	position:relative;
+	padding-left: 400px;
+	padding-top: 10px;
 }

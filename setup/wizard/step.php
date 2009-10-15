@@ -295,10 +295,12 @@ class Step
 	* @return boolean
 	*/
     function migrate() {
-        if(isset($_POST['Migrate'])) {
-            return true;
-        }
-
+    	if(isset($_POST['installtype'])) {
+        	if($_POST['installtype'] == "Upgrade Installation") {
+            	return true;
+        	}
+    	}
+    	
         return false;
     }
     

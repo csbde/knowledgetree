@@ -67,5 +67,6 @@
 		?>
 		</table>
 	</div>
-    <input class="button_next" type="submit" value="Back To Installer" name="BInstall"/>
+    <input class="button_next" type="submit" value="Continue Installion" name="BInstall"/>
 </form>
+<?php if (AJAX) { echo $html->js('form.js'); } ?>

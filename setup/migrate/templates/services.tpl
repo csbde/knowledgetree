@@ -80,3 +80,4 @@
     <input type="submit" name="Previous" value="Back" class="button_previous"/>
     <input type="submit" name="Next" value="Next" class="button_next"/>
 </form>
+<?php if (AJAX) { echo $html->js('form.js'); } ?>
