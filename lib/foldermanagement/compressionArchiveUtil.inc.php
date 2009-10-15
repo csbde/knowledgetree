@@ -208,7 +208,7 @@ class ZipFolder {
         }
 
         $config = KTConfig::getSingleton();
-        $useBinary = $config->get('export/useBinary', false);
+        $useBinary = true; //$config->get('export/useBinary', false);
 
         // Set environment language to output character encoding
         $loc = $this->sOutputEncoding;

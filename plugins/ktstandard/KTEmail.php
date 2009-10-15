@@ -139,7 +139,7 @@ function sendManualEmails($aEmailAddresses, &$aUserEmails, &$aEmailErrors) {
 function sendExternalEmails($aEmailAddresses, $iDocumentID, $sDocumentName, $sComment, &$aEmailErrors){
     global $default;
     $oSendingUser = User::get($_SESSION['userID']);
-    
+
     // Create email content
 /*
     $sMessage = '<font face="arial" size="2">';
@@ -245,6 +245,10 @@ function sendEmailDocument($aDestEmailAddress, $iDocumentID, $sDocumentName, $sC
 
     $sMessage .= sprintf(_kt("Your colleague, %s, wishes you to view the attached document entitled '%s'."), $oSendingUser->getName(), $sDocumentName);
     $sMessage .= "\n\n";
+	$sMessage .= _kt('Click on the hyperlink below to view it.') . '<br>';
+	// add the link to the document to the mail
+	$sMessage .= '<br>' . generateControllerLink('viewDocument', "fDocumentID=$iDocumentID", $sDocumentName, true);
+	// add additional comment
 	if (strlen($sComment) > 0) {
 		$sMessage .= '<br><br>' . _kt('Comments') . ':<br>' . nl2br($sComment);
 	}
@@ -544,7 +548,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
             $this->errorRedirectToMain(_kt('No recipients set'), sprintf('fDocumentId=%d', $this->oDocument->getId()));
             exit(0);
         }
-        
+
         $iDocumentID = $this->oDocument->getID();
         $sDocumentName = $this->oDocument->getName();
 
