@@ -66,21 +66,6 @@ class InstallUtil {
 		return false;
 	}
 
-	/**
-	* Check if system needs to be migrated
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return boolean
- 	*/
-	public function isMigration() {
- 		if (isset($_POST['Migrate'])) {
-			return true;
-    	}
-    	return false;
-	}
-	
 	public function error($error) {
 		$template_vars['error'] = $error;
 		$file = "templates/error.tpl";
@@ -518,6 +503,42 @@ class InstallUtil {
     }
 
 	/**
+	* Check if system needs to be migrated
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
+	public function migrationSpecified() {
+    	if(isset($_POST['installtype'])) {
+        	if($_POST['installtype'] == "Upgrade Installation") {
+            	return true;
+        	}
+    	}
+    	
+        return false;
+	}
+	
+	/**
+	* Check if system needs to be migrated
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
+	public function upgradeSpecified() {
+    	if(isset($_POST['installtype'])) {
+        	if($_POST['installtype'] == "Upgrade Only") {
+            	return true;
+        	}
+    	}
+    	
+        return false;
+	}
+	
+	/**
 	* Get session data from package
 	*
 	* @author KnowledgeTree Team
@@ -644,7 +665,30 @@ class InstallUtil {
 		return '';
     }
 
+    /**
+     * Deletes migration lock file if a clean install is chosen
+     * This is in case someone changes their mind after choosing upgrade/migrate and clicks back up to this step
+     * 
+     * @author KnowledgeTree Team
+     * @access private
+     * @return void
+     */
+    function deleteMigrateFile() {
+    	if(file_exists("migrate.lock"))
+    		@unlink("migrate.lock");
+    }
 
+    /**
+     * Check if we are migrating an existing installation
+     *
+     * @return unknown
+     */
+    function isMigration() {
+    	if(file_exists("migrate.lock"))
+    		return true;
+    	return false;
+    }
+    
    /**
      * Portably execute a command on any of the supported platforms.
      *
