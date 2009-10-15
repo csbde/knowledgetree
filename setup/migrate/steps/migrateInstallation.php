@@ -97,7 +97,7 @@ class migrateInstallation extends step
 	
 	private $knownWindowsLocations = array("C:\Program Files\ktdms"=>"C:\Program Files\ktdms\knowledgeTree\config\config-path","C:\Program Files x86\ktdms"=>"C:\Program Files x86\ktdms\knowledgeTree\config\config-path","C:\ktdms"=>"C:\ktdms\knowledgeTree\config\config-path");
 	
-	private $knownUnixLocations = array("/opt/ktdms","/var/www/ktdms");
+	private $knownUnixLocations = array("/opt/ktdms"=>"/opt/ktdms/knowledgeTree/config/config-path","/var/www/ktdms"=>"/var/www/ktdms/knowledgeTree/config/config-path");
 
 	/**
 	* Installation Settings
@@ -257,13 +257,14 @@ class migrateInstallation extends step
 		$this->ktSettings = array('fileSystemRoot'=> $froot,
     	);
     	$urlPaths = $ini->getSection('urls');
-		$this->urlPaths = array(array('name'=> 'Var Directory', 'path'=> $froot.DS.'var'),
-									array('name'=> 'Log Directory', 'path'=> $froot.DS.'log'),
-									array('name'=> 'Document Root', 'path'=> $froot.DS.'Documents'),
+    	$varFolder = $froot.DS.'var';
+		$this->urlPaths = array(array('name'=> 'Var Directory', 'path'=> $varFolder),
+									array('name'=> 'Log Directory', 'path'=> $varFolder.DS.'log'),
+									array('name'=> 'Document Root', 'path'=> $varFolder.DS.'Documents'),
 									array('name'=> 'UI Directory', 'path'=> $froot.DS.'presentation'.DS.'lookAndFeel'.DS.'knowledgeTree'),
-									array('name'=> 'Temporary Directory', 'path'=> $froot.DS.'tmp'),
-									array('name'=> 'Cache Directory', 'path'=> $froot.DS.'cache'),
-									array('name'=> 'Upload Directory', 'path'=> $froot.DS.'uploads'),
+									array('name'=> 'Temporary Directory', 'path'=> $varFolder.DS.'tmp'),
+									array('name'=> 'Cache Directory', 'path'=> $varFolder.DS.'cache'),
+									array('name'=> 'Upload Directory', 'path'=> $varFolder.DS.'uploads'),
     	);
     	$this->temp_variables['urlPaths'] = $this->urlPaths;
     	$this->temp_variables['ktSettings'] = $this->ktSettings;
