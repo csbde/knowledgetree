@@ -217,7 +217,7 @@ class migrateInstallation extends step
     public function getPort() {
     	$dbConfigPath = $this->location.DS."mysql".DS."my.ini";
     	if(file_exists($dbConfigPath)) {
-    		$ini = $this->util->loadInstallIni($dbConfigPath); //new Ini($path);
+    		$ini = $this->util->loadInstallIni($dbConfigPath);
     		$dbSettings = $ini->getSection('mysqladmin');
     		return $dbSettings['port'];
     	}
@@ -226,7 +226,7 @@ class migrateInstallation extends step
     }
     
     private function loadConfig($path) {
-    	$ini = $this->util->loadInstallIni($path);//new Ini($path);
+    	$ini = $this->util->loadInstallIni($path);
     	$dbSettings = $ini->getSection('db');
     	$this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
     								'dbName'=> $dbSettings['dbName'],

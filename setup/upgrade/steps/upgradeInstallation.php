@@ -51,23 +51,22 @@ class UpgradeInstallation extends step
 	*/
     protected $silent = false;
     protected $temp_variables = array();
-    
-    public function __construct() {
-        $this->temp_variables = array("step_name"=>"installation");
-    }
 
     public function doStep() {
-        parent::doStep();
+    	$this->temp_variables = array("step_name"=>"installation");
+//        parent::doStep();
         if($this->next()) {
             return 'next';
         }
         else if ($this->restore()) {
-            header('Location: index.php?step_name=restore');
-            exit;
+//            header('Location: index.php?step_name=restore');
+            $this->util->redirect("index.php?step_name=restore");
+//            exit;
         }
         else if ($this->upgrade()) {
-            header('Location: index.php?step_name=database');
-            exit;
+            //header('Location: index.php?step_name=database');
+            $this->util->redirect("index.php?step_name=database");
+//            exit;
         }
         
         return 'landing';

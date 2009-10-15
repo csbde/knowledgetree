@@ -43,10 +43,10 @@
 if(isset($_GET['action'])) {
 	$func = $_GET['action'];
 	if($func != '') {
-		require_once("../ini.php");
+		require_once("../iniUtilities.php");
 		require_once("../step.php");
 		require_once("../path.php");
-		require_once("../dbUtil.php");
+		require_once("../dbUtilities.php");
 		require_once("../installUtil.php");
 	}
 }
@@ -326,7 +326,7 @@ class configuration extends Step
         }
         $ini = false;
         if(file_exists($configPath)) {
-            $ini = new Ini($configPath);
+            $ini = new iniUtilities($configPath);
         }
         $this->writeUrlSection($ini);
         $this->writeDBSection($ini, $server);
@@ -646,7 +646,7 @@ class configuration extends Step
     private function readConfigPath() {
 		$configPath = $this->getContentPath();
 		if(!$configPath) return false;
-        $ini = new Ini($configPath);
+        $ini = new iniUtilities($configPath);
         $data = $ini->getFileByLine();
         $firstline = true;
         foreach ($data as $k=>$v) {
@@ -689,7 +689,7 @@ class configuration extends Step
     private function writeConfigPath() {
 		$configPath = $this->getContentPath();
 		if(!$configPath) return false;
-        $ini = new Ini($configPath);
+        $ini = new iniUtilities($configPath);
         $data = $ini->getFileByLine();
         $configContent = '';
         foreach ($data as $k=>$v) {
@@ -709,7 +709,7 @@ class configuration extends Step
 		if(!$cachePath) return false;
 		$configPath = $this->getContentPath();
 		if(!$configPath) return false;
-        $ini = new Ini($configPath);
+        $ini = new iniUtilities($configPath);
         $data = $ini->getFileByLine();
         $cacheContent = '';
         foreach ($data as $k=>$v) {

@@ -40,31 +40,13 @@
 * @version Version 0.1
 */
 
-require '../../config/dmsDefaults.php';
-require_once KT_LIB_DIR . '/config/config.inc.php';
-require_once KT_LIB_DIR . '/plugins/pluginutil.inc.php';
-include KT_LIB_DIR . '/upgrades/upgrade.inc.php';
+require_once('../../config/dmsDefaults.php');
+require_once(KT_LIB_DIR . '/config/config.inc.php');
+require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
+require_once(KT_LIB_DIR . '/upgrades/upgrade.inc.php');
 
 class upgradeDatabase extends Step 
 {
-	/**
-	* Reference to Database object
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var object
-	*/	
-    public $_dbhandler = null;
-    	
-	/**
-	* Reference to Database object
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var object
-	*/	
-    public $_util = null;
-    
 	/**
 	* Location of database binaries.
 	*
@@ -114,20 +96,6 @@ class upgradeDatabase extends Step
     protected $temp_variables = array();
     
 	/**
-	* Constructs database upgrade object
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
- 	*/
-    public function __construct() {
-        $this->temp_variables = array("step_name"=>"database", "silent"=>$this->silent, 
-                                      "loadingText"=>"The database upgrade is under way.  Please wait until it completes");
-    	$this->_dbhandler = new UpgradedbUtil();
-        $this->_util = new UpgradeUtil();
-    }
-
-	/**
 	* Main control of database setup
 	*
 	* @author KnowledgeTree Team
@@ -136,7 +104,8 @@ class upgradeDatabase extends Step
 	* @return string
 	*/
     public function doStep() {
-        parent::doStep();
+        $this->temp_variables = array("step_name"=>"database", "silent"=>$this->silent, 
+                                      "loadingText"=>"The database upgrade is under way.  Please wait until it completes");
     	$this->initErrors();
     	if(!$this->inStep("database")) {
     	    $this->doRun();
@@ -175,10 +144,10 @@ class upgradeDatabase extends Step
         $this->readConfig(KTConfig::getConfigFilename());
         
         if($this->dbSettings['dbPort'] == '')  {
-            $con = $this->_dbhandler->load($this->dbSettings['dbHost'], $this->dbSettings['dbUser'],  
+            $con = $this->dbhandler->load($this->dbSettings['dbHost'], $this->dbSettings['dbUser'],  
                                            $this->dbSettings['dbPass'], $this->dbSettings['dbName']);
         } else {
-            $con = $this->_dbhandler->load($this->dbSettings['dbHost'].":".$this->dbSettings['dbPort'], $this->dbSettings['dbUser'],  
+            $con = $this->dbhandler->load($this->dbSettings['dbHost'].":".$this->dbSettings['dbPort'], $this->dbSettings['dbUser'],  
                                            $this->dbSettings['dbPass'], $this->dbSettings['dbName']);
         }
         
@@ -193,7 +162,7 @@ class upgradeDatabase extends Step
         }
         else if ($action == 'runUpgrade') {
             $this->temp_variables['title'] = 'Upgrade In Progress';
-            if (!$this->upgradeDatabase()) {
+            if (!$this->doDatabaseUpgrade()) {
                 $this->temp_variables['backupSuccessful'] = false;
                 return false;
             }
@@ -209,9 +178,9 @@ class upgradeDatabase extends Step
         $this->temp_variables['systemVersion'] = $default->systemVersion;
         $query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', $default->system_settings_table);
 
-        $result = $this->_dbhandler->query($query);
+        $result = $this->dbhandler->query($query);
         if ($result) {
-            $lastVersionObj = $this->_dbhandler->fetchNextObject($result);
+            $lastVersionObj = $this->dbhandler->fetchNextObject($result);
             $lastVersion = $lastVersionObj->value;
         }
         $currentVersion = $default->systemVersion;
@@ -273,7 +242,7 @@ class upgradeDatabase extends Step
     }
     
      private function readConfig($path) {
-        $ini = new UpgradeIni($path);
+     	$ini = $this->util->loadInstallIni($path);
         $dbSettings = $ini->getSection('db');
         $this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
                                     'dbName'=> $dbSettings['dbName'],
@@ -296,7 +265,7 @@ class upgradeDatabase extends Step
         }
     }
 
-    private function upgradeDatabase()
+    private function doDatabaseUpgrade()
     {
         global $default;
         

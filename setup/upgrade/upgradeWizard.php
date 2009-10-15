@@ -142,8 +142,8 @@ class UpgradeWizard {
 	* @param object upgrader utility
 	* @return void
  	*/
-	private function setIUtil($iutil) {
-		$this->util = $iutil;
+	private function setIUtil($util) {
+		$this->util = $util;
 	}
 	
 	/**
@@ -155,7 +155,7 @@ class UpgradeWizard {
 	* @return void
  	*/
 	private function createUpgradeFile() {
-		@touch("upgrade");
+		@touch("upgrade.lock");
 	}
 	
 	/**

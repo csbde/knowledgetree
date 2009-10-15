@@ -40,32 +40,21 @@
 * @version Version 0.1
 */
 
-require '../../config/dmsDefaults.php';
+require_once('../../config/dmsDefaults.php');
 
 class upgradeRestore extends Step {
 
-    /**
-	* Reference to Database object
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var object
-	*/	
-    private $_dbhandler = null;
 
     protected $silent = false;
     protected $temp_variables = array();    
-    protected $util = null;
     
     public function __construct() {
-    	$this->temp_variables = array("step_name"=>"restore", "silent"=>$this->silent, 
-                                      "loadingText"=>"The database restore is under way.  Please wait until it completes");
-        $this->_dbhandler = new UpgradedbUtil();
-    	$this->util = new UpgradeUtil();
+
     }
 
     public function doStep() {
-        parent::doStep();
+    	$this->temp_variables = array("step_name"=>"restore", "silent"=>$this->silent, 
+                                      "loadingText"=>"The database restore is under way.  Please wait until it completes");
         $this->temp_variables['restore'] = false;
         
         if(!$this->inStep("restore")) {

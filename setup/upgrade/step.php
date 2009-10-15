@@ -107,6 +107,12 @@ class Step
     public $displayFirst = false;
     
     private $salt = 'upgrade';
+    
+    public function __construct() {
+    	$this->util = new UpgradeUtil();
+    	$this->dbhandler = $this->util->loadInstallDBUtil();
+    }
+    
 	/**
 	* Returns step state
 	*

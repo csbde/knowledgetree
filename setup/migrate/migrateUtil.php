@@ -91,8 +91,8 @@ class MigrateUtil extends InstallUtil {
     }
    
     public function loadInstallDBUtil() {
-    	require_once("../wizard/dbUtil.php");
-    	return new dbUtil();
+    	require_once("../wizard/dbUtilities.php");
+    	return new dbUtilities();
     }
     
     public function loadInstallUtil() {
@@ -113,8 +113,8 @@ class MigrateUtil extends InstallUtil {
     }
     
     public function loadInstallIni($path) {
-    	require_once("../wizard/ini.php");
-    	return new Ini($path);
+    	require_once("../wizard/iniUtilities.php");
+    	return new iniUtilities($path);
     }
 }
 ?>

@@ -576,6 +576,26 @@ class InstallUtil {
 	}
 	
 	/**
+	* Check if system needs to be migrated
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
+	public function installationSpecified() {
+    	if(isset($_GET['Return'])) {
+        	if($_GET['Return'] == "Return To Installation") {
+            	return true;
+        	}
+    	}
+    	
+        return false;
+	}
+		
+	
+	
+	/**
 	* Get session data from package
 	*
 	* @author KnowledgeTree Team

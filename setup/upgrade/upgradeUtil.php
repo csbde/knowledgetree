@@ -40,7 +40,7 @@
 * @version Version 0.1
 */
 
-require '../../config/dmsDefaults.php';
+require_once('../../config/dmsDefaults.php');
 require_once("../wizard/installUtil.php");
 
 class UpgradeUtil extends InstallUtil {	
@@ -74,6 +74,16 @@ class UpgradeUtil extends InstallUtil {
         ob_end_clean();
         echo $contents;
 	}
+    
+    public function loadInstallIni($path) {
+    	require_once("../wizard/iniUtilities.php");
+    	return new iniUtilities($path);
+    }
+    
+    public function loadInstallDBUtil() {
+    	require_once("../wizard/dbUtilities.php");
+    	return new dbUtilities();
+    }
     
     /**
      * Function to send output to the browser prior to normal dynamic loading of a template after code execution

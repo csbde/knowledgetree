@@ -166,8 +166,8 @@ class InstallWizard {
 	* @param object installer utility
 	* @return void
  	*/
-	private function setIUtil($iutil) {
-		$this->util = $iutil;
+	private function setIUtil($util) {
+		$this->util = $util;
 	}
 	
 	/**

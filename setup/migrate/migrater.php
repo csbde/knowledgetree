@@ -156,8 +156,8 @@ class Migrater {
     	try {
         	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.$name);
     	} catch (Exception $e) {
-    		$iutil = new MigrateUtil();
-    		$iutil->error("Error reading configuration file: $name");
+    		$util = new MigrateUtil();
+    		$util->error("Error reading configuration file: $name");
     		exit();
     	}
     }
@@ -435,8 +435,8 @@ class Migrater {
 				// TODO : Break on error response
 	    	}
     	} else {
-    		$iutil = new MigrateUtil();
-    		$iutil->error("Class File Missing in Step Directory: $className");
+    		$util = new MigrateUtil();
+    		$util->error("Class File Missing in Step Directory: $className");
     		exit();
     	}
     }
@@ -548,12 +548,12 @@ class Migrater {
 				$this->_backward(); // Load previous page
 				break;
             case 'install':
-                $iutil = new MigrateUtil();
-                $iutil->redirect('../wizard/index.php?step_name=installtype');
+                $util = new MigrateUtil();
+                $util->redirect('../wizard/index.php?step_name=installtype');
             	break;
             case 'binstall':
-                $iutil = new MigrateUtil();
-                $iutil->redirect('../wizard/index.php?step_name=dependencies');
+                $util = new MigrateUtil();
+                $util->redirect('../wizard/index.php?step_name=dependencies');
             	break;
             default:
             	// TODO : handle silent
