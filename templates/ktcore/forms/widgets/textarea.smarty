@@ -3,7 +3,6 @@
 	-------------------------------------->
 {if $options.field->getIsHTML()}
 {literal}
-
 {/literal}
 {/if}
 
