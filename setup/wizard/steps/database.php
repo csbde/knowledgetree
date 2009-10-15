@@ -557,8 +557,8 @@ class database extends Step
 	*/
     private function mysql() {
         $con = $this->connectMysql();
-        // check for migrate.lock file which indicates this is a migration and not a clean install
-        if (file_exists('migrate.lock')) {
+        // check for migrate lock file which indicates this is a migration and not a clean install
+        if ($this->util->isMigration()) {
             if(!$this->migrateDB($con)) {
                 $this->error['con'] = "Could not Create Database: ";
                 return false;

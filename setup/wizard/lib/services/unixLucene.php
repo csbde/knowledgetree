@@ -59,7 +59,7 @@ class unixLucene extends unixService {
 	* @param string
 	* @return void
  	*/
-	public function load() {
+	public function load($options = null) {
 		$this->setLuceneSource("ktlucene.jar");
 		$this->setLuceneDir(SYSTEM_DIR."bin".DS."luceneserver".DS);
 		$this->setIndexerDir(SYSTEM_DIR."search2".DS."indexing".DS."bin".DS);

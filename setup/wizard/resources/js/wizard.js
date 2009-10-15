@@ -218,17 +218,11 @@ wizard.prototype.sendRegistration = function ()  {
 }
 
 wizard.prototype.clearSessions = function ()  {
-	<?php 
-		echo 'All Clear';
-    	$_SESSION['installers'] = null;
-    	$_SESSION['migrate'] = null;
-    	$_SESSION['upgrade'] = null;
-	?>
 //	var address = 'session.php?action=destroyAll';
 //	$.ajax({
 //		url: address,
 //		dataType: "html",
 //		type: "POST",
 //		cache: false,
-//	});	
+//	});
 }

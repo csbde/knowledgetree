@@ -15,7 +15,7 @@
 	This step configures the connection to the database server and installs the database. The details for an administrative <br/>
 	user on the database server are required in order to be able to configure and install the installation database.
 	</div>
-	<div id="step_content_database" class="step">
+	<div id="step_content_<?php echo $step_name; ?>" class="step">
 	
 	<table class="dbconf">
 	<?php

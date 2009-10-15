@@ -1,7 +1,7 @@
-<form id="registration_install_complete" action="index.php?step_name=install" method="post">
+<form id="registration_install_complete" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 	<p class="title">Finalizing System Installation</p>
 
-	<div id="step_content" class="step">
+	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<br/>
 		<br/>
 		<p class="empty_space">

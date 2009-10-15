@@ -116,18 +116,6 @@ class InstallWizard {
 	}
 	
 	/**
-	* Check if system has to be migrated
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param none
-	* @return boolean
- 	*/
-	private function isMigration() {
-		return $this->util->isMigration();
-	}
-	
-	/**
 	* Display the wizard
 	*
 	* @author KnowledgeTree Team
@@ -295,8 +283,10 @@ class InstallWizard {
 			$this->createInstallFile();
 		}
 		if(!$this->isSystemInstalled()) { // Check if the systems not installed
-			if($this->isMigration()) { // Check if the migrator needs to be accessed
+			if($this->util->migrationSpecified()) { // Check if the migrator needs to be accessed
 				$this->util->redirect('../migrate');
+			} elseif ($this->util->upgradeSpecified()) {
+				$this->util->redirect('../upgrade');
 			}
 			$response = $this->systemChecks();
 			if($response === true) {

@@ -12,7 +12,7 @@
 	       . 'Click Here for help on overcoming post install issues</a></div><br/>';
 	}
 	?>
-	<div id="step_content_complete" class="step">
+	<div id="step_content_<?php echo $step_name; ?>" class="step">
 	<!--	Paths and Permissions	-->
 		<div>
 		    <h3><?php echo "<span class='{$paths_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Paths and Permissions</h3>
@@ -65,6 +65,7 @@
 		</div>
 	<!--	Services	-->
 		<br/><br/>
+<?php if(!$migrate_check) { ?>
 		<div>
 		    <h3><?php echo "<span class='{$services_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services</h3>
 		<?php if($silent) { ?>
@@ -116,11 +117,13 @@
 			</div>
 		<?php } ?>
 		</div>
+		<?php } ?>
 	</div>
+	
 	<?php if($migrate_check) { ?>
-		<a href="../../login.php" class="buttons back upgrade" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
+		<a href="../../control.php" class="buttons back upgrade" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
     <?php } else { ?>
-    <a href="../../login.php" class="buttons back upgrade" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
+    	<a href="../../control.php" class="buttons back upgrade" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
     <?php } ?>
     <?php
         if (INSTALL_TYPE == 'Zend') {

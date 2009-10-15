@@ -63,8 +63,7 @@ class openofficeValidation extends serviceValidation {
 	*/
     private $unixLocations = array("/usr/local/bin", "/usr/bin");
 
-    
-    public function preset() {
+    public function preset($options = null) {
     	$this->specifyOpenOffice();
     }
     
@@ -91,15 +90,15 @@ class openofficeValidation extends serviceValidation {
     public function binaryChecks() {
     	if($this->util->openOfficeSpecified()) {
     		$this->soffice = $this->util->openOfficeSpecified();
-			if(file_exists($this->soffice)) 
-				return true;
+			if(file_exists($this->soffice))
+				return $this->soffice;
 			else 
 				return false;
     	} else {
     		$auto = $this->detectOpenOffice();
     		if($auto) {
     			$this->soffice = $auto;
-    			return true;
+    			return $this->soffice;
     		}
     		return false;
     	}

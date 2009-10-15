@@ -1,4 +1,4 @@
-<form id="license_dependencies_configuration" action="index.php?step_name=dependencies" method="post">
+<form id="license_dependencies_configuration" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 	<p class="title">Checking PHP Dependencies</p>
 	<p class="description">
 	The wizard will review your system to determine whether you have the right PHP components in place to run KnowledgeTree. <br/>
@@ -29,7 +29,7 @@
 		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Installer#PHP_Dependencies" target="_blank" class="description_click">Click here for help on overcoming dependency issues</span></a>
 	<?php } ?>
 <!--Content-->
-	<div id="step_content_dependencies" class="step">
+	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<h3><?php echo "<span class='{$php}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>PHP Version Check</h3>
 		<?php if($silent) { ?>
 			<?php if($versionSection) {

@@ -414,8 +414,6 @@ class Installer {
 	*/
     private function _completeInstall() {
     	@touch("install.lock");
-    	if(file_exists("migrate.lock"))
-    		@unlink("migrate.lock");
     }
     
 	/**

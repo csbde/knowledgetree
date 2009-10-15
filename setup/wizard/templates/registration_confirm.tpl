@@ -1,6 +1,6 @@
 <form id="database_registration_install" action="index.php?step_name=install" method="post">
 	<p class="title">Thank you for registering</p>
-	<div id="step_content_registration_confirm" class="step">
+	<div id="step_content_<?php echo $step_name; ?>_confirm" class="step">
 		<br/>
 		<br/>
 		<p class="empty_space">

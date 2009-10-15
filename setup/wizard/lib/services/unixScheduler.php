@@ -57,7 +57,7 @@ class unixScheduler extends unixService {
 	* @param string
 	* @return void
  	*/
-	public function load() {
+	public function load($options = null) {
 		$this->setPhpCli();
 		$this->scheduler = 'scheduler';
 		$this->setSchedulerSource('schedulerTask.sh');

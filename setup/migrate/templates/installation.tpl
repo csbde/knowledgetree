@@ -47,3 +47,4 @@
 <script type="text/javascript">
 	$("#location").focus();
 </script>
+<?php if (AJAX) { echo $html->js('form.js'); } ?>

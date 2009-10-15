@@ -1,4 +1,4 @@
-<form id="welcome_license" action="index.php?step_name=welcome" method="post">
+<form id="welcome_license" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 	<p class="title">Welcome to KnowledgeTree</p>
 	<div id="step_content" class="step">
 		<br/>

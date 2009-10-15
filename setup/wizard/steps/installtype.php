@@ -48,10 +48,11 @@ class installType extends step
     	if(!$this->inStep("installtype")) {
     		return 'landing';
     	}
+    	
         if($this->migrate()) {
             return 'migrate';
         } if($this->next()) {
-            $this->deleteMigrateFile();
+            $this->util->deleteMigrateFile();
             return 'next';
         } else if($this->previous()) {
             return 'previous';
@@ -67,18 +68,6 @@ class installType extends step
 
     public function getErrors() {
         return $this->error;
-    }
-    
-    /**
-     * Deletes migration lock file if a clean install is chosen
-     * This is in case someone changes their mind after choosing upgrade/migrate and clicks back up to this step
-     * 
-     * @author KnowledgeTree Team
-     * @access private
-     * @return void
-     */
-    private function deleteMigrateFile() {
-        @unlink("migrate.lock");
     }
 }
 ?>
