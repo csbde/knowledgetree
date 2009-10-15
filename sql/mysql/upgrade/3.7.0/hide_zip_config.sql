@@ -1,0 +1,1 @@
+UPDATE config_settings SET value = 'true', default_value = 'true', can_edit = 0 WHERE item = 'useBinary' AND group_name = 'export';
