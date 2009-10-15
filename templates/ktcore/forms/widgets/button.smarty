@@ -1,0 +1,1 @@
+<input type="submit" {if $has_id}id="{$id}"{/if} name="{$name}" {if $has_value}value="{$value|sanitize_input}"{/if} /> 
