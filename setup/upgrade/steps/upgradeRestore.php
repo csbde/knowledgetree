@@ -47,10 +47,6 @@ class upgradeRestore extends Step {
 
     protected $silent = false;
     protected $temp_variables = array();    
-    
-    public function __construct() {
-
-    }
 
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"restore", "silent"=>$this->silent, 
