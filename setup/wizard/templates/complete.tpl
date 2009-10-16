@@ -119,19 +119,27 @@
 		</div>
 		<?php } ?>
 	</div>
-	
+	<?php
+        $script = $_SERVER['SCRIPT_NAME'];
+        $file_system_root = $_SERVER['DOCUMENT_ROOT'];
+        $host = $_SERVER['SERVER_NAME'];
+        $port = $_SERVER['SERVER_PORT'];
+        //$ssl_enabled = isset($_SERVER['HTTPS']) ? (strtolower($_SERVER['HTTPS']) === 'on' ? 'yes' : 'no') : 'no';
+
+        $pos = strpos($script, '/setup/wizard/');
+        $root_url = substr($script, 0, $pos);
+        $redirect = "http://".$_SERVER['SERVER_NAME'].$root_url."/admin.php";	
+	?>
 	<?php if($migrate_check) { ?>
-    	<input type="submit" name="completeType" value="Login" class="button_next"/>
-<!--		<a href="../../admin.php" class="buttons back upgrade" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>-->
+		<a href="../../login.php?redirect=<?php echo $redirect; ?>" class="buttons back upgrade" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
     <?php } else { ?>
-    	<input type="submit" name="completeType" value="Login" class="button_next"/>
-<!--    	<a href="../../admin.php" class="buttons back upgrade" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>-->
+    	<a href="../../login.php?redirect=<?php echo $redirect; ?>" class="buttons back upgrade" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
     <?php } ?>
     <?php
         if ($install_environment == 'Zend') {
         	?>
-        	<input type="submit" name="type" value="Zend Server Configuration" class="button_previous"/>
-<!--            <a href="<?php //echo "http://".$_SERVER['HTTP_HOST'].":10081/ZendServer/Index"; ?>" class="back" target="_blank" onclick="javascript:{w.clearSessions();}">Zend Server Configuration</a>-->
+<!--        	<input type="submit" name="type" value="Zend Server Configuration" class="button_previous"/>-->
+            <a href="<?php echo "http://".$_SERVER['HTTP_HOST'].":10081/ZendServer/Index"; ?>" class="back" target="_blank" onclick="javascript:{w.clearSessions();}">Zend Server Configuration</a>
             <?php
         }
     ?>

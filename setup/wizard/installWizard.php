@@ -287,14 +287,14 @@ class InstallWizard {
 				$this->util->redirect('../migrate');
 			} elseif ($this->util->upgradeSpecified()) {
 				$this->util->redirect('../upgrade/index.php?action=installer');
-			} elseif ($this->util->loginSpecified()) {
+			}/* elseif ($this->util->loginSpecified()) {
 				header("Cache-Control: no-cache");
 				$this->util->redirect('../../admin.php');
 			} elseif ($this->util->zendSpecified()) {
 				$zend = "http://".$_SERVER['HTTP_HOST'].":10081/ZendServer/Index";
 				header("Cache-Control: no-cache");
 				$this->util->redirect($zend);
-			}
+			}*/
 			$response = $this->systemChecks();
 			if($response === true) {
 				$this->displayInstaller();

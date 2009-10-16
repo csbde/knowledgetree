@@ -43,7 +43,7 @@ class iniUtilities {
     private $lineNum = 0;
     private $exists = '';
 
-    function Ini($iniFile = '../../config.ini') {
+    function iniUtilities($iniFile = '../../config.ini') {
        $this->iniFile = $iniFile;
        $this->backupIni($iniFile);
        $this->read($iniFile);
@@ -71,7 +71,6 @@ class iniUtilities {
     }
 
     function read($iniFile) {
-
         $iniArray = file($iniFile);
         $section = '';
         foreach($iniArray as $iniLine) {
