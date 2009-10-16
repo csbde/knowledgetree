@@ -51,6 +51,7 @@ class migrateComplete extends Step {
     private $paths_check = 'tick';
     private $privileges_check = 'tick';
     private $database_check = 'tick';
+    protected $conf = array();
     protected $silent = true;
 
     function doStep() {
@@ -98,6 +99,7 @@ class migrateComplete extends Step {
     private function checkServices()
     {
     	$services = $this->util->loadInstallServices(); // Use installer services class
+    	$this->conf = $this->getDataFromSession("installation"); // Get installation directory
 		foreach ($services as $serviceName) {
     		$className = OS.$serviceName;
     		$serv = $this->util->loadInstallService($className);

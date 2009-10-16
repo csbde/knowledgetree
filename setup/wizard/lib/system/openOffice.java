@@ -10,6 +10,7 @@ public class openOffice {
         	// Execute a command without arguments
         	String command = "nohup "+openoffice+" -nofirststartwizard -nologo -headless -accept=\"socket,host=localhost,port=8100;urp;StarOffice.ServiceManager\"";
         	Process child = Runtime.getRuntime().exec(command);
+        	System.out.println(command);
     	} catch (IOException e) {
     		System.err.println("Error: " + e.getMessage());
     	}

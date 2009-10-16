@@ -215,7 +215,12 @@ class services extends Step
 	    	foreach ($this->getServices() as $service) {
 	    		$class = strtolower($service)."Validation";
 				$this->$class->preset(); // Sets defaults
-				if(!$this->$class->installed) {
+				$className = OS.$service;
+				$srv = new $className();
+				$srv->load();
+				$status = $this->serviceInstalled($srv);
+				if($status != 'STARTED') {
+//				if(!$this->$class->installed) {
 					if(!WINDOWS_OS) { $binary = $this->$class->getBinary(); } // Get binary, if it exists
 					$passed = $this->$class->binaryChecks(); // Run Binary Pre Checks
 	    			if ($passed) { // Install Service
@@ -228,6 +233,7 @@ class services extends Step
     	}
 		if($this->checkServiceStatus()) {
 			$this->alreadyInstalled = true;
+			$this->serviceCheck = 'tick';
 		}
 		$this->storeSilent(); // Store info needed for silent mode
 		if(!empty($errors))
@@ -559,10 +565,15 @@ class services extends Step
 	
 	public function doInstallAll() {
     	$serverDetails = $this->getServices();
+    	if(!empty($serverDetails)) {
+			require_once("../lib/validation/serviceValidation.php");
+			require_once("../lib/services/service.php");
+    	}
 		foreach ($serverDetails as $serviceName) {
 			$className = OS.$serviceName;
-			require_once("../lib/services/service.php");
+			$serv = strtolower($serviceName); // Linux Systems.
 			require_once("../lib/services/".OS."Service.php");
+			require_once("../lib/validation/$serv"."Validation.php");
 			require_once("../lib/services/$className.php");
 			$service = new $className();
 			$service->load();

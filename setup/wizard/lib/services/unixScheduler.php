@@ -110,7 +110,7 @@ class unixScheduler extends unixService {
 		$fLoc = $this->getSchedulerDir().$this->getSchedulerSource();
 		$fp = @fopen($fLoc, "w+");
 		$content = "#!/bin/sh\n";
-		$content .= "cd ".$this->getSchedulerDir()."\n";
+		$content .= "cd ".SYS_BIN_DIR."\n";
 		$content .= "while true; do\n";
 		// TODO : This will not work without CLI
 		$content .= "{$this->phpCli} -Cq scheduler.php\n";

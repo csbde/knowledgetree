@@ -692,22 +692,27 @@ class InstallUtil {
 		return '';
     }
 
-    function getOpenOffice() {
-    	$cmd = "whereis soffice";
+/*    function getOpenOffice() {
+    	$cmd = "whereis soffice.bin";
+		$res = $this->getOpenOfficeHelper($cmd);
+		if($res != '' && preg_match('/soffice.bin/', $res)) {
+			return $res;
+		}
+		$cmd = "which soffice.bin";
 		$res = $this->getOpenOfficeHelper($cmd);
 		if($res != '') {
 			return $res;
 		}
-		$cmd = "which soffice";
+		$cmd = "locate soffice.bin";
 		$res = $this->getOpenOfficeHelper($cmd);
 		if($res != '') {
 			return $res;
 		}
-
+		
 		return 'soffice';
-    }
+    }*/
 
-    function getOpenOfficeHelper($cmd) {
+/*   function getOpenOfficeHelper($cmd) {
 		$response = $this->pexec($cmd);
 		if(is_array($response['out'])) {
 			if (isset($response['out'][0])) {
@@ -715,14 +720,14 @@ class InstallUtil {
 				foreach ($broke as $r) {
 					$match = preg_match('/bin/', $r);
 					if($match) {
-						return preg_replace('/soffice:/', '', $r);
+						return preg_replace('/soffice.bin:/', '', $r);
 					}
 				}
 			}
 		}
 
 		return '';
-    }
+    }*/
 
     /**
      * Deletes migration lock file if a clean install is chosen

@@ -55,12 +55,10 @@
 	} else {
 		define('DS', '/');
 	}
+	$wizard = realpath(dirname(__FILE__));
 	// Define environment root
 	if(isset($_GET['type'])) {
 		switch ($_GET['type']) {
-			case 'install':
-				$wizard = realpath(dirname(__FILE__));
-			break;
 			case 'migrate' :
 				$wizard = realpath(dirname(__FILE__));
 				$xdir = explode(DS, $wizard);
@@ -81,10 +79,12 @@
 				}
 				$wizard = $sys.'upgrade';
 			break;
-
+			default:
+				
+			break;
 		}
 	} else {
-		die("Environment Error");
+//		die("Environment Error");
 	}
 	$xdir = explode(DS, $wizard);
 	array_pop($xdir);

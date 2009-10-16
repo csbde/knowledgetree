@@ -61,7 +61,7 @@ class openofficeValidation extends serviceValidation {
 	* @access private
 	* @var mixed
 	*/
-    private $unixLocations = array("/usr/local/bin", "/usr/bin");
+    private $unixLocations = array("/usr/lib/openoffice/program");
 
     public function preset($options = null) {
     	$this->specifyOpenOffice();
@@ -84,7 +84,7 @@ class openofficeValidation extends serviceValidation {
     }
     
     public function getBinary() {
-    	$this->soffice = $this->util->getOpenOffice();
+    	$this->soffice = $this->binaryChecks();
     }
     
     public function binaryChecks() {
@@ -111,7 +111,7 @@ class openofficeValidation extends serviceValidation {
 			$bin = "soffice.exe";
 		} else {
 			$locations = $this->unixLocations;
-			$bin = "soffice";
+			$bin = "soffice.bin";
 		}
 		foreach ($locations as $loc) {
 			$pathToBinary = $loc.DS.$bin;

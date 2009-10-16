@@ -410,7 +410,7 @@ class configuration extends Step
 
         $pos = strpos($script, '/setup/wizard/');
         $root_url = substr($script, 0, $pos);
-echo $root_url;
+
         $root_url = (isset($_POST['root_url'])) ? $_POST['root_url'] : $root_url;
         $file_system_root = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root.$root_url;
         $host = (isset($_POST['host'])) ? $_POST['host'] : $host;
