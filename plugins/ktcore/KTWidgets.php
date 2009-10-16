@@ -948,6 +948,50 @@ class KTCoreTextAreaWidget extends KTWidget {
         $this->aOptions['rows'] = KTUtil::arrayGet($aOptions, 'rows', 3);
         $this->aOptions['field'] = KTUtil::arrayGet($aOptions, 'field');
     }
+
+    function render() {
+        // very simple, general purpose passthrough.  Chances are this is sufficient,
+        // just override the template being used.
+        $bHasErrors = false;       
+        if (count($this->aErrors) != 0) { $bHasErrors = true; }
+        //var_dump($this->aErrors);
+        $oTemplating =& KTTemplating::getSingleton();        
+        $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
+
+        $this->aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js';
+    	$this->aJavascript[] = 'resources/js/kt_tinymce_init.js';
+        
+        if (!empty($this->aJavascript)) {
+            // grab our inner page.
+            $oPage =& $GLOBALS['main'];            
+            $oPage->requireJSResources($this->aJavascript);
+        }
+        if (!empty($this->aCSS)) {
+            // grab our inner page.
+            $oPage =& $GLOBALS['main'];            
+            $oPage->requireCSSResources($this->aCSS);
+        }
+        
+        $widget_content = $this->getWidget();
+        
+        $aTemplateData = array(
+            "context" => $this,
+            "label" => $this->sLabel,
+            "description" => $this->sDescription,
+            "name" => $this->sName,
+            "required" => $this->bRequired,
+            "has_id" => ($this->sId !== null),
+            "id" => $this->sId,
+            "has_value" => ($this->value !== null),
+            "value" => $this->value,
+            "has_errors" => $bHasErrors,
+            "errors" => $this->aErrors,
+            "options" => $this->aOptions,
+            "widget" => $widget_content,
+        );
+        return $oTemplate->render($aTemplateData);   
+    }    
+    
 }
 
 class KTCoreDateWidget extends KTWidget {
@@ -971,4 +1015,9 @@ class KTCoreDateWidget extends KTWidget {
 
         return $val;
     }
+}
+
+class KTCoreButtonWidget extends KTWidget {
+    var $sNamespace = 'ktcore.widgets.button';
+    var $sTemplate = 'ktcore/forms/widgets/button';
 }

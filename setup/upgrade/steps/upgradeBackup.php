@@ -40,31 +40,15 @@
 * @version Version 0.1
 */
 
-require '../../config/dmsDefaults.php';
+require_once('../../config/dmsDefaults.php');
 
 class upgradeBackup extends Step {
-
-    /**
-	* Reference to Database object
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var object
-	*/	
-    private $_dbhandler = null;
-    protected $util = null;
     protected $silent = false;
     protected $temp_variables = array();
     
-    public function __construct() {
+    public function doStep() {
     	$this->temp_variables = array("step_name"=>"backup", "silent"=>$this->silent, 
                                       "loadingText"=>"Your backup is under way.  Please wait until it completes");
-        $this->_dbhandler = new UpgradedbUtil();
-    	$this->util = new UpgradeUtil();
-    }
-
-    public function doStep() {
-        parent::doStep();
         if(!$this->inStep("backup")) {
             $this->doRun();
             return 'landing';

@@ -121,14 +121,17 @@
 	</div>
 	
 	<?php if($migrate_check) { ?>
-		<a href="../../control.php" class="buttons back upgrade" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
+    	<input type="submit" name="completeType" value="Login" class="button_next"/>
+<!--		<a href="../../admin.php" class="buttons back upgrade" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>-->
     <?php } else { ?>
-    	<a href="../../control.php" class="buttons back upgrade" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
+    	<input type="submit" name="completeType" value="Login" class="button_next"/>
+<!--    	<a href="../../admin.php" class="buttons back upgrade" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>-->
     <?php } ?>
     <?php
-        if (INSTALL_TYPE == 'Zend') {
+        if ($install_environment == 'Zend') {
         	?>
-            <a href="<?php echo "http://".$_SERVER['HTTP_HOST'].":10081/ZendServer/Index"; ?>" class="back" target="_blank" onclick="javascript:{w.clearSessions();}">Zend Server Configuration</a>
+        	<input type="submit" name="type" value="Zend Server Configuration" class="button_previous"/>
+<!--            <a href="<?php //echo "http://".$_SERVER['HTTP_HOST'].":10081/ZendServer/Index"; ?>" class="back" target="_blank" onclick="javascript:{w.clearSessions();}">Zend Server Configuration</a>-->
             <?php
         }
     ?>

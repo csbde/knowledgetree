@@ -46,7 +46,7 @@ if(isset($_GET['action'])) {
 		require_once("../step.php");
 		require_once("../installUtil.php");
 		require_once("../path.php");
-		require_once("../dbUtil.php");
+		require_once("../dbUtilities.php");
 	}
 }
 

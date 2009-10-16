@@ -78,15 +78,6 @@ class migrateInstallation extends step
 	*/
     protected $silent = false;
     
-	/**
-	* Reference to Utility object
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var object
-	*/	
-    public $util = null;
-    
 	private $location = '';
 	
 	private $dbSettings = array();
@@ -97,7 +88,7 @@ class migrateInstallation extends step
 	
 	private $knownWindowsLocations = array("C:\Program Files\ktdms"=>"C:\Program Files\ktdms\knowledgeTree\config\config-path","C:\Program Files x86\ktdms"=>"C:\Program Files x86\ktdms\knowledgeTree\config\config-path","C:\ktdms"=>"C:\ktdms\knowledgeTree\config\config-path");
 	
-	private $knownUnixLocations = array("/opt/ktdms"=>"/opt/ktdms/knowledgeTree/config/config-path","/var/www/ktdms"=>"/var/www/ktdms/knowledgeTree/config/config-path");
+	private $knownUnixLocations = array("/opt/ktdms","/var/www/ktdms");
 
 	/**
 	* Installation Settings
@@ -114,12 +105,8 @@ class migrateInstallation extends step
     
     private $versionError = false;
     
-    function __construct() {
-        $this->temp_variables = array("step_name"=>"installation", "silent"=>$this->silent);
-        $this->util = new MigrateUtil();
-    }
-
     public function doStep() {
+		$this->temp_variables = array("step_name"=>"installation", "silent"=>$this->silent);
     	$this->detectInstallation();
     	if(!$this->inStep("installation")) {
     		$this->setDetails();
@@ -230,7 +217,7 @@ class migrateInstallation extends step
     public function getPort() {
     	$dbConfigPath = $this->location.DS."mysql".DS."my.ini";
     	if(file_exists($dbConfigPath)) {
-    		$ini = $this->util->loadInstallIni($dbConfigPath); //new Ini($path);
+    		$ini = $this->util->loadInstallIni($dbConfigPath);
     		$dbSettings = $ini->getSection('mysqladmin');
     		return $dbSettings['port'];
     	}
@@ -239,7 +226,7 @@ class migrateInstallation extends step
     }
     
     private function loadConfig($path) {
-    	$ini = $this->util->loadInstallIni($path);//new Ini($path);
+    	$ini = $this->util->loadInstallIni($path);
     	$dbSettings = $ini->getSection('db');
     	$this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
     								'dbName'=> $dbSettings['dbName'],
@@ -257,14 +244,14 @@ class migrateInstallation extends step
 		$this->ktSettings = array('fileSystemRoot'=> $froot,
     	);
     	$urlPaths = $ini->getSection('urls');
-    	$varFolder = $froot.DS.'var';
-		$this->urlPaths = array(array('name'=> 'Var Directory', 'path'=> $varFolder),
-									array('name'=> 'Log Directory', 'path'=> $varFolder.DS.'log'),
-									array('name'=> 'Document Root', 'path'=> $varFolder.DS.'Documents'),
+    	$varDir = $froot.DS.'var';
+		$this->urlPaths = array(array('name'=> 'Var Directory', 'path'=> $varDir),
+									array('name'=> 'Log Directory', 'path'=> $varDir.DS.'log'),
+									array('name'=> 'Document Root', 'path'=> $varDir.DS.'Documents'),
 									array('name'=> 'UI Directory', 'path'=> $froot.DS.'presentation'.DS.'lookAndFeel'.DS.'knowledgeTree'),
-									array('name'=> 'Temporary Directory', 'path'=> $varFolder.DS.'tmp'),
-									array('name'=> 'Cache Directory', 'path'=> $varFolder.DS.'cache'),
-									array('name'=> 'Upload Directory', 'path'=> $varFolder.DS.'uploads'),
+									array('name'=> 'Temporary Directory', 'path'=> $varDir.DS.'tmp'),
+									array('name'=> 'Cache Directory', 'path'=> $varDir.DS.'cache'),
+									array('name'=> 'Upload Directory', 'path'=> $varDir.DS.'uploads'),
     	);
     	$this->temp_variables['urlPaths'] = $this->urlPaths;
     	$this->temp_variables['ktSettings'] = $this->ktSettings;

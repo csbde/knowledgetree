@@ -41,16 +41,6 @@
 */
 
 class migrateComplete extends Step {
-
-    /**
-	* Reference to Database object
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var object
-	*/	
-    private $_dbhandler = null;
-
     /**
      * List of services to check
      * 
@@ -62,15 +52,9 @@ class migrateComplete extends Step {
     private $privileges_check = 'tick';
     private $database_check = 'tick';
     protected $silent = true;
-    
-    protected $util = null;
-    
-    public function __construct() {
-    	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
-    	$this->util = new MigrateUtil();
-    }
 
     function doStep() {
+    	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
         $this->doRun();
     	return 'landing';
     }

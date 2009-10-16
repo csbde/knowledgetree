@@ -40,8 +40,9 @@
 * @version Version 0.1
 */
 class InstallUtil {
-
+	
 	private $salt = 'installers';
+	
 	/**
 	* Constructs installation object
 	*
@@ -233,7 +234,7 @@ class InstallUtil {
      * @param boolean $create Whether to create the directory if it doesn't exist
      * @return array The message and css class to use
      */
-    private function _checkPermission($dir)
+    public function _checkPermission($dir)
     {
         if(is_readable($dir) && is_writable($dir)) {
 			return true;
@@ -455,7 +456,7 @@ class InstallUtil {
 	*
 	* @author KnowledgeTree Team
 	* @param none
-	* @access private
+	* @access public
 	* @return mixed
 	*/
     public function javaSpecified() {
@@ -475,7 +476,7 @@ class InstallUtil {
 	*
 	* @author KnowledgeTree Team
 	* @param none
-	* @access private
+	* @access public
 	* @return mixed
 	*/
     public function phpSpecified() {
@@ -539,11 +540,67 @@ class InstallUtil {
 	}
 	
 	/**
+	* Check if system needs to be migrated
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
+	public function loginSpecified() {
+    	if(isset($_GET['completeType'])) {
+        	if($_GET['completeType'] == "Login") {
+            	return true;
+        	}
+    	}
+    	
+        return false;
+	}
+	
+	/**
+	* Check if system needs to be migrated
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
+	public function zendSpecified() {
+    	if(isset($_GET['completeType'])) {
+        	if($_GET['completeType'] == "Zend Server Configuration") {
+            	return true;
+        	}
+    	}
+    	
+        return false;
+	}
+	
+	/**
+	* Check if system needs to be migrated
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
+	public function installationSpecified() {
+    	if(isset($_GET['Return'])) {
+        	if($_GET['Return'] == "Return To Installation") {
+            	return true;
+        	}
+    	}
+    	
+        return false;
+	}
+		
+	
+	
+	/**
 	* Get session data from package
 	*
 	* @author KnowledgeTree Team
 	* @params none
-	* @access private
+	* @access public
 	* @return boolean
 	*/
     public function getDataFromPackage($package, $class) {
@@ -559,7 +616,7 @@ class InstallUtil {
 	*
 	* @author KnowledgeTree Team
 	* @params none
-	* @access private
+	* @access public
 	* @return boolean
 	*/
     public function getDataFromSession($class) {
@@ -575,7 +632,7 @@ class InstallUtil {
 	*
 	* @author KnowledgeTree Team
 	* @param none
-	* @access private
+	* @access public
 	* @return mixed
 	*/
     function getJava() {
@@ -595,7 +652,7 @@ class InstallUtil {
 	*
 	* @author KnowledgeTree Team
 	* @param none
-	* @access private
+	* @access public
 	* @return mixed
 	*/
     function getPhp() {
@@ -609,8 +666,10 @@ class InstallUtil {
 		if($res != '') {
 			return $res;
 		}
-		if(file_exists(PHP_DIR."php")) {
-			return PHP_DIR."php";
+		$phpDir = $this->useZendPhp();
+		if(!$phpDir) return 'php';
+		if(file_exists($phpDir."php")) {
+			return $phpDir."php";
 		}
 
 		return 'php';
@@ -670,7 +729,7 @@ class InstallUtil {
      * This is in case someone changes their mind after choosing upgrade/migrate and clicks back up to this step
      * 
      * @author KnowledgeTree Team
-     * @access private
+     * @access public
      * @return void
      */
     function deleteMigrateFile() {
@@ -681,14 +740,90 @@ class InstallUtil {
     /**
      * Check if we are migrating an existing installation
      *
-     * @return unknown
+	 * @author KnowledgeTree Team
+     * @access public
+     * @return boolean
      */
-    function isMigration() {
+    public function isMigration() {
     	if(file_exists("migrate.lock"))
     		return true;
     	return false;
     }
     
+    /**
+     * Determine type of installation
+     * 
+	 * @author KnowledgeTree Team
+     * @access public
+     * @return string
+     */
+    public function installEnvironment() {
+	    preg_match('/Zend/', SYSTEM_DIR, $matches); // Install Type
+	    if($matches) {
+	    	return  'Zend';
+	    } else {
+	    	$modules = get_loaded_extensions();
+	    	if(in_array('Zend Download Server', $modules) || in_array('Zend Monitor', $modules) || in_array('Zend Utils', $modules) || in_array('Zend Page Cache', $modules)) {
+	    		return  'Zend';
+	    	} else {
+	    		return 'Source';
+	    	}
+	    }
+    }
+    
+    /**
+     * Determine if zend php exists
+     * 
+	 * @author KnowledgeTree Team
+     * @access public
+     * @return string
+     */
+    public function useZendPhp() {
+	    if($this->installEnvironment() == 'Zend') {
+	    	if(WINDOWS_OS) {
+				$sysdir = explode(DS, SYSTEM_DIR);
+				array_pop($sysdir);
+				array_pop($sysdir);
+				array_pop($sysdir);
+				array_pop($sysdir);
+				$zendsys = '';
+				foreach ($sysdir as $k=>$v) {
+					$zendsys .= $v.DS;
+				}
+				return $zendsys."ZendServer".DS."bin".DS;
+	    	} else {
+	    		return DS."usr".DS."local".DS."zend".DS."bin".DS;
+	    	}
+	    }
+	    
+	    return false;
+    }
+    
+    /**
+     * Determine if mysql exists
+     * 
+	 * @author KnowledgeTree Team
+     * @access public
+     * @return string
+     */
+    public function detectMysql() {
+	    if(WINDOWS_OS) { // Mysql bin [Windows]
+		    $serverPaths = explode(';',$_SERVER['PATH']);
+		    foreach ($serverPaths as $apath) {
+		    	preg_match('/mysql/i', $apath, $matches);
+		    	if($matches) {
+		    		return $apath.DS;
+		    		break;
+		    	}
+		    }
+	    } else {
+	    	return "mysql"; // Assume its linux and can be executed from command line
+	    }
+    }
+
+    public function sqlInstallDir() {
+    	return SYSTEM_DIR."sql".DS."mysql".DS."install".DS;
+    }
    /**
      * Portably execute a command on any of the supported platforms.
      *

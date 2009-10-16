@@ -195,12 +195,13 @@ class KTCorePlugin extends KTPlugin {
 
         $this->registerWidget('KTCoreTextAreaWidget', 'ktcore.widgets.textarea', 'KTWidgets.php');
         $this->registerWidget('KTCoreDateWidget', 'ktcore.widgets.date', 'KTWidgets.php');
-
+        
+		$this->registerWidget('KTCoreButtonWidget', 'ktcore.widgets.button', 'KTWidgets.php');
+        
         $this->registerWidget('KTCoreConditionalSelectionWidget', 'ktcore.widgets.conditionalselection', 'KTWidgets.php');
 
         $this->registerPage('collection', 'KTCoreCollectionPage', 'KTWidgets.php');
         $this->registerPage('notifications', 'KTNotificationOverflowPage', 'KTMiscPages.php');
-
 
         // validators
         $this->registerValidator('KTStringValidator', 'ktcore.validators.string', 'KTValidators.php');

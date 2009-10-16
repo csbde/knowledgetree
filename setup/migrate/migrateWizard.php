@@ -82,7 +82,7 @@ class MigrateWizard {
 	* @access protected
 	* @var boolean
 	*/
-	protected $iutil = null;
+	protected $util = null;
 
 	/**
 	* Constructs migrateation wizard object
@@ -101,7 +101,7 @@ class MigrateWizard {
 	* @return boolean
  	*/
 	private function isSystemMigrateed() {
-		return $this->iutil->isSystemMigrateed();
+		return $this->util->isSystemMigrateed();
 	}
 	
 	/**
@@ -142,8 +142,8 @@ class MigrateWizard {
 	* @param object migrater utility
 	* @return void
  	*/
-	private function setIUtil($iutil) {
-		$this->iutil = $iutil;
+	private function setIUtil($util) {
+		$this->util = $util;
 	}
 	
 	/**
@@ -218,15 +218,15 @@ class MigrateWizard {
 	* @return mixed
  	*/
 	public function systemChecks() {
-		$res = $this->iutil->checkStructurePermissions();
+		$res = $this->util->checkStructurePermissions();
 		if($res === true) return $res;
 		switch ($res) {
 			case "wizard":
-					$this->iutil->error("Migrater directory is not writable (KT_Installation_Directory/setup/migrate/)");
+					$this->util->error("Migrater directory is not writable (KT_Installation_Directory/setup/migrate/)");
 					return 'Migrater directory is not writable (KT_Installation_Directory/setup/migrate/)';
 				break;
 			case "/":
-					$this->iutil->error("System root is not writable (KT_Installation_Directory/)");
+					$this->util->error("System root is not writable (KT_Installation_Directory/)");
 					return "System root is not writable (KT_Installation_Directory/)";
 				break;
 			default:
@@ -261,7 +261,7 @@ class MigrateWizard {
 			}
 		} else {
 			// TODO: Die gracefully
-			$this->iutil->error("System has been migrated <div class=\"buttons\"><a href='../../'>Goto Login</a></div>");
+			$this->util->error("System has been migrated <div class=\"buttons\"><a href='../../'>Goto Login</a></div>");
 		}
 	}
 }

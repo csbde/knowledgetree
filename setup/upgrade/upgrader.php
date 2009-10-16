@@ -156,8 +156,8 @@ class Upgrader {
     	try {
         	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.$name);
     	} catch (Exception $e) {
-    		$iutil = new UpgradeUtil();
-    		$iutil->error("Error reading configuration file: $name");
+    		$util = new UpgradeUtil();
+    		$util->error("Error reading configuration file: $name");
     		exit();
     	}
     }
@@ -435,8 +435,8 @@ class Upgrader {
 				// TODO : Break on error response
 	    	}
     	} else {
-    		$iutil = new UpgradeUtil();
-    		$iutil->error("Class File Missing in Step Directory: $className");
+    		$util = new UpgradeUtil();
+    		$util->error("Class File Missing in Step Directory: $className");
     		exit();
     	}
     }
@@ -545,8 +545,8 @@ class Upgrader {
                 $this->_backward(); // Load previous page
             	break;
             case 'install':
-                $iutil = new UpgradeUtil();
-                $iutil->redirect('../wizard/index.php?step_name=installtype');
+                $util = new UpgradeUtil();
+                $util->redirect('../wizard/index.php?step_name=installtype');
             	break;
             default:
             	// TODO : handle silent

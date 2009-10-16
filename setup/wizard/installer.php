@@ -156,8 +156,8 @@ class Installer {
     	try {
         	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.$name);
     	} catch (Exception $e) {
-    		$iutil = new InstallUtil();
-    		$iutil->error("Error reading configuration file: $name");
+    		$util = new InstallUtil();
+    		$util->error("Error reading configuration file: $name");
     		exit();
     	}
     }
@@ -435,8 +435,8 @@ class Installer {
 				// TODO : Break on error response
 	    	}
     	} else {
-    		$iutil = new InstallUtil();
-    		$iutil->error("Class File Missing in Step Directory: $className");
+    		$util = new InstallUtil();
+    		$util->error("Class File Missing in Step Directory: $className");
     		exit();
     	}
     }

@@ -39,5 +39,6 @@
 * @package Upgrader
 * @version Version 0.1
 */
+$_GET['type'] = 'upgrade';
 require_once("upgradeWizard.php");
 ?>

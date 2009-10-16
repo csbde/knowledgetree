@@ -40,19 +40,16 @@
 * @version Version 0.1
 */
 
-require '../../config/dmsDefaults.php';
+require_once('../../config/dmsDefaults.php');
 
 class upgradeComplete extends Step {
 
-    protected $util = null;
     protected $silent = false;
     protected $temp_variables = array();
     
-    public function __construct() {
-    	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
-    }
 
     public function doStep() {
+    	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
         $this->doRun();
     	return 'landing';
     }

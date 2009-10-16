@@ -166,8 +166,8 @@ class InstallWizard {
 	* @param object installer utility
 	* @return void
  	*/
-	private function setIUtil($iutil) {
-		$this->util = $iutil;
+	private function setIUtil($util) {
+		$this->util = $util;
 	}
 	
 	/**
@@ -286,7 +286,14 @@ class InstallWizard {
 			if($this->util->migrationSpecified()) { // Check if the migrator needs to be accessed
 				$this->util->redirect('../migrate');
 			} elseif ($this->util->upgradeSpecified()) {
-				$this->util->redirect('../upgrade');
+				$this->util->redirect('../upgrade/index.php?action=installer');
+			} elseif ($this->util->loginSpecified()) {
+				header("Cache-Control: no-cache");
+				$this->util->redirect('../../admin.php');
+			} elseif ($this->util->zendSpecified()) {
+				$zend = "http://".$_SERVER['HTTP_HOST'].":10081/ZendServer/Index";
+				header("Cache-Control: no-cache");
+				$this->util->redirect($zend);
 			}
 			$response = $this->systemChecks();
 			if($response === true) {

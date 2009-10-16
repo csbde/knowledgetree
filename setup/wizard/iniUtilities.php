@@ -36,14 +36,14 @@
  *
  */
 
-class UpgradeIni {
+class iniUtilities {
 
     private $cleanArray = array();
     private $iniFile = '';
     private $lineNum = 0;
     private $exists = '';
 
-    function __construct($iniFile = '../../config.ini') {
+    function Ini($iniFile = '../../config.ini') {
        $this->iniFile = $iniFile;
        $this->backupIni($iniFile);
        $this->read($iniFile);

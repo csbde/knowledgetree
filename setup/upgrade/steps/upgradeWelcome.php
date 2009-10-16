@@ -40,19 +40,16 @@
 * @version Version 0.1
 */
 
-include '../../config/dmsDefaults.php';
+require_once('../../config/dmsDefaults.php');
 require_once KT_LIB_DIR . '/authentication/authenticationutil.inc.php';
 
 class upgradeWelcome extends step {
 
     protected $silent = false;
     protected $temp_variables = array();
-	
-    public function __construct() {
-        $this->temp_variables = array("step_name"=>"welcome");
-    }
 
     public function doStep() {
+    	$this->temp_variables = array("step_name"=>"welcome");
         if($this->next()) {
             if ($this->doRun()) {
                 return 'next';

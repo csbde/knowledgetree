@@ -57,20 +57,34 @@
 	}
 	// Define environment root
 	if(isset($_GET['type'])) {
-		if($_GET['type'] == 'migrate') {
-			$wizard = realpath(dirname(__FILE__));
-			$xdir = explode(DS, $wizard);
-			array_pop($xdir);
-			$sys = '';
-			foreach ($xdir as $k=>$v) {
-				$sys .= $v.DS;
-			}
-			$wizard = $sys.'migrate';
-		} else {
-			$wizard = realpath(dirname(__FILE__));
+		switch ($_GET['type']) {
+			case 'install':
+				$wizard = realpath(dirname(__FILE__));
+			break;
+			case 'migrate' :
+				$wizard = realpath(dirname(__FILE__));
+				$xdir = explode(DS, $wizard);
+				array_pop($xdir);
+				$sys = '';
+				foreach ($xdir as $k=>$v) {
+					$sys .= $v.DS;
+				}
+				$wizard = $sys.'migrate';
+			break;
+			case 'upgrade' :
+				$wizard = realpath(dirname(__FILE__));
+				$xdir = explode(DS, $wizard);
+				array_pop($xdir);
+				$sys = '';
+				foreach ($xdir as $k=>$v) {
+					$sys .= $v.DS;
+				}
+				$wizard = $sys.'upgrade';
+			break;
+
 		}
 	} else {
-			$wizard = realpath(dirname(__FILE__));
+		die("Environment Error");
 	}
 	$xdir = explode(DS, $wizard);
 	array_pop($xdir);
@@ -90,7 +104,6 @@
     define('IMG_DIR', RES_DIR."graphics".DS);
     define('STEP_DIR', WIZARD_DIR."steps".DS);
     define('TEMP_DIR', WIZARD_DIR."templates".DS);
-    define('SHELL_DIR', WIZARD_DIR."shells".DS);
     define('SYS_DIR', WIZARD_LIB."system".DS);
     define('HELPER_DIR', WIZARD_LIB."helpers".DS);
     define('VALID_DIR', WIZARD_LIB."validation".DS);
@@ -98,7 +111,6 @@
 	define('SYSTEM_DIR', $sys);
 	define('SYS_VAR_DIR', SYSTEM_DIR."var".DS);
     define('SYS_BIN_DIR', SYSTEM_DIR."bin".DS);
-    define('SYS_LOG_DIR', SYS_VAR_DIR."log".DS);
     define('SYS_OUT_DIR', SYS_VAR_DIR);
     define('VAR_BIN_DIR', SYS_VAR_DIR."bin".DS);
     // Define paths to system
@@ -108,52 +120,4 @@
 		$asys .= $v.DS;
 	}
     define('SYSTEM_ROOT', $asys);
-    define('SQL_DIR', SYSTEM_DIR."sql".DS);
-    define('SQL_INSTALL_DIR', SQL_DIR."mysql".DS."install".DS);
-    define('SQL_MIGRATE_DIR', SQL_DIR."mysql".DS."migrate".DS);
-    // Install Type
-    preg_match('/Zend/', $sys, $matches); // TODO: Dirty
-    if($matches) {
-    	define('INSTALL_TYPE', 'Zend');
-    } else {
-    	$modules = get_loaded_extensions();
-    	if(in_array('Zend Download Server', $modules) || in_array('Zend Monitor', $modules) || in_array('Zend Utils', $modules) || in_array('Zend Page Cache', $modules)) {
-    		define('INSTALL_TYPE', 'Zend');
-    	} else {
-    		define('INSTALL_TYPE', 'Source');
-    	}
-    }
-    if(INSTALL_TYPE == 'Zend') {
-    	if(WINDOWS_OS) {
-			$sysdir = explode(DS, $sys);
-			array_pop($sysdir);
-			array_pop($sysdir);
-			array_pop($sysdir);
-			array_pop($sysdir);
-			$zendsys = '';
-			foreach ($sysdir as $k=>$v) {
-				$zendsys .= $v.DS;
-			}
-			define('PHP_DIR', $zendsys."ZendServer".DS."bin".DS);
-    	} else {
-    		define('PHP_DIR', DS."usr".DS."local".DS."zend".DS."bin".DS);
-    	}
-    } else {
-    	define('PHP_DIR', '');
-    }
-    // Other
-    date_default_timezone_set('Africa/Johannesburg');
-    if(WINDOWS_OS) { // Mysql bin [Windows]
-	    $serverPaths = explode(';',$_SERVER['PATH']);
-	    foreach ($serverPaths as $apath) {
-	    	preg_match('/mysql/i', $apath, $matches);
-	    	if($matches) {
-	    		define('MYSQL_BIN', $apath.DS);
-	    		break;
-	    	}
-	    }
-    } else {
-    	define('MYSQL_BIN', ''); // Assume its linux and can be executed from command line
-    }
-    
 ?>

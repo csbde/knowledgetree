@@ -2,18 +2,22 @@
 <html>
 	<head>
 		<title>KnowledgeTree Upgrader</title>
-		<script type="text/javascript" src="resources/jquery.js"></script>
-		<script type="text/javascript" src="resources/wizard.js" ></script>
-		<link rel="stylesheet" type="text/css" href="resources/wizard.css" />
-		
+		<?php echo $html->js('jquery.js'); ?>
+		<?php echo $html->js('jquery.form.js'); ?>
+		<?php echo $html->js('jquery.blockUI.js'); ?>
+		<?php echo $html->js('jquery.hotkeys.js'); ?>
+		<?php echo $html->js('wizard.js'); ?>
+		<?php echo $html->css('wizard.css'); ?>
+		<?php echo $html->css('migrate.css'); ?>
+        <meta http-equiv=Content-Type content="text/html; charset=utf-8">
 	</head>
-	<body onload="w.doFormCheck();">
+	<body onload="">
 		<div id="outer-wrapper">
 		    <div id="header">
-		    <div id="logo"><img src="resources/graphics/dame/upgrader-header_logo.png"/></div>
+		    <div id="logo"><?php echo $html->image('dame/installer-header_logo.png'); ?></div>
 		    <div id="upgrade_details">
 				<span style="font-size:120%;"> <?php echo $vars['upgrade_version']; ?> </span>
-				<span style="font-size:120%;"><?php echo $vars['upgrade_type']; ?></span>
+				<span style="font-size:120%;"> <?php echo $vars['upgrade_type']; ?> </span>
 				</div>
 		    </div>
 		    <div id="wrapper">
@@ -31,7 +35,7 @@
 		    </div>
 			
 		    <div id="footer">
-		    	<img width="105" height="23" align="right" src="resources/graphics/dame/powered-by-kt.png" style="padding: 5px;"/>
+		    	<?php echo $html->image('dame/powered-by-kt.png', array("height"=>"23px", "width"=>"105px", "style"=>"padding: 5px;")); ?>
 		    </div>
 		</div>
 	</body>
