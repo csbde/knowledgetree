@@ -2345,21 +2345,15 @@ class OpExpr extends Expr
         
 		if (DefaultOpCollection::isBoolean($expr))
 		{			
-			//$query = '(' . $this->buildComplexQuery($left) . ' ' . $expr->op() . ' ' . $this->buildComplexQuery($right)  . ')';
 			$iCriteria = $this->checkComplexQuery($left);
-			if(!empty($iCriteria))
-				//$oCriteria = $iCriteria;
-				$oCriteria[] = $iCriteria;
+			if(!empty($iCriteria)) {
+				$oCriteria = array_merge($oCriteria, $iCriteria);
+			}
 
 			$iCriteria = $this->checkComplexQuery($right);
-			if(!empty($iCriteria))
-				//$oCriteria = array_merge($oCriteria, $iCriteria);
-				$oCriteria[] = $iCriteria;
-			
-			/*if ($expr->not())
-			{
-				$query = "NOT $query";
-			}*/
+			if(!empty($iCriteria)) {
+				$oCriteria = array_merge($oCriteria, $iCriteria);
+			}
 		}
 		else
 		{
@@ -2379,13 +2373,11 @@ class OpExpr extends Expr
             {
             	$iCriteria = array();
             	
-            	$iCriteria[0] = array();
-            	
-            	$iCriteria[0]['field'] = $fieldname;
-            	$iCriteria[0]['value'] = $value;
-            	$iCriteria[0]['not'] = $expr->not();
+            	$iCriteria['field'] = $fieldname;
+            	$iCriteria['value'] = $value;
+            	$iCriteria['not'] = $expr->not();
 	
-            	$oCriteria[] = $iCriteria[0];
+            	$oCriteria[] = $iCriteria;
             }
             
     		//global $default;
@@ -2405,9 +2397,11 @@ class OpExpr extends Expr
 		return $oCriteria;
 	}
 
+	// NOTE $oColumns = $oCriteria from calling function
+	// TODO variable name change?
+	// WHat is the purpose of this function, it seems to be a double check on the search results but why is this needed?
 	public function checkValues($document_id, $oColumns)
 	{
-		
 		foreach($oColumns as $column)
 		{
 			$rsField = DBUtil::getResultArray("SELECT df.name, dfl.value FROM documents d 
