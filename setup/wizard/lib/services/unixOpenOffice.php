@@ -67,7 +67,7 @@ class unixOpenOffice extends unixService {
 		if(isset($options['binary'])) {
 			$this->setBin($options['binary']);
 		} else {
-			$this->setBin("/usr/bin//soffice");
+			$this->setBin("/usr/bin/soffice");
 		}
 		$this->setPort("8100");
 		$this->setHost("localhost");
@@ -137,11 +137,18 @@ class unixOpenOffice extends unixService {
     public function start() {
     	$state = $this->status();
     	if($state != 'STARTED') {
-	    	$cmd = "\"{$this->util->getJava()}\" -cp \"".SYS_DIR."\" openOffice ".$this->getBin();
+    		$cmd = "nohup ".$this->getBin().' -nofirststartwizard -nologo -headless -accept="socket,host=localhost,port=8100;urp;StarOffice.ServiceManager" '." &1> /dev/null &";
+//	    	$cmd = "\"{$this->util->getJava()}\" -cp \"".SYS_DIR."\" openOffice ".$this->getBin();
+
 	    	if(DEBUG) {
 	    		echo "Command : $cmd<br/>";
 	    		return ;
 	    	}
+//			$cmd = 'nohup /usr/lib/openoffice/program/soffice -nofirststartwizard -nologo -headless -accept="socket,host=localhost,port=8100;urp;StarOffice.ServiceManager" &> /dev/null &';
+//			$cmd = 'nohup /usr/lib/openoffice/program/soffice -nofirststartwizard -nologo -headless -accept="socket,host=localhost,port=8100;urp;StarOffice.ServiceManager" &1> /dev/null &';
+//			$cmd = '/usr/lib/openoffice/program/soffice -nofirststartwizard -nologo -headless -accept="socket,host=localhost,port=8100;urp;StarOffice.ServiceManager"';
+//			$cmd = '/usr/lib/openoffice/program/soffice.bin -nofirststartwizard -nologo -headless -accept="socket,host=localhost,port=8100;urp;StarOffice.ServiceManager"';
+//			$cmd = '/usr/lib/openoffice/program/soffice.bin -nofirststartwizard -nologo -headless -accept="socket,host=localhost,port=8100;urp;StarOffice.ServiceManager"';
 	    	$response = $this->util->pexec($cmd);
 
 	    	return $response;
