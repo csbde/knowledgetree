@@ -72,19 +72,22 @@ class CMISFolderObject extends CMISObject {
 
         if (!is_null($folderId))
         {
-            $this->get($folderId);
+            try {
+                $this->get($folderId);
+            }
+            catch (exception $e) {
+                throw new ObjectNotFoundException($e->getMessage());
+            }
         }
     }
 
     private function get($folderId)
     {
         $object = $this->ktapi->get_folder_by_id((int)$folderId);
-
-        // error?
-        if (PEAR::isError($object))
-        {
-            // throw an exception?
-            return $object;
+        
+        // folder does not exist?
+        if (PEAR::isError($object)) {
+            throw new ObjectNotFoundException('The folder you are trying to access does not exist or is inaccessible');
         }
 
 //          static $allowedChildObjectTypeIds;

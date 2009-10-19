@@ -60,9 +60,10 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         $repositoryId = $repositories[0]['repositoryId'];
 
         // TODO implement full path/node separation as with Alfresco - i.e. path requests come in on path/ and node requests come in on node/
-        //      path request e.g.: Root Folder/DroppedDocuments
-        //      node request e.g.: F1/children
-        //      node request e.g.: F2
+        //      path request e.g.: path/Root Folder/DroppedDocuments
+        //      node request e.g.: node/F1/children
+        //      node request e.g.: node/F2/parent
+        //      node request e.g.: node/F2
         if (urldecode($this->params[0]) == 'Root Folder')
         {
             $folderId = CMISUtil::encodeObjectId('Folder', 1);
@@ -86,6 +87,26 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             }
             
             $folderName = $response['properties']['Name']['value'];
+        }
+        // NOTE parent changes to parents in later specification
+        // TODO update when updating to later specification
+        else if ($this->params[1] == 'parent')
+        {
+            // abstract this to be used also by the document service (and the PWC service?) ???
+            // alternatively use getFolderParent here makes sense and use getObjectParents when document service?
+            $folderId = $this->params[0];
+            $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
+            $response = $NavigationService->getFolderParent($repositoryId, $folderId, false, false, false);
+
+            if (PEAR::isError($response)) {
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response->getMessage());
+                $this->responseFeed = $feed;
+                return null;
+            }
+            
+            // we know that a folder will only have one parent, so we can assume element 0
+            $folderId = $response[0]['properties']['ObjectId']['value'];
+            $folderName = $response[0]['properties']['Name']['value'];
         }
         else {
             $folderId = $this->params[0];

@@ -97,7 +97,8 @@ class KT_cmis_atom_service_helper {
         // links
         $link = $response->newElement('link');
         $link->appendChild($response->newAttr('rel', 'self'));
-        $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . (!$pwc ? $type : 'pwc') . '/' . $cmisEntry['properties']['ObjectId']['value']));
+        $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . (!$pwc ? $type : 'pwc') . '/' 
+                                                    . $cmisEntry['properties']['ObjectId']['value']));
         $entry->appendChild($link);
 
         $link = $response->newElement('link');
