@@ -768,7 +768,10 @@ class database extends Step
         $sqlFile = $dbMigrate['dumpLocation'];
     	$this->parse_mysql_dump($sqlFile);
     	$this->dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
-    	$this->dbhandler->query("TRUNCATE plugin_helper;");
+    	$dropPluginHelper = "TRUNCATE plugin_helper;";
+    	$this->dbhandler->query($dropPluginHelper);
+    	$updateUrls = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "urls";';
+    	$this->dbhandler->query($updateUrls);
     	return true;
     }
 	/**
