@@ -944,36 +944,46 @@ class KTCoreTextAreaWidget extends KTWidget {
         $global_required_default = true;
         $this->bRequired = (KTUtil::arrayGet($aOptions, 'required', $global_required_default, false) == true);
 
-        $this->aOptions['cols'] = KTUtil::arrayGet($aOptions, 'cols', 60);
-        $this->aOptions['rows'] = KTUtil::arrayGet($aOptions, 'rows', 3);
+        // Part of the space on the mce editor is taken up by the toolbars, so make the plain text field slightly smaller (if using the default size)
+        $default_rows = 20;
+        if(isset($this->aOptions['field'])){
+            $oField = $this->aOptions['field'];
+            if(!$oField->getIsHTML()){
+                $default_rows = 15;
+            }
+        }
+
+
+        $this->aOptions['cols'] = KTUtil::arrayGet($aOptions, 'cols', 80);
+        $this->aOptions['rows'] = KTUtil::arrayGet($aOptions, 'rows', $default_rows);
         $this->aOptions['field'] = KTUtil::arrayGet($aOptions, 'field');
     }
 
     function render() {
         // very simple, general purpose passthrough.  Chances are this is sufficient,
         // just override the template being used.
-        $bHasErrors = false;       
+        $bHasErrors = false;
         if (count($this->aErrors) != 0) { $bHasErrors = true; }
         //var_dump($this->aErrors);
-        $oTemplating =& KTTemplating::getSingleton();        
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
 
         $this->aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js';
     	$this->aJavascript[] = 'resources/js/kt_tinymce_init.js';
-        
+
         if (!empty($this->aJavascript)) {
             // grab our inner page.
-            $oPage =& $GLOBALS['main'];            
+            $oPage =& $GLOBALS['main'];
             $oPage->requireJSResources($this->aJavascript);
         }
         if (!empty($this->aCSS)) {
             // grab our inner page.
-            $oPage =& $GLOBALS['main'];            
+            $oPage =& $GLOBALS['main'];
             $oPage->requireCSSResources($this->aCSS);
         }
-        
+
         $widget_content = $this->getWidget();
-        
+
         $aTemplateData = array(
             "context" => $this,
             "label" => $this->sLabel,

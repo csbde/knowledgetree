@@ -33,7 +33,7 @@
 		    <tr>
 		        <td>Root Password: </td>
 		        <td> <div id="tooltips" title="Root user password of the database">&nbsp;</div> </td>
-		        <td><?php echo $dpassword; ?></td>
+		        <td><?php for($i=0; $i< strlen($dpassword); $i++) echo "*"; //echo $dpassword; ?></td>
 		    </tr>
 		    <?php if($ddrop) { ?>
 		    <tr>
