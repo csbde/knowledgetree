@@ -8,6 +8,7 @@ body {
 	background-repeat:repeat-x;
 	font-family:sans-serif;
 	color:grey;
+	z-index:10;
 }
 
 h1 {
@@ -62,6 +63,10 @@ select {
 
 /* *** Layout Styles *** */
 
+#wrapper {
+	background: white;
+}
+
 #outer-wrapper {
 	border:1px solid #B7B7B7;
 	margin-top:20px;
@@ -80,9 +85,8 @@ select {
 }
 
 #container {
-  width: 100%;
-  background: white url("../graphics/background.gif") repeat-y left;
-  float: right;
+	background: white url("../graphics/left.png") repeat-y left;
+	overflow:auto;
 }
 
 #content {
@@ -106,7 +110,7 @@ select {
 #step_content_dependencies {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:285px;
+	min-height:270px;
 }
 
 #step_content_configuration {
@@ -162,6 +166,7 @@ select {
 	line-height:3;
 	padding-left:20px;
 	text-align:left;
+	/*background-image:url("../graphics/left.png");*/
 }
 
 #footer {
@@ -482,7 +487,7 @@ td.dir_description {
 	overflow: scroll;
 	height: 255px;
 	width:765px;
-	height:375px;
+	height:370px;
 	overflow-x:hidden;
 	border:1px solid #CFCFCF;
 }

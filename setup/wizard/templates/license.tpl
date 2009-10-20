@@ -1,13 +1,10 @@
 <form id="welcome_license_dependencies" action="index.php?step_name=license" method="POST">
 <p class="title">License Agreement</p>
-
-<div class="error_message">
     <?php if(isset($errors)) {
         foreach($errors as $k=>$e) {
-                echo $e;
+                echo "<span class='error'>".$e."</span>";
         }
     }?>
-</div>
 <p class="description">
 Please read and accept the license agreement below before continuing with the setup.
 </p>
