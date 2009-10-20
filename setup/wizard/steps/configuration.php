@@ -258,9 +258,6 @@ class configuration extends Step
         $paths = $this->getPathInfo($server['file_system_root']['value']);
         if(!$edit) $this->temp_variables['paths'] = $paths;
 
-        // Running user
-        // Logging
-
         return $this->done;
     }
 
