@@ -11,7 +11,8 @@
         <meta http-equiv=Content-Type content="text/html; charset=utf-8">
 	</head>
 	<body onload="">
-		<div id="outer-wrapper">
+		<div id="outer-outer-wrapper" align="center">
+		<div id="outer-wrapper" align="left">
 		    <div id="header">
 			    <div id="logo"><?php echo $html->image('dame/installer-header_logo.png'); ?> </div>
 			    <div id="install_details">
@@ -37,6 +38,7 @@
 		    <div id="footer">
 		    	<?php echo $html->image('dame/powered-by-kt.png', array("height"=>"23px", "width"=>"105px", "style"=>"padding: 5px;")); ?>
 		    </div>
+		</div>
 		</div>
 	</body>
 </html>
