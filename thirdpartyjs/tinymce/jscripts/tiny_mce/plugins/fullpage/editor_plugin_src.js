@@ -1,5 +1,5 @@
 /**
- * $Id: editor_plugin_src.js 520 2008-01-07 16:30:32Z spocke $
+ * $Id: editor_plugin_src.js 1029 2009-02-24 22:32:21Z spocke $
  *
  * @author Moxiecode
  * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
@@ -29,6 +29,7 @@
 			ed.addButton('fullpage', {title : 'fullpage.desc', cmd : 'mceFullPageProperties'});
 
 			ed.onBeforeSetContent.add(t._setContent, t);
+			ed.onSetContent.add(t._setBodyAttribs, t);
 			ed.onGetContent.add(t._getContent, t);
 		},
 
@@ -44,6 +45,33 @@
 
 		// Private plugin internal methods
 
+		_setBodyAttribs : function(ed, o) {
+			var bdattr, i, len, kv, k, v, t, attr = this.head.match(/body(.*?)>/i);
+
+			if (attr && attr[1]) {
+				bdattr = attr[1].match(/\s*(\w+\s*=\s*".*?"|\w+\s*=\s*'.*?'|\w+\s*=\s*\w+|\w+)\s*/g);
+
+				if (bdattr) {
+					for(i = 0, len = bdattr.length; i < len; i++) {
+						kv = bdattr[i].split('=');
+						k = kv[0].replace(/\s/,'');
+						v = kv[1];
+
+						if (v) {
+							v = v.replace(/^\s+/,'').replace(/\s+$/,'');
+							t = v.match(/^["'](.*)["']$/);
+
+							if (t)
+								v = t[1];
+						} else
+							v = k;
+
+						ed.dom.setAttrib(ed.getBody(), 'style', v);
+					}
+				}
+			}
+		},
+
 		_createSerializer : function() {
 			return new tinymce.dom.Serializer({
 				dom : this.editor.dom,
@@ -52,12 +80,14 @@
 		},
 
 		_setContent : function(ed, o) {
-			var t = this, sp, ep, c = o.content;
+			var t = this, sp, ep, c = o.content, v, st = '';
+
+			if (o.source_view && ed.getParam('fullpage_hide_in_source_view'))
+				return;
 
 			// Parse out head, body and footer
+			c = c.replace(/<(\/?)BODY/gi, '<$1body');
 			sp = c.indexOf('<body');
-			if (sp == -1)
-				sp = c.indexOf('<BODY');
 
 			if (sp != -1) {
 				sp = c.indexOf('>', sp);
@@ -69,9 +99,36 @@
 
 				o.content = c.substring(sp + 1, ep);
 				t.foot = c.substring(ep);
+
+				function low(s) {
+					return s.replace(/<\/?[A-Z]+/g, function(a) {
+						return a.toLowerCase();
+					})
+				};
+
+				t.head = low(t.head);
+				t.foot = low(t.foot);
 			} else {
-				t.head = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-				t.head += '\n<html>\n<head>\n<title>Untitled document</title>\n</head>\n<body>\n';
+				t.head = '';
+				if (ed.getParam('fullpage_default_xml_pi'))
+					t.head += '<?xml version="1.0" encoding="' + ed.getParam('fullpage_default_encoding', 'ISO-8859-1') + '" ?>\n';
+
+				t.head += ed.getParam('fullpage_default_doctype', '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">');
+				t.head += '\n<html>\n<head>\n<title>' + ed.getParam('fullpage_default_title', 'Untitled document') + '</title>\n';
+
+				if (v = ed.getParam('fullpage_default_encoding'))
+					t.head += '<meta http-equiv="Content-Type" content="' + v + '" />\n';
+
+				if (v = ed.getParam('fullpage_default_font_family'))
+					st += 'font-family: ' + v + ';';
+
+				if (v = ed.getParam('fullpage_default_font_size'))
+					st += 'font-size: ' + v + ';';
+
+				if (v = ed.getParam('fullpage_default_text_color'))
+					st += 'color: ' + v + ';';
+
+				t.head += '</head>\n<body' + (st ? ' style="' + st + '"' : '') + '>\n';
 				t.foot = '\n</body>\n</html>';
 			}
 		},
@@ -79,7 +136,8 @@
 		_getContent : function(ed, o) {
 			var t = this;
 
-			o.content = tinymce.trim(t.head) + '\n' + tinymce.trim(o.content) + '\n' + tinymce.trim(t.foot);
+			if (!o.source_view || !ed.getParam('fullpage_hide_in_source_view'))
+				o.content = tinymce.trim(t.head) + '\n' + tinymce.trim(o.content) + '\n' + tinymce.trim(t.foot);
 		}
 	});
 
