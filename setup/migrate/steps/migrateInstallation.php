@@ -181,7 +181,7 @@ class migrateInstallation extends step
     
     public function readConfig() {
 		$ktInstallPath = isset($_POST['location']) ? $_POST['location']: '';
-		if($ktInstallPath != '') {
+		if($ktInstallPath != '' || strlen($ktInstallPath) == 0) {
 			$this->location = $ktInstallPath;
 			if(file_exists($ktInstallPath)) {
 				$configPath = $ktInstallPath.DS."knowledgeTree".DS."config".DS."config-path";
@@ -214,17 +214,6 @@ class migrateInstallation extends step
 		return false;
     }
     
-    public function getPort() {
-    	$dbConfigPath = $this->location.DS."mysql".DS."my.ini";
-    	if(file_exists($dbConfigPath)) {
-    		$ini = $this->util->loadInstallIni($dbConfigPath);
-    		$dbSettings = $ini->getSection('mysqladmin');
-    		return $dbSettings['port'];
-    	}
-    	
-    	return '3306';
-    }
-    
     private function loadConfig($path) {
     	$ini = $this->util->loadInstallIni($path);
     	$dbSettings = $ini->getSection('db');
@@ -232,7 +221,7 @@ class migrateInstallation extends step
     								'dbName'=> $dbSettings['dbName'],
     								'dbUser'=> $dbSettings['dbUser'],
     								'dbPass'=> $dbSettings['dbPass'],
-    								'dbPort'=> $this->getPort(),
+    								'dbPort'=> $this->util->getPort($this->location),
     								'dbAdminUser'=> $dbSettings['dbAdminUser'],
     								'dbAdminPass'=> $dbSettings['dbAdminPass'],
     	);

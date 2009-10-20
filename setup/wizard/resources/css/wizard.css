@@ -64,9 +64,7 @@ select {
 
 #outer-wrapper {
 	border:1px solid #B7B7B7;
-	left:215px;
-	position:relative;
-	top:20px;
+	margin-top:20px;
 	width:1024px;
 }
 

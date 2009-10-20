@@ -116,5 +116,21 @@ class MigrateUtil extends InstallUtil {
     	require_once("../wizard/iniUtilities.php");
     	return new iniUtilities($path);
     }
+    
+    public function getPort($location) {
+    	if(WINDOWS_OS) {
+    		$myIni = "my.ini";
+    	} else {
+    		$myIni = "my.cnf";
+    	}
+    	$dbConfigPath = $location.DS."mysql".DS."$myIni";
+    	if(file_exists($dbConfigPath)) {
+    		$ini = $this->loadInstallIni($dbConfigPath);
+    		$dbSettings = $ini->getSection('mysqladmin');
+    		return $dbSettings['port'];
+    	}
+    	
+    	return '3306';
+    }
 }
 ?>
