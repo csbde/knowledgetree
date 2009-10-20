@@ -180,38 +180,48 @@ class migrateInstallation extends step
     }
     
     public function readConfig() {
-		$ktInstallPath = isset($_POST['location']) ? $_POST['location']: '';
-		if($ktInstallPath != '' || strlen($ktInstallPath) == 0) {
-			$this->location = $ktInstallPath;
-			if(file_exists($ktInstallPath)) {
-				$configPath = $ktInstallPath.DS."knowledgeTree".DS."config".DS."config-path";
-				if(file_exists($configPath)) {
-					$configFilePath = file_get_contents($configPath);
-					if(file_exists($configFilePath)) { // For 3.7 and after
+		if(isset($_POST['location'])) {
+			$ktInstallPath = $_POST['location'];
+			if($ktInstallPath != '' || strlen($ktInstallPath) == 0) {
+				$this->location = $ktInstallPath;
+				
+				return $this->configExists($ktInstallPath);
+			}			
+		} else {
+			
+			return false;
+		}
+
+		return false;
+    }
+    
+    private function configExists($ktInstallPath) {
+		if(file_exists($ktInstallPath)) {
+			$configPath = $ktInstallPath.DS."knowledgeTree".DS."config".DS."config-path";
+			if(file_exists($configPath)) {
+				$configFilePath = file_get_contents($configPath);
+				if(file_exists($configFilePath)) { // For 3.7 and after
+					$this->loadConfig($configFilePath);
+					$this->storeSilent();
+					
+					return true;
+				} else {
+					$configFilePath = $ktInstallPath.DS."knowledgeTree".DS.$configFilePath; // For older than 3.6.2
+					$configFilePath = trim($configFilePath);
+					if(file_exists($configFilePath)) {
 						$this->loadConfig($configFilePath);
 						$this->storeSilent();
-						
+					
 						return true;
-					} else {
-						$configFilePath = $ktInstallPath.DS."knowledgeTree".DS.$configFilePath; // For older than 3.6.2
-						$configFilePath = trim($configFilePath);
-						if(file_exists($configFilePath)) {
-							$this->loadConfig($configFilePath);
-							$this->storeSilent();
-						
-							return true;
-						}
-						$this->error[] = "KT installation configuration file empty";
 					}
-				} else {
-					$this->error[] = "KT installation configuration file not found";
+					$this->error[] = "KT installation configuration file empty";
 				}
 			} else {
-				$this->error[] = "KT installation not found";
+				$this->error[] = "KT installation configuration file not found";
 			}
+		} else {
+			$this->error[] = "Please Enter a Location";
 		}
-		
-		return false;
     }
     
     private function loadConfig($path) {
