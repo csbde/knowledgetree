@@ -287,14 +287,7 @@ class InstallWizard {
 				$this->util->redirect('../migrate');
 			} elseif ($this->util->upgradeSpecified()) {
 				$this->util->redirect('../upgrade/index.php?action=installer');
-			}/* elseif ($this->util->loginSpecified()) {
-				header("Cache-Control: no-cache");
-				$this->util->redirect('../../admin.php');
-			} elseif ($this->util->zendSpecified()) {
-				$zend = "http://".$_SERVER['HTTP_HOST'].":10081/ZendServer/Index";
-				header("Cache-Control: no-cache");
-				$this->util->redirect($zend);
-			}*/
+			}
 			$response = $this->systemChecks();
 			if($response === true) {
 				$this->displayInstaller();
@@ -303,7 +296,7 @@ class InstallWizard {
 			}
 		} else {
 			// TODO: Die gracefully
-			$this->util->error("System has been installed <div class=\"buttons\"><a href='../../'>Goto Login</a></div>");
+			$this->util->error("System has been installed  <a href='../../login.php' class='back' style='width:80px;float:none'>Goto Login</a>");
 		}
 	}
 }
