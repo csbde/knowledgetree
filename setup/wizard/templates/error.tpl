@@ -9,7 +9,8 @@
 	</head>
 
 	<body onload="">
-		<div id="outer-wrapper">
+		<div id="outer-outer-wrapper" align="center">
+		<div id="outer-wrapper" align="left">
 		    <div id="header">
 		    <div id="logo"><img src="resources/graphics/dame/installer-header_logo.png"/></div>
 		    <div id="install_details">
@@ -53,11 +54,10 @@
 		        </div>
 		        <div class="clearing">&nbsp;</div>
 		    </div>
-			
 		    <div id="footer">
-
 		    	<img width="105" height="23" align="right" src="resources/graphics/dame/powered-by-kt.png" style="padding: 5px;"/>
 		    </div>
+		</div>
 		</div>
 	</body>
 </html>
