@@ -57,7 +57,7 @@ class unixScheduler extends unixService {
 	* @param string
 	* @return void
  	*/
-	public function load($options = null) {
+	public function load() {
 		$this->setPhpCli();
 		$this->scheduler = 'scheduler';
 		$this->setSchedulerSource('schedulerTask.sh');
@@ -155,6 +155,7 @@ class unixScheduler extends unixService {
       	if(is_array($response['out'])) {
     		if(count($response['out']) > 1) {
     			foreach ($response['out'] as $r) {
+    				$matches = false;
     				preg_match('/grep/', $r, $matches); // Ignore grep
     				if(!$matches) {
     					return 'STARTED';
@@ -190,7 +191,7 @@ class unixScheduler extends unixService {
 		}
     	if(DEBUG) {
     		echo "Command : $cmd<br/>";
-    		return ;
+    		return true;
     	}
     	$response = $this->util->pexec($cmd);
     	

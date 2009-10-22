@@ -85,7 +85,7 @@ class windowsScheduler extends windowsService {
 	* @param string
 	* @return void
  	*/
-	function load($options = null) {
+	function load() {
 		$this->setSchedulerDIR($this->varDir."bin");
 		$this->setSchedulerScriptPath("taskrunner.bat");
 		$this->setSchedulerSource("schedulerService.php");
@@ -209,7 +209,7 @@ class windowsScheduler extends windowsService {
             		echo '<pre>';
             		print_r(array('service' => $this->name, 'display' => $this->name, 'path' => $this->getSchedulerScriptPath()));
     	            echo '</pre>';
-            		return ;
+            		return true;
             	}
     			$response = win32_create_service(array(
     	            'service' => $this->name,
@@ -224,7 +224,7 @@ class windowsScheduler extends windowsService {
             	$cmd = "\"{$this->winservice}\" install $this->name $this->options";
             	if(DEBUG) {
             		echo "Command : $cmd<br/>";
-            		return ;
+            		return true;
             	}
             	$response = $this->util->pexec($cmd);
             	return $response;

@@ -64,15 +64,16 @@ class UpgradeUtil extends InstallUtil {
 	public function error($error) {
 		$template_vars['error'] = $error;
 		$file = "templates/error.tpl";
-		if (!file_exists($file)) {
-			return false;
+		if (file_exists($file)) {
+			extract($template_vars); // Extract the vars to local namespace
+			ob_start();
+			include($file);
+	        $contents = ob_get_contents();
+	        ob_end_clean();
+	        echo $contents;
 		}
-		extract($template_vars); // Extract the vars to local namespace
-		ob_start();
-		include($file);
-        $contents = ob_get_contents();
-        ob_end_clean();
-        echo $contents;
+		
+		return false;
 	}
     
     public function loadInstallIni($path) {
@@ -99,15 +100,16 @@ class UpgradeUtil extends InstallUtil {
             }
         }
         $file = "templates/" . $template;
-        if (!file_exists($file)) {
-            return false;
+        if (file_exists($file)) {
+	        extract($template_vars); // Extract the vars to local namespace
+	        ob_start();
+	        include($file);
+	        $contents = ob_get_contents();
+	        ob_end_clean();
+	        echo $contents;
         }
-        extract($template_vars); // Extract the vars to local namespace
-        ob_start();
-        include($file);
-        $contents = ob_get_contents();
-        ob_end_clean();
-        echo $contents;
+        
+        return false;
     }
 	
 	/**
@@ -133,7 +135,7 @@ class UpgradeUtil extends InstallUtil {
     
         $adminUser = $oKTConfig->get('db/dbAdminUser');
         $adminPwd = $oKTConfig->get('db/dbAdminPass');
-        $dbHost = $oKTConfig->get('db/dbHost');
+//        $dbHost = $oKTConfig->get('db/dbHost');
         $dbName = $oKTConfig->get('db/dbName');
         $dbPort = trim($oKTConfig->get('db/dbPort'));
         if ($dbPort=='' || $dbPort=='default')$dbPort = get_cfg_var('mysql.default_port');
@@ -158,7 +160,7 @@ class UpgradeUtil extends InstallUtil {
             $mechanism="--port=\"$dbPort\"";
         }
     
-        $tmpdir = $this->resolveTempDir();
+//        $tmpdir = $this->resolveTempDir();
     
         $stmt = $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism drop  \"$dbName\"<br/>";
         $stmt .= $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism create  \"$dbName\"<br/>";
@@ -193,11 +195,13 @@ class UpgradeUtil extends InstallUtil {
         }
     
         $oKTConfig =& KTConfig::getSingleton();
-        $mysqldir = $oKTConfig->get('backup/mysqlDirectory',$mysqldir);
+//        $mysqldir = $oKTConfig->get('backup/mysqlDirectory',$mysqldir);
+        $mysqldir = $oKTConfig->get('backup/mysqlDirectory');
         $dirs[] = $mysqldir;
     
         if (strpos(__FILE__,'knowledgeTree') !== false && strpos(__FILE__,'ktdms') != false) {
-            $dirs [] = realpath(dirname($FILE) . '/../../mysql/bin');
+//            $dirs [] = realpath(dirname($FILE) . '/../../mysql/bin');
+				$dirs [] = realpath('/../../mysql/bin');				
         }
     
         foreach($dirs as $dir)
