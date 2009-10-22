@@ -5,7 +5,7 @@
 		if(!$errors && !$warnings) {
 			?>
 				<span class='big_ok'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-				Installation has been detected. Please click next to continue.
+					KnowledgeTree installation has been detected. Please click <b>Next</b> to continue.
 				<br/><br/>
 			<?php
 		}
@@ -13,7 +13,7 @@
 <!--Warning and Error Messages-->
 	<?php if($errors) { ?>
 		<span class='cross'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-		<span class='error_message'>Your system is not quite ready to migrate KnowledgeTree. See the list below to determine which areas you need to address.</span>
+		<span class='error_message'>The Setup Wizard will not continue until the issues below have been addressed</span>
 		<br/>
 	<?php } elseif ($warnings) {
 		?>
@@ -22,13 +22,15 @@
 	<?php
 		if($errors || $warnings) {
 			?>
-		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Current_Installation" target="_blank">Click here for help on overcoming installation detection issues</a>
+		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Current_Installation" target="_blank">Click here for help on overcoming upgrade issues  </a>
 	<?php } ?>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<p class="empty_space">
-			Please verify the location of your current installation.
+			Enter the full path of the installation you wish to upgrade: 
 		</p>
-		
+		<p class="empty_space">
+			<small>The default is <b>'C:\Program Files\ktdms'</b> on Windows and <b>'/opt/ktdms'</b> or <b>'/home/<i>username</i>/ktdms/'</b> on other operating systems.</small>
+		</p>
 		<input id="location" name="location" type="text" style="width:430px; float:left" value="<?php if($location) echo $location; ?>">
 		<br/><br/>
 		<?php

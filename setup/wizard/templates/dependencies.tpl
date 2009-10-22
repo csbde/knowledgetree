@@ -9,7 +9,7 @@
 		if(!$errors && $warnings) {
 			?>
 				<span class='big_ok'>&nbsp;&nbsp;&nbsp;</span>
-				<span class='description'>Congratulations! Your system is ready to run KnowledgeTree. Click Next to continue.</span>
+				<span class='description'>Congratulations! Your system is ready to run KnowledgeTree. Click <b>Next</b> to continue.</span>
 				<br/><br/>
 			<?php
 		}

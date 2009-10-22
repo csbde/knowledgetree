@@ -2,22 +2,30 @@
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
 	min-height:365px;
+	height:365px;
+	height:auto !important;
 }
 
 #step_content_services {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
 	min-height:340px;
+	height:340px;
+	height:auto !important;
 }
 
 #step_content_database {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
 	min-height:380px;
+	height:380px;
+	height:auto !important;
 }
 
 #step_content_complete {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
 	min-height:360px;
+	height:360px;
+	height:auto !important;
 }

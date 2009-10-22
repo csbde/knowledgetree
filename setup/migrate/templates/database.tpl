@@ -7,9 +7,15 @@
 <!--		user on the database server are required in order to be able to configure and migrate the database.-->
 		</div>
 		<div id="step_content_<?php echo $step_name; ?>" class="step">
-			<br/>
-			<span class="error">!!NB!! You are advised to backup your database before proceeding. !!NB!!</span>
-			<br/><br/>
+<p class="empty_space">The Setup Wizard will now migrate your existing database to the new Zend Server stack. This process may take
+                        several minutes to complete.</p><br />
+                        <span class="error">Please ensure that your database is backed up before proceeding. If you need assistance with backing up see the <a class="description_click" target="_blank" href="http://wiki.knowledgetree.com/Web_Based_Migrater#Database_Migration">database migration section on our wiki</a>
+</span>
+                        <br /><br />
+                        <p class="empty_space">Click <b>Next</b> to continue.</p>
+<!--			<br/>-->
+<!--			<span class="error">!!NB!! You are advised to backup your database before proceeding. !!NB!!</span>-->
+<!--			<br/><br/>-->
 			<?php if(isset($errors)) { ?>
 				<?php
 					foreach ($errors as $error) {
