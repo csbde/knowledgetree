@@ -10,15 +10,15 @@
 <br>
 {if ($smallVersion == 'Community Edition')}
 	{i18n}This program is free software and published under the <a href=" http://www.gnu.org/licenses/">GNU General Public License version 3</a>{/i18n}<br><br>
-	{i18n}KnowledgeTree Community Edition is supplied with <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no support</a>, 
-	<a href="http://www.knowledgetree.com/commercial_support" target="_blank">no maintenance</a>, 
+	{i18n}KnowledgeTree Community Edition is supplied with <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no support</a>,
+	<a href="http://www.knowledgetree.com/commercial_support" target="_blank">no maintenance</a>,
 	and <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no warranty</a>.{/i18n}<br>
 	{i18n}Please contact the <a href="mailto:sales@knowledgetree.com">KnowledgeTree Sales team</a> should you wish to learn more about commercially supported editions of KnowledgeTree.{/i18n}<br>
 {else}
 	<br>
 	{i18n}This is a professionally supported edition of KnowledgeTree.{/i18n} <br>
 	{i18n}Please refer to the documentation provided to you at subscription to learn more about how to access KnowledgeTree's professional support team.{/i18n}<br>
-	
+
 {/if}
 </p>
 <br>
@@ -28,7 +28,7 @@
 	<li><a href="http://forums.knowledgetree.com/">Forums</a>: Discuss KnowledgeTree with expert community users and developers</li>
 	<li><a href="http://wiki.knowledgetree.com/">Wiki</a>: Search the knowledge base of user and developer topics</li>
 	<li><a href="http://issues.knowledgetree.com/">Issues</a>: Log a bug or suggest a new feature</li>
-	<li><a href="http://people.knowledgetree.com/">Blogs</a>: See what the KnowledgeTree team have to say</li>
+	<li><a href="http://www.knowledgetree.com/blog">Blogs</a>: See what the KnowledgeTree team have to say</li>
 </ul>
 </p>
 <p>
@@ -63,12 +63,12 @@
 	</li>
 	<li>
 		Kenny Horan
-	</li>	
+	</li>
 	<li>
 		Artur Kiwa
 	</li>
 	<li>
-	    Michael Knight	
+	    Michael Knight
 	</li>
 	<li>
 		Jeongkyu Kim
@@ -77,7 +77,7 @@
 		Rogerio Kohler
 	</li>
 	<li>
-        Piotr Krawiecki 	
+        Piotr Krawiecki
 	</li>
 	<li>
 		Ola Larsson
@@ -86,7 +86,7 @@
 		Pavel Lastovicka
 	</li>
 	<li>
-		Michel Loiseleur 
+		Michel Loiseleur
 	</li>
 	<li>
 		Renat Lumpau
@@ -143,13 +143,13 @@
 		Phillip Steinbachs
 	</li>
 	<li>
-        Tahir Tahang		
+        Tahir Tahang
 	</li>
 	<li>
 		Paul Trgina
 	</li>
 	<li>
-	    Harry Tsio	
+	    Harry Tsio
 	</li>
 	<li>
         Bjarte Kalstveit Vebj&oslash;rnsen
@@ -161,13 +161,19 @@
 		Jaime Zarate
 	</li>
 	<li>
+	   <a href='http://www.ratp.com'>RATP</a>
+	</li>
+	<li>
+	   <a href='http://nxc.no'>NXC</a>
+	</li>
+	<li>
 		And all the KnowledgeTree staff that <a href="http://en.wikipedia.org/wiki/Eat_one's_own_dog_food">"dogfood"</a> KnowledgeTree every day.
 	</li>
-	
+
 </ul>
 
 <p><small>[If you feel you should be here too, please let us know at <a href="mailto:contributions@knowledgetree.com">contributions@knowledgetree.com</a>]</small></p>
 
 
-<p>This software utilizes third-party software from <a set="yes" linkindex="11" href="http://pear.php.net/">Pear</a>, <a set="yes" linkindex="12" href="http://phpmailer.sourceforge.net/">PHPMailer</a>, <a set="yes" linkindex="13" href="http://smarty.php.net/">Smarty Template Engine</a>, <a set="yes" linkindex="14" href="http://sourceforge.net/projects/jscalendar">JSCalendar</a>, <a set="yes" linkindex="15" href="http://mochikit.com/">Mochikit</a>, <a set="yes" linkindex="16" href="http://tinymce.moxiecode.com/">Moxiecode Systems</a>, <a set="yes" linkindex="17" href="http://developer.yahoo.com/yui/">Yahoo Developer Network</a>.</p>
-	
+<p>This software utilizes third-party software from <a set="yes" linkindex="11" href="http://pear.php.net/">Pear</a>, <a set="yes" linkindex="12" href="http://phpmailer.sourceforge.net/">PHPMailer</a>, <a set="yes" linkindex="13" href="http://smarty.php.net/">Smarty Template Engine</a>, <a set="yes" linkindex="17" href="http://lucene.apache.org/tika/">Apache Tika</a>, <a set="yes" linkindex="15" href="http://mochikit.com/">Mochikit</a>, <a set="yes" linkindex="16" href="http://tinymce.moxiecode.com/">Moxiecode Systems</a>, <a set="yes" linkindex="17" href="http://extjs.com">ExtJS</a>, <a set="yes" linkindex="17" href="http://developer.yahoo.com/yui/">Yahoo Developer Network</a>.</p>
+
