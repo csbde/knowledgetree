@@ -337,7 +337,7 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
             }
         }
 
-        $location = 'browse.php?fFolderId='.$iMyDocsFolderID;
+        $location = 'browse.php?fFolderId='.$iDropDocsFolderID;
         $sReturnTable .= '</tbody>'.
         '</table>'.
         '<br>'.
