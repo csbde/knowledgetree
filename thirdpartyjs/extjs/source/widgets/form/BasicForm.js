@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -13,7 +13,7 @@
  * input field management, validation, submission, and form loading services.</p>
  * <p>By default, Ext Forms are submitted through Ajax, using an instance of {@link Ext.form.Action.Submit}.
  * To enable normal browser submission of an Ext Form, use the {@link #standardSubmit} config option.</p>
- * <p><h3>File Uploads</h3>{@link #fileUpload File uploads} are not performed using Ajax submission, that
+ * <p><h2>File Uploads</h2>{@link #fileUpload File uploads} are not performed using Ajax submission, that
  * is they are <b>not</b> performed using XMLHttpRequests. Instead the form is submitted in the standard
  * manner with the DOM <tt>&lt;form></tt> element temporarily modified to have its
  * <a href="http://www.w3.org/TR/REC-html40/present/frames.html#adef-target">target</a> set to refer
@@ -38,7 +38,10 @@
 Ext.form.BasicForm = function(el, config){
     Ext.apply(this, config);
     /*
-     * The Ext.form.Field items in this form.
+     * @property items
+     * A {@link Ext.util.MixedCollection MixedCollection) containing all the Ext.form.Fields in this form.<p>
+     * Note that in Ext 2.*, Fields which are within Containers <i>dynamically added</i> to a {@link Ext.form.FormPanel FormPanel}
+     * are not automatically added to this Collection, and must be programatically added in order to participate in the BasicForm's operations.
      * @type MixedCollection
      */
     this.items = new Ext.util.MixedCollection(false, function(o){
@@ -125,7 +128,8 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
      */
     /**
      * @cfg {Object} baseParams
-     * Parameters to pass with all requests. e.g. baseParams: {id: '123', foo: 'bar'}.
+     * <p>Parameters to pass with all requests. e.g. baseParams: {id: '123', foo: 'bar'}.</p>
+     * <p>Parameters are encoded as standard HTTP parameters using {@link Ext#urlEncode}.</p>
      */
     /**
      * @cfg {Number} timeout Timeout for form actions in seconds (default is 30 seconds).
@@ -205,7 +209,9 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
     },
 
     /**
-     * Returns true if any fields in this form have changed since their original load.
+     * <p>Returns true if any fields in this form have changed from their original values.</p>
+     * <p>Note that if this BasicForm was configured with {@link #trackResetOnLoad}
+     * then the Fields' <i>original values</i> are updated when the values are loaded by {@link #setValues}.</p>
      * @return Boolean
      */
     isDirty : function(){
@@ -234,7 +240,8 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
      * <li><b>method</b> : String<p style="margin-left:1em">The form method to use (defaults
      * to the form's method, or POST if not defined)</p></li>
      * <li><b>params</b> : String/Object<p style="margin-left:1em">The params to pass
-     * (defaults to the form's baseParams, or none if not defined)</p></li>
+     * (defaults to the form's baseParams, or none if not defined)</p>
+     * <p>Parameters are encoded as standard HTTP parameters using {@link Ext#urlEncode}.</p></li>
      * <li><b>headers</b> : Object<p style="margin-left:1em">Request headers to set for the action
      * (defaults to the form's default headers)</p></li>
      * <li><b>success</b> : Function<p style="margin-left:1em">The callback that will
@@ -410,7 +417,7 @@ myFormPanel.getForm().submit({
      */
     findField : function(id){
         var field = this.items.get(id);
-        if(!field){
+        if(!(field && typeof field == 'object')){
             this.items.each(function(f){
                 if(f.isFormField && (f.dataIndex == id || f.id == id || f.getName() == id)){
                     field = f;
@@ -418,7 +425,7 @@ myFormPanel.getForm().submit({
                 }
             });
         }
-        return field || null;
+        return field;
     },
 
 
@@ -494,7 +501,7 @@ myFormPanel.getForm().submit({
      * <p><b>Note:</b> The values are collected from all enabled HTML input elements within the form, <u>not</u> from
      * the Ext Field objects. This means that all returned values are Strings (or Arrays of Strings) and that the the
      * value can potentionally be the emptyText of a field.</p>
-     * @param {Boolean} asString (optional) false to return the values as an object (defaults to returning as a string)
+     * @param {Boolean} asString (optional) Pass true to return the values as a string. (defaults to false, returning an Object)
      * @return {String/Object}
      */
     getValues : function(asString){

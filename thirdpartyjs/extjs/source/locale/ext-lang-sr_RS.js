@@ -1,4 +1,12 @@
-﻿/*
+/*
+ * Ext JS Library 2.3.0
+ * Copyright(c) 2006-2009, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+
+/*
  * Serbian Cyrillic Translation
  * by Čolovic Vladan (cyrillic, utf8 encoding)
  * sr_RS (ex: sr_CS, sr_YU)

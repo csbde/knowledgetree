@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -59,7 +59,7 @@ Ext.lib.Dom = {
         c = Ext.getDom(c);
         if (!p || !c) {return false;}
 
-        if(p.contains && !Ext.isSafari) {
+        if(p.contains && !Ext.isWebKit) {
             return p.contains(c);
         }else if(p.compareDocumentPosition) {
             return !!(p.compareDocumentPosition(c) & 16);
@@ -137,7 +137,7 @@ Ext.lib.Dom = {
             p = p.offsetParent;
         }
 
-        if (Ext.isSafari && hasAbsolute) {
+        if (Ext.isWebKit && hasAbsolute) {
             x -= bd.offsetLeft;
             y -= bd.offsetTop;
         }

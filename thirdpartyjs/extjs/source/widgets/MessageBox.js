@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -46,6 +46,7 @@ Ext.MessageBox = function(){
     var handleButton = function(button){
         if(dlg.isVisible()){
             dlg.hide();
+            handleHide();
             Ext.callback(opt.fn, opt.scope||window, [button, activeTextEl.dom.value, opt], 1);
         }
     };
@@ -62,6 +63,7 @@ Ext.MessageBox = function(){
     var handleEsc = function(d, k, e){
         if(opt && opt.closable !== false){
             dlg.hide();
+            handleHide();
         }
         if(e){
             e.stopEvent();
@@ -232,11 +234,11 @@ Ext.MessageBox = function(){
          * @return {Ext.MessageBox} this
          */
         hide : function(){
-            var proxy = dlg.activeGhost;
-            if(this.isVisible() || proxy) {
+            var proxy = dlg ? dlg.activeGhost : null;
+            if(this.isVisible() || proxy){
                 dlg.hide();
                 handleHide();
-                if (proxy) {
+                if(proxy){
                     proxy.hide();
                 } 
             }
@@ -408,9 +410,11 @@ Ext.MessageBox.ERROR
             if(icon && icon != ''){
                 iconEl.removeClass('x-hidden');
                 iconEl.replaceClass(iconCls, icon);
+                bodyEl.addClass('x-dlg-icon');
                 iconCls = icon;
             }else{
                 iconEl.replaceClass(iconCls, 'x-hidden');
+                bodyEl.removeClass('x-dlg-icon')
                 iconCls = '';
             }
             return this;

@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -217,8 +217,10 @@ Ext.Container = Ext.extend(Ext.BoxComponent, {
         var items = this.items;
         if(items){
             delete this.items;
-            if(Ext.isArray(items) && items.length > 0){
-                this.add.apply(this, items);
+            if(Ext.isArray(items)){
+                if(items.length > 0){
+                    this.add.apply(this, items);
+                }
             }else{
                 this.add(items);
             }
@@ -324,9 +326,7 @@ myTabPanel.setActiveTab(myNewGrid);
 </code></pre>
      */
     add : function(comp){
-        if(!this.items){
-            this.initItems();
-        }
+        this.initItems();
         var a = arguments, len = a.length;
         if(len > 1){
             for(var i = 0; i < len; i++) {
@@ -363,9 +363,7 @@ myTabPanel.setActiveTab(myNewGrid);
      * inserted with the Container's default config values applied.
      */
     insert : function(index, comp){
-        if(!this.items){
-            this.initItems();
-        }
+        this.initItems();
         var a = arguments, len = a.length;
         if(len > 2){
             for(var i = len-1; i >= 1; --i) {
@@ -421,6 +419,7 @@ myTabPanel.setActiveTab(myNewGrid);
      * @return {Ext.Component} component The Component that was removed.
      */
     remove : function(comp, autoDestroy){
+        this.initItems();
         var c = this.getComponent(comp);
         if(c && this.fireEvent('beforeremove', this, c) !== false){
             this.items.remove(c);
@@ -443,6 +442,7 @@ myTabPanel.setActiveTab(myNewGrid);
      * @return {Array} Array of the destroyed components
      */
     removeAll: function(autoDestroy){
+        this.initItems();
         var item, items = [];
         while((item = this.items.last())){
             items.unshift(this.remove(item, autoDestroy));
@@ -487,7 +487,7 @@ myTabPanel.setActiveTab(myNewGrid);
         if(this.rendered && this.layout){
             this.layout.layout();
         }
-        if(shallow !== false && this.items){
+        if(shallow !== true && this.items){
             var cs = this.items.items;
             for(var i = 0, len = cs.length; i < len; i++) {
                 var c  = cs[i];

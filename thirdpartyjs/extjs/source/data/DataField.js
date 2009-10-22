@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -12,23 +12,23 @@
  * passed to {@link Ext.data.Record#create}.</p>
  * <p>Developers do not need to instantiate this class. Instances are created by {@link Ext.data.Record.create}
  * and cached in the {@link Ext.data.Record#fields fields} property of the created Record constructor's <b>prototype.</b></p>
-*/
+ */
 Ext.data.Field = function(config){
     if(typeof config == "string"){
         config = {name: config};
     }
     Ext.apply(this, config);
-    
+
     if(!this.type){
         this.type = "auto";
     }
-    
+
     var st = Ext.data.SortTypes;
     // named sortTypes are supported, here we look them up
     if(typeof this.sortType == "string"){
         this.sortType = st[this.sortType];
     }
-    
+
     // set default sortType for strings and dates
     if(!this.sortType){
         switch(this.type){
@@ -68,7 +68,7 @@ Ext.data.Field = function(config){
             case "float":
                 cv = function(v){
                     return v !== undefined && v !== null && v !== '' ?
-                           parseFloat(String(v).replace(stripRe, ""), 10) : ''; 
+                           parseFloat(String(v).replace(stripRe, ""), 10) : '';
                     };
                 break;
             case "bool":
@@ -96,7 +96,7 @@ Ext.data.Field = function(config){
                     return parsed ? new Date(parsed) : null;
                 };
              break;
-            
+
         }
         this.convert = cv;
     }
@@ -111,12 +111,12 @@ Ext.data.Field.prototype = {
     /**
      * @cfg {String} type
      * (Optional) The data type for conversion to displayable value. Possible values are
-     * <ul><li>auto (Default, implies no conversion)</li>
+     * <div class="mdetail-params"><ul><li>auto (Default, implies no conversion)</li>
      * <li>string</li>
      * <li>int</li>
      * <li>float</li>
      * <li>boolean</li>
-     * <li>date</li></ul>
+     * <li>date</li></ul></div>
      */
     /**
      * @cfg {Function} convert
@@ -130,7 +130,7 @@ Ext.data.Field.prototype = {
     /**
      * @cfg {String} dateFormat
      * (Optional) A format string for the {@link Date#parseDate Date.parseDate} function, or "timestamp" if the
-     * value provided by the Reader is a UNIX timestamp, or "time" if the value provided by the Reader is a 
+     * value provided by the Reader is a UNIX timestamp, or "time" if the value provided by the Reader is a
      * javascript millisecond timestamp.
      */
     dateFormat: null,

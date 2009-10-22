@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -76,7 +76,9 @@ Ext.data.Connection = function(config){
 
 Ext.extend(Ext.data.Connection, Ext.util.Observable, {
     /**
-     * @cfg {String} url (Optional) The default URL to be used for requests to the server. (defaults to undefined)
+     * @cfg {String} url (Optional) <p>The default URL to be used for requests to the server. Defaults to undefined.</p>
+     * <p>The <code>url</code> config may be a function which <i>returns</i> the URL to use for the Ajax request. The scope
+     * (<code><b>this</b></code> reference) of the function is the <code>scope</code> option passed to the {@link #request} method.</p>
      */
     /**
      * @cfg {Object} extraParams (Optional) An object containing properties which are used as
@@ -122,9 +124,11 @@ Ext.extend(Ext.data.Connection, Ext.util.Observable, {
      * in a callback function.</p>
      * <p>To execute a callback function in the correct scope, use the <tt>scope</tt> option.</p>
      * @param {Object} options An object which may contain the following properties:<ul>
-     * <li><b>url</b> : String/Function (Optional)<div class="sub-desc">The URL to
-     * which to send the request, or a function to call which returns a URL string. The scope of the
-     * function is specified by the <tt>scope</tt> option. Defaults to configured URL.</div></li>
+     * <li><b>url</b> : String/Function (Optional)<div class="sub-desc"><p>The URL to
+     * which to send the request, or a function to call which returns a URL string. The scope (<code><b>this</b></code> reference) of the
+     * function is specified by the <tt>scope</tt> option. Defaults to configured URL.
+     * <p>The <code>url</code> config may be a function which <i>returns</i> the URL to use for the Ajax request. The scope
+     * (<code><b>this</b></code> reference) of the function is the <code>scope</code> option passed to the {@link #request} method.</p></div></li>
      * <li><b>params</b> : Object/String/Function (Optional)<div class="sub-desc">
      * An object containing properties which are used as parameters to the
      * request, a url encoded string or a function to call to get either. The scope of the function
@@ -159,6 +163,7 @@ Ext.extend(Ext.data.Connection, Ext.util.Observable, {
      * which to execute the callbacks: The "this" object for the callback function. If the <tt>url</tt>, or <tt>params</tt> options were
      * specified as functions from which to draw values, then this also serves as the scope for those function calls.
      * Defaults to the browser window.</div></li>
+     * <li><b>timeout</b> : Number (Optional)<div class="sub-desc">The timeout in milliseconds to be used for this request. Defaults to 30 seconds.</div></li>
      * <li><b>form</b> : Element/HTMLElement/String (Optional)<div class="sub-desc">The <tt>&lt;form&gt;</tt>
      * Element or the id of the <tt>&lt;form&gt;</tt> to pull parameters from.</div></li>
      * <li><a id="request-option-isUpload"></a><b>isUpload</b> : Boolean (Optional)<div class="sub-desc"><b>Only meaningful when used 
@@ -331,7 +336,14 @@ Ext.extend(Ext.data.Connection, Ext.util.Observable, {
            document.frames[id].name = id;
         }
 
-        var form = Ext.getDom(o.form);
+        var form = Ext.getDom(o.form),
+            buf = {
+                target: form.target,
+                method: form.method,
+                encoding: form.encoding,
+                enctype: form.enctype,
+                action: form.action
+            };
         form.target = id;
         form.method = 'POST';
         form.enctype = form.encoding = 'multipart/form-data';
@@ -396,6 +408,12 @@ Ext.extend(Ext.data.Connection, Ext.util.Observable, {
         Ext.EventManager.on(frame, 'load', cb, this);
         form.submit();
 
+        form.target = buf.target;
+        form.method = buf.method;
+        form.enctype = buf.enctype;
+        form.encoding = buf.encoding;
+        form.action = buf.action;
+        
         if(hiddens){ // remove dynamic params
             for(var i = 0, len = hiddens.length; i < len; i++){
                 Ext.removeNode(hiddens[i]);

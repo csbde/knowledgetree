@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -21,18 +21,19 @@ Ext.tree.TreeDropZone = function(tree, config){
      * Allow inserting a dragged node between an expanded parent node and its first child that will become a
      * sibling of the parent when dropped (defaults to false)
      */
-    this.allowParentInsert = false;
+    this.allowParentInsert = config.allowParentInsert || false;
     /**
      * @cfg {String} allowContainerDrop
      * True if drops on the tree container (outside of a specific tree node) are allowed (defaults to false)
      */
-    this.allowContainerDrop = false;
+    this.allowContainerDrop = config.allowContainerDrop || false;
     /**
      * @cfg {String} appendOnly
      * True if the tree should only allow append drops (use for trees which are sorted, defaults to false)
      */
-    this.appendOnly = false;
-    Ext.tree.TreeDropZone.superclass.constructor.call(this, tree.innerCt, config);
+    this.appendOnly = config.appendOnly || false;
+
+    Ext.tree.TreeDropZone.superclass.constructor.call(this, tree.getTreeEl(), config);
     /**
     * The TreePanel for this drop zone
     * @type Ext.tree.TreePanel
@@ -148,6 +149,13 @@ Ext.extend(Ext.tree.TreeDropZone, Ext.dd.DropZone, {
     onNodeEnter : function(n, dd, e, data){
         this.cancelExpand();
     },
+    
+    onContainerOver : function(dd, e, data) {
+        if (this.allowContainerDrop && this.isValidDropPoint({ ddel: this.tree.getRootNode().ui.elNode, node: this.tree.getRootNode() }, "append", dd, e, data)) {
+            return this.dropAllowed;
+        }
+        return this.dropNotAllowed;
+    },
 
     // private
     onNodeOver : function(n, dd, e, data){
@@ -203,9 +211,24 @@ Ext.extend(Ext.tree.TreeDropZone, Ext.dd.DropZone, {
         }
         // first try to find the drop node
         var dropNode = data.node || (dd.getTreeNode ? dd.getTreeNode(data, targetNode, point, e) : null);
+        return this.processDrop(targetNode, data, point, dd, e, dropNode);
+    },
+    
+    onContainerDrop : function(dd, e, data){
+        if (this.allowContainerDrop && this.isValidDropPoint({ ddel: this.tree.getRootNode().ui.elNode, node: this.tree.getRootNode() }, "append", dd, e, data)) {
+            var targetNode = this.tree.getRootNode();       
+            targetNode.ui.startDrop();
+            var dropNode = data.node || (dd.getTreeNode ? dd.getTreeNode(data, targetNode, 'append', e) : null);
+            return this.processDrop(targetNode, data, 'append', dd, e, dropNode);
+        }
+        return false;
+    },
+    
+    // private
+    processDrop: function(target, data, point, dd, e, dropNode){
         var dropEvent = {
             tree : this.tree,
-            target: targetNode,
+            target: target,
             data: data,
             point: point,
             source: dd,
@@ -216,13 +239,13 @@ Ext.extend(Ext.tree.TreeDropZone, Ext.dd.DropZone, {
         };
         var retval = this.tree.fireEvent("beforenodedrop", dropEvent);
         if(retval === false || dropEvent.cancel === true || !dropEvent.dropNode){
-            targetNode.ui.endDrop();
+            target.ui.endDrop();
             return dropEvent.dropStatus;
         }
-        // allow target changing
-        targetNode = dropEvent.target;
-        if(point == "append" && !targetNode.isExpanded()){
-            targetNode.expand(false, null, function(){
+    
+        target = dropEvent.target;
+        if(point == 'append' && !target.isExpanded()){
+            target.expand(false, null, function(){
                 this.completeDrop(dropEvent);
             }.createDelegate(this));
         }else{

@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -22,7 +22,7 @@
  </code></pre>
  * @constructor
  * @param {Object} config The configuration options
-*/
+ */
 Ext.grid.RowNumberer = function(config){
     Ext.apply(this, config);
     if(this.rowspan){

@@ -1,1 +1,19 @@
-Ext.layout.Accordion=Ext.extend(Ext.layout.FitLayout,{fill:true,autoWidth:true,titleCollapse:true,hideCollapseTool:false,collapseFirst:false,animate:false,sequence:false,activeOnTop:false,renderItem:function(a){if(this.animate===false){a.animCollapse=false}a.collapsible=true;if(this.autoWidth){a.autoWidth=true}if(this.titleCollapse){a.titleCollapse=true}if(this.hideCollapseTool){a.hideCollapseTool=true}if(this.collapseFirst!==undefined){a.collapseFirst=this.collapseFirst}if(!this.activeItem&&!a.collapsed){this.activeItem=a}else{if(this.activeItem){a.collapsed=true}}Ext.layout.Accordion.superclass.renderItem.apply(this,arguments);a.header.addClass("x-accordion-hd");a.on("beforeexpand",this.beforeExpand,this)},beforeExpand:function(c,b){var a=this.activeItem;if(a){if(this.sequence){delete this.activeItem;if(!a.collapsed){a.collapse({callback:function(){c.expand(b||true)},scope:this});return false}}else{a.collapse(this.animate)}}this.activeItem=c;if(this.activeOnTop){c.el.dom.parentNode.insertBefore(c.el.dom,c.el.dom.parentNode.firstChild)}this.layout()},setItemSize:function(f,e){if(this.fill&&f){var b=this.container.items.items;var d=0;for(var c=0,a=b.length;c<a;c++){var g=b[c];if(g!=f){d+=(g.getSize().height-g.bwrap.getHeight())}}e.height-=d;f.setSize(e)}}});Ext.Container.LAYOUTS.accordion=Ext.layout.Accordion;
+/*
+ * Ext JS Library 2.3.0
+ * Copyright(c) 2006-2009, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+
+
+Ext.layout.Accordion=Ext.extend(Ext.layout.FitLayout,{fill:true,autoWidth:true,titleCollapse:true,hideCollapseTool:false,collapseFirst:false,animate:false,sequence:false,activeOnTop:false,setActiveItem:function(item){item=this.container.getComponent(item);this.activeItem=item;this.layout();},renderItem:function(c){if(this.animate===false){c.animCollapse=false;}
+c.collapsible=true;if(this.autoWidth){c.autoWidth=true;}
+if(this.titleCollapse){c.titleCollapse=true;}
+if(this.hideCollapseTool){c.hideCollapseTool=true;}
+if(this.collapseFirst!==undefined){c.collapseFirst=this.collapseFirst;}
+if(!this.activeItem&&!c.collapsed){this.activeItem=c;}else if(this.activeItem&&this.activeItem!=c){c.collapsed=true;}
+Ext.layout.Accordion.superclass.renderItem.apply(this,arguments);c.header.addClass('x-accordion-hd');c.on('beforeexpand',this.beforeExpand,this);},beforeExpand:function(p,anim){var ai=this.activeItem;if(ai){if(this.sequence){delete this.activeItem;if(!ai.collapsed){ai.collapse({callback:function(){p.expand(anim||true);},scope:this});return false;}}else{ai.collapse(this.animate);}}
+this.activeItem=p;if(this.activeOnTop){p.el.dom.parentNode.insertBefore(p.el.dom,p.el.dom.parentNode.firstChild);}
+this.layout();},setItemSize:function(item,size){if(this.fill&&item){var items=this.container.items.items;var hh=0;for(var i=0,len=items.length;i<len;i++){var p=items[i];if(p!=item){hh+=(p.getSize().height-p.bwrap.getHeight());}}
+size.height-=hh;item.setSize(size);}}});Ext.Container.LAYOUTS['accordion']=Ext.layout.Accordion;

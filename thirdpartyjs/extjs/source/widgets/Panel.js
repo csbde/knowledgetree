@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -75,6 +75,16 @@ new Ext.Panel({
 });</pre></code>
      */
     /**
+     * @cfg {Object} headerCfg
+     * <p>A {@link Ext.DomHelper DomHelper} configuration object specifying the element structure
+     * of this Panel's {@link #header} Element.</p>
+     */
+    /**
+     * @cfg {Object} footerCfg
+     * <p>A {@link Ext.DomHelper DomHelper} configuration object specifying the element structure
+     * of this Panel's {@link #footer} Element.</p>
+     */
+    /**
      * The Panel's footer {@link Ext.Element Element}. Read-only.
      * <p>This Element is used to house the Panel's {@link #buttons}.</p>
      * @type Ext.Element
@@ -99,19 +109,27 @@ new Ext.Panel({
      */
     /**
      * @cfg {Object/Array} tbar
-     * The top toolbar of the panel. This can be either an {@link Ext.Toolbar} object or an array of
+     * <p>The top toolbar of the panel. This can be either an {@link Ext.Toolbar} object or an array of
      * buttons/button configs to be added to the toolbar.  Note that this is not available as a property after render.
-     * To access the top toolbar after render, use {@link #getTopToolbar}.
+     * To access the top toolbar after render, use {@link #getTopToolbar}.</p>
+     * <p><b>Note:</b> Although a Toolbar may contain Field components, these will <b>not<b> be updated by a load
+     * of an ancestor FormPanel. A Panel's toolbars are not part of the standard Container->Component hierarchy, and
+     * so are not scanned to collect form items. Hoverver, the values <b>will</b> be submitted because form
+     * submission parameters are collected from the DOM tree.</p>
      */
     /**
      * @cfg {Object/Array} bbar
-     * The bottom toolbar of the panel. This can be either an {@link Ext.Toolbar} object or an array of
+     * <p>The bottom toolbar of the panel. This can be either an {@link Ext.Toolbar} object or an array of
      * buttons/button configs to be added to the toolbar.  Note that this is not available as a property after render.
-     * To access the bottom toolbar after render, use {@link #getBottomToolbar}.
+     * To access the bottom toolbar after render, use {@link #getBottomToolbar}.</p>
+     * <p><b>Note:</b> Although a Toolbar may contain Field components, these will <b>not<b> be updated by a load
+     * of an ancestor FormPanel. A Panel's toolbars are not part of the standard Container->Component hierarchy, and
+     * so are not scanned to collect form items. Hoverver, the values <b>will</b> be submitted because form
+     * submission parameters are collected from the DOM tree.</p>
      */
     /**
      * @cfg {Boolean} header
-     * True to create the header element explicitly, false to skip creating it.  By default, when header is not
+     * True to create the Panel's header element explicitly, false to skip creating it.  By default, when header is not
      * specified, if a {@link #title} is set the header will be created automatically, otherwise it will not.  If
      * a title is set but header is explicitly set to false, the header will not be rendered.
      */
@@ -177,7 +195,9 @@ new Ext.Panel({
      * <p>Each tool config may contain the following properties:
      * <div class="mdetail-params"><ul>
      * <li><b>id</b> : String<div class="sub-desc"><b>Required.</b> The type
-     * of tool to create. Values may be<ul>
+     * of tool to create. By default, this assigns a CSS class of the form <tt>x-tool-<i>&lt;tool-type&gt;</i></tt> to the
+     * resulting tool Element. Ext provides CSS rules, and an icon sprite containing images for the tool types listed below.
+     * The developer may implement custom tools by supplying alternate CSS rules and background images:<ul>
      * <li><tt>toggle</tt> (Created by default when {@link #collapsible} is <tt>true</tt>)</li>
      * <li><tt>close</tt></li>
      * <li><tt>minimize</tt></li>
@@ -228,6 +248,33 @@ tools:[{
      * necessary behavior.
      */
     /**
+     * @cfg {Ext.Template/Ext.XTemplate} toolTemplate
+     * @type {Ext.Template/Ext.XTemplate}
+     * <p>A Template used to create tools in the {@link #header} Element. Defaults to:</p><pre><code>
+new Ext.Template('&lt;div class="x-tool x-tool-{id}">&amp;#160;&lt;/div>')</code></pre>
+     * <p>This may may be overridden to provide a custom DOM structure for tools based upon a more
+     * complex XTemplate. The template's data is a single tool configuration object (Not the entire Array)
+     * as specified in {@link #tools} Example:</p><pre><code>
+var win = new Ext.Window({
+    tools: [{
+        id: 'download',
+        href: '/MyPdfDoc.pdf'
+    }],
+    toolTemplate: new Ext.XTemplate(
+        '&lt;tpl if="id==\'download\'">',
+            '&lt;a class="x-tool x-tool-pdf" href="{href}">&lt;/a>',
+        '&lt;/tpl>',
+        '&lt;tpl if="id!=\'download\'">',
+            '&lt;div class="x-tool x-tool-{id}">&amp;#160;&lt;/div>',
+        '&lt;/tpl>'
+    ),
+    width:500,
+    height:300,
+    closeAction:'hide'
+});</code></pre>
+     * <p>Note that the CSS class "x-tool-pdf" should have an associated style rule which provides an appropriate background image.</p>
+     */
+    /**
      * @cfg {Boolean} hideCollapseTool
      * True to hide the expand/collapse toggle button when {@link #collapsible} = true, false to display it (defaults to false).
      */
@@ -243,12 +290,15 @@ tools:[{
      */
     /**
      * @cfg {Boolean} floating
-     * True to float the panel (absolute position it with automatic shimming and shadow), false to display it
-     * inline where it is rendered (defaults to false).  Note that by default, setting floating to true will cause the
-     * panel to display at negative offsets so that it is hidden -- because the panel is absolute positioned, the
-     * position must be set explicitly after render (e.g., myPanel.setPosition(100,100);).  Also, when floating a
-     * panel you should always assign a fixed width, otherwise it will be auto width and will expand to fill to the
-     * right edge of the viewport.
+     * <p>True to float this Panel (absolute position it with automatic shimming and shadow), false to display it inline
+     * where it is rendered (defaults to false).</p>
+     * <p>Setting floating to true will create an {@link Ext.Layer} encapsulating this Panel's Element and
+     * display the Panel at negative offsets so that it is hidden. The position must be set explicitly after render
+     * (e.g., myPanel.setPosition(100,100);).</p>
+     * <p>When floating a panel you should always assign a fixed width, otherwise it will be auto width and will expand
+     * to fill to the right edge of the viewport.</p>
+     * <p>This property may also be specified as an object to be used as the configuration object for
+     * the {@link Ext.Layer} that will be created.
      */
     /**
      * @cfg {Boolean/String} shadow
@@ -560,11 +610,11 @@ new Ext.Panel({
         if(this.header === true){
             this.elements += ',header';
             delete this.header;
-        }else if(this.title && this.header !== false){
+        }else if(this.headerCfg || (this.title && this.header !== false)){
             this.elements += ',header';
         }
 
-        if(this.footer === true){
+        if(this.footerCfg || this.footer === true){
             this.elements += ',footer';
             delete this.footer;
         }
@@ -888,27 +938,27 @@ new Ext.Panel({
         for(var i = 0, a = arguments, len = a.length; i < len; i++) {
             var tc = a[i];
             if(!this.tools[tc.id]){
-	            var overCls = 'x-tool-'+tc.id+'-over';
-	            var t = this.toolTemplate.insertFirst((tc.align !== 'left') ? this[this.toolTarget] : this[this.toolTarget].child('span'), tc, true);
-	            this.tools[tc.id] = t;
-	            t.enableDisplayMode('block');
-	            t.on('click', this.createToolHandler(t, tc, overCls, this));
-	            if(tc.on){
-	                t.on(tc.on);
-	            }
-	            if(tc.hidden){
-	                t.hide();
-	            }
-	            if(tc.qtip){
-	                if(typeof tc.qtip == 'object'){
-	                    Ext.QuickTips.register(Ext.apply({
-	                          target: t.id
-	                    }, tc.qtip));
-	                } else {
-	                    t.dom.qtip = tc.qtip;
-	                }
-	            }
-	            t.addClassOnOver(overCls);
+                var overCls = 'x-tool-'+tc.id+'-over';
+                var t = this.toolTemplate.insertFirst((tc.align !== 'left') ? this[this.toolTarget] : this[this.toolTarget].child('span'), tc, true);
+                this.tools[tc.id] = t;
+                t.enableDisplayMode('block');
+                t.on('click', this.createToolHandler(t, tc, overCls, this));
+                if(tc.on){
+                    t.on(tc.on);
+                }
+                if(tc.hidden){
+                    t.hide();
+                }
+                if(tc.qtip){
+                    if(typeof tc.qtip == 'object'){
+                        Ext.QuickTips.register(Ext.apply({
+                              target: t.id
+                        }, tc.qtip));
+                    } else {
+                        t.dom.qtip = tc.qtip;
+                    }
+                }
+                t.addClassOnOver(overCls);
             }
         }
     },
@@ -1393,9 +1443,11 @@ panel.load({
 
     // private
     doAutoLoad : function(){
-        this.body.load(
-            typeof this.autoLoad == 'object' ?
-                this.autoLoad : {url: this.autoLoad});
+        var u = this.body.getUpdater();
+        if(this.renderer){
+            u.setRenderer(this.renderer);
+        }
+        u.update(typeof this.autoLoad == 'object' ? this.autoLoad : {url: this.autoLoad});
     },
     
     /**

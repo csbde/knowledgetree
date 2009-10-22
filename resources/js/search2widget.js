@@ -1,6 +1,6 @@
 Ext.onReady(function(){
 
-Ext.BLANK_IMAGE_URL = '../../thirdpartyjs/extjs/resources/images/default/s.gif';
+Ext.BLANK_IMAGE_URL = 'thirdpartyjs/extjs/resources/images/default/s.gif';
 
 var bSearchOptionMetadataAndContent = true;
 

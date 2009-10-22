@@ -1,7 +1,15 @@
+/*
+ * Ext JS Library 2.3.0
+ * Copyright(c) 2006-2009, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+
 /**
  *
  * Norwegian translation (Bokmål: no-NB)
- * By Tore Kjørsvik 21-January-2009
+ * By Tore Kjørsvik 21-January-2008
  *  
  */
 

@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -100,8 +100,13 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         'Verdana'
     ],
     defaultFont: 'tahoma',
+    /**
+     * @cfg {String} defaultValue A default value to be put into the editor to resolve focus issues (defaults to &#8203;, &nbsp; in Opera).
+     */
+    defaultValue: Ext.isOpera ? '&nbsp;' : '&#8203;',
 
     // private properties
+    actionMode: 'wrap',
     validationEvent : false,
     deferHeight: true,
     initialized : false,
@@ -236,7 +241,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                 this.fontSelect.dom,
                 '-'
             );
-        };
+        }
 
         if(this.enableFormat){
             tb.add(
@@ -244,7 +249,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                 btn('italic'),
                 btn('underline')
             );
-        };
+        }
 
         if(this.enableFontSize){
             tb.add(
@@ -252,7 +257,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                 btn('increasefontsize', false, this.adjustFont),
                 btn('decreasefontsize', false, this.adjustFont)
             );
-        };
+        }
 
         if(this.enableColors){
             tb.add(
@@ -260,7 +265,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                     itemId:'forecolor',
                     cls:'x-btn-icon x-edit-forecolor',
                     clickEvent:'mousedown',
-                    tooltip: tipsEnabled ? editor.buttonTips['forecolor'] || undefined : undefined,
+                    tooltip: tipsEnabled ? editor.buttonTips.forecolor || undefined : undefined,
                     tabIndex:-1,
                     menu : new Ext.menu.ColorMenu({
                         allowReselect: true,
@@ -268,7 +273,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                         value:'000000',
                         plain:true,
                         selectHandler: function(cp, color){
-                            this.execCmd('forecolor', Ext.isSafari || Ext.isIE ? '#'+color : color);
+                            this.execCmd('forecolor', Ext.isWebKit || Ext.isIE ? '#'+color : color);
                             this.deferFocus();
                         },
                         scope: this,
@@ -278,7 +283,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                     itemId:'backcolor',
                     cls:'x-btn-icon x-edit-backcolor',
                     clickEvent:'mousedown',
-                    tooltip: tipsEnabled ? editor.buttonTips['backcolor'] || undefined : undefined,
+                    tooltip: tipsEnabled ? editor.buttonTips.backcolor || undefined : undefined,
                     tabIndex:-1,
                     menu : new Ext.menu.ColorMenu({
                         focus: Ext.emptyFn,
@@ -292,7 +297,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                                 this.execCmd('useCSS', true);
                                 this.deferFocus();
                             }else{
-                                this.execCmd(Ext.isOpera ? 'hilitecolor' : 'backcolor', Ext.isSafari || Ext.isIE ? '#'+color : color);
+                                this.execCmd(Ext.isOpera ? 'hilitecolor' : 'backcolor', Ext.isWebKit || Ext.isIE ? '#'+color : color);
                                 this.deferFocus();
                             }
                         },
@@ -301,7 +306,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                     })
                 }
             );
-        };
+        }
 
         if(this.enableAlignments){
             tb.add(
@@ -310,7 +315,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                 btn('justifycenter'),
                 btn('justifyright')
             );
-        };
+        }
 
         if(!Ext.isSafari2){
             if(this.enableLinks){
@@ -318,7 +323,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                     '-',
                     btn('createlink', false, this.createLink)
                 );
-            };
+            }
 
             if(this.enableLists){
                 tb.add(
@@ -395,15 +400,11 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
 
         this.iframe = iframe;
 
-        this.initFrame();
-
-        if(this.autoMonitorDesignMode !== false){
-            this.monitorTask = Ext.TaskMgr.start({
-                run: this.checkDesignMode,
-                scope: this,
-                interval:100
-            });
-        }
+        this.monitorTask = Ext.TaskMgr.start({
+            run: this.checkDesignMode,
+            scope: this,
+            interval:100
+        });
 
         if(!this.width){
             var sz = this.el.getSize();
@@ -412,6 +413,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
     },
 
     initFrame : function(){
+        Ext.TaskMgr.stop(this.monitorTask);
         this.doc = this.getDoc();
         this.win = this.getWin();
 
@@ -565,11 +567,11 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
     cleanHtml : function(html){
         html = String(html);
         if(html.length > 5){
-            if(Ext.isSafari){ // strip safari nonsense
+            if(Ext.isWebKit){ // strip safari nonsense
                 html = html.replace(/\sclass="(?:Apple-style-span|khtml-block-placeholder)"/gi, '');
             }
         }
-        if(html == '&nbsp;'){
+        if(html == this.defaultValue){
             html = '';
         }
         return html;
@@ -583,7 +585,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         if(this.initialized){
             var bd = this.getEditorBody();
             var html = bd.innerHTML;
-            if(Ext.isSafari){
+            if(Ext.isWebKit){
                 var bs = bd.getAttribute('style'); // Safari puts text-align styles on the body element!
                 var m = bs.match(/text-align:(.*?);/i);
                 if(m && m[1]){
@@ -600,7 +602,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
     
     //docs inherit from Field
     getValue : function() {
-        this.syncValue();
+        this[this.sourceEditMode ? 'pushValue' : 'syncValue']();
         return Ext.form.HtmlEditor.superclass.getValue.call(this);
     },
 
@@ -613,10 +615,18 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         if(this.initialized){
             var v = this.el.dom.value;
             if(!this.activated && v.length < 1){
-                v = '&nbsp;';
+                v = this.defaultValue;
             }
             if(this.fireEvent('beforepush', this, v) !== false){
                 this.getEditorBody().innerHTML = v;
+                if(Ext.isGecko){
+                    // Gecko hack, see: https://bugzilla.mozilla.org/show_bug.cgi?id=232791#c8
+                    var d = this.doc,
+                        mode = d.designMode.toLowerCase();
+                    
+                    d.designMode = mode.toggle('on', 'off');
+                    d.designMode = mode;
+                }
                 this.fireEvent('push', this, v);
             }
         }
@@ -638,43 +648,42 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
 
     // private
     initEditor : function(){
-        var dbody = this.getEditorBody();
-        var ss = this.el.getStyles('font-size', 'font-family', 'background-image', 'background-repeat');
-        ss['background-attachment'] = 'fixed'; // w3c
-        dbody.bgProperties = 'fixed'; // ie
+        try{
+            var dbody = this.getEditorBody();
+            var ss = this.el.getStyles('font-size', 'font-family', 'background-image', 'background-repeat');
+            ss['background-attachment'] = 'fixed'; // w3c
+            dbody.bgProperties = 'fixed'; // ie
 
-        Ext.DomHelper.applyStyles(dbody, ss);
+            Ext.DomHelper.applyStyles(dbody, ss);
 
-        if(this.doc){
-            try{
-                Ext.EventManager.removeAll(this.doc);
-            }catch(e){}
-        }
+            if(this.doc){
+                try{
+                    Ext.EventManager.removeAll(this.doc);
+                }catch(e){}
+            }
 
-        this.doc = this.getDoc();
+            this.doc = this.getDoc();
 
-        Ext.EventManager.on(this.doc, {
-            'mousedown': this.onEditorEvent,
-            'dblclick': this.onEditorEvent,
-            'click': this.onEditorEvent,
-            'keyup': this.onEditorEvent,
-            buffer:100,
-            scope: this
-        });
+            Ext.EventManager.on(this.doc, {
+                'mousedown': this.onEditorEvent,
+                'dblclick': this.onEditorEvent,
+                'click': this.onEditorEvent,
+                'keyup': this.onEditorEvent,
+                buffer:100,
+                scope: this
+            });
 
-        if(Ext.isGecko){
-            Ext.EventManager.on(this.doc, 'keypress', this.applyCommand, this);
-        }
-        if(Ext.isIE || Ext.isSafari || Ext.isOpera){
-            Ext.EventManager.on(this.doc, 'keydown', this.fixKeys, this);
-        }
-        this.initialized = true;
-
-        this.fireEvent('initialize', this);
-
-        this.doc.editorInitialized = true;
-
-        this.pushValue();
+            if(Ext.isGecko){
+                Ext.EventManager.on(this.doc, 'keypress', this.applyCommand, this);
+            }
+            if(Ext.isIE || Ext.isWebKit || Ext.isOpera){
+                Ext.EventManager.on(this.doc, 'keydown', this.fixKeys, this);
+            }
+            this.initialized = true;
+            this.fireEvent('initialize', this);
+            this.doc.editorInitialized = true;
+            this.pushValue();
+        }catch(e){}
     },
 
     // private
@@ -683,18 +692,26 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
             Ext.TaskMgr.stop(this.monitorTask);
         }
         if(this.rendered){
-            this.tb.items.each(function(item){
-                if(item.menu){
-                    item.menu.removeAll();
-                    if(item.menu.el){
-                        item.menu.el.destroy();
-                    }
-                }
-                item.destroy();
-            });
-            this.wrap.dom.innerHTML = '';
-            this.wrap.remove();
+            Ext.destroy(this.tb);
+            if(this.wrap){
+                this.wrap.dom.innerHTML = '';
+                this.wrap.remove();
+            }
         }
+        if(this.el){
+            this.el.removeAllListeners();
+            this.el.remove();
+        }
+ 
+        if(this.doc){
+            try{
+                Ext.EventManager.removeAll(this.doc);
+                for (var prop in this.doc){
+                   delete this.doc[prop];
+                }
+            }catch(e){}
+        }
+        this.purgeListeners();
     },
 
     // private
@@ -725,7 +742,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         var adjust = btn.itemId == 'increasefontsize' ? 1 : -1;
 
         var v = parseInt(this.doc.queryCommandValue('FontSize') || 2, 10);
-        if(Ext.isSafari3 || Ext.isAir){
+        if((Ext.isWebKit && !Ext.isSafari2) || Ext.isAir){
             // Safari 3 values
             // 1 = 10px, 2 = 13px, 3 = 16px, 4 = 18px, 5 = 24px, 6 = 32px
             if(v <= 10){
@@ -876,7 +893,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
             this.win.focus();
             this.execCmd('InsertHTML', text);
             this.deferFocus();
-        }else if(Ext.isSafari){
+        }else if(Ext.isWebKit){
             this.execCmd('InsertText', text);
             this.deferFocus();
         }
@@ -918,7 +935,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                     this.deferFocus();
                 }
             };
-        }else if(Ext.isSafari){
+        }else if(Ext.isWebKit){
             return function(e){
                 var k = e.getKey();
                 if(k == e.TAB){

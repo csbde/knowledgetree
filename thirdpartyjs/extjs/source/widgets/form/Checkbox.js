@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -69,7 +69,9 @@ Ext.form.Checkbox = Ext.extend(Ext.form.Field,  {
      * (defaults to this Checkbox).
      */
 
-
+    // private
+    actionMode: 'wrap',
+    
     // private
     baseCls: 'x-form-check',
 
@@ -207,18 +209,13 @@ Ext.form.Checkbox = Ext.extend(Ext.form.Field,  {
     // private
     getResizeEl : function(){
         if(!this.resizeEl){
-            this.resizeEl = Ext.isSafari ? this.wrap : (this.wrap.up('.x-form-element', 5) || this.wrap);
+            this.resizeEl = Ext.isWebKit ? this.wrap : (this.wrap.up('.x-form-element', 5) || this.wrap);
         }
         return this.resizeEl;
     },
 
     // private
     getPositionEl : function(){
-        return this.wrap;
-    },
-
-    // private
-    getActionEl : function(){
         return this.wrap;
     },
 
@@ -234,7 +231,9 @@ Ext.form.Checkbox = Ext.extend(Ext.form.Field,  {
     clearInvalid : Ext.emptyFn,
 
     // private
-    initValue : Ext.emptyFn,
+    initValue: function(){
+        this.originalValue = this.getValue();
+    },
 
     /**
      * Returns the checked state of the checkbox.

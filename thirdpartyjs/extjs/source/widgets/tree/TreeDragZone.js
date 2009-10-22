@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -15,7 +15,7 @@
  */
 if(Ext.dd.DragZone){
 Ext.tree.TreeDragZone = function(tree, config){
-    Ext.tree.TreeDragZone.superclass.constructor.call(this, tree.getTreeEl(), config);
+    Ext.tree.TreeDragZone.superclass.constructor.call(this, tree.innerCt, config);
     /**
     * The TreePanel for this drag zone
     * @type Ext.tree.TreePanel

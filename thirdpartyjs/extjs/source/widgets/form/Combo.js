@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -48,7 +48,7 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
     // private
     defaultAutoCreate : {tag: "input", type: "text", size: "24", autocomplete: "off"},
     /**
-     * @cfg {Number} listWidth The width in pixels of the dropdown list (defaults to the width of the ComboBox field)
+     * @cfg {Number} listWidth The width (used as a parameter to {@link Ext.Element#setWidth}) of the dropdown list (defaults to the width of the ComboBox field)
      */
     /**
      * @cfg {String} displayField The underlying data field name to bind to this ComboBox (defaults to undefined if
@@ -191,6 +191,20 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
 
     /**
      * The value of the match string used to filter the store. Delete this property to force a requery.
+     * Example use:<pre><code>
+var combo = new Ext.form.ComboBox({
+    ...
+    mode: 'remote',
+    ...
+    listeners: {
+        // delete the previous query in the beforequery event or set 
+        // combo.lastQuery = null (this will reload the store the next time it expands)
+        beforequery: function(qe){
+            delete qe.combo.lastQuery;
+        }
+    }
+});
+</code></pre>
      * @property lastQuery
      * @type String
      */
@@ -250,8 +264,8 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
                 this.mode = 'local';
                 var d = [], opts = s.options;
                 for(var i = 0, len = opts.length;i < len; i++){
-                    var o = opts[i];
-                    var value = (Ext.isIE ? o.getAttributeNode('value').specified : o.hasAttribute('value')) ? o.value : o.text;
+                    var o = opts[i],
+                        value = (o.hasAttribute ? o.hasAttribute('value') : o.getAttributeNode('value').specified) ? o.value : o.text;
                     if(o.selected) {
                         this.value = value;
                     }
@@ -519,31 +533,25 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
         if(this.typeAhead){
             this.taTask = new Ext.util.DelayedTask(this.onTypeAhead, this);
         }
-        if(this.editable !== false){
+        if(this.editable !== false && !this.enableKeyEvents){
             this.el.on("keyup", this.onKeyUp, this);
-        }
-        if(this.forceSelection){
-            this.on('blur', this.doForce, this);
         }
     },
 
     // private
     onDestroy : function(){
-        if(this.view){
-            Ext.destroy(this.view);
-        }
-        if(this.list){
-            if(this.innerList){
-                this.innerList.un('mouseover', this.onViewOver, this);
-                this.innerList.un('mousemove', this.onViewMove, this);
-            }
-            this.list.destroy();
-        }
         if (this.dqTask){
             this.dqTask.cancel();
             this.dqTask = null;
         }
         this.bindStore(null);
+        Ext.destroy(
+            this.resizer,
+            this.view,
+            this.pageTb,
+            this.innerList,
+            this.list
+        );
         Ext.form.ComboBox.superclass.onDestroy.call(this);
     },
 
@@ -554,8 +562,17 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
 
     // private
     fireKey : function(e){
-        if(e.isNavKeyPress() && !this.isExpanded() && !this.delayedCheck){
-            this.fireEvent("specialkey", this, e);
+        var fn = function(ev){
+            if (ev.isNavKeyPress() && !this.isExpanded() && !this.delayedCheck) {
+                this.fireEvent("specialkey", this, ev);
+            }
+        };
+        //For some reason I can't track down, the events fire in a different order in webkit.
+        //Need a slight delay here
+        if(this.inEditor && Ext.isWebKit && e.getKey() == e.TAB){
+            fn.defer(10, this, [new Ext.EventObjectImpl(e)]);
+        }else{
+            fn.call(this, e);
         }
     },
 
@@ -666,6 +683,12 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
             this.collapse();
             this.fireEvent('select', this, record, index);
         }
+    },
+    
+    // inherit docs
+    getName: function(){
+        var hf = this.hiddenField;
+        return hf && hf.name ? hf.name : this.hiddenName || Ext.form.ComboBox.superclass.getName.call(this);    
     },
 
     /**
@@ -854,10 +877,12 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
 
     // private
     onKeyUp : function(e){
-        if(this.editable !== false && !e.isSpecialKey()){
-            this.lastKey = e.getKey();
+        var k = e.getKey();
+        if(this.editable !== false && (k == e.BACKSPACE || !e.isSpecialKey())){
+            this.lastKey = k;
             this.dqTask.delay(this.queryDelay);
         }
+        Ext.form.ComboBox.superclass.onKeyUp.call(this, e);
     },
 
     // private
@@ -871,11 +896,21 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
     },
 
     // private
-    doForce : function(){
-        if(this.el.dom.value.length > 0){
-            this.el.dom.value =
-                this.lastSelectionText === undefined ? '' : this.lastSelectionText;
-            this.applyEmptyText();
+    beforeBlur : function(){
+        var val = this.getRawValue();
+        if(this.forceSelection){
+            if(val.length > 0 && val != this.emptyText){
+               this.el.dom.value = this.lastSelectionText === undefined ? '' : this.lastSelectionText;
+                this.applyEmptyText();
+            }else{
+                this.clearValue();
+            }
+        }else{
+            var rec = this.findRecord(this.displayField, val);
+            if(rec){
+                val = rec.get(this.valueField || this.displayField);
+            }
+            this.setValue(val);
         }
     },
 
@@ -967,7 +1002,9 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
         }
         this.list.alignTo(this.wrap, this.listAlign);
         this.list.show();
-        this.innerList.setOverflow('auto'); // necessary for FF 2.0/Mac
+        if(Ext.isGecko2){
+            this.innerList.setOverflow('auto'); // necessary for FF 2.0/Mac
+        }
         Ext.getDoc().on('mousewheel', this.collapseIf, this);
         Ext.getDoc().on('mousedown', this.collapseIf, this);
         this.fireEvent('expand', this);

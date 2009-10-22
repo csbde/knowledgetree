@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -93,9 +93,8 @@ Ext.layout.TableLayout = Ext.extend(Ext.layout.ContainerLayout, {
 
             this.table = target.createChild(
                 {tag:'table', cls:'x-table-layout', cellspacing: 0, cn: {tag: 'tbody'}}, null, true);
-
-            this.renderAll(ct, target);
         }
+        this.renderAll(ct, target);
     },
 
     // private

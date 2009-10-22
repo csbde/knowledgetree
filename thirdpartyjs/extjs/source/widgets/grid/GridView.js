@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -106,8 +106,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
      * @cfg {String} emptyText Default text to display in the grid body when no rows are available (defaults to '').
      */
     /**
-     * @property dragZone
-     * @type Ext.grid.GridDragZone
+     * @property {Ext.grid.GridDragZone} dragZone
      * <p><b>This will only be present if the owning GridPanel was configured with {@link Ext.grid.GridPanel#enableDragDrop enableDragDrop} <tt>true</tt>.</b></p>
      * <p><b>This will only be present after the owning GridPanel has been rendered</b>.</p>
      * <p>A customized implementation of a {@link Ext.dd.DragZone DragZone} which provides default implementations of the
@@ -174,6 +173,11 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
      * @cfg {String} rowSelector The selector used to find rows internally
      */
     rowSelector: 'div.x-grid3-row',
+    
+    // private
+    firstRowCls: 'x-grid3-row-first',
+    lastRowCls: 'x-grid3-row-last',
+    rowClsRe: /(?:^|\s+)x-grid3-row-(first|last|alt)(?:\s+|$)/g,
 
     /* -------------------------------- UI Specific ----------------------------- */
 
@@ -184,12 +188,12 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
             ts.master = new Ext.Template(
                     '<div class="x-grid3" hidefocus="true">',
                         '<div class="x-grid3-viewport">',
-                            '<div class="x-grid3-header"><div class="x-grid3-header-inner"><div class="x-grid3-header-offset">{header}</div></div><div class="x-clear"></div></div>',
-                            '<div class="x-grid3-scroller"><div class="x-grid3-body">{body}</div><a href="#" class="x-grid3-focus" tabIndex="-1"></a></div>',
-                        "</div>",
+                            '<div class="x-grid3-header"><div class="x-grid3-header-inner"><div class="x-grid3-header-offset" style="{ostyle}">{header}</div></div><div class="x-clear"></div></div>',
+                            '<div class="x-grid3-scroller"><div class="x-grid3-body" style="{bstyle}">{body}</div><a href="#" class="x-grid3-focus" tabIndex="-1"></a></div>',
+                        '</div>',
                         '<div class="x-grid3-resize-marker">&#160;</div>',
                         '<div class="x-grid3-resize-proxy">&#160;</div>',
-                    "</div>"
+                    '</div>'
                     );
         }
 
@@ -197,7 +201,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
             ts.header = new Ext.Template(
                     '<table border="0" cellspacing="0" cellpadding="0" style="{tstyle}">',
                     '<thead><tr class="x-grid3-hd-row">{cells}</tr></thead>',
-                    "</table>"
+                    '</table>'
                     );
         }
 
@@ -205,7 +209,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
             ts.hcell = new Ext.Template(
                     '<td class="x-grid3-hd x-grid3-cell x-grid3-td-{id} {css}" style="{style}"><div {tooltip} {attr} class="x-grid3-hd-inner x-grid3-hd-{id}" unselectable="on" style="{istyle}">', this.grid.enableHdMenu ? '<a class="x-grid3-hd-btn" href="#"></a>' : '',
                     '{value}<img class="x-grid3-sort-icon" src="', Ext.BLANK_IMAGE_URL, '" />',
-                    "</div></td>"
+                    '</div></td>'
                     );
         }
 
@@ -226,7 +230,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
             ts.cell = new Ext.Template(
                     '<td class="x-grid3-col x-grid3-cell x-grid3-td-{id} {css}" style="{style}" tabIndex="0" {cellAttr}>',
                     '<div class="x-grid3-cell-inner x-grid3-col-{id}" unselectable="on" {attr}>{value}</div>',
-                    "</td>"
+                    '</td>'
                     );
         }
 
@@ -475,9 +479,9 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
         for(var i = 0; i < clen; i++){
             ws[i] = this.getColumnWidth(i);
         }
-
+        this.innerHd.firstChild.style.width = this.getOffsetWidth();
         this.innerHd.firstChild.firstChild.style.width = tw;
-
+        this.mainBody.dom.style.width = tw;
         for(var i = 0; i < clen; i++){
             var hd = this.getHeaderCell(i);
             hd.style.width = ws[i];
@@ -503,8 +507,9 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
     updateColumnWidth : function(col, width){
         var w = this.getColumnWidth(col);
         var tw = this.getTotalWidth();
-
+        this.innerHd.firstChild.style.width = this.getOffsetWidth();
         this.innerHd.firstChild.firstChild.style.width = tw;
+        this.mainBody.dom.style.width = tw;
         var hd = this.getHeaderCell(col);
         hd.style.width = w;
 
@@ -524,9 +529,9 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
     // private
     updateColumnHidden : function(col, hidden){
         var tw = this.getTotalWidth();
-
+        this.innerHd.firstChild.style.width = this.getOffsetWidth();
         this.innerHd.firstChild.firstChild.style.width = tw;
-
+        this.mainBody.dom.style.width = tw;
         var display = hidden ? 'none' : '';
 
         var hd = this.getHeaderCell(col);
@@ -543,7 +548,6 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
         }
 
         this.onColumnHiddenUpdated(col, hidden, tw);
-
         delete this.lastViewWidth; // force recalc
         this.layout();
     },
@@ -590,35 +594,28 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
 
     // private
     processRows : function(startRow, skipStripe){
-        if(this.ds.getCount() < 1){
+        if(!this.ds || this.ds.getCount() < 1){
             return;
         }
+        var rows = this.getRows();
         skipStripe = skipStripe || !this.grid.stripeRows;
         startRow = startRow || 0;
-        var rows = this.getRows();
-        var cls = ' x-grid3-row-alt ';
-        rows[0].className += ' x-grid3-row-first';
-        rows[rows.length - 1].className += ' x-grid3-row-last';
-        for(var i = startRow, len = rows.length; i < len; i++){
-            var row = rows[i];
-            row.rowIndex = i;
-            if(!skipStripe){
-                var isAlt = ((i+1) % 2 == 0);
-                var hasAlt = (' '+row.className + ' ').indexOf(cls) != -1;
-                if(isAlt == hasAlt){
-                    continue;
-                }
-                if(isAlt){
-                    row.className += " x-grid3-row-alt";
-                }else{
-                    row.className = row.className.replace("x-grid3-row-alt", "");
-                }
+        Ext.each(rows, function(row, idx){
+            row.rowIndex = idx;
+            row.className = row.className.replace(this.rowClsRe, ' ');
+            if (!skipStripe && (idx + 1) % 2 === 0) {
+                row.className += ' x-grid3-row-alt';
             }
+        });
+        // add first/last-row classes
+        if(startRow === 0){
+            Ext.fly(rows[0]).addClass(this.firstRowCls);
         }
+        Ext.fly(rows[rows.length - 1]).addClass(this.lastRowCls);
     },
 
     afterRender: function(){
-        this.mainBody.dom.innerHTML = this.renderRows();
+        this.mainBody.dom.innerHTML = this.renderRows() || '&nbsp;';
         this.processRows(0, true);
 
         if(this.deferEmptyText !== true){
@@ -630,12 +627,12 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
     renderUI : function(){
 
         var header = this.renderHeaders();
-        var body = this.templates.body.apply({rows:''});
-
-
+        var body = this.templates.body.apply({rows: '&nbsp;'});
         var html = this.templates.master.apply({
             body: body,
-            header: header
+            header: header,
+            ostyle: 'width:'+this.getOffsetWidth()+';',
+            bstyle: 'width:'+this.getTotalWidth()+';'
         });
 
         var g = this.grid;
@@ -672,9 +669,13 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
                 {id:"desc", text: this.sortDescText, cls: "xg-hmenu-sort-desc"}
             );
             if(g.enableColumnHide !== false){
-                this.hmenu.add('-',
-                    {id:"columns", text: this.columnsText, menu: this.colMenu, iconCls: 'x-cols-icon'}
-                );
+                this.hmenu.add('-', {
+                    id:"columns",
+                    hideOnClick: false,
+                    text: this.columnsText,
+                    menu: this.colMenu,
+                    iconCls: 'x-cols-icon'
+                });
             }
             this.hmenu.on("itemclick", this.handleHdMenuClick, this);
 
@@ -711,7 +712,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
 
         if(g.autoHeight){
             this.scroller.dom.style.overflow = 'visible';
-            if(Ext.isSafari){
+            if(Ext.isWebKit){
                 this.scroller.dom.style.position = 'static';
             }
         }else{
@@ -745,17 +746,14 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
 
     onColumnWidthUpdated : function(col, w, tw){
         //template method
-        this.focusEl.setWidth(tw);
     },
 
     onAllColumnWidthsUpdated : function(ws, tw){
         //template method
-        this.focusEl.setWidth(tw);
     },
 
     onColumnHiddenUpdated : function(col, hidden, tw){
         // template method
-        this.focusEl.setWidth(tw);
     },
 
     updateColumnText : function(col, text){
@@ -780,6 +778,12 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
     getColumnId : function(index){
       return this.cm.getColumnId(index);
     },
+    
+    // private 
+    getOffsetWidth: function() {
+        return (this.cm.getTotalWidth() + this.scrollOffset) + 'px';
+    },
+
 
     // private
     renderHeaders : function(){
@@ -826,6 +830,8 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
     // private
     updateHeaders : function(){
         this.innerHd.firstChild.innerHTML = this.renderHeaders();
+        this.innerHd.firstChild.style.width = this.getOffsetWidth();
+        this.innerHd.firstChild.firstChild.style.width = this.getTotalWidth();
     },
 
     /**
@@ -862,9 +868,12 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
         }
         col = (col !== undefined ? col : 0);
 
-        var rowEl = this.getRow(row), cellEl;
+        var rowEl = this.getRow(row),
+            cm = this.cm,
+            colCount = cm.getColumnCount(),
+            cellEl;
         if(!(hscroll === false && col === 0)){
-            while(this.cm.isHidden(col)){
+            while(col < colCount && cm.isHidden(col)){
                 col++;
             }
             cellEl = this.getCell(row, col);
@@ -937,7 +946,8 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
 
     // private
     insertRows : function(dm, firstRow, lastRow, isUpdate){
-        if(!isUpdate && firstRow === 0 && lastRow >= dm.getCount()-1){
+        var last = dm.getCount() - 1;
+        if(!isUpdate && firstRow === 0 && lastRow >= last){
             this.refresh();
         }else{
             if(!isUpdate){
@@ -946,13 +956,23 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
             var html = this.renderRows(firstRow, lastRow);
             var before = this.getRow(firstRow);
             if(before){
+                if(firstRow === 0){
+                    Ext.fly(this.getRow(0)).removeClass(this.firstRowCls);
+                }
                 Ext.DomHelper.insertHtml('beforeBegin', before, html);
             }else{
+                var r = this.getRow(last - 1);
+                if(r){
+                    Ext.fly(r).removeClass(this.lastRowCls);
+                }
                 Ext.DomHelper.insertHtml('beforeEnd', this.mainBody.dom, html);
             }
             if(!isUpdate){
                 this.fireEvent("rowsinserted", this, firstRow, lastRow);
                 this.processRows(firstRow);
+            }else if(firstRow === 0 || firstRow >= last){
+                //ensure first/last row is kept after an update.
+                Ext.fly(this.getRow(firstRow)).addClass(firstRow === 0 ? this.firstRowCls : this.lastRowCls);
             }
         }
         this.syncFocusEl(firstRow);
@@ -990,7 +1010,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
     getColumnWidth : function(col){
         var w = this.cm.getColumnWidth(col);
         if(typeof w == 'number'){
-            return (Ext.isBorderBox ? w : (w-this.borderWidth > 0 ? w-this.borderWidth:0)) + 'px';
+            return (Ext.isBorderBox || (Ext.isWebKit && !Ext.isSafari2) ? w : (w-this.borderWidth > 0 ? w-this.borderWidth:0)) + 'px';
         }
         return w;
     },
@@ -1115,7 +1135,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
 
     // private
     renderBody : function(){
-        var markup = this.renderRows();
+        var markup = this.renderRows() || '&nbsp;';
         return this.templates.body.apply({rows: markup});
     },
 
@@ -1125,8 +1145,14 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
         if(typeof record == 'number'){
             index = record;
             record = ds.getAt(index);
+            if(!record){
+                return;
+            }
         }else{
             index = ds.indexOf(record);
+            if(index < 0){
+                return;
+            }
         }
         var cls = [];
         this.insertRows(ds, index, index, true);
@@ -1144,7 +1170,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
         this.grid.stopEditing(true);
 
         var result = this.renderBody();
-        this.mainBody.update(result);
+        this.mainBody.update(result).setWidth(this.getTotalWidth());
 
         if(headersToo === true){
             this.updateHeaders();
@@ -1359,6 +1385,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
         this.refresh(true);
         this.restoreScroll(s);
         this.afterMove(newIndex);
+        this.grid.fireEvent('columnmove', oldIndex, newIndex);
     },
 
     // private
@@ -1542,9 +1569,9 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
             var x = e.getPageX();
             var ss = this.activeHd.style;
             if(x - r.left <= hw && this.cm.isResizable(this.activeHdIndex-1)){
-                ss.cursor = Ext.isAir ? 'move' : Ext.isSafari ? 'e-resize' : 'col-resize'; // col-resize not always supported
+                ss.cursor = Ext.isAir ? 'move' : Ext.isWebKit ? 'e-resize' : 'col-resize'; // col-resize not always supported
             }else if(r.right - x <= (!this.activeHdBtn ? hw : 2) && this.cm.isResizable(this.activeHdIndex)){
-                ss.cursor = Ext.isAir ? 'move' : Ext.isSafari ? 'w-resize' : 'col-resize';
+                ss.cursor = Ext.isAir ? 'move' : Ext.isWebKit ? 'w-resize' : 'col-resize';
             }else{
                 ss.cursor = '';
             }
@@ -1564,7 +1591,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
     // private
     hasRows : function(){
         var fc = this.mainBody.dom.firstChild;
-        return fc && fc.className != 'x-grid-empty';
+        return fc && fc.nodeType == 1 && fc.className != 'x-grid-empty';
     },
 
     // back compat

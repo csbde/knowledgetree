@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -7,7 +7,7 @@
  */
 
 
-Ext = {version: '2.2.1'};
+Ext = {version: '2.3.0'};
 
 // for old browsers
 window["undefined"] = window["undefined"];
@@ -41,27 +41,34 @@ Ext.apply = function(o, c, defaults){
 
 (function(){
     var idSeed = 0;
-    var ua = navigator.userAgent.toLowerCase();
-
-    var isStrict = document.compatMode == "CSS1Compat",
-        isOpera = ua.indexOf("opera") > -1,
-        isChrome = ua.indexOf("chrome") > -1,
-        isSafari = !isChrome && (/webkit|khtml/).test(ua),
-        isSafari3 = isSafari && ua.indexOf('webkit/5') != -1,
-        isIE = !isOpera && ua.indexOf("msie") > -1,
-        isIE7 = !isOpera && ua.indexOf("msie 7") > -1,
-        isIE8 = !isOpera && ua.indexOf("msie 8") > -1,
-        isGecko = !isSafari && !isChrome && ua.indexOf("gecko") > -1,
-        isGecko3 = isGecko && ua.indexOf("rv:1.9") > -1,
+    var ua = navigator.userAgent.toLowerCase(),
+        check = function(r){
+            return r.test(ua);
+        },
+        isStrict = document.compatMode == "CSS1Compat",
+        isOpera = check(/opera/),
+        isChrome = check(/chrome/),
+        isWebKit = check(/webkit/),
+        isSafari = !isChrome && check(/safari/),
+        isSafari2 = isSafari && check(/applewebkit\/4/), // unique to Safari 2
+        isSafari3 = isSafari && check(/version\/3/),
+        isSafari4 = isSafari && check(/version\/4/),
+        isIE = !isOpera && check(/msie/),
+        isIE7 = isIE && check(/msie 7/),
+        isIE8 = isIE && check(/msie 8/),
+        isIE6 = isIE && !isIE7 && !isIE8,
+        isGecko = !isWebKit && check(/gecko/),
+        isGecko2 = isGecko && check(/rv:1\.8/),
+        isGecko3 = isGecko && check(/rv:1\.9/),
         isBorderBox = isIE && !isStrict,
-        isWindows = (ua.indexOf("windows") != -1 || ua.indexOf("win32") != -1),
-        isMac = (ua.indexOf("macintosh") != -1 || ua.indexOf("mac os x") != -1),
-        isAir = (ua.indexOf("adobeair") != -1),
-        isLinux = (ua.indexOf("linux") != -1),
-        isSecure = window.location.href.toLowerCase().indexOf("https") === 0;
+        isWindows = check(/windows|win32/),
+        isMac = check(/macintosh|mac os x/),
+        isAir = check(/adobeair/),
+        isLinux = check(/linux/),
+        isSecure = /^https/i.test(window.location.protocol);
 
     // remove css image flicker
-	if(isIE && !isIE7){
+    if(isIE6){
         try{
             document.execCommand("BackgroundImageCache", false, true);
         }catch(e){}
@@ -209,7 +216,7 @@ Ext.addBehaviors({
     MyGridPanel = Ext.extend(Ext.grid.GridPanel, {
         constructor: function(config) {
             // Your preprocessing here
-        	MyGridPanel.superclass.constructor.apply(this, arguments);
+            MyGridPanel.superclass.constructor.apply(this, arguments);
             // Your postprocessing here
         },
 
@@ -335,12 +342,12 @@ Company.data.CustomStore = function(config) { ... }
                     buf.push(k, "=", s, "&");
                 }else if(Ext.isArray(ov)){
                     if (ov.length) {
-	                    for(var i = 0, len = ov.length; i < len; i++) {
-	                        buf.push(k, "=", encodeURIComponent(ov[i] === undefined ? '' : ov[i]), "&");
-	                    }
-	                } else {
-	                    buf.push(k, "=&");
-	                }
+                        for(var i = 0, len = ov.length; i < len; i++) {
+                            buf.push(k, "=", encodeURIComponent(ov[i] === undefined ? '' : ov[i]), "&");
+                        }
+                    } else {
+                        buf.push(k, "=&");
+                    }
                 }
             }
             buf.pop();
@@ -348,8 +355,10 @@ Company.data.CustomStore = function(config) { ... }
         },
 
         /**
-         * Takes an encoded URL and and converts it to an object. e.g. Ext.urlDecode("foo=1&bar=2"); would return {foo: "1", bar: "2"}
-         * or Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); would return {foo: "1", bar: ["2", "3", "4"]}.
+         * Takes an encoded URL and and converts it to an object. Example: <pre><code>
+Ext.urlDecode("foo=1&bar=2"); // returns {foo: "1", bar: "2"}
+Ext.urlDecode("foo=1&bar=2&bar=3&bar=4", false); // returns {foo: "1", bar: ["2", "3", "4"]}
+         * </code></pre>
          * @param {String} string
          * @param {Boolean} overwrite (optional) Items of the same name will overwrite previous values instead of creating an an array (Defaults to false).
          * @return {Object} A literal with members
@@ -478,10 +487,8 @@ Company.data.CustomStore = function(config) { ... }
          * @return {Number} Value, if numeric, else defaultValue
          */
         num : function(v, defaultValue){
-            if(typeof v != 'number' || isNaN(v)){
-                return defaultValue;
-            }
-            return v;
+            v = Number(v == null || typeof v == 'boolean'? NaN : v);
+            return isNaN(v)? defaultValue : v;
         },
 
         /**
@@ -498,13 +505,13 @@ Company.data.CustomStore = function(config) { ... }
             for(var i = 0, a = arguments, len = a.length; i < len; i++) {
                 var as = a[i];
                 if(as){
-		            if(typeof as.destroy == 'function'){
-		                as.destroy();
-		            }
-		            else if(as.dom){
-		                as.removeAllListeners();
-		                as.remove();
-		            }
+                    if(typeof as.destroy == 'function'){
+                        as.destroy();
+                    }
+                    else if(as.dom){
+                        as.removeAllListeners();
+                        as.remove();
+                    }
                 }
             }
         },
@@ -585,7 +592,7 @@ Company.data.CustomStore = function(config) { ... }
         },
 
         /**
-         * Utility method for validating that a value is non-empty (i.e. i) not null, ii) not undefined, and iii) not an empty string), 
+         * Utility method for validating that a value is non-empty (i.e. i) not null, ii) not undefined, and iii) not an empty string),
          * returning the specified default value if it is.
          * @param {Mixed} value The value to test
          * @param {Mixed} defaultValue The value to return if the original value is empty
@@ -598,27 +605,32 @@ Company.data.CustomStore = function(config) { ... }
 
         /**
          * Returns true if the passed object is a JavaScript array, otherwise false.
-         * @param {Object} The object to test
+         * @param {Object} object The object to test
          * @return {Boolean}
          */
-		isArray : function(v){
-			return v && typeof v.length == 'number' && typeof v.splice == 'function';
-		},
+        isArray : function(v){
+            return v && typeof v.length == 'number' && typeof v.splice == 'function';
+        },
 
-		/**
+        /**
          * Returns true if the passed object is a JavaScript date object, otherwise false.
-         * @param {Object} The object to test
+         * @param {Object} object The object to test
          * @return {Boolean}
          */
-		isDate : function(v){
-			return v && typeof v.getFullYear == 'function';
-		},
+        isDate : function(v){
+            return v && typeof v.getFullYear == 'function';
+        },
 
         /**
          * True if the detected browser is Opera.
          * @type Boolean
          */
         isOpera : isOpera,
+        /**
+         * True if the detected browser uses WebKit.
+         * @type Boolean
+         */
+        isWebKit: isWebKit,
         /**
          * True if the detected browser is Chrome.
          * @type Boolean
@@ -630,6 +642,11 @@ Company.data.CustomStore = function(config) { ... }
          */
         isSafari : isSafari,
         /**
+         * True if the detected browser is Safari 4.x.
+         * @type Boolean
+         */
+        isSafari4 : isSafari4,
+        /**
          * True if the detected browser is Safari 3.x.
          * @type Boolean
          */
@@ -638,7 +655,7 @@ Company.data.CustomStore = function(config) { ... }
          * True if the detected browser is Safari 2.x.
          * @type Boolean
          */
-        isSafari2 : isSafari && !isSafari3,
+        isSafari2 : isSafari2,
         /**
          * True if the detected browser is Internet Explorer.
          * @type Boolean
@@ -648,7 +665,7 @@ Company.data.CustomStore = function(config) { ... }
          * True if the detected browser is Internet Explorer 6.x.
          * @type Boolean
          */
-        isIE6 : isIE && !isIE7 && !isIE8,
+        isIE6 : isIE6,
         /**
          * True if the detected browser is Internet Explorer 7.x.
          * @type Boolean
@@ -668,7 +685,7 @@ Company.data.CustomStore = function(config) { ... }
          * True if the detected browser uses a pre-Gecko 1.9 layout engine (e.g. Firefox 2.x).
          * @type Boolean
          */
-        isGecko2 : isGecko && !isGecko3,
+        isGecko2 : isGecko2,
         /**
          * True if the detected browser uses a Gecko 1.9+ layout engine (e.g. Firefox 3.x).
          * @type Boolean
@@ -700,12 +717,12 @@ Company.data.CustomStore = function(config) { ... }
          */
         isAir : isAir,
 
-	    /**
-	     * By default, Ext intelligently decides whether floating elements should be shimmed. If you are using flash,
-	     * you may want to set this to true.
-	     * @type Boolean
-	     */
-        useShims : ((isIE && !isIE7) || (isMac && isGecko && !isGecko3))
+        /**
+         * By default, Ext intelligently decides whether floating elements should be shimmed. If you are using flash,
+         * you may want to set this to true.
+         * @type Boolean
+         */
+        useShims : ((isIE && !(isIE7 || isIE8)) || (isMac && isGecko && !isGecko3))
     });
 
     // in intellij using keyword "namespace" causes parsing errors
@@ -1030,9 +1047,9 @@ Ext.applyIf(Array.prototype, {
      */
     indexOf : function(o){
        for (var i = 0, len = this.length; i < len; i++){
- 	      if(this[i] == o) return i;
+          if(this[i] == o) return i;
        }
- 	   return -1;
+       return -1;
     },
 
     /**
@@ -1056,5 +1073,5 @@ Ext.applyIf(Array.prototype, {
  @member Date getElapsed
  */
 Date.prototype.getElapsed = function(date) {
-	return Math.abs((date || new Date()).getTime()-this.getTime());
+    return Math.abs((date || new Date()).getTime()-this.getTime());
 };

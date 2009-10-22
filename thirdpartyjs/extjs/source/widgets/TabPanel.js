@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -10,10 +10,22 @@
  * @class Ext.TabPanel
  * <p>A basic tab container. TabPanels can be used exactly like a standard {@link Ext.Panel} for layout
  * purposes, but also have special support for containing child Components that are managed using a CardLayout
- * layout manager, and displayed as seperate tabs.</p>
- * <p>There is no actual tab class &mdash; each tab is simply an {@link Ext.BoxComponent Component} such
+ * layout manager, and displayed as seperate tabs.
+ * </p>
+ * <p><b>Note:</b> TabPanels use their {@link Ext.Panel#header header} or {@link Ext.Panel#footer footer} element
+ * (depending on the {@link #tabPosition} configuration) to accommodate the tab selector buttons. This means that a TabPanel
+ * will not display any configured title, and will not display any configured header {@link Ext.Panel#tools tools}.
+ * To display a header, embed the TabPanel in a {@link Ext.Panel Panel} which uses
+ * <b><tt>{@link Ext.Container#layout layout: 'fit'}</tt></b>.
+ * </p>
+ * <p><b>Note:</b> It is advisable to configure all child items of a TabPanel (and any Container which uses a CardLayout) with
+ * <b><tt>{@link Ext.Component#hideMode hideMode: 'offsets'}</tt></b> to avoid rendering errors in child components hidden
+ * using the CSS <tt>display</tt> style.
+ * </p>
+ * <p>There is no actual tab class &mdash; each tab is simply a {@link Ext.BoxComponent Component} such
  * as a {@link Ext.Panel Panel}. However, when rendered in a TabPanel, each child Component can fire
- * additional events that only exist for tabs and are not available from other Component. These are:</p>
+ * additional events that only exist for tabs and are not available from other Component. These are:
+ * </p>
  * <ul>
  * <li><b>activate</b>: Fires when this Component becomes the active tab.
  * <div class="mdetail-params">
@@ -34,8 +46,8 @@
 Ext.Ajax.request({
     url: 'gen-invoice-grid.php',
     params: {
-        startDate = Ext.getCmp('start-date').getValue(),
-        endDate = Ext.getCmp('end-date').getValue()
+        startDate : Ext.getCmp('start-date').getValue(),
+        endDate : Ext.getCmp('end-date').getValue()
     },
     success: function(xhr) {
         var newComponent = eval(xhr.responseText);
@@ -461,7 +473,7 @@ var tabs = new Ext.TabPanel({
             tab.removeAttribute('title');
             this.add({
                 title: title,
-                el: tab
+                contentEl: tab
             });
         }
     },
@@ -777,7 +789,8 @@ var tabs = new Ext.TabPanel({
                 this.pos.removeClass('x-tab-scrolling');
                 this.scrollLeft.hide();
                 this.scrollRight.hide();
-                if(Ext.isAir || Ext.isSafari){
+                // See here: http://extjs.com/forum/showthread.php?t=49308&highlight=isSafari
+                if(Ext.isAir || Ext.isWebKit){
                     wd.style.marginLeft = '';
                     wd.style.marginRight = '';
                 }
@@ -785,7 +798,8 @@ var tabs = new Ext.TabPanel({
         }else{
             if(!this.scrolling){
                 this.pos.addClass('x-tab-scrolling');
-                if(Ext.isAir || Ext.isSafari){
+                // See here: http://extjs.com/forum/showthread.php?t=49308&highlight=isSafari
+                if(Ext.isAir || Ext.isWebKit){
                     wd.style.marginLeft = '18px';
                     wd.style.marginRight = '18px';
                 }

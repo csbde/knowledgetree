@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -34,8 +34,9 @@
 .x-menu-list-item{
 	font:normal 11px tahoma,arial, sans-serif;
     white-space: nowrap;
-    -moz-user-select: none;
-	-khtml-user-select: none;
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:ignore;
 	display:block;
 	padding:1px;
 }
@@ -61,8 +62,9 @@
     font-size:1px;
     -moz-outline:0 none;
     outline:0 none;
-    -moz-user-select: text;
-    -khtml-user-select: text;
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:ignore;
     overflow:hidden;
     display:block;
 }
@@ -98,6 +100,17 @@
     top: 3px;
     margin: 0;
     background-position:center;
+}
+
+.ext-ie .x-menu-item-icon {
+    left: -24px;
+}
+.ext-strict .x-menu-item-icon {
+    left: 3px;
+}
+
+.ext-ie6 .x-menu-item-icon {
+    left: -24px;
 }
 
 .x-menu-check-item .x-menu-item-icon{

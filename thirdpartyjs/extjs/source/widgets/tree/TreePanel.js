@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -31,7 +31,7 @@
  * @cfg {String} hlColor The color of the node highlight (defaults to C3DAF9)
  * @cfg {Boolean} animate true to enable animated expand/collapse (defaults to the value of Ext.enableFx)
  * @cfg {Boolean} singleExpand true if only 1 node per branch may be expanded
- * @cfg {Boolean} selModel A tree selection model to use with this TreePanel (defaults to a {@link Ext.tree.DefaultSelectionModel})
+ * @cfg {Object} selModel A tree selection model to use with this TreePanel (defaults to a {@link Ext.tree.DefaultSelectionModel})
  * @cfg {Boolean} trackMouseOver False to disable mouse over highlighting 
  * @cfg {Ext.tree.TreeLoader} loader A {@link Ext.tree.TreeLoader} for use with this TreePanel
  * @cfg {String} pathSeparator The token used to separate sub-paths in path strings (defaults to '/')
@@ -607,6 +607,7 @@ new Ext.tree.TreePanel({
         if((this.enableDD || this.enableDrop) && !this.dropZone){
            /**
             * The dropZone used by this tree if drop is enabled
+            * @property dropZone
             * @type Ext.tree.TreeDropZone
             */
              this.dropZone = new Ext.tree.TreeDropZone(this, this.dropConfig || {
@@ -616,6 +617,7 @@ new Ext.tree.TreePanel({
         if((this.enableDD || this.enableDrag) && !this.dragZone){
            /**
             * The dragZone used by this tree if drag is enabled
+            * @property dragZone
             * @type Ext.tree.TreeDragZone
             */
             this.dragZone = new Ext.tree.TreeDragZone(this, this.dragConfig || {
@@ -704,10 +706,6 @@ new Ext.tree.TreePanel({
      * @hide 
      */
     /** 
-     * @method add 
-     * @hide 
-     */
-    /** 
      * @method cascade 
      * @hide 
      */
@@ -757,6 +755,10 @@ new Ext.tree.TreePanel({
      */
     /** 
      * @event add 
+     * @hide 
+     */
+    /** 
+     * @method removeAll
      * @hide 
      */
     /** 
