@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -90,7 +90,7 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
     /**
      * @cfg {Object} viewConfig A config object that will be used to create the grid's UI view.  Any of
      * the config options available for {@link Ext.grid.GridView} can be specified here. This option
-     * is ignored if {@link #view} is xpecified.
+     * is ignored if {@link #view} is specified.
      */
     /**
      * @cfg {Boolean} hideHeaders True to hide the grid's header (defaults to false).
@@ -111,14 +111,14 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
      */
     trackMouseOver : true,
     /**
-     * @cfg {Boolean} <p>enableDragDrop True to enable dragging of the selected rows of the GridPanel.</p>
+     * @cfg {Boolean} enableDragDrop <p>True to enable dragging of the selected rows of the GridPanel.</p>
      * <p>Setting this to <b><tt>true</tt></b> causes this GridPanel's {@link #getView GridView} to create an instance of 
      * {@link Ext.grid.GridDragZone}. This is available <b>(only after the Grid has been rendered)</b> as the
      * GridView's {@link Ext.grid.GridView#dragZone dragZone} property.</p>
      * <p>A cooperating {@link Ext.dd.DropZone DropZone} must be created who's implementations of
      * {@link Ext.dd.DropZone#onNodeEnter onNodeEnter}, {@link Ext.dd.DropZone#onNodeOver onNodeOver},
-     * {@link Ext.dd.DropZone#onNodeOut onNodeOut} and {@link Ext.dd.DropZone#onNodeDrop onNodeDrop}</p> are able
-     * to process the {@link Ext.grid.GridDragZone#getDragData data} which is provided.
+     * {@link Ext.dd.DropZone#onNodeOut onNodeOut} and {@link Ext.dd.DropZone#onNodeDrop onNodeDrop} are able
+     * to process the {@link Ext.grid.GridDragZone#getDragData data} which is provided.</p>
      */
     enableDragDrop : false,
     /**
@@ -138,7 +138,7 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
      * <p>This causes the CSS class <tt><b>x-grid3-row-alt</b></tt> to be added to alternate rows of
      * the grid. A default CSS rule is provided which sets a background colour, but you can override this
      * with a rule which either overrides the <b>background-color</b> style using the "!important"
-     * modifier, or which uses a CSS selector of higher specificity.
+     * modifier, or which uses a CSS selector of higher specificity.</p>
      */
     stripeRows : false,
     /**
@@ -467,6 +467,9 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
         if(state.sort){
             this.store[this.store.remoteSort ? 'setDefaultSort' : 'sort'](state.sort.field, state.sort.direction);
         }
+        delete state.columns;
+        delete state.sort;
+        Ext.grid.GridPanel.superclass.applyState.call(this, state);
     },
 
     getState : function(){
@@ -514,7 +517,7 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
         if(this.loadMask){
             this.loadMask.destroy();
             this.loadMask = new Ext.LoadMask(this.bwrap,
-                    Ext.apply({store:store}, this.initialConfig.loadMask));
+                    Ext.apply({}, {store:store}, this.initialConfig.loadMask));
         }
         this.view.bind(store, colModel);
         this.store = store;
@@ -532,15 +535,12 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
     // private
     onDestroy : function(){
         if(this.rendered){
-            if(this.loadMask){
-                this.loadMask.destroy();
-            }
             var c = this.body;
             c.removeAllListeners();
-            this.view.destroy();
             c.update("");
+            Ext.destroy(this.view, this.loadMask);
         }
-        this.colModel.purgeListeners();
+        Ext.destroy(this.colModel, this.selModel);
         Ext.grid.GridPanel.superclass.onDestroy.call(this);
     },
 
@@ -629,11 +629,6 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
     },
 
     // private
-    getSelections : function(){
-        return this.selModel.getSelections();
-    },
-
-    // private
     onResize : function(){
         Ext.grid.GridPanel.superclass.onResize.apply(this, arguments);
         if(this.viewReady){
@@ -654,9 +649,9 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
 
     /**
      * Returns the grid's SelectionModel.
-     * @return {Ext.grid.AbstractSelectionModel SelectionModel} The selection model configured by the
-     * @link (#selModel} configuration option. This will be a subclass of {Ext.grid.AbstractSelectionModel}
-     * which provides either cell or row selectability.
+     * @return {SelectionModel} The selection model configured by the @link (#selModel} configuration option.
+     * This will be a subclass of {@link Ext.grid.AbstractSelectionModel} which provides either cell or row
+     * selectability. If no selection model was configured, this will return a {@link Ext.grid.RowSelectionModel RowSelectionModel}.
      */
     getSelectionModel : function(){
         if(!this.selModel){

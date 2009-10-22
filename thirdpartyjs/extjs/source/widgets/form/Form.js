@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -67,7 +67,7 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
      * @cfg {Boolean} monitorValid If true, the form monitors its valid state <b>client-side</b> and
      * regularly fires the {@link #clientvalidation} event passing that state.<br>
      * <p>When monitoring valid state, the FormPanel enables/disables any of its configured
-     * {@link #button}s which have been configured with <tt>formBind: true<tt> depending
+     * {@link #button}s which have been configured with <tt>formBind: true</tt> depending
      * on whether the form is valid or not.</p>
      */
     monitorValid : false,
@@ -115,8 +115,8 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
 
     // private
     createForm: function(){
-        delete this.initialConfig.listeners;
-        return new Ext.form.BasicForm(null, this.initialConfig);
+        var config = Ext.applyIf({listeners: {}}, this.initialConfig);
+        return new Ext.form.BasicForm(null, config);
     },
 
     // private
@@ -163,8 +163,14 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
     
     // private
     beforeDestroy: function(){
-        Ext.FormPanel.superclass.beforeDestroy.call(this);
         this.stopMonitoring();
+        Ext.FormPanel.superclass.beforeDestroy.call(this);
+        /*
+         * Clear the items here to prevent them being destroyed again.
+         * Don't move this behaviour to BasicForm because it can be used
+         * on it's own.
+         */
+        this.form.items.clear();
         Ext.destroy(this.form);
     },
 
@@ -198,9 +204,9 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
      * option "monitorValid"
      */
     startMonitoring : function(){
-        if(!this.bound){
-            this.bound = true;
-            Ext.TaskMgr.start({
+        if(!this.validTask){
+            this.validTask = new Ext.util.TaskRunner();
+            this.validTask.start({
                 run : this.bindHandler,
                 interval : this.monitorPoll || 200,
                 scope: this
@@ -212,7 +218,10 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
      * Stops monitoring of the valid state of this form
      */
     stopMonitoring : function(){
-        this.bound = false;
+        if(this.validTask){
+            this.validTask.stopAll();
+            this.validTask = null;
+        }
     },
 
     /**
@@ -245,9 +254,6 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
 
     // private
     bindHandler : function(){
-        if(!this.bound){
-            return false; // stops binding
-        }
         var valid = true;
         this.form.items.each(function(f){
             if(!f.isValid(true)){

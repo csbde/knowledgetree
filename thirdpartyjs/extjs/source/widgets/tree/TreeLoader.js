@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -206,7 +206,7 @@ Ext.extend(Ext.tree.TreeLoader, Ext.util.Observable, {
     * Example:<code><pre>
 new Ext.tree.TreePanel({
     ...
-    new Ext.tree.TreeLoader({
+    loader: new Ext.tree.TreeLoader({
         url: 'dataUrl',
         createNode: function(attr) {
 //          Allow consolidation consignments to have
@@ -215,7 +215,7 @@ new Ext.tree.TreePanel({
                 attr.iconCls = 'x-consol',
                 attr.allowDrop = true;
             }
-            return Ext.tree.TreeLoader.prototype.call(this, attr);
+            return Ext.tree.TreeLoader.prototype.createNode.call(this, attr);
         }
     }),
     ...

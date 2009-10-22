@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -63,16 +63,9 @@ Ext.util.ClickRepeater = function(el, config)
         "mouseup"
     );
 
-    this.el.on("mousedown", this.handleMouseDown, this);
-    if(this.preventDefault || this.stopDefault){
-        this.el.on("click", function(e){
-            if(this.preventDefault){
-                e.preventDefault();
-            }
-            if(this.stopDefault){
-                e.stopEvent();
-            }
-        }, this);
+    if(!this.disabled){
+        this.disabled = true;
+        this.enable();
     }
 
     // allow inline handler
@@ -90,8 +83,54 @@ Ext.extend(Ext.util.ClickRepeater, Ext.util.Observable, {
     stopDefault : false,
     timer : 0,
 
+    /**
+     * Enables the repeater and allows events to fire.
+     */
+    enable: function(){
+        if(this.disabled){
+            this.el.on('mousedown', this.handleMouseDown, this);
+            if(this.preventDefault || this.stopDefault){
+                this.el.on('click', this.eventOptions, this);
+            }
+        }
+        this.disabled = false;
+    },
+    
+    /**
+     * Disables the repeater and stops events from firing.
+     */
+    disable: function(/* private */ force){
+        if(force || !this.disabled){
+            clearTimeout(this.timer);
+            if(this.pressClass){
+                this.el.removeClass(this.pressClass);
+            }
+            Ext.getDoc().un('mouseup', this.handleMouseUp, this);
+            this.el.removeAllListeners();
+        }
+        this.disabled = true;
+    },
+    
+    /**
+     * Convenience function for setting disabled/enabled by boolean.
+     * @param {Boolean} disabled
+     */
+    setDisabled: function(disabled){
+        this[disabled ? 'disable' : 'enable']();    
+    },
+    
+    eventOptions: function(e){
+        if(this.preventDefault){
+            e.preventDefault();
+        }
+        if(this.stopDefault){
+            e.stopEvent();
+        }       
+    },
+    
     // private
     destroy : function() {
+        this.disable(true);
         Ext.destroy(this.el);
         this.purgeListeners();
     },

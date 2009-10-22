@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -298,6 +298,14 @@ Ext.grid.GroupingView = Ext.extend(Ext.grid.GridView, {
     // private
     getGroupField : function(){
         return this.grid.store.getGroupState();
+    },
+    
+    // private
+    afterRender: function(){
+        Ext.grid.GroupingView.superclass.afterRender.call(this);
+        if(this.grid.deferRowRender){
+            this.updateGroupWidths();
+        }
     },
 
     // private

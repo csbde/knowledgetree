@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -38,6 +38,8 @@
 	padding-left:1px;
     padding-right:1px;
     -moz-user-select: none;
+    -khtml-user-select:none;
+    -webkit-user-select:ignore;
 }
 .x-grid3-hd-row td {
     line-height:15px;
@@ -183,7 +185,6 @@
 }
 .x-grid3-header-offset {
     padding-left:1px;
-	 width:10000px;
 }
 
 td.x-grid3-hd-over, td.sort-desc, td.sort-asc, td.x-grid3-hd-menu-open {
@@ -212,6 +213,7 @@ td.x-grid3-hd-over .x-grid3-hd-inner, td.sort-desc .x-grid3-hd-inner, td.sort-as
 }
 
 /* Header position fixes for IE strict mode */
+.ext-strict .ext-ie6 .x-grid3-header {position: relative;}
 .ext-strict .ext-ie .x-grid3-header-inner{position:relative;}
 .ext-strict .ext-ie6 .x-grid3-hd{position:relative;}
 .ext-strict .ext-ie6 .x-grid3-hd-inner{position:static;}
@@ -229,7 +231,8 @@ td.x-grid3-hd-over .x-grid3-hd-inner, td.sort-desc .x-grid3-hd-inner, td.sort-as
 	display: block;
 	padding: 3px 5px 3px 5px;
 	-moz-user-select: none;
-	-khtml-user-select: none;
+    -khtml-user-select:none;
+    -webkit-user-select:ignore;
 	color:black;
 }
 .x-grid3-split {
@@ -374,8 +377,16 @@ td.x-grid3-hd-over .x-grid3-hd-inner, td.sort-desc .x-grid3-hd-inner, td.sort-as
     padding:1px 3px 3px 1px;
 }
 
+.x-grid3-cell,.x-grid3-cell-first{
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:ignore;
+}
+
 .x-grid3-hd {
     -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:ignore;
 }
 
 .x-grid3-hd-btn {

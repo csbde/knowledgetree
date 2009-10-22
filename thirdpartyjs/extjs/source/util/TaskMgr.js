@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -67,14 +67,15 @@ Ext.util.TaskRunner = function(interval){
                 return;
             }
         }
-        var now = new Date().getTime();
+        var c, now = new Date().getTime();
         for(var i = 0, len = tasks.length; i < len; ++i){
             var t = tasks[i];
             var itime = now - t.taskRunTime;
             if(t.interval <= itime){
-                var rt = t.run.apply(t.scope || t, t.args || [++t.taskRunCount]);
+                c = ++t.taskRunCount;
+                var rt = t.run.apply(t.scope || t, t.args || [c]);
                 t.taskRunTime = now;
-                if(rt === false || t.taskRunCount === t.repeat){
+                if(rt === false || c === t.repeat){
                     removeTask(t);
                     return;
                 }
@@ -97,8 +98,8 @@ Ext.util.TaskRunner = function(interval){
      * should be executed.</div></li>
      * <li><code>args</code> : Array<div class="sub-desc">(optional) An array of arguments to be passed to the function
      * specified by <code>run</code>.</div></li>
-     * <li><code>scope</code> : Object<div class="sub-desc">(optional) The scope in which to execute the
-     * <code>run</code> function.</div></li>
+     * <li><code>scope</code> : Object<div class="sub-desc">(optional) The scope (<tt>this</tt> reference) in which to execute the
+     * <code>run</code> function. Defaults to the task config object.</div></li>
      * <li><code>duration</code> : Number<div class="sub-desc">(optional) The length of time in milliseconds to execute
      * the task before stopping automatically (defaults to indefinite).</div></li>
      * <li><code>repeat</code> : Number<div class="sub-desc">(optional) The number of times to execute the task before
@@ -146,9 +147,9 @@ Ext.util.TaskRunner = function(interval){
 
 /**
  * @class Ext.TaskMgr
- * A static {@link Ext.util.TaskRunner} instance that can be used to start and stop arbitrary tasks.  See
- * {@link Ext.util.TaskRunner} for supported methods and task config properties.
- * <pre><code>
+ * @extends Ext.util.TaskRunner
+ * A static {@link Ext.util.TaskRunner} instance that can be used to start and stop arbitrary tasks.
+ * Example usage:<pre><code>
 // Start a simple clock task that updates a div once per second
 var task = {
     run: function(){

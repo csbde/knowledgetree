@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -135,7 +135,7 @@ Ext.EventManager = function(){
                     fireDocReady();
                 }
             };
-        }else if(Ext.isSafari){
+        }else if(Ext.isWebKit){
             docReadyProcId = setInterval(function(){
                 var rs = document.readyState;
                 if(rs == "complete") {
@@ -225,7 +225,9 @@ Ext.EventManager = function(){
         return h;
     };
 
-    var propRe = /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate)$/;
+    var propRe = /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate)$/,
+        curWidth = 0,
+        curHeight = 0;
     var pub = {
 
     /**
@@ -324,7 +326,13 @@ Ext.EventManager = function(){
         
         // private
         doResizeEvent: function(){
-            resizeEvent.fire(D.getViewWidth(), D.getViewHeight());
+            var h = D.getViewHeight(),
+                w = D.getViewWidth();
+            
+            //whacky problem in IE where the resize event will fire even though the w/h are the same.
+            if(curHeight != h || curWidth != w){
+                resizeEvent.fire(curWidth = w, curHeight = h);
+            }
         },
 
         /**
@@ -458,13 +466,11 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
         if(Ext.isLinux){
             cls.push("ext-linux");
         }
-        if(Ext.isBorderBox){
-            cls.push('ext-border-box');
-        }
-        if(Ext.isStrict){ // add to the parent to allow for selectors like ".ext-strict .ext-ie"
+
+        if(Ext.isStrict || Ext.isBorderBox){ // add to the parent to allow for selectors like ".ext-strict .ext-ie"
             var p = bd.parentNode;
             if(p){
-                p.className += ' ext-strict';
+                p.className += Ext.isStrict ? ' ext-strict' : ' ext-border-box';
             }
         }
         bd.className += cls.join(' ');
@@ -478,8 +484,7 @@ Ext.onReady = Ext.EventManager.onDocumentReady;
 
 /**
  * @class Ext.EventObject
- * EventObject exposes the Yahoo! UI Event functionality directly on the object
- * passed to your event handler. It exists mostly for convenience. It also fixes the annoying null checks automatically to cleanup your code
+ * EventObject encapsulates a DOM event adjusting for browser differences.
  * Example:
  * <pre><code>
  function handleClick(e){ // e is not a standard event object, it is a Ext.EventObject
@@ -515,7 +520,7 @@ Ext.EventObject = function(){
 
     // normalize button clicks
     var btnMap = Ext.isIE ? {1:0,4:1,2:2} :
-                (Ext.isSafari ? {1:0,2:1,3:2} : {0:0,1:1,2:2});
+                (Ext.isWebKit ? {1:0,2:1,3:2} : {0:0,1:1,2:2});
 
     Ext.EventObjectImpl = function(e){
         if(e){
@@ -524,7 +529,7 @@ Ext.EventObject = function(){
     };
 
     Ext.EventObjectImpl.prototype = {
-        /** The normal browser event */
+        /** The encapsulated browser event */
         browserEvent : null,
         /** The button pressed in a mouse event */
         button : -1,
@@ -780,12 +785,12 @@ Ext.EventObject = function(){
 
         isSpecialKey : function(){
             var k = this.keyCode;
-            return (this.type == 'keypress' && this.ctrlKey) || k == 9 || k == 13  || k == 40 || k == 27 ||
-            (k == 16) || (k == 17) ||
-            (k >= 18 && k <= 20) ||
-            (k >= 33 && k <= 35) ||
-            (k >= 36 && k <= 39) ||
-            (k >= 44 && k <= 45);
+            k = Ext.isSafari ? (safariKeys[k] || k) : k;
+            return (this.type == 'keypress' && this.ctrlKey) ||
+		this.isNavKeyPress() ||
+        (k == this.BACKSPACE) || // Backspace
+		(k >= 16 && k <= 20) || // Shift, Ctrl, Alt, Pause, Caps Lock
+		(k >= 44 && k <= 45);   // Print Screen, Insert
         },
 
         /**

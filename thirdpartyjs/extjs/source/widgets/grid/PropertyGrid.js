@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -123,20 +123,15 @@ Ext.grid.PropertyColumnModel = function(grid, store){
         {header: this.valueText, width:50, resizable:false, dataIndex: 'value', id: 'value', menuDisabled:true}
     ]);
     this.store = store;
-    this.bselect = Ext.DomHelper.append(document.body, {
-        tag: 'select', cls: 'x-grid-editor x-hide-display', children: [
-            {tag: 'option', value: 'true', html: 'true'},
-            {tag: 'option', value: 'false', html: 'false'}
-        ]
-    });
     var f = Ext.form;
 
     var bfield = new f.Field({
-        el:this.bselect,
-        bselect : this.bselect,
-        autoShow: true,
+        autoCreate: {tag: 'select', children: [
+            {tag: 'option', value: 'true', html: 'true'},
+            {tag: 'option', value: 'false', html: 'false'}
+        ]},
         getValue : function(){
-            return this.bselect.value == 'true';
+            return this.el.value == 'true';
         }
     });
     this.editors = {
@@ -213,6 +208,13 @@ Ext.extend(Ext.grid.PropertyColumnModel, Ext.grid.ColumnModel, {
             return this.editors['boolean'];
         }else{
             return this.editors['string'];
+        }
+    },
+    
+    destroy : function(){
+        Ext.grid.PropertyColumnModel.superclass.destroy.call(this);
+        for(var ed in this.editors){
+            Ext.destroy(ed);
         }
     }
 });

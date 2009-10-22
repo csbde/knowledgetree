@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -52,7 +52,9 @@ Ext.form.Label = Ext.extend(Ext.BoxComponent, {
      * @return {Label} this
      */
     setText: function(t, encode){
-        this.text = t;
+        var e = encode === false;
+        this[!e ? 'text' : 'html'] = t;
+        delete this[e ? 'text' : 'html'];
         if(this.rendered){
             this.el.dom.innerHTML = encode !== false ? Ext.util.Format.htmlEncode(t) : t;
         }

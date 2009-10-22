@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -91,20 +91,27 @@ Ext.extend(Ext.tree.TreeEditor, Ext.Editor, {
         this.setSize(w, '');
     },
 
-    // private
+    /**
+     * Edit the text of the passed {@link Ext.tree.TreeNode TreeNode}.
+     * @param node {Ext.tree.TreeNode} The TreeNode to edit. The TreeNode must be {@link Ext.tree.TreeNode#editable editable}.
+     */
     triggerEdit : function(node, defer){
         this.completeEdit();
 		if(node.attributes.editable !== false){
-	       /**
-	        * The tree node this editor is bound to. Read-only.
-	        * @type Ext.tree.TreeNode
-	        * @property editNode
-	        */
+           /**
+            * The {@link Ext.tree.TreeNode TreeNode} this editor is bound to. Read-only.
+            * @type Ext.tree.TreeNode
+            * @property editNode
+            */
 			this.editNode = node;
             if(this.tree.autoScroll){
-                node.ui.getEl().scrollIntoView(this.tree.body);
+                Ext.fly(node.ui.getEl()).scrollIntoView(this.tree.body);
             }
-            this.autoEditTimer = this.startEdit.defer(this.editDelay, this, [node.ui.textNode, node.text]);
+            var value = node.text || '';
+            if (!Ext.isGecko && Ext.isEmpty(node.text)){
+                node.setText('&nbsp;');
+            }
+            this.autoEditTimer = this.startEdit.defer(this.editDelay, this, [node.ui.textNode, value]);
             return false;
         }
     },

@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -18,6 +18,7 @@ Ext.menu.ColorItem = function(config){
     Ext.menu.ColorItem.superclass.constructor.call(this, new Ext.ColorPalette(config), config);
     /** The Ext.ColorPalette object @type Ext.ColorPalette */
     this.palette = this.component;
+    this.palette.purgeListeners();
     this.relayEvents(this.palette, ["select"]);
     if(this.selectHandler){
         this.on('select', this.selectHandler, this.scope);

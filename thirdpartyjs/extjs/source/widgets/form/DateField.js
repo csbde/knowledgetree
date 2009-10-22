@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -10,9 +10,9 @@
  * @class Ext.form.DateField
  * @extends Ext.form.TriggerField
  * Provides a date input field with a {@link Ext.DatePicker} dropdown and automatic date validation.
-* @constructor
-* Create a new DateField
-* @param {Object} config
+ * @constructor
+ * Create a new DateField
+ * @param {Object} config
  */
 Ext.form.DateField = Ext.extend(Ext.form.TriggerField,  {
     /**
@@ -108,7 +108,7 @@ Ext.form.DateField = Ext.extend(Ext.form.TriggerField,  {
 
     initComponent : function(){
         Ext.form.DateField.superclass.initComponent.call(this);
-        
+
         this.addEvents(
             /**
              * @event select
@@ -118,7 +118,7 @@ Ext.form.DateField = Ext.extend(Ext.form.TriggerField,  {
              */
             'select'
         );
-        
+
         if(typeof this.minValue == "string"){
             this.minValue = this.parseDate(this.minValue);
         }
@@ -290,9 +290,6 @@ dateField.setValue('2006-05-04');
     onDestroy : function(){
         if(this.menu) {
             this.menu.destroy();
-        }
-        if(this.wrap){
-            this.wrap.remove();
         }
         Ext.form.DateField.superclass.onDestroy.call(this);
     },

@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -69,9 +69,10 @@ Ext.form.Action.prototype = {
  * {@link Ext.form.BasicForm}'s method, or if that is not specified, the underlying DOM form's method.
  */
 /**
- * @cfg {Mixed} params Extra parameter values to pass. These are added to the Form's
+ * @cfg {Mixed} params<p>Extra parameter values to pass. These are added to the Form's
  * {@link Ext.form.BasicForm#baseParams} and passed to the specified URL along with the Form's
- * input fields.
+ * input fields.</p>
+ * <p>Parameters are encoded as standard HTTP parameters using {@link Ext#urlEncode}.</p>
  */
 /**
  * @cfg {Number} timeout The number of milliseconds to wait for a server response before
@@ -94,7 +95,7 @@ Ext.form.Action.prototype = {
  * error ocurred, the failure type will be in {@link #failureType}. The {@link #result}
  * property of this object may be examined to perform custom postprocessing.</div></li>
  * </ul>
-*/
+ */
 /**
  * @cfg {Object} scope The scope in which to call the callback functions (The <tt>this</tt> reference
  * for the callback functions).
@@ -156,7 +157,7 @@ Ext.form.Action.prototype = {
     // private
     processResponse : function(response){
         this.response = response;
-        if(!response.responseText){
+        if(!response.responseText && !response.responseXML){
             return true;
         }
         this.result = this.handleResponse(response);

@@ -132,7 +132,7 @@ class registration extends Step
 	    //$this->sendToHost($_POST);
 
 	    // Post the form using curl
-        $this->curlForm($_POST);
+//        $this->curlForm($_POST);
 		
         // Prevent the form being reposted.
         $_POST['registered'] = 'yes';

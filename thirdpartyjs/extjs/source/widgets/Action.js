@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -140,8 +140,7 @@ Ext.Action.prototype = {
     },
 
     /**
-     * Returns true if the components using this action are currently disabled, else returns false.  Read-only.
-     * @property
+     * Returns true if the components using this action are currently disabled, else returns false. 
      */
     isDisabled : function(){
         return this.initialConfig.disabled;
@@ -172,8 +171,7 @@ Ext.Action.prototype = {
     },
 
     /**
-     * Returns true if the components using this action are currently hidden, else returns false.  Read-only.
-     * @property
+     * Returns true if the components using this action are currently hidden, else returns false.  
      */
     isHidden : function(){
         return this.initialConfig.hidden;

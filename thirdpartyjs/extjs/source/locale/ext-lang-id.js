@@ -1,7 +1,15 @@
+/*
+ * Ext JS Library 2.3.0
+ * Copyright(c) 2006-2009, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+
 /**
  * Pedoman translasi:
  * http://id.wikisource.org/wiki/Panduan_Pembakuan_Istilah,_Pelaksanaan_Instruksi_Presiden_Nomor_2_Tahun_2001_Tentang_Penggunaan_Komputer_Dengan_Aplikasi_Komputer_Berbahasa_Indonesia
- *Original source: http://vlsm.org/etc/baku-0.txt
+ * Original source: http://vlsm.org/etc/baku-0.txt
  * by Farid GS
  * farid [at] pulen.net
  * 10:13 04 Desember 2007
