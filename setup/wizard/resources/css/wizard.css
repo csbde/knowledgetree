@@ -70,8 +70,7 @@ select {
 #outer-wrapper {
 	border:1px solid #B7B7B7;
 	margin-top:20px;
-	width:984px;
-	/*width:1024px;*/
+	width:1024px;
 }
 
 #header {
@@ -106,72 +105,54 @@ select {
 	padding: 5px;
 	overflow: auto;
 	min-height: 400px;
-	height: 400px;
-	height:auto !important;
 }
 
 #step_content_dependencies {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
 	min-height:270px;
-	height:270px;
-	height:auto !important;
 }
 
 #step_content_configuration {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
 	min-height:320px;
-	height:320px;
-	height:auto !important;
 }
 
 #step_content_registration {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
 	min-height:320px;
-	height:320px;
-	height:auto !important;
 }
 
 #step_content_registration_confirm {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
 	min-height:400px;
-	height:400px;
-	height:auto !important;
 }
 
 #step_content_install {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:290px;
-	height:290px;
-	height:auto !important;
+	min-height:400px;
 }
 
 #step_content_database {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
 	min-height:365px;
-	height:365px;
-	height:auto !important;
 }
 
 #step_content_database_confirm {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
 	min-height:370px;
-	height:370px;
-	height:auto !important;
 }
 
 #step_content_complete {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:355px;
-	height:355px;
-	height:auto !important;
+	min-height:340px;
 }
 
 .license_agreement {
@@ -217,15 +198,14 @@ select {
 
 #logo {
 	position:relative;
-	right:740px;
+	right:760px;
 	top:20px;
 }
 
 #install_details {
-	bottom:25%;
-	left:74%;
+	bottom:20px;
 	position:relative;
-	width:25%;
+	right:10px;
 }
 
 .indicator a {
