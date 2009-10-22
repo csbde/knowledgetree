@@ -3,10 +3,11 @@
 	-------------------------------------->
 {if $options.field->getIsHTML()}
 {literal}
+
 {/literal}
 {/if}
 
-	<textarea name="{$name}" {if $options.field->getIsHTML()}class="mceEditor"{/if}
+	<textarea {if $has_id}id="{$id}"{/if} name="{$name}" {if $options.field->getIsHTML()}class="mceEditor"{/if}
         {if $has_id} id="{$id}"{/if}
         {if $options.rows} rows="{$options.rows}"{else} rows="7"{/if}
         {if $options.cols} cols="{$options.cols}"{else} cols="45"{/if}

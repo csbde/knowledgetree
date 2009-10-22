@@ -194,7 +194,7 @@ class KTFieldset extends KTEntity {
             $iDocumentTypeId = $oDocumentType;
         }
 
-        $sTable = KTUtil::getTableName('document_type_fieldsets');
+        $sTable = KTUtil::getTableName('document_type_fieldsets_link');
         $aQuery = array(
             "SELECT fieldset_id FROM $sTable WHERE document_type_id = ?",
             array($iDocumentTypeId),
