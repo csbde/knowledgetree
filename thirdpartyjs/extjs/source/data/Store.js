@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -80,8 +80,8 @@ Ext.data.Store = function(config){
     }
 
     /**
-     * The {@link Ext.data.Record Record} constructor as supplied to (or created by) the {@link Ext.data.Reader#Reader Reader}.  Read-only.
-     * <p>If the Reader was constructed by passing in an Array of field definition objects, instead of an created
+     * The {@link Ext.data.Record Record} constructor as supplied to (or created by) the {@link Ext.data.Reader#Reader Reader}. Read-only.
+     * <p>If the Reader was constructed by passing in an Array of field definition objects, instead of a created
      * Record constructor it will have {@link Ext.data.Record#create created a constructor} from that Array.</p>
      * <p>This property may be used to create new Records of the type held in this Store.</p>
      * @property recordType
@@ -89,7 +89,7 @@ Ext.data.Store = function(config){
      */
     if(this.recordType){
         /**
-         * A MixedCollection containing the defined {@link Ext.data.Field Field}s for the Records stored in this Store.  Read-only.
+         * A MixedCollection containing the defined {@link Ext.data.Field Field}s for the Records stored in this Store. Read-only.
          * @property fields
          * @type Ext.util.MixedCollection
          */
@@ -215,7 +215,8 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
     * an Array of Ext.data.Record objects which are cached keyed by their <em>id</em> property.
     */
     /**
-    * @cfg {Object} baseParams An object containing properties which are to be sent as parameters
+    * @cfg {Object} baseParams<p>An object containing properties which are to be sent as parameters.</p>
+    * <p>Parameters are encoded as standard HTTP parameters using {@link Ext#urlEncode}.</p>
     * on any HTTP request
     */
     /**
@@ -257,6 +258,8 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
             Ext.StoreMgr.unregister(this);
         }
         this.data = null;
+        Ext.destroy(this.proxy);
+        this.reader = null;
         this.purgeListeners();
     },
 
@@ -296,14 +299,16 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
      */
     remove : function(record){
         var index = this.data.indexOf(record);
-        this.data.removeAt(index);
-        if(this.pruneModifiedRecords){
-            this.modified.remove(record);
+        if(index > -1){
+            this.data.removeAt(index);
+            if(this.pruneModifiedRecords){
+                this.modified.remove(record);
+            }
+            if(this.snapshot){
+                this.snapshot.remove(record);
+            }
+            this.fireEvent("remove", this, record, index);
         }
-        if(this.snapshot){
-            this.snapshot.remove(record);
-        }
-        this.fireEvent("remove", this, record, index);
     },
     
     /**
@@ -405,7 +410,8 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
      * and this call will return before the new data has been loaded. Perform any post-processing
      * in a callback function, or in a "load" event handler.</b></p>
      * @param {Object} options An object containing properties which control loading options:<ul>
-     * <li><b>params</b> :Object<p class="sub-desc">An object containing properties to pass as HTTP parameters to a remote data source.</p></li>
+     * <li><b>params</b> :Object<p class="sub-desc">An object containing properties to pass as HTTP parameters to a remote data source.</p>
+     * <p>Parameters are encoded as standard HTTP parameters using {@link Ext#urlEncode}.</p></li>
      * <li><b>callback</b> : Function<p class="sub-desc">A function to be called after the Records have been loaded. The callback is
      * passed the following arguments:<ul>
      * <li>r : Ext.data.Record[]</li>
@@ -491,7 +497,7 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
      * must have been configured in the constructor.
      * @param {Object} data The data block from which to read the Records.  The format of the data expected
      * is dependent on the type of Reader that is configured and should correspond to that Reader's readRecords parameter.
-     * @param {Boolean} add (Optional) True to add the new Records rather than replace the existing cache. <b>Remember that
+     * @param {Boolean} append (Optional) True to append the new Records rather than replace the existing cache. <b>Remember that
      * Records in a Store are keyed by their {@link Ext.data.Record#id id}, so added Records with ids which are already present in
      * the Store will <i>replace</i> existing Records. Records with new, unique ids will be added.</b>
      */
@@ -838,7 +844,11 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
         this.recordType = rtype;
         this.fields = rtype.prototype.fields;
         delete this.snapshot;
-        this.sortInfo = meta.sortInfo;
+        if(meta.sortInfo){
+            this.sortInfo = meta.sortInfo;
+        }else if(this.sortInfo  && !this.fields.get(this.sortInfo.field)){
+            delete this.sortInfo;
+        }
         this.modified = [];
         this.fireEvent('metachange', this, this.reader.meta);
     },

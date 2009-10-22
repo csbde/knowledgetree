@@ -1,3 +1,11 @@
+/*
+ * Ext JS Library 2.3.0
+ * Copyright(c) 2006-2009, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+
 /**
  * Lithuanian Translations (UTF-8)
  * By Vladas Saulis, October 18, 2007

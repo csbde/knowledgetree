@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -57,7 +57,6 @@ Ext.layout.BorderLayout = Ext.extend(Ext.layout.ContainerLayout, {
     onLayout : function(ct, target){
         var collapsed;
         if(!this.rendered){
-            target.position();
             target.addClass('x-border-layout-ct');
             var items = ct.items.items;
             collapsed = [];
@@ -177,7 +176,7 @@ Ext.layout.BorderLayout = Ext.extend(Ext.layout.ContainerLayout, {
         }
         Ext.layout.BorderLayout.superclass.destroy.call(this);
     }
-    
+
     /**
      * @property activeItem
      * @hide
@@ -192,7 +191,7 @@ Ext.layout.BorderLayout = Ext.extend(Ext.layout.ContainerLayout, {
  * regions, see {@link Ext.layout.BorderLayout.SplitRegion}.
  * @constructor
  * Create a new Region.
- * @param {Layout} layout Any valid Ext layout class
+ * @param {Layout} layout The {@link Ext.layout.BorderLayout BorderLayout} instance that is managing this Region.
  * @param {Object} config The configuration options
  * @param {String} position The region position.  Valid values are: north, south, east, west and center.  Every
  * BorderLayout must have a center region for the primary content -- all other regions are optional.
@@ -253,8 +252,8 @@ Ext.layout.BorderLayout.Region.prototype = {
 {
     top: (top margin),
     right: (right margin),
-    bottom: (bottom margin)
-    left: (left margin),
+    bottom: (bottom margin),
+    left: (left margin)
 }</code></pre>
      * <p>May also be a string containing space-separated, numeric margin values. The order of the sides associated
      * with each value matches the way CSS processes margin values:</p>
@@ -273,8 +272,8 @@ Ext.layout.BorderLayout.Region.prototype = {
 {
     top: (top margin),
     right: (right margin),
-    bottom: (bottom margin)
-    left: (left margin),
+    bottom: (bottom margin),
+    left: (left margin)
 }</code></pre>
      * <p>May also be a string containing space-separated, numeric margin values. The order of the sides associated
      * with each value matches the way CSS processes margin values.</p>
@@ -374,7 +373,7 @@ Ext.layout.BorderLayout.Region.prototype = {
                 show: this.onShow,
                 scope: this
             });
-            if(this.collapsible){
+            if(this.collapsible || this.floatable){
                 p.collapseEl = 'el';
                 p.slideAnchor = this.getSlideAnchor();
             }
@@ -411,15 +410,16 @@ Ext.layout.BorderLayout.Region.prototype = {
                 this.collapsedEl.addClassOnOver("x-layout-collapsed-over");
                 this.collapsedEl.on('click', this.onExpandClick, this, {stopEvent:true});
             }else {
-                var t = this.toolTemplate.append(
-                        this.collapsedEl.dom,
-                        {id:'expand-'+this.position}, true);
-                t.addClassOnOver('x-tool-expand-'+this.position+'-over');
-                t.on('click', this.onExpandClick, this, {stopEvent:true});
-                
-                if(this.floatable !== false){
+                if(this.collapsible !== false && !this.hideCollapseTool) {
+                    var t = this.toolTemplate.append(
+                            this.collapsedEl.dom,
+                            {id:'expand-'+this.position}, true);
+                    t.addClassOnOver('x-tool-expand-'+this.position+'-over');
+                    t.on('click', this.onExpandClick, this, {stopEvent:true});
+                }
+                if(this.floatable !== false || this.titleCollapse){
                    this.collapsedEl.addClassOnOver("x-layout-collapsed-over");
-                   this.collapsedEl.on("click", this.collapseClick, this);
+                   this.collapsedEl.on("click", this[this.floatable ? 'collapseClick' : 'onExpandClick'], this);
                 }
             }
         }
@@ -541,7 +541,7 @@ Ext.layout.BorderLayout.Region.prototype = {
     /**
      * Returns the current size of this region.  If the region is collapsed, the size of the collapsedEl will
      * be returned, otherwise the size of the region's panel will be returned.
-     * @return {Object} An object containing the element's size: {width: (element width), height: (element height)}  
+     * @return {Object} An object containing the element's size: {width: (element width), height: (element height)}
      */
     getSize : function(){
         return this.isCollapsed ? this.getCollapsedEl().getSize() : this.panel.getSize();
@@ -802,7 +802,7 @@ Ext.layout.BorderLayout.Region.prototype = {
  * This is a specialized type of BorderLayout region that has a built-in {@link Ext.SplitBar} for user resizing of regions.
  * @constructor
  * Create a new SplitRegion.
- * @param {Layout} layout Any valid Ext layout class
+ * @param {Layout} layout The {@link Ext.layout.BorderLayout BorderLayout} instance that is managing this Region.
  * @param {Object} config The configuration options
  * @param {String} position The region position.  Valid values are: north, south, east, west and center.  Every
  * BorderLayout must have a center region for the primary content -- all other regions are optional.
@@ -1009,12 +1009,12 @@ Ext.extend(Ext.layout.BorderLayout.SplitRegion, Ext.layout.BorderLayout.Region, 
     getSplitBar : function(){
         return this.split;
     },
-    
+
     // inherit docs
     destroy : function() {
         Ext.destroy(
-            this.miniSplitEl, 
-            this.split, 
+            this.miniSplitEl,
+            this.split,
             this.splitEl
         );
     }

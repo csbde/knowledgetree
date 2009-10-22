@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -59,7 +59,7 @@
 }
 /* class for hiding elements without using display:none */
 .x-hidden, .x-hide-offsets {
-    position:absolute;
+    position:absolute !important;
     left:-10000px;
     top:-10000px;
     visibility:hidden;
@@ -89,7 +89,8 @@
 
 .x-unselectable, .x-unselectable * {
     -moz-user-select: none;
-    -khtml-user-select: none;
+    -khtml-user-select:none;
+    -webkit-user-select:ignore;
 }
 
 .x-repaint {

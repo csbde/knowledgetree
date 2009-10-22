@@ -1,10 +1,18 @@
 /*
+ * Ext JS Library 2.3.0
+ * Copyright(c) 2006-2009, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+
+/*
  * Spanish/Latin American Translation by genius551v 04-08-2007
  * Revised by efege, 2007-04-15.
  * Revised by Rafaga2k 10-01-2007 (mm/dd/yyyy)
  * Revised by FeDe 12-13-2007 (mm/dd/yyyy)
  * Synchronized with 2.2 version of ext-lang-en.js (provided by Condor 8 aug 2008) 
- *     by halkon_polako 14-aug-2009
+ *     by halkon_polako 14-aug-2008
  */
 
 Ext.UpdateManager.defaults.indicatorText = '<div class="loading-indicator">Cargando...</div>';

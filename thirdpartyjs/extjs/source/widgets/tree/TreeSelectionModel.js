@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -55,7 +55,9 @@ Ext.extend(Ext.tree.DefaultSelectionModel, Ext.util.Observable, {
      */
     select : function(node){
         var last = this.selNode;
-        if(last != node && this.fireEvent('beforeselect', this, node, last) !== false){
+        if(node == last){
+            node.ui.onSelectedChange(true);
+        }else if(this.fireEvent('beforeselect', this, node, last) !== false){
             if(last){
                 last.ui.onSelectedChange(false);
             }
@@ -226,7 +228,11 @@ Ext.extend(Ext.tree.MultiSelectionModel, Ext.util.Observable, {
     },
     
     onNodeClick : function(node, e){
-        this.select(node, e, e.ctrlKey);
+        if(e.ctrlKey && this.isSelected(node)){
+            this.unselect(node);
+        }else{
+            this.select(node, e, e.ctrlKey);
+        }
     },
     
     /**

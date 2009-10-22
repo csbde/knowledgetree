@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -153,7 +153,7 @@ Ext.grid.EditorGridPanel = Ext.extend(Ext.grid.GridPanel, {
             this.stopEditing();
             if(this.selModel.getSelectedCell){ // cell sm
                 var sc = this.selModel.getSelectedCell();
-                if(sc && sc.cell[0] === row && sc.cell[1] === col){
+                if(sc && sc[0] === row && sc[1] === col){
                     this.startEditing(row, col);
                 }
             }else{
@@ -256,18 +256,6 @@ Ext.grid.EditorGridPanel = Ext.extend(Ext.grid.GridPanel, {
             this.activeEditor[cancel === true ? 'cancelEdit' : 'completeEdit']();
         }
         this.activeEditor = null;
-    },
-
-    // private
-    onDestroy: function() {
-        if(this.rendered){
-            var cols = this.colModel.config;
-            for(var i = 0, len = cols.length; i < len; i++){
-                var c = cols[i];
-                Ext.destroy(c.editor);
-            }
-        }
-        Ext.grid.EditorGridPanel.superclass.onDestroy.call(this);
     }
 });
 Ext.reg('editorgrid', Ext.grid.EditorGridPanel);

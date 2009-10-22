@@ -1,1 +1,11 @@
-Ext.util.DelayedTask=function(f,e,a){var h=null,g,b;var c=function(){var d=new Date().getTime();if(d-b>=g){clearInterval(h);h=null;f.apply(e,a||[])}};this.delay=function(i,k,j,d){if(h&&i!=g){this.cancel()}g=i;b=new Date().getTime();f=k||f;e=j||e;a=d||a;if(!h){h=setInterval(c,g)}};this.cancel=function(){if(h){clearInterval(h);h=null}}};
+/*
+ * Ext JS Library 2.3.0
+ * Copyright(c) 2006-2009, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+
+
+Ext.util.DelayedTask=function(fn,scope,args){var id=null;var call=function(){id=null;fn.apply(scope,args||[]);};this.delay=function(delay,newFn,newScope,newArgs){if(id){this.cancel();}
+fn=newFn||fn;scope=newScope||scope;args=newArgs||args;if(!id){id=setTimeout(call,delay);}};this.cancel=function(){if(id){clearTimeout(id);id=null;}};};

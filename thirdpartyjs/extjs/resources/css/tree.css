@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -179,8 +179,9 @@ input.x-tree-node-cb {
 .x-tree-node a, .x-dd-drag-ghost a{
 	text-decoration:none;
 	color:black;
-	-khtml-user-select:none;
 	-moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:ignore;
     -kthml-user-focus:normal;
     -moz-user-focus:normal;
     -moz-outline: 0 none;

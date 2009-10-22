@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -9,12 +9,17 @@
 /**
  * @class Ext.Component
  * @extends Ext.util.Observable
- * <p>Base class for all Ext components.  All subclasses of Component can automatically participate in the standard
- * Ext component lifecycle of creation, rendering and destruction.  They also have automatic support for basic hide/show
- * and enable/disable behavior.  Component allows any subclass to be lazy-rendered into any {@link Ext.Container} and
- * to be automatically registered with the {@link Ext.ComponentMgr} so that it can be referenced at any time via
- * {@link Ext#getCmp}.  All visual widgets that require rendering into a layout should subclass Component (or
- * {@link Ext.BoxComponent} if managed box model handling is required).</p>
+ * <p>Base class for all Ext components.  All subclasses of Component may participate in the automated
+ * Ext component lifecycle of creation, rendering and destruction which is provided by the {@link Ext.Container Container} class.
+ * Components may be added to a Container through the {@link Ext.Container#items items} config option at the time the Container is created,
+ * or they may be added dynamically via the {@link Ext.Container#add add} method.</p>
+ * <p>The Component base class has built-in support for basic hide/show and enable/disable behavior.</p>
+ * <p>All Components are registered with the {@link Ext.ComponentMgr} on construction so that they can be referenced at any time via
+ * {@link Ext#getCmp}, passing the {@link #id}.</p>
+ * <p>All user-developed visual widgets that are required to participate in automated lifecycle and size management should subclass Component (or
+ * {@link Ext.BoxComponent} if managed box model handling is required, ie height and width management).</p>
+ * <p>See the <a href="http://extjs.com/learn/Tutorial:Creating_new_UI_controls">Creating new UI controls</a> tutorial for details on how
+ * and to either extend or augment ExtJs base classes to create custom Components.</p>
  * <p>Every component has a specific xtype, which is its Ext-specific type name, along with methods for checking the
  * xtype like {@link #getXType} and {@link #isXType}. This is the list of all valid xtypes:</p>
  * <pre>
@@ -334,13 +339,36 @@ new Ext.FormPanel({
      * component's id as the parent.
      */
     /**
-     * @cfg {String/Object} autoEl
-     * A tag name or DomHelper spec to create an element with. This is intended to create shorthand
-     * utility components inline via JSON. It should not be used for higher level components which already create
-     * their own elements. Example usage:
-     * <pre><code>
-{xtype:'box', autoEl: 'div', cls:'my-class'}
-{xtype:'box', autoEl: {tag:'blockquote', html:'autoEl is cool!'}} // with DomHelper
+     * @cfg {Mixed} autoEl
+     * <p>A tag name or {@link Ext.DomHelper DomHelper} spec used to create the {@link #getEl Element} which will
+     * encapsulate this Component.</p>
+     * <p>You only need to specify this when creating or subclassing the base classes {@link Ext.Component}, {@link Ext.BoxComponent},
+     * and {@link Ext.Container}. The more complex Ext classes use a more complex DOM structure created by their own
+     * onRender methods.</p>
+     * <p>This is intended to allow the developer to create application-specific utility Components encapsulated by
+     * different DOM elements. Example usage:</p><pre><code>
+{
+    xtype: 'box',
+    autoEl: {
+        tag: 'img',
+        src: 'http://www.example.com/example.jpg'
+    }
+}, {
+    xtype: 'box',
+    autoEl: {
+        tag: 'blockquote',
+        html: 'autoEl is cool!'
+    }
+}, {
+    xtype: 'container',
+    autoEl: 'ul',
+    cls: 'ux-unordered-list',
+    items: {
+        xtype: 'box',
+        autoEl: 'li',
+        html: 'First list item'
+    }
+}
 </code></pre>
      */
     /**
@@ -396,7 +424,7 @@ new Ext.FormPanel({
      */
     /**
      * @cfg {Mixed} applyTo
-     * The id of the node, a DOM node or an existing Element corresponding to a DIV that is already present in
+     * The id of the element, a DOM element or an existing Element corresponding to a DIV that is already present in
      * the document that specifies some structural markup for this component.  When applyTo is used, constituent parts of
      * the component can also be specified by id or CSS class name within the main element, and the component being created
      * may attempt to create its subcomponents from that markup if applicable. Using this config, a call to render() is
@@ -405,8 +433,11 @@ new Ext.FormPanel({
      */
     /**
      * @cfg {Mixed} renderTo
-     * The id of the node, a DOM node or an existing Element that will be the container to render this component into.
-     * Using this config, a call to render() is not required.
+     * <p>The id of the element, a DOM element or an existing Element that this component will be rendered into.
+     * When using this config, a call to render() is not required.<p>
+     * <p>If this Component needs to be managed by a {@link Ext.Container Container}'s
+     * {@link Ext.Component#layout layout manager}, do not use this option. It is the responsiblity
+     * of the Container's layout manager to perform rendering. See {@link #render}.</p>
      */
 
     /**
@@ -668,7 +699,7 @@ Ext.Foo = Ext.extend(Ext.Bar, {
 
     // private
     saveState : function(){
-        if(Ext.state.Manager){
+        if(Ext.state.Manager && this.stateful !== false){
             var id = this.getStateId();
             if(id){
                 var state = this.getState();
@@ -945,6 +976,7 @@ Ext.Foo = Ext.extend(Ext.Bar, {
 
     /**
      * Returns true if this component is visible.
+     * @return {Boolean} True if this component is visible, false otherwise.
      */
     isVisible : function(){
         return this.rendered && this.getActionEl().isVisible();
@@ -993,6 +1025,7 @@ var isBoxInstance = t.isXType('box', true); // false, not a direct BoxComponent 
      * @param {String} xtype The xtype to check for this Component
      * @param {Boolean} shallow (optional) False to check whether this Component is descended from the xtype (this is
      * the default), or true to check whether this Component is directly of the specified xtype.
+     * @return {Boolean} True if this component descends from the specified xtype, false otherwise.
      */
     isXType : function(xtype, shallow){
         //assume a string by default

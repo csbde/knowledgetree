@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -29,7 +29,7 @@
  * <p>
  * The config options <b>defined by</b> this class are options which may appear in each
  * individual column definition. In order to use configuration options from the superclass,
- * specify the column configuration Array in the <tt><b>columns<b><tt> config property. eg:<pre><code>
+ * specify the column configuration Array in the <tt><b>columns</b></tt> config property. eg:<pre><code>
  var colModel = new Ext.grid.ColumnModel({
     listeners: {
         widthchange: function(cm, colIndex, width) {
@@ -48,7 +48,7 @@
  * @constructor
  * @param {Object} config An Array of column config objects. See this class's
  * config objects for details.
-*/
+ */
 Ext.grid.ColumnModel = function(config){
     /**
      * The width of columns which have no width specified (defaults to 100)
@@ -63,8 +63,9 @@ Ext.grid.ColumnModel = function(config){
     this.defaultSortable = false;
 
     /**
-     * The config passed into the constructor
-     * @property {Array} config
+     * The column configuration Array passed into the constructor.
+     * @property config
+     * @type Array
      */
     if(config.columns){
         Ext.apply(this, config);
@@ -513,7 +514,7 @@ Ext.extend(Ext.grid.ColumnModel, Ext.util.Observable, {
      * Returns the editor defined for the cell/column.
      * @param {Number} colIndex The column index
      * @param {Number} rowIndex The row index
-     * @return {Ext.Editor} The {@link Ext.Editor Editor} that was created to wrap 
+     * @return {Ext.Editor} The {@link Ext.Editor Editor} that was created to wrap
      * the {@link Ext.form.Field Field} used to edit the cell.
      */
     getCellEditor : function(colIndex, rowIndex){
@@ -574,7 +575,19 @@ Ext.extend(Ext.grid.ColumnModel, Ext.util.Observable, {
      * @param {Object} editor The editor object
      */
     setEditor : function(col, editor){
+        Ext.destroy(this.config[col].editor);
         this.config[col].editor = editor;
+    },
+    
+    /**
+     * Destroys this the column model by purging any event listeners, and removing any editors.
+     */
+    destroy : function(){
+        var c = this.config;
+        for(var i = 0, c = this.config, len = c.length; i < len; i++){
+            Ext.destroy(c[i].editor);
+        }
+        this.purgeListeners();
     }
 });
 

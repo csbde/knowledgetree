@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -298,6 +298,7 @@ Ext.extend(Ext.Resizable, Ext.util.Observable, {
 
     // private
     onMouseUp : function(e){
+        this.activeHandle = null;
         var size = this.resizeElement();
         this.resizing = false;
         this.handleOut();
@@ -404,14 +405,14 @@ new Ext.Panel({
         if(v - diff < m){
             diff = v - m;    
         }else if(v - diff > mx){
-            diff = mx - v; 
+            diff = v - mx; 
         }
         return diff;                
     },
 
     // private
     onMouseMove : function(e){
-        if(this.enabled){
+        if(this.enabled && this.activeHandle){
             try{// try catch so if something goes wrong the user doesn't get hung
 
             if(this.resizeRegion && !this.resizeRegion.contains(e.getPoint())) {
@@ -606,14 +607,8 @@ new Ext.Panel({
      * @param {Boolean} removeEl (optional) true to remove the element from the DOM
      */
     destroy : function(removeEl){
-        if(this.dd){
-            this.dd.destroy();
-        }
-        if(this.overlay){
-            Ext.destroy(this.overlay);
-            this.overlay = null;
-        }
-        Ext.destroy(this.proxy);
+        Ext.destroy(this.dd, this.overlay, this.proxy);
+        this.overlay = null;
         this.proxy = null;
         
         var ps = Ext.Resizable.positions;
@@ -627,6 +622,7 @@ new Ext.Panel({
             Ext.destroy(this.el);
             this.el = null;
         }
+        this.purgeListeners();
     },
 
     syncHandleHeight : function(){

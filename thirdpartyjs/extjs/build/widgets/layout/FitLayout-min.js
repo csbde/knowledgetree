@@ -1,1 +1,10 @@
-Ext.layout.FitLayout=Ext.extend(Ext.layout.ContainerLayout,{monitorResize:true,onLayout:function(a,b){Ext.layout.FitLayout.superclass.onLayout.call(this,a,b);if(!this.container.collapsed){this.setItemSize(this.activeItem||a.items.itemAt(0),b.getStyleSize())}},setItemSize:function(b,a){if(b&&a.height>0){b.setSize(a)}}});Ext.Container.LAYOUTS.fit=Ext.layout.FitLayout;
+/*
+ * Ext JS Library 2.3.0
+ * Copyright(c) 2006-2009, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+
+
+Ext.layout.FitLayout=Ext.extend(Ext.layout.ContainerLayout,{monitorResize:true,onLayout:function(ct,target){Ext.layout.FitLayout.superclass.onLayout.call(this,ct,target);if(!this.container.collapsed){var sz=(Ext.isIE6&&Ext.isStrict&&target.dom==document.body)?target.getViewSize():target.getStyleSize();this.setItemSize(this.activeItem||ct.items.itemAt(0),sz);}},setItemSize:function(item,size){if(item&&size.height>0){item.setSize(size);}}});Ext.Container.LAYOUTS['fit']=Ext.layout.FitLayout;

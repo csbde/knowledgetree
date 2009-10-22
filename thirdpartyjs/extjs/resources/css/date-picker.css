@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -61,6 +61,11 @@
     -moz-opacity: 1;
     opacity:1;
     filter: alpha(opacity=100);
+}
+.x-item-disabled .x-date-right a:hover, .x-item-disabled .x-date-left a:hover{
+    -moz-opacity: 0.6;
+    opacity:.6;
+    filter: alpha(opacity=60);
 }
 .x-date-right a {
     background-image: url(../images/default/shared/right-btn.gif);
@@ -138,6 +143,10 @@ table.x-date-inner {
     text-decoration:none !important;
     color:black;
     background: #ddecfe;
+}
+
+.x-item-disabled .x-date-inner a:hover{
+    background: none;
 }
 
 .x-date-inner .x-date-disabled a {

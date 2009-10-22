@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -134,5 +134,15 @@ Ext.extend(Ext.data.HttpProxy, Ext.data.DataProxy, {
     // private
     updateResponse : function(dataSet){
         
+    },
+    
+    // inherit docs
+    destroy: function(){
+        if(!this.useAjax){
+            this.conn.abort();
+        }else if(this.activeRequest){
+            Ext.Ajax.abort(this.activeRequest);
+        }
+        Ext.data.HttpProxy.superclass.destroy.call(this);
     }
 });

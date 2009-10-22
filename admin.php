@@ -96,17 +96,23 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
     function do_viewCategory() {
         // are we categorised, or not?
-
         $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
 
+        //Removing bad documents/fieldmanagement links from the Document Metadata and Workflow Configuration page.
+		if ($category == 'documents') {
+	        $oPage =& $GLOBALS['main'];			
+			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+			$oPage->requireJSResources($aJavascript);
+			$jscript .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
+		}
+        
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
         $aCategory = $oRegistry->getCategory($category);
-
+		
         $aItems = $oRegistry->getItemsForCategory($category);
         asort($aItems);
         $this->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$category));
-
-
+		
         $this->oPage->title = _kt('Administration') . ': ' . $aCategory['title'];
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/admin_items');
@@ -115,6 +121,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
               'category' => $aCategory,
               'items' => $aItems,
               'baseurl' =>  $_SERVER['PHP_SELF'],
+        	  'jscript' => $jscript,
         );
         return $oTemplate->render($aTemplateData);
     }

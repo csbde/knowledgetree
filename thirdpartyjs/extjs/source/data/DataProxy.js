@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -40,4 +40,11 @@ Ext.data.DataProxy = function(){
     Ext.data.DataProxy.superclass.constructor.call(this);
 };
 
-Ext.extend(Ext.data.DataProxy, Ext.util.Observable);
+Ext.extend(Ext.data.DataProxy, Ext.util.Observable, {
+    /**
+     * Destroys the proxy by purging any event listeners and cancelling any active requests.
+     */
+    destroy: function(){
+        this.purgeListeners();
+    }
+});

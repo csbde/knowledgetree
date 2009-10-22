@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -91,8 +91,8 @@ Ext.ComponentMgr = function(){
         /**
          * Creates a new Component from the specified config object using the
          * config object's {@link Ext.component#xtype xtype} to determine the class to instantiate.
-         * @param config {Object} A configuration object for the Component you wish to create.
-         * @param defaultType {Constructor} The constructor to provide the default Component type if
+         * @param {Object} config A configuration object for the Component you wish to create.
+         * @param {Constructor} defaultType The constructor to provide the default Component type if
          * the config object does not contain an xtype. (Optional if the config contains an xtype).
          * @return {Ext.Component} The newly instantiated Component.
          */

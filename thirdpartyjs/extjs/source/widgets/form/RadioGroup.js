@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -30,7 +30,49 @@ Ext.form.RadioGroup = Ext.extend(Ext.form.CheckboxGroup, {
     defaultType : 'radio',
     
     // private
-    groupCls: 'x-form-radio-group'
+    groupCls: 'x-form-radio-group',
+    
+    // private
+    initComponent: function(){
+        this.addEvents(
+            /**
+             * @event change
+             * Fires when the state of a child radio changes.
+             * @param {Ext.form.RadioGroup} this
+             * @param {Ext.form.Radio} checked The checked radio
+             */
+            'change'
+        );   
+        Ext.form.RadioGroup.superclass.initComponent.call(this);
+    },
+    
+    // private
+    fireChecked: function(){
+        if(!this.checkTask){
+            this.checkTask = new Ext.util.DelayedTask(this.bufferChecked, this);
+        }
+        this.checkTask.delay(10);
+    },
+    
+    // private
+    bufferChecked: function(){
+        var out = null;
+        this.items.each(function(item){
+            if(item.checked){
+                out = item;
+                return false;
+            }
+        });
+        this.fireEvent('change', this, out);
+    },
+    
+    onDestroy: function(){
+        if(this.checkTask){
+            this.checkTask.cancel();
+            this.checkTask = null;
+        }
+        Ext.form.RadioGroup.superclass.onDestroy.call(this);
+    }
 });
 
 Ext.reg('radiogroup', Ext.form.RadioGroup);

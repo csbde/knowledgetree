@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -109,10 +109,20 @@ Ext.BoxComponent = Ext.extend(Ext.Component, {
     deferHeight: false,
 
     /**
-     * Sets the width and height of the component.  This method fires the {@link #resize} event.  This method can accept
-     * either width and height as separate numeric arguments, or you can pass a size object like {width:10, height:20}.
-     * @param {Number/Object} width The new width to set, or a size object in the format {width, height}
-     * @param {Number} height The new height to set (not required if a size object is passed as the first arg)
+     * Sets the width and height of this BoxComponent. This method fires the {@link #resize} event. This method can accept
+     * either width and height as separate arguments, or you can pass a size object like <code>{width:10, height:20}</code>.
+     * @param {Mixed} width The new width to set. This may be one of:<div class="mdetail-params"><ul>
+     * <li>A Number specifying the new width in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit}s (by default, pixels).</li>
+     * <li>A String used to set the CSS width style.</li>
+     * <li>A size object in the format <code>{width: widthValue, height: heightValue}</code>.</li>
+     * <li><code>undefined</code> to leave the width unchanged.</li>
+     * </ul></div>
+     * @param {Mixed} height The new height to set (not required if a size object is passed as the first arg).
+     * This may be one of:<div class="mdetail-params"><ul>
+     * <li>A Number specifying the new height in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit}s (by default, pixels).</li>
+     * <li>A String used to set the CSS height style. Animation may <b>not</b> be used.</li>
+     * <li><code>undefined</code> to leave the height unchanged.</li>
+     * </ul></div>
      * @return {Ext.BoxComponent} this
      */
     setSize : function(w, h){
@@ -152,7 +162,10 @@ Ext.BoxComponent = Ext.extend(Ext.Component, {
 
     /**
      * Sets the width of the component.  This method fires the {@link #resize} event.
-     * @param {Number} width The new width to set
+     * @param {Number} width The new width to setThis may be one of:<div class="mdetail-params"><ul>
+     * <li>A Number specifying the new width in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit}s (by default, pixels).</li>
+     * <li>A String used to set the CSS width style.</li>
+     * </ul></div>
      * @return {Ext.BoxComponent} this
      */
     setWidth : function(width){
@@ -161,7 +174,11 @@ Ext.BoxComponent = Ext.extend(Ext.Component, {
 
     /**
      * Sets the height of the component.  This method fires the {@link #resize} event.
-     * @param {Number} height The new height to set
+     * @param {Number} height The new height to set. This may be one of:<div class="mdetail-params"><ul>
+     * <li>A Number specifying the new height in the {@link #getEl Element}'s {@link Ext.Element#defaultUnit}s (by default, pixels).</li>
+     * <li>A String used to set the CSS height style.</li>
+     * <li><i>undefined</i> to leave the height unchanged.</li>
+     * </ul></div>
      * @return {Ext.BoxComponent} this
      */
     setHeight : function(height){

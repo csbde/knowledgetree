@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -191,7 +191,7 @@ Ext.extend(Ext.menu.Menu, Ext.util.Observable, {
         var w = this.width;
         if(w){
             el.setWidth(w);
-        }else if(Ext.isIE){
+        }else if(Ext.isIE && !Ext.isIE8){
             el.setWidth(this.minWidth);
             var t = el.dom.offsetWidth; // force recalc
             el.setWidth(ul.getWidth()+el.getFrameWidth("lr"));
