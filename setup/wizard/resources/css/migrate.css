@@ -2,26 +2,26 @@
 	border: 1px solid rgb(207, 207, 207);
 	overflow: auto;
 	padding: 5px;
-	height:365px;
+	min-height:365px;
 }
 
 #step_content_services {
 	border: 1px solid rgb(207, 207, 207);
 	overflow: auto;
 	padding: 5px;
-	height:340px;
+	min-height:340px;
 }
 
 #step_content_database {
 	border: 1px solid rgb(207, 207, 207);
 	overflow: auto;
 	padding: 5px;
-	height:380px;
+	min-height:380px;
 }
 
 #step_content_complete {
 	border: 1px solid rgb(207, 207, 207);
 	overflow: auto;
 	padding: 5px;
-	height:360px;
+	min-height:360px;
 }

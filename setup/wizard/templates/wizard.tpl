@@ -8,6 +8,7 @@
 		<?php echo $html->js('jquery.hotkeys.js'); ?>
 		<?php echo $html->js('wizard.js'); ?>
 		<?php echo $html->css('wizard.css'); ?>
+		<?php if(AGENT == "IE6") echo $html->css('ie6.css'); ?>
         <meta http-equiv=Content-Type content="text/html; charset=utf-8">
 	</head>
 	<body onload="">

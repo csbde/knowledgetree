@@ -157,7 +157,6 @@ select {
 
 .license_agreement {
 	overflow: scroll;
-	/*width:765px;*/
 	height:370px;
 	overflow-x:hidden;
 	border:1px solid #CFCFCF;
