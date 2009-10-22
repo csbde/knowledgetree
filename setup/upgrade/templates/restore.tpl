@@ -94,7 +94,7 @@ Press <i>Next</i> to attempt the command(s) above.
     </div>
 	<?php include 'templates/loading.tpl'; ?>
 	<div id="buttonBar">
-    <input type="submit" name="Previous" value="Back" class="button_previous">
+    <input type="submit" name="Previous" value="Previous" class="button_previous">
     <?php if (($dir != '') && ($selected)) { ?>
     <input type="button" name="RunRestore" value="Next" class="button_next" onclick="doSubmit(this);">
     <?php }

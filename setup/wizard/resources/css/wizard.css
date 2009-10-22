@@ -155,8 +155,16 @@ select {
 	min-height:355px;
 }
 
+.license_agreement {
+	overflow: scroll;
+	/*width:765px;*/
+	height:370px;
+	overflow-x:hidden;
+	border:1px solid #CFCFCF;
+}
+
 #sidebar {
-	font-size: 90%;
+	font-size: 85%;
 	color: grey; 
 	font-family: sans-serif; 
 	margin-top: 0px;
@@ -166,7 +174,6 @@ select {
 	line-height:3;
 	padding-left:20px;
 	text-align:left;
-	/*background-image:url("../graphics/left.png");*/
 }
 
 #footer {
@@ -361,7 +368,6 @@ select {
 .description {
     color:#898989;
     line-height:150%;
-    /*margin-bottom:0.75em;*/
     font-size:90%;
 }
 
@@ -445,7 +451,6 @@ td.dir_description {
 
 .php_con_details table {
 	width:745px;
-	/*border:1px solid;*/
 }
 
 .error_message {
@@ -481,15 +486,6 @@ td.dir_description {
 .big_ok {
 	background: url("../graphics/big-ok.png") no-repeat;
 	padding:4px;
-}
-
-.license_agreement {
-	overflow: scroll;
-	height: 255px;
-	width:765px;
-	height:370px;
-	overflow-x:hidden;
-	border:1px solid #CFCFCF;
 }
 
 .db_adv_options {
