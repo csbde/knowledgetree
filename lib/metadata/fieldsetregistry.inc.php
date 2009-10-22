@@ -86,6 +86,24 @@ class KTFieldsetRegistry {
 
     }
 
+    
+    	/*
+    	 * Returns an array of fieldIds where field type is HTML hence mce editor type
+    	 * 
+    	 */
+    function getHtmlFields($oFieldset, $idPre = 'metadata_') {
+            $fields = $oFieldset->getFields();
+		$textAreaIds = array();
+		
+		foreach($fields as $field) {
+			if ($field->getIsHtml()) {
+				$textAreaIds[] = $idPre . $field->getId();
+			}
+		}
+		
+		return $textAreaIds;
+    }    
+    
     function widgetsForFieldset($fieldsetOrType, $sContainerName, $oDocument = null) {
         // this is likely to be called repeatedly.
         if (is_null($this->oWF)) {
@@ -212,11 +230,13 @@ class KTFieldsetRegistry {
                         'vocab' => MetaData::getEnabledByDocumentField($oField),
                         'field_id' => $oField->getId(),
                     ));
-                } else if ($type == 'ktcore.fields.largetext') {                    
+                } else if ($type == 'ktcore.fields.largetext') {
+                	                    
                     $widgets[] = $this->oWF->get('ktcore.widgets.textarea', array(
                         'label' => $oField->getName(),
                         'required' => $oField->getIsMandatory(),
                         'name' => $fname,
+                    	'id' => $fname,
                         'value' => $value,
                         'description' => $oField->getDescription(),
                         'field' => $oField,

@@ -197,7 +197,8 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWidget('KTCoreDateWidget', 'ktcore.widgets.date', 'KTWidgets.php');
         
 		$this->registerWidget('KTCoreButtonWidget', 'ktcore.widgets.button', 'KTWidgets.php');
-        
+		$this->registerWidget('KTCoreLayerWidget', 'ktcore.widgets.layer', 'KTWidgets.php');
+		
         $this->registerWidget('KTCoreConditionalSelectionWidget', 'ktcore.widgets.conditionalselection', 'KTWidgets.php');
 
         $this->registerPage('collection', 'KTCoreCollectionPage', 'KTWidgets.php');

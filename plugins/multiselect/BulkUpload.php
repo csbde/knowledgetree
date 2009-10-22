@@ -46,7 +46,6 @@ require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
 
 require_once(KT_LIB_DIR . "/validation/dispatchervalidation.inc.php");
 
-//CHARL TEST
 require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
 require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");
 require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
@@ -67,8 +66,14 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 	function getDisplayName() {
 		if(!KTPluginUtil::pluginIsActive('inet.foldermetadata.plugin'))
 		{
-			$js = "<script src='plugins/multiselect/js/jquery-1.2.6.js' type='text/javascript'></script>";
-			$js .= "<script src='plugins/multiselect/js/hidelink.js' type='text/javascript'></script>";
+			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+			
+			$oPage =& $GLOBALS['main'];			
+			if (method_exists($oPage, 'requireJSResources')) {
+				$oPage->requireJSResources($aJavascript);
+			}
+					
+			$js = "<script src='resources/js/kt_hidelink.js' type='text/javascript'></script>";
 			return $js._kt('Bulk Upload');
 		}
 		else
@@ -121,7 +126,27 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 
 	function getBulkUploadForm() {
 		$this->oPage->setBreadcrumbDetails(_kt("bulk upload"));
-
+		
+		//Adding the required Bulk Upload javascript includes
+		$aJavascript[] = 'resources/js/taillog.js';
+		$aJavascript[] = 'resources/js/conditional_usage.js';
+		$aJavascript[] = 'resources/js/kt_bulkupload.js';
+		
+		//Loading the widget js libraries to support dynamic "Ajax Loaded" widget rendering
+		//FIXME: The widgets can support this via dynamic call to place libs in the head if they aren't loaded
+		//       jQuery can do this but need time to implement/test.
+		
+		$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+		$aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js';
+		$aJavascript[] = 'resources/js/kt_tinymce_init.js';
+    	$aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/jquery.tinymce.js';
+		
+		$this->oPage->requireJSResources($aJavascript);
+		
+		//FIXME: Might really not need to load these styles, will check l8r
+		//$this->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
+		
+        //Creating the form
 		$oForm = new KTForm;
 		$oForm->setOptions(array(
             'identifier' => 'ktcore.folder.bulkUpload',
@@ -155,22 +180,21 @@ class InetBulkUploadFolderAction extends KTFolderAction {
                         'description' => _kt('The archive file containing the documents you wish to add to the document management system.'),
 		));
 		
-		$aTypes = array();
-		foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
-			if(!$oDocumentType->getDisabled()) {
-				$aTypes[] = $oDocumentType;
-			}
-		}
-
+		$aVocab = array('' => _kt('- Please select a document type -'));
+        foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
+            if(!$oDocumentType->getDisabled()) {
+                $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
+            }
+        }
+		
 		//Adding document type lookup widget
-		$widgets[] = $oWF->get('ktcore.widgets.entityselection',array(
+		$widgets[] = $oWF->get('ktcore.widgets.selection',array(
                 'label' => _kt('Document Type'),
 				'id' => 'add-document-type',
                 'description' => _kt('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'),
                 'name' => 'fDocumentTypeId',
                 'required' => true,
-                'vocab' => $aTypes,
-                'initial_string' => _kt('- Please select a document type -'),
+                'vocab' => $aVocab,
                 'id_method' => 'getId',
                 'label_method' => 'getName',
                 'simple_select' => false,
@@ -188,13 +212,19 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 		));
 		
 		$oFReg =& KTFieldsetRegistry::getSingleton();
-
+		
 		$activesets = KTFieldset::getGenericFieldsets();
 		foreach ($activesets as $oFieldset) {
 			$widgets = kt_array_merge($widgets, $oFReg->widgetsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
 			$validators = kt_array_merge($validators, $oFReg->validatorsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
 		}
-
+		
+		//Adding the type_metadata_fields layer to be updated via ajax for non generic metadata fieldsets
+		$widgets[] = $oWF->get('ktcore.widgets.layer',array(
+                'value' => '',
+				'id' => 'type_metadata_fields',
+		));
+		
 		$oForm->setWidgets($widgets);
 		$oForm->setValidators($validators);
 
@@ -213,71 +243,6 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 
 		return $oForm;
 	}
-	 
-	 
-
-	/**
-	 * default and basic function
-	 * @return template
-	 * @param.
-	 * iNET Process
-	 *
-	 * Depricated : Using the new ktcore form above. 
-	 */
-	/*
-	 function do_main() {
-	 $this->oPage->setBreadcrumbDetails(_kt("bulk upload"));
-	 $oTemplate =& $this->oValidator->validateTemplate('ktcore/folder/bulkUpload');
-
-	 $add_fields = array();
-	 $add_fields[] = new KTFileUploadWidget(_kt('Archive file'), _kt('The archive file containing the documents you wish to add to the document management system.'), 'file', "", $this->oPage, true, "file");
-
-	 $aVocab = array('' => _kt('- Please select a document type -'));
-	 foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
-	 if(!$oDocumentType->getDisabled()) {
-	 $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
-	 }
-	 }
-	 $fieldOptions = array("vocab" => $aVocab);
-	 $add_fields[] = new KTLookupWidget(_kt('Document Type'), _kt('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'), 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
-
-	 $fieldsets = array();
-	 $validators = array();
-	 $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
-
-	 $oFReg =& KTFieldsetRegistry::getSingleton();
-
-	 $activesets = KTFieldset::getGenericFieldsets();
-	 foreach ($activesets as $oFieldset) {
-	 $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-	 array_push($fieldsets, new $displayClass($oFieldset));
-	 }
-
-	 // Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
-	 global $default;
-	 $iFolderId = $this->oFolder->getId();
-	 if($default->enableESignatures){
-	 $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
-	 $heading = _kt('You are attempting to perform a bulk upload');
-	 $submit['type'] = 'button';
-	 $submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.bulk_upload', 'bulk', 'bulk_upload_form', 'submit', {$iFolderId});";
-	 }else{
-	 $submit['type'] = 'submit';
-	 $submit['onclick'] = '';
-	 }
-
-	 $oTemplate->setData(array(
-	 'context' => &$this,
-	 'submit' => $submit,
-	 'add_fields' => $add_fields,
-	 'generic_fieldsets' => $fieldsets,
-	 ));
-
-	 return $oTemplate->render();
-	 }
-	 */
-
-
 
 	/**
 	 * make uploads
@@ -339,25 +304,33 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 		
 		$aData = $_REQUEST['data'];
 		
+		/* //This validation breaks with ajax loaded form items e.g. a non generic fieldset that submits
+		 * //values doesn't pass the check below.
 		$oForm = $this->getBulkUploadForm();
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
             return $oForm->handleError();
         }
         $data = $res['results'];
-        
+        var_dump($data);
+        */
+		
+		$data = $aData;
+		
         $doctypeid = $requestDocumentType;
         $aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
         $aSpecificFieldsetIds = KTFieldset::getForDocumentType($doctypeid, array('ids' => false));
         $fieldsets = kt_array_merge($aGenericFieldsetIds, $aSpecificFieldsetIds);
-		
+
 		$MDPack = array();
         foreach ($fieldsets as $oFieldset) {
             $fields = $oFieldset->getFields();
             $values = (array) KTUtil::arrayGet($data, 'fieldset_' . $oFieldset->getId());
-
+            //var_dump($values);
             foreach ($fields as $oField) {
+            	//var_dump($oField->getId());
                 $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
+                //var_dump($val);
 				if ($oFieldset->getIsConditional())
                 {
                 	if ($val == _kt('No selection.'))
@@ -375,7 +348,7 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 
             }
         }        
-        
+
 		$aOptions = array(
             'documenttype' => $oDocumentType,
             'metadata' => $MDPack,

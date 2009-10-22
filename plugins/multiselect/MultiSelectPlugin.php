@@ -114,8 +114,12 @@ class MultiSelectPlugin extends KTPlugin {
 	 */
 	function setupAdmin()
 	{
-		$js = "<script src='plugins/multiselect/js/jquery-1.2.6.js' type='text/javascript'></script>";
-		$js .= "<script src='plugins/multiselect/js/hideadminlink.js' type='text/javascript'></script>";
+		//FIXME: The kt_hideadminlink.js script hides the link on the client side. The faulty link/action
+		//		should be de-registerred and removed at the server side. The function below breaks things
+		//		so don't use.
+		//		e.g. $this->deRegisterPluginHelper('documents/fieldmanagement2', 'KTDocumentFieldDispatcher');
+		
+		$js .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
 		$this->registerAdminPage('ratpfieldset', 'InetDocumentFieldDispatcher', 'documents',
              $js._kt('Document Fieldsets'),
             _kt('Manage the different types of information with multiselect functionality that can be associated with classes of documents.'),
