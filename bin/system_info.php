@@ -49,6 +49,7 @@ require_once('../config/dmsDefaults.php');
 
 global $default;
 $default->log->debug('System information collection script starting...');
+$cache_file = $default->cacheDirectory . '/system_info';
 
 // Get installation guid
 function getGuid()
@@ -166,10 +167,43 @@ function sendForm($data)
 	curl_close($ch);
 }
 
+// Check the last time the call home executed
+function checkRunTime($cache_file)
+{
+    if(!file_exists($cache_file)){
+        return true;
+    }
+
+    $run_time = trim(file_get_contents($cache_file));
+    $now = time();
+
+    if($run_time < $now){
+        return true;
+    }
+
+    return false;
+}
+
+// update the time of the last call home execution
+function updateRunTime($cache_file)
+{
+    // Generate the time for the next call
+    $now = time();
+    $period = rand(12, 36);
+    $next = $now + (60*60*$period);
+
+    file_put_contents($cache_file, $next);
+}
+
+if(!checkRunTime($cache_file)){
+    exit(0);
+}
+
 $post_str = getGuid() .'|'. getUserCnt() .'|'. getDocCnt() .'|'. getKTVersion() .'|'. getKTEdition() .'|'. getOSInfo();
 $data['system_info'] = $post_str;
 
 sendForm($data);
+updateRunTime($cache_file);
 
 $default->log->debug('System information collection script finishing.');
 exit(0);

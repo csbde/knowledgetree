@@ -944,8 +944,17 @@ class KTCoreTextAreaWidget extends KTWidget {
         $global_required_default = true;
         $this->bRequired = (KTUtil::arrayGet($aOptions, 'required', $global_required_default, false) == true);
 
-        $this->aOptions['cols'] = KTUtil::arrayGet($aOptions, 'cols', 60);
-        $this->aOptions['rows'] = KTUtil::arrayGet($aOptions, 'rows', 3);
+		// Part of the space on the mce editor is taken up by the toolbars, so make the plain text field slightly smaller (if using the default size)
+        $default_rows = 20;
+        if(isset($this->aOptions['field'])){
+            $oField = $this->aOptions['field'];
+            if(!$oField->getIsHTML()){
+                $default_rows = 15;
+            }
+        }
+
+        $this->aOptions['cols'] = KTUtil::arrayGet($aOptions, 'cols', 80);
+        $this->aOptions['rows'] = KTUtil::arrayGet($aOptions, 'rows', $default_rows);
         $this->aOptions['field'] = KTUtil::arrayGet($aOptions, 'field');
     }
 
