@@ -955,9 +955,6 @@ class KTCoreTextAreaWidget extends KTWidget {
 
         $this->aOptions['cols'] = KTUtil::arrayGet($aOptions, 'cols', 80);
         $this->aOptions['rows'] = KTUtil::arrayGet($aOptions, 'rows', $default_rows);
-        
-        $this->aOptions['cols'] = KTUtil::arrayGet($aOptions, 'cols', 60);
-        $this->aOptions['rows'] = KTUtil::arrayGet($aOptions, 'rows', 3);
         $this->aOptions['field'] = KTUtil::arrayGet($aOptions, 'field');
     }
 
