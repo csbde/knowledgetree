@@ -967,6 +967,7 @@ class KTCoreTextAreaWidget extends KTWidget {
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
 		
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
         $this->aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js';
     	$this->aJavascript[] = 'resources/js/kt_tinymce_init.js';
     	
