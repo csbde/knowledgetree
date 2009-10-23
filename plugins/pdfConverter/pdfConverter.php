@@ -48,6 +48,25 @@ class pdfConverter extends BaseProcessor
 		$this->ooPort = $config->get('openoffice/port','8100');
 
 		$this->xmlrpc = XmlRpcLucene::get($javaServerUrl);
+
+
+
+    }
+
+    /**
+     * Check that open office is running
+     *
+     * @return boolean
+     */
+    private function checkOO()
+    {
+        $available = SearchHelper::checkOpenOfficeAvailablity();
+
+        if(is_null($available)){
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -63,17 +82,26 @@ class pdfConverter extends BaseProcessor
 
         if(!file_exists($path)){
             global $default;
-            $default->log->debug('Document, id: '.$this->document->iId.', does not exist at given storage path: '.$path);
-            return false;
+            $default->log->debug('PDF Converter: Document, id: '.$this->document->iId.', does not exist at given storage path: '.$path);
+            return _kt("The document, id: {$this->document->iId}, does not exist at the given storage path: {$path}");
         }
 
+        // check for OO
+        $available = $this->checkOO();
+
         // do pdf conversion
+        if(!$available){
+            global $default;
+            $default->log->error("PDF Converter: Cannot connect to Open Office Server on host {$this->ooHost} : {$this->ooPort}");
+            return _kt('Cannot connect to Open Office Server.');
+        }
+
         $res = $this->convertFile($path, $ext);
 
-        if($res === false){
+        if($res !== true){
             global $default;
-            $default->log->debug('Document, id: '.$this->document->iId.', could not be converted to pdf.');
-            return false;
+            $default->log->debug('PDF Converter: Document, id: '.$this->document->iId.', could not be converted to pdf.');
+            return _kt("The document, id: {$this->document->iId}, could not be converted to pdf format. The following error occurred: \"{$res}\".");
         }
 
         return true;
@@ -169,11 +197,11 @@ class pdfConverter extends BaseProcessor
 	    // Get contents and send to converter
         $result = $this->xmlrpc->convertDocument($sourceFile, $targetFile, $this->ooHost, $this->ooPort);
 
-        if($result === false){
+        if(is_string($result)){
             $default->log->error('PDF Converter Plugin: Conversion to PDF Failed');
             @unlink($sourceFile);
             @unlink($targetFile);
-            return false;
+            return $result;
         }
 
         $pdfDir = $default->pdfDirectory;
@@ -196,7 +224,7 @@ class pdfConverter extends BaseProcessor
         $res = @copy($targetFile, $pdfFile);
         @unlink($sourceFile);
         @unlink($targetFile);
-        return $pdfFile;
+        return true;
 
     }
 }
