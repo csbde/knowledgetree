@@ -120,7 +120,7 @@ class upgradeBackup extends Step {
     
         if (is_file($dir . '/mysqladmin') || is_file($dir . '/mysqladmin.exe'))
         {
-            $curdir=getcwd();
+//            $curdir=getcwd();
             chdir($dir);
             
             $handle = popen($stmt['cmd'], 'r');
@@ -198,7 +198,7 @@ class upgradeBackup extends Step {
     
         $adminUser = $oKTConfig->get('db/dbAdminUser');
         $adminPwd = $oKTConfig->get('db/dbAdminPass');
-        $dbHost = $oKTConfig->get('db/dbHost');
+//        $dbHost = $oKTConfig->get('db/dbHost');
         $dbName = $oKTConfig->get('db/dbName');
     
         $dbPort = trim($oKTConfig->get('db/dbPort'));

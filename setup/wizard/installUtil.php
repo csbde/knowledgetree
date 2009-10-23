@@ -70,15 +70,16 @@ class InstallUtil {
 	public function error($error) {
 		$template_vars['error'] = $error;
 		$file = "templates/error.tpl";
-		if (!file_exists($file)) {
-			return false;
+		if (file_exists($file)) {
+			extract($template_vars); // Extract the vars to local namespace
+			ob_start();
+			include($file);
+	        $contents = ob_get_contents();
+	        ob_end_clean();
+	        echo $contents;	
 		}
-		extract($template_vars); // Extract the vars to local namespace
-		ob_start();
-		include($file);
-        $contents = ob_get_contents();
-        ob_end_clean();
-        echo $contents;
+		
+		return false;
 	}
 	/**
 	* Check if system needs to be installed
@@ -165,7 +166,8 @@ class InstallUtil {
                 return $url;
             }
             if (!empty($protocol)) {
-                $url = $protocol .':'. end($array = explode(':', $url, 2));
+            	$array = explode(':', $url, 2);
+                $url = $protocol .':'. end($array);
             }
             if (!empty($port)) {
                 $url = preg_replace('!^(([a-z0-9]+)://[^/:]+)(:[\d]+)?!i',
@@ -321,13 +323,15 @@ class InstallUtil {
 		while (($file = readdir($dh)) !== false) {
 		if($file != '.' && $file != '..') {
 		    $fullpath = $path.'/'.$file;
-		    if(is_link($fullpath))
+		    if(is_link($fullpath)) {
 		        return false;
-		    elseif(!is_dir($fullpath)) {
+		    } elseif(!is_dir($fullpath)) {
 		    	$perms = substr(sprintf('%o', fileperms($fullpath)), -4);
-		    	if($perms != $filemode)
-		        	if (!chmod($fullpath, $filemode))
+		    	if($perms != $filemode) {
+		        	if (!chmod($fullpath, $filemode)) {
 		            	return false;
+		        	}
+		    	}
 		    } elseif(!$this->chmodRecursive($fullpath, $filemode))
 		        return false;
 			}
@@ -354,7 +358,8 @@ class InstallUtil {
      */
     public function canWriteFile($filename) {
     	$fh = fopen($filename, "w+");
-    	if($fr = fwrite($fh, 'test') === false) {
+    	$fr = fwrite($fh, 'test');
+    	if($fr === false) {
     		return false;
     	}
 
@@ -372,9 +377,9 @@ class InstallUtil {
      */
     public function javaBridge() {
 		try {
-    		$javaSystem = new Java('java.lang.System');
+    		new Java('java.lang.System');
 		} catch (JavaException $e) {
-			return false;
+			return $e;
 		}
 		return true;
     }
@@ -763,6 +768,7 @@ class InstallUtil {
      * @return string
      */
     public function installEnvironment() {
+    	$matches = false;
 	    preg_match('/Zend/', SYSTEM_DIR, $matches); // Install Type
 	    if($matches) {
 	    	return  'Zend';
@@ -792,7 +798,7 @@ class InstallUtil {
 				array_pop($sysdir);
 				array_pop($sysdir);
 				$zendsys = '';
-				foreach ($sysdir as $k=>$v) {
+				foreach ($sysdir as $v) {
 					$zendsys .= $v.DS;
 				}
 				return $zendsys."ZendServer".DS."bin".DS;
@@ -815,15 +821,16 @@ class InstallUtil {
 	    if(WINDOWS_OS) { // Mysql bin [Windows]
 		    $serverPaths = explode(';',$_SERVER['PATH']);
 		    foreach ($serverPaths as $apath) {
+		    	$matches = false;
 		    	preg_match('/mysql/i', $apath, $matches);
 		    	if($matches) {
 		    		return $apath.DS;
 		    		break;
 		    	}
 		    }
-	    } else {
-	    	return "mysql"; // Assume its linux and can be executed from command line
 	    }
+	    
+	    return "mysql"; // Assume its linux and can be executed from command line
     }
 
     public function sqlInstallDir() {

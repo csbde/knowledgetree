@@ -111,14 +111,14 @@ class upgradeRestore extends Step {
     private function restoreDatabase()
     {
         $this->temp_variables['restore'] = true;
-        $status = $_SESSION['backupStatus'];
+//        $status = $_SESSION['backupStatus'];
         $filename = $_SESSION['backupFile']; 
         $stmt = $this->util->create_restore_stmt($filename);
         $dir = $stmt['dir'];
     
         if (is_file($dir . '/mysql') || is_file($dir . '/mysql.exe'))
         {
-            $curdir=getcwd();
+//            $curdir=getcwd();
             chdir($dir);
     
             $ok=true;
@@ -181,9 +181,11 @@ class upgradeRestore extends Step {
         $dir = $this->util->resolveTempDir();
     
         $files = array();
-        if ($dh = opendir($dir))
+        $dh = opendir($dir);
+        if ($dh)
         {
-            while (($file = readdir($dh)) !== false)
+        	$file = readdir($dh);
+            while ($file !== false)
             {
                 if (!preg_match('/kt-backup.+\.sql/',$file)) {
                     continue;
@@ -217,7 +219,7 @@ class upgradeRestore extends Step {
             return;
         }
     
-        $status = $_SESSION['backupStatus'];
+//        $status = $_SESSION['backupStatus'];
         $filename = $_SESSION['backupFile'];
         $stmt = $this->util->create_restore_stmt($filename);
         

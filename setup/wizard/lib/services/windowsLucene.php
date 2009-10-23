@@ -140,8 +140,8 @@ class windowsLucene extends windowsService {
 	* @param string
 	* @return void
  	*/
-	public function load($options = null) {
-		$this->setJavaBin();
+	public function load() {
+		$this->findJavaBin();
 		$this->setLuceneDIR(SYSTEM_DIR."bin".DS."luceneserver");
 		$this->setLuceneExe("KTLuceneService.exe");
 		$this->setJavaJVM();
@@ -172,14 +172,14 @@ class windowsLucene extends windowsService {
 	}
 	
 	/**
-	* Set Java Directory path
+	* Dind Java Directory path
 	*
 	* @author KnowledgeTree Team
 	* @access private
 	* @param string
 	* @return void
  	*/
-	private function setJavaBin($javaBin = '') {
+	private function findJavaBin() {
 		if($this->util->zendBridge()) {
 			if($this->util->javaBridge()) {
 				$this->javaSystem = new Java('java.lang.System');
@@ -379,6 +379,8 @@ class windowsLucene extends windowsService {
 		} else {
 			return false;
 		}
+		
+		return true;
 	}
 	
 	/**
@@ -407,12 +409,11 @@ class windowsLucene extends windowsService {
 			$luceneExe = $this->getLuceneExe();
 			$luceneSource = $this->getLuceneSource();
 			$luceneDir = $this->getluceneDir();
-			$javaJVM = $this->getJavaJVM();
 			if($luceneExe && $luceneSource && $luceneDir) {
 				$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
             	if(DEBUG) {
             		echo "Command : $cmd<br/>";
-            		return ;
+            		return true;
             	}
 				$response = $this->util->pexec($cmd);
 				return $response;

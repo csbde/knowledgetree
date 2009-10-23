@@ -472,7 +472,7 @@ class stepAction {
      * @access private
      * @return void
      */
-     private function _loadValueToSession($class, $k, $v, $overwrite = false) {
+     private function _loadValueToSession($class, $k, $v) {
          if($this->session != null) {
             $this->session->setClass($class, $k, $v);
          } else {

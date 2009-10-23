@@ -144,10 +144,10 @@ class upgradeDatabase extends Step
         $this->readConfig(KTConfig::getConfigFilename());
         
         if($this->dbSettings['dbPort'] == '')  {
-            $con = $this->dbhandler->load($this->dbSettings['dbHost'], $this->dbSettings['dbUser'],  
+            $this->dbhandler->load($this->dbSettings['dbHost'], $this->dbSettings['dbUser'],  
                                            $this->dbSettings['dbPass'], $this->dbSettings['dbName']);
         } else {
-            $con = $this->dbhandler->load($this->dbSettings['dbHost'].":".$this->dbSettings['dbPort'], $this->dbSettings['dbUser'],  
+            $this->dbhandler->load($this->dbSettings['dbHost'].":".$this->dbSettings['dbPort'], $this->dbSettings['dbUser'],  
                                            $this->dbSettings['dbPass'], $this->dbSettings['dbName']);
         }
         
@@ -285,7 +285,8 @@ class upgradeDatabase extends Step
         }
         
         $res = $this->performAllUpgrades();
-        if (PEAR::isError($res) || PEAR::isError($pres)) {
+//        if (PEAR::isError($res) || PEAR::isError($pres)) {
+        	if (PEAR::isError($res)) {
             $errors = true;
             // TODO instantiate error details hideable section?
             $this->temp_variables['upgradeStatus'] = '<font color="red">Database upgrade failed</font>
@@ -300,7 +301,8 @@ class upgradeDatabase extends Step
         }
     
         $post_pres = $this->performPostUpgradeActions();
-        if (PEAR::isError($post_res)) {
+//        if (PEAR::isError($post_res)) {
+		if (PEAR::isError($post_pres)) {
             $errors = true;
             $this->temp_variables['postUpgrade'] = '<font color="red">Post-Upgrade actions failed.</font>';
         }
@@ -334,7 +336,7 @@ class upgradeDatabase extends Step
     
         // Ensure all plugins are re-registered.
         $sql = "TRUNCATE plugin_helper";
-        $res = DBUtil::runQuery($sql);
+        DBUtil::runQuery($sql);
     
         // Clear out all caches and proxies - they need to be regenerated with the new code
         $proxyDir = $default->proxyCacheDirectory;

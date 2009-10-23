@@ -52,17 +52,17 @@ function __autoload($class) { // Attempt and autoload classes
 	if ($class == "template") { // Load existing templating classes
 		require_once("../wizard/template.php");
 		require_once("../wizard/lib/helpers/htmlHelper.php");
-		return ;
-	}
-	if(file_exists(WIZARD_DIR."$class.php")) {
-		require_once(WIZARD_DIR."$class.php");
-	} elseif (file_exists(STEP_DIR."$class.php")) {
-		require_once(STEP_DIR."$class.php");
-	} elseif (file_exists(WIZARD_LIB."$class.php")) {
-		require_once(WIZARD_LIB."$class.php");
+		
 	} else {
-		return null;
+		if(file_exists(WIZARD_DIR."$class.php")) {
+			require_once(WIZARD_DIR."$class.php");
+		} elseif (file_exists(STEP_DIR."$class.php")) {
+			require_once(STEP_DIR."$class.php");
+		} elseif (file_exists(WIZARD_LIB."$class.php")) {
+			require_once(WIZARD_LIB."$class.php");
+		}
 	}
+	return true;
 }
 
 class MigrateWizard {
@@ -233,8 +233,6 @@ class MigrateWizard {
 					return true;
 				break;
 		}
-		
-		return $res;
 	}
 	
 	/**

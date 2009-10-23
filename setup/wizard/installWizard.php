@@ -62,9 +62,13 @@ function __autoload($class) { // Attempt and autoload classes
 	} else {
 		if(preg_match('/Helper/', $class)) {
 			require_once(HELPER_DIR."$class.php");
+		} else if(preg_match('/Test/i', $class)) {
+			if($_GET['step'] != '') {
+				require_once(TEST_DIR."$class.php");
+			}
 		}
-		return null;
 	}
+	return true;
 }
 
 class InstallWizard {
@@ -95,6 +99,15 @@ class InstallWizard {
 	*/
 	protected $util = null;
 
+	/**
+	* Step name
+	*
+	* @author KnowledgeTree Team
+	* @access protected
+	* @var mixed
+	*/
+	protected $stepName = '';
+	
 	/**
 	* Constructs installation wizard object
 	*
@@ -183,15 +196,27 @@ class InstallWizard {
 	}
 	
 	/**
-	* Bypass and force an install
+	* Is the step being accessed directly
 	*
 	* @author KnowledgeTree Team
-	* @access private
+	* @access public
 	* @param none
 	* @return boolean
  	*/
-	private function bypass() {
-		
+	public function isActionOnStep() {
+		return $this->stepName;
+	}
+	
+	/**
+	* Set step being accessed directly
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
+	private function setStep($stepName) {
+		$this->stepName = $stepName;
 	}
 	
 	/**
@@ -231,6 +256,9 @@ class InstallWizard {
 		if(isset($_GET['bypass'])) {
 			$this->setBypass($_GET['bypass']);
 		}
+		if(isset($_GET['step'])) {
+			$this->setStep($_GET['step']);
+		}
 		if(isset($_GET['debug'])) {
 			$this->setDebugLevel($_GET['debug']);
 		} else {
@@ -263,8 +291,6 @@ class InstallWizard {
 					return true;
 				break;
 		}
-		
-		return $res;
 	}
 	
 	/**
@@ -278,9 +304,13 @@ class InstallWizard {
 	public function dispatch() {
 		$this->load();
 		if($this->getBypass() === "1") { // Helper to force install
-			$this->removeInstallFile(); // TODO: Remove
+			$this->removeInstallFile();
 		} elseif ($this->getBypass() === "0") {
 			$this->createInstallFile();
+		}
+		if($this->isActionOnStep()) { // Testing purposes
+			$testStepClass = $this->stepName."Test";
+			new $testStepClass();
 		}
 		if(!$this->isSystemInstalled()) { // Check if the systems not installed
 			if($this->util->migrationSpecified()) { // Check if the migrator needs to be accessed

@@ -92,7 +92,7 @@ class openofficeValidation extends serviceValidation {
 	* @access private
 	* @var mixed
 	*/
-    private $windowsLocations = array("C:\Program Files\OpenOffice.org 3\program", "C:\OpenOffice.org 3\program");
+    private $windowsLocations = array("\"C:\Program Files\OpenOffice.org 3\program\"", "\"C:\OpenOffice.org 3\program\"");
     
 	/**
 	* Open Office unix locations 
@@ -103,7 +103,7 @@ class openofficeValidation extends serviceValidation {
 	*/
     private $unixLocations = array("/usr/bin/");
 
-    public function preset($options = null) {
+    public function preset() {
     	$this->specifyOpenOffice();
     }
     

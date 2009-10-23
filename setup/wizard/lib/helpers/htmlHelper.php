@@ -41,7 +41,7 @@
 */
 class htmlHelper {
 	
-	var $tags = array(
+	private $tags = array(
 		'meta' => '<meta%s/>',
 		'metalink' => '<link href="%s"%s/>',
 		'link' => '<a href="%s"%s>%s</a>',
@@ -96,76 +96,76 @@ class htmlHelper {
 		'error' => '<div%s>%s</div>'
 	);
 	
-		function __construct() {
-		}
-		
-		function js($name) {
-			return "<script type=\"text/javascript\" src=\"../wizard/resources/js/$name\"></script>";
-		}
-		
-		function css($name) {
-			return "<link rel=\"stylesheet\" type=\"text/css\" href=\"../wizard/resources/css/$name\" />";
-		}
-		
-		function image($name, $options = array()) {
-			$path = "../wizard/resources/graphics/$name";
-			$image = sprintf($this->tags['image'], $path, $this->_parseAttributes($options, null, '', ' '));
-			
-			return $image; 
-		}
-		
-		function _parseAttributes($options, $exclude = null, $insertBefore = ' ', $insertAfter = null) {
-			if (is_array($options)) {
-				$options = array_merge(array('escape' => true), $options);
+	public function __construct() {
+	}
 	
-				if (!is_array($exclude)) {
-					$exclude = array();
-				}
-				$keys = array_diff(array_keys($options), array_merge((array)$exclude, array('escape')));
-				$values = array_intersect_key(array_values($options), $keys);
-				$escape = $options['escape'];
-				$attributes = array();
+	public function js($name) {
+		return "<script type=\"text/javascript\" src=\"../wizard/resources/js/$name\"></script>";
+	}
 	
-				foreach ($keys as $index => $key) {
-					$attributes[] = $this->__formatAttribute($key, $values[$index], $escape);
-				}
-				$out = implode(' ', $attributes);
-			} else {
-				$out = $options;
-			}
-			return $out ? $insertBefore . $out . $insertAfter : '';
-		}
+	public function css($name) {
+		return "<link rel=\"stylesheet\" type=\"text/css\" href=\"../wizard/resources/css/$name\" />";
+	}
+	
+	public function image($name, $options = array()) {
+		$path = "../wizard/resources/graphics/$name";
+		$image = sprintf($this->tags['image'], $path, $this->_parseAttributes($options, null, '', ' '));
 		
-	function __formatAttribute($key, $value, $escape = true) {
+		return $image; 
+	}
+	
+	public function _parseAttributes($options, $exclude = null, $insertBefore = ' ', $insertAfter = null) {
+		if (is_array($options)) {
+		$options = array_merge(array('escape' => true), $options);
+		
+		if (!is_array($exclude)) {
+		$exclude = array();
+		}
+		$keys = array_diff(array_keys($options), array_merge((array)$exclude, array('escape')));
+		$values = array_intersect_key(array_values($options), $keys);
+		$escape = $options['escape'];
+		$attributes = array();
+		
+		foreach ($keys as $index => $key) {
+		$attributes[] = $this->__formatAttribute($key, $values[$index], $escape);
+		}
+		$out = implode(' ', $attributes);
+		} else {
+		$out = $options;
+		}
+		return $out ? $insertBefore . $out . $insertAfter : '';
+	}
+	
+	public function __formatAttribute($key, $value, $escape = true) {
 		$attribute = '';
 		$attributeFormat = '%s="%s"';
 		$minimizedAttributes = array('compact', 'checked', 'declare', 'readonly', 'disabled', 'selected', 'defer', 'ismap', 'nohref', 'noshade', 'nowrap', 'multiple', 'noresize');
 		if (is_array($value)) {
-			$value = '';
+		$value = '';
 		}
-	
+		
 		if (in_array($key, $minimizedAttributes)) {
-			if ($value === 1 || $value === true || $value === 'true' || $value == $key) {
-				$attribute = sprintf($attributeFormat, $key, $key);
-			}
+		if ($value === 1 || $value === true || $value === 'true' || $value == $key) {
+		$attribute = sprintf($attributeFormat, $key, $key);
+		}
 		} else {
-			$attribute = sprintf($attributeFormat, $key, $this->ife($escape, $this->h($value), $value));
+		$attribute = sprintf($attributeFormat, $key, $this->ife($escape, $this->h($value), $value));
 		}
 		return $attribute;
 	}
 	
-	function ife($condition, $val1 = null, $val2 = null) {
+	public function ife($condition, $val1 = null, $val2 = null) {
 		if (!empty($condition)) {
-			return $val1;
+		return $val1;
 		}
 		return $val2;
 	}
 	
-	function h($text, $charset = 'UTF-8') {
+	public function h($text, $charset = 'UTF-8') {
 		if (is_array($text)) {
-			return array_map('h', $text);
+		return array_map('h', $text);
 		}
 		return htmlspecialchars($text, ENT_QUOTES, $charset);
-}
+	}
 }
 ?>
