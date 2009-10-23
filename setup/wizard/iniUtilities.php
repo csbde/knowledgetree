@@ -63,11 +63,12 @@ class iniUtilities {
     		return false;
     	}
     	$date = date('YmdHis');
-
     	$backupFile = $iniFile . '.' .$date;
         if (is_writeable($backupFile)) {
     	    file_put_contents($backupFile, $content);
         }
+        
+        return true;
     }
 
     function read($iniFile) {
@@ -153,13 +154,20 @@ class iniUtilities {
     }
 
     function itemExists($checkSection, $checkItem) {
-
+/*
+                foreach ($items as $key => $value) {
+                    if($key == $checkItem) {
+                        return true;
+                    }
+                }
+*/
         $this->exists = '';
         foreach($this->cleanArray as $section => $items) {
             if($section == $checkSection) {
                 $this->exists = 'section';
-                foreach ($items as $key => $value) {
-                    if($key == $checkItem) {
+                $items = array_flip($items);
+                foreach ($items as $value) {
+                    if($value == $checkItem) {
                         return true;
                     }
                 }

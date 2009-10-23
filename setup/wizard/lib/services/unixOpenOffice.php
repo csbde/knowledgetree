@@ -106,13 +106,14 @@ class unixOpenOffice extends unixService {
     	}
     }
     
-    public function status($updrade = false) {
+    public function status() {
     	sleep(1);
 		$cmd = "ps ax | grep soffice";
 		$response = $this->util->pexec($cmd);
     	if(is_array($response['out'])) {
     		if(count($response['out']) > 1) {
     			foreach ($response['out'] as $r) {
+    				$matches = false;
     				preg_match('/grep/', $r, $matches); // Ignore grep
     				if(!$matches) {
     					return 'STARTED';
@@ -138,29 +139,16 @@ class unixOpenOffice extends unixService {
     	$state = $this->status();
     	if($state != 'STARTED') {
     		$cmd = "nohup ".$this->getBin().' -nofirststartwizard -nologo -headless -accept="socket,host=localhost,port=8100;urp;StarOffice.ServiceManager" '." &1> /dev/null &";
-//	    	$cmd = "\"{$this->util->getJava()}\" -cp \"".SYS_DIR."\" openOffice ".$this->getBin();
-
 	    	if(DEBUG) {
 	    		echo "Command : $cmd<br/>";
-	    		return ;
+	    		return true;
 	    	}
-//			$cmd = 'nohup /usr/lib/openoffice/program/soffice -nofirststartwizard -nologo -headless -accept="socket,host=localhost,port=8100;urp;StarOffice.ServiceManager" &> /dev/null &';
-//			$cmd = 'nohup /usr/lib/openoffice/program/soffice -nofirststartwizard -nologo -headless -accept="socket,host=localhost,port=8100;urp;StarOffice.ServiceManager" &1> /dev/null &';
-//			$cmd = '/usr/lib/openoffice/program/soffice -nofirststartwizard -nologo -headless -accept="socket,host=localhost,port=8100;urp;StarOffice.ServiceManager"';
-//			$cmd = '/usr/lib/openoffice/program/soffice.bin -nofirststartwizard -nologo -headless -accept="socket,host=localhost,port=8100;urp;StarOffice.ServiceManager"';
-//			$cmd = '/usr/lib/openoffice/program/soffice.bin -nofirststartwizard -nologo -headless -accept="socket,host=localhost,port=8100;urp;StarOffice.ServiceManager"';
 	    	$response = $this->util->pexec($cmd);
 
 	    	return $response;
-    	} elseif ($state == '') {
-    		// Start Service
-    		return true;
-    	} else {
-    		// Service Running Already
-    		return true;
     	}
     	
-    	return false;
+    	return true;
     }
     
 	/**

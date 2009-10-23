@@ -58,13 +58,24 @@ class KTSimplePage {
 class GetHtmlFieldsDispatcher extends KTDispatcher {
     function do_main() {
         $this->oPage = new KTSimplePage;
-		header('Content-type: text/html; charset=UTF-8');        
-        return $this->getHtmlFields ($_REQUEST['fDocumentTypeID']);
+		header('Content-type: text/html; charset=UTF-8');
+		
+		$type = $_REQUEST['type'];
+		$docId = $_REQUEST['fDocumentTypeID'];
+		
+		switch ($type) {
+			case 'html':
+        		return $this->getHtmlFields ($docId);
+			case 'generic':
+        		return $this->getGenericFields ($docId);
+			default:
+				return $this->getHtmlFields ($docId);
+		}
     }
 
 	/**
 	 * Returns a JSON object containing a list of HTML type fields for the given DocumentId
-	 * @return KTForm
+	 * @return JSON Object
 	 *
 	 */
 	
@@ -87,7 +98,61 @@ class GetHtmlFieldsDispatcher extends KTDispatcher {
 		
 		return $jsOptions;
 	}
+
+	/**
+	 * Returns a JSON object containing a list of fields belonging to a generic fieldset 
+	 * for the given DocumentId
+	 * @return JSON Object
+	 *
+	 */
+	function getGenericFields($iDocumentTypeID) {
+		$oFReg =& KTFieldsetRegistry::getSingleton();
+		$activesets = KTFieldset::getForDocumentType($iDocumentTypeID);
+		
+		$fields = array();
+		foreach ($activesets as $oFieldset) {
+			$fieldIds = kt_array_merge($fields, $oFReg->getGenericFields($oFieldset));
+		}
+		
+		$jsOptions = '{ "htmlId" : {';
+		
+		foreach($fieldIds as $fieldId) {
+			$jsOptions .= "'$fieldId' : '$fieldId',";
+		}
+		$jsOptions = substr($jsOptions, 0, strlen($jsOptions) - 1);
+		
+		$jsOptions .= '}}';
+		
+		return $jsOptions;
+	}
     
+	/**
+	 * Returns a JSON object containing a list of fields belonging to a generic fieldset 
+	 * for the given DocumentId
+	 * @return JSON Object
+	 *
+	 */
+	function getNonGenericFields($iDocumentTypeID) {
+		$oFReg =& KTFieldsetRegistry::getSingleton();
+		$activesets = KTFieldset::getForDocumentType($iDocumentTypeID);
+		
+		$fields = array();
+		foreach ($activesets as $oFieldset) {
+			$fieldIds = kt_array_merge($fields, $oFReg->getGenericFields($oFieldset));
+		}
+		
+		$jsOptions = '{ "htmlId" : {';
+		
+		foreach($fieldIds as $fieldId) {
+			$jsOptions .= "'$fieldId' : '$fieldId',";
+		}
+		$jsOptions = substr($jsOptions, 0, strlen($jsOptions) - 1);
+		
+		$jsOptions .= '}}';
+		
+		return $jsOptions;
+	}	
+	
 }
 
 $f =& new GetHtmlFieldsDispatcher;

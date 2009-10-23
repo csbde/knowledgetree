@@ -52,17 +52,17 @@ function __autoload($class) { // Attempt and autoload classes
 	if ($class == "template") { // Load existing templating classes
 		require_once("../wizard/template.php");
 		require_once("../wizard/lib/helpers/htmlHelper.php");
-		return ;
-	}
-	if(file_exists(WIZARD_DIR."$class.php")) {
-		require_once(WIZARD_DIR."$class.php");
-	} elseif (file_exists(STEP_DIR."$class.php")) {
-		require_once(STEP_DIR."$class.php");
-	} elseif (file_exists(WIZARD_LIB."$class.php")) {
-		require_once(WIZARD_LIB."$class.php");
 	} else {
-		return null;
+		if(file_exists(WIZARD_DIR."$class.php")) {
+			require_once(WIZARD_DIR."$class.php");
+		} elseif (file_exists(STEP_DIR."$class.php")) {
+			require_once(STEP_DIR."$class.php");
+		} elseif (file_exists(WIZARD_LIB."$class.php")) {
+			require_once(WIZARD_LIB."$class.php");
+		}
 	}
+	
+	return true;
 }
 
 class UpgradeWizard {
@@ -191,26 +191,7 @@ class UpgradeWizard {
 	* @return mixed
  	*/
 	public function systemChecks() {
-	    // for now we don't write to any of these locations
-        return true;
-        
-		$res = $this->util->checkStructurePermissions();
-		if($res === true) return $res;
-		switch ($res) {
-			case "wizard":
-					$this->util->error("Upgrader directory is not writable (KT_Installation_Directory/setup/upgrade/)");
-					return 'Upgrader directory is not writable (KT_Installation_Directory/setup/upgrade/)';
-				break;
-			case "/":
-					$this->util->error("System root is not writable (KT_Installation_Directory/)");
-					return "System root is not writable (KT_Installation_Directory/)";
-				break;
-			default:
-					return true;
-				break;
-		}
-		
-		return $res;
+        return true; // for now we don't write to any locations
 	}
 	
 	/**
