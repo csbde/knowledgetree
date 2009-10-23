@@ -719,7 +719,14 @@ class database extends Step
 	* @return boolean
 	*/
     private function createDmsUser() {
-		return $this->parse_mysql_dump($this->util->sqlInstallDir()."user.sql");
+		$user1 = "GRANT SELECT, INSERT, UPDATE, DELETE ON {$this->dname}.* TO {$this->dmsusername}@{$this->dhost} IDENTIFIED BY \"{$this->dmsuserpassword}\";";
+      	$user2 = "GRANT ALL PRIVILEGES ON {$this->dname}.* TO {$this->dmsname}@{$this->dhost} IDENTIFIED BY \"{$this->dmspassword}\";";
+      if ($this->dbhandler->query($user1) && $this->dbhandler->query($user2)) {
+              return true;
+          } else {
+            $this->error['con'] = "Could not create users for database: {$this->dname}";
+            return false;
+          }
     }
     
 	/**
