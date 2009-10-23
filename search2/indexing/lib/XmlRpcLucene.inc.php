@@ -416,7 +416,7 @@ class XmlRpcLucene
 
         if($result->faultCode()) {
             $this->error($result, 'convertDocument');
-            return false;
+            return $result->faultString();
         }
         return php_xmlrpc_decode($result->value()) == 0;
     }
