@@ -157,7 +157,7 @@ class Installer {
         	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.$name);
     	} catch (Exception $e) {
     		$util = new InstallUtil();
-    		$util->error("Error reading configuration file: $e");
+    		$util->error("Error reading configuration file: $name");
     		exit();
     	}
     }
@@ -431,7 +431,8 @@ class Installer {
 	    	if($class->runInstall()) { // Check if step needs to be installed
 				$class->setDataFromSession($className); // Set Session Information
 				$class->setPostConfig(); // Set any posted variables
-				$class->installStep(); // Run install step
+				$response = $class->installStep(); // Run install step
+				// TODO : Break on error response
 	    	}
     	} else {
     		$util = new InstallUtil();

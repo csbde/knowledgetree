@@ -202,11 +202,11 @@ class migrateServices extends Step
      */
     public function unixStop() {
     	$cmd = $this->conf['location']."/dmsctl.sh stop lucene";
-    	$this->util->pexec($cmd);
+    	$res = $this->util->pexec($cmd);
     	$cmd = $this->conf['location']."/dmsctl.sh stop scheduler";
-    	$this->util->pexec($cmd);
+    	$res = $this->util->pexec($cmd);
     	$cmd = $this->conf['location']."/dmsctl.sh stop soffice";
-    	$this->util->pexec($cmd);
+    	$res = $this->util->pexec($cmd);
     }
     
     /**
@@ -215,11 +215,11 @@ class migrateServices extends Step
      */
     public function windowsStop() {
     	$cmd = "sc delete KTLucene";
-    	$this->util->pexec($cmd);
+    	$res = $this->util->pexec($cmd);
     	$cmd = "sc delete KTScheduler";
-    	$this->util->pexec($cmd);
+    	$res = $this->util->pexec($cmd);
     	$cmd = "sc delete KTOpenoffice";
-    	$this->util->pexec($cmd);
+    	$res = $this->util->pexec($cmd);
     }
     
     /**
@@ -233,7 +233,7 @@ class migrateServices extends Step
     		$serv->load();
     		$sStatus = $serv->status();
     		if($sStatus != '') {
-    			$serv->uninstall();
+    			$res = $serv->uninstall();
     		}
     	}
     }

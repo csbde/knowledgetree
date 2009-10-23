@@ -264,7 +264,7 @@ class luceneValidation extends serviceValidation {
     public function binaryChecks() {
     	if($this->util->javaSpecified()) {
     		$this->disableExtension = true; // Disable the use of the php bridge extension
-    		if($this->detSettings()) { // AutoDetect java settings
+    		if($this->detSettings(true)) { // AutoDetect java settings
     			return true;
     		} else {
     			$this->specifyJava(); // Ask for settings
@@ -274,16 +274,16 @@ class luceneValidation extends serviceValidation {
     		if($auto) {
 				return $auto;
     		} else {
-    			$auto = $this->detSettings(); // Check if auto detected java works
+    			$auto = $this->useDetected(); // Check if auto detected java works
     			if($auto) {
     				$this->disableExtension = true; // Disable the use of the php bridge extension
+    				return $auto;
     			} else {
 					$this->specifyJava(); // Ask for settings
     			}
     		}
 			return $auto;
     	}
-    	return false;
     }
     
 	/**
@@ -363,11 +363,11 @@ class luceneValidation extends serviceValidation {
 	* @access private
 	* @return boolean
 	*/
- private function detSettings($attempt = false) {
-    	$javaExecutable = $this->util->javaSpecified(); // Retrieve java bin
+    private function detSettings($attempt = false) {
+    	$javaExecutable = $this->util->javaSpecified();// Retrieve java bin
     	if($javaExecutable == '') {
     		if($this->java == '') {
-				$this->java = 'java'; // Assume java is in classpath
+    			return false;
     		}
     		$javaExecutable = $this->java;
     	}
@@ -388,7 +388,7 @@ class luceneValidation extends serviceValidation {
     }
     
     function windowsReadJVFromFile($cmd) {
-    	$this->util->pexec($cmd);
+    	$response = $this->util->pexec($cmd);
 		if(file_exists($this->outputDir.'outJV')) {
 			$version = file_get_contents($this->outputDir.'outJV');
 			if($version != '') {
@@ -409,23 +409,21 @@ class luceneValidation extends serviceValidation {
 			} else {
 				$this->javaVersionWarning();
 				$this->javaCheck = 'cross_orange';
-//				if($attempt) {
+				if($attempt) {
 					$this->javaExeMessage = "Incorrect java path specified";
 					$this->javaExeError = true;
 					$this->error[] = "Requires Java 1.5+ to be installed";
-//				}
+				}
 				
 				return false;
 			}
 		}
-		return false;
     }
     
     function unixReadJVFromFile($cmd) {
-    	$this->util->pexec($cmd);
+    	$response = $this->util->pexec($cmd);
 		if(file_exists($this->outputDir.'outJV')) {
 			$tmp = file_get_contents($this->outputDir.'outJV');
-			$matches = false;
 			preg_match('/"(.*)"/',$tmp, $matches);
 			if($matches) {
 				if($matches[1] < $this->javaVersion) { // Check Version of java
@@ -445,17 +443,27 @@ class luceneValidation extends serviceValidation {
 			} else {
 				$this->javaVersionWarning();
 				$this->javaCheck = 'cross_orange';
-//				if($attempt) {
+				if($attempt) {
 					$this->javaExeMessage = "Incorrect java path specified";
 					$this->javaExeError = true;
 					$this->error[] = "Requires Java 1.5+ to be installed";
-//				}
+				}
 				
 				return false;
 			}
 		}
-		
-		return false;
+    }
+    
+	/**
+	* Attempt detection without logging errors
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access private
+	* @return boolean
+	*/
+    private function useDetected() {
+    	return $this->detSettings();
     }
     
    	/**

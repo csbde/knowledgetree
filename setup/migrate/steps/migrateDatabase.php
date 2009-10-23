@@ -122,17 +122,19 @@ class migrateDatabase extends Step
     	$manual = false; // If file was exported manually
     	$dbSettings = $installation['dbSettings'];
     	$location = $installation['location'];
+		$uname = $this->temp_variables['duname'];
+		$pwrd = $this->temp_variables['dpassword'];
 		$port = $this->util->getPort($location);
 		$tmpFolder = $this->resolveTempDir();
     	if(WINDOWS_OS) {
     		$termOrBash = "command prompt window";
-    		$exe = "\"$location".DS."mysql".DS."bin".DS."mysqldump.exe\""; // Location of dump
+    		$exe = "\"$location\mysql\bin\mysqldump.exe\""; // Location of dump
     	} else {
     		$termOrBash = "terminal window";
     		$exe = "'$location/mysql/bin/mysqldump'"; // Location of dump
     	}
     	$date = date('Y-m-d-H-i-s');
-    	if(isset($database['manual_export'])) {
+    	if(isset($database)) {
     		$sqlFile = $database['manual_export'];
     		if(file_exists($sqlFile)) {
 				$manual = true;
@@ -145,7 +147,7 @@ class migrateDatabase extends Step
     	if(!$manual) { // Try to export database
 			$sqlFile = $tmpFolder."/kt-backup-$date.sql";
 			$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
-			$this->util->pexec($cmd);
+//			$response = $this->util->pexec($cmd);
     	}
 		if(file_exists($sqlFile)) {
 			$fileContents = file_get_contents($sqlFile);
@@ -155,14 +157,10 @@ class migrateDatabase extends Step
 			}
 		}
 		// Handle failed dump
-		if(WINDOWS_OS) {
-			$sqlFile = "\"C:\kt-backup-$date.sql\""; // Use tmp instead due to permissions
-		} else {
-			$sqlFile = "/tmp/kt-backup-$date.sql"; // Use tmp instead due to permissions
-		}
+		$sqlFile = "/tmp/kt-backup-$date.sql"; // Use tmp instead due to permissions
 		$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
-    	$this->error[]['error'] = "Could not export database";
-    	$this->error[]['msg'] = "Execute the following command in a $termOrBash:";
+    	$this->error[]['error'] = "Could not export database:";
+    	$this->error[]['msg'] = "Execute the following command in a $termOrBash.";
     	$this->error[]['cmd'] = $cmd;
     	$this->temp_variables['manual_export'] = $sqlFile;
     	

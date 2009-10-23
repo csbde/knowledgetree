@@ -157,7 +157,7 @@ class Migrater {
         	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.$name);
     	} catch (Exception $e) {
     		$util = new MigrateUtil();
-    		$util->error("Error reading configuration file: $e");
+    		$util->error("Error reading configuration file: $name");
     		exit();
     	}
     }
@@ -431,7 +431,8 @@ class Migrater {
 	    	if($class->runMigrate()) { // Check if step needs to be migrated
 				$class->setDataFromSession($className); // Set Session Information
 				$class->setPostConfig(); // Set any posted variables
-				$class->migrateStep(); // Run migrate step
+				$response = $class->migrateStep(); // Run migrate step
+				// TODO : Break on error response
 	    	}
     	} else {
     		$util = new MigrateUtil();

@@ -62,15 +62,15 @@ class MigrateUtil extends InstallUtil {
 	public function error($error) {
 		$template_vars['error'] = $error;
 		$file = "templates/error.tpl";
-		if (file_exists($file)) {
-			extract($template_vars); // Extract the vars to local namespace
-			ob_start();
-			include($file);
-	        $contents = ob_get_contents();
-	        ob_end_clean();
-	        echo $contents;
+		if (!file_exists($file)) {
+			return false;
 		}
-		return false;
+		extract($template_vars); // Extract the vars to local namespace
+		ob_start();
+		include($file);
+        $contents = ob_get_contents();
+        ob_end_clean();
+        echo $contents;
 	}
 	
 	/**

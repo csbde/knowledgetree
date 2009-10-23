@@ -229,14 +229,12 @@ class stepAction {
             } else {
             	$this->_clearErrors($this->stepName); // Send Errors to session
             }
+            return $response;
         } else {
         	$this->stepName = 'errors';
         	$this->action = $this->createStep();
         	$this->action->error = array('Class File Missing in Step Directory');
-        	$response = '';
         }
-        
-        return $response;
     }
 
 	/**
@@ -310,7 +308,7 @@ class stepAction {
         $menu = '';
         $active = false;
 		if($this->stepClassNames) {
-	        foreach ($this->stepClassNames as $step) {
+	        foreach ($this->stepClassNames as $k=>$step) {
 	            if($this->step_names[$step] != '') {
 	                $item = $this->step_names[$step];
 	            } else {
@@ -454,7 +452,7 @@ class stepAction {
      * @access private
      * @return void
      */
-     private function _loadValueToSession($class, $k, $v) {
+     private function _loadValueToSession($class, $k, $v, $overwrite = false) {
          if($this->session != null) {
             $this->session->setClass($class, $k, $v);
          } else {
@@ -504,7 +502,8 @@ class stepAction {
      * @access private
      * @return void
      */
-     private function _loadErrorToSession($class, $k = "errors", $v) {
+     private function _loadErrorToSession($class, $k, $v, $overwrite = false) {
+         $k = "errors";
          if($this->session != null) {
             $this->session->setClassError($class, $k, $v);
          } else {

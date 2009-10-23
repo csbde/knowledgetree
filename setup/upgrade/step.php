@@ -172,6 +172,30 @@ class Step
     public function getWarnings() {
         return $this->warnings;
     }
+    
+	/**
+	* Load default step values
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return void
+	*/
+    public function loadDefaults() {
+		
+    }
+
+	/**
+	* Return default step values
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return array
+	*/
+    public function getDefaults() {
+        return array();
+    }
 
 	/**
 	* Checks if edit button has been clicked

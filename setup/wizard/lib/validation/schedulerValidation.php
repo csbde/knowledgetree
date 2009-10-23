@@ -92,37 +92,36 @@ class schedulerValidation extends serviceValidation {
     public function binaryChecks() {
     	// TODO: Better detection
     	return true;
-//    	$this->setPhp();
-//    	if($this->util->phpSpecified()) {
-//			return $this->detPhpSettings();
-//    	} else {
-//    		$this->specifyPhp();// Ask for settings
-//			return false;
-//    	}
+    	$this->setPhp();
+    	if($this->util->phpSpecified()) {
+			return $this->detPhpSettings();
+    	} else {
+    		$this->specifyPhp();// Ask for settings
+			return false;
+    	}
     }
     
     function detPhpSettings() {
     	// TODO: Better php handling
     	return true;
-//    	$phpExecutable = $this->util->phpSpecified();// Retrieve java bin
-//    	$cmd = "$phpExecutable -version > ".$this->outputDir."/outPHP 2>&1 echo $!";
-//    	$this->util->pexec($cmd);
-//    	if(file_exists($this->outputDir.'outPHP')) {
-//    		$tmp = file_get_contents($this->outputDir.'outPHP');
-//			$matches = false;
-//    		preg_match('/PHP/',$tmp, $matches);
-//    		if($matches) {
-//				$this->phpCheck = 'tick';
-//				
-//				return true;
-//    		} else {
-//    			$this->phpCheck = 'cross_orange';
-//    			$this->phpExeError = "PHP : Incorrect path specified";
-//				$this->error[] = "PHP executable required";
-//				
-//				return false;
-//    		}
-//    	}
+    	$phpExecutable = $this->util->phpSpecified();// Retrieve java bin
+    	$cmd = "$phpExecutable -version > ".$this->outputDir."/outPHP 2>&1 echo $!";
+    	$response = $this->util->pexec($cmd);
+    	if(file_exists($this->outputDir.'outPHP')) {
+    		$tmp = file_get_contents($this->outputDir.'outPHP');
+    		preg_match('/PHP/',$tmp, $matches);
+    		if($matches) {
+				$this->phpCheck = 'tick';
+				
+				return true;
+    		} else {
+    			$this->phpCheck = 'cross_orange';
+    			$this->phpExeError = "PHP : Incorrect path specified";
+				$this->error[] = "PHP executable required";
+				
+				return false;
+    		}
+    	}
     }
     
     /**
@@ -138,13 +137,13 @@ class schedulerValidation extends serviceValidation {
     }
     
     private function setPhp() {
-    	$phpDir = $this->util->useZendPhp();
 		if($this->php != '') { // PHP Found
 			$this->phpCheck = 'tick';
-		} elseif ($phpDir) { // Use System Defined Settings
+		} elseif ($phpDir = $this->util->useZendPhp()) { // Use System Defined Settings
 			$this->php = $phpDir;
+		} else {
+
 		}
-		
 		$this->temp_variables['php']['location'] = $this->php;
     }
     
