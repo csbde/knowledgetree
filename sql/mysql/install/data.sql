@@ -1377,7 +1377,7 @@ INSERT INTO `scheduler_tasks` VALUES
 (9,'Refresh Index Statistics','search2/bin/cronIndexStats.php','',0,'1min','2007-10-01',NULL,0,'enabled'),
 (10,'Refresh Resource Dependancies','search2/bin/cronResources.php','',0,'1min','2007-10-01',NULL,0,'enabled'),
 (11,'Bulk Download Queue','bin/ajaxtasks/downloadTask.php','',0,'1min','2007-10-01',NULL,0,'system'),
-(12,'Call Home','bin/system_info.php','',0,'daily','2009-10-01',NULL,0,'system');
+(12,'Call Home','bin/system_info.php','',1,'half_hourly','2009-10-01',NULL,0,'system');
 
 /*!40000 ALTER TABLE `scheduler_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
