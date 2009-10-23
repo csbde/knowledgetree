@@ -4,6 +4,7 @@ function swapInItem(docId, elementId, req) {
 
     cp.innerHTML = req.responseText;
 
+    //Rendering the AJAX MCE Editors
     //Sample  { "htmlId" : {'metadata_7' : 'metadata_7','metadata_9' : 'metadata_9'}}
     jQuery.getJSON('presentation/lookAndFeel/knowledgeTree/documentmanagement/getHtmlFields.php?fDocumentTypeID=' + docId, 
 	    function(json){
@@ -12,7 +13,48 @@ function swapInItem(docId, elementId, req) {
             jQuery('#' + id).tinymce(kt_TinyMCEOptions);
 	    });
     });
+
+    //Rendering all the AJAX loaded Date Fields
+    
+    //Need to compare against fields from generic fieldsets to 
+    //prevent duplicate date field instanciation.
+    var genericFields = '';
+    //Sample  { "htmlId" : {'metadata_7' : 'metadata_7','metadata_9' : 'metadata_9'}}
+    jQuery.getJSON('presentation/lookAndFeel/knowledgeTree/documentmanagement/getHtmlFields.php?fDocumentTypeID=' + docId + '&type=generic',
+	    function(json){
+        jQuery.each(json.htmlId, function(id) {
+        	//Building a list of generic fields  
+            genericFields += id + ',';
+	    });
+        
+        var elems = jQuery(document).find(".kt_date_field");
+    	for (i = 0; i < elems.length; i++) {
+    		var fieldName = elems[i].id;
+    		//alert(fieldName);
+    		isGeneric = true;
+    		
+    		if (genericFields.indexOf(fieldName.match('metadata_[0-9]+')) >= 0){
+    			isGeneric = false;
+    		}
+    		
+    		if (!isGeneric){
+    	        var dp = new Ext.form.DateField({
+    		        name: fieldName,
+    		        allowBlank:false,
+    		        size:10,
+    		        format: 'Y-m-d',
+    		        invalidText : "{0} is not a valid date - it must be in the format YYYY-MM-DD",
+    		        fieldClass: 'metadatadate'
+    	        });
+    	
+    	        dp.render(fieldName);
+    		}
+
+    	}        
+        
+    });
 	
+    
     initialiseConditionalFieldsets();
 }
 

@@ -162,6 +162,7 @@ class migrateInstallation extends step
 		if($this->foundVersion < $this->supportedVersion) {
 			$this->versionError = true;
 			$this->error[] = "KT installation needs to be 3.6.1 or higher";
+			return false;
 		} else {
 			return true;
 		}
@@ -222,6 +223,8 @@ class migrateInstallation extends step
 		} else {
 			$this->error[] = "Please Enter a Location";
 		}
+		
+		return false;
     }
     
     private function loadConfig($path) {
@@ -242,7 +245,6 @@ class migrateInstallation extends step
 		}
 		$this->ktSettings = array('fileSystemRoot'=> $froot,
     	);
-    	$urlPaths = $ini->getSection('urls');
     	$varDir = $froot.DS.'var';
 		$this->urlPaths = array(array('name'=> 'Var Directory', 'path'=> $varDir),
 									array('name'=> 'Log Directory', 'path'=> $varDir.DS.'log'),

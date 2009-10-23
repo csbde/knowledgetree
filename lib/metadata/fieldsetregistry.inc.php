@@ -87,10 +87,10 @@ class KTFieldsetRegistry {
     }
 
     
-    	/*
-    	 * Returns an array of fieldIds where field type is HTML hence mce editor type
-    	 * 
-    	 */
+    /*
+     * Returns an array of fieldIds where field type is HTML hence mce editor type
+     * 
+     */
     function getHtmlFields($oFieldset, $idPre = 'metadata_') {
             $fields = $oFieldset->getFields();
 		$textAreaIds = array();
@@ -103,6 +103,28 @@ class KTFieldsetRegistry {
 		
 		return $textAreaIds;
     }    
+
+    
+    /*
+     * Returns an array of fieldIds which belong to a generic fieldset
+     * 
+     */
+    function getGenericFields($oFieldset, $idPre = 'metadata_') {
+    	//return false if this isn't a generic fieldset
+    	if ($oFieldset->getIsGeneric()) {
+    		return false;
+    	}
+    	
+        $fields = $oFieldset->getFields();
+		$fieldIds = array();
+		
+		foreach($fields as $field) {
+			$fieldIds[] = $idPre . $field->getId();
+		}
+		
+		return $fieldIds;
+    }    
+    
     
     function widgetsForFieldset($fieldsetOrType, $sContainerName, $oDocument = null) {
         // this is likely to be called repeatedly.
