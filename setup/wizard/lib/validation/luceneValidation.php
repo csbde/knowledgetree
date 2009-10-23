@@ -363,11 +363,11 @@ class luceneValidation extends serviceValidation {
 	* @access private
 	* @return boolean
 	*/
-    private function detSettings() {
-    	$javaExecutable = $this->util->javaSpecified();// Retrieve java bin
+ private function detSettings($attempt = false) {
+    	$javaExecutable = $this->util->javaSpecified(); // Retrieve java bin
     	if($javaExecutable == '') {
     		if($this->java == '') {
-    			return false;
+				$this->java = 'java'; // Assume java is in classpath
     		}
     		$javaExecutable = $this->java;
     	}
