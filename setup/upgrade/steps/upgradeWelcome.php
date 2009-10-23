@@ -81,7 +81,7 @@ class upgradeWelcome extends step {
     }
     
     private function checkPassword($username, $password) {
-//        global $default;
+        global $default;
     
         $sTable = KTUtil::getTableName('users');
         $sQuery = "SELECT count(*) AS match_count FROM $sTable WHERE username = ? AND password = ?";

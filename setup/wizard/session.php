@@ -228,4 +228,13 @@ class Session
 	}
 	
 }
+
+if(isset($_GET['action'])) {
+	$func = $_GET['action'];
+	if($func != '') {
+		$ses = new Session();
+		$method = "$func";
+		$ses->$method();
+	}
+}
 ?>

@@ -52,17 +52,17 @@ function __autoload($class) { // Attempt and autoload classes
 	if ($class == "template") { // Load existing templating classes
 		require_once("../wizard/template.php");
 		require_once("../wizard/lib/helpers/htmlHelper.php");
-		
-	} else {
-		if(file_exists(WIZARD_DIR."$class.php")) {
-			require_once(WIZARD_DIR."$class.php");
-		} elseif (file_exists(STEP_DIR."$class.php")) {
-			require_once(STEP_DIR."$class.php");
-		} elseif (file_exists(WIZARD_LIB."$class.php")) {
-			require_once(WIZARD_LIB."$class.php");
-		}
+		return ;
 	}
-	return true;
+	if(file_exists(WIZARD_DIR."$class.php")) {
+		require_once(WIZARD_DIR."$class.php");
+	} elseif (file_exists(STEP_DIR."$class.php")) {
+		require_once(STEP_DIR."$class.php");
+	} elseif (file_exists(WIZARD_LIB."$class.php")) {
+		require_once(WIZARD_LIB."$class.php");
+	} else {
+		return null;
+	}
 }
 
 class MigrateWizard {
@@ -233,6 +233,8 @@ class MigrateWizard {
 					return true;
 				break;
 		}
+		
+		return $res;
 	}
 	
 	/**
@@ -259,7 +261,7 @@ class MigrateWizard {
 			}
 		} else {
 			// TODO: Die gracefully
-			$this->util->error("System has been migrated <a href='../../login.php' class='back' style='width:80px;float:none'>Goto Login</a>");
+			$this->util->error("System has been migrated <a href='../../login.php' class='back' style='width:80px;float:none' back button_next>Goto Login</a>");
 		}
 	}
 }

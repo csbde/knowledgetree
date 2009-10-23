@@ -4,8 +4,7 @@ function wizard() {
 
 // Toggle Advance Database options
 wizard.prototype.toggleClass = function(ele, option) { //adv_options|php_details|php_ext_details|php_con_details
-	var state = $('.'+ele).attr('style');
-	if(state.match(/none/g) == 'none') {
+	if($('.'+ele).attr('style') == 'display: none;') {
 	    $('.'+ele).attr('style', 'display: block;');
 	    if($('#'+option).attr('innerHTML') != '&nbsp;&nbsp;Advanced Options')
 	    	$('#'+option).attr('innerHTML', 'Hide Details');
@@ -15,7 +14,7 @@ wizard.prototype.toggleClass = function(ele, option) { //adv_options|php_details
 	    	$('#'+option).attr('innerHTML', 'Show Details');
 	}
 }
-	//alert($('.'+ele) + " " + $('.'+ele).attr('style'));
+
 // Focus on element
 wizard.prototype.focusElement = function(el) {
 	el.focus();

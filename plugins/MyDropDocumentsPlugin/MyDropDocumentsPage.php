@@ -265,7 +265,6 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
     function getUsersDocument($sUserName, $iDropDocsFolderID)
     {
         $oUser = $this->oUser;
-
         $oDropDocsFolder = Folder::get($iDropDocsFolderID);
 
         $fullPath = $oDropDocsFolder->getFullPath() . '/' . $sUserName;
@@ -338,20 +337,7 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
             }
         }
 
-        $sUserName = (string)$this->oUser->getUserName();
-        $subFolders = Folder::getByParentId($iDropDocsFolderID);
-
-        $myDropFolder = false;
-        foreach ($subFolders as $sub){
-            if($sub->getName() == $sUserName){
-                $myDropFolder = $sub;
-                break;
-            }
-        }
-
-        $iMyDropDocsFolderID = $myDropFolder->getID();
-
-        $location = 'browse.php?fFolderId='.$iMyDropDocsFolderID;
+        $location = 'browse.php?fFolderId='.$iMyDocsFolderID;
         $sReturnTable .= '</tbody>'.
         '</table>'.
         '<br>'.

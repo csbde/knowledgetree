@@ -42,15 +42,6 @@
 class Step
 {
 	/**
-	* Salt to use in session
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var string
-	*/
-    private $salt = 'installers';
-    
-	/**
 	* List of variables to be loaded to template
 	*
 	* @author KnowledgeTree Team
@@ -82,7 +73,7 @@ class Step
 	*
 	* @author KnowledgeTree Team
 	* @access public
-	* @var boolean
+	* @var array
 	*/
     protected $storeInSession = false;
     
@@ -91,7 +82,7 @@ class Step
 	*
 	* @author KnowledgeTree Team
 	* @access public
-	* @var boolean
+	* @var array
 	*/
     protected $runInstall = false;
     
@@ -100,7 +91,7 @@ class Step
 	*
 	* @author KnowledgeTree Team
 	* @access public
-	* @var boolean
+	* @var string
 	*/
     protected $order = false;
     
@@ -113,23 +104,9 @@ class Step
 	*/
     protected $silent = false;
     
-	/**
-	* Display the confirmation page first
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var boolean
-	*/
     public $displayFirst = false;
     
-	/**
-	* Reference to utility object
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var object
-	*/
-    public $util = null;
+    private $salt = 'installers';
     
 	/**
 	* Reference to utility object
@@ -138,20 +115,21 @@ class Step
 	* @access protected
 	* @var object
 	*/
-    public $dbhandler = null;
+    public $util;
     
 	/**
-	* Constructs step object
+	* Reference to utility object
 	*
 	* @author KnowledgeTree Team
-	* @access public
-	* @param none
- 	*/
+	* @access protected
+	* @var object
+	*/
+    public $dbhandler;
+    
     public function __construct() {
     	$this->dbhandler = new dbUtilities();
     	$this->util = new InstallUtil();
     }
-    
 	/**
 	* Returns step state
 	*
@@ -164,13 +142,6 @@ class Step
         return '';
     }
 
-	/**
-	* Returns display flag
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var boolean
-	*/
     public function displayFirst() {
     	return $this->displayFirst;
     }
@@ -211,6 +182,30 @@ class Step
         return $this->warnings;
     }
     
+	/**
+	* Load default step values
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return void
+	*/
+    public function loadDefaults() {
+		
+    }
+
+	/**
+	* Return default step values
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return array
+	*/
+    public function getDefaults() {
+        return array();
+    }
+
 	/**
 	* Checks if edit button has been clicked
 	*

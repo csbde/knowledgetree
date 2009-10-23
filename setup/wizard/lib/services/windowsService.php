@@ -163,7 +163,7 @@ class windowsService extends Service {
 	* @return array
  	*/
 	public function restart() {
-		$this->stop();
+		$response = $this->stop();
 		sleep(1);
 		$this->start();
 	}
