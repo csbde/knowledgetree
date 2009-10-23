@@ -54,11 +54,9 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
      * This includes children and tree/descendant listings as well as individual folder retrieval 
      */
     public function GET_action()
-    {
-        $RepositoryService = new RepositoryService();
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
-
+    {        
+        $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
+        
         // TODO implement full path/node separation as with Alfresco - i.e. path requests come in on path/ and node requests come in on node/
         //      path request e.g.: path/Root Folder/DroppedDocuments
         //      node request e.g.: node/F1/children
@@ -134,9 +132,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
      */
     public function POST_action()
     {
-        $RepositoryService = new RepositoryService();
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
+        $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
 
         // set default action, objectId and typeId
         $action = 'create'; 
@@ -246,12 +242,10 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         //      we COULD call deleteObject but when we delete a folder we expect to be trying to delete
         //      the folder and all content.
         
-        $RepositoryService = new RepositoryService();
+        $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
+        
         $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
-        
         // attempt delete
         $response = $ObjectService->deleteTree($repositoryId, $this->params[0]);
 
@@ -369,12 +363,10 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
      */
     public function GET_action()
     {
-        $RepositoryService = new RepositoryService();
+        $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
+        
         $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
-        
         $objectId = $this->params[0];
         
         // TODO this is "parents" in later versions of the specification
@@ -422,12 +414,10 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
         // NOTE due to the way KnowledgeTree works with documents this is always going to call deleteAllVersions.
         //      we do not have support for deleting only specific versions (this may be added in the future.)
         
-        $RepositoryService = new RepositoryService();
+        $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
+        
         $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
 
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
-        
         // attempt delete
         $response = $VersioningService->deleteAllVersions($repositoryId, $this->params[0]);
 
@@ -456,12 +446,10 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
      */
     public function GET_action()
     {
-        $RepositoryService = new RepositoryService();
+        $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
+        
         $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
-        
         // determine whether we want the Private Working Copy entry feed or the actual physical Private Working Copy content.
         // this depends on $this->params[1]
         if (!empty($this->params[1]))
@@ -486,12 +474,11 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
     public function DELETE_action()
     {
         // call the cancel checkout function
-        $RepositoryService = new RepositoryService();
+        
+        $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
+        
         $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
 
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
-        
         $response = $VersioningService->cancelCheckout($repositoryId, $this->params[0]);
 
         if (PEAR::isError($response))
@@ -508,13 +495,11 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
     
     public function PUT_action()
     {
-        $RepositoryService = new RepositoryService();
+        $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
+        
         $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
         $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
-        
         // check for content stream
         // NOTE this is a hack!  will not work with CMISSpaces at least, probably not with any client except RestTest and similar
         //      where we can manually modify the input
@@ -573,11 +558,9 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
      */
     public function GET_action()
     {
-        $RepositoryService = new RepositoryService();
+        $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
+        
         $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
-
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
 
         $checkedout = $NavigationService->getCheckedOutDocs($repositoryId);
 
@@ -631,12 +614,10 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
     
     public function POST_action()
     {
-        $RepositoryService = new RepositoryService();
+        $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
+        
         $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
         $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
-
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
 
         $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']);
         
@@ -676,8 +657,7 @@ class KT_cmis_atom_service_types extends KT_cmis_atom_service {
     public function GET_action()
     {
         $RepositoryService = new RepositoryService();
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
+        $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
 
         $types = $RepositoryService->getTypes($repositoryId);
         $type = ((empty($this->params[0])) ? 'all' : $this->params[0]);
@@ -697,10 +677,7 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service {
     public function GET_action()
     {
         $RepositoryService = new RepositoryService();
-
-        // fetch repository id
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
+        $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
 
         if (!isset($this->params[1])) {
         // For easier return in the wanted format, we call getTypes instead of getTypeDefinition.

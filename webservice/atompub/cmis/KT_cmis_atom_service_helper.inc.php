@@ -1,8 +1,49 @@
 <?php
 
+// initialise ktapi instance
+KT_cmis_atom_service_helper::$ktapi = KT_cmis_atom_service_helper::getKt();
+
 class KT_cmis_atom_service_helper {
 
-    protected static $kt = null;
+    public static $ktapi = null;
+    public static $repositoryId = null;
+    
+    /**
+     * Helper function to set internal repository id
+     *
+     * @param object $RepositoryService
+     */
+    static public function setRepositoryId(&$RepositoryService = null)
+    {
+        if (is_null($RepositoryService)) {
+            $RepositoryService = new RepositoryService();
+        }
+        
+        $repositories = $RepositoryService->getRepositories();
+        
+        // TODO handle multiple repositories
+        self::$repositoryId = $repositories[0]['repositoryId'];         
+    }
+    
+    /**
+     * Helper function to fetch internal repository id
+     * 
+     * Calls set function automatically, use $set = false to prevent this and return the current setting, if any
+     * 
+     * NOTE the function will automatically call the setRepositoryId function if no previous repository id was set
+     *
+     * @param object $RepositoryService
+     * @param boolean $RepositoryService
+     * @return string
+     */
+    static public function getRepositoryId(&$RepositoryService = null, $set = true)
+    {        
+        if (empty(self::$repositoryId) || $set) {
+            self::setRepositoryId($RepositoryService);
+        }
+        
+        return self::$repositoryId;
+    }
 
     /**
      * Retrieves data about a specific folder OR document within a folder
@@ -14,6 +55,8 @@ class KT_cmis_atom_service_helper {
      */
     static public function getObjectFeed(&$service, $ObjectService, $repositoryId, $objectId, $method = 'GET')
     {
+        self::$repositoryId = $repositoryId;
+        
         $serviceType = $service->getServiceType();
         $response = $ObjectService->getProperties($repositoryId, $objectId, false, false);
 
@@ -58,7 +101,7 @@ class KT_cmis_atom_service_helper {
      * @param string $parent The parent folder
      */
     static public function createObjectEntry(&$response, $cmisEntry, $parent, $pwc = false, $method = 'GET')
-    {
+    {        
         $workspace = $response->getWorkspace();
         $type = strtolower($cmisEntry['properties']['ObjectTypeId']['value']);
 
@@ -143,13 +186,19 @@ class KT_cmis_atom_service_helper {
                                                 . $cmisEntry['properties']['ObjectId']['value'] . '/rels'));
         $entry->appendChild($link);
         
-        // TODO check parent link is correct, fix if needed
-        // TODO leave out if at root folder
-        $link = $response->newElement('link');
-        $link->appendChild($response->newAttr('rel', 'parents'));
-        $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/folder/'
-                                                . $cmisEntry['properties']['ObjectId']['value'] . '/parent'));
-        $entry->appendChild($link);
+        // if there is no parent or parent is 0, do not add the parent link
+        // also if this is specifically the root folder, do not add the parent link
+//        if (!empty($cmisEntry['properties']['ParentId']['value']) && !CMISUtil::isRootFolder(self::$repositoryId, $cmisEntry['properties']['ObjectId']['value']))
+
+        if (!CMISUtil::isRootFolder(self::$repositoryId, $cmisEntry['properties']['ObjectId']['value'], self::$ktapi))
+        {
+            // TODO check parent link is correct, fix if needed
+            $link = $response->newElement('link');
+            $link->appendChild($response->newAttr('rel', 'parents'));
+            $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/folder/'
+                                                    . $cmisEntry['properties']['ObjectId']['value'] . '/parent'));
+            $entry->appendChild($link);
+        }
 
         // Folder/Document specific links
         if (strtolower($cmisEntry['properties']['ObjectTypeId']['value']) == 'folder')
@@ -480,12 +529,12 @@ class KT_cmis_atom_service_helper {
 	 */
 	public static function getKt()
     {
-		if(!isset(self::$kt))
+		if(!isset(self::$ktapi))
         {
-			self::$kt = new KTAPI();
-			self::$kt->get_active_session(session_id());
+			self::$ktapi = new KTAPI();
+			self::$ktapi->get_active_session(session_id());
 		}
-		return self::$kt;
+		return self::$ktapi;
 	}
 
     // TODO adjust for time zones?
