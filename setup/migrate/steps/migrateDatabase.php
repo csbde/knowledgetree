@@ -134,7 +134,7 @@ class migrateDatabase extends Step
     		$exe = "'$location/mysql/bin/mysqldump'"; // Location of dump
     	}
     	$date = date('Y-m-d-H-i-s');
-    	if(isset($database)) {
+    	if(isset($database['manual_export'])) {
     		$sqlFile = $database['manual_export'];
     		if(file_exists($sqlFile)) {
 				$manual = true;
@@ -147,7 +147,7 @@ class migrateDatabase extends Step
     	if(!$manual) { // Try to export database
 			$sqlFile = $tmpFolder."/kt-backup-$date.sql";
 			$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
-//			$response = $this->util->pexec($cmd);
+			$response = $this->util->pexec($cmd);
     	}
 		if(file_exists($sqlFile)) {
 			$fileContents = file_get_contents($sqlFile);

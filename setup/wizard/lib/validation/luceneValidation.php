@@ -274,7 +274,7 @@ class luceneValidation extends serviceValidation {
     		if($auto) {
 				return $auto;
     		} else {
-    			$auto = $this->useDetected(); // Check if auto detected java works
+    			$auto = $this->detSettings(); // Check if auto detected java works
     			if($auto) {
     				$this->disableExtension = true; // Disable the use of the php bridge extension
     				return $auto;
@@ -372,7 +372,7 @@ class luceneValidation extends serviceValidation {
     		$javaExecutable = $this->java;
     	}
     	if(WINDOWS_OS) { 
-    		$cmd .= "\"$javaExecutable\" -cp \"".SYS_DIR.";\" javaVersion \"".$this->outputDir."outJV\""." \"".$this->outputDir."outJVHome\"";
+    		$cmd = "\"$javaExecutable\" -cp \"".SYS_DIR.";\" javaVersion \"".$this->outputDir."outJV\""." \"".$this->outputDir."outJVHome\"";
     		$func = OS."ReadJVFromFile";
     		if($this->$func($cmd)) return true;
     	} else {
@@ -452,18 +452,6 @@ class luceneValidation extends serviceValidation {
 				return false;
 			}
 		}
-    }
-    
-	/**
-	* Attempt detection without logging errors
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access private
-	* @return boolean
-	*/
-    private function useDetected() {
-    	return $this->detSettings();
     }
     
    	/**
