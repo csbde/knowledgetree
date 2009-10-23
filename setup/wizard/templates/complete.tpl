@@ -128,7 +128,10 @@
 
         $pos = strpos($script, '/setup/wizard/');
         $root_url = substr($script, 0, $pos);
-        $redirect = "http://".$_SERVER['SERVER_NAME'].$root_url."/admin.php";	
+        if($port == '')
+        	$redirect = "http://".$_SERVER['SERVER_NAME'].$root_url."/admin.php";
+        else 
+        	$redirect = "http://".$_SERVER['SERVER_NAME'].":$port".$root_url."/admin.php";
 	?>
 	<?php if($migrate_check) { ?>
 		<a href="../upgrade" class="back button_next" style="width:190px;" onclick="javascript:{w.clearSessions();}">Goto Database Upgrade</a>

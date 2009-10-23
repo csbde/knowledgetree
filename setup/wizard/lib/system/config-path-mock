@@ -1,7 +1,7 @@
 /var/lib/knowledgetree-ce
 /var/lib/knowledgetree-ce/Documents
 /var/lib/knowledgetree-ce/indexes
-/etc/knowledgetree/config.ini
+/etc/knowledgetree-ce/config.ini
 /var/log/knowledgetree-ce
 /var/tmp/knowledgetree-ce
 /var/tmp/knowledgetree-ce/proxies
