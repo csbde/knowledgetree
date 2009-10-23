@@ -372,7 +372,7 @@ class luceneValidation extends serviceValidation {
     		$javaExecutable = $this->java;
     	}
     	if(WINDOWS_OS) { 
-    		$cmd .= "\"$javaExecutable\" -cp \"".SYS_DIR.";\" javaVersion \"".$this->outputDir."outJV\""." \"".$this->outputDir."outJVHome\"";
+    		$cmd = "\"$javaExecutable\" -cp \"".SYS_DIR.";\" javaVersion \"".$this->outputDir."outJV\""." \"".$this->outputDir."outJVHome\"";
     		$func = OS."ReadJVFromFile";
     		if($this->$func($cmd)) return true;
     	} else {
