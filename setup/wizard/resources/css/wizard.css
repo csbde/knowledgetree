@@ -8,6 +8,7 @@ body {
 	background-repeat:repeat-x;
 	font-family:sans-serif;
 	color:grey;
+	z-index:10;
 }
 
 h1 {
@@ -62,11 +63,13 @@ select {
 
 /* *** Layout Styles *** */
 
+#wrapper {
+	background: white;
+}
+
 #outer-wrapper {
 	border:1px solid #B7B7B7;
-	left:215px;
-	position:relative;
-	top:20px;
+	margin-top:20px;
 	width:1024px;
 }
 
@@ -82,9 +85,8 @@ select {
 }
 
 #container {
-  width: 100%;
-  background: white url("../graphics/background.gif") repeat-y left;
-  float: right;
+	background: white url("../graphics/left.png") repeat-y left;
+	overflow:auto;
 }
 
 #content {
@@ -108,7 +110,7 @@ select {
 #step_content_dependencies {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:285px;
+	min-height:270px;
 }
 
 #step_content_configuration {
@@ -132,7 +134,7 @@ select {
 #step_content_install {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:290px;
+	min-height:400px;
 }
 
 #step_content_database {
@@ -150,11 +152,18 @@ select {
 #step_content_complete {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:355px;
+	min-height:340px;
+}
+
+.license_agreement {
+	overflow: scroll;
+	height:370px;
+	overflow-x:hidden;
+	border:1px solid #CFCFCF;
 }
 
 #sidebar {
-	font-size: 90%;
+	font-size: 85%;
 	color: grey; 
 	font-family: sans-serif; 
 	margin-top: 0px;
@@ -358,7 +367,6 @@ select {
 .description {
     color:#898989;
     line-height:150%;
-    /*margin-bottom:0.75em;*/
     font-size:90%;
 }
 
@@ -442,7 +450,6 @@ td.dir_description {
 
 .php_con_details table {
 	width:745px;
-	/*border:1px solid;*/
 }
 
 .error_message {
@@ -478,15 +485,6 @@ td.dir_description {
 .big_ok {
 	background: url("../graphics/big-ok.png") no-repeat;
 	padding:4px;
-}
-
-.license_agreement {
-	overflow: scroll;
-	height: 255px;
-	width:765px;
-	height:375px;
-	overflow-x:hidden;
-	border:1px solid #CFCFCF;
 }
 
 .db_adv_options {

@@ -180,49 +180,48 @@ class migrateInstallation extends step
     }
     
     public function readConfig() {
-		$ktInstallPath = isset($_POST['location']) ? $_POST['location']: '';
-		if($ktInstallPath != '') {
-			$this->location = $ktInstallPath;
-			if(file_exists($ktInstallPath)) {
-				$configPath = $ktInstallPath.DS."knowledgeTree".DS."config".DS."config-path";
-				if(file_exists($configPath)) {
-					$configFilePath = file_get_contents($configPath);
-					if(file_exists($configFilePath)) { // For 3.7 and after
-						$this->loadConfig($configFilePath);
-						$this->storeSilent();
-						
-						return true;
-					} else {
-						$configFilePath = $ktInstallPath.DS."knowledgeTree".DS.$configFilePath; // For older than 3.6.2
-						$configFilePath = trim($configFilePath);
-						if(file_exists($configFilePath)) {
-							$this->loadConfig($configFilePath);
-							$this->storeSilent();
-						
-							return true;
-						}
-						$this->error[] = "KT installation configuration file empty";
-					}
-				} else {
-					$this->error[] = "KT installation configuration file not found";
-				}
-			} else {
-				$this->error[] = "KT installation not found";
-			}
+		if(isset($_POST['location'])) {
+			$ktInstallPath = $_POST['location'];
+			if($ktInstallPath != '' || strlen($ktInstallPath) == 0) {
+				$this->location = $ktInstallPath;
+				
+				return $this->configExists($ktInstallPath);
+			}			
+		} else {
+			
+			return false;
 		}
-		
+
 		return false;
     }
     
-    public function getPort() {
-    	$dbConfigPath = $this->location.DS."mysql".DS."my.ini";
-    	if(file_exists($dbConfigPath)) {
-    		$ini = $this->util->loadInstallIni($dbConfigPath);
-    		$dbSettings = $ini->getSection('mysqladmin');
-    		return $dbSettings['port'];
-    	}
-    	
-    	return '3306';
+    private function configExists($ktInstallPath) {
+		if(file_exists($ktInstallPath)) {
+			$configPath = $ktInstallPath.DS."knowledgeTree".DS."config".DS."config-path";
+			if(file_exists($configPath)) {
+				$configFilePath = file_get_contents($configPath);
+				if(file_exists($configFilePath)) { // For 3.7 and after
+					$this->loadConfig($configFilePath);
+					$this->storeSilent();
+					
+					return true;
+				} else {
+					$configFilePath = $ktInstallPath.DS."knowledgeTree".DS.$configFilePath; // For older than 3.6.2
+					$configFilePath = trim($configFilePath);
+					if(file_exists($configFilePath)) {
+						$this->loadConfig($configFilePath);
+						$this->storeSilent();
+					
+						return true;
+					}
+					$this->error[] = "KT installation configuration file empty";
+				}
+			} else {
+				$this->error[] = "KT installation configuration file not found";
+			}
+		} else {
+			$this->error[] = "Please Enter a Location";
+		}
     }
     
     private function loadConfig($path) {
@@ -232,7 +231,7 @@ class migrateInstallation extends step
     								'dbName'=> $dbSettings['dbName'],
     								'dbUser'=> $dbSettings['dbUser'],
     								'dbPass'=> $dbSettings['dbPass'],
-    								'dbPort'=> $this->getPort(),
+    								'dbPort'=> $this->util->getPort($this->location),
     								'dbAdminUser'=> $dbSettings['dbAdminUser'],
     								'dbAdminPass'=> $dbSettings['dbAdminPass'],
     	);

@@ -2,21 +2,20 @@
 	<p class="title">Installation Type</p>
 
 	<div id="step_content" class="step">
-		<br/>
-		The wizard will require you choose an installation type.
+		Select an installation type
 		<br/><br/>
 		<table>
 			<tr>
 				<td> <input type="radio" name="installtype" value="Clean Install" checked id="clean" /> </td>
-				<td> <label for="clean"><b>Clean Install</b> - New Installation of KnowledgeTree</label> </td>
+				<td> <label for="clean"><b>Default Install</b> <br/>Install a new copy of KnowledgeTree</label> </td>
 			</tr>
 			<tr>
 				<td> <input type="radio" name="installtype" value="Upgrade Installation" id="migrate" /> </td>
-				<td> <label for="migrate"><b>Upgrade Installation</b> - Upgrade an existing Installation of KnowledgeTree</label> </td>
+				<td> <label for="migrate"><b>Upgrade - KnowledgeTree Stack</b> <br/> Upgrade from a previous version of the KnowledgeTree Stack</label></td>
 			</tr>
 			<tr>
 				<td> <input type="radio" name="installtype" value="Upgrade Only" id="upgrade" /> </td>
-				<td> <label for="upgrade"><b>Source Only Upgrade</b> - Manually Update Source and Upgrade Database only</label> </td>
+				<td> <label for="upgrade"><b>Upgrade - Source Only</b> <br/> Upgrade from a Source Only Installation of KnowledgeTree</label></td>
 			</tr>
 		</table>
 	</div>

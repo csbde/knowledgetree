@@ -779,7 +779,7 @@ Ext.query = Ext.DomQuery.select;
 Date.precompileFormats = function(s){
 	var formats = s.split('|');
 	for(var i = 0, len = formats.length;i < len;i++){
-		Date.createNewFormat(formats[i]);
+		Date.createFormat(formats[i]);
 		Date.createParser(formats[i]);
 	}
 }
@@ -791,6 +791,13 @@ Ext.ColorPalette.prototype.tpl = new Ext.XTemplate(
     '<tpl for="."><a href="#" class="color-{.}" hidefocus="on"><em><span style="background:#{.}" unselectable="on">&#160;</span></em></a></tpl>'
 );
 
+Ext.override(Ext.grid.GroupingView, {
+    startGroup: new Ext.XTemplate(
+        '<div id="{groupId}" class="x-grid-group {cls}">',
+        '<div id="{groupId}-hd" class="x-grid-group-hd" style="{style}"><div>', this.groupTextTpl ,'</div></div>',
+        '<div id="{groupId}-bd" class="x-grid-group-body">'
+    )
+});
 
 // Unique task ids, if the time isn't unique enough, the addition 
 // of random chars should be

@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -231,7 +231,7 @@ Ext.Window = Ext.extend(Ext.Panel, {
 
     // private
     getState : function(){
-        return Ext.apply(Ext.Window.superclass.getState.call(this) || {}, this.getBox());
+        return Ext.apply(Ext.Window.superclass.getState.call(this) || {}, this.getBox(true));
     },
 
     // private
@@ -257,6 +257,7 @@ Ext.Window = Ext.extend(Ext.Panel, {
             this.mask.hide();
             this.mask.on('click', this.focus, this);
         }
+        this.initTools();
     },
 
     // private
@@ -281,8 +282,6 @@ Ext.Window = Ext.extend(Ext.Panel, {
         if(this.draggable){
             this.header.addClass("x-window-draggable");
         }
-        this.initTools();
-
         this.el.on("mousedown", this.toFront, this);
         this.manager = this.manager || Ext.WindowMgr;
         this.manager.register(this);
@@ -315,18 +314,20 @@ Ext.Window = Ext.extend(Ext.Panel, {
 
     // private
     beforeDestroy : function(){
-        this.hide();
-        if(this.doAnchor){
-            Ext.EventManager.removeResizeListener(this.doAnchor, this);
-            Ext.EventManager.un(window, 'scroll', this.doAnchor, this);
+        if (this.rendered){
+            this.hide();
+            if(this.doAnchor){
+                Ext.EventManager.removeResizeListener(this.doAnchor, this);
+                Ext.EventManager.un(window, 'scroll', this.doAnchor, this);
+            }
+            Ext.destroy(
+                this.focusEl,
+                this.resizer,
+                this.dd,
+                this.proxy,
+                this.mask
+            );
         }
-        Ext.destroy(
-            this.focusEl,
-            this.resizer,
-            this.dd,
-            this.proxy,
-            this.mask
-        );
         Ext.Window.superclass.beforeDestroy.call(this);
     },
 

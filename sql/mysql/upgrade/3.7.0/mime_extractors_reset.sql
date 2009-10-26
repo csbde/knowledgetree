@@ -1,0 +1,1 @@
+UPDATE system_settings SET value = 0 WHERE name = 'mimeTypesRegistered';

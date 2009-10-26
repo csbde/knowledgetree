@@ -1,1 +1,19 @@
-Ext.CycleButton=Ext.extend(Ext.SplitButton,{getItemText:function(a){if(a&&this.showText===true){var b="";if(this.prependText){b+=this.prependText}b+=a.text;return b}return undefined},setActiveItem:function(c,a){if(typeof c!="object"){c=this.menu.items.get(c)}if(c){if(!this.rendered){this.text=this.getItemText(c);this.iconCls=c.iconCls}else{var b=this.getItemText(c);if(b){this.setText(b)}this.setIconClass(c.iconCls)}this.activeItem=c;if(!c.checked){c.setChecked(true,true)}if(this.forceIcon){this.setIconClass(this.forceIcon)}if(!a){this.fireEvent("change",this,c)}}},getActiveItem:function(){return this.activeItem},initComponent:function(){this.addEvents("change");if(this.changeHandler){this.on("change",this.changeHandler,this.scope||this);delete this.changeHandler}this.itemCount=this.items.length;this.menu={cls:"x-cycle-menu",items:[]};var d;for(var b=0,a=this.itemCount;b<a;b++){var c=this.items[b];c.group=c.group||this.id;c.itemIndex=b;c.checkHandler=this.checkHandler;c.scope=this;c.checked=c.checked||false;this.menu.items.push(c);if(c.checked){d=c}}this.setActiveItem(d,true);Ext.CycleButton.superclass.initComponent.call(this);this.on("click",this.toggleSelected,this)},checkHandler:function(a,b){if(b){this.setActiveItem(a)}},toggleSelected:function(){this.menu.render();var c,a;for(var b=1;b<this.itemCount;b++){c=(this.activeItem.itemIndex+b)%this.itemCount;a=this.menu.items.itemAt(c);if(!a.disabled){a.setChecked(true);break}}}});Ext.reg("cycle",Ext.CycleButton);
+/*
+ * Ext JS Library 2.3.0
+ * Copyright(c) 2006-2009, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+
+
+Ext.CycleButton=Ext.extend(Ext.SplitButton,{getItemText:function(item){if(item&&this.showText===true){var text='';if(this.prependText){text+=this.prependText;}
+text+=item.text;return text;}
+return undefined;},setActiveItem:function(item,suppressEvent){if(typeof item!='object'){item=this.menu.items.get(item);}
+if(item){if(!this.rendered){this.text=this.getItemText(item);this.iconCls=item.iconCls;}else{var t=this.getItemText(item);if(t){this.setText(t);}
+this.setIconClass(item.iconCls);}
+this.activeItem=item;if(!item.checked){item.setChecked(true,true);}
+if(this.forceIcon){this.setIconClass(this.forceIcon);}
+if(!suppressEvent){this.fireEvent('change',this,item);}}},getActiveItem:function(){return this.activeItem;},initComponent:function(){this.addEvents("change");if(this.changeHandler){this.on('change',this.changeHandler,this.scope||this);delete this.changeHandler;}
+this.itemCount=this.items.length;this.menu={cls:'x-cycle-menu',items:[]};var checked;for(var i=0,len=this.itemCount;i<len;i++){var item=this.items[i];item.group=item.group||this.id;item.itemIndex=i;item.checkHandler=this.checkHandler;item.scope=this;item.checked=item.checked||false;this.menu.items.push(item);if(item.checked){checked=item;}}
+this.setActiveItem(checked,true);Ext.CycleButton.superclass.initComponent.call(this);this.on('click',this.toggleSelected,this);},checkHandler:function(item,pressed){if(pressed){this.setActiveItem(item);}},toggleSelected:function(){this.menu.render();var nextIdx,checkItem;for(var i=1;i<this.itemCount;i++){nextIdx=(this.activeItem.itemIndex+i)%this.itemCount;checkItem=this.menu.items.itemAt(nextIdx);if(!checkItem.disabled){checkItem.setChecked(true);break;}}}});Ext.reg('cycle',Ext.CycleButton);

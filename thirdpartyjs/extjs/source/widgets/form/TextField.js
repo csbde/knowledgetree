@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -261,14 +261,17 @@ Ext.form.TextField = Ext.extend(Ext.form.Field,  {
 
     // private
     preFocus : function(){
+        var el = this.el;
         if(this.emptyText){
-            if(this.el.dom.value == this.emptyText){
+            if(el.dom.value == this.emptyText){
                 this.setRawValue('');
             }
-            this.el.removeClass(this.emptyClass);
+            el.removeClass(this.emptyClass);
         }
         if(this.selectOnFocus){
-            this.el.dom.select();
+            (function(){
+                el.dom.select();
+            }).defer(this.inEditor && Ext.isIE ? 50 : 0);   
         }
     },
 
@@ -279,24 +282,18 @@ Ext.form.TextField = Ext.extend(Ext.form.Field,  {
 
     // private
     filterKeys : function(e){
-        if(e.ctrlKey){
+        // special keys don't generate charCodes, so leave them alone
+        if(e.ctrlKey || e.isSpecialKey()){
             return;
         }
-        var k = e.getKey();
-        if(Ext.isGecko && (e.isNavKeyPress() || k == e.BACKSPACE || (k == e.DELETE && e.button == -1))){
-            return;
-        }
-        var c = e.getCharCode(), cc = String.fromCharCode(c);
-        if(!Ext.isGecko && e.isSpecialKey() && !cc){
-            return;
-        }
-        if(!this.maskRe.test(cc)){
+        
+        if(!this.maskRe.test(String.fromCharCode(e.getCharCode()))){
             e.stopEvent();
         }
     },
 
     setValue : function(v){
-        if(this.emptyText && this.el && v !== undefined && v !== null && v !== ''){
+        if(this.emptyText && this.el && !Ext.isEmpty(v)){
             this.el.removeClass(this.emptyClass);
         }
         Ext.form.TextField.superclass.setValue.apply(this, arguments);

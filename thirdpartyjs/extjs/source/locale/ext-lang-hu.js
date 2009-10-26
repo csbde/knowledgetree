@@ -1,8 +1,8 @@
-﻿/*
- * Ext JS Library 2.1
+/*
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
- *
+ * 
  * http://extjs.com/license
  */
 
@@ -12,6 +12,7 @@
  *
  * Hungarian Translations (utf-8 encoded)
  * by Amon <amon@theba.hu> (27 Apr 2008)
+ * encoding fixed by Vili (17 Feb 2009)
  */
 
 Ext.UpdateManager.defaults.indicatorText = '<div class="loading-indicator">Betöltés...</div>';
@@ -21,7 +22,7 @@ if(Ext.View){
 }
 
 if(Ext.grid.GridPanel){
-  Ext.grid.GridPanel.prototype.ddText = "{0} kivÃ¡lasztott sor";
+  Ext.grid.GridPanel.prototype.ddText = "{0} kiválasztott sor";
 }
 
 if(Ext.TabPanelItem){
@@ -29,7 +30,7 @@ if(Ext.TabPanelItem){
 }
 
 if(Ext.form.Field){
-  Ext.form.Field.prototype.invalidText = "HibÃ¡s Ã©rtÃ©k!";
+  Ext.form.Field.prototype.invalidText = "Hibás érték!";
 }
 
 if(Ext.LoadMask){
@@ -58,11 +59,11 @@ Date.getShortMonthName = function(month) {
 Date.monthNumbers = {
   'Jan' : 0,
   'Feb' : 1,
-  'MÃ¡r' : 2,
-  'Ãpr' : 3,
-  'MÃ¡j' : 4,
-  'JÃºn' : 5,
-  'JÃºl' : 6,
+  'Már' : 2,
+  'Ápr' : 3,
+  'Máj' : 4,
+  'Jún' : 5,
+  'Júl' : 6,
   'Aug' : 7,
   'Sze' : 8,
   'Okt' : 9,
@@ -109,14 +110,14 @@ if(Ext.DatePicker){
   Ext.apply(Ext.DatePicker.prototype, {
     todayText         : "Mai nap",
     minText           : "A dátum korábbi a megengedettnél",
-    maxText           : "A dÃ¡tum kÃ©sÅ‘bbi a megengedettnÃ©l",
+    maxText           : "A dátum későbbi a megengedettnél",
     disabledDaysText  : "",
     disabledDatesText : "",
     monthNames        : Date.monthNames,
     dayNames          : Date.dayNames,
-    nextText          : 'KÃ¶v. hÃ³nap (CTRL+Jobbra)',
-    prevText          : 'ElÅ‘zÅ‘ hÃ³nap (CTRL+Balra)',
-    monthYearText     : 'VÃ¡lassz hÃ³napot (Ã‰vvÃ¡lasztÃ¡s: CTRL+Fel/Le)',
+    nextText          : 'Köv. hónap (CTRL+Jobbra)',
+    prevText          : 'Előző hónap (CTRL+Balra)',
+    monthYearText     : 'Válassz hónapot (Évválasztás: CTRL+Fel/Le)',
     todayTip          : "{0} (Szóköz)",
     format            : "y-m-d",
     okText            : "&#160;OK&#160;",
@@ -133,7 +134,7 @@ if(Ext.PagingToolbar){
     prevText       : "Előző oldal",
     nextText       : "Következő oldal",
     lastText       : "Utolsó oldal",
-    refreshText    : "FrissÃ­tÃ©s",
+    refreshText    : "Frissítés",
     displayMsg     : "{0} - {1} sorok láthatók a {2}-ból/ből",
     emptyMsg       : 'Nincs megjeleníthető adat'
   });
@@ -142,7 +143,7 @@ if(Ext.PagingToolbar){
 if(Ext.form.TextField){
   Ext.apply(Ext.form.TextField.prototype, {
     minLengthText : "A mező tartalma legalább {0} hosszú kell legyen",
-    maxLengthText : "A mezÅ‘ tartalma legfeljebb {0} hosszÃº lehet",
+    maxLengthText : "A mező tartalma legfeljebb {0} hosszú lehet",
     blankText     : "Kötelezően kitöltendő mező",
     regexText     : "",
     emptyText     : null
@@ -163,7 +164,7 @@ if(Ext.form.DateField){
     disabledDatesText : "Nem választható",
     minText           : "A dátum nem lehet korábbi, mint {0}",
     maxText           : "A dátum nem lehet későbbi, mint {0}",
-    invalidText       : "{0} nem megfelelÅ‘ dÃ¡tum - a helyes formÃ¡tum: {1}",
+    invalidText       : "{0} nem megfelelő dátum - a helyes formátum: {1}",
     format            : "Y m d",
     altFormats        : "Y-m-d|y-m-d|y/m/d|m/d|m-d|md|ymd|Ymd|d"
   });
@@ -178,8 +179,8 @@ if(Ext.form.ComboBox){
 
 if(Ext.form.VTypes){
   Ext.apply(Ext.form.VTypes, {
-    emailText    : 'A mezÅ‘ email cÃ­met tartalmazhat, melynek formÃ¡tuma "felhasznÃ¡lÃ³@szolgÃ¡ltatÃ³.hu"',
-    urlText      : 'A mezÅ‘ webcÃ­met tartalmazhat, melynek formÃ¡tuma "http:/'+'/www.weboldal.hu"',
+    emailText    : 'A mező email címet tartalmazhat, melynek formátuma "felhasználó@szolgáltató.hu"',
+    urlText      : 'A mező webcímet tartalmazhat, melynek formátuma "http:/'+'/www.weboldal.hu"',
     alphaText    : 'A mező csak betűket és aláhúzást (_) tartalmazhat',
     alphanumText : 'A mező csak betűket, számokat és aláhúzást (_) tartalmazhat'
   });
@@ -187,76 +188,76 @@ if(Ext.form.VTypes){
 
 if(Ext.form.HtmlEditor){
   Ext.apply(Ext.form.HtmlEditor.prototype, {
-    createLinkText : 'Add meg a webcÃ­met:',
+    createLinkText : 'Add meg a webcímet:',
     buttonTips : {
       bold : {
         title: 'Félkövér (Ctrl+B)',
-        text: 'FÃ©lkÃ¶vÃ©rrÃ© teszi a kijelÃ¶lt szÃ¶veget.',
+        text: 'Félkövérré teszi a kijelölt szöveget.',
         cls: 'x-html-editor-tip'
       },
       italic : {
         title: 'Dőlt (Ctrl+I)',
-        text: 'DÅ‘ltÃ© teszi a kijelÃ¶lt szÃ¶veget.',
+        text: 'Dőlté teszi a kijelölt szöveget.',
         cls: 'x-html-editor-tip'
       },
       underline : {
         title: 'Aláhúzás (Ctrl+U)',
-        text: 'AlÃ¡hÃºzza a kijelÃ¶lt szÃ¶veget.',
+        text: 'Aláhúzza a kijelölt szöveget.',
         cls: 'x-html-editor-tip'
       },
       increasefontsize : {
-        title: 'SzÃ¶veg nagyÃ­tÃ¡s',
-        text: 'NÃ¶veli a szÃ¶vegmÃ©retet.',
+        title: 'Szöveg nagyítás',
+        text: 'Növeli a szövegméretet.',
         cls: 'x-html-editor-tip'
       },
       decreasefontsize : {
-        title: 'SzÃ¶veg kicsinyÃ­tÃ©s',
-        text: 'CsÃ¶kkenti a szÃ¶vegmÃ©retet.',
+        title: 'Szöveg kicsinyítés',
+        text: 'Csökkenti a szövegméretet.',
         cls: 'x-html-editor-tip'
       },
       backcolor : {
         title: 'Háttérszín',
-        text: 'A kijelÃ¶lt szÃ¶veg hÃ¡ttÃ©rszÃ­nÃ©t mÃ³dosÃ­tja.',
+        text: 'A kijelölt szöveg háttérszínét módosítja.',
         cls: 'x-html-editor-tip'
       },
       forecolor : {
-        title: 'SzÃ¶vegszÃ­n',
-        text: 'A kijelÃ¶lt szÃ¶veg szÃ­nÃ©t mÃ³dosÃ­tja.',
+        title: 'Szövegszín',
+        text: 'A kijelölt szöveg színét módosítja.',
         cls: 'x-html-editor-tip'
       },
       justifyleft : {
-        title: 'Balra zÃ¡rt',
-        text: 'Balra zÃ¡rja a szÃ¶veget.',
+        title: 'Balra zárt',
+        text: 'Balra zárja a szöveget.',
         cls: 'x-html-editor-tip'
       },
       justifycenter : {
-        title: 'KÃ¶zÃ©pre zÃ¡rt',
-        text: 'KÃ¶zÃ©pre zÃ¡rja a szÃ¶veget.',
+        title: 'Középre zárt',
+        text: 'Középre zárja a szöveget.',
         cls: 'x-html-editor-tip'
       },
       justifyright : {
-        title: 'Jobbra zÃ¡rt',
-        text: 'Jobbra zÃ¡rja a szÃ¶veget.',
+        title: 'Jobbra zárt',
+        text: 'Jobbra zárja a szöveget.',
         cls: 'x-html-editor-tip'
       },
       insertunorderedlist : {
         title: 'Felsorolás',
-        text: 'FelsorolÃ¡st kezd.',
+        text: 'Felsorolást kezd.',
         cls: 'x-html-editor-tip'
       },
       insertorderedlist : {
-        title: 'SzÃ¡mozÃ¡s',
-        text: 'SzÃ¡mozott listÃ¡t kezd.',
+        title: 'Számozás',
+        text: 'Számozott listát kezd.',
         cls: 'x-html-editor-tip'
       },
       createlink : {
         title: 'Hiperlink',
-        text: 'A kijelÃ¶lt szÃ¶veget linkkÃ© teszi.',
+        text: 'A kijelölt szöveget linkké teszi.',
         cls: 'x-html-editor-tip'
       },
       sourceedit : {
-        title: 'ForrÃ¡s nÃ©zet',
-        text: 'ForrÃ¡s nÃ©zetbe kapcsol.',
+        title: 'Forrás nézet',
+        text: 'Forrás nézetbe kapcsol.',
         cls: 'x-html-editor-tip'
       }
     }
@@ -267,8 +268,8 @@ if(Ext.grid.GridView){
   Ext.apply(Ext.grid.GridView.prototype, {
     sortAscText  : "Növekvő rendezés",
     sortDescText : "Csökkenő rendezés",
-    lockText     : "Oszlop zÃ¡rolÃ¡s",
-    unlockText   : "Oszlop feloldÃ¡s",
+    lockText     : "Oszlop zárolás",
+    unlockText   : "Oszlop feloldás",
     columnsText  : "Oszlopok"
   });
 }
@@ -276,8 +277,8 @@ if(Ext.grid.GridView){
 if(Ext.grid.GroupingView){
   Ext.apply(Ext.grid.GroupingView.prototype, {
     emptyGroupText : '(Nincs)',
-    groupByText    : 'Oszlop szerint csoportosÃ­tÃ¡s',
-    showGroupsText : 'Csoportos nÃ©zet'
+    groupByText    : 'Oszlop szerint csoportosítás',
+    showGroupsText : 'Csoportos nézet'
   });
 }
 

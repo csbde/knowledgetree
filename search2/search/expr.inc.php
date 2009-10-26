@@ -1387,8 +1387,8 @@ class SQLQueryBuilder implements QueryBuilder
 //            }
             if ($this->used_tables['tag_words'] > 0)
             {
-                $sql .= ' LEFT OUTER JOIN document_tags dt  ON dt.document_id=d.id ' . "\n" .
-                ' LEFT OUTER JOIN tag_words tw  ON dt.tag_id = tw.id ' . "\n";
+                $sql .= ' LEFT OUTER JOIN document_tags dt  ON dt.document_id=d.id ' . "\n" 
+                     .  ' LEFT OUTER JOIN tag_words tw  ON dt.tag_id = tw.id ' . "\n";
             }
         }
         else
@@ -2399,7 +2399,18 @@ class OpExpr extends Expr
 
 	// NOTE $oColumns = $oCriteria from calling function
 	// TODO variable name change?
-	// WHat is the purpose of this function, it seems to be a double check on the search results but why is this needed?
+    // At the very least this needs to have added:
+    // 1. Correct verification of OR queries where one criterion fails
+    // 2. Correct verification of NOT queries (simple type covered, complex type not covered, but probably will be done by OR in (1) above
+    /**
+     * This function attempts to verify that matches made on html type fields do not match only on html tags
+     * but in fact match actual content.
+     * 
+     * @param object $document_id
+     * @param object $oColumns
+     * @return boolean TRUE if match | FALSE if not 
+     */
+    // NOTE this function is currently unused as it is incomplete and not able to handle some complex queries
 	public function checkValues($document_id, $oColumns)
 	{
 		foreach($oColumns as $column)
@@ -2424,8 +2435,13 @@ class OpExpr extends Expr
 
     		//$default->log->debug("POSITION: " . $position);
     		
-    		if($position === false)
-    			return false;
+    		if(!$column['not'] && ($position === false)) {
+                return false;
+            }
+    		// cater for NOT queries
+            else if($column['not'] && ($position !== false)) {
+                return false;
+            }
 		}
 		
 		return true;
@@ -2447,17 +2463,14 @@ class OpExpr extends Expr
     	$exprbuilder = new SQLQueryBuilder($this->getContext());
         $exprbuilder->setIncludeStatus($this->incl_status);
 
-    	if (count($group) == 1)
-    	{
+    	if (count($group) == 1) {
     		$sql = $exprbuilder->buildComplexQuery($group[0]);
     	}
-    	else
-    	{
+    	else {
 			$sql = $exprbuilder->buildSimpleQuery($op, $group);
     	}
 
-    	if (empty($sql))
-    	{
+    	if (empty($sql)) {
     	    return array();
     	}
 
@@ -2466,15 +2479,12 @@ class OpExpr extends Expr
     	$default->log->debug("SEARCH SQL: $sql");
     	$rs = DBUtil::getResultArray($sql);
 
-    	if (PEAR::isError($rs))
-    	{
+    	if (PEAR::isError($rs)) {
     		throw new Exception($rs->getMessage());
     	}
 
-    	if (count($group) == 1)
-    	{
+    	if (count($group) == 1) {
            	//$default->log->debug("CASE 1");
-
 			$oCriteria = $this->checkComplexQuery($group[0]);
     	}
     	else
@@ -2527,10 +2537,15 @@ class OpExpr extends Expr
     		{
 				if ($this->context == ExprContext::DOCUMENT)
     		    {
+    		        // NOTE removing the call to checkValues as the function only handles some query types, and is currently not so important as
+                    //      we are stripping most html tags from the html type inputs
+    				/*
     				if((count($oCriteria) > 0 && $this->checkValues($id, $oCriteria)) || count($oCriteria) == 0)
     				{
 		    			$results[$id] = new DocumentResultItem($id, $rank, $item['title'], $exprbuilder->getResultText($item), null, $this->incl_status);
     				}
+    				*/
+                    $results[$id] = new DocumentResultItem($id, $rank, $item['title'], $exprbuilder->getResultText($item), null, $this->incl_status);
     		    }
     		    else
     		    {

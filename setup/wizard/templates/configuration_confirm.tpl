@@ -89,7 +89,6 @@
 		    }
 		?>
 		</table>
-		<br/>
 	</div>
 	<input class="button_previous" type="submit" value="Previous" name="Previous"/>
     <input type="submit" name="Confirm" value="Confirm" class="button_next"/>

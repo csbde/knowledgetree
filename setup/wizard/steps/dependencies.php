@@ -227,6 +227,8 @@ class dependencies extends Step
 			if($class == 'orange') {
 				$this->temp_variables['php_con'] = 'cross_orange';
 			}
+			if($setting < 0)
+				$setting = "unset";
             $limits[$key]['setting'] = $this->prettySize($setting);
             $limits[$key]['class'] = $class;
         }

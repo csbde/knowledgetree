@@ -719,7 +719,14 @@ class database extends Step
 	* @return boolean
 	*/
     private function createDmsUser() {
-		return $this->parse_mysql_dump($this->util->sqlInstallDir()."user.sql");
+		$user1 = "GRANT SELECT, INSERT, UPDATE, DELETE ON {$this->dname}.* TO {$this->dmsusername}@{$this->dhost} IDENTIFIED BY \"{$this->dmsuserpassword}\";";
+      	$user2 = "GRANT ALL PRIVILEGES ON {$this->dname}.* TO {$this->dmsname}@{$this->dhost} IDENTIFIED BY \"{$this->dmspassword}\";";
+      if ($this->dbhandler->query($user1) && $this->dbhandler->query($user2)) {
+              return true;
+          } else {
+            $this->error['con'] = "Could not create users for database: {$this->dname}";
+            return false;
+          }
     }
     
 	/**
@@ -768,7 +775,10 @@ class database extends Step
         $sqlFile = $dbMigrate['dumpLocation'];
     	$this->parse_mysql_dump($sqlFile);
     	$this->dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
-    	$this->dbhandler->query("TRUNCATE plugin_helper;");
+    	$dropPluginHelper = "TRUNCATE plugin_helper;";
+    	$this->dbhandler->query($dropPluginHelper);
+    	$updateUrls = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "urls";';
+    	$this->dbhandler->query($updateUrls);
     	return true;
     }
 	/**

@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -7,10 +7,10 @@
  */
 
 /**
-* @class Ext.Template
-* Represents an HTML fragment template. Templates can be precompiled for greater performance.
-* For a list of available format functions, see {@link Ext.util.Format}.<br />
-* Usage:
+ * @class Ext.Template
+ * Represents an HTML fragment template. Templates can be precompiled for greater performance.
+ * For a list of available format functions, see {@link Ext.util.Format}.<br />
+ * Usage:
 <pre><code>
 var t = new Ext.Template(
     '&lt;div name="{id}"&gt;',
@@ -19,9 +19,9 @@ var t = new Ext.Template(
 );
 t.append('some-element', {id: 'myid', cls: 'myclass', name: 'foo', value: 'bar'});
 </code></pre>
-* @constructor
-* @param {String/Array} html The HTML fragment or an array of fragments to join("") or multiple arguments to join("")
-*/
+ * @constructor
+ * @param {String/Array} html The HTML fragment or an array of fragments to join("") or multiple arguments to join("")
+ */
 Ext.Template = function(html){
     var a = arguments;
     if(Ext.isArray(html)){

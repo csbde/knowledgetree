@@ -1,5 +1,7 @@
 <h2>{$category.title}</h2>
-
+{if ($jscript != '')}
+{$jscript}
+{/if}
 {if ($items === null)}
 <p class="descriptiveText">{i18n}No items in the category.{/i18n}</p>
 {else}

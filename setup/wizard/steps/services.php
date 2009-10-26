@@ -220,7 +220,6 @@ class services extends Step
 				$srv->load();
 				$status = $this->serviceInstalled($srv);
 				if($status != 'STARTED') {
-//				if(!$this->$class->installed) {
 					if(!WINDOWS_OS) { $binary = $this->$class->getBinary(); } // Get binary, if it exists
 					$passed = $this->$class->binaryChecks(); // Run Binary Pre Checks
 	    			if ($passed) { // Install Service
@@ -576,7 +575,10 @@ class services extends Step
 			require_once("../lib/validation/$serv"."Validation.php");
 			require_once("../lib/services/$className.php");
 			$service = new $className();
-			$service->load();
+			$class = strtolower($serviceName)."Validation";
+			$vClass = new $class();
+			$passed = $vClass->binaryChecks(); // Run Binary Pre Checks
+			$service->load(array('binary'=>$passed));
 			$service->install();
 			echo "Install Service {$service->getName()}<br/>";
 			echo "Status of service ".$service->status()."<br/>";

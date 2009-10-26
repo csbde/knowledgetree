@@ -60,9 +60,10 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         $repositoryId = $repositories[0]['repositoryId'];
 
         // TODO implement full path/node separation as with Alfresco - i.e. path requests come in on path/ and node requests come in on node/
-        //      path request e.g.: Root Folder/DroppedDocuments
-        //      node request e.g.: F1/children
-        //      node request e.g.: F2
+        //      path request e.g.: path/Root Folder/DroppedDocuments
+        //      node request e.g.: node/F1/children
+        //      node request e.g.: node/F2/parent
+        //      node request e.g.: node/F2
         if (urldecode($this->params[0]) == 'Root Folder')
         {
             $folderId = CMISUtil::encodeObjectId('Folder', 1);
@@ -86,6 +87,27 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             }
             
             $folderName = $response['properties']['Name']['value'];
+        }
+        // NOTE parent changes to parents in later specification
+        // TODO update when updating to later specification
+        // TODO this only returns one parent, need to implement returnToRoot also
+        else if ($this->params[1] == 'parent')
+        {
+            // abstract this to be used also by the document service (and the PWC service?) ???
+            // alternatively use getFolderParent here makes sense and use getObjectParents when document service?
+            $folderId = $this->params[0];
+            $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
+            $response = $NavigationService->getFolderParent($repositoryId, $folderId, false, false, false);
+
+            if (PEAR::isError($response)) {
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response->getMessage());
+                $this->responseFeed = $feed;
+                return null;
+            }
+            
+            // we know that a folder will only have one parent, so we can assume element 0
+            $folderId = $response[0]['properties']['ObjectId']['value'];
+            $folderName = $response[0]['properties']['Name']['value'];
         }
         else {
             $folderId = $this->params[0];
@@ -336,206 +358,6 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
 }
 
 /**
- * AtomPub Service: types
- */
-class KT_cmis_atom_service_types extends KT_cmis_atom_service {
-
-    public function GET_action()
-    {
-        $RepositoryService = new RepositoryService();
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
-
-        $types = $RepositoryService->getTypes($repositoryId);
-        $type = ((empty($this->params[0])) ? 'all' : $this->params[0]);
-        $feed = KT_cmis_atom_service_helper::getTypeFeed($type, $types);
-
-        // Expose the responseFeed
-        $this->responseFeed = $feed;
-    }
-    
-}
-
-/**
- * AtomPub Service: type
- */
-class KT_cmis_atom_service_type extends KT_cmis_atom_service {
-
-    public function GET_action()
-    {
-        $RepositoryService = new RepositoryService();
-
-        // fetch repository id
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
-
-        if (!isset($this->params[1])) {
-        // For easier return in the wanted format, we call getTypes instead of getTypeDefinition.
-        // Calling this with a single type specified returns an array containing the definition of
-        // just the requested type.
-        // NOTE could maybe be more efficient to call getTypeDefinition direct and then place in
-        //      an array on this side?  or directly expose the individual entry response code and
-        //      call directly from here rather than via getTypeFeed.
-            $type = ucwords($this->params[0]);
-            $types = $RepositoryService->getTypes($repositoryId, $type);
-            $feed = KT_cmis_atom_service_helper::getTypeFeed($type, $types);
-        }
-        else {
-        // TODO dynamic dates, as needed everywhere
-        // NOTE children of types not yet implemented and we don't support any non-basic types at this time
-            $feed = $this->getTypeChildrenFeed($this->params[1]);
-        }
-
-        // Expose the responseFeed
-        $this->responseFeed=$feed;
-    }
-
-    /**
-     * Retrieves a list of child types for the supplied type
-     *
-     * NOTE this currently returns a hard coded empty list, since we do not currently support child types
-     * TODO make dynamic if/when we support checking for child types (we don't actually need to support child types themselves)
-     *
-     * @param string $type
-     * @return string CMIS AtomPub feed
-     */
-    private function getTypeChildrenFeed()
-    {
-        //Create a new response feed
-        // $baseURI=NULL,$title=NULL,$link=NULL,$updated=NULL,$author=NULL,$id=NULL
-        $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
-
-        $feed->newField('title', 'Child Types of ' . ucwords($this->params[0]), $feed);
-        $feed->newField('id', $this->params[0] . '-children', $feed);
-
-        // TODO fetch child types - to be implemented when we support child types in the API
-
-        // links
-        $link = $feed->newElement('link');
-        $link->appendChild($feed->newAttr('rel','first'));
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'type/' . $this->params[0] . '/' . $this->params[1] . '?pageNo=1&amp;pageSize=0'));
-        $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
-
-        $link = $feed->newElement('link');
-        $link->appendChild($feed->newAttr('rel','last'));
-        // TODO set page number correctly - to be done when we support paging the the API
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'type/' . $this->params[0] . '/' . $this->params[1] . '?pageNo=1&amp;pageSize=0'));
-        $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
-
-        $feed->newField('updated', KT_cmis_atom_service_helper::formatDatestamp(), $feed);
-        $feed->newField('cmis:hasMoreItems', 'false', $feed);
-
-        return $feed;
-    }
-
-}
-
-/**
- * AtomPub Service: checkedout
- */
-class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
-    
-    /**
-     * Deals with GET actions for checkedout documents. 
-     */
-    public function GET_action()
-    {
-        $RepositoryService = new RepositoryService();
-        $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
-
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
-
-        $checkedout = $NavigationService->getCheckedOutDocs($repositoryId);
-
-        //Create a new response feed
-        $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
-        $workspace = $feed->getWorkspace();
-        
-        $feed->newField('title', 'Checked out Documents', $feed);
-		
-        // TODO dynamic?
-        $feedElement = $feed->newField('author');
-        $element = $feed->newField('name', 'admin', $feedElement);
-        $feed->appendChild($feedElement);
-		
-		$feed->appendChild($feed->newElement('id', 'urn:uuid:checkedout'));
-
-        // TODO get actual most recent update time, only use current if no other available
-        $feed->appendChild($feed->newElement('updated', KT_cmis_atom_service_helper::formatDatestamp()));
-        
-        $link = $feed->newElement('link');
-        $link->appendChild($feed->newAttr('rel', 'self'));
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/checkedout'));
-        $feed->appendChild($link);
-        
-        $link = $feed->newElement('link');
-        $link->appendChild($feed->newAttr('rel','first'));
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/checkedout/pageNo=1&amp;pageSize=0'));
-        $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
-        $feed->appendChild($link);
-
-        $link = $feed->newElement('link');
-        $link->appendChild($feed->newAttr('rel','last'));
-        // TODO set page number correctly - to be done when we support paging the the API
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/checkedout/pageNo=1&amp;pageSize=0'));
-        $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
-        $feed->appendChild($link);
-
-        foreach($checkedout as $cmisEntry)
-        {
-            KT_cmis_atom_service_helper::createObjectEntry($feed, $cmisEntry, $folderName, true);
-			
-//			// after each entry, add app:edited tag
-//           	$feed->newField('app:edited', KT_cmis_atom_service_helper::formatDatestamp(), $feed);
-        }
-
-        $feed->newField('cmis:hasMoreItems', 'false', $feed);
-
-        // Expose the responseFeed
-        $this->responseFeed = $feed;
-    }
-    
-    public function POST_action()
-    {
-        $RepositoryService = new RepositoryService();
-        $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
-        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
-
-        $repositories = $RepositoryService->getRepositories();
-        $repositoryId = $repositories[0]['repositoryId'];
-
-        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']);
-        
-        // check for existing object id as property of submitted object data
-        if (empty($cmisObjectProperties['ObjectId']))
-        {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
-            // Expose the responseFeed
-            $this->responseFeed = $feed;
-            return null;
-        }
-        
-        $response = $VersioningService->checkOut($repositoryId, $cmisObjectProperties['ObjectId']);
-        
-        if (PEAR::isError($response))
-        {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
-            // Expose the responseFeed
-            $this->responseFeed = $feed;
-            return null;
-        }
-        
-        $this->setStatus(self::STATUS_CREATED);
-        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['ObjectId'], 'POST');
-
-        // Expose the responseFeed
-        $this->responseFeed = $feed;
-    }
-
-}
-
-/**
  * AtomPub Service: document
  */
 // TODO confirm that an error response is sent when a document has status "deleted"
@@ -553,15 +375,36 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
         $repositories = $RepositoryService->getRepositories();
         $repositoryId = $repositories[0]['repositoryId'];
         
+        $objectId = $this->params[0];
+        
+        // TODO this is "parents" in later versions of the specification
+        //      update accordingly when updating to newer specification
+        if ($this->params[1] == 'parent')
+        {
+            // abstract this to be used also by the document service (and the PWC service?) ???
+            // alternatively use getFolderParent here makes sense and use getObjectParents when document service?
+            $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
+            $response = $NavigationService->getObjectParents($repositoryId, $objectId, false, false);
+
+            if (PEAR::isError($response)) {
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response->getMessage());
+                $this->responseFeed = $feed;
+                return null;
+            }
+            
+            // for now a document will only have one parent as KnowledgeTree does not support multi-filing
+            // TODO update this code if/when multi-filing support is added
+            $objectId = $response[0]['properties']['ObjectId']['value'];
+        }
         // determine whether we want the document entry feed or the actual physical document content.
         // this depends on $this->params[1]
-        if (!empty($this->params[1]))
+        else if (!empty($this->params[1]))
         {
             KT_cmis_atom_service_helper::downloadContentStream($this, $ObjectService, $repositoryId);
             return null;
         }
 
-        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $this->params[0]);
+        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $objectId);
 
         // Expose the responseFeed
         $this->responseFeed = $feed;
@@ -718,6 +561,206 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
         $this->responseFeed = $feed;
     }
     
+}
+
+/**
+ * AtomPub Service: checkedout
+ */
+class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
+    
+    /**
+     * Deals with GET actions for checkedout documents. 
+     */
+    public function GET_action()
+    {
+        $RepositoryService = new RepositoryService();
+        $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
+
+        $repositories = $RepositoryService->getRepositories();
+        $repositoryId = $repositories[0]['repositoryId'];
+
+        $checkedout = $NavigationService->getCheckedOutDocs($repositoryId);
+
+        //Create a new response feed
+        $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
+        $workspace = $feed->getWorkspace();
+        
+        $feed->newField('title', 'Checked out Documents', $feed);
+        
+        // TODO dynamic?
+        $feedElement = $feed->newField('author');
+        $element = $feed->newField('name', 'admin', $feedElement);
+        $feed->appendChild($feedElement);
+        
+        $feed->appendChild($feed->newElement('id', 'urn:uuid:checkedout'));
+
+        // TODO get actual most recent update time, only use current if no other available
+        $feed->appendChild($feed->newElement('updated', KT_cmis_atom_service_helper::formatDatestamp()));
+        
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel', 'self'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/checkedout'));
+        $feed->appendChild($link);
+        
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel','first'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/checkedout/pageNo=1&amp;pageSize=0'));
+        $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
+        $feed->appendChild($link);
+
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel','last'));
+        // TODO set page number correctly - to be done when we support paging the the API
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/checkedout/pageNo=1&amp;pageSize=0'));
+        $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
+        $feed->appendChild($link);
+
+        foreach($checkedout as $cmisEntry)
+        {
+            KT_cmis_atom_service_helper::createObjectEntry($feed, $cmisEntry, $folderName, true);
+            
+//          // after each entry, add app:edited tag
+//              $feed->newField('app:edited', KT_cmis_atom_service_helper::formatDatestamp(), $feed);
+        }
+
+        $feed->newField('cmis:hasMoreItems', 'false', $feed);
+
+        // Expose the responseFeed
+        $this->responseFeed = $feed;
+    }
+    
+    public function POST_action()
+    {
+        $RepositoryService = new RepositoryService();
+        $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
+        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+
+        $repositories = $RepositoryService->getRepositories();
+        $repositoryId = $repositories[0]['repositoryId'];
+
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']);
+        
+        // check for existing object id as property of submitted object data
+        if (empty($cmisObjectProperties['ObjectId']))
+        {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
+            // Expose the responseFeed
+            $this->responseFeed = $feed;
+            return null;
+        }
+        
+        $response = $VersioningService->checkOut($repositoryId, $cmisObjectProperties['ObjectId']);
+        
+        if (PEAR::isError($response))
+        {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
+            // Expose the responseFeed
+            $this->responseFeed = $feed;
+            return null;
+        }
+        
+        $this->setStatus(self::STATUS_CREATED);
+        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['ObjectId'], 'POST');
+
+        // Expose the responseFeed
+        $this->responseFeed = $feed;
+    }
+
+}
+
+/**
+ * AtomPub Service: types
+ */
+class KT_cmis_atom_service_types extends KT_cmis_atom_service {
+
+    public function GET_action()
+    {
+        $RepositoryService = new RepositoryService();
+        $repositories = $RepositoryService->getRepositories();
+        $repositoryId = $repositories[0]['repositoryId'];
+
+        $types = $RepositoryService->getTypes($repositoryId);
+        $type = ((empty($this->params[0])) ? 'all' : $this->params[0]);
+        $feed = KT_cmis_atom_service_helper::getTypeFeed($type, $types);
+
+        // Expose the responseFeed
+        $this->responseFeed = $feed;
+    }
+    
+}
+
+/**
+ * AtomPub Service: type
+ */
+class KT_cmis_atom_service_type extends KT_cmis_atom_service {
+
+    public function GET_action()
+    {
+        $RepositoryService = new RepositoryService();
+
+        // fetch repository id
+        $repositories = $RepositoryService->getRepositories();
+        $repositoryId = $repositories[0]['repositoryId'];
+
+        if (!isset($this->params[1])) {
+        // For easier return in the wanted format, we call getTypes instead of getTypeDefinition.
+        // Calling this with a single type specified returns an array containing the definition of
+        // just the requested type.
+        // NOTE could maybe be more efficient to call getTypeDefinition direct and then place in
+        //      an array on this side?  or directly expose the individual entry response code and
+        //      call directly from here rather than via getTypeFeed.
+            $type = ucwords($this->params[0]);
+            $types = $RepositoryService->getTypes($repositoryId, $type);
+            $feed = KT_cmis_atom_service_helper::getTypeFeed($type, $types);
+        }
+        else {
+        // TODO dynamic dates, as needed everywhere
+        // NOTE children of types not yet implemented and we don't support any non-basic types at this time
+            $feed = $this->getTypeChildrenFeed($this->params[1]);
+        }
+
+        // Expose the responseFeed
+        $this->responseFeed=$feed;
+    }
+
+    /**
+     * Retrieves a list of child types for the supplied type
+     *
+     * NOTE this currently returns a hard coded empty list, since we do not currently support child types
+     * TODO make dynamic if/when we support checking for child types (we don't actually need to support child types themselves)
+     *
+     * @param string $type
+     * @return string CMIS AtomPub feed
+     */
+    private function getTypeChildrenFeed()
+    {
+        //Create a new response feed
+        // $baseURI=NULL,$title=NULL,$link=NULL,$updated=NULL,$author=NULL,$id=NULL
+        $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
+
+        $feed->newField('title', 'Child Types of ' . ucwords($this->params[0]), $feed);
+        $feed->newField('id', $this->params[0] . '-children', $feed);
+
+        // TODO fetch child types - to be implemented when we support child types in the API
+
+        // links
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel','first'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'type/' . $this->params[0] . '/' . $this->params[1] . '?pageNo=1&amp;pageSize=0'));
+        $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
+
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel','last'));
+        // TODO set page number correctly - to be done when we support paging the the API
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'type/' . $this->params[0] . '/' . $this->params[1] . '?pageNo=1&amp;pageSize=0'));
+        $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
+
+        $feed->newField('updated', KT_cmis_atom_service_helper::formatDatestamp(), $feed);
+        $feed->newField('cmis:hasMoreItems', 'false', $feed);
+
+        return $feed;
+    }
+
 }
 
 ?>

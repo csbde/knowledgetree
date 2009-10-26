@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -124,7 +124,7 @@ Ext.KeyNav.prototype = {
 	 */
 	enable: function(){
 		if(this.disabled){
-            if(this.forceKeyDown || Ext.isIE || Ext.isSafari3 || Ext.isAir){
+            if(this.isKeyDown()){
                 this.el.on("keydown", this.relay,  this);
             }else{
                 this.el.on("keydown", this.prepareEvent,  this);
@@ -139,7 +139,7 @@ Ext.KeyNav.prototype = {
 	 */
 	disable: function(){
 		if(!this.disabled){
-		    if(this.forceKeyDown || Ext.isIE || Ext.isSafari3 || Ext.isAir){
+		    if(this.isKeyDown()){
                 this.el.un("keydown", this.relay, this);
             }else{
                 this.el.un("keydown", this.prepareEvent, this);
@@ -147,5 +147,10 @@ Ext.KeyNav.prototype = {
             }
 		    this.disabled = true;
 		}
-	}
+	},
+    
+    // private
+    isKeyDown: function(){
+        return this.forceKeyDown || Ext.isIE || (Ext.isWebKit && !Ext.isSafari2) || Ext.isAir;
+    }
 };

@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -79,6 +79,7 @@ Ext.DomQuery = function(){
     var modeRe = /^(\s?[\/>+~]\s?|\s|$)/;
     var tagTokenRe = /^(#)?([\w-\*]+)/;
     var nthRe = /(\d*)n\+?(\d*)/, nthRe2 = /\D/;
+    var opera = Ext.isOpera;
 
     function child(p, index){
         var i = 0;
@@ -167,7 +168,7 @@ Ext.DomQuery = function(){
         }else if(mode == "/" || mode == ">"){
             var utag = tagName.toUpperCase();
             for(var i = 0, ni, cn; ni = ns[i]; i++){
-                cn = ni.children || ni.childNodes;
+                cn = opera ? ni.childNodes : (ni.children || ni.childNodes);
                 for(var j = 0, cj; cj = cn[j]; j++){
                     if(cj.nodeName == utag || cj.nodeName == tagName  || tagName == '*'){
                         result[++ri] = cj;
@@ -183,10 +184,12 @@ Ext.DomQuery = function(){
                 }
             }
         }else if(mode == "~"){
+            var utag = tagName.toUpperCase();
             for(var i = 0, n; n = ns[i]; i++){
-                while((n = n.nextSibling) && (n.nodeType != 1 || (tagName == '*' || n.tagName.toLowerCase()!=tagName)));
-                if(n){
-                    result[++ri] = n;
+                while((n = n.nextSibling)){
+                    if (n.nodeName == utag || n.nodeName == tagName || tagName == '*'){
+                        result[++ri] = n;
+                    }
                 }
             }
         }
@@ -241,6 +244,9 @@ Ext.DomQuery = function(){
         var r = [], ri = -1, st = custom=="{";
         var f = Ext.DomQuery.operators[op];
         for(var i = 0, ci; ci = cs[i]; i++){
+            if(ci.nodeType != 1){
+                continue;
+            }
             var a;
             if(st){
                 a = Ext.DomQuery.getStyle(ci, attr);

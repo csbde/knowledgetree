@@ -53,6 +53,7 @@ if(isset($_GET['action'])) {
 
 class configuration extends Step
 {
+	private $allConfs;
 	/**
 	* Database host
 	*
@@ -258,9 +259,6 @@ class configuration extends Step
         $paths = $this->getPathInfo($server['file_system_root']['value']);
         if(!$edit) $this->temp_variables['paths'] = $paths;
 
-        // Running user
-        // Logging
-
         return $this->done;
     }
 
@@ -285,16 +283,19 @@ class configuration extends Step
     }
 
     private function registerDirs() { // Adjust directories variables
-    	$this->readConfigPath();
-    	$dirs = $this->getFromConfigPath();
-    	$directories['varDirectory'] = array('section'=>'urls', 'value'=>addslashes($dirs['varDirectory']['path']), 'setting'=>'varDirectory');
-    	$directories['logDirectory'] = array('section'=>'urls', 'value'=>addslashes($dirs['logDirectory']['path']), 'setting'=>'logDirectory');
-    	$directories['documentRoot'] = array('section'=>'urls', 'value'=>addslashes($dirs['documentRoot']['path']), 'setting'=>'documentRoot');
+//    	$this->readConfigPath();
+//    	$dirs = $this->getFromConfigPath();
+//    	print_r($dirs);
+    	$directories['varDirectory'] = array('section'=>'urls', 'value'=>addslashes($this->allConfs['varDirectory']['path']), 'setting'=>'varDirectory');
+    	$directories['logDirectory'] = array('section'=>'urls', 'value'=>addslashes($this->allConfs['logDirectory']['path']), 'setting'=>'logDirectory');
+    	$directories['documentRoot'] = array('section'=>'urls', 'value'=>addslashes($this->allConfs['documentRoot']['path']), 'setting'=>'documentRoot');
     	$directories['uiDirectory'] = array('section'=>'urls', 'value'=>'${fileSystemRoot}/presentation/lookAndFeel/knowledgeTree', 'setting'=>'uiDirectory');
-    	$directories['tmpDirectory'] = array('section'=>'urls', 'value'=>addslashes($dirs['tmpDirectory']['path']), 'setting'=>'tmpDirectory');
+    	$directories['tmpDirectory'] = array('section'=>'urls', 'value'=>addslashes($this->allConfs['tmpDirectory']['path']), 'setting'=>'tmpDirectory');
+    	$directories['cacheDirectory'] = array('section'=>'cache', 'value'=>addslashes($this->allConfs['cacheDirectory']['path']), 'setting'=>'cacheDirectory');
     	
     	return $directories;
     }
+    
     /**
      * Perform the installation associated with the step.
      * Variables required by the installation are stored within the session.
@@ -309,22 +310,24 @@ class configuration extends Step
         $this->dbhandler->load($dbconf['dhost'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
         $server = $conf['server'];
         $paths = $conf['paths'];
-        // TODO
         if ($this->util->isMigration()) { // Check if its an upgrade
+        	$this->confpaths['configIni'] = $this->readConfigPathIni();
         	$this->readInstallation();
+        	$configPath = $this->confpaths['configIni'];
         } else {
         	$this->readConfigPath(); // initialise writing to config.ini
+	        if(isset($this->confpaths['configIni'])) { // Check if theres a config path
+	        	$configPath = realpath("../../{$this->confpaths['configIni']}"); // Relative to Config Path File
+	        	if($configPath == '') { // Absolute path probably entered
+	        		$configPath = realpath("{$this->confpaths['configIni']}"); // Get relative path
+	        	}
+	        } else {
+	        	$configPath = realpath('../../config/config.ini'); // Normal
+	        }
         }
-		$dirs = $this->getFromConfigPath();
-        if(isset($this->confpaths['configIni'])) { // Check if theres a config path
-        	$configPath = realpath("../../{$this->confpaths['configIni']}"); // Relative to Config Path File
-        	if($configPath == '') { // Absolute path probably entered
-        		$configPath = realpath("{$this->confpaths['configIni']}"); // Get relative path
-        	}
-        } else {
-        	$configPath = realpath('../../config/config.ini');
-        }
+		$this->getFromConfigPath();
         $ini = false;
+//        print_r($configPath);
         if(file_exists($configPath)) {
             $ini = new iniUtilities($configPath);
         }
@@ -336,7 +339,7 @@ class configuration extends Step
         }
         $this->dbhandler->close(); // close the database connection
         $this->writeCachePath(); // Write cache path file
-        $this->writeConfigPath(); // Write config file
+        $this->writeConfigPath($configPath); // Write config file
     }
 
     private function writeUrlSection($ini) {
@@ -449,6 +452,7 @@ class configuration extends Step
     {
         if(isset($this->temp_variables['paths'])) {
         	if ($this->util->isMigration()) { // Check if its an upgrade
+        		$this->confpaths['configIni'] = $this->readConfigPathIni();
         		$this->readInstallation(); // Read values from config.ini of other installation
         		$dirs = $this->getFromConfigPath(); // Store contents
         	} else {
@@ -456,6 +460,7 @@ class configuration extends Step
         	}
         } else {
         	if ($this->util->isMigration()) { // Check if its an upgrade
+				$this->confpaths['configIni'] = $this->readConfigPathIni();
         		$this->readInstallation(); // Read values from config.ini of other installation
         	} else {
         		$this->readConfigPath(); // Read contents of config-path file
@@ -586,6 +591,7 @@ class configuration extends Step
     	}
     	$configs['varDirectory'] = array('name' => 'Var Directory', 'setting' => 'varDirectory', 'path' => $varPath, 'create' => false);
     	
+    	$this->allConfs = $configs;
     	return $configs;
     }
     
@@ -635,6 +641,21 @@ class configuration extends Step
 		return true;
     }
     
+    private function readConfigPathIni() {
+		$configPath = $this->getContentPath();
+		if(!$configPath) return false;
+        $ini = new iniUtilities($configPath);
+        $data = $ini->getFileByLine();
+        $firstline = true;
+        foreach ($data as $k=>$v) {
+        	if(preg_match('/config.ini/', $k)) { // Find config.ini
+				return $k;
+        	}
+        }
+
+        return false;
+    }
+    
     /**
      * Read contents of config path file
      *
@@ -679,14 +700,14 @@ class configuration extends Step
     }
     
     /**
-     * Read contents of config path file
+     * Write location of config path file
      *
 	 * @author KnowledgeTree Team
      * @access private
      * @param none
      * @return boolean 
      */
-    private function writeConfigPath() {
+    private function writeConfigPath($configPath = '') {
 		$configPath = $this->getContentPath();
 		if(!$configPath) return false;
         $ini = new iniUtilities($configPath);
@@ -749,10 +770,6 @@ class configuration extends Step
         if(!$cachePath) return false;
         return $cachePath;
 	}
-	
-    public function doReadConfig() {
-		
-    }
 }
 
 if(isset($_GET['action'])) {

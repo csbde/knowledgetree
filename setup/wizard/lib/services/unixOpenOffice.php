@@ -67,11 +67,10 @@ class unixOpenOffice extends unixService {
 		if(isset($options['binary'])) {
 			$this->setBin($options['binary']);
 		} else {
-			$this->setBin("/usr/lib/openoffice/program/soffice.bin");
+			$this->setBin("/usr/bin/soffice");
 		}
 		$this->setPort("8100");
 		$this->setHost("localhost");
-//		$this->soffice = $this->util->getOpenOffice();
 	}
 	
 	private function setPort($port = "8100") {
@@ -138,17 +137,13 @@ class unixOpenOffice extends unixService {
     public function start() {
     	$state = $this->status();
     	if($state != 'STARTED') {
-	    	$cmd = "\"{$this->util->getJava()}\" -cp \"".SYS_DIR."\" openOffice ".$this->getBin();
+    		$cmd = "nohup ".$this->getBin().' -nofirststartwizard -nologo -headless -"accept=socket,host=localhost,port=8100;urp;StarOffice.ServiceManager" '." > /dev/null 2>&1 & echo $!";
 	    	if(DEBUG) {
 	    		echo "Command : $cmd<br/>";
 	    		return ;
 	    	}
 	    	$response = $this->util->pexec($cmd);
-//	    	$state = $this->status();
-//	    	if($state != 'STARTED') {
-//	    		$cmd = "nohup ".$this->getBin()." -nofirststartwizard -nologo -headless -accept=\"socket,host=localhost,port=8100;urp;StarOffice.ServiceManager\" &1> /dev/null &";
-//	    		$response = $this->util->pexec($cmd);
-//	    	}
+
 	    	return $response;
     	} elseif ($state == '') {
     		// Start Service

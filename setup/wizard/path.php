@@ -39,9 +39,16 @@
 * @package Installer
 * @version Version 0.1
 */
+	$browser = $_SERVER['HTTP_USER_AGENT'];
+	//MSIE 6.0
+	if(preg_match("/MSIE 6.0/", $browser)) {
+		define('AGENT', 'IE6');
+	} else {
+		define('AGENT', 'OTHER');
+	}
 	// Define installer environment
 	define('AJAX', 0);
-	if (substr(php_uname(), 0, 7) == "Windows"){
+	if (substr(php_uname(), 0, 7) == "Windows") {
     	define('WINDOWS_OS', true);
     	define('UNIX_OS', false);
     	define('OS', 'windows');

@@ -32,6 +32,8 @@ function init() {
 
 	// Setup form
 	addClassesToList('class', 'table_cell_styles');
+	TinyMCE_EditableSelects.init();
+
 	formObj.bordercolor.value = bordercolor;
 	formObj.bgcolor.value = bgcolor;
 	formObj.backgroundimage.value = backgroundimage;
@@ -42,7 +44,7 @@ function init() {
 	formObj.style.value = ed.dom.serializeStyle(st);
 	selectByValue(formObj, 'align', align);
 	selectByValue(formObj, 'valign', valign);
-	selectByValue(formObj, 'class', className);
+	selectByValue(formObj, 'class', className, true, true);
 	selectByValue(formObj, 'celltype', celltype);
 	selectByValue(formObj, 'dir', dir);
 	selectByValue(formObj, 'scope', scope);
@@ -56,12 +58,13 @@ function init() {
 }
 
 function updateAction() {
-	var el = ed.selection.getNode();
-	var inst = ed;
-	var tdElm = ed.dom.getParent(el, "td,th");
-	var trElm = ed.dom.getParent(el, "tr");
-	var tableElm = ed.dom.getParent(el, "table");
-	var formObj = document.forms[0];
+	var el, inst = ed, tdElm, trElm, tableElm, formObj = document.forms[0];
+
+	tinyMCEPopup.restoreSelection();
+	el = ed.selection.getNode();
+	tdElm = ed.dom.getParent(el, "td,th");
+	trElm = ed.dom.getParent(el, "tr");
+	tableElm = ed.dom.getParent(el, "table");
 
 	ed.execCommand('mceBeginUndoLevel');
 
@@ -70,14 +73,24 @@ function updateAction() {
 			var celltype = getSelectValue(formObj, 'celltype');
 			var scope = getSelectValue(formObj, 'scope');
 
-			if (ed.getParam("accessibility_warnings")) {
-				if (celltype == "th" && scope == "")
-					var answer = confirm(ed.getLang('table_dlg.missing_scope', '', true));
-				else
-					var answer = true;
+			function doUpdate(s) {
+				if (s) {
+					updateCell(tdElm);
 
-				if (!answer)
-					return;
+					ed.addVisual();
+					ed.nodeChanged();
+					inst.execCommand('mceEndUndoLevel');
+					tinyMCEPopup.close();
+				}
+			};
+
+			if (ed.getParam("accessibility_warnings", 1)) {
+				if (celltype == "th" && scope == "")
+					tinyMCEPopup.confirm(ed.getLang('table_dlg.missing_scope', '', true), doUpdate);
+				else
+					doUpdate(1);
+
+				return;
 			}
 
 			updateCell(tdElm);
@@ -177,10 +190,8 @@ function updateCell(td, skip_id) {
 		for (var c=0; c<td.childNodes.length; c++)
 			newCell.appendChild(td.childNodes[c].cloneNode(1));
 
-		for (var a=0; a<td.attributes.length; a++) {
-			var attr = td.attributes[a];
-			newCell.setAttribute(attr.name, attr.value);
-		}
+		for (var a=0; a<td.attributes.length; a++)
+			ed.dom.setAttrib(newCell, td.attributes[a].name, ed.dom.getAttrib(td, td.attributes[a].name));
 
 		td.parentNode.replaceChild(newCell, td);
 		td = newCell;

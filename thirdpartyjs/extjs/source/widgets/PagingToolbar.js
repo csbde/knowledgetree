@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -345,6 +345,9 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
         store.on("load", this.onLoad, this);
         store.on("loadexception", this.onLoadError, this);
         this.store = store;
+        if (store.getCount() > 0){
+            this.onLoad(store, null, {});
+        }
     },
 
     // private

@@ -62,8 +62,14 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
     function getDisplayName() {
         if(!KTPluginUtil::pluginIsActive('inet.foldermetadata.plugin'))
 		{
-			$js = "<script src='plugins/multiselect/js/jquery-1.2.6.js' type='text/javascript'></script>";
 			$js .= "<script src='plugins/multiselect/js/hidelink.js' type='text/javascript'></script>";
+			
+			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+			$oPage =& $GLOBALS['main'];			
+			if (method_exists($oPage, 'requireJSResources')) {
+				$oPage->requireJSResources($aJavascript);
+			}
+			
 	        return $js._kt('Import from Server Location');
 		}
 		else
@@ -90,57 +96,139 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
         return parent::getInfo();
     }
 
+    
+	/**
+	 * Returns the main Bulk Upload Form
+	 * @return KTForm 
+	 *
+	 */
+
+	function getBulkImportForm() {
+		$this->oPage->setBreadcrumbDetails(_kt("bulk import"));
+
+		//Adding the required Bulk Upload javascript includes
+		$aJavascript[] = 'resources/js/taillog.js';
+		$aJavascript[] = 'resources/js/conditional_usage.js';
+		$aJavascript[] = 'resources/js/kt_bulkupload.js';
+		
+		//Loading the widget js libraries to support dynamic "Ajax Loaded" widget rendering
+		//FIXME: The widgets can support this via dynamic call to place libs in the head if they aren't loaded
+		//       jQuery can do this but need time to implement/test.
+		
+		$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+		$aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js';
+		$aJavascript[] = 'resources/js/kt_tinymce_init.js';
+    	$aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/jquery.tinymce.js';
+		
+		$this->oPage->requireJSResources($aJavascript);		
+		
+		$oForm = new KTForm;
+		$oForm->setOptions(array(
+            'identifier' => 'ktcore.folder.bulkUpload',
+            'label' => _kt('Import from Server Location'),
+            'submit_label' => _kt('Import'),
+            'action' => 'import',
+            'fail_action' => 'main',
+            'encoding' => 'multipart/form-data',
+		//  'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+            'context' => &$this,
+            'extraargs' => $this->meldPersistQuery("","",true),
+			'description' => _kt('The bulk import facility allows for a number of documents to be added to the document management system easily. Provide a path on the server, and all documents and folders within that path will be added to the document management system.')		
+		));
+		
+		$oWF =& KTWidgetFactory::getSingleton();
+		
+		$widgets = array();
+		$validators = array();
+		
+		// Adding the File Upload Widget
+		
+		//Legacy kt3 widgets don't conform to ktcore type widgets by virtue of the 'name' attribute.
+		//$widgets[] = new KTFileUploadWidget(_kt('Archive file'), , 'file', "", $this->oPage, true, "file");
+
+		$widgets[] = $oWF->get('ktcore.widgets.string', array(
+                        'label' => _kt('Path'),
+                        'required' => true,
+                        'name' => 'path',
+        				'id' => 'path',
+                        'value' => '',
+                        'description' => _kt('The path containing the documents to be added to the document management system.'),
+		));
+		
+		$aVocab = array('' => _kt('- Please select a document type -'));
+        foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
+            if(!$oDocumentType->getDisabled()) {
+                $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
+            }
+        }
+		
+		//Adding document type lookup widget
+		$widgets[] = $oWF->get('ktcore.widgets.selection',array(
+                'label' => _kt('Document Type'),
+				'id' => 'add-document-type',
+                'description' => _kt('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'),
+                'name' => 'fDocumentTypeId',
+                'required' => true,
+                'vocab' => $aVocab,
+                'id_method' => 'getId',
+                'label_method' => 'getName',
+                'simple_select' => false,
+		));
+		
+		//Adding the quick "add" button for when no meta data needs to be added.
+		//FIXME: This widget should only display if there are any "required" fields for the given document type
+		//       Default/general document field type must also be taken into consideration
+		
+		$widgets[] = $oWF->get('ktcore.widgets.button',array(
+                'value' => _kt('Add'),
+				'id' => 'quick_add',
+                'description' => _kt('If you do not need to modify any the metadata for this document (see below), then you can simply click "Add" here to finish the process and add the document.'),
+                'name' => 'btn_quick_submit',
+		));
+		
+		$oFReg =& KTFieldsetRegistry::getSingleton();
+		
+		$activesets = KTFieldset::getGenericFieldsets();
+		foreach ($activesets as $oFieldset) {
+			$widgets = kt_array_merge($widgets, $oFReg->widgetsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
+			$validators = kt_array_merge($validators, $oFReg->validatorsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
+		}
+		
+		//Adding the type_metadata_fields layer to be updated via ajax for non generic metadata fieldsets
+		$widgets[] = $oWF->get('ktcore.widgets.layer',array(
+                'value' => '',
+				'id' => 'type_metadata_fields',
+		));
+		
+		$oForm->setWidgets($widgets);
+		$oForm->setValidators($validators);
+		
+		// Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
+		global $default;
+		$iFolderId = $this->oFolder->getId();
+		if($default->enableESignatures){
+			$sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+			$heading = _kt('You are attempting to perform a bulk upload');
+			$submit['type'] = 'button';
+			$submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.bulk_upload', 'bulk', 'bulk_upload_form', 'submit', {$iFolderId});";
+		}else{
+			$submit['type'] = 'submit';
+			$submit['onclick'] = '';
+		}
+
+		return $oForm;
+	}
+
+	
 	/**
 	 * This is Default function to be called load template for import action. | iNET Process
 	 * @Return template.
 	 * @param.
 	 */
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_kt("bulk import"));
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/folder/bulkImport');
-        $add_fields = array();
-        $add_fields[] = new KTStringWidget(_kt('Path'), _kt('The path containing the documents to be added to the document management system.'), 'path', "", $this->oPage, true);
-
-        $aVocab = array('' => _kt('- Please select a document type -'));
-        foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
-            if(!$oDocumentType->getDisabled()) {
-                $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
-            }
-        }
-
-        $fieldOptions = array("vocab" => $aVocab);
-        $add_fields[] = new KTLookupWidget(_kt('Document Type'), _kt('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'), 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
-
-        $fieldsets = array();
-        $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
-        $activesets = KTFieldset::getGenericFieldsets();
-        foreach ($activesets as $oFieldset) {
-            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-            array_push($fieldsets, new $displayClass($oFieldset));
-        }
-
-        // Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
-        global $default;
-        $iFolderId = $this->oFolder->getId();
-        if($default->enableESignatures){
-            $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
-            $heading = _kt('You are attempting to perform a bulk import');
-            $submit['type'] = 'button';
-            $submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.bulk_import', 'bulk', 'bulk_import_form', 'submit', {$iFolderId});";
-        }else{
-            $submit['type'] = 'submit';
-            $submit['onclick'] = '';
-        }
-
-        $oTemplate->setData(array(
-            'context' => &$this,
-            'submit' => $submit,
-            'add_fields' => $add_fields,
-            'generic_fieldsets' => $fieldsets,
-        ));
-        return $oTemplate->render();
-    }
-
+		return $this->getBulkImportForm()->render();
+    }    
+	
 	/**
 	 * Performs actual import action. | iNET Process
 	 * @Return.
@@ -155,11 +243,26 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
         );
 
         $aErrorOptions['message'] = _kt('Invalid document type provided');
-        $oDocumentType = $this->oValidator->validateDocumentType($_REQUEST['fDocumentTypeId'], $aErrorOptions);
+
+		$requestDocumentType = $_REQUEST['fDocumentTypeId']; //Backwards compatibility
+		if ($requestDocumentType == '' || $requestDocumentType == NULL) {
+			$requestDocumentType = $_REQUEST['data'];
+			$requestDocumentType = $requestDocumentType['fDocumentTypeId']; //New elements come through as arrays
+		}
+
+		$oDocumentType = $this->oValidator->validateDocumentType($requestDocumentType, $aErrorOptions);        
 
         $aErrorOptions['message'] = _kt('Invalid path provided');
-        $sPath = $this->oValidator->validateString($_REQUEST['path'], $aErrorOptions);
+        
+        $tmpPath = $_REQUEST['path']; //Backwards compatibility
+        if ($tmpPath == '') {
+        	$tmpPath = $_REQUEST['data'];
+        	$tmpPath = $tmpPath['path'];
+        }
+        
+        $sPath = $this->oValidator->validateString($tmpPath, $aErrorOptions);
 
+        /*
         $matches = array();
         $aFields = array();
         foreach ($_REQUEST as $k => $v) {
@@ -183,7 +286,56 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
             'metadata' => $aFields,
             'copy_upload' => 'true',
         );
+		*/
+        
+		// Newer metadata form field catcher that works with ktcore form array type fields named like
+		// name='metadata[fieldset][metadata_9]'
+		
+		$aData = $_REQUEST['data'];
+		
+		$oForm = $this->getBulkImportForm();
+        $res = $oForm->validate();
+        if (!empty($res['errors'])) {
+            return $oForm->handleError();
+        }
+        $data = $res['results'];
+        
+        $doctypeid = $requestDocumentType;
+        $aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
+        $aSpecificFieldsetIds = KTFieldset::getForDocumentType($doctypeid, array('ids' => false));
+        $fieldsets = kt_array_merge($aGenericFieldsetIds, $aSpecificFieldsetIds);
+		
+		$MDPack = array();
+        foreach ($fieldsets as $oFieldset) {
+            $fields = $oFieldset->getFields();
+            $values = (array) KTUtil::arrayGet($data, 'fieldset_' . $oFieldset->getId());
 
+            foreach ($fields as $oField) {
+                $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
+				if ($oFieldset->getIsConditional())
+                {
+                	if ($val == _kt('No selection.'))
+                	{
+                		$val = null;
+                	}
+                }
+
+                if (!is_null($val)) {
+                    $MDPack[] = array(
+                        $oField,
+                        $val
+                    );
+                }
+
+            }
+        }        
+        
+		$aOptions = array(
+            'documenttype' => $oDocumentType,
+            'metadata' => $MDPack,
+			'copy_upload' => 'true',
+		);        
+        
         $po =& new JavascriptObserver($this);
         $po->start();
         $oUploadChannel =& KTUploadChannel::getSingleton();

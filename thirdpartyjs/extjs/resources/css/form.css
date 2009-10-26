@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -10,6 +10,10 @@
 .x-form-field{
     margin: 0 0 0 0;
     font:normal 12px tahoma, arial, helvetica, sans-serif;
+}
+
+.ext-safari *:focus, .ext-chrome *:focus{
+    outline: none !important;
 }
 
 /* ---- text fields ---- */
@@ -37,7 +41,7 @@ textarea.x-form-field {
 .ext-strict .x-form-text {
     height:18px;
 }
-.ext-safari .x-form-text {
+.ext-safari .x-form-text, .ext-chrome .x-form-text {
     height:20px; /* safari always same size */
     padding:0 3px; /* remove extra top/bottom padding */
 }
@@ -142,7 +146,6 @@ textarea {
 /* wrapped fields and triggers */
 
 .x-form-field-wrap {
-    position:relative;
     zoom:1;
     white-space: nowrap;
 }
@@ -153,11 +156,10 @@ textarea {
     background:transparent url(../images/default/form/trigger.gif) no-repeat 0 0;
     cursor:pointer;
     border-bottom: 1px solid #B5B8C8;
-    position:absolute;
-    top:0;
+    vertical-align: middle;
 }
-.ext-safari .x-form-field-wrap .x-form-trigger{
-    height:21px; /* safari doesn't allow height adjustments to the fields, so adjust trigger */
+.ext-safari .x-form-field-wrap .x-form-trigger, .ext-chrome .x-form-field-wrap .x-form-trigger{
+    height:19px; /* safari doesn't allow height adjustments to the fields, so adjust trigger */
 }
 
 .x-form-field-wrap .x-form-date-trigger{
@@ -172,18 +174,6 @@ textarea {
     background-image: url(../images/default/form/search-trigger.gif);
     cursor:pointer;
 }
-.ext-safari .x-form-field-wrap .x-form-trigger{
-    right:0;
-}
-.x-form-field-wrap .x-form-twin-triggers{
-
-}
-.x-form-field-wrap .x-form-twin-triggers .x-form-trigger{
-    position:static;
-    top:auto;
-    vertical-align:top;
-}
-
 
 .x-form-field-wrap .x-form-trigger-over{
     background-position:-17px 0;
@@ -345,10 +335,20 @@ textarea {
     height:16px !important;
 }
 
-.ext-safari .x-small-editor .x-form-field {
+.ext-safari .x-small-editor .x-form-field, .ext-chrome .x-small-editor .x-form-field {
     /* safari text field will not size so needs bigger font */
     font:normal 12px arial, tahoma, helvetica, sans-serif;
 }
+.ext-safari .x-small-editor .x-form-text,.ext-chrome .x-small-editor .x-form-text{
+    padding-top:3px;font-size:100%;
+}
+
+.ext-safari .x-toolbar .x-form-text,.ext-chrome .x-toolbar .x-form-text{
+    padding:2px;
+    height:14px!important;
+    font-size:100%;
+}
+
 .ext-ie .x-small-editor .x-form-text {
     height:20px;
     line-height:16px;

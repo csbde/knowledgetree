@@ -2,7 +2,7 @@
 	<p class="title">Deactivate Services</p>
 	
 	<p class="description">
-	Services need to be deactivated before the migration takes place.
+	All KnowledgeTree services need to be deactivated before the migration takes place.
 	</p>
 <!--Continue Message-->
 	<?php
@@ -77,7 +77,7 @@
 			</div>
 		<?php } ?>
 	</div>
-    <input type="submit" name="Previous" value="Back" class="button_previous"/>
+    <input type="submit" name="Previous" value="Previous" class="button_previous"/>
     <input type="submit" name="Next" value="Next" class="button_next"/>
 </form>
 <?php if (AJAX) { echo $html->js('form.js'); } ?>

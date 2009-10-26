@@ -4,8 +4,6 @@
 	<form id="dbsettings" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 <?php } ?>
 <p class="title">Confirming Database Configurations</p>
-<!-- Check For immediate Errors -->
-<span class="error"> <?php if($errors['con']) { echo $errors['con']; } ?> </span>
 <!-- Hidden Fields -->
 <input type="hidden" id='ddrop' name="ddrop" <?php echo ($ddrop) ? 'CHECKED' : ''; ?>/>
 <input type="hidden" id="sendAll" name="" value="" />
@@ -16,7 +14,8 @@
 	user on the database server are required in order to be able to configure and install the installation database.
 	</div>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
-	
+<!-- Check For immediate Errors -->
+<span class="error"> <?php if($errors['con']) { echo $errors['con']; } ?> </span>
 	<table class="dbconf">
 	<?php
 		$input_size = '45';

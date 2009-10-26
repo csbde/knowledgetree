@@ -1,0 +1,1 @@
+sudo chown -R www-data:www-data /var/lib/knowledgetree-ce /var/lib/knowledgetree-ce/Documents /var/lib/knowledgetree-ce/indexes /etc/knowledgetree-ce/config.ini /var/log/knowledgetree-ce /var/tmp/knowledgetree-ce /var/tmp/knowledgetree-ce/proxies /var/tmp/knowledgetree-ce/uploads /var/tmp/knowledgetree-ce/cache /usr/share/knowledgetree-ce/var/ /usr/share/knowledgetree-ce/config/

@@ -693,17 +693,17 @@ class InstallUtil {
     }
 
 /*    function getOpenOffice() {
-    	$cmd = "whereis soffice.bin";
+    	$cmd = "whereis soffice";
 		$res = $this->getOpenOfficeHelper($cmd);
-		if($res != '' && preg_match('/soffice.bin/', $res)) {
+		if($res != '' && preg_match('/soffice/', $res)) {
 			return $res;
 		}
-		$cmd = "which soffice.bin";
+		$cmd = "which soffice";
 		$res = $this->getOpenOfficeHelper($cmd);
 		if($res != '') {
 			return $res;
 		}
-		$cmd = "locate soffice.bin";
+		$cmd = "locate soffice";
 		$res = $this->getOpenOfficeHelper($cmd);
 		if($res != '') {
 			return $res;
@@ -720,7 +720,7 @@ class InstallUtil {
 				foreach ($broke as $r) {
 					$match = preg_match('/bin/', $r);
 					if($match) {
-						return preg_replace('/soffice.bin:/', '', $r);
+						return preg_replace('/soffice:/', '', $r);
 					}
 				}
 			}

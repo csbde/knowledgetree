@@ -56,31 +56,31 @@ wizard.prototype.validateRegistration = function() {
 }
 
 wizard.prototype.valRegHelper = function() {
-	var first = document.getElementById('first');
-	var last = document.getElementById('last');
-	var email = document.getElementById('email');
-	if(first.value.length < 1) {
-		document.getElementById("reg_error").innerHTML = "Please enter a First Name";
+	var first = $("#first");
+	var last = $("#last");
+	var email = $("#email");
+	if(first.attr('value').length < 1) {
+		$("#reg_error").html('Please enter a First Name');
 		w.focusElement(first);
 		return false;
 	}
-	if(!w.nameCheck(first.value)) {
-		document.getElementById("reg_error").innerHTML = "Please enter a valid First Name";
+	if(!w.nameCheck(first.attr('value'))) {
+		$("#reg_error").html('Please enter a valid First Name');
 		w.focusElement(first);
 		return false;
 	}
-	if(last.value.length < 1) {
-		document.getElementById("reg_error").innerHTML = "Please enter a Last Name";
+	if(last.attr('value').length < 1) {
+		$("#reg_error").html('Please enter a Last Name');
 		w.focusElement(last);
 		return false;
 	}
-	if(!w.nameCheck(last.value)) {
-		document.getElementById("reg_error").innerHTML = "Please enter a valid Last Name";
+	if(!w.nameCheck(last.attr('value'))) {
+		$("#reg_error").html('Please enter a valid Last Name');
 		w.focusElement(last);
 		return false;
 	}
-	if(!w.emailCheck(email.value)) {
-		document.getElementById("reg_error").innerHTML = "Please enter a valid email address";
+	if(!w.emailCheck(email.attr('value'))) {
+		$("#reg_error").html('Please enter a valid email address');
 		w.focusElement(email);
 		return false;
 	}
@@ -89,7 +89,8 @@ wizard.prototype.valRegHelper = function() {
 }
 
 wizard.prototype.nameCheck = function(str) {
-	var nameRegxp = /^([a-zA-Z]+)$/;
+	str = w.trim(str);
+	var nameRegxp = /^([a-z A-Z]+)$/;
 	if(str.match(nameRegxp)) {
 		return true;
 	} else {

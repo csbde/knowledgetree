@@ -9,5 +9,5 @@
 	    Your database has been upgraded to <?php echo $default->systemVersion; ?>
 	</div>
 	</div>
-    <a href="../../" class="buttons back" style="width:100px;">Goto Login</a>
+	<a href="../../" class="back button_next" style="width:80px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
 </form>

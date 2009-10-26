@@ -48,7 +48,7 @@ You can continue to do the backup manually using the following process:
     </div>
     <?php include 'templates/loading.tpl'; ?>
 	<div id="buttonBar">
-    <input type="submit" name="Previous" value="Back" class="button_previous">
+    <input type="submit" name="Previous" value="Previous" class="button_previous">
     <?php
 if ($dir != '')
 {

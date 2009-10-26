@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -94,6 +94,16 @@ Ext.layout.Accordion = Ext.extend(Ext.layout.FitLayout, {
      * false to keep the panels in the rendered order. <b>This is NOT compatible with "animate:true"</b> (defaults to false).
      */
     activeOnTop : false,
+    
+    /**
+     * Sets the active (expanded) item in the layout.
+     * @param {String/Number} item The string component id or numeric index of the item to activate
+     */
+    setActiveItem : function(item){
+        item = this.container.getComponent(item);
+        this.activeItem = item;
+        this.layout();
+    },
 
     renderItem : function(c){
         if(this.animate === false){
@@ -114,7 +124,7 @@ Ext.layout.Accordion = Ext.extend(Ext.layout.FitLayout, {
         }
         if(!this.activeItem && !c.collapsed){
             this.activeItem = c;
-        }else if(this.activeItem){
+        }else if(this.activeItem && this.activeItem != c){
             c.collapsed = true;
         }
         Ext.layout.Accordion.superclass.renderItem.apply(this, arguments);

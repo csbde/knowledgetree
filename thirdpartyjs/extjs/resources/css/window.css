@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -161,8 +161,8 @@
 .x-dlg-focus{
 	-moz-outline:0 none;
 	outline:0 none;
-	width:0;
-	height:0;
+	width:1px;
+	height:1px;
 	overflow:hidden;
 	position:absolute;
 	top:0;

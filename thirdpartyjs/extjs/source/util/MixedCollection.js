@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.2.1
+ * Ext JS Library 2.3.0
  * Copyright(c) 2006-2009, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -74,26 +74,22 @@ Ext.extend(Ext.util.MixedCollection, Ext.util.Observable, {
  * @param {Object} o The item to add.
  * @return {Object} The item added.
  */
-    add : function(key, o){
+    add: function(key, o){
         if(arguments.length == 1){
             o = arguments[0];
             key = this.getKey(o);
         }
-        if(typeof key == "undefined" || key === null){
-            this.length++;
-            this.items.push(o);
-            this.keys.push(null);
-        }else{
+        if(typeof key != 'undefined' && key !== null){
             var old = this.map[key];
-            if(old){
+            if(typeof old != 'undefined'){
                 return this.replace(key, o);
             }
-            this.length++;
-            this.items.push(o);
             this.map[key] = o;
-            this.keys.push(key);
         }
-        this.fireEvent("add", this.length-1, o, key);
+        this.length++;
+        this.items.push(o);
+        this.keys.push(key);
+        this.fireEvent('add', this.length-1, o, key);
         return o;
     },
 
@@ -146,7 +142,7 @@ mc.add(otherEl);
             o = arguments[0];
             key = this.getKey(o);
         }
-        var old = this.item(key);
+        var old = this.map[key];
         if(typeof key == "undefined" || key === null || typeof old == "undefined"){
              return this.add(key, o);
         }
@@ -237,6 +233,11 @@ mc.add(otherEl);
             o = arguments[1];
             key = this.getKey(o);
         }
+        if(this.containsKey(key)){
+            this.suspendEvents();
+            this.removeKey(key);
+            this.resumeEvents();
+        }
         if(index >= this.length){
             return this.add(key, o);
         }
@@ -322,7 +323,8 @@ mc.add(otherEl);
  * @return {Object} The item associated with the passed key.
  */
     item : function(key){
-        var item = typeof this.map[key] != "undefined" ? this.map[key] : this.items[key];
+        var mk = this.map[key],
+            item = mk !== undefined ? mk : (typeof key == 'number') ? this.items[key] : undefined;
         return typeof item != 'function' || this.allowFunctions ? item : null; // for prototype!
     },
 
@@ -533,13 +535,6 @@ mc.add(otherEl);
         for(var i = (start||0), len = it.length; i < len; i++){
             if(fn.call(scope||this, it[i], k[i])){
 				return i;
-            }
-        }
-        if(typeof start == 'number' && start > 0){
-            for(var i = 0; i < start; i++){
-                if(fn.call(scope||this, it[i], k[i])){
-                    return i;
-                }
             }
         }
         return -1;
