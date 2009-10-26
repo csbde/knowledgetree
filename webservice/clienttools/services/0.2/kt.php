@@ -461,7 +461,7 @@ class kt extends client_service  {
 		if (PEAR::isError($document))
     	{
     		$response['message']=$document->getMessage();
-    		$this->addDebug("download_document - cannot get $document_id - "  . $document->getMessage(), $session_id);
+    		//$this->addDebug("download_document - cannot get $document_id - "  . $document->getMessage(), $session_id);
 
 //    		$this->setResponse(new SOAP_Value('$this->response=',"{urn:$this->namespace}kt_response", $response));
     		$this->setResponse($response);
@@ -900,7 +900,7 @@ class kt extends client_service  {
 	    		$document=$kt->get_document_by_id($document_id);
 
 	    		if(isset($special['__title'])) {
-	    			$this->debug("Renaming to {$special['__title']}");
+	    			$this->addDebug("Renaming to {$special['__title']}");
 	    			$res=$document->rename($special['__title']);
 	    		}
     		}
