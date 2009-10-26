@@ -449,9 +449,10 @@ class kt extends client_service  {
     	$params['session_id']=$params['session_id']?$params['session_id']:$this->AuthInfo['session'];
     	$params['app_type']=$params['app_type']?$params['app_type']:$this->AuthInfo['appType'];
     	$params['app_type']='air';
-    	
+    	$multipart=isset($params['multipart'])?(bool)$params['multipart']:false;
     	
     	$this->addDebug('parameters',$params);
+    	
     	
     	$session_id=$params['session_id'];
 
@@ -480,7 +481,7 @@ class kt extends client_service  {
     	$download_manager=new KTDownloadManager();
     	$download_manager->set_session($session->session);
     	$download_manager->cleanup();
-    	$url=$download_manager->allow_download($document);
+    	$url=$download_manager->allow_download($document,NULL,$multipart);
     	//http://ktair.dev?code=750f7a09d40a3d855f2897f417baf0bbb9a1f615&d=16&u=evm2pdkkhfagon47eh2b9slqj6
     	/*
     	$this->addDebug('url before split',$url);
@@ -514,7 +515,7 @@ class kt extends client_service  {
     public function download_multiple_documents($params){
     	$response=array();
     	foreach($params['documents'] as $docId){
-    		$ret=$this->download_document(array('document_id'=>$docId,'app_type'=>$params['app_type']),true);
+    		$ret=$this->download_document(array('document_id'=>$docId,'app_type'=>$params['app_type'],'multipart'=>$params['multipart']),true);
     		$rec=array(
     			'filename'	=>$ret['filename'],
     			'url'		=>$ret['message'],
