@@ -197,6 +197,66 @@ class KTDownloadManager
 
         return true;
 	}
+	
+	function multipart_download($document_id, $hash, $version = null, $apptype = 'ws', $chunkSize = NULL, $part = 0) {
+        $oConfig =& KTConfig::getSingleton();
+		
+        $sql = "SELECT 1 FROM download_files WHERE hash=? AND session=? AND document_id=?";
+		$rows = DBUtil::getResultArray ( array ($sql, array ($hash, $this->session, $document_id ) ) );
+		if (PEAR::isError ( $rows )) {
+			return $rows;
+		}
+		
+		if (count ( $rows ) == 0) {
+			return new PEAR_Error ( 'Invalid session.' );
+		}
+		
+		// If document is being downloaded by an external user bypass the session checking
+		$check = strstr ( $this->session, 'ktext_' . $document_id );
+		if ($check == 0 && $check !== false) {
+			// Use external download function
+			return $this->download_ext ( $document_id, $hash, $version = null );
+		}
+		
+		$storage = & KTStorageManagerUtil::getSingleton ();
+		
+		$ktapi = &new KTAPI ( );
+		$res = $ktapi->get_active_session ( $this->session, null, $apptype );
+		if (PEAR::isError ( $res )) {
+			return $res;
+		}
+		
+		$document = $ktapi->get_document_by_id ( $document_id );
+		if (PEAR::isError ( $document )) {
+			return $document;
+		}
+		
+		if (! empty ( $version )) {
+			$version = KTDocumentContentVersion::get ( $version );
+			$res = $storage->downloadVersion ( $document->document, $version );
+		} else {
+			$res = $storage->download ( $document->document );
+		}
+		if (PEAR::isError ( $res )) {
+			return $res;
+		}
+		
+		// Set Default Chunk Size (in KB)
+		$chunkSize=(int)$chunkSize;
+		if($chunkSize<1024)$chunkSize=1024;
+		
+		//Make sure part is set
+		$part=(int)$part;
+		
+		$fileSize=$document->getFileSize();
+		$fileName=$document->getFileName();
+		$path=$oConfig->get('urls/documentRoot').'/'.$document->getStoragePath();
+		
+//		$sql = "DELETE FROM download_files WHERE hash='$hash' AND session='$this->session' AND document_id=$document_id";
+//		$result = DBUtil::runQuery ( $sql );
+		
+		return true;
+	}
 
 	function download_ext($document_id, $hash, $version = null)
 	{
