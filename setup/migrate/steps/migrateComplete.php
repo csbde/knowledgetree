@@ -64,7 +64,17 @@ class migrateComplete extends Step {
         $this->checkServices();
         $this->checkSqlDump();
         $this->checkPaths();
+        $this->removeInstallSessions();
         $this->storeSilent();// Set silent mode variables
+    }
+    
+    private function removeInstallSessions() {
+    	$isteps = array('dependencies', 'configuration', 'services', 'database', 'registration', 'install', 'complete');
+    	foreach ($isteps as $step) {
+	        if(isset($_SESSION['installers'][$step])) {
+	        	$_SESSION['installers'][$step] = null;
+	        }
+    	}
     }
     
     private function checkPaths() {

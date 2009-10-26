@@ -312,10 +312,11 @@ class configuration extends Step
         $paths = $conf['paths'];
         if ($this->util->isMigration()) { // Check if its an upgrade
         	$this->readInstallation();
+        	$configPath = $paths['configFile']['path'];
         } else {
         	$this->readConfigPath(); // initialise writing to config.ini
         }
-		$this->getFromConfigPath();
+        $this->getFromConfigPath(); // Sets config Paths
         $ini = false;
         if(file_exists($configPath)) {
             $ini = new iniUtilities($configPath);
@@ -540,6 +541,7 @@ class configuration extends Step
     	return $configs;
     }
     
+
     /**
      * Migration Path finder
      *
@@ -570,9 +572,6 @@ class configuration extends Step
 				}
 			}
 		}
-		
-		// Now for config path itself
-		if(isset($this->temp_variables['']))
 		
 		return true;
     }
@@ -647,17 +646,24 @@ class configuration extends Step
      * @return boolean 
      */
     private function writeConfigPath($configPath = '') {
-		$configPath = $this->getContentPath();
-		if(!$configPath) return false;
-        $ini = new iniUtilities($configPath);
-        $data = $ini->getFileByLine();
-        $configContent = '';
-        foreach ($data as $k=>$v) {
-        	if(preg_match('/config.ini/', $k)) {
-        		$configContent = $k;
-        		break;
-        	}
-        }
+		$conf = $this->getDataFromSession("configuration"); // get data from the server
+        $paths = $conf['paths'];
+		if(isset($paths['configFile']['path'])) {
+			$configPath = $this->getContentPath();
+        	$configContent = $paths['configFile']['path'];
+    	} else {
+			$configPath = $this->getContentPath();
+			if(!$configPath) return false;
+	        $ini = new iniUtilities($configPath);
+	        $data = $ini->getFileByLine();
+	        $configContent = '';
+	        foreach ($data as $k=>$v) {
+	        	if(preg_match('/config.ini/', $k)) {
+	        		$configContent = $k;
+	        		break;
+	        	}
+	        }
+    	}
         $fp = fopen($configPath, 'w');
         if(fwrite($fp, $configContent))
         	return true;

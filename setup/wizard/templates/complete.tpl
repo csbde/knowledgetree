@@ -134,7 +134,7 @@
         	$redirect = "http://".$_SERVER['SERVER_NAME'].":$port".$root_url."/admin.php";
 	?>
 	<?php if($migrate_check) { ?>
-		<a href="../upgrade" class="back button_next" style="width:190px;" onclick="javascript:{w.clearSessions();}">Goto Database Upgrade</a>
+		<a href="../upgrade/index.php" class="back button_next" style="width:190px;" onclick="javascript:{w.clearSessions();}">Goto Database Upgrade</a>
     <?php } else { ?>
     	<a href="../../login.php?redirect=<?php echo $redirect; ?>" class="back button_next" style="width:90px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
     <?php } ?>

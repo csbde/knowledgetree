@@ -420,6 +420,22 @@ class Step
     public function setErrors($error) {
         $this->error = $error;
     }
+    
+	/**
+	* Get session data from package
+	*
+	* @author KnowledgeTree Team
+	* @params none
+	* @access private
+	* @return boolean
+	*/
+    public function getDataFromPackage($package, $class) {
+    	if(empty($_SESSION[$package][$class])) {
+    		return false;
+    	}
+    	
+    	return $_SESSION[$package][$class];
+    }
 }
 
 ?>

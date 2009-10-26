@@ -774,7 +774,6 @@ class database extends Step
         $dbMigrate = $this->util->getDataFromPackage('migrate', 'database');
         $sqlFile = $dbMigrate['dumpLocation'];
     	$this->parse_mysql_dump($sqlFile);
-    	$this->dbhandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
     	$dropPluginHelper = "TRUNCATE plugin_helper;";
     	$this->dbhandler->query($dropPluginHelper);
     	$updateUrls = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "urls";';
