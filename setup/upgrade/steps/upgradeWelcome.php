@@ -40,6 +40,9 @@
 * @version Version 0.1
 */
 
+require_once('../../config/dmsDefaults.php');
+require_once KT_LIB_DIR . '/authentication/authenticationutil.inc.php';
+
 class upgradeWelcome extends step {
 
     protected $silent = false;
@@ -63,16 +66,22 @@ class upgradeWelcome extends step {
         // attempt login
         $username = $_REQUEST['username'];
         $password = $_REQUEST['password'];
+
         $authenticated = $this->checkPassword($username, $password);
-        if (!$authenticated) {
+    
+        if (!$authenticated)
+        {
             session_unset();
             return false;
         }
+
         $_SESSION['setup_user'] = $username;
+        
         return true;
     }
     
     private function checkPassword($username, $password) {
+/*
     	$dconf = $this->getDataFromPackage('installers', 'database');
     	$this->dbhandler->load($dconf['dhost'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
         $sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
@@ -83,6 +92,25 @@ class upgradeWelcome extends step {
         		return true;
         }
         return false;
+        */
+    	
+        global $default;
+    
+        $sTable = KTUtil::getTableName('users');
+        $sQuery = "SELECT count(*) AS match_count FROM $sTable WHERE username = ? AND password = ?";
+        $aParams = array($username, md5($password));
+        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'match_count');
+        if (PEAR::isError($res)) { return false; }
+        else {
+            $sTable = KTUtil::getTableName('users_groups_link');
+            $sQuery = "SELECT count(*) AS match_count FROM $sTable WHERE user_id = ? AND group_id = 1";
+            $aParams = array($res);
+            $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'match_count');
+            if (PEAR::isError($res)) { return false; }
+            else {
+                return ($res == 1);
+            }
+        }
     }
 
 }
