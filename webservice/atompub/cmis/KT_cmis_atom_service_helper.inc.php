@@ -531,8 +531,16 @@ class KT_cmis_atom_service_helper {
     {
 		if(!isset(self::$ktapi))
         {
-			self::$ktapi = new KTAPI();
-			self::$ktapi->get_active_session(session_id());
+        	self::$ktapi = new KTAPI();
+			$active = self::$ktapi->get_active_session(session_id());
+			
+			if (PEAR::isError($active))
+			{
+				// invoke auth code, session must be restarted
+				if(!KT_atom_HTTPauth::isLoggedIn()) {
+					KT_atom_HTTPauth::login('KnowledgeTree DMS', 'You must authenticate to enter this realm');
+				}
+			}
 		}
 		return self::$ktapi;
 	}

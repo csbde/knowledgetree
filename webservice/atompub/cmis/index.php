@@ -46,10 +46,18 @@ $accessProtocol = (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on')) ? 'h
 define('KT_APP_BASE_URI', $accessProtocol . '://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/?/');
 define('KT_APP_SYSTEM_URI', $accessProtocol . '://'.$_SERVER['HTTP_HOST']);
 define('KT_ATOM_LIB_FOLDER', '../../classes/atompub/');
-
 define('CMIS_APP_BASE_URI', trim(KT_APP_BASE_URI, '/'));
 define('CMIS_APP_SYSTEM_URI', KT_APP_SYSTEM_URI);
 define('CMIS_ATOM_LIB_FOLDER', trim(KT_ATOM_LIB_FOLDER, '/') . '/cmis/');
+
+/**
+ * Check Realm Authentication
+ */
+require_once(KT_ATOM_LIB_FOLDER.'KT_atom_HTTPauth.inc.php');
+
+if(!KT_atom_HTTPauth::isLoggedIn()) {
+	KT_atom_HTTPauth::login('KnowledgeTree DMS', 'You must authenticate to enter this realm');
+}
 
 /**
  * Includes
@@ -62,16 +70,8 @@ include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_responseFeed.inc.php');				//Con
 include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_serviceDoc.inc.php');          //Containing the servicedoc class allowing easy ServiceDocument generation
 include_once(CMIS_ATOM_LIB_FOLDER.'KT_cmis_atom_service.inc.php');          //Containing the servicedoc class allowing easy ServiceDocument generation
 
+// services
 include_once('KT_cmis_atom_server.services.inc.php');
-
-/**
- * Check Realm Authentication
- */
-require_once(KT_ATOM_LIB_FOLDER.'KT_atom_HTTPauth.inc.php');
-
-if(!KT_atom_HTTPauth::isLoggedIn()) {
-	KT_atom_HTTPauth::login('KnowledgeTree DMS', 'You must authenticate to enter this realm');
-}
 
 //Start the AtomPubProtocol Routing Engine
 $APP = new KT_cmis_atom_server();
