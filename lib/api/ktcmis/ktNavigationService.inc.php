@@ -157,8 +157,16 @@ class KTNavigationService extends KTCMISBase {
      */
     public function getFolderParent($repositoryId, $folderId, $includeAllowableActions, $includeRelationships, $returnToRoot, $filter = '')
     {
-        $ancestryResult = $this->NavigationService->getFolderParent($repositoryId, $folderId, $includeAllowableActions,
-                                                              $includeRelationships, $returnToRoot);
+        try {
+            $ancestryResult = $this->NavigationService->getFolderParent($repositoryId, $folderId, $includeAllowableActions,
+                                                                        $includeRelationships, $returnToRoot);
+        }
+        catch (Exception $e) {
+            return array(
+                "status_code" => 1,
+                "message" => "Failed getting ancestry for folder: " . $e->getMessage()
+            );
+        }
 
         if (PEAR::isError($ancestryResult))
         {

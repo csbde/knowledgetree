@@ -178,14 +178,14 @@ class CMISUtil {
                     // if sub-array
                     if (count($object['items']) > 0)
                     {
-                        $CMISArray[$count]['items'] = CMISUtil::createChildObjectHierarchy($object['items'], $repositoryURI, $ktapi);
+                        $CMISArray[$count]['items'] = self::createChildObjectHierarchy($object['items'], $repositoryURI, $ktapi);
                     }
                 }
                 else
                 {
                     // NOTE why is this necessary?  That's what you get for not commenting it at the time
                     // TODO comment this properly
-                    $CMISArray[$count] = CMISUtil::createChildObjectHierarchy($object, $repositoryURI, $ktapi);
+                    $CMISArray[$count] = self::createChildObjectHierarchy($object, $repositoryURI, $ktapi);
                 }
             }
         }
@@ -222,7 +222,7 @@ class CMISUtil {
             // if more parent elements
             if (count($input) > 0)
             {
-                $CMISElement['items'] = CMISUtil::createParentObjectHierarchy($input, $repositoryURI, $ktapi);
+                $CMISElement['items'] = self::createParentObjectHierarchy($input, $repositoryURI, $ktapi);
             }
 
             $CMISArray[] = $CMISElement;
@@ -252,7 +252,7 @@ class CMISUtil {
             $object = $entry['object'];
             $properties = $object->getProperties();
 
-            $hierarchy[$key] = CMISUtil::createObjectPropertiesEntry($properties);
+            $hierarchy[$key] = self::createObjectPropertiesEntry($properties);
         }
 
         return $hierarchy;
@@ -293,7 +293,7 @@ class CMISUtil {
                                                            'value' => $properties->getValue('Name'));
         
 		$object['properties']['ParentId'] = array('type' => $properties->getFieldType('ParentId'),
-                                                  'value' => CMISUtil::encodeObjectId('Folder',
+                                                  'value' => self::encodeObjectId('Folder',
                                                   $properties->getValue('ParentId')));
 												  
 		$object['properties']['Uri'] = array('type' => $properties->getFieldType('Uri'),
@@ -350,7 +350,7 @@ class CMISUtil {
         /*
         // if we have found a child/parent with one or more children/parents, recurse into the child/parent object
         if (count($entry['items']) > 0) {
-            $object[$linkText] = CMISUtil::decodeObjectHierarchy($entry['items'], $linkText);
+            $object[$linkText] = self::decodeObjectHierarchy($entry['items'], $linkText);
         }
         // NOTE may need to set a null value here in case webservices don't like it unset
         //      so we'll set it just in case...
@@ -602,7 +602,7 @@ class CMISUtil {
         // TODO consider checking whether content is encoded (currently we expect encoded)
         // TODO choose between this and the alternative decode function (see CMISUtil class)
         //      this will require some basic benchmarking
-        $contentStream = CMISUtil::decodeChunkedContentStream($contentStream);
+        $contentStream = self::decodeChunkedContentStream($contentStream);
      
         // NOTE There is a function in CMISUtil to do this, written for the unit tests but since KTUploadManager exists
         //      and has more functionality which could come in useful at some point I decided to go with that instead
@@ -612,6 +612,44 @@ class CMISUtil {
         $tempfilename = $uploadManager->store_file($contentStream, 'cmis_');
         
         return $tempfilename;
+    }
+    
+    /**
+     * attempts to fetch the folder id from a name
+     * 
+     * NOTE this won't be reliable if there is more than one folder in the system with the same name
+     *      the only reason this exists is to accomodate the method of browsing used by the drupal module
+     *
+     * @param string $name
+     * @param object $ktapi
+     * @return string
+     */
+    static public function getIdFromName($name, &$ktapi)
+    {
+        $folder = $ktapi->get_folder_by_name($name);
+        
+        return self::encodeObjectId(FOLDER, $folder->get_folderid());
+    }
+    
+    /**
+     * Checks for the root folder
+     *
+     * @param unknown_type $repositoryId
+     * @param unknown_type $folderId
+     * @param unknown_type $ktapi
+     * @return unknown
+     */
+    static public function isRootFolder($repositoryId, $folderId, &$ktapi)
+    {
+        $repository = new CMISRepository($repositoryId);
+        $repositoryInfo = $repository->getRepositoryInfo();
+        
+        // NOTE this call is required to accomodate the definition of the root folder id in the config as required by the drupal module
+        //      we should try to update the drupal module to not require this, but this way is just easier at the moment, and most of
+        //      the code accomodates it without any serious hacks
+        $rootFolder = self::getIdFromName($repositoryInfo->getRootFolderId(), $ktapi);
+        
+        return $folderId == $rootFolder;
     }
 
 }

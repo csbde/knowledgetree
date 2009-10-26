@@ -9,13 +9,10 @@
 		<div id="step_content_<?php echo $step_name; ?>" class="step">
 <p class="empty_space">The Setup Wizard will now migrate your existing database to the new Zend Server stack. This process may take
                         several minutes to complete.</p><br />
-                        <span class="error">Please ensure that your database is backed up before proceeding. If you need assistance with backing up see the <a class="description_click" target="_blank" href="http://wiki.knowledgetree.com/Web_Based_Migrater#Database_Migration">database migration section on our wiki</a>
+                        <span class="error">Please ensure that your database is backed up before proceeding. If you need assistance with backing up see the &nbsp;<a class="description_click" target="_blank" href="http://wiki.knowledgetree.com/Backing_up_and_restoring_KnowledgeTree">'Backing up and restoring KnowledgeTree'</a>&nbsp; wiki entry.
 </span>
                         <br /><br />
                         <p class="empty_space">Click <b>Next</b> to continue.</p>
-<!--			<br/>-->
-<!--			<span class="error">!!NB!! You are advised to backup your database before proceeding. !!NB!!</span>-->
-<!--			<br/><br/>-->
 			<?php if(isset($errors)) { ?>
 				<?php
 					foreach ($errors as $error) {
@@ -51,7 +48,6 @@
 	</div>
 	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
 	<input type="submit" name="Next" value="Next" class="button_next"/>
-<!--	<input type="submit" name="Backup" value="Backup" class="button_next"/>-->
 </form>
 <script type="text/javascript">
 	$("#duname").focus();

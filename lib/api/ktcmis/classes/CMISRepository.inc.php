@@ -61,7 +61,7 @@ class CMISRepository {
      */
     private $objectTypes;
 
-    function CMISRepository($repositoryId, $config = null)
+    function __construct($repositoryId, $config = null)
     {
         $this->repositoryId = $repositoryId;
         $this->RepositoryInfo = new CMISRepositoryInfo();
@@ -94,6 +94,9 @@ class CMISRepository {
         // set info
         foreach($config->repositoryInfo[0] as $field => $value)
         {
+//            if ($field == 'rootFolderId') {
+//                $value = CMISUtil::encodeObjectId(FOLDER, $value);
+//            }
             $this->setRepositoryInfoField($field, (string)$value);
         }
 
