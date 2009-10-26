@@ -367,7 +367,7 @@ class luceneValidation extends serviceValidation {
     	$javaExecutable = $this->util->javaSpecified();// Retrieve java bin
     	if($javaExecutable == '') {
     		if($this->java == '') {
-    			return false;
+    			$this->java = 'java';
     		}
     		$javaExecutable = $this->java;
     	}
