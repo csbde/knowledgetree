@@ -588,24 +588,19 @@ class KTDateValidator extends KTValidator {
     function validate($data) {
         $results = array();
         $errors = array();
-
-		// very simple if we're required and not present, fail
-        // otherwise, its ok.
-        $pMetaKey = array_keys($data);
-        $fieldId = str_replace('metadata_', '', $pMetaKey);
-        $oField = new DocumentField();
-        $oField->load($fieldId);
-        
-        if (!$oField->getIsMandatory()) {
-        	return;
-        }
-        
+		
         $val = KTUtil::arrayGet($data, $this->sInputVariable);
-
+		
         if ($this->bTrim) {
             $val = trim($val);
         }
 
+		// very simple if we're required and not present, fail
+        // otherwise, its ok.
+        if (empty($val) || $val == '') {
+        		return;
+        }
+        
         if (preg_match ("/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/", $val, $parts))
         {
             //check weather the date is valid of not
