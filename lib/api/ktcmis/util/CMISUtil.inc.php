@@ -614,6 +614,16 @@ class CMISUtil {
         return $tempfilename;
     }
     
+    /**
+     * attempts to fetch the folder id from a name
+     * 
+     * NOTE this won't be reliable if there is more than one folder in the system with the same name
+     *      the only reason this exists is to accomodate the method of browsing used by the drupal module
+     *
+     * @param string $name
+     * @param object $ktapi
+     * @return string
+     */
     static public function getIdFromName($name, &$ktapi)
     {
         $folder = $ktapi->get_folder_by_name($name);
@@ -621,10 +631,22 @@ class CMISUtil {
         return self::encodeObjectId(FOLDER, $folder->get_folderid());
     }
     
+    /**
+     * Checks for the root folder
+     *
+     * @param unknown_type $repositoryId
+     * @param unknown_type $folderId
+     * @param unknown_type $ktapi
+     * @return unknown
+     */
     static public function isRootFolder($repositoryId, $folderId, &$ktapi)
     {
         $repository = new CMISRepository($repositoryId);
         $repositoryInfo = $repository->getRepositoryInfo();
+        
+        // NOTE this call is required to accomodate the definition of the root folder id in the config as required by the drupal module
+        //      we should try to update the drupal module to not require this, but this way is just easier at the moment, and most of
+        //      the code accomodates it without any serious hacks
         $rootFolder = self::getIdFromName($repositoryInfo->getRootFolderId(), $ktapi);
         
         return $folderId == $rootFolder;

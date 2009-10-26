@@ -71,7 +71,7 @@ class CMISNavigationService {
      */
 
     // NOTE This method does NOT support paging as defined in the paging section
-    // NOTE If the Repository supports the optional “VersionSpecificFiling” capability,
+    // NOTE If the Repository supports the optional “VersionSpecificFiling�? capability,
     //      then the repository SHALL return the document versions filed in the specified folder or its descendant folders.
     //      Otherwise, the latest version of the documents SHALL be returned.
     // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
@@ -112,7 +112,7 @@ class CMISNavigationService {
      * @param int $skipCount
      * @return array $descendants
      */
-    // NOTE If the Repository supports the optional “VersionSpecificFiling” capability,
+    // NOTE If the Repository supports the optional “VersionSpecificFiling�? capability,
     //      then the repository SHALL return the document versions filed in the specified folder or its descendant folders.
     //      Otherwise, the latest version of the documents SHALL be returned.
     // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
@@ -155,9 +155,14 @@ class CMISNavigationService {
      */
     // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
     // TODO If this service method is invoked on the root folder of the Repository, then the Repository SHALL return an empty result set.
-    // NOTE SHOULD always include the “ObjectId” and “ParentId” properties for all objects returned
+    // NOTE SHOULD always include the “ObjectId�? and “ParentId�? properties for all objects returned
     function getFolderParent($repositoryId, $folderId, $includeAllowableActions, $includeRelationships, $returnToRoot, $filter = '')
     {
+        // NOTE the root folder obviously has no parent, throw an ObjectNotFoundException here if this is the root folder
+        if (CMISUtil::isRootFolder($repositoryId, $folderId, $this->ktapi)) {
+            throw new ObjectNotFoundException('Root folder has no parent');
+        }
+        
         $ancestry = array();
         $repository = new CMISRepository($repositoryId);
 

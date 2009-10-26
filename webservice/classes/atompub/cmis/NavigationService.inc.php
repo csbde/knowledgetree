@@ -77,6 +77,9 @@ class NavigationService extends KTNavigationService {
         {
             return $result['results'];
         }
+        else {
+            return new PEAR_Error($result['message']);
+        }
     }
 
     /**
