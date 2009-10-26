@@ -589,8 +589,17 @@ class KTDateValidator extends KTValidator {
         $results = array();
         $errors = array();
 
-        // very simple if we're required and not present, fail
+		// very simple if we're required and not present, fail
         // otherwise, its ok.
+        $pMetaKey = array_keys($data);
+        $fieldId = str_replace('metadata_', '', $pMetaKey);
+        $oField = new DocumentField();
+        $oField->load($fieldId);
+        
+        if (!$oField->getIsMandatory()) {
+        	return;
+        }
+        
         $val = KTUtil::arrayGet($data, $this->sInputVariable);
 
         if ($this->bTrim) {

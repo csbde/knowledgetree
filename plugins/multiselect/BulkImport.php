@@ -106,6 +106,22 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
 	function getBulkImportForm() {
 		$this->oPage->setBreadcrumbDetails(_kt("bulk import"));
 
+		//Adding the required Bulk Upload javascript includes
+		$aJavascript[] = 'resources/js/taillog.js';
+		$aJavascript[] = 'resources/js/conditional_usage.js';
+		$aJavascript[] = 'resources/js/kt_bulkupload.js';
+		
+		//Loading the widget js libraries to support dynamic "Ajax Loaded" widget rendering
+		//FIXME: The widgets can support this via dynamic call to place libs in the head if they aren't loaded
+		//       jQuery can do this but need time to implement/test.
+		
+		$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+		$aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js';
+		$aJavascript[] = 'resources/js/kt_tinymce_init.js';
+    	$aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/jquery.tinymce.js';
+		
+		$this->oPage->requireJSResources($aJavascript);		
+		
 		$oForm = new KTForm;
 		$oForm->setOptions(array(
             'identifier' => 'ktcore.folder.bulkUpload',
@@ -139,22 +155,21 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
                         'description' => _kt('The path containing the documents to be added to the document management system.'),
 		));
 		
-		$aTypes = array();
-		foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
-			if(!$oDocumentType->getDisabled()) {
-				$aTypes[] = $oDocumentType;
-			}
-		}
-
+		$aVocab = array('' => _kt('- Please select a document type -'));
+        foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
+            if(!$oDocumentType->getDisabled()) {
+                $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
+            }
+        }
+		
 		//Adding document type lookup widget
-		$widgets[] = $oWF->get('ktcore.widgets.entityselection',array(
+		$widgets[] = $oWF->get('ktcore.widgets.selection',array(
                 'label' => _kt('Document Type'),
 				'id' => 'add-document-type',
                 'description' => _kt('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'),
                 'name' => 'fDocumentTypeId',
                 'required' => true,
-                'vocab' => $aTypes,
-                'initial_string' => _kt('- Please select a document type -'),
+                'vocab' => $aVocab,
                 'id_method' => 'getId',
                 'label_method' => 'getName',
                 'simple_select' => false,
@@ -172,16 +187,22 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
 		));
 		
 		$oFReg =& KTFieldsetRegistry::getSingleton();
-
+		
 		$activesets = KTFieldset::getGenericFieldsets();
 		foreach ($activesets as $oFieldset) {
 			$widgets = kt_array_merge($widgets, $oFReg->widgetsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
 			$validators = kt_array_merge($validators, $oFReg->validatorsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
 		}
-
+		
+		//Adding the type_metadata_fields layer to be updated via ajax for non generic metadata fieldsets
+		$widgets[] = $oWF->get('ktcore.widgets.layer',array(
+                'value' => '',
+				'id' => 'type_metadata_fields',
+		));
+		
 		$oForm->setWidgets($widgets);
 		$oForm->setValidators($validators);
-
+		
 		// Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
 		global $default;
 		$iFolderId = $this->oFolder->getId();
