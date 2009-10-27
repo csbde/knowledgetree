@@ -124,10 +124,10 @@ class Step
 	* @access protected
 	* @var object
 	*/
-    public $dbhandler;
+//    public $dbhandler;
     
     public function __construct() {
-    	$this->dbhandler = new dbUtilities();
+//    	$this->dbhandler = new dbUtilities();
     	$this->util = new InstallUtil();
     }
 	/**

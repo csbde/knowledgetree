@@ -39,9 +39,13 @@
 * @package Installer
 * @version Version 0.1
 */
+
+
 class InstallUtil {
 	
 	private $salt = 'installers';
+	public $dbHandler = null;
+	public $iniHandler = null;
 	
 	/**
 	* Constructs installation object
@@ -50,6 +54,8 @@ class InstallUtil {
 	* @access public
  	*/
 	public function __construct() {
+		$this->dbHandler = new dbUtilities();
+		$this->iniHandler = new iniUtilities();
 	}
 
 	/**

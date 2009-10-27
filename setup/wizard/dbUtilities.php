@@ -105,6 +105,7 @@ class dbUtilities {
 	}
 	
 	public function load($dhost = 'localhost', $duname, $dpassword, $dbname) {
+		if($this->isConnected($dhost, $duname, $dpassword, $dbname)) return true;
 		$this->dbhost = $dhost;
 		$this->dbuname = $duname;
 		$this->dbpassword = $dpassword;
@@ -115,6 +116,17 @@ class dbUtilities {
 		$this->dbname = $dbname;
 	}
 
+	public function isConnected($dhost = 'localhost', $duname, $dpassword, $dbname) {
+		$current = array($this->dbhost, $this->dbuname, $this->dbpassword, $this->dbname);
+		$new = array($dhost, $duname, $dpassword, $dbname);
+		$diff = array_diff($new, $current);
+		if(count($diff) == 0) {
+			echo 'same';
+			return true;
+		}
+		return false;
+	}
+	
 	public function getDatabaseLink() {
 		return $this->dbconnection;
 	}

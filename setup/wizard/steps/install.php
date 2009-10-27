@@ -107,14 +107,14 @@ class install extends step
     public function callHome() {
         $conf = $this->getDataFromSession("install"); // retrieve database information from session
         $dbconf = $this->getDataFromSession("database");
-        $this->dbhandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
+        $this->util->dbHandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
         $complete = 1;
         if($conf['call_home'] == 'enable'){
             $complete = 0;
         }
         $query = "UPDATE scheduler_tasks SET is_complete = {$complete} WHERE task = 'Call Home'";
-        $this->dbhandler->query($query);
-        $this->dbhandler->close(); // close the database connection
+        $this->util->dbHandler->query($query);
+        $this->util->dbHandler->close(); // close the database connection
     }
 }
 ?>

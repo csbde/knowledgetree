@@ -43,12 +43,22 @@ class iniUtilities {
     private $lineNum = 0;
     private $exists = '';
 
-    function iniUtilities($iniFile = '../../config.ini') {
+    function iniUtilities() {
+       $this->iniFile = '';
+    }
+
+    function load($iniFile) {
+    	if($this->iniFile != $iniFile) {
+	       $this->cleanArray = array();
+	       $this->lineNum = 0;
+	       $this->exists = '';
+    	}
        $this->iniFile = $iniFile;
        $this->backupIni($iniFile);
        $this->read($iniFile);
+       
     }
-
+    
     /**
      * Create a backup with the date as an extension in the same location as the original config.ini
      *
@@ -111,6 +121,7 @@ class iniUtilities {
                 }
             }
         }
+
         return $this->cleanArray;
     }
 

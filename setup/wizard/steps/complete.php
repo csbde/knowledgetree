@@ -142,8 +142,8 @@ class complete extends Step {
         // retrieve database information from session
         $dbconf = $this->getDataFromSession("database");
         // make db connection - admin
-        $this->dbhandler->load($dbconf['dhost'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
-        $loaded = $this->dbhandler->getDatabaseLink();
+        $this->util->dbHandler->load($dbconf['dhost'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
+        $loaded = $this->util->dbHandler->getDatabaseLink();
         if (!$loaded) {
             $this->temp_variables['dbConnectAdmin'] .= '<td><div class="cross"></div></td>'
                                                		.  '<td class="error">Unable to connect to database (user: ' 
@@ -157,20 +157,20 @@ class complete extends Step {
         }
         
         // make db connection - user
-        $this->dbhandler->load($dbconf['dhost'], $dbconf['dmsusername'], $dbconf['dmsuserpassword'], $dbconf['dname']);
-        $loaded = $this->dbhandler->getDatabaseLink();
+        $this->util->dbHandler->load($dbconf['dhost'], $dbconf['dmsusername'], $dbconf['dmsuserpassword'], $dbconf['dname']);
+        $loaded = $this->util->dbHandler->getDatabaseLink();
         // if we can log in to the database, check access
         // TODO check write access?
         if ($loaded)
         {
             $this->temp_variables['dbConnectUser'] .= sprintf($html, 'tick', '', 'Database connectivity successful (user: ' . $dbconf['dmsusername'] . ')');
 
-            $qresult = $this->dbhandler->query('SELECT COUNT(id) FROM documents');
+            $qresult = $this->util->dbHandler->query('SELECT COUNT(id) FROM documents');
             if (!$qresult)
             {
                 $this->temp_variables['dbPrivileges'] .= '<td style="width:15px;"><div class="cross" style="float:left;"></div></td>'
                                                       .  '<td class="error" style="width:500px;">'
-                                                      .  'Unable to do a basic database query. Error: ' . $this->dbhandler->getLastError()
+                                                      .  'Unable to do a basic database query. Error: ' . $this->util->dbHandler->getLastError()
                                                       .  '</td>';
                                                       $this->privileges_check = 'cross';
 				$this->privileges_check = 'cross';
@@ -183,17 +183,17 @@ class complete extends Step {
             
             // check transaction support
             $sTable = 'system_settings';
-            $this->dbhandler->startTransaction();
-            $this->dbhandler->query('INSERT INTO ' . $sTable . ' (name, value) VALUES ("transactionTest", "1")');
-            $this->dbhandler->rollback();
-            $res = $this->dbhandler->query("SELECT id FROM $sTable WHERE name = 'transactionTest' LIMIT 1");
+            $this->util->dbHandler->startTransaction();
+            $this->util->dbHandler->query('INSERT INTO ' . $sTable . ' (name, value) VALUES ("transactionTest", "1")');
+            $this->util->dbHandler->rollback();
+            $res = $this->util->dbHandler->query("SELECT id FROM $sTable WHERE name = 'transactionTest' LIMIT 1");
             if (!$res) {
                 $this->temp_variables['dbTransaction'] .= sprintf($html, 'cross', 'class="error"', 'Transaction support not available in database');
                 $this->privileges_check = 'cross';
             } else {
                 $this->temp_variables['dbTransaction'] .= sprintf($html, 'tick', '', 'Database has transaction support');
             }
-            $this->dbhandler->query('DELETE FROM ' . $sTable . ' WHERE name = "transactionTest"');
+            $this->util->dbHandler->query('DELETE FROM ' . $sTable . ' WHERE name = "transactionTest"');
         }
         else
         {
