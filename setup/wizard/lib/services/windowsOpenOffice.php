@@ -203,7 +203,7 @@ class windowsOpenOffice extends windowsService {
     		//$binary = $this->util->openOfficeSpecified();
     		$binary = $this->getBin();
     		if($binary != '') {
-            	$cmd = "\"{$this->winservice}\" install $this->name "."-displayname {$this->name} -start auto \"".$binary."\" -headless -invisible -\"accept=socket,host={$this->host},port={$this->port};urp;\"";;
+            	$cmd = "\"{$this->winservice}\" install $this->name "."-displayname {$this->name} -start auto \"".$binary."\" -headless -invisible -nofirststartwizard -\"accept=socket,host={$this->host},port={$this->port};urp;\"";;
 	        	if(DEBUG) {
 	        		echo "Command : $cmd<br/>";
 	        		return ;

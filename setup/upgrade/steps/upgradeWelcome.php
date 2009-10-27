@@ -40,14 +40,12 @@
 * @version Version 0.1
 */
 
-require_once('../../config/dmsDefaults.php');
-require_once KT_LIB_DIR . '/authentication/authenticationutil.inc.php';
-
 class upgradeWelcome extends step {
 
     protected $silent = false;
     protected $temp_variables = array();
-
+	protected $error = array() ;
+    
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"welcome");
         if($this->next()) {
@@ -81,9 +79,18 @@ class upgradeWelcome extends step {
     }
     
     private function checkPassword($username, $password) {
-/*
-    	$dconf = $this->getDataFromPackage('installers', 'database');
-    	$this->dbhandler->load($dconf['dhost'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
+    	$dconf = $this->getDataFromPackage('installers', 'database'); // Use info from install
+    	if($dconf) {
+	    	$this->dbhandler->load($dconf['dhost'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
+    	} else {
+    		require_once("../wizard/iniUtilities.php"); // ini to read the ini content
+    		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
+    		$wizConfigHandler = new configuration();
+    		$configPath = $wizConfigHandler->readConfigPathIni();
+			$ini = new iniUtilities($configPath);
+			$dconf = $ini->getSection('db');
+    		$this->dbhandler->load($dconf['dbHost'], $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
+    	}
         $sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
         $res = $this->dbhandler->query($sQuery);
         $ass = $this->dbhandler->fetchAssoc($res);
@@ -91,28 +98,15 @@ class upgradeWelcome extends step {
         	if($ass[0]['match_count'])
         		return true;
         }
+        $this->error[] = 'Could Not Authenticate User';
         return false;
-        */
-    	
-        global $default;
-    
-        $sTable = KTUtil::getTableName('users');
-        $sQuery = "SELECT count(*) AS match_count FROM $sTable WHERE username = ? AND password = ?";
-        $aParams = array($username, md5($password));
-        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'match_count');
-        if (PEAR::isError($res)) { return false; }
-        else {
-            $sTable = KTUtil::getTableName('users_groups_link');
-            $sQuery = "SELECT count(*) AS match_count FROM $sTable WHERE user_id = ? AND group_id = 1";
-            $aParams = array($res);
-            $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'match_count');
-            if (PEAR::isError($res)) { return false; }
-            else {
-                return ($res == 1);
-            }
-        }
     }
 
+    public function getErrors() {
+    	return $this->error;
+    }
+    
+    
 }
 
 ?>
