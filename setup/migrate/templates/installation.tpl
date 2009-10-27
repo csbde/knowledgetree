@@ -25,7 +25,7 @@
 		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Current_Installation" target="_blank">Click here for help on overcoming upgrade issues  </a>
 	<?php } ?>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
-		<p class="empty_space">
+		<p class="description">
 			Enter the full path of the installation you wish to upgrade: 
 		</p>
 		<p class="empty_space">
