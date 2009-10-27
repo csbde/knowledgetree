@@ -128,7 +128,6 @@ class Step
     
     public function __construct() {
     	$this->util = new MigrateUtil();
-    	$this->dbhandler = $this->util->loadInstallDBUtil();
     }
     
 	/**

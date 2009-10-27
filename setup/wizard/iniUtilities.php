@@ -43,11 +43,8 @@ class iniUtilities {
     private $lineNum = 0;
     private $exists = '';
 
-    function iniUtilities() {
-       $this->iniFile = '';
-    }
-
-    function load($iniFile) {
+    
+   	function load($iniFile) {
     	if($this->iniFile != $iniFile) {
 	       $this->cleanArray = array();
 	       $this->lineNum = 0;
@@ -56,9 +53,11 @@ class iniUtilities {
        $this->iniFile = $iniFile;
        $this->backupIni($iniFile);
        $this->read($iniFile);
-       
     }
     
+    function __construct() {
+    }
+	
     /**
      * Create a backup with the date as an extension in the same location as the original config.ini
      *

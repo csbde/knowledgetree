@@ -127,7 +127,6 @@ class migrateServices extends Step
     public function doStep()
     {
     	$this->temp_variables = array("step_name"=>"services", "silent"=>$this->silent);
-    	$this->installServices = $this->util->loadInstallUtil(); // Use installer utility class
     	$this->services = $this->util->loadInstallServices(); // Use installer services class
     	$this->storeSilent();
     	if(!$this->inStep("services")) {

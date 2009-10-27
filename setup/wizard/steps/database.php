@@ -320,11 +320,11 @@ class database extends Step
     		return false;
     	}
     	if($this->dport == '')  {
-    		$this->util->dbHandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
+    		$this->util->dbUtilities->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
     	} else {
-    		$this->util->dbHandler->load($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
+    		$this->util->dbUtilities->load($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
     	}
-        if (!$this->util->dbHandler->getDatabaseLink()) {
+        if (!$this->util->dbUtilities->getDatabaseLink()) {
             $this->error['con'] = "Could not connect to the database, please check username and password";
             return false;
         } else {
@@ -339,7 +339,7 @@ class database extends Step
     }
     
     public function dbExists() {
-    	return $this->util->dbHandler->useDb();
+    	return $this->util->dbUtilities->useDb();
     }
     
     public function match($str1, $str2) {
@@ -500,7 +500,6 @@ class database extends Step
 	* @return object SimpleXmlObject
 	*/
     public function readXml() {
-//    	echo CONF_DIR."databases.xml";
         $simplexml = simplexml_load_file(CONF_DIR."databases.xml");
 
         return $simplexml;
@@ -583,7 +582,7 @@ class database extends Step
 	* @return object mysql connection
 	*/
     private function connectMysql() {
-		$this->util->dbHandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
+		$this->util->dbUtilities->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
     }
     
     /**
@@ -642,7 +641,7 @@ class database extends Step
 				$this->error['con'] = "Could not create database: ";
 		    }
 		}
-		$this->util->dbHandler->clearErrors();
+		$this->util->dbUtilities->clearErrors();
 		if(!$this->createDmsUser()) { // Create dms users
 			$this->error['con'] = "Could not create database users ";
 		}
@@ -666,8 +665,7 @@ class database extends Step
 	*/
     private function create() {
         $sql = "CREATE DATABASE {$this->dname}";
-        if ($this->util->dbHandler->query($sql)) {
-			
+        if ($this->util->dbUtilities->query($sql)) {	
             return true;
         }
 
@@ -683,7 +681,7 @@ class database extends Step
 	* @return boolean
 	*/
     private function usedb() {
-		if($this->util->dbHandler->useDb()) {
+		if($this->util->dbUtilities->useDb()) {
             return true;
         } else {
             $this->error['con'] = "Error using database: {$this->dname}";
@@ -702,7 +700,7 @@ class database extends Step
     private function dropdb() {
         if($this->ddrop) {
             $sql = "DROP DATABASE {$this->dname};";
-			if(!$this->util->dbHandler->query($sql)) {
+			if(!$this->util->dbUtilities->query($sql)) {
                 $this->error['con'] = "Cannot drop database: {$this->dname}";
                 return false;
             }
@@ -724,7 +722,7 @@ class database extends Step
     private function createDmsUser() {
 		$user1 = "GRANT SELECT, INSERT, UPDATE, DELETE ON {$this->dname}.* TO {$this->dmsusername}@{$this->dhost} IDENTIFIED BY \"{$this->dmsuserpassword}\";";
       	$user2 = "GRANT ALL PRIVILEGES ON {$this->dname}.* TO {$this->dmsname}@{$this->dhost} IDENTIFIED BY \"{$this->dmspassword}\";";
-      if ($this->util->dbHandler->query($user1) && $this->util->dbHandler->query($user2)) {
+      if ($this->util->dbUtilities->query($user1) && $this->util->dbUtilities->query($user2)) {
               return true;
           } else {
             $this->error['con'] = "Could not create users for database: {$this->dname}";
@@ -751,7 +749,7 @@ class database extends Step
 			while (!feof($handle)) {
     			$query.= fgets($handle, 4096);
     				if (substr(rtrim($query), -1) == ';') {
-     					$this->util->dbHandler->query($query);
+     					$this->util->dbUtilities->query($query);
      					$query = '';
     				}
 			}
@@ -778,9 +776,9 @@ class database extends Step
         $sqlFile = $dbMigrate['dumpLocation'];
     	$this->parse_mysql_dump($sqlFile);
     	$dropPluginHelper = "TRUNCATE plugin_helper;";
-    	$this->util->dbHandler->query($dropPluginHelper);
+    	$this->util->dbUtilities->query($dropPluginHelper);
     	$updateUrls = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "urls";';
-    	$this->util->dbHandler->query($updateUrls);
+    	$this->util->dbUtilities->query($updateUrls);
     	return true;
     }
 	/**
@@ -793,7 +791,7 @@ class database extends Step
 	*/
     private function closeMysql() {
         try {
-            $this->util->dbHandler->close();
+            $this->util->dbUtilities->close();
         } catch (Exeption $e) {
             $this->error['con'] = "Could not close: " . $e;
         }
@@ -844,7 +842,7 @@ class database extends Step
     	$this->dpassword = 'root';
     	$this->dname = 'dms_install';
     	$this->dbbinary = 'mysql';
-    	$this->util->dbHandler->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
+    	$this->util->dbUtilities->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
     	$this->createSchema();
     	echo 'Schema loaded<br>';
     }

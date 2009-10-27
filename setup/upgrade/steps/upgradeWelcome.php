@@ -40,6 +40,9 @@
 * @version Version 0.1
 */
 
+//require_once('../../config/dmsDefaults.php');
+//require_once KT_LIB_DIR . '/authentication/authenticationutil.inc.php';
+
 class upgradeWelcome extends step {
 
     protected $silent = false;
@@ -91,15 +94,9 @@ class upgradeWelcome extends step {
 			$dconf = $ini->getSection('db');
     		$this->dbhandler->load($dconf['dbHost'], $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
     	}
-        $sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
-        $res = $this->dbhandler->query($sQuery);
-        $ass = $this->dbhandler->fetchAssoc($res);
-        if(isset($ass[0]['match_count'])) {
-        	if($ass[0]['match_count'])
-        		return true;
-        }
         $this->error[] = 'Could Not Authenticate User';
         return false;
+
     }
 
     public function getErrors() {

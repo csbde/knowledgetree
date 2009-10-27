@@ -40,12 +40,14 @@
 * @version Version 0.1
 */
 
+require_once("../wizard/iniUtilities.php");
+require_once("../wizard/dbUtilities.php");
 
 class InstallUtil {
 	
 	private $salt = 'installers';
-	public $dbHandler = null;
-	public $iniHandler = null;
+	public $dbUtilities = null;
+	public $iniUtilities = null;
 	
 	/**
 	* Constructs installation object
@@ -54,8 +56,8 @@ class InstallUtil {
 	* @access public
  	*/
 	public function __construct() {
-		$this->dbHandler = new dbUtilities();
-		$this->iniHandler = new iniUtilities();
+		$this->dbUtilities = new dbUtilities();
+		$this->iniUtilities = new iniUtilities();
 	}
 
 	/**

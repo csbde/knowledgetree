@@ -225,8 +225,10 @@ class migrateInstallation extends step
     }
     
     private function loadConfig($path) {
-    	$ini = $this->util->loadInstallIni($path);
-    	$dbSettings = $ini->getSection('db');
+//    	$ini = $this->util->loadInstallIni($path);
+		$this->util->iniUtilities->load($path);
+//    	$dbSettings = $ini->getSection('db');
+		$dbSettings = $this->util->iniUtilities->getSection('db');
     	$this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
     								'dbName'=> $dbSettings['dbName'],
     								'dbUser'=> $dbSettings['dbUser'],
@@ -235,14 +237,16 @@ class migrateInstallation extends step
     								'dbAdminUser'=> $dbSettings['dbAdminUser'],
     								'dbAdminPass'=> $dbSettings['dbAdminPass'],
     	);
-		$ktSettings = $ini->getSection('KnowledgeTree');
+    	$ktSettings = $this->util->iniUtilities->getSection('KnowledgeTree');
+//		$ktSettings = $ini->getSection('KnowledgeTree');
 		$froot = $ktSettings['fileSystemRoot'];
 		if ($froot == 'default') {
 			$froot = $this->location;
 		}
 		$this->ktSettings = array('fileSystemRoot'=> $froot,
     	);
-    	$urlPaths = $ini->getSection('urls');
+//    	$urlPaths = $ini->getSection('urls');
+		$urlPaths = $this->util->iniUtilities->getSection('urls');
     	$varDir = $froot.DS.'var';
 		$this->urlPaths = array(array('name'=> 'Var Directory', 'path'=> $varDir),
 									array('name'=> 'Log Directory', 'path'=> $varDir.DS.'log'),
