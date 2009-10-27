@@ -40,10 +40,10 @@
 * @version Version 0.1
 */
 
-require_once('../../config/dmsDefaults.php');
-require_once(KT_LIB_DIR . '/config/config.inc.php');
-require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
-require_once(KT_LIB_DIR . '/upgrades/upgrade.inc.php');
+//require_once('../../config/dmsDefaults.php');
+//require_once(KT_LIB_DIR . '/config/config.inc.php');
+//require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
+//require_once(KT_LIB_DIR . '/upgrades/upgrade.inc.php');
 
 class upgradeDatabase extends Step 
 {

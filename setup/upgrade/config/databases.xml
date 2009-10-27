@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : database.xml
+    Created on : 01 July 2009, 1:13 PM
+    Author     : KnowledgeTree Team
+    Description: Installer Default MySql Database Configuration
+-->
+
+<database>
+    <dtypes>
+        <dtype>mysql</dtype>
+    </dtypes>
+    <dhost>localhost</dhost>
+    <dport>3306</dport>
+    <dname>dms</dname>
+    <duname>root</duname>
+    <dmsadminuser>dmsadmin</dmsadminuser>
+    <dmsaupass>js9281djw</dmsaupass>
+    <dmsuser>dms</dmsuser>
+    <dmsupass>djw9281js</dmsupass>
+</database>

@@ -576,7 +576,7 @@ class configuration extends Step
 		return true;
     }
     
-    private function readConfigPathIni() {
+    public function readConfigPathIni() {
     	if(isset($this->temp_variables['paths']['configFile']['path'])) {
     		return $this->temp_variables['paths']['configFile']['path'];
     	}

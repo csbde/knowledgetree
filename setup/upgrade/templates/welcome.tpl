@@ -9,9 +9,14 @@
         <p class="empty_space"> Only administrator users may access the upgrade wizard. </p>
 		<div class="demo">
             <table>
-                <tr><td>Username<td><input name=username>
-                <tr><td>Password<td><input name=password type="password">
+                <tr><td>Username</td><td><input name=username></td></tr>
+                <tr><td>Password</td><td><input name=password type="password"></td></tr>
+                <?php if (!empty($errors)) { ?><tr><td></td><td><span class="error">Could Not Authenticate User</span></td></tr> <?php } ?>
+                <?php
+//                	print_r($errors);
+                ?>
             </table>
+            
         </div>
 	</div>
 	<?php

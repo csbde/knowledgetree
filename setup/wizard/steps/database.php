@@ -441,6 +441,8 @@ class database extends Step
             $this->temp_variables['tprefix'] = '';
             $this->temp_variables['ddrop'] = false;
         }
+        
+        return $this->temp_variables;
     }
 
 	/**
@@ -493,11 +495,12 @@ class database extends Step
 	* Read xml config file
 	*
 	* @author KnowledgeTree Team
-	* @access private
+	* @access public
 	* @params none
 	* @return object SimpleXmlObject
 	*/
-    private function readXml() {
+    public function readXml() {
+//    	echo CONF_DIR."databases.xml";
         $simplexml = simplexml_load_file(CONF_DIR."databases.xml");
 
         return $simplexml;

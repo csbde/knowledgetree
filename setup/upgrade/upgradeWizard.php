@@ -117,7 +117,7 @@ class UpgradeWizard {
 			$ins = new Upgrader(); // Instantiate the upgrader
 			$ins->resolveErrors($response); // Run step
 		} else {
-			$ins = new Upgrader(new UpgradeSession()); // Instantiate the upgrader and pass the session class
+			$ins = new Upgrader(new session()); // Instantiate the upgrader and pass the session class
 			$ins->step(); // Run step
 		}
 	}
