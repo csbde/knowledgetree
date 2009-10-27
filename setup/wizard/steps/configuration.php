@@ -368,8 +368,7 @@ class configuration extends Step
                     if($value == 'no'){
                         $value = 'false';
                     }
-                    echo "{$item['section']}, {$item['setting']}, {$value}<br/>";
-                        $this->util->iniHandler->updateItem($item['section'], $item['setting'], $value);
+                    $this->util->iniHandler->updateItem($item['section'], $item['setting'], $value);
                     break;
                 case 'db':
                     $value = mysql_real_escape_string($item['value']);
