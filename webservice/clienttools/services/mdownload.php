@@ -52,7 +52,7 @@ require_once ('../../../ktwebservice/KTDownloadManager.inc.php');
 /*****************************************************************************************
  	Configuration
  *****************************************************************************************/
-define('MPDL_MIN_CHUNK_SIZE',102400);				//The Minimum Chunk Size
+define('MPDL_MIN_CHUNK_SIZE',1024);				//The Minimum Chunk Size
 define('MPDL_JSON_PREFIX','JSON::');				//A Prefix to JSON Responses
 
 

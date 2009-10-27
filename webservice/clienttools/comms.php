@@ -2,6 +2,8 @@
 include_once('../../ktapi/ktapi.inc.php');
 error_reporting(E_ERROR);
 
+define('COMMS_DEBUG',true);
+
 /**
  * Intercept Errors and Exceptions and provide a json response in return.
  * TODO: Make the json response 1. an object of its own and 2. versionable.

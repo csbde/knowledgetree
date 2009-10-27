@@ -14,6 +14,8 @@ class jsonResponseObject{
 	public $additional=array();
 	public $isDataSource=false;
 	
+	public $includeDebug=false;
+	
 	public $response=array(
 		'requestName'		=>'',
 		'errors'			=>array(
@@ -71,6 +73,7 @@ class jsonResponseObject{
 			'request'	=>$this->request,
 			'debug'		=>$this->debug,
 		),$this->additional);
+		if(!$this->includeDebug) unset($response['debug']);
 		
 		if($this->isDataSource){
 			$response=json_encode($response['data']);
