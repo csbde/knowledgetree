@@ -159,9 +159,33 @@ class openofficeValidation extends serviceValidation {
 				return $pathToBinary;
 			}
 		}
-		
+		$pathToBinary = $this->useZendOffice(); // Check for openoffice in zend
+		if(file_exists($pathToBinary)) {
+			return $pathToBinary;
+		}
+			
 		return false;
 	}
+	
+	public function useZendOffice() {
+	    if($this->util->installEnvironment() == 'Zend') {
+	    	if(WINDOWS_OS) { // For Zend Installation only
+				$sysdir = explode(DS, SYSTEM_DIR);
+				array_pop($sysdir);
+				array_pop($sysdir);
+				$zendsys = '';
+				foreach ($sysdir as $k=>$v) {
+					$zendsys .= $v.DS;
+				}
+				$soffice = $zendsys."openoffice".DS."program".DS."soffice.exe";
+				if(file_exists($soffice))
+					return $soffice;
+	    	}
+	    }
+	    
+	    return false;
+	}
+	
    	/**
     * Set all silent mode varibles
     *

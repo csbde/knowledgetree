@@ -355,6 +355,25 @@ class luceneValidation extends serviceValidation {
     	}    	
     }
     
+    public function useZendJava() {
+	    if($this->util->installEnvironment() == 'Zend') {
+	    	if(WINDOWS_OS) { // For Zend Installation only
+				$sysdir = explode(DS, SYSTEM_DIR);
+				array_pop($sysdir);
+				array_pop($sysdir);
+				$zendsys = '';
+				foreach ($sysdir as $k=>$v) {
+					$zendsys .= $v.DS;
+				}
+				$java = $zendsys."jre".DS."bin".DS."java.exe";
+				if(file_exists($java))
+					return $java;
+	    	}
+	    }
+	    
+	    return false;
+    }
+    
    	/**
 	* Attempts to use user input and configure java settings
 	*
@@ -374,11 +393,24 @@ class luceneValidation extends serviceValidation {
     	if(WINDOWS_OS) { 
     		$cmd = "\"$javaExecutable\" -cp \"".SYS_DIR.";\" javaVersion \"".$this->outputDir."outJV\""." \"".$this->outputDir."outJVHome\"";
     		$func = OS."ReadJVFromFile";
-    		if($this->$func($cmd)) return true;
+    		if($this->$func($cmd)) {
+    			return true;
+    		} else {
+    			$this->java = $this->useZendJava(); // Java not installed
+    			$javaExecutable = $this->java;
+    			$cmd = "\"$javaExecutable\" -cp \"".SYS_DIR.";\" javaVersion \"".$this->outputDir."outJV\""." \"".$this->outputDir."outJVHome\"";
+    			if($this->$func($cmd)) {
+    				return true;
+    			}
+    		}
     	} else {
     		$cmd = "\"$javaExecutable\" -version > ".$this->outputDir."outJV 2>&1 echo $!";
     		$func = OS."ReadJVFromFile";
-    		if($this->$func($cmd)) return true;
+    		if($this->$func($cmd)) {
+    			return true; 
+    		} else {
+				// TODO: Not sure
+    		}
     	}
 
 		$this->javaVersionInCorrect();

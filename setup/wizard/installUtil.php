@@ -748,17 +748,17 @@ class InstallUtil {
      */
     public function useZendPhp() {
 	    if($this->installEnvironment() == 'Zend') {
-	    	if(WINDOWS_OS) {
+	    	if(WINDOWS_OS) { // For Zend Installation only
 				$sysdir = explode(DS, SYSTEM_DIR);
-				array_pop($sysdir);
-				array_pop($sysdir);
 				array_pop($sysdir);
 				array_pop($sysdir);
 				$zendsys = '';
 				foreach ($sysdir as $k=>$v) {
 					$zendsys .= $v.DS;
 				}
-				return $zendsys."ZendServer".DS."bin".DS;
+				$bin = $zendsys."ZendServer".DS."bin".DS;
+				if(file_exists($bin))
+					return $bin;
 	    	} else {
 	    		return DS."usr".DS."local".DS."zend".DS."bin".DS;
 	    	}

@@ -209,6 +209,9 @@ class windowsScheduler extends windowsService {
             		echo '<pre>';
             		print_r(array('service' => $this->name, 'display' => $this->name, 'path' => $this->getSchedulerScriptPath()));
     	            echo '</pre>';
+    	            echo '<pre>';
+    	            print_r(file_get_contents($this->getSchedulerScriptPath()));
+    	            echo '</pre>';
             		return ;
             	}
     			$response = win32_create_service(array(
