@@ -368,29 +368,48 @@ class kt extends client_service  {
 		}
 		$items[]=array("name"=>"__document_type", "index"=>0, "value"=>$document_type, "control_type"=>"lookup", "selection"=>$json_document_types);
 
+		foreach ($detail as $fieldset) {
+			foreach ($fieldset['fields'] as $field)	{
 
-		for($i=0;$i<count($detail);$i++) {
+				$prepArray = array(
+                    'fieldset' => $fieldset['fieldset'],
+                    'name' => $field['name'],
+                    
+                    // Change for value. If blank value is set to 1, change value to ''
+                    // Overcomes issue of n/a
+                    'value' => ($document_id > 0 ? ($field['blankvalue'] == '1' ? '' : $field['value']) : ''),
+                    
+                    'description' => $field['description'],
+                    'control_type' => $field['control_type'],
+                    'selection' => $field['selection'],
+                    'required' => $field['required'],
+                    'blankvalue' => $field['blankvalue'],
+                    'index' => $index
+                );
+                
+                // Small Adjustment for multiselect to real type
+                if ($field['control_type'] == 'multiselect') {
+                    $prepArray['control_type'] = $field['options']['type'];
+                }
+		
+                
+				if (isset($field['options']['ishtml'])) {
+					$prepArray['ishtml'] = $field['options']['ishtml'];
+				} else {
+					$prepArray['ishtml'] = '0';
+				}
+				
+				if (isset($field['options']['maxlength'])) {
+					$prepArray['maxlength'] = $field['options']['maxlength'];
+				} else {
+					$prepArray['maxlength'] = '-1';
+				}
+                
+                $items[] = $prepArray;
+                $index++;
+            }
+        }
 
-			for($j=0;$j<count($detail[$i]['fields']);$j++)
-			{
-				$items[]=array(
-				'fieldset'=>$detail[$i]['fieldset'],
-				'name'=>$detail[$i]['fields'][$j]['name'],
-
-                // Change for value. If blank value is set to 1, change value to ''
-                // Overcomes issue of n/a
-				'value'=>($document_id > 0 ? ($detail[$i]['fields'][$j]['blankvalue']=='1' ? '' : $detail[$i]['fields'][$j]['value']) : ''),
-
-				'description'=>$detail[$i]['fields'][$j]['description'],
-				'control_type'=>$detail[$i]['fields'][$j]['control_type'],
-				'selection'=>$detail[$i]['fields'][$j]['selection'],
-				'required'=>$detail[$i]['fields'][$j]['required'],
-				'blankvalue'=>$detail[$i]['fields'][$j]['blankvalue'],
-				'index'=>$index
-				);
-				$index++;
-			}
-		}
 
 
 		$this->setResponse(array('id'=>$title, 'items'=>$items, 'count'=>count($items)));
