@@ -25,9 +25,9 @@
             <repositoryDescription>KnowledgeTree Repository</repositoryDescription>
             <vendorName>KnowledgeTree</vendorName>
             <productName>KnowledgeTree Document Management System</productName>
-            <productVersion>3.6.3</productVersion>
+            <productVersion>3.7</productVersion>
             <rootFolderId>Root Folder</rootFolderId>
-            <cmisVersionsSupported>0.61c</cmisVersionsSupported>
+            <cmisVersionsSupported>0.61</cmisVersionsSupported>
         </repositoryInfo>
         <repositoryCapabilities>
             <capabilityMultifiling>false</capabilityMultifiling>

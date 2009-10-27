@@ -14,3 +14,4 @@ clienttools/Office
 *.out
 baobab/
 ktoffice*/
+setup/wizard/install.lock

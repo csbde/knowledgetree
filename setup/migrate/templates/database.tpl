@@ -7,12 +7,12 @@
 <!--		user on the database server are required in order to be able to configure and migrate the database.-->
 		</div>
 		<div id="step_content_<?php echo $step_name; ?>" class="step">
-<p class="empty_space">The Setup Wizard will now migrate your existing database to the new Zend Server stack. This process may take
+<p class="description">The Setup Wizard will now migrate your existing database to the new Zend Server stack. This process may take
                         several minutes to complete.</p><br />
                         <span class="error">Please ensure that your database is backed up before proceeding. If you need assistance with backing up see the &nbsp;<a class="description_click" target="_blank" href="http://wiki.knowledgetree.com/Backing_up_and_restoring_KnowledgeTree">'Backing up and restoring KnowledgeTree'</a>&nbsp; wiki entry.
 </span>
                         <br /><br />
-                        <p class="empty_space">Click <b>Next</b> to continue.</p>
+                        <p class="description">Click <b>Next</b> to continue.</p>
 			<?php if(isset($errors)) { ?>
 				<?php
 					foreach ($errors as $error) {

@@ -692,43 +692,6 @@ class InstallUtil {
 		return '';
     }
 
-/*    function getOpenOffice() {
-    	$cmd = "whereis soffice";
-		$res = $this->getOpenOfficeHelper($cmd);
-		if($res != '' && preg_match('/soffice/', $res)) {
-			return $res;
-		}
-		$cmd = "which soffice";
-		$res = $this->getOpenOfficeHelper($cmd);
-		if($res != '') {
-			return $res;
-		}
-		$cmd = "locate soffice";
-		$res = $this->getOpenOfficeHelper($cmd);
-		if($res != '') {
-			return $res;
-		}
-		
-		return 'soffice';
-    }*/
-
-/*   function getOpenOfficeHelper($cmd) {
-		$response = $this->pexec($cmd);
-		if(is_array($response['out'])) {
-			if (isset($response['out'][0])) {
-				$broke = explode(' ', $response['out'][0]);
-				foreach ($broke as $r) {
-					$match = preg_match('/bin/', $r);
-					if($match) {
-						return preg_replace('/soffice:/', '', $r);
-					}
-				}
-			}
-		}
-
-		return '';
-    }*/
-
     /**
      * Deletes migration lock file if a clean install is chosen
      * This is in case someone changes their mind after choosing upgrade/migrate and clicks back up to this step
@@ -785,17 +748,17 @@ class InstallUtil {
      */
     public function useZendPhp() {
 	    if($this->installEnvironment() == 'Zend') {
-	    	if(WINDOWS_OS) {
+	    	if(WINDOWS_OS) { // For Zend Installation only
 				$sysdir = explode(DS, SYSTEM_DIR);
-				array_pop($sysdir);
-				array_pop($sysdir);
 				array_pop($sysdir);
 				array_pop($sysdir);
 				$zendsys = '';
 				foreach ($sysdir as $k=>$v) {
 					$zendsys .= $v.DS;
 				}
-				return $zendsys."ZendServer".DS."bin".DS;
+				$bin = $zendsys."ZendServer".DS."bin".DS;
+				if(file_exists($bin))
+					return $bin;
 	    	} else {
 	    		return DS."usr".DS."local".DS."zend".DS."bin".DS;
 	    	}

@@ -54,19 +54,14 @@ class UpgradeInstallation extends step
 
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"installation");
-//        parent::doStep();
         if($this->next()) {
             return 'next';
         }
         else if ($this->restore()) {
-//            header('Location: index.php?step_name=restore');
             $this->util->redirect("index.php?step_name=restore");
-//            exit;
         }
         else if ($this->upgrade()) {
-            //header('Location: index.php?step_name=database');
             $this->util->redirect("index.php?step_name=database");
-//            exit;
         }
         
         return 'landing';

@@ -377,9 +377,31 @@ class windowsLucene extends windowsService {
 		} elseif (file_exists($this->getJavaBin().DS."bin".DS."server".DS."jvm.dll")) {
 			$this->javaJVM = $this->getJavaBin().DS."bin".DS."server".DS."jvm.dll";
 		} else {
-			return false;
+			$javaJVM = $this->useZendJVM();
+			if(file_exists($javaJVM)) {
+				$this->javaJVM = $javaJVM;
+			}
 		}
 	}
+	
+    public function useZendJVM() {
+	    if($this->util->installEnvironment() == 'Zend') {
+	    	if(WINDOWS_OS) { // For Zend Installation only
+				$sysdir = explode(DS, SYSTEM_DIR);
+				array_pop($sysdir);
+				array_pop($sysdir);
+				$zendsys = '';
+				foreach ($sysdir as $k=>$v) {
+					$zendsys .= $v.DS;
+				}
+				$jvm = $zendsys."jre".DS."bin".DS."client".DS."jvm.dll";
+				if(file_exists($jvm))
+					return $jvm;
+	    	}
+	    }
+	    
+	    return false;
+    }
 	
 	/**
 	* Get Java JVM path

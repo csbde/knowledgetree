@@ -71,6 +71,14 @@ i18n['close'] = '{i18n}close{/i18n}';
 
 // strings for file: resources/js/kt3calendar.js
 
+// strings for file: resources/js/kt_bulkupload.js
+
+// strings for file: resources/js/kt_hideadminlink.js
+
+// strings for file: resources/js/kt_hidelink.js
+
+// strings for file: resources/js/kt_tinymce_init.js
+
 // strings for file: resources/js/loader.js
 
 // strings for file: resources/js/login_loader.js

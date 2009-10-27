@@ -127,8 +127,7 @@ class CMISNavigationService {
         // if this is not a folder, cannot get children
         $folderId = CMISUtil::decodeObjectId($folderId, $type);
         // NOTE this will quite possibly break the webservices
-        if ($type != 'Folder')
-        {
+        if ($type != 'Folder') {
             return $children;
         }
 

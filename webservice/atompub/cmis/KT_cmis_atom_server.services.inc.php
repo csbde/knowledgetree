@@ -64,7 +64,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         //      node request e.g.: node/F2
         if (urldecode($this->params[0]) == 'Root Folder')
         {
-            $folderId = CMISUtil::encodeObjectId('Folder', 1);
+            $folderId = CMISUtil::encodeObjectId(FOLDER, 1);
             $folderName = urldecode($this->params[0]);
         }
         else if ($this->params[0] == 'path')
