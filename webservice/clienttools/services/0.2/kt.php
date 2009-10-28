@@ -741,6 +741,43 @@ class kt extends client_service  {
 		$this->setResponse($finalArray);
 		return true;
 	}
+
+    function get_all_explorer_policies(){
+		$config=KTConfig::getSingleton();
+		$this->addDebug('KTConfig Singleton',$config);
+		
+		$policies=array('allowRememberPassword', 'explorerMetadataCapture', 'officeMetadataCapture', 'captureReasonsCheckin', 'captureReasonsCheckout', 'captureReasonsDelete', 'captureReasonsCancelCheckout', 'captureReasonsCopyInKT', 'captureReasonsMoveInKT');
+		
+		$returnPolicies=array();
+		$test = $config->get('clientToolPolicies/allowRememberPassword');
+		global $default;
+		$default->log->error('I am here-'.$test);
+		foreach ($policies as $policy_name)
+		{
+			$policyInfo=array(
+						'name'=>$policy_name,
+						'value'=>serviceHelper::bool2str($config->get('clientToolPolicies/'.$policy_name)),
+						'type'=>'boolean'
+					);
+			
+			$returnPolicies[$policy_name] =$policyInfo;
+		}
+		
+		$languages=$this->get_languages(true);
+		
+		$metadata=array('totalProperty'=>'resultsCounter', 'root'=>'languages', 'fields'=>array('isoCode', 'language'));
+		
+		$finalArray=array();
+		$finalArray['metaData']=$metadata;
+		$finalArray['policies']=$returnPolicies;
+		$finalArray['languages']=$languages['languages'];
+		$finalArray['defaultLanguage']=$languages['defaultLanguage'];
+		$finalArray['resultsCounter']=$languages['count'];
+		
+		
+		$this->setResponse($finalArray);
+		return true;
+	}
 	
 	public function switchlang($params){
 		setcookie("kt_language", $params['lang'], 2147483647, '/');
