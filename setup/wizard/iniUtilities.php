@@ -67,23 +67,23 @@ class iniUtilities {
     function backupIni($iniFile)
     {
     	$content = file_get_contents($iniFile);
-    	if ($content === false)
+    	if (!$content === false)
     	{
-    		return false;
-    	}
-    	$date = date('YmdHis');
-
-    	$backupFile = $iniFile . '.' .$date;
-        if (is_writeable($backupFile)) {
-    	    file_put_contents($backupFile, $content);
-        }
+	    	$date = date('YmdHis');
+	
+	    	$backupFile = $iniFile . '.' .$date;
+	        if (is_writeable($backupFile)) {
+	    	    file_put_contents($backupFile, $content);
+	        }    		
+    	} 
+    	return false;
     }
 
     function read($iniFile) {
         $iniArray = file($iniFile);
         $section = '';
         foreach($iniArray as $iniLine) {
-            $this->lineNum++;
+            ++$this->lineNum;
             $iniLine = trim($iniLine);
             $firstChar = substr($iniLine, 0, 1);
             if($firstChar == ';') {
@@ -163,12 +163,12 @@ class iniUtilities {
     }
 
     function itemExists($checkSection, $checkItem) {
-
         $this->exists = '';
         foreach($this->cleanArray as $section => $items) {
             if($section == $checkSection) {
                 $this->exists = 'section';
-                foreach ($items as $key => $value) {
+                $items = array_flip($items);
+                foreach ($items as $key) {
                     if($key == $checkItem) {
                         return true;
                     }

@@ -312,23 +312,23 @@ class configuration extends Step
         $paths = $conf['paths'];
         if ($this->util->isMigration()) { // Check if its an upgrade
         	$this->readInstallation();
-        	$configPath = $paths['configFile']['path'];
+        	$this->confpaths['configIni'] = $paths['configFile']['path'];
         } else {
         	$this->readConfigPath(); // initialise writing to config.ini
         }
         $this->getFromConfigPath(); // Sets config Paths
-        if(file_exists($configPath)) {
-            $this->util->iniUtilities->load($configPath);
+        if(file_exists($this->confpaths['configIni'])) {
+        	$this->util->iniUtilities->load($this->confpaths['configIni']);
         }
-        $this->writeUrlSection();
-        $this->writeDBSection($server);
-		$this->writeDBPathSection($paths);
-        if(!$this->util->iniUtilities === false){ // write out the config.ini file
-            $this->util->iniUtilities->write();
+        if(!$this->util->iniUtilities=== false){ // write out the config.ini file
+	        $this->writeUrlSection();
+	        $this->writeDBSection($server);
+			$this->writeDBPathSection($paths);
+			$this->util->iniUtilities->write();
         }
         $this->util->dbUtilities->close(); // close the database connection
-        $this->writeCachePath(); // Write cache path file
-        $this->writeConfigPath($configPath); // Write config file
+        $this->writeCachePath($this->getCachePath(), $paths['cacheDirectory']['path']); // Write cache path file
+        $this->writeConfigPath($this->getContentPath(), $this->confpaths['configIni']); // Write config file
     }
 
     private function writeUrlSection() {

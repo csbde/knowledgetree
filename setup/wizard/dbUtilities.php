@@ -105,15 +105,13 @@ class dbUtilities {
 	}
 	
 	public function load($dhost = 'localhost', $duname, $dpassword, $dbname) {
-		if($this->isConnected($dhost, $duname, $dpassword, $dbname)) return true;
-		$this->dbhost = $dhost;
-		$this->dbuname = $duname;
-		$this->dbpassword = $dpassword;
-		$this->dbconnection = @mysql_connect($dhost, $duname, $dpassword);
-		if(!$this->dbconnection) {
-			$this->error[] = @mysql_error();
+		if(!$this->isConnected($dhost, $duname, $dpassword, $dbname)) {
+			$this->dbhost = $dhost;
+			$this->dbuname = $duname;
+			$this->dbpassword = $dpassword;
+			$this->dbconnection = @mysql_connect($dhost, $duname, $dpassword);
+			$this->dbname = $dbname;
 		}
-		$this->dbname = $dbname;
 	}
 
 	public function isConnected($dhost = 'localhost', $duname, $dpassword, $dbname) {
@@ -235,6 +233,9 @@ class dbUtilities {
      * @return array.
      */
     public function getErrors() {
+		if(!$this->dbconnection) {
+			$this->error[] = @mysql_error();
+		}
     	return $this->error;
     }
     

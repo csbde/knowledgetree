@@ -63,8 +63,8 @@ function __autoload($class) { // Attempt and autoload classes
 		if(preg_match('/Helper/', $class)) {
 			require_once(HELPER_DIR."$class.php");
 		}
-		return null;
 	}
+	return false;
 }
 
 class InstallWizard {
@@ -263,8 +263,6 @@ class InstallWizard {
 					return true;
 				break;
 		}
-		
-		return $res;
 	}
 	
 	/**
