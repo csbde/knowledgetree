@@ -84,7 +84,7 @@ class GetHtmlFieldsDispatcher extends KTDispatcher {
 		$activesets = KTFieldset::getForDocumentType($iDocumentTypeID);
 		
 		foreach ($activesets as $oFieldset) {
-			$htmlFieldIds = kt_array_merge($htmlFields, $oFReg->getHtmlFields($oFieldset));
+			$htmlFieldIds = kt_array_merge($htmlFieldIds, $oFReg->getHtmlFields($oFieldset));
 		}
 		
 		$jsOptions = '{ "htmlId" : {';
