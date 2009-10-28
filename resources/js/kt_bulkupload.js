@@ -27,8 +27,6 @@ function swapInItem(docId, elementId, req) {
             genericFields += id + ',';
 	    });
         
-        alert(genericFields);
-        
         var elems = jQuery(document).find(".kt_date_field");
     	for (i = 0; i < elems.length; i++) {
     		var fieldName = elems[i].id;
