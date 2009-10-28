@@ -101,20 +101,19 @@ class GetHtmlFieldsDispatcher extends KTDispatcher {
 
 	/**
 	 * Returns a JSON object containing a list of fields belonging to a generic fieldset 
-	 * for the given DocumentId
 	 * @return JSON Object
 	 *
 	 */
-	function getGenericFields($iDocumentTypeID) {
+	function getGenericFields() {
 		$oFReg =& KTFieldsetRegistry::getSingleton();
-		$activesets = KTFieldset::getForDocumentType($iDocumentTypeID);
+		$activesets = KTFieldset::getGenericFieldsets();
 		
 		$fields = array();
 		foreach ($activesets as $oFieldset) {
-			$fieldIds = kt_array_merge($fields, $oFReg->getGenericFields($oFieldset));
+			$fieldIds = kt_array_merge($fieldIds, $oFReg->getGenericFields($oFieldset));
 		}
 		
-		$jsOptions = '{ "htmlId" : {';
+		$jsOptions = '{ "genericId" : {';
 		
 		foreach($fieldIds as $fieldId) {
 			$jsOptions .= "'$fieldId' : '$fieldId',";
