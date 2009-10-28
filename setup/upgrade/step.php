@@ -110,7 +110,7 @@ class Step
     
     public function __construct() {
     	$this->util = new UpgradeUtil();
-    	$this->dbhandler = $this->util->loadInstallDBUtil();
+    	//$this->dbhandler = $this->util->dbUtilities;
     }
     
 	/**

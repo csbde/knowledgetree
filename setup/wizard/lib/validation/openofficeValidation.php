@@ -154,7 +154,7 @@ class openofficeValidation extends serviceValidation {
 			$bin = "soffice";
 		}
 		foreach ($locations as $loc) {
-			$pathToBinary = $loc.$bin;
+			$pathToBinary = $loc.DS.$bin;
 			if(file_exists($pathToBinary)) {
 				return $pathToBinary;
 			}

@@ -127,7 +127,6 @@ class Step
 //    public $dbhandler;
     
     public function __construct() {
-//    	$this->dbhandler = new dbUtilities();
     	$this->util = new InstallUtil();
     }
 	/**

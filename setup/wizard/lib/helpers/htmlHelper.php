@@ -41,7 +41,7 @@
 */
 class htmlHelper {
 	
-	var $tags = array(
+	private $tags = array(
 		'meta' => '<meta%s/>',
 		'metalink' => '<link href="%s"%s/>',
 		'link' => '<a href="%s"%s>%s</a>',

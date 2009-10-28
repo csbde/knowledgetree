@@ -106,13 +106,14 @@ class unixOpenOffice extends unixService {
     	}
     }
     
-    public function status($updrade = false) {
+    public function status() {
     	sleep(1);
 		$cmd = "ps ax | grep soffice";
 		$response = $this->util->pexec($cmd);
     	if(is_array($response['out'])) {
     		if(count($response['out']) > 1) {
     			foreach ($response['out'] as $r) {
+    				$matches = false;
     				preg_match('/grep/', $r, $matches); // Ignore grep
     				if(!$matches) {
     					return 'STARTED';
@@ -140,20 +141,13 @@ class unixOpenOffice extends unixService {
     		$cmd = "nohup ".$this->getBin().' -nofirststartwizard -nologo -headless -"accept=socket,host=localhost,port=8100;urp;StarOffice.ServiceManager" '." > /dev/null 2>&1 & echo $!";
 	    	if(DEBUG) {
 	    		echo "Command : $cmd<br/>";
-	    		return ;
+	    		return false;
 	    	}
-	    	$response = $this->util->pexec($cmd);
-
-	    	return $response;
-    	} elseif ($state == '') {
-    		// Start Service
-    		return true;
-    	} else {
-    		// Service Running Already
-    		return true;
+	    	
+	    	return $this->util->pexec($cmd);
     	}
     	
-    	return false;
+    	return true;
     }
     
 	/**

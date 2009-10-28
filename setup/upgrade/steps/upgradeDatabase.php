@@ -242,7 +242,9 @@ class upgradeDatabase extends Step
     }
     
      private function readConfig($path) {
-     	$ini = $this->util->loadInstallIni($path);
+     	//$ini = $this->util->loadInstallIni($path);
+     	$ini = $this->util->iniUtilities;
+     	$ini->load($path);
         $dbSettings = $ini->getSection('db');
         $this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
                                     'dbName'=> $dbSettings['dbName'],
