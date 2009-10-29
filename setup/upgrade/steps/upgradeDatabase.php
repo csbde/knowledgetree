@@ -40,12 +40,8 @@
 * @version Version 0.1
 */
 
-//require_once('../../config/dmsDefaults.php');
-//require_once(KT_LIB_DIR . '/config/config.inc.php');
-//require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 define('KT_DIR', SYSTEM_DIR);
 define('KT_LIB_DIR', SYSTEM_DIR.'lib');
-//require_once(SYSTEM_DIR . 'lib/upgrades/upgrade.inc.php');
 
 class upgradeDatabase extends Step 
 {
@@ -93,10 +89,12 @@ class upgradeDatabase extends Step
 	* @var array
 	*/
     public $storeInSession = true;
+    
     public $sysVersion = '';
     protected $silent = false;
     protected $temp_variables = array();
     public $paths = '';
+    
 	/**
 	* Main control of database setup
 	*
@@ -214,6 +212,7 @@ class upgradeDatabase extends Step
 
 		return false;    	
     }
+    
 	/**
 	* Stores varibles used by template
 	*

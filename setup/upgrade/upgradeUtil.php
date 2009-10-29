@@ -116,35 +116,35 @@ class UpgradeUtil extends InstallUtil {
     	return true;
     }
 
-    public function create_restore_stmt($targetfile)
+    public function create_restore_stmt($targetfile, $dbConfig)
     {
-        $oKTConfig =& KTConfig::getSingleton();
+//        $oKTConfig =& KTConfig::getSingleton();
     
-        $adminUser = $oKTConfig->get('db/dbAdminUser');
-        $adminPwd = $oKTConfig->get('db/dbAdminPass');
-        $dbHost = $oKTConfig->get('db/dbHost');
-        $dbName = $oKTConfig->get('db/dbName');
-        $dbPort = trim($oKTConfig->get('db/dbPort'));
+        $adminUser = $dbConfig['dbAdminUser'];
+        $adminPwd = $dbConfig['dbAdminPass'];
+        $dbHost = $dbConfig['dbHost'];
+        $dbName = $dbConfig['dbName'];
+        $dbPort = trim($dbConfig['dbPort']);
         if ($dbPort=='' || $dbPort=='default')$dbPort = get_cfg_var('mysql.default_port');
         if (empty($dbPort)) $dbPort='3306';
-        $dbSocket = trim($oKTConfig->get('db/dbSocket'));
+        $dbSocket = '';
         if (empty($dbSocket) || $dbSocket=='default') $dbSocket = get_cfg_var('mysql.default_socket');
         if (empty($dbSocket)) $dbSocket='../tmp/mysql.sock';
     
         $dir = $this->resolveMysqlDir();
     
-        $info['dir']=$dir;
+        $info['dir'] = $dir;
     
-        $prefix='';
-        if (OS_UNIX) {
+        $prefix = '';
+        if (!WINDOWS_OS) {
             $prefix .= "./";
         }
     
         if (@stat($dbSocket) !== false) {
-            $mechanism="--socket=\"$dbSocket\"";
+            $mechanism = "--socket=\"$dbSocket\"";
         }
         else {
-            $mechanism="--port=\"$dbPort\"";
+            $mechanism = "--port=\"$dbPort\"";
         }
     
         $tmpdir = $this->resolveTempDir();
@@ -152,16 +152,14 @@ class UpgradeUtil extends InstallUtil {
         $stmt = $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism drop  \"$dbName\"<br/>";
         $stmt .= $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism create  \"$dbName\"<br/>";
     
-    
         $stmt .= $prefix ."mysql --user=\"$adminUser\" -p $mechanism \"$dbName\" < \"$targetfile\"\n";
         $info['display']=$stmt;
-    
     
         $stmt = $prefix ."mysqladmin --user=\"$adminUser\" --force --password=\"$adminPwd\" $mechanism drop  \"$dbName\"\n";
         $stmt .= $prefix ."mysqladmin --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism create  \"$dbName\"\n";
     
         $stmt .=  $prefix ."mysql --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism \"$dbName\" < \"$targetfile\"";
-        $info['cmd']=$stmt;
+        $info['cmd'] = $stmt;
         return $info;
     }
     
@@ -169,7 +167,7 @@ class UpgradeUtil extends InstallUtil {
     {
         // possibly detect existing installations:
     
-        if (OS_UNIX) {
+        if (!WINDOWS_OS) {
             $dirs = array('/opt/mysql/bin','/usr/local/mysql/bin');
             $mysqlname ='mysql';
         }
@@ -181,8 +179,9 @@ class UpgradeUtil extends InstallUtil {
             $mysqlname ='mysql.exe';
         }
     
-        $oKTConfig =& KTConfig::getSingleton();
-        $mysqldir = $oKTConfig->get('backup/mysqlDirectory',$mysqldir);
+        // I don't know if this value exists anymore?
+//        $mysqldir = $oKTConfig->get('backup/mysqlDirectory',$mysqldir);
+        $mysqldir = '';
         $dirs[] = $mysqldir;
     
         if (strpos(__FILE__,'knowledgeTree') !== false && strpos(__FILE__,'ktdms') != false) {
@@ -202,14 +201,16 @@ class UpgradeUtil extends InstallUtil {
     
     public function resolveTempDir()
     {
-        if (OS_UNIX) {
+        $dir = '';
+        if (!WINDOWS_OS) {
             $dir='/tmp/kt-db-backup';
         }
         else {
             $dir='c:/kt-db-backup';
         }
-        $oKTConfig =& KTConfig::getSingleton();
-        $dir = $oKTConfig->get('backup/backupDirectory',$dir);
+        
+//        $oKTConfig =& KTConfig::getSingleton();
+//        $dir = $oKTConfig->get('backup/backupDirectory',$dir);
     
         if (!is_dir($dir)) {
                 mkdir($dir);

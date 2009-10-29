@@ -40,8 +40,6 @@
 * @version Version 0.1
 */
 
-//require_once('../../config/dmsDefaults.php');
-
 class upgradeComplete extends Step {
 
     protected $silent = false;

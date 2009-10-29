@@ -382,12 +382,12 @@ class stepAction {
         $step_errors = $this->action->getErrors(); // Get errors
         $step_warnings = $this->action->getWarnings(); // Get warnings
         if($this->displayConfirm()) { // Check if theres a confirm step
-            $template = "templates/{$this->stepName}_confirm.tpl";
+            $template = "templates" . DS . "{$this->stepName}_confirm.tpl";
     	} else {
         	if($this->displayFirst()) {
-            	$template = "templates/{$this->stepName}_confirm.tpl";
+            	$template = "templates" . DS . "{$this->stepName}_confirm.tpl";
         	} else {
-        		$template = "templates/{$this->stepName}.tpl";
+        		$template = "templates" . DS . "{$this->stepName}.tpl";
         	}
     	}
         $step_tpl = new Template($template);
@@ -402,7 +402,7 @@ class stepAction {
             }
         }
         $content = $step_tpl->fetch();
-		$tpl = new Template("templates/wizard.tpl");
+		$tpl = new Template("templates" . DS . "wizard.tpl");
         $vars = $this->getVars(); // Get template variables
         $tpl->set("vars", $vars); // Set template errors
 		$tpl->set('content', $content);

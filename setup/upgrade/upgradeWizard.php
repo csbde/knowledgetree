@@ -50,8 +50,8 @@ include("../wizard/path.php"); // Paths
 function __autoload($class) { // Attempt and autoload classes
 	$class = strtolower(substr($class,0,1)).substr($class,1); // Linux Systems.
 	if ($class == "template") { // Load existing templating classes
-		require_once("../wizard/template.php");
-		require_once("../wizard/lib/helpers/htmlHelper.php");
+		require_once(WIZARD_DIR."../wizard/template.php");
+		require_once(WIZARD_DIR."../wizard/lib/helpers/htmlHelper.php");
 		return ;
 	}
 	if(file_exists(WIZARD_DIR."$class.php")) {

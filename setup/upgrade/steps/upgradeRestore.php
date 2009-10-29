@@ -40,18 +40,18 @@
 * @version Version 0.1
 */
 
-//require_once('../../config/dmsDefaults.php');
-
 class upgradeRestore extends Step {
 
 
     protected $silent = false;
     protected $temp_variables = array();    
 
-    public function doStep() {
+    public function doStep() {        
     	$this->temp_variables = array("step_name"=>"restore", "silent"=>$this->silent, 
                                       "loadingText"=>"The database restore is under way.  Please wait until it completes");
         $this->temp_variables['restore'] = false;
+        $this->temp_variables['display'] = '';
+        $this->temp_variables['dir'] = '';
         
         if(!$this->inStep("restore")) {
             $this->doRun();
@@ -79,6 +79,8 @@ class upgradeRestore extends Step {
     } 
     
     private function doRun($restore = false) {
+        $this->readConfig();
+        
         if (!$restore) {
             $this->temp_variables['selected'] = false;
             if ($this->select()) {
@@ -92,7 +94,7 @@ class upgradeRestore extends Step {
             $this->restoreDatabase();
         }
             
-        $this->storeSilent();// Set silent mode variables
+//        $this->storeSilent();// Set silent mode variables
         
         return true;
     }
@@ -101,19 +103,12 @@ class upgradeRestore extends Step {
         return isset($_POST['RestoreSelect']);
     } 
     
-    /**
-     * Set all silent mode varibles
-     *
-     */
-    private function storeSilent() {
-    }
-
     private function restoreDatabase()
     {
         $this->temp_variables['restore'] = true;
         $status = $_SESSION['backupStatus'];
         $filename = $_SESSION['backupFile']; 
-        $stmt = $this->util->create_restore_stmt($filename);
+        $stmt = $this->util->create_restore_stmt($filename, $this->dbSettings);
         $dir = $stmt['dir'];
     
         if (is_file($dir . '/mysql') || is_file($dir . '/mysql.exe'))
@@ -219,13 +214,51 @@ class upgradeRestore extends Step {
     
         $status = $_SESSION['backupStatus'];
         $filename = $_SESSION['backupFile'];
-        $stmt = $this->util->create_restore_stmt($filename);
+        $stmt = $this->util->create_restore_stmt($filename, $this->dbSettings);
         
         $this->temp_variables['title'] = 'Confirm Restore';
         $this->temp_variables['dir'] = $stmt['dir'];
         $this->temp_variables['display'] = $stmt['display'];
         $this->temp_variables['availableBackups'] = true;
         $this->temp_variables['selected'] = true;
+    }
+    
+    // TODO this function needs to be refactored out into the parent Step class??
+    private function readConfig() {
+		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
+    	$wizConfigHandler = new configuration();
+    	$path = $wizConfigHandler->readConfigPathIni();
+		$this->util->iniUtilities->load($path);
+        $dbSettings = $this->util->iniUtilities->getSection('db');
+        
+        $this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
+                                    'dbName'=> $dbSettings['dbName'],
+                                    'dbUser'=> $dbSettings['dbUser'],
+                                    'dbPass'=> $dbSettings['dbPass'],
+                                    'dbPort'=> $dbSettings['dbPort'],
+                                    // dbSocket doesn't exist as far as I can find, where was it coming from?
+                                    //'dbSocket'=> $dbSettings['dbSocket'],
+                                    'dbAdminUser'=> $dbSettings['dbAdminUser'],
+                                    'dbAdminPass'=> $dbSettings['dbAdminPass'],
+        );
+        $this->paths = $this->util->iniUtilities->getSection('urls');
+        $this->paths = array_merge($this->paths, $this->util->iniUtilities->getSection('cache'));
+        $this->temp_variables['dbSettings'] = $this->dbSettings;
+        $this->sysVersion = $this->readVersion();
+        $this->cachePath = $wizConfigHandler->readCachePath();
+    }
+    
+    // TODO this function needs to be refactored out into the parent Step class
+    public function readVersion() {
+    	$verFile = SYSTEM_DIR."docs".DS."VERSION.txt";
+    	if(file_exists($verFile)) {
+			$foundVersion = file_get_contents($verFile);
+			return $foundVersion;
+    	} else {
+			$this->error[] = "KT installation version not found";
+    	}
+
+		return false;    	
     }
 
 }
