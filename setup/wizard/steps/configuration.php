@@ -307,7 +307,7 @@ class configuration extends Step
     {
         $conf = $this->getDataFromSession("configuration"); // get data from the server
         $dbconf = $this->getDataFromSession("database"); 
-        $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
+        $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['dport'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
         $server = $conf['server'];
         $paths = $conf['paths'];
         if ($this->util->isMigration()) { // Check if its an upgrade
@@ -355,7 +355,7 @@ class configuration extends Step
     
     private function writeDBSection($server) {
         $dbconf = $this->getDataFromSession("database"); // retrieve database information from session
-        $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
+        $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['dport'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
 		$server = $this->registerDBConfig($server, $dbconf); // add db config to server variables
         $table = 'config_settings';
         foreach($server as $item) { // write server settings to config_settings table and config.ini
@@ -577,12 +577,41 @@ class configuration extends Step
     			return $this->temp_variables['paths']['configFile']['path'];
     	}
 		$configPath = $this->getContentPath();
-		if(!$configPath) return false;
+		if(!$configPath) {
+			return false;
+		}
         $this->util->iniUtilities->load($configPath);
         $data = $this->util->iniUtilities->getFileByLine();
         $firstline = true;
         foreach ($data as $k=>$v) {
         	if(preg_match('/config.ini/', $k)) { // Find config.ini
+				if($k == "config/config.ini") { // Source install and source upgrades
+					$configIniPath = realpath(SYSTEM_DIR.$k);
+					if($configIniPath)
+						return $configIniPath;
+				}
+				return $k;
+        	}
+        }
+
+        return false;
+    }
+    
+    public function readCachePath() {
+		$cachePath = $this->getCachePath();
+		if(!$cachePath) {
+			return false;
+		}
+        $this->util->iniUtilities->load($cachePath);
+        $data = $this->util->iniUtilities->getFileByLine();
+        $firstline = true;
+        foreach ($data as $k=>$v) {
+        	if(preg_match('/cache/', $k)) { // Find config.ini
+				if($k == "var/cache") { // Source install and source upgrades
+					$configIniPath = realpath(SYSTEM_DIR.$k);
+					if($configIniPath)
+						return $configIniPath;
+				}
 				return $k;
         	}
         }

@@ -55,8 +55,8 @@ class iniUtilities {
        $this->read($iniFile);
     }
     
-    function __construct() {
-    }
+//    function __construct() {
+//    }
 	
     /**
      * Create a backup with the date as an extension in the same location as the original config.ini

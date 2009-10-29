@@ -330,7 +330,6 @@ class InetBulkUploadFolderAction extends KTFolderAction {
             foreach ($fields as $oField) {
             	//var_dump($oField->getId());
                 $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
-                //var_dump($val);
 				if ($oFieldset->getIsConditional())
                 {
                 	if ($val == _kt('No selection.'))

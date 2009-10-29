@@ -142,7 +142,7 @@ class complete extends Step {
         // retrieve database information from session
         $dbconf = $this->getDataFromSession("database");
         // make db connection - admin
-        $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
+        $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['dport'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
         $loaded = $this->util->dbUtilities->getDatabaseLink();
         if (!$loaded) {
             $this->temp_variables['dbConnectAdmin'] .= '<td><div class="cross"></div></td>'
@@ -157,7 +157,7 @@ class complete extends Step {
         }
         
         // make db connection - user
-        $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['dmsusername'], $dbconf['dmsuserpassword'], $dbconf['dname']);
+        $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['dport'], $dbconf['dmsusername'], $dbconf['dmsuserpassword'], $dbconf['dname']);
         $loaded = $this->util->dbUtilities->getDatabaseLink();
         // if we can log in to the database, check access
         // TODO check write access?

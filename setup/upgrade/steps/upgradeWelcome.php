@@ -40,12 +40,9 @@
 * @version Version 0.1
 */
 
-//require_once('../../config/dmsDefaults.php');
-//require_once KT_LIB_DIR . '/authentication/authenticationutil.inc.php';
-
 class upgradeWelcome extends step {
 
-    protected $silent = false;
+    protected $silent = true;
     protected $temp_variables = array();
 	protected $error = array() ;
     
@@ -84,7 +81,7 @@ class upgradeWelcome extends step {
     private function checkPassword($username, $password) {
     	$dconf = $this->getDataFromPackage('installers', 'database'); // Use info from install
     	if($dconf) {
-	    	$this->util->dbUtilities->load($dconf['dhost'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
+	    	$this->util->dbUtilities->load($dconf['dhost'], $dbconf['dport'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
     	} else {
     		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
     		$wizConfigHandler = new configuration();
@@ -93,7 +90,7 @@ class upgradeWelcome extends step {
 			$dconf = $this->util->iniUtilities->getSection('db');
 			if($dconf['dbPort'] == 'default')
 				$dconf['dbPort'] = 3306;
-    		$this->util->dbUtilities->load($dconf['dbHost'].":".$dconf['dbPort'], $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
+    		$this->util->dbUtilities->load($dconf['dbHost'],$dconf['dbPort'], $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
 			$sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
 			$res = $this->util->dbUtilities->query($sQuery);
 			$ass = $this->util->dbUtilities->fetchAssoc($res);
@@ -110,7 +107,22 @@ class upgradeWelcome extends step {
     	return $this->error;
     }
     
+    /**
+	* Returns step variables
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return array
+	*/
+    public function getStepVars()
+    {
+        return $this->temp_variables;
+    }
     
+    public function storeSilent() {
+    	
+    }
 }
 
 ?>

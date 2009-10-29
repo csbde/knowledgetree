@@ -30,7 +30,7 @@ function swapInItem(docId, elementId, req) {
         var elems = jQuery(document).find(".kt_date_field");
     	for (i = 0; i < elems.length; i++) {
     		var fieldName = elems[i].id;
-    		//alert(fieldName);
+    		
     		isGeneric = false;
     		if (genericFields.indexOf(fieldName.match('metadata_[0-9]+')) >= 0){
     			isGeneric = true;
@@ -38,7 +38,7 @@ function swapInItem(docId, elementId, req) {
     		
     		if (!isGeneric){
     	        var dp = new Ext.form.DateField({
-    		        name: fieldName,
+    		        name: fieldName.replace('div_', ''),
     		        allowBlank:false,
     		        size:10,
     		        format: 'Y-m-d',

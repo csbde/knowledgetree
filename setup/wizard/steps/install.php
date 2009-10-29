@@ -107,7 +107,7 @@ class install extends step
     public function callHome() {
         $conf = $this->getDataFromSession("install"); // retrieve database information from session
         $dbconf = $this->getDataFromSession("database");
-        $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
+        $this->util->dbUtilities->load($dbconf['dhost'], '', $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
         $complete = 1;
         if($conf['call_home'] == 'enable'){
             $complete = 0;
