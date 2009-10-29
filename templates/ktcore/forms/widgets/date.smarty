@@ -1,7 +1,7 @@
 <!--------------------------------------
 	---- Changes for Custom Fields -----
 	-------------------------------------->
-<div name="div_{$name}" id="div_{$name}" class="kt_date_field"></div>
+<div name="{$name}" id="div_{$name}" class="kt_date_field"></div>
 
 {literal}
 <script type="text/javascript">

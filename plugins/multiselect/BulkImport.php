@@ -292,14 +292,17 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
 		// name='metadata[fieldset][metadata_9]'
 		
 		$aData = $_REQUEST['data'];
+		$data = $aData;
 		
+		/*
 		$oForm = $this->getBulkImportForm();
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
             return $oForm->handleError();
         }
         $data = $res['results'];
-        
+        */
+		
         $doctypeid = $requestDocumentType;
         $aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
         $aSpecificFieldsetIds = KTFieldset::getForDocumentType($doctypeid, array('ids' => false));
@@ -312,6 +315,7 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
 
             foreach ($fields as $oField) {
                 $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
+                
 				if ($oFieldset->getIsConditional())
                 {
                 	if ($val == _kt('No selection.'))
@@ -319,16 +323,16 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
                 		$val = null;
                 	}
                 }
-
+				
                 if (!is_null($val)) {
                     $MDPack[] = array(
                         $oField,
                         $val
                     );
                 }
-
+			
             }
-        }        
+        }
         
 		$aOptions = array(
             'documenttype' => $oDocumentType,
@@ -340,7 +344,7 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
         $po->start();
         $oUploadChannel =& KTUploadChannel::getSingleton();
         $oUploadChannel->addObserver($po);
-
+		
         $fs =& new KTFSImportStorage($sPath);
         $bm =& new KTBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
        if(KTPluginUtil::pluginIsActive('inet.foldermetadata.plugin'))
