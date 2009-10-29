@@ -101,12 +101,14 @@ class dbUtilities {
 	* @access public
  	*/
 	public function __construct() {
-
+		
 	}
 	
-	public function load($dhost = 'localhost', $duname, $dpassword, $dbname) {
+	public function load($dhost = 'localhost', $dport = 'default', $duname, $dpassword, $dbname) {
 		if(!$this->isConnected($dhost, $duname, $dpassword, $dbname)) {
-			$this->dbhost = $dhost;
+			if($dport == 'default' || $dport == '')
+				$dport = '3306';
+			$this->dbhost = $dhost.":".$dport;
 			$this->dbuname = $duname;
 			$this->dbpassword = $dpassword;
 			$this->dbconnection = @mysql_connect($dhost, $duname, $dpassword);

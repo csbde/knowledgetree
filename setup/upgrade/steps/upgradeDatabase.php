@@ -43,7 +43,8 @@
 //require_once('../../config/dmsDefaults.php');
 //require_once(KT_LIB_DIR . '/config/config.inc.php');
 //require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
-//define('KT_LIB_DIR', SYSTEM_DIR.'lib'.DS);
+define('KT_DIR', SYSTEM_DIR);
+define('KT_LIB_DIR', SYSTEM_DIR.'lib');
 //require_once(SYSTEM_DIR . 'lib/upgrades/upgrade.inc.php');
 
 class upgradeDatabase extends Step 
@@ -92,10 +93,10 @@ class upgradeDatabase extends Step
 	* @var array
 	*/
     public $storeInSession = true;
-    
+    public $sysVersion = '';
     protected $silent = false;
     protected $temp_variables = array();
-    
+    public $paths = '';
 	/**
 	* Main control of database setup
 	*
@@ -143,17 +144,14 @@ class upgradeDatabase extends Step
     
     private function doRun($action = null) {
 //        $this->readConfig(KTConfig::getConfigFilename());
-			require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
-    		$wizConfigHandler = new configuration();
-    		$configPath = $wizConfigHandler->readConfigPathIni();
-        $this->readConfig($configPath);
-        if($this->dbSettings['dbPort'] == '')  {
-            $con = $this->util->dbUtilities->load($this->dbSettings['dbHost'], $this->dbSettings['dbUser'],  
+
+        $this->readConfig();
+//        if($this->dbSettings['dbPort'] == '')  {
+//            $con = $this->util->dbUtilities->load($this->dbSettings['dbHost'], '', $this->dbSettings['dbUser'],$this->dbSettings['dbPass'], $this->dbSettings['dbName']);
+//        } else {
+            $con = $this->util->dbUtilities->load($this->dbSettings['dbHost'], $this->dbSettings['dbPort'], $this->dbSettings['dbUser'],
                                            $this->dbSettings['dbPass'], $this->dbSettings['dbName']);
-        } else {
-            $con = $this->util->dbUtilities->load($this->dbSettings['dbHost'].":".$this->dbSettings['dbPort'], $this->dbSettings['dbUser'],  
-                                           $this->dbSettings['dbPass'], $this->dbSettings['dbName']);
-        }
+//        }
         
         $this->temp_variables['action'] = $action;
         if (is_null($action) || ($action == 'preview')) {
@@ -177,23 +175,19 @@ class upgradeDatabase extends Step
     }
     
     private function generateUpgradeTable() {
-//        global $default;
-		$v = $this->readVersion();
-//        $this->temp_variables['systemVersion'] = $default->systemVersion;
-		$this->temp_variables['systemVersion'] = $v;
-		
-//        $query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', $default->system_settings_table);
-		$query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', 'config_settings');
-		
+		$this->sysVersion = $this->readVersion();
+		$this->temp_variables['systemVersion'] = $this->sysVersion;
+		$dconf = $this->util->iniUtilities->getSection('db');
+		$query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', 'system_settings');
+		$this->util->dbUtilities->load($dconf['dbHost'], '', $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
         $result = $this->util->dbUtilities->query($query);
+        $assArr = $this->util->dbUtilities->fetchAssoc($result);
         if ($result) {
-            $lastVersionObj = $this->util->dbUtilities->fetchNextObject($result);
-            $lastVersion = $lastVersionObj->value;
+            $lastVersion = $assArr[0]['value'];
         }
-        $currentVersion = $v;
-    
+        $currentVersion = $this->sysVersion;
+    	require_once("lib/upgrade.inc.php");
         $upgrades = describeUpgrade($lastVersion, $currentVersion);
-    
         $ret = "<table border=1 cellpadding=1 cellspacing=1 width='100%'>\n";
         $ret .= "<tr bgcolor='darkgrey'><th width='10'>Code</th><th width='100%'>Description</th><th width='30'>Applied</th></tr>\n";
         $i=0;
@@ -259,8 +253,10 @@ class upgradeDatabase extends Step
     	}
     }
     
-     private function readConfig($path) {
-     	//$ini = $this->util->loadInstallIni($path);
+     private function readConfig() {
+			require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
+    		$wizConfigHandler = new configuration();
+    		$path = $wizConfigHandler->readConfigPathIni();
 		$this->util->iniUtilities->load($path);
         $dbSettings = $this->util->iniUtilities->getSection('db');
         $this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
@@ -271,7 +267,11 @@ class upgradeDatabase extends Step
                                     'dbAdminUser'=> $dbSettings['dbAdminUser'],
                                     'dbAdminPass'=> $dbSettings['dbAdminPass'],
         );
+        $this->paths = $this->util->iniUtilities->getSection('urls');
+        $this->paths = array_merge($this->paths, $this->util->iniUtilities->getSection('cache'));
         $this->temp_variables['dbSettings'] = $this->dbSettings;
+        $this->sysVersion = $this->readVersion();
+        $this->cachePath = $wizConfigHandler->readCachePath();
     }
     
     private function upgradeConfirm()
@@ -291,9 +291,10 @@ class upgradeDatabase extends Step
         $errors = false;
         
         $this->temp_variables['detail'] = '<p>The table below describes the upgrades that have occurred to
-            upgrade your KnowledgeTree installation to <strong>' . $default->systemVersion . '</strong>';
+            upgrade your KnowledgeTree installation to <strong>' . $this->sysVersion . '</strong>';
       
         $pre_res = $this->performPreUpgradeActions();
+        
         if (PEAR::isError($pre_res)) {
             $errors = true;
             $this->temp_variables['preUpgrade'] = '<font color="red">Pre-Upgrade actions failed.</font>';
@@ -336,7 +337,7 @@ class upgradeDatabase extends Step
         // It should idealy work the same as the upgrades.
     
 //        global $default;
-    
+//    	print_r($this->paths);die;
         // Lock the scheduler
         $lockFile = $default->cacheDirectory . DIRECTORY_SEPARATOR . 'scheduler.lock';
         touch($lockFile);

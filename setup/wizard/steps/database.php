@@ -319,11 +319,11 @@ class database extends Step
     		$this->error['dmsuserpassword'] = "Passwords do not match: " . $this->dmsuserpassword." ". $this->getPassword2();
     		return false;
     	}
-    	if($this->dport == '')  {
-    		$this->util->dbUtilities->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
-    	} else {
-    		$this->util->dbUtilities->load($this->dhost.":".$this->dport, $this->duname, $this->dpassword, $this->dname);
-    	}
+//    	if($this->dport == '')  {
+//    		$this->util->dbUtilities->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
+//    	} else {
+    		$this->util->dbUtilities->load($this->dhost, $this->dport, $this->duname, $this->dpassword, $this->dname);
+//    	}
         if (!$this->util->dbUtilities->getDatabaseLink()) {
             $this->error['con'] = "Could not connect to the database, please check username and password";
             return false;
@@ -582,7 +582,7 @@ class database extends Step
 	* @return object mysql connection
 	*/
     private function connectMysql() {
-		$this->util->dbUtilities->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
+		$this->util->dbUtilities->load($this->dhost, $this->dport, $this->duname, $this->dpassword, $this->dname);
     }
     
     /**
@@ -842,7 +842,7 @@ class database extends Step
     	$this->dpassword = 'root';
     	$this->dname = 'dms_install';
     	$this->dbbinary = 'mysql';
-    	$this->util->dbUtilities->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
+    	$this->util->dbUtilities->load($this->dhost, '', $this->duname, $this->dpassword, $this->dname);
     	$this->createSchema();
     	echo 'Schema loaded<br>';
     }
