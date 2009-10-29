@@ -142,7 +142,7 @@
         if ($install_environment == 'Zend') {
         	?>
 <!--        	<input type="submit" name="type" value="Zend Server Configuration" class="button_previous"/>-->
-            <a href="<?php echo "http://".$_SERVER['HTTP_HOST'].":10081/ZendServer/Index"; ?>" class="back" target="_blank" onclick="javascript:{w.clearSessions();}">Zend Server Configuration</a>
+<!--            <a href="<?php //echo "http://".$_SERVER['HTTP_HOST'].":10081/ZendServer/Index"; ?>" class="back" target="_blank" onclick="javascript:{w.clearSessions();}">Zend Server Configuration</a>-->
             <?php
         }
     ?>

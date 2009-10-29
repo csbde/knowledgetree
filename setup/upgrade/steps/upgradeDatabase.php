@@ -43,7 +43,8 @@
 //require_once('../../config/dmsDefaults.php');
 //require_once(KT_LIB_DIR . '/config/config.inc.php');
 //require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
-//require_once(KT_LIB_DIR . '/upgrades/upgrade.inc.php');
+//define('KT_LIB_DIR', SYSTEM_DIR.'lib'.DS);
+//require_once(SYSTEM_DIR . 'lib/upgrades/upgrade.inc.php');
 
 class upgradeDatabase extends Step 
 {
@@ -141,13 +142,16 @@ class upgradeDatabase extends Step
     } 
     
     private function doRun($action = null) {
-        $this->readConfig(KTConfig::getConfigFilename());
-        
+//        $this->readConfig(KTConfig::getConfigFilename());
+			require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
+    		$wizConfigHandler = new configuration();
+    		$configPath = $wizConfigHandler->readConfigPathIni();
+        $this->readConfig($configPath);
         if($this->dbSettings['dbPort'] == '')  {
-            $con = $this->dbhandler->load($this->dbSettings['dbHost'], $this->dbSettings['dbUser'],  
+            $con = $this->util->dbUtilities->load($this->dbSettings['dbHost'], $this->dbSettings['dbUser'],  
                                            $this->dbSettings['dbPass'], $this->dbSettings['dbName']);
         } else {
-            $con = $this->dbhandler->load($this->dbSettings['dbHost'].":".$this->dbSettings['dbPort'], $this->dbSettings['dbUser'],  
+            $con = $this->util->dbUtilities->load($this->dbSettings['dbHost'].":".$this->dbSettings['dbPort'], $this->dbSettings['dbUser'],  
                                            $this->dbSettings['dbPass'], $this->dbSettings['dbName']);
         }
         
@@ -173,17 +177,20 @@ class upgradeDatabase extends Step
     }
     
     private function generateUpgradeTable() {
-        global $default;
-
-        $this->temp_variables['systemVersion'] = $default->systemVersion;
-        $query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', $default->system_settings_table);
-
-        $result = $this->dbhandler->query($query);
+//        global $default;
+		$v = $this->readVersion();
+//        $this->temp_variables['systemVersion'] = $default->systemVersion;
+		$this->temp_variables['systemVersion'] = $v;
+		
+//        $query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', $default->system_settings_table);
+		$query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', 'config_settings');
+		
+        $result = $this->util->dbUtilities->query($query);
         if ($result) {
-            $lastVersionObj = $this->dbhandler->fetchNextObject($result);
+            $lastVersionObj = $this->util->dbUtilities->fetchNextObject($result);
             $lastVersion = $lastVersionObj->value;
         }
-        $currentVersion = $default->systemVersion;
+        $currentVersion = $v;
     
         $upgrades = describeUpgrade($lastVersion, $currentVersion);
     
@@ -202,6 +209,17 @@ class upgradeDatabase extends Step
         return $ret;
     }
 
+    public function readVersion() {
+    	$verFile = SYSTEM_DIR."docs".DS."VERSION.txt";
+    	if(file_exists($verFile)) {
+			$foundVersion = file_get_contents($verFile);
+			return $foundVersion;
+    	} else {
+			$this->error[] = "KT installation version not found";
+    	}
+
+		return false;    	
+    }
 	/**
 	* Stores varibles used by template
 	*
@@ -243,9 +261,8 @@ class upgradeDatabase extends Step
     
      private function readConfig($path) {
      	//$ini = $this->util->loadInstallIni($path);
-     	$ini = $this->util->iniUtilities;
-     	$ini->load($path);
-        $dbSettings = $ini->getSection('db');
+		$this->util->iniUtilities->load($path);
+        $dbSettings = $this->util->iniUtilities->getSection('db');
         $this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
                                     'dbName'=> $dbSettings['dbName'],
                                     'dbUser'=> $dbSettings['dbUser'],
@@ -269,7 +286,7 @@ class upgradeDatabase extends Step
 
     private function doDatabaseUpgrade()
     {
-        global $default;
+//        global $default;
         
         $errors = false;
         
@@ -318,7 +335,7 @@ class upgradeDatabase extends Step
         // This is just to test and needs to be updated to a more sane and error resistent architrcture if it works.
         // It should idealy work the same as the upgrades.
     
-        global $default;
+//        global $default;
     
         // Lock the scheduler
         $lockFile = $default->cacheDirectory . DIRECTORY_SEPARATOR . 'scheduler.lock';
@@ -332,7 +349,7 @@ class upgradeDatabase extends Step
         // This is just to test and needs to be updated to a more sane and error resistent architrcture if it works.
         // It should idealy work the same as the upgrades.
     
-        global $default;
+//        global $default;
     
         // Ensure all plugins are re-registered.
         $sql = "TRUNCATE plugin_helper";
@@ -360,7 +377,7 @@ class upgradeDatabase extends Step
     }
 
     private function performAllUpgrades () {
-        global $default;
+//        global $default;
         
         $row = 1;
         

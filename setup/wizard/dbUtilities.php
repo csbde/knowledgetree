@@ -119,10 +119,10 @@ class dbUtilities {
 		$new = array($dhost, $duname, $dpassword, $dbname);
 		$diff = array_diff($new, $current);
 		if(count($diff) == 0) {
-			echo 'same';
-			return true;
+			if($this->getDatabaseLink()) // Make sure theres a link
+				return true; // Already connected
 		}
-		return false;
+		return false; // Reconnect
 	}
 	
 	public function getDatabaseLink() {
