@@ -114,6 +114,10 @@ class htmlHelper {
 			return $image; 
 		}
 		
+		function url() {
+			
+		}
+		
 		function _parseAttributes($options, $exclude = null, $insertBefore = ' ', $insertAfter = null) {
 			if (is_array($options)) {
 				$options = array_merge(array('escape' => true), $options);
