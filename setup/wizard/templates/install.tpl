@@ -10,7 +10,8 @@
 		</p>
 		<div class="demo"><?php echo $html->image('img_fatlogo.jpg'); ?></div>
 		<br/><br/>
-		<p><input type='checkbox' name='call_home' value='enable' checked /> Help to improve KnowledgeTree by providing anonymous usage statistics</p>
+<p>		<input class="" type='checkbox' name='call_home' value='enable' checked style="float:left;"/>&nbsp;&nbsp;
+		Help to improve KnowledgeTree by providing anonymous usage statistics</p>
 	</div>
 	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
 	<input type="submit" name="Install" value="Install" class="button_next"/>
