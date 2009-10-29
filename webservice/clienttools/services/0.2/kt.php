@@ -361,12 +361,8 @@ class kt extends client_service  {
 			$items[]=array("name"=>"__document_extension", "index"=>0, "value"=>strtolower($fileParts['extension']), "control_type"=>"lookup", "selection"=>explode(',', str_replace('.', '', $params['extensions'])));
 		}
 
-		$document_types=$this->get_documenttypes($params);
-		$json_document_types=array();
-		foreach($document_types['items'] as $val) {
-			$json_document_types[]=$val['name'];
-		}
-		$items[]=array("name"=>"__document_type", "index"=>0, "value"=>$document_type, "control_type"=>"lookup", "selection"=>$json_document_types);
+		$document_types=$kt->get_documenttypes($params);
+		$items[]=array("name"=>"__document_type", "index"=>0, "value"=>$document_type, "control_type"=>"lookup", "selection"=>$document_types);
 
 		foreach ($detail as $fieldset) {
 			foreach ($fieldset['fields'] as $field)	{
