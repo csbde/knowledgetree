@@ -741,6 +741,43 @@ class kt extends client_service  {
 		$this->setResponse($finalArray);
 		return true;
 	}
+
+    function get_all_explorer_policies(){
+		$config=KTConfig::getSingleton();
+		$this->addDebug('KTConfig Singleton',$config);
+		
+		$policies=array('allowRememberPassword', 'explorerMetadataCapture', 'officeMetadataCapture', 'captureReasonsCheckin', 'captureReasonsCheckout', 'captureReasonsDelete', 'captureReasonsCancelCheckout', 'captureReasonsCopyInKT', 'captureReasonsMoveInKT');
+		
+		$returnPolicies=array();
+		$test = $config->get('clientToolPolicies/allowRememberPassword');
+		global $default;
+		$default->log->error('I am here-'.$test);
+		foreach ($policies as $policy_name)
+		{
+			$policyInfo=array(
+						'name'=>$policy_name,
+						'value'=>serviceHelper::bool2str($config->get('clientToolPolicies/'.$policy_name)),
+						'type'=>'boolean'
+					);
+			
+			$returnPolicies[$policy_name] =$policyInfo;
+		}
+		
+		$languages=$this->get_languages(true);
+		
+		$metadata=array('totalProperty'=>'resultsCounter', 'root'=>'languages', 'fields'=>array('isoCode', 'language'));
+		
+		$finalArray=array();
+		$finalArray['metaData']=$metadata;
+		$finalArray['policies']=$returnPolicies;
+		$finalArray['languages']=$languages['languages'];
+		$finalArray['defaultLanguage']=$languages['defaultLanguage'];
+		$finalArray['resultsCounter']=$languages['count'];
+		
+		
+		$this->setResponse($finalArray);
+		return true;
+	}
 	
 	public function switchlang($params){
 		setcookie("kt_language", $params['lang'], 2147483647, '/');
@@ -1080,7 +1117,7 @@ class kt extends client_service  {
     function copydocument($params){
         $kt=&$this->KT;
 
-        $response=$kt->copy_document($params['documentid'], $params['destfolderid']);
+        $response=$kt->copy_document($params['documentid'], $params['destfolderid'], $params['reason']);
         if ($response['status_code']==0) {
             $this->setResponse(array('status_code'=>0, 'status'=>'itemupdated', 'icon'=>'success', 'title'=>$this->xlate('Document Copied'), 'message'=>$this->xlate('Document has been successfully copied')));
             return true;
@@ -1093,7 +1130,7 @@ class kt extends client_service  {
     function movedocument($params){
         $kt=$this->KT;
 
-        $response=$kt->move_document($params['documentid'], $params['destfolderid']);
+        $response=$kt->move_document($params['documentid'], $params['destfolderid'], $params['reason']);
         if ($response['status_code']==0) {
             $this->setResponse(array('status_code'=>0, 'status'=>'itemupdated', 'icon'=>'success', 'title'=>$this->xlate('Document Moved'), 'message'=>$this->xlate('Document has been successfully moved')));
             return true;
@@ -1107,7 +1144,7 @@ class kt extends client_service  {
     function copyfolder($params){
         $kt=&$this->KT;
 
-        $response=$kt->copy_folder($params['sourcefolderid'], $params['destfolderid']);
+        $response=$kt->copy_folder($params['sourcefolderid'], $params['destfolderid'], $params['reason']);
         if ($response['status_code']==0) {
             $this->setResponse(array('status_code'=>0, 'status'=>'itemupdated', 'icon'=>'success', 'title'=>$this->xlate('Folder Copied'), 'message'=>$this->xlate('Folder has been successfully copied')));
             return true;
@@ -1121,7 +1158,7 @@ class kt extends client_service  {
     function movefolder($params){
         $kt=&$this->KT;
 
-        $response=$kt->move_folder($params['sourcefolderid'], $params['destfolderid']);
+        $response=$kt->move_folder($params['sourcefolderid'], $params['destfolderid'], $params['reason']);
         if ($response['status_code']==0) {
             $this->setResponse(array('status_code'=>0, 'status'=>'itemupdated', 'icon'=>'success', 'title'=>$this->xlate('Folder Moved'), 'message'=>$this->xlate('Folder has been successfully moved')));
             return true;
@@ -1156,7 +1193,7 @@ class kt extends client_service  {
     function deletefolder($params){
         $kt=&$this->KT;
 
-        $response=$kt->delete_folder($params['folderid'], 'Deleted from office addin');
+        $response=$kt->delete_folder($params['folderid'], $params['reason']);
         if ($response['status_code']==0) {
             $this->setResponse(array('status_code'=>0, 'status'=>'folderdeleted', 'icon'=>'success', 'title'=>$this->xlate('Folder Deleted'), 'message'=>$this->xlate('Folder has been successfully deleted')));
             return true;
