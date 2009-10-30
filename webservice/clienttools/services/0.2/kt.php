@@ -599,9 +599,10 @@ class kt extends client_service  {
 		$filename=$params['filename'];
 		$reason=$params['reason'];
 		$tempfilename=$params['tempfilename'];
+		$major_update=$params['major_update'];
 		$application=$this->AuthInfo['appType'];
 
-    	$this->addDebug('Checkin',"checkin_document('$session_id',$document_id,'$filename','$reason','$tempfilename', '$application')");
+    	$this->addDebug('Checkin',"checkin_document('$session_id',$document_id,'$filename','$reason','$tempfilename', '$application', $major_update)");
     	$kt=&$this->KT;
 
     	// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
@@ -620,7 +621,7 @@ class kt extends client_service  {
 		}
 
 		// checkin
-		$result=$document->checkin($filename, $reason, $tempfilename, false);
+		$result=$document->checkin($filename, $reason, $tempfilename, $major_update);
 		if (PEAR::isError($result))
 		{
 			$this->setResponse(array('status_code'=>14));
