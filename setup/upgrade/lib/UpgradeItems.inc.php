@@ -51,7 +51,7 @@
 
 //require_once(KT_LIB_DIR . '/upgrades/UpgradeFunctions.inc.php');
 require_once('sqlfile.inc.php');
-require_once('datetime.inc');
+require_once('datetime.inc.php');
 
 // {{{ Upgrade_Already_Applied
 class Upgrade_Already_Applied { //extends PEAR_Error {
@@ -200,7 +200,7 @@ class UpgradeItem extends InstallUtil {
         }
         $res = $this->_recordUpgrade(true);
         if (!$res) {
-        	$this->error[] = 'An Error Has Occured 1';
+        	$this->error[] = 'An Error Has Occured';
 			return false;
         }
         return true;
@@ -220,7 +220,7 @@ class UpgradeItem extends InstallUtil {
         } else {
             $parentid = null;
         }
-		$sql = "INSERT INTO upgrades (`id`, `descriptor`, `description`, `date_performed`, `result`, `parent`) VALUES ('', '". $this->getDescriptor()."', '".$this->description."', '".$this->date."', '".$result."', '".$parentid."')";
+		$sql = "INSERT INTO upgrades (`id`, `descriptor`, `description`, `date_performed`, `result`, `parent`) VALUES (NULL, '". $this->getDescriptor()."', '".$this->description."', '".$this->date."', '".$result."', '".$parentid."')";
 		$this->dbUtilities->query($sql);
 		
 		return true;

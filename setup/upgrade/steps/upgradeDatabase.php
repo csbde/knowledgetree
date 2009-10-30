@@ -329,6 +329,8 @@ class upgradeDatabase extends Step
     }
     
     private function deleteDirectory($sPath) {
+        if (empty($sPath) || !is_dir($sPath)) return;
+        
         if (!WINDOWS_OS) {
             if (file_exists('/bin/rm')) {
                 $this->util->pexec(array('/bin/rm', '-rf', $sPath));
@@ -417,7 +419,6 @@ class upgradeDatabase extends Step
 //                }
 //            }
             if ($res === false) {
-            	die;
                 $this->error = $this->util->dbUtilities->getErrors();
 //                print_r($this->error);
                 break;
