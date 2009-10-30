@@ -45,7 +45,8 @@ class upgradeWelcome extends step {
     protected $silent = true;
     protected $temp_variables = array();
 	protected $error = array() ;
-    
+	protected $storeInSession = true;
+	
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"welcome");
         if($this->next()) {
@@ -88,8 +89,6 @@ class upgradeWelcome extends step {
     		$configPath = $wizConfigHandler->readConfigPathIni();
 			$this->util->iniUtilities->load($configPath);
 			$dconf = $this->util->iniUtilities->getSection('db');
-			if($dconf['dbPort'] == 'default')
-				$dconf['dbPort'] = 3306;
     		$this->util->dbUtilities->load($dconf['dbHost'],$dconf['dbPort'], $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
 			$sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
 			$res = $this->util->dbUtilities->query($sQuery);

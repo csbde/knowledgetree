@@ -3,6 +3,13 @@
 	<div id="database" class="step1" style="display:block;">
 		<div class="description">
 		This step performs the necessary Database Upgrades.
+		<?php
+			echo "<br/>";
+			foreach ($errors as $error) {
+				if($error != '')
+					echo "<span class = 'error'>$error</span><br/>";
+			}
+		?>
 		</div>
 		<div id="step_content_database" class="step">
             <br/><br/>

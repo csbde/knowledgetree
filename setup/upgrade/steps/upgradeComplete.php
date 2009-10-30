@@ -48,6 +48,7 @@ class upgradeComplete extends Step {
 
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
+    	
         $this->doRun();
     	return 'landing';
     }
@@ -61,6 +62,8 @@ class upgradeComplete extends Step {
      *
      */
     private function storeSilent() {
+    	$v = $this->getDataFromSession('upgradeProperties');
+    	$this->temp_variables['sysVersion'] = $v['upgrade_version'];
     }
 
 }

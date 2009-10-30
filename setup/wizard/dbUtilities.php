@@ -267,5 +267,15 @@ class dbUtilities {
     public function rollback() {
         $this->query("ROLLBACK");
     }
+    
+	public function runQueries($aQueries) {
+        foreach ($aQueries as $sQuery) {
+            $res = $this->query($sQuery);
+            if (!$res) {
+                return $res;
+            }
+        }
+        return true;
+	}
 }
 ?>
