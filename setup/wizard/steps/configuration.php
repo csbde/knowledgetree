@@ -450,7 +450,7 @@ class configuration extends Step
         	}
 			$dirs = $this->getFromConfigPath(); // Store contents
         }
-        $varDirectory = $fileSystemRoot . DS . 'var';
+        
         foreach ($dirs as $key => $dir){
             $path = (isset($_POST[$dir['setting']])) ? $_POST[$dir['setting']] : $dir['path'];
 
@@ -460,6 +460,7 @@ class configuration extends Step
 			if(WINDOWS_OS)
             	$path = preg_replace('/\//', '\\',$path);
             	$dirs[$key]['path'] = $path;
+            	$path = $class = strtolower(substr($path,0,1)).substr($path,1); // Damn you windows
             	if(isset($dir['file']))
             		$class = $this->util->checkPermission($path, $dir['create'], true);
             	else 
