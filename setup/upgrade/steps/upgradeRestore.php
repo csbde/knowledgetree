@@ -94,8 +94,6 @@ class upgradeRestore extends Step {
             $this->restoreDatabase();
         }
             
-//        $this->storeSilent();// Set silent mode variables
-        
         return true;
     }
     

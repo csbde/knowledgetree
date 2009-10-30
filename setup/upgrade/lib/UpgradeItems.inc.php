@@ -54,14 +54,17 @@ require_once('sqlfile.inc.php');
 require_once('datetime.inc.php');
 
 // {{{ Upgrade_Already_Applied
-class Upgrade_Already_Applied { //extends PEAR_Error {
+class Upgrade_Already_Applied {
+    
     function Upgrade_Already_Applied($oUpgradeItem) {
         $this->oUpgradeItem = $oUpgradeItem;
     }
+    
 }
 // }}}
 
 class UpgradeItem extends InstallUtil {
+    
     var $type = "";
     var $name;
     var $version;
@@ -82,8 +85,6 @@ class UpgradeItem extends InstallUtil {
         $this->phase = $phase;
         $this->priority = $priority;
         parent::__construct();
-//        print_r($this);
-//        die;
     }
 
     function setParent($parent) {
@@ -128,30 +129,14 @@ class UpgradeItem extends InstallUtil {
 		$dconf = $this->iniUtilities->getSection('db');
 		$this->dbUtilities->load($dconf['dbHost'], '', $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
         $result = $this->dbUtilities->query($query);
-//        echo "$query<br/>";
-//        echo '<pre>';
-//        print_r($result);
-//        echo '</pre>';
 		if($checkResult) {
         	$assArr = $this->dbUtilities->fetchAssoc($result);
-//	        echo '<pre>';
-//	        print_r($assArr);
-//	        echo '</pre>';
-//	        if(is_null($assArr)) {
-//	        	echo '=== null ===<br/>';
-//	        	return false;
-//	        } else {
-//	        	echo '=== not null ===<br/>';
-//	        }
 	        if($typeCheck) {
 	        	return !is_null($assArr);
 	        } else {
 	        	return is_null($assArr);
 	        }
 		}
-//        echo '<pre>';
-//        print_r($assArr);
-//        echo '</pre>';
         return !is_null($result);
     }
     
@@ -185,14 +170,7 @@ class UpgradeItem extends InstallUtil {
                 return new Upgrade_Already_Applied($this);
             }
         }
-//        if (!$res) {
-//			$this->error[] = 'An Error Has Occured';
-//        }
-//        $oCache =& KTCache::getSingleton();
-//        $save = $oCache->bEnabled;
-//        $oCache->bEnabled = false;
         $res = $this->_performUpgrade();
-//        $oCache->bEnabled = $save;
         if (!$res) {
             $this->_recordUpgrade(false);
             $this->error[] = $this->dbUtilities->getErrors();
@@ -226,7 +204,6 @@ class UpgradeItem extends InstallUtil {
 		return true;
     }
 
-    // STATIC
     function getAllUpgrades() {
         return array();
     }
@@ -235,6 +212,7 @@ class UpgradeItem extends InstallUtil {
 }
 
 class SQLUpgradeItem extends UpgradeItem {
+    
     function SQLUpgradeItem($path, $version = null, $description = null, $phase = null, $priority = null) {
         $this->type = "sql";
         $this->priority = 0;
@@ -270,18 +248,15 @@ class SQLUpgradeItem extends UpgradeItem {
      * STATIC
      */
     public static function getUpgrades($origVersion, $currVersion) {
-//        global $default;
-		
-//        $sqlupgradedir = KT_DIR . '/sql/' . $default->dbType . '/upgrade/';
-			$dbType = 'mysql';
-			$sqlupgradedir = KT_DIR . 'sql/' . $dbType . '/upgrade/';
+		$dbType = 'mysql';
+		$sqlupgradedir = KT_DIR . 'sql/' . $dbType . '/upgrade/';
         $ret = array();
 
         if (!is_dir($sqlupgradedir)) {
-//            return PEAR::raiseError("SQL Upgrade directory ($sqlupgradedir) not accessible");
+            return false;
         }
         if (!($dh = opendir($sqlupgradedir))) {
-//            return PEAR::raiseError("SQL Upgrade directory ($sqlupgradedir) not accessible");
+            return false;
         }
 
         while (($file = readdir($dh)) !== false) {
@@ -309,9 +284,6 @@ class SQLUpgradeItem extends UpgradeItem {
                     if (!lte_version($details[1], $currVersion)) {
                         continue;
                     }
-                    //print "Will run $file\n";
-//                    print_r($this->util->dbUtilities);
-//                    die;
                     $ret[] = new SQLUpgradeItem($file);
                 }
             }
@@ -330,10 +302,6 @@ class SQLUpgradeItem extends UpgradeItem {
                         if (!lte_version($details[1], $currVersion)) {
                             continue;
                         }
-                        //print "Will run $file\n";
-//                        print_r(SQLUpgradeItem::);
-//                        die;
-//						new InstallUtil();
                         $ret[] = new SQLUpgradeItem($relpath);
                     }
                 }
@@ -417,24 +385,30 @@ class RecordUpgradeItem extends UpgradeItem {
     }
 
     function _performUpgrade() {
-//        $this->_deleteSmartyFiles();
-//        $this->_deleteProxyFiles();
-//        require_once(KT_LIB_DIR . '/cache/cache.inc.php');
-//        $oCache =& KTCache::getSingleton();
-//        $oCache->deleteAllCaches();
+        // What did this do?
+        /*
+        $this->_deleteSmartyFiles();
+        $this->_deleteProxyFiles();
+        require_once(KT_LIB_DIR . '/cache/cache.inc.php');
+        $oCache =& KTCache::getSingleton();
+        $oCache->deleteAllCaches();
 		// TODO : clear cache folder
-//        require_once(KT_LIB_DIR .  '/permissions/permissionutil.inc.php');
-		// TODO : What does this do
-//        $po =& new KTRebuildPermissionObserver($this);
-//        $po->start();
-//        $oChannel =& KTPermissionChannel::getSingleton();
-//        $oChannel->addObserver($po);
+        require_once(KT_LIB_DIR .  '/permissions/permissionutil.inc.php');
+		 TODO : What does this do
+        $po =& new KTRebuildPermissionObserver($this);
+        $po->start();
+        $oChannel =& KTPermissionChannel::getSingleton();
+        $oChannel->addObserver($po);
+        */
 
         set_time_limit(0);
         ignore_user_abort(true);
 
-//        KTPermissionUtil::rebuildPermissionLookups(true);
-//        $po->end();
+        // What did this do?
+        /*
+        KTPermissionUtil::rebuildPermissionLookups(true);
+        $po->end();
+        */
 		
         $versionFile=KT_DIR . '/docs/VERSION-NAME.txt';
         $fp = fopen($versionFile,'rt');
@@ -469,7 +443,6 @@ class RecordUpgradeItem extends UpgradeItem {
             @unlink($sFile);
         }
     }
-
 
     function _deleteProxyFiles() {
         $oKTConfig =& KTConfig::getSingleton();

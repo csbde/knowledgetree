@@ -101,7 +101,6 @@ class upgradeBackup extends Step {
             // TODO error checking (done in backupDone at the moment)
             $this->backupDone();
         }
-//        $this->storeSilent();// Set silent mode variables
         
         return true;
     }

@@ -371,12 +371,7 @@ class upgradeDatabase extends Step
     	
         // Clear out all caches and proxies - they need to be regenerated with the new code
         $this->deleteDirectory($this->proxyPath);
-//        $oKTCache = new KTCache();
-//        $oKTCache->deleteAllCaches();
     	$this->deleteDirectory($this->cachePath);
-        // Clear the configuration cache, it'll regenerate on next load
-//        $oKTConfig = new KTConfig();
-//        $oKTConfig->clearCache();
     
         // Unlock the scheduler
         $lockFile = $this->cachePath . DIRECTORY_SEPARATOR . 'scheduler.lock';
@@ -411,16 +406,8 @@ class upgradeDatabase extends Step
             $this->temp_variables['upgradeTable'] .= sprintf('<div class="bar">%s</div>', $this->showResult($res));
             $this->temp_variables['upgradeTable'] .= '<br>' . "\n";
             $this->temp_variables['upgradeTable'] .= "</div>\n";
-//            if (!$res) {
-//                if (!is_a($res, 'Upgrade_Already_Applied')) {
-//                    $res = false;
-//                } else {
-//                    $res = true;
-//                }
-//            }
             if ($res === false) {
                 $this->error = $this->util->dbUtilities->getErrors();
-//                print_r($this->error);
                 break;
             }
         }
@@ -433,7 +420,6 @@ class upgradeDatabase extends Step
             if (is_a($res, 'Upgrade_Already_Applied')) {
                 return '<span style="color: orange">Already applied</span>';
             }
-//            return sprintf('<span style="color: red">%s</span>', htmlspecialchars($res));
         }
         if ($res === true) {
             return '<span style="color: green">Success</span>';
