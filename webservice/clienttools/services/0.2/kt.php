@@ -140,6 +140,7 @@ class kt extends client_service  {
 		
 		$folder=&$kt->get_folder_by_id($arr['node']);
 		if (PEAR::isError($folder)){
+			echo '<pre>'.print_r($arr,true).'</pre>';
 			$this->addError('Folder Not found');
 			return false;
 		}
@@ -430,6 +431,7 @@ class kt extends client_service  {
 			}
 		}
 		$this->setResponse(array('items'=>$items, 'count'=>count($items)));
+		return true;
 	}
 
 	function update_document_type($params) {
