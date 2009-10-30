@@ -96,6 +96,7 @@ class complete extends Step {
 	        foreach ($paths as $path)
 	        {
 	            $output = '';
+	            $path['path'] = $class = strtolower(substr($path['path'],0,1)).substr($path['path'],1); // Damn you windows
 	            $result = $this->util->checkPermission($path['path']);
             	$output = sprintf($pathhtml, $result['class'], $path['path'], 
                                      (($result['class'] == 'tick') ? 'class="green"' : 'class="error"' ), 
