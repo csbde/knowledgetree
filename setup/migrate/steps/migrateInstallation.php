@@ -85,10 +85,6 @@ class migrateInstallation extends step
 	private $ktSettings = array();
 	
 	private $urlPaths = array();
-	
-	private $knownWindowsLocations = array("C:\Program Files\ktdms"=>"C:\Program Files\ktdms\knowledgeTree\config\config-path","C:\Program Files x86\ktdms"=>"C:\Program Files x86\ktdms\knowledgeTree\config\config-path","C:\ktdms"=>"C:\ktdms\knowledgeTree\config\config-path");
-	
-	private $knownUnixLocations = array("/opt/ktdms","/var/www/ktdms");
 
 	/**
 	* Installation Settings
@@ -132,12 +128,14 @@ class migrateInstallation extends step
 
     public function detectInstallation() {
     	if(WINDOWS_OS) {
-    		foreach ($this->knownWindowsLocations as $loc=>$configPath) {
+    		$knownWindowsLocations = array("C:\Program Files\ktdms"=>"C:\Program Files\ktdms\knowledgeTree\config\config-path","C:\Program Files x86\ktdms"=>"C:\Program Files x86\ktdms\knowledgeTree\config\config-path","C:\ktdms"=>"C:\ktdms\knowledgeTree\config\config-path");
+    		foreach ($knownWindowsLocations as $loc=>$configPath) {
     			if(file_exists($configPath))
     				$this->location = $loc;
     		}
     	} else {
-    		foreach ($this->knownUnixLocations as $loc=>$configPath) {
+    		$knownUnixLocations = array("/opt/ktdms"=>"/opt/ktdms/knowledgeTree/config/config-path","/var/www/ktdms"=>"/var/www/ktdms/knowledgeTree/config/config-path");
+    		foreach ($knownUnixLocations as $loc=>$configPath) {
     			if(file_exists($configPath))
     				$this->location = $loc;
     		}
@@ -149,7 +147,8 @@ class migrateInstallation extends step
 			$this->storeSilent();
 			return false;
 		} else {
-			if($this->readVersion()) {
+			$this->foundVersion = $this->readVersion();
+			if($this->foundVersion) {
 				$this->checkVersion();
 			}
 			$this->storeSilent();
@@ -162,16 +161,17 @@ class migrateInstallation extends step
 		if($this->foundVersion < $this->supportedVersion) {
 			$this->versionError = true;
 			$this->error[] = "KT installation needs to be 3.6.1 or higher";
-		} else {
-			return true;
+			return false;
 		}
+		
+		return true;
     }
     
     public function readVersion() {
     	$verFile = $this->location."/knowledgeTree/docs/VERSION.txt";
     	if(file_exists($verFile)) {
-			$this->foundVersion = file_get_contents($verFile);
-			return true;
+			$foundVersion = file_get_contents($verFile);
+			return $foundVersion;
     	} else {
 			$this->error[] = "KT installation version not found";
     	}
@@ -222,11 +222,13 @@ class migrateInstallation extends step
 		} else {
 			$this->error[] = "Please Enter a Location";
 		}
+		
+		return false;
     }
     
     private function loadConfig($path) {
-    	$ini = $this->util->loadInstallIni($path);
-    	$dbSettings = $ini->getSection('db');
+		$this->util->iniUtilities->load($path);
+		$dbSettings = $this->util->iniUtilities->getSection('db');
     	$this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
     								'dbName'=> $dbSettings['dbName'],
     								'dbUser'=> $dbSettings['dbUser'],
@@ -235,14 +237,15 @@ class migrateInstallation extends step
     								'dbAdminUser'=> $dbSettings['dbAdminUser'],
     								'dbAdminPass'=> $dbSettings['dbAdminPass'],
     	);
-		$ktSettings = $ini->getSection('KnowledgeTree');
+    	$ktSettings = $this->util->iniUtilities->getSection('KnowledgeTree');
 		$froot = $ktSettings['fileSystemRoot'];
+//		print_r($ktSettings);
+//		die;
 		if ($froot == 'default') {
 			$froot = $this->location;
 		}
 		$this->ktSettings = array('fileSystemRoot'=> $froot,
     	);
-    	$urlPaths = $ini->getSection('urls');
     	$varDir = $froot.DS.'var';
 		$this->urlPaths = array(array('name'=> 'Var Directory', 'path'=> $varDir),
 									array('name'=> 'Log Directory', 'path'=> $varDir.DS.'log'),

@@ -117,18 +117,8 @@ class Step
 	*/
     public $util;
     
-	/**
-	* Reference to utility object
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var object
-	*/
-    public $dbhandler;
-    
     public function __construct() {
     	$this->util = new MigrateUtil();
-    	$this->dbhandler = $this->util->loadInstallDBUtil();
     }
     
 	/**

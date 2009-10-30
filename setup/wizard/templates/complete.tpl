@@ -136,13 +136,13 @@
 	<?php if($migrate_check) { ?>
 		<a href="../upgrade/index.php" class="back button_next" style="width:190px;" onclick="javascript:{w.clearSessions();}">Goto Database Upgrade</a>
     <?php } else { ?>
-    	<a href="../../login.php?redirect=<?php echo $redirect; ?>" class="back button_next" style="width:90px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
+    	<a href="../../login.php?" class="back button_next" style="width:90px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
     <?php } ?>
     <?php
         if ($install_environment == 'Zend') {
         	?>
 <!--        	<input type="submit" name="type" value="Zend Server Configuration" class="button_previous"/>-->
-            <a href="<?php echo "http://".$_SERVER['HTTP_HOST'].":10081/ZendServer/Index"; ?>" class="back" target="_blank" onclick="javascript:{w.clearSessions();}">Zend Server Configuration</a>
+<!--            <a href="<?php //echo "http://".$_SERVER['HTTP_HOST'].":10081/ZendServer/Index"; ?>" class="back" target="_blank" onclick="javascript:{w.clearSessions();}">Zend Server Configuration</a>-->
             <?php
         }
     ?>

@@ -96,6 +96,8 @@ class Template
     public function fetch($file = null) 
 	{
         if (is_null($file)) $file = $this->file;
+        
+        $file = WIZARD_DIR . $file;
 		if (!file_exists($file)) {
 			trigger_error('Template file '.$file.' does not exist ', E_USER_ERROR);
 		}

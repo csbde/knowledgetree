@@ -63,14 +63,14 @@ class MigrateUtil extends InstallUtil {
 		$template_vars['error'] = $error;
 		$file = "templates/error.tpl";
 		if (!file_exists($file)) {
-			return false;
+			extract($template_vars); // Extract the vars to local namespace
+			ob_start();
+			include($file);
+	        $contents = ob_get_contents();
+	        ob_end_clean();
+	        echo $contents;			
 		}
-		extract($template_vars); // Extract the vars to local namespace
-		ob_start();
-		include($file);
-        $contents = ob_get_contents();
-        ob_end_clean();
-        echo $contents;
+		return false;
 	}
 	
 	/**
@@ -89,19 +89,10 @@ class MigrateUtil extends InstallUtil {
 
     	return true;
     }
-   
-    public function loadInstallDBUtil() {
-    	require_once("../wizard/dbUtilities.php");
-    	return new dbUtilities();
-    }
-    
-    public function loadInstallUtil() {
-    	require_once("../wizard/steps/services.php");
-    	return new services();
-    }
     
     public function loadInstallServices() {
-    	$s = $this->loadInstallUtil();
+    	require_once("../wizard/steps/services.php");
+    	$s = new services();
     	return $s->getServices();
     }
     
@@ -112,11 +103,6 @@ class MigrateUtil extends InstallUtil {
     	return new $serviceName();
     }
     
-    public function loadInstallIni($path) {
-    	require_once("../wizard/iniUtilities.php");
-    	return new iniUtilities($path);
-    }
-    
     public function getPort($location) {
     	if(WINDOWS_OS) {
     		$myIni = "my.ini";
@@ -125,8 +111,8 @@ class MigrateUtil extends InstallUtil {
     	}
     	$dbConfigPath = $location.DS."mysql".DS."$myIni";
     	if(file_exists($dbConfigPath)) {
-    		$ini = $this->loadInstallIni($dbConfigPath);
-    		$dbSettings = $ini->getSection('mysqladmin');
+			$this->iniUtilities->load($dbConfigPath);
+			$dbSettings = $this->iniUtilities->getSection('mysqladmin');
     		return $dbSettings['port'];
     	}
     	

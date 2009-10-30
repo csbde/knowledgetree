@@ -307,41 +307,38 @@ class configuration extends Step
     {
         $conf = $this->getDataFromSession("configuration"); // get data from the server
         $dbconf = $this->getDataFromSession("database"); 
-        $this->dbhandler->load($dbconf['dhost'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
+        $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['dport'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
         $server = $conf['server'];
         $paths = $conf['paths'];
         if ($this->util->isMigration()) { // Check if its an upgrade
         	$this->readInstallation();
-        	$configPath = $paths['configFile']['path'];
+        	$this->confpaths['configIni'] = $paths['configFile']['path'];
         } else {
         	$this->readConfigPath(); // initialise writing to config.ini
         }
         $this->getFromConfigPath(); // Sets config Paths
-        $ini = false;
-        if(file_exists($configPath)) {
-            $ini = new iniUtilities($configPath);
+        if(file_exists($this->confpaths['configIni'])) {
+        	$this->util->iniUtilities->load($this->confpaths['configIni']);
         }
-        $this->writeUrlSection($ini);
-        $this->writeDBSection($ini, $server);
-		$this->writeDBPathSection($ini, $paths);
-        if(!$ini === false){ // write out the config.ini file
-            $ini->write();
+        if(!$this->util->iniUtilities=== false){ // write out the config.ini file
+	        $this->writeUrlSection();
+	        $this->writeDBSection($server);
+			$this->writeDBPathSection($paths);
+			$this->util->iniUtilities->write();
         }
-        $this->dbhandler->close(); // close the database connection
-        $this->writeCachePath(); // Write cache path file
-        $this->writeConfigPath($configPath); // Write config file
+        $this->util->dbUtilities->close(); // close the database connection
+        $this->writeCachePath($this->getCachePath(), $paths['cacheDirectory']['path']); // Write cache path file
+        $this->writeConfigPath($this->getContentPath(), $this->confpaths['configIni']); // Write config file
     }
 
-    private function writeUrlSection($ini) {
+    private function writeUrlSection() {
     	$directories = $this->registerDirs();
         foreach($directories as $item) { // write server settings to config_settings table and config.ini
-	    	if(!$ini === false) {
-	    		$ini->updateItem($item['section'], $item['setting'], $item['value']);
-	    	}
+    		$this->util->iniUtilities->updateItem($item['section'], $item['setting'], $item['value']);
         }
     }
     
-    private function writeDBPathSection($ini, $paths) {
+    private function writeDBPathSection($paths) {
     	$table = 'config_settings';
        if(is_array($paths)) { // write the paths to the config_settings table
 	        foreach ($paths as $item){
@@ -351,14 +348,14 @@ class configuration extends Step
 	            $value = mysql_real_escape_string($item['path']);
 	            $setting = mysql_real_escape_string($item['setting']);
 	            $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
-	            $this->dbhandler->query($sql);
+	            $this->util->dbUtilities->query($sql);
 	        }
         }
     }
     
-    private function writeDBSection($ini, $server) {
+    private function writeDBSection($server) {
         $dbconf = $this->getDataFromSession("database"); // retrieve database information from session
-        $this->dbhandler->load($dbconf['dhost'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
+        $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['dport'], $dbconf['duname'], $dbconf['dpassword'], $dbconf['dname']); // initialise the db connection
 		$server = $this->registerDBConfig($server, $dbconf); // add db config to server variables
         $table = 'config_settings';
         foreach($server as $item) { // write server settings to config_settings table and config.ini
@@ -371,16 +368,14 @@ class configuration extends Step
                     if($value == 'no'){
                         $value = 'false';
                     }
-                    if(!$ini === false){
-                        $ini->updateItem($item['section'], $item['setting'], $value);
-                    }
+					$this->util->iniUtilities->updateItem($item['section'], $item['setting'], $value);
                     break;
                 case 'db':
                     $value = mysql_real_escape_string($item['value']);
                     $setting = mysql_real_escape_string($item['setting']);
 
                     $sql = "UPDATE {$table} SET value = '{$value}' WHERE item = '{$setting}'";
-                    $this->dbhandler->query($sql);
+                    $this->util->dbUtilities->query($sql);
                     break;
             }
         }
@@ -578,15 +573,45 @@ class configuration extends Step
     
     public function readConfigPathIni() {
     	if(isset($this->temp_variables['paths']['configFile']['path'])) {
-    		return $this->temp_variables['paths']['configFile']['path'];
+    		if($this->temp_variables['paths']['configFile']['path'] != '')
+    			return $this->temp_variables['paths']['configFile']['path'];
     	}
 		$configPath = $this->getContentPath();
-		if(!$configPath) return false;
-        $ini = new iniUtilities($configPath);
-        $data = $ini->getFileByLine();
+		if(!$configPath) {
+			return false;
+		}
+        $this->util->iniUtilities->load($configPath);
+        $data = $this->util->iniUtilities->getFileByLine();
         $firstline = true;
         foreach ($data as $k=>$v) {
         	if(preg_match('/config.ini/', $k)) { // Find config.ini
+				if($k == "config/config.ini") { // Source install and source upgrades
+					$configIniPath = realpath(SYSTEM_DIR.$k);
+					if($configIniPath)
+						return $configIniPath;
+				}
+				return $k;
+        	}
+        }
+
+        return false;
+    }
+    
+    public function readCachePath() {
+		$cachePath = $this->getCachePath();
+		if(!$cachePath) {
+			return false;
+		}
+        $this->util->iniUtilities->load($cachePath);
+        $data = $this->util->iniUtilities->getFileByLine();
+        $firstline = true;
+        foreach ($data as $k=>$v) {
+        	if(preg_match('/cache/', $k)) { // Find config.ini
+				if($k == "var/cache") { // Source install and source upgrades
+					$configIniPath = realpath(SYSTEM_DIR.$k);
+					if($configIniPath)
+						return $configIniPath;
+				}
 				return $k;
         	}
         }
@@ -605,8 +630,8 @@ class configuration extends Step
     private function readConfigPath() {
 		$configPath = $this->getContentPath();
 		if(!$configPath) return false;
-        $ini = new iniUtilities($configPath);
-        $data = $ini->getFileByLine();
+        $this->util->iniUtilities->load($configPath);
+        $data = $this->util->iniUtilities->getFileByLine();
         $firstline = true;
         foreach ($data as $k=>$v) {
         	if($firstline) { // First line holds the var directory
@@ -645,46 +670,48 @@ class configuration extends Step
      * @param none
      * @return boolean 
      */
-    private function writeConfigPath($configPath = '') {
-		$conf = $this->getDataFromSession("configuration"); // get data from the server
-        $paths = $conf['paths'];
-		if(isset($paths['configFile']['path'])) {
-			$configPath = $this->getContentPath();
-        	$configContent = $paths['configFile']['path'];
-    	} else {
-			$configPath = $this->getContentPath();
-			if(!$configPath) return false;
-	        $ini = new iniUtilities($configPath);
-	        $data = $ini->getFileByLine();
-	        $configContent = '';
-	        foreach ($data as $k=>$v) {
-	        	if(preg_match('/config.ini/', $k)) {
-	        		$configContent = $k;
-	        		break;
-	        	}
-	        }
-    	}
-        $fp = fopen($configPath, 'w');
+    private function writeConfigPath($configPath, $configContent) {
+//		$conf = $this->getDataFromSession("configuration"); // get data from the server
+//        $paths = $conf['paths'];
+//		if(isset($paths['configFile']['path'])) {
+//			$configPath = $this->getContentPath();
+//        	$configContent = $paths['configFile']['path'];
+//    	} else {
+//			$configPath = $this->getContentPath();
+//			if(!$configPath) return false;
+//	        $this->util->iniHandler->load($configPath);
+//	        $data = $this->util->iniHandler->getFileByLine();
+//	        $configContent = '';
+//	        foreach ($data as $k=>$v) {
+//	        	if(preg_match('/config.ini/', $k)) {
+//	        		$configContent = $k;
+//	        		break;
+//	        	}
+//	        }
+//    	}
+//		print_r($configPath);
+//		print_r($configContent);
+        $fp = fopen($configPath, 'w+');
         if(fwrite($fp, $configContent))
         	return true;
     	return false;
     }
     
-    private function writeCachePath() {
-		$cachePath = $this->getCachePath();
-		if(!$cachePath) return false;
-		$configPath = $this->getContentPath();
-		if(!$configPath) return false;
-        $ini = new iniUtilities($configPath);
-        $data = $ini->getFileByLine();
-        $cacheContent = '';
-        foreach ($data as $k=>$v) {
-        	if(preg_match('/cache/', $k)) {
-        		$cacheContent = $k;
-        		break;
-        	}
-        }
-        $fp = fopen($cachePath, 'w');
+    private function writeCachePath($cachePath, $cacheContent) {
+//		$cachePath = $this->getCachePath();
+//		if(!$cachePath) return false;
+//		$configPath = $this->getContentPath();
+//		if(!$configPath) return false;
+//        $this->util->iniHandler->load($configPath);
+//        $data = $this->util->iniHandler->getFileByLine();
+//        $cacheContent = '';
+//        foreach ($data as $k=>$v) {
+//        	if(preg_match('/cache/', $k)) {
+//        		$cacheContent = $k;
+//        		break;
+//        	}
+//        }
+        $fp = fopen($cachePath, 'w+');
         if($cacheContent != '') {
 	        if(fwrite($fp, $cacheContent))
 	        	return true;

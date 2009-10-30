@@ -43,12 +43,21 @@ class iniUtilities {
     private $lineNum = 0;
     private $exists = '';
 
-    function iniUtilities($iniFile = '../../config.ini') {
+    
+   	function load($iniFile) {
+//    	if($this->iniFile != $iniFile) {
+//	       $this->cleanArray = array();
+//	       $this->lineNum = 0;
+//	       $this->exists = '';
+//    	}
        $this->iniFile = $iniFile;
        $this->backupIni($iniFile);
        $this->read($iniFile);
     }
-
+    
+//    function __construct() {
+//    }
+	
     /**
      * Create a backup with the date as an extension in the same location as the original config.ini
      *
@@ -58,23 +67,23 @@ class iniUtilities {
     function backupIni($iniFile)
     {
     	$content = file_get_contents($iniFile);
-    	if ($content === false)
+    	if (!$content === false)
     	{
-    		return false;
-    	}
-    	$date = date('YmdHis');
-
-    	$backupFile = $iniFile . '.' .$date;
-        if (is_writeable($backupFile)) {
-    	    file_put_contents($backupFile, $content);
-        }
+	    	$date = date('YmdHis');
+	
+	    	$backupFile = $iniFile . '.' .$date;
+	        if (is_writeable($backupFile)) {
+	    	    file_put_contents($backupFile, $content);
+	        }    		
+    	} 
+    	return false;
     }
 
     function read($iniFile) {
         $iniArray = file($iniFile);
         $section = '';
         foreach($iniArray as $iniLine) {
-            $this->lineNum++;
+            ++$this->lineNum;
             $iniLine = trim($iniLine);
             $firstChar = substr($iniLine, 0, 1);
             if($firstChar == ';') {
@@ -111,6 +120,7 @@ class iniUtilities {
                 }
             }
         }
+
         return $this->cleanArray;
     }
 
@@ -153,12 +163,12 @@ class iniUtilities {
     }
 
     function itemExists($checkSection, $checkItem) {
-
         $this->exists = '';
         foreach($this->cleanArray as $section => $items) {
             if($section == $checkSection) {
                 $this->exists = 'section';
-                foreach ($items as $key => $value) {
+                $items = array_flip($items);
+                foreach ($items as $key) {
                     if($key == $checkItem) {
                         return true;
                     }

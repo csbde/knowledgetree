@@ -59,7 +59,7 @@ class unixLucene extends unixService {
 	* @param string
 	* @return void
  	*/
-	public function load($options = null) {
+	public function load() {
 		$this->setLuceneSource("ktlucene.jar");
 		$this->setLuceneDir(SYSTEM_DIR."bin".DS."luceneserver".DS);
 		$this->setIndexerDir(SYSTEM_DIR."search2".DS."indexing".DS."bin".DS);
@@ -148,14 +148,13 @@ class unixLucene extends unixService {
 	* @return array
  	*/
   	public function stop() {
-  		// TODO: Breaks things
 		$state = $this->status();
 		if($state != '') {
 			$cmd = "pkill -f ".$this->getLuceneSource();
     		$response = $this->util->pexec($cmd);
 			return $response;
 		}
-
+		return $state;
     }
   
     public function install() {
@@ -173,6 +172,7 @@ class unixLucene extends unixService {
     	if(is_array($response['out'])) {
     		if(count($response['out']) > 1) {
     			foreach ($response['out'] as $r) {
+    				$matches = false;
     				preg_match('/grep/', $r, $matches); // Ignore grep
     				if(!$matches) {
     					return 'STARTED';
@@ -201,26 +201,20 @@ class unixLucene extends unixService {
     public function start() {
     	$state = $this->status();
     	if($state != 'STARTED') {
-    		$logFile = $this->outputDir."lucene.log";
+    		$logFile = $this->outputDir.DS."lucene.log";
     		@unlink($logFile);
 	    	$cmd = "cd ".$this->getLuceneDir()."; ";
 	    	$cmd .= "nohup java  {$this->getJavaXmx()} {$this->getJavaXmx()} -jar ".$this->getLuceneSource()." > ".$logFile." 2>&1 & echo $!";
 	    	if(DEBUG) {
 	    		echo "Command : $cmd<br/>";
-	    		return ;
+	    		return false;
 	    	}
 	    	$response = $this->util->pexec($cmd);
 	    	
 	    	return $response;
-    	} elseif ($state == '') {
-    		// Start Service
-    		return true;
-    	} else {
-    		// Service Running Already
-    		return true;
     	}
     	
-    	return false;
+    	return true;
     }
     
 	public function getName() {

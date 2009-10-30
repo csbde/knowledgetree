@@ -41,7 +41,7 @@
 */
 class htmlHelper {
 	
-	var $tags = array(
+	private $tags = array(
 		'meta' => '<meta%s/>',
 		'metalink' => '<link href="%s"%s/>',
 		'link' => '<a href="%s"%s>%s</a>',
@@ -112,6 +112,10 @@ class htmlHelper {
 			$image = sprintf($this->tags['image'], $path, $this->_parseAttributes($options, null, '', ' '));
 			
 			return $image; 
+		}
+		
+		function url() {
+			
 		}
 		
 		function _parseAttributes($options, $exclude = null, $insertBefore = ' ', $insertAfter = null) {

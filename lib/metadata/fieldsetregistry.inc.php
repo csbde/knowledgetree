@@ -111,7 +111,7 @@ class KTFieldsetRegistry {
      */
     function getGenericFields($oFieldset, $idPre = 'metadata_') {
     	//return false if this isn't a generic fieldset
-    	if ($oFieldset->getIsGeneric()) {
+    	if (!$oFieldset->getIsGeneric()) {
     		return false;
     	}
     	

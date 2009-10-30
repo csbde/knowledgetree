@@ -40,9 +40,8 @@
 * @version Version 0.1
 */
 
-//require_once('../../config/dmsDefaults.php');
-
 class upgradeBackup extends Step {
+    
     protected $silent = false;
     protected $temp_variables = array();
     
@@ -83,13 +82,14 @@ class upgradeBackup extends Step {
         return 'landing';
     }
     
-    private function backupNow()
-    {
+    private function backupNow() {
         return isset($_POST['BackupNow']);
     }
     
     private function doRun($action = null) {
+        $this->readConfig();
         $this->temp_variables['action'] = $action;
+        $this->temp_variables['backupStatus'] = false;
         
         if (is_null($action) || ($action == 'confirm')) {
             $this->temp_variables['title'] = 'Confirm Backup';
@@ -101,16 +101,9 @@ class upgradeBackup extends Step {
             // TODO error checking (done in backupDone at the moment)
             $this->backupDone();
         }
-        $this->storeSilent();// Set silent mode variables
+//        $this->storeSilent();// Set silent mode variables
         
         return true;
-    }
-    
-    /**
-     * Set all silent mode varibles
-     *
-     */
-    private function storeSilent() {
     }
     
     private function backup() {
@@ -126,11 +119,11 @@ class upgradeBackup extends Step {
             $handle = popen($stmt['cmd'], 'r');
             $read = fread($handle, 10240);
             pclose($handle);
-            $_SESSION['backupOutput']=$read;
+            $_SESSION['backupOutput'] = $read;
             $dir = $this->util->resolveTempDir();
-            $_SESSION['backupFile'] =   $stmt['target'];
+            $_SESSION['backupFile'] = $stmt['target'];
     
-            if (OS_UNIX) {
+            if (!WINDOWS_OS) {
                 chmod($stmt['target'],0600);
             }
     
@@ -151,7 +144,7 @@ class upgradeBackup extends Step {
     
         if ($status)
         {
-            $stmt = $this->util->create_restore_stmt($filename);
+            $stmt = $this->util->create_restore_stmt($filename, $this->dbSettings);
             $this->temp_variables['display'] = 'The backup file <nobr><i>"' . $filename . '"</i></nobr> has been created.
             <P> It appears as though the <font color=green>backup has been successful</font>.
             <P>';
@@ -193,56 +186,54 @@ class upgradeBackup extends Step {
     }
 
     private function create_backup_stmt($targetfile=null)
-    {
-        $oKTConfig =& KTConfig::getSingleton();
-    
-        $adminUser = $oKTConfig->get('db/dbAdminUser');
-        $adminPwd = $oKTConfig->get('db/dbAdminPass');
-        $dbHost = $oKTConfig->get('db/dbHost');
-        $dbName = $oKTConfig->get('db/dbName');
-    
-        $dbPort = trim($oKTConfig->get('db/dbPort'));
+    {        
+        $adminUser = $this->dbSettings['dbAdminUser'];
+        $adminPwd = $this->dbSettings['dbAdminPass'];
+        $dbHost = $this->dbSettings['dbHost'];
+        $dbName = $this->dbSettings['dbName'];
+        
+        $dbPort = trim($this->dbSettings['dbPort']);
         if (empty($dbPort) || $dbPort=='default') $dbPort = get_cfg_var('mysql.default_port');
         if (empty($dbPort)) $dbPort='3306';
-        $dbSocket = trim($oKTConfig->get('db/dbSocket'));
+        // dbSocket doesn't exist as far as I can find, where was it coming from?
+        //$dbSocket = trim($this->dbSettings['dbSocket']);
+        $dbSocket = '';
         if (empty($dbSocket) || $dbSocket=='default') $dbSocket = get_cfg_var('mysql.default_socket');
         if (empty($dbSocket)) $dbSocket='../tmp/mysql.sock';
     
         $date=date('Y-m-d-H-i-s');
     
-        $dir=$this->util->resolveMysqlDir();
+        $dir = $this->util->resolveMysqlDir();
     
-        $info['dir']=$dir;
-    
-        $prefix='';
-        if (OS_UNIX)
+        $info['dir'] = $dir;
+        $prefix = '';
+        if (!WINDOWS_OS)
         {
             $prefix .= "./";
         }
     
         if (@stat($dbSocket) !== false)
         {
-            $mechanism="--socket=\"$dbSocket\"";
+            $mechanism = "--socket=\"$dbSocket\"";
         }
         else
         {
-            $mechanism="--port=\"$dbPort\"";
+            $mechanism = "--port=\"$dbPort\"";
         }
     
-        $tmpdir=$this->util->resolveTempDir();
+        $tmpdir = $this->util->resolveTempDir();
     
         if (is_null($targetfile))
         {
-            $targetfile="$tmpdir/kt-backup-$date.sql";
+            $targetfile = "$tmpdir/kt-backup-$date.sql";
         }
     
         $stmt = $prefix . "mysqldump --user=\"$adminUser\" -p $mechanism \"$dbName\" > \"$targetfile\"";
-        $info['display']=$stmt;
-        $info['target']=$targetfile;
-    
+        $info['display'] = $stmt;
+        $info['target'] = $targetfile;
     
         $stmt  = $prefix. "mysqldump --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism \"$dbName\" > \"$targetfile\"";
-        $info['cmd']=$stmt;
+        $info['cmd'] = $stmt;
         return $info;
     }
 
@@ -254,6 +245,44 @@ class upgradeBackup extends Step {
         $dir = $stmt['dir'];
         $this->temp_variables['dir'] = $dir;
         $this->temp_variables['display'] = $stmt['display'];
+    }
+    
+    // TODO this function needs to be refactored out into the parent Step class??
+    private function readConfig() {
+		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
+    	$wizConfigHandler = new configuration();
+    	$path = $wizConfigHandler->readConfigPathIni();
+		$this->util->iniUtilities->load($path);
+        $dbSettings = $this->util->iniUtilities->getSection('db');
+        
+        $this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
+                                    'dbName'=> $dbSettings['dbName'],
+                                    'dbUser'=> $dbSettings['dbUser'],
+                                    'dbPass'=> $dbSettings['dbPass'],
+                                    'dbPort'=> $dbSettings['dbPort'],
+                                    // dbSocket doesn't exist as far as I can find, where was it coming from?
+                                    //'dbSocket'=> $dbSettings['dbSocket'],
+                                    'dbAdminUser'=> $dbSettings['dbAdminUser'],
+                                    'dbAdminPass'=> $dbSettings['dbAdminPass'],
+        );
+        $this->paths = $this->util->iniUtilities->getSection('urls');
+        $this->paths = array_merge($this->paths, $this->util->iniUtilities->getSection('cache'));
+        $this->temp_variables['dbSettings'] = $this->dbSettings;
+        $this->sysVersion = $this->readVersion();
+        $this->cachePath = $wizConfigHandler->readCachePath();
+    }
+    
+    // TODO this function needs to be refactored out into the parent Step class
+    public function readVersion() {
+    	$verFile = SYSTEM_DIR."docs".DS."VERSION.txt";
+    	if(file_exists($verFile)) {
+			$foundVersion = file_get_contents($verFile);
+			return $foundVersion;
+    	} else {
+			$this->error[] = "KT installation version not found";
+    	}
+
+		return false;    	
     }
 }
 ?>

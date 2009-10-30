@@ -1,4 +1,4 @@
-<?php global $default; ?>
+<?php //global $default; ?>
 <form>
 	<p class="title">Database Upgrade Completed</p>
 
@@ -6,8 +6,8 @@
 <!--	Services	-->
 	<br/><br/>
 	<div>
-	    Your database has been upgraded to <?php echo $default->systemVersion; ?>
+	    Your database has been upgraded to <?php echo $sysVersion; ?>
 	</div>
 	</div>
-	<a href="../../" class="back button_next" style="width:90px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
+	<a href="../../login.php" class="back button_next" style="width:90px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
 </form>

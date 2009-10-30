@@ -4,14 +4,29 @@ function wizard() {
 
 // Toggle Advance Database options
 wizard.prototype.toggleClass = function(ele, option) { //adv_options|php_details|php_ext_details|php_con_details
-	if($('.'+ele).attr('style') == 'display: none;') {
-	    $('.'+ele).attr('style', 'display: block;');
-	    if($('#'+option).attr('innerHTML') != '&nbsp;&nbsp;Advanced Options')
-	    	$('#'+option).attr('innerHTML', 'Hide Details');
-	} else {
-	    $('.'+ele).attr('style', 'display: none;');
-	    if($('#'+option).attr('innerHTML') != '&nbsp;&nbsp;Advanced Options')
-	    	$('#'+option).attr('innerHTML', 'Show Details');
+	var style = $('.'+ele).attr('style');
+	style = w.trim(style);
+	switch(style) {
+		case 'display: none;':
+			$('.'+ele).attr('style', 'display: block;');
+	    	if($('#'+option).attr('innerHTML') != '&nbsp;&nbsp;Advanced Options')
+	    		$('#'+option).attr('innerHTML', 'Hide Details');
+		break;
+		case 'DISPLAY: none;':
+			$('.'+ele).attr('style', 'DISPLAY: block');
+	    	if($('#'+option).attr('innerHTML') != '&nbsp;&nbsp;Advanced Options')
+	    		$('#'+option).attr('innerHTML', 'Hide Details');
+		break;
+		case 'display: block;':
+			$('.'+ele).attr('style', 'display: none;');
+			if($('#'+option).attr('innerHTML') != '&nbsp;&nbsp;Advanced Options')
+	    		$('#'+option).attr('innerHTML', 'Show Details');
+		break;
+		case 'DISPLAY: block;':
+			$('.'+ele).attr('style', 'DISPLAY: none');
+			if($('#'+option).attr('innerHTML') != '&nbsp;&nbsp;Advanced Options')
+	    		$('#'+option).attr('innerHTML', 'Show Details');
+		break;
 	}
 }
 

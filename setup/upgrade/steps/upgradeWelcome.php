@@ -42,10 +42,11 @@
 
 class upgradeWelcome extends step {
 
-    protected $silent = false;
+    protected $silent = true;
     protected $temp_variables = array();
 	protected $error = array() ;
-    
+	protected $storeInSession = true;
+	
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"welcome");
         if($this->next()) {
@@ -81,32 +82,46 @@ class upgradeWelcome extends step {
     private function checkPassword($username, $password) {
     	$dconf = $this->getDataFromPackage('installers', 'database'); // Use info from install
     	if($dconf) {
-	    	$this->dbhandler->load($dconf['dhost'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
+	    	$this->util->dbUtilities->load($dconf['dhost'], $dbconf['dport'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
     	} else {
-    		require_once("../wizard/iniUtilities.php"); // ini to read the ini content
     		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
     		$wizConfigHandler = new configuration();
     		$configPath = $wizConfigHandler->readConfigPathIni();
-			$ini = new iniUtilities($configPath);
-			$dconf = $ini->getSection('db');
-    		$this->dbhandler->load($dconf['dbHost'], $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
+			$this->util->iniUtilities->load($configPath);
+			$dconf = $this->util->iniUtilities->getSection('db');
+    		$this->util->dbUtilities->load($dconf['dbHost'],$dconf['dbPort'], $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
+			$sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
+			$res = $this->util->dbUtilities->query($sQuery);
+			$ass = $this->util->dbUtilities->fetchAssoc($res);
+			if($ass[0]['match_count'] == 1)
+				return true;
     	}
-        $sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
-        $res = $this->dbhandler->query($sQuery);
-        $ass = $this->dbhandler->fetchAssoc($res);
-        if(isset($ass[0]['match_count'])) {
-        	if($ass[0]['match_count'])
-        		return true;
-        }
+
         $this->error[] = 'Could Not Authenticate User';
         return false;
-    }
 
+    }
+   
     public function getErrors() {
     	return $this->error;
     }
     
+    /**
+	* Returns step variables
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return array
+	*/
+    public function getStepVars()
+    {
+        return $this->temp_variables;
+    }
     
+    public function storeSilent() {
+    	
+    }
 }
 
 ?>

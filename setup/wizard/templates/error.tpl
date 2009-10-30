@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 	<head>
+		<link rel="shortcut icon" href="../wizard/resources/graphics/favicon.ico" type="image/x-icon">
 		<title>KnowledgeTree Installer</title>
 		<script type="text/javascript" src="resources/js/jquery-tooltip/lib/jquery.js"></script>
 		<script type="text/javascript" src="resources/js/wizard.js" ></script>
@@ -15,7 +16,7 @@
 		    <div id="logo"><img src="resources/graphics/dame/installer-header_logo.png"/></div>
 		    <div id="install_details">
 				<span style="font-size:120%;"> 3.7 </span>
-				<span style="font-size:80%;">Commercial Edition</span>
+				<span style="font-size:80%;">Community Edition</span>
 				</div>
 		    </div>
 		    <div id="wrapper">

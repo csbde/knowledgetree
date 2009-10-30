@@ -38,7 +38,7 @@
 
 $checkup = true;
 error_reporting(E_ALL);
-require_once('../config/dmsDefaults.php');
+//require_once('../config/dmsDefaults.php');
 
 function writablePath($name, $path) {
     $ret = sprintf('<tr><td>%s (%s)</td><td>', $name, $path);

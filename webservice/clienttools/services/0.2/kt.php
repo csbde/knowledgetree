@@ -362,12 +362,8 @@ class kt extends client_service  {
 			$items[]=array("name"=>"__document_extension", "index"=>0, "value"=>strtolower($fileParts['extension']), "control_type"=>"lookup", "selection"=>explode(',', str_replace('.', '', $params['extensions'])));
 		}
 
-		$document_types=$this->get_documenttypes($params);
-		$json_document_types=array();
-		foreach($document_types['items'] as $val) {
-			$json_document_types[]=$val['name'];
-		}
-		$items[]=array("name"=>"__document_type", "index"=>0, "value"=>$document_type, "control_type"=>"lookup", "selection"=>$json_document_types);
+		$document_types=$kt->get_documenttypes($params);
+		$items[]=array("name"=>"__document_type", "index"=>0, "value"=>$document_type, "control_type"=>"lookup", "selection"=>$document_types);
 
 		foreach ($detail as $fieldset) {
 			foreach ($fieldset['fields'] as $field)	{
@@ -605,9 +601,10 @@ class kt extends client_service  {
 		$filename=$params['filename'];
 		$reason=$params['reason'];
 		$tempfilename=$params['tempfilename'];
+		$major_update=$params['major_update'];
 		$application=$this->AuthInfo['appType'];
 
-    	$this->addDebug('Checkin',"checkin_document('$session_id',$document_id,'$filename','$reason','$tempfilename', '$application')");
+    	$this->addDebug('Checkin',"checkin_document('$session_id',$document_id,'$filename','$reason','$tempfilename', '$application', $major_update)");
     	$kt=&$this->KT;
 
     	// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
@@ -626,7 +623,7 @@ class kt extends client_service  {
 		}
 
 		// checkin
-		$result=$document->checkin($filename, $reason, $tempfilename, false);
+		$result=$document->checkin($filename, $reason, $tempfilename, $major_update);
 		if (PEAR::isError($result))
 		{
 			$this->setResponse(array('status_code'=>14));
@@ -682,7 +679,7 @@ class kt extends client_service  {
 		$status_code=$update_result['status_code'];
 		if ($status_code != 0)
 		{
-			$this->delete_document($arr['session_id'], $document_id, 'Rollback because metadata could not be added', $arr['application']);
+			$this->delete_document(array('session_id' => $arr['session_id'], 'document_id' => $document_id, 'reason' => 'Rollback because metadata could not be added', 'application' => $arr['application']));
 			$this->response= $update_result;
 		}
 
@@ -722,6 +719,43 @@ class kt extends client_service  {
 			$policyInfo=array(
 						'name'=>$policy_name,
 						'value'=>serviceHelper::bool2str($config->get('addInPolicies/'.$policy_name)),
+						'type'=>'boolean'
+					);
+			
+			$returnPolicies[$policy_name] =$policyInfo;
+		}
+		
+		$languages=$this->get_languages(true);
+		
+		$metadata=array('totalProperty'=>'resultsCounter', 'root'=>'languages', 'fields'=>array('isoCode', 'language'));
+		
+		$finalArray=array();
+		$finalArray['metaData']=$metadata;
+		$finalArray['policies']=$returnPolicies;
+		$finalArray['languages']=$languages['languages'];
+		$finalArray['defaultLanguage']=$languages['defaultLanguage'];
+		$finalArray['resultsCounter']=$languages['count'];
+		
+		
+		$this->setResponse($finalArray);
+		return true;
+	}
+
+    function get_all_explorer_policies(){
+		$config=KTConfig::getSingleton();
+		$this->addDebug('KTConfig Singleton',$config);
+		
+		$policies=array('allowRememberPassword', 'explorerMetadataCapture', 'officeMetadataCapture', 'captureReasonsCheckin', 'captureReasonsCheckout', 'captureReasonsDelete', 'captureReasonsCancelCheckout', 'captureReasonsCopyInKT', 'captureReasonsMoveInKT');
+		
+		$returnPolicies=array();
+		$test = $config->get('clientToolPolicies/allowRememberPassword');
+		global $default;
+		$default->log->error('I am here-'.$test);
+		foreach ($policies as $policy_name)
+		{
+			$policyInfo=array(
+						'name'=>$policy_name,
+						'value'=>serviceHelper::bool2str($config->get('clientToolPolicies/'.$policy_name)),
 						'type'=>'boolean'
 					);
 			
@@ -793,7 +827,12 @@ class kt extends client_service  {
     	$this->setResponse($detail);
    }
 	
-    function delete_document($session_id, $document_id, $reason, $application){
+    function delete_document($params){
+		$session_id = $params['session_id'];
+		$document_id = $params['document_id'];
+		$reason = $params['reason'];
+		$application = $params['application'];
+		
     	$kt=&$this->KT;
 
     	$document=&$kt->get_document_by_id($document_id);
@@ -1082,7 +1121,7 @@ class kt extends client_service  {
     function copydocument($params){
         $kt=&$this->KT;
 
-        $response=$kt->copy_document($params['documentid'], $params['destfolderid']);
+        $response=$kt->copy_document($params['documentid'], $params['destfolderid'], $params['reason']);
         if ($response['status_code']==0) {
             $this->setResponse(array('status_code'=>0, 'status'=>'itemupdated', 'icon'=>'success', 'title'=>$this->xlate('Document Copied'), 'message'=>$this->xlate('Document has been successfully copied')));
             return true;
@@ -1095,7 +1134,7 @@ class kt extends client_service  {
     function movedocument($params){
         $kt=$this->KT;
 
-        $response=$kt->move_document($params['documentid'], $params['destfolderid']);
+        $response=$kt->move_document($params['documentid'], $params['destfolderid'], $params['reason']);
         if ($response['status_code']==0) {
             $this->setResponse(array('status_code'=>0, 'status'=>'itemupdated', 'icon'=>'success', 'title'=>$this->xlate('Document Moved'), 'message'=>$this->xlate('Document has been successfully moved')));
             return true;
@@ -1109,7 +1148,7 @@ class kt extends client_service  {
     function copyfolder($params){
         $kt=&$this->KT;
 
-        $response=$kt->copy_folder($params['sourcefolderid'], $params['destfolderid']);
+        $response=$kt->copy_folder($params['sourcefolderid'], $params['destfolderid'], $params['reason']);
         if ($response['status_code']==0) {
             $this->setResponse(array('status_code'=>0, 'status'=>'itemupdated', 'icon'=>'success', 'title'=>$this->xlate('Folder Copied'), 'message'=>$this->xlate('Folder has been successfully copied')));
             return true;
@@ -1123,7 +1162,7 @@ class kt extends client_service  {
     function movefolder($params){
         $kt=&$this->KT;
 
-        $response=$kt->move_folder($params['sourcefolderid'], $params['destfolderid']);
+        $response=$kt->move_folder($params['sourcefolderid'], $params['destfolderid'], $params['reason']);
         if ($response['status_code']==0) {
             $this->setResponse(array('status_code'=>0, 'status'=>'itemupdated', 'icon'=>'success', 'title'=>$this->xlate('Folder Moved'), 'message'=>$this->xlate('Folder has been successfully moved')));
             return true;
@@ -1158,7 +1197,7 @@ class kt extends client_service  {
     function deletefolder($params){
         $kt=&$this->KT;
 
-        $response=$kt->delete_folder($params['folderid'], 'Deleted from office addin');
+        $response=$kt->delete_folder($params['folderid'], $params['reason']);
         if ($response['status_code']==0) {
             $this->setResponse(array('status_code'=>0, 'status'=>'folderdeleted', 'icon'=>'success', 'title'=>$this->xlate('Folder Deleted'), 'message'=>$this->xlate('Folder has been successfully deleted')));
             return true;

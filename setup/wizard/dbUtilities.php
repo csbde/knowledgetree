@@ -101,20 +101,32 @@ class dbUtilities {
 	* @access public
  	*/
 	public function __construct() {
-
+		
 	}
 	
-	public function load($dhost = 'localhost', $duname, $dpassword, $dbname) {
-		$this->dbhost = $dhost;
-		$this->dbuname = $duname;
-		$this->dbpassword = $dpassword;
-		$this->dbconnection = @mysql_connect($dhost, $duname, $dpassword);
-		if(!$this->dbconnection) {
-			$this->error[] = @mysql_error();
+	public function load($dhost = 'localhost', $dport = 'default', $duname, $dpassword, $dbname) {
+		if(!$this->isConnected($dhost, $duname, $dpassword, $dbname)) {
+			if($dport == 'default' || $dport == '')
+				$dport = '3306';
+			$this->dbhost = $dhost.":".$dport;
+			$this->dbuname = $duname;
+			$this->dbpassword = $dpassword;
+			$this->dbconnection = @mysql_connect($dhost, $duname, $dpassword);
+			$this->dbname = $dbname;
 		}
-		$this->dbname = $dbname;
 	}
 
+	public function isConnected($dhost = 'localhost', $duname, $dpassword, $dbname) {
+		$current = array($this->dbhost, $this->dbuname, $this->dbpassword, $this->dbname);
+		$new = array($dhost, $duname, $dpassword, $dbname);
+		$diff = array_diff($new, $current);
+		if(count($diff) == 0) {
+			if($this->getDatabaseLink()) // Make sure theres a link
+				return true; // Already connected
+		}
+		return false; // Reconnect
+	}
+	
 	public function getDatabaseLink() {
 		return $this->dbconnection;
 	}
@@ -223,6 +235,9 @@ class dbUtilities {
      * @return array.
      */
     public function getErrors() {
+		if(!$this->dbconnection) {
+			$this->error[] = @mysql_error();
+		}
     	return $this->error;
     }
     
@@ -252,5 +267,15 @@ class dbUtilities {
     public function rollback() {
         $this->query("ROLLBACK");
     }
+    
+	public function runQueries($aQueries) {
+        foreach ($aQueries as $sQuery) {
+            $res = $this->query($sQuery);
+            if (!$res) {
+                return $res;
+            }
+        }
+        return true;
+	}
 }
 ?>

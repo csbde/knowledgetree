@@ -19,10 +19,10 @@ function swapInItem(docId, elementId, req) {
     //Need to compare against fields from generic fieldsets to 
     //prevent duplicate date field instanciation.
     var genericFields = '';
-    //Sample  { "htmlId" : {'metadata_7' : 'metadata_7','metadata_9' : 'metadata_9'}}
+    //Sample  { "genericId" : {'metadata_7' : 'metadata_7','metadata_9' : 'metadata_9'}}
     jQuery.getJSON('presentation/lookAndFeel/knowledgeTree/documentmanagement/getHtmlFields.php?fDocumentTypeID=' + docId + '&type=generic',
 	    function(json){
-        jQuery.each(json.htmlId, function(id) {
+        jQuery.each(json.genericId, function(id) {
         	//Building a list of generic fields  
             genericFields += id + ',';
 	    });
@@ -30,16 +30,15 @@ function swapInItem(docId, elementId, req) {
         var elems = jQuery(document).find(".kt_date_field");
     	for (i = 0; i < elems.length; i++) {
     		var fieldName = elems[i].id;
-    		//alert(fieldName);
-    		isGeneric = true;
     		
+    		isGeneric = false;
     		if (genericFields.indexOf(fieldName.match('metadata_[0-9]+')) >= 0){
-    			isGeneric = false;
+    			isGeneric = true;
     		}
     		
     		if (!isGeneric){
     	        var dp = new Ext.form.DateField({
-    		        name: fieldName,
+    		        name: fieldName.replace('div_', ''),
     		        allowBlank:false,
     		        size:10,
     		        format: 'Y-m-d',
