@@ -311,7 +311,6 @@ class upgradeDatabase extends Step
     
         // Ensure all plugins are re-registered.
         $sql = "TRUNCATE plugin_helper";
-        //$res = DBUtil::runQuery($sql);
     	$res = $this->util->dbUtilities->query($sql);
     	
         // Clear out all caches and proxies - they need to be regenerated with the new code
