@@ -139,26 +139,26 @@ class KTFieldsetRegistry {
         // FIXME delegate.
         $oFieldset =& $fieldsetOrType;
 
-            $widgets = array();
-            $fields = $oFieldset->getFields();
+        $widgets = array();
+        $fields = $oFieldset->getFields();
 
-    if ($oFieldset->getIsConditional()) {
-        $iMasterId = $oFieldset->getMasterFieldId();
+        if ($oFieldset->getIsConditional()) {
+            $iMasterId = $oFieldset->getMasterFieldId();
 
-        $oMasterField = DocumentField::get($iMasterId);
+            $oMasterField = DocumentField::get($iMasterId);
         
-        $newfields = array();
-        $newfields[] = $oMasterField;
-        foreach($fields as $oField) {
-        if($oField->getId() != $iMasterId) {
-            $newfields[] = $oField;
-        }
-        }
+            $newfields = array();
+            $newfields[] = $oMasterField;
+            foreach($fields as $oField) {
+                if($oField->getId() != $iMasterId) {
+                    $newfields[] = $oField;
+                }
+            }
         
             foreach ($newfields as $oField) {
                 $fname = 'metadata_' . $oField->getId(); 
                 $value = null;
-                
+                    
                 if (!is_null($oDocument)) {
                     $oFL = DocumentFieldLink::getByDocumentAndField($oDocument, $oField);
                     if (!is_null($oFL) && (!PEAR::isError($oFL))) {
@@ -166,7 +166,7 @@ class KTFieldsetRegistry {
                     }
                 }
                 
-        $widgets[] = $this->oWF->get('ktcore.widgets.conditionalselection', 
+                $widgets[] = $this->oWF->get('ktcore.widgets.conditionalselection', 
                          array(
                            'label' => $oField->getName(),
                            'required' => $oField->getIsMandatory(),
