@@ -94,8 +94,6 @@ class upgradeRestore extends Step {
             $this->restoreDatabase();
         }
             
-//        $this->storeSilent();// Set silent mode variables
-        
         return true;
     }
     
@@ -223,43 +221,5 @@ class upgradeRestore extends Step {
         $this->temp_variables['selected'] = true;
     }
     
-    // TODO this function needs to be refactored out into the parent Step class??
-    private function readConfig() {
-		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
-    	$wizConfigHandler = new configuration();
-    	$path = $wizConfigHandler->readConfigPathIni();
-		$this->util->iniUtilities->load($path);
-        $dbSettings = $this->util->iniUtilities->getSection('db');
-        
-        $this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
-                                    'dbName'=> $dbSettings['dbName'],
-                                    'dbUser'=> $dbSettings['dbUser'],
-                                    'dbPass'=> $dbSettings['dbPass'],
-                                    'dbPort'=> $dbSettings['dbPort'],
-                                    // dbSocket doesn't exist as far as I can find, where was it coming from?
-                                    //'dbSocket'=> $dbSettings['dbSocket'],
-                                    'dbAdminUser'=> $dbSettings['dbAdminUser'],
-                                    'dbAdminPass'=> $dbSettings['dbAdminPass'],
-        );
-        $this->paths = $this->util->iniUtilities->getSection('urls');
-        $this->paths = array_merge($this->paths, $this->util->iniUtilities->getSection('cache'));
-        $this->temp_variables['dbSettings'] = $this->dbSettings;
-        $this->sysVersion = $this->readVersion();
-        $this->cachePath = $wizConfigHandler->readCachePath();
-    }
-    
-    // TODO this function needs to be refactored out into the parent Step class
-    public function readVersion() {
-    	$verFile = SYSTEM_DIR."docs".DS."VERSION.txt";
-    	if(file_exists($verFile)) {
-			$foundVersion = file_get_contents($verFile);
-			return $foundVersion;
-    	} else {
-			$this->error[] = "KT installation version not found";
-    	}
-
-		return false;    	
-    }
-
 }
 ?>

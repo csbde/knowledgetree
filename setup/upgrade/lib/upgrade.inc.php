@@ -40,31 +40,34 @@
 
 require_once('UpgradeItems.inc.php');
 
-//function setupAdminDatabase() {
-//    global $default;
-//    $dsn = array(
-//        'phptype'  => $default->dbType,
-//        'username' => $default->dbAdminUser,
-//        'password' => $default->dbAdminPass,
-//        'hostspec' => $default->dbHost,
-//        'database' => $default->dbName,
-//        'port' => $default->dbPort,
-//    );
-//
-//    $options = array(
-//        'debug'       => 2,
-//        'portability' => DB_PORTABILITY_ERRORS,
-//        'seqname_format' => 'zseq_%s',
-//    );
-//
-//    $default->_admindb = &DB::connect($dsn, $options);
-//    if (PEAR::isError($default->_admindb)) {
-//        die($default->_admindb->toString());
-//    }
-//    $default->_admindb->setFetchMode(DB_FETCHMODE_ASSOC);
-//    return;
-//}
-//setupAdminDatabase();
+// What did this do?
+/*
+function setupAdminDatabase() {
+    global $default;
+    $dsn = array(
+        'phptype'  => $default->dbType,
+        'username' => $default->dbAdminUser,
+        'password' => $default->dbAdminPass,
+        'hostspec' => $default->dbHost,
+        'database' => $default->dbName,
+        'port' => $default->dbPort,
+    );
+
+    $options = array(
+        'debug'       => 2,
+        'portability' => DB_PORTABILITY_ERRORS,
+        'seqname_format' => 'zseq_%s',
+    );
+
+    $default->_admindb = &DB::connect($dsn, $options);
+    if (PEAR::isError($default->_admindb)) {
+        die($default->_admindb->toString());
+    }
+    $default->_admindb->setFetchMode(DB_FETCHMODE_ASSOC);
+    return;
+}
+setupAdminDatabase();
+*/
 
 // {{{ Format of the descriptor
 /**
@@ -196,7 +199,7 @@ function compare_version($version1, $version2) {
  */
 function lte_version($version1, $version2) {
     if (in_array(compare_version($version1, $version2), array(-1, 0))) {
-            return true;
+        return true;
     }
     return false;
 }
@@ -208,7 +211,7 @@ function lte_version($version1, $version2) {
  */
 function gte_version($version1, $version2) {
     if (in_array(compare_version($version1, $version2), array(0, 1))) {
-            return true;
+        return true;
     }
     return false;
 }

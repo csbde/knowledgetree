@@ -151,22 +151,28 @@ function getKTEdition()
 function getOSInfo()
 {
     $server = php_uname();
-    $flavour = '';//'|-';
+    $server_arr = explode(' ', $server);
+
+    // kernel version and os type - 32bit / 64bit
+    $kernel_v = $server_arr[2];
+    $os_v = array_pop($server_arr);
 
     if(strpos($server, 'Darwin') !== false){
         $os = 'Mac OS X';
     }else if(strpos($server, 'Win') !== false){
         $os = 'Windows';
+        // windows differs from *nix
+        // kernel version = windows version
+        // os version = build number
+        $kernel_v = $server_arr[3];
+        $os_v = array_pop($server_arr);
     }else if(strpos($server, 'Linux') !== false) {
-        // Again regular expressions would be nice...
-        // $pos = strpos($server, 'SMP');
-        // $flavour = '|'.substr($server, 6, $pos-7);
         $os = 'Linux';
     }else {
         $os = 'Unix';
     }
 
-    return $os.$flavour;
+    return $os.'|'.$kernel_v.'|'.$os_v;
 }
 
 function sendForm($data)

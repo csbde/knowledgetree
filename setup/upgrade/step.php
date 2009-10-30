@@ -39,6 +39,9 @@
 * @package Upgrader
 * @version Version 0.1
 */
+
+require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
+
 class Step
 {
 	/**
@@ -434,6 +437,44 @@ class Step
     	}
     	
     	return $_SESSION[$package][$class];
+    }
+    
+    protected function readConfig() {
+    	$wizConfigHandler = new configuration();
+    	$path = $wizConfigHandler->readConfigPathIni();
+		$this->util->iniUtilities->load($path);
+        $dbSettings = $this->util->iniUtilities->getSection('db');
+        $this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
+                                  'dbName'=> $dbSettings['dbName'],
+                                  'dbUser'=> $dbSettings['dbUser'],
+                                  'dbPass'=> $dbSettings['dbPass'],
+                                  'dbPort'=> $dbSettings['dbPort'],
+                                  'dbAdminUser'=> $dbSettings['dbAdminUser'],
+                                  'dbAdminPass'=> $dbSettings['dbAdminPass'],
+        );
+        $this->paths = $this->util->iniUtilities->getSection('urls');
+        $this->paths = array_merge($this->paths, $this->util->iniUtilities->getSection('cache'));
+        $this->sysVersion = $this->readVersion();
+        $this->cachePath = $wizConfigHandler->readCachePath();
+        $this->proxyPath = $this->cachePath."/.."; // Total guess.
+        $this->proxyPath = realpath($this->proxyPath."/proxies");
+        $this->storeSilent();
+    }
+    
+    protected function readVersion() {
+    	$verFile = SYSTEM_DIR."docs".DS."VERSION.txt";
+    	if(file_exists($verFile)) {
+			$foundVersion = file_get_contents($verFile);
+			return $foundVersion;
+    	} else {
+			$this->error[] = "KT installation version not found";
+    	}
+
+		return false;    	
+    }
+    
+    protected function storeSilent() {
+        
     }
 }
 
