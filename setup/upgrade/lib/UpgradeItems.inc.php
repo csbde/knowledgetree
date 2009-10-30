@@ -117,7 +117,7 @@ class UpgradeItem extends InstallUtil {
         return $this->type;
     }
 
-    function runDBQuery($query) {
+    function runDBQuery($query, $checkResult = false, $typeCheck = false) {
 		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
 		$wizConfigHandler = new configuration();
 		$configPath = $wizConfigHandler->readConfigPathIni();
@@ -128,13 +128,36 @@ class UpgradeItem extends InstallUtil {
 		$dconf = $this->iniUtilities->getSection('db');
 		$this->dbUtilities->load($dconf['dbHost'], '', $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
         $result = $this->dbUtilities->query($query);
-        $assArr = $this->dbUtilities->fetchAssoc($result);
-        return $assArr;
+//        echo "$query<br/>";
+//        echo '<pre>';
+//        print_r($result);
+//        echo '</pre>';
+		if($checkResult) {
+        	$assArr = $this->dbUtilities->fetchAssoc($result);
+//	        echo '<pre>';
+//	        print_r($assArr);
+//	        echo '</pre>';
+//	        if(is_null($assArr)) {
+//	        	echo '=== null ===<br/>';
+//	        	return false;
+//	        } else {
+//	        	echo '=== not null ===<br/>';
+//	        }
+	        if($typeCheck) {
+	        	return !is_null($assArr);
+	        } else {
+	        	return is_null($assArr);
+	        }
+		}
+//        echo '<pre>';
+//        print_r($assArr);
+//        echo '</pre>';
+        return !is_null($result);
     }
     
     function _upgradeTableInstalled() {
         $query = "SELECT COUNT(id) FROM upgrades";
-        $res = $this->runDBQuery($query);
+        $res = $this->runDBQuery($query, true, true);
         if($res) {
         	return true;
         }
@@ -146,8 +169,9 @@ class UpgradeItem extends InstallUtil {
             return false;
         }
         $query = "SELECT id FROM upgrades WHERE descriptor = '".$this->getDescriptor()."' AND result = 1";
-        $res = $this->runDBQuery($query);
-        if($res) {
+        $res = $this->runDBQuery($query, true, false);
+        
+        if(!$res) {
         	return true;
         }
         return false;
@@ -161,27 +185,30 @@ class UpgradeItem extends InstallUtil {
                 return new Upgrade_Already_Applied($this);
             }
         }
-//        if (PEAR::isError($res)) {
-//            return $res;
+//        if (!$res) {
+//			$this->error[] = 'An Error Has Occured';
 //        }
-        $oCache =& KTCache::getSingleton();
-        $save = $oCache->bEnabled;
-        $oCache->bEnabled = false;
+//        $oCache =& KTCache::getSingleton();
+//        $save = $oCache->bEnabled;
+//        $oCache->bEnabled = false;
         $res = $this->_performUpgrade();
-        $oCache->bEnabled = $save;
-//        if (PEAR::isError($res)) {
-//            $this->_recordUpgrade(false);
-//            return $res;
-//        }
+//        $oCache->bEnabled = $save;
+        if (!$res) {
+            $this->_recordUpgrade(false);
+            $this->error[] = $this->dbUtilities->getErrors();
+            return false;
+        }
         $res = $this->_recordUpgrade(true);
-//        if (PEAR::isError($res)) {
-//            return $res;
-//        }
+        if (!$res) {
+        	$this->error[] = 'An Error Has Occured 1';
+			return false;
+        }
         return true;
     }
 
     function _performUpgrade() {
-//        return PEAR::raiseError("Unimplemented");
+    	$this->error[] = 'Unimplemented';
+    	return false;
     }
 
     function _recordUpgrade($result) {
@@ -193,17 +220,10 @@ class UpgradeItem extends InstallUtil {
         } else {
             $parentid = null;
         }
-        //TODO: Where is the code?
-        exit("add code");
-        /*return $this->autoInsert();
-        
-        DBUtil::autoInsert("upgrades", array(
-            "descriptor" => $this->getDescriptor(),
-            "description" => $this->description,
-            "date_performed" => $this->date,
-            "result" => $result,
-            "parent" => $parentid,
-        ));*/
+		$sql = "INSERT INTO upgrades (`id`, `descriptor`, `description`, `date_performed`, `result`, `parent`) VALUES ('', '". $this->getDescriptor()."', '".$this->description."', '".$this->date."', '".$result."', '".$parentid."')";
+		$this->dbUtilities->query($sql);
+		
+		return true;
     }
 
     // STATIC
@@ -249,7 +269,7 @@ class SQLUpgradeItem extends UpgradeItem {
      *
      * STATIC
      */
-    function getUpgrades($origVersion, $currVersion) {
+    public static function getUpgrades($origVersion, $currVersion) {
 //        global $default;
 		
 //        $sqlupgradedir = KT_DIR . '/sql/' . $default->dbType . '/upgrade/';
@@ -323,7 +343,7 @@ class SQLUpgradeItem extends UpgradeItem {
        return $ret;
     }
 
-    function _getDetailsFromFileName($path) {
+    public static function _getDetailsFromFileName($path) {
         // Old format (pre 2.0.6)
         $matched = preg_match('#^([\d.]*)-to-([\d.]*).sql$#', $path, $matches);
         if ($matched != 0) {
@@ -358,15 +378,13 @@ class SQLUpgradeItem extends UpgradeItem {
     }
 
     function _performUpgrade() {
-//        global $default;
 		$dbType = 'mysql';
         $sqlupgradedir = KT_DIR . 'sql/' . $dbType . '/upgrade/';
         $queries = SQLFile::sqlFromFile($sqlupgradedir . $this->name);
-        exit('add code');
-//        return DBUtil::runQueries($queries, $default->_admindb);
+        return $this->dbUtilities->runQueries($queries);
     }
     
-    
+
 }
 
 class KTRebuildPermissionObserver {
@@ -426,8 +444,8 @@ class RecordUpgradeItem extends UpgradeItem {
         $query = "UPDATE system_settings SET value = '$systemVersion' WHERE name = 'knowledgetreeVersion'";
         $this->runDBQuery($query);
         $query = "UPDATE system_settings SET value = '{$this->version}' WHERE name = 'databaseVersion'";
-        $assArray = $this->runDBQuery($query);
-		return !is_null($assArray);
+        $result = $this->runDBQuery($query);
+		return $result;
     }
 
     function _deleteSmartyFiles() {

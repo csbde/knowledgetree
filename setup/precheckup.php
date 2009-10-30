@@ -38,7 +38,7 @@
 
 error_reporting(E_ALL);
 
-require_once('../config/dmsDefaults.php');
+//require_once('../config/dmsDefaults.php');
 
 function get_php_setting($val) {
     $r =  (ini_get($val) == '1' ? 1 : 0);

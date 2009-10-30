@@ -42,6 +42,7 @@
 
 define('KT_DIR', SYSTEM_DIR);
 define('KT_LIB_DIR', SYSTEM_DIR.'lib');
+require_once(WIZARD_LIB . 'upgrade.inc.php');
 
 class upgradeDatabase extends Step 
 {
@@ -94,8 +95,8 @@ class upgradeDatabase extends Step
     protected $silent = false;
     protected $temp_variables = array();
     public $paths = '';
-    
-	/**
+
+    /**
 	* Main control of database setup
 	*
 	* @author KnowledgeTree Team
@@ -141,16 +142,8 @@ class upgradeDatabase extends Step
     } 
     
     private function doRun($action = null) {
-//        $this->readConfig(KTConfig::getConfigFilename());
-
         $this->readConfig();
-//        if($this->dbSettings['dbPort'] == '')  {
-//            $con = $this->util->dbUtilities->load($this->dbSettings['dbHost'], '', $this->dbSettings['dbUser'],$this->dbSettings['dbPass'], $this->dbSettings['dbName']);
-//        } else {
-            $con = $this->util->dbUtilities->load($this->dbSettings['dbHost'], $this->dbSettings['dbPort'], $this->dbSettings['dbUser'],
-                                           $this->dbSettings['dbPass'], $this->dbSettings['dbName']);
-//        }
-        
+		$con = $this->util->dbUtilities->load($this->dbSettings['dbHost'], $this->dbSettings['dbPort'], $this->dbSettings['dbUser'],$this->dbSettings['dbPass'], $this->dbSettings['dbName']);
         $this->temp_variables['action'] = $action;
         if (is_null($action) || ($action == 'preview')) {
             $this->temp_variables['title'] = 'Preview Upgrade';
@@ -176,15 +169,16 @@ class upgradeDatabase extends Step
 		$this->sysVersion = $this->readVersion();
 		$this->temp_variables['systemVersion'] = $this->sysVersion;
 		$dconf = $this->util->iniUtilities->getSection('db');
-		$query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', 'system_settings');
 		$this->util->dbUtilities->load($dconf['dbHost'], '', $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
+
+		$query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', 'system_settings');
         $result = $this->util->dbUtilities->query($query);
         $assArr = $this->util->dbUtilities->fetchAssoc($result);
         if ($result) {
             $lastVersion = $assArr[0]['value'];
         }
         $currentVersion = $this->sysVersion;
-    	require_once("lib/upgrade.inc.php");
+
         $upgrades = describeUpgrade($lastVersion, $currentVersion);
         $ret = "<table border=1 cellpadding=1 cellspacing=1 width='100%'>\n";
         $ret .= "<tr bgcolor='darkgrey'><th width='10'>Code</th><th width='100%'>Description</th><th width='30'>Applied</th></tr>\n";
@@ -256,21 +250,30 @@ class upgradeDatabase extends Step
 			require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
     		$wizConfigHandler = new configuration();
     		$path = $wizConfigHandler->readConfigPathIni();
-		$this->util->iniUtilities->load($path);
-        $dbSettings = $this->util->iniUtilities->getSection('db');
-        $this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
+			$this->util->iniUtilities->load($path);
+        	$dbSettings = $this->util->iniUtilities->getSection('db');
+        	$this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
                                     'dbName'=> $dbSettings['dbName'],
                                     'dbUser'=> $dbSettings['dbUser'],
                                     'dbPass'=> $dbSettings['dbPass'],
                                     'dbPort'=> $dbSettings['dbPort'],
                                     'dbAdminUser'=> $dbSettings['dbAdminUser'],
                                     'dbAdminPass'=> $dbSettings['dbAdminPass'],
-        );
-        $this->paths = $this->util->iniUtilities->getSection('urls');
-        $this->paths = array_merge($this->paths, $this->util->iniUtilities->getSection('cache'));
-        $this->temp_variables['dbSettings'] = $this->dbSettings;
-        $this->sysVersion = $this->readVersion();
-        $this->cachePath = $wizConfigHandler->readCachePath();
+        	);
+        	$this->paths = $this->util->iniUtilities->getSection('urls');
+        	$this->paths = array_merge($this->paths, $this->util->iniUtilities->getSection('cache'));
+        	$this->sysVersion = $this->readVersion();
+        	$this->cachePath = $wizConfigHandler->readCachePath();
+        	$this->proxyPath = $this->cachePath."/.."; // Total guess.
+        	$this->proxyPath = realpath($this->proxyPath."/proxies");
+        	$this->storeSilent();
+    }
+    
+    public function storeSilent() {
+    	$this->temp_variables['paths'] = $this->paths;
+    	$this->temp_variables['sysVersion'] = $this->sysVersion;
+    	$this->temp_variables['sysVersion'] = $this->sysVersion;
+    	$this->temp_variables['dbSettings'] = $this->dbSettings;
     }
     
     private function upgradeConfirm()
@@ -285,8 +288,6 @@ class upgradeDatabase extends Step
 
     private function doDatabaseUpgrade()
     {
-//        global $default;
-        
         $errors = false;
         
         $this->temp_variables['detail'] = '<p>The table below describes the upgrades that have occurred to
@@ -294,18 +295,10 @@ class upgradeDatabase extends Step
       
         $pre_res = $this->performPreUpgradeActions();
         
-        if (PEAR::isError($pre_res)) {
-            $errors = true;
-            $this->temp_variables['preUpgrade'] = '<font color="red">Pre-Upgrade actions failed.</font>';
-        }
-        else {
-            $this->temp_variables['preUpgrade'] = '<font color="green">Pre-Upgrade actions succeeded.</font>';
-    
-        }
-        
         $res = $this->performAllUpgrades();
-        if (PEAR::isError($res) || PEAR::isError($pres)) {
+        if (!$res) {
             $errors = true;
+            $this->error[] = 'An Error has occured';
             // TODO instantiate error details hideable section?
             $this->temp_variables['upgradeStatus'] = '<font color="red">Database upgrade failed</font>
                                                       <br/><br/>
@@ -319,13 +312,7 @@ class upgradeDatabase extends Step
         }
     
         $post_pres = $this->performPostUpgradeActions();
-        if (PEAR::isError($post_res)) {
-            $errors = true;
-            $this->temp_variables['postUpgrade'] = '<font color="red">Post-Upgrade actions failed.</font>';
-        }
-        else {
-            $this->temp_variables['postUpgrade'] = '<font color="green">Post-Upgrade actions succeeded.</font>';
-        }
+        
         
         return !$errors;
     }
@@ -334,14 +321,40 @@ class upgradeDatabase extends Step
     
         // This is just to test and needs to be updated to a more sane and error resistent architrcture if it works.
         // It should idealy work the same as the upgrades.
-    
-//        global $default;
-//    	print_r($this->paths);die;
         // Lock the scheduler
-        $lockFile = $default->cacheDirectory . DIRECTORY_SEPARATOR . 'scheduler.lock';
-        touch($lockFile);
+        $lockFile = $this->cachePath . DIRECTORY_SEPARATOR . 'scheduler.lock';
+        @touch($lockFile);
         return true;
     
+    }
+    
+    private function deleteDirectory($sPath) {
+        if (!WINDOWS_OS) {
+            if (file_exists('/bin/rm')) {
+                $this->util->pexec(array('/bin/rm', '-rf', $sPath));
+                return;
+            }
+        }
+        if (WINDOWS_OS) {
+            // Potentially kills off all the files in the path, speeding
+            // things up a bit
+            exec("del /q /s " . escapeshellarg($sPath));
+        }
+        $hPath = @opendir($sPath);
+        while (($sFilename = readdir($hPath)) !== false) {
+            if (in_array($sFilename, array('.', '..'))) {
+                continue;
+            }
+            $sFullFilename = sprintf("%s/%s", $sPath, $sFilename);
+            if (is_dir($sFullFilename)) {
+                $this->deleteDirectory($sFullFilename);
+                continue;
+            }
+            @chmod($sFullFilename, 0666);
+            @unlink($sFullFilename);
+        }
+        closedir($hPath);
+        @rmdir($sPath);
     }
     
     private function performPostUpgradeActions() {
@@ -349,25 +362,22 @@ class upgradeDatabase extends Step
         // This is just to test and needs to be updated to a more sane and error resistent architrcture if it works.
         // It should idealy work the same as the upgrades.
     
-//        global $default;
-    
         // Ensure all plugins are re-registered.
         $sql = "TRUNCATE plugin_helper";
-        $res = DBUtil::runQuery($sql);
-    
+        //$res = DBUtil::runQuery($sql);
+    	$res = $this->util->dbUtilities->query($sql);
+    	
         // Clear out all caches and proxies - they need to be regenerated with the new code
-        $proxyDir = $default->proxyCacheDirectory;
-        KTUtil::deleteDirectory($proxyDir);
-    
-        $oKTCache = new KTCache();
-        $oKTCache->deleteAllCaches();
-    
+        $this->deleteDirectory($this->proxyPath);
+//        $oKTCache = new KTCache();
+//        $oKTCache->deleteAllCaches();
+    	$this->deleteDirectory($this->cachePath);
         // Clear the configuration cache, it'll regenerate on next load
-        $oKTConfig = new KTConfig();
-        $oKTConfig->clearCache();
+//        $oKTConfig = new KTConfig();
+//        $oKTConfig->clearCache();
     
         // Unlock the scheduler
-        $lockFile = $default->cacheDirectory . DIRECTORY_SEPARATOR . 'scheduler.lock';
+        $lockFile = $this->cachePath . DIRECTORY_SEPARATOR . 'scheduler.lock';
         if(file_exists($lockFile)){
             @unlink($lockFile);
         }
@@ -377,18 +387,15 @@ class upgradeDatabase extends Step
     }
 
     private function performAllUpgrades () {
-//        global $default;
-        
         $row = 1;
-        
-        $query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', $default->system_settings_table);
-        $lastVersion = DBUtil::getOneResultKey($query, 'value');
-        $currentVersion = $default->systemVersion;
-    
+        $table = 'system_settings';
+        $query = "SELECT value FROM $table WHERE name = 'databaseVersion'";
+		$result = $this->util->dbUtilities->query($query);
+        $assArr = $this->util->dbUtilities->fetchAssoc($result);
+        $lastVersion = $assArr[0]['value'];
+        $currentVersion = $this->sysVersion;
         $upgrades = describeUpgrade($lastVersion, $currentVersion);
-        
         $this->temp_variables['upgradeTable'] = '';
-    
         foreach ($upgrades as $upgrade) {
             if (($row % 2) == 1) {
                 $class = "odd";
@@ -402,15 +409,17 @@ class upgradeDatabase extends Step
             $this->temp_variables['upgradeTable'] .= sprintf('<div class="bar">%s</div>', $this->showResult($res));
             $this->temp_variables['upgradeTable'] .= '<br>' . "\n";
             $this->temp_variables['upgradeTable'] .= "</div>\n";
-            if (PEAR::isError($res)) {
-                if (!is_a($res, 'Upgrade_Already_Applied')) {
-                    break;
-                } else {
-                    $res = true;
-                }
-            }
+//            if (!$res) {
+//                if (!is_a($res, 'Upgrade_Already_Applied')) {
+//                    $res = false;
+//                } else {
+//                    $res = true;
+//                }
+//            }
             if ($res === false) {
-                $res = PEAR::raiseError("Upgrade returned false");
+            	die;
+                $this->error = $this->util->dbUtilities->getErrors();
+//                print_r($this->error);
                 break;
             }
         }
@@ -419,11 +428,11 @@ class upgradeDatabase extends Step
     }
     
     private function showResult($res) {
-        if (PEAR::isError($res)) {
+        if ($res) {
             if (is_a($res, 'Upgrade_Already_Applied')) {
                 return '<span style="color: orange">Already applied</span>';
             }
-            return sprintf('<span style="color: red">%s</span>', htmlspecialchars($res->toString()));
+//            return sprintf('<span style="color: red">%s</span>', htmlspecialchars($res));
         }
         if ($res === true) {
             return '<span style="color: green">Success</span>';
@@ -433,6 +442,5 @@ class upgradeDatabase extends Step
         }
         return $res;
     }
-
 }
 ?>

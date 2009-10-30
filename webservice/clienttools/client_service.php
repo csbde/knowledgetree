@@ -5,8 +5,9 @@ class client_service{
 	public $KT;
 	public $Request;
 	public $AuthInfo;
+	public $handler;
 	
-	public function __construct(&$ResponseObject,&$KT_Instance,&$Request,&$AuthInfo){
+	public function __construct(&$handler,&$ResponseObject,&$KT_Instance,&$Request,&$AuthInfo){
 		// set the response object
 //		if(get_class($ResponseObject)=='jsonResponseObject'){
 //			$this->Response=&$ResponseObject;
@@ -14,7 +15,7 @@ class client_service{
 //			$this->Response=new jsonResponseObject();
 //		}
 
-		
+		$this->handler=$handler;
 		$this->Response=&$ResponseObject;
 		$this->KT=&$KT_Instance;
 		$this->AuthInfo=&$AuthInfo;

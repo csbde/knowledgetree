@@ -92,25 +92,24 @@ function &describeUpgrade ($origVersion, $currVersion) {
     // How to figure out what upgrades to do:
     //
     // 1. Get all SQL upgrades >= origVersion and <= currVersion
-    // 2. Get all Function upgrades >= origVersion and <= currVersion
-    // 3. Categorise each into version they upgrade to
-    // 4. Sort each version subgroup into correct order
+    // 2. Categorise each into version they upgrade to
+    // 3. Sort each version subgroup into correct order
     // 5. Add "recordSubUpgrade" for each version there.
-    // 6. Add back into one big list again
-    // 7. Add "recordUpgrade" for whole thing
+    // 5. Add back into one big list again
+    // 6. Add "recordUpgrade" for whole thing
 
     // $recordUpgrade =  array('upgrade*' . $currVersion, 'Upgrade to ' .  $currVersion, null);
 
     $steps = array();
     foreach (array('SQLUpgradeItem') as $itemgen) {
         $f = array($itemgen, 'getUpgrades');
-        $ssteps =& call_user_func($f, $origVersion, $currVersion);
+        $ssteps = call_user_func($f, $origVersion, $currVersion);
         $scount = count($ssteps);
         for ($i = 0; $i < $scount; $i++) {
             $steps[] =& $ssteps[$i];
         }
     }
-    $upgradestep =& new RecordUpgradeItem($currVersion, $origVersion);
+    $upgradestep = new RecordUpgradeItem($currVersion, $origVersion);
     $steps[] =& $upgradestep;
     $stepcount = count($steps);
     for ($i = 0; $i < $stepcount; $i++) {

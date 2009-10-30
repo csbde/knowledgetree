@@ -14,7 +14,7 @@ class jsonResponseObject{
 	public $additional=array();
 	public $isDataSource=false;
 	
-	public $includeDebug=false;
+	public $includeDebug=true;
 	
 	public $response=array(
 		'requestName'		=>'',
