@@ -21,6 +21,10 @@ class system extends client_service{
 		$this->setResponse($ret);
 		return true;
 	}
+	
+	public function jsondecode($params){
+		$this->setResponse(@json_decode(trim($params['code'])));
+	}
 }
 
 ?>

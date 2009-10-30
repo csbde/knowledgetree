@@ -855,7 +855,7 @@ class kt extends client_service  {
 
 
 	private function update_document_metadata($session_id, $document_id, $metadata, $application, $sysdata=null){
-		$this->addDebug('','entered update_document_metadata');
+		$this->addDebug('update_document_metadata','entered update_document_metadata');
     	$kt=&$this->KT;
    		$responseType='kt_document_detail';
 
@@ -923,27 +923,44 @@ class kt extends client_service  {
 
 	public function update_metadata($arr){
 		$metadata=array();
-		$packed=@json_decode($arr['metadata']);
+		$meta=$arr['metadata'];
 
 		$this->addDebug('','Entered add_document_with_metadata');
+		$this->addDebug('metadata received',$meta);
 
 		$special=array();
+//		foreach($apacked as $packed){
+//			foreach($packed as $key=>$val) {
+//				if(substr($val->name,0,2) != '__') {
+//					if(!is_array($metadata[$val->fieldset])) {
+//						$metadata[$val->fieldset]['fieldset']=$val->fieldset;
+//						$metadata[$val->fieldset]['fields']=array();
+//					}
+//					$metadata[$val->fieldset]['fields'][]=array(
+//						'name'=>$val->name,
+//						'value'=>$val->value
+//					);
+//				}else{
+//					$special[$val->name]=$val->value;
+//				}
+//			}
+//		}
 
-		foreach($packed as $key=>$val) {
-			if(substr($val->name,0,2) != '__') {
-				if(!is_array($metadata[$val->fieldset])) {
-					$metadata[$val->fieldset]['fieldset']=$val->fieldset;
-					$metadata[$val->fieldset]['fields']=array();
-				}
-				$metadata[$val->fieldset]['fields'][]=array(
-					'name'=>$val->name,
-					'value'=>$val->value
-				);
+		foreach($meta as $item){
+			$isSpecial=substr($item['name'],0,2)=='__';
+			if($isSpecial){
+				$special[$item['name']]=$item['value'];
 			}else{
-				$special[$val->name]=$val->value;
-			}
+				$fieldSet=$item['fieldset'];
+				unset($item['fieldset']);
+				$metadata[$fieldSet]['fieldset']=$fieldSet;
+				$metadata[$fieldSet]['fields'][]=$item;
+			}		
 		}
-
+		
+		
+		$this->addDebug('after processing',array('metadata'=>$metadata,'special'=>$special));
+		
 		$document_id=$arr['document_id'];
 
 		$update_result=$this->update_document_metadata($arr['session_id'], $document_id, $metadata, $arr['application'], array());
