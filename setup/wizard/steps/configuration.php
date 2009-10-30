@@ -392,6 +392,9 @@ class configuration extends Step
     {
         $script = $_SERVER['SCRIPT_NAME'];
         $file_system_root = $_SERVER['DOCUMENT_ROOT'];
+        if(preg_match('/inetpub/', $file_system_root)) {
+        	$file_system_root = $_SERVER['APPL_PHYSICAL_PATH'];
+        }
         $host = $_SERVER['SERVER_NAME'];
         $port = $_SERVER['SERVER_PORT'];
         $ssl_enabled = isset($_SERVER['HTTPS']) ? (strtolower($_SERVER['HTTPS']) === 'on' ? 'yes' : 'no') : 'no';
@@ -450,7 +453,6 @@ class configuration extends Step
         	}
 			$dirs = $this->getFromConfigPath(); // Store contents
         }
-        
         foreach ($dirs as $key => $dir){
             $path = (isset($_POST[$dir['setting']])) ? $_POST[$dir['setting']] : $dir['path'];
 

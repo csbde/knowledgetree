@@ -82,7 +82,7 @@ class upgradeWelcome extends step {
     private function checkPassword($username, $password) {
     	$dconf = $this->getDataFromPackage('installers', 'database'); // Use info from install
     	if($dconf) {
-	    	$this->util->dbUtilities->load($dconf['dhost'], $dbconf['dport'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
+	    	$this->util->dbUtilities->load($dconf['dhost'], $dconf['dport'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
     	} else {
     		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
     		$wizConfigHandler = new configuration();
