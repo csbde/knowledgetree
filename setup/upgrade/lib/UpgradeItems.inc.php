@@ -49,9 +49,11 @@
  */
 // }}}
 
-//require_once(KT_LIB_DIR . '/upgrades/UpgradeFunctions.inc.php');
 require_once('sqlfile.inc.php');
 require_once('datetime.inc.php');
+
+require_once("../wizard/iniUtilities.php");
+require_once("../wizard/dbUtilities.php");
 
 // {{{ Upgrade_Already_Applied
 class Upgrade_Already_Applied {
@@ -63,7 +65,7 @@ class Upgrade_Already_Applied {
 }
 // }}}
 
-class UpgradeItem extends InstallUtil {
+class UpgradeItem {
     
     var $type = "";
     var $name;
@@ -84,7 +86,9 @@ class UpgradeItem extends InstallUtil {
         $this->description = $description;
         $this->phase = $phase;
         $this->priority = $priority;
-        parent::__construct();
+        
+        $this->dbUtilities = new dbUtilities();
+		$this->iniUtilities = new iniUtilities();
     }
 
     function setParent($parent) {
@@ -122,8 +126,9 @@ class UpgradeItem extends InstallUtil {
 		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
 		$wizConfigHandler = new configuration();
 		$configPath = $wizConfigHandler->readConfigPathIni();
-		if(!is_object($this->iniUtilities)) {
-			parent::__construct();
+		if(!isset($this->iniUtilities) || !is_object($this->iniUtilities)) {
+			$this->dbUtilities = new dbUtilities();
+		    $this->iniUtilities = new iniUtilities();
 		}
 		$this->iniUtilities->load($configPath);
 		$dconf = $this->iniUtilities->getSection('db');
