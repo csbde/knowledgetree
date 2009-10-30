@@ -65,15 +65,6 @@ class upgradeDatabase extends Step
     private $dbBinary = ''; // TODO:multiple databases
     
 	/**
-	* List of errors encountered
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var array
-	*/
-    public $error = array();
-    
-	/**
 	* List of errors used in template
 	*
 	* @author KnowledgeTree Team
@@ -143,8 +134,10 @@ class upgradeDatabase extends Step
     
     private function doRun($action = null) {
         $this->readConfig();
+        
 		$con = $this->util->dbUtilities->load($this->dbSettings['dbHost'], $this->dbSettings['dbPort'], $this->dbSettings['dbUser'],$this->dbSettings['dbPass'], $this->dbSettings['dbName']);
         $this->temp_variables['action'] = $action;
+        
         if (is_null($action) || ($action == 'preview')) {
             $this->temp_variables['title'] = 'Preview Upgrade';
             $this->temp_variables['upgradeTable'] = $this->generateUpgradeTable();
@@ -206,31 +199,6 @@ class upgradeDatabase extends Step
 
 		return false;    	
     }
-    
-	/**
-	* Stores varibles used by template
-	*
-	* @author KnowledgeTree Team
-	* @params none
-	* @access public
-	* @return array
-	*/
-    public function getStepVars() {
-        return $this->temp_variables;
-    }
-
-	/**
-	* Returns database errors
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @params none
-	* @return array
-	*/
-    public function getErrors() {
-
-        return $this->error;
-    }
 
 	/**
 	* Initialize errors to false
@@ -244,29 +212,6 @@ class upgradeDatabase extends Step
     	foreach ($this->templateErrors as $e) {
     		$this->error[$e] = false;
     	}
-    }
-    
-     private function readConfig() {
-			require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
-    		$wizConfigHandler = new configuration();
-    		$path = $wizConfigHandler->readConfigPathIni();
-			$this->util->iniUtilities->load($path);
-        	$dbSettings = $this->util->iniUtilities->getSection('db');
-        	$this->dbSettings = array('dbHost'=> $dbSettings['dbHost'],
-                                    'dbName'=> $dbSettings['dbName'],
-                                    'dbUser'=> $dbSettings['dbUser'],
-                                    'dbPass'=> $dbSettings['dbPass'],
-                                    'dbPort'=> $dbSettings['dbPort'],
-                                    'dbAdminUser'=> $dbSettings['dbAdminUser'],
-                                    'dbAdminPass'=> $dbSettings['dbAdminPass'],
-        	);
-        	$this->paths = $this->util->iniUtilities->getSection('urls');
-        	$this->paths = array_merge($this->paths, $this->util->iniUtilities->getSection('cache'));
-        	$this->sysVersion = $this->readVersion();
-        	$this->cachePath = $wizConfigHandler->readCachePath();
-        	$this->proxyPath = $this->cachePath."/.."; // Total guess.
-        	$this->proxyPath = realpath($this->proxyPath."/proxies");
-        	$this->storeSilent();
     }
     
     public function storeSilent() {
@@ -416,10 +361,8 @@ class upgradeDatabase extends Step
     }
     
     private function showResult($res) {
-        if ($res) {
-            if (is_a($res, 'Upgrade_Already_Applied')) {
-                return '<span style="color: orange">Already applied</span>';
-            }
+        if ($res && is_a($res, 'Upgrade_Already_Applied')) {
+            return '<span style="color: orange">Already applied</span>';
         }
         if ($res === true) {
             return '<span style="color: green">Success</span>';

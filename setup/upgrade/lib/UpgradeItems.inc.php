@@ -122,21 +122,30 @@ class UpgradeItem {
         return $this->type;
     }
 
-    function runDBQuery($query, $checkResult = false, $typeCheck = false) {
-		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
-		$wizConfigHandler = new configuration();
-		$configPath = $wizConfigHandler->readConfigPathIni();
-		if(!isset($this->iniUtilities) || !is_object($this->iniUtilities)) {
+    /**
+     * Runs a DB query and returns a result based on arguments which specify what to look for
+     *
+     * @param string $query The query to run
+     * @param boolean $checkResult Whether to check that a result was found (not needed for update/delete, only select): This result may be empty
+     * @param boolean $resultCheck Whether to check for returned results from the query
+     * @return unknown
+     */
+    function runDBQuery($query, $checkResult = false, $resultCheck = false) {
+        if(!isset($this->iniUtilities) || !is_object($this->iniUtilities)) {
 			$this->dbUtilities = new dbUtilities();
 		    $this->iniUtilities = new iniUtilities();
 		}
+		
+		$wizConfigHandler = new configuration();
+		$configPath = $wizConfigHandler->readConfigPathIni();
+		
 		$this->iniUtilities->load($configPath);
 		$dconf = $this->iniUtilities->getSection('db');
 		$this->dbUtilities->load($dconf['dbHost'], '', $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
         $result = $this->dbUtilities->query($query);
 		if($checkResult) {
         	$assArr = $this->dbUtilities->fetchAssoc($result);
-	        if($typeCheck) {
+	        if($resultCheck) {
 	        	return !is_null($assArr);
 	        } else {
 	        	return is_null($assArr);
@@ -212,9 +221,8 @@ class UpgradeItem {
     function getAllUpgrades() {
         return array();
     }
-    
 
-}
+} // end class UpgradeItem
 
 class SQLUpgradeItem extends UpgradeItem {
     
@@ -357,10 +365,10 @@ class SQLUpgradeItem extends UpgradeItem {
         return $this->dbUtilities->runQueries($queries);
     }
     
-
-}
+} // end class SQLUpgradeItem
 
 class KTRebuildPermissionObserver {
+    
     function start() {
         $this->lastBeat = time();
     }
@@ -374,9 +382,11 @@ class KTRebuildPermissionObserver {
     }
     function end() {
     }
+    
 }
 
 class RecordUpgradeItem extends UpgradeItem {
+    
     function RecordUpgradeItem ($version, $oldversion = null) {
         $this->type = "upgrade";
         if (is_null($oldversion)) {
@@ -483,6 +493,7 @@ class RecordUpgradeItem extends UpgradeItem {
             @unlink($sFile);
         }
     }
-}
+    
+} // end class RecordUpgradeItem
 
 ?>
