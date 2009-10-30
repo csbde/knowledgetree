@@ -180,7 +180,7 @@ class unixScheduler extends unixService {
 		// TODO : Write sh on the fly? Not sure the reasoning here
 		$source = $this->getSchedulerSourceLoc();
 		$this->writeSchedulerTask();
-		$logFile = $this->outputDir."log".DS."scheduler.log";
+		$logFile = $this->outputDir.DS."scheduler.log";
 		@unlink($logFile);
 		if($source) { // Source
 			$cmd = "nohup ".$source." > ".$logFile." 2>&1 & echo $!";
