@@ -677,7 +677,7 @@ class kt extends client_service  {
 		$status_code=$update_result['status_code'];
 		if ($status_code != 0)
 		{
-			$this->delete_document($arr['session_id'], $document_id, 'Rollback because metadata could not be added', $arr['application']);
+			$this->delete_document(array('session_id' => $arr['session_id'], 'document_id' => $document_id, 'reason' => 'Rollback because metadata could not be added', 'application' => $arr['application']));
 			$this->response= $update_result;
 		}
 
@@ -825,7 +825,12 @@ class kt extends client_service  {
     	$this->setResponse($detail);
    }
 	
-    function delete_document($session_id, $document_id, $reason, $application){
+    function delete_document($params){
+		$session_id = $params['session_id'];
+		$document_id = $params['document_id'];
+		$reason = $params['reason'];
+		$application = $params['application'];
+		
     	$kt=&$this->KT;
 
     	$document=&$kt->get_document_by_id($document_id);
