@@ -390,9 +390,11 @@ class configuration extends Step
      */
     private function getServerInfo()
     {
+    	$iis = false;
         $script = $_SERVER['SCRIPT_NAME'];
         $file_system_root = $_SERVER['DOCUMENT_ROOT'];
         if(preg_match('/inetpub/', $file_system_root)) {
+        	$iis = true;
         	$file_system_root = $_SERVER['APPL_PHYSICAL_PATH'];
         }
         $host = $_SERVER['SERVER_NAME'];
@@ -401,9 +403,12 @@ class configuration extends Step
 
         $pos = strpos($script, '/setup/wizard/');
         $root_url = substr($script, 0, $pos);
-
         $root_url = (isset($_POST['root_url'])) ? $_POST['root_url'] : $root_url;
-        $file_system_root = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root.$root_url;
+        if($iis) {
+        	$file_system_root = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root;
+        } else {
+        	$file_system_root = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root.$root_url;
+        }
         $host = (isset($_POST['host'])) ? $_POST['host'] : $host;
         $port = (isset($_POST['port'])) ? $_POST['port'] : $port;
         $ssl_enabled = (isset($_POST['ssl_enabled'])) ? $_POST['ssl_enabled'] : $ssl_enabled;
@@ -453,6 +458,7 @@ class configuration extends Step
         	}
 			$dirs = $this->getFromConfigPath(); // Store contents
         }
+        $varDirectory = $fileSystemRoot . DS . 'var';
         foreach ($dirs as $key => $dir){
             $path = (isset($_POST[$dir['setting']])) ? $_POST[$dir['setting']] : $dir['path'];
 
