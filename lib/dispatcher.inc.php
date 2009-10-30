@@ -343,8 +343,8 @@ class KTStandardDispatcher extends KTDispatcher {
     }
 
     function loginRequired() {
-	$oKTConfig =& KTConfig::getSingleton();
-	if ($oKTConfig->get('allowAnonymousLogin', false)) {
+	   $oKTConfig =& KTConfig::getSingleton();
+	   if ($oKTConfig->get('allowAnonymousLogin', false)) {
 	    // anonymous logins are now allowed.
 	    // the anonymous user is -1.
 	    //
@@ -352,9 +352,9 @@ class KTStandardDispatcher extends KTDispatcher {
 
 	    $oUser =& User::get(-2);
 	    if (PEAR::isError($oUser) || ($oUser->getName() != 'Anonymous')) {
-		; // do nothing - the database integrity would break if we log the user in now.
+		  ; // do nothing - the database integrity would break if we log the user in now.
 	    } else {
-		$session = new Session();
+		  $session = new Session();
                 $sessionID = $session->create($oUser);
                 $this->sessionStatus = $this->session->verify();
                 if ($this->sessionStatus === true) {

@@ -269,7 +269,7 @@ class SQLUpgradeItem extends UpgradeItem {
      *
      * STATIC
      */
-    function getUpgrades($origVersion, $currVersion) {
+    public static function getUpgrades($origVersion, $currVersion) {
 //        global $default;
 		
 //        $sqlupgradedir = KT_DIR . '/sql/' . $default->dbType . '/upgrade/';
@@ -343,7 +343,7 @@ class SQLUpgradeItem extends UpgradeItem {
        return $ret;
     }
 
-    function _getDetailsFromFileName($path) {
+    public static function _getDetailsFromFileName($path) {
         // Old format (pre 2.0.6)
         $matched = preg_match('#^([\d.]*)-to-([\d.]*).sql$#', $path, $matches);
         if ($matched != 0) {

@@ -169,15 +169,16 @@ class upgradeDatabase extends Step
 		$this->sysVersion = $this->readVersion();
 		$this->temp_variables['systemVersion'] = $this->sysVersion;
 		$dconf = $this->util->iniUtilities->getSection('db');
-		$query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', 'system_settings');
 		$this->util->dbUtilities->load($dconf['dbHost'], '', $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
+
+		$query = sprintf('SELECT value FROM %s WHERE name = "databaseVersion"', 'system_settings');
         $result = $this->util->dbUtilities->query($query);
         $assArr = $this->util->dbUtilities->fetchAssoc($result);
         if ($result) {
             $lastVersion = $assArr[0]['value'];
         }
         $currentVersion = $this->sysVersion;
-    	require_once("lib/upgrade.inc.php");
+
         $upgrades = describeUpgrade($lastVersion, $currentVersion);
         $ret = "<table border=1 cellpadding=1 cellspacing=1 width='100%'>\n";
         $ret .= "<tr bgcolor='darkgrey'><th width='10'>Code</th><th width='100%'>Description</th><th width='30'>Applied</th></tr>\n";
