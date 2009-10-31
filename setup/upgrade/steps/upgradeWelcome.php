@@ -48,7 +48,10 @@ class upgradeWelcome extends step {
 	protected $storeInSession = true;
 	
     public function doStep() {
-    	$this->temp_variables = array("step_name"=>"welcome");
+    	$upgradeOnly = false;
+    	if(isset($_GET['action'])) if($_GET['action'] == 'installer') $upgradeOnly = true;
+//    	print_r($_GET['action']);
+    	$this->temp_variables = array("step_name"=>"welcome", "upgradeOnly"=>$upgradeOnly);
         if($this->next()) {
             if ($this->doRun()) {
                 return 'next';
@@ -80,10 +83,25 @@ class upgradeWelcome extends step {
     }
     
     private function checkPassword($username, $password) {
+    	$upgradeOnly = false;
+
+    	if(isset($_POST['upgradeOnly'])) $upgradeOnly = $_POST['upgradeOnly'];
     	$dconf = $this->getDataFromPackage('installers', 'database'); // Use info from install
-    	if($dconf) {
+    	if($dconf) { // From Install
 	    	$this->util->dbUtilities->load($dconf['dhost'], $dconf['dport'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
-    	} else {
+    	} elseif($upgradeOnly) {
+    		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
+    		$wizConfigHandler = new configuration();
+    		$configPath = $wizConfigHandler->readConfigPathIni();
+			$this->util->iniUtilities->load($configPath);
+			$dconf = $this->util->iniUtilities->getSection('db');
+    		$this->util->dbUtilities->load($dconf['dbHost'],$dconf['dbPort'], $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
+			$sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
+			$res = $this->util->dbUtilities->query($sQuery);
+			$ass = $this->util->dbUtilities->fetchAssoc($res);
+			if($ass[0]['match_count'] == 1)
+				return true;
+    	} else { // Upgrade
     		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
     		$wizConfigHandler = new configuration();
     		$configPath = $wizConfigHandler->readConfigPathIni();
@@ -96,7 +114,7 @@ class upgradeWelcome extends step {
 			if($ass[0]['match_count'] == 1)
 				return true;
     	}
-
+		print_r($this->util->dbUtilities);
         $this->error[] = 'Could Not Authenticate User';
         return false;
 

@@ -1,6 +1,6 @@
 <form action="index.php?step_name=welcome" method="post">
 	<p class="title">Welcome to the KnowledgeTree Database Upgrade Wizard</p>
-
+	<input type="hidden" value="<?php echo $upgradeOnly?>" name="upgradeOnly">
 	<div id="step_content" class="step">
 		<br/>
 		<br/>
