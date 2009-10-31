@@ -1,5 +1,6 @@
 *~
 bin/luceneserver/lucene.pid
+bin/schedulerTask.sh 
 *.tmproj
 .DS_Store
 .buildpath
