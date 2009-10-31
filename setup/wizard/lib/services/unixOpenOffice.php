@@ -140,7 +140,7 @@ class unixOpenOffice extends unixService {
     	if($state != 'STARTED') {
     		$cmd = "nohup ".$this->getBin().' -nofirststartwizard -nologo -headless -"accept=socket,host=localhost,port=8100;urp;StarOffice.ServiceManager" '." > /dev/null 2>&1 & echo $!";
 	    	if(DEBUG) {
-	    		echo "Command : $cmd<br/>";
+	    		echo "$cmd<br/>";
 	    		return false;
 	    	}
 	    	

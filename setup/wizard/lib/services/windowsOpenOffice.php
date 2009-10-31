@@ -205,7 +205,7 @@ class windowsOpenOffice extends windowsService {
     		if($binary != '') {
             	$cmd = "\"{$this->winservice}\" install $this->name "."-displayname {$this->name} -start auto \"".$binary."\" -headless -invisible -nofirststartwizard -\"accept=socket,host={$this->host},port={$this->port};urp;\"";;
 	        	if(DEBUG) {
-	        		echo "Command : $cmd<br/>";
+	        		echo "$cmd<br/>";
 	        		return ;
 	        	}
 	            $response = $this->util->pexec($cmd);

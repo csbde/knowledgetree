@@ -433,7 +433,7 @@ class windowsLucene extends windowsService {
 			if($luceneExe && $luceneSource && $luceneDir) {
 				$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
             	if(DEBUG) {
-            		echo "Command : $cmd<br/>";
+            		echo "$cmd<br/>";
             		return ;
             	}
 				$response = $this->util->pexec($cmd);

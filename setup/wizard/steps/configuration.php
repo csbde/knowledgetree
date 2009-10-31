@@ -42,7 +42,7 @@
 
 if(isset($_GET['action'])) {
 	$func = $_GET['action'];
-	if($func != '') {
+	if($func != '' && $func != 'installer') {
 		require_once("../iniUtilities.php");
 		require_once("../step.php");
 		require_once("../path.php");
@@ -755,7 +755,7 @@ class configuration extends Step
 
 if(isset($_GET['action'])) {
 	$func = $_GET['action'];
-	if($func != '') {
+	if($func != '' && $func != 'installer') {
 		$serv = new configuration();
 		$func_call = strtoupper(substr($func,0,1)).substr($func,1);
 		$method = "do$func_call";

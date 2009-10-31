@@ -64,8 +64,8 @@ class unixLucene extends unixService {
 		$this->setLuceneDir(SYSTEM_DIR."bin".DS."luceneserver".DS);
 		$this->setIndexerDir(SYSTEM_DIR."search2".DS."indexing".DS."bin".DS);
 		$this->setLucenePidFile("lucene_test.pid");
-		$this->setJavaXms(1024);
-		$this->setJavaXmx(1024);
+		$this->setJavaXms(512);
+		$this->setJavaXmx(512);
 		$this->setLuceneSourceLoc("ktlucene.jar");
 		$this->setShutdownScript("shutdown.php");
 	}
@@ -205,9 +205,9 @@ class unixLucene extends unixService {
     		$logFile = "/dev/null";//$this->outputDir."lucene.log";
     		@unlink($logFile);
 	    	$cmd = "cd ".$this->getLuceneDir()."; ";
-	    	$cmd .= "nohup java ".$this->getLuceneSource()." {$this->getJavaXmx()} {$this->getJavaXms()} -jar > ".$logFile." 2>&1 & echo $!";
+	    	$cmd .= "nohup java -jar ".$this->getLuceneSource()." {$this->getJavaXmx()} {$this->getJavaXms()} > ".$logFile." 2>&1 & echo $!";
 	    	if(DEBUG) {
-	    		echo "Command : $cmd<br/>";
+	    		echo "$cmd<br/>";
 	    		return false;
 	    	}
 	    	$response = $this->util->pexec($cmd);
