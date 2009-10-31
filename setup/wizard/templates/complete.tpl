@@ -134,9 +134,9 @@
         	$redirect = "http://".$_SERVER['SERVER_NAME'].":$port".$root_url."/admin.php";
 	?>
 	<?php if($migrate_check) { ?>
-		<a href="../upgrade/index.php" class="back button_next" style="width:190px;" onclick="javascript:{w.clearSessions();}">Goto Database Upgrade</a>
+		<a href="../upgrade/index.php" class="back button_next" style="width:190px;" onclick="javascript:{w.clearSessions();}">Next</a>
     <?php } else { ?>
-    	<a href="../../login.php?" class="back button_next" style="width:90px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
+    	<a href="../../login.php?" class="back button_next" style="width:90px;" onclick="javascript:{w.clearSessions();}">Finish</a>
     <?php } ?>
     <?php
         if ($install_environment == 'Zend') {
