@@ -1,4 +1,41 @@
 <?php
+/**
+ * $Id:$
+ *
+ * KnowledgeTree Community Edition
+ * Document Management Made Simple
+ * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Portions copyright The Jam Warehouse Software (Pty) Limited
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License version 3 as published by the
+ * Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
+ * California 94120-7775, or email info@knowledgetree.com.
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
+ * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
+ * must display the words "Powered by KnowledgeTree" and retain the original
+ * copyright notice.
+ * Contributor( s): ______________________________________
+ *
+ */
+
 require_once('../../config/dmsDefaults.php');
 require_once('../../ktapi/ktapi.inc.php');
 
@@ -212,12 +249,12 @@ class openSearch extends KTStandardDispatcher {
 
     private function body_atom($dom_response) {
         $channel_title = $dom_response->appendChild($this->dom->createElement("title"));
-        $channel_title->appendChild($this->dom->createTextNode("Knowledgetree Search: {$this->searchTerms}"));
+        $channel_title->appendChild($this->dom->createTextNode("KnowledgeTree Search: {$this->searchTerms}"));
         $channel_subtitle = $dom_response->appendChild($this->dom->createElement("subtitle"));
         $channel_subtitle->appendChild($this->dom->createTextNode('Search metadata and content on KnowledgeTree'));
         $channel_author = $dom_response->appendChild($this->dom->createElement("author"));
         $author_name = $channel_author->appendChild($this->dom->createElement("name"));
-        $author_name->appendChild($this->dom->createTextNode("Knowledgetree"));
+        $author_name->appendChild($this->dom->createTextNode("KnowledgeTree"));
         $channel_numResults = $dom_response->appendChild($this->dom->createElement("opensearch:totalResults"));
         $channel_numResults->appendChild($this->dom->createTextNode("{$this->osQuery->getTotalResults()}"));
         $channel_index = $dom_response->appendChild($this->dom->createElement("opensearch:startIndex"));
@@ -248,7 +285,7 @@ class openSearch extends KTStandardDispatcher {
 
     private function body_rss($rss_channel) {
         $channel_title = $rss_channel->appendChild($this->dom->createElement("title"));
-        $channel_title->appendChild($this->dom->createTextNode("Knowledgetree Search: {$this->searchTerms}"));
+        $channel_title->appendChild($this->dom->createTextNode("KnowledgeTree Search: {$this->searchTerms}"));
         $channel_description = $rss_channel->appendChild($this->dom->createElement("description"));
         $channel_description->appendChild($this->dom->createTextNode('Search metadata and content on KnowledgeTree'));
         $channel_numResults = $rss_channel->appendChild($this->dom->createElement("opensearch:totalResults"));
