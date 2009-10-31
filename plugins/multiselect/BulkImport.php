@@ -65,11 +65,12 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
 			$js .= "<script src='plugins/multiselect/js/hidelink.js' type='text/javascript'></script>";
 			
 			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+			$aJavascript[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
+			
 			$oPage =& $GLOBALS['main'];			
 			if (method_exists($oPage, 'requireJSResources')) {
 				$oPage->requireJSResources($aJavascript);
 			}
-			
 	        return $js._kt('Import from Server Location');
 		}
 		else
