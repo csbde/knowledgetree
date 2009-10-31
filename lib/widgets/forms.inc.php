@@ -328,7 +328,7 @@ class KTForm {
         $aOldData = array();
         $aErrors = array();
         $old_data = KTUtil::arrayGet((array) $_SESSION['_kt_old_data'],
-            $this->_kt_form_name, array());
+                                     $this->_kt_form_name, array());
         if (KTUtil::arrayGet($old_data, 'identifier') == $this->sIdentifier) {
             $bUseOld = true;
             $aStoredData = (array) unserialize(KTUtil::arrayGet($old_data, 'data'));

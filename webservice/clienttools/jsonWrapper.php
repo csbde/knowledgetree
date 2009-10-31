@@ -14,7 +14,7 @@ class jsonResponseObject{
 	public $additional=array();
 	public $isDataSource=false;
 	
-	public $includeDebug=false;
+	public $includeDebug=true;
 	
 	public $response=array(
 		'requestName'		=>'',
@@ -91,6 +91,7 @@ class jsonWrapper{
 	public $jsonArray=array();
 	
 	public function __construct($content=NULL){
+		$content=stripslashes($content);
 		$this->raw=$content;
 		$content=@json_decode($content,true);
 		if(!is_array($content))throw new jsonContentException('Invalid JSON input',jsonContentException::INPUT_ERROR);

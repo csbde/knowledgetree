@@ -45,7 +45,8 @@ class upgradeWelcome extends step {
     protected $silent = true;
     protected $temp_variables = array();
 	protected $error = array() ;
-    
+	protected $storeInSession = true;
+	
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"welcome");
         if($this->next()) {
@@ -81,15 +82,13 @@ class upgradeWelcome extends step {
     private function checkPassword($username, $password) {
     	$dconf = $this->getDataFromPackage('installers', 'database'); // Use info from install
     	if($dconf) {
-	    	$this->util->dbUtilities->load($dconf['dhost'], $dbconf['dport'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
+	    	$this->util->dbUtilities->load($dconf['dhost'], $dconf['dport'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
     	} else {
     		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
     		$wizConfigHandler = new configuration();
     		$configPath = $wizConfigHandler->readConfigPathIni();
 			$this->util->iniUtilities->load($configPath);
 			$dconf = $this->util->iniUtilities->getSection('db');
-			if($dconf['dbPort'] == 'default')
-				$dconf['dbPort'] = 3306;
     		$this->util->dbUtilities->load($dconf['dbHost'],$dconf['dbPort'], $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
 			$sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
 			$res = $this->util->dbUtilities->query($sQuery);

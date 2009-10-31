@@ -44,6 +44,7 @@ require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 
 require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
+require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
 
 require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
 require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");

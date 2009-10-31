@@ -40,31 +40,34 @@
 
 require_once('UpgradeItems.inc.php');
 
-//function setupAdminDatabase() {
-//    global $default;
-//    $dsn = array(
-//        'phptype'  => $default->dbType,
-//        'username' => $default->dbAdminUser,
-//        'password' => $default->dbAdminPass,
-//        'hostspec' => $default->dbHost,
-//        'database' => $default->dbName,
-//        'port' => $default->dbPort,
-//    );
-//
-//    $options = array(
-//        'debug'       => 2,
-//        'portability' => DB_PORTABILITY_ERRORS,
-//        'seqname_format' => 'zseq_%s',
-//    );
-//
-//    $default->_admindb = &DB::connect($dsn, $options);
-//    if (PEAR::isError($default->_admindb)) {
-//        die($default->_admindb->toString());
-//    }
-//    $default->_admindb->setFetchMode(DB_FETCHMODE_ASSOC);
-//    return;
-//}
-//setupAdminDatabase();
+// What did this do?
+/*
+function setupAdminDatabase() {
+    global $default;
+    $dsn = array(
+        'phptype'  => $default->dbType,
+        'username' => $default->dbAdminUser,
+        'password' => $default->dbAdminPass,
+        'hostspec' => $default->dbHost,
+        'database' => $default->dbName,
+        'port' => $default->dbPort,
+    );
+
+    $options = array(
+        'debug'       => 2,
+        'portability' => DB_PORTABILITY_ERRORS,
+        'seqname_format' => 'zseq_%s',
+    );
+
+    $default->_admindb = &DB::connect($dsn, $options);
+    if (PEAR::isError($default->_admindb)) {
+        die($default->_admindb->toString());
+    }
+    $default->_admindb->setFetchMode(DB_FETCHMODE_ASSOC);
+    return;
+}
+setupAdminDatabase();
+*/
 
 // {{{ Format of the descriptor
 /**
@@ -92,25 +95,24 @@ function &describeUpgrade ($origVersion, $currVersion) {
     // How to figure out what upgrades to do:
     //
     // 1. Get all SQL upgrades >= origVersion and <= currVersion
-    // 2. Get all Function upgrades >= origVersion and <= currVersion
-    // 3. Categorise each into version they upgrade to
-    // 4. Sort each version subgroup into correct order
+    // 2. Categorise each into version they upgrade to
+    // 3. Sort each version subgroup into correct order
     // 5. Add "recordSubUpgrade" for each version there.
-    // 6. Add back into one big list again
-    // 7. Add "recordUpgrade" for whole thing
+    // 5. Add back into one big list again
+    // 6. Add "recordUpgrade" for whole thing
 
     // $recordUpgrade =  array('upgrade*' . $currVersion, 'Upgrade to ' .  $currVersion, null);
 
     $steps = array();
     foreach (array('SQLUpgradeItem') as $itemgen) {
         $f = array($itemgen, 'getUpgrades');
-        $ssteps =& call_user_func($f, $origVersion, $currVersion);
+        $ssteps = call_user_func($f, $origVersion, $currVersion);
         $scount = count($ssteps);
         for ($i = 0; $i < $scount; $i++) {
             $steps[] =& $ssteps[$i];
         }
     }
-    $upgradestep =& new RecordUpgradeItem($currVersion, $origVersion);
+    $upgradestep = new RecordUpgradeItem($currVersion, $origVersion);
     $steps[] =& $upgradestep;
     $stepcount = count($steps);
     for ($i = 0; $i < $stepcount; $i++) {
@@ -197,7 +199,7 @@ function compare_version($version1, $version2) {
  */
 function lte_version($version1, $version2) {
     if (in_array(compare_version($version1, $version2), array(-1, 0))) {
-            return true;
+        return true;
     }
     return false;
 }
@@ -209,7 +211,7 @@ function lte_version($version1, $version2) {
  */
 function gte_version($version1, $version2) {
     if (in_array(compare_version($version1, $version2), array(0, 1))) {
-            return true;
+        return true;
     }
     return false;
 }

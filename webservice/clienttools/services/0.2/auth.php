@@ -100,13 +100,20 @@ class auth extends client_service {
 	public function ping(){
 		global $default;
        	$user=$this->KT->get_user_object_by_username($this->AuthInfo['user']);
+       	$versions=$this->handler->getServerVersions();
+       	$bestVer=$versions[count($versions)-1];
+       	$clientVer=$this->handler->getVersion();
 		$ret=array(
 			'response'			=>'pong',
 			'loginLocation'		=> '/index.html',
-			'currentversion'	=>$default->systemVersion,
-			'requiredversion'	=>$default->systemVersion,
-			'versionok'			=>true,
-			'fullName'			=>PEAR::isError($user)?'':$user->getName()
+			'versionok'			=>in_array($clientVer,$versions),
+			'fullName'			=>PEAR::isError($user)?'':$user->getName(),
+			'serverVersions'	=>$versions,
+			'serverBestVersion'	=>$bestVer,
+			'clientVersion'		=>$clientVer,
+			'canUpgradeClient'	=>($clientVer<$bestVer?true:false),
+			'canUpgradeServer'	=>($clientVer>$bestVer?true:false)
+					
 		);
 		$this->setResponse($ret);
 		return true;

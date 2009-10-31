@@ -40,8 +40,6 @@
 * @version Version 0.1
 */
 
-//require_once('../../config/dmsDefaults.php');
-
 class upgradeComplete extends Step {
 
     protected $silent = false;
@@ -50,6 +48,7 @@ class upgradeComplete extends Step {
 
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
+    	
         $this->doRun();
     	return 'landing';
     }
@@ -62,7 +61,9 @@ class upgradeComplete extends Step {
      * Set all silent mode varibles
      *
      */
-    private function storeSilent() {
+    protected function storeSilent() {
+    	$v = $this->getDataFromSession('upgradeProperties');
+    	$this->temp_variables['sysVersion'] = $v['upgrade_version'];
     }
 
 }

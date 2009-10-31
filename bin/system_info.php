@@ -43,7 +43,12 @@
 * The following data is collected:
 * Unique installation information: installation GUID, number of users in repository, number of documents in repository,
 * operating system (platform, platform version, flavor if Linux), version and edition.
+
+<installation guid>|<enabled user count>|<disabled user count>|<deleted user count>|
+<live document count>|<deleted document count>|<archived document count>|
+<KT version>|<KT edition>|<User licenses>|<OS info>
 */
+
 chdir(realpath(dirname(__FILE__)));
 require_once('../config/dmsDefaults.php');
 
@@ -56,7 +61,7 @@ function getGuid()
     $guid = KTUtil::getSystemIdentifier();
 
     if(PEAR::isError($guid)){
-        $guid = '';
+        $guid = '-';
     }
     return $guid;
 }
@@ -68,42 +73,43 @@ function getUserCnt()
     $result = DBUtil::getResultArray($query);
 
     if(empty($result) || PEAR::isError($result)){
-        return '';
+        return '-|-|-';
     }
-    $users = '';
+    $enabled = '-';
+    $disabled = '-';
+    $deleted = '-';
 
     foreach ($result as $row){
-        $str = '';
         switch($row['disabled']){
-            case 0: $str = 'Enabled'; break;
-            case 1: $str = 'Disabled'; break;
-            case 2: $str = 'Deleted'; break;
+            case 0: $enabled = $row['cnt']; break;
+            case 1: $disabled = $row['cnt']; break;
+            case 2: $deleted = $row['cnt']; break;
         }
-
-        $str .= ': '.$row['cnt'];
-
-        $users .= (!empty($users)) ? '; ' : '';
-        $users .= $str;
     }
-    return $users;
+    return "{$enabled}|{$disabled}|{$deleted}";
 }
 
 // Get the number of documents in the repository
 function getDocCnt()
 {
-    $query = 'select count(*) as cnt, s.name from documents d, status_lookup s WHERE s.id = d.status_id group by d.status_id;';
+    $query = 'select count(*) as cnt, status_id from documents d WHERE status_id IN (1,3,4) group by d.status_id;';
     $result2 = DBUtil::getResultArray($query);
 
     if(empty($result2) || PEAR::isError($result2)){
-        return '';
+        return '-|-|-';
     }
-    $docs = '';
+    $live = '-';
+    $deleted = '-';
+    $archived = '-';
 
     foreach ($result2 as $row){
-        $docs .= (!empty($docs)) ? '; ' : '';
-        $docs .= $row['name'].': '.$row['cnt'];
+        switch($row['status_id']){
+            case 1: $live = $row['cnt']; break;
+            case 3: $deleted = $row['cnt']; break;
+            case 4: $archived = $row['cnt']; break;
+        }
     }
-    return $docs;
+    return "{$live}|{$deleted}|{$archived}";
 }
 
 // Get the version of KT
@@ -121,15 +127,21 @@ function getKTVersion()
 // Get the edition of KT
 function getKTEdition()
 {
-    $edition = 'Community';
+    $edition = 'Community|-';
     if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
         $path = KTPluginUtil::getPluginPath('ktdms.wintools');
         require_once($path .  'baobabkeyutil.inc.php');
         $edition = BaobabKeyUtil::getName();
 
+        // this could be done with regular expressions...
         // Remove the brackets around the name
         $edition = substr($edition, 1);
         $edition = substr($edition, 0, strlen($edition)-1);
+        // Remove the "users"
+        $pos = strpos($edition, 'users');
+        $edition = ($pos === false) ? $edition.'|-' : substr($edition, 0, $pos-1);
+        // Replace the , with |
+        $edition = str_replace(', ', '|', $edition);
     }
     return $edition;
 }
@@ -139,22 +151,33 @@ function getKTEdition()
 function getOSInfo()
 {
     $server = php_uname();
+    $server_arr = explode(' ', $server);
+
+    // kernel version and os type - 32bit / 64bit
+    $kernel_v = $server_arr[2];
+    $os_v = array_pop($server_arr);
 
     if(strpos($server, 'Darwin') !== false){
         $os = 'Mac OS X';
     }else if(strpos($server, 'Win') !== false){
         $os = 'Windows';
-    }else {
+        // windows differs from *nix
+        // kernel version = windows version
+        // os version = build number
+        $kernel_v = $server_arr[3];
+        $os_v = array_pop($server_arr);
+    }else if(strpos($server, 'Linux') !== false) {
         $os = 'Linux';
+    }else {
+        $os = 'Unix';
     }
 
-    return $os;
+    return $os.'|'.$kernel_v.'|'.$os_v;
 }
 
 function sendForm($data)
 {
     $url = 'http://ktnetwork.knowledgetree.com/call_home.php';
-    //$url = 'http://10.33.20.250/knowledgetree/call_home.php';
     $data = http_build_query($data);
 
 	$ch = curl_init($url);

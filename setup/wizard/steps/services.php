@@ -219,7 +219,7 @@ class services extends Step
 				$srv = new $className();
 				$srv->load();
 				$status = $this->serviceInstalled($srv);
-				if($status != 'STARTED') {
+				if($status != 'STARTED' || $status != 'STOPPED') {
 					if(!WINDOWS_OS) { $binary = $this->$class->getBinary(); } // Get binary, if it exists
 					$passed = $this->$class->binaryChecks(); // Run Binary Pre Checks
 	    			if ($passed) { // Install Service

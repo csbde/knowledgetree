@@ -1,5 +1,5 @@
 <div id="loadingBar" style="display:none; text-align: center; padding: 4px;">
-	<img src="/setup/upgrade/resources/graphics/loading.gif">
+	<img src="/setup/wizard/resources/graphics/loading.gif">
 	<br/>
 	<?php echo $loadingText; ?>
 </div>

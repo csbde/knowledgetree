@@ -140,6 +140,7 @@ class kt extends client_service  {
 		
 		$folder=&$kt->get_folder_by_id($arr['node']);
 		if (PEAR::isError($folder)){
+			echo '<pre>'.print_r($arr,true).'</pre>';
 			$this->addError('Folder Not found');
 			return false;
 		}
@@ -430,6 +431,7 @@ class kt extends client_service  {
 			}
 		}
 		$this->setResponse(array('items'=>$items, 'count'=>count($items)));
+		return true;
 	}
 
 	function update_document_type($params) {
@@ -599,9 +601,10 @@ class kt extends client_service  {
 		$filename=$params['filename'];
 		$reason=$params['reason'];
 		$tempfilename=$params['tempfilename'];
+		$major_update=$params['major_update'];
 		$application=$this->AuthInfo['appType'];
 
-    	$this->addDebug('Checkin',"checkin_document('$session_id',$document_id,'$filename','$reason','$tempfilename', '$application')");
+    	$this->addDebug('Checkin',"checkin_document('$session_id',$document_id,'$filename','$reason','$tempfilename', '$application', $major_update)");
     	$kt=&$this->KT;
 
     	// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
@@ -620,7 +623,7 @@ class kt extends client_service  {
 		}
 
 		// checkin
-		$result=$document->checkin($filename, $reason, $tempfilename, false);
+		$result=$document->checkin($filename, $reason, $tempfilename, $major_update);
 		if (PEAR::isError($result))
 		{
 			$this->setResponse(array('status_code'=>14));
@@ -676,7 +679,7 @@ class kt extends client_service  {
 		$status_code=$update_result['status_code'];
 		if ($status_code != 0)
 		{
-			$this->delete_document($arr['session_id'], $document_id, 'Rollback because metadata could not be added', $arr['application']);
+			$this->delete_document(array('session_id' => $arr['session_id'], 'document_id' => $document_id, 'reason' => 'Rollback because metadata could not be added', 'application' => $arr['application']));
 			$this->response= $update_result;
 		}
 
@@ -824,7 +827,12 @@ class kt extends client_service  {
     	$this->setResponse($detail);
    }
 	
-    function delete_document($session_id, $document_id, $reason, $application){
+    function delete_document($params){
+		$session_id = $params['session_id'];
+		$document_id = $params['document_id'];
+		$reason = $params['reason'];
+		$application = $params['application'];
+		
     	$kt=&$this->KT;
 
     	$document=&$kt->get_document_by_id($document_id);
@@ -847,7 +855,7 @@ class kt extends client_service  {
 
 
 	private function update_document_metadata($session_id, $document_id, $metadata, $application, $sysdata=null){
-		$this->addDebug('','entered update_document_metadata');
+		$this->addDebug('update_document_metadata','entered update_document_metadata');
     	$kt=&$this->KT;
    		$responseType='kt_document_detail';
 
@@ -915,27 +923,44 @@ class kt extends client_service  {
 
 	public function update_metadata($arr){
 		$metadata=array();
-		$packed=@json_decode($arr['metadata']);
+		$meta=$arr['metadata'];
 
 		$this->addDebug('','Entered add_document_with_metadata');
+		$this->addDebug('metadata received',$meta);
 
 		$special=array();
+//		foreach($apacked as $packed){
+//			foreach($packed as $key=>$val) {
+//				if(substr($val->name,0,2) != '__') {
+//					if(!is_array($metadata[$val->fieldset])) {
+//						$metadata[$val->fieldset]['fieldset']=$val->fieldset;
+//						$metadata[$val->fieldset]['fields']=array();
+//					}
+//					$metadata[$val->fieldset]['fields'][]=array(
+//						'name'=>$val->name,
+//						'value'=>$val->value
+//					);
+//				}else{
+//					$special[$val->name]=$val->value;
+//				}
+//			}
+//		}
 
-		foreach($packed as $key=>$val) {
-			if(substr($val->name,0,2) != '__') {
-				if(!is_array($metadata[$val->fieldset])) {
-					$metadata[$val->fieldset]['fieldset']=$val->fieldset;
-					$metadata[$val->fieldset]['fields']=array();
-				}
-				$metadata[$val->fieldset]['fields'][]=array(
-					'name'=>$val->name,
-					'value'=>$val->value
-				);
+		foreach($meta as $item){
+			$isSpecial=substr($item['name'],0,2)=='__';
+			if($isSpecial){
+				$special[$item['name']]=$item['value'];
 			}else{
-				$special[$val->name]=$val->value;
-			}
+				$fieldSet=$item['fieldset'];
+				unset($item['fieldset']);
+				$metadata[$fieldSet]['fieldset']=$fieldSet;
+				$metadata[$fieldSet]['fields'][]=$item;
+			}		
 		}
-
+		
+		
+		$this->addDebug('after processing',array('metadata'=>$metadata,'special'=>$special));
+		
 		$document_id=$arr['document_id'];
 
 		$update_result=$this->update_document_metadata($arr['session_id'], $document_id, $metadata, $arr['application'], array());

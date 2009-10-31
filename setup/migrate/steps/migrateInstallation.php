@@ -148,7 +148,7 @@ class migrateInstallation extends step
 			return false;
 		} else {
 			$this->foundVersion = $this->readVersion();
-			if($version) {
+			if($this->foundVersion) {
 				$this->checkVersion();
 			}
 			$this->storeSilent();
@@ -239,6 +239,8 @@ class migrateInstallation extends step
     	);
     	$ktSettings = $this->util->iniUtilities->getSection('KnowledgeTree');
 		$froot = $ktSettings['fileSystemRoot'];
+//		print_r($ktSettings);
+//		die;
 		if ($froot == 'default') {
 			$froot = $this->location;
 		}

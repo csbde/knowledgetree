@@ -8,6 +8,7 @@ class ajaxHandler{
 	public $kt=NULL;
 	public $authenticator=NULL;
 	public $noAuthRequireList=array();
+	public $standardServices=array('system');
 
 	public function __construct(&$ret=NULL,&$kt,$noAuthRequests=''){
 		// set a local copy of the json request wrapper
@@ -30,6 +31,7 @@ class ajaxHandler{
 		}
 		$this->ret->setRequest($this->req->jsonArray);
 		$this->ret->setTitle($this->request['service'].'::'.$this->request['function']);
+		$this->ret->setDebug('Server Versions',$this->getServerVersions());
 
 		if(get_class($kt)=='KTAPI'){
 			$this->kt=&$kt;
@@ -38,20 +40,22 @@ class ajaxHandler{
 			return $this->render();
 		}
 
-		// Prepar		
-		$this->loadService('auth');
-		$this->authenticator=new auth($this->ret,$this->kt,$this->request,$this->auth);
-		
-
-		//Make sure a token exists before continuing
-		if(!$this->verifyToken())return $this->render();
-
-
-		if(!$this->verifySession()){
-			$this->doLogin();
-			$isAuthRequired=$this->isNoAuthRequiredRequest();
-			$isAuthenticated=$this->isAuthenticated();
-			if(!$isAuthRequired && !$isAuthenticated)return $this->render();
+		// Prepare
+		if(!$this->isStandardService()){
+			$this->loadService('auth');
+			$this->authenticator=new auth($this,$this->ret,$this->kt,$this->request,$this->auth);
+			
+	
+			//Make sure a token exists before continuing
+			if(!$this->verifyToken())return $this->render();
+	
+	
+			if(!$this->verifySession()){
+				$this->doLogin();
+				$isAuthRequired=$this->isNoAuthRequiredRequest();
+				$isAuthenticated=$this->isAuthenticated();
+				if(!$isAuthRequired && !$isAuthenticated)return $this->render();
+			}
 		}
 		
 		$this->dispatch();
@@ -70,11 +74,15 @@ class ajaxHandler{
 			$service=$this->authenticator;
 		}else{
 			$this->loadService($request['service']);
-			$service=new $request['service']($this->ret,$this->kt,$this->request,$this->auth);
+			if(class_exists($request['service'])){
+				$service=new $request['service']($this,$this->ret,$this->kt,$this->request,$this->auth);
+			}else{
+				$this->ret->setDebug('Service could not be loaded',$request['service']);
+			}
 		}
 		$this->ret->setdebug('dispatch_request','The service class loaded');
 		if(method_exists($service,$request['function'])){
-			$this->ret->setdebug('dispatch_execution','The service method was found. Executing');
+			$this->ret->setDebug('dispatch_execution','The service method was found. Executing');
 			$service->$request['function']($request['parameters']);
 		}else{
 			$this->ret->addError("Service {$request['service']} does not contain the method: {$request['function']}");
@@ -82,16 +90,34 @@ class ajaxHandler{
 		}
 	}
 	
+	public function isStandardService(){
+		return in_array($this->request['service'],$this->standardServices);
+	}
+	
 
 	public function loadService($serviceName=NULL){
-		$version=$this->getVersion();
-		if(!class_exists($serviceName)){
-			if(file_exists('services/'.$version.'/'.$serviceName.'.php')){
-				require_once('services/'.$version.'/'.$serviceName.'.php');
-				return true;
-			}else{
-				throw new Exception('Service could not be found: '.$serviceName);
-				return false;
+		if(in_array($serviceName,$this->standardServices)){
+			$fileName=dirname(__FILE__).'/standardservices/'.$serviceName.'.php';
+			$this->ret->setDebug('standardService Found',$fileName);
+			if(!class_exists($serviceName)){
+				if(file_exists($fileName)){
+					require_once($fileName);
+					return true;
+				}else{
+					throw new Exception('Standard Service could not be found: '.$serviceName);
+					return false;
+				}
+			}
+		}else{
+			$version=$this->getVersion();
+			if(!class_exists($serviceName)){
+				if(file_exists('services/'.$version.'/'.$serviceName.'.php')){
+					require_once('services/'.$version.'/'.$serviceName.'.php');
+					return true;
+				}else{
+					throw new Exception('Service could not be found: '.$serviceName);
+					return false;
+				}
 			}
 		}
 	}
@@ -106,9 +132,21 @@ class ajaxHandler{
 		return true;
 	}
 
-	protected function getVersion(){
+	public function getVersion(){
 		if(!$this->version)$this->version=$this->req->getVersion();
 		return $this->version;
+	}
+	
+	public function getServerVersions(){
+		$folder='services/';
+		$contents=scandir($folder);
+		$dir=array();
+		foreach($contents as $item){
+			if(is_dir($folder.$item) && $item!='.' && $item!=='..'){
+				$dir[]=$item;
+			}
+		}
+		return $dir;		
 	}
 
 	protected function verifySession(){

@@ -3,6 +3,13 @@
 	<div id="database" class="step1" style="display:block;">
 		<div class="description">
 		This step performs the necessary Database Upgrades.
+		<?php
+			echo "<br/>";
+			foreach ($errors as $error) {
+				if($error != '')
+					echo "<span class = 'error'>$error</span><br/>";
+			}
+		?>
 		</div>
 		<div id="step_content_database" class="step">
             <br/><br/>
@@ -13,13 +20,11 @@
             <?php echo $upgradeTable; ?>
             <?php }
             else if ($action == 'confirm') {
-                if (!$backupStatus) { ?>
+                if ($backupStatus) { ?>
                     <p>We are about to start the upgrade process.<P>
                 <?php }
                 else { ?>
-                <br/>
-                <font color="Red">Please ensure that you have made a backup before continuing with the upgrade process.</font>
-                <p>
+                    <p><font color="Red">Please ensure that you have made a backup before continuing with the upgrade process.</font><p>
                 <?php } ?>
             <?php }
             else if ($action == 'runUpgrade') {

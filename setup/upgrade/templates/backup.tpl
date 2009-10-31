@@ -46,7 +46,7 @@ You can continue to do the backup manually using the following process:
 <P>
     </div>
     </div>
-    <?php include 'templates/loading.tpl'; ?>
+    <?php include WIZARD_DIR . 'templates/loading.tpl'; ?>
 	<div id="buttonBar">
     <input type="submit" name="Previous" value="Previous" class="button_previous">
     <?php
