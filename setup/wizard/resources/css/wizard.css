@@ -509,9 +509,9 @@ td.dir_description {
 }
 
 .demo {
-	left:75px;
+	/*left:75px;
 	position:relative;
-	width:600px
+	width:600px*/
 }
 
 .text_message {
@@ -543,4 +543,9 @@ td.dir_description {
 	position:relative;
 	padding-left: 400px;
 	padding-top: 10px;
+}
+
+#left_space {
+	float:left;
+	width:50%;
 }
