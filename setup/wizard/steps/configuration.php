@@ -39,18 +39,6 @@
 * @package Installer
 * @version Version 0.1
 */
-
-if(isset($_GET['action'])) {
-	$func = $_GET['action'];
-	if($func != '' && $func != 'installer') {
-		require_once("../iniUtilities.php");
-		require_once("../step.php");
-		require_once("../path.php");
-		require_once("../dbUtilities.php");
-		require_once("../installUtil.php");
-	}
-}
-
 class configuration extends Step
 {
 	private $allConfs;
@@ -680,26 +668,6 @@ class configuration extends Step
      * @return boolean 
      */
     private function writeConfigPath($configPath, $configContent) {
-//		$conf = $this->getDataFromSession("configuration"); // get data from the server
-//        $paths = $conf['paths'];
-//		if(isset($paths['configFile']['path'])) {
-//			$configPath = $this->getContentPath();
-//        	$configContent = $paths['configFile']['path'];
-//    	} else {
-//			$configPath = $this->getContentPath();
-//			if(!$configPath) return false;
-//	        $this->util->iniHandler->load($configPath);
-//	        $data = $this->util->iniHandler->getFileByLine();
-//	        $configContent = '';
-//	        foreach ($data as $k=>$v) {
-//	        	if(preg_match('/config.ini/', $k)) {
-//	        		$configContent = $k;
-//	        		break;
-//	        	}
-//	        }
-//    	}
-//		print_r($configPath);
-//		print_r($configContent);
         $fp = fopen($configPath, 'w+');
         if(fwrite($fp, $configContent))
         	return true;
@@ -707,19 +675,6 @@ class configuration extends Step
     }
     
     private function writeCachePath($cachePath, $cacheContent) {
-//		$cachePath = $this->getCachePath();
-//		if(!$cachePath) return false;
-//		$configPath = $this->getContentPath();
-//		if(!$configPath) return false;
-//        $this->util->iniHandler->load($configPath);
-//        $data = $this->util->iniHandler->getFileByLine();
-//        $cacheContent = '';
-//        foreach ($data as $k=>$v) {
-//        	if(preg_match('/cache/', $k)) {
-//        		$cacheContent = $k;
-//        		break;
-//        	}
-//        }
         $fp = fopen($cachePath, 'w+');
         if($cacheContent != '') {
 	        if(fwrite($fp, $cacheContent))
@@ -753,13 +708,4 @@ class configuration extends Step
 	}
 }
 
-if(isset($_GET['action'])) {
-	$func = $_GET['action'];
-	if($func != '' && $func != 'installer') {
-		$serv = new configuration();
-		$func_call = strtoupper(substr($func,0,1)).substr($func,1);
-		$method = "do$func_call";
-		$serv->$method();
-	}
-}
 ?>

@@ -49,8 +49,11 @@ class upgradeWelcome extends step {
 	
     public function doStep() {
     	$upgradeOnly = false;
-    	if(isset($_GET['action'])) if($_GET['action'] == 'installer') $upgradeOnly = true;
-//    	print_r($_GET['action']);
+    	if(isset($_GET['action'])) { 
+    		if($_GET['action'] == 'installer') {
+    			$upgradeOnly = true;
+    		}
+    	}
     	$this->temp_variables = array("step_name"=>"welcome", "upgradeOnly"=>$upgradeOnly);
         if($this->next()) {
             if ($this->doRun()) {
@@ -114,7 +117,6 @@ class upgradeWelcome extends step {
 			if($ass[0]['match_count'] == 1)
 				return true;
     	}
-		print_r($this->util->dbUtilities);
         $this->error[] = 'Could Not Authenticate User';
         return false;
 

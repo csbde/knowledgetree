@@ -122,16 +122,14 @@ class migrateDatabase extends Step
     	$manual = false; // If file was exported manually
     	$dbSettings = $installation['dbSettings'];
     	$location = $installation['location'];
-//		$uname = $this->temp_variables['duname'];
-//		$pwrd = $this->temp_variables['dpassword'];
 		$port = $this->util->getPort($location);
 		$tmpFolder = $this->resolveTempDir();
     	if(WINDOWS_OS) {
     		$termOrBash = "command prompt window";
-    		$exe = DS."$location".DS."mysql".DS."bin".DS."mysqldump.exe".DS; // Location of dump
+    		$exe = "\"$location".DS."mysql".DS."bin".DS."mysqldump\""; // Location of dump
     	} else {
     		$termOrBash = "terminal window";
-    		$exe = "'$location".DS."mysql".DS."bin".DS."mysqldump'"; // Location of dump
+    		$exe = DS."$location".DS."mysql".DS."bin".DS."mysqldump.exe".DS;
     	}
     	$date = date('Y-m-d-H-i-s');
     	if(isset($database['manual_export'])) {
@@ -157,7 +155,11 @@ class migrateDatabase extends Step
 			}
 		}
 		// Handle failed dump
-		$sqlFile = "/tmp/kt-backup-$date.sql"; // Use tmp instead due to permissions
+		if(WINDOWS_OS) {
+			$sqlFile = "/tmp/kt-backup-$date.sql"; // Use tmp instead due to permissions
+		} else {
+			$sqlFile = "C:\kt-backup-$date.sql"; // Use tmp instead due to permissions
+		}
 		$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
     	$this->error[]['error'] = "Could not export database:";
     	$this->error[]['msg'] = "Execute the following command in a $termOrBash.";

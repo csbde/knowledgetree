@@ -104,7 +104,7 @@ class upgradeRestore extends Step {
     private function restoreDatabase()
     {
         $this->temp_variables['restore'] = true;
-        $status = $_SESSION['backupStatus'];
+        //$status = $_SESSION['backupStatus'];
         $filename = $_SESSION['backupFile']; 
         $stmt = $this->util->create_restore_stmt($filename, $this->dbSettings);
         $dir = $stmt['dir'];
@@ -174,7 +174,8 @@ class upgradeRestore extends Step {
         $dir = $this->util->resolveTempDir();
     
         $files = array();
-        if ($dh = opendir($dir))
+        $dh = opendir($dir);
+        if ($dh)
         {
             while (($file = readdir($dh)) !== false)
             {
@@ -210,7 +211,7 @@ class upgradeRestore extends Step {
             return;
         }
     
-        $status = $_SESSION['backupStatus'];
+//        $status = $_SESSION['backupStatus'];
         $filename = $_SESSION['backupFile'];
         $stmt = $this->util->create_restore_stmt($filename, $this->dbSettings);
         

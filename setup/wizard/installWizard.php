@@ -294,7 +294,7 @@ class InstallWizard {
 			}
 		} else {
 			// TODO: Die gracefully
-			$this->util->error("System has been installed  <a href='../../login.php' class='back' style='width:90px;float:none' class='back button_next'>Finish</a>");
+			$this->util->error("System has been installed  <a href='../../login.php' class='back' style='width:40px;float:none' class='back button_next'>Finish</a>");
 		}
 	}
 }

@@ -183,10 +183,11 @@ class windowsOpenOffice extends windowsService {
 	}
     
 	private function setWinservice($winservice = "winserv.exe") {
-		if(file_exists(SYS_BIN_DIR . $winservice))
+		if(file_exists(SYS_BIN_DIR . $winservice)) {
 			$this->winservice = SYS_BIN_DIR . $winservice;
-		else if(file_exists(SYS_BIN_DIR . "win32" . DS. $winservice))
+		} else if(file_exists(SYS_BIN_DIR . "win32" . DS. $winservice)) {
 			$this->winservice = SYS_BIN_DIR . "win32" . DS. $winservice;
+		}
 	}
 	
 	public function getWinservice() {
@@ -206,7 +207,7 @@ class windowsOpenOffice extends windowsService {
             	$cmd = "\"{$this->winservice}\" install $this->name "."-displayname {$this->name} -start auto \"".$binary."\" -headless -invisible -nofirststartwizard -\"accept=socket,host={$this->host},port={$this->port};urp;\"";;
 	        	if(DEBUG) {
 	        		echo "$cmd<br/>";
-	        		return ;
+	        		return false;
 	        	}
 	            $response = $this->util->pexec($cmd);
 	            return $response;

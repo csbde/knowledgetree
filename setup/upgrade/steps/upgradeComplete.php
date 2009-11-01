@@ -42,19 +42,42 @@
 
 class upgradeComplete extends Step {
 
-    protected $silent = false;
+    protected $silent = true;
     protected $temp_variables = array();
-    
-
+    private $migrateCheck = false;
+	private $servicesCheck = 'tick';
+	
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
-    	
         $this->doRun();
+        $this->storeSilent();
     	return 'landing';
     }
     
     private function doRun() {
-        $this->storeSilent();// Set silent mode variables
+		if($this->util->isMigration()) {
+	        $this->storeSilent();// Set silent mode variables
+			require_once("../wizard/steps/services.php"); // configuration to read the ini path
+			$wizServices = new services();
+			foreach ($wizServices->getServices() as $serviceName) {
+				$className = OS.$serviceName;
+				require_once("../wizard/lib/services/service.php");
+				require_once("../wizard/lib/services/".OS."Service.php");
+				require_once("../wizard/lib/services/$className.php");
+				$aService = new $className();
+				$aService->load(); // Load Defaults
+				$aService->start(); // Start Service
+				$status = $aService->status(); // Get service status
+				if($status) {
+					$this->temp_variables[$serviceName."Status"] = 'tick';
+				} else {
+					$this->temp_variables[$serviceName."Status"] = 'cross_orange';
+					$this->servicesCheck = 'cross_orange';
+				}
+			}
+			$this->migrateCheck = true;
+		}
+		return true;
     }
     
     /**
@@ -64,6 +87,8 @@ class upgradeComplete extends Step {
     protected function storeSilent() {
     	$v = $this->getDataFromSession('upgradeProperties');
     	$this->temp_variables['sysVersion'] = $v['upgrade_version'];
+    	$this->temp_variables['migrateCheck'] = $this->migrateCheck;
+    	$this->temp_variables['servicesCheck'] = $this->servicesCheck;
     }
 
 }

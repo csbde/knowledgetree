@@ -9,7 +9,7 @@
         <p class="empty_space"> Only administrator users may access the upgrade wizard. </p>
 		<div class="demo">
             <table>
-                <tr><td>Username</td><td><input name=username></td></tr>
+                <tr><td>Username</td><td><input id="username" name=username></td></tr>
                 <tr><td>Password</td><td><input name=password type="password"></td></tr>
                 <?php if (!empty($errors)) { ?><tr><td></td><td><span class="error">Could Not Authenticate User</span></td></tr> <?php } ?>
                 <?php
@@ -30,3 +30,6 @@
 	?>
 	<input type="submit" name="Next" value="Next" class="button_next"/>
 </form>
+<script type="text/javascript">
+	$('#username').focus();
+</script>

@@ -188,7 +188,7 @@ class upgradeBackup extends Step {
     {        
         $adminUser = $this->dbSettings['dbAdminUser'];
         $adminPwd = $this->dbSettings['dbAdminPass'];
-        $dbHost = $this->dbSettings['dbHost'];
+//        $dbHost = $this->dbSettings['dbHost'];
         $dbName = $this->dbSettings['dbName'];
         
         $dbPort = trim($this->dbSettings['dbPort']);

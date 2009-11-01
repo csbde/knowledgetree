@@ -40,16 +40,6 @@
 * @version Version 0.1
 */
 
-if(isset($_GET['action'])) {
-	$func = $_GET['action'];
-	if($func != '') {
-		require_once("../step.php");
-		require_once("../installUtil.php");
-		require_once("../path.php");
-		require_once("../dbUtilities.php");
-	}
-}
-
 class services extends Step 
 {
 	/**
@@ -522,7 +512,7 @@ class services extends Step
 	* @access private
 	* @return void
     */
-    private function storeSilent() {
+    public function storeSilent() {
     	foreach ($this->getServices() as $service) {
     		$class = strtolower($service)."Validation";
 			$serv = $this->$class->storeSilent();
@@ -546,71 +536,6 @@ class services extends Step
 		
 		return $services;
 	}
-	
-	/** External Access **/
-	public function doDeleteAll() {
-    	$serverDetails = $this->getServices();
-		foreach ($serverDetails as $serviceName) {
-			$className = OS.$serviceName;
-			require_once("../lib/services/service.php");
-			require_once("../lib/services/".OS."Service.php");
-			require_once("../lib/services/$className.php");
-			$service = new $className();
-			$service->uninstall();
-			echo "Delete Service {$service->getName()}<br/>";
-			echo "Status of service ".$service->status()."<br/>";
-		}
-	}
-	
-	public function doInstallAll() {
-    	$serverDetails = $this->getServices();
-    	if(!empty($serverDetails)) {
-			require_once("../lib/validation/serviceValidation.php");
-			require_once("../lib/services/service.php");
-    	}
-		foreach ($serverDetails as $serviceName) {
-			$className = OS.$serviceName;
-			$serv = strtolower($serviceName); // Linux Systems.
-			require_once("../lib/services/".OS."Service.php");
-			require_once("../lib/validation/$serv"."Validation.php");
-			require_once("../lib/services/$className.php");
-			$service = new $className();
-			$class = strtolower($serviceName)."Validation";
-			$vClass = new $class();
-			$passed = $vClass->binaryChecks(); // Run Binary Pre Checks
-			$service->load(array('binary'=>$passed));
-			$service->install();
-			echo "Install Service {$service->getName()}<br/>";
-			echo "Status of service ".$service->status()."<br/>";
-		}
-	}
-	
-	public function doStatusAll() {
-    	$serverDetails = $this->getServices();
-		foreach ($serverDetails as $serviceName) {
-			$className = OS.$serviceName;
-			require_once("../lib/services/service.php");
-			require_once("../lib/services/".OS."Service.php");
-			require_once("../lib/services/$className.php");
-			$service = new $className();
-			$service->load();
-			echo "{$service->getName()} : Status of service = ".$service->status()."<br/>";
-		}
-	}
 }
 
-if(isset($_GET['action'])) {
-	$func = $_GET['action'];
-	if(isset($_GET['debug'])) {
-		define('DEBUG', $_GET['debug']);
-	} else {
-		define('DEBUG', 0);
-	}
-	if($func != '') {
-		$serv = new services();
-		$func_call = strtoupper(substr($func,0,1)).substr($func,1);
-		$method = "do$func_call";
-		$serv->$method();
-	}
-}
 ?>

@@ -79,9 +79,9 @@
 		        	<?php if ($LuceneStatus != 'tick') { ?>
 		        		<td>
 						<?php if (AJAX) { ?>
-							<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>
+<!--							<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>-->
 						<?php } else { ?>
-							<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+<!--							<a href="javascript:this.location.reload();" class="refresh">Refresh</a>-->
 						<?php } ?>
 		        		</td>
 		        	<?php } ?>
@@ -92,9 +92,9 @@
 		        	<?php if ($SchedulerStatus != 'tick') { ?>
 		        		<td>
 						<?php if (AJAX) { ?>
-							<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>
+<!--							<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>-->
 						<?php } else { ?>
-							<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+<!--							<a href="javascript:this.location.reload();" class="refresh">Refresh</a>-->
 						<?php } ?>
 		        		</td>
 		        	<?php } ?>
@@ -105,9 +105,9 @@
 		        	<?php if ($OpenOfficeStatus != 'tick') { ?>
 		        		<td>
 						<?php if (AJAX) { ?>
-							<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>
+<!--							<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>-->
 						<?php } else { ?>
-							<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+<!--							<a href="javascript:this.location.reload();" class="refresh">Refresh</a>-->
 						<?php } ?>
 		        		</td>
 		        	<?php } ?>
@@ -134,9 +134,9 @@
         	$redirect = "http://".$_SERVER['SERVER_NAME'].":$port".$root_url."/admin.php";
 	?>
 	<?php if($migrate_check) { ?>
-		<a href="../upgrade/index.php" class="back button_next" style="width:190px;" onclick="javascript:{w.clearSessions();}">Next</a>
+		<a href="../upgrade/index.php" class="back button_next" style="width:30px;" onclick="javascript:{w.clearSessions();}">Next</a>
     <?php } else { ?>
-    	<a href="../../login.php?" class="back button_next" style="width:90px;" onclick="javascript:{w.clearSessions();}">Finish</a>
+    	<a href="../../login.php" class="back button_next" style="width:40px;" onclick="javascript:{w.clearSessions();}">Finish</a>
     <?php } ?>
     <?php
         if ($install_environment == 'Zend') {

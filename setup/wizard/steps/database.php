@@ -40,16 +40,6 @@
 * @version Version 0.1
 */
 
-if(isset($_GET['action'])) {
-	$func = $_GET['action'];
-	if($func != '') {
-		require_once("../step.php");
-		require_once("../installUtil.php");
-		require_once("../path.php");
-		require_once("../dbUtilities.php");
-	}
-}
-
 class database extends Step 
 {
 	/**
@@ -811,18 +801,6 @@ class database extends Step
     }
     
 	/**
-	* Test database connectivity
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return boolean
-	*/
-    public function doAjaxTest($host, $uname, $dname) {
-		
-    }
-    
-	/**
 	* Initialize errors to false
 	*
 	* @author KnowledgeTree Team
@@ -836,25 +814,6 @@ class database extends Step
     	}
     }
     
-    public function doCreateSchema() {
-    	$this->dhost = '127.0.0.1';
-    	$this->duname = 'root';
-    	$this->dpassword = 'root';
-    	$this->dname = 'dms_install';
-    	$this->dbbinary = 'mysql';
-    	$this->util->dbUtilities->load($this->dhost, '', $this->duname, $this->dpassword, $this->dname);
-    	$this->createSchema();
-    	echo 'Schema loaded<br>';
-    }
 }
 
-if(isset($_GET['action'])) {
-	$func = $_GET['action'];
-	if($func != '') {
-		$serv = new database();
-		$func_call = strtoupper(substr($func,0,1)).substr($func,1);
-		$method = "do$func_call";
-		$serv->$method();
-	}
-}
 ?>
