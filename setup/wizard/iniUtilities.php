@@ -46,9 +46,9 @@ class iniUtilities {
     
    	function load($iniFile) {
 //    	if($this->iniFile != $iniFile) {
-//	       $this->cleanArray = array();
-//	       $this->lineNum = 0;
-//	       $this->exists = '';
+	       $this->cleanArray = array();
+	       $this->lineNum = 0;
+	       $this->exists = '';
 //    	}
        $this->iniFile = $iniFile;
        $this->backupIni($iniFile);
