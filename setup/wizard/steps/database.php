@@ -641,7 +641,8 @@ class database extends Step
 		if(!$this->populateSchema()) {
 			$this->error['con'] = "Could not populate schema ";
 		}
-
+		$this->writeBinaries();
+		
 		return true;
     }
 
@@ -769,8 +770,22 @@ class database extends Step
     	$this->util->dbUtilities->query($dropPluginHelper);
     	$updateUrls = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "urls";';
     	$this->util->dbUtilities->query($updateUrls);
+		$this->writeBinaries();
+
     	return true;
     }
+    
+    private function writeBinaries() {
+    	$services = $this->util->getDataFromSession('services');
+    	$binaries = $services['binaries'];
+    	foreach ($binaries as $k=>$bin) {
+    		if($k != 1) {
+    			$updateBin = 'UPDATE config_settings c SET c.value = "'.$bin.'" where c.group_name = "externalBinary" and c.display_name = "'.$k.'";';
+				$this->util->dbUtilities->query($updateBin);
+    		}
+    	}
+    }
+    
 	/**
 	* Close connection if it exists
 	*

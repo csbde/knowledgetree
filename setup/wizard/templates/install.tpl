@@ -10,8 +10,8 @@
 		</p>
 		<div class="demo"><?php echo $html->image('greenit.jpg', array('style'=>'padding-left: 35px;')); ?></div>
 		<br/><br/><br/><br/>
-<p>		<input class="" type='checkbox' name='call_home' value='enable' checked style="float:left;"/>&nbsp;&nbsp;
-		Help to improve KnowledgeTree by providing anonymous usage statistics</p>
+<p>		<input type='checkbox' name='call_home' value='enable' checked style="float:left;"/>&nbsp;&nbsp;
+		<label for='call_home'>Help to improve KnowledgeTree by providing anonymous usage statistics</label></p>
 	</div>
 	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
 	<input type="submit" name="Install" value="Install" class="button_next"/>

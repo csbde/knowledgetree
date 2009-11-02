@@ -67,7 +67,7 @@ class services extends Step
 	* @access private
 	* @var array
 	*/
-    private $services = array('Lucene', 'Scheduler', 'OpenOffice');
+    private $services = array('java'=>'Lucene', 'php'=>'Scheduler', 'soffice'=>'OpenOffice');
 
 	/**
 	* Flag if services are already Installed
@@ -144,6 +144,7 @@ class services extends Step
  	*/
 	public $schedulerValidation;
    
+	public $binaries = array();
 	/**
 	* Main control of services setup
 	*
@@ -202,7 +203,7 @@ class services extends Step
     		$this->alreadyInstalled = true;
     		$this->serviceCheck = 'tick';
     	} else {
-	    	foreach ($this->getServices() as $service) {
+	    	foreach ($this->getServices() as $bin=>$service) {
 	    		$class = strtolower($service)."Validation";
 				$this->$class->preset(); // Sets defaults
 				$className = OS.$service;
@@ -212,6 +213,7 @@ class services extends Step
 				if($status != 'STARTED' || $status != 'STOPPED') {
 					if(!WINDOWS_OS) { $binary = $this->$class->getBinary(); } // Get binary, if it exists
 					$passed = $this->$class->binaryChecks(); // Run Binary Pre Checks
+					$this->binaries[$bin] = $passed;
 	    			if ($passed) { // Install Service
 	    				$this->installService($service, $passed);
 	    			}
@@ -520,6 +522,7 @@ class services extends Step
     	}
     	$this->temp_variables['alreadyInstalled'] = $this->alreadyInstalled;
     	$this->temp_variables['serviceCheck'] = $this->serviceCheck;
+    	$this->temp_variables['binaries'] = $this->binaries;
     }
     
 
