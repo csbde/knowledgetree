@@ -42,7 +42,7 @@
 
 class dependencies extends Step
 {
-    private $maxPHPVersion = '5.2.11';
+    private $maxPHPVersion = '5.3';
     private $minPHPVersion = '5.0.0';
     private $done;
 	private $versionSection = false;
