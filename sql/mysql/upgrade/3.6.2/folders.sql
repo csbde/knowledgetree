@@ -1,6 +1,6 @@
-ALTER TABLE `folders` ADD `created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `creator_id` ,
+ALTER TABLE `folders` ADD `created` DATETIME NULL DEFAULT '0000-00-00 00:00:00' AFTER `creator_id` ,
 ADD `modified_user_id` INT( 11 ) NULL DEFAULT NULL AFTER `created` ,
-ADD `modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `modified_user_id` ;
+ADD `modified` DATETIME NULL DEFAULT '0000-00-00 00:00:00' AFTER `modified_user_id` ;
 
 #The following lines are for inserting the data which should have been there if this table had always stored this data
 
@@ -28,3 +28,6 @@ UPDATE folders f set f.modified_user_id =
 UPDATE folders f set f.modified = f.created WHERE f.modified IS NULL OR f.modified = '0000-00-00 00:00:00' ;
 
 UPDATE folders f set f.modified_user_id = f.creator_id WHERE f.modified_user_id IS NULL ;
+
+ALTER TABLE `folders` CHANGE `created` `created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00'
+ALTER TABLE `modified` CHANGE `modified` `modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00'
