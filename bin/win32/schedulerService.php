@@ -54,14 +54,13 @@ global $default;
 
 $config = KTConfig::getSingleton();
 $schedulerInterval = $config->get('KnowledgeTree/schedulerInterval',30); // interval in seconds
-//$phpPath = $config->get('externalBinary/php','php'); // TODO - fix me
 
 // Change to knowledgeTree/bin folder
 $dir = realpath(dirname(__FILE__) . '/..');
 chdir($dir);
 
 // Setup php binary path
-$phpPath = realpath('../../php/php.exe');
+$phpPath = $config->get('externalBinary/php','php');
 if (!is_file($phpPath))
 {
 	$default->log->error("Scheduler: php not found: $phpPath");
