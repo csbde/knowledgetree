@@ -784,6 +784,25 @@ class database extends Step
 				$this->util->dbUtilities->query($updateBin);
     		}
     	}
+    	
+    	// if Windows, hard code (relative to SYSTEM_ROOT) where we expect the Zend MSI installer to have placed them
+    	if (WINDOWS_OS) {
+    	    $winBinaries = array('php' => 'ZendServer\bin\php.exe', 'python' => 'openoffice\program\python.exe', 
+    	                      // since we don't know where convert is yet, let's just assume somewhere for now (manually test)
+    	                      'convert' => 'imagick\convert.exe', 
+    	                      'zip' => 'bin\zip\zip.exe', 'unzip' => 'bin\unzip\unzip.exe');
+    	    foreach ($winBinaries as $displayName => $bin) {
+    	        // what about config settings which don't yet exist?
+    	        // TODO make sure sql install/updates create these entries
+        		$updateBin = 'UPDATE config_settings c SET c.value = "'. str_replace('\\', '\\\\', SYSTEM_ROOT . $bin).'" '
+        		           . 'where c.group_name = "externalBinary" and c.display_name = "'.$displayName.'";';
+                $this->util->dbUtilities->query($updateBin);
+            }
+    	}
+    	// if Linux?
+    	else {
+    	    
+    	}
     }
     
 	/**
