@@ -10,6 +10,7 @@
 	The wizard will review your system to determine whether you can run KnowledgeTree background services. <br/>Once the scan is completed, you&rsquo;ll see whether your system has met the requirements or whether there are areas you need to address. 
 	</p>
 <!--Continue Message-->
+<?php if($validation) { ?>
 	<?php
 		if(!$errors && !$warnings) {
 			?>
@@ -33,10 +34,10 @@
 	}?>
 	<?php
 		if($errors || $warnings) {
-//			var_dump($errors);
 			?>
 		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Installer#Service_Dependencies" target="_blank">Click here for help on overcoming service issues</a>
 	<?php } ?>
+<?php } ?>
 <!--Content-->
 	<div id="step_content_configuration" class="step">
 		<?php if(!$alreadyInstalled) { ?>
@@ -170,6 +171,7 @@
 			All services are already installed.
 <!--			</p>-->
 		<?php } ?>
+		<?php if($validation) { ?>
 		<h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services Check</h3>
 		<?php if($silent) { ?>
 			<?php if($serviceCheck != 'tick') {
@@ -215,6 +217,9 @@
 		</table>
 		<?php if($silent) { ?>
 			</div>
+		<?php } ?>
+		<?php } else { ?>
+			Services have to be manually started after the installation has been run. <a href="http://wiki.knowledgetree.com/KnowledgeTree_Setup_Wizard_Troubleshoot#Services" target="_blank">Click here for help on starting services</a>
 		<?php } ?>
 	</div>
     <input type="submit" name="Previous" value="Previous" class="button_previous"/>

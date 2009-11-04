@@ -201,7 +201,6 @@ class windowsOpenOffice extends windowsService {
     public function install() {
     	$status = $this->status();
     	if($status == '') {
-    		//$binary = $this->util->openOfficeSpecified();
     		$binary = $this->getBin();
     		if($binary != '') {
             	$cmd = "\"{$this->winservice}\" install $this->name "."-displayname {$this->name} -start auto \"".$binary."\" -headless -invisible -nofirststartwizard -\"accept=socket,host={$this->host},port={$this->port};urp;\"";;
