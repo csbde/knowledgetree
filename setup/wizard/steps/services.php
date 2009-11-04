@@ -222,8 +222,6 @@ class services extends Step
     		$this->alreadyInstalled = true;
     		$this->serviceCheck = 'tick';
     	} else {
-//    		$cmd = SYSTEM_DIR."dmsctl.sh start  > /dev/null 2>&1 & echo $!";
-//    		$this->util->pexec($cmd); // First Attempt to start all using bash script
 	    	foreach ($this->getServices() as $bin=>$service) {
 	    		$class = strtolower($service)."Validation";
 				$this->$class->preset(); // Sets defaults
