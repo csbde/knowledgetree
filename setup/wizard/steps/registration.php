@@ -183,7 +183,7 @@ class registration extends Step
             $params['http']['header'] = $optional_headers;
         }
         $ctx = stream_context_create($params);
-        $fp = fopen($url, 'r', false, $ctx);
+        $fp = @fopen($url, 'r', false, $ctx);
         if (!$fp) {
             throw new Exception("Problem with $url, $php_errormsg");
         }
@@ -192,7 +192,7 @@ class registration extends Step
             fclose($fp);
             throw new Exception("Problem reading data from $url, $php_errormsg");
         }
-        fclose($fp);
+        @fclose($fp);
         return $response;
     }
 

@@ -206,7 +206,7 @@ class migrateDatabase extends Step
      * @return void
      */
     private function createMigrateFile() {
-        @touch($this->wizardLocation . DIRECTORY_SEPARATOR . "migrate.lock");
+        @touch(SYSTEM_DIR.'var'.DS.'bin'.DS."migrate.lock");
     }
     
 	/**

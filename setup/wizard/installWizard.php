@@ -203,7 +203,7 @@ class InstallWizard {
 	* @return void
  	*/
 	private function createInstallFile() {
-		@touch("install.lock");
+		@touch(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock");
 	}
 	
 	/**
@@ -215,8 +215,8 @@ class InstallWizard {
 	* @return void
  	*/
 	private function removeInstallFile() {
-		if(file_exists("install.lock"))
-			unlink("install.lock");
+		if(file_exists(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock"))
+			@unlink(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock");
 	}
 	
 	/**

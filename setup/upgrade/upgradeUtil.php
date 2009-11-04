@@ -52,7 +52,7 @@ class UpgradeUtil extends InstallUtil {
 	* @return boolean
  	*/
 	public function isSystemUpgraded() {
-		if (file_exists(dirname(__FILE__)."/upgrade.lock")) {
+		if (file_exists(SYSTEM_DIR.'var'.DS.'bin'.DS."upgrade.lock")) {
 
 			return true;
 		}
@@ -68,7 +68,7 @@ class UpgradeUtil extends InstallUtil {
      * @return boolean
      */
     public function isMigration() {
-    	if(file_exists("../wizard/migrate.lock"))
+    	if(file_exists(SYSTEM_DIR.'var'.DS.'bin'.DS."migrate.lock"))
     		return true;
     	return false;
     }

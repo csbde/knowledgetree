@@ -136,14 +136,14 @@ class iniUtilities {
         $fileHandle = fopen($iniFile, 'wb');
         foreach ($this->cleanArray as $section => $items) {
             if (substr($section, 0, strlen('_blankline_')) === '_blankline_' ) {
-                fwrite ($fileHandle, "\r\n");
+                @fwrite ($fileHandle, "\r\n");
                 continue;
             }
             if (substr($section, 0, strlen('_comment_')) === '_comment_' ) {
-                fwrite ($fileHandle, "$items\r\n");
+                @fwrite ($fileHandle, "$items\r\n");
                 continue;
             }
-            fwrite ($fileHandle, "[".$section."]\r\n");
+            @fwrite ($fileHandle, "[".$section."]\r\n");
             foreach ($items as $key => $value) {
                 if (substr($key, 0, strlen('_blankline_')) === '_blankline_' ) {
                     fwrite ($fileHandle, "\r\n");
@@ -156,10 +156,10 @@ class iniUtilities {
 
                 $value = addcslashes($value,'');
                 //fwrite ($fileHandle, $key.' = "'.$value."\"\r\n");
-                fwrite ($fileHandle, $key.' = '.$value."\r\n");
+                @fwrite ($fileHandle, $key.' = '.$value."\r\n");
             }
         }
-        fclose($fileHandle);
+        @fclose($fileHandle);
     }
 
     function itemExists($checkSection, $checkItem) {
@@ -179,7 +179,6 @@ class iniUtilities {
     }
 
     function addItem($addSection, $addItem, $value, $itemComment = '', $sectionComment = '') {
-
         if($this->itemExists($addSection, $addItem)) {
             $this->delItem($addSection, $addItem);
         }

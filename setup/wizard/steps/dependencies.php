@@ -333,7 +333,7 @@ class dependencies extends Step
      */
     private function getRequiredExtensions() {
     	$ext = array(
-	            array('extension' => 'fileinfo', 'required' => 'no', 'name' => 'Fileinfo', 'details' => 'Provides better file identification support - not necessary if you use file extensions.'),
+//	            array('extension' => 'fileinfo', 'required' => 'no', 'name' => 'Fileinfo', 'details' => 'Provides better file identification support - not necessary if you use file extensions.'),
 	            array('extension' => 'iconv', 'required' => 'no', 'name' => 'IconV', 'details' => 'Used for conversion between character sets.'),
 	            array('extension' => 'mysql', 'required' => 'yes', 'name' => 'MySQL', 'details' => 'Used for accessing a MySQL database.'),
 	            array('extension' => 'curl', 'required' => 'yes', 'name' => 'cURL', 'details' => 'Allows the connection and communication between different servers types using various protocols.'),

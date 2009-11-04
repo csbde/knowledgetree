@@ -144,7 +144,8 @@ class unixOpenOffice extends unixService {
 	    		return false;
 	    	}
 	    	
-	    	return $this->util->pexec($cmd);
+	    	//return $this->util->pexec($cmd);
+	    	return false;
     	}
     	
     	return true;

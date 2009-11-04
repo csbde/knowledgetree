@@ -39,6 +39,7 @@
 * @package Installer
 * @version Version 0.1
 */
+require_once("path.php");
 require_once("iniUtilities.php");
 require_once("dbUtilities.php");
 
@@ -67,7 +68,7 @@ class InstallUtil {
 	* @return boolean
  	*/
 	public function isSystemInstalled() {
-		if (file_exists(dirname(__FILE__)."/install.lock")) {
+		if (file_exists(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock")) {
 			return true;
 		}
 		return false;
@@ -363,13 +364,13 @@ class InstallUtil {
      * @return boolean
      */
     public function canWriteFile($filename) {
-    	$fh = fopen($filename, "w+");
-    	$fr = fwrite($fh, 'test');
+    	$fh = @fopen($filename, "w+");
+    	$fr = @fwrite($fh, 'test');
     	if($fr === false) {
     		return false;
     	}
 
-    	fclose($fh);
+    	@fclose($fh);
     	return true;
     }
 
@@ -714,8 +715,8 @@ class InstallUtil {
      * @return void
      */
     function deleteMigrateFile() {
-    	if(file_exists("migrate.lock"))
-    		@unlink("migrate.lock");
+    	if(file_exists(SYSTEM_DIR.'var'.DS.'bin'.DS."migrate.lock"))
+    		@unlink(SYSTEM_DIR.'var'.DS.'bin'.DS."migrate.lock");
     }
 
     /**
@@ -726,7 +727,7 @@ class InstallUtil {
      * @return boolean
      */
     public function isMigration() {
-    	if(file_exists("migrate.lock"))
+    	if(file_exists(SYSTEM_DIR.'var'.DS.'bin'.DS."migrate.lock"))
     		return true;
     	return false;
     }

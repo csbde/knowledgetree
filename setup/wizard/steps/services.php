@@ -143,8 +143,27 @@ class services extends Step
 	* @return object
  	*/
 	public $schedulerValidation;
-   
+
+	/**
+	* List of binaries needed to start service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return object
+ 	*/
 	public $binaries = array();
+	
+	/**
+	* List of binaries needed to start service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return object
+ 	*/
+	public $validation = false;
+	
 	/**
 	* Main control of services setup
 	*
@@ -203,6 +222,8 @@ class services extends Step
     		$this->alreadyInstalled = true;
     		$this->serviceCheck = 'tick';
     	} else {
+//    		$cmd = SYSTEM_DIR."dmsctl.sh start  > /dev/null 2>&1 & echo $!";
+//    		$this->util->pexec($cmd); // First Attempt to start all using bash script
 	    	foreach ($this->getServices() as $bin=>$service) {
 	    		$class = strtolower($service)."Validation";
 				$this->$class->preset(); // Sets defaults
@@ -523,6 +544,7 @@ class services extends Step
     	$this->temp_variables['alreadyInstalled'] = $this->alreadyInstalled;
     	$this->temp_variables['serviceCheck'] = $this->serviceCheck;
     	$this->temp_variables['binaries'] = $this->binaries;
+    	$this->temp_variables['validation'] = $this->validation;
     }
     
 

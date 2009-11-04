@@ -249,11 +249,11 @@ class windowsScheduler extends windowsService {
 			echo "Attempt to Create {$this->getSchedulerDir()}\\taskrunner.bat<br>";
 		}
 		if(is_readable($this->varDir."bin") && is_writable($this->varDir."bin")) {
-			$fp = fopen($this->getSchedulerDir().""."\\taskrunner.bat", "w+");
+			$fp = @fopen($this->getSchedulerDir().""."\\taskrunner.bat", "w+");
 			$content = "@echo off \n";
 			$content .= "\"".$this->util->useZendPhp()."php.exe\" "."\"{$this->getSchedulerSource()}\"";
-			fwrite($fp, $content);
-			fclose($fp);
+			@fwrite($fp, $content);
+			@fclose($fp);
 		} else {
 			echo 'Could not write task runner<br>'; // TODO: Should not reach this point
 		}

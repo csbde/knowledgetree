@@ -734,7 +734,7 @@ class database extends Step
     }
 
 	private function parse_mysql_dump($url) {
-	    $handle = fopen($url, "r");
+	    $handle = @fopen($url, "r");
 	    $query = "";
 		if ($handle) {
 			while (!feof($handle)) {
@@ -744,7 +744,7 @@ class database extends Step
      					$query = '';
     				}
 			}
-			fclose($handle);
+			@fclose($handle);
 		}
 	    
 		return true;
@@ -778,11 +778,13 @@ class database extends Step
     private function writeBinaries() {
     	$services = $this->util->getDataFromSession('services');
     	$binaries = $services['binaries'];
-    	foreach ($binaries as $k=>$bin) {
-    		if($k != 1) {
-    			$updateBin = 'UPDATE config_settings c SET c.value = "'.$bin.'" where c.group_name = "externalBinary" and c.display_name = "'.$k.'";';
-				$this->util->dbUtilities->query($updateBin);
-    		}
+    	if($binaries) {
+	    	foreach ($binaries as $k=>$bin) {
+	    		if($k != 1) {
+	    			$updateBin = 'UPDATE config_settings c SET c.value = "'.$bin.'" where c.group_name = "externalBinary" and c.display_name = "'.$k.'";';
+					$this->util->dbUtilities->query($updateBin);
+	    		}
+	    	}
     	}
     	
     	// if Windows, hard code (relative to SYSTEM_ROOT) where we expect the Zend MSI installer to have placed them
