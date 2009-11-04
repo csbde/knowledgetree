@@ -1,4 +1,3 @@
-
 /*
  *  Javascript (actual translations);
  */
@@ -18,15 +17,19 @@ function _(trans_string) {
 
 //strings for file: main.js
 
-i18n['Upload'] = '{i18n}Upload{/i18n}';
+i18n['Upload succeeded'] = '{i18n}Upload succeeded{/i18n}';
 
-i18n['Upload cancelled'] = '{i18n}Upload cancelled{/i18n}';
+i18n['Document type changed'] = '{i18n}Document type changed{/i18n}';
 
 i18n['Upload failed'] = '{i18n}Upload failed{/i18n}';
 
 i18n['Your document has not been saved.'] = '{i18n}Your document has not been saved.{/i18n}';
 
-i18n['Upload succeeded'] = '{i18n}Upload succeeded{/i18n}';
+i18n['A newer version of this document is available. Would you like to open it instead?'] = '{i18n}A newer version of this document is available. Would you like to open it instead?{/i18n}';
+
+i18n['Upload'] = '{i18n}Upload{/i18n}';
+
+i18n['Upload cancelled'] = '{i18n}Upload cancelled{/i18n}';
 
 i18n['Your document has been saved.'] = '{i18n}Your document has been saved.{/i18n}';
 
@@ -68,7 +71,7 @@ i18n['The check-out has been cancelled.'] = '{i18n}The check-out has been cancel
 
 i18n['Properties could not be saved.'] = '{i18n}Properties could not be saved.{/i18n}';
 
-i18n['Properties has been saved.'] = '{i18n}Properties has been saved.{/i18n}';
+i18n['Properties have been saved.'] = '{i18n}Properties have been saved.{/i18n}';
 
 i18n['Login failed'] = '{i18n}Login failed{/i18n}';
 
@@ -84,19 +87,19 @@ i18n['Please verify your<br />Internet connection, <br /> and try again.'] = '{i
 
 //strings for file: classes/commentsWindow.js
 
-i18n['Cancelling edit of document (check-in] = '{i18n}Cancelling edit of document (check-i{/i18n}n;
+i18n['Cancelling edit of document (check-in)'] = '{i18n}Cancelling edit of document (check-in){/i18n}';
 
 i18n['Provide a reason for cancelling this edit.<br ><br >'] = '{i18n}Provide a reason for cancelling this edit.<br ><br >{/i18n}';
 
-i18n['Continue Editing (check-out] = '{i18n}Continue Editing (check-ou{/i18n}t;
+i18n['Continue Editing (check-out)'] = '{i18n}Continue Editing (check-out){/i18n}';
 
 i18n['Provide a reason for this edit.<br ><br >'] = '{i18n}Provide a reason for this edit.<br ><br >{/i18n}';
 
-i18n['Editing Document (check-out] = '{i18n}Editing Document (check-ou{/i18n}t;
+i18n['Editing Document (check-out)'] = '{i18n}Editing Document (check-out){/i18n}';
 
 i18n['Provide a reason for editing this document.<br ><br >'] = '{i18n}Provide a reason for editing this document.<br ><br >{/i18n}';
 
-i18n['Saving Document (check-in] = '{i18n}Saving Document (check-i{/i18n}n;
+i18n['Saving Document (check-in)'] = '{i18n}Saving Document (check-in){/i18n}';
 
 i18n['For historical purposes, describe the changes you made to this document.<br ><br >'] = '{i18n}For historical purposes, describe the changes you made to this document.<br ><br >{/i18n}';
 
@@ -168,11 +171,27 @@ i18n['Login'] = '{i18n}Login{/i18n}';
 
 i18n['Document already open'] = '{i18n}Document already open{/i18n}';
 
+i18n['Unable to delete folder'] = '{i18n}Unable to delete folder{/i18n}';
+
+i18n['Delete Folder'] = '{i18n}Delete Folder{/i18n}';
+
+i18n['This will delete this folder.<br/>Are you sure you want to continue?'] = '{i18n}This will delete this folder.<br/>Are you sure you want to continue?{/i18n}';
+
+i18n['Unable to Delete Folder'] = '{i18n}Unable to Delete Folder{/i18n}';
+
+i18n['This folder contains other documents/folders<br/>and may not be deleted.'] = '{i18n}This folder contains other documents/folders<br/>and may not be deleted.{/i18n}';
+
 i18n['Introduction'] = '{i18n}Introduction{/i18n}';
 
 i18n['The requested action has not been implemented'] = '{i18n}The requested action has not been implemented{/i18n}';
 
 i18n['Any unsaved changes will be lost! Are you sure you want to continue?'] = '{i18n}Any unsaved changes will be lost! Are you sure you want to continue?{/i18n}';
+
+i18n['Error'] = '{i18n}Error{/i18n}';
+
+i18n['Please close all open editors.'] = '{i18n}Please close all open editors.{/i18n}';
+
+i18n['Warning'] = '{i18n}Warning{/i18n}';
 
 i18n['Do you want to add the currently open Office document as a new version of [-doctitle-]?'] = '{i18n}Do you want to add the currently open Office document as a new version of [-doctitle-]?{/i18n}';
 
@@ -189,6 +208,16 @@ i18n['You need to have permission to perform this action'] = '{i18n}You need to 
 i18n['Save'] = '{i18n}Save{/i18n}';
 
 i18n['Adds your open Office document to KnowledgeTree. You must have \'write\' permissions on the folder.'] = '{i18n}Adds your open Office document to KnowledgeTree. You must have \'write\' permissions on the folder.{/i18n}';
+
+i18n['Add Folder'] = '{i18n}Add Folder{/i18n}';
+
+i18n['Provides an interface to create a new folder under the current folder. You must have \'add\' permissions on the folder.'] = '{i18n}Provides an interface to create a new folder under the current folder. You must have \'add\' permissions on the folder.{/i18n}';
+
+i18n['Rename Folder'] = '{i18n}Rename Folder{/i18n}';
+
+i18n['Provides an interface to rename the current folder. You must have \'rename\' permissions on the folder.'] = '{i18n}Provides an interface to rename the current folder. You must have \'rename\' permissions on the folder.{/i18n}';
+
+i18n['Provides an interface to delete the current folder. You must have \'delete\' permissions on the folder.'] = '{i18n}Provides an interface to delete the current folder. You must have \'delete\' permissions on the folder.{/i18n}';
 
 i18n['New folder'] = '{i18n}New folder{/i18n}';
 
@@ -276,10 +305,6 @@ i18n['All error reports are submitted anonymously.\r\n\r\nTo help us resolve thi
 
 i18n['Viewing'] = '{i18n}Viewing{/i18n}';
 
-i18n["Click 'Save Properties' to save your changes."] = "{i18n}Click 'Save Properties' to save your changes.{/i18n}";
-
-i18n['Document type changed'] = '{i18n}Document type changed{/i18n}';
-
 i18n['Document type could not be changed'] = '{i18n}Document type could not be changed{/i18n}';
 
 i18n['Document type could not be reset'] = '{i18n}Document type could not be reset{/i18n}';
@@ -289,8 +314,6 @@ i18n['Select...'] = '{i18n}Select...{/i18n}';
 i18n['Double-click to Select'] = '{i18n}Double-click to Select{/i18n}';
 
 i18n['Double-click to Edit'] = '{i18n}Double-click to Edit{/i18n}';
-
-i18n['Error'] = '{i18n}Error{/i18n}';
 
 i18n['Please complete all required fields.'] = '{i18n}Please complete all required fields.{/i18n}';
 
@@ -340,10 +363,10 @@ i18n['Logout'] = '{i18n}Logout{/i18n}';
 
 i18n['No Read permissions'] = '{i18n}No Read permissions{/i18n}';
 
-i18n['You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.', '', 60000] = '{i18n}You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.', '', 6000{/i18n}0;
+i18n['You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.'] = '{i18n}You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.{/i18n}';
 
 i18n['Search for documents'] = '{i18n}Search for documents{/i18n}';
 
-// Total Language Strings: 143
+// Total Language Strings: 155
 
-// Unique Strings: 143
+// Unique Strings: 155
