@@ -378,7 +378,7 @@ class configuration extends Step
      */
     private function getServerInfo()
     {
-    	$iis = false;
+//    	$iis = false;
         $script = $_SERVER['SCRIPT_NAME'];
         /*
         $file_system_root = $_SERVER['DOCUMENT_ROOT'];
@@ -391,15 +391,16 @@ class configuration extends Step
         $host = $_SERVER['SERVER_NAME'];
         $port = $_SERVER['SERVER_PORT'];
         $ssl_enabled = isset($_SERVER['HTTPS']) ? (strtolower($_SERVER['HTTPS']) === 'on' ? 'yes' : 'no') : 'no';
-
         $pos = strpos($script, '/setup/wizard/');
         $root_url = substr($script, 0, $pos);
         $root_url = (isset($_POST['root_url'])) ? $_POST['root_url'] : $root_url;
-        if($iis) {
-        	$file_system_root = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root;
-        } else {
-        	$file_system_root = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root.substr($root_url, 1, strlen($root_url));
-        }
+//        echo $file_system_root;
+//        if($iis) {
+        $file_system_root = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root;
+//        } else {
+//			substr($root_url, 1, strlen($root_url))
+//        	$file_system_root = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root.$root_url;
+//        }
         $host = (isset($_POST['host'])) ? $_POST['host'] : $host;
         $port = (isset($_POST['port'])) ? $_POST['port'] : $port;
         $ssl_enabled = (isset($_POST['ssl_enabled'])) ? $_POST['ssl_enabled'] : $ssl_enabled;
