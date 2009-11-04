@@ -95,7 +95,7 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 		$results = DBUtil::getResultArray($query);
 
 		if(PEAR::isError($results)){
-		    $this->addErrorMessage(_kt("The configuration settings could not be retrieved: {$results->getMessage()}"));
+		    $this->addErrorMessage(sprintf(_kt("The configuration settings could not be retrieved: %s") , $results->getMessage()));
 		    return array();
 		}
 
@@ -133,7 +133,7 @@ class BaseConfigDispatcher extends KTAdminDispatcher
             }
 
             $defaultValue = "<i>{$defaultValue}</i>";
-            $input .= '<span class="descriptiveText">'._kt("The default value is {$defaultValue}").'</span><br>';
+            $input .= '<span class="descriptiveText">'.sprintf(_kt("The default value is %s") , $defaultValue).'</span><br>';
         }
 
 	    /*
@@ -216,7 +216,7 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 	    }
 
 	    // Append any text
-        $input .= isset($options['append']) ? '&nbsp;&nbsp;'._kt($options['append']) : '';
+        $input .= isset($options['append']) ? '&nbsp;&nbsp;'.sprintf(_kt('%sappend']) , $options[) : '';
 
 	    return $input;
 	}
@@ -245,10 +245,10 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 	                 $res = DBUtil::autoUpdate('config_settings', array('value' => $new), $setting['id']);
 
 	                 if(PEAR::isError($res)){
-	                     $this->addErrorMessage(_kt("The setting {$setting['display_name']} could not be updated: ".$res->getMessage()));
+	                     $this->addErrorMessage(sprintf(_kt("The setting %s could not be updated: %s") , $setting['display_name'],$res->getMessage()));
 	                 }
 	                 if($log){
-	                     $comment[] = _kt("{$setting['display_name']} from {$setting['value']} to {$new}");
+	                     $comment[] = sprintf(_kt("%s from %s to %s") , $setting['display_name'],$setting['value'],$new);
 	                 }
 	             }
 	         }

@@ -651,7 +651,7 @@ abstract class ApplicationExtractor extends ExternalDocumentExtractor
 	 */
 	public function getDisplayName()
 	{
-		return _kt($this->displayname);
+		return sprintf(_kt('%s') , $this->displayname);
 	}
 
 	/**

@@ -364,7 +364,7 @@ class PDFGeneratorAction extends KTDocumentAction {
 
             } else {
                 // Set the error messsage and redirect to view document
-                $this->addErrorMessage(_kt('An error occurred generating the PDF - please contact the system administrator. ' . $res));
+                $this->addErrorMessage(sprintf(_kt('An error occurred generating the PDF - please contact the system administrator. %s') , $res));
                 redirect(generateControllerLink('viewDocument',sprintf('fDocumentId=%d',$oDocument->getId())));
                 exit(0);
             }

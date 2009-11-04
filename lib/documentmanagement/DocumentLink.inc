@@ -159,7 +159,7 @@ class DocumentLink extends KTEntity {
 	        $oDocumentLink->iId = $result['id'];
 	        return $oDocumentLink;
 	    }
-	    $_SESSION['errorMessage'] = _kt('The object does not exist. id = '.$iDocumentLinkID.' table = '.$table);
+	    $_SESSION['errorMessage'] = sprintf(_kt('The object does not exist. id = %s table = %s ') , $iDocumentLinkID ,$table);
 	    return false;
 	}
 
