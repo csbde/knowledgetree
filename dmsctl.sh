@@ -290,9 +290,9 @@ noserver() {
 }
 
 firstrun() {
-	echo "Initializing DMS for the first time, exporting  ZEND paths"
+	echo "We running for the first time, FIX ZEND"
 	if grep --quiet LD_LIBRARAY_PATH /etc/zce.rc ; then
-        	echo "Nothing to be done ..."
+        	echo "Nothing to be done ... maybe"
 	else
         	echo "PATH=/usr/local/zend/bin:$PATH" >> /etc/zce.rc
         	if [ -z $LD_LIBRARY_PATH ] ; then
