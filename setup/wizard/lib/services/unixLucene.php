@@ -210,9 +210,10 @@ class unixLucene extends unixService {
 	    		echo "$cmd<br/>";
 	    		return false;
 	    	}
-	    	$response = $this->util->pexec($cmd);
+	    	//$response = $this->util->pexec($cmd);
 	    	
-	    	return $response;
+//	    	return $response;
+			return false;
     	}
     	
     	return true;

@@ -668,16 +668,16 @@ class configuration extends Step
      * @return boolean 
      */
     private function writeConfigPath($configPath, $configContent) {
-        $fp = fopen($configPath, 'w+');
-        if(fwrite($fp, $configContent))
+        $fp = @fopen($configPath, 'w+');
+        if(@fwrite($fp, $configContent))
         	return true;
     	return false;
     }
     
     private function writeCachePath($cachePath, $cacheContent) {
-        $fp = fopen($cachePath, 'w+');
+        $fp = @fopen($cachePath, 'w+');
         if($cacheContent != '') {
-	        if(fwrite($fp, $cacheContent))
+	        if(@fwrite($fp, $cacheContent))
 	        	return true;
         }
     	return false;

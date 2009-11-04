@@ -181,7 +181,6 @@ class unixScheduler extends unixService {
 		// TODO : Write sh on the fly? Not sure the reasoning here
 		$source = $this->getSchedulerSourceLoc();
 		$this->writeSchedulerTask();
-//		$logFile = $this->outputDir."scheduler.log";
 		$logFile = "/dev/null";
 		@unlink($logFile);
 		if($source) { // Source
@@ -194,9 +193,10 @@ class unixScheduler extends unixService {
     		echo "$cmd<br/>";
     		return ;
     	}
-    	$response = $this->util->pexec($cmd);
+    	//$response = $this->util->pexec($cmd);
     	
-		return $response;
+//		return $response;
+		return false;
 	}
 
 	public function getName() {
