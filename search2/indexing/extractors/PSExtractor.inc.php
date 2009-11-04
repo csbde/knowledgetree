@@ -61,6 +61,8 @@ class PSExtractor extends ApplicationExtractor
 
 	public function diagnose()
 	{
+	    // no rpm's available for pstotext, removing the diagnose for it so it doesn't prevent the indexing from running
+	    return null;
 		if (OS_WINDOWS)
 		{
 			// pstotext is not available under windows, so no need to diagnose it
