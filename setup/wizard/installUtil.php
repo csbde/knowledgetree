@@ -39,6 +39,7 @@
 * @package Installer
 * @version Version 0.1
 */
+require_once("path.php");
 require_once("iniUtilities.php");
 require_once("dbUtilities.php");
 
