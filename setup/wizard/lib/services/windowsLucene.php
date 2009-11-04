@@ -429,7 +429,6 @@ class windowsLucene extends windowsService {
 			$luceneExe = $this->getLuceneExe();
 			$luceneSource = $this->getLuceneSource();
 			$luceneDir = $this->getluceneDir();
-//			$javaJVM = $this->getJavaJVM();
 			if($luceneExe && $luceneSource && $luceneDir) {
 				$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
             	if(DEBUG) {

@@ -781,7 +781,7 @@ class database extends Step
     	if($binaries) {
 	    	foreach ($binaries as $k=>$bin) {
 	    		if($k != 1) {
-	    			$updateBin = 'UPDATE config_settings c SET c.value = "'.$bin.'" where c.group_name = "externalBinary" and c.display_name = "'.$k.'";';
+	    			$updateBin = 'UPDATE config_settings c SET c.value = "'.str_replace('\\', '\\\\', $bin).'" where c.group_name = "externalBinary" and c.display_name = "'.$k.'";';
 					$this->util->dbUtilities->query($updateBin);
 	    		}
 	    	}
@@ -790,6 +790,7 @@ class database extends Step
     	// if Windows, hard code (relative to SYSTEM_ROOT) where we expect the Zend MSI installer to have placed them
     	if (WINDOWS_OS) {
     	    $winBinaries = array('php' => 'ZendServer\bin\php.exe', 'python' => 'openoffice\program\python.exe', 
+    	                      'java' => 'jre\bin\java.exe', 
     	                      // since we don't know where convert is yet, let's just assume somewhere for now (manually test)
     	                      'convert' => 'imagick\convert.exe', 
     	                      'zip' => 'bin\zip\zip.exe', 'unzip' => 'bin\unzip\unzip.exe');
