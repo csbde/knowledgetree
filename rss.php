@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- *  
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -39,6 +39,9 @@ require_once('config/dmsDefaults.php');
 require_once(KT_LIB_DIR .'/authentication/DBAuthenticator.inc');
 require_once(KT_LIB_DIR .'/authentication/authenticationutil.inc.php');
 require_once(KT_DIR. '/plugins/rssplugin/KTrss.inc.php');
+
+// Workaround for mod_auth when running php cgi
+list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
 
 // workaround to get http authentication working in cgi mode
 $altinfo = KTUtil::arrayGet( $_SERVER, 'kt_auth', KTUtil::arrayGet( $_SERVER, 'REDIRECT_kt_auth'));
