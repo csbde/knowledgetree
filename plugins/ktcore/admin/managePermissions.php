@@ -86,18 +86,18 @@ class ManagePermissionsDispatcher extends KTAdminDispatcher {
         {
         	$sError = 'An error occured while creating your permission: The System Name was not provided.';
         	$_SESSION['Permission']['HumanNameValue'] = $sHumanName;
-        	return $this->errorRedirectToMain(_kt($sError));
+        	return $this->errorRedirectToMain(sprintf(_kt('%s') , $sError));
         }
         else if(!empty($sName) && empty($sHumanName))
         {
         	$sError = 'An error occured while creating your permission: The Display Name was not provided.';
         	$_SESSION['Permission']['NameValue'] = $sName;
-        	return $this->errorRedirectToMain(_kt($sError));
+        	return $this->errorRedirectToMain(sprintf(_kt('%s') , $sError));
         }
         else if (empty($sName) && empty($sHumanName))
         {
         	$sError = 'An error occured while creating your permission: The Display Name and System Name weren\'t provided.';
-        	return $this->errorRedirectToMain(_kt($sError));
+        	return $this->errorRedirectToMain(sprintf(_kt('%s') , $sError));
         }
         
         //Checking that the System Name and Display Name aren't already in the database
@@ -119,7 +119,7 @@ class ManagePermissionsDispatcher extends KTAdminDispatcher {
     	if ($iNameErrorCount > 0 && $iHumanNameErrorCount > 0) 
     	{
 			$sError = 'An error occured while creating your permission: The Display Name and System Name you have provided both already exist.';
-			return $this->errorRedirectToMain(_kt($sError));
+			return $this->errorRedirectToMain(sprintf(_kt('%s') , $sError));
     	}
     	else if ($iNameErrorCount > 0 && $iHumanNameErrorCount == 0)
     	{
@@ -128,7 +128,7 @@ class ManagePermissionsDispatcher extends KTAdminDispatcher {
 				$_SESSION['Permission']['HumanNameValue'] = $sHumanName;		
 			}
     		$sError = 'An error occured while creating your permission: A permission with the same System Name already exists.';
-			return $this->errorRedirectToMain(_kt($sError));
+			return $this->errorRedirectToMain(sprintf(_kt('%s') , $sError));
 		}
     	else if ($iNameErrorCount == 0 && $iHumanNameErrorCount > 0)
     	{
@@ -137,14 +137,14 @@ class ManagePermissionsDispatcher extends KTAdminDispatcher {
 				$_SESSION['Permission']['NameValue'] = $sName;		
 			}
     		$sError = 'An error occured while creating your permission: A permission with the same Display Name already exists.';
-			return $this->errorRedirectToMain(_kt($sError));    		
+			return $this->errorRedirectToMain(sprintf(_kt('%s') , $sError));    		
     	}
     	$oPerm = KTPermission::createFromArray(array(
             'name' => $sName,
             'humanname' => $sHumanName,
         ));
         if (PEAR::isError($oPerm)) {
-            return $this->errorRedirectToMain(_kt($sError));
+            return $this->errorRedirectToMain(sprintf(_kt('%s') , $sError));
         }
         return $this->successRedirectToMain(_kt("Permission created"));
     }

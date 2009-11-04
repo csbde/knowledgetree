@@ -90,7 +90,7 @@ class KTAuthenticationProviderRegistry {
             include_once($sPath);
         }
         if(!class_exists($sClass)){
-            return PEAR::raiseError(_kt('Authentication provider class does not exist. '.$sClass));
+            return PEAR::raiseError(sprintf(_kt('Authentication provider class does not exist. %s '), $sClass));
         }
         $oProvider =new $sClass;
         $this->_aAuthenticationProviders[$nsname] =& $oProvider;

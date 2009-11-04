@@ -1266,7 +1266,7 @@ class KTAPI
         $response['status_code'] = 1;
 
         if(!is_array($items)){
-            $response['message'] = _kt("The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: {$items}");
+            $response['message'] = sprintf(_kt("The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: %s") , $items);
             return $response;
         }
 
@@ -1276,7 +1276,7 @@ class KTAPI
         }
 
         if(!is_string($action)){
-            $response['message'] = _kt("The bulk action to perform must be a string. Received: {$action}");
+            $response['message'] = sprintf(_kt("The bulk action to perform must be a string. Received: %s") , $action);
             return $response;
         }
 
@@ -1294,7 +1294,7 @@ class KTAPI
         }
 
         if(!$exists) {
-            $response['message'] = _kt("The requested action has not been implemented: {$action}");
+            $response['message'] = sprintf(_kt("The requested action has not been implemented: %s") , $action);
             return $response;
         }
 
@@ -1341,7 +1341,7 @@ class KTAPI
         }
 
         if(PEAR::isError($result)) {
-            $response['message'] = _kt("The bulk action failed: {$result->getMessage()}");
+            $response['message'] = sprintf(_kt("The bulk action failed: %s") , $result->getMessage());
             return $response;
         }
 

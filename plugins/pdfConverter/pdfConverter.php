@@ -83,7 +83,7 @@ class pdfConverter extends BaseProcessor
         if(!file_exists($path)){
             global $default;
             $default->log->debug('PDF Converter: Document, id: '.$this->document->iId.', does not exist at given storage path: '.$path);
-            return _kt("The document, id: {$this->document->iId}, does not exist at the given storage path: {$path}");
+            return sprintf(_kt("The document, id: %s, does not exist at the given storage path: %s") , $this->document->iId,$path);
         }
 
         // check for OO
@@ -101,7 +101,7 @@ class pdfConverter extends BaseProcessor
         if($res !== true){
             global $default;
             $default->log->debug('PDF Converter: Document, id: '.$this->document->iId.', could not be converted to pdf.');
-            return _kt("The document, id: {$this->document->iId}, could not be converted to pdf format. The following error occurred: \"{$res}\".");
+            return sprintf(_kt("The document, id: %s, could not be converted to pdf format. The following error occurred: \"%s\".") , $this->document->iId,$res);
         }
 
         return true;

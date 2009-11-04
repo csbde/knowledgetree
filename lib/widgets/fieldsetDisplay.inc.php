@@ -533,7 +533,7 @@ class ConditionalFieldsetDisplay extends SimpleFieldsetDisplay {
         // how?
 
         $fieldset_name = $this->fieldset->getName();
-        $fieldset_description = _kt($this->fieldset->getDescription()); // need a better approach.  how do we handle database-resident translations?
+        $fieldset_description = sprintf(_kt('%s') , $this->fieldset->getDescription()); // need a better approach.  how do we handle database-resident translations?
         $fieldset_description .= _kt('Note that the options which are available depends on previous choices within this fieldset.');
 
         // FIXME handle the editable case _with_ values.

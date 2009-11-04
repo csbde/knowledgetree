@@ -2087,7 +2087,7 @@ class OpExpr extends Expr
     public function __toString()
     {
         // _kt may not translate well here.
-        $expr = $this->left_expr . ' ' . _kt($this->op) .' ' .  $this->right_expr;
+        $expr = $this->left_expr . ' ' . sprintf(_kt('%s') , $this->op) .' ' .  $this->right_expr;
 
         if (is_null($this->parent))
         {

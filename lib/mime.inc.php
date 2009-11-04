@@ -135,7 +135,7 @@ class KTMime {
         } else if (count($res) != 0){
             $friendly_name = $res[0]['friendly_name'];
             if (!empty($friendly_name)) {
-                return _kt($friendly_name);
+                return sprintf(_kt('%s') , $friendly_name);
             } else {
                 return sprintf(_kt('%s File'), strtoupper($res[0]['filetypes']));
             }
