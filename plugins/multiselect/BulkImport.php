@@ -317,6 +317,11 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
             foreach ($fields as $oField) {
                 $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
                 
+                //Fix for multiselect not submitting data due to the value not being flat.
+                if (is_array($val)) {
+                    $val = $val[0];
+                }
+
 				if ($oFieldset->getIsConditional())
                 {
                 	if ($val == _kt('No selection.'))
