@@ -1,10 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 
 # Boot KnowledgeTree services
 # chkconfig: 2345 55 25
 # description: KnowledgeTree Services
 #
 # processname: ktdms 
+
+cd $(dirname $0)
 
 HOSTNAME=`hostname`
 RETVAL=0
@@ -15,6 +17,14 @@ VDISPLAY="99"
 INSTALL_PATH=`pwd`
 JAVABIN=/usr/bin/java
 ZEND_DIR=/usr/local/zend
+
+if [ -f /etc/zce.rc ];then
+    . /etc/zce.rc
+else
+    echo "/etc/zce.rc doesn't exist!"
+    exit 1;
+fi
+
 
 # OpenOffice
 SOFFICEFILE=soffice
@@ -279,6 +289,24 @@ noserver() {
        help
 }
 
+firstrun() {
+	echo "Initializing DMS for the first time, exporting  ZEND paths"
+	if grep --quiet LD_LIBRARAY_PATH /etc/zce.rc ; then
+        	echo "Nothing to be done ..."
+	else
+        	echo "PATH=/usr/local/zend/bin:$PATH" >> /etc/zce.rc
+        	if [ -z $LD_LIBRARY_PATH ] ; then
+                	echo "LD_LIBRARY_PATH=$ZEND_DIR/lib" >> /etc/zce.rc
+        	else
+                	echo "LD_LIBRARY_PATH=$ZEND_DIR/lib:$LD_LIBRARY_PATH" >> /etc/zce.rc
+        	fi
+	fi
+
+	touch $INSTALL_PATH/var/bin/.dmsinit.lock
+
+	$ZEND_DIR/bin/zendctl.sh restart
+}
+
 [ $# -lt 1 ] && help
 
 if [ ! -z ${2} ]; then
@@ -291,6 +319,8 @@ if [ "x$3" != "x" ]; then
     MYSQL_PASSWORD=$3
 fi
 
+# Are we running for first time
+[[ -e $INSTALL_PATH/var/bin/.dmsinit.lock ]] || firstrun
 
 case $1 in
        help)   help
@@ -302,6 +332,7 @@ case $1 in
                        start_soffice
                        start_lucene
                        start_scheduler
+		       #[[ -e $ZEND_DIR/bin/zendctl.sh ]] && $ZEND_DIR/bin/zendctl.sh restart
                fi
                ;;
        stop)   if [ "${SERVER}" != "all" ]; then

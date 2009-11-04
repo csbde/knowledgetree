@@ -372,6 +372,11 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
     {
         $this->ktwebdavLog('Entering _check_auth...', 'info', true);
 
+        // Workaround for mod_auth when running php cgi
+        if(!isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['HTTP_AUTHORIZATION'])){
+            list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+        }
+
         if (method_exists($this, 'checkAuth')) {
             // PEAR style method name
             return $this->checkAuth(@$_SERVER['AUTH_TYPE'],

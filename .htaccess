@@ -95,6 +95,11 @@ php_value max_execution_time 0
 php_value error_reporting 5
 </IfModule>
 
+# Workaround for mod_auth when running php cgi
+<IfModule mod_rewrite.c>
+RewriteEngine on
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+</IfModule>
 
 #<IfModule mod_rewrite.c>
 #RewriteEngine On
