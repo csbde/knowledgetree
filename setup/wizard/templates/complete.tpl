@@ -13,6 +13,15 @@
 	}
 	?>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
+	
+	<?php if(!$servicesValidation) { ?>
+		<h3>Services</h3>
+		Run the dmsctl.sh script in KnowledgeTree source root from a terminal.<br/>
+		<i>cd KnowledgeTree_Installation_Folder<br/>
+		./dmsctl.sh start
+		</i>
+		<br/>
+	<?php } ?>
 	<!--	Paths and Permissions	-->
 		<div>
 		    <h3><?php echo "<span class='{$paths_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Paths and Permissions</h3>
@@ -65,6 +74,7 @@
 		</div>
 	<!--	Services	-->
 		<br/><br/>
+<?php if($servicesValidation) { ?>
 <?php if(!$migrate_check) { ?>
 		<div>
 		    <h3><?php echo "<span class='{$services_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services</h3>
@@ -118,6 +128,7 @@
 		<?php } ?>
 		</div>
 		<?php } ?>
+		<?php } ?>
 	</div>
 	<?php
         $script = $_SERVER['SCRIPT_NAME'];
@@ -136,7 +147,7 @@
 	<?php if($migrate_check) { ?>
 		<a href="../upgrade/index.php" class="back button_next" style="width:30px;" onclick="javascript:{w.clearSessions();}">Next</a>
     <?php } else { ?>
-    	<a href="../../login.php" class="back button_next" style="width:40px;" onclick="javascript:{w.clearSessions();}">Finish</a>
+    	<a href="../../login.php" class="back button_next" style="width:50px;" onclick="javascript:{w.clearSessions();}">Finish</a>
     <?php } ?>
     <?php
         if ($install_environment == 'Zend') {

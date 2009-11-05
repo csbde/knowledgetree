@@ -10,7 +10,7 @@
 	The wizard will review your system to determine whether you can run KnowledgeTree background services. <br/>Once the scan is completed, you&rsquo;ll see whether your system has met the requirements or whether there are areas you need to address. 
 	</p>
 <!--Continue Message-->
-<?php if($validation) { ?>
+<?php if($servicesValidation) { ?>
 	<?php
 		if(!$errors && !$warnings) {
 			?>
@@ -219,7 +219,8 @@
 			</div>
 		<?php } ?>
 		<?php } else { ?>
-			Services have to be manually started after the installation has been run. <a href="http://wiki.knowledgetree.com/KnowledgeTree_Setup_Wizard_Troubleshoot#Services" target="_blank">Click here for help on starting services</a>
+			Services have to be manually started after the installation has been run. <br/>
+			More information will be provided on completion of the installation.
 		<?php } ?>
 	</div>
     <input type="submit" name="Previous" value="Previous" class="button_previous"/>

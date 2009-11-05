@@ -162,7 +162,7 @@ class services extends Step
 	* @param none
 	* @return object
  	*/
-	public $validation = false;
+	public $servicesValidation = false;
 	
 	/**
 	* Main control of services setup
@@ -542,7 +542,7 @@ class services extends Step
     	$this->temp_variables['alreadyInstalled'] = $this->alreadyInstalled;
     	$this->temp_variables['serviceCheck'] = $this->serviceCheck;
     	$this->temp_variables['binaries'] = $this->binaries;
-    	$this->temp_variables['validation'] = $this->validation;
+    	$this->temp_variables['servicesValidation'] = $this->servicesValidation;
     }
     
 

@@ -63,5 +63,5 @@
 		</div>
 		<?php } ?>
 	</div>
-	<a href="../../login.php" class="back button_next" style="width:40px;" onclick="javascript:{w.clearSessions();}">Finish</a>
+	<a href="../../login.php" class="back button_next" style="width:50px;" onclick="javascript:{w.clearSessions();}">Finish</a>
 </form>
