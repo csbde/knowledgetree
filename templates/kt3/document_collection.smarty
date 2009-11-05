@@ -1,4 +1,4 @@
-    <table class="kt_collection" cellspacing="0">
+    <table class="kt_collection" cellspacing="0" name="browseForm">
         <thead>
             <tr>
               {foreach item=oColumn from=$context->columns}

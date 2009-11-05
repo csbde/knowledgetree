@@ -79,8 +79,8 @@ class PreviewColumn extends AdvancedColumn {
             $width += $thumbnailwidth + 30;
         }
 
-        $link = '<a href = "#" class="ktAction ktPreview" id = "box_'.$iDocumentId.'" ';
-
+        //$link = '<a name = "ktP'.$iDocumentId.'" href = "#ktP'.$iDocumentId.'" class="ktAction ktPreview" id = "box_'.$iDocumentId.'" ';
+		$link = '<a href = "#browseForm" class="ktAction ktPreview" id = "box_'.$iDocumentId.'" ';
         if($this->sActivation == 'mouse-over'){
             $sJs = "javascript: this.t = setTimeout('showInfo(\'$iDocumentId\', \'$sUrl\', \'$sDir\', \'$sLoading\', $width)', $iDelay);";
             $link .= 'onmouseover = "'.$sJs.'" onmouseout = "clearTimeout(this.t);">';
