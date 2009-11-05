@@ -791,7 +791,7 @@ class database extends Step
     	if (WINDOWS_OS) {
     	    $winBinaries = array('php' => 'ZendServer\bin\php.exe', 'python' => 'openoffice\program\python.exe', 
     	                      'java' => 'jre\bin\java.exe', 'convert' => 'bin\imagemagick\convert.exe', 
-    	                      'df' => 'bin//df.exe', 
+    	                      'df' => 'bin\gnuwin32\df.exe', 
     	                      'zip' => 'bin\zip\zip.exe', 'unzip' => 'bin\unzip\unzip.exe');
     	    foreach ($winBinaries as $displayName => $bin)
     	    {
