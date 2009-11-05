@@ -236,5 +236,17 @@ class windowsOpenOffice extends windowsService {
 		
 		return '';
 	}
+	
+	/**
+	* Start Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return mixed
+ 	*/
+	public function start() { // User has to manually start the services
+		return false;
+	}
 }
 ?>

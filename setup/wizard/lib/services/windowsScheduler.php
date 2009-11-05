@@ -173,6 +173,29 @@ class windowsScheduler extends windowsService {
 		return false;
 	}
 	
+	private function setWinservice($winservice = "winserv.exe") {
+		$this->winservice = SYS_BIN_DIR .  "win32" . DS . $winservice;
+	}
+	
+	private function setOptions() {
+		$this->options = "-displayname {$this->name} -start auto -binary \"{$this->getSchedulerScriptPath()}\" -headless -invisible ";
+	}
+	
+	private function writeTaskRunner() {
+		if(DEBUG) { // Check if bin is readable and writable
+			echo "Attempt to Create {$this->getSchedulerDir()}\\taskrunner.bat<br>";
+		}
+		if(is_readable($this->varDir."bin") && is_writable($this->varDir."bin")) {
+			$fp = @fopen($this->getSchedulerDir().""."\\taskrunner.bat", "w+");
+			$content = "@echo off \n";
+			$content .= "\"".$this->util->useZendPhp()."php.exe\" "."\"{$this->getSchedulerSource()}\"";
+			@fwrite($fp, $content);
+			@fclose($fp);
+		} else {
+			echo 'Could not write task runner<br>'; // TODO: Should not reach this point
+		}
+	}
+	
 	/**
 	* Retrieve Status Service
 	*
@@ -235,28 +258,17 @@ class windowsScheduler extends windowsService {
 		}
 		return $state;
 	}
-	
-	private function setWinservice($winservice = "winserv.exe") {
-		$this->winservice = SYS_BIN_DIR .  "win32" . DS . $winservice;
-	}
-	
-	private function setOptions() {
-		$this->options = "-displayname {$this->name} -start auto -binary \"{$this->getSchedulerScriptPath()}\" -headless -invisible ";
-	}
-	
-	private function writeTaskRunner() {
-		if(DEBUG) { // Check if bin is readable and writable
-			echo "Attempt to Create {$this->getSchedulerDir()}\\taskrunner.bat<br>";
-		}
-		if(is_readable($this->varDir."bin") && is_writable($this->varDir."bin")) {
-			$fp = @fopen($this->getSchedulerDir().""."\\taskrunner.bat", "w+");
-			$content = "@echo off \n";
-			$content .= "\"".$this->util->useZendPhp()."php.exe\" "."\"{$this->getSchedulerSource()}\"";
-			@fwrite($fp, $content);
-			@fclose($fp);
-		} else {
-			echo 'Could not write task runner<br>'; // TODO: Should not reach this point
-		}
+
+	/**
+	* Start Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return mixed
+ 	*/
+	public function start() { // User has to manually start the services
+		return false;
 	}
 }
 ?>

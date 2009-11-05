@@ -31,7 +31,6 @@ echo start	- start the services
 echo stop	- stop the services
 echo restart	- restart the services
 echo. 
-echo install	- install the services
 echo uninstall	- uninstall the services
 echo. 
 

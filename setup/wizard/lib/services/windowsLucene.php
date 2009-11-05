@@ -150,26 +150,6 @@ class windowsLucene extends windowsService {
 		$this->setLuceneOut("lucene-out.txt");
 		$this->setLuceneError("lucene-err.txt");
 	}
-
-	
-	/**
-	* Retrieve Status Service
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return string
- 	*/
-	public function status() {
-		$cmd = "sc query {$this->name}";
-		$response = $this->util->pexec($cmd);
-		if($response['out']) {
-			$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
-			return $state;
-		}
-		
-		return '';
-	}
 	
 	/**
 	* Set Java Directory path
@@ -196,7 +176,7 @@ class windowsLucene extends windowsService {
 		
 		return false;
 	}
-	
+
 	/**
 	* Get Java Directory path
 	*
@@ -444,6 +424,35 @@ class windowsLucene extends windowsService {
 		return $state;
 	}
 	
-	
+	/**
+	* Start Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return mixed
+ 	*/
+	public function start() { // User has to manually start the services
+		return false;
+	}
+
+	/**
+	* Retrieve Status Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/
+	public function status() {
+		$cmd = "sc query {$this->name}";
+		$response = $this->util->pexec($cmd);
+		if($response['out']) {
+			$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
+			return $state;
+		}
+		
+		return '';
+	}
 }
 ?>
