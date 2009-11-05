@@ -203,7 +203,7 @@ class InstallWizard {
 	* @return void
  	*/
 	private function createInstallFile() {
-		@touch("install.lock");
+		@touch(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock");
 	}
 	
 	/**
@@ -215,8 +215,8 @@ class InstallWizard {
 	* @return void
  	*/
 	private function removeInstallFile() {
-		if(file_exists("install.lock"))
-			unlink("install.lock");
+		if(file_exists(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock"))
+			@unlink(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock");
 	}
 	
 	/**
@@ -294,7 +294,7 @@ class InstallWizard {
 			}
 		} else {
 			// TODO: Die gracefully
-			$this->util->error("System has been installed  <a href='../../login.php' class='back' style='width:90px;float:none' class='back button_next'>Goto Login</a>");
+			$this->util->error("System has been installed  <a href='../../login.php' class='back' style='width:50px;float:none' class='back button_next'>Finish</a>");
 		}
 	}
 }

@@ -280,6 +280,9 @@ class kt extends client_service  {
 
     private function _processItemInclusion_search($item, $class, $qtip)
     {
+		if ($item['filesize']=='n/a') {
+			$item['filesize']=-1;
+		}
         return array (
                 'text'=>htmlspecialchars($item['title']),
                 'originaltext'=>$item['title'],
@@ -291,6 +294,9 @@ class kt extends client_service  {
                 'item_type'=>'D',
                 'permissions'=>$item['permissions'],
 				'content_id'=>$item['content_id'],
+				'filesize'=>$item['filesize'],
+				'modified'=>$item['modified_date'],
+				'checked_out_by'=>$item['checked_out_by'],
                 'relevance'=>$item['relevance'],
                 'qtip'=> $qtip
             );
@@ -902,7 +908,7 @@ class kt extends client_service  {
 
 		$listing=processSearchExpression("(GeneralText contains \"".$arr['query']."\")");
 
-		$result=ListController::_processListing($listing, 'search', $arr);
+		$result=$this->_processListing($listing, 'search', $arr);
 
 		if(!count($result)) {
 			$result[]=array(
@@ -916,7 +922,9 @@ class kt extends client_service  {
 			$result=array_slice($result, 0, 200);
 		}
 
-		$this->setResponse($result);
+		//$this->setResponse($result);
+		$this->setResponse(array('totalCount'=>count($listing), 'items'=>$result));
+
 		return true;
 	}
 

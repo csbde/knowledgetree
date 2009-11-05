@@ -10,6 +10,7 @@
 	The wizard will review your system to determine whether you can run KnowledgeTree background services. <br/>Once the scan is completed, you&rsquo;ll see whether your system has met the requirements or whether there are areas you need to address. 
 	</p>
 <!--Continue Message-->
+<?php if($servicesValidation) { ?>
 	<?php
 		if(!$errors && !$warnings) {
 			?>
@@ -33,44 +34,45 @@
 	}?>
 	<?php
 		if($errors || $warnings) {
-//			var_dump($errors);
 			?>
 		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Installer#Service_Dependencies" target="_blank">Click here for help on overcoming service issues</a>
 	<?php } ?>
+<?php } ?>
 <!--Content-->
 	<div id="step_content_configuration" class="step">
 		<?php if(!$alreadyInstalled) { ?>
-			<?php if($javaExeError) { ?>
-				Specify the location of your Java executable
-				&nbsp;&nbsp;&nbsp;
-				<input name='java' id='port' size='25' value='<?php echo $java['location']; ?>' style="float:none;"/>
-				&nbsp;&nbsp;&nbsp;
-				<a href="javascript:{w.sendJavaLocation();}" class="specify">Submit</a>
-				<br/>
-				<?php if($javaExeError != '') { ?><span class="error"><?php echo $javaExeMessage; ?></span><?php } ?>
-				<br/>
-			<?php } ?>
-			<?php if($phpExeError != '') { ?>
-				<br />
-				Specify the location of your PHP executable
-				<br />
-				<?php if($php['location'] == '') { ?>
-					<input name='php' id='port' size='25' value='<?php echo $php['location']; ?>'/>
-				<?php } else { ?>
-					<input type="hidden" name='php' id='port' size='25' value='<?php echo $php['location']; ?>'/>
+			<?php if($servicesValidation) { ?>
+				<?php if($javaExeError) { ?>
+					Specify the location of your Java executable
+					&nbsp;&nbsp;&nbsp;
+					<input name='java' id='port' size='25' value='<?php echo $java['location']; ?>' style="float:none;"/>
+					&nbsp;&nbsp;&nbsp;
+					<a href="javascript:{w.sendJavaLocation();}" class="specify">Submit</a>
+					<br/>
+					<?php if($javaExeError != '') { ?><span class="error"><?php echo $javaExeMessage; ?></span><?php } ?>
+					<br/>
 				<?php } ?>
-				&nbsp;&nbsp;&nbsp;
-				<?php if($phpExeError != true) { ?><span class="error"><?php echo $phpExeError; ?></span><?php } ?>
-			<?php } ?>
-			<?php if($openOfficeExeError) { ?>
-				Specify the location of your Open Office executable
-				&nbsp;&nbsp;&nbsp;
-				<input name='soffice' id='port' size='25' value='<?php if(isset($soffice['location'])) echo $soffice['location']; ?>' style="float:none;"/>
-				&nbsp;&nbsp;&nbsp;
-				<a href="javascript:{w.sendJavaLocation();}" class="specify">Submit</a>
-				<br/>
-				<?php if($openOfficeExeError != '') { ?><span class="error"><?php echo $openOfficeExeMessage; ?></span><?php } ?>
-			<?php } ?>
+				<?php if($phpExeError != '') { ?>
+					<br />
+					Specify the location of your PHP executable
+					<br />
+					<?php if($php['location'] == '') { ?>
+						<input name='php' id='port' size='25' value='<?php echo $php['location']; ?>'/>
+					<?php } else { ?>
+						<input type="hidden" name='php' id='port' size='25' value='<?php echo $php['location']; ?>'/>
+					<?php } ?>
+					&nbsp;&nbsp;&nbsp;
+					<?php if($phpExeError != true) { ?><span class="error"><?php echo $phpExeError; ?></span><?php } ?>
+				<?php } ?>
+				<?php if($openOfficeExeError) { ?>
+					Specify the location of your Open Office executable
+					&nbsp;&nbsp;&nbsp;
+					<input name='soffice' id='port' size='25' value='<?php if(isset($soffice['location'])) echo $soffice['location']; ?>' style="float:none;"/>
+					&nbsp;&nbsp;&nbsp;
+					<a href="javascript:{w.sendJavaLocation();}" class="specify">Submit</a>
+					<br/>
+					<?php if($openOfficeExeError != '') { ?><span class="error"><?php echo $openOfficeExeMessage; ?></span><?php } ?>
+				<?php } ?>
 			<h3><?php echo "<span class='{$javaCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Java Check</h3>
 			<?php if($silent) { ?>
 				<?php if($javaExeError) {
@@ -163,11 +165,13 @@
 					</div>
 				<?php } ?>
 			<?php } ?>
+			<?php } ?>
 		<?php } else { ?>
 <!--			<p class="description">-->
 			All services are already installed.
 <!--			</p>-->
 		<?php } ?>
+		<?php if($servicesValidation) { ?>
 		<h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services Check</h3>
 		<?php if($silent) { ?>
 			<?php if($serviceCheck != 'tick') {
@@ -213,6 +217,10 @@
 		</table>
 		<?php if($silent) { ?>
 			</div>
+		<?php } ?>
+		<?php } else { ?>
+			Services have to be manually started after the installation has been run. <br/>
+			More information will be provided on completion of the installation.
 		<?php } ?>
 	</div>
     <input type="submit" name="Previous" value="Previous" class="button_previous"/>

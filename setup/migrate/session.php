@@ -63,7 +63,7 @@ class Session
 	*/
 	public function startSession() {
 		if(!isset($_SESSION[$this->salt]['ready'])) {
-			session_start();
+			@session_start();
 			$_SESSION[$this->salt] ['ready'] = TRUE;
 		}
 	}

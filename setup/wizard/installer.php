@@ -413,7 +413,7 @@ class Installer {
 	* @return void
 	*/
     private function _completeInstall() {
-    	@touch("install.lock");
+    	@touch(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock");
     }
     
 	/**

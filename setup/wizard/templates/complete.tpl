@@ -13,6 +13,27 @@
 	}
 	?>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
+	
+	<?php if(!$servicesValidation) { ?>
+		<h3>Services</h3>
+		The KnowledgeTree services need to be started to allow for optimal functioning of the search, indexing and pdf generation.
+		<?php if(WINDOWS_OS) { ?>
+		To start the services, execute the dmsctl.sh shell script in the KnowledgeTree directory from a terminal.<br/><br/>
+		<?php } else { ?>
+		To start the services, execute the dmsctl.bat batch file in the KnowledgeTree directory from a command prompt, run as administrator.<br/><br/>
+		<?php } ?>
+		<p class="disclaimer">
+		<?php if(WINDOWS_OS) { ?>
+		cd KnowledgeTree_Installation_Folder<br/>
+		dmsctl.bat start
+		<?php } else { ?>
+		cd /usr/share/knowledgetree-ce<br/>
+		sudo ./dmsctl.sh start
+		<?php } ?>
+		</p>
+		
+		<br/>
+	<?php } ?>
 	<!--	Paths and Permissions	-->
 		<div>
 		    <h3><?php echo "<span class='{$paths_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Paths and Permissions</h3>
@@ -65,6 +86,7 @@
 		</div>
 	<!--	Services	-->
 		<br/><br/>
+<?php if($servicesValidation) { ?>
 <?php if(!$migrate_check) { ?>
 		<div>
 		    <h3><?php echo "<span class='{$services_check}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services</h3>
@@ -79,9 +101,9 @@
 		        	<?php if ($LuceneStatus != 'tick') { ?>
 		        		<td>
 						<?php if (AJAX) { ?>
-							<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>
+<!--							<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>-->
 						<?php } else { ?>
-							<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+<!--							<a href="javascript:this.location.reload();" class="refresh">Refresh</a>-->
 						<?php } ?>
 		        		</td>
 		        	<?php } ?>
@@ -92,9 +114,9 @@
 		        	<?php if ($SchedulerStatus != 'tick') { ?>
 		        		<td>
 						<?php if (AJAX) { ?>
-							<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>
+<!--							<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>-->
 						<?php } else { ?>
-							<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+<!--							<a href="javascript:this.location.reload();" class="refresh">Refresh</a>-->
 						<?php } ?>
 		        		</td>
 		        	<?php } ?>
@@ -105,9 +127,9 @@
 		        	<?php if ($OpenOfficeStatus != 'tick') { ?>
 		        		<td>
 						<?php if (AJAX) { ?>
-							<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>
+<!--							<a href="#" class="refresh" onclick="w.refresh('complete')">Refresh</a>-->
 						<?php } else { ?>
-							<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+<!--							<a href="javascript:this.location.reload();" class="refresh">Refresh</a>-->
 						<?php } ?>
 		        		</td>
 		        	<?php } ?>
@@ -117,6 +139,7 @@
 			</div>
 		<?php } ?>
 		</div>
+		<?php } ?>
 		<?php } ?>
 	</div>
 	<?php
@@ -134,9 +157,9 @@
         	$redirect = "http://".$_SERVER['SERVER_NAME'].":$port".$root_url."/admin.php";
 	?>
 	<?php if($migrate_check) { ?>
-		<a href="../upgrade/index.php" class="back button_next" style="width:190px;" onclick="javascript:{w.clearSessions();}">Goto Database Upgrade</a>
+		<a href="../upgrade/index.php" class="back button_next" style="width:30px;" onclick="javascript:{w.clearSessions();}">Next</a>
     <?php } else { ?>
-    	<a href="../../login.php?" class="back button_next" style="width:90px;" onclick="javascript:{w.clearSessions();}">Goto Login</a>
+    	<a href="../../login.php" class="back button_next" style="width:50px;" onclick="javascript:{w.clearSessions();}">Finish</a>
     <?php } ?>
     <?php
         if ($install_environment == 'Zend') {

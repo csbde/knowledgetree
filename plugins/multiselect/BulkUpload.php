@@ -67,6 +67,7 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 		if(!KTPluginUtil::pluginIsActive('inet.foldermetadata.plugin'))
 		{
 			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+			$aJavascript[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
 			
 			$oPage =& $GLOBALS['main'];			
 			if (method_exists($oPage, 'requireJSResources')) {
@@ -330,6 +331,12 @@ class InetBulkUploadFolderAction extends KTFolderAction {
             foreach ($fields as $oField) {
             	//var_dump($oField->getId());
                 $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
+
+                //Fix for multiselect not submitting data due to the value being an array.
+                if (is_array($val)) {
+                    $val = $val[0];
+                }
+
 				if ($oFieldset->getIsConditional())
                 {
                 	if ($val == _kt('No selection.'))
@@ -337,6 +344,7 @@ class InetBulkUploadFolderAction extends KTFolderAction {
                 		$val = null;
                 	}
                 }
+
 
                 if (!is_null($val)) {
                     $MDPack[] = array(
@@ -356,7 +364,7 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 		$fs =& new KTZipImportStorage('_kt_attempt_unique_file');
 		if(!$fs->CheckFormat()){
 			$sFormats = $fs->getFormats();
-			$this->addErrorMessage(_kt("Bulk Upload failed. Archive is not an accepted format. Accepted formats are: ".$sFormats));
+			$this->addErrorMessage(sprintf(_kt("Bulk Upload failed. Archive is not an accepted format. Accepted formats are: .%s") , $sFormats));
 			controllerRedirect("browse", 'fFolderId=' . $this->oFolder->getID());
 			exit;
 		}

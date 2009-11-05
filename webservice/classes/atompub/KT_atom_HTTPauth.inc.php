@@ -1,6 +1,12 @@
 <?php
 class KT_atom_HTTPauth{
 	public static function getCredentials(){
+
+	    // Workaround for mod_auth when running php cgi
+	    if(!isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['HTTP_AUTHORIZATION'])){
+            list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+	    }
+
 		$credentials=array('user'=>'','pass'=>'','method'=>'');
 		if(isset($_SERVER['PHP_AUTH_USER'])){
 			$credentials['user']=$_SERVER['PHP_AUTH_USER'];

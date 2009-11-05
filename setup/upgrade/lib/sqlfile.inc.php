@@ -42,8 +42,8 @@ class SQLFile {
     }
 
     function splitSQL($sql) {
-        $instring = false;
-        $i = 0;
+//        $instring = false;
+//        $i = 0;
         $remaining = $sql;
         $query = "";
         $aQueries = array();

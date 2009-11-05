@@ -367,7 +367,7 @@ class KTAPI_UserSession extends KTAPI_Session
 		$user =& User::getByUsername($username);
         if (PEAR::isError($user) || ($user === false))
         {
-           return new KTAPI_Error(_kt("The user '$username' cound not be found."),$user);
+           return new KTAPI_Error(sprintf(_kt("The user '%s' cound not be found.") , $username),$user);
         }
 
         if ( empty($password) )

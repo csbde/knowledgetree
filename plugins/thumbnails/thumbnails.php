@@ -170,6 +170,11 @@ class thumbnailGenerator extends BaseProcessor
             $default->log->debug('Thumbnail Generator Plugin: PDF file does not exist, cannot generate a thumbnail');
             return false;
         }
+        
+        if (WINDOWS_OS) {
+            $thumbnailfile = KT_DIR . $thumbnailfile;
+        }
+        
 		// if a previous version of the thumbnail exists - delete it
 		if (file_exists($thumbnailfile)) {
 			@unlink($thumbnailfile);
@@ -177,7 +182,10 @@ class thumbnailGenerator extends BaseProcessor
         // do generation
        // if (extension_loaded('imagick')) {
             $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
-        	$result = shell_exec("{$pathConvert} -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile");
+            if (WINDOWS_OS) {
+                $pathConvert = '"' . $pathConvert . '"';
+            }
+        	$result = KTUtil::pexec("{$pathConvert} -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile");
         	return true;
         //}else{
         	//$default->log->debug('Thumbnail Generator Plugin: Imagemagick not installed, cannot generate a thumbnail');
@@ -212,6 +220,10 @@ class ThumbnailViewlet extends KTDocumentViewlet {
         global $default;
 		$varDir = $default->internalVarDirectory;
 		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
+		
+		if (WINDOWS_OS) {
+            $thumbnailfile = KT_DIR . $thumbnailfile;
+        }
 
 		// if the thumbnail doesn't exist try to create it
 		if (!file_exists($thumbnailfile)){

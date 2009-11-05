@@ -44,7 +44,7 @@
 			<div class="php_details" style="display:<?php echo $display; ?>">
 		<?php } ?>
 		<p class="description">
-		Your version of PHP must be between 5.0 and 5.2.11 to run optimally. Versions higher than 5.3.2 are not recommended.
+		Your version of PHP must be between 5.0 and 5.2 to run optimally. Versions that are 5.3 or higher  are not recommended.
 		</p>
 		<?php echo "<span class='{$version['class']}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{$version['version']}"; ?>
 		<?php if($version['class'] != 'tick') { ?>

@@ -57,7 +57,7 @@ class unixScheduler extends unixService {
 	* @param string
 	* @return void
  	*/
-	public function load($options = null) {
+	public function load() {
 		$this->setPhpCli();
 		$this->scheduler = 'scheduler';
 		$this->setSchedulerSource('schedulerTask.sh');
@@ -155,6 +155,7 @@ class unixScheduler extends unixService {
       	if(is_array($response['out'])) {
     		if(count($response['out']) > 1) {
     			foreach ($response['out'] as $r) {
+    				$matches = false;
     				preg_match('/grep/', $r, $matches); // Ignore grep
     				if(!$matches) {
     					return 'STARTED';
@@ -180,7 +181,7 @@ class unixScheduler extends unixService {
 		// TODO : Write sh on the fly? Not sure the reasoning here
 		$source = $this->getSchedulerSourceLoc();
 		$this->writeSchedulerTask();
-		$logFile = $this->outputDir.DS."scheduler.log";
+		$logFile = "/dev/null";
 		@unlink($logFile);
 		if($source) { // Source
 			$cmd = "nohup ".$source." > ".$logFile." 2>&1 & echo $!";
@@ -189,12 +190,13 @@ class unixScheduler extends unixService {
 			$cmd = "nohup ".$source." > ".$logFile." 2>&1 & echo $!";
 		}
     	if(DEBUG) {
-    		echo "Command : $cmd<br/>";
+    		echo "$cmd<br/>";
     		return ;
     	}
-    	$response = $this->util->pexec($cmd);
+    	//$response = $this->util->pexec($cmd);
     	
-		return $response;
+//		return $response;
+		return false;
 	}
 
 	public function getName() {

@@ -91,13 +91,14 @@ class schedulerValidation extends serviceValidation {
     
     public function binaryChecks() {
     	// TODO: Better detection
-    	return true;
-    	$this->setPhp();
-    	if($this->util->phpSpecified()) {
-			return $this->detPhpSettings();
+    	$phpDir = $this->util->useZendPhp();
+    	if(WINDOWS_OS) {
+    		$phpPath = "$phpDir"."php.exe";
     	} else {
-    		$this->specifyPhp();// Ask for settings
-			return false;
+    		$phpPath = "$phpDir"."php";
+    	}
+    	if(file_exists($phpPath)) {
+    		return $phpPath;
     	}
     }
     
@@ -141,9 +142,8 @@ class schedulerValidation extends serviceValidation {
 			$this->phpCheck = 'tick';
 		} elseif ($phpDir = $this->util->useZendPhp()) { // Use System Defined Settings
 			$this->php = $phpDir;
-		} else {
-
 		}
+		
 		$this->temp_variables['php']['location'] = $this->php;
     }
     

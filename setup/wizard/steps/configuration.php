@@ -39,18 +39,6 @@
 * @package Installer
 * @version Version 0.1
 */
-
-if(isset($_GET['action'])) {
-	$func = $_GET['action'];
-	if($func != '') {
-		require_once("../iniUtilities.php");
-		require_once("../step.php");
-		require_once("../path.php");
-		require_once("../dbUtilities.php");
-		require_once("../installUtil.php");
-	}
-}
-
 class configuration extends Step
 {
 	private $allConfs;
@@ -390,17 +378,29 @@ class configuration extends Step
      */
     private function getServerInfo()
     {
+//    	$iis = false;
         $script = $_SERVER['SCRIPT_NAME'];
+        /*
         $file_system_root = $_SERVER['DOCUMENT_ROOT'];
+        if(preg_match('/inetpub/', $file_system_root)) {
+        	$iis = true;
+        	$file_system_root = $_SERVER['APPL_PHYSICAL_PATH'];
+        }
+        */
+        $file_system_root = realpath(SYSTEM_DIR);
         $host = $_SERVER['SERVER_NAME'];
         $port = $_SERVER['SERVER_PORT'];
         $ssl_enabled = isset($_SERVER['HTTPS']) ? (strtolower($_SERVER['HTTPS']) === 'on' ? 'yes' : 'no') : 'no';
-
         $pos = strpos($script, '/setup/wizard/');
         $root_url = substr($script, 0, $pos);
-
         $root_url = (isset($_POST['root_url'])) ? $_POST['root_url'] : $root_url;
-        $file_system_root = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root.$root_url;
+//        echo $file_system_root;
+//        if($iis) {
+        $file_system_root = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root;
+//        } else {
+//			substr($root_url, 1, strlen($root_url))
+//        	$file_system_root = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root.$root_url;
+//        }
         $host = (isset($_POST['host'])) ? $_POST['host'] : $host;
         $port = (isset($_POST['port'])) ? $_POST['port'] : $port;
         $ssl_enabled = (isset($_POST['ssl_enabled'])) ? $_POST['ssl_enabled'] : $ssl_enabled;
@@ -450,7 +450,7 @@ class configuration extends Step
         	}
 			$dirs = $this->getFromConfigPath(); // Store contents
         }
-        
+        $varDirectory = $fileSystemRoot . DS . 'var';
         foreach ($dirs as $key => $dir){
             $path = (isset($_POST[$dir['setting']])) ? $_POST[$dir['setting']] : $dir['path'];
 
@@ -672,49 +672,16 @@ class configuration extends Step
      * @return boolean 
      */
     private function writeConfigPath($configPath, $configContent) {
-//		$conf = $this->getDataFromSession("configuration"); // get data from the server
-//        $paths = $conf['paths'];
-//		if(isset($paths['configFile']['path'])) {
-//			$configPath = $this->getContentPath();
-//        	$configContent = $paths['configFile']['path'];
-//    	} else {
-//			$configPath = $this->getContentPath();
-//			if(!$configPath) return false;
-//	        $this->util->iniHandler->load($configPath);
-//	        $data = $this->util->iniHandler->getFileByLine();
-//	        $configContent = '';
-//	        foreach ($data as $k=>$v) {
-//	        	if(preg_match('/config.ini/', $k)) {
-//	        		$configContent = $k;
-//	        		break;
-//	        	}
-//	        }
-//    	}
-//		print_r($configPath);
-//		print_r($configContent);
-        $fp = fopen($configPath, 'w+');
-        if(fwrite($fp, $configContent))
+        $fp = @fopen($configPath, 'w+');
+        if(@fwrite($fp, $configContent))
         	return true;
     	return false;
     }
     
     private function writeCachePath($cachePath, $cacheContent) {
-//		$cachePath = $this->getCachePath();
-//		if(!$cachePath) return false;
-//		$configPath = $this->getContentPath();
-//		if(!$configPath) return false;
-//        $this->util->iniHandler->load($configPath);
-//        $data = $this->util->iniHandler->getFileByLine();
-//        $cacheContent = '';
-//        foreach ($data as $k=>$v) {
-//        	if(preg_match('/cache/', $k)) {
-//        		$cacheContent = $k;
-//        		break;
-//        	}
-//        }
-        $fp = fopen($cachePath, 'w+');
+        $fp = @fopen($cachePath, 'w+');
         if($cacheContent != '') {
-	        if(fwrite($fp, $cacheContent))
+	        if(@fwrite($fp, $cacheContent))
 	        	return true;
         }
     	return false;
@@ -745,13 +712,4 @@ class configuration extends Step
 	}
 }
 
-if(isset($_GET['action'])) {
-	$func = $_GET['action'];
-	if($func != '') {
-		$serv = new configuration();
-		$func_call = strtoupper(substr($func,0,1)).substr($func,1);
-		$method = "do$func_call";
-		$serv->$method();
-	}
-}
 ?>

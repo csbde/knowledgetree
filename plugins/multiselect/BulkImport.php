@@ -65,11 +65,12 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
 			$js .= "<script src='plugins/multiselect/js/hidelink.js' type='text/javascript'></script>";
 			
 			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+			$aJavascript[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
+			
 			$oPage =& $GLOBALS['main'];			
 			if (method_exists($oPage, 'requireJSResources')) {
 				$oPage->requireJSResources($aJavascript);
 			}
-			
 	        return $js._kt('Import from Server Location');
 		}
 		else
@@ -316,6 +317,11 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
             foreach ($fields as $oField) {
                 $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
                 
+                //Fix for multiselect not submitting data due to the value not being flat.
+                if (is_array($val)) {
+                    $val = $val[0];
+                }
+
 				if ($oFieldset->getIsConditional())
                 {
                 	if ($val == _kt('No selection.'))

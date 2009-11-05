@@ -52,7 +52,7 @@ class UpgradeUtil extends InstallUtil {
 	* @return boolean
  	*/
 	public function isSystemUpgraded() {
-		if (file_exists(dirname(__FILE__)."/upgrade.lock")) {
+		if (file_exists(SYSTEM_DIR.'var'.DS.'bin'.DS."upgrade.lock")) {
 
 			return true;
 		}
@@ -60,6 +60,19 @@ class UpgradeUtil extends InstallUtil {
 		return false;
 	}
 
+    /**
+     * Check if we are migrating an existing installation
+     *
+	 * @author KnowledgeTree Team
+     * @access public
+     * @return boolean
+     */
+    public function isMigration() {
+    	if(file_exists(SYSTEM_DIR.'var'.DS.'bin'.DS."migrate.lock"))
+    		return true;
+    	return false;
+    }
+    
 	public function error($error) {
 		$template_vars['error'] = $error;
 		$file = "templates/error.tpl";
@@ -122,7 +135,7 @@ class UpgradeUtil extends InstallUtil {
     
         $adminUser = $dbConfig['dbAdminUser'];
         $adminPwd = $dbConfig['dbAdminPass'];
-        $dbHost = $dbConfig['dbHost'];
+//        $dbHost = $dbConfig['dbHost'];
         $dbName = $dbConfig['dbName'];
         $dbPort = trim($dbConfig['dbPort']);
         if ($dbPort=='' || $dbPort=='default')$dbPort = get_cfg_var('mysql.default_port');
@@ -147,7 +160,8 @@ class UpgradeUtil extends InstallUtil {
             $mechanism = "--port=\"$dbPort\"";
         }
     
-        $tmpdir = $this->resolveTempDir();
+//        $tmpdir = $this->resolveTempDir();
+		$this->resolveTempDir();
     
         $stmt = $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism drop  \"$dbName\"<br/>";
         $stmt .= $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism create  \"$dbName\"<br/>";

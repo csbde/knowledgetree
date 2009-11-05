@@ -701,7 +701,7 @@ class SearchDispatcher extends KTStandardDispatcher {
                 }
             }
 
-            $this->errorRedirectTo('manage', _kt($message));
+            $this->errorRedirectTo('manage', sprintf(_kt('%s' , $message));
         }
 
         $this->successRedirectTo('manage', _kt('The saved search was deleted successfully.'));

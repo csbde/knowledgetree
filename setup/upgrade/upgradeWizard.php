@@ -155,7 +155,7 @@ class UpgradeWizard {
 	* @return void
  	*/
 	private function createUpgradeFile() {
-		@touch("upgrade.lock");
+		@touch(SYSTEM_DIR.'var'.DS.'bin'.DS."upgrade.lock");
 	}
 	
 	/**
@@ -167,7 +167,7 @@ class UpgradeWizard {
 	* @return void
  	*/
 	private function removeUpgradeFile() {
-		@unlink("upgrade.lock");
+		@unlink(SYSTEM_DIR.'var'.DS.'bin'.DS."upgrade.lock");
 	}
 	
 	/**

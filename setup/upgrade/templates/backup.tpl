@@ -56,8 +56,8 @@ if ($dir != '')
         ?><input type="button" name="BackupNow" value="Next" class="button_next" onclick="doSubmit(this);"><?php
     }
     else if ($backupStatus) {
-        ?><input type="submit" name="Next" value="Restore" class="button_next">
-        <input type="submit" name="Upgrade" value="Upgrade" class="button_next"><?php
+        ?><input type="submit" name="Upgrade" value="Upgrade" class="button_next">
+        <input type="submit" name="Next" value="Restore" class="button_next"><?php
     }
     else {
         ?><input type="submit" name="Next" value="Next" class="button_next""><?php

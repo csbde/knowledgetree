@@ -135,7 +135,7 @@ class upgradeDatabase extends Step
     private function doRun($action = null) {
         $this->readConfig();
         
-		$con = $this->util->dbUtilities->load($this->dbSettings['dbHost'], $this->dbSettings['dbPort'], $this->dbSettings['dbUser'],$this->dbSettings['dbPass'], $this->dbSettings['dbName']);
+		$this->util->dbUtilities->load($this->dbSettings['dbHost'], $this->dbSettings['dbPort'], $this->dbSettings['dbUser'],$this->dbSettings['dbPass'], $this->dbSettings['dbName']);
         $this->temp_variables['action'] = $action;
         
         if (is_null($action) || ($action == 'preview')) {
@@ -238,7 +238,7 @@ class upgradeDatabase extends Step
         $this->temp_variables['detail'] = '<p>The table below describes the upgrades that have occurred to
             upgrade your KnowledgeTree installation to <strong>' . $this->sysVersion . '</strong>';
       
-        $pre_res = $this->performPreUpgradeActions();
+        $this->performPreUpgradeActions();
         
         $res = $this->performAllUpgrades();
         if (!$res) {
@@ -256,7 +256,7 @@ class upgradeDatabase extends Step
             $this->temp_variables['upgradeStatus'] = '<font color="green">Upgrade succeeded.</font>';
         }
     
-        $post_pres = $this->performPostUpgradeActions();
+        $this->performPostUpgradeActions();
         
         
         return !$errors;
@@ -311,7 +311,7 @@ class upgradeDatabase extends Step
     
         // Ensure all plugins are re-registered.
         $sql = "TRUNCATE plugin_helper";
-    	$res = $this->util->dbUtilities->query($sql);
+    	$this->util->dbUtilities->query($sql);
     	
         // Clear out all caches and proxies - they need to be regenerated with the new code
         $this->deleteDirectory($this->proxyPath);

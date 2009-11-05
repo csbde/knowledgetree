@@ -67,15 +67,15 @@ class Upgrade_Already_Applied {
 
 class UpgradeItem {
     
-    var $type = "";
-    var $name;
-    var $version;
-    var $description;
-    var $phase;
-    var $priority = 0;
-    var $parent;
-    var $date;
-    var $result;
+    public $type = "";
+    public $name;
+    public $version;
+    public $description;
+    public $phase;
+    public $priority = 0;
+    public $parent;
+    public $date;
+    public $result;
 	 
     function UpgradeItem($name, $version, $description = null, $phase = 0, $priority = 0) {
         $this->name = $name;
@@ -326,6 +326,7 @@ class SQLUpgradeItem extends UpgradeItem {
 
     public static function _getDetailsFromFileName($path) {
         // Old format (pre 2.0.6)
+        $matches = false;
         $matched = preg_match('#^([\d.]*)-to-([\d.]*).sql$#', $path, $matches);
         if ($matched != 0) {
             $fromVersion = $matches[1];
@@ -345,6 +346,7 @@ class SQLUpgradeItem extends UpgradeItem {
 
             //$priority = (int)$matches[4];
             $priority = 0;
+            $priorities = false;
             $iPriority = preg_match('#^(.*)-(\d*)$#', $matches[3], $priorities);
             if($iPriority != 0){
                 $priority = $priorities[2];

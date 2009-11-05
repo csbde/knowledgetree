@@ -40,16 +40,6 @@
 * @version Version 0.1
 */
 
-if(isset($_GET['action'])) {
-	$func = $_GET['action'];
-	if($func != '') {
-		require_once("../step.php");
-		require_once("../installUtil.php");
-		require_once("../path.php");
-		require_once("../dbUtilities.php");
-	}
-}
-
 class database extends Step 
 {
 	/**
@@ -651,7 +641,8 @@ class database extends Step
 		if(!$this->populateSchema()) {
 			$this->error['con'] = "Could not populate schema ";
 		}
-
+		$this->writeBinaries();
+		
 		return true;
     }
 
@@ -743,7 +734,7 @@ class database extends Step
     }
 
 	private function parse_mysql_dump($url) {
-	    $handle = fopen($url, "r");
+	    $handle = @fopen($url, "r");
 	    $query = "";
 		if ($handle) {
 			while (!feof($handle)) {
@@ -753,7 +744,7 @@ class database extends Step
      					$query = '';
     				}
 			}
-			fclose($handle);
+			@fclose($handle);
 		}
 	    
 		return true;
@@ -779,8 +770,44 @@ class database extends Step
     	$this->util->dbUtilities->query($dropPluginHelper);
     	$updateUrls = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "urls";';
     	$this->util->dbUtilities->query($updateUrls);
+		$this->writeBinaries();
+
     	return true;
     }
+    
+    private function writeBinaries() {
+    	$services = $this->util->getDataFromSession('services');
+    	$binaries = $services['binaries'];
+    	if($binaries) {
+	    	foreach ($binaries as $k=>$bin) {
+	    		if($k != 1) {
+	    			$updateBin = 'UPDATE config_settings c SET c.value = "'.str_replace('\\', '\\\\', $bin).'" where c.group_name = "externalBinary" and c.display_name = "'.$k.'";';
+					$this->util->dbUtilities->query($updateBin);
+	    		}
+	    	}
+    	}
+    	
+    	// if Windows, hard code (relative to SYSTEM_ROOT) where we expect the Zend MSI installer to have placed them
+    	if (WINDOWS_OS) {
+    	    $winBinaries = array('php' => 'ZendServer\bin\php.exe', 'python' => 'openoffice\program\python.exe', 
+    	                      'java' => 'jre\bin\java.exe', 
+    	                      // since we don't know where convert is yet, let's just assume somewhere for now (manually test)
+    	                      'convert' => 'imagick\convert.exe', 
+    	                      'zip' => 'bin\zip\zip.exe', 'unzip' => 'bin\unzip\unzip.exe');
+    	    foreach ($winBinaries as $displayName => $bin) {
+    	        // what about config settings which don't yet exist?
+    	        // TODO make sure sql install/updates create these entries
+        		$updateBin = 'UPDATE config_settings c SET c.value = "'. str_replace('\\', '\\\\', SYSTEM_ROOT . $bin).'" '
+        		           . 'where c.group_name = "externalBinary" and c.display_name = "'.$displayName.'";';
+                $this->util->dbUtilities->query($updateBin);
+            }
+    	}
+    	// if Linux?
+    	else {
+    	    
+    	}
+    }
+    
 	/**
 	* Close connection if it exists
 	*
@@ -811,18 +838,6 @@ class database extends Step
     }
     
 	/**
-	* Test database connectivity
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return boolean
-	*/
-    public function doAjaxTest($host, $uname, $dname) {
-		
-    }
-    
-	/**
 	* Initialize errors to false
 	*
 	* @author KnowledgeTree Team
@@ -836,25 +851,6 @@ class database extends Step
     	}
     }
     
-    public function doCreateSchema() {
-    	$this->dhost = '127.0.0.1';
-    	$this->duname = 'root';
-    	$this->dpassword = 'root';
-    	$this->dname = 'dms_install';
-    	$this->dbbinary = 'mysql';
-    	$this->util->dbUtilities->load($this->dhost, '', $this->duname, $this->dpassword, $this->dname);
-    	$this->createSchema();
-    	echo 'Schema loaded<br>';
-    }
 }
 
-if(isset($_GET['action'])) {
-	$func = $_GET['action'];
-	if($func != '') {
-		$serv = new database();
-		$func_call = strtoupper(substr($func,0,1)).substr($func,1);
-		$method = "do$func_call";
-		$serv->$method();
-	}
-}
 ?>

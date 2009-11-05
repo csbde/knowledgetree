@@ -55,6 +55,7 @@ class complete extends Step {
     private $migrate_check = false;
     public $silent = true;
     private $install_environment = 'Zend';
+    private $servicesValidation = false;
     
     function doStep() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
@@ -239,6 +240,7 @@ class complete extends Step {
     	$this->temp_variables['database_check'] = $this->database_check;
     	$this->temp_variables['migrate_check'] = $this->migrate_check;
     	$this->temp_variables['install_environment'] = $this->install_environment;
+    	$this->temp_variables['servicesValidation'] = $this->servicesValidation;
     }
 }
 ?>

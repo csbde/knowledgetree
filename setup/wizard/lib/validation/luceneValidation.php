@@ -114,10 +114,15 @@ class luceneValidation extends serviceValidation {
     private $javaExtCheck = 'cross_orange';
     
     public function preset() {
-		$this->zendBridgeNotInstalled(); // Set bridge not installed
-		$this->javaVersionInCorrect(); // Set version to incorrect
-		$this->javaNotInstalled(); // Set java to not installed
-		$this->setJava(); // Check if java has been auto detected
+    	/* Rely on Script */
+    	$this->zendBridgeInstalled();
+    	$this->javaVersionCorrect();
+    	$this->javaInstalled();
+    	$this->installed();
+//		$this->zendBridgeNotInstalled(); // Set bridge not installed
+//		$this->javaVersionInCorrect(); // Set version to incorrect
+//		$this->javaNotInstalled(); // Set java to not installed
+//		$this->setJava(); // Check if java has been auto detected
     }
     
     /**
@@ -262,28 +267,33 @@ class luceneValidation extends serviceValidation {
 	* @return boolean
 	*/
     public function binaryChecks() {
-    	if($this->util->javaSpecified()) {
-    		$this->disableExtension = true; // Disable the use of the php bridge extension
-    		if($this->detSettings(true)) { // AutoDetect java settings
-    			return true;
-    		} else {
-    			$this->specifyJava(); // Ask for settings
-    		}
-    	} else {
-    		$auto = $this->useBridge(); // Use Bridge to get java settings
-    		if($auto) {
+    	$java = $this->useZendJava();
+    	if(!$java) {
+	    	if($this->util->javaSpecified()) {
+	    		$this->disableExtension = true; // Disable the use of the php bridge extension
+	    		if($this->detSettings(true)) { // AutoDetect java settings
+	    			return true;
+	    		} else {
+	    			$this->specifyJava(); // Ask for settings
+	    		}
+	    	} else {
+	    		$auto = $this->useBridge(); // Use Bridge to get java settings
+	    		if($auto) {
+					return $auto;
+	    		} else {
+	    			$auto = $this->detSettings(); // Check if auto detected java works
+	    			if($auto) {
+	    				$this->disableExtension = true; // Disable the use of the php bridge extension
+	    				return $auto;
+	    			} else {
+						$this->specifyJava(); // Ask for settings
+	    			}
+	    		}
 				return $auto;
-    		} else {
-    			$auto = $this->detSettings(); // Check if auto detected java works
-    			if($auto) {
-    				$this->disableExtension = true; // Disable the use of the php bridge extension
-    				return $auto;
-    			} else {
-					$this->specifyJava(); // Ask for settings
-    			}
-    		}
-			return $auto;
+	    	}
     	}
+    	
+    	return $java;
     }
     
 	/**
@@ -368,6 +378,11 @@ class luceneValidation extends serviceValidation {
 				$java = $zendsys."jre".DS."bin".DS."java.exe";
 				if(file_exists($java))
 					return $java;
+	    	} else {
+	    		$java = "/usr/bin/java";
+	    		if(file_exists($java)) {
+	    			return $java;
+	    		}
 	    	}
 	    }
 	    

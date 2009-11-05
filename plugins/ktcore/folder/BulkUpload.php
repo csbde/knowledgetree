@@ -146,7 +146,7 @@ class KTBulkUploadFolderAction extends KTFolderAction {
         $fs =& new KTZipImportStorage('file');
         if(!$fs->CheckFormat()){
             $sFormats = $fs->getFormats();
-            $this->addErrorMessage(_kt("Bulk Upload failed. Archive is not an accepted format. Accepted formats are: ".$sFormats));
+            $this->addErrorMessage(sprintf(_kt("Bulk Upload failed. Archive is not an accepted format. Accepted formats are: %s") , $sFormats));
             controllerRedirect("browse", 'fFolderId=' . $this->oFolder->getID());
             exit;
         }

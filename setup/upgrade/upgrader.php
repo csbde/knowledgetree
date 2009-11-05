@@ -157,7 +157,7 @@ class Upgrader {
         	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.$name);
     	} catch (Exception $e) {
     		$util = new UpgradeUtil();
-    		$util->error("Error reading configuration file: $name");
+    		$util->error("Error reading configuration file: $e");
     		exit();
     	}
     }
@@ -431,8 +431,7 @@ class Upgrader {
 	    	if($class->runUpgrade()) { // Check if step needs to be upgraded
 				$class->setDataFromSession($className); // Set Session Information
 				$class->setPostConfig(); // Set any posted variables
-				$response = $class->upgradeStep(); // Run upgrade step
-				// TODO : Break on error response
+				$class->upgradeStep(); // Run upgrade step
 	    	}
     	} else {
     		$util = new UpgradeUtil();
