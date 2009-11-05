@@ -765,16 +765,12 @@ class InstallUtil {
 	    if($this->installEnvironment() == 'Zend') {
 	    	if(WINDOWS_OS) { // For Zend Installation only
 				$sysdir = explode(DS, SYSTEM_DIR);
-				// pop until we find Zend, this should be our Zend root :)
-				$current = array_pop($sysdir);
-				while ($current != 'Zend') {
-				    $current = array_pop($sysdir);
-				}
+				array_pop($sysdir);
+				array_pop($sysdir);
 				$zendsys = '';
 				foreach ($sysdir as $v) {
 					$zendsys .= $v.DS;
 				}
-				$zendsys .= 'Zend'.DS;
 				$bin = $zendsys."ZendServer".DS."bin".DS;
 				if(file_exists($bin))
 					return $bin;
