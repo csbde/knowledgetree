@@ -792,19 +792,37 @@ class database extends Step
     	    $winBinaries = array('php' => 'ZendServer\bin\php.exe', 'python' => 'openoffice\program\python.exe', 
     	                      'java' => 'jre\bin\java.exe', 
     	                      // since we don't know where convert is yet, let's just assume somewhere for now (manually test)
-    	                      'convert' => 'imagick\convert.exe', 
+    	                      'convert' => 'bin\imagemagick\convert.exe', 
     	                      'zip' => 'bin\zip\zip.exe', 'unzip' => 'bin\unzip\unzip.exe');
-    	    foreach ($winBinaries as $displayName => $bin) {
-    	        // what about config settings which don't yet exist?
-    	        // TODO make sure sql install/updates create these entries
-        		$updateBin = 'UPDATE config_settings c SET c.value = "'. str_replace('\\', '\\\\', SYSTEM_ROOT . $bin).'" '
+    	    foreach ($winBinaries as $displayName => $bin)
+    	    {
+    	        // ignore if we can't find the file
+    	        if (!file_exists(SYSTEM_ROOT . $bin)) continue;
+    	        
+    	        // thumbnails is a special case, being a plugin which won't have an entry on a new installation
+    	        if ($displayName == 'convert') {
+    	            // check if there is an entry, if not, insert and continue to next loop, else continue to update statement
+    	            $query = 'SELECT id FROM config_settings WHERE display_name = "' . $displayName . '"';
+    	            $this->util->dbUtilities->query($query);
+    	            $result = $this->util->dbUtilities->fetchAssoc();
+    	            if (is_null($result)) {
+    	                $query = "INSERT INTO `config_settings` "
+    	                       . "(group_name, display_name, description, item, value, default_value, type, options, can_edit) "
+    	                       . "VALUES ('externalBinary', 'convert', 'The path to the ImageMagick \"convert\" binary', 'convertPath', "
+    	                       . "'" . str_replace('\\', '\\\\', SYSTEM_ROOT . $bin) . "', 'convert', 'string', NULL, 1);";
+    	                $this->util->dbUtilities->query($query);
+    	                continue;
+    	            }
+    	        }
+    	        
+        		$updateBin = 'UPDATE config_settings c SET c.value = "'. str_replace('\\', '\\\\', SYSTEM_ROOT . $bin) . '" '
         		           . 'where c.group_name = "externalBinary" and c.display_name = "'.$displayName.'";';
                 $this->util->dbUtilities->query($updateBin);
             }
     	}
     	// if Linux?
     	else {
-    	    
+    	    // TODO python binary
     	}
     }
     
