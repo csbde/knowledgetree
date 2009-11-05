@@ -216,7 +216,7 @@ class BaseConfigDispatcher extends KTAdminDispatcher
 	    }
 
 	    // Append any text
-        $input .= isset($options['append']) ? '&nbsp;&nbsp;'.sprintf(_kt('%sappend']) , $options[) : '';
+        $input .= isset($options['append']) ? '&nbsp;&nbsp;'.sprintf(_kt('%s') , $options['append']) : '';
 
 	    return $input;
 	}
