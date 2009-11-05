@@ -332,9 +332,14 @@ class InetBulkUploadFolderAction extends KTFolderAction {
             	//var_dump($oField->getId());
                 $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
 
-                //Fix for multiselect not submitting data due to the value being an array.
+                //Fix for multiselect not submitting data due to the value not being flat.
+                $sVal = '';
                 if (is_array($val)) {
-                    $val = $val[0];
+                    foreach ($val as $v) {
+                        $sVal .= $v . ", ";
+                    }
+                    $sVal = substr($sVal, 0, strlen($sVal) - 2);
+                    $val = $sVal;
                 }
 
 				if ($oFieldset->getIsConditional())
