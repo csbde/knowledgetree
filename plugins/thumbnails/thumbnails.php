@@ -171,10 +171,6 @@ class thumbnailGenerator extends BaseProcessor
             return false;
         }
         
-        if (WINDOWS_OS) {
-            $thumbnailfile = KT_DIR . $thumbnailfile;
-        }
-        
 		// if a previous version of the thumbnail exists - delete it
 		if (file_exists($thumbnailfile)) {
 			@unlink($thumbnailfile);
@@ -182,6 +178,7 @@ class thumbnailGenerator extends BaseProcessor
         // do generation
        // if (extension_loaded('imagick')) {
             $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
+            // windows path may contain spaces
             if (WINDOWS_OS) {
                 $pathConvert = '"' . $pathConvert . '"';
             }
@@ -220,10 +217,6 @@ class ThumbnailViewlet extends KTDocumentViewlet {
         global $default;
 		$varDir = $default->internalVarDirectory;
 		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
-		
-		if (WINDOWS_OS) {
-            $thumbnailfile = KT_DIR . $thumbnailfile;
-        }
 
 		// if the thumbnail doesn't exist try to create it
 		if (!file_exists($thumbnailfile)){
