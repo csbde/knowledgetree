@@ -787,7 +787,7 @@ class database extends Step
 	    	}
     	}
     	
-    	// if Windows, hard code (relative to SYSTEM_ROOT) where we expect the Zend MSI installer to have placed them
+    	// if Windows, attempt to insert full paths to binaries
     	if (WINDOWS_OS) {
     	    $winBinaries = array('php' => 'ZendServer\bin\php.exe', 'python' => 'openoffice\program\python.exe', 
     	                      'java' => 'jre\bin\java.exe', 
