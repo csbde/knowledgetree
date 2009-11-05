@@ -6,11 +6,11 @@
 	that things are still set up correctly.</p>
 	
 	<?php
-	if($errors || $warnings){
+//	if($errors || $warnings){
 	    echo '<div>'
 	       . '<a href="http://wiki.knowledgetree.com/Web_Based_Installer#Post_Install" target="_blank">'
 	       . 'Click Here for help on overcoming post install issues</a></div><br/>';
-	}
+//	}
 	?>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
 	

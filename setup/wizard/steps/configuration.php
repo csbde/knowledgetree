@@ -378,15 +378,7 @@ class configuration extends Step
      */
     private function getServerInfo()
     {
-//    	$iis = false;
         $script = $_SERVER['SCRIPT_NAME'];
-        /*
-        $file_system_root = $_SERVER['DOCUMENT_ROOT'];
-        if(preg_match('/inetpub/', $file_system_root)) {
-        	$iis = true;
-        	$file_system_root = $_SERVER['APPL_PHYSICAL_PATH'];
-        }
-        */
         $file_system_root = realpath(SYSTEM_DIR);
         $host = $_SERVER['SERVER_NAME'];
         $port = $_SERVER['SERVER_PORT'];
@@ -394,17 +386,10 @@ class configuration extends Step
         $pos = strpos($script, '/setup/wizard/');
         $root_url = substr($script, 0, $pos);
         $root_url = (isset($_POST['root_url'])) ? $_POST['root_url'] : $root_url;
-//        echo $file_system_root;
-//        if($iis) {
         $file_system_root = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root;
-//        } else {
-//			substr($root_url, 1, strlen($root_url))
-//        	$file_system_root = (isset($_POST['file_system_root'])) ? $_POST['file_system_root'] : $file_system_root.$root_url;
-//        }
         $host = (isset($_POST['host'])) ? $_POST['host'] : $host;
         $port = (isset($_POST['port'])) ? $_POST['port'] : $port;
         $ssl_enabled = (isset($_POST['ssl_enabled'])) ? $_POST['ssl_enabled'] : $ssl_enabled;
-
         $server = array();
         $server['root_url'] = array('name' => 'Root Url', 'setting' => 'rootUrl', 'where' => 'db', 'value' => $root_url);
         $server['file_system_root'] = array('name' => 'File System Root', 'section' => 'KnowledgeTree', 'setting' => 'fileSystemRoot', 'where' => 'file', 'value' => $file_system_root);
