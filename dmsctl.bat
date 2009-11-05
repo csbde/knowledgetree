@@ -31,6 +31,7 @@ echo start	- start the services
 echo stop	- stop the services
 echo restart	- restart the services
 echo. 
+echo install	- install the services
 echo uninstall	- uninstall the services
 echo. 
 
@@ -61,6 +62,13 @@ echo Uninstalling services
 sc delete %LuceneServiceName%
 sc delete %SchedulerServiceName%
 sc delete %OpenofficeServiceName%
+goto end
+
+:install
+echo Installing services
+call "%INSTALL_PATH%\var\bin\officeinstall.bat"
+call "%INSTALL_PATH%\var\bin\schedulerinstall.bat"
+call "%INSTALL_PATH%\var\bin\luceneinstall.bat"
 goto end
 
 :end

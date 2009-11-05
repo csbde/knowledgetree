@@ -118,8 +118,6 @@ class unixScheduler extends unixService {
 		$content .= "done";
 		@fwrite($fp, $content);
 		@fclose($fp);
-		@chmod($fLoc, '0777');
-		$this->util->pexec("chmod 777 $fLoc");
 	}
 	
 	function install() {

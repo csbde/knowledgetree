@@ -395,6 +395,13 @@ class windowsLucene extends windowsService {
 		return $this->javaJVM;
 	}
 	
+	private function writeLuceneInstall($cmd) {
+		$luceneInstallFile = SYS_VAR_DIR."bin".DS."luceneinstall.bat";
+		$fp = fopen($luceneInstallFile, "w+");
+		fwrite($fp, $cmd);
+		fclose($fp);
+	}
+
 	/**
 	* Install Lucene Service
 	*
@@ -415,7 +422,8 @@ class windowsLucene extends windowsService {
             		echo "$cmd<br/>";
             		return false;
             	}
-				$response = $this->util->pexec($cmd);
+            	$this->writeLuceneInstall($cmd);
+				//$response = $this->util->pexec($cmd);
 				return $response;
 			}
 			return $state;

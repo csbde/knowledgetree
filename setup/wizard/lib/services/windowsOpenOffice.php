@@ -198,6 +198,13 @@ class windowsOpenOffice extends windowsService {
 		return $this->options;
 	}
 	
+	private function writeOfficeInstall($cmd) {
+		$officeInstallFile = SYS_VAR_DIR."bin".DS."officeinstall.bat";
+		$fp = fopen($officeInstallFile, "w+");
+		fwrite($fp, $cmd);
+		fclose($fp);
+	}
+	
     public function install() {
     	$status = $this->status();
     	if($status == '') {
@@ -208,7 +215,8 @@ class windowsOpenOffice extends windowsService {
 	        		echo "$cmd<br/>";
 	        		return false;
 	        	}
-	            $response = $this->util->pexec($cmd);
+	        	$this->writeOfficeInstall($cmd);
+	            //$response = $this->util->pexec($cmd);
 	            return $response;
     		}
     		return $status;

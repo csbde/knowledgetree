@@ -86,7 +86,7 @@ class windowsScheduler extends windowsService {
 	* @return void
  	*/
 	function load() {
-		$this->setSchedulerDIR($this->varDir."bin");
+		$this->setSchedulerDIR(SYS_VAR_DIR."bin");
 		$this->setSchedulerScriptPath("taskrunner.bat");
 		$this->setSchedulerSource("schedulerService.php");
 		
@@ -102,7 +102,7 @@ class windowsScheduler extends windowsService {
  	*/
 	private function setSchedulerDIR($schedulerDIR) {
 		if(!file_exists($schedulerDIR)) {
-			@mkdir($schedulerDIR);
+			mkdir($schedulerDIR);
 		}
 		$this->schedulerDir = $schedulerDIR;
 	}
@@ -185,15 +185,19 @@ class windowsScheduler extends windowsService {
 		if(DEBUG) { // Check if bin is readable and writable
 			echo "Attempt to Create {$this->getSchedulerDir()}\\taskrunner.bat<br>";
 		}
-		if(is_readable($this->varDir."bin") && is_writable($this->varDir."bin")) {
-			$fp = @fopen($this->getSchedulerDir().""."\\taskrunner.bat", "w+");
-			$content = "@echo off \n";
-			$content .= "\"".$this->util->useZendPhp()."php.exe\" "."\"{$this->getSchedulerSource()}\"";
-			@fwrite($fp, $content);
-			@fclose($fp);
-		} else {
-			echo 'Could not write task runner<br>'; // TODO: Should not reach this point
-		}
+		$taskrunner = SYS_VAR_DIR."bin".DS."taskrunner.bat";
+		$fp = fopen($taskrunner, "w+");
+		$content = "@echo off \n";
+		$content .= "\"".$this->util->useZendPhp()."php.exe\" "."\"{$this->getSchedulerSource()}\"";
+		fwrite($fp, $content);
+		fclose($fp);
+	}
+	
+	private function writeSchedulerInstall($cmd) {
+		$schedulerInstallFile = SYS_VAR_DIR."bin".DS."schedulerinstall.bat";
+		$fp = fopen($schedulerInstallFile, "w+");
+		fwrite($fp, $cmd);
+		fclose($fp);
 	}
 	
 	/**
@@ -227,7 +231,7 @@ class windowsScheduler extends windowsService {
 		$state = $this->status();
 		if($state == '') {
 			$this->writeTaskRunner();
-            if (function_exists('win32_create_service')) { // TODO what if it does not exist? check how the dmsctl.bat does this
+            //if (function_exists('win32_create_service')) { // TODO what if it does not exist? check how the dmsctl.bat does this
             	if(DEBUG) {
             		echo '<pre>';
             		print_r(array('service' => $this->name, 'display' => $this->name, 'path' => $this->getSchedulerScriptPath()));
@@ -237,13 +241,15 @@ class windowsScheduler extends windowsService {
     	            echo '</pre>';
             		return ;
             	}
+            	/*
     			$response = win32_create_service(array(
     	            'service' => $this->name,
     	            'display' => $this->name,
     	            'path' => $this->getSchedulerScriptPath()
     	            ));
     			return $response;
-            } else { // Attempt to use the winserv
+    			*/
+            //} else { // Attempt to use the winserv
             	// TODO: Add service using winserv
             	$this->setWinservice();
             	$this->setOptions();
@@ -252,9 +258,10 @@ class windowsScheduler extends windowsService {
             		echo "$cmd<br/>";
             		return false;
             	}
-            	$response = $this->util->pexec($cmd);
-            	return $response;
-            }
+            	//$response = $this->util->pexec($cmd);
+            	//return $response;
+            //}
+            $this->writeSchedulerInstall($cmd);
 		}
 		return $state;
 	}
