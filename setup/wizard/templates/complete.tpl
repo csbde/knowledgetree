@@ -16,10 +16,22 @@
 	
 	<?php if(!$servicesValidation) { ?>
 		<h3>Services</h3>
-		Run the dmsctl.sh script in KnowledgeTree source root from a terminal.<br/>
-		<i>cd KnowledgeTree_Installation_Folder<br/>
-		./dmsctl.sh start
-		</i>
+		The KnowledgeTree services need to be started to allow for optimal functioning of the search, indexing and pdf generation.
+		<?php if(WINDOWS_OS) { ?>
+		To start the services, execute the dmsctl.sh shell script in the KnowledgeTree directory from a terminal.<br/><br/>
+		<?php } else { ?>
+		To start the services, execute the dmsctl.bat batch file in the KnowledgeTree directory from a command prompt, run as administrator.<br/><br/>
+		<?php } ?>
+		<p class="disclaimer">
+		<?php if(WINDOWS_OS) { ?>
+		cd KnowledgeTree_Installation_Folder<br/>
+		dmsctl.bat start
+		<?php } else { ?>
+		cd /usr/share/knowledgetree-ce<br/>
+		sudo ./dmsctl.sh start
+		<?php } ?>
+		</p>
+		
 		<br/>
 	<?php } ?>
 	<!--	Paths and Permissions	-->

@@ -41,7 +41,7 @@
 <!--Content-->
 	<div id="step_content_configuration" class="step">
 		<?php if(!$alreadyInstalled) { ?>
-			<?php if($validation) { ?>
+			<?php if($servicesValidation) { ?>
 				<?php if($javaExeError) { ?>
 					Specify the location of your Java executable
 					&nbsp;&nbsp;&nbsp;
@@ -171,7 +171,7 @@
 			All services are already installed.
 <!--			</p>-->
 		<?php } ?>
-		<?php if($validation) { ?>
+		<?php if($servicesValidation) { ?>
 		<h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services Check</h3>
 		<?php if($silent) { ?>
 			<?php if($serviceCheck != 'tick') {
