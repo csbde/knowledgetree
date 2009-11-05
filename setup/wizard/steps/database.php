@@ -790,9 +790,8 @@ class database extends Step
     	// if Windows, attempt to insert full paths to binaries
     	if (WINDOWS_OS) {
     	    $winBinaries = array('php' => 'ZendServer\bin\php.exe', 'python' => 'openoffice\program\python.exe', 
-    	                      'java' => 'jre\bin\java.exe', 
-    	                      // since we don't know where convert is yet, let's just assume somewhere for now (manually test)
-    	                      'convert' => 'bin\imagemagick\convert.exe', 
+    	                      'java' => 'jre\bin\java.exe', 'convert' => 'bin\imagemagick\convert.exe', 
+    	                      'df' => 'bin//df.exe', 
     	                      'zip' => 'bin\zip\zip.exe', 'unzip' => 'bin\unzip\unzip.exe');
     	    foreach ($winBinaries as $displayName => $bin)
     	    {
@@ -822,7 +821,8 @@ class database extends Step
     	}
     	// if Linux?
     	else {
-    	    // TODO python binary
+    	    // TODO python binary?
+    	    // TODO other binaries?
     	}
     }
     
