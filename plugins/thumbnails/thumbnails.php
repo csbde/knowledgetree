@@ -152,17 +152,17 @@ class thumbnailGenerator extends BaseProcessor
             $pdfFile = $pdfDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
 	    }else{
     	    $pdfDir = $default->pdfDirectory;
-            $pdfFile = $pdfDir .'/'. $this->document->iId.'.pdf';
+            $pdfFile = $pdfDir .DIRECTORY_SEPARATOR. $this->document->iId.'.pdf';
 	    }
 
-        $thumbnaildir = $default->internalVarDirectory.'/thumbnails';
-        $thumbnailfile = $thumbnaildir.'/'.$this->document->iId.'.jpg';
+        $thumbnaildir = $default->internalVarDirectory.DIRECTORY_SEPARATOR.'thumbnails';
+        $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
 
         //if thumbail dir does not exist, generate one and add an index file to block access
         if (!file_exists($thumbnaildir)) {
         	 mkdir($thumbnaildir, 0755);
-        	 touch($thumbnaildir.'/index.html');
-        	 file_put_contents($thumbnaildir.'/index.html', 'You do not have permission to access this directory.');
+        	 touch($thumbnaildir.DIRECTORY_SEPARATOR.'index.html');
+        	 file_put_contents($thumbnaildir.DIRECTORY_SEPARATOR.'index.html', 'You do not have permission to access this directory.');
         }
 
         // if there is no pdf that exists - hop out
@@ -216,7 +216,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
         // Check for the thumbnail
         global $default;
 		$varDir = $default->internalVarDirectory;
-		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
+		$thumbnailfile = $varDir . DIRECTORY_SEPARATOR . 'thumbnails'. DIRECTORY_SEPARATOR .$documentId.'.jpg';
 
 		// if the thumbnail doesn't exist try to create it
 		if (!file_exists($thumbnailfile)){
@@ -251,7 +251,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     public function get_width($documentId){
     	global $default;
     	$varDir = $default->internalVarDirectory;
-		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
+		$thumbnailfile = $varDir . DIRECTORY_SEPARATOR.'thumbnails'.DIRECTORY_SEPARATOR.$documentId.'.jpg';
 		$size = getimagesize($thumbnailfile);
 		return $size[0];
     }
