@@ -17,7 +17,7 @@
 	<?php if(!$servicesValidation) { ?>
 		<h3>Services</h3>
 		The KnowledgeTree services need to be started to allow for optimal functioning of the search, indexing and pdf generation.
-		<?php if(WINDOWS_OS) { ?>
+		<?php if(!WINDOWS_OS) { ?>
 		To start the services, execute the dmsctl.sh shell script in the KnowledgeTree directory from a terminal.<br/><br/>
 		<?php } else { ?>
 		To start the services, execute the dmsctl.bat batch file in the KnowledgeTree directory from a command prompt, run as administrator.<br/><br/>
