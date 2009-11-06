@@ -302,7 +302,7 @@ firstrun() {
         	fi
 	fi
 
-	touch $INSTALL_PATH/var/bin/.dmsinit.lock
+	touch $INSTALL_PATH/var/bin/dmsinit.lock
 
 	$ZEND_DIR/bin/zendctl.sh restart
 }
@@ -320,7 +320,7 @@ if [ "x$3" != "x" ]; then
 fi
 
 # Are we running for first time
-[[ -e $INSTALL_PATH/var/bin/.dmsinit.lock ]] || firstrun
+[[ -e $INSTALL_PATH/var/bin/dmsinit.lock ]] || firstrun
 
 case $1 in
        help)   help
