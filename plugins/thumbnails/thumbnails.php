@@ -180,9 +180,13 @@ class thumbnailGenerator extends BaseProcessor
             $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
             // windows path may contain spaces
             if (WINDOWS_OS) {
-                $pathConvert = '"' . $pathConvert . '"';
+				$cmd = "\"{$pathConvert}\" -size 200x200 \"{$pdfFile}[0]\" -resize 200x200 \"$thumbnailfile\"";
             }
-        	$result = KTUtil::pexec("{$pathConvert} -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile");
+			else {
+				$cmd = "{$pathConvert} -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile";
+			}
+			
+        	$result = KTUtil::pexec($cmd);
         	return true;
         //}else{
         	//$default->log->debug('Thumbnail Generator Plugin: Imagemagick not installed, cannot generate a thumbnail');
