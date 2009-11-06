@@ -158,10 +158,7 @@ class thumbnailGenerator extends BaseProcessor
 		$pdfFile = str_replace('/', '\\', $pdfFile);
 		
         $thumbnaildir = $default->internalVarDirectory.DIRECTORY_SEPARATOR.'thumbnails';
-		if (!KTUtil::isAbsolutePath($thumbnaildir)) {
-            $thumbnaildir = KT_DIR . $thumbnaildir;
-        }
-        $thumbnaildir = str_replace('/', '\\', $thumbnaildir);
+		$thumbnaildir = str_replace('/', '\\', $thumbnaildir);
         $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
 
         //if thumbail dir does not exist, generate one and add an index file to block access
@@ -237,10 +234,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 
 			$thumbcheck = $thumbnailfile;
             // if it still doesn't exist, return an empty string
-			if (!KTUtil::isAbsolutePath($thumbcheck)) {
-				$thumbcheck = KT_DIR . $thumbcheck;
-			}
-            if (!file_exists($thumbcheck)) {
+			if (!file_exists($thumbcheck)) {
                 return '';
             }
 		}
