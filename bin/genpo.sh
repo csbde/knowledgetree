@@ -6,19 +6,22 @@ cd ..
 pwd
 
 #pull in comm stuff
-cp -R ../commercial-plugins/alerts plugins/commercial/
-cp -R ../commercial-plugins/conditional-metadata plugins/commercial/
-cp -R ../commercial-plugins/custom-numbering plugins/commercial/
-cp -R ../commercial-plugins/documentcomparison plugins/commercial/
-cp -R ../commercial-plugins/network plugins/commercial/
-cp -R ../commercial-plugins/professional-reporting plugins/commercial/
-cp -R ../commercial-plugins/shortcuts plugins/commercial/
-cp -R ../commercial-plugins/wintools plugins/commercial/
-cp -R ../commercial-plugins/guidInserter plugins/commercial/
-cp -R ../commercial-plugins/clienttools plugins/commercial/
-cp -R ../commercial-plugins/electronic-signatures plugins/commercial/
-cp -R ../commercial-plugins/officeaddin plugins/commercial/
-cp -R ../ktofficeAddIn/ktoffice ktoffice
+#cp -R ../commercial-plugins/alerts plugins/commercial/
+#cp -R ../commercial-plugins/conditional-metadata plugins/commercial/
+#cp -R ../commercial-plugins/custom-numbering plugins/commercial/
+#cp -R ../commercial-plugins/documentcomparison plugins/commercial/
+#cp -R ../commercial-plugins/network plugins/commercial/
+#cp -R ../commercial-plugins/professional-reporting plugins/commercial/
+#cp -R ../commercial-plugins/shortcuts plugins/commercial/
+#cp -R ../commercial-plugins/wintools plugins/commercial/
+#cp -R ../commercial-plugins/guidInserter plugins/commercial/
+#cp -R ../commercial-plugins/clienttools plugins/commercial/
+#cp -R ../commercial-plugins/electronic-signatures plugins/commercial/
+#cp -R ../commercial-plugins/officeaddin plugins/commercial/
+#cp -R ../ktofficeAddIn/ktoffice ktoffice
+
+cp -R ../commercial-plugins plugins/commercial
+cp -R ../ktofficeaddin/ktoffice ktoffice
 
 rm -f i18n/templates.c
 find resources -name "*.js" | sort | python ./bin/jsi18n.py > templates/ktcore/javascript_i18n.smarty
@@ -33,7 +36,7 @@ cd ../../
 
 #remove comm stuff again
 rm -rf plugins/commercial
-rm -rf ktoffice 
+rm -rf ktoffice
 
 #alerts  conditional-metadata  custom-numbering  documentcomparison  i18n  network  professional-reporting  shortcuts  wintools guidInserter clienttools electronic-signatures officeaddin
 
