@@ -195,8 +195,10 @@ class iniUtilities {
     }
 
     function updateItem($addSection, $addItem, $value) {
-
-        $this->cleanArray[$addSection][$addItem] = stripcslashes($value);
+		if(WINDOWS_OS)
+        	$this->cleanArray[$addSection][$addItem] = $value;
+        else 
+        	$this->cleanArray[$addSection][$addItem] = stripcslashes($value);
         return true;
     }
 

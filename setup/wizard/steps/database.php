@@ -797,11 +797,9 @@ class database extends Step
     	}
     	// if Linux?
     	else {
-    	    // TODO python binary?
-    	    // Python
 	    	$services = $this->util->getDataFromSession('services');
 	    	$binaries = $services['binaries'];
-    	    $python = "/usr/bin/python";
+    	    $python = "/usr/bin/python"; // Python default location
     	    if(file_exists($python)) {
     	    	$binaries['python'] = $python;
     	    }
