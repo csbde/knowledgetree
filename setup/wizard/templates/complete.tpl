@@ -25,6 +25,7 @@
 		<p class="disclaimer">
 		<?php if(WINDOWS_OS) { ?>
 		cd KnowledgeTree_Installation_Folder<br/>
+		dmsctl.bat install
 		dmsctl.bat start
 		<?php } else { ?>
 		cd /usr/share/knowledgetree-ce<br/>

@@ -776,17 +776,6 @@ class database extends Step
     }
     
     private function writeBinaries() {
-    	$services = $this->util->getDataFromSession('services');
-    	$binaries = $services['binaries'];
-    	if($binaries) {
-	    	foreach ($binaries as $k=>$bin) {
-	    		if($k != 1) {
-	    			$updateBin = 'UPDATE config_settings c SET c.value = "'.str_replace('\\', '\\\\', $bin).'" where c.group_name = "externalBinary" and c.display_name = "'.$k.'";';
-					$this->util->dbUtilities->query($updateBin);
-	    		}
-	    	}
-    	}
-    	
     	// if Windows, attempt to insert full paths to binaries
     	if (WINDOWS_OS) {
     	    $winBinaries = array('php' => 'ZendServer\bin\php.exe', 'python' => 'openoffice\program\python.exe', 
@@ -822,7 +811,21 @@ class database extends Step
     	// if Linux?
     	else {
     	    // TODO python binary?
-    	    // TODO other binaries?
+    	    // Python
+	    	$services = $this->util->getDataFromSession('services');
+	    	$binaries = $services['binaries'];
+    	    $python = "/usr/bin/python";
+    	    if(file_exists($python)) {
+    	    	$binaries['python'] = $python;
+    	    }
+	    	if($binaries) {
+		    	foreach ($binaries as $k=>$bin) {
+		    		if($k != 1) {
+		    			$updateBin = 'UPDATE config_settings c SET c.value = "'.str_replace('\\', '\\\\', $bin).'" where c.group_name = "externalBinary" and c.display_name = "'.$k.'";';
+						$this->util->dbUtilities->query($updateBin);
+		    		}
+		    	}
+	    	}
     	}
     }
     
