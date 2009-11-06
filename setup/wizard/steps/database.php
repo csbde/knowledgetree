@@ -778,14 +778,17 @@ class database extends Step
     private function writeBinaries() {
     	// if Windows, attempt to insert full paths to binaries
     	if (WINDOWS_OS) {
-    	    $winBinaries = array('php' => 'ZendServer\bin\php.exe', 'python' => 'openoffice\program\python.exe', 
-    	                      'java' => 'jre\bin\java.exe', 'convert' => 'bin\imagemagick\convert.exe', 
-    	                      'df' => 'bin\gnuwin32\df.exe', 
-    	                      'zip' => 'bin\zip\zip.exe', 'unzip' => 'bin\unzip\unzip.exe');
+    	    $winBinaries = array('php' => array(0 => 'externalBinary', 1 => 'ZendServer\bin\php.exe'), 
+    	    				  	 'python' => array(0 => 'externalBinary', 1 => 'openoffice\program\python.exe'), 
+    	                      	 'java' => array(0 => 'externalBinary', 1 => 'jre\bin\java.exe'), 
+    	                      	 'convert' => array(0 => 'externalBinary', 1 => 'bin\imagemagick\convert.exe'), 
+    	                      	 'df' => array(0 => 'externalBinary', 1 => 'bin\gnuwin32\df.exe'), 
+    	                      	 'zip' => array(0 => 'export', 1 => 'bin\zip\zip.exe'), 
+    	                      	 'unzip' => array(0 => 'import', 1 => 'bin\unzip\unzip.exe'));
     	    foreach ($winBinaries as $displayName => $bin)
     	    {
-    	        // ignore if we can't find the file
-    	        if (!file_exists(SYSTEM_ROOT . $bin)) continue;
+    	        // continue without attempting to set the path if we can't find the file in the specified location
+    	        if (!file_exists(SYSTEM_ROOT . $bin[1])) continue;
     	        
     	        // thumbnails is a special case, being a plugin which won't have an entry on a new installation
     	        if ($displayName == 'convert') {
@@ -796,15 +799,15 @@ class database extends Step
     	            if (is_null($result)) {
     	                $query = "INSERT INTO `config_settings` "
     	                       . "(group_name, display_name, description, item, value, default_value, type, options, can_edit) "
-    	                       . "VALUES ('externalBinary', 'convert', 'The path to the ImageMagick \"convert\" binary', 'convertPath', "
-    	                       . "'" . str_replace('\\', '\\\\', SYSTEM_ROOT . $bin) . "', 'convert', 'string', NULL, 1);";
+    	                       . "VALUES ('" . $bin[0] . "', 'convert', 'The path to the ImageMagick \"convert\" binary', 'convertPath', "
+    	                       . "'" . str_replace('\\', '\\\\', SYSTEM_ROOT . $bin[1]) . "', 'convert', 'string', NULL, 1);";
     	                $this->util->dbUtilities->query($query);
     	                continue;
     	            }
     	        }
     	        
-        		$updateBin = 'UPDATE config_settings c SET c.value = "'. str_replace('\\', '\\\\', SYSTEM_ROOT . $bin) . '" '
-        		           . 'where c.group_name = "externalBinary" and c.display_name = "'.$displayName.'";';
+        		$updateBin = 'UPDATE config_settings c SET c.value = "'. str_replace('\\', '\\\\', SYSTEM_ROOT . $bin[1]) . '" '
+        		           . 'where c.group_name = "' . $bin[0] . '" and c.display_name = "'.$displayName.'";';
                 $this->util->dbUtilities->query($updateBin);
             }
     	}
