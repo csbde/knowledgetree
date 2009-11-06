@@ -154,8 +154,14 @@ class thumbnailGenerator extends BaseProcessor
     	    $pdfDir = $default->pdfDirectory;
             $pdfFile = $pdfDir .DIRECTORY_SEPARATOR. $this->document->iId.'.pdf';
 	    }
-
+		
+		$pdfFile = str_replace('/', '\\', $pdfFile);
+		
         $thumbnaildir = $default->internalVarDirectory.DIRECTORY_SEPARATOR.'thumbnails';
+		if (!KTUtil::isAbsolutePath($thumbnaildir)) {
+            $thumbnaildir = KT_DIR . $thumbnaildir;
+        }
+        $thumbnaildir = str_replace('/', '\\', $thumbnaildir);
         $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
 
         //if thumbail dir does not exist, generate one and add an index file to block access
@@ -179,6 +185,7 @@ class thumbnailGenerator extends BaseProcessor
        // if (extension_loaded('imagick')) {
             $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
             // windows path may contain spaces
+
             if (WINDOWS_OS) {
 				$cmd = "\"{$pathConvert}\" -size 200x200 \"{$pdfFile}[0]\" -resize 200x200 \"$thumbnailfile\"";
             }
@@ -220,7 +227,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
         // Check for the thumbnail
         global $default;
 		$varDir = $default->internalVarDirectory;
-		$thumbnailfile = $varDir . DIRECTORY_SEPARATOR . 'thumbnails'. DIRECTORY_SEPARATOR .$documentId.'.jpg';
+		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
 
 		// if the thumbnail doesn't exist try to create it
 		if (!file_exists($thumbnailfile)){
@@ -228,8 +235,12 @@ class ThumbnailViewlet extends KTDocumentViewlet {
             $thumbnailer->setDocument($this->oDocument);
             $thumbnailer->processDocument();
 
+			$thumbcheck = $thumbnailfile;
             // if it still doesn't exist, return an empty string
-            if (!file_exists($thumbnailfile)) {
+			if (!KTUtil::isAbsolutePath($thumbcheck)) {
+				$thumbcheck = KT_DIR . $thumbcheck;
+			}
+            if (!file_exists($thumbcheck)) {
                 return '';
             }
 		}
@@ -255,7 +266,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     public function get_width($documentId){
     	global $default;
     	$varDir = $default->internalVarDirectory;
-		$thumbnailfile = $varDir . DIRECTORY_SEPARATOR.'thumbnails'.DIRECTORY_SEPARATOR.$documentId.'.jpg';
+		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
 		$size = getimagesize($thumbnailfile);
 		return $size[0];
     }

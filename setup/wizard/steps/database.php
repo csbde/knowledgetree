@@ -790,22 +790,6 @@ class database extends Step
     	        // continue without attempting to set the path if we can't find the file in the specified location
     	        if (!file_exists(SYSTEM_ROOT . $bin[1])) continue;
     	        
-    	        // thumbnails is a special case, being a plugin which won't have an entry on a new installation
-    	        if ($displayName == 'convert') {
-    	            // check if there is an entry, if not, insert and continue to next loop, else continue to update statement
-    	            $query = 'SELECT id FROM config_settings WHERE display_name = "' . $displayName . '"';
-    	            $this->util->dbUtilities->query($query);
-    	            $result = $this->util->dbUtilities->fetchAssoc();
-    	            if (is_null($result)) {
-    	                $query = "INSERT INTO `config_settings` "
-    	                       . "(group_name, display_name, description, item, value, default_value, type, options, can_edit) "
-    	                       . "VALUES ('" . $bin[0] . "', 'convert', 'The path to the ImageMagick \"convert\" binary', 'convertPath', "
-    	                       . "'" . str_replace('\\', '\\\\', SYSTEM_ROOT . $bin[1]) . "', 'convert', 'string', NULL, 1);";
-    	                $this->util->dbUtilities->query($query);
-    	                continue;
-    	            }
-    	        }
-    	        
         		$updateBin = 'UPDATE config_settings c SET c.value = "'. str_replace('\\', '\\\\', SYSTEM_ROOT . $bin[1]) . '" '
         		           . 'where c.group_name = "' . $bin[0] . '" and c.display_name = "'.$displayName.'";';
                 $this->util->dbUtilities->query($updateBin);
