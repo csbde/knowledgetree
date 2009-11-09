@@ -446,6 +446,7 @@ class configuration extends Step
 			$dirs = $this->getFromConfigPath(); // Store contents
         }
         $varDirectory = $fileSystemRoot . DS . 'var';
+
         foreach ($dirs as $key => $dir){
             $path = (isset($_POST[$dir['setting']])) ? $_POST[$dir['setting']] : $dir['path'];
 
@@ -456,18 +457,17 @@ class configuration extends Step
             	$path = preg_replace('/\//', '\\',$path);
             	$dirs[$key]['path'] = $path;
             	$path = $class = strtolower(substr($path,0,1)).substr($path,1); // Damn you windows
-            	if(isset($dir['file']))
-            		$class = $this->util->checkPermission($path, $dir['create'], true);
-            	else 
+            	if(isset($dir['file'])) {
+            		$class = $this->util->checkPermission($path, false, true);
+            	} else {
             		$class = $this->util->checkPermission($path, $dir['create']);
-			if($class['class'] != 'tick') {
-				$this->temp_variables['paths_perms'] = $class['class'];
-				$this->done = false;
-				$this->error[] = "Path error";
-			}
+            	}
 			if(isset($class['msg'])) {
-				$this->done = false;
-				$this->error[] = $class['msg'];
+				if($class['class'] != 'tick') {
+					$this->temp_variables['paths_perms'] = $class['class'];
+					$this->done = false;
+					$this->error[] = $class['msg'];
+				}
 			}
             $dirs[$key] = array_merge($dirs[$key], $class);
         }

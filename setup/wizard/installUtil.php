@@ -272,34 +272,27 @@ class InstallUtil {
         $write = 'Directory not writable';
         $fwrite = 'File not writable';
         $ret = array('class' => 'cross');
-
-        if(!file_exists($dir)){
+        if(!file_exists($dir)) {
             if($create === false){
-                $this->done = false;
                 $ret['msg'] = $exist;
                 return $ret;
             }
             $par_dir = dirname($dir);
             if(!file_exists($par_dir)){
-                $this->done = false;
                 $ret['msg'] = $exist;
                 return $ret;
             }
             if(!is_writable($par_dir)){
-                $this->done = false;
                 $ret['msg'] = $exist;
                 return $ret;
             }
             mkdir($dir, 0755);
         }
-
-        if(is_writable($dir)){
+        if(is_writable($dir)) {
             $ret['class'] = 'tick';
 
             return $ret;
         }
-
-        $this->done = false;
         if(!$file) {
         	$ret['msg'] = $write;
         } else {
@@ -801,7 +794,7 @@ class InstallUtil {
 		while (!feof($file_handle) ) {
 			$line_of_text = fgets($file_handle);
 			$parts = explode('=', $line_of_text);
-			$fileLines[] = $line_of_text;
+			$fileLines[] = trim($line_of_text);
 		}
 		fclose($file_handle);
 		return $fileLines;
