@@ -734,7 +734,7 @@ class database extends Step
     }
 
 	private function parse_mysql_dump($url) {
-	    $handle = @fopen($url, "r");
+	    $handle = fopen($url, "r");
 	    $query = "";
 		if ($handle) {
 			while (!feof($handle)) {
@@ -744,7 +744,7 @@ class database extends Step
      					$query = '';
     				}
 			}
-			@fclose($handle);
+			fclose($handle);
 		}
 	    
 		return true;

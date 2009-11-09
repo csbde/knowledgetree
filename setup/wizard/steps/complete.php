@@ -54,7 +54,6 @@ class complete extends Step {
     private $database_check = 'tick';
     private $migrate_check = false;
     public $silent = true;
-    private $install_environment = 'Zend';
     private $servicesValidation = false;
     
     function doStep() {
@@ -68,7 +67,6 @@ class complete extends Step {
         $this->checkDb(); // check database
         $this->checkServices(); // check services
         $this->checkInstallType();// Set silent mode variables
-        $this->install_environment = $this->util->installEnvironment(); // Determine installation environment
         $this->storeSilent();// Set silent mode variables
     }
     
@@ -239,7 +237,6 @@ class complete extends Step {
     	$this->temp_variables['privileges_check'] = $this->privileges_check;
     	$this->temp_variables['database_check'] = $this->database_check;
     	$this->temp_variables['migrate_check'] = $this->migrate_check;
-    	$this->temp_variables['install_environment'] = $this->install_environment;
     	$this->temp_variables['servicesValidation'] = $this->servicesValidation;
     }
 }

@@ -108,7 +108,7 @@ class unixScheduler extends unixService {
 	
 	function writeSchedulerTask() {
 		$fLoc = $this->getSchedulerDir().$this->getSchedulerSource();
-		$fp = @fopen($fLoc, "w+");
+		$fp = fopen($fLoc, "w+");
 		$content = "#!/bin/sh\n";
 		$content .= "cd ".SYS_BIN_DIR."\n";
 		$content .= "while true; do\n";
@@ -116,8 +116,8 @@ class unixScheduler extends unixService {
 		$content .= "{$this->phpCli} -Cq scheduler.php\n";
 		$content .= "sleep 30\n";
 		$content .= "done";
-		@fwrite($fp, $content);
-		@fclose($fp);
+		fwrite($fp, $content);
+		fclose($fp);
 	}
 	
 	function install() {

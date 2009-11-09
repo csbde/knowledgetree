@@ -25,7 +25,7 @@
 		<p class="disclaimer">
 		<?php if(WINDOWS_OS) { ?>
 		cd KnowledgeTree_Installation_Folder<br/>
-		dmsctl.bat install
+		dmsctl.bat install<br/>
 		dmsctl.bat start
 		<?php } else { ?>
 		cd /usr/share/knowledgetree-ce<br/>
@@ -162,13 +162,5 @@
     <?php } else { ?>
     	<a href="../../login.php" class="back button_next" style="width:50px;" onclick="javascript:{w.clearSessions();}">Finish</a>
     <?php } ?>
-    <?php
-        if ($install_environment == 'Zend') {
-        	?>
-<!--        	<input type="submit" name="type" value="Zend Server Configuration" class="button_previous"/>-->
-<!--            <a href="<?php //echo "http://".$_SERVER['HTTP_HOST'].":10081/ZendServer/Index"; ?>" class="back" target="_blank" onclick="javascript:{w.clearSessions();}">Zend Server Configuration</a>-->
-            <?php
-        }
-    ?>
 </form>
 <?php if (AJAX) { echo $html->js('form.js'); } ?>
