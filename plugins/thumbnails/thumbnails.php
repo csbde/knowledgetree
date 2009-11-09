@@ -155,12 +155,21 @@ class thumbnailGenerator extends BaseProcessor
             $pdfFile = $pdfDir .DIRECTORY_SEPARATOR. $this->document->iId.'.pdf';
 	    }
 		
-		$pdfFile = str_replace('/', '\\', $pdfFile);
-		
         $thumbnaildir = $default->internalVarDirectory.DIRECTORY_SEPARATOR.'thumbnails';
-		$thumbnaildir = str_replace('/', '\\', $thumbnaildir);
-        $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
 
+		if (stristr(PHP_OS,'WIN')) {
+			$thumbnaildir = str_replace('/', '\\', $thumbnaildir);
+			 $pdfFile = str_replace('/', '\\', $pdfFile);
+		}
+
+		if (!preg_match('/' . str_replace('/', '\/', str_replace('\\', '\\\\', KT_DIR)) . '/', $thumbnaildir))
+		{
+			if (stristr(PHP_OS,'WIN')) {
+				$thumbnaildir = KT_DIR . '\\' . trim($thumbnaildir, '\\');
+			}
+		}
+		
+        $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
         //if thumbail dir does not exist, generate one and add an index file to block access
         if (!file_exists($thumbnaildir)) {
         	 mkdir($thumbnaildir, 0755);
@@ -173,7 +182,6 @@ class thumbnailGenerator extends BaseProcessor
             $default->log->debug('Thumbnail Generator Plugin: PDF file does not exist, cannot generate a thumbnail');
             return false;
         }
-        
 		// if a previous version of the thumbnail exists - delete it
 		if (file_exists($thumbnailfile)) {
 			@unlink($thumbnailfile);
@@ -183,13 +191,12 @@ class thumbnailGenerator extends BaseProcessor
             $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
             // windows path may contain spaces
 
-            if (WINDOWS_OS) {
+            if (stristr(PHP_OS,'WIN')) {
 				$cmd = "\"{$pathConvert}\" -size 200x200 \"{$pdfFile}[0]\" -resize 200x200 \"$thumbnailfile\"";
             }
 			else {
 				$cmd = "{$pathConvert} -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile";
 			}
-			
         	$result = KTUtil::pexec($cmd);
         	return true;
         //}else{
@@ -225,16 +232,28 @@ class ThumbnailViewlet extends KTDocumentViewlet {
         global $default;
 		$varDir = $default->internalVarDirectory;
 		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
+		
+		if (stristr(PHP_OS,'WIN')) {
+			$varDir = str_replace('/', '\\', $varDir);
+		}
+		
+		if (!preg_match('/' . str_replace('/', '\/', str_replace('\\', '\\\\', KT_DIR)) . '/', $thumbnaildir))
+		{
+			if (stristr(PHP_OS,'WIN')) {
+				$varDir = KT_DIR . '\\' . trim($varDir, '\\');
+			}
+		}
+		
+		$thumbnailCheck = $varDir . '/thumbnails/'.$documentId.'.jpg';
 
 		// if the thumbnail doesn't exist try to create it
-		if (!file_exists($thumbnailfile)){
+		if (!file_exists($thumbnailCheck)){
             $thumbnailer = new thumbnailGenerator();
             $thumbnailer->setDocument($this->oDocument);
             $thumbnailer->processDocument();
 
-			$thumbcheck = $thumbnailfile;
             // if it still doesn't exist, return an empty string
-			if (!file_exists($thumbcheck)) {
+			if (!file_exists($thumbnailCheck)) {
                 return '';
             }
 		}
@@ -260,6 +279,15 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     public function get_width($documentId){
     	global $default;
     	$varDir = $default->internalVarDirectory;
+    	if (stristr(PHP_OS,'WIN'))
+		{
+			$varDir = str_replace('/', '\\', $varDir);
+		
+			if (!preg_match('/' . str_replace('/', '\/', str_replace('\\', '\\\\', KT_DIR)) . '/', $thumbnaildir))
+			{
+				$varDir = KT_DIR . '\\' . trim($varDir, '\\');
+			}
+		}
 		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
 		$size = getimagesize($thumbnailfile);
 		return $size[0];
