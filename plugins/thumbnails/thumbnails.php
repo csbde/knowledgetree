@@ -158,9 +158,22 @@ class thumbnailGenerator extends BaseProcessor
 		$pdfFile = str_replace('/', '\\', $pdfFile);
 		
         $thumbnaildir = $default->internalVarDirectory.DIRECTORY_SEPARATOR.'thumbnails';
-		$thumbnaildir = str_replace('/', '\\', $thumbnaildir);
-        $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
+		if (WINDOWS_OS) {
+			$thumbnaildir = str_replace('/', '\\', $thumbnaildir);
+		}
 
+		if (!preg_match('/' . str_replace('/', '\/', str_replace('\\', '\\\\', KT_DIR)) . '/', $thumbnaildir))
+		{
+			if (WINDOWS_OS) {
+				$thumbnaildir = KT_DIR . '\\' . trim($thumbnaildir, '\\');
+			}
+			else {
+				$thumbnaildir = KT_DIR . '/' . trim($thumbnaildir, '/');
+			}
+		}
+		
+        $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
+		
         //if thumbail dir does not exist, generate one and add an index file to block access
         if (!file_exists($thumbnaildir)) {
         	 mkdir($thumbnaildir, 0755);
@@ -225,16 +238,31 @@ class ThumbnailViewlet extends KTDocumentViewlet {
         global $default;
 		$varDir = $default->internalVarDirectory;
 		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
+		
+		if (WINDOWS_OS) {
+			$varDir = str_replace('/', '\\', $varDir);
+		}
+		
+		if (!preg_match('/' . str_replace('/', '\/', str_replace('\\', '\\\\', KT_DIR)) . '/', $thumbnaildir))
+		{
+			if (WINDOWS_OS) {
+				$varDir = KT_DIR . '\\' . trim($varDir, '\\');
+			}
+			else {
+				$varDir = KT_DIR . '/' . trim($varDir, '/');
+			}
+		}
+		
+		$thumbnailCheck = $varDir . '/thumbnails/'.$documentId.'.jpg';
 
 		// if the thumbnail doesn't exist try to create it
-		if (!file_exists($thumbnailfile)){
+		if (!file_exists($thumbnailCheck)){
             $thumbnailer = new thumbnailGenerator();
             $thumbnailer->setDocument($this->oDocument);
             $thumbnailer->processDocument();
 
-			$thumbcheck = $thumbnailfile;
             // if it still doesn't exist, return an empty string
-			if (!file_exists($thumbcheck)) {
+			if (!file_exists($thumbnailCheck)) {
                 return '';
             }
 		}
