@@ -12,9 +12,6 @@
                 <tr><td>Username</td><td><input id="username" name=username></td></tr>
                 <tr><td>Password</td><td><input name=password type="password"></td></tr>
                 <?php if (!empty($errors)) { ?><tr><td></td><td><span class="error">Could Not Authenticate User</span></td></tr> <?php } ?>
-                <?php
-//                	print_r($errors);
-                ?>
             </table>
             
         </div>

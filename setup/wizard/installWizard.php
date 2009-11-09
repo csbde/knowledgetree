@@ -293,7 +293,6 @@ class InstallWizard {
 				exit();
 			}
 		} else {
-			// TODO: Die gracefully
 			$this->util->error("System has been installed  <a href='../../login.php' class='back' style='width:50px;float:none' class='back button_next'>Finish</a>");
 		}
 	}
