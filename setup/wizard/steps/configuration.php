@@ -252,6 +252,12 @@ class configuration extends Step
         $paths = $this->getPathInfo($server['file_system_root']['value']);
         if(!$edit) $this->temp_variables['paths'] = $paths;
 
+        // Rewrite file system root
+        if(!$this->fpath) {
+        	$froot = $this->temp_variables['server']['file_system_root']['value'];
+        	$this->temp_variables['server']['file_system_root']['value'] = 'default';
+        }
+
         return $this->done;
     }
 
@@ -295,6 +301,7 @@ class configuration extends Step
      */
     public function installStep()
     {
+    	$this->file_system_root = realpath(SYSTEM_DIR);
         $conf = $this->getDataFromSession("configuration"); // get data from the server
         $dbconf = $this->getDataFromSession("database"); 
         $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['dport'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
@@ -382,6 +389,7 @@ class configuration extends Step
     {
         $script = $_SERVER['SCRIPT_NAME'];
         $file_system_root = realpath(SYSTEM_DIR);
+        $this->file_system_root = $file_system_root;
         $host = $_SERVER['SERVER_NAME'];
         $port = $_SERVER['SERVER_PORT'];
         $ssl_enabled = isset($_SERVER['HTTPS']) ? (strtolower($_SERVER['HTTPS']) === 'on' ? 'yes' : 'no') : 'no';
@@ -394,12 +402,7 @@ class configuration extends Step
         $ssl_enabled = (isset($_POST['ssl_enabled'])) ? $_POST['ssl_enabled'] : $ssl_enabled;
         $server = array();
         $server['root_url'] = array('name' => 'Root Url', 'setting' => 'rootUrl', 'where' => 'db', 'value' => $root_url);
-        if(!$this->fpath) {
-        	$system_root = 'default';
-        } else {
-        	$system_root = $file_system_root;
-        }
-        $server['file_system_root'] = array('name' => 'File System Root', 'section' => 'KnowledgeTree', 'setting' => 'fileSystemRoot', 'where' => 'file', 'value' => $system_root);
+        $server['file_system_root'] = array('name' => 'File System Root', 'section' => 'KnowledgeTree', 'setting' => 'fileSystemRoot', 'where' => 'file', 'value' => $file_system_root);
         $server['host'] = array('name' => 'Host', 'setting' => 'server_name', 'where' => 'db', 'value' => $host);
         $server['port'] = array('name' => 'Port', 'setting' => 'server_port', 'where' => 'db', 'value' => $port);
         $server['ssl_enabled'] = array('name' => 'SSL Enabled', 'section' => 'KnowledgeTree', 'setting' => 'sslEnabled', 'where' => 'file', 'value' => $ssl_enabled);
@@ -443,6 +446,7 @@ class configuration extends Step
 			$dirs = $this->getFromConfigPath(); // Store contents
         }
         $varDirectory = $fileSystemRoot . DS . 'var';
+
         foreach ($dirs as $key => $dir){
             $path = (isset($_POST[$dir['setting']])) ? $_POST[$dir['setting']] : $dir['path'];
 
@@ -453,18 +457,17 @@ class configuration extends Step
             	$path = preg_replace('/\//', '\\',$path);
             	$dirs[$key]['path'] = $path;
             	$path = $class = strtolower(substr($path,0,1)).substr($path,1); // Damn you windows
-            	if(isset($dir['file']))
-            		$class = $this->util->checkPermission($path, $dir['create'], true);
-            	else 
+            	if(isset($dir['file'])) {
+            		$class = $this->util->checkPermission($path, false, true);
+            	} else {
             		$class = $this->util->checkPermission($path, $dir['create']);
-			if($class['class'] != 'tick') {
-				$this->temp_variables['paths_perms'] = $class['class'];
-				$this->done = false;
-				$this->error[] = "Path error";
-			}
+            	}
 			if(isset($class['msg'])) {
-				$this->done = false;
-				$this->error[] = $class['msg'];
+				if($class['class'] != 'tick') {
+					$this->temp_variables['paths_perms'] = $class['class'];
+					$this->done = false;
+					$this->error[] = $class['msg'];
+				}
 			}
             $dirs[$key] = array_merge($dirs[$key], $class);
         }
@@ -573,10 +576,9 @@ class configuration extends Step
 		if(!$configPath) {
 			return false;
 		}
-        $this->util->iniUtilities->load($configPath);
-        $data = $this->util->iniUtilities->getFileByLine();
+        $data = $this->util->getFileByLine($configPath);
         $firstline = true;
-        foreach ($data as $k=>$v) {
+        foreach ($data as $k) {
         	if(preg_match('/config.ini/', $k)) { // Find config.ini
 				if($k == "config/config.ini") { // Source install and source upgrades
 					$configIniPath = realpath(SYSTEM_DIR.$k);
@@ -595,10 +597,9 @@ class configuration extends Step
 		if(!$cachePath) {
 			return false;
 		}
-        $this->util->iniUtilities->load($cachePath);
-        $data = $this->util->iniUtilities->getFileByLine();
+        $data = $this->util->getFileByLine($cachePath);
         $firstline = true;
-        foreach ($data as $k=>$v) {
+        foreach ($data as $k) {
         	if(preg_match('/cache/', $k)) { // Find config.ini
 				if($k == "var/cache") { // Source install and source upgrades
 					$configIniPath = realpath(SYSTEM_DIR.$k);
@@ -623,10 +624,9 @@ class configuration extends Step
     private function readConfigPath() {
 		$configPath = $this->getContentPath();
 		if(!$configPath) return false;
-        $this->util->iniUtilities->load($configPath);
-        $data = $this->util->iniUtilities->getFileByLine();
+        $data = $this->util->getFileByLine($configPath);
         $firstline = true;
-        foreach ($data as $k=>$v) {
+        foreach ($data as $k) {
         	if($firstline) { // First line holds the var directory
         		$firstline = false;
         		if(!preg_match('/config.ini/', $k)) { // Make sure it is not the old config.ini
@@ -651,7 +651,11 @@ class configuration extends Step
 				$this->confpaths['tmp'] = $k;
         	}
         }
-
+		// Source Installs
+		if($this->confpaths['configIni'] == 'config/config.ini') {
+			$this->confpaths['configIni'] = $this->file_system_root .DS. $this->confpaths['configIni'];
+		}
+		
         return true;
     }
     
@@ -664,16 +668,24 @@ class configuration extends Step
      * @return boolean 
      */
     private function writeConfigPath($configPath, $configContent) {
-        $fp = @fopen($configPath, 'w+');
-        if(@fwrite($fp, $configContent))
-        	return true;
+    	if($configContent == 'config/config.ini') {
+    		$configContent = $this->file_system_root . DS . 'config/config.ini';
+    	}
+        $fp = fopen($configPath, 'w+');
+        if($configContent != '' && $fp) {
+	        if(fwrite($fp, $configContent))
+	        	return true;
+        }
     	return false;
     }
     
     private function writeCachePath($cachePath, $cacheContent) {
-        $fp = @fopen($cachePath, 'w+');
-        if($cacheContent != '') {
-	        if(@fwrite($fp, $cacheContent))
+    	if($cacheContent == 'var/cache') {
+    		$cacheContent = $this->file_system_root . DS . 'var/cache';
+    	}
+        $fp = fopen($cachePath, 'w+');
+        if($cacheContent != '' && $fp) {
+	        if(fwrite($fp, $cacheContent))
 	        	return true;
         }
     	return false;

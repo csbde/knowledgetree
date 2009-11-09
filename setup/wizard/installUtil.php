@@ -264,41 +264,40 @@ class InstallUtil {
      */
     public function checkPermission($dir, $create=false, $file = false)
     {
-    	if(!$file)
+    	if(!$file) {
         	$exist = 'Directory doesn\'t exist';
-        else
+    	} else {
         	$exist = 'File doesn\'t exist';
+    	}
         $write = 'Directory not writable';
+        $fwrite = 'File not writable';
         $ret = array('class' => 'cross');
-
-        if(!file_exists($dir)){
+        if(!file_exists($dir)) {
             if($create === false){
-                $this->done = false;
                 $ret['msg'] = $exist;
                 return $ret;
             }
             $par_dir = dirname($dir);
             if(!file_exists($par_dir)){
-                $this->done = false;
                 $ret['msg'] = $exist;
                 return $ret;
             }
             if(!is_writable($par_dir)){
-                $this->done = false;
                 $ret['msg'] = $exist;
                 return $ret;
             }
             mkdir($dir, 0755);
         }
-
-        if(is_writable($dir)){
+        if(is_writable($dir)) {
             $ret['class'] = 'tick';
 
             return $ret;
         }
-
-        $this->done = false;
-        $ret['msg'] = $write;
+        if(!$file) {
+        	$ret['msg'] = $write;
+        } else {
+        	$ret['msg'] = $fwrite;
+    	}
         return $ret;
     }
 
@@ -364,13 +363,13 @@ class InstallUtil {
      * @return boolean
      */
     public function canWriteFile($filename) {
-    	$fh = @fopen($filename, "w+");
-    	$fr = @fwrite($fh, 'test');
+    	$fh = fopen($filename, "w+");
+    	$fr = fwrite($fh, 'test');
     	if($fr === false) {
     		return false;
     	}
 
-    	@fclose($fh);
+    	fclose($fh);
     	return true;
     }
 
@@ -518,6 +517,24 @@ class InstallUtil {
     }
 
 	/**
+	* Check if system needs to be accessed
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
+    public function finishSpecified() {
+    	if(isset($_GET['Finish'])) {
+        	if($_GET['Finish'] == "Finish") {
+            	return true;
+        	}
+    	}
+    	
+        return false;
+    }
+    
+	/**
 	* Check if system needs to be migrated
 	*
 	* @author KnowledgeTree Team
@@ -561,42 +578,6 @@ class InstallUtil {
 	* @param none
 	* @return boolean
  	*/
-	public function loginSpecified() {
-    	if(isset($_GET['completeType'])) {
-        	if($_GET['completeType'] == "Login") {
-            	return true;
-        	}
-    	}
-    	
-        return false;
-	}
-	
-	/**
-	* Check if system needs to be migrated
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return boolean
- 	*/
-	public function zendSpecified() {
-    	if(isset($_GET['completeType'])) {
-        	if($_GET['completeType'] == "Zend Server Configuration") {
-            	return true;
-        	}
-    	}
-    	
-        return false;
-	}
-	
-	/**
-	* Check if system needs to be migrated
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return boolean
- 	*/
 	public function installationSpecified() {
     	if(isset($_GET['Return'])) {
         	if($_GET['Return'] == "Return To Installation") {
@@ -607,8 +588,6 @@ class InstallUtil {
         return false;
 	}
 		
-	
-	
 	/**
 	* Get session data from package
 	*
@@ -808,6 +787,19 @@ class InstallUtil {
     public function sqlInstallDir() {
     	return SYSTEM_DIR."sql".DS."mysql".DS."install".DS;
     }
+    
+    public function getFileByLine($file) {
+    	$fileLines = array();
+		$file_handle = fopen($file, "rb");
+		while (!feof($file_handle) ) {
+			$line_of_text = fgets($file_handle);
+			$parts = explode('=', $line_of_text);
+			$fileLines[] = trim($line_of_text);
+		}
+		fclose($file_handle);
+		return $fileLines;
+    }
+    
    /**
      * Portably execute a command on any of the supported platforms.
      *
