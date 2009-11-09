@@ -337,6 +337,18 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
             }
         }
 
+        $subFolders = Folder::getByParentId($iDropDocsFolderID);
+        if(PEAR::isError($subFolders) || empty($subFolders)){
+            $iMyDocsFolderID = $iDropDocsFolderID;
+        }else{
+            foreach ($subFolders as $sub){
+                if($sub->getName() == $sUserName){
+                    $iMyDocsFolderID = $sub->getID();
+                    break;
+                }
+            }
+        }
+
         $location = 'browse.php?fFolderId='.$iMyDocsFolderID;
         $sReturnTable .= '</tbody>'.
         '</table>'.
