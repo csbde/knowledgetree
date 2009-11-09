@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- *  
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -137,7 +137,7 @@ function search2QuerySort($sSortColumn, $sSortOrder)
         uasort($sortresults, 'search2queryCompare');
         $results[$key] = $sortresults;
     }
-    
+
     $_SESSION['search2_results'] = serialize($results);
 }
 
@@ -694,14 +694,14 @@ class SearchDispatcher extends KTStandardDispatcher {
                 }
             }
             else
-            {                
+            {
                 if ($message == '') // generic failure message
                 {
                     $message = 'The saved search could not be deleted.';
                 }
             }
 
-            $this->errorRedirectTo('manage', sprintf(_kt('%s' , $message));
+            $this->errorRedirectTo('manage', sprintf(_kt('%s' , $message)));
         }
 
         $this->successRedirectTo('manage', _kt('The saved search was deleted successfully.'));
