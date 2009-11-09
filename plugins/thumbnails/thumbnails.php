@@ -279,6 +279,15 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     public function get_width($documentId){
     	global $default;
     	$varDir = $default->internalVarDirectory;
+    	if (stristr(PHP_OS,'WIN'))
+		{
+			$varDir = str_replace('/', '\\', $varDir);
+		
+			if (!preg_match('/' . str_replace('/', '\/', str_replace('\\', '\\\\', KT_DIR)) . '/', $thumbnaildir))
+			{
+				$varDir = KT_DIR . '\\' . trim($varDir, '\\');
+			}
+		}
 		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
 		$size = getimagesize($thumbnailfile);
 		return $size[0];
