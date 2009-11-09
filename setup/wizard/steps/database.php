@@ -806,7 +806,7 @@ class database extends Step
 	    	if($binaries) {
 		    	foreach ($binaries as $k=>$bin) {
 		    		if($k != 1) {
-		    			$updateBin = 'UPDATE config_settings c SET c.value = "'.str_replace('\\', '\\\\', $bin).'" where c.group_name = "externalBinary" and c.display_name = "'.$k.'";';
+		    			$updateBin = 'UPDATE config_settings c SET c.value = "'.$bin.'" where c.group_name = "externalBinary" and c.display_name = "'.$k.'";';
 						$this->util->dbUtilities->query($updateBin);
 		    		}
 		    	}
