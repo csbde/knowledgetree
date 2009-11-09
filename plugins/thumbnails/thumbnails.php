@@ -158,15 +158,8 @@ class thumbnailGenerator extends BaseProcessor
         $thumbnaildir = $default->internalVarDirectory.DIRECTORY_SEPARATOR.'thumbnails';
 
 		if (stristr(PHP_OS,'WIN')) {
-			$thumbnaildir = str_replace('/', '\\', $thumbnaildir);
-			 $pdfFile = str_replace('/', '\\', $pdfFile);
-		}
-
-		if (!preg_match('/' . str_replace('/', '\/', str_replace('\\', '\\\\', KT_DIR)) . '/', $thumbnaildir))
-		{
-			if (stristr(PHP_OS,'WIN')) {
-				$thumbnaildir = KT_DIR . '\\' . trim($thumbnaildir, '\\');
-			}
+            $thumbnaildir = str_replace('/', '\\', $thumbnaildir);
+            $pdfFile = str_replace('/', '\\', $pdfFile);
 		}
 		
         $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
@@ -237,13 +230,6 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 			$varDir = str_replace('/', '\\', $varDir);
 		}
 		
-		if (!preg_match('/' . str_replace('/', '\/', str_replace('\\', '\\\\', KT_DIR)) . '/', $thumbnaildir))
-		{
-			if (stristr(PHP_OS,'WIN')) {
-				$varDir = KT_DIR . '\\' . trim($varDir, '\\');
-			}
-		}
-		
 		$thumbnailCheck = $varDir . '/thumbnails/'.$documentId.'.jpg';
 
 		// if the thumbnail doesn't exist try to create it
@@ -279,15 +265,6 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     public function get_width($documentId){
     	global $default;
     	$varDir = $default->internalVarDirectory;
-    	if (stristr(PHP_OS,'WIN'))
-		{
-			$varDir = str_replace('/', '\\', $varDir);
-		
-			if (!preg_match('/' . str_replace('/', '\/', str_replace('\\', '\\\\', KT_DIR)) . '/', $thumbnaildir))
-			{
-				$varDir = KT_DIR . '\\' . trim($varDir, '\\');
-			}
-		}
 		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
 		$size = getimagesize($thumbnailfile);
 		return $size[0];
