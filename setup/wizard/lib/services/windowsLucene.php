@@ -392,15 +392,8 @@ class windowsLucene extends windowsService {
 	* @return string
  	*/
 	public function getJavaJVM() {
-		$path1 = "C:\Program Files\Zend\ktdms\java\jre\bin\client\jvm.dll";
-		$path2 = "C:\Program Files (x86)\Zend\ktdms\java\jre\bin\client\jvm.dll";
-		if(file_exists($path1)) {
-			return $path1;
-		} else if(file_exists($path2)) {
-			return $path2;
-		}
-		// Hard code
-		//return $this->javaJVM;
+		return SYSTEM_ROOT . "java\jre\bin\client\jvm.dll"; // Hard code
+		//return $this->javaJVM; // TODO: PUT BACK!!!
 	}
 
 	private function writeLuceneInstall($cmd) {
