@@ -328,13 +328,13 @@ class KTPluginUtil {
                     if(isset($aParams[3])){
                         $aParams[3] = KTPluginUtil::getFullPath($aParams[3]);
                     }
-                    $aParams[0] = sprintf(_kt('%s') , $aParams[0]);
+                    $aParams[0] = _kt($aParams[0]);
         	        call_user_func_array(array(&$oAPRegistry, 'registerAuthenticationProvider'), $aParams);
         	        break;
 
         	    case 'admin_category':
-    	            $aParams[1] = sprintf(_kt('%s') , $aParams[1]);
-    	            $aParams[2] = sprintf(_kt('%s') , $aParams[2]);
+    	            $aParams[1] = _kt($aParams[1]);
+    	            $aParams[2] = _kt($aParams[2]);
         	        call_user_func_array(array(&$oAdminRegistry, 'registerCategory'), $aParams);
         	        break;
 
@@ -342,8 +342,8 @@ class KTPluginUtil {
                     if(isset($aParams[5])){
                         $aParams[5] = KTPluginUtil::getFullPath($aParams[5]);
                     }
-                    $aParams[3] = sprintf(_kt('%s') , $aParams[3]);
-                    $aParams[4] = sprintf(_kt('%s') , $aParams[4]);
+                    $aParams[3] = _kt($aParams[3]);
+                    $aParams[4] = _kt($aParams[4]);
         	        call_user_func_array(array(&$oAdminRegistry, 'registerLocation'), $aParams);
         	        break;
 
@@ -393,12 +393,12 @@ class KTPluginUtil {
                     if(isset($aParams[3])){
                         $aParams[3] = KTPluginUtil::getFullPath($aParams[3]);
                     }
-                    $aParams[0] = sprintf(_kt('%s') , $aParams[0]);
+                    $aParams[0] = _kt($aParams[0]);
         	        call_user_func_array(array(&$oColumnRegistry, 'registerColumn'), $aParams);
         	        break;
 
         	    case 'view':
-        	        $aParams[0] = sprintf(_kt('%s') , $aParams[0]);
+        	        $aParams[0] = _kt($aParams[0]);
         	        call_user_func_array(array(&$oColumnRegistry, 'registerView'), $aParams);
         	        break;
 
