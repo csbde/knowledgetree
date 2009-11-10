@@ -90,7 +90,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
      * @param unknown_type $sTmpFilePath
      * @return unknown
      */
-    function uploadTmpFile($sUploadedFile, $sTmpFilePath) {
+    function uploadTmpFile($sUploadedFile, $sTmpFilePath, $aOptions = null) {
 
         //copy the file accross
         if (OS_WINDOWS) {

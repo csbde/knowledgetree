@@ -8,31 +8,31 @@
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
  * Portions copyright The Jam Warehouse Software (Pty) Limited
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
  * Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco, 
+ *
+ * You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
  * California 94120-7775, or email info@knowledgetree.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU General Public License version 3,
  * these Appropriate Legal Notices must retain the display of the "Powered by
- * KnowledgeTree" logo and retain the original copyright notice. If the display of the 
+ * KnowledgeTree" logo and retain the original copyright notice. If the display of the
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
- * must display the words "Powered by KnowledgeTree" and retain the original 
+ * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
  */
@@ -40,7 +40,9 @@
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 require_once(KT_LIB_DIR . '/import/fsimportstorage.inc.php');
 
+require_once(KT_DIR.'/thirdparty/peclzip/pclzip.lib.php');
 require_once('File/Archive.php');
+
 
 class KTZipImportStorage extends KTFSImportStorage {
 
@@ -56,10 +58,17 @@ class KTZipImportStorage extends KTFSImportStorage {
 
     var $aFile = array();
 
+    var $sFileName = 'file';
+
     var $allowed_extensions = array('tgz', 'tar', 'gz', 'zip', 'deb', 'ar');
 
-    function KTZipImportStorage($sFilesName) {
-        $this->aFile = $_FILES[$sFilesName];
+    function KTZipImportStorage($fileName, $fileData = null) {
+        $this->sFileName = $fileName;
+        if(empty($fileData)){
+            $this->aFile = $_FILES[$fileName];
+        }else{
+            $this->aFile = $fileData;
+        }
         $this->sZipPath = $this->aFile['tmp_name'];
 
         // Check the bzip2 lib functions are available
@@ -114,7 +123,7 @@ class KTZipImportStorage extends KTFSImportStorage {
             return PEAR::raiseError(_kt("Archive file given does not exist"));
         }
         unlink($sTmpPath);
-        mkdir($sTmpPath, 0700);
+        mkdir($sTmpPath, 0777);
         $this->sBasePath = $sTmpPath;
 
         // Set environment language to output character encoding
@@ -124,9 +133,17 @@ class KTZipImportStorage extends KTFSImportStorage {
         putenv("LANGUAGE=$loc");
         $loc = setlocale(LC_ALL, $loc);
 
-        // File Archive doesn't unzip properly so sticking to the original unzip functionality
+        // File Archive doesn't unzip properly - using peclzip for zip files
+        // todo: replace file archive for tar, etc
         if($this->sExtension == 'zip'){
-            // ** Original zip functionality
+
+        	$archive = new PclZip($this->sZipPath);
+
+        	if ($archive->extract(PCLZIP_OPT_PATH, $sTmpPath) == 0){
+        		die("<font color='red'>Error : Unable to unzip archive</font>");
+        	}
+
+            /* ** Original zip functionality using the unzip binary ** *
             $sUnzipCommand = KTUtil::findCommand("import/unzip", "unzip");
             if (empty($sUnzipCommand)) {
                 return PEAR::raiseError(_kt("unzip command not found on system"));
@@ -142,10 +159,11 @@ class KTZipImportStorage extends KTFSImportStorage {
             if ($aRes['ret'] !== 0) {
                 return PEAR::raiseError(_kt("Could not retrieve contents from zip storage"));
             }
+            /* ** End original zip functionality ** */
         }else{
             File_Archive::extract(
                 File_Archive::readArchive(
-                    $this->sExtension, File_Archive::readUploadedFile('file')
+                    $this->sExtension, File_Archive::readUploadedFile($this->sFileName)
                 ),
                 $dst = $sTmpPath
             );
@@ -156,6 +174,10 @@ class KTZipImportStorage extends KTFSImportStorage {
         if ($this->sBasePath && file_exists($this->sBasePath)) {
             KTUtil::deleteDirectory($this->sBasePath);
             $this->sBasePath = null;
+        }
+        if ($this->sZipPath && file_exists($this->sZipPath)) {
+            KTUtil::deleteDirectory($this->sZipPath);
+            $this->sZipPath = null;
         }
     }
 }

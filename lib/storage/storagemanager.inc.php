@@ -59,8 +59,12 @@ class KTStorageManager {
      * @param unknown_type $sTmpFilePath
      * @return unknown
      */
-    function uploadTmpFile($sUploadedFile, $sTmpFilePath) {
+    function uploadTmpFile($sUploadedFile, $sTmpFilePath, $aOptions = null) {
         return PEAR::raiseError(_kt('Not implemented'));
+    }
+
+    function writeToFile($sTmpFilePath, $sDocumentFileSystemPath, $aOptions = null) {
+        return PEAR::raiseError(_kt("Not implemented"));
     }
 
     /**
