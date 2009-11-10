@@ -762,6 +762,26 @@ class InstallUtil {
 	    return false;
     }
 
+    public function useZendJVM() {
+	    if($this->util->installEnvironment() == 'Zend') {
+	    	if(WINDOWS_OS) { // For Zend Installation only
+				$sysdir = explode(DS, SYSTEM_DIR);
+				array_pop($sysdir);
+				array_pop($sysdir);
+				array_pop($sysdir);
+				$zendsys = '';
+				foreach ($sysdir as $v) {
+					$zendsys .= $v.DS;
+				}
+				$jvm = $zendsys."jre".DS."bin".DS."client".DS."jvm.dll";
+				if(file_exists($jvm))
+					return $jvm;
+	    	}
+	    }
+
+	    return false;
+    }
+
     /**
      * Determine if mysql exists
      *
