@@ -357,13 +357,32 @@ class windowsLucene extends windowsService {
 		} elseif (file_exists($this->getJavaBin().DS."bin".DS."server".DS."jvm.dll")) {
 			$this->javaJVM = $this->getJavaBin().DS."bin".DS."server".DS."jvm.dll";
 		} else {
-			$javaJVM = $this->util->useZendJVM();
+			$javaJVM = $this->useZendJVM();
 			if(file_exists($javaJVM)) {
 				$this->javaJVM = $javaJVM;
 			}
 		}
 	}
 
+	public function useZendJVM() {
+	    if($this->util->installEnvironment() == 'Zend') {
+	    	if(WINDOWS_OS) { // For Zend Installation only
+				$sysdir = explode(DS, SYSTEM_DIR);
+				array_pop($sysdir);
+				array_pop($sysdir);
+				array_pop($sysdir);
+				$zendsys = '';
+				foreach ($sysdir as $v) {
+					$zendsys .= $v.DS;
+				}
+				$jvm = $zendsys."jre".DS."bin".DS."client".DS."jvm.dll";
+				if(file_exists($jvm))
+					return $jvm;
+	    	}
+	    }
+
+	    return false;
+    }
 	/**
 	* Get Java JVM path
 	*
@@ -373,7 +392,15 @@ class windowsLucene extends windowsService {
 	* @return string
  	*/
 	public function getJavaJVM() {
-		return $this->javaJVM;
+		$path1 = "C:\Program Files\Zend\ktdms\java\jre\bin\client\jvm.dll";
+		$path2 = "C:\Program Files (x86)\Zend\ktdms\java\jre\bin\client\jvm.dll";
+		if(file_exists($path1)) {
+			return $path1;
+		} else if(file_exists($path2)) {
+			return $path2;
+		}
+		// Hard code
+		//return $this->javaJVM;
 	}
 
 	private function writeLuceneInstall($cmd) {
@@ -397,7 +424,7 @@ class windowsLucene extends windowsService {
 			$luceneExe = $this->getLuceneExe();
 			$luceneSource = $this->getLuceneSource();
 			$luceneDir = $this->getluceneDir();
-			if($luceneExe && $luceneSource && $luceneDir) {
+//			if($luceneExe && $luceneSource && $luceneDir) {
 				$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
             	if(DEBUG) {
             		echo "$cmd<br/>";
@@ -405,8 +432,8 @@ class windowsLucene extends windowsService {
             	}
             	$this->writeLuceneInstall($cmd);
 				//$response = $this->util->pexec($cmd);
-				return $response;
-			}
+//				return $response;
+//			}
 			return $state;
 		}
 
