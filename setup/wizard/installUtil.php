@@ -763,7 +763,7 @@ class InstallUtil {
     }
 
     public function useZendJVM() {
-	    if($this->util->installEnvironment() == 'Zend') {
+	    if($this->installEnvironment() == 'Zend') {
 	    	if(WINDOWS_OS) { // For Zend Installation only
 				$sysdir = explode(DS, SYSTEM_DIR);
 				array_pop($sysdir);
