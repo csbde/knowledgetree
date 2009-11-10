@@ -776,6 +776,11 @@ class InstallUtil {
 				$jvm = $zendsys."jre".DS."bin".DS."client".DS."jvm.dll";
 				if(file_exists($jvm))
 					return $jvm;
+	    	} else {
+	    		$java = "/usr/bin/java";
+	    		if(file_exists($java)) {
+	    			return $java;
+	    		}
 	    	}
 	    }
 
