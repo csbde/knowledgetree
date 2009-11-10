@@ -49,7 +49,7 @@ class windowsOpenOffice extends windowsService {
 	* @var string
 	*/
 	private $path;
-	
+
 	/**
 	* Web server
 	*
@@ -58,7 +58,7 @@ class windowsOpenOffice extends windowsService {
 	* @var string
 	*/
 	private $host;
-	
+
 	/**
 	* Path to temp pid file
 	*
@@ -67,7 +67,7 @@ class windowsOpenOffice extends windowsService {
 	* @var string
 	*/
 	private $pidFile;
-	
+
 	/**
 	* Web server Port
 	*
@@ -76,7 +76,7 @@ class windowsOpenOffice extends windowsService {
 	* @var string
 	*/
 	private $port;
-	
+
 	/**
 	* Web server
 	*
@@ -85,7 +85,7 @@ class windowsOpenOffice extends windowsService {
 	* @var string
 	*/
 	private $bin;
-	
+
 	/**
 	* Office executable name
 	*
@@ -103,7 +103,7 @@ class windowsOpenOffice extends windowsService {
 	* @var string
 	*/
 	private $log;
-	
+
 	/**
 	* Open office options
 	*
@@ -112,7 +112,7 @@ class windowsOpenOffice extends windowsService {
 	* @var string
 	*/
 	private $options;
-	
+
 	/**
 	* Path to win service
 	*
@@ -129,9 +129,9 @@ class windowsOpenOffice extends windowsService {
 	* @access public
 	* @param none
 	* @return string
- 	*/	
+ 	*/
     public $name = "KTOpenOffice";
-    
+
 	/**
 	* Load defaults needed by service
 	*
@@ -153,35 +153,35 @@ class windowsOpenOffice extends windowsService {
 	private function setPort($port = "8100") {
 		$this->port = $port;
 	}
-	
+
 	public function getPort() {
 		return $this->port;
 	}
-	
+
 	private function setHost($host = "127.0.0.1") {
 		$this->host = $host;
 	}
-	
+
 	public function getHost() {
 		return $this->host;
 	}
-	
+
 	private function setLog($log = "openoffice.log") {
 		$this->log = $log;
 	}
-	
+
 	public function getLog() {
 		return $this->log;
 	}
-	
+
 	private function setBin($bin) {
 		$this->bin = $bin;
 	}
-	
+
 	public function getBin() {
 		return $this->bin;
 	}
-    
+
 	private function setWinservice($winservice = "winserv.exe") {
 		if(file_exists(SYS_BIN_DIR . $winservice)) {
 			$this->winservice = SYS_BIN_DIR . $winservice;
@@ -189,22 +189,22 @@ class windowsOpenOffice extends windowsService {
 			$this->winservice = SYS_BIN_DIR . "win32" . DS. $winservice;
 		}
 	}
-	
+
 	public function getWinservice() {
 		return $this->winservice;
 	}
-	
+
 	public function getOption() {
 		return $this->options;
 	}
-	
+
 	private function writeOfficeInstall($cmd) {
 		$officeInstallFile = SYS_VAR_DIR."bin".DS."officeinstall.bat";
 		$fp = fopen($officeInstallFile, "w+");
 		fwrite($fp, $cmd);
 		fclose($fp);
 	}
-	
+
     public function install() {
     	$status = $this->status();
     	if($status == '') {
@@ -217,7 +217,7 @@ class windowsOpenOffice extends windowsService {
 	        	}
 	        	$this->writeOfficeInstall($cmd);
 	            //$response = $this->util->pexec($cmd);
-	            return $response;
+//	            return $response;
     		}
     		return $status;
     	}
@@ -225,7 +225,7 @@ class windowsOpenOffice extends windowsService {
     		return $status;
     	}
     }
-    
+
 	/**
 	* Retrieve Status Service
 	*
@@ -241,10 +241,10 @@ class windowsOpenOffice extends windowsService {
 			$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
 			return $state;
 		}
-		
+
 		return '';
 	}
-	
+
 	/**
 	* Start Service
 	*
