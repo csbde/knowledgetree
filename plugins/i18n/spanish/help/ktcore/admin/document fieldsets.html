@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+   <title>Document Fieldsets</title>
+</head>
+<body>
+<h2>Document Fieldsets</h2>
+<p>
+Document Fieldsets allow you to associate custom metadata with documents in the
+repository.
+</p>
+<p>
+There are two types of document fieldsets:
+<ul>
+<li><strong>Normal</strong> - users are allowed to edit normal fieldsets only if they have been
+   associated with the document type that is being edited.</li>
+<li><strong>Generic</strong> - users may add and edit generic fieldsets to any document type in
+   KnowledgeTree.</li>
+</ul>
+</p>
+<p>   
+<strong>Note:</strong> KnowledgeTree auto-generates an editable system name (namespace) for every
+fieldset. Plug-ins use this namespace to call the fieldset, and to control how the fieldset works.
+For more information on developing Plug-ins for KnowledgeTree, see the KnowledgeTree Wiki
+at <a href ="http://support.knowledgetree.com/confluence/">http://support.knowledgetree.com/confluence/</a>
+</p>
+
+<h2>Document Fields</h2>
+<p>
+KnowledgeTree uses fields to group sets of related information into predefined
+fieldsets. The custom fieldsets are then associated with specific document types, to
+define the information (metadata) that should be included on documents of that
+type.</p>
+<p>
+There are three classes of custom fields in KnowledgeTree:
+<ul>
+<li><strong>Normal</strong> - stores text metadata, such as invoice code</li>
+<li><strong>Lookup</strong> - used to allow users to select from a predefined set of options</li>
+<li><strong>Tree</strong> - used to allow users to select a metadata value by browsing a tree structure</li>
+</ul>
+</p>
+<h3>Managing Tree Fields</h3>
+
+<p>
+Trees can have multiple sub-categories and levels. You need to add sub-categories at
+each level in order to organize the options into a 'tree'.</p>
+<p>
+The top level of the tree is called the root. The root, which holds all the top level
+items, is not shown to the user, but it provides a single 'parent' to the top level items.</p>
+<p>
+For example, let's say you create a tree of the countries in the world. In this case, the
+actual countries would be keywords - e.g. South Africa, England, Singapore, etc. And
+the highest group of categories (the top level or 'root') would be continents - e.g.
+Africa, Europe, Asia etc. The sub-categories, which fall below the top level 'continents'
+could be 'regions' - e.g. Sub-Saharan Africa, Western Europe, South East Asia.</p><p>
+KnowledgeTree allows you to create more sophisticated tree fields on the Edit
+Lookup Tree page.</p>
+
+</body>
+</html>
