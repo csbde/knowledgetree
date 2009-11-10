@@ -49,7 +49,7 @@ class luceneValidation extends serviceValidation {
 	* @var string
 	*/
     private $java = "";
-    
+
 	/**
 	* Minumum Java Version
 	*
@@ -67,7 +67,7 @@ class luceneValidation extends serviceValidation {
 	* @var mixed
 	*/
     private $providedJava = false;
-    
+
 	/**
 	* Flag, if java is specified and an error has been encountered
 	*
@@ -76,7 +76,7 @@ class luceneValidation extends serviceValidation {
 	* @var booelean
 	*/
     private $javaExeError = false;
-    
+
 	/**
 	* Holds path error, if java is specified
 	*
@@ -85,16 +85,16 @@ class luceneValidation extends serviceValidation {
 	* @var string
 	*/
     private $javaExeMessage = '';
-    
+
 	/**
-	* Java Installed 
+	* Java Installed
 	*
 	* @author KnowledgeTree Team
 	* @access private
 	* @var mixed
 	*/
     private $javaCheck = 'cross';
-    
+
 	/**
 	* Flag if bridge extension needs to be disabled
 	*
@@ -105,14 +105,14 @@ class luceneValidation extends serviceValidation {
     private $disableExtension = false;
 
 	/**
-	* Java Bridge Installed 
+	* Java Bridge Installed
 	*
 	* @author KnowledgeTree Team
 	* @access private
 	* @var mixed
 	*/
     private $javaExtCheck = 'cross_orange';
-    
+
     public function preset() {
     	/* Rely on Script */
     	$this->zendBridgeInstalled();
@@ -124,7 +124,7 @@ class luceneValidation extends serviceValidation {
 //		$this->javaNotInstalled(); // Set java to not installed
 //		$this->setJava(); // Check if java has been auto detected
     }
-    
+
     /**
 	* Check if java executable was found
 	*
@@ -140,7 +140,7 @@ class luceneValidation extends serviceValidation {
 			$this->temp_variables['java']['location'] = $this->java;
 			return ;
 		}
-		
+
 		$this->temp_variables['java']['location'] = $this->java;
     }
 
@@ -156,7 +156,7 @@ class luceneValidation extends serviceValidation {
 		$this->temp_variables['java']['class'] = 'tick';
 		$this->temp_variables['java']['found'] = "Java Runtime Installed";
     }
-    
+
 	/**
 	* Store Java state as not installed
 	*
@@ -169,7 +169,7 @@ class luceneValidation extends serviceValidation {
 		$this->temp_variables['java']['class'] = 'cross';
 		$this->temp_variables['java']['found'] = "Java runtime environment required";
     }
-    
+
 	/**
 	* Store Java version state as correct
 	*
@@ -182,7 +182,7 @@ class luceneValidation extends serviceValidation {
 		$this->temp_variables['version']['class'] = 'tick';
 		$this->temp_variables['version']['found'] = "Java Version 1.5+ Installed";
     }
-    
+
 	/**
 	* Store Java version state as warning
 	* @author KnowledgeTree Team
@@ -194,7 +194,7 @@ class luceneValidation extends serviceValidation {
 		$this->temp_variables['version']['class'] = 'cross_orange';
 		$this->temp_variables['version']['found'] = "Java Runtime Version Cannot be detected";
     }
-    
+
 	/**
 	* Store Java version as state incorrect
 	*
@@ -207,7 +207,7 @@ class luceneValidation extends serviceValidation {
 		$this->temp_variables['version']['class'] = 'cross';
 		$this->temp_variables['version']['found'] = "Requires Java 1.5+ to be installed";
     }
-    
+
 	/**
     * Store Zend Bridge state as installed
     *
@@ -220,10 +220,10 @@ class luceneValidation extends serviceValidation {
 		$this->temp_variables['extensions']['class'] = 'tick';
 		$this->temp_variables['extensions']['found'] = "Java Bridge Installed";
     }
-    
+
 	/**
     * Store Zend Bridge state as not installed
-    * 
+    *
 	* @author KnowledgeTree Team
 	* @param none
 	* @access private
@@ -233,7 +233,7 @@ class luceneValidation extends serviceValidation {
 		$this->temp_variables['extensions']['class'] = 'cross_orange';
 		$this->temp_variables['extensions']['found'] = "Zend Java Bridge Not Installed";
     }
-    
+
    	/**
     * Store Zend Bridge state as warning
     *
@@ -246,18 +246,18 @@ class luceneValidation extends serviceValidation {
 		$this->temp_variables['extensions']['class'] = 'cross_orange';
 		$this->temp_variables['extensions']['found'] = "Zend Java Bridge Not Functional";
     }
-    
+
     public function installed() {
 		$this->disableExtension = true; // Disable the use of the php bridge extension
 		$this->javaVersionCorrect();
 		$this->javaInstalled();
 		$this->javaCheck = 'tick';
     }
-    
+
     public function getBinary() {
     	$this->java = $this->util->getJava();
     }
-    
+
     /**
 	* Do some basic checks to help the user overcome java problems
 	*
@@ -267,7 +267,7 @@ class luceneValidation extends serviceValidation {
 	* @return boolean
 	*/
     public function binaryChecks() {
-    	$java = $this->useZendJava();
+    	$java = $this->util->useZendJava();
     	if(!$java) {
 	    	if($this->util->javaSpecified()) {
 	    		$this->disableExtension = true; // Disable the use of the php bridge extension
@@ -292,10 +292,10 @@ class luceneValidation extends serviceValidation {
 				return $auto;
 	    	}
     	}
-    	
+
     	return $java;
     }
-    
+
 	/**
 	* Set template view to specify java
 	*
@@ -307,7 +307,7 @@ class luceneValidation extends serviceValidation {
     private function specifyJava() {
     	$this->javaExeError = true;
     }
-    
+
     /**
 	* Attempts to use bridge and configure java settings
 	*
@@ -348,7 +348,7 @@ class luceneValidation extends serviceValidation {
 			return false;
 		}
     }
-    
+
     /**
 	* Check if Zend Bridge is functional
 	*
@@ -362,33 +362,9 @@ class luceneValidation extends serviceValidation {
 			return true;
     	} else {
 			return false;
-    	}    	
+    	}
     }
-    
-    public function useZendJava() {
-	    if($this->util->installEnvironment() == 'Zend') {
-	    	if(WINDOWS_OS) { // For Zend Installation only
-				$sysdir = explode(DS, SYSTEM_DIR);
-				array_pop($sysdir);
-				array_pop($sysdir);
-				$zendsys = '';
-				foreach ($sysdir as $k=>$v) {
-					$zendsys .= $v.DS;
-				}
-				$java = $zendsys."jre".DS."bin".DS."java.exe";
-				if(file_exists($java))
-					return $java;
-	    	} else {
-	    		$java = "/usr/bin/java";
-	    		if(file_exists($java)) {
-	    			return $java;
-	    		}
-	    	}
-	    }
-	    
-	    return false;
-    }
-    
+
    	/**
 	* Attempts to use user input and configure java settings
 	*
@@ -405,13 +381,13 @@ class luceneValidation extends serviceValidation {
     		}
     		$javaExecutable = $this->java;
     	}
-    	if(WINDOWS_OS) { 
+    	if(WINDOWS_OS) {
     		$cmd = "\"$javaExecutable\" -cp \"".SYS_DIR.";\" javaVersion \"".$this->outputDir."outJV\""." \"".$this->outputDir."outJVHome\"";
     		$func = OS."ReadJVFromFile";
     		if($this->$func($cmd)) {
     			return true;
     		} else {
-    			$this->java = $this->useZendJava(); // Java not installed
+    			$this->java = $this->util->useZendJava(); // Java not installed
     			$javaExecutable = $this->java;
     			$cmd = "\"$javaExecutable\" -cp \"".SYS_DIR.";\" javaVersion \"".$this->outputDir."outJV\""." \"".$this->outputDir."outJVHome\"";
     			if($this->$func($cmd)) {
@@ -422,7 +398,7 @@ class luceneValidation extends serviceValidation {
     		$cmd = "\"$javaExecutable\" -version > ".$this->outputDir."outJV 2>&1 echo $!";
     		$func = OS."ReadJVFromFile";
     		if($this->$func($cmd)) {
-    			return true; 
+    			return true;
     		} else {
 				// TODO: Not sure
     		}
@@ -433,7 +409,7 @@ class luceneValidation extends serviceValidation {
 		$this->error[] = "Requires Java 1.5+ to be installed";
     	return false;
     }
-    
+
     function windowsReadJVFromFile($cmd) {
     	$response = $this->util->pexec($cmd);
 		if(file_exists($this->outputDir.'outJV')) {
@@ -443,14 +419,14 @@ class luceneValidation extends serviceValidation {
 					$this->javaVersionInCorrect();
 					$this->javaCheck = 'cross';
 					$this->error[] = "Requires Java 1.5+ to be installed";
-					
+
 					return false;
 				} else {
 					$this->javaVersionCorrect();
 					$this->javaInstalled();
 					$this->javaCheck = 'tick';
 					$this->providedJava = true;
-					
+
 					return true;
 				}
 			} else {
@@ -461,12 +437,12 @@ class luceneValidation extends serviceValidation {
 					$this->javaExeError = true;
 					$this->error[] = "Requires Java 1.5+ to be installed";
 				}
-				
+
 				return false;
 			}
 		}
     }
-    
+
     function unixReadJVFromFile($cmd) {
     	$response = $this->util->pexec($cmd);
 		if(file_exists($this->outputDir.'outJV')) {
@@ -477,14 +453,14 @@ class luceneValidation extends serviceValidation {
 					$this->javaVersionInCorrect();
 					$this->javaCheck = 'cross';
 					$this->error[] = "Requires Java 1.5+ to be installed";
-					
+
 					return false;
 				} else {
 					$this->javaVersionCorrect();
 					$this->javaInstalled();
 					$this->javaCheck = 'tick';
 					$this->providedJava = true;
-					
+
 					return true;
 				}
 			} else {
@@ -495,12 +471,12 @@ class luceneValidation extends serviceValidation {
 					$this->javaExeError = true;
 					$this->error[] = "Requires Java 1.5+ to be installed";
 				}
-				
+
 				return false;
 			}
 		}
     }
-    
+
    	/**
     * Set all silent mode varibles
     *

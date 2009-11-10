@@ -9,6 +9,7 @@ class jsonResponseObject{
 	protected $errors=array();
 	protected $status=array('session_id'=>'','random_token'=>'');
 	protected $data=array();
+	protected $log=array();
 	protected $request=array();
 	protected $debug=array();
 	public $additional=array();
@@ -28,7 +29,8 @@ class jsonResponseObject{
 		),
 		'data'				=>array(),
 		'request'			=>array(),
-		'debug'				=>array()
+		'debug'				=>array(),
+		'log'				=>array()
 	);	
 	
 	
@@ -49,8 +51,11 @@ class jsonResponseObject{
 	}
 	
 	public function setDebug($varName=NULL,$value=NULL){
+		if(is_array($this->debug[$varName]) && is_array($value))$value=array_merge($this->debug[$varName],$value);
 		$this->debug[$varName]=$value;
 	}
+	
+	public function addDebug($varName=NULL,$value=NULL){$this->setDebug($varName,$value);}
 	
 	public function setRequest($request=NULL){
 		$this->request=$request;
@@ -59,6 +64,10 @@ class jsonResponseObject{
 	public function setTitle($title=NULL){
 		$title=(string)$title;
 		$this->title=$title;
+	}
+	
+	public function log($str){
+		$this->log[]='['.date('h:i:s').'] '.$str;
 	}
 	
 	public function getJson(){
@@ -72,6 +81,7 @@ class jsonResponseObject{
 			'data'		=>$this->data,
 			'request'	=>$this->request,
 			'debug'		=>$this->debug,
+			'log'		=>$this->log
 		),$this->additional);
 		if(!$this->includeDebug) unset($response['debug']);
 		
@@ -91,7 +101,6 @@ class jsonWrapper{
 	public $jsonArray=array();
 	
 	public function __construct($content=NULL){
-//		$content=stripslashes($content);
 		$this->raw=$content;
 		$content=@json_decode($content,true);
 		if(!is_array($content))throw new jsonContentException('Invalid JSON input',jsonContentException::INPUT_ERROR);
