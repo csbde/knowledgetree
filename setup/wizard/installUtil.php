@@ -47,7 +47,7 @@ class InstallUtil {
 	private $salt = 'installers';
 	public $dbUtilities = null;
 	public $iniUtilities = null;
-	
+
 	/**
 	* Constructs installation object
 	*
@@ -83,9 +83,9 @@ class InstallUtil {
 			include($file);
 	        $contents = ob_get_contents();
 	        ob_end_clean();
-	        echo $contents;			
+	        echo $contents;
 		}
-		
+
 		return false;
 
 	}
@@ -460,7 +460,7 @@ class InstallUtil {
 				return preg_replace('/java:/', '', $r);
 			}
 		}
-		
+
 		return '';
     }
 
@@ -530,10 +530,10 @@ class InstallUtil {
             	return true;
         	}
     	}
-    	
+
         return false;
     }
-    
+
 	/**
 	* Check if system needs to be migrated
 	*
@@ -548,10 +548,10 @@ class InstallUtil {
             	return true;
         	}
     	}
-    	
+
         return false;
 	}
-	
+
 	/**
 	* Check if system needs to be migrated
 	*
@@ -566,10 +566,10 @@ class InstallUtil {
             	return true;
         	}
     	}
-    	
+
         return false;
 	}
-	
+
 	/**
 	* Check if system needs to be migrated
 	*
@@ -584,10 +584,10 @@ class InstallUtil {
             	return true;
         	}
     	}
-    	
+
         return false;
 	}
-		
+
 	/**
 	* Get session data from package
 	*
@@ -600,10 +600,10 @@ class InstallUtil {
     	if(empty($_SESSION[$package][$class])) {
     		return false;
     	}
-    	
+
     	return $_SESSION[$package][$class];
     }
-    
+
 	/**
 	* Get session data from post
 	*
@@ -688,7 +688,7 @@ class InstallUtil {
     /**
      * Deletes migration lock file if a clean install is chosen
      * This is in case someone changes their mind after choosing upgrade/migrate and clicks back up to this step
-     * 
+     *
      * @author KnowledgeTree Team
      * @access public
      * @return void
@@ -710,10 +710,10 @@ class InstallUtil {
     		return true;
     	return false;
     }
-    
+
     /**
      * Determine type of installation
-     * 
+     *
 	 * @author KnowledgeTree Team
      * @access public
      * @return string
@@ -732,10 +732,10 @@ class InstallUtil {
 	    	}
 	    }
     }
-    
+
     /**
      * Determine if zend php exists
-     * 
+     *
 	 * @author KnowledgeTree Team
      * @access public
      * @return string
@@ -744,6 +744,7 @@ class InstallUtil {
 	    if($this->installEnvironment() == 'Zend') {
 	    	if(WINDOWS_OS) { // For Zend Installation only
 				$sysdir = explode(DS, SYSTEM_DIR);
+				array_pop($sysdir);
 				array_pop($sysdir);
 				array_pop($sysdir);
 				$zendsys = '';
@@ -757,13 +758,13 @@ class InstallUtil {
 	    		return DS."usr".DS."local".DS."zend".DS."bin".DS;
 	    	}
 	    }
-	    
+
 	    return false;
     }
-    
+
     /**
      * Determine if mysql exists
-     * 
+     *
 	 * @author KnowledgeTree Team
      * @access public
      * @return string
@@ -780,14 +781,14 @@ class InstallUtil {
 		    	}
 		    }
 	    }
-	    
+
 	    return "mysql"; // Assume its linux and can be executed from command line
     }
 
     public function sqlInstallDir() {
     	return SYSTEM_DIR."sql".DS."mysql".DS."install".DS;
     }
-    
+
     public function getFileByLine($file) {
     	$fileLines = array();
 		$file_handle = fopen($file, "rb");
@@ -799,7 +800,7 @@ class InstallUtil {
 		fclose($file_handle);
 		return $fileLines;
     }
-    
+
    /**
      * Portably execute a command on any of the supported platforms.
      *

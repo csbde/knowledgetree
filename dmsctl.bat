@@ -6,6 +6,7 @@ rem KnowledgeTree Control Script
 rem ============= SET ENVIRONMENT VARIABLES ==============
 set INSTALL_PATH=%CD%
 cd ..
+cd ..
 set ZEND_PATH=%CD%
 cd %INSTALL_PATH%
 set JAVA_BIN=%ZEND_PATH%\jre\bin\java.exe
