@@ -50,7 +50,7 @@ class registration extends Step
 	* @var array
 	*/
     public $storeInSession = true;
-    
+
     /**
      * Controller function for determining the position within the step
      *
@@ -75,10 +75,10 @@ class registration extends Step
 
 		    return 'previous';
 		}else if($this->confirm()) {
-			
+
 		    return 'next';
 		}
-		
+
 		return 'landing';
     }
 
@@ -91,7 +91,7 @@ class registration extends Step
     	$this->temp_variables['sel_industry'] = $this->getPostSafe($reg['sel_industry']);
     	$this->temp_variables['sel_organization_size'] = $this->getPostSafe($reg['sel_organization_size']);
     }
-    
+
 	/**
 	* Safer way to return post data
 	*
@@ -104,7 +104,7 @@ class registration extends Step
     	$value = isset($key) ? $key : "";
     	return $value;
     }
-    
+
     public function setInSession() {
         $this->temp_variables['first_name'] = $_POST['submitted']['first_name'];
     	$this->temp_variables['last_name'] = $_POST['submitted']['last_name'];
@@ -113,7 +113,7 @@ class registration extends Step
     	$this->temp_variables['sel_industry'] = $_POST['submitted']['industry'];
     	$this->temp_variables['sel_organization_size'] = $_POST['submitted']['organization_size'];
     }
-    
+
     /**
      * Execute the step action to register the user. If the user has already registered then the step will return.
      *
@@ -127,13 +127,10 @@ class registration extends Step
             return true;
         }
 		$this->setInSession();
-//		return true;
-	    //$this->postForm($_POST);
-	    //$this->sendToHost($_POST);
 
 	    // Post the form using curl
-//        $this->curlForm($_POST);
-		
+        $this->curlForm($_POST);
+
         // Prevent the form being reposted.
         $_POST['registered'] = 'yes';
 	    return true;
@@ -536,10 +533,10 @@ class registration extends Step
         $this->temp_variables['industries'] = $industries;
         $this->temp_variables['org_size'] = $sizes;
     }
-    
+
     /**
      * Return whether or not to store a step information in session
-     * 
+     *
      * @author KnowledgeTree Team
      * @param none
      * @access public
