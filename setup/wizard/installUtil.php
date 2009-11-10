@@ -768,12 +768,11 @@ class InstallUtil {
 				$sysdir = explode(DS, SYSTEM_DIR);
 				array_pop($sysdir);
 				array_pop($sysdir);
-				array_pop($sysdir);
 				$zendsys = '';
 				foreach ($sysdir as $v) {
 					$zendsys .= $v.DS;
 				}
-				$jvm = $zendsys."jre".DS."bin".DS."client".DS."jvm.dll";
+				$jvm = $zendsys."java".DS."jre".DS."bin".DS."java.exe";
 				if(file_exists($jvm))
 					return $jvm;
 	    	} else {

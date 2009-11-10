@@ -348,6 +348,8 @@ class windowsLucene extends windowsService {
 	* @return void
  	*/
 	private function setJavaJVM() {
+		$this->javaJVM = SYSTEM_ROOT . "java\jre\bin\client\jvm.dll";
+		/*
 		if(file_exists($this->getJavaBin().DS."client".DS."jvm.dll")) {
 			$this->javaJVM = $this->getJavaBin().DS."client".DS."jvm.dll";
 		} elseif (file_exists($this->getJavaBin().DS."server".DS."jvm.dll")) {
@@ -362,6 +364,7 @@ class windowsLucene extends windowsService {
 				$this->javaJVM = $javaJVM;
 			}
 		}
+		*/
 	}
 
 	public function useZendJVM() {
@@ -392,6 +395,7 @@ class windowsLucene extends windowsService {
 	* @return string
  	*/
 	public function getJavaJVM() {
+		$this->javaJVM = SYSTEM_ROOT . "java\jre\bin\client\jvm.dll";
 		return SYSTEM_ROOT . "java\jre\bin\client\jvm.dll"; // Hard code
 		//return $this->javaJVM; // TODO: PUT BACK!!!
 	}
@@ -413,7 +417,7 @@ class windowsLucene extends windowsService {
  	*/
 	public function install() {
 		$state = $this->status();
-		if($state == '') {
+//		if($state == '') {
 			$luceneExe = $this->getLuceneExe();
 			$luceneSource = $this->getLuceneSource();
 			$luceneDir = $this->getluceneDir();
@@ -428,7 +432,7 @@ class windowsLucene extends windowsService {
 //				return $response;
 //			}
 			return $state;
-		}
+//		}
 
 		return $state;
 	}
