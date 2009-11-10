@@ -43,21 +43,15 @@ class iniUtilities {
     private $lineNum = 0;
     private $exists = '';
 
-    
    	function load($iniFile) {
-//    	if($this->iniFile != $iniFile) {
-	       $this->cleanArray = array();
-	       $this->lineNum = 0;
-	       $this->exists = '';
-//    	}
+       $this->cleanArray = array();
        $this->iniFile = $iniFile;
+       $this->lineNum = 0;
+       $this->exists = '';
        $this->backupIni($iniFile);
        $this->read($iniFile);
     }
     
-//    function __construct() {
-//    }
-	
     /**
      * Create a backup with the date as an extension in the same location as the original config.ini
      *
@@ -125,25 +119,23 @@ class iniUtilities {
     }
 
     function write($iniFile = "") {
-
         if(empty($iniFile)) {
             $iniFile = $this->iniFile;
         }
         if (!is_writeable($iniFile)) {
             return;
         }
-
         $fileHandle = fopen($iniFile, 'wb');
         foreach ($this->cleanArray as $section => $items) {
             if (substr($section, 0, strlen('_blankline_')) === '_blankline_' ) {
-                @fwrite ($fileHandle, "\r\n");
+                fwrite ($fileHandle, "\r\n");
                 continue;
             }
             if (substr($section, 0, strlen('_comment_')) === '_comment_' ) {
-                @fwrite ($fileHandle, "$items\r\n");
+                fwrite ($fileHandle, "$items\r\n");
                 continue;
             }
-            @fwrite ($fileHandle, "[".$section."]\r\n");
+            fwrite ($fileHandle, "[".$section."]\r\n");
             foreach ($items as $key => $value) {
                 if (substr($key, 0, strlen('_blankline_')) === '_blankline_' ) {
                     fwrite ($fileHandle, "\r\n");
@@ -155,11 +147,10 @@ class iniUtilities {
                 }
 
                 $value = addcslashes($value,'');
-                //fwrite ($fileHandle, $key.' = "'.$value."\"\r\n");
-                @fwrite ($fileHandle, $key.' = '.$value."\r\n");
+                fwrite ($fileHandle, $key.' = '.$value."\r\n");
             }
         }
-        @fclose($fileHandle);
+        fclose($fileHandle);
     }
 
     function itemExists($checkSection, $checkItem) {
@@ -195,8 +186,11 @@ class iniUtilities {
     }
 
     function updateItem($addSection, $addItem, $value) {
-
-        $this->cleanArray[$addSection][$addItem] = stripcslashes($value);
+		if(WINDOWS_OS) {
+        	$this->cleanArray[$addSection][$addItem] = $value;
+		} else {
+        	$this->cleanArray[$addSection][$addItem] = stripcslashes($value);
+		}
         return true;
     }
 

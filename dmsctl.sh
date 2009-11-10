@@ -32,7 +32,7 @@ SOFFICE_PIDFILE=$INSTALL_PATH/var/log/soffice.bin.pid
 SOFFICE_PID=""
 SOFFICE_PORT="8100"
 SOFFICEBIN=/usr/bin/soffice
-SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -accept=socket,host=127.0.0.1,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
+SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -\"accept=socket,host=127.0.0.1,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager\""
 SOFFICE_STATUS=""
 
 # Lucene
@@ -302,7 +302,7 @@ firstrun() {
         	fi
 	fi
 
-	touch $INSTALL_PATH/var/bin/.dmsinit.lock
+	touch $INSTALL_PATH/var/bin/dmsinit.lock
 
 	$ZEND_DIR/bin/zendctl.sh restart
 }
@@ -320,7 +320,7 @@ if [ "x$3" != "x" ]; then
 fi
 
 # Are we running for first time
-[[ -e $INSTALL_PATH/var/bin/.dmsinit.lock ]] || firstrun
+[[ -e $INSTALL_PATH/var/bin/dmsinit.lock ]] || firstrun
 
 case $1 in
        help)   help

@@ -256,7 +256,6 @@ class MigrateWizard {
 				exit();
 			}
 		} else {
-			// TODO: Die gracefully
 			$this->util->error("System has been migrated <a href='../../login.php' class='back' style='width:50px;float:none' back button_next>Finish</a>");
 		}
 	}

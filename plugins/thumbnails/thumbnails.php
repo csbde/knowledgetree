@@ -152,17 +152,22 @@ class thumbnailGenerator extends BaseProcessor
             $pdfFile = $pdfDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
 	    }else{
     	    $pdfDir = $default->pdfDirectory;
-            $pdfFile = $pdfDir .'/'. $this->document->iId.'.pdf';
+            $pdfFile = $pdfDir .DIRECTORY_SEPARATOR. $this->document->iId.'.pdf';
 	    }
+		
+        $thumbnaildir = $default->internalVarDirectory.DIRECTORY_SEPARATOR.'thumbnails';
 
-        $thumbnaildir = $default->internalVarDirectory.'/thumbnails';
-        $thumbnailfile = $thumbnaildir.'/'.$this->document->iId.'.jpg';
-
+		if (stristr(PHP_OS,'WIN')) {
+            $thumbnaildir = str_replace('/', '\\', $thumbnaildir);
+            $pdfFile = str_replace('/', '\\', $pdfFile);
+		}
+		
+        $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
         //if thumbail dir does not exist, generate one and add an index file to block access
         if (!file_exists($thumbnaildir)) {
         	 mkdir($thumbnaildir, 0755);
-        	 touch($thumbnaildir.'/index.html');
-        	 file_put_contents($thumbnaildir.'/index.html', 'You do not have permission to access this directory.');
+        	 touch($thumbnaildir.DIRECTORY_SEPARATOR.'index.html');
+        	 file_put_contents($thumbnaildir.DIRECTORY_SEPARATOR.'index.html', 'You do not have permission to access this directory.');
         }
 
         // if there is no pdf that exists - hop out
@@ -170,11 +175,6 @@ class thumbnailGenerator extends BaseProcessor
             $default->log->debug('Thumbnail Generator Plugin: PDF file does not exist, cannot generate a thumbnail');
             return false;
         }
-        
-        if (WINDOWS_OS) {
-            $thumbnailfile = KT_DIR . $thumbnailfile;
-        }
-        
 		// if a previous version of the thumbnail exists - delete it
 		if (file_exists($thumbnailfile)) {
 			@unlink($thumbnailfile);
@@ -182,10 +182,15 @@ class thumbnailGenerator extends BaseProcessor
         // do generation
        // if (extension_loaded('imagick')) {
             $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
-            if (WINDOWS_OS) {
-                $pathConvert = '"' . $pathConvert . '"';
+            // windows path may contain spaces
+
+            if (stristr(PHP_OS,'WIN')) {
+				$cmd = "\"{$pathConvert}\" -size 200x200 \"{$pdfFile}[0]\" -resize 200x200 \"$thumbnailfile\"";
             }
-        	$result = KTUtil::pexec("{$pathConvert} -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile");
+			else {
+				$cmd = "{$pathConvert} -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile";
+			}
+        	$result = KTUtil::pexec($cmd);
         	return true;
         //}else{
         	//$default->log->debug('Thumbnail Generator Plugin: Imagemagick not installed, cannot generate a thumbnail');
@@ -221,18 +226,20 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 		$varDir = $default->internalVarDirectory;
 		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
 		
-		if (WINDOWS_OS) {
-            $thumbnailfile = KT_DIR . $thumbnailfile;
-        }
+		if (stristr(PHP_OS,'WIN')) {
+			$varDir = str_replace('/', '\\', $varDir);
+		}
+		
+		$thumbnailCheck = $varDir . '/thumbnails/'.$documentId.'.jpg';
 
 		// if the thumbnail doesn't exist try to create it
-		if (!file_exists($thumbnailfile)){
+		if (!file_exists($thumbnailCheck)){
             $thumbnailer = new thumbnailGenerator();
             $thumbnailer->setDocument($this->oDocument);
             $thumbnailer->processDocument();
 
             // if it still doesn't exist, return an empty string
-            if (!file_exists($thumbnailfile)) {
+			if (!file_exists($thumbnailCheck)) {
                 return '';
             }
 		}

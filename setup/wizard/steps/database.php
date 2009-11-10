@@ -734,7 +734,7 @@ class database extends Step
     }
 
 	private function parse_mysql_dump($url) {
-	    $handle = @fopen($url, "r");
+	    $handle = fopen($url, "r");
 	    $query = "";
 		if ($handle) {
 			while (!feof($handle)) {
@@ -744,7 +744,7 @@ class database extends Step
      					$query = '';
     				}
 			}
-			@fclose($handle);
+			fclose($handle);
 		}
 	    
 		return true;
@@ -776,35 +776,41 @@ class database extends Step
     }
     
     private function writeBinaries() {
-    	$services = $this->util->getDataFromSession('services');
-    	$binaries = $services['binaries'];
-    	if($binaries) {
-	    	foreach ($binaries as $k=>$bin) {
-	    		if($k != 1) {
-	    			$updateBin = 'UPDATE config_settings c SET c.value = "'.str_replace('\\', '\\\\', $bin).'" where c.group_name = "externalBinary" and c.display_name = "'.$k.'";';
-					$this->util->dbUtilities->query($updateBin);
-	    		}
-	    	}
-    	}
-    	
-    	// if Windows, hard code (relative to SYSTEM_ROOT) where we expect the Zend MSI installer to have placed them
+    	// if Windows, attempt to insert full paths to binaries
     	if (WINDOWS_OS) {
-    	    $winBinaries = array('php' => 'ZendServer\bin\php.exe', 'python' => 'openoffice\program\python.exe', 
-    	                      'java' => 'jre\bin\java.exe', 
-    	                      // since we don't know where convert is yet, let's just assume somewhere for now (manually test)
-    	                      'convert' => 'imagick\convert.exe', 
-    	                      'zip' => 'bin\zip\zip.exe', 'unzip' => 'bin\unzip\unzip.exe');
-    	    foreach ($winBinaries as $displayName => $bin) {
-    	        // what about config settings which don't yet exist?
-    	        // TODO make sure sql install/updates create these entries
-        		$updateBin = 'UPDATE config_settings c SET c.value = "'. str_replace('\\', '\\\\', SYSTEM_ROOT . $bin).'" '
-        		           . 'where c.group_name = "externalBinary" and c.display_name = "'.$displayName.'";';
+    	    $winBinaries = array('php' => array(0 => 'externalBinary', 1 => 'ZendServer\bin\php.exe'), 
+    	    				  	 'python' => array(0 => 'externalBinary', 1 => 'openoffice\program\python.exe'), 
+    	                      	 'java' => array(0 => 'externalBinary', 1 => 'jre\bin\java.exe'), 
+    	                      	 'convert' => array(0 => 'externalBinary', 1 => 'bin\imagemagick\convert.exe'), 
+    	                      	 'df' => array(0 => 'externalBinary', 1 => 'bin\gnuwin32\df.exe'), 
+    	                      	 'zip' => array(0 => 'export', 1 => 'bin\zip\zip.exe'), 
+    	                      	 'unzip' => array(0 => 'import', 1 => 'bin\unzip\unzip.exe'));
+    	    foreach ($winBinaries as $displayName => $bin)
+    	    {
+    	        // continue without attempting to set the path if we can't find the file in the specified location
+    	        if (!file_exists(SYSTEM_ROOT . $bin[1])) continue;
+    	        
+        		$updateBin = 'UPDATE config_settings c SET c.value = "'. str_replace('\\', '\\\\', SYSTEM_ROOT . $bin[1]) . '" '
+        		           . 'where c.group_name = "' . $bin[0] . '" and c.display_name = "'.$displayName.'";';
                 $this->util->dbUtilities->query($updateBin);
             }
     	}
     	// if Linux?
     	else {
-    	    
+	    	$services = $this->util->getDataFromSession('services');
+	    	$binaries = $services['binaries'];
+    	    $python = "/usr/bin/python"; // Python default location
+    	    if(file_exists($python)) {
+    	    	$binaries['python'] = $python;
+    	    }
+	    	if($binaries) {
+		    	foreach ($binaries as $k=>$bin) {
+		    		if($k != 1) {
+		    			$updateBin = 'UPDATE config_settings c SET c.value = "'.$bin.'" where c.group_name = "externalBinary" and c.display_name = "'.$k.'";';
+						$this->util->dbUtilities->query($updateBin);
+		    		}
+		    	}
+	    	}
     	}
     }
     

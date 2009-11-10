@@ -68,12 +68,12 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 		{
 			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
 			$aJavascript[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
-			
-			$oPage =& $GLOBALS['main'];			
+
+			$oPage =& $GLOBALS['main'];
 			if (method_exists($oPage, 'requireJSResources')) {
 				$oPage->requireJSResources($aJavascript);
 			}
-					
+
 			$js = "<script src='resources/js/kt_hidelink.js' type='text/javascript'></script>";
 			return $js._kt('Bulk Upload');
 		}
@@ -116,37 +116,37 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 	 function do_main() {
 	 	$bulkUploadForm = $this->getBulkUploadForm();
 	 	return $bulkUploadForm->render();
-	 }	
+	 }
 
 
 	/**
 	 * Returns the main Bulk Upload Form
-	 * @return KTForm 
+	 * @return KTForm
 	 *
 	 */
 
 	function getBulkUploadForm() {
 		$this->oPage->setBreadcrumbDetails(_kt("bulk upload"));
-		
+
 		//Adding the required Bulk Upload javascript includes
 		$aJavascript[] = 'resources/js/taillog.js';
 		$aJavascript[] = 'resources/js/conditional_usage.js';
 		$aJavascript[] = 'resources/js/kt_bulkupload.js';
-		
+
 		//Loading the widget js libraries to support dynamic "Ajax Loaded" widget rendering
 		//FIXME: The widgets can support this via dynamic call to place libs in the head if they aren't loaded
 		//       jQuery can do this but need time to implement/test.
-		
+
 		$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
 		$aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js';
 		$aJavascript[] = 'resources/js/kt_tinymce_init.js';
     	$aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/jquery.tinymce.js';
-		
+
 		$this->oPage->requireJSResources($aJavascript);
-		
+
 		//FIXME: Might really not need to load these styles, will check l8r
 		//$this->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
-		
+
         //Creating the form
 		$oForm = new KTForm;
 		$oForm->setOptions(array(
@@ -156,19 +156,20 @@ class InetBulkUploadFolderAction extends KTFolderAction {
             'action' => 'upload',
             'fail_action' => 'main',
             'encoding' => 'multipart/form-data',
+            'file_upload' => true,
 		//  'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
             'context' => &$this,
             'extraargs' => $this->meldPersistQuery("","",true),
-			'description' => _kt('The bulk upload facility allows for a number of documents to be added to the document management system. Provide an archive (ZIP) file from your local computer, and all documents and folders within that archive will be added to the document management system.')		
+			'description' => _kt('The bulk upload facility allows for a number of documents to be added to the document management system. Provide an archive (ZIP) file from your local computer, and all documents and folders within that archive will be added to the document management system.')
 		));
-		
+
 		$oWF =& KTWidgetFactory::getSingleton();
-		
+
 		$widgets = array();
 		$validators = array();
-		
+
 		// Adding the File Upload Widget
-		
+
 		//Legacy kt3 widgets don't conform to ktcore type widgets by virtue of the 'name' attribute.
 		//$widgets[] = new KTFileUploadWidget(_kt('Archive file'), , 'file', "", $this->oPage, true, "file");
 
@@ -180,14 +181,14 @@ class InetBulkUploadFolderAction extends KTFolderAction {
                         'value' => '',
                         'description' => _kt('The archive file containing the documents you wish to add to the document management system.'),
 		));
-		
+
 		$aVocab = array('' => _kt('- Please select a document type -'));
         foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
             if(!$oDocumentType->getDisabled()) {
                 $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
             }
         }
-		
+
 		//Adding document type lookup widget
 		$widgets[] = $oWF->get('ktcore.widgets.selection',array(
                 'label' => _kt('Document Type'),
@@ -200,32 +201,32 @@ class InetBulkUploadFolderAction extends KTFolderAction {
                 'label_method' => 'getName',
                 'simple_select' => false,
 		));
-		
+
 		//Adding the quick "add" button for when no meta data needs to be added.
 		//FIXME: This widget should only display if there are any "required" fields for the given document type
 		//       Default/general document field type must also be taken into consideration
-		
+
 		$widgets[] = $oWF->get('ktcore.widgets.button',array(
                 'value' => _kt('Add'),
 				'id' => 'quick_add',
                 'description' => _kt('If you do not need to modify any the metadata for this document (see below), then you can simply click "Add" here to finish the process and add the document.'),
                 'name' => 'btn_quick_submit',
 		));
-		
+
 		$oFReg =& KTFieldsetRegistry::getSingleton();
-		
+
 		$activesets = KTFieldset::getGenericFieldsets();
 		foreach ($activesets as $oFieldset) {
 			$widgets = kt_array_merge($widgets, $oFReg->widgetsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
 			$validators = kt_array_merge($validators, $oFReg->validatorsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
 		}
-		
+
 		//Adding the type_metadata_fields layer to be updated via ajax for non generic metadata fieldsets
 		$widgets[] = $oWF->get('ktcore.widgets.layer',array(
                 'value' => '',
 				'id' => 'type_metadata_fields',
 		));
-		
+
 		$oForm->setWidgets($widgets);
 		$oForm->setValidators($validators);
 
@@ -253,6 +254,7 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 	 */
 	function do_upload() {
 		set_time_limit(0);
+		global $default;
 		$aErrorOptions = array(
             'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
 		);
@@ -268,19 +270,37 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 		$oDocumentType = $this->oValidator->validateDocumentType($requestDocumentType, $aErrorOptions);
 
 		unset($aErrorOptions['message']);
-		$fileName = $_FILES['file'];
-		if ($fileName == '' || $fileName == NULL){
-			$fileName = $_FILES['_kt_attempt_unique_file'];//$_FILES['_kt_attempt_unique_file'];
+		$fileData = $_FILES['file'];
+		$fileName = 'file';
+		if ($fileData == '' || $fileData == NULL){
+			$fileData = $_FILES['_kt_attempt_unique_file'];//$_FILES['_kt_attempt_unique_file'];
+			$fileName = '_kt_attempt_unique_file';
 		}
 
-		$aFile = $this->oValidator->validateFile($fileName, $aErrorOptions);
+		$aFile = $this->oValidator->validateFile($fileData, $aErrorOptions);
+
+		// Lets move the file from the windows temp directory into our own directory
+        $oKTConfig =& KTConfig::getSingleton();
+        $sBasedir = $oKTConfig->get("urls/tmpDirectory");
+        $tmpFilename = tempnam($sBasedir, 'kt_storebulk');
+
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $res = $oStorage->uploadTmpFile($fileData['tmp_name'], $tmpFilename, array('copy_upload' => 'true'));
+
+        // Save the new temp filename in the file data array
+        $fileData['tmp_name'] = $tmpFilename;
+
+        if($res === false){
+            $default->log->error('File could not be copied from the system temp directory.');
+            exit('File could not be copied from the system temp directory.');
+        }
 
 		$matches = array();
 		$aFields = array();
 
 		// author: Charl Mert
 		// Older kt3 form field submission used name='metadata_9 etc and the aFields array contained them.'
-		// Should keep open here for backwards compatibility but will close it to "discover" the other 
+		// Should keep open here for backwards compatibility but will close it to "discover" the other
 		// old interfaces.
 		/*
 		foreach ($_REQUEST as $k => $v) {
@@ -302,9 +322,9 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 
 		//Newer metadata form field catcher that works with ktcore form array type fields named like
 		//name='metadata[fieldset][metadata_9]'
-		
+
 		$aData = $_REQUEST['data'];
-		
+
 		/* //This validation breaks with ajax loaded form items e.g. a non generic fieldset that submits
 		 * //values doesn't pass the check below.
 		$oForm = $this->getBulkUploadForm();
@@ -315,9 +335,9 @@ class InetBulkUploadFolderAction extends KTFolderAction {
         $data = $res['results'];
         var_dump($data);
         */
-		
+
 		$data = $aData;
-		
+
         $doctypeid = $requestDocumentType;
         $aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
         $aSpecificFieldsetIds = KTFieldset::getForDocumentType($doctypeid, array('ids' => false));
@@ -332,9 +352,14 @@ class InetBulkUploadFolderAction extends KTFolderAction {
             	//var_dump($oField->getId());
                 $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
 
-                //Fix for multiselect not submitting data due to the value being an array.
+                //Fix for multiselect not submitting data due to the value not being flat.
+                $sVal = '';
                 if (is_array($val)) {
-                    $val = $val[0];
+                    foreach ($val as $v) {
+                        $sVal .= $v . ", ";
+                    }
+                    $sVal = substr($sVal, 0, strlen($sVal) - 2);
+                    $val = $sVal;
                 }
 
 				if ($oFieldset->getIsConditional())
@@ -354,21 +379,21 @@ class InetBulkUploadFolderAction extends KTFolderAction {
                 }
 
             }
-        }        
+        }
 
 		$aOptions = array(
             'documenttype' => $oDocumentType,
             'metadata' => $MDPack,
 		);
-		
-		$fs =& new KTZipImportStorage('_kt_attempt_unique_file');
+
+		$fs =& new KTZipImportStorage($fileName, $fileData);
 		if(!$fs->CheckFormat()){
 			$sFormats = $fs->getFormats();
 			$this->addErrorMessage(sprintf(_kt("Bulk Upload failed. Archive is not an accepted format. Accepted formats are: .%s") , $sFormats));
 			controllerRedirect("browse", 'fFolderId=' . $this->oFolder->getID());
 			exit;
 		}
-		
+
 		if(KTPluginUtil::pluginIsActive('inet.foldermetadata.plugin'))
 		{
 			require_once(KT_DIR . "/plugins/foldermetadata/import/bulkimport.inc.php");

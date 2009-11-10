@@ -298,7 +298,8 @@ class kt extends client_service  {
 				'modified'=>$item['modified_date'],
 				'checked_out_by'=>$item['checked_out_by'],
                 'relevance'=>$item['relevance'],
-                'qtip'=> $qtip
+                'qtip'=> $qtip,
+				'version'=>$item['version']
             );
     }
 
@@ -323,7 +324,8 @@ class kt extends client_service  {
 				'content_id'=>$item['content_id'],
 				'filesize'=>$item['filesize'],
 				'modified'=>$item['modified_date'],
-				'checked_out_by'=>$item['checked_out_by']
+				'checked_out_by'=>$item['checked_out_by'],
+				'version'=>$item['version']
             );
     }
     

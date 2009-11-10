@@ -45,19 +45,19 @@ class windowsLucene extends windowsService {
 	*
 	* @author KnowledgeTree Team
 	* @access private
-	* @var string 
+	* @var string
 	*/
 	private $javaBin;
-	
+
 	/**
 	* Java JVM path
 	*
 	* @author KnowledgeTree Team
 	* @access private
-	* @var string 
+	* @var string
 	*/
 	private $javaJVM;
-	
+
 	/**
 	* Java System object
 	*
@@ -66,61 +66,61 @@ class windowsLucene extends windowsService {
 	* @var object
 	*/
 	private $javaSystem;
-	
+
 	/**
 	* Lucene executable path
 	*
 	* @author KnowledgeTree Team
 	* @access private
-	* @var string 
+	* @var string
 	*/
 	private $luceneExe;
-	
+
 	/**
 	* Lucene jar path
 	*
 	* @author KnowledgeTree Team
 	* @access private
-	* @var string 
+	* @var string
 	*/
 	private $luceneSource;
-	
+
 	/**
 	* Lucene package name
 	*
 	* @author KnowledgeTree Team
 	* @access private
-	* @var string 
+	* @var string
 	*/
 	private $luceneServer;
-	
+
 	/**
 	* Lucene output log path
 	*
 	* @author KnowledgeTree Team
 	* @access private
-	* @var string 
+	* @var string
 	*/
 	private $luceneOut;
-	
+
 	/**
 	* Lucene error log path
 	*
 	* @author KnowledgeTree Team
 	* @access private
-	* @var string 
+	* @var string
 	*/
 	private $luceneError;
-	
+
 	/**
 	* Lucene directory path
 	*
 	* @author KnowledgeTree Team
 	* @access private
-	* @var string 
+	* @var string
 	*/
 	private $luceneDir;
-	
+
 
 	/**
 	* Service name
@@ -129,9 +129,9 @@ class windowsLucene extends windowsService {
 	* @access public
 	* @param none
 	* @return string
- 	*/	
+ 	*/
 	public $name = "KTLucene";
-	
+
 	/**
 	* Load defaults needed by service
 	*
@@ -151,26 +151,6 @@ class windowsLucene extends windowsService {
 		$this->setLuceneError("lucene-err.txt");
 	}
 
-	
-	/**
-	* Retrieve Status Service
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return string
- 	*/
-	public function status() {
-		$cmd = "sc query {$this->name}";
-		$response = $this->util->pexec($cmd);
-		if($response['out']) {
-			$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
-			return $state;
-		}
-		
-		return '';
-	}
-	
 	/**
 	* Set Java Directory path
 	*
@@ -184,7 +164,7 @@ class windowsLucene extends windowsService {
 			if($this->util->javaBridge()) {
 				$this->javaSystem = new Java('java.lang.System');
 				$this->javaBin = $this->javaSystem->getProperty('java.home').DS."bin";
-				
+
 				return true;
 			}
 		}
@@ -193,10 +173,10 @@ class windowsLucene extends windowsService {
 			$this->javaBin = file_get_contents($this->varDir.'outJVHome');
 			if($this->javaBin != '') return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	* Get Java Directory path
 	*
@@ -208,7 +188,7 @@ class windowsLucene extends windowsService {
 	public function getJavaBin() {
 		return $this->javaBin;
 	}
-	
+
 	/**
 	* Set Lucene directory path
 	*
@@ -220,7 +200,7 @@ class windowsLucene extends windowsService {
 	private function setLuceneDIR($luceneDir) {
 		$this->luceneDir = $luceneDir;
 	}
-	
+
 	/**
 	* Get Lucene directory path
 	*
@@ -246,7 +226,7 @@ class windowsLucene extends windowsService {
 	private function setLuceneExe($luceneExe) {
 		$this->luceneExe = $this->getluceneDir().DS.$luceneExe;
 	}
-	
+
 	/**
 	* Get Lucene executable path
 	*
@@ -260,7 +240,7 @@ class windowsLucene extends windowsService {
 			return $this->luceneExe;
 		return false;
 	}
-	
+
 	/**
 	* Set Lucene source path
 	*
@@ -272,7 +252,7 @@ class windowsLucene extends windowsService {
 	private function setLuceneSource($luceneSource) {
 		$this->luceneSource = $this->getluceneDir().DS.$luceneSource;
 	}
-	
+
 	/**
 	* Get Lucene source path
 	*
@@ -286,7 +266,7 @@ class windowsLucene extends windowsService {
 			return $this->luceneSource;
 		return false;
 	}
-	
+
 	/**
 	* Set Lucene package name
 	*
@@ -298,7 +278,7 @@ class windowsLucene extends windowsService {
 	private function setLuceneServer($luceneServer) {
 		$this->luceneServer = $luceneServer;
 	}
-	
+
 	/**
 	* Get Lucene package name
 	*
@@ -310,7 +290,7 @@ class windowsLucene extends windowsService {
 	public function getLuceneServer() {
 		return $this->luceneServer;
 	}
-	
+
 	/**
 	* Set Lucene output file path
 	*
@@ -322,7 +302,7 @@ class windowsLucene extends windowsService {
 	private function setLuceneOut($luceneOut) {
 		$this->luceneOut = $this->outputDir.$luceneOut;
 	}
-	
+
 	/**
 	* Get Lucene output file path
 	*
@@ -334,7 +314,7 @@ class windowsLucene extends windowsService {
 	public function getLuceneOut() {
 		return $this->luceneOut;
 	}
-	
+
 	/**
 	* Set Lucene error file path
 	*
@@ -346,7 +326,7 @@ class windowsLucene extends windowsService {
 	private function setLuceneError($luceneError) {
 		$this->luceneError = $this->outputDir.$luceneError;
 	}
-	
+
 	/**
 	* Get Lucene error file path
 	*
@@ -358,7 +338,7 @@ class windowsLucene extends windowsService {
 	public function getLuceneError() {
 		return $this->luceneError;
 	}
-	
+
 	/**
 	* Set Java JVM path
 	*
@@ -377,32 +357,13 @@ class windowsLucene extends windowsService {
 		} elseif (file_exists($this->getJavaBin().DS."bin".DS."server".DS."jvm.dll")) {
 			$this->javaJVM = $this->getJavaBin().DS."bin".DS."server".DS."jvm.dll";
 		} else {
-			$javaJVM = $this->useZendJVM();
+			$javaJVM = $this->util->useZendJVM();
 			if(file_exists($javaJVM)) {
 				$this->javaJVM = $javaJVM;
 			}
 		}
 	}
-	
-    public function useZendJVM() {
-	    if($this->util->installEnvironment() == 'Zend') {
-	    	if(WINDOWS_OS) { // For Zend Installation only
-				$sysdir = explode(DS, SYSTEM_DIR);
-				array_pop($sysdir);
-				array_pop($sysdir);
-				$zendsys = '';
-				foreach ($sysdir as $v) {
-					$zendsys .= $v.DS;
-				}
-				$jvm = $zendsys."jre".DS."bin".DS."client".DS."jvm.dll";
-				if(file_exists($jvm))
-					return $jvm;
-	    	}
-	    }
-	    
-	    return false;
-    }
-	
+
 	/**
 	* Get Java JVM path
 	*
@@ -414,7 +375,14 @@ class windowsLucene extends windowsService {
 	public function getJavaJVM() {
 		return $this->javaJVM;
 	}
-	
+
+	private function writeLuceneInstall($cmd) {
+		$luceneInstallFile = SYS_VAR_DIR."bin".DS."luceneinstall.bat";
+		$fp = fopen($luceneInstallFile, "w+");
+		fwrite($fp, $cmd);
+		fclose($fp);
+	}
+
 	/**
 	* Install Lucene Service
 	*
@@ -435,15 +403,45 @@ class windowsLucene extends windowsService {
             		echo "$cmd<br/>";
             		return false;
             	}
-				$response = $this->util->pexec($cmd);
+            	$this->writeLuceneInstall($cmd);
+				//$response = $this->util->pexec($cmd);
 				return $response;
 			}
 			return $state;
 		}
-		
+
 		return $state;
 	}
-	
-	
+
+	/**
+	* Start Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return mixed
+ 	*/
+	public function start() { // User has to manually start the services
+		return false;
+	}
+
+	/**
+	* Retrieve Status Service
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+ 	*/
+	public function status() {
+		$cmd = "sc query {$this->name}";
+		$response = $this->util->pexec($cmd);
+		if($response['out']) {
+			$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
+			return $state;
+		}
+
+		return '';
+	}
 }
 ?>

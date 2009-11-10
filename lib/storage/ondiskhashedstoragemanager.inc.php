@@ -92,13 +92,13 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
      * @param unknown_type $sTmpFilePath
      * @return unknown
      */
-    function uploadTmpFile($sUploadedFile, $sTmpFilePath) {
+    function uploadTmpFile($sUploadedFile, $sTmpFilePath, $aOptions = null) {
 
         //copy the file accross
         if (OS_WINDOWS) {
             $sTmpFilePath = str_replace('\\','/',$sTmpFilePath);
         }
-        if ($this->writeToFile($sUploadedFile, $sTmpFilePath)) {
+        if ($this->writeToFile($sUploadedFile, $sTmpFilePath, $aOptions)) {
             if (file_exists($sTmpFilePath)) {
                 return true;
             } else {

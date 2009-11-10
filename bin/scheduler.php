@@ -51,6 +51,8 @@ if(file_exists($lock)){
     exit(0);
 }
 
+// NOTE commented out because it was causing problems with the new locations in KnowledgeTree 3.7
+/*
 // If this is *nix and we are root then make sure file permisions are correct
 if(!OS_WINDOWS && (get_current_user() == 'root'))
 {
@@ -62,6 +64,7 @@ if(!OS_WINDOWS && (get_current_user() == 'root'))
         $default->log->error('Scheduler: can\'t set owner to nobody - '.$e);
     }
 }
+*/
 
 /* ** Set up functions ** */
 

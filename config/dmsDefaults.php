@@ -483,6 +483,9 @@ class KTInit {
     function initConfig() {
         global $default;
         $oKTConfig = KTConfig::getSingleton();
+        
+		// Override the config setting - KT_DIR is resolved on page load
+        $oKTConfig->setdefaultns('KnowledgeTree', 'fileSystemRoot', KT_DIR);
 
         // TODO: refactor when all the config settings are stored in the database
         // Check for the config cache

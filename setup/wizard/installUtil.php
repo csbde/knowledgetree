@@ -47,7 +47,7 @@ class InstallUtil {
 	private $salt = 'installers';
 	public $dbUtilities = null;
 	public $iniUtilities = null;
-	
+
 	/**
 	* Constructs installation object
 	*
@@ -83,9 +83,9 @@ class InstallUtil {
 			include($file);
 	        $contents = ob_get_contents();
 	        ob_end_clean();
-	        echo $contents;			
+	        echo $contents;
 		}
-		
+
 		return false;
 
 	}
@@ -264,41 +264,40 @@ class InstallUtil {
      */
     public function checkPermission($dir, $create=false, $file = false)
     {
-    	if(!$file)
+    	if(!$file) {
         	$exist = 'Directory doesn\'t exist';
-        else
+    	} else {
         	$exist = 'File doesn\'t exist';
+    	}
         $write = 'Directory not writable';
+        $fwrite = 'File not writable';
         $ret = array('class' => 'cross');
-
-        if(!file_exists($dir)){
+        if(!file_exists($dir)) {
             if($create === false){
-                $this->done = false;
                 $ret['msg'] = $exist;
                 return $ret;
             }
             $par_dir = dirname($dir);
             if(!file_exists($par_dir)){
-                $this->done = false;
                 $ret['msg'] = $exist;
                 return $ret;
             }
             if(!is_writable($par_dir)){
-                $this->done = false;
                 $ret['msg'] = $exist;
                 return $ret;
             }
             mkdir($dir, 0755);
         }
-
-        if(is_writable($dir)){
+        if(is_writable($dir)) {
             $ret['class'] = 'tick';
 
             return $ret;
         }
-
-        $this->done = false;
-        $ret['msg'] = $write;
+        if(!$file) {
+        	$ret['msg'] = $write;
+        } else {
+        	$ret['msg'] = $fwrite;
+    	}
         return $ret;
     }
 
@@ -364,13 +363,13 @@ class InstallUtil {
      * @return boolean
      */
     public function canWriteFile($filename) {
-    	$fh = @fopen($filename, "w+");
-    	$fr = @fwrite($fh, 'test');
+    	$fh = fopen($filename, "w+");
+    	$fr = fwrite($fh, 'test');
     	if($fr === false) {
     		return false;
     	}
 
-    	@fclose($fh);
+    	fclose($fh);
     	return true;
     }
 
@@ -461,7 +460,7 @@ class InstallUtil {
 				return preg_replace('/java:/', '', $r);
 			}
 		}
-		
+
 		return '';
     }
 
@@ -518,6 +517,24 @@ class InstallUtil {
     }
 
 	/**
+	* Check if system needs to be accessed
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
+    public function finishSpecified() {
+    	if(isset($_GET['Finish'])) {
+        	if($_GET['Finish'] == "Finish") {
+            	return true;
+        	}
+    	}
+
+        return false;
+    }
+
+	/**
 	* Check if system needs to be migrated
 	*
 	* @author KnowledgeTree Team
@@ -531,10 +548,10 @@ class InstallUtil {
             	return true;
         	}
     	}
-    	
+
         return false;
 	}
-	
+
 	/**
 	* Check if system needs to be migrated
 	*
@@ -549,46 +566,10 @@ class InstallUtil {
             	return true;
         	}
     	}
-    	
+
         return false;
 	}
-	
-	/**
-	* Check if system needs to be migrated
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return boolean
- 	*/
-	public function loginSpecified() {
-    	if(isset($_GET['completeType'])) {
-        	if($_GET['completeType'] == "Login") {
-            	return true;
-        	}
-    	}
-    	
-        return false;
-	}
-	
-	/**
-	* Check if system needs to be migrated
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return boolean
- 	*/
-	public function zendSpecified() {
-    	if(isset($_GET['completeType'])) {
-        	if($_GET['completeType'] == "Zend Server Configuration") {
-            	return true;
-        	}
-    	}
-    	
-        return false;
-	}
-	
+
 	/**
 	* Check if system needs to be migrated
 	*
@@ -603,12 +584,10 @@ class InstallUtil {
             	return true;
         	}
     	}
-    	
+
         return false;
 	}
-		
-	
-	
+
 	/**
 	* Get session data from package
 	*
@@ -621,10 +600,10 @@ class InstallUtil {
     	if(empty($_SESSION[$package][$class])) {
     		return false;
     	}
-    	
+
     	return $_SESSION[$package][$class];
     }
-    
+
 	/**
 	* Get session data from post
 	*
@@ -709,7 +688,7 @@ class InstallUtil {
     /**
      * Deletes migration lock file if a clean install is chosen
      * This is in case someone changes their mind after choosing upgrade/migrate and clicks back up to this step
-     * 
+     *
      * @author KnowledgeTree Team
      * @access public
      * @return void
@@ -731,10 +710,10 @@ class InstallUtil {
     		return true;
     	return false;
     }
-    
+
     /**
      * Determine type of installation
-     * 
+     *
 	 * @author KnowledgeTree Team
      * @access public
      * @return string
@@ -753,10 +732,10 @@ class InstallUtil {
 	    	}
 	    }
     }
-    
+
     /**
      * Determine if zend php exists
-     * 
+     *
 	 * @author KnowledgeTree Team
      * @access public
      * @return string
@@ -765,16 +744,13 @@ class InstallUtil {
 	    if($this->installEnvironment() == 'Zend') {
 	    	if(WINDOWS_OS) { // For Zend Installation only
 				$sysdir = explode(DS, SYSTEM_DIR);
-				// pop until we find Zend, this should be our Zend root :)
-				$current = array_pop($sysdir);
-				while ($current != 'Zend') {
-				    $current = array_pop($sysdir);
-				}
+				array_pop($sysdir);
+				array_pop($sysdir);
+				array_pop($sysdir);
 				$zendsys = '';
 				foreach ($sysdir as $v) {
 					$zendsys .= $v.DS;
 				}
-				$zendsys .= 'Zend'.DS;
 				$bin = $zendsys."ZendServer".DS."bin".DS;
 				if(file_exists($bin))
 					return $bin;
@@ -782,13 +758,38 @@ class InstallUtil {
 	    		return DS."usr".DS."local".DS."zend".DS."bin".DS;
 	    	}
 	    }
-	    
+
 	    return false;
     }
-    
+
+    public function useZendJVM() {
+	    if($this->util->installEnvironment() == 'Zend') {
+	    	if(WINDOWS_OS) { // For Zend Installation only
+				$sysdir = explode(DS, SYSTEM_DIR);
+				array_pop($sysdir);
+				array_pop($sysdir);
+				array_pop($sysdir);
+				$zendsys = '';
+				foreach ($sysdir as $v) {
+					$zendsys .= $v.DS;
+				}
+				$jvm = $zendsys."jre".DS."bin".DS."client".DS."jvm.dll";
+				if(file_exists($jvm))
+					return $jvm;
+	    	} else {
+	    		$java = "/usr/bin/java";
+	    		if(file_exists($java)) {
+	    			return $java;
+	    		}
+	    	}
+	    }
+
+	    return false;
+    }
+
     /**
      * Determine if mysql exists
-     * 
+     *
 	 * @author KnowledgeTree Team
      * @access public
      * @return string
@@ -805,13 +806,26 @@ class InstallUtil {
 		    	}
 		    }
 	    }
-	    
+
 	    return "mysql"; // Assume its linux and can be executed from command line
     }
 
     public function sqlInstallDir() {
     	return SYSTEM_DIR."sql".DS."mysql".DS."install".DS;
     }
+
+    public function getFileByLine($file) {
+    	$fileLines = array();
+		$file_handle = fopen($file, "rb");
+		while (!feof($file_handle) ) {
+			$line_of_text = fgets($file_handle);
+			$parts = explode('=', $line_of_text);
+			$fileLines[] = trim($line_of_text);
+		}
+		fclose($file_handle);
+		return $fileLines;
+    }
+
    /**
      * Portably execute a command on any of the supported platforms.
      *

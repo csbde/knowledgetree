@@ -6,18 +6,18 @@
 	that things are still set up correctly.</p>
 	
 	<?php
-	if($errors || $warnings){
+//	if($errors || $warnings){
 	    echo '<div>'
 	       . '<a href="http://wiki.knowledgetree.com/Web_Based_Installer#Post_Install" target="_blank">'
 	       . 'Click Here for help on overcoming post install issues</a></div><br/>';
-	}
+//	}
 	?>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
 	
 	<?php if(!$servicesValidation) { ?>
 		<h3>Services</h3>
 		The KnowledgeTree services need to be started to allow for optimal functioning of the search, indexing and pdf generation.
-		<?php if(WINDOWS_OS) { ?>
+		<?php if(!WINDOWS_OS) { ?>
 		To start the services, execute the dmsctl.sh shell script in the KnowledgeTree directory from a terminal.<br/><br/>
 		<?php } else { ?>
 		To start the services, execute the dmsctl.bat batch file in the KnowledgeTree directory from a command prompt, run as administrator.<br/><br/>
@@ -25,6 +25,7 @@
 		<p class="disclaimer">
 		<?php if(WINDOWS_OS) { ?>
 		cd KnowledgeTree_Installation_Folder<br/>
+		dmsctl.bat install<br/>
 		dmsctl.bat start
 		<?php } else { ?>
 		cd /usr/share/knowledgetree-ce<br/>
@@ -161,13 +162,5 @@
     <?php } else { ?>
     	<a href="../../login.php" class="back button_next" style="width:50px;" onclick="javascript:{w.clearSessions();}">Finish</a>
     <?php } ?>
-    <?php
-        if ($install_environment == 'Zend') {
-        	?>
-<!--        	<input type="submit" name="type" value="Zend Server Configuration" class="button_previous"/>-->
-<!--            <a href="<?php //echo "http://".$_SERVER['HTTP_HOST'].":10081/ZendServer/Index"; ?>" class="back" target="_blank" onclick="javascript:{w.clearSessions();}">Zend Server Configuration</a>-->
-            <?php
-        }
-    ?>
 </form>
 <?php if (AJAX) { echo $html->js('form.js'); } ?>
