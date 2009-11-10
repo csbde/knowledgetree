@@ -1,5 +1,9 @@
 <?php
 class ajaxHandler{
+	protected $rawRequestObject=NULL;
+	protected $digestToken=NULL;
+	protected $remoteIp=NULL;
+	
 	public $ret=NULL;
 	public $req=NULL;
 	public $version=NULL;
@@ -9,59 +13,309 @@ class ajaxHandler{
 	public $authenticator=NULL;
 	public $noAuthRequireList=array();
 	public $standardServices=array('system');
+	
+	protected $errors=array();
+	
+	/**
+	 * 1.Parse JSON
+	 * 2.Check Request Validity (hash/ip/expiration token)
+	 * 3.Preliminary Session Check
+	 * 		if no session or invalid session
+	 * 			3.1 Use credentials to create a new session.
+	 * 			3.3 Update Authentication segment with new sessionid
+	 * 4.Authentication Check
+	 * 5.Service Dispatch
+	 */
 
-	public function __construct(&$ret=NULL,&$kt,$noAuthRequests=''){
-		// set a local copy of the json request wrapper
-		$noAuthRequests=is_array($noAuthRequests)?$noAuthRequests:split(',',(string)$noAuthRequests);
-		$this->registerNoAuthRequest($noAuthRequests);
-		$this->req=new jsonWrapper(isset($_GET['request'])?$_GET['request']:(isset($_POST['request'])?$_POST['request']:''));
-		$this->auth=$this->structArray('user,pass,passhash,appType,session,token,version',$this->req->jsonArray['auth']);
-		$this->request=$this->structArray('service,function,parameters',$this->req->jsonArray['request']);
-
-		$add_params=array_merge($_GET,$_POST);
-		unset($add_params['request'],$add_params['datasource']);
-		$this->request['parameters']=array_merge($this->request['parameters'],$add_params);
-
-
+	public function __construct(&$response=NULL,&$kt,$noAuthRequests=''){
+		
+		//========================= Preparations
 		// set the response object
-		if(get_class($ret)=='jsonResponseObject'){
-			$this->ret=&$ret;
+		if(get_class($response)=='jsonResponseObject'){
+			$this->ret=&$response;
 		}else{
 			$this->ret=new jsonResponseObject();
 		}
+		$this->log("[__construct]ENTERING PREPARATIONS");		
+
+		$this->remoteIp = (getenv(HTTP_X_FORWARDED_FOR)) ?  getenv(HTTP_X_FORWARDED_FOR)  :  getenv(REMOTE_ADDR);
+		$this->log("[__construct]Remote IP determined as: {$this->remoteIp}");		
+
+		$noAuthRequests=is_array($noAuthRequests)?$noAuthRequests:split(',',(string)$noAuthRequests);
+		$this->registerNoAuthRequest($noAuthRequests);
+
+		$this->rawRequestObject=isset($_GET['request'])?$_GET['request']:(isset($_POST['request'])?$_POST['request']:'');
+		$this->digestToken=isset($_GET['msgAuth'])?$_GET['msgAuth']:(isset($_POST['msgAuth'])?$_POST['msgAuth']:'');
+		$this->log("[__construct]DigestToken Found: {$this->digestToken}");		
+		
+		$this->ret->addDebug('Raw Request',$this->rawRequestObject);
+		$this->ret->addDebug('DigestToken Received',$this->digestToken);
+		$this->ret->addDebug('Remote IP',$this->remoteIp);
+		
+		
+		if($this->auth['session'])session_id($this->auth['session']);
+		$this->session=session_id();
+		$this->log("[__construct]Session Restarted as: {$this->session}");		
+		//		session_id('BLANK_SESSION');
+		
+		
+		
+		//========================= 1. Parse Json
+		$this->log("[__construct]ENTERING Parse Json");		
+		$this->req=new jsonWrapper($this->rawRequestObject);
+		$this->auth=$this->structArray('user,pass,passhash,appType,session,token,version',$this->req->jsonArray['auth']);
+		$this->request=$this->structArray('service,function,parameters',$this->req->jsonArray['request']);
+
+		//Add additional parameters
+		$add_params=array_merge($_GET,$_POST);
+		unset($add_params['request'],$add_params['datasource']);
+		$this->request['parameters']=array_merge($this->request['parameters'],$add_params);
+		
+		if(!$this->auth['debug'])$this->ret->includeDebug=false;
+		
 		$this->ret->setRequest($this->req->jsonArray);
 		$this->ret->setTitle($this->request['service'].'::'.$this->request['function']);
 		$this->ret->setDebug('Server Versions',$this->getServerVersions());
-
+		
+		
+		
+		
+		
+		//========================= 2. Test System Requirements
+		$this->log("[__construct]ENTERING Test System Requirements");		
 		if(get_class($kt)=='KTAPI'){
 			$this->kt=&$kt;
 		}else{
 			$this->ret->addError('KnowledgeTree Object not Received in '.__CLASS__.' constructor. Quitting.');
 			return $this->render();
 		}
-
-		// Prepare
-		if(!$this->isStandardService()){
-			$this->loadService('auth');
-			$this->authenticator=new auth($this,$this->ret,$this->kt,$this->request,$this->auth);
-			
-	
-			//Make sure a token exists before continuing
-			if(!$this->verifyToken())return $this->render();
-	
-	
-			if(!$this->verifySession()){
-				$this->doLogin();
-				$isAuthRequired=$this->isNoAuthRequiredRequest();
-				$isAuthenticated=$this->isAuthenticated();
-				if(!$isAuthRequired && !$isAuthenticated)return $this->render();
+		
+		
+		//TODO: Get rid of this service
+		$this->loadService('auth');
+		$this->authenticator=new auth($this,$this->ret,$this->kt,$this->request,$this->auth);
+		
+		
+		
+		//========================= 3. Check Request Validity
+		$this->log("[__construct]ENTERING Check Request Validity");		
+		if(!$this->checkRequestValidity())return $this->render();
+		if(!$this->checkTokenValidity())return $this->render();
+		
+		
+		
+		
+		//========================= 4. Preliminary Session Check
+		$this->log("[__construct]ENTERING Preliminary Session Check");		
+		if(!$this->checkSessionValidity()){
+			$this->creatNewSession();				//(login) This may fail, be the user is still allowed to dispatch to the 
+		}
+		
+		
+		
+		
+		
+		//========================= 5. Authentication Check
+		$this->log("[__construct]ENTERING Authentication Check");		
+		if(!$this->isStandardService() && !$this->isNoAuthRequiredRequest()){
+			//Authentication is Required
+			$this->log("[__construct]Determined Authentication is required");		
+			if(!$this->checkCredentials()){
+				throw new Exception('User Credentials Necessary for Requested Service');
+				return $this->render();
 			}
 		}
 		
+		
+		
+		
+		
+		
+		//========================= 6. Service Dispatch
+		$this->log("[__construct]ENTERING Service Dispatch");		
 		$this->dispatch();
-
 		return $this->render();
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	protected function checkRequestValidity(){
+		$this->log("[checkRequestvalidity]Entering...");		
+		$securityHash=md5(md5($this->rawRequestObject).'_'.$this->auth['token'].'_'.$this->getUserPass());
+		$digestToken=$this->digestToken;
+		$this->log("[checkRequestvalidity]comparing {$securityHash} with {$digestToken} as received");		
+
+		$passed=$securityHash==$digestToken;
+
+		$data=array(
+			'Received Token'	=>$digestToken,
+			'Expected Token'	=>$securityHash,
+			'Passed'			=>$passed,
+			''
+		);		
+		$this->ret->addDebug('Message Digest Security',$data);
+		
+		if(!$passed){
+			$this->log("[checkRequestvalidity]Failed Validity Test");		
+			throw new Exception('Message Integrity Was Compromised.');
+		}
+		return $passed;
+	}
+	
+	
+	protected function checkSessionValidity(){
+		$valid=$this->start_session();
+		$this->auth['session']=session_id();
+		$this->ret->setStatus('session_id',session_id());
+		$this->ret->addDebug('Auth',array('Session Check'=>$valid));
+//		echo $valid?'true':'false'.'<br /><br /><br /><br /><br /><br /><br />';
+		return $valid;
+	}
+	
+	//TODO: Alter this to verify whether token was used before or whether it is new
+	protected function checkTokenValidity(){
+		$token=$this->auth['token'];
+		$tokenList=$_SESSION['JAPI_TOKEN_STORE']?$_SESSION['JAPI_TOKEN_STORE']:array();
+		$valid=!in_array($token,$tokenList);
+		if($valid){
+			$tokenList[$token]=$token;
+			$_SESSION['JAPI_TOKEN_STORE']=$tokenList;
+		}else{
+			$this->error('Invalid Token - Already Used');
+			$this->log('Invalid Token - Already Used');
+		}
+		
+		return $valid;
+	}
+	
+	
+	protected function creatNewSession(){
+		$this->ret->addDebug('Auth',array('Attempting to Create a New Session'));
+		if($this->checkCredentials()){
+			$ssession=KTAPI_UserSession::_check_session($this->getUserObject(),$this->remoteIp,$this->auth['appType']);
+			$session=$ssession[0];
+			$this->ret->addDebug('####################################Session Created : '.$session);
+			$this->auth['session']=session_id();
+			$this->ret->setStatus('session_id',session_id());
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	protected function start_session(){
+		$app_type=$this->auth['appType'];
+		$session_id=$this->auth['session'];
+		$ip=$this->remoteIp;
+		
+		$session=$this->kt->get_session();
+		
+		if(get_class($session)=='KTAPI_UserSession'){
+			return true;			
+		}else{
+			$session = $this->kt->get_active_session($session_id, $ip, $app_type);
+			
+			if (PEAR::isError($session)){
+	            return false;
+	        }
+			$this->auth['session']=session_id();
+			$this->ret->setStatus('session_id',session_id());
+			return true;		
+		}
+				
+		
+	}
+	
+	
+	protected function getUserPass(){
+		$l_pass=md5('@NO_AUTH_NEEDED@');
+		$u=$this->getUserObject();
+		if($u){
+			$l_pass=$this->getUserObject()->getPassword();
+		}
+		return $l_pass;
+	}
+	
+	protected function getUserObject(){
+		$kt=$this->kt;
+		$user=$this->auth['user'];
+        $o_user=$kt->get_user_object_by_username($user);
+        
+        if(PEAR::isError($o_user)){
+        	if(!isset($this->errors['usernotfound']))$this->ret->addError('User '.$user.' not found');
+        	$this->errors['usernotfound']=true;
+        	return false;
+        }else{
+        	$this->log("[getUserObject] Found User: ".$o_user->getName());
+        }
+		return $o_user;
+	}
+	
+	protected function checkCredentials(){
+		$user=$this->auth['user'];
+		$passHash=$this->auth['passhash'];
+		
+		$kt=$this->kt;
+		
+        $o_user=$kt->get_user_object_by_username($user);
+        
+        if(PEAR::isError($o_user)){
+        	if(!isset($this->errors['usernotfound']))$this->ret->addError('User '.$user.' not found');
+        	$this->errors['usernotfound']=true;
+        	return false;
+        }
+        
+        try{
+        	$l_pass=$o_user->getPassword();
+        	$l_passHash=md5($l_pass.$this->auth['token']);
+        	
+        	$passed=$passHash==$l_passHash;
+        	
+        	$this->ret->setDebug('Auth',array(
+        		'User Real Password'=>$l_pass,
+        		'User Real Password Hash'=>$l_passHash,
+        		'Received Password Hash'=>$passHash,
+        		'passed'=>$passed
+        	));
+        	
+        	return $passed;
+        	
+        }catch(Exception $e){
+        	throw new Exception('Unknown credentialCheck error encountered');
+        	return false;
+        }
+		
+        return ture;
+	}
+	
+	
+	
+	protected function log($str=''){
+		$this->ret->log($str);
+	}
+	
+	
+	protected function error($errMsg=NULL){
+		$this->ret->addError($errMsg);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	private function structArray($structString=NULL,$arr=NULL){
 		$struct=array_flip(split(',',(string)$structString));
@@ -91,7 +345,17 @@ class ajaxHandler{
 	}
 	
 	public function isStandardService(){
-		return in_array($this->request['service'],$this->standardServices);
+		$isStandardService=in_array($this->request['service'],$this->standardServices);
+		
+		$debug=array(
+			'requested service'	=>$this->request['service'],
+			'standard services'	=>$this->standardServices,
+			'isStandardService'	=>$isStandardService
+		);
+		
+		$this->ret->addDebug('ajaxhandler::isStandardService',$debug);
+		
+		return $isStandardService;
 	}
 	
 
@@ -188,7 +452,17 @@ class ajaxHandler{
 	public function isNoAuthRequiredRequest(){
 		$req=$this->request;
 		$reqString=strtolower("{$req['service']}.{$req['function']}");
-		return in_array($reqString,$this->noAuthRequireList);
+		$requiresAuth=in_array($reqString,$this->noAuthRequireList);
+
+		$debug=array(
+			'requested service  method'	=>$reqString,
+			'no auth required list'	=>$this->noAuthRequireList,
+			'requires auth'	=>$requiresAuth
+		);
+		
+		$this->ret->addDebug('ajaxhandler::isNoAuthRequiredRequest',$debug);
+		
+		return $requiresAuth;
 	}
 
 }
