@@ -50,7 +50,7 @@ if($_GET['datasource'])$RET->isDataSource=true;
 
 $noAuthRequests=array(
 	'auth.ping',
-	'auth.japiLogin',
+	//'auth.japiLogin',
 	'kt.get_all_client_policies',
 	'kt.get_languages',
 	'kt.switchlang'
