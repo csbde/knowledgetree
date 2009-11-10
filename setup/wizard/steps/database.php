@@ -778,19 +778,19 @@ class database extends Step
     private function writeBinaries() {
     	// if Windows, attempt to insert full paths to binaries
     	if (WINDOWS_OS) {
-    	    $winBinaries = array('php' => array(0 => 'externalBinary', 1 => 'ZendServer\bin\php.exe'), 
-    	    				  	 'python' => array(0 => 'externalBinary', 1 => 'openoffice\program\python.exe'), 
-    	                      	 'java' => array(0 => 'externalBinary', 1 => 'jre\bin\java.exe'), 
-    	                      	 'convert' => array(0 => 'externalBinary', 1 => 'bin\imagemagick\convert.exe'), 
-    	                      	 'df' => array(0 => 'externalBinary', 1 => 'bin\gnuwin32\df.exe'), 
-    	                      	 'zip' => array(0 => 'export', 1 => 'bin\zip\zip.exe'), 
-    	                      	 'unzip' => array(0 => 'import', 1 => 'bin\unzip\unzip.exe'));
+    	    $winBinaries = array('php' => array(0 => 'externalBinary', 1 => $this->util->useZendPhp() . 'php.exe'), 
+    	    				  	 'python' => array(0 => 'externalBinary', 1 => SYSTEM_ROOT . 'openoffice\program\python.exe'), 
+    	                      	 'java' => array(0 => 'externalBinary', 1 => SYSTEM_ROOT . 'java\jre\bin\java.exe'), 
+    	                      	 'convert' => array(0 => 'externalBinary', 1 => SYSTEM_ROOT . 'bin\imagemagick\convert.exe'), 
+    	                      	 'df' => array(0 => 'externalBinary', 1 => SYSTEM_ROOT . 'bin\gnuwin32\df.exe'), 
+    	                      	 'zip' => array(0 => 'export', 1 => SYSTEM_ROOT . 'bin\zip\zip.exe'), 
+    	                      	 'unzip' => array(0 => 'import', 1 => SYSTEM_ROOT . 'bin\unzip\unzip.exe'));
     	    foreach ($winBinaries as $displayName => $bin)
     	    {
     	        // continue without attempting to set the path if we can't find the file in the specified location
-    	        if (!file_exists(SYSTEM_ROOT . $bin[1])) continue;
+    	        if (!file_exists($bin[1])) continue;
     	        
-        		$updateBin = 'UPDATE config_settings c SET c.value = "'. str_replace('\\', '\\\\', SYSTEM_ROOT . $bin[1]) . '" '
+        		$updateBin = 'UPDATE config_settings c SET c.value = "'. str_replace('\\', '\\\\', $bin[1]) . '" '
         		           . 'where c.group_name = "' . $bin[0] . '" and c.display_name = "'.$displayName.'";';
                 $this->util->dbUtilities->query($updateBin);
             }
