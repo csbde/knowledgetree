@@ -9,7 +9,7 @@ bin/schedulerTask.sh
 dummy.php
 var/*
 plugins/commercial
-clienttools/Karoo
+clienttools/ExplorerCP
 clienttools/Office
 .gitmodules
 *.out
