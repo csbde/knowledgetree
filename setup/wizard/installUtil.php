@@ -762,18 +762,17 @@ class InstallUtil {
 	    return false;
     }
 
-    public function useZendJVM() {
-	    if($this->util->installEnvironment() == 'Zend') {
+    public function useZendJava() {
+	    if($this->installEnvironment() == 'Zend') {
 	    	if(WINDOWS_OS) { // For Zend Installation only
 				$sysdir = explode(DS, SYSTEM_DIR);
-				array_pop($sysdir);
 				array_pop($sysdir);
 				array_pop($sysdir);
 				$zendsys = '';
 				foreach ($sysdir as $v) {
 					$zendsys .= $v.DS;
 				}
-				$jvm = $zendsys."jre".DS."bin".DS."client".DS."jvm.dll";
+				$jvm = $zendsys."java".DS."jre".DS."bin".DS."java.exe";
 				if(file_exists($jvm))
 					return $jvm;
 	    	} else {
@@ -919,5 +918,8 @@ class InstallUtil {
         return join(" ", $aSafeArgs);
     }
 
+    /*
+    Just Because.
+    */
 }
 ?>

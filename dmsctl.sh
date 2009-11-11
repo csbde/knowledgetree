@@ -32,7 +32,7 @@ SOFFICE_PIDFILE=$INSTALL_PATH/var/log/soffice.bin.pid
 SOFFICE_PID=""
 SOFFICE_PORT="8100"
 SOFFICEBIN=/usr/bin/soffice
-SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -\"accept=socket,host=127.0.0.1,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager\""
+SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -accept=socket,host=127.0.0.1,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
 SOFFICE_STATUS=""
 
 # Lucene
@@ -145,6 +145,7 @@ start_soffice() {
     if [ $RUNNING -eq 1 ]; then
         echo "$0 $ARG: openoffice (pid $SOFFICE_PID) already running"
     else
+	if [ -x $SOFFICEBIN ]; then
         nohup $SOFFICE &> $INSTALL_PATH/var/log/dmsctl.log &
         if [ $? -eq 0 ]; then
             echo "$0 $ARG: openoffice started at port $SOFFICE_PORT"
@@ -154,6 +155,10 @@ start_soffice() {
             echo "$0 $ARG: openoffice could not be started"
             ERROR=3
         fi
+    else 
+        echo "$0 $ARG: path to openoffice binary ($SOFFICEBIN) could not be found"
+        ERROR=3
+    fi
 fi
 }
 
