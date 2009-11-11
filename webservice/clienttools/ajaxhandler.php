@@ -13,6 +13,7 @@ class ajaxHandler{
 	public $authenticator=NULL;
 	public $noAuthRequireList=array();
 	public $standardServices=array('system');
+	public $parameters=array();
 	
 	protected $errors=array();
 	
@@ -70,6 +71,7 @@ class ajaxHandler{
 		$add_params=array_merge($_GET,$_POST);
 		unset($add_params['request'],$add_params['datasource']);
 		$this->request['parameters']=array_merge($this->request['parameters'],$add_params);
+		$this->parameters=$this->request['parameters'];
 		
 		if(!$this->auth['debug'])$this->ret->includeDebug=false;
 		
@@ -183,6 +185,7 @@ class ajaxHandler{
 	
 	//TODO: Alter this to verify whether token was used before or whether it is new
 	protected function checkTokenValidity(){
+		if($this->parameters['permanentURL'])return true;
 		$token=$this->auth['token'];
 		$tokenList=$_SESSION['JAPI_TOKEN_STORE']?$_SESSION['JAPI_TOKEN_STORE']:array();
 		$valid=!in_array($token,$tokenList);
