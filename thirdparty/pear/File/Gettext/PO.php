@@ -3,7 +3,7 @@
 
 /**
  * File::Gettext
- * 
+ *
  * PHP versions 4 and 5
  *
  * @category   FileFormats
@@ -20,11 +20,11 @@
  */
 require_once 'File/Gettext.php';
 
-/** 
+/**
  * File_Gettext_PO
  *
  * GNU PO file reader and writer.
- * 
+ *
  * @author      Michael Wallner <mike@php.net>
  * @version     $Revision$
  * @access      public
@@ -55,7 +55,7 @@ class File_Gettext_PO extends File_Gettext
         if (!isset($file)) {
             $file = $this->file;
         }
-        
+
         // load file
         if (!$contents = @file($file)) {
             return parent::raiseError($php_errormsg . ' ' . $file);
@@ -65,6 +65,35 @@ class File_Gettext_PO extends File_Gettext
         $aMatches = array();
 
         foreach ($contents as $line) {
+            /*
+            Replaced the regular expressions to get translations working on windows.
+            */
+            if (preg_match('/^msgid(.*)$/', $line, $aMatches)) {
+                if ($msgid) {
+                    $this->strings[parent::prepare($msgid)] = parent::prepare($msgstr);
+                }
+                $msgid = trim($aMatches[1]);
+				$msgid = substr($msgid, 1, strlen($msgid) - 2);
+                $msgstr = "";
+                $msgstr_started = false;
+            }
+			//#^msgstr "(.*)"$#
+            if (preg_match('/^msgstr(.*)$/', $line, $aMatches)) {
+                $msgstr = trim($aMatches[1]);
+				$msgstr = substr($msgstr, 1, strlen($msgstr) - 2);
+                $msgstr_started = true;
+            }
+			//#^"(.*)"$#
+            if (preg_match('/^"(.*)"$/', $line, $aMatches)) {
+                if ($msgstr_started) {
+                    $tmp = trim($aMatches[1]);
+					$msgstr .= substr($tmp, 1, strlen($tmp) - 2);
+                } else {
+                    $tmp = trim($aMatches[1]);
+					$msgid .= substr($tmp, 1, strlen($tmp) - 2);
+                }
+            }
+            /* Original code
             if (preg_match('#^msgid "(.*)"$#', $line, $aMatches)) {
                 if ($msgid) {
                     $this->strings[parent::prepare($msgid)] = parent::prepare($msgstr);
@@ -84,6 +113,7 @@ class File_Gettext_PO extends File_Gettext
                     $msgid .= $aMatches[1];
                 }
             }
+            */
         }
         if ($msgid) {
             $this->strings[parent::prepare($msgid)] = parent::prepare($msgstr);
@@ -94,10 +124,10 @@ class File_Gettext_PO extends File_Gettext
             $this->meta = parent::meta2array($this->strings['']);
             unset($this->strings['']);
         }
-        
+
         return true;
     }
-    
+
     /**
      * Save PO file
      *
@@ -110,7 +140,7 @@ class File_Gettext_PO extends File_Gettext
         if (!isset($file)) {
             $file = $this->file;
         }
-        
+
         // open PO file
         if (!is_resource($fh = @fopen($file, 'w'))) {
             return parent::raiseError($php_errormsg . ' ' . $file);
@@ -120,7 +150,7 @@ class File_Gettext_PO extends File_Gettext
             @fclose($fh);
             return parent::raiseError($php_errmsg . ' ' . $file);
         }
-        
+
         // write meta info
         if (count($this->meta)) {
             $meta = 'msgid ""' . "\nmsgstr " . '""' . "\n";
@@ -136,7 +166,7 @@ class File_Gettext_PO extends File_Gettext
                 'msgstr "' . parent::prepare($t, true) . '"' . "\n\n"
             );
         }
-        
+
         //done
         @flock($fh, LOCK_UN);
         @fclose($fh);
