@@ -154,14 +154,14 @@ class thumbnailGenerator extends BaseProcessor
     	    $pdfDir = $default->pdfDirectory;
             $pdfFile = $pdfDir .DIRECTORY_SEPARATOR. $this->document->iId.'.pdf';
 	    }
-		
+
         $thumbnaildir = $default->internalVarDirectory.DIRECTORY_SEPARATOR.'thumbnails';
 
 		if (stristr(PHP_OS,'WIN')) {
             $thumbnaildir = str_replace('/', '\\', $thumbnaildir);
             $pdfFile = str_replace('/', '\\', $pdfFile);
 		}
-		
+
         $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
         //if thumbail dir does not exist, generate one and add an index file to block access
         if (!file_exists($thumbnaildir)) {
@@ -225,11 +225,11 @@ class ThumbnailViewlet extends KTDocumentViewlet {
         global $default;
 		$varDir = $default->internalVarDirectory;
 		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
-		
+
 		if (stristr(PHP_OS,'WIN')) {
 			$varDir = str_replace('/', '\\', $varDir);
 		}
-		
+
 		$thumbnailCheck = $varDir . '/thumbnails/'.$documentId.'.jpg';
 
 		// if the thumbnail doesn't exist try to create it
@@ -266,8 +266,12 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     	global $default;
     	$varDir = $default->internalVarDirectory;
 		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
-		$size = getimagesize($thumbnailfile);
-		return $size[0];
+		if(file_exists($thumbnailfile)){
+		    return 200;
+		}
+		return 0;
+		//$size = getimagesize($thumbnailfile);
+		//return $size[0];
     }
 }
 
