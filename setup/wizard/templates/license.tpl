@@ -9,7 +9,11 @@
 Please read and accept the license agreement below before continuing with the setup.
 </p>
 
-<div class="license_agreement" tabindex="-1">
+<?php if(isset($errors)) { ?>
+	<div class="license_agreement" tabindex="-1" style="height:270px;">
+<?php } else { ?>
+	<div class="license_agreement" tabindex="-1">
+<?php } ?>
 <?php echo file_get_contents($licensePath); ?>
 </div>
 	<input id="accept" type="hidden" name="license" value=""/>
