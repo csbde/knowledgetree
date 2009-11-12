@@ -1463,8 +1463,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.7.0.1'),
-(3,'databaseVersion','3.7.0.1'),
+(2,'knowledgeTreeVersion','3.7.0-1'),
+(3,'databaseVersion','3.7.0-1'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1767,13 +1767,13 @@ INSERT INTO `upgrades` VALUES
 (223, 'sql*3.6.2*0*3.6.2/data_types.sql', 'Add large text and date fields','2009-05-01 00:00:00',1,'upgrade*3.6.2*99*upgrade3.6.2'),
 (224,'upgrade*3.6.2*99*upgrade3.6.2','Upgrade from version 3.6.1 to 3.6.2','2009-05-01 00:00:00',1,'upgrade*3.6.2*99*upgrade3.6.2'),
 (225,'upgrade*3.6.3*99*upgrade3.6.3','Upgrade from version 3.6.2 to 3.6.3','2009-06-01 00:00:00',1,'upgrade*3.6.3*99*upgrade3.6.3'),
-(226,'sql*3.7.0.1*0*3.7.0.1/plugins_admin.sql','Database upgrade to version 3.7.0.1: Plugins admin','2009-09-01 00:00:00',1,'upgrade*3.7.0.1*99*upgrade3.7.0.1'),
-(227,'sql*3.7.0.1*0*3.7.0.1/config_settings.sql','Database upgrade to version 3.7.0.1: Config settings','2009-09-01 00:00:00',1,'upgrade*3.7.0.1*99*upgrade3.7.0.1'),
-(228,'sql*3.7.0.1*0*3.7.0.1/plugin_helper.sql','Database upgrade to version 3.7.0.1: Plugin helper','2009-09-01 00:00:00',1,'upgrade*3.7.0.1*99*upgrade3.7.0.1'),
-(229,'sql*3.7.0.1*0*3.7.0.1/call_home_task.sql','Database upgrade to version 3.7.0.1: Call home task','2009-09-01 00:00:00',1,'upgrade*3.7.0.1*99*upgrade3.7.0.1'),
-(230,'sql*3.7.0.1*0*3.7.0.1/hide_zip_config.sql','Database upgrade to version 3.7.0.1: Hide zip config','2009-09-01 00:00:00',1,'upgrade*3.7.0.1*99*upgrade3.7.0.1'),
-(231,'sql*3.7.0.1*0*3.7.0.1/mime_extractors_reset.sql','Database upgrade to version 3.7.0.1: Mime extractors reset','2009-09-01 00:00:00',1,'upgrade*3.7.0.1*99*upgrade3.7.0.1'),
-(232,'upgrade*3.7.0.1.1*99*upgrade3.7.0.1','Upgrade from version 3.6.3 to 3.7.0.1','2009-09-01 00:00:00',1,'upgrade*3.7.0.1*99*upgrade3.7.0.1');
+(226,'sql*3.7.0-1*0*3.7.0-1/plugins_admin.sql','Database upgrade to version 3.7.0-1: Plugins admin','2009-09-01 00:00:00',1,'upgrade*3.7.0-1*99*upgrade3.7.0-1'),
+(227,'sql*3.7.0-1*0*3.7.0-1/config_settings.sql','Database upgrade to version 3.7.0-1: Config settings','2009-09-01 00:00:00',1,'upgrade*3.7.0-1*99*upgrade3.7.0-1'),
+(228,'sql*3.7.0-1*0*3.7.0-1/plugin_helper.sql','Database upgrade to version 3.7.0-1: Plugin helper','2009-09-01 00:00:00',1,'upgrade*3.7.0-1*99*upgrade3.7.0-1'),
+(229,'sql*3.7.0-1*0*3.7.0-1/call_home_task.sql','Database upgrade to version 3.7.0-1: Call home task','2009-09-01 00:00:00',1,'upgrade*3.7.0-1*99*upgrade3.7.0-1'),
+(230,'sql*3.7.0-1*0*3.7.0-1/hide_zip_config.sql','Database upgrade to version 3.7.0-1: Hide zip config','2009-09-01 00:00:00',1,'upgrade*3.7.0-1*99*upgrade3.7.0-1'),
+(231,'sql*3.7.0-1*0*3.7.0-1/mime_extractors_reset.sql','Database upgrade to version 3.7.0-1: Mime extractors reset','2009-09-01 00:00:00',1,'upgrade*3.7.0-1*99*upgrade3.7.0-1'),
+(232,'upgrade*3.7.0-1*99*upgrade3.7.0-1','Upgrade from version 3.6.3 to 3.7.0-1','2009-09-01 00:00:00',1,'upgrade*3.7.0-1*99*upgrade3.7.0-1');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
