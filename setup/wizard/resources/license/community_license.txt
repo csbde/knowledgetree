@@ -106,51 +106,6 @@ div.Section1
 </style>
 
 <div class=Section1>
-
-<h1><span lang=EN-US style='font-size:18.0pt;font-family:"Times New Roman","serif"'>
-KnowledgeTree Community Edition
-Document Management Made Simple
-Copyright (C) 2008, 2009 KnowledgeTree Inc.
-</span></h1>
-
-<p><span lang=EN-US style='font-family:"Times New Roman","serif"'>
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License version 3 as published by the
-Free Software Foundation.
-</span></p>
-
-<p><span lang=EN-US style='font-family:"Times New Roman","serif"'>
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-details.
-</span></p>
-
-<p><span lang=EN-US style='font-family:"Times New Roman","serif"'>
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-</span></p>
-
-<p><span lang=EN-US style='font-family:"Times New Roman","serif"'>
-You can contact KnowledgeTree Inc., PO Box 7775 #87847, San Francisco,
-California 94120-7775, or email info@knowledgetree.com.
-</span></p>
-
-<p><span lang=EN-US style='font-family:"Times New Roman","serif"'>
-The interactive user interfaces in modified source and object code versions
-of this program must display Appropriate Legal Notices, as required under
-Section 5 of the GNU General Public License version 3.
-</span></p>
-
-<p><span lang=EN-US style='font-family:"Times New Roman","serif"'>
-In accordance with Section 7(b) of the GNU General Public License version 3,
-these Appropriate Legal Notices must retain the display of the "Powered by
-KnowledgeTree" logo and retain the original copyright notice. If the display of the
-logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
-must display the words "Powered by KnowledgeTree" and retain the original
-copyright notice.
-</span></p>
-
 <!-- <h2>GNU General Public License</h2> -->
 
 <!-- The license text is in English and appears broken in RTL as
