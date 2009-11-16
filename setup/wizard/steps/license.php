@@ -1,6 +1,6 @@
 <?php
 /**
-* License Step Controller. 
+* License Step Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -50,10 +50,11 @@ class license extends step {
 	* @var array
 	*/
     protected $error = array();
-    
+
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"license");
-    	$this->temp_variables['licensePath'] = realpath('resources/license/license.txt');
+    	//$this->temp_variables['licensePath'] = realpath('resources/license/license.txt');
+    	$this->temp_variables['licensePath'] = realpath('resources/license/community_license.txt');
     	if(!$this->inStep("license")) {
     		return 'landing';
     	}

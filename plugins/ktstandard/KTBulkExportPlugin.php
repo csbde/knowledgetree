@@ -93,7 +93,7 @@ class KTBulkExportAction extends KTFolderAction {
         if($useQueue){
             DownloadQueue::addItem($exportCode, $sCurrentFolderId, $sCurrentFolderId, 'folder');
 
-            $task_url = KTUtil::kt_url() . '/bin/ajaxtasks/downloadTask.php';
+            $task_url = KTUtil::kt_url() . '/presentation/lookAndFeel/knowledgeTree/bulkdownload/downloadTask.php';
 
           	$oTemplating =& KTTemplating::getSingleton();
           	$oTemplate = $oTemplating->loadTemplate('ktcore/action/bulk_download');

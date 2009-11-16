@@ -713,6 +713,25 @@ class kt extends client_service  {
 
 		$this->response= array('status_code'=>0, 'document_id'=>$document_id, 'content_id'=>$content_id);
     }
+	
+	function create_empty_upload_file($params){
+		$config=KTConfig::getSingleton();
+		$this->addDebug('KTConfig Singleton',$config);
+		$uploadFolder=$config->get('webservice/uploadDirectory');
+		
+		$result = array();
+		
+		if ($file = fopen($uploadFolder."/".$params['filename'], 'w')) {
+			fclose($file);
+			$result['status_code'] = '0';
+			$result['filename'] = $uploadFolder."/".$params['filename'];
+		} else {
+			$result['status_code'] = '1';
+			$result['filename'] = $uploadFolder."/".$params['filename'];
+		}
+		$this->setResponse($result);
+		return true;
+	}
 
     function get_all_client_policies(){
 		$config=KTConfig::getSingleton();

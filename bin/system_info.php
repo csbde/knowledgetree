@@ -165,7 +165,6 @@ function getOSInfo()
         // kernel version = windows version
         // os version = build number
         $kernel_v = $server_arr[3];
-        $os_v = array_pop($server_arr);
     }else if(strpos($server, 'Linux') !== false) {
         $os = 'Linux';
     }else {

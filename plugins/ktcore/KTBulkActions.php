@@ -1156,7 +1156,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         if($useQueue){
             $result = parent::do_performaction();
 
-            $url = KTUtil::kt_url() . '/bin/ajaxtasks/downloadTask.php';
+            $url = KTUtil::kt_url() . '/presentation/lookAndFeel/knowledgeTree/bulkdownload/downloadTask.php';
 
           	$oTemplating =& KTTemplating::getSingleton();
           	$oTemplate = $oTemplating->loadTemplate('ktcore/action/bulk_download');
