@@ -167,7 +167,13 @@ class ajaxHandler{
 		$this->ret->addDebug('Message Digest Security',$data);
 		
 		if(!$passed){
-			$this->log("[checkRequestvalidity]Failed Validity Test");		
+			$this->log("[checkRequestvalidity]Failed Validity Test");
+			if(!$this->isStandardService() && !$this->isNoAuthRequiredRequest()){
+				if(!$this->checkCredentials()){
+					throw new Exception('User Credentials are Incorrect');
+					return $this->render();
+				}				
+			}		
 			throw new Exception('Message Integrity Was Compromised.');
 		}
 		return $passed;
