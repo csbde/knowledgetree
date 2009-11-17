@@ -656,52 +656,49 @@ class kt extends client_service  {
     	$session_id=$arr['session_id'];
     	//error_reporting(E_ALL);
 		$metadata=array();
-		$packed=@json_decode($arr['metadata']);
+		$packed=$arr['metadata'];
 
-		$this->debug('Entered add_document_with_metadata');
+		foreach($meta as $item){
+			$fieldSet=$item['fieldset'];
+			unset($item['fieldset']);
+			$metadata[$fieldSet]['fieldset']=$fieldSet;
+			$metadata[$fieldSet]['fields'][]=$item;
+		}		
 
-		foreach($packed as $key=>$val) {
-			if(!is_array($metadata[$val->fieldset])) {
-				$metadata[$val->fieldset]['fieldset']=$val->fieldset;
-				$metadata[$val->fieldset]['fields']=array();
-			}
-			$metadata[$val->fieldset]['fields'][]=array(
-				'name'=>$val->name,
-				'value'=>$val->value
-			);
+    	$kt=&$this->KT;
+
+    	$upload_manager=new KTUploadManager();
+    	if (!$upload_manager->is_valid_temporary_file($arr['tempfilename'])) 	{
+    		$this->addError('Temporary File Not Valid');
+			$this->setResponse(array('status_code'=>1, 'message'=>'Temporary File Not Valid'));
+			return false;
+    	}
+    	$this->addDebug('','Exited is_valid_temporary file');
+
+    	$folder=&$kt->get_folder_by_id($arr['folder_id']);
+		if (PEAR::isError($folder)){
+			$this->addError('Could not find Folder '.$arr['folder_id']);
+    		$this->setResponse(array('status_code'=>1, 'message'=>'Could not find Folder '.$arr['folder_id']));
+    		return false;
+		}
+		
+    	$document=&$folder->add_document($arr['title'], $arr['filename'], $arr['documenttype'], $arr['tempfilename']);
+		if (PEAR::isError($document)){
+			$this->addError("Could not add Document [title:{$title},filename:{$filename},documenttype:{$documenttype},tempfilename:{$tempfilename}]");
+    		$this->setResponse(array('status_code'=>1, 'message'=>'Could not add Document'));
+    		return false;
 		}
 
-    	$add_result=$this->add_document($arr['session_id'], $arr['folder_id'], $arr['title'], $arr['filename'], $arr['documenttype'], $arr['tempfilename'], $arr['application']);
-		$this->debug('$this->response= from add_document');
-
-		$status_code=$add_result['status_code'];
-		if ($status_code != 0)
-		{
-			$this->response= $add_result;
-		}
-		$document_id=$add_result['document_id'];
-		$content_id=$add_result['content_id'];
+  
+		$document_id=$document->get_documentid();
 
 		$update_result=$this->update_document_metadata($arr['session_id'], $document_id, $metadata, $arr['application'], array());
-		$this->debug('$this->response= from update_document_metadata');
+
 		$status_code=$update_result['status_code'];
 		if ($status_code != 0)
 		{
 			$this->delete_document(array('session_id' => $arr['session_id'], 'document_id' => $document_id, 'reason' => 'Rollback because metadata could not be added', 'application' => $arr['application']));
 			$this->response= $update_result;
-		}
-
-		$kt=&$this->KT;
-    	if (is_array($kt))
-    	{
-    		$this->response= array('status_code'=>1);
-    	}
-
-    	$document=$kt->get_document_by_id($document_id);
-    	$result=$document->removeUpdateNotification();
-    	if (PEAR::isError($result))
-		{
-			// not much we can do, maybe just log!
 		}
 
 
@@ -711,7 +708,7 @@ class kt extends client_service  {
 			// not much we can do, maybe just log!
 		}
 
-		$this->response= array('status_code'=>0, 'document_id'=>$document_id, 'content_id'=>$content_id);
+		$this->response= array('status_code'=>0, 'document_id'=>$document_id);
     }
 	
 	function create_empty_upload_file($params){
