@@ -13,7 +13,7 @@
                 <tr><td>Password</td><td><input name=password type="password"></td></tr>
                 <?php if (!empty($errors)) { ?><tr><td></td><td><span class="error">Could Not Authenticate User</span></td></tr> <?php } ?>
             </table>
-            
+
         </div>
 	</div>
 	<?php
@@ -30,3 +30,4 @@
 <script type="text/javascript">
 	$('#username').focus();
 </script>
+<?php if (AJAX) { echo $html->js('form.js'); } ?>

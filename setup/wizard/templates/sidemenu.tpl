@@ -1,12 +1,16 @@
 <?php
+	$passCurrent = false;
 	foreach ($sideMenuElements as $ele) {
 		?>
 		<span id="<?php echo $ele['step']; ?>" class="<?php echo $ele['class']; ?>">
 			<?php if ($ele['class'] == "current") { ?>
 				<?php echo $ele['name']; ?>
+				<?php $passCurrent = true; ?>
 			<?php } else { ?>
 				<?php if ($ajax) { ?>
+					<?php if(!$passCurrent) { ?>
 					<a tabindex="-1" href='#' onclick='javascript:{w.getUrl("index.php?step_name=<?php echo $ele['step']; ?>", "content_container");}'>
+					<?php } ?>
 						<?php echo $ele['name']; ?>
 					</a>
 				<?php } else { ?>

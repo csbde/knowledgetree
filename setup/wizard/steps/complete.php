@@ -1,6 +1,6 @@
 <?php
 /**
-* Complete Step Controller. 
+* Complete Step Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -44,7 +44,7 @@ class complete extends Step {
 
     /**
      * List of services to check
-     * 
+     *
      * @access private
      * @var array
      */
@@ -55,13 +55,16 @@ class complete extends Step {
     private $migrate_check = false;
     public $silent = true;
     private $servicesValidation = false;
-    
+    private $pathsSection = true;
+    private $databaseSection = true;
+    private $privilegesSection = true;
+
     function doStep() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
         $this->doRun();
     	return 'landing';
     }
-    
+
     function doRun() {
         $this->checkFileSystem(); // check filesystem (including location of document directory and logging)
         $this->checkDb(); // check database
@@ -69,7 +72,7 @@ class complete extends Step {
         $this->checkInstallType();// Set silent mode variables
         $this->storeSilent();// Set silent mode variables
     }
-    
+
     private function checkFileSystem()
     {
         // defaults
@@ -81,36 +84,33 @@ class complete extends Step {
         $this->temp_variables['config'] = '';
         $this->temp_variables['docLocation'] = '';
         $docRoot = '';
-        // retrieve path information from session
-        $config = $this->getDataFromSession("configuration");
+        $config = $this->getDataFromSession("configuration"); // retrieve path information from session
         $paths = $config['paths'];
-
         $html = '<td><div class="%s"></div></td>'
               . '<td %s>%s</td>';
         $pathhtml = '<td><div class="%s"></div></td>'
                   . '<td>%s</td>'
                   . '<td %s>%s</td>';
-        // check paths are writeable
-        if(is_array($paths)) {
+        if(is_array($paths)) { // check paths are writeable
 	        foreach ($paths as $path)
 	        {
 	            $output = '';
 	            $path['path'] = $class = strtolower(substr($path['path'],0,1)).substr($path['path'],1); // Damn you windows
 	            $result = $this->util->checkPermission($path['path']);
-            	$output = sprintf($pathhtml, $result['class'], $path['path'], 
-                                     (($result['class'] == 'tick') ? 'class="green"' : 'class="error"' ), 
+            	$output = sprintf($pathhtml, $result['class'], $path['path'],
+                                     (($result['class'] == 'tick') ? 'class="green"' : 'class="error"' ),
                                      (($result['class'] == 'tick') ? 'Writeable' : 'Not Writeable' ));
 	            $this->temp_variables[($path['setting'] != '') ? $path['setting'] : 'config'] = $output;
 	            if($result['class'] != 'tick') {
+	            	$this->pathsSection = false;
 					$this->paths_check = $result['class'];
 	            }
 	            // for document location check
 	            if ($path['setting'] == 'documentRoot') {
-	                $docRoot = $path['path']; 
+	                $docRoot = $path['path'];
 	            }
 	        }
         }
-        
         // check document path internal/external to web root
         // compare SYSTEM_DIR to root path of documentRoot
         // NOTE preg_replace is to ensure all slash separators are the same (forward slash)
@@ -121,15 +121,15 @@ class complete extends Step {
                                                  . '<td class="warning" colspan="2">Your document directory is set to the default, which is inside the web root. '
                                                  . 'This may present a security problem if your documents can be accessed from the web, '
                                                  . 'working around the permission system in KnowledgeTree.</td>';
-                                                 if($this->paths_check == 'tick')
-                                                 	$this->paths_check = 'cross_orange';
-                                                 $this->warnings[] = 'Move var directory';
+			$this->paths_check = 'cross_orange';
+			$this->warnings[] = 'Move var directory';
+			$this->pathsSection = false;
         }
         else {
             $this->temp_variables['docLocation'] = sprintf($html, 'tick', '', 'Your document directory is outside the web root.');
         }
     }
-    
+
     private function checkDb()
     {
         // defaults
@@ -146,16 +146,17 @@ class complete extends Step {
         $loaded = $this->util->dbUtilities->getDatabaseLink();
         if (!$loaded) {
             $this->temp_variables['dbConnectAdmin'] .= '<td><div class="cross"></div></td>'
-                                               		.  '<td class="error">Unable to connect to database (user: ' 
+                                               		.  '<td class="error">Unable to connect to database (user: '
                                                		. $dbconf['dmsname'] . ')</td>';
 			$this->database_check = 'cross';
             $this->temp_variables['dbConnectAdmin'] .= sprintf($html, 'cross', 'class="error"', 'Unable to connect to database (user: ' . $dbconf['dmsname'] . ')');
+            $this->privilegesSection = false;
         }
         else
         {
             $this->temp_variables['dbConnectAdmin'] .= sprintf($html, 'tick', '', 'Database connectivity successful (user: ' . $dbconf['dmsname'] . ')');
         }
-        
+
         // make db connection - user
         $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['dport'], $dbconf['dmsusername'], $dbconf['dmsuserpassword'], $dbconf['dname']);
         $loaded = $this->util->dbUtilities->getDatabaseLink();
@@ -170,17 +171,16 @@ class complete extends Step {
             {
                 $this->temp_variables['dbPrivileges'] .= '<td style="width:15px;"><div class="cross" style="float:left;"></div></td>'
                                                       .  '<td class="error" style="width:500px;">'
-                                                      .  'Unable to do a basic database query. Error: ' . $this->util->dbUtilities->getLastError()
-                                                      .  '</td>';
-                                                      $this->privileges_check = 'cross';
+                                                      .  'Unable to do a basic database query. Error: ' . $this->util->dbUtilities->getLastError()                                                   .  '</td>';
 				$this->privileges_check = 'cross';
+				$this->privilegesSection = false;
             }
             else
             {
                 $this->temp_variables['dbPrivileges'] .= sprintf($html, 'tick', '', 'Basic database query successful');
-                
+
             }
-            
+
             // check transaction support
             $sTable = 'system_settings';
             $this->util->dbUtilities->startTransaction();
@@ -190,6 +190,7 @@ class complete extends Step {
             if (!$res) {
                 $this->temp_variables['dbTransaction'] .= sprintf($html, 'cross', 'class="error"', 'Transaction support not available in database');
                 $this->privileges_check = 'cross';
+                $this->privilegesSection = false;
             } else {
                 $this->temp_variables['dbTransaction'] .= sprintf($html, 'tick', '', 'Database has transaction support');
             }
@@ -200,7 +201,7 @@ class complete extends Step {
             $this->temp_variables['dbConnectUser'] .= sprintf($html, 'cross', 'class="error"', 'Unable to connect to database (user: ' . $dbconf['dmsusername'] . ')');
         }
     }
-    
+
     private function checkServices()
     {
         $services = new services();
@@ -215,10 +216,10 @@ class complete extends Step {
 				$this->temp_variables[$serviceName."Status"] = 'cross_orange';
 				$this->services_check = 'cross_orange';
 			}
-        }     
+        }
 		return true;
     }
-    
+
     function checkInstallType() {
     	if ($this->util->isMigration()) {
     		$this->migrate_check = true;
@@ -226,7 +227,7 @@ class complete extends Step {
     		$this->migrate_check = false;
     	}
     }
-    
+
     /**
      * Set all silent mode varibles
      *
@@ -238,6 +239,10 @@ class complete extends Step {
     	$this->temp_variables['database_check'] = $this->database_check;
     	$this->temp_variables['migrate_check'] = $this->migrate_check;
     	$this->temp_variables['servicesValidation'] = $this->servicesValidation;
+    	//if(!$this->pathsSection) {die;} else {echo 'huh';}
+    	$this->temp_variables['pathsSection'] = $this->pathsSection;
+    	$this->temp_variables['databaseSection'] = $this->databaseSection;
+    	$this->temp_variables['privilegesSection'] = $this->privilegesSection;
     }
 }
 ?>

@@ -55,24 +55,30 @@
 		        <td><?php echo $server['ssl_enabled']['value']; ?></td>
 		    </tr>
 		</table>
-		
+
 		<h3>Paths and Permissions</h3>
-		
+
 		<table class="conf_paths">
 		<?php
 			if($errors || $warnings) {
 				$width = "50%";
+				$width = "40%";
 			} else {
 				$width = "60%";
 			}
+			$td1 = "10";
+			$td2 = "32%";
+			$td3 = "27%";
+			$td4 = "27%";
+			$td5 = "10";
 		    foreach ($paths as $key => $path){
 		?>
 			<tr>
-				<td width="10"><div class='<?php echo $path['class']; ?>'></div></td>
-				<td width="22%"><?php echo $path['name']; ?>:</td>
+				<td width="<?php echo $td1; ?>"><div class='<?php echo $path['class']; ?>'></div></td>
+				<td width="<?php echo $td2; ?>"><?php echo $path['name']; ?>:</td>
 				<td width="<?php echo $width; ?>"><?php echo $path['path']; ?></td>
 	    		<?php if($path['class'] != 'tick') {	?>
-	    			<td class="error" width="27%"> <?php echo $path['msg']; ?> </td>
+	    			<td class="error" width="<?php echo $td3; ?>"> <?php echo $path['msg']; ?> </td>
 	    			<td width="10">
 					<?php if (AJAX) { ?>
 						<a href="#" class="refresh" onclick="w.refresh('configuration')">Refresh</a>
@@ -81,8 +87,8 @@
 					<?php } ?>
 	    			</td>
 	    		<?php } else { ?>
-	    			<td class="error" width="27%"> </td>
-	    			<td width="10"> </td>
+	    			<td class="error" width="<?php echo $td4; ?>"> </td>
+	    			<td width="<?php echo $td5; ?>"> </td>
 	    		<?php } ?>
 			</tr>
 		<?php

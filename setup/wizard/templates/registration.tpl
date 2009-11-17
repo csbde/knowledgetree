@@ -10,7 +10,11 @@
 	?>
 	<p class="description">
 	Register with KnowledgeTree to receive important product updates.
-	<a href="index.php?step_name=install">Skip Registration</a>
+	<?php if(AJAX) { ?>
+		<a href='#' onclick='javascript:{w.getUrl("index.php?step_name=install", "content_container");}'>Skip Registration</a>
+	<?php } else { ?>
+		<a href="index.php?step_name=install">Skip Registration</a>
+	<?php } ?>
 	</p>
 	<!-- Hidden Fields -->
 	<input type="hidden" id="sendAll" name="" value="" />
@@ -22,16 +26,17 @@
 	<br/>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<span class="error" id="reg_error"></span>
-		<?php if(WINDOWS_OS) $input_width = 40; else { $input_width = 32; } ?>
-		<table>
+		<?php $rowspan = "6";?>
+		<?php if(WINDOWS_OS) $input_width = 40; else { $input_width = 28; } ?>
+		<table class="registration_template">
 		    <tr>
 		        <td><label for='first'>First Name</label></td>
-		        <td rowspan='6' width='5%'>&nbsp;</td>
+		        <td rowspan='<?php echo $rowspan; ?>' width='5%'>&nbsp;</td>
 		        <td><input value="<?php echo $first_name; ?>" name='submitted[first_name]' id='first' size='<?php echo $input_width; ?>' style="float:left;"/></td>
-		        <td rowspan='6' width='5%'>&nbsp;</td>
-		        <td rowspan='6'> <?php echo $html->image('dropbox.png'); ?> </td>
+		        <td rowspan='<?php echo $rowspan; ?>' width='5%'>&nbsp;</td>
+		        <td rowspan='<?php echo $rowspan; ?>'> <?php echo $html->image('dropbox.png'); ?> </td>
 		    </tr>
-		    
+
 		    <tr>
 		        <td><label for='last'>Last Name</label></td>
 		        <td><input value="<?php echo $last_name; ?>" name='submitted[last_name]' id='last' size='<?php echo $input_width; ?>' style="float:left;"/></td>
@@ -43,7 +48,7 @@
 		    <tr>
 		        <td><label for='country'>Country</label></td>
 		        <td>
-		            <select id='country' name='submitted[country]'>
+		            <select id='country' class="registration_select" name='submitted[country]'>
 		                <?php
 		                    $str = '';
 		                    foreach ($countries as $code => $country) {
@@ -52,9 +57,9 @@
 		                    	} else {
 		                    		$str .= "<option name='{$code}' value='{$country}'>{$country}</option>";
 		                    	}
-		                        
+
 		                    }
-		
+
 		                    echo $str;
 		                ?>
 		            </select>
@@ -63,7 +68,7 @@
 		    <tr>
 		        <td><label for='industry'>Industry</label></td>
 		        <td>
-		            <select id='industry' name='submitted[industry]'>
+		            <select id='industry' name='submitted[industry]' class="registration_select">
 		                <?php
 		                    $str = '';
 		                    foreach ($industries as $code => $industry) {
@@ -73,7 +78,7 @@
 		                        	$str .= "<option name='{$code}' value='{$industry}'>{$industry}</option>";
 		                    	}
 		                    }
-		
+
 		                    echo $str;
 		                ?>
 		            </select>
@@ -82,7 +87,7 @@
 		    <tr>
 		        <td><label for='size'>Organization Size</label></td>
 		        <td>
-		            <select id='size' name='submitted[organization_size]'>
+		            <select id='size' name='submitted[organization_size]' class="registration_select">
 		                <?php
 		                    $str = '';
 		                    foreach ($org_size as $code => $size) {
@@ -92,18 +97,18 @@
 		                        	$str .= "<option name='{$code}' value='{$size}'>{$size}</option>";
 	                    		}
 		                    }
-		
+
 		                    echo $str;
 		                ?>
 		            </select>
 		        </td>
 		    </tr>
 		</table>
-		
+
 		<input type='hidden' name='form_id' value='webform_client_form_242' />
 		<input type='hidden' name='op' value='Submit' />
 	</div>
-	
+
 	<input type="submit" name="Previous" value="Previous" onclick="w.pClick()" class="button_previous"/>
 	<input type="submit" name="Next" value="Register" onclick="w.nClick()" class="button_next"/>
 </form>

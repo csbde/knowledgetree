@@ -47,7 +47,7 @@
 		define('AGENT', 'OTHER');
 	}
 	// Define installer environment
-	define('AJAX', 0);
+	define('AJAX', 1);
 	if (substr(php_uname(), 0, 7) == "Windows") {
     	define('WINDOWS_OS', true);
     	define('UNIX_OS', false);
@@ -64,34 +64,25 @@
 	}
 	$wizard = realpath(dirname(__FILE__));
 	// Define environment root
+	$wizard = realpath(dirname(__FILE__));
+	$xdir = explode(DS, $wizard);
+	array_pop($xdir);
+	$sys = '';
+	foreach ($xdir as $k=>$v) {
+		$sys .= $v.DS;
+	}
 	if(isset($_GET['type'])) {
 		switch ($_GET['type']) {
 			case 'migrate' :
-				$wizard = realpath(dirname(__FILE__));
-				$xdir = explode(DS, $wizard);
-				array_pop($xdir);
-				$sys = '';
-				foreach ($xdir as $k=>$v) {
-					$sys .= $v.DS;
-				}
 				$wizard = $sys.'migrate';
 			break;
 			case 'upgrade' :
-				$wizard = realpath(dirname(__FILE__));
-				$xdir = explode(DS, $wizard);
-				array_pop($xdir);
-				$sys = '';
-				foreach ($xdir as $k=>$v) {
-					$sys .= $v.DS;
-				}
 				$wizard = $sys.'upgrade';
 			break;
 			default:
-				
+
 			break;
 		}
-	} else {
-//		die("Environment Error");
 	}
 	$xdir = explode(DS, $wizard);
 	array_pop($xdir);

@@ -67,3 +67,4 @@
     <?php } ?>
 	</div>
 </form>
+<?php if (AJAX) { echo $html->js('form.js'); } ?>

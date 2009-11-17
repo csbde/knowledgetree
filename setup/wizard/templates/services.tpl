@@ -5,9 +5,9 @@
 <?php } ?>
 
 	<p class="title">Checking Service Dependencies</p>
-	
+
 	<p class="description">
-	The wizard will review your system to determine whether you can run KnowledgeTree background services. <br/>Once the scan is completed, you&rsquo;ll see whether your system has met the requirements or whether there are areas you need to address. 
+	The wizard will review your system to determine whether you can run KnowledgeTree background services. <br/>Once the scan is completed, you&rsquo;ll see whether your system has met the requirements or whether there are areas you need to address.
 	</p>
 <!--Continue Message-->
 <?php if($servicesValidation) { ?>
@@ -39,7 +39,7 @@
 	<?php } ?>
 <?php } ?>
 <!--Content-->
-	<div id="step_content_configuration" class="step">
+	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<?php if(!$alreadyInstalled) { ?>
 			<?php if($servicesValidation) { ?>
 				<?php if($javaExeError) { ?>
@@ -93,7 +93,7 @@
 				<tr>
 					<td> <span class='<?php echo $step_vars['java']['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> </td>
 					<td style="width:645px;"> <?php echo $step_vars['java']['found']; ?> </td>
-					<?php 
+					<?php
 					if ($step_vars['java']['class'] != 'tick') {
 					?>
 						<td>
@@ -122,7 +122,7 @@
 							</td>
 						<?php
 					}
-					?>			
+					?>
 				</tr>
 			</table>
 			<?php if($silent) { ?>

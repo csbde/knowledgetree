@@ -64,20 +64,20 @@ select {
 /* *** Layout Styles *** */
 
 #wrapper {
-	background: white;
+	background: white; min-height:410px;
 }
 
 #outer-wrapper {
 	border:1px solid #B7B7B7;
 	margin-top:20px;
-	width:1024px;
+	/*width:1024px;*/width:964px;
 }
 
 #header {
 	background: transparent url("../graphics/dame/installer_head.png") repeat scroll 0% 0%;
-	text-align: right; 
-	font-size: 100%; 
-	color: rgb(167, 167, 167); 
+	text-align: right;
+	font-size: 100%;
+	color: rgb(167, 167, 167);
 	font-family: sans-serif;
 	height: 71px;
 	font-family:sans-serif;
@@ -87,11 +87,12 @@ select {
 #container {
 	background: white url("../graphics/left.png") repeat-y left;
 	overflow:auto;
+	/*min-height:630px;height:410px;*/min-height:410px;
 }
 
 #content {
     margin-left: 220px;
-    height:515px;
+    /*height:515px;*/height:400px;
 }
 
 #content_container {
@@ -104,43 +105,49 @@ select {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
 	overflow: auto;
-	min-height: 400px;
+	/*min-height: 400px;*/min-height: 300px;
 }
 
 #step_content_dependencies {
 	border: 1px solid rgb(207, 207, 207);
-	padding: 5px;
-	min-height:270px;
+	/*padding: 5px;*/padding: 12px;
+	/*min-height:270px;*/min-height:170px;
 }
 
 #step_content_configuration {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:320px;
+	/*min-height:320px;*//*height:330px*/min-height:130px;
+}
+
+#step_content_services {
+	border: 1px solid rgb(207, 207, 207);
+	padding: 5px;
+	min-height:230px;
 }
 
 #step_content_registration {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:320px;
+	/*min-height:320px;*/min-height:100px;
 }
 
 #step_content_registration_confirm {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:400px;
+	/*min-height:400px;*/min-height:300px;
 }
 
 #step_content_install {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:400px;
+	/*min-height:400px;*/min-height:150px;
 }
 
 #step_content_database {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	min-height:365px;
+	/*min-height:365px;*/min-height:240px;
 }
 
 #step_content_database_confirm {
@@ -157,15 +164,15 @@ select {
 
 .license_agreement {
 	overflow: scroll;
-	height:370px;
+	/*height:370px;*/height:270px;
 	overflow-x:hidden;
 	border:1px solid #CFCFCF;
 }
 
 #sidebar {
 	font-size: 85%;
-	color: grey; 
-	font-family: sans-serif; 
+	color: grey;
+	font-family: sans-serif;
 	margin-top: 0px;
 	float: left;
 	padding-top: 20px;
@@ -197,8 +204,8 @@ select {
 
 #logo {
 	position:relative;
-	right:760px;
-	top:20px;
+	/*right:760px;*/right:75%;
+	/*top:20px;*/top:25%;
 }
 
 #install_details {
@@ -208,26 +215,26 @@ select {
 }
 
 .indicator a {
-	background:url("../graphics/dame/tick1.png") no-repeat left; 
-	padding-top:15px;			
-	padding-bottom:10px;		
-	padding-left:30px;			
-	color: #1c9e00;	
+	background:url("../graphics/dame/tick1.png") no-repeat left;
+	padding-top:15px;
+	padding-bottom:10px;
+	padding-left:30px;
+	color: #1c9e00;
 }
 
 .active {
-	background:url("../graphics/dame/tick1.png") no-repeat left; 
-	padding-top:15px;			
-	padding-bottom:10px;		
-	padding-left:30px;			
-	color: #1c9e00;	
+	background:url("../graphics/dame/tick1.png") no-repeat left;
+	padding-top:15px;
+	padding-bottom:10px;
+	padding-left:30px;
+	color: #1c9e00;
 }
 
 .inactive {
 	background:url("../graphics/dame/tick2.png") no-repeat left;
 	padding-top:15px;
 	padding-bottom:10px;
-	padding-left:30px; 
+	padding-left:30px;
 	color:#a7a7a7;
 }
 
@@ -238,7 +245,7 @@ select {
 	padding-left:30px;
 	color: #f36a00;
 }
-	
+
 .tick {
     background: url("../graphics/tick.png") no-repeat;
     height: 16px;
@@ -275,7 +282,7 @@ select {
 }
 
 .conf_paths {
-	width:755px;
+	/*width:755px;*/width:100%;
 }
 
 .errors {
@@ -361,7 +368,7 @@ select {
 .onclick {
      cursor: pointer;
      color: #EC7725;
-     width: 150px;
+     /*width: 150px;*/width:350px;top:12px;position:relative;
 }
 
 .description {
@@ -397,7 +404,7 @@ table#dbconf tr td {
 }
 
 table#dbconf tr td input{
-	
+
 }
 
 .options {
@@ -408,17 +415,17 @@ table#dbconf tr td input{
 	padding: 5px 8px;
 }
 
-#section {
+/*#section {
 
-}
+}*/
 
 .php_ext_details table {
 	width:745px;
 }
 
-.php_ext_details table tr {
-	
-}
+/*.php_ext_details table tr {
+
+}*/
 
 td.ext_indicator {
 	width:10px;
@@ -449,7 +456,7 @@ td.dir_description {
 }
 
 .php_con_details table {
-	width:745px;
+	/*width:745px;*/width:675px;
 }
 
 .error_message {
@@ -471,7 +478,7 @@ td.dir_description {
 	margin-bottom:0.75em;
 	font-weight:bold;
 }
-	
+
 .continue_message {
 	border:none;
 	width:550px;
@@ -533,7 +540,7 @@ td.dir_description {
 
 #loading {
 	bottom:250px;
-	left:500px;
+	/*left:500px;*/left:400px;
 	position:relative;
 	height:0px;
 	width:0px;
@@ -548,4 +555,38 @@ td.dir_description {
 #left_space {
 	float:left;
 	width:50%;
+	font-size:11pt;
+}
+
+#welcome_license_dependencies {
+	height:100px;
+}
+
+.dependency_details {
+	top:12px;
+	position:relative;
+	width:650px;
+}
+
+.dependencies {
+	position:relative;
+	right:30%;
+}
+
+.registration_template {
+	width:90%;
+}
+
+.registration_select {
+    width: 270px;
+}
+
+.description_complete {
+	position:relative;
+	right:35%;
+	width:100%;
+}
+
+.space{
+	padding-bottom:5px;
 }

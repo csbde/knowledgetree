@@ -1,8 +1,8 @@
 <form id="license_dependencies_configuration" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 	<p class="title">Checking PHP Dependencies</p>
 	<p class="description">
-	The wizard will review your system to determine whether you have the right PHP components in place to run KnowledgeTree. <br/>
-	Once the scan is completed, you&rsquo;ll see whether your system has met the requirements or whether there are areas you need to address. 
+	The wizard will review your system to determine whether you have the right PHP components in place to run KnowledgeTree. <!--<br/> -->
+	Once the scan is completed, you&rsquo;ll see whether your system has met the requirements or whether there are areas you need to address.
 	</p>
 <!--Continue Message-->
 	<?php
@@ -10,7 +10,8 @@
 			?>
 				<span class='big_ok'>&nbsp;&nbsp;&nbsp;</span>
 				<span class='description'>Congratulations! Your system is ready to run KnowledgeTree. Click <b>Next</b> to continue.</span>
-				<br/><br/>
+				<br/>
+<!--				<br/>-->
 			<?php
 		}
 	?>
@@ -18,19 +19,29 @@
 	<?php if($errors) { ?>
 		<span class='cross'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 		<span class='error_message'>Your system is not quite ready to run KnowledgeTree. See the list below to determine which areas you need to address. </span>
-		<br/>
+		<!--<br/>-->
 	<?php } elseif ($warnings) { ?>
 			<span class='cross_orange'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-			<span class='warning_message'>Not all optional dependencies required by KnowledgeTree have been met but you will be able to continue.</span><br/>
+			<span class='warning_message'>Not all optional dependencies required by KnowledgeTree have been met but you will be able to continue.</span>
+		<!--<br/>-->
 	<?php } ?>
 	<?php
 		if($errors || $warnings) {
 			?>
-		    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.knowledgetree.com/Web_Based_Installer#PHP_Dependencies" target="_blank" class="description_click">Click here for help on overcoming dependency issues</span></a>
+<!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+		    	<a href="http://wiki.knowledgetree.com/Web_Based_Installer#PHP_Dependencies" target="_blank" class="description_click">Click here for help on overcoming dependency issues</span></a>
 	<?php } ?>
 <!--Content-->
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
-		<h3><?php echo "<span class='{$php}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>PHP Version Check</h3>
+	<?php
+		$iconFlag = "<span class='{$php}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+		$checkHeading = "<h3 style='width:30%; float:left'>".$iconFlag."PHP Version Check</h3>";
+	?>
+<!--		<h3>-->
+			<?php
+//				echo "<span class='{$php}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+			?>
+<!--		PHP Version Check</h3>-->
 		<?php if($silent) { ?>
 			<?php if($versionSection) {
 				$details = 'Hide Details';
@@ -40,25 +51,43 @@
 				$display = 'none';
 			}
 			?>
-			<div id="option1" class="onclick" onclick="javascript:{w.toggleClass('php_details', 'option1');}"><?php echo $details; ?></div>
-			<div class="php_details" style="display:<?php echo $display; ?>">
+			<?php
+				$phpVersionCheck = $checkHeading;
+				$phpVersionCheck .= "<div id='option1' class='onclick' onclick='javascript:{w.toggleClass(\"php_details\", \"option1\");}'>";
+				$phpVersionCheck .= $details."</div>";
+				$phpVersionCheck .= "<div class='php_details dependency_details' style='display:".$display.";'>";
+			?>
+<!--			<div id="option1" class="onclick" onclick="javascript:{w.toggleClass('php_details', 'option1');}"> <?php //echo $details; ?></div>-->
+<!--			<div class="php_details" style="display:<?php //echo $display; ?>">-->
 		<?php } ?>
-		<p class="description">
+		<?php
+			$phpVersionCheck .= "<p class='space'>&nbsp;</p><p class='description'>Your version of PHP must be between 5.0 and 5.2 to run optimally. Versions that are 5.3 or higher  are not recommended.</p>";
+		?>
+<!--		<p class="description">
 		Your version of PHP must be between 5.0 and 5.2 to run optimally. Versions that are 5.3 or higher  are not recommended.
-		</p>
-		<?php echo "<span class='{$version['class']}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{$version['version']}"; ?>
+		</p>-->
+		<?php $phpVersionCheck .= "<span class='{$version['class']}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{$version['version']}"; ?>
+		<?php //echo "<span class='{$version['class']}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{$version['version']}"; ?>
 		<?php if($version['class'] != 'tick') { ?>
 			<?php if (AJAX) { ?>
-				<a href="#" class="refresh" onclick="w.refresh('dependencies')">Refresh</a>
+			<?php $phpVersionCheck .= "<a href='#' class='refresh' onclick='w.refresh('dependencies')'>Refresh</a>"; ?>
+<!--				<a href="#" class="refresh" onclick="w.refresh('dependencies')">Refresh</a>-->
 			<?php } else { ?>
-				<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+			<?php $phpVersionCheck .=  "<a href='javascript:this.location.reload();' class='refresh'>Refresh</a>"; ?>
+<!--				<a href="javascript:this.location.reload();" class="refresh">Refresh</a>-->
 			<?php } ?>
 		<?php } ?>
 		<?php if($silent) { ?>
-			</div>
+			<?php $phpVersionCheck .= "</div>"; ?>
+<!--			</div>-->
 		<?php } ?>
+		<?php echo $phpVersionCheck; ?>
 		<br />
-		<h3><?php echo "<span class='{$php_ext}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>PHP Extensions</h3>
+	<?php
+		$iconFlag = "<span class='{$php_ext}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+		$checkHeading = "<h3 style='width:30%; float:left'>".$iconFlag."PHP Extensions</h3>";
+	?>
+<!--		<h3><?php //echo "<span class='{$php_ext}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>PHP Extensions</h3>-->
 		<?php
 		if($silent) { ?>
 			<?php if($extensionSection) {
@@ -69,12 +98,23 @@
 				$display = 'none';
 			}
 			?>
-			<div id="option2" class="onclick" onclick="javascript:{w.toggleClass('php_ext_details', 'option2');}"><?php echo $details; ?></div>
-			<div class="php_ext_details" style="display:<?php echo $display; ?>">
+			<?php
+				$phpExtensionCheck = $checkHeading;
+				$phpExtensionCheck .= "<div id='option2' class='onclick' onclick='javascript:{w.toggleClass(\"php_ext_details\", \"option2\");}'>";
+				$phpExtensionCheck .= $details."</div>";
+				$phpExtensionCheck .= "<div class='php_ext_details dependency_details' style='display:".$display.";'>";
+			?>
+<!--			<div id="option2" class="onclick" onclick="javascript:{w.toggleClass('php_ext_details', 'option2');}"><?php //echo $details; ?></div>-->
+<!--			<div class="php_ext_details" style="display:<?php //echo $display; ?>">-->
 		<?php } ?>
-		<p class="description">
+		<?php
+			$phpExtensionCheck .= "<p class='space'>&nbsp;</p><p class='description'>The extensions shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.</p>";
+		?>
+<!--		<p class="description">
 			The extensions shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.
-		</p>
+		</p>-->
+		<br/>
+		<?php echo $phpExtensionCheck; ?>
 		<table class="description">
 		<?php
 		    foreach($extensions as $ext) {
@@ -118,7 +158,11 @@
 			</div>
 		<?php } ?>
 		<br />
-		<h3><?php echo "<span class='{$php_con}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>PHP Configuration</h3>
+		<?php
+			$iconFlag = "<span class='{$php_con}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+			$checkHeading = "<h3 style='width:30%; float:left'>".$iconFlag."PHP Configurations</h3>";
+		?>
+<!--		<h3><?php //echo "<span class='{$php_con}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>PHP Configuration</h3>-->
 		<?php
 		if($silent) { ?>
 			<?php if($configurationSection) {
@@ -129,12 +173,25 @@
 				$display = 'none';
 			}
 			?>
-			<div id="option3" class="onclick" onclick="javascript:{w.toggleClass('php_con_details', 'option3');}"><?php echo $details; ?></div>
-			<div class="php_con_details" style="display:<?php echo $display; ?>">
+			<?php
+				$phpDirectivesCheck = $checkHeading;
+				$phpDirectivesCheck .= "<div id='option3' class='onclick' onclick='javascript:{w.toggleClass(\"php_con_details\", \"option3\");}'>";
+				$phpDirectivesCheck .= $details."</div>";
+				$phpDirectivesCheck .= "<div class='php_con_details dependency_details' style='display:".$display.";'>";
+			?>
+<!--			<div id="option3" class="onclick" onclick="javascript:{w.toggleClass('php_con_details', 'option3');}"><?php //echo $details; ?></div>-->
+<!--			<div class="php_con_details" style="display:<?php //echo $display; ?>">-->
 		<?php } ?>
-		<p class="description">
-		The configurations shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.
-		</p>
+		<?php
+			//$phpDirectivesCheck .= "<p class='description'>The configurations shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.</p>";
+			//$phpDirectivesCheck .= "Test";
+			$phpDirectivesCheck .= "<p class='space'>&nbsp;</p><p class='description'>The configurations shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.</p>";
+		?>
+<!--		<p class="description">-->
+<!--		The configurations shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.-->
+<!--		</p>-->
+		<br/>
+		<?php echo $phpDirectivesCheck; ?>
 		<table class="description">
 		<tr>
 		    <th>Setting</th>
