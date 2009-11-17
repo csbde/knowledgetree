@@ -972,17 +972,35 @@ class kt extends client_service  {
 //			}
 //		}
 
+		/**
+
+Fatal error:  Cannot unset string offsets in on line 981
+		 */
+
+//		foreach($meta as $item){
+//			$isSpecial=substr($item['name'],0,2)=='__';
+//			if($isSpecial){
+//				$special[$item['name']]=$item['value'];
+//			}else{
+//				$fieldSet=$item['fieldset'];
+//				unset($item['fieldset']);
+//				$metadata[$fieldSet]['fieldset']=$fieldSet;
+//				$metadata[$fieldSet]['fields'][]=$item;
+//			}		
+//		}
+		
+		$metadata=array();
+		$special=array();
+		
 		foreach($meta as $item){
-			$isSpecial=substr($item['name'],0,2)=='__';
-			if($isSpecial){
+			if(substr($item['name'],0,2)=='__'){
 				$special[$item['name']]=$item['value'];
 			}else{
-				$fieldSet=$item['fieldset'];
-				unset($item['fieldset']);
-				$metadata[$fieldSet]['fieldset']=$fieldSet;
-				$metadata[$fieldSet]['fields'][]=$item;
-			}		
+				$metadata[$item['fieldset']]['fieldset']=$item['fieldset'];
+				$metadata[$item['fieldset']]['fields'][]=array('name'=>$item['name'],'value'=>$item['value']);
+			}
 		}
+		
 		
 		
 		$this->addDebug('after processing',array('metadata'=>$metadata,'special'=>$special));
