@@ -185,11 +185,9 @@ class ajaxHandler{
 		$this->auth['session']=session_id();
 		$this->ret->setStatus('session_id',session_id());
 		$this->ret->addDebug('Auth',array('Session Check'=>$valid));
-//		echo $valid?'true':'false'.'<br /><br /><br /><br /><br /><br /><br />';
 		return $valid;
 	}
 	
-	//TODO: Alter this to verify whether token was used before or whether it is new
 	protected function checkTokenValidity(){
 		if($this->parameters['permanentURL'])return true;
 		$token=$this->auth['token'];
@@ -395,6 +393,7 @@ class ajaxHandler{
 		}
 	}
 
+	//TODO: Remove this function - deprecated
 	protected function verifyToken(){
 		$token=isset($this->auth['token'])?$this->auth['token']:NULL;
 		if(!$token){
@@ -422,14 +421,17 @@ class ajaxHandler{
 		return $dir;		
 	}
 
+	//TODO: Remove this function - deprecated
 	protected function verifySession(){
 		return $this->authenticator->pickup_session();
 	}
 
+	//TODO: Remove this function - deprecated
 	protected function isAuthenticated(){
 		return $this->authenticator->pickup_session();
 	}
 
+	//TODO: Remove this function - deprecated
 	protected function doLogin(){
 		if($this->authenticator->login()){
 			return true;
