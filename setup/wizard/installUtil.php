@@ -75,6 +75,8 @@ class InstallUtil {
 	}
 
 	public function error($error) {
+		$template_vars['install_type'] = strtoupper(substr(INSTALL_TYPE,0,1)).substr(INSTALL_TYPE,1);
+		$template_vars['install_version'] = $this->readVersion();
 		$template_vars['error'] = $error;
 		$file = "templates/error.tpl";
 		if (file_exists($file)) {
@@ -85,7 +87,6 @@ class InstallUtil {
 	        ob_end_clean();
 	        echo $contents;
 		}
-
 		return false;
 
 	}
@@ -824,6 +825,26 @@ class InstallUtil {
 		}
 		fclose($file_handle);
 		return $fileLines;
+    }
+
+    public function readVersion() {
+    	$verFile = SYSTEM_DIR."docs".DS."VERSION.txt";
+    	if(file_exists($verFile)) {
+			$foundVersion = file_get_contents($verFile);
+			return $foundVersion;
+    	}
+
+		return false;
+    }
+
+    public function getVersionType() {
+    	$verFile = SYSTEM_DIR."docs".DS."VERSION-TYPE.txt";
+    	if(file_exists($verFile)) {
+			$type = file_get_contents($verFile);
+			return $type;
+    	}
+
+		return false;
     }
 
    /**

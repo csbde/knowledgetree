@@ -5,7 +5,7 @@
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright (C) 2008,2009 KnowledgeTree Inc.
-* 
+*
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -118,4 +118,13 @@
 		$asys .= $v.DS;
 	}
     define('SYSTEM_ROOT', $asys);
+	$verType = SYSTEM_DIR."docs".DS."VERSION-TYPE.txt";
+    if(file_exists($verType)) {
+		$type = file_get_contents($verType);
+    }
+    if($type) {
+		define('INSTALL_TYPE', $type);
+    } else {
+		define('INSTALL_TYPE', 'community');
+	}
 ?>

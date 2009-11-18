@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : config.xml
+    Created on : 01 July 2009, 9:57 AM
+    Author     : KnowledgeTree Team
+    Description: Installer steps
+-->
+
+<install version="3.7" type="Community Edition">
+    <steps>
+        <step name="Welcome">welcome</step>
+        <step name="License Agreement">license</step>
+        <step name="Install Type">installtype</step>
+        <step name="PHP Dependencies" mode="silent">dependencies</step>
+        <step name="System Configuration" order="2">configuration</step>
+        <step name="Service Dependency" order="3" mode="silent">services</step>
+        <step name="Database Configuration" order="1">database</step>
+        <step name="Registration">registration</step>
+        <step name="Install" order="4" mode="silent">install</step>
+        <step name="Complete">complete</step>
+    </steps>
+ </install>

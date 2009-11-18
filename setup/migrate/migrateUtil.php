@@ -41,7 +41,7 @@
 */
 require_once("../wizard/installUtil.php");
 
-class MigrateUtil extends InstallUtil {	
+class MigrateUtil extends InstallUtil {
 	/**
 	* Check if system needs to be migrated
 	*
@@ -55,24 +55,26 @@ class MigrateUtil extends InstallUtil {
 
 			return true;
 		}
-		
+
 		return false;
 	}
 
 	public function error($error) {
+		$template_vars['migrate_type'] = strtoupper(substr(INSTALL_TYPE,0,1)).substr(INSTALL_TYPE,1);
+		$template_vars['migrate_version'] = $this->readVersion();
 		$template_vars['error'] = $error;
 		$file = "templates/error.tpl";
-		if (!file_exists($file)) {
+		if (file_exists($file)) {
 			extract($template_vars); // Extract the vars to local namespace
 			ob_start();
 			include($file);
 	        $contents = ob_get_contents();
 	        ob_end_clean();
-	        echo $contents;			
+	        echo $contents;
 		}
 		return false;
 	}
-	
+
 	/**
 	* Check if system needs to be migrated
 	*
@@ -89,20 +91,20 @@ class MigrateUtil extends InstallUtil {
 
     	return true;
     }
-    
+
     public function loadInstallServices() {
     	require_once("../wizard/steps/services.php");
     	$s = new services();
     	return $s->getServices();
     }
-    
+
     public function loadInstallService($serviceName) {
     	require_once("../wizard/lib/services/service.php");
     	require_once("../wizard/lib/services/".OS."Service.php");
     	require_once("../wizard/lib/services/$serviceName.php");
     	return new $serviceName();
     }
-    
+
     public function getPort($location) {
     	if(WINDOWS_OS) {
     		$myIni = "my.ini";
@@ -115,7 +117,7 @@ class MigrateUtil extends InstallUtil {
 			$dbSettings = $this->iniUtilities->getSection('mysqladmin');
     		return $dbSettings['port'];
     	}
-    	
+
     	return '3306';
     }
 }

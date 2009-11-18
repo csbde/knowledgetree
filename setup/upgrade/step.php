@@ -52,7 +52,7 @@ class Step
 	* @var array
 	*/
     protected $temp_variables = array();
-    
+
 	/**
 	* List of errors encountered by step
 	*
@@ -70,7 +70,7 @@ class Step
 	* @var array
 	*/
     protected $warnings = array();
-    
+
 	/**
 	* Flag to store class information in session
 	*
@@ -79,7 +79,7 @@ class Step
 	* @var array
 	*/
     protected $storeInSession = false;
-    
+
 	/**
 	* Flag if step needs to be upgraded
 	*
@@ -88,7 +88,7 @@ class Step
 	* @var array
 	*/
     protected $runUpgrade = false;
-    
+
 	/**
 	* Step order
 	*
@@ -97,7 +97,7 @@ class Step
 	* @var string
 	*/
     protected $order = false;
-    
+
 	/**
 	* Flag if step needs to run silently
 	*
@@ -106,15 +106,15 @@ class Step
 	* @var boolean
 	*/
     protected $silent = false;
-    
+
     public $displayFirst = false;
-    
+
     private $salt = 'upgrade';
-    
+
     public function __construct() {
     	$this->util = new UpgradeUtil();
     }
-    
+
 	/**
 	* Returns step state
 	*
@@ -137,7 +137,7 @@ class Step
     public function displayFirst() {
     	return $this->displayFirst;
     }
-    
+
     /**
 	* Returns step variables
 	*
@@ -174,7 +174,7 @@ class Step
     public function getWarnings() {
         return $this->warnings;
     }
-    
+
 	/**
 	* Load default step values
 	*
@@ -184,7 +184,7 @@ class Step
 	* @return void
 	*/
     public function loadDefaults() {
-		
+
     }
 
 	/**
@@ -262,7 +262,7 @@ class Step
 
         return false;
     }
-    
+
     /**
     * Checks if Upgrade button has been clicked
     *
@@ -274,7 +274,7 @@ class Step
     function upgrade() {
         return isset($_POST['Upgrade']);
     }
-    
+
     /**
     * Checks if Upgrade button has been clicked
     *
@@ -301,7 +301,7 @@ class Step
             return true;
         return false;
     }
-    
+
 	/**
 	* Load session data to post
 	*
@@ -315,10 +315,10 @@ class Step
             return false;
         }
         $_POST = isset($_SESSION[$this->salt]['upgrade'][$class]) ? $_SESSION[$this->salt]['upgrade'][$class]: '';
-		
+
         return true;
     }
-    
+
 	/**
 	* Get session data from post
 	*
@@ -331,10 +331,10 @@ class Step
     	if(empty($_SESSION[$this->salt][$class])) {
     		return false;
     	}
-    	
+
     	return $_SESSION[$this->salt][$class];
     }
-    
+
 	/**
 	* Safer way to return post data
 	*
@@ -346,7 +346,7 @@ class Step
     public function getPostSafe($key) {
     	return isset($_POST[$key]) ? $_POST[$key] : "";
     }
-    
+
 	/**
 	* Safer way to return post data
 	*
@@ -358,7 +358,7 @@ class Step
     public function getPostBoolean($key) {
     	return isset($_POST[$key]) ? $_POST[$key] : false;
     }
-    
+
 	/**
 	* Runs step upgrade if required
 	*
@@ -370,10 +370,10 @@ class Step
     public function upgradeStep() {
 		return '';
     }
-    
+
     /**
      * Return whether or not to store a step information in session
-     * 
+     *
      * @author KnowledgeTree Team
      * @param none
      * @access public
@@ -382,10 +382,10 @@ class Step
     public function storeInSession() {
     	return $this->storeInSession;
     }
-    
+
     /**
      * Return whether or not to a step has to be upgraded
-     * 
+     *
      * @author KnowledgeTree Team
      * @param none
      * @access public
@@ -394,14 +394,14 @@ class Step
     public function runUpgrade() {
     	return $this->runUpgrade;
     }
-    
+
     public function setPostConfig() {
     	return '';
     }
-    
+
     /**
      * Return whether or not to a step has to be in silent mode
-     * 
+     *
      * @author KnowledgeTree Team
      * @param none
      * @access public
@@ -410,7 +410,7 @@ class Step
     public function silentMode() {
     	return $this->silent;
     }
-    
+
 	/**
 	* Set step errors
 	*
@@ -422,7 +422,7 @@ class Step
     public function setErrors($error) {
         $this->error = $error;
     }
-    
+
 	/**
 	* Get session data from package
 	*
@@ -435,10 +435,10 @@ class Step
     	if(empty($_SESSION[$package][$class])) {
     		return false;
     	}
-    	
+
     	return $_SESSION[$package][$class];
     }
-    
+
     protected function readConfig() {
     	$wizConfigHandler = new configuration();
     	$path = $wizConfigHandler->readConfigPathIni();
@@ -460,7 +460,7 @@ class Step
         $this->proxyPath = realpath($this->proxyPath."/proxies");
         $this->storeSilent();
     }
-    
+
     protected function readVersion() {
     	$verFile = SYSTEM_DIR."docs".DS."VERSION.txt";
     	if(file_exists($verFile)) {
@@ -470,11 +470,11 @@ class Step
 			$this->error[] = "KT installation version not found";
     	}
 
-		return false;    	
+		return false;
     }
-    
+
     protected function storeSilent() {
-        
+
     }
 }
 
