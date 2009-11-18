@@ -6,7 +6,7 @@
 	{i18n}All rights reserved.{/i18n}<br>
 {/if}
 
-{i18n}Portions copyright The Jam Warehouse Software (Pty) Limited.{/i18n}
+{i18n}.{/i18n}
 <br>
 {if ($smallVersion == 'Community Edition')}
 	{i18n}This program is free software and published under the <a href=" http://www.gnu.org/licenses/">GNU General Public License version 3</a>{/i18n}<br><br>

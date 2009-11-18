@@ -10743,7 +10743,7 @@ msgid "Plus"
 msgstr "Más"
 
 #: i18n/templates.c:5975
-msgid "Portions copyright The Jam Warehouse Software (Pty) Limited."
+msgid "."
 msgstr "El derecho de autor porciones Atasco Almacén de Software (Pty) Limited."
 
 #: i18n/templates.c:1370

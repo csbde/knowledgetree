@@ -10833,8 +10833,8 @@ msgid "Plus"
 msgstr "Mais"
 
 #: i18n/templates.c:5975
-msgid "Portions copyright The Jam Warehouse Software (Pty) Limited."
-msgstr "Portions copyright The Jam Warehouse Software (Pty) Limited."
+msgid "."
+msgstr "."
 
 #: i18n/templates.c:1370
 #: i18n/templates.c:5162

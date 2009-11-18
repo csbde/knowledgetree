@@ -5972,7 +5972,7 @@ gettext("&copy; 2008, 2009 <a href=\" http://www.knowledgetree.com/\">KnowledgeT
 gettext("All rights reserved.");
 
 /* ./templates/ktcore/principals/about.smarty */
-gettext("Portions copyright The Jam Warehouse Software (Pty) Limited.");
+gettext(".");
 
 /* ./templates/ktcore/principals/about.smarty */
 gettext("This program is free software and published under the <a href=\" http://www.gnu.org/licenses/\">GNU General Public License version 3</a>");

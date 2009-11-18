@@ -10226,7 +10226,7 @@ msgid "Plus"
 msgstr "Plus"
 
 #: i18n/templates.c:6746
-msgid "Portions copyright The Jam Warehouse Software (Pty) Limited."
+msgid "."
 msgstr "Copyright The Jam Warehouse Software (Pty) Limited."
 
 # C:\Programmi\xampp\htdocs\kt3\plugins\ktcore\admin\workflows.php:707
