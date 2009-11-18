@@ -119,6 +119,7 @@
 	}
     define('SYSTEM_ROOT', $asys);
 	$verType = SYSTEM_DIR."docs".DS."VERSION-TYPE.txt";
+	$type = false;
     if(file_exists($verType)) {
 		$type = file_get_contents($verType);
     }
