@@ -17,29 +17,34 @@ set SOFFICE_PORT=8100
 set OpenofficeServiceName=KTOpenoffice
 set SchedulerServiceName=KTScheduler
 set LuceneServiceName=KTLucene
+set MySQLServiceName=MySQL_ZendServer51
 
 rem ============= MAIN ==============
-if NOT ""%1"" == ""help"" IF NOT ""%1"" == ""start"" IF NOT ""%1"" == ""path"" IF NOT ""%1"" == ""stop"" IF NOT ""%1"" == ""restart"" IF NOT ""%1"" == ""install"" IF NOT ""%1"" == ""uninstall"" goto help
+IF NOT ""%1"" == ""start"" IF NOT ""%1"" == ""path"" IF NOT ""%1"" == ""stop"" IF NOT ""%1"" == ""restart"" IF NOT ""%1"" == ""install"" IF NOT ""%1"" == ""uninstall"" goto help
 goto %1
 
 :help
 echo USAGE:
 echo.
-echo dmsctl.bat ^<start^|stop^|restart^|install^|uninstall^>
+echo dmsctl.bat ^<start^|stop^|restart^|install^|uninstall^> [servicename]
 echo.
-echo help	- this screen
+echo help		- this screen
 echo.
-echo start	- start the services
-echo stop	- stop the services
-echo restart	- restart the services
+echo start		- start the services
+echo stop		- stop the services
+echo restart		- restart the services
 echo. 
-echo install	- install the services
+echo install		- install the services
 echo uninstall	- uninstall the services
+echo. 
+echo servicename	- optional service name to start/stop only that service.
+echo 		  only mysql is supported for individual control at this time.
 echo. 
 
 goto end
 
 :start
+IF ""%2"" == ""mysql"" goto start_mysql
 echo Starting services
 sc start %OpenofficeServiceName%
 sc start %LuceneServiceName%
@@ -48,12 +53,23 @@ sc start %SchedulerServiceName%
 goto end
 
 :stop
+IF ""%2"" == ""mysql"" goto stop_mysql
 echo Stopping services
 sc stop %LuceneServiceName% 
 sc stop %SchedulerServiceName%
 sc stop %OpenofficeServiceName%
 ping -n 7 127.0.0.1 > null
 IF ""%1"" == ""restart"" goto start
+goto end
+
+:start_mysql
+echo Starting MySQL Service
+sc start %MySQLServiceName%
+goto end
+
+:stop_mysql
+echo Stopping MySQL Service
+sc stop %MySQLServiceName% 
 goto end
 
 :restart

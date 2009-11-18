@@ -10067,7 +10067,7 @@ msgid "Plus"
 msgstr "Plus"
 
 #: i18n/templates.c:6746
-msgid "Portions copyright The Jam Warehouse Software (Pty) Limited."
+msgid "."
 msgstr "Droit de reproduction des portions The Jam Warehouse Software (Pty) Limited."
 
 #: i18n/templates.c:2624
