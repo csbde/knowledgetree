@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Boot KnowledgeTree services
 # chkconfig: 2345 55 25
 # description: KnowledgeTree Services
@@ -40,6 +38,7 @@ LUCENE_PIDFILE=$INSTALL_PATH/var/log/lucene.pid
 LUCENE_PID=""
 LUCENE="$JAVABIN -Xms512M -Xmx512M -jar ktlucene.jar"
 LUCENE_STATUS=""
+:q
 
 # Scheduler
 SCHEDULER_PATH="$INSTALL_PATH/bin/"
@@ -48,6 +47,13 @@ SCHEDULER_PID=""
 SCHEDULERBIN="$INSTALL_PATH/var/bin/schedulerTask.sh"
 SCHEDULER="$SCHEDULERBIN"
 SCHEDULER_STATUS=""
+
+# MySQL: modify if needed for your installation
+MYSQL_PATH=/etc/init.d
+MYSQLBIN=mysql
+MYSQL_PIDFILE=/var/run/mysqld/mysqld.pid
+MYSQL_PID=""
+MYSQL_STATUS=""
 
 get_pid() {
     PID=""
@@ -89,6 +95,16 @@ get_scheduler_pid() {
     fi
     if [ $PID -gt 0 ]; then
         SCHEDULER_PID=$PID
+    fi
+}
+
+get_mysql_pid() {
+    get_pid $MYSQL_PIDFILE
+    if [ ! $PID ]; then
+        return 
+    fi
+    if [ $PID -gt 0 ]; then
+        MYSQL_PID=$PID
     fi
 }
 
@@ -134,6 +150,18 @@ is_scheduler_running() {
         SCHEDULER_STATUS="scheduler not running"
     else
         SCHEDULER_STATUS="scheduler already running"
+    fi
+    return $RUNNING
+}
+
+is_mysql_running() {
+    get_mysql_pid
+    is_service_running $MYSQL_PID
+    RUNNING=$?
+    if [ $RUNNING -eq 0 ]; then
+        MYSQL_STATUS="mysql not running"
+    else
+        MYSQL_STATUS="mysql already running"
     fi
     return $RUNNING
 }
@@ -272,12 +300,54 @@ stop_scheduler() {
 	fi
 }
 
+start_mysql() {
+    is_mysql_running
+    RUNNING=$?
+
+    if [ $RUNNING -eq 1 ]; then
+        echo "$0 $ARG: mysql (pid $MYSQL_PID) already running"
+    else
+        nohup  $MYSQL_PATH/$MYSQLBIN start &> $INSTALL_PATH/var/log/dmsctl.log &
+		if [ $? -eq 0 ]; then
+            echo "$0 $ARG: mysql started"
+            ps ax | grep $MYSQLBIN | awk {'print $1'} > $MYSQL_PIDFILE
+	        sleep 2
+        else
+            echo "$0 $ARG: mysql could not be started"
+            ERROR=3
+        fi
+    fi
+}
+
+stop_mysql() {
+    NO_EXIT_ON_ERROR=$1
+    is_mysql_running
+    RUNNING=$?
+
+    if [ $RUNNING -eq 0 ]; then
+        echo "$0 $ARG: $MYSQL_STATUS"
+        if [ "x$NO_EXIT_ON_ERROR" != "xno_exit" ]; then
+            exit
+        else
+            return
+        fi
+	fi
+    get_mysql_pid
+	if kill $MYSQL_PID ; then
+	    echo "$0 $ARG: mysql stopped"
+	else
+	    echo "$0 $ARG: mysql could not be stopped"
+	    ERROR=4
+	fi
+}
+
 help() {
 	echo "usage: $0 help"
 	echo "       $0 (start|stop|restart)"
 	echo "       $0 (start|stop|restart) scheduler"
 	echo "       $0 (start|stop|restart) soffice"
 	echo "       $0 (start|stop|restart) lucene"
+	echo "       $0 (start|stop|restart) mysql"
 	cat <<EOF
 
 help       - this screen
