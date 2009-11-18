@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : config.xml
+    Created on : 01 July 2009, 9:57 AM
+    Author     : KnowledgeTree Team
+    Description: Upgrader steps
+-->
+
+<upgrade version="3.7" type="Community Edition">
+    <steps>
+        <step name="Welcome">welcome</step>
+        <step name="Current Installation">installation</step>
+        <step name="Database Backup">backup</step>
+        <step name="Database Restore">restore</step>
+        <step name="Database Upgrade">database</step>
+        <step name="Complete">complete</step>
+    </steps>
+ </upgrade>
