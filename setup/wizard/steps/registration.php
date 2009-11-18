@@ -127,7 +127,10 @@ class registration extends Step
             return true;
         }
 		$this->setInSession();
-
+    	// Flip
+    	$countries = $this->temp_variables['countries'];
+    	$fcountries = array_flip($countries);
+    	$_POST['submitted']['country'] = $fcountries[$_POST['submitted']['country']];
 	    // Post the form using curl
         $this->curlForm($_POST);
 
@@ -280,6 +283,15 @@ class registration extends Step
     	);
 
     	$countries = array(
+    		'noneselected' => 'Select Country...',
+            'US' => 'UNITED STATES',
+            'GB' => 'UNITED KINGDOM',
+            'DE' => 'GERMANY',
+            'FR' => 'FRANCE',
+            'IT' => 'ITALY',
+            'ES' => 'SPAIN',
+            'AU' => 'AUSTRALIA',
+            'IN' => 'INDIA',
             'AF' => 'AFGHANISTAN',
             'AX' => '&Aring;LAND ISLANDS',
             'AL' => 'ALBANIA',
@@ -293,7 +305,6 @@ class registration extends Step
             'AR' => 'ARGENTINA',
             'AM' => 'ARMENIA',
             'AW' => 'ARUBA',
-            'AU' => 'AUSTRALIA',
             'AT' => 'AUSTRIA',
             'AZ' => 'AZERBAIJAN',
             'BS' => 'BAHAMAS',
@@ -353,14 +364,12 @@ class registration extends Step
             'FO' => 'FAROE ISLANDS',
             'FJ' => 'FIJI',
             'FI' => 'FINLAND',
-            'FR' => 'FRANCE',
             'GF' => 'FRENCH GUIANA',
             'PF' => 'FRENCH POLYNESIA',
             'TF' => 'FRENCH SOUTHERN TERRITORIES',
             'GA' => 'GABON',
             'GM' => 'GAMBIA',
             'GE' => 'GEORGIA',
-            'DE' => 'GERMANY',
             'GH' => 'GHANA',
             'GI' => 'GIBRALTAR',
             'GR' => 'GREECE',
@@ -380,16 +389,13 @@ class registration extends Step
             'HK' => 'HONG KONG',
             'HU' => 'HUNGARY',
             'IS' => 'ICELAND',
-            'IN' => 'INDIA',
             'ID' => 'INDONESIA',
             'IR' => 'IRAN, ISLAMIC REPUBLIC OF',
             'IQ' => 'IRAQ',
             'IE' => 'IRELAND',
             'IM' => 'ISLE OF MAN',
             'IL' => 'ISRAEL',
-            'IT' => 'ITALY',
             'JM' => 'JAMAICA',
-            'JP' => 'JAPAN',
             'JE' => 'JERSEY',
             'JO' => 'JORDAN',
             'KZ' => 'KAZAKHSTAN',
@@ -486,7 +492,6 @@ class registration extends Step
             'SO' => 'SOMALIA',
             'ZA' => 'SOUTH AFRICA',
             'GS' => 'SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS',
-            'ES' => 'SPAIN',
             'LK' => 'SRI LANKA',
             'SD' => 'SUDAN',
             'SR' => 'SURINAME',
@@ -512,8 +517,6 @@ class registration extends Step
             'UG' => 'UGANDA',
             'UA' => 'UKRAINE',
             'AE' => 'UNITED ARAB EMIRATES',
-            'GB' => 'UNITED KINGDOM',
-            'US' => 'UNITED STATES',
             'UM' => 'UNITED STATES MINOR OUTLYING ISLANDS',
             'UY' => 'URUGUAY',
             'UZ' => 'UZBEKISTAN',
@@ -528,7 +531,6 @@ class registration extends Step
             'ZM' => 'ZAMBIA',
             'ZW' => 'ZIMBABWE'
         );
-
         $this->temp_variables['countries'] = $countries;
         $this->temp_variables['industries'] = $industries;
         $this->temp_variables['org_size'] = $sizes;

@@ -11,7 +11,7 @@
     <steps>
         <step name="Welcome">welcome</step>
         <step name="License Agreement">license</step>
-<!--        <step name="Install Type">installtype</step>-->
+        <step name="Install Type">installtype</step>
         <step name="PHP Dependencies" mode="silent">dependencies</step>
         <step name="System Configuration" order="2">configuration</step>
         <step name="Service Dependency" order="3" mode="silent">services</step>

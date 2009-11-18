@@ -52,9 +52,11 @@
 		        <td id="error" class="error"><?php if($errors['dpassword']) echo $errors['dpassword']; ?></td>
 		    </tr>
 	</table>
-<br/><br/>
-	<div id="option3" class="onclick" onclick="javascript:{w.toggleClass('adv_options', 'option3');}">&nbsp;&nbsp;Advanced Options</div>
+<br/>
+<!--<br/>-->
+	<div id="option3" class="onclick advoptions" onclick="javascript:{w.toggleClass('adv_options', 'option3');}">&nbsp;&nbsp;Advanced Options</div>
 	<div id="database" class="adv_options" style="display:none;">
+	<br/>
 	    <div class="description">
 	        These options are only necessary for some sites. If you're not sure what you should enter here, leave the default settings.
 	    </div>

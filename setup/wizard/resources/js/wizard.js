@@ -1,5 +1,7 @@
 // Class Wizard
-function wizard() {	
+var ajaxOn = false;
+function wizard() {
+	this.ajaxOn = false;
 }
 
 // Toggle Advance Database options
@@ -10,17 +12,32 @@ wizard.prototype.toggleClass = function(ele, option) { //adv_options|php_details
 	var patt1=/none/gi; // preg match
 	var patt2=/block/gi;
 	if(style.match(patt1) == 'none') {
-		$('.'+ele).attr('style', 'display: block;');
+		if(this.ajaxOn) {
+			w.slideElement($('.'+ele), 'down');
+		} else {
+			$('.'+ele).attr('style', 'display: block;');
+		}
     	if($('#'+option).attr('innerHTML') != '&nbsp;&nbsp;Advanced Options') {
     		$('#'+option).attr('innerHTML', 'Hide Details');
     	}
 	} else if(style.match(patt2) == 'block') {
-		$('.'+ele).attr('style', 'display: none;');
+		if(this.ajaxOn) {
+			w.slideElement($('.'+ele), 'up');
+		} else {
+			$('.'+ele).attr('style', 'display: none;');
+		}
 		if($('#'+option).attr('innerHTML') != '&nbsp;&nbsp;Advanced Options') {
     		$('#'+option).attr('innerHTML', 'Show Details');
 		}
 	} else {
 	}
+}
+
+wizard.prototype.slideElement = function(el, dir) {
+	if(dir == 'down')
+		$(el).slideDown("slow");
+	else
+		$(el).slideUp("slow");
 }
 
 // Focus on element
@@ -59,7 +76,7 @@ wizard.prototype.validateRegistration = function() {
 		$('#sendAll').attr('value', 'previous');
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -92,7 +109,7 @@ wizard.prototype.valRegHelper = function() {
 		w.focusElement(email);
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -107,7 +124,7 @@ wizard.prototype.nameCheck = function(str) {
 }
 
 // Validate Registration Page Courtesy of SmartWebby.com (http://www.smartwebby.com/dhtml/)
-wizard.prototype.emailCheck = function(str) { 
+wizard.prototype.emailCheck = function(str) {
 	str = w.trim(str);
 	var at="@";
 	var dot=".";
@@ -141,12 +158,12 @@ wizard.prototype.emailCheck = function(str) {
 wizard.prototype.trim = function (str, chars) {
 	return w.ltrim(w.rtrim(str, chars), chars);
 }
- 
+
 wizard.prototype.ltrim = function (str, chars) {
 	chars = chars || "\\s";
 	return str.replace(new RegExp("^[" + chars + "]+", "g"), "");
 }
- 
+
 wizard.prototype.rtrim = function (str, chars) {
 	chars = chars || "\\s";
 	return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
@@ -170,17 +187,18 @@ wizard.prototype.adjustMenu = function (form_id, previous) {
 }
 
 wizard.prototype.dummy = function () {
-	
+
 }
 
-// pre-submit callback 
+// pre-submit callback
 wizard.prototype.showRequest = function (formData, jqForm, options) {
-	$.blockUI({message:''});
+	//$.blockUI({message:''});
+	$.blockUI({overlayCSS:{opacity:0.1}, fadeIn:500, fadeOut:500, message:''});
 	$('#loading').attr('style', 'display:block;');
 }
 
-// post-submit callback 
-wizard.prototype.showResponse = function (responseText, statusText)  {
+// post-submit callback
+wizard.prototype.showResponse = function (responseText, statusText) {
 	$.unblockUI();
 	$('#loading').attr('style', 'display:none;');
 }
@@ -194,12 +212,12 @@ wizard.prototype.refresh = function (page)  {
 		type: "GET",
 		cache: false,
 		beforeSubmit: w.showRequest,
-		success: function(data){
-					$("#"+div).empty();
-					$("#"+div).append(data);
-					w.showResponse;
-					return;
-				}
+		success: function(data) {
+			$("#"+div).empty();
+			$("#"+div).append(data);
+			w.showResponse;
+			return;
+		}
 	});
 }
 
@@ -210,7 +228,7 @@ wizard.prototype.getUrl = function (address, div)  {
 		dataType: "html",
 		type: "GET",
 		cache: false,
-		success: function(data){
+		success: function(data) {
 			$("#"+div).empty();
 			$("#"+div).append(data);
 			return;
@@ -227,11 +245,5 @@ wizard.prototype.sendRegistration = function ()  {
 }
 
 wizard.prototype.clearSessions = function ()  {
-//	var address = 'session.php?action=destroyAll';
-//	$.ajax({
-//		url: address,
-//		dataType: "html",
-//		type: "POST",
-//		cache: false,
-//	});
+
 }

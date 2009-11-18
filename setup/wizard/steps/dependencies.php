@@ -48,7 +48,7 @@ class dependencies extends Step
 	private $versionSection = false;
 	private $extensionSection = false;
 	private $configurationSection = false;
-	
+
 	/**
 	* Flag to store class information in session
 	*
@@ -167,7 +167,7 @@ class dependencies extends Step
     public function getWarnings() {
         return $this->warnings;
     }
-    
+
     /**
      * Get the variables to be passed to the template
      *
@@ -264,7 +264,7 @@ class dependencies extends Step
         }
         $check['class'] = 'tick';
         $check['version'] =  "You are running version <b>{$phpversion}</b>.";
-		
+
         return $check;
     }
 
@@ -337,7 +337,7 @@ class dependencies extends Step
 	            array('extension' => 'mysql', 'required' => 'yes', 'name' => 'MySQL', 'details' => 'Used for accessing a MySQL database.'),
 	            array('extension' => 'curl', 'required' => 'yes', 'name' => 'cURL', 'details' => 'Allows the connection and communication between different servers types using various protocols.'),
 	            array('extension' => 'xmlrpc', 'required' => 'yes', 'name' => 'XMLRPC', 'details' => 'Used with XML-RPC servers and clients.'),
-	            array('extension' => 'win32', 'required' => 'no', 'name' => 'Win32', 'details' => 'Allows control of Microsoft Windows services.'),
+	            array('extension' => 'win32service', 'required' => 'no', 'name' => 'Win32 Services', 'details' => 'Allows control of Microsoft Windows services.'),
 	            array('extension' => 'mbstring', 'required' => 'no', 'name' => 'Multi Byte Strings', 'details' => 'Used in the manipulation of multi-byte strings.'),
 	            array('extension' => 'ldap', 'required' => 'no', 'name' => 'LDAP', 'details' => 'Used to access LDAP directory servers.'),
 	            array('extension' => 'json', 'required' => 'yes', 'name' => 'JSON', 'details' => 'Implements the javascript object notation (json) data-interchange format.'),
@@ -392,7 +392,7 @@ class dependencies extends Step
             array('name' => 'Memory limit', 'configuration' => 'memory_limit', 'recommended' => '32M', 'type' => 'int'),
         );
     }
-    
+
     public function storeSilent() {
 	  	$this->temp_variables['versionSection'] = $this->versionSection;
 		$this->temp_variables['extensionSection'] = $this->extensionSection;

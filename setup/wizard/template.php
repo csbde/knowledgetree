@@ -40,63 +40,63 @@
 * @version Version 0.1
 */
 
-class Template 
+class Template
 {
 	/**
 	* Hold all the variables that are going to be imported into the template file
 	* @var array
 	*/
-    var $template_vars = Array(); 
+    var $template_vars = Array();
 
-	
+
     /**
 	* Constructor
-	* 
+	*
 	* @author KnowledgeTree Team
 	* @param string $file the file name you want to load
 	* @access public
 	* @return void
 	*/
-    public function Template($file = null) 
+    public function Template($file = null)
 	{
         $this->file = $file;
     }
 
-	
+
 	/**
 	* Set a variable into the template
 	* If the variable is a template object, go and call its template::fetch() method
-	* 
+	*
 	* @author KnowledgeTree Team
 	* @param string $name The name for this value in the template file
 	* @param string $value The value to show in the template file
 	* @access public
 	* @return void
 	*/
-    public function set($name, $value) 
+    public function set($name, $value)
 	{
 		//if(is_a($value, 'Template')) {
 		$class = 'Template';
 		$isA = $value instanceof $class;
 		if($isA) {
-			$value = $value->fetch();	
+			$value = $value->fetch();
 		}
 		$this->template_vars[$name] = $value;
     }
 
-    
+
 	/**
 	* Create the template and import its variables
-	* 
+	*
 	* @author KnowledgeTree Team
 	* @param string $file The file to use as the template
 	* @access public
 	* @return string The parsed template
 	*/
-    public function fetch($file = null) 
+    public function fetch($file = null)
 	{
         if (is_null($file)) $file = $this->file;
-        
+
         $file = WIZARD_DIR . $file;
 		if (!file_exists($file)) {
 			trigger_error('Template file '.$file.' does not exist ', E_USER_ERROR);
@@ -105,10 +105,10 @@ class Template
         extract($this->template_vars); // Extract the vars to local namespace
         ob_start();
 		include($file);
-        $contents = ob_get_contents(); 
-        ob_end_clean();              
+        $contents = ob_get_contents();
+        ob_end_clean();
         return $contents;
     }
-	
+
 }
 ?>

@@ -32,11 +32,17 @@
 		                	<?php echo $content; ?>
 		                </div>
 		            </div>
-		            <div id="loading" style="display:none;"> <?php echo $html->image('loading.gif', array("height"=>"32px", "width"=>"32px")); ?> </div>
+		            <div id="loading" style="display:none;">
+		            	<?php
+		            		$options = array("height"=>"32px", "width"=>"32px");
+		            		$options = array();
+		            		echo $html->image('loader.gif', $options);
+		            	?>
+		            </div>
 		        </div>
 		        <div class="clearing">&nbsp;</div>
 		    </div>
-			
+
 		    <div id="footer">
 		    	<?php echo $html->image('dame/powered-by-kt.png', array("height"=>"23px", "width"=>"105px", "style"=>"padding: 5px;")); ?>
 		    </div>

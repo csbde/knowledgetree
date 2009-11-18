@@ -1,5 +1,7 @@
 <?php
 
+require_once(KT_DIR.'/thirdparty/peclzip/pclzip.lib.php');
+
 /**
  * $Id:$
  *
@@ -41,11 +43,13 @@ class OpenOfficeTextExtractor extends ExternalDocumentExtractor
 {
 	public function __construct()
 	{
+	    /* *** Replaced unzip binary with pclzip ***
 		$config = KTConfig::getSingleton();
 
 		$this->unzip = KTUtil::findCommand("import/unzip", 'unzip');
 		$this->unzip = str_replace('\\','/',$this->unzip);
 		$this->unzip_params = $config->get('extractorParameters/unzip', '"{source}" "{part}" -d "{target_dir}"');
+		*/
 		parent::__construct();
 	}
 
@@ -94,6 +98,14 @@ class OpenOfficeTextExtractor extends ExternalDocumentExtractor
 		$this->sourcefile = str_replace('\\','/',$this->sourcefile);
 		$this->openxml_dir = str_replace('\\','/',$this->openxml_dir);
 
+    	$archive = new PclZip($this->sourcefile);
+
+    	if ($archive->extract(PCLZIP_OPT_PATH, $this->openxml_dir) == 0){
+    		$this->output = _kt('Failed to extract content');
+			return false;
+    	}
+
+		/* *** Original code using the unzip binary ***
 		$cmd = '"' . $this->unzip . '"' . ' ' . str_replace(
 			array('{source}','{part}', '{target_dir}'),
 			array($this->sourcefile, 'content.xml',$this->openxml_dir), $this->unzip_params);
@@ -105,6 +117,7 @@ class OpenOfficeTextExtractor extends ExternalDocumentExtractor
 			$this->output = _kt('Failed to execute command: ') . $cmd;
 			return false;
 		}
+		*** End unzip code *** */
 
 		$filename = $this->openxml_dir . '/content.xml';
 		if (!file_exists($filename))

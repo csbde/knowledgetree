@@ -1,6 +1,6 @@
 <form id="dependencies_configuration_services" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 	<p class="title">Checking System Configuration</p>
-	
+
 	<p class="description">
 	The wizard will review your system to determine whether KnowledgeTree is correctly configured. You&rsquo;ll see whether KnowledgeTree has the correct settings or whether changes are required.
 	</p>
@@ -34,7 +34,7 @@
 	<!--Content-->
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
 	<h3>Server Settings</h3>
-	
+
 	<p class="description">
 	The settings below have been drawn from the system information. The host and port should reflect the host and port that will be used to access KnowledgeTree. The Root Url is only needed if your installation is in a directory off the main web server root.
 	</p>
@@ -64,7 +64,7 @@
 	    <tr>
 	        <td> <label for='yes'>Do you have SSL Enabled?: </label> </td>
 	        <td> <div id="tooltips" title="Whether or not you have SSL installed">&nbsp;</div> </td>
-	        <td> 
+	        <td>
 	        	<label for='yes'>Yes</label>
 	        	<input class="radio" type='radio' name='ssl_enabled' id='yes' value='yes' <?php echo $server['ssl_enabled']['value'] == 'yes' ? 'CHECKED' : ''; ?> />
 	        	&nbsp;&nbsp;&nbsp;
@@ -73,7 +73,7 @@
 			</td>
 	    </tr>
 	</table>
-	
+
 	<h3><?php echo "<span class='{$paths_perms}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Paths and Permissions</h3>
 	<?php if($silent) { ?>
 		<div id="option7" class="onclick" onclick="javascript:{w.toggleClass('paths_perms', 'option7');}">Show Details</div>
