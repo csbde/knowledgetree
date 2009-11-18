@@ -939,7 +939,92 @@ class InstallUtil {
         }
         return join(" ", $aSafeArgs);
     }
+    
+	/**
+     * The system identifier is a unique ID defined in every installation of KnowledgeTree
+     *
+     * @return string The system identifier
+     */
+    function getSystemIdentifier($db = true)
+    {
+    	$sIdentifier = null;
+    	
+    	if ($db) {
+        	$sIdentifier = $this->getSystemSetting('kt_system_identifier');
+    	}
+    	
+        if (empty($sIdentifier)) {
+	        // if we have one from the session, simply return that one
+			if (isset($_SESSION['installers']['registration']['installation_guid']) 
+			     && !empty($_SESSION['installers']['registration']['installation_guid'])) {
+				$sIdentifier = $_SESSION['installers']['registration']['installation_guid'];
+			}
+			else { // generate
+	            $sIdentifier = md5(uniqid(mt_rand(), true));
+			}
+            if ($db) {
+            	$this->setSystemSetting('kt_system_identifier', $sIdentifier);
+            }
+        }
+        return $sIdentifier;
+    }
+    
+    function setSystemSetting($name, $value)
+    {
+        // we either need to insert or update:
+        $sTable = $this->getTableName('system_settings');
+        $current_value = $this->getSystemSetting($name);
+        $query = '';
+        if (is_null($current_value)) {
+            // insert
+            $query = 'INSERT INTO ' . $sTable . '(name, value) VALUES ("' . $name . '", "' . $value . '")';
+        } else {
+            // update
+            $query = 'UPDATE ' . $sTable . ' SET value = "' . $value . '" WHERE name = "' . $name . '"';
+        }
+        
+        $res = $this->dbUtilities->query($query);
+	    $errors = $this->dbUtilities->getErrors();
+		if (count($errors)) { return false; }
+            
+        return true;
+    }
+    
+	function getSystemSetting($name, $default = null)
+	{
+        // XXX make this use a cache layer?
+        $sTable = $this->getTableName('system_settings');
+        $query = 'SELECT value FROM %s WHERE name = "' . $name . '"';
+		$res = $this->dbUtilities->query($query);
+        $errors = $this->dbUtilities->getErrors();
+		if (count($errors)) {
+            if(!is_null($default)){
+                return $default;
+            }
+            return null;
+        }
 
+        $result = $this->dbUtilities->fetchAssoc($res);
+        if (is_null($result)) { return $default; }
+
+        return $result[$name];
+    }
+    
+	// {{{ getTableName
+    /**
+     * The one true way to get the correct name for a table whilst
+     * respecting the administrator's choice of table naming.
+     */
+    function getTableName($sTable)
+    {
+        $sDefaultsTable = $sTable . "_table";
+        if (isset($GLOBALS['default']->$sDefaultsTable)) {
+            return $GLOBALS['default']->$sDefaultsTable;
+        }
+        return $sTable;
+    }
+    // }}}
+    
     /*
     Just Because.
     */

@@ -642,6 +642,8 @@ class database extends Step
 			$this->error['con'] = "Could not populate schema ";
 		}
 		$this->writeBinaries();
+		// ensure a guid was generated and is stored
+		$this->util->getSystemIdentifier();
 		
 		return true;
     }
@@ -771,6 +773,8 @@ class database extends Step
     	$updateUrls = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "urls";';
     	$this->util->dbUtilities->query($updateUrls);
 		$this->writeBinaries();
+		// ensure a guid was generated and is stored
+		$this->util->getSystemIdentifier();
 
     	return true;
     }
