@@ -4,7 +4,7 @@
 -- KnowledgeTree Community Edition
 -- Document Management Made Simple
 -- Copyright (C) 2008, 2009 KnowledgeTree Inc.
--- 
+--
 --
 -- This program is free software; you can redistribute it and/or modify it under
 -- the terms of the GNU General Public License version 3 as published by the
@@ -1463,8 +1463,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.7.0-1'),
-(3,'databaseVersion','3.7.0-1'),
+(2,'knowledgeTreeVersion','3.7.0.2'),
+(3,'databaseVersion','3.7.0.2'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
