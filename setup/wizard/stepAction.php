@@ -1,6 +1,6 @@
 <?php
 /**
-* Steap Action Controller.
+* Step Action Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -76,7 +76,7 @@ class stepAction {
 	* @var boolean
 	*/
     protected $displayFirst = false;
-    
+
 	/**
 	* List of install properties
 	*
@@ -85,7 +85,7 @@ class stepAction {
 	* @var boolean
 	*/
     protected $installProperties = array();
-    
+
 	/**
 	* Reference to session object
 	*
@@ -131,7 +131,7 @@ class stepAction {
         $this->loadSession($session);
         $this->setInstallProperties($installProperties);
     }
-    
+
 	/**
 	* Sets steps class names in string format
 	*
@@ -179,7 +179,7 @@ class stepAction {
     public function setDisplayFirst($displayFirst) {
         $this->displayFirst = $displayFirst;
     }
-    
+
 	/**
 	* Sets session object
 	*
@@ -191,7 +191,7 @@ class stepAction {
     public function loadSession($ses) {
         $this->session = $ses;
     }
-    
+
 	/**
 	* Sets install properties
 	*
@@ -203,7 +203,7 @@ class stepAction {
     public function setInstallProperties($installProperties) {
     	$this->installProperties = $installProperties;
     }
-    
+
 	/**
 	* Main control to handle the steps actions
 	*
@@ -279,7 +279,7 @@ class stepAction {
 
         return $str;
     }
-    
+
 	/**
 	* Returns current step name
 	*
@@ -334,7 +334,7 @@ class stepAction {
 
         return $step_tpl->fetch();
     }
-    
+
 	/**
 	* Returns confirmation page flag
 	*
@@ -358,7 +358,7 @@ class stepAction {
     public function displayFirst() {
     	return $this->displayFirst;
     }
-    
+
 	/**
 	* Returns session object
 	*
@@ -401,7 +401,7 @@ class stepAction {
         // TODO: Force because it does not always recognize ajax request
 		if(AJAX && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
     		echo $step_tpl->fetch();
-		} else { 
+		} else {
 	        $content = $step_tpl->fetch();
 			$tpl = new Template("templates/wizard.tpl");
 	        $vars = $this->getVars(); // Get template variables
@@ -418,17 +418,17 @@ class stepAction {
             }
         }
 	}
-	
+
 	public function loadToTpl($step_tpl, $step_vars) {
 		foreach ($step_vars as $key => $value) { // Set template variables
 			$step_tpl->set($key, $value); // Load values to session
 		}
 	}
-	
+
 	public function getStepVars() {
 		return $this->action->getStepVars();
 	}
-	
+
 	public function getVars() {
 		$left = $this->getLeftMenu();
 		$vars['left'] = $left; // Set left menu
@@ -436,6 +436,7 @@ class stepAction {
 		$vars['install_type'] = $this->installProperties['install_type']; // Set type
 		return $vars;
 	}
+
     /**
      * Load class to session
      *

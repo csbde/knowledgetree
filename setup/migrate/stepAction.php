@@ -76,7 +76,7 @@ class stepAction {
 	* @var boolean
 	*/
     protected $displayFirst = false;
-    
+
 	/**
 	* List of migrate properties
 	*
@@ -85,7 +85,7 @@ class stepAction {
 	* @var boolean
 	*/
     protected $migrateProperties = array();
-    
+
 	/**
 	* Reference to session object
 	*
@@ -131,7 +131,7 @@ class stepAction {
         $this->loadSession($session);
         $this->setMigrateProperties($migrateProperties);
     }
-    
+
 	/**
 	* Sets steps class names in string format
 	*
@@ -179,7 +179,7 @@ class stepAction {
     public function setDisplayFirst($displayFirst) {
         $this->displayFirst = $displayFirst;
     }
-    
+
 	/**
 	* Sets session object
 	*
@@ -191,7 +191,7 @@ class stepAction {
     public function loadSession($ses) {
         $this->session = $ses;
     }
-    
+
 	/**
 	* Sets migrate properties
 	*
@@ -203,7 +203,7 @@ class stepAction {
     public function setMigrateProperties($migrateProperties) {
     	$this->migrateProperties = $migrateProperties;
     }
-    
+
 	/**
 	* Main control to handle the steps actions
 	*
@@ -228,7 +228,7 @@ class stepAction {
         	$this->stepName = 'errors';
         	$this->action = $this->createStep();
         	$this->action->error = array('Class File Missing in Step Directory');
-        	
+
         }
         if ($response == 'error') {
         	$this->_handleErrors(); // Send Errors to session
@@ -248,7 +248,7 @@ class stepAction {
 	*/
     public function createStep() {
 		$step_class = "migrate".$this->makeCamelCase($this->stepName);
-		
+
 		return new $step_class();
     }
 
@@ -281,7 +281,7 @@ class stepAction {
 
         return $str;
     }
-    
+
 	/**
 	* Returns current step name
 	*
@@ -306,32 +306,35 @@ class stepAction {
 	*/
     public function getLeftMenu()
     {
-        $menu = '';
+    	$sideMenuElements = array();
         $active = false;
 		if($this->stepClassNames) {
-	        foreach ($this->stepClassNames as $step) {
+			$ele = array();
+	        foreach ($this->stepClassNames as $k=>$step) {
+	        	$ele['step'] = $step;
 	            if($this->step_names[$step] != '') {
-	                $item = $this->step_names[$step];
+	            	$ele['name'] = $this->step_names[$step];
 	            } else {
-	                $item = $this->makeHeading($step);
+	            	$ele['name'] = $this->makeHeading($step);
 	            }
 	            if($step == $this->stepName) {
-	                $class = 'current';
-	                $active = true;
+	            	$ele['class'] = 'current';
+	            	$active = true;
 	            } else {
-	                if($active){
-	                    $class = 'inactive';
-	                }else{
-	                    $class = 'indicator';
-	                    $item = "<a href=\"index.php?step_name={$step}\">{$item}</a>";
+	                if($active) {
+	                	$ele['class'] = 'inactive';
+	                } else {
+	                	$ele['class'] = 'indicator';
 	                }
 	            }
-	
-	            $menu .= "<span class='{$class}'>$item</span><br />";
+	            $sideMenuElements[] = $ele;
 	        }
 		}
-//        $menu .= '</div>';
-        return $menu;
+		$step_tpl = new Template("..".DS."wizard".DS."templates".DS."sidemenu.tpl"); // Create template
+		$step_tpl->set("sideMenuElements", $sideMenuElements); // Set side menu elements
+		$step_tpl->set("ajax", AJAX); // Set ajax state
+
+        return $step_tpl->fetch();
     }
 
 	/**
@@ -357,7 +360,7 @@ class stepAction {
     public function displayFirst() {
     	return $this->displayFirst;
     }
-    
+
 	/**
 	* Returns session object
 	*
@@ -379,7 +382,6 @@ class stepAction {
 	* @return string
 	*/
     public function paintAction() {
-        
         $step_errors = $this->action->getErrors(); // Get errors
         $step_warnings = $this->action->getWarnings(); // Get warnings
         if($this->displayConfirm()) { // Check if theres a confirm step
@@ -396,18 +398,33 @@ class stepAction {
         $step_tpl->set("warnings", $step_warnings); // Set template warnings
         $step_vars = $this->action->getStepVars(); // Get template variables
         $step_tpl->set("step_vars", $step_vars); // Set template errors
-        foreach ($step_vars as $key => $value) { // Set template variables
-            $step_tpl->set($key, $value); // Load values to session
-            if($this->action->storeInSession()) { // Check if class values need to be stored in session
-            	$this->_loadValueToSession($this->stepName, $key, $value);
+		$this->loadToSes($step_vars);
+		$this->loadToTpl($step_tpl, $step_vars);
+        // TODO: Force because it does not always recognize ajax request
+		if(AJAX && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+    		echo $step_tpl->fetch();
+		} else {
+	        $content = $step_tpl->fetch();
+			$tpl = new Template("templates/wizard.tpl");
+	        $vars = $this->getVars(); // Get template variables
+	        $tpl->set("vars", $vars); // Set template errors
+			$tpl->set('content', $content);
+			echo $tpl->fetch();
+		}
+	}
+
+	public function loadToSes($step_vars) {
+		if($this->action->storeInSession()) { // Check if class values need to be stored in session
+        	foreach ($step_vars as $key => $value) { // Set template variables
+				$this->_loadValueToSession($this->stepName, $key, $value);
             }
         }
-        $content = $step_tpl->fetch();
-		$tpl = new Template("templates/wizard.tpl");
-        $vars = $this->getVars(); // Get template variables
-        $tpl->set("vars", $vars); // Set template errors
-		$tpl->set('content', $content);
-		echo $tpl->fetch();
+	}
+
+	public function loadToTpl($step_tpl, $step_vars) {
+		foreach ($step_vars as $key => $value) { // Set template variables
+			$step_tpl->set($key, $value); // Load values to session
+		}
 	}
 
 	public function getVars() {

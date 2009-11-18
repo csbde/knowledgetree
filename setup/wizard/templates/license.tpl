@@ -1,4 +1,4 @@
-<form id="welcome_license_dependencies" action="index.php?step_name=license" method="POST">
+<form id="welcome_license_installtype" action="index.php?step_name=license" method="POST">
 <p class="title">License Agreement</p>
     <?php if(isset($errors)) {
         foreach($errors as $k=>$e) {

@@ -54,7 +54,7 @@
 	</table>
 <br/>
 <!--<br/>-->
-	<div id="option3" class="onclick" onclick="javascript:{w.toggleClass('adv_options', 'option3');}">&nbsp;&nbsp;Advanced Options</div>
+	<div id="option3" class="onclick advoptions" onclick="javascript:{w.toggleClass('adv_options', 'option3');}">&nbsp;&nbsp;Advanced Options</div>
 	<div id="database" class="adv_options" style="display:none;">
 	<br/>
 	    <div class="description">

@@ -1,6 +1,6 @@
 <?php
 /**
-* Welcome Step Controller. 
+* Welcome Step Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -46,10 +46,10 @@ class upgradeWelcome extends step {
     protected $temp_variables = array();
 	protected $error = array() ;
 	protected $storeInSession = true;
-	
+
     public function doStep() {
     	$upgradeOnly = false;
-    	if(isset($_GET['action'])) { 
+    	if(isset($_GET['action'])) {
     		if($_GET['action'] == 'installer') {
     			$upgradeOnly = true;
     		}
@@ -66,14 +66,14 @@ class upgradeWelcome extends step {
 
         return 'landing';
     }
-    
+
     private function doRun() {
         // attempt login
         $username = $_REQUEST['username'];
         $password = $_REQUEST['password'];
 
         $authenticated = $this->checkPassword($username, $password);
-    
+
         if (!$authenticated)
         {
             session_unset();
@@ -81,10 +81,10 @@ class upgradeWelcome extends step {
         }
 
         $_SESSION['setup_user'] = $username;
-        
+
         return true;
     }
-    
+
     private function checkPassword($username, $password) {
     	$upgradeOnly = false;
 
@@ -121,11 +121,11 @@ class upgradeWelcome extends step {
         return false;
 
     }
-   
+
     public function getErrors() {
     	return $this->error;
     }
-    
+
     /**
 	* Returns step variables
 	*
@@ -138,9 +138,9 @@ class upgradeWelcome extends step {
     {
         return $this->temp_variables;
     }
-    
+
     public function storeSilent() {
-    	
+
     }
 }
 

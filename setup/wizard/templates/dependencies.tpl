@@ -1,4 +1,5 @@
-<form id="license_dependencies_configuration" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
+<!--<form id="license_dependencies_configuration" action="index.php?step_name=<?php //echo $step_name; ?>" method="post">-->
+<form id="installtype_dependencies_configuration" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 	<p class="title">Checking PHP Dependencies</p>
 	<p class="description">
 	The wizard will review your system to determine whether you have the right PHP components in place to run KnowledgeTree. <!--<br/> -->

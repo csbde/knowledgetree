@@ -26,11 +26,17 @@
 	<?php } ?>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<p class="description">
-			Enter the full path of the installation you wish to upgrade: 
+			Enter the full path of the installation you wish to upgrade:
 		</p>
 		<p class="empty_space">
 			<small>The default is <b>'C:\Program Files\ktdms'</b> on Windows and <b>'/opt/ktdms'</b> or <b>'/home/<i>username</i>/ktdms/'</b> on other operating systems.</small>
 		</p>
+		<p class="empty_space">
+			<small>
+				Make sure that the services are running for that installation.
+			</small>
+		</p>
+		<br/>
 		<input id="location" name="location" type="text" style="width:430px; float:left" value="<?php if($location) echo $location; ?>">
 		<br/><br/>
 		<?php

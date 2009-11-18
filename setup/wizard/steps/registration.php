@@ -127,7 +127,10 @@ class registration extends Step
             return true;
         }
 		$this->setInSession();
-
+    	// Flip
+    	$countries = $this->temp_variables['countries'];
+    	$fcountries = array_flip($countries);
+    	$_POST['submitted']['country'] = $fcountries[$_POST['submitted']['country']];
 	    // Post the form using curl
         $this->curlForm($_POST);
 
@@ -283,11 +286,12 @@ class registration extends Step
     		'noneselected' => 'Select Country...',
             'US' => 'UNITED STATES',
             'GB' => 'UNITED KINGDOM',
-            'FR' => 'FRANCE',
             'DE' => 'GERMANY',
+            'FR' => 'FRANCE',
             'IT' => 'ITALY',
-            'PT' => 'PORTUGAL',
             'ES' => 'SPAIN',
+            'AU' => 'AUSTRALIA',
+            'IN' => 'INDIA',
             'AF' => 'AFGHANISTAN',
             'AX' => '&Aring;LAND ISLANDS',
             'AL' => 'ALBANIA',
@@ -301,7 +305,6 @@ class registration extends Step
             'AR' => 'ARGENTINA',
             'AM' => 'ARMENIA',
             'AW' => 'ARUBA',
-            'AU' => 'AUSTRALIA',
             'AT' => 'AUSTRIA',
             'AZ' => 'AZERBAIJAN',
             'BS' => 'BAHAMAS',
@@ -386,7 +389,6 @@ class registration extends Step
             'HK' => 'HONG KONG',
             'HU' => 'HUNGARY',
             'IS' => 'ICELAND',
-            'IN' => 'INDIA',
             'ID' => 'INDONESIA',
             'IR' => 'IRAN, ISLAMIC REPUBLIC OF',
             'IQ' => 'IRAQ',
@@ -460,6 +462,7 @@ class registration extends Step
             'PH' => 'PHILIPPINES',
             'PN' => 'PITCAIRN',
             'PL' => 'POLAND',
+            'PT' => 'PORTUGAL',
             'PR' => 'PUERTO RICO',
             'QA' => 'QATAR',
             'RE' => 'REUNION',
@@ -528,7 +531,6 @@ class registration extends Step
             'ZM' => 'ZAMBIA',
             'ZW' => 'ZIMBABWE'
         );
-
         $this->temp_variables['countries'] = $countries;
         $this->temp_variables['industries'] = $industries;
         $this->temp_variables['org_size'] = $sizes;

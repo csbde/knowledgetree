@@ -3,9 +3,9 @@
 		Installation Completed
 	</p>
 	<p class="description">
-		This allows you to check that your KnowledgeTree configuration is set up correctly.
-		<br/>
-		Use the Finish link to login to the system using username: <b><i>admin</b></i> and password: <b><i>admin</b></i>.
+		This step allows you to check that your KnowledgeTree configuration is set up correctly.
+<!--		<br/>-->
+		Click <b>Finish</b> to browse to the KnowledgeTree Web Interface. Default login credentials are <b>username:</b> <i>admin</i> and <b>password:</b> <i>admin</i>.
 <!--		You can run this at any time after configuration to check	that things are still set up correctly.-->
 	</p>
 	<div>

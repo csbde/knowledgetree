@@ -85,7 +85,7 @@ class InstallWizard {
 	* @var mixed
 	*/
 	protected $debugLevel = 0;
-	
+
 	/**
 	* Reference to installer utility object
 	*
@@ -114,7 +114,7 @@ class InstallWizard {
 	private function isSystemInstalled() {
 		return $this->util->isSystemInstalled();
 	}
-	
+
 	/**
 	* Display the wizard
 	*
@@ -132,7 +132,7 @@ class InstallWizard {
 			$ins->step(); // Run step
 		}
 	}
-	
+
 	/**
 	* Set bypass flag
 	*
@@ -144,7 +144,7 @@ class InstallWizard {
 	private function setBypass($bypass) {
 		$this->bypass = $bypass;
 	}
-	
+
 	/**
 	* Set debug level
 	*
@@ -157,7 +157,7 @@ class InstallWizard {
 		define('DEBUG', $debug);
 		$this->debugLevel = $debug;
 	}
-	
+
 	/**
 	* Set util reference
 	*
@@ -169,7 +169,7 @@ class InstallWizard {
 	private function setIUtil($util) {
 		$this->util = $util;
 	}
-	
+
 	/**
 	* Get bypass flag
 	*
@@ -181,7 +181,7 @@ class InstallWizard {
 	public function getBypass() {
 		return $this->bypass;
 	}
-	
+
 	/**
 	* Bypass and force an install
 	*
@@ -191,9 +191,9 @@ class InstallWizard {
 	* @return boolean
  	*/
 	private function bypass() {
-		
+
 	}
-	
+
 	/**
 	* Create install file
 	*
@@ -205,7 +205,7 @@ class InstallWizard {
 	private function createInstallFile() {
 		@touch(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock");
 	}
-	
+
 	/**
 	* Remove install file
 	*
@@ -218,7 +218,7 @@ class InstallWizard {
 		if(file_exists(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock"))
 			@unlink(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock");
 	}
-	
+
 	/**
 	* Load default values
 	*
@@ -238,7 +238,7 @@ class InstallWizard {
 		}
 		$this->setIUtil(new InstallUtil());
 	}
-	
+
 	/**
 	* Run pre-installation system checks
 	*
@@ -264,7 +264,7 @@ class InstallWizard {
 				break;
 		}
 	}
-	
+
 	/**
 	* Control all requests to wizard
 	*
@@ -282,7 +282,7 @@ class InstallWizard {
 		}
 		if(!$this->isSystemInstalled()) { // Check if the systems not installed
 			if($this->util->migrationSpecified()) { // Check if the migrator needs to be accessed
-				$this->util->redirect('../migrate/index.php');
+				$this->util->redirect('../migrate/index.php?');
 			} elseif ($this->util->upgradeSpecified()) {
 				$this->util->redirect('../upgrade/index.php?action=installer');
 			}

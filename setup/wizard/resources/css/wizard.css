@@ -587,6 +587,10 @@ td.dir_description {
 	width:100%;
 }
 
-.space{
+.space {
 	padding-bottom:5px;
+}
+
+.advoptions {
+	top:0px;
 }
