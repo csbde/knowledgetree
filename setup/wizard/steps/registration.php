@@ -90,6 +90,7 @@ class registration extends Step
     	$this->temp_variables['sel_country'] = $this->getPostSafe($reg['sel_country']);
     	$this->temp_variables['sel_industry'] = $this->getPostSafe($reg['sel_industry']);
     	$this->temp_variables['sel_organization_size'] = $this->getPostSafe($reg['sel_organization_size']);
+    	$this->temp_variables['installation_guid'] = $this->getPostSafe($reg['installation_guid']);
     }
 
 	/**
@@ -112,6 +113,8 @@ class registration extends Step
     	$this->temp_variables['sel_country'] = $_POST['submitted']['country'];
     	$this->temp_variables['sel_industry'] = $_POST['submitted']['industry'];
     	$this->temp_variables['sel_organization_size'] = $_POST['submitted']['organization_size'];
+    	// System GUID, comes from session or db, not POST
+    	$this->temp_variables['installation_guid'] = $this->util->getSystemIdentifier(false);
     }
 
     /**
@@ -132,13 +135,17 @@ class registration extends Step
     	$fcountries = array_flip($countries);
     	$_POST['submitted']['country'] = $fcountries[$_POST['submitted']['country']];
 	    // Post the form using curl
-        $this->curlForm($_POST);
+	    $formPost = $_POST;
+	    $formPost['submitted']['installation_guid'] = $this->temp_variables['installation_guid'];
+	    // TODO set correctly using auto set mechanism
+	    $_SESSION['installers']['registration']['installation_guid'] = $this->temp_variables['installation_guid'];
+        $this->curlForm($formPost);
 
         // Prevent the form being reposted.
         $_POST['registered'] = 'yes';
 	    return true;
     }
-
+    
     /**
      * Post the form data to the drupal form using curl
      *
