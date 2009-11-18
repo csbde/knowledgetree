@@ -168,7 +168,9 @@
 			<?php } ?>
 		<?php } else { ?>
 <!--			<p class="description">-->
-			All services are already installed.
+			<?php if($servicesValidation) { ?>
+				All services are already installed.
+			<?php } ?>
 <!--			</p>-->
 		<?php } ?>
 		<?php if($servicesValidation) { ?>

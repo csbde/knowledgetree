@@ -62,7 +62,8 @@
 <!--			<div class="php_details" style="display:<?php //echo $display; ?>">-->
 		<?php } ?>
 		<?php
-			$phpVersionCheck .= "<p class='space'>&nbsp;</p><p class='description'>Your version of PHP must be between 5.0 and 5.2 to run optimally. Versions that are 5.3 or higher  are not recommended.</p>";
+			$space = "<p class='space'>&nbsp;</p>";
+			$phpVersionCheck .= "<p class='description dependencies'>Your version of PHP must be between 5.0 and 5.2 to run optimally. Versions that are 5.3 or higher  are not recommended.</p>";
 		?>
 <!--		<p class="description">
 		Your version of PHP must be between 5.0 and 5.2 to run optimally. Versions that are 5.3 or higher  are not recommended.
@@ -109,7 +110,7 @@
 <!--			<div class="php_ext_details" style="display:<?php //echo $display; ?>">-->
 		<?php } ?>
 		<?php
-			$phpExtensionCheck .= "<p class='space'>&nbsp;</p><p class='description'>The extensions shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.</p>";
+			$phpExtensionCheck .= "<p class='description dependencies'>The extensions shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.</p>";
 		?>
 <!--		<p class="description">
 			The extensions shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.
@@ -184,9 +185,7 @@
 <!--			<div class="php_con_details" style="display:<?php //echo $display; ?>">-->
 		<?php } ?>
 		<?php
-			//$phpDirectivesCheck .= "<p class='description'>The configurations shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.</p>";
-			//$phpDirectivesCheck .= "Test";
-			$phpDirectivesCheck .= "<p class='space'>&nbsp;</p><p class='description'>The configurations shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.</p>";
+			$phpDirectivesCheck .= "<p class='description dependencies'>The configurations shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.</p>";
 		?>
 <!--		<p class="description">-->
 <!--		The configurations shown in red below are required for KnowledgeTree to run optimally. Items shown in orange are optional, but recommended.-->

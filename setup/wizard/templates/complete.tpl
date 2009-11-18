@@ -29,7 +29,7 @@
 		<?php } ?>
 		<p class="disclaimer">
 		<?php if(WINDOWS_OS) { ?>
-			cd KnowledgeTree_Installation_Folder<br/>
+			cd <?php echo "\"".SYSTEM_ROOT."\""; ?> <br/>
 			dmsctl.bat install<br/>
 			dmsctl.bat start
 		<?php } else { ?>

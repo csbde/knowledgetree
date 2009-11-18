@@ -571,6 +571,7 @@ td.dir_description {
 .dependencies {
 	position:relative;
 	right:30%;
+	width:880px;
 }
 
 .registration_template {
