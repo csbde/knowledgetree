@@ -56,7 +56,7 @@ class UpgradeUtil extends InstallUtil {
 
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -72,8 +72,10 @@ class UpgradeUtil extends InstallUtil {
     		return true;
     	return false;
     }
-    
+
 	public function error($error) {
+		$template_vars['upgrade_type'] = strtoupper(substr(INSTALL_TYPE,0,1)).substr(INSTALL_TYPE,1);
+		$template_vars['upgrade_version'] = $this->readVersion();
 		$template_vars['error'] = $error;
 		$file = "templates/error.tpl";
 		if (!file_exists($file)) {
@@ -86,13 +88,13 @@ class UpgradeUtil extends InstallUtil {
         ob_end_clean();
         echo $contents;
 	}
-    
+
     /**
      * Function to send output to the browser prior to normal dynamic loading of a template after code execution
-     * 
+     *
      * @param string $template The name of the template to use
      * @param array $output [optional] Optional array containing output text to be inserted into the template
-     * @return 
+     * @return
      */
     public function flushOutput($template, $output = null) {
         if (is_array($output)) {
@@ -111,7 +113,7 @@ class UpgradeUtil extends InstallUtil {
         ob_end_clean();
         echo $contents;
     }
-	
+
 	/**
 	* Check if system needs to be upgraded
 	*
@@ -132,7 +134,7 @@ class UpgradeUtil extends InstallUtil {
     public function create_restore_stmt($targetfile, $dbConfig)
     {
 //        $oKTConfig =& KTConfig::getSingleton();
-    
+
         $adminUser = $dbConfig['dbAdminUser'];
         $adminPwd = $dbConfig['dbAdminPass'];
 //        $dbHost = $dbConfig['dbHost'];
@@ -143,44 +145,44 @@ class UpgradeUtil extends InstallUtil {
         $dbSocket = '';
         if (empty($dbSocket) || $dbSocket=='default') $dbSocket = get_cfg_var('mysql.default_socket');
         if (empty($dbSocket)) $dbSocket='../tmp/mysql.sock';
-    
+
         $dir = $this->resolveMysqlDir();
-    
+
         $info['dir'] = $dir;
-    
+
         $prefix = '';
         if (!WINDOWS_OS) {
             $prefix .= "./";
         }
-    
+
         if (@stat($dbSocket) !== false) {
             $mechanism = "--socket=\"$dbSocket\"";
         }
         else {
             $mechanism = "--port=\"$dbPort\"";
         }
-    
+
 //        $tmpdir = $this->resolveTempDir();
 		$this->resolveTempDir();
-    
+
         $stmt = $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism drop  \"$dbName\"<br/>";
         $stmt .= $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism create  \"$dbName\"<br/>";
-    
+
         $stmt .= $prefix ."mysql --user=\"$adminUser\" -p $mechanism \"$dbName\" < \"$targetfile\"\n";
         $info['display']=$stmt;
-    
+
         $stmt = $prefix ."mysqladmin --user=\"$adminUser\" --force --password=\"$adminPwd\" $mechanism drop  \"$dbName\"\n";
         $stmt .= $prefix ."mysqladmin --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism create  \"$dbName\"\n";
-    
+
         $stmt .=  $prefix ."mysql --user=\"$adminUser\" --password=\"$adminPwd\" $mechanism \"$dbName\" < \"$targetfile\"";
         $info['cmd'] = $stmt;
         return $info;
     }
-    
+
     public function resolveMysqlDir()
     {
         // possibly detect existing installations:
-    
+
         if (!WINDOWS_OS) {
             $dirs = array('/opt/mysql/bin','/usr/local/mysql/bin');
             $mysqlname ='mysql';
@@ -192,16 +194,16 @@ class UpgradeUtil extends InstallUtil {
             $dirs[] = 'c:/program files/ktdms/mysql/bin';
             $mysqlname ='mysql.exe';
         }
-    
+
         // I don't know if this value exists anymore?
 //        $mysqldir = $oKTConfig->get('backup/mysqlDirectory',$mysqldir);
         $mysqldir = '';
         $dirs[] = $mysqldir;
-    
+
         if (strpos(__FILE__,'knowledgeTree') !== false && strpos(__FILE__,'ktdms') != false) {
             $dirs [] = realpath(dirname($FILE) . '/../../mysql/bin');
         }
-    
+
         foreach($dirs as $dir)
         {
             if (is_file($dir . '/' . $mysqlname))
@@ -209,10 +211,10 @@ class UpgradeUtil extends InstallUtil {
                 return $dir;
             }
         }
-    
+
         return '';
     }
-    
+
     public function resolveTempDir()
     {
         $dir = '';
@@ -222,10 +224,10 @@ class UpgradeUtil extends InstallUtil {
         else {
             $dir='c:/kt-db-backup';
         }
-        
+
 //        $oKTConfig =& KTConfig::getSingleton();
 //        $dir = $oKTConfig->get('backup/backupDirectory',$dir);
-    
+
         if (!is_dir($dir)) {
                 mkdir($dir);
         }

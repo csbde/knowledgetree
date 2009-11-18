@@ -6,7 +6,7 @@
 		<script type="text/javascript" src="resources/js/jquery-tooltip/lib/jquery.js"></script>
 		<script type="text/javascript" src="resources/js/wizard.js" ></script>
 		<link rel="stylesheet" type="text/css" href="resources/css/wizard.css" />
-		
+
 	</head>
 
 	<body onload="">
@@ -15,8 +15,8 @@
 		    <div id="header">
 		    <div id="logo"><img src="resources/graphics/dame/installer-header_logo.png"/></div>
 		    <div id="install_details">
-				<span style="font-size:120%;"> 3.7 </span>
-				<span style="font-size:80%;">Community Edition</span>
+				<span style="font-size:120%;"> <?php echo $install_version; ?> </span>
+				<span style="font-size:80%;"> <?php echo $install_type; ?> </span>
 				</div>
 		    </div>
 		    <div id="wrapper">
@@ -28,13 +28,13 @@
 		                	<form action="index.php?step_name=welcome" method="post">
 		                		<div id="step_content" class="step">
 					                <p class="title">Welcome to the KnowledgeTree Setup Wizard</p>
-									<?php if(isset($error)) { 
+									<?php if(isset($error)) {
 											echo "<span class='error'>".$error."</span>";
 											?>
 											<?php
 										}
 									?>
-									<?php 
+									<?php
 										if(isset($errors)) {
 											if($errors){
 											    echo '<div class="error">';

@@ -13,8 +13,8 @@
 		    <div id="header">
 		    <div id="logo"><img src="resources/graphics/dame/installer-header_logo.png"/></div>
 		    <div id="install_details">
-				<span style="font-size:120%;"> 3.7 </span>
-				<span style="font-size:80%;">Community Edition</span>
+				<span style="font-size:120%;"> <?php echo $migrate_version; ?> </span>
+				<span style="font-size:80%;"> <?php echo $migrate_type; ?> </span>
 				</div>
 		    </div>
 		    <div id="wrapper">
@@ -27,13 +27,13 @@
 		                	<form action="index.php?step_name=isntallation" method="post">
 		                		<div id="step_content" class="step">
 					                <p class="title">Welcome to the KnowledgeTree Migration Wizard</p>
-									<?php if(isset($error)) { 
+									<?php if(isset($error)) {
 											echo "<span class='error'>".$error."</span>";
 											?>
 											<?php
 										}
 									?>
-									<?php 
+									<?php
 										if(isset($errors)) {
 											if($errors){
 											    echo '<div class="error">';
@@ -54,7 +54,7 @@
 		        </div>
 		        <div class="clearing">&nbsp;</div>
 		    </div>
-			
+
 		    <div id="footer">
 
 		    	<img width="105" height="23" align="right" src="resources/graphics/dame/powered-by-kt.png" style="padding: 5px;"/>

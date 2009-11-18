@@ -5,7 +5,7 @@
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright (C) 2008,2009 KnowledgeTree Inc.
-* 
+*
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -46,10 +46,10 @@ class Migrater {
 	*
 	* @author KnowledgeTree Team
 	* @access protected
-	* @var object SimpleXMLElement 
+	* @var object SimpleXMLElement
 	*/
     protected $simpleXmlObj = null;
-    
+
 	/**
 	* Reference to step action object
 	*
@@ -58,7 +58,7 @@ class Migrater {
 	* @var object StepAction
 	*/
     protected $stepAction = null;
-    
+
 	/**
 	* Reference to session object
 	*
@@ -67,7 +67,7 @@ class Migrater {
 	* @var object Session
 	*/
     protected $session = null;
-    
+
 	/**
 	* List of migrateation steps as strings
 	*
@@ -76,7 +76,7 @@ class Migrater {
 	* @var array string
 	*/
     protected $stepClassNames = array();
-    
+
 	/**
 	* List of migrateation steps as human readable strings
 	*
@@ -85,7 +85,7 @@ class Migrater {
 	* @var array string
 	*/
 	protected $stepNames = array();
-    
+
 	/**
 	* List of migrateation steps as human readable strings
 	*
@@ -94,7 +94,7 @@ class Migrater {
 	* @var array string
 	*/
 	protected $stepObjects = array();
-    
+
 	/**
 	* Order in which steps have to be migrated
 	*
@@ -103,7 +103,7 @@ class Migrater {
 	* @var array string
 	*/
 	protected $migrateOrders = array();
-	
+
 	/**
 	* List of migrateation properties
 	*
@@ -112,7 +112,7 @@ class Migrater {
 	* @var array string
 	*/
 	protected $migrateProperties = array();
-	
+
 	/**
 	* Flag if a step object needs confirmation
 	*
@@ -121,7 +121,7 @@ class Migrater {
 	* @var boolean
 	*/
     protected $stepConfirmation = false;
-    
+
 	/**
 	* Flag if a step object needs confirmation
 	*
@@ -132,7 +132,7 @@ class Migrater {
     protected $stepDisplayFirst = false;
 
     private $migraterAction = '';
-    
+
 	/**
 	* Constructs migrateation object
 	*
@@ -143,18 +143,18 @@ class Migrater {
     public function __construct($session = null) {
         $this->session = $session;
     }
-    
+
 	/**
 	* Read xml configuration file
 	*
 	* @author KnowledgeTree Team
 	* @param string $name of config file
 	* @access private
-	* @return object 
+	* @return object
 	*/
     private function _readXml($name = "config.xml") {
     	try {
-        	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.$name);
+        	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.INSTALL_TYPE."_$name");
     	} catch (Exception $e) {
     		$util = new MigrateUtil();
     		$util->error("Error reading configuration file: $e");
@@ -174,7 +174,7 @@ class Migrater {
         if(isset($_GET['step_name'])) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -191,10 +191,10 @@ class Migrater {
         	if($_GET['step_name'] != 'installation')
             	return false;
         }
-        
+
         return true;
     }
-    
+
 	/**
 	* Returns next step
 	*
@@ -301,7 +301,7 @@ class Migrater {
     	$class = $this->stepAction->createStep(); // Get step class
     	return $class->displayFirst(); // Check if class needs to display first
     }
-    
+
 	/**
 	* Set steps class names in string format
 	*
@@ -313,7 +313,7 @@ class Migrater {
     private function _getMigrateOrders() {
         return $this->migrateOrders;
     }
-    
+
 	/**
 	* Set steps as names
 	*
@@ -331,7 +331,7 @@ class Migrater {
 	        $this->_loadToSession('stepClassNames', $this->stepClassNames);
     	}
     }
-    
+
 	/**
 	* Set steps as human readable strings
 	*
@@ -349,7 +349,7 @@ class Migrater {
 	        $this->_loadToSession('stepNames', $this->stepNames);
     	}
     }
-    
+
 	/**
 	* Set steps migrate order
 	*
@@ -370,7 +370,7 @@ class Migrater {
 	        $this->_loadToSession('migrateOrders', $this->migrateOrders);
     	}
     }
-    
+
 	/**
 	* Set migrate properties
 	*
@@ -386,7 +386,7 @@ class Migrater {
 			$this->_loadToSession('migrateProperties', $this->migrateProperties);
     	}
     }
-    
+
 	/**
 	* Migrate steps
 	*
@@ -400,10 +400,10 @@ class Migrater {
     	for ($i=1; $i< count($steps)+1; $i++) {
     		$this->_migrateHelper($steps[$i]);
     	}
-    	
+
     	$this->_completeMigrate();
     }
-    
+
 	/**
 	* Complete migrate cleanup process
 	*
@@ -415,7 +415,7 @@ class Migrater {
     private function _completeMigrate() {
     	@touch("migrate");
     }
-    
+
 	/**
 	* Migrate steps helper
 	*
@@ -439,7 +439,7 @@ class Migrater {
     		exit();
     	}
     }
-    
+
 	/**
 	* Reset all session information on welcome landing
 	*
@@ -482,7 +482,7 @@ class Migrater {
     		$this->_xmlMigrateProperties();
     	}
     }
-    
+
     private function loadNeeded() {
     	$this->_readXml(); // Xml steps
     	// Make sure session is cleared
@@ -514,7 +514,7 @@ class Migrater {
     		$this->migraterAction = '';
     	}
     }
-    
+
 	/**
 	* Main control to handle the flow of migrate
 	*
@@ -588,7 +588,7 @@ class Migrater {
 
         return $pos;
     }
-    
+
 	/**
 	* Returns the step names for classes
 	*
@@ -624,7 +624,7 @@ class Migrater {
     public function getStepConfirmation() {
     	return $this->stepConfirmation;
     }
-    
+
 	/**
 	* Return migrate properties
 	*
@@ -632,11 +632,11 @@ class Migrater {
 	* @param string
 	* @access public
 	* @return string
-	*/    
+	*/
     public function getMigrateProperties() {
     	return $this->migrateProperties;
     }
-    
+
 	/**
 	* Returns session
 	*
@@ -648,9 +648,9 @@ class Migrater {
     public function getSession() {
     	return $this->session;
     }
-    
+
 	/**
-	* Dump of SESSION 
+	* Dump of SESSION
 	*
 	* @author KnowledgeTree Team
 	* @param none
@@ -662,7 +662,7 @@ class Migrater {
         print_r($_SESSION);
         echo '</pre>';
     }
-    
+
 	/**
 	* Display errors that are not allowing the migrater to operate
 	*
@@ -675,7 +675,7 @@ class Migrater {
     	echo $errors;
     	exit();
     }
-    
+
     private function _loadToSession($type, $values) {
     	if($values) {
     		$this->session->set($type , $values);

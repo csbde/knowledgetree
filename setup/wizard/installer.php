@@ -5,7 +5,7 @@
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright (C) 2008,2009 KnowledgeTree Inc.
-* 
+*
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -46,10 +46,10 @@ class Installer {
 	*
 	* @author KnowledgeTree Team
 	* @access protected
-	* @var object SimpleXMLElement 
+	* @var object SimpleXMLElement
 	*/
     protected $simpleXmlObj = null;
-    
+
 	/**
 	* Reference to step action object
 	*
@@ -58,7 +58,7 @@ class Installer {
 	* @var object StepAction
 	*/
     protected $stepAction = null;
-    
+
 	/**
 	* Reference to session object
 	*
@@ -67,7 +67,7 @@ class Installer {
 	* @var object Session
 	*/
     protected $session = null;
-    
+
 	/**
 	* List of installation steps as strings
 	*
@@ -76,7 +76,7 @@ class Installer {
 	* @var array string
 	*/
     protected $stepClassNames = array();
-    
+
 	/**
 	* List of installation steps as human readable strings
 	*
@@ -85,7 +85,7 @@ class Installer {
 	* @var array string
 	*/
 	protected $stepNames = array();
-    
+
 	/**
 	* List of installation steps as human readable strings
 	*
@@ -94,7 +94,7 @@ class Installer {
 	* @var array string
 	*/
 	protected $stepObjects = array();
-    
+
 	/**
 	* Order in which steps have to be installed
 	*
@@ -103,7 +103,7 @@ class Installer {
 	* @var array string
 	*/
 	protected $installOrders = array();
-	
+
 	/**
 	* List of installation properties
 	*
@@ -112,7 +112,7 @@ class Installer {
 	* @var array string
 	*/
 	protected $installProperties = array();
-	
+
 	/**
 	* Flag if a step object needs confirmation
 	*
@@ -121,7 +121,7 @@ class Installer {
 	* @var boolean
 	*/
     protected $stepConfirmation = false;
-    
+
 	/**
 	* Flag if a step object needs confirmation
 	*
@@ -132,7 +132,7 @@ class Installer {
     protected $stepDisplayFirst = false;
 
     private $installerAction = '';
-    
+
 	/**
 	* Constructs installation object
 	*
@@ -143,18 +143,18 @@ class Installer {
     public function __construct($session = null) {
         $this->session = $session;
     }
-    
+
 	/**
 	* Read xml configuration file
 	*
 	* @author KnowledgeTree Team
 	* @param string $name of config file
 	* @access private
-	* @return object 
+	* @return object
 	*/
     private function _readXml($name = "config.xml") {
     	try {
-        	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.$name);
+        	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.INSTALL_TYPE."_$name");
     	} catch (Exception $e) {
     		$util = new InstallUtil();
     		$util->error("Error reading configuration file: $e");
@@ -174,7 +174,7 @@ class Installer {
         if(isset($_GET['step_name'])) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -191,10 +191,10 @@ class Installer {
         	if($_GET['step_name'] != 'welcome')
             	return false;
         }
-        
+
         return true;
     }
-    
+
 	/**
 	* Returns next step
 	*
@@ -291,7 +291,7 @@ class Installer {
     private function _runStepAction($stepName) {
         $this->stepAction = new stepAction($stepName);
         $this->stepAction->setUpStepAction($this->getSteps(), $this->getStepNames(), $this->getStepConfirmation(), $this->stepDisplayFirst(), $this->getSession(), $this->getInstallProperties());
-        
+
         return $this->stepAction->doAction();
     }
 
@@ -301,7 +301,7 @@ class Installer {
     	$class = $this->stepAction->createStep(); // Get step class
     	return $class->displayFirst(); // Check if class needs to display first
     }
-    
+
 	/**
 	* Set steps class names in string format
 	*
@@ -313,7 +313,7 @@ class Installer {
     private function _getInstallOrders() {
         return $this->installOrders;
     }
-    
+
 	/**
 	* Set steps as names
 	*
@@ -331,7 +331,7 @@ class Installer {
 	        $this->_loadToSession('stepClassNames', $this->stepClassNames);
     	}
     }
-    
+
 	/**
 	* Set steps as human readable strings
 	*
@@ -349,7 +349,7 @@ class Installer {
 	        $this->_loadToSession('stepNames', $this->stepNames);
     	}
     }
-    
+
 	/**
 	* Set steps install order
 	*
@@ -370,7 +370,7 @@ class Installer {
 	        $this->_loadToSession('installOrders', $this->installOrders);
     	}
     }
-    
+
 	/**
 	* Set install properties
 	*
@@ -386,7 +386,7 @@ class Installer {
 			$this->_loadToSession('installProperties', $this->installProperties);
     	}
     }
-    
+
 	/**
 	* Install steps
 	*
@@ -400,10 +400,10 @@ class Installer {
     	for ($i=1; $i< count($steps)+1; $i++) {
     		$this->_installHelper($steps[$i]);
     	}
-    	
+
     	$this->_completeInstall();
     }
-    
+
 	/**
 	* Complete install cleanup process
 	*
@@ -415,7 +415,7 @@ class Installer {
     private function _completeInstall() {
     	@touch(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock");
     }
-    
+
 	/**
 	* Install steps helper
 	*
@@ -439,7 +439,7 @@ class Installer {
     		exit();
     	}
     }
-    
+
 	/**
 	* Reset all session information on welcome landing
 	*
@@ -482,7 +482,7 @@ class Installer {
     		$this->_xmlInstallProperties();
     	}
     }
-    
+
     private function loadNeeded() {
     	$this->_readXml(); // Xml steps
     	// Make sure session is cleared
@@ -508,7 +508,7 @@ class Installer {
     		$this->installerAction = '';
     	}
     }
-    
+
 	/**
 	* Main control to handle the flow of install
 	*
@@ -577,7 +577,7 @@ class Installer {
 
         return $pos;
     }
-    
+
 	/**
 	* Returns the step names for classes
 	*
@@ -613,7 +613,7 @@ class Installer {
     public function getStepConfirmation() {
     	return $this->stepConfirmation;
     }
-    
+
 	/**
 	* Return install properties
 	*
@@ -621,11 +621,11 @@ class Installer {
 	* @param string
 	* @access public
 	* @return string
-	*/    
+	*/
     public function getInstallProperties() {
     	return $this->installProperties;
     }
-    
+
 	/**
 	* Returns session
 	*
@@ -637,9 +637,9 @@ class Installer {
     public function getSession() {
     	return $this->session;
     }
-    
+
 	/**
-	* Dump of SESSION 
+	* Dump of SESSION
 	*
 	* @author KnowledgeTree Team
 	* @param none
@@ -651,7 +651,7 @@ class Installer {
         print_r($_SESSION['installers']);
         echo '</pre>';
     }
-    
+
 	/**
 	* Display errors that are not allowing the installer to operate
 	*
@@ -664,7 +664,7 @@ class Installer {
     	echo $errors;
     	exit();
     }
-    
+
     private function _loadToSession($type, $values) {
     	if($values) {
     		$this->session->set($type , $values);

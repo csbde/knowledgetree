@@ -5,7 +5,7 @@
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright (C) 2008,2009 KnowledgeTree Inc.
-* 
+*
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -46,10 +46,10 @@ class Upgrader {
 	*
 	* @author KnowledgeTree Team
 	* @access protected
-	* @var object SimpleXMLElement 
+	* @var object SimpleXMLElement
 	*/
     protected $simpleXmlObj = null;
-    
+
 	/**
 	* Reference to step action object
 	*
@@ -58,7 +58,7 @@ class Upgrader {
 	* @var object StepAction
 	*/
     protected $stepAction = null;
-    
+
 	/**
 	* Reference to session object
 	*
@@ -67,7 +67,7 @@ class Upgrader {
 	* @var object Session
 	*/
     protected $session = null;
-    
+
 	/**
 	* List of upgradeation steps as strings
 	*
@@ -76,7 +76,7 @@ class Upgrader {
 	* @var array string
 	*/
     protected $stepClassNames = array();
-    
+
 	/**
 	* List of upgradeation steps as human readable strings
 	*
@@ -85,7 +85,7 @@ class Upgrader {
 	* @var array string
 	*/
 	protected $stepNames = array();
-    
+
 	/**
 	* List of upgradeation steps as human readable strings
 	*
@@ -94,7 +94,7 @@ class Upgrader {
 	* @var array string
 	*/
 	protected $stepObjects = array();
-    
+
 	/**
 	* Order in which steps have to be upgraded
 	*
@@ -103,7 +103,7 @@ class Upgrader {
 	* @var array string
 	*/
 	protected $upgradeOrders = array();
-	
+
 	/**
 	* List of upgradeation properties
 	*
@@ -112,7 +112,7 @@ class Upgrader {
 	* @var array string
 	*/
 	protected $upgradeProperties = array();
-	
+
 	/**
 	* Flag if a step object needs confirmation
 	*
@@ -121,7 +121,7 @@ class Upgrader {
 	* @var boolean
 	*/
     protected $stepConfirmation = false;
-    
+
 	/**
 	* Flag if a step object needs confirmation
 	*
@@ -132,7 +132,7 @@ class Upgrader {
     protected $stepDisplayFirst = false;
 
     private $upgraderAction = '';
-    
+
 	/**
 	* Constructs upgradeation object
 	*
@@ -143,18 +143,18 @@ class Upgrader {
     public function __construct($session = null) {
         $this->session = $session;
     }
-    
+
 	/**
 	* Read xml configuration file
 	*
 	* @author KnowledgeTree Team
 	* @param string $name of config file
 	* @access private
-	* @return object 
+	* @return object
 	*/
     private function _readXml($name = "config.xml") {
     	try {
-        	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.$name);
+        	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.INSTALL_TYPE."_$name");
     	} catch (Exception $e) {
     		$util = new UpgradeUtil();
     		$util->error("Error reading configuration file: $e");
@@ -174,7 +174,7 @@ class Upgrader {
         if(isset($_GET['step_name'])) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -191,10 +191,10 @@ class Upgrader {
         	if($_GET['step_name'] != 'welcome')
             	return false;
         }
-        
+
         return true;
     }
-    
+
 	/**
 	* Returns next step
 	*
@@ -301,7 +301,7 @@ class Upgrader {
     	$class = $this->stepAction->createStep(); // Get step class
     	return $class->displayFirst(); // Check if class needs to display first
     }
-    
+
 	/**
 	* Set steps class names in string format
 	*
@@ -313,7 +313,7 @@ class Upgrader {
     private function _getUpgradeOrders() {
         return $this->upgradeOrders;
     }
-    
+
 	/**
 	* Set steps as names
 	*
@@ -331,7 +331,7 @@ class Upgrader {
 	        $this->_loadToSession('stepClassNames', $this->stepClassNames);
     	}
     }
-    
+
 	/**
 	* Set steps as human readable strings
 	*
@@ -349,7 +349,7 @@ class Upgrader {
 	        $this->_loadToSession('stepNames', $this->stepNames);
     	}
     }
-    
+
 	/**
 	* Set steps upgrade order
 	*
@@ -370,7 +370,7 @@ class Upgrader {
 	        $this->_loadToSession('upgradeOrders', $this->upgradeOrders);
     	}
     }
-    
+
 	/**
 	* Set upgrade properties
 	*
@@ -386,7 +386,7 @@ class Upgrader {
 			$this->_loadToSession('upgradeProperties', $this->upgradeProperties);
     	}
     }
-    
+
 	/**
 	* Upgrade steps
 	*
@@ -400,10 +400,10 @@ class Upgrader {
     	for ($i=1; $i< count($steps)+1; $i++) {
     		$this->_upgradeHelper($steps[$i]);
     	}
-    	
+
     	$this->_completeUpgrade();
     }
-    
+
 	/**
 	* Complete upgrade cleanup process
 	*
@@ -415,7 +415,7 @@ class Upgrader {
     private function _completeUpgrade() {
     	@touch("upgrade");
     }
-    
+
 	/**
 	* Upgrade steps helper
 	*
@@ -439,7 +439,7 @@ class Upgrader {
     		exit();
     	}
     }
-    
+
 	/**
 	* Reset all session information on welcome landing
 	*
@@ -482,7 +482,7 @@ class Upgrader {
     		$this->_xmlUpgradeProperties();
     	}
     }
-    
+
     private function loadNeeded() {
     	$this->_readXml(); // Xml steps
     	// Make sure session is cleared
@@ -511,7 +511,7 @@ class Upgrader {
     		$this->upgraderAction = '';
     	}
     }
-    
+
 	/**
 	* Main control to handle the flow of upgrade
 	*
@@ -581,7 +581,7 @@ class Upgrader {
 
         return $pos;
     }
-    
+
 	/**
 	* Returns the step names for classes
 	*
@@ -617,7 +617,7 @@ class Upgrader {
     public function getStepConfirmation() {
     	return $this->stepConfirmation;
     }
-    
+
 	/**
 	* Return upgrade properties
 	*
@@ -625,11 +625,11 @@ class Upgrader {
 	* @param string
 	* @access public
 	* @return string
-	*/    
+	*/
     public function getUpgradeProperties() {
     	return $this->upgradeProperties;
     }
-    
+
 	/**
 	* Returns session
 	*
@@ -641,9 +641,9 @@ class Upgrader {
     public function getSession() {
     	return $this->session;
     }
-    
+
 	/**
-	* Dump of SESSION 
+	* Dump of SESSION
 	*
 	* @author KnowledgeTree Team
 	* @param none
@@ -655,7 +655,7 @@ class Upgrader {
         print_r($_SESSION);
         echo '</pre>';
     }
-    
+
 	/**
 	* Display errors that are not allowing the upgrader to operate
 	*
@@ -668,7 +668,7 @@ class Upgrader {
     	echo $errors;
     	exit();
     }
-    
+
     private function _loadToSession($type, $values) {
     	if($values) {
     		$this->session->set($type , $values);
