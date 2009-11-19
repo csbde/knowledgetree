@@ -126,7 +126,7 @@
 		$type = file_get_contents($verType);
     }
     if($type) {
-		define('INSTALL_TYPE', $type);
+		define('INSTALL_TYPE', trim($type));
     } else {
 		define('INSTALL_TYPE', 'community');
 	}

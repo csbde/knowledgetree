@@ -413,7 +413,7 @@ class Upgrader {
 	* @return void
 	*/
     private function _completeUpgrade() {
-    	@touch("upgrade");
+    	touch("upgrade");
     }
 
 	/**

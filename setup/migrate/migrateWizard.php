@@ -177,7 +177,7 @@ class MigrateWizard {
 	* @return void
  	*/
 	private function createMigrateFile() {
-		@touch("migrate");
+		touch("migrate");
 	}
 
 	/**
@@ -189,7 +189,7 @@ class MigrateWizard {
 	* @return void
  	*/
 	private function removeMigrateFile() {
-		@unlink("migrate");
+		unlink("migrate");
 	}
 
 	/**

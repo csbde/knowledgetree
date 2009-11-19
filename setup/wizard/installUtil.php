@@ -712,7 +712,7 @@ class InstallUtil {
      */
     function deleteMigrateFile() {
     	if(file_exists(SYSTEM_DIR.'var'.DS.'bin'.DS."migrate.lock"))
-    		@unlink(SYSTEM_DIR.'var'.DS.'bin'.DS."migrate.lock");
+    		unlink(SYSTEM_DIR.'var'.DS.'bin'.DS."migrate.lock");
     }
 
     /**

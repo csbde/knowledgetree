@@ -413,7 +413,7 @@ class Migrater {
 	* @return void
 	*/
     private function _completeMigrate() {
-    	@touch("migrate");
+    	touch("migrate");
     }
 
 	/**
