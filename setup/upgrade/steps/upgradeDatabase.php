@@ -268,7 +268,7 @@ class upgradeDatabase extends Step
         // It should idealy work the same as the upgrades.
         // Lock the scheduler
         $lockFile = $this->cachePath . DIRECTORY_SEPARATOR . 'scheduler.lock';
-        @touch($lockFile);
+        touch($lockFile);
         return true;
     
     }
@@ -287,7 +287,7 @@ class upgradeDatabase extends Step
             // things up a bit
             exec("del /q /s " . escapeshellarg($sPath));
         }
-        $hPath = @opendir($sPath);
+        $hPath = opendir($sPath);
         while (($sFilename = readdir($hPath)) !== false) {
             if (in_array($sFilename, array('.', '..'))) {
                 continue;
@@ -297,11 +297,11 @@ class upgradeDatabase extends Step
                 $this->deleteDirectory($sFullFilename);
                 continue;
             }
-            @chmod($sFullFilename, 0666);
-            @unlink($sFullFilename);
+            chmod($sFullFilename, 0666);
+            unlink($sFullFilename);
         }
         closedir($hPath);
-        @rmdir($sPath);
+        rmdir($sPath);
     }
     
     private function performPostUpgradeActions() {
@@ -320,7 +320,7 @@ class upgradeDatabase extends Step
         // Unlock the scheduler
         $lockFile = $this->cachePath . DIRECTORY_SEPARATOR . 'scheduler.lock';
         if(file_exists($lockFile)){
-            @unlink($lockFile);
+            unlink($lockFile);
         }
     
         return true;

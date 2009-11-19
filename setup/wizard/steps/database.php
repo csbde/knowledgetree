@@ -768,13 +768,14 @@ class database extends Step
         $dbMigrate = $this->util->getDataFromPackage('migrate', 'database');
         $sqlFile = $dbMigrate['dumpLocation'];
     	$this->parse_mysql_dump($sqlFile);
-    	$dropPluginHelper = "TRUNCATE plugin_helper;";
+    	$dropPluginHelper = "TRUNCATE plugin_helper;"; // Remove plugin helper table
     	$this->util->dbUtilities->query($dropPluginHelper);
-    	$updateUrls = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "urls";';
+    	$updateUrls = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "urls";'; // Remove references to old paths
     	$this->util->dbUtilities->query($updateUrls);
-		$this->writeBinaries();
-		// ensure a guid was generated and is stored
-		$this->util->getSystemIdentifier();
+    	$updateExternalBinaries = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "externalBinary";'; // Remove references to old paths
+    	$this->util->dbUtilities->query($updateExternalBinaries);
+		$this->writeBinaries(); // Rebuild some of the binaries
+		$this->util->getSystemIdentifier(); // ensure a guid was generated and is stored
 
     	return true;
     }
@@ -793,7 +794,6 @@ class database extends Step
     	    {
     	        // continue without attempting to set the path if we can't find the file in the specified location
     	        if (!file_exists($bin[1])) continue;
-    	        
         		$updateBin = 'UPDATE config_settings c SET c.value = "'. str_replace('\\', '\\\\', $bin[1]) . '" '
         		           . 'where c.group_name = "' . $bin[0] . '" and c.display_name = "'.$displayName.'";';
                 $this->util->dbUtilities->query($updateBin);
