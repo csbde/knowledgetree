@@ -119,8 +119,8 @@ class migrateComplete extends Step {
     			$state = 'cross';
     			$this->error[] = "Service : {$serv->getName()} could not be uninstalled.<br/>";
     			$this->services_check = 'cross';
-    			$stopmsg = OS.'GetStopMsg';
-    			$this->temp_variables['services'][$serv->getName()]['msg'] = $serv->$stopmsg($this->conf['location']);
+    			//$stopmsg = OS.'GetStopMsg';
+    			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service Running"; //$serv->getStopMsg($this->conf['location']);
     		} else {
     			$state = 'tick';
     			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service has been uninstalled";

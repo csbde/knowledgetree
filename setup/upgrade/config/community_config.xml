@@ -4,7 +4,7 @@
     Document   : config.xml
     Created on : 01 July 2009, 9:57 AM
     Author     : KnowledgeTree Team
-    Description: Upgrader steps
+    Description: Community Upgrader steps
 -->
 
 <upgrade version="3.7" type="Community Edition">

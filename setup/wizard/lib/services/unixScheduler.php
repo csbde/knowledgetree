@@ -180,17 +180,17 @@ class unixScheduler extends unixService {
 		$source = $this->getSchedulerSourceLoc();
 		$this->writeSchedulerTask();
 		$logFile = "/dev/null";
-		@unlink($logFile);
+//		@unlink($logFile);
 		if($source) { // Source
 			$cmd = "nohup ".$source." > ".$logFile." 2>&1 & echo $!";
 		} else { // Could be Stack
 			$source = SYS_BIN_DIR.$this->schedulerSource;
 			$cmd = "nohup ".$source." > ".$logFile." 2>&1 & echo $!";
 		}
-    	if(DEBUG) {
-    		echo "$cmd<br/>";
-    		return ;
-    	}
+//    	if(DEBUG) {
+//    		echo "$cmd<br/>";
+//    		return ;
+//    	}
     	//$response = $this->util->pexec($cmd);
     	
 //		return $response;
@@ -201,12 +201,9 @@ class unixScheduler extends unixService {
 		return $this->name;
 	}
 	
-	public function unixGetStopMsg($installDir) {
-		return "Execute from terminal : $installDir/dmsctl.sh stop scheduler";
+	public function getStopMsg($installDir) {
+		return "Service Running";//"Execute from terminal : $installDir/dmsctl.sh stop";
 	}
 	
-	public function windowsGetStopMsg($installDir) {
-		return "Execute from terminal : $installDir/dmsctl.sh stop scheduler";
-	}
 }
 ?>

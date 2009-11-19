@@ -13,7 +13,7 @@
 		<div>
 		    <h3><?php echo "<span class='{$servicesCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services</h3>
 		<?php if($silent) { ?>
-			<div id="option2" class="onclick" onclick="javascript:{w.toggleClass('services_check', 'option2');}">Show Details</div>
+			<div id="option2" class="onclick notop" onclick="javascript:{w.toggleClass('services_check', 'option2');}">Show Details</div>
 			<div class="services_check" style="display:none">
 		<?php } ?>
 		    <table style="width:755px;">

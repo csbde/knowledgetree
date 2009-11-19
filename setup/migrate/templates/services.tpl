@@ -47,8 +47,9 @@
 			$details = 'Show Details';
 			$display = 'none';
 		}
+		$display = 'block';
 		?>
-			<div id="option6" class="onclick notop" onclick="javascript:{w.toggleClass('service_details', 'option6');}"><?php echo $details; ?></div>
+<!--			<div id="option6" class="onclick notop" onclick="javascript:{w.toggleClass('service_details', 'option6');}"><?php echo $details; ?></div>-->
 			<div class="service_details" style="display:<?php echo $display; ?>">
 		<?php } ?>
 		<table>
@@ -63,7 +64,7 @@
 			    		<td style="width:75%;"> <?php echo $ser['msg']; ?> </td>
 			    		<?php if ($ser['class'] != 'tick') {
 			    			?>
-			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+<!--			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>-->
 			    			<?php
 			    		} ?>
 			    	</tr>
@@ -73,6 +74,8 @@
 		}
 		?>
 		</table>
+		<br/>
+		<p class=\"description\">Click <b>Next</b> after deactivating the above services.</p>
 		<?php if($silent) { ?>
 			</div>
 		<?php } ?>

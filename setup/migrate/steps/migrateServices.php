@@ -167,7 +167,7 @@ class migrateServices extends Step
      *
      * @return boolean If all services are not installed
      */
-    public function alreadyUninstalled() {
+    private function alreadyUninstalled() {
     	$alreadyUninstalled = true;
     	foreach ($this->services as $serviceName) {
     		$className = OS.$serviceName;
@@ -178,10 +178,22 @@ class migrateServices extends Step
     			return false;
     		}
     	}
+    	if($this->mysqlRunning()) {
+    		return false;
+    	}
     	
     	return $alreadyUninstalled;
     }
 
+    private function mysqlRunning() {
+    	$installation = $this->getDataFromSession("installation"); // Get installation directory
+    	$mysqlPid = $installation['location'].DS."mysql".DS."data".DS."mysqld.pid";
+    	if(file_exists($mysqlPid)) {
+    		return true;
+    	}
+    	return false;
+    }
+    
     /**
      * Attempt to uninstall services
      *
@@ -199,7 +211,7 @@ class migrateServices extends Step
      * Attempt to uninstall unix services
      *
      */
-    public function unixStop() {
+    private function unixStop() {
     	$cmd = $this->conf['location']."/dmsctl.sh stop lucene";
     	$this->util->pexec($cmd);
     	$cmd = $this->conf['location']."/dmsctl.sh stop scheduler";
@@ -212,7 +224,7 @@ class migrateServices extends Step
      * Attempt to uninstall windows services
      *
      */
-    public function windowsStop() {
+    private function windowsStop() {
     	$cmd = "sc delete KTLucene";
     	$this->util->pexec($cmd);
     	$cmd = "sc delete KTScheduler";
@@ -225,7 +237,7 @@ class migrateServices extends Step
      * Attempt to uninstall services created by webserver
      *
      */
-    public function shutdown() {
+    private function shutdown() {
     	foreach ($this->services as $serviceName) {
     		$className = OS.$serviceName;
     		$serv = $this->util->loadInstallService($className);
@@ -240,8 +252,8 @@ class migrateServices extends Step
     /**
      * Check if services are uninstall
      *
-     */    
-    public function checkServices() {
+     */
+    private function checkServices() {
     	foreach ($this->services as $serviceName) {
     		$className = OS.$serviceName;
     		$serv = $this->util->loadInstallService($className);
@@ -251,8 +263,8 @@ class migrateServices extends Step
     			$state = 'cross';
     			$this->error[] = "Service : {$serv->getName()} could not be uninstalled.<br/>";
     			$this->serviceCheck = 'cross';
-    			$stopmsg = OS.'GetStopMsg';
-    			$this->temp_variables['services'][$serv->getName()]['msg'] = $serv->$stopmsg($this->conf['location']);
+    			//$stopmsg = OS.'GetStopMsg';
+    			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service Running"; //$serv->getStopMsg($this->conf['location']);
     		} else {
     			$state = 'tick';
     			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service has been uninstalled";
@@ -260,11 +272,31 @@ class migrateServices extends Step
     		$this->temp_variables['services'][$serv->getName()]['class'] = $state;
     		$this->temp_variables['services'][$serv->getName()]['name'] = $serv->getName();
     	}
+    	$this->checkMysql();
     	if ($this->serviceCheck != 'tick') {
     		return false;
     	}
     	
     	return true;
+    }
+    
+    /**
+     * Check if services are uninstall
+     *
+     */
+    private function checkMysql() {
+    	$installation = $this->getDataFromSession("installation"); // Get installation directory
+    	$mysqlPid = $installation['location'].DS."mysql".DS."data".DS."mysqld.pid";
+    	if(file_exists($mysqlPid)) {
+    		$this->temp_variables['services']['KTMysql']['class'] = "cross";
+    		$this->temp_variables['services']['KTMysql']['name'] = "KTMysql";
+    		$this->temp_variables['services']['KTMysql']['msg'] = "Service Running";
+    		$this->error[] = "Service : KTMysql running.<br/>";
+    	} else {
+    		$this->temp_variables['services']['KTMysql']['class'] = "tick";
+    		$this->temp_variables['services']['KTMysql']['name'] = "KTMysql";
+    		$this->temp_variables['services']['KTMysql']['msg'] = "Service has been uninstalled";
+    	}
     }
     
 	/**
@@ -314,6 +346,7 @@ class migrateServices extends Step
     private function storeSilent() {
     	$this->temp_variables['alreadyUninstalled'] = $this->alreadyUninstalled;
     	$this->temp_variables['serviceCheck'] = $this->serviceCheck;
+    	$this->temp_variables['msg'] = "Please turn off KnowledgeTree Mysql Instance.";
     }
 }
 ?>

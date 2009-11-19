@@ -78,14 +78,6 @@ class migrateDatabase extends Step
 	*/
     protected $silent = false;
 
-	/**
-	* List of errors used in template
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var array
-	*/
-    public $templateErrors = array('dmspassword', 'dmsuserpassword', 'con', 'dname', 'dtype', 'duname', 'dpassword');
     private $sqlDumpFile = '';
 
 	/**
@@ -99,7 +91,6 @@ class migrateDatabase extends Step
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"database", "silent"=>$this->silent);
         $this->wizardLocation = '../wizard';
-    	$this->initErrors(); // Load template errors
     	$this->setDetails(); // Set any posted variables
     	if(!$this->inStep("database")) {
     		return 'landing';
@@ -118,6 +109,14 @@ class migrateDatabase extends Step
 
     public function exportDatabase() {
     	$database = $this->getDataFromSession("database");
+    	if(isset($database['dumpLocation'])) {
+    		if(!empty($database['dumpLocation'])) {
+    			if(file_exists($database['dumpLocation'])) { // Maybe file has been deleted by tmp
+    				$this->sqlDumpFile = $database['dumpLocation'];
+    				return true;// Database dumped already in this session
+    			}
+    		}
+    	}
     	$installation = $this->getDataFromSession("installation"); // Get installation directory
     	$manual = false; // If file was exported manually
     	$dbSettings = $installation['dbSettings'];
@@ -171,10 +170,10 @@ class migrateDatabase extends Step
 		}
 		$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
 		if($response['ret'] == 2) {
-			$this->error[]['error'] = "Could not connect to KnowledgeTree Database";
+			$this->error[]['error'] = "Could not connect to the KnowledgeTree Database";
 			$this->error[]['msg'] = "Make sure all KnowledgeTree Services are running.";
 			$this->error[]['cmd'] = "<p class=\"description\">Click <b>Next</b> after resolving the above errors.</p>";
-			$this->temp_variables['manual_export'] = "a";
+			$this->temp_variables['manual_export'] = "";
 		} else {
 	    	$this->error[]['error'] = "Could not export database:";
 	    	$this->error[]['msg'] = "Execute the following command in a $termOrBash.";
@@ -208,10 +207,20 @@ class migrateDatabase extends Step
 	* @return void
 	*/
 	private function setDetails() {
+    	$database = $this->getDataFromSession("database");
+    	if(isset($database['dumpLocation'])) {
+    		if(!empty($database['dumpLocation'])) {
+    			if(file_exists($database['dumpLocation'])) { // Maybe file has been deleted by tmp
+    				$this->sqlDumpFile = $database['dumpLocation'];
+    				return false;
+    			}
+    		}
+    	}
         $this->temp_variables['duname'] = $this->getPostSafe('duname');
         $this->temp_variables['dpassword'] = $this->getPostSafe('dpassword');
         $this->temp_variables['dumpLocation'] = $this->getPostSafe('dumpLocation');
         $this->createMigrateFile(); // create lock file to indicate migration mode
+        return true;
     }
 
     /**
@@ -259,20 +268,6 @@ class migrateDatabase extends Step
 	*/
     public function getErrors() {
         return $this->error;
-    }
-
-	/**
-	* Initialize errors to false
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access private
-	* @return boolean
-	*/
-    private function initErrors() {
-    	foreach ($this->templateErrors as $e) {
-    		$this->error[$e] = false;
-    	}
     }
 
     private function storeSilent() {

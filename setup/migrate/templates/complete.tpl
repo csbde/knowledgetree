@@ -35,7 +35,7 @@
 			    		<td style="width:75%;"> <?php echo $ser['msg']; ?> </td>
 			    		<?php if ($ser['class'] != 'tick') {
 			    			?>
-			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>
+<!--			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>-->
 			    			<?php
 			    		} ?>
 			    	</tr>

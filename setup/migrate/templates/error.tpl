@@ -40,7 +40,7 @@
 											    foreach ($errors as $msg){
 											        echo $msg . "<br />";
 											        ?>
-											        	<a href="javascript:this.location.reload();" class="refresh">Refresh</a>
+<!--											        	<a href="javascript:this.location.reload();" class="refresh">Refresh</a>-->
 											        <?php
 											    }
 											    echo '</div>';
