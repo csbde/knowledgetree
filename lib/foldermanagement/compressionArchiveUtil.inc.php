@@ -37,6 +37,7 @@
  */
 
 require_once('File/Archive.php');
+require_once(KT_LIB_DIR . '/util/ktpclzip.inc.php');
 
 /**
 * Class to create and download a zip file
@@ -207,6 +208,13 @@ class ZipFolder {
             return PEAR::raiseError(_kt("No folders or documents found to compress"));
         }
 
+		$sZipFile = sprintf("%s/%s.".$this->extension, $this->sTmpPath, $this->sZipFileName);
+        $sZipFile = str_replace('<', '', str_replace('</', '', str_replace('>', '', $sZipFile)));
+        
+        $archive = new KTPclZip($sZipFile);
+        $archive->createZipFile($this->sTmpPath.'/Root Folder');
+                
+        /*
         $config = KTConfig::getSingleton();
         $useBinary = true; //$config->get('export/useBinary', false);
 
@@ -259,7 +267,8 @@ class ZipFolder {
                 File_Archive::toArchive($this->sZipFileName.'.'.$this->extension, File_Archive::toFiles($this->sTmpPath), $this->extension)
             );
         }
-
+		*/
+        
         // Save the zip file and path into session
         $_SESSION['zipcompression'] = KTUtil::arrayGet($_SESSION, 'zipcompression', array());
         $sExportCode = $this->exportCode;
