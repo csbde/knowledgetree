@@ -9,8 +9,11 @@ cd ..
 cd ..
 set ZEND_PATH=%CD%
 cd %INSTALL_PATH%
-set JAVA_BIN=%ZEND_PATH%\jre\bin\java.exe
-set SOFFICE_PATH=%ZEND_PATH%\openoffice
+cd ..
+set KTDMS_PATH=%CD%
+cd %INSTALL_PATH%
+set JAVA_BIN=%KTDMS_PATH%\jre\bin\java.exe
+set SOFFICE_PATH=%KTDMS_PATH%\openoffice
 set SOFFICE_BIN=%SOFFICE_PATH%\program\soffice.exe
 set SOFFICE_PORT=8100
 
@@ -84,6 +87,7 @@ goto end
 
 :path
 echo ZEND_PATH     == %ZEND_PATH%
+echo KTDMS_PATH     == %KTDMS_PATH%
 echo INSTALL_PATH  == %INSTALL_PATH%
 echo JAVA_BIN      == %JAVA_BIN%
 echo SOFFICE_PATH  == %SOFFICE_PATH%

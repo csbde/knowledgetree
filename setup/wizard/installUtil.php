@@ -244,10 +244,14 @@ class InstallUtil {
      * @param boolean $create Whether to create the directory if it doesn't exist
      * @return array The message and css class to use
      */
-    public function _checkPermission($dir)
+    public function _checkPermission($dir, $writable = false)
     {
-    	//return true; // TODO: remove
-        if(is_readable($dir) && is_writable($dir)) {
+        if(is_readable($dir)) {
+        	if($writable) {
+        		if(!is_writable($dir)) {
+        			return false;
+        		}
+        	}
 			return true;
         } else {
         	return false;
