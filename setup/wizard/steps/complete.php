@@ -145,9 +145,6 @@ class complete extends Step {
         $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['dport'], $dbconf['dmsname'], $dbconf['dmspassword'], $dbconf['dname']);
         $loaded = $this->util->dbUtilities->getDatabaseLink();
         if (!$loaded) {
-            $this->temp_variables['dbConnectAdmin'] .= '<td><div class="cross"></div></td>'
-                                               		.  '<td class="error">Unable to connect to database (user: '
-                                               		. $dbconf['dmsname'] . ')</td>';
 			$this->database_check = 'cross';
             $this->temp_variables['dbConnectAdmin'] .= sprintf($html, 'cross', 'class="error"', 'Unable to connect to database (user: ' . $dbconf['dmsname'] . ')');
             $this->privilegesSection = false;

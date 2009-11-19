@@ -66,13 +66,14 @@
 			?>
 		    <table class="description_complete">
 <!--			<table class="description">-->
-		        <tr><?php echo $varDirectory; ?></tr>
-		        <tr><?php echo $documentRoot; ?></tr>
-		        <tr><?php echo $logDirectory; ?></tr>
-		        <tr><?php echo $tmpDirectory; ?></tr>
-		        <tr><?php echo $uploadDirectory; ?></tr>
-		        <tr><?php echo $config; ?></tr>
-		        <tr><?php echo $docLocation; ?></tr>
+				<tr></tr>
+		        <?php if (!empty($varDirectory)) echo '<tr>' . $varDirectory . '</tr>'; ?>
+		        <?php if (!empty($documentRoot)) echo '<tr>' . $documentRoot . '</tr>'; ?>
+		        <?php if (!empty($logDirectory)) echo '<tr>' . $logDirectory . '</tr>'; ?>
+		        <?php if (!empty($tmpDirectory)) echo '<tr>' . $tmpDirectory . '</tr>'; ?>
+		        <?php if (!empty($uploadDirectory)) echo '<tr>' . $uploadDirectory . '</tr>'; ?>
+		        <?php if (!empty($config)) echo '<tr>' . $config . '</tr>'; ?>
+		        <?php if (!empty($docLocation)) echo '<tr>' . $docLocation . '</tr>'; ?>
 		    </table>
 		<?php if($silent) { ?>
 			</div>
