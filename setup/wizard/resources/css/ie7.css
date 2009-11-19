@@ -1,0 +1,21 @@
+#logo {
+	right:70%;
+}
+
+.onclick {
+     cursor: pointer;
+     color: #EC7725;
+     /*width: 150px;*/width:350px;padding-top:12px;position:static;
+}
+
+.dependency_details {
+	padding-top:12px;
+	position:static;
+	width:650px;
+}
+
+.dependencies {
+	position:static;
+	right:30%;
+	width:640px;
+}
