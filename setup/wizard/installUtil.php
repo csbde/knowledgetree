@@ -246,7 +246,7 @@ class InstallUtil {
      */
     public function _checkPermission($dir)
     {
-    	return true; // TODO: remove
+    	//return true; // TODO: remove
         if(is_readable($dir) && is_writable($dir)) {
 			return true;
         } else {
