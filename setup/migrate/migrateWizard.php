@@ -5,7 +5,7 @@
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright (C) 2008,2009 KnowledgeTree Inc.
-* 
+*
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -98,10 +98,10 @@ class MigrateWizard {
 	* @param none
 	* @return boolean
  	*/
-	private function isSystemMigrateed() {
-		return $this->util->isSystemMigrateed();
+	private function isSystemMigrated() {
+		return $this->util->isSystemMigrated();
 	}
-	
+
 	/**
 	* Display the wizard
 	*
@@ -119,7 +119,7 @@ class MigrateWizard {
 			$ins->step(); // Run step
 		}
 	}
-	
+
 	/**
 	* Set bypass flag
 	*
@@ -131,7 +131,7 @@ class MigrateWizard {
 	private function setBypass($bypass) {
 		$this->bypass = $bypass;
 	}
-	
+
 	/**
 	* Set util reference
 	*
@@ -143,7 +143,7 @@ class MigrateWizard {
 	private function setIUtil($util) {
 		$this->util = $util;
 	}
-	
+
 	/**
 	* Get bypass flag
 	*
@@ -155,7 +155,7 @@ class MigrateWizard {
 	public function getBypass() {
 		return $this->bypass;
 	}
-	
+
 	/**
 	* Bypass and force an migrate
 	*
@@ -165,9 +165,9 @@ class MigrateWizard {
 	* @return boolean
  	*/
 	private function bypass() {
-		
+
 	}
-	
+
 	/**
 	* Create migrate file
 	*
@@ -179,7 +179,7 @@ class MigrateWizard {
 	private function createMigrateFile() {
 		@touch("migrate");
 	}
-	
+
 	/**
 	* Remove migrate file
 	*
@@ -191,7 +191,7 @@ class MigrateWizard {
 	private function removeMigrateFile() {
 		@unlink("migrate");
 	}
-	
+
 	/**
 	* Load default values
 	*
@@ -206,7 +206,7 @@ class MigrateWizard {
 		}
 		$this->setIUtil(new MigrateUtil());
 	}
-	
+
 	/**
 	* Run pre-migrateation system checks
 	*
@@ -232,7 +232,7 @@ class MigrateWizard {
 				break;
 		}
 	}
-	
+
 	/**
 	* Control all requests to wizard
 	*
@@ -248,7 +248,7 @@ class MigrateWizard {
 		} elseif ($this->getBypass() === "0") {
 			$this->createMigrateFile();
 		}
-		if(!$this->isSystemMigrateed()) { // Check if the systems not migrated
+		if(!$this->isSystemMigrated()) { // Check if the systems not migrated
 			$response = $this->systemChecks();
 			if($response === true) {
 				$this->displayMigrater();

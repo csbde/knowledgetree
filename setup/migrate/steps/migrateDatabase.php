@@ -1,6 +1,6 @@
 <?php
 /**
-* Database Step Controller. 
+* Database Step Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -40,7 +40,7 @@
 * @version Version 0.1
 */
 
-class migrateDatabase extends Step 
+class migrateDatabase extends Step
 {
 	/**
 	* List of errors encountered
@@ -50,7 +50,7 @@ class migrateDatabase extends Step
 	* @var array
 	*/
     public $error = array();
-    
+
 	/**
 	* Flag to store class information in session
 	*
@@ -59,7 +59,7 @@ class migrateDatabase extends Step
 	* @var array
 	*/
     public $storeInSession = true;
-    
+
 	/**
 	* Flag if step needs to be migrated
 	*
@@ -68,7 +68,7 @@ class migrateDatabase extends Step
 	* @var array
 	*/
     protected $runMigrate = true;
-    
+
 	/**
 	* Flag if step needs to run silently
 	*
@@ -112,7 +112,7 @@ class migrateDatabase extends Step
 		} else if($this->previous()) {
 			return 'previous';
 		}
-        
+
         return 'landing';
     }
 
@@ -145,7 +145,7 @@ class migrateDatabase extends Step
     	if(!$manual) { // Try to export database
 			$sqlFile = $tmpFolder."/kt-backup-$date.sql";
 			$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
-			$this->util->pexec($cmd);
+			$response = $this->util->pexec($cmd);
     	}
 		if(file_exists($sqlFile)) {
 			$fileContents = file_get_contents($sqlFile);
@@ -156,19 +156,35 @@ class migrateDatabase extends Step
 		}
 		// Handle failed dump
 		if(WINDOWS_OS) {
-			$sqlFile = "C:\\kt-backup-$date.sql"; // Use tmp instead due to permissions
+			// Could be permissions, check error code.
+			if($response['ret'] == 2) {
+
+			} else {
+				$sqlFile = "C:\\kt-backup-$date.sql"; // Use tmp instead due to permissions
+			}
 		} else {
-			$sqlFile = "/tmp/kt-backup-$date.sql"; // Use tmp instead due to permissions
+			if($response['ret'] == 2) {
+
+			} else {
+				$sqlFile = "/tmp/kt-backup-$date.sql"; // Use tmp instead due to permissions
+			}
 		}
 		$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
-    	$this->error[]['error'] = "Could not export database:";
-    	$this->error[]['msg'] = "Execute the following command in a $termOrBash.";
-    	$this->error[]['cmd'] = $cmd;
-    	$this->temp_variables['manual_export'] = $sqlFile;
-    	
+		if($response['ret'] == 2) {
+			$this->error[]['error'] = "Could not connect to KnowledgeTree Database";
+			$this->error[]['msg'] = "Make sure all KnowledgeTree Services are running.";
+			$this->error[]['cmd'] = "<p class=\"description\">Click <b>Next</b> after resolving the above errors.</p>";
+			$this->temp_variables['manual_export'] = "a";
+		} else {
+	    	$this->error[]['error'] = "Could not export database:";
+	    	$this->error[]['msg'] = "Execute the following command in a $termOrBash.";
+	    	$this->error[]['cmd'] = $cmd;
+	    	$this->temp_variables['manual_export'] = $sqlFile;
+		}
+
 		return false;
     }
-    
+
     // TODO
 	function resolveTempDir() {
 	    if (!WINDOWS_OS) {
@@ -179,7 +195,7 @@ class migrateDatabase extends Step
 	    if (!is_dir($dir)) {
 			mkdir($dir);
 	    }
-	    
+
 	    return $dir;
 	}
 
@@ -197,10 +213,10 @@ class migrateDatabase extends Step
         $this->temp_variables['dumpLocation'] = $this->getPostSafe('dumpLocation');
         $this->createMigrateFile(); // create lock file to indicate migration mode
     }
-    
+
     /**
      * Creates migration lock file so that system knows it is supposed to run an upgrade installation
-     * 
+     *
      * @author KnowledgeTree Team
      * @access private
      * @return void
@@ -208,7 +224,7 @@ class migrateDatabase extends Step
     private function createMigrateFile() {
         @touch(SYSTEM_DIR.'var'.DS.'bin'.DS."migrate.lock");
     }
-    
+
 	/**
 	* Safer way to return post data
 	*
@@ -220,7 +236,7 @@ class migrateDatabase extends Step
     public function getPostSafe($key) {
     	return isset($_POST[$key]) ? $_POST[$key] : "";
     }
-    
+
 	/**
 	* Stores varibles used by template
 	*
@@ -244,7 +260,7 @@ class migrateDatabase extends Step
     public function getErrors() {
         return $this->error;
     }
-    
+
 	/**
 	* Initialize errors to false
 	*
@@ -258,12 +274,12 @@ class migrateDatabase extends Step
     		$this->error[$e] = false;
     	}
     }
-    
+
     private function storeSilent() {
     	// TODO
     	$_SESSION['migrate']['database']['dumpLocation'] = $this->sqlDumpFile;
     	$this->temp_variables['dumpLocation'] = $this->sqlDumpFile;
     }
-    
+
 }
 ?>

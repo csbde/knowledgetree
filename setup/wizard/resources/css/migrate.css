@@ -25,3 +25,7 @@
 	padding: 5px;
 	/*min-height:360px;*/min-height:295px;
 }
+
+.notop {
+	top:0px;
+}

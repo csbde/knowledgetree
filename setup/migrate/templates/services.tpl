@@ -1,6 +1,6 @@
 <form action="index.php?step_name=<?php echo $step_name; ?>" method="post" id="<?php echo $step_name; ?>">
 	<p class="title">Deactivate Services</p>
-	
+
 	<p class="description">
 	All KnowledgeTree services need to be deactivated before the migration takes place.
 	</p>
@@ -34,7 +34,7 @@
 <!--Content-->
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<?php if(!$alreadyUninstalled) { ?>
-			
+
 		<?php } else { ?>
 			All services are uninstalled.
 		<?php } ?>
@@ -48,7 +48,7 @@
 			$display = 'none';
 		}
 		?>
-			<div id="option6" class="onclick" onclick="javascript:{w.toggleClass('service_details', 'option6');}"><?php echo $details; ?></div>
+			<div id="option6" class="onclick notop" onclick="javascript:{w.toggleClass('service_details', 'option6');}"><?php echo $details; ?></div>
 			<div class="service_details" style="display:<?php echo $display; ?>">
 		<?php } ?>
 		<table>

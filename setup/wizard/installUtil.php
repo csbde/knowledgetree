@@ -939,7 +939,7 @@ class InstallUtil {
         }
         return join(" ", $aSafeArgs);
     }
-    
+
 	/**
      * The system identifier is a unique ID defined in every installation of KnowledgeTree
      *
@@ -948,14 +948,14 @@ class InstallUtil {
     function getSystemIdentifier($db = true)
     {
     	$sIdentifier = null;
-    	
+
     	if ($db) {
         	$sIdentifier = $this->getSystemSetting('kt_system_identifier');
     	}
-    	
+
         if (empty($sIdentifier)) {
 	        // if we have one from the session, simply return that one
-			if (isset($_SESSION['installers']['registration']['installation_guid']) 
+			if (isset($_SESSION['installers']['registration']['installation_guid'])
 			     && !empty($_SESSION['installers']['registration']['installation_guid'])) {
 				$sIdentifier = $_SESSION['installers']['registration']['installation_guid'];
 			}
@@ -968,7 +968,7 @@ class InstallUtil {
         }
         return $sIdentifier;
     }
-    
+
     function setSystemSetting($name, $value)
     {
         // we either need to insert or update:
@@ -982,14 +982,14 @@ class InstallUtil {
             // update
             $query = 'UPDATE ' . $sTable . ' SET value = "' . $value . '" WHERE name = "' . $name . '"';
         }
-        
+
         $res = $this->dbUtilities->query($query);
 	    $errors = $this->dbUtilities->getErrors();
 		if (count($errors)) { return false; }
-            
+
         return true;
     }
-    
+
 	function getSystemSetting($name, $default = null)
 	{
         // XXX make this use a cache layer?
@@ -1009,7 +1009,7 @@ class InstallUtil {
 
         return $result[$name];
     }
-    
+
 	// {{{ getTableName
     /**
      * The one true way to get the correct name for a table whilst
@@ -1024,7 +1024,7 @@ class InstallUtil {
         return $sTable;
     }
     // }}}
-    
+
     /*
     Just Because.
     */

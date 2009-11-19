@@ -50,7 +50,7 @@ class MigrateUtil extends InstallUtil {
 	* @param none
 	* @return boolean
  	*/
-	public function isSystemMigrateed() {
+	public function isSystemMigrated() {
 		if (file_exists(dirname(__FILE__)."/migrate")) {
 
 			return true;
