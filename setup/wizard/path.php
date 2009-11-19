@@ -41,8 +41,10 @@
 */
 	$browser = $_SERVER['HTTP_USER_AGENT'];
 	//MSIE 6.0
-	if(preg_match("/MSIE 6.0/", $browser)) {
+	if(preg_match("/MSIE 6\.\d/", $browser)) {
 		define('AGENT', 'IE6');
+	} else if(preg_match("/MSIE 7\.\d/", $browser)) {
+		define('AGENT', 'IE7');
 	} else {
 		define('AGENT', 'OTHER');
 	}

@@ -10,6 +10,7 @@
 		<?php echo $html->js('wizard.js'); ?>
 		<?php echo $html->css('wizard.css'); ?>
 		<?php if(AGENT == "IE6") echo $html->css('ie6.css'); ?>
+        <?php if(AGENT == "IE7") echo $html->css('ie7.css'); ?>
         <meta http-equiv=Content-Type content="text/html; charset=utf-8">
 	</head>
 	<body onload="">
