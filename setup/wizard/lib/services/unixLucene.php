@@ -203,13 +203,13 @@ class unixLucene extends unixService {
     	if($state != 'STARTED') {
     		//$logFile = $this->outputDir."lucene.log";
     		$logFile = "/dev/null";//$this->outputDir."lucene.log";
-    		@unlink($logFile);
+    		//unlink($logFile);
 	    	$cmd = "cd ".$this->getLuceneDir()."; ";
 	    	$cmd .= "nohup java -jar ".$this->getLuceneSource()." {$this->getJavaXmx()} {$this->getJavaXms()} > ".$logFile." 2>&1 & echo $!";
-	    	if(DEBUG) {
-	    		echo "$cmd<br/>";
-	    		return false;
-	    	}
+//	    	if(DEBUG) {
+//	    		echo "$cmd<br/>";
+//	    		return false;
+//	    	}
 	    	//$response = $this->util->pexec($cmd);
 	    	
 //	    	return $response;
@@ -223,12 +223,9 @@ class unixLucene extends unixService {
 		return $this->name;
 	}
 	
-	public function unixGetStopMsg($installDir) {
-		return "Execute from terminal : $installDir/dmsctl.sh stop lucene";
+	public function getStopMsg($installDir) {
+		return "";//"Execute from terminal : $installDir/dmsctl.sh stop";
 	}
 	
-	public function windowsGetStopMsg($installDir) {
-		return "Execute from terminal : $installDir/dmsctl.sh stop lucene";
-	}
 }
 ?>

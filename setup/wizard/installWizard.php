@@ -281,7 +281,9 @@ class InstallWizard {
 			$this->createInstallFile();
 		}
 		if(!$this->isSystemInstalled()) { // Check if the systems not installed
-			if($this->util->migrationSpecified()) { // Check if the migrator needs to be accessed
+			if($this->util->loginSpecified()) {
+				$this->util->redirect('../../control.php');
+			} elseif($this->util->migrationSpecified()) { // Check if the migrator needs to be accessed
 				$this->util->redirect('../migrate/index.php?');
 			} elseif ($this->util->upgradeSpecified()) {
 				$this->util->redirect('../upgrade/index.php?action=installer');

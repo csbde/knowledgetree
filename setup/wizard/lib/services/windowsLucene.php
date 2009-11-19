@@ -467,5 +467,9 @@ class windowsLucene extends windowsService {
 
 		return '';
 	}
+	
+	public function getStopMsg($installDir) {
+		return "";//"Execute from command prompt : $installDir/dmsctl.bat stop";
+	}
 }
 ?>

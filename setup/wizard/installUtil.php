@@ -594,6 +594,17 @@ class InstallUtil {
         return false;
 	}
 
+	public function loginSpecified() {
+//		return true;
+    	if(isset($_GET['Return'])) {
+        	if($_GET['Return'] == "Return To Installation") {
+            	return true;
+        	}
+    	}
+
+        return false;
+	}
+	
 	/**
 	* Get session data from package
 	*

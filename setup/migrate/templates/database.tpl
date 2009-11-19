@@ -7,6 +7,9 @@
 <!--		user on the database server are required in order to be able to configure and migrate the database.-->
 		</div>
 		<div id="step_content_<?php echo $step_name; ?>" class="step">
+		<?php
+			//print_r($errors);
+		?>
 		<?php if(empty($errors)) { ?>
 <p class="description">The Setup Wizard will now migrate your existing database to the new Zend Server stack. This process may take
                         several minutes to complete.</p><br />

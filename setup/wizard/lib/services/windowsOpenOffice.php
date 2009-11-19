@@ -256,5 +256,9 @@ class windowsOpenOffice extends windowsService {
 	public function start() { // User has to manually start the services
 		return false;
 	}
+	
+	public function getStopMsg($installDir) {
+		return "";//"Execute from command prompt : $installDir/dmsctl.bat stop";
+	}
 }
 ?>

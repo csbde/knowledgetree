@@ -4,10 +4,10 @@
     Document   : config.xml
     Created on : 01 July 2009, 9:57 AM
     Author     : KnowledgeTree Team
-    Description: Migrateer steps
+    Description: Commercial Migrater steps
 -->
 
-<migrate version="3.7" type="Community Edition">
+<migrate version="3.7" type="Commercial Edition">
     <steps>
         <step name="Current Installation">installation</step>
         <step name="Database Migration">database</step>

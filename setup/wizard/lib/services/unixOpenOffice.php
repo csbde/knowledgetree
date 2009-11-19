@@ -139,10 +139,10 @@ class unixOpenOffice extends unixService {
     	$state = $this->status();
     	if($state != 'STARTED') {
     		$cmd = "nohup ".$this->getBin().' -nofirststartwizard -nologo -headless -"accept=socket,host=localhost,port=8100;urp;StarOffice.ServiceManager" '." > /dev/null 2>&1 & echo $!";
-	    	if(DEBUG) {
-	    		echo "$cmd<br/>";
-	    		return false;
-	    	}
+//	    	if(DEBUG) {
+//	    		echo "$cmd<br/>";
+//	    		return false;
+//	    	}
 	    	
 	    	//return $this->util->pexec($cmd);
 	    	return false;
@@ -173,12 +173,9 @@ class unixOpenOffice extends unixService {
 		return $this->name;
 	}
 	
-	public function unixGetStopMsg($installDir) {
-		return "Execute from terminal : $installDir/dmsctl.sh stop soffice";
+	public function getStopMsg($installDir) {
+		return "";//"Execute from terminal : $installDir/dmsctl.sh stop";
 	}
 	
-	public function windowsGetStopMsg($installDir) {
-		return "Execute from terminal : $installDir/dmsctl.sh stop soffice";
-	}
 }
 ?>
