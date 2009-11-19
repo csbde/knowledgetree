@@ -117,6 +117,7 @@ class migrateDatabase extends Step
     			}
     		}
     	}
+    	$noFile = false;
     	$installation = $this->getDataFromSession("installation"); // Get installation directory
     	$manual = false; // If file was exported manually
     	$dbSettings = $installation['dbSettings'];
@@ -125,7 +126,7 @@ class migrateDatabase extends Step
 		$tmpFolder = $this->resolveTempDir();
     	if(WINDOWS_OS) {
     		$termOrBash = "command prompt window";
-    		$exe = "$location".DS."mysql".DS."bin".DS."mysqldump.exe".DS;
+    		$exe = "\"$location".DS."mysql".DS."bin".DS."mysqldump.exe\"";
     	} else {
     		$termOrBash = "terminal window";
     		$exe = "\"$location".DS."mysql".DS."bin".DS."mysqldump\""; // Location of dump
@@ -153,23 +154,20 @@ class migrateDatabase extends Step
 				return true;
 			}
 		}
+		$noFile = true;
 		// Handle failed dump
 		if(WINDOWS_OS) {
 			// Could be permissions, check error code.
-			if($response['ret'] == 2) {
-
-			} else {
+			if(!$noFile) {
 				$sqlFile = "C:\\kt-backup-$date.sql"; // Use tmp instead due to permissions
 			}
 		} else {
-			if($response['ret'] == 2) {
-
-			} else {
+			if(!$noFile) {
 				$sqlFile = "/tmp/kt-backup-$date.sql"; // Use tmp instead due to permissions
 			}
 		}
 		$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
-		if($response['ret'] == 2) {
+		if($noFile) {
 			$this->error[]['error'] = "Could not connect to the KnowledgeTree Database";
 			$this->error[]['msg'] = "Make sure all KnowledgeTree Services are running.";
 			$this->error[]['cmd'] = "<p class=\"description\">Click <b>Next</b> after resolving the above errors.</p>";
@@ -207,6 +205,7 @@ class migrateDatabase extends Step
 	* @return void
 	*/
 	private function setDetails() {
+		$this->createMigrateFile(); // create lock file to indicate migration mode
     	$database = $this->getDataFromSession("database");
     	if(isset($database['dumpLocation'])) {
     		if(!empty($database['dumpLocation'])) {
@@ -219,7 +218,7 @@ class migrateDatabase extends Step
         $this->temp_variables['duname'] = $this->getPostSafe('duname');
         $this->temp_variables['dpassword'] = $this->getPostSafe('dpassword');
         $this->temp_variables['dumpLocation'] = $this->getPostSafe('dumpLocation');
-        $this->createMigrateFile(); // create lock file to indicate migration mode
+
         return true;
     }
 
@@ -231,7 +230,7 @@ class migrateDatabase extends Step
      * @return void
      */
     private function createMigrateFile() {
-        @touch(SYSTEM_DIR.'var'.DS.'bin'.DS."migrate.lock");
+        touch(SYSTEM_DIR.'var'.DS.'bin'.DS."migrate.lock");
     }
 
 	/**

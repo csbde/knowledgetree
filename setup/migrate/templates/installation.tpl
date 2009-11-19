@@ -33,7 +33,7 @@
 		</p>
 		<p class="empty_space">
 			<small>
-				Make sure that the services are running for that installation.
+				Make sure that the KnowledgeTree services are running.
 			</small>
 		</p>
 		<br/>

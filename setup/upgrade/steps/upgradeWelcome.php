@@ -92,6 +92,11 @@ class upgradeWelcome extends step {
     	$dconf = $this->getDataFromPackage('installers', 'database'); // Use info from install
     	if($dconf) { // From Install
 	    	$this->util->dbUtilities->load($dconf['dhost'], $dconf['dport'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
+			$sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
+			$res = $this->util->dbUtilities->query($sQuery);
+			$ass = $this->util->dbUtilities->fetchAssoc($res);
+			if($ass[0]['match_count'] == 1)
+				return true;
     	} elseif($upgradeOnly) {
     		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
     		$wizConfigHandler = new configuration();
@@ -108,14 +113,16 @@ class upgradeWelcome extends step {
     		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
     		$wizConfigHandler = new configuration();
     		$configPath = $wizConfigHandler->readConfigPathIni();
-			$this->util->iniUtilities->load($configPath);
-			$dconf = $this->util->iniUtilities->getSection('db');
-    		$this->util->dbUtilities->load($dconf['dbHost'],$dconf['dbPort'], $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
-			$sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
-			$res = $this->util->dbUtilities->query($sQuery);
-			$ass = $this->util->dbUtilities->fetchAssoc($res);
-			if($ass[0]['match_count'] == 1)
-				return true;
+    		if($configPath) {
+				$this->util->iniUtilities->load($configPath);
+				$dconf = $this->util->iniUtilities->getSection('db');
+	    		$this->util->dbUtilities->load($dconf['dbHost'],$dconf['dbPort'], $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
+				$sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
+				$res = $this->util->dbUtilities->query($sQuery);
+				$ass = $this->util->dbUtilities->fetchAssoc($res);
+				if($ass[0]['match_count'] == 1)
+					return true;
+    		}
     	}
         $this->error[] = 'Could Not Authenticate User';
         return false;

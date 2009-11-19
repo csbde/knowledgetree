@@ -272,7 +272,9 @@ class migrateServices extends Step
     		$this->temp_variables['services'][$serv->getName()]['class'] = $state;
     		$this->temp_variables['services'][$serv->getName()]['name'] = $serv->getName();
     	}
-    	$this->checkMysql();
+    	if(!$this->checkMysql()) {
+    		return false;
+    	}
     	if ($this->serviceCheck != 'tick') {
     		return false;
     	}
@@ -292,10 +294,12 @@ class migrateServices extends Step
     		$this->temp_variables['services']['KTMysql']['name'] = "KTMysql";
     		$this->temp_variables['services']['KTMysql']['msg'] = "Service Running";
     		$this->error[] = "Service : KTMysql running.<br/>";
+    		return false;
     	} else {
     		$this->temp_variables['services']['KTMysql']['class'] = "tick";
     		$this->temp_variables['services']['KTMysql']['name'] = "KTMysql";
     		$this->temp_variables['services']['KTMysql']['msg'] = "Service has been uninstalled";
+    		return true;
     	}
     }
     

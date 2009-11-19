@@ -52,7 +52,6 @@ function __autoload($class) { // Attempt and autoload classes
 	if ($class == "template") { // Load existing templating classes
 		require_once(WIZARD_DIR."../wizard/template.php");
 		require_once(WIZARD_DIR."../wizard/lib/helpers/htmlHelper.php");
-		return ;
 	}
 	if(file_exists(WIZARD_DIR."$class.php")) {
 		require_once(WIZARD_DIR."$class.php");
@@ -155,7 +154,7 @@ class UpgradeWizard {
 	* @return void
  	*/
 	private function createUpgradeFile() {
-		@touch(SYSTEM_DIR.'var'.DS.'bin'.DS."upgrade.lock");
+		touch(SYSTEM_DIR.'var'.DS.'bin'.DS."upgrade.lock");
 	}
 	
 	/**
@@ -167,7 +166,7 @@ class UpgradeWizard {
 	* @return void
  	*/
 	private function removeUpgradeFile() {
-		@unlink(SYSTEM_DIR.'var'.DS.'bin'.DS."upgrade.lock");
+		unlink(SYSTEM_DIR.'var'.DS.'bin'.DS."upgrade.lock");
 	}
 	
 	/**
