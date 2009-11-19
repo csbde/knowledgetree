@@ -1773,7 +1773,8 @@ INSERT INTO `upgrades` VALUES
 (229,'sql*3.7.0-1*0*3.7.0-1/call_home_task.sql','Database upgrade to version 3.7.0-1: Call home task','2009-09-01 00:00:00',1,'upgrade*3.7.0-1*99*upgrade3.7.0-1'),
 (230,'sql*3.7.0-1*0*3.7.0-1/hide_zip_config.sql','Database upgrade to version 3.7.0-1: Hide zip config','2009-09-01 00:00:00',1,'upgrade*3.7.0-1*99*upgrade3.7.0-1'),
 (231,'sql*3.7.0-1*0*3.7.0-1/mime_extractors_reset.sql','Database upgrade to version 3.7.0-1: Mime extractors reset','2009-09-01 00:00:00',1,'upgrade*3.7.0-1*99*upgrade3.7.0-1'),
-(232,'upgrade*3.7.0-1*99*upgrade3.7.0-1','Upgrade from version 3.6.3 to 3.7.0-1','2009-09-01 00:00:00',1,'upgrade*3.7.0-1*99*upgrade3.7.0-1');
+(232,'upgrade*3.7.0-1*99*upgrade3.7.0-1','Upgrade from version 3.6.3 to 3.7.0-1','2009-11-13 00:00:00',1,'upgrade*3.7.0-1*99*upgrade3.7.0-1'),
+(233,'upgrade*3.7.0.2*99*upgrade3.7.0.2','Upgrade from version 3.7.0-1 to 3.7.0.2','2009-11-19 00:00:00',1,'upgrade*3.7.0.2*99*upgrade3.7.0.2');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
