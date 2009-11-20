@@ -37,7 +37,6 @@
  * Contributor( s): ______________________________________
  */
 
-require_once ('config/dmsDefaults.php');
 require_once (KT_DIR . '/thirdparty/peclzip/pclzip.lib.php');
 
 /**
