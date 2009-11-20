@@ -139,20 +139,28 @@ class KTPclZip {
 		return $sExportCode;
 	}
 	
-	/*
-	 * Returns the part of the folder to be excluded from the zip content structure
-	 * 
+  /*
      * @params: $sPath folder to start from.
      * @params: $ds directory separator
      */
-    function getExcludePath($sPath, $ds = '/') {
+    static function getExcludePath($sPath, $ds = '/') {
         //Will grab the part of the full path to exclude from the zip contents
-        if ($sPath[strlen($sPath)] == $ds) {
-            //Chopping the last ds to make the keepPath contain an actual folder name
-            $sPath = substr($sPath, 0, strlen($sPath) - 1);
-        }
-        $keepPath = end(explode($ds, $sPath));
-        $excludePath = str_replace($keepPath, '', $sPath);
+
+		/*
+		 * For windows the pre drive letter needs to be removed for it to work with the pclzip class
+		 */
+		if (stristr(PHP_OS,'WIN')) {
+			$sPath = end(explode(':', $sPath));
+		}
+		
+		//Chopping the last ds to make the keepPath contain an actual folder name
+		$aDir = explode($ds, $sPath);
+		$cutOff = count($aDir);
+		for ($i = 0; $i < $cutOff; $i++) {
+			echo $aDir[$i] . "\n";
+			$excludePath .= $aDir[$i] . '/';
+		}
+
         return $excludePath;
     }
     
