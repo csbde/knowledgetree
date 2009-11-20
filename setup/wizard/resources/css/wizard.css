@@ -368,7 +368,7 @@ select {
 .onclick {
      cursor: pointer;
      color: #EC7725;
-     /*width: 150px;*/width:350px;top:12px;position:relative;
+     /*width: 150px;*//*width:350px;top:12px;position:relative;*/width:350px;padding-top:12px;position:static;
 }
 
 .description {
@@ -563,15 +563,15 @@ td.dir_description {
 }
 
 .dependency_details {
-	top:12px;
-	position:relative;
+	/*top:12px;*/padding-top:12px;
+	/*position:relative;*/position:static;
 	width:650px;
 }
 
 .dependencies {
-	position:relative;
+	/*position:relative;*/position:static;
 	right:30%;
-	width:880px;
+	/*width:880px;*/width:650px;
 }
 
 .registration_template {
@@ -583,7 +583,7 @@ td.dir_description {
 }
 
 .description_complete {
-	position:relative;
+	/*position:relative;*/position:static;
 	right:35%;
 	width:100%;
 }
@@ -594,4 +594,11 @@ td.dir_description {
 
 .advoptions {
 	top:0px;
+}
+
+.description_1 {
+	color:#898989;
+	font-size:100%;
+	line-height:150%;
+	font-family:sans-serif;
 }

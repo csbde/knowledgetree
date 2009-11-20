@@ -168,8 +168,8 @@ class migrateDatabase extends Step
 		}
 		$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
 		if($noFile) {
-			$this->error[]['error'] = "Could not connect to the KnowledgeTree Database";
-			$this->error[]['msg'] = "Make sure all KnowledgeTree Services are running.";
+			$this->error[]['error'] = "The KnowledgeTree Setup Wizard was unable to connect to your KnowledgeTree 3.6.1 database";
+			$this->error[]['msg'] = "Please ensure that all KnowledgeTree Services are running.";
 			$this->error[]['cmd'] = "<p class=\"description\">Click <b>Next</b> after resolving the above errors.</p>";
 			$this->temp_variables['manual_export'] = "";
 		} else {
