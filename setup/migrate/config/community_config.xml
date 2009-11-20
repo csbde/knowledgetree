@@ -11,7 +11,7 @@
     <steps>
         <step name="Current Installation">installation</step>
         <step name="Database Export">database</step>
-       	<step name="Pre Migration">services</step>
+       	<step name="Deactivate Services">services</step>
         <step name="Complete">complete</step>
     </steps>
  </migrate>

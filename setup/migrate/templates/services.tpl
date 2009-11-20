@@ -2,7 +2,7 @@
 	<p class="title">Deactivate Services</p>
 
 	<p class="description">
-	All KnowledgeTree services need to be deactivated before the migration takes place.
+	All KnowledgeTree services need to be shutdown before the migration can continue.
 	</p>
 <!--Continue Message-->
 	<?php
@@ -38,7 +38,7 @@
 		<?php } else { ?>
 			All services are uninstalled.
 		<?php } ?>
-		<h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services Check</h3>
+		<h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Please shutdown the following services</h3>
 		<?php if($silent) { ?>
 		<?php if($serviceCheck != 'tick') {
 			$details = 'Hide Details';
@@ -60,8 +60,8 @@
 			    	?>
 			    	<tr>
 			    		<td> <span class='<?php echo $ser['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> </td>
-			    		<td style="width:20%;"> <?php echo $ser['name']; ?> </td>
-			    		<td style="width:75%;"> <?php echo $ser['msg']; ?> </td>
+			    		<td style="width:50%;"> <?php echo $ser['name']; ?> </td>
+			    		<td style="width:50%;"> <?php echo $ser['msg']; ?> </td>
 			    		<?php if ($ser['class'] != 'tick') {
 			    			?>
 <!--			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>-->

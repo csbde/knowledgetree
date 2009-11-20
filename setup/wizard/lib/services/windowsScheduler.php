@@ -77,6 +77,8 @@ class windowsScheduler extends windowsService {
  	*/	
 	public $name = "KTScheduler";
 
+	public $hrname = "KnowledgeTree Scheduler Service. (KTScheduler)";
+	
 	/**
 	* Load defaults needed by service
 	*
@@ -276,6 +278,10 @@ class windowsScheduler extends windowsService {
  	*/
 	public function start() { // User has to manually start the services
 		return false;
+	}
+	
+	public function getHRName() {
+		return $this->hrname;
 	}
 	
 	public function getStopMsg($installDir) {

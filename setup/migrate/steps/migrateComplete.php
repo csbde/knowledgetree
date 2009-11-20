@@ -96,8 +96,8 @@ class migrateComplete extends Step {
     	$sqlFile = $database['dumpLocation'];
 		if(file_exists($sqlFile)) {
 			$this->temp_variables['sql']['class'] = "tick";
-			$this->temp_variables['sql']['name'] = "dms.sql";
-			$this->temp_variables['sql']['msg'] = "Data file created";
+			$this->temp_variables['sql']['name'] = "";//dms.sql
+			$this->temp_variables['sql']['msg'] = $sqlFile;
 			return true;
 		} else {
 			$this->temp_variables['sql']['class'] = "cross";
