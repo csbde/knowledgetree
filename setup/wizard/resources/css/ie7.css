@@ -2,10 +2,13 @@
 	right:70%;
 }
 
+/*
 .onclick {
      cursor: pointer;
      color: #EC7725;
-     /*width: 150px;*/width:350px;padding-top:12px;position:static;
+     width:350px;
+     padding-top:12px;
+     position:static;
 }
 
 .dependency_details {
@@ -25,3 +28,4 @@
 	right:35%;
 	width:100%;
 }
+*/
