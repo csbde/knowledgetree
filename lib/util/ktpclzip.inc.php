@@ -157,7 +157,6 @@ class KTPclZip {
 		$aDir = explode($ds, $sPath);
 		$cutOff = count($aDir);
 		for ($i = 0; $i < $cutOff; $i++) {
-			echo $aDir[$i] . "\n";
 			$excludePath .= $aDir[$i] . '/';
 		}
 
