@@ -69,10 +69,14 @@ class complete extends Step {
         $this->checkFileSystem(); // check filesystem (including location of document directory and logging)
         $this->checkDb(); // check database
         $this->checkServices(); // check services
-        $this->checkInstallType();// Set silent mode variables
-        $this->storeSilent();// Set silent mode variables
+        $this->checkInstallType(); // Set silent mode variables
+        $this->storeSilent(); // Set silent mode variables
     }
 
+    /**
+     * Check all the system paths
+     *
+     */
     private function checkFileSystem()
     {
         // defaults
@@ -130,6 +134,10 @@ class complete extends Step {
         }
     }
 
+    /**
+     * Check if a database connection can be made
+     *
+     */
     private function checkDb()
     {
         // defaults
@@ -199,6 +207,10 @@ class complete extends Step {
         }
     }
 
+    /**
+     * Check if all services are deactivated
+     *
+     */
     private function checkServices()
     {
         $services = new services();
@@ -217,14 +229,40 @@ class complete extends Step {
 		return true;
     }
 
+    /**
+     * Check the install type and store
+     *
+     */
     function checkInstallType() {
     	if ($this->util->isMigration()) {
     		$this->migrate_check = true;
+    		$this->registerPlugins(); // Set silent mode variables
     	} else {
     		$this->migrate_check = false;
     	}
     }
 
+    /**
+     * Register extra commercial plugins
+     *
+     */
+    private function registerPlugins() {
+//    	define(KT_LIB_DIR, SYSTEM_DIR);
+//    	require_once(WIZARD_DIR . "lib" . DS . "plugins". DS . "pluginutil.inc.php");
+        KTPluginUtil::_walk(KT_DIR . '/plugins', $files);
+        foreach ($files as $sFile) {
+            $plugin_ending = "Plugin.php";
+            if (substr($sFile, -strlen($plugin_ending)) === $plugin_ending) {
+            	/* Set default priority */
+            	$plugins[$sFile] = KTPluginUtil::getPluginPriority($sFile);
+            }
+        }
+
+        /* Sort the plugins by priority */
+        asort($plugins);
+    	print_r($plugins);
+    }
+    
     /**
      * Set all silent mode varibles
      *
@@ -236,7 +274,6 @@ class complete extends Step {
     	$this->temp_variables['database_check'] = $this->database_check;
     	$this->temp_variables['migrate_check'] = $this->migrate_check;
     	$this->temp_variables['servicesValidation'] = $this->servicesValidation;
-    	//if(!$this->pathsSection) {die;} else {echo 'huh';}
     	$this->temp_variables['pathsSection'] = $this->pathsSection;
     	$this->temp_variables['databaseSection'] = $this->databaseSection;
     	$this->temp_variables['privilegesSection'] = $this->privilegesSection;

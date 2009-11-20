@@ -116,6 +116,7 @@ class migrateServices extends Step
     
     protected $conf = array();
     
+    protected $mysqlServiceName = "KTMysql";
 	/**
 	* Main control of services setup
 	*
@@ -186,9 +187,22 @@ class migrateServices extends Step
     }
 
     private function mysqlRunning() {
-    	$installation = $this->getDataFromSession("installation"); // Get installation directory
-    	$mysqlPid = $installation['location'].DS."mysql".DS."data".DS."mysqld.pid";
-    	if(file_exists($mysqlPid)) {
+    	if(WINDOWS_OS) {
+			$cmd = "sc query {$this->mysqlServiceName}";
+			$response = $this->util->pexec($cmd);
+			if($response['out']) {
+				$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
+			}
+			if($state == "STARTED") {
+				return true;
+			}
+    	} else {
+    		$installation = $this->getDataFromSession("installation"); // Get installation directory
+    		$mysqlPid = $installation['location'].DS."mysql".DS."data".DS."mysqld.pid";
+    		if(file_exists($mysqlPid))
+    			$running = true;
+    	}
+    	if(file_exists($running)) {
     		return true;
     	}
     	return false;
@@ -247,6 +261,12 @@ class migrateServices extends Step
     			$serv->uninstall();
     		}
     	}
+    	$this->shutdownMysql();
+    }
+    
+    private function shutdownMysql() {
+		$cmd = "sc stop {$this->mysqlServiceName}";
+		$response = $this->util->pexec($cmd);
     }
     
     /**
@@ -287,9 +307,23 @@ class migrateServices extends Step
      *
      */
     private function checkMysql() {
-    	$installation = $this->getDataFromSession("installation"); // Get installation directory
-    	$mysqlPid = $installation['location'].DS."mysql".DS."data".DS."mysqld.pid";
-    	if(file_exists($mysqlPid)) {
+    	$running = false;
+    	if(WINDOWS_OS) {
+			$cmd = "sc query {$this->mysqlServiceName}";
+			$response = $this->util->pexec($cmd);
+			if($response['out']) {
+				$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
+			}
+			if($state == "STARTED") {
+				return true;
+			}
+    	} else {
+    		$installation = $this->getDataFromSession("installation"); // Get installation directory
+    		$mysqlPid = $installation['location'].DS."mysql".DS."data".DS."mysqld.pid";
+    		if(file_exists($mysqlPid))
+    			$running = true;
+    	}
+    	if($running) {
     		$this->temp_variables['services']['KTMysql']['class'] = "cross";
     		$this->temp_variables['services']['KTMysql']['name'] = "KTMysql";
     		$this->temp_variables['services']['KTMysql']['msg'] = "Service Running";

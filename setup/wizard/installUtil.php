@@ -727,7 +727,13 @@ class InstallUtil {
     		return true;
     	return false;
     }
-
+	
+    public function isCommunity() {
+    	if(INSTALL_TYPE == "community")
+    		return true;
+    	return false;
+    }
+    
     /**
      * Determine type of installation
      *

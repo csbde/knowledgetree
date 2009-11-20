@@ -1,8 +1,13 @@
 <form id="registration_install_complete" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 	<p class="title">Finalizing System Installation</p>
-	<div id="step_content_<?php echo $step_name; ?>" class="step">
+	<?php if(!$ce_check) { ?>
+		<div id="step_content_<?php echo $step_name; ?>" class="step">
+	<?php } else { ?>
+		<div id="step_content" class="step">
+	<?php } ?>
 		<p class="empty_space" style="font-size:11pt;">	The wizard will now complete the installation and run a final check on your system.	</p>
 <!--		<br/>-->
+<?php if(!$ce_check) { ?>
 		<p class="empty_space" style="font-size:11pt;" id="left_space">
 			We would greatly appreciate it if you would allow us to collect anonymous usage statistics to help us provide a better quality product.
 			<br/>
@@ -13,6 +18,9 @@
 <!--		<br/><br/><br/><br/>-->
 <p>		<input type='checkbox' name='call_home' value='enable' checked style="float:left;"/>&nbsp;&nbsp;
 		<label for='call_home'>Help to improve KnowledgeTree by providing anonymous usage statistics</label></p>
+<?php } else { ?>
+
+<?php } ?>
 	</div>
 	<input type="submit" name="Previous" value="Previous" class="button_previous"/>
 	<input type="submit" name="Install" value="Install" class="button_next"/>

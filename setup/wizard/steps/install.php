@@ -60,6 +60,7 @@ class install extends step
 	* @var array
 	*/
     protected $runInstall = true;
+	private $ce_check = false;
 
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"install");
@@ -89,6 +90,7 @@ class install extends step
     public function doRun()
     {
     	$value = 'disable';
+    	$this->checkInstallType(); // Set silent mode variables
         if(isset($_POST['Install'])) {
             if(isset($_POST['call_home'])){
                 $value = $_POST['call_home'];
@@ -104,6 +106,24 @@ class install extends step
 		$this->callHome();
     }
 
+    /**
+     * Check the install type and store
+     *
+     */
+    function checkInstallType() {
+    	if ($this->util->isCommunity()) {
+    		$this->ce_check = true;
+    		$this->registerPlugins(); // Set silent mode variables
+    	} else {
+    		$this->ce_check = false;
+    	}
+    	$this->temp_variables['ce_check'] = $this->ce_check;
+    }
+    
+    function registerPlugins() {
+    	
+    }
+    
     public function callHome() {
         $conf = $this->getDataFromSession("install"); // retrieve database information from session
         $dbconf = $this->getDataFromSession("database");
@@ -116,5 +136,7 @@ class install extends step
         $this->util->dbUtilities->query($query);
         $this->util->dbUtilities->close(); // close the database connection
     }
+    
+    
 }
 ?>
