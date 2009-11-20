@@ -50,6 +50,7 @@ class unixLucene extends unixService {
 	private $javaXms;
 	private $javaXmx;
 	public $name = "KTLucene";
+	public $hrname = "KnowledgeTree Indexer Service";
 	
 	/**
 	* Load defaults needed by service
@@ -221,6 +222,10 @@ class unixLucene extends unixService {
     
 	public function getName() {
 		return $this->name;
+	}
+	
+	public function getHRName() {
+		return $this->hrname;
 	}
 	
 	public function getStopMsg($installDir) {

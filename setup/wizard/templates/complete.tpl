@@ -34,7 +34,11 @@
 				dmsctl.bat install<br/>
 				dmsctl.bat start
 			<?php } else { ?>
-				cd /usr/share/knowledgetree-ce<br/>
+				<?php if ($isCE) { ?>
+					cd /usr/share/knowledgetree-ce<br/>
+				<?php } else { ?>
+					cd /usr/share/knowledgetree<br/>
+				<?php } ?>
 				sudo ./dmsctl.sh start
 			<?php } ?>
 			</p>

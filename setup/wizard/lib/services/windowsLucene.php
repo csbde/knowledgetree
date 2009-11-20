@@ -132,6 +132,8 @@ class windowsLucene extends windowsService {
  	*/
 	public $name = "KTLucene";
 
+	public $hrname = "KnowledgeTree Indexer Service. (KTLucene)";
+	
 	/**
 	* Load defaults needed by service
 	*
@@ -466,6 +468,10 @@ class windowsLucene extends windowsService {
 		}
 
 		return '';
+	}
+	
+	public function getHRName() {
+		return $this->hrname;
 	}
 	
 	public function getStopMsg($installDir) {

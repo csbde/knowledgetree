@@ -48,6 +48,7 @@ class unixScheduler extends unixService {
 	private $scheduler;
 	private $phpCli;
 	public $name = "KTScheduler";
+	public $hrname = "KnowledgeTree Scheduler Service";
 	
 	/**
 	* Load defaults needed by service
@@ -199,6 +200,10 @@ class unixScheduler extends unixService {
 
 	public function getName() {
 		return $this->name;
+	}
+	
+	public function getHRName() {
+		return $this->hrname;
 	}
 	
 	public function getStopMsg($installDir) {

@@ -53,7 +53,8 @@ class migrateComplete extends Step {
     private $database_check = 'tick';
     protected $conf = array();
     protected $silent = true;
-
+	protected $mysqlServiceName = "KTMysql";
+	
     function doStep() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
         $this->doRun();
@@ -95,8 +96,8 @@ class migrateComplete extends Step {
     	$sqlFile = $database['dumpLocation'];
 		if(file_exists($sqlFile)) {
 			$this->temp_variables['sql']['class'] = "tick";
-			$this->temp_variables['sql']['name'] = "dms.sql";
-			$this->temp_variables['sql']['msg'] = "Data file created";
+			$this->temp_variables['sql']['name'] = "";//dms.sql
+			$this->temp_variables['sql']['msg'] = $sqlFile;
 			return true;
 		} else {
 			$this->temp_variables['sql']['class'] = "cross";
@@ -128,11 +129,49 @@ class migrateComplete extends Step {
     		$this->temp_variables['services'][$serv->getName()]['class'] = $state;
     		$this->temp_variables['services'][$serv->getName()]['name'] = $serv->getName();
     	}
+    	if(!$this->checkMysql()) {
+    		return false;
+    	}
     	if ($this->services_check != 'tick') {
     		return false;
     	}
     	
     	return true;
+    }
+    
+    /**
+     * Check if services are uninstall
+     *
+     */
+    private function checkMysql() {
+    	$running = false;
+    	if(WINDOWS_OS) {
+			$cmd = "sc query {$this->mysqlServiceName}";
+			$response = $this->util->pexec($cmd);
+			if($response['out']) {
+				$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
+			}
+			if($state == "STARTED") {
+				return true;
+			}
+    	} else {
+    		$installation = $this->getDataFromSession("installation"); // Get installation directory
+    		$mysqlPid = $installation['location'].DS."mysql".DS."data".DS."mysqld.pid";
+    		if(file_exists($mysqlPid))
+    			$running = true;
+    	}
+    	if($running) {
+    		$this->temp_variables['services']['KTMysql']['class'] = "cross";
+    		$this->temp_variables['services']['KTMysql']['name'] = "KTMysql";
+    		$this->temp_variables['services']['KTMysql']['msg'] = "Service Running";
+    		$this->error[] = "Service : KTMysql running.<br/>";
+    		return false;
+    	} else {
+    		$this->temp_variables['services']['KTMysql']['class'] = "tick";
+    		$this->temp_variables['services']['KTMysql']['name'] = "KTMysql";
+    		$this->temp_variables['services']['KTMysql']['msg'] = "Service has been uninstalled";
+    		return true;
+    	}
     }
     
     /**

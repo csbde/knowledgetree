@@ -187,6 +187,7 @@ class migrateServices extends Step
     }
 
     private function mysqlRunning() {
+    	$running = false;
     	if(WINDOWS_OS) {
 			$cmd = "sc query {$this->mysqlServiceName}";
 			$response = $this->util->pexec($cmd);
@@ -290,7 +291,7 @@ class migrateServices extends Step
     			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service has been uninstalled";
     		}
     		$this->temp_variables['services'][$serv->getName()]['class'] = $state;
-    		$this->temp_variables['services'][$serv->getName()]['name'] = $serv->getName();
+    		$this->temp_variables['services'][$serv->getName()]['name'] = $serv->getHRName();
     	}
     	if(!$this->checkMysql()) {
     		return false;
@@ -325,13 +326,21 @@ class migrateServices extends Step
     	}
     	if($running) {
     		$this->temp_variables['services']['KTMysql']['class'] = "cross";
-    		$this->temp_variables['services']['KTMysql']['name'] = "KTMysql";
+    		if(WINDOWS_OS) {
+    			$this->temp_variables['services']['KTMysql']['name'] = "KnowledgeTree Mysql Service. (KTMysql)";
+    		} else {
+    			$this->temp_variables['services']['KTMysql']['name'] = "KnowledgeTree Mysql Service.";
+    		}
     		$this->temp_variables['services']['KTMysql']['msg'] = "Service Running";
     		$this->error[] = "Service : KTMysql running.<br/>";
     		return false;
     	} else {
     		$this->temp_variables['services']['KTMysql']['class'] = "tick";
-    		$this->temp_variables['services']['KTMysql']['name'] = "KTMysql";
+    		if(WINDOWS_OS) {
+    			$this->temp_variables['services']['KTMysql']['name'] = "KnowledgeTree Mysql Service. (KTMysql)";
+    		} else {
+    			$this->temp_variables['services']['KTMysql']['name'] = "KnowledgeTree Mysql Service.";
+    		}
     		$this->temp_variables['services']['KTMysql']['msg'] = "Service has been uninstalled";
     		return true;
     	}

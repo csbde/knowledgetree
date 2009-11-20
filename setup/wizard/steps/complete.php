@@ -61,6 +61,10 @@ class complete extends Step {
 
     function doStep() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
+		$this->temp_variables['isCE'] = false;
+		$type = $this->util->getVersionType();
+		if($type == "community")
+		 	$this->temp_variables['isCE'] = true;
         $this->doRun();
     	return 'landing';
     }
@@ -247,20 +251,7 @@ class complete extends Step {
      *
      */
     private function registerPlugins() {
-//    	define(KT_LIB_DIR, SYSTEM_DIR);
-//    	require_once(WIZARD_DIR . "lib" . DS . "plugins". DS . "pluginutil.inc.php");
-        KTPluginUtil::_walk(KT_DIR . '/plugins', $files);
-        foreach ($files as $sFile) {
-            $plugin_ending = "Plugin.php";
-            if (substr($sFile, -strlen($plugin_ending)) === $plugin_ending) {
-            	/* Set default priority */
-            	$plugins[$sFile] = KTPluginUtil::getPluginPriority($sFile);
-            }
-        }
 
-        /* Sort the plugins by priority */
-        asort($plugins);
-    	print_r($plugins);
     }
     
     /**

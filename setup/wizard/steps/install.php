@@ -64,6 +64,7 @@ class install extends step
 
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"install");
+    	$this->checkInstallType(); // Set silent mode variables
     	if(!$this->inStep("install")) {
     		return 'landing';
     	}
@@ -90,7 +91,6 @@ class install extends step
     public function doRun()
     {
     	$value = 'disable';
-    	$this->checkInstallType(); // Set silent mode variables
         if(isset($_POST['Install'])) {
             if(isset($_POST['call_home'])){
                 $value = $_POST['call_home'];

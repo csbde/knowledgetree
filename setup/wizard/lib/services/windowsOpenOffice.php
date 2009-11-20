@@ -132,6 +132,8 @@ class windowsOpenOffice extends windowsService {
  	*/
     public $name = "KTOpenOffice";
 
+    public $hrname = "KnowledgeTree OpenOffice.org Service. (KTOpenOffice)";
+    
 	/**
 	* Load defaults needed by service
 	*
@@ -255,6 +257,10 @@ class windowsOpenOffice extends windowsService {
  	*/
 	public function start() { // User has to manually start the services
 		return false;
+	}
+	
+	public function getHRName() {
+		return $this->hrname;
 	}
 	
 	public function getStopMsg($installDir) {
