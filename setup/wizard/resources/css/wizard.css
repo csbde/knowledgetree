@@ -595,3 +595,10 @@ td.dir_description {
 .advoptions {
 	top:0px;
 }
+
+.description_1 {
+	color:#898989;
+	font-size:100%;
+	line-height:150%;
+	font-family:sans-serif;
+}

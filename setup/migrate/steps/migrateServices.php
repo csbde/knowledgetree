@@ -187,6 +187,7 @@ class migrateServices extends Step
     }
 
     private function mysqlRunning() {
+    	$running = false;
     	if(WINDOWS_OS) {
 			$cmd = "sc query {$this->mysqlServiceName}";
 			$response = $this->util->pexec($cmd);

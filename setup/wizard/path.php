@@ -64,7 +64,6 @@
 	} else {
 		define('DS', '/');
 	}
-	$wizard = realpath(dirname(__FILE__));
 	// Define environment root
 	$wizard = realpath(dirname(__FILE__));
 	$xdir = explode(DS, $wizard);
