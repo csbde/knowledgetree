@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -643,6 +643,16 @@ abstract class Indexer
 
         $default->log->debug("index: Queuing indexing of $document_id");
 
+        // Appending the process queue to the index for convenience
+        // Don't want to complicate matters by creating too many new classes and files
+        Indexer::unqueueDocFromProcessing($document_id);
+
+        // enqueue item
+        $date = date('Y-m-d H:i:s');
+        $sql = "INSERT INTO process_queue(document_id, date_added) VALUES($document_id, '$date')";
+        DBUtil::runQuery($sql);
+
+        $default->log->debug("Processing queue: Queuing document for processing - $document_id");
     }
 
     private static function incrementCount()
@@ -722,8 +732,37 @@ abstract class Indexer
         DBUtil::runQuery($sql);
 
         $default->log->debug("Indexer::clearoutDeleted: removed documents from indexing queue that have been deleted");
+
+        // Multiple indexing processes cannot occur at the same time - the lock file prevents this.
+        // However if the indexing is interrupted the documents can get stuck in the queue with the processdate set
+        // but never having been indexed. To prevent this we will clear the processdate on all documents without errors.
+        $sql = 'UPDATE index_files SET processdate = null where processdate is not null and status_msg is null';
+        $res = DBUtil::runQuery($sql);
+
+        if(PEAR::isError($res)){
+            $default->log->error("Indexer::clearoutDeleted: something happened ".$res->getMessage);
+        }
+
+        $default->log->debug("Indexer::clearoutDeleted: resetting processdate for documents that may be stuck");
     }
 
+    /**
+     * Clearout the processing of documents that no longer exist.
+     *
+     */
+    public static function clearoutDeletedFromProcessor()
+    {
+    	global $default;
+
+        $sql = 'DELETE FROM
+					process_queue
+				WHERE
+					document_id in (SELECT d.id FROM documents AS d WHERE d.status_id=3) OR
+					NOT EXISTS(SELECT process_queue.document_id FROM documents WHERE process_queue.document_id=documents.id)';
+        $result = DBUtil::runQuery($sql);
+
+        $default->log->debug("Process queue: removed documents from processing queue that have been deleted");
+    }
 
     /**
      * Check if a document is scheduled to be indexed
@@ -1191,7 +1230,7 @@ abstract class Indexer
 	}
 
 	/**
-	 * Get the queue of documents for processing
+	 * Get the queue of documents for indexing
 	 * Refactored from indexDocuments()
 	 */
 	public function getDocumentsQueue($max = null)
@@ -1222,7 +1261,7 @@ abstract class Indexer
         if (PEAR::isError($result))
         {
         	//unlink($indexLockFile);
-        	if ($this->debug) $default->log->debug('indexDocuments: stopping - db error');
+        	if ($this->debug) $default->log->error('indexDocuments: stopping - db error');
         	return;
         }
         KTUtil::setSystemSetting('luceneIndexingDate', time());
@@ -1248,6 +1287,51 @@ abstract class Indexer
         $ids=implode(',',$ids);
         $sql = "UPDATE index_files SET processdate='$date' WHERE document_id in ($ids)";
         DBUtil::runQuery($sql);
+
+        return $result;
+	}
+
+	/**
+	 * Get the queue of documents for processing
+	 *
+	 */
+	public function getDocumentProcessingQueue($max = null)
+	{
+	    global $default;
+	    $max = (empty($max)) ? 20 : $max;
+
+	    // Cleanup the queue
+    	Indexer::clearoutDeletedFromProcessor();
+
+    	$date = date('Y-m-d H:i:s');
+    	// identify the indexers that must run
+        // mysql specific limit!
+        $sql = "SELECT
+        			pq.document_id, mt.filetypes, mt.mimetypes
+				FROM
+					process_queue pq
+					INNER JOIN documents d ON pq.document_id=d.id
+					INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id
+					INNER JOIN document_content_version dcv ON dmv.content_version_id=dcv.id
+					INNER JOIN mime_types mt ON dcv.mime_id=mt.id
+ 				WHERE
+ 					(pq.date_processed IS NULL or pq.date_processed < date_sub('$date', interval 1 day)) AND dmv.status_id=1
+				ORDER BY date_added
+ 					LIMIT $max";
+
+        $result = DBUtil::getResultArray($sql);
+        if (PEAR::isError($result))
+        {
+        	$default->log->error('Processing queue: stopping - db error: '.$result->getMessage());
+        	return;
+        }
+
+        // bail if no work to do
+        if (count($result) == 0)
+        {
+        	$default->log->debug('Processing queue: stopping - no work to be done');
+            return;
+        }
 
         return $result;
 	}
@@ -1813,7 +1897,7 @@ abstract class Indexer
     }
 
     /**
-     * Remove the document from the queue. This is normally called when it has been processed.
+     * Remove the document from the indexing queue. This is normally called when it has been processed.
      *
      * @param int $docid
      */
@@ -1825,6 +1909,23 @@ abstract class Indexer
         {
         	global $default;
         	$default->log->$level("Indexer: removing document $docid from the queue - $reason");
+        }
+    }
+
+    /**
+     * Remove the document from the processing queue. This is normally called when it has been processed.
+     *
+     * @param int $docid
+     */
+    public static function unqueueDocFromProcessing($docid, $reason=false, $level='debug')
+    {
+    	$sql = "DELETE FROM process_queue WHERE document_id=$docid";
+        $result = DBUtil::runQuery($sql);
+
+        if ($reason !== false)
+        {
+        	global $default;
+        	$default->log->$level("Processor queue: removing document $docid from the queue - $reason");
         }
     }
 

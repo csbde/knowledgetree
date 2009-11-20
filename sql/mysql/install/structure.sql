@@ -4,7 +4,7 @@
 -- KnowledgeTree Community Edition
 -- Document Management Made Simple
 -- Copyright (C) 2008, 2009 KnowledgeTree Inc.
--- 
+--
 --
 -- This program is free software; you can redistribute it and/or modify it under
 -- the terms of the GNU General Public License version 3 as published by the
@@ -1324,6 +1324,20 @@ CREATE TABLE `plugins` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `namespace` (`namespace`),
   KEY `disabled` (`disabled`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `process_queue`
+--
+
+CREATE table `process_queue` (
+  `document_id` int(11) NOT NULL,
+  `date_added` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `date_processed` timestamp,
+  `status_msg` mediumtext,
+  `process_type` varchar(20),
+  PRIMARY KEY  (`document_id`),
+  CONSTRAINT `process_queue_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --

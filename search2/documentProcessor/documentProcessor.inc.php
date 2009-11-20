@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -105,6 +105,11 @@ class DocumentProcessor
 		return $singleton;
 	}
 
+	/**
+	 * Load the processors that will get run on the documents, eg pdf generation
+	 *
+	 * @return array
+	 */
     private function loadProcessors()
     {
         // Get list of registered processors (plugins)
@@ -116,7 +121,7 @@ class DocumentProcessor
 
         if(PEAR::isError($results)){
             global $default;
-            $default->log->debug('documentProcessor: error loading processors').' - '.$results->getMessage();
+            $default->log->error('documentProcessor: error loading processors').' - '.$results->getMessage();
             return false;
         }
 
@@ -139,34 +144,65 @@ class DocumentProcessor
         return $processors;
     }
 
-    public function processQueue()
+    /**
+     * Fetch the documents in the indexing queue and start the indexer
+     *
+     */
+    public function processIndexQueue()
     {
         global $default;
-        $default->log->debug('documentProcessor: starting');
+
+        if(!$default->enableIndexing){
+            $default->log->debug('documentProcessor: indexer disabled');
+            return ;
+        }
+
+        $default->log->debug('documentProcessor: starting indexer');
 
         // Check for lock file to ensure processor is not currently running
         $cacheDir = $default->cacheDirectory;
         $lockFile = $cacheDir . DIRECTORY_SEPARATOR . 'document_processor.lock';
 
         if(file_exists($lockFile)){
-            // lock file exists, exit
-            $default->log->debug('documentProcessor: stopping, lock file in place '.$lockFile);
-            return ;
+            // If something causes the document processor to stop part way through processing, the lock
+            // file will remain stopping the document processor from resuming. To workaround this problem
+            // we check the creation date of the lockfile and remove it if it is older than 24 hours or
+            // 48 hours if the batch size is greater than 1000 documents.
+            $stat = stat($lockFile);
+            $created = $stat['mtime'];
+
+            $gap = 24;
+            if($this->limit > 1000){
+                $gap = 48;
+                $default->log->warn('documentProcessor: batch size of documents to index is set to '.$this->limit.', this could cause problems.');
+            }
+            $check = time() - ($gap*60*60);
+
+            if($check > $created){
+                $default->log->error('documentProcessor: lock file is older than '.$gap.' hours, deleting it to restart indexing - '.$lockFile);
+                @unlink($lockFile);
+            }else{
+                // lock file exists, exit
+                // through a warning if the lock file is older than half an hour
+                $small_gap = time() - (30*60);
+                if($small_gap > $created){
+                    $default->log->warn('documentProcessor: stopping, lock file in place since '. date('Y-m-d H:i:s', $created) .' - '.$lockFile);
+                }
+                return ;
+            }
         }
 
-        if($default->enableIndexing){
-            // Setup indexing - load extractors, run diagnostics
-            if($this->indexer->preIndexingSetup() === false){
-                $default->log->debug('documentProcessor: stopping - indexer setup failed.');
-                return;
-            }
+        // Setup indexing - load extractors, run diagnostics
+        if($this->indexer->preIndexingSetup() === false){
+            $default->log->error('documentProcessor: stopping - indexer setup failed.');
+            return;
         }
 
         // Get document queue
         $queue = $this->indexer->getDocumentsQueue($this->limit);
 
         if(empty($queue)){
-            $default->log->debug('documentProcessor: stopping - no documents in processing queue');
+            $default->log->debug('documentProcessor: stopping - no documents in indexing queue');
             return ;
         }
 
@@ -177,7 +213,8 @@ class DocumentProcessor
         foreach($queue as $item){
 
             // Get the document object
-            $document = Document::get($item['document_id']);
+            $docId = $item['document_id'];
+            $document = Document::get($docId);
 
     	    if (PEAR::isError($document))
     	    {
@@ -186,9 +223,54 @@ class DocumentProcessor
     	    }
 
             // index document
-            if($default->enableIndexing){
-                $this->indexer->processDocument($document, $item);
-            }
+            $this->indexer->processDocument($document, $item);
+        }
+
+        // update the indexer statistics
+        $this->indexer->updateIndexStats();
+
+        // Remove lock file to indicate processing has completed
+        if(file_exists($lockFile)){
+            @unlink($lockFile);
+        }
+
+        $default->log->debug('documentProcessor: stopping indexer, batch completed');
+    }
+
+    /**
+     * Fetch the process queue for running the processors on
+     *
+     */
+    public function processQueue()
+    {
+        global $default;
+        $default->log->debug('documentProcessor: starting processing');
+
+        // Get processing queue
+        // Use the same batch size as the indexer (for now)
+        // If the batch size is huge then reset it to a smaller number
+        // Open office leaks memory, so we don't want to do too many documents at once
+        $batch = ($this->limit > 500) ? 500 : $this->limit;
+
+        $queue = $this->indexer->getDocumentProcessingQueue($batch);
+
+        if(empty($queue)){
+            $default->log->debug('documentProcessor: stopping - no documents in processing queue');
+            return ;
+        }
+
+        // Process queue
+        foreach($queue as $item){
+
+            // Get the document object
+            $docId = $item['document_id'];
+            $document = Document::get($docId);
+
+    	    if (PEAR::isError($document))
+    	    {
+    	        Indexer::unqueueDocFromProcessing($docId, "Cannot resolve document id: {$document->getMessage()}", 'error');
+    	        continue;
+    	    }
 
             // loop through processors
             if($this->processors !== false){
@@ -204,19 +286,13 @@ class DocumentProcessor
                     // Process document
                     $processor->setDocument($document);
                     $processor->processDocument();
+
+                    Indexer::unqueueDocFromProcessing($docId, "Document processed", 'debug');
                 }
             }
         }
 
-        // update the indexer statistics
-        $this->indexer->updateIndexStats();
-
-        // Remove lock file to indicate processing has completed
-        if(file_exists($lockFile)){
-            @unlink($lockFile);
-        }
-
-        $default->log->debug('documentProcessor: stopping');
+        $default->log->debug('documentProcessor: stopping processing, batch completed');
     }
 
     /**
