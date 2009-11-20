@@ -45,6 +45,8 @@
 		define('AGENT', 'IE6');
 	} else if(preg_match("/MSIE 7\.\d/", $browser)) {
 		define('AGENT', 'IE7');
+	} else if(preg_match("/MSIE 8\.\d/", $browser)) {
+		define('AGENT', 'IE8');
 	} else {
 		define('AGENT', 'OTHER');
 	}
