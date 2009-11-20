@@ -40,8 +40,8 @@
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 require_once(KT_LIB_DIR . '/import/fsimportstorage.inc.php');
 
-require_once(KT_DIR.'/thirdparty/peclzip/pclzip.lib.php');
 require_once('File/Archive.php');
+require_once(KT_LIB_DIR . '/util/ktpclzip.inc.php');
 
 
 class KTZipImportStorage extends KTFSImportStorage {
@@ -137,11 +137,8 @@ class KTZipImportStorage extends KTFSImportStorage {
         // todo: replace file archive for tar, etc
         if($this->sExtension == 'zip'){
 
-        	$archive = new PclZip($this->sZipPath);
-
-        	if ($archive->extract(PCLZIP_OPT_PATH, $sTmpPath) == 0){
-        		die("<font color='red'>Error : Unable to unzip archive</font>");
-        	}
+        	$archive = new KTPclZip($this->sZipPath);
+        	$archive->extractZipFile($sTmpPath);
 
             /* ** Original zip functionality using the unzip binary ** *
             $sUnzipCommand = KTUtil::findCommand("import/unzip", "unzip");
