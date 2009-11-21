@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -57,16 +57,16 @@ require_once("../wizard/dbUtilities.php");
 
 // {{{ Upgrade_Already_Applied
 class Upgrade_Already_Applied {
-    
+
     function Upgrade_Already_Applied($oUpgradeItem) {
         $this->oUpgradeItem = $oUpgradeItem;
     }
-    
+
 }
 // }}}
 
 class UpgradeItem {
-    
+
     public $type = "";
     public $name;
     public $version;
@@ -76,7 +76,8 @@ class UpgradeItem {
     public $parent;
     public $date;
     public $result;
-	 
+    protected $error;
+
     function UpgradeItem($name, $version, $description = null, $phase = 0, $priority = 0) {
         $this->name = $name;
         $this->version = $version;
@@ -86,7 +87,7 @@ class UpgradeItem {
         $this->description = $description;
         $this->phase = $phase;
         $this->priority = $priority;
-        
+
         $this->dbUtilities = new dbUtilities();
 		$this->iniUtilities = new iniUtilities();
     }
@@ -122,6 +123,14 @@ class UpgradeItem {
         return $this->type;
     }
 
+    public function getErrors()
+    {
+        if(isset($this->error[0])){
+            return $this->error[0];
+        }
+        return $this->error;
+    }
+
     /**
      * Runs a DB query and returns a result based on arguments which specify what to look for
      *
@@ -135,13 +144,13 @@ class UpgradeItem {
 			$this->dbUtilities = new dbUtilities();
 		    $this->iniUtilities = new iniUtilities();
 		}
-		
+
 		$wizConfigHandler = new configuration();
 		$configPath = $wizConfigHandler->readConfigPathIni();
-		
+
 		$this->iniUtilities->load($configPath);
 		$dconf = $this->iniUtilities->getSection('db');
-		$this->dbUtilities->load($dconf['dbHost'], '', $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
+		$this->dbUtilities->load($dconf['dbHost'], '', $dconf['dbAdminUser'], $dconf['dbAdminPass'], $dconf['dbName']);
         $result = $this->dbUtilities->query($query);
 		if($checkResult) {
         	$assArr = $this->dbUtilities->fetchAssoc($result);
@@ -153,7 +162,7 @@ class UpgradeItem {
 		}
         return !is_null($result);
     }
-    
+
     function _upgradeTableInstalled() {
         $query = "SELECT COUNT(id) FROM upgrades";
         $res = $this->runDBQuery($query, true, true);
@@ -169,7 +178,7 @@ class UpgradeItem {
         }
         $query = "SELECT id FROM upgrades WHERE descriptor = '".$this->getDescriptor()."' AND result = 1";
         $res = $this->runDBQuery($query, true, false);
-        
+
         if(!$res) {
         	return true;
         }
@@ -214,7 +223,7 @@ class UpgradeItem {
         }
 		$sql = "INSERT INTO upgrades (`id`, `descriptor`, `description`, `date_performed`, `result`, `parent`) VALUES (NULL, '". $this->getDescriptor()."', '".$this->description."', '".$this->date."', '".$result."', '".$parentid."')";
 		$this->dbUtilities->query($sql);
-		
+
 		return true;
     }
 
@@ -225,7 +234,7 @@ class UpgradeItem {
 } // end class UpgradeItem
 
 class SQLUpgradeItem extends UpgradeItem {
-    
+
     function SQLUpgradeItem($path, $version = null, $description = null, $phase = null, $priority = null) {
         $this->type = "sql";
         $this->priority = 0;
@@ -366,11 +375,11 @@ class SQLUpgradeItem extends UpgradeItem {
         $queries = SQLFile::sqlFromFile($sqlupgradedir . $this->name);
         return $this->dbUtilities->runQueries($queries);
     }
-    
+
 } // end class SQLUpgradeItem
 
 class KTRebuildPermissionObserver {
-    
+
     function start() {
         $this->lastBeat = time();
     }
@@ -384,11 +393,11 @@ class KTRebuildPermissionObserver {
     }
     function end() {
     }
-    
+
 }
 
 class RecordUpgradeItem extends UpgradeItem {
-    
+
     function RecordUpgradeItem ($version, $oldversion = null) {
         $this->type = "upgrade";
         if (is_null($oldversion)) {
@@ -426,7 +435,7 @@ class RecordUpgradeItem extends UpgradeItem {
         KTPermissionUtil::rebuildPermissionLookups(true);
         $po->end();
         */
-		
+
         $versionFile=KT_DIR . '/docs/VERSION-NAME.txt';
         $fp = fopen($versionFile,'rt');
         $systemVersion = fread($fp, filesize($versionFile));
@@ -495,7 +504,7 @@ class RecordUpgradeItem extends UpgradeItem {
             @unlink($sFile);
         }
     }
-    
+
 } // end class RecordUpgradeItem
 
 ?>
