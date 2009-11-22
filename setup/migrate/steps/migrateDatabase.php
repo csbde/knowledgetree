@@ -1,6 +1,6 @@
 <?php
 /**
-* Database Step Controller.
+* Migrate Database Step Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple

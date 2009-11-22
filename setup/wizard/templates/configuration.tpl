@@ -61,17 +61,6 @@
 	        <td> <div id="tooltips" title="Absolute path to KnowledgeTree Source directory">&nbsp;</div> </td>
 	        <td><input name='file_system_root' id='file_system_root' size='<?php echo $input_size; ?>' value='<?php echo $server['file_system_root']['value']; ?>' /></td>
 	    </tr>
-<!--	    <tr>-->
-<!--	        <td> <label for='yes'>Do you have SSL Enabled?: </label> </td>-->
-<!--	        <td> <div id="tooltips" title="Whether or not you have SSL installed">&nbsp;</div> </td>-->
-<!--	        <td>-->
-<!--	        	<label for='yes'>Yes</label>-->
-<!--	        	<input class="radio" type='radio' name='ssl_enabled' id='yes' value='yes' <?php //echo $server['ssl_enabled']['value'] == 'yes' ? 'CHECKED' : ''; ?> />-->
-<!--	        	&nbsp;&nbsp;&nbsp;-->
-<!--	        	<label for='no'>No</label>-->
-<!--	        	<input class="radio" type='radio' name='ssl_enabled' id='no' value='no' <?php //echo $server['ssl_enabled']['value'] == 'no' ? 'CHECKED' : ''; ?> />-->
-<!--			</td>-->
-<!--	    </tr>-->
 	</table>
 	        	<input type='hidden' name='ssl_enabled' id='no' value='no' checked='' />
 	<h3><?php echo "<span class='{$paths_perms}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Paths and Permissions</h3>

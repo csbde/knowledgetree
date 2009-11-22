@@ -1,15 +1,5 @@
 <form action="index.php?step_name=<?php echo $step_name; ?>" method="post" id="<?php echo $step_name; ?>">
 	<p class="title">Current Installation</p>
-<!--Continue Message-->
-	<?php
-		if(!$errors && !$warnings) {
-			?>
-<!--				<span class='big_ok'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-					KnowledgeTree installation has been detected. Please click <b>Next</b> to continue.
-				<br/><br/>-->
-			<?php
-		}
-	?>
 <!--Warning and Error Messages-->
 	<?php if($errors) { ?>
 		<span class='cross'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>

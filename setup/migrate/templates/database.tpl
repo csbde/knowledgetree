@@ -3,8 +3,6 @@
 	<div id="database" class="step1" style="display:block;">
 		<div class="description">
 		This step configures the connection to the database server and migrates the database.
-<!--		The details for an administrative <br/>-->
-<!--		user on the database server are required in order to be able to configure and migrate the database.-->
 		</div>
 		<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<?php

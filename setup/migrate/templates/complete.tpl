@@ -2,7 +2,6 @@
 	<p class="title">Migration Completed</p>
 
 	<p class="description">Your database migration was successfully completed. Please check the section below for details of the migration and final instructions</p>
-	
 	<?php
 	if($errors || $warnings){
 	    echo '<div>'
@@ -17,58 +16,8 @@
 		<span class='<?php echo $sql['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><?php echo $sql['msg']; ?>
 		<br /><br />
 		<h3>Start new MySQL service</h3>
-		In order to complete the upgrade process please start the Zend Server MySQL process (<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Post_Migrate" target="_blank">Click here for help</a>). 
-<!--		<table>-->
-<!--	    	<tr>-->
-<!--	    		<td> <span class='<?php //echo $sql['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> </td>-->
-<!--	    		<td style="width:25%;"> <?php //echo $sql['name']; ?> </td>-->
-<!--	    		<td style="width:75%;"> <?php //echo $sql['msg']; ?> </td>-->
-<!--	    	<tr>-->
-<!--	    </table>-->
-<!--	Services	-->
-<!--		<h3>Uninstalled Services</h3>-->
-<!--		<table>-->
-		<?php
-//			if(isset($step_vars['services'])) {
-//			    foreach ($step_vars['services'] as $ser){
-			    	?>
-<!--			    	<tr>-->
-<!--			    		<td> <span class='<?php //echo $ser['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> </td>-->
-<!--			    		<td style="width:25%;"> <?php //echo $ser['name']; ?> </td>-->
-<!--			    		<td style="width:75%;"> <?php //echo $ser['msg']; ?> </td>-->
-			    		<?php //if ($ser['class'] != 'tick') {
-			    			?>
-<!--			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>-->
-			    			<?php
-			    		//} ?>
-<!--			    	</tr>-->
-			    	<?php
-//			    }
-//			}
-		?>
-<!--		</table>-->
-<!--	Paths		-->
-<!--		<h3>System Path</h3>-->
-<!--		<table>-->
-		<?php
-//		if(isset($step_vars['paths'])) {
-//			    foreach ($step_vars['paths'] as $path){
-			    	?>
-<!--			    	<tr>-->
-<!--			    		<td> <span class='<?php //echo $path['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> </td>-->
-<!--			    		<td style="width:25%;"> <?php //echo $path['name']; ?> </td>-->
-<!--			    		<td style="width:75%;"> <?php //echo $path['msg']; ?> </td>-->
-			    		<?php //if ($path['class'] != 'tick') {
-			    			?>
-<!--			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>-->
-			    			<?php
-//			    		} ?>
-<!--			    	</tr>-->
-			    	<?php
-//			    }
-//			}
-		?>
-<!--		</table>-->
+		In order to complete the upgrade process please start the Zend Server MySQL process (<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Post_Migrate" target="_blank">Click here for help</a>).
+		
 	</div>
     <input class="button_next" type="submit" value="Continue Installation" name="BInstall"/>
 </form>

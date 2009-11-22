@@ -1,6 +1,6 @@
 <?php
 /**
-* Complete Step Controller. 
+* Migrate Complete Step Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -42,19 +42,29 @@
 
 class migrateComplete extends Step {
     /**
-     * List of services to check
+     * Flag if step needs to run silently
      * 
-     * @access private
-     * @var array
+     * @access protected
+     * @var boolean
      */
-    private $services_check = 'tick';
-    private $paths_check = 'tick';
-    private $privileges_check = 'tick';
-    private $database_check = 'tick';
-    protected $conf = array();
     protected $silent = true;
+    
+    /**
+     * Name of BitRock Stack MySql
+     * 
+     * @access protected
+     * @var string
+     */
 	protected $mysqlServiceName = "KTMysql";
 	
+	/**
+	* Returns step state
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return string
+	*/
     function doStep() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
         $this->doRun();
@@ -62,11 +72,18 @@ class migrateComplete extends Step {
     }
     
     function doRun() {
-        $this->checkServices();
-        $this->checkSqlDump();
-        $this->checkPaths();
+		if(!$this->inStep("complete")) {
+			$this->checkSqlDump();
+			return 'landing';
+		}
+        if($this->next()) {
+        	if($this->checkMysql()) {
+        		return 'next';
+        	} else {
+            	return 'error';
+        	}
+        }
         $this->removeInstallSessions();
-        $this->storeSilent();// Set silent mode variables
     }
     
     private function removeInstallSessions() {
@@ -75,19 +92,6 @@ class migrateComplete extends Step {
 	        if(isset($_SESSION['installers'][$step])) {
 	        	$_SESSION['installers'][$step] = null;
 	        }
-    	}
-    }
-    
-    private function checkPaths() {
-    	$installation = $this->getDataFromSession("installation"); // Get installation directory
-    	foreach ($installation['urlPaths'] as $path) {
-    		if(is_writable($path['path']) && is_readable($path['path'])) {
-    			$this->temp_variables['paths'][$path['name']]['class'] = "tick";
-    		} else {
-    			$this->temp_variables['paths'][$path['name']]['class'] = "cross_orange";
-    		}
-			$this->temp_variables['paths'][$path['name']]['name'] = $path['name'];
-			$this->temp_variables['paths'][$path['name']]['msg'] = $path['path'];
     	}
     }
     
@@ -107,38 +111,6 @@ class migrateComplete extends Step {
 		}
     }
     
-    private function checkServices()
-    {
-    	$services = $this->util->loadInstallServices(); // Use installer services class
-    	$this->conf = $this->getDataFromSession("installation"); // Get installation directory
-		foreach ($services as $serviceName) {
-    		$className = OS.$serviceName;
-    		$serv = $this->util->loadInstallService($className);
-    		$serv->load();
-    		$sStatus = $serv->status();
-    		if($sStatus == 'STARTED') {
-    			$state = 'cross';
-    			$this->error[] = "Service : {$serv->getName()} could not be uninstalled.<br/>";
-    			$this->services_check = 'cross';
-    			//$stopmsg = OS.'GetStopMsg';
-    			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service Running"; //$serv->getStopMsg($this->conf['location']);
-    		} else {
-    			$state = 'tick';
-    			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service has been uninstalled";
-    		}
-    		$this->temp_variables['services'][$serv->getName()]['class'] = $state;
-    		$this->temp_variables['services'][$serv->getName()]['name'] = $serv->getName();
-    	}
-    	if(!$this->checkMysql()) {
-    		return false;
-    	}
-    	if ($this->services_check != 'tick') {
-    		return false;
-    	}
-    	
-    	return true;
-    }
-    
     /**
      * Check if services are uninstall
      *
@@ -151,9 +123,8 @@ class migrateComplete extends Step {
 			if($response['out']) {
 				$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
 			}
-			if($state == "STARTED") {
-				return true;
-			}
+			if($state == "STARTED")
+				$running = true;
     	} else {
     		$installation = $this->getDataFromSession("installation"); // Get installation directory
     		$mysqlPid = $installation['location'].DS."mysql".DS."data".DS."mysqld.pid";
@@ -172,14 +143,6 @@ class migrateComplete extends Step {
     		$this->temp_variables['services']['KTMysql']['msg'] = "Service has been uninstalled";
     		return true;
     	}
-    }
-    
-    /**
-     * Set all silent mode varibles
-     *
-     */
-    private function storeSilent() {
-    	$this->temp_variables['servicesCheck'] = $this->services_check;
     }
 }
 ?>

@@ -49,11 +49,6 @@
 		        <td> <div id="tooltips" title="Absolute path to KnowledgeTree Source directory">&nbsp;</div> </td>
 		        <td><?php echo $server['file_system_root']['value']; ?></td>
 		    </tr>
-<!--		    <tr>-->
-<!--		        <td>Do you have SSL Enabled?: </td>-->
-<!--		        <td> <div id="tooltips" title="Whether or not you have SSL installed">&nbsp;</div> </td>-->
-<!--		        <td><?php //echo $server['ssl_enabled']['value']; ?></td>-->
-<!--		    </tr>-->
 		</table>
 
 		<h3>Paths and Permissions</h3>

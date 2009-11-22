@@ -29,17 +29,9 @@
             <?php }
             else if ($action == 'runUpgrade') {
                 // hiding pre-upgrade notification
-				/*
-				echo $preUpgrade;
-                echo '<br/><br/>';
-				*/
                 echo $upgradeTable;
                 echo '<br/><br/>';
                 // hiding pre-upgrade notification
-				/*
-				echo $postUpgrade;
-                echo '<br/><br/>';
-				*/
                 echo $upgradeStatus;
                 echo '<br/><br/>';
             }

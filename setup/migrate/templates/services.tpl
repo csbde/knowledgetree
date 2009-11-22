@@ -49,8 +49,7 @@
 		}
 		$display = 'block';
 		?>
-<!--			<div id="option6" class="onclick notop" onclick="javascript:{w.toggleClass('service_details', 'option6');}"><?php echo $details; ?></div>-->
-			<div class="service_details" style="display:<?php echo $display; ?>">
+		<div class="service_details" style="display:<?php echo $display; ?>">
 		<?php } ?>
 		<table>
 		<?php
