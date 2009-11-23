@@ -271,7 +271,7 @@ class migrateServices extends Step
     }
     
     /**
-     * Check if services are uninstall
+ * Check if services are uninstall
      *
      */
     private function checkServices() {
@@ -285,7 +285,7 @@ class migrateServices extends Step
     			$this->error[] = "Service : {$serv->getName()} could not be uninstalled.<br/>";
     			$this->serviceCheck = 'cross';
     			//$stopmsg = OS.'GetStopMsg';
-    			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service Running"; //$serv->getStopMsg($this->conf['location']);
+    			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service Running";
     		} else {
     			$state = 'tick';
     			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service has been uninstalled";
@@ -341,7 +341,7 @@ class migrateServices extends Step
     		} else {
     			$this->temp_variables['services']['KTMysql']['name'] = "KnowledgeTree Mysql Service.";
     		}
-    		$this->temp_variables['services']['KTMysql']['msg'] = "Service has been uninstalled";
+    		$this->temp_variables['services']['KTMysql']['msg'] = "Service has been stopped";
     		return true;
     	}
     }

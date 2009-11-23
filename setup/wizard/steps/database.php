@@ -644,6 +644,7 @@ class database extends Step
 		$this->writeBinaries();
 		// ensure a guid was generated and is stored
 		$this->util->getSystemIdentifier();
+		$this->reBuildPaths();
 		
 		return true;
     }
@@ -770,8 +771,8 @@ class database extends Step
     	$this->parse_mysql_dump($sqlFile);
     	$dropPluginHelper = "TRUNCATE plugin_helper;"; // Remove plugin helper table
     	$this->util->dbUtilities->query($dropPluginHelper);
-    	$updateUrls = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "urls";'; // Remove references to old paths
-    	$this->util->dbUtilities->query($updateUrls);
+    	$this->reBuildPaths();
+
     	$updateExternalBinaries = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "externalBinary";'; // Remove references to old paths
     	$this->util->dbUtilities->query($updateExternalBinaries);
 		$this->writeBinaries(); // Rebuild some of the binaries
@@ -779,6 +780,15 @@ class database extends Step
 
     	return true;
     }
+    
+    private function reBuildPaths() {
+    	$conf = $this->util->getDataFromSession('configuration');
+    	$paths = $conf['paths'];
+    	foreach ($paths as $k=>$path) {
+    		$sql = 'UPDATE config_settings SET value = "'.$path['path'].'" where item = "'.$k.'";';
+    		$this->util->dbUtilities->query($sql);
+    	}
+	}
     
     private function writeBinaries() {
     	// if Windows, attempt to insert full paths to binaries

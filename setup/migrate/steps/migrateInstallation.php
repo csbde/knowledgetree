@@ -241,16 +241,17 @@ class migrateInstallation extends step
 		if ($froot == 'default') {
 			$froot = $this->location;
 		}
-		$this->ktSettings = array('fileSystemRoot'=> $froot,
-    	);
+		$this->ktSettings = array('fileSystemRoot'=> $froot);
     	$varDir = $froot.DS.'var';
-		$this->urlPaths = array(array('name'=> 'Var Directory', 'path'=> $varDir),
-									array('name'=> 'Log Directory', 'path'=> $varDir.DS.'log'),
-									array('name'=> 'Document Root', 'path'=> $varDir.DS.'Documents'),
-									array('name'=> 'Temporary Directory', 'path'=> $varDir.DS.'tmp'),
-									array('name'=> 'Cache Directory', 'path'=> $varDir.DS.'cache'),
-									array('name'=> 'Upload Directory', 'path'=> $varDir.DS.'uploads'),
+		$this->urlPaths = array(
+//									array('name'=> 'Var Directory', 'path'=> $varDir),
+//									array('name'=> 'Log Directory', 'path'=> $varDir.DS.'log'),
+									array('name'=> 'Document Root', 'path'=> $froot.DS.'Documents'),
+//									array('name'=> 'Temporary Directory', 'path'=> $varDir.DS.'tmp'),
+//									array('name'=> 'Cache Directory', 'path'=> $varDir.DS.'cache'),
+//									array('name'=> 'Upload Directory', 'path'=> $varDir.DS.'uploads'),
     	);
+//		$this->urlPaths = array();
     	$this->dbSettings['dbPort'] = $this->util->getPort($this->location); // Add Port
     	$this->temp_variables['urlPaths'] = $this->urlPaths;
     	$this->temp_variables['ktSettings'] = $this->ktSettings;

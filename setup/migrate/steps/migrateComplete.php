@@ -86,7 +86,8 @@ class migrateComplete extends Step {
 		}
         if($this->next()) {
         	$this->checkZendMysql();
-        	if($this->checkMysql()) {
+        	//if($this->checkMysql()) {
+        	if($this->checkZendMysql()) {
         		return 'binstall';
         	} else {
             	return 'error';
@@ -178,8 +179,8 @@ class migrateComplete extends Step {
 			return true;
     	} else {
     		$this->temp_variables['zmysql']['class'] = "cross";
-    		$this->temp_variables['zmysql']['name'] = "KTMysql";
-    		$this->temp_variables['zmysql']['msg'] = "Service has been uninstalled";
+    		$this->temp_variables['zmysql']['name'] = "Mysql";
+    		$this->temp_variables['zmysql']['msg'] = "Service not running";
     		$this->error[] = "Service : KTMysql running.<br/>";
     		return false;
     	}
