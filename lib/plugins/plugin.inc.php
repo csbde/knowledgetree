@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -751,6 +751,11 @@ class KTPlugin {
                     ));
 
                 }
+            }else{
+                // Update the plugin path, in case it has moved
+                $oEntity->updateFromArray(array(
+                    'path' => $this->stripKtDir($this->sFilename)
+                ));
             }
             /* ** Quick fix for optimisation. Reread must run plugin setup. ** */
             $this->setup();

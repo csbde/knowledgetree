@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -598,9 +598,17 @@ class KTPluginUtil {
             if (!KTUtil::isAbsolutePath($sPath)) {
                 $sPath = sprintf("%s/%s", KT_DIR, $sPath);
             }
+            // Check that the file exists at the given path
+            // If it doesn't set it as unavailable and disabled
+            // else set it as available and enabled.
+            // We'll document this in case they've specifically disabled certain plugins
             if (!file_exists($sPath)) {
                 $oPluginEntity->setUnavailable(true);
                 $oPluginEntity->setDisabled(true);
+                $res = $oPluginEntity->update();
+            }elseif ($oPluginEntity->getUnavailable()){
+                $oPluginEntity->setUnavailable(false);
+                $oPluginEntity->setDisabled(false);
                 $res = $oPluginEntity->update();
             }
         }
