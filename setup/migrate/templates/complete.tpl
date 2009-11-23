@@ -5,7 +5,7 @@
 	<?php
 	if($errors || $warnings){
 	    echo '<div>'
-	       . '<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Post_Migrate" target="_blank">'
+	       . '<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Complete" target="_blank">'
 	       . 'Click Here for help on overcoming post migrate issues</a></div><br/>';
 	}
 	?>
@@ -16,7 +16,7 @@
 		<span class='<?php echo $sql['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><?php echo $sql['msg']; ?>
 		<br /><br />
 		<h3>Start new MySQL service</h3>
-		In order to complete the upgrade process please start the Zend Server MySQL service and then click <b>Next</b> to continue (<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Deactivate_Services" target="_blank">Click here for help</a>). 
+		In order to complete the upgrade process please start the Zend Server MySQL service and then click <b>Next</b> to continue (<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Complete" target="_blank">Click here for help</a>). 
 		<br /><br />
 		<?php if(!empty($errors)) { ?>
 <!--		<span class='<?php //echo $ktmysql['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>-->

@@ -214,11 +214,9 @@ class migrateServices extends Step
      *
      */
     private function uninstallServices() {
-    	$this->conf = $this->getDataFromSession("installation"); // Get installation directory
-    	if($this->conf['location'] != '') {
-			$func = OS."Stop";// Try the dmsctl
-			$this->$func();
-    	}
+		$func = OS."Stop";
+		$this->$func();
+
 		$this->shutdown();
     }
 
@@ -240,11 +238,11 @@ class migrateServices extends Step
      *
      */
     private function windowsStop() {
-    	$cmd = "sc delete KTLucene";
+    	$cmd = "sc stop KTLucene; sc delete KTLucene";
     	$this->util->pexec($cmd);
-    	$cmd = "sc delete KTScheduler";
+    	$cmd = "sc stop KTScheduler; sc delete KTScheduler";
     	$this->util->pexec($cmd);
-    	$cmd = "sc delete KTOpenoffice";
+    	$cmd = "sc stop KTOpenoffice; sc delete KTOpenoffice";
     	$this->util->pexec($cmd);
     }
     

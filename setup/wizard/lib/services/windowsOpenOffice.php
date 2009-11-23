@@ -130,7 +130,7 @@ class windowsOpenOffice extends windowsService {
 	* @param none
 	* @return string
  	*/
-    public $name = "KTOpenOffice";
+    public $name = "KTOpenoffice";
 
     public $hrname = "KnowledgeTree OpenOffice.org Service. (KTOpenOffice)";
     
