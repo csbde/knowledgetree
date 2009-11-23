@@ -4,7 +4,7 @@ rem KnowledgeTree Control Script
 
 
 rem ============= SET ENVIRONMENT VARIABLES ==============
-set INSTALL_PATH=%CD%
+set INSTALL_PATH=%~dp0
 cd ..
 cd ..
 set ZEND_PATH=%CD%

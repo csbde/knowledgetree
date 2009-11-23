@@ -5,9 +5,6 @@
 		This step configures the connection to the database server and migrates the database.
 		</div>
 		<div id="step_content_<?php echo $step_name; ?>" class="step">
-		<?php
-			//print_r($errors);
-		?>
 		<?php if(empty($errors)) { ?>
 <p class="description">The Setup Wizard will now export your existing database in preparation for the migration to the new KnowledgeTree Stack.</p><br />
                         <span class="error">Please ensure that your database is backed up before proceeding. If you need assistance with backing up see the &nbsp;<a class="description_click" target="_blank" href="http://wiki.knowledgetree.com/Backing_up_and_restoring_KnowledgeTree">'Backing up and restoring KnowledgeTree'</a>&nbsp; wiki entry.
