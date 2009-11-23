@@ -246,6 +246,11 @@ class DocumentProcessor
         global $default;
         $default->log->debug('documentProcessor: starting processing');
 
+        if($this->processors === false){
+            $default->log->info('documentProcessor: stopping - no processors enabled');
+            return ;
+        }
+
         // Get processing queue
         // Use the same batch size as the indexer (for now)
         // If the batch size is huge then reset it to a smaller number
@@ -286,9 +291,8 @@ class DocumentProcessor
                     // Process document
                     $processor->setDocument($document);
                     $processor->processDocument();
-
-                    Indexer::unqueueDocFromProcessing($docId, "Document processed", 'debug');
                 }
+                Indexer::unqueueDocFromProcessing($docId, "Document processed", 'debug');
             }
         }
 
