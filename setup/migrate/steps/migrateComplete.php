@@ -57,6 +57,14 @@ class migrateComplete extends Step {
      */
 	protected $mysqlServiceName = "KTMysql";
 	
+    /**
+     * Name of BitRock Stack MySql
+     * 
+     * @access protected
+     * @var string
+     */
+	protected $zendMysql = "MySQL_ZendServer51";
+	
 	/**
 	* Returns step state
 	*
@@ -67,23 +75,25 @@ class migrateComplete extends Step {
 	*/
     function doStep() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
-        $this->doRun();
-    	return 'landing';
+        return $this->doRun();
     }
     
     function doRun() {
+    	$this->checkSqlDump();
 		if(!$this->inStep("complete")) {
-			$this->checkSqlDump();
+			
 			return 'landing';
 		}
         if($this->next()) {
+        	$this->checkZendMysql();
         	if($this->checkMysql()) {
-        		return 'next';
+        		return 'binstall';
         	} else {
             	return 'error';
         	}
         }
         $this->removeInstallSessions();
+        return 'landing';
     }
     
     private function removeInstallSessions() {
@@ -132,17 +142,51 @@ class migrateComplete extends Step {
     			$running = true;
     	}
     	if($running) {
-    		$this->temp_variables['services']['KTMysql']['class'] = "cross";
-    		$this->temp_variables['services']['KTMysql']['name'] = "KTMysql";
-    		$this->temp_variables['services']['KTMysql']['msg'] = "Service Running";
+    		$this->temp_variables['ktmysql']['class'] = "cross";
+    		$this->temp_variables['ktmysql']['name'] = "KTMysql";
+    		$this->temp_variables['ktmysql']['msg'] = "Service Running";
     		$this->error[] = "Service : KTMysql running.<br/>";
     		return false;
     	} else {
-    		$this->temp_variables['services']['KTMysql']['class'] = "tick";
-    		$this->temp_variables['services']['KTMysql']['name'] = "KTMysql";
-    		$this->temp_variables['services']['KTMysql']['msg'] = "Service has been uninstalled";
+    		$this->temp_variables['ktmysql']['class'] = "tick";
+    		$this->temp_variables['ktmysql']['name'] = "KTMysql";
+    		$this->temp_variables['ktmysql']['msg'] = "Service has been uninstalled";
     		return true;
     	}
+    }
+    
+    private function checkZendMysql() {
+    	$running = false;
+    	if(WINDOWS_OS) {
+			$cmd = "sc query {$this->zendMysql}";
+			$response = $this->util->pexec($cmd);
+			if($response['out']) {
+				$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
+			}
+			if($state == "STARTED")
+				$running = true;
+    	} else {
+    		//TODO : Read fomr my.cnf file
+    		$mysqlPid = "/var/run/mysqld/mysqld.sock";
+    		if(file_exists($mysqlPid))
+    			$running = true;
+    	}
+    	if($running) {
+    		$this->temp_variables['zmysql']['class'] = "tick";
+    		$this->temp_variables['zmysql']['name'] = "KTMysql";
+    		$this->temp_variables['zmysql']['msg'] = "Service Running";
+			return true;
+    	} else {
+    		$this->temp_variables['zmysql']['class'] = "cross";
+    		$this->temp_variables['zmysql']['name'] = "KTMysql";
+    		$this->temp_variables['zmysql']['msg'] = "Service has been uninstalled";
+    		$this->error[] = "Service : KTMysql running.<br/>";
+    		return false;
+    	}
+    }
+    
+    public function getErrors() {
+    	return $this->error;
     }
 }
 ?>

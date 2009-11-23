@@ -247,7 +247,6 @@ class migrateInstallation extends step
 		$this->urlPaths = array(array('name'=> 'Var Directory', 'path'=> $varDir),
 									array('name'=> 'Log Directory', 'path'=> $varDir.DS.'log'),
 									array('name'=> 'Document Root', 'path'=> $varDir.DS.'Documents'),
-									array('name'=> 'UI Directory', 'path'=> $froot.DS.'presentation'.DS.'lookAndFeel'.DS.'knowledgeTree'),
 									array('name'=> 'Temporary Directory', 'path'=> $varDir.DS.'tmp'),
 									array('name'=> 'Cache Directory', 'path'=> $varDir.DS.'cache'),
 									array('name'=> 'Upload Directory', 'path'=> $varDir.DS.'uploads'),

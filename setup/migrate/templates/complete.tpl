@@ -16,9 +16,19 @@
 		<span class='<?php echo $sql['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><?php echo $sql['msg']; ?>
 		<br /><br />
 		<h3>Start new MySQL service</h3>
-		In order to complete the upgrade process please start the Zend Server MySQL process (<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Post_Migrate" target="_blank">Click here for help</a>).
-		
+		In order to complete the upgrade process please start the Zend Server MySQL process, and shutdown the KnowledgeTree Mysql Service. (<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Deactivate_Services" target="_blank">Click here for help</a>).
+		<br /><br />
+		<span class='<?php echo $ktmysql['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+		<?php echo $ktmysql['name']; ?>
+		<?php echo $ktmysql['msg']; ?>
+		<br /><br />
+		<?php if (WINDOWS_OS) { ?>
+		<span class='<?php echo $zmysql['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+		<?php echo $zmysql['name']; ?>
+		<?php echo $zmysql['msg']; ?>
+		<?php } ?>
 	</div>
-    <input class="button_next" type="submit" value="Continue Installation" name="BInstall"/>
+<!--    <input class="button_next" type="submit" value="Continue Installation" name="BInstall"/>-->
+    <input class="button_next" type="submit" value="Continue Installation" name="Next"/>
 </form>
 <?php if (AJAX) { echo $html->js('form.js'); } ?>
