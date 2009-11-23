@@ -30,7 +30,7 @@
 			<?php } ?>
 			<p class="disclaimer">
 			<?php if(WINDOWS_OS) { ?>
-				cd <?php echo "\"".SYSTEM_ROOT."\""; ?> <br/>
+				cd <?php echo "\"".SYSTEM_DIR."\""; ?> <br/>
 				dmsctl.bat install<br/>
 				dmsctl.bat start
 			<?php } else { ?>
