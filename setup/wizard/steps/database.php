@@ -808,7 +808,7 @@ class database extends Step
     	    foreach ($winBinaries as $displayName => $bin)
     	    {
     	        // continue without attempting to set the path if we can't find the file in the specified location
-//    	        if (!file_exists($bin[1])) continue;
+    	        if (!file_exists($bin[1])) continue;
     	        
     	        // instaView won't exist, must be inserted instead of updated
     	        if ($displayName == 'pdf2swf') {
