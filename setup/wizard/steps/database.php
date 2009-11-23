@@ -810,14 +810,34 @@ class database extends Step
     	        // continue without attempting to set the path if we can't find the file in the specified location
     	        if (!file_exists($bin[1])) continue;
     	        
+    	        // escape paths for insert/update query
+    	        $bin[1] = str_replace('\\', '\\\\', $bin[1]);
+    	        
     	        // instaView won't exist, must be inserted instead of updated
-    	        if ($displayName == 'pdf2swf') {
+    	        // TODO this may need to be modified to first check for existing setting as with the convert step below; not necessary for 3.7.0.x
+    	    	if ($displayName == 'pdf2swf') {
     	            $updateBin = 'INSERT INTO `config_settings` (group_name, display_name, description, item, value, default_value, type, options, can_edit) '
 	    					   . 'VALUES ("' . $bin[0] . '", "' . $displayName . '", "The path to the SWFTools \"pdf2swf\" binary", "pdf2swfPath", '
-	    					   . '"' . str_replace('\\', '\\\\', $bin[1]) . '", "pdf2swf", "string", NULL, 1);';
+	    					   . '"' . $bin[1] . '", "pdf2swf", "string", NULL, 1);';
+    	        }
+    	        // on a migration, the convert setting will not exist, so do something similar to the above, but first check whether it exists
+    	    	else if ($displayName == 'convert') {
+            		// check for existing config settings entry and only add if not already present
+			        $sql = 'SELECT id FROM `config_settings` WHERE group_name = "externalBinary" AND item = "convertPath"';
+			        $result = $this->util->dbUtilities->query($sql);
+			        $output = $this->util->dbUtilities->fetchAssoc($result);
+				    if(is_null($output)) {
+    					$updateBin = 'INSERT INTO `config_settings` (group_name, display_name, description, item, value, default_value, type, options, can_edit) '
+	    	            		   . 'VALUES ("' . $bin[0] . '", "' . $displayName . '", "The path to the ImageMagick \"convert\" binary", "convertPath", '
+	    	            		   . '"' . $bin[1] . '", "convert", "string", NULL, 1)';
+    	    		}
+    	    		else {
+	    	            $updateBin = 'UPDATE config_settings c SET c.value = "'. $bin[1] . '" '
+	                               . 'where c.group_name = "' . $bin[0] . '" and c.display_name = "'.$displayName.'";';
+    	    		}
     	        }
     	        else {
-                    $updateBin = 'UPDATE config_settings c SET c.value = "'. str_replace('\\', '\\\\', $bin[1]) . '" '
+                    $updateBin = 'UPDATE config_settings c SET c.value = "'. $bin[1] . '" '
                                . 'where c.group_name = "' . $bin[0] . '" and c.display_name = "'.$displayName.'";';
     	        }
     	        
