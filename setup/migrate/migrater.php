@@ -540,6 +540,9 @@ class Migrater {
                 	$this->_landing();
                 } elseif ($res == 'landing') {
 					$this->_landing();
+                } elseif ($res == 'binstall') {
+                	$util = new MigrateUtil();
+                	$util->redirect('../wizard/index.php?step_name=dependencies');
                 } else {
                 }
             	break;
@@ -550,10 +553,10 @@ class Migrater {
                 $util = new MigrateUtil();
                 $util->redirect('../wizard/index.php?step_name=installtype');
             	break;
-            case 'binstall':
-                $util = new MigrateUtil();
-                $util->redirect('../wizard/index.php?step_name=dependencies');
-            	break;
+//            case 'binstall':
+//                $util = new MigrateUtil();
+//                $util->redirect('../wizard/index.php?step_name=dependencies');
+//            	break;
             default:
             	// TODO : handle silent
             	$this->_landing();

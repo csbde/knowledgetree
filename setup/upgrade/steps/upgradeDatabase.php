@@ -86,7 +86,8 @@ class upgradeDatabase extends Step
     protected $silent = false;
     protected $temp_variables = array();
     public $paths = '';
-
+	public $migrateCheck = false;
+	
     /**
 	* Main control of database setup
 	*
@@ -99,6 +100,7 @@ class upgradeDatabase extends Step
         $this->temp_variables = array("step_name"=>"database", "silent"=>$this->silent,
                                       "loadingText"=>"The database upgrade is under way.  Please wait until it completes");
     	$this->initErrors();
+    	$this->checkMigration();
     	if(!$this->inStep("database")) {
     	    $this->doRun();
     		return 'landing';
@@ -124,6 +126,12 @@ class upgradeDatabase extends Step
         return 'landing';
     }
 
+    public function checkMigration() {
+    	if($this->util->isMigration()) {
+    		$this->migrateCheck = true;
+    	}
+    }
+    
     private function confirmUpgrade() {
         return isset($_POST['ConfirmUpgrade']);
     }
@@ -219,6 +227,7 @@ class upgradeDatabase extends Step
     	$this->temp_variables['sysVersion'] = $this->sysVersion;
     	$this->temp_variables['sysVersion'] = $this->sysVersion;
     	$this->temp_variables['dbSettings'] = $this->dbSettings;
+    	$this->temp_variables['migrateCheck'] = $this->migrateCheck;
     }
 
     private function upgradeConfirm()

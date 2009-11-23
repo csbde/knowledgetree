@@ -644,6 +644,7 @@ class database extends Step
 		$this->writeBinaries();
 		// ensure a guid was generated and is stored
 		$this->util->getSystemIdentifier();
+		$this->reBuildPaths();
 		
 		return true;
     }
@@ -770,8 +771,8 @@ class database extends Step
     	$this->parse_mysql_dump($sqlFile);
     	$dropPluginHelper = "TRUNCATE plugin_helper;"; // Remove plugin helper table
     	$this->util->dbUtilities->query($dropPluginHelper);
-    	$updateUrls = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "urls";'; // Remove references to old paths
-    	$this->util->dbUtilities->query($updateUrls);
+    	$this->reBuildPaths();
+
     	$updateExternalBinaries = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "externalBinary";'; // Remove references to old paths
     	$this->util->dbUtilities->query($updateExternalBinaries);
 		$this->writeBinaries(); // Rebuild some of the binaries
@@ -779,6 +780,15 @@ class database extends Step
 
     	return true;
     }
+    
+    private function reBuildPaths() {
+    	$conf = $this->util->getDataFromSession('configuration');
+    	$paths = $conf['paths'];
+    	foreach ($paths as $k=>$path) {
+    		$sql = 'UPDATE config_settings SET value = "'.$path['path'].'" where item = "'.$k.'";';
+    		$this->util->dbUtilities->query($sql);
+    	}
+	}
     
     private function writeBinaries() {
     	// if Windows, attempt to insert full paths to binaries
@@ -792,18 +802,18 @@ class database extends Step
     	                      	 'unzip' => array(0 => 'import', 1 => SYSTEM_ROOT . 'bin\unzip\unzip.exe'));
 	    	
     	    if (INSTALL_TYPE == 'commercial' || true) {
-    	    	$winBinaries['pdf2swf'] = array(0 => 'externalBinary', 1 => SYSTEM_ROOT . 'bin\pdf2swf.exe');
+    	    	$winBinaries['pdf2swf'] = array(0 => 'externalBinary', 1 => SYSTEM_ROOT . 'bin\swftools\pdf2swf.exe');
     	    }
     	    
     	    foreach ($winBinaries as $displayName => $bin)
     	    {
     	        // continue without attempting to set the path if we can't find the file in the specified location
-    	        if (!file_exists($bin[1])) continue;
+//    	        if (!file_exists($bin[1])) continue;
     	        
     	        // instaView won't exist, must be inserted instead of updated
     	        if ($displayName == 'pdf2swf') {
     	            $updateBin = 'INSERT INTO `config_settings` (group_name, display_name, description, item, value, default_value, type, options, can_edit) '
-	    					   . 'VALUES ("' . $bin[0] . '", "pdf2swf", "The path to the SWFTools \"pdf2swf\" binary", "pdf2swfPath", '
+	    					   . 'VALUES ("' . $bin[0] . '", "' . $displayName . '", "The path to the SWFTools \"pdf2swf\" binary", "pdf2swfPath", '
 	    					   . '"' . str_replace('\\', '\\\\', $bin[1]) . '", "pdf2swf", "string", NULL, 1);';
     	        }
     	        else {

@@ -147,10 +147,10 @@ class thumbnailGenerator extends BaseProcessor
         $mimeType = KTMime::getMimeTypeName($mimeTypeId);
 
 	    // Get the pdf source file - if the document is a pdf then use the document as the source
-	    if($mimeType == 'application/pdf'){
+	    if($mimeType == 'application/pdf') {
 	        $pdfDir = $default->documentRoot;
             $pdfFile = $pdfDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
-	    }else{
+	    } else {
     	    $pdfDir = $default->pdfDirectory;
             $pdfFile = $pdfDir .DIRECTORY_SEPARATOR. $this->document->iId.'.pdf';
 	    }
@@ -175,28 +175,23 @@ class thumbnailGenerator extends BaseProcessor
             $default->log->debug('Thumbnail Generator Plugin: PDF file does not exist, cannot generate a thumbnail');
             return false;
         }
-		// if a previous version of the thumbnail exists - delete it
+
+        // if a previous version of the thumbnail exists - delete it
 		if (file_exists($thumbnailfile)) {
 			@unlink($thumbnailfile);
 		}
         // do generation
-       // if (extension_loaded('imagick')) {
-            $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
-            // windows path may contain spaces
-
-            if (stristr(PHP_OS,'WIN')) {
-				$cmd = "\"{$pathConvert}\" -size 200x200 \"{$pdfFile}[0]\" -resize 200x200 \"$thumbnailfile\"";
-            }
-			else {
-				$cmd = "{$pathConvert} -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile";
-			}
-        	$result = KTUtil::pexec($cmd);
-        	return true;
-        //}else{
-        	//$default->log->debug('Thumbnail Generator Plugin: Imagemagick not installed, cannot generate a thumbnail');
-           // return false;
-        //}
-
+        $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
+        // windows path may contain spaces
+        if (stristr(PHP_OS,'WIN')) {
+			$cmd = "\"{$pathConvert}\" -size 200x200 \"{$pdfFile}[0]\" -resize 200x200 \"$thumbnailfile\"";
+        }
+		else {
+			$cmd = "{$pathConvert} -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile";
+		}
+		
+		$result = KTUtil::pexec($cmd);
+        return true;
     }
 }
 
