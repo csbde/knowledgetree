@@ -522,23 +522,6 @@ class InstallUtil {
     	}
     }
 
-	/**
-	* Check if system needs to be accessed
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return boolean
- 	*/
-    public function finishSpecified() {
-    	if(isset($_GET['Finish'])) {
-        	if($_GET['Finish'] == "Finish") {
-            	return true;
-        	}
-    	}
-
-        return false;
-    }
 
 	/**
 	* Check if system needs to be migrated
@@ -559,8 +542,29 @@ class InstallUtil {
 	}
 
 	public function upgradeInstall() {
-    	if(isset($_POST['Next'])) {
+		if(isset($_GET['Upgrade'])) {
+			return true;
+		}
+    	if(isset($_GET['Next'])) {
         	if($_POST['Next'] == "Upgrade") {
+            	return true;
+        	}
+    	}
+
+        return false;
+	}
+	
+	/**
+	* Check if system needs to be accessed
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
+	public function finishInstall() {
+    	if(isset($_GET['Next'])) {
+        	if($_GET['Next'] == "Finish") {
             	return true;
         	}
     	}
