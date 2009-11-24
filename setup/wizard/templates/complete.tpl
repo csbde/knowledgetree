@@ -38,7 +38,7 @@
 			<?php } ?>
 			<p class="disclaimer">
 				<?php if(WINDOWS_OS) { ?>
-					[START MENU] => [Programs] => [KnowledgeTree]
+					[START MENU] => [Programs] => [KnowledgeTree] => [Services]
 					<br/>
 					Click [Install Services] 
 					<br/>
