@@ -25,6 +25,7 @@ body
 {
     /*margin-top: 15px;*/
     margin-left: 10px;
+    margin-right: 25px;
 }
 
 .copyright {
@@ -1289,7 +1290,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     width: 47%;
     margin-top: 0;
     margin-left: 0;
-    padding-right: 2em;
+    padding-right: 3em;
     float: left;
     padding-bottom: 2em;
     height: 100%;
