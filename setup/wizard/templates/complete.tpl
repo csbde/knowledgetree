@@ -40,6 +40,8 @@
 				<?php if(WINDOWS_OS) { ?>
 					[START MENU] => [Programs] => [KnowledgeTree]
 					<br/>
+					Click [Install Services] 
+					<br/>
 					Click [Start Services] 
 					<br/>
 					<br/>
