@@ -156,6 +156,8 @@ class migrateServices extends Step
 	* @return boolean
 	*/
     private function doRun() {
+    	$installation = $this->getDataFromSession("installation"); // Get installation directory
+    	$this->conf = $installation['location'];
 		if(!$this->alreadyUninstalled()) { // Pre-check if services are uninstalled
 			$this->uninstallServices();
 		}

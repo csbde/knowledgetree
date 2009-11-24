@@ -50,10 +50,12 @@
     <?php }
     else if ($action == 'runUpgrade') { ?>
 		<?php if ($backupSuccessful) { ?>
-		<script type="text/javascript">
 		<?php if($migrateCheck) { ?>
-		alert("To complete the upgrade please do the following before continuing:\n\n1. Hard refresh your bowser (CTRL-F5) on first view of the Dashboard.\n\n\nSelect 'Finish' at the bottom of this page to continue.");
+		<script type="text/javascript">
+		alert("To complete the upgrade please do the following before continuing:\n\n1. Hard refresh your browser (CTRL-F5) on first view of the Dashboard.\n\n\nSelect 'Finish' at the bottom of this page to continue.");
+		</script>
 		<?php } else { ?>
+		<script type="text/javascript">
         alert("To complete the upgrade please do the following before continuing:\n\n1. Restart the services as appropriate for your environment.\n\n\nOn first run of your upgraded installaton please do the following:\n\n1. Hard refresh your bowser (CTRL-F5) on first view of the Dashboard.\n2. Enable the new plugins you wish to use.\n\n\nSelect 'Finish' at the bottom of this page to continue.")
     </script>
     	<?php } ?>
