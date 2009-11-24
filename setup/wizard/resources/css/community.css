@@ -1,0 +1,43 @@
+#step_content {
+	min-height: 400px;
+}
+
+#step_content_dependencies {
+	min-height:270px;
+}
+
+#step_content_configuration {
+	min-height:130px;
+}
+
+#step_content_services {
+	min-height:230px;
+}
+
+#step_content_registration {
+	min-height:100px;
+}
+
+#step_content_registration_confirm {
+	min-height:300px;
+}
+
+#step_content_install {
+	min-height:150px;
+}
+
+#step_content_database {
+	min-height:240px;
+}
+
+#step_content_database_confirm {
+	min-height:370px;
+}
+
+#step_content_complete {
+	min-height:340px;
+}
+
+.license_agreement {
+	height:270px;
+}
