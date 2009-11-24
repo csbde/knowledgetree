@@ -49,6 +49,10 @@ class upgradeComplete extends Step {
 	
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
+    	$this->temp_variables['isCE'] = false;
+		$type = $this->util->getVersionType();
+		if($type == "community")
+		 	$this->temp_variables['isCE'] = true;
         $this->doRun();
         $this->storeSilent();
     	return 'landing';
