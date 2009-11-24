@@ -227,6 +227,8 @@ class UpgradeWizard {
 		$response = $this->systemChecks();
 		if($this->util->installationSpecified()) { // Check if the migrator needs to be accessed
 			$this->util->redirect('../wizard/index.php?step_name=install_type');
+		} elseif ($this->util->finishInstall()) { // Check if the installer has completed
+			$this->util->redirect('../../login.php');
 		}
 		if($response === true) {
 			$this->displayUpgrader();

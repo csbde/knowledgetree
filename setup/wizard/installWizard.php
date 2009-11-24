@@ -104,18 +104,6 @@ class InstallWizard {
 	public function __construct(){}
 
 	/**
-	* Check if system has been install
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param none
-	* @return boolean
- 	*/
-	private function isSystemInstalled() {
-		return $this->util->isSystemInstalled();
-	}
-
-	/**
 	* Display the wizard
 	*
 	* @author KnowledgeTree Team
@@ -280,17 +268,18 @@ class InstallWizard {
 		} elseif ($this->getBypass() === "0") {
 			$this->createInstallFile();
 		}
-		if(!$this->isSystemInstalled()) { // Check if the systems not installed
+		if ($this->util->finishInstall()) { // Check if the installer has completed
+			$this->util->redirect('../../login.php');
+		} elseif ($this->util->upgradeInstall()) { // Check if the upgrader needs to be accessed
+				$this->util->redirect('../upgrade/index.php');
+		}
+		if(!$this->util->isSystemInstalled()) { // Check if the systems not installed
 			if($this->util->loginSpecified()) { // Back to wizard from upgrader
 				$this->util->redirect('../../control.php');
 			} elseif($this->util->migrationSpecified()) { // Check if the migrator needs to be accessed
 				$this->util->redirect('../migrate/index.php?');
 			} elseif ($this->util->upgradeSpecified()) { // Check if the upgrader needs to be accessed
 				$this->util->redirect('../upgrade/index.php?action=installer');
-			} elseif ($this->util->finishSpecified()) { // Check if the installer has completed
-				$this->util->redirect('../../login.php');
-			} elseif ($this->util->upgradeInstall()) { // Check if the upgrader needs to be accessed
-				$this->util->redirect('../upgrade/index.php');
 			}
 			$response = $this->systemChecks();
 			if($response === true) {
