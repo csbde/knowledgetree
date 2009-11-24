@@ -184,10 +184,10 @@ class thumbnailGenerator extends BaseProcessor
         $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
         // windows path may contain spaces
         if (stristr(PHP_OS,'WIN')) {
-			$cmd = "\"{$pathConvert}\" -size 200x200 \"{$pdfFile}[0]\" -resize 200x200 \"$thumbnailfile\"";
+			$cmd = "\"{$pathConvert}\" \"{$pdfFile}[0]\" -resize 200x200 \"$thumbnailfile\"";
         }
 		else {
-			$cmd = "{$pathConvert} -size 200x200 {$pdfFile}[0] -resize 200x200 $thumbnailfile";
+			$cmd = "{$pathConvert} {$pdfFile}[0] -resize 200x200 $thumbnailfile";
 		}
 		
 		$result = KTUtil::pexec($cmd);
