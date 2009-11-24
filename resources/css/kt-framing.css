@@ -1218,20 +1218,6 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     text-decoration: none;
 }
 
-.portlet_button a .arrow_download {
-    background: transparent url(../../resources/graphics/download_arrow.gif) center right no-repeat;
-    width: 20px;
-    height: 47px;
-    float: right;
-}
-
-.portlet_button a .arrow_upload {
-    background: transparent url(../../resources/graphics/upload_arrow.gif) center right no-repeat;
-    width: 20px;
-    height: 47px;
-    float: right;
-}
-
 .portlet_button a .big_btn_left {
     background: transparent url(../../resources/graphics/btn_left.gif) top left no-repeat;
     width: 10px;
@@ -1246,14 +1232,21 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     text-align: center;
     vertical-align: middle;
     align: center;
-    width: 89%;
+    width: 80%;
 }
 
 .portlet_button a .big_btn_right {
-    background: transparent url(../../resources/graphics/btn_right.gif) top right no-repeat;
     float: left;
-    width: 10px;
+    width: 25px;
     height: 47px;
+}
+
+.portlet_button a .arrow_upload{
+    background: transparent url(../../resources/graphics/btn_right_up.gif) top right no-repeat;
+}
+
+.portlet_button a .arrow_download{
+    background: transparent url(../../resources/graphics/btn_right_down.gif) top right no-repeat;
 }
 
 .portlet_button a:hover .big_btn_left {
@@ -1264,8 +1257,12 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     background: transparent url(../../resources/graphics/btn_middle_ro.gif) repeat-x;
 }
 
-.portlet_button a:hover .big_btn_right {
-    background: transparent url(../../resources/graphics/btn_right_ro.gif) top right no-repeat;
+.portlet_button a:hover .arrow_upload {
+    background: transparent url(../../resources/graphics/btn_right_ro_up.gif) top right no-repeat;
+}
+
+.portlet_button a:hover .arrow_download {
+    background: transparent url(../../resources/graphics/btn_right_ro_down.gif) top right no-repeat;
 }
 
 
