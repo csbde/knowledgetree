@@ -37,11 +37,20 @@
 			<br/>
 			<?php } ?>
 			<p class="disclaimer">
-			<?php if(WINDOWS_OS) { ?>
-				cd <?php echo "\"".SYSTEM_DIR."\""; ?> <br/>
-				dmsctl.bat install<br/>
-				dmsctl.bat start
-			<?php } else { ?>
+				<?php if(WINDOWS_OS) { ?>
+					[START MENU] => [Programs] => [KnowledgeTree]
+					<br/>
+					Click [Start Services] 
+					<br/>
+					<br/>
+					Alternatively:
+					<br/>
+					Open a command prompt and enter the following:
+					<br/>
+					cd <?php echo "\"".SYSTEM_DIR."\""; ?> <br/>
+					dmsctl.bat install<br/>
+					dmsctl.bat start
+				<?php } else { ?>
 				<?php if ($isCE) { ?>
 					cd /usr/share/knowledgetree-ce<br/>
 				<?php } else { ?>
