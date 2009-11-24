@@ -85,7 +85,6 @@ class migrateComplete extends Step {
 			return 'landing';
 		}
         if($this->next()) {
-        	$this->checkZendMysql();
         	if($this->checkZendMysql()) {
         		return 'binstall';
         	} else {
@@ -133,17 +132,8 @@ class migrateComplete extends Step {
 			if($response['out']) {
 				$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
 			}
-			if($state == "STARTED") {
+			if($state == "STARTED")
 				$running = true;
-    		} else {
-    			$installation = $this->getDataFromSession("database"); // Get installation directory
-    			$dbConf = $installation;
-//    			$this->util->dbUtilities->load($this->dhost, $this->dport, $this->duname, $this->dpassword, $this->dname);
-//    			$res = @mysql_connect(null, 'root', '');
-//    			if($res) {
-//    				$running = true;
-//    			}
-    		}
     	} else {
     		$installation = $this->getDataFromSession("installation"); // Get installation directory
     		$mysqlPid = $installation['location'].DS."mysql".DS."data".DS."mysqld.pid";
@@ -172,7 +162,7 @@ class migrateComplete extends Step {
 			if($response['out']) {
 				$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
 			}
-			if($state == "STARTED")
+			if($state == "STARTED" || $state == "RUNNING")
 				$running = true;
     	} else {
     		//TODO : Read fomr my.cnf file

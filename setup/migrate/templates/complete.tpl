@@ -19,15 +19,9 @@
 		In order to complete the upgrade process please start the Zend Server MySQL service and then click <b>Next</b> to continue (<a href="http://wiki.knowledgetree.com/Web_Based_Migrater#Complete" target="_blank">Click here for help</a>). 
 		<br /><br />
 		<?php if(!empty($errors)) { ?>
-<!--		<span class='<?php //echo $ktmysql['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>-->
-		<?php //echo $ktmysql['name']; ?>
-		<?php //echo $ktmysql['msg']; ?>
-<!--		<br /><br />-->
-		<?php //if (WINDOWS_OS) { ?>
-		<span class='<?php echo $zmysql['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-		<?php echo $zmysql['name']; ?>
-		<?php echo $zmysql['msg']; ?>
-		<?php //} ?>
+			<span class='<?php echo $zmysql['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+			<?php echo $zmysql['name']; ?>
+			<?php echo $zmysql['msg']; ?>
 		<?php } ?>
 	</div>
 <!--    <input class="button_next" type="submit" value="Continue Installation" name="BInstall"/>-->

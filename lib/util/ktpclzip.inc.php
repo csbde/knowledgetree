@@ -117,6 +117,10 @@ class KTPclZip {
 	 */
 	function createZipFile($sFolder) {
 		//Overriding $this->aPaths with specified
+        if (!is_dir($sFolder)) {
+            PEAR::raiseError( sprintf( _kt( "Couldn't create zip file, invalid folder was specified %s " ) , $sFolder ));
+        }
+
 		if (!is_null($sFolder)) {
 			$this->aPaths = $sFolder;
 		}
@@ -139,27 +143,36 @@ class KTPclZip {
 		return $sExportCode;
 	}
 	
-  /*
+
+    /*
      * @params: $sPath folder to start from.
      * @params: $ds directory separator
      */
     static function getExcludePath($sPath, $ds = '/') {
         //Will grab the part of the full path to exclude from the zip contents
 
-		/*
-		 * For windows the pre drive letter needs to be removed for it to work with the pclzip class
-		 */
-		if (stristr(PHP_OS,'WIN')) {
-			$sPath = end(explode(':', $sPath));
-		}
-		
-		//Chopping the last ds to make the keepPath contain an actual folder name
-		$aDir = explode($ds, $sPath);
-		$cutOff = count($aDir);
-		for ($i = 0; $i < $cutOff; $i++) {
-			$excludePath .= $aDir[$i] . '/';
-		}
+        /*
+         * For windows the pre drive letter needs to be removed for it to work with the pclzip class for version 2.5
+         */
+        // Now using pclzip 2.8.2 so no need to strip the drive letter.
+        /*
+        if (stristr(PHP_OS,'WIN')) {
+            $sPath = end(explode(':', $sPath));
+        }
+        */
 
+        //Generating the exclude path : Flexible method (Can set $cutOff = count($aDir) - 1;) to include the parent folder.
+        /*
+        $aDir = explode($ds, $sPath);
+        $cutOff = count($aDir);
+        for ($i = 0; $i < $cutOff; $i++) {
+            //echo $aDir[$i] . "\n";
+            $excludePath .= $aDir[$i] . '/';
+        }
+		*/
+
+    	$excludePath = str_replace('\\', '/', $sPath); 
+    	
         return $excludePath;
     }
     

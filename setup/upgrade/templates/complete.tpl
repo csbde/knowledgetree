@@ -51,5 +51,6 @@
 		</a>
 	</div>
 	</div>
-	<a href="../../login.php" class="back button_next" style="width:50px;" onclick="javascript:{w.clearSessions();}">Finish</a>
+<!--	<a href="../../login.php" class="back button_next" style="width:50px;" onclick="javascript:{w.clearSessions();}">Finish</a>-->
+		<input type="submit" name="Next" value="Finish" class="button_next"/>
 </form>

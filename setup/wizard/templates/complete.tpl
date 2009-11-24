@@ -199,11 +199,11 @@
         	$redirect = "http://".$_SERVER['SERVER_NAME'].":$port".$root_url."/admin.php";
 	?>
 	<?php if($migrate_check) { ?>
-		<a href="../upgrade/index.php" class="back button_next" style="width:30px;" onclick="javascript:{w.clearSessions();}">Next</a>
-<!--		<input type="submit" name="Upgrade" value="Next" class="button_next"/>-->
+<!--		<a href="../upgrade/index.php" class="back button_next" style="width:30px;" onclick="javascript:{w.clearSessions();}">Next</a>-->
+		<input type="submit" name="Upgrade" value="Next" class="button_next"/>
     <?php } else { ?>
-    	<a href="../../login.php" class="back button_next" style="width:50px;" onclick="javascript:{w.clearSessions();}">Finish</a>
-<!--		<input type="submit" name="Finish" value="Finish" class="button_next"/>-->
+<!--    	<a href="../../login.php" class="back button_next" style="width:50px;" onclick="javascript:{w.clearSessions();}">Finish</a>-->
+		<input type="submit" name="Next" value="Finish" class="button_next"/>
     <?php } ?>
 </form>
 <?php if (AJAX) { echo $html->js('form.js'); } ?>

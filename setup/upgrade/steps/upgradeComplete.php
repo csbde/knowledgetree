@@ -55,6 +55,7 @@ class upgradeComplete extends Step {
 		 	$this->temp_variables['isCE'] = true;
         $this->doRun();
         $this->storeSilent();
+        $this->util->deleteMigrateFile();
     	return 'landing';
     }
     

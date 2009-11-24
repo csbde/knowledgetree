@@ -161,7 +161,7 @@ class migrateServices extends Step
 		if(!$this->alreadyUninstalled()) { // Pre-check if services are uninstalled
 			$this->uninstallServices();
 		}
-		$this->uninstallServices();
+		//$this->uninstallServices();
 		return $this->checkServices();
     }
     	
@@ -196,8 +196,8 @@ class migrateServices extends Step
 			if($response['out']) {
 				$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
 			}
-			if($state == "STARTED") {
-				return true;
+			if($state == "STARTED" || $state == 'RUNNING') {
+				$running = true;
 			}
     	} else {
     		$installation = $this->getDataFromSession("installation"); // Get installation directory
@@ -205,10 +205,7 @@ class migrateServices extends Step
     		if(file_exists($mysqlPid))
     			$running = true;
     	}
-    	if(file_exists($running)) {
-    		return true;
-    	}
-    	return false;
+		return $running;
     }
     
     /**
@@ -217,6 +214,7 @@ class migrateServices extends Step
      */
     private function uninstallServices() {
 		$func = OS."Stop";
+		//echo "$func";
 		$this->$func();
 
 		$this->shutdown();
@@ -240,12 +238,18 @@ class migrateServices extends Step
      *
      */
     private function windowsStop() {
-    	$cmd = "sc stop KTLucene; sc delete KTLucene";
-    	$this->util->pexec($cmd);
-    	$cmd = "sc stop KTScheduler; sc delete KTScheduler";
-    	$this->util->pexec($cmd);
-    	$cmd = "sc stop KTOpenoffice; sc delete KTOpenoffice";
-    	$this->util->pexec($cmd);
+    	$cmd = "sc stop KTScheduler";
+    	$response = $this->util->pexec($cmd);
+    	$cmd = "sc stop KTLucene";
+    	$response = $this->util->pexec($cmd);
+    	$cmd = "sc stop KTOpenoffice";
+    	$response = $this->util->pexec($cmd);
+    	$cmd = "sc delete KTOpenoffice";
+    	$response = $this->util->pexec($cmd);
+    	$cmd = "sc delete KTLucene";
+    	$response = $this->util->pexec($cmd);
+    	$cmd = "sc delete KTScheduler";
+    	$response = $this->util->pexec($cmd);
     }
     
     /**
@@ -268,6 +272,7 @@ class migrateServices extends Step
     private function shutdownMysql() {
 		$cmd = "sc stop {$this->mysqlServiceName}";
 		$response = $this->util->pexec($cmd);
+		
     }
     
     /**
@@ -280,11 +285,10 @@ class migrateServices extends Step
     		$serv = $this->util->loadInstallService($className);
     		$serv->load();
     		$sStatus = $serv->status();
-    		if($sStatus == 'STARTED') {
+    		if($sStatus == 'STARTED' || $sStatus == 'RUNNING' || $sStatus == 'STOPPED') {
     			$state = 'cross';
     			$this->error[] = "Service : {$serv->getName()} could not be uninstalled.<br/>";
     			$this->serviceCheck = 'cross';
-    			//$stopmsg = OS.'GetStopMsg';
     			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service Running";
     		} else {
     			$state = 'tick';
@@ -315,8 +319,8 @@ class migrateServices extends Step
 			if($response['out']) {
 				$state = preg_replace('/^STATE *\: *\d */', '', trim($response['out'][3])); // Status store in third key
 			}
-			if($state == "STARTED") {
-				return true;
+			if($state == "STARTED" || $state == "RUNNING") {
+				$running = true;
 			}
     	} else {
     		$installation = $this->getDataFromSession("installation"); // Get installation directory
