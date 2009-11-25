@@ -160,7 +160,7 @@ class migrateInstallation extends step
     public function checkVersion() {
 		if($this->foundVersion < $this->supportedVersion) {
 			$this->versionError = true;
-			$this->error[] = "KT installation needs to be 3.6.1 or higher";
+			$this->error[] = "KnowledgeTree installation needs to be 3.6.1 or higher";
 			return false;
 		}
 
@@ -173,7 +173,7 @@ class migrateInstallation extends step
 			$foundVersion = file_get_contents($verFile);
 			return $foundVersion;
     	} else {
-			$this->error[] = "KT installation version not found";
+			$this->error[] = "KnowledgeTree installation version not found";
     	}
 
 		return false;
@@ -214,10 +214,10 @@ class migrateInstallation extends step
 
 						return true;
 					}
-					$this->error[] = "KT installation configuration file empty";
+					$this->error[] = "KnowledgeTree installation configuration file empty";
 				}
 			} else {
-				$this->error[] = "KT installation configuration file not found";
+				$this->error[] = "KnowledgeTree installation configuration file not found";
 			}
 		} else {
 			$this->error[] = "Please Enter a Location";
