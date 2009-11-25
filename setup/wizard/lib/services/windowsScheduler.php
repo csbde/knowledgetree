@@ -79,6 +79,8 @@ class windowsScheduler extends windowsService {
 
 	public $hrname = "KnowledgeTree Scheduler Service. (KTScheduler)";
 	
+	public $description = "KnowledgeTree Scheduler Service.";
+	
 	/**
 	* Load defaults needed by service
 	*
@@ -180,7 +182,7 @@ class windowsScheduler extends windowsService {
 	}
 	
 	private function setOptions() {
-		$this->options = "-displayname {$this->name} -start auto -binary \"{$this->getSchedulerScriptPath()}\" -headless -invisible ";
+		$this->options = "-displayname {$this->name} -description {$this->description} -start auto -binary \"{$this->getSchedulerScriptPath()}\" -headless -invisible ";
 	}
 	
 	private function writeTaskRunner() {

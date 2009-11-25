@@ -133,6 +133,8 @@ class windowsLucene extends windowsService {
 	public $name = "KTLucene";
 
 	public $hrname = "KnowledgeTree Indexer Service. (KTLucene)";
+
+	public $description = "KnowledgeTree Indexer Service.";
 	
 	/**
 	* Load defaults needed by service
@@ -424,7 +426,7 @@ class windowsLucene extends windowsService {
 			$luceneSource = $this->getLuceneSource();
 			$luceneDir = $this->getluceneDir();
 //			if($luceneExe && $luceneSource && $luceneDir) {
-				$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
+				$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()." -description "."\"".$this->description."\""."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
             	if(DEBUG) {
             		echo "$cmd<br/>";
             		return false;
