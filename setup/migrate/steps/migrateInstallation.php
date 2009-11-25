@@ -128,7 +128,7 @@ class migrateInstallation extends step
 
     public function detectInstallation() {
     	if(WINDOWS_OS) {
-    		$knownWindowsLocations = array("C:\Program Files\ktdms"=>"C:\Program Files\ktdms\knowledgeTree\config\config-path","C:\Program Files x86\ktdms"=>"C:\Program Files x86\ktdms\knowledgeTree\config\config-path","C:\ktdms"=>"C:\ktdms\knowledgeTree\config\config-path");
+    		$knownWindowsLocations = array("C:\Program Files\ktdms"=>"C:\Program Files\ktdms\knowledgeTree\config\config-path","C:\Program Files x86\ktdms"=>"C:\Program Files (x86)\ktdms\knowledgeTree\config\config-path","C:\ktdms"=>"C:\ktdms\knowledgeTree\config\config-path");
     		foreach ($knownWindowsLocations as $loc=>$configPath) {
     			if(file_exists($configPath))
     				$this->location = $loc;
@@ -244,14 +244,8 @@ class migrateInstallation extends step
 		$this->ktSettings = array('fileSystemRoot'=> $froot);
     	$varDir = $froot.DS.'var';
 		$this->urlPaths = array(
-//									array('name'=> 'Var Directory', 'path'=> $varDir),
-//									array('name'=> 'Log Directory', 'path'=> $varDir.DS.'log'),
 									array('name'=> 'Document Root', 'path'=> $froot.DS.'Documents'),
-//									array('name'=> 'Temporary Directory', 'path'=> $varDir.DS.'tmp'),
-//									array('name'=> 'Cache Directory', 'path'=> $varDir.DS.'cache'),
-//									array('name'=> 'Upload Directory', 'path'=> $varDir.DS.'uploads'),
     	);
-//		$this->urlPaths = array();
     	$this->dbSettings['dbPort'] = $this->util->getPort($this->location); // Add Port
     	$this->temp_variables['urlPaths'] = $this->urlPaths;
     	$this->temp_variables['ktSettings'] = $this->ktSettings;
