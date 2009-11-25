@@ -38,14 +38,18 @@
 			<?php } ?>
 			<p class="disclaimer">
 				<?php if(WINDOWS_OS) { ?>
-					[START MENU] => [Programs] => [KnowledgeTree] => [Services]
+					<b>Using shortcuts:</b>
 					<br/>
-					Click [Install Services] 
+					[START MENU] => [Programs] => [KnowledgeTree 3.7.x] => [services]
 					<br/>
-					Click [Start Services] 
+					Click [Install Services]
+					<br/>
+					[START MENU] => [Programs] => [KnowledgeTree 3.7.x] => [services]
+					<br/>
+					Click [Start Services]
 					<br/>
 					<br/>
-					Alternatively:
+					<b>Alternatively:</b>
 					<br/>
 					Open a command prompt and enter the following:
 					<br/>
