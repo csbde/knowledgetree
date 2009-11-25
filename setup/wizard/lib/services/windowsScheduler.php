@@ -182,7 +182,7 @@ class windowsScheduler extends windowsService {
 	}
 	
 	private function setOptions() {
-		$this->options = "-displayname {$this->name} -description {$this->description} -start auto -binary \"{$this->getSchedulerScriptPath()}\" -headless -invisible ";
+		$this->options = "-displayname \"{$this->name}\" -description \"{$this->description}\" -start auto -binary \"{$this->getSchedulerScriptPath()}\" -headless -invisible ";
 	}
 	
 	private function writeTaskRunner() {
@@ -235,36 +235,9 @@ class windowsScheduler extends windowsService {
 		$state = $this->status();
 		if($state == '') {
 			$this->writeTaskRunner();
-            //if (function_exists('win32_create_service')) { // TODO what if it does not exist? check how the dmsctl.bat does this
-//            	if(DEBUG) {
-//            		echo '<pre>';
-//            		print_r(array('service' => $this->name, 'display' => $this->name, 'path' => $this->getSchedulerScriptPath()));
-//    	            echo '</pre>';
-//    	            echo '<pre>';
-//    	            print_r(file_get_contents($this->getSchedulerScriptPath()));
-//    	            echo '</pre>';
-//            		return ;
-//            	}
-            	/*
-    			$response = win32_create_service(array(
-    	            'service' => $this->name,
-    	            'display' => $this->name,
-    	            'path' => $this->getSchedulerScriptPath()
-    	            ));
-    			return $response;
-    			*/
-            //} else { // Attempt to use the winserv
-            	// TODO: Add service using winserv
-            	$this->setWinservice();
-            	$this->setOptions();
-            	$cmd = "\"{$this->winservice}\" install $this->name $this->options";
-            	if(DEBUG) {
-            		echo "$cmd<br/>";
-            		return false;
-            	}
-            	//$response = $this->util->pexec($cmd);
-            	//return $response;
-            //}
+        	$this->setWinservice();
+        	$this->setOptions();
+        	$cmd = "\"{$this->winservice}\" install $this->name $this->options";
             $this->writeSchedulerInstall($cmd);
 		}
 		return $state;
@@ -287,7 +260,7 @@ class windowsScheduler extends windowsService {
 	}
 	
 	public function getStopMsg($installDir) {
-		return "";//"Execute from command prompt : $installDir/dmsctl.bat stop";
+		return "";
 	}
 }
 ?>

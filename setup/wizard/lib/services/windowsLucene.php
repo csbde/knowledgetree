@@ -421,23 +421,15 @@ class windowsLucene extends windowsService {
  	*/
 	public function install() {
 		$state = $this->status();
-//		if($state == '') {
 			$luceneExe = $this->getLuceneExe();
 			$luceneSource = $this->getLuceneSource();
 			$luceneDir = $this->getluceneDir();
-//			if($luceneExe && $luceneSource && $luceneDir) {
-				$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()." -description "."\"".$this->description."\""."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
-            	if(DEBUG) {
-            		echo "$cmd<br/>";
-            		return false;
-            	}
-            	$this->writeLuceneInstall($cmd);
-				//$response = $this->util->pexec($cmd);
-//				return $response;
-//			}
-			return $state;
-//		}
-
+			$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()."\" -description "."\"".$this->description."\""." \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
+        	if(DEBUG) {
+        		echo "$cmd<br/>";
+        		return false;
+        	}
+        	$this->writeLuceneInstall($cmd);
 		return $state;
 	}
 
