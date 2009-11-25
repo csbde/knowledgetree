@@ -610,3 +610,12 @@ td.dir_description {
 .facebook {
 
 }
+
+.connect {
+	float:none;
+	padding-bottom:0;
+	padding-left:560px;
+	padding-right:10px;
+	padding-top:10px;
+	position:static;
+}

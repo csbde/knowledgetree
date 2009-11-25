@@ -63,7 +63,7 @@
 	    <table>
 	    	<tr>
 	    		<td width="10px"> <label for='dhost'>Host: </label> </td>
-	    		<td width="205px"> <div id="tooltips" title="The address of the server where the database is located, if different to the current server">&nbsp;</div> </td>
+	    		<td width="10px"> <div id="tooltips" title="The address of the server where the database is located, if different to the current server">&nbsp;</div> </td>
 	    		<td width="10px"> <input type="text" value="<?php echo $dhost?>" id="dhost" name="dhost" size='<?php echo $input_size; ?>' class="textinput"/> </td>
 	    	</tr>
 	    	<tr>

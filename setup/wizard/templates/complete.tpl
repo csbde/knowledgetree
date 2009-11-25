@@ -13,16 +13,7 @@
 	</div>
 	<br/>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
-	<div style="padding: 0pt 0pt 40px 15px; float: right;">
-	<a class="twitter" href="http://www.twitter.com/knowledgetreesw" style="color:#FFFFFF;" target="_blank">
-		<?php echo $html->image('twitterbutton.png'); ?>
-	</a>
-	<br/>
-	<br/>
-	<a class="facebook" href="http://www.facebook.com/pages/KnowledgeTree-Document-Management-Made-Simple/59248880725" style="color:#FFFFFF;" target="_blank">
-		<?php echo $html->image('facebookbutton.png'); ?>
-	</a>
-	</div>
+
 	<?php if(!$servicesValidation) { ?>
 		<?php if(!$migrate_check) { ?>
 			<h3>Services</h3>
@@ -191,6 +182,16 @@
 		</div>
 		<?php } ?>
 		<?php } ?>
+	<div class="connect">
+		<a class="twitter" href="http://www.twitter.com/knowledgetreesw" style="color:#FFFFFF;" target="_blank">
+			<?php echo $html->image('twitterbutton.png'); ?>
+		</a>
+		<br/>
+		<br/>
+		<a class="facebook" href="http://www.facebook.com/pages/KnowledgeTree-Document-Management-Made-Simple/59248880725" style="color:#FFFFFF;" target="_blank">
+			<?php echo $html->image('facebookbutton.png'); ?>
+		</a>
+	</div>
 	</div>
 	<?php
         $script = $_SERVER['SCRIPT_NAME'];
