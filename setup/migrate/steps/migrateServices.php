@@ -285,11 +285,16 @@ class migrateServices extends Step
     		$serv = $this->util->loadInstallService($className);
     		$serv->load();
     		$sStatus = $serv->status();
-    		if($sStatus == 'STARTED' || $sStatus == 'RUNNING' || $sStatus == 'STOPPED') {
+    		if($sStatus == 'STARTED' || $sStatus == 'RUNNING') {
     			$state = 'cross';
     			$this->error[] = "Service : {$serv->getName()} could not be uninstalled.<br/>";
     			$this->serviceCheck = 'cross';
     			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service Running";
+    		} elseif ($sStatus == 'STOPPED') { 
+    			$state = 'cross';
+    			$this->error[] = "Service : {$serv->getName()} could not be uninstalled.<br/>";
+    			$this->serviceCheck = 'cross';
+    			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service Stopped, please uninstall service";
     		} else {
     			$state = 'tick';
     			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service has been uninstalled";
