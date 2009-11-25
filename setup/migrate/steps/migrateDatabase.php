@@ -152,6 +152,8 @@ class migrateDatabase extends Step
 			if(!empty($fileContents)) {
 				$this->sqlDumpFile = realpath($sqlFile); // Store location of dump
 				return true;
+			} else {
+				unlink($sqlFile);
 			}
 		}
 		$noFile = true;
