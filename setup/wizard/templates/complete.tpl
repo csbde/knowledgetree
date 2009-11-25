@@ -13,16 +13,7 @@
 	</div>
 	<br/>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
-	<div style="padding: 0pt 0pt 40px 15px; float: right;">
-	<a class="twitter" href="http://www.twitter.com/knowledgetreesw" style="color:#FFFFFF;" target="_blank">
-		<?php echo $html->image('twitterbutton.png'); ?>
-	</a>
-	<br/>
-	<br/>
-	<a class="facebook" href="http://www.facebook.com/pages/KnowledgeTree-Document-Management-Made-Simple/59248880725" style="color:#FFFFFF;" target="_blank">
-		<?php echo $html->image('facebookbutton.png'); ?>
-	</a>
-	</div>
+
 	<?php if(!$servicesValidation) { ?>
 		<?php if(!$migrate_check) { ?>
 			<h3>Services</h3>
@@ -38,14 +29,18 @@
 			<?php } ?>
 			<p class="disclaimer">
 				<?php if(WINDOWS_OS) { ?>
-					[START MENU] => [Programs] => [KnowledgeTree] => [Services]
+					<b>Using shortcuts:</b>
 					<br/>
-					Click [Install Services] 
+					[START MENU] => [Programs] => [KnowledgeTree 3.7.x] => [services]
 					<br/>
-					Click [Start Services] 
+					Click [Install Services]
+					<br/>
+					[START MENU] => [Programs] => [KnowledgeTree 3.7.x] => [services]
+					<br/>
+					Click [Start Services]
 					<br/>
 					<br/>
-					Alternatively:
+					<b>Alternatively:</b>
 					<br/>
 					Open a command prompt and enter the following:
 					<br/>
@@ -187,6 +182,16 @@
 		</div>
 		<?php } ?>
 		<?php } ?>
+	<div class="connect">
+		<a class="twitter" href="http://www.twitter.com/knowledgetreesw" style="color:#FFFFFF;" target="_blank">
+			<?php echo $html->image('twitterbutton.png'); ?>
+		</a>
+		<br/>
+		<br/>
+		<a class="facebook" href="http://www.facebook.com/pages/KnowledgeTree-Document-Management-Made-Simple/59248880725" style="color:#FFFFFF;" target="_blank">
+			<?php echo $html->image('facebookbutton.png'); ?>
+		</a>
+	</div>
 	</div>
 	<?php
         $script = $_SERVER['SCRIPT_NAME'];

@@ -5,6 +5,12 @@
 	<div>
 	    Your database has been upgraded to <?php echo $sysVersion; ?>
 	</div>
+	<br/>
+	<div>
+		<a href="http://wiki.knowledgetree.com/Web_Based_Installer#Post_Install" target="_blank">
+			Click Here for help on overcoming post install issues
+		</a>
+	</div>
 	<?php if($migrateCheck) { ?>
 		<br/>
 		<h3>Services</h3>
@@ -20,16 +26,21 @@
 		<?php } ?>
 		<p class="disclaimer">
 		<?php if(WINDOWS_OS) { ?>
-			[START MENU] => [Programs] => [KnowledgeTree] => [Services]
+			<b>Using shortcuts:</b>
 			<br/>
-			Click [Install Services] 
+			[START MENU] => [Programs] => [KnowledgeTree 3.7.x] => [services]
 			<br/>
-			Click [Start Services] 
+			Click [Install Services]
+			<br/>
+			[START MENU] => [Programs] => [KnowledgeTree 3.7.x] => [services]
+			<br/>
+			Click [Start Services]
 			<br/>
 			<br/>
-			Alternatively:
+			<b>Alternatively:</b>
 			<br/>
 			Open a command prompt and enter the following:
+			<br/>
 			<br/>
 			cd <?php echo "\"".SYSTEM_DIR."\""; ?> <br/>
 			dmsctl.bat install<br/>
@@ -47,11 +58,6 @@
 	<?php } else { ?>
 	<br>
 	<?php } ?>
-	<div>
-		<a href="http://wiki.knowledgetree.com/Web_Based_Installer#Post_Install" target="_blank">
-			Click Here for help on overcoming post install issues
-		</a>
-	</div>
 	</div>
 <!--	<a href="../../login.php" class="back button_next" style="width:50px;" onclick="javascript:{w.clearSessions();}">Finish</a>-->
 		<input type="submit" name="Next" value="Finish" class="button_next"/>

@@ -169,6 +169,9 @@ class migrateComplete extends Step {
     		$mysqlPid = "/var/run/mysqld/mysqld.sock";
     		if(file_exists($mysqlPid))
     			$running = true;
+    		$mysqlPid = "/var/run/mysqld/mysqld.pid";
+    		if(file_exists($mysqlPid))
+    			$running = true;
     	}
     	if($running) {
     		$this->temp_variables['zmysql']['class'] = "tick";

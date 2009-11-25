@@ -21,7 +21,7 @@
             <?php }
             else if ($action == 'confirm') {
                 if ($backupStatus) { ?>
-                    <p>We are about to start the upgrade process.<P>
+                    <p>We are about to start the upgrade process. Are you sure you want to proceed with the upgrade process?<P>
                 <?php }
                 else { ?>
                     <p><font color="Red">Please ensure that you have made a backup before continuing with the upgrade process.</font><p>
