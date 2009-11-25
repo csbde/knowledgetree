@@ -75,7 +75,7 @@
 		</table>
 		<?php if ($serviceCheck != 'tick') { ?>
 			<br/>
-			<p class=\"description\">Click <b>Next</b> if deactivating the above services.</p>
+			<p class=\"description\">Click <b>Next</b> if the above services are deactivated .</p>
 		<?php } ?>
 		<?php if($silent) { ?>
 			</div>
