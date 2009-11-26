@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -54,6 +54,11 @@ class IndexErrorsDispatcher extends KTAdminDispatcher {
 
 		//Number of items on a page
 		$itemsPerPage = 50;
+		$pageNum = 1;
+
+        if(isset($_REQUEST['itemsPerPage'])){
+            $itemsPerPage = $_REQUEST['itemsPerPage'];
+        }
 
         //registerTypes registers the mime types and populates the needed tables.
         $indexer = Indexer::get();
@@ -128,6 +133,11 @@ class IndexErrorsDispatcher extends KTAdminDispatcher {
 			if(isset($_REQUEST['pageValue']))
 			{
 				$pageNum = (int)$_REQUEST['pageValue'];
+
+                if($pageNum > $pages){
+                    $pageNum = $pages;
+                }
+
 				$start = (($pageNum-1)*$itemsPerPage)-1;
 				$limit = $start+$itemsPerPage;
 				for($i = $start; $i <= $limit; $i++){
@@ -145,13 +155,18 @@ class IndexErrorsDispatcher extends KTAdminDispatcher {
 			}
         }
 
+        $config = KTConfig::getSingleton();
+        $rootUrl = $config->get('KnowledgeTree/rootUrl');
+
         $oTemplate->setData(array(
             'context' => $this,
             'pageList' => $aPages,
             'pageCount' => $pages,
+            'pageNum' => $pageNum,
             'itemCount' => $items,
             'itemsPerPage' => $itemsPerPage,
-            'indexErrors' => $aIndexList
+            'indexErrors' => $aIndexList,
+            'root_url' => $rootUrl
 
         ));
         return $oTemplate;
