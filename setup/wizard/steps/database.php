@@ -638,17 +638,20 @@ class database extends Step
 			$this->error['con'] = "Could not populate schema ";
 		}
 		$this->writeBinaries();
-		$conf = $this->util->getDataFromSession('configuration');
-    	$port = $conf['server']['port'];
-		$iserverPorts = 'UPDATE config_settings SET value = "'.$port.'" where group_name = "server" and item IN("internal_server_port", "server_port");'; // Update internal server port
+		$this->addServerPort();
     	$this->util->dbUtilities->query($iserverPorts);
-		// ensure a guid was generated and is stored
-		$this->util->getSystemIdentifier();
+		$this->util->getSystemIdentifier(); // ensure a guid was generated and is stored
 		$this->reBuildPaths();
 		
 		return true;
     }
 
+    private function addServerPort() {
+		$conf = $this->util->getDataFromSession('configuration');
+    	$port = $conf['server']['port'];
+		$iserverPorts = 'UPDATE config_settings SET value = "'.$port.'" where group_name = "server" and item IN("internal_server_port", "server_port");'; // Update internal server port    	
+    }
+    
 	/**
 	* Create database
 	*
@@ -771,9 +774,7 @@ class database extends Step
     	$this->parse_mysql_dump($sqlFile);
     	$dropPluginHelper = "TRUNCATE plugin_helper;"; // Remove plugin helper table
     	$this->util->dbUtilities->query($dropPluginHelper);
-    	$conf = $this->util->getDataFromSession('configuration');
-    	$port = $conf['server']['port'];
-		$iserverPorts = 'UPDATE config_settings SET value = "'.$port.'" where group_name = "server" and item IN("internal_server_port", "server_port");'; // Update internal server port
+		$this->addServerPort();
     	$this->util->dbUtilities->query($iserverPorts);
     	$updateExternalBinaries = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "externalBinary";'; // Remove references to old paths
     	$this->util->dbUtilities->query($updateExternalBinaries);
