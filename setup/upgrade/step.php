@@ -467,7 +467,7 @@ class Step
 			$foundVersion = file_get_contents($verFile);
 			return $foundVersion;
     	} else {
-			$this->error[] = "KT installation version not found";
+			$this->error[] = "KnowledgeTree installation version not found";
     	}
 
 		return false;

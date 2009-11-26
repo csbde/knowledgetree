@@ -146,18 +146,6 @@ class UpgradeWizard {
 	}
 	
 	/**
-	* Create upgrade file
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param none
-	* @return void
- 	*/
-	private function createUpgradeFile() {
-		touch(SYSTEM_DIR.'var'.DS.'bin'.DS."upgrade.lock");
-	}
-	
-	/**
 	* Remove upgrade file
 	*
 	* @author KnowledgeTree Team
@@ -222,8 +210,6 @@ class UpgradeWizard {
  	*/
 	public function dispatch() {
 		$this->load();
-        // is this necessary?
-    	$this->createUpgradeFile();
 		$response = $this->systemChecks();
 		if($this->util->installationSpecified()) { // Check if the migrator needs to be accessed
 			$this->util->redirect('../wizard/index.php?step_name=install_type');

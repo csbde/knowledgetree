@@ -400,20 +400,6 @@ class Upgrader {
     	for ($i=1; $i< count($steps)+1; $i++) {
     		$this->_upgradeHelper($steps[$i]);
     	}
-
-    	$this->_completeUpgrade();
-    }
-
-	/**
-	* Complete upgrade cleanup process
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access private
-	* @return void
-	*/
-    private function _completeUpgrade() {
-    	touch("upgrade");
     }
 
 	/**
