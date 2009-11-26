@@ -639,7 +639,6 @@ class database extends Step
 		}
 		$this->writeBinaries();
 		$this->addServerPort();
-    	$this->util->dbUtilities->query($iserverPorts);
 		$this->util->getSystemIdentifier(); // ensure a guid was generated and is stored
 		$this->reBuildPaths();
 		
@@ -648,8 +647,9 @@ class database extends Step
 
     private function addServerPort() {
 		$conf = $this->util->getDataFromSession('configuration');
-    	$port = $conf['server']['port'];
+    	$port = $conf['server']['port']['value'];
 		$iserverPorts = 'UPDATE config_settings SET value = "'.$port.'" where group_name = "server" and item IN("internal_server_port", "server_port");'; // Update internal server port    	
+		$this->util->dbUtilities->query($iserverPorts);
     }
     
 	/**
