@@ -878,7 +878,7 @@ class InstallUtil {
 			return $type;
     	}
 
-		return false;
+		return "community";
     }
 
    /**
