@@ -179,7 +179,7 @@ class unixScheduler extends unixService {
 	function start() {
 		// TODO : Write sh on the fly? Not sure the reasoning here
 		$source = $this->getSchedulerSourceLoc();
-		$this->writeSchedulerTask();
+//		$this->writeSchedulerTask();
 		$logFile = "/dev/null";
 //		@unlink($logFile);
 		if($source) { // Source
