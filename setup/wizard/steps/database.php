@@ -638,6 +638,7 @@ class database extends Step
 			$this->error['con'] = "Could not populate schema ";
 		}
 		$this->writeBinaries();
+		$conf = $this->util->getDataFromSession('configuration');
     	$port = $conf['server']['port'];
 		$iserverPorts = 'UPDATE config_settings SET value = "'.$port.'" where group_name = "server" and item IN("internal_server_port", "server_port");'; // Update internal server port
     	$this->util->dbUtilities->query($iserverPorts);
