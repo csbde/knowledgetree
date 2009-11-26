@@ -16,13 +16,30 @@ INSTALL_PATH=`pwd`
 JAVABIN=/usr/bin/java
 ZEND_DIR=/usr/local/zend
 
+# exits if the UID is not 0 [root]
+check_root_privileges()
+{
+    ID="id -u"
+        MYUID=`$ID 2> /dev/null`
+	    if [ ! -z "$MYUID" ]; then
+	           if [ $MYUID != 0 ]; then
+		           echo "You need root privileges to run this script!";
+			   exit 1
+		   fi
+	    else
+		echo "Could not detect UID";
+		exit 1
+	   fi
+}
+
+
 if [ -f /etc/zce.rc ];then
     . /etc/zce.rc
 else
     echo "/etc/zce.rc doesn't exist!"
     exit 1;
 fi
-
+check_root_privileges
 
 # OpenOffice
 SOFFICEFILE=soffice
