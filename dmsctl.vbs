@@ -5,7 +5,7 @@
 '
 
 ' Service Name Consts
-Const KTOFFICE = "KTOpenOffice"
+Const KTOFFICE = "KTOpenoffice"
 Const KTSCHEDULER = "KTScheduler"
 Const KTLUCENE = "KTLucene"
 
@@ -56,23 +56,23 @@ For Each objOperatingSystem in colOperatingSystems
 Next
 
 Public Function isWindowsVista()
-	isWin = false
+	isWindowsVista = false
 	If left(currOS, 19) = "Microsoft Windows Vista" Then
-	    isWin = TRUE
+	    isWindowsVista = TRUE
 	End If
 End Function
 
 Public Function isWindows7()
-	isWin = false
+	isWindows7 = false
 	If left(currOS, 19) = "Microsoft Windows 7" Then
-	    isWin = TRUE
+	    isWindows7 = TRUE
 	End If
 End Function
 
 Public Function isWindows2008()
-	isWin = false
-	If left(currOS, 19) = "Microsoft Windows 2008" Then
-	    isWin = TRUE
+	isWindows2008 = false
+	If mid(currOS, 27, 42) = "2008 Enterprise" Then
+	    isWindows2008 = TRUE
 	End If
 End Function
 
@@ -91,7 +91,7 @@ End Sub
 dim objArgs, errMsg, result, strUsage, isSuccess
 
 strUsage = "USAGE:" &_
-"dmsctl.bat <start|stop|restart|install|uninstall> [servicename]" & vbNewLine &_
+"dmsctl.vbs <start|stop|restart|install|uninstall> [servicename]" & vbNewLine &_
 vbNewLine &_
 "help        - this screen " & vbNewLine &_
 "start       - start the services" & vbNewLine &_
@@ -652,13 +652,12 @@ End Sub
 
 ' Event logging only works on Server 2003, 2000 and XP
 Public Sub logEvent(ByVal strMessage)
-	
-	If (NOT isWindowsVista() AND NOT isWindows7 AND NOT isWindows2008) Then 
-		Const EVENT_SUCCESS = 0
-		Set objShell = Wscript.CreateObject("Wscript.Shell")
-		objShell.LogEvent EVENT_SUCCESS, strMessage
-	End If
-	
+    ' Disabled until Windows Vista detection has been tested.
+	'If (NOT isWindowsVista() AND NOT isWindows7() AND NOT isWindows2008()) Then 
+	'	Const EVENT_SUCCESS = 0
+	'	Set objShell = Wscript.CreateObject("Wscript.Shell")
+	'	objShell.LogEvent EVENT_SUCCESS, strMessage
+	'End If
 End Sub
 
 ' Event logging only works on Server 2003, 2000 and XP
