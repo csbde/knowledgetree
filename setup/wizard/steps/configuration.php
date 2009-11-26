@@ -247,10 +247,12 @@ class configuration extends Step
     public function doRun($edit = false)
     {
         $server = $this->getServerInfo();
-        if(!$edit) $this->temp_variables['server'] = $server;
+        if(!$edit || $this->util->isMigration()) 
+        	$this->temp_variables['server'] = $server;
 
         $paths = $this->getPathInfo($server['file_system_root']['value']);
-        if(!$edit) $this->temp_variables['paths'] = $paths;
+        if(!$edit || $this->util->isMigration())
+        	$this->temp_variables['paths'] = $paths;
 
         // Rewrite file system root
         if(!$this->fpath) {
@@ -432,13 +434,15 @@ class configuration extends Step
     {
         if(isset($this->temp_variables['paths'])) {
         	if ($this->util->isMigration()) { // Check if its an upgrade
-        		$this->readInstallation(); // Read values from config.ini of other installation
+        		$this->readConfigPath(); // Read contents of config-path file as only var Documents are used of old stack
+        		$this->readInstallation(); // Read values from config.ini of other installation and overwrite config-path's
         		$dirs = $this->getFromConfigPath(); // Store contents
         	} else {
         		$dirs = $this->temp_variables['paths']; // Pull from temp
         	}
         } else {
         	if ($this->util->isMigration()) { // Check if its an upgrade
+        		$this->readConfigPath(); // Read contents of config-path file as only var Documents are used of old stack
         		$this->readInstallation(); // Read values from config.ini of other installation
         	} else {
         		$this->readConfigPath(); // Read contents of config-path file
@@ -455,13 +459,13 @@ class configuration extends Step
             }
 			if(WINDOWS_OS)
             	$path = preg_replace('/\//', '\\',$path);
-            	$dirs[$key]['path'] = $path;
-            	$path = $class = strtolower(substr($path,0,1)).substr($path,1); // Damn you windows
-            	if(isset($dir['file'])) {
-            		$class = $this->util->checkPermission($path, false, true);
-            	} else {
-            		$class = $this->util->checkPermission($path, $dir['create']);
-            	}
+        	$dirs[$key]['path'] = $path;
+        	$path = $class = strtolower(substr($path,0,1)).substr($path,1); // Damn you windows
+        	if(isset($dir['file'])) {
+        		$class = $this->util->checkPermission($path, false, true);
+        	} else {
+        		$class = $this->util->checkPermission($path, $dir['create']);
+        	}
 			if(isset($class['msg'])) {
 				if($class['class'] != 'tick') {
 					$this->temp_variables['paths_perms'] = $class['class'];
