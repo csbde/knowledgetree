@@ -104,6 +104,14 @@ class install extends step
     public function installStep()
     {
 		$this->callHome();
+		// copy indexing directory if this is a migration
+		$this->setDataFromSession();
+		if ($this->util->isMigration()) {
+			$migrateSessionData = $this->getDataFromPackage('migrate', 'installation'); 
+			$src = $migrateSessionData['location'] . DS . 'var' . DS .  'indexes';
+			$dst = SYSTEM_DIR . 'var'  . DS . 'indexes';
+			$this->util->copyDirectory($src, $dst);
+		}
     }
 
     /**

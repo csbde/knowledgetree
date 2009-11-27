@@ -20,7 +20,8 @@
 		<br/>
 		<br/>
 		<?php } else { ?>
-		To start the services, execute the dmsctl.bat batch file in the KnowledgeTree directory from a command prompt, run as administrator.
+			To start the services, using the instructions below:
+<!--			execute the dmsctl.bat batch file in the KnowledgeTree directory from a command prompt, run as administrator.-->
 		<br/>
 		<br/>
 		<?php } ?>
@@ -30,11 +31,11 @@
 			<br/>
 			[START MENU] => [Programs] => [KnowledgeTree 3.7.x] => [services]
 			<br/>
-			Click [Install Services]
+			Right-Click and run [Install Services] as administrator
 			<br/>
 			[START MENU] => [Programs] => [KnowledgeTree 3.7.x] => [services]
 			<br/>
-			Click [Start Services]
+			Right-Click and run [Start Services] as administrator
 			<br/>
 			<br/>
 			<b>Alternatively:</b>
