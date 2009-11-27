@@ -219,6 +219,9 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 		}
 		$filename = str_replace('\\','/',$filename);
 
+		/*
+		// Removing the unzip command as the whole document gets unzipped at the start
+
 		$cmd = '"' .$this->unzip . '"' . ' ' . str_replace(
 			array('{source}','{part}', '{target_dir}'),
 			array($this->sourcefile, $filename,$this->openxml_dir), $this->unzip_params);
@@ -228,6 +231,7 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 			$this->output = _kt('Failed to execute command: ') . $cmd;
 			return false;
 		}
+		*/
 
 		$filename = $this->openxml_dir . "/$filename";
 		if (!file_exists($filename))
