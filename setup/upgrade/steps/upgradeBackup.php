@@ -208,7 +208,7 @@ class upgradeBackup extends Step {
         $prefix = '';
         if (!WINDOWS_OS)
         {
-            $prefix .= "./";
+            $prefix .= "";//$prefix .= "./";
         }
     
         if (@stat($dbSocket) !== false)
