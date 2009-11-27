@@ -421,15 +421,16 @@ class windowsLucene extends windowsService {
  	*/
 	public function install() {
 		$state = $this->status();
-			$luceneExe = $this->getLuceneExe();
-			$luceneSource = $this->getLuceneSource();
-			$luceneDir = $this->getluceneDir();
-			$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
-        	if(DEBUG) {
-        		echo "$cmd<br/>";
-        		return false;
-        	}
-        	$this->writeLuceneInstall($cmd);
+		$this->writeLuceneProperties();
+		$luceneExe = $this->getLuceneExe();
+		$luceneSource = $this->getLuceneSource();
+		$luceneDir = $this->getluceneDir();
+		$cmd = "\"{$luceneExe}\""." -install \"".$this->getName()."\" \"".$this->getJavaJVM(). "\" -Djava.class.path=\"".$luceneSource."\"". " -start ".$this->getLuceneServer(). " -out \"".$this->getLuceneOut()."\" -err \"".$this->getLuceneError()."\" -current \"".$luceneDir."\" -auto";
+    	if(DEBUG) {
+    		echo "$cmd<br/>";
+    		return false;
+    	}
+    	$this->writeLuceneInstall($cmd);
 		return $state;
 	}
 
@@ -470,6 +471,31 @@ class windowsLucene extends windowsService {
 	
 	public function getStopMsg($installDir) {
 		return "";//"Execute from command prompt : $installDir/dmsctl.bat stop";
+	}
+	
+	/**
+	* Write Lucene Service property file
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return string
+	*/
+	private function writeLuceneProperties() {
+		// Check if bin is readable and writable
+		$fileLoc = $this->getluceneDir()."KnowledgeTreeIndexer.properties";
+		$fp = fopen($fileLoc, "w+");
+		$content = "server.port=8875\n";
+		$content .= "server.paranoid=false\n";
+		$content .= "server.accept=127.0.0.1\n";
+		$content .= "server.deny=\n";
+		$conf = $this->util->getDataFromSession('configuration');
+		$varDirectory = $conf['paths']['varDirectory']['path'];
+		$content .= "indexer.directory=$varDirectory\n";
+		$content .= "indexer.analyzer=org.apache.lucene.analysis.standard.StandardAnalyzer\n";
+		fwrite($fp, $content);
+		fclose($fp);
+		chmod($fileLoc, 0644);
 	}
 }
 ?>

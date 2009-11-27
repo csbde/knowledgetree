@@ -255,7 +255,7 @@ class unixLucene extends unixService {
 		$content .= "indexer.analyzer=org.apache.lucene.analysis.standard.StandardAnalyzer\n";
 		fwrite($fp, $content);
 		fclose($fp);
-		@chmod($fileLoc, 0644);
+		chmod($fileLoc, 0644);
 	}
 }
 ?>
