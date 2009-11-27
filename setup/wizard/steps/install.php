@@ -108,8 +108,9 @@ class install extends step
 		$this->setDataFromSession();
 		if ($this->util->isMigration()) {
 			$migrateSessionData = $this->getDataFromPackage('migrate', 'installation'); 
+			$configSessionData = $this->getDataFromSession('configuration'); 
 			$src = $migrateSessionData['location'] . DS . 'var' . DS .  'indexes';
-			$dst = SYSTEM_DIR . 'var'  . DS . 'indexes';
+			$dst = $configSessionData['paths']['varDirectory']['path'] . DS . 'indexes';
 			$this->util->copyDirectory($src, $dst);
 		}
     }
