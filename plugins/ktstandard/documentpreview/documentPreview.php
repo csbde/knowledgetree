@@ -176,7 +176,11 @@ class DocumentPreview {
 
         $sInfo = $this->getMetadata();
 
-        return '<div id="preview" class="preview" onclick="javascript: destroyPanel();">'.$sInfo.'</div>';
+        $sInfo = '<div id="preview" class="preview" onclick="javascript: destroyPanel();">'.$sInfo.'</div>';
+
+        $sInfo .= $this->getThumbnail();
+
+        return $sInfo;
     }
 
     /**
@@ -279,8 +283,6 @@ class DocumentPreview {
 
         $sInfo .= "<tr><td>{$sIdLb}</td><td><b>{$sId}</b></td></tr>";
         $sInfo .= " </table></div>";
-
-        $sInfo .= $this->getThumbnail();
 
         return $sInfo;
     }
