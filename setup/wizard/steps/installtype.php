@@ -45,6 +45,10 @@ class installType extends step
 
 	public function doStep() {
     	$this->temp_variables = array("step_name"=>"installtype");
+		$type = $this->util->getVersionType();
+		$this->temp_variables['isCE'] = false;
+		if($type == "community")
+		 	$this->temp_variables['isCE'] = true;
     	if(!$this->inStep("installtype")) {
     		return 'landing';
     	}

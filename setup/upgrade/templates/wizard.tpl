@@ -11,6 +11,9 @@
 		<?php echo $html->css('wizard.css'); ?>
 		<?php echo $html->css('migrate.css'); ?>
 		<?php if(AGENT == "IE6") echo $html->css('ie6.css'); ?>
+        <?php if(AGENT == "IE7") echo $html->css('ie7.css'); ?>
+        <?php if(AGENT == "IE8") echo $html->css('ie8.css'); ?>
+        <?php if(INSTALL_TYPE == "community") echo $html->css('community.css'); ?>
         <meta http-equiv=Content-Type content="text/html; charset=utf-8">
 	</head>
 	<body onload="">

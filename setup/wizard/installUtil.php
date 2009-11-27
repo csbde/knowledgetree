@@ -522,23 +522,6 @@ class InstallUtil {
     	}
     }
 
-	/**
-	* Check if system needs to be accessed
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return boolean
- 	*/
-    public function finishSpecified() {
-    	if(isset($_GET['Finish'])) {
-        	if($_GET['Finish'] == "Finish") {
-            	return true;
-        	}
-    	}
-
-        return false;
-    }
 
 	/**
 	* Check if system needs to be migrated
@@ -558,6 +541,37 @@ class InstallUtil {
         return false;
 	}
 
+	public function upgradeInstall() {
+		if(isset($_GET['Upgrade'])) {
+			return true;
+		}
+    	if(isset($_GET['Next'])) {
+        	if($_POST['Next'] == "Upgrade") {
+            	return true;
+        	}
+    	}
+
+        return false;
+	}
+	
+	/**
+	* Check if system needs to be accessed
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param none
+	* @return boolean
+ 	*/
+	public function finishInstall() {
+    	if(isset($_GET['Next'])) {
+        	if($_GET['Next'] == "Finish") {
+            	return true;
+        	}
+    	}
+
+        return false;
+	}
+	
 	/**
 	* Check if system needs to be migrated
 	*
@@ -595,7 +609,6 @@ class InstallUtil {
 	}
 
 	public function loginSpecified() {
-//		return true;
     	if(isset($_GET['Return'])) {
         	if($_GET['Return'] == "Return To Installation") {
             	return true;
@@ -727,7 +740,13 @@ class InstallUtil {
     		return true;
     	return false;
     }
-
+	
+    public function isCommunity() {
+    	if(INSTALL_TYPE == "community")
+    		return true;
+    	return false;
+    }
+    
     /**
      * Determine type of installation
      *
@@ -859,7 +878,7 @@ class InstallUtil {
 			return $type;
     	}
 
-		return false;
+		return "community";
     }
 
    /**
@@ -1040,8 +1059,93 @@ class InstallUtil {
     }
     // }}}
 
-    /*
-    Just Because.
-    */
+    // {{{ copyDirectory
+    function copyDirectory($sSrc, $sDst, $bMove = false) {
+        if (file_exists($sDst)) {
+            return false; //PEAR::raiseError(_kt("Destination directory already exists."));
+        }
+        if (!WINDOWS_OS) {
+            if ($bMove && file_exists('/bin/mv')) {
+                $this->pexec(array('/bin/mv', $sSrc, $sDst));
+                return;
+            }
+            if (!$bMove && file_exists('/bin/cp')) {
+                $this->pexec(array('/bin/cp', '-R', $sSrc, $sDst));
+                return;
+            }
+        }
+        if (substr($sDst, 0, strlen($sSrc)) === $sSrc) {
+            return false; //PEAR::raiseError(_kt("Destination of move is within source"));
+        }
+        $hSrc = @opendir($sSrc);
+        if ($hSrc === false) {
+            return false; //PEAR::raiseError(sprintf(_kt("Could not open source directory: %s"), $sSrc));
+        }
+        if (@mkdir($sDst, 0777) === false) {
+            return false; //PEAR::raiseError(sprintf(_kt("Could not create destination directory: %s"), $sDst));
+        }
+        while (($sFilename = readdir($hSrc)) !== false) {
+            if (in_array($sFilename, array('.', '..'))) {
+                continue;
+            }
+            $sOldFile = sprintf("%s/%s", $sSrc, $sFilename);
+            $sNewFile = sprintf("%s/%s", $sDst, $sFilename);
+            if (is_dir($sOldFile)) {
+                $this->copyDirectory($sOldFile, $sNewFile, $bMove);
+                continue;
+            }
+            if ($bMove) {
+                $this->moveFile($sOldFile, $sNewFile);
+            } else {
+                copy($sOldFile, $sNewFile);
+            }
+        }
+        if ($bMove) {
+            @rmdir($sSrc);
+        }
+    }
+    // }}}
+    
+    // {{{ moveFile
+    function moveFile ($sSrc, $sDst) {
+        // Only 4.3.3 and above allow us to use rename across partitions
+        // on Unix-like systems.
+        if (!WINDOWS_OS) {
+            // If /bin/mv exists, just use it.
+            if (file_exists('/bin/mv')) {
+                $this->pexec(array('/bin/mv', $sSrc, $sDst));
+                return;
+            }
+            $aSrcStat = stat($sSrc);
+            if ($aSrcStat === false) {
+                return false; //PEAR::raiseError(sprintf(_kt("Couldn't stat source file: %s"), $sSrc));
+            }
+            $aDstStat = stat(dirname($sDst));
+            if ($aDstStat === false) {
+                return false; //PEAR::raiseError(sprintf(_kt("Couldn't stat destination location: %s"), $sDst));
+            }
+            if ($aSrcStat["dev"] === $aDstStat["dev"]) {
+                $res = @rename($sSrc, $sDst);
+                if ($res === false) {
+                    return false; //PEAR::raiseError(sprintf(_kt("Couldn't move file to destination: %s"), $sDst));
+                }
+                return;
+            }
+            $res = @copy($sSrc, $sDst);
+            if ($res === false) {
+                return false; //PEAR::raiseError(sprintf(_kt("Could not copy to destination: %s"), $sDst));
+            }
+            $res = @unlink($sSrc);
+            if ($res === false) {
+                return false; //PEAR::raiseError(sprintf(_kt("Could not remove source: %s"), $sSrc));
+            }
+        } else {
+            $res = @rename($sSrc, $sDst);
+            if ($res === false) {
+                return false; //PEAR::raiseError(sprintf(_kt("Could not move to destination: %s"), $sDst));
+            }
+        }
+    }
+    // }}}
 }
 ?>

@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -36,6 +36,8 @@
  * Contributor( s): ______________________________________
  *
  */
+
+require_once(KT_DIR.'/thirdparty/peclzip/pclzip.lib.php');
 
 class OpenXmlTextExtractor extends ExternalDocumentExtractor
 {
@@ -217,6 +219,9 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 		}
 		$filename = str_replace('\\','/',$filename);
 
+		/*
+		// Removing the unzip command as the whole document gets unzipped at the start
+
 		$cmd = '"' .$this->unzip . '"' . ' ' . str_replace(
 			array('{source}','{part}', '{target_dir}'),
 			array($this->sourcefile, $filename,$this->openxml_dir), $this->unzip_params);
@@ -226,6 +231,7 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 			$this->output = _kt('Failed to execute command: ') . $cmd;
 			return false;
 		}
+		*/
 
 		$filename = $this->openxml_dir . "/$filename";
 		if (!file_exists($filename))
@@ -321,6 +327,7 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 	 */
 	public function diagnose()
 	{
+	    return null;
 		if (false === $this->unzip)
 		{
 			return sprintf(_kt("Cannot locate unzip: %s."), $this->unzip);

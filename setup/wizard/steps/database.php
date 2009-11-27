@@ -309,11 +309,7 @@ class database extends Step
     		$this->error['dmsuserpassword'] = "Passwords do not match: " . $this->dmsuserpassword." ". $this->getPassword2();
     		return false;
     	}
-//    	if($this->dport == '')  {
-//    		$this->util->dbUtilities->load($this->dhost, $this->duname, $this->dpassword, $this->dname);
-//    	} else {
-    		$this->util->dbUtilities->load($this->dhost, $this->dport, $this->duname, $this->dpassword, $this->dname);
-//    	}
+    	$this->util->dbUtilities->load($this->dhost, $this->dport, $this->duname, $this->dpassword, $this->dname);
         if (!$this->util->dbUtilities->getDatabaseLink()) {
             $this->error['con'] = "Could not connect to the database, please check username and password";
             return false;
@@ -642,12 +638,20 @@ class database extends Step
 			$this->error['con'] = "Could not populate schema ";
 		}
 		$this->writeBinaries();
-		// ensure a guid was generated and is stored
-		$this->util->getSystemIdentifier();
+		$this->addServerPort();
+		$this->util->getSystemIdentifier(); // ensure a guid was generated and is stored
+		$this->reBuildPaths();
 		
 		return true;
     }
 
+    private function addServerPort() {
+		$conf = $this->util->getDataFromSession('configuration');
+    	$port = $conf['server']['port']['value'];
+		$iserverPorts = 'UPDATE config_settings SET value = "'.$port.'" where group_name = "server" and item IN("internal_server_port", "server_port");'; // Update internal server port    	
+		$this->util->dbUtilities->query($iserverPorts);
+    }
+    
 	/**
 	* Create database
 	*
@@ -770,15 +774,25 @@ class database extends Step
     	$this->parse_mysql_dump($sqlFile);
     	$dropPluginHelper = "TRUNCATE plugin_helper;"; // Remove plugin helper table
     	$this->util->dbUtilities->query($dropPluginHelper);
-    	$updateUrls = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "urls";'; // Remove references to old paths
-    	$this->util->dbUtilities->query($updateUrls);
+		$this->addServerPort();
+    	$this->util->dbUtilities->query($iserverPorts);
     	$updateExternalBinaries = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "externalBinary";'; // Remove references to old paths
     	$this->util->dbUtilities->query($updateExternalBinaries);
+    	$this->reBuildPaths();
 		$this->writeBinaries(); // Rebuild some of the binaries
 		$this->util->getSystemIdentifier(); // ensure a guid was generated and is stored
 
     	return true;
     }
+    
+    private function reBuildPaths() {
+    	$conf = $this->util->getDataFromSession('configuration');
+    	$paths = $conf['paths'];
+    	foreach ($paths as $k=>$path) {
+    		$sql = 'UPDATE config_settings SET value = "'.$path['path'].'" where item = "'.$k.'";';
+    		$this->util->dbUtilities->query($sql);
+    	}
+	}
     
     private function writeBinaries() {
     	// if Windows, attempt to insert full paths to binaries
@@ -790,12 +804,47 @@ class database extends Step
     	                      	 'df' => array(0 => 'externalBinary', 1 => SYSTEM_ROOT . 'bin\gnuwin32\df.exe'), 
     	                      	 'zip' => array(0 => 'export', 1 => SYSTEM_ROOT . 'bin\zip\zip.exe'), 
     	                      	 'unzip' => array(0 => 'import', 1 => SYSTEM_ROOT . 'bin\unzip\unzip.exe'));
+	    	
+    	    if (INSTALL_TYPE == 'commercial' || true) {
+    	    	$winBinaries['pdf2swf'] = array(0 => 'externalBinary', 1 => SYSTEM_ROOT . 'bin\swftools\pdf2swf.exe');
+    	    }
+    	    
     	    foreach ($winBinaries as $displayName => $bin)
     	    {
     	        // continue without attempting to set the path if we can't find the file in the specified location
     	        if (!file_exists($bin[1])) continue;
-        		$updateBin = 'UPDATE config_settings c SET c.value = "'. str_replace('\\', '\\\\', $bin[1]) . '" '
-        		           . 'where c.group_name = "' . $bin[0] . '" and c.display_name = "'.$displayName.'";';
+    	        
+    	        // escape paths for insert/update query
+    	        $bin[1] = str_replace('\\', '\\\\', $bin[1]);
+    	        
+    	        // instaView won't exist, must be inserted instead of updated
+    	        // TODO this may need to be modified to first check for existing setting as with the convert step below; not necessary for 3.7.0.x
+    	    	if ($displayName == 'pdf2swf') {
+    	            $updateBin = 'INSERT INTO `config_settings` (group_name, display_name, description, item, value, default_value, type, options, can_edit) '
+	    					   . 'VALUES ("' . $bin[0] . '", "' . $displayName . '", "The path to the SWFTools \"pdf2swf\" binary", "pdf2swfPath", '
+	    					   . '"' . $bin[1] . '", "pdf2swf", "string", NULL, 1);';
+    	        }
+    	        // on a migration, the convert setting will not exist, so do something similar to the above, but first check whether it exists
+    	    	else if ($displayName == 'convert') {
+            		// check for existing config settings entry and only add if not already present
+			        $sql = 'SELECT id FROM `config_settings` WHERE group_name = "externalBinary" AND item = "convertPath"';
+			        $result = $this->util->dbUtilities->query($sql);
+			        $output = $this->util->dbUtilities->fetchAssoc($result);
+				    if(is_null($output)) {
+    					$updateBin = 'INSERT INTO `config_settings` (group_name, display_name, description, item, value, default_value, type, options, can_edit) '
+	    	            		   . 'VALUES ("' . $bin[0] . '", "' . $displayName . '", "The path to the ImageMagick \"convert\" binary", "convertPath", '
+	    	            		   . '"' . $bin[1] . '", "convert", "string", NULL, 1)';
+    	    		}
+    	    		else {
+	    	            $updateBin = 'UPDATE config_settings c SET c.value = "'. $bin[1] . '" '
+	                               . 'where c.group_name = "' . $bin[0] . '" and c.display_name = "'.$displayName.'";';
+    	    		}
+    	        }
+    	        else {
+                    $updateBin = 'UPDATE config_settings c SET c.value = "'. $bin[1] . '" '
+                               . 'where c.group_name = "' . $bin[0] . '" and c.display_name = "'.$displayName.'";';
+    	        }
+    	        
                 $this->util->dbUtilities->query($updateBin);
             }
     	}

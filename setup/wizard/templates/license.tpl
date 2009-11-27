@@ -4,9 +4,8 @@
         foreach($errors as $k=>$e) {
                 echo "<span class='error'>".$e."</span>";
         }
-        //print_r($errors);
     }?>
-<p class="description">
+<p class="description_1">
 Please read and accept the license agreement below before continuing with the setup.
 </p>
 

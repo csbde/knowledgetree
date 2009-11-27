@@ -1,14 +1,11 @@
 <?php
-
-require_once(KT_DIR.'/thirdparty/peclzip/pclzip.lib.php');
-
 /**
  * $Id:$
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -38,6 +35,8 @@ require_once(KT_DIR.'/thirdparty/peclzip/pclzip.lib.php');
  * Contributor( s): ______________________________________
  *
  */
+
+require_once(KT_DIR.'/thirdparty/peclzip/pclzip.lib.php');
 
 class OpenOfficeTextExtractor extends ExternalDocumentExtractor
 {
@@ -138,6 +137,7 @@ class OpenOfficeTextExtractor extends ExternalDocumentExtractor
 	 */
 	public function diagnose()
 	{
+	    return null;
 		if (false === $this->unzip)
 		{
 			return sprintf(_kt("Cannot locate unzip: %s."), $this->unzip);

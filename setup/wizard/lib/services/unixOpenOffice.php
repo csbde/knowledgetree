@@ -54,6 +54,7 @@ class unixOpenOffice extends unixService {
 	// office executable
 	private $soffice;
 	public $name = "KTOpenOffice";
+	public $hrname = "KnowledgeTree OpenOffice.org Service";
 	
 	/**
 	* Load defaults needed by service
@@ -171,6 +172,10 @@ class unixOpenOffice extends unixService {
 	
 	public function getName() {
 		return $this->name;
+	}
+	
+	public function getHRName() {
+		return $this->hrname;
 	}
 	
 	public function getStopMsg($installDir) {

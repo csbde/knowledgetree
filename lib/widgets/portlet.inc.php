@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -153,13 +153,12 @@ class KTActionPortlet extends KTPortlet {
 
         // Create button html
         $button = "<div class='portlet_button'>
-            <a href='$link'>
+            <a href='{$link}'>
                 <div class='big_btn_left'></div>
                 <div class='big_btn_middle'>
                     <div class='btn_text'>{$text}</div>
-                    <div class='{$class}'></div>
                 </div>
-                <div class='big_btn_right'></div>
+                <div class='big_btn_right {$class}'></div>
             </a>
         </div>";
 

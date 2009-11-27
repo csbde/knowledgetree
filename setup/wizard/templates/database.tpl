@@ -11,7 +11,7 @@
 <div id="database" class="step1" style="display:block;">
 	<div class="description">
 	This step configures the connection to the database server and installs the database. The details for an administrative <br/>
-	user on the database server are required in order to be able to configure and install the installation database.
+	user on the database server are required in order to be able to configure and install the KnowledgeTree database.
 	</div>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
 <!-- Check For immediate Errors -->
@@ -63,7 +63,7 @@
 	    <table>
 	    	<tr>
 	    		<td width="10px"> <label for='dhost'>Host: </label> </td>
-	    		<td width="205px"> <div id="tooltips" title="The address of the server where the database is located, if different to the current server">&nbsp;</div> </td>
+	    		<td width="10px"> <div id="tooltips" title="The address of the server where the database is located, if different to the current server">&nbsp;</div> </td>
 	    		<td width="10px"> <input type="text" value="<?php echo $dhost?>" id="dhost" name="dhost" size='<?php echo $input_size; ?>' class="textinput"/> </td>
 	    	</tr>
 	    	<tr>

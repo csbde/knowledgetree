@@ -21,7 +21,7 @@
             <?php }
             else if ($action == 'confirm') {
                 if ($backupStatus) { ?>
-                    <p>We are about to start the upgrade process.<P>
+                    <p>We are about to start the upgrade process. Are you sure you want to proceed with the upgrade process?<P>
                 <?php }
                 else { ?>
                     <p><font color="Red">Please ensure that you have made a backup before continuing with the upgrade process.</font><p>
@@ -29,17 +29,9 @@
             <?php }
             else if ($action == 'runUpgrade') {
                 // hiding pre-upgrade notification
-				/*
-				echo $preUpgrade;
-                echo '<br/><br/>';
-				*/
                 echo $upgradeTable;
                 echo '<br/><br/>';
                 // hiding pre-upgrade notification
-				/*
-				echo $postUpgrade;
-                echo '<br/><br/>';
-				*/
                 echo $upgradeStatus;
                 echo '<br/><br/>';
             }
@@ -58,9 +50,15 @@
     <?php }
     else if ($action == 'runUpgrade') { ?>
 		<?php if ($backupSuccessful) { ?>
+		<?php if($migrateCheck) { ?>
+		<script type="text/javascript">
+		alert("To complete the upgrade please do the following before continuing:\n\n1. Hard refresh your browser (CTRL-F5) on first view of the Dashboard.\n\n\nSelect 'Finish' at the bottom of this page to continue.");
+		</script>
+		<?php } else { ?>
 		<script type="text/javascript">
         alert("To complete the upgrade please do the following before continuing:\n\n1. Restart the services as appropriate for your environment.\n\n\nOn first run of your upgraded installaton please do the following:\n\n1. Hard refresh your bowser (CTRL-F5) on first view of the Dashboard.\n2. Enable the new plugins you wish to use.\n\n\nSelect 'Finish' at the bottom of this page to continue.")
     </script>
+    	<?php } ?>
 				<input type="submit" name="Next" value="Finish" class="button_next"/>
 		<?php }
 			  else { ?><input type="submit" name="Previous" value="Restore" class="button_previous"/><?php } ?>

@@ -49,8 +49,13 @@ class upgradeComplete extends Step {
 	
     public function doStep() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
+    	$this->temp_variables['isCE'] = false;
+		$type = $this->util->getVersionType();
+		if($type == "community")
+		 	$this->temp_variables['isCE'] = true;
         $this->doRun();
         $this->storeSilent();
+        $this->util->deleteMigrateFile();
     	return 'landing';
     }
     
@@ -86,7 +91,7 @@ class upgradeComplete extends Step {
      */
     protected function storeSilent() {
     	$v = $this->getDataFromSession('upgradeProperties');
-    	$this->temp_variables['sysVersion'] = $v['upgrade_version'];
+    	$this->temp_variables['sysVersion'] = $this->util->readVersion();
     	$this->temp_variables['migrateCheck'] = $this->migrateCheck;
     	$this->temp_variables['servicesCheck'] = $this->servicesCheck;
     }

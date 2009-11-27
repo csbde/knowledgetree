@@ -2,7 +2,7 @@
 	<p class="title">Deactivate Services</p>
 
 	<p class="description">
-	All KnowledgeTree services need to be deactivated before the migration takes place.
+	All KnowledgeTree services need to be shutdown before the migration can continue.
 	</p>
 <!--Continue Message-->
 	<?php
@@ -38,7 +38,7 @@
 		<?php } else { ?>
 			All services are uninstalled.
 		<?php } ?>
-		<h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services Check</h3>
+		<h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Please shutdown the following services</h3>
 		<?php if($silent) { ?>
 		<?php if($serviceCheck != 'tick') {
 			$details = 'Hide Details';
@@ -49,8 +49,7 @@
 		}
 		$display = 'block';
 		?>
-<!--			<div id="option6" class="onclick notop" onclick="javascript:{w.toggleClass('service_details', 'option6');}"><?php echo $details; ?></div>-->
-			<div class="service_details" style="display:<?php echo $display; ?>">
+		<div class="service_details" style="display:<?php echo $display; ?>">
 		<?php } ?>
 		<table>
 		<?php
@@ -60,8 +59,8 @@
 			    	?>
 			    	<tr>
 			    		<td> <span class='<?php echo $ser['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> </td>
-			    		<td style="width:20%;"> <?php echo $ser['name']; ?> </td>
-			    		<td style="width:75%;"> <?php echo $ser['msg']; ?> </td>
+			    		<td style="width:50%;"> <?php echo $ser['name']; ?> </td>
+			    		<td style="width:50%;"> <?php echo $ser['msg']; ?> </td>
 			    		<?php if ($ser['class'] != 'tick') {
 			    			?>
 <!--			    			<td><a href="javascript:this.location.reload();" class="refresh">Refresh</a></td>-->
@@ -76,7 +75,7 @@
 		</table>
 		<?php if ($serviceCheck != 'tick') { ?>
 			<br/>
-			<p class=\"description\">Click <b>Next</b> if deactivating the above services.</p>
+			<p class=\"description\">Click <b>Next</b> if the above services are deactivated .</p>
 		<?php } ?>
 		<?php if($silent) { ?>
 			</div>

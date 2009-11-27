@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -51,6 +51,14 @@ class PendingDocumentsDispatcher extends KTAdminDispatcher
 
     function do_main() {
 
+		//Number of items on a page
+		$itemsPerPage = 50;
+		$pageNum = 1;
+
+        if(isset($_REQUEST['itemsPerPage'])){
+            $itemsPerPage = $_REQUEST['itemsPerPage'];
+        }
+
         //registerTypes registers the mime types and populates the needed tables.
         $indexer = Indexer::get();
         $indexer->registerTypes();
@@ -68,6 +76,51 @@ class PendingDocumentsDispatcher extends KTAdminDispatcher
  			$aPendingDocs[$key] = $doc;
  		}
 
+		$aPendingList = array();
+
+		//creating page variables and loading the items for the current page
+		if(!empty($aPendingDocs)){
+        	$items = count($aPendingDocs);
+
+			if(fmod($items, $itemsPerPage) > 0){
+				$pages = floor($items/$itemsPerPage)+1;
+			}else{
+				$pages = ($items/$itemsPerPage);
+			}
+			for($i=1; $i<=$pages; $i++){
+				$aPages[] = $i;
+			}
+			if($items < $itemsPerPage){
+				$limit = $items-1;
+			}else{
+				$limit = $itemsPerPage-1;
+			}
+
+			if(isset($_REQUEST['pageValue']))
+			{
+				$pageNum = (int)$_REQUEST['pageValue'];
+
+                if($pageNum > $pages){
+                    $pageNum = $pages;
+                }
+
+				$start = (($pageNum-1)*$itemsPerPage)-1;
+				$limit = $start+$itemsPerPage;
+				for($i = $start; $i <= $limit; $i++){
+					if(isset($aPendingDocs[$i]))
+					{
+						$aPendingList[] = $aPendingDocs[$i];
+					}
+				}
+			}
+			else
+			{
+				for($i = 0; $i <= $limit; $i++){
+					$aPendingList[] = $aPendingDocs[$i];
+				}
+			}
+        }
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/search2/reporting/pendingdocuments');
 
@@ -76,7 +129,12 @@ class PendingDocumentsDispatcher extends KTAdminDispatcher
 
         $oTemplate->setData(array(
             'context' => $this,
-            'pending_docs' => $aPendingDocs,
+            'pageList' => $aPages,
+            'pageCount' => $pages,
+            'pageNum' => $pageNum,
+            'itemCount' => $items,
+            'itemsPerPage' => $itemsPerPage,
+            'pending_docs' => $aPendingList,
             'root_url' => $rootUrl
         ));
         return $oTemplate;

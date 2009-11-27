@@ -5,8 +5,6 @@
 {if ($smallVersion !== 'Community Edition')}
 	{i18n}All rights reserved.{/i18n}<br>
 {/if}
-
-{i18n}.{/i18n}
 <br>
 {if ($smallVersion == 'Community Edition')}
 	{i18n}This program is free software and published under the <a href=" http://www.gnu.org/licenses/">GNU General Public License version 3</a>{/i18n}<br><br>
@@ -31,143 +29,55 @@
 	<li><a href="http://people.knowledgetree.com/">Blogs</a>: See what the KnowledgeTree team have to say</li>
 </ul>
 </p>
+<br/>
 <p>
 <strong>Thanks to the following contributors for helping us with code contributions and testing...</strong></p>
-<ul>
-	<li>
-		Fu Bin
-	</li>
-	<li>
-		Blackhold
-	</li>
-	<li>
-		Chris Buechler
-	</li>
-	<li>
-		Guillaume Dufloux
-	</li>
-	<li>
-		David Alfonso Faspar
-	</li>
-	<li>
-		Ruud Feringa
-	</li>
-	<li>
-		Hil&aacute;rio Fernandes
-	</li>
-	<li>
-		William Hawkins
-	</li>
-	<li>
-		Lody Hoekstra
-	</li>
-	<li>
-		Kenny Horan
-	</li>	
-	<li>
-		Artur Kiwa
-	</li>
-	<li>
-	    Michael Knight	
-	</li>
-	<li>
-		Jeongkyu Kim
-	</li>
-	<li>
-		Rogerio Kohler
-	</li>
-	<li>
-        Piotr Krawiecki 	
-	</li>
-	<li>
-		Ola Larsson
-	</li>
-	<li>
-		Pavel Lastovicka
-	</li>
-	<li>
-		Michel Loiseleur 
-	</li>
-	<li>
-		Renat Lumpau
-	</li>
-	<li>
-		Marco Lusini
-	</li>
-	<li>
-		Michael Malone
-	</li>
-	<li>
-		Jochem Meijers
-	</li>
-	<li>
-		John Miles
-	</li>
-	<li>
-		Ismail Mogal
-	</li>
-	<li>
-		David Nalley
-	</li>
-	<li>
-		Marco Napetti
-	</li>
-	<li>
-		Manuela Patrono
-	</li>
-	<li>
-		Antti Poro
-	</li>
-	<li>
-		Nicolas Quienot
-	</li>
-	<li>
-		Ken Rainsforth
-	</li>
-	<li>
-		Antonio Rizzelli
-	</li>
-	<li>
-		Greg Rundlett
-	</li>
-	<li>
-		Leonardo Russo
-	</li>
-	<li>
-		Ricardo Silva
-	</li>
-	<li>
-		Mario Steinhoff
-	</li>
-	<li>
-		Phillip Steinbachs
-	</li>
-	<li>
-        Tahir Tahang		
-	</li>
-	<li>
-		Paul Trgina
-	</li>
-	<li>
-	    Harry Tsio	
-	</li>
-	<li>
-        Bjarte Kalstveit Vebj&oslash;rnsen
-	</li>
-    <li>
-		Zakariah
-	</li>
-	<li>
-		Jaime Zarate
-	</li>
-	<li>
-		And all the KnowledgeTree staff that <a href="http://en.wikipedia.org/wiki/Eat_one's_own_dog_food">"dogfood"</a> KnowledgeTree every day.
-	</li>
-	
-</ul>
+		Fu Bin, 
+		Blackhold, 
+		Chris Buechler, 
+		Guillaume Dufloux, 
+		David Alfonso Faspar, 
+		Ruud Feringa, 
+		Hil&aacute;rio Fernandes, 
+		William Hawkins, 
+		Lody Hoekstra, 
+		Kenny Horan, 
+		Artur Kiwa, 
+	    Michael Knight, 
+		Jeongkyu Kim, 
+		Rogerio Kohler, 
+        Piotr Krawiecki , 
+		Ola Larsson, 
+		Pavel Lastovicka, 
+		Michel Loiseleur , 
+		Renat Lumpau, 
+		Marco Lusini, 
+		Michael Malone, 
+		Jochem Meijers, 
+		John Miles, 
+		Ismail Mogal, 
+		David Nalley, 
+		Marco Napetti, 
+		Manuela Patrono, 
+		Antti Poro, 
+		Nicolas Quienot, 
+		Ken Rainsforth, 
+		Antonio Rizzelli, 
+		Greg Rundlett, 
+		Leonardo Russo, 
+		Ricardo Silva, 
+		Mario Steinhoff, 
+		Phillip Steinbachs, 
+        Tahir Tahang, 
+		Paul Trgina, 
+	    Harry Tsio, 
+        Bjarte Kalstveit Vebj&oslash;rnsen, 
+		Zakariah, 
+		Jaime Zarate, <br><br/>
+		And the KnowledgeTree team who <a href="http://en.wikipedia.org/wiki/Eat_one's_own_dog_food">"dogfood"</a> KnowledgeTree every day.
 
 <p><small>[If you feel you should be here too, please let us know at <a href="mailto:contributions@knowledgetree.com">contributions@knowledgetree.com</a>]</small></p>
 
-
+<br/>
 <p>This software utilizes third-party software from <a set="yes" linkindex="11" href="http://pear.php.net/">Pear</a>, <a set="yes" linkindex="12" href="http://phpmailer.sourceforge.net/">PHPMailer</a>, <a set="yes" linkindex="13" href="http://smarty.php.net/">Smarty Template Engine</a>, <a set="yes" linkindex="14" href="http://sourceforge.net/projects/jscalendar">JSCalendar</a>, <a set="yes" linkindex="15" href="http://mochikit.com/">Mochikit</a>, <a set="yes" linkindex="16" href="http://tinymce.moxiecode.com/">Moxiecode Systems</a>, <a set="yes" linkindex="17" href="http://developer.yahoo.com/yui/">Yahoo Developer Network</a>.</p>
 	

@@ -10,7 +10,7 @@
 <migrate version="3.7" type="Commercial Edition">
     <steps>
         <step name="Current Installation">installation</step>
-        <step name="Database Migration">database</step>
+        <step name="Database Export">database</step>
        	<step name="Deactivate Services">services</step>
         <step name="Complete">complete</step>
     </steps>

@@ -130,8 +130,12 @@ class windowsOpenOffice extends windowsService {
 	* @param none
 	* @return string
  	*/
-    public $name = "KTOpenOffice";
+    public $name = "KTOpenoffice";
 
+    public $hrname = "KnowledgeTree OpenOffice.org Service. (KTOpenOffice)";
+    
+    public $description = "KnowledgeTree OpenOffice.org Service.";
+    
 	/**
 	* Load defaults needed by service
 	*
@@ -210,7 +214,7 @@ class windowsOpenOffice extends windowsService {
     	if($status == '') {
     		$binary = $this->getBin();
     		if($binary != '') {
-            	$cmd = "\"{$this->winservice}\" install $this->name "."-displayname {$this->name} -start auto \"".$binary."\" -headless -invisible -nofirststartwizard -\"accept=socket,host={$this->host},port={$this->port};urp;\"";;
+            	$cmd = "\"{$this->winservice}\" install \"{$this->name}\" -description \"{$this->description}\" -displayname \"{$this->name}\" -start auto \"".$binary."\" -headless -invisible -nofirststartwizard -\"accept=socket,host={$this->host},port={$this->port};urp;\"";;
 	        	if(DEBUG) {
 	        		echo "$cmd<br/>";
 	        		return false;
@@ -255,6 +259,10 @@ class windowsOpenOffice extends windowsService {
  	*/
 	public function start() { // User has to manually start the services
 		return false;
+	}
+	
+	public function getHRName() {
+		return $this->hrname;
 	}
 	
 	public function getStopMsg($installDir) {

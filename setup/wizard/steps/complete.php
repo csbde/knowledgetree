@@ -61,6 +61,10 @@ class complete extends Step {
 
     function doStep() {
     	$this->temp_variables = array("step_name"=>"complete", "silent"=>$this->silent);
+		$this->temp_variables['isCE'] = false;
+		$type = $this->util->getVersionType();
+		if($type == "community")
+		 	$this->temp_variables['isCE'] = true;
         $this->doRun();
     	return 'landing';
     }
@@ -69,10 +73,14 @@ class complete extends Step {
         $this->checkFileSystem(); // check filesystem (including location of document directory and logging)
         $this->checkDb(); // check database
         $this->checkServices(); // check services
-        $this->checkInstallType();// Set silent mode variables
-        $this->storeSilent();// Set silent mode variables
+        $this->checkInstallType(); // Set silent mode variables
+        $this->storeSilent(); // Set silent mode variables
     }
 
+    /**
+     * Check all the system paths
+     *
+     */
     private function checkFileSystem()
     {
         // defaults
@@ -130,6 +138,10 @@ class complete extends Step {
         }
     }
 
+    /**
+     * Check if a database connection can be made
+     *
+     */
     private function checkDb()
     {
         // defaults
@@ -199,6 +211,10 @@ class complete extends Step {
         }
     }
 
+    /**
+     * Check if all services are deactivated
+     *
+     */
     private function checkServices()
     {
         $services = new services();
@@ -217,14 +233,27 @@ class complete extends Step {
 		return true;
     }
 
+    /**
+     * Check the install type and store
+     *
+     */
     function checkInstallType() {
     	if ($this->util->isMigration()) {
     		$this->migrate_check = true;
+    		$this->registerPlugins(); // Set silent mode variables
     	} else {
     		$this->migrate_check = false;
     	}
     }
 
+    /**
+     * Register extra commercial plugins
+     *
+     */
+    private function registerPlugins() {
+
+    }
+    
     /**
      * Set all silent mode varibles
      *
@@ -236,7 +265,6 @@ class complete extends Step {
     	$this->temp_variables['database_check'] = $this->database_check;
     	$this->temp_variables['migrate_check'] = $this->migrate_check;
     	$this->temp_variables['servicesValidation'] = $this->servicesValidation;
-    	//if(!$this->pathsSection) {die;} else {echo 'huh';}
     	$this->temp_variables['pathsSection'] = $this->pathsSection;
     	$this->temp_variables['databaseSection'] = $this->databaseSection;
     	$this->temp_variables['privilegesSection'] = $this->privilegesSection;

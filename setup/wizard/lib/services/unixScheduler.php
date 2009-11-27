@@ -48,6 +48,7 @@ class unixScheduler extends unixService {
 	private $scheduler;
 	private $phpCli;
 	public $name = "KTScheduler";
+	public $hrname = "KnowledgeTree Scheduler Service";
 	
 	/**
 	* Load defaults needed by service
@@ -178,7 +179,7 @@ class unixScheduler extends unixService {
 	function start() {
 		// TODO : Write sh on the fly? Not sure the reasoning here
 		$source = $this->getSchedulerSourceLoc();
-		$this->writeSchedulerTask();
+//		$this->writeSchedulerTask();
 		$logFile = "/dev/null";
 //		@unlink($logFile);
 		if($source) { // Source
@@ -199,6 +200,10 @@ class unixScheduler extends unixService {
 
 	public function getName() {
 		return $this->name;
+	}
+	
+	public function getHRName() {
+		return $this->hrname;
 	}
 	
 	public function getStopMsg($installDir) {

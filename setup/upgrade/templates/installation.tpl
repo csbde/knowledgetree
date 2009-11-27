@@ -8,7 +8,7 @@
         You will not be able to log into KnowledgeTree until your the database upgrade process is completed.
         </p>
         <p class="empty_space">
-        <font color="#ffa500">!!NB!! You are advised to backup the database before attempting the upgrade. !!NB!!</font>
+        <font color="red">You are advised to backup the database before attempting the upgrade.</font>
         </p>
         <p class="empty_space"></p>
         If you have already done this, you may skip this step and can continue directly to the upgrade.

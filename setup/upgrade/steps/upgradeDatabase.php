@@ -1,6 +1,6 @@
 <?php
 /**
-* Upgrade Step Controller. 
+* Upgrade Step Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -44,7 +44,7 @@ define('KT_DIR', SYSTEM_DIR);
 define('KT_LIB_DIR', SYSTEM_DIR.'lib');
 require_once(WIZARD_LIB . 'upgrade.inc.php');
 
-class upgradeDatabase extends Step 
+class upgradeDatabase extends Step
 {
 	/**
 	* Location of database binaries.
@@ -54,7 +54,7 @@ class upgradeDatabase extends Step
 	* @var string
 	*/
     private $mysqlDir; // TODO:multiple databases
-    
+
 	/**
 	* Name of database binary.
 	*
@@ -63,7 +63,7 @@ class upgradeDatabase extends Step
 	* @var string
 	*/
     private $dbBinary = ''; // TODO:multiple databases
-    
+
 	/**
 	* List of errors used in template
 	*
@@ -72,7 +72,7 @@ class upgradeDatabase extends Step
 	* @var array
 	*/
     public $templateErrors = array('dmspassword', 'dmsuserpassword', 'con', 'dname', 'dtype', 'duname', 'dpassword');
-    
+
 	/**
 	* Flag to store class information in session
 	*
@@ -81,12 +81,13 @@ class upgradeDatabase extends Step
 	* @var array
 	*/
     public $storeInSession = true;
-    
+
     public $sysVersion = '';
     protected $silent = false;
     protected $temp_variables = array();
     public $paths = '';
-
+	public $migrateCheck = false;
+	
     /**
 	* Main control of database setup
 	*
@@ -96,9 +97,10 @@ class upgradeDatabase extends Step
 	* @return string
 	*/
     public function doStep() {
-        $this->temp_variables = array("step_name"=>"database", "silent"=>$this->silent, 
+        $this->temp_variables = array("step_name"=>"database", "silent"=>$this->silent,
                                       "loadingText"=>"The database upgrade is under way.  Please wait until it completes");
     	$this->initErrors();
+    	$this->checkMigration();
     	if(!$this->inStep("database")) {
     	    $this->doRun();
     		return 'landing';
@@ -119,25 +121,31 @@ class upgradeDatabase extends Step
             }
             return 'error';
         }
-        
+
         $this->doRun();
         return 'landing';
+    }
+
+    public function checkMigration() {
+    	if($this->util->isMigration()) {
+    		$this->migrateCheck = true;
+    	}
     }
     
     private function confirmUpgrade() {
         return isset($_POST['ConfirmUpgrade']);
     }
-    
+
     private function upgrading() {
         return isset($_POST['RunUpgrade']);
-    } 
-    
+    }
+
     private function doRun($action = null) {
         $this->readConfig();
-        
+
 		$this->util->dbUtilities->load($this->dbSettings['dbHost'], $this->dbSettings['dbPort'], $this->dbSettings['dbUser'],$this->dbSettings['dbPass'], $this->dbSettings['dbName']);
         $this->temp_variables['action'] = $action;
-        
+
         if (is_null($action) || ($action == 'preview')) {
             $this->temp_variables['title'] = 'Preview Upgrade';
             $this->temp_variables['upgradeTable'] = $this->generateUpgradeTable();
@@ -154,10 +162,10 @@ class upgradeDatabase extends Step
             }
             $this->temp_variables['backupSuccessful'] = true;
         }
-        
+
         return true;
     }
-    
+
     private function generateUpgradeTable() {
 		$this->sysVersion = $this->readVersion();
 		$this->temp_variables['systemVersion'] = $this->sysVersion;
@@ -194,10 +202,10 @@ class upgradeDatabase extends Step
 			$foundVersion = file_get_contents($verFile);
 			return $foundVersion;
     	} else {
-			$this->error[] = "KT installation version not found";
+			$this->error[] = "KnowledgeTree installation version not found";
     	}
 
-		return false;    	
+		return false;
     }
 
 	/**
@@ -213,14 +221,15 @@ class upgradeDatabase extends Step
     		$this->error[$e] = false;
     	}
     }
-    
+
     public function storeSilent() {
     	$this->temp_variables['paths'] = $this->paths;
     	$this->temp_variables['sysVersion'] = $this->sysVersion;
     	$this->temp_variables['sysVersion'] = $this->sysVersion;
     	$this->temp_variables['dbSettings'] = $this->dbSettings;
+    	$this->temp_variables['migrateCheck'] = $this->migrateCheck;
     }
-    
+
     private function upgradeConfirm()
     {
         if (!isset($_SESSION['backupStatus']) || $_SESSION['backupStatus'] === false) {
@@ -234,12 +243,12 @@ class upgradeDatabase extends Step
     private function doDatabaseUpgrade()
     {
         $errors = false;
-        
+
         $this->temp_variables['detail'] = '<p>The table below describes the upgrades that have occurred to
             upgrade your KnowledgeTree installation to <strong>' . $this->sysVersion . '</strong>';
-      
+
         $this->performPreUpgradeActions();
-        
+
         $res = $this->performAllUpgrades();
         if (!$res) {
             $errors = true;
@@ -247,7 +256,7 @@ class upgradeDatabase extends Step
             // TODO instantiate error details hideable section?
             $this->temp_variables['upgradeStatus'] = '<font color="red">Database upgrade failed</font>
                                                       <br/><br/>
-                                                      Please restore from your backup and ensure that the database does not contain 
+                                                      Please restore from your backup and ensure that the database does not contain
                                                       any unsupported modifications and try the upgrade process again.
                                                       <br/><br/>
                                                       If the problem persists, contact KnowledgeTree Support.';
@@ -255,27 +264,27 @@ class upgradeDatabase extends Step
         else {
             $this->temp_variables['upgradeStatus'] = '<font color="green">Upgrade succeeded.</font>';
         }
-    
+
         $this->performPostUpgradeActions();
-        
-        
+
+
         return !$errors;
     }
 
     private function performPreUpgradeActions() {
-    
+
         // This is just to test and needs to be updated to a more sane and error resistent architrcture if it works.
         // It should idealy work the same as the upgrades.
         // Lock the scheduler
         $lockFile = $this->cachePath . DIRECTORY_SEPARATOR . 'scheduler.lock';
         touch($lockFile);
         return true;
-    
+
     }
-    
+
     private function deleteDirectory($sPath) {
         if (empty($sPath) || !is_dir($sPath)) return;
-        
+
         if (!WINDOWS_OS) {
             if (file_exists('/bin/rm')) {
                 $this->util->pexec(array('/bin/rm', '-rf', $sPath));
@@ -303,28 +312,31 @@ class upgradeDatabase extends Step
         closedir($hPath);
         rmdir($sPath);
     }
-    
+
     private function performPostUpgradeActions() {
-    
+
         // This is just to test and needs to be updated to a more sane and error resistent architrcture if it works.
         // It should idealy work the same as the upgrades.
-    
+
         // Ensure all plugins are re-registered.
         $sql = "TRUNCATE plugin_helper";
     	$this->util->dbUtilities->query($sql);
-    	
+
         // Clear out all caches and proxies - they need to be regenerated with the new code
         $this->deleteDirectory($this->proxyPath);
     	$this->deleteDirectory($this->cachePath);
-    
+
+    	// Recreate the cache directory - it doesn't get regenerated
+    	mkdir($this->cachePath, 0755);
+
         // Unlock the scheduler
         $lockFile = $this->cachePath . DIRECTORY_SEPARATOR . 'scheduler.lock';
         if(file_exists($lockFile)){
             unlink($lockFile);
         }
-    
+
         return true;
-    
+
     }
 
     private function performAllUpgrades () {
@@ -343,11 +355,12 @@ class upgradeDatabase extends Step
             } else {
                 $class = "even";
             }
-            $this->temp_variables['upgradeTable'] .= sprintf('<div class="row %s"><div class="foo">%s</div>' . "\n", $class, 
+            $this->temp_variables['upgradeTable'] .= sprintf('<div class="row %s"><div class="foo">%s</div>' . "\n", $class,
                                                              htmlspecialchars($upgrade->getDescription()));
             ++$row;
             $res = $upgrade->performUpgrade();
-            $this->temp_variables['upgradeTable'] .= sprintf('<div class="bar">%s</div>', $this->showResult($res));
+            $errors = $upgrade->getErrors();
+            $this->temp_variables['upgradeTable'] .= sprintf('<div class="bar">%s</div>', $this->showResult($res, $errors));
             $this->temp_variables['upgradeTable'] .= '<br>' . "\n";
             $this->temp_variables['upgradeTable'] .= "</div>\n";
             if ($res === false) {
@@ -355,11 +368,11 @@ class upgradeDatabase extends Step
                 break;
             }
         }
-    
+
         return $res;
     }
-    
-    private function showResult($res) {
+
+    private function showResult($res, $errors = null) {
         if ($res && is_a($res, 'Upgrade_Already_Applied')) {
             return '<span style="color: orange">Already applied</span>';
         }
@@ -367,7 +380,15 @@ class upgradeDatabase extends Step
             return '<span style="color: green">Success</span>';
         }
         if ($res === false) {
-            return '<span style="color: red">Failure</span>';
+            $str = '<span style="color: red">Failure</span>';
+            if(is_array($errors)){
+                $str .= '<ul style="padding-left: 20px; color: red;">';
+                foreach ($errors as $error){
+                    $str .= '<li style="padding: 5px 2px 0;">'.$error."</li>\n";
+                }
+                $str .= '</ul>';
+            }
+            return $str;
         }
         return $res;
     }

@@ -128,7 +128,7 @@ class migrateInstallation extends step
 
     public function detectInstallation() {
     	if(WINDOWS_OS) {
-    		$knownWindowsLocations = array("C:\Program Files\ktdms"=>"C:\Program Files\ktdms\knowledgeTree\config\config-path","C:\Program Files x86\ktdms"=>"C:\Program Files x86\ktdms\knowledgeTree\config\config-path","C:\ktdms"=>"C:\ktdms\knowledgeTree\config\config-path");
+    		$knownWindowsLocations = array("C:\Program Files\ktdms"=>"C:\Program Files\ktdms\knowledgeTree\config\config-path","C:\Program Files (x86)\ktdms"=>"C:\Program Files (x86)\ktdms\knowledgeTree\config\config-path","C:\ktdms"=>"C:\ktdms\knowledgeTree\config\config-path");
     		foreach ($knownWindowsLocations as $loc=>$configPath) {
     			if(file_exists($configPath))
     				$this->location = $loc;
@@ -160,7 +160,7 @@ class migrateInstallation extends step
     public function checkVersion() {
 		if($this->foundVersion < $this->supportedVersion) {
 			$this->versionError = true;
-			$this->error[] = "KT installation needs to be 3.6.1 or higher";
+			$this->error[] = "KnowledgeTree installation needs to be 3.6.1 or higher";
 			return false;
 		}
 
@@ -173,7 +173,7 @@ class migrateInstallation extends step
 			$foundVersion = file_get_contents($verFile);
 			return $foundVersion;
     	} else {
-			$this->error[] = "KT installation version not found";
+			$this->error[] = "KnowledgeTree installation version not found";
     	}
 
 		return false;
@@ -214,10 +214,10 @@ class migrateInstallation extends step
 
 						return true;
 					}
-					$this->error[] = "KT installation configuration file empty";
+					$this->error[] = "KnowledgeTree installation configuration file empty";
 				}
 			} else {
-				$this->error[] = "KT installation configuration file not found";
+				$this->error[] = "KnowledgeTree installation configuration file not found";
 			}
 		} else {
 			$this->error[] = "Please Enter a Location";
@@ -241,16 +241,10 @@ class migrateInstallation extends step
 		if ($froot == 'default') {
 			$froot = $this->location;
 		}
-		$this->ktSettings = array('fileSystemRoot'=> $froot,
-    	);
+		$this->ktSettings = array('fileSystemRoot'=> $froot);
     	$varDir = $froot.DS.'var';
-		$this->urlPaths = array(array('name'=> 'Var Directory', 'path'=> $varDir),
-									array('name'=> 'Log Directory', 'path'=> $varDir.DS.'log'),
-									array('name'=> 'Document Root', 'path'=> $varDir.DS.'Documents'),
-									array('name'=> 'UI Directory', 'path'=> $froot.DS.'presentation'.DS.'lookAndFeel'.DS.'knowledgeTree'),
-									array('name'=> 'Temporary Directory', 'path'=> $varDir.DS.'tmp'),
-									array('name'=> 'Cache Directory', 'path'=> $varDir.DS.'cache'),
-									array('name'=> 'Upload Directory', 'path'=> $varDir.DS.'uploads'),
+		$this->urlPaths = array(
+									array('name'=> 'Document Root', 'path'=> $froot.DS.'Documents'),
     	);
     	$this->dbSettings['dbPort'] = $this->util->getPort($this->location); // Add Port
     	$this->temp_variables['urlPaths'] = $this->urlPaths;

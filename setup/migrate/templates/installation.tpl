@@ -1,15 +1,5 @@
 <form action="index.php?step_name=<?php echo $step_name; ?>" method="post" id="<?php echo $step_name; ?>">
 	<p class="title">Current Installation</p>
-<!--Continue Message-->
-	<?php
-		if(!$errors && !$warnings) {
-			?>
-				<span class='big_ok'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-					KnowledgeTree installation has been detected. Please click <b>Next</b> to continue.
-				<br/><br/>
-			<?php
-		}
-	?>
 <!--Warning and Error Messages-->
 	<?php if($errors) { ?>
 		<span class='cross'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -26,19 +16,18 @@
 	<?php } ?>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<p class="description">
-			Enter the full path of the installation you wish to upgrade:
+			The Setup Wizard will now prepare your current KnowledgeTree database for migration to the new KnowledgeTree Stack. 
+			</p>
+			
+			<p class="description">
+			Please enter the full path of the installation you wish to upgrade:
 		</p>
-		<p class="empty_space">
-			<small>The default is <b>'C:\Program Files\ktdms'</b> on Windows and <b>'/opt/ktdms'</b> or <b>'/home/<i>username</i>/ktdms/'</b> on other operating systems.</small>
-		</p>
-		<p class="empty_space">
-			<small>
-				Make sure that the KnowledgeTree services are running.
-			</small>
-		</p>
-		<br/>
+		
 		<input id="location" name="location" type="text" style="width:430px; float:left" value="<?php if($location) echo $location; ?>">
 		<br/><br/>
+		<p class="description">
+			<small>(The default is <b>'C:\Program Files\ktdms'</b> on Windows and <b>'/opt/ktdms'</b> or <b>'/home/<i>username</i>/ktdms/'</b> on other operating systems.)</small>
+		</p>
 		<?php
 		if($errors) {
 			foreach ($errors as $error) {
