@@ -64,7 +64,7 @@ select {
 /* *** Layout Styles *** */
 
 #wrapper {
-	background: white; min-height:410px;
+	background: white; min-height:500px;
 }
 
 #outer-wrapper {
@@ -87,12 +87,12 @@ select {
 #container {
 	background: white url("../graphics/left.png") repeat-y left;
 	overflow:auto;
-	/*min-height:630px;height:410px;*/min-height:410px;
+	/*min-height:630px;height:410px;*/min-height:500px;
 }
 
 #content {
     margin-left: 220px;
-    /*height:515px;*/height:400px;
+    /*height:515px;*/height:500px;
 }
 
 #content_container {
