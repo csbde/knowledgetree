@@ -94,8 +94,8 @@ class ajaxHandler{
 		
 		
 		//TODO: Get rid of this service
-		$this->loadService('auth');
-		$this->authenticator=new auth($this,$this->ret,$this->kt,$this->request,$this->auth);
+//		$this->loadService('auth');
+//		$this->authenticator=new auth($this,$this->ret,$this->kt,$this->request,$this->auth);
 		
 		
 		
@@ -273,6 +273,9 @@ class ajaxHandler{
 		
 		$kt=$this->kt;
 		
+		/*
+		 * User Check
+		 */
         $o_user=$kt->get_user_object_by_username($user);
         
         if(PEAR::isError($o_user)){
@@ -281,6 +284,33 @@ class ajaxHandler{
         	return false;
         }
         
+        /*
+         * BAOBAB Licence Check
+         */
+       if ($user != 'admin') {
+        	try{
+        		if(class_exists('BaobabKeyUtil')){
+		            if (!BaobabKeyUtil::checkIfLicensed(true)) {
+		                $this->ret->setResponse(array('authenticated'=> false, 'message'=> 'license_expired'));
+		                $this->ret->addError('Licence Expired');
+		                return false;
+		            }
+        		}else{
+        			$this->ret->addError('Licence Utility could not be loaded. Appears to be a Community version.');
+        			$this->ret->setResponse(array('authenticated'=> false, 'message'=> 'Licence Utility could not be loaded. Appears to be a Community version.'));
+        			return false;
+				}
+        	}catch(Exception $e){
+        		$this->ret->addError('could not execute BaobabKeyUtil::checkIfLicensed');
+        		$this->ret->setResponse(array('authenticated'=> false, 'message'=> 'BaobabKeyUtil::checkIfLicensed error'));
+        		return;
+        	}
+        }
+        
+        
+        /*
+         * Password Check
+         */
         try{
         	$l_pass=$o_user->getPassword();
         	$l_passHash=md5($l_pass.$this->auth['token']);
