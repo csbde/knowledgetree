@@ -243,19 +243,19 @@ class unixLucene extends unixService {
 	*/
 	private function writeLuceneProperties() {
 		// Check if bin is readable and writable
-			$fileLoc = $this->getluceneDir()."KnowledgeTreeIndexer.properties";
-			$fp = fopen($fileLoc, "w+");
-			$content = "server.port=8875\n";
-			$content .= "server.paranoid=false\n";
-			$content .= "server.accept=127.0.0.1\n";
-			$content .= "server.deny=\n";
-			$conf = $this->util->getDataFromSession('configuration');
-			$varDirectory = $conf['paths']['varDirectory']['path'];
-			$content .= "indexer.directory=$varDirectory\n";
-			$content .= "indexer.analyzer=org.apache.lucene.analysis.standard.StandardAnalyzer\n";
-			fwrite($fp, $content);
-			fclose($fp);
-			$this->util->pexec("chmod 777 $fileLoc");
+		$fileLoc = $this->getluceneDir()."KnowledgeTreeIndexer.properties";
+		$fp = fopen($fileLoc, "w+");
+		$content = "server.port=8875\n";
+		$content .= "server.paranoid=false\n";
+		$content .= "server.accept=127.0.0.1\n";
+		$content .= "server.deny=\n";
+		$conf = $this->util->getDataFromSession('configuration');
+		$varDirectory = $conf['paths']['varDirectory']['path'];
+		$content .= "indexer.directory=$varDirectory\n";
+		$content .= "indexer.analyzer=org.apache.lucene.analysis.standard.StandardAnalyzer\n";
+		fwrite($fp, $content);
+		fclose($fp);
+		@chmod($fileLoc, 0644);
 	}
 }
 ?>
