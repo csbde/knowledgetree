@@ -159,20 +159,20 @@ Else
 				If (NOT isServiceStarted(svcName)) Then
 					If (NOT startService(svcName)) Then
 						isSuccess = FALSE
-						writeLog "The " & KTOFFICE & " KnowledgeTree service could not be started. Result Code: " & lastErrorCode
+						writeLog "The " & KTOFFICE & " KnowledgeTree service could not be started. Result Code: " & getServiceErrorMessage(lastErrorCode)
 					Else
 						writeLog "The " & KTOFFICE & " KnowledgeTree service was successfully started"
 					End If
 					
 					writeLog "Successfully started " & KTOFFICE
 				Else
-					writeLog KTOFFICE & " already started. Result Code: " & lastErrorCode
+					writeLog KTOFFICE & " already started. Result Code: " & getServiceErrorMessage(lastErrorCode)
 				End If
 				
 				If (isSuccess) Then
 					Wscript.Echo "The " & KTOFFICE & " KnowledgeTree service was successfully started"
 				Else
-					Wscript.Echo "The " & KTOFFICE & " KnowledgeTree service could not be started. Result Code: " & lastErrorCode
+					Wscript.Echo "The " & KTOFFICE & " KnowledgeTree service could not be started. Result Code: " & getServiceErrorMessage(lastErrorCode)
 				End If
 			
 			Case "scheduler"
@@ -181,20 +181,20 @@ Else
 				If (NOT isServiceStarted(svcName)) Then
 					If (NOT startService(svcName)) Then
 						isSuccess = FALSE
-						writeLog "The " & KTSCHEDULER & " KnowledgeTree service could not be started. Result Code: " & lastErrorCode
+						writeLog "The " & KTSCHEDULER & " KnowledgeTree service could not be started. Result Code: " & getServiceErrorMessage(lastErrorCode)
 					Else
 						writeLog "The " & KTSCHEDULER & " KnowledgeTree service was successfully started"
 					End If
 					
 					writeLog "Successfully started " & KTSCHEDULER
 				Else
-					writeLog KTSCHEDULER & " already started. Result Code: " & lastErrorCode
+					writeLog KTSCHEDULER & " already started. Result Code: " & getServiceErrorMessage(lastErrorCode)
 				End If
 
 				If (isSuccess) Then
 					Wscript.Echo "The " & KTSCHEDULER & " KnowledgeTree service was successfully started"
 				Else
-					Wscript.Echo "The " & KTSCHEDULER & " KnowledgeTree service could not be started. Result Code: " & lastErrorCode
+					Wscript.Echo "The " & KTSCHEDULER & " KnowledgeTree service could not be started. Result Code: " & getServiceErrorMessage(lastErrorCode)
 				End If
 				
 			Case "lucene"
@@ -203,20 +203,20 @@ Else
 				If (NOT isServiceStarted(svcName)) Then
 					If (NOT startService(svcName)) Then
 						isSuccess = false
-						writeLog "The " & KTLUCENE & " KnowledgeTree service could not be started. Result Code: " & lastErrorCode
+						writeLog "The " & KTLUCENE & " KnowledgeTree service could not be started. Result Code: " & getServiceErrorMessage(lastErrorCode)
 					Else
 						writeLog "The " & KTLUCENE & " KnowledgeTree service was successfully started"
 					End If
 					
 					writeLog "Successfully started " & KTLUCENE
 				Else
-					writeLog KTLUCENE & " already started. Result Code: " & lastErrorCode
+					writeLog KTLUCENE & " already started. Result Code: " & getServiceErrorMessage(lastErrorCode)
 				End If
 
 				If (isSuccess) Then
 					Wscript.Echo "The " & KTLUCENE & " KnowledgeTree service was successfully started"
 				Else
-					Wscript.Echo "The " & KTLUCENE & " KnowledgeTree service could not be started. Result Code: " & lastErrorCode
+					Wscript.Echo "The " & KTLUCENE & " KnowledgeTree service could not be started. Result Code: " & getServiceErrorMessage(lastErrorCode)
 				End If
 			End Select
 		Else
@@ -226,30 +226,36 @@ Else
 			If (NOT isServiceStarted(svcName)) Then
 				If (NOT startService(svcName)) Then
 					isSuccess = false
-				End If
-					writeLog "Successfully started " & KTOFFICE
+					writeLog "Couldn't start. " & KTOFFICE & " Result Code: " & getServiceErrorMessage(lastErrorCode)
 				Else
-					writeLog KTOFFICE & " already started. Result Code: " & lastErrorCode
+					writeLog "Successfully started " & KTOFFICE
+				End If
+			Else
+				writeLog KTOFFICE & " already started. Result Code: " & getServiceErrorMessage(lastErrorCode)
 			End If
 
 			svcName = KTSCHEDULER
 			If (NOT isServiceStarted(svcName)) Then
 				If (NOT startService(svcName)) Then
 					isSuccess = false
-				End If
-					writeLog "Successfully started " & KTSCHEDULER
+					writeLog "Couldn't start " & KTSCHEDULER & " Result Code: " & getServiceErrorMessage(lastErrorCode)
 				Else
-					writeLog KTSCHEDULER & " already started. Result Code: " & lastErrorCode
+					writeLog "Successfully started " & KTSCHEDULER
+				End If
+			Else
+				writeLog KTSCHEDULER & " already started. Result Code: " & getServiceErrorMessage(lastErrorCode)
 			End If
 
 			svcName = KTLUCENE
 			If (NOT isServiceStarted(svcName)) Then
 				If (NOT startService(svcName)) Then
 					isSuccess = false
-				End If
-					writeLog "Successfully started " & KTLUCENE
+					writeLog "Couldn't start " & KTLUCENE & " Result Code: " & getServiceErrorMessage(lastErrorCode)
 				Else
-					writeLog KTLUCENE & " already started. Result Code: " & lastErrorCode
+					writeLog "Successfully started " & KTLUCENE
+				End If
+			Else
+				writeLog KTLUCENE & " already started. Result Code: " & getServiceErrorMessage(lastErrorCode)
 			End If
 
 			If (isSuccess) Then
@@ -267,20 +273,20 @@ Else
 				If (isServiceStarted(svcName)) Then
 					If (NOT stopService(svcName)) Then
 						isSuccess = false
-						writeLog "The " & KTOFFICE & " KnowledgeTree service could not be stopped. Result Code: " & lastErrorCode
+						writeLog "The " & KTOFFICE & " KnowledgeTree service could not be stopped. Result Code: " & getServiceErrorMessage(lastErrorCode)
 					Else
 						writeLog "The " & KTOFFICE & " KnowledgeTree service was successfully stopped"
 					End If
 					
 					writeLog "Successfully stopped " & KTOFFICE
 				Else
-					writeLog KTOFFICE & " already stopped. Result Code: " & lastErrorCode
+					writeLog KTOFFICE & " already stopped. Result Code: " & getServiceErrorMessage(lastErrorCode)
 				End If
 
 				If (isSuccess) Then
 					Wscript.Echo "The " & KTOFFICE & " KnowledgeTree service was successfully stopped"
 				Else
-					Wscript.Echo "The " & KTOFFICE & " KnowledgeTree service could not be stopped. Result Code: " & lastErrorCode
+					Wscript.Echo "The " & KTOFFICE & " KnowledgeTree service could not be stopped. Result Code: " & getServiceErrorMessage(lastErrorCode)
 				End If
 				
 			Case "scheduler"	
@@ -289,20 +295,20 @@ Else
 				If (isServiceStarted(svcName)) Then
 					If (NOT stopService(svcName)) Then
 						isSuccess = false
-						writeLog "The " & KTSCHEDULER & " KnowledgeTree service could not be stopped. Result Code: " & lastErrorCode
+						writeLog "The " & KTSCHEDULER & " KnowledgeTree service could not be stopped. Result Code: " & getServiceErrorMessage(lastErrorCode)
 					Else
 						writeLog "The " & KTSCHEDULER & " KnowledgeTree service was successfully stopped"
 					End If
 					
 					writeLog "Successfully stopped " & KTSCHEDULER
 				Else
-					writeLog KTSCHEDULER & " already stopped. Result Code: " & lastErrorCode
+					writeLog KTSCHEDULER & " already stopped. Result Code: " & getServiceErrorMessage(lastErrorCode)
 				End If
 
 				If (isSuccess) Then
 					Wscript.Echo "The " & KTSCHEDULER & " KnowledgeTree service was successfully stopped"
 				Else
-					Wscript.Echo "The " & KTSCHEDULER & " KnowledgeTree service could not be stopped. Result Code: " & lastErrorCode
+					Wscript.Echo "The " & KTSCHEDULER & " KnowledgeTree service could not be stopped. Result Code: " & getServiceErrorMessage(lastErrorCode)
 				End If
 				
 			Case "lucene"	
@@ -311,20 +317,20 @@ Else
 				If (isServiceStarted(svcName)) Then
 					If (NOT stopService(svcName)) Then
 						isSuccess = false
-						writeLog "The " & KTLUCENE & " KnowledgeTree service could not be stopped. Result Code: " & lastErrorCode
+						writeLog "The " & KTLUCENE & " KnowledgeTree service could not be stopped. Result Code: " & getServiceErrorMessage(lastErrorCode)
 					Else
 						writeLog "The " & KTLUCENE & " KnowledgeTree service was successfully stopped"
 					End If
 					
 					writeLog "Successfully stopped " & KTLUCENE
 				Else
-					writeLog KTLUCENE & " already stopped. Result Code: " & lastErrorCode
+					writeLog KTLUCENE & " already stopped. Result Code: " & getServiceErrorMessage(lastErrorCode)
 				End If
 				
 				If (isSuccess) Then
 					Wscript.Echo "The " & KTLUCENE & " KnowledgeTree service was successfully stopped"
 				Else
-					Wscript.Echo "The " & KTLUCENE & " KnowledgeTree service could not be stopped. Result Code: " & lastErrorCode
+					Wscript.Echo "The " & KTLUCENE & " KnowledgeTree service could not be stopped. Result Code: " & getServiceErrorMessage(lastErrorCode)
 				End If
 			End Select
 		Else
@@ -335,30 +341,36 @@ Else
 			If (isServiceStarted(svcName)) Then
 				If (NOT stopService(svcName)) Then
 					isSuccess = false
-				End If
-					writeLog "Successfully stopped " & KTOFFICE
+					writeLog "Couldn't stop." & KTOFFICE & " Result Code: " & getServiceErrorMessage(lastErrorCode)
 				Else
-					writeLog KTOFFICE & " already stopped. Result Code: " & lastErrorCode
+					writeLog "Successfully stopped " & KTOFFICE
+				End If
+			Else
+				writeLog KTOFFICE & " already stopped. Result Code: " & getServiceErrorMessage(lastErrorCode)
 			End If
 
 			svcName = KTSCHEDULER
 			If (isServiceStarted(svcName)) Then
 				If (NOT stopService(svcName)) Then
 					isSuccess = false
-				End If
-					writeLog "Successfully stopped " & KTSCHEDULER
+					writeLog "Couldn't stop." & KTSCHEDULER & " Result Code: " & getServiceErrorMessage(lastErrorCode)
 				Else
-					writeLog KTSCHEDULER & " already stopped. Result Code: " & lastErrorCode
+					writeLog "Successfully stopped " & KTSCHEDULER
+				End If
+			Else
+				writeLog KTSCHEDULER & " already stopped. Result Code: " & getServiceErrorMessage(lastErrorCode)
 			End If
 
 			svcName = KTLUCENE
 			If (isServiceStarted(svcName)) Then
 				If (NOT stopService(svcName)) Then
 					isSuccess = false
-				End If
-					writeLog "Successfully stopped " & KTLUCENE
+					writeLog "Couldn't stop." & KTLUCENE & " Result Code: " & getServiceErrorMessage(lastErrorCode)
 				Else
-					writeLog KTLUCENE & " already stopped. Result Code: " & lastErrorCode
+					writeLog "Successfully stopped " & KTLUCENE
+				End If
+			Else
+				writeLog KTLUCENE & " already stopped. Result Code: " & getServiceErrorMessage(lastErrorCode)
 			End If
 
 			If (isSuccess) Then
@@ -669,3 +681,59 @@ Public Sub writeLog(ByVal strMessage)
 	objTextFile.Close
 End Sub
 
+Public Function getServiceErrorMessage(ByVal errCode)
+	Select Case errCode
+		Case SVC_SUCCESS 
+			getServiceErrorMessage = "Success"
+		Case SVC_NOT_SUPPORTED 
+			getServiceErrorMessage =  "Not Supported"
+		Case SVC_ACCESS_DENIED
+			getServiceErrorMessage = "Access Denied"
+		Case SVC_DEPENDENT_SERVICES_RUNNING
+			getServiceErrorMessage = "Dependent Services Running"
+		Case SVC_INVALID_SERVICE_CONTROL
+			getServiceErrorMessage = "Invalid Service Control"
+		Case SVC_SERVICE_CANNOT_ACCEPT_CONTROL 
+			getServiceErrorMessage = "Service Cannot Accept Control"
+		Case SVC_SERVICE_NOT_ACTIVE 
+			getServiceErrorMessage = "Service Not Active"
+		Case SVC_SERVICE_REQUEST_TIMEOUT 
+			getServiceErrorMessage = "Service Request Timeout"
+		Case SVC_UNKNOWN_FAILURE 
+			getServiceErrorMessage = "Unknown Failure"
+		Case SVC_PATH_NOT_FOUND 
+			getServiceErrorMessage = "Path Not Found"
+		Case SVC_SERVICE_ALREADY_RUNNING 
+			getServiceErrorMessage = "Service Already Running"
+		Case SVC_SERVICE_DATABASE_LOCKED 
+			getServiceErrorMessage = "Service Database Locked"
+		Case SVC_SERVICE_DEPENDENCY_DELETED 
+			getServiceErrorMessage = "Service Dependency Deleted"
+		Case SVC_SERVICE_DEPENDENCY_FAILURE 
+			getServiceErrorMessage = "Service Dependency Failure"
+		Case SVC_SERVICE_DISABLED 
+			getServiceErrorMessage = "Service Disabled"
+		Case SVC_SERVICE_LOGON_FAILURE 
+			getServiceErrorMessage = "Service Logon Failure"
+		Case SVC_SERVICE_MARKED_FOR_DELETION 
+			getServiceErrorMessage = "Service Marked For Deletion"
+		Case SVC_SERVICES_NO_THREAD 
+			getServiceErrorMessage = "Service No Thread"
+		Case SVC_STATUS_CIRCULAR_DEPENDENCY 
+			getServiceErrorMessage = "Status Circular Dependency"
+		Case SVC_STATUS_DUPLICATE_NAME 
+			getServiceErrorMessage = "Status Duplicate Name"
+		Case SVC_INVALID_NAME 
+			getServiceErrorMessage = "Status Invalid Name"
+		Case SVC_STATUS_INVALID_PARAMETER 
+			getServiceErrorMessage = "Status Invalid Parameter"
+		Case SVC_INVALID_SERVICES_ACCOUNT 
+			getServiceErrorMessage = "Status Invalid Service Account"
+		Case SVC_STATUS_SERVICE_EXISTS 
+			getServiceErrorMessage = "Status Service Exists"
+		Case SVC_SERVICE_ALREADY_PAUSED 
+			getServiceErrorMessage = "Service Already Paused"
+		Case Else
+			getServiceErrorMessage = "Unknown Failure"
+	End Select
+End Function
