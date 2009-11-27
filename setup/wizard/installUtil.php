@@ -1061,9 +1061,6 @@ class InstallUtil {
 
     // {{{ copyDirectory
     function copyDirectory($sSrc, $sDst, $bMove = false) {
-        if (file_exists($sDst)) {
-            return false; //PEAR::raiseError(_kt("Destination directory already exists."));
-        }
         if (!WINDOWS_OS) {
             if ($bMove && file_exists('/bin/mv')) {
                 $this->pexec(array('/bin/mv', $sSrc, $sDst));
@@ -1081,15 +1078,13 @@ class InstallUtil {
         if ($hSrc === false) {
             return false; //PEAR::raiseError(sprintf(_kt("Could not open source directory: %s"), $sSrc));
         }
-        if (@mkdir($sDst, 0777) === false) {
-            return false; //PEAR::raiseError(sprintf(_kt("Could not create destination directory: %s"), $sDst));
-        }
+        @mkdir($sDst, 0777);
         while (($sFilename = readdir($hSrc)) !== false) {
             if (in_array($sFilename, array('.', '..'))) {
                 continue;
             }
-            $sOldFile = sprintf("%s/%s", $sSrc, $sFilename);
-            $sNewFile = sprintf("%s/%s", $sDst, $sFilename);
+            $sOldFile = sprintf("%s"  . DS . "%s", $sSrc, $sFilename);
+            $sNewFile = sprintf("%s" . DS . "%s", $sDst, $sFilename);
             if (is_dir($sOldFile)) {
                 $this->copyDirectory($sOldFile, $sNewFile, $bMove);
                 continue;
