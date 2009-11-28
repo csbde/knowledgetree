@@ -155,7 +155,7 @@ class thumbnailGenerator extends BaseProcessor
             $pdfFile = $pdfDir .DIRECTORY_SEPARATOR. $this->document->iId.'.pdf';
 	    }
 
-        $thumbnaildir = $default->internalVarDirectory.DIRECTORY_SEPARATOR.'thumbnails';
+        $thumbnaildir = $default->varDirectory.DIRECTORY_SEPARATOR.'thumbnails';
 
 		if (stristr(PHP_OS,'WIN')) {
             $thumbnaildir = str_replace('/', '\\', $thumbnaildir);
@@ -189,7 +189,7 @@ class thumbnailGenerator extends BaseProcessor
 		else {
 			$cmd = "{$pathConvert} {$pdfFile}[0] -resize 200x200 $thumbnailfile";
 		}
-		
+
 		$result = KTUtil::pexec($cmd);
         return true;
     }
@@ -216,16 +216,15 @@ class ThumbnailViewlet extends KTDocumentViewlet {
             return '';
         }
 
-        // Check for the thumbnail
+        // Check that the thumbnail exists on disk
         global $default;
-		$varDir = $default->internalVarDirectory;
-		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
-
-		if (stristr(PHP_OS,'WIN')) {
-			$varDir = str_replace('/', '\\', $varDir);
-		}
-
+		$varDir = $default->varDirectory;
 		$thumbnailCheck = $varDir . '/thumbnails/'.$documentId.'.jpg';
+
+		// Use correct slashes for windows
+		if (strpos(PHP_OS, 'WIN') !== false) {
+			$thumbnailCheck = str_replace('/', '\\', $thumbnailCheck);
+		}
 
 		// if the thumbnail doesn't exist try to create it
 		if (!file_exists($thumbnailCheck)){
@@ -239,18 +238,24 @@ class ThumbnailViewlet extends KTDocumentViewlet {
             }
 		}
 
-		// check for existence and status of instant view plugin
+		// check for existence and status of the instant view plugin
 		$url = '';
         if (KTPluginUtil::pluginIsActive('instaview.processor.plugin'))
         {
              require_once KTPluginUtil::getPluginPath('instaview.processor.plugin') . 'instaViewLinkAction.php';
              $ivLinkAction = new instaViewLinkAction();
              $url = $ivLinkAction->getViewLink($documentId, 'document');
-         }
+        }
 
         // Get the url to the thumbnail and render it
-		$thumbnailUrl = str_replace($default->internalVarDirectory, 'var', $thumbnailfile);
-        $oTemplate->setData(array(
+        // Ensure url has correct slashes
+		$sHostPath = KTUtil::kt_url();
+		$plugin_path = KTPluginUtil::getPluginPath('thumbnails.generator.processor.plugin');
+		$thumbnailUrl = $plugin_path . 'thumbnail_view.php?documentId='.$documentId;
+		$thumbnailUrl = str_replace('\\', '/', $thumbnailUrl);
+		$thumbnailUrl = str_replace(KT_DIR, $sHostPath, $thumbnailUrl);
+
+		$oTemplate->setData(array(
             'thumbnail' => $thumbnailUrl,
             'url' => $url
             ));
@@ -259,7 +264,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 
     public function get_width($documentId){
     	global $default;
-    	$varDir = $default->internalVarDirectory;
+    	$varDir = $default->varDirectory;
 		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
 		if(file_exists($thumbnailfile)){
 		    return 200;
