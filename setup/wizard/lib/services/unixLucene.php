@@ -251,7 +251,7 @@ class unixLucene extends unixService {
 		$content .= "server.deny=\n";
 		$conf = $this->util->getDataFromSession('configuration');
 		$varDirectory = $conf['paths']['varDirectory']['path'];
-		$content .= "indexer.directory=$varDirectory" . DIRECTORY_SEPARATOR . "indexes\n";
+		$content .= "indexer.directory=$varDirectory" . DS . "indexes\n";
 		$content .= "indexer.analyzer=org.apache.lucene.analysis.standard.StandardAnalyzer\n";
 		fwrite($fp, $content);
 		fclose($fp);
