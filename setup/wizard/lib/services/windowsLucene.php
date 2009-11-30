@@ -483,7 +483,7 @@ class windowsLucene extends windowsService {
 	*/
 	private function writeLuceneProperties() {
 		// Check if bin is readable and writable
-		$fileLoc = $this->getluceneDir()."KnowledgeTreeIndexer.properties";
+		$fileLoc = $this->getluceneDir(). DS ."KnowledgeTreeIndexer.properties";
 		$fp = fopen($fileLoc, "w+");
 		$content = "server.port=8875\n";
 		$content .= "server.paranoid=false\n";
