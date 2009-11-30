@@ -2,7 +2,6 @@
 
 rem KnowledgeTree Control Script
 
-
 rem ============= SET ENVIRONMENT VARIABLES ==============
 set INSTALL_PATH=%~dp0
 cd ..
@@ -87,7 +86,7 @@ goto end
 
 :path
 echo ZEND_PATH     == %ZEND_PATH%
-echo KTDMS_PATH     == %KTDMS_PATH%
+echo KTDMS_PATH    == %KTDMS_PATH%
 echo INSTALL_PATH  == %INSTALL_PATH%
 echo JAVA_BIN      == %JAVA_BIN%
 echo SOFFICE_PATH  == %SOFFICE_PATH%
@@ -97,10 +96,11 @@ goto end
 :install
 echo Installing services
 IF EXIST "%INSTALL_PATH%\var\bin\officeinstall.bat" call "%INSTALL_PATH%\var\bin\officeinstall.bat"
-echo The Open Office automatic service was successfully installed
+IF EXIST "%INSTALL_PATH%\var\bin\officeinstall.bat" echo The Open Office automatic service was successfully installed.
 IF EXIST "%INSTALL_PATH%\var\bin\schedulerinstall.bat" call "%INSTALL_PATH%\var\bin\schedulerinstall.bat"
-echo The Scheduler automatic service was successfully installed
+IF EXIST "%INSTALL_PATH%\var\bin\schedulerinstall.bat" echo The Scheduler automatic service was successfully installed.
 IF EXIST "%INSTALL_PATH%\var\bin\luceneinstall.bat" call "%INSTALL_PATH%\var\bin\luceneinstall.bat"
+IF EXIST "%INSTALL_PATH%\var\bin\luceneinstall.bat" echo The Lucene automatic service was successfully installed.
 goto end
 
 :end
