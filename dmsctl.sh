@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Boot KnowledgeTree services
 # chkconfig: 2345 55 25
 # description: KnowledgeTree Services
