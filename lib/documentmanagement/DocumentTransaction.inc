@@ -9,7 +9,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -59,7 +59,22 @@ class DocumentTransaction extends KTEntity {
 	var $sFileName;
 	var $sComment;
 	var $sTransactionNS;
+	var $iSessionId;
 	var $bAdminMode = 0;
+
+	var $_aFieldToSelect = array(
+        'iId' => 'id',
+        'iDocumentID' => 'document_id',
+        'sVersion' => 'version',
+        'iUserID' => 'user_id',
+        'dDateTime' => 'datetime',
+        'sIP' => 'ip',
+        'sFileName' => 'filename',
+        'sComment' => 'comment',
+        'sTransactionNS' => 'transaction_namespace',
+        'iSessionId' => 'session_id',
+        'bAdminMode' => 'admin_mode',
+    );
 
 	/**
 	* Constructor
@@ -69,10 +84,17 @@ class DocumentTransaction extends KTEntity {
 	* @param 	Primary key of transaction type
 	*
 	*/
-	function DocumentTransaction($oDocument, $sNewComment, $sTransactionNS, $aOptions = null) {
+	function DocumentTransaction($oDocument = null, $sNewComment = null, $sTransactionNS = null, $aOptions = null) {
         if (is_null($aOptions)) {
             $aOptions = array();
         }
+
+        // class breaks convention and passes the document object into the constructor
+        // ktentity creates the object to get the sql columns, adding a workaround to exit if the document object is empty
+        if(empty($oDocument)){
+            return ;
+        }
+
 		//object not stored yet, id = -1
 		$this->iId = -1;
 
