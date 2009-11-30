@@ -775,7 +775,6 @@ class database extends Step
     	$dropPluginHelper = "TRUNCATE plugin_helper;"; // Remove plugin helper table
     	$this->util->dbUtilities->query($dropPluginHelper);
 		$this->addServerPort();
-    	$this->util->dbUtilities->query($iserverPorts);
     	$updateExternalBinaries = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "externalBinary";'; // Remove references to old paths
     	$this->util->dbUtilities->query($updateExternalBinaries);
     	$this->reBuildPaths();
