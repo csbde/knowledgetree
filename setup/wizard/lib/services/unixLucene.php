@@ -1,6 +1,6 @@
 <?php
 /**
-* Unix Lucene Service Controller. 
+* Unix Lucene Service Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -51,7 +51,7 @@ class unixLucene extends unixService {
 	private $javaXmx;
 	public $name = "KTLucene";
 	public $hrname = "KnowledgeTree Indexer Service";
-	
+
 	/**
 	* Load defaults needed by service
 	*
@@ -70,76 +70,76 @@ class unixLucene extends unixService {
 		$this->setLuceneSourceLoc("ktlucene.jar");
 		$this->setShutdownScript("shutdown.php");
 	}
-	
-	
+
+
 	public function setIndexerDir($indexerDir) {
 		$this->indexerDir = $indexerDir;
 	}
-	
+
 	private function getIndexerDir() {
 		return $this->indexerDir;
 	}
-	
+
 	private function setShutdownScript($shutdownScript) {
 		$this->shutdownScript = $shutdownScript;
 	}
-	
+
 	public function getShutdownScript() {
 		return $this->shutdownScript;
 	}
-	
+
 	private function setLucenePidFile($lucenePidFile) {
 		$this->lucenePidFile = $lucenePidFile;
 	}
-	
+
 	private function getLucenePidFile() {
 		return $this->lucenePidFile;
 	}
-	
+
 	private function setLuceneDir($luceneDir) {
 		$this->luceneDir = $luceneDir;
 	}
-	
+
 	public function getLuceneDir() {
 		return $this->luceneDir;
 	}
-	
+
 	private function setJavaXms($javaXms) {
 		$this->javaXms = "-Xms$javaXms";
 	}
-	
+
 	public function getJavaXms() {
 		return $this->javaXms;
 	}
-	
+
 	private function setJavaXmx($javaXmx) {
 		$this->javaXmx = "-Xmx$javaXmx";
 	}
-	
+
 	public function getJavaXmx() {
 		return $this->javaXmx;
 	}
-	
+
 	private function setLuceneSource($luceneSource) {
 		$this->luceneSource = $luceneSource;
 	}
-	
+
 	public function getLuceneSource() {
 		return $this->luceneSource;
 	}
-	
+
 	private function setLuceneSourceLoc($luceneSourceLoc) {
 		$this->luceneSourceLoc = $this->getLuceneDir().$luceneSourceLoc;
 	}
-	
+
 	public function getLuceneSourceLoc() {
 		return $this->luceneSourceLoc;
 	}
-	
+
 	public function getJavaOptions() {
 		return " {$this->getJavaXmx()} {$this->getJavaXmx()} -jar ";
 	}
-	
+
 	/**
 	* Stop Service
 	*
@@ -157,7 +157,7 @@ class unixLucene extends unixService {
 		}
 		return $state;
     }
-  
+
     public function install() {
     	$status = $this->status();
     	if($status == '') {
@@ -166,7 +166,7 @@ class unixLucene extends unixService {
     		return $status;
     	}
     }
-    
+
     public function status() {
     	$cmd = "ps ax | grep ".$this->getLuceneSource();
     	$response = $this->util->pexec($cmd);
@@ -183,14 +183,14 @@ class unixLucene extends unixService {
     			return '';
     		}
     	}
-    	
+
     	return '';
     }
-    
+
     public function uninstall() {
     	$this->stop();
     }
-    
+
 	/**
 	* Start Service
 	*
@@ -213,26 +213,26 @@ class unixLucene extends unixService {
 //	    		return false;
 //	    	}
 	    	//$response = $this->util->pexec($cmd);
-	    	
+
 //	    	return $response;
 			return false;
     	}
-    	
+
     	return true;
     }
-    
+
 	public function getName() {
 		return $this->name;
 	}
-	
+
 	public function getHRName() {
 		return $this->hrname;
 	}
-	
+
 	public function getStopMsg($installDir) {
 		return "";//"Execute from terminal : $installDir/dmsctl.sh stop";
 	}
-	
+
 	/**
 	* Write Lucene Service property file
 	*
@@ -251,7 +251,7 @@ class unixLucene extends unixService {
 		$content .= "server.deny=\n";
 		$conf = $this->util->getDataFromSession('configuration');
 		$varDirectory = $conf['paths']['varDirectory']['path'];
-		$content .= "indexer.directory=$varDirectory\n";
+		$content .= "indexer.directory=$varDirectory" . DIRECTORY_SEPARATOR . "indexes\n";
 		$content .= "indexer.analyzer=org.apache.lucene.analysis.standard.StandardAnalyzer\n";
 		fwrite($fp, $content);
 		fclose($fp);
