@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -33,7 +34,6 @@
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
- *
  */
 
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');

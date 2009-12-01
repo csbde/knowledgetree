@@ -294,7 +294,7 @@ class migrateServices extends Step
     			$state = 'cross';
     			$this->error[] = "Service : {$serv->getName()} could not be uninstalled.<br/>";
     			$this->serviceCheck = 'cross';
-    			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service Stopped, please uninstall service";
+    			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service Stopped, uninstall service";
     		} else {
     			$state = 'tick';
     			$this->temp_variables['services'][$serv->getName()]['msg'] = "Service has been uninstalled";
@@ -402,7 +402,7 @@ class migrateServices extends Step
     private function storeSilent() {
     	$this->temp_variables['alreadyUninstalled'] = $this->alreadyUninstalled;
     	$this->temp_variables['serviceCheck'] = $this->serviceCheck;
-    	$this->temp_variables['msg'] = "Please turn off KnowledgeTree Mysql Instance.";
+    	$this->temp_variables['msg'] = "Turn off KnowledgeTree Mysql Instance.";
     }
 }
 ?>

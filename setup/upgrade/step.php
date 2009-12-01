@@ -476,6 +476,20 @@ class Step
     protected function storeSilent() {
 
     }
+    
+	/**
+	* Is the installation 
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return string
+	*/
+    public function isCe() {
+    	if($this->util->getVersionType() == "community")
+    		return true;
+    	return false;
+    }
 }
 
 ?>

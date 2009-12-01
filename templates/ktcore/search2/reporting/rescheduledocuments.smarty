@@ -4,12 +4,25 @@
 
 <form name="rescheduleAllDocs" action="{$smarty.server.PHP_SELF}" method="POST">
 <br>
-{if $rescheduleDone == true}
-<p>Documents Rescheduled</p>
-<p>You can view the schedule queue <a href=admin.php?kt_path_info=search/pendingdocuments>here</a></p>
-<br>
+<h4>{i18n}Reschedule All Documents for Indexing{/i18n}</h4>
+<p class='descriptiveText'>{i18n}Schedule all documents in the repository to be indexed.{/i18n}</p>
+{if $rescheduleDone == 'true'}
+<p style="padding-top: 5px;">{i18n}All documents have been rescheduled for indexing.{/i18n}</p>
+<p><a href=admin.php?kt_path_info=search/pendingdocuments>{i18n}View the indexing queue.{/i18n}</a></p>
 {/if}
-<input type="submit" name="Reschedule" value="{i18n}Reschedule All{/i18n}" />
-<input type="hidden" name="rescheduleValue" id="rescheduleValue" value="reschedule" />
+<br>
+<input type="submit" name="Reschedule" value="{i18n}Reschedule All{/i18n}" onclick="document.getElementById('rescheduleValue').value='reschedule';" />
 
+<br><br><br>
+<h4>{i18n}Reschedule All Documents for Processing{/i18n}</h4>
+<p class='descriptiveText'>{i18n}Schedule all documents in the repository to be processed. Processing involves the conversion of documents into PDF format and the generation of thumbnails.{/i18n}</p>
+{if $reprocessDone == 'true'}
+<p style="padding-top: 5px;">{i18n}All documents have been rescheduled for processing.{/i18n}</p>
+{/if}
+<br>
+<input type="submit" name="Reprocess" value="{i18n}Reschedule All{/i18n}" onclick="document.getElementById('rescheduleValue').value='reprocess';" />
+
+<input type="hidden" name="rescheduleDone" id="rescheduleDone" value="{$rescheduleDone}" />
+<input type="hidden" name="reprocessDone" id="reprocessDone" value="{$reprocessDone}" />
+<input type="hidden" name="rescheduleValue" id="rescheduleValue" value="reschedule" />
 </form>

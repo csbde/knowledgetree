@@ -6,7 +6,7 @@
         }
     }?>
 <p class="description_1">
-Please read and accept the license agreement below before continuing with the setup.
+Read and accept the license agreement below before continuing with the setup.
 </p>
 
 <?php if(!empty($errors)) { ?>

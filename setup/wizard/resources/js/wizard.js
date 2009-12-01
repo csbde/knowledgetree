@@ -85,27 +85,27 @@ wizard.prototype.valRegHelper = function() {
 	var last = $("#last");
 	var email = $("#email");
 	if(first.attr('value').length < 1) {
-		$("#reg_error").html('Please enter a First Name');
+		$("#reg_error").html('Enter a First Name');
 		w.focusElement(first);
 		return false;
 	}
 	if(!w.nameCheck(first.attr('value'))) {
-		$("#reg_error").html('Please enter a valid First Name');
+		$("#reg_error").html('Enter a valid First Name');
 		w.focusElement(first);
 		return false;
 	}
 	if(last.attr('value').length < 1) {
-		$("#reg_error").html('Please enter a Last Name');
+		$("#reg_error").html('Enter a Last Name');
 		w.focusElement(last);
 		return false;
 	}
 	if(!w.nameCheck(last.attr('value'))) {
-		$("#reg_error").html('Please enter a valid Last Name');
+		$("#reg_error").html('Enter a valid Last Name');
 		w.focusElement(last);
 		return false;
 	}
 	if(!w.emailCheck(email.attr('value'))) {
-		$("#reg_error").html('Please enter a valid email address');
+		$("#reg_error").html('Enter a valid email address');
 		w.focusElement(email);
 		return false;
 	}

@@ -9,7 +9,7 @@
 		if(!$errors && !$warnings) {
 			?>
 				<span class='big_ok'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-				All services have been shut down. Please click next to continue.
+				All services have been shut down. Click next to continue.
 				<br/><br/>
 			<?php
 		}
@@ -38,7 +38,7 @@
 		<?php } else { ?>
 			All services are uninstalled.
 		<?php } ?>
-		<h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Please shutdown the following services</h3>
+		<h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Shutdown the following services</h3>
 		<?php if($silent) { ?>
 		<?php if($serviceCheck != 'tick') {
 			$details = 'Hide Details';

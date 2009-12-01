@@ -76,11 +76,11 @@ class license extends step {
             if($_POST['license']) {
                 return true;
             } else {
-                $this->error[] = "Please accept the license agreement";
+                $this->error[] = "Accept the license agreement";
                 return false;
             }
         }
-        $this->error[] = "Please accept the license agreement";
+        $this->error[] = "Accept the license agreement";
         return false;
     }
 

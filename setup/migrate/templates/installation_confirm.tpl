@@ -5,7 +5,7 @@
 		if(!$errors && !$warnings) {
 			?>
 				<span class='big_ok'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-				Installation has been detected. Please confirm system settings.
+				Installation has been detected. Confirm system settings.
 				<br/><br/>
 			<?php
 		}
@@ -27,7 +27,7 @@
 	<!--Content-->
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<p class="empty_space">
-			Please verify your current installation settings.
+			Verify your current installation settings.
 		</p>
 		<h3>Installation Settings</h3>
 		<table class="conf_paths">

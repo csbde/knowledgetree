@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id$
+ * $Id: $
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
@@ -33,7 +33,6 @@
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  * Contributor( s): ______________________________________
- *
  */
 
 require_once(KT_DIR . '/search2/documentProcessor/documentProcessor.inc.php');

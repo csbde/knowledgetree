@@ -15,7 +15,7 @@
 		if(!$errors && !$warnings) {
 			?>
 				<span class='big_ok'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-				All service dependencies are met. Please click next to continue.
+				All service dependencies are met. Click next to continue.
 				<br/><br/>
 			<?php
 		}

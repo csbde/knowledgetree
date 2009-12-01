@@ -4,7 +4,7 @@
 	<?php
 		if(!$errors && !$warnings) {
 			?>
-				<span class='big_ok'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class='continue_message'>All configuration settings are correctly set. Please click next to continue.</span><br/><br/>
+				<span class='big_ok'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class='continue_message'>All configuration settings are correctly set. Click next to continue.</span><br/><br/>
 			<?php
 		}
 	?>

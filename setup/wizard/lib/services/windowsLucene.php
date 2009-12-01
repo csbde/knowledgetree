@@ -5,7 +5,7 @@
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright (C) 2008,2009 KnowledgeTree Inc.
-* 
+*
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -135,7 +135,7 @@ class windowsLucene extends windowsService {
 	public $hrname = "KnowledgeTree Indexer Service. (KTLucene)";
 
 	public $description = "KnowledgeTree Indexer Service.";
-	
+
 	/**
 	* Load defaults needed by service
 	*
@@ -464,15 +464,15 @@ class windowsLucene extends windowsService {
 
 		return '';
 	}
-	
+
 	public function getHRName() {
 		return $this->hrname;
 	}
-	
+
 	public function getStopMsg($installDir) {
 		return "";//"Execute from command prompt : $installDir/dmsctl.bat stop";
 	}
-	
+
 	/**
 	* Write Lucene Service property file
 	*
@@ -483,7 +483,7 @@ class windowsLucene extends windowsService {
 	*/
 	private function writeLuceneProperties() {
 		// Check if bin is readable and writable
-		$fileLoc = $this->getluceneDir()."KnowledgeTreeIndexer.properties";
+		$fileLoc = $this->getluceneDir(). DS ."KnowledgeTreeIndexer.properties";
 		$fp = fopen($fileLoc, "w+");
 		$content = "server.port=8875\n";
 		$content .= "server.paranoid=false\n";
@@ -491,8 +491,9 @@ class windowsLucene extends windowsService {
 		$content .= "server.deny=\n";
 		$conf = $this->util->getDataFromSession('configuration');
 		$varDirectory = $conf['paths']['varDirectory']['path'];
-		$content .= "indexer.directory=$varDirectory\n";
-		$content .= "indexer.analyzer=org.apache.lucene.analysis.standard.StandardAnalyzer\n";
+		$content .= "indexer.directory=$varDirectory" . DS . "indexes\n";
+		// on Windows the path needs to be escaped or the Java Lucene code cannot understand it
+		$content .= "indexer.directory=" . str_replace('\\', '\\\\', $varDirectory . DS . "indexes") . "\n";
 		fwrite($fp, $content);
 		fclose($fp);
 		chmod($fileLoc, 0644);
