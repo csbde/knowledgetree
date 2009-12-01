@@ -100,7 +100,6 @@ IF EXIST "%INSTALL_PATH%\var\bin\officeinstall.bat" echo The Open Office automat
 IF EXIST "%INSTALL_PATH%\var\bin\schedulerinstall.bat" call "%INSTALL_PATH%\var\bin\schedulerinstall.bat"
 IF EXIST "%INSTALL_PATH%\var\bin\schedulerinstall.bat" echo The Scheduler automatic service was successfully installed.
 IF EXIST "%INSTALL_PATH%\var\bin\luceneinstall.bat" call "%INSTALL_PATH%\var\bin\luceneinstall.bat"
-IF EXIST "%INSTALL_PATH%\var\bin\luceneinstall.bat" echo The Lucene automatic service was successfully installed.
 goto end
 
 :end
