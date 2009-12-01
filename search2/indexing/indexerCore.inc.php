@@ -700,6 +700,17 @@ abstract class Indexer
     	DBUtil::runQuery($sql);
     }
 
+    public static function processAll()
+    {
+        // Empty the queue
+    	$sql = "DELETE FROM process_queue";
+    	DBUtil::runQuery($sql);
+
+    	// Add all documents to the queue
+    	$sql = "INSERT INTO process_queue(document_id, date_added) SELECT id, now() FROM documents WHERE status_id=1 and id not in (select document_id from process_queue)";
+    	DBUtil::runQuery($sql);
+    }
+
     public static function indexFolder($folder)
     {
         $userid=$_SESSION['userID'];
