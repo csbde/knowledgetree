@@ -1,0 +1,1 @@
+INSERT INTO process_queue(document_id, date_added) SELECT id, now() FROM documents WHERE status_id=1 and id not in (select document_id from process_queue);

@@ -54,7 +54,7 @@
         <p class="description">Click <b>Next</b> to continue.</p>
 		<?php } ?>
 <!--Handle a failed dump-->
-<?php if(isset($errors)) { ?>
+<?php if(!empty($errors)) { ?>
 	<?php
 		foreach ($errors as $error) {
 		?>
@@ -81,8 +81,7 @@
 //					echo $error['cmd'];
 	//			}
 		}
-	}
-	?>
+?>
 <p class="description">
 	Ensure that the new Mysql server installed from your operating system's repository is not running
 </p>
@@ -119,6 +118,10 @@
 	<?php } ?>
 </p>
 <br/>
+<?php
+	}
+	?>
+
 
 			<br/>
 		</div>
