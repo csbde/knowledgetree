@@ -220,7 +220,7 @@ class migrateInstallation extends step
 				$this->error[] = "KnowledgeTree installation configuration file not found";
 			}
 		} else {
-			$this->error[] = "Please Enter a Location";
+			$this->error[] = "Enter a Location";
 		}
 
 		return false;

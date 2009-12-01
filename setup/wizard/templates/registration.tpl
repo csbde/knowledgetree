@@ -21,7 +21,7 @@
 	<input type="hidden" id="state" name="" />
 	<p class='disclaimer'>
 	We will not share your information with 3rd-parties, nor will we send you information not directly related to KnowledgeTree's products
-	and services. Please see our <a href="http://www.knowledgetree.com/about/legal" target="_blank">Privacy and Data Retention policies</a> for more information.
+	and services. See our <a href="http://www.knowledgetree.com/about/legal" target="_blank">Privacy and Data Retention policies</a> for more information.
 	</p>
 	<br/>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
