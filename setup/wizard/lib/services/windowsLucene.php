@@ -493,6 +493,7 @@ class windowsLucene extends windowsService {
 		$varDirectory = $conf['paths']['varDirectory']['path'];
 		// on Windows the path needs to be escaped or the Java Lucene code cannot understand it
 		$content .= "indexer.directory=" . str_replace('\\', '/', $varDirectory . DS . "indexes") . "\n";
+		$content .= "indexer.analyzer=org.apache.lucene.analysis.standard.StandardAnalyzer\n";
 		fwrite($fp, $content);
 		fclose($fp);
 		chmod($fileLoc, 0644);
