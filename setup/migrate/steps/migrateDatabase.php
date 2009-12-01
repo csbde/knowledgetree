@@ -211,6 +211,7 @@ class migrateDatabase extends Step
     	$database = $this->getDataFromSession("database");
 		$installation = $this->getDataFromSession("installation"); // Get installation directory
     	$location = $installation['location'];
+    	$this->temp_variables['location'] = $location;
     	if(isset($database['dumpLocation'])) {
     		if(!empty($database['dumpLocation'])) {
     			if(file_exists($database['dumpLocation'])) { // Maybe file has been deleted by tmp
@@ -222,7 +223,7 @@ class migrateDatabase extends Step
         $this->temp_variables['duname'] = $this->getPostSafe('duname');
         $this->temp_variables['dpassword'] = $this->getPostSafe('dpassword');
         $this->temp_variables['dumpLocation'] = $this->getPostSafe('dumpLocation');
-    	$this->temp_variables['location'] = $location;
+    	
     	
         return true;
     }

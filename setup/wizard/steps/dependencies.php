@@ -375,7 +375,7 @@ class dependencies extends Step
             array('name' => 'Open base directory', 'configuration' => 'open_basedir', 'recommended' => 'unset', 'type' => 'empty'),
             array('name' => 'Default MIME type', 'configuration' => 'default_mimetype', 'recommended' => 'text/html', 'type' => 'string'),
         );
-        if(!WINDOWS_OS) {
+        if(!WINDOWS_OS) { // Remove linux settings
         	unset($conf[1]);
         	unset($conf[2]);
         }
