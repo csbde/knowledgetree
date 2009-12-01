@@ -491,9 +491,8 @@ class windowsLucene extends windowsService {
 		$content .= "server.deny=\n";
 		$conf = $this->util->getDataFromSession('configuration');
 		$varDirectory = $conf['paths']['varDirectory']['path'];
-		$content .= "indexer.directory=$varDirectory" . DS . "indexes\n";
 		// on Windows the path needs to be escaped or the Java Lucene code cannot understand it
-		$content .= "indexer.directory=" . str_replace('\\', '\\\\', $varDirectory . DS . "indexes") . "\n";
+		$content .= "indexer.directory=" . str_replace('\\', '/', $varDirectory . DS . "indexes") . "\n";
 		fwrite($fp, $content);
 		fclose($fp);
 		chmod($fileLoc, 0644);
