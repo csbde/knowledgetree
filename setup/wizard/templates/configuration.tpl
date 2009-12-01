@@ -9,7 +9,7 @@
 		if(!$errors && !$warnings) {
 			?>
 				<span class='big_ok'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-				All configuration settings are correctly set. Please click next to continue.
+				All configuration settings are correctly set. Click next to continue.
 				<br/><br/>
 			<?php
 		}

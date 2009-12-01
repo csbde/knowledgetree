@@ -311,11 +311,11 @@ class database extends Step
     	}
     	$this->util->dbUtilities->load($this->dhost, $this->dport, $this->duname, $this->dpassword, $this->dname);
         if (!$this->util->dbUtilities->getDatabaseLink()) {
-            $this->error['con'] = "Could not connect to the database, please check username and password";
+            $this->error['con'] = "Could not connect to the database, check username and password";
             return false;
         } else {
         	if ($this->dbExists()) { // Check if database Exists
-        		$this->error['dname'] = 'Database Already Exists, please specify a different name'; // Reset usage errors
+        		$this->error['dname'] = 'Database Already Exists, specify a different name'; // Reset usage errors
             	return false;
         	} else {
         		$this->error = array(); // Reset usage errors

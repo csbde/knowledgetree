@@ -104,9 +104,14 @@ class Step
 	*/
     protected $silent = false;
     
+	/**
+	* Flag if step needs to show confirm page first
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var boolean
+	*/
     public $displayFirst = false;
-    
-    private $salt = 'installers';
     
 	/**
 	* Reference to utility object
@@ -116,10 +121,20 @@ class Step
 	* @var object
 	*/
     public $util;
+
+	/**
+	* Session salt
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var boolean
+	*/
+    private $salt = 'installers';
     
     public function __construct() {
     	$this->util = new InstallUtil();
     }
+    
 	/**
 	* Returns step state
 	*
@@ -445,6 +460,21 @@ class Step
     public function setErrors($error) {
         $this->error = $error;
     }
+    
+	/**
+	* Is the installation 
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return string
+	*/
+    public function isCe() {
+    	if($this->util->getVersionType() == "community")
+    		return true;
+    	return false;
+    }
+
 }
 
 ?>

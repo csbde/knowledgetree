@@ -20,7 +20,7 @@
 			</p>
 			
 			<p class="description">
-			Please enter the full path of the installation you wish to upgrade:
+			Enter the full path of the installation you wish to upgrade:
 		</p>
 		
 		<input id="location" name="location" type="text" style="width:430px; float:left" value="<?php if($location) echo $location; ?>">

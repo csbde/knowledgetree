@@ -2,7 +2,7 @@
 <p class="title">Confirming Database Configurations</p>
 
 	<div class="description">
-	Please confirm whether KnowledgeTree has correctly determined your database settings before proceeding. Print this page for future use. <a href="javascript:window.print()">Click to Print This Page</a>
+	Confirm whether KnowledgeTree has correctly determined your database settings before proceeding. Print this page for future use. <a href="javascript:window.print()">Click to Print This Page</a>
 	</div>
 	<div id="step_content_<?php echo $step_name; ?>_confirm" class="step">
 		<h3><b>Database Settings</b></h3>

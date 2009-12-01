@@ -103,7 +103,7 @@ class migrateDatabase extends Step
 		} else if($this->previous()) {
 			return 'previous';
 		}
-
+		$this->storeSilent();
         return 'landing';
     }
 
@@ -171,7 +171,7 @@ class migrateDatabase extends Step
 		$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
 		if($noFile) {
 			$this->error[]['error'] = "The KnowledgeTree Setup Wizard was unable to connect to your KnowledgeTree 3.6.1 database.";
-			$this->error[]['msg'] = "Please ensure that your KnowledgeTree Mysql service is running.";
+			$this->error[]['msg'] = "Ensure that your KnowledgeTree Mysql service is running.";
 			$this->error[]['cmd'] = "Click <b>Next</b> after resolving the above errors.";
 			$this->temp_variables['manual_export'] = "";
 		} else {
@@ -209,6 +209,9 @@ class migrateDatabase extends Step
 	private function setDetails() {
 		$this->createMigrateFile(); // create lock file to indicate migration mode
     	$database = $this->getDataFromSession("database");
+		$installation = $this->getDataFromSession("installation"); // Get installation directory
+    	$location = $installation['location'];
+    	$this->temp_variables['location'] = $location;
     	if(isset($database['dumpLocation'])) {
     		if(!empty($database['dumpLocation'])) {
     			if(file_exists($database['dumpLocation'])) { // Maybe file has been deleted by tmp
@@ -220,7 +223,8 @@ class migrateDatabase extends Step
         $this->temp_variables['duname'] = $this->getPostSafe('duname');
         $this->temp_variables['dpassword'] = $this->getPostSafe('dpassword');
         $this->temp_variables['dumpLocation'] = $this->getPostSafe('dumpLocation');
-
+    	
+    	
         return true;
     }
 
