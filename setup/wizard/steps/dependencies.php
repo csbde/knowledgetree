@@ -5,7 +5,6 @@
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright(C) 2008,2009 KnowledgeTree Inc.
-* Portions copyright The Jam Warehouse Software(Pty) Limited
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -360,7 +359,7 @@ class dependencies extends Step
      */
     private function getConfigurations()
     {
-        return array(
+    	$conf = array(
             array('name' => 'Safe Mode', 'configuration' => 'safe_mode', 'recommended' => 'OFF', 'type' => 'bool'),
             array('name' => 'Display Errors', 'configuration' => 'display_errors', 'recommended' => 'OFF', 'type' => 'bool'),
             array('name' => 'Display Startup Errors', 'configuration' => 'display_startup_errors', 'recommended' => 'OFF', 'type' => 'bool'),
@@ -375,6 +374,11 @@ class dependencies extends Step
             array('name' => 'Open base directory', 'configuration' => 'open_basedir', 'recommended' => 'unset', 'type' => 'empty'),
             array('name' => 'Default MIME type', 'configuration' => 'default_mimetype', 'recommended' => 'text/html', 'type' => 'string'),
         );
+        if(!WINDOWS_OS) { // Remove linux settings
+        	unset($conf[1]);
+        	unset($conf[2]);
+        }
+        return $conf;
     }
 
     /**

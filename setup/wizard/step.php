@@ -5,7 +5,6 @@
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright(C) 2008,2009 KnowledgeTree Inc.
-* Portions copyright The Jam Warehouse Software(Pty) Limited
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -104,9 +103,14 @@ class Step
 	*/
     protected $silent = false;
     
+	/**
+	* Flag if step needs to show confirm page first
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var boolean
+	*/
     public $displayFirst = false;
-    
-    private $salt = 'installers';
     
 	/**
 	* Reference to utility object
@@ -116,10 +120,20 @@ class Step
 	* @var object
 	*/
     public $util;
+
+	/**
+	* Session salt
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @var boolean
+	*/
+    private $salt = 'installers';
     
     public function __construct() {
     	$this->util = new InstallUtil();
     }
+    
 	/**
 	* Returns step state
 	*
@@ -445,6 +459,21 @@ class Step
     public function setErrors($error) {
         $this->error = $error;
     }
+    
+	/**
+	* Is the installation 
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return string
+	*/
+    public function isCe() {
+    	if($this->util->getVersionType() == "community")
+    		return true;
+    	return false;
+    }
+
 }
 
 ?>

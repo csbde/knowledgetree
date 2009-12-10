@@ -5,7 +5,6 @@
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright(C) 2008,2009 KnowledgeTree Inc.
-* Portions copyright The Jam Warehouse Software(Pty) Limited
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -475,6 +474,20 @@ class Step
 
     protected function storeSilent() {
 
+    }
+    
+	/**
+	* Is the installation 
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return string
+	*/
+    public function isCe() {
+    	if($this->util->getVersionType() == "community")
+    		return true;
+    	return false;
     }
 }
 

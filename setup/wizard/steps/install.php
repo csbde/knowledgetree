@@ -5,7 +5,6 @@
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright(C) 2008,2009 KnowledgeTree Inc.
-* Portions copyright The Jam Warehouse Software(Pty) Limited
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -105,10 +104,15 @@ class install extends step
     {
 		$this->callHome();
 		if ($this->util->isMigration()) { // copy indexing directory if this is a migration
-			$migrateSessionData = $this->getDataFromPackage('migrate', 'installation'); 
-			$configSessionData = $this->getDataFromSession('configuration'); 
+			$migrateSessionData = $this->getDataFromPackage('migrate', 'installation');
+			$configSessionData = $this->getDataFromSession('configuration');
 			$src = $migrateSessionData['location'] . DS . 'var' . DS .  'indexes';
-			$dst = $configSessionData['paths']['varDirectory']['path'] . DS . 'indexes';
+
+			if(WINDOWS_OS){
+                $dst = $configSessionData['paths']['varDirectory']['path'] . DS . 'indexes';
+			}else{
+			    $dst = $configSessionData['paths']['varDirectory']['path'];
+			}
 			$this->util->copyDirectory($src, $dst);
 		}
     }
@@ -126,11 +130,11 @@ class install extends step
     	}
     	$this->temp_variables['ce_check'] = $this->ce_check;
     }
-    
+
     function registerPlugins() {
-    	
+
     }
-    
+
     public function callHome() {
         $conf = $this->getDataFromSession("install"); // retrieve database information from session
         $dbconf = $this->getDataFromSession("database");
@@ -143,7 +147,7 @@ class install extends step
         $this->util->dbUtilities->query($query);
         $this->util->dbUtilities->close(); // close the database connection
     }
-    
-    
+
+
 }
 ?>

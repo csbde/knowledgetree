@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -41,7 +41,8 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
 class RescheduleDocumentsDispatcher extends KTAdminDispatcher
 {
-    function check() {
+    function check()
+    {
         $this->aBreadcrumbs[] = array(
             'url' => $_SERVER['PHP_SELF'],
             'name' => _kt('Reschedule all documents'),
@@ -49,28 +50,34 @@ class RescheduleDocumentsDispatcher extends KTAdminDispatcher
         return parent::check();
     }
 
-    function do_main() {
-
-        //registerTypes registers the mime types and populates the needed tables.
-        $indexer = Indexer::get();
-        $indexer->registerTypes();
-
+    function do_main()
+    {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/search2/reporting/rescheduledocuments');
 
+        $rescheduleDone = ($_REQUEST['rescheduleDone'] == 'true') ? 'true' : 'false';
+        $reprocessDone = ($_REQUEST['reprocessDone'] == 'true') ? 'true' : 'false';
+
         if ($_REQUEST['rescheduleValue'] == 'reschedule')
  		{
+            //registerTypes registers the mime types and populates the needed tables.
+            $indexer = Indexer::get();
+            $indexer->registerTypes();
+
  			Indexer::indexAll();
- 			$oTemplate->setData(array(
-            'context' => $this,
-            'rescheduleDone' => true
-        	));
-        	return $oTemplate;
+            $rescheduleDone = 'true';
+ 		}
+
+        if ($_REQUEST['rescheduleValue'] == 'reprocess')
+ 		{
+ 			Indexer::processAll();
+ 			$reprocessDone = 'true';
  		}
 
         $oTemplate->setData(array(
             'context' => $this,
-            'rescheduleDone' => false
+            'rescheduleDone' => $rescheduleDone,
+            'reprocessDone' => $reprocessDone
 
         ));
         return $oTemplate;

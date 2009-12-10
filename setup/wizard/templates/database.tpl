@@ -68,12 +68,12 @@
 	    	</tr>
 	    	<tr>
 	    		<td> <label for='dport'>Port: </label> </td>
-	    		<td> <div id="tooltips" title="The port on which your database server is listening, if it is a non-standard port please enter the number here">&nbsp;</div> </td>
+	    		<td> <div id="tooltips" title="The port on which your database server is listening, if it is a non-standard port enter the number here">&nbsp;</div> </td>
 	    		<td> <input type="text" value="<?php echo $dport?>" id="dport" name="dport" size='10' class="textinput" style="float:left"/> </td>
 	    	</tr>
 	    	<tr>
 	    		<td> <label for='dbbinary'>Socket: </label> </td>
-	    		<td> <div id="tooltips" title="The path to the database binary. If it is not on your system path then please enter it here">&nbsp;</div> </td>
+	    		<td> <div id="tooltips" title="The path to the database binary. If it is not on your system path then enter it here">&nbsp;</div> </td>
 	    		<td> <input type="text" value="<?php echo $dbbinary?>" id="dbbinary" name="dbbinary" size='<?php echo $input_size; ?>' class="textinput"/> </td>
 	    	</tr>
 	    </table>
@@ -96,17 +96,17 @@ An administrative user is required for creating tables within the database.
 	    <tr style="<?php if ($silent) echo 'display:none' ;?>">
 	        <td><label for='dmsname'>Enter the name of the Database Administrative User: </label></td>
 	        <td><input type='text' value="<?php echo $dmsname; ?>" id='dmsname' name='dmsname' size='40' /></td>
-	        <td id="error_1_2" class="error" style="display:none">Please Enter A Username</td>
+	        <td id="error_1_2" class="error" style="display:none">Enter A Username</td>
 		</tr>
 	    <tr>
 	        <td><label for='dmspassword'>Enter a password for the Administrative User: </label></td>
 	        <td><input type='password' value="<?php echo $dmspassword; ?>" id='dmspassword' name='dmspassword' size='40' /></td>
-	        <td id="error_2_2" class="error" style="display:none">Please Enter A Password</td>
+	        <td id="error_2_2" class="error" style="display:none">Enter A Password</td>
 		</tr>
 	    <tr>
-	        <td><label for='dmspassword2'>Please confirm the password: </label></td>
+	        <td><label for='dmspassword2'>Confirm the password: </label></td>
 	        <td><input type='password' value="<?php echo $dmspassword; ?>" id='dmspassword2' name='dmspassword2' size='40' /></td>
-	        <td id="error_3_2" class="error" style="display:none">Please Confirm Password</td>
+	        <td id="error_3_2" class="error" style="display:none">Confirm Password</td>
 	        <td id="error_4_2" class="error" style="display:none">Passwords Do Not Match</td>
 		</tr>
 	</table>
@@ -125,17 +125,17 @@ An second user is required for normal database interaction, the reading and writ
 		<tr style="<?php if ($silent) echo 'display:none' ;?>">
 	        <td><label for='dmsusername'>Enter a name for the User: </label></td>
 	        <td><input type='text' value="<?php echo $dmsusername; ?>" id='dmsusername' name='dmsusername' size='40' /></td>
-	        <td id="error_1_3" class="error" style="display:none">Please Enter A Username</td>
+	        <td id="error_1_3" class="error" style="display:none">Enter A Username</td>
 		</tr>
 	    <tr>
 	        <td><label for='dmsuserpassword'>Enter a password: </label></td>
 	        <td><input type='password' value="<?php echo $dmsuserpassword?>" id='dmsuserpassword' name='dmsuserpassword' size='40' /></td>
-	        <td id="error_2_3" class="error" style="display:none">Please Enter A Password</td>
+	        <td id="error_2_3" class="error" style="display:none">Enter A Password</td>
 		</tr>
 	    <tr>
-	        <td><label for='dmsuserpassword2'>Please confirm the password: </label></td>
+	        <td><label for='dmsuserpassword2'>Confirm the password: </label></td>
 	        <td><input type='password' value="<?php echo $dmsuserpassword?>" id='dmsuserpassword2' name='dmsuserpassword2' size='40' /></td>
-	        <td id="error_3_3" class="error" style="display:none">Please Confirm Password</td>
+	        <td id="error_3_3" class="error" style="display:none">Confirm Password</td>
 	        <td id="error_4_3" class="error" style="display:none">Passwords Do Not Match</td>
 		</tr>
 	</table>

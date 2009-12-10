@@ -5,7 +5,6 @@
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright(C) 2008,2009 KnowledgeTree Inc.
-* Portions copyright The Jam Warehouse Software(Pty) Limited
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -76,11 +75,11 @@ class license extends step {
             if($_POST['license']) {
                 return true;
             } else {
-                $this->error[] = "Please accept the license agreement";
+                $this->error[] = "Accept the license agreement";
                 return false;
             }
         }
-        $this->error[] = "Please accept the license agreement";
+        $this->error[] = "Accept the license agreement";
         return false;
     }
 

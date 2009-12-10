@@ -267,8 +267,9 @@ stop_lucene() {
     get_lucene_pid
     cd $INSTALL_PATH/search2/indexing/bin
     $ZEND_DIR/bin/php shutdown.php positive &> $INSTALL_PATH/var/log/dmsctl.log
+    exit=$?
     sleep 5
-    if [ $? -eq 0 ]; then
+    if [ $exit -eq 0 ]; then
 	    echo "$0 $ARG: lucene stopped"
 	else
 	    echo "$0 $ARG: lucene could not be stopped"

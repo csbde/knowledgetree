@@ -5,7 +5,6 @@
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright(C) 2008,2009 KnowledgeTree Inc.
-* Portions copyright The Jam Warehouse Software(Pty) Limited
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -408,15 +407,14 @@ class configuration extends Step
         $server['host'] = array('name' => 'Host', 'setting' => 'server_name', 'where' => 'db', 'value' => $host);
         $server['port'] = array('name' => 'Port', 'setting' => 'server_port', 'where' => 'db', 'value' => $port);
         $server['ssl_enabled'] = array('name' => 'SSL Enabled', 'section' => 'KnowledgeTree', 'setting' => 'sslEnabled', 'where' => 'file', 'value' => $ssl_enabled);
-
         if(empty($server['host']['value']))
-            $this->error[] = 'Please enter the server\'s host name';
+            $this->error[] = 'Enter the server\'s host name';
 
         if(empty($server['port']['value']))
-            $this->error[] = 'Please enter the server\'s port';
+            $this->error[] = 'Enter the server\'s port';
 
         if(empty($server['file_system_root']['value']))
-            $this->error[] = 'Please enter the file system root';
+            $this->error[] = 'Enter the file system root';
 
         return $server;
     }
