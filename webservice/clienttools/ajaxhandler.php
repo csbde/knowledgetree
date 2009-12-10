@@ -54,12 +54,6 @@ class ajaxHandler{
 		$this->ret->addDebug('Remote IP',$this->remoteIp);
 		
 		
-		if($this->auth['session'])session_id($this->auth['session']);
-		$this->session=session_id();
-		$this->log("[__construct]Session Restarted as: {$this->session}");		
-		//		session_id('BLANK_SESSION');
-		
-		
 		
 		//========================= 1. Parse Json
 		$this->log("[__construct]ENTERING Parse Json");		
@@ -78,6 +72,13 @@ class ajaxHandler{
 		$this->ret->setRequest($this->req->jsonArray);
 		$this->ret->setTitle($this->request['service'].'::'.$this->request['function']);
 		$this->ret->setDebug('Server Versions',$this->getServerVersions());
+		
+		$this->ret->addDebug('Session From Server: ',$this->auth);
+		if($this->auth['session'])session_id($this->auth['session']);
+		$this->session=session_id();
+		$this->ret->addDebug('Session in PHP: ',$this->session);
+		$this->log("[__construct]Session Restarted as: {$this->session}");		
+		//		session_id('BLANK_SESSION');
 		
 		
 		
