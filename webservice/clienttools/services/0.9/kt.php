@@ -477,8 +477,9 @@ class kt extends client_service  {
     	$params['app_type']=$params['app_type']?$params['app_type']:$this->AuthInfo['appType'];
     	$params['app_type']='air';
     	$multipart=isset($params['multipart'])?(bool)$params['multipart']:false;
+    	$multipart=false;
     	
-    	$this->addDebug('parameters',$params);
+    	$this->Response->addDebug('download_document Parameters',$params);
     	
     	
     	$session_id=$params['session_id'];
@@ -489,7 +490,7 @@ class kt extends client_service  {
 		if (PEAR::isError($document))
     	{
     		$response['message']=$document->getMessage();
-    		//$this->addDebug("download_document - cannot get $document_id - "  . $document->getMessage(), $session_id);
+    		$this->addDebug("download_document - cannot get $document_id - "  . $document->getMessage(), $document);
 
 //    		$this->setResponse(new SOAP_Value('$this->response=',"{urn:$this->namespace}kt_response", $response));
     		$this->setResponse($response);
@@ -543,6 +544,7 @@ class kt extends client_service  {
     	$response=array();
     	foreach($params['documents'] as $docId){
     		$ret=$this->download_document(array('document_id'=>$docId,'app_type'=>$params['app_type'],'multipart'=>$params['multipart']),true);
+    		$this->Response->addDebug('Trying to create Download Link for '.$docId,$ret);
     		$rec=array(
     			'filename'	=>$ret['filename'],
     			'url'		=>$ret['message'],
