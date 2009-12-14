@@ -37,6 +37,7 @@ class ajaxHandler{
 		}else{
 			$this->ret=new jsonResponseObject();
 		}
+		$this->ret->location='ajaxhandler';
 		$this->log("[__construct]ENTERING PREPARATIONS");		
 
 		$this->remoteIp = (getenv(HTTP_X_FORWARDED_FOR)) ?  getenv(HTTP_X_FORWARDED_FOR)  :  getenv(REMOTE_ADDR);

@@ -20,6 +20,8 @@ class client_service{
 		$this->KT=&$KT_Instance;
 		$this->AuthInfo=&$AuthInfo;
 		$this->Request=&$Request;
+		
+		$this->Response->location='client service';
 	}
 	
 	protected function addResponse($name,$value){
