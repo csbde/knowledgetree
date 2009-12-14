@@ -42,6 +42,7 @@ include_once('jsonWrapper.php');
 include_once('ajaxhandler.php');
 include_once('serviceHelper.php');
 include_once('client_service.php');
+include_once('clienttools_syslog.php');
 
 //Instantiate base classes
 $KT = new KTAPI();

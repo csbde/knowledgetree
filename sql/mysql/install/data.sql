@@ -162,7 +162,8 @@ INSERT INTO `config_groups` VALUES
 (21, 'user_prefs', 'User Preferences', 'Configures user preferences.', 'General Settings'),
 (22, 'webservice', 'Web Services', 'KnowledgeTree Web Service Interface configuration. Note that a number of KnowledgeTree Tools rely on this service.', 'Client Tools Settings'),
 (23, 'ldapAuthentication', 'LDAP Authentication', 'Configures LDAP Authentication', 'General Settings'),
-(24, 'server', 'Server Settings', 'Configuration settings for the server', 'General Settings');
+(24, 'server', 'Server Settings', 'Configuration settings for the server', 'General Settings'),
+(25, 'explorerCPSettings', 'Explorer CP Settings', 'Configuration options for KnowledgeTree Explorer CP', 'Client Tools Settings');
 /*!40000 ALTER TABLE `config_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -291,7 +292,8 @@ INSERT INTO `config_settings` VALUES
 (116, 'export', 'Use External Zip Binary', 'Utilises the external zip binary for compressing archives. The default is to use the PEAR archive class.', 'useBinary', 'default', 'true', 'boolean', NULL, 0),
 (117, 'export', 'Use Bulk Download Queue', 'The bulk download can be large and can prevent normal browsing. The download queue performs the bulk downloads in the background.', 'useDownloadQueue', 'default', 'true', 'boolean', NULL, 1),
 (118, 'urls', 'Internal Var Directory', 'The path to the internal var directory that must sit within the web root', 'internalVarDirectory', 'default', '${fileSystemRoot}/var', 'string', NULL, 0),
-(119, 'externalBinary', 'convert', 'The path to the ImageMagick "convert" binary', 'convertPath', 'default', 'convert', 'string', NULL, 1);
+(119, 'externalBinary', 'convert', 'The path to the ImageMagick "convert" binary', 'convertPath', 'default', 'convert', 'string', NULL, 1),
+(120, 'explorerCPSettings', 'Debug Log Level', 'Set the level of debug information included in the server side log file', 'debugLevel', 'error', 'error', 'dropdown', 'a:1:{s:7:\"options\";a:3:{i:0;a:2:{s:5:\"value\";s:3:\"off\";s:5:\"label\";s:10:\"No Logging\";}i:1;a:2:{s:5:\"value\";s:5:\"error\";s:5:\"label\";s:18:\"Error Logging Only\";}i:2;a:2:{s:5:\"value\";s:5:\"debug\";s:5:\"label\";s:28:\"Error and Debug Info Logging\";}}}', 1);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1775,7 +1777,8 @@ INSERT INTO `upgrades` VALUES
 (231,'sql*3.7.0.1*0*3.7.0.1/mime_extractors_reset.sql','Database upgrade to version 3.7.0.1: Mime extractors reset','2009-09-01 00:00:00',1,'upgrade*3.7.0.1*99*upgrade3.7.0.1'),
 (232,'upgrade*3.7.0.1*99*upgrade3.7.0.1','Upgrade from version 3.6.3 to 3.7.0.1','2009-11-13 00:00:00',1,'upgrade*3.7.0.1*99*upgrade3.7.0.1'),
 (233,'sql*3.7.0.2*0*3.7.0.2/processor_queue.sql','Database upgrade to version 3.7.0.1: Processor Queue','2009-09-01 00:00:00',1,'upgrade*3.7.0.2*99*upgrade3.7.0.2'),
-(234,'upgrade*3.7.0.2*99*upgrade3.7.0.2','Upgrade from version 3.7.0.1 to 3.7.0.2','2009-11-19 00:00:00',1,'upgrade*3.7.0.2*99*upgrade3.7.0.2');
+(234,'upgrade*3.7.0.2*99*upgrade3.7.0.2','Upgrade from version 3.7.0.1 to 3.7.0.2','2009-11-19 00:00:00',1,'upgrade*3.7.0.2*99*upgrade3.7.0.2'),
+(233,'sql*3.7.0.3*0*3.7.0.3/clienttools_config.sql','Database upgrade to version 3.7.0.3: Clienttools Config','2009-12-10 00:00:00',1,'upgrade*3.7.0.3*99*upgrade3.7.0.3');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
