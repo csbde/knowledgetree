@@ -1075,6 +1075,24 @@ Fatal error:  Cannot unset string offsets in on line 981
     	$this->setResponse($response);
     }
 
+	function get_transaction_history($params){
+    	$kt=&$this->KT;
+
+    	$document=&$kt->get_document_by_id($params['document_id']);
+		if (PEAR::isError($document)){
+    		$this->setResponse(array('status_code'=>1, 'message'=>$document->getMessage()));
+    		return false;
+    	}
+
+    	$versions=$document->get_version_history();
+		$transactions=$document->get_transaction_history();
+    	$response['status_code']=0;
+		$response['transactions'] = $transactions;
+		$response['versions'] = $versions;
+    	$this->setResponse($response);
+    }
+	
+	
 
 	public function get_users_groups($params){
 		$kt=&$this->KT;
