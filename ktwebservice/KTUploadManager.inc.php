@@ -9,7 +9,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -110,7 +110,7 @@ class KTUploadManager
 		return ($tempdir == $this->temp_dir);
 		*/
     }
-    
+
 	function store_base64_file($base64, $prefix= 'sa_')
 	{
 		$tempfilename = $this->get_temp_filename($prefix);
@@ -134,9 +134,9 @@ class KTUploadManager
 
 		return $tempfilename;
 	}
-    
+
     /**
-     * 
+     *
      * @param string $content file content NOT base64 encoded (may be string, may be binary)
      * @param string $prefix [optional]
      * @return $tempfilename the name of the temporary file created
@@ -172,7 +172,7 @@ class KTUploadManager
 	 * @param string $tempfile
 	 * @param string $action
 	 */
-	function uploaded($filename, $tempfile, $action, $relatedid = null)
+	function uploaded($filename, $tempfile, $action, $unique_file_id = null)
 	{
 		$filename=basename($filename);
 		$now=date('Y-m-d H:i:s');
@@ -190,6 +190,11 @@ class KTUploadManager
 			$newtempfile = str_replace('\\','/',$newtempfile);
 		}
 
+		if(!empty($unique_file_id) && !$this->check_unique_id($unique_file_id)){
+		    // If the unique_file_id is not unique then return an error
+		    return PEAR::raiseError(_kt('Unique file id already exists.'));
+		}
+
 		DBUtil::startTransaction();
 		$id = DBUtil::autoInsert('uploaded_files',
 			array(
@@ -198,7 +203,7 @@ class KTUploadManager
 				'userid'=>$_SESSION['userID'],
 				'uploaddate'=>$now,
 				'action'=>$action,
-			//	'related_uploadid'=>$relatedid
+				'unique_file_id'=>$unique_file_id
 				),
 				array('noid'=>true)
 			);
@@ -229,6 +234,42 @@ class KTUploadManager
 		DBUtil::commit();
 
 		return $newtempfile;
+	}
+
+	/**
+	 * Ensure the unique file id is unique for the uploaded file
+	 *
+	 * @param string $unique_file_id
+	 * @return bool
+	 */
+	private function check_unique_id($unique_file_id)
+	{
+	    $unique = addslashes($unique_file_id);
+	    $sql = "SELECT tempfilename FROM uploaded_files WHERE unique_file_id = '$unique'";
+	    $result = DBUtil::getResultArray($sql);
+
+	    if(PEAR::isError($result) || empty($result)){
+	        return true;
+	    }
+
+	    return false;
+	}
+
+	function get_tempfile_from_unique_id($unique_file_id)
+	{
+	    $unique = addslashes($unique_file_id);
+	    $sql = "SELECT tempfilename FROM uploaded_files WHERE unique_file_id = '$unique'";
+	    $result = DBUtil::getResultArray($sql);
+
+	    if(PEAR::isError($result)){
+	        return $result;
+	    }
+
+	    if(empty($result)){
+	        PEAR::raiseError(_kt('No file has been uploaded with the unique file id: ').$unique_file_id);
+	    }
+
+	    return $result[0]['tempfilename'];
 	}
 
 	/**
