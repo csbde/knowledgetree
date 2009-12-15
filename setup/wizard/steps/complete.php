@@ -169,7 +169,6 @@ class complete extends Step {
         $this->util->dbUtilities->load($dbconf['dhost'], $dbconf['dport'], $dbconf['dmsusername'], $dbconf['dmsuserpassword'], $dbconf['dname']);
         $loaded = $this->util->dbUtilities->getDatabaseLink();
         // if we can log in to the database, check access
-        // TODO check write access?
         if ($loaded)
         {
             $this->temp_variables['dbConnectUser'] .= sprintf($html, 'tick', '', 'Database connectivity successful (user: ' . $dbconf['dmsusername'] . ')');
@@ -257,7 +256,7 @@ class complete extends Step {
      * Set all silent mode varibles
      *
      */
-    private function storeSilent() {
+    public function storeSilent() {
     	$this->temp_variables['services_check'] = $this->services_check;
     	$this->temp_variables['paths_check'] = $this->paths_check;
     	$this->temp_variables['privileges_check'] = $this->privileges_check;

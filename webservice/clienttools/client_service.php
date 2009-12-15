@@ -44,6 +44,18 @@ class client_service{
 		return $var;
 	}
 	
+	protected function logTrace($location=NULL,$message=NULL){
+		Clienttools_Syslog::logTrace($this->AuthInfo['user'],'SERVICE - '.$location,$message);
+	}
+	
+	protected function logError($location=NULL,$detail=NULL,$err=NULL){
+		Clienttools_Syslog::logError($this->AuthInfo['user'],'SERVICE - '.$location,$detail,$err);
+	}
+	
+	protected function logInfo($location=NULL,$message=NULL,$debugData=NULL){
+		Clienttools_Syslog::logInfo($this->AuthInfo['user'],'SERVICE - '.$location,$message,$debugData);
+	}
+	
 	protected function checkPearError($obj,$errMsg,$debug=NULL,$response=NULL){
 		if (PEAR::isError($obj)){
 			if($response===NULL)$response=array('status_code' => 1);

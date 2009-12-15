@@ -703,17 +703,17 @@ class configuration extends Step
      */
 	public function getContentPath() {
     	$configPath = realpath('../../../config/config-path');
-        if($configPath == '')
+        if(!file_exists($configPath))
          	$configPath = realpath('../../config/config-path');
-        if(!$configPath) return false;
+        if(!file_exists($configPath)) return false;
         return $configPath;
 	}
 	
 	public function getCachePath() {
     	$cachePath = realpath('../../../config/cache-path');
-        if($cachePath == '')
+        if(!file_exists($cachePath))
          	$cachePath = realpath('../../config/cache-path');
-        if(!$cachePath) return false;
+        if(!file_exists($cachePath)) return false;
         return $cachePath;
 	}
 }

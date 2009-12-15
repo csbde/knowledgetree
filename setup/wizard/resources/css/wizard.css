@@ -1,5 +1,4 @@
 * { margin: 0; padding: 0; }
-
 body {
 	background-attachment:scroll;
 	background-color:transparent;
@@ -70,7 +69,7 @@ select {
 #outer-wrapper {
 	border:1px solid #B7B7B7;
 	margin-top:20px;
-	/*width:1024px;*/width:964px;
+	width:964px;
 }
 
 #header {
@@ -87,12 +86,12 @@ select {
 #container {
 	background: white url("../graphics/left.png") repeat-y left;
 	overflow:auto;
-	/*min-height:630px;height:410px;*/min-height:500px;
+	min-height:500px;
 }
 
 #content {
     margin-left: 220px;
-    /*height:515px;*/height:500px;
+    height:500px;
 }
 
 #content_container {
@@ -105,19 +104,19 @@ select {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
 	overflow: auto;
-	/*min-height: 400px;*/min-height: 300px;
+	min-height: 300px;
 }
 
 #step_content_dependencies {
 	border: 1px solid rgb(207, 207, 207);
-	/*padding: 5px;*/padding: 12px;
-	/*min-height:270px;*/min-height:170px;
+	padding: 12px;
+	/min-height:170px;
 }
 
 #step_content_configuration {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	/*min-height:320px;*//*height:330px*/min-height:130px;
+	min-height:130px;
 }
 
 #step_content_services {
@@ -129,25 +128,25 @@ select {
 #step_content_registration {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	/*min-height:320px;*/min-height:100px;
+	min-height:100px;
 }
 
 #step_content_registration_confirm {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	/*min-height:400px;*/min-height:300px;
+	min-height:300px;
 }
 
 #step_content_install {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	/*min-height:400px;*/min-height:150px;
+	min-height:150px;
 }
 
 #step_content_database {
 	border: 1px solid rgb(207, 207, 207);
 	padding: 5px;
-	/*min-height:365px;*/min-height:240px;
+	min-height:240px;
 }
 
 #step_content_database_confirm {
@@ -164,7 +163,7 @@ select {
 
 .license_agreement {
 	overflow: scroll;
-	/*height:370px;*/height:270px;
+	height:270px;
 	overflow-x:hidden;
 	border:1px solid #CFCFCF;
 }
@@ -204,11 +203,11 @@ select {
 
 #logo {
 	position:relative;
-	/*right:760px;*/right:75%;
-	/*top:20px;*/top:25%;
+	right:75%;
+	top:25%;
 }
 
-#install_details {
+#version_details {
 	bottom:20px;
 	position:relative;
 	right:10px;
@@ -282,7 +281,7 @@ select {
 }
 
 .conf_paths {
-	/*width:755px;*/width:100%;
+	width:100%;
 }
 
 .errors {
@@ -320,7 +319,6 @@ select {
 	font-size:13px;
 	font-weight:bold;
 	margin-left:5px;
-	/*margin-top:10px;*/
 }
 
 .step .radio {
@@ -368,7 +366,9 @@ select {
 .onclick {
      cursor: pointer;
      color: #EC7725;
-     /*width: 150px;*//*width:350px;top:12px;position:relative;*/width:350px;padding-top:12px;position:static;
+     width:350px;
+     padding-top:12px;
+     position:static;
 }
 
 .description {
@@ -415,17 +415,9 @@ table#dbconf tr td input{
 	padding: 5px 8px;
 }
 
-/*#section {
-
-}*/
-
 .php_ext_details table {
-	width:745px;
+	width:645px;
 }
-
-/*.php_ext_details table tr {
-
-}*/
 
 td.ext_indicator {
 	width:10px;
@@ -456,7 +448,7 @@ td.dir_description {
 }
 
 .php_con_details table {
-	/*width:745px;*/width:675px;
+	width:675px;
 }
 
 .error_message {
@@ -515,12 +507,6 @@ td.dir_description {
 	font-size:12pt;
 }
 
-.demo {
-	/*left:75px;
-	position:relative;
-	width:600px*/
-}
-
 .text_message {
 
 }
@@ -540,7 +526,7 @@ td.dir_description {
 
 #loading {
 	bottom:250px;
-	/*left:500px;*/left:400px;
+	left:400px;
 	position:relative;
 	height:0px;
 	width:0px;
@@ -563,15 +549,15 @@ td.dir_description {
 }
 
 .dependency_details {
-	/*top:12px;*/padding-top:12px;
-	/*position:relative;*/position:static;
+	padding-top:12px;
+	position:static;
 	width:650px;
 }
 
 .dependencies {
-	/*position:relative;*/position:static;
+	position:static;
 	right:30%;
-	/*width:880px;*/width:650px;
+	width:650px;
 }
 
 .registration_template {
@@ -583,7 +569,7 @@ td.dir_description {
 }
 
 .description_complete {
-	/*position:relative;*/position:static;
+	position:static;
 	right:35%;
 	width:100%;
 }
@@ -601,14 +587,6 @@ td.dir_description {
 	font-size:100%;
 	line-height:150%;
 	font-family:sans-serif;
-}
-
-.twitter {
-
-}
-
-.facebook {
-
 }
 
 .connect {

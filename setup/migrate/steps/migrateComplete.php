@@ -164,7 +164,6 @@ class migrateComplete extends Step {
 			if($state == "STARTED" || $state == "RUNNING")
 				$running = true;
     	} else {
-    		//TODO : Read fomr my.cnf file
     		$mysqlPid = "/var/run/mysqld/mysqld.sock";
     		if(file_exists($mysqlPid))
     			$running = true;

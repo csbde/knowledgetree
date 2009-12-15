@@ -20,7 +20,7 @@
 		<div id="outer-wrapper" align="left">
 		    <div id="header">
 			    <div id="logo"><?php echo $html->image('dame/installer-header_logo.png'); ?> </div>
-			    <div id="install_details">
+			    <div id="version_details">
 					<span style="font-size:120%;"> <?php echo $vars['install_version']; ?> </span>
 					<span style="font-size:120%;"><?php echo $vars['install_type']; ?></span>
 				</div>
@@ -45,7 +45,6 @@
 		        </div>
 		        <div class="clearing">&nbsp;</div>
 		    </div>
-
 		    <div id="footer">
 		    	<?php echo $html->image('dame/powered-by-kt.png', array("height"=>"23px", "width"=>"105px", "style"=>"padding: 5px;")); ?>
 		    </div>
