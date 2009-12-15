@@ -77,11 +77,8 @@ class KTFolderUtil {
         return $oFolder;
     }
 
-     /*
+     /**
       * Folder Add
-      * Author  :   Jarrett Jordaan
-      * Modified    :   28/04/09
-      *
       * @params :   KTDocumentUtil $oParentFolder
       *             string $sFolderName
       *             KTUser $oUser
