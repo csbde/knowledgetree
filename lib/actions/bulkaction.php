@@ -49,9 +49,7 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
-
-// // Jarrett Jordaan: Deal with bulk action
-require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php');
+require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php'); // Deal with bulk action
 
 class KTBulkAction extends KTStandardDispatcher {
     var $sName;
@@ -603,7 +601,9 @@ class KTBulkAction extends KTStandardDispatcher {
                                         'form' => $this->form_complete()));
     }
 
-    // Jarrett Jordaan: Deal with bulk actions
+    /**
+     * Deal with bulk actions
+     */
     function do_notification($objects, $eventAction, $targetFolder) {
         // Make sure there were documents/folders affected
         if ($targetFolder && count($objects) > 0 && $eventAction != '') {

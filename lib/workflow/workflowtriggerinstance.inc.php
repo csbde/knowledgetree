@@ -72,8 +72,6 @@ class KTWorkflowTriggerInstance extends KTEntity {
     function &get($iId) { return KTEntityUtil::get('KTWorkflowTriggerInstance', $iId); }
 
     function &createFromArray($aOptions) {
-        // Modified : Jarrett Jordaan
-        // Removed Serialize, since the original is serialized already
         $aOptions['configarraytext'] = $aOptions['config'];
         unset($aOptions['config']);
         return KTEntityUtil::createFromArray('KTWorkflowTriggerInstance', $aOptions); 
