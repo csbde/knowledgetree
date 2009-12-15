@@ -59,9 +59,11 @@ class Clienttools_Syslog{
 	}
 	
 	public static function logInfo($user,$location,$message,$data){
+		list($usec, $sec) = explode(" ", microtime());
+		$usec=ceil($usec*1000);
 		$entry=self::parseTemplate(self::$debugLogTemplate,array(
 			'date'	=>date('Y-m-d'),
-			'time'	=>date('h:i:s'),
+			'time'	=>date('h:i:s').':'.$usec,
 			'user'	=>$user,
 			'session'=>session_id(),
 			'location'=>$location,
@@ -73,9 +75,11 @@ class Clienttools_Syslog{
 	}
 	
 	public static function logTrace($user,$location,$message){
+		list($usec, $sec) = explode(" ", microtime());
+		$usec=ceil($usec*1000);
 		$entry=self::parseTemplate(self::$traceLogTemplate,array(
 			'date'	=>date('Y-m-d'),
-			'time'	=>date('h:i:s'),
+			'time'	=>date('h:i:s').':'.$usec,
 			'user'	=>$user,
 			'session'=>session_id(),
 			'location'=>$location,
@@ -86,9 +90,11 @@ class Clienttools_Syslog{
 	}
 	
 	public static function logError($user=NULL,$location=NULL,$detail=NULL,$err=NULL){
+		list($usec, $sec) = explode(" ", microtime());
+		$usec=ceil($usec*1000);
 		$entry=self::parseTemplate(self::$errorLogTemplate,array(
 			'date'	=>date('Y-m-d'),
-			'time'	=>date('h:i:s'),
+			'time'	=>date('h:i:s').':'.$usec,
 			'user'	=>$user,
 			'session'=>session_id(),
 			'location'=>$location,
