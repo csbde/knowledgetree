@@ -84,50 +84,37 @@ class upgradeWelcome extends step {
         return true;
     }
 
-    private function checkPassword($username, $password) {
-    	$upgradeOnly = false;
-
-    	if(isset($_POST['upgradeOnly'])) $upgradeOnly = $_POST['upgradeOnly'];
-    	$dconf = $this->getDataFromPackage('installers', 'database'); // Use info from install
-    	if($dconf) { // From Install
-	    	$this->util->dbUtilities->load($dconf['dhost'], $dconf['dport'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
-			$sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
-			$res = $this->util->dbUtilities->query($sQuery);
-			$ass = $this->util->dbUtilities->fetchAssoc($res);
-			if($ass[0]['match_count'] == 1)
-				return true;
-    	} elseif($upgradeOnly) {
-    		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
-    		$wizConfigHandler = new configuration();
-    		$configPath = $wizConfigHandler->readConfigPathIni();
-			$this->util->iniUtilities->load($configPath);
-			$dconf = $this->util->iniUtilities->getSection('db');
-    		$this->util->dbUtilities->load($dconf['dbHost'],$dconf['dbPort'], $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
-			$sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
-			$res = $this->util->dbUtilities->query($sQuery);
-			$ass = $this->util->dbUtilities->fetchAssoc($res);
-			if($ass[0]['match_count'] == 1)
-				return true;
-    	} else { // Upgrade
-    		require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
-    		$wizConfigHandler = new configuration();
-    		$configPath = $wizConfigHandler->readConfigPathIni();
-    		if($configPath) {
+	private function checkPassword($username, $password) {
+		$dconf = $this->getDataFromPackage('installers', 'database'); // Use info from install
+		if($dconf) { // From Install
+			$this->util->dbUtilities->load($dconf['dhost'], $dconf['dport'], $dconf['duname'], $dconf['dpassword'], $dconf['dname']);
+		} else { // Upgrade
+			require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
+			$wizConfigHandler = new configuration();
+			$configPath = $wizConfigHandler->readConfigPathIni();
+			if($configPath) {
 				$this->util->iniUtilities->load($configPath);
 				$dconf = $this->util->iniUtilities->getSection('db');
-	    		$this->util->dbUtilities->load($dconf['dbHost'],$dconf['dbPort'], $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
-				$sQuery = "SELECT count(*) AS match_count FROM users WHERE username = '$username' AND password = '".md5($password)."'";
-				$res = $this->util->dbUtilities->query($sQuery);
-				$ass = $this->util->dbUtilities->fetchAssoc($res);
-				if($ass[0]['match_count'] == 1)
-					return true;
-    		}
-    	}
-        $this->error[] = 'Could Not Authenticate User';
-        return false;
-
-    }
-
+				$this->util->dbUtilities->load($dconf['dbHost'],$dconf['dbPort'], $dconf['dbUser'], $dconf['dbPass'], $dconf['dbName']);
+			}
+		}
+		$sQuery = "SELECT * FROM users WHERE username = '$username' AND password = '".md5($password)."'";
+		$res = $this->util->dbUtilities->query($sQuery);
+		$ass = $this->util->dbUtilities->fetchAssoc($res);
+		if($ass[0]['id'] != "") {
+			$user_id = $ass[0]['id'];
+			$sQuery = "SELECT count(*) AS match_count FROM users_groups_link WHERE user_id = $user_id AND group_id = 1";
+			$res = $this->util->dbUtilities->query($sQuery);
+			$ass = $this->util->dbUtilities->fetchAssoc($res);
+			if($ass[0]['match_count'] == 1) 
+				return true;
+			$this->error[] = 'You need Administrative Rights';
+			return false;
+		}
+		$this->error[] = 'Could Not Authenticate User';
+		return false;
+	}
+    
     public function getErrors() {
     	return $this->error;
     }
