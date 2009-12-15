@@ -155,31 +155,20 @@ class migrateDatabase extends Step
 				unlink($sqlFile);
 			}
 		}
-		$noFile = true;
 		// Handle failed dump
 		if(WINDOWS_OS) {
 			// Could be permissions, check error code.
-			if(!$noFile) {
-				$sqlFile = "C:\\kt-backup-$date.sql"; // Use tmp instead due to permissions
-			}
+			$sqlFile = "C:\\kt-backup-$date.sql"; // Use tmp instead due to permissions
 		} else {
-			if(!$noFile) {
-				$sqlFile = "/tmp/kt-backup-$date.sql"; // Use tmp instead due to permissions
-			}
+			$sqlFile = "/tmp/kt-backup-$date.sql"; // Use tmp instead due to permissions
 		}
 		$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
-		if($noFile) {
-			$this->error[]['error'] = "The KnowledgeTree Setup Wizard was unable to connect to your KnowledgeTree 3.6.1 database.";
-			$this->error[]['msg'] = "Ensure that your KnowledgeTree Mysql service is running.";
-			$this->error[]['cmd'] = "Click <b>Next</b> after resolving the above errors.";
-			$this->temp_variables['manual_export'] = "";
-		} else {
-	    	$this->error[]['error'] = "Could not export database:";
-	    	$this->error[]['msg'] = "Execute the following command in a $termOrBash.";
-	    	$this->error[]['cmd'] = $cmd;
-	    	$this->temp_variables['manual_export'] = $sqlFile;
-		}
-
+		$this->error[]['error'] = "The KnowledgeTree Setup Wizard was unable to connect to your KnowledgeTree 3.6.1 database.";
+		$this->error[]['msg'] = "Ensure that your KnowledgeTree Mysql service is running.";
+		$this->error[]['cmd'] = "Click <b>Next</b> after resolving the above errors.";
+		$this->temp_variables['dumpLocation'] = $sqlFile;
+		$this->temp_variables['manual_export'] = $sqlFile;
+		$this->error[]['manual'] = $cmd;
 		return false;
     }
 
@@ -274,7 +263,7 @@ class migrateDatabase extends Step
         return $this->error;
     }
 
-    private function storeSilent() {
+    public function storeSilent() {
     	// TODO
     	$_SESSION['migrate']['database']['dumpLocation'] = $this->sqlDumpFile;
     	$this->temp_variables['dumpLocation'] = $this->sqlDumpFile;

@@ -886,7 +886,7 @@ class database extends Step
     private function closeMysql() {
         try {
             $this->util->dbUtilities->close();
-        } catch (Exeption $e) {
+        } catch (Exception $e) {
             $this->error['con'] = "Could not close: " . $e;
         }
     }

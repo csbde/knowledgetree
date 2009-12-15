@@ -398,7 +398,7 @@ class migrateServices extends Step
 	* @access private
 	* @return void
     */
-    private function storeSilent() {
+    public function storeSilent() {
     	$this->temp_variables['alreadyUninstalled'] = $this->alreadyUninstalled;
     	$this->temp_variables['serviceCheck'] = $this->serviceCheck;
     	$this->temp_variables['msg'] = "Turn off KnowledgeTree Mysql Instance.";

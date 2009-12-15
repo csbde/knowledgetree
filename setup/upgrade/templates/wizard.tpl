@@ -21,7 +21,7 @@
 		<div id="outer-wrapper" align="left">
 		    <div id="header">
 		    <div id="logo"><?php echo $html->image('dame/installer-header_logo.png'); ?></div>
-		    <div id="upgrade_details">
+		    <div id="version_details">
 				<span style="font-size:120%;"> <?php echo $vars['upgrade_version']; ?> </span>
 				<span style="font-size:120%;"> <?php echo $vars['upgrade_type']; ?> </span>
 				</div>

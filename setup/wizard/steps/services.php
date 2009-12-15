@@ -245,8 +245,7 @@ class services extends Step
 			$this->serviceCheck = 'tick';
 		}
 		$this->storeSilent(); // Store info needed for silent mode
-		if(!empty($errors))
-			return false;
+		
 		return true;
     }
 
