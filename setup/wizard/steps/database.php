@@ -150,22 +150,13 @@ class database extends Step
 	private $dmsuserpassword = '';
 	
 	/**
-	* Location of database binaries.
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var string
-	*/
-    private $mysqlDir; // TODO:multiple databases
-    
-	/**
 	* Name of database binary.
 	*
 	* @author KnowledgeTree Team
 	* @access private
 	* @var string
 	*/
-    private $dbbinary = ''; // TODO:multiple databases
+    private $dbbinary = '';
     
 	/**
 	* Database table prefix
@@ -230,7 +221,7 @@ class database extends Step
 	*/
     protected $silent = true;
     
-    private $salt = 'installers';
+    //protected $salt = 'installers';
     
 	/**
 	* Main control of database setup
@@ -284,7 +275,8 @@ class database extends Step
             $this->setPostConfig(); // Set any posted variables
 			return 'next';
         } else if($this->edit()) {
-            $this->setDataFromSession("database"); // Set Session Information, since its an edit
+            if($this->setDataFromSession("database")) // Set Session Information, since its an edit
+            	$this->setDetails(); // Set any posted variables
             $this->temp_variables['state'] = 'edit';
             
             return 'landing';
@@ -363,8 +355,8 @@ class database extends Step
 	* @return boolean
 	*/
     private function setErrorsFromSession() {
-        if(isset($_SESSION[$this->salt]['database']['errors'])) {
-            $this->error[] = $_SESSION[$this->salt]['database']['errors'];
+        if(isset($_SESSION['installers']['database']['errors'])) {
+            $this->error[] = $_SESSION['installers']['database']['errors'];
             
             return true;
         }
@@ -382,7 +374,7 @@ class database extends Step
 	*/
     public function setPostConfig() {
     	$this->dtype = $this->getPostSafe("dtype");
-    	$this->dtypes = array("0"=>"mysql"); // TODO:multiple databases
+    	$this->dtypes = array("0"=>"mysql");
         $this->dhost = $this->getPostSafe("dhost");
         $this->dport = $this->getPostSafe("dport");
         $this->dname = $this->getPostSafe("dname");
@@ -408,7 +400,7 @@ class database extends Step
     public function loadDefaults($simplexml) {
         if($simplexml) {
         	$this->temp_variables['dtype'] = "";
-            $this->temp_variables['dtypes'] = array("0"=>"mysql"); // TODO:multiple databases
+            $this->temp_variables['dtypes'] = array("0"=>"mysql");
             $this->temp_variables['dname'] = (string) $simplexml->dname;
             $this->temp_variables['duname'] = (string) $simplexml->duname;
             $this->temp_variables['dhost'] = (string) $simplexml->dhost;
@@ -416,8 +408,8 @@ class database extends Step
             $this->temp_variables['dpassword'] = '';
             $this->temp_variables['dmsname'] = (string) $simplexml->dmsadminuser;
             $this->temp_variables['dmsusername'] = (string) $simplexml->dmsuser;
-            $this->temp_variables['dmspassword'] = (string) $simplexml->dmsaupass;
-            $this->temp_variables['dmsuserpassword'] = (string) $simplexml->dmsupass;
+            $this->temp_variables['dmspassword'] = substr(md5(rand()), 0, 9);
+            $this->temp_variables['dmsuserpassword'] = substr(md5(rand()), 0, 9);
             if(WINDOWS_OS) {
             	$this->temp_variables['dbbinary'] = 'mysql.exe';
             } else {
@@ -445,7 +437,7 @@ class database extends Step
    			$this->temp_variables['state'] = '';
    		}
    		$this->temp_variables['dtype'] = $this->getPostSafe('dtype');
-        $this->temp_variables['dtypes'] = array("0"=>"mysql"); // TODO:multiple databases;
+        $this->temp_variables['dtypes'] = array("0"=>"mysql");
         $this->temp_variables['dhost'] = $this->getPostSafe('dhost');
         $this->temp_variables['dport'] = $this->getPostSafe('dport');
         $this->temp_variables['dname'] = $this->getPostSafe('dname');
@@ -771,16 +763,34 @@ class database extends Step
         $dbMigrate = $this->util->getDataFromPackage('migrate', 'database');
         $sqlFile = $dbMigrate['dumpLocation'];
     	$this->parse_mysql_dump($sqlFile);
-    	$dropPluginHelper = "TRUNCATE plugin_helper;"; // Remove plugin helper table
-    	$this->util->dbUtilities->query($dropPluginHelper);
-		$this->addServerPort();
-    	$updateExternalBinaries = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "externalBinary";'; // Remove references to old paths
-    	$this->util->dbUtilities->query($updateExternalBinaries);
-    	$this->reBuildPaths();
-		$this->writeBinaries(); // Rebuild some of the binaries
-		$this->util->getSystemIdentifier(); // ensure a guid was generated and is stored
+		$this->prepDatabase();
 
     	return true;
+    }
+    
+    private function prepDatabase() {
+		$this->truncatePluginHelper();
+		$this->truncateActiveSessions();
+		$this->addServerPort();
+		$this->updateConfigSettings();
+    	$this->reBuildPaths();
+		$this->writeBinaries(); // Rebuild some of the binaries
+		$this->util->getSystemIdentifier(); // ensure a guid was generated and is stored    	
+    }
+    
+    private function truncateActiveSessions() {
+    	$dropActiveSessions = "TRUNCATE active_sessions;"; // Remove plugin helper table
+    	$this->util->dbUtilities->query($dropActiveSessions);
+    }
+    
+    private function truncatePluginHelper() {
+    	$dropPluginHelper = "TRUNCATE plugin_helper;"; // Remove plugin helper table
+    	$this->util->dbUtilities->query($dropPluginHelper);    	
+    }
+    
+    private function updateConfigSettings() {
+    	$updateExternalBinaries = 'UPDATE config_settings c SET c.value = "default" where c.group_name = "externalBinary";'; // Remove references to old paths
+    	$this->util->dbUtilities->query($updateExternalBinaries);    	
     }
     
     private function reBuildPaths() {

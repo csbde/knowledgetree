@@ -1,6 +1,5 @@
 <form id="services_database_registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 <p class="title">Confirming Database Configurations</p>
-
 	<div class="description">
 	Confirm whether KnowledgeTree has correctly determined your database settings before proceeding. Print this page for future use. <a href="javascript:window.print()">Click to Print This Page</a>
 	</div>
@@ -41,9 +40,7 @@
 		    </tr>
 		    <?php } ?>
 		</table>
-		<!--</div>-->
 		<h3><b>Advanced Settings</b></h3>
-		
 		<table class="dbconf">
 		    <tr>
 		        <td width="153px">Host: </td>
@@ -68,29 +65,23 @@
 		    </tr>
 		<?php } ?>
 		</table>
-		
 		<h3><b>Database Users (System Generated)</b></h3>
-		
 		<table class="dbconf">
-		    <?php //if (!$silent) { ?>
 		    <tr>
 		        <td width="153px">DMS Admin Username: </td>
 		        <td width="15px"> <div id="tooltips" title="Database Administrative User for KnowledgeTree System">&nbsp;</div> </td>
 		        <td><?php echo $dmsname; ?></td>
 		    </tr>
-		    <?php //} ?>
 		    <tr>
 		        <td>DMS Admin Password: </td>
 		        <td> <div id="tooltips" title="Database Administrative User password">&nbsp;</div> </td>
 		        <td><?php echo $dmspassword; ?></td>
 		    </tr>
-		    <?php //if (!$silent) { ?>
 		    <tr>
 		        <td>DMS User Username: </td>
 		        <td> <div id="tooltips" title="Database User for KnowledgeTree System">&nbsp;</div> </td>
 		        <td><?php echo $dmsusername; ?></td>
 		    </tr>
-		    <?php //} ?>
 		    <tr>
 		        <td>DMS User Password: </td>
 		        <td> <div id="tooltips" title="Database User password">&nbsp;</div> </td>
