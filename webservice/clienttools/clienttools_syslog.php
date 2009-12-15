@@ -11,6 +11,9 @@ class Clienttools_Syslog{
 		$ret=null;
 		if(is_array($data)){
 			$txs=array_keys($data);
+			foreach($txs as $idx=>$val){
+				$txs[$idx]='['.$val.']';
+			}
 			$txd=array_values($data);
 			$ret=str_replace($txs,$txd,$template);
 		};

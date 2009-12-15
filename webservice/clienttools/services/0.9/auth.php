@@ -3,6 +3,7 @@
 class auth extends client_service {
 
 	public function login(){
+		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
 		$params=$this->AuthInfo;
 		
 		$username=$params['user'];
@@ -71,6 +72,7 @@ class auth extends client_service {
 	}
 	
 	public function japiLogin(){
+		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
 		global $default;
 		
        	$user=$this->KT->get_user_object_by_username($this->AuthInfo['user']);
@@ -82,6 +84,7 @@ class auth extends client_service {
 	}
 	
 	public function pickup_session(){
+		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
 		$params=$this->AuthInfo;
 		$app_type=$params['appType'];
 		$session_id=$params['session'];
@@ -98,6 +101,7 @@ class auth extends client_service {
 
 
 	public function ping(){
+		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
 		global $default;
        	$user=$this->KT->get_user_object_by_username($this->AuthInfo['user']);
        	$versions=$this->handler->getServerVersions();
@@ -120,6 +124,7 @@ class auth extends client_service {
 	}
 
     function logout($params){
+    	$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
 		$params=$this->AuthInfo;
 		$app_type=$params['appType'];
 		$session_id=$params['session'];

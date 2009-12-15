@@ -1,6 +1,7 @@
 <?php
 class system extends client_service{
 	public function checkVersion(){
+		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
 		global $default;
        	$user=$this->KT->get_user_object_by_username($this->AuthInfo['user']);
        	$versions=$this->handler->getServerVersions();
@@ -19,11 +20,14 @@ class system extends client_service{
 					
 		);
 		$this->setResponse($ret);
+		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Exit Function');
 		return true;
 	}
 	
 	public function jsondecode($params){
+		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
 		$this->setResponse(@json_decode(trim($params['code'])));
+		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Exit Function');
 	}
 }
 
