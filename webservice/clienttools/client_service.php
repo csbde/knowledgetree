@@ -20,6 +20,8 @@ class client_service{
 		$this->KT=&$KT_Instance;
 		$this->AuthInfo=&$AuthInfo;
 		$this->Request=&$Request;
+		
+		$this->Response->location='client service';
 	}
 	
 	protected function addResponse($name,$value){
@@ -40,6 +42,18 @@ class client_service{
 	
 	protected function xlate($var=NULL){
 		return $var;
+	}
+	
+	protected function logTrace($location=NULL,$message=NULL){
+		Clienttools_Syslog::logTrace($this->AuthInfo['user'],'SERVICE - '.$location,$message);
+	}
+	
+	protected function logError($location=NULL,$detail=NULL,$err=NULL){
+		Clienttools_Syslog::logError($this->AuthInfo['user'],'SERVICE - '.$location,$detail,$err);
+	}
+	
+	protected function logInfo($location=NULL,$message=NULL,$debugData=NULL){
+		Clienttools_Syslog::logInfo($this->AuthInfo['user'],'SERVICE - '.$location,$message,$debugData);
 	}
 	
 	protected function checkPearError($obj,$errMsg,$debug=NULL,$response=NULL){

@@ -15,10 +15,27 @@ define('COMMS_DEBUG',true);
  * 
  * return json Error Response
  */
-function error_handler($e,$errstr=null,$errfile=null,$errline=null){
+function error_handler($errno,$errstr=null,$errfile=null,$errline=null){
+	$e=new ErrorException($errstr,0,$errno,$errfile,$errline);
+	print_r($e);
 	if($GLOBALS['RET']){
-		$GLOBALS['RET']->addError($errfile?$errstr:$e->getmessage());
-		$GLOBALS['RET']->setDebug($errfile?'ERR':'EXC',$errfile?(array('error_number'=>$e,'error_string'=>$errstr,'error_file'=>$errfile,'error_line'=>$errline)):$e);
+		$GLOBALS['RET']->addError($e->getmessage());
+		$GLOBALS['RET']->setDebug('Exception::',$e);
+		echo $GLOBALS['RET']->getJson();
+		exit;
+	};
+//	if($GLOBALS['RET']){
+//		$GLOBALS['RET']->addError($errfile?$errstr:$e->getmessage());
+//		$GLOBALS['RET']->setDebug($errfile?'ERR':'EXC',$errfile?(array('error_number'=>$e,'error_string'=>$errstr,'error_file'=>$errfile,'error_line'=>$errline)):$e);
+//		echo $GLOBALS['RET']->getJson();
+//		exit;
+//	};
+}
+
+function exception_handler($e){
+	if($GLOBALS['RET']){
+		$GLOBALS['RET']->addError($e->getmessage());
+		$GLOBALS['RET']->setDebug('Exception::',$e);
 		echo $GLOBALS['RET']->getJson();
 		exit;
 	};
@@ -27,8 +44,8 @@ function error_handler($e,$errstr=null,$errfile=null,$errline=null){
 /**
  * Set the error & exception handlers
  */
-$old_exception_handler=set_exception_handler('error_handler');
 $old_error_handler=set_error_handler('error_handler',E_ERROR);
+$old_exception_handler=set_exception_handler('exception_handler');
 
 
 
@@ -42,6 +59,7 @@ include_once('jsonWrapper.php');
 include_once('ajaxhandler.php');
 include_once('serviceHelper.php');
 include_once('client_service.php');
+include_once('clienttools_syslog.php');
 
 //Instantiate base classes
 $KT = new KTAPI();
@@ -74,6 +92,6 @@ $handler=new ajaxHandler($RET,$KT,$noAuthRequests);
 /**
  * Reset the error & exception handlers
  */
-set_exception_handler($old_exception_handler);
-set_error_handler($old_error_handler,E_ALL);
+//set_exception_handler($old_exception_handler);
+//set_error_handler($old_error_handler,E_ALL);
 ?>
