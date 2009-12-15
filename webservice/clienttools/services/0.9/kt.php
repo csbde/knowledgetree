@@ -8,7 +8,7 @@ class kt extends client_service {
 	 *
 	 */
 	function get_languages($passthru = false) {
-		$this->logTrace ( __CLASS__ . '::' . __METHOD__ . '(' . __FILE__ . ' ' . __LINE__, 'Enter Function' );
+		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
 		global $default;
 		$oReg = & KTi18nregistry::getSingleton ();
 		$aRegisteredLangs = $oReg->geti18nLanguages ( 'knowledgeTree' );
@@ -28,13 +28,13 @@ class kt extends client_service {
 	}
 	
 	function get_rootfolder_detail($params) {
-		$this->logTrace ( __CLASS__ . '::' . __METHOD__ . '(' . __FILE__ . ' ' . __LINE__, 'Enter Function' );
+		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
 		$params ['folderId'] = '1';
 		$this->get_folder_detail ( $params );
 	}
 	
 	function get_folder_detail($params) {
-		$this->logTrace ( __CLASS__ . '::' . __METHOD__ . '(' . __FILE__ . ' ' . __LINE__, 'Enter Function' );
+		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
 		if (isset ( $params ['node'] ) && ! isset ( $params ['folderId'] )) {
 			$params ['node'] = split ( '_', $params ['node'] );
 			$params ['folderId'] = $params ['node'] [1];
@@ -94,7 +94,7 @@ class kt extends client_service {
 	}
 	
 	function get_folder_contents($params) {
-		$this->logTrace ( __CLASS__ . '::' . __METHOD__ . '(' . __FILE__ . ' ' . __LINE__, 'Enter Function' );
+		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
 		$kt = &$this->KT;
 		
 		$params ['control'] = 'F_';
@@ -119,7 +119,7 @@ class kt extends client_service {
 	 * @return array
 	 */
 	function get_folder_contents_for_grid($arr) {
-		$this->logTrace ( __CLASS__ . '::' . __METHOD__ . '(' . __FILE__ . ' ' . __LINE__, 'Enter Function' );
+		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
 		$kt = &$this->KT;
 		
 		$arr ['control'] = 'F_';
@@ -144,7 +144,7 @@ class kt extends client_service {
 	}
 	
 	private function _processListing($listing, $type, $arr) {
-		$this->logTrace ( __CLASS__ . '::' . __METHOD__ . '(' . __FILE__ . ' ' . __LINE__, 'Enter Function' );
+		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
 		$result = array ();
 		$methodToIncludeItem = '_processItemInclusion_' . $type;
 		
@@ -244,12 +244,12 @@ class kt extends client_service {
 	}
 	
 	private function _processItemInclusion_folderContents($item, $class, $qtip) {
-		$this->logTrace ( __CLASS__ . '::' . __METHOD__ . '(' . __FILE__ . ' ' . __LINE__, 'Enter Function' );
+		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
 		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => ($item ['item_type'] == 'F' ? $item ['item_type'] . "_" : "") . $item ['id'], 'filename' => $item ['filename'], 'cls' => $class, 'leaf' => ($item ['item_type'] == 'D'), 'document_type' => $item ['document_type'], 'item_type' => $item ['item_type'], 'permissions' => $item ['permissions'], 'content_id' => $item ['content_id'], 'checked_out_by' => $item ['checked_out_by'], 'qtip' => $qtip );
 	}
 	
 	private function _processItemInclusion_search($item, $class, $qtip) {
-		$this->logTrace ( __CLASS__ . '::' . __METHOD__ . '(' . __FILE__ . ' ' . __LINE__, 'Enter Function' );
+		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
 		if ($item ['filesize'] == 'n/a') {
 			$item ['filesize'] = - 1;
 		}
@@ -257,7 +257,7 @@ class kt extends client_service {
 	}
 	
 	private function _processItemInclusion_grid($item, $class, $qtip) {
-		$this->logTrace ( __CLASS__ . '::' . __METHOD__ . '(' . __FILE__ . ' ' . __LINE__, 'Enter Function' );
+		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
 		//var_dump($item);
 		
 
@@ -269,7 +269,7 @@ class kt extends client_service {
 	}
 	
 	public function get_metadata($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
 		if (substr ( $params ['document_id'], 0, 2 ) == 'D_') {
@@ -351,7 +351,7 @@ class kt extends client_service {
 	}
 	
 	public function get_documenttypes($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		
 		$kt = &$this->KT;
 		
@@ -394,7 +394,7 @@ class kt extends client_service {
 	 * @param unknown_type $params
 	 */
 	function download_document($params, $returnResult = false){
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		
 		$kt = &$this->KT;
 		$params ['session_id'] = $params ['session_id'] ? $params ['session_id'] : $this->AuthInfo ['session'];
@@ -461,7 +461,7 @@ class kt extends client_service {
 	 * @param unknown_type $params
 	 */
 	public function download_multiple_documents($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$response = array ();
 		foreach ( $params ['documents'] as $docId ) {
 			$ret = $this->download_document ( array ('document_id' => $docId, 'app_type' => $params ['app_type'], 'multipart' => $params ['multipart'] ), true );
@@ -483,7 +483,7 @@ class kt extends client_service {
 	 *
 	 */
 	function checkout_document($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$responseType = 'kt_response';
 		$kt = &$this->KT;
 		
@@ -523,7 +523,7 @@ class kt extends client_service {
 	 * @param array $params
 	 */
 	function checkin_document($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$session_id = $this->AuthInfo ['session'];
 		$document_id = $params ['document_id'];
 		$filename = $params ['filename'];
@@ -569,7 +569,7 @@ class kt extends client_service {
 	 * @param unknown_type $arr
 	 */
 	function add_document_with_metadata($arr) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$session_id = $arr ['session_id'];
 		//error_reporting(E_ALL);
 		$metadata = array ();
@@ -625,7 +625,7 @@ class kt extends client_service {
 	}
 	
 	function create_empty_upload_file($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$config = KTConfig::getSingleton ();
 		$this->addDebug ( 'KTConfig Singleton', $config );
 		$uploadFolder = $config->get ( 'webservice/uploadDirectory' );
@@ -645,7 +645,7 @@ class kt extends client_service {
 	}
 	
 	function get_all_client_policies() {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$config = KTConfig::getSingleton ();
 		$this->addDebug ( 'KTConfig Singleton', $config );
 		
@@ -675,7 +675,7 @@ class kt extends client_service {
 	}
 	
 	function get_all_explorer_policies() {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$config = KTConfig::getSingleton ();
 		$this->addDebug ( 'KTConfig Singleton', $config );
 		
@@ -707,12 +707,12 @@ class kt extends client_service {
 	}
 	
 	public function switchlang($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		setcookie ( "kt_language", $params ['lang'], 2147483647, '/' );
 	}
 	
 	function add_document_params($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$folder_id = $params ['folder_id'];
 		$title = $params ['title'];
 		$filename = $params ['filename'];
@@ -757,7 +757,7 @@ class kt extends client_service {
 	}
 	
 	function delete_document($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$session_id = $params ['session_id'];
 		$document_id = $params ['document_id'];
 		$reason = $params ['reason'];
@@ -783,7 +783,7 @@ class kt extends client_service {
 	}
 	
 	private function update_document_metadata($session_id, $document_id, $metadata, $application, $sysdata = null) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$this->addDebug ( 'update_document_metadata', 'entered update_document_metadata' );
 		$kt = &$this->KT;
 		$responseType = 'kt_document_detail';
@@ -807,7 +807,7 @@ class kt extends client_service {
 	}
 	
 	function get_client_policy($arr) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$policy_name = $arr ['policy_name'];
 		
 		$config = KTConfig::getSingleton ();
@@ -823,7 +823,7 @@ class kt extends client_service {
 	}
 	
 	function search($arr) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
 		$listing = processSearchExpression ( "(GeneralText contains \"" . $arr ['query'] . "\")" );
@@ -843,7 +843,7 @@ class kt extends client_service {
 	}
 	
 	public function update_metadata($arr) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$metadata = array ();
 		$meta = $arr ['metadata'];
 		
@@ -928,7 +928,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	function check_document_title($arr) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
 		$folder = $kt->get_folder_by_id ( $arr ['folder_id'] );
@@ -948,7 +948,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	function cancel_checkout($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
 		$document = &$kt->get_document_by_id ( $params ['document_id'] );
@@ -967,7 +967,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	function get_transaction_history($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
 		$document = &$kt->get_document_by_id ( $params ['document_id'] );
@@ -985,7 +985,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	public function get_users_groups($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		$query = $params ['query'];
 		//$start=$params['start'];
@@ -1013,7 +1013,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	function send_email($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
 		$message = $params ['message'];
@@ -1066,7 +1066,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	function is_latest_version($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
 		$documentId = $params ['document_id'];
@@ -1079,7 +1079,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	function check_permission($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
 		$user = $kt->get_user ();
@@ -1096,7 +1096,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	function copydocument($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
 		$response = $kt->copy_document ( $params ['documentid'], $params ['destfolderid'], $params ['reason'] );
@@ -1110,7 +1110,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	function movedocument($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = $this->KT;
 		
 		$response = $kt->move_document ( $params ['documentid'], $params ['destfolderid'], $params ['reason'] );
@@ -1125,7 +1125,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	function copyfolder($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
 		$response = $kt->copy_folder ( $params ['sourcefolderid'], $params ['destfolderid'], $params ['reason'] );
@@ -1140,7 +1140,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	function movefolder($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
 		$response = $kt->move_folder ( $params ['sourcefolderid'], $params ['destfolderid'], $params ['reason'] );
@@ -1154,7 +1154,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	function renamefolder($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
 		$response = $kt->rename_folder ( $params ['currentfolderid'], $params ['newname'] );
@@ -1168,7 +1168,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	function addfolder($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		$this->addDebug ( 'parameters', $params );
 		$response = $kt->create_folder ( $params ['currentfolderid'], $params ['newname'] );
@@ -1177,7 +1177,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	function deletefolder($params) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
 		$response = $kt->delete_folder ( $params ['folderid'], $params ['reason'] );
@@ -1191,7 +1191,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	function candeletefolder($arr) {
-		$this->logTrace(__CLASS__.'::'.__METHOD__.'('.__FILE__.' '.__LINE__,'Enter Function');
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
 		$folder = &$kt->get_folder_by_id ( $arr ['folderid'] );
