@@ -61,6 +61,9 @@ include_once('serviceHelper.php');
 include_once('client_service.php');
 include_once('clienttools_syslog.php');
 
+
+Clienttools_Syslog::logTrace('--','--','======================================================================== TRANSACTION START');
+
 //Instantiate base classes
 $KT = new KTAPI();
 $RET=new jsonResponseObject();

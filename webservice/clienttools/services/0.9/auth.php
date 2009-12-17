@@ -142,7 +142,10 @@ class auth extends client_service {
             return false;
         }
 	
+    	$newSessId=md5(session_id());
     	$session->logout();
+    	session_id($newSessId);
+    	$this->Response->setStatus('session_id',$newSessId);
     	$this->setResponse(array('logout'=>true));
     	return true;
     }

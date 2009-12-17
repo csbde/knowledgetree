@@ -1,4 +1,11 @@
 <?php
+/**
+ * ClientTools System Logging Static Class
+ * 
+ * For more information about use: http://ktwiki.kt-cpt.internal/Logging
+ * @author Mark Holtzhausen
+ *
+ */
 class Clienttools_Syslog{
 	/** The default folder in which to put the log files **/
 	private static $logFolder='../../var/log/';
