@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -484,7 +484,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			return $user;
 		}
-        
+
 		//if the document is checked-out by the current user, just return
 		//as no need to check-out again BUT we do need to download
 		//returning here will allow download, but skip check-out
@@ -1242,7 +1242,7 @@ class KTAPI_Document extends KTAPI_FolderItem
                 //$controltype = 'string';
                 // Replace with true
                 $controltype = strtolower($field->getDataType());
-                
+
                 if ($field->getHasLookup())
                 {
                 	$controltype = 'lookup';
@@ -1251,14 +1251,14 @@ class KTAPI_Document extends KTAPI_FolderItem
                     	$controltype = 'tree';
                     }
                 }
-                
+
                 // Options - Required for Custom Properties
                 $options = array();
-                
+
                 if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
                     $controltype = 'multiselect';
                 }
-                
+
                 switch ($controltype)
                 {
                 	case 'lookup':
@@ -1293,7 +1293,7 @@ class KTAPI_Document extends KTAPI_FolderItem
                     'description' => $field->getDescription(),
                     'control_type' => $controltype,
                     'selection' => $selection,
-                    'options' => $options,  
+                    'options' => $options,
 
                 );
 
@@ -1482,6 +1482,20 @@ class KTAPI_Document extends KTAPI_FolderItem
             $ret = $oTrigger->postValidate();
         }
 
+        // update document object with additional fields / data from the triggers
+        $this->document = Document::get($this->document->iId);
+        $folder = Folder::get($this->document->getFolderID());
+
+        // Check if there are any dynamic conditions / permissions that need to be updated on the document
+        // If there are dynamic conditions then update the permissions on the document
+        // The dynamic condition test fails unless the document exists in the DB therefore update permissions after committing the transaction.
+        include_once(KT_LIB_DIR.'/permissions/permissiondynamiccondition.inc.php');
+        $iPermissionObjectId = $folder->getPermissionObjectID();
+        $dynamicCondition = KTPermissionDynamicCondition::getByPermissionObjectId($iPermissionObjectId);
+
+        if(!PEAR::isError($dynamicCondition) && !empty($dynamicCondition)){
+            $res = KTPermissionUtil::updatePermissionLookup($this->document);
+        }
 	}
 
 	/**
@@ -2128,22 +2142,22 @@ class KTAPI_Document extends KTAPI_FolderItem
         $oDocumentTransaction = new DocumentTransaction($this->document, 'Document downloaded', 'ktcore.transactions.download', $aOptions);
         $oDocumentTransaction->create();
 	}
-    
+
     /**
      * Function to fetch the actual file content of a document
-     * 
-     * @return $content the document file content 
+     *
+     * @return $content the document file content
      */
     function get_document_content()
     {
         // fetch the content
         $content = KTDocumentUtil::getDocumentContent($this->document);
-        
+
         // TODO what if the file could not be found?
-        
+
     	// Log the transaction
     	$this->download();
-        
+
         // return the document content
         return $content;
     }
@@ -2457,7 +2471,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 	/**
 	 * Emails a document as an attachment or hyperlink to a list of users, groups or external email addresses.
-	 * In the case of external addresses, if a hyperlink is used then a timed download link (via webservices) is sent 
+	 * In the case of external addresses, if a hyperlink is used then a timed download link (via webservices) is sent
 	 * allowing the recipient a window period in which to download the document.
 	 * The period is set through the webservices config option webservice/downloadExpiry. Defaults to 30 minutes.
 	 *
@@ -2466,9 +2480,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @param array $members The email recipients - KTPAI_Users, KTAPI_Groups or email addresses
 	 * @param string $comment Content to be appended to the email
 	 * @param bool $attachDocument TRUE if document is an attachment | FALSE if using a hyperlink to the document
-	 * 
+	 *
 	 * NOTE this function requires that the Email Plugin be active.
-	 *      It seems that it is possible for this to be unintentionally turned off during a plugin re-read. 
+	 *      It seems that it is possible for this to be unintentionally turned off during a plugin re-read.
 	 */
 	public function email($members, $comment, $attachDocument = true)
 	{
@@ -2533,7 +2547,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         sendEmail($listEmails, $this->documentid, $this->get_title(), $comment, (boolean)$attachDocument, $emailErrors);
 
     }
-    
+
     /**
      * Get a list of Documents
      *

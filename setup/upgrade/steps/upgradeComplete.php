@@ -88,7 +88,7 @@ class upgradeComplete extends Step {
      * Set all silent mode varibles
      *
      */
-    protected function storeSilent() {
+    public function storeSilent() {
     	$v = $this->getDataFromSession('upgradeProperties');
     	$this->temp_variables['sysVersion'] = $this->util->readVersion();
     	$this->temp_variables['migrateCheck'] = $this->migrateCheck;

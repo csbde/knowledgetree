@@ -1,0 +1,1 @@
+ALTER TABLE `uploaded_files` ADD COLUMN `unique_file_id` varchar(30);

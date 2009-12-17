@@ -9,7 +9,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -97,7 +97,7 @@ define('KTWS_ERR_DB_PROBLEM',				99);
 
 if (!defined('LATEST_WEBSERVICE_VERSION'))
 {
-	define('LATEST_WEBSERVICE_VERSION',2);
+	define('LATEST_WEBSERVICE_VERSION', 3);
 }
 
 	function bool2str($bool)
@@ -435,7 +435,7 @@ class KTWebService
                         'item' => "{urn:$this->namespace}kt_metadata_selection_item"
                   )
          	);
-            
+
     $this->__typedef["{urn:$this->namespace}kt_metadata_options"] =
          	array(
 				'ishtml' => 'string',
@@ -946,6 +946,20 @@ class KTWebService
 
  	        $this->__dispatch_map['add_document_with_metadata'] =
     	        array('in' => array('session_id'=>'string','folder_id'=>'int','title'=>'string','filename'=>'string','documentype' =>'string','tempfilename' =>'string', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets",'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
+        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
+            	);
+         }
+
+         if($this->version >= 3)
+         {
+             // add_document
+             $this->__dispatch_map['add_document'] =
+                array('in' => array('session_id'=>'string','folder_id'=>'int','title'=>'string','filename'=>'string','documentype' =>'string','tempfilename' =>'string', 'unique_file_id' => 'string' ),
+                 'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
+                );
+
+ 	        $this->__dispatch_map['add_document_with_metadata'] =
+    	        array('in' => array('session_id'=>'string','folder_id'=>'int','title'=>'string','filename'=>'string','documentype' =>'string','tempfilename' =>'string', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets",'sysdata'=>"{urn:$this->namespace}kt_sysdata", 'unique_file_id' => 'string' ),
         	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
             	);
          }
@@ -2260,8 +2274,20 @@ class KTWebService
      * @param string $tempfilename
      * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      */
-    function add_document($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename)
+    function add_document($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $unique_file_id = null)
     {
+        if(empty($tempfilename)){
+            $upload_manager = new KTUploadManager();
+            $tempfilename = $upload_manager->get_tempfile_from_unique_id($unique_file_id);
+
+            if (PEAR::isError($tempfilename))
+    		{
+    		    $response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, "Invalid unique file id: {$tempfilename->getMessage()}.");
+    			$this->debug("add_document - cannot add document - "  . $tempfilename->getMessage(), $session_id);
+    			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
+    		}
+        }
+
     	$this->debug("add_document('$session_id',$folder_id,'$title','$filename','$documenttype','$tempfilename')");
     	$kt = &$this->get_ktapi($session_id );
     	if (is_array($kt))
@@ -2347,9 +2373,9 @@ class KTWebService
 		return $update_result;
     }
 
-    function add_document_with_metadata($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata)
+    function add_document_with_metadata($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata, $unique_file_id = null)
     {
-		$add_result = $this->add_document($session_id, $folder_id, $title, $filename, $documenttype, $tempfilename);
+		$add_result = $this->add_document($session_id, $folder_id, $title, $filename, $documenttype, $tempfilename, $unique_file_id);
 
 		$status_code = $add_result->value['status_code'];
 		if ($status_code != 0)

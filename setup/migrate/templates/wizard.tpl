@@ -21,7 +21,7 @@
 		<div id="outer-wrapper" align="left">
 		    <div id="header">
 			    <div id="logo"><?php echo $html->image('dame/installer-header_logo.png'); ?> </div>
-			    <div id="install_details">
+			    <div id="version_details">
 					<span style="font-size:120%;"> <?php if (isset($vars['migrate_version'])) echo $vars['migrate_version']; ?> </span>
 					<span style="font-size:120%;"> <?php if (isset($vars['migrate_version'])) echo $vars['migrate_type']; ?></span>
 				</div>

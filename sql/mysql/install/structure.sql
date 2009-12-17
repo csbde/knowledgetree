@@ -1591,6 +1591,7 @@ CREATE TABLE `uploaded_files` (
   `uploaddate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `action` char(1) NOT NULL COMMENT 'A = Add, C = Checkin',
   `document_id` int(11) default NULL,
+  `unique_file_id` varchar(30),
   PRIMARY KEY  (`tempfilename`),
   KEY `userid` (`userid`),
   KEY `document_id` (`document_id`),

@@ -40,8 +40,7 @@
 require_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/filelike/filelikeutil.inc.php');
-// // Jarrett Jordaan: Deal with bulk action
-require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php');
+require_once(KT_LIB_DIR . '/subscriptions/subscriptions.inc.php'); // Deal with bulk action
 
 class KTBulkImportManager {
     var $oStorage;
