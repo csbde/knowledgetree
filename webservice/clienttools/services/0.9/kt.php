@@ -532,7 +532,7 @@ class kt extends client_service {
 		$filename = $params ['filename'];
 		$reason = $params ['reason'];
 		$tempfilename = $params ['tempfilename'];
-		$major_update = $this->bool($params);		//Force value into boolean container.
+		$major_update = $this->bool($params['major_update']);		//Force value into boolean container.
 		$application = $this->AuthInfo ['appType'];
 		
 		$kt = &$this->KT;

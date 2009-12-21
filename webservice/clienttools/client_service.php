@@ -72,9 +72,12 @@ class client_service{
 	 * $isTrue array contains a list of values that are recognized as 'true' values in boolean
 	 */
 	protected function bool($var=NULL){
+		$ret=false;
 		$isTrue=Array('true','0','yes');
-		if(is_bool($var))return $var;
-		return (in_array(strtolower(trim((string)$var)),$isTrue));
+		if(is_bool($var))$ret=$var;
+		$var=strtolower(trim(($var.'')));
+		$ret=(in_array($var,$isTrue));
+		return $ret;
 	}
 	
 }
