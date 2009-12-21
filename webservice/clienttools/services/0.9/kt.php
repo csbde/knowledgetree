@@ -532,10 +532,9 @@ class kt extends client_service {
 		$filename = $params ['filename'];
 		$reason = $params ['reason'];
 		$tempfilename = $params ['tempfilename'];
-		$major_update = $params ['major_update'];
+		$major_update = $this->bool($params);		//Force value into boolean container.
 		$application = $this->AuthInfo ['appType'];
 		
-		$this->addDebug ( 'Checkin', "checkin_document('$session_id',$document_id,'$filename','$reason','$tempfilename', '$application', $major_update)" );
 		$kt = &$this->KT;
 		
 		// we need to add some security to ensure that people don't frig the checkin process to access restricted files.
@@ -552,6 +551,7 @@ class kt extends client_service {
 		}
 		
 		// checkin
+		$this->logInfo('kt.checkin_document','Parameter Inspector',$major_update);
 		$result = $document->checkin ( $filename, $reason, $tempfilename, $major_update );
 		if (PEAR::isError ( $result )) {
 			$this->setResponse ( array ('status_code' => 14 ) );
@@ -578,6 +578,7 @@ class kt extends client_service {
 		$metadata = array ();
 		$packed = $arr ['metadata'];
 		
+		//TODO: $meta is undefined - please revise
 		foreach ( $meta as $item ) {
 			$fieldSet = $item ['fieldset'];
 			unset ( $item ['fieldset'] );
@@ -604,7 +605,7 @@ class kt extends client_service {
 		
 		$document = &$folder->add_document ( $arr ['title'], $arr ['filename'], $arr ['documenttype'], $arr ['tempfilename'] );
 		if (PEAR::isError ( $document )) {
-			$this->addError ( "Could not add Document [title:{$title},filename:{$filename},documenttype:{$documenttype},tempfilename:{$tempfilename}]" );
+			$this->addError ( "Could not add Document [title:{$arr['title']},filename:{$arr['filename']},documenttype:{$arr['documenttype']},tempfilename:{$arr['tempfilename']}]" );
 			$this->setResponse ( array ('status_code' => 1, 'message' => 'Could not add Document' ) );
 			return false;
 		}

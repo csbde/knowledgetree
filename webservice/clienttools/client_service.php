@@ -67,6 +67,16 @@ class client_service{
     	return true;	
 	}
 	
+	/**
+	 * Forces parameter to boolean.
+	 * $isTrue array contains a list of values that are recognized as 'true' values in boolean
+	 */
+	protected function bool($var=NULL){
+		$isTrue=Array('true','0','yes');
+		if(is_bool($var))return $var;
+		return (in_array(strtolower(trim((string)$var)),$isTrue));
+	}
+	
 }
 
 ?>
