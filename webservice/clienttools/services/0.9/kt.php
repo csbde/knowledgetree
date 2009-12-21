@@ -149,6 +149,8 @@ class kt extends client_service {
 		$methodToIncludeItem = '_processItemInclusion_' . $type;
 		
 		foreach ( $listing as $item ) {
+			$this->logInfo('Listing Detail:',$item);
+			$this->addDebug('Listing Detail:',$item);
 			/* Trying to fix folder sizes */
 			if ($item ['filesize'] <= 0) {
 				$item ['filesize'] = '';
@@ -165,6 +167,7 @@ class kt extends client_service {
 			$immutable = false;
 			$permissions = $item ['permissions'];
 			$perms = '';
+			
 			
 			for($j = 0; $j < strlen ( $permissions ); $j ++) {
 				switch (strtoupper ( $permissions {$j} )) {
