@@ -1780,7 +1780,8 @@ INSERT INTO `upgrades` VALUES
 (234,'upgrade*3.7.0.2*99*upgrade3.7.0.2','Upgrade from version 3.7.0.1 to 3.7.0.2','2009-11-19 00:00:00',1,'upgrade*3.7.0.2*99*upgrade3.7.0.2'),
 (235,'sql*3.7.0.3*0*3.7.0.3/clienttools_config.sql','Database upgrade to version 3.7.0.3: Clienttools Config','2009-12-10 00:00:00',1,'upgrade*3.7.0.3*99*upgrade3.7.0.3'),
 (236,'sql*3.7.0.3*0*3.7.0.3/uploaded_files.sql','Database upgrade to version 3.7.0.3: Uploaded Files','2009-12-10 00:00:00',1,'upgrade*3.7.0.3*99*upgrade3.7.0.3'),
-(237,'upgrade*3.7.0.3*99*upgrade3.7.0.3','Upgrade from version 3.7.0.2 to 3.7.0.3','2009-12-14 00:00:00',1,'upgrade*3.7.0.3*99*upgrade3.7.0.3');
+(237,'sql*3.7.0.3*0*3.7.0.3/active_sessions_ip.sql','Database upgrade to version 3.7.0.3: Active Sessions Ip','2009-12-10 00:00:00',1,'upgrade*3.7.0.3*99*upgrade3.7.0.3'),
+(238,'upgrade*3.7.0.3*99*upgrade3.7.0.3','Upgrade from version 3.7.0.2 to 3.7.0.3','2009-12-14 00:00:00',1,'upgrade*3.7.0.3*99*upgrade3.7.0.3');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 

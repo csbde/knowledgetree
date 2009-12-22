@@ -59,7 +59,7 @@ CREATE TABLE `active_sessions` (
   `user_id` int(11) default NULL,
   `session_id` varchar(32) default NULL,
   `lastused` datetime default NULL,
-  `ip` varchar(15) default NULL,
+  `ip` varchar(50) default NULL,
   `apptype` varchar(15) default 'webapp' NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `user_id` (`user_id`),

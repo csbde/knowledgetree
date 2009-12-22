@@ -1,0 +1,1 @@
+ALTER TABLE active_sessions CHANGE COLUMN ip ip VARCHAR(50);
