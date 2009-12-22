@@ -17,7 +17,9 @@ class kt extends client_service {
 		
 		if (! empty ( $aRegisteredLangs )) {
 			foreach ( array_keys ( $aRegisteredLangs ) as $sLang ) {
-				$languages [] = array ('isoCode' => $sLang, 'language' => $aLanguageNames [$sLang] );
+				if($sLang=='en') $languages [] = array ('isoCode' => $sLang, 'language' => $aLanguageNames [$sLang] );
+				$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), "Removing Language {$aLanguageNames[$sLang]} from the list because Language Support not Ready." );
+				
 			}
 		}
 		$response = array ('languages' => $languages, 'count' => count ( $languages ), 'defaultLanguage' => $default->defaultLanguage );
@@ -248,7 +250,7 @@ class kt extends client_service {
 	
 	private function _processItemInclusion_folderContents($item, $class, $qtip) {
 		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
-		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => ($item ['item_type'] == 'F' ? $item ['item_type'] . "_" : "") . $item ['id'], 'filename' => $item ['filename'], 'cls' => $class, 'leaf' => ($item ['item_type'] == 'D'), 'document_type' => $item ['document_type'], 'item_type' => $item ['item_type'], 'permissions' => $item ['permissions'], 'content_id' => $item ['content_id'], 'checked_out_by' => $item ['checked_out_by'], 'qtip' => $qtip );
+		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => ($item ['item_type'] == 'F' ? $item ['item_type'] . "_" : "") . $item ['id'], 'filename' => $item ['filename'], 'cls' => $class, 'leaf' => ($item ['item_type'] == 'D'), 'document_type' => $item ['document_type'], 'item_type' => $item ['item_type'], 'permissions' => $item ['permissions'], 'content_id' => $item ['content_id'], 'checked_out_by' => $item ['checked_out_by'], 'qtip' => $qtip, 'is_immutable' => $item ['is_immutable'] );
 	}
 	
 	private function _processItemInclusion_search($item, $class, $qtip) {
@@ -256,7 +258,7 @@ class kt extends client_service {
 		if ($item ['filesize'] == 'n/a') {
 			$item ['filesize'] = - 1;
 		}
-		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => $item ['document_id'], 'filename' => $item ['filename'], 'cls' => $class, 'leaf' => true, 'document_type' => $item ['document_type'], 'item_type' => 'D', 'permissions' => $item ['permissions'], 'content_id' => $item ['content_id'], 'filesize' => $item ['filesize'], 'modified' => $item ['modified_date'], 'created_date' => $item ['created_date'], 'checked_out_by' => $item ['checked_out_by'], 'relevance' => $item ['relevance'], 'qtip' => $qtip, 'version' => $item ['version'] );
+		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => $item ['document_id'], 'filename' => $item ['filename'], 'cls' => $class, 'leaf' => true, 'document_type' => $item ['document_type'], 'item_type' => 'D', 'permissions' => $item ['permissions'], 'content_id' => $item ['content_id'], 'filesize' => $item ['filesize'], 'modified' => $item ['modified_date'], 'created_date' => $item ['created_date'], 'checked_out_by' => $item ['checked_out_by'], 'relevance' => $item ['relevance'], 'qtip' => $qtip, 'version' => $item ['version'], 'is_immutable' => $item ['is_immutable'] );
 	}
 	
 	private function _processItemInclusion_grid($item, $class, $qtip) {
@@ -268,7 +270,7 @@ class kt extends client_service {
 			$item ['filesize'] = - 1;
 		}
 		
-		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => $item ['id'], 'filename' => $item ['filename'], 'cls' => $class, 'owner' => $item ['created_by'], 'document_type' => $item ['document_type'], 'item_type' => $item ['item_type'], 'permissions' => $item ['permissions'], 'created_date' => $item ['created_date'], 'content_id' => $item ['content_id'], 'filesize' => $item ['filesize'], 'modified' => $item ['modified_date'], 'checked_out_by' => $item ['checked_out_by'], 'version' => $item ['version'] );
+		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => $item ['id'], 'filename' => $item ['filename'], 'cls' => $class, 'owner' => $item ['created_by'], 'document_type' => $item ['document_type'], 'item_type' => $item ['item_type'], 'permissions' => $item ['permissions'], 'created_date' => $item ['created_date'], 'content_id' => $item ['content_id'], 'filesize' => $item ['filesize'], 'modified' => $item ['modified_date'], 'checked_out_by' => $item ['checked_out_by'], 'version' => $item ['version'], 'is_immutable' => $item ['is_immutable'] );
 	}
 	
 	public function get_metadata($params) {

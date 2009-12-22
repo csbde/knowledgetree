@@ -147,6 +147,7 @@ class auth extends client_service {
     	session_id($newSessId);
     	$this->Response->setStatus('session_id',$newSessId);
     	$this->setResponse(array('logout'=>true));
+    	session_destroy();
     	return true;
     }
 
