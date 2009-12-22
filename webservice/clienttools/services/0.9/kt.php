@@ -17,7 +17,9 @@ class kt extends client_service {
 		
 		if (! empty ( $aRegisteredLangs )) {
 			foreach ( array_keys ( $aRegisteredLangs ) as $sLang ) {
-				$languages [] = array ('isoCode' => $sLang, 'language' => $aLanguageNames [$sLang] );
+				if($sLang=='en') $languages [] = array ('isoCode' => $sLang, 'language' => $aLanguageNames [$sLang] );
+				$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), "Removing Language {$aLanguageNames[$sLang]} from the list because Language Support not Ready." );
+				
 			}
 		}
 		$response = array ('languages' => $languages, 'count' => count ( $languages ), 'defaultLanguage' => $default->defaultLanguage );
