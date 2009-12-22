@@ -103,7 +103,26 @@ class KTUploadManager
             $this->temp_dir
         );
 
-        return ($tempdir == $main_temp_dir);
+        $check = ($tempdir == $main_temp_dir);
+
+        if($check){
+            return $check;
+        }
+
+        // in case of a symlinked directory, check if the file exists and is in the uploads directory
+        $file = basename($tempfilename);
+        $path = $this->temp_dir . DIRECTORY_SEPARATOR . $file;
+
+        if(file_exists($path)){
+            return true;
+        }
+
+        // log the error
+        global $default;
+        $default->log->error('Upload Manager: can\'t resolve temporary filename: '.$tempfilename .' in uploads directory: '.$this->temp_dir);
+
+        return false;
+
         /*
         $tempdir = substr($tempfilename,0,strlen($this->temp_dir));
 		$tempdir = str_replace('\\','/', $tempdir);
