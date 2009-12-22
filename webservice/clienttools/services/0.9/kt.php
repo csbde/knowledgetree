@@ -155,7 +155,8 @@ class kt extends client_service {
 			$this->addDebug('Listing Detail:',$item);
 			/* Trying to fix folder sizes */
 			if ($item ['filesize'] <= 0) {
-				$item ['filesize'] = '';
+				$item ['filesize']='';
+				if($item['item_type']=='D')$item ['filesize'] =serviceHelper::size_readable ( 0 );
 			} else {
 				$item ['filesize'] = serviceHelper::size_readable ( $item ['filesize'] );
 			}
