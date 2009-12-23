@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -207,6 +207,7 @@ class KTSubscriptionNotification extends KTNotificationHandler {
         "ArchivedDocument" => 'document', // can go through and request un-archival (?)
         "RestoredArchivedDocument" => 'document',
         "DiscussDocument" => 'document',
+        "DownloadDocument" => 'document'
         );
 
     function KTSubscriptionNotification() {
@@ -224,6 +225,7 @@ class KTSubscriptionNotification extends KTNotificationHandler {
             "ArchivedDocument" => _kt('Document archived'), // can go through and request un-archival (?)
             "RestoredArchivedDocument" => _kt('Document restored'),
             "DiscussDocument" => _kt('Document Discussions updated'),
+            "DownloadDocument" => _kt('Document Downloaded')
         );
         //parent::KTNotificationHandler();
     }
