@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -369,17 +369,80 @@ class XmlRpcLucene
 	 * @param string $sourceFile The full path to the document
      * @return array The properties as an associative array | False on failure
      */
-    function readProperties($sourceFile)
+    function readProperties($sourceFile, $property)
     {
         $function = new xmlrpcmsg('metadata.readMetadata',
         array(
-            php_xmlrpc_encode((string) $sourceFile)
+            php_xmlrpc_encode((string) $sourceFile),
+            php_xmlrpc_encode((string) $property)
         ));
 
         $result =& $this->client->send($function);
 
         if($result->faultCode()) {
             $this->error($result, 'readProperties');
+            return false;
+        }
+
+        $obj = php_xmlrpc_decode($result->value());
+
+        if($obj['status'] != '0') {
+            return false;
+        }
+
+        return $obj['metadata'];
+    }
+
+    /**
+     * Writes a given set of custom properties to an OOXML document (MS Office 2007)
+     *
+	 * @param string $sourceFile The full path to the document
+	 * @param string $targetFile The full path to the target / output file
+	 * @param int $type 1 = docx, 2 = xlsx, 3 = pptx
+     * @param array $properties Associative array of the properties to be added
+	 * @return boolean true on success | false on failure
+     */
+    function writeOOXMLProperties($sourceFile, $targetFile, $type, $properties)
+    {
+        $function = new xmlrpcmsg('metadata.writeOOXMLProperty',
+        array(
+            php_xmlrpc_encode((string) $sourceFile),
+            php_xmlrpc_encode((string) $targetFile),
+            php_xmlrpc_encode((int) $type),
+            php_xmlrpc_encode($properties)
+        ));
+
+        $result =& $this->client->send($function);
+
+        if($result->faultCode()) {
+            $this->error($result, 'writeOOXMLProperties');
+            return false;
+        }
+
+        return php_xmlrpc_decode($result->value()) == 0;
+    }
+
+    /**
+     * Read the custom document properties of an OOXML document (MS Office 2007)
+     *
+	 * @param string $sourceFile The full path to the document
+	 * @param int $type 1 = docx, 2 = xlsx, 3 = pptx
+	 * @param string $property The name of the property to read
+     * @return array The properties as an associative array | False on failure
+     */
+    function readOOXMLProperty($sourceFile, $type, $property)
+    {
+        $function = new xmlrpcmsg('metadata.readOOXMLProperty',
+        array(
+            php_xmlrpc_encode((string) $sourceFile),
+            php_xmlrpc_encode((int) $type),
+            php_xmlrpc_encode((string) $property)
+        ));
+
+        $result =& $this->client->send($function);
+
+        if($result->faultCode()) {
+            $this->error($result, 'readOOXMLProperty');
             return false;
         }
 
