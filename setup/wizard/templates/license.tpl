@@ -6,9 +6,8 @@
         }
     }?>
 <p class="description_1">
-Read and accept the license agreement below before continuing with the setup.
+	Read and accept the license agreement below before continuing with the setup.
 </p>
-
 <?php if(!empty($errors)) { ?>
 	<div class="license_agreement" tabindex="-1" style="height:270px;">
 <?php } else { ?>

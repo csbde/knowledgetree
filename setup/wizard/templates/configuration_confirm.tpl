@@ -50,9 +50,7 @@
 		        <td><?php echo $server['file_system_root']['value']; ?></td>
 		    </tr>
 		</table>
-
 		<h3>Paths and Permissions</h3>
-
 		<table class="conf_paths">
 		<?php
 			if($errors || $warnings) {

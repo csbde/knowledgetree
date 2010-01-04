@@ -1,8 +1,7 @@
-<!--<form id="license_dependencies_configuration" action="index.php?step_name=<?php //echo $step_name; ?>" method="post">-->
 <form id="installtype_dependencies_configuration" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 	<p class="title">Checking PHP Dependencies</p>
 	<p class="description">
-	The wizard will review your system to determine whether you have the right PHP components in place to run KnowledgeTree. <!--<br/> -->
+	The wizard will review your system to determine whether you have the right PHP components in place to run KnowledgeTree.
 	Once the scan is completed, you&rsquo;ll see whether your system has met the requirements or whether there are areas you need to address.
 	</p>
 <!--Continue Message-->
@@ -12,7 +11,6 @@
 				<span class='big_ok'>&nbsp;&nbsp;&nbsp;</span>
 				<span class='description'>Congratulations! Your system is ready to run KnowledgeTree. Click <b>Next</b> to continue.</span>
 				<br/>
-<!--				<br/>-->
 			<?php
 		}
 	?>
@@ -35,7 +33,7 @@
 		$iconFlag = "<span class='{$php}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>";
 		$checkHeading = "<h3 style='width:30%; float:left'>".$iconFlag."PHP Version Check</h3>";
 	?>
-<!--		PHP Version Check</h3>-->
+<!--PHP Version Check</h3>-->
 		<?php if($silent) { ?>
 			<?php if($versionSection) {
 				$details = 'Hide Details';
@@ -57,7 +55,6 @@
 			$phpVersionCheck .= "<p class='description dependencies'>Your version of PHP must be between 5.0 and 5.2 to run optimally. Versions that are 5.3 or higher  are not recommended.</p>";
 		?>
 		<?php $phpVersionCheck .= "<span class='{$version['class']}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{$version['version']}"; ?>
-		<?php //echo "<span class='{$version['class']}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{$version['version']}"; ?>
 		<?php if($version['class'] != 'tick') { ?>
 			<?php if (AJAX) { ?>
 			<?php $phpVersionCheck .= "<a href='#' class='refresh' onclick='w.refresh('dependencies')'>Refresh</a>"; ?>

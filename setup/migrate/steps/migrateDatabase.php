@@ -148,7 +148,6 @@ class migrateDatabase extends Step
 				$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.' --socket="'.$socket.'" '.$dbName.' > '.$sqlFile;
 			else 
 				$cmd = $exe.' -u"'.$dbAdminUser.'" -p"'.$dbAdminPass.'" --port="'.$port.'" '.$dbName.' > '.$sqlFile;
-			echo $cmd;
 			$response = $this->util->pexec($cmd);
     	}
 		if(file_exists($sqlFile)) {
