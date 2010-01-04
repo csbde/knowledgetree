@@ -1,0 +1,91 @@
+Microsoft Windows Web Application Gallery
+
+Source Code Structure
+Create a zip file with the following struture:
+
+kt-web-pi.zip
+\
+ +--kt-web-pi root directory
+     \
+     +--knowledgetree source sub directory
+     \
+     	|--various other files
+     	|--web.config
+	 |--manifest.xml (required)
+ 	 |--parameters.xml (required)
+
+Manifest File
+Contains site defaults
+iisApp : Name of directory created in webroot
+setAcl : Sets ACL's on directories specified in parameters.xml
+
+Parameters File
+Contains directory permission information
+AppPath : Installation path you would like to install KnowledgeTree to. (Default Web Site/knowledgetree)
+
+Web Config
+Contains iis site defaults
+directoryBrowse : Whether or not the directory is browsable. (false)
+defaultDocument : Default page to access. (control.php)
+site name : Name of the application. (KnowledgeTree)
+
+Tested Environment
+Windows Vista configured with IIS 7.
+Download and install Microsoft Web Platform Installer 2.0. (http://www.microsoft.com/web/downloads/platform.aspx)
+Open Microsoft Web Platform Installer.
+Download and install Web Deployment Tool. (http://www.iis.net/expand/WebDeploymentTool)
+Open IIS Manager.
+In the Right-Pane under Deploy, use "Import Application", to import KnowledgeTree zip file.
+You will be prompted for details to deploy on IIS 7.
+
+Submission Criteria
+GeneralName					: 	KnowledgeTree
+Nickname					: 	KnowledgeTree
+Version						:	3.7.0.2
+Submitting Entity			:	[?]
+Submitting Entity URL		:	www.knowledgetree.com/
+App URL						:	www.knowledgetree.com/
+Support URL					:	[?]
+Release Date				:	[?]
+Primary Category			:	Content Management
+Secondary Category			:	[?]
+Description					:	KnowledgeTree® is open source document management software that connects people, processes, and ideas. Collaborate, securely store all your critical documents, address compliance challenges, and focus on providing a simple solution that works for your business.
+Brief Description			:	KnowledgeTree® is open source document management software that connects people, processes, and ideas.
+Professional Services URL	:	[?]
+Commercial Product URL		:	[?]
+Additional Info				:	[?]
+Dependencies				:	PHP 5.2, MySQL
+x86 PackagePackage URL		:	[?]
+Public URL					:	[?]
+Start Page					:	control.php
+MD5 Hash					:	0
+SHA-1 Hash					:	[?]
+File Size					:	[?]
+Language					:	en-us
+x64 PackagePackage URL		:	
+Public URL					:	
+Start Page					:	control.php
+MD5 Hash					:	0
+SHA-1 Hash					:	[?]
+File Size					:	[?]
+Language					:	en-us
+ContactName					:	[?]
+Title						:	[?]
+eMail						:	[?]
+Address 1					:	[?]
+Address 2					:	[?]
+Address 3					:	[?]
+City						:	[?]
+State or Province			:	[?]
+Zip or Region Code			:	[?]
+Country						:	[?]
+Direct Contact Method 1		:	[?]
+Direct Data 1				:	[?]
+Direct Contact Method 2		:	[?]
+Direct Data 2				:	[?]
+
+Other files included
+Logo needs to be created with the following specifications:
+Filename : webpi-logo.png
+Width : 195px
+Height : 43px

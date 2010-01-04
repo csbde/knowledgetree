@@ -1,0 +1,41 @@
+<parameters>
+	<!-- Prompts where to copy the content files and takes a web site path. -->
+	<parameter name="AppPath" description="Installation path you would like to install KnowledgeTree to." defaultValue="Default Web Site/knowledgetree" tags="iisapp">
+    	<parameterEntry type="ProviderPath" scope="iisapp" match="knowledgetree"/>
+	</parameter>
+	
+	<!-- This is the parameters that are used to set ACLs, it's set to the application path filled in by the user -->
+	<parameter name="IUSR_1" defaultValue="{AppPath}/var" tags="Hidden">
+    	<parameterEntry type="ProviderPath" scope="setAcl" match="var"/>
+	</parameter>
+	<parameter name="IUSR_2" defaultValue="{AppPath}/config/cache-path" tags="Hidden">
+    	<parameterEntry type="ProviderPath" scope="setAcl" match="config/cache-path"/>
+	</parameter>
+	<parameter name="IUSR_3" defaultValue="{AppPath}/config/config-path" tags="Hidden">
+    	<parameterEntry type="ProviderPath" scope="setAcl" match="config/config-path"/>
+	</parameter>
+	<parameter name="IUSR_4" defaultValue="{AppPath}/config/config.ini" tags="Hidden">
+    	<parameterEntry type="ProviderPath" scope="setAcl" match="config/config.ini"/>
+	</parameter>
+	<parameter name="IUSR_5" defaultValue="{AppPath}/bin/luceneserver/KnowledgeTreeIndexer.properties" tags="Hidden">
+    	<parameterEntry type="ProviderPath" scope="setAcl" match="bin/luceneserver/KnowledgeTreeIndexer.properties"/>
+	</parameter>
+	<parameter name="IIS_IUSRS_1" defaultValue="{AppPath}/var" tags="Hidden">
+    	<parameterEntry type="ProviderPath" scope="setAcl" match="var"/>
+	</parameter>
+	<parameter name="IIS_IUSRS_2" defaultValue="{AppPath}/config/cache-path" tags="Hidden">
+    	<parameterEntry type="ProviderPath" scope="setAcl" match="config/cache-path"/>
+	</parameter>
+	<parameter name="IIS_IUSRS_3" defaultValue="{AppPath}/config/config-path" tags="Hidden">
+    	<parameterEntry type="ProviderPath" scope="setAcl" match="config/config-path"/>
+	</parameter>
+	<parameter name="IIS_IUSRS_4" defaultValue="{AppPath}/config/config.ini" tags="Hidden">
+    	<parameterEntry type="ProviderPath" scope="setAcl" match="config/config.ini"/>
+	</parameter>
+	<parameter name="IIS_IUSRS_5" defaultValue="{AppPath}/bin/luceneserver/KnowledgeTreeIndexer.properties" tags="Hidden">
+    	<parameterEntry type="ProviderPath" scope="setAcl" match="bin/luceneserver/KnowledgeTreeIndexer.properties"/>
+	</parameter>
+	<parameter name="NETWORK SERVICE_1" defaultValue="{AppPath}/var" tags="Hidden">
+    	<parameterEntry type="ProviderPath" scope="setAcl" match="var"/>
+	</parameter>
+</parameters>
