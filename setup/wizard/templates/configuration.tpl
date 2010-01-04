@@ -1,6 +1,5 @@
 <form id="dependencies_configuration_services" action="index.php?step_name=<?php echo $step_name; ?>" method="post">
 	<p class="title">Checking System Configuration</p>
-
 	<p class="description">
 	The wizard will review your system to determine whether KnowledgeTree is correctly configured. You&rsquo;ll see whether KnowledgeTree has the correct settings or whether changes are required.
 	</p>
@@ -34,7 +33,6 @@
 	<!--Content-->
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
 	<h3>Server Settings</h3>
-
 	<p class="description">
 	The settings below have been drawn from the system information. The host and port should reflect the host and port that will be used to access KnowledgeTree. The Root Url is only needed if your installation is in a directory off the main web server root.
 	</p>

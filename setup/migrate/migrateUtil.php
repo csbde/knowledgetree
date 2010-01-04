@@ -104,6 +104,12 @@ class MigrateUtil extends InstallUtil {
     	return new $serviceName();
     }
 
+    /**
+     * Return port of the old installation
+     *
+     * @param location
+     * @return string
+     */
     public function getPort($location) {
     	if(WINDOWS_OS) {
     		$myIni = "my.ini";
