@@ -106,9 +106,9 @@ class ExtractorInfoDispatcher extends KTAdminDispatcher {
 
     function getSupportedMimeTypesDB($sExtractorName)
 	{
-		$sQuery = "SELECT MT.mimetypes  FROM mime_extractors as ME LEFT JOIN mime_types as MT ON " .
+		$sQuery = "SELECT MT.mimetypes FROM mime_extractors as ME LEFT JOIN mime_types as MT ON " .
   		  		"(ME.id = MT.extractor_id) WHERE ME.name = ?";
-   		 $aQuery = array($sQuery, array($sExtractorName));
+   		$aQuery = array($sQuery, array($sExtractorName));
     	$aTempRes = DBUtil::getResultArray($aQuery);
     	$aRes = array();
     	for($i = 0; $i < count($aTempRes); $i++ )

@@ -106,7 +106,7 @@ class CMISVersioningService {
         }
         
         // NOTE KTAPI as currently implemented does not give a direct response which indicates if the document is already checked out,
-        //      as long as the same use is calling the checkout again, so should we add a check here specifically?
+        //      as long as the same user is calling the checkout again, so should we add a check here specifically?
 
         // run checkout process - set $download = false (third function argument) as we want to return the document content via the contentStream
         $response = $this->ktapi->checkout_document($documentId, 'CMIS Checkout Action', false, $sig_username, $sig_password);
