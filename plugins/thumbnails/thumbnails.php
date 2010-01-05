@@ -83,7 +83,7 @@ class thumbnailGenerator extends BaseProcessor
 //            'otg', 'std', 'asc');
 
         // work around for ms office xp and 2003 templates - the mime type is identical but the templates aren't supported
-        if(!empty($fileType)){
+        if(!empty($fileType)) {
             $types = array('dot', 'xlt', 'pot');
             if(in_array($fileType, $types)){
                 return false;
@@ -132,9 +132,16 @@ class thumbnailGenerator extends BaseProcessor
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
     	//$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.template';
 
-    	// In addition PDF files are also supported
+    	// In addition PDF and (standard) Image files are also supported
     	$mime_types[] = 'application/pdf';
-
+    	
+        $sQuery = "SELECT DISTINCT mimetypes FROM mime_types WHERE mimetypes LIKE 'image/%'";
+   		$aTempRes = DBUtil::getResultArray($sQuery);
+    	$count =count($aTempRes);
+    	for($i = 0; $i < $count; $i++ ) {
+    		$mime_types[] = $aTempRes[$i]['mimetypes'];
+    	}
+    	
         return $mime_types;
 	}
 
@@ -157,23 +164,30 @@ class thumbnailGenerator extends BaseProcessor
 	    */
 		global $default;
 
+		$type = 'pdf'; // default type expected
         $mimeTypeId = $this->document->getMimeTypeID();
         $mimeType = KTMime::getMimeTypeName($mimeTypeId);
 
+        // Check document type: Image or PDF
+        if (strstr($mimeType, 'image')) {
+            $type = 'image';
+            $srcDir = $default->documentRoot;
+            $srcFile = $srcDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
+        }
 	    // Get the pdf source file - if the document is a pdf then use the document as the source
-	    if($mimeType == 'application/pdf') {
+	    else if($mimeType == 'application/pdf') {
 	        $pdfDir = $default->documentRoot;
-            $pdfFile = $pdfDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
+            $srcFile = $pdfDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
 	    } else {
     	    $pdfDir = $default->pdfDirectory;
-            $pdfFile = $pdfDir .DIRECTORY_SEPARATOR. $this->document->iId.'.pdf';
+            $srcFile = $pdfDir .DIRECTORY_SEPARATOR. $this->document->iId.'.pdf';
 	    }
 
         $thumbnaildir = $default->varDirectory.DIRECTORY_SEPARATOR.'thumbnails';
 
 		if (stristr(PHP_OS,'WIN')) {
             $thumbnaildir = str_replace('/', '\\', $thumbnaildir);
-            $pdfFile = str_replace('/', '\\', $pdfFile);
+            $srcFile = str_replace('/', '\\', $srcFile);
 		}
 
         $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
@@ -185,8 +199,8 @@ class thumbnailGenerator extends BaseProcessor
         }
 
         // if there is no pdf that exists - hop out
-        if(!file_exists($pdfFile)){
-            $default->log->debug('Thumbnail Generator Plugin: PDF file does not exist, cannot generate a thumbnail');
+        if(!file_exists($srcFile)){
+            $default->log->debug('Thumbnail Generator Plugin: Source file for conversion does not exist, cannot generate a thumbnail');
             return false;
         }
 
@@ -198,12 +212,12 @@ class thumbnailGenerator extends BaseProcessor
         $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
         // windows path may contain spaces
         if (stristr(PHP_OS,'WIN')) {
-			$cmd = "\"{$pathConvert}\" \"{$pdfFile}[0]\" -resize 200x200 \"$thumbnailfile\"";
+			$cmd = "\"{$pathConvert}\" \"{$srcFile}" . ($type == 'pdf' ? "[0]" : "") . "\" -resize 200x200 \"$thumbnailfile\"";
         }
 		else {
-			$cmd = "{$pathConvert} {$pdfFile}[0] -resize 200x200 $thumbnailfile";
+			$cmd = "{$pathConvert} {$srcFile}" . ($type == 'pdf' ? "[0]" : "") . " -resize 200x200 $thumbnailfile";
 		}
-
+		
 		$result = KTUtil::pexec($cmd);
         return true;
     }
@@ -226,7 +240,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
         // Set up the template
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate('thumbnail_viewlet');
-        if (is_null($oTemplate)){
+        if (is_null($oTemplate)) {
             return '';
         }
 
@@ -241,7 +255,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 		}
 
 		// if the thumbnail doesn't exist try to create it
-		if (!file_exists($thumbnailCheck)){
+		if (!file_exists($thumbnailCheck)) {
             $thumbnailer = new thumbnailGenerator();
             $thumbnailer->setDocument($this->oDocument);
             $thumbnailer->processDocument();
@@ -254,8 +268,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 
 		// check for existence and status of the instant view plugin
 		$url = '';
-        if (KTPluginUtil::pluginIsActive('instaview.processor.plugin'))
-        {
+        if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
              require_once KTPluginUtil::getPluginPath('instaview.processor.plugin') . 'instaViewLinkAction.php';
              $ivLinkAction = new instaViewLinkAction();
              $url = $ivLinkAction->getViewLink($documentId, 'document');
@@ -276,7 +289,10 @@ class ThumbnailViewlet extends KTDocumentViewlet {
         return $oTemplate->render();
     }
 
-    public function get_width($documentId){
+    // determines whether the image exists and returns the maximum aspect to display;
+    // this is used for anywhere which might require display resizing based on the presence or absence of the thumbnail
+    public function getDisplaySize($documentId)
+    {
     	global $default;
     	$varDir = $default->varDirectory;
 		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
@@ -284,8 +300,6 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 		    return 200;
 		}
 		return 0;
-		//$size = getimagesize($thumbnailfile);
-		//return $size[0];
     }
 }
 

@@ -23,7 +23,7 @@
         {if $url}
             <a href='{$url}' target='_blank'>
         {/if}
-        <img src="{$thumbnail}" height="200px"/>
+        <img src="{$thumbnail}"/>
         {if $url}
             </a>
         {/if}
