@@ -112,7 +112,6 @@ class unixScheduler extends unixService {
 		$content = "#!/bin/sh\n";
 		$content .= "cd ".SYS_BIN_DIR."\n";
 		$content .= "while true; do\n";
-		// TODO : This will not work without CLI
 		$content .= "{$this->phpCli} -Cq scheduler.php\n";
 		$content .= "sleep 30\n";
 		$content .= "done";
@@ -176,24 +175,15 @@ class unixScheduler extends unixService {
 	* @return array
  	*/
 	function start() {
-		// TODO : Write sh on the fly? Not sure the reasoning here
 		$source = $this->getSchedulerSourceLoc();
-//		$this->writeSchedulerTask();
 		$logFile = "/dev/null";
-//		@unlink($logFile);
 		if($source) { // Source
 			$cmd = "nohup ".$source." > ".$logFile." 2>&1 & echo $!";
 		} else { // Could be Stack
 			$source = SYS_BIN_DIR.$this->schedulerSource;
 			$cmd = "nohup ".$source." > ".$logFile." 2>&1 & echo $!";
 		}
-//    	if(DEBUG) {
-//    		echo "$cmd<br/>";
-//    		return ;
-//    	}
-    	//$response = $this->util->pexec($cmd);
-    	
-//		return $response;
+
 		return false;
 	}
 

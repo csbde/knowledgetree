@@ -172,10 +172,10 @@ class windowsLucene extends windowsService {
 				return true;
 			}
 		}
-		// TODO: Will not detect, but a java pre-check is done in services, before this
 		if(file_exists($this->varDir.'outJVHome')) {
 			$this->javaBin = file_get_contents($this->varDir.'outJVHome');
-			if($this->javaBin != '') return true;
+			if($this->javaBin != '')
+				return true;
 		}
 
 		return false;
@@ -400,8 +400,7 @@ class windowsLucene extends windowsService {
  	*/
 	public function getJavaJVM() {
 		$this->javaJVM = SYSTEM_ROOT . "java\jre\bin\client\jvm.dll";
-		return SYSTEM_ROOT . "java\jre\bin\client\jvm.dll"; // Hard code
-		//return $this->javaJVM; // TODO: PUT BACK!!!
+		return SYSTEM_ROOT . "java\jre\bin\client\jvm.dll";
 	}
 
 	private function writeLuceneInstall($cmd) {

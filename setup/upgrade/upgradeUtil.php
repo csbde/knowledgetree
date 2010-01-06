@@ -161,8 +161,7 @@ class UpgradeUtil extends InstallUtil {
             $mechanism = "--port=\"$dbPort\"";
         }
 
-//        $tmpdir = $this->resolveTempDir();
-		$this->resolveTempDir();
+		$this->util->resolveTempDir();
 
         $stmt = $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism drop  \"$dbName\"<br/>";
         $stmt .= $prefix ."mysqladmin --user=\"$adminUser\" -p $mechanism create  \"$dbName\"<br/>";
@@ -214,24 +213,7 @@ class UpgradeUtil extends InstallUtil {
         return '';
     }
 
-    public function resolveTempDir()
-    {
-        $dir = '';
-        if (!WINDOWS_OS) {
-            $dir='/tmp/kt-db-backup';
-        }
-        else {
-            $dir='c:/kt-db-backup';
-        }
 
-//        $oKTConfig =& KTConfig::getSingleton();
-//        $dir = $oKTConfig->get('backup/backupDirectory',$dir);
-
-        if (!is_dir($dir)) {
-                mkdir($dir);
-        }
-        return $dir;
-    }
 
 }
 ?>
