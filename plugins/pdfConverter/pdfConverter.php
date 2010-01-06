@@ -185,7 +185,7 @@ class pdfConverter extends BaseProcessor
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
     	//$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.template';
     	/* */
-
+		$mime_types[] = 'image/tiff';
         return $mime_types;
 	}
 
@@ -208,9 +208,13 @@ class pdfConverter extends BaseProcessor
 	    // Create a temporary file to store the converted document
 	    $targetFile = tempnam($tempDir, 'pdfconverter') . '.pdf';
 
-	    // Get contents and send to converter
-        $result = $this->xmlrpc->convertDocument($sourceFile, $targetFile, $this->ooHost, $this->ooPort);
-
+		if($ext == "tiff" || $ext == "tif") { // Also known as tif.
+			$this->convertTiff($sourceFile, $targetFile);
+		} else {
+	    	// Get contents and send to converter
+        	$result = $this->xmlrpc->convertDocument($sourceFile, $targetFile, $this->ooHost, $this->ooPort);
+		}
+		
         if(is_string($result)){
             $default->log->error('PDF Converter Plugin: Conversion to PDF Failed');
             @unlink($sourceFile);
@@ -240,6 +244,19 @@ class pdfConverter extends BaseProcessor
         @unlink($targetFile);
         return true;
 
+    }
+    
+    function convertTiff($sourceFile, $targetFile) {
+    	global $default;
+		$pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert'; // Retrieve convert location
+        if (stristr(PHP_OS,'WIN')) { // windows path may contain spaces
+			$cmd = "\"{$pathConvert}\" \"{$sourceFile}\" \"$targetFile\"";
+        }
+		else {
+			$cmd = "{$pathConvert} {$sourceFile} $targetFile";
+		}
+
+    	$result = KTUtil::pexec($cmd);
     }
 }
 ?>
