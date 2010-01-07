@@ -235,10 +235,14 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     	    return '';
     	}
 
+    	// Get the CSS to render the thumbnail
+    	global $main;
+        $main->requireCSSResource('plugins/thumbnails/resources/thumbnails.css');
+
     	return $this->renderThumbnail($documentId);
     }
 
-    public function renderThumbnail($documentId) {
+    public function renderThumbnail($documentId, $height = null) {
         // Set up the template
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate('thumbnail_viewlet');
@@ -284,10 +288,16 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 		$thumbnailUrl = str_replace('\\', '/', $thumbnailUrl);
 		$thumbnailUrl = str_replace(KT_DIR, $sHostPath, $thumbnailUrl);
 
-		$oTemplate->setData(array(
+		$templateData = array(
             'thumbnail' => $thumbnailUrl,
             'url' => $url
-            ));
+        );
+
+        if(is_numeric($height)){
+            $templateData['height'] = $height;
+        }
+
+        $oTemplate->setData($templateData);
         return $oTemplate->render();
     }
 
@@ -317,11 +327,8 @@ class ThumbnailColumn extends AdvancedColumn {
     }
 
     function renderHeader($sReturnURL) {
-        global $main;
-
-        $path = dirname(__FILE__);
-
         // Get the CSS to render the thumbnail
+        global $main;
         $main->requireCSSResource('plugins/thumbnails/resources/thumbnails.css');
         return '&nbsp;';
     }
@@ -360,6 +367,11 @@ class ThumbnailColumn extends AdvancedColumn {
     		    return $tag;
     		}
 
+            // hook into thumbnail plugin to get display for thumbnail
+            $thumbnailer = new ThumbnailViewlet();
+            $thumbnailer->setDocument($oDoc);
+            $thumbnailDisplay = $thumbnailer->renderThumbnail($docid, $height);
+        	/*
         	$sHostPath = KTUtil::kt_url();
     		$plugin_path = KTPluginUtil::getPluginPath('thumbnails.generator.processor.plugin');
     		$thumbnailUrl = $plugin_path . 'thumbnail_view.php?documentId='.$docid;
@@ -370,8 +382,9 @@ class ThumbnailColumn extends AdvancedColumn {
     		<div class="thumb-shadow">
                     <img src="'.$thumbnailUrl.'" height='.$height.' />
             </div>';
+            */
 
-        	return $sInfo;
+        	return $thumbnailDisplay;
         }
         return '';
     }
