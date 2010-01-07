@@ -89,7 +89,6 @@ class schedulerValidation extends serviceValidation {
     }
     
     public function binaryChecks() {
-    	// TODO: Better detection
     	$phpDir = $this->util->useZendPhp();
     	if(WINDOWS_OS) {
     		$phpPath = "$phpDir"."php.exe";
@@ -98,29 +97,6 @@ class schedulerValidation extends serviceValidation {
     	}
     	if(file_exists($phpPath)) {
     		return $phpPath;
-    	}
-    }
-    
-    function detPhpSettings() {
-    	// TODO: Better php handling
-    	return true;
-    	$phpExecutable = $this->util->phpSpecified();// Retrieve java bin
-    	$cmd = "$phpExecutable -version > ".$this->outputDir."/outPHP 2>&1 echo $!";
-    	$response = $this->util->pexec($cmd);
-    	if(file_exists($this->outputDir.'outPHP')) {
-    		$tmp = file_get_contents($this->outputDir.'outPHP');
-    		preg_match('/PHP/',$tmp, $matches);
-    		if($matches) {
-				$this->phpCheck = 'tick';
-				
-				return true;
-    		} else {
-    			$this->phpCheck = 'cross_orange';
-    			$this->phpExeError = "PHP : Incorrect path specified";
-				$this->error[] = "PHP executable required";
-				
-				return false;
-    		}
     	}
     }
     
@@ -150,7 +126,7 @@ class schedulerValidation extends serviceValidation {
 		return $this->php;
 	}
 	
-    public function storeSilent() { // TODO : PHP detection
+    public function storeSilent() {
     	$this->temp_variables['schedulerInstalled'] = $this->installed;
 		$this->temp_variables['phpCheck'] = $this->phpCheck;
 		$this->temp_variables['phpExeError'] = $this->phpExeError;
