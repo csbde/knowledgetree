@@ -1216,5 +1216,68 @@ Fatal error:  Cannot unset string offsets in on line 981
 			return true;
 		}
 	}
+	
+	function get_all_files($arr)
+	{
+		$kt=&$this->KT;
+        
+		$folderId = str_replace('F_', '', $arr['folderid']);
+		
+        $folder=&$kt->get_folder_by_id($folderId);
+        if (PEAR::isError($folder)){
+            $this->setResponse('error 1');
+            return false;
+        }
+		
+		// Note 50 is set here as the level depth, inaccurate
+		$listing = $folder->get_listing(50, 'DF'); //DF
+		
+		if ($folderId == '1') {
+			$path = 'KnowledgeTree';
+		} else {
+			$path = $folder->get_folder_name();
+		}
+		
+		
+		$this->listOfFiles = array();
+		$this->listOfFoldersToBeCreated = array();
+		
+		$this->addFolderToList($listing, $path);
+		
+		// Sort Array by list of folders to be created in right order
+		sort($this->listOfFoldersToBeCreated);
+		
+		$this->setResponse(array('items'=>$this->listOfFiles, 'folders'=>$this->listOfFoldersToBeCreated));
+		return true;
+	}
+	
+	
+	function addFolderToList(&$listing, $path)
+	{
+		if (!in_array($path, $this->listOfFoldersToBeCreated)) {
+			$this->listOfFoldersToBeCreated[] = $path;
+		}
+		
+		foreach ($listing as $item)
+		{
+			if ($item['item_type'] == 'D') {
+				$this->listOfFiles[] = array(
+					'folderName' => $path,
+					'documentId' => $item['id'],
+					'filename' => $item['filename'],
+					'fullpath' => $path.'/'.$item['filename']
+				);
+				
+			} else if ($item['item_type'] == 'F') {
+				
+				
+				
+				$this->addFolderToList($item['items'], $path.'/'.$item['filename']);
+				
+				
+			}
+			
+		}
+	}
 }
 ?>
