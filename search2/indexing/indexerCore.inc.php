@@ -1344,6 +1344,17 @@ abstract class Indexer
             return;
         }
 
+        // identify any documents that need processing and flag them so they are not taken in a followup run
+		$ids = array();
+		foreach($result as $docinfo)
+		{
+			$ids[] = $docinfo['document_id'];
+		}
+
+        $ids=implode(',',$ids);
+        $sql = "UPDATE process_queue SET date_processed=NOW() WHERE document_id in ($ids)";
+        DBUtil::runQuery($sql);
+
         return $result;
 	}
 
