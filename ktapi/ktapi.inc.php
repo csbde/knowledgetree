@@ -5,7 +5,7 @@
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright (C) 2008,2009 KnowledgeTree Inc.
-* 
+*
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -403,7 +403,6 @@ class KTAPI
 			);
 		}
 
-
 		$user = KTAPI_User::getByUsername($username);
 		if(PEAR::isError($user)) {
 			$user_ktapi->session_logout();
@@ -417,6 +416,10 @@ class KTAPI
 
 		$permissions->add($user, $permission);
 		$permissions->save();
+
+		return array(
+			"status_code" => 0
+		);
 	}
 
 	/**
@@ -470,7 +473,6 @@ class KTAPI
 			);
 		}
 
-
 		$role = KTAPI_Role::getByName($role);
 		if(PEAR::isError($role)) {
 			return array(
@@ -483,6 +485,10 @@ class KTAPI
 
 		$permissions->add($role, $permission);
 		$permissions->save();
+
+		return array(
+			"status_code" => 0
+		);
 	}
 
 	/**
@@ -536,8 +542,7 @@ class KTAPI
 			);
 		}
 
-
-		$group = KTAPI_Role::getByName($group);
+		$group = KTAPI_Group::getByName($group);
 		if(PEAR::isError($group)) {
 			return array(
 				"status_code" => 1,
@@ -549,6 +554,10 @@ class KTAPI
 
 		$permissions->add($group, $permission);
 		$permissions->save();
+
+		return array(
+			"status_code" => 0
+		);
 	}
 
 	/**
@@ -1025,7 +1034,7 @@ class KTAPI
 
 
 				//$controltype = 'string';
-                
+
                 // Replace with true
 				$controltype = strtolower($field->getDataType());
 				if ($field->getHasLookup())
@@ -1037,12 +1046,12 @@ class KTAPI
 					}
 				}
                 $options = array();
-                
+
                 if ($field->getInetLookupType() == 'multiwithcheckboxes' || $field->getInetLookupType() == 'multiwithlist') {
                     $controltype = 'multiselect';
                 }
-                
-                
+
+
 				switch ($controltype)
 				{
 					case 'lookup':
@@ -2702,7 +2711,7 @@ class KTAPI
         }
 
         $result = $document->email($recipients, $content, $attach);
-        
+
         if (PEAR::isError($result)) {
             $response['message'] = $result->getMessage();
             return $response;
@@ -3137,7 +3146,7 @@ class KTAPI
     	}
 
     	$result = $document->checkout($reason);
-        
+
         if (PEAR::isError($result))
     	{
     		$response['status_code'] = 1;
@@ -3275,19 +3284,19 @@ class KTAPI
 		$response['status_code'] = 0;
     	return $response;
     }
-    
+
     /**
      * Fetches a list of checked out documents (optionally limited to the logged in user)
-     * 
+     *
      * @param boolean $userSpecific limit to current user
-     * @return $checkedout An array of checked out documents 
+     * @return $checkedout An array of checked out documents
      */
     // TODO determine whether the listing is showing docs the user should not be able to see
     //     (when not restricting to docs checked out by that user)
     public function get_checkedout_docs($userSpecific = true)
     {
         $checkedout = array();
-       
+
         $where = null;
         // limit to current user?
         if ($userSpecific) {
