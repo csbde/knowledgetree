@@ -151,6 +151,7 @@ class kt extends client_service {
 		$methodToIncludeItem = '_processItemInclusion_' . $type;
 		
 		foreach ( $listing as $item ) {
+			$item['filesize_bytes']=($item['filesize']+0);
 			$this->logInfo('Listing Detail:',$item);
 			$this->addDebug('Listing Detail:',$item);
 			/* Trying to fix folder sizes */
@@ -159,6 +160,7 @@ class kt extends client_service {
 				if($item['item_type']=='D')$item ['filesize'] =serviceHelper::size_readable ( 0 );
 			} else {
 				$item ['filesize'] = serviceHelper::size_readable ( $item ['filesize'] );
+//				$item ['filesize'] = serviceHelper::size_kb ( $item ['filesize'] );		//To Fix Column Sort Issue
 			}
 			
 			$filename = $item ['filename'];
@@ -271,7 +273,7 @@ class kt extends client_service {
 			$item ['filesize'] = - 1;
 		}
 		
-		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => $item ['id'], 'filename' => $item ['filename'], 'cls' => $class, 'owner' => $item ['created_by'], 'document_type' => $item ['document_type'], 'item_type' => $item ['item_type'], 'permissions' => $item ['permissions'], 'created_date' => $item ['created_date'], 'content_id' => $item ['content_id'], 'filesize' => $item ['filesize'], 'modified' => $item ['modified_date'], 'checked_out_by' => $item ['checked_out_by'], 'version' => $item ['version'], 'is_immutable' => $item ['is_immutable'] );
+		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => $item ['id'], 'filename' => $item ['filename'], 'cls' => $class, 'owner' => $item ['created_by'], 'document_type' => $item ['document_type'], 'item_type' => $item ['item_type'], 'permissions' => $item ['permissions'], 'created_date' => $item ['created_date'], 'content_id' => $item ['content_id'], 'filesize' => $item ['filesize'], 'filesize_bytes' => $item ['filesize_bytes'], 'modified' => $item ['modified_date'], 'checked_out_by' => $item ['checked_out_by'], 'version' => $item ['version'], 'is_immutable' => $item ['is_immutable'] );
 	}
 	
 	public function get_metadata($params) {
