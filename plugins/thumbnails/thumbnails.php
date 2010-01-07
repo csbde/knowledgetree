@@ -36,6 +36,7 @@
  */
 
 require_once(KT_LIB_DIR . "/actions/documentviewlet.inc.php");
+require_once(KT_LIB_DIR . '/browse/advancedcolumns.inc.php');
 require_once(KT_DIR . '/search2/documentProcessor/documentProcessor.inc.php');
 
 /**
@@ -134,14 +135,14 @@ class thumbnailGenerator extends BaseProcessor
 
     	// In addition PDF and (standard) Image files are also supported
     	$mime_types[] = 'application/pdf';
-    	
+
         $sQuery = "SELECT DISTINCT mimetypes FROM mime_types WHERE mimetypes LIKE 'image/%'";
    		$aTempRes = DBUtil::getResultArray($sQuery);
     	$count =count($aTempRes);
     	for($i = 0; $i < $count; $i++ ) {
     		$mime_types[] = $aTempRes[$i]['mimetypes'];
     	}
-    	
+
         return $mime_types;
 	}
 
@@ -218,7 +219,7 @@ class thumbnailGenerator extends BaseProcessor
 		else {
 			$cmd = "{$pathConvert} {$srcFile}" . $pageNumber . " -resize 200x200 $thumbnailfile";
 		}
-		
+
 		$result = KTUtil::pexec($cmd);
         return true;
     }
@@ -301,6 +302,78 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 		    return 200;
 		}
 		return 0;
+    }
+}
+
+/**
+ * Displays a column in the Browse view of the document thumbnail
+ */
+class ThumbnailColumn extends AdvancedColumn {
+    var $name = 'thumnailcolumn';
+    var $namespace = 'thumbnails.generator.column';
+
+    function ThumbnailColumn() {
+        $this->label = _kt('Thumbnail');
+    }
+
+    function renderHeader($sReturnURL) {
+        global $main;
+
+        $path = dirname(__FILE__);
+
+        // Get the CSS to render the thumbnail
+        $main->requireCSSResource('plugins/thumbnails/resources/thumbnails.css');
+        return '&nbsp;';
+    }
+
+    /**
+     * Render the thumbnail for the given document
+     *
+     * @param array $aDataRow
+     * @return string HTML
+     */
+    function renderData($aDataRow) {
+        if ($aDataRow["type"] == "document") {
+            $docid = $aDataRow['docid'];
+            $oDoc = $aDataRow['document'];
+
+            $config = KTConfig::getSingleton();
+            $height = $config->get('browse/thumbnail_height', 75);
+            $rootUrl = $config->get('KnowledgeTree/rootUrl');
+
+            // Check if the thumbnail exists
+            global $default;
+    		$varDir = $default->varDirectory;
+    		$thumbnailCheck = $varDir . '/thumbnails/'.$docid.'.jpg';
+
+    		// Use correct slashes for windows
+    		if (strpos(PHP_OS, 'WIN') !== false) {
+    			$thumbnailCheck = str_replace('/', '\\', $thumbnailCheck);
+    		}
+
+    		// We won't try generate one - will slow down browsing too much
+    		if (!file_exists($thumbnailCheck)){
+    		    $tag = "
+    		      <div class='thumb-shadow'>
+    		          <img src='{$rootUrl}/resources/graphics/no_preview.png' height='{$height}' />
+		          </div>";
+    		    return $tag;
+    		}
+
+        	$sHostPath = KTUtil::kt_url();
+    		$plugin_path = KTPluginUtil::getPluginPath('thumbnails.generator.processor.plugin');
+    		$thumbnailUrl = $plugin_path . 'thumbnail_view.php?documentId='.$docid;
+    		$thumbnailUrl = str_replace('\\', '/', $thumbnailUrl);
+    		$thumbnailUrl = str_replace(KT_DIR, $sHostPath, $thumbnailUrl);
+
+    		$sInfo = '
+    		<div class="thumb-shadow">
+                    <img src="'.$thumbnailUrl.'" height='.$height.' />
+            </div>';
+
+        	return $sInfo;
+        }
+        return '';
     }
 }
 
