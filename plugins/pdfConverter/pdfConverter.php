@@ -93,7 +93,8 @@ class pdfConverter extends BaseProcessor
         $oStorage = KTStorageManagerUtil::getSingleton();
         $path = $oStorage->temporaryFile($this->document);
         $ext = KTMime::getFileType($this->document->getMimeTypeID());
-
+        $mimetype = KTMime::getMimeTypeName($this->document->getMimeTypeID());
+			
         if(!file_exists($path)){
             global $default;
             $default->log->debug('PDF Converter: Document, id: '.$this->document->iId.', does not exist at given storage path: '.$path);
@@ -185,7 +186,7 @@ class pdfConverter extends BaseProcessor
     	$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
     	//$mime_types[] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.template';
     	/* */
-		$mime_types[] = 'image/tiff';
+    	$mime_types[] = 'image/tiff';
         return $mime_types;
 	}
 
@@ -208,7 +209,8 @@ class pdfConverter extends BaseProcessor
 	    // Create a temporary file to store the converted document
 	    $targetFile = tempnam($tempDir, 'pdfconverter') . '.pdf';
 
-		if($ext == "tiff" || $ext == "tif") { // Also known as tif.
+
+		if($ext == "tiff"||$ext == "tif") {
 			$this->convertTiff($sourceFile, $targetFile);
 		} else {
 	    	// Get contents and send to converter

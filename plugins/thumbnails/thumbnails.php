@@ -274,12 +274,21 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 
 		// check for existence and status of the instant view plugin
 		$url = '';
+		$modal = '';
+		$title = '';
         if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
              require_once KTPluginUtil::getPluginPath('instaview.processor.plugin') . 'instaViewLinkAction.php';
              $ivLinkAction = new instaViewLinkAction();
-             $url = $ivLinkAction->getViewLink($documentId, 'document');
+             $modal = $ivLinkAction->isImage($documentId);
+             if($modal) // If it requires a modal window, it only needs the image content
+             	$url = $ivLinkAction->getViewLink($documentId, 'document_content');
+             else // Needs the file content
+             	$url = $ivLinkAction->getViewLink($documentId, 'document');
+             $title = $ivLinkAction->getName($documentId);
         }
-
+		if($modal) {
+			$this->loadLightBox(); // Load lightbox effects
+		}
         // Get the url to the thumbnail and render it
         // Ensure url has correct slashes
 		$sHostPath = KTUtil::kt_url();
@@ -290,7 +299,9 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 
 		$templateData = array(
             'thumbnail' => $thumbnailUrl,
-            'url' => $url
+            'url' => $url,
+            'modal'=>$modal,
+            'title'=>$title
         );
 
         if(is_numeric($height)){
@@ -301,6 +312,19 @@ class ThumbnailViewlet extends KTDocumentViewlet {
         return $oTemplate->render();
     }
 
+    function loadLightBox() {
+		global $main;
+    	// force forward slash, since we are ultimately treating/using the outcome this as a URL
+    	$replace = str_replace('\\', '/', KT_DIR) . '/';
+    	$dir = str_replace('\\', '/', dirname(__FILE__));
+
+    	$linkPath = str_replace($replace, '', $dir);
+		$main->requireJSResource($linkPath.'/resources/lightbox/js/prototype.js');
+		$main->requireJSResource($linkPath.'/resources/lightbox/js/scriptaculous.js');
+		$main->requireJSResource($linkPath.'/resources/lightbox/js/lightbox.js');
+		$main->requireCSSResource($linkPath.'/resources/lightbox/css/lightbox.css');    	
+    }
+    
     // determines whether the image exists and returns the maximum aspect to display;
     // this is used for anywhere which might require display resizing based on the presence or absence of the thumbnail
     public function getDisplaySize($documentId)

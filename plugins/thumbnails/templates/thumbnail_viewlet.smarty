@@ -1,8 +1,9 @@
-
 <div class="thumb-shadow">
     <div>
-        {if $url}
-            <a href='{$url}' target='_blank'>
+        {if $url && $modal}
+            <a href='{$url}' rel="lightbox" title="{$title}">
+		{else}
+			<a href='{$url}' target='_blank'>
         {/if}
         <img src="{$thumbnail}" {if $height}height="{$height}"{/if} />
         {if $url}
