@@ -142,12 +142,17 @@ class auth extends client_service {
             return false;
         }
 	
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Proceeding With Logout');
     	$newSessId=md5(session_id());
     	$session->logout();
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'KTAPI session logout requested');
     	session_id($newSessId);
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'New SessionID Requested from PHP (Redundant Security)['.session_id().']');
     	$this->Response->setStatus('session_id',$newSessId);
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'New SessionID set in response status ['.$newSessId.']');
     	$this->setResponse(array('logout'=>true));
     	session_destroy();
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'PHP Session Destroyed');
     	return true;
     }
 

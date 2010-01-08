@@ -78,6 +78,7 @@ class jsonResponseObject{
 	}
 	
 	public function getJson(){
+//		$this->status['session_id']=session_id();
 		$response=array_merge(array(
 			'requestName'		=>$this->title,
 			'errors'	=>array(
@@ -111,6 +112,7 @@ class jsonWrapper{
 		$this->raw=$content;
 		$content=@json_decode($content,true);
 		if(!is_array($content))throw new jsonContentException('Invalid JSON input',jsonContentException::INPUT_ERROR);
+		if(!is_array($content['request']['parameters']))$content['request']['parameters']=array();
 		$this->jsonArray=$content;
 	}
 	
