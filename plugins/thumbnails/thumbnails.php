@@ -280,15 +280,14 @@ class ThumbnailViewlet extends KTDocumentViewlet {
              require_once KTPluginUtil::getPluginPath('instaview.processor.plugin') . 'instaViewLinkAction.php';
              $ivLinkAction = new instaViewLinkAction();
              $modal = $ivLinkAction->isImage($documentId);
-             if($modal) // If it requires a modal window, it only needs the image content
+             if($modal) { // If it requires a modal window, it only needs the document content
              	$url = $ivLinkAction->getViewLink($documentId, 'document_content');
-             else // Needs the file content
+             	$this->loadLightBox(); // Load lightbox effects
+             } else { // Needs the file content
              	$url = $ivLinkAction->getViewLink($documentId, 'document');
+             }
              $title = $ivLinkAction->getName($documentId);
         }
-		if($modal) {
-			$this->loadLightBox(); // Load lightbox effects
-		}
         // Get the url to the thumbnail and render it
         // Ensure url has correct slashes
 		$sHostPath = KTUtil::kt_url();
@@ -314,15 +313,10 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 
     function loadLightBox() {
 		global $main;
-    	// force forward slash, since we are ultimately treating/using the outcome this as a URL
-    	$replace = str_replace('\\', '/', KT_DIR) . '/';
-    	$dir = str_replace('\\', '/', dirname(__FILE__));
-
-    	$linkPath = str_replace($replace, '', $dir);
-		$main->requireJSResource($linkPath.'/resources/lightbox/js/prototype.js');
-		$main->requireJSResource($linkPath.'/resources/lightbox/js/scriptaculous.js');
-		$main->requireJSResource($linkPath.'/resources/lightbox/js/lightbox.js');
-		$main->requireCSSResource($linkPath.'/resources/lightbox/css/lightbox.css');    	
+		// jQuery and lightbox
+		$main->requireJSResource('resources/lightbox/js/jquery.js');
+		$main->requireJSResource('resources/lightbox/js/jquery.lightbox-0.5.pack.js');
+		$main->requireCSSResource('resources/lightbox/css/lightbox.css');
     }
     
     // determines whether the image exists and returns the maximum aspect to display;
