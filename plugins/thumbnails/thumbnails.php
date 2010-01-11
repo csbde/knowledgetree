@@ -315,7 +315,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 		global $main;
 		// jQuery and lightbox
 		$main->requireJSResource('resources/lightbox/js/jquery.js');
-		$main->requireJSResource('resources/lightbox/js/jquery.lightbox-0.5.pack.js');
+		$main->requireJSResource('resources/lightbox/js/jquery.lightbox-0.5.min.js');
 		$main->requireCSSResource('resources/lightbox/css/lightbox.css');
     }
     
