@@ -503,6 +503,13 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		return $perms;
 	}
 
+
+    function write_log($msg){
+        $fp = fopen('/var/www/knowledgetree/var/log/charl.txt', 'a');
+        fwrite($fp, $msg);
+        fclose($fp);
+    }
+
 	/**
 	 * Get's a folder listing, recursing to the given depth
 	 *
@@ -550,8 +557,9 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 			foreach ($folder_children as $folder)
 			{
-				if(KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder) ||
-				    KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $folder))
+			
+				if(KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder) 
+				    /*|| KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $folder)*/)
 				{
 					if ($depth-1 > 0)
 					{
