@@ -74,7 +74,9 @@ $noAuthRequests=array(
 	//'auth.japiLogin',
 	'kt.get_all_client_policies',
 	'kt.get_languages',
-	'kt.switchlang'
+	'kt.switchlang',
+	'kt.get_max_fileupload_size',
+	'kt.get_all_explorer_policies'
 );
 
 if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {

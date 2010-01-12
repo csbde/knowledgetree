@@ -1281,5 +1281,45 @@ Fatal error:  Cannot unset string offsets in on line 981
 			
 		}
 	}
+	
+	private function convert_size_to_num($size)
+	{
+		//This function transforms the php.ini notation for numbers (like '2M') to an integer (2*1024*1024 in this case)
+		$l = substr($size, -1);
+		$ret = substr($size, 0, -1);
+		switch(strtoupper($l)){
+		case 'P':
+			$ret *= 1024;
+		case 'T':
+			$ret *= 1024;
+		case 'G':
+			$ret *= 1024;
+		case 'M':
+			$ret *= 1024;
+		case 'K':
+			$ret *= 1024;
+			break;
+		}
+		return $ret;
+	}
+	
+	/*
+	* Determing the maximum size a file can be to upload
+	*/
+	function get_max_fileupload_size()
+	{
+		$post_max_size = $this->convert_size_to_num(ini_get('post_max_size'));
+		$upload_max_filesize = $this->convert_size_to_num(ini_get('upload_max_filesize'));
+
+		if ($upload_max_filesize < 0) {
+			$max_upload_size = $post_max_size;
+		} else {
+			$max_upload_size = min($post_max_size, $upload_max_filesize);
+		}
+		$this->setResponse ( array ('status_code' => 0, 'maxsize' => $max_upload_size ) );
+		return true;
+	}
 }
+
+
 ?>
