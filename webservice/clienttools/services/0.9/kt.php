@@ -688,7 +688,7 @@ class kt extends client_service {
 		$config = KTConfig::getSingleton ();
 		$this->addDebug ( 'KTConfig Singleton', $config );
 		
-		$policies = array ('allowRememberPassword', 'explorerMetadataCapture', 'officeMetadataCapture', 'captureReasonsCheckin', 'captureReasonsCheckout', 'captureReasonsDelete', 'captureReasonsCancelCheckout', 'captureReasonsCopyInKT', 'captureReasonsMoveInKT' );
+		$policies = array ('allowRememberPassword', 'explorerMetadataCapture', 'officeMetadataCapture', 'captureReasonsCheckin', 'captureReasonsCheckout', 'captureReasonsDelete', 'captureReasonsCancelCheckout', 'captureReasonsCopyInKT', 'captureReasonsMoveInKT', 'forceSameNameCheckin' );
 		
 		$returnPolicies = array ();
 		$test = $config->get ( 'clientToolPolicies/allowRememberPassword' );
