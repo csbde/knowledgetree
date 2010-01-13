@@ -503,13 +503,6 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		return $perms;
 	}
 
-
-    function write_log($msg){
-        $fp = fopen('/var/www/knowledgetree/var/log/charl.txt', 'a');
-        fwrite($fp, $msg);
-        fclose($fp);
-    }
-
 	/**
 	 * Get's a folder listing, recursing to the given depth
 	 *
