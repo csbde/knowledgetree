@@ -82,7 +82,9 @@ class OpenOfficeTextExtractor extends ExternalDocumentExtractor
 
 	protected function filter($text)
 	{
-		 return preg_replace ("@(</?[^>]*>)+@", " ", $text);
+        $tidy = tidy_parse_string($text);
+        $text = $tidy->repairString($text);
+        return preg_replace ("@(</?[^>]*>)+@", " ", $text).' ';
 	}
 
 	public function extractTextContent()
@@ -125,7 +127,8 @@ class OpenOfficeTextExtractor extends ExternalDocumentExtractor
 			return false;
 		}
 
-        $result = file_put_contents($this->targetfile, $this->filter(file_get_contents($filename)));
+		$content = $this->filter(file_get_contents($filename));
+        $result = file_put_contents($this->targetfile, $content);
 
 		return $result !== false;
 	}
