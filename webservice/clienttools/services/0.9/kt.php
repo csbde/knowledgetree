@@ -1108,7 +1108,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = &$this->KT;
 		
-		$response = $kt->copy_document ( $params ['documentid'], $params ['destfolderid'], $params ['reason'] );
+		$response = $kt->copy_document ( $params ['documentid'], $params ['destfolderid'], $params ['reason'], $params ['title'], $params ['filename'] );
 		if ($response ['status_code'] == 0) {
 			$this->setResponse ( array ('status_code' => 0, 'status' => 'itemupdated', 'icon' => 'success', 'title' => $this->xlate ( 'Document Copied' ), 'message' => $this->xlate ( 'Document has been successfully copied' ) ) );
 			return true;
@@ -1122,7 +1122,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$kt = $this->KT;
 		
-		$response = $kt->move_document ( $params ['documentid'], $params ['destfolderid'], $params ['reason'] );
+		$response = $kt->move_document ( $params ['documentid'], $params ['destfolderid'], $params ['reason'], $params ['title'], $params ['filename']  );
 		if ($response ['status_code'] == 0) {
 			$this->setResponse ( array ('status_code' => 0, 'status' => 'itemupdated', 'icon' => 'success', 'title' => $this->xlate ( 'Document Moved' ), 'message' => $this->xlate ( 'Document has been successfully moved' ) ) );
 			return true;
