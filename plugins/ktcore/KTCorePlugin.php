@@ -169,11 +169,13 @@ class KTCorePlugin extends KTPlugin {
 		$this->registerTrigger('add', 'postValidate', 'SavedSearchSubscriptionTrigger', 'ktcore.search2.savedsearch.subscription.add', KT_DIR . '/plugins/search2/Search2Triggers.php');
 		$this->registerTrigger('discussion', 'postValidate', 'SavedSearchSubscriptionTrigger', 'ktcore.search2.savedsearch.subscription.discussion', KT_DIR . '/plugins/search2/Search2Triggers.php');
 
-		//Tag Cloud Triggers
+		// Tag Cloud Triggers
 		$this->registerTrigger('add', 'postValidate', 'KTAddDocumentTrigger', 'ktcore.triggers.tagcloud.add', KT_DIR.'/plugins/tagcloud/TagCloudTriggers.php');
         $this->registerTrigger('edit', 'postValidate', 'KTEditDocumentTrigger', 'ktcore.triggers.tagcloud.edit', KT_DIR.'/plugins/tagcloud/TagCloudTriggers.php');
 
-
+		// Bulk Download Trigger
+		$this->registerTrigger('ktcore', 'pageLoad', 'BulkDownloadTrigger', 'ktcore.triggers.pageload', 'KTDownloadTriggers.inc.php');
+        
         // widgets
         $this->registerWidget('KTCoreInfoWidget', 'ktcore.widgets.info', 'KTWidgets.php');
         $this->registerWidget('KTCoreHiddenWidget', 'ktcore.widgets.hidden', 'KTWidgets.php');
