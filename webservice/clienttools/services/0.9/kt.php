@@ -1058,17 +1058,24 @@ Fatal error:  Cannot unset string offsets in on line 981
 			}
 		}
 		
-		$document = $kt->get_document_by_id ( $params ['document'] );
+		
 		if (count ( $recipientsList ) == 0) {
 			$this->setResponse ( array ('status' => 'norecipients' ) );
 			return false;
 		} else {
-			$result = $document->email ( $recipientsList, $message, TRUE ); // true to attach document
-			if (PEAR::isError ( $result )) {
-				$this->setResponse ( array ('status' => $result->getMessage () ) );
-				;
-				return false;
+			
+			foreach ($params ['documents'] as $documentId)
+			{
+				$document = $kt->get_document_by_id ( $documentId );
+				
+				
+				$result = $document->email ( $recipientsList, $message, TRUE ); // true to attach document
+				if (PEAR::isError ( $result )) {
+					$this->setResponse ( array ('status' => $result->getMessage () ) );
+					return false;
+				}
 			}
+			
 			$this->setResponse ( array ('status' => 'documentemailed' ) );
 		}
 		return true;
@@ -1269,7 +1276,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	
-	function addFolderToList(&$listing, $path)
+	private function addFolderToList(&$listing, $path)
 	{
 		if (!in_array($path, $this->listOfFoldersToBeCreated)) {
 			$this->listOfFoldersToBeCreated[] = $path;
@@ -1334,6 +1341,10 @@ Fatal error:  Cannot unset string offsets in on line 981
 		$this->setResponse ( array ('status_code' => 0, 'maxsize' => $max_upload_size ) );
 		return true;
 	}
+	
+	
+	
+	
 }
 
 
