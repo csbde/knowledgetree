@@ -1,0 +1,1 @@
+	<img id="kt_image_to_crop" {if $has_value} src="{$value}"{/if} alt="{$name}" title="{$name}" />
