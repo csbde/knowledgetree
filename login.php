@@ -116,6 +116,9 @@ class LoginPageDispatcher extends KTDispatcher {
         if (PEAR::isError($sessionID)) {
             return $sessionID;
         }
+        
+        // add a flag to check for bulk downloads after login is succesful; this will be cleared in the code which checks
+        $_SESSION['checkBulkDownload'] = true;
 
 		$redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 

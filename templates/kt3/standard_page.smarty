@@ -357,3 +357,8 @@
 </div>
 </body>
 </html>
+{if ($downloadNotification != '')}
+	<script type="text/javascript">
+		{$downloadNotification}
+	</script>
+{/if}
