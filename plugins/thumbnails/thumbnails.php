@@ -296,6 +296,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 		$thumbnailUrl = str_replace(KT_DIR, $sHostPath, $thumbnailUrl);
 
 		$templateData = array(
+			'documentId' => $documentId,
             'thumbnail' => $thumbnailUrl,
             'url' => $url,
             'modal'=>$modal,

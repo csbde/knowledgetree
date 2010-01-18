@@ -2,7 +2,7 @@
 {literal}
 <script type="text/javascript">
 	$(document).ready(function(){
-		$('#thumb a').lightBox();
+		$('#thumb_{/literal}{$documentId}{literal} a').lightBox();
 	});
 </script>
 {/literal}
@@ -10,9 +10,9 @@
 <div class="thumb-shadow">
     <div>
         {if $url && $modal}
-        	<div id="thumb" class="thumb">
+        	<div id="thumb_{/literal}{$documentId}{literal}" class="thumb">
             <a href='{$url}' rel="lightbox" title="{$title}">
-            <img src="{$thumbnail}" {if $height}height="{$height}"{/if} class="lightbox_window"/>
+            <img id="img{$documentId}" src="{$thumbnail}" {if $height}height="{$height}"{/if} class="lightbox_window"/>
             </div>
 		{else}
 			<a href='{$url}' target='_blank'>

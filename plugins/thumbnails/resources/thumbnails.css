@@ -1,7 +1,7 @@
 .thumb-shadow {
     float:left;
-    background: url(plugins/thumbnails/templates/shadowAlpha.png) no-repeat bottom right !important;
-    background: url(plugins/thumbnails/templates/shadow.gif) no-repeat bottom right;
+    background: url(../templates/shadowAlpha.png) no-repeat bottom right !important;
+    background: url(../templates/shadow.gif) no-repeat bottom right;
     margin: 10px 0 0 10px !important;
     margin: 10px 0 0 5px;
 }
