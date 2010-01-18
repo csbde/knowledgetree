@@ -242,7 +242,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     	return $this->renderThumbnail($documentId);
     }
 
-    public function renderThumbnail($documentId, $height = null) {
+    public function renderThumbnail($documentId, $height = null, $modal = null) {
         // Set up the template
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate('thumbnail_viewlet');
@@ -274,12 +274,11 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 
 		// check for existence and status of the instant view plugin
 		$url = '';
-		$modal = '';
 		$title = '';
         if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
              require_once KTPluginUtil::getPluginPath('instaview.processor.plugin') . 'instaViewLinkAction.php';
              $ivLinkAction = new instaViewLinkAction();
-             $modal = $ivLinkAction->isImage($documentId);
+             if(is_null($modal)) $modal = $ivLinkAction->isImage($documentId);
              if($modal) { // If it requires a modal window, it only needs the document content
              	$url = $ivLinkAction->getViewLink($documentId, 'document_content');
              	$this->loadLightBox(); // Load lightbox effects

@@ -457,7 +457,7 @@ class AdvancedWorkflowColumn extends AdvancedColumn {
 
     function AdvancedWorkflowColumn() {
         $this->label = _kt("Workflow State");
-        $this->sortable = false;
+        $this->sortable = true;
     }
 
     // use inline, since its just too heavy to even _think_ about using smarty.
