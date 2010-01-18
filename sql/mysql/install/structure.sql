@@ -648,7 +648,7 @@ CREATE TABLE `download_queue` (
 	`code` char(16) NOT NULL,
 	`folder_id` int(11) NOT NULL,
 	`object_id` int(11) NOT NULL,
-	`object_type` enum('document', 'folder') NOT NULL default 'folder',
+	`object_type` enum('document', 'folder', 'zip') NOT NULL default 'folder',
 	`user_id` int(11) NOT NULL,
 	`date_added` timestamp NOT NULL default CURRENT_TIMESTAMP,
 	`status` tinyint(4) NOT NULL default 0,
