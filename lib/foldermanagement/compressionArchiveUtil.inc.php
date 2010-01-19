@@ -648,8 +648,8 @@ class DownloadQueue
             $_SESSION['zipcompression'] = null;
         }
         
-        // check for any errors and if none found then create the entry for the zip file which will be used by the notification code
-        if (!PEAR::isError($res) && !PEAR::isError($result)/* && !PEAR::isError() // There was a third one here originally but I cannot remember what it was // */) {
+        if (count($queue) && !PEAR::isError($res) && !PEAR::isError($result)) {
+        	// check for any errors and if none found then create the entry for the zip file which will be used by the notification code
         	// create the db entry
         	self::addItem($code, self::getFolderId($code), -1, 'zip');
         	// update the db entry with the appropriate status and message
