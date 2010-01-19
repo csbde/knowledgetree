@@ -649,13 +649,12 @@ class DownloadQueue
         }
         
         if (count($queue) && !PEAR::isError($res) && !PEAR::isError($result)) {
-        	// check for any errors and if none found then create the entry for the zip file which will be used by the notification code
         	// create the db entry
         	self::addItem($code, self::getFolderId($code), -1, 'zip');
         	// update the db entry with the appropriate status and message
         	$this->setItemStatus($code, 2, serialize(array($zip->getTmpPath(), $zip->getZipFileName())), true);
-        	// Here was an attempt to allow the download notification to occur if the user left the page, which was using a session value (which didn't work properly) and then
-        	// we were trying a file, which was untested and in process when the file corruption occurred.  Will continue this once the rest of the code is committed & safe.
+        	// write a file which will be checked if the user has not been logged out and back in 
+        	// (in which case the required session value will not be set and this file acts as a trigger instead)
         	$config = KTConfig::getSingleton();
         	@touch($config->get('cache/cacheDirectory') . '/' . self::$notificationFile);
         }
