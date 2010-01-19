@@ -84,7 +84,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     'encoding' => 'multipart/form-data',
                     'context' => &$this,
                     'extraargs' => $this->meldPersistQuery("","",true),
-                    'description' => _kt('The logo upload facility allows you to upload a logo to brand your knowledgetree site.')
+                    'description' => _kt('You can upload a logo to brand your KnowledgeTree site.')
                     ));
 
         $oWF =& KTWidgetFactory::getSingleton();
@@ -99,7 +99,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     'name' => 'file',
                     'id' => 'file',
                     'value' => '',
-                    'description' => _kt('The logo should be 313px by 50px in dimension. If you don\'t have a 313x50 logo you should choose to either "crop" or "scale" it. If you are certain that your logo has the correct dimentions you can safely skip by the selecting "Don\'t do anything"'),
+                    'description' => _kt("The logo's dimensions should be 313px width by 50px height. If your logo doesn't fit these dimensions, you can choose to crop or scale it."),
                     ));
         
         $aVocab['crop'] = 'Crop - Cut out a selection';
@@ -136,6 +136,61 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
             $submit['onclick'] = '';
         }
         */
+
+        return $oForm;
+    }
+
+
+    /**
+     * Returns the scale logo form
+     *
+     * This form will display a preview of all the possible sclaled combinations.
+     * This includes:
+     *
+     * Stretched, Top Left Cropped, Proportional Stretch, Proportional Top Left Cropped
+     *
+     * @return KTForm 
+     *
+     */
+
+    function getScaleLogoForm($logoItems = array()) {
+        $this->oPage->setBreadcrumbDetails(_kt("Scale Logo"));
+
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+                    'identifier' => 'ktcore.folder.branding',
+                    'label' => _kt('Choose Logo'),
+                    'submit_label' => _kt('Select'),
+                    'action' => 'selectLogo',
+                    'fail_action' => 'main',
+                    'encoding' => 'multipart/form-data',
+                    'context' => &$this,
+                    'extraargs' => $this->meldPersistQuery("","",true),
+                    'description' => _kt('Choose a logo by clicking on one of the images')
+                    ));
+
+        $oWF =& KTWidgetFactory::getSingleton();
+
+        $widgets = array();
+        $validators = array();
+
+        $logoFileName = 'var'.DIRECTORY_SEPARATOR.'branding'.DIRECTORY_SEPARATOR.'logo'.DIRECTORY_SEPARATOR.$logoFileName;
+
+        // Adding the image select widget (User will select the best image)
+        $widgets[] = $oWF->get('ktcore.widgets.imageselect', array(
+                    'label' => _kt('Logo Preview'),
+                    'name' => $logoFileName,
+                    'value' => $logoItems,
+                    ));
+
+        // Adding the Hidden FileName Input String
+        $widgets[] = $oWF->get('ktcore.widgets.hidden', array(
+                    'name' => 'kt_imageselect',
+                    'value' => $logoItems[0],
+                    ));
+
+        $oForm->setWidgets($widgets);
+        $oForm->setValidators($validators);
 
         return $oForm;
     }
@@ -311,7 +366,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
         //Changing to logo.jpg (Need to preserve extention as GD requires the exact image type to work)
         $ext = end(explode('.', $logoFileName));
-        $logoFileName = 'logo_tmp.'.$ext;
+        $logoFileName = 'logo_tmp_'.md5(Date('ymd-hms')).'.'.$ext; //Fighting the browser cache here
         $logoFile = $logoDir.DIRECTORY_SEPARATOR.$logoFileName;
 
         // deleting old tmp file
@@ -329,6 +384,8 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
         $resizeMethod = $_REQUEST['data']['resize_method'];
 
+        $relDir = 'var'.DIRECTORY_SEPARATOR.'branding'.DIRECTORY_SEPARATOR.'logo'.DIRECTORY_SEPARATOR;
+
         switch ($resizeMethod) {
             case 'crop':
                 $cropLogoForm = $this->getCropLogoForm($logoFileName);
@@ -336,9 +393,24 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                 
             case 'scale':
                 $type = $_FILES['_kt_attempt_unique_file']['type'];
-                $res = $this->scaleImage($logoFile, $logoFile, $this->maxLogoWidth, $this->maxLogoHeight, $type);
                 
-                $form = $this->getApplyLogoForm($logoFileName);
+                $logoFileNameStretched = 'logo_tmp_stretched_'.md5(Date('ymd-hms')).'.'.$ext; //Fighting the browser cache here
+                $logoFileStretched = $logoDir.DIRECTORY_SEPARATOR.$logoFileNameStretched;
+
+                $logoFileNameCropped = 'logo_tmp_cropped_'.md5(Date('ymd-hms')).'.'.$ext; //Fighting the browser cache here
+                $logoFileCropped = $logoDir.DIRECTORY_SEPARATOR.$logoFileNameCropped;
+
+                //Creating stretched image                
+                $res = $this->scaleImage($logoFile, $logoFileStretched, $this->maxLogoWidth, $this->maxLogoHeight, $type, false, false);
+
+                //Creating top-left cropped image
+                $res = $this->scaleImage($logoFile, $logoFileCropped, $this->maxLogoWidth, $this->maxLogoHeight, $type, false, true);
+                $res = $this->cropImage($logoFileCropped, $logoFileCropped, 0, 0, $this->maxLogoWidth, $this->maxLogoHeight, $type);
+
+                $logoItem[] = $relDir.$logoFileNameStretched;
+                $logoItem[] = $relDir.$logoFileNameCropped;
+                
+                $form = $this->getScaleLogoForm($logoItem);
                 return $form->render();
                 
             default:
@@ -354,7 +426,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
      *  - Supported images are jpeg, png  and gif
      *
      */
-    public function scaleImage( $origFile, $destFile, $width, $height, $type = 'image/jpeg', $scaleUp = true) {
+    public function scaleImage( $origFile, $destFile, $width, $height, $type = 'image/jpeg', $scaleUp = false, $keepProportion = true) {
         global $default;
         
         //Requires the GD library if not exit gracefully
@@ -399,7 +471,11 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
             
             $image_x = $width;
             $image_y = $height;
-            //$image_y = round(($orig_y * $image_x) / $orig_x); //Preserve proportion
+
+            //Constraining proportion
+            if ($keepProportion) {
+                $image_y = round(($orig_y * $image_x) / $orig_x); //Preserve proportion
+            }
 
             /*
              * create the new image, and scale the original into it.
@@ -426,7 +502,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     return false;
             }
 
-
         } else {
             //Handle Error
             $default->log->error("Couldn't obtain a valid GD resource");
@@ -446,9 +521,13 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
     function do_crop(){
         global $default;
 
-        $logoFileName = $_REQUEST['data']['logo_file_name'];   
+        $logoFileName = $_REQUEST['data']['logo_file_name'];
         $logoFile = 'var'.DIRECTORY_SEPARATOR.'branding'.DIRECTORY_SEPARATOR.'logo'.DIRECTORY_SEPARATOR.$logoFileName;
-        
+
+        $ext = end(explode('.', $logoFileName));
+        $destFileName = 'logo_tmp_'.md5(Date('ymd-hms')).'.'.$ext;
+        $destFile = 'var'.DIRECTORY_SEPARATOR.'branding'.DIRECTORY_SEPARATOR.'logo'.DIRECTORY_SEPARATOR.$destFileName;
+
         $x1 = $_REQUEST['data']['crop_x1'];
         $y1 = $_REQUEST['data']['crop_y1'];
         
@@ -458,7 +537,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         $type = $this->getMime($logoFileName);
         
         //GD Crop
-        $res = $this->cropImage($logoFile, $logoFile, $x1, $y1, $x2, $y2, $type);
+        $res = $this->cropImage($logoFile, $destFile, $x1, $y1, $x2, $y2, $type);
         
         //If dimensions don't conform then will scale it further
         $width = $x2 - $x1;
@@ -466,7 +545,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         
         if (($width > $this->maxLogoWidth) || ($height > $this->maxLogoHeight)) {
             $default->log->info('SCALING IMAGE AFTER CROP');
-            $res = $this->scaleImage($logoFile, $logoFile, $this->maxLogoWidth, $this->maxLogoHeight, $type);
+            $res = $this->scaleImage($logoFile, $destFile, $this->maxLogoWidth, $this->maxLogoHeight, $type);
         }
         
         // ImageMagick Crop
@@ -485,7 +564,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 	    $result = KTUtil::pexec($cmd);
         */
 
-        $applyLogoForm = $this->getApplyLogoForm($logoFileName);
+        $applyLogoForm = $this->getApplyLogoForm($destFileName);
         return $applyLogoForm->render();
         
     }
@@ -600,6 +679,21 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
     }
 
 
+    /*
+     *  Action responsible for selecting the logo after it has been scaled.
+     *
+     */
+    function do_selectLogo(){
+        global $default;
+
+        $tmpLogoFileName = end(explode(DIRECTORY_SEPARATOR, $_REQUEST['kt_imageselect']));
+        
+        $form = $this->getApplyLogoForm($tmpLogoFileName);
+        return $form->render();
+
+    }
+
+
 
     /*
      *  Action responsible for applying the logo
@@ -628,10 +722,12 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
             $brandDir = $default->varDirectory.DIRECTORY_SEPARATOR.'branding'.DIRECTORY_SEPARATOR.'logo'.DIRECTORY_SEPARATOR;
             $handle = opendir($brandDir);
             while (false !== ($file = readdir($handle))) {
-                if (!is_dir($file) && $file != 'logo_tmp.jpg' && $file != $logoFileName) {
+                if (!is_dir($file) && $file != $tmpLogoFileName && $file != $logoFileName) {
                     if (!@unlink($brandDir.$file)) {
                         $default->log->error("Couldn't delete '".$brandDir.$file."'");
-                    }
+                    } else {
+                        $default->log->error("Cleaning Brand Logo Dir: Deleted '".$brandDir.$file."'");
+                    }                    
                 }
             }
         }
@@ -663,128 +759,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         $oKTConfig->clearCache();
         
         $this->successRedirectTo('', _kt("Logo succesfully applied."));
-    }
-
-
-    /*
-
-       Old Manage Views Code!
-       Crap, must delete
-
-     */
-    function do_editView() {
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/misc/columns/edit_view');
-
-        $oColumnRegistry =& KTColumnRegistry::getSingleton();
-        $aColumns = $oColumnRegistry->getColumnsForView($_REQUEST['viewNS']);
-        //var_dump($aColumns); exit(0);
-        $aAllColumns = $oColumnRegistry->getColumns();
-
-        $view_name = $oColumnRegistry->getViewName(($_REQUEST['viewNS']));
-        $this->oPage->setTitle($view_name);
-        $this->oPage->setBreadcrumbDetails($view_name);
-
-        $aOptions = array();
-        $vocab = array();
-        foreach ($aAllColumns as $aInfo) {
-            $vocab[$aInfo['namespace']] = $aInfo['name'];
-        }
-        $aOptions['vocab'] = $vocab;
-        $add_field = new KTLookupWidget(_kt("Columns"), _kt("Select a column to add to the view.  Please note that while you can add multiple copies of a column, they will all behave as a single column"), 'column_ns', null, $this->oPage, true, null, $aErrors = null, $aOptions);
-
-        $aTemplateData = array(
-                'context' => $this,
-                'current_columns' => $aColumns,
-                'all_columns' => $aAllColumns,
-                'view' => $_REQUEST['viewNS'],
-                'add_field' => $add_field,
-                );
-        return $oTemplate->render($aTemplateData);
-    }
-
-    function do_deleteEntry() {
-        $entry_id = KTUtil::arrayGet($_REQUEST, 'entry_id');
-        $view = KTUtil::arrayGet($_REQUEST, 'viewNS');
-
-        // none of these conditions can be reached "normally".
-
-        $oEntry = KTColumnEntry::get($entry_id);
-        if (PEAR::isError($oEntry)) {
-            $this->errorRedirectToMain(_kt("Unable to locate the entry"));
-        }
-
-        if ($oEntry->getRequired()) {
-            $this->errorRedirectToMain(_kt("That column is required"));
-        }
-
-        if ($oEntry->getViewNamespace() != $view) {
-            $this->errorRedirectToMain(_kt("That column is not for the specified view"));
-        }
-
-        $res = $oEntry->delete();
-
-        if (PEAR::isError($res)) {
-            $this->errorRedirectToMain(sprintf(_kt("Failed to remove that column: %s"), $res->getMessage()));
-        }
-
-        $this->successRedirectTo("editView", _kt("Deleted Entry"), sprintf("viewNS=%s", $view));
-    }
-
-    function do_addEntry() {
-        $column_ns = KTUtil::arrayGet($_REQUEST, 'column_ns');
-        $view = KTUtil::arrayGet($_REQUEST, 'viewNS');
-
-        $this->startTransaction();
-
-        $position = KTColumnEntry::getNextEntryPosition($view);
-        $oEntry = KTColumnEntry::createFromArray(array(
-                    'ColumnNamespace' => $column_ns,
-                    'ViewNamespace' => $view,
-                    'Position' => $position,             // start it at the bottom
-                    'config' => array(),            // stub, for now.
-                    'Required' => 0
-                    ));
-
-        $this->successRedirectTo("editView", _kt("Added Entry"), sprintf("viewNS=%s", $view));
-    }
-
-    function do_orderUp(){
-        $entryId = $_REQUEST['entry_id'];
-        $view = $_REQUEST['viewNS'];
-
-        $oEntry = KTColumnEntry::get($entryId);
-        if (PEAR::isError($oEntry)) {
-            $this->errorRedirectTo('editView', _kt('Unable to locate the column entry'), "viewNS={$view}");
-            exit();
-        }
-
-        $res = $oEntry->movePosition($view, $entryId, 'up');
-        if (PEAR::isError($res)) {
-            $this->errorRedirectTo('editView', $res->getMessage(), "viewNS={$view}");
-            exit();
-        }
-
-        $this->redirectTo('editView', "viewNS={$view}");
-    }
-
-    function do_orderDown(){
-        $entryId = $_REQUEST['entry_id'];
-        $view = $_REQUEST['viewNS'];
-
-        $oEntry = KTColumnEntry::get($entryId);
-        if (PEAR::isError($oEntry)) {
-            $this->errorRedirectTo('editView', _kt('Unable to locate the column entry'), "viewNS={$view}");
-            exit();
-        }
-
-        $res = $oEntry->movePosition($view, $entryId, 'down');
-        if (PEAR::isError($res)) {
-            $this->errorRedirectTo('editView', $res->getMessage(), "viewNS={$view}");
-            exit();
-        }
-
-        $this->redirectTo("editView", "viewNS={$view}");
     }
 
 }

@@ -1,0 +1,11 @@
+#kt_image_select_container img {
+    cursor: pointer;
+    text-decoration: none;
+    border: 10px solid white;
+}
+
+#kt_image_select_container img:hover {
+    text-decoration: none;
+    border: 10px solid white;
+}
+

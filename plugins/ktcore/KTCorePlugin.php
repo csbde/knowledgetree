@@ -200,6 +200,7 @@ class KTCorePlugin extends KTPlugin {
 		$this->registerWidget('KTCoreLayerWidget', 'ktcore.widgets.layer', 'KTWidgets.php');
         $this->registerWidget('KTCoreConditionalSelectionWidget', 'ktcore.widgets.conditionalselection', 'KTWidgets.php');
         $this->registerWidget('KTCoreImageWidget', 'ktcore.widgets.image', 'KTWidgets.php');
+        $this->registerWidget('KTCoreImageSelectWidget', 'ktcore.widgets.imageselect', 'KTWidgets.php');
         $this->registerWidget('KTCoreImageCropWidget', 'ktcore.widgets.imagecrop', 'KTWidgets.php');
 
         $this->registerPage('collection', 'KTCoreCollectionPage', 'KTWidgets.php');

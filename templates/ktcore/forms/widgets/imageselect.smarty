@@ -1,0 +1,35 @@
+<fieldset {if $has_name}title="{$name}"{/if}>
+    <field>
+        <div id="kt_image_select_container">
+
+        {foreach key=id item=src from=$value}
+
+	    <img class="kt_image_select" id="kt_image_select_{$id}" src="{$src}" border="0"/>
+        
+        <script type="text/javascript">
+            var toggle_{$id} = 1;
+            var selected = '';
+            
+            var multiselect = false;
+            
+            var hover = '#f9f9f9';
+            var click = '#f2943a'; //Orange
+            var background_color = 'white'; //also set in css
+            
+            jQuery('#kt_image_select_{$id}').click(function(){ldelim}
+                jQuery('#kt_image_select').val('{$src}');
+                
+                //Resetting background:
+                jQuery("img[id*='kt_image_select_']").css('border', '10px solid ' + background_color);
+                jQuery('#kt_image_select_{$id}').css('border', '10px solid ' + click);
+                window.console.log('#kt_image_select_{$id} = {$src} : toggle_{$id} [' + toggle_{$id} + ']');
+            {rdelim})
+        </script>
+
+        {/foreach}
+        
+        </div>
+        
+    	<input type="hidden" name="kt_imageselect" value="" id="kt_image_select"/>
+	</field>
+</fieldset>
