@@ -545,7 +545,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         
         if (($width > $this->maxLogoWidth) || ($height > $this->maxLogoHeight)) {
             $default->log->info('SCALING IMAGE AFTER CROP');
-            $res = $this->scaleImage($logoFile, $destFile, $this->maxLogoWidth, $this->maxLogoHeight, $type);
+            $res = $this->scaleImage($destFile, $destFile, $this->maxLogoWidth, $this->maxLogoHeight, $type, false, false);
         }
         
         // ImageMagick Crop

@@ -22,7 +22,7 @@
                 //Resetting background:
                 jQuery("img[id*='kt_image_select_']").css('border', '10px solid ' + background_color);
                 jQuery('#kt_image_select_{$id}').css('border', '10px solid ' + click);
-                window.console.log('#kt_image_select_{$id} = {$src} : toggle_{$id} [' + toggle_{$id} + ']');
+                
             {rdelim})
         </script>
 
