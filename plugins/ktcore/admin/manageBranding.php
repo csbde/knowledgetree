@@ -52,6 +52,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
     private $maxLogoWidth = 313;
     private $maxLogoHeight = 50;
+    public $supportedTypes = array('gif', 'png', 'pjpeg', 'jpe', 'jpeg', 'jpg', 'jfif', 'jfif-tbnl');
     
     function check() {
 
@@ -104,7 +105,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         
         $aVocab['crop'] = 'Crop - Cut out a selection';
         $aVocab['scale'] = 'Scale - Stretch or Shrink to fit';
-        $aVocab['nothing'] = 'Don\'t do anything';
+        $aVocab['nothing'] = 'Don\'t do anything <span class="descriptiveText">(My image has the correct dimensions)</span>';
         
 		//Adding document type lookup widget
 		$widgets[] = $oWF->get('ktcore.widgets.selection',array(
@@ -117,7 +118,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     'label_method' => 'getName',
                     'simple_select' => true,
 		));
-                    
+
         $oForm->setWidgets($widgets); 
         $oForm->setValidators($validators);
 
@@ -306,11 +307,14 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
         $logoFileName = 'var'.DIRECTORY_SEPARATOR.'branding'.DIRECTORY_SEPARATOR.'logo'.DIRECTORY_SEPARATOR.$logoFileName;
 
-        // Adding the Image Crop Widget
+        // Adding the Image Widget
         $widgets[] = $oWF->get('ktcore.widgets.image', array(
                     'label' => _kt('Logo Preview'),
                     'name' => $logoFileName, // title and alt attributes get set to this.
                     'value' => $logoFileName,
+                    'width' => $this->maxLogoWidth,
+                    'height' => $this->maxLogoHeight,
+                    'widgetwidth' => 20
                     ));
 
         // Adding the Hidden FileName Input String
@@ -366,6 +370,21 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
         //Changing to logo.jpg (Need to preserve extention as GD requires the exact image type to work)
         $ext = end(explode('.', $logoFileName));
+
+        $type = $_FILES['_kt_attempt_unique_file']['type'];
+
+        //Stage 1 filename based ext check:
+        if (!$this->isSupportedExtension($ext)) {
+            //If filename based extension isn't supported will try and guess based on mime type
+            $default->log->error("Stage 1: Unsupported file type: '".$type."' for file: ':".$_FILES['_kt_attempt_unique_file']['name']."'");
+            $ext = $this->getExtension($type);
+            
+            if (!$this->isSupportedExtension($ext)) {
+                $default->log->error("Unsupported file type: '".$type."' for file: ':".$_FILES['_kt_attempt_unique_file']['name']."'");
+                $this->errorRedirectToMain("The file you tried to upload is not supported.");
+            }
+        }
+
         $logoFileName = 'logo_tmp_'.md5(Date('ymd-hms')).'.'.$ext; //Fighting the browser cache here
         $logoFile = $logoDir.DIRECTORY_SEPARATOR.$logoFileName;
 
@@ -373,7 +392,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 		if (file_exists($logoFile)) {
 			@unlink($logoFile);
 		}
-		
+
         //TODO: Test Upload Failure by setting the $logoFile to ''
 
         if(!move_uploaded_file($_FILES['_kt_attempt_unique_file']['tmp_name'], $logoFile)) {
@@ -388,8 +407,14 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
         switch ($resizeMethod) {
             case 'crop':
-                $cropLogoForm = $this->getCropLogoForm($logoFileName);
-                return $cropLogoForm->render();
+                if ($this->isImageCroppable($logoFile, $this->maxLogoWith, $this->maxLogoHeight)) {
+                    $retForm = $this->getCropLogoForm($logoFileName);
+                } else {
+                    $_SESSION['KTErrorMessage'][] = _kt("The image was too small to be cropped.");
+                    $retForm = $this->getApplyLogoForm($logoFileName);
+                }
+                
+                return $retForm->render();
                 
             case 'scale':
                 $type = $_FILES['_kt_attempt_unique_file']['type'];
@@ -421,6 +446,82 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
     }
 
 
+    /**
+     * Returns the MIME of the filename, deducted from its extension
+     * If the extension is unknown, returns "image/jpeg"
+     */
+    function getMime($filename)
+    {
+        $pos = strrpos($filename, '.');
+        $extension = "";
+        if ($pos !== false) {
+            $extension = strtolower(substr($filename, $pos+1));
+        }
+
+        switch($extension) {
+        case 'gif':
+            return 'image/gif';
+        case 'jfif':
+            return 'image/jpeg';
+        case 'jfif-tbnl':
+            return 'image/jpeg';
+        case 'png':
+            return 'image/png';
+        case 'jpe':
+            return 'image/jpeg';
+        case 'jpeg':
+            return 'image/jpeg';
+        case 'jpg':
+            return 'image/jpeg';
+        default:
+            return 'image/jpeg';
+        }
+    }
+
+
+    /**
+     * Returns the MIME of the filename, deducted from its extension
+     * If the extension is unknown, returns "image/jpeg"
+     */
+    function getExtension($type)
+    {
+
+        switch($type) {
+        case 'image/gif':
+            return 'gif';
+        case 'image/jpeg':
+            return 'jfif';
+        case 'image/jpeg':
+            return 'jfif-tbnl';
+        case 'image/png':
+            return 'png';
+        case 'image/jpeg':
+            return 'jpe';
+        case 'image/jpeg':
+            return 'jpeg';
+        case 'image/jpeg':
+            return 'jpg';
+        case 'image/pjpeg':
+            return 'jpg';
+        default:
+            return 'image/jpeg';
+        }
+    }
+
+
+    /**
+     * Returns TRUE of the extension is supported
+     */
+    function isSupportedExtension($extension)
+    {
+        if (in_array($extension, $this->supportedTypes)) {
+            return TRUE;
+        }
+        
+        return FALSE;
+    }
+
+     
     /*
      *  This method uses the GD library to scale an image.
      *  - Supported images are jpeg, png  and gif
@@ -569,38 +670,59 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         
     }
 
-
-    /**
-     * Returns the MIME of the filename, deducted from its extension
-     * If the extension is unknown, returns "image/jpeg"
+    /*
+     *  This method is used to determine if the image actually can be cropped
+     *  - Supported images are jpeg, png  and gif
+     *
      */
-    function getMime($filename)
-    {
-        $pos = strrpos($filename, '.');
-        $extension = "";
-        if ($pos !== false) {
-            $extension = strtolower(substr($filename, $pos+1));
+    public function isImageCroppable( $origFile, $width, $height) {
+        global $default;
+        
+        //Requires the GD library if not exit gracefully
+        if (!extension_loaded('gd')) {
+            $default->log->error("The GD library isn't loaded");
+            return false;
+        }
+        
+        switch($type) {
+            case 'image/jpeg':
+                $orig = imagecreatefromjpeg($origFile);
+                break;
+            case 'image/pjpeg':
+                $orig = imagecreatefromjpeg($origFile);
+                break;
+            case 'image/png':
+                $orig = imagecreatefrompng($origFile);
+                break;
+            case 'image/gif':
+                $orig = imagecreatefromgif($origFile);
+                break;
+            default:
+                //Handle Error
+                $default->log->error("Tried to determine crop for an unsupported file type: $type");
+                return false;
         }
 
-        switch($extension) {
-        case 'gif':
-            return 'image/gif';
-        case 'jfif':
-            return 'image/jpeg';
-        case 'jfif-tbnl':
-            return 'image/jpeg';
-        case 'png':
-            return 'image/png';
-        case 'jpe':
-            return 'image/jpeg';
-        case 'jpeg':
-            return 'image/jpeg';
-        case 'jpg':
-            return 'image/jpeg';
-        default:
-            return 'image/jpeg';
+        if($orig) {
+            /*
+             *  calculate the size of the new image.
+             */
+            $orig_x = imagesx($orig);
+            $orig_y = imagesy($orig);
+            
+            if (($orig_x > $width) || ($orig_y > $height)) {
+                return true;
+            }
+            
+        } else {
+            //Handle Error
+            $default->log->error("Couldn't obtain a valid GD resource $origFile");
+            return false;
         }
+        
+        return true;
     }
+
 
     /*
      *  This method uses the GD library to crop an image.
