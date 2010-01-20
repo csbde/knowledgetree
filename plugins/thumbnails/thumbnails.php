@@ -194,9 +194,12 @@ class thumbnailGenerator extends BaseProcessor
         $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
         //if thumbail dir does not exist, generate one and add an index file to block access
         if (!file_exists($thumbnaildir)) {
-        	 mkdir($thumbnaildir, 0755);
-        	 touch($thumbnaildir.DIRECTORY_SEPARATOR.'index.html');
-        	 file_put_contents($thumbnaildir.DIRECTORY_SEPARATOR.'index.html', 'You do not have permission to access this directory.');
+        	mkdir($thumbnaildir, 0755);
+        }
+        
+        if (!file_exists($thumbnaildir.DIRECTORY_SEPARATOR.'index.html')) {
+        	touch($thumbnaildir.DIRECTORY_SEPARATOR.'index.html');
+        	file_put_contents($thumbnaildir.DIRECTORY_SEPARATOR.'index.html', 'You do not have permission to access this directory.');
         }
 
         // if there is no pdf that exists - hop out
@@ -219,8 +222,22 @@ class thumbnailGenerator extends BaseProcessor
 		else {
 			$cmd = "{$pathConvert} {$srcFile}" . $pageNumber . " -resize 200x200 $thumbnailfile";
 		}
+		
+		$default->log->debug($cmd);
 
-		$result = KTUtil::pexec($cmd);
+		$output = KTUtil::pexec($cmd);
+		
+		// Log the output
+		if(isset($output['out'])){
+			$out = $output['out'];
+			if(is_array($out)){
+				$out = array_pop($out);
+			}
+			if(strpos($out, 'ERROR') === 0){
+			    $default->log->error('InstaView Plugin: error in creation of document thumbnail '.$this->document->iId.': '. $out);
+			}
+		}
+		
         return true;
     }
 }
