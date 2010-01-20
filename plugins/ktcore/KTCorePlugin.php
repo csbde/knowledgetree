@@ -169,11 +169,13 @@ class KTCorePlugin extends KTPlugin {
 		$this->registerTrigger('add', 'postValidate', 'SavedSearchSubscriptionTrigger', 'ktcore.search2.savedsearch.subscription.add', KT_DIR . '/plugins/search2/Search2Triggers.php');
 		$this->registerTrigger('discussion', 'postValidate', 'SavedSearchSubscriptionTrigger', 'ktcore.search2.savedsearch.subscription.discussion', KT_DIR . '/plugins/search2/Search2Triggers.php');
 
-		//Tag Cloud Triggers
+		// Tag Cloud Triggers
 		$this->registerTrigger('add', 'postValidate', 'KTAddDocumentTrigger', 'ktcore.triggers.tagcloud.add', KT_DIR.'/plugins/tagcloud/TagCloudTriggers.php');
         $this->registerTrigger('edit', 'postValidate', 'KTEditDocumentTrigger', 'ktcore.triggers.tagcloud.edit', KT_DIR.'/plugins/tagcloud/TagCloudTriggers.php');
 
-
+		// Bulk Download Trigger
+		$this->registerTrigger('ktcore', 'pageLoad', 'BulkDownloadTrigger', 'ktcore.triggers.pageload', 'KTDownloadTriggers.inc.php');
+        
         // widgets
         $this->registerWidget('KTCoreInfoWidget', 'ktcore.widgets.info', 'KTWidgets.php');
         $this->registerWidget('KTCoreHiddenWidget', 'ktcore.widgets.hidden', 'KTWidgets.php');
@@ -198,6 +200,7 @@ class KTCorePlugin extends KTPlugin {
 		$this->registerWidget('KTCoreLayerWidget', 'ktcore.widgets.layer', 'KTWidgets.php');
         $this->registerWidget('KTCoreConditionalSelectionWidget', 'ktcore.widgets.conditionalselection', 'KTWidgets.php');
         $this->registerWidget('KTCoreImageWidget', 'ktcore.widgets.image', 'KTWidgets.php');
+        $this->registerWidget('KTCoreImageSelectWidget', 'ktcore.widgets.imageselect', 'KTWidgets.php');
         $this->registerWidget('KTCoreImageCropWidget', 'ktcore.widgets.imagecrop', 'KTWidgets.php');
 
         $this->registerPage('collection', 'KTCoreCollectionPage', 'KTWidgets.php');

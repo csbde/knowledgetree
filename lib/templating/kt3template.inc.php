@@ -353,8 +353,9 @@ class KTPage {
 	function setSecondaryTitle($sSecondary) { $this->secondary_title = $sSecondary; }
 
     /* final render call. */
-    function render() {
-	global $default;
+    function render()
+    {
+		global $default;
         $oConfig = KTConfig::getSingleton();
 
         if (empty($this->contents)) {
@@ -366,70 +367,68 @@ class KTPage {
             $this->contents = "";
         }
 
-	if (!is_string($this->contents)) {
-	    $this->contents = $this->contents->render();
-	}
+        if (!is_string($this->contents)) {
+        	$this->contents = $this->contents->render();
+        }
 
-	// if we have no portlets, make the ui a tad nicer.
-	if (empty($this->portlets)) {
-	    $this->show_portlets = false;
-	}
+        // if we have no portlets, make the ui a tad nicer.
+        if (empty($this->portlets)) {
+        	$this->show_portlets = false;
+        }
 
-	if (empty($this->title)) {
-	    if (!empty($this->breadcrumbDetails)) {
-		$this->title = $this->breadcrumbDetails;
-	    } else if (!empty($this->breadcrumbs)) {
-		$this->title = array_slice($this->breadcrumbs, -1);
-		$this->title = $this->title[0]['label'];
-	    } else if (!empty($this->breadcrumbSection)) {
-		$this->title = $this->breadcrumbSection['label'];
-	    } else {
-		$this->title = $this->componentLabel;
-	    }
-	}
-
-	$this->userMenu = array();
-	$sBaseUrl = KTUtil::kt_url();
-
-	if (!(PEAR::isError($this->user) || is_null($this->user) || $this->user->isAnonymous())) {
-	    if ($oConfig->get("user_prefs/restrictPreferences", false) && !Permission::userIsSystemAdministrator($this->user->getId())) {
-		    $this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
-	    } else {
-
-        	if($default->enableESignatures){
-        	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
-        	    $heading = _kt('You are attempting to modify Preferences');
-        	    $this->userMenu['preferences']['url'] = '#';
-        	    $this->userMenu['preferences']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_preferences', 'system', '{$sBaseUrl}/preferences.php', 'redirect');";
-        	}else{
-        	    $this->userMenu['preferences']['url'] = $sBaseUrl.'/preferences.php';
+        if (empty($this->title)) {
+        	if (!empty($this->breadcrumbDetails)) {
+        		$this->title = $this->breadcrumbDetails;
+        	} else if (!empty($this->breadcrumbs)) {
+        		$this->title = array_slice($this->breadcrumbs, -1);
+        		$this->title = $this->title[0]['label'];
+        	} else if (!empty($this->breadcrumbSection)) {
+        		$this->title = $this->breadcrumbSection['label'];
+        	} else {
+        		$this->title = $this->componentLabel;
         	}
+        }
 
-//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
-	        $this->userMenu['preferences']['label'] = _kt('Preferences');
-	        $this->userMenu['aboutkt'] = array('label' => _kt('About'), 'url' => $sBaseUrl.'/about.php');
-	        $this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
-	    }
-	} else {
-	    $this->userMenu['login'] = array('label' => _kt('Login'), 'url' => $sBaseUrl.'/login.php');
-	}
+        $this->userMenu = array();
+        $sBaseUrl = KTUtil::kt_url();
 
-	// FIXME we need a more complete solution to navigation restriction
-	if (!is_null($this->menu['administration']) && !is_null($this->user)) {
-	    if (!Permission::userIsSystemAdministrator($this->user->getId())) {
-		  unset($this->menu['administration']);
-	    }
-	}
+        if (!(PEAR::isError($this->user) || is_null($this->user) || $this->user->isAnonymous())) {
+        	if ($oConfig->get("user_prefs/restrictPreferences", false) && !Permission::userIsSystemAdministrator($this->user->getId())) {
+        		$this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
+        	} else {
+        		if($default->enableESignatures) {
+        			$sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+        			$heading = _kt('You are attempting to modify Preferences');
+        			$this->userMenu['preferences']['url'] = '#';
+        			$this->userMenu['preferences']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_preferences', 'system', '{$sBaseUrl}/preferences.php', 'redirect');";
+        		} else {
+        			$this->userMenu['preferences']['url'] = $sBaseUrl.'/preferences.php';
+        		}
 
-	$sContentType = 'Content-type: ' . $this->contentType;
-	if(!empty($this->charset)) {
-	    $sContentType .= '; charset=' . $this->charset;
-	};
+        		//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
+        		$this->userMenu['preferences']['label'] = _kt('Preferences');
+        		$this->userMenu['aboutkt'] = array('label' => _kt('About'), 'url' => $sBaseUrl.'/about.php');
+        		$this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
+        	}
+        } else {
+        	$this->userMenu['login'] = array('label' => _kt('Login'), 'url' => $sBaseUrl.'/login.php');
+        }
 
+        // FIXME we need a more complete solution to navigation restriction
+        if (!is_null($this->menu['administration']) && !is_null($this->user)) {
+        	if (!Permission::userIsSystemAdministrator($this->user->getId())) {
+        		unset($this->menu['administration']);
+        	}
+        }
 
-	header($sContentType);
+        $sContentType = 'Content-type: ' . $this->contentType;
+        if(!empty($this->charset)) {
+        	$sContentType .= '; charset=' . $this->charset;
+        };
 
-	$savedSearches = SearchHelper::getSavedSearches($_SESSION['userID']);
+        header($sContentType);
+
+        $savedSearches = SearchHelper::getSavedSearches($_SESSION['userID']);
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate($this->template);
@@ -442,13 +441,24 @@ class KTPage {
         if ($oConfig->get("ui/automaticRefresh", false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
         }
+		
+		// Trigger for pending downloads
+		$aTemplateData['downloadNotification'] = null;
+		require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
+		$oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+		$aTriggers = $oKTTriggerRegistry->getTriggers('ktcore', 'pageLoad');
+		foreach ($aTriggers as $aTrigger) {
+			$sTrigger = $aTrigger[0];
+			$oTrigger = new $sTrigger;
+			$aTemplateData['downloadNotification'] = $oTrigger->invoke();
+		}
 
         // unlike the rest of KT, we use echo here.
         echo $oTemplate->render($aTemplateData);
     }
 
 
-	/**   heler functions */
+	/**   helper functions */
 	// returns an array ("url", "label")
     function _actionhelper($aActionTuple) {
         $aTuple = Array("label" => $aActionTuple["name"]);

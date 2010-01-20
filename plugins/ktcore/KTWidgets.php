@@ -1140,6 +1140,56 @@ class KTCoreImageWidget extends KTWidget {
         return $oTemplate->render($aTemplateData);   
     }    
 
+}
+
+class KTCoreImageSelectWidget extends KTWidget {
+    var $sNamespace = 'ktcore.widgets.imageselect';
+    var $sTemplate = 'ktcore/forms/widgets/imageselect';
+
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        
+    }
+
+    function render() {
+        $oTemplating =& KTTemplating::getSingleton();        
+        $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
+        
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+	
+        if (!empty($this->aJavascript)) {
+            // grab our inner page.
+            $oPage =& $GLOBALS['main'];            
+            $oPage->requireJSResources($this->aJavascript);
+        }
+
+    	$this->aCSS[] = 'resources/css/kt_imageselect.css';
+        
+        if (!empty($this->aCSS)) {
+            // grab our inner page.
+            $oPage =& $GLOBALS['main'];            
+            $oPage->requireCSSResources($this->aCSS);
+        }
+		
+        $widget_content = $this->getWidget();
+
+        $aTemplateData = array(
+            "context" => $this,
+            "label" => $this->sLabel,
+            "description" => $this->sDescription,
+            "name" => $this->sName,
+            "has_value" => ($this->value !== null),
+            "value" => $this->value,
+            "has_errors" => $bHasErrors,
+            "errors" => $this->aErrors,
+            "options" => $this->aOptions,
+            "widget" => $widget_content,
+        );
+        return $oTemplate->render($aTemplateData);   
+    }    
     
 }
 
