@@ -242,12 +242,9 @@ class upgradeDatabase extends Step
     private function doDatabaseUpgrade()
     {
         $errors = false;
-
         $this->temp_variables['detail'] = '<p>The table below describes the upgrades that have occurred to
             upgrade your KnowledgeTree installation to <strong>' . $this->sysVersion . '</strong>';
-
         $this->performPreUpgradeActions();
-
         $res = $this->performAllUpgrades();
         if (!$res) {
             $errors = true;
@@ -261,11 +258,9 @@ class upgradeDatabase extends Step
                                                       If the problem persists, contact KnowledgeTree Support.';
         }
         else {
+        	$this->performPostUpgradeActions();
             $this->temp_variables['upgradeStatus'] = '<font color="green">Upgrade succeeded.</font>';
         }
-
-        $this->performPostUpgradeActions();
-
 
         return !$errors;
     }
