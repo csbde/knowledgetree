@@ -1,1 +1,1 @@
-	<img id="kt_image_to_crop" {if $has_value} src="{$value}"{/if} alt="{$name}" title="{$name}" />
+	<img {if $has_id} id="{$id}" {/if} {if $has_value} src="{$value}"{/if} alt="{$name}" title="{$name}" {if $options.has_width} width="{$options.width}" {/if} {if $options.has_height} height="{$options.height}" {/if}/>
