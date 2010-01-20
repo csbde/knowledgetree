@@ -1113,9 +1113,13 @@ class KTCoreImageWidget extends KTWidget {
             return $res;
         }
 
-        $this->src = $aOptions['src'];
-        $this->alt = $aOptions['alt'];
-        $this->title = $aOptions['title'];
+        $this->aOptions['src'] = KTUtil::arrayGet($aOptions, 'src', '');
+        $this->aOptions['alt'] = KTUtil::arrayGet($aOptions, 'alt', '');
+        $this->aOptions['title'] = KTUtil::arrayGet($aOptions, 'title', '');
+        $this->aOptions['width'] = KTUtil::arrayGet($aOptions, 'width', '');
+        $this->aOptions['height'] = KTUtil::arrayGet($aOptions, 'height', '');
+        $this->aOptions['has_width'] = ($this->aOptions['height'] !== null);
+        $this->aOptions['has_height'] = ($this->aOptions['height'] !== null);
         
     }
 
@@ -1146,12 +1150,14 @@ class KTCoreImageSelectWidget extends KTWidget {
     var $sNamespace = 'ktcore.widgets.imageselect';
     var $sTemplate = 'ktcore/forms/widgets/imageselect';
 
+    var $width;
+    var $height;
+
     function configure($aOptions) {
         $res = parent::configure($aOptions);
         if (PEAR::isError($res)) {
             return $res;
         }
-        
     }
 
     function render() {
