@@ -13,14 +13,16 @@
         	<div id="thumb_{/literal}{$documentId}{literal}" class="thumb">
             <a href='{$url}' rel="lightbox" title="{$title}">
             <img id="img{$documentId}" src="{$thumbnail}" {if $height}height="{$height}"{/if} class="lightbox_window"/>
+            </a>
             </div>
 		{else}
-			<a href='{$url}' target='_blank'>
-			<img src="{$thumbnail}" {if $height}height="{$height}"{/if}/>
-        {/if}
-        
-        {if $url}
-            </a>
+			{if $url}
+				<a href='{$url}' target='_blank'>
+				<img src="{$thumbnail}" {if $height}height="{$height}"{/if}/>
+				</a>
+			{else}
+				<img src="{$thumbnail}" {if $height}height="{$height}"{/if}/>
+			{/if}
         {/if}
     </div>
 </div>
