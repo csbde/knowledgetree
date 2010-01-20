@@ -842,11 +842,12 @@ class KTAPI
     * @author KnowledgeTree Team
     * @access public
 	* @param string $foldername The folder name
+	* @param int $parent_id The folder in which to search for the requested child folder
 	* @return object $folder The KTAPI_Folder object
     */
-	public function &get_folder_by_name($foldername, $parentId = 1)
+	public function &get_folder_by_name($foldername, $parent_id = 1)
 	{
-		$folder = KTAPI_Folder::_get_folder_by_name($this, $foldername, $parentId);
+		$folder = KTAPI_Folder::_get_folder_by_name($this, $foldername, $parent_id);
 		return $folder;
 	}
 
@@ -2027,14 +2028,14 @@ class KTAPI
     function get_folder_shortcuts($folder_id)
     {
         $folder = $this->get_folder_by_id($folder_id);
-        if(PEAR::isError($folder)){
+        if(PEAR::isError($folder)) {
     	    $response['status_code'] = 1;
     	    $response['message']= $folder->getMessage();
     	    return $response;
         }
 
         $shortcuts = $folder->get_shortcuts();
-    	if(PEAR::isError($shortcuts)){
+    	if(PEAR::isError($shortcuts)) {
     	    $response['status_code'] = 1;
     	    $response['message']= $shortcuts->getMessage();
     	    return $response;
@@ -2054,10 +2055,10 @@ class KTAPI
      * @param string $folder_name The name of the folder
      * @return array Response 'results' contains kt_folder_detail | 'message' contains error message on failure
      */
-    function get_folder_detail_by_name($folder_name)
+    function get_folder_detail_by_name($folder_name, $parent_id = 1)
     {
-        $folder = &$this->get_folder_by_name($folder_name);
-        if(PEAR::isError($folder)){
+        $folder = &$this->get_folder_by_name($folder_name, $parent_id);
+        if(PEAR::isError($folder)) {
     	    $response['status_code'] = 1;
     	    $response['message']= $folder->getMessage();
     	    return $response;
@@ -2343,7 +2344,7 @@ class KTAPI
         	$sourceName = $src_folder->get_folder_name();
         	$targetPath = $tgt_folder->get_full_path();
 
-        	$response['results'] = $this->get_folder_detail_by_name($targetPath . '/' . $sourceName);
+        	$response['results'] = $this->get_folder_detail_by_name($targetPath . '/' . $sourceName, $source_id);
         	return $response;
     	}
 

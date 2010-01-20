@@ -137,6 +137,210 @@ class RESTTestCase extends KTUnitTestCase {
         $this->assertTrue(empty($response['results']));
         $this->assertTrue(!empty($response['message']));
     }
+    
+    /**
+     * Tests finding of a folder or folder detail by name
+     * Runs the following sub-tests:
+     * . Root folder Folder by Name (root folder test)
+     * . Folder Detail by Name in root folder (no duplicate names)
+     * . Folder Detail by name in subfolder of root folder (no duplicate names)
+     * . Folder by Name in subfolder of root folder (no duplicate names)
+     * . Folder by Name in root folder (duplicate names)
+     * . Folder Detail by name in subfolder of root folder (duplicate names)
+     * . Folder by name in subfolder of root folder (duplicate names)
+     */
+    public function testGetFolderByName()
+    {
+    	// Login and authenticate
+        $url = $this->rootUrl.'method=login&password=admin&username=admin';
+        $response = $this->call($url);
+        $response = $response['response'];
+
+        $this->assertEqual($response['status_code'], 0);
+        $session_id = $response['results'];
+        
+    	// set up
+    	$root_folder_id = array();
+    	$sub_folder_id = array();
+    	$folders[0][1] = 'Root Folder';
+    	
+    	// Create a sub folder in the root folder
+    	$parentId = 1;
+    	$folderName = 'Test api sub-folder ONE';
+    	$url = $this->rootUrl.'method=create_folder&session_id=' . $session_id . '&folder_id=' . $parentId . '&folder_name=' . urlencode($folderName);
+        $response = $this->call($url);
+        $response = $response['response'];
+        $root_folder_id[] = $response['results']['id'];
+        $folders[$parentId][$response['results']['id']] = $folderName;
+        $this->assertEqual($response['status_code'], 0);
+        
+    	// Create a second sub folder in the root folder
+    	$parentId = 1;
+    	$folderName = 'Test api sub-folder TWO';
+    	$url = $this->rootUrl.'method=create_folder&session_id=' . $session_id . '&folder_id=' . $parentId . '&folder_name=' . urlencode($folderName);
+        $response = $this->call($url);
+        $response = $response['response'];
+        $root_folder_id[] = $response['results']['id'];
+        $folders[$parentId][$response['results']['id']] = $folderName;
+        $this->assertEqual($response['status_code'], 0);
+
+        // Create a sub folder in the first sub folder
+    	$parentId = $root_folder_id[0];
+    	$folderName = 'Test api sub-folder THREE';
+    	$url = $this->rootUrl.'method=create_folder&session_id=' . $session_id . '&folder_id=' . $parentId . '&folder_name=' . urlencode($folderName);
+        $response = $this->call($url);
+        $response = $response['response'];
+        $sub_folder_id[0][] = $response['results']['id'];
+        $folders[$parentId][$response['results']['id']] = $folderName;
+        $this->assertEqual($response['status_code'], 0);
+        
+        // Create a sub folder within the first sub folder which shares a name with one of the root sub folders
+    	$parentId = $sub_folder_id[0][0];
+    	$folderName = 'Test api sub-folder TWO';
+    	$url = $this->rootUrl.'method=create_folder&session_id=' . $session_id . '&folder_id=' . $parentId . '&folder_name=' . urlencode($folderName);
+        $response = $this->call($url);
+        $response = $response['response'];
+        $sub_folder_id[0][] = $response['results']['id'];
+        $folders[$parentId][$response['results']['id']] = $folderName;
+        $this->assertEqual($response['status_code'], 0);
+        
+        // Create a second sub folder in the first sub folder
+    	$parentId = $root_folder_id[0];
+    	$folderName = 'Test api sub-folder FOUR';
+    	$url = $this->rootUrl.'method=create_folder&session_id=' . $session_id . '&folder_id=' . $parentId . '&folder_name=' . urlencode($folderName);
+        $response = $this->call($url);
+        $response = $response['response'];
+        $sub_folder_id[0][] = $response['results']['id'];
+        $folders[$parentId][$response['results']['id']] = $folderName;
+        $this->assertEqual($response['status_code'], 0);
+        
+        // Create a sub folder within the second sub folder
+    	$parentId = $root_folder_id[1];
+    	$folderName = 'Test api sub-folder FIVE';
+    	$url = $this->rootUrl.'method=create_folder&session_id=' . $session_id . '&folder_id=' . $parentId . '&folder_name=' . urlencode($folderName);
+        $response = $this->call($url);
+        $response = $response['response'];
+        $sub_folder_id[1][] = $response['results']['id'];
+        $folders[$parentId][$response['results']['id']] = $folderName;
+        $this->assertEqual($response['status_code'], 0);
+        
+        // Create a sub folder within the second sub folder which shares a name with a sub folder in the first sub folder
+    	$parentId = $sub_folder_id[1][0];
+    	$folderName = 'Test api sub-folder THREE';
+    	$url = $this->rootUrl.'method=create_folder&session_id=' . $session_id . '&folder_id=' . $parentId . '&folder_name=' . urlencode($folderName);
+        $response = $this->call($url);
+        $response = $response['response'];
+        $sub_folder_id[1][] = $response['results']['id'];
+        $folders[$parentId][$response['results']['id']] = $folderName;
+        $this->assertEqual($response['status_code'], 0);
+        
+        // NOTE default parent is 1, so does not need to be declared when searching the root folder, but we use it elsewhere
+        
+        // Fetching of root folder
+		$parentId = 0;
+        $folderName = 'Root Folder';
+        $url = $this->rootUrl.'method=get_folder_detail_by_name&session_id=' . $session_id . '&folder_name=' . urlencode($folderName);
+        $response = $this->call($url);
+        $response = $response['response'];
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertFalse(!empty($response['message']));
+    	if (($response['status_code'] == 0)) {
+    		$this->assertEqual($folders[$parentId][$response['results']['id']], $folderName);
+    	}
+    	
+        // Folder Detail by Name in root folder (no duplicate names)
+        $parentId = 1;
+        $folderName = 'Test api sub-folder ONE';
+        // no parent required
+    	$url = $this->rootUrl.'method=get_folder_detail_by_name&session_id=' . $session_id . '&folder_name=' . urlencode($folderName);
+        $response = $this->call($url);
+        $response = $response['response'];
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertFalse(!empty($response['message']));
+    	if (($response['status_code'] == 0)) {
+    		$this->assertEqual($folders[$parentId][$response['results']['id']], $folderName);
+    	}
+        
+        // Folder Detail by Name in sub folder of root folder (no duplicate names)
+        $parentId = $root_folder_id[0];
+        $folderName = 'Test api sub-folder FOUR';
+        $url = $this->rootUrl.'method=get_folder_detail_by_name&session_id=' . $session_id . '&parent_id=' . $parentId . '&folder_name=' . urlencode($folderName);
+        $response = $this->call($url);
+        $response = $response['response'];
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertFalse(!empty($response['message']));
+    	if (($response['status_code'] == 0)) {
+    		$this->assertEqual($folders[$parentId][$response['results']['id']], $folderName);
+    	}
+        
+        // Folder Detail by Name in root folder (duplicate names)
+        $parentId = 1;
+        $folderName = 'Test api sub-folder TWO';
+        $url = $this->rootUrl.'method=get_folder_detail_by_name&session_id=' . $session_id . '&parent_id=' . $parentId . '&folder_name=' . urlencode($folderName);
+        $response = $this->call($url);
+        $response = $response['response'];
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertFalse(!empty($response['message']));
+    	if (($response['status_code'] == 0)) {
+    		$this->assertEqual($folders[$parentId][$response['results']['id']], $folderName);
+    	}
+        
+        // Folder Detail by Name in sub folder of root folder (duplicate names)
+        $parentId = $root_folder_id[0];
+        $folderName = 'Test api sub-folder THREE';
+        $url = $this->rootUrl.'method=get_folder_detail_by_name&session_id=' . $session_id . '&parent_id=' . $parentId . '&folder_name=' . urlencode($folderName);
+        $response = $this->call($url);
+        $response = $response['response'];
+        $this->assertEqual($response['status_code'], 0);
+        $this->assertFalse(!empty($response['message']));
+    	if (($response['status_code'] == 0)) {
+    		$this->assertEqual($folders[$parentId][$response['results']['id']], $folderName);
+    	}
+
+		// Negative test with non duplicated folder - look for folder in location it does not exist
+        $parentId = $root_folder_id[0];
+        $folderName = 'Test api sub-folder ONE';
+        $url = $this->rootUrl.'method=get_folder_detail_by_name&session_id=' . $session_id . '&parent_id=' . $parentId . '&folder_name=' . urlencode($folderName);
+        $response = $this->call($url);
+        $response = $response['response']; 
+        $this->assertNotEqual($response['status_code'], 0);
+        $this->assertTrue(!empty($response['message']));
+    	$this->assertNotEqual($folders[$parentId][$response['results']['id']], $folderName);
+    	
+    	// Negative test with duplicated folder - look for folder with incorrect parent id, result should not match expected folder
+    	$parentId = 1;
+    	$actualParentId = $sub_folder_id[0][0];
+        $folderName = 'Test api sub-folder TWO';
+        $url = $this->rootUrl.'method=get_folder_detail_by_name&session_id=' . $session_id . '&parent_id=' . $parentId . '&folder_name=' . urlencode($folderName);
+        $response = $this->call($url);
+        $response = $response['response'];
+        // we should get a result
+        $this->assertEqual($response['status_code'], 0);
+    	$this->assertFalse(!empty($response['message']));
+    	// but not the one we wanted
+    	$url = $this->rootUrl.'method=get_folder_detail_by_name&session_id=' . $session_id . '&parent_id=' . $actualParentId . '&folder_name=' . urlencode($folderName);
+        $expectedResponse = $this->call($url);
+        $expectedResponse = $expectedResponse['response'];
+        $this->assertNotEqual($response['results']['id'], $expectedResponse['results']['id']);
+        
+        // Clean up - delete all of the folders
+        foreach ($root_folder_id as $folder_id) {
+        	$url = $this->rootUrl.'method=delete_folder&session_id=' . $session_id . '&folder_id=' . $folder_id . '&reason=Testing%20Webservice';
+        	$this->call($url);
+        }
+        
+        foreach ($sub_folder_id as $_folder_id_) {
+        	foreach ($_folder_id_ as $folder_id) {	
+        		$url = $this->rootUrl.'method=delete_folder&session_id=' . $session_id . '&folder_id=' . $folder_id . '&reason=Testing%20Webservice';
+        		$this->call($url);
+        	}
+        }
+        
+        // Logout
+        $url = $this->rootUrl.'method=logout&session_id='.$session_id;
+        $response = $this->call($url);
+        $response = $response['response'];
+    }
 
     /**
      * Convert xml into an array structure

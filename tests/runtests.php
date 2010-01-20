@@ -38,6 +38,10 @@ class UnitTests extends TestSuite {
         // are not on, so if you have failures, check there first :)
         $this->addFile('api/testElectronicSignatures.php');
 
+        // Web Service tests
+        $this->addFile('webservices/testRest.php');
+        $this->addFile('webservices/testSoap.php');        
+        
 //        $this->addFile('SQLFile/test_sqlfile.php');
 //        $this->addFile('cache/testCache.php');
 //        $this->addFile('config/testConfig.php');
