@@ -163,6 +163,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     'label' => _kt('Choose Logo'),
                     'submit_label' => _kt('Select'),
                     'action' => 'selectLogo',
+                    'cancel_action' => 'main',
                     'fail_action' => 'main',
                     'encoding' => 'multipart/form-data',
                     'context' => &$this,
