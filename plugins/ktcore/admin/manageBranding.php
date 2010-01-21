@@ -100,7 +100,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     'name' => 'file',
                     'id' => 'file',
                     'value' => '',
-                    'description' => _kt("The logo's dimensions should be 313px width by 50px height. If your logo doesn't fit these dimensions, you can choose to crop or scale it."),
+                    'description' => _kt("The logo's dimensions should be 313px width by 50px height. If your logo doesn't fit these dimensions, you can choose to scale it."),
                     ));
         
         //$aVocab['crop'] = 'Crop - Cut out a selection';
