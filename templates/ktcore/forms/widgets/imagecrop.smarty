@@ -1,6 +1,4 @@
 <img id="kt_image_to_crop" src="{$value}" alt="{$name}" title="{$name}" />
-{$options.init_width}
-{$options.init_height}
 <script type="text/javascript">
 jQuery(function () {ldelim}
     //TODO: Draw attributes and config options from widget attributes
