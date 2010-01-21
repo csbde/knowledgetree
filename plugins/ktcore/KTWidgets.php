@@ -1113,6 +1113,8 @@ class KTCoreImageWidget extends KTWidget {
         $this->aOptions['height'] = KTUtil::arrayGet($aOptions, 'height', '');
         $this->aOptions['has_width'] = ($this->aOptions['height'] !== null);
         $this->aOptions['has_height'] = ($this->aOptions['height'] !== null);
+        $this->aOptions['div_border'] = KTUtil::arrayGet($aOptions, 'div_border', '');
+        $this->aOptions['has_div_border'] = ($this->aOptions['div_border'] !== null);
         
     }
 
