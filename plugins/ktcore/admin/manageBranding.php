@@ -407,7 +407,9 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
         switch ($resizeMethod) {
             case 'crop':
-                if ($this->isImageCroppable($logoFile, $this->maxLogoWith, $this->maxLogoHeight)) {
+            
+                if ($this->isImageCroppable($logoFile, $this->maxLogoWith, $this->maxLogoHeight, $type)) {
+    
                     $retForm = $this->getCropLogoForm($logoFileName);
                 } else {
                     $_SESSION['KTErrorMessage'][] = _kt("The image was too small to be cropped.");
@@ -417,8 +419,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                 return $retForm->render();
                 
             case 'scale':
-                $type = $_FILES['_kt_attempt_unique_file']['type'];
-                
+            
                 $logoFileNameStretched = 'logo_tmp_stretched_'.md5(Date('ymd-hms')).'.'.$ext; //Fighting the browser cache here
                 $logoFileStretched = $logoDir.DIRECTORY_SEPARATOR.$logoFileNameStretched;
 
@@ -675,7 +676,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
      *  - Supported images are jpeg, png  and gif
      *
      */
-    public function isImageCroppable( $origFile, $width, $height) {
+    public function isImageCroppable( $origFile, $width, $height, $type) {
         global $default;
         
         //Requires the GD library if not exit gracefully
@@ -709,7 +710,10 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
              */
             $orig_x = imagesx($orig);
             $orig_y = imagesy($orig);
-            
+
+            $default->log->info("ORIG_X : $orig_x");
+            $default->log->info("ORIG_Y : $orig_y");
+
             if (($orig_x > $width) || ($orig_y > $height)) {
                 return true;
             }
