@@ -1047,15 +1047,8 @@ class KTCoreImageCropWidget extends KTWidget {
             return $res;
         }
 
-        // FIXME make required *either* per-action property
-        // FIXME or a global pref.
-        $global_required_default = true;
-        $this->bRequired = (KTUtil::arrayGet($aOptions, 'required', $global_required_default, false) == true);
-
-        $this->src = $aOptions['src'];
-        $this->alt = $aOptions['alt'];
-        $this->title = $aOptions['title'];
-        
+        $this->aOptions['init_width'] = KTUtil::arrayGet($aOptions, 'init_width', '313');
+        $this->aOptions['init_height'] = KTUtil::arrayGet($aOptions, 'init_height', '50');
     }
 
     function render() {
@@ -1069,7 +1062,7 @@ class KTCoreImageCropWidget extends KTWidget {
 		
       	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
         $this->aJavascript[] = 'thirdpartyjs/jquery/plugins/imageareaselect/scripts/jquery.imgareaselect.pack.js';
-    	$this->aJavascript[] = 'resources/js/kt_image_crop.js';
+    	//$this->aJavascript[] = 'resources/js/kt_image_crop.js';
     	
         if (!empty($this->aJavascript)) {
             // grab our inner page.

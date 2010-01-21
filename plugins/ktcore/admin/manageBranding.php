@@ -230,12 +230,27 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         $validators = array();
 
         $logoFile = 'var'.DIRECTORY_SEPARATOR.'branding'.DIRECTORY_SEPARATOR.'logo'.DIRECTORY_SEPARATOR.$logoFileName;
+        $ext = end(explode('.', end(explode(DIRECTORY_SEPARATOR, $logoFile))));
+        $type = $this->getMime($ext);
+        
+        $imageWidth = $this->getImageWidth($logoFile, $type);
+        $imageHeight = $this->getImageHeight($logoFile, $type);
+
+        if ($imageWidth > $this->maxLogoWidth) {
+            $imageWidth = $this->maxLogoWidth;
+        }
+
+        if ($imageHeight > $this->maxLogoHeight) {
+            $imageHeight = $this->maxLogoHeight;
+        }
 
         // Adding the Image Crop Widget
         $widgets[] = $oWF->get('ktcore.widgets.imagecrop', array(
                     'label' => _kt('Crop Logo'),
                     //'name' => 'Logo',
                     'value' => $logoFile,
+                    'init_width' => $imageWidth,
+                    'init_height' => $imageHeight,
                     'description' => _kt('To crop an area of the logo, click and drag the resizable rectangle over the image.'),
                     ));
 
@@ -328,7 +343,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
         return $oForm;
     }
-
 
     /*
      *  Action responsible for uploading the logo
@@ -487,7 +501,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
     function getExtension($type)
     {
 
-        switch($type) {
+        switch(strtolower($type)) {
         case 'image/gif':
             return 'gif';
         case 'image/jpeg':
@@ -515,7 +529,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
      */
     function isSupportedExtension($extension)
     {
-        if (in_array($extension, $this->supportedTypes)) {
+        if (in_array(strtolower($extension), $this->supportedTypes)) {
             return TRUE;
         }
         
@@ -711,9 +725,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
             $orig_x = imagesx($orig);
             $orig_y = imagesy($orig);
 
-            $default->log->info("ORIG_X : $orig_x");
-            $default->log->info("ORIG_Y : $orig_y");
-
             if (($orig_x > $width) || ($orig_y > $height)) {
                 return true;
             }
@@ -725,6 +736,104 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         }
         
         return true;
+    }
+
+
+    /*
+     *  This method uses GD library to return the image width
+     *  - Supported images are jpeg, png  and gif     *
+     */
+    public function getImageWidth( $origFile, $type) {
+        global $default;
+        
+        //Requires the GD library if not exit gracefully
+        if (!extension_loaded('gd')) {
+            $default->log->error("The GD library isn't loaded");
+            return false;
+        }
+        
+        switch($type) {
+            case 'image/jpeg':
+                $orig = imagecreatefromjpeg($origFile);
+                break;
+            case 'image/pjpeg':
+                $orig = imagecreatefromjpeg($origFile);
+                break;
+            case 'image/png':
+                $orig = imagecreatefrompng($origFile);
+                break;
+            case 'image/gif':
+                $orig = imagecreatefromgif($origFile);
+                break;
+            default:
+                //Handle Error
+                $default->log->error("Tried to determine crop for an unsupported file type: $type");
+                return false;
+        }
+
+        if($orig) {
+            /*
+             *  calculate the size of the new image.             */
+            
+            $orig_x = imagesx($orig);
+            return $orig_x;
+            
+        } else {
+            //Handle Error
+            $default->log->error("Couldn't obtain a valid GD resource $origFile");
+            return false;
+        }
+        
+        return false;
+    }
+
+
+    /*
+     *  This method uses GD library to return the image height
+     *  - Supported images are jpeg, png  and gif     *
+     */
+    public function getImageHeight( $origFile, $type) {
+        global $default;
+        
+        //Requires the GD library if not exit gracefully
+        if (!extension_loaded('gd')) {
+            $default->log->error("The GD library isn't loaded");
+            return false;
+        }
+        
+        switch($type) {
+            case 'image/jpeg':
+                $orig = imagecreatefromjpeg($origFile);
+                break;
+            case 'image/pjpeg':
+                $orig = imagecreatefromjpeg($origFile);
+                break;
+            case 'image/png':
+                $orig = imagecreatefrompng($origFile);
+                break;
+            case 'image/gif':
+                $orig = imagecreatefromgif($origFile);
+                break;
+            default:
+                //Handle Error
+                $default->log->error("Tried to determine crop for an unsupported file type: $type");
+                return false;
+        }
+
+        if($orig) {
+            /*
+             *  calculate the size of the new image.             */
+            
+            $orig_y = imagesy($orig);
+            return $orig_y;
+            
+        } else {
+            //Handle Error
+            $default->log->error("Couldn't obtain a valid GD resource $origFile");
+            return false;
+        }
+        
+        return false;
     }
 
 

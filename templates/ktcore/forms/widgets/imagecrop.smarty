@@ -1,1 +1,26 @@
-	<img id="kt_image_to_crop" {if $has_value} src="{$value}"{/if} alt="{$name}" title="{$name}" />
+<img id="kt_image_to_crop" src="{$value}" alt="{$name}" title="{$name}" />
+{$options.init_width}
+{$options.init_height}
+<script type="text/javascript">
+jQuery(function () {ldelim}
+    //TODO: Draw attributes and config options from widget attributes
+    //jQuery('#kt_image_to_crop').imgAreaSelect({ldelim} maxWidth: 200, maxHeight: 150, handles: true {rdelim});
+    //jQuery('#kt_image_to_crop').imgAreaSelect({ldelim} aspectRatio: '4:3', handles: true {rdelim});
+    jQuery('#kt_image_to_crop').imgAreaSelect({ldelim} 
+        x1: 0, 
+        y1: 0, 
+        x2: {$options.init_width},
+        y2: {$options.init_height},
+        handles: true
+    {rdelim});
+{rdelim});
+
+jQuery('#kt_image_to_crop').imgAreaSelect({ldelim}
+    onSelectEnd: function (img, selection) {ldelim}
+        jQuery('input[name="data[crop_x1]"]').val(selection.x1);
+        jQuery('input[name="data[crop_y1]"]').val(selection.y1);
+        jQuery('input[name="data[crop_x2]"]').val(selection.x2);
+        jQuery('input[name="data[crop_y2]"]').val(selection.y2);
+    {rdelim}
+{rdelim})
+</script>
