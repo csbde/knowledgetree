@@ -231,7 +231,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
         $logoFile = 'var'.DIRECTORY_SEPARATOR.'branding'.DIRECTORY_SEPARATOR.'logo'.DIRECTORY_SEPARATOR.$logoFileName;
         $ext = end(explode('.', end(explode(DIRECTORY_SEPARATOR, $logoFile))));
-        $type = $this->getMime($ext);
+        $type = $ext;
         
         $imageWidth = $this->getImageWidth($logoFile, $type);
         $imageHeight = $this->getImageHeight($logoFile, $type);
@@ -398,7 +398,9 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                 $this->errorRedirectToMain("The file you tried to upload is not supported.");
             }
         }
-
+        
+        $type = $ext; //GD Methods changed to accept extention as type
+        
         $logoFileName = 'logo_tmp_'.md5(Date('ymd-hms')).'.'.$ext; //Fighting the browser cache here
         $logoFile = $logoDir.DIRECTORY_SEPARATOR.$logoFileName;
 
@@ -439,6 +441,9 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
                 $logoFileNameCropped = 'logo_tmp_cropped_'.md5(Date('ymd-hms')).'.'.$ext; //Fighting the browser cache here
                 $logoFileCropped = $logoDir.DIRECTORY_SEPARATOR.$logoFileNameCropped;
+
+                $default->log->info($logoFileStretched);
+                $default->log->info($logoFileCropped);
 
                 //Creating stretched image                
                 $res = $this->scaleImage($logoFile, $logoFileStretched, $this->maxLogoWidth, $this->maxLogoHeight, $type, false, false);
@@ -510,6 +515,8 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
             return 'jfif-tbnl';
         case 'image/png':
             return 'png';
+        case 'image/x-png':
+            return 'png';
         case 'image/jpeg':
             return 'jpe';
         case 'image/jpeg':
@@ -542,7 +549,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
      *  - Supported images are jpeg, png  and gif
      *
      */
-    public function scaleImage( $origFile, $destFile, $width, $height, $type = 'image/jpeg', $scaleUp = false, $keepProportion = true) {
+    public function scaleImage( $origFile, $destFile, $width, $height, $type = 'jpg', $scaleUp = false, $keepProportion = true) {
         global $default;
         
         //Requires the GD library if not exit gracefully
@@ -552,21 +559,18 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         }
         
         switch($type) {
-            case 'image/jpeg':
+            case 'jpg':
                 $orig = imagecreatefromjpeg($origFile);
                 break;
-            case 'image/pjpeg':
-                $orig = imagecreatefromjpeg($origFile);
-                break;
-            case 'image/png':
+            case 'png':
                 $orig = imagecreatefrompng($origFile);
                 break;
-            case 'image/gif':
+            case 'gif':
                 $orig = imagecreatefromgif($origFile);
                 break;
             default:
                 //Handle Error
-                $default->log->error("Tried to scale an unsupported file type: $type");
+                $default->log->error("Tried to crop an unsupported file type: $type");
                 return false;
         }
 
@@ -600,21 +604,18 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
             imagecopyresampled($image, $orig, 0, 0, 0, 0, $image_x, $image_y, $orig_x, $orig_y);
 
             switch($type) {
-                case 'image/jpeg':
+                case 'jpg':
                     imagejpeg($image, $destFile);
                     break;
-                case 'image/pjpeg':
-                    imagejpeg($image, $destFile);
-                    break;
-                case 'image/png':
+                case 'png':
                     imagepng($image, $destFile);
                     break;
-                case 'image/gif':
+                case 'gif':
                     imagegif($image, $destFile);
                     break;
                 default:
                     //Handle Error
-                    $default->log->error("Tried to scale an unsupported file type: $type");
+                    $default->log->error("Tried to crop an unsupported file type: $type");
                     return false;
             }
 
@@ -700,23 +701,21 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         }
         
         switch($type) {
-            case 'image/jpeg':
+            case 'jpg':
                 $orig = imagecreatefromjpeg($origFile);
                 break;
-            case 'image/pjpeg':
-                $orig = imagecreatefromjpeg($origFile);
-                break;
-            case 'image/png':
+            case 'png':
                 $orig = imagecreatefrompng($origFile);
                 break;
-            case 'image/gif':
+            case 'gif':
                 $orig = imagecreatefromgif($origFile);
                 break;
             default:
                 //Handle Error
-                $default->log->error("Tried to determine crop for an unsupported file type: $type");
+                $default->log->error("Tried to crop an unsupported file type: $type");
                 return false;
         }
+
 
         if($orig) {
             /*
@@ -753,21 +752,18 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         }
         
         switch($type) {
-            case 'image/jpeg':
+            case 'jpg':
                 $orig = imagecreatefromjpeg($origFile);
                 break;
-            case 'image/pjpeg':
-                $orig = imagecreatefromjpeg($origFile);
-                break;
-            case 'image/png':
+            case 'png':
                 $orig = imagecreatefrompng($origFile);
                 break;
-            case 'image/gif':
+            case 'gif':
                 $orig = imagecreatefromgif($origFile);
                 break;
             default:
                 //Handle Error
-                $default->log->error("Tried to determine crop for an unsupported file type: $type");
+                $default->log->error("Tried to crop an unsupported file type: $type");
                 return false;
         }
 
@@ -802,21 +798,18 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         }
         
         switch($type) {
-            case 'image/jpeg':
+            case 'jpg':
                 $orig = imagecreatefromjpeg($origFile);
                 break;
-            case 'image/pjpeg':
-                $orig = imagecreatefromjpeg($origFile);
-                break;
-            case 'image/png':
+            case 'png':
                 $orig = imagecreatefrompng($origFile);
                 break;
-            case 'image/gif':
+            case 'gif':
                 $orig = imagecreatefromgif($origFile);
                 break;
             default:
                 //Handle Error
-                $default->log->error("Tried to determine crop for an unsupported file type: $type");
+                $default->log->error("Tried to crop an unsupported file type: $type");
                 return false;
         }
 
@@ -842,7 +835,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
      *  - Supported images are jpeg, png  and gif
      *
      */
-    public function cropImage( $origFile, $destFile, $x1, $y1, $x2, $y2, $type = 'image/jpeg', $scaleUp = true) {
+    public function cropImage( $origFile, $destFile, $x1, $y1, $x2, $y2, $type = 'jpg', $scaleUp = true) {
         global $default;
 
         $width = $x2 - $x1;
@@ -855,16 +848,13 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         }
         
         switch($type) {
-            case 'image/jpeg':
+            case 'jpg':
                 $orig = imagecreatefromjpeg($origFile);
                 break;
-            case 'image/pjpeg':
-                $orig = imagecreatefromjpeg($origFile);
-                break;
-            case 'image/png':
+            case 'png':
                 $orig = imagecreatefrompng($origFile);
                 break;
-            case 'image/gif':
+            case 'gif':
                 $orig = imagecreatefromgif($origFile);
                 break;
             default:
@@ -885,16 +875,13 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
             //imagecopyresized($canvas, $piece, 0,0, $cropLeft, $cropHeight,$newwidth, $newheight, $width, $height);
 
             switch($type) {
-                case 'image/jpeg':
+                case 'jpg':
                     imagejpeg($image, $destFile);
                     break;
-                case 'image/pjpeg':
-                    imagejpeg($image, $destFile);
-                    break;
-                case 'image/png':
+                case 'png':
                     imagepng($image, $destFile);
                     break;
-                case 'image/gif':
+                case 'gif':
                     imagegif($image, $destFile);
                     break;
                 default:
