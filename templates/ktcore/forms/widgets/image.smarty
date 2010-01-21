@@ -1,22 +1,12 @@
 {if $options.has_div_border}
-<style>
-.jq_select_image {
-    float: left;
-    border: {$options.div_border};
-    margin-right: 5px;
-    padding: 0px;
-    display:inline;
-    height:70px;
-}
-</style>
 <fieldset>
  <field>
     <div style="float: left;
     border: {$options.div_border};
     margin-right: 5px;
-    padding: 0px;
+    padding: 10px;
     display:inline;
-    height:70px;">
+    height:50px;">
 {/if}
 
     <img {if $has_id} id="{$id}" {/if} {if $has_value} src="{$value}"{/if} alt="{$name}" title="{$name}" {if $options.has_width} width="{$options.width}" {/if} {if $options.has_height} height="{$options.height}" {/if}/>

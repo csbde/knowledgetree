@@ -308,6 +308,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     'label' => _kt('Apply Logo'),
                     'submit_label' => _kt('Apply'),
                     'action' => 'apply',
+                    'cancel_action' => 'main',
                     'fail_action' => 'main',
                     'encoding' => 'multipart/form-data',
                     'context' => &$this,
@@ -329,7 +330,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     'value' => $logoFileName,
                     'width' => $this->maxLogoWidth,
                     'height' => $this->maxLogoHeight,
-                    'widgetwidth' => 20
+                    'div_border' => '1px solid #cccccc'
                     ));
 
         // Adding the Hidden FileName Input String
