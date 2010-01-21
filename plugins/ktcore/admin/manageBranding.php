@@ -103,7 +103,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     'description' => _kt("The logo's dimensions should be 313px width by 50px height. If your logo doesn't fit these dimensions, you can choose to crop or scale it."),
                     ));
         
-        $aVocab['crop'] = 'Crop - Cut out a selection';
+        //$aVocab['crop'] = 'Crop - Cut out a selection';
         $aVocab['scale'] = 'Scale - Stretch or Shrink to fit';
         $aVocab['nothing'] = 'Don\'t do anything <span class="descriptiveText">(My image has the correct dimensions)</span>';
         

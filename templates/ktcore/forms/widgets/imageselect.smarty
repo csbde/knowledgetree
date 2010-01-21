@@ -4,8 +4,9 @@
 
         {foreach key=id item=src from=$value}
 
+        <div class="jq_select_image">
 	    <img class="kt_image_select" id="kt_image_select_{$id}" src="{$src}" border="0"/>
-        
+        </div>
         <script type="text/javascript">
             var toggle_{$id} = 1;
             var selected = '';

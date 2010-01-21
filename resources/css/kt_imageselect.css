@@ -9,3 +9,11 @@
     border: 10px solid white;
 }
 
+.jq_select_image {
+    float: left;
+    border: 1px solid #cccccc;
+    margin-right: 5px;
+    padding: 0px;
+    display:inline;
+    height:70px;
+}
