@@ -910,7 +910,11 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
     function do_selectLogo(){
         global $default;
 
-        $tmpLogoFileName = end(explode(DIRECTORY_SEPARATOR, $_REQUEST['kt_imageselect']));
+        if ($_REQUEST['kt_imageselect'] != '') {
+            $tmpLogoFileName = end(explode(DIRECTORY_SEPARATOR, $_REQUEST['kt_imageselect']));
+        } else {
+            $tmpLogoFileName = end(explode(DIRECTORY_SEPARATOR, $_REQUEST['data']['kt_imageselect']));
+        }
         
         $form = $this->getApplyLogoForm($tmpLogoFileName);
         return $form->render();
