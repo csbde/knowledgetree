@@ -453,11 +453,11 @@ class AdvancedSingleSelectionColumn extends AdvancedSelectionColumn {
 
 class AdvancedWorkflowColumn extends AdvancedColumn {
     var $namespace = 'ktcore.columns.workflow_state';
-    var $sortable = false;
-
+    var $folder_sort_column = null;
+    
     function AdvancedWorkflowColumn() {
         $this->label = _kt("Workflow State");
-        $this->sortable = false;
+		$this->sortable = true;
     }
 
     // use inline, since its just too heavy to even _think_ about using smarty.
@@ -477,6 +477,13 @@ class AdvancedWorkflowColumn extends AdvancedColumn {
                 htmlentities($oWorkflow->getName(), ENT_NOQUOTES, 'UTF-8')
             );
         }
+    }
+    
+    function addToDocumentQuery() {
+            return array(null,
+            null,
+            "DM.workflow_state_id" // Not a standard search column, so override.
+        );
     }
 }
 

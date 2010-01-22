@@ -20,6 +20,8 @@ class client_service{
 		$this->KT=&$KT_Instance;
 		$this->AuthInfo=&$AuthInfo;
 		$this->Request=&$Request;
+		
+		$this->Response->location='client service';
 	}
 	
 	protected function addResponse($name,$value){
@@ -42,6 +44,18 @@ class client_service{
 		return $var;
 	}
 	
+	protected function logTrace($location=NULL,$message=NULL){
+		Clienttools_Syslog::logTrace($this->AuthInfo['user'],'SERVICE - '.$location,$message);
+	}
+	
+	protected function logError($location=NULL,$detail=NULL,$err=NULL){
+		Clienttools_Syslog::logError($this->AuthInfo['user'],'SERVICE - '.$location,$detail,$err);
+	}
+	
+	protected function logInfo($location=NULL,$message=NULL,$debugData=NULL){
+		Clienttools_Syslog::logInfo($this->AuthInfo['user'],'SERVICE - '.$location,$message,$debugData);
+	}
+	
 	protected function checkPearError($obj,$errMsg,$debug=NULL,$response=NULL){
 		if (PEAR::isError($obj)){
 			if($response===NULL)$response=array('status_code' => 1);
@@ -51,6 +65,19 @@ class client_service{
     		return false;
     	}
     	return true;	
+	}
+	
+	/**
+	 * Forces parameter to boolean.
+	 * $isTrue array contains a list of values that are recognized as 'true' values in boolean
+	 */
+	protected function bool($var=NULL){
+		$ret=false;
+		$isTrue=Array('true','0','yes');
+		if(is_bool($var))$ret=$var;
+		$var=strtolower(trim(($var.'')));
+		$ret=(in_array($var,$isTrue));
+		return $ret;
 	}
 	
 }

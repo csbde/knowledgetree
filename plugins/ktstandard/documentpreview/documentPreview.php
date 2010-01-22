@@ -311,7 +311,7 @@ class DocumentPreview {
             include_once(KT_DIR . '/plugins/thumbnails/thumbnails.php');
             $thumbnailer = new ThumbnailViewlet();
             $thumbnailer->setDocument($this->_oDocument);
-            $thumbnailDisplay = $thumbnailer->renderThumbnail($this->_IDocId);
+            $thumbnailDisplay = $thumbnailer->renderThumbnail($this->_IDocId, null, false);
             if ($thumbnailDisplay != '')
             {
         		$sInfo = "<div>$thumbnailDisplay</div>";

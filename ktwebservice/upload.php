@@ -9,7 +9,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -70,6 +70,11 @@ if (!array_key_exists('action',$_POST))
 	respond(2, 'Action not specified.');
 }
 
+$unique_file_id = false;
+if(array_key_exists('unique_file_id', $_POST)){
+    $unique_file_id = $_POST['unique_file_id'];
+}
+
 $action = $_POST['action'];
 if (!in_array($action,array('C','A')))
 {
@@ -77,9 +82,14 @@ if (!in_array($action,array('C','A')))
 }
 
 //$session_id = $_POST['session_id'];
-if (count($_FILES) == 0)
+$file_count = count($_FILES);
+if ($file_count == 0)
 {
 	respond(5, 'No files have been uploaded.');
+}
+
+if($file_count > 1 && $unique_file_id !== false){
+    respond(5, 'Only one file can be uploaded with a unique file id.');
 }
 
 if ($action == 'C')
@@ -120,7 +130,7 @@ foreach($_FILES as $key =>$file)
     $extra = $filename.'-'.$tempfile.'-'.$error;
 	if ($error == UPLOAD_ERR_OK)
 	{
-		$result = $upload_manager->uploaded($filename, $tempfile, $action);
+		$result = $upload_manager->uploaded($filename, $tempfile, $action, $unique_file_id);
 		if (PEAR::isError($result))
 		{
 			$lastMessage=$result->getMessage();

@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -69,6 +69,8 @@ class ManageCleanupDispatcher extends KTAdminDispatcher {
 
     function do_main()
     {
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Storage Verification'));
+        $this->oPage->setTitle(_kt('Document Storage Verification'));
 
     	 $oForm = new KTForm;
         $oForm->setOptions(array(
@@ -82,7 +84,12 @@ class ManageCleanupDispatcher extends KTAdminDispatcher {
     }
 
 
-    function do_verify() {
+    function do_verify()
+    {
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Document Storage Verification'));
+        $this->oPage->setTitle(_kt('Document Storage Verification'));
+        $this->oPage->setBreadcrumbDetails(_kt('verify'));
+
         global $aFoldersToRemove;
         global $aFilesToRemove;
         global $aRepoDocumentProblems;

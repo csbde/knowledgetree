@@ -380,28 +380,6 @@ class luceneValidation extends serviceValidation {
     		}
     		$javaExecutable = $this->java;
     	}
-    	if(WINDOWS_OS) {
-    		$cmd = "\"$javaExecutable\" -cp \"".SYS_DIR.";\" javaVersion \"".$this->outputDir."outJV\""." \"".$this->outputDir."outJVHome\"";
-    		$func = OS."ReadJVFromFile";
-    		if($this->$func($cmd)) {
-    			return true;
-    		} else {
-    			$this->java = $this->util->useZendJava(); // Java not installed
-    			$javaExecutable = $this->java;
-    			$cmd = "\"$javaExecutable\" -cp \"".SYS_DIR.";\" javaVersion \"".$this->outputDir."outJV\""." \"".$this->outputDir."outJVHome\"";
-    			if($this->$func($cmd)) {
-    				return true;
-    			}
-    		}
-    	} else {
-    		$cmd = "\"$javaExecutable\" -version > ".$this->outputDir."outJV 2>&1 echo $!";
-    		$func = OS."ReadJVFromFile";
-    		if($this->$func($cmd)) {
-    			return true;
-    		} else {
-				// TODO: Not sure
-    		}
-    	}
 
 		$this->javaVersionInCorrect();
 		$this->javaCheck = 'cross';

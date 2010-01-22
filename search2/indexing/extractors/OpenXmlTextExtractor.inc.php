@@ -118,6 +118,13 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 		}
 	}
 
+	protected function filter($text)
+	{
+        $tidy = tidy_parse_string($text);
+        $text = $tidy->repairString($text);
+        return preg_replace("@(</?[^>]*>)+@", " ", $text).' ';
+	}
+
 	/**
 	 * The open xml file comprises various file with different content. This function identifies
 	 * which of those content types are worth indexing.
@@ -193,7 +200,7 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 		$xml_content = file_get_contents($filename);
 
 		// once we have the content, we can cleanup!
-		@unlink($filename);
+		//@unlink($filename);
 
 		// parse the file
 		$parser = xml_parser_create();
@@ -211,27 +218,11 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 	 */
 	private function getContent($filename)
 	{
-		$config = KTConfig::getSingleton();
-
 		if (substr($filename,0,1) == '/')
 		{
 			$filename = substr($filename,1);
 		}
 		$filename = str_replace('\\','/',$filename);
-
-		/*
-		// Removing the unzip command as the whole document gets unzipped at the start
-
-		$cmd = '"' .$this->unzip . '"' . ' ' . str_replace(
-			array('{source}','{part}', '{target_dir}'),
-			array($this->sourcefile, $filename,$this->openxml_dir), $this->unzip_params);
-
-		if (!$this->exec($cmd))
-		{
-			$this->output = _kt('Failed to execute command: ') . $cmd;
-			return false;
-		}
-		*/
 
 		$filename = $this->openxml_dir . "/$filename";
 		if (!file_exists($filename))
@@ -240,13 +231,32 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 			return false;
 		}
 
-		$content = file_get_contents($filename);
+		$size = filesize($filename);
+		$content = '';
 
+		// Large xml files cause problems - chunking the file to reduce problems
+		// The preg_replace causes segmentation faults on files with bad xml and on
+		// the chunks - using tidy to clean up the tags
+		if($size > 10000){
+		    $fp = fopen($filename, 'rb');
+
+		    while (!feof($fp)){
+		        $batch = fread($fp, $size);
+		        $content .= $this->filter($batch);
+		    }
+    		fclose($fp);
+		}else{
+		    $content = file_get_contents($filename);
+
+		    if(!empty($content)){
+                $content = $this->filter($batch);
+    		}
+		}
+
+		/* Removing cleanup - the whole directory is deleted at the end
 		// cleanup
 		@unlink($filename);
-
-		$content = preg_replace ("@(</?[^>]*>)+@", " ", $content);
-
+		*/
 		return $content;
 	}
 
@@ -301,7 +311,7 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 
 			if ($content !== false)
 			{
-				$result = file_put_contents($this->targetfile, $this->filter($content));
+				$result = file_put_contents($this->targetfile, $content);
 
 				if ($result === false)
 				{

@@ -1,9 +1,0 @@
-/var/lib/knowledgetree
-/var/lib/knowledgetree/Documents
-/var/lib/knowledgetree/indexes
-/etc/knowledgetree/config.ini
-/var/log/knowledgetree
-/var/tmp/knowledgetree
-/var/tmp/knowledgetree/proxies
-/var/tmp/knowledgetree/uploads
-/var/tmp/knowledgetree/cache

@@ -1,0 +1,17 @@
+<MSDeploy.iisApp> 
+	<!-- Copies content from path into the destination specified in parameters.xml and marks as an app in IIS 5.1, 6.0 and 7.x -->
+	<iisApp path="knowledgetree"/>
+	
+	<!-- Set NTFS ACLs on the destination specified in parameters.xml -->
+	<setAcl path="var" setAclResourceType="Directory" setAclAccess="Modify" setAclUser="IUSR"/>
+	<setAcl path="config/cache-path" setAclResourceType="File" setAclAccess="Modify" setAclUser="IUSR"/>
+	<setAcl path="config/config-path" setAclResourceType="File" setAclAccess="Modify" setAclUser="IUSR"/>
+	<setAcl path="config/config.ini" setAclResourceType="File" setAclAccess="Modify" setAclUser="IUSR"/>
+	<setAcl path="bin/luceneserver/KnowledgeTreeIndexer.properties" setAclResourceType="File" setAclAccess="Modify" setAclUser="IUSR"/>
+	<setAcl path="var" setAclResourceType="Directory" setAclAccess="Modify" setAclUser="IIS_IUSRS"/>
+	<setAcl path="config/cache-path" setAclResourceType="File" setAclAccess="Modify" setAclUser="IIS_IUSRS"/>
+	<setAcl path="config/config-path" setAclResourceType="File" setAclAccess="Modify" setAclUser="IIS_IUSRS"/>
+	<setAcl path="config/config.ini" setAclResourceType="File" setAclAccess="Modify" setAclUser="IIS_IUSRS"/>
+	<setAcl path="bin/luceneserver/KnowledgeTreeIndexer.properties" setAclResourceType="File" setAclAccess="Modify" setAclUser="IIS_IUSRS"/>
+	<setAcl path="var" setAclResourceType="Directory" setAclAccess="ReadAndExecute" setAclUser="NETWORK SERVICE"/>
+</MSDeploy.iisApp>

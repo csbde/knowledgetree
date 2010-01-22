@@ -3,6 +3,7 @@
 class auth extends client_service {
 
 	public function login(){
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$params=$this->AuthInfo;
 		
 		$username=$params['user'];
@@ -71,6 +72,7 @@ class auth extends client_service {
 	}
 	
 	public function japiLogin(){
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		global $default;
 		
        	$user=$this->KT->get_user_object_by_username($this->AuthInfo['user']);
@@ -82,6 +84,7 @@ class auth extends client_service {
 	}
 	
 	public function pickup_session(){
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$params=$this->AuthInfo;
 		$app_type=$params['appType'];
 		$session_id=$params['session'];
@@ -98,6 +101,7 @@ class auth extends client_service {
 
 
 	public function ping(){
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		global $default;
        	$user=$this->KT->get_user_object_by_username($this->AuthInfo['user']);
        	$versions=$this->handler->getServerVersions();
@@ -120,19 +124,35 @@ class auth extends client_service {
 	}
 
     function logout($params){
+    	$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$params=$this->AuthInfo;
 		$app_type=$params['appType'];
 		$session_id=$params['session'];
 		$ip=$_SERVER['REMOTE_ADDR'];
 
-		$session = $this->KT->get_active_session($session_id, $ip, $app_type);
+		$session=$this->KT->get_session();
+		$this->logInfo((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Logout Session Object (From KT)',$session);
+		
+		if(get_class($session)!='KTAPI_UserSession'){
+			$session = $this->KT->get_active_session($session_id, $ip, $app_type);
+		}
+		$this->logInfo((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Logout Session Object (To Logout)',$session);
 		
 		if (PEAR::isError($session)){
             return false;
         }
 	
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Proceeding With Logout');
+    	$newSessId=md5(session_id());
     	$session->logout();
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'KTAPI session logout requested');
+    	session_id($newSessId);
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'New SessionID Requested from PHP (Redundant Security)['.session_id().']');
+    	$this->Response->setStatus('session_id',$newSessId);
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'New SessionID set in response status ['.$newSessId.']');
     	$this->setResponse(array('logout'=>true));
+    	session_destroy();
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'PHP Session Destroyed');
     	return true;
     }
 

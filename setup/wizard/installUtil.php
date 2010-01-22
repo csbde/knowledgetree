@@ -1071,11 +1071,11 @@ class InstallUtil {
             }
         }
         if (substr($sDst, 0, strlen($sSrc)) === $sSrc) {
-            return false; //PEAR::raiseError(_kt("Destination of move is within source"));
+            return false;
         }
         $hSrc = @opendir($sSrc);
         if ($hSrc === false) {
-            return false; //PEAR::raiseError(sprintf(_kt("Could not open source directory: %s"), $sSrc));
+            return false;
         }
         @mkdir($sDst, 0777);
         while (($sFilename = readdir($hSrc)) !== false) {
@@ -1112,34 +1112,47 @@ class InstallUtil {
             }
             $aSrcStat = stat($sSrc);
             if ($aSrcStat === false) {
-                return false; //PEAR::raiseError(sprintf(_kt("Couldn't stat source file: %s"), $sSrc));
+                return false;
             }
             $aDstStat = stat(dirname($sDst));
             if ($aDstStat === false) {
-                return false; //PEAR::raiseError(sprintf(_kt("Couldn't stat destination location: %s"), $sDst));
+                return false;
             }
             if ($aSrcStat["dev"] === $aDstStat["dev"]) {
                 $res = @rename($sSrc, $sDst);
                 if ($res === false) {
-                    return false; //PEAR::raiseError(sprintf(_kt("Couldn't move file to destination: %s"), $sDst));
+                    return false;
                 }
                 return;
             }
             $res = @copy($sSrc, $sDst);
             if ($res === false) {
-                return false; //PEAR::raiseError(sprintf(_kt("Could not copy to destination: %s"), $sDst));
+                return false;
             }
             $res = @unlink($sSrc);
             if ($res === false) {
-                return false; //PEAR::raiseError(sprintf(_kt("Could not remove source: %s"), $sSrc));
+                return false;
             }
         } else {
             $res = @rename($sSrc, $sDst);
             if ($res === false) {
-                return false; //PEAR::raiseError(sprintf(_kt("Could not move to destination: %s"), $sDst));
+                return false;
             }
         }
     }
-    // }}}
+    
+    public function resolveTempDir() {
+        $dir = '';
+        if (!WINDOWS_OS) {
+            $dir='/tmp/kt-db-backup';
+        } else {
+            $dir='c:/kt-db-backup';
+        }
+
+        if (!is_dir($dir)) {
+                mkdir($dir);
+        }
+        return $dir;
+    }
 }
 ?>

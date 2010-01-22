@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -227,7 +227,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 		return $detail;
 	}
-    
+
 	/**
 	 * This clears the global object cache of the folder class.
 	 *
@@ -545,12 +545,14 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if (strpos($what,'F') !== false)
 		{
 
-			$folder_children = Folder::getList(array('parent_id = ?', $this->folderid));
+		    $aOptions['orderby'] = 'name';
+			$folder_children = Folder::getList(array('parent_id = ?', $this->folderid), $aOptions);
 
 			foreach ($folder_children as $folder)
 			{
-				if(KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder) ||
-				    KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $folder))
+			
+				if(KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder) 
+				    /*|| KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $folder)*/)
 				{
 					if ($depth-1 > 0)
 					{
@@ -798,7 +800,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 		return $contents;
 	}
-    
+
     /**
 	 * Get's a folder listing, recursing to the maximum depth.
 	 * Derived from the get_listing function.
@@ -836,7 +838,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if (strpos($what,'F') !== false)
 		{
 
-			$folder_children = Folder::getList(array('parent_id = ?', $this->folderid));
+		    $aOptions['orderby'] = 'name';
+			$folder_children = Folder::getList(array('parent_id = ?', $this->folderid), $aOptions);
 
 			foreach ($folder_children as $folder)
 			{
@@ -903,9 +906,9 @@ class KTAPI_Folder extends KTAPI_FolderItem
 								$array['item_type'] = "S";
 							}
 						}
-                        
+
 						$array['items']=$items;
-						if($wsversion<3 || (strpos($what,'F') !== false && !$folder->isSymbolicLink()) || 
+						if($wsversion<3 || (strpos($what,'F') !== false && !$folder->isSymbolicLink()) ||
                            ($folder->isSymbolicLink() && strpos($what,'S') !== false)) {
 							$contents[] = $array;
 						}

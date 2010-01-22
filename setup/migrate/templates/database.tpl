@@ -118,6 +118,16 @@
 	<?php } ?>
 </p>
 <br/>
+<p class="description">
+	Manually perform a KnowledgeTree 3.6.1 database export
+</p>
+<p class="disclaimer">
+<?php
+if(isset($error['manual'])) {
+					echo $error['manual'];
+				}
+?>
+</p>
 <?php
 	}
 	?>

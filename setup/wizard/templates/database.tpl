@@ -21,7 +21,6 @@
 		$input_size = '45';
 		$align = 'left';
 	?>
-<!--	TODO: Different Databases-->
 <?php if($state != 'edit') { ?>
 	    <tr><td>Your current database type is: </td>
 		<?php if($dtypes) {
@@ -86,7 +85,6 @@
 	    <input type="button" name="Next" value="Next" onclick="javascript:{w.showStep(1, 'n');}" class="button_next"/>
 	    <?php } ?>
 </div>
-
 <!-- STEP 2 of the database configuration - Admin user password settings -->
 <div id="database" class="step2" style="display:none;">
 <div class="description">
@@ -114,7 +112,6 @@ An administrative user is required for creating tables within the database.
 	    <input type="button" name="Previous" value="Previous" onclick="javascript:{w.showStep(2, 'p');}" class="button_previous"/>
 	    <input type="button" name="Next" value="Next" onclick="javascript:{w.showStep(2, 'n');}" class="button_next"/>
 </div>
-
 <!-- STEP 3 of the database configuration - default user password settings -->
 <div id="database" class="step3" style="display:none;">
 <div class="description">

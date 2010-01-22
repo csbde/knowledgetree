@@ -1,0 +1,16 @@
+<h2><span class="warning" />{$head}</h2>
+<p>&nbsp;</p>
+<div id="download_form">
+    <a href="{$downloadLink}" onclick="win.destroy();">{$downloadText}</a>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<div class="form_actions">
+    <a href="#" onclick="javascript: {$cancelAction}">{i18n}Cancel{/i18n}</a>
+    &nbsp;
+    <a href="#" onclick="javascript: {$closeAction}">{i18n}Close{/i18n}</a>
+</div>
+<div id="process_msg" style="visibility: hidden;">
+    {i18n}Starting download, please wait{/i18n}...
+</div>
+<input type="hidden" name="exportcode" id="exportcode" value="{$exportCode}" />

@@ -89,8 +89,10 @@ class PreviewColumn extends AdvancedColumn {
             // hook into thumbnail plugin to get display for thumbnail
             include_once(KT_DIR . '/plugins/thumbnails/thumbnails.php');
             $thumbnailer = new ThumbnailViewlet();
-            $thumbnailwidth = $thumbnailer->get_width($iDocumentId);
-            $width += $thumbnailwidth + 30;
+            $thumbWidth = $thumbnailer->getDisplaySize($iDocumentId);
+            if ($thumbWidth > 0) {
+                $width += $thumbWidth + 30;
+            }
         }
 
         //$link = '<a name = "ktP'.$iDocumentId.'" href = "#ktP'.$iDocumentId.'" class="ktAction ktPreview" id = "box_'.$iDocumentId.'" ';

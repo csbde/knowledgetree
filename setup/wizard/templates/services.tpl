@@ -3,9 +3,7 @@
 <?php } else { ?>
 	<form action="index.php?step_name=<?php echo $step_name; ?>" method="post" id="_<?php echo $step_name; ?>">
 <?php } ?>
-
 	<p class="title">Checking Service Dependencies</p>
-
 	<p class="description">
 	The wizard will review your system to determine whether you can run KnowledgeTree background services. <br/>Once the scan is completed, you&rsquo;ll see whether your system has met the requirements or whether there are areas you need to address.
 	</p>
@@ -86,9 +84,7 @@
 				<div id="option4" class="onclick" onclick="javascript:{w.toggleClass('java_details', 'option4');}"><?php echo $details; ?></div>
 				<div class="java_details" style="display:<?php echo $display; ?>">
 			<?php } ?>
-<!--			<p class="description">-->
 			The Java version must be higher than 1.5.
-<!--			</p>-->
 			<table>
 				<tr>
 					<td> <span class='<?php echo $step_vars['java']['class']; ?>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> </td>
@@ -167,11 +163,9 @@
 			<?php } ?>
 			<?php } ?>
 		<?php } else { ?>
-<!--			<p class="description">-->
 			<?php if($servicesValidation) { ?>
 				All services are already installed.
 			<?php } ?>
-<!--			</p>-->
 		<?php } ?>
 		<?php if($servicesValidation) { ?>
 		<h3><?php echo "<span class='{$serviceCheck}'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"; ?>Services Check</h3>
@@ -187,9 +181,7 @@
 			<div id="option6" class="onclick" onclick="javascript:{w.toggleClass('service_details', 'option6');}"><?php echo $details; ?></div>
 			<div class="service_details" style="display:<?php echo $display; ?>">
 		<?php } ?>
-<!--		<p class="description">-->
 		Preload Services if posibble.
-<!--		</p>-->
 		<table>
 		<?php
 		if($step_vars) {

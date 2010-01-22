@@ -3,20 +3,16 @@
 <?php } else { ?>
 <form id="registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="javascript:{ if(w.validateRegistration()) { w.sendRegistration() };return false;}">
 <?php } ?>
-
 	<p class="title">Registering KnowledgeTree</p>
-	<?php
-		//echo $sel_country;
-	?>
 	<p class="description">
-	Register your KnowledgeTree installation and receive the KnowledgeTree Drop Box for Windows software, a drag and drop tool that makes placing documents into KnowledgeTree even easier.
+		Register your KnowledgeTree installation and receive the KnowledgeTree Drop Box for Windows software, a drag and drop tool that makes placing documents into KnowledgeTree even easier.
 	<?php if(AJAX) { ?>
 		<a href='#' onclick='javascript:{w.getUrl("index.php?step_name=install", "content_container");}'>Skip Registration</a>
 	<?php } else { ?>
 		<a href="index.php?step_name=install">Skip Registration</a>
 	<?php } ?>
 	</p>
-	<!-- Hidden Fields -->
+<!-- Hidden Fields -->
 	<input type="hidden" id="sendAll" name="" value="" />
 	<input type="hidden" id="state" name="" />
 	<p class='disclaimer'>
@@ -36,7 +32,6 @@
 		        <td rowspan='<?php echo $rowspan; ?>' width='5%'>&nbsp;</td>
 		        <td rowspan='<?php echo $rowspan; ?>'> <?php echo $html->image('dropbox.png'); ?> </td>
 		    </tr>
-
 		    <tr>
 		        <td><label for='last'>Last Name</label></td>
 		        <td><input value="<?php echo $last_name; ?>" name='submitted[last_name]' id='last' size='<?php echo $input_width; ?>' style="float:left;"/></td>
@@ -59,7 +54,6 @@
 		                    	}
 
 		                    }
-
 		                    echo $str;
 		                ?>
 		            </select>
@@ -78,7 +72,6 @@
 		                        	$str .= "<option name='{$code}' value='{$industry}'>{$industry}</option>";
 		                    	}
 		                    }
-
 		                    echo $str;
 		                ?>
 		            </select>
@@ -104,11 +97,9 @@
 		        </td>
 		    </tr>
 		</table>
-
 		<input type='hidden' name='form_id' value='webform_client_form_242' />
 		<input type='hidden' name='op' value='Submit' />
 	</div>
-
 	<input type="submit" name="Previous" value="Previous" onclick="w.pClick()" class="button_previous"/>
 	<input type="submit" name="Next" value="Register" onclick="w.nClick()" class="button_next"/>
 </form>

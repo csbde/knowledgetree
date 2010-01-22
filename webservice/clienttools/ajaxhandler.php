@@ -37,10 +37,9 @@ class ajaxHandler{
 		}else{
 			$this->ret=new jsonResponseObject();
 		}
-		$this->log("[__construct]ENTERING PREPARATIONS");		
+		$this->ret->location='ajaxhandler';
 
 		$this->remoteIp = (getenv(HTTP_X_FORWARDED_FOR)) ?  getenv(HTTP_X_FORWARDED_FOR)  :  getenv(REMOTE_ADDR);
-		$this->log("[__construct]Remote IP determined as: {$this->remoteIp}");		
 
 		$noAuthRequests=is_array($noAuthRequests)?$noAuthRequests:split(',',(string)$noAuthRequests);
 		$this->registerNoAuthRequest($noAuthRequests);
@@ -49,15 +48,7 @@ class ajaxHandler{
 		$this->digestToken=isset($_GET['msgAuth'])?$_GET['msgAuth']:(isset($_POST['msgAuth'])?$_POST['msgAuth']:'');
 		$this->log("[__construct]DigestToken Found: {$this->digestToken}");		
 		
-		$this->ret->addDebug('Raw Request',$this->rawRequestObject);
-		$this->ret->addDebug('DigestToken Received',$this->digestToken);
-		$this->ret->addDebug('Remote IP',$this->remoteIp);
-		
-		
-		if($this->auth['session'])session_id($this->auth['session']);
-		$this->session=session_id();
-		$this->log("[__construct]Session Restarted as: {$this->session}");		
-		//		session_id('BLANK_SESSION');
+
 		
 		
 		
@@ -66,6 +57,13 @@ class ajaxHandler{
 		$this->req=new jsonWrapper($this->rawRequestObject);
 		$this->auth=$this->structArray('user,pass,passhash,appType,session,token,version',$this->req->jsonArray['auth']);
 		$this->request=$this->structArray('service,function,parameters',$this->req->jsonArray['request']);
+		
+		Clienttools_Syslog::logInfo('--','--','REQUESTING: '.$this->request['service'].'::'.$this->request['function'],$this->request);
+		
+
+		$this->ret->addDebug('Raw Request',$this->rawRequestObject);
+		$this->ret->addDebug('DigestToken Received',$this->digestToken);
+		$this->ret->addDebug('Remote IP',$this->remoteIp);
 
 		//Add additional parameters
 		$add_params=array_merge($_GET,$_POST);
@@ -78,6 +76,13 @@ class ajaxHandler{
 		$this->ret->setRequest($this->req->jsonArray);
 		$this->ret->setTitle($this->request['service'].'::'.$this->request['function']);
 		$this->ret->setDebug('Server Versions',$this->getServerVersions());
+		
+		$this->ret->addDebug('Session From Server: ',$this->auth);
+//		if($this->auth['session'])session_id($this->auth['session']);
+		$this->session=session_id();
+		$this->ret->addDebug('Session in PHP: ',$this->session);
+		$this->log("[__construct]Session Restarted as: {$this->session}");		
+		//		session_id('BLANK_SESSION');
 		
 		
 		

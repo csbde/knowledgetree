@@ -70,6 +70,12 @@ class serviceHelper{
 	    }
 	
 	    return sprintf(($sys['prefix'][$i]=='B'?'%01d %s':$retstring), $size, $sys['prefix'][$i]);
-	}	
+	}
+	
+	function size_kb($size = NULL){
+		$size=$size/1024;
+		$size=sprintf("%0.2f",$size).' KB';
+		return $size;
+	}
 }
 ?>

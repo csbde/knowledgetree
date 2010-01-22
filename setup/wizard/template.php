@@ -75,7 +75,6 @@ class Template
 	*/
     public function set($name, $value)
 	{
-		//if(is_a($value, 'Template')) {
 		$class = 'Template';
 		$isA = $value instanceof $class;
 		if($isA) {

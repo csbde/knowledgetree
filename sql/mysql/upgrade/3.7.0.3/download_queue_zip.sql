@@ -1,0 +1,1 @@
+ALTER TABLE download_queue MODIFY object_type ENUM ('document', 'folder', 'zip') NOT NULL DEFAULT 'folder';

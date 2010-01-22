@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: KnowledgeTree 3.7\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-11-06 07:51+0200\n"
-"PO-Revision-Date: 2009-11-09 17:50+0200\n"
-"Last-Translator: Damien <damien@knowledgetree.com>\n"
+"PO-Revision-Date: 2010-01-19 12:02+0200\n"
+"Last-Translator: \n"
 "Language-Team: Nuno Rodrigues <nuno.rodrigues@searching4more.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -324,7 +324,7 @@ msgstr "%d valores para o Campo Principal não foram atribuídos para comportame
 #: search2/search/expr.inc.php:2090
 #, php-format
 msgid "%s"
-msgstr ""
+msgstr "%s"
 
 #: plugins/ktcore/admin/workflowsv2.php:1695
 #: plugins/ktcore/admin/workflowsv2.php:1917
@@ -349,9 +349,9 @@ msgid "%s could not be made \"live\"."
 msgstr "%s não foi(ram) feito(s) \"live\"."
 
 #: plugins/ktcore/admin/configSettings.php:251
-#, fuzzy, php-format
+#, php-format
 msgid "%s from %s to %s"
-msgstr "Renomeado a partir de \"%s\" para \"%s\""
+msgstr "%s de %s para %s"
 
 #: lib/groups/GroupUtil.php:420
 #, php-format
@@ -659,7 +659,7 @@ msgstr "Uma mensagem para aqueles que receberem o documento"
 
 #: i18n/templates.c:4541
 msgid "A newer version of this document is available. Would you like to open it instead?"
-msgstr ""
+msgstr "A versão mais recente deste documento está disponível. Deseja abri-lo em vez disso?"
 
 #: lib/validation/dispatchervalidation.inc.php:264
 msgid "A non-numeric value was given"
@@ -1345,9 +1345,9 @@ msgid "Alert Triggered for "
 msgstr "Alerta Despoletado para"
 
 #: plugins/commercial/alerts/alerts.php:611
-#, fuzzy, php-format
+#, php-format
 msgid "Alert cannot be found: %s"
-msgstr "Alerta não consegue ser encontrado:"
+msgstr "Alerta não consegue ser encontrado: %s"
 
 #: plugins/commercial/alerts/alerts.php:484
 msgid "Alert cleared."
@@ -1594,9 +1594,9 @@ msgid "An error occured, and no error handlers were configured."
 msgstr "Ocorreu um erro e nenhum manipulador de erro foi configurado."
 
 #: plugins/ktstandard/PDFGeneratorAction.php:367
-#, fuzzy, php-format
+#, php-format
 msgid "An error occurred generating the PDF - please contact the system administrator. %s"
-msgstr "Ocorreu um erro ao gerar o PDF - por favor contacte o administrador do sistema."
+msgstr "Ocorreu um erro ao gerar o PDF - por favor contacte o administrador do sistema. %s"
 
 #: plugins/ktstandard/PDFGeneratorAction.php:308
 msgid "An error occurred generating the PDF - please contact the system administrator. Python binary not found."
@@ -1969,9 +1969,9 @@ msgid "Authentication provider"
 msgstr "Provedor de autenticação"
 
 #: lib/authentication/authenticationproviderregistry.inc.php:93
-#, fuzzy, php-format
+#, php-format
 msgid "Authentication provider class does not exist. %s "
-msgstr "Não existe a provider class de autenticação."
+msgstr "Não existe a provider class de autenticação. %s"
 
 #: i18n/templates.c:2771
 msgid "Authentication source"
@@ -2184,14 +2184,14 @@ msgid "Bulk Upload failed"
 msgstr "Carregamento em Massa falhou"
 
 #: plugins/ktcore/folder/BulkUpload.php:149
-#, fuzzy, php-format
+#, php-format
 msgid "Bulk Upload failed. Archive is not an accepted format. Accepted formats are: %s"
-msgstr "Falhou o carregamento massivo. O arquivo não é um formato aceitável. Formatos aceitáveis são:"
+msgstr "Falhou o carregamento massivo. O arquivo não é um formato aceitável. Formatos aceitáveis são: %s"
 
 #: plugins/multiselect/BulkUpload.php:372
-#, fuzzy, php-format
+#, php-format
 msgid "Bulk Upload failed. Archive is not an accepted format. Accepted formats are: .%s"
-msgstr "Falhou o carregamento massivo. O arquivo não é um formato aceitável. Formatos aceitáveis são:"
+msgstr "Falhou o carregamento massivo. O arquivo não é um formato aceitável. Formatos aceitáveis são: %s"
 
 #: plugins/ktcore/folder/BulkUpload.php:161
 #: plugins/multiselect/BulkUpload.php:393
@@ -3365,9 +3365,9 @@ msgid "Could not create destination directory: %s"
 msgstr "Não foi possível criar directório destino: %s"
 
 #: lib/storage/ondiskhashedstoragemanager.inc.php:167
-#, fuzzy, php-format
+#, php-format
 msgid "Could not create directory for storage: %s"
-msgstr "Não foi possível criar directório para armazenamento:"
+msgstr "Não foi possível criar directório para armazenamento: %s"
 
 #: plugins/ktstandard/KTDocumentLinks.php:446
 msgid "Could not create document link"
@@ -4068,7 +4068,6 @@ msgid "Delete Files and Folders"
 msgstr "Apagar Arquivos e Pastas"
 
 #: i18n/templates.c:4736
-#, fuzzy
 msgid "Delete Folder"
 msgstr "Apagar pasta"
 
@@ -6612,7 +6611,6 @@ msgid "File Size"
 msgstr "Tamanho do Ficheiro"
 
 #: i18n/templates.c:4943
-#, fuzzy
 msgid "File Type"
 msgstr "Tipo de Campo"
 
@@ -6725,12 +6723,10 @@ msgid "Folder \"%s\" renamed to \"%s\"."
 msgstr "Pasta \"%s\" renomeada para \"%s\"."
 
 #: ktoffice/controllers/list.php:1361
-#, fuzzy
 msgid "Folder Created"
 msgstr "Pasta criada"
 
 #: ktoffice/controllers/list.php:1379
-#, fuzzy
 msgid "Folder Deleted"
 msgstr "Pasta criada"
 
@@ -6748,7 +6744,6 @@ msgid "Folder ID:"
 msgstr "ID da Pasta:"
 
 #: ktoffice/controllers/list.php:1342
-#, fuzzy
 msgid "Folder Renamed"
 msgstr "Nome de pasta"
 
@@ -6799,17 +6794,14 @@ msgid "Folder details"
 msgstr "Detalhes da Pasta"
 
 #: ktoffice/controllers/list.php:1361
-#, fuzzy
 msgid "Folder has been successfully created"
 msgstr "Este documento foi restaurado com sucesso."
 
 #: ktoffice/controllers/list.php:1379
-#, fuzzy
 msgid "Folder has been successfully deleted"
 msgstr "Este documento foi restaurado com sucesso."
 
 #: ktoffice/controllers/list.php:1342
-#, fuzzy
 msgid "Folder has been successfully renamed"
 msgstr "Este documento foi restaurado com sucesso."
 
@@ -10440,7 +10432,6 @@ msgid "Please choose a location to place your unit folder."
 msgstr "Por favor, escolha um local para colocar sua pasta de unidade."
 
 #: i18n/templates.c:4760
-#, fuzzy
 msgid "Please close all open editors."
 msgstr "Por favor especifique um tipo de link para editar."
 
@@ -11009,17 +11000,14 @@ msgid "Provider does not support editing"
 msgstr "Provedor não suporta edição"
 
 #: i18n/templates.c:4793
-#, fuzzy
 msgid "Provides an interface to create a new folder under the current folder. You must have 'add' permissions on the folder."
 msgstr "Guarda o documento activo para uma nova pasta. Tem de possuir permissões de 'escrita' na pasta."
 
 #: i18n/templates.c:4802
-#, fuzzy
 msgid "Provides an interface to delete the current folder. You must have 'delete' permissions on the folder."
 msgstr "Guarda o documento activo para uma nova pasta. Tem de possuir permissões de 'escrita' na pasta."
 
 #: i18n/templates.c:4799
-#, fuzzy
 msgid "Provides an interface to rename the current folder. You must have 'rename' permissions on the folder."
 msgstr "Guarda o documento activo para uma nova pasta. Tem de possuir permissões de 'escrita' na pasta."
 
@@ -12830,9 +12818,9 @@ msgid "System alert"
 msgstr "Alerta do sistema"
 
 #: plugins/commercial/electronic-signatures/Esignature.inc.php:157
-#, fuzzy, php-format
+#, php-format
 msgid "System locked. You have exceeded the number of allowed authentication attempts. No further write actions will be allowed until you have logged back into %s."
-msgstr "Sistema fechado à chave. Excedeu o número de tentativas de autenticação permitidas e não lhe será permitido realizar quaisquer acções de escrita durante esta sessão."
+msgstr "Sistema fechado à chave. Excedeu o número de tentativas de autenticação permitidas e não lhe será permitido realizar quaisquer acções de escrita durante esta sessão.  %s"
 
 #: lib/util/ktutil.inc:264
 msgid "TB"
@@ -12995,24 +12983,24 @@ msgstr "A acção irá ser executada nos seguintes documentos e pastas"
 
 #: plugins/commercial/alerts/docTypeAlerts.inc.php:175
 #: plugins/commercial/alerts/docTypeAlerts.inc.php:188
-#, fuzzy, php-format
+#, php-format
 msgid "The alert could not be added: %s"
-msgstr "O alerta não pode ser adicionado:"
+msgstr "O alerta não pode ser adicionado:  %s"
 
 #: plugins/commercial/alerts/alerts.php:635
 #: plugins/commercial/alerts/alerts.php:650
 #: plugins/commercial/alerts/docTypeAlerts.inc.php:273
 #: plugins/commercial/alerts/docTypeAlerts.inc.php:288
 #: plugins/commercial/alerts/docTypeAlerts.inc.php:300
-#, fuzzy, php-format
+#, php-format
 msgid "The alert could not be deleted: %s"
-msgstr "O alerta não pode ser apagado:"
+msgstr "O alerta não pode ser apagado:  %s"
 
 #: plugins/commercial/alerts/alerts.php:698
 #: plugins/commercial/alerts/alerts.php:711
-#, fuzzy, php-format
+#, php-format
 msgid "The alert could not be saved: %s"
-msgstr "O alerta não pode ser guardado:"
+msgstr "O alerta não pode ser guardado: %s"
 
 #: plugins/commercial/alerts/docTypeAlerts.inc.php:231
 #: plugins/commercial/alerts/docTypeAlerts.inc.php:244
@@ -13022,9 +13010,9 @@ msgstr "O alerta não pode ser guardado:"
 #: plugins/commercial/alerts/docTypeAlerts.inc.php:412
 #: plugins/commercial/alerts/docTypeAlerts.inc.php:440
 #: plugins/commercial/alerts/docTypeAlerts.inc.php:468
-#, fuzzy, php-format
+#, php-format
 msgid "The alert could not be updated: %s"
-msgstr "O alerta não pode ser actualizado:"
+msgstr "O alerta não pode ser actualizado: %s"
 
 #: plugins/commercial/alerts/docTypeAlerts.inc.php:178
 msgid "The alert has been added"
@@ -13036,9 +13024,9 @@ msgid "The alert has been deleted"
 msgstr "O alerta foi apagado"
 
 #: plugins/commercial/alerts/alerts.php:729
-#, fuzzy, php-format
+#, php-format
 msgid "The alert has been saved for the date: %s"
-msgstr "O alerta foi gravado para a data:"
+msgstr "O alerta foi gravado para a data: %s"
 
 # Typo: updated
 #: plugins/commercial/alerts/docTypeAlerts.inc.php:234
@@ -13052,9 +13040,9 @@ msgid "The alert has been udated"
 msgstr "O alerta foi actualizado"
 
 #: plugins/commercial/alerts/alerts.php:1225
-#, fuzzy, php-format
+#, php-format
 msgid "The alerts on this document could not be deleted: %s"
-msgstr "Os alertas neste documento não podem ser apagados:"
+msgstr "Os alertas neste documento não podem ser apagados: %s"
 
 #: ktapi/KTAPISession.inc.php:500
 msgid "The anonymous user could not be found."
@@ -13079,14 +13067,14 @@ msgid "The base document you attempted to retrieve is invalid.   Please <a href=
 msgstr "O documento base que tentou recuperar é inválido. Por favor <a href=\"%s\">navegue</a> para um."
 
 #: ktapi/ktapi.inc.php:1344
-#, fuzzy, php-format
+#, php-format
 msgid "The bulk action failed: %s"
-msgstr "Falhou o check-in"
+msgstr "Falhou o check-in: %s"
 
 #: ktapi/ktapi.inc.php:1279
 #, php-format
 msgid "The bulk action to perform must be a string. Received: %s"
-msgstr ""
+msgstr "A ação para executar a granel deve ser uma seqüência. Recebido: %s"
 
 #: i18n/templates.c:3977
 msgid "The bulk import facility allows for a number of documents to be added to the document management system easily. Provide a path on the <strong>server</strong>, and all documents and folders within that path will be added to the document management system."
@@ -13118,9 +13106,9 @@ msgid "The condition required for this trigger has been deleted, so it is always
 msgstr "A condição necessária para esse trigger foi apagada, por isso ele está sempre disponível."
 
 #: plugins/ktcore/admin/configSettings.php:98
-#, fuzzy, php-format
+#, php-format
 msgid "The configuration settings could not be retrieved: %s"
-msgstr "Os parâmetros de configuração foram actualizados."
+msgstr "Os parâmetros de configuração foram actualizados: %s"
 
 #: plugins/ktcore/admin/configSettings.php:233
 msgid "The configuration settings have been updated."
@@ -13155,7 +13143,7 @@ msgstr "A data introduzida tem de estar no formato \"%s\"."
 #: plugins/ktcore/admin/configSettings.php:136
 #, php-format
 msgid "The default value is %s"
-msgstr ""
+msgstr "O valor padrão é %s"
 
 #: lib/subscriptions/subscriptions.inc.php:577
 #: lib/subscriptions/subscriptions.inc.php:578
@@ -13301,12 +13289,12 @@ msgstr "O documento que deseja realizar o check-out iniciará o download em brev
 #: plugins/pdfConverter/pdfConverter.php:104
 #, php-format
 msgid "The document, id: %s, could not be converted to pdf format. The following error occurred: \"%s\"."
-msgstr ""
+msgstr "O documento, id: %s, não pôde ser convertido para o formato PDF. Ocorreu o seguinte erro: \"%s\"."
 
 #: plugins/pdfConverter/pdfConverter.php:86
 #, php-format
 msgid "The document, id: %s, does not exist at the given storage path: %s"
-msgstr ""
+msgstr "O documento, id: %s, não existe no caminho de armazenamento de dados: %s"
 
 #: plugins/ktcore/admin/userManagement.php:158
 #: plugins/ktcore/admin/userManagement.php:223
@@ -13506,9 +13494,9 @@ msgid "The list may be long and take some time to load if the search is not filt
 msgstr "A lista pode ser longa e demorar algum tempo a carregar se a pesquisa não foi filtrada e há um número de utilizadores no sistema."
 
 #: ktapi/ktapi.inc.php:1269
-#, fuzzy, php-format
+#, php-format
 msgid "The list of id's must be an array of format array('documents' => array(1,2), 'folders' => array(2,3)). Received: %s"
-msgstr "A lista de membros tem de estar no formato: array('users' => array(1,2), 'groups' => array(2,4)).')"
+msgstr "A lista de membros tem de estar no formato: array('documents' => array(1,2), 'folders' => array(2,3)) Received: %s"
 
 #: ktapi/ktapi.inc.php:1680
 #: ktapi/ktapi.inc.php:1685
@@ -13572,19 +13560,19 @@ msgid "The name to which the current folder should be renamed."
 msgstr "O nome para o qual a pasta corrente deve ser renomeada."
 
 #: plugins/commercial/wintools/email/emailDocumentTypes.php:167
-#, fuzzy, php-format
+#, php-format
 msgid "The new document type, %s was created"
-msgstr "O novo tipo de documento,"
+msgstr "O novo tipo de documento,  %s"
 
 #: plugins/commercial/alerts/alerts.php:1211
-#, fuzzy, php-format
+#, php-format
 msgid "The notifications on this document could not be deleted: %s"
-msgstr "As notificações neste documento não poderam ser apagadas:"
+msgstr "As notificações neste documento não poderam ser apagadas: %s"
 
 #: lib/documentmanagement/DocumentLink.inc:162
-#, fuzzy, php-format
+#, php-format
 msgid "The object does not exist. id = %s table = %s "
-msgstr "O objecto não existe. id ="
+msgstr "O objecto não existe. id = %s table =  %s"
 
 #: plugins/ktcore/KTDocumentActions.php:2035
 msgid "The owner of a document is usually the person with ultimate responsibility for its contents.  It is initially set to the person who created the document, but can be changed to any other user."
@@ -13638,9 +13626,9 @@ msgid "The process a document follows is controlled by the way that the transiti
 msgstr "O processo que um documento segue é controlado pela maneira como as transições estão configuradas. O documento inicia o fluxo de trabalho no estado inicial, depois segue transições entre estados. Na secção \"Security\" pode configurar que utilizadores podem efectuar essas transições."
 
 #: plugins/commercial/network/quicklinks/manageQuicklinks.php:305
-#, fuzzy, php-format
+#, php-format
 msgid "The quicklink to this document could not be deleted: %s"
-msgstr "O link rápido para este documento não pode ser apagado:"
+msgstr "O link rápido para este documento não pode ser apagado: %s"
 
 #: plugins/ktcore/KTBulkActions.php:850
 msgid "The reason for archiving these documents and folders, for historical purposes."
@@ -13667,9 +13655,9 @@ msgid "The requested action has not been implemented"
 msgstr "A acção requerida não foi implementada"
 
 #: ktapi/ktapi.inc.php:1297
-#, fuzzy, php-format
+#, php-format
 msgid "The requested action has not been implemented: %s"
-msgstr "A acção requerida não foi implementada"
+msgstr "A acção requerida não foi implementada %s"
 
 #: lib/help/help.inc.php:162
 msgid "The requested help language has no contents."
@@ -13719,9 +13707,9 @@ msgid "The search criteria has been saved."
 msgstr "Os critérios de pesquisa foram guardados."
 
 #: plugins/ktcore/admin/configSettings.php:248
-#, fuzzy, php-format
+#, php-format
 msgid "The setting %s could not be updated: %s"
-msgstr "O alerta não pode ser actualizado:"
+msgstr "O ajuste %s não pode ser actualizado: %s"
 
 #: search2.php:639
 msgid "The sharing option was not passed correctly."
@@ -13807,9 +13795,9 @@ msgid "The url to the rss feed"
 msgstr "O url do feed rss"
 
 #: ktapi/KTAPISession.inc.php:370
-#, fuzzy, php-format
+#, php-format
 msgid "The user '%s' cound not be found."
-msgstr "O utilizador anónimo não pode ser encontrado."
+msgstr "O utilizador '%s' não pode ser encontrado."
 
 #: plugins/ktstandard/ldap/ldapbaseauthenticationprovider.inc.php:164
 msgid "The user account in the LDAP directory to perform searches in the LDAP directory as (such as CN=searchUser,CN=Users,DC=mycorp,DC=com or searchUser@mycorp.com)"
@@ -14255,7 +14243,6 @@ msgid "This folder <strong>inherits</strong> its permissions from #permission_so
 msgstr "Esta pasta <strong>herda</strong> as permissões de #permission_source#."
 
 #: i18n/templates.c:4745
-#, fuzzy
 msgid "This folder contains other documents/folders<br/>and may not be deleted."
 msgstr "Os alertas neste documento não podem ser apagados:"
 
@@ -14462,9 +14449,8 @@ msgid "This trigger has no configuration."
 msgstr "Este trigger não foi configurado."
 
 #: i18n/templates.c:4739
-#, fuzzy
 msgid "This will delete this folder.<br/>Are you sure you want to continue?"
-msgstr "Todas as modificação não guardadas serão perdidas! Tem a certeza que deseja continuar?"
+msgstr "Todas as modificação não guardadas serão perdidas! <br/>Tem a certeza que deseja continuar?"
 
 #: plugins/ktcore/KTDocumentActions.php:352
 msgid "This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS."
@@ -14857,9 +14843,8 @@ msgid "URL"
 msgstr "URL"
 
 #: i18n/templates.c:4742
-#, fuzzy
 msgid "Unable to Delete Folder"
-msgstr "Incapaz de localizar pasta:"
+msgstr "Incapaz de localizar pasta."
 
 #: plugins/commercial/wintools/baobabKeyManagement.php:86
 msgid "Unable to add license."
@@ -14923,9 +14908,8 @@ msgid "Unable to create field: %s"
 msgstr "Incapaz de criar campo: %s"
 
 #: ktoffice/controllers/list.php:1363
-#, fuzzy
 msgid "Unable to create folder"
-msgstr "Incapaz de criar perfil."
+msgstr "Incapaz de criar perfil"
 
 #: plugins/ktcore/admin/groupManagement.php:692
 #, php-format
@@ -14953,9 +14937,8 @@ msgstr "Incapaz de apagar campo: %s"
 
 #: ktoffice/controllers/list.php:1381
 #: i18n/templates.c:4733
-#, fuzzy
 msgid "Unable to delete folder"
-msgstr "Incapaz de localizar pasta:"
+msgstr "Incapaz de localizar pasta"
 
 #: plugins/commercial/network/quicklinks/manageQuicklinks.php:85
 #: plugins/rssplugin/manageRSSFeeds.php:75
@@ -15106,9 +15089,8 @@ msgid "Unable to remove user from group \"%s\""
 msgstr "Incapaz de remover utilizador do grupo \"%s\""
 
 #: ktoffice/controllers/list.php:1344
-#, fuzzy
 msgid "Unable to rename folder"
-msgstr "Incapaz de criar perfil."
+msgstr "Incapaz de criar perfil"
 
 #: plugins/ktcore/folder/Rename.php:100
 msgid "Unable to retrieve parent folder."

@@ -97,11 +97,8 @@ class SubscriptionEvent {
      * Every attempt is made to be as explicit as possible.
      */
 
-     /*
+     /**
       * Notification of bulk upload
-      * Author  :   Jarrett Jordaan
-      * Date    :   27/04/09
-      *
       * @params :   KTDocumentUtil $oDocObjects
       *             KTFolderUtil $oParentFolder
       */
@@ -115,11 +112,8 @@ class SubscriptionEvent {
         }
     }
 
-     /*
+     /**
       * Bulk upload email notification handler
-      * Author  :    Jarrett Jordaan
-      * Date    :   27/04/09
-      *
       * @params :   User $aUsers
       *             string $eventType
       *             KTDocumentUtil $oDocObjects

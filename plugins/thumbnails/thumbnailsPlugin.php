@@ -60,6 +60,7 @@ class thumbnailsPlugin extends KTPlugin {
         $dir = $plugin_dir . 'thumbnails.php';
         $this->registerProcessor('thumbnailGenerator', 'thumbnails.generator.processor', $dir);
         $this->registerAction('documentviewlet', 'ThumbnailViewlet', 'thumbnail.viewlets', $dir);
+        $this->registerColumn(_kt('Thumbnail'), 'thumbnails.generator.column', 'ThumbnailColumn', $dir);
 
         require_once(KT_LIB_DIR . '/templating/templating.inc.php');
         $oTemplating =& KTTemplating::getSingleton();

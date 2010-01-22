@@ -14,6 +14,7 @@ class jsonResponseObject{
 	protected $debug=array();
 	public $additional=array();
 	public $isDataSource=false;
+	public $location='';
 	
 	public $includeDebug=true;
 	
@@ -36,6 +37,8 @@ class jsonResponseObject{
 	
 	public function addError($message=NULL,$code=NULL){
 		$this->errors[]=array('code'=>$code,'message'=>$message);
+		$user=isset($this->request['auth']['user'])?$this->request['auth']['user']:'';
+		Clienttools_Syslog::logError($user,$this->location,array('code'=>$code,'message'=>$message),'');
 	}
 	
 	public function setStatus($varName=NULL,$value=NULL){
@@ -53,6 +56,8 @@ class jsonResponseObject{
 	public function setDebug($varName=NULL,$value=NULL){
 		if(is_array($this->debug[$varName]) && is_array($value))$value=array_merge($this->debug[$varName],$value);
 		$this->debug[$varName]=$value;
+		$user=isset($this->request['auth']['user'])?$this->request['auth']['user']:'';
+		Clienttools_Syslog::logInfo($user,$this->location,$varName,$value);
 	}
 	
 	public function addDebug($varName=NULL,$value=NULL){$this->setDebug($varName,$value);}
@@ -68,9 +73,12 @@ class jsonResponseObject{
 	
 	public function log($str){
 		$this->log[]='['.date('h:i:s').'] '.$str;
+		$user=isset($this->request['auth']['user'])?$this->request['auth']['user']:'';
+		Clienttools_Syslog::logTrace($user,$this->location,$str);
 	}
 	
 	public function getJson(){
+//		$this->status['session_id']=session_id();
 		$response=array_merge(array(
 			'requestName'		=>$this->title,
 			'errors'	=>array(
@@ -104,6 +112,7 @@ class jsonWrapper{
 		$this->raw=$content;
 		$content=@json_decode($content,true);
 		if(!is_array($content))throw new jsonContentException('Invalid JSON input',jsonContentException::INPUT_ERROR);
+		if(!is_array($content['request']['parameters']))$content['request']['parameters']=array();
 		$this->jsonArray=$content;
 	}
 	

@@ -259,16 +259,9 @@ class KTBulkDeleteAction extends KTBulkAction {
         return parent::do_performaction();
     }
 
-     /*
+     /**
       * Bulk delete
-      * Author      :   Jarrett Jordaan
-      * Modified    :   28/04/09
-      *
       * @params     :   KTDocumentUtil/KTFolderUtil $oEntity
-      *
-      * Description :   Since its a bulk operation, the delete function needs to
-      *                 know that. Added extra boolean param to the delete
-      *                 function.
       */
     function perform_action($oEntity) {
         $sReason = $this->res['reason'];
@@ -526,16 +519,10 @@ class KTBulkMoveAction extends KTBulkAction {
         return parent::do_performaction();
     }
 
-     /*
+     /**
       * Bulk move
-      * Author      :   Jarrett Jordaan
-      * Modified    :   28/04/09
-      *
       * @params     :   KTDocumentUtil/KTFolderUtil $oEntity
       *
-      * Description :   Since its a bulk operation, the move function needs to
-      *                 know that. Added extra boolean param to the move
-      *                 function.
       */
     function perform_action($oEntity) {
         if(is_a($oEntity, 'Document')) {
@@ -771,16 +758,10 @@ class KTBulkCopyAction extends KTBulkAction {
         return parent::do_performaction();
     }
 
-     /*
+     /**
       * Bulk copy
-      * Author      :   Jarrett Jordaan
-      * Modified    :   28/04/09
-      *
       * @params     :   KTDocumentUtil/KTFolderUtil $oEntity
-      *
-      * Description :   Since its a bulk operation, the copy function needs to
-      *                 know that. Added extra boolean param to the copy
-      *                 function.
+	  *
       */
     function perform_action($oEntity) {
         if(is_a($oEntity, 'Document')) {
@@ -1029,16 +1010,10 @@ class KTBulkArchiveAction extends KTBulkAction {
         return parent::do_performaction();
     }
 
-     /*
+     /**
       * Bulk archive
-      * Author      :   Jarrett Jordaan
-      * Modified    :   28/04/09
-      *
       * @params     :   KTDocumentUtil/KTFolderUtil $oEntity
       *
-      * Description :   Since its a bulk operation, the archive function needs
-      *                 to know that. Added extra boolean param to the archive
-      *                 function.
       */
     function perform_action($oEntity) {
         if(is_a($oEntity, 'Document')) {
@@ -1216,19 +1191,13 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         return $str;
     }
 
-     /*
+     /**
       * Bulk export
-      * Author      :   Jarrett Jordaan
-      * Modified    :   28/04/09
-      *
       * @params     :   KTDocumentUtil/KTFolderUtil $oEntity
       *
-      * Description :   Since its a bulk operation, the export function needs
-      *                 to know that. Added extra boolean param to the export
-      *                 function.
       */
     function perform_action($oEntity) {
-// TODO find a way to do bulk email
+        // TODO find a way to do bulk email
         $exportCode = $_SESSION['exportcode'];
         $this->oZip = ZipFolder::get($exportCode);
 
@@ -1489,16 +1458,10 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
         return $result;
     }
 
-     /*
+     /**
       * Bulk checkout
-      * Author      :   Jarrett Jordaan
-      * Modified    :   28/04/09
-      *
       * @params     :   KTDocumentUtil/KTFolderUtil $oEntity
       *
-      * Description :   Since its a bulk operation, the checkout function needs
-      *                 to know that. Added extra boolean param to the checkout
-      *                 function.
       */
     function perform_action($oEntity) {
         // checkout document

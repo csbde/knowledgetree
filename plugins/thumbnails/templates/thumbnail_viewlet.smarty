@@ -1,31 +1,28 @@
+{if $modal}
 {literal}
-<style>
-.thumb-shadow {
-  float:left;
-  background: url(plugins/thumbnails/templates/shadowAlpha.png) no-repeat bottom right !important;
-  background: url(plugins/thumbnails/templates/shadow.gif) no-repeat bottom right;
-  margin: 10px 0 0 10px !important;
-  margin: 10px 0 0 5px;
-  }
-
-.thumb-shadow img {
-  display: block;
-  position: relative;
-  background-color: #fff;
-  border: 1px solid #a9a9a9;
-  margin: -6px 6px 6px -6px;
-  padding: 4px;
-  }
-</style>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#thumb_{/literal}{$documentId}{literal} a').lightBox();
+	});
+</script>
 {/literal}
+{/if}
 <div class="thumb-shadow">
     <div>
-        {if $url}
-            <a href='{$url}' target='_blank'>
-        {/if}
-        <img src="{$thumbnail}" height="200px"/>
-        {if $url}
+        {if $url && $modal}
+        	<div id="thumb_{/literal}{$documentId}{literal}" class="thumb">
+            <a href='{$url}' rel="lightbox" title="{$title}">
+            <img id="img{$documentId}" src="{$thumbnail}" {if $height}height="{$height}"{/if} class="lightbox_window"/>
             </a>
+            </div>
+		{else}
+			{if $url}
+				<a href='{$url}' target='_blank'>
+				<img src="{$thumbnail}" {if $height}height="{$height}"{/if}/>
+				</a>
+			{else}
+				<img src="{$thumbnail}" {if $height}height="{$height}"{/if}/>
+			{/if}
         {/if}
     </div>
 </div>

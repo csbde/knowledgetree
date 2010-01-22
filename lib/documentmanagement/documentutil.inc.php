@@ -10,7 +10,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -581,9 +581,102 @@ $sourceDocument->getName(),
     }
     // }}}
 
+	/*
+	 * Function to sanitize the date input from any textual date representation to a valid KT date format
+	 * - Will check for any string supported by strtotime which can be any US English date format.
+	 * - Further corrects any quote descrepancies and checks the textual description again.
+	 * - If still no valid date then takes the integers and separators to produce a best guess.
+	 */
+	function sanitizeDate($sDate) {
+
+	    //Checking for Normal Strings, e.g. 13 August 2009 etc. All formats accepted by strtotime()
+	    $datetime = date_create($sDate);
+	    $resDate = date_format($datetime, 'Y-m-d');
+
+	    if (!trim($resDate) == '') {
+	        return $resDate;
+	    } else {
+	        //If null then removing quotes e.g. 14'th doesn't yield a valid date but 14th does
+	        $sDate = str_replace("'", '', $sDate);
+	        $sDate = str_replace('"', '', $sDate);
+
+	        $datetime = date_create($sDate);
+	        $resDate = date_format($datetime, 'Y-m-d');
+
+	        if (!trim($resDate) == '') {
+	            return $resDate;
+	        } else {
+	            //If null then trying with numeric data
+	            //Stripping non-numerics
+	            $sDate = preg_replace('/[^0-9]/', '-', $sDate);
+	            $token = strpos($sDate, '--');
+
+	            while ($token != 0)
+	            {
+	                $sDate = str_replace('--', '-', $sDate);
+	                $token = strpos($sDate, '--');
+	            }
+
+	            $datetime = date_create($sDate);
+	            $resDate = date_format($datetime, 'Y-m-d');
+
+	            return $resDate;
+
+	        }
+	    }
+	}
+
+    // Forcefully sanitize metadata, specifically date values, to account for client tools that submit unvalidated date input
+    // Will produce a best effort match to a valid date format.
+    function sanitizeMetadata($oDocument, $aMetadata){
+        $aFieldsets =& KTFieldset::getGenericFieldsets();
+        $aFieldsets =& kt_array_merge($aFieldsets,
+                KTFieldset::getForDocumentType($oDocument->getDocumentTypeId()));
+        $aSimpleMetadata = array();
+        foreach ($aMetadata as $aSingleMetadatum) {
+            list($oField, $sValue) = $aSingleMetadatum;
+            if (is_null($oField)) {
+                continue;
+            }
+            $aSimpleMetadata[$oField->getId()] = $sValue;
+        }
+
+        foreach ($aFieldsets as $oFieldset) {
+            $aFields =& $oFieldset->getFields();
+            $aFieldValues = array();
+            foreach ($aFields as $oField) {
+                $val = KTUtil::arrayGet($aSimpleMetadata, $oField->getId());
+                if (!empty($v)) {
+                    $aFieldValues[$oField->getId()] = $val;
+                }
+
+                //Sanitizing Date Values
+                if ($oField->getDataType() == 'DATE') {
+                	$val = KTDocumentUtil::sanitizeDate($val);
+                }
+
+				if (!is_null($val)) {
+	            	$MDPack[] = array(
+	                	$oField,
+	                    $val
+	                );
+	            }
+
+            }
+        }
+
+        return $MDPack;
+    }
+
     // {{{ saveMetadata
     function saveMetadata(&$oDocument, $aMetadata, $aOptions = null) {
         $table = 'document_fields_link';
+
+        //Sanitizing Date Fields
+        if(!empty($aMetadata)){
+            $aMetadata = KTDocumentUtil::sanitizeMetadata($oDocument, $aMetadata);
+        }
+
         $bNoValidate = KTUtil::arrayGet($aOptions, 'novalidate', false);
         if ($bNoValidate !== true)
         {
@@ -1564,7 +1657,7 @@ $sourceDocument->getName(),
 
         DBUtil::commit();
     }
-    
+
     public static function getDocumentContent($oDocument)
     {
         global $default;
@@ -1595,7 +1688,7 @@ $sourceDocument->getName(),
         }
 
         $content = file_get_contents($path);
-        
+
         return $content;
     }
 }

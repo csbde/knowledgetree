@@ -472,8 +472,6 @@ function addFieldTypeSelection(groupid, fid, type, options)
 		default:
 			html += 'unknown: ' + type;
 	}
-    // Jarrett Jordaan
-    // Closing tags added
     html += "</nobr></td>";
 
 	return {html: html, init: callback};

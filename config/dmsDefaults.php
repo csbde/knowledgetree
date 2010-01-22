@@ -7,7 +7,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -483,7 +483,7 @@ class KTInit {
     function initConfig() {
         global $default;
         $oKTConfig = KTConfig::getSingleton();
-        
+
 		// Override the config setting - KT_DIR is resolved on page load
         $oKTConfig->setdefaultns('KnowledgeTree', 'fileSystemRoot', KT_DIR);
 

@@ -1,0 +1,19 @@
+#kt_image_select_container img {
+    cursor: pointer;
+    text-decoration: none;
+    border: 10px solid white;
+}
+
+#kt_image_select_container img:hover {
+    text-decoration: none;
+    border: 10px solid white;
+}
+
+.jq_select_image {
+    float: left;
+    border: 1px solid #cccccc;
+    margin-right: 5px;
+    padding: 0px;
+    display:inline;
+    height:70px;
+}
