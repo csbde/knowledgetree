@@ -97,7 +97,7 @@ define('KTWS_ERR_DB_PROBLEM',				99);
 
 if (!defined('LATEST_WEBSERVICE_VERSION'))
 {
-	define('LATEST_WEBSERVICE_VERSION', 3);
+	define('LATEST_WEBSERVICE_VERSION', 2);
 }
 
 	function bool2str($bool)
@@ -950,7 +950,7 @@ class KTWebService
             	);
          }
 
-         if($this->version >= 3)
+         if($this->version >= 2)
          {
              // add_document
              $this->__dispatch_map['add_document'] =
@@ -2276,7 +2276,7 @@ class KTWebService
      */
     function add_document($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $unique_file_id = null)
     {
-        if(empty($tempfilename)){
+        if(empty($tempfilename) && !empty($unique_file_id)){
             $upload_manager = new KTUploadManager();
             $tempfilename = $upload_manager->get_tempfile_from_unique_id($unique_file_id);
 
@@ -3765,7 +3765,7 @@ class KTWebService
 	 */
 	function update_document_metadata($session_id,$document_id,$metadata, $sysdata=null)
 	{
-    	$this->debug("update_document_metadata('$session_id',$document_id,$metadata, $sysdata)");
+    	$this->debug("update_document_metadata('$session_id',$document_id," . print_r($metadata, true) . print_r($sysdata, true));
 
     	$kt = &$this->get_ktapi($session_id );
     	$responseType = 'kt_response';
