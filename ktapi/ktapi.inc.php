@@ -59,6 +59,7 @@ require_once(KTAPI_DIR .'/KTAPIDocument.inc.php');
 require_once(KTAPI_DIR .'/KTAPIAcl.inc.php');
 require_once(KTAPI_DIR .'/KTAPICollection.inc.php');
 require_once(KTAPI_DIR .'/KTAPIBulkActions.inc.php');
+require_once(KTAPI_DIR .'/KTAPITrigger.inc.php');
 
 /**
 * This class defines functions that MUST exist in the inheriting class
