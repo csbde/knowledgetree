@@ -74,7 +74,12 @@ class KTCoreFileWidget extends KTWidget {
             return null;
         }
 
+        if (!$this->bRequired) {
+            return null;
+        }
+
         $oVF =& KTValidatorFactory::getSingleton();
+       
         return $oVF->get('ktcore.validators.requiredfile', array(
             'test' => sprintf('_kt_attempt_unique_%s', $this->sName),
             'basename' => $this->sBasename,

@@ -93,10 +93,29 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         $widgets = array();
         $validators = array();
 
+        // Adding the title widget
+        $widgets[] = $oWF->get('ktcore.widgets.string', array(
+                    'label' => _kt('Title'),
+                    'required' => false,
+                    'name' => 'logo_title',
+                    'value' => '',
+                    'description' => _kt("This will appear when hovering over the logo."),
+                    ));
+
+        // Adding the url widget
+        $widgets[] = $oWF->get('ktcore.widgets.string', array(
+                    'label' => _kt('Url'),
+                    'required' => false,
+                    'name' => 'logo_url',
+                    'id' => 'file',
+                    'value' => '',
+                    'description' => _kt("This is the website address you will be redirected to after clicking the logo"),
+                    ));
+
         // Adding the File Upload Widget
         $widgets[] = $oWF->get('ktcore.widgets.file', array(
                     'label' => _kt('Logo File'),
-                    'required' => true,
+                    'required' => false,
                     'name' => 'file',
                     'id' => 'file',
                     'value' => '',
@@ -353,6 +372,21 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
     function do_upload(){
         global $default;
+        
+        //No file, edit title and url only then
+        if (($_FILES['_kt_attempt_unique_file']['name'] == '')) {
+            $config =& KTConfig::getSingleton();
+            $logoUrl = $_REQUEST['data']['logo_url'];
+            $logoTitle = $_REQUEST['data']['logo_title'];
+            
+            if ($config->set('ui/companyLogoUrl', $logoUrl) && $config->set('ui/companyLogoTitle', $logoTitle)) {
+                $this->successRedirectTo('main', _kt('Logo fields have been successfully updated.'));
+            } else {
+                $this->errorRedirectToMain(_kt("Couldn't update logo fields"));
+            }
+            
+            exit(0);
+        }
         
 		$oForm = $this->getUploadLogoForm();
         $res = $oForm->validate();
