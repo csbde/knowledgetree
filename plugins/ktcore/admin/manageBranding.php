@@ -112,6 +112,12 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     'description' => _kt("This is the website address you will be redirected to after clicking the logo"),
                     ));
 
+		$widgets[] = $oWF->get('ktcore.widgets.button',array(
+                'value' => _kt('Save'),
+                'description' => _kt('If you do not need to upload a logo, then you can simply click "Save" here to save the title and url details.'),
+                'name' => 'btn_quick_save',
+		));
+
         // Adding the File Upload Widget
         $widgets[] = $oWF->get('ktcore.widgets.file', array(
                     'label' => _kt('Logo File'),
