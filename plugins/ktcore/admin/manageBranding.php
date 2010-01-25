@@ -61,31 +61,44 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
     }
 
     function do_main() {
-        $uploadLogoForm = $this->getUploadLogoForm();
-        return $uploadLogoForm->render();
+
+        $oForms[] = $this->getLogoDetailsForm();
+        $oForms[] = $this->getUploadLogoForm();
+        
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktcore/branding/list');
+        $oTemplate->setData(array(
+            'context' => $this,
+            'document_types' => $aDocumentTypes,
+            'associated_types' => $aAssocDocs,
+            'add_fields' => $addFields,
+            'oForms' => $oForms,
+        ));
+        
+        return $oTemplate;
     }
 
 
     /**
-     * Returns the upload logo form
+     * Returns the set logo details
      * @return KTForm 
      *
      */
 
-    function getUploadLogoForm() {
-        $this->oPage->setBreadcrumbDetails(_kt("Upload Logo"));
+    function getLogoDetailsForm() {
+        $this->oPage->setBreadcrumbDetails(_kt("Set Logo Details"));
 
         $oForm = new KTForm;
         $oForm->setOptions(array(
                     'identifier' => 'ktcore.folder.branding',
-                    'label' => _kt('Upload Logo'),
-                    'submit_label' => _kt('Upload'),
-                    'action' => 'upload',
+                    'label' => _kt('Set Logo Details'),
+                    'submit_label' => _kt('Save'),
+                    'action' => 'setdetails',
                     'fail_action' => 'main',
                     'encoding' => 'multipart/form-data',
                     'context' => &$this,
                     'extraargs' => $this->meldPersistQuery("","",true),
-                    'description' => _kt('You can upload a logo to brand your KnowledgeTree site.')
+                    'description' => _kt('You can set the branding details.')
                     ));
 
         $oWF =& KTWidgetFactory::getSingleton();
@@ -115,12 +128,56 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     'value' => $logoUrl,
                     'description' => _kt("This is the website address you will be redirected to after clicking the logo"),
                     ));
+                    
+        $oForm->setWidgets($widgets); 
+        $oForm->setValidators($validators);
 
-		$widgets[] = $oWF->get('ktcore.widgets.button',array(
-                'value' => _kt('Save'),
-                'description' => _kt('If you do not need to upload a logo, then you can simply click "Save" here to save the title and url details.'),
-                'name' => 'btn_quick_save',
-		));
+        // TODO: Should electronic signature be implemented for this?
+        // Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
+        /* //Have to instanciate the oFolder
+        global $default;
+        $iFolderId = $this->oFolder->getId();
+        if($default->enableESignatures){
+            $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+            $heading = _kt('You are attempting to perform a bulk upload');
+            $submit['type'] = 'button';
+            $submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.bulk_upload', 'bulk', 'bulk_upload_form', 'submit', {$iFolderId});";
+        }else{
+            $submit['type'] = 'submit';
+            $submit['onclick'] = '';
+        }
+        */
+
+        return $oForm;
+    }
+
+
+    /**
+     * Returns the upload logo form
+     * @return KTForm 
+     *
+     */
+
+    function getUploadLogoForm() {
+        $this->oPage->setBreadcrumbDetails(_kt("Upload Logo"));
+
+        $oForm = new KTForm;
+        $oForm->setOptions(array(
+                    'identifier' => 'ktcore.folder.branding',
+                    'label' => _kt('Upload Logo'),
+                    'submit_label' => _kt('Upload'),
+                    'action' => 'upload',
+                    'fail_action' => 'main',
+                    'encoding' => 'multipart/form-data',
+                    'context' => &$this,
+                    'extraargs' => $this->meldPersistQuery("","",true),
+                    'description' => _kt('You can upload a logo to brand your KnowledgeTree site.')
+                    ));
+
+        $oWF =& KTWidgetFactory::getSingleton();
+
+        $widgets = array();
+        $validators = array();
 
         // Adding the File Upload Widget
         $widgets[] = $oWF->get('ktcore.widgets.file', array(
@@ -169,7 +226,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
         return $oForm;
     }
-
 
     /**
      * Returns the scale logo form
@@ -375,6 +431,31 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         return $oForm;
     }
 
+
+
+
+    /*
+     *  Action responsible for setting the logo details
+     *
+     */
+
+    function do_setdetails(){
+        global $default;
+
+        $config =& KTConfig::getSingleton();
+        $logoUrl = $_REQUEST['data']['logo_url'];
+        $logoTitle = $_REQUEST['data']['logo_title'];
+        
+        if ($config->set('ui/companyLogoUrl', $logoUrl) && $config->set('ui/companyLogoTitle', $logoTitle)) {
+            $this->successRedirectTo('main', _kt('Logo fields have been successfully updated.'));
+        } else {
+            $this->errorRedirectToMain(_kt("Couldn't update logo fields"));
+        }
+
+    }
+
+
+
     /*
      *  Action responsible for uploading the logo
      *
@@ -383,30 +464,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
     function do_upload(){
         global $default;
 
-        $config =& KTConfig::getSingleton();
-        $logoUrl = $_REQUEST['data']['logo_url'];
-        $logoTitle = $_REQUEST['data']['logo_title'];
-        
-        //No file, edit title and url only then
-        if (($_FILES['_kt_attempt_unique_file']['name'] == '')) {
-            
-            if ($config->set('ui/companyLogoUrl', $logoUrl) && $config->set('ui/companyLogoTitle', $logoTitle)) {
-                $this->successRedirectTo('main', _kt('Logo fields have been successfully updated.'));
-            } else {
-                $this->errorRedirectToMain(_kt("Couldn't update logo fields"));
-            }
-            
-            exit(0);
-        }
-
-        //If params where given then update the title and url
-        if ($config->set('ui/companyLogoUrl', $logoUrl) && $config->set('ui/companyLogoTitle', $logoTitle)) {
-            $default->log->info('Logo fields have been successfully updated.');
-        } else {
-            $default->log->error("Couldn't update logo fields.");
-        }
-
-        
 		$oForm = $this->getUploadLogoForm();
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
@@ -477,6 +534,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         $relDir = 'var'.DIRECTORY_SEPARATOR.'branding'.DIRECTORY_SEPARATOR.'logo'.DIRECTORY_SEPARATOR;
 
         switch ($resizeMethod) {
+        /* //crop was disabled
             case 'crop':
             
                 if ($this->isImageCroppable($logoFile, $this->maxLogoWith, $this->maxLogoHeight, $type)) {
@@ -488,6 +546,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                 }
                 
                 return $retForm->render();
+                */
                 
             case 'scale':
             
@@ -511,11 +570,29 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                 $logoItem[] = $relDir.$logoFileNameCropped;
                 
                 $form = $this->getScaleLogoForm($logoItem);
-                return $form->render();
+                
+                $oForms[] = $form;
+                $oTemplating =& KTTemplating::getSingleton();
+                $oTemplate = $oTemplating->loadTemplate('ktcore/branding/list');
+                $oTemplate->setData(array(
+                    'context' => $this,
+                    'oForms' => $oForms,
+                ));
+        
+                return $oTemplate;
                 
             default:
                 $form = $this->getApplyLogoForm($logoFileName);
-                return $form->render();
+
+                $oForms[] = $form;
+                $oTemplating =& KTTemplating::getSingleton();
+                $oTemplate = $oTemplating->loadTemplate('ktcore/branding/list');
+                $oTemplate->setData(array(
+                    'context' => $this,
+                    'oForms' => $oForms,
+                ));
+        
+                return $oTemplate;
         }        
 
     }
@@ -970,7 +1047,16 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         }
         
         $form = $this->getApplyLogoForm($tmpLogoFileName);
-        return $form->render();
+
+        $oForms[] = $form;
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktcore/branding/list');
+        $oTemplate->setData(array(
+            'context' => $this,
+            'oForms' => $oForms,
+        ));
+
+        return $oTemplate;
 
     }
 
