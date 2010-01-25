@@ -93,12 +93,16 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         $widgets = array();
         $validators = array();
 
+        $oConfig = KTConfig::getSingleton();
+        $logoTitle = $oConfig->get("ui/companyLogoTitle");
+        $logoUrl = $oConfig->get("ui/companyLogoUrl");
+
         // Adding the title widget
         $widgets[] = $oWF->get('ktcore.widgets.string', array(
                     'label' => _kt('Title'),
                     'required' => false,
                     'name' => 'logo_title',
-                    'value' => '',
+                    'value' => $logoTitle,
                     'description' => _kt("This will appear when hovering over the logo."),
                     ));
 
@@ -108,7 +112,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     'required' => false,
                     'name' => 'logo_url',
                     'id' => 'file',
-                    'value' => '',
+                    'value' => $logoUrl,
                     'description' => _kt("This is the website address you will be redirected to after clicking the logo"),
                     ));
 
@@ -378,12 +382,13 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
     function do_upload(){
         global $default;
+
+        $config =& KTConfig::getSingleton();
+        $logoUrl = $_REQUEST['data']['logo_url'];
+        $logoTitle = $_REQUEST['data']['logo_title'];
         
         //No file, edit title and url only then
         if (($_FILES['_kt_attempt_unique_file']['name'] == '')) {
-            $config =& KTConfig::getSingleton();
-            $logoUrl = $_REQUEST['data']['logo_url'];
-            $logoTitle = $_REQUEST['data']['logo_title'];
             
             if ($config->set('ui/companyLogoUrl', $logoUrl) && $config->set('ui/companyLogoTitle', $logoTitle)) {
                 $this->successRedirectTo('main', _kt('Logo fields have been successfully updated.'));
@@ -393,6 +398,14 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
             
             exit(0);
         }
+
+        //If params where given then update the title and url
+        if ($config->set('ui/companyLogoUrl', $logoUrl) && $config->set('ui/companyLogoTitle', $logoTitle)) {
+            $default->log->info('Logo fields have been successfully updated.');
+        } else {
+            $default->log->error("Couldn't update logo fields.");
+        }
+
         
 		$oForm = $this->getUploadLogoForm();
         $res = $oForm->validate();
