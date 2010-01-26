@@ -44,7 +44,6 @@ if(!$iu->isSystemInstalled()) {
 	$iu->redirect("setup/wizard");
 	exit(0);
 }
-
 // main library routines and defaults
 require_once('config/dmsDefaults.php');
 
