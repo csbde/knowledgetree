@@ -84,6 +84,7 @@ wizard.prototype.valRegHelper = function() {
 	var first = $("#first");
 	var last = $("#last");
 	var email = $("#email");
+	var country = $("#country");
 	if(first.attr('value').length < 1) {
 		$("#reg_error").html('Enter a First Name');
 		w.focusElement(first);
@@ -109,7 +110,23 @@ wizard.prototype.valRegHelper = function() {
 		w.focusElement(email);
 		return false;
 	}
+	if(!w.countryCheck(country.attr('value'))) {
+		$("#reg_error").html('Please select a Country.');
+		w.focusElement(country);
+		return false;
+	}
 
+	return true;
+}
+
+wizard.prototype.countryCheck = function(str) {
+	//str = w.trim(str);
+	//alert(str);
+	if(str == "Select Country...") {
+		return false;
+	} else {
+		return true;
+	}
 	return true;
 }
 
@@ -192,7 +209,6 @@ wizard.prototype.dummy = function () {
 
 // pre-submit callback
 wizard.prototype.showRequest = function (formData, jqForm, options) {
-	//$.blockUI({message:''});
 	$.blockUI({overlayCSS:{opacity:0.1}, fadeIn:500, fadeOut:500, message:''});
 	$('#loading').attr('style', 'display:block;');
 }
