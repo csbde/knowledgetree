@@ -8,6 +8,12 @@
 KTDIR="$1";
 TMPDIR="$KTDIR/var/pear"
 
+if [ "$KTDIR" == "" ]; then
+    echo "Usage: $0 path/to/knowledgetree/directory";
+    echo "e.g. $0 /var/www/knowledgetree";
+    exit;
+fi
+
 if [ ! -x "$TMPDIR" ]; then
     mkdir -p "$TMPDIR"
 fi
