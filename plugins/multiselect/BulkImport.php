@@ -71,7 +71,7 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
 			if (method_exists($oPage, 'requireJSResources')) {
 				$oPage->requireJSResources($aJavascript);
 			}
-	        return $js._kt('Import from Server Location');
+	        return _kt('Import from Server Location') . $js;
 		}
 		else
 		{
