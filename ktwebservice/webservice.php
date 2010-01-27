@@ -769,14 +769,20 @@ class KTWebService
 
          // get_folder_detail_by_name
          $this->__dispatch_map['get_folder_detail_by_name'] =
-            array('in' => array('session_id' => 'string', 'folder_name' => 'string' ),
+            array('in' => array('session_id' => 'string', 'folder_name' => 'string', 'parent_id' => 'int' ),
              'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
             );
 
+         /* If this is now the same as version 2 for this function, we don't need this.
+          *
          if ($this->version >=3)
          {
+             // was 
          	 $this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create'=>'boolean' );
+             // now
+         	 $this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'parent_id'=>'int' );
          }
+          */
 
          // get_folder_contents
          $this->__dispatch_map['get_folder_contents'] =
@@ -1507,22 +1513,23 @@ class KTWebService
      *
      * @param string $session_id
      * @param string $folder_name
+     * @param integer $parent_id The parent folder in which to look for the named folder
      * @return kt_folder_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, or KTWS_SUCCESS.
      */
-    function get_folder_detail_by_name($session_id, $folder_name)
+    function get_folder_detail_by_name($session_id, $folder_name, $parent_id = 1)
     {
-    	$this->debug("get_folder_detail_by_name('$session_id','$folder_name')");
+    	$this->debug("get_folder_detail_by_name('$session_id','$folder_name','$parent_id')");
     	$kt = &$this->get_ktapi($session_id);
     	if (is_array($kt))
     	{
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $kt);
     	}
 
-    	$folder = &$kt->get_folder_by_name($folder_name);
+    	$folder = &$kt->get_folder_by_name($folder_name, $parent_id);
     	if (PEAR::isError($folder))
     	{
     		$response = KTWebService::_status(KTWS_ERR_INVALID_FOLDER,$folder);
-    		$this->debug("get_folder_detail_by_name - cannot get folder $folder_name - "  . $folder->getMessage(), $session_id);
+    		$this->debug("get_folder_detail_by_name - cannot get folder $folder_name (looking in folder $parent_id) - "  . $folder->getMessage(), $session_id);
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $response);
     	}
 
@@ -1883,11 +1890,10 @@ class KTWebService
 
     	if ($this->version >=2)
     	{
-
 	    	$sourceName = $src_folder->get_folder_name();
 	    	$targetPath = $tgt_folder->get_full_path();
 
-	    	$response = $this->get_folder_detail_by_name($session_id, $targetPath . '/' . $sourceName);
+	    	$response = $this->get_folder_detail_by_name($session_id, $targetPath . '/' . $sourceName, $source_id);
 
     		return $response;
     	}

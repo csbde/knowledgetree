@@ -90,13 +90,10 @@ class KTBulkDeleteAction extends KTBulkAction {
             }
 
             // If all documents at the current level may be deleted, we can continue
-            // Get any existing subfolders
-            $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
-            parent_folder_ids LIKE '{$sFolderId},%' OR
-            parent_folder_ids LIKE '%,{$sFolderId},%' OR
-            parent_folder_ids LIKE '%,{$sFolderId}'";
+            // Get any existing subfolders - but ONLY on the current level, or we will be checking subfolders more than once!
+			$sWhereClause = "parent_id = '{$sFolderId}'";
             $aChildFolders = $this->oFolder->getList($sWhereClause);
-
+            
             // Loop through subfolders and check each in the same way as the parent
             if(!empty($aChildFolders)){
                 foreach($aChildFolders as $oChild){

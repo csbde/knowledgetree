@@ -291,7 +291,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param int $folderid
 	 * @return KTAPI_Folder
 	 */
-	function _get_folder_by_name($ktapi, $foldername, $folderid)
+	function _get_folder_by_name($ktapi, $foldername, $parentId)
 	{
 		$foldername=trim($foldername);
 		if (empty($foldername))
@@ -310,8 +310,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			$foldername = KTUtil::replaceInvalidCharacters($foldername);
 			$foldername = sanitizeForSQL($foldername);
 			$sql = "SELECT id FROM folders WHERE
-					(name='$foldername' and parent_id=$folderid) OR
-					(name='$foldername' and parent_id is null and $folderid=1)";
+					(name='$foldername' and parent_id=$parentId) OR
+					(name='$foldername' and parent_id is null and $parentId=1)";
 			$row = DBUtil::getOneResult($sql);
 			if (is_null($row) || PEAR::isError($row))
 			{
@@ -377,7 +377,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 		if (!empty($foldername) && ($foldername != '.'))
 		{
-			$ktapi_folder = $this->get_folder_by_name($foldername);
+			// TODO confirm that this addition of the parent folder id as second parameter is correct and necessary
+			$ktapi_folder = $this->get_folder_by_name($foldername, $this->folderid);
 		}
 
 		$currentFolderName = $this->get_folder_name();
@@ -391,7 +392,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			else
 			{
 				$foldername = substr($foldername, strlen($currentFolderName)+1);
-				$ktapi_folder = $this->get_folder_by_name($foldername);
+				// TODO confirm that this addition of the parent folder id as second parameter is correct and necessary
+				$ktapi_folder = $this->get_folder_by_name($foldername, $this->folderid);
 			}
 		}
 

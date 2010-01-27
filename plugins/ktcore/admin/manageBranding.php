@@ -47,7 +47,6 @@ require_once(KT_LIB_DIR . "/validation/dispatchervalidation.inc.php");
 require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
 require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
 
-
 class ManageBrandDispatcher extends KTAdminDispatcher {
 
     private $maxLogoWidth = 313;
@@ -61,7 +60,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
     }
 
     function do_main() {
-
         $oForms[] = $this->getLogoDetailsForm();
         $oForms[] = $this->getUploadLogoForm();
         
@@ -102,6 +100,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     ));
 
         $oWF =& KTWidgetFactory::getSingleton();
+        $oVF =& KTValidatorFactory::getSingleton();
 
         $widgets = array();
         $validators = array();
@@ -126,7 +125,14 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     'name' => 'logo_url',
                     'id' => 'file',
                     'value' => $logoUrl,
-                    'description' => _kt("This is the website address you will be redirected to after clicking the logo"),
+                    'description' => _kt("This is the website address you will be redirected to after clicking the logo. The url should include the protocol e.g. http://www.knowledgetree.com . If no protocol is given the url is treated as a relative link."),
+                    ));
+
+
+        // Adding the url widget
+        $validators[] = $oVF->get('ktcore.widgets.string', array(
+                    'test' => 'logo_url',
+                    'output' => 'logo_url',
                     ));
                     
         $oForm->setWidgets($widgets); 
@@ -431,9 +437,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         return $oForm;
     }
 
-
-
-
     /*
      *  Action responsible for setting the logo details
      *
@@ -446,6 +449,12 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         $logoUrl = $_REQUEST['data']['logo_url'];
         $logoTitle = $_REQUEST['data']['logo_title'];
         
+        $aOptions = array('redirect_to' => 'main');
+
+        if ($logoTitle != '') {
+            $this->oValidator->validateIllegalCharacters($logoTitle, $aOptions);
+        }
+        
         if ($config->set('ui/companyLogoUrl', $logoUrl) && $config->set('ui/companyLogoTitle', $logoTitle)) {
             $this->successRedirectTo('main', _kt('Logo fields have been successfully updated.'));
         } else {
@@ -453,8 +462,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         }
 
     }
-
-
 
     /*
      *  Action responsible for uploading the logo
@@ -597,7 +604,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
     }
 
-
     /**
      * Returns the MIME of the filename, deducted from its extension
      * If the extension is unknown, returns "image/jpeg"
@@ -674,7 +680,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         
         return FALSE;
     }
-
      
     /*
      *  This method uses the GD library to scale an image.
