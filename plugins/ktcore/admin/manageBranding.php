@@ -100,6 +100,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     ));
 
         $oWF =& KTWidgetFactory::getSingleton();
+        $oVF =& KTValidatorFactory::getSingleton();
 
         $widgets = array();
         $validators = array();
@@ -125,6 +126,13 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     'id' => 'file',
                     'value' => $logoUrl,
                     'description' => _kt("This is the website address you will be redirected to after clicking the logo. The url should include the protocol e.g. http://www.knowledgetree.com . If no protocol is given the url is treated as a relative link."),
+                    ));
+
+
+        // Adding the url widget
+        $validators[] = $oVF->get('ktcore.widgets.string', array(
+                    'test' => 'logo_url',
+                    'output' => 'logo_url',
                     ));
                     
         $oForm->setWidgets($widgets); 
@@ -429,9 +437,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         return $oForm;
     }
 
-
-
-
     /*
      *  Action responsible for setting the logo details
      *
@@ -443,12 +448,12 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         $config =& KTConfig::getSingleton();
         $logoUrl = $_REQUEST['data']['logo_url'];
         $logoTitle = $_REQUEST['data']['logo_title'];
+        
+        $aOptions = array('redirect_to' => 'main');
 
-        if(!preg_match('/([a-z])|([A-Z])|([0-9])/', $logoTitle)){
-            $this->errorRedirectTo('main', _kt("You have entered an invalid character in the logo title. You may use only letters and numbers."));
+        if ($logoTitle != '') {
+            $this->oValidator->validateIllegalCharacters($logoTitle, $aOptions);
         }
-
-        $logoTitle = addslashes(htmlentities($logoTitle));
         
         if ($config->set('ui/companyLogoUrl', $logoUrl) && $config->set('ui/companyLogoTitle', $logoTitle)) {
             $this->successRedirectTo('main', _kt('Logo fields have been successfully updated.'));
@@ -457,8 +462,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         }
 
     }
-
-
 
     /*
      *  Action responsible for uploading the logo

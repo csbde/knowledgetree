@@ -668,9 +668,10 @@ class DownloadQueue
      *
      * @param unknown_type $zip
      * @param unknown_type $docId
+     * @param boolean $alerts
      * @return unknown
      */
-    public function addDocument(&$zip, $docId)
+    public function addDocument(&$zip, $docId, $alerts = true)
     {
 
         $oDocument = Document::get($docId);
@@ -685,7 +686,7 @@ class DownloadQueue
         }
 
         // fire subscription alerts for the downloaded document - if global config is set
-        if($this->bNotifications){
+        if($this->bNotifications && $alerts){
             $oSubscriptionEvent = new SubscriptionEvent();
             $oFolder = Folder::get($oDocument->getFolderID());
             $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
