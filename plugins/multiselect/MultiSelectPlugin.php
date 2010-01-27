@@ -126,6 +126,7 @@ class MultiSelectPlugin extends KTPlugin {
             'InetdocumentFieldsv2.php', null);
 	}
 }
+
 $oPluginRegistry =& KTPluginRegistry::getSingleton();
 $oPluginRegistry->registerPlugin('MultiSelectPlugin', 'inet.multiselect.lookupvalue.plugin', __FILE__);
 ?>

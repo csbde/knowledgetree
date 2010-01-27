@@ -75,7 +75,7 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 			}
 
 			$js = "<script src='resources/js/kt_hidelink.js' type='text/javascript'></script>";
-			return $js._kt('Bulk Upload');
+			return _kt('Bulk Upload') .$js;
 		}
 		else
 		{
