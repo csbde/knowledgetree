@@ -7,6 +7,8 @@
 #KTDIR="/var/www/knowledgetree"
 KTDIR="$1";
 TMPDIR="$KTDIR/var/pear"
+PEAR_BAK="$TMPDIR/pear_backup_$(date +%Y%m%d).tgz"
+PEAR_LOG="$TMPDIR/upgrade_log.txt"
 
 if [ "$KTDIR" == "" ]; then
     echo "Usage: $0 path/to/knowledgetree/directory";
@@ -24,27 +26,32 @@ if [ ! -x "$(which pear)" ]; then
 fi
 
 # Installing latest pear packages into tmp directory
-pear config-set php_dir "$TMPDIR"
-pear channel-update pear.php.net
-pear config-set preferred_state stable
-pear install --alldeps PEAR
-pear install --alldeps Cache_Lite
-pear install --alldeps Config
-pear install --alldeps DB
-pear install --alldeps File
-pear install --alldeps MDB2#mysql
-pear install --alldeps Log
-pear install --alldeps PHP_Compat
-pear install --alldeps Services_JSON
-pear install --alldeps MIME_Type
-pear config-set preferred_state beta
-pear install --alldeps File_Gettext
-pear install --alldeps Net_LDAP
-pear install --alldeps SOAP
-pear config-set preferred_state stable
+pear config-set php_dir "$TMPDIR" > "$PEAR_LOG"
+pear channel-update pear.php.net >> "$PEAR_LOG"
+pear config-set preferred_state stable >> "$PEAR_LOG"
+pear install --alldeps PEAR >> "$PEAR_LOG"
+pear install --alldeps Cache_Lite >> "$PEAR_LOG"
+pear install --alldeps Config >> "$PEAR_LOG"
+pear install --alldeps DB >> "$PEAR_LOG"
+pear install --alldeps File >> "$PEAR_LOG"
+pear install --alldeps MDB2#mysql >> "$PEAR_LOG"
+pear install --alldeps Log >> "$PEAR_LOG"
+pear install --alldeps PHP_Compat >> "$PEAR_LOG"
+pear install --alldeps Services_JSON >> "$PEAR_LOG"
+pear install --alldeps MIME_Type >> "$PEAR_LOG"
+pear config-set preferred_state beta >> "$PEAR_LOG"
+pear install --alldeps File_Gettext >> "$PEAR_LOG"
+pear install --alldeps Net_LDAP >> "$PEAR_LOG"
+pear install --alldeps SOAP >> "$PEAR_LOG"
+pear config-set preferred_state stable >> "$PEAR_LOG"
+
+if [ "$(grep -i error $PEAR_LOG)" ]; then
+    echo "There where errors retrieving the pear packages from pear.php.net."
+    exit;
+fi
 
 # Backing up the current pear directory
-tar -czvf "$TMPDIR/pear_backup_$(date +%Y%m%d).tgz" "$KTDIR/thirdparty/pear"
+tar -czvf "$PEAR_BAK" "$KTDIR/thirdparty/pear"
 
 #
 # The following section was created via an ls in the current knowledgetree 
@@ -72,3 +79,6 @@ cp -frv "$TMPDIR/PEAR.php" "$KTDIR/thirdparty/pear/"
 cp -frv "$TMPDIR/PHP" "$KTDIR/thirdparty/pear/"
 cp -frv "$TMPDIR/SOAP" "$KTDIR/thirdparty/pear/"
 cp -frv "$TMPDIR/System.php" "$KTDIR/thirdparty/pear/"
+
+echo "Backup of you old pear instance can be found here:"
+echo "$PEAR_BAK"
