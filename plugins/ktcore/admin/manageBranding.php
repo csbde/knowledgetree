@@ -47,7 +47,6 @@ require_once(KT_LIB_DIR . "/validation/dispatchervalidation.inc.php");
 require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
 require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
 
-
 class ManageBrandDispatcher extends KTAdminDispatcher {
 
     private $maxLogoWidth = 313;
@@ -61,7 +60,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
     }
 
     function do_main() {
-
         $oForms[] = $this->getLogoDetailsForm();
         $oForms[] = $this->getUploadLogoForm();
         
@@ -126,7 +124,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
                     'name' => 'logo_url',
                     'id' => 'file',
                     'value' => $logoUrl,
-                    'description' => _kt("This is the website address you will be redirected to after clicking the logo"),
+                    'description' => _kt("This is the website address you will be redirected to after clicking the logo. The url should include the protocol e.g. http://www.knowledgetree.com . If no protocol is given the url is treated as a relative link."),
                     ));
                     
         $oForm->setWidgets($widgets); 
@@ -445,6 +443,12 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         $config =& KTConfig::getSingleton();
         $logoUrl = $_REQUEST['data']['logo_url'];
         $logoTitle = $_REQUEST['data']['logo_title'];
+
+        if(!preg_match('/([a-z])|([A-Z])|([0-9])/', $logoTitle)){
+            $this->errorRedirectTo('main', _kt("You have entered an invalid character in the logo title. You may use only letters and numbers."));
+        }
+
+        $logoTitle = addslashes(htmlentities($logoTitle));
         
         if ($config->set('ui/companyLogoUrl', $logoUrl) && $config->set('ui/companyLogoTitle', $logoTitle)) {
             $this->successRedirectTo('main', _kt('Logo fields have been successfully updated.'));
@@ -597,7 +601,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
     }
 
-
     /**
      * Returns the MIME of the filename, deducted from its extension
      * If the extension is unknown, returns "image/jpeg"
@@ -674,7 +677,6 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         
         return FALSE;
     }
-
      
     /*
      *  This method uses the GD library to scale an image.
