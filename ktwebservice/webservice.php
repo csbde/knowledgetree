@@ -769,17 +769,20 @@ class KTWebService
 
          // get_folder_detail_by_name
          $this->__dispatch_map['get_folder_detail_by_name'] =
-            array('in' => array('session_id' => 'string', 'folder_name' => 'string'),
+            array('in' => array('session_id' => 'string', 'folder_name' => 'string', 'parent_id' => 'int' ),
              'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
             );
 
+         /* If this is now the same as version 2 for this function, we don't need this.
+          *
          if ($this->version >=3)
          {
-             // was
-         	 //$this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create'=>'boolean' );
+             // was 
+         	 $this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create'=>'boolean' );
              // now
          	 $this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'parent_id'=>'int' );
          }
+          */
 
          // get_folder_contents
          $this->__dispatch_map['get_folder_contents'] =
@@ -957,26 +960,11 @@ class KTWebService
          {
              // add_document
              $this->__dispatch_map['add_document'] =
-                array('in' => array('session_id'=>'string','folder_id'=>'int','title'=>'string','filename'=>'string','documentype' =>'string','tempfilename' =>'string' ),
-                 'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
-                );
-
- 	        $this->__dispatch_map['add_document_with_metadata'] =
-    	        array('in' => array('session_id'=>'string','folder_id'=>'int','title'=>'string','filename'=>'string','documentype' =>'string','tempfilename' =>'string', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets",'sysdata'=>"{urn:$this->namespace}kt_sysdata" ),
-        	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
-            	);
-         }
-
-         // Replaces add_document and add_document_with_metadata functions to allow upload with a unique file id
-         if($this->version >= 2)
-         {
-             // add_document
-             $this->__dispatch_map['add_document_with_key'] =
                 array('in' => array('session_id'=>'string','folder_id'=>'int','title'=>'string','filename'=>'string','documentype' =>'string','tempfilename' =>'string', 'unique_file_id' => 'string' ),
                  'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" ),
                 );
 
- 	        $this->__dispatch_map['add_document_with_key_with_metadata'] =
+ 	        $this->__dispatch_map['add_document_with_metadata'] =
     	        array('in' => array('session_id'=>'string','folder_id'=>'int','title'=>'string','filename'=>'string','documentype' =>'string','tempfilename' =>'string', 'metadata'=>"{urn:$this->namespace}kt_metadata_fieldsets",'sysdata'=>"{urn:$this->namespace}kt_sysdata", 'unique_file_id' => 'string' ),
         	     'out' => array( 'return' => "{urn:$this->namespace}kt_document_detail" )
             	);
@@ -2281,7 +2269,18 @@ class KTWebService
 
     }
 
-    function add_document_with_key($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $unique_file_id = null)
+    /**
+     * Adds a document to the repository.
+     *
+     * @param string $session_id
+     * @param int $folder_id
+     * @param string $title
+     * @param string $filename
+     * @param string $documenttype
+     * @param string $tempfilename
+     * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
+     */
+    function add_document($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $unique_file_id = null)
     {
         if(empty($tempfilename) && !empty($unique_file_id)){
             $upload_manager = new KTUploadManager();
@@ -2295,22 +2294,6 @@ class KTWebService
     		}
         }
 
-        return $this->add_document($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename);
-    }
-
-    /**
-     * Adds a document to the repository.
-     *
-     * @param string $session_id
-     * @param int $folder_id
-     * @param string $title
-     * @param string $filename
-     * @param string $documenttype
-     * @param string $tempfilename
-     * @return kt_document_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
-     */
-    function add_document($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename)
-    {
     	$this->debug("add_document('$session_id',$folder_id,'$title','$filename','$documenttype','$tempfilename')");
     	$kt = &$this->get_ktapi($session_id );
     	if (is_array($kt))
@@ -2396,24 +2379,7 @@ class KTWebService
 		return $update_result;
     }
 
-    function add_document_with_key_with_metadata($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata, $unique_file_id = null)
-    {
-        if(empty($tempfilename) && !empty($unique_file_id)){
-            $upload_manager = new KTUploadManager();
-            $tempfilename = $upload_manager->get_tempfile_from_unique_id($unique_file_id);
-
-            if (PEAR::isError($tempfilename))
-    		{
-    		    $response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, "Invalid unique file id: {$tempfilename->getMessage()}.");
-    			$this->debug("add_document - cannot add document - "  . $tempfilename->getMessage(), $session_id);
-    			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
-    		}
-        }
-
-        return $this->add_document_with_metadata($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata);
-    }
-
-    function add_document_with_metadata($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata)
+    function add_document_with_metadata($session_id, $folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata, $unique_file_id = null)
     {
 		$add_result = $this->add_document($session_id, $folder_id, $title, $filename, $documenttype, $tempfilename, $unique_file_id);
 
