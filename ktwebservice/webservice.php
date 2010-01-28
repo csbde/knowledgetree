@@ -775,10 +775,11 @@ class KTWebService
 
          if ($this->version >=3)
          {
-             // was
+             // NOTE that there was a bug: folder_id should be folder_name and be of type int - this is fixed in the second version below
+             //      additionally the function has no "create" parameter
          	 //$this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create'=>'boolean' );
              // now
-         	 $this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'parent_id'=>'int' );
+         	 $this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_name' => 'string', 'parent_id'=>'int' );
          }
 
          // get_folder_contents
