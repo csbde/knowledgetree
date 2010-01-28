@@ -602,11 +602,11 @@ class DownloadQueue
             foreach ($download as $item){
                 if($item['object_type'] == 'document'){
                     $docId = $item['object_id'];
-                    $this->addDocument($zip, $docId);
+                    $this->addDocument($zip, $docId, false);
                 }
                 if($item['object_type'] == 'folder'){
                     $folderId = $item['object_id'];
-                    $this->addFolder($zip, $folderId);
+                    $this->addFolder($zip, $folderId, false);
                 }
             }
 
@@ -700,9 +700,10 @@ class DownloadQueue
      *
      * @param unknown_type $zip
      * @param unknown_type $folderId
+     * @param boolean $alerts
      * @return unknown
      */
-    public function addFolder(&$zip, $folderId)
+    public function addFolder(&$zip, $folderId, $alerts = true)
     {
         $oFolder = Folder::get($folderId);
 
@@ -782,7 +783,7 @@ class DownloadQueue
                     }
 
                     // fire subscription alerts for the downloaded document
-                    if($this->bNotifications){
+                    if($this->bNotifications && $alerts) {
                         $oSubscriptionEvent = new SubscriptionEvent();
                         $oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
                     }
