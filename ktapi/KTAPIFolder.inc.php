@@ -288,10 +288,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @access public
 	 * @param KTAPI $ktapi
 	 * @param string $foldername
-	 * @param int $folderid
+	 * @param int $folderid The parent folder id
 	 * @return KTAPI_Folder
 	 */
-	function _get_folder_by_name($ktapi, $foldername, $parentId)
+	function _get_folder_by_name($ktapi, $foldername, $folderid)
 	{
 		$foldername=trim($foldername);
 		if (empty($foldername))
@@ -310,8 +310,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			$foldername = KTUtil::replaceInvalidCharacters($foldername);
 			$foldername = sanitizeForSQL($foldername);
 			$sql = "SELECT id FROM folders WHERE
-					(name='$foldername' and parent_id=$parentId) OR
-					(name='$foldername' and parent_id is null and $parentId=1)";
+					(name='$foldername' and parent_id=$folderid) OR
+					(name='$foldername' and parent_id is null and $folderid=1)";
 			$row = DBUtil::getOneResult($sql);
 			if (is_null($row) || PEAR::isError($row))
 			{
@@ -552,8 +552,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 			foreach ($folder_children as $folder)
 			{
-			
-				if(KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder) 
+
+				if(KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder)
 				    /*|| KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $folder)*/)
 				{
 					if ($depth-1 > 0)
