@@ -1194,7 +1194,6 @@ class KTBrowseBulkExportAction extends KTBulkAction {
       *
       */
     function perform_action($oEntity) {
-        // TODO find a way to do bulk email
         $exportCode = $_SESSION['exportcode'];
         $this->oZip = ZipFolder::get($exportCode);
 
@@ -1213,7 +1212,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 	    	if($useQueue){
                 DownloadQueue::addItem($this->sExportCode, $this->oFolder->getId(), $oDocument->iId, 'document');
 	    	}else{
-                $oQueue->addDocument($this->oZip, $oDocument->iId);
+                $oQueue->addDocument($this->oZip, $oDocument->iId, false);
 	    	}
 
 

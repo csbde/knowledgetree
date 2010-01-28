@@ -70,6 +70,16 @@ class KTBulkExportAction extends KTFolderAction {
         return _kt('Bulk Download');
     }
 
+	/**
+     * Deal with bulk actions
+     */
+    function do_notification($objects, $eventAction, $targetFolder) {
+        if ($targetFolder && count($objects) > 0 && $eventAction != '') { // Make sure there were documents/folders affected
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oSubscriptionEvent->notifyBulkDocumentAction($objects, $eventAction, $targetFolder);
+        }
+    }
+    
     function do_main() {
         $config = KTConfig::getSingleton();
         $useQueue = $config->get('export/useDownloadQueue', true);
@@ -91,12 +101,21 @@ class KTBulkExportAction extends KTFolderAction {
         $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
 
         if($useQueue){
+          	$aDocList = array();
+          	$originalFolder =& Folder::get($sCurrentFolderId);
+          	$docIds = $originalFolder->getDocumentIDs($sCurrentFolderId);
+          	$docIds = split(",", $docIds);
+          	foreach ($docIds as $dId) {
+          		$aDocList[] = & Document::get($dId);
+          	}
+			$this->do_notification($aDocList, "DownloadDocument", $originalFolder); // Send off notifications about bulk action
+			
             DownloadQueue::addItem($exportCode, $sCurrentFolderId, $sCurrentFolderId, 'folder');
 
             $task_url = KTUtil::kt_url() . '/presentation/lookAndFeel/knowledgeTree/bulkdownload/downloadTask.php';
-
           	$oTemplating =& KTTemplating::getSingleton();
           	$oTemplate = $oTemplating->loadTemplate('ktcore/action/bulk_download');
+
 
           	$aParams = array(
                     'folder_url' => $folderurl,
@@ -174,12 +193,6 @@ class KTBulkExportAction extends KTFolderAction {
                 if ($bNoisy) {
                     $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
                     $oDocumentTransaction->create();
-                }
-
-                // fire subscription alerts for the downloaded document
-                if($bNotifications){
-                    //$oSubscriptionEvent = new SubscriptionEvent();
-                    //$oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
                 }
 
                 $this->oZip->addDocumentToZip($oDocument, $oFolder);
