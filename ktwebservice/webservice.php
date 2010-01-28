@@ -769,20 +769,17 @@ class KTWebService
 
          // get_folder_detail_by_name
          $this->__dispatch_map['get_folder_detail_by_name'] =
-            array('in' => array('session_id' => 'string', 'folder_name' => 'string', 'parent_id' => 'int' ),
+            array('in' => array('session_id' => 'string', 'folder_name' => 'string'),
              'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
             );
 
-         /* If this is now the same as version 2 for this function, we don't need this.
-          *
          if ($this->version >=3)
          {
-             // was 
-         	 $this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create'=>'boolean' );
+             // was
+         	 //$this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create'=>'boolean' );
              // now
          	 $this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'parent_id'=>'int' );
          }
-          */
 
          // get_folder_contents
          $this->__dispatch_map['get_folder_contents'] =
