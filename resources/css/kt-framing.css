@@ -1065,7 +1065,7 @@ a.main_nav_item {
 
 .ktBlock {
 	position: relative;
-    padding: 0.1em 1em;
+    padding: 0.1em 1em 1em 1em;
     margin: 0 0 1em 0.5em;
     z-index:0; /*Added to accomadate pageBody background change*/
 }
