@@ -99,24 +99,18 @@ class KTBulkExportAction extends KTFolderAction {
         $sCurrentFolderId = $this->oFolder->getId();
         $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $sCurrentFolderId, $exportCode));
         $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
-
+      	$aDocList = array();
+      	$originalFolder =& Folder::get($sCurrentFolderId);
+      	$docIds = $originalFolder->getDocumentIDs($sCurrentFolderId);
+      	$docIds = split(",", $docIds);
+      	foreach ($docIds as $dId) {
+      		$aDocList[] = & Document::get($dId);
+      	}
         if($useQueue){
-          	$aDocList = array();
-          	$originalFolder =& Folder::get($sCurrentFolderId);
-          	$docIds = $originalFolder->getDocumentIDs($sCurrentFolderId);
-          	$docIds = split(",", $docIds);
-          	foreach ($docIds as $dId) {
-          		$aDocList[] = & Document::get($dId);
-          	}
-			$this->do_notification($aDocList, "DownloadDocument", $originalFolder); // Send off notifications about bulk action
-			
             DownloadQueue::addItem($exportCode, $sCurrentFolderId, $sCurrentFolderId, 'folder');
-
             $task_url = KTUtil::kt_url() . '/presentation/lookAndFeel/knowledgeTree/bulkdownload/downloadTask.php';
           	$oTemplating =& KTTemplating::getSingleton();
           	$oTemplate = $oTemplating->loadTemplate('ktcore/action/bulk_download');
-
-
           	$aParams = array(
                     'folder_url' => $folderurl,
                     'url' => $task_url,
@@ -125,7 +119,7 @@ class KTBulkExportAction extends KTFolderAction {
                 );
             return $oTemplate->render($aParams);
         }
-
+		$this->do_notification($aDocList, "DownloadDocument", $originalFolder); // Send off notifications about bulk action
         // Get all folders and sub-folders
         $sWhereClause = "parent_folder_ids = '{$sCurrentFolderId}' OR
         parent_folder_ids LIKE '{$sCurrentFolderId},%' OR
