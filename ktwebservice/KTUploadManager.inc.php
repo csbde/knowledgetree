@@ -105,15 +105,27 @@ class KTUploadManager
 
         $check = ($tempdir == $main_temp_dir);
 
+        /*
+        Removing the return, if the file is not directly in the temp directory then it may be a security risk, for instance a file can be uploaded using the following tempfilename: /var/www/var/uploads/../../../../etc/passwd
+        Checking the basename of the file should negate this risk.
         if($check){
             return $check;
         }
+        */
 
         // in case of a symlinked directory, check if the file exists and is in the uploads directory
         $file = basename($tempfilename);
         $path = $this->temp_dir . DIRECTORY_SEPARATOR . $file;
 
         if(file_exists($path)){
+
+            // Added check - if file name contains ../ to get down a few levels into the root filesystem
+            if(strpos($tempfilename, '../') !== false){
+                global $default;
+                $default->log->error('Upload Manager: temporary filename contains relative path: '.$tempfilename .' could be attempting to access root level files');
+                return false;
+            }
+
             return true;
         }
 
@@ -122,12 +134,6 @@ class KTUploadManager
         $default->log->error('Upload Manager: can\'t resolve temporary filename: '.$tempfilename .' in uploads directory: '.$this->temp_dir);
 
         return false;
-
-        /*
-        $tempdir = substr($tempfilename,0,strlen($this->temp_dir));
-		$tempdir = str_replace('\\','/', $tempdir);
-		return ($tempdir == $this->temp_dir);
-		*/
     }
 
 	function store_base64_file($base64, $prefix= 'sa_')
