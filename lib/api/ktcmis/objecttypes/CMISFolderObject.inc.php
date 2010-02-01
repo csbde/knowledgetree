@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008,2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,7 +33,11 @@
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
  *
- * @copyright 2008-2009, KnowledgeTree Inc.
+ */
+
+/**
+ *
+ * @copyright 2008-2010, KnowledgeTree Inc.
  * @license GNU General Public License version 3
  * @author KnowledgeTree Team
  * @package KTCMIS
