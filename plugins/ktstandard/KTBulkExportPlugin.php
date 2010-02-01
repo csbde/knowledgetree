@@ -117,6 +117,7 @@ class KTBulkExportAction extends KTFolderAction {
                     'code' => $exportCode,
                     'download_url' => $url
                 );
+			$this->do_notification($aDocList, "DownloadDocument", $originalFolder); // Send off notifications about bulk action
             return $oTemplate->render($aParams);
         }
 		$this->do_notification($aDocList, "DownloadDocument", $originalFolder); // Send off notifications about bulk action
