@@ -32,7 +32,7 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original 
  * copyright notice.
- *
+ * Contributor( s): ______________________________________
  */
 
 /**
