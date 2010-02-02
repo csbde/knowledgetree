@@ -333,7 +333,7 @@
 					{/if}
                 </td>
                 <td align="right">
-                    {i18n}&copy; 2008, 2009 <a href="http://www.knowledgetree.com/about/legal" target="_blank">KnowledgeTree Inc.</a>{/i18n}
+                    {i18n}&copy; 2008-2010 <a href="http://www.knowledgetree.com/about/legal" target="_blank">KnowledgeTree Inc.</a>{/i18n}
 					{i18n}All rights reserved.{/i18n}
 					{if ($smallVersion == 'Community Edition')}
 						<br>{i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}
