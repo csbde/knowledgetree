@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: array_diff_uassoc.php,v 1.2 2005/01/26 04:55:13 aidan Exp $
 
 
 /**
@@ -24,7 +24,7 @@
  * @category    PHP
  * @package     PHP_Compat
  * @link        http://php.net/function.array_diff_uassoc
- * @version     $Revision$
+ * @version     $Revision: 1.2 $
  * @since       PHP 5.0.0
  * @require     PHP 4.0.6 (is_callable)
  */

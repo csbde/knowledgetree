@@ -21,66 +21,64 @@
  * @category   Web Services
  * @package    SOAP
  * @author     Shane Caraveo <Shane@Caraveo.com>
- * @copyright  2003-2005 The PHP Group
+ * @author     Jan Schneider <jan@horde.org>
+ * @copyright  2003-2006 The PHP Group
  * @license    http://www.php.net/license/2_02.txt  PHP License 2.02
  * @link       http://pear.php.net/package/SOAP
  */
 
-require_once 'SOAP/Base.php';
+require_once 'SOAP/Transport.php';
 require_once 'Mail/smtp.php';
 
 /**
- *  SMTP Transport for SOAP
+ * SMTP Transport for SOAP
  *
- * implements SOAP-SMTP as defined at
+ * Implements SOAP-SMTP as defined at
  * http://www.pocketsoap.com/specs/smtpbinding/
  *
- * TODO: use PEAR smtp and Mime classes
+ * @todo use PEAR smtp and Mime classes
  *
  * @access public
  * @package SOAP
  * @author Shane Caraveo <shane@php.net>
+ * @author Jan Schneider <jan@horde.org>
  */
-class SOAP_Transport_SMTP extends SOAP_Base
+class SOAP_Transport_SMTP extends SOAP_Transport
 {
-
     var $credentials = '';
     var $timeout = 4; // connect timeout
-    var $urlparts = NULL;
-    var $url = '';
-    var $incoming_payload = '';
-    var $_userAgent = SOAP_LIBRARY_NAME;
-    var $encoding = SOAP_DEFAULT_ENCODING;
     var $host = '127.0.0.1';
     var $port = 25;
-    var $auth = NULL;
+    var $auth = null;
+
     /**
-    * SOAP_Transport_SMTP Constructor
-    *
-    * @param string $URL    mailto:address
-    *
-    * @access public
-    */
-    function SOAP_Transport_SMTP($URL, $encoding='US-ASCII')
+     * SOAP_Transport_SMTP Constructor
+     *
+     * @param string $url  mailto: address.
+     *
+     * @access public
+     */
+    function SOAP_Transport_SMTP($url, $encoding = 'US-ASCII')
     {
         parent::SOAP_Base('SMTP');
         $this->encoding = $encoding;
-        $this->urlparts = @parse_url($URL);
-        $this->url = $URL;
+        $this->urlparts = @parse_url($url);
+        $this->url = $url;
     }
 
     /**
      * Sends and receives SOAP data.
      *
-     * @param string $msg       Outgoing POST data.
-     * @param string $action    SOAP Action header data.
-     * @param integer $timeout  Socket timeout, defaults to 0 or off.
-     *
-     * @return string  Response data, minus HTTP headers.
      * @access public
+     *
+     * @param string  Outgoing SOAP data.
+     * @param array   Options.
+     *
+     * @return string|SOAP_Fault
      */
     function send($msg, $options = array())
     {
+        $this->fault = null;
         $this->incoming_payload = '';
         $this->outgoing_payload = $msg;
         if (!$this->_validateUrl()) {
@@ -148,22 +146,21 @@ class SOAP_Transport_SMTP extends SOAP_Base
             'password' => $this->password,
             'auth' => $this->auth
         );
-        $mailer =& new Mail_smtp($mailer_params);
+        $mailer = new Mail_smtp($mailer_params);
         $result = $mailer->send($this->urlparts['path'], $headers, $out);
         if (!PEAR::isError($result)) {
-            $val =& new SOAP_Value('Message-ID', 'string', $headers['Message-ID']);
+            $val = new SOAP_Value('Message-ID', 'string', $headers['Message-ID']);
         } else {
-            $sval[] =& new SOAP_Value('faultcode', 'QName', 'SOAP-ENV:Client');
-            $sval[] =& new SOAP_Value('faultstring', 'string', "couldn't send SMTP message to {$this->urlparts['path']}");
-            $val =& new SOAP_Value('Fault', 'Struct', $sval);
+            $sval[] = new SOAP_Value('faultcode', 'QName', SOAP_BASE::SOAPENVPrefix().':Client');
+            $sval[] = new SOAP_Value('faultstring', 'string', "couldn't send SMTP message to {$this->urlparts['path']}");
+            $val = new SOAP_Value('Fault', 'Struct', $sval);
         }
 
-        $mqname =& new QName($method, $namespace);
-        $methodValue =& new SOAP_Value('Response', 'Struct', array($val));
+        $methodValue = new SOAP_Value('Response', 'Struct', array($val));
 
-        $this->incoming_payload = $this->_makeEnvelope($methodValue,
-                                                       $this->headers,
-                                                       $this->encoding);
+        $this->incoming_payload = $this->makeEnvelope($methodValue,
+                                                      $this->headers,
+                                                      $this->encoding);
 
         return $this->incoming_payload;
     }
@@ -191,16 +188,16 @@ class SOAP_Transport_SMTP extends SOAP_Base
     function _validateUrl()
     {
         if (!is_array($this->urlparts)) {
-            $this->_raiseSoapFault("Unable to parse URL $url");
+            $this->_raiseSoapFault("Unable to parse URL $this->url");
             return false;
         }
         if (!isset($this->urlparts['scheme']) ||
             strcasecmp($this->urlparts['scheme'], 'mailto') != 0) {
-                $this->_raiseSoapFault("Unable to parse URL $url");
+                $this->_raiseSoapFault("Unable to parse URL $this->url");
                 return false;
         }
         if (!isset($this->urlparts['path'])) {
-            $this->_raiseSoapFault("Unable to parse URL $url");
+            $this->_raiseSoapFault("Unable to parse URL $this->url");
             return false;
         }
         return true;

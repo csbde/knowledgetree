@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: FILE.php,v 1.8 2004/08/19 10:09:52 aidan Exp $
 
 
 /**
@@ -25,7 +25,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/ref.filesystem
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.8 $
  * @since       PHP 5
  */
 if (!defined('FILE_USE_INCLUDE_PATH')) {

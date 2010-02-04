@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: array_chunk.php,v 1.14 2005/01/26 04:55:13 aidan Exp $
 
 
 /**
@@ -26,7 +26,7 @@
  * @link        http://php.net/function.array_chunk
  * @author      Aidan Lister <aidan@php.net>
  * @author      Thiemo Mättig (http://maettig.com)
- * @version     $Revision$
+ * @version     $Revision: 1.14 $
  * @since       PHP 4.2.0
  * @require     PHP 4.0.0 (user_error)
  */

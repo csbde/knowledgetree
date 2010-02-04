@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: Compat.php,v 1.19 2005/05/10 12:05:36 aidan Exp $
 
 
 /**
@@ -27,7 +27,7 @@
  *
  * @category    PHP
  * @package     PHP_Compat
- * @version     $Revision$
+ * @version     $Revision: 1.19 $
  * @author      Aidan Lister <aidan@php.net>
  * @static
  */

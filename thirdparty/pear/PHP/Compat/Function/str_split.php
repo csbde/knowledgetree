@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: str_split.php,v 1.15 2005/06/18 12:15:32 aidan Exp $
 
 
 /**
@@ -25,7 +25,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/function.str_split
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.15 $
  * @since       PHP 5
  * @require     PHP 4.0.0 (user_error)
  */

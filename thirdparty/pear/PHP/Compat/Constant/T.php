@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: T.php,v 1.4 2004/11/14 16:43:40 aidan Exp $
 
 
 /**
@@ -25,7 +25,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/ref.tokenizer
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.4 $
  * @since       PHP 5
  */
 if (!defined('T_ML_COMMENT')) {

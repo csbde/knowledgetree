@@ -32,12 +32,14 @@
 // | Author: Richard Heyes <richard at php net>                            |
 // +-----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: URL.php,v 1.49 2007/06/28 14:43:07 davidc Exp $
 //
 // Net_URL Class
 
+
 class Net_URL
 {
+    var $options = array('encode_query_keys' => false);
     /**
     * Full url
     * @var string
@@ -104,7 +106,8 @@ class Net_URL
     * @see __construct()
     */
     function Net_URL($url = null, $useBrackets = true)
-    {
+    {   
+        
         $this->__construct($url, $useBrackets);
     }
 
@@ -121,10 +124,16 @@ class Net_URL
     */
     function __construct($url = null, $useBrackets = true)
     {
+        $this->url = $url;
+        $this->useBrackets = $useBrackets;
+
+        $this->initialize();
+    }
+
+    function initialize()
+    {
         $HTTP_SERVER_VARS  = !empty($_SERVER) ? $_SERVER : $GLOBALS['HTTP_SERVER_VARS'];
 
-        $this->useBrackets = $useBrackets;
-        $this->url         = $url;
         $this->user        = '';
         $this->pass        = '';
         $this->host        = '';
@@ -134,14 +143,15 @@ class Net_URL
         $this->anchor      = '';
 
         // Only use defaults if not an absolute URL given
-        if (!preg_match('/^[a-z0-9]+:\/\//i', $url)) {
-
-            $this->protocol    = (@$HTTP_SERVER_VARS['HTTPS'] == 'on' ? 'https' : 'http');
+        if (!preg_match('/^[a-z0-9]+:\/\//i', $this->url)) {
+            $this->protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http');
 
             /**
             * Figure out host/port
             */
-            if (!empty($HTTP_SERVER_VARS['HTTP_HOST']) AND preg_match('/^(.*)(:([0-9]+))?$/U', $HTTP_SERVER_VARS['HTTP_HOST'], $matches)) {
+            if (!empty($HTTP_SERVER_VARS['HTTP_HOST']) && 
+                preg_match('/^(.*)(:([0-9]+))?$/U', $HTTP_SERVER_VARS['HTTP_HOST'], $matches)) 
+            {
                 $host = $matches[1];
                 if (!empty($matches[3])) {
                     $port = $matches[3];
@@ -160,8 +170,8 @@ class Net_URL
         }
 
         // Parse the url and store the various parts
-        if (!empty($url)) {
-            $urlinfo = parse_url($url);
+        if (!empty($this->url)) {
+            $urlinfo = parse_url($this->url);
 
             // Default querystring
             $this->querystring = array();
@@ -200,7 +210,6 @@ class Net_URL
             }
         }
     }
-
     /**
     * Returns full url
     *
@@ -223,7 +232,11 @@ class Net_URL
     }
 
     /**
-    * Adds a querystring item
+    * Adds or updates a querystring item (URL parameter).
+    * Automatically encodes parameters with rawurlencode() if $preencoded
+    *  is false.
+    * You can pass an array to $value, it gets mapped via [] in the URL if
+    * $this->useBrackets is activated.
     *
     * @param  string $name       Name of item
     * @param  string $value      Value of item
@@ -232,6 +245,10 @@ class Net_URL
     */
     function addQueryString($name, $value, $preencoded = false)
     {
+        if ($this->getOption('encode_query_keys')) {
+            $name = rawurlencode($name);
+        }
+
         if ($preencoded) {
             $this->querystring[$name] = $value;
         } else {
@@ -247,6 +264,10 @@ class Net_URL
     */
     function removeQueryString($name)
     {
+        if ($this->getOption('encode_query_keys')) {
+            $name = rawurlencode($name);
+        }
+
         if (isset($this->querystring[$name])) {
             unset($this->querystring[$name]);
         }
@@ -273,6 +294,9 @@ class Net_URL
     {
         if (!empty($this->querystring)) {
             foreach ($this->querystring as $name => $value) {
+                // Encode var name
+                $name = rawurlencode($name);
+
                 if (is_array($value)) {
                     foreach ($value as $k => $v) {
                         $querystring[] = $this->useBrackets ? sprintf('%s[%s]=%s', $name, $k, $v) : ($name . '=' . $v);
@@ -311,13 +335,27 @@ class Net_URL
                 $value = null;
                 $key   = $part;
             }
-            if (substr($key, -2) == '[]') {
-                $key = substr($key, 0, -2);
-                if (@!is_array($return[$key])) {
-                    $return[$key]   = array();
+
+            //$encodekeys = $this->getOption('encode_query_keys'); // This method fails in KnowledgeTree (Gives Bad Pointer Refs)
+            $encodekeys = $this->options['encode_query_keys'];
+            if (!$encodekeys) {
+                $key = rawurldecode($key);
+            }
+
+            if (preg_match('#^(.*)\[([0-9a-z_-]*)\]#i', $key, $matches)) {
+                $key = $matches[1];
+                $idx = $matches[2];
+
+                // Ensure is an array
+                if (empty($return[$key]) || !is_array($return[$key])) {
+                    $return[$key] = array();
+                }
+
+                // Add data
+                if ($idx === '') {
                     $return[$key][] = $value;
                 } else {
-                    $return[$key][] = $value;
+                    $return[$key][$idx] = $value;
                 }
             } elseif (!$this->useBrackets AND !empty($return[$key])) {
                 $return[$key]   = (array)$return[$key];
@@ -326,6 +364,21 @@ class Net_URL
                 $return[$key] = $value;
             }
         }
+
+        /* //TODO: when 'encode_query_keys' option needs to be implemented re open this
+         *         to test.
+         *         1. Add Ldap Authentication Source in Administration->Users and Groups->Authentication
+         *         2. Edit Provider Configuration. 
+         *         3. Save generates an error that can be caught here:
+         */
+         /*
+        if ($querystring == 'source_id=1') {
+            var_dump($this->options);
+            
+            //var_dump($return);
+            exit;
+        }
+        */
 
         return $return;
     }
@@ -340,7 +393,7 @@ class Net_URL
     *
     * This method can also be called statically.
     *
-    * @param  string $url URL path to resolve
+    * @param  string $path URL path to resolve
     * @return string      The result
     */
     function resolvePath($path)
@@ -403,7 +456,47 @@ class Net_URL
     function setProtocol($protocol, $port = null)
     {
         $this->protocol = $protocol;
-        $this->port = is_null($port) ? $this->getStandardPort($protocol) : $port;
+        $this->port     = is_null($port) ? $this->getStandardPort($protocol) : $port;
+    }
+
+    /**
+     * Set an option
+     *
+     * This function set an option
+     * to be used thorough the script.
+     *
+     * @access public
+     * @param  string $optionName  The optionname to set
+     * @param  string $value       The value of this option.
+     */
+    function setOption($optionName, $value)
+    {
+        if (!array_key_exists($optionName, $this->options)) {
+            return false;
+        }
+
+        $this->options[$optionName] = $value;
+        $this->initialize();
+    }
+
+    /**
+     * Get an option
+     *
+     * This function gets an option
+     * from the $this->options array
+     * and return it's value.
+     *
+     * @access public
+     * @param  string $opionName  The name of the option to retrieve
+     * @see    $this->options
+     */
+    function getOption($optionName)
+    {
+        if (!isset($this->options[$optionName])) {
+            return false;
+        }
+
+        return $this->options[$optionName];
     }
 
 }

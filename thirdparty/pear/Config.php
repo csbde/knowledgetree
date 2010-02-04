@@ -15,19 +15,20 @@
 // | Author: Bertrand Mansion <bmansion@mamasam.com>                      |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: Config.php,v 1.22 2006/12/22 00:35:34 aashley Exp $
 
 require_once('PEAR.php');
 require_once('Config/Container.php');
 
 $GLOBALS['CONFIG_TYPES'] = 
         array(
-            'apache'        =>array('Config/Container/Apache.php','Config_Container_Apache'),
-            'genericconf'   =>array('Config/Container/GenericConf.php','Config_Container_GenericConf'),
-            'inifile'       =>array('Config/Container/IniFile.php','Config_Container_IniFile'),
-            'inicommented'  =>array('Config/Container/IniCommented.php','Config_Container_IniCommented'),
-            'phparray'      =>array('Config/Container/PHPArray.php','Config_Container_PHPArray'),
-            'xml'           =>array('Config/Container/XML.php','Config_Container_XML')
+            'apache'        => array('Config/Container/Apache.php', 'Config_Container_Apache'),
+            'genericconf'   => array('Config/Container/GenericConf.php', 'Config_Container_GenericConf'),
+            'inifile'       => array('Config/Container/IniFile.php', 'Config_Container_IniFile'),
+            'inicommented'  => array('Config/Container/IniCommented.php', 'Config_Container_IniCommented'),
+            'phparray'      => array('Config/Container/PHPArray.php', 'Config_Container_PHPArray'),
+						'phpconstants'	=> array('Config/Container/PHPConstants.php', 'Config_Container_PHPConstants'),
+            'xml'           => array('Config/Container/XML.php', 'Config_Container_XML')
             );
 
 /**
@@ -159,12 +160,12 @@ class Config {
     function setRoot(&$rootContainer)
     {
         if (is_object($rootContainer) && strtolower(get_class($rootContainer)) === 'config_container') {
-        	if ($rootContainer->getName() === 'root' && $rootContainer->getType() === 'section') {
-        		$this->container =& $rootContainer;
-        	} else {
-	            $this->container =& new Config_Container('section', 'root');
-    	        $this->container->addItem($rootContainer);
-    	    }
+            if ($rootContainer->getName() === 'root' && $rootContainer->getType() === 'section') {
+                $this->container =& $rootContainer;
+            } else {
+                $this->container =& new Config_Container('section', 'root');
+                $this->container->addItem($rootContainer);
+            }
             return true;
         } else {
             return PEAR::raiseError("Config::setRoot only accepts object of Config_Container type.", null, PEAR_ERROR_RETURN);

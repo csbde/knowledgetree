@@ -3,12 +3,19 @@
  * $Header$
  * $Horde: horde/lib/Log/sql.php,v 1.12 2000/08/16 20:27:34 chuck Exp $
  *
- * @version $Revision$
+ * @version $Revision: 250926 $
  * @package Log
  */
 
-/** PEAR's DB package */
-require_once 'DB.php';
+/**
+ * We require the PEAR DB class.  This is generally defined in the DB.php file,
+ * but it's possible that the caller may have provided the DB class, or a
+ * compatible wrapper (such as the one shipped with MDB2), so we first check
+ * for an existing 'DB' class before including 'DB.php'.
+ */
+if (!class_exists('DB')) {
+    require_once 'DB.php';
+}
 
 /**
  * The Log_sql class is a concrete implementation of the Log::
@@ -29,25 +36,47 @@ require_once 'DB.php';
  * @author  Jon Parise <jon@php.net>
  * @since   Horde 1.3
  * @since   Log 1.0
- * @package Log 
+ * @package Log
  *
  * @example sql.php     Using the SQL handler.
  */
-class Log_sql extends Log {
-
-    /** 
-     * Array containing the dsn information. 
-     * @var string
+class Log_sql extends Log
+{
+    /**
+     * Variable containing the DSN information.
+     * @var mixed
      * @access private
      */
     var $_dsn = '';
 
-    /** 
-     * Object holding the database handle. 
+    /**
+     * String containing the SQL insertion statement.
+     *
+     * @var string
+     * @access private
+     */
+    var $_sql = '';
+
+    /**
+     * Array containing our set of DB configuration options.
+     * @var array
+     * @access private
+     */
+    var $_options = array('persistent' => true);
+
+    /**
+     * Object holding the database handle.
      * @var object
      * @access private
      */
     var $_db = null;
+
+    /**
+     * Resource holding the prepared statement handle.
+     * @var resource
+     * @access private
+     */
+    var $_statement = null;
 
     /**
      * Flag indicating that we're using an existing database connection.
@@ -56,8 +85,8 @@ class Log_sql extends Log {
      */
     var $_existingConnection = false;
 
-    /** 
-     * String holding the database table to use. 
+    /**
+     * String holding the database table to use.
      * @var string
      * @access private
      */
@@ -86,7 +115,7 @@ class Log_sql extends Log {
      * @param string $ident        The identification field.
      * @param array $conf          The connection configuration array.
      * @param int $level           Log messages up to and including this level.
-     * @access public     
+     * @access public
      */
     function Log_sql($name, $ident = '', $conf = array(),
                      $level = PEAR_LOG_DEBUG)
@@ -94,6 +123,20 @@ class Log_sql extends Log {
         $this->_id = md5(microtime());
         $this->_table = $name;
         $this->_mask = Log::UPTO($level);
+
+        /* Now that we have a table name, assign our SQL statement. */
+        if (!empty($conf['sql'])) {
+            $this->_sql = $conf['sql'];
+        } else {
+            $this->_sql = 'INSERT INTO ' . $this->_table .
+                          ' (id, logtime, ident, priority, message)' .
+                          ' VALUES(?, CURRENT_TIMESTAMP, ?, ?, ?)';
+        }
+
+        /* If an options array was provided, use it. */
+        if (isset($conf['options']) && is_array($conf['options'])) {
+            $this->_options = $conf['options'];
+        }
 
         /* If a specific sequence name was provided, use it. */
         if (!empty($conf['sequence'])) {
@@ -123,15 +166,23 @@ class Log_sql extends Log {
      * been opened. This is implicitly called by log(), if necessary.
      *
      * @return boolean   True on success, false on failure.
-     * @access public     
+     * @access public
      */
     function open()
     {
         if (!$this->_opened) {
-            $this->_db = &DB::connect($this->_dsn, true);
+            /* Use the DSN and options to create a database connection. */
+            $this->_db = &DB::connect($this->_dsn, $this->_options);
             if (DB::isError($this->_db)) {
                 return false;
             }
+
+            /* Create a prepared statement for repeated use in log(). */
+            if (!$this->_prepareStatement()) {
+                return false;
+            }
+
+            /* We now consider out connection open. */
             $this->_opened = true;
         }
 
@@ -144,12 +195,13 @@ class Log_sql extends Log {
      * existing connection that was passed to us via $conf['db'].
      *
      * @return boolean   True on success, false on failure.
-     * @access public     
+     * @access public
      */
     function close()
     {
         if ($this->_opened && !$this->_existingConnection) {
             $this->_opened = false;
+            $this->_db->freePrepared($this->_statement);
             return $this->_db->disconnect();
         }
 
@@ -182,7 +234,7 @@ class Log_sql extends Log {
      *                  PEAR_LOG_CRIT, PEAR_LOG_ERR, PEAR_LOG_WARNING,
      *                  PEAR_LOG_NOTICE, PEAR_LOG_INFO, and PEAR_LOG_DEBUG.
      * @return boolean  True on success or false on failure.
-     * @access public     
+     * @access public
      */
     function log($message, $priority = null)
     {
@@ -201,17 +253,20 @@ class Log_sql extends Log {
             return false;
         }
 
+        /* If we don't already have our statement object yet, create it. */
+        if (!is_object($this->_statement) && !$this->_prepareStatement()) {
+            return false;
+        }
+
         /* Extract the string representation of the message. */
         $message = $this->_extractMessage($message);
 
-        /* Build the SQL query for this log entry insertion. */
+        /* Build our set of values for this log entry. */
         $id = $this->_db->nextId($this->_sequence);
-        $q = sprintf('insert into %s (id, logtime, ident, priority, message)' .
-                     'values(%d, CURRENT_TIMESTAMP, %s, %d, %s)',
-                     $this->_table, $id, $this->_db->quote($this->_ident),
-                     $priority, $this->_db->quote($message));
+        $values = array($id, $this->_ident, $priority, $message);
 
-        $result = $this->_db->query($q);
+        /* Execute the SQL query for this log entry insertion. */
+        $result =& $this->_db->execute($this->_statement, $values);
         if (DB::isError($result)) {
             return false;
         }
@@ -220,6 +275,20 @@ class Log_sql extends Log {
 
         return true;
     }
-}
 
-?>
+    /**
+     * Prepare the SQL insertion statement.
+     *
+     * @return boolean  True if the statement was successfully created.
+     *
+     * @access  private
+     * @since   Log 1.9.1
+     */
+    function _prepareStatement()
+    {
+        $this->_statement = $this->_db->prepare($this->_sql);
+
+        /* Return success if we didn't generate an error. */
+        return (DB::isError($this->_statement) === false);
+    }
+}

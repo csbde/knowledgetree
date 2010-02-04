@@ -22,8 +22,12 @@
  * @link       http://pear.php.net/package/SOAP
  */
 
+/** SOAP_Base */
 require_once 'SOAP/Base.php';
 
+/**
+ * @package SOAP
+ */
 class SOAP_DISCO_Server extends SOAP_Base_Object {
 
     var $namespaces     = array(SCHEMA_WSDL => 'wsdl', SCHEMA_SOAP => 'soap');
@@ -90,7 +94,7 @@ class SOAP_DISCO_Server extends SOAP_Base_Object {
             $flipped = array_flip($this->soap_server->_namespaces);
             $this->namespaces[$this->_service_ns] = 'tns';
             $this->namespaces[$flipped['xsd']] = 'xsd';
-            $this->namespaces[$flipped['SOAP-ENC']] = 'SOAP-ENC';
+            $this->namespaces[$flipped[SOAP_BASE::SOAPENCPrefix()]] = SOAP_BASE::SOAPENCPrefix();
         }
 
         // DEFINITIONS
@@ -154,8 +158,8 @@ class SOAP_DISCO_Server extends SOAP_Base_Object {
                 $this->addMethodsFromMap($object->__dispatch_map, $namespace, get_class($object));
             }
         }
-        if (isset($server->dispatch_map)) {
-            $this->addMethodsFromMap($server->dispatch_map, $namespace);
+        if (isset($this->soap_server->dispatch_map)) {
+            $this->addMethodsFromMap($this->soap_server->dispatch_map, $namespace);
         }
 
         // generate wsdl
@@ -208,10 +212,10 @@ class SOAP_DISCO_Server extends SOAP_Base_Object {
                         $el['attr']['type'] = $_vartypens . ':' . $_vartype;
                     } else {
                         $ctype['complexContent']['attr'] = '';
-                        $ctype['complexContent']['restriction']['attr']['base'] = 'SOAP-ENC:Array';
-                        foreach ($_vartype as $array_var => $array_type) {
+                        $ctype['complexContent']['restriction']['attr']['base'] = SOAP_BASE::SOAPENCPrefix().':Array';
+                        foreach ($_vartype as $array_type) {
                             list($_vartypens, $_vartype) = $this->_getTypeNs($array_type);
-                            $ctype['complexContent']['restriction']['attribute']['attr']['ref'] = 'SOAP-ENC:arrayType';
+                            $ctype['complexContent']['restriction']['attribute']['attr']['ref'] = SOAP_BASE::SOAPENCPrefix().':arrayType';
                             $ctype['complexContent']['restriction']['attribute']['attr']['wsdl:arrayType'] = $_vartypens . ':' . $_vartype . '[]';
                         }
                     }
@@ -232,59 +236,58 @@ class SOAP_DISCO_Server extends SOAP_Base_Object {
             } else {
                 $method_namespace = $namespace;
             }
+
             // INPUT
+            $input_message = array('attr' => array('name' => $method_name . 'Request'));
             if (isset($method_types['in']) && is_array($method_types['in'])) {
-                $input_message =& $this->_wsdl['definitions']['message'][];
-                $input_message['attr']['name'] = $method_name . 'Request';
                 foreach ($method_types['in'] as $name => $type) {
                     list($typens, $type) = $this->_getTypeNs($type);
-                    $part =& $input_message['part'][];
+                    $part = array();
                     $part['attr']['name'] = $name;
                     $part['attr']['type'] = $typens . ':' . $type;
+                    $input_message['part'][] = $part;
                 }
             }
+            $this->_wsdl['definitions']['message'][] = $input_message;
 
             // OUTPUT
+            $output_message = array('attr' => array('name' => $method_name . 'Response'));
             if (isset($method_types['out']) && is_array($method_types['out'])) {
-                $output_message =& $this->_wsdl['definitions']['message'][];
-                $output_message['attr']['name'] = $method_name . 'Response';
                 foreach ($method_types['out'] as $name => $type) {
                     list($typens, $type) = $this->_getTypeNs($type);
-                    $part =& $output_message['part'][];
+                    $part = array();
                     $part['attr']['name'] = $name;
                     $part['attr']['type'] = $typens . ':' . $type;
+                    $output_message['part'][] = $part;
                 }
             }
+            $this->_wsdl['definitions']['message'][] = $output_message;
 
             // PORTTYPES
-            $operation =& $this->_wsdl['definitions']['portType']['operation'][];
+            $operation = array();
             $operation['attr']['name'] = $method_name;
-
             // INPUT
-            $operation['input']['attr']['message'] = 'tns:'
-                            . $input_message['attr']['name'];
-
+            $operation['input']['attr']['message'] = 'tns:' . $input_message['attr']['name'];
             // OUTPUT
-            $operation['output']['attr']['message'] = 'tns:'
-                            . $output_message['attr']['name'];
+            $operation['output']['attr']['message'] = 'tns:' . $output_message['attr']['name'];
+            $this->_wsdl['definitions']['portType']['operation'][] = $operation;
 
             // BINDING
-            $binding =& $this->_wsdl['definitions']['binding']['operation'][];
+            $binding = array();
             $binding['attr']['name'] = $method_name;
             $action = $method_namespace . '#' . ($classname ? $classname . '#' : '') . $method_name;
             $binding['soap:operation']['attr']['soapAction'] = $action;
-
             // INPUT
             $binding['input']['attr'] = '';
             $binding['input']['soap:body']['attr']['use'] = 'encoded';
             $binding['input']['soap:body']['attr']['namespace'] = $method_namespace;
             $binding['input']['soap:body']['attr']['encodingStyle'] = SOAP_SCHEMA_ENCODING;
-
             // OUTPUT
             $binding['output']['attr'] = '';
             $binding['output']['soap:body']['attr']['use'] = 'encoded';
             $binding['output']['soap:body']['attr']['namespace'] = $method_namespace;
             $binding['output']['soap:body']['attr']['encodingStyle'] = SOAP_SCHEMA_ENCODING;
+            $this->_wsdl['definitions']['binding']['operation'][] = $binding;
         }
     }
 
@@ -373,8 +376,8 @@ class SOAP_DISCO_Server extends SOAP_Base_Object {
     function _ifComplexTypeExists($typesArray, $type_name)
     {
         if (is_array($typesArray)) {
-            foreach ($typesArray as $index => $type_data) {
-                if ($typesArray[$index]['attr']['name'] == $type_name) {
+            foreach ($typesArray as $type_data) {
+                if ($type_data['attr']['name'] == $type_name) {
                     return true;
                 }
             }

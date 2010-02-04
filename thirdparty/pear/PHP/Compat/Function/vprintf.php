@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: vprintf.php,v 1.14 2005/01/26 04:55:13 aidan Exp $
 
 
 /**
@@ -25,7 +25,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/function.vprintf
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.14 $
  * @since       PHP 4.1.0
  * @require     PHP 4.0.4 (call_user_func_array)
  */

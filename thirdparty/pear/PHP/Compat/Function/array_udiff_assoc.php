@@ -16,7 +16,7 @@
 // |          Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: array_udiff_assoc.php,v 1.14 2005/01/26 04:55:13 aidan Exp $
 
 
 /**
@@ -26,7 +26,7 @@
  * @package     PHP_Compat
  * @author      Stephan Schmidt <schst@php.net>
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.14 $
  * @link        http://php.net/function.array-udiff-assoc
  * @since       PHP 5
  * @require     PHP 4.0.6 (is_callable)

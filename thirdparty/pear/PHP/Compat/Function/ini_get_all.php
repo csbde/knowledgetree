@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: ini_get_all.php,v 1.3 2005/01/26 04:55:13 aidan Exp $
 
 
 /**
@@ -25,7 +25,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/function.ini_get_all
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.3 $
  * @since       PHP 4.2.0
  * @require     PHP 4.0.0 (user_error)
  */

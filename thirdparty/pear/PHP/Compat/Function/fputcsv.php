@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: fputcsv.php,v 1.2 2005/11/22 08:28:16 aidan Exp $
 
 
 /**
@@ -26,7 +26,7 @@
  * @link        http://php.net/function.fprintf
  * @author      Twebb <twebb@boisecenter.com>
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.2 $
  * @since       PHP 5
  * @require     PHP 4.0.0 (user_error)
  */
@@ -34,16 +34,16 @@ if (!function_exists('fputcsv')) {
     function fputcsv($handle, $fields, $delimiter = ',', $enclosure = '"')
     {
         // Sanity Check
-        if (!is_resource($extension)) {
+        if (!is_resource($handle)) {
             user_error('fputcsv() expects parameter 1 to be resource, ' .
-                gettype($extension) . ' given', E_USER_WARNING);
+                gettype($handle) . ' given', E_USER_WARNING);
             return false;
         }
 
         
         $str = '';
         foreach ($fields as $cell) {
-            $cell = str_replace($enclosure, $enclosure.$enclosure, $cell);
+            $cell = str_replace($enclosure, $enclosure . $enclosure, $cell);
 
             if (strchr($cell, $delimiter) !== false ||
                 strchr($cell, $enclosure) !== false ||

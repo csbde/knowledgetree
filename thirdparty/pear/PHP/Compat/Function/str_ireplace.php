@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: str_ireplace.php,v 1.18 2005/01/26 04:55:13 aidan Exp $
 
 
 /**
@@ -25,7 +25,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/function.str_ireplace
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.18 $
  * @since       PHP 5
  * @require     PHP 4.0.0 (user_error)
  * @note        count not by returned by reference, to enable

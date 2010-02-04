@@ -11,7 +11,7 @@
  * @author     Michael Wallner <mike@php.net>
  * @copyright  2004-2005 Michael Wallner
  * @license    BSD, revised
- * @version    CVS: $Id$
+ * @version    CVS: $Id: Gettext.php,v 1.7 2005/11/08 18:57:03 mike Exp $
  * @link       http://pear.php.net/package/File_Gettext
  */
 
@@ -30,7 +30,7 @@ ini_set('track_errors', true);
  * #################################################################
  *
  * @author      Michael Wallner <mike@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.7 $
  * @access      public
  */
 class File_Gettext

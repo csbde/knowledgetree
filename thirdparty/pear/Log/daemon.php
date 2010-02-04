@@ -1,5 +1,10 @@
 <?php
-// $Id$
+/**
+ * $Header$
+ *
+ * @version $Revision: 250926 $
+ * @package Log
+ */
 
 /**
  * The Log_daemon class is a concrete implementation of the Log::
@@ -7,11 +12,11 @@
  * This class uses the syslog protocol: http://www.ietf.org/rfc/rfc3164.txt
  *
  * @author  Bart van der Schans <schans@dds.nl>
- * @version $Revision$
+ * @version $Revision: 250926 $
  * @package Log
  */
-class Log_daemon extends Log {
-
+class Log_daemon extends Log
+{
     /**
      * Integer holding the log facility to use.
      * @var string
@@ -226,4 +231,5 @@ class Log_daemon extends Log {
 
         return $priorities[$priority];
     }
+
 }

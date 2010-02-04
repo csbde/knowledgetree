@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: is_a.php,v 1.16 2005/01/26 04:55:13 aidan Exp $
 
 
 /**
@@ -25,7 +25,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/function.is_a
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.16 $
  * @since       PHP 4.2.0
  * @require     PHP 4.0.0 (user_error) (is_subclass_of)
  */

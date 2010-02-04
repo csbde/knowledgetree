@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: var_export.php,v 1.15 2005/12/05 14:24:27 aidan Exp $
 
 
 /**
@@ -25,14 +25,14 @@
  * @package     PHP_Compat
  * @link        http://php.net/function.var_export
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.15 $
  * @since       PHP 4.2.0
  * @require     PHP 4.0.0 (user_error)
  */
 if (!function_exists('var_export')) {
-    function var_export($array, $return = false)
+    function var_export($var, $return = false, $level = 0)
     {
-        // Common output variables
+        // Init
         $indent      = '  ';
         $doublearrow = ' => ';
         $lineend     = ",\n";
@@ -40,58 +40,95 @@ if (!function_exists('var_export')) {
         $newline     = "\n";
         $find        = array(null, '\\', '\'');
         $replace     = array('NULL', '\\\\', '\\\'');
-
-        // Check the export isn't a simple string / int
-        if (is_string($array)) {
-            $out = $stringdelim . $array . $stringdelim;
-        } elseif (is_int($array)) {
-            $out = (string)$array;
-        } else {
-            // Begin the array export
-            // Start the string
-            $out = "array (\n";
-
-            // Loop through each value in array
-            foreach ($array as $key => $value) {
-                // If the key is a string, delimit it
-                if (is_string($key)) {
-                    $key = str_replace($find, $replace, $key);
-                    $key = $stringdelim . $key . $stringdelim;
-                }
-
-                // Delimit value                   
-                if (is_array($value)) {
-                    // We have an array, so do some recursion
-                    // Do some basic recursion while increasing the indent
-                    $recur_array = explode($newline, var_export($value, true));
-                    $temp_array = array();
-                    foreach ($recur_array as $recur_line) {
-                        $temp_array[] = $indent . $recur_line;
-                    }
-                    $recur_array = implode($newline, $temp_array);
-                    $value = $newline . $recur_array;
-                } elseif (is_null($value)) {
-                    $value = 'NULL';
-                } else {
-                    $value = str_replace($find, $replace, $value);
-                    $value = $stringdelim . $value . $stringdelim;
-                }
-
-                // Piece together the line
-                $out .= $indent . $key . $doublearrow . $value . $lineend;
-            }
-
-            // End our string
-            $out .= ")";
+        $out         = '';
+        
+        // Indent
+        $level++;
+        for ($i = 1, $previndent = ''; $i < $level; $i++) {
+            $previndent .= $indent;
         }
 
+        // Handle each type
+        switch (gettype($var)) {
+            // Array
+            case 'array':
+                $out = 'array (' . $newline;
+                foreach ($var as $key => $value) {
+                    // Key
+                    if (is_string($key)) {
+                        // Make key safe
+                        for ($i = 0, $c = count($find); $i < $c; $i++) {
+                            $var = str_replace($find[$i], $replace[$i], $var);
+                        }
+                        $key = $stringdelim . $key . $stringdelim;
+                    }
+                    
+                    // Value
+                    if (is_array($value)) {
+                        $export = var_export($value, true, $level);
+                        $value = $newline . $previndent . $indent . $export;
+                    } else {
+                        $value = var_export($value, true, $level);
+                    }
 
-        // Decide method of output
+                    // Piece line together
+                    $out .= $previndent . $indent . $key . $doublearrow . $value . $lineend;
+                }
+
+                // End string
+                $out .= $previndent . ')';
+                break;
+
+            // String
+            case 'string':
+                // Make the string safe
+                for ($i = 0, $c = count($find); $i < $c; $i++) {
+                    $var = str_replace($find[$i], $replace[$i], $var);
+                }
+                $out = $stringdelim . $var . $stringdelim;
+                break;
+
+            // Number
+            case 'integer':
+            case 'double':
+                $out = (string) $var;
+                break;
+            
+            // Boolean
+            case 'boolean':
+                $out = $var ? 'true' : 'false';
+                break;
+
+            // NULLs
+            case 'NULL':
+            case 'resource':
+                $out = 'NULL';
+                break;
+
+            // Objects
+            case 'object':
+                // Start the object export
+                $out = $newline . $previndent . 'class ' . get_class($var) . ' {' . $newline;
+
+                // Export the object vars
+                foreach (get_object_vars($var) as $key => $val) {
+                    $out .= $previndent . '  var $' . $key . ' = ';
+                    if (is_array($val)) {
+                        $export = var_export($val, true, $level);
+                        $out .= $newline . $previndent . $indent .  $export  . ';' . $newline;
+                    } else {
+                        $out .= var_export($val, true, $level) . ';' . $newline;
+                    }
+                }
+                $out .= $previndent . '}';
+                break;
+        }
+
+        // Method of output
         if ($return === true) {
             return $out;
         } else {
             echo $out;
-            return;
         }
     }
 }

@@ -15,7 +15,7 @@
 // | Authors: Stephan Schmidt <schst@php.net>                             |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: strpbrk.php,v 1.4 2005/01/26 04:55:13 aidan Exp $
 
 
 /**
@@ -25,7 +25,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/function.strpbrk
  * @author      Stephan Schmidt <schst@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.4 $
  * @since       PHP 5
  * @require     PHP 4.0.0 (user_error)
  */

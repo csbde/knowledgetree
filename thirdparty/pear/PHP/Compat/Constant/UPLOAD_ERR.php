@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: UPLOAD_ERR.php,v 1.1 2004/10/12 08:41:11 aidan Exp $
 
 
 /**
@@ -25,7 +25,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/features.file-upload.errors
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.1 $
  * @since       PHP 4.3.0
  */
 if (!defined('UPLOAD_ERR_OK')) {

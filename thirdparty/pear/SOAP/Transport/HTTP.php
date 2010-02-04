@@ -14,7 +14,8 @@
  * @category   Web Services
  * @package    SOAP
  * @author     Shane Caraveo <Shane@Caraveo.com>
- * @copyright  2003-2005 The PHP Group
+ * @author     Jan Schneider <jan@horde.org>
+ * @copyright  2003-2006 The PHP Group
  * @license    http://www.php.net/license/2_02.txt  PHP License 2.02
  * @link       http://pear.php.net/package/SOAP
  */
@@ -23,13 +24,13 @@
  * HTTP Transport class
  *
  * @package  SOAP
- * @category Web_Services
+ * @category Web Services
  */
 
 /**
  * Needed Classes
  */
-require_once 'SOAP/Base.php';
+require_once 'SOAP/Transport.php';
 
 /**
  *  HTTP Transport for SOAP
@@ -37,10 +38,10 @@ require_once 'SOAP/Base.php';
  * @access public
  * @package SOAP
  * @author Shane Caraveo <shane@php.net>
+ * @author Jan Schneider <jan@horde.org>
  */
-class SOAP_Transport_HTTP extends SOAP_Base
+class SOAP_Transport_HTTP extends SOAP_Transport
 {
-
     /**
      * Basic Auth string.
      *
@@ -61,49 +62,6 @@ class SOAP_Transport_HTTP extends SOAP_Base
      * @var integer
      */
     var $timeout = 4;
-
-    /**
-     * Array containing urlparts - parse_url().
-     *
-     * @var mixed
-     */
-    var $urlparts = null;
-
-    /**
-     * Connection endpoint - URL.
-     *
-     * @var string
-     */
-    var $url = '';
-
-    /**
-     * Incoming payload.
-     *
-     * @var string
-     */
-    var $incoming_payload = '';
-
-    /**
-     * HTTP-Request User-Agent.
-     *
-     * @var string
-     */
-    var $_userAgent = SOAP_LIBRARY_NAME;
-
-    /**
-     * HTTP encoding.
-     *
-     * @var string
-     */
-    var $encoding = SOAP_DEFAULT_ENCODING;
-
-    /**
-     * HTTP-Response Content-Type encoding.
-     * We assume UTF-8 if no encoding is set.
-     *
-     * @var string
-     */
-    var $result_encoding = 'UTF-8';
 
     /**
      * HTTP-Response Content-Type.
@@ -133,14 +91,17 @@ class SOAP_Transport_HTTP extends SOAP_Base
     /**
      * Sends and receives SOAP data.
      *
-     * @param string  Outgoing POST data.
+     * @access public
+     *
+     * @param string  Outgoing SOAP data.
      * @param array   Options.
      *
      * @return string|SOAP_Fault
-     * @access public
      */
-    function send($msg, $options = null)
+    function send($msg, $options = array())
     {
+        $this->fault = null;
+
         if (!$this->_validateUrl()) {
             return $this->fault;
         }
@@ -187,13 +148,45 @@ class SOAP_Transport_HTTP extends SOAP_Base
      * Generates the correct headers for the cookies.
      *
      * @access private
+     *
+     * @param array $options  Cookie options. If 'nocookies' is set and true
+     *                        the cookies from the last response are added
+     *                        automatically. 'cookies' is name-value-hash with
+     *                        a list of cookies to add.
+     *
+     * @return string  The cookie header value.
      */
-    function _genCookieHeader()
+    function _generateCookieHeader($options)
     {
-        foreach ($this->cookies as $name=>$value) {
-            $cookies = (isset($cookies) ? $cookies. '; ' : '') .
-                        urlencode($name) . '=' . urlencode($value);
+        $this->cookies = array();
+
+        if (empty($options['nocookies']) &&
+            isset($this->result_cookies)) {
+            // Add the cookies we got from the last request.
+            foreach ($this->result_cookies as $cookie) {
+                if ($cookie['domain'] == $this->urlparts['host']) {
+                    $this->cookies[$cookie['name']] = $cookie['value'];
+                }
+            }
         }
+
+        // Add cookies the user wants to set.
+        if (isset($options['cookies'])) {
+            foreach ($options['cookies'] as $cookie) {
+                if ($cookie['domain'] == $this->urlparts['host']) {
+                    $this->cookies[$cookie['name']] = $cookie['value'];
+                }
+            }
+        }
+
+        $cookies = '';
+        foreach ($this->cookies as $name => $value) {
+            if (!empty($cookies)) {
+                $cookies .= '; ';
+            }
+            $cookies .= urlencode($name) . '=' . urlencode($value);
+        }
+
         return $cookies;
     }
 
@@ -333,90 +326,95 @@ class SOAP_Transport_HTTP extends SOAP_Base
      */
     function _parseResponse()
     {
-        if (preg_match("/^(.*?)\r?\n\r?\n(.*)/s",
+        if (!preg_match("/^(.*?)\r?\n\r?\n(.*)/s",
                        $this->incoming_payload,
                        $match)) {
-            $this->response = $match[2];
-            // Find the response error, some servers response with 500 for
-            // SOAP faults.
-            $this->_parseHeaders($match[1]);
+            $this->_raiseSoapFault('Invalid HTTP Response');
+            return false;
+        }
 
-            list($protocol, $code, $msg) = sscanf($this->result_headers[0],
-                                                  '%s %s %s');
-            unset($this->result_headers[0]);
+        $this->response = $match[2];
+        // Find the response error, some servers response with 500 for
+        // SOAP faults.
+        $this->_parseHeaders($match[1]);
 
-            switch($code) {
-                case 100: // Continue
-                    $this->incoming_payload = $match[2];
-                    return $this->_parseResponse();
-                case 400:
-                    $this->_raiseSoapFault("HTTP Response $code Bad Request");
-                    return false;
-                    break;
-                case 401:
-                    $this->_raiseSoapFault("HTTP Response $code Authentication Failed");
-                    return false;
-                    break;
-                case 403:
-                    $this->_raiseSoapFault("HTTP Response $code Forbidden");
-                    return false;
-                    break;
-                case 404:
-                    $this->_raiseSoapFault("HTTP Response $code Not Found");
-                    return false;
-                    break;
-                case 407:
-                    $this->_raiseSoapFault("HTTP Response $code Proxy Authentication Required");
-                    return false;
-                    break;
-                case 408:
-                    $this->_raiseSoapFault("HTTP Response $code Request Timeout");
-                    return false;
-                    break;
-                case 410:
-                    $this->_raiseSoapFault("HTTP Response $code Gone");
-                    return false;
-                    break;
-                default:
-                    if ($code >= 400 && $code < 500) {
-                        $this->_raiseSoapFault("HTTP Response $code Not Found, Server message: $msg");
-                        return false;
-                    }
-            }
+        list(, $code, $msg) = sscanf($this->result_headers[0], '%s %s %s');
+        unset($this->result_headers[0]);
 
-            $this->_parseEncoding($match[1]);
-
-            if ($this->result_content_type == 'application/dime') {
-                // XXX quick hack insertion of DIME
-                if (PEAR::isError($this->_decodeDIMEMessage($this->response,$this->headers,$this->attachments))) {
-                    // _decodeDIMEMessage already raised $this->fault
+        switch($code) {
+            case 100: // Continue
+                $this->incoming_payload = $match[2];
+                return $this->_parseResponse();
+            case 200:
+            case 202:
+                $this->incoming_payload = trim($match[2]);
+                if (!strlen($this->incoming_payload)) {
+                    /* Valid one-way message response. */
+                    return true;
+                }
+                break;
+            case 400:
+                $this->_raiseSoapFault("HTTP Response $code Bad Request");
+                return false;
+            case 401:
+                $this->_raiseSoapFault("HTTP Response $code Authentication Failed");
+                return false;
+            case 403:
+                $this->_raiseSoapFault("HTTP Response $code Forbidden");
+                return false;
+            case 404:
+                $this->_raiseSoapFault("HTTP Response $code Not Found");
+                return false;
+            case 407:
+                $this->_raiseSoapFault("HTTP Response $code Proxy Authentication Required");
+                return false;
+            case 408:
+                $this->_raiseSoapFault("HTTP Response $code Request Timeout");
+                return false;
+            case 410:
+                $this->_raiseSoapFault("HTTP Response $code Gone");
+                return false;
+            default:
+                if ($code >= 400 && $code < 500) {
+                    $this->_raiseSoapFault("HTTP Response $code Not Found, Server message: $msg");
                     return false;
                 }
-                $this->result_content_type = $this->headers['content-type'];
-            } elseif (stristr($this->result_content_type,'multipart/related')) {
-                $this->response = $this->incoming_payload;
-                if (PEAR::isError($this->_decodeMimeMessage($this->response,$this->headers,$this->attachments))) {
-                    // _decodeMimeMessage already raised $this->fault
-                    return false;
-                }
-            } elseif ($this->result_content_type != 'text/xml') {
-                $this->_raiseSoapFault($this->response);
+                break;
+        }
+
+        $this->_parseEncoding($match[1]);
+
+        if ($this->result_content_type == 'application/dime') {
+            // XXX quick hack insertion of DIME
+            if (PEAR::isError($this->_decodeDIMEMessage($this->response, $this->headers, $this->attachments))) {
+                // _decodeDIMEMessage already raised $this->fault
                 return false;
             }
-            // if no content, return false
-            return strlen($this->response) > 0;
+            $this->result_content_type = $this->headers['content-type'];
+        } elseif (stristr($this->result_content_type, 'multipart/related')) {
+            $this->response = $this->incoming_payload;
+            if (PEAR::isError($this->_decodeMimeMessage($this->response, $this->headers, $this->attachments))) {
+                // _decodeMimeMessage already raised $this->fault
+                return false;
+            }
+        } elseif ($this->result_content_type != 'text/xml') {
+            $this->_raiseSoapFault($this->response);
+            return false;
         }
-        $this->_raiseSoapFault('Invalid HTTP Response');
-        return false;
+
+        // if no content, return false
+        return strlen($this->response) > 0;
     }
 
     /**
-     * Creates HTTP request, including headers, for outgoing request.
+     * Creates an HTTP request, including headers, for the outgoing request.
+     *
+     * @access private
      *
      * @param string $msg     Outgoing SOAP package.
      * @param array $options  Options.
+     *
      * @return string  Outgoing payload.
-     * @access private
      */
     function _getRequest($msg, $options)
     {
@@ -451,30 +449,17 @@ class SOAP_Transport_HTTP extends SOAP_Base
         $this->headers['Content-Type'] = "text/xml; charset=$this->encoding";
         $this->headers['Content-Length'] = strlen($msg);
         $this->headers['SOAPAction'] = '"' . $action . '"';
+        $this->headers['Connection'] = 'close';
+
         if (isset($options['headers'])) {
             $this->headers = array_merge($this->headers, $options['headers']);
         }
 
-        $this->cookies = array();
-        if (!isset($options['nocookies']) || !$options['nocookies']) {
-            // Add the cookies we got from the last request.
-            if (isset($this->result_cookies)) {
-                foreach ($this->result_cookies as $cookie) {
-                    if ($cookie['domain'] == $this->urlparts['host'])
-                        $this->cookies[$cookie['name']] = $cookie['value'];
-                }
-            }
+        $cookies = $this->_generateCookieHeader($options);
+        if ($cookies) {
+            $this->headers['Cookie'] = $cookies;
         }
-        // Add cookies the user wants to set.
-        if (isset($options['cookies'])) {
-            foreach ($options['cookies'] as $cookie) {
-                if ($cookie['domain'] == $this->urlparts['host'])
-                    $this->cookies[$cookie['name']] = $cookie['value'];
-            }
-        }
-        if (count($this->cookies)) {
-            $this->headers['Cookie'] = $this->_genCookieHeader();
-        }
+
         $headers = '';
         foreach ($this->headers as $k => $v) {
             $headers .= "$k: $v\r\n";
@@ -486,12 +471,14 @@ class SOAP_Transport_HTTP extends SOAP_Base
     }
 
     /**
-     * Sends outgoing request, and read/parse response.
+     * Sends the outgoing HTTP request and reads and parses the response.
+     *
+     * @access private
      *
      * @param string $msg     Outgoing SOAP package.
-     * @param string $action  SOAP Action.
-     * @return string  Response data, minus HTTP headers.
-     * @access private
+     * @param array $options  Options.
+     *
+     * @return string  Response data without HTTP headers.
      */
     function _sendHTTP($msg, $options)
     {
@@ -541,18 +528,18 @@ class SOAP_Transport_HTTP extends SOAP_Base
     }
 
     /**
-     * Sends outgoing request, and read/parse response, via HTTPS.
+     * Sends the outgoing HTTPS request and reads and parses the response.
+     *
+     * @access private
      *
      * @param string $msg     Outgoing SOAP package.
-     * @param string $action  SOAP Action.
-     * @return string $response  Response data, minus HTTP headers.
-     * @access private
+     * @param array $options  Options.
+     *
+     * @return string  Response data without HTTP headers.
      */
     function _sendHTTPS($msg, $options)
     {
-        /* NOTE This function uses the CURL functions
-         *  Your php must be compiled with CURL
-         */
+        /* Check if the required curl extension is installed. */
         if (!extension_loaded('curl')) {
             return $this->_raiseSoapFault('CURL Extension is required for HTTPS');
         }
@@ -560,40 +547,52 @@ class SOAP_Transport_HTTP extends SOAP_Base
         $ch = curl_init();
 
         if (isset($options['proxy_host'])) {
-            // $options['http_proxy'] == 'hostname:port'
-            $host = $options['proxy_host'];
             $port = isset($options['proxy_port']) ? $options['proxy_port'] : 8080;
-            curl_setopt($ch, CURLOPT_PROXY, $host . ":" . $port);
+            curl_setopt($ch, CURLOPT_PROXY,
+                        $options['proxy_host'] . ':' . $port);
         }
-
         if (isset($options['proxy_user'])) {
-            // $options['http_proxy_userpw'] == 'username:password'
-            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $options['proxy_user'] . ':' . $options['proxy_pass']);
+            curl_setopt($ch, CURLOPT_PROXYUSERPWD,
+                        $options['proxy_user'] . ':' . $options['proxy_pass']);
         }
 
         if (isset($options['user'])) {
-            curl_setopt($ch, CURLOPT_USERPWD, $options['user'] . ':' . $options['pass']);
+            curl_setopt($ch, CURLOPT_USERPWD,
+                        $options['user'] . ':' . $options['pass']);
         }
 
-        if (!isset($options['soapaction'])) {
-            $options['soapaction'] = '';
+        $headers = array();
+        $action = isset($options['soapaction']) ? $options['soapaction'] : '';
+        $headers['Content-Type'] = "text/xml; charset=$this->encoding";
+        $headers['SOAPAction'] = '"' . $action . '"';
+        if (isset($options['headers'])) {
+            $headers = array_merge($headers, $options['headers']);
         }
-        curl_setopt($ch, CURLOPT_HTTPHEADER ,    array('Content-Type: text/xml;charset=' . $this->encoding, 'SOAPAction: "'.$options['soapaction'].'"'));
-        curl_setopt($ch, CURLOPT_USERAGENT ,     $this->_userAgent);
+        foreach ($headers as $header => $value) {
+            $headers[$header] = $header . ': ' . $value;
+        }
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_USERAGENT, $this->_userAgent);
 
         if ($this->timeout) {
-            curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout); //times out after 4s
+            curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
         }
 
-        curl_setopt($ch, CURLOPT_POSTFIELDS,       $msg);
-        curl_setopt($ch, CURLOPT_URL,              $this->url);
-        curl_setopt($ch, CURLOPT_POST,             1);
-        curl_setopt($ch, CURLOPT_FAILONERROR,      0);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION,   1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER,   1);
-        curl_setopt($ch, CURLOPT_HEADER,           1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $msg);
+        curl_setopt($ch, CURLOPT_URL, $this->url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_FAILONERROR, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
         if (defined('CURLOPT_HTTP_VERSION')) {
             curl_setopt($ch, CURLOPT_HTTP_VERSION, 1);
+        }
+        if (!ini_get('safe_mode') && !ini_get('open_basedir')) {
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        }
+        $cookies = $this->_generateCookieHeader($options);
+        if ($cookies) {
+            curl_setopt($ch, CURLOPT_COOKIE, $cookies);
         }
 
         if (isset($options['curl'])) {
