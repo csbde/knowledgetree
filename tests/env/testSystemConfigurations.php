@@ -46,7 +46,8 @@ class EnvPhpSystemTestCase extends KTUnitTestCase {
      */
     function testConfigFile() {
       $key = 'configFile';
-      $this->assertEqual($this->arrPathInfo[$key]['class'], 'tick', $this->arrPathInfo[$key]['msg']);
+      $fileValid = (file_exists($this->arrPathInfo[$key]['path']));
+      $this->assertTrue($fileValid, 'Config file : [' . $this->arrPathInfo[$key]['path'] . '] could not be found.');
     }
 
     /**

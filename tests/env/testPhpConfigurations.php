@@ -321,32 +321,36 @@ class EnvPhpConfigTestCase extends KTUnitTestCase {
      * Testing maximumUploadSize
      */
     function testMaximumUploadSize() {
-      $key = 'upload_max_filesize';
-      $actualConfig = $this->getActualConfig($key);
-      $requiredConfig = $this->getRecommendedConfig($key);
+      if (!ini_get('upload_max_filesize') == -1) {
+        $key = 'upload_max_filesize';
+        $actualConfig = $this->getActualConfig($key);
+        $requiredConfig = $this->getRecommendedConfig($key);
 
-      $byteSetting = $this->to_byte($actualConfig['setting']);
-      $byteRecommended = $this->to_byte($requiredConfig['recommended']);
-      //Testing that the byte conversion passed
-      $this->assertNotEqual($byteSetting, false, 'Could Not Convert Actual Setting to Bytes [' . $actualConfig['setting'] . ']');
-      $result = ($byteSetting >= $byteRecommended);
-      $this->assertTrue($result, 'current php.ini conf value for '.$key.' ['.$actualConfig['setting'].'] is too small. The recommended size is ' . $requiredConfig['recommended']);
+        $byteSetting = $this->to_byte($actualConfig['setting']);
+        $byteRecommended = $this->to_byte($requiredConfig['recommended']);
+        //Testing that the byte conversion passed
+        $this->assertNotEqual($byteSetting, false, 'Could Not Convert Actual Setting to Bytes [' . $actualConfig['setting'] . ']');
+        $result = ($byteSetting >= $byteRecommended);
+        $this->assertTrue($result, 'current php.ini conf value for '.$key.' ['.$actualConfig['setting'].'] is too small. The recommended size is ' . $requiredConfig['recommended']);
+      }
     }
 
     /**
      * Testing memoryLimit
      */
     function testMemoryLimit() {
-      $key = 'memory_limit';
-      $actualConfig = $this->getActualConfig($key);
-      $requiredConfig = $this->getRecommendedConfig($key);
+      if (!ini_get('memory_limit') == -1) {
+        $key = 'memory_limit';
+        $actualConfig = $this->getActualConfig($key);
+        $requiredConfig = $this->getRecommendedConfig($key);
 
-      $byteSetting = $this->to_byte($actualConfig['setting']);
-      $byteRecommended = $this->to_byte($requiredConfig['recommended']);
-      //Testing that the byte conversion passed
-      $this->assertNotEqual($byteSetting, false, 'Could Not Convert Actual Setting to Bytes [' . $actualConfig['setting'] . ']');
-      $result = ($byteSetting >= $byteRecommended);
-      $this->assertTrue($result, 'current php.ini conf value for '.$key.' ['.$actualConfig['setting'].'] is too small. The recommended size is ' . $requiredConfig['recommended']);
+        $byteSetting = $this->to_byte($actualConfig['setting']);
+        $byteRecommended = $this->to_byte($requiredConfig['recommended']);
+        //Testing that the byte conversion passed
+        $this->assertNotEqual($byteSetting, false, 'Could Not Convert Actual Setting to Bytes [' . $actualConfig['setting'] . ']');
+        $result = ($byteSetting >= $byteRecommended);
+        $this->assertTrue($result, 'current php.ini conf value for '.$key.' ['.$actualConfig['setting'].'] is too small. The recommended size is ' . $requiredConfig['recommended']);
+      }
     }
 
 }
