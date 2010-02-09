@@ -85,6 +85,9 @@ wizard.prototype.valRegHelper = function() {
 	var last = $("#last");
 	var email = $("#email");
 	var country = $("#country");
+	var industry = $("#industry");
+	var size = $("#size");
+	var reasons = $("#reasons");
 	if(first.attr('value').length < 1) {
 		$("#reg_error").html('Enter a First Name');
 		w.focusElement(first);
@@ -110,19 +113,32 @@ wizard.prototype.valRegHelper = function() {
 		w.focusElement(email);
 		return false;
 	}
-	if(!w.countryCheck(country.attr('value'))) {
+	if(!w.ddCheck(reasons.attr('value'), "")) {
+		$("#reg_error").html('Please supply a reason for the installation.');
+		w.focusElement(reasons);
+		return false;
+	}
+	if(!w.ddCheck(country.attr('value'), "Select Country...")) {
 		$("#reg_error").html('Please select a Country.');
 		w.focusElement(country);
 		return false;
 	}
-
+	if(!w.ddCheck(industry.attr('value'), "Select Industry...")) {
+		$("#reg_error").html('Please select a Industry.');
+		w.focusElement(industry);
+		return false;
+	}
+	if(!w.ddCheck(size.attr('value'), "Select Organization Size...")) {
+		$("#reg_error").html('Please select an Organization.');
+		w.focusElement(size);
+		return false;
+	}
+	
 	return true;
 }
 
-wizard.prototype.countryCheck = function(str) {
-	//str = w.trim(str);
-	//alert(str);
-	if(str == "Select Country...") {
+wizard.prototype.ddCheck = function(str, check) {
+	if(str == check) {
 		return false;
 	} else {
 		return true;
@@ -252,14 +268,6 @@ wizard.prototype.getUrl = function (address, div)  {
 	});
 }
 
-wizard.prototype.sendJavaLocation = function ()  {
+wizard.prototype.send = function ()  {
 	$('form').submit();
-}
-
-wizard.prototype.sendRegistration = function ()  {
-	$('form').submit();
-}
-
-wizard.prototype.clearSessions = function ()  {
-
 }
