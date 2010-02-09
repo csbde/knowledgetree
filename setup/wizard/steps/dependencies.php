@@ -190,7 +190,7 @@ class dependencies extends Step
      * @access private
      * @return array The configurations list
      */
-   private function checkPhpConfiguration()
+   public function checkPhpConfiguration()
     {
         $configs = $this->getConfigurations();
 		$this->temp_variables['php_con'] = 'tick';
@@ -243,11 +243,11 @@ class dependencies extends Step
     /**
      * Check that the version of php is correct
      *
-	 * @author KnowledgeTree Team
+     * @author KnowledgeTree Team
      * @access private
      * @return array Version check result
      */
-    private function checkPhpVersion()
+    public function checkPhpVersion()
     {
         $phpversion = phpversion();
         $phpversion5 = version_compare($phpversion, $this->minPHPVersion, '>=');
@@ -279,7 +279,7 @@ class dependencies extends Step
      * @param string $extension
      * @return boolean
      */
-    private function checkExtension($extension)
+    public function checkExtension($extension)
     {
         if(extension_loaded($extension)){
             return true;
@@ -334,7 +334,7 @@ class dependencies extends Step
      * @access private
      * @return array
      */
-    private function getRequiredExtensions() {
+    public function getRequiredExtensions() {
     	$ext = array(
 	            array('extension' => 'iconv', 'required' => 'no', 'name' => 'IconV', 'details' => 'Used for conversion between character sets.'),
 	            array('extension' => 'mysql', 'required' => 'yes', 'name' => 'MySQL', 'details' => 'Used for accessing a MySQL database.'),
@@ -357,11 +357,11 @@ class dependencies extends Step
     /**
      * Get the recommended configuration settings
      *
-	 * @author KnowledgeTree Team
+     * @author KnowledgeTree Team
      * @access private
      * @return array
      */
-    private function getConfigurations()
+    public function getConfigurations()
     {
     	$conf = array(
             array('name' => 'Safe Mode', 'configuration' => 'safe_mode', 'recommended' => 'OFF', 'type' => 'bool'),
@@ -392,7 +392,7 @@ class dependencies extends Step
      * @access private
      * @return array
      */
-    private function getLimits()
+    public function getLimits()
     {
         return array(
             array('name' => 'Maximum POST size', 'configuration' => 'post_max_size', 'recommended' => '32M', 'type' => 'int'),

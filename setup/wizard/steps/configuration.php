@@ -390,7 +390,7 @@ class configuration extends Step
      * @access private
      * @return array Server settings
      */
-    private function getServerInfo()
+    public function getServerInfo()
     {
         $script = $_SERVER['SCRIPT_NAME'];
         $file_system_root = realpath(SYSTEM_DIR);
@@ -432,24 +432,24 @@ class configuration extends Step
      * @param string $fileSystemRoot The file system root of the installation
      * @return array The path information
      */
-    private function getPathInfo($fileSystemRoot)
+    public function getPathInfo($fileSystemRoot, $useRelative = true)
     {
         if(isset($this->temp_variables['paths'])) {
         	if ($this->util->isMigration()) { // Check if its an upgrade
-        		$this->readConfigPath(); // Read contents of config-path file as only var Documents are used of old stack
+        		$this->readConfigPath($useRelative); // Read contents of config-path file as only var Documents are used of old stack
         		$this->readInstallation(); // Read values from config.ini of other installation and overwrite config-path's
-        		$dirs = $this->getFromConfigPath(); // Store contents
+        		$dirs = $this->getFromConfigPath($useRelative); // Store contents
         	} else {
         		$dirs = $this->temp_variables['paths']; // Pull from temp
         	}
         } else {
         	if ($this->util->isMigration()) { // Check if its an upgrade
-        		$this->readConfigPath(); // Read contents of config-path file as only var Documents are used of old stack
+        		$this->readConfigPath($useRelative); // Read contents of config-path file as only var Documents are used of old stack
         		$this->readInstallation(); // Read values from config.ini of other installation
         	} else {
-        		$this->readConfigPath(); // Read contents of config-path file
+        		$this->readConfigPath($useRelative); // Read contents of config-path file
         	}
-			$dirs = $this->getFromConfigPath(); // Store contents
+			$dirs = $this->getFromConfigPath($useRelative); // Store contents
         }
         $varDirectory = $fileSystemRoot . DS . 'var';
 
@@ -489,12 +489,12 @@ class configuration extends Step
      * @param none
      * @return array The path information
      */
-    private function getFromConfigPath() {
+    private function getFromConfigPath($useRelative = true) {
     	$configs = array();
     	if(isset($this->confpaths['configIni'])) { // Simple check to see if any paths were written
     		$configPath = $this->confpaths['configIni']; // Get absolute path
     	} else {
-    		$configPath = $this->readConfigPathIni(); //'${fileSystemRoot}/config/config.ini';
+    		$configPath = $this->readConfigPathIni($useRelative); //'${fileSystemRoot}/config/config.ini';
     	}
 		$configs['configFile'] = array('name' => 'Configuration File', 'setting' => 'configFile', 'path' => $configPath, 'create' => false, 'file'=>true);
     	if(isset($this->confpaths['Documents'])) {
@@ -573,12 +573,12 @@ class configuration extends Step
 		return true;
     }
     
-    public function readConfigPathIni() {
+    public function readConfigPathIni($useRelative = true) {
     	if(isset($this->temp_variables['paths']['configFile']['path'])) {
     		if($this->temp_variables['paths']['configFile']['path'] != '')
     			return $this->temp_variables['paths']['configFile']['path'];
     	}
-		$configPath = $this->getContentPath();
+		$configPath = $this->getContentPath($useRelative);
 		if(!$configPath) {
 			return false;
 		}
@@ -627,8 +627,8 @@ class configuration extends Step
      * @param none
      * @return boolean
      */
-    private function readConfigPath() {
-		$configPath = $this->getContentPath();
+    private function readConfigPath($useRelative = true) {
+		$configPath = $this->getContentPath($useRelative);
 		if(!$configPath) return false;
         $data = $this->util->getFileByLine($configPath);
         $firstline = true;
@@ -705,12 +705,24 @@ class configuration extends Step
      * @param none
      * @return mixed
      */
-	public function getContentPath() {
-    	$configPath = realpath('../../../config/config-path');
+	public function getContentPath($useRelative = true) {
+      if ($useRelative) {
+        $configPath = realpath('../../../config/config-path');
         if(!file_exists($configPath))
-         	$configPath = realpath('../../config/config-path');
+          $configPath = realpath('../../config/config-path');
+        
         if(!file_exists($configPath)) return false;
-        return $configPath;
+          return $configPath;
+      } else {
+        //Using absolute config path. From rootPath
+        $arrServerInfo = $this->getServerInfo();
+        $configPath = realpath($arrServerInfo['file_system_root']['value'] . '/config/config-path');
+        if(!file_exists($configPath))
+          $configPath = realpath($arrServerInfo['file_system_root']['value'] . '/config/config-path');
+
+        if(!file_exists($configPath)) return false;
+          return $configPath;
+      }
 	}
 	
 	public function getCachePath() {
