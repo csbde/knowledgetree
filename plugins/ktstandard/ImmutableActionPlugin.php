@@ -60,7 +60,8 @@ class KTDocumentImmutableAction extends KTDocumentAction {
     var $sName = "ktcore.actions.document.immutable";
     var $_sShowPermission = 'ktcore.permissions.security';
     var $_bMutator = true;
-
+	var $_bMutationAllowedByAdmin = false;
+	
     function getDisplayName() {
         return _kt('Make immutable');
     }
