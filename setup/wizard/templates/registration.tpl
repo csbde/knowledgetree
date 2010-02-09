@@ -22,7 +22,7 @@
 	<br/>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<span class="error" id="reg_error"></span>
-		<?php $rowspan = "6";?>
+		<?php $rowspan = "8";?>
 		<?php if(WINDOWS_OS) $input_width = 40; else { $input_width = 28; } ?>
 		<table class="registration_template">
 		    <tr>
@@ -39,6 +39,10 @@
 		    <tr>
 		        <td><label for='email'>Email Address</label></td>
 		        <td><input value="<?php echo $email_address; ?>" name='submitted[email_address]' id='email' size='<?php echo $input_width; ?>' style="float:left;"/></td>
+		    </tr>
+		    <tr>
+		        <td><label for='email'>Reasons</label></td>
+		        <td><input value="<?php echo $reasons; ?>" name='submitted[reasons]' id='reasons' size='<?php echo $input_width; ?>' style="float:left;"/></td>
 		    </tr>
 		    <tr>
 		        <td><label for='country'>Country</label></td>
@@ -96,6 +100,11 @@
 		            </select>
 		        </td>
 		    </tr>
+		    <tr>
+		    	<td><label for='opt_in'>Commumity updates</label></td>
+		    	<td><input type='checkbox' id="opt_in" name='opt_in' value='enable' checked style="float:right;"/></td>
+			
+			</tr>
 		</table>
 		<input type='hidden' name='form_id' value='webform_client_form_242' />
 		<input type='hidden' name='op' value='Submit' />
