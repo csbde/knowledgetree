@@ -5,7 +5,8 @@
 <?php } ?>
 	<p class="title">Registering KnowledgeTree</p>
 	<p class="description">
-		Register your KnowledgeTree installation and receive the KnowledgeTree Drop Box for Windows software, a drag and drop tool that makes placing documents into KnowledgeTree even easier.
+	Register your KnowledgeTree installation.
+<!--		Register your KnowledgeTree installation and receive the KnowledgeTree Drop Box for Windows software, a drag and drop tool that makes placing documents into KnowledgeTree even easier.-->
 	<?php if(AJAX) { ?>
 		<a href='#' onclick='javascript:{w.getUrl("index.php?step_name=install", "content_container");}'>Skip Registration</a>
 	<?php } else { ?>
