@@ -34,16 +34,21 @@
 					<br/>
 					[START MENU] => [Programs] => [KnowledgeTree 3.7.x] => [services]
 					<br/>
-					Right-Click and run [Install Services] as administrator
+					Right-Click and run [Install Services] as administrator, if applicable, or
+					<br/>
+					Click [Install Services]
 					<br/>
 					[START MENU] => [Programs] => [KnowledgeTree 3.7.x] => [services]
 					<br/>
-					Right-Click and run [Start Services] as administrator
+					Right-Click and run [Start Services] as administrator, if applicable, or
+					<br/>
+					Click [Start Services]
 					<br/>
 					<br/>
 					<b>Alternatively:</b>
 					<br/>
 					Open a command prompt and enter the following:
+					<br/>
 					<br/>
 					cd <?php echo "\"".SYSTEM_DIR."\""; ?> <br/>
 					dmsctl.bat install<br/>
