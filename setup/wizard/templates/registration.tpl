@@ -24,14 +24,14 @@
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<span class="error" id="reg_error"></span>
 		<?php $rowspan = "8";?>
-		<?php if(WINDOWS_OS) $input_width = 40; else { $input_width = 28; } ?>
+		<?php if(WINDOWS_OS) $input_width = 40; else { $input_width = 42; } ?>
 		<table class="registration_template">
 		    <tr>
 		        <td><label for='first'>First Name</label></td>
-		        <td rowspan='<?php echo $rowspan; ?>' width='5%'>&nbsp;</td>
-		        <td><input value="<?php echo $first_name; ?>" name='submitted[first_name]' id='first' size='<?php echo $input_width; ?>' style="float:left;"/></td>
-		        <td rowspan='<?php echo $rowspan; ?>' width='5%'>&nbsp;</td>
-		        <td rowspan='<?php echo $rowspan; ?>'> <?php echo $html->image('dropbox.png'); ?> </td>
+<!--		        <td rowspan='<?php //echo $rowspan; ?>' width='5%'>&nbsp;</td>-->
+		        <td><input value="<?php //echo $first_name; ?>" name='submitted[first_name]' id='first' size='<?php echo $input_width; ?>' style="float:left;"/></td>
+<!--		        <td rowspan='<?php //echo $rowspan; ?>' width='5%'>&nbsp;</td>-->
+<!--		        <td rowspan='<?php //echo $rowspan; ?>'> <?php //echo $html->image('dropbox.png'); ?> </td>-->
 		    </tr>
 		    <tr>
 		        <td><label for='last'>Last Name</label></td>
@@ -102,8 +102,8 @@
 		        </td>
 		    </tr>
 		    <tr>
-		    	<td><label for='opt_in'>Commumity updates</label></td>
-		    	<td><input type='checkbox' id="opt_in" name='opt_in' value='enable' checked style="float:right;"/></td>
+		    	<td><label for='opt_in'>Receive Community Updates</label></td>
+		    	<td><input type='checkbox' id="opt_in" name='opt_in' value='enable' checked style="float:left;"/></td>
 			
 			</tr>
 		</table>
