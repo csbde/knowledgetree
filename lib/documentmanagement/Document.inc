@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -169,7 +169,7 @@ class Document {
 
     function getStoragePath() { return $this->_oDocumentContentVersion->getStoragePath(); }
     function setStoragePath($sNewValue) { $this->_oDocumentContentVersion->setStoragePath($sNewValue); }
-    
+
 
 
     /**
@@ -676,6 +676,50 @@ class Document {
         }
         $this->_oDocumentCore->setMetadataVersion($this->_oDocumentMetadataVersion->getMetadataVersion());
         $this->_oDocumentCore->setMetadataVersionId($this->_oDocumentMetadataVersion->getId());
+    }
+    // }}}
+
+    // {{{ getContentVersionIdFromVersion
+    function getContentVersionIdFromVersion($version)
+    {
+        $aVersion = explode('.', $version);
+        $major = $aVersion[0];
+        $minor = $aVersion[1];
+
+        $doc_id = $this->iId;
+
+        $query = "select id from document_content_version where document_id = $doc_id and major_version = $major and minor_version = $minor";
+
+        $result = DBUtil::getOneResultKey($query, 'id');
+
+        if(empty($result)){
+            return PEAR::raiseError("Requested content version, $version, does not exist.");
+        }
+
+        if(PEAR::isError($result)){
+            return $result;
+        }
+
+        return $result;
+    }
+    // }}}
+
+    // {{{ getMetadataVersionIdFromVersion
+    static function getMetadataVersionIdFromVersion($doc_id, $version)
+    {
+        $query = "select id from document_metadata_version where document_id = $doc_id and metadata_version = $version";
+
+        $result = DBUtil::getOneResultKey($query, 'id');
+
+        if(empty($result)){
+            return PEAR::raiseError("Requested metadata version, $version, does not exist.");
+        }
+
+        if(PEAR::isError($result)){
+            return $result;
+        }
+
+        return $result;
     }
     // }}}
 

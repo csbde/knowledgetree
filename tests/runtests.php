@@ -36,12 +36,12 @@ class UnitTests extends TestSuite {
         // if Electronic Signatures are NOT enabled for the API, new tests may not
         // include the check which allows the tests to be bypassed when esignatures
         // are not on, so if you have failures, check there first :)
-        $this->addFile('api/testElectronicSignatures.php');
+//        $this->addFile('api/testElectronicSignatures.php');
 
         // Web Service tests
         $this->addFile('webservices/testRest.php');
-        $this->addFile('webservices/testSoap.php');        
-        
+        $this->addFile('webservices/testSoap.php');
+
 //        $this->addFile('SQLFile/test_sqlfile.php');
 //        $this->addFile('cache/testCache.php');
 //        $this->addFile('config/testConfig.php');

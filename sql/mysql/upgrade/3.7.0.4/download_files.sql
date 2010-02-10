@@ -1,0 +1,1 @@
+ALTER TABLE download_files CHANGE COLUMN content_version content_version int(10) unsigned, CHANGE COLUMN filesize filesize int(10) unsigned;

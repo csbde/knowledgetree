@@ -9,7 +9,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -76,44 +76,41 @@ class KTDownloadManager
 	{
 		$this->session = $session;
 	}
-	
+
 	/**
 	 * This returns
 	 *
 	 * @access public
 	 * @param KTAPI_Document $document
+	 * @param int $content_version_id Optional. The id of the requested content version
 	 * @return string
 	 */
-	function allow_download($document, $content_version = null, $multipart = false) {
+	function allow_download($document, $content_version_id = null, $multipart = false) {
 		assert ( ! is_null ( $document ) );
-		
-		$content_version = 0;
+
 		$filesize = 0;
-		
+
 		if ($document instanceof KTAPI_Document) {
 			$doc_id = $document->documentid;
-			$content_version = $document->document->getContentVersionId ();
+			//$content_version_id = (is_numeric($content_version_id)) ? $content_version_id : $document->document->getContentVersionId();
 			$filesize = $document->document->getFileSize ();
 		} else if ($document instanceof Document || $document instanceof DocumentProxy) {
 			$doc_id = $document->getId ();
-			$content_version = $document->getContentVersionId ();
+			//$content_version_id = (is_numeric($content_version_id)) ? $content_version_id : $document->getContentVersionId();
 			$filesize = $document->getFileSize ();
 		} else if (is_numeric ( $document )) {
 			$doc_id = $document;
 		} else
 			die ( 'gracefully' );
-			
-		//assert(is_a($document, 'KTAPI_Document'));
-		
 
-		$hash = sha1 ( "$doc_id $this->session $this->random" );
-		
-		$id = DBUtil::autoInsert ( 'download_files', array ('document_id' => $doc_id, 'session' => $this->session, 'download_date' => date ( 'Y-m-d H:i:s' ), 'content_version' => $content_version, 'filesize' => $filesize, 'hash' => $hash ), array ('noid' => true ) );
-		
-		return $multipart?$this->build_multipart_url( $hash, $doc_id ):$this->build_url ( $hash, $doc_id );
+		$hash = sha1 ( "$doc_id $content_version_id $this->session $this->random" );
+
+		$id = DBUtil::autoInsert ( 'download_files', array ('document_id' => $doc_id, 'session' => $this->session, 'download_date' => date ( 'Y-m-d H:i:s' ), 'content_version' => $content_version_id, 'filesize' => $filesize, 'hash' => $hash ), array ('noid' => true ) );
+
+		return $multipart ? $this->build_multipart_url( $hash, $doc_id ) : $this->build_url ( $hash, $doc_id );
 	}
-	
-	
+
+
 	/**
 	 * This returns the url used to download a document.
 	 *
@@ -125,21 +122,24 @@ class KTDownloadManager
 	function build_url($hash, $documentid) {
 		return $this->download_url . "?code=$hash&d=$documentid&u=$this->session";
 	}
-	
+
 	function build_multipart_url($hash, $documentId) {
-//		return '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@';
 		return $this->multipart_download_url . "?code=$hash&d=$documentId&u=$this->session";
 	}
-
 
 	/**
 	 * This starts a download.
 	 *
 	 * @access public
+	 *
+	 * @param int $document_id
+	 * @param string $hash
+	 * @param string $apptype
+	 * @return mixed
 	 */
-	function download($document_id, $hash, $version = null, $apptype = 'ws')
+	function download($document_id, $hash, $apptype = 'ws')
 	{
-		$sql = "SELECT 1 FROM download_files WHERE hash=? AND session=? AND document_id=?";
+		$sql = "SELECT content_version FROM download_files WHERE hash=? AND session=? AND document_id=?";
 		$rows = DBUtil::getResultArray(array($sql, array($hash, $this->session, $document_id)));
 		if (PEAR::isError($rows))
 		{
@@ -151,11 +151,14 @@ class KTDownloadManager
 			return new PEAR_Error('Invalid session.');
 		}
 
+		// Get the content version id
+		$content_version_id = $rows[0]['content_version'];
+
 		// If document is being downloaded by an external user bypass the session checking
 		$check = strstr($this->session, 'ktext_'.$document_id);
 		if($check == 0 && $check !== false){
 		    // Use external download function
-		    return $this->download_ext($document_id, $hash, $version = null);
+		    return $this->download_ext($document_id, $hash, $content_version_id);
 		}
 
 		$storage =& KTStorageManagerUtil::getSingleton();
@@ -173,11 +176,9 @@ class KTDownloadManager
         	return $document;
         }
 
-        if (!empty($version))
+        if (!empty($content_version_id))
         {
-            $version = KTDocumentContentVersion::get($version);
-
-            $res = $storage->downloadVersion($document->document, $version);
+            $res = $storage->downloadVersion($document->document, $content_version_id);
         }
         else
         {
@@ -193,8 +194,8 @@ class KTDownloadManager
 
         return true;
 	}
-	
-	function download_ext($document_id, $hash, $version = null)
+
+	function download_ext($document_id, $hash, $content_version_id = null)
 	{
 	    $storage =& KTStorageManagerUtil::getSingleton();
 	    $document = Document::get($document_id);
@@ -203,11 +204,9 @@ class KTDownloadManager
 	        return $document;
 	    }
 
-	    if (!empty($version))
+	    if (!empty($content_version_id))
 	    {
-	        $version = KTDocumentContentVersion::get($version);
-
-	        $res = $storage->downloadVersion($document, $version);
+	        $res = $storage->downloadVersion($document, $content_version_id);
 	    }
 	    else
 	    {

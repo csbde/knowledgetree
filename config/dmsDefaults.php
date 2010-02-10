@@ -47,7 +47,7 @@ if (defined('DMS_DEFAULTS_INCLUDED'))
 }
 
 define('DMS_DEFAULTS_INCLUDED',1);
-define('LATEST_WEBSERVICE_VERSION',2);
+define('LATEST_WEBSERVICE_VERSION',3);
 
 
 if (function_exists('apd_set_pprof_trace')) {

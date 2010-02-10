@@ -870,6 +870,22 @@ class KTAPI
 	}
 
 	/**
+	* This returns a refererence to a document based on document id.
+	*
+    * @author KnowledgeTree Team
+    * @access public
+	* @param integer $documentid The document id
+	* @param integer $metadataVersion The metadata version of the document (not the id)
+	* @return object $document The KTAPI_Document object
+	*/
+	public function &get_document_by_metadata_version($documentid, $metadataVersion)
+	{
+	    // Get the document using the metadata version
+		$document = KTAPI_Document::get_by_metadata_version($this, $documentid, $metadataVersion);
+		return $document;
+	}
+
+	/**
     * This returns a document type id based on the name or an error object.
 	*
     * @author KnowledgeTree Team
