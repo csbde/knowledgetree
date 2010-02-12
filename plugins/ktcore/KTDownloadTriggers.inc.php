@@ -36,6 +36,8 @@
  * Contributor( s): ______________________________________
  *
  */
+			
+require_once(KT_LIB_DIR . DIRECTORY_SEPARATOR . 'foldermanagement' . DIRECTORY_SEPARATOR . 'compressionArchiveUtil.inc.php');
 
 class BulkDownloadTrigger {
 	
@@ -66,8 +68,6 @@ class BulkDownloadTrigger {
         if ((isset($_SESSION['checkBulkDownload']) && ($_SESSION['checkBulkDownload'])) || (file_exists($notificationFile))) {
 			unset($_SESSION['checkBulkDownload']);
 			DownloadQueue::removeNotificationFile();
-			
-			require_once(KT_LIB_DIR . DIRECTORY_SEPARATOR . 'foldermanagement' . DIRECTORY_SEPARATOR . 'compressionArchiveUtil.inc.php');
 			
 			$userID = $_SESSION['userID'];
 			$code = DownloadQueue::userDownloadAvailable($userID);
