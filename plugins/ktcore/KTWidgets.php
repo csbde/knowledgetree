@@ -1165,6 +1165,8 @@ class KTCoreImageSelectWidget extends KTWidget {
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
         
       	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/plugins/selectimage/jquery.selectimage.js';
+      	$this->aJavascript[] = 'resources/js/kt_selectimage.js';
 	
         if (!empty($this->aJavascript)) {
             // grab our inner page.
@@ -1172,14 +1174,15 @@ class KTCoreImageSelectWidget extends KTWidget {
             $oPage->requireJSResources($this->aJavascript);
         }
 
-    	$this->aCSS[] = 'resources/css/kt_imageselect.css';
+    	//$this->aCSS[] = 'resources/css/kt_imageselect.css';
+	$this->aCSS[] = 'thirdpartyjs/jquery/plugins/selectimage/css/selectimage.css';
         
         if (!empty($this->aCSS)) {
             // grab our inner page.
             $oPage =& $GLOBALS['main'];            
             $oPage->requireCSSResources($this->aCSS);
         }
-		
+	
         $widget_content = $this->getWidget();
 
         $aTemplateData = array(
