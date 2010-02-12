@@ -7,7 +7,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -73,7 +73,7 @@ require_once('KTDownloadManager.inc.php');
 $download_manager = new KTDownloadManager();
 $download_manager->set_session($session);
 
-$response = $download_manager->download($document_id, $hash, null, $apptype);
+$response = $download_manager->download($document_id, $hash, $apptype);
 if (PEAR::isError($response))
 {
 	$msg = urlencode($response->getMessage());

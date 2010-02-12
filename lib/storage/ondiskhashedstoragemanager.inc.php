@@ -8,7 +8,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -174,6 +174,20 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
     function temporaryFile(&$oDocument) {
         $oConfig =& KTConfig::getSingleton();
         return sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oDocument));
+    }
+
+    function temporaryFileForVersion($iVersionId) {
+        $oConfig =& KTConfig::getSingleton();
+
+        // get path to the content version
+        $oContentVersion = KTDocumentContentVersion::get($iVersionId);
+        $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oContentVersion));
+
+        // Ensure the file exists
+        if (file_exists($sPath)) {
+            return $sPath;
+        }
+        return false;
     }
 
     function freeTemporaryFile($sPath) {

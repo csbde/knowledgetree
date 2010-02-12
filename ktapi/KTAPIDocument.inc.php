@@ -91,16 +91,17 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This is used to get a document based on document id.
+	 * This is used to get a document based on document id. Or a version of the document based on the metadata version id
 	 *
 	 * @author KnowledgeTree Team
 	 * @static
 	 * @access public
 	 * @param KTAPI $ktapi The ktapi object
 	 * @param int $documentid The document id
+	 * @param int $iMetadataVersionId Optional. The metadata version id
 	 * @return KTAPI_Document The document object
 	 */
-	function &get(&$ktapi, $documentid)
+	function &get(&$ktapi, $documentid, $iMetadataVersionId = null)
 	{
 		assert(!is_null($ktapi));
 		assert(is_a($ktapi, 'KTAPI'));
@@ -108,7 +109,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		$documentid += 0;
 
-		$document = &Document::get($documentid);
+		$document = &Document::get($documentid, $iMetadataVersionId);
 		if (is_null($document) || PEAR::isError($document))
 		{
 			return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_INVALID,$document );
@@ -134,6 +135,30 @@ class KTAPI_Document extends KTAPI_FolderItem
 		// We don't do any checks on this folder as it could possibly be deleted, and is not required right now.
 
 		return new KTAPI_Document($ktapi, $ktapi_folder, $document);
+	}
+
+	/**
+	 * This is used to get a document based on the document id and the metadata version
+	 *
+	 * @author KnowledgeTree Team
+	 * @static
+	 * @access public
+	 * @param KTAPI $ktapi The ktapi object
+	 * @param int $documentid The document id
+	 * @param int $metadataVersion The metadata version (0,1,2)
+	 * @return KTAPI_Document The document object
+	 */
+	function &get_by_metadata_version(&$ktapi, $documentid, $metadataVersion)
+	{
+	    // get the metadata version id
+	    $iMetadataVersionId = Document::getMetadataVersionIdFromVersion($documentid, $metadataVersion);
+		if (is_null($iMetadataVersionId) || PEAR::isError($iMetadataVersionId))
+		{
+			return new KTAPI_Error(KTAPI_ERROR_VERSION_INVALID, $iMetadataVersionId );
+		}
+
+	    // get the KTAPI_Document object
+	    return self::get($ktapi, $documentid, $iMetadataVersionId);
 	}
 
 	/**
@@ -2137,13 +2162,14 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @author KnowledgeTree Team
 	 * @access public
 	 */
-	function download()
+	function download($version = null)
 	{
 		$storage =& KTStorageManagerUtil::getSingleton();
         $options = array();
 
+        $comment = (!is_null($version)) ? 'Document version '.$version.' downloaded' : 'Document downloaded';
         $oDocumentTransaction = new DocumentTransaction($this->document, 'Document downloaded', 'ktcore.transactions.download', $aOptions);
-        $oDocumentTransaction->create();
+        return $oDocumentTransaction->create();
 	}
 
     /**
@@ -2238,6 +2264,17 @@ class KTAPI_Document extends KTAPI_FolderItem
             $versions[] = $version;
         }
         return $versions;
+	}
+
+	/**
+	 * Get the content version id using the document (content) version - major/minor version
+	 *
+	 * @param string $version
+	 * @return int
+	 */
+	function get_content_version_id_from_version($version)
+	{
+	    return $this->document->getContentVersionIdFromVersion($version);
 	}
 
 	/**
