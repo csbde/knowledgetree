@@ -30,6 +30,11 @@
             <cmisVersionsSupported>0.61</cmisVersionsSupported>
         </repositoryInfo>
         <repositoryCapabilities>
+        	<capabilityGetDescendants>true</capabilityGetDescendants>
+        	<capabilityGetFolderTree>true</capabilityGetFolderTree>
+        	<capabilityContentStreamUpdatability>pwconly</capabilityContentStreamUpdatability>
+        	<capabilityChanges>none</capabilityChanges>
+        	<capabilityRenditions>none</capabilityRenditions>
             <capabilityMultifiling>false</capabilityMultifiling>
             <capabilityUnfiling>false</capabilityUnfiling>
             <capabilityVersionSpecificFiling>false</capabilityVersionSpecificFiling>
@@ -37,8 +42,8 @@
             <capabilityPWCSearchable>false</capabilityPWCSearchable>
             <capabilityAllVersionsSearchable>false</capabilityAllVersionsSearchable>
             <capabilityQuery>None</capabilityQuery>
-            <capabilityFullText>None</capabilityFullText>
             <capabilityJoin>NoJoin</capabilityJoin>
+        	<capabilityACL>none</capabilityACL>
         </repositoryCapabilities>
         <supportedTypes>
             <objectType>Document</objectType>

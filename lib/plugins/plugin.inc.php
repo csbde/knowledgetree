@@ -46,7 +46,7 @@ class KTPlugin {
     var $iOrder = 0;
     var $sFriendlyName = null;
     var $sSQLDir = null;
-
+    
     var $autoRegister = false;
     var $showInAdmin = true;
 
@@ -319,6 +319,19 @@ class KTPlugin {
         // Register helper in DB
         $params = $sClassname.'|'.$sNamespace.'|'.$sPath;
         $this->registerPluginHelper($sNamespace, $sClassname, $sPath, $params, 'process', 'processor');
+    }
+    
+    /**
+     * Register search criteria for a plugin
+     * See Search2/search/fieldRegistry.inc.php
+     */
+    function registerSearchCriteria($sNamespace, $sPath)
+    {
+        $sPath = $this->_fixFilename($sPath);
+
+        // Register helper in DB
+        $params = $sNamespace.'|'.$sPath;
+        $this->registerPluginHelper($sNamespace, '', $sPath, $params, 'general', 'search_criteria');
     }
 
     /* ** Refactor into another class ** */

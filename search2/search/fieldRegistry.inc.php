@@ -249,8 +249,59 @@ class ExprFieldRegistry
 			}
         }
         closedir($dir);
+        
+        // register any search fields tied to specific plugins
+        $this->registerPluginSearchFields();
 
         $this->registerMetdataFields();
+    }
+    
+    /**
+     * Registers search fields which are specific to a certain plugin which may or may not exist/be active in the user's installation
+     * 
+     * NOTE this may only be used with commercial plugins?
+     * NOTE do we want to restrict based on whether the plugin is active?  it may have been deactivated but existing metadata created
+     *      while it was active would still exist and be searchable.  The plugin should not need to be active to use the search.
+     * 
+     * SQL alter table plugin_helper ADD searchfields varchar(32) NULL Default NULL;
+     * 
+     */
+    private function registerPluginSearchFields()
+    {
+    	// check the database for any registered plugin specific search criteria
+    	$pluginSearchCriteria = null;
+    	
+    	$result = DBUtil::getOneResult('Select pathname FROM plugin_helper WHERE classtype = "search_criteria"');
+    	if (PEAR::isError($result)) {
+    		return;
+    	}
+		
+    	$fieldPath = KT_DIR . DIRECTORY_SEPARATOR . $result['pathname'];
+    	
+    	// loop through those found and include from the plugin path
+    	$dir = opendir($fieldPath);
+		while (($file = readdir($dir)) !== false)
+		{
+			if (substr($file,-13) == 'Field.inc.php')
+			{
+				require_once($fieldPath . DIRECTORY_SEPARATOR . $file);
+				$class = substr($file, 0, -8);
+
+				if (!class_exists($class))
+				{
+					continue;
+				}
+
+				$field = new $class;
+				if (is_null($field) || !($field instanceof FieldExpr))
+				{
+					continue;
+				}
+
+				$this->registerField($field);
+			}
+        }
+        closedir($dir);
     }
 
     /**
