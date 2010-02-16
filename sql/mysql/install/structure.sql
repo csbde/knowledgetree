@@ -803,6 +803,28 @@ CREATE TABLE `folder_subscriptions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
+-- Table structure for table `folder_structures`
+--
+
+CREATE TABLE IF NOT EXISTS `folder_structures` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `parent_id` int(11) unsigned NOT NULL,
+  `template_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `folder_templates`
+--
+
+CREATE TABLE  `folder_templates` (
+`id` INT( 11 ) UNSIGNED NOT NULL ,
+`name` VARCHAR( 255 ) NOT NULL ,
+PRIMARY KEY (  `id` )
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `folder_transactions`
 --
 
