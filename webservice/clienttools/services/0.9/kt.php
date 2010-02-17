@@ -134,6 +134,8 @@ class kt extends client_service {
 			return false;
 		}
 		
+		$folder->addFolderToUserHistory();
+		
 		$types = (isset ( $arr ['types'] ) ? $arr ['types'] : 'DF');
 		
 		$listing = $folder->get_listing ( 1, $types );
@@ -291,6 +293,8 @@ class kt extends client_service {
 			$document_detail = $document->get_detail ();
 			$title = $document_detail ['title'];
 			$document_type = $document_detail ['document_type'];
+			
+			$document->addDocumentToUserHistory(); /* Added by Tohir */
 		
 		} else {
 			if (isset ( $params ['document_type'] )) {
