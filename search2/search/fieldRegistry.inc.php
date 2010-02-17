@@ -271,37 +271,36 @@ class ExprFieldRegistry
     	// check the database for any registered plugin specific search criteria
     	$pluginSearchCriteria = null;
     	
-    	$result = DBUtil::getOneResult('Select pathname FROM plugin_helper WHERE classtype = "search_criteria"');
+    	$result = DBUtil::getResultArray('Select h.pathname FROM plugin_helper h INNER JOIN plugins p ON (p.namespace = h.plugin) '
+        	                           . 'WHERE p.disabled = 0 AND  h.classtype = "search_criteria"');
     	if (PEAR::isError($result)) {
     		return;
     	}
 		
-    	$fieldPath = KT_DIR . DIRECTORY_SEPARATOR . $result['pathname'];
+    	foreach ($result as $pluginSearchResult) {
+            $fieldPath = KT_DIR . DIRECTORY_SEPARATOR . $pluginSearchResult['pathname'];
     	
-    	// loop through those found and include from the plugin path
-    	$dir = opendir($fieldPath);
-		while (($file = readdir($dir)) !== false)
-		{
-			if (substr($file,-13) == 'Field.inc.php')
-			{
-				require_once($fieldPath . DIRECTORY_SEPARATOR . $file);
-				$class = substr($file, 0, -8);
+            // loop through those found and include from the plugin path
+            $dir = opendir($fieldPath);
+            while (($file = readdir($dir)) !== false) {
+                if (substr($file,-13) == 'Field.inc.php') {
+                    require_once($fieldPath . DIRECTORY_SEPARATOR . $file);
+                    $class = substr($file, 0, -8);
 
-				if (!class_exists($class))
-				{
-					continue;
-				}
+                    if (!class_exists($class)) {
+                        continue;
+                    }
 
-				$field = new $class;
-				if (is_null($field) || !($field instanceof FieldExpr))
-				{
-					continue;
-				}
+                    $field = new $class;
+                    if (is_null($field) || !($field instanceof FieldExpr)) {
+                        continue;
+                    }
 
-				$this->registerField($field);
-			}
-        }
-        closedir($dir);
+                    $this->registerField($field);
+                }
+            }
+            closedir($dir);
+    	}
     }
 
     /**
