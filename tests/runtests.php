@@ -52,9 +52,9 @@ class UnitTests extends TestSuite {
 //        $this->addFile('filelike/testStringFileLike.php');
 
         // Search (2) and indexing
-//        $this->addFile('documentProcessor/testExtracters.php');
+        $this->addFile('documentProcessor/testExtracters.php');
 //        $this->addFile('documentProcessor/testGuidInserter.php');
-//        $this->addFile('search2/testSearch.php');
+        $this->addFile('search2/testSearch.php');
     }
 }
 

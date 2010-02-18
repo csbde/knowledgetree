@@ -86,9 +86,13 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 */
 	function get(&$ktapi, $folderid)
 	{
-		assert(!is_null($ktapi));
-		assert(is_a($ktapi, 'KTAPI'));
-		assert(is_numeric($folderid));
+	    if(is_null($ktapi) || !is_a($ktapi, 'KTAPI')){
+	        return PEAR::raiseError('A valid KTAPI object is needed');
+	    }
+
+	    if(!is_numeric($folderid)){
+	        return PEAR::raiseError('A valid folder id is required');
+	    }
 
 		$folderid += 0;
 
