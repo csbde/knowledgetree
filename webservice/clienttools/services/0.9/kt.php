@@ -1346,6 +1346,24 @@ Fatal error:  Cannot unset string offsets in on line 981
 		return true;
 	}
 	
+	/**
+	 * Method to get the recently viewed documents and folders.
+	 */
+	function get_recently_viewed()
+	{
+		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
+		$kt = &$this->KT;
+		
+		$items = array();
+		$folders = array();
+		
+		
+		// Fake for the timebeing
+		//$folders = array(array('id'=>'2', 'path'=>'/F_0/F_1/F_2', 'name'=>'Dropped Documents (fake)'), array('id'=>'3', 'path'=>'/F_0/F_1/F_2/F_3', 'name'=>'admin (fake)'));
+		
+		$this->setResponse(array('items'=>$items, 'folders'=>$folders));
+	}
+	
 	
 	
 	
