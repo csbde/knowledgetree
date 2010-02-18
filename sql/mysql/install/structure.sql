@@ -819,7 +819,7 @@ CREATE TABLE IF NOT EXISTS `folder_structures` (
 --
 
 CREATE TABLE  `folder_templates` (
-`id` INT( 11 ) UNSIGNED NOT NULL ,
+`id` INT( 11 ) UNSIGNED NOT NULL auto_increment,
 `name` VARCHAR( 255 ) NOT NULL ,
 PRIMARY KEY (  `id` )
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -829,7 +829,7 @@ PRIMARY KEY (  `id` )
 --
 
 CREATE TABLE `folder_transactions` (
-  `id` int(11) NOT NULL auto_increment,
+  `id` int(11) UNSIGNED NOT NULL auto_increment,
   `folder_id` int(11) default NULL,
   `user_id` int(11) default NULL,
   `datetime` datetime NOT NULL default '0000-00-00 00:00:00',
