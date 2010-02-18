@@ -820,14 +820,10 @@ abstract class KTAPI_AllocationBase extends KTAPI_Dynamic
 
                 break;
             case 'KTAPI_Document':
-                DocumentTransaction::createFromArray(array(
-                    'folderid' => $objectId,
-                    'comment' => $comment,
-                    'transactionNS' => $namespace,
-                    'userid' => $_SESSION['userID'],
-                    'ip' => Session::getClientIP(),
-                ));
+                $oDocumentTransaction = new DocumentTransaction($object, $comment, $namespace);
+        		$res = $oDocumentTransaction->create();
                 break;
+
             default:
                 throw new Exception('Unexpected type: ' . $type);
         }

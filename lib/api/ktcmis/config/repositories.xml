@@ -4,8 +4,7 @@
     Document   : repositories.xml
     Created on : 25 May 2009, 10:33 AM
     Author     : KnowledgeTree Team
-    Description:
-        Contains definitions for all repositories accessible via the CMIS API.
+    Description: Contains definitions for all repositories accessible via the CMIS API.
 -->
 
 <!--
@@ -30,11 +29,11 @@
             <cmisVersionsSupported>0.61</cmisVersionsSupported>
         </repositoryInfo>
         <repositoryCapabilities>
-        	<capabilityGetDescendants>true</capabilityGetDescendants>
-        	<capabilityGetFolderTree>true</capabilityGetFolderTree>
-        	<capabilityContentStreamUpdatability>pwconly</capabilityContentStreamUpdatability>
-        	<capabilityChanges>none</capabilityChanges>
-        	<capabilityRenditions>none</capabilityRenditions>
+            <capabilityGetDescendants>true</capabilityGetDescendants>
+            <capabilityGetFolderTree>true</capabilityGetFolderTree>
+            <capabilityContentStreamUpdatability>pwconly</capabilityContentStreamUpdatability>
+            <capabilityChanges>none</capabilityChanges>
+            <capabilityRenditions>none</capabilityRenditions>
             <capabilityMultifiling>false</capabilityMultifiling>
             <capabilityUnfiling>false</capabilityUnfiling>
             <capabilityVersionSpecificFiling>false</capabilityVersionSpecificFiling>
