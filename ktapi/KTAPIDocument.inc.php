@@ -103,10 +103,15 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function &get(&$ktapi, $documentid, $iMetadataVersionId = null)
 	{
-		assert(!is_null($ktapi));
-		assert(is_a($ktapi, 'KTAPI'));
-		assert(is_numeric($documentid));
+	    if(is_null($ktapi) || !is_a($ktapi, 'KTAPI')){
+	        return PEAR::raiseError('A valid KTAPI object is needed');
+	    }
 
+	    if(!is_numeric($documentid)){
+	        return PEAR::raiseError('A valid document id is required');
+	    }
+
+	    // ensure documentid is an integer
 		$documentid += 0;
 
 		$document = &Document::get($documentid, $iMetadataVersionId);
@@ -2587,6 +2592,21 @@ class KTAPI_Document extends KTAPI_FolderItem
         sendEmail($listEmails, $this->documentid, $this->get_title(), $comment, (boolean)$attachDocument, $emailErrors);
 
     }
+
+	/**
+	 * Method to add a Document to the User's History
+	 *
+	 * This integrates with the User History commercial plugin
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function addDocumentToUserHistory()
+	{
+		require_once(KT_DIR . '/plugins/commercial/network/userhistory/UserHistoryActions.php');
+		
+		$docAction = new UserHistoryDocumentAction($this->document, $this->ktapi->get_user());
+		$docAction->_show();
+	}
 
     /**
      * Get a list of Documents
