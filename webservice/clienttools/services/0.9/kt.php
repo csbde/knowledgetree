@@ -134,6 +134,8 @@ class kt extends client_service {
 			return false;
 		}
 		
+		$folder->addFolderToUserHistory();
+		
 		$types = (isset ( $arr ['types'] ) ? $arr ['types'] : 'DF');
 		
 		$listing = $folder->get_listing ( 1, $types );
@@ -291,6 +293,8 @@ class kt extends client_service {
 			$document_detail = $document->get_detail ();
 			$title = $document_detail ['title'];
 			$document_type = $document_detail ['document_type'];
+			
+			$document->addDocumentToUserHistory(); /* Added by Tohir */
 		
 		} else {
 			if (isset ( $params ['document_type'] )) {
@@ -1340,6 +1344,24 @@ Fatal error:  Cannot unset string offsets in on line 981
 		}
 		$this->setResponse ( array ('status_code' => 0, 'maxsize' => $max_upload_size ) );
 		return true;
+	}
+	
+	/**
+	 * Method to get the recently viewed documents and folders.
+	 */
+	function get_recently_viewed()
+	{
+		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
+		$kt = &$this->KT;
+		
+		$items = array();
+		$folders = array();
+		
+		
+		// Fake for the timebeing
+		//$folders = array(array('id'=>'2', 'path'=>'/F_0/F_1/F_2', 'name'=>'Dropped Documents (fake)'), array('id'=>'3', 'path'=>'/F_0/F_1/F_2/F_3', 'name'=>'admin (fake)'));
+		
+		$this->setResponse(array('items'=>$items, 'folders'=>$folders));
 	}
 	
 	
