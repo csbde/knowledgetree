@@ -1606,6 +1606,21 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
         return $_SESSION['errorMessage'];
 	}
+	
+	/**
+	 * Method to add a Document to the User's History
+	 *
+	 * This integrates with the User History commercial plugin
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function addFolderToUserHistory()
+	{
+		require_once(KT_DIR . '/plugins/commercial/network/userhistory/UserHistoryActions.php');
+		
+		$docAction = new UserHistoryFolderAction($this->folder, $this->ktapi->get_user());
+		$docAction->_show();
+	}
 }
 
 ?>

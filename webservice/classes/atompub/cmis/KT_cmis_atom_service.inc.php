@@ -14,7 +14,7 @@ class KT_cmis_atom_service extends KT_atom_service {
         $this->contentDownload = $contentDownload;
     }
     
-    public public function isContentDownload()
+    public function isContentDownload()
     {
         return $this->contentDownload;
     }
