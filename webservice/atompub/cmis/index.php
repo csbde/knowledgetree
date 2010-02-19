@@ -101,12 +101,12 @@ if ($workspace == 'servicedocument')
 */
 // TODO consider a registerServices function which will, dependant on what is requested, register the appropriate services, keep the logic out of the index file
 $APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',
-                      array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'children'), 'rootchildren');
+                      array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'children'), 'root');
 $APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',
                       array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'descendants'), 'rootdescendants');
 $APP->registerService('dms', 'checkedout', 'KT_cmis_atom_service_checkedout', 'Checked Out Document Collection', null, 
                       'checkedout', 'application/atom+xml;type=entry');
-$APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'typeschildren');
+$APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'types');
 $APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'typesdescendants');
 
 if ($workspace != 'servicedocument')
