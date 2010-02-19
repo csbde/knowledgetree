@@ -40,9 +40,9 @@
             <capabilityPWCUpdateable>false</capabilityPWCUpdateable>
             <capabilityPWCSearchable>false</capabilityPWCSearchable>
             <capabilityAllVersionsSearchable>false</capabilityAllVersionsSearchable>
-            <capabilityQuery>None</capabilityQuery>
-            <capabilityJoin>NoJoin</capabilityJoin>
-        	<capabilityACL>none</capabilityACL>
+            <capabilityQuery>none</capabilityQuery>
+            <capabilityJoin>none</capabilityJoin>
+            <capabilityACL>none</capabilityACL>
         </repositoryCapabilities>
         <supportedTypes>
             <objectType>Document</objectType>

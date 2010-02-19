@@ -43,11 +43,11 @@
  * Includes
  */
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_serviceDoc.inc.php');
-//include_once('KT_atom_baseDoc.inc.php');
+require_once('RepositoryService.inc.php');
 
 class KT_cmis_atom_serviceDoc extends KT_atom_serviceDoc {
 
-// override and extend as needed
+    // override and extend as needed
 
     public $repositoryInfo = array();
 
@@ -58,11 +58,7 @@ class KT_cmis_atom_serviceDoc extends KT_atom_serviceDoc {
         // get repositoryInfo
         // NOTE currently we only support one repository, which will be the first one found in the repositories.xml config
         // TODO multiple repositories as individual workspaces
-
-        include 'services/cmis/RepositoryService.inc.php';
         $RepositoryService = new RepositoryService();
-        // TODO add auth requirement here, don't want to even supply service doc without auth
-//        $RepositoryService->startSession();
 
         // fetch data for response
         $repositories = $RepositoryService->getRepositories();

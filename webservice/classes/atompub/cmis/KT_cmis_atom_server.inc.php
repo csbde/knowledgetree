@@ -1,7 +1,7 @@
 <?php
 
 include_once(KT_ATOM_LIB_FOLDER . 'KT_atom_server.inc.php');
-include_once('RepositoryService.inc.php');
+require_once('RepositoryService.inc.php');
 
 class KT_cmis_atom_server extends KT_atom_server {
 
@@ -45,7 +45,6 @@ class KT_cmis_atom_server extends KT_atom_server {
 		$workspace = strtolower(trim($queryArray[0]));
         if ($workspace == 'servicedocument')
         {
-            include 'services/cmis/RepositoryService.inc.php';
             $RepositoryService = new RepositoryService();
 
             // fetch data for response
@@ -152,6 +151,9 @@ class KT_cmis_atom_server extends KT_atom_server {
     {
 		ob_end_clean();
         if (!$this->headersSet) header('Content-type: text/xml');
+
+        //include('/var/www/atompub_response.xml');
+
 		if ($this->renderBody) echo $this->output;
 	}
 

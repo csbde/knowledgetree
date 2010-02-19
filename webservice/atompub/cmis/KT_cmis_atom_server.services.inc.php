@@ -269,7 +269,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             foreach($response as $failed)
             {            
                 $entry = $feed->newEntry();
-                $objectElement = $feed->newElement('cmis:object');
+                $objectElement = $feed->newElement('cmisra:object');
                 $propertiesElement = $feed->newElement('cmis:properties');
                 $propElement = $feed->newElement('cmis:propertyId');
                 $propElement->appendChild($feed->newAttr('cmis:name', 'ObjectId'));
