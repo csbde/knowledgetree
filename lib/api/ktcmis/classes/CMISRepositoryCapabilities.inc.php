@@ -46,20 +46,34 @@
  */
 
 class CMISRepositoryCapabilities {
-
-    // boolean values
-    protected $capabilityMultifiling;
-    protected $capabilityUnfiling;
-    protected $capabilityVersionSpecificFiling;
-    protected $capabilityPWCUpdateable;
-    protected $capabilityPWCSearchable;
-    protected $capabilityAllVersionsSearchable;
-
-    // non-boolean values
-    // TODO these should be defined as classes/enums which will only accept the defined values when set
-    protected $capabilityQuery;
-    protected $capabilityFullText;
-    protected $capabilityJoin;
+    
+    // TODO we need an enum equivalent class which can be used to define acceptable values for all which are not boolean
+    
+    // navigation capabilities
+    protected $capabilityGetDescendants; // true/false
+    protected $capabilityGetFolderTree; // true/false
+    
+    // object capabilities
+    protected $capabilityContentStreamUpdatability; // none/anytime/pwconly
+    protected $capabilityChanges; // none/objectidsonly/properties/all
+    protected $capabilityRenditions; // none/read
+    
+    // filing capabilities
+    protected $capabilityMultifiling; // true/false
+    protected $capabilityUnfiling; // true/false
+    protected $capabilityVersionSpecificFiling; // true/false
+    
+    // versioning capabilities
+    protected $capabilityPWCUpdateable; // true/false
+    protected $capabilityPWCSearchable; // true/false
+    protected $capabilityAllVersionsSearchable; // true/false
+    
+    // query capabilities
+    protected $capabilityQuery; // none/metadataonly/fulltextonly/bothseparate/bothcombined
+    protected $capabilityJoin; // none/inneronly/innerandouter
+    
+    // acl capabilities
+    protected $capabilityACL; // none/discover/manage
 
     /**
      * Set a single field value
@@ -67,12 +81,67 @@ class CMISRepositoryCapabilities {
      * @param string $field
      * @param string/int $value
      * @return a collection of repository entries
+     * 
+     * TODO when we have the enum class in place we will need to check whether the value is of type enum and call its set function
+     *      to ensure that the rules are followed
      */
     function setFieldValue($field, $value)
     {
         $this->{$field} = ($value == 'true' ? true : ($value == 'false' ? false : $value));
     }
-
+    
+    /**
+     * Gets the value of the capabilityMultifiling property.
+     *
+     */
+    public function hasCapabilityGetDescendants() {
+        return $this->capabilityGetDescendants;
+    }
+    
+    /**
+     * Gets the value of the capabilityMultifiling property.
+     *
+     */
+    public function hasCapabilityGetFolderTree() {
+        return $this->capabilityGetFolderTree;
+    }
+    
+    /**
+     * Gets the value of the capabilityContentStreamUpdatability property.
+     *
+     * @return
+     *     possible object is
+     *     {@link EnumCapabilityContentStreamUpdatability }
+     *
+     */
+    public function getCapabilityContentStreamUpdatability() {
+        return $this->capabilityContentStreamUpdatability;
+    }
+    
+    /**
+     * Gets the value of the capabilityChanges property.
+     *
+     * @return
+     *     possible object is
+     *     {@link EnumCapabilityChanges }
+     *
+     */
+    public function getCapabilityChanges() {
+        return $this->capabilityChanges;
+    }
+    
+    /**
+     * Gets the value of the capabilityRenditions property.
+     *
+     * @return
+     *     possible object is
+     *     {@link EnumCapabilityRenditions }
+     *
+     */
+    public function getCapabilityRenditions() {
+        return $this->capabilityRenditions;
+    }
+    
     /**
      * Gets the value of the capabilityMultifiling property.
      *
@@ -82,43 +151,19 @@ class CMISRepositoryCapabilities {
     }
 
     /**
-     * Sets the value of the capabilityMultifiling property.
-     *
-     */
-    public function setCapabilityMultifiling($value) {
-        $this->capabilityMultifiling = $value;
-    }
-
-    /**
      * Gets the value of the capabilityUnfiling property.
      *
      */
     public function hasCapabilityUnfiling() {
         return $this->capabilityUnfiling;
     }
-
-    /**
-     * Sets the value of the capabilityUnfiling property.
-     *
-     */
-    public function setCapabilityUnfiling($value) {
-        $this->capabilityUnfiling = $value;
-    }
-
+    
     /**
      * Gets the value of the capabilityVersionSpecificFiling property.
      *
      */
     public function hasCapabilityVersionSpecificFiling() {
         return $this->capabilityVersionSpecificFiling;
-    }
-
-    /**
-     * Sets the value of the capabilityVersionSpecificFiling property.
-     *
-     */
-    public function setCapabilityVersionSpecificFiling($value) {
-        $this->capabilityVersionSpecificFiling = $value;
     }
 
     /**
@@ -130,27 +175,11 @@ class CMISRepositoryCapabilities {
     }
 
     /**
-     * Sets the value of the capabilityPWCUpdateable property.
-     *
-     */
-    public function setCapabilityPWCUpdateable($value) {
-        $this->capabilityPWCUpdateable = $value;
-    }
-
-    /**
      * Gets the value of the capabilityPWCSearchable property.
      *
      */
     public function hasCapabilityPWCSearchable() {
         return $this->capabilityPWCSearchable;
-    }
-
-    /**
-     * Sets the value of the capabilityPWCSearchable property.
-     *
-     */
-    public function setCapabilityPWCSearchable($value) {
-        $this->capabilityPWCSearchable = $value;
     }
 
     /**
@@ -160,15 +189,7 @@ class CMISRepositoryCapabilities {
     public function hasCapabilityAllVersionsSearchable() {
         return $this->capabilityAllVersionsSearchable;
     }
-
-    /**
-     * Sets the value of the capabilityAllVersionsSearchable property.
-     *
-     */
-    public function setCapabilityAllVersionsSearchable($value) {
-        $this->capabilityAllVersionsSearchable = $value;
-    }
-
+    
     /**
      * Gets the value of the capabilityQuery property.
      *
@@ -179,18 +200,6 @@ class CMISRepositoryCapabilities {
      */
     public function getCapabilityQuery() {
         return $this->capabilityQuery;
-    }
-
-    /**
-     * Sets the value of the capabilityQuery property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link EnumCapabilityQuery }
-     *
-     */
-    public function setCapabilityQuery($value) {
-        $this->capabilityQuery = $value;
     }
 
     /**
@@ -206,39 +215,15 @@ class CMISRepositoryCapabilities {
     }
 
     /**
-     * Sets the value of the capabilityJoin property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link EnumCapabilityJoin }
-     *
-     */
-    public function setCapabilityJoin($value) {
-        $this->capabilityJoin = $value;
-    }
-
-    /**
-     * Gets the value of the capabilityFullText property.
+     * Gets the value of the capabilityACL property.
      *
      * @return
      *     possible object is
-     *     {@link EnumCapabilityFullText }
+     *     {@link EnumCapabilityACL }
      *
      */
-    public function getCapabilityFullText() {
-        return $this->capabilityFullText;
-    }
-
-    /**
-     * Sets the value of the capabilityFullText property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link EnumCapabilityFullText }
-     *
-     */
-    public function setCapabilityFullText($value) {
-        $this->capabilityFullText = $value;
+    public function getCapabilityACL() {
+        return $this->capabilityACL;
     }
 
 //    /**
