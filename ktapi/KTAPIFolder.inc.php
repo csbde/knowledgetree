@@ -1616,10 +1616,24 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 */
 	public function addFolderToUserHistory()
 	{
-		require_once(KT_DIR . '/plugins/commercial/network/userhistory/UserHistoryActions.php');
-		
-		$docAction = new UserHistoryFolderAction($this->folder, $this->ktapi->get_user());
-		$docAction->_show();
+		if (KTPluginUtil::pluginIsActive('brad.UserHistory.plugin')) {
+			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
+            require_once($path.'UserHistoryActions.php');
+			
+			$folderAction = new UserHistoryFolderAction($this->folder, $this->ktapi->get_user());
+			$folderAction->_show();
+		}
+	}
+	
+	/**
+	 * Method to get the Ids of all the Parent Folders
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function getParentFolderIDs()
+	{
+		return $this->folder->getParentFolderIDs();
 	}
 }
 

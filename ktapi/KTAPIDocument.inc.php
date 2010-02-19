@@ -2602,10 +2602,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	public function addDocumentToUserHistory()
 	{
-		require_once(KT_DIR . '/plugins/commercial/network/userhistory/UserHistoryActions.php');
-		
-		$docAction = new UserHistoryDocumentAction($this->document, $this->ktapi->get_user());
-		$docAction->_show();
+		if (KTPluginUtil::pluginIsActive('brad.UserHistory.plugin')) {
+			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
+            require_once($path .  'UserHistoryActions.php');
+			
+			$docAction = new UserHistoryDocumentAction($this->document, $this->ktapi->get_user());
+			$docAction->_show();
+		}
 	}
 
     /**
