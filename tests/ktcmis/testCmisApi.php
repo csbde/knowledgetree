@@ -62,7 +62,9 @@ class CMISTestCase extends KTUnitTestCase {
     * This method ends the KT session
     */
     public function tearDown() {
-        $this->session->logout();
+        if (!is_null($this->session) && !PEAR::isError($this->session)) {
+            $this->session->logout();
+        }
     }
 
     // Repository service functions
