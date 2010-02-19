@@ -1354,14 +1354,80 @@ Fatal error:  Cannot unset string offsets in on line 981
 		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
 		$kt = &$this->KT;
 		
-		$items = array();
-		$folders = array();
+		
+		// Generate Folders List
+		$returnFoldersArray = array();
+		
+		$folders = $kt->getRecentlyViewedFolders();
+		foreach ($folders as $folder)
+		{
+			$folderObj = &$kt->get_folder_by_id ( $folder->getFolderId() );
+			
+			$folderArray = array();
+			$folderArray['id']   = $folderObj->folderid;
+			$folderArray['name'] = $folderObj->get_folder_name();
+			
+			$parentIds = explode(',', $folderObj->getParentFolderIds());
+			$path = '/F_0';
+			
+			if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
+				foreach ($parentIds as $parentId)
+				{
+					$path .= '/F_'.$parentId;
+				}
+			}
+			
+			$path .= '/F_'.$folderObj->folderid;
+			
+			$folderArray['path'] = $path;
+			
+			$returnFoldersArray[] = $folderArray;
+		}
 		
 		
-		// Fake for the timebeing
-		//$folders = array(array('id'=>'2', 'path'=>'/F_0/F_1/F_2', 'name'=>'Dropped Documents (fake)'), array('id'=>'3', 'path'=>'/F_0/F_1/F_2/F_3', 'name'=>'admin (fake)'));
+		// Generate Documents List
+		$returnDocumentArray = array();
 		
-		$this->setResponse(array('items'=>$items, 'folders'=>$folders));
+		$items = $kt->getRecentlyViewedDocuments();
+		foreach ($items as $item)
+		{
+			$document = $kt->get_document_by_id($item->getDocumentId());
+			$documentDetail = $document->get_detail();
+			
+			$documentArray = array();
+			
+			$documentArray['id'] = $document->documentid;
+			$documentArray['contentID'] = $document->documentid;
+			$documentArray['title'] = $documentDetail['title'];
+			$documentArray['folderId'] = $documentDetail['folder_id'];
+			
+			// Determine Icon Class
+			$extpos = strrpos ( $documentDetail['filename'], '.' );
+			if ($extpos === false) {
+				$class = 'file-unknown';
+			} else {
+				$class = 'file-' . substr ( $documentDetail['filename'], $extpos + 1 ); // Get Extension without the dot
+			}
+			$documentArray['iconCls'] = $class;
+			
+			// Determine Icon Path
+			$folderObj = $kt->get_folder_by_id ( $documentDetail['folder_id']);
+			$parentIds = explode(',', $folderObj->getParentFolderIds());
+			$path = '/F_0';
+			if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
+				foreach ($parentIds as $parentId)
+				{
+					$path .= '/F_'.$parentId;
+				}
+			}
+			$path .= '/F_'.$documentDetail['folder_id'];
+			
+			$documentArray['folderPath'] = $path;
+			
+			$returnDocumentArray[] = $documentArray;
+		}
+		
+		$this->setResponse(array('documents'=>$returnDocumentArray, 'folders'=>$returnFoldersArray));
 	}
 	
 	

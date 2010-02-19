@@ -4832,6 +4832,58 @@ class KTAPI
 
         return $response;
     }
+	
+	/**
+	 * Method to get the Recently Viewed Documents
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function getRecentlyViewedDocuments()
+	{
+		if (KTPluginUtil::pluginIsActive('brad.UserHistory.plugin')) {
+			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
+            require_once($path.'UserHistoryActions.php');
+			$user = $this->get_user();
+			
+			if (is_null($user) || PEAR::isError($user))
+			{
+				$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
+				return $result;
+			}
+			
+			return UserHistoryDocumentEntry::getByUser($user);
+			
+		} else {
+			return array();
+		}
+	}
+	
+	/**
+	 * Method to get the Recently Viewed Folders
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function getRecentlyViewedFolders()
+	{
+		if (KTPluginUtil::pluginIsActive('brad.UserHistory.plugin')) {
+			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
+            require_once($path.'UserHistoryActions.php');
+			$user = $this->get_user();
+			
+			if (is_null($user) || PEAR::isError($user))
+			{
+				$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
+				return $result;
+			}
+			
+			return UserHistoryFolderEntry::getByUser($user);
+			
+		} else {
+			return array();
+		}
+	}
 }
 
 
