@@ -683,38 +683,6 @@ INSERT INTO `folders` VALUES
 UNLOCK TABLES;
 
 --
--- Dumping data for table `folder_template_nodes`
---
-
-LOCK TABLES `folder_template_nodes` WRITE;
-/*!40000 ALTER TABLE `folders` DISABLE KEYS */;
-INSERT INTO `folder_template_nodes` (`id`, `name`, `parent_id`, `template_id`) VALUES
-(1, 'Correspondence', 0, 1),
-(2, 'Tax Returns', 0, 1),
-(3, 'Financial statements', 0, 1),
-(4, 'Working papers', 0, 1),
-(5, 'Templates', 0, 2),
-(6, 'Finance', 0, 2),
-(7, 'Human Resources', 0, 2),
-(8, 'Product', 0, 2),
-(9, 'Operations', 0, 2),
-(10, 'Sales', 0, 2);
-/*!40000 ALTER TABLE `folder_template_nodes` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping data for table `folder_templates`
---
-
-LOCK TABLES `folder_templates` WRITE;
-/*!40000 ALTER TABLE `folder_templates` DISABLE KEYS */;
-INSERT INTO `folder_templates` (`id`, `name`) VALUES
-(1, 'ClientName'),
-(2, 'BusinessName');
-/*!40000 ALTER TABLE `folder_templates` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `folders_users_roles_link`
 --
 
