@@ -1497,8 +1497,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.7.0.3'),
-(3,'databaseVersion','3.7.0.3'),
+(2,'knowledgeTreeVersion','3.7.0.4'),
+(3,'databaseVersion','3.7.0.4'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1814,7 +1814,9 @@ INSERT INTO `upgrades` VALUES
 (236,'sql*3.7.0.3*0*3.7.0.3/uploaded_files.sql','Database upgrade to version 3.7.0.3: Uploaded Files','2009-12-10 00:00:00',1,'upgrade*3.7.0.3*99*upgrade3.7.0.3'),
 (237,'sql*3.7.0.3*0*3.7.0.3/active_sessions_ip.sql','Database upgrade to version 3.7.0.3: Active Sessions Ip','2009-12-10 00:00:00',1,'upgrade*3.7.0.3*99*upgrade3.7.0.3'),
 (238,'sql*3.7.0.3*0*3.7.0.3/download_queue_zip.sql','Database upgrade to version 3.7.0.3: Download Queue Zip','2009-12-10 00:00:00',1,'upgrade*3.7.0.3*99*upgrade3.7.0.3'),
-(239,'upgrade*3.7.0.3*99*upgrade3.7.0.3','Upgrade from version 3.7.0.2 to 3.7.0.3','2009-12-14 00:00:00',1,'upgrade*3.7.0.3*99*upgrade3.7.0.3');
+(239,'upgrade*3.7.0.3*99*upgrade3.7.0.3','Upgrade from version 3.7.0.2 to 3.7.0.3','2009-12-14 00:00:00',1,'upgrade*3.7.0.3*99*upgrade3.7.0.3'),
+(240,'sql*3.7.0.4*0*3.7.0.4/download_files.sql','Database upgrade to version 3.7.0.4: Download Files','2010-02-19 00:00:00',1,'upgrade*3.7.0.4*99*upgrade3.7.0.4'),
+(241,'upgrade*3.7.0.4*99*upgrade3.7.0.4','Upgrade from version 3.7.0.3 to 3.7.0.4','2010-02-19 00:00:00',1,'upgrade*3.7.0.4*99*upgrade3.7.0.4');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
