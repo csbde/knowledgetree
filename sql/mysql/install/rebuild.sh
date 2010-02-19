@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 DIR=`dirname $0`
 cd $DIR
@@ -17,4 +18,3 @@ mysqladmin -u root -p$pass create $db
 mysql -u root -p$pass $db < structure.sql
 mysql -u root -p$pass $db < data.sql
 mysql -u root -p$pass $db < user.sql
-
