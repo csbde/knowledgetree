@@ -1,6 +1,6 @@
 <?php
 
-include_once(KT_ATOM_LIB_FOLDER.'KT_atom_response.inc.php');
+require_once(KT_ATOM_LIB_FOLDER.'KT_atom_response.inc.php');
 
 class KT_cmis_atom_response extends KT_atom_response {
 
