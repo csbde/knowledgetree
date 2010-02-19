@@ -19,7 +19,8 @@ class KT_cmis_atom_responseFeed extends KT_atom_responseFeed {
         
         // append additional tags
 		$this->feed->appendChild($this->newAttr('xmlns:app', 'http://www.w3.org/2007/app'));
-		$this->feed->appendChild($this->newAttr('xmlns:cmis', 'http://docs.oasis-open.org/ns/cmis/core/200901'));
+		$this->feed->appendChild($this->newAttr('xmlns:cmis', 'http://docs.oasis-open.org/ns/cmis/core/200908'));
+		$this->feed->appendChild($this->newAttr('xmlns:cmisra', 'http://docs.oasis-open.org/ns/cmis/restatom/200908/'));
         
         // require the workspace for creating links within responses
         $queryArray = split('/', trim($_SERVER['QUERY_STRING'], '/'));

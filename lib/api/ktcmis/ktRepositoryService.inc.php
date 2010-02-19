@@ -86,7 +86,7 @@ class KTRepositoryService extends KTCMISBase {
         {
             $repositoryList[$count]['repositoryId'] = $repository->getRepositoryId();
             $repositoryList[$count]['repositoryName'] = $repository->getRepositoryName();
-            $repositoryList[$count]['repositoryURI'] = $repository->getRepositoryURI();
+            //$repositoryList[$count]['repositoryURI'] = $repository->getRepositoryURI();
             ++$count;
         }
 

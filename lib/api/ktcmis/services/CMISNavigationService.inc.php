@@ -75,7 +75,7 @@ class CMISNavigationService {
      */
 
     // NOTE This method does NOT support paging as defined in the paging section
-    // NOTE If the Repository supports the optional “VersionSpecificFiling�? capability,
+    // NOTE If the Repository supports the optional “VersionSpecificFiling��? capability,
     //      then the repository SHALL return the document versions filed in the specified folder or its descendant folders.
     //      Otherwise, the latest version of the documents SHALL be returned.
     // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
@@ -116,12 +116,12 @@ class CMISNavigationService {
      * @param int $skipCount
      * @return array $descendants
      */
-    // NOTE If the Repository supports the optional “VersionSpecificFiling�? capability,
+    // NOTE If the Repository supports the optional “VersionSpecificFiling��? capability,
     //      then the repository SHALL return the document versions filed in the specified folder or its descendant folders.
     //      Otherwise, the latest version of the documents SHALL be returned.
     // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
-    function getChildren($repositoryId, $folderId, $includeAllowableActions, $includeRelationships,
-                         $typeId = 'Any', $filter = '', $maxItems = 0, $skipCount = 0)
+    function getChildren($repositoryId, $folderId, $includeAllowableActions = null, $includeRelationships = null,
+                         $typeId = 'Any', $filter = '', $maxItems = 0, $skipCount = 0, $orderBy = '', $renditionFilter = null, $includePathSegment = false)
     {
         // TODO paging
         // TODO optional parameters
@@ -130,9 +130,9 @@ class CMISNavigationService {
 
         // if this is not a folder, cannot get children
         $folderId = CMISUtil::decodeObjectId($folderId, $type);
-        // NOTE this will quite possibly break the webservices
+
         if ($type != 'Folder') {
-            return $children;
+            throw new invalidArgumentException('The specified object is not a folder');
         }
 
         $folder = $this->ktapi->get_folder_by_id($folderId);
@@ -158,7 +158,7 @@ class CMISNavigationService {
      */
     // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
     // TODO If this service method is invoked on the root folder of the Repository, then the Repository SHALL return an empty result set.
-    // NOTE SHOULD always include the “ObjectId�? and “ParentId�? properties for all objects returned
+    // NOTE SHOULD always include the “ObjectId��? and “ParentId��? properties for all objects returned
     function getFolderParent($repositoryId, $folderId, $includeAllowableActions, $includeRelationships, $returnToRoot, $filter = '')
     {
         // NOTE the root folder obviously has no parent, throw an ObjectNotFoundException here if this is the root folder
@@ -263,12 +263,11 @@ class CMISNavigationService {
      * @param int $skipCount
      * @return array $checkedout The collection of checked out document objects
      */
-    // NOTE NOT YET IMPLEMENTED (this function is just a place holder at the moment :))
     // TODO exceptions: •	FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid.
     // TODO filter by folder id
     // TODO $filter and paging
-    function getCheckedOutDocs($repositoryId, $folderId = null, $filter = '', $includeAllowableActions, $includeRelationships, 
-                               $maxItems = 0, $skipCount = 0)
+    function getCheckedOutDocs($repositoryId, $folderId = null, $filter = '', $includeAllowableActions = false, $includeRelationships = null,
+                               $maxItems = 0, $skipCount = 0, $orderBy = '')
     {
         $checkedout = array();
 

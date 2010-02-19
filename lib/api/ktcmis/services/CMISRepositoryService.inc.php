@@ -104,9 +104,10 @@ class CMISRepositoryService {
     // NOTE this code may fit better within the Repository Class
     // TODO return for specific type when $typeId is specified
     // TODO other optional parameters
-    function getTypes($repositoryId, $typeId = '', $returnPropertyDefinitions = false,
+    private function getTypes($repositoryId, $typeId = '', $returnPropertyDefinitions = false,
                       $maxItems = 0, $skipCount = 0, &$hasMoreItems = false)
-    {        
+    {   
+        /*     
         if ($typeId != '')
         {
             try {
@@ -117,6 +118,7 @@ class CMISRepositoryService {
                 throw new InvalidArgumentException('Type ' . $typeId . ' is not supported');
             }
         }
+        */
 
         $repository = new CMISRepository($repositoryId);
         $supportedTypes = $repository->getTypes();
@@ -171,7 +173,7 @@ class CMISRepositoryService {
 
         require_once(CMIS_DIR . '/objecttypes/' . $object . '.inc.php');
         $cmisObject = new $object;
-        $typeDefinition['attributes'] = $cmisObject->getAttributes();
+        //$typeDefinition['attributes'] = $cmisObject->getAttributes();
         $typeDefinition['properties'] = $cmisObject->getProperties();
 
         return $typeDefinition;

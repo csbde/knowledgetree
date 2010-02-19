@@ -298,13 +298,14 @@ class KT_cmis_atom_service_helper {
         $entry->appendChild($response->newField('updated', self::formatDatestamp()));
 
         // main CMIS entry
-        $objectElement = $response->newElement('cmis:object');
+        $objectElement = $response->newElement('cmisra:object');
         $propertiesElement = $response->newElement('cmis:properties');
 
         foreach($cmisEntry['properties'] as $propertyName => $property)
         {
             $propElement = $response->newElement('cmis:' . $property['type']);
-            $propElement->appendChild($response->newAttr('cmis:name', $propertyName));
+            $propElement->appendChild($response->newAttr('localName', 'rep-cmis:' . $propertyName));
+            $propElement->appendChild($response->newAttr('propertyDefinitionId', 'cmis:' . $propertyName));
             if (!empty($property['value']))
             {
                 if ($propertyName == 'ContentStreamUri') {
@@ -484,12 +485,12 @@ class KT_cmis_atom_service_helper {
     {
         $properties = array();
         
-        // find cmis:object tag
-        $baseCmisObject = KT_cmis_atom_service_helper::findTag('cmis:object', $xmlArray, null, false);
+        // find cmisra:object tag
+        $baseCmisObject = KT_cmis_atom_service_helper::findTag('cmisra:object', $xmlArray, null, false);
         if(count($baseCmisObject) <= 0)
         {
             $entryObject = KT_cmis_atom_service_helper::findTag('entry', $xmlArray, null, false);
-            $baseCmisObject = KT_cmis_atom_service_helper::findTag('cmis:object', $entryObject['@children'], null, true);
+            $baseCmisObject = KT_cmis_atom_service_helper::findTag('cmisra:object', $entryObject['@children'], null, true);
         }
         
         if(count($baseCmisObject)>0)

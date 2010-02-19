@@ -83,7 +83,7 @@ class KT_cmis_atom_server extends KT_atom_server {
             $ws->appendChild($service->newAttr('cmis:repositoryRelationship', $this->repositoryInfo['repositoryRelationship']));
             
             // repository information
-            $element = $service->newElement('cmis:repositoryInfo');
+            $element = $service->newElement('cmisra:repositoryInfo');
             foreach($this->repositoryInfo as $key => $repoData)
             {
                 if ($key == 'rootFolderId') {
@@ -151,6 +151,9 @@ class KT_cmis_atom_server extends KT_atom_server {
     {
 		ob_end_clean();
         if (!$this->headersSet) header('Content-type: text/xml');
+
+        //include('/var/www/atompub_response.xml');
+
 		if ($this->renderBody) echo $this->output;
 	}
 
