@@ -8,7 +8,7 @@ class UnitTests extends TestSuite {
         $this->TestSuite('Unit tests');
 
         // CMIS API
-        $this->addFile('ktcmis/testCmisApi.php');
+//        $this->addFile('ktcmis/testCmisApi.php');
 
         // KTAPI
         // Some of these tests will fail if Electronic Signatures are enabled for the API.
