@@ -104,7 +104,7 @@ class CMISRepositoryService {
     // NOTE this code may fit better within the Repository Class
     // TODO return for specific type when $typeId is specified
     // TODO other optional parameters
-    private function getTypes($repositoryId, $typeId = '', $returnPropertyDefinitions = false,
+    public function getTypes($repositoryId, $typeId = '', $returnPropertyDefinitions = false,
                       $maxItems = 0, $skipCount = 0, &$hasMoreItems = false)
     {   
         /*     

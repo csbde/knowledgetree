@@ -531,7 +531,7 @@ class CMISTestCase extends KTUnitTestCase {
         $response = $NavigationService->getCheckedOutDocs($repositoryId, false, false);
         $this->assertEqual($response['status_code'], 0);
         $this->assertNotNull($response['results']);
-        $this->assertTrue($this->findInPropertiesArray('ObjectId', $documentId, $response['results']));
+        $this->assertTrue($this->findInPropertiesArray('objectId', $documentId, $response['results']));
         // now let's cancel the checkout so that we can delete later during cleanup :)
         $response = $VersioningService->cancelCheckOut($repositoryId, $pwcId);
                

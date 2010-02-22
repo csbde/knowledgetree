@@ -104,8 +104,8 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             }
             
             // we know that a folder will only have one parent, so we can assume element 0
-            $folderId = $response[0]['properties']['ObjectId']['value'];
-            $folderName = $response[0]['properties']['Name']['value'];
+            $folderId = $response[0]['properties']['objectId']['value'];
+            $folderName = $response[0]['properties']['name']['value'];
         }
         else {
             $folderId = $this->params[0];
@@ -162,10 +162,10 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']);
         
         // check for existing object id as property of submitted object data
-        if (!empty($cmisObjectProperties['ObjectId']))
+        if (!empty($cmisObjectProperties['objectId']))
         {
             $action = 'move';
-            $objectId = $cmisObjectProperties['ObjectId'];
+            $objectId = $cmisObjectProperties['objectId'];
         }
         
         // TODO there may be more to do for the checking of an existing object.
@@ -196,9 +196,9 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         if ($action == 'create')
         {
             if ($type == 'folder')
-                $newObjectId = $ObjectService->createFolder($repositoryId, ucwords($cmisObjectProperties['ObjectTypeId']), $properties, $folderId);
+                $newObjectId = $ObjectService->createFolder($repositoryId, ucwords($cmisObjectProperties['objectTypeId']), $properties, $folderId);
             else
-                $newObjectId = $ObjectService->createDocument($repositoryId, ucwords($cmisObjectProperties['ObjectTypeId']), $properties, $folderId, $content);
+                $newObjectId = $ObjectService->createDocument($repositoryId, ucwords($cmisObjectProperties['objectTypeId']), $properties, $folderId, $content);
 
             // check if returned Object Id is a valid CMIS Object Id
             CMISUtil::decodeObjectId($newObjectId, $typeId);
@@ -272,12 +272,12 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                 $objectElement = $feed->newElement('cmisra:object');
                 $propertiesElement = $feed->newElement('cmis:properties');
                 $propElement = $feed->newElement('cmis:propertyId');
-                $propElement->appendChild($feed->newAttr('cmis:name', 'ObjectId'));
+                $propElement->appendChild($feed->newAttr('cmis:name', 'objectId'));
                 $feed->newField('cmis:value', $failed, $propElement);
                 $propertiesElement->appendChild($propElement);
                 $objectElement->appendChild($propertiesElement);
                 $entry->appendChild($objectElement);
-                $entry->appendChild($feed->newElement('cmis:terminator'));
+//                $entry->appendChild($feed->newElement('cmis:terminator'));
             }
             
             $this->responseFeed = $feed;
@@ -386,7 +386,7 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
             
             // for now a document will only have one parent as KnowledgeTree does not support multi-filing
             // TODO update this code if/when multi-filing support is added
-            $objectId = $response[0]['properties']['ObjectId']['value'];
+            $objectId = $response[0]['properties']['objectId']['value'];
         }
         // determine whether we want the document entry feed or the actual physical document content.
         // this depends on $this->params[1]
@@ -622,7 +622,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']);
         
         // check for existing object id as property of submitted object data
-        if (empty($cmisObjectProperties['ObjectId']))
+        if (empty($cmisObjectProperties['objectId']))
         {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
             // Expose the responseFeed
@@ -630,7 +630,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
             return null;
         }
         
-        $response = $VersioningService->checkOut($repositoryId, $cmisObjectProperties['ObjectId']);
+        $response = $VersioningService->checkOut($repositoryId, $cmisObjectProperties['objectId']);
         
         if (PEAR::isError($response))
         {
@@ -641,7 +641,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         }
         
         $this->setStatus(self::STATUS_CREATED);
-        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['ObjectId'], 'POST');
+        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['objectId'], 'POST');
 
         // Expose the responseFeed
         $this->responseFeed = $feed;

@@ -98,7 +98,7 @@ class CMISFolderObject extends CMISObject {
 
         $objectProperties = $object->get_detail();
 
-        $this->_setPropertyInternal('ObjectId', CMISUtil::encodeObjectId($this->typeId, $objectProperties['id']));
+        $this->_setPropertyInternal('objectId', CMISUtil::encodeObjectId($this->typeId, $objectProperties['id']));
         // prevent doubled '/' chars
         $uri = preg_replace_callback('/([^:]\/)\//',
                                      create_function('$matches', 'return $matches[1];'),
@@ -106,24 +106,24 @@ class CMISFolderObject extends CMISObject {
                                      . '/browse.php?fFolderId='
                                      . $objectProperties['id']);
         // TODO this url is probably incorrect...needs to be checked
-//        $this->_setPropertyInternal('Uri', $uri);
-        $this->_setPropertyInternal('Uri', '');
+//        $this->_setPropertyInternal('uri', $uri);
+        $this->_setPropertyInternal('uri', '');
         // TODO what is this?  Assuming it is the object type id, and not OUR document type?
-        $this->_setPropertyInternal('ObjectTypeId', $this->getAttribute('typeId'));
+        $this->_setPropertyInternal('objectTypeId', 'cmis:' . strtolower($this->getAttribute('typeId')));
         // Needed to distinguish type
-        $this->_setPropertyInternal('BaseType', strtolower($this->getAttribute('typeId')));
-        $this->_setPropertyInternal('CreatedBy', $objectProperties['created_by']);
+        $this->_setPropertyInternal('baseTypeId', 'cmis:' . strtolower($this->getAttribute('typeId')));
+        $this->_setPropertyInternal('createdBy', $objectProperties['created_by']);
         // TODO cannot currently retrieve via ktapi or regular folder code - add as with created by
-        $this->_setPropertyInternal('CreationDate', $objectProperties['created_date']);
+        $this->_setPropertyInternal('creationDate', $objectProperties['created_date']);
         // TODO cannot currently retrieve via ktapi or regular folder code - add as with created by
-        $this->_setPropertyInternal('LastModifiedBy', $objectProperties['modified_by']);
+        $this->_setPropertyInternal('lastModifiedBy', $objectProperties['modified_by']);
         // TODO cannot currently retrieve via ktapi or regular folder code - add as with created by
-        $this->_setPropertyInternal('LastModificationDate', $objectProperties['modified_date']);
-        $this->_setPropertyInternal('ChangeToken', null);
-        $this->_setPropertyInternal('Name', $objectProperties['folder_name']);
-        $this->_setPropertyInternal('ParentId', $objectProperties['parent_id']);
-        $this->_setPropertyInternal('AllowedChildObjectTypeIds', array('Document', 'Folder'));
-        $this->_setPropertyInternal('Author', $objectProperties['created_by']);
+        $this->_setPropertyInternal('lastModificationDate', $objectProperties['modified_date']);
+        $this->_setPropertyInternal('changeToken', null);
+        $this->_setPropertyInternal('name', $objectProperties['folder_name']);
+        $this->_setPropertyInternal('parentId', CMISUtil::encodeObjectId(FOLDER, $objectProperties['parent_id']));
+        $this->_setPropertyInternal('allowedChildObjectTypeIds', array('Document', 'Folder'));
+        $this->_setPropertyInternal('author', $objectProperties['created_by']);
     }
 
 }

@@ -88,7 +88,7 @@ class CMISObjectService {
 
         // if parent folder is not allowed to hold this type, throw exception
         $CMISFolder = new CMISFolderObject($folderId, $this->ktapi);
-        $allowed = $CMISFolder->getProperty('AllowedChildObjectTypeIds');
+        $allowed = $CMISFolder->getProperty('allowedChildObjectTypeIds');
         $typeAllowed = false;
 
         if (is_array($allowed))
@@ -306,7 +306,7 @@ class CMISObjectService {
         
         // if parent folder is not allowed to hold this type, throw exception
         $CMISFolder = new CMISFolderObject($folderId, $this->ktapi);
-        $allowed = $CMISFolder->getProperty('AllowedChildObjectTypeIds');
+        $allowed = $CMISFolder->getProperty('allowedChildObjectTypeIds');
         if (!is_array($allowed) || !in_array($typeId, $allowed)) {
             throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
         }
@@ -366,7 +366,7 @@ class CMISObjectService {
         }
         
         // check that we were actually able to retrieve a real object
-        $objectId = $CMISObject->getProperty('ObjectId');
+        $objectId = $CMISObject->getProperty('objectId');
         if (empty($objectId)) {
             throw new ObjectNotFoundException('The requested object could not be found');
         }
@@ -384,7 +384,7 @@ class CMISObjectService {
      * @return string $contentStream (binary or text data)
      */
     // NOTE streamNotSupportedException: The Repository SHALL throw this exception if the Object-Type definition 
-    //      specified by the objectId parameter’s “contentStreamAllowed” attribute is set to “not allowed”.
+    //      specified by the objectId parameter’s “contentStreamAllowed�? attribute is set to “not allowed�?.
     //      
     function getContentStream($repositoryId, $objectId)
     {
@@ -461,7 +461,7 @@ class CMISObjectService {
             
         // check type id of object against allowed child types for destination folder
         $CMISFolder = new CMISFolderObject($targetFolderId, $this->ktapi);
-        $allowed = $CMISFolder->getProperty('AllowedChildObjectTypeIds');
+        $allowed = $CMISFolder->getProperty('allowedChildObjectTypeIds');
         if (!is_array($allowed) || !in_array($typeId, $allowed)) {
             throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
         }
@@ -707,7 +707,7 @@ class CMISObjectService {
             throw new StreamNotSupportedException('Content Streams are not allowed for this object type');
         }
 
-        $csFileName = $CMISDocument->getProperty('ContentStreamFilename');
+        $csFileName = $CMISDocument->getProperty('contentStreamFilename');
         if (!empty($csFileName) && (!$overwriteFlag))
         {
             throw new ContentAlreadyExistsException('Unable to overwrite existing content stream');
@@ -730,7 +730,7 @@ class CMISObjectService {
         // update the CMIS document object with the content stream information
 //        $CMISDocument->reload($document['result']['document_id']);
 
-        return $CMISDocument->getProperty('ObjectId');
+        return $CMISDocument->getProperty('objectId');
     }
 
 }

@@ -49,35 +49,35 @@
  */
 abstract class CMISPropertyCollection {
 
-    static $ObjectId;
-    static $BaseType;
-    static $Uri;
-    static $ObjectTypeId;
-    static $CreatedBy;
-    static $CreationDate;
-    static $LastModifiedBy;
-    static $LastModificationDate;
-    static $ChangeToken;
+    static $objectId;
+    static $baseTypeId;
+    static $uri;
+    static $objectTypeId;
+    static $createdBy;
+    static $creationDate;
+    static $lastModifiedBy;
+    static $lastModificationDate;
+    static $changeToken;
     // TODO these definitions belong in their own classe definition (see property type definions,) but here will do for now
     static public $propertyTypes;
 
     function __construct()
     {
-        self::$propertyTypes = array('ObjectId' => 'propertyId',
-                                     'Author' => 'propertyString',
-                                     'BaseType' => 'propertyString',
-                                     'ObjectTypeId' => 'propertyId',
-                                     'CreatedBy' => 'propertyString',
-                                     'CreationDate' => 'propertyDateTime',
-                                     'LastModifiedBy' => 'propertyString',
-                                     'LastModificationDate' => 'propertyDateTime',
-                                     'Name' => 'propertyString',
-                                     'Uri' => 'propertyUri',
-                                     'AllowedChildObjectTypeIds' => 'propertyId',
-                                     'CreatedBy' => 'propertyString',
-                                     'CreationDate' => 'propertyDateTime',
-                                     'ChangeToken' => 'propertyString',
-                                     'ParentId' => 'propertyId');
+        self::$propertyTypes = array('objectId' => 'propertyId',
+                                     'author' => 'propertyString',
+                                     'baseTypeId' => 'propertyId',
+                                     'objectTypeId' => 'propertyId',
+                                     'createdBy' => 'propertyString',
+                                     'creationDate' => 'propertyDateTime',
+                                     'lastModifiedBy' => 'propertyString',
+                                     'lastModificationDate' => 'propertyDateTime',
+                                     'name' => 'propertyString',
+                                     'uri' => 'propertyUri',
+                                     'allowedChildObjectTypeIds' => 'propertyId',
+                                     'createdBy' => 'propertyString',
+                                     'creationDate' => 'propertyDateTime',
+                                     'changeToken' => 'propertyString',
+                                     'parentId' => 'propertyId');
     }
 
     /**

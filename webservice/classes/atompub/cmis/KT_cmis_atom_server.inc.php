@@ -115,8 +115,13 @@ class KT_cmis_atom_server extends KT_atom_server {
                 }
 			}
 		}
+		
+		ob_start();
+		readfile('C:\Users\Paul\Documents\Downloads\cmis_mod_kt.xml');
+		$this->output = ob_get_contents();
+		ob_end_clean();
 
-		$this->output = $service->getAPPdoc();
+//		$this->output = $service->getAPPdoc();
 	}
 
     public function registerService($workspace = NULL, $serviceName = NULL, $serviceClass = NULL, $title = NULL, 
@@ -154,7 +159,21 @@ class KT_cmis_atom_server extends KT_atom_server {
 
         //include('/var/www/atompub_response.xml');
 
-		if ($this->renderBody) echo $this->output;
+        if (false && preg_match('/F1\-children/', $this->output)) {
+            readfile('C:\Users\Paul\Documents\Downloads\alfresco folder tree atompub response.xml');
+        }
+        else if (false && preg_match('/urn:uuid:checkedout/', $this->output)) {
+            readfile('C:\Users\Paul\Documents\Downloads\alfresco checkedout atompub response.xml');
+        }
+        else if (false && preg_match('/urn:uuid:types\-all/', $this->output)) {
+            readfile('C:\Users\Paul\Documents\Downloads\alfresco types atompub response.xml');
+        }
+        else if (false && preg_match('/\<service\>/', $this->output)) {
+            readfile('C:\Users\Paul\Documents\Downloads\cmis_mod_kt.xml');
+        }
+        else {
+		  if ($this->renderBody) echo $this->output;
+        }
 	}
 
 }

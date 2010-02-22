@@ -84,6 +84,7 @@ class CMISRepository {
             foreach($xml->repository as $repository)
             {
                 $currentRepo = $repository->repositoryInfo[0]->repositoryId;
+                // TODO this is no longer correct - is an object of SimpleXMLElement and not a string or int
                 if ((int)$currentRepo == $this->repositoryId)
                 {
                     $config = $repository;

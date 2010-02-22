@@ -74,9 +74,9 @@ class CMISDocumentObject extends CMISObject {
         $this->creatable = ''; // <repository-specific>
         /*
          * fileable SHOULD be set as follows:
-         * If the repository does NOT support the “un-filing” capability:
+         * If the repository does NOT support the “un-filing�? capability:
          * TRUE
-         * If the repository does support the “un-filing” capability:
+         * If the repository does support the “un-filing�? capability:
          * <repository-specific>, but SHOULD be TRUE
          */
         $this->fileable = true; // TODO implement check for whether un-filing is supported
@@ -119,7 +119,7 @@ class CMISDocumentObject extends CMISObject {
 
         $objectProperties = $object->get_detail();
 
-        $this->_setPropertyInternal('ObjectId', CMISUtil::encodeObjectId($this->typeId, $objectProperties['document_id']));
+        $this->_setPropertyInternal('objectId', CMISUtil::encodeObjectId($this->typeId, $objectProperties['document_id']));
         // prevent doubled '/' chars
         $uri = preg_replace_callback('/([^:]\/)\//',
                                      create_function('$matches', 'return $matches[1];'),
@@ -128,33 +128,33 @@ class CMISDocumentObject extends CMISObject {
                                      . $objectProperties['document_id']);
         // NOTE what about instead creating a downloadable version with appropriate link?  see ktapi::download_document
         //      also ktapidocument::get_download_url
-//        $this->_setPropertyInternal('Uri', $uri);
-        $this->_setPropertyInternal('Uri', '');
+//        $this->_setPropertyInternal('uri', $uri);
+        $this->_setPropertyInternal('uri', '');
         // TODO what is this?  Assuming it is the object type id, and not OUR document type?
-        $this->_setPropertyInternal('ObjectTypeId', $this->getAttribute('typeId'));
+        $this->_setPropertyInternal('objectTypeId', 'cmis:' . strtolower($this->getAttribute('typeId')));
         // Needed to distinguish type
-        $this->_setPropertyInternal('BaseType', strtolower($this->getAttribute('typeId')));
-        $this->_setPropertyInternal('CreatedBy', $objectProperties['created_by']);
-        $this->_setPropertyInternal('CreationDate', $objectProperties['created_date']);
-        $this->_setPropertyInternal('LastModifiedBy', $objectProperties['modified_by']);
-        $this->_setPropertyInternal('LastModificationDate', $objectProperties['modified_date']);
-        $this->_setPropertyInternal('ChangeToken', null);
-        $this->_setPropertyInternal('Name', $objectProperties['title']);
-        $this->_setPropertyInternal('ParentId', $objectProperties['folder_id']);
-        $this->_setPropertyInternal('IsImmutable', $objectProperties['is_immutable']);
+        $this->_setPropertyInternal('baseTypeId', 'cmis:' . strtolower($this->getAttribute('typeId')));
+        $this->_setPropertyInternal('createdBy', $objectProperties['created_by']);
+        $this->_setPropertyInternal('creationDate', $objectProperties['created_date']);
+        $this->_setPropertyInternal('lastModifiedBy', $objectProperties['modified_by']);
+        $this->_setPropertyInternal('lastModificationDate', $objectProperties['modified_date']);
+        $this->_setPropertyInternal('changeToken', null);
+        $this->_setPropertyInternal('name', $objectProperties['title']);
+        $this->_setPropertyInternal('parentId', CMISUtil::encodeObjectId(FOLDER, $objectProperties['folder_id']));
+        $this->_setPropertyInternal('isImmutable', $objectProperties['is_immutable']);
         // NOTE if access to older versions is allowed, this will need to be checked, else just set to yes
         //      see ktapi::get_document_version_history
         // NOTE see ktapi::is_latest_version
-        $this->_setPropertyInternal('IsLatestVersion', true);
-        $this->_setPropertyInternal('IsMajorVersion', (strstr($objectProperties['version'], '.') ? false : true));
+        $this->_setPropertyInternal('isLatestVersion', true);
+        $this->_setPropertyInternal('isMajorVersion', (strstr($objectProperties['version'], '.') ? false : true));
         // NOTE if access to older versions is allowed, this will need to be checked, else just set to yes
         //      see ktapi::get_document_version_history
         // NOTE see ktapi::is_latest_version
-        $this->_setPropertyInternal('IsLatestMajorVersion', true);
-        $this->_setPropertyInternal('VersionLabel', $objectProperties['version']);
+        $this->_setPropertyInternal('isLatestMajorVersion', true);
+        $this->_setPropertyInternal('versionLabel', $objectProperties['version']);
         // VersionSeriesId should be the id of the latest version
         // NOTE this may change in the future but is easiest for the current implementation
-        $this->_setPropertyInternal('VersionSeriesId', $objectProperties['version']);
+        $this->_setPropertyInternal('versionSeriesId', $objectProperties['version']);
         if ($objectProperties['checked_out_by'] != 'n/a')
         {
             $checkedOut = true;
@@ -168,18 +168,18 @@ class CMISDocumentObject extends CMISObject {
             $checkedOutBy = null;
             $checkedOutId = null;
         }
-        $this->_setPropertyInternal('IsVersionSeriesCheckedOut', $checkedOut);
-        $this->_setPropertyInternal('VersionSeriesCheckedOutBy', $checkedOutBy);
+        $this->_setPropertyInternal('isVersionSeriesCheckedOut', $checkedOut);
+        $this->_setPropertyInternal('versionSeriesCheckedOutBy', $checkedOutBy);
         // TODO presumably this is the ID of the Private Working Copy created on checkout?
         //      will find out more when we do checkout/checkin
-        $this->_setPropertyInternal('VersionSeriesCheckedOutId', $checkedOutId);
+        $this->_setPropertyInternal('versionSeriesCheckedOutId', $checkedOutId);
         // TODO currently not returned by KnowledgeTree?
-        $this->_setPropertyInternal('CheckinComment', null);
-        $this->_setPropertyInternal('ContentStreamLength', $objectProperties['filesize']);
-        $this->_setPropertyInternal('ContentStreamMimeType', $objectProperties['mime_type']);
-        $this->_setPropertyInternal('ContentStreamFilename', $objectProperties['filename']);
-        $this->_setPropertyInternal('ContentStreamUri', $this->getProperty('ObjectId') . '/' . $objectProperties['filename']);
-        $this->_setPropertyInternal('Author', $objectProperties['created_by']);
+        $this->_setPropertyInternal('checkinComment', null);
+        $this->_setPropertyInternal('contentStreamLength', $objectProperties['filesize']);
+        $this->_setPropertyInternal('contentStreamMimeType', $objectProperties['mime_type']);
+        $this->_setPropertyInternal('contentStreamFilename', $objectProperties['filename']);
+        $this->_setPropertyInternal('contentStreamUri', $this->getProperty('objectId') . '/' . $objectProperties['filename']);
+        $this->_setPropertyInternal('author', $objectProperties['created_by']);
     }
 
 }

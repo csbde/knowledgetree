@@ -278,7 +278,7 @@ class CMISUtil {
         foreach(CMISPropertyCollection::$propertyTypes as $property => $type)
         {
             // hack for Author property
-            if ($property == 'Author') {
+            if ($property == 'author') {
                 $object[$property] = array('value' => $properties->getValue($property));
             }
             else {
@@ -286,71 +286,7 @@ class CMISUtil {
             }
         }
 
-        /* old static method */
-        /*
-        $object['Author'] = array('value' => $properties->getValue('Author'));
-        
-        $object['properties']['BaseType'] = array('type' => $properties->getFieldType('BaseType'),
-                                                           'value' => $properties->getValue('BaseType'));
-        
-		$object['properties']['Name'] = array('type' => $properties->getFieldType('Name'),
-                                                           'value' => $properties->getValue('Name'));
-        
-		$object['properties']['ParentId'] = array('type' => $properties->getFieldType('ParentId'),
-                                                  'value' => self::encodeObjectId('Folder',
-                                                  $properties->getValue('ParentId')));
-												  
-		$object['properties']['Uri'] = array('type' => $properties->getFieldType('Uri'),
-                               'value' => $properties->getValue('Uri'));	
-							   
-        // TODO ensure format of date is always correct
-        $object['properties']['LastModificationDate'] = array('type' => $properties->getFieldType('LastModificationDate'),
-                                                           'value' => $properties->getValue('LastModificationDate'));					   									  
-
-        $object['properties']['CreatedBy'] = array('type' => $properties->getFieldType('CreatedBy'),
-                                                   'value' => $properties->getValue('CreatedBy'));
-												   
-        $object['properties']['AllowedChildObjectTypeIds'] = array('type' => $properties->getFieldType('AllowedChildObjectTypeIds'),
-                                                                   'value' => $properties->getValue('AllowedChildObjectTypeIds'));
-
-        $object['properties']['CreationDate'] = array('type' => $properties->getFieldType('CreationDate'),
-                                                       'value' => $properties->getValue('CreationDate'));
-
-        $object['properties']['LastModifiedBy'] = array('type' => $properties->getFieldType('LastModifiedBy'),
-                                                       'value' => $properties->getValue('LastModifiedBy'));
-
-        $object['properties']['ChangeToken'] = array('type' => $properties->getFieldType('ChangeToken'),
-                                                       'value' => $properties->getValue('ChangeToken'));
-														   
-        $object['properties']['ObjectTypeId'] = array('type' => $properties->getFieldType('ObjectTypeId'),
-                                                           'value' => $properties->getValue('ObjectTypeId'));
-													   
-        $object['properties']['ObjectId'] = array('type' => $properties->getFieldType('ObjectId'),
-                                                           'value' => $properties->getValue('ObjectId'));
-        
-        if (strtolower($properties->getValue('ObjectTypeId')) == 'document')
-        {
-            $object['properties']['ChangeToken'] = array('type' => $properties->getFieldType('ChangeToken'),
-                                                                   'value' => $properties->getValue('ChangeToken'));
-            $contentStreamLength = $properties->getValue('ContentStreamLength');
-            if (!empty($contentStreamLength))
-            {
-                $contentStreamLength = $properties->getValue('ContentStreamLength');
-                $object['properties']['ContentStreamAllowed'] = array('type' => $properties->getFieldType('ContentStreamAllowed'),
-                                                               'value' => $properties->getValue('ContentStreamAllowed'));
-                $object['properties']['ContentStreamLength'] = array('type' => $properties->getFieldType('ContentStreamLength'),
-                                                               'value' => $properties->getValue('ContentStreamLength'));
-                $object['properties']['ContentStreamMimeType'] = array('type' => $properties->getFieldType('ContentStreamMimeType'),
-                                                               'value' => $properties->getValue('ContentStreamMimeType'));
-                $object['properties']['ContentStreamFilename'] = array('type' => $properties->getFieldType('ContentStreamFilename'),
-                                                               'value' => $properties->getValue('ContentStreamFilename'));
-                $object['properties']['ContentStreamUri'] = array('type' => $properties->getFieldType('ContentStreamUri'),
-                                                               'value' => $properties->getValue('ContentStreamUri'));
-            }
-        }
-        */
-
-        /* what on earth was this for? */
+        /* what was this for and is it still needed? */
         /*
         // if we have found a child/parent with one or more children/parents, recurse into the child/parent object
         if (count($entry['items']) > 0) {

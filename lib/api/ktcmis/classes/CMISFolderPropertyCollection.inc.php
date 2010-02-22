@@ -51,9 +51,9 @@ require_once(CMIS_DIR . '/classes/CMISPropertyCollection.inc.php');
  */
 class CMISFolderPropertyCollection extends CMISPropertyCollection {
     
-    static $Name;
-    static $ParentId;
-    static $AllowedChildObjectTypeIds;
+    static $name;
+    static $parentId;
+    static $allowedChildObjectTypeIds;
 
     function __construct()
     {

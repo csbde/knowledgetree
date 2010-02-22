@@ -116,18 +116,18 @@ class CMISVersioningService {
         };
         
         // if successful, set $contentCopied = true; unless contentStream is not set
-        if ($pwc->getProperty('ContentStreamFilename') != '') $contentCopied = true;
+        if ($pwc->getProperty('contentStreamFilename') != '') $contentCopied = true;
         $documentId = CMISUtil::encodeObjectId('Document', $documentId);
         
         // mark document object as checked out
-        $pwc->setProperty('IsVersionSeriesCheckedOut', true);
+        $pwc->setProperty('isVersionSeriesCheckedOut', true);
         $userName = '';
         $user = $this->ktapi->get_user();
         if (!PEAR::isError($user)) {
             $userName = $user->getName();
         }
-        $pwc->setProperty('VersionSeriesCheckedOutBy', $userName);
-        $pwc->setProperty('VersionSeriesCheckedOutId', $documentId);
+        $pwc->setProperty('versionSeriesCheckedOutBy', $userName);
+        $pwc->setProperty('versionSeriesCheckedOutId', $documentId);
         
         return $contentCopied;
     }
@@ -215,13 +215,13 @@ class CMISVersioningService {
         }
         
         // check that this is the latest version
-        if ($pwc->getProperty('IsLatestVersion') != true) {
+        if ($pwc->getProperty('isLatestVersion') != true) {
             throw new VersioningException('The document is not the latest version and cannot be checked in');
         }
         
         // now do the checkin
         $tempfilename = CMISUtil::createTemporaryFile($contentStream);
-        $response = $this->ktapi->checkin_document($documentId, $pwc->getProperty('ContentStreamFilename'), $reason, $tempfilename, $major,
+        $response = $this->ktapi->checkin_document($documentId, $pwc->getProperty('contentStreamFilename'), $reason, $tempfilename, $major,
                                                    $sig_username, $sig_password);
                                        
         // if there was any error in cancelling the checkout
