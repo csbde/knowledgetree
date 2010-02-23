@@ -101,7 +101,7 @@ class CMISFolderObject extends CMISObject {
 
         $objectProperties = $object->get_detail();
 
-        $this->_setPropertyInternal('objectId', CMISUtil::encodeObjectId($this->typeId, $objectProperties['id']));
+        $this->_setPropertyInternal('objectId', CMISUtil::encodeObjectId($this->id, $objectProperties['id']));
         // prevent doubled '/' chars
         $uri = preg_replace_callback('/([^:]\/)\//',
                                      create_function('$matches', 'return $matches[1];'),

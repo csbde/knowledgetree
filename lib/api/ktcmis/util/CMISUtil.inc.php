@@ -69,11 +69,13 @@ class CMISUtil {
         {
             case 'D':
             case 'Document':
+            case 'cmis:document':
             case DOCUMENT:
                 $encoded = 'D' . $objectId;
                 break;
             case 'F':
             case 'Folder':
+            case 'cmis:folder':
             case FOLDER:
                 $encoded = 'F' . $objectId;
                 break;
@@ -188,7 +190,7 @@ class CMISUtil {
                 else
                 {
                     // NOTE why is this necessary?  That's what you get for not commenting it at the time
-                    // TODO comment this properly
+                    // TODO comment this properly, once we know why it is happening
                     $CMISArray[$count] = self::createChildObjectHierarchy($object, $repositoryURI, $ktapi);
                 }
             }

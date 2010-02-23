@@ -99,6 +99,8 @@ class KT_cmis_atom_service_helper {
      * @param object $feed The feed to which we add the entry
      * @param array $cmisEntry The entry data
      * @param string $parent The parent folder
+     * @param boolean $pwc Whether this is a PWC object
+     * @param $method The request method used (POST/GET/...)
      */
     static public function createObjectEntry(&$response, $cmisEntry, $parent, $pwc = false, $method = 'GET')
     {        
@@ -108,7 +110,7 @@ class KT_cmis_atom_service_helper {
     	// create entry
         $entry = $response->newEntry();
 
-        // FIXME this maybe belongs in the response feed class only how?
+        // When request is a POST we will be returning only an object entry, not a full feed, and so this belongs here
         if (($method == 'POST') || $pwc)
         {
             // append attributes
@@ -123,68 +125,70 @@ class KT_cmis_atom_service_helper {
         $element = $response->newField('name', 'admin', $responseElement);
         $entry->appendChild($responseElement);
         
+        $typeString = str_replace('cmis:', '', $type);
+        
         if (!empty($cmisEntry['properties']['contentStreamLength']['value']))
         {
             $field = $response->newElement('content');
             $field->appendChild($response->newAttr('type', $cmisEntry['properties']['contentStreamMimeType']['value']));
-            $field->appendChild($response->newAttr('src', CMIS_APP_BASE_URI . $workspace . '/' . $type 
-                                                          . '/' . $cmisEntry['properties']['objectId']['value'] 
-                                                          . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
+            $field->appendChild($response->newAttr('src', CMIS_APP_BASE_URI . $workspace . '/' . $typeString 
+                                                        . '/' . $cmisEntry['properties']['objectId']['value'] 
+                                                        . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
             $entry->appendChild($field);
         }
 		
 		// content & id tags
         $id = $cmisEntry['properties']['objectId']['value'];
-        
         $response->newField('id', 'urn:uuid:' . $id, $entry);
 
         // links
         $link = $response->newElement('link');
         $link->appendChild($response->newAttr('rel', 'self'));
-        $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . (!$pwc ? $type : 'pwc') . '/' 
+        $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' 
+                                                    . (!$pwc ? $typeString : 'pwc') . '/' 
                                                     . $cmisEntry['properties']['objectId']['value']));
         $entry->appendChild($link);
 
         $link = $response->newElement('link');
         $link->appendChild($response->newAttr('rel', 'edit'));
-        $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type 
-                                                  . '/' . $cmisEntry['properties']['objectId']['value']));
+        $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString 
+                                                    . '/' . $cmisEntry['properties']['objectId']['value']));
         $entry->appendChild($link);
         
-        if ((strtolower($cmisEntry['properties']['objectTypeId']['value']) == 'document') 
+        if ((strtolower($cmisEntry['properties']['objectTypeId']['value']) == 'cmis:document') 
             && (!empty($cmisEntry['properties']['contentStreamLength']['value'])))
         {
             $link = $response->newElement('link');
             $link->appendChild($response->newAttr('rel', 'edit-media'));
             $link->appendChild($response->newAttr('type', $cmisEntry['properties']['contentStreamMimeType']['value']));
-            $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type 
-                                                          . '/' . $cmisEntry['properties']['objectId']['value'] 
-                                                          . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
+            $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString 
+                                                        . '/' . $cmisEntry['properties']['objectId']['value'] 
+                                                        . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
             $entry->appendChild($link);
 
             $link = $response->newElement('link');
             $link->appendChild($response->newAttr('rel', 'enclosure'));
             $link->appendChild($response->newAttr('type', $cmisEntry['properties']['contentStreamMimeType']['value']));
-            $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type 
-                                                          . '/' . $cmisEntry['properties']['objectId']['value'] 
-                                                          . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
+            $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString 
+                                                        . '/' . $cmisEntry['properties']['objectId']['value'] 
+                                                        . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
             $entry->appendChild($link);
         }
 
         // according to spec this MUST be present, but spec says that links for function which are not supported
         // do not need to be present, so unsure for the moment
         $link = $response->newElement('link');
-        $link->appendChild($response->newAttr('rel', 'allowableactions'));
-        $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type . '/'
-                                                . $cmisEntry['properties']['objectId']['value'] . '/permissions'));
+        $link->appendChild($response->newAttr('rel', 'http://docs.oasis-open.org/ns/cmis/link/200908/allowableactions'));
+        $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString . '/'
+                                                    . $cmisEntry['properties']['objectId']['value'] . '/allowableactions'));
         $entry->appendChild($link);
 
         // according to spec this MUST be present, but spec says that links for function which are not supported
         // do not need to be present, so unsure for the moment
         $link = $response->newElement('link');
-        $link->appendChild($response->newAttr('rel', 'relationships'));
-        $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type . '/'
-                                                . $cmisEntry['properties']['objectId']['value'] . '/rels'));
+        $link->appendChild($response->newAttr('rel', 'http://docs.oasis-open.org/ns/cmis/link/200908/relationships'));
+        $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString . '/'
+                                                    . $cmisEntry['properties']['objectId']['value'] . '/rels'));
         $entry->appendChild($link);
         
         // if there is no parent or parent is 0, do not add the parent link
@@ -195,46 +199,35 @@ class KT_cmis_atom_service_helper {
         {
             // TODO check parent link is correct, fix if needed
             $link = $response->newElement('link');
-            $link->appendChild($response->newAttr('rel', 'parents'));
+            $link->appendChild($response->newAttr('rel', 'up'));
             $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/folder/'
-                                                    . $cmisEntry['properties']['objectId']['value'] . '/parent'));
+                                                        . $cmisEntry['properties']['parentId']['value']));
             $entry->appendChild($link);
         }
 
         // Folder/Document specific links
-        if (strtolower($cmisEntry['properties']['objectTypeId']['value']) == 'folder')
+        if (strtolower($cmisEntry['properties']['objectTypeId']['value']) == 'cmis:folder')
         {
             $link = $response->newElement('link');
-            $link->appendChild($response->newAttr('rel', 'children'));
+            $link->appendChild($response->newAttr('rel', 'down'));
             $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/'
-                                                    . $type
-                                                    . '/' . $cmisEntry['properties']['objectId']['value']
-                                                    . '/children'));
+                                                        . $typeString
+                                                        . '/' . $cmisEntry['properties']['objectId']['value']
+                                                        . '/children'));
             $entry->appendChild($link);
             $link = $response->newElement('link');
-            $link->appendChild($response->newAttr('rel', 'descendants'));
+            $link->appendChild($response->newAttr('rel', 'down'));
             $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/'
-                                                    . $type
-                                                    . '/' . $cmisEntry['properties']['objectId']['value']
-                                                    . '/descendants'));
+                                                        . $typeString
+                                                        . '/' . $cmisEntry['properties']['objectId']['value']
+                                                        . '/descendants'));
             $entry->appendChild($link);
+            
+            // TODO add folder tree link when we have folder tree implemented
+            //      this will probably use (much) the same code as the folder children functionality
         }
-        else if (strtolower($cmisEntry['properties']['objectTypeId']['value']) == 'document')
+        else if (strtolower($cmisEntry['properties']['objectTypeId']['value']) == 'cmis:document')
         {
-            // according to spec this MUST be present, but spec says that links for function which are not supported
-            // do not need to be present, so unsure for the moment
-//            $link = $response->newElement('link');
-//            $link->appendChild($response->newAttr('rel', 'allversions'));
-//            $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type . '/' . $cmisEntry['properties']['parentId']['value']));
-//            $entry->appendChild($link);
-
-            // according to spec this MUST be present, but spec says that links for function which are not supported
-            // do not need to be present, so unsure for the moment
-//            $link = $response->newElement('link');
-//            $link->appendChild($response->newAttr('rel', 'latestversion'));
-//            $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type . '/' . $cmisEntry['properties']['parentId']['value']));
-//            $entry->appendChild($link);
-
             // if there is a content stream, this link MUST be present
             // not sure yet where it must point...
             if (!empty($cmisEntry['properties']['contentStreamLength']['value']))
@@ -251,7 +244,7 @@ class KT_cmis_atom_service_helper {
             // if the document is checked out and this is NOT the PWC, this link MUST be present
             // NOTE at the moment the document and the PWC are the same object, so we always show it for a checked out document
             // TODO separated code for PWC and actual document object
-            if (!empty($cmisEntry['properties']['VersionSeriesCheckedOutId']['value']))
+            if (!empty($cmisEntry['properties']['versionSeriesCheckedOutId']['value']))
             {
                 $link = $response->newElement('link');
                 $link->appendChild($response->newAttr('rel', 'pwc'));
@@ -275,22 +268,14 @@ class KT_cmis_atom_service_helper {
         }        
 
         $link = $response->newElement('link');
-        $link->appendChild($response->newAttr('rel', 'type'));
+        $link->appendChild($response->newAttr('rel', 'describedby'));
         $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/type/' . $type));
         $entry->appendChild($link);
 
         $link = $response->newElement('link');
-        $link->appendChild($response->newAttr('rel', 'repository'));
+        $link->appendChild($response->newAttr('rel', 'service'));
         $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . '/servicedocument'));
         $entry->appendChild($link);
-
-        // according to spec this MUST be present, but spec says that links for function which are not supported
-        // do not need to be present, so unsure for the moment - policies are being abandoned, or so I thought...
-//        $link = $response->newElement('link');
-//        $link->appendChild($response->newAttr('rel', 'policies'));
-//        $link->appendChild($response->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type . '/' . $cmisEntry['properties']['parentId']['value']));
-//        $entry->appendChild($link);
-        // end links
 
         // TODO proper date
         $entry->appendChild($response->newField('published', self::formatDatestamp()));

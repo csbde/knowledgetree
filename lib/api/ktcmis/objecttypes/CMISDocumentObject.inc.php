@@ -113,7 +113,7 @@ class CMISDocumentObject extends CMISObject {
 
         $objectProperties = $object->get_detail();
 
-        $this->_setPropertyInternal('objectId', CMISUtil::encodeObjectId($this->typeId, $objectProperties['document_id']));
+        $this->_setPropertyInternal('objectId', CMISUtil::encodeObjectId($this->id, $objectProperties['document_id']));
         // prevent doubled '/' chars
         $uri = preg_replace_callback('/([^:]\/)\//',
                                      create_function('$matches', 'return $matches[1];'),
