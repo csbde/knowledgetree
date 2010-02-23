@@ -71,7 +71,7 @@ class KT_cmis_atom_serviceDoc extends KT_atom_serviceDoc {
         $service = $this->newElement('service');
         $service->appendChild($this->newAttr('xmlns', 'http://www.w3.org/2007/app'));
         $service->appendChild($this->newAttr('xmlns:atom', 'http://www.w3.org/2005/Atom'));
-        $service->appendChild($this->newAttr('xmlns:cmis', 'http://docs.oasis-open.org/ns/cmis/core/200908'));
+        $service->appendChild($this->newAttr('xmlns:cmis', 'http://docs.oasis-open.org/ns/cmis/core/200908/'));
         $service->appendChild($this->newAttr('xmlns:cmisra', 'http://docs.oasis-open.org/ns/cmis/restatom/200908/'));
         $this->service =& $service;
         $this->DOM->appendChild($this->service);
@@ -81,8 +81,8 @@ class KT_cmis_atom_serviceDoc extends KT_atom_serviceDoc {
     {
         $collection=$this->newElement('collection');
         $collection->appendChild($this->newAttr('href', $url));
-        $collection->appendChild($this->newAttr('cmisra:collectionType', $cmisCollectionType));
         $collection->appendChild($this->newElement('atom:title', $title));
+        $collection->appendChild($this->newElement('cmisra:collectionType', $cmisCollectionType));
         if (!is_null($accept)) {
             $collection->appendChild($this->newElement('accept', $accept));
         }
