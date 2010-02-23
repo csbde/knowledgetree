@@ -307,8 +307,11 @@ class CMISUtil {
      * via var_export (which returns a useable PHP string for creating the object from array content)
      * and regular expressions to extract the array definitions and structure without the class specific code
      *
-     * NOTE this function is not reliable for objects which contain ktapi instances, as it appears there is a recursive reference
-     * TODO attempt to deal with recursive references?
+     * NOTE this function is not reliable for objects which contain ktapi instances, as it appears there is a recursive reference;
+     *      this will apply to any class which contains recursive references (which is bad practice and should not be done - the
+     *      problem is with the object and not this code
+     * 
+     * TODO attempt to deal with recursive references? - better to fix the objects in question, if possible
      *
      * @param object $data
      * @return array $array
@@ -318,7 +321,7 @@ class CMISUtil {
         $array = array();
 
         $stringdata = var_export($data, true);
-        // clean up ", )" - NOTE this may not be necessary
+        // clean up ", )" - NOTE this may not be necessary, but is included for safety
         $stringdata = preg_replace('/, *\r?\n? *\)/', ')', $stringdata);
 
         // NOTE is this while loop even needed?
@@ -351,14 +354,14 @@ class CMISUtil {
     /**
      * Checks the contentStream and ensures that it is a correct base64 string;
      * This is purely for clients such as CMISSpaces breaking the content into 
-     * chunks before base64 encoding.
+     * chunks before base64 encoding each and this coming through as a single string containing multiple base64 chunks.
      * 
      * If the stream is chunked, it is decoded in chunks and sent back as a single stream.
      * If it is not chunked it is decoded as is and sent back as a single stream.
      * 
      * NOTE there is an alternative version of this function called decodeChunkedContentStreamLong.
      *      that version checks line lengths, which should not be necessary.
-     *      this version merely splits on one or two "=" which is less complex and possibly faster (test this assumption)
+     *      this version merely splits on one or two "=" which is less complex and appears to be faster
      *      (one or two "=" signs is the specified padding used for base64 encoding at the end of an encoded string, when needed)
      * 
      * @param object $contentStream
@@ -394,7 +397,7 @@ class CMISUtil {
                 }
             }
             
-            // decode, append to output to be re-encoded
+            // decode, append to output
             $decoded .= base64_decode($part);
         }
 

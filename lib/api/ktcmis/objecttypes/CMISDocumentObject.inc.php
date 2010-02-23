@@ -52,41 +52,34 @@ require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
 class CMISDocumentObject extends CMISObject {
 
-    protected $versionable;
-    private $ktapi;
-    private $uri;
-
+    protected $versionable; // Bolean; indicates whether objects of this type are versionable
+    protected $contentStreamAllowed; // Enum; notallowed, allowed, required
+    protected $ktapi;
+    
     // TODO some of this should probably come from configuration files as it is repository specific
     function __construct($documentId = null, &$ktapi = null, $uri = null)
     {
         $this->ktapi = $ktapi;
-        // uri to use for document links
-        $this->uri = $uri;
 
         // attributes
-        $this->typeId = 'Document'; // <repository-specific>
-        $this->queryName = 'Document';
-        $this->displayName = ''; // <repository-specific>
-        $this->baseType = 'document';
-        $this->baseTypeQueryName = 'Document';
-        $this->parentId = null; // MUST NOT be set
-        $this->description = ''; // <repository-specific>
-        $this->creatable = ''; // <repository-specific>
-        /*
-         * fileable SHOULD be set as follows:
-         * If the repository does NOT support the â€œun-filingâ€? capability:
-         * TRUE
-         * If the repository does support the â€œun-filingâ€? capability:
-         * <repository-specific>, but SHOULD be TRUE
-         */
-        $this->fileable = true; // TODO implement check for whether un-filing is supported
+        $this->id = 'cmis:document';
+        $this->localName = null; // <repository-specific>
+        $this->localNamespace = null; // <repository-specific>
+        $this->queryName = 'cmis:document';
+        $this->displayName = 'Document'; // <repository-specific>
+        $this->baseId = 'cmis:document';
+        $this->parentId = null; // MUST NOT be set for base document object-type
+        $this->description = null; // <repository-specific>
+        $this->creatable = true; // <repository-specific>
+        $this->fileable = true;
         $this->queryable = true; // SHOULD be true
-        $this->includedInSupertypeQuery = true; //
-        // TODO determine what these next 3 should be
-        $this->controllable = false; // <repository-specific>
+        $this->controllablePolicy = false; // <repository-specific>
+        $this->includedInSupertypeQuery = true; // <repository-specific>
         $this->versionable = true; // <repository-specific>
-        $this->contentStreamAllowed = 'required'; // <repository-specific> notAllowed/allowed/required
-
+        $this->contentStreamAllowed = 'required'; // <repository-specific> notallowed/allowed/required
+        $this->controllableACL = false; // <repository-specific>
+        $this->fulltextIndexed = false; // <repository-specific>
+        
         // properties
         $this->properties = new CMISDocumentPropertyCollection();
 
@@ -98,7 +91,7 @@ class CMISDocumentObject extends CMISObject {
         if (!is_null($documentId))
         {
             try {
-                $this->get($documentId);
+                $this->_get($documentId);
             }
             catch (exception $e) {
                 throw new ObjectNotFoundException($e->getMessage());
@@ -107,8 +100,9 @@ class CMISDocumentObject extends CMISObject {
         
         // TODO throw exception if unable to create?
     }
-
-    private function get($documentId)
+    
+    // TODO abstract shared stuff to base class where possible
+    private function _get($documentId)
     {
         $object = $this->ktapi->get_document_by_id((int)$documentId);
 
@@ -131,9 +125,9 @@ class CMISDocumentObject extends CMISObject {
 //        $this->_setPropertyInternal('uri', $uri);
         $this->_setPropertyInternal('uri', '');
         // TODO what is this?  Assuming it is the object type id, and not OUR document type?
-        $this->_setPropertyInternal('objectTypeId', 'cmis:' . strtolower($this->getAttribute('typeId')));
+        $this->_setPropertyInternal('objectTypeId', strtolower($this->getAttribute('id')));
         // Needed to distinguish type
-        $this->_setPropertyInternal('baseTypeId', 'cmis:' . strtolower($this->getAttribute('typeId')));
+        $this->_setPropertyInternal('baseTypeId', strtolower($this->getAttribute('id')));
         $this->_setPropertyInternal('createdBy', $objectProperties['created_by']);
         $this->_setPropertyInternal('creationDate', $objectProperties['created_date']);
         $this->_setPropertyInternal('lastModifiedBy', $objectProperties['modified_by']);
@@ -180,6 +174,22 @@ class CMISDocumentObject extends CMISObject {
         $this->_setPropertyInternal('contentStreamFilename', $objectProperties['filename']);
         $this->_setPropertyInternal('contentStreamUri', $this->getProperty('objectId') . '/' . $objectProperties['filename']);
         $this->_setPropertyInternal('author', $objectProperties['created_by']);
+    }
+    
+    /**
+     * Returns a listing of all attributes in an array
+     *
+     * @return array $attributes
+     */
+    public function getAttributes()
+    {
+        $attributes = parent::getAttributes();
+
+        // add document object-type specific attributes
+        $attributes['versionable'] = $this->versionable;
+        $attributes['contentStreamAllowed'] = $this->contentStreamAllowed;
+
+        return $attributes;
     }
 
 }

@@ -117,7 +117,7 @@ class CMISVersioningService {
         
         // if successful, set $contentCopied = true; unless contentStream is not set
         if ($pwc->getProperty('contentStreamFilename') != '') $contentCopied = true;
-        $documentId = CMISUtil::encodeObjectId('Document', $documentId);
+        $documentId = CMISUtil::encodeObjectId(DOCUMENT, $documentId);
         
         // mark document object as checked out
         $pwc->setProperty('isVersionSeriesCheckedOut', true);

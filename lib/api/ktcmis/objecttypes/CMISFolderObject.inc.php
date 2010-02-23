@@ -50,34 +50,36 @@ require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
 class CMISFolderObject extends CMISObject {
 
-    private $ktapi;
-    private $uri;
+    protected $ktapi;
 
     public function __construct($folderId = null, &$ktapi = null, $uri = null)
     {
         $this->ktapi = $ktapi;
-        $this->uri = $uri;
 
-        $this->typeId = 'Folder'; // <repository-specific>
-        $this->queryName = 'Folder';
-        $this->displayName = ''; // <repository-specific>
-        $this->baseType = 'folder';
-        $this->baseTypeQueryName = 'Folder';
+        $this->id = 'cmis:folder'; // <repository-specific>
+        $this->localName = null; // <repository-specific>
+        $this->localNamespace = null; // <repository-specific>
+        $this->queryName = 'cmis:folder';
+        $this->displayName = 'Folder'; // <repository-specific>
+        $this->baseId = 'cmis:folder';
         $this->parentId = null; // MUST NOT be set
-        $this->description = ''; // <repository-specific>
-        $this->creatable = ''; // <repository-specific>
+        $this->description = null; // <repository-specific>
+        $this->creatable = true; // <repository-specific>
         $this->fileable = true;
         $this->queryable = true; // SHOULD be true
-        $this->includedInSupertypeQuery = true; //
-        $this->controllable = ''; // <repository-specific>
- 
+        $this->controllablePolicy = false; // <repository-specific>
+        $this->includedInSupertypeQuery = true; // <repository-specific>
+        $this->contentStreamAllowed = 'required'; // <repository-specific> notallowed/allowed/required
+        $this->controllableACL = false; // <repository-specific>
+        $this->fulltextIndexed = false; // <repository-specific>      
+        
         // properties
         $this->properties = new CMISFolderPropertyCollection();
 
         if (!is_null($folderId))
         {
             try {
-                $this->get($folderId);
+                $this->_get($folderId);
             }
             catch (exception $e) {
                 throw new ObjectNotFoundException($e->getMessage());
@@ -85,7 +87,8 @@ class CMISFolderObject extends CMISObject {
         }
     }
 
-    private function get($folderId)
+    // TODO abstract shared stuff to base class where possible
+    private function _get($folderId)
     {
         $object = $this->ktapi->get_folder_by_id((int)$folderId);
         
@@ -109,9 +112,9 @@ class CMISFolderObject extends CMISObject {
 //        $this->_setPropertyInternal('uri', $uri);
         $this->_setPropertyInternal('uri', '');
         // TODO what is this?  Assuming it is the object type id, and not OUR document type?
-        $this->_setPropertyInternal('objectTypeId', 'cmis:' . strtolower($this->getAttribute('typeId')));
+        $this->_setPropertyInternal('objectTypeId', strtolower($this->getAttribute('id')));
         // Needed to distinguish type
-        $this->_setPropertyInternal('baseTypeId', 'cmis:' . strtolower($this->getAttribute('typeId')));
+        $this->_setPropertyInternal('baseTypeId', strtolower($this->getAttribute('id')));
         $this->_setPropertyInternal('createdBy', $objectProperties['created_by']);
         // TODO cannot currently retrieve via ktapi or regular folder code - add as with created by
         $this->_setPropertyInternal('creationDate', $objectProperties['created_date']);
