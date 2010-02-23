@@ -263,7 +263,7 @@ class kt extends client_service {
 		if ($item ['filesize'] == 'n/a') {
 			$item ['filesize'] = - 1;
 		}
-		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => $item ['document_id'], 'filename' => $item ['filename'], 'cls' => $class, 'leaf' => true, 'document_type' => $item ['document_type'], 'item_type' => 'D', 'permissions' => $item ['permissions'], 'content_id' => $item ['content_id'], 'filesize' => $item ['filesize'], 'modified' => $item ['modified_date'], 'created_date' => $item ['created_date'], 'checked_out_by' => $item ['checked_out_by'], 'relevance' => $item ['relevance'], 'qtip' => $qtip, 'version' => $item ['version'], 'is_immutable' => $item ['is_immutable'] );
+		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => $item ['document_id'], 'filename' => $item ['filename'], 'cls' => $class, 'leaf' => true, 'document_type' => $item ['document_type'], 'item_type' => 'D', 'permissions' => $item ['permissions'], 'content_id' => $item ['content_id'], 'filesize' => $item ['filesize'], 'modified' => $item ['modified_date'], 'created_date' => $item ['created_date'], 'checked_out_by' => $item ['checked_out_by'], 'relevance' => $item ['relevance'], 'qtip' => $qtip, 'version' => $item ['version'], 'is_immutable' => $item ['is_immutable'], 'folder_id' => $item['folder_id'] );
 	}
 	
 	private function _processItemInclusion_grid($item, $class, $qtip) {
@@ -1428,6 +1428,34 @@ Fatal error:  Cannot unset string offsets in on line 981
 		}
 		
 		$this->setResponse(array('documents'=>$returnDocumentArray, 'folders'=>$returnFoldersArray));
+	}
+	
+	
+	function get_folder_path($arr)
+	{
+		$kt=&$this->KT;
+		
+		$folderObj = &$kt->get_folder_by_id ( $arr ['folderId'] );
+		if (PEAR::isError ( $folderObj )) {
+			$this->setError ( "Could not get folder by Id:  {$arr['folderId']}" );
+			$this->setDebug ( 'FolderError', array ('kt' => $kt, 'folder' => $folderObj ) );
+			return false;
+		}
+		
+		$parentIds = explode(',', $folderObj->getParentFolderIds());
+		$path = '/F_0';
+		
+		if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
+			foreach ($parentIds as $parentId)
+			{
+				$path .= '/F_'.$parentId;
+			}
+		}
+		
+		$path .= '/F_'.$folderObj->folderid;
+		
+		
+		$this->setResponse ( array ('status_code' => 0, 'folderPath' => $path ) );
 	}
 	
 	
