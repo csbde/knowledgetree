@@ -143,8 +143,6 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         $title = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'title');
         $summary = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'summary');
 
-        $properties = array('name' => $title, 'summary' => $summary);
-
         // determine whether this is a folder or a document action
         // document action create will have a content tag <atom:content> or <content> containing base64 encoding of the document
         // move action will have an existing id supplied as a parameter - not sure how this works yet as the CMIS clients we are
@@ -160,6 +158,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         }
         
         $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']);
+        $properties = array('name' => $title, 'summary' => $summary, 'typeId' => $cmisObjectProperties['objectTypeId']);
         
         // check for existing object id as property of submitted object data
         if (!empty($cmisObjectProperties['objectId']))
@@ -175,14 +174,20 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         
         // determine type if object is being moved
         if (!is_null($objectId)) {
-            CMISUtil::decodeObjectId($objectId, $typeId);
+            CMISUtil::decodeObjectId($objectId, $cmisObjectProperties['objectTypeId']);
         }
         
         // check for content stream
-        $content = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'content');        
+        $content = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'content');
         
-        // TODO this will possibly need to change somewhat once Relationship Objects come into play.
-        if ((($action == 'create') && (is_null($content))) || ($typeId == 'Folder')) {
+        global $default;
+//        $default->log->info('cmis object type id: ' . $cmisObjectProperties['objectTypeId']);      
+//        $default->log->info(print_r($cmisObjectProperties, true));      
+//        $default->log->info(print_r($this->parsedXMLContent['@children'], true));      
+        $default->log->info(print_r($this->rawContent, true));      
+        
+        // TODO this will need to change somewhat once other object-types come into play.
+        if ((($action == 'create') && (is_null($content))) || ($cmisObjectProperties['objectTypeId'] == 'cmis:folder')) {
             $type = 'folder';
         }
         else {
@@ -195,13 +200,14 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         $error = null;
         if ($action == 'create')
         {
+            // TODO detection and passing of optional parameters (policies, ACEs, etc...)
             if ($type == 'folder')
                 $newObjectId = $ObjectService->createFolder($repositoryId, ucwords($cmisObjectProperties['objectTypeId']), $properties, $folderId);
             else
                 $newObjectId = $ObjectService->createDocument($repositoryId, ucwords($cmisObjectProperties['objectTypeId']), $properties, $folderId, $content);
 
             // check if returned Object Id is a valid CMIS Object Id
-            CMISUtil::decodeObjectId($newObjectId, $typeId);
+            CMISUtil::decodeObjectId($newObjectId, $cmisObjectProperties['objectTypeId']);
             if ($typeId != 'Unknown') $success = true;
             else $error = $newObjectId['message'];
         }

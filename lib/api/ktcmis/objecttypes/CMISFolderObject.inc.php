@@ -88,7 +88,7 @@ class CMISFolderObject extends CMISObject {
     }
 
     // TODO abstract shared stuff to base class where possible
-    private function _get($folderId)
+    protected function _get($folderId)
     {
         $object = $this->ktapi->get_folder_by_id((int)$folderId);
         
@@ -125,7 +125,7 @@ class CMISFolderObject extends CMISObject {
         $this->_setPropertyInternal('changeToken', null);
         $this->_setPropertyInternal('name', $objectProperties['folder_name']);
         $this->_setPropertyInternal('parentId', CMISUtil::encodeObjectId(FOLDER, $objectProperties['parent_id']));
-        $this->_setPropertyInternal('allowedChildObjectTypeIds', array('Document', 'Folder'));
+        $this->_setPropertyInternal('allowedChildObjectTypeIds', array('cmis:document', 'cmis:folder'));
         $this->_setPropertyInternal('author', $objectProperties['created_by']);
     }
 

@@ -57,7 +57,7 @@ class CMISDocumentObject extends CMISObject {
     protected $ktapi;
     
     // TODO some of this should probably come from configuration files as it is repository specific
-    function __construct($documentId = null, &$ktapi = null, $uri = null)
+    public function __construct($documentId = null, &$ktapi = null, $uri = null)
     {
         $this->ktapi = $ktapi;
 
@@ -102,7 +102,7 @@ class CMISDocumentObject extends CMISObject {
     }
     
     // TODO abstract shared stuff to base class where possible
-    private function _get($documentId)
+    protected function _get($documentId)
     {
         $object = $this->ktapi->get_document_by_id((int)$documentId);
 

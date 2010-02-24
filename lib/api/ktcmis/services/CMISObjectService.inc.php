@@ -34,33 +34,34 @@ class CMISObjectService {
      * Creates a new document within the repository
      *
      * @param string $repositoryId The repository to which the document must be added
-     * @param string $typeId Object Type id for the document object being created
      * @param array $properties Array of properties which must be applied to the created document object
      * @param string $folderId The id of the folder which will be the parent of the created document object
      *                         This parameter is optional IF unfilingCapability is supported
      * @param string $contentStream optional content stream data - expected as a base64 encoded string
-     * @param string $versioningState optional version state value: checkedout/major/minor
+     * @param string $versioningState optional version state value: none/checkedout/major/minor
+     * @param $policies List of policy ids that MUST be applied
+     * @param $addACEs List of ACEs that MUST be added
+     * @param $removeACEs List of ACEs that MUST be removed
      * @return string $objectId The id of the created folder object
      */
     // TODO throw ConstraintViolationException if:
     //      value of any of the properties violates the min/max/required/length constraints
     //      specified in the property definition in the Object-Type. 
-    public function createDocument($repositoryId, $typeId, $properties, $folderId = null,
-                                   $contentStream = null, $versioningState = null)
+    // TODO throw ConstraintViolationException if At least one of the permissions is used in 
+    //      an ACE provided which is not supported by the repository.
+    // NOTE typeId is supplied in the cmis:objectTypeId property in the properties array
+    public function createDocument($repositoryId, $properties, $folderId = null, $contentStream = null, 
+                                   $versioningState = null, $policies = array(), $addACEs = array(), 
+                                   $removeACEs = array())
     {        
         $objectId = null;
 
         // fetch type definition of supplied type and check for base type "document", if not true throw exception
         $RepositoryService = new CMISRepositoryService();
         try {
-            $typeDefinition = $RepositoryService->getTypeDefinition($repositoryId, $typeId);
+            $typeDefinition = $RepositoryService->getTypeDefinition($repositoryId, $properties['objectTypeId']);
         }
-        // NOTE Not sure that we should throw this specific exception, maybe just let the underlying
-        //      exception propogate upward...
-        //      Alternatively: throw new exception with original exception message appended
-        // NOTE The latter method has been adopted for the moment
-        catch (Exception $e)
-        {
+        catch (Exception $e) {
             throw new ConstraintViolationException('Object base type could not be determined. ' . $e->getMessage());
         }
 
@@ -95,7 +96,7 @@ class CMISObjectService {
         {
             foreach($allowed as $type)
             {
-                if (strtolower($type) == strtolower($typeId))
+                if (strtolower($type) == strtolower($properties['objectTypeId']))
                 {
                     $typeAllowed = true;
                     break;
@@ -117,9 +118,23 @@ class CMISObjectService {
         }
 
         // if versionable attribute is set to false and versioningState is supplied, throw a ConstraintViolationException
-        if (!$typeDefinition['attributes']['versionable'] && !empty($versioningState)) {
-            throw new ConstraintViolationException('This repository does not support versioning');
+        if (!$typeDefinition['attributes']['versionable'] && (!empty($versioningState) || $versioningState != 'none')) {
+            throw new ConstraintViolationException('This object-type does not support versioning');
         }
+        else if ($typeDefinition['attributes']['versionable'] && (empty($versioningState) || $versioningState == 'none')) {
+            throw new ConstraintViolationException('Invalid versioning state supplied');
+        }
+        
+        if (!$typeDefinition['attributes']['controllablePolicy'] && count($policies)) {
+            throw new ConstraintViolationException('This object-type does not support policies');
+        }
+        
+        if (!$typeDefinition['attributes']['controllableACL'] && (count($addACEs) || count($removeACEs))) {
+            throw new ConstraintViolationException('This object-type does not support ACLs');
+        }
+        
+        // TODO throw NameConstraintViolation if there is a violation with the given cmis:name property value
+        //      OR choose a name which does not conflict
 
         // TODO deal with $versioningState when supplied
 
@@ -146,6 +161,10 @@ class CMISObjectService {
         //      this check isn't strictly necessary;  however it is needed for a repository which does not support content streams
         if (!is_null($contentStream))
         {
+            if (!$typeDefinition['attributes']['contentStreamAllowed']) {
+                throw new StreamNotSupportedException('Content streams are not supported by this object-type');
+            }
+            
             $tempfilename = CMISUtil::createTemporaryFile($contentStream);
 
             // metadata
@@ -210,6 +229,7 @@ class CMISObjectService {
             include_once(KT_LIB_DIR . '/mime.inc.php');
             $KTMime = new KTMime();
             $mimetype = $KTMime->getMimeTypeFromFile($tempfilename);
+            // extract type string from mimetype response
             preg_match('/^([^\/]*)\/([^\/]*)/', $mimetype, $matches);
             if (($matches[1] == 'text') || ($matches[1] == 'image') || ($matches[1] == 'audio')) {
                 $mediatype = ucwords($matches[1]);

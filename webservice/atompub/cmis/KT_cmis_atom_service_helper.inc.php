@@ -479,9 +479,9 @@ class KT_cmis_atom_service_helper {
             $baseCmisObject = KT_cmis_atom_service_helper::findTag('cmisra:object', $entryObject['@children'], null, true);
         }
         
-        if(count($baseCmisObject)>0)
+        if(count($baseCmisObject) > 0)
         {
-            foreach($baseCmisObject['@children'] as $key => $childElement)
+            foreach($baseCmisObject[0]['@children'] as $key => $childElement)
             {
                 if ($key == 'cmis:properties')
                 {
@@ -489,7 +489,8 @@ class KT_cmis_atom_service_helper {
                     {
                         foreach($cmisPropertyDefinition as $propertyType => $propertyDefinition)
                         {
-                            $properties[$propertyDefinition['@attributes']['cmis:name']] = $propertyDefinition['@children']['cmis:value'][0]['@value'];
+                            $properties[$propertyDefinition['@attributes']['cmis:name']] 
+                                    = $propertyDefinition['@children']['cmis:value'][0]['@value'];
                         }
                     }
                 }
@@ -605,7 +606,8 @@ class KT_cmis_atom_service_helper {
     }
     
     //TODO: Add key information to be able to find the same tag in the original struct (MarkH)
-    static public function findTag($tagName=NULL,$xml=array(),$tagArray=NULL,$deep=false){
+    static public function findTag($tagName=NULL,$xml=array(),$tagArray=NULL,$deep=false)
+    {
         $tagArray=is_array($tagArray)?$tagArray:array();
         foreach($xml as $xmlTag=>$content){
             if($xmlTag===$tagName){

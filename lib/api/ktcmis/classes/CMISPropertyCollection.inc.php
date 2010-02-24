@@ -61,7 +61,7 @@ abstract class CMISPropertyCollection {
     // TODO these definitions belong in their own classe definition (see property type definions,) but here will do for now
     static public $propertyTypes;
 
-    function __construct()
+    public function __construct()
     {
         self::$propertyTypes = array('objectId' => 'propertyId',
                                      'author' => 'propertyString',
@@ -83,7 +83,7 @@ abstract class CMISPropertyCollection {
     /**
      * Gets the property value.
      */
-    function getValue($field)
+    public function getValue($field)
     {
         return $this->{$field};
     }
@@ -92,12 +92,12 @@ abstract class CMISPropertyCollection {
      * Sets the property value.
      */
     // for connection-tied live objects
-    function setValue($field, $value)
+    public function setValue($field, $value)
     {
         $this->{$field} = $value;
     }
 
-    function getFieldType($field)
+    public function getFieldType($field)
     {
         return $this->propertyTypes[$field];
     }

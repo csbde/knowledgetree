@@ -155,7 +155,7 @@ abstract class CMISObject {
         $this->_get($objectId);
     }
 
-    private function _get($objectId)
+    protected function _get($objectId)
     {
         // override in child classes
     }
