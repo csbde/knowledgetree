@@ -43,46 +43,8 @@
 * @version Version 0.1
 */
 
-require_once("../wizard/steps/configuration.php"); // configuration to read the ini path
-
-class Step
+class Step extends StepBase
 {
-	/**
-	* List of variables to be loaded to template
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var array
-	*/
-    protected $temp_variables = array();
-
-	/**
-	* List of errors encountered by step
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var array
-	*/
-    protected $error = array();
-
-	/**
-	* List of warnings encountered by step
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var array
-	*/
-    protected $warnings = array();
-
-	/**
-	* Flag to store class information in session
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var array
-	*/
-    protected $storeInSession = false;
-
 	/**
 	* Flag if step needs to be upgraded
 	*
@@ -90,32 +52,11 @@ class Step
 	* @access public
 	* @var array
 	*/
-    protected $runUpgrade = false;
-
-	/**
-	* Step order
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var string
-	*/
-    protected $order = false;
-
-	/**
-	* Flag if step needs to run silently
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @var boolean
-	*/
-    protected $silent = false;
-
-    public $displayFirst = false;
-
-    private $salt = 'upgrade';
+    private $runUpgrade = false;
 
     public function __construct() {
     	$this->util = new UpgradeUtil();
+    	$this->salt = 'upgrade';
     }
 
 	/**
@@ -137,134 +78,6 @@ class Step
         return '';
     }
 
-    public function displayFirst() {
-    	return $this->displayFirst;
-    }
-
-    /**
-	* Returns step variables
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return array
-	*/
-    public function getStepVars()
-    {
-        return $this->temp_variables;
-    }
-
-	/**
-	* Returns step errors
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return array
-	*/
-    public function getErrors() {
-        return $this->error;
-    }
-
-	/**
-	* Returns step errors
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return array
-	*/
-    public function getWarnings() {
-        return $this->warnings;
-    }
-
-	/**
-	* Load default step values
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return void
-	*/
-    public function loadDefaults() {
-
-    }
-
-	/**
-	* Return default step values
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return array
-	*/
-    public function getDefaults() {
-        return array();
-    }
-
-	/**
-	* Checks if edit button has been clicked
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return boolean
-	*/
-    public function edit() {
-        if(isset($_POST['Edit'])) {
-            return true;
-        }
-
-        return false;
-    }
-
-	/**
-	* Checks if next button has been clicked
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return boolean
-	*/
-    public function next() {
-        if(isset($_POST['Next'])) {
-            return true;
-        }
-
-        return false;
-    }
-
-	/**
-	* Checks if previous button has been clicked
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return boolean
-	*/
-    public function previous() {
-        if(isset($_POST['Previous'])) {
-            return true;
-        }
-
-        return false;
-    }
-
-	/**
-	* Checks if Confirm button has been clicked
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return boolean
-	*/
-    function confirm() {
-        if(isset($_POST['Confirm'])) {
-            return true;
-        }
-
-        return false;
-    }
 
     /**
     * Checks if Upgrade button has been clicked
@@ -288,21 +101,6 @@ class Step
     */
     function restore() {
         return isset($_POST['Restore']);
-    }
-
-	/**
-	* Checks if we are currently in this class step
-	*
-	* @author KnowledgeTree Team
-	* @param string
-	* @access public
-	* @return boolean
-	*/
-    public function inStep($name) {
-    	if(!isset($_GET['step_name'])) return false;
-        if($_GET['step_name'] == $name)
-            return true;
-        return false;
     }
 
 	/**
@@ -339,30 +137,6 @@ class Step
     }
 
 	/**
-	* Safer way to return post data
-	*
-	* @author KnowledgeTree Team
-	* @params SimpleXmlObject $simplexml
-	* @access public
-	* @return void
-	*/
-    public function getPostSafe($key) {
-    	return isset($_POST[$key]) ? $_POST[$key] : "";
-    }
-
-	/**
-	* Safer way to return post data
-	*
-	* @author KnowledgeTree Team
-	* @params SimpleXmlObject $simplexml
-	* @access public
-	* @return void
-	*/
-    public function getPostBoolean($key) {
-    	return isset($_POST[$key]) ? $_POST[$key] : false;
-    }
-
-	/**
 	* Runs step upgrade if required
 	*
 	* @author KnowledgeTree Team
@@ -372,18 +146,6 @@ class Step
 	*/
     public function upgradeStep() {
 		return '';
-    }
-
-    /**
-     * Return whether or not to store a step information in session
-     *
-     * @author KnowledgeTree Team
-     * @param none
-     * @access public
-     * @return boolean
-     */
-    public function storeInSession() {
-    	return $this->storeInSession;
     }
 
     /**
@@ -398,51 +160,8 @@ class Step
     	return $this->runUpgrade;
     }
 
-    public function setPostConfig() {
-    	return '';
-    }
-
-    /**
-     * Return whether or not to a step has to be in silent mode
-     *
-     * @author KnowledgeTree Team
-     * @param none
-     * @access public
-     * @return boolean
-     */
-    public function silentMode() {
-    	return $this->silent;
-    }
-
-	/**
-	* Set step errors
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return array
-	*/
-    public function setErrors($error) {
-        $this->error = $error;
-    }
-
-	/**
-	* Get session data from package
-	*
-	* @author KnowledgeTree Team
-	* @params none
-	* @access private
-	* @return boolean
-	*/
-    public function getDataFromPackage($package, $class) {
-    	if(empty($_SESSION[$package][$class])) {
-    		return false;
-    	}
-
-    	return $_SESSION[$package][$class];
-    }
-
     protected function readConfig() {
+    	require_once("../wizard/steps/configuration.php"); // TODO
     	$wizConfigHandler = new configuration();
     	$path = $wizConfigHandler->readConfigPathIni();
 		$this->util->iniUtilities->load($path);
@@ -474,25 +193,7 @@ class Step
     	}
 
 		return false;
-    }
-
-    protected function storeSilent() {
-
-    }
-    
-	/**
-	* Is the installation 
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return string
-	*/
-    public function isCe() {
-    	if($this->util->getVersionType() == "community")
-    		return true;
-    	return false;
-    }
+    }   
 }
 
 ?>

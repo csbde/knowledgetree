@@ -43,49 +43,10 @@
 * @package Migrater
 * @version Version 0.1
 */
-include("../wizard/path.php"); // Paths
 
-/**
- * Auto loader to bind migrater package
- *
- * @param string $class
- * @return void
- */
-function __autoload($class) { // Attempt and autoload classes
-	$class = strtolower(substr($class,0,1)).substr($class,1); // Linux Systems.
-	if ($class == "template") { // Load existing templating classes
-		require_once("../wizard/template.php");
-		require_once("../wizard/lib/helpers/htmlHelper.php");
-	} else {
-		if(file_exists(WIZARD_DIR."$class.php")) {
-			require_once(WIZARD_DIR."$class.php");
-		} elseif (file_exists(STEP_DIR."$class.php")) {
-			require_once(STEP_DIR."$class.php");
-		} elseif (file_exists(WIZARD_LIB."$class.php")) {
-			require_once(WIZARD_LIB."$class.php");
-		}
-	}
-}
+require_once("../wizard/share/wizardBase.php");
 
-class MigrateWizard {
-	/**
-	* Migrate bypass flag
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var mixed
-	*/
-	protected $bypass = null;
-
-	/**
-	* Reference to migrater utility object
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var boolean
-	*/
-	protected $util = null;
-
+class MigrateWizard extends WizardBase {
 	/**
 	* Constructs migrateation wizard object
 	*
@@ -114,7 +75,7 @@ class MigrateWizard {
 	* @param string
 	* @return void
  	*/
-	public function displayMigrater($response = null) {
+	public function display($response = null) {
 		if($response) {
 			$ins = new Migrater(); // Instantiate the migrater
 			$ins->resolveErrors($response); // Run step
@@ -122,54 +83,6 @@ class MigrateWizard {
 			$ins = new Migrater(new Session()); // Instantiate the migrater and pass the session class
 			$ins->step(); // Run step
 		}
-	}
-
-	/**
-	* Set bypass flag
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param boolean
-	* @return void
- 	*/
-	private function setBypass($bypass) {
-		$this->bypass = $bypass;
-	}
-
-	/**
-	* Set util reference
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param object migrater utility
-	* @return void
- 	*/
-	private function setIUtil($util) {
-		$this->util = $util;
-	}
-
-	/**
-	* Get bypass flag
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return boolean
- 	*/
-	public function getBypass() {
-		return $this->bypass;
-	}
-
-	/**
-	* Bypass and force an migrate
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param none
-	* @return boolean
- 	*/
-	private function bypass() {
-
 	}
 
 	/**
@@ -181,7 +94,7 @@ class MigrateWizard {
 	* @return void
  	*/
 	private function createMigrateFile() {
-		touch("migrate");
+		touch(SYSTEM_DIR.'var'.DS.'bin'.DS."migrate.lock");
 	}
 
 	/**
@@ -193,7 +106,7 @@ class MigrateWizard {
 	* @return void
  	*/
 	private function removeMigrateFile() {
-		unlink("migrate");
+		unlink(SYSTEM_DIR.'var'.DS.'bin'.DS."migrate.lock");
 	}
 
 	/**
@@ -255,7 +168,7 @@ class MigrateWizard {
 		if(!$this->isSystemMigrated()) { // Check if the systems not migrated
 			$response = $this->systemChecks();
 			if($response === true) {
-				$this->displayMigrater();
+				$this->display();
 			} else {
 				exit();
 			}

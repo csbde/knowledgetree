@@ -1,11 +1,11 @@
 <?php
 /**
-* Installer Index.
+* Index.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
-* 
+*
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -40,19 +40,32 @@
 * @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Installer
+* @package First Login
 * @version Version 0.1
 */
+
 require_once("../wizard/share/wizardBase.php");
 
-class InstallWizard extends WizardBase {
+class firstloginWizard extends WizardBase {
 	/**
-	* Constructs installation wizard object
+	* Constructs wizard object
 	*
 	* @author KnowledgeTree Team
 	* @access public
  	*/
 	public function __construct(){}
+
+	/**
+	* Check if system
+	*
+	* @author KnowledgeTree Team
+	* @access private
+	* @param none
+	* @return boolean
+ 	*/
+	private function isSystem() {
+		return $this->util->isSystem();
+	}
 
 	/**
 	* Display the wizard
@@ -64,37 +77,36 @@ class InstallWizard extends WizardBase {
  	*/
 	public function display($response = null) {
 		if($response) {
-			$ins = new Installer(); // Instantiate the installer
+			$ins = new FirstLogin(); // Instantiate
 			$ins->resolveErrors($response); // Run step
 		} else {
-			$ins = new Installer(new Session()); // Instantiate the installer and pass the session class
+			$ins = new FirstLogin(new Session()); // Instantiate and pass the session class
 			$ins->step(); // Run step
 		}
 	}
 
 	/**
-	* Create install file
+	* Create file
 	*
 	* @author KnowledgeTree Team
 	* @access private
 	* @param none
 	* @return void
  	*/
-	private function createInstallFile() {
-		touch(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock");
+	private function createFile() {
+		touch(SYSTEM_DIR.'var'.DS.'bin'.DS."firstlogin.lock");
 	}
 
 	/**
-	* Remove install file
+	* Remove file
 	*
 	* @author KnowledgeTree Team
 	* @access private
 	* @param none
 	* @return void
  	*/
-	private function removeInstallFile() {
-		if(file_exists(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock"))
-			unlink(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock");
+	private function removeFile() {
+		unlink(SYSTEM_DIR.'var'.DS.'bin'.DS."firstlogin.lock");
 	}
 
 	/**
@@ -109,16 +121,11 @@ class InstallWizard extends WizardBase {
 		if(isset($_GET['bypass'])) {
 			$this->setBypass($_GET['bypass']);
 		}
-		if(isset($_GET['debug'])) {
-			$this->setDebugLevel($_GET['debug']);
-		} else {
-			$this->setDebugLevel($this->debugLevel);
-		}
-		$this->setIUtil(new InstallUtil());
+		$this->setIUtil(new firstloginUtil());
 	}
 
 	/**
-	* Run pre-installation system checks
+	* Run pre system checks
 	*
 	* @author KnowledgeTree Team
 	* @access public
@@ -130,8 +137,8 @@ class InstallWizard extends WizardBase {
 		if($res === true) return $res;
 		switch ($res) {
 			case "wizard":
-					$this->util->error("Installer directory is not writable (KT_Installation_Directory/setup/wizard/)");
-					return 'Installer directory is not writable (KT_Installation_Directory/setup/wizard/)';
+					$this->util->error("firstlogin directory is not writable (KT_Installation_Directory/setup/firstlogin/)");
+					return 'firstlogin directory is not writable (KT_Installation_Directory/setup/firstlogin/)';
 				break;
 			case "/":
 					$this->util->error("System root is not writable (KT_Installation_Directory/)");
@@ -153,24 +160,12 @@ class InstallWizard extends WizardBase {
  	*/
 	public function dispatch() {
 		$this->load();
-		if($this->getBypass() === "1") { // Helper to force install
-			$this->removeInstallFile();
+		if($this->getBypass() === "1") {
+			$this->removeFile();
 		} elseif ($this->getBypass() === "0") {
-			$this->createInstallFile();
+			$this->createFile();
 		}
-		if ($this->util->finishInstall()) { // Check if the installer has completed
-			$this->util->redirect('../../login.php');
-		} elseif ($this->util->upgradeInstall()) { // Check if the upgrader needs to be accessed
-				$this->util->redirect('../upgrade/index.php');
-		}
-		if(!$this->util->isSystemInstalled()) { // Check if the systems not installed
-			if($this->util->loginSpecified()) { // Back to wizard from upgrader
-				$this->util->redirect('../../control.php');
-			} elseif($this->util->migrationSpecified()) { // Check if the migrator needs to be accessed
-				$this->util->redirect('../migrate/index.php');
-			} elseif ($this->util->upgradeSpecified()) { // Check if the upgrader needs to be accessed
-				$this->util->redirect('../upgrade/index.php?action=installer');
-			}
+		if(!$this->isSystem()) { // Check if the systems
 			$response = $this->systemChecks();
 			if($response === true) {
 				$this->display();
@@ -178,11 +173,11 @@ class InstallWizard extends WizardBase {
 				exit();
 			}
 		} else {
-			$this->util->error("System has been installed  <a href='../../login.php' class='back' style='width:50px;float:none' class='back button_next'>Finish</a>");
+			$this->util->error("System preferences run before. <a href='../../login.php' class='back' style='width:50px;float:none' back button_next>Finish</a>");
 		}
 	}
 }
 
-$ic = new InstallWizard();
+$ic = new firstloginWizard();
 $ic->dispatch();
 ?>

@@ -145,7 +145,7 @@ class registration extends Step
 	    $formPost = $_POST;
 	    $formPost['submitted']['installation_guid'] = $this->temp_variables['installation_guid'];
 	    // TODO set correctly using auto set mechanism
-	    $_SESSION['installers']['registration']['installation_guid'] = $this->temp_variables['installation_guid'];
+	    // $_SESSION['installers']['registration']['installation_guid'] = $this->temp_variables['installation_guid'];
         $this->curlForm($formPost);
 
         // Prevent the form being reposted.
@@ -483,7 +483,7 @@ class registration extends Step
             'RO' => 'ROMANIA',
             'RU' => 'RUSSIAN FEDERATION',
             'RW' => 'RWANDA',
-//            TODO: Special Character for the e
+//            TODO: Special Character for the É
             'BL' => 'SAINT BARTHELEMY',
             'SH' => 'SAINT HELENA',
             'KN' => 'SAINT KITTS AND NEVIS',

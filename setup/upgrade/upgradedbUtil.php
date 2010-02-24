@@ -105,7 +105,6 @@ class UpgradedbUtil {
 	* @access public
  	*/
 	public function __construct() {
-
 	}
 	
 	public function load($dhost = 'localhost', $duname, $dpassword, $dbname) {

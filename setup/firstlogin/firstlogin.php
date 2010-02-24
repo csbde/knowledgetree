@@ -1,6 +1,6 @@
 <?php
 /**
-* Migrater Controller.
+* Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -40,11 +40,11 @@
 * @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Migrater
+* @package Fist Start Wizard
 * @version Version 0.1
 */
 
-class Migrater {
+class FirstLogin {
 	/**
 	* Reference to simple xml object
 	*
@@ -73,7 +73,7 @@ class Migrater {
     protected $session = null;
 
 	/**
-	* List of migrateation steps as strings
+	* List of steps as strings
 	*
 	* @author KnowledgeTree Team
 	* @access protected
@@ -82,7 +82,7 @@ class Migrater {
     protected $stepClassNames = array();
 
 	/**
-	* List of migrateation steps as human readable strings
+	* List of steps as human readable strings
 	*
 	* @author KnowledgeTree Team
 	* @access protected
@@ -91,7 +91,7 @@ class Migrater {
 	protected $stepNames = array();
 
 	/**
-	* List of migrateation steps as human readable strings
+	* List of steps as human readable strings
 	*
 	* @author KnowledgeTree Team
 	* @access protected
@@ -100,22 +100,22 @@ class Migrater {
 	protected $stepObjects = array();
 
 	/**
-	* Order in which steps have to be migrated
+	* Order in which steps have to be done
 	*
 	* @author KnowledgeTree Team
 	* @access protected
 	* @var array string
 	*/
-	protected $migrateOrders = array();
+	protected $orders = array();
 
 	/**
-	* List of migrateation properties
+	* List of properties
 	*
 	* @author KnowledgeTree Team
 	* @access protected
 	* @var array string
 	*/
-	protected $migrateProperties = array();
+	protected $properties = array();
 
 	/**
 	* Flag if a step object needs confirmation
@@ -135,10 +135,10 @@ class Migrater {
 	*/
     protected $stepDisplayFirst = false;
 
-    private $migraterAction = '';
+    private $action = '';
 
 	/**
-	* Constructs migrateation object
+	* Constructs object
 	*
 	* @author KnowledgeTree Team
 	* @access public
@@ -160,14 +160,14 @@ class Migrater {
     	try {
         	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.INSTALL_TYPE."_$name");
     	} catch (Exception $e) {
-    		$util = new MigrateUtil();
+    		$util = new FirstLoginUtil();
     		$util->error("Error reading configuration file: $e");
     		exit();
     	}
     }
 
 	/**
-	* Checks if first step of migrater
+	* Checks if first step
 	*
 	* @author KnowledgeTree Team
 	* @param none
@@ -183,7 +183,7 @@ class Migrater {
     }
 
 	/**
-	* Checks if first step of migrater
+	* Checks if first step
 	*
 	* @author KnowledgeTree Team
 	* @param none
@@ -294,13 +294,13 @@ class Migrater {
 	*/
     private function _runStepAction($stepName) {
         $this->stepAction = new stepAction($stepName);
-        $this->stepAction->setUpStepAction($this->getSteps(), $this->getStepNames(), $this->getStepConfirmation(), $this->stepDisplayFirst(), $this->getSession(), $this->getMigrateProperties());
+        $this->stepAction->setUpStepAction($this->getSteps(), $this->getStepNames(), $this->getStepConfirmation(), $this->stepDisplayFirst(), $this->getSession(), $this->getProperties());
 
         return $this->stepAction->doAction();
     }
 
     private function stepDisplayFirst() {
-    	if($this->migraterAction == 'edit')
+    	if($this->action == 'edit')
     		return false; //
     	$class = $this->stepAction->createStep(); // Get step class
     	return $class->displayFirst(); // Check if class needs to display first
@@ -314,8 +314,8 @@ class Migrater {
 	* @access private
 	* @return array
 	*/
-    private function _getMigrateOrders() {
-        return $this->migrateOrders;
+    private function _getOrders() {
+        return $this->orders;
     }
 
 	/**
@@ -355,7 +355,7 @@ class Migrater {
     }
 
 	/**
-	* Set steps migrate order
+	* Set steps order
 	*
 	* @author KnowledgeTree Team
 	* @param none
@@ -368,77 +368,77 @@ class Migrater {
 				if(isset($d_step['order'])) {
 					$step_name = (string) $d_step[0];
 					$order = (string) $d_step['order'];
-	            	$this->migrateOrders[$order] = $step_name; // Store step migrate order
+	            	$this->orders[$order] = $step_name; // Store step order
 	            }
 	        }
-	        $this->_loadToSession('migrateOrders', $this->migrateOrders);
+	        $this->_loadToSession('orders', $this->orders);
     	}
     }
 
 	/**
-	* Set migrate properties
+	* Set properties
 	*
 	* @author KnowledgeTree Team
 	* @param none
 	* @access private
 	* @return void
 	*/
-    private function _xmlMigrateProperties() {
+    private function _xmlProperties() {
     	if(isset($this->simpleXmlObj)) {
-    		$this->migrateProperties['migrate_version'] = (string) $this->simpleXmlObj['version'];
-    		$this->migrateProperties['migrate_type'] = (string) $this->simpleXmlObj['type'];
-			$this->_loadToSession('migrateProperties', $this->migrateProperties);
+    		$this->properties['fl_version'] = (string) $this->simpleXmlObj['version'];
+    		$this->properties['fl_type'] = (string) $this->simpleXmlObj['type'];
+			$this->_loadToSession('properties', $this->properties);
     	}
     }
 
 	/**
-	* Migrate steps
+	* Steps
 	*
 	* @author KnowledgeTree Team
 	* @param none
 	* @access private
 	* @return void
 	*/
-    private function _runStepsMigraters() {
-    	$steps = $this->_getMigrateOrders();
+    private function _runSteps() {
+    	$steps = $this->_getOrders();
     	for ($i=1; $i< count($steps)+1; $i++) {
-    		$this->_migrateHelper($steps[$i]);
+    		$this->_helper($steps[$i]);
     	}
 
-    	$this->_completeMigrate();
+    	$this->_complete();
     }
 
 	/**
-	* Complete migrate cleanup process
+	* Complete cleanup process
 	*
 	* @author KnowledgeTree Team
 	* @param none
 	* @access private
 	* @return void
 	*/
-    private function _completeMigrate() {
-    	touch("migrate");
+    private function _complete() {
+    	touch("firstlogin");
     }
 
 	/**
-	* Migrate steps helper
+	* Steps helper
 	*
 	* @author KnowledgeTree Team
 	* @param none
 	* @access private
 	* @return void
 	*/
-    private function _migrateHelper($className) {
+    private function _helper($className) {
     	$stepAction = new stepAction($className); // Instantiate a step action
     	$class = $stepAction->createStep(); // Get step class
     	if($class) { // Check if class Exists
-	    	if($class->runMigrate()) { // Check if step needs to be migrated
+	    	if($class->run()) { // Check if step needs to be run
 				$class->setDataFromSession($className); // Set Session Information
 				$class->setPostConfig(); // Set any posted variables
-				$class->migrateStep(); // Run migrate step
+				$class->Step(); // Run step
 	    	}
     	} else {
-    		$util = new MigrateUtil();
+    		$util = new firstloginUtil();
     		$util->error("Class File Missing in Step Directory: $className");
     		exit();
     	}
@@ -461,7 +461,7 @@ class Migrater {
 	    		foreach ($this->getStepNames() as $class) {
 	    			$this->session->un_setClass($class);
 	    		}
-	    		foreach ($this->_getMigrateOrders() as $class) {
+	    		foreach ($this->_getOrders() as $class) {
 	    			$this->session->un_setClass($class);
 	    		}
 	    	}
@@ -477,13 +477,13 @@ class Migrater {
     	if(!$this->stepNames) {
     		$this->_xmlStepsNames();
     	}
-    	$this->migrateOrders = $this->session->get('migrateOrders');
-    	if(!$this->migrateOrders) {
+    	$this->Orders = $this->session->get('Orders');
+    	if(!$this->orders) {
     		$this->_xmlStepsOrders();
     	}
-    	$this->migrateProperties = $this->session->get('migrateProperties');
-    	if(!$this->migrateProperties) {
-    		$this->_xmlMigrateProperties();
+    	$this->properties = $this->session->get('properties');
+    	if(!$this->properties) {
+    		$this->_xmlProperties();
     	}
     }
 
@@ -493,34 +493,25 @@ class Migrater {
         $this->_resetSessions();
         $this->_loadFromSessions();
     	if(isset($_POST['Next'])) {
-    		$this->migraterAction = 'next';
+    		$this->action = 'next';
     		$this->response = 'next';
     	} elseif (isset($_POST['Previous'])) {
-    		$this->migraterAction = 'previous';
+    		$this->action = 'previous';
     		$this->response = 'previous';
    	  	} elseif (isset($_POST['Confirm'])) {
-   	  		$this->migraterAction = 'confirm';
-    		$this->response = 'next';
-    	} elseif (isset($_POST['Migrate'])) {
-    		$this->migraterAction = 'migrate';
+   	  		$this->action = 'confirm';
     		$this->response = 'next';
     	} elseif (isset($_POST['Edit'])) {
-    		$this->migraterAction = 'edit';
+    		$this->action = 'edit';
     		$this->response = 'next';
-    	} elseif (isset($_POST['Install'])) {
-    		$this->migraterAction = 'install';
-    		$this->response = 'install';
-    	} elseif (isset($_POST['BInstall'])) {
-    		$this->migraterAction = 'binstall';
-    		$this->response = 'binstall';
     	} else {
     		$this->response = '';
-    		$this->migraterAction = '';
+    		$this->action = '';
     	}
     }
 
 	/**
-	* Main control to handle the flow of migrate
+	* Main control to handle the flow
 	*
 	* @author KnowledgeTree Team
 	* @param none
@@ -535,18 +526,12 @@ class Migrater {
         		$res = $this->_runStepAction($step_name);
 				if($res == 'next') {
                 	$this->_proceed(); // Load next window
-        		} elseif ($res == 'migrate') {
-                	$this->_runStepsMigraters(); // Load landing
-                	$this->_proceed(); // Load next window
                 } elseif ($res == 'confirm') {
                 	if(!$this->stepDisplayFirst())
                 		$this->stepConfirmation = true;
                 	$this->_landing();
                 } elseif ($res == 'landing') {
 					$this->_landing();
-                } elseif ($res == 'binstall') {
-                	$util = new MigrateUtil();
-                	$util->redirect('../wizard/index.php?step_name=dependencies');
                 } else {
                 }
             	break;
@@ -554,7 +539,7 @@ class Migrater {
 				$this->_backward(); // Load previous page
 				break;
             case 'install':
-                $util = new MigrateUtil();
+                $util = new firstloginUtil();
                 $util->redirect('../wizard/index.php?step_name=installtype');
             	break;
             default:
@@ -628,15 +613,15 @@ class Migrater {
     }
 
 	/**
-	* Return migrate properties
+	* Return properties
 	*
 	* @author KnowledgeTree Team
 	* @param string
 	* @access public
 	* @return string
 	*/
-    public function getMigrateProperties() {
-    	return $this->migrateProperties;
+    public function getProperties() {
+    	return $this->properties;
     }
 
 	/**
@@ -666,7 +651,7 @@ class Migrater {
     }
 
 	/**
-	* Display errors that are not allowing the migrater to operate
+	* Display errors that are not allowing the operation
 	*
 	* @author KnowledgeTree Team
 	* @param none

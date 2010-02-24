@@ -15,8 +15,8 @@
     <dport>3306</dport>
     <dname>dms</dname>
     <duname>root</duname>
-    <dmsadminuser>dmsadmin</dmsadminuser>
+    <dmsadminuser>ktcomadmin</dmsadminuser>
     <dmsaupass>js9281djw</dmsaupass>
-    <dmsuser>dms</dmsuser>
+    <dmsuser>ktcom-dms</dmsuser>
     <dmsupass>djw9281js</dmsupass>
 </database>

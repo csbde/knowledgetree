@@ -214,7 +214,7 @@ class database extends Step
 	* @access public
 	* @var array
 	*/
-    protected $runInstall = true;
+    public $runInstall = true;
     
 	/**
 	* Flag if step needs to run silently

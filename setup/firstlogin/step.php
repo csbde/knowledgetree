@@ -39,35 +39,55 @@
 * @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Installer
+* @package 
 * @version Version 0.1
 */
 class Step extends StepBase
 {
 	/**
-	* Flag if step needs to be installed
+	* Flag if step needs
 	*
 	* @author KnowledgeTree Team
-	* @access private
-	* @var booelean
+	* @access public
+	* @var array
 	*/
-    public $runInstall = false;
+    private $run = false;
     
     public function __construct() {
-    	$this->util = new InstallUtil();
-    	$this->salt = 'installers';
+    	$this->util = new firstloginUtil();
+    	$this->salt = 'firstlogin';
     }
     
-    /**
-     * Return whether or not to a step has to be installed
-     * 
-     * @author KnowledgeTree Team
-     * @param none
-     * @access public
-     * @return boolean
-     */
-    public function runInstall() {
-    	return $this->runInstall;
+	/**
+	* Checks if Confirm button has been clicked
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    function firstlogin() {
+        if(isset($_POST['firstlogin'])) {
+            return true;
+        }
+
+        return false;
+    }
+
+	/**
+	* Checks if Confirm button has been clicked
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    function installer() {
+        if(isset($_POST['Install'])) {
+            return true;
+        }
+
+        return false;
     }
     
 	/**
@@ -82,13 +102,13 @@ class Step extends StepBase
         if(empty($_SESSION[$this->salt][$class])) {
             return false;
         }
-        $_POST = $_SESSION[$this->salt][$class];
+        $_POST = isset($_SESSION[$this->salt]['firstlogin'][$class]) ? $_SESSION[$this->salt]['firstlogin'][$class]: '';
 		
         return true;
     }
     
 	/**
-	* Get session data from class
+	* Get session data from post
 	*
 	* @author KnowledgeTree Team
 	* @params none
@@ -102,6 +122,30 @@ class Step extends StepBase
     	
     	return $_SESSION[$this->salt][$class];
     }
+    
+	/**
+	* Runs step if required
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return void
+	*/
+    public function Step() {
+		return '';
+    }
+    
+    /**
+     * Return whether or not to a step
+     * 
+     * @author KnowledgeTree Team
+     * @param none
+     * @access public
+     * @return boolean
+     */
+    public function run() {
+    	return $this->run;
+    }    
 }
 
 ?>

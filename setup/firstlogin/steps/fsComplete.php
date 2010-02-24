@@ -1,6 +1,6 @@
 <?php
 /**
-* Step .
+* Complete Step Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -39,69 +39,43 @@
 * @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Installer
+* @package First Login
 * @version Version 0.1
 */
-class Step extends StepBase
-{
-	/**
-	* Flag if step needs to be installed
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @var booelean
-	*/
-    public $runInstall = false;
-    
-    public function __construct() {
-    	$this->util = new InstallUtil();
-    	$this->salt = 'installers';
-    }
-    
+
+class fsComplete extends Step {
     /**
-     * Return whether or not to a step has to be installed
+     * Flag if step needs to run silently
      * 
-     * @author KnowledgeTree Team
-     * @param none
-     * @access public
-     * @return boolean
+     * @access protected
+     * @var boolean
      */
-    public function runInstall() {
-    	return $this->runInstall;
-    }
+    protected $silent = true;
     
 	/**
-	* Load session data to post
+	* Returns step state
 	*
 	* @author KnowledgeTree Team
-	* @params none
-	* @access private
-	* @return boolean
+	* @param none
+	* @access public
+	* @return string
 	*/
-    public function setDataFromSession($class) {
-        if(empty($_SESSION[$this->salt][$class])) {
-            return false;
-        }
-        $_POST = $_SESSION[$this->salt][$class];
-		
-        return true;
+    function doStep() {
+    	$this->temp_variables = array(
+    									"step_name"=>"complete", 
+    									"silent"=>$this->silent);
+        return $this->doRun();
     }
     
-	/**
-	* Get session data from class
-	*
-	* @author KnowledgeTree Team
-	* @params none
-	* @access private
-	* @return boolean
-	*/
-    public function getDataFromSession($class) {
-    	if(empty($_SESSION[$this->salt][$class])) {
-    		return false;
-    	}
-    	
-    	return $_SESSION[$this->salt][$class];
+    function doRun() {
+
+        return 'landing';
+    }
+    
+    
+    
+    public function getErrors() {
+    	return $this->error;
     }
 }
-
 ?>
