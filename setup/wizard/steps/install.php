@@ -62,7 +62,7 @@ class install extends step
 	* @access public
 	* @var array
 	*/
-    protected $runInstall = true;
+    public $runInstall = true;
 	private $ce_check = false;
 
     public function doStep() {

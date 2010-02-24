@@ -109,7 +109,6 @@
     define('IMG_DIR', RES_DIR."graphics".DS);
     define('STEP_DIR', WIZARD_DIR."steps".DS);
     define('TEMP_DIR', WIZARD_DIR."templates".DS);
-    define('SYS_DIR', WIZARD_LIB."system".DS);
     define('HELPER_DIR', WIZARD_LIB."helpers".DS);
     define('VALID_DIR', WIZARD_LIB."validation".DS);
     // Define paths to system webroot

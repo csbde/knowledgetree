@@ -1,10 +1,11 @@
 <?php
 /**
-* Step .
+* Steap Action Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
 * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
+* 
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -39,69 +40,53 @@
 * @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Installer
+* @package First Login
 * @version Version 0.1
 */
-class Step extends StepBase
-{
+
+class stepAction extends stepActionBase {
 	/**
-	* Flag if step needs to be installed
+	* Constructs step action object
 	*
 	* @author KnowledgeTree Team
-	* @access private
-	* @var booelean
-	*/
-    public $runInstall = false;
-    
-    public function __construct() {
-    	$this->util = new InstallUtil();
-    	$this->salt = 'installers';
+	* @access public
+	* @param string class name of the current step
+ 	*/
+    public function __construct($step) {
+        $this->stepName = $step;
     }
-    
-    /**
-     * Return whether or not to a step has to be installed
-     * 
-     * @author KnowledgeTree Team
-     * @param none
-     * @access public
-     * @return boolean
-     */
-    public function runInstall() {
-    	return $this->runInstall;
-    }
-    
+
 	/**
-	* Load session data to post
+	* Instantiate a step.
 	*
 	* @author KnowledgeTree Team
-	* @params none
-	* @access private
-	* @return boolean
+	* @param none
+	* @access public
+	* @return object Step
 	*/
-    public function setDataFromSession($class) {
-        if(empty($_SESSION[$this->salt][$class])) {
-            return false;
-        }
-        $_POST = $_SESSION[$this->salt][$class];
-		
-        return true;
+    public function createStep() {
+		$step_class = "firstlogin".$this->makeCamelCase($this->stepName);
+
+		return new $step_class();
     }
-    
+
 	/**
-	* Get session data from class
+	* Returns step tenplate content
 	*
 	* @author KnowledgeTree Team
-	* @params none
-	* @access private
-	* @return boolean
+	* @param none
+	* @access public
+	* @return string
 	*/
-    public function getDataFromSession($class) {
-    	if(empty($_SESSION[$this->salt][$class])) {
-    		return false;
-    	}
-    	
-    	return $_SESSION[$this->salt][$class];
-    }
+
+	public function getVars() {
+		$left = $this->getLeftMenu();
+		$vars['left'] = $left; // Set left menu
+		$vars['fl_version'] = $this->properties['fl_version']; // Set version
+		$vars['fl_type'] = $this->properties['fl_type']; // Set type
+		return $vars;
+	}
+
 }
 
 ?>

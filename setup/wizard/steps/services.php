@@ -61,7 +61,7 @@ class services extends Step
 	* @access protected
 	* @var array
 	*/
-    protected $runInstall = true;
+    public $runInstall = true;
     
 	/**
 	* List of services to be installed

@@ -1,5 +1,6 @@
 <?php
 require_once (KT_DIR . '/tests/test.php');
+require_once (KT_DIR . '/setup//wizard/share/wizardBase.php');
 require_once (KT_DIR . '/setup/wizard/installUtil.php');
 require_once (KT_DIR . '/setup/wizard/step.php');
 require_once (KT_DIR . '/setup/wizard/steps/dependencies.php');

@@ -13,7 +13,6 @@
 	</div>
 	<br/>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
-
 	<?php if(!$servicesValidation) { ?>
 		<?php if(!$migrate_check) { ?>
 			<h3>Services</h3>
@@ -24,7 +23,6 @@
 			<br/>
 			<?php } else { ?>
 			To start the services, using the instructions below:
-<!--			execute the dmsctl.bat batch file in the KnowledgeTree directory from a command prompt, run as administrator.-->
 			<br/>
 			<br/>
 			<?php } ?>
@@ -159,7 +157,6 @@
 		<?php } ?>
 	<!--	Services	-->
 		<br/>
-<!--		<br/>-->
 <?php if($servicesValidation) { ?>
 <?php if(!$migrate_check) { ?>
 		<div>

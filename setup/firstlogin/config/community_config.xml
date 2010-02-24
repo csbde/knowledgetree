@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : config.xml
+    Created on : 01 July 2009, 9:57 AM
+    Author     : KnowledgeTree Team
+    Description: First login steps
+-->
+
+<migrate version="3.7" type="Commercial Edition">
+    <steps>
+        <step name="Apply Folder Template">templates</step>
+        <step name="Complete">complete</step>
+    </steps>
+ </migrate>

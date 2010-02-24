@@ -43,50 +43,10 @@
 * @package Upgrader
 * @version Version 0.1
 */
-include("../wizard/path.php"); // Paths
 
-/**
- * Auto loader to bind upgrader package
- *
- * @param string $class
- * @return void
- */
-function __autoload($class) { // Attempt and autoload classes
-	$class = strtolower(substr($class,0,1)).substr($class,1); // Linux Systems.
-	if ($class == "template") { // Load existing templating classes
-		require_once(WIZARD_DIR."../wizard/template.php");
-		require_once(WIZARD_DIR."../wizard/lib/helpers/htmlHelper.php");
-	}
-	if(file_exists(WIZARD_DIR."$class.php")) {
-		require_once(WIZARD_DIR."$class.php");
-	} elseif (file_exists(STEP_DIR."$class.php")) {
-		require_once(STEP_DIR."$class.php");
-	} elseif (file_exists(WIZARD_LIB."$class.php")) {
-		require_once(WIZARD_LIB."$class.php");
-	} else {
-		return null;
-	}
-}
+require_once("../wizard/share/wizardBase.php");
 
-class UpgradeWizard {
-	/**
-	* Upgrade bypass flag
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var mixed
-	*/
-	protected $bypass = null;
-
-	/**
-	* Reference to upgrader utility object
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var boolean
-	*/
-	protected $util = null;
-
+class UpgradeWizard extends WizardBase {
 	/**
 	* Constructs upgradeation wizard object
 	*
@@ -96,18 +56,6 @@ class UpgradeWizard {
 	public function __construct(){}
 
 	/**
-	* Check if system has been upgrade
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param none
-	* @return boolean
- 	*/
-	private function isSystemUpgraded() {
-		return $this->util->isSystemUpgraded();
-	}
-	
-	/**
 	* Display the wizard
 	*
 	* @author KnowledgeTree Team
@@ -115,7 +63,7 @@ class UpgradeWizard {
 	* @param string
 	* @return void
  	*/
-	public function displayUpgrader($response = null) {
+	public function display($response = null) {
 		if($response) {
 			$ins = new Upgrader(); // Instantiate the upgrader
 			$ins->resolveErrors($response); // Run step
@@ -123,30 +71,6 @@ class UpgradeWizard {
 			$ins = new Upgrader(new session()); // Instantiate the upgrader and pass the session class
 			$ins->step(); // Run step
 		}
-	}
-	
-	/**
-	* Set bypass flag
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param boolean
-	* @return void
- 	*/
-	private function setBypass($bypass) {
-		$this->bypass = $bypass;
-	}
-	
-	/**
-	* Set util reference
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param object upgrader utility
-	* @return void
- 	*/
-	private function setIUtil($util) {
-		$this->util = $util;
 	}
 	
 	/**
@@ -182,9 +106,6 @@ class UpgradeWizard {
 	* @return mixed
  	*/
 	public function systemChecks() {
-	    // for now we don't write to any of these locations
-        return true;
-        
 		$res = $this->util->checkStructurePermissions();
 		if($res === true) return $res;
 		switch ($res) {
@@ -221,7 +142,7 @@ class UpgradeWizard {
 			$this->util->redirect('../../login.php');
 		}
 		if($response === true) {
-			$this->displayUpgrader();
+			$this->display();
 		} else {
 			exit();
 		}
