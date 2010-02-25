@@ -50,8 +50,12 @@ class CMISObjectService {
     // TODO throw ConstraintViolationException if At least one of the permissions is used in 
     //      an ACE provided which is not supported by the repository.
     // NOTE typeId is supplied in the cmis:objectTypeId property in the properties array
+    // TODO support submission of content stream as an array containing mimetype and stream;
+    //      for now we just filter on the other side so that only the stream comes through
+    //      and continue to check the mime type dynamically (may need that anyway if none specified
+    //      by CMIS client)
     public function createDocument($repositoryId, $properties, $folderId = null, $contentStream = null, 
-                                   $versioningState = null, $policies = array(), $addACEs = array(), 
+                                   $versioningState = 'none', $policies = array(), $addACEs = array(), 
                                    $removeACEs = array())
     {        
         $objectId = null;
@@ -164,7 +168,7 @@ class CMISObjectService {
             if (!$typeDefinition['attributes']['contentStreamAllowed']) {
                 throw new StreamNotSupportedException('Content streams are not supported by this object-type');
             }
-            
+
             $tempfilename = CMISUtil::createTemporaryFile($contentStream);
 
             // metadata

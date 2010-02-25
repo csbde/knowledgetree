@@ -9,6 +9,15 @@ class KT_cmis_atom_service extends KT_atom_service {
     protected $serviceType = null;
     protected $contentDownload = false;
     
+    public function __construct($method, $params, $content)
+    {
+        // We are not going to use the parsed xml content, but rather the raw content;
+        // This is due to changes in the CMIS spec more than once requiring a change in 
+        // the functions which fetch information from the parsed content; using XMLReader
+        // now which should be able to handle changes easier
+        parent::__construct($method, $params, $content, false);
+    }
+    
     public function setContentDownload($contentDownload)
     {
         $this->contentDownload = $contentDownload;
