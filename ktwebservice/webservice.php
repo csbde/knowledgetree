@@ -95,22 +95,22 @@ define('KTWS_ERR_DB_PROBLEM',				99);
 
 if (!defined('LATEST_WEBSERVICE_VERSION'))
 {
-	define('LATEST_WEBSERVICE_VERSION', 3);
+	define('LATEST_WEBSERVICE_VERSION', 2);
 }
 
-	function bool2str($bool)
+function bool2str($bool)
+{
+	if (is_bool($bool))
 	{
-		if (is_bool($bool))
-		{
-			return $bool?'true':'false';
-		}
-		if (is_numeric($bool))
-		{
-			return ($bool+0)?'true':'false';
-		}
-		// assume str
-		return (strtolower($bool) == 'true')?'true':'false';
+		return $bool?'true':'false';
 	}
+	if (is_numeric($bool))
+	{
+		return ($bool+0)?'true':'false';
+	}
+	// assume str
+	return (strtolower($bool) == 'true')?'true':'false';
+}
 
 class KTWebService
 {
