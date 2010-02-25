@@ -94,6 +94,31 @@ class kt extends client_service {
 		$this->setResponse ( $result );
 		return true;
 	}
+
+	function get_checkedout_documents_list($params) {
+		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
+		$kt = &$this->KT;
+		
+
+		$params ['control'] = 'F_';
+		$params ['node'] = substr ( $params ['node'], strlen ( $params ['control'] ) );
+		
+		$folder = &$kt->get_folder_by_id ( $params ['node'] );
+		if (! $this->checkPearError ( $folder, "[error 1] Folder Not Found: {$params['control']}{$params['node']}", '', array () ))
+			return false;
+		
+		$types = (isset ( $params ['types'] ) ? $params ['types'] : 'D');
+		$listing = $folder->get_listing ( 1, $types );
+		foreach ( $listing as $item ) {
+			if ($item['checked_out_by'] == $params['user'])
+			{
+				$result[] = array ('text' => htmlspecialchars ( $item ['title'] ), 'id' => $item ['id'], 'filename' => $item ['filename']);
+			}
+		}
+
+		$this->setResponse ( $result );
+		return true;
+	}
 	
 	function get_folder_contents($params) {
 		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );

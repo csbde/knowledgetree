@@ -123,13 +123,13 @@ class KTObjectService extends KTCMISBase {
      * @param $removeACEs List of ACEs that MUST be removed
      * @return string $objectId The id of the created folder object
      */
-    public function createDocument($repositoryId, $properties, $folderId = null, $contentStream = null, $versioningState = null, 
+    public function createDocument($repositoryId, $properties, $folderId = null, $contentStream = null, $versioningState = 'none', 
                                    $policies = array(), $addACEs = array(), $removeACEs = array())
     {
         $objectId = null;
 
         try {
-            $objectId = $this->ObjectService->createDocument($repositoryId, $typeId, $properties, $folderId, $contentStream, 
+            $objectId = $this->ObjectService->createDocument($repositoryId, $properties, $folderId, $contentStream, 
                                                              $versioningState,$policies, $addACEs, $removeACEs);
         }
         catch (Exception $e)

@@ -466,8 +466,97 @@ class KT_cmis_atom_service_helper {
         
         return CMISUtil::encodeObjectId(FOLDER, $folderId);
     }
+    
+    static public function getCmisProperties(&$xml)
+    {
+        $xmlReader = new XMLReader();
+        $xmlReader->XML($xml);
+        $object = false;
+        $objectProperties = false;
+        $cmisObjectProperty = null;
+        $cmisObjectPropertiesCollection = array();
+        while ($xmlReader->read()) {
+            // get cmis object properties
+            if ($xmlReader->name == 'cmisra:object') {
+                $object = ($xmlReader->nodeType == XMLReader::ELEMENT);
+                // exit if we have finished reading the cmis object node
+                if (!$object) {
+                    break;
+                }
+            }
+            else if ($object && ($xmlReader->name == 'cmis:properties')) {
+                $objectProperties = ($xmlReader->nodeType == XMLReader::ELEMENT);
+            }
+            else if ($objectProperties && ($xmlReader->nodeType == XMLReader::ELEMENT)) {
+                if (strstr($xmlReader->name, 'cmis:property') && $xmlReader->nodeType == XMLReader::ELEMENT) {
+                    $cmisObjectProperty = $xmlReader->getAttribute('propertyDefinitionId');
+                }
+                else if ($xmlReader->name == 'cmis:value' && $xmlReader->nodeType == XMLReader::ELEMENT) {
+                    // push to next read, which will be the text contained within the node
+                    $xmlReader->read();
+                    $cmisObjectPropertiesCollection[$cmisObjectProperty] = $xmlReader->value;
+                    // reset for next value - may leave this out of final code
+                    $cmisObjectProperty = null;
+                }
+            }
+        }
+        
+        return $cmisObjectPropertiesCollection;
+    }
+    
+    static public function getCmisContent(&$xml)
+    {
+        $xmlReader = new XMLReader();
+        $xmlReader->XML($xml);
+        $content = false;
+        $cmisContentProperty = null;
+        $cmisObjectContent = array();
+        while ($xmlReader->read()) {
+            if ($xmlReader->name == 'cmisra:content') {
+                $content = ($xmlReader->nodeType == XMLReader::ELEMENT);
+                // exit if we have finished reading the cmis content node
+                if (!$content) {
+                    break;
+                }
+            }
+            else if ($content && ($xmlReader->nodeType == XMLReader::ELEMENT)) {
+                $cmisContentProperty = $xmlReader->name;
+                //  push to next read, which will be the text contained within the node
+                $xmlReader->read();
+                $cmisObjectContent[$cmisContentProperty] = $xmlReader->value;
+            }
+        }
+        
+        return $cmisObjectContent;
+    }
+    
+    static public function getAtomValues(&$xml, $tag)
+    {
+        $returnTag = null;
+        
+        $xmlReader = new XMLReader();
+        $xmlReader->XML($xml);
+        $foundTag = false;
+        while ($xmlReader->read()) {
+            // using strstr because we may or may not have the tag preceded by "atom:"
+            // TODO ensure that this does not return incorrect matches
+            if (strstr($xmlReader->name, $tag)) {
+                $foundTag = ($xmlReader->nodeType == XMLReader::ELEMENT);
+                // exit if we have finished reading the cmis content node
+                if ($foundTag) {
+                    $xmlReader->read();
+                    $returnTag = $xmlReader->value;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+        
+        return $returnTag;
+    }
 
-    static public function getCmisProperties($xmlArray)
+    static public function getCmisPropertiesOld($xmlArray)
     {
         $properties = array();
         
@@ -500,7 +589,7 @@ class KT_cmis_atom_service_helper {
         return $properties;
     }
 
-    static public function getAtomValues($xmlArray, $tag)
+    static public function getAtomValuesOld($xmlArray, $tag)
     {
         if (!is_null($xmlArray['atom:'.$tag]))
             return $xmlArray['atom:'.$tag][0]['@value'];

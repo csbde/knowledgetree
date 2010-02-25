@@ -160,6 +160,7 @@ class CMISRepositoryService {
     // NOTE this code may fit better in the Repository Class
     function getTypeDefinition($repositoryId, $typeId)
     {
+        $typeId = ucwords(str_replace('cmis:', '', $typeId));
         $object = 'CMIS' . $typeId . 'Object';
         
         // check whether the object type exists, return error if not
@@ -173,7 +174,7 @@ class CMISRepositoryService {
 
         require_once(CMIS_DIR . '/objecttypes/' . $object . '.inc.php');
         $cmisObject = new $object;
-        //$typeDefinition['attributes'] = $cmisObject->getAttributes();
+        $typeDefinition['attributes'] = $cmisObject->getAttributes();
         $typeDefinition['properties'] = $cmisObject->getProperties();
 
         return $typeDefinition;

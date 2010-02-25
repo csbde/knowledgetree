@@ -48,21 +48,18 @@ class ObjectService extends KTObjectService {
      * @param $removeACEs List of ACEs that MUST be removed
      * @return string $objectId The id of the created folder object
      */
-    // TODO throw ConstraintViolationException if:
-    //      value of any of the properties violates the min/max/required/length constraints
-    //      specified in the property definition in the Object-Type.
     public function createDocument($repositoryId, $properties, $folderId = null, $contentStream = null, 
-                                   $versioningState = null, $policies = array(), $addACEs = array(), 
+                                   $versioningState = 'none', $policies = array(), $addACEs = array(), 
                                    $removeACEs = array())
     {
         $result = parent::createDocument($repositoryId, $properties, $folderId, $contentStream, $versioningState, 
                                          $policies, $addACEs, $removeACEs);
-
+                                         
         if ($result['status_code'] == 0) {
             return $result['results'];
         }
         else {
-            return $result;
+            return new PEAR_Error($result['message']);
         }
     }
 
@@ -83,7 +80,7 @@ class ObjectService extends KTObjectService {
             return $result['results'];
         }
         else {
-            return $result;
+            return new PEAR_Error($result['message']);
         }
     }
     
@@ -102,7 +99,7 @@ class ObjectService extends KTObjectService {
             return $result['results'];
         }
         else {
-            return  new PEAR_Error($result['message']);
+            return new PEAR_Error($result['message']);
         }
     }
     
