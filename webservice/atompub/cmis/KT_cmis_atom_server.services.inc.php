@@ -131,7 +131,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
      * This includes creation/moving of both folders and documents.
      */
     public function POST_action()
-    {
+    {        
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
 
         // set default action, objectId and typeId
@@ -140,8 +140,8 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         $typeId = null;
         
         $folderId = $this->params[0];
-        $title = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'title');
-        $summary = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'summary');
+        $title = KT_cmis_atom_service_helper::getAtomValues($this->rawContent, 'title');
+        $summary = KT_cmis_atom_service_helper::getAtomValues($this->rawContent, 'summary');
 
         // determine whether this is a folder or a document action
         // document action create will have a content tag <atom:content> or <content> containing base64 encoding of the document
@@ -157,14 +157,14 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $objectId = $this->params[2];
         }
         
-        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']);
-        $properties = array('name' => $title, 'summary' => $summary, 'typeId' => $cmisObjectProperties['objectTypeId']);
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->rawContent);
+        $properties = array('name' => $title, 'summary' => $summary, 'objectTypeId' => $cmisObjectProperties['cmis:objectTypeId']);
         
         // check for existing object id as property of submitted object data
-        if (!empty($cmisObjectProperties['objectId']))
+        if (!empty($cmisObjectProperties['cmis:objectId']))
         {
             $action = 'move';
-            $objectId = $cmisObjectProperties['objectId'];
+            $objectId = $cmisObjectProperties['cmis:objectId'];
         }
         
         // TODO there may be more to do for the checking of an existing object.
@@ -174,53 +174,61 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         
         // determine type if object is being moved
         if (!is_null($objectId)) {
-            CMISUtil::decodeObjectId($objectId, $cmisObjectProperties['objectTypeId']);
+            CMISUtil::decodeObjectId($objectId, $cmisObjectProperties['cmis:objectTypeId']);
         }
         
         // check for content stream
-        $content = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'content');
-        
-        global $default;
-//        $default->log->info('cmis object type id: ' . $cmisObjectProperties['objectTypeId']);      
-//        $default->log->info(print_r($cmisObjectProperties, true));      
-//        $default->log->info(print_r($this->parsedXMLContent['@children'], true));      
-        $default->log->info(print_r($this->rawContent, true));      
-        
-        // TODO this will need to change somewhat once other object-types come into play.
-        if ((($action == 'create') && (is_null($content))) || ($cmisObjectProperties['objectTypeId'] == 'cmis:folder')) {
-            $type = 'folder';
-        }
-        else {
-            $type = 'document';
-        }
+        $content = KT_cmis_atom_service_helper::getCmisContent($this->rawContent);
+        // NOTE not sure about the text type, will need testing, most content will be base64
+        $cmisContent = (isset($content['cmisra:base64']) 
+                            ? $content['cmisra:base64'] 
+                            : ((isset($content['cmisra:text'])) 
+                                    ? $content['cmisra:text'] 
+                                    : null));
 
         $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
-
+        
+        global $default;
         $success = false;
         $error = null;
         if ($action == 'create')
         {
-            // TODO detection and passing of optional parameters (policies, ACEs, etc...)
-            if ($type == 'folder')
-                $newObjectId = $ObjectService->createFolder($repositoryId, ucwords($cmisObjectProperties['objectTypeId']), $properties, $folderId);
+            // TODO detection and passing of optional parameters (policies, ACEs, etc...) as well as support for other object-types
+            if ($cmisObjectProperties['cmis:objectTypeId'] == 'folder')
+                $newObjectId = $ObjectService->createFolder($repositoryId, ucwords($cmisObjectProperties['cmis:objectTypeId']), $properties, $folderId);
             else
-                $newObjectId = $ObjectService->createDocument($repositoryId, ucwords($cmisObjectProperties['objectTypeId']), $properties, $folderId, $content);
+                // NOTE for the moment only creation in minor versioning state
+                $newObjectId = $ObjectService->createDocument($repositoryId, $properties, $folderId, $cmisContent, 'minor');
 
-            // check if returned Object Id is a valid CMIS Object Id
-            CMISUtil::decodeObjectId($newObjectId, $cmisObjectProperties['objectTypeId']);
-            if ($typeId != 'Unknown') $success = true;
-            else $error = $newObjectId['message'];
+            if (!PEAR::isError($newObjectId)) {
+                // check if returned Object Id is a valid CMIS Object Id
+                CMISUtil::decodeObjectId($newObjectId, $cmisObjectProperties['cmis:objectTypeId']);
+                if ($typeId != 'Unknown') {
+                    $success = true;
+                }
+                else {
+                    $error = 'Unknown Object Type';
+                }
+            }
+            else {
+                $error = $newObjectId->getMessage();
+            }
         }
         else if ($action == 'move')
         {
             $response = $ObjectService->moveObject($repositoryId, $objectId, '', $folderId);
             
-            if (!PEAR::isError($response)) $success = true;
-            else $error = $response->getMessage();
+            if (!PEAR::isError($response)) {
+                $success = true;
+            }
+            else {
+                $error = $response->getMessage();
+            }
             
             // same object as before
             $newObjectId = $objectId;
-            $typeId = ucwords($type);
+            // FIXME why set this?  it does not appear to get used
+            $typeId = ucwords($cmisObjectProperties['cmis:objectTypeId']);
         }
         
         if ($success)
@@ -510,7 +518,7 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
         // NOTE this is a hack!  will not work with CMISSpaces at least, probably not with any client except RestTest and similar
         //      where we can manually modify the input
         // first we try for an atom content tag
-        $content = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'content');
+        $content = KT_cmis_atom_service_helper::getAtomValues($this->rawContent, 'content');
         if (!empty($content)) {
             $contentStream = $content;
         }
@@ -625,10 +633,10 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
         $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
-        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']);
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->rawContent);
         
         // check for existing object id as property of submitted object data
-        if (empty($cmisObjectProperties['objectId']))
+        if (empty($cmisObjectProperties['cmis:objectId']))
         {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
             // Expose the responseFeed
@@ -636,7 +644,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
             return null;
         }
         
-        $response = $VersioningService->checkOut($repositoryId, $cmisObjectProperties['objectId']);
+        $response = $VersioningService->checkOut($repositoryId, $cmisObjectProperties['cmis:objectId']);
         
         if (PEAR::isError($response))
         {
@@ -647,7 +655,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         }
         
         $this->setStatus(self::STATUS_CREATED);
-        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['objectId'], 'POST');
+        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['cmis:objectId'], 'POST');
 
         // Expose the responseFeed
         $this->responseFeed = $feed;
