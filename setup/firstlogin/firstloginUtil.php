@@ -53,12 +53,10 @@ class firstloginUtil extends InstallUtil {
 	* @param none
 	* @return boolean
  	*/
-	public function isSystem() {
-		if (file_exists(dirname(__FILE__)."/firstlogin")) {
-
+	public function isFirstLogin() {
+		if (file_exists(SYSTEM_DIR.'var'.DS.'bin'.DS."firstlogin.lock")) {
 			return true;
 		}
-
 		return false;
 	}
 

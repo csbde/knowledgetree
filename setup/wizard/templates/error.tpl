@@ -3,7 +3,7 @@
 	<head>
 		<link rel="shortcut icon" href="../wizard/resources/graphics/favicon.ico" type="image/x-icon">
 		<title>KnowledgeTree Installer</title>
-		<script type="text/javascript" src="resources/js/jquery-tooltip/lib/jquery.js"></script>
+		<script type="text/javascript" src="../../thirdpartyjs/jquery/jquery-1.3.2.js"></script>
 		<script type="text/javascript" src="resources/js/wizard.js" ></script>
 		<link rel="stylesheet" type="text/css" href="resources/css/wizard.css" />
 

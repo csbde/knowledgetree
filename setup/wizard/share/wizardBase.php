@@ -39,7 +39,7 @@
 * @package Installer
 * @version Version 0.1
 */
-include("../wizard/path.php"); // Paths
+require_once("../wizard/path.php"); // Paths
 
 /**
  * Auto loader to bind installer package

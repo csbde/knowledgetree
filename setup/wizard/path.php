@@ -65,11 +65,7 @@
     	define('UNIX_OS', true);
     	define('OS', 'unix');
 	}
-	if(WINDOWS_OS) {
-		define('DS', '\\');
-	} else {
-		define('DS', '/');
-	}
+	define('DS', DIRECTORY_SEPARATOR);
 	// Define environment root
 	$wizard = realpath(dirname(__FILE__));
 	$xdir = explode(DS, $wizard);
@@ -85,6 +81,9 @@
 			break;
 			case 'upgrade' :
 				$wizard = $sys.'upgrade';
+			break;
+			case 'firstlogin' :
+				$wizard = $sys.'firstlogin';
 			break;
 			default:
 
@@ -134,4 +133,38 @@
     } else {
 		define('INSTALL_TYPE', 'community');
 	}
+	define('WIZARD_ROOT',guessRootUrl().DS);
+	define('WIZARD_SETUP',WIZARD_ROOT . "setup");
+	
+    function guessRootUrl() {
+        $urlpath = $_SERVER['SCRIPT_NAME'];
+        $bFound = false;
+        $rootUrl = '';
+        while ($urlpath) {
+            if (file_exists(SYSTEM_DIR . '/' . $urlpath)) {
+                $bFound = true;
+                break;
+            }
+            $i = strpos($urlpath, '/');
+            if ($i === false) {
+                break;
+            }
+            if ($rootUrl)
+            {
+            	$rootUrl .= '/';
+            }
+            $rootUrl .= substr($urlpath, 0, $i);
+            $urlpath = substr($urlpath, $i + 1);
+        }
+        if ($bFound) {
+            if ($rootUrl) {
+                $rootUrl = '/' . $rootUrl;
+            }
+            if(strpos($rootUrl, SYSTEM_DIR) !== false){
+                return '';
+            }
+            return $rootUrl;
+        }
+        return '';
+    }
 ?>

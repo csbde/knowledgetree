@@ -63,8 +63,8 @@ class firstloginWizard extends WizardBase {
 	* @param none
 	* @return boolean
  	*/
-	private function isSystem() {
-		return $this->util->isSystem();
+	private function isFirstLogin() {
+		return $this->util->isFirstLogin();
 	}
 
 	/**
@@ -77,10 +77,10 @@ class firstloginWizard extends WizardBase {
  	*/
 	public function display($response = null) {
 		if($response) {
-			$ins = new FirstLogin(); // Instantiate
+			$ins = new firstlogin(); // Instantiate
 			$ins->resolveErrors($response); // Run step
 		} else {
-			$ins = new FirstLogin(new Session()); // Instantiate and pass the session class
+			$ins = new firstlogin(new Session()); // Instantiate and pass the session class
 			$ins->step(); // Run step
 		}
 	}
@@ -165,7 +165,7 @@ class firstloginWizard extends WizardBase {
 		} elseif ($this->getBypass() === "0") {
 			$this->createFile();
 		}
-		if(!$this->isSystem()) { // Check if the systems
+		if(!$this->isFirstLogin()) { // Check if the systems
 			$response = $this->systemChecks();
 			if($response === true) {
 				$this->display();

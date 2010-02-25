@@ -44,7 +44,7 @@
 * @version Version 0.1
 */
 
-class FirstLogin {
+class firstlogin {
 	/**
 	* Reference to simple xml object
 	*
@@ -160,7 +160,7 @@ class FirstLogin {
     	try {
         	$this->simpleXmlObj = simplexml_load_file(CONF_DIR.INSTALL_TYPE."_$name");
     	} catch (Exception $e) {
-    		$util = new FirstLoginUtil();
+    		$util = new firstloginUtil();
     		$util->error("Error reading configuration file: $e");
     		exit();
     	}
@@ -435,7 +435,7 @@ class FirstLogin {
 	    	if($class->run()) { // Check if step needs to be run
 				$class->setDataFromSession($className); // Set Session Information
 				$class->setPostConfig(); // Set any posted variables
-				$class->Step(); // Run step
+				$class->runStep(); // Run step
 	    	}
     	} else {
     		$util = new firstloginUtil();

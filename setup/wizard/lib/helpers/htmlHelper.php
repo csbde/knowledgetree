@@ -102,16 +102,20 @@ class htmlHelper {
 		function __construct() {
 		}
 		
+		function tpjs($name) {
+			return "<script type=\"text/javascript\" src=\"".WIZARD_ROOT."thirdpartyjs/jquery/$name\"></script>";
+		}
+		
 		function js($name) {
-			return "<script type=\"text/javascript\" src=\"../wizard/resources/js/$name\"></script>";
+			return "<script type=\"text/javascript\" src=\"".WIZARD_SETUP."/wizard/resources/js/$name\"></script>";
 		}
 		
 		function css($name) {
-			return "<link rel=\"stylesheet\" type=\"text/css\" href=\"../wizard/resources/css/$name\" />";
+			return "<link rel=\"stylesheet\" type=\"text/css\" href=\"".WIZARD_SETUP."/wizard/resources/css/$name\" />";
 		}
 		
 		function image($name, $options = array()) {
-			$path = "../wizard/resources/graphics/$name";
+			$path = WIZARD_SETUP."/wizard/resources/graphics/$name";
 			$image = sprintf($this->tags['image'], $path, $this->_parseAttributes($options, null, '', ' '));
 			
 			return $image; 

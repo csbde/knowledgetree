@@ -131,7 +131,7 @@ class Step extends StepBase
 	* @access public
 	* @return void
 	*/
-    public function Step() {
+    public function runStep() {
 		return '';
     }
     
