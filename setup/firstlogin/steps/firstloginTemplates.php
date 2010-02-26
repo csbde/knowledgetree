@@ -70,6 +70,7 @@ class firstloginTemplates extends Step {
     									"step_name"=>"templates",
     									"silent"=>$this->silent);
 		if(!$this->inStep("templates")) { // Landing
+			$this->doRun(); // Set folder structure templates
     		return 'landing';
     	}
     	if($this->next()) { // Next click
@@ -89,7 +90,16 @@ class firstloginTemplates extends Step {
     }
     
     function applyTemplates() {
+    	$templateId = KTUtil::arrayGet($_POST['data'], "templateId", 0);
+    	if($templateId > 0) {
+			if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
+	            $oRegistry =& KTPluginRegistry::getSingleton();
+	            $oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
+	            return $oPlugin->applyFolderTemplate($templateId, 1);
+			}
+    	}
     	
+    	return false;
     }
     
     function getTemplates() {

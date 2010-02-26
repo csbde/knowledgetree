@@ -10,3 +10,64 @@
 	margin-left:5px;
 	margin-top:10px;
 }
+
+.tree_icon {
+	float:left;
+	height:16px;
+	width:16px;
+	cursor: pointer;
+}
+
+.tree_folder {
+	background-image:url(../../../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png);
+}
+
+#tree_editable {
+	float : right;
+	width: 700px;
+}
+
+.tree_navigation {
+	align : left;
+	width:600px;
+	min-height: 200px;
+	float:left;
+}
+
+.tree_table {
+	width:100%;
+}
+
+.tree_table td {
+	float:left;
+	line-height:1.8em;
+	padding: 0px 0px;
+}
+
+.outer {
+	align : left;
+}
+
+.tree_node_edit {
+	background-image:url(../../../../thirdparty/icon-theme/16x16/actions/document-properties.png);
+}
+
+.tree_node_delete {
+	background-image:url(../../../../resources/graphics/delete.png);
+}
+
+.tree_node_add {
+	background-image:url(../../../../thirdparty/icon-theme/16x16/actions/add.gif);
+}
+
+.tree_node_description {
+	background-image:url(graphics/question.gif);
+}
+
+#template_options {
+	width : 20px;
+}
+
+.action_form {
+	margin-left:35px;
+}

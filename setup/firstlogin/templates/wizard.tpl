@@ -8,8 +8,8 @@
 		<?php echo $html->js('jquery.blockUI.js'); ?>
 		<?php echo $html->js('jquery.hotkeys.js'); ?>
 		<?php echo $html->js('firstlogin.js'); ?>
-		<?php echo $html->css('wizard.css'); ?>
 		<?php echo $html->css('firstlogin.css'); ?>
+		<?php echo $html->css('wizard.css'); ?>
 		<?php if(AGENT == "IE6") echo $html->css('ie6.css'); ?>
         <?php if(AGENT == "IE7") echo $html->css('ie7.css'); ?>
         <?php if(AGENT == "IE8") echo $html->css('ie8.css'); ?>
@@ -49,5 +49,5 @@
 	</body>
 </html>
 <script>
-	var fl = new firstlogin();
+	var fl = new firstlogin('<?php echo WIZARD_ROOTURL; ?>');
 </script>
