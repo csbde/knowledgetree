@@ -16,10 +16,13 @@ class KT_cmis_atom_service_helper {
     static public function setRepositoryId(&$RepositoryService = null)
     {
         if (is_null($RepositoryService)) {
-            $RepositoryService = new RepositoryService();
+            $RepositoryService = new KTRepositoryService();
         }
         
         $repositories = $RepositoryService->getRepositories();
+        
+        // hack for removing one level of access
+        $repositories = $repositories['results'];
         
         // TODO handle multiple repositories
         self::$repositoryId = $repositories[0]['repositoryId'];         
@@ -60,11 +63,11 @@ class KT_cmis_atom_service_helper {
         $serviceType = $service->getServiceType();
         $response = $ObjectService->getProperties($repositoryId, $objectId, false, false);
 
-        if (PEAR::isError($response)) {
-            return KT_cmis_atom_service_helper::getErrorFeed($service, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response->getMessage());
+        if ($response['status_code'] == 1) {
+            return KT_cmis_atom_service_helper::getErrorFeed($service, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response['message']);
         }
-        
-        $cmisEntry = $response;
+
+        $cmisEntry = $response['results'];
         $response = null;
         
         // POST/PWC responses only send back an entry, not a feed
@@ -84,11 +87,6 @@ class KT_cmis_atom_service_helper {
 
         if ($serviceType == 'PWC') $pwc = true; else $pwc = false;
         KT_cmis_atom_service_helper::createObjectEntry($response, $cmisEntry, $cmisEntry['properties']['parentId']['value'], $pwc, $method);
-
-        // Don't think this should be here...only one item so why would we need to say there are no more?
-        /*if ($method == 'GET') {
-            $response->newField('cmis:hasMoreItems', 'false', $response);
-        }*/
         
         return $response;
     }
@@ -639,11 +637,14 @@ class KT_cmis_atom_service_helper {
     static public function getContentStream(&$service, &$ObjectService, $repositoryId)
     {
         $response = $ObjectService->getProperties($repositoryId, $service->params[0], false, false);
-        if (PEAR::isError($response)) {
+        if ($response['status_code'] == 1) {
             return null;
         }
         
         $contentStream = $ObjectService->getContentStream($repositoryId, $service->params[0]);
+        
+        // hack for removing one level of access
+        $contentStream = $contentStream['results'];
         
         return $contentStream;
     }
@@ -657,10 +658,13 @@ class KT_cmis_atom_service_helper {
     static public function downloadContentStream(&$service, &$ObjectService, $repositoryId)
     {
         $response = $ObjectService->getProperties($repositoryId, $service->params[0], false, false);
-        if (PEAR::isError($response)) {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($service, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response->getMessage());
+        if ($response['status_code'] == 1) {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($service, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response['message']);
             $service->responseFeed = $feed;
             return null;
+        }
+        else {
+            $response = $response['results'];
         }
         
         // TODO also check If-Modified-Since?
@@ -677,6 +681,9 @@ class KT_cmis_atom_service_helper {
         }
         
         $contentStream = $ObjectService->getContentStream($repositoryId, $service->params[0]);
+        
+        // hack for removing one level of access
+        $contentStream = $contentStream['results'];
         
         // headers specific to output
         $service->setEtag($eTag);

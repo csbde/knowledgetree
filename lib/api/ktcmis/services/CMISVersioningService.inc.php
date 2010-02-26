@@ -201,8 +201,9 @@ class CMISVersioningService {
     public function checkIn($repositoryId, $objectId, $major = true, $properties = array(), $contentStream = null,
                             $checkinComment = '', $policies = array(), $addACEs = array(), $removeACEs = array())
     {
+        
         $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
-
+        
         // throw updateConflictException if the operation is attempting to update an object that is no longer current (as determined by the repository).
         try {
             $pwc = new CMISDocumentObject($objectId, $this->ktapi);
@@ -210,7 +211,7 @@ class CMISVersioningService {
         catch (exception $e) {
             throw new UpdateConflictException($e->getMessage());
         }
-
+        
         // throw exception if the object is not versionable
         if (!$pwc->getAttribute('versionable')) {
             throw new ConstraintViolationException('This document is not versionable and may not be checked in');
@@ -224,7 +225,7 @@ class CMISVersioningService {
             // if we can't get the type definition, then we can't store the content
             throw new StorageException($e->getMessage());
         }
-
+        
         // if content stream is required (capabilityPWCUpdatability == false) and no content stream is supplied, 
         // throw a ConstraintViolationException
         if (($typeDefinition['attributes']['contentStreamAllowed'] == 'required') && is_null($contentStream)) {
@@ -244,7 +245,7 @@ class CMISVersioningService {
         $tempfilename = CMISUtil::createTemporaryFile($contentStream);
         $reason = 'CMIS object checkin';
         $response = $this->ktapi->checkin_document($objectId, $pwc->getProperty('contentStreamFilename'), $reason, $tempfilename, $major,
-        $sig_username, $sig_password);
+                                                   $sig_username, $sig_password);
 
         // if there was any error checking in
         if ($response['status_code'] == 1) {
