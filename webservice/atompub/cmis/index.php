@@ -49,6 +49,7 @@ define('KT_ATOM_LIB_FOLDER', '../../classes/atompub/');
 define('CMIS_APP_BASE_URI', trim(KT_APP_BASE_URI, '/'));
 define('CMIS_APP_SYSTEM_URI', KT_APP_SYSTEM_URI);
 define('CMIS_ATOM_LIB_FOLDER', trim(KT_ATOM_LIB_FOLDER, '/') . '/cmis/');
+define('CMIS_API', KT_LIB_DIR . '/api/ktcmis');
 
 /**
  * Check Realm Authentication

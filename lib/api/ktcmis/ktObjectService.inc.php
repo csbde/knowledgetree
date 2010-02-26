@@ -181,12 +181,13 @@ class KTObjectService extends KTCMISBase {
      *  
      * @param string $repositoryId
      * @param string $objectId
+     * @param string $streamId [optional for documents] Specifies the rendition to retrieve if not original document
      * @return string $contentStream (binary or text data)
      */
-    function getContentStream($repositoryId, $objectId)
+    function getContentStream($repositoryId, $objectId, $streamId = null)
     {
         try {
-            $contentStream = $this->ObjectService->getContentStream($repositoryId, $objectId);
+            $contentStream = $this->ObjectService->getContentStream($repositoryId, $objectId, $streamId);
         }
         catch (Exception $e)
         {

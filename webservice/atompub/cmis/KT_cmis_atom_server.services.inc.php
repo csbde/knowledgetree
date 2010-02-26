@@ -34,7 +34,7 @@ When POSTing an Atom Document, the atom fields take precedence over the CMIS pro
 include_once CMIS_ATOM_LIB_FOLDER . 'RepositoryService.inc.php';
 include_once CMIS_ATOM_LIB_FOLDER . 'NavigationService.inc.php';
 include_once CMIS_ATOM_LIB_FOLDER . 'ObjectService.inc.php';
-include_once CMIS_ATOM_LIB_FOLDER . 'VersioningService.inc.php';
+include_once CMIS_API . '/ktVersioningService.inc.php';
 include_once 'KT_cmis_atom_service_helper.inc.php';
 
 // TODO consider changing all responses from the webservice layer to return PEAR errors or success results instead of the half/half we have at the moment.
@@ -157,6 +157,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $objectId = $this->params[2];
         }
         
+        // get object properties - todo send through original properties array and not modified version
         $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->rawContent);
         $properties = array('name' => $title, 'summary' => $summary, 'objectTypeId' => $cmisObjectProperties['cmis:objectTypeId']);
         
@@ -188,7 +189,6 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
 
         $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
         
-        global $default;
         $success = false;
         $error = null;
         if ($action == 'create')
@@ -430,7 +430,7 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
         
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         
-        $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
+        $VersioningService = new KTVersioningService(KT_cmis_atom_service_helper::getKt());
 
         // attempt delete
         $response = $VersioningService->deleteAllVersions($repositoryId, $this->params[0]);
@@ -491,13 +491,12 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
         
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         
-        $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
+        $VersioningService = new KTVersioningService(KT_cmis_atom_service_helper::getKt());
 
         $response = $VersioningService->cancelCheckout($repositoryId, $this->params[0]);
 
-        if (PEAR::isError($response))
-        {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response->getMessage());
+        if ($response['status_code'] == 1) {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response['message']);
            // Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
@@ -510,45 +509,41 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
     public function PUT_action()
     {
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
-        
-        $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
+        $VersioningService = new KTVersioningService(KT_cmis_atom_service_helper::getKt());
         $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+        
+        // get object properties
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->rawContent);
 
         // check for content stream
-        // NOTE this is a hack!  will not work with CMISSpaces at least, probably not with any client except RestTest and similar
-        //      where we can manually modify the input
-        // first we try for an atom content tag
-        $content = KT_cmis_atom_service_helper::getAtomValues($this->rawContent, 'content');
-        if (!empty($content)) {
-            $contentStream = $content;
-        }
-        // not found? try for a regular content tag
-        else {
-            $content = KT_cmis_atom_service_helper::findTag('content', $this->parsedXMLContent['@children'], null, false); 
-            $contentStream = $content['@value'];
-        }
-        
-        // if we haven't found it now, the real hack begins - retrieve the EXISTING content and submit this as the contentStream
+        $content = KT_cmis_atom_service_helper::getCmisContent($this->rawContent);
+        // NOTE not sure about the text type, will need testing, most content will be base64
+        $cmisContent = (isset($content['cmisra:base64']) 
+                            ? $content['cmisra:base64'] 
+                            : ((isset($content['cmisra:text'])) 
+                                    ? $content['cmisra:text'] 
+                                    : null));
+
+        // if we haven't found it now, the hack begins - retrieve the EXISTING content and submit this as the contentStream
         // this is needed because KnowledgeTree will not accept a checkin without a content stream but CMISSpaces (and possibly 
         // other CMIS clients are the same, does not send a content stream on checkin nor does it offer the user a method to choose one)
         // NOTE that if the content is INTENDED to be empty this and all the above checks will FAIL!
         // FIXME this is horrible, terrible, ugly and bad!
-        if (empty($contentStream)) {
-            $contentStream = base64_encode(KT_cmis_atom_service_helper::getContentStream($this, $ObjectService, $repositoryId));
+        if (empty($cmisContent)) {
+            $cmisContent = base64_encode(KT_cmis_atom_service_helper::getContentStream($this, $ObjectService, $repositoryId));
         }
         
-        // and if we don't have it by now, we give up...but leave the error to be generated by the underlying KnowledgeTree code
-        
+        // and if we don't have the content stream by now, we give up...but leave the error to be generated by the underlying KnowledgeTree code
         // checkin function call
         // TODO dynamically detect version change type - leaving this for now as the CMIS clients tested do not appear to 
         //      offer the choice to the user - perhaps it will turn out that this will come from somewhere else but for now
         //      we assume minor version updates only
         $major = false;
-        $response = $VersioningService->checkIn($repositoryId, $this->params[0], $major, $contentStream);
-
-        if (PEAR::isError($response))
-        {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response->getMessage());
+        $checkinComment = '';
+        $response = $VersioningService->checkIn($repositoryId, $this->params[0], $major, $cmisObjectProperties, $cmisContent, $checkinComment);
+        
+        if ($response['status_code'] == 1) {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response['message']);
             // Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
@@ -630,7 +625,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
     {
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         
-        $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
+        $VersioningService = new KTVersioningService(KT_cmis_atom_service_helper::getKt());
         $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
 
         $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->rawContent);
@@ -646,8 +641,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         
         $response = $VersioningService->checkOut($repositoryId, $cmisObjectProperties['cmis:objectId']);
         
-        if (PEAR::isError($response))
-        {
+        if ($response['status_code'] == 1) {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
             // Expose the responseFeed
             $this->responseFeed = $feed;
