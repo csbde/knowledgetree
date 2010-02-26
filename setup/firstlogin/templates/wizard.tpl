@@ -7,7 +7,7 @@
 		<?php echo $html->js('jquery.form.js'); ?>
 		<?php echo $html->js('jquery.blockUI.js'); ?>
 		<?php echo $html->js('jquery.hotkeys.js'); ?>
-		<?php echo $html->js('wizard.js'); ?>
+		<?php echo $html->js('firstlogin.js'); ?>
 		<?php echo $html->css('wizard.css'); ?>
 		<?php echo $html->css('firstlogin.css'); ?>
 		<?php if(AGENT == "IE6") echo $html->css('ie6.css'); ?>
@@ -26,7 +26,7 @@
 					<span style="font-size:120%;"> <?php if (isset($vars['fl_version'])) echo $vars['fl_type']; ?></span>
 				</div>
 		    </div>
-		    <div id="wrapper">
+		    <div id="wrapper" class="wizard">
 		        <div id="container">
 		        	<div id="sidebar">
 		            	<?php echo $vars['left']; ?>
@@ -49,5 +49,5 @@
 	</body>
 </html>
 <script>
-	var w = new wizard();
+	var fl = new firstlogin();
 </script>

@@ -17,7 +17,7 @@
 				<span style="font-size:80%;"> <?php echo $fl_type; ?> </span>
 				</div>
 		    </div>
-		    <div id="wrapper">
+		    <div id="wrapper" class="wizard">
 		        <div id="container">
 		        	<div id="sidebar">
 		            	<span class="current">Welcome</span><br><span class="inactive">Current Installation</span><br><span class="inactive">Deactivate Services</span><br><span class="inactive">Database Migration</span><br><span class="inactive">Complete</span><br></div>

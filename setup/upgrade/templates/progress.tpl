@@ -18,7 +18,7 @@
 				<span style="font-size:80%;">Community Edition</span>
 				</div>
 		    </div>
-		    <div id="wrapper">
+		    <div id="wrapper" class="wizard">
 		        <div id="container">
 		            <div id="sidebar">
                         <?php echo $left; ?>

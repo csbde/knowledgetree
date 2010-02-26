@@ -26,7 +26,7 @@
 					<span style="font-size:120%;"> <?php if (isset($vars['migrate_version'])) echo $vars['migrate_type']; ?></span>
 				</div>
 		    </div>
-		    <div id="wrapper">
+		    <div id="wrapper" class="wizard">
 		        <div id="container">
 		        	<div id="sidebar">
 		            	<?php echo $vars['left']; ?>

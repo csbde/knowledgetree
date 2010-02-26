@@ -1,6 +1,6 @@
 <?php
 /**
-* Complete Step Controller.
+* Session Controller.
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
@@ -39,43 +39,24 @@
 * @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package First Login
+* @package Migrater
 * @version Version 0.1
 */
-
-class firstloginComplete extends Step {
-    /**
-     * Flag if step needs to run silently
-     * 
-     * @access protected
-     * @var boolean
-     */
-    protected $silent = true;
-    
+class wSession extends SessionBase
+{
+	public $salt = 'migrate';
+	
 	/**
-	* Returns step state
+	* Constructs session object
 	*
 	* @author KnowledgeTree Team
-	* @param none
 	* @access public
-	* @return string
-	*/
-    function doStep() {
-    	$this->temp_variables = array(
-    									"step_name"=>"complete", 
-    									"silent"=>$this->silent);
-        return $this->doRun();
-    }
-    
-    function doRun() {
-		
-        return 'landing';
-    }
-    
-    
-    
-    public function getErrors() {
-    	return $this->error;
-    }
+	* @param none
+ 	*/
+	public function __construct() {
+		$this->setSalt($this->salt);
+		$this->startSession();
+	}
+
 }
 ?>

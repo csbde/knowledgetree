@@ -19,7 +19,7 @@
 				<span style="font-size:80%;"> <?php echo $install_type; ?> </span>
 				</div>
 		    </div>
-		    <div id="wrapper">
+		    <div id="wrapper" class="wizard">
 		        <div id="container">
 		        	<div id="sidebar">
 		            	<span id="welcome" class="current">Welcome</span><br><span id="license" class="inactive">License Agreement</span><br><span id="installtype" class="inactive">Install Type</span><br><span id="dependencies" class="inactive">PHP Dependencies</span><br><span id="configuration" class="inactive">System Configuration</span><br><span id="services" class="inactive">Service Dependency</span><br><span id="database" class="inactive">Database Configuration</span><br><span id="registration" class="inactive">Registration</span><br><span id="install" class="inactive">Install</span><br><span id="complete" class="inactive">Complete</span><br></div>

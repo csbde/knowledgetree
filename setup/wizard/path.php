@@ -133,8 +133,8 @@
     } else {
 		define('INSTALL_TYPE', 'community');
 	}
-	define('WIZARD_ROOT',guessRootUrl().DS);
-	define('WIZARD_SETUP',WIZARD_ROOT . "setup");
+	define('WIZARD_ROOTURL',guessRootUrl().DS); # Used by template resources
+	define('WIZARD_SETUP',WIZARD_ROOTURL . "setup");
 	
     function guessRootUrl() {
         $urlpath = $_SERVER['SCRIPT_NAME'];

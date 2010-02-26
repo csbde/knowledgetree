@@ -489,11 +489,9 @@ class firstlogin {
 
     private function loadNeeded() {
     	$this->_readXml(); // Xml steps
-    	// Make sure session is cleared
-        $this->_resetSessions();
+        $this->_resetSessions(); // Make sure session is cleared
         $this->_loadFromSessions();
-    	if(isset($_POST['Next'])) {
-    		$this->action = 'next';
+    	if(isset($_POST['Next'])) { $this->action = 'next'; 
     		$this->response = 'next';
     	} elseif (isset($_POST['Previous'])) {
     		$this->action = 'previous';
@@ -503,6 +501,9 @@ class firstlogin {
     		$this->response = 'next';
     	} elseif (isset($_POST['Edit'])) {
     		$this->action = 'edit';
+    		$this->response = 'next';
+    	} elseif (isset($_POST['Skip'])) {
+    		$this->action = 'next';
     		$this->response = 'next';
     	} else {
     		$this->response = '';

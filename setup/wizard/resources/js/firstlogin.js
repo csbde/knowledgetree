@@ -1,10 +1,26 @@
+// Class Wizard
+var ajaxOn;
+var ktfolderAccess = "plugins/commercial/folder-templates/KTFolderTemplates.php?action=";
+var ktmanageFolderAccess = "admin.php?kt_path_info=misc/adminfoldertemplatesmanagement&action=";
+var actionForm = false;
+
+function firstlogin() {
+	this.ajaxOn = false;
+}
+
+var showFolderTemplateTree = function(templateId) {
+	alert($('template_' + templateId).attr('style'));
+	$('template_' + templateId).attr('style', 'display:block'); // Show template
+//	var address = this.ktfolderAccess + "getTemplateNodes&templateId="+templateId; 
+//	getUrl("templates_" + templateId, "template_" + templateId, address);
+}
+
 /*
-*    Create the electronic signature dialog
+*    Create the dialog
 */
-var showForm = function(){
-    createForm();
-    // create the window
-    this.win = new Ext.Window({
+var showForm = function() {
+    createForm(); // Populate the form
+    this.win = new Ext.Window({ // create the window
         applyTo     : 'firstlogin',
         layout      : 'fit',
         width       : 800,
@@ -20,9 +36,9 @@ var showForm = function(){
 
 var createForm = function() {
 	var holder = "<div id='firstlogin'></div>"; 
-	$("#wrapper").append(holder);// Append to current dashboard
+	$("#wrapper").append(holder); // Append to current dashboard
 	var address = "setup/firstlogin/index.php";
-	getUrl(address, "firstlogin");
+	getUrl(address, "firstlogin"); // Pull in existing wizard
 }
 
 // Send request and update a div
@@ -40,6 +56,6 @@ var getUrl = function (address, div)  {
 }
 
 $(function() { // Document is ready
-  
-  showForm();
+	if($("#wrapper").attr('class') != 'wizard') // Check if we in a wizard, or on the dashboard
+  		showForm(); // Display first login wizard
 });

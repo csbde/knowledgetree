@@ -7,9 +7,9 @@
     Description: First login steps
 -->
 
-<migrate version="3.7" type="Commercial Edition">
+<firstlogin version="3.7" type="Commercial Edition">
     <steps>
         <step name="Apply Folder Template">templates</step>
         <step name="Complete">complete</step>
     </steps>
- </migrate>
+ </firstlogin>

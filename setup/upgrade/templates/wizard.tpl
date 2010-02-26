@@ -26,7 +26,7 @@
 				<span style="font-size:120%;"> <?php echo $vars['upgrade_type']; ?> </span>
 				</div>
 		    </div>
-		    <div id="wrapper">
+		    <div id="wrapper" class="wizard">
 		        <div id="container">
 		        	<div id="sidebar">
 		            	<?php echo $vars['left']; ?>

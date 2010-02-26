@@ -80,7 +80,7 @@ class MigrateWizard extends WizardBase {
 			$ins = new Migrater(); // Instantiate the migrater
 			$ins->resolveErrors($response); // Run step
 		} else {
-			$ins = new Migrater(new Session()); // Instantiate the migrater and pass the session class
+			$ins = new Migrater(new wSession()); // Instantiate the migrater and pass the session class
 			$ins->step(); // Run step
 		}
 	}

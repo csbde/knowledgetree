@@ -80,7 +80,7 @@ class firstloginWizard extends WizardBase {
 			$ins = new firstlogin(); // Instantiate
 			$ins->resolveErrors($response); // Run step
 		} else {
-			$ins = new firstlogin(new Session()); // Instantiate and pass the session class
+			$ins = new firstlogin(new wSession()); // Instantiate and pass the session class
 			$ins->step(); // Run step
 		}
 	}

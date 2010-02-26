@@ -18,7 +18,7 @@
 				<span style="font-size:80%;"> <?php echo $upgrade_type; ?> </span>
 				</div>
 		    </div>
-		    <div id="wrapper">
+		    <div id="wrapper" class="wizard">
 		        <div id="container">
 		        	<div id="sidebar">
 		            	<span class="current">Welcome</span><br>

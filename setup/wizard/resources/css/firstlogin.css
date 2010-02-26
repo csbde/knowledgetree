@@ -1,6 +1,12 @@
-#step_content_folderstructures {
+#step_content_templates {
 	border: 1px solid rgb(207, 207, 207);
 	overflow: auto;
 	padding: 5px;
 	min-height:315px;
+}
+
+.button_skip {
+	float:right;
+	margin-left:5px;
+	margin-top:10px;
 }

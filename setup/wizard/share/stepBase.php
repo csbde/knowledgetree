@@ -246,6 +246,22 @@ class StepBase {
     }
 
 	/**
+	* Checks if skip button has been clicked
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    public function skip() {
+        if(isset($_POST['Skip'])) {
+            return true;
+        }
+
+        return false;
+    }
+    
+	/**
 	* Checks if Confirm button has been clicked
 	*
 	* @author KnowledgeTree Team

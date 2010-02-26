@@ -67,7 +67,7 @@ class InstallWizard extends WizardBase {
 			$ins = new Installer(); // Instantiate the installer
 			$ins->resolveErrors($response); // Run step
 		} else {
-			$ins = new Installer(new Session()); // Instantiate the installer and pass the session class
+			$ins = new Installer(new wSession()); // Instantiate the installer and pass the session class
 			$ins->step(); // Run step
 		}
 	}

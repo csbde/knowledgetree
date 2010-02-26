@@ -103,7 +103,7 @@ class htmlHelper {
 		}
 		
 		function tpjs($name) {
-			return "<script type=\"text/javascript\" src=\"".WIZARD_ROOT."thirdpartyjs/jquery/$name\"></script>";
+			return "<script type=\"text/javascript\" src=\"".WIZARD_ROOTURL."thirdpartyjs/jquery/$name\"></script>";
 		}
 		
 		function js($name) {

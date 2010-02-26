@@ -43,6 +43,11 @@
 * @version Version 0.1
 */
 
+// Load needed system files.
+require_once(SYSTEM_DIR . "config/dmsDefaults.php");
+require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
+require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+
 class firstloginTemplates extends Step {
     /**
      * Flag if step needs to run silently
@@ -62,18 +67,61 @@ class firstloginTemplates extends Step {
 	*/
     function doStep() {
     	$this->temp_variables = array(
-    									"step_name"=>"folderstructures",
+    									"step_name"=>"templates",
     									"silent"=>$this->silent);
-        return $this->doRun();
+		if(!$this->inStep("templates")) { // Landing
+    		return 'landing';
+    	}
+    	if($this->next()) { // Next click
+    		$this->applyTemplates(); // Apply folder template structures
+    		return 'next'; // And go to next step
+    	} else if($this->skip()) { // Skip Step
+    		return 'next';
+    	}
+    	
+    	$this->doRun(); // Set folder structure templates
+        return 'landing'; // Default to landing
     }
     
     function doRun() {
-
+		$this->temp_variables['aFolderTemplates'] = $this->getTemplates();
         return 'landing';
+    }
+    
+    function applyTemplates() {
+    	
+    }
+    
+    function getTemplates() {
+		if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
+            $oRegistry =& KTPluginRegistry::getSingleton();
+            $oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
+            return $oPlugin->getFirstLoginTemplates();
+		}
+    }
+    
+    function getTemplateNodes() {
+		if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
+            $oRegistry =& KTPluginRegistry::getSingleton();
+            $oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
+            return $oPlugin->getFirstLoginTemplates();
+		}
     }
     
     public function getErrors() {
     	return $this->error;
+    }
+    
+	/**
+	* Stores varibles used by template
+	*
+	* @author KnowledgeTree Team
+	* @params none
+	* @access public
+	* @return array
+	*/
+    public function getStepVars() {
+        return $this->temp_variables;
     }
 }
 ?>
