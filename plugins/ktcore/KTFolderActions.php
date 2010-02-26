@@ -79,7 +79,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
 
     function form_main() {
         $oForm = new KTForm;
-
+		
         $oForm->setOptions(array(
             'context' => &$this,
             'identifier' => 'ktcore.folder.add',
@@ -98,6 +98,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
                 'description' => _kt('The name for the new folder.'),
                 'required' => true,
                 'name' => 'name')),
+            $this->folderTemplateOptions(), // Add folder structure creation option
         ));
 
         // Electronic Signature if enabled
@@ -150,10 +151,25 @@ class KTFolderAddFolderAction extends KTFolderAction {
 
     }
 
+    /**
+     * Create Folder template options for a folder.
+     *
+     * @return unknown
+     */
+    function folderTemplateOptions() {
+		if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
+            $oRegistry =& KTPluginRegistry::getSingleton();
+            $oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
+            return $oPlugin->getTemplates();
+		}
+		
+		return array();
+    }
+    
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt("add folder"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/addFolder');
-
+		
         $oForm = $this->form_main();
 
         $oTemplate->setData(array(
@@ -178,14 +194,26 @@ class KTFolderAddFolderAction extends KTFolderAction {
 
         $this->startTransaction();
 
-        $res = KTFolderUtil::add($this->oFolder, $res['name'], $this->oUser);
+        $oFolder = KTFolderUtil::add($this->oFolder, $res['name'], $this->oUser);
 
         $aErrorOptions['defaultmessage'] = _kt("Could not create folder in the document management system");
         $this->oValidator->notError($res, $aErrorOptions);
 
         $this->commitTransaction();
-        controllerRedirect('browse', sprintf('fFolderId=%d', $res->getId()));
+        // On successful creation of a folder
+        // Check if a folder template needs to be applied
+        // TODO : Get post value templateId properly
+        $data = KTUtil::arrayGet($_POST, 'data',0);
+        $this->applyTemplate($oFolder->getId(), $data['templateId']);
+        controllerRedirect('browse', sprintf('fFolderId=%d', $oFolder->getId()));
+        
         exit(0);
+    }
+    
+    function applyTemplate($rootId, $templateId) {
+		$oRegistry =& KTPluginRegistry::getSingleton();
+		$oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
+		$oPlugin->applyFolderTemplate($rootId, $templateId);
     }
 }
 
