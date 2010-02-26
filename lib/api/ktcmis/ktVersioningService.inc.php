@@ -110,15 +110,14 @@ class KTVersioningService extends KTCMISBase {
      * Checks out a document and creates the PWC (Private Working Copy) which will represent the checked out document
      * 
      * @param string $repositoryId
-     * @param string $documentId
-     * @param string $changeToken [optional]
+     * @param string $objectId
      * @return array results
      */
     // TODO set up delivery of content stream? or is that up to the CMIS client?
-    public function checkOut($repositoryId, $documentId, $changeToken = '')
+    public function checkOut($repositoryId, $objectId)
     {
         try {
-            $result = $this->VersioningService->checkOut($repositoryId, $documentId, $changeToken);
+            $result = $this->VersioningService->checkOut($repositoryId, $objectId);
         }
         catch (Exception $e)
         {
@@ -138,18 +137,17 @@ class KTVersioningService extends KTCMISBase {
      * Reverses the effect of a checkout: I.E. deletes the PWC (Private Working Copy) and re-sets the status of the document to "not checked out" 
      * 
      * @param string $repositoryId
-     * @param string $documentId
-     * @param string $changeToken [optional]
+     * @param string $objectId
      */
     // TODO exceptions:
     //      •	ConstraintViolationException: The Repository SHALL throw this exception if ANY of the following conditions are met:
     //      o	The Document’s Object-Type definition’s versionable attribute is FALSE. 
     //      •	updateConflictException
     //      •	versioningException
-    public function cancelCheckOut($repositoryId, $documentId, $changeToken = '')
+    public function cancelCheckOut($repositoryId, $objectId)
     {
         try {
-            $result = $this->VersioningService->cancelCheckOut($repositoryId, $documentId, $changeToken);
+            $result = $this->VersioningService->cancelCheckOut($repositoryId, $objectId);
         }
         catch (Exception $e)
         {
@@ -169,18 +167,22 @@ class KTVersioningService extends KTCMISBase {
      * Checks in a checked out document
      * 
      * @param string $repositoryId
-     * @param string $documentId
-     * @param boolean $major
-     * @param string $changeToken [optional]
+     * @param string $objectId
+     * @param boolean $major [optional] defaults to true
      * @param array $properties [optional]
      * @param contentStream $contentStream [optional]
      * @param string $checkinComment [optional]
-     * @return string $documentId
+     * @param array $policies
+     * @param array $addACEs
+     * @param array $removeACEs
+     * @return string $objectId
      */
-    public function checkIn($repositoryId, $documentId, $major, $contentStream = null, $changeToken = '', $properties = array(), $checkinComment = '')
+    public function checkIn($repositoryId, $objectId, $major = true, $properties = array(), $contentStream = null, 
+    						$checkinComment = '', $policies = array(), $addACEs = array(), $removeACEs = array())
     {
         try {
-            $result = $this->VersioningService->checkIn($repositoryId, $documentId, $major, $contentStream, $changeToken, $properties, $checkinComment);
+            $result = $this->VersioningService->checkIn($repositoryId, $objectId, $major, $properties, $contentStream, 
+            											$checkinComment, $policies, $addACEs, $removeACEs);
         }
         catch (Exception $e)
         {

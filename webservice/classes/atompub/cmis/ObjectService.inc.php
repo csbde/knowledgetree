@@ -89,11 +89,12 @@ class ObjectService extends KTObjectService {
      *  
      * @param string $repositoryId
      * @param string $objectId
+     * @param string $streamId [optional for documents] Specifies the rendition to retrieve if not original document
      * @return string $contentStream (binary or text data)
      */
-    function getContentStream($repositoryId, $objectId)
+    function getContentStream($repositoryId, $objectId, $streamId = null)
     {
-        $result = parent::getContentStream($repositoryId, $objectId);
+        $result = parent::getContentStream($repositoryId, $objectId, $streamId);
 
         if ($result['status_code'] == 0) {
             return $result['results'];

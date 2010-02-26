@@ -401,16 +401,16 @@ class CMISObjectService {
     }
     
     /**
-     * Fetches the content stream data for an object
+     * Fetches the content stream data for an object, or fetched a rendition stream for a specified rendition
      *  
      * @param string $repositoryId
      * @param string $objectId
-     * @return string $contentStream (binary or text data)
+     * @param string $streamId [optional for documents] Specifies the rendition to retrieve if not original document
+     * @return string $contentStream (binary [base64 encoded] or text data)
      */
-    // NOTE streamNotSupportedException: The Repository SHALL throw this exception if the Object-Type definition 
-    //      specified by the objectId parameterâ€™s â€œcontentStreamAllowedâ€? attribute is set to â€œnot allowedâ€?.
-    //      
-    function getContentStream($repositoryId, $objectId)
+    // NOTE Each CMIS protocol binding MAY provide a way for fetching a sub-range within a content stream, 
+    //      in a manner appropriate to that protocol.
+    function getContentStream($repositoryId, $objectId, $streamId = null)
     {
         $contentStream = null;
         
@@ -426,13 +426,11 @@ class CMISObjectService {
         $objectClass = 'CMIS' . $typeId . 'Object';
         $CMISObject = new $objectClass($objectId, $this->ktapi);
         
-        // if content stream is not allowed for this object type definition, throw a ConstraintViolationException
+        // if content stream is not allowed for this object type definition, or the specified object does not have 
+        // a content/rendition stream, throw a ConstraintViolationException
         if (($CMISObject->getAttribute('contentStreamAllowed') == 'notAllowed'))
         {
-            // NOTE spec version 0.61c specifies both a ConstraintViolationException and a StreamNotSupportedException
-            //      for this case.  Choosing to throw StreamNotSupportedException until the specification is clarified
-            //      as it is a more specific exception
-            throw new StreamNotSupportedException('Content Streams are not allowed for this object type');
+            throw new ConstraintViolationException('This object does not have a content stream of the requested type');
         }
         
         // now go on to fetching the content stream
