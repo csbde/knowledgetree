@@ -90,16 +90,21 @@ class KTFolderAddFolderAction extends KTFolderAction {
             'submit_label' => _kt('Add Folder'),
             'extraargs' => $this->meldPersistQuery("","", true),
         ));
-
+        
         // widgets
-        $oForm->setWidgets(array(
+		$folderWidgets[] = 
             array('ktcore.widgets.string', array(
                 'label' => _kt('Folder name'),
                 'description' => _kt('The name for the new folder.'),
                 'required' => true,
-                'name' => 'name')),
-            $this->folderTemplateOptions(), // Add folder structure creation option
-        ));
+                'name' => 'name'),
+            );
+		$aFolderTemplates = $this->folderTemplateOptions(); // Get folder structure creation option
+		if(is_array($aFolderTemplates)) { // Check if any results are returned
+			 $folderWidgets[] = $aFolderTemplates; 
+		}
+        
+        $oForm->setWidgets($folderWidgets);
 
         // Electronic Signature if enabled
         global $default;
@@ -163,7 +168,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
             return $oPlugin->getTemplates();
 		}
 		
-		return array();
+		return false;
     }
     
     function do_main() {
@@ -213,7 +218,8 @@ class KTFolderAddFolderAction extends KTFolderAction {
     function applyTemplate($rootId, $templateId) {
 		$oRegistry =& KTPluginRegistry::getSingleton();
 		$oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
-		$oPlugin->applyFolderTemplate($rootId, $templateId);
+		// How to get current user. 
+		return $oPlugin->applyFolderTemplate($rootId, $templateId);
     }
 }
 
