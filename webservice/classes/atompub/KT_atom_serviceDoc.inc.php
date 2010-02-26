@@ -43,7 +43,6 @@
  */
 include_once('KT_atom_baseDoc.inc.php');
 
-
 class KT_atom_serviceDoc extends KT_atom_baseDoc {
 
 	protected $baseURI=NULL;
@@ -94,11 +93,6 @@ class KT_atom_serviceDoc extends KT_atom_baseDoc {
 	}
 
 }
-
-
-
-
-
 
 
 

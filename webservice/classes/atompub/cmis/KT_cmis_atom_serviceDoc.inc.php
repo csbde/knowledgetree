@@ -43,7 +43,7 @@
  * Includes
  */
 include_once(KT_ATOM_LIB_FOLDER.'KT_atom_serviceDoc.inc.php');
-require_once('RepositoryService.inc.php');
+require_once(CMIS_API . '/ktRepositoryService.inc.php');
 
 class KT_cmis_atom_serviceDoc extends KT_atom_serviceDoc {
 
@@ -58,12 +58,18 @@ class KT_cmis_atom_serviceDoc extends KT_atom_serviceDoc {
         // get repositoryInfo
         // NOTE currently we only support one repository, which will be the first one found in the repositories.xml config
         // TODO multiple repositories as individual workspaces
-        $RepositoryService = new RepositoryService();
+        $RepositoryService = new KTRepositoryService();
 
         // fetch data for response
         $repositories = $RepositoryService->getRepositories();
+        
+        // hack for removing one level of access
+        $repositories = $repositories['results'];
+        
         // fetch for default first repo;  NOTE that this will probably have to change at some point, quick and dirty for now
-        $this->repositoryInfo = $RepositoryService->getRepositoryInfo($repositories[0]['repositoryId']);
+        // hack for removing one level of access
+        $repositoryInfo = $RepositoryService->getRepositoryInfo($repositories[0]['repositoryId']);
+        $this->repositoryInfo = $repositoryInfo['results'];
     }
 
     protected function constructServiceDocumentHeaders()
