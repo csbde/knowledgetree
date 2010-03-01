@@ -216,10 +216,12 @@ class KTFolderAddFolderAction extends KTFolderAction {
     }
     
     function applyTemplate($rootId, $templateId) {
-		$oRegistry =& KTPluginRegistry::getSingleton();
-		$oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
-		// How to get current user. 
-		return $oPlugin->applyFolderTemplate($rootId, $templateId);
+    	if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
+			$oRegistry =& KTPluginRegistry::getSingleton();
+			$oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
+			// How to get current user. 
+			return $oPlugin->applyFolderTemplate($rootId, $templateId);
+    	}
     }
 }
 
