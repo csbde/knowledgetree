@@ -80,19 +80,20 @@ class KTNavigationService extends KTCMISBase {
      *
      * @param string $repositoryId
      * @param string $folderId
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
-     * @param string $typeID
      * @param int $depth
      * @param string $filter
+     * @param boolean $includeRelationships
+     * @param string $renditionFilter
+     * @param boolean $includeAllowableAc
      * @return array $descendants
      */
-    public function getDescendants($repositoryId, $folderId, $includeAllowableActions, $includeRelationships,
-                            $depth = 1, $typeID = 'Any', $filter = '')
+    public function getDescendants($repositoryId, $folderId, $depth = 2, $filter = '', $includeRelationships = false, $renditionFilter = '', 
+                                   $includeAllowableActions = false, $includePathSegment = false)
     {
         // TODO optional parameters
-        $descendantsResult = $this->NavigationService->getDescendants($repositoryId, $folderId, $includeAllowableActions,
-                                                                        $includeRelationships, $depth);
+        $descendantsResult = $this->NavigationService->getDescendants($repositoryId, $folderId, $depth, $filter, 
+                                                                      $includeRelationships = false, $renditionFilter = '', 
+                                                                      $includeAllowableActions = false, $includePathSegment = false);
 
         if (PEAR::isError($descendantsResult))
         {
@@ -101,11 +102,11 @@ class KTNavigationService extends KTCMISBase {
                 "message" => "Failed getting descendants for folder"
             );
         }
-
+        
         // format for webservices consumption
         // NOTE this will almost definitely be changing in the future, this is just to get something working
-        $descendants = CMISUtil::decodeObjectHierarchy($descendantsResult, 'child');
-
+        $descendants = CMISUtil::decodeObjectHierarchy($descendantsResult, 'children');
+        
         return array (
             "status_code" => 0,
             "results" => $descendants
@@ -126,7 +127,7 @@ class KTNavigationService extends KTCMISBase {
      * @return array $descendants
      */
     public function getChildren($repositoryId, $folderId, $includeAllowableActions, $includeRelationships,
-                         $typeID = 'Any', $filter = '', $maxItems = 0, $skipCount = 0)
+                                $typeID = 'Any', $filter = '', $maxItems = 0, $skipCount = 0)
     {
         // TODO paging
         // TODO optional parameters
@@ -140,7 +141,7 @@ class KTNavigationService extends KTCMISBase {
             );
         }
 
-        $children = CMISUtil::decodeObjectHierarchy($childrenResult, 'child');
+        $children = CMISUtil::decodeObjectHierarchy($childrenResult, 'children');
 
         return array(
 			"status_code" => 0,
@@ -180,7 +181,7 @@ class KTNavigationService extends KTCMISBase {
             );
         }
 
-        $ancestry = CMISUtil::decodeObjectHierarchy($ancestryResult, 'child');
+        $ancestry = CMISUtil::decodeObjectHierarchy($ancestryResult, 'children');
 
         return array(
 			"status_code" => 0,
@@ -211,7 +212,7 @@ class KTNavigationService extends KTCMISBase {
             );
         }
 
-        $ancestry = CMISUtil::decodeObjectHierarchy($ancestryResult, 'child');
+        $ancestry = CMISUtil::decodeObjectHierarchy($ancestryResult, 'children');
 
         return array(
             "status_code" => 0,

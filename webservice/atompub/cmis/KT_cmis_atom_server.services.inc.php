@@ -84,7 +84,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                 $response = $response['results'];
             }
             
-            $folderName = $response['properties']['Name']['value'];
+            $folderName = $response['properties']['name']['value'];
         }
         // NOTE parent changes to parents in later specification
         // TODO update when updating to later specification
@@ -262,13 +262,14 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         // NOTE due to the way KnowledgeTree works with folders this is always going to call deleteTree.
         //      we COULD call deleteObject but when we delete a folder we expect to be trying to delete
         //      the folder and all content.
+        // TODO determine whether client is requesting deleteObject or deleteTree
         
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         
         $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
 
-        // attempt delete
-        $response = $ObjectService->deleteTree($repositoryId, $this->params[0]);
+        // attempt delete - last parameter sets $deleteAllVersions true
+        $response = $ObjectService->deleteTree($repositoryId, $this->params[0], 'delete', true);
 
         // error?
         if ($response['status_code'] == 1) {
@@ -300,7 +301,6 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                 $propertiesElement->appendChild($propElement);
                 $objectElement->appendChild($propertiesElement);
                 $entry->appendChild($objectElement);
-//                $entry->appendChild($feed->newElement('cmis:terminator'));
             }
             
             $this->responseFeed = $feed;
@@ -326,7 +326,8 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $entries = $NavigationService->getChildren($repositoryId, $folderId, false, false);
         }
         else if ($feedType == 'descendants') {
-            $entries = $NavigationService->getDescendants($repositoryId, $folderId, false, false);
+            // TODO how will client request depth?
+            $entries = $NavigationService->getDescendants($repositoryId, $folderId);
         }
         else {
             // error, we shouldn't be here, if we are then the wrong service/function was called
@@ -362,9 +363,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/folder/' . $folderId));
         $feed->appendChild($link);
 
-        foreach($entries as $cmisEntry) {
-            KT_cmis_atom_service_helper::createObjectEntry($feed, $cmisEntry, $folderName);
-        }
+        KT_cmis_atom_service_helper::createObjectFeed($feed, $entries, $folderName);
 
         $feed->newField('cmis:hasMoreItems', 'false', $feed);
 
@@ -435,16 +434,14 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
      * @return 204 on success, 500 on error
      */
     public function DELETE_action()
-    {
-        // NOTE due to the way KnowledgeTree works with documents this is always going to call deleteAllVersions.
-        //      we do not have support for deleting only specific versions (this may be added in the future.)
-        
+    {        
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         
         $VersioningService = new KTVersioningService(KT_cmis_atom_service_helper::getKt());
-
+        $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
+        
         // attempt delete
-        $response = $VersioningService->deleteAllVersions($repositoryId, $this->params[0]);
+        $response = $ObjectService->deleteObject($repositoryId, $this->params[0]);
 
         if ($response['status_code'] == 1) {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response['message']);

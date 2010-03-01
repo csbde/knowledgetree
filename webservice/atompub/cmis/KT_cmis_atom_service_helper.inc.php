@@ -90,13 +90,20 @@ class KT_cmis_atom_service_helper {
         
         return $response;
     }
+    
+    static public function createObjectFeed(&$feed, $entries, $folderName)
+    {
+        foreach($entries as $cmisEntry) {
+            self::createObjectEntry($feed, $cmisEntry, $folderName);
+        }
+    }
 
     /**
      * Creates an AtomPub entry for a CMIS entry and adds it to the supplied feed
      *
      * @param object $feed The feed to which we add the entry
      * @param array $cmisEntry The entry data
-     * @param string $parent The parent folder
+     * @param string $parent The parent folder - this appears to be unused, not sure what it was meant for
      * @param boolean $pwc Whether this is a PWC object
      * @param $method The request method used (POST/GET/...)
      */
@@ -118,6 +125,54 @@ class KT_cmis_atom_service_helper {
             $entry->appendChild($response->newAttr('xmlns:cmisra', 'http://docs.oasis-open.org/ns/cmis/restatom/200908/'));
         }
 		
+        self::createObjectEntryContent($entry, $response, $cmisEntry, $parent, $pwc, $method);
+    }
+    
+    /**
+     * Creates an AtomPub child feed for a CMIS entry and adds it to the supplied entry
+     * 
+     * @param $feed The child feed element
+     * @param $entries Entried contained within the child feed element
+     * @param $folderName The parent folder name (currently unused)
+     */
+    static public function createObjectChildrenFeed(&$childrenFeed, $entries, $workspace, $feed, $folderName)
+    {
+        foreach($entries as $cmisEntry) {
+            self::createChildObjectEntry($childrenFeed, $cmisEntry, $workspace, $feed, $folderName);
+        }
+    }
+
+    /**
+     * Creates an AtomPub child feed for a CMIS entry and adds it to the supplied entry
+     *
+     * @param object $entry The entry to which we add the child feed
+     * @param array $cmisEntry The object entry data
+     */
+    // NOTE this approach appears to be necessary due to the structure of the underlying atompub code and specification,
+    //      which does not directly support nesting - attempting to create a new feed and append it within the outer
+    //      feed resulted in an empty cmisra:children node, so this approach was substituted
+    static public function createChildObjectEntry(&$childrenFeed, $cmisEntry, $workspace, $response, $folderNam)
+    {        
+        $type = strtolower($cmisEntry['properties']['objectTypeId']['value']);
+		
+        // create entry
+        $entry = $response->newElement('entry');
+        self::createObjectEntryContent($entry, $response, $cmisEntry);//, $parent, $pwc, $method);
+        $childrenFeed->appendChild($entry);
+    }
+    
+    /**
+     * Creates the actual object entry: this is shared between other functions which require this content
+     *
+     * @param object $entry The entry object
+     * @param object $response The response feed
+     * @param array $cmisEntry The CMIS object content
+     * @param string $parent The parent folder name
+     * @param boolean $pwc Whether this is a PWC object (will be returned slightly differently)
+     * @param string $method The calling method (slightly affects the output)
+     */
+    static public function createObjectEntryContent($entry, &$response, $cmisEntry, $parent = '', $pwc = false, $method = 'GET')
+    {
         // TODO dynamic actual creator name
         $responseElement = $response->newField('author');
         $element = $response->newField('name', 'admin', $responseElement);
@@ -303,13 +358,23 @@ class KT_cmis_atom_service_helper {
         $objectElement->appendChild($propertiesElement);
         $entry->appendChild($objectElement);
         
-        // after every entry, append a cmis:terminator tag
-//        $entry->appendChild($response->newElement('cmis:terminator'));
-        
         // TODO check determination of when to add app:edited tag
 //        if ($method == 'POST') {
             $entry->appendChild($response->newElement('app:edited', self::formatDatestamp()));
 //        }
+
+        // TODO pathSegment entry
+        
+        // deal with child objects
+        if (isset($cmisEntry['children'])) {
+            // add children node and fill with child entries
+            $childrenFeed = $response->newElement('feed');
+            self::createObjectChildrenFeed($childrenFeed, $cmisEntry['children'], $workspace, $response, '' /*folderName not passed through*/);
+            
+            $childrenElement = $response->newElement('cmisra:children');
+            $childrenElement->appendChild($childrenFeed);
+            $entry->appendChild($childrenElement);
+        }
     }
 
     /**

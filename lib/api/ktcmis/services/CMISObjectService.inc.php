@@ -357,22 +357,15 @@ class CMISObjectService {
      *
      * @param string $repositoryId
      * @param string $objectId
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
-     * @param boolean $returnVersion
      * @param string $filter
      * @return object CMIS object properties
      */
     // TODO optional parameter support
     // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
-    public function getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships,
-                                  $returnVersion = false, $filter = '')
+    public function getProperties($repositoryId, $objectId, $filter = '')
     {
         $repository = new CMISRepository($repositoryId);
-
-        // TODO a better default value?
         $properties = array();
-
         $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
 
         if ($typeId == 'Unknown') {
@@ -395,7 +388,8 @@ class CMISObjectService {
             throw new ObjectNotFoundException('The requested object could not be found');
         }
         
-        $properties = $CMISObject->getProperties();
+        $propertyCollection = $CMISObject->getProperties();
+        $properties = CMISUtil::createObjectPropertiesEntry($propertyCollection);
 
         return $properties;
     }
@@ -518,12 +512,11 @@ class CMISObjectService {
      * 
      * @param string $repositoryId
      * @param string $objectId
-     * @param string $changeToken [optional]
-     * @return boolean true on success (exception should be thrown otherwise)
+     * @param string $allVersions [optional] If true, delete all versions
      */
-    // NOTE Invoking this service method on an object SHALL not delete the entire version series for a Document Object. 
-    //      To delete an entire version series, use the deleteAllVersions() service
-    public function deleteObject($repositoryId, $objectId, $changeToken = null)
+    // NOTE Invoking this service method on an object SHALL not delete the entire version series for a Document Object 
+    //      if $allVersions is false. 
+    public function deleteObject($repositoryId, $objectId, $allVersions = true)
     {
         // determine object type and internal id
         $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
@@ -553,7 +546,7 @@ class CMISObjectService {
         if (!$exists) {
             throw new updateConflictException('Unable to delete the object as it cannot be found.');
         }
-        
+        global $default;
         // throw ConstraintViolationException if method is invoked on a Folder object that contains one or more objects
         if ($typeId == 'Folder')
         {
@@ -572,14 +565,17 @@ class CMISObjectService {
         }
         else if ($typeId == 'Document')
         {
+            // NOTE KnowledgeTree does not support deleting of individual versions and will always delete all versions
+            //      Throw an exception instead if individual version requested for delete
             // since we do not allow deleting of only the latest version we must throw an exception when this function is called on any document
             // which has more than one version.  Okay to delete if there is only the one version.
-            $versions = $object->get_version_history();
-            if (count($versions) > 1)
-            {
-                // NOTE possibly may want to just throw a RuntimeException rather than this CMIS specific exception.
-                throw new ConstraintViolationException('This function may not be used to delete an object which has multiple versions.  '
-                                                     . 'Since the repository does not allow deleting of only the latest version, nothing can be deleted.');
+            if (!$allVersions) {
+                $versions = $object->get_version_history();
+                if (count($versions) > 1)
+                {
+                    // NOTE possibly may want to just throw a RuntimeException rather than this CMIS specific exception.
+                    throw new ConstraintViolationException('This repository does not allow deleting of only the latest version.');
+                }
             }
             
             // do not allow deletion of a checked out document - this is actually handled by the ktapi code, 
@@ -605,9 +601,9 @@ class CMISObjectService {
      * Deletes an entire tree including all subfolders and other filed objects
      * 
      * @param string $repositoryId
-     * @param string $objectId
-     * @param string $changeToken [optional]
-     * @param boolean $unfileNonfolderObject [optional] - note that since KnowledgeTree does not allow unfiling this will be ignored
+     * @param string $folderId
+     * @param boolean $unfileObjects [optional] unfile/deletesinglefiles/delete - note that since KnowledgeTree does not 
+     *                                          allow unfiling this will be ignored
      * @param boolean $continueOnFailure [optional] - note that since KnowledgeTree does not allow continue on failure this will be ignored
      * @return array $failedToDelete A list of identifiers of objects in the folder tree that were not deleted.
      */
@@ -616,57 +612,52 @@ class CMISObjectService {
     //      • This is not transactional.
     //      • However, if DeleteSingleFiled is chosen and some objects fail to delete, then single-filed objects are either deleted or kept, 
     //        never just unfiled. This is so that a user can call this command again to recover from the error by using the same tree.
-    public function deleteTree($repositoryId, $objectId, $changeToken = null, $unfileNonfolderObject = 'delete', $continueOnFailure = false)
+    // NOTE when $continueOnFailure is false, the repository SHOULD abort this method when it fails to delete a single child- or 
+    //      descendant-object
+    public function deleteTree($repositoryId, $folderId, $unfileObjects = 'delete', $continueOnFailure = false)
     {
         // NOTE since we do not currently allow partial deletes this will always be empty
         //      (unless there is a failure at the requested folder level - what do we do then?  exception or array of all objects?)
         $failedToDelete = array();
         
         // determine object type and internal id
-        $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
+        $folderId = CMISUtil::decodeObjectId($folderId, $typeId);
         
-        // throw updateConflictException if the operation is attempting to update an object that is no longer current (as determined by the repository).
-        $exists = true;
+        // throw updateConflictException if the operation is attempting to update an object that is no longer current 
+        // (as determined by the repository)
         if ($typeId == 'Folder') {
-            $object = $this->ktapi->get_folder_by_id($objectId);
+            $object = $this->ktapi->get_folder_by_id($folderId);
             if (PEAR::isError($object)) {
-                $exists = false;
+                throw new updateConflictException('Unable to delete the object as it cannot be found.');
             }
         }
         // if not of type folder then we have a general problem, throw exception
         else {
             throw new RuntimeException('Cannot call deleteTree on a non-folder object.');
         }
-
-        if (!$exists) {
-            throw new updateConflictException('Unable to delete the object as it cannot be found.');
-        }
         
         // attempt to delete tree, throw RuntimeException if failed
         // TODO add a default reason
         // TODO add the electronic signature capability
-        $result = $this->ktapi->delete_folder($objectId, $reason, $sig_username, $sig_password);
-        // if there was an error performing the delete, throw exception
-        // TODO list of objects which failed in $failedToDelete array;
-        //      since we do not delete the folder or any contents if anything cannot be deleted, this will contain the entire tree listing
-        // NOTE once we do this we will need to deal with it externally as well, since we can no longer just catch an exception.
-        if ($result['status_code'] == 1)
+        // TODO support of $continueOnFailure == false - this is not supported by the underlying code and so is left out for now
+        $result = $this->ktapi->delete_folder($folderId, $reason, $sig_username, $sig_password);
+        // if there was an error performing the delete, list objects not deleted
+       if ($result['status_code'] == 1)
         {
             // TODO consider sending back full properties on each object?
             //      Not sure yet what this output may be used for by a client, and the current specification (0.61c) says:
             //      "A list of identifiers of objects in the folder tree that were not deleted", so let's leave it returning just ids for now.
-            $failedToDelete[] = CMISUtil::encodeObjectId(FOLDER, $objectId);
+            $failedToDelete[] = CMISUtil::encodeObjectId(FOLDER, $folderId);
             $folderContents = $object->get_full_listing();
             foreach($folderContents as $folderObject)
             {
-                if ($folderObject['item_type'] == 'F') $type = 'Folder';
-                else if ($folderObject['item_type'] == 'D') $type = 'Document';
-                // TODO deal with non-folder and non-document content
-                else continue;
+                if ($folderObject['item_type'] == 'F') {
+                    $type = 'Folder';
+                }
+                else if ($folderObject['item_type'] == 'D') {
+                    $type = 'Document';
+                }
                 
-                // TODO find out whether this is meant to be a hierarchical list or simply a list.
-                //      for now we are just returning the list in non-hierarchical form 
-                //      (seeing as we don't really know how CMIS AtomPub is planning to deal with hierarchies at this time.)
                 $failedToDelete[] = CMISUtil::encodeObjectId($type, $folderObject['id']); 
             }
         }
@@ -674,14 +665,8 @@ class CMISObjectService {
         return $failedToDelete;
     }
 
-    // NOTE this function is presently incomplete and untested.  Completion deferred to implementation of Checkout/Checkin
-    //      functionality
-    // NOTE I am not sure yet when this function would ever be called - checkin would be able to update the content stream
-    //      already and the only easy method we have (via KTAPI as it stands) to update the content is on checkin anyway.
-    //      Additionally this function doesn't take a value for the versioning status (major/minor) and so cannot pass it
-    //      on to the ktapi checkin function.
-    //      I imagine this function may be called if we ever allow updating document content independent of checkin,
-    //      or if we change some of the underlying code and call direct to the document functions and not via KTAPI.
+    // NOTE this function is presently incomplete and untested.  Completion deferred until Knowledgetree supports setting
+    //      content streams independent of checkin (which may be necessary for proper client interaction with some clients)
     /**
      * Sets the content stream data for an existing document
      *

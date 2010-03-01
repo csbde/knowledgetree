@@ -80,17 +80,13 @@ class KTObjectService extends KTCMISBase {
      *
      * @param string $repositoryId
      * @param string $objectId
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
-     * @param string $returnVersion
      * @param string $filter
      * @return properties[]
      */
-    public function getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships,
-                           $returnVersion = false, $filter = '')
+    public function getProperties($repositoryId, $objectId, $filter = '')
     {
         try {
-            $propertyCollection = $this->ObjectService->getProperties($repositoryId, $objectId, $includeAllowableActions,
+            $properties = $this->ObjectService->getProperties($repositoryId, $objectId, $includeAllowableActions,
                                                                       $includeRelationships);
         }
         catch (Exception $e)
@@ -100,8 +96,6 @@ class KTObjectService extends KTCMISBase {
                 "message" => $e->getMessage()
             );
         }
-
-        $properties = CMISUtil::createObjectPropertiesEntry($propertyCollection);
 
         return array(
 			"status_code" => 0,
@@ -236,15 +230,13 @@ class KTObjectService extends KTCMISBase {
      * 
      * @param string $repositoryId
      * @param string $objectId
-     * @param string $changeToken [optional]
+     * @param string $allVersions [optional] If true, delete all versions
      * @return array
      */
-    // NOTE Invoking this service method on an object SHALL not delete the entire version series for a Document Object. 
-    //      To delete an entire version series, use the deleteAllVersions() service
-    public function deleteObject($repositoryId, $objectId, $changeToken = null)
+    public function deleteObject($repositoryId, $objectId, $allVersions = true)
     {
         try {
-            $this->ObjectService->deleteObject($repositoryId, $objectId, $changeToken);
+            $this->ObjectService->deleteObject($repositoryId, $objectId, $allVersions);
         }
         catch (Exception $e)
         {

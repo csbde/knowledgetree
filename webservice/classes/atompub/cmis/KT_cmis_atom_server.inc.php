@@ -160,26 +160,15 @@ class KT_cmis_atom_server extends KT_atom_server {
     
     public function render()
     {
-		ob_end_clean();
-        if (!$this->headersSet) header('Content-type: text/xml');
-
-        //include('/var/www/atompub_response.xml');
-
-//        if (false && preg_match('/F1\-children/', $this->output)) {
-//            readfile('C:\Users\Paul\Documents\Downloads\alfresco folder tree atompub response.xml');
-//        }
-//        else if (false && preg_match('/urn:uuid:checkedout/', $this->output)) {
-//            readfile('C:\Users\Paul\Documents\Downloads\alfresco checkedout atompub response.xml');
-//        }
-//        else if (false && preg_match('/urn:uuid:types\-all/', $this->output)) {
-//            readfile('C:\Users\Paul\Documents\Downloads\alfresco types atompub response.xml');
-//        }
-//        else if (false && preg_match('/\<service\>/', $this->output)) {
-//            readfile('C:\Users\Paul\Documents\Downloads\cmis_mod_kt.xml');
-//        }
-//        else {
-		  if ($this->renderBody) echo $this->output;
-//        }
+        ob_end_clean();
+        
+        if (!$this->headersSet) {
+            header('Content-type: text/xml');
+        }
+        
+        if ($this->renderBody) {
+            echo $this->output;
+        }
 	}
 
 }

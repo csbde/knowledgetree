@@ -182,16 +182,15 @@ class CMISUtil {
                     $CMISArray[$count]['object'] = $CMISObject;
                     
                     // if sub-array
-                    if (count($object['items']) > 0)
-                    {
-                        $CMISArray[$count]['items'] = self::createChildObjectHierarchy($object['items'], $repositoryURI, $ktapi);
+                    if (count($object['items']) > 0) {
+                        $CMISArray[$count]['children'] = self::createChildObjectHierarchy($object['items'], $repositoryURI, $ktapi);
                     }
                 }
                 else
                 {
                     // NOTE why is this necessary?  That's what you get for not commenting it at the time
                     // TODO comment this properly, once we know why it is happening
-                    $CMISArray[$count] = self::createChildObjectHierarchy($object, $repositoryURI, $ktapi);
+//                    $CMISArray[$count] = self::createChildObjectHierarchy($object, $repositoryURI, $ktapi);
                 }
             }
         }
@@ -226,9 +225,8 @@ class CMISUtil {
             $CMISElement['object'] = $CMISObject;
 
             // if more parent elements
-            if (count($input) > 0)
-            {
-                $CMISElement['items'] = self::createParentObjectHierarchy($input, $repositoryURI, $ktapi);
+            if (count($input) > 0) {
+                $CMISElement['parents'] = self::createParentObjectHierarchy($input, $repositoryURI, $ktapi);
             }
 
             $CMISArray[] = $CMISElement;
@@ -245,10 +243,10 @@ class CMISUtil {
      * though the output may well be different to what went into that function
      *
      * @param array $input // input hierarchy to decode
-     * @param string $linkText // 'child' or 'parent' - indicates direction of hierarchy => descending or ascending
+     * @param string $linkText // 'children' or 'parents' - indicates direction of hierarchy => descending or ascending
      * @return array $hierarchy
      */
-    static public function decodeObjectHierarchy($input, $linkText)
+    static public function decodeObjectHierarchy($input, $linkText = 'children')
     {
         $hierarchy = array();
         
@@ -257,8 +255,11 @@ class CMISUtil {
         {
             $object = $entry['object'];
             $properties = $object->getProperties();
-
             $hierarchy[$key] = self::createObjectPropertiesEntry($properties);
+            
+            if (isset($entry[$linkText]) && count($entry[$linkText])) {
+                $hierarchy[$key][$linkText] = self::decodeObjectHierarchy($entry[$linkText], $linkText);
+            }
         }
 
         return $hierarchy;
@@ -287,19 +288,6 @@ class CMISUtil {
                 $object['properties'][$property] = array('type' => $type, 'value' => $properties->getValue($property));
             }
         }
-
-        /* what was this for and is it still needed? */
-        /*
-        // if we have found a child/parent with one or more children/parents, recurse into the child/parent object
-        if (count($entry['items']) > 0) {
-            $object[$linkText] = self::decodeObjectHierarchy($entry['items'], $linkText);
-        }
-        // NOTE may need to set a null value here in case webservices don't like it unset
-        //      so we'll set it just in case...
-        else {
-            $object[$linkText] = null;
-        }
-        */
 
         return $object;
     }

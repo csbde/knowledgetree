@@ -62,48 +62,6 @@ class CMISNavigationService {
     }
 
     /**
-     * Get descendents of the specified folder, up to the depth indicated
-     *
-     * @param string $repositoryId
-     * @param string $folderId
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
-     * @param string $typeId
-     * @param int $depth
-     * @param string $filter
-     * @return array $descendants
-     */
-
-    // NOTE This method does NOT support paging as defined in the paging section
-    // NOTE If the Repository supports the optional “VersionSpecificFiling��? capability,
-    //      then the repository SHALL return the document versions filed in the specified folder or its descendant folders.
-    //      Otherwise, the latest version of the documents SHALL be returned.
-    // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
-    function getDescendants($repositoryId, $folderId, $includeAllowableActions, $includeRelationships,
-                            $depth = 1, $typeId = 'Any', $filter = '')
-    {
-        // TODO optional parameters
-        $descendants = array();
-        $repository = new CMISRepository($repositoryId);
-
-        // if this is not a folder, cannot get descendants
-        $folderId = CMISUtil::decodeObjectId($folderId, $type);
-        
-        if ($type != 'Folder')
-        {
-            return $descendants;
-        }
-
-        $folder = $this->ktapi->get_folder_by_id($folderId);
-        $descendants = $folder->get_listing($depth);
-
-        // parse ktapi descendants result into a list of CMIS objects
-        $descendants = CMISUtil::createChildObjectHierarchy($descendants, $repository->getRepositoryURI, $this->ktapi);
-
-        return $descendants;
-    }
-
-    /**
      * Get direct children of the specified folder
      *
      * @param string $repositoryId
@@ -115,13 +73,22 @@ class CMISNavigationService {
      * @param int $maxItems
      * @param int $skipCount
      * @return array $descendants
+     *               MUST include (unless not requested) for each object:
+     *               array $properties
+     *               array $relationships
+     *               array $renditions
+     *               $allowableActions
+     *               string $pathSegment
+     *        boolean $hasMoreItems
+     *        int $numItems [optional]
      */
     // NOTE If the Repository supports the optional “VersionSpecificFiling��? capability,
     //      then the repository SHALL return the document versions filed in the specified folder or its descendant folders.
     //      Otherwise, the latest version of the documents SHALL be returned.
     // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
     function getChildren($repositoryId, $folderId, $includeAllowableActions = null, $includeRelationships = null,
-                         $typeId = 'Any', $filter = '', $maxItems = 0, $skipCount = 0, $orderBy = '', $renditionFilter = null, $includePathSegment = false)
+                         $typeId = 'Any', $filter = '', $maxItems = 0, $skipCount = 0, $orderBy = '', $renditionFilter = null, 
+                         $includePathSegment = false)
     {
         // TODO paging
         // TODO optional parameters
@@ -141,6 +108,62 @@ class CMISNavigationService {
         $children = CMISUtil::createChildObjectHierarchy($children, $repository->getRepositoryURI, $this->ktapi);
 
         return $children;
+    }
+
+    /**
+     * Get descendents of the specified folder, up to the depth indicated
+     *
+     * @param string $repositoryId
+     * @param string $folderId
+     * @param int $depth
+     * @param string $filter
+     * @param boolean $includeRelationships
+     * @param string $renditionFilter
+     * @param boolean $includeAllowableActions
+     * @param boolean $includePathSegment
+     * @return array $descendants
+     *               MUST include (unless not requested) for each object:
+     *               array $properties
+     *               array $relationships
+     *               array $renditions
+     *               $allowableActions
+     *               string $pathSegment
+     */
+
+    // NOTE This method does NOT support paging as defined in the paging section
+    // NOTE If the Repository supports the optional “VersionSpecificFiling��? capability,
+    //      then the repository SHALL return the document versions filed in the specified folder or its descendant folders.
+    //      Otherwise, the latest version of the documents SHALL be returned.
+    // NOTE If the Repository supports the optional capability capabilityMutlifiling and the same document is encountered 
+    //      multiple times in the hierarchy, then the repository MUST return that document each time is encountered.
+    // NOTE The default value for the $depth parameter is repository specific and SHOULD be at least 2 or -1
+    //      Chosen 2 as the underlying code currently has no concept of digging all the way down
+    // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
+    function getDescendants($repositoryId, $folderId, $depth = 2, $filter = '', $includeRelationships = false, $renditionFilter = '', 
+                            $includeAllowableActions = false, $includePathSegment = false)
+    {
+        if ($depth == 0) {
+            throw new InvalidArgumentException('Invalid depth argument supplied');
+        }
+
+        // if this is not a folder, cannot get descendants
+        $folderId = CMISUtil::decodeObjectId($folderId, $type);
+        
+        if ($type != 'Folder') {
+            throw new InvalidArgumentException('The supplied object is not a folder, unable to return descendants');
+        }
+        
+        // TODO optional parameters
+        $descendants = array();
+        $repository = new CMISRepository($repositoryId);
+
+        $folder = $this->ktapi->get_folder_by_id($folderId);
+        $descendants = $folder->get_listing($depth);
+
+        // parse ktapi descendants result into a list of CMIS objects
+        $descendants = CMISUtil::createChildObjectHierarchy($descendants, $repository->getRepositoryURI, $this->ktapi);
+
+        return $descendants;
     }
 
     /**

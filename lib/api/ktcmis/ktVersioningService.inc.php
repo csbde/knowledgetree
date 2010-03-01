@@ -81,32 +81,6 @@ class KTVersioningService extends KTCMISBase {
     }
     
     /**
-     * Deletes all Document Objects in the specified Version Series, including the Private Working Copy
-     * 
-     * @param string $repositoryId
-     * @param string $versionSeriesId
-     * @return boolean true if successful
-     */
-    public function deleteAllVersions($repositoryId, $versionSeriesId)
-    {
-        try {
-            $result = $this->VersioningService->deleteAllVersions($repositoryId, $versionSeriesId);
-        }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
-        }
-
-        return array(
-            'status_code' => 0,
-            'results' => $result
-        );
-    }
-    
-    /**
      * Checks out a document and creates the PWC (Private Working Copy) which will represent the checked out document
      * 
      * @param string $repositoryId

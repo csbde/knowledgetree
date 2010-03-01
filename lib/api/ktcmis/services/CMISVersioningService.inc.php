@@ -25,49 +25,6 @@ class CMISVersioningService {
     }
     
     /**
-     * Deletes all Document Objects in the specified Version Series, including the Private Working Copy if it exists
-     * 
-     * @param string $repositoryId
-     * @param string $versionSeriesId
-     * @return boolean true if successful
-     */
-    // NOTE For KnowledgeTree the $versionSeriesId should be the latest version, if not it will be taken as implied.
-    //      Should we decide to implement the ability to delete individual versions, 
-    //      then an exception may be thrown under certain circumstances (to be determined)
-    // NOTE I am not really sure how this is going to be handled by CMIS clients.
-    //      Testing with CMISSpaces we have it sending the actual document id, not a version series id.
-    //      This may be due to the data sent back from our code, or it may just be how CMISSpaces does it.
-    //      There is a note in their source code about this.
-    //      Meantime we will try based on document id and adjust as needed later
-    public function deleteAllVersions($repositoryId, $versionSeriesId)
-    {
-        // attempt to delete based on versionSeriesId as document/object id
-        // determine object type and internal id
-        $objectId = CMISUtil::decodeObjectId($versionSeriesId, $typeId);
-        
-        // if not a versionable object, throw exception
-        // NOTE that we are assuming only documents are versionable at the moment
-        if ($typeId != 'Document') {
-            throw new RuntimeException('The object type is not versionable and cannot be deleted using deleteAllVersions.');
-        }
-        
-        // try to delete
-        // TODO add a default reason
-        // TODO add the electronic signature capability
-        $auth_sig = true;
-        $result = $this->ktapi->delete_document($objectId, $reason, $auth_sig, $sig_username, $sig_password);
-        
-        // TODO delete any PWC which may exist (NOTE added 24 August 2009 - we did not have any PWC functionality when this function was originally created)
-
-        // if there was an error performing the delete, throw exception
-        if ($result['status_code'] == 1) {
-            throw new RuntimeException('There was an error deleting the object: ' . $result['message']);
-        }
-        
-        return true;
-    }
-    
-    /**
      * Checks out a document and creates the PWC (Private Working Copy) which will represent the checked out document
      * 
      * @param string $repositoryId
