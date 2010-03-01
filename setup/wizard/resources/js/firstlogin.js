@@ -1,7 +1,7 @@
 var win;
 
-$(function() { // Document is ready
-	if($("#wrapper").attr('class') != 'wizard') {// Check if we in a wizard, or on the dashboard
+jQuery(function() { // Document is ready
+	if(jQuery("#wrapper").attr('class') != 'wizard') {// Check if we in a wizard, or on the dashboard
   		showForm(); // Display first login wizard
 	}
 });
@@ -16,8 +16,8 @@ function firstlogin(rootUrl, pluginHandle) {
 
 firstlogin.prototype.showFolderTemplateTree = function(templateId) {
 	this.hideFolderTemplateTrees();
-	$('#template_' + templateId).attr('style', 'display:block'); // Show template
-	$('#templates_' + templateId).attr('style', 'display:block'); // Show template nodes
+	jQuery('#template_' + templateId).attr('style', 'display:block'); // Show template
+	jQuery('#templates_' + templateId).attr('style', 'display:block'); // Show template nodes
 	this.showFolderTemplateNodes(templateId);
 }
 
@@ -37,14 +37,14 @@ firstlogin.prototype.showFolderTemplateNodes = function(templateId) {
 }
 
 firstlogin.prototype.hideFolderTemplateTrees = function() {
-	$('.templates').each( 
+	jQuery('.templates').each( 
 		function() {
-			$(this).attr('style', 'display:none');
+			jQuery(this).attr('style', 'display:none');
 		}
 	);
-	$('.template_nodes').each( 
+	jQuery('.template_nodes').each( 
 		function() {
-			$(this).attr('style', 'display:none');
+			jQuery(this).attr('style', 'display:none');
 		}
 	);
 }
@@ -74,21 +74,21 @@ var showForm = function() {
 
 var createForm = function() {
 	var holder = "<div id='firstlogin'></div>"; 
-	$("#pageBody").append(holder); // Append to current dashboard
+	jQuery("#pageBody").append(holder); // Append to current dashboard
 	var address = "setup/firstlogin/index.php";
 	getUrl(address, "firstlogin"); // Pull in existing wizard
 }
 
 // Send request and update a div
 var getUrl = function (address, div)  {
-	$.ajax({
+	jQuery.ajax({
 		url: address,
 		dataType: "html",
 		type: "POST",
 		cache: false,
 		success: function(data) {
-			$("#"+div).empty();
-			$("#"+div).append(data);
+			jQuery("#"+div).empty();
+			jQuery("#"+div).append(data);
 		}
 	});
 }
@@ -98,9 +98,9 @@ var getUrl = function (address, div)  {
 */
 var closeFirstLogin = function ()  {
     this.win.destroy();
-    $('.ext-el-mask').each( // TODO : Why does overlay hang around?
+    jQuery('.ext-el-mask').each( // TODO : Why does overlay hang around?
 		function() {
-			$(this).remove();
+			jQuery(this).remove();
 		}
 	);
     
@@ -108,14 +108,14 @@ var closeFirstLogin = function ()  {
 
 // Node clicked
 firstlogin.prototype.nodeAction = function(updateContentDiv, updateDiv, address) {
-	var className = $("#"+updateDiv).attr('class');
+	var className = jQuery("#"+updateDiv).attr('class');
 	state = className.split(' ');
 	if(state[2] == 'closed') {
 		getUrl(address, updateContentDiv);
-		$("#"+updateDiv).attr('class', 'tree_icon tree_folder open'); // Replace the closed class name to open
+		jQuery("#"+updateDiv).attr('class', 'tree_icon tree_folder open'); // Replace the closed class name to open
 	} else {
-		$("#"+updateContentDiv).empty(); // Empty out that tree.
-		$("#"+updateDiv).attr('class', 'tree_icon tree_folder closed'); // Replace the opened class name to close
+		jQuery("#"+updateContentDiv).empty(); // Empty out that tree.
+		jQuery("#"+updateDiv).attr('class', 'tree_icon tree_folder closed'); // Replace the opened class name to close
 	}
 }
 
@@ -124,8 +124,8 @@ firstlogin.prototype.getRootUrl = function() {
 }
 
 firstlogin.prototype.sendFirstLoginForm = function() {
-	var templateId = $("#selectedTemplate").val();
-	var action = $("#step_name_templates").attr('action');
+	var templateId = jQuery("#selectedTemplate").val();
+	var action = jQuery("#step_name_templates").attr('action');
 	var address = this.rootUrl + "setup/firstlogin/" + action + "&templateId=" + templateId + "&Next=Next";
 	getUrl(address, 'firstlogin');
 }
