@@ -595,7 +595,7 @@ class KTWorkflowUtil {
         $sTransactionComments = sprintf(_kt("Workflow state changed from %s to %s"), $sSourceState, $sTargetState);
 
         if ($sComments) {
-            $sTransactionComments .= _kt("; Reason given was:") .' '. $sComments;
+            $sTransactionComments .= _kt("; Reason given was: ") .' '. $sComments;
         }
         $oDocumentTransaction = new DocumentTransaction($oDocument, $sTransactionComments, 'ktcore.transactions.workflow_state_transition');
         $oDocumentTransaction->create();
