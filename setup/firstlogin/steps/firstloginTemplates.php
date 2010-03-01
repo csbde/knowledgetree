@@ -68,7 +68,8 @@ class firstloginTemplates extends Step {
     function doStep() {
     	$this->temp_variables = array(
     									"step_name"=>"templates",
-    									"silent"=>$this->silent);
+    									"silent"=>$this->silent,
+    								);
 		if(!$this->inStep("templates")) { // Landing
 			$this->doRun(); // Set folder structure templates
     		return 'landing';

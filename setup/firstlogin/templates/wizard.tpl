@@ -49,5 +49,5 @@
 	</body>
 </html>
 <script>
-	var fl = new firstlogin('<?php echo WIZARD_ROOTURL; ?>');
+	var fl = new firstlogin('<?php echo WIZARD_ROOTURL; ?>', '<?php echo $vars['ft_handle']; ?>');
 </script>

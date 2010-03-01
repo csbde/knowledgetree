@@ -84,6 +84,12 @@ class stepAction extends stepActionBase {
 		$vars['left'] = $left; // Set left menu
 		$vars['fl_version'] = $this->properties['fl_version']; // Set version
 		$vars['fl_type'] = $this->properties['fl_type']; // Set type
+		if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
+	            $oRegistry =& KTPluginRegistry::getSingleton();
+	            $oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
+	            $ft_dir = $oPlugin->getDirs();
+		}
+		$vars['ft_handle'] = $ft_dir; // Set type
 		return $vars;
 	}
 

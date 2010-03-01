@@ -7,9 +7,9 @@ $(function() { // Document is ready
 });
 
 // Class First Login
-function firstlogin(rootUrl) {
+function firstlogin(rootUrl, pluginHandle) {
 	this.rootUrl = rootUrl;
-	this.ktfolderAccess = rootUrl + "plugins/commercial/folder-templates/KTFolderTemplates.php?action=";
+	this.ktfolderAccess = rootUrl + pluginHandle + "?action=";
 	this.ktmanageFolderAccess = rootUrl + "admin.php?kt_path_info=misc/adminfoldertemplatesmanagement&action=";
 	this.ajaxOn = false;
 }
