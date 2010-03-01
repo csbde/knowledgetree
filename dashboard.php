@@ -135,9 +135,21 @@ class DashboardDispatcher extends KTStandardDispatcher {
               'dashlets_left' => $aDashletsLeft,
               'dashlets_right' => $aDashletsRight,
         );
+        
+		// TODO : Is this ok?
+		if(file_exists(KT_DIR.DIRECTORY_SEPARATOR.'var'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR."firstlogin.lock")) {
+			$this->runFirstLoginWizard($oTemplate, $aTemplateData);
+		}
+		
         return $oTemplate->render($aTemplateData);
     }
 
+    // 
+    function runFirstLoginWizard($oTemplate, $aTemplateData) {
+    	$this->oPage->requireJSResource('thirdpartyjs/jquery/jquery-1.3.2.min.js');
+    	$this->oPage->requireJSResource('setup/wizard/resources/js/firstlogin.js');
+    }
+    
     // return some kind of ID for each dashlet
     // currently uses the class name
     function _getDashletId($oDashlet) {

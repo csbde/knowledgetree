@@ -145,7 +145,23 @@ class Step extends StepBase
      */
     public function run() {
     	return $this->run;
-    }    
+    }
+
+	/**
+	* Checks if next button has been clicked
+	*
+	* @author KnowledgeTree Team
+	* @param none
+	* @access public
+	* @return boolean
+	*/
+    public function next() {
+        if(isset($_GET['Next'])) {
+            return true;
+        }
+
+        return false;
+    }
 }
 
 ?>

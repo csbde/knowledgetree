@@ -1,14 +1,14 @@
-// Class First Login
-//TODO : Plugin path in js
-var ktfolderAccess = "../../plugins/commercial/folder-templates/KTFolderTemplates.php?action=";
-var ktmanageFolderAccess = "admin.php?kt_path_info=misc/adminfoldertemplatesmanagement&action=";
+var win;
+
 $(function() { // Document is ready
 	if($("#wrapper").attr('class') != 'wizard') {// Check if we in a wizard, or on the dashboard
   		showForm(); // Display first login wizard
 	}
 });
 
+// Class First Login
 function firstlogin(rootUrl) {
+	this.rootUrl = rootUrl;
 	this.ktfolderAccess = rootUrl + "plugins/commercial/folder-templates/KTFolderTemplates.php?action=";
 	this.ktmanageFolderAccess = rootUrl + "admin.php?kt_path_info=misc/adminfoldertemplatesmanagement&action=";
 	this.ajaxOn = false;
@@ -49,6 +49,7 @@ firstlogin.prototype.hideFolderTemplateTrees = function() {
 	);
 }
 
+// Template has this action. Not needed in first login wizard
 firstlogin.prototype.showNodeOptions = function() {
 	
 }
@@ -68,13 +69,12 @@ var showForm = function() {
         shadow: false,
         modal: true
     });
-    
     this.win.show();
 }
 
 var createForm = function() {
 	var holder = "<div id='firstlogin'></div>"; 
-	$("#wrapper").append(holder); // Append to current dashboard
+	$("#pageBody").append(holder); // Append to current dashboard
 	var address = "setup/firstlogin/index.php";
 	getUrl(address, "firstlogin"); // Pull in existing wizard
 }
@@ -93,6 +93,19 @@ var getUrl = function (address, div)  {
 	});
 }
 
+/*
+* Close the popup
+*/
+var closeFirstLogin = function ()  {
+    this.win.destroy();
+    $('.ext-el-mask').each( // TODO : Why does overlay hang around?
+		function() {
+			$(this).remove();
+		}
+	);
+    
+}
+
 // Node clicked
 firstlogin.prototype.nodeAction = function(updateContentDiv, updateDiv, address) {
 	var className = $("#"+updateDiv).attr('class');
@@ -106,4 +119,13 @@ firstlogin.prototype.nodeAction = function(updateContentDiv, updateDiv, address)
 	}
 }
 
+firstlogin.prototype.getRootUrl = function() {
+	return this.rootUrl;
+}
 
+firstlogin.prototype.sendFirstLoginForm = function() {
+	var templateId = $("#selectedTemplate").val();
+	var action = $("#step_name_templates").attr('action');
+	var address = this.rootUrl + "setup/firstlogin/" + action + "&templateId=" + templateId + "&Next=Next";
+	getUrl(address, 'firstlogin');
+}

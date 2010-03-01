@@ -491,7 +491,8 @@ class firstlogin {
     	$this->_readXml(); // Xml steps
         $this->_resetSessions(); // Make sure session is cleared
         $this->_loadFromSessions();
-    	if(isset($_POST['Next'])) { $this->action = 'next'; 
+    	if(isset($_POST['Next'])) { 
+    		$this->action = 'next'; 
     		$this->response = 'next';
     	} elseif (isset($_POST['Previous'])) {
     		$this->action = 'previous';
@@ -509,8 +510,31 @@ class firstlogin {
     		$this->response = '';
     		$this->action = '';
     	}
+    	$this->loadAjax();
     }
 
+    private function loadAjax() {
+    	if(isset($_GET['Next'])) { 
+    		$this->action = 'next'; 
+    		$this->response = 'next';
+    	} elseif (isset($_GET['Previous'])) {
+    		$this->action = 'previous';
+    		$this->response = 'previous';
+   	  	} elseif (isset($_GET['Confirm'])) {
+   	  		$this->action = 'confirm';
+    		$this->response = 'next';
+    	} elseif (isset($_GET['Edit'])) {
+    		$this->action = 'edit';
+    		$this->response = 'next';
+    	} elseif (isset($_GET['Skip'])) {
+    		$this->action = 'next';
+    		$this->response = 'next';
+    	} else {
+    		$this->response = '';
+    		$this->action = '';
+    	}
+    }
+    
 	/**
 	* Main control to handle the flow
 	*

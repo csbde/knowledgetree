@@ -142,6 +142,7 @@ class Installer extends NavBase {
 	*/
     private function completeInstall() {
     	touch(SYSTEM_DIR.'var'.DS.'bin'.DS."install.lock");
+    	touch(SYSTEM_DIR.'var'.DS.'bin'.DS."firstlogin.lock");
     }
     
 	/**

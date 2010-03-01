@@ -85,47 +85,23 @@ class firstloginUtil extends InstallUtil {
 	* @return mixed
  	*/
     public function checkStructurePermissions() {
-    	// Check if Wizard Directory is writable
-    	if(!$this->_checkPermission(WIZARD_DIR)) {
+    	if(!$this->_checkPermission(WIZARD_DIR)) { // Check if Wizard Directory is writable
     		return 'firstlogin';
     	}
 
     	return true;
     }
 
-    public function loadInstallServices() {
-    	require_once("../wizard/steps/services.php");
-    	$s = new services();
-    	return $s->getServices();
-    }
-
-    public function loadInstallService($serviceName) {
-    	require_once("../wizard/lib/services/service.php");
-    	require_once("../wizard/lib/services/".OS."Service.php");
-    	require_once("../wizard/lib/services/$serviceName.php");
-    	return new $serviceName();
-    }
-
     /**
-     * Return port of the old installation
+     * Deletes first login lock file
      *
-     * @param location
-     * @return string
+     * @author KnowledgeTree Team
+     * @access public
+     * @return void
      */
-    public function getPort($location) {
-    	if(WINDOWS_OS) {
-    		$myIni = "my.ini";
-    	} else {
-    		$myIni = "my.cnf";
-    	}
-    	$dbConfigPath = $location.DS."mysql".DS."$myIni";
-    	if(file_exists($dbConfigPath)) {
-			$this->iniUtilities->load($dbConfigPath);
-			$dbSettings = $this->iniUtilities->getSection('mysqladmin');
-    		return $dbSettings['port'];
-    	}
-
-    	return '3306';
+    public function deleteFirstLogin() {
+    	if(file_exists(SYSTEM_DIR.'var'.DS.'bin'.DS."firstlogin.lock"))
+    		unlink(SYSTEM_DIR.'var'.DS.'bin'.DS."firstlogin.lock");
     }
 }
 ?>

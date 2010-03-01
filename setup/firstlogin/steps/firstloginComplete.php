@@ -68,7 +68,7 @@ class firstloginComplete extends Step {
     }
     
     function doRun() {
-		
+		$this->util->deleteFirstLogin();
         return 'landing';
     }
     

@@ -91,14 +91,16 @@ class firstloginTemplates extends Step {
     
     function applyTemplates() {
     	$templateId = KTUtil::arrayGet($_POST['data'], "templateId", 0);
+    	if($templateId < 1) {
+			$templateId = KTUtil::arrayGet($_GET, "templateId", 0);// Could be ajax call
+    	}
     	if($templateId > 0) {
 			if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
 	            $oRegistry =& KTPluginRegistry::getSingleton();
 	            $oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
-	            return $oPlugin->applyFolderTemplate($templateId, 1);
+	            return $oPlugin->firstLoginAction(1, $templateId);
 			}
     	}
-    	
     	return false;
     }
     

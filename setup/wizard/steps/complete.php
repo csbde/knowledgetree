@@ -242,20 +242,11 @@ class complete extends Step {
     function checkInstallType() {
     	if ($this->util->isMigration()) {
     		$this->migrate_check = true;
-    		$this->registerPlugins(); // Set silent mode variables
     	} else {
     		$this->migrate_check = false;
     	}
     }
 
-    /**
-     * Register extra commercial plugins
-     *
-     */
-    private function registerPlugins() {
-
-    }
-    
     /**
      * Set all silent mode varibles
      *

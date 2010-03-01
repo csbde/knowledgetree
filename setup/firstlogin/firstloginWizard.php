@@ -165,7 +165,7 @@ class firstloginWizard extends WizardBase {
 		} elseif ($this->getBypass() === "0") {
 			$this->createFile();
 		}
-		if(!$this->isFirstLogin()) { // Check if the systems
+		if($this->isFirstLogin()) { // Check if the systems
 			$response = $this->systemChecks();
 			if($response === true) {
 				$this->display();

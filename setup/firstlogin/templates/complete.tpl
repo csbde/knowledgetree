@@ -6,6 +6,9 @@
 	<input type="submit" name="Next" value="Finish" class="button_next"/>
 </form>
 <script type="text/javascript">
-	$("#duname").focus();
+	$("form").bind("submit", function() {
+		closeFirstLogin();
+		return false;
+	});
 </script>
 <?php if (AJAX) { echo $html->js('form.js'); } ?>
