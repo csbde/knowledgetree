@@ -19,8 +19,8 @@
 }
 
 #boxes #dialog {
-  width:375px; 
-  height:203px;
+  width:auto; 
+  height:auto;
   padding:10px;
-  background-color:#ffffff;
+  background-color:transparent none repeat scroll 0 0;
 }

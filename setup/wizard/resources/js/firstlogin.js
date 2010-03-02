@@ -1,5 +1,3 @@
-var win;
-
 jQuery(function() { // Document is ready
 	if(jQuery("#wrapper").attr('class') != 'wizard') {// Check if we in a wizard, or on the dashboard
 		if(jQuery("#firstlogin").attr('id') != 'firstlogin') {// Check if we in a wizard, or on the dashboard
@@ -16,7 +14,8 @@ function firstlogin(rootUrl, pluginHandle) {
 	this.ajaxOn = false;
 }
 
-firstlogin.prototype.showFolderTemplateTree = function(templateId) {
+firstlogin.prototype.showFolderTemplateTree = function() {
+	templateId = jQuery('#selectedTemplate').val();
 	this.hideFolderTemplateTrees();
 	jQuery('#template_' + templateId).attr('style', 'display:block'); // Show template
 	jQuery('#templates_' + templateId).attr('style', 'display:block'); // Show template nodes
@@ -41,12 +40,14 @@ firstlogin.prototype.showFolderTemplateNodes = function(templateId) {
 firstlogin.prototype.hideFolderTemplateTrees = function() {
 	jQuery('.templates').each( 
 		function() {
-			jQuery(this).attr('style', 'display:none');
+			if(jQuery(this).attr('style') != undefined)
+				jQuery(this).attr('style', 'display:none');
 		}
 	);
 	jQuery('.template_nodes').each( 
 		function() {
-			jQuery(this).attr('style', 'display:none');
+			if(jQuery(this).attr('style') != undefined)
+				jQuery(this).attr('style', 'display:none');
 		}
 	);
 }
@@ -108,7 +109,7 @@ var getUrl = function (address, div)  {
 		type: "POST",
 		cache: false,
 		success: function(data) {
-			if(div != "" || div != undefined) {
+			if(div != "" || div != undefined || div != 'none') {
 				jQuery("#"+div).empty();
 				jQuery("#"+div).append(data);
 			}
@@ -150,5 +151,5 @@ firstlogin.prototype.sendFirstLoginForm = function() {
 
 firstlogin.prototype.postComplete = function() {
 	var address = this.rootUrl + "setup/firstlogin/index.php?step_name=complete&Next=Next";
-	getUrl(address, ""); // Pull in existing wizard	
+	getUrl(address, "none");
 }
