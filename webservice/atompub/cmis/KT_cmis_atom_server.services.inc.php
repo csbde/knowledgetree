@@ -134,7 +134,10 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
      * This includes creation/moving of both folders and documents.
      */
     public function POST_action()
-    {        
+    {   
+        global $default;
+        $default->log->info($this->rawContent); 
+        
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
 
         // set default action, objectId and typeId
@@ -155,10 +158,10 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         // NOTE this also applies to the source folder id, see above
         
         // check for existing object id as parameter in url
-        // if sourceFolderId parameter is submitted, this is a move
-        if (isset($this->params[1])) {
+        // if sourceFolderId parameter is submitted (expected as parameter 3, or params[2]) then this is a move
+        if (isset($this->params[2])) {
             $action = 'move';
-            $sourceFolderId = $this->params[1];
+            $sourceFolderId = $this->params[2];
         }
         
         // get object properties - todo send through original properties array and not modified version
@@ -190,15 +193,17 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                                     : null));
 
         $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
+
+        $default->log->info('here: '.$action);
         
         $success = false;
         $error = null;
         if ($action == 'create')
         {
             // TODO detection and passing of optional parameters (policies, ACEs, etc...) as well as support for other object-types
-            if ($cmisObjectProperties['cmis:objectTypeId'] == 'folder') {
-                $newObjectId = $ObjectService->createFolder($repositoryId, ucwords($cmisObjectProperties['cmis:objectTypeId']), 
-                                                            $properties, $folderId);
+            if ($cmisObjectProperties['cmis:objectTypeId'] == 'cmis:folder') {
+                $default->log->info($cmisObjectProperties['cmis:objectTypeId']);
+                $newObjectId = $ObjectService->createFolder($repositoryId, $properties, $folderId);
             }
             else {
                 // NOTE for the moment only creation in minor versioning state

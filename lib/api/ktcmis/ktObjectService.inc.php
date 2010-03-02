@@ -144,17 +144,19 @@ class KTObjectService extends KTCMISBase {
      * Creates a new folder within the repository
      *
      * @param string $repositoryId The repository to which the folder must be added
-     * @param string $typeId Object Type id for the folder object being created
      * @param array $properties Array of properties which must be applied to the created folder object
      * @param string $folderId The id of the folder which will be the parent of the created folder object
+     * @param array $policies List of policy ids that MUST be applied
+     * @param $addACEs List of ACEs that MUST be added
+     * @param $removeACEs List of ACEs that MUST be removed
      * @return string $objectId The id of the created folder object
      */
-    public function createFolder($repositoryId, $typeId, $properties, $folderId)
+    public function createFolder($repositoryId, $properties, $folderId, $policies = array(), $addACEs = array(), $removeACEs = array())
     {
         $objectId = null;
 
         try {
-            $objectId = $this->ObjectService->createFolder($repositoryId, $typeId, $properties, $folderId);
+            $objectId = $this->ObjectService->createFolder($repositoryId, $properties, $folderId, $policies, $addACEs, $removeACEs);
         }
         catch (Exception $e)
         {

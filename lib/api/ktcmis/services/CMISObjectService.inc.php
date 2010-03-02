@@ -4,6 +4,7 @@ require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(KT_DIR . '/ktwebservice/KTUploadManager.inc.php');
 require_once(CMIS_DIR . '/exceptions/ConstraintViolationException.inc.php');
 require_once(CMIS_DIR . '/exceptions/ContentAlreadyExistsException.inc.php');
+require_once(CMIS_DIR . '/exceptions/NameConstraintViolationException.inc.php');
 require_once(CMIS_DIR . '/exceptions/ObjectNotFoundException.inc.php');
 require_once(CMIS_DIR . '/exceptions/StorageException.inc.php');
 require_once(CMIS_DIR . '/exceptions/StreamNotSupportedException.inc.php');
@@ -136,9 +137,6 @@ class CMISObjectService {
         if (!$typeDefinition['attributes']['controllableACL'] && (count($addACEs) || count($removeACEs))) {
             throw new ConstraintViolationException('This object-type does not support ACLs');
         }
-        
-        // TODO throw NameConstraintViolation if there is a violation with the given cmis:name property value
-        //      OR choose a name which does not conflict
 
         // TODO deal with $versioningState when supplied
 
@@ -150,9 +148,10 @@ class CMISObjectService {
             $properties['name'] = $properties['title'];
         }
 
-        // if name is blank throw exception (check type) - using invalidArgument Exception for now
+        // throw NameConstraintViolation if there is a violation with the given cmis:name property value
+        // OR choose a name which does not conflict
         if (trim($properties['name']) == '') {
-            throw new InvalidArgumentException('Refusing to create an un-named document');
+            throw new NameConstraintViolationException('Refusing to create an un-named document');
         }
 
         // TODO also set to Default if a non-supported type is submitted
@@ -293,22 +292,28 @@ class CMISObjectService {
      * Creates a new folder within the repository
      *
      * @param string $repositoryId The repository to which the folder must be added
-     * @param string $typeId Object Type id for the folder object being created
      * @param array $properties Array of properties which must be applied to the created folder object
      * @param string $folderId The id of the folder which will be the parent of the created folder object
+     * @param array $policies List of policy ids that MUST be applied
+     * @param $addACEs List of ACEs that MUST be added
+     * @param $removeACEs List of ACEs that MUST be removed
      * @return string $objectId The id of the created folder object
      */
     // TODO throw ConstraintViolationException if:
     //      value of any of the properties violates the min/max/required/length constraints
     //      specified in the property definition in the Object-Type.
-    public function createFolder($repositoryId, $typeId, $properties, $folderId)
+    // TODO throw ConstraintViolationException if At least one of the permissions is used in 
+    //      an ACE provided which is not supported by the repository.
+    public function createFolder($repositoryId, $properties, $folderId, $policies = array(), $addACEs = array(), $removeACEs = array())
     {
+        global $default;
+        $default->log->info('try create folder');
         $objectId = null;
         
         // fetch type definition of supplied type and check for base type "folder", if not true throw exception
         $RepositoryService = new CMISRepositoryService();
         try {
-            $typeDefinition = $RepositoryService->getTypeDefinition($repositoryId, $typeId);
+            $typeDefinition = $RepositoryService->getTypeDefinition($repositoryId, $properties['objectTypeId']);
         }
         // NOTE Not sure that we should throw this specific exception, maybe just let the underlying
         //      exception propogate upward...
@@ -331,21 +336,37 @@ class CMISObjectService {
         // if parent folder is not allowed to hold this type, throw exception
         $CMISFolder = new CMISFolderObject($folderId, $this->ktapi);
         $allowed = $CMISFolder->getProperty('allowedChildObjectTypeIds');
-        if (!is_array($allowed) || !in_array($typeId, $allowed)) {
-            throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $typeId . ')');
+        if (!is_array($allowed) || !in_array($properties['objectTypeId'], $allowed)) {
+            throw new ConstraintViolationException('Parent folder may not hold objects of this type (' . $properties['objectTypeId'] . ')');
         }
-
-        // TODO if name is blank! throw another exception (check type) - using invalidArgument Exception for now
+        
+        if (!$typeDefinition['attributes']['controllablePolicy'] && count($policies)) {
+            throw new ConstraintViolationException('This object-type does not support policies');
+        }
+        
+        if (!$typeDefinition['attributes']['controllableACL'] && (count($addACEs) || count($removeACEs))) {
+            throw new ConstraintViolationException('This object-type does not support ACLs');
+        }
+        $default->log->info(print_r($properties, true));
+        // set title and name identical if only one submitted
+        if ($properties['title'] == '') {
+            $properties['title'] = $properties['name'];
+        }
+        else if ($properties['name'] == '') {
+            $properties['name'] = $properties['title'];
+        }
+        
+        // throw NameConstraintViolation if there is a violation with the given cmis:name property value
+        // OR choose a name which does not conflict
         if (trim($properties['name']) == '') {
-            throw new InvalidArgumentException('Refusing to create an un-named folder');
+            throw new NameConstraintViolationException('Refusing to create an un-named folder');
         }
 
         $response = $this->ktapi->create_folder((int)$folderId, $properties['name'], $sig_username = '', $sig_password = '', $reason = '');
         if ($response['status_code'] != 0) {
             throw new StorageException('The repository was unable to create the folder: ' . $response['message']);
         }
-        else
-        {
+        else {
             $objectId = CMISUtil::encodeObjectId(FOLDER, $response['results']['id']);
         }
 
