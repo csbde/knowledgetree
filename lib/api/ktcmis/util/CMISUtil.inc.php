@@ -97,11 +97,11 @@ class CMISUtil {
      * @param string &$typeId
      * @return string $objectId
      */
-    static public function decodeObjectId($objectId, &$typeId = null)
+    static public function decodeObjectId($objectId, &$typeId = null, &$className = '')
     {
         if (!is_string($objectId))
         {
-            $typeId = 'Unknown';
+            $typeId = 'unknown';
             return null;
         }
         
@@ -123,7 +123,7 @@ class CMISUtil {
             //      method of doing this.
             //      meantime this minor hack will get things working for the existing system structure, as the root
             //      folder should always be id 1.
-            $typeId = 'Folder';
+            $typeId = 'cmis:folder';
             return '1';
         }
 
@@ -134,13 +134,15 @@ class CMISUtil {
         switch($type)
         {
             case 'D':
-                $typeId = 'Document';
+                $typeId = 'cmis:document';
+                $className = 'Document';
                 break;
             case 'F':
-                $typeId = 'Folder';
+                $typeId = 'cmis:folder';
+                $className = 'Folder';
                 break;
             default:
-                $typeId = 'Unknown';
+                $typeId = 'unknown';
                 break;
         }
 
@@ -498,14 +500,14 @@ class CMISUtil {
     public function contentExists($typeId, $objectId, &$ktapi)
     {
         $exists = true;
-        if ($typeId == 'Folder')
+        if ($typeId == 'cmis:folder')
         {
             $object = $ktapi->get_folder_by_id($objectId);
             if (PEAR::isError($object)) {
                 $exists = false;
             }
         }
-        else if ($typeId == 'Document')
+        else if ($typeId == 'cmis:document')
         {
             $object = $ktapi->get_document_by_id($objectId);
             if (PEAR::isError($object)) {
@@ -567,10 +569,10 @@ class CMISUtil {
     /**
      * Checks for the root folder
      *
-     * @param unknown_type $repositoryId
-     * @param unknown_type $folderId
-     * @param unknown_type $ktapi
-     * @return unknown
+     * @param string $repositoryId
+     * @param string $folderId
+     * @param object $ktapi
+     * @return boolean
      */
     static public function isRootFolder($repositoryId, $folderId, &$ktapi)
     {

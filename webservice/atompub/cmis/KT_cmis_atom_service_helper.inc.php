@@ -530,7 +530,7 @@ class KT_cmis_atom_service_helper {
         return CMISUtil::encodeObjectId(FOLDER, $folderId);
     }
     
-    static public function getCmisProperties(&$xml)
+    static public function getCmisObjectProperties(&$xml)
     {
         $xmlReader = new XMLReader();
         $xmlReader->XML($xml);

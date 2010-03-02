@@ -88,7 +88,7 @@ class CMISObjectService {
         // Attempt to decode $folderId, use as is if not detected as encoded
         $tmpObjectId = $folderId;
         $tmpObjectId = CMISUtil::decodeObjectId($tmpObjectId, $tmpTypeId);
-        if ($tmpTypeId != 'Unknown')
+        if ($tmpTypeId != 'unknown')
             $folderId = $tmpObjectId;
 
         // if parent folder is not allowed to hold this type, throw exception
@@ -325,7 +325,7 @@ class CMISObjectService {
         // Attempt to decode $folderId, use as is if not detected as encoded
         $tmpObjectId = $folderId;
         $tmpObjectId = CMISUtil::decodeObjectId($tmpObjectId, $tmpTypeId);
-        if ($tmpTypeId != 'Unknown')
+        if ($tmpTypeId != 'unknown')
             $folderId = $tmpObjectId;
         
         // if parent folder is not allowed to hold this type, throw exception
@@ -368,16 +368,16 @@ class CMISObjectService {
         $properties = array();
         $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
 
-        if ($typeId == 'Unknown') {
+        if ($typeId == 'unknown') {
             throw new ObjectNotFoundException('The type of the requested object could not be determined');
         }
 
         switch($typeId)
         {
-            case 'Document':
+            case 'cmis:document':
                 $CMISObject = new CMISDocumentObject($objectId, $this->ktapi, $repository->getRepositoryURI());
                 break;
-            case 'Folder':
+            case 'cmis:folder':
                 $CMISObject = new CMISFolderObject($objectId, $this->ktapi, $repository->getRepositoryURI());
                 break;
         }
@@ -409,15 +409,15 @@ class CMISObjectService {
         $contentStream = null;
         
         // decode $objectId
-        $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
+        $objectId = CMISUtil::decodeObjectId($objectId, $typeId, $className);
         
         // unknown object type?
-        if ($typeId == 'Unknown') {
+        if ($typeId == 'unknown') {
             throw new ObjectNotFoundException('The type of the requested object could not be determined');
         }
         
         // fetch type definition of supplied object type
-        $objectClass = 'CMIS' . $typeId . 'Object';
+        $objectClass = 'CMIS' . $className . 'Object';
         $CMISObject = new $objectClass($objectId, $this->ktapi);
         
         // if content stream is not allowed for this object type definition, or the specified object does not have 
@@ -444,37 +444,32 @@ class CMISObjectService {
     /**
      * Moves a fileable object from one folder to another.
      * 
-     * @param object $repositoryId
-     * @param object $objectId
-     * @param object $changeToken [optional]
-     * @param object $targetFolderId
-     * @param object $sourceFolderId [optional] 
+     * @param string $repositoryId
+     * @param string $objectId
+     * @param string $targetFolderId
+     * @param string $sourceFolderId
+     * @return string $objectId
      */
     // TODO versioningException: The repository MAY throw this exception if the object is a non-current Document Version.
-    // TODO check whether object is in fact fileable?  not strictly needed, but possibly should be here.
-    public function moveObject($repositoryId, $objectId, $changeToken = '', $targetFolderId, $sourceFolderId = null)
+    // TODO check whether object is in fact fileable?  perhaps not strictly needed, but possibly should be here.
+    public function moveObject($repositoryId, $objectId, $targetFolderId, $sourceFolderId)
     {
-        // The $sourceFolderId parameter SHALL be specified if the Repository supports the optional 'unfiling' capability
-        if (is_null($sourceFolderId))
-        {
-            $RepositoryService = new CMISRepositoryService();
-            $info = $RepositoryService->getRepositoryInfo($repositoryId);
-            $capabilities = $info->getCapabilities();
-            // check for unfiling capability
-            // NOTE this is only required once/if KnowledgeTree allows the source folder id to be optional, 
-            //      but it is required for CMIS specification compliance.
-            if ($capabilities->hasCapabilityUnfiling() === 'true') {
-                throw new RuntimeException('The source folder id MUST be supplied when unfiling is supported.');
-            }
-        }
-        
-        // Attempt to decode $objectId, use as is if not detected as encoded
+        // attempt to decode $objectId, use as is if not detected as encoded
         $tmpObjectId = $objectId;
-        $tmpObjectId = CMISUtil::decodeObjectId($tmpObjectId, $typeId);
-        if ($tmpTypeId != 'Unknown') $objectId = $tmpObjectId;
+        $tmpObjectId = CMISUtil::decodeObjectId($tmpObjectId, $typeId, $className);
+        if ($tmpTypeId != 'unknown') $objectId = $tmpObjectId;
+        
+        $objectClass = 'CMIS' . $className . 'Object';
+        $CMISObject = new $objectClass($objectId, $this->ktapi);
         
         $targetFolderId = CMISUtil::decodeObjectId($targetFolderId);
             
+        // check the $sourceFolderId parameter - if empty or does not match (at least one) parent of the specified object, 
+        // throw exception
+        if (empty($sourceFolderId) || $CMISObject->getProperty('parentId') != $sourceFolderId) {
+            throw new InvalidArgumentException('The source folder id is invalid');
+        }
+        
         // check type id of object against allowed child types for destination folder
         $CMISFolder = new CMISFolderObject($targetFolderId, $this->ktapi);
         $allowed = $CMISFolder->getProperty('allowedChildObjectTypeIds');
@@ -490,21 +485,26 @@ class CMISObjectService {
         
         // TODO add reasons and sig data
         // attempt to move object
-        if ($typeId == 'Folder') {
+        if ($typeId == 'cmis:folder') {
             $response = $this->ktapi->move_folder($objectId, $targetFolderId, $reason, $sig_username, $sig_password);
         }
-        else if ($typeId == 'Document') {
+        else if ($typeId == 'cmis:document') {
             $response = $this->ktapi->move_document($objectId, $targetFolderId, $reason, null, null, $sig_username, $sig_password);
         }
         else {
             $response['status_code'] = 1;
             $response['message'] = 'The object type could not be determined.';
         }
+        
+        // TODO The repository may throw a NameConstrainViolationException if there is a name conflict (determined by KTAPI) 
+        //      or may choose a name which does not conflict
 
         // if failed, throw StorageException
         if ($response['status_code'] != 0) {
             throw new StorageException('The repository was unable to move the object: ' . $response['message']);
-        } 
+        }
+        
+        return CMISUtil::encodeObjectId($objectId, $typeId);
     }
     
     /**
@@ -524,14 +524,14 @@ class CMISObjectService {
         // TODO this should probably be a function, it is now used in two places...
         // throw updateConflictException if the operation is attempting to update an object that is no longer current (as determined by the repository).
         $exists = true;
-        if ($typeId == 'Folder')
+        if ($typeId == 'cmis:folder')
         {
             $object = $this->ktapi->get_folder_by_id($objectId);
             if (PEAR::isError($object)) {
                 $exists = false;
             }
         }
-        else if ($typeId == 'Document')
+        else if ($typeId == 'cmis:document')
         {
             $object = $this->ktapi->get_document_by_id($objectId);
             if (PEAR::isError($object)) {
@@ -548,7 +548,7 @@ class CMISObjectService {
         }
         global $default;
         // throw ConstraintViolationException if method is invoked on a Folder object that contains one or more objects
-        if ($typeId == 'Folder')
+        if ($typeId == 'cmis:folder')
         {
             $folderContent = $object->get_listing();
             if (!PEAR::isError($folderContent))
@@ -563,7 +563,7 @@ class CMISObjectService {
             // TODO add the electronic signature capability
             $result = $this->ktapi->delete_folder($objectId, $reason, $sig_username, $sig_password);
         }
-        else if ($typeId == 'Document')
+        else if ($typeId == 'cmis:document')
         {
             // NOTE KnowledgeTree does not support deleting of individual versions and will always delete all versions
             //      Throw an exception instead if individual version requested for delete
@@ -625,7 +625,7 @@ class CMISObjectService {
         
         // throw updateConflictException if the operation is attempting to update an object that is no longer current 
         // (as determined by the repository)
-        if ($typeId == 'Folder') {
+        if ($typeId == 'cmis:folder') {
             $object = $this->ktapi->get_folder_by_id($folderId);
             if (PEAR::isError($object)) {
                 throw new updateConflictException('Unable to delete the object as it cannot be found.');
@@ -652,10 +652,10 @@ class CMISObjectService {
             foreach($folderContents as $folderObject)
             {
                 if ($folderObject['item_type'] == 'F') {
-                    $type = 'Folder';
+                    $type = 'cmis:folder';
                 }
                 else if ($folderObject['item_type'] == 'D') {
-                    $type = 'Document';
+                    $type = 'cmis:document';
                 }
                 
                 $failedToDelete[] = CMISUtil::encodeObjectId($type, $folderObject['id']); 
@@ -697,7 +697,7 @@ class CMISObjectService {
         // Attempt to decode $documentId, use as is if not detected as encoded
         $tmpObjectId = $documentId;
         $tmpObjectId = CMISUtil::decodeObjectId($tmpObjectId, $tmpTypeId);
-        if ($tmpTypeId != 'Unknown')
+        if ($tmpTypeId != 'unknown')
             $documentId = $tmpObjectId;
 
         // TODO deal with other types except documents
@@ -715,8 +715,7 @@ class CMISObjectService {
         }
 
         $csFileName = $CMISDocument->getProperty('contentStreamFilename');
-        if (!empty($csFileName) && (!$overwriteFlag))
-        {
+        if (!empty($csFileName) && (!$overwriteFlag)) {
             throw new ContentAlreadyExistsException('Unable to overwrite existing content stream');
         }
 
@@ -724,8 +723,7 @@ class CMISObjectService {
         // update the document content from this temporary file as per usual
         // TODO Use checkin_document_with_metadata instead if metadata content submitted || update metadata separately?
         $response = $this->ktapi->checkin_document($documentId,  $csFileName, 'CMIS setContentStream action', $tempfilename, false);
-        if ($response['status_code'] != 0)
-        {
+        if ($response['status_code'] != 0) {
             throw new StorageException('Unable to update the content stream.  ' . $response['message']);
         }
 //        else

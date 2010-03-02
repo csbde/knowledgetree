@@ -200,16 +200,16 @@ class KTObjectService extends KTCMISBase {
     /**
      * Moves a fileable object from one folder to another.
      * 
-     * @param object $repositoryId
-     * @param object $objectId
-     * @param object $changeToken [optional]
-     * @param object $targetFolderId
-     * @param object $sourceFolderId [optional] 
+     * @param string $repositoryId
+     * @param string $objectId
+     * @param string $targetFolderId
+     * @param string $sourceFolderId
+     * @return string $objectId
      */
-    public function moveObject($repositoryId, $objectId, $changeToken = '', $targetFolderId, $sourceFolderId = null)
+    public function moveObject($repositoryId, $objectId, $targetFolderId, $sourceFolderId)
     {
         try {
-            $this->ObjectService->moveObject($repositoryId, $objectId, $changeToken, $targetFolderId, $sourceFolderId);
+            $this->ObjectService->moveObject($repositoryId, $objectId, $targetFolderId, $sourceFolderId);
         }
         catch (Exception $e)
         {

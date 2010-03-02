@@ -150,24 +150,23 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         // document action create will have a content tag <atom:content> or <content> containing base64 encoding of the document
         // move action will have an existing id supplied as a parameter - not sure how this works yet as the CMIS clients we are
         // testing don't support move functionality at this time (2009/07/23) and so we are presuming the following format:
-        // /folder/<folderId>/children/<objectId>
+        // /folder/<folderId>/<sourceFolderId>/<objectId>
         // also possible that there will be an existing ObjectId property, try to cater for both until we know how it really works
+        // NOTE this also applies to the source folder id, see above
         
         // check for existing object id as parameter in url
-        if (isset($this->params[2]))
-        {
+        // if sourceFolderId parameter is submitted, this is a move
+        if (isset($this->params[1])) {
             $action = 'move';
-            $objectId = $this->params[2];
+            $sourceFolderId = $this->params[1];
         }
         
         // get object properties - todo send through original properties array and not modified version
-        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->rawContent);
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisObjectProperties($this->rawContent);
         $properties = array('name' => $title, 'summary' => $summary, 'objectTypeId' => $cmisObjectProperties['cmis:objectTypeId']);
         
         // check for existing object id as property of submitted object data
-        if (!empty($cmisObjectProperties['cmis:objectId']))
-        {
-            $action = 'move';
+        if (!empty($cmisObjectProperties['cmis:objectId'])) {
             $objectId = $cmisObjectProperties['cmis:objectId'];
         }
         
@@ -210,7 +209,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                 $newObjectId = $newObjectId['results'];
                 // check if returned Object Id is a valid CMIS Object Id
                 CMISUtil::decodeObjectId($newObjectId, $typeId);
-                if ($typeId != 'Unknown') {
+                if ($typeId != 'unknown') {
                     $success = true;
                 }
                 else {
@@ -223,7 +222,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         }
         else if ($action == 'move')
         {
-            $response = $ObjectService->moveObject($repositoryId, $objectId, '', $folderId);
+            $response = $ObjectService->moveObject($repositoryId, $objectId, $folderId, $sourceFolderId);
             
             if ($response['status_code'] == 0) {
                 $success = true;
@@ -523,7 +522,7 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
         $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
         
         // get object properties
-        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->rawContent);
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisObjectProperties($this->rawContent);
 
         // check for content stream
         $content = KT_cmis_atom_service_helper::getCmisContent($this->rawContent);
@@ -635,7 +634,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         $VersioningService = new KTVersioningService(KT_cmis_atom_service_helper::getKt());
         $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
 
-        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->rawContent);
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisObjectProperties($this->rawContent);
         
         // check for existing object id as property of submitted object data
         if (empty($cmisObjectProperties['cmis:objectId']))

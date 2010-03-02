@@ -98,7 +98,7 @@ class CMISNavigationService {
         // if this is not a folder, cannot get children
         $folderId = CMISUtil::decodeObjectId($folderId, $type);
 
-        if ($type != 'Folder') {
+        if ($type != 'cmis:folder') {
             throw new invalidArgumentException('The specified object is not a folder');
         }
 
@@ -149,7 +149,7 @@ class CMISNavigationService {
         // if this is not a folder, cannot get descendants
         $folderId = CMISUtil::decodeObjectId($folderId, $type);
         
-        if ($type != 'Folder') {
+        if ($type != 'cmis:folder') {
             throw new InvalidArgumentException('The supplied object is not a folder, unable to return descendants');
         }
         
@@ -195,7 +195,7 @@ class CMISNavigationService {
         // if this is not a folder, cannot get folder parent :)
         $folderId = CMISUtil::decodeObjectId($folderId, $type);
         // NOTE this will quite possibly break the webservices
-        if ($type != 'Folder')
+        if ($type != 'cmis:folder')
         {
             return $ancestry;
         }
@@ -257,12 +257,12 @@ class CMISNavigationService {
         // TODO - what about other types?  only implementing folders and documents at the moment so ignore for now
         switch($typeId)
         {
-            case 'Document':
+            case 'cmis:document':
                 $document = $this->ktapi->get_document_by_id($objectId);
                 $parent = $document->ktapi_folder;
                 $ancestry[] = $parent;
                 break;
-            case 'Folder':
+            case 'cmis:folder':
                 $folder = $this->ktapi->get_folder_by_id($objectId);
                 $parent = $this->ktapi->get_folder_by_id($folder->get_parent_folder_id());
                 $ancestry[] = $parent;
