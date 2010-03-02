@@ -357,9 +357,14 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         $link->appendChild($feed->newAttr('rel', 'self'));
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/folder/' . $folderId . '/' . $feedType));
         $feed->appendChild($link);
+        
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel', 'service'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'servicedocument'));
+        $feed->appendChild($link);
 
         $link = $feed->newElement('link');
-        $link->appendChild($feed->newAttr('rel', 'source'));
+        $link->appendChild($feed->newAttr('rel', 'via'));
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/folder/' . $folderId));
         $feed->appendChild($link);
 
