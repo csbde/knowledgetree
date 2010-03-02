@@ -5,11 +5,13 @@
 		<div class="field ">
       	<p class="descriptiveText">Choose a template, if you would like to generate predefined folders.</p>
 		<p class="errorMessage"></p>
-			<select name="data[templateId]" id="selectedTemplate">
+			<select name="data[templateId]" id="selectedTemplate" onchange="javascript:fl.showFolderTemplateTree();">
 				<option selected="selected" value="0">- No template -</option>
 				<?php 
 					foreach ($aFolderTemplates as $oFolderTemplate) {
-						echo "<option onclick=\"javascript:{fl.showFolderTemplateTree('{$oFolderTemplate->getId()}')}\" value=\"{$oFolderTemplate->getId()}\">".$oFolderTemplate->getName()."</option>";
+						echo "<option value=\"{$oFolderTemplate->getId()}\">".$oFolderTemplate->getName()."</option>";
+?>
+						<?php
 					}
 				?>
 	    	</select>
