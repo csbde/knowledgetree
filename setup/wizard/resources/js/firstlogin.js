@@ -2,15 +2,17 @@ var win;
 
 jQuery(function() { // Document is ready
 	if(jQuery("#wrapper").attr('class') != 'wizard') {// Check if we in a wizard, or on the dashboard
-  		showForm(); // Display first login wizard
+		if(jQuery("#firstlogin").attr('id') != 'firstlogin') {// Check if we in a wizard, or on the dashboard
+			showForm(); // Display first login wizard, once and only once!!!
+		}
 	}
 });
 
 // Class First Login
 function firstlogin(rootUrl, pluginHandle) {
-	this.rootUrl = rootUrl;
-	this.ktfolderAccess = rootUrl + pluginHandle + "?action=";
-	this.ktmanageFolderAccess = rootUrl + "admin.php?kt_path_info=misc/adminfoldertemplatesmanagement&action=";
+	this.rootUrl = rootUrl + "/";
+	this.ktfolderAccess = rootUrl + "/" + pluginHandle + "?action=";
+	this.ktmanageFolderAccess = rootUrl + "/" + "admin.php?kt_path_info=misc/adminfoldertemplatesmanagement&action=";
 	this.ajaxOn = false;
 }
 
@@ -58,37 +60,58 @@ firstlogin.prototype.showNodeOptions = function() {
 *    Create the dialog
 */
 var showForm = function() {
-    createForm(); // Populate the form
-    this.win = new Ext.Window({ // create the window
-        applyTo     : 'firstlogin',
-        layout      : 'fit',
-        width       : 800,
-        height      : 500,
-        closeAction :'destroy',
-        y           : 75,
-        shadow: false,
-        modal: true
-    });
-    this.win.show();
-}
-
-var createForm = function() {
 	var holder = "<div id='firstlogin'></div>"; 
 	jQuery("#pageBody").append(holder); // Append to current dashboard
+	var mask = "<div id='mask'></div>";
+	jQuery("#firstlogin").append(mask); // Append to current dashboard
+	var dialog = '<div id="boxes"><div id="dialog" class="window"></div></div>';
+	jQuery("#firstlogin").append(dialog); // Append to current dashboard
+	createModal();
 	var address = "setup/firstlogin/index.php";
-	getUrl(address, "firstlogin"); // Pull in existing wizard
+	getUrl(address, "dialog"); // Pull in existing wizard
 }
+
+var createModal = function() {
+	//Get the tag
+	var id = "#dialog";
+	
+	//Get the screen height and width
+	var maskHeight = jQuery(document).height();
+	var maskWidth = jQuery(window).width();
+
+	//Set heigth and width to mask to fill up the whole screen
+	jQuery('#mask').css({'width':maskWidth,'height':maskHeight});
+	
+	//transition effect		
+	jQuery('#mask').fadeIn(1000);	
+	jQuery('#mask').fadeTo("slow",0.8);	
+
+	//Get the window height and width
+	var winH = jQuery(window).height();
+	var winW = jQuery(window).width();
+
+	//Set the popup window to center
+	jQuery(id).css('top',  0);
+	jQuery(id).css('left', 200);
+	jQuery(id).css('background', 'transparent');
+	//transition effect
+	jQuery(id).fadeIn(2000);
+}
+
+
 
 // Send request and update a div
 var getUrl = function (address, div)  {
 	jQuery.ajax({
 		url: address,
-		dataType: "html",
+		dataType: "HTML",
 		type: "POST",
 		cache: false,
 		success: function(data) {
-			jQuery("#"+div).empty();
-			jQuery("#"+div).append(data);
+			if(div != "" || div != undefined) {
+				jQuery("#"+div).empty();
+				jQuery("#"+div).append(data);
+			}
 		}
 	});
 }
@@ -96,14 +119,9 @@ var getUrl = function (address, div)  {
 /*
 * Close the popup
 */
-var closeFirstLogin = function ()  {
-    this.win.destroy();
-    jQuery('.ext-el-mask').each( // TODO : Why does overlay hang around?
-		function() {
-			jQuery(this).remove();
-		}
-	);
-    
+firstlogin.prototype.closeFirstLogin = function ()  {
+	jQuery('#mask').remove();
+	jQuery('.window').remove();
 }
 
 // Node clicked
@@ -127,5 +145,10 @@ firstlogin.prototype.sendFirstLoginForm = function() {
 	var templateId = jQuery("#selectedTemplate").val();
 	var action = jQuery("#step_name_templates").attr('action');
 	var address = this.rootUrl + "setup/firstlogin/" + action + "&templateId=" + templateId + "&Next=Next";
-	getUrl(address, 'firstlogin');
+	getUrl(address, 'dialog');
+}
+
+firstlogin.prototype.postComplete = function() {
+	var address = this.rootUrl + "setup/firstlogin/index.php?step_name=complete&Next=Next";
+	getUrl(address, ""); // Pull in existing wizard	
 }

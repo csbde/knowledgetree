@@ -6,8 +6,10 @@
 	<input type="submit" name="Next" value="Finish" class="button_next"/>
 </form>
 <script type="text/javascript">
-	$("form").bind("submit", function() {
-		closeFirstLogin();
+	var fl = new firstlogin('<?php echo WIZARD_ROOTURL; ?>', '<?php echo $ft_dir; ?>');
+	jQuery("form").bind("submit", function() {
+		fl.closeFirstLogin();
+		fl.postComplete();
 		return false;
 	});
 </script>

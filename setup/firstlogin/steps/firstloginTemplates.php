@@ -86,7 +86,14 @@ class firstloginTemplates extends Step {
     }
     
     function doRun() {
+    	$ft_dir = "";
+    	if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
+            $oRegistry =& KTPluginRegistry::getSingleton();
+            $oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
+            $ft_dir = $oPlugin->getDirs();
+		}
 		$this->temp_variables['aFolderTemplates'] = $this->getTemplates();
+		$this->temp_variables['ft_dir'] = $ft_dir;
         return 'landing';
     }
     

@@ -4,9 +4,7 @@
 		<link rel="shortcut icon" href="../wizard/resources/graphics/favicon.ico" type="image/x-icon">
 		<title>KnowledgeTree Installer</title>
 		<?php echo $html->tpjs('jquery-1.3.2.js'); ?>
-		<?php echo $html->js('jquery.form.js'); ?>
-		<?php echo $html->js('jquery.blockUI.js'); ?>
-		<?php echo $html->js('jquery.hotkeys.js'); ?>
+		<?php echo $html->tpjs('jquery_noconflict.js'); ?>
 		<?php echo $html->js('firstlogin.js'); ?>
 		<?php echo $html->css('firstlogin.css'); ?>
 		<?php echo $html->css('wizard.css'); ?>

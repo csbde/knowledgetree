@@ -64,15 +64,32 @@ class firstloginComplete extends Step {
     	$this->temp_variables = array(
     									"step_name"=>"complete", 
     									"silent"=>$this->silent);
-        return $this->doRun();
-    }
-    
-    function doRun() {
-		$this->util->deleteFirstLogin();
+    	if(!$this->inStep("complete")) {
+			return  $this->doRun();
+    	}
+    	if($this->next()) { // Next click
+    		$this->completeWizard(); // Apply folder template structures
+    		return 'login'; // And go to next step
+    	}
+    	
         return 'landing';
     }
     
+    function doRun() {
+    	$ft_dir = "";
+    	if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
+            $oRegistry =& KTPluginRegistry::getSingleton();
+            $oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
+            $ft_dir = $oPlugin->getDirs();
+		}
+		$this->temp_variables['ft_dir'] = $ft_dir;
+
+        return 'landing';
+    }
     
+    function completeWizard() {
+		$this->util->deleteFirstLogin();    	
+    }
     
     public function getErrors() {
     	return $this->error;

@@ -49,7 +49,8 @@
 	<input id="next" type="submit" name="Next" value="Next" class="button_next"/>
 </form>
 <script type="text/javascript">
-	$("form").bind("submit", function() {
+	var fl = new firstlogin('<?php echo WIZARD_ROOTURL; ?>', '<?php echo $ft_dir; ?>');
+	jQuery("form").bind("submit", function() {
 		fl.sendFirstLoginForm();
 		return false;
 	});
