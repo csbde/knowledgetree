@@ -118,7 +118,7 @@ class jsonWrapper{
 	
 	public function getVersion(){
 		$ver=$this->jsonArray['auth']['version'];
-		$ver="{$ver['major']}.{$ver['minor']}";
+		$ver="{$ver['major']}.{$ver['minor']}.{$ver['revision']}";
 		return $ver;
 	}
 }
