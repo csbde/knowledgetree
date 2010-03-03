@@ -1,3 +1,11 @@
+#outer-wrapper {
+	width:900px;
+}
+
+#logo {
+	right:70%;
+}
+
 #step_content_templates {
 	border: 1px solid rgb(207, 207, 207);
 	overflow: auto;

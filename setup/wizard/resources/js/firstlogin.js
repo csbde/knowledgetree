@@ -93,7 +93,7 @@ var createModal = function() {
 
 	//Set the popup window to center
 	jQuery(id).css('top',  0);
-	jQuery(id).css('left', 200);
+	jQuery(id).css('left', 50);
 	jQuery(id).css('background', 'transparent');
 	//transition effect
 	jQuery(id).fadeIn(2000);
