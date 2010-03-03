@@ -213,6 +213,7 @@ class CMISUtil {
      * @return array $CMISArray
      */
     // NOTE this will have to change if we implement multi-filing
+    // NOTE this function probably serves no purpose, the parents are to be returned as a flat array
     static public function createParentObjectHierarchy($input, $repositoryURI, &$ktapi)
     {
         $CMISArray = array();

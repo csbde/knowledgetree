@@ -101,9 +101,12 @@ class CMISRepositoryService {
      * @param boolean $hasMoreItems TRUE if there are more items to return than were requested
      * @return array $objectTypes
      */
-    // NOTE this code may fit better within the Repository Class
     // TODO return for specific type when $typeId is specified
     // TODO other optional parameters
+    // This code is superseded by getTypeChildren and getTypeDescendants - when implementing those, check
+    // whether it is possible to entirely remove this function or if it is to remain and be shared by the
+    // other two functions (when no type is specified they will return base types [children] amd all types
+    // [descendants] respectively
     public function getTypes($repositoryId, $typeId = '', $returnPropertyDefinitions = false,
                       $maxItems = 0, $skipCount = 0, &$hasMoreItems = false)
     {   

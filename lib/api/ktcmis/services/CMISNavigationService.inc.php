@@ -195,7 +195,7 @@ class CMISNavigationService {
         if (PEAR::isError($ktapiFolder)) {
             throw new RuntimeException($ktapiFolder->getMessage());
         }
-        
+
         $parentId = $ktapiFolder->get_parent_folder_id();
         $parent = new CMISFolderObject(CMISUtil::encodeObjectId($parentId, FOLDER), $this->ktapi);
 
@@ -203,43 +203,70 @@ class CMISNavigationService {
     }
 
     /**
-     * Fetches the parent(s) of the specified object
+     * Gets the parent folder(s) for the specified non-folder, fileable object.
      * Multiple parents may exist if a repository supports multi-filing
      * It is also possible that linked documents/folders may qualify as having multiple parents
      * as they are essentially the same object
      *
      * @param string $repositoryId
      * @param string $objectId
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
-     * @param string $filter
-     * @return array $parents
+     * @param string $filter [optional]
+     * @param enum $includeRelationships [optional]
+     * @param string $renditionFilter  [optional]
+     * @param boolean $includeAllowableActions [optional]
+     * @param boolean $includeRelativePathSegment [optional]
+     * @return array $parents - empty for unfiled objects or the root folder
+     *               MUST include (unless not requested) for each object:
+     *               array $properties
+     *               array $relationships
+     *               array $renditions
+     *               $allowableActions
+     *               string $relativePathSegment
      */
-    // TODO ConstraintViolationException: The Repository SHALL throw this exception if this method is invoked
-    //      on an object who Object-Type Definition specifies that it is not fileable.
-    //      FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid.
-    function getObjectParents($repositoryId, $objectId, $includeAllowableActions, $includeRelationships, $filter = '')
+    // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid.
+    function getObjectParents($repositoryId, $objectId, $filter = '', $includeRelationships = null, $renditionFilter = '',
+                              $includeAllowableActions = false, $includeRelativePathSegment = false)
     {
         $ancestry = array();
 
         $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
+        
+        // if type is a folder, this function does not apply
+        if ($typeId == 'cmis:folder') {
+            throw new InvalidArgumentException('Cannot call this function for a folder object');
+        }
+        
+        $objectTypeId = ucwords(str_replace('cmis:', '', $typeId));
+        $object = 'CMIS' . $objectTypeId . 'Object';
+        
+        if (!file_exists(CMIS_DIR . '/objecttypes/' . $object . '.inc.php')) {
+            throw new InvalidArgumentException('Type ' . $typeId . ' is not supported');
+        }
+
+        require_once(CMIS_DIR . '/objecttypes/' . $object . '.inc.php');
+        $cmisObject = new $object;
+        
+        if (!$cmisObject->getAttribute('fileable')) {
+            throw new ConstraintViolationException('Unable to get parents of non-filable object');
+        }
 
         // TODO - what about other types?  only implementing folders and documents at the moment so ignore for now
+        // NOTE this will change if we implement multi-filing and/or unfiling
         switch($typeId)
         {
             case 'cmis:document':
                 $document = $this->ktapi->get_document_by_id($objectId);
-                $parent = $document->ktapi_folder;
-                $ancestry[] = $parent;
-                break;
-            case 'cmis:folder':
-                $folder = $this->ktapi->get_folder_by_id($objectId);
-                $parent = $this->ktapi->get_folder_by_id($folder->get_parent_folder_id());
-                $ancestry[] = $parent;
-                break;
+                if ($document->is_deleted()) {
+                    throw new InvalidArgumentException('The requested object has been deleted');
+                }
+                $ancestry[] = $document->ktapi_folder->get_folderid();
+            break;
         }
-
-        $ancestry = CMISUtil::createParentObjectHierarchy($ancestry, $repository->getRepositoryURI, $this->ktapi);
+        
+        foreach ($ancestry as $key => $parentId) {
+            $CMISObject = new CMISFolderObject($parentId, $this->ktapi, $repositoryURI);
+            $ancestry[$key] = CMISUtil::createObjectPropertiesEntry($CMISObject->getProperties());
+        }
 
         return $ancestry;
     }
@@ -266,8 +293,8 @@ class CMISNavigationService {
      */
     // TODO exceptions: •	FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid.
     // TODO $filter and paging
-    function getCheckedOutDocs($repositoryId, $folderId = null, $maxItems = 0, $skipCount = 0, $orderBy = '', 
-                               $filter = '', $includeRelationships = null, $includeAllowableActions = false, $renditionFilter = '')
+    function getCheckedOutDocs($repositoryId, $folderId = null, $maxItems = 0, $skipCount = 0, $orderBy = '',
+    $filter = '', $includeRelationships = null, $includeAllowableActions = false, $renditionFilter = '')
     {
         $checkedout = array();
 

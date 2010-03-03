@@ -195,18 +195,24 @@ class KTNavigationService extends KTCMISBase {
      */
     function getObjectParents($repositoryId, $objectId, $includeAllowableActions, $includeRelationships, $filter = '')
     {
-        $ancestryResult = $this->NavigationService->getObjectParents($repositoryId, $objectId, $includeAllowableActions,
-                                                                     $includeRelationships);
+        try {
+            $ancestry = $this->NavigationService->getObjectParents($repositoryId, $objectId, $includeAllowableActions,
+                                                                   $includeRelationships);
+        }
+        catch (Exception $e) {
+            return array(
+                "status_code" => 1,
+                "message" => $e->getMessage()
+            );
+        }
 
-        if (PEAR::isError($ancestryResult))
+        if (PEAR::isError($ancestry))
         {
             return array(
                 "status_code" => 1,
                 "message" => "Failed getting ancestry for object"
             );
         }
-
-        $ancestry = CMISUtil::decodeObjectHierarchy($ancestryResult, 'children');
 
         return array(
             "status_code" => 0,

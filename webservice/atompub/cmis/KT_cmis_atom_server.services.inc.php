@@ -401,7 +401,7 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
         //      update accordingly when updating to newer specification
         if ($this->params[1] == 'parent')
         {
-            $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
+            $NavigationService = new KTNavigationService(KT_cmis_atom_service_helper::getKt());
             $response = $NavigationService->getObjectParents($repositoryId, $objectId, false, false);
 
             if ($response['status_code'] == 1) {
