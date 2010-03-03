@@ -137,7 +137,7 @@ class KTNavigationService extends KTCMISBase {
         {
             return array(
                 "status_code" => 1,
-                "message" => "Failed getting descendants for folder"
+                "message" => "Failed getting children for folder"
             );
         }
 
@@ -154,38 +154,32 @@ class KTNavigationService extends KTCMISBase {
      *
      * @param string $repositoryId
      * @param string $folderId
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
-     * @param boolean $returnToRoot
      * @param string $filter
-     * @return ancestry[]
+     * @return parent[]
      */
-    public function getFolderParent($repositoryId, $folderId, $includeAllowableActions, $includeRelationships, $returnToRoot, $filter = '')
+    public function getFolderParent($repositoryId, $folderId, $filter = '')
     {
         try {
-            $ancestryResult = $this->NavigationService->getFolderParent($repositoryId, $folderId, $includeAllowableActions,
-                                                                        $includeRelationships, $returnToRoot);
+            $parent = $this->NavigationService->getFolderParent($repositoryId, $folderId, $filter);
         }
         catch (Exception $e) {
             return array(
                 "status_code" => 1,
-                "message" => "Failed getting ancestry for folder: " . $e->getMessage()
+                "message" => "Failed getting folder parent: " . $e->getMessage()
             );
         }
 
-        if (PEAR::isError($ancestryResult))
+        if (PEAR::isError($parent))
         {
             return array(
                 "status_code" => 1,
-                "message" => "Failed getting ancestry for folder"
+                "message" => "Failed getting folder parent"
             );
         }
 
-        $ancestry = CMISUtil::decodeObjectHierarchy($ancestryResult, 'children');
-
         return array(
 			"status_code" => 0,
-			"results" => $ancestry
+			"results" => CMISUtil::createObjectPropertiesEntry($parent->getProperties())
 		);
     }
 
@@ -225,18 +219,27 @@ class KTNavigationService extends KTCMISBase {
      *
      * @param string $repositoryId
      * @param string $folderId The folder for which checked out docs are requested
-     * @param string $filter
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
      * @param int $maxItems
      * @param int $skipCount
-     * @return array $checkedout The collection of checked out documents
+     * @param string $filter
+     * @param enum $includeRelationships
+     * @param boolean $includeAllowableActions
+     * @param string $renditionFilter
+     * @return array $checkedout The collection of checked out document objects
+     *               MUST include (unless not requested) for each object:
+     *               array $properties
+     *               array $relationships
+     *               array $renditions
+     *               $allowableActions
+     * @return boolean $hasMoreItems
+     * @return int $numItems [optional]
      */
-    function getCheckedOutDocs($repositoryId, $includeAllowableActions, $includeRelationships, $folderId = null, $filter = '', 
-                               $maxItems = 0, $skipCount = 0)
+    function getCheckedOutDocs($repositoryId, $folderId = null, $maxItems = 0, $skipCount = 0, $orderBy = '', 
+                               $filter = '', $includeRelationships = null, $includeAllowableActions = false, $renditionFilter = '')
     {
-        $checkedout = $this->NavigationService->getCheckedOutDocs($repositoryId, $includeAllowableActions, $includeRelationships, 
-                                                                  $folderId, $filter, $maxItems, $skipCount);
+        $checkedout = $this->NavigationService->getCheckedOutDocs($repositoryId, $folderId = null, $maxItems = 0, $skipCount = 0, 
+                                                                  $orderBy, $filter, $includeRelationships, $includeAllowableActions, 
+                                                                  $renditionFilter);
 
         if (PEAR::isError($checkedout))
         {
