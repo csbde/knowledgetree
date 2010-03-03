@@ -1,0 +1,118 @@
+# This file sets up the necessary PHP settings to run KnowledgeTree
+# optimally.
+#
+# It is best that KnowledgeTree be allowed to manage its PHP and access
+# permissions using these .htaccess files.  This prevents direct access
+# to libraries, scripts, and documents that should not be available via
+# the web.
+#
+# By default, to facilitate quick testing of functionality,
+# KnowledgeTree places the Documents directory within the KnowledgeTree
+# web root.  This, by default, would allow people to browse the
+# documents in the DMS, bypassing the security permissions.  The
+# default .htaccess settings would prevent this.
+#
+# KnowledgeTree itself is able to deal with most PHP configurations,
+# excepting "safe mode" currently, but is unable to handle certain
+# inherent configuration options (for example, setting the upload size
+# very low).  Check the setup checklists (as described in the
+# documentation) to see how your configuration is handled.
+#
+# The default .htaccess settings ensure that no workarounds occur in the
+# PHP code, leading to better performance and robustness.
+#
+<IfModule mod_php5.c>
+php_value default_mimetype text/html
+php_value auto_prepend_file none
+php_value auto_append_file none
+php_flag display_startup_errors ON
+php_flag display_errors ON
+php_flag file_uploads ON
+php_flag magic_quotes_gpc OFF
+php_flag magic_quotes_runtime OFF
+php_flag register_globals OFF
+php_flag output_buffering OFF
+php_flag session.auto_start OFF
+</IfModule>
+
+<IfModule sapi_apache2.c>
+php_value default_mimetype text/html
+php_value auto_prepend_file none
+php_value auto_append_file none
+php_flag display_startup_errors ON
+php_flag display_errors ON
+php_flag file_uploads ON
+php_flag magic_quotes_gpc OFF
+php_flag magic_quotes_runtime OFF
+php_flag register_globals OFF
+php_flag output_buffering OFF
+php_flag session.auto_start OFF
+</IfModule>
+
+<IfModule mod_env.c>
+SetEnv kt_htaccess_worked yes
+SetEnvIf Authorization (.*) kt_auth=$1
+</IfModule>
+LimitRequestBody 0
+DirectoryIndex index.html index.php
+Options none
+Options +ExecCGI
+Options +SymLinksIfOwnerMatch
+#AcceptPathInfo On
+
+AddOutputFilter DEFLATE text/html text/plain text/xml text/javascript application/x-javascript text/css
+# The following seems to breaking things on ZendServer - kgf
+#ExpiresActive ON
+#ExpiresByType text/html "access plus 1 day"
+#ExpiresByType text/css "access plus 1 day"
+#ExpiresByType text/javascript "access plus 7 days"
+#ExpiresByType application/x-javascript "access plus 7 days"
+#ExpiresByType image/gif "access plus 1 month"
+#ExpiresByType image/jpg "access plus 1 month"
+#ExpiresByType image/png "access plus 1 month"
+#ExpiresByType image/x-icon "access plus 1 month"
+
+#
+# If you are having uploading larger documents, adjust the 16M examples
+# below to increase the maximum file size.  This is set to a reasonable
+# size for testing and most usage patterns, as increased sizes may allow
+# malicious users to use up resources.
+#
+<IfModule mod_php5.c>
+php_value upload_max_filesize -1
+php_value post_max_size 2000M
+php_value memory_limit -1
+php_value max_input_time -1
+php_value max_execution_time 0
+php_value error_reporting 5
+</IfModule>
+<IfModule sapi_apache2.c>
+php_value upload_max_filesize -1
+php_value post_max_size 2000M
+php_value memory_limit -1
+php_value max_input_time -1
+php_value max_execution_time 0
+php_value error_reporting 5
+</IfModule>
+
+# Workaround for mod_auth when running php cgi
+<IfModule mod_rewrite.c>
+RewriteEngine on
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+</IfModule>
+
+#<IfModule mod_rewrite.c>
+#RewriteEngine On
+#RewriteBase /
+## Set RewriteBase to the base directory that KnowledgeTree is viewable
+## from via the web.  So http://foo.org/ is /, and
+## http://bar.com/knowledgeTree/ is /knowledgeTree
+##RewriteBase /knowledgeTree
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_FILENAME}.php -f
+#RewriteRule !^[^/]*.php - [C]
+#RewriteRule ^([^/]*)([/].+)? $1.php [E=kt_path_info:$2,E=kt_orig_file:$1.php]
+#<IfModule mod_env.c>
+#SetEnv kt_no_extensions yes
+#</IfModule>
+#</IfModule>
