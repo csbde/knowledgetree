@@ -6,8 +6,9 @@
 
 // TODO enable creation of enum instances on the fly - this will most likely be done in an extending class
 
-abstract class AbstractEnum {
+abstract class Enum {
     
+    // actual implementation of these will be in child classes
     static private $values;
     static private $value;
     static private $name;
