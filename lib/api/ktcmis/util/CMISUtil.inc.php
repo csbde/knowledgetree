@@ -283,7 +283,7 @@ class CMISUtil {
 
         foreach(CMISPropertyCollection::$propertyTypes as $property => $type)
         {
-            // hack for Author property
+            // author property does not work the same as the others
             if ($property == 'author') {
                 $object[$property] = array('value' => $properties->getValue($property));
             }

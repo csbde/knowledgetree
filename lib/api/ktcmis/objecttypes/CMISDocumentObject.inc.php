@@ -98,7 +98,7 @@ class CMISDocumentObject extends CMISObject {
             }
         }
         
-        // TODO throw exception if unable to create?
+        parent::__construct();
     }
     
     // TODO abstract shared stuff to base class where possible
@@ -124,10 +124,6 @@ class CMISDocumentObject extends CMISObject {
         //      also ktapidocument::get_download_url
 //        $this->_setPropertyInternal('uri', $uri);
         $this->_setPropertyInternal('uri', '');
-        // TODO what is this?  Assuming it is the object type id, and not OUR document type?
-        $this->_setPropertyInternal('objectTypeId', strtolower($this->getAttribute('id')));
-        // Needed to distinguish type
-        $this->_setPropertyInternal('baseTypeId', strtolower($this->getAttribute('id')));
         $this->_setPropertyInternal('createdBy', $objectProperties['created_by']);
         $this->_setPropertyInternal('creationDate', $objectProperties['created_date']);
         $this->_setPropertyInternal('lastModifiedBy', $objectProperties['modified_by']);

@@ -85,6 +85,8 @@ class CMISFolderObject extends CMISObject {
                 throw new ObjectNotFoundException($e->getMessage());
             }
         }
+        
+        parent::__construct();
     }
 
     // TODO abstract shared stuff to base class where possible
@@ -111,10 +113,6 @@ class CMISFolderObject extends CMISObject {
         // TODO this url is probably incorrect...needs to be checked
 //        $this->_setPropertyInternal('uri', $uri);
         $this->_setPropertyInternal('uri', '');
-        // TODO what is this?  Assuming it is the object type id, and not OUR document type?
-        $this->_setPropertyInternal('objectTypeId', strtolower($this->getAttribute('id')));
-        // Needed to distinguish type
-        $this->_setPropertyInternal('baseTypeId', strtolower($this->getAttribute('id')));
         $this->_setPropertyInternal('createdBy', $objectProperties['created_by']);
         // TODO cannot currently retrieve via ktapi or regular folder code - add as with created by
         $this->_setPropertyInternal('creationDate', $objectProperties['created_date']);
@@ -125,8 +123,16 @@ class CMISFolderObject extends CMISObject {
         $this->_setPropertyInternal('changeToken', null);
         $this->_setPropertyInternal('name', $objectProperties['folder_name']);
         $this->_setPropertyInternal('parentId', CMISUtil::encodeObjectId(FOLDER, $objectProperties['parent_id']));
-        $this->_setPropertyInternal('allowedChildObjectTypeIds', array('cmis:document', 'cmis:folder'));
         $this->_setPropertyInternal('author', $objectProperties['created_by']);
+    }
+    
+    /**
+     * Sets properties shared between all objects of this type
+     */
+    protected function _setSharedProperties()
+    {
+        parent::_setSharedProperties();
+        $this->_setPropertyInternal('allowedChildObjectTypeIds', array('cmis:document', 'cmis:folder'));
     }
 
 }

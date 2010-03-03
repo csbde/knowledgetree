@@ -165,25 +165,14 @@ class KTRepositoryService extends KTCMISBase {
     public function getTypeDefinition($repositoryId, $typeId)
     {
         try {
-            $typeDefinitionResult = $this->RepositoryService->getTypeDefinition($repositoryId, $typeId);
+            $typeDefinition = $this->RepositoryService->getTypeDefinition($repositoryId, $typeId);
         }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+        catch (Exception $e) {
+            // propogate upward
+            throw $e;
         }
-
-        // format as array style output
-        // NOTE only concerned with attributes at this time
-        // TODO add support for properties
-        $typeDefinition = $typeDefinitionResult['attributes'];
-
-        return array (
-            "status_code" => 0,
-            "results" => $typeDefinition
-        );
+        
+        return $typeDefinition;
     }
 
 }
