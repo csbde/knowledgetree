@@ -110,7 +110,6 @@ class KT_cmis_atom_service_helper {
     static public function createObjectEntry(&$feed, $cmisEntry, $parent, $pwc = false, $method = 'GET')
     {        
         $workspace = $feed->getWorkspace();
-        $type = strtolower($cmisEntry['properties']['objectTypeId']['value']);
 
     	// create entry
         $entry = $feed->newEntry();
@@ -125,7 +124,7 @@ class KT_cmis_atom_service_helper {
             $entry->appendChild($feed->newAttr('xmlns:cmisra', 'http://docs.oasis-open.org/ns/cmis/restatom/200908/'));
         }
 		
-        self::createObjectEntryContent($entry, $feed, $cmisEntry, $parent, $pwc, $method);
+        self::createObjectEntryContent($entry, $feed, $workspace, $cmisEntry, $parent, $pwc, $method);
     }
     
     /**
@@ -157,7 +156,7 @@ class KT_cmis_atom_service_helper {
 		
         // create entry
         $entry = $feed->newElement('entry');
-        self::createObjectEntryContent($entry, $feed, $cmisEntry);//, $parent, $pwc, $method);
+        self::createObjectEntryContent($entry, $feed, $workspace, $cmisEntry);//, $parent, $pwc, $method);
         $childrenFeed->appendChild($entry);
     }
     
@@ -171,8 +170,10 @@ class KT_cmis_atom_service_helper {
      * @param boolean $pwc Whether this is a PWC object (will be returned slightly differently)
      * @param string $method The calling method (slightly affects the output)
      */
-    static public function createObjectEntryContent($entry, &$feed, $cmisEntry, $parent = '', $pwc = false, $method = 'GET')
+    static public function createObjectEntryContent($entry, &$feed, $workspace, $cmisEntry, $parent = '', $pwc = false, $method = 'GET')
     {
+        $type = $cmisEntry['properties']['objectTypeId']['value'];
+        
         // TODO dynamic actual creator name
         $responseElement = $feed->newField('author');
         $element = $feed->newField('name', 'admin', $responseElement);

@@ -166,6 +166,9 @@ class KT_cmis_atom_server extends KT_atom_server {
             header('Content-type: text/xml');
         }
         
+//        global $default;
+//        $default->log->info($this->output);
+        
         if ($this->renderBody) {
             echo $this->output;
         }

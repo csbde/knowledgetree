@@ -51,7 +51,9 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
      * This includes children and tree/descendant listings as well as individual folder retrieval 
      */
     public function GET_action()
-    {        
+    {
+//        global $default;
+//        $default->log->info($this->rawContent);
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         
         // TODO implement full path/node separation as with Alfresco - i.e. path requests come in on path/ and node requests come in on node/
