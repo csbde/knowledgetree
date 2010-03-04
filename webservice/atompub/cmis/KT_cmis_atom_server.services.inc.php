@@ -709,7 +709,7 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service {
             return null;
         }
 
-        $feed = KT_cmis_atom_service_helper::getTypeFeed($type, array($typeDefinition));
+        $feed = KT_cmis_atom_service_helper::getTypeFeed($type, array($typeDefinition['attributes']));
 
         // Expose the responseFeed
         $this->responseFeed=$feed;

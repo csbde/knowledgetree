@@ -70,8 +70,7 @@ class CMISObjectService {
             throw new ConstraintViolationException('Object base type could not be determined. ' . $e->getMessage());
         }
 
-        if ($typeDefinition['attributes']['baseId'] != 'cmis:document')
-        {
+        if ($typeDefinition['attributes']['baseId'] != 'cmis:document') {
             throw new ConstraintViolationException('Object is not of base type document');
         }
 
@@ -306,8 +305,6 @@ class CMISObjectService {
     //      an ACE provided which is not supported by the repository.
     public function createFolder($repositoryId, $properties, $folderId, $policies = array(), $addACEs = array(), $removeACEs = array())
     {
-        global $default;
-        $default->log->info('try create folder');
         $objectId = null;
         
         // fetch type definition of supplied type and check for base type "folder", if not true throw exception
@@ -347,7 +344,7 @@ class CMISObjectService {
         if (!$typeDefinition['attributes']['controllableACL'] && (count($addACEs) || count($removeACEs))) {
             throw new ConstraintViolationException('This object-type does not support ACLs');
         }
-        $default->log->info(print_r($properties, true));
+        
         // set title and name identical if only one submitted
         if ($properties['title'] == '') {
             $properties['title'] = $properties['name'];
@@ -567,7 +564,7 @@ class CMISObjectService {
         if (!$exists) {
             throw new updateConflictException('Unable to delete the object as it cannot be found.');
         }
-        global $default;
+        
         // throw ConstraintViolationException if method is invoked on a Folder object that contains one or more objects
         if ($typeId == 'cmis:folder')
         {

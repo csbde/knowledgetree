@@ -163,9 +163,6 @@ class CMISRepositoryService {
     // NOTE this code may fit better in the Repository Class
     function getTypeDefinition($repositoryId, $typeId)
     {
-        global $default;
-        $default->log->debug();
-        $default->log->info(str_replace('cmis:', '', $typeId));
         $typeId = ucwords(str_replace('cmis:', '', $typeId));
         $object = 'CMIS' . $typeId . 'Object';
         
@@ -183,7 +180,7 @@ class CMISRepositoryService {
         // NOTE The specification is ambigous here: it states that this function must return the type properties, but 
         //      the atompub example shows the type attributes, not properties;  since most properties are only populated
         //      on creation of an instance of an object-type, we choose to go with the attributes and not the properties
-        $typeDefinition = $cmisObject->getAttributes();
+        $typeDefinition['attributes'] = $cmisObject->getAttributes();
 
         return $typeDefinition;
     }
