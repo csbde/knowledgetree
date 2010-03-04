@@ -4735,21 +4735,28 @@ class KTAPI
 	    }
         return $response;
 	}
-
+	
+	/**
+	* Method to check whether content version is the latest for a specific document
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $documentID The id of the document
+	* @param string $contentID The id of the content version to check
+	* @return bool $response The formatted response array
+	*/
 	public function is_latest_version($documentID, $contentID)
-	{
-		$sql = 'SELECT COUNT(document_content_version.id) AS newdocumentcount
-		FROM document_content_version
-		WHERE document_content_version.document_id ="'.$documentID.'" AND
-		document_content_version.id > "'.$contentID.'"';
+	{		
+		$document = $this->get_document_by_id($documentID);
 
-		$row = DBUtil::getOneResult($sql);
- 		$row = (int)$row['newdocumentcount'];
+ 		$maxcontentID = $document->get_content_version();
 
-		if ($row > 0) {
+		if ($maxcontentID > $contentID) {
 			$response['is_latest'] = 'FALSE';
+			$response['max_contentID'] = $maxcontentID;
 		} else {
 			$response['is_latest'] = 'TRUE';
+			$response['max_contentID'] = $contentID;
 		}
 
 		$response['status_code'] = 0;

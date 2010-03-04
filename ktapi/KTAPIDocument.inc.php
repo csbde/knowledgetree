@@ -2141,6 +2141,18 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
+	 * Gets the content version id of the document
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return integer the content version id
+	*/
+	function get_content_version()
+	{
+		return $this->document->getContentVersionId();
+	}
+	
+	/**
 	 * Gets the url which can be used to download the document.
 	 *
 	 * @param int $version Not implemented. The content version of the document
