@@ -330,8 +330,14 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $entries = $NavigationService->getChildren($repositoryId, $folderId, false, false);
         }
         else if ($feedType == 'descendants') {
-            // TODO how will client request depth?
-            $entries = $NavigationService->getDescendants($repositoryId, $folderId);
+            // TODO how will client request depth?  for now we assume as part of the url - will probably be covered by URI templates
+            if (isset($this->params[2])) {
+                $entries = $NavigationService->getDescendants($repositoryId, $folderId, $this->params[2]);
+                
+            }
+            else {
+                $entries = $NavigationService->getDescendants($repositoryId, $folderId);
+            }
         }
         else {
             // error, we shouldn't be here, if we are then the wrong service/function was called
