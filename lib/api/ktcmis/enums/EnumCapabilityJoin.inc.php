@@ -11,8 +11,21 @@ require_once(CMIS_DIR . '/classes/Enum.inc.php');
 
 class EnumCapabilityJoin extends Enum {
     
-    static private $values = array('none', 'inneronly', 'innerandouter');
-    static private $name = 'capabilityJoin';
+    static protected $name = 'capabilityJoin';
+    static protected $values = array('none', 'inneronly', 'innerandouter');
+    
+    /**
+     * Sets the value of the enumerator
+     *
+     * @param unknown_type $value
+     * @throws invalidArgumentException if the given value does not match one of the allowed values
+     *         (exception is thrown in parent class function)
+     */
+    static protected function set($value)
+    {
+        parent::set($value);
+    }
+    
 }
 
 ?>
