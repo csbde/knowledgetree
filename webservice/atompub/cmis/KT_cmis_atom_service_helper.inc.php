@@ -56,6 +56,7 @@ class KT_cmis_atom_service_helper {
      * @param string $folderId
      * @return string CMIS AtomPub feed
      */
+    // TODO enable this to work on an existing set of object properties if submitted
     static public function getObjectFeed(&$service, $ObjectService, $repositoryId, $objectId, $method = 'GET')
     {
         self::$repositoryId = $repositoryId;
@@ -399,10 +400,6 @@ class KT_cmis_atom_service_helper {
      */
     static public function getTypeFeed($typeDef, $types)
     {
-        global $default;
-//        $default->log->info(print_r($types));
-//        $default->log->info(print_r($types, true));
-        $default->log->info($typeDef);
         $typesString = '';
         $typesHeading = '';
         switch($typeDef)

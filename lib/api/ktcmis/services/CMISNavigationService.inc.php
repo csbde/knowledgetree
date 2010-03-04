@@ -197,7 +197,7 @@ class CMISNavigationService {
         }
 
         $parentId = $ktapiFolder->get_parent_folder_id();
-        $parent = new CMISFolderObject(CMISUtil::encodeObjectId($parentId, FOLDER), $this->ktapi);
+        $parent = new CMISFolderObject($parentId, $this->ktapi);
 
         return $parent;
     }

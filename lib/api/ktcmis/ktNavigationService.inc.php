@@ -168,7 +168,7 @@ class KTNavigationService extends KTCMISBase {
                 "message" => "Failed getting folder parent: " . $e->getMessage()
             );
         }
-
+        
         if (PEAR::isError($parent))
         {
             return array(
@@ -176,7 +176,7 @@ class KTNavigationService extends KTCMISBase {
                 "message" => "Failed getting folder parent"
             );
         }
-
+        
         return array(
 			"status_code" => 0,
 			"results" => CMISUtil::createObjectPropertiesEntry($parent->getProperties())
