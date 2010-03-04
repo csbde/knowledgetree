@@ -147,7 +147,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
     // 
     function runFirstLoginWizard($oTemplate, $aTemplateData) {
     	$this->oPage->requireCSSResource('setup/wizard/resources/css/modal.css');
-    	$this->oPage->requireJSResource('thirdpartyjs/jquery/jquery-1.3.2.min.js');
+    	$this->oPage->requireJSResource('setup/wizard/resources/js/jquery-1.4.2.min.js');
+    	//$this->oPage->requireJSResource('thirdpartyjs/jquery/jquery-1.3.2.min.js');
     	$this->oPage->requireJSResource('thirdpartyjs/jquery/jquery_noconflict.js');
     	$this->oPage->requireJSResource('setup/wizard/resources/js/firstlogin.js');
     	
