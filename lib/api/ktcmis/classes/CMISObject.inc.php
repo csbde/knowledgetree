@@ -78,6 +78,9 @@ abstract class CMISObject {
 
     public function __construct()
     {
+        // set properties shared by all objects of this type
+        $this->_setSharedProperties();
+        
 //        $propertyDef = new PropertyDefinition();
 //        $this->properties[] = $propertyDef;
     }
@@ -158,6 +161,16 @@ abstract class CMISObject {
     protected function _get($objectId)
     {
         // override in child classes
+    }
+    
+    /**
+     * Sets properties which are shared between all objects of this type
+     */
+    protected function _setSharedProperties()
+    {
+        $this->_setPropertyInternal('objectTypeId', strtolower($this->getAttribute('id')));
+        // Needed to distinguish type
+        $this->_setPropertyInternal('baseTypeId', strtolower($this->getAttribute('id')));
     }
 
 }

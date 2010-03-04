@@ -101,9 +101,12 @@ class CMISRepositoryService {
      * @param boolean $hasMoreItems TRUE if there are more items to return than were requested
      * @return array $objectTypes
      */
-    // NOTE this code may fit better within the Repository Class
     // TODO return for specific type when $typeId is specified
     // TODO other optional parameters
+    // This code is superseded by getTypeChildren and getTypeDescendants - when implementing those, check
+    // whether it is possible to entirely remove this function or if it is to remain and be shared by the
+    // other two functions (when no type is specified they will return base types [children] amd all types
+    // [descendants] respectively
     public function getTypes($repositoryId, $typeId = '', $returnPropertyDefinitions = false,
                       $maxItems = 0, $skipCount = 0, &$hasMoreItems = false)
     {   
@@ -160,13 +163,15 @@ class CMISRepositoryService {
     // NOTE this code may fit better in the Repository Class
     function getTypeDefinition($repositoryId, $typeId)
     {
+        global $default;
+        $default->log->debug();
+        $default->log->info(str_replace('cmis:', '', $typeId));
         $typeId = ucwords(str_replace('cmis:', '', $typeId));
         $object = 'CMIS' . $typeId . 'Object';
         
         // check whether the object type exists, return error if not
         // consider throwing an exception instead (see General Exceptions)
-        if (!file_exists(CMIS_DIR . '/objecttypes/' . $object . '.inc.php'))
-        {
+        if (!file_exists(CMIS_DIR . '/objecttypes/' . $object . '.inc.php')) {
             throw new InvalidArgumentException('Type ' . $typeId . ' is not supported');
         }
 
@@ -174,8 +179,11 @@ class CMISRepositoryService {
 
         require_once(CMIS_DIR . '/objecttypes/' . $object . '.inc.php');
         $cmisObject = new $object;
-        $typeDefinition['attributes'] = $cmisObject->getAttributes();
-        $typeDefinition['properties'] = $cmisObject->getProperties();
+        
+        // NOTE The specification is ambigous here: it states that this function must return the type properties, but 
+        //      the atompub example shows the type attributes, not properties;  since most properties are only populated
+        //      on creation of an instance of an object-type, we choose to go with the attributes and not the properties
+        $typeDefinition = $cmisObject->getAttributes();
 
         return $typeDefinition;
     }

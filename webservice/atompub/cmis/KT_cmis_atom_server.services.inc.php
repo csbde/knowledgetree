@@ -91,8 +91,6 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         // TODO this only returns one parent, need to implement returnToRoot also
         else if ($this->params[1] == 'parent')
         {
-            // abstract this to be used also by the document service (and the PWC service?) ???
-            // alternatively use getFolderParent here makes sense and use getObjectParents when document service?
             $folderId = $this->params[0];
             $NavigationService = new KTNavigationService(KT_cmis_atom_service_helper::getKt());
             $response = $NavigationService->getFolderParent($repositoryId, $folderId, false, false, false);
@@ -403,9 +401,7 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
         //      update accordingly when updating to newer specification
         if ($this->params[1] == 'parent')
         {
-            // abstract this to be used also by the document service (and the PWC service?) ???
-            // alternatively use getFolderParent here makes sense and use getObjectParents when document service?
-            $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
+            $NavigationService = new KTNavigationService(KT_cmis_atom_service_helper::getKt());
             $response = $NavigationService->getObjectParents($repositoryId, $objectId, false, false);
 
             if ($response['status_code'] == 1) {
@@ -701,27 +697,19 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service {
     {
         $RepositoryService = new KTRepositoryService();
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
+        $type = $this->params[0];
 
-        if (!isset($this->params[1])) {
-        // For easier return in the wanted format, we call getTypes instead of getTypeDefinition.
-        // Calling this with a single type specified returns an array containing the definition of
-        // just the requested type.
-        // NOTE could maybe be more efficient to call getTypeDefinition direct and then place in
-        //      an array on this side?  or directly expose the individual entry response code and
-        //      call directly from here rather than via getTypeFeed.
-            $type = ucwords($this->params[0]);
-            $types = $RepositoryService->getTypes($repositoryId, $type);
-            
-            // hack for removing one level of access
-            $types = $types['results'];
-        
-            $feed = KT_cmis_atom_service_helper::getTypeFeed($type, $types);
+        try {
+            $typeDefinition = $RepositoryService->getTypeDefinition($repositoryId, $type);
         }
-        else {
-        // TODO dynamic dates, as needed everywhere
-        // NOTE children of types not yet implemented and we don't support any non-basic types at this time
-            $feed = $this->getTypeChildrenFeed($this->params[1]);
+        catch (Exception $e) {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $e->getMessage());
+            // Expose the responseFeed
+            $this->responseFeed = $feed;
+            return null;
         }
+
+        $feed = KT_cmis_atom_service_helper::getTypeFeed($type, array($typeDefinition));
 
         // Expose the responseFeed
         $this->responseFeed=$feed;

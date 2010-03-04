@@ -48,7 +48,6 @@ require_once(realpath(dirname(__FILE__) . '/../../../config/dmsDefaults.php'));
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 
 define ('CMIS_DIR', KT_LIB_DIR . '/api/ktcmis');
-require_once(CMIS_DIR . '/exceptions/PermissionDeniedException.inc.php');
 require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
 /**
