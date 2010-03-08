@@ -1,0 +1,31 @@
+#selectimage_container img {
+    cursor: pointer;
+    text-decoration: none;
+    border: 10px solid white;
+}
+
+#selectimage_container img:hover {
+    text-decoration: none;
+    border: 10px solid white;
+}
+
+.jq_select_image {
+    float: left;
+    border: 1px solid #cccccc;
+    margin-right: 5px;
+    padding: 0px;
+    display:inline;
+    height:70px;
+}
+
+.selectimage_border_background {
+  border: 10px solid white;
+}
+
+.selectimage_border_hover {
+  border: 10px solid #9c9c9c;
+}
+
+.selectimage_border_click {
+  border: 10px solid #f2943a;
+}

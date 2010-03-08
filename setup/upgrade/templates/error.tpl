@@ -3,7 +3,7 @@
 	<head>
 		<link rel="shortcut icon" href="../wizard/resources/graphics/favicon.ico" type="image/x-icon">
 		<title>KnowledgeTree Installer</title>
-		<script type="text/javascript" src="resources/jquery.js"></script>
+		<script type="text/javascript" src="../../thirdpartyjs/jquery/jquery-1.3.2.js"></script>
 		<script type="text/javascript" src="resources/wizard.js" ></script>
 		<link rel="stylesheet" type="text/css" href="resources/wizard.css" />
 
@@ -18,7 +18,7 @@
 				<span style="font-size:80%;"> <?php echo $upgrade_type; ?> </span>
 				</div>
 		    </div>
-		    <div id="wrapper">
+		    <div id="wrapper" class="wizard">
 		        <div id="container">
 		        	<div id="sidebar">
 		            	<span class="current">Welcome</span><br>

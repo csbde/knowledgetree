@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -71,7 +71,7 @@ class InetBulkImportFolderMultiSelectAction extends KTFolderAction {
 			if (method_exists($oPage, 'requireJSResources')) {
 				$oPage->requireJSResources($aJavascript);
 			}
-	        return $js._kt('Import from Server Location');
+	        return _kt('Import from Server Location') . $js;
 		}
 		else
 		{

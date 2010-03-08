@@ -16,7 +16,7 @@
 // |          Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: array_uintersect_assoc.php,v 1.9 2005/05/10 07:50:08 aidan Exp $
 
 
 /**
@@ -27,7 +27,7 @@
  * @link        http://php.net/function.array_uintersect_assoc
  * @author      Tom Buskens <ortega@php.net>
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.9 $
  * @since       PHP 5
  * @require     PHP 4.0.6 (is_callable)
  */

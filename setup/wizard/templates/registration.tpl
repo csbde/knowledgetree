@@ -1,11 +1,12 @@
 <?php if (AJAX) { ?>
 <form id="database_registration_install" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="w.dummy();">
 <?php } else { ?>
-<form id="registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="javascript:{ if(w.validateRegistration()) { w.sendRegistration() };return false;}">
+<form id="registration" action="index.php?step_name=<?php echo $step_name; ?>" method="post" onsubmit="javascript:{ if(w.validateRegistration()) { w.send() };return false;}">
 <?php } ?>
 	<p class="title">Registering KnowledgeTree</p>
 	<p class="description">
-		Register your KnowledgeTree installation and receive the KnowledgeTree Drop Box for Windows software, a drag and drop tool that makes placing documents into KnowledgeTree even easier.
+	Register your KnowledgeTree installation.
+<!--		Register your KnowledgeTree installation and receive the KnowledgeTree Drop Box for Windows software, a drag and drop tool that makes placing documents into KnowledgeTree even easier.-->
 	<?php if(AJAX) { ?>
 		<a href='#' onclick='javascript:{w.getUrl("index.php?step_name=install", "content_container");}'>Skip Registration</a>
 	<?php } else { ?>
@@ -22,15 +23,15 @@
 	<br/>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
 		<span class="error" id="reg_error"></span>
-		<?php $rowspan = "6";?>
-		<?php if(WINDOWS_OS) $input_width = 40; else { $input_width = 28; } ?>
+		<?php $rowspan = "8";?>
+		<?php if(WINDOWS_OS) $input_width = 40; else { $input_width = 42; } ?>
 		<table class="registration_template">
 		    <tr>
 		        <td><label for='first'>First Name</label></td>
-		        <td rowspan='<?php echo $rowspan; ?>' width='5%'>&nbsp;</td>
-		        <td><input value="<?php echo $first_name; ?>" name='submitted[first_name]' id='first' size='<?php echo $input_width; ?>' style="float:left;"/></td>
-		        <td rowspan='<?php echo $rowspan; ?>' width='5%'>&nbsp;</td>
-		        <td rowspan='<?php echo $rowspan; ?>'> <?php echo $html->image('dropbox.png'); ?> </td>
+<!--		        <td rowspan='<?php //echo $rowspan; ?>' width='5%'>&nbsp;</td>-->
+		        <td><input value="<?php //echo $first_name; ?>" name='submitted[first_name]' id='first' size='<?php echo $input_width; ?>' style="float:left;"/></td>
+<!--		        <td rowspan='<?php //echo $rowspan; ?>' width='5%'>&nbsp;</td>-->
+<!--		        <td rowspan='<?php //echo $rowspan; ?>'> <?php //echo $html->image('dropbox.png'); ?> </td>-->
 		    </tr>
 		    <tr>
 		        <td><label for='last'>Last Name</label></td>
@@ -39,6 +40,10 @@
 		    <tr>
 		        <td><label for='email'>Email Address</label></td>
 		        <td><input value="<?php echo $email_address; ?>" name='submitted[email_address]' id='email' size='<?php echo $input_width; ?>' style="float:left;"/></td>
+		    </tr>
+		    <tr>
+		        <td><label for='reasons'>Reasons</label></td>
+		        <td><input value="<?php echo $reasons; ?>" name='submitted[reasons]' id='reasons' size='<?php echo $input_width; ?>' style="float:left;"/></td>
 		    </tr>
 		    <tr>
 		        <td><label for='country'>Country</label></td>
@@ -96,6 +101,11 @@
 		            </select>
 		        </td>
 		    </tr>
+		    <tr>
+		    	<td><label for='opt_in'>Receive Community Updates</label></td>
+		    	<td><input type='checkbox' id="opt_in" name='opt_in' value='enable' checked style="float:left;"/></td>
+			
+			</tr>
 		</table>
 		<input type='hidden' name='form_id' value='webform_client_form_242' />
 		<input type='hidden' name='op' value='Submit' />

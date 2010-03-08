@@ -31,14 +31,11 @@ When POSTing an Atom Document, the atom fields take precedence over the CMIS pro
  */
 
 // load all available CMIS services
-include_once CMIS_ATOM_LIB_FOLDER . 'RepositoryService.inc.php';
-include_once CMIS_ATOM_LIB_FOLDER . 'NavigationService.inc.php';
-include_once CMIS_ATOM_LIB_FOLDER . 'ObjectService.inc.php';
-include_once CMIS_ATOM_LIB_FOLDER . 'VersioningService.inc.php';
+include_once CMIS_API . '/ktRepositoryService.inc.php';
+include_once CMIS_API . '/ktNavigationService.inc.php';
+include_once CMIS_API . '/ktObjectService.inc.php';
+include_once CMIS_API . '/ktVersioningService.inc.php';
 include_once 'KT_cmis_atom_service_helper.inc.php';
-
-// TODO consider changing all responses from the webservice layer to return PEAR errors or success results instead of the half/half we have at the moment.
-//      the half/half occurred because on initial services PEAR Error seemed unnecessary, but it has proven useful for some of the newer functions
 
 // TODO proper first/last links
 // FIXME any incorrect or missing links
@@ -54,7 +51,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
      * This includes children and tree/descendant listings as well as individual folder retrieval 
      */
     public function GET_action()
-    {        
+    {
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         
         // TODO implement full path/node separation as with Alfresco - i.e. path requests come in on path/ and node requests come in on node/
@@ -75,37 +72,41 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         else if (($this->params[1] == 'children') || ($this->params[1] == 'descendants'))
         {
             $folderId = $this->params[0];
-            $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+            $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
             $response = $ObjectService->getProperties($repositoryId, $folderId, false, false);
     
-            if (PEAR::isError($response)) {
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response->getMessage());
+            if ($response['status_code'] == 1) {
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response['message']);
                 $this->responseFeed = $feed;
                 return null;
             }
+            else {
+                $response = $response['results'];
+            }
             
-            $folderName = $response['properties']['Name']['value'];
+            $folderName = $response['properties']['name']['value'];
         }
         // NOTE parent changes to parents in later specification
         // TODO update when updating to later specification
         // TODO this only returns one parent, need to implement returnToRoot also
         else if ($this->params[1] == 'parent')
         {
-            // abstract this to be used also by the document service (and the PWC service?) ???
-            // alternatively use getFolderParent here makes sense and use getObjectParents when document service?
             $folderId = $this->params[0];
-            $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
+            $NavigationService = new KTNavigationService(KT_cmis_atom_service_helper::getKt());
             $response = $NavigationService->getFolderParent($repositoryId, $folderId, false, false, false);
 
-            if (PEAR::isError($response)) {
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response->getMessage());
+            if ($response['status_code'] == 1) {
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response['message']);
                 $this->responseFeed = $feed;
                 return null;
             }
+            else {
+                $response = $response['results'];
+            }
             
             // we know that a folder will only have one parent, so we can assume element 0
-            $folderId = $response[0]['properties']['ObjectId']['value'];
-            $folderName = $response[0]['properties']['Name']['value'];
+            $folderId = $response['properties']['objectId']['value'];
+            $folderName = $response['properties']['name']['value'];
         }
         else {
             $folderId = $this->params[0];
@@ -113,12 +114,12 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
 
         if (!empty($this->params[1]) && (($this->params[1] == 'children') || ($this->params[1] == 'descendants')))
         {
-            $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
+            $NavigationService = new KTNavigationService(KT_cmis_atom_service_helper::getKt());
             $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $this->params[1]);
         }
         else
         {
-            $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+            $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
             $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $folderId);
         }
 
@@ -131,7 +132,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
      * This includes creation/moving of both folders and documents.
      */
     public function POST_action()
-    {
+    {        
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
 
         // set default action, objectId and typeId
@@ -140,32 +141,31 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         $typeId = null;
         
         $folderId = $this->params[0];
-        $title = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'title');
-        $summary = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'summary');
-
-        $properties = array('name' => $title, 'summary' => $summary);
+        $title = KT_cmis_atom_service_helper::getAtomValues($this->rawContent, 'title');
+        $summary = KT_cmis_atom_service_helper::getAtomValues($this->rawContent, 'summary');
 
         // determine whether this is a folder or a document action
         // document action create will have a content tag <atom:content> or <content> containing base64 encoding of the document
         // move action will have an existing id supplied as a parameter - not sure how this works yet as the CMIS clients we are
         // testing don't support move functionality at this time (2009/07/23) and so we are presuming the following format:
-        // /folder/<folderId>/children/<objectId>
+        // /folder/<folderId>/<sourceFolderId>/<objectId>
         // also possible that there will be an existing ObjectId property, try to cater for both until we know how it really works
+        // NOTE this also applies to the source folder id, see above
         
         // check for existing object id as parameter in url
-        if (isset($this->params[2]))
-        {
+        // if sourceFolderId parameter is submitted (expected as parameter 3, or params[2]) then this is a move
+        if (isset($this->params[2])) {
             $action = 'move';
-            $objectId = $this->params[2];
+            $sourceFolderId = $this->params[2];
         }
         
-        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']);
+        // get object properties - todo send through original properties array and not modified version
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisObjectProperties($this->rawContent);
+        $properties = array('name' => $title, 'summary' => $summary, 'objectTypeId' => $cmisObjectProperties['cmis:objectTypeId']);
         
         // check for existing object id as property of submitted object data
-        if (!empty($cmisObjectProperties['ObjectId']))
-        {
-            $action = 'move';
-            $objectId = $cmisObjectProperties['ObjectId'];
+        if (!empty($cmisObjectProperties['cmis:objectId'])) {
+            $objectId = $cmisObjectProperties['cmis:objectId'];
         }
         
         // TODO there may be more to do for the checking of an existing object.
@@ -179,42 +179,59 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         }
         
         // check for content stream
-        $content = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'content');        
-        
-        // TODO this will possibly need to change somewhat once Relationship Objects come into play.
-        if ((($action == 'create') && (is_null($content))) || ($typeId == 'Folder')) {
-            $type = 'folder';
-        }
-        else {
-            $type = 'document';
-        }
+        $content = KT_cmis_atom_service_helper::getCmisContent($this->rawContent);
+        // NOTE not sure about the text type, will need testing, most content will be base64
+        $cmisContent = (isset($content['cmisra:base64']) 
+                            ? $content['cmisra:base64'] 
+                            : ((isset($content['cmisra:text'])) 
+                                    ? $content['cmisra:text'] 
+                                    : null));
 
-        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+        $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
 
         $success = false;
         $error = null;
         if ($action == 'create')
         {
-            if ($type == 'folder')
-                $newObjectId = $ObjectService->createFolder($repositoryId, ucwords($cmisObjectProperties['ObjectTypeId']), $properties, $folderId);
-            else
-                $newObjectId = $ObjectService->createDocument($repositoryId, ucwords($cmisObjectProperties['ObjectTypeId']), $properties, $folderId, $content);
+            // TODO detection and passing of optional parameters (policies, ACEs, etc...) as well as support for other object-types
+            if ($cmisObjectProperties['cmis:objectTypeId'] == 'cmis:folder') {
+                $newObjectId = $ObjectService->createFolder($repositoryId, $properties, $folderId);
+            }
+            else {
+                // NOTE for the moment only creation in minor versioning state
+                $newObjectId = $ObjectService->createDocument($repositoryId, $properties, $folderId, $cmisContent, 'minor');
+            }
 
-            // check if returned Object Id is a valid CMIS Object Id
-            CMISUtil::decodeObjectId($newObjectId, $typeId);
-            if ($typeId != 'Unknown') $success = true;
-            else $error = $newObjectId['message'];
+            if ($newObjectId['status_code'] == 0) {
+                $newObjectId = $newObjectId['results'];
+                // check if returned Object Id is a valid CMIS Object Id
+                CMISUtil::decodeObjectId($newObjectId, $typeId);
+                if ($typeId != 'unknown') {
+                    $success = true;
+                }
+                else {
+                    $error = 'Unknown Object Type';
+                }
+            }
+            else {
+                $error = $newObjectId['message'];
+            }
         }
         else if ($action == 'move')
         {
-            $response = $ObjectService->moveObject($repositoryId, $objectId, '', $folderId);
+            $response = $ObjectService->moveObject($repositoryId, $objectId, $folderId, $sourceFolderId);
             
-            if (!PEAR::isError($response)) $success = true;
-            else $error = $response->getMessage();
+            if ($response['status_code'] == 0) {
+                $success = true;
+            }
+            else {
+                $error = $response['message'];
+            }
             
             // same object as before
             $newObjectId = $objectId;
-            $typeId = ucwords($type);
+            // FIXME why set this?  it does not appear to get used
+            $typeId = ucwords($cmisObjectProperties['cmis:objectTypeId']);
         }
         
         if ($success)
@@ -241,21 +258,24 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         // NOTE due to the way KnowledgeTree works with folders this is always going to call deleteTree.
         //      we COULD call deleteObject but when we delete a folder we expect to be trying to delete
         //      the folder and all content.
+        // TODO determine whether client is requesting deleteObject or deleteTree
         
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         
-        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+        $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
 
-        // attempt delete
-        $response = $ObjectService->deleteTree($repositoryId, $this->params[0]);
+        // attempt delete - last parameter sets $deleteAllVersions true
+        $response = $ObjectService->deleteTree($repositoryId, $this->params[0], 'delete', true);
 
         // error?
-        if (PEAR::isError($response))
-        {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response->getMessage());
+        if ($response['status_code'] == 1) {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response['message']);
             // Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
+        }
+        else {
+            $response = $response['results'];
         }
         
         // list of failed objects?
@@ -269,15 +289,14 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             foreach($response as $failed)
             {            
                 $entry = $feed->newEntry();
-                $objectElement = $feed->newElement('cmis:object');
+                $objectElement = $feed->newElement('cmisra:object');
                 $propertiesElement = $feed->newElement('cmis:properties');
                 $propElement = $feed->newElement('cmis:propertyId');
-                $propElement->appendChild($feed->newAttr('cmis:name', 'ObjectId'));
+                $propElement->appendChild($feed->newAttr('cmis:name', 'objectId'));
                 $feed->newField('cmis:value', $failed, $propElement);
                 $propertiesElement->appendChild($propElement);
                 $objectElement->appendChild($propertiesElement);
                 $entry->appendChild($objectElement);
-                $entry->appendChild($feed->newElement('cmis:terminator'));
             }
             
             $this->responseFeed = $feed;
@@ -303,11 +322,21 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $entries = $NavigationService->getChildren($repositoryId, $folderId, false, false);
         }
         else if ($feedType == 'descendants') {
-            $entries = $NavigationService->getDescendants($repositoryId, $folderId, false, false);
+            // TODO how will client request depth?  for now we assume as part of the url - will probably be covered by URI templates
+            if (isset($this->params[2])) {
+                $entries = $NavigationService->getDescendants($repositoryId, $folderId, $this->params[2]);
+                
+            }
+            else {
+                $entries = $NavigationService->getDescendants($repositoryId, $folderId);
+            }
         }
         else {
             // error, we shouldn't be here, if we are then the wrong service/function was called
         }
+        
+        // hack, for removing one level of access
+        $entries = $entries['results'];
 
         // $baseURI=NULL,$title=NULL,$link=NULL,$updated=NULL,$author=NULL,$id=NULL
         $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
@@ -330,19 +359,18 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         $link->appendChild($feed->newAttr('rel', 'self'));
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/folder/' . $folderId . '/' . $feedType));
         $feed->appendChild($link);
+        
+        $link = $feed->newElement('link');
+        $link->appendChild($feed->newAttr('rel', 'service'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'servicedocument'));
+        $feed->appendChild($link);
 
         $link = $feed->newElement('link');
-        $link->appendChild($feed->newAttr('rel', 'source'));
+        $link->appendChild($feed->newAttr('rel', 'via'));
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/folder/' . $folderId));
         $feed->appendChild($link);
 
-        foreach($entries as $cmisEntry)
-        {
-            KT_cmis_atom_service_helper::createObjectEntry($feed, $cmisEntry, $folderName);
-			
-			// after each entry, add app:edited tag
-           	$feed->newField('app:edited', KT_cmis_atom_service_helper::formatDatestamp(), $feed);
-        }
+        KT_cmis_atom_service_helper::createObjectFeed($feed, $entries, $folderName);
 
         $feed->newField('cmis:hasMoreItems', 'false', $feed);
 
@@ -365,7 +393,7 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
     {
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         
-        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+        $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
 
         $objectId = $this->params[0];
         
@@ -373,20 +401,21 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
         //      update accordingly when updating to newer specification
         if ($this->params[1] == 'parent')
         {
-            // abstract this to be used also by the document service (and the PWC service?) ???
-            // alternatively use getFolderParent here makes sense and use getObjectParents when document service?
-            $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
+            $NavigationService = new KTNavigationService(KT_cmis_atom_service_helper::getKt());
             $response = $NavigationService->getObjectParents($repositoryId, $objectId, false, false);
 
-            if (PEAR::isError($response)) {
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response->getMessage());
+            if ($response['status_code'] == 1) {
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response['message']);
                 $this->responseFeed = $feed;
                 return null;
+            }
+            else {
+                $response = $response['results'];
             }
             
             // for now a document will only have one parent as KnowledgeTree does not support multi-filing
             // TODO update this code if/when multi-filing support is added
-            $objectId = $response[0]['properties']['ObjectId']['value'];
+            $objectId = $response[0]['properties']['objectId']['value'];
         }
         // determine whether we want the document entry feed or the actual physical document content.
         // this depends on $this->params[1]
@@ -410,21 +439,17 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
      * @return 204 on success, 500 on error
      */
     public function DELETE_action()
-    {
-        // NOTE due to the way KnowledgeTree works with documents this is always going to call deleteAllVersions.
-        //      we do not have support for deleting only specific versions (this may be added in the future.)
-        
+    {        
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         
-        $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
-
+        $VersioningService = new KTVersioningService(KT_cmis_atom_service_helper::getKt());
+        $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
+        
         // attempt delete
-        $response = $VersioningService->deleteAllVersions($repositoryId, $this->params[0]);
+        $response = $ObjectService->deleteObject($repositoryId, $this->params[0]);
 
-        // error?
-        if (PEAR::isError($response))
-        {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response->getMessage());
+        if ($response['status_code'] == 1) {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response['message']);
             // Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
@@ -448,7 +473,7 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
     {
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         
-        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+        $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
 
         // determine whether we want the Private Working Copy entry feed or the actual physical Private Working Copy content.
         // this depends on $this->params[1]
@@ -475,15 +500,13 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
     {
         // call the cancel checkout function
         
-        $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
+        $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);  
+        $VersioningService = new KTVersioningService(KT_cmis_atom_service_helper::getKt());
         
-        $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
-
         $response = $VersioningService->cancelCheckout($repositoryId, $this->params[0]);
 
-        if (PEAR::isError($response))
-        {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response->getMessage());
+        if ($response['status_code'] == 1) {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response['message']);
            // Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
@@ -496,45 +519,41 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
     public function PUT_action()
     {
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
+        $VersioningService = new KTVersioningService(KT_cmis_atom_service_helper::getKt());
+        $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
         
-        $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
-        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+        // get object properties
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisObjectProperties($this->rawContent);
 
         // check for content stream
-        // NOTE this is a hack!  will not work with CMISSpaces at least, probably not with any client except RestTest and similar
-        //      where we can manually modify the input
-        // first we try for an atom content tag
-        $content = KT_cmis_atom_service_helper::getAtomValues($this->parsedXMLContent['@children'], 'content');
-        if (!empty($content)) {
-            $contentStream = $content;
-        }
-        // not found? try for a regular content tag
-        else {
-            $content = KT_cmis_atom_service_helper::findTag('content', $this->parsedXMLContent['@children'], null, false); 
-            $contentStream = $content['@value'];
-        }
-        
-        // if we haven't found it now, the real hack begins - retrieve the EXISTING content and submit this as the contentStream
+        $content = KT_cmis_atom_service_helper::getCmisContent($this->rawContent);
+        // NOTE not sure about the text type, will need testing, most content will be base64
+        $cmisContent = (isset($content['cmisra:base64']) 
+                            ? $content['cmisra:base64'] 
+                            : ((isset($content['cmisra:text'])) 
+                                    ? $content['cmisra:text'] 
+                                    : null));
+
+        // if we haven't found it now, the hack begins - retrieve the EXISTING content and submit this as the contentStream
         // this is needed because KnowledgeTree will not accept a checkin without a content stream but CMISSpaces (and possibly 
         // other CMIS clients are the same, does not send a content stream on checkin nor does it offer the user a method to choose one)
         // NOTE that if the content is INTENDED to be empty this and all the above checks will FAIL!
         // FIXME this is horrible, terrible, ugly and bad!
-        if (empty($contentStream)) {
-            $contentStream = base64_encode(KT_cmis_atom_service_helper::getContentStream($this, $ObjectService, $repositoryId));
+        if (empty($cmisContent)) {
+            $cmisContent = base64_encode(KT_cmis_atom_service_helper::getContentStream($this, $ObjectService, $repositoryId));
         }
         
-        // and if we don't have it by now, we give up...but leave the error to be generated by the underlying KnowledgeTree code
-        
+        // and if we don't have the content stream by now, we give up...but leave the error to be generated by the underlying KnowledgeTree code
         // checkin function call
         // TODO dynamically detect version change type - leaving this for now as the CMIS clients tested do not appear to 
         //      offer the choice to the user - perhaps it will turn out that this will come from somewhere else but for now
         //      we assume minor version updates only
         $major = false;
-        $response = $VersioningService->checkIn($repositoryId, $this->params[0], $major, $contentStream);
-
-        if (PEAR::isError($response))
-        {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response->getMessage());
+        $checkinComment = '';
+        $response = $VersioningService->checkIn($repositoryId, $this->params[0], $major, $cmisObjectProperties, $cmisContent, $checkinComment);
+        
+        if ($response['status_code'] == 1) {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response['message']);
             // Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
@@ -559,10 +578,12 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
     public function GET_action()
     {
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
-        
-        $NavigationService = new NavigationService(KT_cmis_atom_service_helper::getKt());
+        $NavigationService = new KTNavigationService(KT_cmis_atom_service_helper::getKt());
 
         $checkedout = $NavigationService->getCheckedOutDocs($repositoryId);
+        
+        // hack, for removing one level of access
+        $checkedout = $checkedout['results'];
 
         //Create a new response feed
         $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
@@ -598,12 +619,8 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
         $feed->appendChild($link);
 
-        foreach($checkedout as $cmisEntry)
-        {
+        foreach($checkedout as $cmisEntry) {
             KT_cmis_atom_service_helper::createObjectEntry($feed, $cmisEntry, $folderName, true);
-            
-//          // after each entry, add app:edited tag
-//              $feed->newField('app:edited', KT_cmis_atom_service_helper::formatDatestamp(), $feed);
         }
 
         $feed->newField('cmis:hasMoreItems', 'false', $feed);
@@ -615,14 +632,13 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
     public function POST_action()
     {
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
-        
-        $VersioningService = new VersioningService(KT_cmis_atom_service_helper::getKt());
-        $ObjectService = new ObjectService(KT_cmis_atom_service_helper::getKt());
+        $VersioningService = new KTVersioningService(KT_cmis_atom_service_helper::getKt());
+        $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
 
-        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisProperties($this->parsedXMLContent['@children']);
+        $cmisObjectProperties = KT_cmis_atom_service_helper::getCmisObjectProperties($this->rawContent);
         
         // check for existing object id as property of submitted object data
-        if (empty($cmisObjectProperties['ObjectId']))
+        if (empty($cmisObjectProperties['cmis:objectId']))
         {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
             // Expose the responseFeed
@@ -630,10 +646,9 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
             return null;
         }
         
-        $response = $VersioningService->checkOut($repositoryId, $cmisObjectProperties['ObjectId']);
+        $response = $VersioningService->checkOut($repositoryId, $cmisObjectProperties['cmis:objectId']);
         
-        if (PEAR::isError($response))
-        {
+        if ($response['status_code'] == 1) {
             $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
             // Expose the responseFeed
             $this->responseFeed = $feed;
@@ -641,7 +656,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         }
         
         $this->setStatus(self::STATUS_CREATED);
-        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['ObjectId'], 'POST');
+        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['cmis:objectId'], 'POST');
 
         // Expose the responseFeed
         $this->responseFeed = $feed;
@@ -656,10 +671,14 @@ class KT_cmis_atom_service_types extends KT_cmis_atom_service {
 
     public function GET_action()
     {
-        $RepositoryService = new RepositoryService();
+        $RepositoryService = new KTRepositoryService();
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
 
         $types = $RepositoryService->getTypes($repositoryId);
+        
+        // hack for removing one level of access
+        $types = $types['results'];
+        
         $type = ((empty($this->params[0])) ? 'all' : $this->params[0]);
         $feed = KT_cmis_atom_service_helper::getTypeFeed($type, $types);
 
@@ -676,25 +695,21 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service {
 
     public function GET_action()
     {
-        $RepositoryService = new RepositoryService();
+        $RepositoryService = new KTRepositoryService();
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
+        $type = $this->params[0];
 
-        if (!isset($this->params[1])) {
-        // For easier return in the wanted format, we call getTypes instead of getTypeDefinition.
-        // Calling this with a single type specified returns an array containing the definition of
-        // just the requested type.
-        // NOTE could maybe be more efficient to call getTypeDefinition direct and then place in
-        //      an array on this side?  or directly expose the individual entry response code and
-        //      call directly from here rather than via getTypeFeed.
-            $type = ucwords($this->params[0]);
-            $types = $RepositoryService->getTypes($repositoryId, $type);
-            $feed = KT_cmis_atom_service_helper::getTypeFeed($type, $types);
+        try {
+            $typeDefinition = $RepositoryService->getTypeDefinition($repositoryId, $type);
         }
-        else {
-        // TODO dynamic dates, as needed everywhere
-        // NOTE children of types not yet implemented and we don't support any non-basic types at this time
-            $feed = $this->getTypeChildrenFeed($this->params[1]);
+        catch (Exception $e) {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $e->getMessage());
+            // Expose the responseFeed
+            $this->responseFeed = $feed;
+            return null;
         }
+
+        $feed = KT_cmis_atom_service_helper::getTypeFeed($type, array($typeDefinition['attributes']));
 
         // Expose the responseFeed
         $this->responseFeed=$feed;
@@ -712,7 +727,6 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service {
     private function getTypeChildrenFeed()
     {
         //Create a new response feed
-        // $baseURI=NULL,$title=NULL,$link=NULL,$updated=NULL,$author=NULL,$id=NULL
         $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
 
         $feed->newField('title', 'Child Types of ' . ucwords($this->params[0]), $feed);

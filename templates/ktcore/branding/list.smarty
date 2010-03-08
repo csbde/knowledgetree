@@ -1,0 +1,5 @@
+<h2>{i18n}Manage Branding{/i18n}</h2>
+
+{foreach item=oForm from=$oForms}
+{$oForm->render()}
+{/foreach}

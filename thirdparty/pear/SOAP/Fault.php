@@ -18,16 +18,27 @@
  * @author     Shane Caraveo <Shane@Caraveo.com>   Port to PEAR and more
  * @author     Chuck Hagenbuch <chuck@horde.org>   Maintenance
  * @author     Jan Schneider <jan@horde.org>       Maintenance
- * @copyright  2003-2005 The PHP Group
+ * @copyright  2003-2006 The PHP Group
  * @license    http://www.php.net/license/2_02.txt  PHP License 2.02
  * @link       http://pear.php.net/package/SOAP
  */
 
-require_once('PEAR.php');
+/** PEAR_Error */
+require_once 'PEAR.php';
 
 /**
- * SOAP_Fault
  * PEAR::Error wrapper used to match SOAP Faults to PEAR Errors
+ *
+ * SOAP_Fault can provide a complete backtrace of the error.  Revealing these
+ * details in a public web services is a bad idea because it can be used by
+ * attackers.  Thus you have to enable backtrace information in SOAP_Fault
+ * responses by putting the following code in your script after your
+ * "require_once 'SOAP/Server.php';" line:
+ *
+ * <code>
+ * $backtrace =& PEAR::getStaticProperty('SOAP_Fault', 'backtrace');
+ * $backtrace = true;
+ * </code>
  *
  * @package  SOAP
  * @access   public
@@ -36,101 +47,83 @@ require_once('PEAR.php');
  */
 class SOAP_Fault extends PEAR_Error
 {
-    
     /**
-     * Constructor
-     * 
-     * @param    string  message string for fault
-     * @param    mixed   the faultcode
-     * @param    mixed   see PEAR::ERROR 
-     * @param    mixed   see PEAR::ERROR 
-     * @param    array   the userinfo array is used to pass in the
-     *                   SOAP actor and detail for the fault
+     * Constructor.
+     *
+     * @param string $faultstring  Message string for fault.
+     * @param mixed $faultcode     The faultcode.
+     * @param mixed $faultactor
+     * @param mixed $detail        @see PEAR_Error
+     * @param array $mode          @see PEAR_Error
+     * @param array $options       @see PEAR_Error
      */
-    function SOAP_Fault($faultstring = 'unknown error', $faultcode = 'Client', $faultactor=NULL, $detail=NULL, $mode = null, $options = null)
+    function SOAP_Fault($faultstring = 'unknown error', $faultcode = 'Client',
+                        $faultactor = null, $detail = null, $mode = null,
+                        $options = null)
     {
         parent::PEAR_Error($faultstring, $faultcode, $mode, $options, $detail);
-        if ($faultactor) $this->error_message_prefix = $faultactor;
-    }
-    
-    /**
-     * message
-     *
-     * returns a SOAP_Message class that can be sent as a server response
-     *
-     * @return SOAP_Message 
-     * @access public
-     */
-    function message()
-    {
-        $msg =& new SOAP_Base();
-        $params = array();
-        $params[] =& new SOAP_Value('faultcode', 'QName', 'SOAP-ENV:'.$this->code);
-        $params[] =& new SOAP_Value('faultstring', 'string', $this->message);
-        $params[] =& new SOAP_Value('faultactor', 'anyURI', $this->error_message_prefix);
-        if (isset($this->backtrace)) {
-            $params[] =& new SOAP_Value('detail', 'string', $this->backtrace);
-        } else {
-            $params[] =& new SOAP_Value('detail', 'string', $this->userinfo);
+        if ($faultactor) {
+            $this->error_message_prefix = $faultactor;
         }
-        
-        $methodValue =& new SOAP_Value('{'.SOAP_ENVELOP.'}Fault', 'Struct', $params);
-        $headers = NULL;
-        return $msg->_makeEnvelope($methodValue, $headers);
     }
-    
+
     /**
-     * getFault
+     * Returns a SOAP XML message that can be sent as a server response.
      *
-     * returns a simple native php array containing the fault data
+     * @return string
+     */
+    function message($encoding = SOAP_DEFAULT_ENCODING)
+    {
+        $msg = new SOAP_Base();
+        $params = array();
+        $params[] = new SOAP_Value('faultcode', 'QName', SOAP_BASE::SOAPENVPrefix().':' . $this->code);
+        $params[] = new SOAP_Value('faultstring', 'string', $this->message);
+        $params[] = new SOAP_Value('faultactor', 'anyURI', $this->error_message_prefix);
+        if (PEAR::getStaticProperty('SOAP_Fault', 'backtrace') &&
+            isset($this->backtrace)) {
+            $params[] = new SOAP_Value('detail', 'string', $this->backtrace);
+        } else {
+            $params[] = new SOAP_Value('detail', 'string', $this->userinfo);
+        }
+
+        $methodValue = new SOAP_Value('{' . SOAP_ENVELOP . '}Fault', 'Struct', $params);
+        $headers = null;
+        return $msg->makeEnvelope($methodValue, $headers, $encoding);
+    }
+
+    /**
+     * Returns a simple native PHP array containing the fault data.
      *
-     * @return array 
-     * @access public
+     * @return array
      */
     function getFault()
     {
-        global $SOAP_OBJECT_STRUCT;
-        if ($SOAP_OBJECT_STRUCT) {
-            $fault =& new stdClass();
-            $fault->faultcode = $this->code;
-            $fault->faultstring = $this->message;
-            $fault->faultactor = $this->error_message_prefix;
-            $fault->detail = $this->userinfo;
-            return $fault;
-        }
-        return array(
-                'faultcode' => $this->code,
-                'faultstring' => $this->message,
-                'faultactor' => $this->error_message_prefix,
-                'detail' => $this->userinfo
-            );
+        $fault = new stdClass();
+        $fault->faultcode = $this->code;
+        $fault->faultstring = $this->message;
+        $fault->faultactor = $this->error_message_prefix;
+        $fault->detail = $this->userinfo;
+        return $fault;
     }
-    
+
     /**
-     * getActor
+     * Returns the SOAP actor for the fault.
      *
-     * returns the SOAP actor for the fault
-     *
-     * @return string 
-     * @access public
+     * @return string
      */
     function getActor()
     {
         return $this->error_message_prefix;
     }
-    
+
     /**
-     * getDetail
+     * Returns the fault detail.
      *
-     * returns the fault detail
-     *
-     * @return string 
-     * @access public
+     * @return string
      */
     function getDetail()
     {
         return $this->userinfo;
     }
-    
+
 }
-?>

@@ -4,7 +4,7 @@
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
+* Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
 * 
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -32,69 +32,20 @@
 * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
 * must display the words "Powered by KnowledgeTree" and retain the original
 * copyright notice.
+* Contributor( s): ______________________________________
+*/
+
+/**
 *
-* @copyright 2008-2009, KnowledgeTree Inc.
+* @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
 * @package Installer
 * @version Version 0.1
 */
-include("path.php"); // Paths
+require_once("../wizard/share/wizardBase.php");
 
-/**
- * Auto loader to bind installer package
- *
- * @param string $class
- * @return void
- */
-function __autoload($class) { // Attempt and autoload classes
-	$class = strtolower(substr($class,0,1)).substr($class,1); // Linux Systems.
-	if(file_exists(WIZARD_DIR."$class.php")) {
-		require_once(WIZARD_DIR."$class.php");
-	} elseif (file_exists(STEP_DIR."$class.php")) {
-		require_once(STEP_DIR."$class.php");
-	} elseif (file_exists(WIZARD_LIB."$class.php")) {
-		require_once(WIZARD_LIB."$class.php");
-	} elseif (file_exists(SERVICE_LIB."$class.php")) {
-		require_once(SERVICE_LIB."$class.php");
-	} elseif (file_exists(VALID_DIR."$class.php")) {
-		require_once(VALID_DIR."$class.php");
-	} else {
-		if(preg_match('/Helper/', $class)) {
-			require_once(HELPER_DIR."$class.php");
-		}
-	}
-	return false;
-}
-
-class InstallWizard {
-	/**
-	* Install bypass flag
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var mixed
-	*/
-	protected $bypass = null;
-
-	/**
-	* Level of debugger
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var mixed
-	*/
-	protected $debugLevel = 0;
-
-	/**
-	* Reference to installer utility object
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var boolean
-	*/
-	protected $util = null;
-
+class InstallWizard extends WizardBase {
 	/**
 	* Constructs installation wizard object
 	*
@@ -111,75 +62,14 @@ class InstallWizard {
 	* @param string
 	* @return void
  	*/
-	public function displayInstaller($response = null) {
+	public function display($response = null) {
 		if($response) {
 			$ins = new Installer(); // Instantiate the installer
 			$ins->resolveErrors($response); // Run step
 		} else {
-			$ins = new Installer(new Session()); // Instantiate the installer and pass the session class
+			$ins = new Installer(new wSession()); // Instantiate the installer and pass the session class
 			$ins->step(); // Run step
 		}
-	}
-
-	/**
-	* Set bypass flag
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param boolean
-	* @return void
- 	*/
-	private function setBypass($bypass) {
-		$this->bypass = $bypass;
-	}
-
-	/**
-	* Set debug level
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param boolean
-	* @return void
- 	*/
-	private function setDebugLevel($debug) {
-		define('DEBUG', $debug);
-		$this->debugLevel = $debug;
-	}
-
-	/**
-	* Set util reference
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param object installer utility
-	* @return void
- 	*/
-	private function setIUtil($util) {
-		$this->util = $util;
-	}
-
-	/**
-	* Get bypass flag
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return boolean
- 	*/
-	public function getBypass() {
-		return $this->bypass;
-	}
-
-	/**
-	* Bypass and force an install
-	*
-	* @author KnowledgeTree Team
-	* @access private
-	* @param none
-	* @return boolean
- 	*/
-	private function bypass() {
-
 	}
 
 	/**
@@ -264,7 +154,7 @@ class InstallWizard {
 	public function dispatch() {
 		$this->load();
 		if($this->getBypass() === "1") { // Helper to force install
-			$this->removeInstallFile(); // TODO: Remove
+			$this->removeInstallFile();
 		} elseif ($this->getBypass() === "0") {
 			$this->createInstallFile();
 		}
@@ -277,13 +167,13 @@ class InstallWizard {
 			if($this->util->loginSpecified()) { // Back to wizard from upgrader
 				$this->util->redirect('../../control.php');
 			} elseif($this->util->migrationSpecified()) { // Check if the migrator needs to be accessed
-				$this->util->redirect('../migrate/index.php?');
+				$this->util->redirect('../migrate/index.php');
 			} elseif ($this->util->upgradeSpecified()) { // Check if the upgrader needs to be accessed
 				$this->util->redirect('../upgrade/index.php?action=installer');
 			}
 			$response = $this->systemChecks();
 			if($response === true) {
-				$this->displayInstaller();
+				$this->display();
 			} else {
 				exit();
 			}

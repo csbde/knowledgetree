@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: md5_file.php,v 1.3 2005/11/22 08:29:19 aidan Exp $
 
 
 /**
@@ -25,7 +25,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/md5_file
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.3 $
  * @since       PHP 4.2.0
  * @require     PHP 4.0.0 (user_error)
  */
@@ -70,6 +70,7 @@ if (!function_exists('md5_file')) {
         fclose($fh);
 
         // Return
+        $data = md5($data);
         if ($raw_output === true) {
             $data = pack('H*', $data);
         }

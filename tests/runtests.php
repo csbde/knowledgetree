@@ -8,7 +8,7 @@ class UnitTests extends TestSuite {
         $this->TestSuite('Unit tests');
 
         // CMIS API
-        $this->addFile('ktcmis/testCmisApi.php');
+//        $this->addFile('ktcmis/testCmisApi.php');
 
         // KTAPI
         // Some of these tests will fail if Electronic Signatures are enabled for the API.
@@ -36,7 +36,11 @@ class UnitTests extends TestSuite {
         // if Electronic Signatures are NOT enabled for the API, new tests may not
         // include the check which allows the tests to be bypassed when esignatures
         // are not on, so if you have failures, check there first :)
-        $this->addFile('api/testElectronicSignatures.php');
+//        $this->addFile('api/testElectronicSignatures.php');
+
+        // Web Service tests
+        $this->addFile('webservices/testRest.php');
+        $this->addFile('webservices/testSoap.php');
 
 //        $this->addFile('SQLFile/test_sqlfile.php');
 //        $this->addFile('cache/testCache.php');
@@ -48,9 +52,9 @@ class UnitTests extends TestSuite {
 //        $this->addFile('filelike/testStringFileLike.php');
 
         // Search (2) and indexing
-//        $this->addFile('documentProcessor/testExtracters.php');
+        $this->addFile('documentProcessor/testExtracters.php');
 //        $this->addFile('documentProcessor/testGuidInserter.php');
-//        $this->addFile('search2/testSearch.php');
+        $this->addFile('search2/testSearch.php');
     }
 }
 

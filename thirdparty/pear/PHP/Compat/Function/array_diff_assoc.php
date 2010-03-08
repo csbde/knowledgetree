@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: array_diff_assoc.php,v 1.12 2005/12/07 21:08:57 aidan Exp $
 
 
 /**
@@ -25,7 +25,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/function.array_diff_assoc
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.12 $
  * @since       PHP 4.3.0
  * @require     PHP 4.0.0 (user_error)
  */
@@ -72,4 +72,5 @@ if (!function_exists('array_diff_assoc')) {
         return $array_comp;
     }
 }
+
 ?>

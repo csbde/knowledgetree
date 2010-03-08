@@ -16,7 +16,7 @@
 // |          Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: htmlspecialchars_decode.php,v 1.3 2005/06/18 14:02:09 aidan Exp $
 
 
 /**
@@ -26,7 +26,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/function.htmlspecialchars_decode
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.3 $
  * @since       PHP 5.1.0
  * @require     PHP 4.0.0 (user_error)
  */

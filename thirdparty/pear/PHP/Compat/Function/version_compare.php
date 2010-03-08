@@ -16,7 +16,7 @@
 // |          Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: version_compare.php,v 1.13 2005/08/01 12:21:14 aidan Exp $
 
 
 /**
@@ -27,9 +27,9 @@
  * @link        http://php.net/function.version_compare
  * @author      Philippe Jausions <Philippe.Jausions@11abacus.com>
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.13 $
  * @since       PHP 4.1.0
- * @require     PHP 4.0.0 (user_error)
+ * @require     PHP 4.0.5 (user_error)
  */
 if (!function_exists('version_compare')) {
     function version_compare($version1, $version2, $operator = '<')
@@ -95,6 +95,7 @@ if (!function_exists('version_compare')) {
                 $compare = ($i1 < $i2) ? -1 : 1;
                 break;
             }
+
             // We use the position of '#' in the versions list
             // for numbers... (so take care of # in original string)
             if ($i1 == '#') {
@@ -102,11 +103,13 @@ if (!function_exists('version_compare')) {
             } elseif (is_numeric($i1)) {
                 $i1 = '#';
             }
+
             if ($i2 == '#') {
                 $i2 = '';
             } elseif (is_numeric($i2)) {
                 $i2 = '#';
             }
+
             if (isset($versions[$i1]) && isset($versions[$i2])) {
                 $compare = ($versions[$i1] < $versions[$i2]) ? -1 : 1;
             } elseif (isset($versions[$i1])) {

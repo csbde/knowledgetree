@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -90,13 +90,10 @@ class KTBulkDeleteAction extends KTBulkAction {
             }
 
             // If all documents at the current level may be deleted, we can continue
-            // Get any existing subfolders
-            $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
-            parent_folder_ids LIKE '{$sFolderId},%' OR
-            parent_folder_ids LIKE '%,{$sFolderId},%' OR
-            parent_folder_ids LIKE '%,{$sFolderId}'";
+            // Get any existing subfolders - but ONLY on the current level, or we will be checking subfolders more than once!
+			$sWhereClause = "parent_id = '{$sFolderId}'";
             $aChildFolders = $this->oFolder->getList($sWhereClause);
-
+            
             // Loop through subfolders and check each in the same way as the parent
             if(!empty($aChildFolders)){
                 foreach($aChildFolders as $oChild){
@@ -445,12 +442,9 @@ class KTBulkMoveAction extends KTBulkAction {
                 }
             }
 
-            // If all documents at the current level may be moved, we can continue
-            // Get any existing subfolders
-            $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
-            parent_folder_ids LIKE '{$sFolderId},%' OR
-            parent_folder_ids LIKE '%,{$sFolderId},%' OR
-            parent_folder_ids LIKE '%,{$sFolderId}'";
+            // If all documents at the current level may be deleted, we can continue
+            // Get any existing subfolders - but ONLY on the current level, or we will be checking subfolders more than once!
+			$sWhereClause = "parent_id = '{$sFolderId}'";
             $aChildFolders = $this->oFolder->getList($sWhereClause);
 
             // Loop through subfolders and check each in the same way as the parent
@@ -694,12 +688,9 @@ class KTBulkCopyAction extends KTBulkAction {
                 }
             }
 
-            // If all documents at the current level may be copied, we can continue
-            // Get any existing subfolders
-            $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
-            parent_folder_ids LIKE '{$sFolderId},%' OR
-            parent_folder_ids LIKE '%,{$sFolderId},%' OR
-            parent_folder_ids LIKE '%,{$sFolderId}'";
+            // If all documents at the current level may be deleted, we can continue
+            // Get any existing subfolders - but ONLY on the current level, or we will be checking subfolders more than once!
+			$sWhereClause = "parent_id = '{$sFolderId}'";
             $aChildFolders = $this->oFolder->getList($sWhereClause);
 
             // Loop through subfolders and check each in the same way as the parent
@@ -904,12 +895,9 @@ class KTBulkArchiveAction extends KTBulkAction {
                 }
             }
 
-            // If all documents at the current level may be archived, we can continue
-            // Get any existing subfolders
-            $sWhereClause = "parent_folder_ids = '{$sFolderId}' OR
-            parent_folder_ids LIKE '{$sFolderId},%' OR
-            parent_folder_ids LIKE '%,{$sFolderId},%' OR
-            parent_folder_ids LIKE '%,{$sFolderId}'";
+            // If all documents at the current level may be deleted, we can continue
+            // Get any existing subfolders - but ONLY on the current level, or we will be checking subfolders more than once!
+			$sWhereClause = "parent_id = '{$sFolderId}'";
             $aChildFolders = $this->oFolder->getList($sWhereClause);
 
             // Loop through subfolders and check each in the same way as the parent
@@ -1197,7 +1185,6 @@ class KTBrowseBulkExportAction extends KTBulkAction {
       *
       */
     function perform_action($oEntity) {
-        // TODO find a way to do bulk email
         $exportCode = $_SESSION['exportcode'];
         $this->oZip = ZipFolder::get($exportCode);
 
@@ -1216,7 +1203,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 	    	if($useQueue){
                 DownloadQueue::addItem($this->sExportCode, $this->oFolder->getId(), $oDocument->iId, 'document');
 	    	}else{
-                $oQueue->addDocument($this->oZip, $oDocument->iId);
+                $oQueue->addDocument($this->oZip, $oDocument->iId, false);
 	    	}
 
 

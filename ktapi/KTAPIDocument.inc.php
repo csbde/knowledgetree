@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  *
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,8 +32,11 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
- *
- * @copyright 2008-2009, KnowledgeTree Inc.
+ * Contributor( s): ______________________________________
+ */
+
+/**
+ * @copyright 2008-2010, KnowledgeTree Inc.
  * @license GNU General Public License version 3
  * @author KnowledgeTree Team
  * @package KTAPI
@@ -88,24 +91,30 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
-	 * This is used to get a document based on document id.
+	 * This is used to get a document based on document id. Or a version of the document based on the metadata version id
 	 *
 	 * @author KnowledgeTree Team
 	 * @static
 	 * @access public
 	 * @param KTAPI $ktapi The ktapi object
 	 * @param int $documentid The document id
+	 * @param int $iMetadataVersionId Optional. The metadata version id
 	 * @return KTAPI_Document The document object
 	 */
-	function &get(&$ktapi, $documentid)
+	function &get(&$ktapi, $documentid, $iMetadataVersionId = null)
 	{
-		assert(!is_null($ktapi));
-		assert(is_a($ktapi, 'KTAPI'));
-		assert(is_numeric($documentid));
+	    if(is_null($ktapi) || !is_a($ktapi, 'KTAPI')){
+	        return PEAR::raiseError('A valid KTAPI object is needed');
+	    }
 
+	    if(!is_numeric($documentid)){
+	        return PEAR::raiseError('A valid document id is required');
+	    }
+
+	    // ensure documentid is an integer
 		$documentid += 0;
 
-		$document = &Document::get($documentid);
+		$document = &Document::get($documentid, $iMetadataVersionId);
 		if (is_null($document) || PEAR::isError($document))
 		{
 			return new KTAPI_Error(KTAPI_ERROR_DOCUMENT_INVALID,$document );
@@ -131,6 +140,30 @@ class KTAPI_Document extends KTAPI_FolderItem
 		// We don't do any checks on this folder as it could possibly be deleted, and is not required right now.
 
 		return new KTAPI_Document($ktapi, $ktapi_folder, $document);
+	}
+
+	/**
+	 * This is used to get a document based on the document id and the metadata version
+	 *
+	 * @author KnowledgeTree Team
+	 * @static
+	 * @access public
+	 * @param KTAPI $ktapi The ktapi object
+	 * @param int $documentid The document id
+	 * @param int $metadataVersion The metadata version (0,1,2)
+	 * @return KTAPI_Document The document object
+	 */
+	function &get_by_metadata_version(&$ktapi, $documentid, $metadataVersion)
+	{
+	    // get the metadata version id
+	    $iMetadataVersionId = Document::getMetadataVersionIdFromVersion($documentid, $metadataVersion);
+		if (is_null($iMetadataVersionId) || PEAR::isError($iMetadataVersionId))
+		{
+			return new KTAPI_Error(KTAPI_ERROR_VERSION_INVALID, $iMetadataVersionId );
+		}
+
+	    // get the KTAPI_Document object
+	    return self::get($ktapi, $documentid, $iMetadataVersionId);
 	}
 
 	/**
@@ -2108,6 +2141,18 @@ class KTAPI_Document extends KTAPI_FolderItem
 	}
 
 	/**
+	 * Gets the content version id of the document
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 * @return integer the content version id
+	*/
+	function get_content_version()
+	{
+		return $this->document->getContentVersionId();
+	}
+
+	/**
 	 * Gets the url which can be used to download the document.
 	 *
 	 * @param int $version Not implemented. The content version of the document
@@ -2134,13 +2179,14 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 * @author KnowledgeTree Team
 	 * @access public
 	 */
-	function download()
+	function download($version = null)
 	{
 		$storage =& KTStorageManagerUtil::getSingleton();
         $options = array();
 
+        $comment = (!is_null($version)) ? 'Document version '.$version.' downloaded' : 'Document downloaded';
         $oDocumentTransaction = new DocumentTransaction($this->document, 'Document downloaded', 'ktcore.transactions.download', $aOptions);
-        $oDocumentTransaction->create();
+        return $oDocumentTransaction->create();
 	}
 
     /**
@@ -2235,6 +2281,17 @@ class KTAPI_Document extends KTAPI_FolderItem
             $versions[] = $version;
         }
         return $versions;
+	}
+
+	/**
+	 * Get the content version id using the document (content) version - major/minor version
+	 *
+	 * @param string $version
+	 * @return int
+	 */
+	function get_content_version_id_from_version($version)
+	{
+	    return $this->document->getContentVersionIdFromVersion($version);
 	}
 
 	/**
@@ -2557,10 +2614,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	public function addDocumentToUserHistory()
 	{
-		require_once(KT_DIR . '/plugins/commercial/network/userhistory/UserHistoryActions.php');
-		
-		$docAction = new UserHistoryDocumentAction($this->document, $this->ktapi->get_user());
-		$docAction->_show();
+		if (KTPluginUtil::pluginIsActive('brad.UserHistory.plugin')) {
+			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
+            require_once($path .  'UserHistoryActions.php');
+
+			$docAction = new UserHistoryDocumentAction($this->document, $this->ktapi->get_user());
+			$docAction->_show();
+		}
 	}
 
     /**

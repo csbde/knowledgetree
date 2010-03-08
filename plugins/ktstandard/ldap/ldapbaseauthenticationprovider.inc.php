@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -368,12 +368,24 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
             $aResults = $oAuthenticator->getUser($sId);
             $dn = $sId;
             $sUserName = $aResults[$this->aAttributes[1]];
+            
+            if ($sUserName == '') {
+                $dnParts = ldap_explode_dn($dn, 0);
+                $sUserName = end(explode('=',$dnParts[0]));;
+            }
+            
             // With LDAP, if the 'uid' is null then try using the 'givenname' instead.
             // See activedirectoryauthenticationprovider.inc.php and ldapauthenticationprovider.inc.php for details.
             if($this->sAuthenticatorClass == "KTLDAPAuthenticator" && empty($sUserName)) {
                 $sUserName = strtolower($aResults[$this->aAttributes[2]]);
             }
             $sName = $aResults[$this->aAttributes[0]];
+            
+            if ($sName == '') {
+                $dnParts = ldap_explode_dn($dn, 0);
+                $sName = end(explode('=',$dnParts[0]));;
+            }
+            
             $sEmailAddress = $aResults[$this->aAttributes[4]];
             $sMobileNumber = $aResults[$this->aAttributes[5]];
 
@@ -385,7 +397,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
                     $appending = true;
                 } else $appending = false;
             }
-
+            
             $oUser = User::createFromArray(array(
                 "Username" => $sUserName,
                 "Name" => $sName,
@@ -715,7 +727,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
 
         if ($this->iLdapPort + 0 == 0) $this->iLdapPort=389; // some basic validation in case port is blank or 0
 
-        require_once('Net/LDAP.php');
+        require_once('Net/LDAP2.php');
         $config = array(
             'dn' => $this->sSearchUser,
             'password' => $this->sSearchPassword,
@@ -726,7 +738,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
             'port'=> $this->iLdapPort
         );
 
-        $this->oLdap =& Net_LDAP::connect($config);
+        $this->oLdap =& Net_LDAP2::connect($config);
         if (PEAR::isError($this->oLdap)) {
             return $this->oLdap;
         }
@@ -752,12 +764,12 @@ class KTLDAPBaseAuthenticator extends Authenticator {
             'tls' => $this->bTls,
             'port'=> $this->iLdapPort
         );
-        $this->oLdap =& Net_LDAP::connect($config);
+        $this->oLdap =& Net_LDAP2::connect($config);
         if (PEAR::isError($this->oLdap)) {
             $default->log->error('LDAP Authentication: Failed to connect to LDAP: '.$this->oLdap->getMessage());
             return $this->oLdap;
         }
-        $res = $this->oLdap->reBind($dn, $sPassword);
+        $res = $this->oLdap->bind($dn, $sPassword);
 
         if(PEAR::isError($res)){
             $default->log->error('LDAP Authentication: Failed to authenticate user: '.$res->getMessage());
@@ -794,7 +806,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
             'port'=> $this->iLdapPort
         );
 
-        $this->oLdap =& Net_LDAP::connect($config);
+        $this->oLdap =& Net_LDAP2::connect($config);
         if (PEAR::isError($this->oLdap)) {
             $default->log->error('LDAP Authentication: Failed to connect to LDAP: '.$this->oLdap->getMessage());
             return $res;
@@ -855,7 +867,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
             'tls' => $this->bTls,
             'port'=> $this->iLdapPort
         );
-        $this->oLdap =& Net_LDAP::connect($config);
+        $this->oLdap =& Net_LDAP2::connect($config);
         if (PEAR::isError($this->oLdap)) {
             return $this->oLdap;
         }

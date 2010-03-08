@@ -4,7 +4,7 @@
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright(C) 2008,2009 KnowledgeTree Inc.
+* Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -31,8 +31,12 @@
 * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
 * must display the words "Powered by KnowledgeTree" and retain the original
 * copyright notice.
+* Contributor( s): ______________________________________
+*/
+
+/**
 *
-* @copyright 2008-2009, KnowledgeTree Inc.
+* @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
 * @package Installer
@@ -86,10 +90,12 @@ class registration extends Step
         $this->temp_variables['first_name'] = $this->getPostSafe($reg['first_name']);
     	$this->temp_variables['last_name'] = $this->getPostSafe($reg['last_name']);
     	$this->temp_variables['email_address'] = $this->getPostSafe($reg['email_address']);
+    	$this->temp_variables['reasons'] = $this->getPostSafe($reg['reasons']);;
     	$this->temp_variables['sel_country'] = $this->getPostSafe($reg['sel_country']);
     	$this->temp_variables['sel_industry'] = $this->getPostSafe($reg['sel_industry']);
     	$this->temp_variables['sel_organization_size'] = $this->getPostSafe($reg['sel_organization_size']);
     	$this->temp_variables['installation_guid'] = $this->getPostSafe($reg['installation_guid']);
+    	$this->temp_variables['opt_in'] = $this->getPostSafe($reg['opt_in']);;
     }
 
 	/**
@@ -109,11 +115,13 @@ class registration extends Step
         $this->temp_variables['first_name'] = $_POST['submitted']['first_name'];
     	$this->temp_variables['last_name'] = $_POST['submitted']['last_name'];
     	$this->temp_variables['email_address'] = $_POST['submitted']['email_address'];
+    	$this->temp_variables['reasons'] = $_POST['submitted']['reasons'];
     	$this->temp_variables['sel_country'] = $_POST['submitted']['country'];
     	$this->temp_variables['sel_industry'] = $_POST['submitted']['industry'];
     	$this->temp_variables['sel_organization_size'] = $_POST['submitted']['organization_size'];
     	// System GUID, comes from session or db, not POST
     	$this->temp_variables['installation_guid'] = $this->util->getSystemIdentifier(false);
+    	$this->temp_variables['opt_in'] = $_POST['submitted']['opt_in'];
     }
 
     /**
@@ -137,7 +145,7 @@ class registration extends Step
 	    $formPost = $_POST;
 	    $formPost['submitted']['installation_guid'] = $this->temp_variables['installation_guid'];
 	    // TODO set correctly using auto set mechanism
-	    $_SESSION['installers']['registration']['installation_guid'] = $this->temp_variables['installation_guid'];
+	    // $_SESSION['installers']['registration']['installation_guid'] = $this->temp_variables['installation_guid'];
         $this->curlForm($formPost);
 
         // Prevent the form being reposted.
@@ -475,7 +483,7 @@ class registration extends Step
             'RO' => 'ROMANIA',
             'RU' => 'RUSSIAN FEDERATION',
             'RW' => 'RWANDA',
-//            TODO: Special Character for the e
+//            TODO: Special Character for the É
             'BL' => 'SAINT BARTHELEMY',
             'SH' => 'SAINT HELENA',
             'KN' => 'SAINT KITTS AND NEVIS',

@@ -1,7 +1,7 @@
 <?php
 
 include_once(KT_ATOM_LIB_FOLDER . 'KT_atom_server.inc.php');
-include_once('RepositoryService.inc.php');
+require_once(CMIS_API . '/ktRepositoryService.inc.php');
 
 class KT_cmis_atom_server extends KT_atom_server {
 
@@ -45,13 +45,18 @@ class KT_cmis_atom_server extends KT_atom_server {
 		$workspace = strtolower(trim($queryArray[0]));
         if ($workspace == 'servicedocument')
         {
-            include 'services/cmis/RepositoryService.inc.php';
-            $RepositoryService = new RepositoryService();
+            $RepositoryService = new KTRepositoryService();
 
             // fetch data for response
             $repositories = $RepositoryService->getRepositories();
+
+            // hack for removing one level of access
+            $repositories = $repositories['results'];
+            
             // fetch for default first repo;  NOTE that this will probably have to change at some point, quick and dirty for now
-            $this->repositoryInfo = $RepositoryService->getRepositoryInfo($repositories[0]['repositoryId']);
+            // hack for removing one level of access
+            $repositoryInfo = $RepositoryService->getRepositoryInfo($repositories[0]['repositoryId']);
+            $this->repositoryInfo = $repositoryInfo['results'];
         }
     }
     
@@ -84,7 +89,7 @@ class KT_cmis_atom_server extends KT_atom_server {
             $ws->appendChild($service->newAttr('cmis:repositoryRelationship', $this->repositoryInfo['repositoryRelationship']));
             
             // repository information
-            $element = $service->newElement('cmis:repositoryInfo');
+            $element = $service->newElement('cmisra:repositoryInfo');
             foreach($this->repositoryInfo as $key => $repoData)
             {
                 if ($key == 'rootFolderId') {
@@ -116,6 +121,11 @@ class KT_cmis_atom_server extends KT_atom_server {
                 }
 			}
 		}
+		
+//		ob_start();
+//		readfile('C:\Users\Paul\Documents\Downloads\cmis_mod_kt.xml');
+//		$this->output = ob_get_contents();
+//		ob_end_clean();
 
 		$this->output = $service->getAPPdoc();
 	}
@@ -150,9 +160,15 @@ class KT_cmis_atom_server extends KT_atom_server {
     
     public function render()
     {
-		ob_end_clean();
-        if (!$this->headersSet) header('Content-type: text/xml');
-		if ($this->renderBody) echo $this->output;
+        ob_end_clean();
+        
+        if (!$this->headersSet) {
+            header('Content-type: text/xml');
+        }
+        
+        if ($this->renderBody) {
+            echo $this->output;
+        }
 	}
 
 }

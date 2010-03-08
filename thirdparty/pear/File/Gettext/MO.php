@@ -11,7 +11,7 @@
  * @author     Michael Wallner <mike@php.net>
  * @copyright  2004-2005 Michael Wallner
  * @license    BSD, revised
- * @version    CVS: $Id$
+ * @version    CVS: $Id: MO.php,v 1.8 2006/01/07 09:45:25 mike Exp $
  * @link       http://pear.php.net/package/File_Gettext
  */
 
@@ -26,7 +26,7 @@ require_once 'File/Gettext.php';
  * GNU MO file reader and writer.
  *
  * @author      Michael Wallner <mike@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.8 $
  * @access      public
  */
 class File_Gettext_MO extends File_Gettext
@@ -147,6 +147,8 @@ class File_Gettext_MO extends File_Gettext
      */
     function load($file = null)
     {
+        $this->strings = array();
+        
         if (!isset($file)) {
             $file = $this->file;
         }

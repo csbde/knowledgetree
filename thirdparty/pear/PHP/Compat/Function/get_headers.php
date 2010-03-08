@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: get_headers.php,v 1.1 2005/05/10 07:50:53 aidan Exp $
 
 
 /**
@@ -27,7 +27,7 @@
  * @author      Aeontech <aeontech@gmail.com>
  * @author      Cpurruc <cpurruc@fh-landshut.de>
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.1 $
  * @since       PHP 5.0.0
  * @require     PHP 4.0.0 (user_error)
  */

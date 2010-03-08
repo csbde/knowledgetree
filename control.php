@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  *  
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -44,7 +44,6 @@ if(!$iu->isSystemInstalled()) {
 	$iu->redirect("setup/wizard");
 	exit(0);
 }
-
 // main library routines and defaults
 require_once('config/dmsDefaults.php');
 

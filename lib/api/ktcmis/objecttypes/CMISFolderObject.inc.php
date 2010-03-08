@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008,2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,8 +32,12 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
+ * Contributor( s): ______________________________________
+ */
+
+/**
  *
- * @copyright 2008-2009, KnowledgeTree Inc.
+ * @copyright 2008-2010, KnowledgeTree Inc.
  * @license GNU General Public License version 3
  * @author KnowledgeTree Team
  * @package KTCMIS
@@ -46,42 +50,47 @@ require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
 class CMISFolderObject extends CMISObject {
 
-    private $ktapi;
-    private $uri;
+    protected $ktapi;
 
     public function __construct($folderId = null, &$ktapi = null, $uri = null)
     {
         $this->ktapi = $ktapi;
-        $this->uri = $uri;
 
-        $this->typeId = 'Folder'; // <repository-specific>
-        $this->queryName = 'Folder';
-        $this->displayName = ''; // <repository-specific>
-        $this->baseType = 'folder';
-        $this->baseTypeQueryName = 'Folder';
+        $this->id = 'cmis:folder'; // <repository-specific>
+        $this->localName = null; // <repository-specific>
+        $this->localNamespace = null; // <repository-specific>
+        $this->queryName = 'cmis:folder';
+        $this->displayName = 'Folder'; // <repository-specific>
+        $this->baseId = 'cmis:folder';
         $this->parentId = null; // MUST NOT be set
-        $this->description = ''; // <repository-specific>
-        $this->creatable = ''; // <repository-specific>
+        $this->description = null; // <repository-specific>
+        $this->creatable = true; // <repository-specific>
         $this->fileable = true;
         $this->queryable = true; // SHOULD be true
-        $this->includedInSupertypeQuery = true; //
-        $this->controllable = ''; // <repository-specific>
- 
+        $this->controllablePolicy = false; // <repository-specific>
+        $this->includedInSupertypeQuery = true; // <repository-specific>
+        $this->contentStreamAllowed = 'required'; // <repository-specific> notallowed/allowed/required
+        $this->controllableACL = false; // <repository-specific>
+        $this->fulltextIndexed = false; // <repository-specific>      
+        
         // properties
         $this->properties = new CMISFolderPropertyCollection();
 
         if (!is_null($folderId))
         {
             try {
-                $this->get($folderId);
+                $this->_get($folderId);
             }
             catch (exception $e) {
                 throw new ObjectNotFoundException($e->getMessage());
             }
         }
+        
+        parent::__construct();
     }
 
-    private function get($folderId)
+    // TODO abstract shared stuff to base class where possible
+    protected function _get($folderId)
     {
         $object = $this->ktapi->get_folder_by_id((int)$folderId);
         
@@ -94,7 +103,7 @@ class CMISFolderObject extends CMISObject {
 
         $objectProperties = $object->get_detail();
 
-        $this->_setPropertyInternal('ObjectId', CMISUtil::encodeObjectId($this->typeId, $objectProperties['id']));
+        $this->_setPropertyInternal('objectId', CMISUtil::encodeObjectId($this->id, $objectProperties['id']));
         // prevent doubled '/' chars
         $uri = preg_replace_callback('/([^:]\/)\//',
                                      create_function('$matches', 'return $matches[1];'),
@@ -102,24 +111,28 @@ class CMISFolderObject extends CMISObject {
                                      . '/browse.php?fFolderId='
                                      . $objectProperties['id']);
         // TODO this url is probably incorrect...needs to be checked
-//        $this->_setPropertyInternal('Uri', $uri);
-        $this->_setPropertyInternal('Uri', '');
-        // TODO what is this?  Assuming it is the object type id, and not OUR document type?
-        $this->_setPropertyInternal('ObjectTypeId', $this->getAttribute('typeId'));
-        // Needed to distinguish type
-        $this->_setPropertyInternal('BaseType', strtolower($this->getAttribute('typeId')));
-        $this->_setPropertyInternal('CreatedBy', $objectProperties['created_by']);
+//        $this->_setPropertyInternal('uri', $uri);
+        $this->_setPropertyInternal('uri', '');
+        $this->_setPropertyInternal('createdBy', $objectProperties['created_by']);
         // TODO cannot currently retrieve via ktapi or regular folder code - add as with created by
-        $this->_setPropertyInternal('CreationDate', $objectProperties['created_date']);
+        $this->_setPropertyInternal('creationDate', $objectProperties['created_date']);
         // TODO cannot currently retrieve via ktapi or regular folder code - add as with created by
-        $this->_setPropertyInternal('LastModifiedBy', $objectProperties['modified_by']);
+        $this->_setPropertyInternal('lastModifiedBy', $objectProperties['modified_by']);
         // TODO cannot currently retrieve via ktapi or regular folder code - add as with created by
-        $this->_setPropertyInternal('LastModificationDate', $objectProperties['modified_date']);
-        $this->_setPropertyInternal('ChangeToken', null);
-        $this->_setPropertyInternal('Name', $objectProperties['folder_name']);
-        $this->_setPropertyInternal('ParentId', $objectProperties['parent_id']);
-        $this->_setPropertyInternal('AllowedChildObjectTypeIds', array('Document', 'Folder'));
-        $this->_setPropertyInternal('Author', $objectProperties['created_by']);
+        $this->_setPropertyInternal('lastModificationDate', $objectProperties['modified_date']);
+        $this->_setPropertyInternal('changeToken', null);
+        $this->_setPropertyInternal('name', $objectProperties['folder_name']);
+        $this->_setPropertyInternal('parentId', CMISUtil::encodeObjectId(FOLDER, $objectProperties['parent_id']));
+        $this->_setPropertyInternal('author', $objectProperties['created_by']);
+    }
+    
+    /**
+     * Sets properties shared between all objects of this type
+     */
+    protected function _setSharedProperties()
+    {
+        parent::_setSharedProperties();
+        $this->_setPropertyInternal('allowedChildObjectTypeIds', array('cmis:document', 'cmis:folder'));
     }
 
 }

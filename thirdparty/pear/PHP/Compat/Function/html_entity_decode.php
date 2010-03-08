@@ -16,7 +16,7 @@
 // |          Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: html_entity_decode.php,v 1.8 2005/12/07 21:08:57 aidan Exp $
 
 
 if (!defined('ENT_NOQUOTES')) {
@@ -40,7 +40,7 @@ if (!defined('ENT_QUOTES')) {
  * @link        http://php.net/function.html_entity_decode
  * @author      David Irvine <dave@codexweb.co.za>
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.8 $
  * @since       PHP 4.3.0
  * @internal    Setting the charset will not do anything
  * @require     PHP 4.0.0 (user_error)
@@ -69,4 +69,5 @@ if (!function_exists('html_entity_decode')) {
         return strtr($string, $trans_tbl);
     }
 }
+
 ?>

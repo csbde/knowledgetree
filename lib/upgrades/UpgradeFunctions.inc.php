@@ -1,11 +1,12 @@
 <?php
 /**
- * Implements the functions run during upgrades
+ *
+ * $Id $
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -32,8 +33,13 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
+ * Contributor( s): ______________________________________
+ */
+
+/**
+ * Implements the functions run during upgrades
  *
- * @copyright 2008-2009, KnowledgeTree Inc.
+ * @copyright 2008-2010, KnowledgeTree Inc.
  * @license GNU General Public License version 3
  * @author KnowledgeTree Team
  * @package KnowledgeTree

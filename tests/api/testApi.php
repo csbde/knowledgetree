@@ -295,6 +295,7 @@ class APITestCase extends KTUnitTestCase {
     * This method tests the retrieval of a folder by name
     *
     */
+    /* replaced by the new function below
     public function testGetFolderByName()
     {
         $folder = $this->ktapi->get_folder_by_name('Root Folder');
@@ -303,6 +304,7 @@ class APITestCase extends KTUnitTestCase {
         $this->assertIsA($folder, 'KTAPI_Folder');
         $this->assertNoErrors();
     }
+    */
 
     /**
     * This method tests the retrieval of a document by it's id
@@ -606,6 +608,181 @@ class APITestCase extends KTUnitTestCase {
         
         $detail2 = $this->ktapi->get_folder_detail($folder_id);
         $this->assertNotEqual($detail2['status_code'], 0);
+    }
+    
+    /**
+     * Tests finding of a folder or folder detail by name
+     * 
+     * Runs the following sub-tests:
+     * 
+     * . Root folder Folder by Name (root folder test)
+     * . Folder Detail by Name in root folder (no duplicate names)
+     * . Folder Detail by name in subfolder of root folder (no duplicate names)
+     * . Folder by Name in subfolder of root folder (no duplicate names)
+     * . Folder by Name in root folder (duplicate names)
+     * . Folder Detail by name in subfolder of root folder (duplicate names)
+     * . Folder by name in subfolder of root folder (duplicate names)
+     */
+    public function testGetFolderByName()
+    {
+    	// set up
+    	$root_folder_id = array();
+    	$sub_folder_id = array();
+    	$folders[0][1] = 'Root Folder';
+    	
+    	// Create a sub folder in the root folder
+    	$parentId = 1;
+    	$folderName = 'Test api sub-folder ONE';
+        $result1 = $this->ktapi->create_folder($parentId, $folderName, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
+        $root_folder_id[] = $result1['results']['id'];
+        $folders[$parentId][$result1['results']['id']] = $folderName;
+        $this->assertEqual($result1['status_code'], 0);
+        
+    	// Create a second sub folder in the root folder
+    	$parentId = 1;
+    	$folderName = 'Test api sub-folder TWO';
+        $result1 = $this->ktapi->create_folder($parentId, $folderName, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
+        $root_folder_id[] = $result1['results']['id'];
+        $folders[$parentId][$result1['results']['id']] = $folderName;
+        $this->assertEqual($result1['status_code'], 0);
+
+        // Create a sub folder in the first sub folder
+        $parentId = $root_folder_id[0];
+        $folderName = 'Test api sub-folder THREE';
+        $result2 = $this->ktapi->create_folder($parentId, $folderName, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
+        $sub_folder_id[0][] = $result2['results']['id'];
+        $folders[$parentId][$result2['results']['id']] = $folderName;
+        $this->assertEqual($result2['status_code'], 0);
+        
+        // Create a sub folder within the first sub folder which shares a name with one of the root sub folders
+        $parentId = $sub_folder_id[0][0];
+        $folderName = 'Test api sub-folder TWO';
+        $result2 = $this->ktapi->create_folder($parentId, $folderName, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
+        $sub_folder_id[0][] = $result2['results']['id'];
+        $folders[$parentId][$result2['results']['id']] = $folderName;
+        $this->assertEqual($result2['status_code'], 0);
+        
+        // Create a second sub folder in the first sub folder
+        $parentId = $root_folder_id[0];
+        $folderName = 'Test api sub-folder FOUR';
+        $result2 = $this->ktapi->create_folder($parentId, $folderName, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
+        $sub_folder_id[0][] = $result2['results']['id'];
+        $folders[$parentId][$result2['results']['id']] = $folderName;
+        $this->assertEqual($result2['status_code'], 0);
+        
+        // Create a sub folder within the second sub folder
+        $parentId = $root_folder_id[1];
+        $folderName = 'Test api sub-folder FIVE';
+        $result2 = $this->ktapi->create_folder($parentId, $folderName, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
+        $sub_folder_id[1][] = $result2['results']['id'];
+        $folders[$parentId][$result2['results']['id']] = $folderName;
+        $this->assertEqual($result2['status_code'], 0);
+        
+        // Create a sub folder within the second sub folder which shares a name with a sub folder in the first sub folder
+        $parentId = $sub_folder_id[1][0];
+        $folderName = 'Test api sub-folder THREE';
+        $result2 = $this->ktapi->create_folder($parentId, $folderName, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
+        $sub_folder_id[1][] = $result2['results']['id'];
+        $folders[$parentId][$result2['results']['id']] = $folderName;
+        $this->assertEqual($result2['status_code'], 0);
+        
+        // NOTE default parent is 1, so does not need to be declared when searching the root folder, but we use it elsewhere
+        
+        // Fetching of root folder - this used to be in the other test
+        $parentId = 0;
+        $folderName = 'Root Folder';
+        // no parent required
+        $folder = $this->ktapi->get_folder_by_name($folderName);
+        $this->assertNotNull($folder);
+        $this->assertIsA($folder, 'KTAPI_Folder');
+        $this->assertNoErrors();
+        // confirm folder id matches expected
+        if (is_a($folder, 'KTAPI_Folder')) {
+        	$this->assertEqual($folders[$parentId][$folder->get_folderid()], $folderName);
+        }
+        
+        // Folder Detail by Name in root folder (no duplicate names)
+        $parentId = 1;
+        $folderName = 'Test api sub-folder ONE';
+        // no parent required
+    	$response = $this->ktapi->get_folder_detail_by_name($folderName);
+        $this->assertNotNull($response['results']);
+        $this->assertNoErrors();
+        // confirm folder id matches expected
+        if (!empty($response)) {
+        	$this->assertEqual($folders[$parentId][$response['results']['id']], $folderName);
+        }
+        
+        // Folder Detail by Name in sub folder of root folder (no duplicate names)
+        $parentId = $root_folder_id[0];
+        $folderName = 'Test api sub-folder FOUR';
+        // no parent required
+    	$response = $this->ktapi->get_folder_detail_by_name($folderName, $parentId);
+        $this->assertNotNull($response['results']);
+        $this->assertNoErrors();
+        // confirm folder id matches expected
+        if (!empty($response)) {
+        	$this->assertEqual($folders[$parentId][$response['results']['id']], $folderName);
+        }
+        
+        // Folder by Name in subfolder of root folder (no duplicate names)
+        $parentId = $root_folder_id[0];
+        $folderName = 'Test api sub-folder FOUR';
+        $folder = $this->ktapi->get_folder_by_name($folderName, $parentId);
+        $this->assertNotNull($folder);
+        $this->assertIsA($folder, 'KTAPI_Folder');
+        $this->assertNoErrors();
+        // confirm folder id matches expected
+        if (is_a($folder, 'KTAPI_Folder')) {
+        	$this->assertEqual($folders[$parentId][$folder->get_folderid()], $folderName);
+        }
+        
+        // Folder by Name in root folder (duplicate names)
+        $parentId = 1;
+        $folderName = 'Test api sub-folder TWO';
+        // no parent required
+        $folder = $this->ktapi->get_folder_by_name($folderName);
+        $this->assertNotNull($folder);
+        $this->assertIsA($folder, 'KTAPI_Folder');
+        $this->assertNoErrors();
+        // confirm folder id matches expected
+        if (is_a($folder, 'KTAPI_Folder')) {
+        	$this->assertEqual($folders[$parentId][$folder->get_folderid()], $folderName);
+        }
+        
+        // Folder Detail by Name in sub folder of root folder (duplicate names)
+        $parentId = $root_folder_id[0];
+        $folderName = 'Test api sub-folder THREE';
+        $response = $this->ktapi->get_folder_detail_by_name($folderName, $parentId);
+        $this->assertNotNull($response['results']);
+        $this->assertNoErrors();
+        // confirm folder id matches expected
+        if (!empty($response)) {
+        	$this->assertEqual($folders[$parentId][$response['results']['id']], $folderName);
+        }
+        
+        // Folder by Name in sub folder of sub folder (duplicate names)
+        $parentId = $sub_folder_id[0][0];
+        $folderName = 'Test api sub-folder TWO';
+        $folder = $this->ktapi->get_folder_by_name($folderName, $parentId);
+        $this->assertNotNull($folder);
+        $this->assertIsA($folder, 'KTAPI_Folder');
+        $this->assertNoErrors();
+        // confirm folder id matches expected
+        if (is_a($folder, 'KTAPI_Folder')) {
+        	$this->assertEqual($folders[$parentId][$folder->get_folderid()], $folderName);
+        }
+
+		// Clean up - delete all of the folders
+        foreach ($root_folder_id as $folder_id) {
+        	$this->ktapi->delete_folder($folder_id, 'Testing API', KT_TEST_USER, KT_TEST_PASS);   
+        }
+        
+        foreach ($sub_folder_id as $_folder_id_) {
+        	foreach ($_folder_id_ as $folder_id) {	
+        		$this->ktapi->delete_folder($folder_id, 'Testing API', KT_TEST_USER, KT_TEST_PASS);
+        	}
+        }
     }
 
     /**

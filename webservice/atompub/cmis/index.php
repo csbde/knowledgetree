@@ -5,7 +5,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -49,6 +49,7 @@ define('KT_ATOM_LIB_FOLDER', '../../classes/atompub/');
 define('CMIS_APP_BASE_URI', trim(KT_APP_BASE_URI, '/'));
 define('CMIS_APP_SYSTEM_URI', KT_APP_SYSTEM_URI);
 define('CMIS_ATOM_LIB_FOLDER', trim(KT_ATOM_LIB_FOLDER, '/') . '/cmis/');
+define('CMIS_API', KT_LIB_DIR . '/api/ktcmis');
 
 /**
  * Check Realm Authentication
@@ -101,12 +102,12 @@ if ($workspace == 'servicedocument')
 */
 // TODO consider a registerServices function which will, dependant on what is requested, register the appropriate services, keep the logic out of the index file
 $APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',
-                      array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'children'), 'rootchildren');
+                      array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'children'), 'root');
 $APP->registerService('dms', 'folder', 'KT_cmis_atom_service_folder', 'Root Folder Children Collection',
                       array(rawurlencode($APP->repositoryInfo['rootFolderId']), 'descendants'), 'rootdescendants');
 $APP->registerService('dms', 'checkedout', 'KT_cmis_atom_service_checkedout', 'Checked Out Document Collection', null, 
                       'checkedout', 'application/atom+xml;type=entry');
-$APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'typeschildren');
+$APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'types');
 $APP->registerService('dms', 'types', 'KT_cmis_atom_service_types', 'Object Type Collection', null, 'typesdescendants');
 
 if ($workspace != 'servicedocument')

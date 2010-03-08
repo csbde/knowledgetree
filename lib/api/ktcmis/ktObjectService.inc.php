@@ -4,7 +4,7 @@
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
+* Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
 * 
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -32,8 +32,12 @@
 * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
 * must display the words "Powered by KnowledgeTree" and retain the original
 * copyright notice.
+* Contributor( s): ______________________________________
+*/
+
+/**
 *
-* @copyright 2008-2009, KnowledgeTree Inc.
+* @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
 * @package KTCMIS
@@ -76,17 +80,13 @@ class KTObjectService extends KTCMISBase {
      *
      * @param string $repositoryId
      * @param string $objectId
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
-     * @param string $returnVersion
      * @param string $filter
      * @return properties[]
      */
-    public function getProperties($repositoryId, $objectId, $includeAllowableActions, $includeRelationships,
-                           $returnVersion = false, $filter = '')
+    public function getProperties($repositoryId, $objectId, $filter = '')
     {
         try {
-            $propertyCollection = $this->ObjectService->getProperties($repositoryId, $objectId, $includeAllowableActions,
+            $properties = $this->ObjectService->getProperties($repositoryId, $objectId, $includeAllowableActions,
                                                                       $includeRelationships);
         }
         catch (Exception $e)
@@ -96,8 +96,6 @@ class KTObjectService extends KTCMISBase {
                 "message" => $e->getMessage()
             );
         }
-
-        $properties = CMISUtil::createObjectPropertiesEntry($propertyCollection);
 
         return array(
 			"status_code" => 0,
@@ -109,22 +107,24 @@ class KTObjectService extends KTCMISBase {
      * Creates a new document within the repository
      *
      * @param string $repositoryId The repository to which the document must be added
-     * @param string $typeId Object Type id for the document object being created
      * @param array $properties Array of properties which must be applied to the created document object
      * @param string $folderId The id of the folder which will be the parent of the created document object
      *                         This parameter is optional IF unfilingCapability is supported
-     * @param contentStream $contentStream optional content stream data
-     * @param string $versioningState optional version state value: checkedout/major/minor
+     * @param string $contentStream optional content stream data - expected as a base64 encoded string
+     * @param string $versioningState optional version state value: none/checkedout/major/minor
+     * @param $policies List of policy ids that MUST be applied
+     * @param $addACEs List of ACEs that MUST be added
+     * @param $removeACEs List of ACEs that MUST be removed
      * @return string $objectId The id of the created folder object
      */
-    public function createDocument($repositoryId, $typeId, $properties, $folderId = null,
-                            $contentStream = null, $versioningState = null)
+    public function createDocument($repositoryId, $properties, $folderId = null, $contentStream = null, $versioningState = 'none', 
+                                   $policies = array(), $addACEs = array(), $removeACEs = array())
     {
         $objectId = null;
 
         try {
-            $objectId = $this->ObjectService->createDocument($repositoryId, $typeId, $properties, $folderId,
-                                                             $contentStream, $versioningState);
+            $objectId = $this->ObjectService->createDocument($repositoryId, $properties, $folderId, $contentStream, 
+                                                             $versioningState,$policies, $addACEs, $removeACEs);
         }
         catch (Exception $e)
         {
@@ -144,17 +144,19 @@ class KTObjectService extends KTCMISBase {
      * Creates a new folder within the repository
      *
      * @param string $repositoryId The repository to which the folder must be added
-     * @param string $typeId Object Type id for the folder object being created
      * @param array $properties Array of properties which must be applied to the created folder object
      * @param string $folderId The id of the folder which will be the parent of the created folder object
+     * @param array $policies List of policy ids that MUST be applied
+     * @param $addACEs List of ACEs that MUST be added
+     * @param $removeACEs List of ACEs that MUST be removed
      * @return string $objectId The id of the created folder object
      */
-    public function createFolder($repositoryId, $typeId, $properties, $folderId)
+    public function createFolder($repositoryId, $properties, $folderId, $policies = array(), $addACEs = array(), $removeACEs = array())
     {
         $objectId = null;
 
         try {
-            $objectId = $this->ObjectService->createFolder($repositoryId, $typeId, $properties, $folderId);
+            $objectId = $this->ObjectService->createFolder($repositoryId, $properties, $folderId, $policies, $addACEs, $removeACEs);
         }
         catch (Exception $e)
         {
@@ -175,12 +177,13 @@ class KTObjectService extends KTCMISBase {
      *  
      * @param string $repositoryId
      * @param string $objectId
+     * @param string $streamId [optional for documents] Specifies the rendition to retrieve if not original document
      * @return string $contentStream (binary or text data)
      */
-    function getContentStream($repositoryId, $objectId)
+    function getContentStream($repositoryId, $objectId, $streamId = null)
     {
         try {
-            $contentStream = $this->ObjectService->getContentStream($repositoryId, $objectId);
+            $contentStream = $this->ObjectService->getContentStream($repositoryId, $objectId, $streamId);
         }
         catch (Exception $e)
         {
@@ -199,16 +202,16 @@ class KTObjectService extends KTCMISBase {
     /**
      * Moves a fileable object from one folder to another.
      * 
-     * @param object $repositoryId
-     * @param object $objectId
-     * @param object $changeToken [optional]
-     * @param object $targetFolderId
-     * @param object $sourceFolderId [optional] 
+     * @param string $repositoryId
+     * @param string $objectId
+     * @param string $targetFolderId
+     * @param string $sourceFolderId
+     * @return string $objectId
      */
-    public function moveObject($repositoryId, $objectId, $changeToken = '', $targetFolderId, $sourceFolderId = null)
+    public function moveObject($repositoryId, $objectId, $targetFolderId, $sourceFolderId)
     {
         try {
-            $this->ObjectService->moveObject($repositoryId, $objectId, $changeToken, $targetFolderId, $sourceFolderId);
+            $this->ObjectService->moveObject($repositoryId, $objectId, $targetFolderId, $sourceFolderId);
         }
         catch (Exception $e)
         {
@@ -229,15 +232,13 @@ class KTObjectService extends KTCMISBase {
      * 
      * @param string $repositoryId
      * @param string $objectId
-     * @param string $changeToken [optional]
+     * @param string $allVersions [optional] If true, delete all versions
      * @return array
      */
-    // NOTE Invoking this service method on an object SHALL not delete the entire version series for a Document Object. 
-    //      To delete an entire version series, use the deleteAllVersions() service
-    public function deleteObject($repositoryId, $objectId, $changeToken = null)
+    public function deleteObject($repositoryId, $objectId, $allVersions = true)
     {
         try {
-            $this->ObjectService->deleteObject($repositoryId, $objectId, $changeToken);
+            $this->ObjectService->deleteObject($repositoryId, $objectId, $allVersions);
         }
         catch (Exception $e)
         {

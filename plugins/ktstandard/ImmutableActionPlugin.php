@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -60,7 +60,8 @@ class KTDocumentImmutableAction extends KTDocumentAction {
     var $sName = "ktcore.actions.document.immutable";
     var $_sShowPermission = 'ktcore.permissions.security';
     var $_bMutator = true;
-
+	var $_bMutationAllowedByAdmin = false;
+	
     function getDisplayName() {
         return _kt('Make immutable');
     }

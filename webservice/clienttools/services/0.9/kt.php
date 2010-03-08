@@ -94,6 +94,31 @@ class kt extends client_service {
 		$this->setResponse ( $result );
 		return true;
 	}
+
+	function get_checkedout_documents_list($params) {
+		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
+		$kt = &$this->KT;
+		
+
+		$params ['control'] = 'F_';
+		$params ['node'] = substr ( $params ['node'], strlen ( $params ['control'] ) );
+		
+		$folder = &$kt->get_folder_by_id ( $params ['node'] );
+		if (! $this->checkPearError ( $folder, "[error 1] Folder Not Found: {$params['control']}{$params['node']}", '', array () ))
+			return false;
+		
+		$types = (isset ( $params ['types'] ) ? $params ['types'] : 'D');
+		$listing = $folder->get_listing ( 1, $types );
+		foreach ( $listing as $item ) {
+			if ($item['checked_out_by'] == $params['user'])
+			{
+				$result[] = array ('text' => htmlspecialchars ( $item ['title'] ), 'id' => $item ['id'], 'filename' => $item ['filename']);
+			}
+		}
+
+		$this->setResponse ( $result );
+		return true;
+	}
 	
 	function get_folder_contents($params) {
 		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
@@ -263,7 +288,7 @@ class kt extends client_service {
 		if ($item ['filesize'] == 'n/a') {
 			$item ['filesize'] = - 1;
 		}
-		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => $item ['document_id'], 'filename' => $item ['filename'], 'cls' => $class, 'leaf' => true, 'document_type' => $item ['document_type'], 'item_type' => 'D', 'permissions' => $item ['permissions'], 'content_id' => $item ['content_id'], 'filesize' => $item ['filesize'], 'modified' => $item ['modified_date'], 'created_date' => $item ['created_date'], 'checked_out_by' => $item ['checked_out_by'], 'relevance' => $item ['relevance'], 'qtip' => $qtip, 'version' => $item ['version'], 'is_immutable' => $item ['is_immutable'] );
+		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => $item ['document_id'], 'filename' => $item ['filename'], 'cls' => $class, 'leaf' => true, 'document_type' => $item ['document_type'], 'item_type' => 'D', 'permissions' => $item ['permissions'], 'content_id' => $item ['content_id'], 'filesize' => $item ['filesize'], 'modified' => $item ['modified_date'], 'created_date' => $item ['created_date'], 'checked_out_by' => $item ['checked_out_by'], 'relevance' => $item ['relevance'], 'qtip' => $qtip, 'version' => $item ['version'], 'is_immutable' => $item ['is_immutable'], 'folder_id' => $item['folder_id'] );
 	}
 	
 	private function _processItemInclusion_grid($item, $class, $qtip) {
@@ -1344,6 +1369,118 @@ Fatal error:  Cannot unset string offsets in on line 981
 		}
 		$this->setResponse ( array ('status_code' => 0, 'maxsize' => $max_upload_size ) );
 		return true;
+	}
+	
+	/**
+	 * Method to get the recently viewed documents and folders.
+	 */
+	function get_recently_viewed()
+	{
+		$this->logTrace ((__METHOD__.'('.__FILE__.' '.__LINE__.')'), 'Enter Function' );
+		$kt = &$this->KT;
+		
+		
+		// Generate Folders List
+		$returnFoldersArray = array();
+		
+		$folders = $kt->getRecentlyViewedFolders();
+		foreach ($folders as $folder)
+		{
+			$folderObj = &$kt->get_folder_by_id ( $folder->getFolderId() );
+			
+			$folderArray = array();
+			$folderArray['id']   = $folderObj->folderid;
+			$folderArray['name'] = $folderObj->get_folder_name();
+			
+			$parentIds = explode(',', $folderObj->getParentFolderIds());
+			$path = '/F_0';
+			
+			if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
+				foreach ($parentIds as $parentId)
+				{
+					$path .= '/F_'.$parentId;
+				}
+			}
+			
+			$path .= '/F_'.$folderObj->folderid;
+			
+			$folderArray['path'] = $path;
+			
+			$returnFoldersArray[] = $folderArray;
+		}
+		
+		
+		// Generate Documents List
+		$returnDocumentArray = array();
+		
+		$items = $kt->getRecentlyViewedDocuments();
+		foreach ($items as $item)
+		{
+			$document = $kt->get_document_by_id($item->getDocumentId());
+			$documentDetail = $document->get_detail();
+			
+			$documentArray = array();
+			
+			$documentArray['id'] = $document->documentid;
+			$documentArray['contentID'] = $document->documentid;
+			$documentArray['title'] = $documentDetail['title'];
+			$documentArray['folderId'] = $documentDetail['folder_id'];
+			
+			// Determine Icon Class
+			$extpos = strrpos ( $documentDetail['filename'], '.' );
+			if ($extpos === false) {
+				$class = 'file-unknown';
+			} else {
+				$class = 'file-' . substr ( $documentDetail['filename'], $extpos + 1 ); // Get Extension without the dot
+			}
+			$documentArray['iconCls'] = $class;
+			
+			// Determine Icon Path
+			$folderObj = $kt->get_folder_by_id ( $documentDetail['folder_id']);
+			$parentIds = explode(',', $folderObj->getParentFolderIds());
+			$path = '/F_0';
+			if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
+				foreach ($parentIds as $parentId)
+				{
+					$path .= '/F_'.$parentId;
+				}
+			}
+			$path .= '/F_'.$documentDetail['folder_id'];
+			
+			$documentArray['folderPath'] = $path;
+			
+			$returnDocumentArray[] = $documentArray;
+		}
+		
+		$this->setResponse(array('documents'=>$returnDocumentArray, 'folders'=>$returnFoldersArray));
+	}
+	
+	
+	function get_folder_path($arr)
+	{
+		$kt=&$this->KT;
+		
+		$folderObj = &$kt->get_folder_by_id ( $arr ['folderId'] );
+		if (PEAR::isError ( $folderObj )) {
+			$this->setError ( "Could not get folder by Id:  {$arr['folderId']}" );
+			$this->setDebug ( 'FolderError', array ('kt' => $kt, 'folder' => $folderObj ) );
+			return false;
+		}
+		
+		$parentIds = explode(',', $folderObj->getParentFolderIds());
+		$path = '/F_0';
+		
+		if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
+			foreach ($parentIds as $parentId)
+			{
+				$path .= '/F_'.$parentId;
+			}
+		}
+		
+		$path .= '/F_'.$folderObj->folderid;
+		
+		
+		$this->setResponse ( array ('status_code' => 0, 'folderPath' => $path ) );
 	}
 	
 	

@@ -8,7 +8,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  *
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -60,8 +60,6 @@ if (defined('HAS_SEARCH_FUNCTIONALITY'))
 	require_once(KT_DIR . '/search2/search/search.inc.php');
 }
 
-// TODO: allow downloading of metadata versions
-// TODO: allow downloading of document versions
 // TODO: chunking search results
 // TODO: add basic permissions management - add permissions to folder based on user/groups
 // TODO: refactor!!! download manager, split this file into a few smaller ones, etc
@@ -72,7 +70,7 @@ if (defined('HAS_SEARCH_FUNCTIONALITY'))
 // TODO: ktwsapi/php must be made compatible with v2/v3
 // TODO: subscriptions/notifications
 
-// NOTE: some features are not implemented yet. most expected for v3. e.g. oem_document_no, custom_document_no, download($version)., get_metadata($version)
+// NOTE: some features are not implemented yet. most expected for v3. e.g. oem_document_no, custom_document_no
 
 // Status Codes as defined in the specification.
 
@@ -100,19 +98,19 @@ if (!defined('LATEST_WEBSERVICE_VERSION'))
 	define('LATEST_WEBSERVICE_VERSION', 2);
 }
 
-	function bool2str($bool)
+function bool2str($bool)
+{
+	if (is_bool($bool))
 	{
-		if (is_bool($bool))
-		{
-			return $bool?'true':'false';
-		}
-		if (is_numeric($bool))
-		{
-			return ($bool+0)?'true':'false';
-		}
-		// assume str
-		return (strtolower($bool) == 'true')?'true':'false';
+		return $bool?'true':'false';
 	}
+	if (is_numeric($bool))
+	{
+		return ($bool+0)?'true':'false';
+	}
+	// assume str
+	return (strtolower($bool) == 'true')?'true':'false';
+}
 
 class KTWebService
 {
@@ -769,13 +767,17 @@ class KTWebService
 
          // get_folder_detail_by_name
          $this->__dispatch_map['get_folder_detail_by_name'] =
-            array('in' => array('session_id' => 'string', 'folder_name' => 'string' ),
+            array('in' => array('session_id' => 'string', 'folder_name' => 'string'),
              'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
             );
 
          if ($this->version >=3)
          {
-         	 $this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create'=>'boolean' );
+             // NOTE that there was a bug: folder_id should be folder_name and be of type int - this is fixed in the second version below
+             //      additionally the function has no "create" parameter
+         	 //$this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create'=>'boolean' );
+             // now
+         	 $this->__dispatch_map['get_folder_detail_by_name']['in'] = array('session_id' => 'string', 'folder_name' => 'string', 'parent_id'=>'int' );
          }
 
          // get_folder_contents
@@ -1521,22 +1523,23 @@ class KTWebService
      *
      * @param string $session_id
      * @param string $folder_name
+     * @param integer $parent_id The parent folder in which to look for the named folder
      * @return kt_folder_detail. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_FOLDER, or KTWS_SUCCESS.
      */
-    function get_folder_detail_by_name($session_id, $folder_name)
+    function get_folder_detail_by_name($session_id, $folder_name, $parent_id = 1)
     {
-    	$this->debug("get_folder_detail_by_name('$session_id','$folder_name')");
+    	$this->debug("get_folder_detail_by_name('$session_id','$folder_name','$parent_id')");
     	$kt = &$this->get_ktapi($session_id);
     	if (is_array($kt))
     	{
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $kt);
     	}
 
-    	$folder = &$kt->get_folder_by_name($folder_name);
+    	$folder = &$kt->get_folder_by_name($folder_name, $parent_id);
     	if (PEAR::isError($folder))
     	{
     		$response = KTWebService::_status(KTWS_ERR_INVALID_FOLDER,$folder);
-    		$this->debug("get_folder_detail_by_name - cannot get folder $folder_name - "  . $folder->getMessage(), $session_id);
+    		$this->debug("get_folder_detail_by_name - cannot get folder $folder_name (looking in folder $parent_id) - "  . $folder->getMessage(), $session_id);
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_folder_detail", $response);
     	}
 
@@ -1897,11 +1900,10 @@ class KTWebService
 
     	if ($this->version >=2)
     	{
-
 	    	$sourceName = $src_folder->get_folder_name();
 	    	$targetPath = $tgt_folder->get_full_path();
 
-	    	$response = $this->get_folder_detail_by_name($session_id, $targetPath . '/' . $sourceName);
+	    	$response = $this->get_folder_detail_by_name($session_id, $targetPath . '/' . $sourceName, $source_id);
 
     		return $response;
     	}
@@ -2940,12 +2942,13 @@ class KTWebService
      *
      * @param string $session_id
      * @param int $document_id
+     * @param string $version The document (content) version - "major version" . "minor version"
 
      * @return kt_response. status_code can be KTWS_ERR_INVALID_SESSION, KTWS_ERR_INVALID_DOCUMENT or KTWS_SUCCESS
      */
     function download_document($session_id, $document_id, $version=null)
     {
-    	$this->debug("download_document('$session_id',$document_id)");
+    	$this->debug("download_document('$session_id',$document_id, '$version')");
 
     	$kt = &$this->get_ktapi($session_id );
     	if (is_array($kt))
@@ -2964,11 +2967,23 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
     	}
 
-    	$result = $document->download();
+    	$content_version_id = null;
+    	if(!empty($version)){
+    		// Get the content version id for the given document version
+    		$content_version_id = $document->get_content_version_id_from_version($version);
+    		if (PEAR::isError($content_version_id))
+        	{
+        		$response['message'] = $result->getMessage();
+        		$this->debug("download_document - cannot get version $version - "  . $result->getMessage(), $session_id);
+        		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+        	}
+    	}
+
+    	$result = $document->download($version);
 		if (PEAR::isError($result))
     	{
     		$response['message'] = $result->getMessage();
-    		$this->debug("download_document - cannot download - "  . $result->getMessage(), $session_id);
+    		$this->debug("download_document - cannot download (version $version) - "  . $result->getMessage(), $session_id);
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
     	}
 
@@ -2976,7 +2991,7 @@ class KTWebService
     	$download_manager = new KTDownloadManager();
     	$download_manager->set_session($session->session);
     	$download_manager->cleanup();
-    	$url = $download_manager->allow_download($document);
+    	$url = $download_manager->allow_download($document, $content_version_id);
 
     	$response['status_code'] = KTWS_SUCCESS;
 		$response['message'] = $url;
@@ -3012,7 +3027,19 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
     	}
 
-    	$result = $document->download();
+    	$content_version_id = null;
+    	if(!empty($version)){
+    		// Get the content version id for the given document version
+    		$content_version_id = $document->get_content_version_id_from_version($version);
+    		if (PEAR::isError($content_version_id))
+        	{
+        		$response['message'] = $result->getMessage();
+        		$this->debug("download_document - cannot get version $version - "  . $result->getMessage(), $session_id);
+        		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+        	}
+    	}
+
+    	$result = $document->download($version);
 		if (PEAR::isError($result))
     	{
     		$response['message'] = $result->getMessage();
@@ -3020,24 +3047,33 @@ class KTWebService
     		return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
     	}
 
-    	$content='';
+    	$content = '';
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
 
-    		$document = $document->document;
+    	// for a specified version
+    	if(is_numeric($content_version_id)){
+    	    $filename = $oStorage->temporaryFileForVersion($content_version_id);
 
-    		$oStorage =& KTStorageManagerUtil::getSingleton();
-            $filename = $oStorage->temporaryFile($document);
-
-    		$fp=fopen($filename,'rb');
-    		if ($fp === false)
-    		{
+    	    if(!$filename){
     			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
-    			$this->debug("download_small_document - cannot write $filename", $session_id);
+    			$this->debug("download_small_document - $filename cannot be found in the storage system", $session_id);
     			return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
-    		}
-    		$content = fread($fp, filesize($filename));
-    		fclose($fp);
-    		$content = base64_encode($content);
+    	    }
+    	}else{
+    	    $document = $document->document;
+    	    $filename = $oStorage->temporaryFile($document);
+    	}
 
+		$fp=fopen($filename,'rb');
+		if ($fp === false)
+		{
+			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
+			$this->debug("download_small_document - cannot read $filename", $session_id);
+			return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
+		}
+		$content = fread($fp, filesize($filename));
+		fclose($fp);
+		$content = base64_encode($content);
 
     	$response['status_code'] = KTWS_SUCCESS;
 		$response['message'] = $content;
@@ -3739,9 +3775,9 @@ class KTWebService
      * @param int $document_id
      * @return kt_metadata_response
      */
-	function get_document_metadata($session_id,$document_id)
+	function get_document_metadata($session_id, $document_id, $version = null)
 	{
-    	$this->debug("get_document_metadata('$session_id',$document_id)");
+    	$this->debug("get_document_metadata('$session_id',$document_id, $version)");
 
     	$kt = &$this->get_ktapi($session_id );
     	if (is_array($kt))
@@ -3751,7 +3787,12 @@ class KTWebService
 
     	$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
 
-    	$document = &$kt->get_document_by_id($document_id);
+    	if(is_numeric($version)){
+            $document = &$kt->get_document_by_metadata_version($document_id, $version);
+    	}else {
+    	    $document = &$kt->get_document_by_id($document_id);
+    	}
+
 		if (PEAR::isError($document))
     	{
     		$response['message'] = $document->getMessage();

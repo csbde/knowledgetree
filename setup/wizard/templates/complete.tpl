@@ -13,7 +13,6 @@
 	</div>
 	<br/>
 	<div id="step_content_<?php echo $step_name; ?>" class="step">
-
 	<?php if(!$servicesValidation) { ?>
 		<?php if(!$migrate_check) { ?>
 			<h3>Services</h3>
@@ -24,7 +23,6 @@
 			<br/>
 			<?php } else { ?>
 			To start the services, using the instructions below:
-<!--			execute the dmsctl.bat batch file in the KnowledgeTree directory from a command prompt, run as administrator.-->
 			<br/>
 			<br/>
 			<?php } ?>
@@ -34,16 +32,21 @@
 					<br/>
 					[START MENU] => [Programs] => [KnowledgeTree 3.7.x] => [services]
 					<br/>
-					Right-Click and run [Install Services] as administrator
+					Right-Click and run [Install Services] as administrator, if applicable, or
+					<br/>
+					Click [Install Services]
 					<br/>
 					[START MENU] => [Programs] => [KnowledgeTree 3.7.x] => [services]
 					<br/>
-					Right-Click and run [Start Services] as administrator
+					Right-Click and run [Start Services] as administrator, if applicable, or
+					<br/>
+					Click [Start Services]
 					<br/>
 					<br/>
 					<b>Alternatively:</b>
 					<br/>
 					Open a command prompt and enter the following:
+					<br/>
 					<br/>
 					cd <?php echo "\"".SYSTEM_DIR."\""; ?> <br/>
 					dmsctl.bat install<br/>
@@ -154,7 +157,6 @@
 		<?php } ?>
 	<!--	Services	-->
 		<br/>
-<!--		<br/>-->
 <?php if($servicesValidation) { ?>
 <?php if(!$migrate_check) { ?>
 		<div>
@@ -207,10 +209,8 @@
         	$redirect = "http://".$_SERVER['SERVER_NAME'].":$port".$root_url."/admin.php";
 	?>
 	<?php if($migrate_check) { ?>
-<!--		<a href="../upgrade/index.php" class="back button_next" style="width:30px;" onclick="javascript:{w.clearSessions();}">Next</a>-->
 		<input type="submit" name="Upgrade" value="Next" class="button_next"/>
     <?php } else { ?>
-<!--    	<a href="../../login.php" class="back button_next" style="width:50px;" onclick="javascript:{w.clearSessions();}">Finish</a>-->
 		<input type="submit" name="Next" value="Finish" class="button_next"/>
     <?php } ?>
 </form>

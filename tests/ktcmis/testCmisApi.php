@@ -62,7 +62,9 @@ class CMISTestCase extends KTUnitTestCase {
     * This method ends the KT session
     */
     public function tearDown() {
-        $this->session->logout();
+        if (!is_null($this->session) && !PEAR::isError($this->session)) {
+            $this->session->logout();
+        }
     }
 
     // Repository service functions
@@ -529,7 +531,7 @@ class CMISTestCase extends KTUnitTestCase {
         $response = $NavigationService->getCheckedOutDocs($repositoryId, false, false);
         $this->assertEqual($response['status_code'], 0);
         $this->assertNotNull($response['results']);
-        $this->assertTrue($this->findInPropertiesArray('ObjectId', $documentId, $response['results']));
+        $this->assertTrue($this->findInPropertiesArray('objectId', $documentId, $response['results']));
         // now let's cancel the checkout so that we can delete later during cleanup :)
         $response = $VersioningService->cancelCheckOut($repositoryId, $pwcId);
                

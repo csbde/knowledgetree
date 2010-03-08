@@ -35,21 +35,16 @@
 * @copyright 2008-2009, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
-* @package Migrater
+* @package Installer
 * @version Version 0.1
 */
-class Session
+class SessionBase
 {
-	private $salt = 'migrate';
-	/**
-	* Constructs session object
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
- 	*/
-	public function __construct() {
-		$this->startSession();
+	
+	public $salt = '';
+	
+	public function setSalt($salt) {
+		$this->salt = $salt;
 	}
 	
 	/**
@@ -174,7 +169,7 @@ class Session
 	* @access public
 	* @return void
 	*/
-	public function destroyMigrate() {
+	public function destroy() {
 		$this->startSession();
 		unset($_SESSION[$this->salt]);
 		session_destroy();
@@ -219,5 +214,6 @@ class Session
 	public function getClass($class) {
 		return $_SESSION[$this->salt][$class];
 	}
+	
 }
 ?>

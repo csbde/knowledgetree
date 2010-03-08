@@ -4,7 +4,7 @@
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
+* Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
 *
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -32,8 +32,12 @@
 * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
 * must display the words "Powered by KnowledgeTree" and retain the original
 * copyright notice.
+* Contributor( s): ______________________________________
+*/
+
+/**
 *
-* @copyright 2008-2009, KnowledgeTree Inc.
+* @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
 * @package Installer
@@ -61,11 +65,7 @@
     	define('UNIX_OS', true);
     	define('OS', 'unix');
 	}
-	if(WINDOWS_OS) {
-		define('DS', '\\');
-	} else {
-		define('DS', '/');
-	}
+	define('DS', DIRECTORY_SEPARATOR);
 	// Define environment root
 	$wizard = realpath(dirname(__FILE__));
 	$xdir = explode(DS, $wizard);
@@ -81,6 +81,9 @@
 			break;
 			case 'upgrade' :
 				$wizard = $sys.'upgrade';
+			break;
+			case 'firstlogin' :
+				$wizard = $sys.'firstlogin';
 			break;
 			default:
 
@@ -105,7 +108,6 @@
     define('IMG_DIR', RES_DIR."graphics".DS);
     define('STEP_DIR', WIZARD_DIR."steps".DS);
     define('TEMP_DIR', WIZARD_DIR."templates".DS);
-    define('SYS_DIR', WIZARD_LIB."system".DS);
     define('HELPER_DIR', WIZARD_LIB."helpers".DS);
     define('VALID_DIR', WIZARD_LIB."validation".DS);
     // Define paths to system webroot
@@ -131,4 +133,38 @@
     } else {
 		define('INSTALL_TYPE', 'community');
 	}
+	define('WIZARD_ROOTURL',guessRootUrl()); # Used by template resources
+	define('WIZARD_SETUP',WIZARD_ROOTURL . DS . "setup");
+	
+    function guessRootUrl() {
+        $urlpath = $_SERVER['SCRIPT_NAME'];
+        $bFound = false;
+        $rootUrl = '';
+        while ($urlpath) {
+            if (file_exists(SYSTEM_DIR . '/' . $urlpath)) {
+                $bFound = true;
+                break;
+            }
+            $i = strpos($urlpath, '/');
+            if ($i === false) {
+                break;
+            }
+            if ($rootUrl)
+            {
+            	$rootUrl .= '/';
+            }
+            $rootUrl .= substr($urlpath, 0, $i);
+            $urlpath = substr($urlpath, $i + 1);
+        }
+        if ($bFound) {
+            if ($rootUrl) {
+                $rootUrl = '/' . $rootUrl;
+            }
+            if(strpos($rootUrl, SYSTEM_DIR) !== false){
+                return '';
+            }
+            return $rootUrl;
+        }
+        return '';
+    }
 ?>

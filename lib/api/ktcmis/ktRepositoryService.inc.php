@@ -4,7 +4,7 @@
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
+* Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
 * 
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -32,8 +32,12 @@
 * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
 * must display the words "Powered by KnowledgeTree" and retain the original
 * copyright notice.
+* Contributor( s): ______________________________________
+*/
+
+/**
 *
-* @copyright 2008-2009, KnowledgeTree Inc.
+* @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
 * @package KTCMIS
@@ -82,7 +86,7 @@ class KTRepositoryService extends KTCMISBase {
         {
             $repositoryList[$count]['repositoryId'] = $repository->getRepositoryId();
             $repositoryList[$count]['repositoryName'] = $repository->getRepositoryName();
-            $repositoryList[$count]['repositoryURI'] = $repository->getRepositoryURI();
+            //$repositoryList[$count]['repositoryURI'] = $repository->getRepositoryURI();
             ++$count;
         }
 
@@ -161,25 +165,14 @@ class KTRepositoryService extends KTCMISBase {
     public function getTypeDefinition($repositoryId, $typeId)
     {
         try {
-            $typeDefinitionResult = $this->RepositoryService->getTypeDefinition($repositoryId, $typeId);
+            $typeDefinition = $this->RepositoryService->getTypeDefinition($repositoryId, $typeId);
         }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+        catch (Exception $e) {
+            // propogate upward
+            throw $e;
         }
-
-        // format as array style output
-        // NOTE only concerned with attributes at this time
-        // TODO add support for properties
-        $typeDefinition = $typeDefinitionResult['attributes'];
-
-        return array (
-            "status_code" => 0,
-            "results" => $typeDefinition
-        );
+        
+        return $typeDefinition;
     }
 
 }

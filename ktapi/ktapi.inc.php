@@ -4,7 +4,7 @@
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
+* Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
 *
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -32,8 +32,12 @@
 * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
 * must display the words "Powered by KnowledgeTree" and retain the original
 * copyright notice.
+* Contributor( s): ______________________________________
+*/
+
+/**
 *
-* @copyright 2008-2009, KnowledgeTree Inc.
+* @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
 * @package KTAPI
@@ -842,11 +846,12 @@ class KTAPI
     * @author KnowledgeTree Team
     * @access public
 	* @param string $foldername The folder name
+	* @param int $parent_id The folder in which to search for the requested child folder
 	* @return object $folder The KTAPI_Folder object
     */
-	public function &get_folder_by_name($foldername, $parentId = 1)
+	public function &get_folder_by_name($foldername, $parent_id = 1)
 	{
-		$folder = KTAPI_Folder::_get_folder_by_name($this, $foldername, $parentId);
+		$folder = KTAPI_Folder::_get_folder_by_name($this, $foldername, $parent_id);
 		return $folder;
 	}
 
@@ -861,6 +866,22 @@ class KTAPI
 	public function &get_document_by_id($documentid)
 	{
 		$document = KTAPI_Document::get($this, $documentid);
+		return $document;
+	}
+
+	/**
+	* This returns a refererence to a document based on document id.
+	*
+    * @author KnowledgeTree Team
+    * @access public
+	* @param integer $documentid The document id
+	* @param integer $metadataVersion The metadata version of the document (not the id)
+	* @return object $document The KTAPI_Document object
+	*/
+	public function &get_document_by_metadata_version($documentid, $metadataVersion)
+	{
+	    // Get the document using the metadata version
+		$document = KTAPI_Document::get_by_metadata_version($this, $documentid, $metadataVersion);
 		return $document;
 	}
 
@@ -2027,14 +2048,14 @@ class KTAPI
     function get_folder_shortcuts($folder_id)
     {
         $folder = $this->get_folder_by_id($folder_id);
-        if(PEAR::isError($folder)){
+        if(PEAR::isError($folder)) {
     	    $response['status_code'] = 1;
     	    $response['message']= $folder->getMessage();
     	    return $response;
         }
 
         $shortcuts = $folder->get_shortcuts();
-    	if(PEAR::isError($shortcuts)){
+    	if(PEAR::isError($shortcuts)) {
     	    $response['status_code'] = 1;
     	    $response['message']= $shortcuts->getMessage();
     	    return $response;
@@ -2054,10 +2075,10 @@ class KTAPI
      * @param string $folder_name The name of the folder
      * @return array Response 'results' contains kt_folder_detail | 'message' contains error message on failure
      */
-    function get_folder_detail_by_name($folder_name)
+    function get_folder_detail_by_name($folder_name, $parent_id = 1)
     {
-        $folder = &$this->get_folder_by_name($folder_name);
-        if(PEAR::isError($folder)){
+        $folder = &$this->get_folder_by_name($folder_name, $parent_id);
+        if(PEAR::isError($folder)) {
     	    $response['status_code'] = 1;
     	    $response['message']= $folder->getMessage();
     	    return $response;
@@ -2343,7 +2364,7 @@ class KTAPI
         	$sourceName = $src_folder->get_folder_name();
         	$targetPath = $tgt_folder->get_full_path();
 
-        	$response['results'] = $this->get_folder_detail_by_name($targetPath . '/' . $sourceName);
+        	$response['results'] = $this->get_folder_detail_by_name($targetPath . '/' . $sourceName, $source_id);
         	return $response;
     	}
 
@@ -4714,21 +4735,28 @@ class KTAPI
 	    }
         return $response;
 	}
-
+	
+	/**
+	* Method to check whether content version is the latest for a specific document
+	*
+	* @author KnowledgeTree Team
+	* @access public
+	* @param string $documentID The id of the document
+	* @param string $contentID The id of the content version to check
+	* @return bool $response The formatted response array
+	*/
 	public function is_latest_version($documentID, $contentID)
-	{
-		$sql = 'SELECT COUNT(document_content_version.id) AS newdocumentcount
-		FROM document_content_version
-		WHERE document_content_version.document_id ="'.$documentID.'" AND
-		document_content_version.id > "'.$contentID.'"';
+	{		
+		$document = $this->get_document_by_id($documentID);
 
-		$row = DBUtil::getOneResult($sql);
- 		$row = (int)$row['newdocumentcount'];
+ 		$maxcontentID = $document->get_content_version();
 
-		if ($row > 0) {
+		if ($maxcontentID > $contentID) {
 			$response['is_latest'] = 'FALSE';
+			$response['max_contentID'] = $maxcontentID;
 		} else {
 			$response['is_latest'] = 'TRUE';
+			$response['max_contentID'] = $contentID;
 		}
 
 		$response['status_code'] = 0;
@@ -4811,6 +4839,58 @@ class KTAPI
 
         return $response;
     }
+	
+	/**
+	 * Method to get the Recently Viewed Documents
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function getRecentlyViewedDocuments()
+	{
+		if (KTPluginUtil::pluginIsActive('brad.UserHistory.plugin')) {
+			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
+            require_once($path.'UserHistoryActions.php');
+			$user = $this->get_user();
+			
+			if (is_null($user) || PEAR::isError($user))
+			{
+				$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
+				return $result;
+			}
+			
+			return UserHistoryDocumentEntry::getByUser($user);
+			
+		} else {
+			return array();
+		}
+	}
+	
+	/**
+	 * Method to get the Recently Viewed Folders
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function getRecentlyViewedFolders()
+	{
+		if (KTPluginUtil::pluginIsActive('brad.UserHistory.plugin')) {
+			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
+            require_once($path.'UserHistoryActions.php');
+			$user = $this->get_user();
+			
+			if (is_null($user) || PEAR::isError($user))
+			{
+				$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
+				return $result;
+			}
+			
+			return UserHistoryFolderEntry::getByUser($user);
+			
+		} else {
+			return array();
+		}
+	}
 }
 
 

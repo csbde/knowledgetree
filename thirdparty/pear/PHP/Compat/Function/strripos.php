@@ -16,7 +16,7 @@
 // |          Stephan Schmidt <schst@php.net>                             |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: strripos.php,v 1.24 2005/08/10 10:19:59 aidan Exp $
 
 
 /**
@@ -26,7 +26,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/function.strripos
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.24 $
  * @since       PHP 5
  * @require     PHP 4.0.0 (user_error)
  */
@@ -65,7 +65,7 @@ if (!function_exists('strripos')) {
                                 $haystack_len + $offset + 1;
 
         // Reverse iterate haystack
-        while (--$p > $leftlimit) {
+        while (--$p >= $leftlimit) {
             if ($needle_fc === $haystack{$p} &&
                 substr($haystack, $p, $needle_len) === $needle) {
                 return $p;

@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -71,6 +71,40 @@ class KTPermissionLookup extends KTEntity {
         global $default;
         return KTEntityUtil::getList($default->permission_lookups_table, 'KTPermissionLookup', $sWhereClause);
     }
+    
+    
+    /**
+     * Overriding the create to specify the id field value
+     * Create the current object in the database.
+     * 
+     * @return boolean on successful store, false otherwise and set $_SESSION["errorMessage"]
+     *
+     */
+    function create() {
+        if ($this->iId <= 0) {
+            $fieldValues = $this->_fieldValues();
+            
+            if (empty($fieldValues)) {
+                $fieldValues = array('id' => 'id');
+            }
+            
+            $id = DBUtil::autoInsert($this->_table(), $fieldValues);
+            if (PEAR::isError($id)) {
+                if ($this->_bUsePearError === false) {
+                    $_SESSION["errorMessage"] = $id->toString();
+                    return false;
+                } else {
+                    return $id;
+                }
+            }
+            $this->clearCachedGroups();
+            $this->iId = $id;
+            return true;
+        }
+        $_SESSION["errorMessage"] = "Can't create an object that already exists id = " . $this->iId . ' table = ' . $this->_table();
+        return false;
+    }       
+    
 }
 
 ?>

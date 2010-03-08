@@ -633,8 +633,8 @@ CREATE TABLE `download_files` (
   `session` varchar(100) NOT NULL,
   `download_date` timestamp NULL default CURRENT_TIMESTAMP,
   `downloaded` int(10) unsigned NOT NULL default '0',
-  `filesize` int(10) unsigned NOT NULL,
-  `content_version` int(10) unsigned NOT NULL,
+  `filesize` int(10) unsigned,
+  `content_version` int(10) unsigned,
   `hash` varchar(100) NOT NULL,
   PRIMARY KEY  (`document_id`,`session`),
   CONSTRAINT `download_files_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -807,7 +807,7 @@ CREATE TABLE `folder_subscriptions` (
 --
 
 CREATE TABLE `folder_transactions` (
-  `id` int(11) NOT NULL auto_increment,
+  `id` int(11) UNSIGNED NOT NULL auto_increment,
   `folder_id` int(11) default NULL,
   `user_id` int(11) default NULL,
   `datetime` datetime NOT NULL default '0000-00-00 00:00:00',

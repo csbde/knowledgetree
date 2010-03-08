@@ -84,6 +84,10 @@ wizard.prototype.valRegHelper = function() {
 	var first = $("#first");
 	var last = $("#last");
 	var email = $("#email");
+	var country = $("#country");
+	var industry = $("#industry");
+	var size = $("#size");
+	var reasons = $("#reasons");
 	if(first.attr('value').length < 1) {
 		$("#reg_error").html('Enter a First Name');
 		w.focusElement(first);
@@ -109,7 +113,36 @@ wizard.prototype.valRegHelper = function() {
 		w.focusElement(email);
 		return false;
 	}
+	if(!w.ddCheck(reasons.attr('value'), "")) {
+		$("#reg_error").html('Please supply a reason for the installation.');
+		w.focusElement(reasons);
+		return false;
+	}
+	if(!w.ddCheck(country.attr('value'), "Select Country...")) {
+		$("#reg_error").html('Please select a Country.');
+		w.focusElement(country);
+		return false;
+	}
+	if(!w.ddCheck(industry.attr('value'), "Select Industry...")) {
+		$("#reg_error").html('Please select a Industry.');
+		w.focusElement(industry);
+		return false;
+	}
+	if(!w.ddCheck(size.attr('value'), "Select Organization Size...")) {
+		$("#reg_error").html('Please select an Organization.');
+		w.focusElement(size);
+		return false;
+	}
+	
+	return true;
+}
 
+wizard.prototype.ddCheck = function(str, check) {
+	if(str == check) {
+		return false;
+	} else {
+		return true;
+	}
 	return true;
 }
 
@@ -192,7 +225,6 @@ wizard.prototype.dummy = function () {
 
 // pre-submit callback
 wizard.prototype.showRequest = function (formData, jqForm, options) {
-	//$.blockUI({message:''});
 	$.blockUI({overlayCSS:{opacity:0.1}, fadeIn:500, fadeOut:500, message:''});
 	$('#loading').attr('style', 'display:block;');
 }
@@ -236,14 +268,6 @@ wizard.prototype.getUrl = function (address, div)  {
 	});
 }
 
-wizard.prototype.sendJavaLocation = function ()  {
+wizard.prototype.send = function ()  {
 	$('form').submit();
-}
-
-wizard.prototype.sendRegistration = function ()  {
-	$('form').submit();
-}
-
-wizard.prototype.clearSessions = function ()  {
-
 }

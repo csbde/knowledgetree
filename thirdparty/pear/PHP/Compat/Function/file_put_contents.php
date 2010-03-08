@@ -15,11 +15,15 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: file_put_contents.php,v 1.25 2005/12/05 09:25:15 aidan Exp $
 
 
 if (!defined('FILE_USE_INCLUDE_PATH')) {
     define('FILE_USE_INCLUDE_PATH', 1);
+}
+
+if (!defined('LOCK_EX')) {
+    define('LOCK_EX', 2);
 }
 
 if (!defined('FILE_APPEND')) {
@@ -34,7 +38,7 @@ if (!defined('FILE_APPEND')) {
  * @package     PHP_Compat
  * @link        http://php.net/function.file_put_contents
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.25 $
  * @internal    resource_context is not supported
  * @since       PHP 5
  * @require     PHP 4.0.0 (user_error)
@@ -60,7 +64,7 @@ if (!function_exists('file_put_contents')) {
         // Check what mode we are using
         $mode = ($flags & FILE_APPEND) ?
                     'a' :
-                    'w';
+                    'wb';
 
         // Check if we're using the include path
         $use_inc_path = ($flags & FILE_USE_INCLUDE_PATH) ?
@@ -72,6 +76,14 @@ if (!function_exists('file_put_contents')) {
             user_error('file_put_contents() failed to open stream: Permission denied',
                 E_USER_WARNING);
             return false;
+        }
+
+        // Attempt to get an exclusive lock
+        $use_lock = ($flags & LOCK_EX) ? true : false ;
+        if ($use_lock === true) {
+            if (!flock($fh, LOCK_EX)) {
+                return false;
+            }
         }
 
         // Write to the file

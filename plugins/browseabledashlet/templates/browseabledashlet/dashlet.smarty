@@ -1,5 +1,5 @@
 {if empty($folders)}
-<div><p>{i18n}You have no orphaned folders.{/i18n}</p></div>
+<div><p>{i18n}You have no orphaned folders.{/i18n}</p><br/></div>
 {else}
 <table class="kt_collection">
 <thead>

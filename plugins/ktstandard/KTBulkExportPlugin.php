@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -70,6 +70,16 @@ class KTBulkExportAction extends KTFolderAction {
         return _kt('Bulk Download');
     }
 
+	/**
+     * Deal with bulk actions
+     */
+    function do_notification($objects, $eventAction, $targetFolder) {
+        if ($targetFolder && count($objects) > 0 && $eventAction != '') { // Make sure there were documents/folders affected
+            $oSubscriptionEvent = new SubscriptionEvent();
+            $oSubscriptionEvent->notifyBulkDocumentAction($objects, $eventAction, $targetFolder);
+        }
+    }
+    
     function do_main() {
         $config = KTConfig::getSingleton();
         $useQueue = $config->get('export/useDownloadQueue', true);
@@ -89,24 +99,28 @@ class KTBulkExportAction extends KTFolderAction {
         $sCurrentFolderId = $this->oFolder->getId();
         $url = KTUtil::addQueryStringSelf(sprintf('action=downloadZipFile&fFolderId=%d&exportcode=%s', $sCurrentFolderId, $exportCode));
         $folderurl = KTBrowseUtil::getUrlForFolder($this->oFolder);
-
+      	$aDocList = array();
+      	$originalFolder =& Folder::get($sCurrentFolderId);
+      	$docIds = $originalFolder->getDocumentIDs($sCurrentFolderId);
+      	$docIds = split(",", $docIds);
+      	foreach ($docIds as $dId) {
+      		$aDocList[] = & Document::get($dId);
+      	}
         if($useQueue){
             DownloadQueue::addItem($exportCode, $sCurrentFolderId, $sCurrentFolderId, 'folder');
-
             $task_url = KTUtil::kt_url() . '/presentation/lookAndFeel/knowledgeTree/bulkdownload/downloadTask.php';
-
           	$oTemplating =& KTTemplating::getSingleton();
           	$oTemplate = $oTemplating->loadTemplate('ktcore/action/bulk_download');
-
           	$aParams = array(
                     'folder_url' => $folderurl,
                     'url' => $task_url,
                     'code' => $exportCode,
                     'download_url' => $url
                 );
+			$this->do_notification($aDocList, "DownloadDocument", $originalFolder); // Send off notifications about bulk action
             return $oTemplate->render($aParams);
         }
-
+		$this->do_notification($aDocList, "DownloadDocument", $originalFolder); // Send off notifications about bulk action
         // Get all folders and sub-folders
         $sWhereClause = "parent_folder_ids = '{$sCurrentFolderId}' OR
         parent_folder_ids LIKE '{$sCurrentFolderId},%' OR
@@ -174,12 +188,6 @@ class KTBulkExportAction extends KTFolderAction {
                 if ($bNoisy) {
                     $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document part of bulk export", 'ktstandard.transactions.bulk_export', array());
                     $oDocumentTransaction->create();
-                }
-
-                // fire subscription alerts for the downloaded document
-                if($bNotifications){
-                    //$oSubscriptionEvent = new SubscriptionEvent();
-                    //$oSubscriptionEvent->DownloadDocument($oDocument, $oFolder);
                 }
 
                 $this->oZip->addDocumentToZip($oDocument, $oFolder);

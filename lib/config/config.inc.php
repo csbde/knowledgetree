@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -285,6 +285,62 @@ class KTConfig {
             return $this->expand($this->flat[$var]);
         }
         return $oDefault;
+    }
+
+    /**
+     * Set a config value called $var to $value
+     * @param $var config variable and group in string like "ui/mainLogoTitle"
+     * @param $value a string with the value you want for the config item.
+     * @return boolean
+     */
+
+    function set($var = null, $value = null) {
+        global $default;
+    
+        if ($var == null) {
+            return false;
+        }
+
+        $varParts = explode('/', $var);
+        $groupName = $varParts[0];
+        $var = $varParts[1];
+    
+        if ($var == '' || $groupName == ''){
+            //var and group must be set
+            $default->log->error("config->set() requires the first parameter to be in the form 'groupName/configSetting'");
+            return false;
+        }
+    
+        $sql = "SELECT id from config_settings WHERE item = '$var' and group_name = '$groupName'";
+        $configId = DBUtil::getOneResultKey($sql,'id');
+        if (PEAR::isError($configId))
+        {
+            $default->log->error(sprintf(_kt("Couldn't get the config id:%s"), $configId->getMessage()));
+            return false;
+        }
+
+        //If config var doesn't exist we create it
+        if ($configId == null) {
+            $configId = DBUtil::autoInsert('config_settings', array('item' => $var ,'value' => $value, 'group_name' => $groupName));
+
+            if (PEAR::isError($configId))
+            {
+                $default->log->error(sprintf(_kt("Couldn't insert config value:%s"), $configId->getMessage()));
+                return false;
+            }
+
+        } else {
+        
+            $res = DBUtil::autoUpdate('config_settings', array('value' => $value), $configId);
+            if (PEAR::isError($res)) {
+                $default->log->error(sprintf(_kt("Couldn't update config value: %s"), $res->getMessage()));
+                return false;
+            }
+        }
+        
+        $this->clearCache();
+        
+        return true;
     }
 
     /**

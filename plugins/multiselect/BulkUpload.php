@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -75,7 +75,7 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 			}
 
 			$js = "<script src='resources/js/kt_hidelink.js' type='text/javascript'></script>";
-			return $js._kt('Bulk Upload');
+			return _kt('Bulk Upload') .$js;
 		}
 		else
 		{

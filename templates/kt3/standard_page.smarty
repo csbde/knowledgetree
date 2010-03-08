@@ -76,7 +76,7 @@
                 	<a href="{$page->systemURL}"><img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" class="primary" title="{$page->systemName}"/></a>
                 {/if}
                 {if $config->get("ui/companyLogo") != ''}
-                	<a href="{$rootUrl}/"><img src="{$config->get("ui/companyLogo")}" height="50px" width="{$config->get("ui/companyLogoWidth")}" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("companyLogoTitle")}" class="secondary" /></a>
+                	<a href="{$config->get("ui/companyLogoUrl")}"><img src="{$config->get("ui/companyLogo")}" height="50px" width="{$config->get("ui/companyLogoWidth")}" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("ui/companyLogoTitle")}" class="secondary" /></a>
                 {/if}
                 <div class="floatClear"></div>
             </div>
@@ -333,7 +333,7 @@
 					{/if}
                 </td>
                 <td align="right">
-                    {i18n}&copy; 2008, 2009 <a href="http://www.knowledgetree.com/about/legal" target="_blank">KnowledgeTree Inc.</a>{/i18n}
+                    {i18n}&copy; 2008-2010 <a href="http://www.knowledgetree.com/about/legal" target="_blank">KnowledgeTree Inc.</a>{/i18n}
 					{i18n}All rights reserved.{/i18n}
 					{if ($smallVersion == 'Community Edition')}
 						<br>{i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}

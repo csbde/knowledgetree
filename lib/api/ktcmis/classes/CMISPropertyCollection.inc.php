@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008,2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,8 +32,12 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
+ * Contributor( s): ______________________________________
+ */
+
+/**
  *
- * @copyright 2008-2009, KnowledgeTree Inc.
+ * @copyright 2008-2010, KnowledgeTree Inc.
  * @license GNU General Public License version 3
  * @author KnowledgeTree Team
  * @package KTCMIS
@@ -45,41 +49,41 @@
  */
 abstract class CMISPropertyCollection {
 
-    static $ObjectId;
-    static $BaseType;
-    static $Uri;
-    static $ObjectTypeId;
-    static $CreatedBy;
-    static $CreationDate;
-    static $LastModifiedBy;
-    static $LastModificationDate;
-    static $ChangeToken;
+    static $objectId;
+    static $baseTypeId;
+    static $uri;
+    static $objectTypeId;
+    static $createdBy;
+    static $creationDate;
+    static $lastModifiedBy;
+    static $lastModificationDate;
+    static $changeToken;
     // TODO these definitions belong in their own classe definition (see property type definions,) but here will do for now
     static public $propertyTypes;
 
-    function __construct()
+    public function __construct()
     {
-        self::$propertyTypes = array('ObjectId' => 'propertyId',
-                                     'Author' => 'propertyString',
-                                     'BaseType' => 'propertyString',
-                                     'ObjectTypeId' => 'propertyId',
-                                     'CreatedBy' => 'propertyString',
-                                     'CreationDate' => 'propertyDateTime',
-                                     'LastModifiedBy' => 'propertyString',
-                                     'LastModificationDate' => 'propertyDateTime',
-                                     'Name' => 'propertyString',
-                                     'Uri' => 'propertyUri',
-                                     'AllowedChildObjectTypeIds' => 'propertyId',
-                                     'CreatedBy' => 'propertyString',
-                                     'CreationDate' => 'propertyDateTime',
-                                     'ChangeToken' => 'propertyString',
-                                     'ParentId' => 'propertyId');
+        self::$propertyTypes = array('objectId' => 'propertyId',
+                                     'author' => 'propertyString',
+                                     'baseTypeId' => 'propertyId',
+                                     'objectTypeId' => 'propertyId',
+                                     'createdBy' => 'propertyString',
+                                     'creationDate' => 'propertyDateTime',
+                                     'lastModifiedBy' => 'propertyString',
+                                     'lastModificationDate' => 'propertyDateTime',
+                                     'name' => 'propertyString',
+                                     'uri' => 'propertyUri',
+                                     'allowedChildObjectTypeIds' => 'propertyId',
+                                     'createdBy' => 'propertyString',
+                                     'creationDate' => 'propertyDateTime',
+                                     'changeToken' => 'propertyString',
+                                     'parentId' => 'propertyId');
     }
 
     /**
      * Gets the property value.
      */
-    function getValue($field)
+    public function getValue($field)
     {
         return $this->{$field};
     }
@@ -88,12 +92,12 @@ abstract class CMISPropertyCollection {
      * Sets the property value.
      */
     // for connection-tied live objects
-    function setValue($field, $value)
+    public function setValue($field, $value)
     {
         $this->{$field} = $value;
     }
 
-    function getFieldType($field)
+    public function getFieldType($field)
     {
         return $this->propertyTypes[$field];
     }

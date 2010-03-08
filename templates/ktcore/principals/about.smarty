@@ -1,22 +1,22 @@
 <h2>{i18n arg_appname="$appname" arg_versionname="$versionname"}#appname# #versionname#{/i18n}</h2>
 <p><strong>{i18n arg_version="$versionnumber"}Version #version#{/i18n}</strong></p>
 <img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" border="0" />
-<p>{i18n}&copy; 2008, 2009 <a href=" http://www.knowledgetree.com/">KnowledgeTree Inc.</a>{/i18n} &nbsp &nbsp &nbsp <a href="http://www.knowledgetree.com">http://www.knowledgetree.com</a><br />
+<p>{i18n}&copy; 2008-2010 <a href=" http://www.knowledgetree.com/">KnowledgeTree Inc.</a>{/i18n} &nbsp &nbsp &nbsp <a href="http://www.knowledgetree.com">http://www.knowledgetree.com</a><br />
 {if ($smallVersion !== 'Community Edition')}
 	{i18n}All rights reserved.{/i18n}<br>
 {/if}
 <br>
 {if ($smallVersion == 'Community Edition')}
 	{i18n}This program is free software and published under the <a href=" http://www.gnu.org/licenses/">GNU General Public License version 3</a>{/i18n}<br><br>
-	{i18n}KnowledgeTree Community Edition is supplied with <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no support</a>, 
-	<a href="http://www.knowledgetree.com/commercial_support" target="_blank">no maintenance</a>, 
+	{i18n}KnowledgeTree Community Edition is supplied with <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no support</a>,
+	<a href="http://www.knowledgetree.com/commercial_support" target="_blank">no maintenance</a>,
 	and <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no warranty</a>.{/i18n}<br>
 	{i18n}Please contact the <a href="mailto:sales@knowledgetree.com">KnowledgeTree Sales team</a> should you wish to learn more about commercially supported editions of KnowledgeTree.{/i18n}<br>
 {else}
 	<br>
 	{i18n}This is a professionally supported edition of KnowledgeTree.{/i18n} <br>
 	{i18n}Please refer to the documentation provided to you at subscription to learn more about how to access KnowledgeTree's professional support team.{/i18n}<br>
-	
+
 {/if}
 </p>
 <br>
@@ -32,47 +32,47 @@
 <br/>
 <p>
 <strong>Thanks to the following contributors for helping us with code contributions and testing...</strong></p>
-		Fu Bin, 
-		Blackhold, 
-		Chris Buechler, 
-		Guillaume Dufloux, 
-		David Alfonso Faspar, 
-		Ruud Feringa, 
-		Hil&aacute;rio Fernandes, 
-		William Hawkins, 
-		Lody Hoekstra, 
-		Kenny Horan, 
-		Artur Kiwa, 
-	    Michael Knight, 
-		Jeongkyu Kim, 
-		Rogerio Kohler, 
-        Piotr Krawiecki , 
-		Ola Larsson, 
-		Pavel Lastovicka, 
-		Michel Loiseleur , 
-		Renat Lumpau, 
-		Marco Lusini, 
-		Michael Malone, 
-		Jochem Meijers, 
-		John Miles, 
-		Ismail Mogal, 
-		David Nalley, 
-		Marco Napetti, 
-		Manuela Patrono, 
-		Antti Poro, 
-		Nicolas Quienot, 
-		Ken Rainsforth, 
-		Antonio Rizzelli, 
-		Greg Rundlett, 
-		Leonardo Russo, 
-		Ricardo Silva, 
-		Mario Steinhoff, 
-		Phillip Steinbachs, 
-        Tahir Tahang, 
-		Paul Trgina, 
-	    Harry Tsio, 
-        Bjarte Kalstveit Vebj&oslash;rnsen, 
-		Zakariah, 
+		Fu Bin,
+		Blackhold,
+		Chris Buechler,
+		Guillaume Dufloux,
+		David Alfonso Faspar,
+		Ruud Feringa,
+		Hil&aacute;rio Fernandes,
+		William Hawkins,
+		Lody Hoekstra,
+		Kenny Horan,
+		Artur Kiwa,
+	    Michael Knight,
+		Jeongkyu Kim,
+		Rogerio Kohler,
+        Piotr Krawiecki ,
+		Ola Larsson,
+		Pavel Lastovicka,
+		Michel Loiseleur ,
+		Renat Lumpau,
+		Marco Lusini,
+		Michael Malone,
+		Jochem Meijers,
+		John Miles,
+		Ismail Mogal,
+		David Nalley,
+		Marco Napetti,
+		Manuela Patrono,
+		Antti Poro,
+		Nicolas Quienot,
+		Ken Rainsforth,
+		Antonio Rizzelli,
+		Greg Rundlett,
+		Leonardo Russo,
+		Ricardo Silva,
+		Mario Steinhoff,
+		Phillip Steinbachs,
+        Tahir Tahang,
+		Paul Trgina,
+	    Harry Tsio,
+        Bjarte Kalstveit Vebj&oslash;rnsen,
+		Zakariah,
 		Jaime Zarate, <br><br/>
 		And the KnowledgeTree team who <a href="http://en.wikipedia.org/wiki/Eat_one's_own_dog_food">"dogfood"</a> KnowledgeTree every day.
 
@@ -80,4 +80,4 @@
 
 <br/>
 <p>This software utilizes third-party software from <a set="yes" linkindex="11" href="http://pear.php.net/">Pear</a>, <a set="yes" linkindex="12" href="http://phpmailer.sourceforge.net/">PHPMailer</a>, <a set="yes" linkindex="13" href="http://smarty.php.net/">Smarty Template Engine</a>, <a set="yes" linkindex="14" href="http://sourceforge.net/projects/jscalendar">JSCalendar</a>, <a set="yes" linkindex="15" href="http://mochikit.com/">Mochikit</a>, <a set="yes" linkindex="16" href="http://tinymce.moxiecode.com/">Moxiecode Systems</a>, <a set="yes" linkindex="17" href="http://developer.yahoo.com/yui/">Yahoo Developer Network</a>.</p>
-	
+

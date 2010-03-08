@@ -4,7 +4,7 @@
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
+* Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
 * 
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -32,8 +32,12 @@
 * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
 * must display the words "Powered by KnowledgeTree" and retain the original
 * copyright notice.
+* Contributor( s): ______________________________________
+*/
+
+/**
 *
-* @copyright 2008-2009, KnowledgeTree Inc.
+* @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
 * @package KTCMIS
@@ -76,19 +80,20 @@ class KTNavigationService extends KTCMISBase {
      *
      * @param string $repositoryId
      * @param string $folderId
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
-     * @param string $typeID
      * @param int $depth
      * @param string $filter
+     * @param boolean $includeRelationships
+     * @param string $renditionFilter
+     * @param boolean $includeAllowableAc
      * @return array $descendants
      */
-    public function getDescendants($repositoryId, $folderId, $includeAllowableActions, $includeRelationships,
-                            $depth = 1, $typeID = 'Any', $filter = '')
+    public function getDescendants($repositoryId, $folderId, $depth = 2, $filter = '', $includeRelationships = false, $renditionFilter = '', 
+                                   $includeAllowableActions = false, $includePathSegment = false)
     {
         // TODO optional parameters
-        $descendantsResult = $this->NavigationService->getDescendants($repositoryId, $folderId, $includeAllowableActions,
-                                                                        $includeRelationships, $depth);
+        $descendantsResult = $this->NavigationService->getDescendants($repositoryId, $folderId, $depth, $filter, 
+                                                                      $includeRelationships = false, $renditionFilter = '', 
+                                                                      $includeAllowableActions = false, $includePathSegment = false);
 
         if (PEAR::isError($descendantsResult))
         {
@@ -97,11 +102,11 @@ class KTNavigationService extends KTCMISBase {
                 "message" => "Failed getting descendants for folder"
             );
         }
-
+        
         // format for webservices consumption
         // NOTE this will almost definitely be changing in the future, this is just to get something working
-        $descendants = CMISUtil::decodeObjectHierarchy($descendantsResult, 'child');
-
+        $descendants = CMISUtil::decodeObjectHierarchy($descendantsResult, 'children');
+        
         return array (
             "status_code" => 0,
             "results" => $descendants
@@ -122,7 +127,7 @@ class KTNavigationService extends KTCMISBase {
      * @return array $descendants
      */
     public function getChildren($repositoryId, $folderId, $includeAllowableActions, $includeRelationships,
-                         $typeID = 'Any', $filter = '', $maxItems = 0, $skipCount = 0)
+                                $typeID = 'Any', $filter = '', $maxItems = 0, $skipCount = 0)
     {
         // TODO paging
         // TODO optional parameters
@@ -132,11 +137,11 @@ class KTNavigationService extends KTCMISBase {
         {
             return array(
                 "status_code" => 1,
-                "message" => "Failed getting descendants for folder"
+                "message" => "Failed getting children for folder"
             );
         }
 
-        $children = CMISUtil::decodeObjectHierarchy($childrenResult, 'child');
+        $children = CMISUtil::decodeObjectHierarchy($childrenResult, 'children');
 
         return array(
 			"status_code" => 0,
@@ -149,38 +154,32 @@ class KTNavigationService extends KTCMISBase {
      *
      * @param string $repositoryId
      * @param string $folderId
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
-     * @param boolean $returnToRoot
      * @param string $filter
-     * @return ancestry[]
+     * @return parent[]
      */
-    public function getFolderParent($repositoryId, $folderId, $includeAllowableActions, $includeRelationships, $returnToRoot, $filter = '')
+    public function getFolderParent($repositoryId, $folderId, $filter = '')
     {
         try {
-            $ancestryResult = $this->NavigationService->getFolderParent($repositoryId, $folderId, $includeAllowableActions,
-                                                                        $includeRelationships, $returnToRoot);
+            $parent = $this->NavigationService->getFolderParent($repositoryId, $folderId, $filter);
         }
         catch (Exception $e) {
             return array(
                 "status_code" => 1,
-                "message" => "Failed getting ancestry for folder: " . $e->getMessage()
+                "message" => "Failed getting folder parent: " . $e->getMessage()
             );
         }
-
-        if (PEAR::isError($ancestryResult))
+        
+        if (PEAR::isError($parent))
         {
             return array(
                 "status_code" => 1,
-                "message" => "Failed getting ancestry for folder"
+                "message" => "Failed getting folder parent"
             );
         }
-
-        $ancestry = CMISUtil::decodeObjectHierarchy($ancestryResult, 'child');
-
+        
         return array(
 			"status_code" => 0,
-			"results" => $ancestry
+			"results" => CMISUtil::createObjectPropertiesEntry($parent->getProperties())
 		);
     }
 
@@ -196,18 +195,24 @@ class KTNavigationService extends KTCMISBase {
      */
     function getObjectParents($repositoryId, $objectId, $includeAllowableActions, $includeRelationships, $filter = '')
     {
-        $ancestryResult = $this->NavigationService->getObjectParents($repositoryId, $objectId, $includeAllowableActions,
-                                                                     $includeRelationships);
+        try {
+            $ancestry = $this->NavigationService->getObjectParents($repositoryId, $objectId, $includeAllowableActions,
+                                                                   $includeRelationships);
+        }
+        catch (Exception $e) {
+            return array(
+                "status_code" => 1,
+                "message" => $e->getMessage()
+            );
+        }
 
-        if (PEAR::isError($ancestryResult))
+        if (PEAR::isError($ancestry))
         {
             return array(
                 "status_code" => 1,
                 "message" => "Failed getting ancestry for object"
             );
         }
-
-        $ancestry = CMISUtil::decodeObjectHierarchy($ancestryResult, 'child');
 
         return array(
             "status_code" => 0,
@@ -220,18 +225,27 @@ class KTNavigationService extends KTCMISBase {
      *
      * @param string $repositoryId
      * @param string $folderId The folder for which checked out docs are requested
-     * @param string $filter
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
      * @param int $maxItems
      * @param int $skipCount
-     * @return array $checkedout The collection of checked out documents
+     * @param string $filter
+     * @param enum $includeRelationships
+     * @param boolean $includeAllowableActions
+     * @param string $renditionFilter
+     * @return array $checkedout The collection of checked out document objects
+     *               MUST include (unless not requested) for each object:
+     *               array $properties
+     *               array $relationships
+     *               array $renditions
+     *               $allowableActions
+     * @return boolean $hasMoreItems
+     * @return int $numItems [optional]
      */
-    function getCheckedOutDocs($repositoryId, $includeAllowableActions, $includeRelationships, $folderId = null, $filter = '', 
-                               $maxItems = 0, $skipCount = 0)
+    function getCheckedOutDocs($repositoryId, $folderId = null, $maxItems = 0, $skipCount = 0, $orderBy = '', 
+                               $filter = '', $includeRelationships = null, $includeAllowableActions = false, $renditionFilter = '')
     {
-        $checkedout = $this->NavigationService->getCheckedOutDocs($repositoryId, $includeAllowableActions, $includeRelationships, 
-                                                                  $folderId, $filter, $maxItems, $skipCount);
+        $checkedout = $this->NavigationService->getCheckedOutDocs($repositoryId, $folderId = null, $maxItems = 0, $skipCount = 0, 
+                                                                  $orderBy, $filter, $includeRelationships, $includeAllowableActions, 
+                                                                  $renditionFilter);
 
         if (PEAR::isError($checkedout))
         {

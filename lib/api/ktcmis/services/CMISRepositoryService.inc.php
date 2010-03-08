@@ -5,7 +5,7 @@
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
+* Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
 * 
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -33,8 +33,12 @@
 * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
 * must display the words "Powered by KnowledgeTree" and retain the original
 * copyright notice.
+* Contributor( s): ______________________________________
+*/
+
+/**
 *
-* @copyright 2008-2009, KnowledgeTree Inc.
+* @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
 * @package KTCMIS
@@ -97,12 +101,16 @@ class CMISRepositoryService {
      * @param boolean $hasMoreItems TRUE if there are more items to return than were requested
      * @return array $objectTypes
      */
-    // NOTE this code may fit better within the Repository Class
     // TODO return for specific type when $typeId is specified
     // TODO other optional parameters
-    function getTypes($repositoryId, $typeId = '', $returnPropertyDefinitions = false,
+    // This code is superseded by getTypeChildren and getTypeDescendants - when implementing those, check
+    // whether it is possible to entirely remove this function or if it is to remain and be shared by the
+    // other two functions (when no type is specified they will return base types [children] amd all types
+    // [descendants] respectively
+    public function getTypes($repositoryId, $typeId = '', $returnPropertyDefinitions = false,
                       $maxItems = 0, $skipCount = 0, &$hasMoreItems = false)
-    {        
+    {   
+        /*     
         if ($typeId != '')
         {
             try {
@@ -113,6 +121,7 @@ class CMISRepositoryService {
                 throw new InvalidArgumentException('Type ' . $typeId . ' is not supported');
             }
         }
+        */
 
         $repository = new CMISRepository($repositoryId);
         $supportedTypes = $repository->getTypes();
@@ -154,12 +163,12 @@ class CMISRepositoryService {
     // NOTE this code may fit better in the Repository Class
     function getTypeDefinition($repositoryId, $typeId)
     {
+        $typeId = ucwords(str_replace('cmis:', '', $typeId));
         $object = 'CMIS' . $typeId . 'Object';
         
         // check whether the object type exists, return error if not
         // consider throwing an exception instead (see General Exceptions)
-        if (!file_exists(CMIS_DIR . '/objecttypes/' . $object . '.inc.php'))
-        {
+        if (!file_exists(CMIS_DIR . '/objecttypes/' . $object . '.inc.php')) {
             throw new InvalidArgumentException('Type ' . $typeId . ' is not supported');
         }
 
@@ -167,8 +176,11 @@ class CMISRepositoryService {
 
         require_once(CMIS_DIR . '/objecttypes/' . $object . '.inc.php');
         $cmisObject = new $object;
+        
+        // NOTE The specification is ambigous here: it states that this function must return the type properties, but 
+        //      the atompub example shows the type attributes, not properties;  since most properties are only populated
+        //      on creation of an instance of an object-type, we choose to go with the attributes and not the properties
         $typeDefinition['attributes'] = $cmisObject->getAttributes();
-        $typeDefinition['properties'] = $cmisObject->getProperties();
 
         return $typeDefinition;
     }

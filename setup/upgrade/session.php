@@ -4,7 +4,7 @@
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright(C) 2008,2009 KnowledgeTree Inc.
+* Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -31,16 +31,21 @@
 * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
 * must display the words "Powered by KnowledgeTree" and retain the original
 * copyright notice.
+* Contributor( s): ______________________________________
+*/
+
+/**
 *
-* @copyright 2008-2009, KnowledgeTree Inc.
+* @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
 * @package Upgrader
 * @version Version 0.1
 */
-class session
+class Session extends SessionBase
 {
-	private $salt = 'upgrade';
+	public $salt = 'upgrade';
+	
 	/**
 	* Constructs session object
 	*
@@ -49,175 +54,9 @@ class session
 	* @param none
  	*/
 	public function __construct() {
+		$this->setSalt($this->salt);
 		$this->startSession();
 	}
 	
-	/**
-	* Starts a session if one does not exist
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return void
-	*/
-	public function startSession() {
-		if(!isset($_SESSION[$this->salt]['ready'])) {
-			@session_start();
-			$_SESSION[$this->salt] ['ready'] = TRUE;
-		}
-	}
-
-	/**
-	* Sets a value key pair in session
-	*
-	* @author KnowledgeTree Team
-	* @param string $fld
-	* @param string $val
-	* @access public
-	* @return void
-	*/
-	public function set($fld, $val) {
-		$this->startSession();
-		$_SESSION[$this->salt] [$fld] = $val;
-	}
-	
-	/**
-	* Sets a value key pair in a class in session
-	*
-	* @author KnowledgeTree Team
-	* @param string $class
-	* @param string $fld
-	* @param string $val
-	* @access public
-	* @return void
-	*/
-	public function setClass($class , $k, $v) {
-		$this->startSession();
-		$classArray = $this->get($class);
-		if(isset($classArray[$k])) {
-			$classArray[$k] = $v;
-		} else {
-			$classArray[$k] = $v;
-		}
-		$_SESSION[$this->salt] [ $class] = $classArray;
-	}
-	
-	/**
-	* Sets a error value key pair in a class in session
-	*
-	* @author KnowledgeTree Team
-	* @param string $class
-	* @param string $fld
-	* @param string $val
-	* @access public
-	* @return void
-	*/
-	public function setClassError($class, $k, $v) {
-		$this->startSession();
-		$classArray = $this->get($class);
-		if(isset($classArray[$k])) {
-			$classArray[$k] = $v;
-		} else {
-			$classArray[$k] = $v;
-		}
-		$_SESSION[$this->salt] [ $class] = $classArray;
-	}
-	
-	/**
-	* Clear error values in a class session
-	*
-	* @author KnowledgeTree Team
-	* @param string $class
-	* @param string $fld
-	* @param string $val
-	* @access public
-	* @return void
-	*/
-	public function clearErrors($class) {
-		$classArray = $this->get($class);
-		unset($classArray['errors']);
-		$_SESSION[$this->salt] [ $class] = $classArray;
-	}
-	
-	/**
-	* Unset a value in session
-	*
-	* @author KnowledgeTree Team
-	* @param string $fld
-	* @access public
-	* @return void
-	*/
-	public function un_set($fld) {
-		$this->startSession();
-		unset($_SESSION[$this->salt] [$fld]);
-	}
-	
-	/**
-	* Unset a class value in session
-	*
-	* @author KnowledgeTree Team
-	* @param string $class
-	* @access public
-	* @return void
-	*/
-	public function un_setClass($class) {
-		$this->startSession();
-		if(isset($_SESSION[$this->salt] [$class]))
-			unset($_SESSION[$this->salt] [$class]);
-	}
-	
-	/**
-	* Destroy the session
-	*
-	* @author KnowledgeTree Team
-	* @param none
-	* @access public
-	* @return void
-	*/
-	public function destroy() {
-		$this->startSession();
-		unset($_SESSION[$this->salt]);
-		session_destroy();
-	}
-	
-	/**
-	* Get a session value
-	*
-	* @author KnowledgeTree Team
-	* @param string $fld
-	* @access public
-	* @return string
-	*/
-	public function get($fld) {
-		$this->startSession();
-		if(isset($_SESSION[$this->salt] [$fld]))
-			return $_SESSION[$this->salt] [$fld];
-		return false;
-	}
-	
-	/**
-	* Check if a field exists in session
-	*
-	* @author KnowledgeTree Team
-	* @param string $fld
-	* @access public
-	* @return string
-	*/
-	public function is_set($fld) {
-		$this->startSession();
-		return isset($_SESSION[$this->salt] [$fld]);
-	}
-	
-	/**
-	* Return a class from session
-	*
-	* @author KnowledgeTree Team
-	* @param string $fld
-	* @access public
-	* @return string
-	*/
-	public function getClass($class) {
-		return $_SESSION[$this->salt][$class];
-	}
 }
 ?>

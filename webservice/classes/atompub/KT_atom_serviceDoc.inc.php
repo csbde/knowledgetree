@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -42,7 +42,6 @@
  * Includes
  */
 include_once('KT_atom_baseDoc.inc.php');
-
 
 class KT_atom_serviceDoc extends KT_atom_baseDoc {
 
@@ -94,11 +93,6 @@ class KT_atom_serviceDoc extends KT_atom_baseDoc {
 	}
 
 }
-
-
-
-
-
 
 
 

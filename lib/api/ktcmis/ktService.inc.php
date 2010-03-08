@@ -4,7 +4,7 @@
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
+* Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
 * 
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -32,8 +32,12 @@
 * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
 * must display the words "Powered by KnowledgeTree" and retain the original
 * copyright notice.
+* Contributor( s): ______________________________________
+*/
+
+/**
 *
-* @copyright 2008-2009, KnowledgeTree Inc.
+* @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
 * @package KTCMIS
@@ -44,7 +48,6 @@ require_once(realpath(dirname(__FILE__) . '/../../../config/dmsDefaults.php'));
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 
 define ('CMIS_DIR', KT_LIB_DIR . '/api/ktcmis');
-require_once(CMIS_DIR . '/exceptions/PermissionDeniedException.inc.php');
 require_once(CMIS_DIR . '/util/CMISUtil.inc.php');
 
 /**

@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: ob_get_clean.php,v 1.6 2005/01/26 04:55:13 aidan Exp $
 
 
 /**
@@ -26,7 +26,7 @@
  * @link        http://php.net/function.ob_get_clean
  * @author      Aidan Lister <aidan@php.net>
  * @author      Thiemo Mättig (http://maettig.com/)
- * @version     $Revision$
+ * @version     $Revision: 1.6 $
  * @since       PHP 4.3.0
  * @require     PHP 4.0.0 (user_error)
  */

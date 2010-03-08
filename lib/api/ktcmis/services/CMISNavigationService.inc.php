@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008,2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,8 +32,12 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
+ * Contributor( s): ______________________________________
+ */
+
+/**
  *
- * @copyright 2008-2009, KnowledgeTree Inc.
+ * @copyright 2008-2010, KnowledgeTree Inc.
  * @license GNU General Public License version 3
  * @author KnowledgeTree Team
  * @package KTCMIS
@@ -58,48 +62,6 @@ class CMISNavigationService {
     }
 
     /**
-     * Get descendents of the specified folder, up to the depth indicated
-     *
-     * @param string $repositoryId
-     * @param string $folderId
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
-     * @param string $typeId
-     * @param int $depth
-     * @param string $filter
-     * @return array $descendants
-     */
-
-    // NOTE This method does NOT support paging as defined in the paging section
-    // NOTE If the Repository supports the optional â€œVersionSpecificFilingâ€? capability,
-    //      then the repository SHALL return the document versions filed in the specified folder or its descendant folders.
-    //      Otherwise, the latest version of the documents SHALL be returned.
-    // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
-    function getDescendants($repositoryId, $folderId, $includeAllowableActions, $includeRelationships,
-                            $depth = 1, $typeId = 'Any', $filter = '')
-    {
-        // TODO optional parameters
-        $descendants = array();
-        $repository = new CMISRepository($repositoryId);
-
-        // if this is not a folder, cannot get descendants
-        $folderId = CMISUtil::decodeObjectId($folderId, $type);
-        
-        if ($type != 'Folder')
-        {
-            return $descendants;
-        }
-
-        $folder = $this->ktapi->get_folder_by_id($folderId);
-        $descendants = $folder->get_listing($depth);
-
-        // parse ktapi descendants result into a list of CMIS objects
-        $descendants = CMISUtil::createChildObjectHierarchy($descendants, $repository->getRepositoryURI, $this->ktapi);
-
-        return $descendants;
-    }
-
-    /**
      * Get direct children of the specified folder
      *
      * @param string $repositoryId
@@ -111,13 +73,22 @@ class CMISNavigationService {
      * @param int $maxItems
      * @param int $skipCount
      * @return array $descendants
+     *               MUST include (unless not requested) for each object:
+     *               array $properties
+     *               array $relationships
+     *               array $renditions
+     *               $allowableActions
+     *               string $pathSegment
+     *        boolean $hasMoreItems
+     *        int $numItems [optional]
      */
-    // NOTE If the Repository supports the optional â€œVersionSpecificFilingâ€? capability,
+    // NOTE If the Repository supports the optional â€œVersionSpecificFilingï¿½ï¿½? capability,
     //      then the repository SHALL return the document versions filed in the specified folder or its descendant folders.
     //      Otherwise, the latest version of the documents SHALL be returned.
     // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
-    function getChildren($repositoryId, $folderId, $includeAllowableActions, $includeRelationships,
-                         $typeId = 'Any', $filter = '', $maxItems = 0, $skipCount = 0)
+    function getChildren($repositoryId, $folderId, $includeAllowableActions = null, $includeRelationships = null,
+    $typeId = 'Any', $filter = '', $maxItems = 0, $skipCount = 0, $orderBy = '', $renditionFilter = null,
+    $includePathSegment = false)
     {
         // TODO paging
         // TODO optional parameters
@@ -126,9 +97,9 @@ class CMISNavigationService {
 
         // if this is not a folder, cannot get children
         $folderId = CMISUtil::decodeObjectId($folderId, $type);
-        // NOTE this will quite possibly break the webservices
-        if ($type != 'Folder') {
-            return $children;
+
+        if ($type != 'cmis:folder') {
+            throw new invalidArgumentException('The specified object is not a folder');
         }
 
         $folder = $this->ktapi->get_folder_by_id($folderId);
@@ -140,109 +111,162 @@ class CMISNavigationService {
     }
 
     /**
+     * Get descendents of the specified folder, up to the depth indicated
+     *
+     * @param string $repositoryId
+     * @param string $folderId
+     * @param int $depth
+     * @param string $filter
+     * @param boolean $includeRelationships
+     * @param string $renditionFilter
+     * @param boolean $includeAllowableActions
+     * @param boolean $includePathSegment
+     * @return array $descendants
+     *               MUST include (unless not requested) for each object:
+     *               array $properties
+     *               array $relationships
+     *               array $renditions
+     *               $allowableActions
+     *               string $pathSegment
+     */
+
+    // NOTE This method does NOT support paging as defined in the paging section
+    // NOTE If the Repository supports the optional â€œVersionSpecificFilingï¿½ï¿½? capability,
+    //      then the repository SHALL return the document versions filed in the specified folder or its descendant folders.
+    //      Otherwise, the latest version of the documents SHALL be returned.
+    // NOTE If the Repository supports the optional capability capabilityMutlifiling and the same document is encountered
+    //      multiple times in the hierarchy, then the repository MUST return that document each time is encountered.
+    // NOTE The default value for the $depth parameter is repository specific and SHOULD be at least 2 or -1
+    //      Chosen 2 as the underlying code currently has no concept of digging all the way down
+    // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
+    function getDescendants($repositoryId, $folderId, $depth = 2, $filter = '', $includeRelationships = false, $renditionFilter = '',
+    $includeAllowableActions = false, $includePathSegment = false)
+    {
+        if ($depth == 0) {
+            throw new InvalidArgumentException('Invalid depth argument supplied');
+        }
+
+        // if this is not a folder, cannot get descendants
+        $folderId = CMISUtil::decodeObjectId($folderId, $type);
+
+        if ($type != 'cmis:folder') {
+            throw new InvalidArgumentException('The supplied object is not a folder, unable to return descendants');
+        }
+
+        // TODO optional parameters
+        $descendants = array();
+        $repository = new CMISRepository($repositoryId);
+
+        $folder = $this->ktapi->get_folder_by_id($folderId);
+        $descendants = $folder->get_listing($depth);
+
+        // parse ktapi descendants result into a list of CMIS objects
+        $descendants = CMISUtil::createChildObjectHierarchy($descendants, $repository->getRepositoryURI, $this->ktapi);
+
+        return $descendants;
+    }
+
+    /**
      * Fetches the folder parent and optional ancestors
      *
      * @param string $repositoryId
      * @param string $folderId
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
-     * @param boolean $returnToRoot If TRUE, then the repository SHALL return all folder objects
-     *                           that are ancestors of the specified folder.
-     *                           If FALSE, the repository SHALL return only the parent folder of the specified folder.
      * @param string $filter
-     * @return array $ancestry
+     * @return object $parent The parent folder object
      */
     // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
-    // TODO If this service method is invoked on the root folder of the Repository, then the Repository SHALL return an empty result set.
-    // NOTE SHOULD always include the â€œObjectIdâ€? and â€œParentIdâ€? properties for all objects returned
-    function getFolderParent($repositoryId, $folderId, $includeAllowableActions, $includeRelationships, $returnToRoot, $filter = '')
+    function getFolderParent($repositoryId, $folderId, $filter = '')
     {
         // NOTE the root folder obviously has no parent, throw an ObjectNotFoundException here if this is the root folder
         if (CMISUtil::isRootFolder($repositoryId, $folderId, $this->ktapi)) {
-            throw new ObjectNotFoundException('Root folder has no parent');
+            throw new InvalidArgumentException('Root folder has no parent');
         }
-        
-        $ancestry = array();
-        $repository = new CMISRepository($repositoryId);
+
+        $parent = null;
 
         // if this is not a folder, cannot get folder parent :)
         $folderId = CMISUtil::decodeObjectId($folderId, $type);
-        // NOTE this will quite possibly break the webservices
-        if ($type != 'Folder')
-        {
-            return $ancestry;
+        // this exception is not indicated in the CMIS Specification, but it just makes sense and so we include it here
+        if ($type != 'cmis:folder') {
+            throw new InvalidArgumentException('The specified object is not a folder');
         }
 
         $ktapiFolder = $this->ktapi->get_folder_by_id($folderId);
-
-        if ($returnToRoot)
-        {
-            $folder = $ktapiFolder->get_folder();
-            $parents = $folder->generateFolderIDs($folderId);
-            // remove the id of the requesting folder and convert to array
-            $ancestry = explode(',', str_replace(','.$folderId, '', $parents));
-            // reverse to get bottom up listing?  don't think so with the current implementation
-            // specifying that objectTypes may have children but do not have parents listed.
-//            $ancestry = array_reverse($ancestry);
-        }
-        else
-        {
-            $parent = $ktapiFolder->get_parent_folder_id();
-            $ancestry[] = $parent;
+        if (PEAR::isError($ktapiFolder)) {
+            throw new RuntimeException($ktapiFolder->getMessage());
         }
 
-        // need some info about the parent(s) in order to correctly create the hierarchy
-        $tmpArray = array();
-        foreach ($ancestry as $key => $ancestor)
-        {
-            $tmpArray[$key] = $this->ktapi->get_folder_by_id($ancestor);
-        }
-        $ancestry = $tmpArray;
-        unset($tmpArray);
-        
-        $ancestry = CMISUtil::createParentObjectHierarchy($ancestry, $repository->getRepositoryURI, $this->ktapi);
-        
-        return $ancestry;
+        $parentId = $ktapiFolder->get_parent_folder_id();
+        $parent = new CMISFolderObject($parentId, $this->ktapi);
+
+        return $parent;
     }
 
     /**
-     * Fetches the parent(s) of the specified object
+     * Gets the parent folder(s) for the specified non-folder, fileable object.
      * Multiple parents may exist if a repository supports multi-filing
      * It is also possible that linked documents/folders may qualify as having multiple parents
      * as they are essentially the same object
      *
      * @param string $repositoryId
      * @param string $objectId
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
-     * @param string $filter
-     * @return array $parents
+     * @param string $filter [optional]
+     * @param enum $includeRelationships [optional]
+     * @param string $renditionFilter  [optional]
+     * @param boolean $includeAllowableActions [optional]
+     * @param boolean $includeRelativePathSegment [optional]
+     * @return array $parents - empty for unfiled objects or the root folder
+     *               MUST include (unless not requested) for each object:
+     *               array $properties
+     *               array $relationships
+     *               array $renditions
+     *               $allowableActions
+     *               string $relativePathSegment
      */
-    // TODO ConstraintViolationException: The Repository SHALL throw this exception if this method is invoked
-    //      on an object who Object-Type Definition specifies that it is not fileable.
-    //      FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid.
-    function getObjectParents($repositoryId, $objectId, $includeAllowableActions, $includeRelationships, $filter = '')
+    // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid.
+    function getObjectParents($repositoryId, $objectId, $filter = '', $includeRelationships = null, $renditionFilter = '',
+                              $includeAllowableActions = false, $includeRelativePathSegment = false)
     {
         $ancestry = array();
 
         $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
-
-        // TODO - what about other types?  only implementing folders and documents at the moment so ignore for now
-        switch($typeId)
-        {
-            case 'Document':
-                $document = $this->ktapi->get_document_by_id($objectId);
-                $parent = $document->ktapi_folder;
-                $ancestry[] = $parent;
-                break;
-            case 'Folder':
-                $folder = $this->ktapi->get_folder_by_id($objectId);
-                $parent = $this->ktapi->get_folder_by_id($folder->get_parent_folder_id());
-                $ancestry[] = $parent;
-                break;
+        
+        // if type is a folder, this function does not apply
+        if ($typeId == 'cmis:folder') {
+            throw new InvalidArgumentException('Cannot call this function for a folder object');
+        }
+        
+        $objectTypeId = ucwords(str_replace('cmis:', '', $typeId));
+        $object = 'CMIS' . $objectTypeId . 'Object';
+        
+        if (!file_exists(CMIS_DIR . '/objecttypes/' . $object . '.inc.php')) {
+            throw new InvalidArgumentException('Type ' . $typeId . ' is not supported');
         }
 
-        $ancestry = CMISUtil::createParentObjectHierarchy($ancestry, $repository->getRepositoryURI, $this->ktapi);
+        require_once(CMIS_DIR . '/objecttypes/' . $object . '.inc.php');
+        $cmisObject = new $object;
+        
+        if (!$cmisObject->getAttribute('fileable')) {
+            throw new ConstraintViolationException('Unable to get parents of non-filable object');
+        }
+
+        // TODO - what about other types?  only implementing folders and documents at the moment so ignore for now
+        // NOTE this will change if we implement multi-filing and/or unfiling
+        switch($typeId)
+        {
+            case 'cmis:document':
+                $document = $this->ktapi->get_document_by_id($objectId);
+                if ($document->is_deleted()) {
+                    throw new InvalidArgumentException('The requested object has been deleted');
+                }
+                $ancestry[] = $document->ktapi_folder->get_folderid();
+            break;
+        }
+        
+        foreach ($ancestry as $key => $parentId) {
+            $CMISObject = new CMISFolderObject($parentId, $this->ktapi, $repositoryURI);
+            $ancestry[$key] = CMISUtil::createObjectPropertiesEntry($CMISObject->getProperties());
+        }
 
         return $ancestry;
     }
@@ -252,19 +276,25 @@ class CMISNavigationService {
      *
      * @param string $repositoryId
      * @param string $folderId The folder for which checked out docs are requested
-     * @param string $filter
-     * @param boolean $includeAllowableActions
-     * @param boolean $includeRelationships
      * @param int $maxItems
      * @param int $skipCount
+     * @param string $filter
+     * @param enum $includeRelationships
+     * @param boolean $includeAllowableActions
+     * @param string $renditionFilter
      * @return array $checkedout The collection of checked out document objects
+     *               MUST include (unless not requested) for each object:
+     *               array $properties
+     *               array $relationships
+     *               array $renditions
+     *               $allowableActions
+     * @return boolean $hasMoreItems
+     * @return int $numItems [optional]
      */
-    // NOTE NOT YET IMPLEMENTED (this function is just a place holder at the moment :))
     // TODO exceptions: â€¢	FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid.
-    // TODO filter by folder id
     // TODO $filter and paging
-    function getCheckedOutDocs($repositoryId, $folderId = null, $filter = '', $includeAllowableActions, $includeRelationships, 
-                               $maxItems = 0, $skipCount = 0)
+    function getCheckedOutDocs($repositoryId, $folderId = null, $maxItems = 0, $skipCount = 0, $orderBy = '',
+    $filter = '', $includeRelationships = null, $includeAllowableActions = false, $renditionFilter = '')
     {
         $checkedout = array();
 
@@ -273,7 +303,7 @@ class CMISNavigationService {
         {
             $CMISDocument = new CMISDocumentObject($document->getId(), $this->ktapi);
             // set version label property - possibly belongs in document class
-            $CMISDocument->setProperty('VersionLabel', $CMISDocument->getProperty('VersionSeriesCheckedOutId'));
+            $CMISDocument->setProperty('versionLabel', $CMISDocument->getProperty('versionSeriesCheckedOutId'));
             $checkedout[] = $CMISDocument->getProperties();
         }
 

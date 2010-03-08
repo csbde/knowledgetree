@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: str_shuffle.php,v 1.6 2005/08/14 03:24:16 aidan Exp $
 
 
 /**
@@ -25,15 +25,14 @@
  * @package     PHP_Compat
  * @link        http://php.net/function.str_shuffle
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.6 $
  * @since       PHP 4.3.0
  * @require     PHP 4.0.0 (user_error)
  */
 if (!function_exists('str_shuffle')) {
     function str_shuffle($str)
     {
-        $newstr = '';
-        $strlen = strlen($str);
+        // Init
         $str = (string) $str;
 
         // Seed
@@ -42,11 +41,11 @@ if (!function_exists('str_shuffle')) {
         mt_srand($seed);
 
         // Shuffle
-        for ($i = 0; $strlen > $i; $i++) {
-            $newstr .= $str[mt_rand(0, $strlen - 1)];
+        for ($new = '', $len = strlen($str); $len > 0; $str{$p} = $str{$len}) { 
+            $new .= $str{$p = mt_rand(0, --$len)};
         }
 
-        return $newstr;
+        return $new;
     }
 }
 

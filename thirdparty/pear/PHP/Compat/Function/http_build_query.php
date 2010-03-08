@@ -16,7 +16,7 @@
 // |          Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: http_build_query.php,v 1.16 2005/05/31 08:54:57 aidan Exp $
 
 
 /**
@@ -27,7 +27,7 @@
  * @link        http://php.net/function.http-build-query
  * @author      Stephan Schmidt <schst@php.net>
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.16 $
  * @since       PHP 5
  * @require     PHP 4.0.0 (user_error)
  */

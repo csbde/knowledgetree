@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: image_type_to_mime_type.php,v 1.8 2005/01/26 04:55:13 aidan Exp $
 
 
 if (!defined('IMAGETYPE_GIF')) {
@@ -90,7 +90,7 @@ if (!defined('IMAGETYPE_XBM')) {
  * @package     PHP_Compat
  * @link        http://php.net/function.image_type_to_mime_type
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.8 $
  * @since       PHP 4.3.0
  * @require     PHP 4.0.0 (user_error)
  */

@@ -10,7 +10,7 @@
 <div class="thumb-shadow">
     <div>
         {if $url && $modal}
-        	<div id="thumb_{/literal}{$documentId}{literal}" class="thumb">
+        	<div id="thumb_{$documentId}" class="thumb">
             <a href='{$url}' rel="lightbox" title="{$title}">
             <img id="img{$documentId}" src="{$thumbnail}" {if $height}height="{$height}"{/if} class="lightbox_window"/>
             </a>

@@ -2,7 +2,7 @@
 /**
  * $Header$
  *
- * @version $Revision$
+ * @version $Revision: 224513 $
  * @package Log
  */
 
@@ -56,18 +56,6 @@ class Log_console extends Log
     var $_timeFormat = '%b %d %H:%M:%S';
 
     /**
-     * Hash that maps canonical format keys to position arguments for the
-     * "line format" string.
-     * @var array
-     * @access private
-     */
-    var $_formatMap = array('%{timestamp}'  => '%1$s',
-                            '%{ident}'      => '%2$s',
-                            '%{priority}'   => '%3$s',
-                            '%{message}'    => '%4$s',
-                            '%\{'           => '%%{');
-
-    /**
      * Constructs a new Log_console object.
      * 
      * @param string $name     Ignored.
@@ -115,7 +103,34 @@ class Log_console extends Log
      */
     function _Log_console()
     {
+        $this->close();
+    }
+
+    /**
+     * Open the output stream.
+     *
+     * @access public
+     * @since Log 1.9.7
+     */
+    function open()
+    {
+        $this->_opened = true;
+        return true;
+    }
+
+    /**
+     * Closes the output stream.
+     *
+     * This results in a call to flush().
+     *
+     * @access public
+     * @since Log 1.9.0
+     */
+    function close()
+    {
         $this->flush();
+        $this->_opened = false;
+        return true;
     }
 
     /**
@@ -135,7 +150,11 @@ class Log_console extends Log
             $this->_buffer = '';
         }
  
-        return fflush($this->_stream);
+        if (is_resource($this->_stream)) {
+            return fflush($this->_stream);
+        }
+
+        return false;
     }
 
     /**
@@ -166,9 +185,9 @@ class Log_console extends Log
         $message = $this->_extractMessage($message);
 
         /* Build the string containing the complete log line. */
-        $line = sprintf($this->_lineFormat, strftime($this->_timeFormat),
-                $this->_ident, $this->priorityToString($priority),
-                $message) . "\n";
+        $line = $this->_format($this->_lineFormat,
+                               strftime($this->_timeFormat),
+                               $priority, $message) . "\n";
 
         /*
          * If buffering is enabled, append this line to the output buffer.
@@ -185,6 +204,5 @@ class Log_console extends Log
 
         return true;
     }
-}
 
-?>
+}

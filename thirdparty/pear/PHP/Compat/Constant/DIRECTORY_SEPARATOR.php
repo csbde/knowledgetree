@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: DIRECTORY_SEPARATOR.php,v 1.1 2004/11/28 03:55:28 aidan Exp $
 
 
 /**
@@ -25,7 +25,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/reserved.constants.standard
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.1 $
  * @since       PHP 4.0.6
  */
 if (!defined('DIRECTORY_SEPARATOR')) {

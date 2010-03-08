@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -126,6 +126,7 @@ class MultiSelectPlugin extends KTPlugin {
             'InetdocumentFieldsv2.php', null);
 	}
 }
+
 $oPluginRegistry =& KTPluginRegistry::getSingleton();
 $oPluginRegistry->registerPlugin('MultiSelectPlugin', 'inet.multiselect.lookupvalue.plugin', __FILE__);
 ?>

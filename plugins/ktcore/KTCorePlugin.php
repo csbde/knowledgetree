@@ -4,8 +4,8 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
- * 
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -175,7 +175,7 @@ class KTCorePlugin extends KTPlugin {
 
 		// Bulk Download Trigger
 		$this->registerTrigger('ktcore', 'pageLoad', 'BulkDownloadTrigger', 'ktcore.triggers.pageload', 'KTDownloadTriggers.inc.php');
-        
+
         // widgets
         $this->registerWidget('KTCoreInfoWidget', 'ktcore.widgets.info', 'KTWidgets.php');
         $this->registerWidget('KTCoreHiddenWidget', 'ktcore.widgets.hidden', 'KTWidgets.php');
@@ -290,13 +290,6 @@ class KTCorePlugin extends KTPlugin {
              _kt('Document Fieldsets'),
             _kt('Manage the different types of information that can be associated with classes of documents.'),
             'admin/documentFieldsv2.php', null);
-        if(KTPluginUtil::pluginIsActive('ktdms.wintools'))
-        {
-            $this->registerAdminPage('emailtypemanagement', 'KTEmailDocumentTypeDispatcher', 'documents',
-                    _kt('Email Document Types'),
-                    _kt('Manage the addition of Email document types to the system.'),
-                    '../wintools/email/emailDocumentTypes.php', null);
-        }
         $this->registerAdminPage('workflows_2', 'KTWorkflowAdminV2', 'documents',
             _kt('Workflows'), _kt('Configure automated Workflows that map to document life-cycles.'),
             'admin/workflowsv2.php', null);

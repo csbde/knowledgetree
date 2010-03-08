@@ -4,7 +4,7 @@
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright(C) 2008,2009 KnowledgeTree Inc.
+* Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
 *
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License version 3 as published by the
@@ -31,8 +31,12 @@
 * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
 * must display the words "Powered by KnowledgeTree" and retain the original
 * copyright notice.
+* Contributor( s): ______________________________________
+*/
+
+/**
 *
-* @copyright 2008-2009, KnowledgeTree Inc.
+* @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
 * @package Installer
@@ -186,7 +190,7 @@ class dependencies extends Step
      * @access private
      * @return array The configurations list
      */
-   private function checkPhpConfiguration()
+   public function checkPhpConfiguration()
     {
         $configs = $this->getConfigurations();
 		$this->temp_variables['php_con'] = 'tick';
@@ -239,11 +243,11 @@ class dependencies extends Step
     /**
      * Check that the version of php is correct
      *
-	 * @author KnowledgeTree Team
+     * @author KnowledgeTree Team
      * @access private
      * @return array Version check result
      */
-    private function checkPhpVersion()
+    public function checkPhpVersion()
     {
         $phpversion = phpversion();
         $phpversion5 = version_compare($phpversion, $this->minPHPVersion, '>=');
@@ -275,7 +279,7 @@ class dependencies extends Step
      * @param string $extension
      * @return boolean
      */
-    private function checkExtension($extension)
+    public function checkExtension($extension)
     {
         if(extension_loaded($extension)){
             return true;
@@ -330,7 +334,7 @@ class dependencies extends Step
      * @access private
      * @return array
      */
-    private function getRequiredExtensions() {
+    public function getRequiredExtensions() {
     	$ext = array(
 	            array('extension' => 'iconv', 'required' => 'no', 'name' => 'IconV', 'details' => 'Used for conversion between character sets.'),
 	            array('extension' => 'mysql', 'required' => 'yes', 'name' => 'MySQL', 'details' => 'Used for accessing a MySQL database.'),
@@ -353,11 +357,11 @@ class dependencies extends Step
     /**
      * Get the recommended configuration settings
      *
-	 * @author KnowledgeTree Team
+     * @author KnowledgeTree Team
      * @access private
      * @return array
      */
-    private function getConfigurations()
+    public function getConfigurations()
     {
     	$conf = array(
             array('name' => 'Safe Mode', 'configuration' => 'safe_mode', 'recommended' => 'OFF', 'type' => 'bool'),
@@ -388,7 +392,7 @@ class dependencies extends Step
      * @access private
      * @return array
      */
-    private function getLimits()
+    public function getLimits()
     {
         return array(
             array('name' => 'Maximum POST size', 'configuration' => 'post_max_size', 'recommended' => '32M', 'type' => 'int'),

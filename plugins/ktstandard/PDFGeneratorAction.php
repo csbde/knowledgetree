@@ -4,7 +4,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  * 
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -66,11 +66,11 @@ class PDFGeneratorAction extends KTDocumentAction {
         // The generation of the pdf is done through the PDF Converter plugin.
         // The PDF's are generated in the background by the document processor
 
+        // Build the display name and url
+        $sDisplayName = _kt('Generate PDF');
+
         if(!empty($this->oDocument)){
             $iDocId = $this->oDocument->iId;
-
-            // Build the display name and url
-            $sDisplayName = _kt('Generate PDF');
 
             $sHostPath = KTUtil::kt_url();
             $icon = "<img src='{$sHostPath}/resources/mimetypes/pdf.gif' alt='PDF' border=0 />";

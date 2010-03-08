@@ -45,7 +45,7 @@
 					&nbsp;&nbsp;&nbsp;
 					<input name='java' id='port' size='25' value='<?php echo $java['location']; ?>' style="float:none;"/>
 					&nbsp;&nbsp;&nbsp;
-					<a href="javascript:{w.sendJavaLocation();}" class="specify">Submit</a>
+					<a href="javascript:{w.send();}" class="specify">Submit</a>
 					<br/>
 					<?php if($javaExeError != '') { ?><span class="error"><?php echo $javaExeMessage; ?></span><?php } ?>
 					<br/>
@@ -67,7 +67,7 @@
 					&nbsp;&nbsp;&nbsp;
 					<input name='soffice' id='port' size='25' value='<?php if(isset($soffice['location'])) echo $soffice['location']; ?>' style="float:none;"/>
 					&nbsp;&nbsp;&nbsp;
-					<a href="javascript:{w.sendJavaLocation();}" class="specify">Submit</a>
+					<a href="javascript:{w.send();}" class="specify">Submit</a>
 					<br/>
 					<?php if($openOfficeExeError != '') { ?><span class="error"><?php echo $openOfficeExeMessage; ?></span><?php } ?>
 				<?php } ?>

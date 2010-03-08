@@ -68,12 +68,14 @@ class KT_atom_service{
 	public $parsedXMLContent='';
 	public $headers=array();
 
-	public function __construct($method,$params,$content){
+	public function __construct($method,$params,$content,$parse = true){
 		$this->method=$method;
 		$this->params=$params;
 		$this->rawContent=$content;
 		$this->parseHeaders();
-		$this->parsedXMLContent=$this->xml2array($this->rawContent);
+		if ($parse) {
+		    $this->parsedXMLContent=$this->xml2array($this->rawContent);
+		}
 		$this->setStatus(self::STATUS_OK);
 		$this->responseFeed=new KT_atom_responseFeed(KT_APP_BASE_URI);
 		switch(strtoupper($this->method)){

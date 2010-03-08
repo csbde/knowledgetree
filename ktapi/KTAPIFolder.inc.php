@@ -1,10 +1,11 @@
 <?php
 /**
- * Folder API for KnowledgeTree
+ *
+ * $Id$
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  *
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,8 +33,13 @@
  * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
  * must display the words "Powered by KnowledgeTree" and retain the original
  * copyright notice.
+ * Contributor( s): ______________________________________
+ */
+
+/**
+ * Folder API for KnowledgeTree
  *
- * @copyright 2008-2009, KnowledgeTree Inc.
+ * @copyright 2008-2010, KnowledgeTree Inc.
  * @license GNU General Public License version 3
  * @author KnowledgeTree Team
  * @package KTAPI
@@ -80,9 +86,13 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 */
 	function get(&$ktapi, $folderid)
 	{
-		assert(!is_null($ktapi));
-		assert(is_a($ktapi, 'KTAPI'));
-		assert(is_numeric($folderid));
+	    if(is_null($ktapi) || !is_a($ktapi, 'KTAPI')){
+	        return PEAR::raiseError('A valid KTAPI object is needed');
+	    }
+
+	    if(!is_numeric($folderid)){
+	        return PEAR::raiseError('A valid folder id is required');
+	    }
 
 		$folderid += 0;
 
@@ -288,7 +298,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @access public
 	 * @param KTAPI $ktapi
 	 * @param string $foldername
-	 * @param int $folderid
+	 * @param int $folderid The parent folder id
 	 * @return KTAPI_Folder
 	 */
 	function _get_folder_by_name($ktapi, $foldername, $folderid)
@@ -377,7 +387,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 		if (!empty($foldername) && ($foldername != '.'))
 		{
-			$ktapi_folder = $this->get_folder_by_name($foldername);
+			// TODO confirm that this addition of the parent folder id as second parameter is correct and necessary
+			$ktapi_folder = $this->get_folder_by_name($foldername, $this->folderid);
 		}
 
 		$currentFolderName = $this->get_folder_name();
@@ -391,7 +402,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			else
 			{
 				$foldername = substr($foldername, strlen($currentFolderName)+1);
-				$ktapi_folder = $this->get_folder_by_name($foldername);
+				// TODO confirm that this addition of the parent folder id as second parameter is correct and necessary
+				$ktapi_folder = $this->get_folder_by_name($foldername, $this->folderid);
 			}
 		}
 
@@ -550,8 +562,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 			foreach ($folder_children as $folder)
 			{
-			
-				if(KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder) 
+
+				if(KTPermissionUtil::userHasPermissionOnItem($user, $folder_permission, $folder)
 				    /*|| KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $folder)*/)
 				{
 					if ($depth-1 > 0)
@@ -1594,7 +1606,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
         return $_SESSION['errorMessage'];
 	}
-	
+
 	/**
 	 * Method to add a Document to the User's History
 	 *
@@ -1604,10 +1616,24 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 */
 	public function addFolderToUserHistory()
 	{
-		require_once(KT_DIR . '/plugins/commercial/network/userhistory/UserHistoryActions.php');
-		
-		$docAction = new UserHistoryFolderAction($this->folder, $this->ktapi->get_user());
-		$docAction->_show();
+		if (KTPluginUtil::pluginIsActive('brad.UserHistory.plugin')) {
+			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
+            require_once($path.'UserHistoryActions.php');
+
+			$folderAction = new UserHistoryFolderAction($this->folder, $this->ktapi->get_user());
+			$folderAction->_show();
+		}
+	}
+
+	/**
+	 * Method to get the Ids of all the Parent Folders
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function getParentFolderIDs()
+	{
+		return $this->folder->getParentFolderIDs();
 	}
 }
 

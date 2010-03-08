@@ -8,7 +8,7 @@
  *
  * KnowledgeTree Community Edition
  * Document Management Made Simple
- * Copyright (C) 2008, 2009 KnowledgeTree Inc.
+ * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
  *  
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -135,9 +135,25 @@ class DashboardDispatcher extends KTStandardDispatcher {
               'dashlets_left' => $aDashletsLeft,
               'dashlets_right' => $aDashletsRight,
         );
+        
+		// TODO : Is this ok?
+		if(file_exists(KT_DIR.DIRECTORY_SEPARATOR.'var'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR."firstlogin.lock")) {
+			$this->runFirstLoginWizard($oTemplate, $aTemplateData);
+		}
+		
         return $oTemplate->render($aTemplateData);
     }
 
+    // 
+    function runFirstLoginWizard($oTemplate, $aTemplateData) {
+    	$this->oPage->requireCSSResource('setup/wizard/resources/css/modal.css');
+    	$this->oPage->requireJSResource('setup/wizard/resources/js/jquery-1.4.2.min.js');
+    	//$this->oPage->requireJSResource('thirdpartyjs/jquery/jquery-1.3.2.min.js');
+    	$this->oPage->requireJSResource('thirdpartyjs/jquery/jquery_noconflict.js');
+    	$this->oPage->requireJSResource('setup/wizard/resources/js/firstlogin.js');
+    	
+    }
+    
     // return some kind of ID for each dashlet
     // currently uses the class name
     function _getDashletId($oDashlet) {

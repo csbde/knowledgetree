@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: PATH_SEPARATOR.php,v 1.13 2004/11/14 16:10:18 aidan Exp $
 
 
 /**
@@ -25,7 +25,7 @@
  * @package     PHP_Compat
  * @link        http://php.net/ref.dir
  * @author      Aidan Lister <aidan@php.net>
- * @version     $Revision$
+ * @version     $Revision: 1.13 $
  * @since       PHP 4.3.0
  */
 if (!defined('PATH_SEPARATOR')) {

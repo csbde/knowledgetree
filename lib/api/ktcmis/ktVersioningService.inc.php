@@ -4,7 +4,7 @@
 *
 * KnowledgeTree Community Edition
 * Document Management Made Simple
-* Copyright (C) 2008,2009 KnowledgeTree Inc.
+* Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
 * 
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -32,8 +32,12 @@
 * logo is not reasonably feasible for technical reasons, the Appropriate Legal Notices
 * must display the words "Powered by KnowledgeTree" and retain the original
 * copyright notice.
+* Contributor( s): ______________________________________
+*/
+
+/**
 *
-* @copyright 2008-2009, KnowledgeTree Inc.
+* @copyright 2008-2010, KnowledgeTree Inc.
 * @license GNU General Public License version 3
 * @author KnowledgeTree Team
 * @package KTCMIS
@@ -77,44 +81,17 @@ class KTVersioningService extends KTCMISBase {
     }
     
     /**
-     * Deletes all Document Objects in the specified Version Series, including the Private Working Copy
-     * 
-     * @param string $repositoryId
-     * @param string $versionSeriesId
-     * @return boolean true if successful
-     */
-    public function deleteAllVersions($repositoryId, $versionSeriesId)
-    {
-        try {
-            $result = $this->VersioningService->deleteAllVersions($repositoryId, $versionSeriesId);
-        }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
-        }
-
-        return array(
-            'status_code' => 0,
-            'results' => $result
-        );
-    }
-    
-    /**
      * Checks out a document and creates the PWC (Private Working Copy) which will represent the checked out document
      * 
      * @param string $repositoryId
-     * @param string $documentId
-     * @param string $changeToken [optional]
+     * @param string $objectId
      * @return array results
      */
     // TODO set up delivery of content stream? or is that up to the CMIS client?
-    public function checkOut($repositoryId, $documentId, $changeToken = '')
+    public function checkOut($repositoryId, $objectId)
     {
         try {
-            $result = $this->VersioningService->checkOut($repositoryId, $documentId, $changeToken);
+            $result = $this->VersioningService->checkOut($repositoryId, $objectId);
         }
         catch (Exception $e)
         {
@@ -134,18 +111,17 @@ class KTVersioningService extends KTCMISBase {
      * Reverses the effect of a checkout: I.E. deletes the PWC (Private Working Copy) and re-sets the status of the document to "not checked out" 
      * 
      * @param string $repositoryId
-     * @param string $documentId
-     * @param string $changeToken [optional]
+     * @param string $objectId
      */
     // TODO exceptions:
     //      •	ConstraintViolationException: The Repository SHALL throw this exception if ANY of the following conditions are met:
     //      o	The Document’s Object-Type definition’s versionable attribute is FALSE. 
     //      •	updateConflictException
     //      •	versioningException
-    public function cancelCheckOut($repositoryId, $documentId, $changeToken = '')
+    public function cancelCheckOut($repositoryId, $objectId)
     {
         try {
-            $result = $this->VersioningService->cancelCheckOut($repositoryId, $documentId, $changeToken);
+            $result = $this->VersioningService->cancelCheckOut($repositoryId, $objectId);
         }
         catch (Exception $e)
         {
@@ -165,18 +141,22 @@ class KTVersioningService extends KTCMISBase {
      * Checks in a checked out document
      * 
      * @param string $repositoryId
-     * @param string $documentId
-     * @param boolean $major
-     * @param string $changeToken [optional]
+     * @param string $objectId
+     * @param boolean $major [optional] defaults to true
      * @param array $properties [optional]
      * @param contentStream $contentStream [optional]
      * @param string $checkinComment [optional]
-     * @return string $documentId
+     * @param array $policies
+     * @param array $addACEs
+     * @param array $removeACEs
+     * @return string $objectId
      */
-    public function checkIn($repositoryId, $documentId, $major, $contentStream = null, $changeToken = '', $properties = array(), $checkinComment = '')
+    public function checkIn($repositoryId, $objectId, $major = true, $properties = array(), $contentStream = null, 
+    						$checkinComment = '', $policies = array(), $addACEs = array(), $removeACEs = array())
     {
         try {
-            $result = $this->VersioningService->checkIn($repositoryId, $documentId, $major, $contentStream, $changeToken, $properties, $checkinComment);
+            $result = $this->VersioningService->checkIn($repositoryId, $objectId, $major, $properties, $contentStream, 
+            											$checkinComment, $policies, $addACEs, $removeACEs);
         }
         catch (Exception $e)
         {
