@@ -176,10 +176,18 @@ class KTAPI
 	protected $version = 3;
 
     private $esig_enabled;
+	
+	public $webserviceVersion;
 
-    public function KTAPI()
+    public function KTAPI($webserviceVersion = '')
     {
         $this->esig_enabled = $this->electronic_sig_enabled();
+		
+		if ($webserviceVersion == '') {
+			$this->webserviceVersion = LATEST_WEBSERVICE_VERSION;
+		} else {
+			$this->webserviceVersion = $webserviceVersion;
+		}
     }
 
  	/**

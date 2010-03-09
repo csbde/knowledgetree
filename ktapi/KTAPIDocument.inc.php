@@ -1929,7 +1929,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$this->clearCache();
 
 		$config = KTConfig::getSingleton();
-		$wsversion = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
+		$wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
 
 		$detail = array();
 		$document = $this->document;
@@ -2230,7 +2230,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         }
 
         $config = KTConfig::getSingleton();
-		$wsversion = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
+		$wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
 		foreach($transactions as $key=>$transaction)
 		{
 			$transactions[$key]['version'] = (float) $transaction['version'];
@@ -2251,7 +2251,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$metadata_versions = KTDocumentMetadataVersion::getByDocument($this->document);
 
 		$config = KTConfig::getSingleton();
-		$wsversion = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
+		$wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
 
         $versions = array();
         foreach ($metadata_versions as $version)
