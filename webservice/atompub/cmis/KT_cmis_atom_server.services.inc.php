@@ -190,12 +190,11 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         // /folder/<folderId>/<sourceFolderId>/<objectId>
         // also possible that there will be an existing ObjectId property, try to cater for both until we know how it really works
         // NOTE this also applies to the source folder id, see above
-
         // check for existing object id as parameter in url
-        // if sourceFolderId parameter is submitted (expected as parameter 3, or params[2]) then this is a move
-        if (isset($this->params[2])) {
+        // if sourceFolderId parameter is submitted (expected as $_GET['sourceFolderId']) then this is a move
+        if (isset($_GET['sourceFolderId'])) {
             $action = 'move';
-            $sourceFolderId = $this->params[2];
+            $sourceFolderId = $_GET['sourceFolderId'];
         }
 
         // get object properties - todo send through original properties array and not modified version
@@ -364,7 +363,6 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             // TODO how will client request depth?  for now we assume as part of the url - will probably be covered by URI templates
             if (isset($this->params[2])) {
                 $entries = $NavigationService->getDescendants($repositoryId, $folderId, $this->params[2]);
-
             }
             else {
                 $entries = $NavigationService->getDescendants($repositoryId, $folderId);
