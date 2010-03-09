@@ -69,21 +69,18 @@ class KT_cmis_atom_server extends KT_atom_server {
 			//Creating the Default Workspace for use with standard atomPub Clients
 			$ws = $service->newWorkspace();
 
-            $hadDetail=false;
-			if(isset($this->workspaceDetail[$workspace]))
-            {
-                if(is_array($this->workspaceDetail[$workspace]))
-                {
-                    foreach ($this->workspaceDetail[$workspace] as $wsTag=>$wsValue)
-                    {
-                        $ws->appendChild($service->newElement($wsTag,$wsValue));
+            $hadDetail = false;
+			if(isset($this->workspaceDetail[$workspace])) {
+                if(is_array($this->workspaceDetail[$workspace])) {
+                    foreach ($this->workspaceDetail[$workspace] as $wsTag => $wsValue){
+                        $ws->appendChild($service->newElement($wsTag, $wsValue));
                         $hadDetail=true;
                     }
                 }
             }
 
 			if(!$hadDetail) {
-				$ws->appendChild($service->newElement('atom:title',$workspace));
+				$ws->appendChild($service->newElement('atom:title', $workspace));
 			}
 
             $ws->appendChild($service->newAttr('cmis:repositoryRelationship', $this->repositoryInfo['repositoryRelationship']));
@@ -99,11 +96,9 @@ class KT_cmis_atom_server extends KT_atom_server {
                 if (!is_array($repoData)) {
                     $element->appendChild($service->newElement('cmis:' . $key, $repoData));
                 }
-                else
-                {
+                else {
                     $elementSub = $service->newElement('cmis:' . $key);
-                    foreach($repoData as $key2 => $data)
-                    {
+                    foreach($repoData as $key2 => $data) {
                         $elementSub->appendChild($service->newElement('cmis:' . $key2, CMISUtil::boolToString($data)));
                     }
                     $element->appendChild($elementSub);
@@ -111,21 +106,24 @@ class KT_cmis_atom_server extends KT_atom_server {
             }
             $ws->appendChild($element);
 
+            // collections
+            // TODO check collectionType usage against spec
             foreach($collection as $serviceName => $serviceInstance)
             {
                 foreach($serviceInstance as $instance)
                 {
                     $collectionStr = CMIS_APP_BASE_URI . $workspace . '/' . $serviceName . '/'
                                    . (is_array($instance['parameters']) ? implode('/', $instance['parameters']).'/' : '');
+                    // FIXME? do we need to return the value from the function?
                     $col = $service->newCollection($collectionStr, $instance['title'], $instance['collectionType'], $instance['accept'], $ws);
                 }
 			}
+			
+			// uri templates - getObjectById, getObjectByPath, getTypeById
+			$ws->appendChild($service->uriTemplate('objectbyid', $workspace));
+			$ws->appendChild($service->uriTemplate('objectbypath', $workspace));
+			$ws->appendChild($service->uriTemplate('typebyid', $workspace));
 		}
-		
-//		ob_start();
-//		readfile('C:\Users\Paul\Documents\Downloads\cmis_mod_kt.xml');
-//		$this->output = ob_get_contents();
-//		ob_end_clean();
 
 		$this->output = $service->getAPPdoc();
 	}

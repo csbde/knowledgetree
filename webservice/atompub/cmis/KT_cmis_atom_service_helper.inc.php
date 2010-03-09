@@ -7,7 +7,7 @@ class KT_cmis_atom_service_helper {
 
     public static $ktapi = null;
     public static $repositoryId = null;
-    
+
     /**
      * Helper function to set internal repository id
      *
@@ -18,16 +18,16 @@ class KT_cmis_atom_service_helper {
         if (is_null($RepositoryService)) {
             $RepositoryService = new KTRepositoryService();
         }
-        
+
         $repositories = $RepositoryService->getRepositories();
-        
+
         // hack for removing one level of access
         $repositories = $repositories['results'];
-        
+
         // TODO handle multiple repositories
-        self::$repositoryId = $repositories[0]['repositoryId'];         
+        self::$repositoryId = $repositories[0]['repositoryId'];
     }
-    
+
     /**
      * Helper function to fetch internal repository id
      * 
@@ -40,11 +40,11 @@ class KT_cmis_atom_service_helper {
      * @return string
      */
     static public function getRepositoryId(&$RepositoryService = null, $set = true)
-    {        
+    {
         if (empty(self::$repositoryId) || $set) {
             self::setRepositoryId($RepositoryService);
         }
-        
+
         return self::$repositoryId;
     }
 
@@ -60,7 +60,7 @@ class KT_cmis_atom_service_helper {
     static public function getObjectFeed(&$service, $ObjectService, $repositoryId, $objectId, $method = 'GET')
     {
         self::$repositoryId = $repositoryId;
-        
+
         $serviceType = $service->getServiceType();
         $response = $ObjectService->getProperties($repositoryId, $objectId, false, false);
 
@@ -70,7 +70,7 @@ class KT_cmis_atom_service_helper {
 
         $cmisEntry = $response['results'];
         $response = null;
-        
+
         // POST/PWC responses only send back an entry, not a feed
         if (($serviceType == 'PWC') || ($method == 'POST')) {
             if ($method == 'POST') {
@@ -88,10 +88,10 @@ class KT_cmis_atom_service_helper {
 
         if ($serviceType == 'PWC') $pwc = true; else $pwc = false;
         KT_cmis_atom_service_helper::createObjectEntry($response, $cmisEntry, $cmisEntry['properties']['parentId']['value'], $pwc, $method);
-        
+
         return $response;
     }
-    
+
     static public function createObjectFeed(&$feed, $entries, $folderName)
     {
         foreach($entries as $cmisEntry) {
@@ -109,10 +109,10 @@ class KT_cmis_atom_service_helper {
      * @param $method The request method used (POST/GET/...)
      */
     static public function createObjectEntry(&$feed, $cmisEntry, $parent, $pwc = false, $method = 'GET')
-    {        
+    {
         $workspace = $feed->getWorkspace();
 
-    	// create entry
+        // create entry
         $entry = $feed->newEntry();
 
         // When request is a POST we will be returning only an object entry, not a full feed, and so this belongs here
@@ -124,10 +124,10 @@ class KT_cmis_atom_service_helper {
             $entry->appendChild($feed->newAttr('xmlns:cmis', 'http://docs.oasis-open.org/ns/cmis/core/200908/'));
             $entry->appendChild($feed->newAttr('xmlns:cmisra', 'http://docs.oasis-open.org/ns/cmis/restatom/200908/'));
         }
-		
+
         self::createObjectEntryContent($entry, $feed, $workspace, $cmisEntry, $parent, $pwc, $method);
     }
-    
+
     /**
      * Creates an AtomPub child feed for a CMIS entry and adds it to the supplied entry
      * 
@@ -152,15 +152,15 @@ class KT_cmis_atom_service_helper {
     //      which does not directly support nesting - attempting to create a new feed and append it within the outer
     //      feed resulted in an empty cmisra:children node, so this approach was substituted
     static public function createChildObjectEntry(&$childrenFeed, $cmisEntry, $workspace, $feed, $folderNam)
-    {        
+    {
         $type = strtolower($cmisEntry['properties']['objectTypeId']['value']);
-		
+
         // create entry
         $entry = $feed->newElement('entry');
         self::createObjectEntryContent($entry, $feed, $workspace, $cmisEntry);//, $parent, $pwc, $method);
         $childrenFeed->appendChild($entry);
     }
-    
+
     /**
      * Creates the actual object entry: this is shared between other functions which require this content
      *
@@ -174,59 +174,59 @@ class KT_cmis_atom_service_helper {
     static public function createObjectEntryContent($entry, &$feed, $workspace, $cmisEntry, $parent = '', $pwc = false, $method = 'GET')
     {
         $type = $cmisEntry['properties']['objectTypeId']['value'];
-        
+
         // TODO dynamic actual creator name
         $responseElement = $feed->newField('author');
         $element = $feed->newField('name', 'admin', $responseElement);
         $entry->appendChild($responseElement);
-        
+
         $typeString = str_replace('cmis:', '', $type);
-        
+
         if (!empty($cmisEntry['properties']['contentStreamLength']['value']))
         {
             $field = $feed->newElement('content');
             $field->appendChild($feed->newAttr('type', $cmisEntry['properties']['contentStreamMimeType']['value']));
-            $field->appendChild($feed->newAttr('src', CMIS_APP_BASE_URI . $workspace . '/' . $typeString 
-                                                        . '/' . $cmisEntry['properties']['objectId']['value'] 
-                                                        . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
+            $field->appendChild($feed->newAttr('src', CMIS_APP_BASE_URI . $workspace . '/' . $typeString
+            . '/' . $cmisEntry['properties']['objectId']['value']
+            . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
             $entry->appendChild($field);
         }
-		
-		// content & id tags
+
+        // content & id tags
         $id = $cmisEntry['properties']['objectId']['value'];
         $feed->newField('id', 'urn:uuid:' . $id, $entry);
 
         // links
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel', 'self'));
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' 
-                                                    . (!$pwc ? $typeString : 'pwc') . '/' 
-                                                    . $cmisEntry['properties']['objectId']['value']));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/'
+        . (!$pwc ? $typeString : 'pwc') . '/'
+        . $cmisEntry['properties']['objectId']['value']));
         $entry->appendChild($link);
 
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel', 'edit'));
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString 
-                                                    . '/' . $cmisEntry['properties']['objectId']['value']));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString
+        . '/' . $cmisEntry['properties']['objectId']['value']));
         $entry->appendChild($link);
-        
-        if ((strtolower($cmisEntry['properties']['objectTypeId']['value']) == 'cmis:document') 
-            && (!empty($cmisEntry['properties']['contentStreamLength']['value'])))
+
+        if ((strtolower($cmisEntry['properties']['objectTypeId']['value']) == 'cmis:document')
+        && (!empty($cmisEntry['properties']['contentStreamLength']['value'])))
         {
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel', 'edit-media'));
             $link->appendChild($feed->newAttr('type', $cmisEntry['properties']['contentStreamMimeType']['value']));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString 
-                                                        . '/' . $cmisEntry['properties']['objectId']['value'] 
-                                                        . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
+            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString
+            . '/' . $cmisEntry['properties']['objectId']['value']
+            . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
             $entry->appendChild($link);
 
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel', 'enclosure'));
             $link->appendChild($feed->newAttr('type', $cmisEntry['properties']['contentStreamMimeType']['value']));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString 
-                                                        . '/' . $cmisEntry['properties']['objectId']['value'] 
-                                                        . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
+            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString
+            . '/' . $cmisEntry['properties']['objectId']['value']
+            . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
             $entry->appendChild($link);
         }
 
@@ -235,7 +235,7 @@ class KT_cmis_atom_service_helper {
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel', 'http://docs.oasis-open.org/ns/cmis/link/200908/allowableactions'));
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString . '/'
-                                                    . $cmisEntry['properties']['objectId']['value'] . '/allowableactions'));
+        . $cmisEntry['properties']['objectId']['value'] . '/allowableactions'));
         $entry->appendChild($link);
 
         // according to spec this MUST be present, but spec says that links for function which are not supported
@@ -243,12 +243,12 @@ class KT_cmis_atom_service_helper {
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel', 'http://docs.oasis-open.org/ns/cmis/link/200908/relationships'));
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString . '/'
-                                                    . $cmisEntry['properties']['objectId']['value'] . '/rels'));
+        . $cmisEntry['properties']['objectId']['value'] . '/rels'));
         $entry->appendChild($link);
-        
+
         // if there is no parent or parent is 0, do not add the parent link
         // also if this is specifically the root folder, do not add the parent link
-//        if (!empty($cmisEntry['properties']['parentId']['value']) && !CMISUtil::isRootFolder(self::$repositoryId, $cmisEntry['properties']['objectId']['value']))
+        //        if (!empty($cmisEntry['properties']['parentId']['value']) && !CMISUtil::isRootFolder(self::$repositoryId, $cmisEntry['properties']['objectId']['value']))
 
         if (!CMISUtil::isRootFolder(self::$repositoryId, $cmisEntry['properties']['objectId']['value'], self::$ktapi))
         {
@@ -256,7 +256,7 @@ class KT_cmis_atom_service_helper {
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel', 'up'));
             $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/folder/'
-                                                        . $cmisEntry['properties']['parentId']['value']));
+            . $cmisEntry['properties']['parentId']['value']));
             $entry->appendChild($link);
         }
 
@@ -266,18 +266,18 @@ class KT_cmis_atom_service_helper {
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel', 'down'));
             $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/'
-                                                        . $typeString
-                                                        . '/' . $cmisEntry['properties']['objectId']['value']
-                                                        . '/children'));
+            . $typeString
+            . '/' . $cmisEntry['properties']['objectId']['value']
+            . '/children'));
             $entry->appendChild($link);
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel', 'down'));
             $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/'
-                                                        . $typeString
-                                                        . '/' . $cmisEntry['properties']['objectId']['value']
-                                                        . '/descendants'));
+            . $typeString
+            . '/' . $cmisEntry['properties']['objectId']['value']
+            . '/descendants'));
             $entry->appendChild($link);
-            
+
             // TODO add folder tree link when we have folder tree implemented
             //      this will probably use (much) the same code as the folder children functionality
         }
@@ -290,9 +290,9 @@ class KT_cmis_atom_service_helper {
                 $link = $feed->newElement('link');
                 $link->appendChild($feed->newAttr('rel', 'stream'));
                 $link->appendChild($feed->newAttr('type', $cmisEntry['properties']['contentStreamMimeType']['value']));
-                $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type 
-                                                        . '/' . $cmisEntry['properties']['objectId']['value']
-                                                        . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
+                $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type
+                . '/' . $cmisEntry['properties']['objectId']['value']
+                . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
                 $entry->appendChild($link);
             }
 
@@ -303,24 +303,24 @@ class KT_cmis_atom_service_helper {
             {
                 $link = $feed->newElement('link');
                 $link->appendChild($feed->newAttr('rel', 'pwc'));
-                $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type 
-                                                                                . '/' . $cmisEntry['properties']['objectId']['value'] 
-                                                                                . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
+                $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type
+                . '/' . $cmisEntry['properties']['objectId']['value']
+                . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
                 $entry->appendChild($link);
                 $link = $feed->newElement('link');
                 $link->appendChild($feed->newAttr('rel', 'source'));
-                $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type 
-                                                                                . '/' . $cmisEntry['properties']['objectId']['value'] 
-                                                                                . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
+                $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type
+                . '/' . $cmisEntry['properties']['objectId']['value']
+                . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
                 $entry->appendChild($link);
             }
 
-//            $link = $feed->newElement('link');
-//            $link->appendChild($feed->newAttr('rel', 'stream'));
-//            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type 
-//                                                          . '/' . $cmisEntry['properties']['objectId']['value'] 
-//                                                          . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
-        }        
+            //            $link = $feed->newElement('link');
+            //            $link->appendChild($feed->newAttr('rel', 'stream'));
+            //            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $type
+            //                                                          . '/' . $cmisEntry['properties']['objectId']['value']
+            //                                                          . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
+        }
 
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel', 'describedby'));
@@ -342,26 +342,26 @@ class KT_cmis_atom_service_helper {
         $objectElement = $feed->newElement('cmisra:object');
         $objectElement->appendChild(self::createEntryPropertiesElement($feed, $cmisEntry['properties']));
         $entry->appendChild($objectElement);
-        
+
         // TODO check determination of when to add app:edited tag
-//        if ($method == 'POST') {
-            $entry->appendChild($feed->newElement('app:edited', self::formatDatestamp()));
-//        }
+        //        if ($method == 'POST') {
+        $entry->appendChild($feed->newElement('app:edited', self::formatDatestamp()));
+        //        }
 
         // TODO pathSegment entry
-        
+
         // deal with child objects
         if (isset($cmisEntry['children'])) {
             // add children node and fill with child entries
             $childrenFeed = $feed->newElement('feed');
             self::createObjectChildrenFeed($childrenFeed, $cmisEntry['children'], $workspace, $feed, '' /*folderName not passed through*/);
-            
+
             $childrenElement = $feed->newElement('cmisra:children');
             $childrenElement->appendChild($childrenFeed);
             $entry->appendChild($childrenElement);
         }
     }
-    
+
     /**
      * Shared function for creating an object properties node
      *
@@ -376,7 +376,7 @@ class KT_cmis_atom_service_helper {
         foreach($properties as $propertyName => $property)
         {
             $propElement = $feed->newElement('cmis:' . $property['type']);
-//            $propElement->appendChild($feed->newAttr('localName', 'rep-cmis:' . $propertyName));
+            //            $propElement->appendChild($feed->newAttr('localName', 'rep-cmis:' . $propertyName));
             $propElement->appendChild($feed->newAttr('propertyDefinitionId', 'cmis:' . $propertyName));
             if (!empty($property['value']))
             {
@@ -387,7 +387,7 @@ class KT_cmis_atom_service_helper {
             }
             $propertiesElement->appendChild($propElement);
         }
-        
+
         return $propertiesElement;
     }
 
@@ -419,12 +419,12 @@ class KT_cmis_atom_service_helper {
         //Create a new response feed
         $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
         $workspace = $feed->getWorkspace();
-        
+
         $feed->newField('title', $typesHeading, $feed);
         $feed->newField('id', 'urn:uuid:' . $typesString, $feed);
 
         // TODO set page number correctly - to be done when we support paging the the API
-        
+
         // author
         // TODO generate this dynamically (based on???)\
         $feedElement = $feed->newField('author');
@@ -434,7 +434,7 @@ class KT_cmis_atom_service_helper {
         foreach($types as $type)
         {
             $entry = $feed->newEntry();
-            
+
             $feedElement = $feed->newField('author');
             $element = $feed->newField('name', 'admin', $feedElement);
             $entry->appendChild($feedElement);
@@ -442,7 +442,7 @@ class KT_cmis_atom_service_helper {
             $entry->appendChild($feedElement);
 
             $feed->newField('id', 'urn:uuid:type-' . $type['baseId'], $feed);
-            
+
             // links
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel','self'));
@@ -459,11 +459,11 @@ class KT_cmis_atom_service_helper {
             $link->appendChild($feed->newAttr('rel','repository'));
             $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . '/servicedocument'));
             $entry->appendChild($link);
-            
+
             $entry->appendChild($feed->newElement('summary', 'Summary for ' . $type['baseId'] . ' type'));
             $entry->appendChild($feed->newElement('title', $type['baseId']));
             $entry->appendChild($feed->newElement('updated', self::formatDatestamp()));
-            
+
             $objectElement = $feed->newElement('cmisra:type');
             foreach($type as $property => $value) {
                 $feed->newField('cmis:' . $property, CMISUtil::boolToString($value), $objectElement);
@@ -478,7 +478,7 @@ class KT_cmis_atom_service_helper {
     {
         $service->setStatus($status);
         $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
-        
+
         $feed->newField('title', 'Error: ' . $status, $feed);
         $entry = $feed->newEntry();
         $feed->newField('error', $message, $entry);
@@ -493,31 +493,49 @@ class KT_cmis_atom_service_helper {
      * @param object $ktapi KTAPI instance
      */
     // TODO make this much more efficient than this method
-    static public function getFolderId($path, &$ktapi)
+    static public function getObjectId($path, &$ktapi, $shift = true)
     {
-        // lose first item
-        array_shift($path);
+        // lose first item, if not specified to keep ($shift == false)
+        // NOTE the shift was for the way info comes from the Drupal module, which may now have changed
+        if ($shift) {
+            array_shift($path);
+        }
 
+        // we always start at the root
+        $lastFolderId = $objectId = 1;
         $numQ = count($path);
-        $numFolders = $numQ;
-        $folderId = 1;
-
+        $numObjects = $numQ;
         $start = 0;
-        while($start < $numFolders)
+        $type = FOLDER;
+        
+        while($start < $numObjects)
         {
-            $name = $path[$numQ-$numFolders+$start];
-            // fix for possible url encoding issue
+            $name = $path[$numQ - $numObjects + $start];
+            // fix for possible url encoding issue - this was for the Drupal code and hopefully one day we can remove it
             $name = str_replace('%2520', '%20', $name);
 
-            $folderName = urldecode($name);
-            $folder = $ktapi->get_folder_by_name($folderName, $folderId);
-            $folderId = $folder->get_folderid();
+            $objectName = urldecode($name);
+            // try to get a folder by that name
+            $object = $ktapi->get_folder_by_name($objectName, $lastFolderId);
+            if (PEAR::isError($object)) {
+                // probably not a folder, so let's try for a document by that name
+                $object = $ktapi->get_document_detail_by_name($lastFolderId, $objectName);
+                $objectId = $object['results']['document_id'];
+                // this must be the end (can't have sub-documents or sub-folders within a document
+                $type = DOCUMENT;
+                break;
+            }
+            else {
+                $objectId = $object->get_folderid();
+                $lastFolderId = $objectId;
+            }
+            
             ++$start;
         }
-        
-        return CMISUtil::encodeObjectId(FOLDER, $folderId);
+
+        return CMISUtil::encodeObjectId($type, $objectId);
     }
-    
+
     static public function getCmisObjectProperties(&$xml)
     {
         $xmlReader = new XMLReader();
@@ -551,10 +569,10 @@ class KT_cmis_atom_service_helper {
                 }
             }
         }
-        
+
         return $cmisObjectPropertiesCollection;
     }
-    
+
     static public function getCmisContent(&$xml)
     {
         $xmlReader = new XMLReader();
@@ -577,14 +595,14 @@ class KT_cmis_atom_service_helper {
                 $cmisObjectContent[$cmisContentProperty] = $xmlReader->value;
             }
         }
-        
+
         return $cmisObjectContent;
     }
-    
+
     static public function getAtomValues(&$xml, $tag)
     {
         $returnTag = null;
-        
+
         $xmlReader = new XMLReader();
         $xmlReader->XML($xml);
         $foundTag = false;
@@ -603,14 +621,14 @@ class KT_cmis_atom_service_helper {
                 }
             }
         }
-        
+
         return $returnTag;
     }
 
     static public function getCmisPropertiesOld($xmlArray)
     {
         $properties = array();
-        
+
         // find cmisra:object tag
         $baseCmisObject = KT_cmis_atom_service_helper::findTag('cmisra:object', $xmlArray, null, false);
         if(count($baseCmisObject) <= 0)
@@ -618,7 +636,7 @@ class KT_cmis_atom_service_helper {
             $entryObject = KT_cmis_atom_service_helper::findTag('entry', $xmlArray, null, false);
             $baseCmisObject = KT_cmis_atom_service_helper::findTag('cmisra:object', $entryObject['@children'], null, true);
         }
-        
+
         if(count($baseCmisObject) > 0)
         {
             foreach($baseCmisObject[0]['@children'] as $key => $childElement)
@@ -629,8 +647,8 @@ class KT_cmis_atom_service_helper {
                     {
                         foreach($cmisPropertyDefinition as $propertyType => $propertyDefinition)
                         {
-                            $properties[$propertyDefinition['@attributes']['cmis:name']] 
-                                    = $propertyDefinition['@children']['cmis:value'][0]['@value'];
+                            $properties[$propertyDefinition['@attributes']['cmis:name']]
+                            = $propertyDefinition['@children']['cmis:value'][0]['@value'];
                         }
                     }
                 }
@@ -643,9 +661,9 @@ class KT_cmis_atom_service_helper {
     static public function getAtomValuesOld($xmlArray, $tag)
     {
         if (!is_null($xmlArray['atom:'.$tag]))
-            return $xmlArray['atom:'.$tag][0]['@value'];
+        return $xmlArray['atom:'.$tag][0]['@value'];
         else if (!is_null($xmlArray[$tag]))
-            return $xmlArray[$tag][0]['@value'];
+        return $xmlArray[$tag][0]['@value'];
 
         return null;
     }
@@ -655,23 +673,23 @@ class KT_cmis_atom_service_helper {
 	 *
 	 * @return object
 	 */
-	public static function getKt()
+    public static function getKt()
     {
-		if(!isset(self::$ktapi))
+        if(!isset(self::$ktapi))
         {
-        	self::$ktapi = new KTAPI();
-			$active = self::$ktapi->get_active_session(session_id());
-			
-			if (PEAR::isError($active))
-			{
-				// invoke auth code, session must be restarted
-				if(!KT_atom_HTTPauth::isLoggedIn()) {
-					KT_atom_HTTPauth::login('KnowledgeTree DMS', 'You must authenticate to enter this realm');
-				}
-			}
-		}
-		return self::$ktapi;
-	}
+            self::$ktapi = new KTAPI();
+            $active = self::$ktapi->get_active_session(session_id());
+
+            if (PEAR::isError($active))
+            {
+                // invoke auth code, session must be restarted
+                if(!KT_atom_HTTPauth::isLoggedIn()) {
+                    KT_atom_HTTPauth::login('KnowledgeTree DMS', 'You must authenticate to enter this realm');
+                }
+            }
+        }
+        return self::$ktapi;
+    }
 
     // TODO adjust for time zones?
     static public function formatDatestamp($time = null)
@@ -679,7 +697,7 @@ class KT_cmis_atom_service_helper {
         if (is_null($time)) $time = time();
         return date('Y-m-d H:i:s', $time);
     }
-    
+
     /**
      * Fetches the document content stream for internal use
      * 
@@ -693,12 +711,12 @@ class KT_cmis_atom_service_helper {
         if ($response['status_code'] == 1) {
             return null;
         }
-        
+
         $contentStream = $ObjectService->getContentStream($repositoryId, $service->params[0]);
-        
+
         // hack for removing one level of access
         $contentStream = $contentStream['results'];
-        
+
         return $contentStream;
     }
     /**
@@ -719,41 +737,41 @@ class KT_cmis_atom_service_helper {
         else {
             $response = $response['results'];
         }
-        
+
         // TODO also check If-Modified-Since?
-//        $service->headers['If-Modified-Since'] => 2009-07-24 17:16:54
+        //        $service->headers['If-Modified-Since'] => 2009-07-24 17:16:54
 
         $service->setContentDownload(true);
         $eTag = md5($response['properties']['lastModificationDate']['value'] . $response['properties']['contentStreamLength']['value']);
-        
+
         if ($service->headers['If-None-Match'] == $eTag)
         {
             $service->setStatus(KT_cmis_atom_service::STATUS_NOT_MODIFIED);
             $service->setContentDownload(false);
             return null;
         }
-        
+
         $contentStream = $ObjectService->getContentStream($repositoryId, $service->params[0]);
-        
+
         // hack for removing one level of access
         $contentStream = $contentStream['results'];
-        
+
         // headers specific to output
         $service->setEtag($eTag);
         $service->setHeader('Last-Modified', $response['properties']['lastModificationDate']['value']);
 
         if (!empty($response['properties']['contentStreamMimeType']['value'])) {
-    		$service->setHeader('Content-type', $response['properties']['contentStreamMimeType']['value'] . ';charset=utf-8');
+            $service->setHeader('Content-type', $response['properties']['contentStreamMimeType']['value'] . ';charset=utf-8');
         }
         else {
-    		$service->setHeader('Content-type', 'text/plain;charset=utf-8');
+            $service->setHeader('Content-type', 'text/plain;charset=utf-8');
         }
-        
+
         $service->setHeader('Content-Disposition', 'attachment;filename="' . $response['properties']['contentStreamFilename']['value'] . '"');
-		$service->setHeader('Content-Length', $response['properties']['contentStreamLength']['value']);
+        $service->setHeader('Content-Length', $response['properties']['contentStreamLength']['value']);
         $service->setOutput($contentStream);
     }
-    
+
     //TODO: Add key information to be able to find the same tag in the original struct (MarkH)
     static public function findTag($tagName=NULL,$xml=array(),$tagArray=NULL,$deep=false)
     {
@@ -773,11 +791,11 @@ class KT_cmis_atom_service_helper {
         //TODO: this is very ugly. Change it. (MarkH)
         return self::rebaseArray($tagArray);
     }
-    
+
     static public function rebaseArray($arr=array()){
         //Force Array
         $arr=is_array($arr)?$arr:array();
-        
+
         //Rebase recursively
         if(count($arr)===1)$arr=self::rebaseArray($arr[0]);
         return $arr;
