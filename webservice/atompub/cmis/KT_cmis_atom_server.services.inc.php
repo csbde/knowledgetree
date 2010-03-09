@@ -51,7 +51,7 @@ class KT_cmis_atom_service_objectbyid extends KT_cmis_atom_service {
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         $objectId = $this->params[0];
         $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
-        
+
         $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $objectId);
 
         // Expose the responseFeed
@@ -71,7 +71,7 @@ class KT_cmis_atom_service_objectbypath extends KT_cmis_atom_service {
         $ktapi =& KT_cmis_atom_service_helper::getKt();
         $objectId = KT_cmis_atom_service_helper::getObjectId(explode('/', urldecode($this->params[0])), $ktapi, false);
         $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
-        
+
         $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $objectId);
 
         // Expose the responseFeed
@@ -100,7 +100,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         //      node request e.g.: node/F2
         if (urldecode($this->params[0]) == 'Root Folder')
         {
-            $folderId = CMISUtil::encodeObjectId(FOLDER, 1);
+            $folderId = CMISUtil::encodeObjectId(CMIS_FOLDER, 1);
             $folderName = urldecode($this->params[0]);
         }
         else if ($this->params[0] == 'path')
@@ -112,16 +112,16 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         {
             $folderId = $this->params[0];
             $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
-            $response = $ObjectService->getProperties($repositoryId, $folderId, false, false);
-
-            if ($response['status_code'] == 1) {
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response['message']);
+            try {
+                $response = $ObjectService->getProperties($repositoryId, $folderId, false, false);
+            }
+            catch (Exception $e) {
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
                 $this->responseFeed = $feed;
                 return null;
             }
-            else {
-                $response = $response['results'];
-            }
+
+            $response = $response['results'];
 
             $folderName = $response['properties']['name']['value'];
         }
@@ -153,6 +153,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
 
         if (!empty($this->params[1]) && (($this->params[1] == 'children') || ($this->params[1] == 'descendants')))
         {
+        print_r($this->params);exit;
             $NavigationService = new KTNavigationService(KT_cmis_atom_service_helper::getKt());
             $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $this->params[1]);
         }
@@ -356,26 +357,31 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
      */
     private function getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $feedType = 'children')
     {
+        print_r($this->params);exit;
         if ($feedType == 'children') {
             $entries = $NavigationService->getChildren($repositoryId, $folderId, false, false);
         }
         else if ($feedType == 'descendants') {
-            // TODO how will client request depth?  for now we assume as part of the url - will probably be covered by URI templates
+            // TODO how will client request depth?  for now we assume as part of the url
             if (isset($this->params[2])) {
-                $entries = $NavigationService->getDescendants($repositoryId, $folderId, $this->params[2]);
+                $depth = $this->params[2];
             }
             else {
-                $entries = $NavigationService->getDescendants($repositoryId, $folderId);
+                // don't really like this, would prefer to use the default argument, but this avoids 2 copies of the function call
+                // with only the depth different
+                $depth = 2;
+            }
+            
+            try {
+                $entries = $NavigationService->getDescendants($repositoryId, $folderId, $depth);
+            }
+            catch (Exception $e) {
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $response['message']);
+                $this->responseFeed = $feed;
+                return null;
             }
         }
-        else {
-            // error, we shouldn't be here, if we are then the wrong service/function was called
-        }
 
-        // hack, for removing one level of access
-        $entries = $entries['results'];
-
-        // $baseURI=NULL,$title=NULL,$link=NULL,$updated=NULL,$author=NULL,$id=NULL
         $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
         $workspace = $feed->getWorkspace();
 

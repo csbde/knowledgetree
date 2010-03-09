@@ -476,7 +476,9 @@ class KT_cmis_atom_service_helper {
 
     static public function getErrorFeed(&$service, $status, $message)
     {
-        $service->setStatus($status);
+        // this seems to cause problems as it sets an http header, and if that header is
+        // "404 Not Found" we get html output instead of atompub
+//        $service->setStatus($status);
         $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
 
         $feed->newField('title', 'Error: ' . $status, $feed);
@@ -506,7 +508,7 @@ class KT_cmis_atom_service_helper {
         $numQ = count($path);
         $numObjects = $numQ;
         $start = 0;
-        $type = FOLDER;
+        $type = CMIS_FOLDER;
         
         while($start < $numObjects)
         {
@@ -522,7 +524,7 @@ class KT_cmis_atom_service_helper {
                 $object = $ktapi->get_document_detail_by_name($lastFolderId, $objectName);
                 $objectId = $object['results']['document_id'];
                 // this must be the end (can't have sub-documents or sub-folders within a document
-                $type = DOCUMENT;
+                $type = CMIS_DOCUMENT;
                 break;
             }
             else {

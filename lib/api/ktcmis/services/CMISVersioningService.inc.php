@@ -78,7 +78,7 @@ class CMISVersioningService {
         if ($pwc->getProperty('contentStreamFilename') != '') {
             $contentCopied = true;
         }
-        $objectId = CMISUtil::encodeObjectId(DOCUMENT, $objectId);
+        $objectId = CMISUtil::encodeObjectId(CMIS_DOCUMENT, $objectId);
 
         // mark document object as checked out
         $pwc->setProperty('isVersionSeriesCheckedOut', true);
@@ -209,7 +209,7 @@ class CMISVersioningService {
             throw new RuntimeException('There was an error checking in the document: ' . $response['message']);
         }
         
-        return CMISUtil::encodeObjectId(DOCUMENT, $objectId);
+        return CMISUtil::encodeObjectId(CMIS_DOCUMENT, $objectId);
     }
     
 }

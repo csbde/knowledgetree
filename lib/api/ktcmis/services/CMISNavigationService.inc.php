@@ -139,6 +139,7 @@ class CMISNavigationService {
     // NOTE The default value for the $depth parameter is repository specific and SHOULD be at least 2 or -1
     //      Chosen 2 as the underlying code currently has no concept of digging all the way down
     // TODO FilterNotValidException: The Repository SHALL throw this exception if this property filter input parameter is not valid
+    // TODO a depth of -1 (or possibly any negative number) should return all children - ktapi does not support arbitrary depths
     function getDescendants($repositoryId, $folderId, $depth = 2, $filter = '', $includeRelationships = false, $renditionFilter = '',
     $includeAllowableActions = false, $includePathSegment = false)
     {
@@ -158,6 +159,9 @@ class CMISNavigationService {
         $repository = new CMISRepository($repositoryId);
 
         $folder = $this->ktapi->get_folder_by_id($folderId);
+        if (PEAR::isError($folder)) {
+            throw new InvalidArgumentException($folder->getMessage());
+        }
         $descendants = $folder->get_listing($depth);
 
         // parse ktapi descendants result into a list of CMIS objects

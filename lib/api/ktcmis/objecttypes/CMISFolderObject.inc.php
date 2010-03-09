@@ -122,7 +122,7 @@ class CMISFolderObject extends CMISObject {
         $this->_setPropertyInternal('lastModificationDate', $objectProperties['modified_date']);
         $this->_setPropertyInternal('changeToken', null);
         $this->_setPropertyInternal('name', $objectProperties['folder_name']);
-        $this->_setPropertyInternal('parentId', CMISUtil::encodeObjectId(FOLDER, $objectProperties['parent_id']));
+        $this->_setPropertyInternal('parentId', CMISUtil::encodeObjectId(CMIS_FOLDER, $objectProperties['parent_id']));
         $this->_setPropertyInternal('author', $objectProperties['created_by']);
     }
     

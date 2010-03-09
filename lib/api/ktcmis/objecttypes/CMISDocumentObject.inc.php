@@ -130,7 +130,7 @@ class CMISDocumentObject extends CMISObject {
         $this->_setPropertyInternal('lastModificationDate', $objectProperties['modified_date']);
         $this->_setPropertyInternal('changeToken', null);
         $this->_setPropertyInternal('name', $objectProperties['title']);
-        $this->_setPropertyInternal('parentId', CMISUtil::encodeObjectId(FOLDER, $objectProperties['folder_id']));
+        $this->_setPropertyInternal('parentId', CMISUtil::encodeObjectId(CMIS_FOLDER, $objectProperties['folder_id']));
         $this->_setPropertyInternal('isImmutable', $objectProperties['is_immutable']);
         // NOTE if access to older versions is allowed, this will need to be checked, else just set to yes
         //      see ktapi::get_document_version_history

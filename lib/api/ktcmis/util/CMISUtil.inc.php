@@ -45,8 +45,13 @@
  */
 
 define('UNKNOWN', -1);
+// NOTE should be able to remove these next two, superseded by CMIS_ definitions
+//      left in to avoid needing to re-test everything right now, will take out for end-of-sprint testing
 define('DOCUMENT', 1);
 define('FOLDER', 2);
+// new definitions
+define('CMIS_DOCUMENT', 'cmis:document');
+define('CMIS_FOLDER', 'cmis:folder');
 
 require_once(CMIS_DIR . '/objecttypes/CMISDocumentObject.inc.php');
 require_once(CMIS_DIR . '/objecttypes/CMISFolderObject.inc.php');
@@ -70,13 +75,13 @@ class CMISUtil {
             case 'D':
             case 'Document':
             case 'cmis:document':
-            case DOCUMENT:
+            case CMIS_DOCUMENT:
                 $encoded = 'D' . $objectId;
                 break;
             case 'F':
             case 'Folder':
             case 'cmis:folder':
-            case FOLDER:
+            case CMIS_FOLDER:
                 $encoded = 'F' . $objectId;
                 break;
             default:
@@ -565,7 +570,7 @@ class CMISUtil {
     {
         $folder = $ktapi->get_folder_by_name($name);
 
-        return self::encodeObjectId(FOLDER, $folder->get_folderid());
+        return self::encodeObjectId(CMIS_FOLDER, $folder->get_folderid());
     }
 
     /**

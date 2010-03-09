@@ -91,26 +91,18 @@ class KTNavigationService extends KTCMISBase {
                                    $includeAllowableActions = false, $includePathSegment = false)
     {
         // TODO optional parameters
-        $descendantsResult = $this->NavigationService->getDescendants($repositoryId, $folderId, $depth, $filter, 
-                                                                      $includeRelationships = false, $renditionFilter = '', 
-                                                                      $includeAllowableActions = false, $includePathSegment = false);
-
-        if (PEAR::isError($descendantsResult))
-        {
-            return array(
-                "status_code" => 1,
-                "message" => "Failed getting descendants for folder"
-            );
+        try {
+            $descendantsResult = $this->NavigationService->getDescendants($repositoryId, $folderId, $depth, $filter, 
+                                                                          $includeRelationships = false, $renditionFilter = '', 
+                                                                          $includeAllowableActions = false, $includePathSegment = false);
+        }
+        catch (Exception $e) {
+            throw $e;
         }
         
         // format for webservices consumption
         // NOTE this will almost definitely be changing in the future, this is just to get something working
-        $descendants = CMISUtil::decodeObjectHierarchy($descendantsResult, 'children');
-        
-        return array (
-            "status_code" => 0,
-            "results" => $descendants
-        );
+        return CMISUtil::decodeObjectHierarchy($descendantsResult, 'children');
     }
 
     /**

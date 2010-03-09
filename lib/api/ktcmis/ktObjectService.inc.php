@@ -87,14 +87,10 @@ class KTObjectService extends KTCMISBase {
     {
         try {
             $properties = $this->ObjectService->getProperties($repositoryId, $objectId, $includeAllowableActions,
-                                                                      $includeRelationships);
+                                                              $includeRelationships);
         }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+        catch (Exception $e) {
+            throw $e;
         }
 
         return array(
