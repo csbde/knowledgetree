@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -580,6 +580,7 @@ class SubscriptionContent {
         $restoreArchivedDocumentText = _kt('The document "').$info['object_name']._kt('" has been restored by an administrator');
         $downloadDocumentText = _kt('The document "').$info['object_name']._kt('"');
         $documentAlertText = _kt('An alert on the document "').$info['object_name']._kt('" has been added or modified');
+        $discussDocumentText = _kt('A discussion on the document "').$info['object_name']._kt('" has been updated');
 
         if($info['location_name'] !== NULL && !$bulk_action){
             $addFolderText .= _kt(' to "').$info['location_name']._kt('"');
@@ -701,6 +702,14 @@ class SubscriptionContent {
                 $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
                 $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=viewall';
                 $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('View all alerts on this document').'</a>';
+                break;
+            case 'DiscussDocument':
+                $text = $discussDocumentText;
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'];
+                $links = '<a href="'.$url.'">'._kt('View Document').'</a>';
+                $url = $rootUrl.'/notify.php?id='.$info['notify_id'].'&notify_action=clear';
+                $links .= '&#160;|&#160;<a href="'.$url.'">'._kt('Clear Alert').'</a>';
+                break;
         }
 
         if($info['actor_name'] !== NULL && $info['event_type'] != 'RestoredArchivedDocument'){
