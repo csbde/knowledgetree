@@ -127,7 +127,7 @@ class KT_cmis_atom_serviceDoc extends KT_atom_serviceDoc {
         
         $uriTemplate = $this->newElement('cmisra:uritemplate');
         $uriTemplate->appendChild($this->newElement('cmisra:template', $content['template']));
-        $uriTemplate->appendChild($this->newElement('cmisra:type', $content));
+        $uriTemplate->appendChild($this->newElement('cmisra:type', $templateType));
         $uriTemplate->appendChild($this->newElement('cmisra:mediatype', $content['mediatype']));
         
         return $uriTemplate;
