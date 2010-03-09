@@ -65,7 +65,7 @@ include_once('clienttools_syslog.php');
 Clienttools_Syslog::logTrace('--','--','======================================================================== TRANSACTION START');
 
 //Instantiate base classes
-$KT = new KTAPI();
+$KT = new KTAPI(3);
 $RET=new jsonResponseObject();
 if($_GET['datasource'])$RET->isDataSource=true;
 

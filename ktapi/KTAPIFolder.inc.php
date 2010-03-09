@@ -184,7 +184,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		$this->clearCache();
 
 		$config = KTConfig::getSingleton();
-		$wsversion = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
+		$wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
 
 		$detail = array(
 			'id'=>(int) $this->folderid,
@@ -548,7 +548,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 		$config = KTConfig::getSingleton();
 
-		$wsversion = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
+		$wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
 
 		$user = $this->ktapi->get_user();
 
@@ -841,7 +841,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
 		$config = KTConfig::getSingleton();
 
-		$wsversion = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
+		$wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
 
 		$user = $this->ktapi->get_user();
 
@@ -1471,7 +1471,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
         }
 
         $config = KTConfig::getSingleton();
-		$wsversion = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
+		$wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
 		foreach($transactions as $key=>$transaction)
 		{
 			$transactions[$key]['version'] = (float) $transaction['version'];
