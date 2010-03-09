@@ -643,6 +643,11 @@ abstract class Indexer
 
         $default->log->debug("index: Queuing indexing of $document_id");
 
+        // If we're indexing a discussion, re-processing is not needed.
+        if($what === 'D'){
+            return true;
+        }
+
         // Appending the process queue to the index for convenience
         // Don't want to complicate matters by creating too many new classes and files
         Indexer::unqueueDocFromProcessing($document_id);
