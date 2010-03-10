@@ -49,14 +49,9 @@ class KT_cmis_atom_server extends KT_atom_server {
 
             // fetch data for response
             $repositories = $RepositoryService->getRepositories();
-
-            // hack for removing one level of access
-            $repositories = $repositories['results'];
             
             // fetch for default first repo;  NOTE that this will probably have to change at some point, quick and dirty for now
-            // hack for removing one level of access
-            $repositoryInfo = $RepositoryService->getRepositoryInfo($repositories[0]['repositoryId']);
-            $this->repositoryInfo = $repositoryInfo['results'];
+            $this->repositoryInfo = $RepositoryService->getRepositoryInfo($repositories[0]['repositoryId']);
         }
     }
     

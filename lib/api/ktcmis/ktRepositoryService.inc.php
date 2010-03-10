@@ -68,16 +68,10 @@ class KTRepositoryService extends KTCMISBase {
      *
      * @return repositoryList[]
      */
+    // TODO error handling
     public function getRepositories()
     {
         $repositories = $this->RepositoryService->getRepositories();
-        if (PEAR::isError($repositories))
-        {
-            return array(
-                "status_code" => 1,
-                "message" => "Failed getting repositories"
-            );
-        }
 
         // extract the required info fields into array format for easy encoding;
         $count = 0;
@@ -86,14 +80,10 @@ class KTRepositoryService extends KTCMISBase {
         {
             $repositoryList[$count]['repositoryId'] = $repository->getRepositoryId();
             $repositoryList[$count]['repositoryName'] = $repository->getRepositoryName();
-            //$repositoryList[$count]['repositoryURI'] = $repository->getRepositoryURI();
             ++$count;
         }
 
-        return array(
-            "status_code" => 0,
-            "results" => $repositoryList
-        );
+        return $repositoryList;
     }
 
     /**
@@ -101,23 +91,15 @@ class KTRepositoryService extends KTCMISBase {
      *
      * @param string $repositoryId
      */
+    // TODO error handling
     public function getRepositoryInfo($repositoryId)
     {
         $repositoryInfo = $this->RepositoryService->getRepositoryInfo($repositoryId);
-        if (PEAR::isError($repositoryInfo))
-        {
-            return array(
-                "status_code" => 1,
-                "message" => "Failed getting repository information"
-            );
-        }
 
         // TODO output this manually, the function works but only for some objects so rather avoid it completely?
         // NOTE the problems appear to be due to recursive objects
-        return array (
-            "status_code" => 0,
-            "results" => CMISUtil::objectToArray($repositoryInfo)
-        );
+        $repositoryInfo = CMISUtil::objectToArray($repositoryInfo);
+        return $repositoryInfo;
     }
 
     /**
@@ -132,28 +114,16 @@ class KTRepositoryService extends KTCMISBase {
             $repositoryObjectTypeResult = $this->RepositoryService->getTypes($repositoryId, $typeId, $returnPropertyDefinitions,
                                                                              $maxItems, $skipCount, $hasMoreItems);
         }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+        catch (Exception $e) {
+            throw $e;
         }
 
         // format as array style output
-        // NOTE only concerned with attributes at this time
-        // TODO add support for properties
-        foreach($repositoryObjectTypeResult as $key => $objectType)
-        {
+        foreach($repositoryObjectTypeResult as $key => $objectType) {
             $repositoryObjectTypes[$key] = $objectType['attributes'];
-            // TODO properties
-            // $repositoryObjectTypes[$key]['properties'] = $objectType['properties'];
         }
 
-        return array (
-            "status_code" => 0,
-            "results" => $repositoryObjectTypes
-        );
+        return $repositoryObjectTypes;
     }
 
     /**
@@ -168,7 +138,6 @@ class KTRepositoryService extends KTCMISBase {
             $typeDefinition = $this->RepositoryService->getTypeDefinition($repositoryId, $typeId);
         }
         catch (Exception $e) {
-            // propogate upward
             throw $e;
         }
         

@@ -66,8 +66,7 @@ class CMISRepositoryService {
         // TODO what if file does not exist?
         $xml = simplexml_load_file(CMIS_DIR . '/config/repositories.xml');
 
-        foreach($xml->repository as $repositoryXML)
-        {
+        foreach($xml->repository as $repositoryXML) {
             $repositoryId = (string)$repositoryXML->repositoryInfo[0]->repositoryId;
             $Repository = new CMISRepository($repositoryId, $repositoryXML);
             $repositories[] = $Repository;

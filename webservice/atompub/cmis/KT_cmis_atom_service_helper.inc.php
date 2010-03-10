@@ -21,9 +21,6 @@ class KT_cmis_atom_service_helper {
 
         $repositories = $RepositoryService->getRepositories();
 
-        // hack for removing one level of access
-        $repositories = $repositories['results'];
-
         // TODO handle multiple repositories
         self::$repositoryId = $repositories[0]['repositoryId'];
     }

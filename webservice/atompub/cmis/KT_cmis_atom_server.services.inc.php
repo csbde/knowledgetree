@@ -116,8 +116,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                 $response = $ObjectService->getProperties($repositoryId, $folderId, false, false);
             }
             catch (Exception $e) {
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
-                $this->responseFeed = $feed;
+                $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
                 return null;
             }
 
@@ -134,8 +133,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                 $response = $NavigationService->getFolderParent($repositoryId, $folderId, false, false, false);
             }
             catch (Exception $e) {
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
-                $this->responseFeed = $feed;
+                $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
                 return null;
             }
 
@@ -298,9 +296,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $response = $ObjectService->deleteTree($repositoryId, $this->params[0], 'delete', true);
         }
         catch (Exception $e) {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
-            // Expose the responseFeed
-            $this->responseFeed = $feed;
+            $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
             return null;
         }
 
@@ -350,8 +346,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                 $entries = $NavigationService->getChildren($repositoryId, $folderId, false, false);
             }
             catch (Exception $e) {
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
-                $this->responseFeed = $feed;
+                $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
                 return null;
             }
         }
@@ -370,8 +365,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                 $entries = $NavigationService->getDescendants($repositoryId, $folderId, $depth);
             }
             catch (Exception $e) {
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
-                $this->responseFeed = $feed;
+                $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
                 return null;
             }
         }
@@ -618,8 +612,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
             $checkedout = $NavigationService->getCheckedOutDocs($repositoryId);
         }
         catch (Exception $e) {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
-            $this->responseFeed = $feed;
+            $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
             return null;
         }
 
@@ -712,10 +705,13 @@ class KT_cmis_atom_service_types extends KT_cmis_atom_service {
         $RepositoryService = new KTRepositoryService();
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
 
-        $types = $RepositoryService->getTypes($repositoryId);
-
-        // hack for removing one level of access
-        $types = $types['results'];
+        try {
+            $types = $RepositoryService->getTypes($repositoryId);
+        }
+        catch (Exception $e) {
+            $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
+            return null;
+        }
 
         $type = ((empty($this->params[0])) ? 'all' : $this->params[0]);
         $feed = KT_cmis_atom_service_helper::getTypeFeed($type, $types);
@@ -741,9 +737,7 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service {
             $typeDefinition = $RepositoryService->getTypeDefinition($repositoryId, $type);
         }
         catch (Exception $e) {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $e->getMessage());
-            // Expose the responseFeed
-            $this->responseFeed = $feed;
+            $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
             return null;
         }
 
