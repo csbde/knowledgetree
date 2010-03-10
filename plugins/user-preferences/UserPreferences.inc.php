@@ -75,7 +75,16 @@ class UserPreferences extends KTEntity {
         return KTEntityUtil::getList2('UserPreferences', $sWhereClause, $aOptions);
     }
     
-    public function getUserPreferences($iUserId, $sKey, $aOptions = null) {
+    /**
+    * 
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param 
+    * @param 
+    * @return
+    */
+    public function getPreferences($iUserId, $sKey, $aOptions = null) {
     	$sWhereClause = "WHERE user_id = '$iUserId' AND prefkey = '$sKey'";
     	
     	return KTEntityUtil::getList2('UserPreferences', $sWhereClause, $aOptions);
@@ -154,16 +163,30 @@ class UserPreferences extends KTEntity {
     // Utility
     
     /**
-    * Set the template name
+    * 
     *
     * @author KnowledgeTree Team
     * @access public
-    * @param $sName - string - the template node name
-    * @param $iParentId - int - the template id
-    * @return boolean
+    * @param 
+    * @param 
+    * @param 
+    * @return 
     */
     public function exists($iUserId, $sKey, $sValue) {
-        return UserPreferencesUtil::userPreferenceExists($iUserId, $sKey, $sValue);
+        $sQuery = "SELECT id, name FROM " . KTUtil::getTableName('user_preferences') . " WHERE user_id = ? AND prefkey = ? AND prefvalue = ?";/*ok*/
+        $aParams = array($iUserId, $sKey, $sValue);
+		$res = DBUtil::getResultArray(array($sQuery, $aParams));
+		if (count($res) != 0) {
+		    foreach ($res as $user_pref){
+		    	$userid = isset($user_pref['user_id']) ? $user_pref['user_id'] : '';
+    		    $key = isset($user_pref['prefkey']) ? $user_pref['prefkey'] : '';
+    		    if($sKey == $key && $iUserId == $userid) {
+    		        return true;
+    		    }
+		    }
+			return false;
+		}
+		return false;
     }
     
     /**
@@ -180,33 +203,54 @@ class UserPreferences extends KTEntity {
         $sWhereClause = "WHERE user_id = '$userId'";
         return KTEntityUtil::getList2('UserPreferences', $sWhereClause, $aOptions);
     }
-}
-
-class UserPreferencesUtil {
-
-	/**
-	*
-	* 
-	* @author KnowledgeTree Team
-	*
-	* @return
-	*/
-	function userPreferenceExists($iUserId, $sKey, $sValue) {
-        $sQuery = "SELECT id, name FROM " . KTUtil::getTableName('user_preferences') . " WHERE user_id = ? AND prefkey = ? AND prefvalue = ?";/*ok*/
-        $aParams = array($iUserId, $sKey, $sValue);
-		$res = DBUtil::getResultArray(array($sQuery, $aParams));
-		if (count($res) != 0) {
-		    foreach ($res as $user_pref){
-		    	$userid = isset($user_pref['user_id']) ? $user_pref['user_id'] : '';
-    		    $key = isset($user_pref['prefkey']) ? $user_pref['prefkey'] : '';
-    		    if($sKey == $key && $iUserId == $userid) {
-    		        return true;
-    		    }
-		    }
-			return false;
+    
+    /**
+    *
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param $aOptions - array
+    * @return 
+    */
+    public function getUserPreferenceValue($iUserId, $sKey) {
+    	$aPref = UserPreferences::getPreferences($iUserId, $sKey);
+    	if(PEAR::isError($aPref)) {
+    		return false;
+    	}
+    	if(count($aPref) > 1) {
+    		return false;
+    	}
+    	
+    	foreach ($aPref as $oPref) {
+    		return $oPref->getValue();
+    	}
+    }
+    
+    /**
+    *
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param $aOptions - array
+    * @return 
+    */
+    public function saveUserPreferences($iUserId, $sKey, $sValue) {
+    	$oUser = User::get($iUserId); // Get the user
+    	if (PEAR::isError($oUser)) {
+    		return false;
+    	}
+		$aUserPreference = UserPreferences::getPreferences($iUserId, 'zohoWarning'); // Get user preference
+		if(empty($aUserPreference) || is_null($aUserPreference)) { // Create the preference
+			$oUserPreference = new UserPreferences($iUserId, 'zohoWarning', $sValue);
+			$oUserPreference->create();
+		} else {
+    		foreach ($aUserPreference as $oUserPreference) { // Access object
+	    		if($oUserPreference->getValue() != $sValue) { // Check if value needs to be updated
+	    			$oUserPreference->setValue($sValue); // Set the new value
+	    			$oUserPreference->update(); // Update preference
+	    		}
+    		}
 		}
-		return false;
-	}
+    }
 }
-
 ?>
