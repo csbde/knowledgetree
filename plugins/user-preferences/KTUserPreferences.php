@@ -37,6 +37,7 @@ require_once('UserPreferences.inc.php');
  */
 class KTUserPreferences
 {
+	private $oUserPreference;
 	
     /**
      * Constructor function for the class
@@ -47,14 +48,54 @@ class KTUserPreferences
      */
     public function __construct()
     {
+    	$this->oUserPreference = new UserPreferences();
     }
 
     /**
-    * Check if user is logged in
+    * 
     *
     * @author KnowledgeTree Team
     * @access public
-    * @return html
+    * @return 
+    */
+    function saveUserPreferences() {
+    	$iUserId = KTUtil::arrayGet($_GET, 'user_id', $_SESSION['userID']);
+    	$sKey = KTUtil::arrayGet($_GET, 'key', null);
+    	$sValue = KTUtil::arrayGet($_GET, 'value', null);
+    	if(is_null($iUserId) || is_null($sKey) || is_null($sValue)) {
+    		exit("Missing Required options : user_id = $iUserId key = $sKey value = $sValue");
+    	}
+    	$this->oUserPreference->saveUserPreferences($iUserId, $sKey, $sValue);
+    }
+    
+    /**
+    * 
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @return 
+    */
+    function getUserPreferences() {
+    	
+    }
+    
+    /**
+    * 
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @return 
+    */
+    function deleteUserPreferences() {
+    	
+    }
+    
+    /**
+    *
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @return boolean
     */
     function isLoggedIn() {
     	$session = new Session();
@@ -73,16 +114,9 @@ if (!$oKTUserPreferences->isLoggedIn()) {
     exit;
 }
 
-switch($_GET['action']){
-    case 'getUserPreferences':
-    	
-    	break;
-    case 'addUserPreferences':
-    	
-    	break;
-   	default:
-        echo "No action defined";
-        break;
+if(isset($_GET['action'])) {
+	$action = $_GET['action'];
+	$oKTUserPreferences->$action();
 }
 
 exit;
