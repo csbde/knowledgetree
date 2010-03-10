@@ -93,10 +93,7 @@ class KTObjectService extends KTCMISBase {
             throw $e;
         }
 
-        return array(
-			"status_code" => 0,
-			"results" => $properties
-		);
+        return $properties;
     }
 
     /**
@@ -122,18 +119,11 @@ class KTObjectService extends KTCMISBase {
             $objectId = $this->ObjectService->createDocument($repositoryId, $properties, $folderId, $contentStream, 
                                                              $versioningState,$policies, $addACEs, $removeACEs);
         }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+        catch (Exception $e) {
+            throw $e;
         }
 
-        return array(
-            'status_code' => 0,
-            'results' => $objectId
-        );
+        return $objectId;
     }
 
     /**
@@ -154,18 +144,11 @@ class KTObjectService extends KTCMISBase {
         try {
             $objectId = $this->ObjectService->createFolder($repositoryId, $properties, $folderId, $policies, $addACEs, $removeACEs);
         }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+        catch (Exception $e) {
+            throw $e;
         }
 
-        return array(
-            'status_code' => 0,
-            'results' => $objectId
-        );
+        return $objectId;
     }
     
     /**
@@ -181,18 +164,11 @@ class KTObjectService extends KTCMISBase {
         try {
             $contentStream = $this->ObjectService->getContentStream($repositoryId, $objectId, $streamId);
         }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+        catch (Exception $e) {
+            throw $e;
         }
 
-        return array(
-            'status_code' => 0,
-            'results' => $contentStream
-        );
+        return $contentStream;
     }
     
     /**
@@ -209,18 +185,11 @@ class KTObjectService extends KTCMISBase {
         try {
             $this->ObjectService->moveObject($repositoryId, $objectId, $targetFolderId, $sourceFolderId);
         }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+        catch (Exception $e) {
+            throw $e;
         }
 
-        return array(
-            'status_code' => 0,
-            'results' => $objectId
-        );
+        return $objectId;
     }
     
     /**
@@ -236,46 +205,30 @@ class KTObjectService extends KTCMISBase {
         try {
             $this->ObjectService->deleteObject($repositoryId, $objectId, $allVersions);
         }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+        catch (Exception $e) {
+            throw $e;
         }
 
-        return array(
-            'status_code' => 0,
-            'results' => $objectId
-        );
+        return $objectId;
     }
     
     public function deleteTree($repositoryId, $objectId, $changeToken = null, $unfileNonfolderObject = 'delete', $continueOnFailure = false)
     {
+        $failed = array();
+        
         try {
             $result = $this->ObjectService->deleteTree($repositoryId, $objectId, $changeToken, $unfileNonfolderObject, $continueOnFailure);
         }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+        catch (Exception $e) {
+            throw $e;
         }
 
         // check whether there is a list of items which did not delete
-        if (count($result) > 0)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $result
-            );          
+        if (count($result) > 0) {
+            return $result;
         }
         
-        return array(
-            'status_code' => 0,
-            'results' => $objectId
-        );
+        return $failed;
     }
 
     /**
@@ -299,18 +252,11 @@ class KTObjectService extends KTCMISBase {
         try {
             $documentId = $this->ObjectService->setContentStream($repositoryId, $documentId, $overwriteFlag, $contentStream, $changeToken);
         }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+        catch (Exception $e) {
+            throw $e;
         }
 
-        return array(
-            'status_code' => 0,
-            'results' => $documentId
-        );
+        return $documentId;
     }
 
 }

@@ -121,8 +121,6 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                 return null;
             }
 
-            $response = $response['results'];
-
             $folderName = $response['properties']['name']['value'];
         }
         // NOTE parent changes to parents in later specification
@@ -140,7 +138,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                 $this->responseFeed = $feed;
                 return null;
             }
-            
+
             // we know that a folder will only have one parent, so we can assume element 0
             $folderId = $response['properties']['objectId']['value'];
             $folderName = $response['properties']['name']['value'];
@@ -151,7 +149,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
 
         if (!empty($this->params[1]) && (($this->params[1] == 'children') || ($this->params[1] == 'descendants')))
         {
-        print_r($this->params);exit;
+            print_r($this->params);exit;
             $NavigationService = new KTNavigationService(KT_cmis_atom_service_helper::getKt());
             $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $this->params[1]);
         }
@@ -232,56 +230,50 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         {
             // TODO detection and passing of optional parameters (policies, ACEs, etc...) as well as support for other object-types
             if ($cmisObjectProperties['cmis:objectTypeId'] == 'cmis:folder') {
-                $newObjectId = $ObjectService->createFolder($repositoryId, $properties, $folderId);
+                try {
+                    $newObjectId = $ObjectService->createFolder($repositoryId, $properties, $folderId);
+                }
+                catch (Exception $e) {
+                    $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($service, $this->getStatusCode($e), $e->getMessage());
+                    return null;
+                }
             }
             else {
                 // NOTE for the moment only creation in minor versioning state
-                $newObjectId = $ObjectService->createDocument($repositoryId, $properties, $folderId, $cmisContent, 'minor');
+                try {
+                    $newObjectId = $ObjectService->createDocument($repositoryId, $properties, $folderId, $cmisContent, 'minor');
+                }
+                catch (Exception $e) {
+                    $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($service, $this->getStatusCode($e), $e->getMessage());
+                    return null;
+                }
             }
 
-            if ($newObjectId['status_code'] == 0) {
-                $newObjectId = $newObjectId['results'];
-                // check if returned Object Id is a valid CMIS Object Id
-                CMISUtil::decodeObjectId($newObjectId, $typeId);
-                if ($typeId != 'unknown') {
-                    $success = true;
-                }
-                else {
-                    $error = 'Unknown Object Type';
-                }
+            // check if returned Object Id is a valid CMIS Object Id
+            CMISUtil::decodeObjectId($newObjectId, $typeId);
+            if ($typeId != 'unknown') {
+                $success = true;
             }
             else {
-                $error = $newObjectId['message'];
+                $error = 'Unknown Object Type';
             }
         }
         else if ($action == 'move')
         {
-            $response = $ObjectService->moveObject($repositoryId, $objectId, $folderId, $sourceFolderId);
-
-            if ($response['status_code'] == 0) {
-                $success = true;
+            try {
+                $newObjectId = $ObjectService->moveObject($repositoryId, $objectId, $folderId, $sourceFolderId);
             }
-            else {
-                $error = $response['message'];
+            catch (Exception $e) {
+                $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($service, $this->getStatusCode($e), $e->getMessage());
+                return null;
             }
 
-            // same object as before
-            $newObjectId = $objectId;
             // FIXME why set this?  it does not appear to get used
             $typeId = ucwords($cmisObjectProperties['cmis:objectTypeId']);
         }
 
-        if ($success)
-        {
-            $this->setStatus(($action == 'create') ? self::STATUS_CREATED : self::STATUS_UPDATED);
-            $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $newObjectId, 'POST');
-        }
-        else {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $error);
-        }
-
-        // Expose the responseFeed
-        $this->responseFeed = $feed;
+        $this->setStatus(($action == 'create') ? self::STATUS_CREATED : self::STATUS_UPDATED);
+        $this->responseFeed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $newObjectId, 'POST');
     }
 
     /**
@@ -302,21 +294,18 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
 
         // attempt delete - last parameter sets $deleteAllVersions true
-        $response = $ObjectService->deleteTree($repositoryId, $this->params[0], 'delete', true);
-
-        // error?
-        if ($response['status_code'] == 1) {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response['message']);
+        try {
+            $response = $ObjectService->deleteTree($repositoryId, $this->params[0], 'delete', true);
+        }
+        catch (Exception $e) {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
             // Expose the responseFeed
             $this->responseFeed = $feed;
             return null;
         }
-        else {
-            $response = $response['results'];
-        }
 
-        // list of failed objects?
-        if (is_array($response))
+        // non-empty list of failed objects?
+        if (count($response))
         {
             $this->setStatus(self::STATUS_SERVER_ERROR);
 
@@ -376,7 +365,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                 // with only the depth different
                 $depth = 2;
             }
-            
+
             try {
                 $entries = $NavigationService->getDescendants($repositoryId, $folderId, $depth);
             }
@@ -454,8 +443,7 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
                 $response = $NavigationService->getObjectParents($repositoryId, $objectId, false, false);
             }
             catch (Exception $e) {
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
-                $this->responseFeed = $feed;
+                $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
                 return null;
             }
 
@@ -492,12 +480,11 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
         $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
 
         // attempt delete
-        $response = $ObjectService->deleteObject($repositoryId, $this->params[0]);
-
-        if ($response['status_code'] == 1) {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response['message']);
-            // Expose the responseFeed
-            $this->responseFeed = $feed;
+        try {
+            $response = $ObjectService->deleteObject($repositoryId, $this->params[0]);
+        }
+        catch (Exception $e) {
+            $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
             return null;
         }
 

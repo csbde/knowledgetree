@@ -62,13 +62,14 @@ class KT_cmis_atom_service_helper {
         self::$repositoryId = $repositoryId;
 
         $serviceType = $service->getServiceType();
-        $response = $ObjectService->getProperties($repositoryId, $objectId, false, false);
-
-        if ($response['status_code'] == 1) {
-            return KT_cmis_atom_service_helper::getErrorFeed($service, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response['message']);
+        try {
+            $response = $ObjectService->getProperties($repositoryId, $objectId, false, false);
+        }
+        catch (Exception $e) {
+            return KT_cmis_atom_service_helper::getErrorFeed($service, $service->getStatusCode($e), $e->getMessage());
         }
 
-        $cmisEntry = $response['results'];
+        $cmisEntry = $response;
         $response = null;
 
         // POST/PWC responses only send back an entry, not a feed
@@ -709,8 +710,11 @@ class KT_cmis_atom_service_helper {
      */
     static public function getContentStream(&$service, &$ObjectService, $repositoryId)
     {
-        $response = $ObjectService->getProperties($repositoryId, $service->params[0], false, false);
-        if ($response['status_code'] == 1) {
+        // why do we check the properties first?  is it just to determine that the object in fact exists?
+        try {
+            $response = $ObjectService->getProperties($repositoryId, $service->params[0], false, false);
+        }
+        catch (Exception $e) {
             return null;
         }
 
@@ -730,14 +734,13 @@ class KT_cmis_atom_service_helper {
      */
     static public function downloadContentStream(&$service, &$ObjectService, $repositoryId)
     {
-        $response = $ObjectService->getProperties($repositoryId, $service->params[0], false, false);
-        if ($response['status_code'] == 1) {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($service, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response['message']);
+        try {
+            $response = $ObjectService->getProperties($repositoryId, $service->params[0], false, false);
+        }
+        catch (Exception $e) {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($service, $service->getStatusCode($e), $e->getMessage());
             $service->responseFeed = $feed;
             return null;
-        }
-        else {
-            $response = $response['results'];
         }
 
         // TODO also check If-Modified-Since?
