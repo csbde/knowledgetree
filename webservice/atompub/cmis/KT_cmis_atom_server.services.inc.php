@@ -2,7 +2,7 @@
 
 /**
  * Any feed must be a valid atom Feed document and conform to the guidelines below:
-1.	Updated will be the latest time the folder or its contents was updated. If unknown by the underlying repository, it should be the current time.
+1.	Updated will be the latest time the folder or its contents was updated. If unknown by the underlying repository, it MUST be the current time.
 2.	Author/name will be the CMIS property createdBy
 3.	Title will be the CMIS property name
 4.	App:edited will be the CMIS property lastModifiedDate
@@ -145,14 +145,12 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $folderId = $this->params[0];
         }
 
-        if (!empty($this->params[1]) && (($this->params[1] == 'children') || ($this->params[1] == 'descendants')))
-        {
+        $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
+        if (!empty($this->params[1]) && (($this->params[1] == 'children') || ($this->params[1] == 'descendants'))) {
             $NavigationService = new KTNavigationService(KT_cmis_atom_service_helper::getKt());
-            $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $this->params[1]);
+            $feed = $this->getFolderChildrenFeed($NavigationService, $ObjectService, $repositoryId, $folderId, $folderName, $this->params[1]);
         }
-        else
-        {
-            $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
+        else {
             $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $folderId);
         }
 
@@ -305,6 +303,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $this->setStatus(self::STATUS_SERVER_ERROR);
 
             $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
+            // FIXME? this should perhaps use a different status code?
             $feed->newField('title', 'Error: Failed to delete all objects in tree: ' . self::STATUS_SERVER_ERROR, $feed);
 
             foreach($response as $failed)
@@ -337,8 +336,17 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
      * @param string $feedType children or descendants
      * @return string CMIS AtomPub feed
      */
-    private function getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $feedType = 'children')
+    private function getFolderChildrenFeed(&$NavigationService, &$ObjectService, $repositoryId, $folderId, $folderName, $feedType = 'children')
     {
+        // fetch properties of parent folder for which children/descendants are being retrieved
+        try {
+            $rootProperties = $ObjectService->getProperties($repositoryId, $folderId);
+        }
+        catch (Exception $e) {
+            $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
+            return null;
+        }
+
         if ($feedType == 'children') {
             try {
                 $entries = $NavigationService->getChildren($repositoryId, $folderId, false, false);
@@ -373,30 +381,39 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
 
         $feed->newField('title', $folderName . ' ' . ucwords($feedType), $feed);
 
-        // TODO dynamic?
         $feedElement = $feed->newField('author');
-        $element = $feed->newField('name', 'System', $feedElement);
+        $element = $feed->newField('name', $rootProperties['properties']['createdBy']['value'], $feedElement);
         $feed->appendChild($feedElement);
 
         // id
         $feed->newField('id', 'urn:uuid:' . $folderId . '-' . $feedType, $feed);
 
-        // TODO get actual most recent update time, only use current if no other available
-        $feed->newField('updated', KT_cmis_atom_service_helper::formatDatestamp(), $feed);
+        $updated = null;
+        if ($rootProperties['properties']['lastModificationDate']['value'] != '0000-00-00 00:00:00') {
+            $updated = $rootProperties['properties']['lastModificationDate']['value'];
+        }
+        else if ($rootProperties['properties']['creationDate']['value'] != '0000-00-00 00:00:00') {
+            $updated = $rootProperties['properties']['creationDate']['value'];
+        }
+        
+        $feed->newField('updated', KT_cmis_atom_service_helper::formatDatestamp($updated), $feed);
 
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel', 'self'));
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/folder/' . $folderId . '/' . $feedType));
         $feed->appendChild($link);
 
+        // TODO this link must specify the workspace
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel', 'service'));
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'servicedocument'));
+        $link->appendChild($feed->newAttr('type', 'application/atomsvc+xml'));
         $feed->appendChild($link);
 
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel', 'via'));
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/folder/' . $folderId));
+        $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=entry'));
         $feed->appendChild($link);
 
         KT_cmis_atom_service_helper::createObjectFeed($feed, $entries, $folderName);
@@ -553,10 +570,10 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
         $content = KT_cmis_atom_service_helper::getCmisContent($this->rawContent);
         // NOTE not sure about the text type, will need testing, most content will be base64
         $cmisContent = (isset($content['cmisra:base64'])
-                            ? $content['cmisra:base64']
-                            : ((isset($content['cmisra:text']))
-                                    ? $content['cmisra:text']
-                                    : null));
+        ? $content['cmisra:base64']
+        : ((isset($content['cmisra:text']))
+        ? $content['cmisra:text']
+        : null));
 
         // if we haven't found it now, the hack begins - retrieve the EXISTING content and submit this as the contentStream
         // this is needed because KnowledgeTree will not accept a checkin without a content stream but CMISSpaces (and possibly
@@ -618,14 +635,14 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
 
         $feed->newField('title', 'Checked out Documents', $feed);
 
-        // TODO dynamic?
+        // Since checked out documents do not necessarily share the same creator, we use a default value
         $feedElement = $feed->newField('author');
-        $element = $feed->newField('name', 'admin', $feedElement);
+        $element = $feed->newField('name', 'Administrator', $feedElement);
         $feed->appendChild($feedElement);
 
         $feed->appendChild($feed->newElement('id', 'urn:uuid:checkedout'));
 
-        // TODO get actual most recent update time, only use current if no other available
+        // Since checked out documents are not necessarily from a single folder, we don't know the time last updated, so we use current
         $feed->appendChild($feed->newElement('updated', KT_cmis_atom_service_helper::formatDatestamp()));
 
         $link = $feed->newElement('link');
@@ -671,8 +688,8 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
             // in the helper code, but I don't feel that throwing an exception is necessary or always wanted;
             // alternative is to send the name of the Exception but not an instance, and do an is_a check on the other side,
             // but since it will only be needed to this and similar calls, it seems wasteful to do that for every other case
-            $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode(new InvalidArgumentException()), 
-                                                                            'No object was specified for checkout');
+            $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode(new InvalidArgumentException()),
+            'No object was specified for checkout');
             return null;
         }
 
@@ -683,7 +700,7 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
             $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
             return null;
         }
-        
+
         $this->setStatus(self::STATUS_CREATED);
         $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['cmis:objectId'], 'POST');
 
@@ -776,6 +793,7 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service {
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'type/' . $this->params[0] . '/' . $this->params[1] . '?pageNo=1&amp;pageSize=0'));
         $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
 
+        // Since types do not have associated dates, we don't know the time last updated, so we use current
         $feed->newField('updated', KT_cmis_atom_service_helper::formatDatestamp(), $feed);
         $feed->newField('cmis:hasMoreItems', 'false', $feed);
 

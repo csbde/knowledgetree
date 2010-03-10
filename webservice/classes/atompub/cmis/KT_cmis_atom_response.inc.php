@@ -19,6 +19,21 @@ class KT_cmis_atom_response extends KT_atom_response {
     {
         return $this->workspace;
     }
+    
+    protected function constructFeedHeader(){
+		$feed = $this->newElement('feed');
+		$feed->appendChild($this->newAttr('xmlns','http://www.w3.org/2005/Atom'));
+		$this->feed = &$feed;
+        $this->DOM->appendChild($this->feed);
+	}
+    
+    public function &newEntry()
+    {
+		$entry = $this->newElement('atom:entry');
+		$this->feed->appendChild($entry);
+		
+		return $entry;
+	}
 
     // TODO try to get rid of this function
     function appendChild($element)

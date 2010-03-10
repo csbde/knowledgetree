@@ -22,14 +22,14 @@ class KT_cmis_atom_server extends KT_atom_server {
             header('Expires:');
             header('Pragma:');
             
-            // prevent output of standard text/xml header
+            // prevent output of regular headers for AtomPub responses
             $this->headersSet = true;
             
             return false;
         }
         else if ($doc->notModified())
         {
-            // prevent output of standard text/xml header
+            // prevent output of regular headers for AtomPub responses
             $this->headersSet = true;
             $this->setNoContent(true);
             
@@ -113,6 +113,15 @@ class KT_cmis_atom_server extends KT_atom_server {
                     $col = $service->newCollection($collectionStr, $instance['title'], $instance['collectionType'], $instance['accept'], $ws);
                 }
 			}
+			
+			// TODO add other links once their services are supported
+			// links
+			$link = $service->newElement('atom:link');
+			$link->appendChild($service->newAttr('title', 'root descendants'));
+			$link->appendChild($service->newAttr('type', 'application/cmistree+xml'));
+			$link->appendChild($service->newAttr('rel', 'http://docs.oasis-open.org/ns/cmis/link/200908/rootdescendants'));
+			$link->appendChild($service->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/folder/Root%20Folder/descendants'));
+			$ws->appendChild($link);
 			
 			// uri templates - getObjectById, getObjectByPath, getTypeById
 			$ws->appendChild($service->uriTemplate('objectbyid', $workspace));
