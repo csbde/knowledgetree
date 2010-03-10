@@ -474,9 +474,18 @@ class KT_cmis_atom_service_helper {
 
     static public function getErrorFeed(&$service, $status, $message)
     {
-        // this seems to cause problems as it sets an http header, and if that header is
-        // "404 Not Found" we get html output instead of atompub
-//        $service->setStatus($status);
+        // TODO determine whether the client needs to see the AtomPub response or if a 404 header is enough.
+        //      reason: when this status header is set and the status is 404 Not Found then the AtomPub response does not
+        //      appear to be seen by browser based clients (I am not sure of non-browser clients)
+        // NOTE just added a check and only send back the header containing 404, no text, and this works, we get a 404 header
+        //      plus a readable AtomPub response
+        if (!strstr($status, '404')) {
+            $service->setStatus($status);
+        }
+        else {
+            $service->setStatus('404');
+        }
+        
         $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
 
         $feed->newField('title', 'Error: ' . $status, $feed);
@@ -507,7 +516,7 @@ class KT_cmis_atom_service_helper {
         $numObjects = $numQ;
         $start = 0;
         $type = CMIS_FOLDER;
-        
+
         while($start < $numObjects)
         {
             $name = $path[$numQ - $numObjects + $start];
@@ -529,7 +538,7 @@ class KT_cmis_atom_service_helper {
                 $objectId = $object->get_folderid();
                 $lastFolderId = $objectId;
             }
-            
+
             ++$start;
         }
 
@@ -716,10 +725,6 @@ class KT_cmis_atom_service_helper {
         }
 
         $contentStream = $ObjectService->getContentStream($repositoryId, $service->params[0]);
-
-        // hack for removing one level of access
-        $contentStream = $contentStream['results'];
-
         return $contentStream;
     }
     /**
@@ -754,9 +759,6 @@ class KT_cmis_atom_service_helper {
         }
 
         $contentStream = $ObjectService->getContentStream($repositoryId, $service->params[0]);
-
-        // hack for removing one level of access
-        $contentStream = $contentStream['results'];
 
         // headers specific to output
         $service->setEtag($eTag);

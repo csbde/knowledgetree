@@ -147,7 +147,6 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
 
         if (!empty($this->params[1]) && (($this->params[1] == 'children') || ($this->params[1] == 'descendants')))
         {
-            print_r($this->params);exit;
             $NavigationService = new KTNavigationService(KT_cmis_atom_service_helper::getKt());
             $feed = $this->getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $this->params[1]);
         }
@@ -340,7 +339,6 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
      */
     private function getFolderChildrenFeed($NavigationService, $repositoryId, $folderId, $folderName, $feedType = 'children')
     {
-        print_r($this->params);exit;
         if ($feedType == 'children') {
             try {
                 $entries = $NavigationService->getChildren($repositoryId, $folderId, false, false);
@@ -555,10 +553,10 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
         $content = KT_cmis_atom_service_helper::getCmisContent($this->rawContent);
         // NOTE not sure about the text type, will need testing, most content will be base64
         $cmisContent = (isset($content['cmisra:base64'])
-        ? $content['cmisra:base64']
-        : ((isset($content['cmisra:text']))
-        ? $content['cmisra:text']
-        : null));
+                            ? $content['cmisra:base64']
+                            : ((isset($content['cmisra:text']))
+                                    ? $content['cmisra:text']
+                                    : null));
 
         // if we haven't found it now, the hack begins - retrieve the EXISTING content and submit this as the contentStream
         // this is needed because KnowledgeTree will not accept a checkin without a content stream but CMISSpaces (and possibly
@@ -576,12 +574,11 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
         //      we assume minor version updates only
         $major = false;
         $checkinComment = '';
-        $response = $VersioningService->checkIn($repositoryId, $this->params[0], $major, $cmisObjectProperties, $cmisContent, $checkinComment);
-
-        if ($response['status_code'] == 1) {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response['message']);
-            // Expose the responseFeed
-            $this->responseFeed = $feed;
+        try {
+            $response = $VersioningService->checkIn($repositoryId, $this->params[0], $major, $cmisObjectProperties, $cmisContent, $checkinComment);
+        }
+        catch (Exception $e) {
+            $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
             return null;
         }
 
@@ -670,9 +667,12 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         // check for existing object id as property of submitted object data
         if (empty($cmisObjectProperties['cmis:objectId']))
         {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
-            // Expose the responseFeed
-            $this->responseFeed = $feed;
+            // not sure this is the best way to deal with this (new InvalidArgumentException) rather than actually throwing an exception
+            // in the helper code, but I don't feel that throwing an exception is necessary or always wanted;
+            // alternative is to send the name of the Exception but not an instance, and do an is_a check on the other side,
+            // but since it will only be needed to this and similar calls, it seems wasteful to do that for every other case
+            $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode(new InvalidArgumentException()), 
+                                                                            'No object was specified for checkout');
             return null;
         }
 

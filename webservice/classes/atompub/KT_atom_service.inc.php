@@ -151,7 +151,7 @@ class KT_atom_service{
 
 	// TODO why is this setting an http header for an atompub response?  this causes problems with a "404 Not Found" status message
 	public function setStatus($status=NULL){
-		header("HTTP/1.1 ".$status);
+		header("HTTP/1.1 ".$status."");
 	}
 
 	public function setEtag($etagValue=NULL){
