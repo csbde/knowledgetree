@@ -88,23 +88,16 @@ class KTVersioningService extends KTCMISBase {
      * @return array results
      */
     // TODO set up delivery of content stream? or is that up to the CMIS client?
-    public function checkOut($repositoryId, $objectId)
+    public function checkOut($repositoryId, &$objectId)
     {
         try {
             $result = $this->VersioningService->checkOut($repositoryId, $objectId);
         }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+        catch (Exception $e) {
+            throw $e;
         }
 
-        return array(
-            'status_code' => 0,
-            'results' => (!empty($result) ? $result : 'Document Checked Out')
-        );
+        return $result;
     }
     
     /**
@@ -113,28 +106,14 @@ class KTVersioningService extends KTCMISBase {
      * @param string $repositoryId
      * @param string $objectId
      */
-    // TODO exceptions:
-    //      •	ConstraintViolationException: The Repository SHALL throw this exception if ANY of the following conditions are met:
-    //      o	The Document’s Object-Type definition’s versionable attribute is FALSE. 
-    //      •	updateConflictException
-    //      •	versioningException
     public function cancelCheckOut($repositoryId, $objectId)
     {
         try {
             $result = $this->VersioningService->cancelCheckOut($repositoryId, $objectId);
         }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+        catch (Exception $e) {
+            throw $e;
         }
-
-        return array(
-            'status_code' => 0,
-            'results' => (!empty($result) ? $result : 'Document Checkout Cancelled')
-        );
     }
     
     /**
@@ -155,21 +134,14 @@ class KTVersioningService extends KTCMISBase {
     						$checkinComment = '', $policies = array(), $addACEs = array(), $removeACEs = array())
     {
         try {
-            $result = $this->VersioningService->checkIn($repositoryId, $objectId, $major, $properties, $contentStream, 
-            											$checkinComment, $policies, $addACEs, $removeACEs);
+            $objectId = $this->VersioningService->checkIn($repositoryId, $objectId, $major, $properties, $contentStream, 
+            											  $checkinComment, $policies, $addACEs, $removeACEs);
         }
-        catch (Exception $e)
-        {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+        catch (Exception $e) {
+            throw $e;
         }
 
-        return array(
-            'status_code' => 0,
-            'results' => (!empty($result) ? $result : 'Document Checked In Successfully')
-        );
+        return $objectId;
     }
 
 }

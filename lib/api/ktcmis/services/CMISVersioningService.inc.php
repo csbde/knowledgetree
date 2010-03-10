@@ -99,8 +99,6 @@ class CMISVersioningService {
      * @param string $repositoryId
      * @param string $objectId
      */
-    // TODO exceptions:
-    //      •	versioningException - The repository MAY throw this exception if the object is a non-current Document Version.
     public function cancelCheckOut($repositoryId, $objectId)
     {
         $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
@@ -158,7 +156,6 @@ class CMISVersioningService {
     public function checkIn($repositoryId, $objectId, $major = true, $properties = array(), $contentStream = null,
                             $checkinComment = '', $policies = array(), $addACEs = array(), $removeACEs = array())
     {
-        
         $objectId = CMISUtil::decodeObjectId($objectId, $typeId);
         
         // throw updateConflictException if the operation is attempting to update an object that is no longer current (as determined by the repository).

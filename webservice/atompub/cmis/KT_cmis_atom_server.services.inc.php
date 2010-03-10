@@ -530,12 +530,11 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         $VersioningService = new KTVersioningService(KT_cmis_atom_service_helper::getKt());
 
-        $response = $VersioningService->cancelCheckout($repositoryId, $this->params[0]);
-
-        if ($response['status_code'] == 1) {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, $response['message']);
-            // Expose the responseFeed
-            $this->responseFeed = $feed;
+        try {
+            $response = $VersioningService->cancelCheckout($repositoryId, $this->params[0]);
+        }
+        catch (Exception $e) {
+            $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
             return null;
         }
 
@@ -677,15 +676,14 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
             return null;
         }
 
-        $response = $VersioningService->checkOut($repositoryId, $cmisObjectProperties['cmis:objectId']);
-
-        if ($response['status_code'] == 1) {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, self::STATUS_SERVER_ERROR, 'No object was specified for checkout');
-            // Expose the responseFeed
-            $this->responseFeed = $feed;
+        try {
+            $response = $VersioningService->checkOut($repositoryId, $cmisObjectProperties['cmis:objectId']);
+        }
+        catch (Exception $e) {
+            $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
             return null;
         }
-
+        
         $this->setStatus(self::STATUS_CREATED);
         $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['cmis:objectId'], 'POST');
 
