@@ -1,17 +1,20 @@
 <?php
 class KT_atom_service{
-	const STATUS_OK					 = '200 OK';
-	const STATUS_UPDATED			 = '200 Updated';
-	const STATUS_CREATED			 = '201 Created';
-	const STATUS_NO_CONTENT			 = '204 No Content';
-	const STATUS_NOT_ALLOWED		 = '204 Not Allowed';
-	const STATUS_NOT_MODIFIED		 = '304 Not Modified';			// For use with ETag & If-None-Match headers.
-	const STATUS_BAD_REQUEST         = '400 Bad Request';           // Client issued a wrongly constructed request
-	const STATUS_NOT_AUTHENTICATED	 = '401 Not Authenticated';
-	const STATUS_PERMISSION_DENIED   = '403 Permission Denied';           // Client issued a wrongly constructed request
-	const STATUS_NOT_FOUND			 = '404 Not Found';
-	const STATUS_PRECONDITION_FAILED = '412 Precondition Failed';   // Could not update document because another a newer version exist on the server than the one you are trying to update
-	const STATUS_SERVER_ERROR        = '500 Internal Server Error';	// Server encountered an error processing the request
+	const STATUS_OK                     = '200 OK';
+	const STATUS_UPDATED                = '200 Updated';
+	const STATUS_CREATED                = '201 Created';
+	const STATUS_NO_CONTENT             = '204 No Content';
+	const STATUS_NOT_MODIFIED           = '304 Not Modified';			// For use with ETag & If-None-Match headers.
+	const STATUS_BAD_REQUEST            = '400 Bad Request';           // Client issued a wrongly constructed request
+	const STATUS_NOT_AUTHENTICATED      = '401 Not Authenticated';
+	const STATUS_PERMISSION_DENIED      = '403 Permission Denied';     // Client issued a wrongly constructed request
+	const STATUS_NOT_FOUND              = '404 Not Found';
+	const STATUS_NOT_ALLOWED            = '405 Not Allowed';
+	const STATUS_CONFLICT               = '409 Conflict';
+	const STATUS_PRECONDITION_FAILED    = '412 Precondition Failed';   // Could not update document because another a newer version exist on the server than the one you are trying to update
+	const STATUS_UNSUPPORTED_MEDIA_TYPE = '415 Unsupported Media Type';
+	const STATUS_UNPROCESSABLE_ENTITY   = '422 Unprocessable Entity';
+	const STATUS_SERVER_ERROR           = '500 Internal Server Error';	// Server encountered an error processing the request
 
 	/*
 		Array(

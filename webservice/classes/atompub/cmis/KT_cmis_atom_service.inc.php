@@ -13,19 +13,19 @@ class KT_cmis_atom_service extends KT_atom_service {
     static protected $statusCodeMapping = array('InvalidArgumentException' => self::STATUS_BAD_REQUEST,
                                                 'ObjectNotFoundException' => self::STATUS_NOT_FOUND,
                                                 'PermissionDeniedException' => self::STATUS_PERMISSION_DENIED,
-                                                'NotSupportedException' => 405,
+                                                'NotSupportedException' => self::STATUS_NOT_ALLOWED,
                                                 'RuntimeException' => self::STATUS_SERVER_ERROR,
-                                                'ConstraintViolationException' => 409,
+                                                'ConstraintViolationException' => self::STATUS_CONFLICT,
                                                 'FilterNotValidException' => self::STATUS_BAD_REQUEST,
                                                 'StreamNotSupportedException' => self::STATUS_PERMISSION_DENIED,
                                                 'StorageException' => self::STATUS_SERVER_ERROR,
-                                                'ContentAlreadyExistsException' => 409,
-                                                'VersioningException' => 409,
-                                                'UpdateConflictException' => 409,
-                                                'NameConstraintViolationException' => 409,
+                                                'ContentAlreadyExistsException' => self::STATUS_CONFLICT,
+                                                'VersioningException' => self::STATUS_CONFLICT,
+                                                'UpdateConflictException' => self::STATUS_CONFLICT,
+                                                'NameConstraintViolationException' => self::STATUS_CONFLICT,
                                                 // additional notable exceptions
-                                                'TypeNotSupportedException' => 415,
-                                                'UnprocessableEntityException' => 422);
+                                                'TypeNotSupportedException' => self::STATUS_UNSUPPORTED_MEDIA_TYPE,
+                                                'UnprocessableEntityException' => self::STATUS_UNPROCESSABLE_ENTITY);
     
     public function __construct($method, $params, $content)
     {

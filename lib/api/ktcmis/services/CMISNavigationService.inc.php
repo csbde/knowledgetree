@@ -99,14 +99,16 @@ class CMISNavigationService {
         $folderId = CMISUtil::decodeObjectId($folderId, $type);
 
         if ($type != 'cmis:folder') {
-            throw new invalidArgumentException('The specified object is not a folder');
+            throw new InvalidArgumentException('The specified object is not a folder');
         }
 
         $folder = $this->ktapi->get_folder_by_id($folderId);
+        if (PEAR::isError($folder)) {
+            throw new ObjectNotFoundException('The requested folder does not exist or cannot be accessed');
+        }
         $children = $folder->get_listing();
 
         $children = CMISUtil::createChildObjectHierarchy($children, $repository->getRepositoryURI, $this->ktapi);
-
         return $children;
     }
 
@@ -160,13 +162,12 @@ class CMISNavigationService {
 
         $folder = $this->ktapi->get_folder_by_id($folderId);
         if (PEAR::isError($folder)) {
-            throw new InvalidArgumentException($folder->getMessage());
+            throw new ObjectNotFoundException($folder->getMessage());
         }
         $descendants = $folder->get_listing($depth);
 
         // parse ktapi descendants result into a list of CMIS objects
         $descendants = CMISUtil::createChildObjectHierarchy($descendants, $repository->getRepositoryURI, $this->ktapi);
-
         return $descendants;
     }
 
@@ -197,12 +198,10 @@ class CMISNavigationService {
 
         $ktapiFolder = $this->ktapi->get_folder_by_id($folderId);
         if (PEAR::isError($ktapiFolder)) {
-            throw new RuntimeException($ktapiFolder->getMessage());
+            throw new ObjectNotFoundException($ktapiFolder->getMessage());
         }
 
-        $parentId = $ktapiFolder->get_parent_folder_id();
-        $parent = new CMISFolderObject($parentId, $this->ktapi);
-
+        $parent = new CMISFolderObject($ktapiFolder->get_parent_folder_id(), $this->ktapi);
         return $parent;
     }
 
@@ -303,8 +302,13 @@ class CMISNavigationService {
         $checkedout = array();
 
         $results = $this->ktapi->get_checkedout_docs(false);
-        foreach($results as $document)
-        {
+
+        // not actually sure that a PEAR error ever could be returned, revisit when looking at error handling in KTAPI code
+        if (PEAR::isError($results)) {
+            throw new RuntimeException('Failed getting list of checked out documents');
+        }
+
+        foreach($results as $document) {
             $CMISDocument = new CMISDocumentObject($document->getId(), $this->ktapi);
             // set version label property - possibly belongs in document class
             $CMISDocument->setProperty('versionLabel', $CMISDocument->getProperty('versionSeriesCheckedOutId'));

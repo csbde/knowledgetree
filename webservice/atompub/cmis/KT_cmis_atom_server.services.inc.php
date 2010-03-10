@@ -132,17 +132,15 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         {
             $folderId = $this->params[0];
             $NavigationService = new KTNavigationService(KT_cmis_atom_service_helper::getKt());
-            $response = $NavigationService->getFolderParent($repositoryId, $folderId, false, false, false);
-
-            if ($response['status_code'] == 1) {
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response['message']);
+            try {
+                $response = $NavigationService->getFolderParent($repositoryId, $folderId, false, false, false);
+            }
+            catch (Exception $e) {
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
                 $this->responseFeed = $feed;
                 return null;
             }
-            else {
-                $response = $response['results'];
-            }
-
+            
             // we know that a folder will only have one parent, so we can assume element 0
             $folderId = $response['properties']['objectId']['value'];
             $folderName = $response['properties']['name']['value'];
@@ -359,7 +357,14 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
     {
         print_r($this->params);exit;
         if ($feedType == 'children') {
-            $entries = $NavigationService->getChildren($repositoryId, $folderId, false, false);
+            try {
+                $entries = $NavigationService->getChildren($repositoryId, $folderId, false, false);
+            }
+            catch (Exception $e) {
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
+                $this->responseFeed = $feed;
+                return null;
+            }
         }
         else if ($feedType == 'descendants') {
             // TODO how will client request depth?  for now we assume as part of the url
@@ -376,7 +381,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                 $entries = $NavigationService->getDescendants($repositoryId, $folderId, $depth);
             }
             catch (Exception $e) {
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $response['message']);
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
                 $this->responseFeed = $feed;
                 return null;
             }
@@ -445,15 +450,13 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
         if ($this->params[1] == 'parent')
         {
             $NavigationService = new KTNavigationService(KT_cmis_atom_service_helper::getKt());
-            $response = $NavigationService->getObjectParents($repositoryId, $objectId, false, false);
-
-            if ($response['status_code'] == 1) {
-                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, KT_cmis_atom_service::STATUS_SERVER_ERROR, $response['message']);
+            try {
+                $response = $NavigationService->getObjectParents($repositoryId, $objectId, false, false);
+            }
+            catch (Exception $e) {
+                $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
                 $this->responseFeed = $feed;
                 return null;
-            }
-            else {
-                $response = $response['results'];
             }
 
             // for now a document will only have one parent as KnowledgeTree does not support multi-filing
@@ -623,10 +626,15 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         $NavigationService = new KTNavigationService(KT_cmis_atom_service_helper::getKt());
 
-        $checkedout = $NavigationService->getCheckedOutDocs($repositoryId);
-
-        // hack, for removing one level of access
-        $checkedout = $checkedout['results'];
+        // not actually sure that an exception could occur, revisit when looking at error handling in KTAPI code
+        try {
+            $checkedout = $NavigationService->getCheckedOutDocs($repositoryId);
+        }
+        catch (Exception $e) {
+            $feed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
+            $this->responseFeed = $feed;
+            return null;
+        }
 
         //Create a new response feed
         $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
