@@ -202,17 +202,6 @@ class InetBulkUploadFolderAction extends KTFolderAction {
                 'simple_select' => false,
 		));
 
-		//Adding the quick "add" button for when no meta data needs to be added.
-		//FIXME: This widget should only display if there are any "required" fields for the given document type
-		//       Default/general document field type must also be taken into consideration
-
-		$widgets[] = $oWF->get('ktcore.widgets.button',array(
-                'value' => _kt('Add'),
-				'id' => 'quick_add',
-                'description' => _kt('If you do not need to modify any the metadata for this document (see below), then you can simply click "Add" here to finish the process and add the document.'),
-                'name' => 'btn_quick_submit',
-		));
-
 		$oFReg =& KTFieldsetRegistry::getSingleton();
 
 		$activesets = KTFieldset::getGenericFieldsets();
