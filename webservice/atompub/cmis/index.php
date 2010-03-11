@@ -79,6 +79,9 @@ $APP = new KT_cmis_atom_server();
 
 $queryArray = split('/', trim($_SERVER['QUERY_STRING'], '/'));
 $workspace = strtolower(trim($queryArray[0]));
+if (empty($workspace)) {
+    $workspace = 'servicedocument';
+}
 if ($workspace == 'servicedocument')
 {
     // CMIS service document setup

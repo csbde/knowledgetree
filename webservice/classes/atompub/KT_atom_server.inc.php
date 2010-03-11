@@ -33,6 +33,10 @@ class KT_atom_server {
 		$rawRequest=@file_get_contents('php://input');
 
         $workspace=strtolower(trim($queryArray[0]));
+        if (empty($workspace)) {
+            $workspace = 'servicedocument';
+        }
+        
 		$serviceName=strtolower(trim($queryArray[1]));
 		$requestParams=array_slice($queryArray,2);
 		$this->queryArray=$queryArray;

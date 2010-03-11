@@ -66,9 +66,11 @@ class KT_cmis_atom_service extends KT_atom_service {
         return $this->serviceType;
     }
     
-    public function setHeader($header = null, $value = null)
+    public function setHeader($header, $value = null)
     {
-		if ($header) header($header . ': ' . $value);
+		if (!empty($header)) {
+		    header($header . ': ' . $value);
+		}
 	}
 	
 	public function getStatusCode($exception)

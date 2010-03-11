@@ -54,6 +54,7 @@ class KT_cmis_atom_service_helper {
      * @return string CMIS AtomPub feed
      */
     // TODO enable this to work on an existing set of object properties if submitted
+    // TODO this might be better as an entry rather than a feed - see Alfresco example
     static public function getObjectFeed(&$service, $ObjectService, $repositoryId, $objectId, $method = 'GET')
     {
         self::$repositoryId = $repositoryId;
@@ -173,9 +174,8 @@ class KT_cmis_atom_service_helper {
     {
         $type = $cmisEntry['properties']['objectTypeId']['value'];
 
-        // TODO dynamic actual creator name
         $responseElement = $feed->newField('author');
-        $element = $feed->newField('name', 'admin', $responseElement);
+        $element = $feed->newField('name', $cmisEntry['properties']['createdBy']['value'], $responseElement);
         $entry->appendChild($responseElement);
 
         $typeString = str_replace('cmis:', '', $type);
@@ -206,6 +206,7 @@ class KT_cmis_atom_service_helper {
         $link->appendChild($feed->newAttr('rel', 'edit'));
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString
         . '/' . $cmisEntry['properties']['objectId']['value']));
+        $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=entry'));
         $entry->appendChild($link);
 
         if ((strtolower($cmisEntry['properties']['objectTypeId']['value']) == 'cmis:document')
@@ -213,14 +214,6 @@ class KT_cmis_atom_service_helper {
         {
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel', 'edit-media'));
-            $link->appendChild($feed->newAttr('type', $cmisEntry['properties']['contentStreamMimeType']['value']));
-            $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString
-            . '/' . $cmisEntry['properties']['objectId']['value']
-            . '/' . $cmisEntry['properties']['contentStreamFilename']['value']));
-            $entry->appendChild($link);
-
-            $link = $feed->newElement('link');
-            $link->appendChild($feed->newAttr('rel', 'enclosure'));
             $link->appendChild($feed->newAttr('type', $cmisEntry['properties']['contentStreamMimeType']['value']));
             $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/' . $typeString
             . '/' . $cmisEntry['properties']['objectId']['value']
@@ -255,6 +248,7 @@ class KT_cmis_atom_service_helper {
             $link->appendChild($feed->newAttr('rel', 'up'));
             $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/folder/'
             . $cmisEntry['properties']['parentId']['value']));
+            $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=entry'));
             $entry->appendChild($link);
         }
 
@@ -267,13 +261,16 @@ class KT_cmis_atom_service_helper {
             . $typeString
             . '/' . $cmisEntry['properties']['objectId']['value']
             . '/children'));
+            $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
             $entry->appendChild($link);
+
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel', 'down'));
             $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/'
             . $typeString
             . '/' . $cmisEntry['properties']['objectId']['value']
             . '/descendants'));
+            $link->appendChild($feed->newAttr('type', 'application/cmistree+xml'));
             $entry->appendChild($link);
 
             // TODO add folder tree link when we have folder tree implemented
@@ -323,18 +320,33 @@ class KT_cmis_atom_service_helper {
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel', 'describedby'));
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/type/' . $type));
+        $link->appendChild($feed->newAttr('type', 'application/atomsvc+xml'));
         $entry->appendChild($link);
 
+        // TODO this link must specify the workspace
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel', 'service'));
         $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . '/servicedocument'));
+        $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=entry'));
         $entry->appendChild($link);
 
-        // TODO proper date
-        $entry->appendChild($feed->newField('published', self::formatDatestamp()));
+        $updated = null;
+        $published = null;
+        if ($cmisEntry['properties']['lastModificationDate']['value'] != '0000-00-00 00:00:00') {
+            $updated = $cmisEntry['properties']['lastModificationDate']['value'];
+        }
+        else if ($cmisEntry['properties']['creationDate']['value'] != '0000-00-00 00:00:00') {
+            $updated = $cmisEntry['properties']['creationDate']['value'];
+        }
+        
+        if ($cmisEntry['properties']['creationDate']['value'] != '0000-00-00 00:00:00') {
+            $published = $cmisEntry['properties']['creationDate']['value'];
+        }
+        
+        $entry->appendChild($feed->newField('published', self::formatDatestamp($published)));
         $entry->appendChild($feed->newElement('summary', $cmisEntry['properties']['name']['value']));
         $entry->appendChild($feed->newElement('title', $cmisEntry['properties']['name']['value']));
-        $entry->appendChild($feed->newField('updated', self::formatDatestamp()));
+        $entry->appendChild($feed->newField('updated', self::formatDatestamp($updated)));
 
         // main CMIS entry
         $objectElement = $feed->newElement('cmisra:object');
@@ -343,7 +355,14 @@ class KT_cmis_atom_service_helper {
 
         // TODO check determination of when to add app:edited tag
         //        if ($method == 'POST') {
-        $entry->appendChild($feed->newElement('app:edited', self::formatDatestamp()));
+        $edited = null;
+        if ($cmisEntry['properties']['lastModificationDate']['value'] != '0000-00-00 00:00:00') {
+            $edited = $cmisEntry['properties']['lastModificationDate']['value'];
+        }
+        else if ($cmisEntry['properties']['creationDate']['value'] != '0000-00-00 00:00:00') {
+            $edited = $cmisEntry['properties']['creationDate']['value'];
+        }
+        $entry->appendChild($feed->newElement('app:edited', self::formatDatestamp($edited)));
         //        }
 
         // TODO pathSegment entry
@@ -424,17 +443,20 @@ class KT_cmis_atom_service_helper {
         // TODO set page number correctly - to be done when we support paging the the API
 
         // author
-        // TODO generate this dynamically (based on???)\
+        // since types are/should be always created by system admin, we use a default value - this may be set later but for now is unset
+        // for a type which is not an instantiated object
         $feedElement = $feed->newField('author');
-        $element = $feed->newField('name', 'admin', $feedElement);
+        $element = $feed->newField('name', 'Administrator', $feedElement);
         $feed->appendChild($feedElement);
 
         foreach($types as $type)
         {
             $entry = $feed->newEntry();
 
+            // since types are/should be always created by system admin, we use a default value - this may be set later but for now is unset
+            // for a type which is not an instantiated object
             $feedElement = $feed->newField('author');
-            $element = $feed->newField('name', 'admin', $feedElement);
+            $element = $feed->newField('name', 'Administrator', $feedElement);
             $entry->appendChild($feedElement);
             $feedElement = $feed->newField('content', 'Type definition for ' . $type['baseId']);
             $entry->appendChild($feedElement);
@@ -449,17 +471,20 @@ class KT_cmis_atom_service_helper {
             // TODO type link MUST point to base type
             //      KnowledgeTree currently only supports base types so this is not important
             //      at the present time as it will always point at the base type.
+
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel','type'));
             $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/type/' . strtolower($type['baseId'])));
             $entry->appendChild($link);
+
             $link = $feed->newElement('link');
             $link->appendChild($feed->newAttr('rel','repository'));
             $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . '/servicedocument'));
             $entry->appendChild($link);
 
-            $entry->appendChild($feed->newElement('summary', 'Summary for ' . $type['baseId'] . ' type'));
-            $entry->appendChild($feed->newElement('title', $type['baseId']));
+            $entry->appendChild($feed->newElement('summary', 'Summary for ' . $type['displayName'] . ' type'));
+            $entry->appendChild($feed->newElement('title', $type['displayName']));
+            // Since types do not have associated dates, we don't know the time last updated, so we use current
             $entry->appendChild($feed->newElement('updated', self::formatDatestamp()));
 
             $objectElement = $feed->newElement('cmisra:type');
@@ -479,13 +504,14 @@ class KT_cmis_atom_service_helper {
         //      appear to be seen by browser based clients (I am not sure of non-browser clients)
         // NOTE just added a check and only send back the header containing 404, no text, and this works, we get a 404 header
         //      plus a readable AtomPub response
+        // THEORY is that Apache is generating the html response when given a '404 Not Found' header, overriding the desired output
         if (!strstr($status, '404')) {
             $service->setStatus($status);
         }
         else {
             $service->setStatus('404');
         }
-        
+
         $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
 
         $feed->newField('title', 'Error: ' . $status, $feed);
@@ -697,13 +723,21 @@ class KT_cmis_atom_service_helper {
                 }
             }
         }
+
         return self::$ktapi;
     }
 
     // TODO adjust for time zones?
     static public function formatDatestamp($time = null)
     {
-        if (is_null($time)) $time = time();
+        if (is_null($time)) {
+            $time = time();
+        }
+        else {
+            // assumes format is 'yyyy-mm-dd hh:mm:ss' or some other string representation, and not a unix timestamp
+            $time = strtotime($time);
+        }
+
         return date('Y-m-d H:i:s', $time);
     }
 
@@ -768,6 +802,7 @@ class KT_cmis_atom_service_helper {
             $service->setHeader('Content-type', $response['properties']['contentStreamMimeType']['value'] . ';charset=utf-8');
         }
         else {
+            // FIXME what should the default type be?  application/unknown?
             $service->setHeader('Content-type', 'text/plain;charset=utf-8');
         }
 
