@@ -215,13 +215,18 @@ class thumbnailGenerator extends BaseProcessor
         // do generation
         $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
         $pageNumber = $type == 'pdf' ? "[0]" : $mimeType == 'image/tiff' ? "[0]":""; // If its a pdf or tiff, just convert first page
+        
         // windows path may contain spaces
+        /*
         if (stristr(PHP_OS,'WIN')) {
 			$cmd = "\"{$pathConvert}\" \"{$srcFile}" . $pageNumber . "\" -resize 200x200 \"$thumbnailfile\"";
         }
 		else {
 			$cmd = "{$pathConvert} {$srcFile}" . $pageNumber . " -resize 200x200 $thumbnailfile";
 		}
+		*/
+        
+        $cmd = "'{$pathConvert}' '{$srcFile}" . $pageNumber . "' -thumbnail 200 -limit memory 32MiB -limit map 64MiB '$thumbnailfile'";
 		
 		$default->log->debug($cmd);
 
