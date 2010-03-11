@@ -541,14 +541,16 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
     public function DELETE_action()
     {
         // call the cancel checkout function
-
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         $VersioningService = new KTVersioningService(KT_cmis_atom_service_helper::getKt());
 
+            global $default;
         try {
+            $default->log->info('try');
             $response = $VersioningService->cancelCheckout($repositoryId, $this->params[0]);
         }
         catch (Exception $e) {
+            $default->log->info($e->getMessage());
             $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
             return null;
         }
@@ -669,6 +671,10 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
 
         $feed->newField('cmis:hasMoreItems', 'false', $feed);
 
+        // set Content-Type header
+        $this->setHeader('Content-Type', 'application/atomsvc+xml');
+        $this->setHeader('Content-Disposition', 'attachment;filename="knowledgetree_checkedout"');
+        
         // Expose the responseFeed
         $this->responseFeed = $feed;
     }
