@@ -774,8 +774,7 @@ class KT_cmis_atom_service_helper {
             $response = $ObjectService->getProperties($repositoryId, $service->params[0], false, false);
         }
         catch (Exception $e) {
-            $feed = KT_cmis_atom_service_helper::getErrorFeed($service, $service->getStatusCode($e), $e->getMessage());
-            $service->responseFeed = $feed;
+            $service->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($service, $service->getStatusCode($e), $e->getMessage());
             return null;
         }
 

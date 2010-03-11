@@ -2,7 +2,8 @@
 
 /**
  * Any feed must be a valid atom Feed document and conform to the guidelines below:
-1.	Updated will be the latest time the folder or its contents was updated. If unknown by the underlying repository, it MUST be the current time.
+1.	Updated will be the latest time the folder or its contents was updated. If unknown by the underlying repository, 
+    it MUST be the current time.
 2.	Author/name will be the CMIS property createdBy
 3.	Title will be the CMIS property name
 4.	App:edited will be the CMIS property lastModifiedDate
@@ -10,7 +11,8 @@
  */
 
 /**
- * At any point where an Atom document of type Entry is sent or returned, it must be a valid Atom Entry document and conform to the guidelines below:
+ * At any point where an Atom document of type Entry is sent or returned, it must be a valid Atom Entry document and conform to 
+ * the guidelines below:
 1.	Atom:Title will be best efforts by the repository.  The repository should chose a property closest to Title.
 2.	App:edited will be CMIS:lastModifiedDate
 3.	Link with relation self will be the URI that returns the Atom Entry document
@@ -19,16 +21,19 @@
 6.	For content tags
 7.	Documents with content
 a.	Leverage the src attribute to point to the same link as stream
-b.	The repository SHOULD populate the summary tag with text that at best efforts represents the documents.  For example, an HTML table containing the properties and their values for simple feed readers
-i.	Other (Content-less document, Folder, Relationship, Type, etc) â€“ best efforts at generating HTML text that represents the object.  That text would normally go into the summary tag, but since there is no content, goes in the content tag.
+b.	The repository SHOULD populate the summary tag with text that at best efforts represents the documents.  
+    For example, an HTML table containing the properties and their values for simple feed readers
+i.	Other (Content-less document, Folder, Relationship, Type, etc) â€“ best efforts at generating HTML text that represents the object.  
+    That text would normally go into the summary tag, but since there is no content, goes in the content tag.
 8.	If content src is specified, the summary SHOULD contain a text or html representation of the object.
 9.	Links will be used to provide URIs to CMIS functionality
 10.	Link relations may be omitted if the function is not allowed and that function would not show up on getAllowableActions.
 11.	Links may be omitted if the repository does not support that capability
 12.	All CMIS properties will be exposed in CMIS properties tag even if they are duplicated in an atom element
 
-When POSTing an Atom Document, the atom fields take precedence over the CMIS property field for writeable properties.  For example, atom:title will overwrite cmis:name
- */
+When POSTing an Atom Document, the atom fields take precedence over the CMIS property field for writeable properties.  
+For example, atom:title will overwrite cmis:name
+*/
 
 // load all available CMIS services
 include_once CMIS_API . '/ktRepositoryService.inc.php';
@@ -51,11 +56,11 @@ class KT_cmis_atom_service_objectbyid extends KT_cmis_atom_service {
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         $objectId = $this->params[0];
         $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
+        
+        // set Content-Type header
+        $this->setHeader('Content-Type', 'application/atom+xml;type=entry');
 
-        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $objectId);
-
-        // Expose the responseFeed
-        $this->responseFeed = $feed;
+        $this->responseFeed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $objectId);
     }
 
 }
@@ -71,11 +76,11 @@ class KT_cmis_atom_service_objectbypath extends KT_cmis_atom_service {
         $ktapi =& KT_cmis_atom_service_helper::getKt();
         $objectId = KT_cmis_atom_service_helper::getObjectId(explode('/', urldecode($this->params[0])), $ktapi, false);
         $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
+        
+        // set Content-Type header
+        $this->setHeader('Content-Type', 'application/atom+xml;type=entry');
 
-        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $objectId);
-
-        // Expose the responseFeed
-        $this->responseFeed = $feed;
+        $this->responseFeed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $objectId);
     }
 
 }
@@ -151,10 +156,11 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $feed = $this->getFolderChildrenFeed($NavigationService, $ObjectService, $repositoryId, $folderId, $folderName, $this->params[1]);
         }
         else {
+            // set Content-Type header
+            $this->setHeader('Content-Type', 'application/atom+xml;type=entry');
             $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $folderId);
         }
 
-        // Expose the responseFeed
         $this->responseFeed = $feed;
     }
 
@@ -212,10 +218,10 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         $content = KT_cmis_atom_service_helper::getCmisContent($this->rawContent);
         // NOTE not sure about the text type, will need testing, most content will be base64
         $cmisContent = (isset($content['cmisra:base64'])
-        ? $content['cmisra:base64']
-        : ((isset($content['cmisra:text']))
-        ? $content['cmisra:text']
-        : null));
+                            ? $content['cmisra:base64']
+                            : ((isset($content['cmisra:text']))
+                                ? $content['cmisra:text']
+                                : null));
 
         $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
 
@@ -267,6 +273,9 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $typeId = ucwords($cmisObjectProperties['cmis:objectTypeId']);
         }
 
+        // set Content-Type header
+        $this->setHeader('Content-Type', 'application/atom+xml;type=entry');
+
         $this->setStatus(($action == 'create') ? self::STATUS_CREATED : self::STATUS_UPDATED);
         $this->responseFeed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $newObjectId, 'POST');
     }
@@ -303,7 +312,9 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             $this->setStatus(self::STATUS_SERVER_ERROR);
 
             $feed = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
-            // FIXME? this should perhaps use a different status code?
+            // FIXME? this should perhaps use a different status code?  probably a 200 OK - see below
+            //        however it should be 500 Internal Server Error if NO folders were deleted, which
+            //        matches how the folder deletion currently works within KnowledgeTree
             $feed->newField('title', 'Error: Failed to delete all objects in tree: ' . self::STATUS_SERVER_ERROR, $feed);
 
             foreach($response as $failed)
@@ -323,6 +334,16 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
             return null;
         }
 
+        /*
+        TODO ensure that status codes are returned as specified in section 3.9.3.2:
+        
+        • 200 OK if successful. Body contains entity describing the status 7900
+        • 202 Accepted, if accepted but deletion not yet taking place 7901
+        • 204 No Content, if successful with no content 7902
+        • 403 Forbidden, if permission is denied 7903
+        • 401 Unauthorized, if not authenticated 7904
+        • 500 Internal Server Error. The body SHOULD contain an entity describing the status
+        */
         // success
         $this->setStatus(self::STATUS_NO_CONTENT);
     }
@@ -395,7 +416,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         else if ($rootProperties['properties']['creationDate']['value'] != '0000-00-00 00:00:00') {
             $updated = $rootProperties['properties']['creationDate']['value'];
         }
-        
+
         $feed->newField('updated', KT_cmis_atom_service_helper::formatDatestamp($updated), $feed);
 
         $link = $feed->newElement('link');
@@ -419,6 +440,9 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         KT_cmis_atom_service_helper::createObjectFeed($feed, $entries, $folderName);
 
         $feed->newField('cmis:hasMoreItems', 'false', $feed);
+        
+        // set Content-Type header
+        $this->setHeader('Content-Type', 'application/atom+xml;type=feed');
 
         return $feed;
     }
@@ -468,10 +492,10 @@ class KT_cmis_atom_service_document extends KT_cmis_atom_service {
             return null;
         }
 
-        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $objectId);
-
-        // Expose the responseFeed
-        $this->responseFeed = $feed;
+        // set Content-Type header
+        $this->setHeader('Content-Type', 'application/atom+xml;type=entry');
+        
+        $this->responseFeed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $objectId);
     }
 
     /**
@@ -525,10 +549,10 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
             return null;
         }
 
-        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $this->params[0]);
-
-        // Expose the responseFeed
-        $this->responseFeed = $feed;
+        // set Content-Type header
+        $this->setHeader('Content-Type', 'application/atom+xml;type=entry');
+        
+        $this->responseFeed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $this->params[0]);
     }
 
     /**
@@ -544,19 +568,15 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
         $repositoryId = KT_cmis_atom_service_helper::getRepositoryId($RepositoryService);
         $VersioningService = new KTVersioningService(KT_cmis_atom_service_helper::getKt());
 
-            global $default;
         try {
-            $default->log->info('try');
             $response = $VersioningService->cancelCheckout($repositoryId, $this->params[0]);
         }
         catch (Exception $e) {
-            $default->log->info($e->getMessage());
             $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
             return null;
         }
 
         $this->setStatus(self::STATUS_NO_CONTENT);
-        $this->responseFeed = null;
     }
 
     public function PUT_action()
@@ -572,10 +592,10 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
         $content = KT_cmis_atom_service_helper::getCmisContent($this->rawContent);
         // NOTE not sure about the text type, will need testing, most content will be base64
         $cmisContent = (isset($content['cmisra:base64'])
-        ? $content['cmisra:base64']
-        : ((isset($content['cmisra:text']))
-        ? $content['cmisra:text']
-        : null));
+                            ? $content['cmisra:base64']
+                            : ((isset($content['cmisra:text']))
+                                ? $content['cmisra:text']
+                                : null));
 
         // if we haven't found it now, the hack begins - retrieve the EXISTING content and submit this as the contentStream
         // this is needed because KnowledgeTree will not accept a checkin without a content stream but CMISSpaces (and possibly
@@ -600,11 +620,11 @@ class KT_cmis_atom_service_pwc extends KT_cmis_atom_service {
             $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
             return null;
         }
-
-        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $this->params[0]);
-
-        // Expose the responseFeed
-        $this->responseFeed = $feed;
+        
+        // set Content-Type header
+        $this->setHeader('Content-Type', 'application/atom+xml;type=entry');
+        
+        $this->responseFeed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $this->params[0]);
     }
 
 }
@@ -672,10 +692,8 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
         $feed->newField('cmis:hasMoreItems', 'false', $feed);
 
         // set Content-Type header
-        $this->setHeader('Content-Type', 'application/atomsvc+xml');
-        $this->setHeader('Content-Disposition', 'attachment;filename="knowledgetree_checkedout"');
-        
-        // Expose the responseFeed
+        $this->setHeader('Content-Type', 'application/atom+xml;type=feed');
+
         $this->responseFeed = $feed;
     }
 
@@ -707,11 +725,11 @@ class KT_cmis_atom_service_checkedout extends KT_cmis_atom_service {
             return null;
         }
 
+        // set Content-Type header
+        $this->setHeader('Content-Type', 'application/atom+xml;type=entry');
+        
         $this->setStatus(self::STATUS_CREATED);
-        $feed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['cmis:objectId'], 'POST');
-
-        // Expose the responseFeed
-        $this->responseFeed = $feed;
+        $this->responseFeed = KT_cmis_atom_service_helper::getObjectFeed($this, $ObjectService, $repositoryId, $cmisObjectProperties['cmis:objectId'], 'POST');
     }
 
 }
@@ -734,11 +752,11 @@ class KT_cmis_atom_service_types extends KT_cmis_atom_service {
             return null;
         }
 
-        $type = ((empty($this->params[0])) ? 'all' : $this->params[0]);
-        $feed = KT_cmis_atom_service_helper::getTypeFeed($type, $types);
+        // set Content-Type header
+        $this->setHeader('Content-Type', 'application/atom+xml;type=feed');
 
-        // Expose the responseFeed
-        $this->responseFeed = $feed;
+        $type = ((empty($this->params[0])) ? 'all' : $this->params[0]);
+        $this->responseFeed = KT_cmis_atom_service_helper::getTypeFeed($type, $types);
     }
 
 }
@@ -762,10 +780,12 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service {
             return null;
         }
 
-        $feed = KT_cmis_atom_service_helper::getTypeFeed($type, array($typeDefinition['attributes']));
-
-        // Expose the responseFeed
-        $this->responseFeed=$feed;
+        // NOTE will need to choose feed/entry for type appropriately when this function supports the defaults of getting base types
+        //      or child types when no type specified
+        // set Content-Type header
+        $this->setHeader('Content-Type', 'application/atom+xml;type=entry');
+        
+        $this->responseFeed = KT_cmis_atom_service_helper::getTypeFeed($type, array($typeDefinition['attributes']));
     }
 
     /**
@@ -790,19 +810,24 @@ class KT_cmis_atom_service_type extends KT_cmis_atom_service {
         // links
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel','first'));
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'type/' . $this->params[0] . '/' . $this->params[1] . '?pageNo=1&amp;pageSize=0'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'type/' . $this->params[0] . '/' . $this->params[1] 
+                                                                    . '?pageNo=1&amp;pageSize=0'));
         $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
 
         $link = $feed->newElement('link');
         $link->appendChild($feed->newAttr('rel','last'));
         // TODO set page number correctly - to be done when we support paging the the API
-        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'type/' . $this->params[0] . '/' . $this->params[1] . '?pageNo=1&amp;pageSize=0'));
+        $link->appendChild($feed->newAttr('href', CMIS_APP_BASE_URI . 'type/' . $this->params[0] . '/' . $this->params[1] 
+                                                                    . '?pageNo=1&amp;pageSize=0'));
         $link->appendChild($feed->newAttr('type', 'application/atom+xml;type=feed'));
 
         // Since types do not have associated dates, we don't know the time last updated, so we use current
         $feed->newField('updated', KT_cmis_atom_service_helper::formatDatestamp(), $feed);
         $feed->newField('cmis:hasMoreItems', 'false', $feed);
-
+        
+        // set Content-Type header
+        $this->setHeader('Content-Type', 'application/atom+xml;type=feed');
+        
         return $feed;
     }
 
