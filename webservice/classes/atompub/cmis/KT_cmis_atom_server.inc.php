@@ -58,6 +58,10 @@ class KT_cmis_atom_server extends KT_atom_server {
 	public function serviceDocument()
     {
 		$service = new KT_cmis_atom_serviceDoc(KT_APP_BASE_URI);
+		
+		header('Content-Type: application/atomsvc+xml;charset=UTF-8');
+        header('Content-Disposition', 'attachment;filename="knowledgetree_cmis"');
+		$this->headersSet = true;
 
 		foreach($this->services as $workspace => $collection)
         {
