@@ -8,6 +8,7 @@ class KT_cmis_atom_service extends KT_atom_service {
     
     protected $serviceType = null;
     protected $contentDownload = false;
+    protected $responseHeaders = false;
     // status code mapping is for mapping exceptions thrown by the API to their appropriate
     // HTTP error status codes (see section 3.2.4.1)
     static protected $statusCodeMapping = array('InvalidArgumentException' => self::STATUS_BAD_REQUEST,
@@ -71,6 +72,17 @@ class KT_cmis_atom_service extends KT_atom_service {
 		if (!empty($header)) {
 		    header($header . ': ' . $value);
 		}
+		
+		$this->responseHeaders = true;
+	}
+	
+	/**
+	 * Checks whether the service has set its own headers
+	 *
+	 * TODO we may want to rather use setHeader to collect the headers and then we return them here and save some code
+	 */
+	public function checkHeaders() {
+	    return $this->responseHeaders;
 	}
 	
 	public function getStatusCode($exception)

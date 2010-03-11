@@ -9,6 +9,13 @@ class KT_cmis_atom_server extends KT_atom_server {
     public $repositoryInfo;
     public $headersSet = false;
     
+    /**
+     * Performs actions which must take place before the response document is rendered
+     * What is done here will determine certain aspects of how the document is rendered
+     *
+     * @param service $doc
+     * @return boolean
+     */
     protected function hook_beforeDocRender($doc)
     {
         if ($doc->isContentDownload())
@@ -35,6 +42,9 @@ class KT_cmis_atom_server extends KT_atom_server {
             
             return false;
         }
+        else {
+            $this->headersSet = $doc->checkHeaders();
+        }
         
         return true;
     }
@@ -60,7 +70,7 @@ class KT_cmis_atom_server extends KT_atom_server {
 		$service = new KT_cmis_atom_serviceDoc(KT_APP_BASE_URI);
 		
 		header('Content-Type: application/atomsvc+xml;charset=UTF-8');
-        header('Content-Disposition', 'attachment;filename="knowledgetree_cmis"');
+        header('Content-Disposition: attachment;filename="knowledgetree_cmis"');
 		$this->headersSet = true;
 
 		foreach($this->services as $workspace => $collection)
