@@ -77,10 +77,8 @@ class firstloginComplete extends Step {
     
     function doRun() {
     	$ft_dir = "";
-    	if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
-            $oRegistry =& KTPluginRegistry::getSingleton();
-            $oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
-            $ft_dir = $oPlugin->getDirs();
+    	if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
+			$ft_dir = FolderTemplatesPlugin_RDIR . DIRECTORY_SEPARATOR . "KTFolderTemplates.php";
 		}
 		$this->temp_variables['ft_dir'] = $ft_dir;
 

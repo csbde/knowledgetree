@@ -27,7 +27,36 @@
 }
 
 .tree_folder {
-	background-image:url(../../../../thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png);
+	background-image:url(../../../../thirdpartyjs/extjs/resources/images/default/tree/folder.gif);
+}
+
+.open {
+	background-image:url(../../../../thirdpartyjs/extjs/resources/images/default/tree/folder-open.gif);
+}
+/* TODO: Check connectors again */
+
+.connector-closed {
+	background-image:url(../../../../thirdpartyjs/extjs/resources/images/default/tree/elbow-plus.gif);
+}
+
+.connector-closed-first {
+	background-image:url(../../../../thirdpartyjs/extjs/resources/images/default/tree/elbow-plus.gif);
+}
+
+.connector-closed-end {
+	background-image:url(../../../../thirdpartyjs/extjs/resources/images/default/tree/elbow-end-plus.gif);
+}
+
+.connector-open {
+	background-image:url(../../../../thirdpartyjs/extjs/resources/images/default/tree/elbow-minus.gif);
+}
+
+.connector-open-first {
+	background-image:url(../../../../thirdpartyjs/extjs/resources/images/default/tree/elbow-minus.gif);
+}
+
+.connector-open-end {
+	background-image:url(../../../../thirdpartyjs/extjs/resources/images/default/tree/elbow-end-minus.gif);
 }
 
 #tree_editable {

@@ -27,6 +27,11 @@ firstlogin.prototype.openNode = function(node_id) {
 	this.nodeAction("nodes_" + node_id, "node_" + node_id, address);
 }
 
+firstlogin.prototype.getNodes = function(node_id) {
+	var address = this.ktfolderAccess + "getNodes&node_id="+node_id;
+	this.nodeAction("nodes_" + node_id, "node_" + node_id, address);
+};
+
 firstlogin.prototype.openTemplate = function(templateId) {
 	var address = this.ktfolderAccess + "getTemplateNodes&templateId="+templateId + "&firstlogin=1";
 	this.nodeAction("templates_" + templateId, "template_" + templateId, address);

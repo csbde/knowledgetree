@@ -87,10 +87,8 @@ class firstloginTemplates extends Step {
     
     function doRun() {
     	$ft_dir = "";
-    	if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
-            $oRegistry =& KTPluginRegistry::getSingleton();
-            $oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
-            $ft_dir = $oPlugin->getDirs();
+    	if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
+			$ft_dir = FolderTemplatesPlugin_RDIR . DIRECTORY_SEPARATOR . "KTFolderTemplates.php";
 		}
 		$this->temp_variables['aFolderTemplates'] = $this->getTemplates();
 		$this->temp_variables['ft_dir'] = $ft_dir;
@@ -103,28 +101,18 @@ class firstloginTemplates extends Step {
 			$templateId = KTUtil::arrayGet($_GET, "templateId", 0);// Could be ajax call
     	}
     	if($templateId > 0) {
-			if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
-	            $oRegistry =& KTPluginRegistry::getSingleton();
-	            $oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
-	            return $oPlugin->firstLoginAction(1, $templateId);
+			if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
+				require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR . "FolderTemplate.inc.php");
+				return FolderTemplates::firstLoginAction(1, $templateId);
 			}
     	}
     	return false;
     }
     
     function getTemplates() {
-		if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
-            $oRegistry =& KTPluginRegistry::getSingleton();
-            $oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
-            return $oPlugin->getFirstLoginTemplates();
-		}
-    }
-    
-    function getTemplateNodes() {
-		if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
-            $oRegistry =& KTPluginRegistry::getSingleton();
-            $oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
-            return $oPlugin->getFirstLoginTemplates();
+		if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
+			require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR . "FolderTemplate.inc.php");
+            return FolderTemplates::getList();
 		}
     }
     
