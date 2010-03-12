@@ -39,6 +39,34 @@
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
+class DeleteThumbnailTrigger {
+    var $namespace = 'thumbnail.triggers.delete.document.checkin';
+    var $aInfo = null;
+
+    function setInfo($aInfo) {
+        $this->aInfo = $aInfo;
+    }
+
+    /**
+     * On checkin of a document, delete the thumbnail so a new one can be generated
+     */
+    function postValidate() {
+        $oDoc = $this->aInfo['document'];
+        $docId = $oDoc->getId();
+        $docInfo = array('id' => $docId, 'name' => $oDoc->getName());
+
+        // Delete the pdf document
+        global $default;
+        $varDirectory = $default->varDirectory;
+
+        $file = $varDirectory . DIRECTORY_SEPARATOR . "thumbnails" . DIRECTORY_SEPARATOR .$docId.'.jpg';
+
+        if(file_exists($file)){
+            @unlink($file);
+        }
+    }
+}
+
 class thumbnailsPlugin extends KTPlugin {
     var $sNamespace = 'thumbnails.generator.processor.plugin';
     var $iVersion = 0;
@@ -61,6 +89,7 @@ class thumbnailsPlugin extends KTPlugin {
         $this->registerProcessor('thumbnailGenerator', 'thumbnails.generator.processor', $dir);
         $this->registerAction('documentviewlet', 'ThumbnailViewlet', 'thumbnail.viewlets', $dir);
         $this->registerColumn(_kt('Thumbnail'), 'thumbnails.generator.column', 'ThumbnailColumn', $dir);
+        $this->registerTrigger('checkin', 'postValidate', 'DeleteThumbnailTrigger','thumbnail.triggers.delete.document.checkin', __FILE__);
 
         require_once(KT_LIB_DIR . '/templating/templating.inc.php');
         $oTemplating =& KTTemplating::getSingleton();
