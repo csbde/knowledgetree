@@ -141,7 +141,8 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 		$aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js';
 		$aJavascript[] = 'resources/js/kt_tinymce_init.js';
     	$aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/jquery.tinymce.js';
-
+    	$aJavascript[] = 'resources/js/conditional_selection.js';
+    	
 		$this->oPage->requireJSResources($aJavascript);
 
 		//FIXME: Might really not need to load these styles, will check l8r
