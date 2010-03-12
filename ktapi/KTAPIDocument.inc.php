@@ -1253,7 +1253,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		 foreach ($fieldsets as $fieldset)
 		 {
-		 	if ($fieldset->getIsConditional()) {	/* this is not implemented...*/	continue;	}
+		    // this line caused conditional metadata to not be present, and it is there when this is commented out;
+		    // if there are problems with conditional metadata in future, check here to make sure this is not the cause
+//		 	if ($fieldset->getIsConditional()) {	/* this is not implemented...*/	continue;	}
 
 		 	$fields = $fieldset->getFields();
 		 	$result = array('fieldset' => $fieldset->getName(),
@@ -1400,7 +1402,10 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 		if (is_array($fieldinfo))
 		 		{
 		 			$fieldname = $fieldinfo['name'];
-		 			$value = $fieldinfo['value'];
+		 			// if the 'blankvalue' argument was set to 1 (true) then do not use the current value;
+		 			// this prevents the 'n/a' values set for blank fields on get_metadata from being saved as such
+		 			// while allowing user entered values of 'n/a' to be saved
+		 			$value = $fieldinfo['blankvalue'] ? '' : $fieldinfo['value'];
 		 		}
 		 		elseif ($fieldinfo instanceof stdClass)   // is_a($fieldinfo, 'stdClass'))
 		 		{
