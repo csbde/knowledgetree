@@ -92,7 +92,7 @@ class KTFieldsetRegistry {
      * 
      */
     function getHtmlFields($oFieldset, $idPre = 'metadata_') {
-            $fields = $oFieldset->getFields();
+        $fields = $oFieldset->getFields();
 		$textAreaIds = array();
 		
 		foreach($fields as $field) {
@@ -103,7 +103,6 @@ class KTFieldsetRegistry {
 		
 		return $textAreaIds;
     }    
-
     
     /*
      * Returns an array of fieldIds which belong to a generic fieldset
@@ -156,6 +155,11 @@ class KTFieldsetRegistry {
             }
         
             foreach ($newfields as $oField) {
+                // If a conditional field hasn't been set up properly this will throw errors.
+                // TODO: display a message indicating that admin must complete the setup. 
+                if (PEAR::isError($oField)) {
+                    continue;
+                }
                 $fname = 'metadata_' . $oField->getId(); 
                 $value = null;
                     

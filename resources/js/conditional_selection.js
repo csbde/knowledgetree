@@ -1,4 +1,6 @@
-// 'lookups' and 'connections' are produced by the master conditional widget
+// depricated: 'lookups' and 'connections' are produced by the master conditional widget
+// 'lookups' and 'connections' are now dynamically callable via ajax request to get a json response
+
 var NOSELECTION = 'No selection.';
 
 function ConditionalSelection() {
@@ -27,135 +29,159 @@ function getId(elm) {
 
 ConditionalSelection.prototype = {
     'initialize' : function(masterId) {
+	
 	// make clones of the original nodes to keep the options in
 	var fieldLookups = {};
 	var current = {};
+	
+	/*
 	var lookups = eval('lookups_' + masterId);
 	var connections = eval('connections_' + masterId);
-
-	// initialize - build various tables
-	forEach(getElementsByTagAndClassName(null, 'is_conditional_' + masterId),
-		function(elm) {
-		    var fieldId = getId(elm);
-		    for(var i=0; i<elm.options.length; i++) {
-			var oElm = elm.options[i];
-			var lookupId = oElm.id.substring('lookup_'.length);
-			fieldLookups[lookupId] = {'parent':fieldId, 'value':oElm.innerHTML};
-
-			if(oElm.selected && oElm.value) {
-			    current[fieldId] = oElm.value;
-			}
-		    }
-		});
-
-	// the following function are defined inline, as they depend on the
-	// 'lookups' and 'connections' being specified above
-
-	function clearConnected(fieldId) {
-	    if(!fieldId in connections || !connections[fieldId].length) {
-		return;
-	    }
-	    for(var i=0; i<connections[fieldId].length; i++) {
-		var field = $('field_'+connections[fieldId][i]);
-		replaceChildNodes(field, OPTION(null, NOSELECTION));
-		field.disabled = true;
-		clearConnected(connections[fieldId][i]);
-	    }
-	}
+	*/
 	
+	var lookups = null;
+	var connections = null;
+	
+	// Making the conditional selection rules dynamically envokable. This enables conditional metadata fields to be used as ajax loaded dom elements.
+	// Needed for the Bulk Upload metadata page.
+	
+    jQuery.getJSON('presentation/lookAndFeel/knowledgeTree/ajaxConditional.php?action=getConditionalData&masterid=' + masterId + '&type=lookups',
+	    function(json){
+    		lookups = json;
+    		
+    	    jQuery.getJSON('presentation/lookAndFeel/knowledgeTree/ajaxConditional.php?action=getConditionalData&masterid=' + masterId + '&type=connections',
+    		    function(json){
+    	    		connections = json;
 
-	function clearInvalid(fieldId) {
-	    if(!fieldId in connections || !connections[fieldId].length) {
-		return;
-	    }
-	    
-	    var parentField = $('field_'+fieldId);
-	    var selectedId = getId(parentField.options[parentField.selectedIndex]);
-	    var options = lookups[selectedId];
+    	    		// initialize - build various tables
+    	    		forEach(getElementsByTagAndClassName(null, 'is_conditional_' + masterId),
+    	    			function(elm) {
+    	    			    var fieldId = getId(elm);
+    	    			    for(var i=0; i<elm.options.length; i++) {
+    	    				var oElm = elm.options[i];
+    	    				var lookupId = oElm.id.substring('lookup_'.length);
+    	    				fieldLookups[lookupId] = {'parent':fieldId, 'value':oElm.innerHTML};
 
-	    if(parentField.options[parentField.selectedIndex].innerHTML == NOSELECTION) {
-		clearConnected(fieldId);
-	    } else {
-		for(var i=0; i<connections[fieldId].length; i++) {
-		    var field = $('field_'+connections[fieldId][i]);
-		    var newOptions = [];
-		    var selected = null;
+    	    				if(oElm.selected && oElm.value) {
+    	    				    current[fieldId] = oElm.value;
+    	    				}
+    	    			    }
+    	    			});
 
-		    for(var j=0; j<field.options.length; j++) {
-			var opt = field.options[j];
-			if(!(opt.innerHTML != NOSELECTION  && !in_array(options, getId(opt)))) {
-			    newOptions.push(opt);
-			}
+    	    		// the following function are defined inline, as they depend on the
+    	    		// 'lookups' and 'connections' being specified above
 
-			if(j == field.selectedIndex && opt.id && in_array(options, getId(opt))) {
-			    selected = opt.id;
-			}
-		    }
+    	    		function clearConnected(fieldId) {
+    	    		    if(!fieldId in connections || !connections[fieldId].length) {
+    	    			return;
+    	    		    }
+    	    		    for(var i=0; i<connections[fieldId].length; i++) {
+    	    			var field = $('field_'+connections[fieldId][i]);
+    	    			replaceChildNodes(field, OPTION(null, NOSELECTION));
+    	    			field.disabled = true;
+    	    			clearConnected(connections[fieldId][i]);
+    	    		    }
+    	    		}
+    	    		
 
-		    field.selectedIndex = 0;
-		    replaceChildNodes(field, null);
-		    
+    	    		function clearInvalid(fieldId) {
+    	    		    if(!fieldId in connections || !connections[fieldId].length) {
+    	    			return;
+    	    		    }
+    	    		    
+    	    		    var parentField = $('field_'+fieldId);
+    	    		    var selectedId = getId(parentField.options[parentField.selectedIndex]);
+    	    		    var options = lookups[selectedId];
 
-		    for(var j=0; j<newOptions.length; j++) {
-			var opt = newOptions[j];
-			appendChildNodes(field, opt);
-			
-			if(selected != null) {
-			    if(opt.id && opt.id == selected) { // || j == 0 && field.selectedIndex == 0) {
-				field.selectedIndex = j;
-			    }
-			}			    
-		    }
+    	    		    if(parentField.options[parentField.selectedIndex].innerHTML == NOSELECTION) {
+    	    			clearConnected(fieldId);
+    	    		    } else {
+    	    			for(var i=0; i<connections[fieldId].length; i++) {
+    	    			    var field = $('field_'+connections[fieldId][i]);
+    	    			    var newOptions = [];
+    	    			    var selected = null;
 
-		    if(selected == null) {
-			field.selectedIndex = 0;
-			field.options[0].selected = 'selected';
-		    }
+    	    			    for(var j=0; j<field.options.length; j++) {
+    	    				var opt = field.options[j];
+    	    				if(!(opt.innerHTML != NOSELECTION  && !in_array(options, getId(opt)))) {
+    	    				    newOptions.push(opt);
+    	    				}
 
+    	    				if(j == field.selectedIndex && opt.id && in_array(options, getId(opt))) {
+    	    				    selected = opt.id;
+    	    				}
+    	    			    }
 
-		    clearInvalid(connections[fieldId][i]);
-		}
-	    }
-	}
+    	    			    field.selectedIndex = 0;
+    	    			    replaceChildNodes(field, null);
+    	    			    
 
-	// instead of clearing here, we remove the non-applicable options
-	// this should handle the case with existing selections
-	clearInvalid(masterId);	
+    	    			    for(var j=0; j<newOptions.length; j++) {
+    	    				var opt = newOptions[j];
+    	    				appendChildNodes(field, opt);
+    	    				
+    	    				if(selected != null) {
+    	    				    if(opt.id && opt.id == selected) { // || j == 0 && field.selectedIndex == 0) {
+    	    					field.selectedIndex = j;
+    	    				    }
+    	    				}			    
+    	    			    }
 
-
-	function populateForSelection(selectedId) {
-	    if(selectedId in lookups) {
-		for(var i=0; i<lookups[selectedId].length; i++) {
-		    var lookupId = lookups[selectedId][i];
-		    var lookupInfo = fieldLookups[lookupId];
-		    
-		    var parent = $('field_' + lookupInfo['parent']);
-		    appendChildNodes(parent, 
-				     OPTION({'value':lookupInfo['value'], 'id':'lookup_' + lookupId}, 
-					    lookupInfo['value']));
-		    parent.disabled = false;
-		}
-	    }
-	}
+    	    			    if(selected == null) {
+    	    				field.selectedIndex = 0;
+    	    				field.options[0].selected = 'selected';
+    	    			    }
 
 
-	forEach(getElementsByTagAndClassName(null, 'is_conditional_' + masterId), function(elm) {
-		    // check if this field connects to anything else
-		    var fieldId = elm.id.substring('field_'.length);
-		    if(fieldId in connections && connections[fieldId].length) {
-			var controller = true;
-		    }
+    	    			    clearInvalid(connections[fieldId][i]);
+    	    			}
+    	    		    }
+    	    		}
 
-		    if(controller) {
-			connect(elm, 'onchange', 
-				function() {
-				    var selectedId = elm.options[elm.selectedIndex].id.substring('lookup_'.length);
-				    var touched = [];
-				    clearConnected(fieldId);
-				    populateForSelection(selectedId);
-				});
-		    }
-		});
+    	    		// instead of clearing here, we remove the non-applicable options
+    	    		// this should handle the case with existing selections
+    	    		clearInvalid(masterId);	
+
+
+    	    		function populateForSelection(selectedId) {
+    	    		    if(selectedId in lookups) {
+    	    			for(var i=0; i<lookups[selectedId].length; i++) {
+    	    			    var lookupId = lookups[selectedId][i];
+    	    			    var lookupInfo = fieldLookups[lookupId];
+    	    			    
+    	    			    var parent = $('field_' + lookupInfo['parent']);
+    	    			    appendChildNodes(parent, 
+    	    					     OPTION({'value':lookupInfo['value'], 'id':'lookup_' + lookupId}, 
+    	    						    lookupInfo['value']));
+    	    			    parent.disabled = false;
+    	    			}
+    	    		    }
+    	    		}
+
+
+    	    		forEach(getElementsByTagAndClassName(null, 'is_conditional_' + masterId), function(elm) {
+    	    			    // check if this field connects to anything else
+    	    			    var fieldId = elm.id.substring('field_'.length);
+    	    			    if(fieldId in connections && connections[fieldId].length) {
+    	    				var controller = true;
+    	    			    }
+
+    	    			    if(controller) {
+    	    				connect(elm, 'onchange', 
+    	    					function() {
+    	    					    var selectedId = elm.options[elm.selectedIndex].id.substring('lookup_'.length);
+    	    					    var touched = [];
+    	    					    clearConnected(fieldId);
+    	    					    populateForSelection(selectedId);
+    	    					});
+    	    			    }
+    	    			});
+
+    	    		//---------- End Inner Functions
+    	    });
+    });
+	
+	
     }
 }
 

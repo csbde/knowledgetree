@@ -186,6 +186,18 @@ class KTFieldset extends KTEntity {
         ), $aOptions);
     }
 
+    function &getConditionalFieldsets($aOptions = null) {
+	$aOptions = KTUtil::meldOptions(
+	    $aOptions,
+	    array('multi' => true,)
+	);
+        return KTEntityUtil::getByDict('KTFieldset', array(
+            'is_conditional' => true,
+            'disabled' => false,
+        ), $aOptions);
+    }
+    
+    
     function &getForDocumentType($oDocumentType, $aOptions = null) {
         $bIds = KTUtil::arrayGet($aOptions, 'ids');
         if (is_object($oDocumentType)) {

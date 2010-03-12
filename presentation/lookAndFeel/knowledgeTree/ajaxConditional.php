@@ -45,6 +45,11 @@ require_once(KT_LIB_DIR . "/util/ktutil.inc");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 
+require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
+require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");
+require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
+
+
 /*
  * example code - tests the frontend behaviour.  remember to check ajaxConditional.php 
  * 
@@ -102,6 +107,82 @@ class AjaxConditionalDispatcher extends KTStandardDispatcher {
         
         return $sWidgets;
     }
+
+    
+    
+    
+    function _getFieldIdForMetadataId($iMetadata) {
+	$sTable = 'metadata_lookup';
+	$sQuery = "SELECT document_field_id FROM " . $sTable . " WHERE id = ?";
+	$aParams = array($iMetadata);
+
+	$res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'document_field_id');
+	if (PEAR::isError($res)) {
+	    return false;
+	}
+	return $res;
+    }
+    
+    //http://localhost/knowledgetree/presentation/lookAndFeel/knowledgeTree/ajaxConditional.php?action=getConditionalData&masterid=6&type=connections
+    //http://localhost/knowledgetree/presentation/lookAndFeel/knowledgeTree/ajaxConditional.php?action=getConditionalData&masterid=6&type=lookups
+    //$type can be lookups or connections
+    function do_getConditionalData(){
+        $iMetadata = $_GET['masterid'];
+        $type = $_GET['type'];
+        
+		$oFReg =& KTFieldsetRegistry::getSingleton();
+		$oFieldSets = KTFieldset::getConditionalFieldsets();
+
+		foreach ($oFieldSets as $oFieldset) {
+            
+    	    $aLookups = array();
+    	    $aConnections = array();
+    
+    	    foreach($oFieldset->getFields() as $oField) {
+    		$c = array();
+    
+    		foreach($oField->getEnabledValues() as $oMetadata) {
+    		    $a = array();
+    		    // print '<pre>';
+    
+    		    $nvals = KTMetadataUtil::getNextValuesForLookup($oMetadata->getId());
+    		    if($nvals) {
+    			foreach($nvals as $i=>$aVals) {
+    			    $a = array_merge($a, $aVals);
+    
+    			    foreach($aVals as $id) {
+    			      $field = $this->_getFieldIdForMetadataId($id);
+    			      // print 'id ' . $id . ' is in field ' . $field . "<br/>";
+    			      if(!in_array($field, $c)) {
+    				$c[] = $field;
+    			      }
+    			    }
+    			}
+    		    }
+    
+    		    $aLookups[$oMetadata->getId()] = $a;
+    		}
+    		$aConnections[$oField->getId()] = $c;
+    	    }
+    
+    	    //exit(0);
+    
+    	    $oJSON = new Services_JSON;
+    	    switch ($type) {
+	            case 'lookups':
+    	            return $oJSON->encode($aLookups);
+    	            break;
+	            case 'connections' :
+	                return $oJSON->encode($aConnections);
+	                break;
+	            default:
+    	            return $oJSON->encode($aLookups);
+    	    }
+    	            
+            return false;
+		}
+    }
+    
 }
 
 $oDispatcher = new AjaxConditionalDispatcher();
