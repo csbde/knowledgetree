@@ -162,10 +162,9 @@ class KTFolderAddFolderAction extends KTFolderAction {
      * @return unknown
      */
     function folderTemplateOptions() {
-		if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
-            $oRegistry =& KTPluginRegistry::getSingleton();
-            $oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
-            return $oPlugin->getTemplates();
+		if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
+			require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR. "FolderTemplate.inc.php");
+			return FolderTemplateRenders::getTemplates();
 		}
 		
 		return false;
@@ -216,11 +215,9 @@ class KTFolderAddFolderAction extends KTFolderAction {
     }
     
     function applyTemplate($rootId, $templateId) {
-    	if (KTPluginUtil::pluginIsActive('fs.FolderTemplatesPlugin.plugin')) { // Check if folder templates plugin is active
-			$oRegistry =& KTPluginRegistry::getSingleton();
-			$oPlugin =& $oRegistry->getPlugin('fs.FolderTemplatesPlugin.plugin'); // Get a handle on the plugin
-			// How to get current user. 
-			return $oPlugin->applyFolderTemplate($rootId, $templateId);
+    	if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
+			require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR ."FolderTemplate.inc.php");
+			return FolderTemplates::applyFolderTemplate($rootId, $templateId);
     	}
     }
 }
