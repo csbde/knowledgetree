@@ -226,7 +226,7 @@ class thumbnailGenerator extends BaseProcessor
 		}
 		*/
         
-        $cmd = "'{$pathConvert}' '{$srcFile}" . $pageNumber . "' -thumbnail 200 -limit memory 32MiB -limit map 64MiB '$thumbnailfile'";
+        $cmd = "'{$pathConvert}' -thumbnail 200 -limit area 10mb '{$srcFile}" . $pageNumber . "' '$thumbnailfile'";
 		
 		$default->log->debug($cmd);
 
