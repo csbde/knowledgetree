@@ -28,6 +28,9 @@
 					?>
 					<tr class="templates" style="display:none;" id="template_<?php echo $oFolderTemplate->getId(); ?>">
 						<td>
+							<div id="tconnector_template_<?php echo $oFolderTemplate->getId(); ?>" class="tree_icon connector-open-first open-first">&nbsp;</div>
+						</td>
+						<td>
 							<div class="tree_icon tree_folder closed">&nbsp;</div> 
 						</td>
 						<td>
