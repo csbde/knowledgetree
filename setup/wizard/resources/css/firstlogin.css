@@ -1,7 +1,3 @@
-#outer-wrapper {
-	width:900px;
-}
-
 #logo {
 	right:70%;
 }
@@ -19,11 +15,9 @@
 	margin-top:10px;
 }
 
-.tree_icon {
-	float:left;
-	height:16px;
-	width:16px;
-	cursor: pointer;
+
+#template_options {
+	width : 20px;
 }
 
 .tree_folder {
@@ -59,32 +53,6 @@
 	background-image:url(../../../../thirdpartyjs/extjs/resources/images/default/tree/elbow-end-minus.gif);
 }
 
-#tree_editable {
-	float : right;
-	width: 700px;
-}
-
-.tree_navigation {
-	align : left;
-	width:600px;
-	min-height: 200px;
-	float:left;
-}
-
-.tree_table {
-	width:100%;
-}
-
-.tree_table td {
-	float:left;
-	line-height:1.8em;
-	padding: 0px 0px;
-}
-
-.outer {
-	align : left;
-}
-
 .tree_node_edit {
 	background-image:url(../../../../thirdparty/icon-theme/16x16/actions/document-properties.png);
 }
@@ -101,10 +69,23 @@
 	background-image:url(graphics/question.gif);
 }
 
-#template_options {
-	width : 20px;
+#tree_editable {
+	float : right;
+	width: 700px;
+}
+
+.tree_table td {
+	float:left;
+	padding: 1px 1px;
 }
 
 .action_form {
 	margin-left:35px;
+}
+
+.tree_icon {
+	float:left;
+	height:16px;
+	width:16px;
+	cursor: pointer;
 }

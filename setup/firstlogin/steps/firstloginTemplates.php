@@ -91,19 +91,24 @@ class firstloginTemplates extends Step {
 			$ft_dir = FolderTemplatesPlugin_RDIR . DIRECTORY_SEPARATOR . "KTFolderTemplates.php";
 		}
 		$this->temp_variables['aFolderTemplates'] = $this->getTemplates();
+		$ftr = new FolderTemplateRenders(1);
+		$this->temp_variables['aTemplates'] = $ftr->renderTemplates();
 		$this->temp_variables['ft_dir'] = $ft_dir;
         return 'landing';
     }
     
     function applyTemplates() {
     	$templateId = KTUtil::arrayGet($_POST['data'], "templateId", 0);
+    	$folderId = KTUtil::arrayGet($_POST['data'], "folderId", 1);
     	if($templateId < 1) {
 			$templateId = KTUtil::arrayGet($_GET, "templateId", 0);// Could be ajax call
     	}
     	if($templateId > 0) {
 			if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
+				
 				require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR . "FolderTemplate.inc.php");
-				return FolderTemplates::firstLoginAction(1, $templateId);
+				
+				return FolderTemplates::firstLoginAction($folderId, $templateId);
 			}
     	}
     	return false;
@@ -112,6 +117,7 @@ class firstloginTemplates extends Step {
     function getTemplates() {
 		if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
 			require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR . "FolderTemplate.inc.php");
+
             return FolderTemplates::getList();
 		}
     }
