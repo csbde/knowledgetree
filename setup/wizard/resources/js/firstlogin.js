@@ -10,7 +10,6 @@ jQuery(function() { // Document is ready
 function firstlogin(rootUrl, pluginHandle) {
 	this.rootUrl = rootUrl + "/";
 	this.ktfolderAccess = rootUrl + "/" + pluginHandle + "?action=";
-	this.ktmanageFolderAccess = rootUrl + "/" + "admin.php?kt_path_info=misc/adminfoldertemplatesmanagement&action=";
 	this.ajaxOn = false;
 }
 
