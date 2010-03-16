@@ -201,7 +201,7 @@ class KTUploadManager
 	{
 		$filename=basename($filename);
 		$now=date('Y-m-d H:i:s');
-		$now_str=date('YmdHis');
+		$now_str=date('YmdHis') + rand(0, 32768);
 
 		// Ensure the temp directory exists otherwise an error is thrown.
         if (realpath($this->temp_dir) == FALSE) {
