@@ -176,7 +176,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         $action = 'create';
         $objectId = null;
         $typeId = null;
-
+        // get submitted information
         $folderId = $this->params[0];
         $title = KT_cmis_atom_service_helper::getAtomValues($this->rawContent, 'title');
         $summary = KT_cmis_atom_service_helper::getAtomValues($this->rawContent, 'summary');
@@ -245,7 +245,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                     $newObjectId = $ObjectService->createDocument($repositoryId, $properties, $folderId, $cmisContent, 'minor');
                 }
                 catch (Exception $e) {
-                    $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($service, $this->getStatusCode($e), $e->getMessage());
+                    $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
                     return null;
                 }
             }
@@ -265,7 +265,7 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
                 $newObjectId = $ObjectService->moveObject($repositoryId, $objectId, $folderId, $sourceFolderId);
             }
             catch (Exception $e) {
-                $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($service, $this->getStatusCode($e), $e->getMessage());
+                $this->responseFeed = KT_cmis_atom_service_helper::getErrorFeed($this, $this->getStatusCode($e), $e->getMessage());
                 return null;
             }
 
