@@ -80,13 +80,11 @@ class KT_cmis_atom_service_helper {
             }
         }
         else if ($method == 'GET') {
-            $response = new KT_cmis_atom_responseFeed_GET(CMIS_APP_BASE_URI);
-            $response->newField('title', $cmisEntry['properties']['objectTypeId']['value'], $response);
-            $response->newField('id', 'urn:uuid:' . $cmisEntry['properties']['objectId']['value'], $response);
+            $response = new KT_cmis_atom_response_GET(CMIS_APP_BASE_URI);
         }
 
         if ($serviceType == 'PWC') $pwc = true; else $pwc = false;
-        KT_cmis_atom_service_helper::createObjectEntry($response, $cmisEntry, $cmisEntry['properties']['parentId']['value'], $pwc, $method);
+        KT_cmis_atom_service_helper::createObjectEntry($response, $cmisEntry, $cmisEntry['properties']['parentId']['value'], true, $method, $pwc);
 
         return $response;
     }
@@ -104,10 +102,11 @@ class KT_cmis_atom_service_helper {
      * @param object $feed The feed to which we add the entry
      * @param array $cmisEntry The entry data
      * @param string $parent The parent folder - this appears to be unused, not sure what it was meant for
-     * @param boolean $pwc Whether this is a PWC object
+     * @param boolean $entry Whether this is an atom entry or an atom feed, defaults to false (feed)
      * @param $method The request method used (POST/GET/...)
+     * @param $pwc Whether this is a pwc entry
      */
-    static public function createObjectEntry(&$feed, $cmisEntry, $parent, $pwc = false, $method = 'GET')
+    static public function createObjectEntry(&$feed, $cmisEntry, $parent, $entry = false, $method = 'GET', $pwc = false)
     {
         $workspace = $feed->getWorkspace();
 
@@ -115,7 +114,7 @@ class KT_cmis_atom_service_helper {
         $entry = $feed->newEntry();
 
         // When request is a POST we will be returning only an object entry, not a full feed, and so this belongs here
-        if (($method == 'POST') || $pwc)
+        if (($method == 'POST') || $entry)
         {
             // append attributes
             $entry->appendChild($feed->newAttr('xmlns', 'http://www.w3.org/2005/Atom'));
@@ -156,7 +155,7 @@ class KT_cmis_atom_service_helper {
 
         // create entry
         $entry = $feed->newElement('entry');
-        self::createObjectEntryContent($entry, $feed, $workspace, $cmisEntry);//, $parent, $pwc, $method);
+        self::createObjectEntryContent($entry, $feed, $workspace, $cmisEntry);
         $childrenFeed->appendChild($entry);
     }
 
@@ -167,10 +166,11 @@ class KT_cmis_atom_service_helper {
      * @param object $feed The response feed
      * @param array $cmisEntry The CMIS object content
      * @param string $parent The parent folder name
-     * @param boolean $pwc Whether this is a PWC object (will be returned slightly differently)
+     * @param string $pwc Whether this is a PWC object
      * @param string $method The calling method (slightly affects the output)
      */
-    static public function createObjectEntryContent($entry, &$feed, $workspace, $cmisEntry, $parent = '', $pwc = false, $method = 'GET')
+    static public function createObjectEntryContent($entry, &$feed, $workspace, $cmisEntry, $parent = '', 
+                                                    $pwc = false, $method = 'GET')
     {
         $type = $cmisEntry['properties']['objectTypeId']['value'];
 

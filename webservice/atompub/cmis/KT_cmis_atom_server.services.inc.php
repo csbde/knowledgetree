@@ -115,6 +115,8 @@ class KT_cmis_atom_service_folder extends KT_cmis_atom_service {
         }
         else if (($this->params[1] == 'children') || ($this->params[1] == 'descendants'))
         {
+            // NOTE this call is duplicated in the folder children/descendants feed function
+            // TODO see if we can remove this call and rely solely on the one in the children feed function
             $folderId = $this->params[0];
             $ObjectService = new KTObjectService(KT_cmis_atom_service_helper::getKt());
             try {
