@@ -1463,25 +1463,31 @@ Fatal error:  Cannot unset string offsets in on line 981
 		{
 			$folderObj = &$kt->get_folder_by_id ( $folder->getFolderId() );
 			
-			$folderArray = array();
-			$folderArray['id']   = $folderObj->folderid;
-			$folderArray['name'] = $folderObj->get_folder_name();
-			
-			$parentIds = explode(',', $folderObj->getParentFolderIds());
-			$path = '/F_0';
-			
-			if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
-				foreach ($parentIds as $parentId)
-				{
-					$path .= '/F_'.$parentId;
+			if (PEAR::isError ( $folderObj )) {
+				// Ignore, dont add to list
+			} else {
+				
+				$folderArray = array();
+				$folderArray['id']   = $folderObj->folderid;
+				$folderArray['name'] = $folderObj->get_folder_name();
+				
+				$parentIds = explode(',', $folderObj->getParentFolderIds());
+				$path = '/F_0';
+				
+				if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
+					foreach ($parentIds as $parentId)
+					{
+						$path .= '/F_'.$parentId;
+					}
 				}
+				
+				$path .= '/F_'.$folderObj->folderid;
+				
+				$folderArray['path'] = $path;
+				
+				$returnFoldersArray[] = $folderArray;
+			
 			}
-			
-			$path .= '/F_'.$folderObj->folderid;
-			
-			$folderArray['path'] = $path;
-			
-			$returnFoldersArray[] = $folderArray;
 		}
 		
 		
@@ -1492,39 +1498,44 @@ Fatal error:  Cannot unset string offsets in on line 981
 		foreach ($items as $item)
 		{
 			$document = $kt->get_document_by_id($item->getDocumentId());
-			$documentDetail = $document->get_detail();
 			
-			$documentArray = array();
-			
-			$documentArray['id'] = $document->documentid;
-			$documentArray['contentID'] = $document->documentid;
-			$documentArray['title'] = $documentDetail['title'];
-			$documentArray['folderId'] = $documentDetail['folder_id'];
-			
-			// Determine Icon Class
-			$extpos = strrpos ( $documentDetail['filename'], '.' );
-			if ($extpos === false) {
-				$class = 'file-unknown';
+			if (PEAR::isError ( $document )) {
+				// Ignore, dont add to list
 			} else {
-				$class = 'file-' . substr ( $documentDetail['filename'], $extpos + 1 ); // Get Extension without the dot
-			}
-			$documentArray['iconCls'] = $class;
-			
-			// Determine Icon Path
-			$folderObj = $kt->get_folder_by_id ( $documentDetail['folder_id']);
-			$parentIds = explode(',', $folderObj->getParentFolderIds());
-			$path = '/F_0';
-			if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
-				foreach ($parentIds as $parentId)
-				{
-					$path .= '/F_'.$parentId;
+				$documentDetail = $document->get_detail();
+				
+				$documentArray = array();
+				
+				$documentArray['id'] = $document->documentid;
+				$documentArray['contentID'] = $document->documentid;
+				$documentArray['title'] = $documentDetail['title'];
+				$documentArray['folderId'] = $documentDetail['folder_id'];
+				
+				// Determine Icon Class
+				$extpos = strrpos ( $documentDetail['filename'], '.' );
+				if ($extpos === false) {
+					$class = 'file-unknown';
+				} else {
+					$class = 'file-' . substr ( $documentDetail['filename'], $extpos + 1 ); // Get Extension without the dot
 				}
+				$documentArray['iconCls'] = $class;
+				
+				// Determine Icon Path
+				$folderObj = $kt->get_folder_by_id ( $documentDetail['folder_id']);
+				$parentIds = explode(',', $folderObj->getParentFolderIds());
+				$path = '/F_0';
+				if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
+					foreach ($parentIds as $parentId)
+					{
+						$path .= '/F_'.$parentId;
+					}
+				}
+				$path .= '/F_'.$documentDetail['folder_id'];
+				
+				$documentArray['folderPath'] = $path;
+				
+				$returnDocumentArray[] = $documentArray;
 			}
-			$path .= '/F_'.$documentDetail['folder_id'];
-			
-			$documentArray['folderPath'] = $path;
-			
-			$returnDocumentArray[] = $documentArray;
 		}
 		
 		$this->setResponse(array('documents'=>$returnDocumentArray, 'folders'=>$returnFoldersArray));
