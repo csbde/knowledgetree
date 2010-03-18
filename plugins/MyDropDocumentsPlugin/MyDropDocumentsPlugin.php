@@ -4,7 +4,7 @@
  * License Version 1.1.2 ("License"); You may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.knowledgetree.com/KPL
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * See the License for the specific language governing rights and
@@ -15,9 +15,9 @@
  *    (ii) the KnowledgeTree copyright notice
  * in the same form as they appear in the distribution.  See the License for
  * requirements.
- * 
+ *
  * The Original Code is: KnowledgeTree Open Source
- * 
+ *
  * The Initial Developer of the Original Code is The Jam Warehouse Software
  * (Pty) Ltd, trading as KnowledgeTree.
  * Portions created by The Jam Warehouse Software (Pty) Ltd are Copyright
@@ -26,28 +26,30 @@
  * Contributor( s): ______________________________________
  *
  */
- 
+
 require_once(KT_LIB_DIR . "/plugins/plugin.inc.php");
 require_once(KT_LIB_DIR . "/plugins/pluginregistry.inc.php");
 
  class MyDropDocumentsPlugin extends KTPlugin
  {
 	var $sNamespace = 'ktlive.mydropdocuments.plugin';
+	var $iVersion = 1;
 	var $autoRegister = true;
- 	 	
+
  	function MyDropDocumentsPlugin($sFilename = null) {
- 		
+
 		$res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('My Drop Documents');
         return $res;
-		
+
     }
-    
+
     function setup() {
-    	
+
 		$this->registerDashlet('MyDropDocumentsDashlet', 'klive.mydropdocuments.dashlet', 'MyDropDocumentsDashlet.php');
 		$this->registerPage('MyDropDocuments', 'MyDropDocumentsPage', 'MyDropDocumentsPage.php');
-		
+		$this->registerTrigger('user_create', 'postValidate', 'CreateUserFolderTrigger','ktlive.mydropdocuments.triggers.user_create', 'MyDropDocumentsDashlet.php');
+
         require_once(KT_LIB_DIR . "/templating/templating.inc.php");
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplating->addLocation('MyDropDocumentsDashlet', '/plugins/MyDropDocumentsPlugin/templates');
