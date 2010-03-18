@@ -161,7 +161,7 @@ class kt extends client_service {
 		
 		$folder->addFolderToUserHistory();
 		
-		$types = (isset ( $arr ['types'] ) ? $arr ['types'] : 'DF');
+		$types = (isset ( $arr ['types'] ) ? $arr ['types'] : 'DFS');
 		
 		$listing = $folder->get_listing ( 1, $types );
 		
@@ -220,9 +220,29 @@ class kt extends client_service {
 				$perms = substr ( $perms, 0, strlen ( $perms ) - 2 );
 			}
 			
-			if ($itemType == 'F') {
+			// This is done here because a shortcut can be a document or folder
+			switch ($itemType)
+			{
+				case 'F': $docOrFolder = 'F'; break;
+				case 'D': $docOrFolder = 'D'; break;
+				case 'S':
+					if (array_key_exists('linked_folder_id', $item)) {
+						$docOrFolder = 'F'; 
+					} else {
+						$docOrFolder = 'D'; 
+					}
+					break;
+			}
+			
+			if ($docOrFolder == 'F') {
 				$qtip .= $this->xlate ( 'Folder name' ) . ": {$filename}<br>";
-				$class = 'folder';
+				
+				if ($itemType == 'S') {
+					$class = 'folder_shortcut';
+				} else {
+					$class = 'folder';
+				}
+				
 				$qtip .= $this->xlate ( 'Permissions:' ) . " {$perms}<br>";
 				$qtip .= $canWrite ? $this->xlate ( 'You may add content to this folder' ) : $this->xlate ( 'You may not add content to this folder' );
 			} 
@@ -238,6 +258,11 @@ class kt extends client_service {
 					$ext = substr ( $filename, $extpos ); // Get Extension including the dot
 					$class = 'file-' . substr ( $filename, $extpos + 1 ); // Get Extension without the dot
 				}
+				
+				if ($itemType == 'S') {
+					$class .= '_shortcut';
+				}
+
 				
 				$extensions = explode ( ',', $arr ['extensions'] );
 				if (! in_array ( strtolower ( $ext ), $extensions ) && ! in_array ( '*', $extensions )) {
@@ -300,7 +325,14 @@ class kt extends client_service {
 			$item ['filesize'] = - 1;
 		}
 		
-		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => $item ['id'], 'filename' => $item ['filename'], 'cls' => $class, 'owner' => $item ['created_by'], 'document_type' => $item ['document_type'], 'item_type' => $item ['item_type'], 'permissions' => $item ['permissions'], 'created_date' => $item ['created_date'], 'content_id' => $item ['content_id'], 'filesize' => $item ['filesize'], 'filesize_bytes' => $item ['filesize_bytes'], 'modified' => $item ['modified_date'], 'checked_out_by' => $item ['checked_out_by'], 'version' => $item ['version'], 'is_immutable' => $item ['is_immutable'] );
+		if (array_key_exists('linked_folder_id', $item)) {
+			$linkedId = 'F_'.$item['linked_folder_id'];
+		} else {
+			$linkedId = 'D_'.$item['linked_document_id'];
+		}
+		
+		
+		return array ('text' => htmlspecialchars ( $item ['title'] ), 'originaltext' => $item ['title'], 'id' => $item ['id'], 'filename' => $item ['filename'], 'cls' => $class, 'owner' => $item ['created_by'], 'document_type' => $item ['document_type'], 'item_type' => $item ['item_type'], 'permissions' => $item ['permissions'], 'created_date' => $item ['created_date'], 'content_id' => $item ['content_id'], 'filesize' => $item ['filesize'], 'filesize_bytes' => $item ['filesize_bytes'], 'modified' => $item ['modified_date'], 'checked_out_by' => $item ['checked_out_by'], 'version' => $item ['version'], 'is_immutable' => $item ['is_immutable'], 'linked_item'=>$linkedId );
 	}
 	
 	public function get_metadata($params) {
@@ -1284,7 +1316,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 			}
 			
 			// Note 50 is set here as the level depth, inaccurate
-			$listing = $folder->get_listing(50, 'DF'); //DF
+			$listing = $folder->get_listing(50, 'DFS'); //DFS
 			
 			if ($folderId == '1') {
 				$path = 'KnowledgeTree';
@@ -1328,10 +1360,53 @@ Fatal error:  Cannot unset string offsets in on line 981
 				$this->addFolderToList($item['items'], $path.'/'.$item['filename']);
 				
 				
+			} else if ($item['item_type'] == 'S') {
+				if (isset($item['linked_document_id']) && $item['linked_document_id'] != '') {
+					
+					
+					$this->listOfFiles[] = array(
+						'folderName' => $path,
+						'documentId' => $item['linked_document_id'],
+						'filename' => $item['filename'],
+						'fullpath' => $path.'/'.$item['filename']
+					);
+					
+					
+				// Need to delved again if it is a shortcut folder
+				} else if (isset($item['linked_folder_id']) && $item['linked_folder_id']) {
+					
+					
+					
+					$folder = $this->KT->get_folder_by_id($item['linked_folder_id']);
+					
+					if (PEAR::isError($folder)){
+						
+					} else {
+						// Note 50 is set here as the level depth, inaccurate
+						$listing2 = $folder->get_listing(50, 'DFS'); //DF
+						
+						/*
+						if ($folderId == '1') {
+							$path = 'KnowledgeTree';
+						} else {
+							$path = $item['filename'];
+						}*/
+						
+						$this->addFolderToList($listing2, $path.'/'.$item['filename']);
+					}
+					
+					
+					
+					
+				}
+				
+				
 			}
 			
 		}
 	}
+	
+	// ***********************************************
 	
 	private function convert_size_to_num($size)
 	{
@@ -1388,25 +1463,31 @@ Fatal error:  Cannot unset string offsets in on line 981
 		{
 			$folderObj = &$kt->get_folder_by_id ( $folder->getFolderId() );
 			
-			$folderArray = array();
-			$folderArray['id']   = $folderObj->folderid;
-			$folderArray['name'] = $folderObj->get_folder_name();
-			
-			$parentIds = explode(',', $folderObj->getParentFolderIds());
-			$path = '/F_0';
-			
-			if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
-				foreach ($parentIds as $parentId)
-				{
-					$path .= '/F_'.$parentId;
+			if (PEAR::isError ( $folderObj )) {
+				// Ignore, dont add to list
+			} else {
+				
+				$folderArray = array();
+				$folderArray['id']   = $folderObj->folderid;
+				$folderArray['name'] = $folderObj->get_folder_name();
+				
+				$parentIds = explode(',', $folderObj->getParentFolderIds());
+				$path = '/F_0';
+				
+				if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
+					foreach ($parentIds as $parentId)
+					{
+						$path .= '/F_'.$parentId;
+					}
 				}
+				
+				$path .= '/F_'.$folderObj->folderid;
+				
+				$folderArray['path'] = $path;
+				
+				$returnFoldersArray[] = $folderArray;
+			
 			}
-			
-			$path .= '/F_'.$folderObj->folderid;
-			
-			$folderArray['path'] = $path;
-			
-			$returnFoldersArray[] = $folderArray;
 		}
 		
 		
@@ -1417,39 +1498,44 @@ Fatal error:  Cannot unset string offsets in on line 981
 		foreach ($items as $item)
 		{
 			$document = $kt->get_document_by_id($item->getDocumentId());
-			$documentDetail = $document->get_detail();
 			
-			$documentArray = array();
-			
-			$documentArray['id'] = $document->documentid;
-			$documentArray['contentID'] = $document->documentid;
-			$documentArray['title'] = $documentDetail['title'];
-			$documentArray['folderId'] = $documentDetail['folder_id'];
-			
-			// Determine Icon Class
-			$extpos = strrpos ( $documentDetail['filename'], '.' );
-			if ($extpos === false) {
-				$class = 'file-unknown';
+			if (PEAR::isError ( $document )) {
+				// Ignore, dont add to list
 			} else {
-				$class = 'file-' . substr ( $documentDetail['filename'], $extpos + 1 ); // Get Extension without the dot
-			}
-			$documentArray['iconCls'] = $class;
-			
-			// Determine Icon Path
-			$folderObj = $kt->get_folder_by_id ( $documentDetail['folder_id']);
-			$parentIds = explode(',', $folderObj->getParentFolderIds());
-			$path = '/F_0';
-			if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
-				foreach ($parentIds as $parentId)
-				{
-					$path .= '/F_'.$parentId;
+				$documentDetail = $document->get_detail();
+				
+				$documentArray = array();
+				
+				$documentArray['id'] = $document->documentid;
+				$documentArray['contentID'] = $document->documentid;
+				$documentArray['title'] = $documentDetail['title'];
+				$documentArray['folderId'] = $documentDetail['folder_id'];
+				
+				// Determine Icon Class
+				$extpos = strrpos ( $documentDetail['filename'], '.' );
+				if ($extpos === false) {
+					$class = 'file-unknown';
+				} else {
+					$class = 'file-' . substr ( $documentDetail['filename'], $extpos + 1 ); // Get Extension without the dot
 				}
+				$documentArray['iconCls'] = $class;
+				
+				// Determine Icon Path
+				$folderObj = $kt->get_folder_by_id ( $documentDetail['folder_id']);
+				$parentIds = explode(',', $folderObj->getParentFolderIds());
+				$path = '/F_0';
+				if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
+					foreach ($parentIds as $parentId)
+					{
+						$path .= '/F_'.$parentId;
+					}
+				}
+				$path .= '/F_'.$documentDetail['folder_id'];
+				
+				$documentArray['folderPath'] = $path;
+				
+				$returnDocumentArray[] = $documentArray;
 			}
-			$path .= '/F_'.$documentDetail['folder_id'];
-			
-			$documentArray['folderPath'] = $path;
-			
-			$returnDocumentArray[] = $documentArray;
 		}
 		
 		$this->setResponse(array('documents'=>$returnDocumentArray, 'folders'=>$returnFoldersArray));
