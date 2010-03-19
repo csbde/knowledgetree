@@ -1401,6 +1401,10 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 		{
 		 			$fieldname = $fieldinfo['name'];
 		 			$value = $fieldinfo['value'];
+		 			// if the 'blankvalue' argument was set to 1 (true) then do not use the current value;
+		 			// this prevents the 'n/a' values set for blank fields on get_metadata from being saved as such
+		 			// while allowing user entered values of 'n/a' to be saved
+		 			$value = ($fieldinfo['value'] == 'n/a' && $fieldinfo['blankvalue']) ? '' : $fieldinfo['value'];
 		 		}
 		 		elseif ($fieldinfo instanceof stdClass)   // is_a($fieldinfo, 'stdClass'))
 		 		{
