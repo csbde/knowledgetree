@@ -2,8 +2,7 @@
 {i18n}Creating zip file. Compressing and archiving in progress ...{/i18n}
 </p>
 <p style='margin-bottom: 10px;'>
-<br /><b>{i18n}Warning! Please wait for archiving to complete before closing the page.{/i18n} </b>
-<br />{i18n}Note: Closing the page before the download link displays will cancel your Bulk Download.{/i18n}
+<br />{i18n}Note: You can close this window and browse to other pages while the archiving completes. You will be notified by a pop-up window once the .zip file is created.{/i18n}
 </p>
 
 
