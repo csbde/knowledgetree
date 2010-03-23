@@ -334,6 +334,16 @@ class SOAPTestCase extends KTUnitTestCase {
 
 		// NOTE default parent is 1, so does not need to be declared when searching the root folder, but we use it elsewhere
 
+        // Webservice needs to be version 3
+        if(LATEST_WEBSERVICE_VERSION < 3){
+
+            // Clean up - delete all of the folders
+            foreach ($root_folder_id as $folder_id) {
+            	$this->deleteFolder($folder_id);
+            }
+            return ;
+        }
+
         // Fetching of root folder
 		$parentId = 0;
         $folderName = 'Root Folder';
@@ -541,6 +551,12 @@ class SOAPTestCase extends KTUnitTestCase {
         $documentId = $result->document_id;
         $this->assertTrue(is_numeric($documentId), 'Document id should be numeric');
 
+        if(LATEST_WEBSERVICE_VERSION < 3){
+            // delete and cleanup
+            $this->deleteFolder($folderId);
+            return ;
+        }
+
         // Get the download url for the document
         $result = $this->downloadDocument($documentId);
         $this->assertEqual($result->status_code, 0, 'Get document download url - '.$result->message);
@@ -570,12 +586,6 @@ class SOAPTestCase extends KTUnitTestCase {
         $this->assertTrue(is_string($content), 'Content should be a string');
         $content = base64_decode($content);
         $this->assertEqual($content, $this->content, 'Document content should be the same as that uploaded');
-
-        if(LATEST_WEBSERVICE_VERSION < 3){
-            // delete and cleanup
-            $this->deleteFolder($folderId);
-            return ;
-        }
 
         /* *** V3 functions *** */
 
@@ -696,6 +706,12 @@ class SOAPTestCase extends KTUnitTestCase {
      */
     public function testDocumentMetadata()
     {
+        // functions require WS version 3 to run correctly
+        // Fix: refactor functions to check version and pass correct number of parameters
+        if(LATEST_WEBSERVICE_VERSION < 3){
+            return ;
+        }
+
         // Create folder containing the documents
         $result = $this->createFolder(1, 'Test Metadata Container');
         $this->assertEqual($result->status_code, 0, 'Create folder - '.$result->message);

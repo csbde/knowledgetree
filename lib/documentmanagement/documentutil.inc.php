@@ -641,6 +641,7 @@ $sourceDocument->getName(),
             $aSimpleMetadata[$oField->getId()] = $sValue;
         }
 
+        $MDPack = array();
         foreach ($aFieldsets as $oFieldset) {
             $aFields =& $oFieldset->getFields();
             $aFieldValues = array();
@@ -694,6 +695,7 @@ $sourceDocument->getName(),
             return $res;
         }
         // XXX: Metadata refactor
+        $aMetadata = (is_array($aMetadata)) ? $aMetadata : array();
         foreach ($aMetadata as $aInfo) {
             list($oMetadata, $sValue) = $aInfo;
             if (is_null($oMetadata)) {

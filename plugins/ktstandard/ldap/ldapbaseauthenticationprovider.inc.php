@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -322,11 +322,6 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $username = KTUtil::arrayGet($_REQUEST, 'ldap_username');
         if (empty($username)) { $this->errorRedirectToMain(_kt('You must specify a new username.')); }
 
-        $dupUser =& User::getByUserName($username);
-        if(!PEAR::isError($dupUser)) {
-            $this->errorRedirectToMain(_kt("A user with that username already exists"));
-        }
-
         $email_address = KTUtil::arrayGet($_REQUEST, 'email_address');
         $email_notifications = KTUtil::arrayGet($_REQUEST, 'email_notifications', false);
         if ($email_notifications !== false) $email_notifications = true;
@@ -334,21 +329,10 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
         $max_sessions = KTUtil::arrayGet($_REQUEST, 'max_sessions', '3');
         // FIXME check for numeric max_sessions... db-error else?
 
-        $oUser =& User::createFromArray(array(
-            "Username" => $username,
-            "Name" => $name,
-            "Email" => $email_address,
-            "EmailNotification" => $email_notifications,
-            "SmsNotification" => false,   // FIXME do we auto-act if the user has a mobile?
-            "MaxSessions" => $max_sessions,
-            "authenticationsourceid" => $oSource->getId(),
-            "authenticationdetails" => $dn,
-            "authenticationdetails2" => $samaccountname,
-            "password" => "",
-        ));
+        $oUser = KTUserUtil::createUser($username, $name, '', $email_address, $email_notifications, '', $max_sessions, $oSource->getId(), $dn, $samaccountname);
 
         if (PEAR::isError($oUser) || ($oUser == false)) {
-            $this->errorRedirectToMain(_kt("failed to create user") . ": " . $oUser->message);
+            $this->errorRedirectToMain($oUser->getMessage());
             exit(0);
         }
 
@@ -368,24 +352,24 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
             $aResults = $oAuthenticator->getUser($sId);
             $dn = $sId;
             $sUserName = $aResults[$this->aAttributes[1]];
-            
+
             if ($sUserName == '') {
                 $dnParts = ldap_explode_dn($dn, 0);
                 $sUserName = end(explode('=',$dnParts[0]));;
             }
-            
+
             // With LDAP, if the 'uid' is null then try using the 'givenname' instead.
             // See activedirectoryauthenticationprovider.inc.php and ldapauthenticationprovider.inc.php for details.
             if($this->sAuthenticatorClass == "KTLDAPAuthenticator" && empty($sUserName)) {
                 $sUserName = strtolower($aResults[$this->aAttributes[2]]);
             }
             $sName = $aResults[$this->aAttributes[0]];
-            
+
             if ($sName == '') {
                 $dnParts = ldap_explode_dn($dn, 0);
                 $sName = end(explode('=',$dnParts[0]));;
             }
-            
+
             $sEmailAddress = $aResults[$this->aAttributes[4]];
             $sMobileNumber = $aResults[$this->aAttributes[5]];
 
@@ -397,19 +381,9 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
                     $appending = true;
                 } else $appending = false;
             }
-            
-            $oUser = User::createFromArray(array(
-                "Username" => $sUserName,
-                "Name" => $sName,
-                "Email" => $sEmailAddress,
-                "EmailNotification" => true,
-                "SmsNotification" => false,   // FIXME do we auto-act if the user has a mobile?
-                "MaxSessions" => 3,
-                "authenticationsourceid" => $oSource->getId(),
-                "authenticationdetails" => $dn,
-                "authenticationdetails2" => $sUserName,
-                "password" => "",
-            ));
+
+            $oUser = KTUserUtil::createUser($sUserName, $sName, '', $sEmailAddress, true, '', 3, $oSource->getId(), $dn, $sUserName);
+
             $aNames[] = $sName;
         }
         $this->successRedirectToMain(_kt("Added users") . ": " . join(', ', $aNames));

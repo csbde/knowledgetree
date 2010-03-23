@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -73,23 +73,10 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
         $oUser = $this->oUser;
         $sUserName = (string)$this->oUser->getUserName();
 
-
         // Check for the DropDocuments folder in root
         if(!Folder::FolderExistsName('DroppedDocuments', $iRootID))
         {
-            // We need to be admin to create the folder and update its permissions
-            $this->ktapi = new KTAPI();
-            $this->session = $this->ktapi->start_system_session();
-
-            // create the folder
-            $res = $this->createDropDocsFolder();
-
-            $this->session->logout();
-
-            // Check if the creation was successful
-            if(!is_null($res)){
-                return $res;
-            }
+            return _kt('The Dropped Documents folder does not exist. Please contact your System Administrator');
         }
 
         $iDropDocsFolderID = $this->getFolderID('DroppedDocuments');
@@ -97,161 +84,11 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
         // Check for users folder
         if(!Folder::FolderExistsName($sUserName, $iDropDocsFolderID))
         {
-            // We need to be admin to create the folder and update its permissions
-            $this->ktapi = new KTAPI();
-            $this->session = $this->ktapi->start_system_session();
-
-            // create the users personal folder in the DroppedDocuments folder
-            $res = $this->createPersonalFolder($sUserName, $iDropDocsFolderID);
-
-            $this->session->logout();
-
-            // Check if the creation was successful
-            if(!is_null($res)){
-                return $res;
-            }
+            return _kt('Your personal folder under the Dropped Documents folder does not exist. Please contact your System Administrator');
         }
 
         // Get documents
         return $this->getUsersDocument($sUserName, $iDropDocsFolderID);
-    }
-
-    /**
-     * Method to create the users personal folder where documents are added from the Drop Box.
-     *
-     */
-    function createPersonalFolder($sUserName, $iDropDocsFolderID)
-    {
-        // Add the users folder
-        // Add the user to the WorkSpaceAdmin role on the DroppedDocuments folder
-        // Define users folder permissions
-
-        // Get the root folder
-        $root = $this->ktapi->get_root_folder();
-
-        if(PEAR::isError($root)){
-            $default->log->debug('MyDropDocuments: could not get root folder '.$root->getMessage());
-            return _kt('Error - could not get the root folder: ').$root->getMessage();
-        }
-
-        /* ** Get the Dropped Documents folder object and assign the user to the role */
-        // Get the DroppedDocuments folder
-        $dropDocsFolder = $root->get_folder_by_name('/DroppedDocuments');
-
-        if(PEAR::isError($dropDocsFolder)){
-            $default->log->debug('MyDropDocuments: could not get DroppedDocuments folder '.$dropDocsFolder->getMessage());
-            return _kt('Error - could not get the DropppedDocuments folder: ').$dropDocsFolder->getMessage();
-        }
-
-        $oDropDocsFolder = $dropDocsFolder->get_folder();
-
-        // Get the permission object from the dropdocuments folder object
-        $oDropDocsPO = KTPermissionObject::get($oDropDocsFolder->getPermissionObjectId());
-
-        // Check to see if there are duplicate WorkSpaceOwner roles.
-        if (count($this->getRoleIdByName('WorkSpaceOwner')) > 1)
-        {
-            return _kt('Error: cannot set user role permissions: more than one role named \'WorkSpaceOwner\' exists');
-        }
-
-        // Assign the current user to the WorkSpaceOwner role
-        $this->updateUserDocsRoleAllocation($oDropDocsFolder);
-
-        /* ** Create the users personal folder */
-        // Create the users personal folder using the username as the folder name
-        $personalFolder = $dropDocsFolder->add_folder($sUserName);
-
-        if(PEAR::isError($personalFolder)){
-            $default->log->debug('MyDropDocuments: could not create user folder '.$personalFolder->getMessage());
-            return _kt('Error - could not create the personal folder: ').$personalFolder->getMessage();
-        }
-
-        $oPersonalFolder = $personalFolder->get_folder();
-
-        // The folder defines its own permissions - copy the permission object
-        KTPermissionUtil::copyPermissionObject($oPersonalFolder);
-
-        // The role should exist by now.
-        if(!$this->roleExistsName('WorkSpaceOwner'))
-        {
-            return _kt('Error: WorkSpaceOwner Role not setup, cannot assign to Personal Folder');
-        }
-
-        //Get permission object
-        $oPO = KTPermissionObject::get($oPersonalFolder->getPermissionObjectId());
-
-        if(PEAR::isError($oPO)){
-            $default->log->debug('MyDropDocuments: could not get permission object for user folder '.$oPO->getMessage());
-            return _kt('Error - could not get permission object for the personal folder: ').$oPO->getMessage();
-        }
-
-        $this->setPersonalFolderPermissions($oPO);
-
-        $this->updatePersonalFolderRoleAllocation($oPersonalFolder);
-
-        // Folder just created so no top list of last modified documents
-        return _kt('<span class="descriptiveText"> You do not have any dropped documents </span><br><br><br>');
-    }
-
-    /**
-     * Method to create the DroppedDocuments folder within the Root Folder
-     *
-     * @return string|null Returns an error message or null on success
-     */
-    function createDropDocsFolder()
-    {
-        $root = $this->ktapi->get_root_folder();
-
-        if(PEAR::isError($root)){
-            $default->log->debug('MyDropDocuments: could not get root folder '.$root->getMessage());
-            return _kt('Error - could not get the root folder: ').$root->getMessage();
-        }
-
-        //Create dropdocuments folder
-        $dropDocsFolder = $root->add_folder('DroppedDocuments');
-
-        if(PEAR::isError($dropDocsFolder)){
-            $default->log->debug('MyDropDocuments: could not create DroppedDocuments folder '.$dropDocsFolder->getMessage());
-            return _kt('Error - could not create the DropppedDocuments folder: ').$dropDocsFolder->getMessage();
-        }
-
-        // Get the DropDocuments folder object
-        $dropDocsFolderObject = $dropDocsFolder->get_folder();
-
-        // The folder must define its own permissions so create a copy of the root folder
-        KTPermissionUtil::copyPermissionObject($dropDocsFolderObject);
-
-        // Each user is added to the WorkSpaceOwner role on their personal folder
-        // Check if the role exists and create it if it doesn't
-        if(!$this->roleExistsName('WorkSpaceOwner'))
-        {
-            $oWorkSpaceOwnerRole = $this->createRole('WorkSpaceOwner');
-            if ($oWorkSpaceOwnerRole == null)
-            {
-                return _kt('Error: Failed to create WorkSpaceOwner Role');
-            }
-        }
-
-        // Get the permission object from the dropdocuments folder object
-        $oDropDocsPO = KTPermissionObject::get($dropDocsFolderObject->getPermissionObjectId());
-
-        if(PEAR::isError($oDropDocsPO)){
-            $default->log->debug('MyDropDocuments: could not get permission object for DroppedDocuments folder '.$oDropDocsPO->getMessage());
-            return _kt('Error - could not create the DropppedDocuments folder: ').$oDropDocsPO->getMessage();
-        }
-
-        // Check to see if there are duplicate WorkSpaceOwner roles.
-        if (count($this->getRoleIdByName('WorkSpaceOwner')) > 1)
-        {
-            return _kt('Error: cannot set user role permissions: more than one role named \'WorkSpaceOwner\' exists');
-        }
-
-        // call the function to set the permission on the dropdocuments folder
-        $this->setUserDocsPermissions($oDropDocsPO);
-
-        // Assign the current user to the WorkSpaceOwner role
-        $this->setUserDocsRoleAllocation($dropDocsFolderObject);
-        return null;
     }
 
     /**
@@ -354,13 +191,299 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
         '</table>'.
         '<br>'.
         '<a href="'.$location.'">'._kt(' View All').' </a><br><br>';
-        //$this->session->logout();
-
         return $sReturnTable;
+    }
+
+    //this function returns the document link and document name to be displayed on the dashlet
+    function getDocInfo($iDocId) {
+        $oDocument = Document::get($iDocId);
+
+        if (PEAR::isError($oDocument)) {
+            return _kt('Document no longer exists.');
+        }
+
+        $sName = htmlentities($oDocument->getName(), ENT_NOQUOTES, 'UTF-8');
+        $sLink = KTBrowseUtil::getUrlForDocument($oDocument);
+
+        $aAnchorData = array();
+        $aAnchorData[] = $sLink;
+        $aAnchorData[] = $sName;
+        return $aAnchorData;
+    }
+
+    //FIXME: Direct Database access
+    function getFolderID($sFolderName) {
+        $sQuery = 'SELECT id FROM folders WHERE name = \''.$sFolderName.'\'';
+
+        $id = DBUtil::getResultArray($sQuery);
+        return $id[0]['id'];
     }
 
     function handleOutput($sOutput) {
         print $sOutput;
+    }
+
+    /*
+    attempt to abstract the transaction-matching query.
+
+    tables that are already defined (other than sec ones):
+
+    - Documents (D)
+    - Users (U)
+    - TransactionTypes (DTT)
+    - Document Transactions (DT)
+
+    so where clausess can take advantage of those.
+
+    */
+    function getTransactionsMatchingQuery($oUser, $sJoinClause, $aExternalWhereClauses, $aExternalWhereParams, $aOptions = null) {
+
+        $sSelectItems = 'DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime, D.id as document_id, DT.transaction_namespace as namespace';
+        $sBaseJoin =  "FROM " . KTUtil::getTableName("document_transactions") . " AS DT " .
+        "INNER JOIN " . KTUtil::getTableName("users") . " AS U ON DT.user_id = U.id " .
+        "INNER JOIN " . KTUtil::getTableName("transaction_types") . " AS DTT ON DTT.namespace = DT.transaction_namespace " .
+        "INNER JOIN " . KTUtil::getTableName("documents") . " AS D ON D.id = DT.document_id ";
+
+        // now we're almost at partialquery like status.
+        $perm_res = KTSearchUtil::permissionToSQL($oUser, 'ktcore.permissions.read');
+        if (PEAR::isError($perm_res)) {
+            return $perm_res;
+        }
+        list($sPermissionString, $aPermissionParams, $sPermissionJoin) = $perm_res;
+
+        // compile the final list
+        $aFinalWhere = kt_array_merge(array($sPermissionString,'D.creator_id IS NOT NULL'), $aExternalWhereClauses, array('D.status_id = ?'));
+        $aFinalWhereParams = kt_array_merge($aPermissionParams, $aExternalWhereParams, array(LIVE));
+
+        if (!is_array($aOptions)) {
+            $aOptions = (array) $aOptions;
+        }
+        $sOrderBy = KTUtil::arrayGet($aOptions, 'orderby', 'DT.datetime DESC');
+
+        // compile these.
+        // NBM: do we need to wrap these in ()?
+        $sWhereClause = implode(' AND ', $aFinalWhere);
+        if (!empty($sWhereClause)) {
+            $sWhereClause = 'WHERE ' . $sWhereClause;
+        }
+
+        $sQuery = sprintf("SELECT %s %s %s %s %s ORDER BY %s",
+                $sSelectItems,
+                $sBaseJoin,
+                $sPermissionJoin,
+                $sJoinClause,
+                $sWhereClause,
+                $sOrderBy
+            );
+
+        //var_dump(array($sQuery, $aFinalWhereParams));
+
+        $res = DBUtil::getResultArray(array($sQuery, $aFinalWhereParams));
+        //var_dump($res); exit(0);
+        return $res;
+    }
+
+}
+
+class DropFolderCreation
+{
+    private $oUser;
+    private $ktapi;
+    private $session;
+
+    function __construct($oUser)
+    {
+        $this->oUser = $oUser;
+    }
+
+    function checkFolders()
+    {
+        // Check if users folder exists in DropDocuments folder
+        // - it does -> continue on to check for documents
+        // - it doesn't -> switch to root user and create it
+
+        global $default;
+        $iRootID = (int)1;
+        $oUser = $this->oUser;
+        $sUserName = (string)$this->oUser->getUserName();
+
+        // Check for the DropDocuments folder in root
+        if(!Folder::FolderExistsName('DroppedDocuments', $iRootID))
+        {
+            // We need to be admin to create the folder and update its permissions
+            $this->ktapi = new KTAPI();
+            $this->session = $this->ktapi->start_system_session();
+
+            // create the folder
+            $res = $this->createDropDocsFolder();
+
+            $this->session->logout();
+
+            // Check if the creation was successful
+            if(!is_null($res)){
+                return $res;
+            }
+        }
+
+        $iDropDocsFolderID = $this->getFolderID('DroppedDocuments');
+
+        // Check for users folder
+        if(!Folder::FolderExistsName($sUserName, $iDropDocsFolderID))
+        {
+            // We need to be admin to create the folder and update its permissions
+            $this->ktapi = new KTAPI();
+            $this->session = $this->ktapi->start_system_session();
+
+            // create the users personal folder in the DroppedDocuments folder
+            $res = $this->createPersonalFolder($sUserName, $iDropDocsFolderID);
+
+            $this->session->logout();
+
+            // Check if the creation was successful
+            if(!is_null($res)){
+                return $res;
+            }
+        }
+    }
+
+    /**
+     * Method to create the users personal folder where documents are added from the Drop Box.
+     *
+     */
+    function createPersonalFolder($sUserName, $iDropDocsFolderID)
+    {
+        global $default;
+        // Add the users folder
+        // Add the user to the WorkSpaceAdmin role on the DroppedDocuments folder
+        // Define users folder permissions
+
+        // Get the root folder
+        $root = $this->ktapi->get_root_folder();
+
+        if(PEAR::isError($root)){
+            $default->log->debug('MyDropDocuments: could not get root folder '.$root->getMessage());
+            return _kt('Error - could not get the root folder: ').$root->getMessage();
+        }
+
+        /* ** Get the Dropped Documents folder object and assign the user to the role */
+        // Get the DroppedDocuments folder
+        $dropDocsFolder = $root->get_folder_by_name('/DroppedDocuments');
+
+        if(PEAR::isError($dropDocsFolder)){
+            $default->log->debug('MyDropDocuments: could not get DroppedDocuments folder '.$dropDocsFolder->getMessage());
+            return _kt('Error - could not get the DropppedDocuments folder: ').$dropDocsFolder->getMessage();
+        }
+
+        $oDropDocsFolder = $dropDocsFolder->get_folder();
+
+        // Get the permission object from the dropdocuments folder object
+        $oDropDocsPO = KTPermissionObject::get($oDropDocsFolder->getPermissionObjectId());
+
+        // Check to see if there are duplicate WorkSpaceOwner roles.
+        if (count($this->getRoleIdByName('WorkSpaceOwner')) > 1)
+        {
+            return _kt('Error: cannot set user role permissions: more than one role named \'WorkSpaceOwner\' exists');
+        }
+
+        // Assign the current user to the WorkSpaceOwner role
+        $this->updateUserDocsRoleAllocation($oDropDocsFolder);
+
+        /* ** Create the users personal folder */
+        // Create the users personal folder using the username as the folder name
+        $personalFolder = $dropDocsFolder->add_folder($sUserName);
+
+        if(PEAR::isError($personalFolder)){
+            $default->log->debug('MyDropDocuments: could not create user folder '.$personalFolder->getMessage());
+            return _kt('Error - could not create the personal folder: ').$personalFolder->getMessage();
+        }
+
+        $oPersonalFolder = $personalFolder->get_folder();
+
+        // The folder defines its own permissions - copy the permission object
+        KTPermissionUtil::copyPermissionObject($oPersonalFolder);
+
+        // The role should exist by now.
+        if(!$this->roleExistsName('WorkSpaceOwner'))
+        {
+            return _kt('Error: WorkSpaceOwner Role not setup, cannot assign to Personal Folder');
+        }
+
+        //Get permission object
+        $oPO = KTPermissionObject::get($oPersonalFolder->getPermissionObjectId());
+
+        if(PEAR::isError($oPO)){
+            $default->log->debug('MyDropDocuments: could not get permission object for user folder '.$oPO->getMessage());
+            return _kt('Error - could not get permission object for the personal folder: ').$oPO->getMessage();
+        }
+
+        $this->setPersonalFolderPermissions($oPO);
+
+        $this->updatePersonalFolderRoleAllocation($oPersonalFolder);
+
+        // Folder just created so no top list of last modified documents
+        return _kt('<span class="descriptiveText"> You do not have any dropped documents </span><br><br><br>');
+    }
+
+    /**
+     * Method to create the DroppedDocuments folder within the Root Folder
+     *
+     * @return string|null Returns an error message or null on success
+     */
+    function createDropDocsFolder()
+    {
+        global $default;
+        $root = $this->ktapi->get_root_folder();
+
+        if(PEAR::isError($root)){
+            $default->log->debug('MyDropDocuments: could not get root folder '.$root->getMessage());
+            return _kt('Error - could not get the root folder: ').$root->getMessage();
+        }
+
+        //Create dropdocuments folder
+        $dropDocsFolder = $root->add_folder('DroppedDocuments');
+
+        if(PEAR::isError($dropDocsFolder)){
+           $defaultf->log->debug('MyDropDocuments: could not create DroppedDocuments folder '.$dropDocsFolder->getMessage());
+            return _kt('Error - could not create the DropppedDocuments folder: ').$dropDocsFolder->getMessage();
+        }
+
+        // Get the DropDocuments folder object
+        $dropDocsFolderObject = $dropDocsFolder->get_folder();
+
+        // The folder must define its own permissions so create a copy of the root folder
+        KTPermissionUtil::copyPermissionObject($dropDocsFolderObject);
+
+        // Each user is added to the WorkSpaceOwner role on their personal folder
+        // Check if the role exists and create it if it doesn't
+        if(!$this->roleExistsName('WorkSpaceOwner'))
+        {
+            $oWorkSpaceOwnerRole = $this->createRole('WorkSpaceOwner');
+            if ($oWorkSpaceOwnerRole == null)
+            {
+                return _kt('Error: Failed to create WorkSpaceOwner Role');
+            }
+        }
+
+        // Get the permission object from the dropdocuments folder object
+        $oDropDocsPO = KTPermissionObject::get($dropDocsFolderObject->getPermissionObjectId());
+
+        if(PEAR::isError($oDropDocsPO)){
+            $default->log->debug('MyDropDocuments: could not get permission object for DroppedDocuments folder '.$oDropDocsPO->getMessage());
+            return _kt('Error - could not create the DropppedDocuments folder: ').$oDropDocsPO->getMessage();
+        }
+
+        // Check to see if there are duplicate WorkSpaceOwner roles.
+        if (count($this->getRoleIdByName('WorkSpaceOwner')) > 1)
+        {
+            return _kt('Error: cannot set user role permissions: more than one role named \'WorkSpaceOwner\' exists');
+        }
+
+        // call the function to set the permission on the dropdocuments folder
+        $this->setUserDocsPermissions($oDropDocsPO);
+
+        // Assign the current user to the WorkSpaceOwner role
+        $this->setUserDocsRoleAllocation($dropDocsFolderObject);
+        return null;
     }
 
     //This function is used to set the permission on the dropdocuments folder
@@ -545,43 +668,13 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
         $this->renegeratePermissionsForRole($oRoleAllocation->getRoleId(), $personalFolderID);
     }
 
-    //FIXME: Direct Database access
-    function getFolderID($sFolderName) {
-        $sQuery = 'SELECT id FROM folders WHERE name = \''.$sFolderName.'\'';
-
-        $id = DBUtil::getResultArray($sQuery);
-        return $id[0]['id'];
-    }
-
-    //this function returns the document link and document name to be displayed on the dashlet
-    function getDocInfo($iDocId) {
-        $oDocument = Document::get($iDocId);
-
-        if (PEAR::isError($oDocument)) {
-            return _kt('Document no longer exists.');
-        }
-
-        $sName = htmlentities($oDocument->getName(), ENT_NOQUOTES, 'UTF-8');
-        $sLink = KTBrowseUtil::getUrlForDocument($oDocument);
-
-        $aAnchorData = array();
-        $aAnchorData[] = $sLink;
-        $aAnchorData[] = $sName;
-        return $aAnchorData;
-    }
-
     //This function is used to create the role, role allocation is done separately
     function createRole ($sName)
     {
-        $this->startTransaction();
         $oRole = Role::createFromArray(array('name' => $sName));
 
         if (PEAR::isError($oRole) || ($oRole == false))
         {
-            if ($this->bTransactionStarted)
-            {
-                $this->rollbackTransaction();
-            }
             //return null on failure
             return null;
         }
@@ -630,6 +723,14 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
     }
 
     //FIXME: Direct Database access
+    function getFolderID($sFolderName) {
+        $sQuery = 'SELECT id FROM folders WHERE name = \''.$sFolderName.'\'';
+
+        $id = DBUtil::getResultArray($sQuery);
+        return $id[0]['id'];
+    }
+
+    //FIXME: Direct Database access
     function getGroupIdByName ($sName)
     {
         $sQuery = "SELECT id FROM groups_lookup WHERE name = ?";
@@ -672,7 +773,6 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
 
             $aNewFolders = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
             if (PEAR::isError($aNewFolders)) {
-                //$this->errorRedirectToMain(_kt('Failure to generate folderlisting.'));
                 echo _kt('Failure to generate folderlisting.');
             }
             $folder_queue = kt_array_merge ($folder_queue, (array) $aNewFolders); // push.
@@ -681,14 +781,12 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
             // update the folder.
             $oFolder =& Folder::get($active_folder);
             if (PEAR::isError($oFolder) || ($oFolder == false)) {
-                //$this->errorRedirectToMain(_kt('Unable to locate folder: ') . $active_folder);
                 echo _kt('Unable to locate folder: ').$active_folder;
             }
 
             KTPermissionUtil::updatePermissionLookup($oFolder);
             $aDocList =& Document::getList(array('folder_id = ?', $active_folder));
             if (PEAR::isError($aDocList) || ($aDocList === false)) {
-                //$this->errorRedirectToMain(sprintf(_kt('Unable to get documents in folder %s: %s'), $active_folder, $aDocList->getMessage()));
                 echo _kt('Unable to get documents in folder ').$active_folder;
             }
 
@@ -698,66 +796,6 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
                 }
             }
         }
-    }
-
-    /*
-    attempt to abstract the transaction-matching query.
-
-    tables that are already defined (other than sec ones):
-
-    - Documents (D)
-    - Users (U)
-    - TransactionTypes (DTT)
-    - Document Transactions (DT)
-
-    so where clausess can take advantage of those.
-
-    */
-    function getTransactionsMatchingQuery($oUser, $sJoinClause, $aExternalWhereClauses, $aExternalWhereParams, $aOptions = null) {
-
-        $sSelectItems = 'DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime, D.id as document_id, DT.transaction_namespace as namespace';
-        $sBaseJoin =  "FROM " . KTUtil::getTableName("document_transactions") . " AS DT " .
-        "INNER JOIN " . KTUtil::getTableName("users") . " AS U ON DT.user_id = U.id " .
-        "INNER JOIN " . KTUtil::getTableName("transaction_types") . " AS DTT ON DTT.namespace = DT.transaction_namespace " .
-        "INNER JOIN " . KTUtil::getTableName("documents") . " AS D ON D.id = DT.document_id ";
-
-        // now we're almost at partialquery like status.
-        $perm_res = KTSearchUtil::permissionToSQL($oUser, 'ktcore.permissions.read');
-        if (PEAR::isError($perm_res)) {
-            return $perm_res;
-        }
-        list($sPermissionString, $aPermissionParams, $sPermissionJoin) = $perm_res;
-
-        // compile the final list
-        $aFinalWhere = kt_array_merge(array($sPermissionString,'D.creator_id IS NOT NULL'), $aExternalWhereClauses, array('D.status_id = ?'));
-        $aFinalWhereParams = kt_array_merge($aPermissionParams, $aExternalWhereParams, array(LIVE));
-
-        if (!is_array($aOptions)) {
-            $aOptions = (array) $aOptions;
-        }
-        $sOrderBy = KTUtil::arrayGet($aOptions, 'orderby', 'DT.datetime DESC');
-
-        // compile these.
-        // NBM: do we need to wrap these in ()?
-        $sWhereClause = implode(' AND ', $aFinalWhere);
-        if (!empty($sWhereClause)) {
-            $sWhereClause = 'WHERE ' . $sWhereClause;
-        }
-
-        $sQuery = sprintf("SELECT %s %s %s %s %s ORDER BY %s",
-                $sSelectItems,
-                $sBaseJoin,
-                $sPermissionJoin,
-                $sJoinClause,
-                $sWhereClause,
-                $sOrderBy
-            );
-
-        //var_dump(array($sQuery, $aFinalWhereParams));
-
-        $res = DBUtil::getResultArray(array($sQuery, $aFinalWhereParams));
-        //var_dump($res); exit(0);
-        return $res;
     }
 }
 ?>

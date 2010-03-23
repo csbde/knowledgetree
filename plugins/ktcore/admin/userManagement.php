@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -39,6 +39,7 @@
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 
 require_once(KT_LIB_DIR . '/users/User.inc');
+require_once(KT_LIB_DIR . '/users/userutil.inc.php');
 require_once(KT_LIB_DIR . '/groups/GroupUtil.php');
 require_once(KT_LIB_DIR . '/groups/Group.inc');
 
@@ -539,32 +540,21 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         	$this->errorRedirectTo('addUser', _kt("You have entered an invalid character in your name."));
         }
 
-        $dupUser =& User::getByUserName($username);
-        if(!PEAR::isError($dupUser)) {
-            $this->errorRedirectTo('addUser', _kt("A user with that username already exists"));
-        }
 
+        $oUser = KTUserUtil::createUser($username, $name, $password, $email_address, $email_notifications, $mobile_number, $max_sessions);
 
+        if(PEAR::isError($oUser)){
+            if($oUser->getMessage() == _kt("A user with that username already exists")){
+                $this->errorRedirectTo('addUser', _kt("A user with that username already exists"));
+                exit();
+            }
 
-        $oUser =& User::createFromArray(array(
-            "sUsername" => $username,
-            "sName" => $name,
-            "sPassword" => md5($password),
-            "iQuotaMax" => 0,
-            "iQuotaCurrent" => 0,
-            "sEmail" => $email_address,
-            "bEmailNotification" => $email_notifications,
-            "sMobile" => $mobile_number,
-            "bSmsNotification" => false,   // FIXME do we auto-act if the user has a mobile?
-            "iMaxSessions" => $max_sessions,
-        ));
-
-        if (PEAR::isError($oUser) || ($oUser == false)) {
             $this->errorRedirectToMain(_kt("failed to create user."), sprintf("old_search=%s&do_search=1", $old_search));
-            exit(0);
+            exit;
         }
 
         $this->successRedirectToMain(_kt('Created new user') . ': ' . $oUser->getUsername(), 'name=' . $oUser->getUsername(), sprintf("old_search=%s&do_search=1", $old_search));
+        return ;
     }
 
     function do_deleteUser() {

@@ -1405,7 +1405,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 			// if the 'blankvalue' argument was set to 1 (true) then do not use the current value;
 		 			// this prevents the 'n/a' values set for blank fields on get_metadata from being saved as such
 		 			// while allowing user entered values of 'n/a' to be saved
-		 			$value = $fieldinfo['blankvalue'] ? '' : $fieldinfo['value'];
+		 			$value = ($fieldinfo['value'] == 'n/a' && $fieldinfo['blankvalue']) ? '' : $fieldinfo['value'];
 		 		}
 		 		elseif ($fieldinfo instanceof stdClass)   // is_a($fieldinfo, 'stdClass'))
 		 		{
@@ -2156,7 +2156,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	{
 		return $this->document->getContentVersionId();
 	}
-	
+
 	/**
 	 * Gets the url which can be used to download the document.
 	 *
@@ -2622,7 +2622,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		if (KTPluginUtil::pluginIsActive('brad.UserHistory.plugin')) {
 			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
             require_once($path .  'UserHistoryActions.php');
-			
+
 			$docAction = new UserHistoryDocumentAction($this->document, $this->ktapi->get_user());
 			$docAction->_show();
 		}
