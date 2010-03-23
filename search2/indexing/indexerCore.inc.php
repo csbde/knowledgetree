@@ -41,6 +41,7 @@ define('SEARCH2_INDEXER_DIR',realpath(dirname(__FILE__)) . '/');
 require_once('indexing/extractorCore.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/scheduler/schedulerUtil.php');
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
+require_once(KT_DIR . '/search2/indexing/lib/RestSolr.inc.php');
 
 class IndexerInconsistencyException extends Exception {};
 
@@ -1374,6 +1375,9 @@ abstract class Indexer
 	    global $default;
 	    static $extractorCache = array();
 
+	    //$oSolr = new RestSolr('localhost', '8983', '/solr/');
+	    $oSolr = new RestSolr('localhost', '8983', '/solr/client_02/'); //connecting to a dynamic core (core still needs a folder struct on the server though)
+	    
 	    // increment indexed documents count
 	    Indexer::incrementCount();
 
@@ -1389,7 +1393,10 @@ abstract class Indexer
 	    $docId = $docinfo['document_id'];
 	    $extension = $docinfo['filetypes'];
 	    $mimeType = $docinfo['mimetypes'];
+	    
 	    $extractorClass = $docinfo['extractor'];
+	    //$extractorClass = ''; //nulling the extractor class to avoid old extraction implementation:
+	    
 	    $indexDocument = in_array($docinfo['what'], array('A','C'));
 	    $indexDiscussion = in_array($docinfo['what'], array('A','D'));
 	    $this->indexingHistory = '';
@@ -1399,6 +1406,7 @@ abstract class Indexer
 
 	    if (empty($extractorClass))
 	    {
+	        
 	        /*
 	        if no extractor is found and we don't need to index discussions, then we can remove the item from the queue.
 	        */
@@ -1406,9 +1414,15 @@ abstract class Indexer
 	        {
 	            $indexDocument = false;
 	            $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Not indexing docid: %d content because extractor could not be resolve. Still indexing discussion."), $docId), 'info');
+	            
 	        }
 	        else
 	        {
+	            
+	            //Indexing the document with Tika extraction.
+	            $default->log->info('SOLR - document info, need file location : ' . var_export($docinfo, true));
+	            //$oSolr->addExtractDocument();
+	            
 	            Indexer::unqueueDocument($docId, sprintf(_kt("No extractor for docid: %d"),$docId));
 	            return ;
 	        }
@@ -1447,6 +1461,26 @@ abstract class Indexer
 	    $removeFromQueue = true;
 	    if ($indexDocument)
 	    {
+	        
+	        //SolR Indexing Here
+            $docId = $docinfo['document_id'];
+            $document = Document::get($docId);
+
+            $contentPath = '/var/www/knowledgetree/var/Documents/' . $document->getStoragePath();
+                        
+            //Indexing the document with Tika extraction.
+            $default->log->info('SOLR - document id : ' . var_export($docinfo['document_id'], true));
+            $default->log->info('SOLR - document path : ' . var_export($contentPath, true));
+            $default->log->info('SOLR - document discussion : ' . var_export($indexDiscussion, true));
+            $default->log->info('SOLR - document title : ' . var_export($docinfo, true));
+            $default->log->info('SOLR - document version : ' . var_export($docinfo, true));
+            
+            $result = $oSolr->addDocument($docId, $contentPath, $indexDiscussion, $title, $version);
+            $default->log->info('SOLR - SENDIN FILE : ' . $contentPath);
+            $default->log->info('SOLR - POST RESULT : ' . var_export($result, true));	            
+            
+	        //------------ end solr indexing
+	        
 	        if (array_key_exists($extractorClass, $extractorCache))
 	        {
 	            $extractor = $extractorCache[$extractorClass];
