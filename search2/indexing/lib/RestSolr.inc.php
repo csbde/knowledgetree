@@ -41,92 +41,99 @@ require_once(KT_DIR . '/thirdparty/solr-php-client/Apache/Solr/Service.php');
 
 class RestSolr
 {
-	/**
+    /**
 	 * Reference to the SOLR client
 	 *
 	 * @var client
 	 */
-	var $client;
+    var $client;
 
-	/**
+    /**
 	 * Identifier for the KT instance
 	 *
 	 * @var string
 	 */
-	var $ktid;
+    var $ktid;
 
-	/**
-	 * Identifier for the lucene server
+    /**
+	 * Identifier for the solr server
 	 *
 	 * @var string
 	 */
-	var $authToken;
+    var $authToken;
 
-	/**
+    /**
+	 * Tells the solr client whether to extract text content or if it is receiving already extracted content
+	 *
+	 * @var boolean
+	 */
+    private $extract = true;
+
+    /**
 	 * The constructor for the SOLR initialization.
 	 *
 	 * @param string $url
 	 * @param int $port
 	 */
-	public function __construct($host, $port = 8983, $base = '/solr/')
-	{
-	    
-	    //$this->client = new Apache_Solr_Service($host, $port, $base);
-	    
-	    $this->client = new Apache_Solr_Service($host, $port, $base);
-	    
-		/* //TODO: Add config vars for Solr Host/Port, Update/Extract url's
-		$config = KTConfig::getSingleton();
-		$this->authToken = $config->get('indexer/luceneAuthToken','');
-		$this->ktid = $config->get('indexer/luceneID','');
-		*/
-	}
+    public function __construct($host, $port = 8983, $base = '/solr/')
+    {
+        $this->client = new Apache_Solr_Service($host, $port, $base);
 
-	public static function get($url)
-	{
-	    static $singleton = null;
+        /* //TODO: Add config vars for Solr Host/Port, Update/Extract url's
+        $config = KTConfig::getSingleton();
+        $this->authToken = $config->get('indexer/luceneAuthToken','');
+        $this->ktid = $config->get('indexer/luceneID','');
+        */
+    }
 
-	    if(is_null($singleton)){
-	        $singleton = new RestSolr($url);
-	    }
+    public static function get($url)
+    {
+        static $singleton = null;
+
+        if(is_null($singleton)){
+            $singleton = new RestSolr($url);
+        }
         return $singleton;
-	}
+    }
 
-	/**
+    /**
 	 * Set a level for debugging.
 	 *
 	 * @param int $level
 	 */
-	function debug($level)
-	{
-		//$this->client->setDebug($level);
-	}
+    function debug($level)
+    {
+        //$this->client->setDebug($level);
+    }
 
-	/**
+    public function setExtract($extract)
+    {
+        $this->extract = $extract;
+    }
+
+    /**
 	 * Logs errors to the log file
 	 *
 	 * @param result $result
 	 * @param string $function
 	 */
-	function error($result, $function)
-	{
-		global $default;
-		$default->log->error('SOLR Indexer - ' . $function . ' - Code: ' . htmlspecialchars($result->faultCode()));
-		$default->log->error('SOLR Indexer - ' . $function . ' - Reason: ' . htmlspecialchars($result->faultString()));
-	}
+    function error($result, $function)
+    {
+        global $default;
+        $default->log->error('SOLR Indexer - ' . $function . ' - Code: ' . htmlspecialchars($result->faultCode()));
+        $default->log->error('SOLR Indexer - ' . $function . ' - Reason: ' . htmlspecialchars($result->faultString()));
+    }
 
-	/**
+    /**
 	 * Optimise the Solr index.
-	 *
-	 * @return boolean
 	 */
-	function optimise()
-	{
-	    //send through the optimize key/value to updateUrl
-	}
+    function optimise()
+    {
+        $this->client->optimize();
+    }
 
-	/**
-	 * Add a document to lucene
+    /**
+	 * Add a document to solr
 	 *
 	 * @param int $documentid
 	 * @param string $contentFile
@@ -135,159 +142,174 @@ class RestSolr
 	 * @param string $version
 	 * @return boolean
 	 */
-	function addDocument($documentid, $contentFile, $discussion, $title, $version)
-	{
-	    global $default;
-	    $default->log->info('SOLR ADD: ' . $contentFile);
-	    /*
-		$this->ktid
-		$this->authToken
-		*/
-	    
-	    $result = $this->client->addExtractDocument($contentFile, array('id' => $documentid, 'title' => $title, 'version' => $version, 'description' => $discussion));
-	
-	    $default->log->info('SOLR ADD RESULT: ' . var_export($result, true));
-	    
+    // TODO add document with already extracted content
+    function addDocument($documentid, $contentFile, $discussion, $title, $version)
+    {
+        global $default;
+        $default->log->info('SOLR ADD: ' . $contentFile);
+        /*
+        $this->ktid
+        $this->authToken
+        */
+
+        if ($this->extract) {
+            $result = $this->client->addExtractDocument($contentFile, 
+                                                        array('id' => $documentid, 'title' => $title, 
+                                                              'version' => $version, 'description' => $discussion));
+        }
+        else {
+            $document = new Apache_Solr_Document();
+            $document->id = $documentid; // MUST be suitably unique
+            $document->title = $title;
+            $document->content = file_get_contents($contentFile); // MUST be pre-extracted content
+
+            $result = $this->client->addDocument($document); 	//if you're going to be adding documents in bulk using addDocuments
+                                                                //with an array of documents is faster
+            $this->client->commit(); //commit to see the document
+        }
+
+        $default->log->info('SOLR ADD RESULT: ' . var_export($result, true));
+
         if ($result['http_code'] != 200) {
-	        $default->log->info('SOLR INDEX ERROR: ' . var_export($result, true));
+            $default->log->info('SOLR INDEX ERROR: ' . var_export($result, true));
             return false;
         }
 
         return true;
-	}
+    }
 
-	/**
+    /**
 	 * Remove the document from the index.
 	 *
 	 * @param int $documentid
 	 * @return boolean
 	 */
-	function deleteDocument($documentid)
-	{
-		$function=new xmlrpcmsg('indexer.deleteDocument',array(
-				php_xmlrpc_encode((string) $this->ktid),
-				php_xmlrpc_encode((string) $this->authToken),
-				php_xmlrpc_encode((int) $documentid)));
+    function deleteDocument($documentid)
+    {
+        $function=new xmlrpcmsg('indexer.deleteDocument',array(
+        php_xmlrpc_encode((string) $this->ktid),
+        php_xmlrpc_encode((string) $this->authToken),
+        php_xmlrpc_encode((int) $documentid)));
 
-		$result=&$this->client->send($function);
-		if($result->faultCode())
-		{
-			$this->error($result, 'deleteDocument');
-			return false;
-		}
-		return php_xmlrpc_decode($result->value()) == 0;
-	}
+        $result=&$this->client->send($function);
+        if($result->faultCode())
+        {
+            $this->error($result, 'deleteDocument');
+            return false;
+        }
+        return php_xmlrpc_decode($result->value()) == 0;
+    }
 
-	/**
+    /**
 	 * Does the document exist?
 	 *
 	 * @param int $documentid
 	 * @return boolean
 	 */
-	function documentExists($documentid)
-	{
-		$function=new xmlrpcmsg('indexer.documentExists',array(
-				php_xmlrpc_encode((string) $this->ktid),
-				php_xmlrpc_encode((string) $this->authToken),
-				php_xmlrpc_encode((int) $documentid)));
+    function documentExists($documentid)
+    {
+        $function=new xmlrpcmsg('indexer.documentExists',array(
+        php_xmlrpc_encode((string) $this->ktid),
+        php_xmlrpc_encode((string) $this->authToken),
+        php_xmlrpc_encode((int) $documentid)));
 
-		$result=&$this->client->send($function);
-		if($result->faultCode())
-		{
-			$this->error($result, 'documentExists');
-			return false;
-		}
-		return php_xmlrpc_decode($result->value());
-	}
+        $result=&$this->client->send($function);
+        if($result->faultCode())
+        {
+            $this->error($result, 'documentExists');
+            return false;
+        }
+        return php_xmlrpc_decode($result->value());
+    }
 
-	/**
+    /**
 	 * Get statistics from the indexer
 	 *
 	 * @return array
 	 */
-	function getStatistics()
-	{
-		$function=new xmlrpcmsg('indexer.getStatistics',array(
-				php_xmlrpc_encode((string) $this->ktid),
-				php_xmlrpc_encode((string) $this->authToken)));
+    function getStatistics()
+    {
+        $function=new xmlrpcmsg('indexer.getStatistics',array(
+        php_xmlrpc_encode((string) $this->ktid),
+        php_xmlrpc_encode((string) $this->authToken)));
 
 
-		$result=&$this->client->send($function);
-		if($result->faultCode())
-		{
-			$this->error($result, 'getStatistics');
-			return false;
-		}
+        $result=&$this->client->send($function);
+        if($result->faultCode())
+        {
+            $this->error($result, 'getStatistics');
+            return false;
+        }
 
-		$result = php_xmlrpc_decode($result->value());
+        $result = php_xmlrpc_decode($result->value());
 
-		//print $result;
+        //print $result;
 
-		return json_decode($result);
-	}
+        return json_decode($result);
+    }
 
-	/**
+    /**
 	 * Run a query on the lucene index
 	 *
 	 * @param string $query
 	 * @return boolean
 	 */
-	function query($query)
-	{
-		$function=new xmlrpcmsg('indexer.query',array(
-				php_xmlrpc_encode((string) $this->ktid),
-				php_xmlrpc_encode((string) $this->authToken),
-				php_xmlrpc_encode((string) $query)));
+    function query($query)
+    {
+        $function=new xmlrpcmsg('indexer.query',array(
+        php_xmlrpc_encode((string) $this->ktid),
+        php_xmlrpc_encode((string) $this->authToken),
+        php_xmlrpc_encode((string) $query)));
 
-		$result=&$this->client->send($function, 60);
-		if($result->faultCode())
-		{
-			$this->error($result, 'query');
-			return false;
-		}
+        $result=&$this->client->send($function, 60);
+        if($result->faultCode())
+        {
+            $this->error($result, 'query');
+            return false;
+        }
 
-		$result = php_xmlrpc_decode($result->value());
-		return json_decode($result);
-	}
+        $result = php_xmlrpc_decode($result->value());
+        return json_decode($result);
+    }
 
-	/**
+    /**
 	 * Updates the discussion text on a given document.
 	 *
 	 * @param int $docid
 	 * @param string $discussion
 	 * @return boolean
 	 */
-	function updateDiscussion($docid, $discussion)
-	{
-		$function=new xmlrpcmsg('indexer.updateDiscussion',array(
-				php_xmlrpc_encode((string) $this->ktid),
-				php_xmlrpc_encode((string) $this->authToken),
-				php_xmlrpc_encode((int) $docid),
-				php_xmlrpc_encode((string) $discussion)));
+    function updateDiscussion($docid, $discussion)
+    {
+        $function=new xmlrpcmsg('indexer.updateDiscussion',array(
+        php_xmlrpc_encode((string) $this->ktid),
+        php_xmlrpc_encode((string) $this->authToken),
+        php_xmlrpc_encode((int) $docid),
+        php_xmlrpc_encode((string) $discussion)));
 
-		$result=&$this->client->send($function);
-		if($result->faultCode())
-		{
-			$this->error($result, 'updateDiscussion');
-			return false;
-		}
-		return php_xmlrpc_decode($result->value()) == 0;
-	}
+        $result=&$this->client->send($function);
+        if($result->faultCode())
+        {
+            $this->error($result, 'updateDiscussion');
+            return false;
+        }
+        return php_xmlrpc_decode($result->value()) == 0;
+    }
 
-	/**
+    /**
 	 * Extracts the text from a given document and writes it to the target file
 	 *
 	 * @param string $sourceFile The full path to the document
 	 * @param string $targetFile The full path to the target / output file
 	 * @return boolean true on success | false on failure
 	 */
-	function extractTextContent($sourceFile, $targetFile)
+    function extractTextContent($sourceFile, $targetFile)
     {
         $function = new xmlrpcmsg('textextraction.getTextFromFile',
-            array(
-                php_xmlrpc_encode((string) $sourceFile),
-                php_xmlrpc_encode((string) $targetFile)
-            )
+        array(
+        php_xmlrpc_encode((string) $sourceFile),
+        php_xmlrpc_encode((string) $targetFile)
+        )
         );
 
         $result =& $this->client->send($function, 120);
@@ -296,7 +318,7 @@ class RestSolr
             $this->error($result, 'extractTextContent');
             return false;
         }
-		return php_xmlrpc_decode($result->value()) == 0;
+        return php_xmlrpc_decode($result->value()) == 0;
     }
 
     /**
@@ -308,9 +330,9 @@ class RestSolr
     function extractTextContentByStreaming($content)
     {
         $function = new xmlrpcmsg('textextraction.getText',
-            array(
-                new xmlrpcval($content, 'base64'))
-            );
+        array(
+        new xmlrpcval($content, 'base64'))
+        );
         $result =& $this->client->send($function, 120);
 
         unset($content);
@@ -338,9 +360,9 @@ class RestSolr
     {
         $function = new xmlrpcmsg('metadata.writeProperty',
         array(
-            php_xmlrpc_encode((string) $sourceFile),
-            php_xmlrpc_encode((string) $targetFile),
-            php_xmlrpc_encode($properties)
+        php_xmlrpc_encode((string) $sourceFile),
+        php_xmlrpc_encode((string) $targetFile),
+        php_xmlrpc_encode($properties)
         ));
 
         $result =& $this->client->send($function);
@@ -363,8 +385,8 @@ class RestSolr
     {
         $function = new xmlrpcmsg('metadata.readMetadata',
         array(
-            php_xmlrpc_encode((string) $sourceFile),
-            php_xmlrpc_encode((string) $property)
+        php_xmlrpc_encode((string) $sourceFile),
+        php_xmlrpc_encode((string) $property)
         ));
 
         $result =& $this->client->send($function);
@@ -396,10 +418,10 @@ class RestSolr
     {
         $function = new xmlrpcmsg('metadata.writeOOXMLProperty',
         array(
-            php_xmlrpc_encode((string) $sourceFile),
-            php_xmlrpc_encode((string) $targetFile),
-            php_xmlrpc_encode((int) $type),
-            php_xmlrpc_encode($properties)
+        php_xmlrpc_encode((string) $sourceFile),
+        php_xmlrpc_encode((string) $targetFile),
+        php_xmlrpc_encode((int) $type),
+        php_xmlrpc_encode($properties)
         ));
 
         $result =& $this->client->send($function);
@@ -424,9 +446,9 @@ class RestSolr
     {
         $function = new xmlrpcmsg('metadata.readOOXMLProperty',
         array(
-            php_xmlrpc_encode((string) $sourceFile),
-            php_xmlrpc_encode((int) $type),
-            php_xmlrpc_encode((string) $property)
+        php_xmlrpc_encode((string) $sourceFile),
+        php_xmlrpc_encode((int) $type),
+        php_xmlrpc_encode((string) $property)
         ));
 
         $result =& $this->client->send($function);
@@ -457,12 +479,12 @@ class RestSolr
     function convertDocument($sourceFile, $targetFile, $ooHost, $ooPort)
     {
         $function = new xmlrpcmsg('openoffice.convertDocument',
-            array(
-                php_xmlrpc_encode((string) $sourceFile),
-                php_xmlrpc_encode((string) $targetFile),
-                php_xmlrpc_encode((string) $ooHost),
-                php_xmlrpc_encode((int) $ooPort)
-            )
+        array(
+        php_xmlrpc_encode((string) $sourceFile),
+        php_xmlrpc_encode((string) $targetFile),
+        php_xmlrpc_encode((string) $ooHost),
+        php_xmlrpc_encode((int) $ooPort)
+        )
         );
 
         $result=&$this->client->send($function, 120);
@@ -485,10 +507,10 @@ class RestSolr
     function convertDocumentStreamed($content, $toExtension = 'pdf')
     {
         $function = new xmlrpcmsg('openoffice.convertDocument',
-            array(
-                new xmlrpcval($content, 'base64'),
-                php_xmlrpc_encode((string)$toExtension)
-            ));
+        array(
+        new xmlrpcval($content, 'base64'),
+        php_xmlrpc_encode((string)$toExtension)
+        ));
 
         $result=&$this->client->send($function, 120);
 
@@ -509,19 +531,19 @@ class RestSolr
     }
 
     function shutdown()
-	{
-		$function=new xmlrpcmsg('control.shutdown',array(
-				php_xmlrpc_encode((string) $this->ktid),
-				php_xmlrpc_encode((string) $this->authToken)));
+    {
+        $function=new xmlrpcmsg('control.shutdown',array(
+        php_xmlrpc_encode((string) $this->ktid),
+        php_xmlrpc_encode((string) $this->authToken)));
 
-		$result=&$this->client->send($function);
-		if($result->faultCode())
-		{
-			$this->error($result, 'shutdown');
-			return false;
-		}
-		return true;
-	}
+        $result=&$this->client->send($function);
+        if($result->faultCode())
+        {
+            $this->error($result, 'shutdown');
+            return false;
+        }
+        return true;
+    }
 
 
 }
