@@ -1253,7 +1253,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		 foreach ($fieldsets as $fieldset)
 		 {
-		 	if ($fieldset->getIsConditional()) {	/* this is not implemented...*/	continue;	}
+		    // this line caused conditional metadata to not be present, and it is there when this is commented out;
+		    // if there are problems with conditional metadata in future, check here to make sure this is not the cause
+//		 	if ($fieldset->getIsConditional()) {	/* this is not implemented...*/	continue;	}
 
 		 	$fields = $fieldset->getFields();
 		 	$result = array('fieldset' => $fieldset->getName(),
