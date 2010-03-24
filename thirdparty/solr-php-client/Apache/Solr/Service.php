@@ -342,6 +342,13 @@ class Apache_Solr_Service
         curl_close ($ch);
     
         $info['body'] = $result;
+                
+//		$response = new Apache_Solr_Response($result);
+
+		if ($info['http_code'] != 200)
+		{
+			throw new Exception('SOLR INDEX ERROR: ' . $info['http_code']);
+		}
         
         return $info;
     }

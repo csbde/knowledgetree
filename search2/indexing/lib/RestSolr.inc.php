@@ -152,28 +152,36 @@ class RestSolr
         $this->authToken
         */
 
-        if ($this->extract) {
-            $result = $this->client->addExtractDocument($contentFile, 
-                                                        array('id' => $documentid, 'title' => $title, 
-                                                              'version' => $version, 'description' => $discussion));
+        try {
+            if ($this->extract) {
+                $result = $this->client->addExtractDocument($contentFile,
+                array('id' => $documentid, 'title' => $title,
+                'version' => $version, 'description' => $discussion));
+            }
+            else {
+                $document = new Apache_Solr_Document();
+                $document->id = $documentid; // MUST be suitably unique
+                $document->title = $title;
+                //$document->content = file_get_contents($contentFile); // MUST be pre-extracted content
+                $document->text = file_get_contents($contentFile); // MUST be pre-extracted content
+
+                $result = $this->client->addDocument($document); 	//if you're going to be adding documents in bulk using addDocuments
+                //with an array of documents is faster
+                $this->client->commit(); //commit to see the document
+            }
+            $default->log->info('SOLR ADD RESULT: ' . print_r($result, true));
         }
-        else {
-            $document = new Apache_Solr_Document();
-            $document->id = $documentid; // MUST be suitably unique
-            $document->title = $title;
-            $document->content = file_get_contents($contentFile); // MUST be pre-extracted content
-
-            $result = $this->client->addDocument($document); 	//if you're going to be adding documents in bulk using addDocuments
-                                                                //with an array of documents is faster
-            $this->client->commit(); //commit to see the document
-        }
-
-        $default->log->info('SOLR ADD RESULT: ' . var_export($result, true));
-
-        if ($result['http_code'] != 200) {
-            $default->log->info('SOLR INDEX ERROR: ' . var_export($result, true));
+        catch (Exception $e) {
+            $default->log->info('SOLR INDEX ERROR: ' . print_r($result, true));
             return false;
         }
+
+//        $default->log->info('SOLR ADD RESULT: ' . print_r($result, true));
+//
+//        if ($result['http_code'] != 200) {
+//            $default->log->info('SOLR INDEX ERROR: ' . print_r($result, true));
+//            return false;
+//        }
 
         return true;
     }
@@ -186,18 +194,19 @@ class RestSolr
 	 */
     function deleteDocument($documentid)
     {
-        $function=new xmlrpcmsg('indexer.deleteDocument',array(
-        php_xmlrpc_encode((string) $this->ktid),
-        php_xmlrpc_encode((string) $this->authToken),
-        php_xmlrpc_encode((int) $documentid)));
-
-        $result=&$this->client->send($function);
-        if($result->faultCode())
-        {
-            $this->error($result, 'deleteDocument');
+        global $default;
+        
+        try {                        
+            $result = $this->client->deleteById($documentid);
+            $this->client->commit();
+            $default->log->info('SOLR ADD RESULT: ' . print_r($result, true));
+        }
+        catch (Exception $e) {
+            $default->log->info('SOLR INDEX ERROR: ' . print_r($result, true));
             return false;
         }
-        return php_xmlrpc_decode($result->value()) == 0;
+
+        return true;
     }
 
     /**
