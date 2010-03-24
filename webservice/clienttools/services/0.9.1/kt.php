@@ -1522,19 +1522,25 @@ Fatal error:  Cannot unset string offsets in on line 981
 				
 				// Determine Icon Path
 				$folderObj = $kt->get_folder_by_id ( $documentDetail['folder_id']);
-				$parentIds = explode(',', $folderObj->getParentFolderIds());
-				$path = '/F_0';
-				if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
-					foreach ($parentIds as $parentId)
-					{
-						$path .= '/F_'.$parentId;
+				
+				if (PEAR::isError ( $folderObj )) {
+					// Ignore, dont add to list
+					// Folder has been deleted
+				} else {
+					$parentIds = explode(',', $folderObj->getParentFolderIds());
+					$path = '/F_0';
+					if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
+						foreach ($parentIds as $parentId)
+						{
+							$path .= '/F_'.$parentId;
+						}
 					}
+					$path .= '/F_'.$documentDetail['folder_id'];
+					
+					$documentArray['folderPath'] = $path;
+					
+					$returnDocumentArray[] = $documentArray;
 				}
-				$path .= '/F_'.$documentDetail['folder_id'];
-				
-				$documentArray['folderPath'] = $path;
-				
-				$returnDocumentArray[] = $documentArray;
 			}
 		}
 		
