@@ -131,6 +131,10 @@ class RestSolr
     {
         $this->client->optimize();
     }
+    
+    public function ping() {
+        return $this->client->ping();
+    }
 
     /**
 	 * Add a document to solr
@@ -154,11 +158,13 @@ class RestSolr
 
         try {
             if ($this->extract) {
+                // add document which must be extracted by SOLR
                 $result = $this->client->addExtractDocument($contentFile,
-                array('id' => $documentid, 'title' => $title,
-                'version' => $version, 'description' => $discussion));
+                                                            array('id' => $documentid, 'title' => $title,
+                                                                  'version' => $version, 'description' => $discussion));
             }
             else {
+                // add document with pre-extracted content
                 $document = new Apache_Solr_Document();
                 $document->id = $documentid; // MUST be suitably unique
                 $document->title = $title;
@@ -199,7 +205,7 @@ class RestSolr
         try {                        
             $result = $this->client->deleteById($documentid);
             $this->client->commit();
-            $default->log->info('SOLR ADD RESULT: ' . print_r($result, true));
+            $default->log->info('SOLR DELETE RESULT: ' . print_r($result, true));
         }
         catch (Exception $e) {
             $default->log->info('SOLR INDEX ERROR: ' . print_r($result, true));
@@ -217,6 +223,7 @@ class RestSolr
 	 */
     function documentExists($documentid)
     {
+        /*
         $function=new xmlrpcmsg('indexer.documentExists',array(
         php_xmlrpc_encode((string) $this->ktid),
         php_xmlrpc_encode((string) $this->authToken),
@@ -229,6 +236,7 @@ class RestSolr
             return false;
         }
         return php_xmlrpc_decode($result->value());
+        */
     }
 
     /**
@@ -238,6 +246,7 @@ class RestSolr
 	 */
     function getStatistics()
     {
+        /*
         $function=new xmlrpcmsg('indexer.getStatistics',array(
         php_xmlrpc_encode((string) $this->ktid),
         php_xmlrpc_encode((string) $this->authToken)));
@@ -255,6 +264,8 @@ class RestSolr
         //print $result;
 
         return json_decode($result);
+        */
+        return;
     }
 
     /**
@@ -290,6 +301,7 @@ class RestSolr
 	 */
     function updateDiscussion($docid, $discussion)
     {
+        /*
         $function=new xmlrpcmsg('indexer.updateDiscussion',array(
         php_xmlrpc_encode((string) $this->ktid),
         php_xmlrpc_encode((string) $this->authToken),
@@ -303,6 +315,8 @@ class RestSolr
             return false;
         }
         return php_xmlrpc_decode($result->value()) == 0;
+        */
+        return;
     }
 
     /**
@@ -314,6 +328,7 @@ class RestSolr
 	 */
     function extractTextContent($sourceFile, $targetFile)
     {
+        /*
         $function = new xmlrpcmsg('textextraction.getTextFromFile',
         array(
         php_xmlrpc_encode((string) $sourceFile),
@@ -328,6 +343,8 @@ class RestSolr
             return false;
         }
         return php_xmlrpc_decode($result->value()) == 0;
+        */
+        return;
     }
 
     /**
@@ -338,6 +355,7 @@ class RestSolr
 	 */
     function extractTextContentByStreaming($content)
     {
+        /*
         $function = new xmlrpcmsg('textextraction.getText',
         array(
         new xmlrpcval($content, 'base64'))
@@ -355,6 +373,8 @@ class RestSolr
 
         $extractedText = trim($obj['text']);
         return $extractedText;
+        */
+        return;
     }
 
     /**
@@ -367,6 +387,7 @@ class RestSolr
      */
     function writeProperties($sourceFile, $targetFile, $properties)
     {
+        /*
         $function = new xmlrpcmsg('metadata.writeProperty',
         array(
         php_xmlrpc_encode((string) $sourceFile),
@@ -382,6 +403,8 @@ class RestSolr
         }
 
         return php_xmlrpc_decode($result->value()) == 0;
+        */
+        return;
     }
 
     /**
@@ -392,6 +415,7 @@ class RestSolr
      */
     function readProperties($sourceFile, $property)
     {
+        /*
         $function = new xmlrpcmsg('metadata.readMetadata',
         array(
         php_xmlrpc_encode((string) $sourceFile),
@@ -412,6 +436,8 @@ class RestSolr
         }
 
         return $obj['metadata'];
+        */
+        return;
     }
 
     /**
@@ -425,6 +451,7 @@ class RestSolr
      */
     function writeOOXMLProperties($sourceFile, $targetFile, $type, $properties)
     {
+        /*
         $function = new xmlrpcmsg('metadata.writeOOXMLProperty',
         array(
         php_xmlrpc_encode((string) $sourceFile),
@@ -441,6 +468,8 @@ class RestSolr
         }
 
         return php_xmlrpc_decode($result->value()) == 0;
+        */
+        return;
     }
 
     /**
@@ -453,6 +482,7 @@ class RestSolr
      */
     function readOOXMLProperty($sourceFile, $type, $property)
     {
+        /*
         $function = new xmlrpcmsg('metadata.readOOXMLProperty',
         array(
         php_xmlrpc_encode((string) $sourceFile),
@@ -474,6 +504,8 @@ class RestSolr
         }
 
         return $obj['metadata'];
+        */
+        return;
     }
 
     /**
@@ -487,6 +519,7 @@ class RestSolr
      */
     function convertDocument($sourceFile, $targetFile, $ooHost, $ooPort)
     {
+        /*
         $function = new xmlrpcmsg('openoffice.convertDocument',
         array(
         php_xmlrpc_encode((string) $sourceFile),
@@ -503,6 +536,8 @@ class RestSolr
             return $result->faultString();
         }
         return php_xmlrpc_decode($result->value()) == 0;
+        */
+        return;
     }
 
     /**
@@ -515,6 +550,7 @@ class RestSolr
      */
     function convertDocumentStreamed($content, $toExtension = 'pdf')
     {
+        /*
         $function = new xmlrpcmsg('openoffice.convertDocument',
         array(
         new xmlrpcval($content, 'base64'),
@@ -537,10 +573,13 @@ class RestSolr
         }
 
         return $obj['data'];
+        */
+        return;
     }
 
     function shutdown()
     {
+        /*
         $function=new xmlrpcmsg('control.shutdown',array(
         php_xmlrpc_encode((string) $this->ktid),
         php_xmlrpc_encode((string) $this->authToken)));
@@ -551,6 +590,7 @@ class RestSolr
             $this->error($result, 'shutdown');
             return false;
         }
+        */
         return true;
     }
 

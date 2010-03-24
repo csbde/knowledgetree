@@ -45,6 +45,7 @@ class RestSolrIndexer extends Indexer
 	 * @var $solr connection instance
 	 */
 	private $solr;
+	private $solrServerUrl;
 
 	/**
 	 * The constructor for REST SOLR class
@@ -54,11 +55,15 @@ class RestSolrIndexer extends Indexer
 		parent::__construct();
 		
 		// TODO solr config from config_settings
-		$this->solr = new RestSolr('10.33.15.255', '8984', '/solr/');
-
-//		$config =& KTConfig::getSingleton();
-//		$javaServerUrl = $config->get('indexer/javaLuceneURL');
-//		$this->lucene = XmlRpcLucene::get($javaServerUrl);
+		$config =& KTConfig::getSingleton();
+//		$solrServerUrl = $config->get('indexer/solrURL');
+        $this->solrServerUrl = '10.33.15.255:8984/solr/';
+		// need to replace any instance of http(s):// at the start of the url, and split the port number and /solr/ part if present
+		preg_match('/h?t?t?p?s?:?\/?\/?([^:]*)\:?([^\/]*)(\/?\w*\/?)/', $this->solrServerUrl, $matches);
+		$host = $matches[1];
+		$port = !empty($matches[2]) ? $matches[2] : '';
+		$solrBase = !empty($matches[3]) ? $matches[3] : '/solr/';
+		$this->solr = new RestSolr($host, $port, $solrBase);
 	}
 
 	/**
@@ -210,8 +215,9 @@ class RestSolrIndexer extends Indexer
     }
 
     /**
-     * Shut down the java server
+     * Shut down the solr server
      *
+     * NOTE this probably doesn't work, comes from JavaXMLRPCLuceneIndexer
      */
     public function shutdown()
     {
@@ -275,19 +281,11 @@ class RestSolrIndexer extends Indexer
     // TODO update to use SOLR
     public function diagnose()
     {
-		$config =& KTConfig::getSingleton();
-
-		$javaLuceneURL = $config->get('indexer/javaLuceneURL');
-
-		list($protocol, $host, $port) = explode(':', $javaLuceneURL);
-		if (empty($port)) $port == 8875;
-		if (substr($host, 0, 2) == '//') $host = substr($host, 2);
-
-		$connection = @fsockopen($host, $port, $errno, $errstr, 2);
+		$connection = $this->solr->ping();
 		if (false === $connection)
 		{
 			$indexer = $this->getDisplayName();
-			return sprintf(_kt("Cannot connect to the %s on '%s'."), $indexer, $javaLuceneURL);
+			return sprintf(_kt("Cannot connect to the %s on '%s'."), $indexer, $this->solrServerUrl);
 		}
 		fclose($connection);
 
@@ -302,7 +300,7 @@ class RestSolrIndexer extends Indexer
      */
 	public function getDisplayName()
 	{
-		return _kt('Document Indexer Service');
+		return _kt('Solr Document Indexer Service');
 	}
 
 
