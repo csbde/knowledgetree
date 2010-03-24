@@ -56,8 +56,7 @@ class RestSolrIndexer extends Indexer
 		
 		// TODO solr config from config_settings
 		$config =& KTConfig::getSingleton();
-//		$solrServerUrl = $config->get('indexer/solrURL');
-        $this->solrServerUrl = '10.33.15.255:8984/solr/';
+		$this->solrServerUrl = $config->get('indexer/javaLuceneURL');
 		// need to replace any instance of http(s):// at the start of the url, and split the port number and /solr/ part if present
 		preg_match('/h?t?t?p?s?:?\/?\/?([^:]*)\:?([^\/]*)(\/?\w*\/?)/', $this->solrServerUrl, $matches);
 		$host = $matches[1];
@@ -72,7 +71,6 @@ class RestSolrIndexer extends Indexer
 	 */
 	public static function createIndex()
 	{
-	    // TODO/CHECK does SOLR also auto create?  probably
 		// do nothing. The java lucene indexer will create the indexes if required
 	}
 	
