@@ -246,26 +246,7 @@ class RestSolr
 	 */
     function getStatistics()
     {
-        /*
-        $function=new xmlrpcmsg('indexer.getStatistics',array(
-        php_xmlrpc_encode((string) $this->ktid),
-        php_xmlrpc_encode((string) $this->authToken)));
-
-
-        $result=&$this->client->send($function);
-        if($result->faultCode())
-        {
-            $this->error($result, 'getStatistics');
-            return false;
-        }
-
-        $result = php_xmlrpc_decode($result->value());
-
-        //print $result;
-
-        return json_decode($result);
-        */
-        return;
+        return $this->client->getStatistics();
     }
 
     /**

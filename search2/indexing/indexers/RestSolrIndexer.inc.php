@@ -277,17 +277,13 @@ class RestSolrIndexer extends Indexer
      * Diagnose the indexer. e.g. Check that the indexing server is running.
      *
      */
-    // Leaving this for now
-    // TODO update to use SOLR
     public function diagnose()
     {
 		$connection = $this->solr->ping();
 		if (false === $connection)
 		{
-			$indexer = $this->getDisplayName();
-			return sprintf(_kt("Cannot connect to the %s on '%s'."), $indexer, $this->solrServerUrl);
+			return sprintf(_kt("Cannot connect to the %s on '%s'."), $this->getDisplayName(), $this->solrServerUrl);
 		}
-		fclose($connection);
 
 		return null;
 
@@ -316,9 +312,8 @@ class RestSolrIndexer extends Indexer
     	{
     		return _kt('Not Available');
     	}
-    	// FIXME temp hack
-    	return 1;
-    	return $stats->countDocuments;
+    	
+    	return $stats->index->numDocs;
     }
 
     /**
@@ -333,9 +328,10 @@ class RestSolrIndexer extends Indexer
     	{
     		return false;
     	}
-    	return $stats->indexDirectory;
+    	return $stats->index->directory;
     }
 
+    // TODO from JavaXMLRPCLucene and not likely to work here without modification
     public function isDocumentIndexed($document_id)
     {
     	return $this->solr->documentExists($document_id);

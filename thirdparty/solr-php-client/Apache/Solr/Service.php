@@ -119,6 +119,7 @@ class Apache_Solr_Service
 	const EXTRACT_SERVLET = 'update/extract';
 	const SEARCH_SERVLET = 'select';
 	const THREADS_SERVLET = 'admin/threads';
+	const STATS_SERVLET = 'admin/luke';
 
 	/**
 	 * Server identification strings
@@ -164,7 +165,7 @@ class Apache_Solr_Service
 	 *
 	 * @var string
 	 */
-	protected $_pingUrl, $_updateUrl, $_searchUrl, $_threadsUrl;
+	protected $_pingUrl, $_updateUrl, $_searchUrl, $_threadsUrl, $_statsUrl;
 
 	/**
 	 * Keep track of whether our URLs have been constructed
@@ -304,6 +305,7 @@ class Apache_Solr_Service
 		$this->_extractUrl = $this->_constructUrl(self::EXTRACT_SERVLET, array('commit' => 'true', 'captureAttr' => 'true', 'defaultField' => 'text' ));
 		$this->_searchUrl = $this->_constructUrl(self::SEARCH_SERVLET);
 		$this->_threadsUrl = $this->_constructUrl(self::THREADS_SERVLET, array('wt' => self::SOLR_WRITER ));
+		$this->_statsUrl = $this->_constructUrl(self::STATS_SERVLET, array('wt' => self::SOLR_WRITER ));
 
 		$this->_urlsInited = true;
 	}
@@ -332,12 +334,12 @@ class Apache_Solr_Service
        
         $file = array('file_contents'=>'@'.$file); //Formatting for post file upload
         $ch = curl_init($target_url);
-        curl_setopt($ch, CURLOPT_POST,1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-        curl_setopt($ch, CURLOPT_HEADER,1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $file);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        $result=curl_exec ($ch);
+        $result = curl_exec($ch);
         $info = curl_getinfo($ch);
         curl_close ($ch);
     
@@ -351,6 +353,37 @@ class Apache_Solr_Service
 		}
         
         return $info;
+    }
+    
+    /**
+	 * Get statistics from the indexer
+	 *
+	 * @return unknown
+	 */
+    public function getStatistics()
+    {
+        $target_url = $this->_statsUrl;
+       
+        $ch = curl_init($target_url);
+        curl_setopt($ch, CURLOPT_GET, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        $result = curl_exec($ch);
+        $info = curl_getinfo($ch);
+        curl_close ($ch);
+    
+//        $info['body'] = $result;
+                
+//		$response = new Apache_Solr_Response($result);
+
+		if ($info['http_code'] != 200)
+		{
+			throw new Exception('SOLR INDEX ERROR: ' . $info['http_code']);
+		}
+        
+//        return $info;
+        return json_decode($result);
     }
 	
 	/**
