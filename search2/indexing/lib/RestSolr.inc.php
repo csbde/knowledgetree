@@ -256,21 +256,42 @@ class RestSolr
 	 * @return boolean
 	 */
     function query($query)
-    {
-        $function=new xmlrpcmsg('indexer.query',array(
-        php_xmlrpc_encode((string) $this->ktid),
-        php_xmlrpc_encode((string) $this->authToken),
-        php_xmlrpc_encode((string) $query)));
+    {   
+        $query = str_replace('Content:', 'text:', $query);
+        $query = strtolower($query);
+        $offset = 0;
+        $limit = 10;
+        $result = $this->client->search($query, $offset, $limit, array('hl.fl' => 'text', 'hl' => 'true'));
+        $result = json_decode($result->getRawResponse(), true);
 
-        $result=&$this->client->send($function, 60);
-        if($result->faultCode())
-        {
-            $this->error($result, 'query');
-            return false;
+        //formatting the response to be compatible with current search struct:
+        /*
+        	["DocumentID"]=>	int(239)
+            ["Rank"]=>  float(1)
+            ["Title"]=>  string(32) "OpenDocument 2.4 Spreadsheet.ods"
+            ["Version"]=>  string(3) "0.1"
+            ["Content"]=>  string(83) " This is my <b>test</b> text in the OpenOffice.org Calc filehttp://www.google.com/ "
+         */
+        
+        //var_dump($result['response']['docs']); exit;
+        $retDocs = array();
+        $count = 0;
+        foreach($result['response']['docs'] as $document) {
+            //var_dump($document);
+            $retDocs[$count]->DocumentID = $document['id'];
+            $retDocs[$count]->Rank = $document['boost'];                        
+            $retDocs[$count]->Title = $document['title'][0];                        
+            $retDocs[$count]->Version = $document['version'];                        
+            //$retDocs[$count]->Content = $document['text'][0];
+            $retDocs[$count]->Content = $result['highlighting'][$document['id']]['text'][0];
+            $retDocs[$count]->Content = str_replace('<em>', '<b>', $retDocs[$count]->Content);
+            $retDocs[$count]->Content = str_replace('</em>', '</b>', $retDocs[$count]->Content);
+            
+            $count++;
         }
-
-        $result = php_xmlrpc_decode($result->value());
-        return json_decode($result);
+        //var_dump($retDocs); exit;
+        return $retDocs;
+        //return json_decode($result);
     }
 
     /**
