@@ -305,7 +305,13 @@ class RestSolrIndexer extends Indexer
      */
     public function getDocumentsInIndex()
     {
-    	$stats = $this->solr->getStatistics();
+    	try {
+    	    $stats = $this->solr->getStatistics();
+    	}
+    	catch (Exception $e) {
+    	    return _kt('Not Available');
+    	}
+    	
     	if ($stats === false || !is_object($stats))
     	{
     		return _kt('Not Available');
