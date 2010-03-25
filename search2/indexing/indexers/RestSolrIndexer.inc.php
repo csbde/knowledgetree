@@ -87,7 +87,7 @@ class RestSolrIndexer extends Indexer
 	    if ($extractorClass != 'TikaApacheExtractor') {
 	        $extract = true;
 	    }
-//	    $extract = true;
+	    
 	    $this->solr->setExtract(!$extract);
 	    
 	    parent::processDocument($document, $docinfo, $extract);
