@@ -1569,7 +1569,33 @@ Fatal error:  Cannot unset string offsets in on line 981
 		$this->setResponse ( array ('status_code' => 0, 'folderPath' => $path ) );
 	}
 	
-	
+	function is_document_deleted($params) {
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
+		$kt = &$this->KT;
+		
+		if (substr ( $params ['document_id'], 0, 2 ) == 'D_') {
+			$params ['document_id'] = substr ( $params ['document_id'], 2 );
+		}
+		
+		$document_id = ( int ) $params ['document_id'];
+		if ($document_id > 0) {
+			$document = $kt->get_document_by_id ( $params ['document_id'] );
+			
+			if (PEAR::isError ( $document )) {
+				$documentDeleted = 1;
+			} else {
+				$documentDeleted = ($document->is_deleted() ? 1 : 0);
+			}
+			
+		
+		} else {
+			$documentDeleted = 1;
+		}
+		
+		$this->setResponse ( array ('status_code' => 0, 'documentDeleted' => $documentDeleted) );
+		
+		//return true;
+	}
 	
 	
 }
