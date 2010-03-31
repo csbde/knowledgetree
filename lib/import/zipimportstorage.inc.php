@@ -138,7 +138,13 @@ class KTZipImportStorage extends KTFSImportStorage {
         if($this->sExtension == 'zip'){
 
         	$archive = new KTPclZip($this->sZipPath);
-        	$archive->extractZipFile($sTmpPath);
+        	// before extraction, test for directory traversal
+        	if (!$archive->checkDirectoryTraversal($sTmpPath)) {
+        	   $archive->extractZipFile($sTmpPath);
+        	}
+        	else {
+        	    return new PEAR_Error('Zip file contains potential directory traversal and will not be extracted');
+        	}
 
             /* ** Original zip functionality using the unzip binary ** *
             $sUnzipCommand = KTUtil::findCommand("import/unzip", "unzip");

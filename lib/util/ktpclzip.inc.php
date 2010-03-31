@@ -212,6 +212,36 @@ class KTPclZip {
 		return $sExportCode;
 		*/
 	}
+    
+	/**
+	 * Check the supplied zip file for directory traversal (paths beginning with ../)
+	 * Checks both Windows and Linux format paths
+	 * 
+	 * Looks for:
+	 * paths beginning with / ./ or ../|..\ (do not need to match \ and .\ as these are not valid paths on 
+	 *                                       either Windows of Linux)
+	 * paths beginning with (e.g.) c: (any drive letter will match)
+	 * paths containing ../|..\ anywhere within the path
+	 * linux symbolic links: myLink -> evilLocation
+	 */
+	function checkDirectoryTraversal($tmpPath = null) {
+		
+		//Overriding $this->tmpPath if specified
+		if (!is_null($tmpPath)) {
+			$this->sTmpPath = $tmpPath;
+		}
+		
+		$list = $this->_pclZip->listContent();
+		// may be enough to check first entry, but just to be safe reject if any file contains directory traversal
+		foreach ($list as $content) {
+		    // look for a match on the current content path
+		    if (preg_match('/(^([\.]{0,2}[\/]))|(^[a-zA-Z]:)|(\.\.[\/\\\\])|( ?-> ?)/', $content['filename'])) {
+		        return true;
+		    }
+		}
+		
+		return false;
+	}
 	
 	/* //TODO: Cherry pick some of this logic borrowed from lib/foldremanagement/compressionArchiveUtil.inc.php
 	static public function get($exportCode) {
