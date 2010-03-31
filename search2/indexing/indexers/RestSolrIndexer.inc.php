@@ -327,7 +327,13 @@ class RestSolrIndexer extends Indexer
      */
     public function getIndexDirectory()
     {
-    	$stats = $this->solr->getStatistics();
+    	try {
+    	    $stats = $this->solr->getStatistics();
+    	}
+    	catch (Exception $e) {
+    	    return false;
+    	}
+    	
     	if ($stats === false || !is_object($stats))
     	{
     		return false;
