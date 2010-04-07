@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -226,9 +226,12 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
         if ($debug_only && $this->debugInfo != 'on') return false;
 
+        global $default;
+        $logDir = $default->logDirectory;
+
         $ident = 'KTWEBDAV';
         $conf = array('mode' => 0644, 'timeFormat' => '%X %x');
-        $logger = &Log::singleton('file', '../../var/log/ktwebdav-' . date('Y-m-d') . '.txt', $ident, $conf);
+        $logger = &Log::singleton('file', $logDir.'/ktwebdav-' . date('Y-m-d') . '.txt', $ident, $conf);
         if ($type == 'error') $logger->log($entry, PEAR_LOG_ERR);
         else $logger->log($entry, PEAR_LOG_INFO);
         return true;
@@ -1096,7 +1099,9 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             $aChildren = Folder::getList(array('parent_id = ?', $iMainFolderID));
             //        $sFolderName = $oMainFolder->getName();
 
-            if (is_writeable("../var") && is_writeable("../var/log")) {
+            $logDir = $default->logDirectory;
+            $varDir = $default->varDirectory;
+            if (is_writeable($varDir) && is_writeable($logDir)) {
                 $writeperms = "<font color=\"green\"><b>OK</b></font>";
             }else {
                 $writeperms = "<font color=\"red\"><b>NOT SET</b></font>";
