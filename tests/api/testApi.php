@@ -784,6 +784,19 @@ class APITestCase extends KTUnitTestCase {
         	}
         }
     }
+    
+    /**
+    * This method tests the license whether it is a commercial or community edition of KnowledgeTree
+    *
+    */
+    public function testIsCommercialEdition()
+    {
+        $isCommercial = $this->ktapi->isCommercialEdition();
+
+        $this->assertNotNull($isCommercial);
+        $this->assertIsA($isCommercial, 'boolean');
+        $this->assertNoErrors();
+    }
 
     /**
      * Helper function to create a document
