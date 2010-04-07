@@ -723,6 +723,11 @@ class kt extends client_service {
 		
 		$returnPolicies = array ();
 		
+		$kt = &$this->KT;
+		$policyInfo = array ('name' => 'commercialEdition', 'value' => $kt->isCommercialEdition(), 'type' => 'boolean' );
+		$returnPolicies['commercialEdition'] = $policyInfo;
+		
+		
 		foreach ( $policies as $policy_name ) {
 			$policyInfo = array ('name' => $policy_name, 'value' => serviceHelper::bool2str ( $config->get ( 'addInPolicies/' . $policy_name ) ), 'type' => 'boolean' );
 			

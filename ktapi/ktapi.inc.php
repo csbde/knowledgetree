@@ -4899,6 +4899,23 @@ class KTAPI
 			return array();
 		}
 	}
+	
+	/**
+     * Method to check whether the installation is a commercial edition of KnowledgeTree
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @return bool True if commercial edition | False if community edition
+     */
+	public function isCommercialEdition()
+	{
+		// Check that the wintools plugin is active and available, return false if not.
+        if (!KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+            return false;
+        }
+		
+		return (BaobabKeyUtil::getLicenseCount() >= MIN_LICENSES);
+	}
 }
 
 
