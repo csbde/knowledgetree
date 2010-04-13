@@ -1,0 +1,1 @@
+INSERT INTO `config_settings` (`group_name`, `display_name`, `description`, `item`, `value`, `default_value`, `type`, `options`, `can_edit`) VALUES ('KnowledgeTree', 'Use SQS Queues', 'Defines whether to use the SQS Queues. Which allows remote document processing.<br>Default is ''False''. ', 'useSQSQueues', 'false', 'false', 'boolean', NULL, 1);
