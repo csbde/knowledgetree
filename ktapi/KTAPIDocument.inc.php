@@ -2643,7 +2643,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 	/**
 	 * Method to check whether the thumbnail preview of a document exists
 	 *
-	 * This integrates with the User History commercial plugin
 	 * @author KnowledgeTree Team
 	 * @access public
 	 */
@@ -2656,6 +2655,53 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$thumbnailCheck = $varDir . '/thumbnails/'.$this->documentid.'.jpg';
 		
 		return file_exists($thumbnailCheck);
+	}
+	
+	/**
+	 * Method to generate a thumbnail for a document
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function generateThumbnail()
+	{
+		// If thumbnail exists, return it
+		if ($this->thumbnailExists()) {
+			return TRUE;
+		} else {
+			require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
+			
+			// Check that plugin is enabled
+			if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin')) {
+				$path = KTPluginUtil::getPluginPath('thumbnails.generator.processor.plugin');
+				
+				require_once($path .  'thumbnails.php');
+				
+				// Get mimetype
+				$mimeType = KTMime::getMimeTypeName($this->document->getMimeTypeID());
+				
+				$thumbnailGenerator = new thumbnailGenerator();
+				
+				// Check that mimetype is valid
+				if (in_array($mimeType, $thumbnailGenerator->getSupportedMimeTypes())) {
+					
+					// Setup
+					$thumbnailGenerator->setDocument($this->document);
+					
+					// Process
+					$thumbnailGenerator->processDocument();
+					
+					// return another (final) check for the thumbnail
+					return $this->thumbnailExists();
+					
+				} else {
+					return FALSE;
+				}
+				
+			} else {
+				return FALSE;
+			}
+		}
 	}
 }
 

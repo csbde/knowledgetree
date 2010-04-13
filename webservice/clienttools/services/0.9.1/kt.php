@@ -415,7 +415,7 @@ class kt extends client_service {
 		}
 		
 		if ($document_id > 0) {
-			$hasThumbnail = $document->thumbnailExists();
+			$hasThumbnail = $document->generateThumbnail();
 		} else {
 			$hasThumbnail = FALSE;
 		}

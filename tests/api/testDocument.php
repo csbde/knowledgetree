@@ -459,6 +459,32 @@ class APIDocumentTestCase extends KTUnitTestCase {
         $document->delete('Test');
         $document->expunge();
     }
+    
+    
+    /**
+    * Method to test the document thumbnail generation
+    *
+    */
+    public function testThumbnailGeneration()
+    {
+        $this->ktapi->session_logout();
+        $this->session = $this->ktapi->start_session('admin', 'admin');
+
+        $randomFile = APIDocumentHelper::createRandomFile();
+        $this->assertTrue(is_file($randomFile));
+
+        $document = $this->root->add_document('testtitle.txt', 'testname.txt', 'Default', $randomFile);
+        $this->assertIsA($document, 'KTAPI_Document');
+        $this->assertNoErrors();
+        
+        $documentid = $document->get_documentid();
+        $thumbnail = $document->generateThumbnail();
+        
+        $this->assertNotNull($thumbnail);
+        $this->assertIsA($thumbnail, 'boolean');
+        $this->assertNoErrors();
+        
+    }
 }
 
 ?>
