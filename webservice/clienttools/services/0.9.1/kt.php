@@ -414,7 +414,13 @@ class kt extends client_service {
 			}
 		}
 		
-		$this->setResponse ( array ('id' => $title, 'items' => $items, 'count' => count ( $items ) ) );
+		if ($document_id > 0) {
+			$hasThumbnail = $document->thumbnailExists();
+		} else {
+			$hasThumbnail = FALSE;
+		}
+		
+		$this->setResponse ( array ('id' => $title, 'hasThumbnail'=>$hasThumbnail, 'items' => $items, 'count' => count ( $items ) ) );
 		
 		return true;
 	}

@@ -2638,6 +2638,25 @@ class KTAPI_Document extends KTAPI_FolderItem
     {
         return Document::getList($whereClause);
     }
+	
+	
+	/**
+	 * Method to check whether the thumbnail preview of a document exists
+	 *
+	 * This integrates with the User History commercial plugin
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function thumbnailExists()
+	{
+		global $default;
+		
+		$varDir = $default->varDirectory;
+		
+		$thumbnailCheck = $varDir . '/thumbnails/'.$this->documentid.'.jpg';
+		
+		return file_exists($thumbnailCheck);
+	}
 }
 
 ?>
