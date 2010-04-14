@@ -1608,6 +1608,34 @@ Fatal error:  Cannot unset string offsets in on line 981
 	}
 	
 	
+	function document_has_instantview($params)
+	{
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
+		$kt = &$this->KT;
+		
+		if (substr ( $params ['document_id'], 0, 2 ) == 'D_') {
+			$params ['document_id'] = substr ( $params ['document_id'], 2 );
+		}
+		
+		$document_id = ( int ) $params ['document_id'];
+		if ($document_id > 0) {
+			$document = $kt->get_document_by_id ( $params ['document_id'] );
+			
+			if (PEAR::isError ( $document )) {
+				$instantViewExists = 1;
+			} else {
+				$instantViewExists = ($document->generateInstantView() ? 1 : 0);
+			}
+			
+		
+		} else {
+			$instantViewExists = 1;
+		}
+		
+		$this->setResponse(array ('instantViewExists'=>$instantViewExists, 'version'=>'0.9.2'));
+	}
+	
+	
 }
 
 
