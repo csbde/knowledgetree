@@ -42,6 +42,7 @@ require_once('indexing/extractorCore.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/scheduler/schedulerUtil.php');
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(KT_DIR . '/search2/indexing/lib/RestSolr.inc.php');
+require_once(dirname(__FILE__) . '/../documentProcessor/sqsqueue/queueDispatcher.php');
 
 class IndexerInconsistencyException extends Exception {};
 
@@ -468,6 +469,13 @@ abstract class Indexer
 
     private $enabledExtractors;
 
+    /**
+	 * Indicates of process are passed to sqs queue
+	 *
+	 * @var array
+	 */
+    private $isSQSEnabled = false;
+    
     protected $inclStatus = true;
 
     /**
@@ -484,10 +492,15 @@ abstract class Indexer
         $this->generalHookCache = array();
         $this->extractorPath 	= $config->get('indexer/extractorPath', 'extractors');
         $this->hookPath 		= $config->get('indexer/extractorHookPath','extractorHooks');
-
+		
         $this->loadExtractorStatus();
+        
     }
 
+    private function sendToQueue($document_id) {
+    	$queueDispatcher = new queueDispatcher();
+		$queueDispatcher->runProcesses($document_id);
+    }
     /**
 	 * Get the list if enabled extractors
 	 *
@@ -643,7 +656,12 @@ abstract class Indexer
         DBUtil::runQuery($sql);
 
         $default->log->debug("index: Queuing indexing of $document_id");
-
+        $config = KTConfig::getSingleton();
+        $isSQSEnabled     = $config->get('KnowledgeTree/useSQSQueues','useSQSQueues');
+        if($isSQSEnabled)
+        {
+        	Indexer::sendToQueue($document_id);
+        }
         // If we're indexing a discussion, re-processing is not needed.
         if($what === 'D'){
             return true;
@@ -684,12 +702,24 @@ abstract class Indexer
     {
         $sql = "UPDATE index_files SET processdate = null";
         DBUtil::runQuery($sql);
+        $config = KTConfig::getSingleton();
+        $isSQSEnabled     = $config->get('KnowledgeTree/useSQSQueues','useSQSQueues');
+        if($isSQSEnabled)
+        {
+			Indexer::sendToQueue($document_id);
+        }
     }
 
     public static function reindexDocument($documentId)
     {
         $sql = "UPDATE index_files SET processdate=null, status_msg=null WHERE document_id=$documentId";
         DBUtil::runQuery($sql);
+        $config = KTConfig::getSingleton();
+        $isSQSEnabled     = $config->get('KnowledgeTree/useSQSQueues','useSQSQueues');
+        if($isSQSEnabled)
+        {
+			Indexer::sendToQueue($document_id);
+        }
     }
 
 
@@ -704,6 +734,17 @@ abstract class Indexer
 
         $sql = "INSERT INTO index_files(document_id, user_id, what) SELECT id, $userid, 'A' FROM documents WHERE status_id=1 and id not in (select document_id from index_files)";
         DBUtil::runQuery($sql);
+
+        $config = KTConfig::getSingleton();
+        $isSQSEnabled     = $config->get('KnowledgeTree/useSQSQueues','useSQSQueues');
+        if($isSQSEnabled)
+        {
+	        $sql = "SELECT document_id FROM index_files;";
+	        $results = DBUtil::getResultArray($sql);
+			foreach ($results as $key=>$res) {
+				Indexer::sendToQueue($res['document_id']);
+			}
+        }
     }
 
     public static function processAll()
