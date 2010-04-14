@@ -20,15 +20,18 @@
  *
  */
 class queueEvent {
-	public  $name;
-	public  $message;
+	// Event name
+	public $name;
+	// Event message
+	public $message;
 
     /**
-    * 
+    * Constructor
     *
     * @author KnowledgeTree Team
     * @access public
-    * @param none
+    * @param string $name
+    * @param string $message
     * @return
     */
 	public function __construct($name, $message) {
@@ -37,11 +40,11 @@ class queueEvent {
 	}
 	
     /**
-    * 
+    * Set event name
     *
     * @author KnowledgeTree Team
     * @access public
-    * @param none
+    * @param string $name
     * @return
     */
 	public function setName($name) {
@@ -49,11 +52,11 @@ class queueEvent {
 	}
 	
     /**
-    * 
+    * Set event message
     *
     * @author KnowledgeTree Team
     * @access public
-    * @param none
+    * @param string $message
     * @return
     */
 	public function setMessage($message) {
@@ -61,7 +64,7 @@ class queueEvent {
 	}
 
     /**
-    * 
+    * Get event name
     *
     * @author KnowledgeTree Team
     * @access public
@@ -73,7 +76,7 @@ class queueEvent {
 	}
 	
     /**
-    * 
+    * Get event message 
     *
     * @author KnowledgeTree Team
     * @access public

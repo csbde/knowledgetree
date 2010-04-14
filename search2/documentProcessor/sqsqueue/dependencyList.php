@@ -23,24 +23,64 @@ class dependencyList {
 	public  $name;
 	public  $list_of_events;
 	
+    /**
+    * Constructor
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
 	public function __construct($name) {
 		$this->name = $name;
 		$this->list_of_events = array();
 	}
 	
+    /**
+    * Set dependency list name
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
 	public function setName($name) {
 		$this->name = $name;
 	}
 	
+    /**
+    * Add to dependency list
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
 	public function addDependency($event) {
 		$this->list_of_events[] = $event;
 	}
 	
+    /**
+    * Get dependency list name
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
 	public function getName() {
 		return $this->name;
 	}
 	
-	public function getDependency() {
+    /**
+    * Get list of dependencies
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
+	public function getDependencList() {
 		return $this->list_of_events;
 	}
 }

@@ -497,9 +497,11 @@ abstract class Indexer
         
     }
 
-    private function sendToQueue($document_id) {
+    private function sendToQueue($process_name, $document_id) {
+    	// TODO : What do i need to send, besides the document ID
+    	$params = array('document_id'=>$document_id);
     	$queueDispatcher = new queueDispatcher();
-		$queueDispatcher->runProcesses($document_id);
+		$queueDispatcher->run($process_name, $params);
     }
     /**
 	 * Get the list if enabled extractors
@@ -660,7 +662,8 @@ abstract class Indexer
         $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
         if($isSQSEnabled)
         {
-        	Indexer::sendToQueue($document_id);
+        	// Document add, create indexing complex event
+        	Indexer::sendToQueue('indexing', $document_id);
         }
         // If we're indexing a discussion, re-processing is not needed.
         if($what === 'D'){
@@ -677,6 +680,11 @@ abstract class Indexer
         DBUtil::runQuery($sql);
 
         $default->log->debug("Processing queue: Queuing document for processing - $document_id");
+        if($isSQSEnabled)
+        {
+        	// Document add, create processing complex event
+        	Indexer::sendToQueue('processing', $document_id);
+        }
     }
 
     protected static function incrementCount()
@@ -706,7 +714,8 @@ abstract class Indexer
         $isSQSEnabled     = $config->get('KnowledgeTree/useSQSQueues', false);
         if($isSQSEnabled)
         {
-			Indexer::sendToQueue($document_id);
+        	// Queue marked for reindex
+			Indexer::sendToQueue('indexing', $document_id);
         }
     }
 
@@ -718,7 +727,8 @@ abstract class Indexer
         $isSQSEnabled     = $config->get('KnowledgeTree/useSQSQueues', false);
         if($isSQSEnabled)
         {
-			Indexer::sendToQueue($document_id);
+        	// Document marked for reindex
+			Indexer::sendToQueue('indexing', $document_id);
         }
     }
 
@@ -742,7 +752,7 @@ abstract class Indexer
 	        $sql = "SELECT document_id FROM index_files;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
-				Indexer::sendToQueue($res['document_id']);
+				Indexer::sendToQueue('indexing', $res['document_id']);
 			}
         }
     }
@@ -756,6 +766,17 @@ abstract class Indexer
         // Add all documents to the queue
         $sql = "INSERT INTO process_queue(document_id, date_added) SELECT id, now() FROM documents WHERE status_id=1 and id not in (select document_id from process_queue)";
         DBUtil::runQuery($sql);
+        
+        $config = KTConfig::getSingleton();
+        $isSQSEnabled     = $config->get('KnowledgeTree/useSQSQueues', false);
+        if($isSQSEnabled)
+        {
+	        $sql = "SELECT document_id FROM process_queue;";
+	        $results = DBUtil::getResultArray($sql);
+			foreach ($results as $key=>$res) {
+				Indexer::sendToQueue('processing', $res['document_id']);
+			}
+        }
     }
 
     public static function indexFolder($folder)
@@ -769,9 +790,26 @@ abstract class Indexer
         }
 
         $full_path = $folder->getFullPath();
-
+        // TODO : Should we pass this to sqs queue?
+/*
+        $config = KTConfig::getSingleton();
+        $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
+        if($isSQSEnabled)
+        {
+        	// Folder documents added
+	        $sql = "SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files);";
+	        $results = DBUtil::getResultArray($sql);
+			foreach ($results as $key=>$res) {
+				Indexer::sendToQueue('indexing', $res['id']);
+			}
+        	
+        	Indexer::sendToQueue('indexing', $document_id);
+        }
+*/
         $sql = "INSERT INTO index_files(document_id, user_id, what) SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files)";
         DBUtil::runQuery($sql);
+        
+
     }
 
     /**
@@ -802,6 +840,7 @@ abstract class Indexer
         }
 
         $default->log->debug("Indexer::clearoutDeleted: resetting processdate for documents that may be stuck");
+
     }
 
     /**
