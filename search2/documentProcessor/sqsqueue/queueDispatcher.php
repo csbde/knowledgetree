@@ -54,24 +54,26 @@ class queueDispatcher
     * @param none
     * @return array
     */
-    public function runProcesses($document_id) {
-    	global $default;
+    public function runProcesses($params) {
     	$processes = self::getListOfProcesses();
     	foreach ($processes as $process) {
-    		$process_name = $process . "Process";
-    		$process_file = $process_name . ".inc.php";
-    		$process_file_path = dirname(__FILE__) . "/processes/" . $process_file;
-    		if (file_exists($process_file_path)) {
-    			require_once($process_file_path);
-    			$process_class = new $process_name();
-    			$process_class->init();
-    			$process_class->addEvents();
-    			$process_class->addDependencies();
-    			$complexEvent = self::buildComplexEvent($process_class);
-    			$default->log->debug('document placed on sqs queue');
-				self::sendToQueue($complexEvent);
-    		}
+			$process_name = $process . "Process";
+			self::run($process_name, $params);
     	}
+    }
+    
+    public function run($process_name, $params) {
+		$process_file = $process_name . ".inc.php";
+		$process_file_path = dirname(__FILE__) . "/processes/" . $process_file;
+		if (file_exists($process_file_path)) {
+			require_once($process_file_path);
+			$process_class = new $process_name();
+			$process_class->init();
+			$process_class->addEvents();
+			$process_class->addDependencies();
+			$complexEvent = self::buildComplexEvent($process_class);
+			self::sendToQueue($complexEvent);
+		}
     }
     
     /**
