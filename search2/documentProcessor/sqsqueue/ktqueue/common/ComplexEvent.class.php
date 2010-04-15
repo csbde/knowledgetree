@@ -2,7 +2,7 @@
 
 require_once('lib.static.php');
 require_once('Event.class.php');
-require_once('Benchmark.inc.php');
+
 /**
  * ComplexEventException as simple extention of Exception
  * @author Mark Holtzhausen

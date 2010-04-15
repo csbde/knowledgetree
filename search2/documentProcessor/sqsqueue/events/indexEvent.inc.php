@@ -20,15 +20,10 @@
  *
  */
 
-require_once(realpath(dirname(__FILE__) . '/../queueProcess.php'));
 require_once(realpath(dirname(__FILE__) . '/../queueEvent.php'));
 
-class processingProcess extends queueProcess {
-	public $list_of_events = array (
-									'pdf' => 'pdf.run',
-									'flash' => 'flash.run',
-									'thumb' => 'thumb.run',
-	);
+class indexEvent extends queueEvent {
+	public $list_of_dependencies = array();
 	
     /**
     * 
@@ -39,9 +34,11 @@ class processingProcess extends queueProcess {
     * @return
     */
 	function __construct() {
-		parent::setName('processingProcess');
-		parent::setListOfEvent($this->list_of_events);
+		parent::setName('indexEvent');
+		parent::setMessage('indexer.run');
+		parent::setDependency($this->list_of_dependencies);
 	}
+	
 	
 }
 ?>

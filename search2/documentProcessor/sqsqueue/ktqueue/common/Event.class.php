@@ -1,7 +1,6 @@
 <?php 
 
 require_once('lib.static.php');
-require_once('Benchmark.inc.php');
 
 /**
  * EventException as simple extention of Exception

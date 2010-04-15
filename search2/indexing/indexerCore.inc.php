@@ -497,12 +497,12 @@ abstract class Indexer
         
     }
 
-    private function sendToQueue($process_name, $document_id) {
+//    private function sendToQueue($process_name, $document_id) {
     	// TODO : What do i need to send, besides the document ID
-    	$params = array('document_id'=>$document_id);
-    	$queueDispatcher = new queueDispatcher();
-		$queueDispatcher->run($process_name, $params);
-    }
+//    	$params = array('document_id'=>$document_id);
+//    	$queueDispatcher = new queueDispatcher();
+//		$queueDispatcher->run($process_name, $params);
+//    }
     /**
 	 * Get the list if enabled extractors
 	 *
@@ -663,10 +663,18 @@ abstract class Indexer
         if($isSQSEnabled)
         {
         	// Document add, create indexing complex event
-        	Indexer::sendToQueue('indexing', $document_id);
+        	//Indexer::sendToQueue('indexing', $document_id);
+        	$queueDispatcher = new queueDispatcher();
+        	$queueDispatcher->addProcess('indexing');
+        	$queue = new queueEvent();
+        	$queue->addToEvent('indexing', $document_id);
+        	
         }
         // If we're indexing a discussion, re-processing is not needed.
         if($what === 'D'){
+        	
+        	if($isSQSEnabled)
+        		$queue->sendEvent();
             return true;
         }
 
@@ -684,6 +692,9 @@ abstract class Indexer
         {
         	// Document add, create processing complex event
         	Indexer::sendToQueue('processing', $document_id);
+        	
+        	$queue->addToEvent('processing', $document_id);
+        	$queue->sendEvent();
         }
     }
 
@@ -790,7 +801,10 @@ abstract class Indexer
         }
 
         $full_path = $folder->getFullPath();
-        // TODO : Should we pass this to sqs queue?
+       
+        $sql = "INSERT INTO index_files(document_id, user_id, what) SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files)";
+        DBUtil::runQuery($sql);
+         // TODO : Should we pass this to sqs queue?
 /*
         $config = KTConfig::getSingleton();
         $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
@@ -806,9 +820,6 @@ abstract class Indexer
         	Indexer::sendToQueue('indexing', $document_id);
         }
 */
-        $sql = "INSERT INTO index_files(document_id, user_id, what) SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files)";
-        DBUtil::runQuery($sql);
-        
 
     }
 

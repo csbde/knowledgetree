@@ -19,12 +19,17 @@
  * All Rights Reserved.
  *
  */
+
+require_once(realpath(dirname(__FILE__) . '/dependencyList.php'));
+
 class queueEvent {
 	// Event name
 	public $name;
 	// Event message
 	public $message;
-
+	// List of event dependencies
+	public $list_of_dependencies;
+	
     /**
     * Constructor
     *
@@ -34,9 +39,10 @@ class queueEvent {
     * @param string $message
     * @return
     */
-	public function __construct($name, $message) {
+	public function __construct($name = '', $message = '') {
 		$this->name = $name;
 		$this->message = $message;
+		$this->list_of_dependencies = array();
 	}
 	
     /**
@@ -62,7 +68,19 @@ class queueEvent {
 	public function setMessage($message) {
 		$this->message = $message;
 	}
-
+	
+    /**
+    * Add event dependency
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param string $message
+    * @return
+    */
+	public function setDependency($list_of_dependencies) {
+		$this->list_of_dependencies = $list_of_dependencies;
+	}
+	
     /**
     * Get event name
     *
@@ -86,6 +104,19 @@ class queueEvent {
 	public function getMessage() {
 		return $this->message;
 	}
+	
+    /**
+    * Get list of event dependencies
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
+	public function getDependencies() {
+		return $this->list_of_dependencies;
+	}
+	
 }
 
 ?>

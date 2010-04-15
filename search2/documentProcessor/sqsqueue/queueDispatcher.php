@@ -21,7 +21,10 @@
  */
 
 require_once('ktqueue/config/config.inc.php'); // sqs queue configuration
-require_once('ktqueue/common/SqsQueueManager.inc.php'); // sqs queue manager
+require_once('ktqueue/common/ComplexEvent.class.php'); // sqs queue configuration
+require_once('ktqueue/common/Event.class.php'); // sqs queue configuration
+require_once('SqsQueueController.inc.php'); // sqs queue manager
+define('EVENTS_DIR', realpath(dirname(__FILE__)) . "/events");
 
 /**
  * Dispatchers complex events to the SQS control queue for processing.
@@ -32,6 +35,25 @@ require_once('ktqueue/common/SqsQueueManager.inc.php'); // sqs queue manager
  */
 class queueDispatcher
 {
+	/**
+	 * Process name store
+	 *
+	 * @var array
+	 */
+	public $processNames;
+	/**
+	 * Process object store
+	 *
+	 * @var queueProcess
+	 */
+	public $processes;
+	/**
+	 * Complex event store
+	 *
+	 * @var queueProcess
+	 */
+	public $complexEvent;
+	
     /**
      * Constructor
      *
@@ -42,57 +64,45 @@ class queueDispatcher
      */
     public function __construct()
     {
+    	$this->processNames = array();
+    	$this->processes = array();
     }
 
-    /**
-    * Execute all document processes
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param array $params
-    * @return none
-    */
-    public function runProcesses($params) {
-    	$processes = self::getListOfProcesses();
-    	foreach ($processes as $process) {
-			self::run($process, $params);
-    	}
-    }
-
-    /**
-    * Get the list if enabled processors
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return array
-    */
-    private function getListOfProcesses() {
-    	return array('indexing', 'processing'); // documentProcessing documentIndexing
+    function testing() 
+    {
+    	// Create processes
+    	$this->addProcess('processing');
+    	$this->addProcess('indexing');
+		$this->sendToQueue();
+    	print_r($this);
     }
     
-    /**
-    * Executes a specified document process
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param string $process_name
-    * @param array $params
-    * @return none
-    */
-    public function run($process, $params) {
+    function addProcess($process) {
+    	// Check if process has not been added before
+    	if(!in_array($process, $this->processNames)) {
+    		// Store process name
+    		$this->processNames[] = $process;
+    		// Load process
+    		$process_class = $this->getProcess($process);
+			// Add events to process
+			$process_class->addEventsToProcess();
+    		// Store process object
+    		$this->processes[$process] = $process_class;
+    	}
+    }
+    
+    function getProcess($process) {
+    	$process_class = null;
     	$process_name = $process . "Process";
 		$process_file = $process_name . ".inc.php";
 		$process_file_path = dirname(__FILE__) .  "/processes/" . $process_file;
 		if (file_exists($process_file_path)) {
 			require_once($process_file_path);
+			// Instantiate process
 			$process_class = new $process_name();
-			$process_class->init();
-			$process_class->addEvents();
-			$process_class->addDependencies();
-			$complexEvent = self::buildComplexEvent($process_class, $params);
-			self::sendToQueue($complexEvent);
 		}
+		
+		return $process_class;
     }
     
     /**
@@ -104,64 +114,45 @@ class queueDispatcher
     * @param array $params
     * @return ComplexEvent $complexEvent
     */
-    public function buildComplexEvent($process, $params) {
+    public function createComplexEvent() {
     	// Create complex event object
-		$complexEvent = new ComplexEvent();
-		self::addEvents($complexEvent, $params, $process);
-		self::addDependencies($complexEvent, $process->getDependencies());
-		return $complexEvent;
-    }
-    
-    /**
-    * Add events to a given complex event object
-    *
-    * @author KnowledgeTree Team
-    * @access private
-    * @param ComplexEvent $complexEvent
-    * @param array $params
-	* @param queueProcess $process
-    */
-    private function addEvents($complexEvent, $params, $process) 
-    {
-    	foreach ($process->getEvents() as $event) 
+		$this->complexEvent = new ComplexEvent();
+		$dependencyList = array();
+    	foreach ($this->processes as $process) {
+			$events = $process->getEvents();
+			if($events) 
+			{
+				foreach ($events as $event) {
+		    		// Retrieve event name
+		    		$name = $event->getName();
+		    		// Retrieve event message
+		    		$message = $event->getMessage();
+		    		// Add events to complex event
+		    		$this->addEventToComplexEvent(null, $name, $message);
+		    		$dependencyList[$event->getName()] = $event->getDependencies();
+				}
+			}
+    	}
+    	foreach ($dependencyList as $event=>$dependencies) 
     	{
-    		// Retrieve event name
-    		$name = $event->getName();
-    		// Retrieve event message
-    		$message = $event->getMessage();
-    		// Add events to complex event
-    		self::addEvent($complexEvent, $params, $name, $message); 
+    		foreach ($dependencies as $namedEvent=>$dependency) 
+    		{
+    			$this->addDependencyToComplexEvent($namedEvent, $event);
+    		}
     	}
     }
-
+    
     /**
     * Add an event to the given complex event
     *
     * @author KnowledgeTree Team
     * @access public
-    * @param ComplexEvent $complexEvent
-    * @param array $params
     * @param string $name
     * @param array $message
     * @return none
     */
-    private function addEvent($complexEvent, $params, $name, $message) {
-    	return $complexEvent->addEvent($name, new Event($message, $params));
-    }
-    
-    /**
-    * Set dependencies between events within a complex event.
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param ComplexEvent $complexEvent
-    * @param array $dependencies
-    * @return none
-    */
-    private function addDependencies($complexEvent, $dependencies) {
-    	foreach ($dependencies as $dependency) {
-    		self::addDependency($complexEvent, $dependency->getName(), $dependency->getDependencList());
-    	}
+    private function addEventToComplexEvent($params, $name, $message) {
+    	return $this->complexEvent->addEvent($name, new Event($message, $params));
     }
     
     /**
@@ -174,10 +165,30 @@ class queueDispatcher
     * @param array $dependencies
     * @return 
     */
-    private function addDependency($complexEvent, $name, $dependencies) {
-    	$complexEvent->setDependency($name, $dependencies); // Add simple event dependencies
+    private function addDependencyToComplexEvent($name, $dependencies) {
+    	$this->complexEvent->setDependency($name, $dependencies); // Add simple event dependencies
     }
-
+    
+    /**
+    * Set dependencies between events within a complex event.
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param ComplexEvent $complexEvent
+    * @param array $dependencies
+    * @return none
+    */
+    private function addDependencies($complexEvent, $dependencies) 
+    {
+    	if($dependencies) 
+    	{
+	    	foreach ($dependencies as $dependency) 
+	    	{
+	    		$this->addDependency($complexEvent, $dependency->getName(), $dependency->getDependencList());
+	    	}
+    	}
+    }
+    
     /**
     * Instantiates the sqs queue manager and sends a complex event to the sqs queue
     *
@@ -186,18 +197,21 @@ class queueDispatcher
     * @param ComplexEvent $complexEvent
     * @return none
     */
-    private function sendToQueue($complexEvent) {
-		$queues = SqsQueueManager::getQueues();
-		$queueManager = new SqsQueueManager(array(), array($queues['controlQueue']));
-    	$queueManager->sendToQueue($queues['controlQueue'], $complexEvent);
+    private function sendToQueue() {
+    	// Create the complex event
+    	$this->createComplexEvent();
+    	// Instantiate SQS Queue Manager
+		$queueManager = new SqsQueueController('controlQueue');
+		// Send To SQS Queue Manager
+    	$queueManager->sendToQueue($this->complexEvent);
     }
     
 }
 
 if(isset($_GET['method'])) {
-	$oKTSQSQueues = new queueDispatcher();
+	$oQueueDispatcher = new queueDispatcher();
 	$method = $_GET['method'];
 	unset($_GET['method']);
-	call_user_func_array(array($oKTSQSQueues, $method), $_GET);
+	call_user_func_array(array($oQueueDispatcher, $method), $_GET);
 }
 ?>

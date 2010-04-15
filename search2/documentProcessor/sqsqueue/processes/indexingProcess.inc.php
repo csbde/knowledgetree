@@ -21,9 +21,12 @@
  */
 
 require_once(realpath(dirname(__FILE__) . '/../queueProcess.php'));
+require_once(realpath(dirname(__FILE__) . '/../queueEvent.php'));
 
 class indexingProcess extends queueProcess {
 	
+	public $list_of_events = array('index' => 'index.run');
+	
     /**
     * 
     *
@@ -32,33 +35,11 @@ class indexingProcess extends queueProcess {
     * @param none
     * @return
     */
-	function init() {
+	public function __construct() {
 		parent::setName('indexingProcess');
+		parent::setListOfEvent($this->list_of_events);
 	}
 	
-    /**
-    * 
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return
-    */
-	function addEvents() {
-		$indexer = new queueEvent('indexer', 'indexer.run');
-		parent::addEvent($indexer);
-	}
-	
-    /**
-    * 
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return
-    */
-	function addDependencies() {
-		
-	}
+
 }
 ?>

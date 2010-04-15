@@ -20,12 +20,11 @@
  *
  */
 require_once('queueEvent.php');
-require_once('dependencyList.php');
 
 abstract class queueProcess {
 	public $name;
 	public $events;
-	public $dependencies;
+	public $list_of_events;
 	
     /**
     * 
@@ -38,6 +37,7 @@ abstract class queueProcess {
 	public function __construct() {
 		$this->name = '';
 		$this->events = array();
+		$this->list_of_events = array();
 	}
 	
     /**
@@ -60,8 +60,8 @@ abstract class queueProcess {
     * @param none
     * @return
     */
-	public function addEvent($event) {
-		$this->events[] = $event;
+	public function getName() {
+		return $this->name;
 	}
 	
     /**
@@ -72,8 +72,8 @@ abstract class queueProcess {
     * @param none
     * @return
     */
-	public function addDependencyList($dependency) {
-		$this->dependencies[] = $dependency;
+	public function addEvent($event) {
+		$this->events[] = $event;
 	}
 	
     /**
@@ -96,8 +96,8 @@ abstract class queueProcess {
     * @param none
     * @return
     */
-	public function getDependencies() {
-		return $this->dependencies;
+	public function setListOfEvent($list_of_events) {
+		$this->list_of_events = $list_of_events;
 	}
 	
     /**
@@ -108,7 +108,9 @@ abstract class queueProcess {
     * @param none
     * @return
     */
-	abstract function addEvents();
+	public function getListOfEvent() {
+		return $this->list_of_events;
+	}
 	
     /**
     * 
@@ -118,6 +120,19 @@ abstract class queueProcess {
     * @param none
     * @return
     */
-	abstract function addDependencies();
+	public function addEventsToProcess() {
+		foreach ($this->list_of_events as $key => $message) 
+		{
+			$event_name = $key . "Event";
+			$event_file = $event_name . ".inc.php";
+			$event_file_path = realpath(dirname(__FILE__)) . "/events/" . $event_file;
+			if (file_exists($event_file_path)) 
+			{
+				require_once($event_file_path);
+				$event_class = new $event_name();
+				$this->addEvent($event_class);
+			}
+		}
+	}
 }
 ?>
