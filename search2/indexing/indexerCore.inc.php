@@ -662,9 +662,9 @@ abstract class Indexer
         }
         // If we're indexing a discussion, re-processing is not needed.
         if($what === 'D'){
-        	
-        	if($isSQSEnabled)
-        		$queue->sendEvent();
+        	if($isSQSEnabled) {
+        		
+        	}
             return true;
         }
 
@@ -708,7 +708,7 @@ abstract class Indexer
         $sql = "UPDATE index_files SET processdate = null";
         DBUtil::runQuery($sql);
         $config = KTConfig::getSingleton();
-        $isSQSEnabled     = $config->get('KnowledgeTree/useSQSQueues', false);
+        $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
         if($isSQSEnabled)
         {
 
@@ -720,7 +720,7 @@ abstract class Indexer
         $sql = "UPDATE index_files SET processdate=null, status_msg=null WHERE document_id=$documentId";
         DBUtil::runQuery($sql);
         $config = KTConfig::getSingleton();
-        $isSQSEnabled     = $config->get('KnowledgeTree/useSQSQueues', false);
+        $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
         if($isSQSEnabled)
         {
 
@@ -741,7 +741,7 @@ abstract class Indexer
         DBUtil::runQuery($sql);
 
         $config = KTConfig::getSingleton();
-        $isSQSEnabled     = $config->get('KnowledgeTree/useSQSQueues', false);
+        $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
         if($isSQSEnabled)
         {
 	        $sql = "SELECT document_id FROM index_files;";
@@ -763,7 +763,7 @@ abstract class Indexer
         DBUtil::runQuery($sql);
         
         $config = KTConfig::getSingleton();
-        $isSQSEnabled     = $config->get('KnowledgeTree/useSQSQueues', false);
+        $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
         if($isSQSEnabled)
         {
 	        $sql = "SELECT document_id FROM process_queue;";
