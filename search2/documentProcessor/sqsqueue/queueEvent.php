@@ -29,6 +29,8 @@ class queueEvent {
 	public $message;
 	// List of event dependencies
 	public $list_of_dependencies;
+	// Parameters to be passed with event
+	public $parameters;
 	
     /**
     * Constructor
@@ -43,6 +45,7 @@ class queueEvent {
 		$this->name = $name;
 		$this->message = $message;
 		$this->list_of_dependencies = array();
+		$this->parameters = array();
 	}
 	
     /**

@@ -24,7 +24,6 @@ require_once('ktqueue/config/config.inc.php'); // sqs queue configuration
 require_once('ktqueue/common/ComplexEvent.class.php'); // sqs queue configuration
 require_once('ktqueue/common/Event.class.php'); // sqs queue configuration
 require_once('SqsQueueController.inc.php'); // sqs queue manager
-define('EVENTS_DIR', realpath(dirname(__FILE__)) . "/events");
 
 /**
  * Dispatchers complex events to the SQS control queue for processing.
@@ -68,15 +67,15 @@ class queueDispatcher
     	$this->processes = array();
     }
 
-    function testing() 
-    {
-    	// Create processes
-    	$this->addProcess('processing');
-    	$this->addProcess('indexing');
-		$this->sendToQueue();
-    }
-    
-    function addProcess($process) {
+    /**
+     * Add a process, which maps to a complex event
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param none
+     * @return none
+     */
+    public function addProcess($process) {
     	// Check if process has not been added before
     	if(!in_array($process, $this->processNames)) {
     		// Store process name
@@ -90,12 +89,21 @@ class queueDispatcher
     	}
     }
     
-    function getProcess($process) {
+    /**
+     * Instantiate the process used to contain the complex object mapping
+     *
+     * @author KnowledgeTree Team
+     * @access private
+     * @param none
+     * @return none
+     */
+    private function getProcess($process) {
     	$process_class = null;
     	$process_name = $process . "Process";
 		$process_file = $process_name . ".inc.php";
 		$process_file_path = dirname(__FILE__) .  "/processes/" . $process_file;
-		if (file_exists($process_file_path)) {
+		if (file_exists($process_file_path)) 
+		{
 			require_once($process_file_path);
 			// Instantiate process
 			$process_class = new $process_name();
@@ -109,19 +117,19 @@ class queueDispatcher
     *
     * @author KnowledgeTree Team
     * @access public
-    * @param queueProcess $process
-    * @param array $params
     * @return ComplexEvent $complexEvent
     */
     public function createComplexEvent() {
     	// Create complex event object
 		$this->complexEvent = new ComplexEvent();
 		$dependencyList = array();
-    	foreach ($this->processes as $process) {
+    	foreach ($this->processes as $process) 
+    	{
 			$events = $process->getEvents();
 			if($events) 
 			{
-				foreach ($events as $event) {
+				foreach ($events as $event) 
+				{
 		    		// Retrieve event name
 		    		$name = $event->getName();
 		    		// Retrieve event message
@@ -145,34 +153,36 @@ class queueDispatcher
     * Add an event to the given complex event
     *
     * @author KnowledgeTree Team
-    * @access public
+    * @access private
+    * @param array $params
     * @param string $name
     * @param array $message
     * @return none
     */
-    private function addEventToComplexEvent($params, $name, $message) {
+    private function addEventToComplexEvent($params, $name, $message) 
+    {
     	return $this->complexEvent->addEvent($name, new Event($message, $params));
     }
     
     /**
-    * Set a dependency between events.
+    * Add a dependency between events.
     *
     * @author KnowledgeTree Team
-    * @access public
-    * @param ComplexEvent $complexEvent
+    * @access private
     * @param string $name
     * @param array $dependencies
     * @return 
     */
-    private function addDependencyToComplexEvent($name, $dependencies) {
+    private function addDependencyToComplexEvent($name, $dependencies) 
+    {
     	$this->complexEvent->setDependency($name, $dependencies); // Add simple event dependencies
     }
     
     /**
-    * Set dependencies between events within a complex event.
+    * Add dependencies between events within a complex event.
     *
     * @author KnowledgeTree Team
-    * @access public
+    * @access private
     * @param ComplexEvent $complexEvent
     * @param array $dependencies
     * @return none
@@ -192,19 +202,37 @@ class queueDispatcher
     * Instantiates the sqs queue manager and sends a complex event to the sqs queue
     *
     * @author KnowledgeTree Team
-    * @access private
-    * @param ComplexEvent $complexEvent
+    * @access public
     * @return none
     */
-    private function sendToQueue() {
+    public function sendToQueue($send = true)
+    {
     	// Create the complex event
     	$this->createComplexEvent();
     	// Instantiate SQS Queue Manager
 		$queueManager = new SqsQueueController('controlQueue');
-		// Send To SQS Queue Manager
-    	$queueManager->sendToQueue($this->complexEvent);
+		if($send) 
+		{
+			// Send To SQS Queue Manager
+	    	$queueManager->sendToQueue($this->complexEvent);
+		}
     }
-    
+
+    /**
+    * Used for testing purposes to create and send complex object to the queue
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @return none
+    */
+    public function testing($params)
+    {
+    	// Create processes
+    	$this->addProcess('processing');
+    	$this->addProcess('indexing');
+		$this->sendToQueue(false);
+		print_r($this);
+    }
 }
 
 if(isset($_GET['method'])) {

@@ -654,16 +654,14 @@ abstract class Indexer
         $default->log->debug("index: Queuing indexing of $document_id");
         $config = KTConfig::getSingleton();
         $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
-        if($isSQSEnabled)
-        {
-        	// Document add, create indexing complex event
-			
-        	
-        }
+		if($isSQSEnabled) {
+			$oQueueDispatcher = new queueDispatcher();
+		}
         // If we're indexing a discussion, re-processing is not needed.
         if($what === 'D'){
         	if($isSQSEnabled) {
-        		
+	        	// Document added, create indexing complex event
+	        	$oQueueDispatcher->addProcess('indexing');
         	}
             return true;
         }
@@ -680,7 +678,10 @@ abstract class Indexer
         $default->log->debug("Processing queue: Queuing document for processing - $document_id");
         if($isSQSEnabled)
         {
-
+        	// Document added, create processing complex event
+			$oQueueDispatcher->addProcess('processing');
+			// Send complex event
+			$oQueueDispatcher->sendToQueue();
         }
     }
 
@@ -711,7 +712,11 @@ abstract class Indexer
         $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
         if($isSQSEnabled)
         {
-
+	        	// Document reindexed, create indexing complex event and send
+				$oQueueDispatcher = new queueDispatcher();
+	        	$oQueueDispatcher->addProcess('indexing');
+	        	// Send complex event
+	        	$oQueueDispatcher->sendToQueue();
         }
     }
 
@@ -723,7 +728,10 @@ abstract class Indexer
         $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
         if($isSQSEnabled)
         {
-
+	        	// Document added, create indexing complex event
+				$oQueueDispatcher = new queueDispatcher();
+	        	$oQueueDispatcher->addProcess('indexing');
+	        	$oQueueDispatcher->sendToQueue();
         }
     }
 
@@ -747,7 +755,10 @@ abstract class Indexer
 	        $sql = "SELECT document_id FROM index_files;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
-
+	        	// Document added, create indexing complex event
+				$oQueueDispatcher = new queueDispatcher();
+	        	$oQueueDispatcher->addProcess('indexing');
+	        	$oQueueDispatcher->sendToQueue();
 			}
         }
     }
@@ -769,7 +780,11 @@ abstract class Indexer
 	        $sql = "SELECT document_id FROM process_queue;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
-
+	        	// Document added, create indexing complex event
+				$oQueueDispatcher = new queueDispatcher();
+	        	$oQueueDispatcher->addProcess('processing');
+	        	// Send complex event to sqs queue
+	        	$oQueueDispatcher->sendToQueue();
 			}
         }
     }
@@ -798,7 +813,11 @@ abstract class Indexer
 	        $sql = "SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files);";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
-				
+	        	// Document added, create indexing complex event
+				$oQueueDispatcher = new queueDispatcher();
+	        	$oQueueDispatcher->addProcess('indexing');
+	        	// Send complex event to sqs queue
+	        	$oQueueDispatcher->sendToQueue();
 			}
         }
 
