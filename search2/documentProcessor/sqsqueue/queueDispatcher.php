@@ -74,7 +74,6 @@ class queueDispatcher
     	$this->addProcess('processing');
     	$this->addProcess('indexing');
 		$this->sendToQueue();
-    	print_r($this);
     }
     
     function addProcess($process) {
@@ -213,5 +212,6 @@ if(isset($_GET['method'])) {
 	$method = $_GET['method'];
 	unset($_GET['method']);
 	call_user_func_array(array($oQueueDispatcher, $method), $_GET);
+	exit();
 }
 ?>
