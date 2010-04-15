@@ -497,12 +497,6 @@ abstract class Indexer
         
     }
 
-//    private function sendToQueue($process_name, $document_id) {
-    	// TODO : What do i need to send, besides the document ID
-//    	$params = array('document_id'=>$document_id);
-//    	$queueDispatcher = new queueDispatcher();
-//		$queueDispatcher->run($process_name, $params);
-//    }
     /**
 	 * Get the list if enabled extractors
 	 *
@@ -663,11 +657,7 @@ abstract class Indexer
         if($isSQSEnabled)
         {
         	// Document add, create indexing complex event
-        	//Indexer::sendToQueue('indexing', $document_id);
-        	$queueDispatcher = new queueDispatcher();
-        	$queueDispatcher->addProcess('indexing');
-        	$queue = new queueEvent();
-        	$queue->addToEvent('indexing', $document_id);
+			
         	
         }
         // If we're indexing a discussion, re-processing is not needed.
@@ -690,11 +680,7 @@ abstract class Indexer
         $default->log->debug("Processing queue: Queuing document for processing - $document_id");
         if($isSQSEnabled)
         {
-        	// Document add, create processing complex event
-        	Indexer::sendToQueue('processing', $document_id);
-        	
-        	$queue->addToEvent('processing', $document_id);
-        	$queue->sendEvent();
+
         }
     }
 
@@ -725,8 +711,7 @@ abstract class Indexer
         $isSQSEnabled     = $config->get('KnowledgeTree/useSQSQueues', false);
         if($isSQSEnabled)
         {
-        	// Queue marked for reindex
-			Indexer::sendToQueue('indexing', $document_id);
+
         }
     }
 
@@ -738,8 +723,7 @@ abstract class Indexer
         $isSQSEnabled     = $config->get('KnowledgeTree/useSQSQueues', false);
         if($isSQSEnabled)
         {
-        	// Document marked for reindex
-			Indexer::sendToQueue('indexing', $document_id);
+
         }
     }
 
@@ -763,7 +747,7 @@ abstract class Indexer
 	        $sql = "SELECT document_id FROM index_files;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
-				Indexer::sendToQueue('indexing', $res['document_id']);
+
 			}
         }
     }
@@ -785,7 +769,7 @@ abstract class Indexer
 	        $sql = "SELECT document_id FROM process_queue;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
-				Indexer::sendToQueue('processing', $res['document_id']);
+
 			}
         }
     }
@@ -805,7 +789,7 @@ abstract class Indexer
         $sql = "INSERT INTO index_files(document_id, user_id, what) SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files)";
         DBUtil::runQuery($sql);
          // TODO : Should we pass this to sqs queue?
-/*
+
         $config = KTConfig::getSingleton();
         $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
         if($isSQSEnabled)
@@ -814,12 +798,10 @@ abstract class Indexer
 	        $sql = "SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files);";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
-				Indexer::sendToQueue('indexing', $res['id']);
+				
 			}
-        	
-        	Indexer::sendToQueue('indexing', $document_id);
         }
-*/
+
 
     }
 
