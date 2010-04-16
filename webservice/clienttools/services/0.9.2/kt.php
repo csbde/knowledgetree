@@ -1532,19 +1532,25 @@ Fatal error:  Cannot unset string offsets in on line 981
 				
 				// Determine Icon Path
 				$folderObj = $kt->get_folder_by_id ( $documentDetail['folder_id']);
-				$parentIds = explode(',', $folderObj->getParentFolderIds());
-				$path = '/F_0';
-				if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
-					foreach ($parentIds as $parentId)
-					{
-						$path .= '/F_'.$parentId;
+				
+				if (PEAR::isError ( $folderObj )) {
+					// Ignore, dont add to list
+					// Folder has been deleted
+				} else {
+					$parentIds = explode(',', $folderObj->getParentFolderIds());
+					$path = '/F_0';
+					if (count($parentIds) > 0 && $folderObj->getParentFolderIds() != '') {
+						foreach ($parentIds as $parentId)
+						{
+							$path .= '/F_'.$parentId;
+						}
 					}
+					$path .= '/F_'.$documentDetail['folder_id'];
+					
+					$documentArray['folderPath'] = $path;
+					
+					$returnDocumentArray[] = $documentArray;
 				}
-				$path .= '/F_'.$documentDetail['folder_id'];
-				
-				$documentArray['folderPath'] = $path;
-				
-				$returnDocumentArray[] = $documentArray;
 			}
 		}
 		
@@ -1579,17 +1585,17 @@ Fatal error:  Cannot unset string offsets in on line 981
 		$this->setResponse ( array ('status_code' => 0, 'folderPath' => $path ) );
 	}
 	
-	function is_document_deleted($params) {
-		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
+	private function check_if_document_deleted($documentId)
+	{
 		$kt = &$this->KT;
 		
-		if (substr ( $params ['document_id'], 0, 2 ) == 'D_') {
-			$params ['document_id'] = substr ( $params ['document_id'], 2 );
+		if (substr ( $documentId, 0, 2 ) == 'D_') {
+			$documentId = substr ( $documentId, 2 );
 		}
 		
-		$document_id = ( int ) $params ['document_id'];
-		if ($document_id > 0) {
-			$document = $kt->get_document_by_id ( $params ['document_id'] );
+		$documentId = ( int ) $documentId;
+		if ($documentId > 0) {
+			$document = $kt->get_document_by_id ( $documentId );
 			
 			if (PEAR::isError ( $document )) {
 				$documentDeleted = 1;
@@ -1602,9 +1608,92 @@ Fatal error:  Cannot unset string offsets in on line 981
 			$documentDeleted = 1;
 		}
 		
-		$this->setResponse ( array ('status_code' => 0, 'documentDeleted' => $documentDeleted) );
+		return $documentDeleted;
+	}
+	
+	private function check_if_folder_deleted($folderId)
+	{
+		$kt = &$this->KT;
+		
+		if (substr ( $folderId, 0, 2 ) == 'F_') {
+			$folderId = substr ( $folderId, 2 );
+		}
+		
+		$folderId = ( int ) $folderId;
+		if ($folder_id > 0) {
+			$folder = $kt->get_folder_by_id ( $folderId );
+			
+			if (PEAR::isError ( $folder )) {
+				$folderDeleted = 1;
+			} else {
+				//$folderDeleted = ($folder->is_deleted() ? 1 : 0);
+				$folderDeleted = 0;
+			}
+			
+		
+		} else {
+			$folderDeleted = 1;
+		}
+		
+		return $folderDeleted;
+	}
+	
+	
+	function is_document_deleted($params) {
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
+		$kt = &$this->KT;
+		
+		$documentDeleted = $this->check_if_document_deleted($params ['document_id']);
+		
+		$this->setResponse ( array ('status_code' => 0, 'documentDeleted' => $documentDeleted, 'itemDeleted' => $documentDeleted) );
 		
 		//return true;
+	}
+	
+	function is_folder_deleted($params) {
+		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
+		
+		
+		$folderDeleted = $this->check_if_folder_deleted($params ['folder_id']);
+		
+		$this->setResponse ( array ('status_code' => 0, 'folderDeleted' => $folderDeleted, 'itemDeleted' => $folderDeleted) );
+		
+		//return true;
+	}
+	
+	function is_item_deleted($params)
+	{
+		if ($params['type'] == 'F') {
+			$params['folder_id'] = $params['item_id'];
+			return $this->is_folder_deleted($params);
+		} else {
+			$params['document_id'] = $params['item_id'];
+			return $this->is_document_deleted($params);
+		}
+	}
+	
+	function is_items_deleted($params)
+	{
+		$items = explode(',', $params['items']);
+		
+		$return = '';
+		
+		foreach ($items as $item)
+		{
+			if (substr($item, 0, 1) == 'F') {
+				$return .= $this->check_if_folder_deleted($item);
+			} else {
+				$return .= $this->check_if_document_deleted($item);
+			}
+		}
+		
+		if (strpos($return, '1') == FALSE) {
+			$returnStr = '0';
+		} else {
+			$returnStr = '1';
+		}
+		
+		$this->setResponse(array('itemsDeleted'=>$returnStr, 'str'=>$return, 'function'=>strpos($return, '1')));
 	}
 	
 	
