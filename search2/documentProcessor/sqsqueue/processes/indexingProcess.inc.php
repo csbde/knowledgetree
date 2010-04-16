@@ -25,7 +25,9 @@ require_once(realpath(dirname(__FILE__) . '/../queueEvent.php'));
 
 class indexingProcess extends queueProcess {
 	
-	public $list_of_events = array('index' => 'index.run');
+	public $list_of_events = array(
+									'index' => 'index.run',
+									);
 	
     /**
     * 

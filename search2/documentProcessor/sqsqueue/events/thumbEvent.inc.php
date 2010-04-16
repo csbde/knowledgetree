@@ -41,5 +41,8 @@ class thumbEvent extends queueEvent {
 		parent::setDependency($this->list_of_dependencies);
 	}
 	
+	public function buildParameters() {
+		$this->addParameter('document_id', $this->document->getId());
+	}
 }
 ?>

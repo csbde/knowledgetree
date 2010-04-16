@@ -23,6 +23,8 @@
 require_once(realpath(dirname(__FILE__) . '/dependencyList.php'));
 
 class queueEvent {
+	// Event document
+	public $document;
 	// Event name
 	public $name;
 	// Event message
@@ -30,7 +32,7 @@ class queueEvent {
 	// List of event dependencies
 	public $list_of_dependencies;
 	// Parameters to be passed with event
-	public $parameters;
+	public $list_of_parameters;
 	
     /**
     * Constructor
@@ -45,7 +47,8 @@ class queueEvent {
 		$this->name = $name;
 		$this->message = $message;
 		$this->list_of_dependencies = array();
-		$this->parameters = array();
+		$this->list_of_parameters = array();
+		$this->document = null;
 	}
 	
     /**
@@ -85,6 +88,20 @@ class queueEvent {
 	}
 	
     /**
+    * Add event parameter
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param string $parameters
+    * @return
+    */
+	function addParameter($key, $value) {
+		if(!in_array($key, $this->list_of_parameters)) {
+			$this->list_of_parameters[$key] = $value;
+		}
+	}
+	
+    /**
     * Get event name
     *
     * @author KnowledgeTree Team
@@ -120,6 +137,25 @@ class queueEvent {
 		return $this->list_of_dependencies;
 	}
 	
+    /**
+    * Get list of event dependencies
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
+	public function getParameters() {
+		return $this->list_of_parameters;
+	}
+	
+	public function buildParameters() {}
+	
+	public function setDocument($document) 
+	{
+		$this->document = $document;
+	}
+
 }
 
 ?>

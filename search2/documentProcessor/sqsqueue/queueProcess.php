@@ -22,10 +22,31 @@
 require_once('queueEvent.php');
 
 abstract class queueProcess {
+	/**
+	 * Name
+	 *
+	 * @var name
+	 */
 	public $name;
+	/**
+	 * Events
+	 *
+	 * @var events
+	 */
 	public $events;
+	/**
+	 * List of events
+	 *
+	 * @var queueProcess
+	 */
 	public $list_of_events;
-	
+	/**
+	 * Document object
+	 *
+	 * @var document
+	 */
+	public $document;
+		
     /**
     * 
     *
@@ -38,6 +59,7 @@ abstract class queueProcess {
 		$this->name = '';
 		$this->events = array();
 		$this->list_of_events = array();
+		$this->document = null;
 	}
 	
     /**
@@ -130,9 +152,15 @@ abstract class queueProcess {
 			{
 				require_once($event_file_path);
 				$event_class = new $event_name();
+				$event_class->setDocument($this->document);
+				$event_class->buildParameters();
 				$this->addEvent($event_class);
 			}
 		}
 	}
+	
+    public function setDocument($document) {
+    	$this->document = $document;
+    }
 }
 ?>

@@ -24,6 +24,7 @@ require_once(realpath(dirname(__FILE__) . '/../queueEvent.php'));
 
 class pdfEvent extends queueEvent {
 	public $list_of_dependencies = array();
+	public $list_of_parameters = array();
 	
     /**
     * 
@@ -37,6 +38,18 @@ class pdfEvent extends queueEvent {
 		parent::setName('pdfEvent');
 		parent::setMessage('pdf.run');
 		parent::setDependency($this->list_of_dependencies);
+	}
+	
+	public function buildParameters() {
+		require_once(dirname(__FILE__) . '/../../../../config/dmsDefaults.php');
+		require_once(KT_DIR . '/search2/documentProcessor/documentProcessor.inc.php');
+		require_once(KT_DIR . '/search2/indexing/lib/XmlRpcLucene.inc.php');
+		$config =& KTConfig::getSingleton();
+		$this->addParameter('document_id', $this->document->getId());
+		$this->addParameter('javaServerUrl', $config->get('indexer/javaLuceneURL'));
+		$this->addParameter('ooHost', $config->get('openoffice/host','127.0.0.1'));
+		$this->addParameter('ooPort', $config->get('openoffice/port','8100'));
+		$this->addParameter('ext', KTMime::getFileType($this->document->getMimeTypeID()));
 	}
 	
 }

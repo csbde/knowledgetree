@@ -52,7 +52,7 @@ class queueDispatcher
 	 * @var queueProcess
 	 */
 	public $complexEvent;
-	
+
     /**
      * Constructor
      *
@@ -75,13 +75,15 @@ class queueDispatcher
      * @param none
      * @return none
      */
-    public function addProcess($process) {
+    public function addProcess($process, $document) {
     	// Check if process has not been added before
     	if(!in_array($process, $this->processNames)) {
     		// Store process name
     		$this->processNames[] = $process;
     		// Load process
     		$process_class = $this->getProcess($process);
+    		// Set the document in the process
+    		$process_class->setDocument($document);
 			// Add events to process
 			$process_class->addEventsToProcess();
     		// Store process object
@@ -134,8 +136,10 @@ class queueDispatcher
 		    		$name = $event->getName();
 		    		// Retrieve event message
 		    		$message = $event->getMessage();
+		    		// Retrieve event parameters
+		    		$params = $event->getParameters();
 		    		// Add events to complex event
-		    		$this->addEventToComplexEvent(null, $name, $message);
+		    		$this->addEventToComplexEvent($params, $name, $message);
 		    		$dependencyList[$event->getName()] = $event->getDependencies();
 				}
 			}
@@ -161,7 +165,9 @@ class queueDispatcher
     */
     private function addEventToComplexEvent($params, $name, $message) 
     {
-    	return $this->complexEvent->addEvent($name, new Event($message, $params));
+    	$event = new Event($message, $params);
+
+    	return $this->complexEvent->addEvent($name, $event);
     }
     
     /**
@@ -211,10 +217,18 @@ class queueDispatcher
     	$this->createComplexEvent();
     	// Instantiate SQS Queue Manager
 		$queueManager = new SqsQueueController('controlQueue');
-		if($send) 
+		if($send)
 		{
 			// Send To SQS Queue Manager
-	    	$queueManager->sendToQueue($this->complexEvent);
+			$complexEvent = $this->complexEvent;
+			$sComplexEvent = serialize($complexEvent);
+			$oComplexEvent = unserialize($sComplexEvent);
+			if ($oComplexEvent instanceof ComplexEvent )
+			{
+	    		$queueManager->sendToQueue($complexEvent);
+			} else {
+				// TODO : Malformed complex event
+			}
 		}
     }
 
@@ -225,11 +239,13 @@ class queueDispatcher
     * @access public
     * @return none
     */
-    public function testing($params)
+    public function testing($document_id)
     {
+    	require_once(dirname(__FILE__) . '/../../../config/dmsDefaults.php');
+    	$document = Document::get($document_id);
     	// Create processes
-    	$this->addProcess('processing');
-    	$this->addProcess('indexing');
+    	$this->addProcess('processing', $document);
+    	$this->addProcess('indexing', $document);
 		$this->sendToQueue(false);
 		print_r($this);
     }
