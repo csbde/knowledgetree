@@ -241,18 +241,38 @@ class queueDispatcher
     */
     public function testing($document_id)
     {
-    	require_once(dirname(__FILE__) . '/../../../config/dmsDefaults.php');
     	$document = Document::get($document_id);
     	// Create processes
     	$this->addProcess('processing', $document);
     	$this->addProcess('indexing', $document);
 		$this->sendToQueue(false);
-		print_r($this);
+		print_r($this->complexEvent);
+    }
+    
+    /**
+    *
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @return boolean
+    */
+    function isLoggedIn() {
+    	$session = new Session();
+    	$sessionStatus = $session->verify();
+    	if ($sessionStatus !== true) {
+    		return false;
+    	}
+    	return true;
     }
 }
 
 if(isset($_GET['method'])) {
+	require_once(dirname(__FILE__) . '/../../../config/dmsDefaults.php');
 	$oQueueDispatcher = new queueDispatcher();
+	if (!$oQueueDispatcher->isLoggedIn()) {
+    	echo _kt('Session has expired. Refresh page and login.');
+    	exit();
+	}
 	$method = $_GET['method'];
 	unset($_GET['method']);
 	call_user_func_array(array($oQueueDispatcher, $method), $_GET);

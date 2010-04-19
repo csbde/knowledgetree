@@ -116,9 +116,11 @@ class ComplexEvent{
 	 * Provide a processed Callback URL
 	 * @param $callbackName		This refers to the named callbacks defined in this object (callbacks)
 	 * @param $eventObject		The relevant event object to investigate for the url parsing. An event name can also be passed.
+	 * @param $additional		Additional variables to parse into the callback string.
 	 * @return string			URL
 	 */
-	public function processCallbackUrl($callbackName=NULL,$eventObject=NULL){
+	public function processCallbackUrl($callbackName=NULL,$eventObject=NULL,$additional=NULL){
+		if(COMPLEXEVENT_LOGGING)Logger::info('Processing a callback url: '.$this->callbacks[$callbackName]);
 		$url=NULL;
 		if(isset($this->callbacks[$callbackName]))if($this->callbacks[$callbackName]){
 			$parseVars=array();
@@ -135,6 +137,26 @@ class ComplexEvent{
 		}
 		return $url;
 	}
+	
+	
+	
+	/**
+	 * Get the Trace Url if it is defined
+	 * @param $vars	Additional variables to parse into the callback url string
+	 * @return String url
+	 */
+	public function traceUrl($vars=NULL){
+		return $this->processCallbackUrl('@TRACE',$vars);
+	}
+
+	/**
+	 * Set a trace Url
+	 * @param $url		The url template to use as trace callback - see the comment on callbacks above
+	 * @return void
+	 */
+	public function setTraceUrl($url=NULL){
+		if($url)$this->callbacks['@TRACE']=$url;
+	}	
 	
 	/**
 	 * Get's the batch of events next in line. These events include those that have already been started.

@@ -25,28 +25,40 @@ abstract class queueProcess {
 	/**
 	 * Name
 	 *
-	 * @var name
+	 * @var string
 	 */
 	public $name;
 	/**
 	 * Events
 	 *
-	 * @var events
+	 * @var array
 	 */
 	public $events;
 	/**
 	 * List of events
 	 *
-	 * @var queueProcess
+	 * @var array 
 	 */
 	public $list_of_events;
 	/**
 	 * Document object
 	 *
-	 * @var document
+	 * @var Document object
 	 */
 	public $document;
-		
+	/**
+	 * Process callbacks
+	 *
+	 * @var array
+	 */
+	public $callbacks;
+	/**
+	 * List of valid callbacks
+	 *
+	 * @var array
+	 */
+	public $valid_callbacks;
+	
     /**
     * 
     *
@@ -60,10 +72,23 @@ abstract class queueProcess {
 		$this->events = array();
 		$this->list_of_events = array();
 		$this->document = null;
+		$this->valid_callbacks = array('done',
+									'onQueueNextEvent',
+									'onReturnEvent',
+									'onReturnEventFailure',
+									'onReturnEventSuccess',
+									);
+		$this->callbacks = array(
+									'done'=>'',
+									'onQueueNextEvent'=>'',
+									'onReturnEvent'=>'',
+									'onReturnEventFailure'=>'',
+									'onReturnEventSuccess'=>'',
+									);
 	}
 	
     /**
-    * 
+    * Set process name
     *
     * @author KnowledgeTree Team
     * @access public
@@ -75,67 +100,43 @@ abstract class queueProcess {
 	}
 	
     /**
-    * 
+    * Set the list of event names
     *
     * @author KnowledgeTree Team
     * @access public
     * @param none
     * @return
     */
-	public function getName() {
-		return $this->name;
+	public function setListOfEvents($list_of_events) {
+		$this->list_of_events = $list_of_events;
 	}
-	
+
     /**
-    * 
+    * Set the document to be processed
     *
     * @author KnowledgeTree Team
     * @access public
-    * @param none
-    * @return
+    * @param object Document 
+    * @return none
+    */
+	public function setDocument($document) {
+    	$this->document = $document;
+    }
+    
+    /**
+    * Add an event to list of events
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param processEvent $event
+    * @return none
     */
 	public function addEvent($event) {
 		$this->events[] = $event;
 	}
-	
+
     /**
-    * 
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return
-    */
-	public function getEvents() {
-		return $this->events;
-	}
-	
-    /**
-    * 
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return
-    */
-	public function setListOfEvent($list_of_events) {
-		$this->list_of_events = $list_of_events;
-	}
-	
-    /**
-    * 
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return
-    */
-	public function getListOfEvent() {
-		return $this->list_of_events;
-	}
-	
-    /**
-    * 
+    * Load the event class and store the in a list of events
     *
     * @author KnowledgeTree Team
     * @access public
@@ -145,9 +146,10 @@ abstract class queueProcess {
 	public function addEventsToProcess() {
 		foreach ($this->list_of_events as $key => $message) 
 		{
+			$process_name = $this->getName();
 			$event_name = $key . "Event";
 			$event_file = $event_name . ".inc.php";
-			$event_file_path = realpath(dirname(__FILE__)) . "/events/" . $event_file;
+			$event_file_path = realpath(dirname(__FILE__)) ."/events/" . $process_name . "/" . $event_file;
 			if (file_exists($event_file_path)) 
 			{
 				require_once($event_file_path);
@@ -159,8 +161,69 @@ abstract class queueProcess {
 		}
 	}
 	
-    public function setDocument($document) {
-    	$this->document = $document;
-    }
+    /**
+    * Add process callback
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param string $callback
+    * @param string $url
+    * @return none
+    */
+	function addCallback($callback, $url) 
+	{
+		if(in_array($url, array_flip($this->valid_callbacks)))
+		{
+			$this->callbacks[$callback] = $url;
+		}
+	}
+	
+    /**
+    * Get the process name
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return string
+    */
+	public function getName() {
+		return $this->name;
+	}
+	
+    /**
+    * Get process list of events
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return array
+    */
+	public function getEvents() {
+		return $this->events;
+	}
+	
+    /**
+    * Get the list of event names
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
+	public function getListOfEvent() {
+		return $this->list_of_events;
+	}
+	
+    /**
+    * Get the list of event names
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
+	public function getCallbacks() {
+		return $this->callbacks;
+	}
 }
 ?>
