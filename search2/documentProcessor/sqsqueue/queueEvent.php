@@ -22,17 +22,38 @@
 
 require_once(realpath(dirname(__FILE__) . '/dependencyList.php'));
 
-class queueEvent {
-	// Event document
+class queueEvent 
+{
+	/**
+	 * Document object
+	 * @var object
+	 */
 	public $document;
-	// Event name
+	/**
+	 * Event name
+	 * @var string
+	 */
 	public $name;
-	// Event message
+	/**
+	 * Event message
+	 * @var string
+	 */
 	public $message;
-	// List of event dependencies
+	/**
+	 * List of event dependencies
+	 * @var array
+	 */
 	public $list_of_dependencies;
-	// Parameters to be passed with event
+	/**
+	 * Parameters to be passed with event
+	 * @var array
+	 */
 	public $list_of_parameters;
+	/**
+	 * Callbacks to be envoked
+	 * @var array
+	 */
+	public $list_of_callbacks;
 	
     /**
     * Constructor
@@ -43,11 +64,12 @@ class queueEvent {
     * @param string $message
     * @return
     */
-	public function __construct($name = '', $message = '') {
+	public function __construct($name = '', $message = '') 
+	{
 		$this->name = $name;
 		$this->message = $message;
-		$this->list_of_dependencies = array();
-		$this->list_of_parameters = array();
+		$this->setDependency($this->list_of_dependencies);
+		$this->setCallbacks($this->list_of_callbacks);
 		$this->document = null;
 	}
 	
@@ -59,7 +81,8 @@ class queueEvent {
     * @param string $name
     * @return
     */
-	public function setName($name) {
+	public function setName($name) 
+	{
 		$this->name = $name;
 	}
 	
@@ -71,7 +94,8 @@ class queueEvent {
     * @param string $message
     * @return
     */
-	public function setMessage($message) {
+	public function setMessage($message) 
+	{
 		$this->message = $message;
 	}
 	
@@ -83,8 +107,22 @@ class queueEvent {
     * @param string $message
     * @return
     */
-	public function setDependency($list_of_dependencies) {
+	public function setDependency($list_of_dependencies) 
+	{
 		$this->list_of_dependencies = $list_of_dependencies;
+	}
+	
+    /**
+    * Set the document
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
+	public function setDocument($document) 
+	{
+		$this->document = $document;
 	}
 	
     /**
@@ -95,8 +133,10 @@ class queueEvent {
     * @param string $parameters
     * @return
     */
-	function addParameter($key, $value) {
-		if(!in_array($key, $this->list_of_parameters)) {
+	function addParameter($key, $value) 
+	{
+		if(!in_array($key, $this->list_of_parameters))
+		{
 			$this->list_of_parameters[$key] = $value;
 		}
 	}
@@ -109,7 +149,8 @@ class queueEvent {
     * @param none
     * @return
     */
-	public function getName() {
+	public function getName() 
+	{
 		return $this->name;
 	}
 	
@@ -121,7 +162,8 @@ class queueEvent {
     * @param none
     * @return
     */
-	public function getMessage() {
+	public function getMessage() 
+	{
 		return $this->message;
 	}
 	
@@ -133,7 +175,8 @@ class queueEvent {
     * @param none
     * @return
     */
-	public function getDependencies() {
+	public function getDependencies() 
+	{
 		return $this->list_of_dependencies;
 	}
 	
@@ -145,15 +188,35 @@ class queueEvent {
     * @param none
     * @return
     */
-	public function getParameters() {
+	public function getParameters() 
+	{
 		return $this->list_of_parameters;
 	}
 	
-	public function buildParameters() {}
-	
-	public function setDocument($document) 
+    /**
+    * Get list of event callbacks
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
+	public function getCallbacks() 
 	{
-		$this->document = $document;
+		return $this->list_of_callbacks;
+	}
+	
+    /**
+    * Create parameters needed by event
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
+	public function buildParameters() 
+	{
+		
 	}
 
 }

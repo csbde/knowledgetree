@@ -66,7 +66,24 @@ class Event{
 	 * @var Exception or extension thereof
 	 */
 	public $exception=null;
-	
+	/**
+	 * An array of callback urls for different reporting methods.
+	 * A callback url can contain the following variable declarations:
+	 * 		[eventId]			Denoting the id of the event in question.
+	 * 		[complexEventId]	Denoting the id of the complex event.
+	 * 		[eventMessage]		Denoting the event Message.
+	 * 		[eventObject]		Denoting the serialized event object.
+	 * 
+	 * If a callback url is preceded with POST|, the callback will be accessed via a curl post 
+	 * while all the variables mentioned above will be sent as post variables
+	 * 
+	 * Example URL: POST|http://example.com/callback.php?eid=[eventId]&ceid=[complexEventId]&action=[eventMessage]
+	 * 
+	 * @var array
+	 */
+	public $callbacks=array(
+		'@TRACE'=>null
+	);	
 	/**
 	 * Event Class Constructor
 	 * @return void
@@ -77,7 +94,48 @@ class Event{
 		$this->message=(string)$message;
 		$this->params=$parameters;
 	}
-
+	
+	/**
+	 * Provide a processed Callback URL
+	 * @param $callbackName		This refers to the named callbacks defined in this object (callbacks)
+	 * @param $additional		Additional variables to parse into the callback string.
+	 * @return string			URL
+	 */
+	public function processCallbackUrl($callbackName=NULL,$additional=NULL){
+		$url=NULL;
+		if(isset($this->callbacks[$callbackName]))if($this->callbacks[$callbackName]){
+			$parseVars=array();
+			$parseVars['eventId']=$this->id;
+			$parseVars['eventMessage']=$this->message;
+			$parseVars['eventObject']=lib::sSerialize($this);
+			$parseVars['id']=$parseVars['complexEventId']=$this->containerId;
+			if(is_array($additional))$parseVars=array_merge($parseVars,$additional);
+			$parseVars=lib::aUrlEncode($parseVars);
+			$url=lib::parseString($this->callbacks[$callbackName],$parseVars);
+		}
+		return $url;
+	}
+	
+	
+	/**
+	 * Get the Trace Url if it is defined
+	 * @param $vars	Additional variables to parse into the callback url string
+	 * @return String url
+	 */
+	public function traceUrl($vars=NULL){
+		return $this->processCallbackUrl('@TRACE',$vars);
+	}
+	
+	/**
+	 * Set a trace Url
+	 * @param $url		The url template to use as trace callback - see the comment on callbacks above
+	 * @return void
+	 */
+	public function setTraceUrl($url=NULL){
+		if($url)$this->callbacks['@TRACE']=$url;
+	}
+	
+	
 	/**
 	 * Create a new exception with the message and code provided and set this event exception and error flag
 	 * @param $message			The error Message

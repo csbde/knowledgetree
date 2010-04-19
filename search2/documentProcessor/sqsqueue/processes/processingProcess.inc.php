@@ -31,7 +31,7 @@ class processingProcess extends queueProcess {
 	);
 	
     /**
-    * 
+    * Construct document processing process
     *
     * @author KnowledgeTree Team
     * @access public
@@ -39,8 +39,8 @@ class processingProcess extends queueProcess {
     * @return
     */
 	function __construct() {
-		parent::setName('processingProcess');
-		parent::setListOfEvent($this->list_of_events);
+		parent::setName('processing');
+		parent::setListOfEvents($this->list_of_events);
 	}
 	
 }

@@ -3,7 +3,7 @@
 class LibException extends Exception{}
 
 class lib{
-    /**
+	/**
      * uuid()
      * 
      * Generates a random uuid.
@@ -63,6 +63,23 @@ class lib{
 		$obj=@unserialize(str_replace('~snl~',"\0",$string));
 		return $obj;		
 	}
+
+    public function out($msg=null){
+    	fwrite(STDOUT, $msg."\n");
+    }
+    
+    public function aUrlEncode($var=NULL){
+    	if(is_array($var)){
+    		$ret=array();
+    		foreach ($var as $idx=>$val){
+    			$ret[$idx]=self::aUrlEncode($val);
+    		}
+    		return $ret;
+    	}else{
+    		return urlencode($var);
+    	}
+    }
+    
 }
 
 ?>
