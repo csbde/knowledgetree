@@ -1620,7 +1620,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 		}
 		
 		$folderId = ( int ) $folderId;
-		if ($folder_id > 0) {
+		if ($folderId > 0) {
 			$folder = $kt->get_folder_by_id ( $folderId );
 			
 			if (PEAR::isError ( $folder )) {
