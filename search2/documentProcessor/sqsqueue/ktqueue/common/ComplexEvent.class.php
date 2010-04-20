@@ -120,7 +120,6 @@ class ComplexEvent{
 	 * @return string			URL
 	 */
 	public function processCallbackUrl($callbackName=NULL,$eventObject=NULL,$additional=NULL){
-		if(COMPLEXEVENT_LOGGING)Logger::info('Processing a callback url: '.$this->callbacks[$callbackName]);
 		$url=NULL;
 		if(isset($this->callbacks[$callbackName]))if($this->callbacks[$callbackName]){
 			$parseVars=array();

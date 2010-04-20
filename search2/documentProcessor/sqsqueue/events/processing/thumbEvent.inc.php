@@ -28,7 +28,7 @@ class thumbEvent extends queueEvent {
 	 * @var array
 	 */
 	public $list_of_dependencies = array(
-										'pdfEvent' => true
+										'pdfEvent'
 										);
 	/**
 	 * Parameters to be passed with event
@@ -66,8 +66,23 @@ class thumbEvent extends queueEvent {
 	public function buildParameters() 
 	{
 		require_once(dirname(__FILE__) . '/../../../../../config/dmsDefaults.php');
-		$this->addParameter('doc_id', $this->document->getId());
+		$this->addParameter('src_file', $this->getSrcFile());
 		$this->addParameter('dest_file', $this->getDestFile());
+	}
+	
+    /**
+    * Create pdf destination url
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
+	private function getSrcFile() 
+	{
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+
+		return $oStorage->getDocumentUrl($this->document, 'pdf');
 	}
 	
     /**
@@ -80,13 +95,9 @@ class thumbEvent extends queueEvent {
     */
 	private function getDestFile() 
 	{
-		global $default;
-		$fileSystemRoot = $default->fileSystemRoot;
-		$pdfDir = $default->pdfDirectory;
-		$pdfFile = $pdfDir . '/' . $this->document->getId() . '.pdf';
-			$destFile = str_replace($fileSystemRoot.'/','http://' . $default->serverName . ':'  . $default->server_port . '' . $default->rootUrl . '/', $pdfFile);
-		
-		return $destFile;
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+
+		return $oStorage->getDocumentUrl($this->document, 'thumbnail');
 	}
 }
 ?>

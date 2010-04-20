@@ -65,7 +65,6 @@ class indexEvent extends queueEvent
 	public function buildParameters() 
 	{
 		require_once(dirname(__FILE__) . '/../../../../../config/dmsDefaults.php');
-		$this->addParameter('doc_id', $this->document->getId());
 		$this->addParameter('src_file', $this->getSrcFile());
 	}
 	
@@ -77,15 +76,11 @@ class indexEvent extends queueEvent
     * @param none
     * @return
     */
-	private function getSrcFile() 
+	private function getSrcFile()
 	{
-		global $default;
-		$fileSystemRoot = $default->fileSystemRoot;
-		$documentRoot = $default->documentRoot;
-		$docFile = $documentRoot . '/' . $this->document->getStoragePath();
-		$srcFile = str_replace($fileSystemRoot.'/','http://' . $default->serverName . ':' . $default->server_port . $default->rootUrl . '/', $docFile);
-		
-		return $srcFile;
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+
+		return $oStorage->getDocumentUrl($this->document);
 	}
 }
 ?>

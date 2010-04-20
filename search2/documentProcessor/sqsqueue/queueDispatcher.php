@@ -75,17 +75,25 @@ class queueDispatcher
      * @param none
      * @return none
      */
-    public function addProcess($process, $document) {
+    public function addProcess($process, $document) 
+    {
     	// Check if process has not been added before
-    	if(!in_array($process, $this->processNames)) {
+    	if(!in_array($process, $this->processNames)) 
+    	{
     		// Store process name
     		$this->processNames[] = $process;
     		// Load process
     		$process_class = $this->getProcess($process);
     		// Set the document in the process
     		$process_class->setDocument($document);
+    		// Load process events
+    		$process_class->loadEvents();
+    		// Load process callbacks
+    		$process_class->loadCallbacks();
 			// Add events to process
 			$process_class->addEventsToProcess();
+			// Add callbacks to process
+			$process_class->addCallbacksToProcess();
     		// Store process object
     		$this->processes[$process] = $process_class;
     	}
@@ -99,7 +107,8 @@ class queueDispatcher
      * @param none
      * @return none
      */
-    private function getProcess($process) {
+    private function getProcess($process) 
+    {
     	$process_class = null;
     	$process_name = $process . "Process";
 		$process_file = $process_name . ".inc.php";
@@ -121,12 +130,15 @@ class queueDispatcher
     * @access public
     * @return ComplexEvent $complexEvent
     */
-    public function createComplexEvent() {
+    public function createComplexEvent() 
+    {
     	// Create complex event object
 		$this->complexEvent = new ComplexEvent();
 		$dependencyList = array();
+		// Iterate through processes
     	foreach ($this->processes as $process) 
     	{
+    		// Retrieve process events
 			$events = $process->getEvents();
 			if($events) 
 			{
@@ -140,16 +152,16 @@ class queueDispatcher
 		    		$params = $event->getParameters();
 		    		// Add events to complex event
 		    		$this->addEventToComplexEvent($params, $name, $message);
-		    		$dependencyList[$event->getName()] = $event->getDependencies();
+		    		// Store event dependencies for later processing
+		    		$dependencies = $event->getDependencies();
+		    		if(count($dependencies))
+		    			// Check for dependencies
+		    			$dependencyList[$event->getName()] = $dependencies;
 				}
 			}
-    	}
-    	foreach ($dependencyList as $event=>$dependencies) 
-    	{
-    		foreach ($dependencies as $namedEvent=>$dependency) 
-    		{
-    			$this->addDependencyToComplexEvent($namedEvent, $event);
-    		}
+			// Process event dependencies
+			$this->addDependencies($dependencyList);
+			$this->addCallbacks($process);
     	}
     }
     
@@ -179,31 +191,45 @@ class queueDispatcher
     * @param array $dependencies
     * @return 
     */
-    private function addDependencyToComplexEvent($name, $dependencies) 
+    private function addDependencyToComplexEvent($name, $dependencies)
     {
-    	$this->complexEvent->setDependency($name, $dependencies); // Add simple event dependencies
+    	$this->complexEvent->setDependency($name, $dependencies);
     }
     
     /**
-    * Add dependencies between events within a complex event.
+    * 
     *
     * @author KnowledgeTree Team
     * @access private
-    * @param ComplexEvent $complexEvent
-    * @param array $dependencies
     * @return none
     */
-    private function addDependencies($complexEvent, $dependencies) 
-    {
-    	if($dependencies) 
+	private function addDependencies($dependencyList) 
+	{
+    	foreach ($dependencyList as $event=>$dependencies) 
     	{
-	    	foreach ($dependencies as $dependency) 
-	    	{
-	    		$this->addDependency($complexEvent, $dependency->getName(), $dependency->getDependencList());
-	    	}
+    		$this->addDependencyToComplexEvent($event, $dependencies);
     	}
-    }
-    
+	}
+    /**
+    * 
+    *
+    * @author KnowledgeTree Team
+    * @access private
+    * @return none
+    */
+	private function addCallbacks($process) 
+	{
+		// Retrieve process callbacks
+		$callbacks = $process->getCallbacks();
+		if($callbacks) 
+		{
+			foreach ($callbacks as $callback=>$url) 
+			{
+				
+			}
+		}
+	}
+	
     /**
     * Instantiates the sqs queue manager and sends a complex event to the sqs queue
     *
@@ -246,7 +272,8 @@ class queueDispatcher
     	$this->addProcess('processing', $document);
     	$this->addProcess('indexing', $document);
 		$this->sendToQueue(false);
-		print_r($this->complexEvent);
+		print_r($this);
+//		print_r($this->complexEvent);
     }
     
     /**
@@ -264,6 +291,7 @@ class queueDispatcher
     	}
     	return true;
     }
+    
 }
 
 if(isset($_GET['method'])) {

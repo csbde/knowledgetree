@@ -504,6 +504,13 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 		$oDocument = new Document($aFileArray['name'], $aFileArray['name'], $aFileArray['size'], $_SESSION["userID"], PhysicalDocumentManager::getMimeTypeID($aFileArray['type'], $aFileArray['name']), $iFolderID);
 		return $oDocument;
 	}
+	
+    /*
+    TODO: Remove as it is only needed for testing.
+    */
+    function getDocumentUrl($oDocument, $type = 'document') {
+    	return '';
+    }
 }
 
 ?>

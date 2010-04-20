@@ -112,6 +112,21 @@ abstract class queueProcess {
 	}
 
     /**
+    * et the list of callbacks
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param string $callback
+    * @param string $url
+    * @return none
+    */
+	public function setListOfCallbacks($callbacks) {
+		foreach ($callbacks as $callback=>$url) {
+			$this->addCallback($callback, $url);
+		}
+	}
+	
+    /**
     * Set the document to be processed
     *
     * @author KnowledgeTree Team
@@ -161,6 +176,12 @@ abstract class queueProcess {
 		}
 	}
 	
+	public function addCallbacksToProcess() {
+		foreach ($this->callbacks as $callback=>$url) {
+			$this->addCallback($callback, $url);
+		}
+	}
+	
     /**
     * Add process callback
     *
@@ -172,7 +193,7 @@ abstract class queueProcess {
     */
 	function addCallback($callback, $url) 
 	{
-		if(in_array($url, array_flip($this->valid_callbacks)))
+		if(in_array($callback, array_flip($this->valid_callbacks)))
 		{
 			$this->callbacks[$callback] = $url;
 		}

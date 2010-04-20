@@ -94,13 +94,9 @@ class pdfEvent extends queueEvent
     */
 	private function getSrcFile() 
 	{
-		global $default;
-		$fileSystemRoot = $default->fileSystemRoot;
-		$documentRoot = $default->documentRoot;
-		$docFile = $documentRoot . '/' . $this->document->getStoragePath();
-		$srcFile = str_replace($fileSystemRoot.'/','http://' . $default->serverName . ':' . $default->server_port . $default->rootUrl . '/', $docFile);
+		$oStorage =& KTStorageManagerUtil::getSingleton();
 		
-		return $srcFile;
+		return $oStorage->getDocumentUrl($this->document);
 	}
 	
     /**
@@ -113,13 +109,9 @@ class pdfEvent extends queueEvent
     */
 	private function getDestFile() 
 	{
-		global $default;
-		$fileSystemRoot = $default->fileSystemRoot;
-		$pdfDir = $default->pdfDirectory;
-		$pdfFile = $pdfDir . '/' . $this->document->getId() . '.pdf';
-		$destFile = str_replace($fileSystemRoot.'/','http://' . $default->serverName . ':'  . $default->server_port . '' . $default->rootUrl . '/', $pdfFile);
-		
-		return $destFile;
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+
+		return $oStorage->getDocumentUrl($this->document, 'pdf');
 	}
 	
     /**

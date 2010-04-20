@@ -24,11 +24,14 @@ require_once(realpath(dirname(__FILE__) . '/../queueProcess.php'));
 require_once(realpath(dirname(__FILE__) . '/../queueEvent.php'));
 
 class processingProcess extends queueProcess {
+	
 	public $list_of_events = array (
 									'pdf' => 'pdf.run',
 									'flash' => 'flash.run',
 									'thumb' => 'thumb.run',
 	);
+	
+	public $callbacks = array();
 	
     /**
     * Construct document processing process
@@ -36,12 +39,31 @@ class processingProcess extends queueProcess {
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return none
     */
-	function __construct() {
+	public function __construct() {
 		parent::setName('processing');
+	}
+	
+	public function loadEvents() {
 		parent::setListOfEvents($this->list_of_events);
 	}
 	
+	public function loadCallbacks() {
+		global $default;
+		$server = 'http://' . $default->serverName . ':'  . $default->server_port . '' . $default->rootUrl;
+		$done = $server;
+		$onQueueNextEvent = $server;
+		$onReturnEvent = $server;
+		$onReturnEventFailure = $server;
+		$onReturnEventSuccess = $server;
+		parent::setListOfCallbacks(array(
+								'done' => $done,
+								'onQueueNextEvent' => $onQueueNextEvent,
+								'onReturnEvent' => $onReturnEvent,
+								'onReturnEventFailure' => $onReturnEventFailure,
+								'onReturnEventSuccess' => $onReturnEventSuccess,
+		));
+	}
 }
 ?>

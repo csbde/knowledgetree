@@ -30,6 +30,8 @@ class indexingProcess extends queueProcess {
 									'metadata' => 'Metadata.run',
 									);
 	
+	public $callbacks = array();
+	
     /**
     * Construct document indexing process
     *
@@ -40,9 +42,27 @@ class indexingProcess extends queueProcess {
     */
 	public function __construct() {
 		parent::setName('indexing');
+	}
+	
+	public function loadEvents() {
 		parent::setListOfEvents($this->list_of_events);
 	}
 	
-
+	public function loadCallbacks() {
+		global $default;
+		$server = 'http://' . $default->serverName . ':'  . $default->server_port . '' . $default->rootUrl;
+		$done = $server;
+		$onQueueNextEvent = $server;
+		$onReturnEvent = $server;
+		$onReturnEventFailure = $server;
+		$onReturnEventSuccess = $server;
+		parent::setListOfCallbacks(array(
+								'done' => $done,
+								'onQueueNextEvent' => $onQueueNextEvent,
+								'onReturnEvent' => $onReturnEvent,
+								'onReturnEventFailure' => $onReturnEventFailure,
+								'onReturnEventSuccess' => $onReturnEventSuccess,
+		));
+	}
 }
 ?>

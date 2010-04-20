@@ -370,6 +370,32 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         // Storage doesn't care if the document is deleted or restored
         return true;
     }
+    
+    /*
+    TODO: Remove as it is only needed for testing.
+    */
+    function getDocumentUrl($oDocument, $type = 'document') {
+    	global $default;
+    	$sFile_system_root = $default->fileSystemRoot;
+    	$server = $server = 'http://' . $default->serverName . ':'  . $default->server_port . $default->rootUrl . '/';
+    	switch ($type) {
+    		case 'pdf' :
+	               $sFile = 'Pdf/' . $oDocument->getId() . '.pdf';
+    			break;
+    		case 'document' :
+					$sFile = 'var/Documents/' . $oDocument->getStoragePath();
+    			break;
+    		case 'flash':
+					$sFile = 'var/flash/' . $oDocument->getId() . '.swf';
+    			break;
+    		case 'thumbnail':
+					$sFile = 'var/thumbnails/' . $oDocument->getId() . '.jpg';
+    			break;
+    	}
+    	$sFileLocation = $server . $sFile;
+
+		return $sFileLocation;
+    }
 }
 
 ?>

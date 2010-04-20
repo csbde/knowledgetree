@@ -178,6 +178,13 @@ class KTStorageManager {
     function renameDocument(&$oDocument, $oOldContentVersion, $sNewFilename) {
         return PEAR::raiseError(_kt("Not implemented"));
     }
+    
+    /*
+    TODO: Remove as it is only needed for testing.
+    */
+    function getDocumentUrl($oDocument, $type = 'document') {
+    	return PEAR::raiseError(_kt("Not implemented"));
+    }
 }
 
 class KTStorageManagerUtil {
