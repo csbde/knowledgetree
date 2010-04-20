@@ -19,7 +19,7 @@ of related information.{/i18n}</p>
       {foreach name=fieldlist from=$fields item=oField}
         <tr>
             <td class="title">
-                {$oField->getName()}
+                {$oField->getName()|escape:'htmlall'}
             </td>
             <td class="centered">
                 <a href="{addQS context=$context}fieldset_action=managefield&fFieldId={$oField->getId()}{/addQS}" class="ktAction ktEdit">{i18n}edit{/i18n}</a>

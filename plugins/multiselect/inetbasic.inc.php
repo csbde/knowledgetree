@@ -250,7 +250,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $errors = $res['errors'];
         $extra_errors = array();
 
-        $oField = DocumentField::getByFieldsetAndName($this->oFieldset, $data['name']);
+        $oField = DocumentField::getByFieldsetAndName($this->oFieldset, sanitizeForHTML($data['name']));
         if (!PEAR::isError($oField)) {
             $extra_errors['name'] = _kt("A field with that name already exists in this fieldset.");
         }
@@ -291,8 +291,8 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 		// multiselect change end
         
         $oField = DocumentField::createFromArray(array(
-            'Name' => $data['name'],
-            'Description' => $data['description'],
+            'Name' => sanitizeForHTML($data['name']),
+            'Description' => sanitizeForHTML($data['description']),
             'DataType' => $DataType,
             'IsGeneric' => false,
             'HasLookup' => $lookup,
@@ -488,8 +488,8 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $extra_errors = array();
 
         // check that the field name either hasn't changed, or doesn't exist.
-        if ($data['name'] != $this->oField->getName()) {
-            $oOldField = DocumentField::getByFieldsetAndName($this->oFieldset, $data['name']);
+        if (sanitizeForHTML($data['name']) != $this->oField->getName()) {
+            $oOldField = DocumentField::getByFieldsetAndName($this->oFieldset, sanitizeForHTML($data['name']));
             // If the field exists throw an error. Mysql doesn't distinguish between é and e so check the names are different in php.
             if (!PEAR::isError($oOldField) && $oOldField->getName() == $data['name']) {
                 $extra_errors['name'] = _kt("That name is already in use in this fieldset.  Please specify a unique name.");
@@ -500,8 +500,8 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             return $oForm->handleError(null, $extra_errors);
         }
 
-        $this->oField->setName($data['name']);
-        $this->oField->setDescription($data['description']);
+        $this->oField->setName(sanitizeForHTML($data['name']));
+        $this->oField->setDescription(sanitizeForHTML($data['description']));
         $this->oField->setIsMandatory($data['required']);
 
 		// multiselect change start
