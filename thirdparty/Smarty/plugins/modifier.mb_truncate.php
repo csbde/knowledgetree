@@ -25,6 +25,8 @@ function smarty_modifier_mb_truncate($string, $length = 80, $etc = '...',
 {
     if ($length == 0)
         return '';
+    
+    $string = htmlentities($string, ENT_QUOTES);
 
     if (mb_strlen($string, 'UTF-8') > $length) {
         mb_internal_encoding("UTF-8");
