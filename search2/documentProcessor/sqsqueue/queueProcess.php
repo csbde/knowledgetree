@@ -51,13 +51,47 @@ abstract class queueProcess {
 	 *
 	 * @var array
 	 */
-	public $callbacks;
+	public $callbacks = array('done'=>'',
+								'onQueueNextEvent'=>'',
+								'onReturnEvent'=>'',
+								'onReturnEventFailure'=>'',
+								'onReturnEventSuccess'=>'',
+							);
 	/**
 	 * List of valid callbacks
 	 *
 	 * @var array
 	 */
-	public $valid_callbacks;
+	public $valid_callbacks = array('done',
+									'onQueueNextEvent',
+									'onReturnEvent',
+									'onReturnEventFailure',
+									'onReturnEventSuccess',
+									);
+	/**
+	 * Callback type
+	 *
+	 * @var array
+	 */
+	public $callback_type = "POST|";
+	/**
+	 * Callback script
+	 *
+	 * @var array
+	 */
+	public $callback_script = "search2/documentProcessor/sqsqueue/callbackDispatcher.php";
+	/**
+	 * Traceback script
+	 *
+	 * @var array
+	 */
+	public $traceback_script = "search2/documentProcessor/sqsqueue/tracebackDispatcher.php";
+	/**
+	 * Callback and traceback options
+	 *
+	 * @var array
+	 */
+	public $callback_options = "msg=[eventMessage]&eid=[eventId]&cid=[complexEventId]&status=[status]";
 	
     /**
     * 
@@ -72,19 +106,6 @@ abstract class queueProcess {
 		$this->events = array();
 		$this->list_of_events = array();
 		$this->document = null;
-		$this->valid_callbacks = array('done',
-									'onQueueNextEvent',
-									'onReturnEvent',
-									'onReturnEventFailure',
-									'onReturnEventSuccess',
-									);
-		$this->callbacks = array(
-									'done'=>'',
-									'onQueueNextEvent'=>'',
-									'onReturnEvent'=>'',
-									'onReturnEventFailure'=>'',
-									'onReturnEventSuccess'=>'',
-									);
 	}
 	
     /**
@@ -151,7 +172,7 @@ abstract class queueProcess {
 	}
 
     /**
-    * Load the event class and store the in a list of events
+    * Load the event class and store in a list of events
     *
     * @author KnowledgeTree Team
     * @access public
@@ -161,6 +182,9 @@ abstract class queueProcess {
 	public function addEventsToProcess() {
 		foreach ($this->list_of_events as $key => $message) 
 		{
+			if($key == 'http') {
+				
+			}
 			$process_name = $this->getName();
 			$event_name = $key . "Event";
 			$event_file = $event_name . ".inc.php";
@@ -172,13 +196,11 @@ abstract class queueProcess {
 				$event_class->setDocument($this->document);
 				$event_class->buildParameters();
 				$this->addEvent($event_class);
+				$previous_event = $key;
+			} else {
+				// TODO : Die Gracefully
+				
 			}
-		}
-	}
-	
-	public function addCallbacksToProcess() {
-		foreach ($this->callbacks as $callback=>$url) {
-			$this->addCallback($callback, $url);
 		}
 	}
 	
@@ -195,7 +217,7 @@ abstract class queueProcess {
 	{
 		if(in_array($callback, array_flip($this->valid_callbacks)))
 		{
-			$this->callbacks[$callback] = $url;
+			$this->callbacks[$callback] = $url . "&callback_type=$callback";
 		}
 	}
 	
@@ -224,26 +246,26 @@ abstract class queueProcess {
 	}
 	
     /**
-    * Get the list of event names
+    * Get the list of callbacks
     *
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return array
     */
-	public function getListOfEvent() {
-		return $this->list_of_events;
+	public function getCallbacks() {
+		return $this->callbacks;
 	}
 	
     /**
-    * Get the list of event names
+    * Get the list of tracebacks
     *
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return array
     */
-	public function getCallbacks() {
+	public function getTracebacks() {
 		return $this->callbacks;
 	}
 }

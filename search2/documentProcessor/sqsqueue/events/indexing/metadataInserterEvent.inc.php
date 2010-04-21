@@ -22,7 +22,7 @@
 
 require_once(realpath(dirname(__FILE__) . '/../../queueEvent.php'));
 
-class metadataEvent extends queueEvent 
+class metadataInserterEvent extends queueEvent 
 {
 	/**
 	 * List of event dependencies
@@ -50,8 +50,8 @@ class metadataEvent extends queueEvent
     */
 	function __construct() 
 	{
-		parent::setName('metadataEvent');
-		parent::setMessage('Metadata.run');
+		parent::setName('metadataInserterEvent');
+		parent::setMessage('metadataInserter.run');
 	}
 	
     /**

@@ -91,8 +91,6 @@ class queueDispatcher
     		$process_class->loadCallbacks();
 			// Add events to process
 			$process_class->addEventsToProcess();
-			// Add callbacks to process
-			$process_class->addCallbacksToProcess();
     		// Store process object
     		$this->processes[$process] = $process_class;
     	}
@@ -153,8 +151,8 @@ class queueDispatcher
 		    		$this->addEventToComplexEvent($params, $name, $message);
 		    		// Store event dependencies for later processing
 		    		$dependencies = $event->getDependencies();
+		    		// Check for dependencies
 		    		if(count($dependencies))
-		    			// Check for dependencies
 		    			$dependencyList[$event->getName()] = $dependencies;
 				}
 			}
@@ -209,6 +207,7 @@ class queueDispatcher
     		$this->addDependencyToComplexEvent($event, $dependencies);
     	}
 	}
+	
     /**
     * 
     *
@@ -224,7 +223,28 @@ class queueDispatcher
 		{
 			foreach ($callbacks as $callback=>$url) 
 			{
-				
+				// Add callback to Complex Event
+				$this->complexEvent->callbacks[$callback] = $url;
+			}
+		}
+	}
+	
+    /**
+    * 
+    *
+    * @author KnowledgeTree Team
+    * @access private
+    * @return none
+    */
+	private function addTracebacks($process)
+	{
+		// Retrieve process callbacks
+		$callbacks = $process->getTracebacks();
+		if($callbacks) 
+		{
+			foreach ($callbacks as $callback=>$url) 
+			{
+				$this->complexEvent->callbacks[$callback] = $url;
 			}
 		}
 	}
@@ -273,8 +293,8 @@ class queueDispatcher
     	$this->addProcess('processing', $document);
     	$this->addProcess('indexing', $document);
 		$this->sendToQueue(false);
-		print_r($this);
-//		print_r($this->complexEvent);
+//		print_r($this);
+		print_r($this->complexEvent);
     }
     
     /**
@@ -295,16 +315,20 @@ class queueDispatcher
     
 }
 
-//if(isset($_GET['method'])) {
-//	require_once(dirname(__FILE__) . '/../../../config/dmsDefaults.php');
-//	$oQueueDispatcher = new queueDispatcher();
-//	if (!$oQueueDispatcher->isLoggedIn()) {
-//    	echo _kt('Session has expired. Refresh page and login.');
-//    	exit();
-//	}
-//	$method = $_GET['method'];
-//	unset($_GET['method']);
-//	call_user_func_array(array($oQueueDispatcher, $method), $_GET);
-//	exit();
-//}
+if(isset($_GET['method'])) {
+	require_once(dirname(__FILE__) . '/../../../config/dmsDefaults.php');
+	$oQueueDispatcher = new queueDispatcher();
+	if (!$oQueueDispatcher->isLoggedIn()) {
+    	echo _kt('Session has expired. Refresh page and login.');
+    	exit();
+	}
+	if(!isset($_GET['method'])) {
+    	echo _kt('No method specified.');
+    	exit();
+	}
+	$method = $_GET['method'];
+	unset($_GET['method']);
+	call_user_func_array(array($oQueueDispatcher, $method), $_GET);
+	exit();
+}
 ?>

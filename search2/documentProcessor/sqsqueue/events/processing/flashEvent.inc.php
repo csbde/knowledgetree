@@ -53,7 +53,7 @@ class flashEvent extends queueEvent
 	function __construct() 
 	{
 		parent::setName('flashEvent');
-		parent::setMessage('flash.run');
+		parent::setMessage('SwfGenerator.run');
 	}
 	
     /**

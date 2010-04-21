@@ -26,8 +26,8 @@ require_once(realpath(dirname(__FILE__) . '/../queueEvent.php'));
 class indexingProcess extends queueProcess {
 	
 	public $list_of_events = array(
-									'index' => 'Index.run',
-									'metadata' => 'Metadata.run',
+									'index' => 'Indexer.run',
+									'metadataInserter' => 'MetadataInserter.run',
 									);
 	
 	public $callbacks = array();
@@ -51,6 +51,7 @@ class indexingProcess extends queueProcess {
 	public function loadCallbacks() {
 		global $default;
 		$server = 'http://' . $default->serverName . ':'  . $default->server_port . '' . $default->rootUrl;
+		$server = $this->callback_type . $server . $this->callback_script . '?' . $this->callback_options;
 		$done = $server;
 		$onQueueNextEvent = $server;
 		$onReturnEvent = $server;

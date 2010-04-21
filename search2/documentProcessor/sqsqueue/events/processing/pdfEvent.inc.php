@@ -51,7 +51,7 @@ class pdfEvent extends queueEvent
 	function __construct() 
 	{
 		parent::setName('pdfEvent');
-		parent::setMessage('PDFConvert.run');
+		parent::setMessage('PdfGenerator.run');
 	}
 	
     /**

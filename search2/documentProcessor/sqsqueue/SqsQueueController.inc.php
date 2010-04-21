@@ -77,13 +77,13 @@ class SqsQueueController
     {
 		try {
             $this->sqsQueue->create_queue($this->output);
+            sleep(3);
         }
         catch (Exception $e) {
 			// TODO : Return proper error
         }
         // sleep in order to give queues time to be created if they do not already exist
         // TODO should only do this if queues did not already exist
-        sleep(3);
     }
 
     /**

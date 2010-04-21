@@ -52,7 +52,7 @@ class thumbEvent extends queueEvent {
 	function __construct() 
 	{
 		parent::setName('thumbEvent');
-		parent::setMessage('thumb.run');
+		parent::setMessage('ThumbGenerator.run');
 	}
 	
     /**
