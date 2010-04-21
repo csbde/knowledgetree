@@ -5,7 +5,7 @@ function smarty_modifier_sanitize($string, $esc_type = 'html', $charset='UTF-8')
     // based on escape, but with charset
     switch ($esc_type) {
         case 'html':
-            return htmlspecialchars($string, ENT_QUOTES,$charset);
+            return htmlspecialchars($string, ENT_QUOTES,$charset, FALSE);
 
         case 'htmlall':
             return htmlentities($string, ENT_QUOTES,$charset);

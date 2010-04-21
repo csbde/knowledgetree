@@ -473,8 +473,8 @@ class AdvancedWorkflowColumn extends AdvancedColumn {
             return '&mdash;';
         } else {
             return sprintf('%s <span class="descriptive">%s</span>',
-                htmlentities($oState->getName(), ENT_NOQUOTES, 'UTF-8'),
-                htmlentities($oWorkflow->getName(), ENT_NOQUOTES, 'UTF-8')
+                htmlspecialchars($oState->getName(), ENT_NOQUOTES, 'UTF-8', FALSE),
+                htmlspecialchars($oWorkflow->getName(), ENT_NOQUOTES, 'UTF-8', FALSE)
             );
         }
     }

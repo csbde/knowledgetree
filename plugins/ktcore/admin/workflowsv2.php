@@ -57,6 +57,8 @@ require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 //require_once(KT_DIR . "/thirdparty/pear/GraphViz.php");
 
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
+
 class WorkflowNavigationPortlet extends KTPortlet {
     var $oWorkflow;
     var $sHelpPage = 'ktcore/admin/workflow.html';
@@ -525,8 +527,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         }
 
         $this->startTransaction();
-        $this->oWorkflow->setName($data['workflow_name']);
-        $this->oWorkflow->setHumanName($data['workflow_name']);
+        $this->oWorkflow->setName(sanitizeForHTML($data['workflow_name']));
+        $this->oWorkflow->setHumanName(sanitizeForHTML($data['workflow_name']));
         $this->oWorkflow->setStartStateId($data['start_state']->getId());
         $this->oWorkflow->setIsEnabled($data['enabled']);
         $res = $this->oWorkflow->update();
@@ -772,7 +774,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $old_states = array();
         $states = array();
         foreach ($initial_states as $sName) {
-            $state_name = trim($sName);
+            $state_name = sanitizeForHTML(trim($sName));
             if (empty($state_name)) {
                 continue;
             }
@@ -879,7 +881,7 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $old_transitions = array();
         $transitions = array();
         foreach ($initial_transitions as $sName) {
-            $transition_name = trim($sName);
+            $transition_name = sanitizeForHTML(trim($sName));
             if (empty($transition_name)) {
                 continue;
             }
@@ -1003,6 +1005,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $data = $res['results'];
         $errors = $res['errors'];
         $extra_errors = array();
+        
+        $data['name'] = sanitizeForHTML($data['name']);
 
         // check if any *other* states have this name.
         if ($data['name'] == $this->oState->getName()) {
@@ -1094,6 +1098,8 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $data = $res['results'];
         $errors = $res['errors'];
         $extra_errors = array();
+        
+        $data['name'] = sanitizeForHTML($data['name']);
 
         // check if any *other* states have this name.
         if ($data['name'] == $this->oTransition->getName()) {

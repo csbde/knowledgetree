@@ -6,7 +6,7 @@
             <th>{i18n}Name{/i18n}</th><td>{$context->oFieldset->getName()}</td>
         </tr>
         <tr>
-            <th>{i18n}Description{/i18n}</th><td>{$context->oFieldset->getDescription()|escape:'htmlall'}</td>
+            <th>{i18n}Description{/i18n}</th><td>{$context->oFieldset->getDescription()}</td>
         </tr>        
         <tr>
             <th>{i18n}Generic{/i18n}</th><td>{if $context->oFieldset->getIsGeneric()}
