@@ -123,15 +123,19 @@ class ComplexEvent{
 		$url=NULL;
 		if(isset($this->callbacks[$callbackName]))if($this->callbacks[$callbackName]){
 			$parseVars=array();
-			if(!($eventObject instanceof Event)){
-				$eventObject=isset($this->events[$eventObject])?$this->events[$eventObject]:NULL;
+			if($eventObject){
+				if(!($eventObject instanceof Event)){
+					$eventObject=isset($this->events[$eventObject])?$this->events[$eventObject]:NULL;
+				}
+				if($eventObject instanceof Event){
+					$parseVars['eventId']=$eventObject->id;
+					$parseVars['eventMessage']=$eventObject->message;
+					$parseVars['eventObject']=lib::sSerialize($eventObject);
+				}
 			}
-			if($eventObject instanceof Event){
-				$parseVars['eventId']=$eventObject->id;
-				$parseVars['eventMessage']=$eventObject->message;
-				$parseVars['eventObject']=lib::sSerialize($eventObject);
-			}
-			$parseVars['id']=$this->id;
+			$parseVars['id']=$parseVars['complexEventId']=$this->id;
+			if(is_array($additional))$parseVars=array_merge($parseVars,$additional);
+			$parseVars=lib::aUrlEncode($parseVars);
 			$url=lib::parseString($this->callbacks[$callbackName],$parseVars);
 		}
 		return $url;

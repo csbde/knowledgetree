@@ -19,7 +19,9 @@
  * All Rights Reserved.
  *
  */
-
+/**
+ * Load simple event modeling class queueEvent
+ */
 require_once(realpath(dirname(__FILE__) . '/../../queueEvent.php'));
 
 class indexEvent extends queueEvent 
@@ -46,9 +48,9 @@ class indexEvent extends queueEvent
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return none
     */
-	function __construct() 
+	public function __construct() 
 	{
 		parent::setName('indexEvent');
 		parent::setMessage('Indexer.run');
@@ -60,7 +62,7 @@ class indexEvent extends queueEvent
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return none
     */
 	public function buildParameters() 
 	{
@@ -69,12 +71,12 @@ class indexEvent extends queueEvent
 	}
 	
     /**
-    * Create indexer source url
+    * Get document source url
     *
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return string
     */
 	private function getSrcFile()
 	{

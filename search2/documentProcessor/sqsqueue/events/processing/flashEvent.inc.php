@@ -19,7 +19,9 @@
  * All Rights Reserved.
  *
  */
-
+/**
+ * Load simple event modeling class queueEvent
+ */
 require_once(realpath(dirname(__FILE__) . '/../../queueEvent.php'));
 
 class flashEvent extends queueEvent 
@@ -50,7 +52,7 @@ class flashEvent extends queueEvent
     * @param none
     * @return
     */
-	function __construct() 
+	public function __construct() 
 	{
 		parent::setName('flashEvent');
 		parent::setMessage('SwfGenerator.run');
@@ -71,7 +73,7 @@ class flashEvent extends queueEvent
 	}
 	
     /**
-    * Create pdf destination url
+    * Get pdf destination url
     *
     * @author KnowledgeTree Team
     * @access public
@@ -86,7 +88,7 @@ class flashEvent extends queueEvent
 	}
 	
     /**
-    * Create pdf destination url
+    * Get flash destination url
     *
     * @author KnowledgeTree Team
     * @access public

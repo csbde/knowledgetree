@@ -2,6 +2,8 @@
 
 class LibException extends Exception{}
 
+if(!defined('LIB_STDOUT'))define('LIB_STDOUT',true);
+
 class lib{
 	/**
      * uuid()
@@ -63,12 +65,28 @@ class lib{
 		$obj=@unserialize(str_replace('~snl~',"\0",$string));
 		return $obj;		
 	}
+	
+	public static function printVar($var=NULL,$title=NULL){
+		$id=uniqid('printVar_');
+		if($title)echo "<H4 style=\"cursor:pointer\" onClick=\"var e=document.getElementById('{$id}');e.style.display=(e.style.display=='none'?'block':'none');\">{$title}</H3>";
+		echo '<hr /><pre id="'.$id.'"'.($title?'style="display:none"':'').'>'.print_r($var,true).'</pre>';
+	}
 
-    public function out($msg=null){
-    	fwrite(STDOUT, $msg."\n");
+	/**
+	 * Send messages to standard out. Encapsulated in this function in order to easily turn this on or off
+	 * @param $msg
+	 * @return void
+	 */
+	public static function out($msg=null,$do=true){
+    	if(LIB_STDOUT && $do)fwrite(STDOUT, $msg."\n");
     }
     
-    public function aUrlEncode($var=NULL){
+	/**
+	 * Recursively processes an array and returns the same array with values urlencoded
+	 * @param String/Array $var
+	 * @return String/Array
+	 */
+    public static function aUrlEncode($var=NULL){
     	if(is_array($var)){
     		$ret=array();
     		foreach ($var as $idx=>$val){
@@ -78,6 +96,24 @@ class lib{
     	}else{
     		return urlencode($var);
     	}
+    }
+    
+    
+    /**
+     * Converts an associative array into an indexed array of key value pairs
+     * @param $array
+     * @return array
+     */
+    public static function array2kvp(array $array,$valueQuotes=false,$keyQuotes=false){
+    	$ret=array();
+    	$keyQuote=$keyQuotes?'"':'';
+    	$valueQuote=$valueQuotes?'"':'';
+    	if(is_array($array)){
+    		foreach($array as $key=>$value){
+    			$ret[]="{$keyQuote}{$key}{$keyQuote}={$valueQuote}{$value}{$valueQuote}";
+    		}
+    	}
+    	return $ret;
     }
     
 }

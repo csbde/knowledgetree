@@ -19,7 +19,9 @@
  * All Rights Reserved.
  *
  */
-
+/**
+ * Load simple event modeling class queueEvent
+ */
 require_once(realpath(dirname(__FILE__) . '/../../queueEvent.php'));
 
 class metadataInserterEvent extends queueEvent 
@@ -48,7 +50,7 @@ class metadataInserterEvent extends queueEvent
     * @param none
     * @return
     */
-	function __construct() 
+	public function __construct() 
 	{
 		parent::setName('metadataInserterEvent');
 		parent::setMessage('metadataInserter.run');

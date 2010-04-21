@@ -63,6 +63,7 @@ class SqsQueueController
         }
         catch (Exception $e) {
         	// TODO : Return proper error
+        	return false;
         }
     }
 
@@ -81,6 +82,7 @@ class SqsQueueController
         }
         catch (Exception $e) {
 			// TODO : Return proper error
+			return false;
         }
         // sleep in order to give queues time to be created if they do not already exist
         // TODO should only do this if queues did not already exist
@@ -112,8 +114,8 @@ class SqsQueueController
             return $response->body->SendMessageResult->MessageId;
         }
         catch (Exception $e) {
-
-            return null;
+			// TODO : Log something
+            return false;
         }
     }
 

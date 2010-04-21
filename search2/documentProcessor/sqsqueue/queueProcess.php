@@ -213,7 +213,7 @@ abstract class queueProcess {
     * @param string $url
     * @return none
     */
-	function addCallback($callback, $url) 
+	public function addCallback($callback, $url) 
 	{
 		if(in_array($callback, array_flip($this->valid_callbacks)))
 		{

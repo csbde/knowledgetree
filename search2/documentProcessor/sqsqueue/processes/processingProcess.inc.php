@@ -19,18 +19,27 @@
  * All Rights Reserved.
  *
  */
-
+/**
+ * Load simple event modelling class queueEvent
+ * Load complex even modelling class queueProcess
+ */
 require_once(realpath(dirname(__FILE__) . '/../queueProcess.php'));
 require_once(realpath(dirname(__FILE__) . '/../queueEvent.php'));
 
 class processingProcess extends queueProcess {
-	
+	/**
+	 * List of events
+	 * @var array
+	 */
 	public $list_of_events = array (
 									'pdf' => 'PdfGenerator.run',
 									'flash' => 'SwfGenerator.run',
 									'thumb' => 'ThumbGenerator.run',
 	);
-	
+	/**
+	 * List of callbacks
+	 * @var array
+	 */
 	public $callbacks = array();
 	
     /**
@@ -45,10 +54,26 @@ class processingProcess extends queueProcess {
 		parent::setName('processing');
 	}
 	
+    /**
+    * Load list of events to process
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return none
+    */
 	public function loadEvents() {
 		parent::setListOfEvents($this->list_of_events);
 	}
 	
+    /**
+    * Load list of callbacks to process
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return none
+    */
 	public function loadCallbacks() {
 		global $default;
 		$server = 'http://' . $default->serverName . ':'  . $default->server_port . '' . $default->rootUrl;
@@ -58,13 +83,15 @@ class processingProcess extends queueProcess {
 		$onReturnEvent = $server;
 		$onReturnEventFailure = $server;
 		$onReturnEventSuccess = $server;
-		parent::setListOfCallbacks(array(
+		$callbacks = array(
 								'done' => $done,
 								'onQueueNextEvent' => $onQueueNextEvent,
 								'onReturnEvent' => $onReturnEvent,
 								'onReturnEventFailure' => $onReturnEventFailure,
 								'onReturnEventSuccess' => $onReturnEventSuccess,
-		));
+		);
+		$callbacks = array();
+		parent::setListOfCallbacks($callbacks);
 	}
 }
 ?>

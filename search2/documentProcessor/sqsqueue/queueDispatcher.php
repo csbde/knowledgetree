@@ -20,9 +20,11 @@
  *
  */
 
-require_once('ktqueue/config/config.inc.php'); // sqs queue configuration
-require_once('ktqueue/common/ComplexEvent.class.php'); // sqs queue configuration
-require_once('ktqueue/common/Event.class.php'); // sqs queue configuration
+// TODO : Restructure ktqueue folder
+/**
+ * Load KTQueue Complex
+ */
+require_once('ktqueue/common/ComplexEvent.class.php'); // sqs queue complex event
 
 /**
  * Dispatchers complex events to the SQS control queue for processing.
@@ -194,10 +196,11 @@ class queueDispatcher
     }
     
     /**
-    * 
+    * Add a list of dependencies to complex event
     *
     * @author KnowledgeTree Team
     * @access private
+    * @param $dependencyList
     * @return none
     */
 	private function addDependencies($dependencyList) 
@@ -209,10 +212,11 @@ class queueDispatcher
 	}
 	
     /**
-    * 
+    * Add process callbacks to complex event
     *
     * @author KnowledgeTree Team
     * @access private
+    * @param $process queueProcess
     * @return none
     */
 	private function addCallbacks($process) 
@@ -230,23 +234,16 @@ class queueDispatcher
 	}
 	
     /**
-    * 
+    * Add process tracebacks to complex event
     *
     * @author KnowledgeTree Team
     * @access private
+    * @param $event queueEvent
     * @return none
     */
-	private function addTracebacks($process)
+	private function addTracebacks($event)
 	{
-		// Retrieve process callbacks
-		$callbacks = $process->getTracebacks();
-		if($callbacks) 
-		{
-			foreach ($callbacks as $callback=>$url) 
-			{
-				$this->complexEvent->callbacks[$callback] = $url;
-			}
-		}
+		
 	}
 	
     /**
@@ -254,6 +251,7 @@ class queueDispatcher
     *
     * @author KnowledgeTree Team
     * @access public
+    * @param $send
     * @return none
     */
     public function sendToQueue($send = true)
@@ -272,15 +270,18 @@ class queueDispatcher
 			$oComplexEvent = unserialize($sComplexEvent);
 			if ($oComplexEvent instanceof ComplexEvent )
 			{
-	    		$queueManager->sendToQueue($complexEvent);
+	    		$response = $queueManager->sendToQueue($complexEvent);
+	    		if($response === false) {
+	    			// TODO : Not placed on queue. Resend event.
+	    		}
 			} else {
-				// TODO : Malformed complex event
+				// TODO : Malformed complex. Resend event.
 			}
 		}
     }
 
     /**
-    * Used for testing purposes to create and send complex object to the queue
+    * Used for testing purposes to create and send complex object to the queue. (Testing)
     *
     * @author KnowledgeTree Team
     * @access public
@@ -298,13 +299,13 @@ class queueDispatcher
     }
     
     /**
-    *
+    * Check if a user is logged in. (Testing)
     *
     * @author KnowledgeTree Team
     * @access public
     * @return boolean
     */
-    function isLoggedIn() {
+    private function isLoggedIn() {
     	$session = new Session();
     	$sessionStatus = $session->verify();
     	if ($sessionStatus !== true) {
@@ -315,19 +316,20 @@ class queueDispatcher
     
 }
 
-if(isset($_GET['method'])) {
+// (Testing)
+if(isset($_GET['sqsmethod'])) {
 	require_once(dirname(__FILE__) . '/../../../config/dmsDefaults.php');
 	$oQueueDispatcher = new queueDispatcher();
 	if (!$oQueueDispatcher->isLoggedIn()) {
     	echo _kt('Session has expired. Refresh page and login.');
     	exit();
 	}
-	if(!isset($_GET['method'])) {
-    	echo _kt('No method specified.');
+	if(!isset($_GET['sqsmethod'])) {
+    	echo _kt('No sqsmethod specified.');
     	exit();
 	}
-	$method = $_GET['method'];
-	unset($_GET['method']);
+	$method = $_GET['sqsmethod'];
+	unset($_GET['sqsmethod']);
 	call_user_func_array(array($oQueueDispatcher, $method), $_GET);
 	exit();
 }

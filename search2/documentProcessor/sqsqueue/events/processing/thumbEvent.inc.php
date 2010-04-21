@@ -19,7 +19,9 @@
  * All Rights Reserved.
  *
  */
-
+/**
+ * Load simple event modeling class queueEvent
+ */
 require_once(realpath(dirname(__FILE__) . '/../../queueEvent.php'));
 
 class thumbEvent extends queueEvent {
@@ -47,7 +49,7 @@ class thumbEvent extends queueEvent {
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return none
     */
 	function __construct() 
 	{
@@ -61,7 +63,7 @@ class thumbEvent extends queueEvent {
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return none
     */
 	public function buildParameters() 
 	{
@@ -71,12 +73,12 @@ class thumbEvent extends queueEvent {
 	}
 	
     /**
-    * Create pdf destination url
+    * Get pdf destination url
     *
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return string
     */
 	private function getSrcFile() 
 	{
@@ -86,12 +88,12 @@ class thumbEvent extends queueEvent {
 	}
 	
     /**
-    * Create pdf destination url
+    * Get thumbnail destination url
     *
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return string
     */
 	private function getDestFile() 
 	{

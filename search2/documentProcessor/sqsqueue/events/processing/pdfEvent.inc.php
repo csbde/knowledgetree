@@ -19,7 +19,9 @@
  * All Rights Reserved.
  *
  */
-
+/**
+ * Load simple event modeling class queueEvent
+ */
 require_once(realpath(dirname(__FILE__) . '/../../queueEvent.php'));
 
 class pdfEvent extends queueEvent 
@@ -46,9 +48,9 @@ class pdfEvent extends queueEvent
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return none
     */
-	function __construct() 
+	public function __construct() 
 	{
 		parent::setName('pdfEvent');
 		parent::setMessage('PdfGenerator.run');
@@ -60,7 +62,7 @@ class pdfEvent extends queueEvent
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return none
     */
 	public function buildParameters() 
 	{
@@ -72,25 +74,12 @@ class pdfEvent extends queueEvent
 	}
 	
     /**
-    * 
+    * Get document source url
     *
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
-    */
-	private function getDocId() 
-	{
-		return $this->document->getId();
-	}
-	
-    /**
-    * Create pdf source url
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return
+    * @return string
     */
 	private function getSrcFile() 
 	{
@@ -100,12 +89,12 @@ class pdfEvent extends queueEvent
 	}
 	
     /**
-    * Create pdf destination url
+    * Get pdf destination url
     *
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return string
     */
 	private function getDestFile() 
 	{
@@ -115,18 +104,26 @@ class pdfEvent extends queueEvent
 	}
 	
     /**
-    * 
+    * Get file type
     *
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return string
     */
 	private function getFileType() 
 	{
 		return KTMime::getFileType($this->document->getMimeTypeID());
 	}
 	
+    /**
+    * Get file mimetype
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return string
+    */
 	private function getMimeType() 
 	{
 		return KTMime::getMimeTypeName($this->document->getMimeTypeID());

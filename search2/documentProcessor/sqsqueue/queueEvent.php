@@ -60,7 +60,7 @@ class queueEvent
     * @access public
     * @param string $name
     * @param string $message
-    * @return
+    * @return none
     */
 	public function __construct($name = '', $message = '') 
 	{
@@ -77,7 +77,7 @@ class queueEvent
     * @author KnowledgeTree Team
     * @access public
     * @param string $name
-    * @return
+    * @return none
     */
 	public function setName($name) 
 	{
@@ -90,7 +90,7 @@ class queueEvent
     * @author KnowledgeTree Team
     * @access public
     * @param string $message
-    * @return
+    * @return none
     */
 	public function setMessage($message) 
 	{
@@ -103,7 +103,7 @@ class queueEvent
     * @author KnowledgeTree Team
     * @access public
     * @param string $message
-    * @return
+    * @return none
     */
 	public function setDependency($list_of_dependencies) 
 	{
@@ -116,7 +116,7 @@ class queueEvent
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return none
     */
 	public function setDocument($document) 
 	{
@@ -129,9 +129,9 @@ class queueEvent
     * @author KnowledgeTree Team
     * @access public
     * @param string $parameters
-    * @return
+    * @return none
     */
-	function addParameter($key, $value) 
+	public function addParameter($key, $value) 
 	{
 		if(!in_array($key, $this->list_of_parameters))
 		{
@@ -145,7 +145,7 @@ class queueEvent
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return string
     */
 	public function getName() 
 	{
@@ -158,7 +158,7 @@ class queueEvent
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return string
     */
 	public function getMessage() 
 	{
@@ -179,12 +179,12 @@ class queueEvent
 	}
 	
     /**
-    * Get list of event dependencies
+    * Get list of event parameters
     *
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return array
     */
 	public function getParameters() 
 	{
@@ -197,11 +197,24 @@ class queueEvent
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return array
     */
 	public function getCallbacks() 
 	{
 		return $this->list_of_callbacks;
+	}
+	
+    /**
+    * Get the document Id
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return string
+    */
+	public function getDocId()
+	{
+		return $this->document->getId();
 	}
 	
     /**
@@ -210,7 +223,7 @@ class queueEvent
     * @author KnowledgeTree Team
     * @access public
     * @param none
-    * @return
+    * @return none
     */
 	public function buildParameters() 
 	{
