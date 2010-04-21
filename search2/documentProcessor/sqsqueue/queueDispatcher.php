@@ -295,16 +295,16 @@ class queueDispatcher
     
 }
 
-if(isset($_GET['method'])) {
-	require_once(dirname(__FILE__) . '/../../../config/dmsDefaults.php');
-	$oQueueDispatcher = new queueDispatcher();
-	if (!$oQueueDispatcher->isLoggedIn()) {
-    	echo _kt('Session has expired. Refresh page and login.');
-    	exit();
-	}
-	$method = $_GET['method'];
-	unset($_GET['method']);
-	call_user_func_array(array($oQueueDispatcher, $method), $_GET);
-	exit();
-}
+//if(isset($_GET['method'])) {
+//	require_once(dirname(__FILE__) . '/../../../config/dmsDefaults.php');
+//	$oQueueDispatcher = new queueDispatcher();
+//	if (!$oQueueDispatcher->isLoggedIn()) {
+//    	echo _kt('Session has expired. Refresh page and login.');
+//    	exit();
+//	}
+//	$method = $_GET['method'];
+//	unset($_GET['method']);
+//	call_user_func_array(array($oQueueDispatcher, $method), $_GET);
+//	exit();
+//}
 ?>
