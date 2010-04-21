@@ -826,7 +826,7 @@ class DownloadQueue
             parent_folder_ids LIKE '{$folderId},%' OR
             parent_folder_ids LIKE '%,{$folderId},%' OR
             parent_folder_ids LIKE '%,{$folderId}'";
-            $aFolderList = $this->oFolder->getList($sWhereClause);
+            $aFolderList = $oFolder->getList($sWhereClause);
             foreach($aFolderList as $oFolderItem){
 	            if($oFolderItem->isSymbolicLink()){
 	            	$oFolderItem = $oFolderItem->getLinkedFolder();
