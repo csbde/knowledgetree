@@ -20,8 +20,6 @@
  *
  */
 
-require_once(realpath(dirname(__FILE__) . '/dependencyList.php'));
-
 class queueEvent 
 {
 	/**

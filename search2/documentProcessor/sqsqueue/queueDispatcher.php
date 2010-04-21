@@ -23,7 +23,6 @@
 require_once('ktqueue/config/config.inc.php'); // sqs queue configuration
 require_once('ktqueue/common/ComplexEvent.class.php'); // sqs queue configuration
 require_once('ktqueue/common/Event.class.php'); // sqs queue configuration
-require_once('SqsQueueController.inc.php'); // sqs queue manager
 
 /**
  * Dispatchers complex events to the SQS control queue for processing.
@@ -239,6 +238,8 @@ class queueDispatcher
     */
     public function sendToQueue($send = true)
     {
+    	// Load sqs queue controller class
+    	require_once('SqsQueueController.inc.php'); // sqs queue manager
     	// Create the complex event
     	$this->createComplexEvent();
     	// Instantiate SQS Queue Manager
@@ -294,16 +295,16 @@ class queueDispatcher
     
 }
 
-//if(isset($_GET['method'])) {
-//	require_once(dirname(__FILE__) . '/../../../config/dmsDefaults.php');
-//	$oQueueDispatcher = new queueDispatcher();
-//	if (!$oQueueDispatcher->isLoggedIn()) {
-//    	echo _kt('Session has expired. Refresh page and login.');
-//    	exit();
-//	}
-//	$method = $_GET['method'];
-//	unset($_GET['method']);
-//	call_user_func_array(array($oQueueDispatcher, $method), $_GET);
-//	exit();
-//}
+if(isset($_GET['method'])) {
+	require_once(dirname(__FILE__) . '/../../../config/dmsDefaults.php');
+	$oQueueDispatcher = new queueDispatcher();
+	if (!$oQueueDispatcher->isLoggedIn()) {
+    	echo _kt('Session has expired. Refresh page and login.');
+    	exit();
+	}
+	$method = $_GET['method'];
+	unset($_GET['method']);
+	call_user_func_array(array($oQueueDispatcher, $method), $_GET);
+	exit();
+}
 ?>
