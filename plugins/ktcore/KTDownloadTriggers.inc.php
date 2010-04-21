@@ -53,18 +53,17 @@ class BulkDownloadTrigger {
     
     public function invoke()
     {
-    	// TODO get this working with triggers instead of this?
-		// check for timed out downloads - now we may be looking at enough code to justify a trigger instead of all being here...?
 		DownloadQueue::timeout();
 		
 		// determine whether there is a waiting bulk download
 		global $main;
 		// first check whether there is in fact a download waiting for this user
 		$config = KTConfig::getSingleton();
-		$file = DownloadQueue::getNotificationFileName();
+		$file = DownloadQueue::getNotificationFileName(array($_SESSION['userID']));
         if (!PEAR::isError($file)) {
 			$notificationFile = $config->get('cache/cacheDirectory') . '/' . $file;
         }
+        
         if ((isset($_SESSION['checkBulkDownload']) && ($_SESSION['checkBulkDownload'])) || (file_exists($notificationFile))) {
 			unset($_SESSION['checkBulkDownload']);
 			DownloadQueue::removeNotificationFile();
