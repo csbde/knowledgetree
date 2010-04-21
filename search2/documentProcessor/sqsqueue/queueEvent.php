@@ -218,6 +218,36 @@ class queueEvent
 	}
 	
     /**
+    * Get document source url
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return string
+    */
+	public function getSrcFile($type = 'document')
+	{
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+		
+		return $oStorage->getDocumentUrl($this->document, $type);
+	}
+	
+    /**
+    * Get pdf destination url
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return string
+    */
+	public function getDestFile($type = 'document')
+	{
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+
+		return $oStorage->getDocumentUrl($this->document, $type);
+	}
+	
+    /**
     * Create parameters needed by event
     *
     * @author KnowledgeTree Team

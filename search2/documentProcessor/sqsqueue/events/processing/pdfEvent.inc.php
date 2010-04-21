@@ -66,41 +66,10 @@ class pdfEvent extends queueEvent
     */
 	public function buildParameters() 
 	{
-		require_once(dirname(__FILE__) . '/../../../../../config/dmsDefaults.php');
 		$this->addParameter('src_file', $this->getSrcFile());
-		$this->addParameter('dest_file', $this->getDestFile());
+		$this->addParameter('dest_file', $this->getDestFile('pdf'));
 		$this->addParameter('filetype', $this->getFileType());
 		$this->addParameter('mimetype', $this->getMimeType());
-	}
-	
-    /**
-    * Get document source url
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return string
-    */
-	private function getSrcFile() 
-	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
-		
-		return $oStorage->getDocumentUrl($this->document);
-	}
-	
-    /**
-    * Get pdf destination url
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return string
-    */
-	private function getDestFile() 
-	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
-
-		return $oStorage->getDocumentUrl($this->document, 'pdf');
 	}
 	
     /**

@@ -66,23 +66,8 @@ class indexEvent extends queueEvent
     */
 	public function buildParameters() 
 	{
-		require_once(dirname(__FILE__) . '/../../../../../config/dmsDefaults.php');
+		$this->addParameter('doc_id', $this->getDocId());
 		$this->addParameter('src_file', $this->getSrcFile());
-	}
-	
-    /**
-    * Get document source url
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return string
-    */
-	private function getSrcFile()
-	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
-
-		return $oStorage->getDocumentUrl($this->document);
 	}
 }
 ?>

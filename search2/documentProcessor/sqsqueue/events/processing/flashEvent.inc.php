@@ -68,38 +68,9 @@ class flashEvent extends queueEvent
     */
 	public function buildParameters() 
 	{
-		$this->addParameter('src_file', $this->getSrcFile());
-		$this->addParameter('dest_file', $this->getDestFile());
+		$this->addParameter('src_file', $this->getSrcFile('pdf'));
+		$this->addParameter('dest_file', $this->getDestFile('flash'));
 	}
 	
-    /**
-    * Get pdf destination url
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return
-    */
-	private function getSrcFile() 
-	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
-
-		return $oStorage->getDocumentUrl($this->document, 'pdf');
-	}
-	
-    /**
-    * Get flash destination url
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return
-    */
-	private function getDestFile() 
-	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
-
-		return $oStorage->getDocumentUrl($this->document, 'flash');
-	}
 }
 ?>

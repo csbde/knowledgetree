@@ -67,39 +67,9 @@ class thumbEvent extends queueEvent {
     */
 	public function buildParameters() 
 	{
-		require_once(dirname(__FILE__) . '/../../../../../config/dmsDefaults.php');
-		$this->addParameter('src_file', $this->getSrcFile());
-		$this->addParameter('dest_file', $this->getDestFile());
+		$this->addParameter('src_file', $this->getSrcFile('pdf'));
+		$this->addParameter('dest_file', $this->getDestFile('thumbnail'));
 	}
-	
-    /**
-    * Get pdf destination url
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return string
-    */
-	private function getSrcFile() 
-	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
 
-		return $oStorage->getDocumentUrl($this->document, 'pdf');
-	}
-	
-    /**
-    * Get thumbnail destination url
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return string
-    */
-	private function getDestFile() 
-	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
-
-		return $oStorage->getDocumentUrl($this->document, 'thumbnail');
-	}
 }
 ?>

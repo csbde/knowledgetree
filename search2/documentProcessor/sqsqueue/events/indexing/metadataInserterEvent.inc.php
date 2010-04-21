@@ -66,8 +66,9 @@ class metadataInserterEvent extends queueEvent
     */
 	public function buildParameters() 
 	{
-		require_once(dirname(__FILE__) . '/../../../../../config/dmsDefaults.php');
 		$this->addParameter('doc_id', $this->document->getId());
+		$this->addParameter('src_file', $this->getSrcFile());
+		$this->addParameter('dest_file', $this->getSrcFile());
 		$this->addParameter('metadata', $this->getMetadata());
 	}
 	

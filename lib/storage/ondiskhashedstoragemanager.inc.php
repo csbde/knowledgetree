@@ -380,7 +380,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
     	$server = $server = 'http://' . $default->serverName . ':'  . $default->server_port . $default->rootUrl . '/';
     	switch ($type) {
     		case 'pdf' :
-	               $sFile = 'Pdf/' . $oDocument->getId() . '.pdf';
+	               $sFile = 'var/Pdf/' . $oDocument->getId() . '.pdf';
     			break;
     		case 'document' :
 					$sFile = 'var/Documents/' . $oDocument->getStoragePath();

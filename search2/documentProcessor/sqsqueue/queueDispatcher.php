@@ -22,9 +22,11 @@
 
 // TODO : Restructure ktqueue folder
 /**
- * Load KTQueue Complex
+ * Load KTQueue Complex event
+ * Load KT default configurations
  */
 require_once('ktqueue/common/ComplexEvent.class.php'); // sqs queue complex event
+require_once(dirname(__FILE__) . '/../../../config/dmsDefaults.php');
 
 /**
  * Dispatchers complex events to the SQS control queue for processing.
@@ -305,7 +307,7 @@ class queueDispatcher
     * @access public
     * @return boolean
     */
-    private function isLoggedIn() {
+    public function isLoggedIn() {
     	$session = new Session();
     	$sessionStatus = $session->verify();
     	if ($sessionStatus !== true) {
@@ -318,7 +320,6 @@ class queueDispatcher
 
 // (Testing)
 if(isset($_GET['sqsmethod'])) {
-	require_once(dirname(__FILE__) . '/../../../config/dmsDefaults.php');
 	$oQueueDispatcher = new queueDispatcher();
 	if (!$oQueueDispatcher->isLoggedIn()) {
     	echo _kt('Session has expired. Refresh page and login.');
