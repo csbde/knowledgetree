@@ -42,6 +42,7 @@ require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 require_once(KT_LIB_DIR . "/documentmanagement/MDTree.inc");
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
@@ -587,7 +588,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $raw_lookups = $data['lookups'];
         $lookup_candidates = explode("\n", $raw_lookups);
         foreach ($lookup_candidates as $candidate) {
-            $name = trim($candidate);
+            $name = sanitizeForHTML(trim($candidate));
 
             if (empty($name)) {
                 continue;
@@ -784,6 +785,9 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         }
 
         foreach ($aLookupValues as $iMetaDataId => $sValue){
+			
+			$sValue = sanitizeForHTML($sValue);
+			
             $oMetaData = MetaData::get($iMetaDataId);
             if (PEAR::isError($oMetaData)) {
                 $this->addErrorMessage(_kt('Invalid lookup selected').': '.$sValue);
@@ -905,7 +909,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             $target = 'managetree';
             $msg = _kt('Changes saved.');
             if ($subaction === "addCategory") {
-                $new_category = KTUtil::arrayGet($_REQUEST, 'category_name');
+                $new_category = sanitizeForHTML(KTUtil::arrayGet($_REQUEST, 'category_name'));
                 if (empty($new_category)) {
                     return $this->errorRedirectTo("managetree", _kt("Must enter a name for the new category."), array("field_id" => $field_id, "fFieldsetId" => $iFieldsetId));
                 } else {
