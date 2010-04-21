@@ -643,20 +643,20 @@ class DownloadQueue
             if(PEAR::isError($result)){
                 $default->log->error('Download Queue: item status could not be set for user: '.$_SESSION['userID'].', code: '.$code.', error: '.$result->getMessage());
             }
+            else {
+                // create the db entry for the notification
+                self::addItem($code, self::getFolderId($code), -1, 'zip');
+                // update the db entry with the appropriate status and message
+                $this->setItemStatus($code, 2, serialize(array($zip->getTmpPath(), $zip->getZipFileName())), true);
+                // write a file which will be checked if the user has not been logged out and back in 
+                // (in which case the required session value will not be set and this file acts as a trigger instead)
+                $config = KTConfig::getSingleton();
+                @touch($config->get('cache/cacheDirectory') . '/' . self::getNotificationFileName(array($_SESSION['userID'])));
+            }
+            
             // reset the error messages
             $this->errors = null;
             $_SESSION['zipcompression'] = null;
-        }
-        
-        if (count($queue) && !PEAR::isError($res) && !PEAR::isError($result)) {
-        	// create the db entry
-        	self::addItem($code, self::getFolderId($code), -1, 'zip');
-        	// update the db entry with the appropriate status and message
-        	$this->setItemStatus($code, 2, serialize(array($zip->getTmpPath(), $zip->getZipFileName())), true);
-        	// write a file which will be checked if the user has not been logged out and back in 
-        	// (in which case the required session value will not be set and this file acts as a trigger instead)
-        	$config = KTConfig::getSingleton();
-        	@touch($config->get('cache/cacheDirectory') . '/' . self::$notificationFile);
         }
 
         // Remove lock file
@@ -982,7 +982,7 @@ class DownloadQueue
      */
     static public function removeNotificationFile() {
     	$config = KTConfig::getSingleton();
-    	$file = DownloadQueue::getNotificationFileName();
+    	$file = DownloadQueue::getNotificationFileName(array($_SESSION['userID']));
         if (!PEAR::isError($file)) {
 			$notificationFile = $config->get('cache/cacheDirectory') . '/' . $file;
         }
@@ -1020,9 +1020,9 @@ class DownloadQueue
     	return $result['folder_id'];
     }
     
-    static public function getNotificationFileName() {
+    static public function getNotificationFileName($params = array()) {
     	if (!empty(self::$notificationFile)) {
-    		return self::$notificationFile;
+    		return self::$notificationFile . '_' . implode('_', $params);
     	}
     	
     	return new PEAR_Error('Unable to get file name');
