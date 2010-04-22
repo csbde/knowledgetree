@@ -48,6 +48,7 @@ require_once(KT_LIB_DIR . '/browse/BrowseColumns.inc.php');
 require_once(KT_LIB_DIR . '/browse/PartialQuery.inc.php');
 
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 // {{{ KTDocumentDetailsAction
 class KTDocumentDetailsAction extends KTDocumentAction {
@@ -2009,7 +2010,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         $data = $res['results'];
         $oTransition = KTWorkflowTransition::get($_REQUEST['fTransitionId']);
 
-        $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $this->oDocument, $this->oUser, $data['reason']);
+        $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $this->oDocument, $this->oUser, sanitizeForHTML($data['reason']));
 
         if(!Permission::userHasDocumentReadPermission($this->oDocument)) {
             $this->commitTransaction();
