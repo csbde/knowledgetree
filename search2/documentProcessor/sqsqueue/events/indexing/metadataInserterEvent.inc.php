@@ -53,7 +53,7 @@ class metadataInserterEvent extends queueEvent
 	public function __construct() 
 	{
 		parent::setName('metadataInserterEvent');
-		parent::setMessage('metadataInserter.run');
+		parent::setMessage('MetadataInserter.run');
 	}
 	
     /**
