@@ -388,7 +388,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
     				$sFileLocation = $server . $sFile;
     				$tempFile = $server . 'var/tmp/'. $oDocument->getId() . '.' . KTMime::getFileType($oDocument->getMimeTypeID());
 					copy($sFileLocation, $tempFile);
-					return ;
+					return $tempFile;
     			break;
     		case 'flash':
 					$sFile = 'var/flash/' . $oDocument->getId() . '.swf';
