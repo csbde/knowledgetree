@@ -377,7 +377,8 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
     function getDocumentUrl($oDocument, $type = 'document') {
     	global $default;
     	$sFile_system_root = $default->fileSystemRoot;
-    	$server = $server = 'http://' . $default->serverName . ':'  . $default->server_port . $default->rootUrl . '/';
+    	//$server = $server = 'http://' . $default->serverName . ':'  . $default->server_port . $default->rootUrl . '/';
+    	$server = '/var/www/knowledgetree/';
     	switch ($type) {
     		case 'pdf' :
 	               $sFile = 'var/Pdf/' . $oDocument->getId() . '.pdf';
