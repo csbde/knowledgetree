@@ -19,58 +19,80 @@
  * All Rights Reserved.
  *
  */
-/**
- * Load simple event modeling class queueEvent
- */
-require_once(realpath(dirname(__FILE__) . '/../../queueEvent.php'));
 
-class flashEvent extends queueEvent 
+class eventCallback 
 {
 	/**
-	 * List of event dependencies, (List of event class names)
-	 * @var array
+	 * Name of callback
+	 * @var object
 	 */
-	public $list_of_dependencies = array(
-										'pdfEvent',
-										);
+	public $name;
 	/**
-	 * Parameters to be passed with event
-	 * @var array
+	 * A url to callback to.
+	 * @var string
 	 */
-	public $list_of_parameters = array();
+	public $url;
 	/**
-	 * Callbacks to be envoked
+	 * List of event dependencies
 	 * @var array
 	 */
-	public $list_of_callbacks = array();
+	public $dependencies;
 	
     /**
-    * Construct flash generator Event
+    * Constructor
     *
     * @author KnowledgeTree Team
     * @access public
-    * @param none
-    * @return
+    * @param string $name
+    * @param string $url
+    * @param array $dependencies
+    * @return none
     */
-	public function __construct() 
+	public function __construct($name, $url, $dependencies) 
 	{
-		parent::setName('flashEvent');
-		parent::setMessage('SwfGenerator.run');
+		$this->name = $name;
+		$this->url = $url;
+		$this->dependencies = $dependencies;
 	}
 	
     /**
-    * Create parameters needed by event
+    * 
     *
     * @author KnowledgeTree Team
     * @access public
-    * @param none
-    * @return
+    * @param string
+    * @return none
     */
-	public function buildParameters() 
+	public function getName() 
 	{
-		$this->addParameter('src_file', $this->getSrcFile('pdf'));
-		$this->addParameter('dest_file', $this->getDestFile('flash'));
+		return $this->name;
 	}
 	
+    /**
+    * 
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param string
+    * @return none
+    */
+	public function getUrl()
+	{
+		return $this->url;
+	}
+	
+    /**
+    * 
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param string
+    * @return none
+    */
+	public function getDependencies()
+	{
+		return $this->dependencies;
+	}
 }
+
 ?>

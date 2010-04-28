@@ -64,7 +64,7 @@ class ConfigManager {
         // cannot find config file
         if (empty(self::$configLocation) || !file_exists(self::$configLocation)) {
             self::$status = QCFG_FAILED;
-            self::$errorMessage = 'Unable to load configuration file: ' . self::$configLocation;
+            self::$errorMessage = 'Unable to find configuration file: ' . self::$configLocation;
             return;
         }
         
@@ -74,9 +74,12 @@ class ConfigManager {
         // unable to load config file
         if (!is_array($content) || !count($content)) {
             self::$status = QCFG_FAILED;
-            self::$errorMessage = 'Unable to load configuration file';
+            self::$errorMessage = 'Unable to load configuration file: ' . self::$configLocation;
             return;
         }
+        
+        // clear any previously loaded data
+        self::$configData = array();
         
         // parse into data array
         foreach($content as $line) {
@@ -96,7 +99,13 @@ class ConfigManager {
             else if (preg_match('/^ *([^=]*) *= *(.*) *\r?\n?$/', $line, $match)) {
                 self::$configData[$heading][trim($match[1])] = trim($match[2]); 
             }
+            // comment line
+            else if (preg_match('/^(#.*)\r?\n?$/', $line, $match)) {
+                self::$configData[$heading]['QcfgComments'][] = trim($match[1]);
+            }
         }
+        
+        self::$status = QCFG_SUCCESS;
     }
     
     /**
@@ -108,7 +117,12 @@ class ConfigManager {
      */
     static public function getSection($section)
     {
-        return self::$configData[$section];
+        $data = self::$configData[$section];
+        if (isset($data['QcfgComments'])) {
+            unset($data['QcfgComments']);
+        }
+        
+        return $data;
     }
     
     /**
@@ -121,16 +135,80 @@ class ConfigManager {
      */
     static public function getValue($cfgKey, $cfgSection = null)
     {
-        foreach(self::$configData as $section => $sectionData) {
+        foreach (self::$configData as $section => $sectionData) {
             // check section?
             if (!empty($cfgSection) && ($cfgSection!= $section)) continue;
             // check keys
-            foreach($sectionData as $key => $value) {
+            foreach ($sectionData as $key => $value) {
+                // skip comments
+                if ($key == 'QcfgComments') {
+                    continue;
+                }
                 if ($key == $cfgKey) {
                     return $value;
                 }
             }
         }
+    }
+    
+    /**
+     * Gets ALL config data loaded
+     */
+    static public function getConfigData()
+    {
+        return self::$configData;
+    }
+    
+    /**
+     * Sets the location of the config file
+     *
+     * @param string $config Path to the config file
+     */
+    static public function setConfig($config)
+    {
+        self::$configLocation = $config;
+    }
+    
+    /**
+     * Sets config data, overwriting what is currently stored
+     *
+     * @param array $configData
+     * 
+     * TODO format checking - reject if not in ConfigManager accepted format
+     */
+    static public function setConfigData($configData)
+    {
+        self::$configData = $configData;
+    }
+    
+    /**
+     * Writes current data to the current config file or as specified
+     */
+    static public function writeConfig()
+    {        
+        $file = fopen(self::$configLocation, 'w');
+        if (!$file) {
+            self::$status = QCFG_FAILED;
+            return;
+        }
+        foreach (self::$configData as $section => $sectionData) {
+            fwrite($file, "[$section]\n");
+            
+            // write comment lines
+            if (isset($sectionData['QcfgComments'])) {
+                foreach ($sectionData['QcfgComments'] as $comment) {
+                    fwrite($file, "$comment\n");
+                }
+                unset($sectionData['QcfgComments']);
+            }
+            
+            foreach ($sectionData as $key => $value) {
+                fwrite($file, "$key = $value\n");
+            }
+            // newline...
+            fwrite($file, "\n");
+        }
+        fclose($file);
     }
     
     /**
@@ -140,7 +218,7 @@ class ConfigManager {
      */
     static public function error()
     {
-        return self::$status;
+        return self::$status == QCFG_FAILED;
     }
     
     /**

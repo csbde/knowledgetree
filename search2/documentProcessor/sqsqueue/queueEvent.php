@@ -20,6 +20,8 @@
  *
  */
 
+require_once(realpath(dirname(__FILE__) . '/eventCallback.php'));
+
 class queueEvent 
 {
 	/**
@@ -66,8 +68,6 @@ class queueEvent
 	{
 		$this->name = $name;
 		$this->message = $message;
-		$this->setDependency($this->list_of_dependencies);
-		$this->setCallbacks($this->list_of_callbacks);
 		$this->document = null;
 	}
 	
@@ -260,6 +260,9 @@ class queueEvent
 		
 	}
 
+	public function loadCallbacks() {
+		
+	}
 }
 
 ?>
