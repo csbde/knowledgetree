@@ -19,58 +19,69 @@
  * All Rights Reserved.
  *
  */
-/**
- * Load simple event modeling class queueEvent
- */
-require_once(realpath(dirname(__FILE__) . '/../../queueEvent.php'));
-
-class flashEvent extends queueEvent 
-{
-	/**
-	 * List of event dependencies, (List of event class names)
-	 * @var array
-	 */
-	public $list_of_dependencies = array(
-										'pdfEvent',
-										);
-	/**
-	 * Parameters to be passed with event
-	 * @var array
-	 */
-	public $list_of_parameters = array();
-	/**
-	 * Callbacks to be envoked
-	 * @var array
-	 */
-	public $list_of_callbacks = array();
+class dependencyList {
+	public  $name;
+	public  $list_of_events;
 	
     /**
-    * Construct flash generator Event
+    * Constructor
     *
     * @author KnowledgeTree Team
     * @access public
     * @param none
     * @return
     */
-	public function __construct() 
-	{
-		parent::setName('flashEvent');
-		parent::setMessage('SwfGenerator.run');
+	public function __construct($name) {
+		$this->name = $name;
+		$this->list_of_events = array();
 	}
 	
     /**
-    * Create parameters needed by event
+    * Set dependency list name
     *
     * @author KnowledgeTree Team
     * @access public
     * @param none
     * @return
     */
-	public function buildParameters() 
-	{
-		$this->addParameter('src_file', $this->getSrcFile('pdf'));
-		$this->addParameter('dest_file', $this->getDestFile('flash'));
+	public function setName($name) {
+		$this->name = $name;
 	}
 	
+    /**
+    * Add to dependency list
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
+	public function addDependency($event) {
+		$this->list_of_events[] = $event;
+	}
+	
+    /**
+    * Get dependency list name
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
+	public function getName() {
+		return $this->name;
+	}
+	
+    /**
+    * Get list of dependencies
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return
+    */
+	public function getDependencList() {
+		return $this->list_of_events;
+	}
 }
 ?>

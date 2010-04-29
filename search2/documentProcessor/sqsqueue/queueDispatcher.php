@@ -23,10 +23,10 @@
 // TODO : Restructure ktqueue folder
 /**
  * Load KTQueue Complex event
- * Load KT default configurations
  */
+require_once("sqsDispatcher.php");
 require_once('ktqueue/common/ComplexEvent.class.php'); // sqs queue complex event
-require_once(dirname(__FILE__) . '/../../../config/dmsDefaults.php');
+
 
 /**
  * Dispatchers complex events to the SQS control queue for processing.
@@ -35,27 +35,51 @@ require_once(dirname(__FILE__) . '/../../../config/dmsDefaults.php');
  * @package
  * @version 1.0
  */
-class queueDispatcher
+class queueDispatcher extends sqsDispatcher
 {
 	/**
-	 * Process name store
+	 * List of process names
+	 *
+	 * @var array string
+	 */
+	protected $processNames;
+	/**
+	 * List of process objects
+	 *
+	 * @var array queueProcess
+	 */
+	protected $processes;
+	/**
+	 * Complex event object
+	 *
+	 * @var complexEvent
+	 */
+	protected $complexEvent;
+	/**
+	 * Callback type
 	 *
 	 * @var array
 	 */
-	public $processNames;
+	protected $callback_type = "POST|";
 	/**
-	 * Process object store
+	 * Callback script
 	 *
-	 * @var queueProcess
+	 * @var array
 	 */
-	public $processes;
+	protected $callback_script = "search2/documentProcessor/sqsqueue/callbackDispatcher.php";
 	/**
-	 * Complex event store
+	 * Traceback script
 	 *
-	 * @var queueProcess
+	 * @var array
 	 */
-	public $complexEvent;
-
+	protected $traceback_script = "search2/documentProcessor/sqsqueue/tracebackDispatcher.php";
+	/**
+	 * Callback and traceback options
+	 *
+	 * @var array
+	 */
+	protected $callback_options = "msg=[eventMessage]&eid=[eventId]&cid=[complexEventId]&status=[status]";
+	
     /**
      * Constructor
      *
@@ -89,10 +113,6 @@ class queueDispatcher
     		$process_class = $this->getProcess($process);
     		// Set the document in the process
     		$process_class->setDocument($document);
-    		// Load process events
-    		$process_class->loadEvents();
-    		// Load process callbacks
-    		$process_class->loadCallbacks();
 			// Add events to process
 			$process_class->addEventsToProcess();
     		// Store process object
@@ -153,16 +173,51 @@ class queueDispatcher
 		    		$params = $event->getParameters();
 		    		// Add events to complex event
 		    		$this->addEventToComplexEvent($params, $name, $message);
+		    		// Retrieve event callbacks
+		    		$callbacks = $event->getCallbacks();
+					// Check for callbacks
+		    		if(count($callbacks) > 0)
+		    		{
+		    			// Add simple event level callbacks
+		    			$this->addCallbacksToEvent($name, $callbacks);
+		    		}
 		    		// Store event dependencies for later processing
 		    		$dependencies = $event->getDependencies();
 		    		// Check for dependencies
-		    		if(count($dependencies))
+		    		if(count($dependencies) > 0)
+		    		{
+		    			// Store dependencies for later process
 		    			$dependencyList[$event->getName()] = $dependencies;
+		    		}
 				}
 			}
 			// Process event dependencies
 			$this->addDependencies($dependencyList);
-			$this->addCallbacks($process);
+			// TODO : Map complex event callbacks properly
+			$this->addCallbacks($this->getCallbacks());
+			//$this->addCallbacks($process);
+    	}
+    }
+    
+    /**
+    * Add callbacks to the given simple event
+    *
+    * @author KnowledgeTree Team
+    * @access private
+    * @param array $params
+    * @param string $name
+    * @param array $message
+    * @return none
+    */
+    function addCallbacksToEvent($name, $callbacks) {
+    	// Check if simple event exists in complex event
+    	if (isset($this->complexEvent->events[$name])) {
+    		foreach ($callbacks as $eventCallback) {
+    			$params = array('url' => $eventCallback->getUrl());
+    			$event = new Event('HttpEventRequest.run', $params);
+    			$this->complexEvent->addEvent($eventCallback->getName(), $event);
+    			$this->complexEvent->setDependency($eventCallback->getName(), $eventCallback->getDependencies());
+    		}
     	}
     }
     
@@ -184,20 +239,6 @@ class queueDispatcher
     }
     
     /**
-    * Add a dependency between events.
-    *
-    * @author KnowledgeTree Team
-    * @access private
-    * @param string $name
-    * @param array $dependencies
-    * @return 
-    */
-    private function addDependencyToComplexEvent($name, $dependencies)
-    {
-    	$this->complexEvent->setDependency($name, $dependencies);
-    }
-    
-    /**
     * Add a list of dependencies to complex event
     *
     * @author KnowledgeTree Team
@@ -212,6 +253,51 @@ class queueDispatcher
     		$this->addDependencyToComplexEvent($event, $dependencies);
     	}
 	}
+
+    /**
+    * Add a dependency between events.
+    *
+    * @author KnowledgeTree Team
+    * @access private
+    * @param string $name
+    * @param array $dependencies
+    * @return 
+    */
+    private function addDependencyToComplexEvent($name, $dependencies)
+    {
+    	$this->complexEvent->setDependency($name, $dependencies);
+    }
+    
+    /**
+    * Load list of callbacks to complex event
+    * These are for demo purposes only.
+    * Are far as I know the complex event callbacks are used for testing only.
+    *
+    * @author KnowledgeTree Team
+    * @access private
+    * @param none
+    * @return none
+    */
+	private function getCallbacks() {
+		//return array();
+		global $default;
+		$server = 'http://' . $default->serverName . ':'  . $default->server_port . '' . $default->rootUrl . '/';
+		$server = $this->callback_type . $server . $this->callback_script . '?' . $this->callback_options;
+		$done = $server;
+		$onQueueNextEvent = $server;
+		$onReturnEvent = $server;
+		$onReturnEventFailure = $server;
+		$onReturnEventSuccess = $server;
+		$callbacks = array(
+								'done' => $done,
+								'onQueueNextEvent' => $onQueueNextEvent,
+								'onReturnEvent' => $onReturnEvent,
+								'onReturnEventFailure' => $onReturnEventFailure,
+								'onReturnEventSuccess' => $onReturnEventSuccess,
+		);
+		
+		return $callbacks;
+	}
 	
     /**
     * Add process callbacks to complex event
@@ -223,8 +309,13 @@ class queueDispatcher
     */
 	private function addCallbacks($process) 
 	{
-		// Retrieve process callbacks
-		$callbacks = $process->getCallbacks();
+		if ($process instanceof queueProcess ) {
+			// Retrieve process callbacks
+			$callbacks = $process->getCallbacks();
+		} else {
+			$callbacks = $process;
+		}
+
 		if($callbacks) 
 		{
 			foreach ($callbacks as $callback=>$url) 
@@ -233,19 +324,6 @@ class queueDispatcher
 				$this->complexEvent->callbacks[$callback] = $url;
 			}
 		}
-	}
-	
-    /**
-    * Add process tracebacks to complex event
-    *
-    * @author KnowledgeTree Team
-    * @access private
-    * @param $event queueEvent
-    * @return none
-    */
-	private function addTracebacks($event)
-	{
-		
 	}
 	
     /**
@@ -262,10 +340,10 @@ class queueDispatcher
     	require_once('SqsQueueController.inc.php'); // sqs queue manager
     	// Create the complex event
     	$this->createComplexEvent();
-    	// Instantiate SQS Queue Manager
-		$queueManager = new SqsQueueController('controlQueue');
 		if($send)
 		{
+	    	// Instantiate SQS Queue Manager
+			$queueManager = new SqsQueueController('controlQueue');
 			// Send To SQS Queue Manager
 			$complexEvent = $this->complexEvent;
 			$sComplexEvent = serialize($complexEvent);
@@ -283,7 +361,7 @@ class queueDispatcher
     }
 
     /**
-    * Used for testing purposes to create and send complex object to the queue. (Testing)
+    * Used for testing purposes to create and does not send complex object to the queue.
     *
     * @author KnowledgeTree Team
     * @access public
@@ -300,38 +378,9 @@ class queueDispatcher
 		print_r($this->complexEvent);
     }
     
-    /**
-    * Check if a user is logged in. (Testing)
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @return boolean
-    */
-    public function isLoggedIn() {
-    	$session = new Session();
-    	$sessionStatus = $session->verify();
-    	if ($sessionStatus !== true) {
-    		return false;
-    	}
-    	return true;
-    }
+
     
 }
 
-// (Testing)
-if(isset($_GET['sqsmethod'])) {
-	$oQueueDispatcher = new queueDispatcher();
-	if (!$oQueueDispatcher->isLoggedIn()) {
-    	echo _kt('Session has expired. Refresh page and login.');
-    	exit();
-	}
-	if(!isset($_GET['sqsmethod'])) {
-    	echo _kt('No sqsmethod specified.');
-    	exit();
-	}
-	$method = $_GET['sqsmethod'];
-	unset($_GET['sqsmethod']);
-	call_user_func_array(array($oQueueDispatcher, $method), $_GET);
-	exit();
-}
+
 ?>

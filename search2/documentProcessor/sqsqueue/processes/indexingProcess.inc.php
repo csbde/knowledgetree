@@ -35,12 +35,7 @@ class indexingProcess extends queueProcess {
 									'index' => 'Indexer.run',
 									'metadataInserter' => 'MetadataInserter.run',
 									);
-	/**
-	 * List of callbacks
-	 * @var array
-	 */
-	public $callbacks = array();
-	
+									
     /**
     * Construct document indexing process
     *
@@ -53,44 +48,5 @@ class indexingProcess extends queueProcess {
 		parent::setName('indexing');
 	}
 	
-    /**
-    * Load list of events to process
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return none
-    */
-	public function loadEvents() {
-		parent::setListOfEvents($this->list_of_events);
-	}
-	
-    /**
-    * Load list of callbacks to process
-    *
-    * @author KnowledgeTree Team
-    * @access public
-    * @param none
-    * @return none
-    */
-	public function loadCallbacks() {
-		global $default;
-		$server = 'http://' . $default->serverName . ':'  . $default->server_port . '' . $default->rootUrl;
-		$server = $this->callback_type . $server . $this->callback_script . '?' . $this->callback_options;
-		$done = $server;
-		$onQueueNextEvent = $server;
-		$onReturnEvent = $server;
-		$onReturnEventFailure = $server;
-		$onReturnEventSuccess = $server;
-		$callbacks = array(
-								'done' => $done,
-								'onQueueNextEvent' => $onQueueNextEvent,
-								'onReturnEvent' => $onReturnEvent,
-								'onReturnEventFailure' => $onReturnEventFailure,
-								'onReturnEventSuccess' => $onReturnEventSuccess,
-		);
-		$callbacks = array();
-		parent::setListOfCallbacks($callbacks);
-	}
 }
 ?>
