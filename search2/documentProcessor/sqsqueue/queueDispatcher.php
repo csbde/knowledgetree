@@ -24,9 +24,8 @@
 /**
  * Load KTQueue Complex event
  */
-require_once("sqsDispatcher.php");
-require_once('ktqueue/common/ComplexEvent.class.php'); // sqs queue complex event
-
+require_once(realpath(dirname(__FILE__)) . "/sqsDispatcher.php");
+require_once(realpath(dirname(__FILE__)) . '/ktqueue/common/ComplexEvent.class.php'); // sqs queue complex event
 
 /**
  * Dispatchers complex events to the SQS control queue for processing.

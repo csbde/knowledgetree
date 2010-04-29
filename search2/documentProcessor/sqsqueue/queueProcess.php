@@ -19,7 +19,7 @@
  * All Rights Reserved.
  *
  */
-require_once('queueEvent.php');
+realpath(dirname(__FILE__)) . '/queueEvent.php');
 
 abstract class queueProcess {
 	/**
