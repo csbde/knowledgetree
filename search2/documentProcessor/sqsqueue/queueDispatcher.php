@@ -373,7 +373,8 @@ class queueDispatcher extends sqsDispatcher
     	// Create processes
     	$this->addProcess('processing', $document);
     	$this->addProcess('indexing', $document);
-		$this->sendToQueue(false);
+		$this->sendToQueue();
+//		$this->sendToQueue(false);
 //		print_r($this);
 		print_r($this->complexEvent);
     }

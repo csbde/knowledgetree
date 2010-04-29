@@ -22,8 +22,8 @@
 
 require_once(realpath(dirname(__FILE__)) . '/ktqueue/config/config.inc.php');
 require_once(realpath(dirname(__FILE__)) . '/ktqueue/common/ConfigManager.inc.php');
-require_once (HOME . '/common/thirdparty/cloudfusion/cloudfusion.class.php');
-require_once (HOME . '/common/thirdparty/cloudfusion/sqs.class.php');
+require_once (KT_DIR . '/thirdparty/cloudfusion/cloudfusion.class.php');
+require_once (KT_DIR . '/thirdparty/cloudfusion/sqs.class.php');
 
 class SqsQueueController
 {
