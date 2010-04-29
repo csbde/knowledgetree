@@ -16,3 +16,4 @@ clienttools/Office
 baobab/
 ktoffice*/
 setup/wizard/install.lock
+config/aws_config.ini
