@@ -62,12 +62,13 @@
     	define('WINDOWS_OS', true);
     	define('UNIX_OS', false);
     	define('OS', 'windows');
+		define('DS', '/');
 	} else {
     	define('WINDOWS_OS', false);
     	define('UNIX_OS', true);
     	define('OS', 'unix');
+		define('DS', '\\');
 	}
-	define('DS', DIRECTORY_SEPARATOR);
 	// Define environment root
 	$wizard = realpath(dirname(__FILE__));
 	$xdir = explode(DS, $wizard);
@@ -137,7 +138,6 @@
 	}
 	define('WIZARD_ROOTURL',guessRootUrl()); # Used by template resources
 	define('WIZARD_SETUP',WIZARD_ROOTURL . DS . "setup");
-	
     function guessRootUrl() {
         $urlpath = $_SERVER['SCRIPT_NAME'];
         $bFound = false;
