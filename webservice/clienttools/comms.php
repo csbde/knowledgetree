@@ -3,6 +3,9 @@ include_once('../../ktapi/ktapi.inc.php');
 error_reporting(E_ERROR);
 
 define('COMMS_DEBUG',true);
+define('COMMS_TIMEOUT',60*3); //3 minutes
+
+set_time_limit(COMMS_TIMEOUT);	//Be careful altering this inside the services area - it should never be set to 0 as that could cause runaway processes
 
 /**
  * Intercept Errors and Exceptions and provide a json response in return.

@@ -20,35 +20,48 @@
  *
  */
 /**
- * Load simple event modelling class queueEvent
- * Load complex even modelling class queueProcess
+ * Load sqs dispatcher
  */
-require_once(realpath(dirname(__FILE__) . '/../queueProcess.php'));
-require_once(realpath(dirname(__FILE__) . '/../queueEvent.php'));
+require_once("sqsDispatcher.php");
 
-class processingProcess extends queueProcess {
-	/**
-	 * List of events
-	 * @var array
-	 */
-	public $list_of_events = array (
-									'pdf' => 'PdfGenerator.run',
-									'flash' => 'SwfGenerator.run',
-									'thumb' => 'ThumbGenerator.run',
-	);
-
+class callbackDispatcher extends sqsDispatcher 
+{
     /**
-    * Construct document processing process
+     * Constructor
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param none
+     * @return none
+     */
+    public function __construct()
+    {
+    }
+    
+    /**
+     * Send callback
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @param none
+     * @return none
+     */
+    public function send() 
+    {
+    
+    }
+    
+    /**
+    * Used for testing purposes to create and send complex object to the queue. (Testing)
     *
     * @author KnowledgeTree Team
     * @access public
-    * @param none
     * @return none
     */
-	public function __construct() {
-		parent::setName('processing');
-	}
-	
+    public function testing()
+    {
 
+    }
 }
+
 ?>

@@ -27,7 +27,7 @@ require_once(realpath(dirname(__FILE__) . '/../../queueEvent.php'));
 class pdfEvent extends queueEvent 
 {
 	/**
-	 * List of event dependencies
+	 * List of event dependencies, (List of event class names)
 	 * @var array
 	 */
 	public $list_of_dependencies = array();
@@ -37,7 +37,7 @@ class pdfEvent extends queueEvent
 	 */
 	public $list_of_parameters = array();
 	/**
-	 * Callbacks to be envoked
+	 * Callbacks to be envoked, (Callbacks are seen as events)
 	 * @var array
 	 */
 	public $list_of_callbacks = array();
@@ -70,6 +70,21 @@ class pdfEvent extends queueEvent
 		$this->addParameter('dest_file', $this->getDestFile('pdf'));
 		$this->addParameter('filetype', $this->getFileType());
 		$this->addParameter('mimetype', $this->getMimeType());
+	}
+	
+    /**
+    * Create callbacks
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param none
+    * @return none
+    */
+	public function loadCallbacks()
+	{
+		// TODO : Better callback mapping.
+		//$callback = new eventCallback('afterPdfEvent', 'callbackDispatcher.php', array('pdfEvent'));
+		//$this->list_of_callbacks[] = $callback;
 	}
 	
     /**

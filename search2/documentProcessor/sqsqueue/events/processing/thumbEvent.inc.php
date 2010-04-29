@@ -26,7 +26,7 @@ require_once(realpath(dirname(__FILE__) . '/../../queueEvent.php'));
 
 class thumbEvent extends queueEvent {
 	/**
-	 * List of event dependencies
+	 * List of event dependencies, (List of event class names)
 	 * @var array
 	 */
 	public $list_of_dependencies = array(
