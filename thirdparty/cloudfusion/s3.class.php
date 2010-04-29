@@ -607,25 +607,27 @@ class AmazonS3 extends CloudFusion
 		$body = null;
 		$contentType = null;
 
-		if ($locale)
+		// NOTE manually updated this based on this forum thread: http://groups.google.com/group/cloudfusion/browse_thread/thread/4ca53ef62c0cc3b7
+		//      (code modified by Paul Barrett)
+		//      This problem exists in 2.5 but will probably be officially fixed in an upcoming version
+		if ($locale) 
 		{
-			switch(strtolower($locale))
-			{
-				case 'eu':
-					$body = '<CreateBucketConfiguration><LocationConstraint>' . strtoupper($locale) . '</LocationConstraint></CreateBucketConfiguration>';
-					$contentType = 'application/xml';
-					break;
-
-				default:
-					$body = '<CreateBucketConfiguration><LocationConstraint>US</LocationConstraint></CreateBucketConfiguration>';
-					$contentType = 'application/xml';
-					break;
-			}
+		    switch(strtolower($locale))
+		    {
+		        case 'eu':
+		            $body = '<CreateBucketConfiguration><LocationConstraint>' . strtoupper($locale) . '</LocationConstraint></CreateBucketConfiguration>';
+		            $contentType = 'application/xml';
+		            break;
+		        default:
+		            $body = '';
+		            $contentType = 'application/xml';
+		            break;
+		    }
 		}
 		else
 		{
-			$body = '<CreateBucketConfiguration><LocationConstraint>US</LocationConstraint></CreateBucketConfiguration>';
-			$contentType = 'application/xml';
+		    $body = '';
+		    $contentType = 'application/xml';
 		}
 
 		// Authenticate to S3
