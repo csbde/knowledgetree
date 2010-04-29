@@ -42,7 +42,7 @@ require_once('indexing/extractorCore.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/scheduler/schedulerUtil.php');
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(KT_DIR . '/search2/indexing/lib/RestSolr.inc.php');
-require_once(dirname(__FILE__) . '/../documentProcessor/sqsqueue/queueDispatcher.php');
+require_once(KT_DIR . '/search2/documentProcessor/sqsqueue/queueDispatcher.php');
 
 class IndexerInconsistencyException extends Exception {};
 
