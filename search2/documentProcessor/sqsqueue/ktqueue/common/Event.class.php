@@ -1,6 +1,6 @@
 <?php 
 
-require_once('lib.static.php');
+require_once(KT_DIR . '/search2/documentProcessor/sqsqueue/ktqueue/common/lib.static.php');
 
 /**
  * EventException as simple extention of Exception
