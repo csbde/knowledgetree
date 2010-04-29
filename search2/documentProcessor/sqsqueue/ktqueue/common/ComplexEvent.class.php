@@ -1,7 +1,7 @@
 <?php 
 
-require_once('lib.static.php');
-require_once('Event.class.php');
+require_once(KT_DIR . '/search2/documentProcessor/sqsqueue/ktqueue/common/lib.static.php');
+require_once(KT_DIR . '/search2/documentProcessor/sqsqueue/ktqueue/common/Event.class.php');
 
 /**
  * ComplexEventException as simple extention of Exception
