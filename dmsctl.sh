@@ -385,7 +385,7 @@ noserver() {
 
 firstrun() {
 	echo "We running for the first time, FIX ZEND"
-	if grep --quiet LD_LIBRARAY_PATH /etc/zce.rc ; then
+	if grep --quiet LD_LIBRARY_PATH /etc/zce.rc ; then
         	echo "Nothing to be done ... maybe"
 	else
         	echo "PATH=/usr/local/zend/bin:$PATH" >> /etc/zce.rc
@@ -414,11 +414,11 @@ if [ "x$3" != "x" ]; then
 fi
 
 # Are we running for first time
-if [ -e "/usr/share/knowledgetree/var/bin/dmsinit.lock" ]
+if [ -e "$INSTALL_PATH/var/bin/dmsinit.lock" ]
 then
 echo "";
 else
-	if grep --quiet LD_LIBRARAY_PATH /etc/zce.rc ; then
+	if grep --quiet LD_LIBRARY_PATH /etc/zce.rc ; then
         	echo "Nothing to be done ... maybe"
 	else
         	echo "PATH=/usr/local/zend/bin:$PATH" >> /etc/zce.rc
