@@ -150,7 +150,10 @@ class KTUtil {
 
 		// build up the url
 		$base_url = ($default->sslEnabled ? 'https' : 'http') .'://'.$serverName . $default->rootUrl;
-		if(is_object($default->log))
+		// NOTE this appears to (at least) sometimes be an object of stdClass, and not the correct log class;
+		//      to deal with this we check whether it is of type stdClass
+		// TODO see if we can determine the actual class and check that type specifically (code uses factory method)
+		if(!($default instanceof stdClass) && is_object($default->log))
 		{
 			$default->log->debug("kt_url: base url - $base_url");
 		}
