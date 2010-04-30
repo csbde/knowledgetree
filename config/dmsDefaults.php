@@ -175,7 +175,10 @@ class KTInit {
         $logLevel = $oKTConfig->get('KnowledgeTree/logLevel');
         $properties['log4php.rootLogger'] = $logLevel . ', default';
 
-//        session_start();
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+
         $configurator->doConfigureProperties($properties, $repository);
 
         $userId = isset($_SESSION['userID'])?$_SESSION['userID']:'n/a';
