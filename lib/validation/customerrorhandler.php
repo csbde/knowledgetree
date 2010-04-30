@@ -41,13 +41,12 @@
  	// {{{ initCustomErrorHandler()
  	function initCustomErrorHandler ()
  	{
-		return $oCustomErrorHandler = new KTCustomErrorHandler;
+        return $oCustomErrorHandler = new KTCustomErrorHandler;
  	}
  	// }}}
 
 	// {{{ logError()
  	function logError($oError)
-
  	{
  		global $default;
 
