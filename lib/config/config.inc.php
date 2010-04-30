@@ -212,7 +212,7 @@ class KTConfig {
             'password' => $this->flatns[$sPass],
             'hostspec' => $this->flatns['db/dbHost'],
             'database' => $this->flatns['db/dbName'],
-            'port' => $this->flatns['db/dbPort']
+            'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
         );
 
         $options = array(
