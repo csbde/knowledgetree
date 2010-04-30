@@ -772,7 +772,7 @@ class KTAPI
 		}
 
 		$session = & new KTAPI_SystemSession($this, $user);
-		$this->session = &$session;
+		$this->session = $session;
 
 		return $session;
 	}

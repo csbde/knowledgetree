@@ -401,7 +401,7 @@ class KTAPI_UserSession extends KTAPI_Session
 
         list($session,$sessionid) = $result;
 
-		$session = &new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);
+		$session = new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);
 
 		return $session;
 	}
@@ -446,9 +446,9 @@ class KTAPI_UserSession extends KTAPI_Session
         DBUtil::runQuery($sql);
 
         if ($user->isAnonymous())
-			$session = &new KTAPI_AnonymousSession($ktapi, $user, $session, $sessionid, $ip);
+			$session = new KTAPI_AnonymousSession($ktapi, $user, $session, $sessionid, $ip);
         else
-			$session = &new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);
+			$session = new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);
 		return $session;
 	}
 
@@ -525,7 +525,7 @@ class KTAPI_AnonymousSession extends KTAPI_UserSession
         	return $sessionid;
         }
 
-		$session = &new KTAPI_AnonymousSession($ktapi, $user, $session, $sessionid, $ip);
+		$session = new KTAPI_AnonymousSession($ktapi, $user, $session, $sessionid, $ip);
 
 		return $session;
 	}
