@@ -122,12 +122,13 @@ class Scheduler
     * The file name is the task name followed by a random number.
     */
     function saveScript($sScript = '') {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         // Path to scripts
         $ktPath = '/var/tasks/';
         $path = KT_DIR.$ktPath;
 
-        if(!is_dir($path)){
-            mkdir($path, '0755');
+        if(!$oStorage->is_dir($path)){
+            $oStorage->mkdir($path, '0755');
         }
 
         // Create script file
@@ -136,14 +137,11 @@ class Scheduler
         $sName = str_replace('', "&", $sName);
         $sFileName = $sName.'_'.mt_rand(1, 999).'.php';
 
-        while(file_exists($path.$sFileName)){
+        while($oStorage->file_exists($path.$sFileName)){
             $sFileName = $sTask.'_'.mt_rand(1, 9999).'.php';
         }
-
-        $fp = fopen($path.$sFileName, 'wb');
-        fwrite($fp, $sScript);
-        fclose($fp);
-
+        
+		$oStorage->writeFile($path.$sFileName, 'wb', $sScript);
         $this->sPath = $ktPath.$sFileName;
     }
 

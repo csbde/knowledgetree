@@ -138,8 +138,9 @@ class KTUploadManager
 
 	function store_base64_file($base64, $prefix= 'sa_')
 	{
+		$oStorage =& KTStorageManagerUtil::getSingleton();
 		$tempfilename = $this->get_temp_filename($prefix);
-		if (!is_writable($tempfilename))
+		if (!$oStorage->is_writable($tempfilename))
 		{
 			return new PEAR_Error("Cannot write to file: $tempfilename");
 		}
@@ -149,13 +150,11 @@ class KTUploadManager
 			return new PEAR_Error("Invalid temporary file: $tempfilename. There is a problem with the temporary storage path: $this->temp_dir.");
 		}
 
-		$fp=fopen($tempfilename, 'wb');
+		$fp = $oStorage->write_file($tempfilename, 'wb', base64_decode($base64));
 		if ($fp === false)
 		{
 			return new PEAR_Error("Cannot write content to temporary file: $tempfilename.");
 		}
-		fwrite($fp, base64_decode($base64));
-		fclose($fp);
 
 		return $tempfilename;
 	}
@@ -168,8 +167,9 @@ class KTUploadManager
      */
     function store_file($content, $prefix= 'sa_')
 	{
+		$oStorage =& KTStorageManagerUtil::getSingleton();
 		$tempfilename = $this->get_temp_filename($prefix);
-		if (!is_writable($tempfilename))
+		if (!$oStorage->is_writable($tempfilename))
 		{
 			return new PEAR_Error("Cannot write to file: $tempfilename");
 		}
@@ -179,13 +179,11 @@ class KTUploadManager
 			return new PEAR_Error("Invalid temporary file: $tempfilename. There is a problem with the temporary storage path: $this->temp_dir.");
 		}
 
-		$fp=fopen($tempfilename, 'wb');
+		$fp = $oStorage->write_file($tempfilename, 'wb', $content);
 		if ($fp === false)
 		{
 			return new PEAR_Error("Cannot write content to temporary file: $tempfilename.");
 		}
-		fwrite($fp, $content);
-		fclose($fp);
 
 		return $tempfilename;
 	}

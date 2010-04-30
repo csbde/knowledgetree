@@ -128,14 +128,14 @@ class Search2TestCase extends KTUnitTestCase {
      * @return string
      */
     function createFile($filename = 'myfile.txt', $content = null) {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         if(empty($content)){
             $content = 'Searchable text: abcde xyz 12345';
         }
 
-        $temp = tempnam(dirname(__FILE__), $filename);
-        $fp = fopen($temp, 'wt');
-        fwrite($fp, $content);
-        fclose($fp);
+        $temp = $oStorage->tempnam(dirname(__FILE__), $filename);
+        $oStorage->write_file($temp, 'wt', $content);
+
         return $temp;
     }
 }

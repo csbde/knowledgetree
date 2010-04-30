@@ -616,13 +616,13 @@ class CMISTestCase extends KTUnitTestCase {
 
     function createRandomFile($content = 'this is some text', $uploadDir = null)
     {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         if(is_null($uploadDir)){
            $uploadDir = dirname(__FILE__);
         }
-        $temp = tempnam($uploadDir, 'myfile');
-        $fp = fopen($temp, 'wt');
-        fwrite($fp, $content);
-        fclose($fp);
+        $temp = $oStorage->tempnam($uploadDir, 'myfile');
+        $oStorage->write_file($temp, 'wt', $content);
+
         return $temp;
     }
 

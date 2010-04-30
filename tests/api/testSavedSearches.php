@@ -309,10 +309,10 @@ class savedSearchTestCase extends KTUnitTestCase {
     *
     */
     function createRandomFile($content = 'this is some text') {
-        $temp = tempnam(dirname(__FILE__), 'myfile');
-        $fp = fopen($temp, 'wt');
-        fwrite($fp, $content);
-        fclose($fp);
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
+        $temp = $oStorage->tempnam(dirname(__FILE__), 'myfile');
+        $oStorage->write_file($temp, 'wt', $content);
+
         return $temp;
     }
 }

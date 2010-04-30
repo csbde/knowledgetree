@@ -44,6 +44,226 @@
 require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');
 
 class KTStorageManager {
+	/**
+	 * Handle direct file system access
+	 */
+	
+    /**
+     * Opens file or URL
+     *
+     * @param string $filename - Path to the file to open.
+     * @param string $mode - The mode parameter specifies the type of access you require to the stream.
+     * @param boolean $use_include_path - The data to write
+     * @param resource $context - A valid context resource created with stream_context_create().
+     * 
+     * URL : http://www.php.net/manual/en/function.fopen.php
+     * 
+     */
+	function fopen($filename, $mode, $use_include_path = false, $context = null) 
+	{
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
+    /**
+     * Binary-safe file write
+     *
+     * @param string $handle - A file system pointer resource that is typically created using fopen().
+     * @param string $string - The string that is to be written. 
+     * @param integer $length - If the length argument is given, writing will stop after length bytes 
+     * 							have been written or the end of string is reached, whichever comes first. 
+     * 
+     * URL : http://www.php.net/manual/en/function.fwrite.php
+     * 
+     */
+	function fwrite($handle, $string, $length) 
+	{
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
+    /**
+     * Binary-safe file read
+     *
+     * @param string $handle - A file system pointer resource that is typically created using fopen().
+     * @param integer $length - Up to length number of bytes read. 
+     * 
+     * URL : http://www.php.net/manual/en/function.fread.php
+     * 
+     */
+	function fread($handle, $length) 
+	{
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
+    /**
+     * Closes an open file pointer
+     *
+     * @param resource $handle - he file pointer must be valid, and must point to a file successfully opened by fopen() or fsockopen(). 
+     * 
+     * URL : http://www.php.net/manual/en/function.fclose.php
+     * 
+     */
+	function fclose($handle) 
+	{
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
+    /**
+     * Checks whether a file or directory exists. 
+     *
+     * @param string $filename - Path to the file to open.
+     * 
+     * URL : http://www.php.net/manual/en/function.file-exists.php
+     * 
+     */
+	function file_exists($filename) 
+	{
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
+    /**
+     * Write a string to a file
+     *
+     * @param string $filename - Path to the file where to write the data.
+     * @param mixed $data - The data to write
+     * @param boolean $flags - The value of flags can be any combination of the following flags (with some restrictions)
+     * @param resource $context - A valid context resource created with stream_context_create().
+     * 
+     * URL : http://www.php.net/manual/en/function.file-put-contents.php
+     * 
+     */
+	function file_put_contents($filename, $data, $flags = 0, $context = null) 
+	{
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
+    /**
+     * Reads entire file into a string
+     *
+     * @param string $filename - Name of the file to read. 
+     * @param string $flags - The data to write
+     * @param resource $context - A valid context resource created with stream_context_create().
+     * @param integer $offset - The offset where the reading starts on the original stream. 
+     * @param integer $maxlen - Maximum length of data read. The default is to read until end of file is reached. Note that this parameter is applied to the stream processed by the filters.
+     * 
+     * URL : http://www.php.net/manual/en/function.file-get-contents.php
+     * 
+     */
+	function file_get_contents($filename, $flags = 0, $context = null, $offset = -1, $maxlen = -1) 
+	{
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
+    /**
+     * Open Internet or Unix domain socket connection
+     *
+     * @param string $hostname - Name host.
+     * @param integer $port - The port number.
+     * @param integer $errno - If provided, holds the system level error number that occurred in the system-level connect() call. 
+     * @param string $errstr - The error message as a string.
+     * @param float $timeout - The connection timeout, in seconds.
+     * 
+     * URL : http://www.php.net/manual/en/function.fsockopen.php
+     * 
+     */
+	function fsockopen($hostname, $port = -1, &$errno , &$errstr, $timeout = null) 
+	{
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
+    /**
+     * Open Internet or Unix domain socket connection
+     *
+     * @param string $filename - The filename being checked. 
+     * 
+     * URL : http://www.php.net/manual/en/function.is-writable.php
+     * 
+     */
+	function is_writable($filename) 
+	{
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
+    /**
+     * This function is an alias of: is_writable(). 
+     * 
+     * URL : http://www.php.net/manual/en/function.is-writeable.php
+     * 
+     */
+	function is_writeable() 
+	{
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
+    /**
+     * Create file with unique file name
+     * 
+     * @param string $dir - The directory where the temporary filename will be created.
+     * @param string $prefix - The prefix of the generated temporary filename. 
+     * 
+     * URL : http://www.php.net/manual/en/function.tempnam.php
+     * 
+     */
+	function tempnam($dir, $prefix) 
+	{
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
+    /**
+     * Create file with unique file name
+     * 
+     * @param string $filename - Path to the file. 
+     * @param resource $context - A valid context resource created with stream_context_create().
+     * 
+     * URL : http://www.php.net/manual/en/function.unlink.php
+     * 
+     */
+	function unlink($filename, $context = null) 
+	{
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
+    /**
+     * Sets access and modification time of file
+     * 
+     * @param string $filename - Path to the file. 
+     * @param integer $time - The touch time. If time is not supplied, the current system time is used. 
+     * @param integer $atime - If present, the access time of the given filename is set to the value of atime. Otherwise, it is set to time. 
+     * 
+     * URL : http://www.php.net/manual/en/function.touch.php
+     * 
+     */
+	function touch($filename, $time = null, $atime) 
+	{
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
+    /**
+     * Makes directory
+     * 
+     * @param string $pathname - The directory path. 
+     * @param integer $mode - The mode is 0777 by default, which means the widest possible access. For more information on modes, read the details on the chmod() page. 
+     * @param boolean $recursive - Allows the creation of nested directories specified in the pathname. Defaults to FALSE. 
+     * @param resource $context - A valid context resource created with stream_context_create().
+     * 
+     * URL : http://www.php.net/manual/en/function.mkdir.php
+     * 
+     */
+	function mkdir($pathname, $mode = 0777, $recursive = false, $context = null) {
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
+    /**
+     * Tells whether the filename is a directory
+     * 
+     * @param string $filename - Path to the file
+     * 
+     * URL : http://www.php.net/manual/en/function.is-dir.php
+     * 
+     */
+	function is_dir($filename) {
+		return PEAR::raiseError(_kt("Not implemented"));
+	}
+	
     /**
      * Puts the given file into storage, and saves the storage details
      * into the document.
