@@ -277,8 +277,8 @@ class configuration extends Step
      */
     public function registerDBConfig($server, $dbconf) { // Adjust server variables
         $server['dbName'] = array('where'=>'file', 'name'=>ucwords($dbconf['dname']), 'section'=>'db', 'value'=>$dbconf['dname'], 'setting'=>'dbName');
-        $server['dbUser'] = array('where'=>'file', 'name'=>ucwords($dbconf['dmsname']), 'section'=>'db', 'value'=>$dbconf['dmsname'], 'setting'=>'dbUser');
-        $server['dbPass'] = array('where'=>'file', 'name'=>ucwords($dbconf['dmspassword']), 'section'=>'db', 'value'=>$dbconf['dmspassword'], 'setting'=>'dbPass');
+        $server['dbUser'] = array('where'=>'file', 'name'=>ucwords($dbconf['dmsusername']), 'section'=>'db', 'value'=>$dbconf['dmsusername'], 'setting'=>'dbUser');
+        $server['dbPass'] = array('where'=>'file', 'name'=>ucwords($dbconf['dmsuserpassword']), 'section'=>'db', 'value'=>$dbconf['dmsuserpassword'], 'setting'=>'dbPass');
         $server['dbPort'] = array('where'=>'file', 'name'=>ucwords($dbconf['dport']), 'section'=>'db', 'value'=>$dbconf['dport'], 'setting'=>'dbPort');
         $server['dbAdminUser'] = array('where'=>'file', 'name'=>ucwords($dbconf['dmsname']), 'section'=>'db', 'value'=>$dbconf['dmsname'], 'setting'=>'dbAdminUser');
         $server['dbAdminPass'] = array('where'=>'file', 'name'=>ucwords($dbconf['dmspassword']), 'section'=>'db', 'value'=>$dbconf['dmspassword'], 'setting'=>'dbAdminPass');

@@ -62,13 +62,12 @@
     	define('WINDOWS_OS', true);
     	define('UNIX_OS', false);
     	define('OS', 'windows');
-		define('DS', '/');
 	} else {
     	define('WINDOWS_OS', false);
     	define('UNIX_OS', true);
     	define('OS', 'unix');
-		define('DS', '\\');
 	}
+	define('DS', DIRECTORY_SEPARATOR);
 	// Define environment root
 	$wizard = realpath(dirname(__FILE__));
 	$xdir = explode(DS, $wizard);
