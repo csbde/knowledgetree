@@ -1049,6 +1049,7 @@ $sourceDocument->getName(),
         }
         KTDocumentUtil::setComplete($oDocument, 'contents');
 
+        // TODO deal with this file existing with amazon s3 driver - it should not...
         if ($aOptions['cleanup_initial_file'] && file_exists($sFilename)) {
             @unlink($sFilename);
         }

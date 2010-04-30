@@ -612,10 +612,12 @@ class Document {
         }
         $iId = $oDocument->_oDocumentCore->getId();
         $aContentVersion["documentid"] = $iId;
+        
         $oDocument->_oDocumentContentVersion = KTDocumentContentVersion::createFromArray($aContentVersion);
         if (PEAR::isError($oDocument->_oDocumentContentVersion)) { return $oDocument->_oDocumentContentVersion; }
         $aMetadataVersion["documentid"] = $iId;
         $aMetadataVersion["contentversionid"] = $oDocument->_oDocumentContentVersion->getId();
+        
         $oDocument->_oDocumentMetadataVersion = KTDocumentMetadataVersion::createFromArray($aMetadataVersion);
         if (PEAR::isError($oDocument->_oDocumentMetadataVersion)) { return $oDocument->_oDocumentMetadataVersion; }
         $oDocument->_oDocumentCore->setMetadataVersionId($oDocument->_oDocumentMetadataVersion->getId());

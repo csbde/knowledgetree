@@ -110,7 +110,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             return $sStoragePath;
         }
         $this->setPath($oDocument, $sStoragePath);
-        $oDocument->setFileSize($response->header->info->download_content_length);
+        $oDocument->setFileSize($response->header['_info']['download_content_length']);
         $oConfig =& KTConfig::getSingleton();
         $amazonS3Path = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oDocument));
 
