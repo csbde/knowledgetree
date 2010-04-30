@@ -42,9 +42,9 @@
 * @package Installer
 * @version Version 0.1
 */
-require_once("path.php");
-require_once("iniUtilities.php");
-require_once("dbUtilities.php");
+require_once(realpath(dirname(__FILE__)) . "/path.php");
+require_once(realpath(dirname(__FILE__)) . "/iniUtilities.php");
+require_once(realpath(dirname(__FILE__)) . "/dbUtilities.php");
 
 class InstallUtil {
 	private $salt = 'installers';

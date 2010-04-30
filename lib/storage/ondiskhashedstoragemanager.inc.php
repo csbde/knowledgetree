@@ -53,21 +53,21 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
 	 * Write contents to a file.
 	 */
 	function write_file($filename, $mode, $string) {
-		$fileHanlde = KTOnDiskHashedStorageManager::fopen($filename, $mode);
-		if($fileHanlde === false) {
+		$fileHandle = KTOnDiskHashedStorageManager::fopen($filename, $mode);
+		if($fileHandle === false) {
 			
-			return $fileHanlde;
+			return $fileHandle;
 		} else {
-			KTOnDiskHashedStorageManager::fwrite($fileHanlde, $string);
+			KTOnDiskHashedStorageManager::fwrite($fileHandle, $string);
 		}
 		
-		return KTOnDiskHashedStorageManager::fclose($fileHanlde);
+		return KTOnDiskHashedStorageManager::fclose($fileHandle);
 	}
 	
 	/**
 	 * Read contents of a file.
 	 */
-	function read_file($filename, $mode, $length, $fileHandle = null) {
+	function read_file($filename = "", $mode = "", $length, $fileHandle = null) {
 		$content = "";
 		// Check if a file handle exists
 		if(is_null($fileHandle))
@@ -83,6 +83,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
 			// Read contents of file
 			$content = KTOnDiskHashedStorageManager::fread($fileHandle, $length);
 		}
+		KTOnDiskHashedStorageManager::fclose($fileHandle);
 		
 		return $content;
 	}
