@@ -99,6 +99,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         if (OS_WINDOWS) {
             $sTmpFilePath = str_replace('\\','/',$sTmpFilePath);
         }
+        $sTmpFilePath = $this->setTmpPath($sTmpFilePath);
         $response = $this->amazonS3->head_object($this->bucket, $sTmpFilePath);
         if (!$response->isOK()) {
             return new PEAR_Error("$sTmpFilePath does not exist so we can't copy it into the repository! Options: " 
@@ -111,8 +112,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         }
         $this->setPath($oDocument, $sStoragePath);
         $oDocument->setFileSize($response->header['_info']['download_content_length']);
-        $oConfig =& KTConfig::getSingleton();
-        $amazonS3Path = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oDocument));
+        $amazonS3Path = sprintf("%s/%s", 'Documents', $this->getPath($oDocument));
 
         //copy the file accross
         $start_time = KTUtil::getBenchmarkTime();
@@ -145,18 +145,16 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * @return boolean
      */
     function uploadTmpFile($sUploadedFile, $sTmpFilePath, $aOptions = null)
-    {
+    {                
         if (OS_WINDOWS) {
             $sTmpFilePath = str_replace('\\','/',$sTmpFilePath);
         }
-
+        
         if ($this->writeToFile($sUploadedFile, $sTmpFilePath, $aOptions)) {
-            if (file_exists($sTmpFilePath)) {
-                return true;
-            } else {
-                return false;
-            }
+            $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
+            return $response->isOK();
         }
+        
         return false;
     }
 
@@ -178,16 +176,20 @@ class KTAmazonS3StorageManager extends KTStorageManager {
 
         // copy from php temp directory to S3
         if (is_uploaded_file($sourceFilePath)) {
+            $destinationFilePath = $this->setTmpPath($destinationFilePath);
             $content = file_get_contents($sourceFilePath);
             $opt = array('filename' => $destinationFilePath, 'body' => $content);
             $response = $this->amazonS3->create_object($this->bucket, $opt);
             // ensure php temp file is removed, as we are not using move_uploaded_file()
-            @unlink($sTmpFilePath);
+            @unlink($sourceFilePath);
 
             return $response->isOK();
         }
-        // already in S3, just do a rename (equivalent of move, restricted to single bucket)
+        // already in S3
         else {
+            // NOTE this should probably not be needed as it is already done in the calling function
+            //      leaving here as redundancy check
+            $sourceFilePath = $this->setTmpPath($sourceFilePath);
             // set semantic headers: filename, size (is given by amazon by default), content type - what else?
             $opt['contentType'] = KTMime::getMimeTypeName($document->getMimeTypeID());
             $opt['meta'] = array('filename' => $document->getFileName());
@@ -212,6 +214,13 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     function setPath(&$oDocument, $sNewPath)
     {
         $oDocument->setStoragePath($sNewPath);
+    }
+    
+    function setTmpPath($tmpPath)
+    {
+        // path as received is full system path, don't want that...feels like a bit of a hack, but...
+        $config = KTConfig::getSingleton();
+        return str_replace($config->get('urls/varDirectory') . '/', '', $tmpPath);
     }
 
     function generateStoragePath(&$oDocument)
@@ -239,17 +248,14 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     // TODO find out what these temporaryFile* functions do and whether they must be modified
     function temporaryFile(&$oDocument)
     {
-        $oConfig =& KTConfig::getSingleton();
-        return sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oDocument));
+        return sprintf("%s/%s", 'Documents', $this->getPath($oDocument));
     }
 
     function temporaryFileForVersion($iVersionId)
     {
-        $oConfig =& KTConfig::getSingleton();
-
         // get path to the content version
         $oContentVersion = KTDocumentContentVersion::get($iVersionId);
-        $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oContentVersion));
+        $sPath = sprintf("%s/%s", 'Documents', $this->getPath($oContentVersion));
 
         // Ensure the file exists
         if (file_exists($sPath)) {
@@ -261,8 +267,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     // TODO modify to use direct access to S3 instead of downloading locally
     function download($oDocument, $bIsCheckout = false)
     {
-        $oConfig =& KTConfig::getSingleton();
-        $amazonS3Path = $oConfig->get('urls/documentRoot') .'/'. $oDocument->getStoragePath();
+        $amazonS3Path = 'Documents/'. $oDocument->getStoragePath();
 
         // Ensure the file exists
         $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
@@ -280,6 +285,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             $iFileSize = $oDocument->getFileSize();
 
             // download to local file system
+            $oConfig = KTConfig::getSingleton();
             $sPath = sprintf("%s/%s", $oConfig->get('urls/tmpDirectory'), $sFileName);
             $response = $this->amazonS3->get_object($this->bucket, $amazonS3Path);
             if ($response->isOK()) {
@@ -326,8 +332,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         //get the document
         $oContentVersion = KTDocumentContentVersion::get($iVersionId);
         $sVersion = sprintf("%d.%d", $oContentVersion->getMajorVersionNumber(), $oContentVersion->getMinorVersionNumber());
-        $oConfig =& KTConfig::getSingleton();
-        $amazonS3Path = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oContentVersion));
+        $amazonS3Path = sprintf("%s/%s", 'Documents', $this->getPath($oContentVersion));
 
         // Ensure the file exists
         $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
@@ -343,8 +348,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             $response = $this->amazonS3->get_object($this->bucket, $amazonS3Path);
             if ($response->isOK()) {
                 // copy file content to local path & download
-                $oConfig =& KTConfig::getSingleton();
-                $sPath = sprintf("%s/%s", $oConfig->get('urls/tmpDirectory'), $this->getPath($oContentVersion));
+                $sPath = sprintf("%s/%s", 'tmp', $this->getPath($oContentVersion));
                 // TODO get actual content - not sure yet how this comes out, test with basic script
                 $file = fopen($sPath, 'w');
                 if ($file) {
@@ -403,8 +407,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     function copy($oSrcDocument, &$oNewDocument)
     {
         $oVersion = $oNewDocument->_oDocumentContentVersion;
-        $oConfig =& KTConfig::getSingleton();
-        $sDocumentRoot = $oConfig->get('urls/documentRoot');
+        $sDocumentRoot = 'Documents';
         $sNewPath = $this->generateStoragePath($oNewDocument);
         $sFullOldPath = sprintf("%s/%s", $sDocumentRoot, $this->getPath($oSrcDocument));
         $sFullNewPath = sprintf("%s/%s", $sDocumentRoot, $sNewPath);
@@ -438,8 +441,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     {
         parent::expunge($oDocument);
 
-        $oConfig =& KTConfig::getSingleton();
-        $sDocumentRoot = $oConfig->get('urls/documentRoot');
+        $sDocumentRoot = 'Documents';
         $aVersions = KTDocumentContentVersion::getByDocument($oDocument);
         foreach ($aVersions as $oVersion) {
             $sPath = sprintf('%s/%s', $sDocumentRoot, $oVersion->getStoragePath());
@@ -457,11 +459,10 @@ class KTAmazonS3StorageManager extends KTStorageManager {
 	 */
     function deleteVersion($oVersion)
     {
-        $oConfig =& KTConfig::getSingleton();
         $iContentId = $oVersion->getContentVersionId();
         $oContentVersion = KTDocumentContentVersion::get($iContentId);
 
-        $amazonS3Path = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $oContentVersion->getStoragePath());
+        $amazonS3Path = sprintf("%s/%s", 'Documents', $oContentVersion->getStoragePath());
         // NOTE do we need to check, or can we just issue the delete anyway?
         //      existing storage driver checks, so we check...
         $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
