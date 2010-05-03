@@ -1603,7 +1603,7 @@ abstract class Indexer
                     {
                         $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Could not create intermediate file from document %d"),$docId), 'error');
                         // problem. lets try again later. probably permission related. log the issue.
-                        continue;
+                        return;
                     }
                     $sourceFile = $intermediate;
                 }
