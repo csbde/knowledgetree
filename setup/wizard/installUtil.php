@@ -1062,6 +1062,7 @@ class InstallUtil {
     }
     // }}}
 
+    /*
     // {{{ copyDirectory
     function copyDirectory($sSrc, $sDst, $bMove = false) {
         if (!WINDOWS_OS) {
@@ -1103,6 +1104,7 @@ class InstallUtil {
         }
     }
     // }}}
+    */
     
     // {{{ moveFile
     function moveFile ($sSrc, $sDst) {

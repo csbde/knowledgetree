@@ -78,6 +78,7 @@ class KTUploadManager
 
     function is_valid_temporary_file($tempfilename)
     {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         $tempdir = substr($tempfilename,0,strlen($this->temp_dir));
         $tempdir = str_replace('\\','/', $tempdir);
 
@@ -117,7 +118,7 @@ class KTUploadManager
         $file = basename($tempfilename);
         $path = $this->temp_dir . DIRECTORY_SEPARATOR . $file;
 
-        if(file_exists($path)){
+        if($oStorage->file_exists($path)){
 
             // Added check - if file name contains ../ to get down a few levels into the root filesystem
             if(strpos($tempfilename, '../') !== false){

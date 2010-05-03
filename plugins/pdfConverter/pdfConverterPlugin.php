@@ -51,18 +51,17 @@ class DeletePDFTrigger {
      * On deleting/checkin a document, send the document owner and alert creator a notification email
      */
     function postValidate() {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         $oDoc = $this->aInfo['document'];
         $docId = $oDoc->getId();
         $docInfo = array('id' => $docId, 'name' => $oDoc->getName());
 
         // Delete the pdf document
-        global $default;
-        $pdfDirectory = $default->pdfDirectory;
 
-        $file = $pdfDirectory .'/'.$docId.'.pdf';
+        $file = $oStorage->getDocStoragePath($oDoc, 'pdf');
 
-        if(file_exists($file)){
-            @unlink($file);
+        if($oStorage->file_exists($file)){
+            $oStorage->unlink($file);
         }
     }
 }

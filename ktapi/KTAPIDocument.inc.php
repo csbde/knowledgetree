@@ -2648,13 +2648,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	public function thumbnailExists()
 	{
-		global $default;
+		$oStorage =& KTStorageManagerUtil::getSingleton();
 		
-		$varDir = $default->varDirectory;
+		$thumbnailCheck = $oStorage->getDocStoragePath($this->document, 'jpg');
 		
-		$thumbnailCheck = $varDir . '/thumbnails/'.$this->documentid.'.jpg';
-		
-		return file_exists($thumbnailCheck);
+		return $oStorage->file_exists($thumbnailCheck);
 	}
 	
 	/**
@@ -2712,13 +2710,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	public function instantViewExists()
 	{
-		global $default;
+		$oStorage =& KTStorageManagerUtil::getSingleton();
 		
-		$varDir = $default->varDirectory;
+		$flashCheck = $oStorage->getDocStoragePath($this->document, 'flash');
 		
-		$thumbnailCheck = $varDir . '/flash/'.$this->documentid.'.swf';
-		
-		return file_exists($thumbnailCheck);
+		return $oStorage->file_exists($flashCheck);
 	}
 	
 	/**

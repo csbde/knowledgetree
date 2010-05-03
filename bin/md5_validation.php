@@ -92,8 +92,8 @@ foreach($rows as $row)
 		// don't exit here, we do so later
 	}
 
-	$storage = KTStorageManagerUtil::getSingleton();
-	$storage_path = $storage->temporaryFile($document);
+	$oStorage = KTStorageManagerUtil::getSingleton();
+	$storage_path = $oStorage->temporaryFile($document);
 	if (PEAR::isError($storage_path))
 	{
 		if ($dots > 0) print "\n";
@@ -103,7 +103,7 @@ foreach($rows as $row)
 		$current = 0; $dots = 0;
 		continue;
 	}
-	if (!file_exists($storage_path))
+	if (!$oStorage->file_exists($storage_path))
 	{
 		if ($dots > 0) print "\n";
 		print("Document Id: $document_id - Content Id: $content_id - File '$storage_path' cannot be found!\n");
@@ -115,7 +115,7 @@ foreach($rows as $row)
 
 	$actual_md5 = md5_file($storage_path);
 
-	$storage->freeTemporaryFile($storage_path);
+	$oStorage->freeTemporaryFile($storage_path);
 
 	if (empty($md5))
 	{

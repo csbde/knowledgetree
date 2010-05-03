@@ -1049,8 +1049,8 @@ $sourceDocument->getName(),
         }
         KTDocumentUtil::setComplete($oDocument, 'contents');
 
-        if ($aOptions['cleanup_initial_file'] && file_exists($sFilename)) {
-            @unlink($sFilename);
+        if ($aOptions['cleanup_initial_file'] && $oStorage->file_exists($sFilename)) {
+            $oStorage->unlink($sFilename);
         }
 
         return true;
@@ -1663,33 +1663,32 @@ $sourceDocument->getName(),
     public static function getDocumentContent($oDocument)
     {
         global $default;
-
+		$oStorage =& KTStorageManagerUtil::getSingleton();
         //get the path to the document on the server
-        //$docRoot = $default->documentRoot;
-        $oConfig =& KTConfig::getSingleton();
-        $docRoot  = $oConfig->get('urls/documentRoot');
-
-        $path = $docRoot .'/'. $oDocument->getStoragePath();
+        $path = $oStorage->getDocStoragePath($oDocument);
 
         // Ensure the file exists
-        if (file_exists($path))
+        if ($oStorage->file_exists($path))
         {
             // Get the mime type - this is not relevant at the moment...
             $mimeId = $oDocument->getMimeTypeID();
             $mimetype = KTMime::getMimeTypeName($mimeId);
 
-            if ($bIsCheckout && $default->fakeMimetype) {
+            if ($bIsCheckout && $default->fakeMimetype) 
+            {
                 // note this does not work for "image" types in some browsers
                 $mimetype = 'application/x-download';
             }
 
-            $sFileName = $oDocument->getFileName( );
+            $sFileName = $oDocument->getFileName();
             $iFileSize = $oDocument->getFileSize();
-        } else {
+        } 
+        else 
+        {
             return null;
         }
 
-        $content = file_get_contents($path);
+        $content = $oStorage->file_get_contents($path);
 
         return $content;
     }

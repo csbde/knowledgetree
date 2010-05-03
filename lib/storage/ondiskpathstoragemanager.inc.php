@@ -292,8 +292,8 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
             $default->log->info(sprintf("Uploaded %d byte file in %.3f seconds", $file_size, $end_time - $start_time));
 
             //remove the temporary file
-            unlink($sTmpFilePath);
-            if (file_exists($sDocumentFileSystemPath)) {
+            KTOnDiskPathStorageManager::unlink($sTmpFilePath);
+            if (KTOnDiskPathStorageManager::file_exists($sDocumentFileSystemPath)) {
                 return true;
             } else {
                 return false;
@@ -317,7 +317,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
             $sTmpFilePath = str_replace('\\','/',$sTmpFilePath);
         }
         if ($this->writeToFile($sUploadedFile, $sTmpFilePath)) {
-            if (file_exists($sTmpFilePath)) {
+            if (KTOnDiskPathStorageManager::file_exists($sTmpFilePath)) {
                 return true;
             } else {
                 return false;
@@ -363,7 +363,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
     function createFolder($oFolder) {
         $oConfig =& KTConfig::getSingleton();
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $oFolder->generateFolderPath($oFolder->getID()));
-        if (file_exists($sPath)) {
+        if (KTOnDiskPathStorageManager::file_exists($sPath)) {
             // It already exists - let's just use it.
             return;
         }
@@ -377,7 +377,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
     function removeFolder($oFolder) {
         $oConfig =& KTConfig::getSingleton();
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $oFolder->generateFolderPath($oFolder->getID()));
-        if (!file_exists($sPath)) {
+        if (!KTOnDiskPathStorageManager::file_exists($sPath)) {
             return true;
         }
         @rmdir($sPath);
@@ -443,7 +443,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 	 */
 	function move($sOldDocumentPath, $sNewDocumentPath) {
 		global $default;
-		if (file_exists($sOldDocumentPath)) {
+		if (KTOnDiskPathStorageManager::file_exists($sOldDocumentPath)) {
 			//copy the file	to the new destination
 			if (copy($sOldDocumentPath, $sNewDocumentPath)) {
 				//delete the old one
@@ -592,7 +592,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 
 		// check if the deleted folder exists and create it if not
         $sDeletedPrefix = sprintf("%s/Deleted", $oConfig->get('urls/documentRoot'));
-		if (!file_exists($sDeletedPrefix)) {
+		if (!KTOnDiskPathStorageManager::file_exists($sDeletedPrefix)) {
             mkdir($sDeletedPrefix, 0755);
         }
 
@@ -627,7 +627,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         foreach ($aVersions as $oVersion) {
             $sPath = sprintf("Deleted/%s-%s", $oVersion->getId(), $oVersion->getFileName());
             $sFullPath = sprintf("%s/%s", $sDocumentRoot, $sPath);
-            if (file_exists($sFullPath)) {
+            if (KTOnDiskPathStorageManager::file_exists($sFullPath)) {
                 unlink($sFullPath);
             }
         }
@@ -647,7 +647,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 
 	    $sPath = $oContentVersion->getStoragePath();
 	    $sFullPath = sprintf("%s/%s", $sDocumentRoot, $sPath);
-	    if (file_exists($sFullPath)) {
+	    if (KTOnDiskPathStorageManager::file_exists($sFullPath)) {
             unlink($sFullPath);
 	    }
 	    return true;
@@ -696,7 +696,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
             $oDocument = & Document::get($iDocumentID);
             //get the path to the document on the server
             $sDocumentFileSystemPath = $oDocument->getPath();
-            if (file_exists($sDocumentFileSystemPath)) {
+            if (KTOnDiskPathStorageManager::file_exists($sDocumentFileSystemPath)) {
                 header("Content-Type: application/octet-stream");
                 header("Content-Length: ". $oDocument->getFileSize());
                 // prefix the filename presented to the browser to preserve the document extension
@@ -728,7 +728,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
     /*
     TODO: Remove as it is only needed for testing.
     */
-    function getDocumentUrl($oDocument, $type = 'document') {
+    function getDocStoragePath($oDocument, $type = 'document') {
     	return '';
     }
 }

@@ -165,7 +165,7 @@ class ZipFolder {
         $aFullPath = split('/', $sDocPath);
         foreach ($aFullPath as $dirPart) {
             $newDir = sprintf("%s/%s", $newDir, $dirPart);
-            if (!file_exists($newDir)) {
+            if (!$this->oStorage->file_exists($newDir)) {
                 mkdir($newDir, 0700);
             }
         }
@@ -191,7 +191,7 @@ class ZipFolder {
         $aFullPath = split('/', $sFolderPath);
         foreach ($aFullPath as $dirPart) {
             $newDir = sprintf("%s/%s", $newDir, $dirPart);
-            if (!file_exists($newDir)) {
+            if (!$this->oStorage->file_exists($newDir)) {
                 mkdir($newDir, 0700);
             }
         }
@@ -300,7 +300,7 @@ class ZipFolder {
             $sTmpPath = $this->sTmpPath;
         }
 
-        if (!file_exists($sZipFile)) {
+        if (!$this->oStorage->file_exists($sZipFile)) {
             return PEAR::raiseError(_kt('The zip file has not been created, if you are downloading a large number of documents
             or a large document then it may take a few minutes to finish.'));
         }
@@ -336,7 +336,7 @@ class ZipFolder {
             $sTmpPath = $this->sTmpPath;
         }
 
-        if (!file_exists($sZipFile)) {
+        if (!$this->oStorage->file_exists($sZipFile)) {
             return false;
         }
         return true;

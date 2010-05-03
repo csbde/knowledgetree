@@ -163,6 +163,7 @@ class thumbnailGenerator extends BaseProcessor
                - check out ktcore/KTDocumentViewlets.php
                - viewlet class is below
 	    */
+	    $oStorage =& KTStorageManagerUtil::getSingleton();
 		global $default;
 
 		$type = 'pdf'; // default type expected
@@ -170,47 +171,53 @@ class thumbnailGenerator extends BaseProcessor
         $mimeType = KTMime::getMimeTypeName($mimeTypeId);
 
         // Check document type: Image or PDF
-        if (strstr($mimeType, 'image')) {
+        if (strstr($mimeType, 'image')) 
+        {
             $type = 'image';
-            $srcDir = $default->documentRoot;
-            $srcFile = $srcDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
+            $srcFile = $oStorage->getDocStoragePath($this->document);
         }
 	    // Get the pdf source file - if the document is a pdf then use the document as the source
-	    else if($mimeType == 'application/pdf') {
-	        $pdfDir = $default->documentRoot;
-            $srcFile = $pdfDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
-	    } else {
-    	    $pdfDir = $default->pdfDirectory;
-            $srcFile = $pdfDir .DIRECTORY_SEPARATOR. $this->document->iId.'.pdf';
+	    else if($mimeType == 'application/pdf') 
+	    {
+            $srcFile = $oStorage->getDocStoragePath($this->document);
+	    } 
+	    else 
+	    {
+            $srcFile = $oStorage->getDocStoragePath($this->document, 'pdf');
 	    }
 
         $thumbnaildir = $default->varDirectory.DIRECTORY_SEPARATOR.'thumbnails';
 
-		if (stristr(PHP_OS,'WIN')) {
+		if (stristr(PHP_OS,'WIN')) 
+		{
             $thumbnaildir = str_replace('/', '\\', $thumbnaildir);
             $srcFile = str_replace('/', '\\', $srcFile);
 		}
 
-        $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
+        $thumbnailfile = $oStorage->getDocStoragePath($this->document, 'thumbnail');
         //if thumbail dir does not exist, generate one and add an index file to block access
-        if (!file_exists($thumbnaildir)) {
-        	mkdir($thumbnaildir, 0755);
+        if (!$oStorage->file_exists($thumbnaildir)) 
+        {
+        	$oStorage->mkdir($thumbnaildir, 0755);
         }
         
-        if (!file_exists($thumbnaildir.DIRECTORY_SEPARATOR.'index.html')) {
-        	touch($thumbnaildir.DIRECTORY_SEPARATOR.'index.html');
-        	file_put_contents($thumbnaildir.DIRECTORY_SEPARATOR.'index.html', 'You do not have permission to access this directory.');
+        if (!$oStorage->file_exists($thumbnaildir.DIRECTORY_SEPARATOR.'index.html')) 
+        {
+        	$oStorage->touch($thumbnaildir.DIRECTORY_SEPARATOR.'index.html');
+        	$oStorage->file_put_contents($thumbnaildir.DIRECTORY_SEPARATOR.'index.html', 'You do not have permission to access this directory.');
         }
 
         // if there is no pdf that exists - hop out
-        if(!file_exists($srcFile)){
+        if(!$oStorage->file_exists($srcFile))
+        {
             $default->log->debug('Thumbnail Generator Plugin: Source file for conversion does not exist, cannot generate a thumbnail');
             return false;
         }
 
         // if a previous version of the thumbnail exists - delete it
-		if (file_exists($thumbnailfile)) {
-			@unlink($thumbnailfile);
+		if ($oStorage->file_exists($thumbnailfile)) 
+		{
+			$oStorage->unlink($thumbnailfile);
 		}
         // do generation
         $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
@@ -265,6 +272,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     }
 
     public function renderThumbnail($documentId, $height = null, $modal = null) {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         // Set up the template
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate('thumbnail_viewlet');
@@ -273,9 +281,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
         }
 
         // Check that the thumbnail exists on disk
-        global $default;
-		$varDir = $default->varDirectory;
-		$thumbnailCheck = $varDir . '/thumbnails/'.$documentId.'.jpg';
+		$thumbnailCheck = $oStorage->getDocStoragePath($this->oDocument, 'thumbnail');
 
 		// Use correct slashes for windows
 		if (strpos(PHP_OS, 'WIN') !== false) {
@@ -283,13 +289,13 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 		}
 
 		// if the thumbnail doesn't exist try to create it
-		if (!file_exists($thumbnailCheck)) {
+		if (!$oStorage->file_exists($thumbnailCheck)) {
             $thumbnailer = new thumbnailGenerator();
             $thumbnailer->setDocument($this->oDocument);
             $thumbnailer->processDocument();
 
             // if it still doesn't exist, return an empty string
-			if (!file_exists($thumbnailCheck)) {
+			if (!$oStorage->file_exists($thumbnailCheck)) {
                 return '';
             }
 		}
@@ -345,10 +351,10 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     // this is used for anywhere which might require display resizing based on the presence or absence of the thumbnail
     public function getDisplaySize($documentId)
     {
-    	global $default;
-    	$varDir = $default->varDirectory;
-		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
-		if(file_exists($thumbnailfile)){
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
+		$thumbnailfile = $oStorage->getDocStoragePath($this->oDocument, 'thumbnail', $documentId);
+		if($oStorage->file_exists($thumbnailfile))
+		{
 		    return 200;
 		}
 		return 0;
@@ -381,6 +387,7 @@ class ThumbnailColumn extends AdvancedColumn {
      */
     function renderData($aDataRow) {
         if ($aDataRow["type"] == "document") {
+        	$oStorage =& KTStorageManagerUtil::getSingleton();
             $docid = $aDataRow['docid'];
             $oDoc = $aDataRow['document'];
 
@@ -389,9 +396,7 @@ class ThumbnailColumn extends AdvancedColumn {
             $rootUrl = $config->get('KnowledgeTree/rootUrl');
 
             // Check if the thumbnail exists
-            global $default;
-    		$varDir = $default->varDirectory;
-    		$thumbnailCheck = $varDir . '/thumbnails/'.$docid.'.jpg';
+    		$thumbnailCheck = $oStorage->getDocStoragePath($oDoc, 'thumbnail');
 
     		// Use correct slashes for windows
     		if (strpos(PHP_OS, 'WIN') !== false) {
@@ -399,7 +404,7 @@ class ThumbnailColumn extends AdvancedColumn {
     		}
 
     		// We won't try generate one - will slow down browsing too much
-    		if (!file_exists($thumbnailCheck)){
+    		if (!$oStorage->file_exists($thumbnailCheck)){
     		    $tag = "
     		      <div class='thumb-shadow'>
     		          <img src='{$rootUrl}/resources/graphics/no_preview.png' height='{$height}' />

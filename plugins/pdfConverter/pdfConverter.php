@@ -95,7 +95,7 @@ class pdfConverter extends BaseProcessor
         $ext = KTMime::getFileType($this->document->getMimeTypeID());
         $mimetype = KTMime::getMimeTypeName($this->document->getMimeTypeID());
 			
-        if(!file_exists($path)){
+        if(!$oStorage->file_exists($path)){
             global $default;
             $default->log->debug('PDF Converter: Document, id: '.$this->document->iId.', does not exist at given storage path: '.$path);
             return sprintf(_kt("The document, id: %s, does not exist at the given storage path: %s") , $this->document->iId,$path);
@@ -199,15 +199,16 @@ class pdfConverter extends BaseProcessor
 	 */
 	function convertFile($filename, $ext)
 	{
+		$oStorage = KTStorageManagerUtil::getSingleton();
 	    global $default;
 	    $tempDir = $default->tmpDirectory;
 
 	    // Create temporary copy of document
-	    $sourceFile = tempnam($tempDir, 'pdfconverter') . '.' .$ext;
-	    $res = @copy($filename, $sourceFile);
+	    $sourceFile = $oStorage->tempnam($tempDir, 'pdfconverter') . '.' .$ext;
+	    $res = $oStorage->copy($filename, $sourceFile);
 
 	    // Create a temporary file to store the converted document
-	    $targetFile = tempnam($tempDir, 'pdfconverter') . '.pdf';
+	    $targetFile = $oStorage->tempnam($tempDir, 'pdfconverter') . '.pdf';
 
 
 		if($ext == "tiff"||$ext == "tif") {
@@ -219,8 +220,8 @@ class pdfConverter extends BaseProcessor
 		
         if(is_string($result)){
             $default->log->error('PDF Converter Plugin: Conversion to PDF Failed');
-            @unlink($sourceFile);
-            @unlink($targetFile);
+            $oStorage->unlink($sourceFile);
+            $oStorage->unlink($targetFile);
             return $result;
         }
 

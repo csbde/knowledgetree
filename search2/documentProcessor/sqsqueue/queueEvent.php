@@ -229,7 +229,7 @@ class queueEvent
 	{
 		$oStorage =& KTStorageManagerUtil::getSingleton();
 		
-		return $oStorage->getDocumentUrl($this->document, $type);
+		return $oStorage->getDocStoragePath($this->document, $type);
 	}
 	
     /**
@@ -244,7 +244,7 @@ class queueEvent
 	{
 		$oStorage =& KTStorageManagerUtil::getSingleton();
 
-		return $oStorage->getDocumentUrl($this->document, $type);
+		return $oStorage->getDocStoragePath($this->document, $type);
 	}
 	
     /**

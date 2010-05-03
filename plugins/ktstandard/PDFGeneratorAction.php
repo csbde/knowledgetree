@@ -61,15 +61,17 @@ class PDFGeneratorAction extends KTDocumentAction {
             'odp', 'otp', 'sxi', 'sti', 'ppt', 'pot', 'sxd', 'odg',
             'otg', 'std', 'asc');
 
-    function getDisplayName() {
-        global $default;
+    function getDisplayName() 
+    {
         // The generation of the pdf is done through the PDF Converter plugin.
         // The PDF's are generated in the background by the document processor
 
         // Build the display name and url
         $sDisplayName = _kt('Generate PDF');
 
-        if(!empty($this->oDocument)){
+        if(!empty($this->oDocument))
+        {
+        	$oStorage =& KTStorageManagerUtil::getSingleton();
             $iDocId = $this->oDocument->iId;
 
             $sHostPath = KTUtil::kt_url();
@@ -78,10 +80,10 @@ class PDFGeneratorAction extends KTDocumentAction {
             $sDisplayLink = "&nbsp;<a href=\"{$link}\">{$icon}</a>";
 
             // First check if the pdf has already been generated
-            $dir = $default->pdfDirectory;
-            $file = $dir .'/'. $iDocId . '.pdf';
+            $file = $oStorage->getDocStoragePath($this->oDocument, 'pdf');
 
-            if(file_exists($file)){
+            if($oStorage->file_exists($file))
+            {
                 // Display the download link
                 return $sDisplayName . $sDisplayLink;
             }
@@ -91,7 +93,8 @@ class PDFGeneratorAction extends KTDocumentAction {
             $mimeTypes = $converter->getSupportedMimeTypes();
             $docType = $this->getMimeExtension();
 
-            if($mimeTypes === true || in_array($docType, $mimeTypes)){
+            if($mimeTypes === true || in_array($docType, $mimeTypes))
+            {
                 // Display the download link
                 return $sDisplayName . $sDisplayLink;
             }
@@ -227,11 +230,12 @@ class PDFGeneratorAction extends KTDocumentAction {
     public function do_pdfdownload()
     {
         global $default;
+        $oStorage =& KTStorageManagerUtil::getSingleton();
         $iDocId = $this->oDocument->iId;
 
         // Check if pdf has already been created
-        $dir = $default->pdfDirectory;
-        $file = $dir .'/'. $iDocId . '.pdf';
+        
+        $file = $oStorage->getDocStoragePath($this->oDocument, 'pdf');
         $mimetype = 'application/pdf';
         $size = filesize($file);
 
@@ -242,8 +246,10 @@ class PDFGeneratorAction extends KTDocumentAction {
         $name = implode('.', $aName) . '.pdf';
 
 
-        if(file_exists($file)){
-            if(KTUtil::download($file, $mimetype, $size, $name) === false){
+        if($oStorage->file_exists($file))
+        {
+            if(KTUtil::download($file, $mimetype, $size, $name) === false)
+            {
                 $default->log->error('PDF Generator: PDF file could not be downloaded because it doesn\'t exist');
                 $this->errorRedirectToMain(_kt('PDF file could not be downloaded because it doesn\'t exist'));
             }
@@ -262,8 +268,10 @@ class PDFGeneratorAction extends KTDocumentAction {
             exit();
         }
 
-        if(file_exists($file)){
-            if(KTUtil::download($file, $mimetype, $size, $name) === false){
+        if($oStorage->file_exists($file))
+        {
+            if(KTUtil::download($file, $mimetype, $size, $name) === false)
+            {
                 $default->log->error('PDF Generator: PDF file could not be downloaded because it doesn\'t exist');
                 $this->errorRedirectToMain(_kt('PDF file could not be downloaded because it doesn\'t exist'));
             }
@@ -311,12 +319,13 @@ class PDFGeneratorAction extends KTDocumentAction {
         }
 
         //get the actual path to the document on the server
-        $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $oStorage->getPath($oDocument));
+        $sPath = $oStorage->getDocStoragePath($oDocument);
 
-        if (file_exists($sPath)) {
+        if ($oStorage->file_exists($sPath)) 
+        {
 
             // Get a tmp file
-            $sTempFilename = tempnam('/tmp', 'ktpdf');
+            $sTempFilename = $oStorage->tempnam('/tmp', 'ktpdf');
 
             // We need to handle Windows differently - as usual ;)
             if (substr( PHP_OS, 0, 3) == 'WIN') {
@@ -346,7 +355,7 @@ class PDFGeneratorAction extends KTDocumentAction {
             }
 
             // Check the tempfile exists and the python script did not return anything (which would indicate an error)
-            if (file_exists($sTempFilename) && $res == '') {
+            if ($oStorage->file_exists($sTempFilename) && $res == '') {
 
                 $mimetype = 'application/pdf';
                 $size = filesize($sTempFilename);
@@ -354,7 +363,7 @@ class PDFGeneratorAction extends KTDocumentAction {
                 KTUtil::download($sTempFilename, $mimetype, $size, $name);
 
                 // Remove the tempfile
-                unlink($sTempFilename);
+                $oStorage->unlink($sTempFilename);
 
                 // Create the document transaction
                 $oDocumentTransaction = & new DocumentTransaction($oDocument, 'Document downloaded as PDF', 'ktcore.transactions.download', $aOptions);

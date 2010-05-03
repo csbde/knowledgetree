@@ -112,6 +112,7 @@ class KTZipImportStorage extends KTFSImportStorage {
     }
 
     function init() {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         $oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get("urls/tmpDirectory");
 
@@ -119,7 +120,7 @@ class KTZipImportStorage extends KTFSImportStorage {
         if ($sTmpPath === false) {
             return PEAR::raiseError(_kt("Could not create temporary directory for archive storage"));
         }
-        if (!file_exists($this->sZipPath)) {
+        if (!$oStorage->file_exists($this->sZipPath)) {
             return PEAR::raiseError(_kt("Archive file given does not exist"));
         }
         unlink($sTmpPath);
@@ -174,11 +175,12 @@ class KTZipImportStorage extends KTFSImportStorage {
     }
 
     function cleanup() {
-        if ($this->sBasePath && file_exists($this->sBasePath)) {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
+        if ($this->sBasePath && $oStorage->file_exists($this->sBasePath)) {
             KTUtil::deleteDirectory($this->sBasePath);
             $this->sBasePath = null;
         }
-        if ($this->sZipPath && file_exists($this->sZipPath)) {
+        if ($this->sZipPath && $oStorage->file_exists($this->sZipPath)) {
             KTUtil::deleteDirectory($this->sZipPath);
             $this->sZipPath = null;
         }
