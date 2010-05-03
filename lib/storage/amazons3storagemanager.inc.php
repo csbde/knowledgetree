@@ -192,9 +192,9 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             $sourceFilePath = $this->getShortPath($sourceFilePath);
             // set semantic headers: filename, size (is given by amazon by default), content type - what else?
             $opt['contentType'] = KTMime::getMimeTypeName($document->getMimeTypeID());
+            $opt['contentDisposition'] = 'attachment';
             $opt['meta'] = array('title' => $document->getName(), 
-                                 'filename' => $document->getFileName(), 
-                                 'md5' => $document->_oDocumentContentVersion->getStorageHash());
+                                 'filename' => $document->getFileName());
             $response = $this->amazonS3->copy_object($this->bucket, $sourceFilePath, $this->bucket, $destinationFilePath, $opt);
             if ($response->isOK()) {
                 $response = $this->amazonS3->delete_object($this->bucket, $sourceFilePath);
