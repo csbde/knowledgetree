@@ -52,7 +52,7 @@ require_once(KT_DIR . '/thirdparty/cloudfusion/s3.class.php');
 
 // TODO better error handling/messages
 // TODO logging
-// TODO use of vhost
+// TODO use of vhost?
 class KTAmazonS3StorageManager extends KTStorageManager {
 
     private $amazonS3;
@@ -117,7 +117,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         //copy the file accross
         $start_time = KTUtil::getBenchmarkTime();
         $file_size = $oDocument->getFileSize();
-        if ($this->writeToFile($sTmpFilePath, $amazonS3Path, $aOptions)) {
+        if ($this->writeToFile($sTmpFilePath, $amazonS3Path, $aOptions, $oDocument)) {
             $end_time = KTUtil::getBenchmarkTime();
             global $default;
             $default->log->info(sprintf("Uploaded %d byte file in %.3f seconds", $file_size, $end_time - $start_time));
@@ -168,7 +168,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * @param array $aOptions
      * @return boolean
      */
-    function writeToFile($sourceFilePath, $destinationFilePath, $aOptions = null)
+    function writeToFile($sourceFilePath, $destinationFilePath, $aOptions = null, $document = null)
     {
         // TODO determine what if anything needs to change here - this is only used by bulk upload,
         //      I think for the zip file...
@@ -188,8 +188,17 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         }
         // already in S3, just do a rename (equivalent of move, restricted to single bucket)
         else {
-            $response = $this->amazonS3->rename_object($this->bucket, $sourceFilePath, $destinationFilePath);
-            return $response['copy']->isOK() && $response['delete']->isOK();
+            // set semantic headers: filename, size (is given by amazon by default), content type - what else?
+            $opt['contentType'] = KTMime::getMimeTypeName($document->getMimeTypeID());
+            $opt['meta'] = array('filename' => $document->getFileName());
+            $response = $this->amazonS3->copy_object($this->bucket, $sourceFilePath, $this->bucket, $destinationFilePath, $opt);
+            if ($response->isOK()) {
+                $response = $this->amazonS3->delete_object($this->bucket, $sourceFilePath);
+                return $response->isOK();
+            }
+            else {
+                return false;
+            }
         }
 
         return false;
