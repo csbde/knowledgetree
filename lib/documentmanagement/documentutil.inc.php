@@ -338,15 +338,11 @@ class KTDocumentUtil {
 
         // setIncomplete and storeContents may change the document's status or
         // storage_path, so now is the time to update
-<<<<<<< HEAD
         $res = $oDocument->update();
 
         if (PEAR::isError($res) || ($res == false)) {
             return PEAR::raiseError(_kt('Unable to finalise the document status.'));
         }
-=======
-        $oDocument->update();
->>>>>>> Remove some assignments of new object by reference
         
         return $oDocument;
     }
