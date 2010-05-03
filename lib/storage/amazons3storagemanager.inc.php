@@ -60,7 +60,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
 
     // TODO real account name passed through (depends on account routing story)
     // TODO fetch amazon info from a config file - where to put this config file (we want it outside of publicly accesible code...)
-    function __construct()
+    public function __construct()
     {
         ConfigManager::load(KT_DIR . '/config/aws_config.ini');
         if (ConfigManager::error()) {
@@ -94,7 +94,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         }
     }
 
-    function upload(&$oDocument, $sTmpFilePath, $aOptions = null)
+    public function upload(&$oDocument, $sTmpFilePath, $aOptions = null)
     {
         if (OS_WINDOWS) {
             $sTmpFilePath = str_replace('\\','/',$sTmpFilePath);
@@ -144,7 +144,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * @param string $sTmpFilePath
      * @return boolean
      */
-    function uploadTmpFile($sUploadedFile, $sTmpFilePath, $aOptions = null)
+    public function uploadTmpFile($sUploadedFile, $sTmpFilePath, $aOptions = null)
     {                
         if (OS_WINDOWS) {
             $sTmpFilePath = str_replace('\\','/',$sTmpFilePath);
@@ -166,7 +166,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * @param array $aOptions
      * @return boolean
      */
-    function writeToFile($sourceFilePath, $destinationFilePath, $aOptions = null, $document = null)
+    protected function writeToFile($sourceFilePath, $destinationFilePath, $aOptions = null, $document = null)
     {
         // TODO determine what if anything needs to change here - this is only used by bulk upload,
         //      I think for the zip file...
@@ -206,29 +206,29 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         return false;
     }
 
-    function getPath(&$oDocument)
+    protected function getPath(&$oDocument)
     {
         return $oDocument->getStoragePath();
     }
 
-    function setPath(&$oDocument, $sNewPath)
+    protected function setPath(&$oDocument, $sNewPath)
     {
         $oDocument->setStoragePath($sNewPath);
     }
     
-    function setTmpPath($tmpPath)
+    private function setTmpPath($tmpPath)
     {
         // path as received is full system path, don't want that...feels like a bit of a hack, but...
         $config = KTConfig::getSingleton();
         return str_replace($config->get('urls/varDirectory') . '/', '', $tmpPath);
     }
 
-    function generateStoragePath(&$oDocument)
+    protected function generateStoragePath(&$oDocument)
     {
         return $this->generateStoragePathForVersion($oDocument->getContentVersionId());
     }
 
-    function generateStoragePathForVersion($oContentVersion)
+    protected function generateStoragePathForVersion($oContentVersion)
     {
         $iId = KTUtil::getId($oContentVersion);
         $str = (string)$iId;
@@ -246,12 +246,12 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     }
 
     // TODO find out what these temporaryFile* functions do and whether they must be modified
-    function temporaryFile(&$oDocument)
+    public function temporaryFile(&$oDocument)
     {
         return sprintf("%s/%s", 'Documents', $this->getPath($oDocument));
     }
 
-    function temporaryFileForVersion($iVersionId)
+    public function temporaryFileForVersion($iVersionId)
     {
         // get path to the content version
         $oContentVersion = KTDocumentContentVersion::get($iVersionId);
@@ -265,7 +265,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     }
 
     // TODO modify to use direct access to S3 instead of downloading locally
-    function download($oDocument, $bIsCheckout = false)
+    public function download($oDocument, $bIsCheckout = false)
     {
         $amazonS3Path = 'Documents/'. $oDocument->getStoragePath();
 
@@ -308,26 +308,26 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         }
     }
 
-    function createFolder($oFolder)
+    public function createFolder($oFolder)
     {
         // Storage doesn't deal with folders
         return true;
     }
 
-    function removeFolder($oFolder)
+    public function removeFolder($oFolder)
     {
         // Storage doesn't deal with folders
         return true;
     }
 
-    function removeFolderTree($oFolder)
+    public function removeFolderTree($oFolder)
     {
         // Storage doesn't deal with folders
         return true;
     }
 
     // TODO modify to use direct access to S3 instead of downloading locally
-    function downloadVersion($oDocument, $iVersionId)
+    public function downloadVersion($oDocument, $iVersionId)
     {
         //get the document
         $oContentVersion = KTDocumentContentVersion::get($iVersionId);
@@ -363,7 +363,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         }
     }
 
-    function moveDocument(&$oDocument, $oSourceFolder, $oDestinationFolder)
+    public function moveDocument(&$oDocument, $oSourceFolder, $oDestinationFolder)
     {
         // Storage path isn't based on location folder hierarchy
         return true;
@@ -375,7 +375,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * @param string source path
      * @param string destination path
      */
-    function move($sOldDocumentPath, $sNewDocumentPath)
+    public function move($sOldDocumentPath, $sNewDocumentPath)
     {
         $response = $this->amazonS3->head_object($this->bucket, $sOldDocumentPath);
         if ($response->isOK()) {
@@ -388,13 +388,13 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         }
     }
 
-    function moveFolder($oFolder, $oDestFolder)
+    public function moveFolder($oFolder, $oDestFolder)
     {
         // Storage path isn't based on folder hierarchy
         return true;
     }
 
-    function renameFolder($oFolder, $sNewName)
+    public function renameFolder($oFolder, $sNewName)
     {
         // Storage path isn't based on folder hierarchy
         return true;
@@ -404,7 +404,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * Perform any storage changes necessary to account for a copied
      * document object.
      */
-    function copy($oSrcDocument, &$oNewDocument)
+    public function copy($oSrcDocument, &$oNewDocument)
     {
         $oVersion = $oNewDocument->_oDocumentContentVersion;
         $sDocumentRoot = 'Documents';
@@ -420,13 +420,13 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         $oVersion->update();
     }
 
-    function renameDocument(&$oDocument, $oOldContentVersion, $sNewFilename)
+    public function renameDocument(&$oDocument, $oOldContentVersion, $sNewFilename)
     {
         // Storage isn't based on document name
         return true;
     }
 
-    function delete($oDocument)
+    public function delete($oDocument)
     {
         // Storage doesn't care if the document is deleted
         return true;
@@ -437,7 +437,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      *
      * return boolean true on successful expunge
      */
-    function expunge($oDocument)
+    public function expunge($oDocument)
     {
         parent::expunge($oDocument);
 
@@ -457,7 +457,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
 	 *
 	 * return boolean true on successful delete
 	 */
-    function deleteVersion($oVersion)
+    public function deleteVersion($oVersion)
     {
         $iContentId = $oVersion->getContentVersionId();
         $oContentVersion = KTDocumentContentVersion::get($iContentId);
@@ -474,7 +474,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         return true;
     }
 
-    function restore($oDocument)
+    public function restore($oDocument)
     {
         // Storage doesn't care if the document is deleted or restored
         return true;

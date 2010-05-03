@@ -57,7 +57,7 @@ if (!extension_loaded('fileinfo')) {
 }
 
 class KTOnDiskPathStorageManager extends KTStorageManager {
-    function upload(&$oDocument, $sTmpFilePath) {
+    public function upload(&$oDocument, $sTmpFilePath) {
         $oConfig =& KTConfig::getSingleton();
         $sStoragePath = $this->generateStoragePath($oDocument);
         $this->setPath($oDocument, $sStoragePath);
@@ -90,7 +90,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
      * @param unknown_type $sTmpFilePath
      * @return unknown
      */
-    function uploadTmpFile($sUploadedFile, $sTmpFilePath, $aOptions = null) {
+    public function uploadTmpFile($sUploadedFile, $sTmpFilePath, $aOptions = null) {
 
         //copy the file accross
         if (OS_WINDOWS) {
@@ -106,29 +106,29 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         return false;
     }
 
-    function getPath(&$oDocument) {
+    protected function getPath(&$oDocument) {
         return $oDocument->getStoragePath();
     }
 
-    function setPath(&$oDocument, $sNewPath) {
+    protected function setPath(&$oDocument, $sNewPath) {
         $oDocument->setStoragePath($sNewPath);
     }
 
-    function generateStoragePath(&$oDocument) {
+    protected function generateStoragePath(&$oDocument) {
         $sStoragePath = sprintf("%s/%s-%s", Folder::generateFolderPath($oDocument->getFolderID()), $oDocument->getContentVersionId(), $oDocument->getFileName());
         return $sStoragePath;
     }
 
-    function temporaryFile(&$oDocument) {
+    public function temporaryFile(&$oDocument) {
         $oConfig =& KTConfig::getSingleton();
         return sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oDocument));
     }
 
-    function freeTemporaryFile($sPath) {
+    public function freeTemporaryFile($sPath) {
         return;
     }
 
-    function download($oDocument) {
+    public function download($oDocument) {
         //get the path to the document on the server
         $oConfig =& KTConfig::getSingleton();
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oDocument));
@@ -140,7 +140,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         return KTUtil::download($sPath, $mimeType, $fileSize, $fileName);
     }
 
-    function createFolder($oFolder) {
+    public function createFolder($oFolder) {
         $oConfig =& KTConfig::getSingleton();
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $oFolder->generateFolderPath($oFolder->getID()));
         if (file_exists($sPath)) {
@@ -154,7 +154,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         return true;
     }
 
-    function removeFolder($oFolder) {
+    public function removeFolder($oFolder) {
         $oConfig =& KTConfig::getSingleton();
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $oFolder->generateFolderPath($oFolder->getID()));
         if (!file_exists($sPath)) {
@@ -165,13 +165,13 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         return true;
     }
 
-    function removeFolderTree($oFolder) {
+    public function removeFolderTree($oFolder) {
         $oConfig =& KTConfig::getSingleton();
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $oFolder->generateFolderPath($oFolder->getID()));
         KTUtil::deleteDirectory($sPath);
     }
 
-    function downloadVersion($oDocument, $iVersionId) {
+    public function downloadVersion($oDocument, $iVersionId) {
         //get the document
         $oContentVersion = KTDocumentContentVersion::get($iVersionId);
         $oConfig =& KTConfig::getSingleton();
@@ -198,7 +198,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 	 *
 	 * return boolean true on successful move, false otherwhise
 	 */
-	function moveDocument(&$oDocument, $oSourceFolder, $oDestinationFolder) {
+	public function moveDocument(&$oDocument, $oSourceFolder, $oDestinationFolder) {
         $oConfig =& KTConfig::getSingleton();
         $aContentVersions = KTDocumentContentVersion::getByDocument($oDocument);
         $sDocumentRoot = $oConfig->get('urls/documentRoot');
@@ -221,7 +221,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 	 * @param string source path
 	 * @param string destination path
 	 */
-	function move($sOldDocumentPath, $sNewDocumentPath) {
+	public function move($sOldDocumentPath, $sNewDocumentPath) {
 		global $default;
 		if (file_exists($sOldDocumentPath)) {
 			//copy the file	to the new destination
@@ -237,7 +237,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 		}
 	}
 
-    function moveFolder($oFolder, $oDestFolder) {
+    public function moveFolder($oFolder, $oDestFolder) {
         $table = "document_content_version";
         $sQuery = "UPDATE $table SET storage_path = CONCAT(?, SUBSTRING(storage_path FROM ?)) WHERE storage_path LIKE ?";
 
@@ -276,7 +276,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         return KTUtil::moveDirectory($sSrc, $sDst);
     }
 
-    function renameFolder($oFolder, $sNewName) {
+    public function renameFolder($oFolder, $sNewName) {
         $table = "document_content_version";
         $sQuery = "UPDATE $table SET storage_path = CONCAT(?, SUBSTRING(storage_path FROM ?)) WHERE storage_path LIKE ?";
 
@@ -321,7 +321,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
      * Perform any storage changes necessary to account for a copied
      * document object.
      */
-     function copy($oSrcDocument, &$oNewDocument) {
+     public function copy($oSrcDocument, &$oNewDocument) {
         // we get the Folder object
 		$oVersion = $oNewDocument->_oDocumentContentVersion;
 		$oConfig =& KTConfig::getSingleton();
@@ -342,7 +342,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
      * document object.
 	 * someone else _must_ call the update on $oDocument
      */
-     function renameDocument(&$oDocument, $oOldContentVersion, $sNewFilename) {
+     public function renameDocument(&$oDocument, $oOldContentVersion, $sNewFilename) {
         // we get the Folder object
 		$oVersion =& $oDocument->_oDocumentContentVersion;
 		$oConfig =& KTConfig::getSingleton();
@@ -366,7 +366,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 	 *
 	 * return boolean true on successful move, false otherwhise
 	 */
-	function delete($oDocument) {
+	public function delete($oDocument) {
         $oConfig =& KTConfig::getSingleton();
 		$sCurrentPath = $this->getPath($oDocument);
 
@@ -394,7 +394,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 	 *
 	 * return boolean true on successful expunge
 	 */
-	function expunge($oDocument) {
+	public function expunge($oDocument) {
 		parent::expunge($oDocument);
         $oConfig =& KTConfig::getSingleton();
 		$sCurrentPath = $this->getPath($oDocument);
@@ -419,7 +419,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 	 *
 	 * return boolean true on successful delete
 	 */
-	function deleteVersion($oVersion) {
+	public function deleteVersion($oVersion) {
 	    $oConfig =& KTConfig::getSingleton();
 	    $sDocumentRoot = $oConfig->get('urls/documentRoot');
 	    $iContentId = $oVersion->getContentVersionId();
@@ -438,7 +438,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 	 *
 	 * return boolean true on successful move, false otherwhise
 	 */
-	function restore($oDocument) {
+	public function restore($oDocument) {
         $oConfig =& KTConfig::getSingleton();
 		$sCurrentPath = $this->getPath($oDocument);
 
@@ -471,7 +471,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 	*
 	* @todo investigate possible problem in MSIE 5.5 concerning Content-Disposition header
 	*/
-	function inlineViewPhysicalDocument($iDocumentID) {
+	public function inlineViewPhysicalDocument($iDocumentID) {
             //get the document
             $oDocument = & Document::get($iDocumentID);
             //get the path to the document on the server
@@ -499,7 +499,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 	*
 	* @return Document Document object containing uploaded file information
 	*/
-	function & createDocumentFromUploadedFile($aFileArray, $iFolderID) {
+	public function & createDocumentFromUploadedFile($aFileArray, $iFolderID) {
 		//get the uploaded document information and put it into a document object
 		$oDocument = new Document($aFileArray['name'], $aFileArray['name'], $aFileArray['size'], $_SESSION["userID"], PhysicalDocumentManager::getMimeTypeID($aFileArray['type'], $aFileArray['name']), $iFolderID);
 		return $oDocument;
@@ -508,7 +508,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
     /*
     TODO: Remove as it is only needed for testing.
     */
-    function getDocumentUrl($oDocument, $type = 'document') {
+    public function getDocumentUrl($oDocument, $type = 'document') {
     	return '';
     }
 }
