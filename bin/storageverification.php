@@ -169,7 +169,7 @@ class StorageVerification
             }
 
             $expectedHash = $row['md5hash'];
-            $currentHash = md5_file($tmpPath);
+            $currentHash = $storage->md5File($tmpPath);
             if ($expectedHash != $currentHash)
             {
                 $this->error("Hash does not match. Expected: {$expectedHash} Current: {$currentHash}");

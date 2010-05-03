@@ -1032,7 +1032,7 @@ $sourceDocument->getName(),
             return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), _kt('The uploaded file does not exist.')));
         }
 
-        $md5hash = md5_file($sFilename);
+        $md5hash = $oStorage->md5File($sFilename);
         $content = $oDocument->_oDocumentContentVersion;
         $content->setStorageHash($md5hash);
         $content->update();

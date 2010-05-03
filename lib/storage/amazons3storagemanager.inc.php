@@ -97,9 +97,9 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     public function upload(&$oDocument, $sTmpFilePath, $aOptions = null)
     {
         if (OS_WINDOWS) {
-            $sTmpFilePath = str_replace('\\','/',$sTmpFilePath);
+            $sTmpFilePath = str_replace('\\', '/', $sTmpFilePath);
         }
-        $sTmpFilePath = $this->setTmpPath($sTmpFilePath);
+        $sTmpFilePath = $this->getShortPath($sTmpFilePath);
         $response = $this->amazonS3->head_object($this->bucket, $sTmpFilePath);
         if (!$response->isOK()) {
             return new PEAR_Error("$sTmpFilePath does not exist so we can't copy it into the repository! Options: " 
@@ -147,7 +147,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     public function uploadTmpFile($sUploadedFile, $sTmpFilePath, $aOptions = null)
     {                
         if (OS_WINDOWS) {
-            $sTmpFilePath = str_replace('\\','/',$sTmpFilePath);
+            $sTmpFilePath = str_replace('\\', '/', $sTmpFilePath);
         }
         
         if ($this->writeToFile($sUploadedFile, $sTmpFilePath, $aOptions)) {
@@ -176,7 +176,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
 
         // copy from php temp directory to S3
         if (is_uploaded_file($sourceFilePath)) {
-            $destinationFilePath = $this->setTmpPath($destinationFilePath);
+            $destinationFilePath = $this->getShortPath($destinationFilePath);
             $content = file_get_contents($sourceFilePath);
             $opt = array('filename' => $destinationFilePath, 'body' => $content);
             $response = $this->amazonS3->create_object($this->bucket, $opt);
@@ -189,10 +189,12 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         else {
             // NOTE this should probably not be needed as it is already done in the calling function
             //      leaving here as redundancy check
-            $sourceFilePath = $this->setTmpPath($sourceFilePath);
+            $sourceFilePath = $this->getShortPath($sourceFilePath);
             // set semantic headers: filename, size (is given by amazon by default), content type - what else?
             $opt['contentType'] = KTMime::getMimeTypeName($document->getMimeTypeID());
-            $opt['meta'] = array('filename' => $document->getFileName());
+            $opt['meta'] = array('title' => $document->getName(), 
+                                 'filename' => $document->getFileName(), 
+                                 'md5' => $document->_oDocumentContentVersion->getStorageHash());
             $response = $this->amazonS3->copy_object($this->bucket, $sourceFilePath, $this->bucket, $destinationFilePath, $opt);
             if ($response->isOK()) {
                 $response = $this->amazonS3->delete_object($this->bucket, $sourceFilePath);
@@ -216,11 +218,11 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         $oDocument->setStoragePath($sNewPath);
     }
     
-    private function setTmpPath($tmpPath)
+    private function getShortPath($path)
     {
-        // path as received is full system path, don't want that...feels like a bit of a hack, but...
+        // if path as received is full system var path, don't want that...feels like a bit of a hack, but...
         $config = KTConfig::getSingleton();
-        return str_replace($config->get('urls/varDirectory') . '/', '', $tmpPath);
+        return str_replace($config->get('urls/varDirectory') . '/', '', $path);
     }
 
     protected function generateStoragePath(&$oDocument)
@@ -258,10 +260,16 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         $sPath = sprintf("%s/%s", 'Documents', $this->getPath($oContentVersion));
 
         // Ensure the file exists
-        if (file_exists($sPath)) {
+        $response = $this->amazonS3->head_object($this->bucket, $sPath);
+        if ($response->isOK()) {
             return $sPath;
         }
+        
         return false;
+    }
+    
+    public function freeTemporaryFile($sPath) {
+        return;
     }
 
     // TODO modify to use direct access to S3 instead of downloading locally
@@ -478,6 +486,21 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     {
         // Storage doesn't care if the document is deleted or restored
         return true;
+    }
+    
+    public function md5File($filePath)
+    {
+        if (OS_WINDOWS) {
+            $filePath = str_replace('\\', '/', $filePath);
+        }
+        $filePath = $this->getShortPath($filePath);
+        $response = $this->amazonS3->get_object($this->bucket, $filePath);
+        if ($response->isOK()) {
+            return md5($response->body);
+        }
+        
+        // TODO proper error handling and logging
+        return null;
     }
 
 }

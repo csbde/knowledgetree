@@ -179,6 +179,16 @@ class KTStorageManager {
         return PEAR::raiseError(_kt("Not implemented"));
     }
     
+    /**
+     * Returns the md5 hash of the file content
+     *
+     * @param string $filePath the location of the file
+     * @return string the md5 hash
+     */
+    public function md5File($filePath) {
+        return md5_file($filePath);
+    }
+    
     /*
     TODO: Remove as it is only needed for testing.
     */
