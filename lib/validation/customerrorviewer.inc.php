@@ -41,7 +41,7 @@
  	// {{{ initCustomErrorViewer()
  	function initCustomErrorViewer()
  	{
- 		return $oCustomViewer =& new KTCustomErrorViewer; 
+		return $oCustomViewer =& new KTCustomErrorViewer; 
  	}
  	//}}}
  	
