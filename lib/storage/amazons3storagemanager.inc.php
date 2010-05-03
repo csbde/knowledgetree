@@ -168,6 +168,8 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      */
     protected function writeToFile($sourceFilePath, $destinationFilePath, $aOptions = null, $document = null)
     {
+        global $default;
+        
         // TODO determine what if anything needs to change here - this is only used by bulk upload,
         //      I think for the zip file...
         if(isset($aOptions['copy_upload']) && ($aOptions['copy_upload'] == 'true')) {
@@ -182,8 +184,12 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             $response = $this->amazonS3->create_object($this->bucket, $opt);
             // ensure php temp file is removed, as we are not using move_uploaded_file()
             @unlink($sourceFilePath);
+            if ($response->isOK()) {
+                $default->log->info("Amazon S3 PUT operation: {$this->bucket}/$destinationFilePath");
+                return true;
+            }
 
-            return $response->isOK();
+            return false;
         }
         // already in S3
         else {
@@ -197,6 +203,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
                                  'filename' => $document->getFileName());
             $response = $this->amazonS3->copy_object($this->bucket, $sourceFilePath, $this->bucket, $destinationFilePath, $opt);
             if ($response->isOK()) {
+                $default->log->info("Amazon S3 PUT operation: {$this->bucket}/$destinationFilePath");
                 $response = $this->amazonS3->delete_object($this->bucket, $sourceFilePath);
                 return $response->isOK();
             }
@@ -385,11 +392,17 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      */
     public function move($sOldDocumentPath, $sNewDocumentPath)
     {
+        global $default;
+        
         $response = $this->amazonS3->head_object($this->bucket, $sOldDocumentPath);
         if ($response->isOK()) {
             // move the file to the new destination
             $response = $this->amazonS3->move_object($this->bucket, $sOldDocumentPath, $this->bucket, $sNewDocumentPath);
-            return $response->isOK();
+            if ($response->isOK()) {
+                $default->log->info("Amazon S3 PUT operation: {$this->bucket}/$sNewDocumentPath");
+                return true;
+            }
+            return false;
         }
         else {
             return false;
@@ -414,6 +427,8 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      */
     public function copy($oSrcDocument, &$oNewDocument)
     {
+        global $default;
+        
         $oVersion = $oNewDocument->_oDocumentContentVersion;
         $sDocumentRoot = 'Documents';
         $sNewPath = $this->generateStoragePath($oNewDocument);
@@ -424,6 +439,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         if (!$response->isOK()) {
             return new PEAR_Error("There was an error copying the file from $sFullOldPath to $sFullNewPath");
         }
+        $default->log->info("Amazon S3 PUT operation: {$this->bucket}/$sFullNewPath");
         $oVersion->setStoragePath($sNewPath);
         $oVersion->update();
     }
