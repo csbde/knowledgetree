@@ -11,10 +11,10 @@ require_once (KT_DIR . '/ktapi/ktapi.inc.php');
  */
 class APIDocumentHelper {
     function createRandomFile($content = 'this is some text') {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
-        $temp = $oStorage->tempnam(dirname(__FILE__), 'myfile');
-        $oStorage->write_file($temp, 'wt', $content);
-
+        $temp = tempnam(dirname(__FILE__), 'myfile');
+        $fp = fopen($temp, 'wt');
+        fwrite($fp, $content);
+        fclose($fp);
         return $temp;
     }
 }
