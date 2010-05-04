@@ -104,6 +104,9 @@ function checkDirectory($path) {
         }
     }
     
+    // TODO this whole piece will possibly need to go in the storage driver in order to work correctly
+    //      REALLY not sure exactly how this will be done as it uses functions local to this class
+    // NOTE alternate option - have an opendir function in storage driver...
     $dh = @opendir($fullpath);
     if ($dh === false) {
         print "Could not open directory: $fullpath\n";
@@ -134,7 +137,8 @@ function checkRepoDocument($oDocument) {
     global $fsPath, $aRepoDocumentProblems;
     $sDocumentPath = $oDocument->getStoragePath();
     $sFullPath = sprintf('%s/%s', $fsPath, $sDocumentPath);
-    if (!is_file($sFullPath)) {
+    $oStorage = KTStorageManagerUtil::getSingleton();
+    if (!$oStorage->isFile($sFullPath)) {
         $aRepoDocumentProblems[] = $sDocumentPath;
     }
     checkRepoVersions($oDocument);
@@ -150,7 +154,8 @@ function checkRepoVersions($oDocument) {
         }
         $sDocumentPath = $oDocument->getStoragePath();
         $sFullPath = sprintf('%s/%s-%s', $fsPath, $sDocumentPath, $sVersion);
-        if (!is_file($sFullPath)) {
+        $oStorage = KTStorageManagerUtil::getSingleton();
+        if (!$oStorage->isFile($sFullPath)) {
             $aRepoVersionProblems[] = array($sDocumentPath, $sVersion);
             continue;
         }

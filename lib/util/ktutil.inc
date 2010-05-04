@@ -850,6 +850,9 @@ class KTUtil {
     }
     // }}}
 
+    /**
+     * @deprecated Used in bitrock stack
+     */
     function checkForStackCommand($configCommand)
     {
     	$config = KTConfig::getSingleton();
