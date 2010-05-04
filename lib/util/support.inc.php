@@ -74,6 +74,7 @@ class MD5SourceTree
 		{
     		if ($dh = opendir($dir))
     		{
+    		    $storage = KTStorageManagerUtil::getSingleton();
         		while (($filename = readdir($dh)) !== false)
         		{
         			if (substr($filename,0,1) == '.')
@@ -92,7 +93,7 @@ class MD5SourceTree
         				$this->numFiles++;
         				if (is_readable($path))
         				{
-							$md5 = md5_file($path);
+							$md5 = $storage->md5File($path);
 							$path = substr($path, strlen($this->rootDir) + 1);
 							fwrite($this->logFile, "$md5:$path\n");
         				}

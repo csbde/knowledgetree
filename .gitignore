@@ -1,3 +1,4 @@
+
 *~
 bin/luceneserver/lucene.pid
 bin/schedulerTask.sh 
@@ -9,11 +10,14 @@ bin/schedulerTask.sh
 dummy.php
 var/*
 plugins/commercial
-clienttools/ExplorerCP
-clienttools/Office
+clienttools/*
 .gitmodules
 *.out
-baobab/
-ktoffice*/
+baobab
+ktoffice
 setup/wizard/install.lock
-config/aws_config.ini
+config/cache-path
+config/config-path
+config/config.ini
+bin/luceneserver/KnowledgeTreeIndexer.properties
+

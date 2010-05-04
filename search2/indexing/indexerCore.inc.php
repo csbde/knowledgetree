@@ -1589,7 +1589,7 @@ abstract class Indexer
             if (empty($sourceFile) || !is_file($sourceFile))
             {
                 Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: source file '%s' for document %d does not exist."),$sourceFile,$docId), 'error');
-                continue;
+                return;
             }
 
             if ($extract) {
@@ -1603,7 +1603,7 @@ abstract class Indexer
                     {
                         $this->logPendingDocumentInfoStatus($docId, sprintf(_kt("Could not create intermediate file from document %d"),$docId), 'error');
                         // problem. lets try again later. probably permission related. log the issue.
-                        continue;
+                        return;
                     }
                     $sourceFile = $intermediate;
                 }

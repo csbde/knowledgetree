@@ -41,7 +41,7 @@
  	// {{{ initCustomErrorHandler()
  	function initCustomErrorHandler ()
  	{
- 		return $oCustomErrorHandler =& new KTCustomErrorHandler;
+		return $oCustomErrorHandler =& new KTCustomErrorHandler;
  	}
  	// }}}
 

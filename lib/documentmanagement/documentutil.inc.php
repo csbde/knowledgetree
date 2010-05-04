@@ -330,7 +330,12 @@ class KTDocumentUtil {
 
         // setIncomplete and storeContents may change the document's status or
         // storage_path, so now is the time to update
-        $oDocument->update();
+        $res = $oDocument->update();
+
+        if (PEAR::isError($res) || ($res == false)) {
+            return PEAR::raiseError(_kt('Unable to finalise the document status.'));
+        }
+        
         return $oDocument;
     }
 
@@ -1027,7 +1032,7 @@ $sourceDocument->getName(),
             return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), _kt('The uploaded file does not exist.')));
         }
 
-        $md5hash = md5_file($sFilename);
+        $md5hash = $oStorage->md5File($sFilename);
         $content = $oDocument->_oDocumentContentVersion;
         $content->setStorageHash($md5hash);
         $content->update();

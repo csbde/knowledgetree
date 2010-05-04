@@ -374,6 +374,12 @@ class AmazonS3 extends CloudFusion
 				$req->add_header('Content-Type', $contentType);
 			}
 
+			// Do we have a contentDisposition?
+			if (isset($contentDisposition) && !empty($contentDisposition))
+			{
+				$req->add_header('Content-Disposition', $contentDisposition);
+			}
+
 			// Do we have a date?
 			if (isset($httpDate) && !empty($httpDate))
 			{

@@ -113,8 +113,7 @@ foreach($rows as $row)
 		continue;
 	}
 
-	$actual_md5 = md5_file($storage_path);
-
+	$actual_md5 = $storage->md5File($storage_path);
 	$storage->freeTemporaryFile($storage_path);
 
 	if (empty($md5))
