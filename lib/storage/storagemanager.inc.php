@@ -345,19 +345,6 @@ class KTStorageManager {
 	}
 	
     /**
-     * 
-     * 
-     * @param string $filename - Path to the file
-     * 
-     * URL :
-     * 
-     */
-	function filesize($filename) {
-		
-		return filesize($filename);
-	}
-	
-    /**
      * Puts the given file into storage, and saves the storage details
      * into the document.
      */

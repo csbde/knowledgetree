@@ -45,14 +45,7 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentcontentversion.inc.php');
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 
 class KTOnDiskHashedStorageManager extends KTStorageManager {
-<<<<<<< HEAD:lib/storage/ondiskhashedstoragemanager.inc.php
     public function upload(&$oDocument, $sTmpFilePath, $aOptions = null) {
-=======
-
-	
-    function upload(&$oDocument, $sTmpFilePath, $aOptions = null) {
->>>>>>> s3readiness:lib/storage/ondiskhashedstoragemanager.inc.php
-
     	if (!parent::file_exists($sTmpFilePath)) {
 
             	return new PEAR_Error("$sTmpFilePath does not exist so we can't copy it into the repository! Options: "  . print_r($aOptions,true) );
@@ -377,12 +370,6 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         return true;
     }
     
-<<<<<<< HEAD:lib/storage/ondiskhashedstoragemanager.inc.php
-    /*
-    TODO: Remove as it is only needed for testing.
-    */
-    public function getDocumentUrl($oDocument, $type = 'document') {
-=======
 	/**
 	 * Get the storage path of a documents content.
 	 *
@@ -399,7 +386,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
     		}
     		$oDocument = Document::get($document_id);
     	}
->>>>>>> s3readiness:lib/storage/ondiskhashedstoragemanager.inc.php
+
     	global $default;
     	$varDirectory = $default->varDirectory;
     	switch ($type) {
