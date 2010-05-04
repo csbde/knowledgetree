@@ -60,7 +60,8 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 
 class KTDocumentUtil {
-    function checkin($oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false, $bulk_action = false) {
+    
+    public static function checkin($oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false, $bulk_action = false) {
         $oStorage = KTStorageManagerUtil::getSingleton();
 
         // NOTE working with a local php uploaded file and so will not need to use the storage driver
@@ -165,7 +166,7 @@ class KTDocumentUtil {
         return true;
     }
 
-    function checkout($oDocument, $sCheckoutComment, $oUser, $bulk_action = false) {
+    public static function checkout($oDocument, $sCheckoutComment, $oUser, $bulk_action = false) {
     	//automatically check out the linked document if this is a shortcut
 		if($oDocument->isSymbolicLink()){
     		$oDocument->switchToLinkedCore();
@@ -217,7 +218,7 @@ class KTDocumentUtil {
         return true;
     }
 
-    function archive($oDocument, $sReason, $bulk_action = false) {
+    public static function archive($oDocument, $sReason, $bulk_action = false) {
 
         if($oDocument->isSymbolicLink()){
         	return PEAR::raiseError(_kt("It is not possible to archive a shortcut. Please archive the target document."));
@@ -253,7 +254,7 @@ class KTDocumentUtil {
         	}
         }
 
-        $oDocumentTransaction = new DocumentTransaction($oDocument, sprintf(_kt('Document archived: %s'), $sReason), 'ktcore.transactions.update');
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, sprintf(_kt('Document archived: %s'), $sReason), 'ktcore.transactions.update');
         $oDocumentTransaction->create();
 
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
@@ -281,7 +282,7 @@ class KTDocumentUtil {
         return true;
     }
 
-    function &_add($oFolder, $sFilename, $oUser, $aOptions) {
+    public static function &_add($oFolder, $sFilename, $oUser, $aOptions) {
         global $default;
 
         //$oContents = KTUtil::arrayGet($aOptions, 'contents');
@@ -354,7 +355,7 @@ class KTDocumentUtil {
      * @param Folder $targetFolder the folder to place the link in
      * @param User $user current user
      */
-    static function createSymbolicLink($sourceDocument, $targetFolder, $user = null) // added/
+    public static function createSymbolicLink($sourceDocument, $targetFolder, $user = null) // added/
     {
     	//validate input
         if (is_numeric($sourceDocument))
@@ -432,7 +433,7 @@ $sourceDocument->getName(),
      * @param User $user the user deleting the link
      * @return unknown
      */
-    static function deleteSymbolicLink($document, $user = null) // added/
+    public static function deleteSymbolicLink($document, $user = null) // added/
     {
     	//validate input
         if (is_numeric($document))
@@ -470,9 +471,8 @@ $sourceDocument->getName(),
 
     }
 
-
     // Overwrite the document
-    function overwrite($oDocument, $sFilename, $sTempFileName, $oUser, $aOptions) {
+    public static function overwrite($oDocument, $sFilename, $sTempFileName, $oUser, $aOptions) {
         //$oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false
         $oStorage = KTStorageManagerUtil::getSingleton();
         $iFileSize = filesize($sTempFileName);
@@ -546,7 +546,7 @@ $sourceDocument->getName(),
     }
 
     // {{{ validateMetadata
-    function validateMetadata(&$oDocument, $aMetadata) {
+    public static function validateMetadata(&$oDocument, $aMetadata) {
         $aFieldsets =& KTFieldset::getGenericFieldsets();
         $aFieldsets =& kt_array_merge($aFieldsets,
                 KTFieldset::getForDocumentType($oDocument->getDocumentTypeId()));
@@ -600,7 +600,7 @@ $sourceDocument->getName(),
 	 * - Further corrects any quote descrepancies and checks the textual description again.
 	 * - If still no valid date then takes the integers and separators to produce a best guess.
 	 */
-	function sanitizeDate($sDate) {
+	public static function sanitizeDate($sDate) {
 
 	    //Checking for Normal Strings, e.g. 13 August 2009 etc. All formats accepted by strtotime()
 	    $datetime = date_create($sDate);
@@ -641,7 +641,7 @@ $sourceDocument->getName(),
 
     // Forcefully sanitize metadata, specifically date values, to account for client tools that submit unvalidated date input
     // Will produce a best effort match to a valid date format.
-    function sanitizeMetadata($oDocument, $aMetadata){
+    public static function sanitizeMetadata($oDocument, $aMetadata){
         $aFieldsets =& KTFieldset::getGenericFieldsets();
         $aFieldsets =& kt_array_merge($aFieldsets,
                 KTFieldset::getForDocumentType($oDocument->getDocumentTypeId()));
@@ -683,7 +683,7 @@ $sourceDocument->getName(),
     }
 
     // {{{ saveMetadata
-    function saveMetadata(&$oDocument, $aMetadata, $aOptions = null) {
+    public static function saveMetadata(&$oDocument, $aMetadata, $aOptions = null) {
         $table = 'document_fields_link';
 
         //Sanitizing Date Fields
@@ -729,7 +729,7 @@ $sourceDocument->getName(),
     }
     // }}}
 
-    function copyMetadata($oDocument, $iPreviousMetadataVersionId) {
+    public static function copyMetadata($oDocument, $iPreviousMetadataVersionId) {
         $iNewMetadataVersion = $oDocument->getMetadataVersionId();
         $sTable = KTUtil::getTableName('document_fields_link');
         $aFields = DBUtil::getResultArray(array("SELECT * FROM $sTable WHERE metadata_version_id = ?", array($iPreviousMetadataVersionId)));
@@ -742,7 +742,7 @@ $sourceDocument->getName(),
     }
 
     // {{{ setIncomplete
-    function setIncomplete(&$oDocument, $reason) {
+    public static function setIncomplete(&$oDocument, $reason) {
         $oDocument->setStatusID(STATUS_INCOMPLETE);
         $table = 'document_incomplete';
         $iId = $oDocument->getId();
@@ -767,7 +767,7 @@ $sourceDocument->getName(),
     // }}}
 
     // {{{ setComplete
-    function setComplete(&$oDocument, $reason) {
+    public static function setComplete(&$oDocument, $reason) {
         $table = 'document_incomplete';
         $iId = $oDocument->getID();
         $aIncomplete = DBUtil::getOneResult(array("SELECT * FROM $table WHERE id = ?", array($iId)));
@@ -820,7 +820,7 @@ $sourceDocument->getName(),
       *                 boolean $bulk_action
       */
     // {{{ add
-    function &add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action = false) {
+    public static function &add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action = false) {
         $GLOBALS['_IN_ADD'] = true;
         $ret = KTDocumentUtil::_in_add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action);
         unset($GLOBALS['_IN_ADD']);
@@ -828,7 +828,7 @@ $sourceDocument->getName(),
     }
     // }}}
 
-    function getUniqueFilename($oFolder, $sFilename) {
+    public static function getUniqueFilename($oFolder, $sFilename) {
         // this is just a quick refactoring. We should look at a more optimal way of doing this as there are
         // quite a lot of queries.
         $iFolderId = $oFolder->getId();
@@ -839,7 +839,7 @@ $sourceDocument->getName(),
         return $sFilename;
     }
 
-    function getUniqueDocumentName($oFolder, $sFilename)
+    public static function getUniqueDocumentName($oFolder, $sFilename)
     {
         // this is just a quick refactoring. We should look at a more optimal way of doing this as there are
         // quite a lot of queries.
@@ -863,7 +863,7 @@ $sourceDocument->getName(),
       *                 boolean $bulk_action
       */
     // {{{ _in_add
-    function &_in_add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action = false) {
+    public static function &_in_add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action = false) {
         $aOrigOptions = $aOptions;
 
         $sFilename = KTDocumentUtil::getUniqueFilename($oFolder, $sFilename);
@@ -960,7 +960,7 @@ $sourceDocument->getName(),
     }
     // }}}
 
-    function incrementNameCollissionNumbering($sDocFilename, $skipExtension = false){
+    public static function incrementNameCollissionNumbering($sDocFilename, $skipExtension = false){
 
         $iDot = strpos($sDocFilename, '.');
         if ($skipExtension || $iDot === false)
@@ -994,24 +994,23 @@ $sourceDocument->getName(),
         return $sDocFilename;
     }
 
-
-	function generateNewDocumentFilename($sDocFilename) {
+	public static function generateNewDocumentFilename($sDocFilename) {
 	    return self::incrementNameCollissionNumbering($sDocFilename, false);
 	}
 
-	function generateNewDocumentName($sDocName){
+	public static function generateNewDocumentName($sDocName){
 	    return self::incrementNameCollissionNumbering($sDocName, true);
 
 	}
 
     // {{{ fileExists
-    function fileExists($oFolder, $sFilename) {
+    public static function fileExists($oFolder, $sFilename) {
         return Document::fileExists($sFilename, $oFolder->getID());
     }
     // }}}
 
     // {{{ nameExists
-    function nameExists($oFolder, $sName) {
+    public static function nameExists($oFolder, $sName) {
         return Document::nameExists($sName, $oFolder->getID());
     }
     // }}}
@@ -1020,8 +1019,13 @@ $sourceDocument->getName(),
     /**
      * Stores contents (filelike) from source into the document storage
      */
+<<<<<<< HEAD
     function storeContents(&$oDocument, $oContents = null, $aOptions = null) {
     	$oStorage = KTStorageManagerUtil::getSingleton();
+=======
+    public static function storeContents(&$oDocument, $oContents = null, $aOptions = null) {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
+>>>>>>> Declare all functions in documentutil static
         if (is_null($aOptions)) {
             $aOptions = array();
         }
@@ -1080,7 +1084,7 @@ $sourceDocument->getName(),
       *                 boolean $bulk_action
       */
     // {{{ delete
-    function delete($oDocument, $sReason, $iDestFolderId = null, $bulk_action = false) {
+    public static function delete($oDocument, $sReason, $iDestFolderId = null, $bulk_action = false) {
     	global $default;
         $oStorage = KTStorageManagerUtil::getSingleton();
 
@@ -1213,12 +1217,12 @@ $sourceDocument->getName(),
     }
     // }}}
 
-    function reindexDocument($oDocument) {
+    public static function reindexDocument($oDocument) {
 
         Indexer::index($oDocument);
     }
 
-    function canBeCopied($oDocument, &$sError) {
+    public static function canBeCopied($oDocument, &$sError) {
         if ($oDocument->getIsCheckedOut()) {
             $sError = PEAR::raiseError(_kt('Document cannot be copied as it is checked out.'));
             return false;
@@ -1230,7 +1234,7 @@ $sourceDocument->getName(),
         return true;
     }
 
-    function canBeMoved($oDocument, &$sError) {
+    public static function canBeMoved($oDocument, &$sError) {
         if ($oDocument->getImmutable()) {
             $sError = PEAR::raiseError(_kt('Document cannot be moved as it is immutable.'));
             return false;
@@ -1246,7 +1250,7 @@ $sourceDocument->getName(),
         return true;
     }
 
-    function canBeDeleted($oDocument, &$sError) {
+    public static function canBeDeleted($oDocument, &$sError) {
         if($oDocument->getImmutable())
         {
             $sError = PEAR::raiseError(_kt('Document cannot be deleted as it is immutable.'));
@@ -1263,7 +1267,7 @@ $sourceDocument->getName(),
         return true;
     }
 
-    function canBeArchived($oDocument, &$sError) {
+    public static function canBeArchived($oDocument, &$sError) {
         if ($oDocument->getIsCheckedOut()) {
             $sError = PEAR::raiseError(_kt('Document cannot be archived as it is checked out.'));
             return false;
@@ -1275,8 +1279,13 @@ $sourceDocument->getName(),
         return true;
     }
 
+<<<<<<< HEAD
     function copy($oDocument, $oDestinationFolder, $sReason = null, $sDestinationDocName = null, $bulk_action = false) {
     	$oStorage = KTStorageManagerUtil::getSingleton();
+=======
+    public static function copy($oDocument, $oDestinationFolder, $sReason = null, $sDestinationDocName = null, $bulk_action = false) {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
+>>>>>>> Declare all functions in documentutil static
         // 1. generate a new triad of content, metadata and core objects.
         // 2. update the storage path.
 		//print '--------------------------------- BEFORE';
@@ -1434,8 +1443,13 @@ $sourceDocument->getName(),
         return $oNewDocument;
     }
 
+<<<<<<< HEAD
     function rename($oDocument, $sNewFilename, $oUser) {
         $oStorage = KTStorageManagerUtil::getSingleton();
+=======
+    public static function rename($oDocument, $sNewFilename, $oUser) {
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+>>>>>>> Declare all functions in documentutil static
         $oKTConfig = KTConfig::getSingleton();
         $updateVersion = $oKTConfig->get('tweaks/incrementVersionOnRename', true);
 
@@ -1520,8 +1534,13 @@ $sourceDocument->getName(),
       *                 string $sReason
       *                 boolean $bulk_action
       */
+<<<<<<< HEAD
     function move($oDocument, $oToFolder, $oUser = null, $sReason = null, $bulk_action = false) {
     	$oStorage = KTStorageManagerUtil::getSingleton();
+=======
+    public static function move($oDocument, $oToFolder, $oUser = null, $sReason = null, $bulk_action = false) {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
+>>>>>>> Declare all functions in documentutil static
     	//make sure we move the symlink, and the document it's linking to
 		if($oDocument->isSymbolicLink()){
     		$oDocument->switchToRealCore();
@@ -1606,7 +1625,7 @@ $sourceDocument->getName(),
     /**
     * Delete a selected version of the document.
     */
-    function deleteVersion($oDocument, $iVersionID, $sReason){
+    public static function deleteVersion($oDocument, $iVersionID, $sReason){
     	global $default;
 		$oStorage = KTStorageManagerUtil::getSingleton();
 		
