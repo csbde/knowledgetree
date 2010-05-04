@@ -62,6 +62,12 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     // TODO fetch amazon info from a config file - where to put this config file (we want it outside of publicly accesible code...)
     public function __construct()
     {
+        // get account name from defined constant, or throw an error
+        if (!defined('ACCOUNT_NAME') || (ACCOUNT_NAME == '')) {
+            // TODO log error
+            throw new RuntimeException('No account name defined');
+        }
+        
         ConfigManager::load(KT_DIR . '/config/aws_config.ini');
         if (ConfigManager::error()) {
             // TODO log error
@@ -79,9 +85,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             throw $e;
         }
 
-        // TODO get proper account name from session value
-        $accountName = 'default';
-        $this->bucket = "ktlive-$accountName";
+        $this->bucket = 'ktlive-' . ACCOUNT_NAME;
 
         // create bucket if it does not exist
         $response = $this->amazonS3->head_bucket($this->bucket);
