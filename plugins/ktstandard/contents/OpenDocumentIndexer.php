@@ -115,6 +115,7 @@ class KTOpenDocumentIndexerTrigger extends KTBaseIndexerTrigger {
     }
 
     function extract_contents($sFilename, $sTmpFilename) {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         $sUnzipCommand = KTUtil::findCommand("import/unzip", "unzip");
         if (empty($sUnzipCommand)) {
             return;
@@ -122,12 +123,12 @@ class KTOpenDocumentIndexerTrigger extends KTBaseIndexerTrigger {
         $oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get("urls/tmpDirectory");
         
-        $this->sTmpPath = tempnam($sBasedir, 'opendocumentextract');
+        $this->sTmpPath = $oStorage->tempnam($sBasedir, 'opendocumentextract');
         if ($this->sTmpPath === false) {
             return;
         }
-        unlink($this->sTmpPath);
-        mkdir($this->sTmpPath, 0700);
+        $oStorage->unlink($this->sTmpPath);
+        $oStorage->mkdir($this->sTmpPath, 0700);
 
         $sCmd = array(
             $sUnzipCommand,
@@ -141,7 +142,7 @@ class KTOpenDocumentIndexerTrigger extends KTBaseIndexerTrigger {
         if (OS_WINDOWS) {
     	     $sManifest = str_replace( '/','\\',$sManifest);
     	  } 
-        if (!file_exists($sManifest)) {
+        if (!$oStorage->file_exists($sManifest)) {
             $this->cleanup();
             return;
         }
@@ -149,12 +150,12 @@ class KTOpenDocumentIndexerTrigger extends KTBaseIndexerTrigger {
         if (OS_WINDOWS) {
     	     $sContentFile = str_replace( '/','\\',$sContentFile );
     	  } 
-        if (!file_exists($sContentFile)) {
+        if (!$oStorage->file_exists($sContentFile)) {
             $this->cleanup();
             return;
         }
 
-        $sContent = file_get_contents($sContentFile);
+        $sContent = $oStorage->file_get_contents($sContentFile);
         $sContent = preg_replace ("@(</?[^>]*>)+@", " ", $sContent);
 
         $this->cleanup();

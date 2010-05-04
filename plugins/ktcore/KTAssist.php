@@ -276,6 +276,8 @@ class KTAssistNotification extends KTNotificationHandler {
             return $oDoc;
         }
 
+        $oStorage = KTStorageManagerUtil::getSingleton();
+        
         $this->startTransaction();
         $iRestoreFolder = $oDoc->getRestoreFolderId();
         $oFolder = Folder::get($iRestoreFolder);
@@ -287,8 +289,6 @@ class KTAssistNotification extends KTNotificationHandler {
         } else {
             $oDoc->setFolderId($iRestoreFolder);
         }
-
-        $oStorage = KTStorageManagerUtil::getSingleton();
 
         if ($oStorage->restore($oDoc)) {
             $oDoc = Document::get($iDocId); // storage path has changed for most recent object...

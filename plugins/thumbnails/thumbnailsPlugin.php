@@ -51,18 +51,16 @@ class DeleteThumbnailTrigger {
      * On checkin of a document, delete the thumbnail so a new one can be generated
      */
     function postValidate() {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         $oDoc = $this->aInfo['document'];
         $docId = $oDoc->getId();
         $docInfo = array('id' => $docId, 'name' => $oDoc->getName());
 
-        // Delete the pdf document
-        global $default;
-        $varDirectory = $default->varDirectory;
+        // Delete the thumbnail document
+        $file = $oStorage->getDocStoragePath($oDoc, 'thumbnail');
 
-        $file = $varDirectory . DIRECTORY_SEPARATOR . "thumbnails" . DIRECTORY_SEPARATOR .$docId.'.jpg';
-
-        if(file_exists($file)){
-            @unlink($file);
+        if($oStorage->file_exists($file)){
+            $oStorage->unlink($file);
         }
     }
 }

@@ -239,6 +239,7 @@ function sendEmail($aDestEmailAddress, $iDocumentID, $sDocumentName, $sComment, 
 
 function sendEmailDocument($aDestEmailAddress, $iDocumentID, $sDocumentName, $sComment, &$aEmailErrors) {
     global $default;
+    $oStorage =& KTStorageManagerUtil::getSingleton();
     // Get the email list as a string for the logs
     $sDestEmails = implode(',', $aDestEmailAddress);
     $oSendingUser = User::get($_SESSION['userID']);
@@ -266,7 +267,6 @@ function sendEmailDocument($aDestEmailAddress, $iDocumentID, $sDocumentName, $sC
 
     // Request a standard file path so that it can be attached to the
     // email
-    $oStorage =& KTStorageManagerUtil::getSingleton();
     $sDocumentPath = $oStorage->temporaryFile($oDocument);
 
     $sDocumentFileName = $oDocument->getFileName();

@@ -141,6 +141,7 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
     }
 
     function do_finish_expunge() {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array());
 
         $aDocuments = array();
@@ -159,7 +160,6 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
         $aSuccessDocuments = array();
         $aDeletedDocs = array();
 
-        $oStorage =& KTStorageManagerUtil::getSingleton();
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
 
         foreach ($aDocuments as $oDoc) {
@@ -245,6 +245,7 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
     }
 
     function do_finish_restore() {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array());
 
         $aDocuments = array();
@@ -261,8 +262,6 @@ var $sHelpPage = 'ktcore/admin/deleted documents.html';
         $this->startTransaction();
         $aErrorDocuments = array();
         $aSuccessDocuments = array();
-
-        $oStorage =& KTStorageManagerUtil::getSingleton();
 
         foreach ($aDocuments as $oDoc) {
             $oFolder = Folder::get($oDoc->getRestoreFolderId());

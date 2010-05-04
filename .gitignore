@@ -20,4 +20,3 @@ config/cache-path
 config/config-path
 config/config.ini
 bin/luceneserver/KnowledgeTreeIndexer.properties
-

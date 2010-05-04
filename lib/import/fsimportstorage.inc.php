@@ -46,21 +46,23 @@ class KTFSImportStorage extends KTImportStorage {
     }
 
     function init() {
-        if (!file_exists($this->sBasePath)) {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
+        if (!$oStorage->file_exists($this->sBasePath)) {
             return PEAR::raiseError(_kt("Filesystem location given does not exist"));
         }
-        if (!is_dir($this->sBasePath)) {
+        if (!$oStorage->is_dir($this->sBasePath)) {
             return PEAR::raiseError(_kt("Filesystem location given is not a directory"));
         }
     }
 
     function listDocuments($sFolderPath) {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         $ret = array();
         if (substr($sFolderPath, -1) === "/") {
             $sFolderPath = substr($sFolderPath, 0, -1);
         }
         $sFullPath = sprintf("%s/%s", $this->sBasePath, $sFolderPath);
-        if (!is_dir($sFullPath)) {
+        if (!$oStorage->is_dir($sFullPath)) {
             return PEAR::raiseError(_kt('Path is not a folder'));
         }
         $rDir = @opendir($sFullPath);
@@ -72,7 +74,7 @@ class KTFSImportStorage extends KTImportStorage {
                 continue;
             }
             $sThisPath = sprintf("%s/%s", $sFullPath, $sFilename);
-            if (!file_exists($sThisPath)) {
+            if (!$oStorage->file_exists($sThisPath)) {
                 return PEAR::raiseError(sprintf(_kt('Could not read file: %s') , $sThisPath));
             }
             if (@is_file($sThisPath)) {
@@ -88,6 +90,7 @@ class KTFSImportStorage extends KTImportStorage {
     }
 
     function listFolders($sFolderPath) {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         $ret = array();
         if (substr($sFolderPath, -1) === "/") {
             $sFolderPath = substr($sFolderPath, 0, -1);
@@ -105,7 +108,7 @@ class KTFSImportStorage extends KTImportStorage {
                 continue;
             }
             $sThisPath = sprintf("%s/%s", $sFullPath, $sFilename);
-            if (!file_exists($sThisPath)) {
+            if (!$oStorage->file_exists($sThisPath)) {
                 return PEAR::raiseError(sprintf(_kt('Could not read file: %s'), $sThisPath));
             }
             if (@is_dir($sThisPath)) {

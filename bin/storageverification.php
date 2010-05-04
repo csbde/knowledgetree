@@ -51,8 +51,7 @@ class StorageVerification
     private $nl;
     private $tab;
 
-    private
-    function error($msg)
+    private function error($msg)
     {
         $doc = $this->doc;
         $documentId = $doc->getId();
@@ -72,8 +71,7 @@ class StorageVerification
         $this->clearCache();
     }
 
-    private
-    function progress()
+    private function progress()
     {
         if ($this->count++ % StorageVerification::DOCS_PER_DOT == 0)
         {
@@ -91,8 +89,7 @@ class StorageVerification
         $this->clearCache();
     }
 
-    private
-    function clearCache()
+    private function clearCache()
     {
         $metadataid = $this->doc->getMetadataVersionId();
         $contentid = $this->doc->getContentVersionId();
@@ -109,11 +106,11 @@ class StorageVerification
         unset($this->doc);
     }
 
-    public
-    function run()
+    public function run()
     {
         global $argc;
-
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+		
         if (isset($argc))
         {
             $this->nl = "\n";
@@ -140,7 +137,6 @@ class StorageVerification
         $this->count = 0;
         $this->lineCount = 0;
 
-        $storage =& KTStorageManagerUtil::getSingleton();
         foreach($rows as $row)
         {
             $doc = Document::get($row['document_id'], $row['metadata_version_id']);
@@ -153,8 +149,8 @@ class StorageVerification
             }
             $this->doc = $doc;
 
-            $tmpPath = $storage->temporaryFile($doc);
-            if (!file_exists($tmpPath))
+            $tmpPath = $oStorage->temporaryFile($doc);
+            if (!$oStorage->file_exists($tmpPath))
             {
                 $this->error("Temporary file could not be resolved: {$tmpPath}");
                 continue;

@@ -917,7 +917,8 @@ abstract class Indexer
      */
     protected function filterText($filename)
     {
-        $content = file_get_contents($filename);
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
+        $content = $oStorage->file_get_contents($filename);
 
         // if the file is empty skip the filter - document was probably empty
         if(empty($content)){
@@ -936,7 +937,7 @@ abstract class Indexer
             $content = preg_replace($src, $tgt, $content);
         } while ($content != $orig);
 
-        return file_put_contents($filename, $content) !== false;
+        return $oStorage->file_put_contents($filename, $content) !== false;
     }
 
     /**
@@ -1021,7 +1022,7 @@ abstract class Indexer
     private function doesDiagnosticsPass($simple=false)
     {
         global $default;
-
+		$oStorage =& KTStorageManagerUtil::getSingleton();
         $config =& KTConfig::getSingleton();
         // create a index log lock file in case there are errors, and we don't need to log them forever!
         // this function will create the lockfile if an error is detected. It will be removed as soon
@@ -1035,7 +1036,7 @@ abstract class Indexer
             {
                 $default->log->error(_kt('Indexer problem: ') . $diagnosis);
             }
-            touch($lockFile);
+            $oStorage->touch($lockFile);
             return false;
         }
 
@@ -1054,7 +1055,7 @@ abstract class Indexer
                     $default->log->error(sprintf(_kt('%s problem: %s'), $diag['name'],$diag['diagnosis']));
                 }
             }
-            touch($lockFile);
+            $oStorage->touch($lockFile);
             return false;
         }
 
@@ -1344,7 +1345,7 @@ abstract class Indexer
         // Load extractor hooks
         $this->loadExtractorHooks();
 
-        $this->storageManager = KTStorageManagerUtil::getSingleton();
+        $this->oStorage = KTStorageManagerUtil::getSingleton();
 
         // Config setting - urls/tmpDirectory
         $this->tempPath = $default->tmpDirectory;
@@ -1477,6 +1478,7 @@ abstract class Indexer
     public function processDocument($document, $docinfo, $extract = true)
     {
         global $default;
+        $oStorage =& KTStorageManagerUtil::getSingleton();
         static $extractorCache = array();
 
         //$oSolr = new RestSolr('localhost', '8983', '/solr/');
@@ -1584,7 +1586,7 @@ abstract class Indexer
             }
 
             $version = $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber();
-            $sourceFile = $this->storageManager->temporaryFile($document);
+            $sourceFile = $this->oStorage->temporaryFile($document);
 
             $storage = KTStorageManagerUtil::getSingleton();
             if (empty($sourceFile) || !$storage->isFile($sourceFile))
@@ -1616,7 +1618,7 @@ abstract class Indexer
                 $extractor->setIndexingStatus(null);
                 $extractor->setExtractionStatus(null);
 
-                $targetFile = tempnam($tempPath, 'ktindexer');
+                $targetFile = $oStorage->tempnam($tempPath, 'ktindexer');
                 $extractor->setTargetFile($targetFile);
             }
             else {
@@ -1704,12 +1706,12 @@ abstract class Indexer
 
                 if ($extractor->needsIntermediateSourceFile())
                 {
-                    @unlink($sourceFile);
+                    $oStorage->unlink($sourceFile);
                 }
             }
 
             if ($extract) {
-                @unlink($targetFile);
+                $oStorage->unlink($targetFile);
             }
         }
         else
@@ -1758,6 +1760,7 @@ abstract class Indexer
 
     public function migrateDocuments($max=null)
     {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         global $default;
 
         $default->log->info(_kt('migrateDocuments: starting'));
@@ -1786,7 +1789,7 @@ abstract class Indexer
             $default->log->info(_kt('migrateDocuments: stopping - migration lockfile detected.'));
             return;
         }
-        touch($lockFile);
+        $oStorage->touch($lockFile);
 
         $startTime = KTUtil::getSystemSetting('migrationStarted');
         if (is_null($startTime))
@@ -1841,9 +1844,9 @@ abstract class Indexer
 
                 $version = $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber();
 
-                $targetFile = tempnam($tempPath, 'ktindexer');
+                $targetFile = $oStorage->tempnam($tempPath, 'ktindexer');
 
-                if (file_put_contents($targetFile, $docinfo['document_text']) === false)
+                if ($oStorage->file_put_contents($targetFile, $docinfo['document_text']) === false)
                 {
                     $default->log->error(sprintf(_kt('migrateDocuments: Cannot write to \'%s\' for document id %d'), $targetFile, $docId));
                     continue;
@@ -1865,11 +1868,11 @@ abstract class Indexer
                     $default->log->error(sprintf(_kt("migrateDocuments: Problem indexing document %d"), $docId));
                 }
 
-                @unlink($targetFile);
+                $oStorage->unlink($targetFile);
             }
         }
 
-        @unlink($lockFile);
+        $oStorage->unlink($lockFile);
 
         $time = KTUtil::getBenchmarkTime() - $start;
 
@@ -1897,11 +1900,12 @@ abstract class Indexer
 
     public function updateDocumentIndex($docId, $text)
     {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         $config = KTConfig::getSingleton();
         $tempPath = $config->get("urls/tmpDirectory");
-        $tempFile = tempnam($tempPath,'ud_');
+        $tempFile = $oStorage->tempnam($tempPath,'ud_');
 
-        file_put_contents($tempFile, $text);
+        $oStorage->file_put_contents($tempFile, $text);
 
         $document = Document::get($docId);
         $title = $document->getDescription();
@@ -1909,9 +1913,9 @@ abstract class Indexer
 
         $result = $this->indexDocument($docId, $tempFile, $title, $version);
 
-        if (file_exists($tempFile))
+        if ($oStorage->file_exists($tempFile))
         {
-            unlink($tempFile);
+            $oStorage->unlink($tempFile);
         }
 
         return $result;

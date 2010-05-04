@@ -67,23 +67,24 @@ class KTExcelIndexerTrigger extends KTBaseIndexerTrigger {
     }
 
     function _fallbackExcelReader($sFilename, $sTempFilename) {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         require_once(KT_DIR . '/thirdparty/excelreader/Excel/reader.php');
         $reader = new Spreadsheet_Excel_Reader();
         $reader->setOutputEncoding('UTF-8');
         $reader->read($sFilename);
-        
-        $t = fopen($sTempFilename, "w");
+        $sContent = "";
         foreach ($reader->sheets as $aSheet) {
         	for ($i = 1; $i <= $aSheet['numRows'] && $i <= 1000; $i++) {
         		for ($j = 1; $j <= $aSheet['numCols'] && $j <= 1000; $j++) {
-        			fwrite($t, $aSheet['cells'][$i][$j] . " ");
+        			$sContent = $aSheet['cells'][$i][$j] . " ";
         		}
-        		fwrite($t, "\n");
+        		$sContent = "\n";
         	}
-        	fwrite($t, "\n\n\n");
+        	$sContent = "\n\n\n";
         }
-        fclose($t);
-        return file_get_contents($sTempFilename);
+        $oStorage->write_file($sTempFilename, "w", $sContent);
+        
+        return $oStorage->file_get_contents($sTempFilename);
     }
 }
 

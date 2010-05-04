@@ -2186,7 +2186,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function download($version = null)
 	{
-		$storage =& KTStorageManagerUtil::getSingleton();
+		$oStorage =& KTStorageManagerUtil::getSingleton();
         $options = array();
 
         $comment = (!is_null($version)) ? 'Document version '.$version.' downloaded' : 'Document downloaded';
@@ -2331,9 +2331,9 @@ class KTAPI_Document extends KTAPI_FolderItem
 
         $this->document->cleanupDocumentData($this->documentid);
 
-		$storage =& KTStorageManagerUtil::getSingleton();
+		$oStorage =& KTStorageManagerUtil::getSingleton();
 
-		$result= $storage->expunge($this->document);
+		$result= $oStorage->expunge($this->document);
 
 		DBUtil::commit();
 	}
@@ -2348,7 +2348,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	{
 		DBUtil::startTransaction();
 
-		$storage =& KTStorageManagerUtil::getSingleton();
+		$oStorage =& KTStorageManagerUtil::getSingleton();
 
 		$folder = Folder::get($this->document->getRestoreFolderId());
 		if (PEAR::isError($folder))
@@ -2361,7 +2361,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			$this->document->setFolderId($this->document->getRestoreFolderId());
 		}
 
-		$storage->restore($this->document);
+		$oStorage->restore($this->document);
 
 		$this->document->setStatusId(LIVE);
 		$this->document->setPermissionObjectId($folder->getPermissionObjectId());
@@ -2648,13 +2648,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	public function thumbnailExists()
 	{
-		global $default;
+		$oStorage =& KTStorageManagerUtil::getSingleton();
 		
-		$varDir = $default->varDirectory;
+		$thumbnailCheck = $oStorage->getDocStoragePath($this->document, 'jpg');
 		
-		$thumbnailCheck = $varDir . '/thumbnails/'.$this->documentid.'.jpg';
-		
-		return file_exists($thumbnailCheck);
+		return $oStorage->file_exists($thumbnailCheck);
 	}
 	
 	/**
@@ -2712,13 +2710,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	public function instantViewExists()
 	{
-		global $default;
+		$oStorage =& KTStorageManagerUtil::getSingleton();
 		
-		$varDir = $default->varDirectory;
+		$flashCheck = $oStorage->getDocStoragePath($this->document, 'flash');
 		
-		$thumbnailCheck = $varDir . '/flash/'.$this->documentid.'.swf';
-		
-		return file_exists($thumbnailCheck);
+		return $oStorage->file_exists($flashCheck);
 	}
 	
 	/**

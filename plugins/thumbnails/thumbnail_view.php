@@ -1,7 +1,7 @@
 <?php
 
 require_once('../../config/dmsDefaults.php');
-
+$oStorage =& KTStorageManagerUtil::getSingleton();
 // Check the session, ensure the user is logged in
 $session = new Session();
 $sessionStatus = $session->verify();
@@ -33,11 +33,9 @@ if ($oDocument->getStatusID() == ARCHIVED) {
 }
 
 // Get and render the thumbnail
+$thumbnailCheck = $oStorage->getDocStoragePath($oDocument, 'thumbnail');
 // Check for the thumbnail
-$varDir = $default->varDirectory;
-$thumbnailCheck = $varDir . '/thumbnails/'.$documentId.'.jpg';
-
-if(!file_exists($thumbnailCheck)){
+if(!$oStorage->file_exists($thumbnailCheck)){
     exit;
 }
 

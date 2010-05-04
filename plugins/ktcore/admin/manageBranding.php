@@ -470,6 +470,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
     function do_upload(){
         global $default;
+		$oStorage =& KTStorageManagerUtil::getSingleton();
 
 		$oForm = $this->getUploadLogoForm();
         $res = $oForm->validate();
@@ -485,18 +486,18 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 		}
         
         //if branding dir does not exist, generate one and add an index file to block access
-        if (!file_exists($brandDir)) {
-        	 mkdir($brandDir, 0755);
-        	 touch($brandDir.DIRECTORY_SEPARATOR.'index.html');
-        	 file_put_contents($brandDir.DIRECTORY_SEPARATOR.'index.html', 'You do not have permission to access this directory.');
+        if (!$oStorage->file_exists($brandDir)) {
+        	 $oStorage->mkdir($brandDir, 0755);
+        	 $oStorage->touch($brandDir.DIRECTORY_SEPARATOR.'index.html');
+        	 $oStorage->file_put_contents($brandDir.DIRECTORY_SEPARATOR.'index.html', 'You do not have permission to access this directory.');
         }
 
         $logoDir = $brandDir.DIRECTORY_SEPARATOR."logo";
         //if branding dir does not exist, generate one and add an index file to block access
-        if (!file_exists($logoDir)) {
-        	 mkdir($logoDir, 0755);
-        	 touch($logoDir.DIRECTORY_SEPARATOR.'index.html');
-        	 file_put_contents($logoDir.DIRECTORY_SEPARATOR.'index.html', 'You do not have permission to access this directory.');
+        if (!$oStorage->file_exists($logoDir)) {
+        	 $oStorage->mkdir($logoDir, 0755);
+        	 $oStorage->touch($logoDir.DIRECTORY_SEPARATOR.'index.html');
+        	 $oStorage->file_put_contents($logoDir.DIRECTORY_SEPARATOR.'index.html', 'You do not have permission to access this directory.');
         }
 
         $logoFileName = $_FILES['_kt_attempt_unique_file']['name'];
@@ -524,13 +525,13 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
         $logoFile = $logoDir.DIRECTORY_SEPARATOR.$logoFileName;
 
         // deleting old tmp file
-		if (file_exists($logoFile)) {
-			@unlink($logoFile);
+		if ($oStorage->file_exists($logoFile)) {
+			$oStorage->unlink($logoFile);
 		}
 
         //TODO: Test Upload Failure by setting the $logoFile to ''
 
-        if(!move_uploaded_file($_FILES['_kt_attempt_unique_file']['tmp_name'], $logoFile)) {
+        if(!$oStorage->move_uploaded_file($_FILES['_kt_attempt_unique_file']['tmp_name'], $logoFile)) {
             $default->log->error("Couldn't upload file from '".$_FILES['_kt_attempt_unique_file']['tmp_name']."' to '$logoFile'");
             $this->errorRedirectToMain("Couldn't upload file");
             exit(0);
@@ -877,7 +878,8 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
     /*
      *  This method uses GD library to return the image width
-     *  - Supported images are jpeg, png  and gif     *
+     *  - Supported images are jpeg, png  and gif
+     *
      */
     public function getImageWidth( $origFile, $type) {
         global $default;
@@ -906,7 +908,8 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
         if($orig) {
             /*
-             *  calculate the size of the new image.             */
+             *  calculate the size of the new image.
+             */
             
             $orig_x = imagesx($orig);
             return $orig_x;
@@ -923,7 +926,8 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
     /*
      *  This method uses GD library to return the image height
-     *  - Supported images are jpeg, png  and gif     *
+     *  - Supported images are jpeg, png  and gif
+     *
      */
     public function getImageHeight( $origFile, $type) {
         global $default;
@@ -952,7 +956,8 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
         if($orig) {
             /*
-             *  calculate the size of the new image.             */
+             *  calculate the size of the new image.
+             */
             
             $orig_y = imagesy($orig);
             return $orig_y;
@@ -1073,7 +1078,8 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
      */
     function do_apply(){
         global $default;
-
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+		
         $rootPath = $default->varDirectory . '/';
         
         $tmpLogoFileName = $_REQUEST['data']['logo_file_name'];
@@ -1094,8 +1100,8 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
             $brandDir = $default->varDirectory.DIRECTORY_SEPARATOR.'branding'.DIRECTORY_SEPARATOR.'logo'.DIRECTORY_SEPARATOR;
             $handle = opendir($brandDir);
             while (false !== ($file = readdir($handle))) {
-                if (!is_dir($file) && $file != $tmpLogoFileName && $file != $logoFileName) {
-                    if (!@unlink($brandDir.$file)) {
+                if (!$oStorage->is_dir($file) && $file != $tmpLogoFileName && $file != $logoFileName) {
+                    if (!$oStorage->unlink($brandDir.$file)) {
                         $default->log->error("Couldn't delete '".$brandDir.$file."'");
                     } else {
                         $default->log->error("Cleaning Brand Logo Dir: Deleted '".$brandDir.$file."'");

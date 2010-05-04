@@ -266,6 +266,7 @@ class MultiDocumentAddAction extends KTFolderAction {
 	 * iNET Process
 	 */
     function do_processInitialData() {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         $oForm = $this->form_initialdata();
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
@@ -284,7 +285,7 @@ class MultiDocumentAddAction extends KTFolderAction {
         $oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get("urls/tmpDirectory");
 
-        $sFilename = tempnam($sBasedir, 'kt_storecontents');
+        $sFilename = $oStorage->tempnam($sBasedir, 'kt_storecontents');
 
         //$oContents = new KTFSFileLike($data['file']['tmp_name']);
         //$oOutputFile = new KTFSFileLike($sFilename);
