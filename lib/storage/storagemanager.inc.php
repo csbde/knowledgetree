@@ -180,13 +180,36 @@ class KTStorageManager {
     }
     
     /**
+     * Wrapper function
      * Returns the md5 hash of the file content
      *
-     * @param string $filePath the location of the file
+     * @param string $path the location of the file
      * @return string the md5 hash
      */
-    public function md5File($filePath) {
-        return md5_file($filePath);
+    public function md5File($path) {
+        return md5_file($path);
+    }
+    
+    /**
+     * Wrapper function
+     * Returns whether the supplied path is a file
+     *
+     * @param string $path
+     * @return boolean
+     */
+    public function isFile($path)
+    {
+        return is_file($path);
+    }
+    
+    /**
+     * Wrapper function for filesize
+     *
+     * @param string $path
+     */
+    public function fileSize($path)
+    {
+        return filesize($path);
     }
     
     /*

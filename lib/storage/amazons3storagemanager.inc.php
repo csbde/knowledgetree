@@ -96,9 +96,6 @@ class KTAmazonS3StorageManager extends KTStorageManager {
 
     public function upload(&$oDocument, $sTmpFilePath, $aOptions = null)
     {
-        if (OS_WINDOWS) {
-            $sTmpFilePath = str_replace('\\', '/', $sTmpFilePath);
-        }
         $sTmpFilePath = $this->getShortPath($sTmpFilePath);
         $response = $this->amazonS3->head_object($this->bucket, $sTmpFilePath);
         if (!$response->isOK()) {
@@ -227,7 +224,12 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     
     private function getShortPath($path)
     {
+        if (OS_WINDOWS) {
+            $path = str_replace('\\', '/', $path);
+        }
+        
         // if path as received is full system var path, don't want that...feels like a bit of a hack, but...
+        // NOTE this will likely break on external Document storage (unless we're lucky)
         $config = KTConfig::getSingleton();
         return str_replace($config->get('urls/varDirectory') . '/', '', $path);
     }
@@ -504,19 +506,46 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         return true;
     }
     
-    public function md5File($filePath)
+    /**
+     * Determine the md5 of a file stored in S3
+     *
+     * @param string $path
+     * @return string the md5 value
+     */
+    public function md5File($path)
     {
-        if (OS_WINDOWS) {
-            $filePath = str_replace('\\', '/', $filePath);
-        }
-        $filePath = $this->getShortPath($filePath);
-        $response = $this->amazonS3->get_object($this->bucket, $filePath);
+        $path = $this->getShortPath($path);
+        $response = $this->amazonS3->get_object($this->bucket, $path);
         if ($response->isOK()) {
             return md5($response->body);
         }
         
         // TODO proper error handling and logging
         return null;
+    }
+    
+    /**
+     * Returns whether the supplied path is a file stored on S3
+     *
+     * @param string $path
+     * @return boolean
+     */
+    public function isFile($path)
+    {
+        $path = $this->getShortPath($path);
+        $response = $this->amazonS3->head_object($this->bucket, $path);
+        return $response->isOK();
+    }
+    
+    public function fileSize($path)
+    {
+        $path = $this->getShortPath($path);
+        $response = $this->amazonS3->head_object($this->bucket, $path);
+        if ($response->isOK()) {
+            return $response->header['_info']['download_content_length'];
+        }
+        
+        return 0;
     }
 
 }
