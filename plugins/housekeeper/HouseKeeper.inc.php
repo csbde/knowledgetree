@@ -127,10 +127,11 @@ class HouseKeeper
     private static
     function scanPath($path,$pattern)
     {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         $files=0;
         $filesize=0;
 
-        if (is_dir($path) && ($dh = opendir($path)))
+        if ($oStorage->is_dir($path) && ($dh = opendir($path)))
         {
             while (($file = readdir($dh)) !== false)
             {
@@ -141,12 +142,12 @@ class HouseKeeper
 
                 $full = $path . '/' . $file;
 
-                if (!is_readable($full) || !is_writable($full))
+                if (!$oStorage->is_readable($full) || !$oStorage->is_writable($full))
                 {
                     continue;
                 }
 
-                if (is_dir($full))
+                if ($oStorage->is_dir($full))
                 {
                     $result = self::scanPath($full,$pattern);
                     $files += $result['files'];
@@ -305,7 +306,8 @@ class HouseKeeper
     public static
     function cleanDirectory($path, $pattern)
     {
-        if (!is_readable($path))
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
+        if (!$oStorage->is_readable($path))
         {
             return;
         }
@@ -319,10 +321,10 @@ class HouseKeeper
                 }
 
                 $full = $path . '/' . $file;
-                if (is_dir($full))
+                if ($oStorage->is_dir($full))
                 {
                     self::cleanDirectory($full,$pattern);
-                    if (is_writable($full))
+                    if ($oStorage->is_writable($full))
                     {
                         @rmdir($full);
                     }
@@ -334,9 +336,9 @@ class HouseKeeper
                     continue;
                 }
 
-                if (is_writable($full))
+                if ($oStorage->is_writable($full))
                 {
-                    @unlink($full);
+                    $oStorage->unlink($full);
                 }
 
             }

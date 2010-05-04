@@ -205,7 +205,7 @@ class pdfConverter extends BaseProcessor
 
 	    // Create temporary copy of document
 	    $sourceFile = $oStorage->tempnam($tempDir, 'pdfconverter') . '.' .$ext;
-	    $res = $oStorage->copy($filename, $sourceFile);
+	    $res = copy($filename, $sourceFile);
 
 	    // Create a temporary file to store the converted document
 	    $targetFile = $oStorage->tempnam($tempDir, 'pdfconverter') . '.pdf';
@@ -228,23 +228,23 @@ class pdfConverter extends BaseProcessor
         $pdfDir = $default->pdfDirectory;
 
         // Ensure the PDF directory exists
-        if(!file_exists($pdfDir)){
-            mkdir($pdfDir, 0755);
-            touch($pdfDir.'/index.html');
-            file_put_contents($pdfDir.'/index.html', 'You do not have permission to access this directory.');
+        if(!$oStorage->file_exists($pdfDir)){
+            $oStorage->mkdir($pdfDir, 0755);
+            $oStorage->touch($pdfDir.'/index.html');
+            $oStorage->file_put_contents($pdfDir.'/index.html', 'You do not have permission to access this directory.');
         }
 
         $pdfFile = $pdfDir .'/'. $this->document->iId.'.pdf';
 
         // if a previous version of the pdf exists - delete it
-        if(file_exists($pdfFile)){
-            @unlink($pdfFile);
+        if($oStorage->file_exists($pdfFile)){
+            $oStorage->unlink($pdfFile);
         }
 
         // Copy the generated pdf into the pdf directory
         $res = @copy($targetFile, $pdfFile);
-        @unlink($sourceFile);
-        @unlink($targetFile);
+        $oStorage->unlink($sourceFile);
+        $oStorage->unlink($targetFile);
         return true;
 
     }

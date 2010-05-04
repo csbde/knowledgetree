@@ -89,13 +89,13 @@ class KTBaseIndexerTrigger {
     }
 
     function transform() {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $iMimeTypeId = $this->oDocument->getMimeTypeId();
         $sMimeType = KTMime::getMimeTypeName($iMimeTypeId);
         if (!array_key_exists($sMimeType, $this->mimetypes)) {
             return;
         }
 
-        $oStorage = KTStorageManagerUtil::getSingleton();
         $sFile = $oStorage->temporaryFile($this->oDocument);
 
         $tempstub = 'transform';
@@ -106,9 +106,9 @@ class KTBaseIndexerTrigger {
         $oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get("urls/tmpDirectory");
 
-        $myfilename = tempnam($sBasedir, 'kt.' . $tempstub);
+        $myfilename = $oStorage->tempnam($sBasedir, 'kt.' . $tempstub);
         if (OS_WINDOWS) {
-            $intermediate = tempnam($sBasedir, 'kt.' . $tempstub);
+            $intermediate = $oStorage->tempnam($sBasedir, 'kt.' . $tempstub);
             if (!@copy($sFile, $intermediate)) {
                 return ;
             }
@@ -118,8 +118,8 @@ class KTBaseIndexerTrigger {
 
         $contents = $this->extract_contents($intermediate, $myfilename);
 
-        @unlink($myfilename);
-        if (OS_WINDOWS) { @unlink($intermediate); }
+        $oStorage->unlink($myfilename);
+        if (OS_WINDOWS) { $oStorage->unlink($intermediate); }
         if (empty($contents)) {
             return;
         }

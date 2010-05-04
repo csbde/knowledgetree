@@ -247,7 +247,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
      */
 	function is_writeable($filename)
 	{
-		return KTOnDiskPathStorageManager::is_writeable($filename);
+		return KTOnDiskPathStorageManager::is_writable($filename);
 	}
 	
     /**
@@ -655,7 +655,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         $aVersions = KTDocumentContentVersion::getByDocument($oDocument);
         foreach ($aVersions as $oVersion) {
             $sPath = sprintf('%s/%s', $sDocumentRoot, $oVersion->getStoragePath());
-            @unlink($sPath);
+            KTOnDiskHashedStorageManager::unlink($sPath);
         }
         return true;
     }
@@ -674,7 +674,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
 	    $sPath = $oContentVersion->getStoragePath();
 	    $sFullPath = sprintf("%s/%s", $sDocumentRoot, $sPath);
 	    if (KTOnDiskHashedStorageManager::file_exists($sFullPath)) {
-            unlink($sFullPath);
+            KTOnDiskHashedStorageManager::unlink($sFullPath);
 	    }
 	    return true;
 	}

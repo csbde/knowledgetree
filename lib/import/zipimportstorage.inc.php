@@ -116,15 +116,15 @@ class KTZipImportStorage extends KTFSImportStorage {
         $oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get("urls/tmpDirectory");
 
-        $sTmpPath = tempnam($sBasedir, 'archiveimportstorage');
+        $sTmpPath = $oStorage->tempnam($sBasedir, 'archiveimportstorage');
         if ($sTmpPath === false) {
             return PEAR::raiseError(_kt("Could not create temporary directory for archive storage"));
         }
         if (!$oStorage->file_exists($this->sZipPath)) {
             return PEAR::raiseError(_kt("Archive file given does not exist"));
         }
-        unlink($sTmpPath);
-        mkdir($sTmpPath, 0777);
+        $oStorage->unlink($sTmpPath);
+        $oStorage->mkdir($sTmpPath, 0777);
         $this->sBasePath = $sTmpPath;
 
         // Set environment language to output character encoding

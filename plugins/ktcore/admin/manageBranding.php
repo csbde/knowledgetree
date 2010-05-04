@@ -1078,7 +1078,8 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
      */
     function do_apply(){
         global $default;
-
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+		
         $rootPath = $default->varDirectory . '/';
         
         $tmpLogoFileName = $_REQUEST['data']['logo_file_name'];
@@ -1099,8 +1100,8 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
             $brandDir = $default->varDirectory.DIRECTORY_SEPARATOR.'branding'.DIRECTORY_SEPARATOR.'logo'.DIRECTORY_SEPARATOR;
             $handle = opendir($brandDir);
             while (false !== ($file = readdir($handle))) {
-                if (!is_dir($file) && $file != $tmpLogoFileName && $file != $logoFileName) {
-                    if (!@unlink($brandDir.$file)) {
+                if (!$oStorage->is_dir($file) && $file != $tmpLogoFileName && $file != $logoFileName) {
+                    if (!$oStorage->unlink($brandDir.$file)) {
                         $default->log->error("Couldn't delete '".$brandDir.$file."'");
                     } else {
                         $default->log->error("Cleaning Brand Logo Dir: Deleted '".$brandDir.$file."'");

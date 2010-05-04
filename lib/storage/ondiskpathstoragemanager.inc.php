@@ -204,7 +204,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
      */
 	function is_writeable($filename)
 	{
-		return KTOnDiskPathStorageManager::is_writeable($filename);
+		return KTOnDiskPathStorageManager::is_writable($filename);
 	}
 	
     /**
@@ -447,7 +447,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 			//copy the file	to the new destination
 			if (copy($sOldDocumentPath, $sNewDocumentPath)) {
 				//delete the old one
-				unlink($sOldDocumentPath);
+				KTOnDiskPathStorageManager::unlink($sOldDocumentPath);
 				return true;
 			} else {
 				return false;
@@ -628,7 +628,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
             $sPath = sprintf("Deleted/%s-%s", $oVersion->getId(), $oVersion->getFileName());
             $sFullPath = sprintf("%s/%s", $sDocumentRoot, $sPath);
             if (KTOnDiskPathStorageManager::file_exists($sFullPath)) {
-                unlink($sFullPath);
+                KTOnDiskPathStorageManager::unlink($sFullPath);
             }
         }
         return true;
@@ -648,7 +648,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 	    $sPath = $oContentVersion->getStoragePath();
 	    $sFullPath = sprintf("%s/%s", $sDocumentRoot, $sPath);
 	    if (KTOnDiskPathStorageManager::file_exists($sFullPath)) {
-            unlink($sFullPath);
+            KTOnDiskPathStorageManager::unlink($sFullPath);
 	    }
 	    return true;
 	}

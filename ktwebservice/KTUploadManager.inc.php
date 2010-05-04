@@ -71,7 +71,8 @@ class KTUploadManager
 
 	function get_temp_filename($prefix)
 	{
-		$tempfilename = tempnam($this->temp_dir,$prefix);
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$tempfilename = $oStorage->tempnam($this->temp_dir,$prefix);
 
 		return $tempfilename;
 	}
@@ -198,13 +199,14 @@ class KTUploadManager
 	 */
 	function uploaded($filename, $tempfile, $action, $unique_file_id = null)
 	{
+		$oStorage =& KTStorageManagerUtil::getSingleton();
 		$filename=basename($filename);
 		$now=date('Y-m-d H:i:s');
 		$now_str=date('YmdHis') + rand(0, 32768);
 
 		// Ensure the temp directory exists otherwise an error is thrown.
         if (realpath($this->temp_dir) == FALSE) {
-            mkdir($this->temp_dir, 0777, true);
+			$oStorage->mkdir($this->temp_dir, 0777, true);
         }
 
 		$newtempfile = realpath($this->temp_dir) . '/' . $_SESSION['userID'] . '-'. $now_str;
@@ -240,7 +242,7 @@ class KTUploadManager
 		global $php_errormsg;
 		if (is_uploaded_file($tempfile))
 		{
-			$result = @move_uploaded_file($tempfile, $newtempfile);
+			$result = $oStorage->move_uploaded_file($tempfile, $newtempfile);
 		}
 		else
 		{
@@ -333,6 +335,7 @@ class KTUploadManager
 	 */
 	function cleanup()
 	{
+		$oStorage =& KTStorageManagerUtil::getSingleton();
 		list($year,$mon,$day,$hour, $min) = explode(':', date('Y:m:d:H:i'));
 		$expirydate = date('Y-m-d H:i:s', mktime($hour, $min - $this->age, 0, $mon, $day, $year));
 
@@ -350,7 +353,7 @@ class KTUploadManager
 				continue;
 			}
 
-			@unlink($tempfilename);
+			$oStorage->unlink($tempfilename);
 		}
 	}
 }
