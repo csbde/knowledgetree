@@ -22,7 +22,7 @@ class liveAccounts{
 		if($accountName)$enabled=true;
 		
 		//TEST OVERRIDE
-		$enabled=false;
+//		$enabled=false;
 		
 		return $enabled;
 	}
