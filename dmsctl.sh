@@ -48,8 +48,8 @@ SOFFICEFILE=soffice
 SOFFICE_PIDFILE=$INSTALL_PATH/var/log/soffice.bin.pid
 SOFFICE_PID=""
 SOFFICE_PORT="8100"
-#SOFFICEBIN=/usr/share/ktdms-office/ktdms-office/openoffice/program/soffice
-SOFFICEBIN=/usr/bin/soffice
+SOFFICEBIN=/usr/share/ktdms-office/ktdms-office/openoffice/program/soffice
+#SOFFICEBIN=/usr/bin/soffice
 SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -accept=socket,host=127.0.0.1,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
 SOFFICE_STATUS=""
 
