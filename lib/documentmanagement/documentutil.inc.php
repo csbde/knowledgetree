@@ -1008,6 +1008,7 @@ $sourceDocument->getName(),
      * Stores contents (filelike) from source into the document storage
      */
     function storeContents(&$oDocument, $oContents = null, $aOptions = null) {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         if (is_null($aOptions)) {
             $aOptions = array();
         }
@@ -1016,7 +1017,6 @@ $sourceDocument->getName(),
         }
 
         $bCanMove = KTUtil::arrayGet($aOptions, 'move');
-        $oStorage =& KTStorageManagerUtil::getSingleton();
 
         $oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get('urls/tmpDirectory');
@@ -1069,6 +1069,9 @@ $sourceDocument->getName(),
       */
     // {{{ delete
     function delete($oDocument, $sReason, $iDestFolderId = null, $bulk_action = false) {
+    	global $default;
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+
     	// use the deleteSymbolicLink function is this is a symlink
         if ($oDocument->isSymbolicLink())
         {
@@ -1079,9 +1082,6 @@ $sourceDocument->getName(),
         if (is_null($iDestFolderId)) {
             $iDestFolderId = $oDocument->getFolderID();
         }
-        $oStorageManager =& KTStorageManagerUtil::getSingleton();
-
-        global $default;
 
         if (count(trim($sReason)) == 0) {
             return PEAR::raiseError(_kt('Deletion requires a reason'));
@@ -1124,7 +1124,7 @@ $sourceDocument->getName(),
         }
 
         // now move the document to the delete folder
-        $res = $oStorageManager->delete($oDocument);
+        $res = $oStorage->delete($oDocument);
         if (PEAR::isError($res) || ($res == false)) {
             //could not delete the document from the file system
             $default->log->error('Deletion: Filesystem error deleting document ' .
@@ -1264,6 +1264,7 @@ $sourceDocument->getName(),
     }
 
     function copy($oDocument, $oDestinationFolder, $sReason = null, $sDestinationDocName = null, $bulk_action = false) {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         // 1. generate a new triad of content, metadata and core objects.
         // 2. update the storage path.
 		//print '--------------------------------- BEFORE';
@@ -1368,7 +1369,6 @@ $sourceDocument->getName(),
         $oNewDocument->setCheckedOutUserID(-1);
 
         // finally, copy the actual file.
-        $oStorage =& KTStorageManagerUtil::getSingleton();
         $res = $oStorage->copy($oDocument, $oNewDocument);
 
         $oOriginalFolder = Folder::get($oDocument->getFolderId());
@@ -1424,7 +1424,6 @@ $sourceDocument->getName(),
 
     function rename($oDocument, $sNewFilename, $oUser) {
         $oStorage =& KTStorageManagerUtil::getSingleton();
-
         $oKTConfig = KTConfig::getSingleton();
         $updateVersion = $oKTConfig->get('tweaks/incrementVersionOnRename', true);
 
@@ -1510,6 +1509,7 @@ $sourceDocument->getName(),
       *                 boolean $bulk_action
       */
     function move($oDocument, $oToFolder, $oUser = null, $sReason = null, $bulk_action = false) {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
     	//make sure we move the symlink, and the document it's linking to
 		if($oDocument->isSymbolicLink()){
     		$oDocument->switchToRealCore();
@@ -1541,7 +1541,6 @@ $sourceDocument->getName(),
 
         //move the document on the file system(not if it's a symlink)
         if(!$oDocument->isSymbolicLink()){
-	        $oStorage =& KTStorageManagerUtil::getSingleton();
 	        $res = $oStorage->moveDocument($oDocument, $oFolder, $oOriginalFolder);
 	        if (PEAR::isError($res) || ($res === false)) {
 	            $oDocument->setFolderID($oOriginalFolder->getId());
@@ -1596,13 +1595,11 @@ $sourceDocument->getName(),
     * Delete a selected version of the document.
     */
     function deleteVersion($oDocument, $iVersionID, $sReason){
-
+    	global $default;
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+		
         $oDocument =& KTUtil::getObject('Document', $oDocument);
         $oVersion =& KTDocumentMetadataVersion::get($iVersionID);
-
-        $oStorageManager =& KTStorageManagerUtil::getSingleton();
-
-        global $default;
 
         if (empty($sReason)) {
             return PEAR::raiseError(_kt('Deletion requires a reason'));
@@ -1634,7 +1631,7 @@ $sourceDocument->getName(),
         DBUtil::startTransaction();
 
         // now delete the document version
-        $res = $oStorageManager->deleteVersion($oVersion);
+        $res = $oStorage->deleteVersion($oVersion);
         if (PEAR::isError($res) || ($res == false)) {
             //could not delete the document version from the file system
             $default->log->error('Deletion: Filesystem error deleting the metadata version ' .

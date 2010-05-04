@@ -199,8 +199,8 @@ class pdfConverter extends BaseProcessor
 	 */
 	function convertFile($filename, $ext)
 	{
-		$oStorage = KTStorageManagerUtil::getSingleton();
 	    global $default;
+	    $oStorage = KTStorageManagerUtil::getSingleton();
 	    $tempDir = $default->tmpDirectory;
 
 	    // Create temporary copy of document

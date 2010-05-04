@@ -303,7 +303,6 @@ class PDFGeneratorAction extends KTDocumentAction {
      * @return true on success else false
      */
     function do_pdfdownload_deprecated() {
-
         $oDocument = $this->oDocument;
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $oConfig =& KTConfig::getSingleton();

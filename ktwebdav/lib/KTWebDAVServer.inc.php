@@ -1147,11 +1147,11 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
          */
         function _GETDocument(&$options, $iDocumentID) {
             global $default;
-
+			$oStorage =& KTStorageManagerUtil::getSingleton();
             $oDocument =& Document::get($iDocumentID);
 
             // get a temp file, and read.  NOTE: NEVER WRITE TO THIS
-            $oStorage =& KTStorageManagerUtil::getSingleton();
+            
             $fspath = $oStorage->temporaryFile($oDocument);
 
             $this->ktwebdavLog("Filesystem Path is " . $fspath, 'info', true );

@@ -3402,14 +3402,10 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-
-    	$content='';
-
-		$document = $document->document;
-
 		$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$content='';
+		$document = $document->document;
         $filename = $oStorage->temporaryFile($document);
-
 		$fp = $oStorage->fopen($filename,'rb');
 		if ($fp === false)
 		{
@@ -3419,8 +3415,6 @@ class KTAPI
 		}
 		$content = $oStorage->read_file("", "", filesize($filename), $fp);
 		$content = base64_encode($content);
-
-
     	$response['status_code'] = 0;
 		$response['results'] = $content;
 

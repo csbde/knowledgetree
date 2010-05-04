@@ -39,6 +39,8 @@
 
 require_once('../config/dmsDefaults.php');
 
+$oStorage = KTStorageManagerUtil::getSingleton();
+
 print "KnowledgeTree MD5 Validation Tool\n";
 print "=================================\n\n";
 print "NOTE: This utility make take some time to run to completion!\n\n";
@@ -92,7 +94,6 @@ foreach($rows as $row)
 		// don't exit here, we do so later
 	}
 
-	$oStorage = KTStorageManagerUtil::getSingleton();
 	$storage_path = $oStorage->temporaryFile($document);
 	if (PEAR::isError($storage_path))
 	{

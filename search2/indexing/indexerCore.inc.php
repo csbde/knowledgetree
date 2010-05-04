@@ -1345,7 +1345,7 @@ abstract class Indexer
         // Load extractor hooks
         $this->loadExtractorHooks();
 
-        $this->storageManager = KTStorageManagerUtil::getSingleton();
+        $this->oStorage = KTStorageManagerUtil::getSingleton();
 
         // Config setting - urls/tmpDirectory
         $this->tempPath = $default->tmpDirectory;
@@ -1586,7 +1586,7 @@ abstract class Indexer
             }
 
             $version = $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber();
-            $sourceFile = $this->storageManager->temporaryFile($document);
+            $sourceFile = $this->oStorage->temporaryFile($document);
 
             if (empty($sourceFile) || !is_file($sourceFile))
             {

@@ -469,8 +469,8 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
      */
 
     function do_upload(){
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
         global $default;
+		$oStorage =& KTStorageManagerUtil::getSingleton();
 
 		$oForm = $this->getUploadLogoForm();
         $res = $oForm->validate();

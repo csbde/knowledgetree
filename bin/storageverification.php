@@ -109,7 +109,8 @@ class StorageVerification
     public function run()
     {
         global $argc;
-
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+		
         if (isset($argc))
         {
             $this->nl = "\n";
@@ -136,7 +137,6 @@ class StorageVerification
         $this->count = 0;
         $this->lineCount = 0;
 
-        $oStorage =& KTStorageManagerUtil::getSingleton();
         foreach($rows as $row)
         {
             $doc = Document::get($row['document_id'], $row['metadata_version_id']);

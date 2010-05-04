@@ -16,3 +16,7 @@ clienttools/Office
 baobab/
 ktoffice*/
 setup/wizard/install.lock
+config/cache-path
+config/config-path
+config/config.ini
+bin/luceneserver/KnowledgeTreeIndexer.properties

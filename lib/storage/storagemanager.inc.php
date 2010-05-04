@@ -48,6 +48,46 @@ class KTStorageManager {
 	 * Handle direct file system access
 	 */
 	
+	/**
+	 * Write contents to a file.
+	 */
+	function write_file($filename, $mode, $string) {
+		$fileHandle = KTStorageManager::fopen($filename, $mode);
+		if($fileHandle === false) {
+			
+			return $fileHandle;
+		} else {
+			KTStorageManager::fwrite($fileHandle, $string);
+		}
+		
+		return KTStorageManager::fclose($fileHandle);
+	}
+	
+	/**
+	 * Read contents of a file.
+	 */
+	function read_file($filename = "", $mode = "", $length, $fileHandle = null) {
+		$content = "";
+		// Check if a file handle exists
+		if(is_null($fileHandle))
+		{
+			// Get file handle
+			$fileHandle = KTStorageManager::fopen($filename, $mode);
+		}
+		// Check if a file handle exists
+		if($fileHandle === false) {
+			// Return file handle
+			return $fileHandle;
+		} else {
+			// Read contents of file
+			$content = KTStorageManager::fread($fileHandle, $length);
+		}
+		// Close file handle
+		KTStorageManager::fclose($fileHandle);
+		// Return content
+		return $content;
+	}
+	
     /**
      * Opens file or URL
      *
@@ -59,9 +99,14 @@ class KTStorageManager {
      * URL : http://www.php.net/manual/en/function.fopen.php
      * 
      */
-	function fopen($filename, $mode, $use_include_path = false, $context = null) 
+	function fopen($filename, $mode, $use_include_path = false, $context = null)
 	{
-		return PEAR::raiseError(_kt("Not implemented"));
+		if (is_null($context))
+		{
+			$context = stream_context_create(array());
+		}
+		
+		return fopen($filename, $mode, $use_include_path, $context);
 	}
 	
     /**
@@ -75,9 +120,9 @@ class KTStorageManager {
      * URL : http://www.php.net/manual/en/function.fwrite.php
      * 
      */
-	function fwrite($handle, $string, $length) 
+	function fwrite($handle, $string, $length = null)
 	{
-		return PEAR::raiseError(_kt("Not implemented"));
+		return fwrite($handle, $string, $length);
 	}
 	
     /**
@@ -91,7 +136,7 @@ class KTStorageManager {
      */
 	function fread($handle, $length) 
 	{
-		return PEAR::raiseError(_kt("Not implemented"));
+		return fread($handle, $length);
 	}
 	
     /**
@@ -104,7 +149,7 @@ class KTStorageManager {
      */
 	function fclose($handle) 
 	{
-		return PEAR::raiseError(_kt("Not implemented"));
+		return fclose($handle);
 	}
 	
     /**
@@ -117,7 +162,7 @@ class KTStorageManager {
      */
 	function file_exists($filename) 
 	{
-		return PEAR::raiseError(_kt("Not implemented"));
+		return file_exists($filename);
 	}
 	
     /**
@@ -131,9 +176,14 @@ class KTStorageManager {
      * URL : http://www.php.net/manual/en/function.file-put-contents.php
      * 
      */
-	function file_put_contents($filename, $data, $flags = 0, $context = null) 
+	function file_put_contents($filename, $data, $flags = null, $context = null) 
 	{
-		return PEAR::raiseError(_kt("Not implemented"));
+		if (is_null($context))
+		{
+			$context = stream_context_create(array());
+		}
+		
+		return file_put_contents($filename, $data, $flags, $context);
 	}
 	
     /**
@@ -148,9 +198,14 @@ class KTStorageManager {
      * URL : http://www.php.net/manual/en/function.file-get-contents.php
      * 
      */
-	function file_get_contents($filename, $flags = 0, $context = null, $offset = -1, $maxlen = -1) 
+	function file_get_contents($filename, $flags = null, $context = null, $offset = null, $maxlen = null)
 	{
-		return PEAR::raiseError(_kt("Not implemented"));
+		if (is_null($context))
+		{
+			$context = stream_context_create(array());
+		}
+		
+		return file_get_contents($filename, $flags, $context, $offset, $maxlen);
 	}
 	
     /**
@@ -165,9 +220,9 @@ class KTStorageManager {
      * URL : http://www.php.net/manual/en/function.fsockopen.php
      * 
      */
-	function fsockopen($hostname, $port = -1, &$errno , &$errstr, $timeout = null) 
+	function fsockopen($hostname, $port = null, &$errno , &$errstr, $timeout = null) 
 	{
-		return PEAR::raiseError(_kt("Not implemented"));
+		return fsockopen($hostname, $port, $errno, $errstr, $timeout);
 	}
 	
     /**
@@ -180,7 +235,7 @@ class KTStorageManager {
      */
 	function is_writable($filename) 
 	{
-		return PEAR::raiseError(_kt("Not implemented"));
+		return is_writable($filename);
 	}
 	
     /**
@@ -189,9 +244,9 @@ class KTStorageManager {
      * URL : http://www.php.net/manual/en/function.is-writeable.php
      * 
      */
-	function is_writeable() 
+	function is_writeable($filename)
 	{
-		return PEAR::raiseError(_kt("Not implemented"));
+		return KTOnDiskPathStorageManager::is_writable($filename);
 	}
 	
     /**
@@ -205,7 +260,21 @@ class KTStorageManager {
      */
 	function tempnam($dir, $prefix) 
 	{
-		return PEAR::raiseError(_kt("Not implemented"));
+		return tempnam($dir, $prefix);
+	}
+	
+    /**
+     * Moves an uploaded file to a new location
+     * 
+     * @param string $filename - The filename of the uploaded file. 
+     * @param string $destination - The destination of the moved file. 
+     * 
+     * URL : http://www.php.net/manual/en/function.move-uploaded-file.php
+     * 
+     */
+	function move_uploaded_file($filename, $destination) 
+	{
+		return move_uploaded_file($filename, $destination);
 	}
 	
     /**
@@ -219,7 +288,12 @@ class KTStorageManager {
      */
 	function unlink($filename, $context = null) 
 	{
-		return PEAR::raiseError(_kt("Not implemented"));
+		if (is_null($context))
+		{
+			$context = stream_context_create(array());
+		}
+		
+		return unlink($filename, $context);
 	}
 	
     /**
@@ -232,9 +306,9 @@ class KTStorageManager {
      * URL : http://www.php.net/manual/en/function.touch.php
      * 
      */
-	function touch($filename, $time = null, $atime) 
+	function touch($filename, $time = null, $atime = null)
 	{
-		return PEAR::raiseError(_kt("Not implemented"));
+		return touch($filename, $time, $atime);
 	}
 	
     /**
@@ -249,7 +323,12 @@ class KTStorageManager {
      * 
      */
 	function mkdir($pathname, $mode = 0777, $recursive = false, $context = null) {
-		return PEAR::raiseError(_kt("Not implemented"));
+		if (is_null($context))
+		{
+			$context = stream_context_create(array());
+		}
+		
+		return mkdir($pathname, $mode, $recursive, $context);
 	}
 	
     /**
@@ -261,7 +340,21 @@ class KTStorageManager {
      * 
      */
 	function is_dir($filename) {
-		return PEAR::raiseError(_kt("Not implemented"));
+		
+		return is_dir($filename);
+	}
+	
+    /**
+     * 
+     * 
+     * @param string $filename - Path to the file
+     * 
+     * URL :
+     * 
+     */
+	function filesize($filename) {
+		
+		return filesize($filename);
 	}
 	
     /**
