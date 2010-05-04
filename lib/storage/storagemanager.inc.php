@@ -226,7 +226,7 @@ class KTStorageManager {
 	}
 	
     /**
-     * Open Internet or Unix domain socket connection
+     * Determine whether file is writable
      *
      * @param string $filename - The filename being checked. 
      * 
@@ -246,7 +246,7 @@ class KTStorageManager {
      */
 	function is_writeable($filename)
 	{
-		return KTOnDiskPathStorageManager::is_writable($filename);
+		return self::is_writable($filename);
 	}
 	
     /**
@@ -278,7 +278,7 @@ class KTStorageManager {
 	}
 	
     /**
-     * Create file with unique file name
+     * Remove a file
      * 
      * @param string $filename - Path to the file. 
      * @param resource $context - A valid context resource created with stream_context_create().
@@ -334,7 +334,7 @@ class KTStorageManager {
     /**
      * Tells whether the filename is a directory
      * 
-     * @param string $filename - Path to the file
+     * @param string $filename - Path to the file/directory
      * 
      * URL : http://www.php.net/manual/en/function.is-dir.php
      * 
