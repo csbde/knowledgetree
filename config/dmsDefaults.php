@@ -50,10 +50,6 @@ define('DMS_DEFAULTS_INCLUDED',1);
 define('LATEST_WEBSERVICE_VERSION',2);
 
 
-
-
-
-
 if (function_exists('apd_set_pprof_trace')) {
     apd_set_pprof_trace();
 }
@@ -79,9 +75,6 @@ if (!defined('KT_DIR')) {
     }
     define('KT_DIR', $rootLoc);
 }
-
-if(!defined('KT_PLUGIN_DIR')) define('KT_PLUGIN_DIR',KT_DIR . '/plugins/');
-
 
 if (!defined('KT_LIB_DIR')) {
     define('KT_LIB_DIR', KT_DIR . '/lib');
@@ -188,24 +181,6 @@ class KTInit {
     // }}}
 
     // {{{ setupI18n()
-
-	/**
-	 * Include Account Routing Helper
-	 * @return void
-	 */
-    public function accountRouting(){
-		if(file_exists(KT_PLUGIN_DIR.'ktlive/AccountRouting.helper.php')){
-			require_once(KT_PLUGIN_DIR.'ktlive/AccountRouting.helper.php');
-			define('ACCOUNT_ROUTING_ENABLED',true);
-			define('ACCOUNT_NAME',AccountRouting::getAccountName());
-		}else{
-			define('ACCOUNT_ROUTING_ENABLED',false);
-			define('ACCOUNT_NAME','');
-		}
-		
-		//TODO: Implement checking account for existence/access & acting accordingly
-	}    
-    
     /**
      * setupI18n
      *
@@ -599,7 +574,6 @@ class KTInit {
 
 
 $KTInit = new KTInit();
-$KTInit->accountRouting();
 $KTInit->initConfig();
 $KTInit->setupI18n();
 
