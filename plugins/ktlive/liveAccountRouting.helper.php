@@ -1,5 +1,9 @@
 <?php 
-class AccountRouting{
+
+if(!defined('KT_LIVE_DIR'))define('KT_LIVE_DIR',KT_PLUGIN_DIR.'ktlive/');
+if(!defined('KT_LIVE_ROOT'))define('KT_LIVE_ROOT',KT_PLUGIN_DIR.'ktlive/');
+
+class liveAccountRouting{
 	/**
 	 * Temporary Help Function - will be removed
 	 * TODO: Remove this function when done with dev.
@@ -24,6 +28,7 @@ class AccountRouting{
 //		self::out(array('domain parts'=>$domain_parts,'account'=>$acct),'Account Routing');
 		return $acct;
 	}
+	
 }
 
 ?>

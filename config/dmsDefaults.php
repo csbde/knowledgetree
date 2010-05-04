@@ -190,20 +190,31 @@ class KTInit {
     // {{{ setupI18n()
 
 	/**
-	 * Include Account Routing Helper
+	 * Account Routing
 	 * @return void
 	 */
     public function accountRouting(){
-		if(file_exists(KT_PLUGIN_DIR.'ktlive/AccountRouting.helper.php')){
-			require_once(KT_PLUGIN_DIR.'ktlive/AccountRouting.helper.php');
+		if(file_exists(KT_PLUGIN_DIR.'ktlive/liveEnable.php')){
+			require_once(KT_PLUGIN_DIR.'ktlive/liveEnable.php');
 			define('ACCOUNT_ROUTING_ENABLED',true);
-			define('ACCOUNT_NAME',AccountRouting::getAccountName());
+			define('ACCOUNT_NAME',liveAccountRouting::getAccountName());
 		}else{
 			define('ACCOUNT_ROUTING_ENABLED',false);
 			define('ACCOUNT_NAME','');
 		}
-		
+
 		//TODO: Implement checking account for existence/access & acting accordingly
+		if(ACCOUNT_ROUTING_ENABLED){
+			if(liveAccounts::accountExists(ACCOUNT_NAME)){
+				if(liveAccounts::accountEnabled(ACCOUNT_NAME)){
+					//TODO: space for currently unanticipated functionality (might load account details here)					
+				}else{
+					liveRenderError::create('Account Disabled','This account ('.ACCOUNT_NAME.') was discontinued - please contact your system administrator',$_SERVER,LIVE_ACCOUNT_DISABLED);
+				}
+			}else{
+				liveRenderError::create('Account Does Not Exist','We have no record of this account ('.ACCOUNT_NAME.') Please contact your system administrator',NULL,LIVE_ACCOUNT_DISABLED);
+			}
+		}
 	}    
     
     /**
@@ -552,7 +563,11 @@ class KTInit {
         {
         	/* We need to setup the language handler to display this error correctly */
         	$this->setupI18n();
-        	$this->handleInitError($dbSetup);
+        	if(ACCOUNT_ROUTING_ENABLED){
+        		liveRenderError::create('Account Does Not Exist','We have no record of this account - please contact your system administrator',NULL,LIVE_ACCOUNT_DISABLED);
+        	}else{
+        		$this->handleInitError($dbSetup);
+        	}
         }
 
         // Read in the config settings from the database
