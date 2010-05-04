@@ -123,6 +123,7 @@ class KTFolderUtil {
     		// moved! done.
     		return;
     	}
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
     	$sFolderParentIds = $oFolder->getParentFolderIDs();
     	$sNewFolderParentIds = $oNewParentFolder->getParentFolderIDs();
 
@@ -133,7 +134,6 @@ class KTFolderUtil {
         if (KTFolderUtil::exists($oNewParentFolder, $oFolder->getName())) {
             return PEAR::raiseError(_kt('Folder with the same name already exists in the new parent folder'));
         }
-        $oStorage =& KTStorageManagerUtil::getSingleton();
 
         $iOriginalPermissionObjectId = $oFolder->getPermissionObjectId();
         $iOriginalParentFolderId = $oFolder->getParentID();
@@ -325,7 +325,8 @@ class KTFolderUtil {
 
     function delete($oStartFolder, $oUser, $sReason, $aOptions = null, $bulk_action = false) {
         require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc');
-
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+		
         $oPerm = KTPermission::getByName('ktcore.permissions.delete');
 
         $bIgnorePermissions = KTUtil::arrayGet($aOptions, 'ignore_permissions');
@@ -404,7 +405,6 @@ class KTFolderUtil {
             }
         }
 
-        $oStorage =& KTStorageManagerUtil::getSingleton();
         $oStorage->removeFolderTree($oStartFolder);
 
         // Check for symbolic links to the folder and its sub folders
@@ -458,6 +458,7 @@ class KTFolderUtil {
         if (KTFolderUtil::exists($oDestFolder, $sDestFolderName)) {
             return PEAR::raiseError(_kt("Folder with the same name already exists in the new parent folder"));
         }
+		$oStorage =& KTStorageManagerUtil::getSingleton();
         //
         // FIXME the failure cleanup code here needs some serious work.
         //
@@ -535,9 +536,6 @@ class KTFolderUtil {
 
         // first we walk the tree, creating in the new location as we go.
         // essentially this is an "ok" pass.
-
-
-        $oStorage =& KTStorageManagerUtil::getSingleton();
 
         $aFolderMap = array();
 

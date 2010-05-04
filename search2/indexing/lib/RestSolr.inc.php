@@ -149,6 +149,7 @@ class RestSolr
     // TODO add document with already extracted content
     function addDocument($documentid, $contentFile, $discussion, $title, $version)
     {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         global $default;
         $default->log->info('SOLR ADD: ' . $contentFile);
         /*
@@ -169,7 +170,7 @@ class RestSolr
                 $document->id = $documentid; // MUST be suitably unique
                 $document->title = $title;
                 //$document->content = file_get_contents($contentFile); // MUST be pre-extracted content
-                $document->text = file_get_contents($contentFile); // MUST be pre-extracted content
+                $document->text = $oStorage->file_get_contents($contentFile); // MUST be pre-extracted content
 
                 $result = $this->client->addDocument($document); 	//if you're going to be adding documents in bulk using addDocuments
                 //with an array of documents is faster

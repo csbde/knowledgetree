@@ -3250,15 +3250,14 @@ class KTAPI
     		$oStorage =& KTStorageManagerUtil::getSingleton();
             $filename = $oStorage->temporaryFile($document);
 
-    		$fp=fopen($filename,'rb');
+    		$fp = $oStorage->fopen($filename, 'rb');
     		if ($fp === false)
     		{
     		    $response['status_code'] = 1;
     			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
     			return $response;
     		}
-    		$content = fread($fp, filesize($filename));
-    		fclose($fp);
+    		$content = $oStorage->read_file("", "", filesize($filename), $fp);
     		$content = base64_encode($content);
     	}
 
@@ -3403,26 +3402,19 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-
-    	$content='';
-
-		$document = $document->document;
-
 		$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$content='';
+		$document = $document->document;
         $filename = $oStorage->temporaryFile($document);
-
-		$fp=fopen($filename,'rb');
+		$fp = $oStorage->fopen($filename,'rb');
 		if ($fp === false)
 		{
 		    $response['status_code'] = 1;
 			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
 			return $response;
 		}
-		$content = fread($fp, filesize($filename));
-		fclose($fp);
+		$content = $oStorage->read_file("", "", filesize($filename), $fp);
 		$content = base64_encode($content);
-
-
     	$response['status_code'] = 0;
 		$response['results'] = $content;
 

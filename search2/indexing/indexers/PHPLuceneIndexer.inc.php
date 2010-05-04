@@ -119,6 +119,7 @@ class PHPLuceneIndexer extends Indexer
 	 */
     protected function indexDocument($docid, $textfile, $title, $version)
     {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
     	global $default;
 
     	if (!is_file($textfile))
@@ -129,7 +130,7 @@ class PHPLuceneIndexer extends Indexer
 
     	list($content, $discussion, $title2, $version2) = $this->deleteDocument($docid);
 
-    	$this->addDocument($docid, file_get_contents($textfile), $discussion, $title, $version);
+    	$this->addDocument($docid, $oStorage->file_get_contents($textfile), $discussion, $title, $version);
 
 		return true;
     }
@@ -143,6 +144,7 @@ class PHPLuceneIndexer extends Indexer
      */
     protected function indexDocumentAndDiscussion($docid, $textfile, $title, $version)
     {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
 		global $default;
 
     	if (!is_file($textfile))
@@ -153,7 +155,7 @@ class PHPLuceneIndexer extends Indexer
 
     	$this->deleteDocument($docid);
 
-    	$this->addDocument($docid, file_get_contents($textfile), Indexer::getDiscussionText($docid), $title, $version);
+    	$this->addDocument($docid, $oStorage->file_get_contents($textfile), Indexer::getDiscussionText($docid), $title, $version);
 
     	return true;
     }

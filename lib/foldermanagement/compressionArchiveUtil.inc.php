@@ -84,10 +84,10 @@ class ZipFolder {
             $sTmpPath = $aData['dir'];
         }else {
             $sBasedir = $this->oKTConfig->get("urls/tmpDirectory");
-            $sTmpPath = tempnam($sBasedir, 'kt_compress_zip');
+            $sTmpPath = $this->oStorage->tempnam($sBasedir, 'kt_compress_zip');
 
-            unlink($sTmpPath);
-            mkdir($sTmpPath, 0755);
+            $this->oStorage->unlink($sTmpPath);
+            $this->oStorage->mkdir($sTmpPath, 0755);
         }
 
         // Hard coding the zip file name.
@@ -165,8 +165,8 @@ class ZipFolder {
         $aFullPath = split('/', $sDocPath);
         foreach ($aFullPath as $dirPart) {
             $newDir = sprintf("%s/%s", $newDir, $dirPart);
-            if (!file_exists($newDir)) {
-                mkdir($newDir, 0700);
+            if (!$this->oStorage->file_exists($newDir)) {
+                $this->oStorage->mkdir($newDir, 0700);
             }
         }
 
@@ -191,8 +191,8 @@ class ZipFolder {
         $aFullPath = split('/', $sFolderPath);
         foreach ($aFullPath as $dirPart) {
             $newDir = sprintf("%s/%s", $newDir, $dirPart);
-            if (!file_exists($newDir)) {
-                mkdir($newDir, 0700);
+            if (!$this->oStorage->file_exists($newDir)) {
+                $this->oStorage->mkdir($newDir, 0700);
             }
         }
 
@@ -300,7 +300,7 @@ class ZipFolder {
             $sTmpPath = $this->sTmpPath;
         }
 
-        if (!file_exists($sZipFile)) {
+        if (!$this->oStorage->file_exists($sZipFile)) {
             return PEAR::raiseError(_kt('The zip file has not been created, if you are downloading a large number of documents
             or a large document then it may take a few minutes to finish.'));
         }
@@ -336,7 +336,7 @@ class ZipFolder {
             $sTmpPath = $this->sTmpPath;
         }
 
-        if (!file_exists($sZipFile)) {
+        if (!$this->oStorage->file_exists($sZipFile)) {
             return false;
         }
         return true;
@@ -559,7 +559,7 @@ class DownloadQueue
         }
 
         // Set queue as locked
-        touch($this->lockFile);
+        $this->oStorage->touch($this->lockFile);
 
         // Loop through items and create downloads
         foreach ($queue as $code => $download){
@@ -651,7 +651,7 @@ class DownloadQueue
                 // write a file which will be checked if the user has not been logged out and back in 
                 // (in which case the required session value will not be set and this file acts as a trigger instead)
                 $config = KTConfig::getSingleton();
-                @touch($config->get('cache/cacheDirectory') . '/' . self::getNotificationFileName(array($_SESSION['userID'])));
+                $this->oStorage->touch($config->get('cache/cacheDirectory') . '/' . self::getNotificationFileName(array($_SESSION['userID'])));
             }
             
             // reset the error messages
@@ -660,7 +660,7 @@ class DownloadQueue
         }
 
         // Remove lock file
-        @unlink($this->lockFile);
+        $this->oStorage->unlink($this->lockFile);
     }
 
     /**
@@ -989,7 +989,7 @@ class DownloadQueue
         
         // ensure the file is actually a file and not a directory
         if (is_file($notificationFile)) {
-        	@unlink($notificationFile);
+        	$this->oStorage->unlink($notificationFile);
         }
     }
     

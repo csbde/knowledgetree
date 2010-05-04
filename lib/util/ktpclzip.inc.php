@@ -91,10 +91,10 @@ class KTPclZip {
 			$sTmpPath = $aData ['dir'];
 		} else {
 			$sBasedir = $this->oKTConfig->get ( "urls/tmpDirectory" );
-			$sTmpPath = tempnam ( $sBasedir, 'kt_compress_zip' );
+			$sTmpPath = $this->oStorage->tempnam ( $sBasedir, 'kt_compress_zip' );
 			
-			unlink ( $sTmpPath );
-			mkdir ( $sTmpPath, 0755 );
+			$this->oStorage->unlink ( $sTmpPath );
+			$this->oStorage->mkdir ( $sTmpPath, 0755 );
 		}
 		
 		$this->sTmpPath = $sTmpPath;

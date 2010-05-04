@@ -309,6 +309,7 @@ class Expr
 
     public function toVizGraph($options=array())
     {
+    	$oStorage =& KTStorageManagerUtil::getSingleton();
         $str = "digraph tree {\n";
         if (isset($options['left-to-right']) && $options['left-to-right'])
         {
@@ -331,10 +332,7 @@ class Expr
             chdir($_ENV['PWD']);
             $dotfile="$base.$ext";
             $jpgfile="$base.jpg";
-            $fp = fopen($dotfile,'wt');
-            fwrite($fp, $str);
-            fclose($fp);
-
+            $oStorage->write_file($dotfile, 'wt', $str);
             system("dot -Tjpg -o$jpgfile $dotfile 2>1 >/dev/null ");
 
             if (isset($options['view']) && $options['view'])

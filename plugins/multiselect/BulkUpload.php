@@ -243,6 +243,7 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 	 * iNET Process
 	 */
 	function do_upload() {
+		$oStorage =& KTStorageManagerUtil::getSingleton();
 		set_time_limit(0);
 		global $default;
 		$aErrorOptions = array(
@@ -272,9 +273,9 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 		// Lets move the file from the windows temp directory into our own directory
         $oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get("urls/tmpDirectory");
-        $tmpFilename = tempnam($sBasedir, 'kt_storebulk');
+        $tmpFilename = $oStorage->tempnam($sBasedir, 'kt_storebulk');
 
-        $oStorage =& KTStorageManagerUtil::getSingleton();
+        
         $res = $oStorage->uploadTmpFile($fileData['tmp_name'], $tmpFilename, array('copy_upload' => 'true'));
 
         // Save the new temp filename in the file data array

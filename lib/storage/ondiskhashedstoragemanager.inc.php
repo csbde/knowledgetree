@@ -45,9 +45,15 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentcontentversion.inc.php');
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 
 class KTOnDiskHashedStorageManager extends KTStorageManager {
+<<<<<<< HEAD:lib/storage/ondiskhashedstoragemanager.inc.php
     public function upload(&$oDocument, $sTmpFilePath, $aOptions = null) {
+=======
 
-    	if (!file_exists($sTmpFilePath)) {
+	
+    function upload(&$oDocument, $sTmpFilePath, $aOptions = null) {
+>>>>>>> s3readiness:lib/storage/ondiskhashedstoragemanager.inc.php
+
+    	if (!parent::file_exists($sTmpFilePath)) {
 
             	return new PEAR_Error("$sTmpFilePath does not exist so we can't copy it into the repository! Options: "  . print_r($aOptions,true) );
             }
@@ -75,7 +81,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
 
             //remove the temporary file
             //@unlink($sTmpFilePath);
-            if (file_exists($sDocumentFileSystemPath)) {
+            if (parent::file_exists($sDocumentFileSystemPath)) {
                 return true;
             } else {
             	return new PEAR_Error("$sDocumentFileSystemPath does not exist after write to storage path. Options: " . print_r($aOptions,true));
@@ -99,7 +105,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
             $sTmpFilePath = str_replace('\\','/',$sTmpFilePath);
         }
         if ($this->writeToFile($sUploadedFile, $sTmpFilePath, $aOptions)) {
-            if (file_exists($sTmpFilePath)) {
+            if (parent::file_exists($sTmpFilePath)) {
                 return true;
             } else {
                 return false;
@@ -115,7 +121,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         }
 
         if (is_uploaded_file($sTmpFilePath))
-            $res = @move_uploaded_file($sTmpFilePath, $sDocumentFileSystemPath);
+            $res = parent::move_uploaded_file($sTmpFilePath, $sDocumentFileSystemPath);
         else
             $res = @rename($sTmpFilePath, $sDocumentFileSystemPath);
 
@@ -161,7 +167,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         foreach(split('/', $dir) as $sDirPart) {
             $path = sprintf('%s/%s', $path, $sDirPart);
             $createPath = sprintf('%s%s', $sDocumentRoot, $path);
-            if (!file_exists($createPath)) {
+            if (!parent::file_exists($createPath)) {
                 $res = @mkdir($createPath, 0777, true);
                 if ($res === false) {
                     return PEAR::raiseError(sprintf(_kt("Could not create directory for storage" .': ' . '%s') , $createPath));
@@ -184,7 +190,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oContentVersion));
 
         // Ensure the file exists
-        if (file_exists($sPath)) {
+        if (parent::file_exists($sPath)) {
             return $sPath;
         }
         return false;
@@ -206,7 +212,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         $path = $docRoot .'/'. $oDocument->getStoragePath();
 
         // Ensure the file exists
-        if (file_exists($path)) {
+        if (parent::file_exists($path)) {
             // Get the mime type
             $mimeId = $oDocument->getMimeTypeID();
             $mimetype = KTMime::getMimeTypeName($mimeId);
@@ -246,7 +252,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         $oConfig =& KTConfig::getSingleton();
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oContentVersion));
         $sVersion = sprintf("%d.%d", $oContentVersion->getMajorVersionNumber(), $oContentVersion->getMinorVersionNumber());
-        if (file_exists($sPath)) {
+        if (parent::file_exists($sPath)) {
             // Get the mime type
             $mimeId = $oContentVersion->getMimeTypeID();
             $mimetype = KTMime::getMimeTypeName($mimeId);
@@ -273,7 +279,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
      */
     public function move($sOldDocumentPath, $sNewDocumentPath) {
         global $default;
-        if (file_exists($sOldDocumentPath)) {
+        if (parent::file_exists($sOldDocumentPath)) {
             //copy the file    to the new destination
             if (rename($sOldDocumentPath, $sNewDocumentPath)) {
                 //delete the old one
@@ -342,7 +348,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         $aVersions = KTDocumentContentVersion::getByDocument($oDocument);
         foreach ($aVersions as $oVersion) {
             $sPath = sprintf('%s/%s', $sDocumentRoot, $oVersion->getStoragePath());
-            @unlink($sPath);
+            parent::unlink($sPath);
         }
         return true;
     }
@@ -360,8 +366,8 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
 
 	    $sPath = $oContentVersion->getStoragePath();
 	    $sFullPath = sprintf("%s/%s", $sDocumentRoot, $sPath);
-	    if (file_exists($sFullPath)) {
-            unlink($sFullPath);
+	    if (parent::file_exists($sFullPath)) {
+            parent::unlink($sFullPath);
 	    }
 	    return true;
 	}
@@ -371,36 +377,50 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         return true;
     }
     
+<<<<<<< HEAD:lib/storage/ondiskhashedstoragemanager.inc.php
     /*
     TODO: Remove as it is only needed for testing.
     */
     public function getDocumentUrl($oDocument, $type = 'document') {
+=======
+	/**
+	 * Get the storage path of a documents content.
+	 *
+	 * @param unknown_type $oDocument
+	 * @param unknown_type $type
+	 * @return unknown
+	 */
+    function getDocStoragePath($oDocument = null, $type = 'document', $document_id = null) {
+    	if (is_null($oDocument)) 
+    	{
+    		if(is_null($document_id))
+    		{
+    			return PEAR::isError("No document supplied.");
+    		}
+    		$oDocument = Document::get($document_id);
+    	}
+>>>>>>> s3readiness:lib/storage/ondiskhashedstoragemanager.inc.php
     	global $default;
-    	$sFile_system_root = $default->fileSystemRoot;
-    	//$server = $server = 'http://' . $default->serverName . ':'  . $default->server_port . $default->rootUrl . '/';
-    	$server = '/var/www/knowledgetree/';
+    	$varDirectory = $default->varDirectory;
     	switch ($type) {
     		case 'pdf' :
-	               $sFile = 'var/Pdf/' . $oDocument->getId() . '.pdf';
+	               $sFile = $varDirectory . '/Pdf/' . $oDocument->getId() . '.pdf';
     			break;
     		case 'document' :
-					$sFile = 'var/Documents/' . $oDocument->getStoragePath();
-    				$sFileLocation = $server . $sFile;
-    				$tempFile = $server . 'var/tmp/'. $oDocument->getId() . '.' . KTMime::getFileType($oDocument->getMimeTypeID());
-					copy($sFileLocation, $tempFile);
+					$sFile = $varDirectory . '/Documents/' . $oDocument->getStoragePath();
+    				$tempFile = $varDirectory . '/tmp/'. $oDocument->getId() . '.' . KTMime::getFileType($oDocument->getMimeTypeID());
+					copy($sFile, $tempFile);
 					return $tempFile;
     			break;
     		case 'flash':
-					$sFile = 'var/flash/' . $oDocument->getId() . '.swf';
+					$sFile = $varDirectory . '/flash/' . $oDocument->getId() . '.swf';
     			break;
     		case 'thumbnail':
-					$sFile = 'var/thumbnails/' . $oDocument->getId() . '.jpg';
+					$sFile = $varDirectory . '/thumbnails/' . $oDocument->getId() . '.jpg';
     			break;
     	}
-    	
-    	$sFileLocation = $server . $sFile;
 
-		return $sFileLocation;
+		return $sFile;
     }
 }
 
