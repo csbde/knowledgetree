@@ -651,6 +651,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
 
     function form_main() {
+        global $default;
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'label' => _kt('Checkin Document'),
@@ -684,7 +685,6 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         );
 
         // Electronic Signature if enabled
-        global $default;
         if($default->enableESignatures){
             $aWidgets[] = array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
@@ -738,7 +738,6 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         }
 
         // Add the "Force Original Filename" option if applicable
-        global $default;
         if(!$default->disableForceFilenameOption){
             $aWidgets[] = array('ktcore.widgets.boolean',array(
                 'label' => _kt('Force Original Filename'),
