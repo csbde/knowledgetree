@@ -186,7 +186,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             // ensure php temp file is removed, as we are not using move_uploaded_file()
             @unlink($sourceFilePath);
             if ($response->isOK()) {
-                $default->log->info("Amazon S3 PUT operation: {$this->bucket}/$destinationFilePath");
+                $default->log->info("Amazon S3 PUT operation [CREATE]: {$this->bucket}/$destinationFilePath");
                 return true;
             }
 
@@ -204,7 +204,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
                                  'filename' => $document->getFileName());
             $response = $this->amazonS3->copy_object($this->bucket, $sourceFilePath, $this->bucket, $destinationFilePath, $opt);
             if ($response->isOK()) {
-                $default->log->info("Amazon S3 PUT operation: {$this->bucket}/$destinationFilePath");
+                $default->log->info("Amazon S3 PUT operation [COPY]: {$this->bucket}/$destinationFilePath");
                 $response = $this->amazonS3->delete_object($this->bucket, $sourceFilePath);
                 return $response->isOK();
             }
@@ -406,7 +406,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             // move the file to the new destination
             $response = $this->amazonS3->move_object($this->bucket, $sOldDocumentPath, $this->bucket, $sNewDocumentPath);
             if ($response->isOK()) {
-                $default->log->info("Amazon S3 PUT operation: {$this->bucket}/$sNewDocumentPath");
+                $default->log->info("Amazon S3 PUT operation [MOVE]: {$this->bucket}/$sNewDocumentPath");
                 return true;
             }
             return false;
@@ -446,7 +446,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         if (!$response->isOK()) {
             return new PEAR_Error("There was an error copying the file from $sFullOldPath to $sFullNewPath");
         }
-        $default->log->info("Amazon S3 PUT operation: {$this->bucket}/$sFullNewPath");
+        $default->log->info("Amazon S3 PUT operation [COPY]: {$this->bucket}/$sFullNewPath");
         $oVersion->setStoragePath($sNewPath);
         $oVersion->update();
     }
