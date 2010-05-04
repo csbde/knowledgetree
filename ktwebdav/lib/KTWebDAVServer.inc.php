@@ -2506,113 +2506,57 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
         }
 
         /**
-         * checkSafeMode() helper
+         * Checks the type of webdav client. Certain clients require specific fixes to work properly.
          *
          * @return bool  true or false
          */
         function checkSafeMode()
         {
+            $supported = false;
 
             // Check/Set the WebDAV Client
             $userAgentValue = $_SERVER['HTTP_USER_AGENT'];
+
             // KT Explorer
             if (stristr($userAgentValue,"Microsoft Data Access Internet Publishing Provider")) {
+                $supported = true;
                 $this->dav_client = "MS";
-                $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
             }
             // Mac Finder
             if (stristr($userAgentValue,"Macintosh") || stristr($userAgentValue,"Darwin")) {
+                $supported = true;
                 $this->dav_client = "MC";
-                $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
             }
             // Mac Goliath
             if (stristr($userAgentValue,"Goliath")) {
+                $supported = true;
                 $this->dav_client = "MG";
-                $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
             }
             // Konqueror
             if (stristr($userAgentValue,"Konqueror")) {
+                $supported = true;
                 $this->dav_client = "KO";
-                $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
             }
             // Neon Library ( Gnome Nautilus, cadaver, etc)
             if (stristr($userAgentValue,"neon")) {
+                $supported = true;
                 $this->dav_client = "NE";
-                $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
             }
-            // Windows WebDAV
-            if ($this->dav_client == 'MS' && $this->safeMode == 'off') {
 
-                $this->ktwebdavLog("This is MS type client with SafeMode Off.", 'info', true);
-                return true;
+            $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
 
-            }
-            if ($this->dav_client == 'MS' && $this->safeMode != 'off') {
-
-                $this->ktwebdavLog("This is MS type client with SafeMode On.", 'info', true);
+            if($this->safeMode != 'off'){
+                $this->ktwebdavLog("SafeMode is On.", 'info', true);
                 return false;
-
             }
-            // Mac Finder
-            if ($this->dav_client == 'MC' && $this->safeMode == 'off') {
 
-                $this->ktwebdavLog("This is Mac Finder type client with SafeMode off.", 'info', true);
+            if($supported){
+                $this->ktwebdavLog("This is supported client with SafeMode Off.", 'info', true);
                 return true;
-
-            }
-            if ($this->dav_client == 'MC' && $this->safeMode != 'off') {
-
-                $this->ktwebdavLog("This is Mac Finder type client with SafeMode on.", 'info', true);
-                return false;
-
-            }
-            // Mac Goliath
-            if ($this->dav_client == 'MG' && $this->safeMode == 'off') {
-
-                $this->ktwebdavLog("This is a Mac Goliath type client with SafeMode off.", 'info', true);
-                return true;
-
-            }
-            // Mac Goliath
-            if ($this->dav_client == 'MG' && $this->safeMode != 'off') {
-
-                $this->ktwebdavLog("This is a Mac Goliath type client with SafeMode on.", 'info', true);
-                return false;
-
-            }
-            // Konqueror
-            if ($this->dav_client == 'KO' && $this->safeMode == 'off') {
-
-                $this->ktwebdavLog("This is Konqueror type client with SafeMode Off.", 'info', true);
-                return true;
-
-            }
-            if ($this->dav_client == 'KO' && $this->safeMode != 'off') {
-
-                $this->ktwebdavLog("This is Konqueror type client with SafeMode On.", 'info', true);
-                return false;
-
-            }
-            // Neon Library (Gnome Nautilus, cadaver, etc.)
-            if ($this->dav_client == 'NE' && $this->safeMode == 'off') {
-
-                $this->ktwebdavLog("This is Neon type client with SafeMode Off.", 'info', true);
-                return true;
-
-            }
-            if ($this->dav_client == 'NE' && $this->safeMode != 'off') {
-
-                $this->ktwebdavLog("This is Neon type client with SafeMode On.", 'info', true);
-                return false;
-
             }
 
-            $this->ktwebdavLog("Unknown client. SafeMode needed.", 'info', true);
-            return false;
-
+            $this->ktwebdavLog("This is an unsupported client running with SafeMode Off. There could be issues.", 'warn', true);
+            return true;
         }
-
-        }
-
-
-        ?>
+}
+?>
