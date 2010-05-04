@@ -71,6 +71,11 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         ConfigManager::load(KT_DIR . '/config/aws_config.ini');
         if (ConfigManager::error()) {
             // TODO log error
+            if (ACCOUNT_ROUTING_ENABLED) {
+        		liveRenderError::create('Unable to read Amazon config', 
+        		                        'Amazon Credentials are not available - please contact your system administrator', 
+        		                        new RuntimeException(ConfigManager::getErrorMessage()), AMAZON_CREDENTIALS_MISSING);
+            }
             throw new RuntimeException(ConfigManager::getErrorMessage());
         }
 
