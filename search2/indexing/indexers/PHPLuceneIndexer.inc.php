@@ -121,7 +121,8 @@ class PHPLuceneIndexer extends Indexer
     {
     	global $default;
 
-    	if (!is_file($textfile))
+    	$storage = KTStorageManagerUtil::getSingleton();
+    	if (!$storage->isFile($textfile))
     	{
     		$default->log->error(sprintf(_kt("Attempting to index %d %s but it is not available."),$docid, $textfile));
     		return false;
@@ -145,7 +146,8 @@ class PHPLuceneIndexer extends Indexer
     {
 		global $default;
 
-    	if (!is_file($textfile))
+		$storage = KTStorageManagerUtil::getSingleton();
+    	if (!$storage->isFile($textfile))
     	{
     		$default->log->error(sprintf(_kt("Attempting to index %d %s but it is not available."),$docid, $textfile));
     		return false;

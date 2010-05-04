@@ -1586,7 +1586,8 @@ abstract class Indexer
             $version = $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber();
             $sourceFile = $this->storageManager->temporaryFile($document);
 
-            if (empty($sourceFile) || !is_file($sourceFile))
+            $storage = KTStorageManagerUtil::getSingleton();
+            if (empty($sourceFile) || !$storage->isFile($sourceFile))
             {
                 Indexer::unqueueDocument($docId,sprintf(_kt("indexDocuments: source file '%s' for document %d does not exist."),$sourceFile,$docId), 'error');
                 return;
