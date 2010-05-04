@@ -362,10 +362,11 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             $iFileSize = $oContentVersion->getFileSize();
 
             // download to local system
+            $oConfig = KTConfig::getSingleton();
             $response = $this->amazonS3->get_object($this->bucket, $amazonS3Path);
             if ($response->isOK()) {
                 // copy file content to local path & download
-                $sPath = sprintf("%s/%s", 'tmp', $this->getPath($oContentVersion));
+                $sPath = sprintf("%s/%s", $oConfig->get('urls/tmpDirectory'), $sFileName);
                 // TODO get actual content - not sure yet how this comes out, test with basic script
                 $file = fopen($sPath, 'w');
                 if ($file) {
