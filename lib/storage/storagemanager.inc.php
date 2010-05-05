@@ -226,7 +226,7 @@ class KTStorageManager {
 	}
 	
     /**
-     * Open Internet or Unix domain socket connection
+     * Tells whether the filename is writable
      *
      * @param string $filename - The filename being checked. 
      * 

@@ -109,7 +109,7 @@ class StorageVerification
     public function run()
     {
         global $argc;
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 		
         if (isset($argc))
         {

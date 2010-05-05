@@ -127,7 +127,7 @@ class HouseKeeper
     private static
     function scanPath($path,$pattern)
     {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $files=0;
         $filesize=0;
 
@@ -175,6 +175,7 @@ class HouseKeeper
     private static
     function getDirectories()
     {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $config = KTConfig::getSingleton();
         $cacheDir = $config->get('cache/cacheDirectory');
 
@@ -223,7 +224,7 @@ class HouseKeeper
         'canClean'=>true
         );
 
-        if (is_dir($docsDir))
+        if ($oStorage->is_dir($docsDir))
         {
             $folders[] =
             array(
@@ -234,7 +235,7 @@ class HouseKeeper
             );
         }
 
-        if (is_dir($luceneDir))
+        if ($oStorage->is_dir($luceneDir))
         {
             $folders[] =
             array(
@@ -306,7 +307,7 @@ class HouseKeeper
     public static
     function cleanDirectory($path, $pattern)
     {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         if (!$oStorage->is_readable($path))
         {
             return;

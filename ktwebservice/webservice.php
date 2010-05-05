@@ -2853,7 +2853,7 @@ class KTWebService
     	{
     		$document = $document->document;
 
-    		$oStorage =& KTStorageManagerUtil::getSingleton();
+    		$oStorage = KTStorageManagerUtil::getSingleton();
             $filename = $oStorage->temporaryFile($document);
 
     		$fp = $oStorage->fopen($filename,'rb');    		
@@ -3048,7 +3048,7 @@ class KTWebService
     	}
 
     	$content = '';
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
 
     	// for a specified version
     	if(is_numeric($content_version_id)){

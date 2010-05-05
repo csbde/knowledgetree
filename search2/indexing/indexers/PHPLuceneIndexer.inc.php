@@ -119,7 +119,7 @@ class PHPLuceneIndexer extends Indexer
 	 */
     protected function indexDocument($docid, $textfile, $title, $version)
     {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
     	global $default;
 
     	$storage = KTStorageManagerUtil::getSingleton();
@@ -145,9 +145,8 @@ class PHPLuceneIndexer extends Indexer
      */
     protected function indexDocumentAndDiscussion($docid, $textfile, $title, $version)
     {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
 		global $default;
-
+		$oStorage = KTStorageManagerUtil::getSingleton();
 		$storage = KTStorageManagerUtil::getSingleton();
     	if (!$storage->isFile($textfile))
     	{

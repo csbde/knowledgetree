@@ -149,8 +149,8 @@ class RestSolr
     // TODO add document with already extracted content
     function addDocument($documentid, $contentFile, $discussion, $title, $version)
     {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
         global $default;
+        $oStorage = KTStorageManagerUtil::getSingleton();
         $default->log->info('SOLR ADD: ' . $contentFile);
         /*
         $this->ktid

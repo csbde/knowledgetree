@@ -64,7 +64,7 @@ class ZipFolder {
     */
     function ZipFolder($sZipFileName = null, $exportCode = null, $extension = 'zip') {
         $this->oKTConfig =& KTConfig::getSingleton();
-        $this->oStorage =& KTStorageManagerUtil::getSingleton();
+        $this->oStorage = KTStorageManagerUtil::getSingleton();
 
         $this->sOutputEncoding = $this->oKTConfig->get('export/encoding', 'UTF-8');
         $this->extension = $extension;

@@ -224,7 +224,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
     }
 
     function do_processInitialData() {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $oForm = $this->form_initialdata();
         $res = $oForm->validate();
         if (!empty($res['errors'])) {

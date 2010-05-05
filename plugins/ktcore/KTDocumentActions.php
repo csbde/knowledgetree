@@ -355,7 +355,7 @@ class KTDocumentViewAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oStorage = KTStorageManagerUtil::getSingleton();
         $aOptions = array();
         $iVersion = KTUtil::arrayGet($_REQUEST, 'version');
         session_write_close();
@@ -586,7 +586,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
             }
         }
 
-        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oStorage = KTStorageManagerUtil::getSingleton();
         $oStorage->download($this->oDocument, true);
         exit(0);
     }

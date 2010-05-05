@@ -239,7 +239,7 @@ function sendEmail($aDestEmailAddress, $iDocumentID, $sDocumentName, $sComment, 
 
 function sendEmailDocument($aDestEmailAddress, $iDocumentID, $sDocumentName, $sComment, &$aEmailErrors) {
     global $default;
-    $oStorage =& KTStorageManagerUtil::getSingleton();
+    $oStorage = KTStorageManagerUtil::getSingleton();
     // Get the email list as a string for the logs
     $sDestEmails = implode(',', $aDestEmailAddress);
     $oSendingUser = User::get($_SESSION['userID']);

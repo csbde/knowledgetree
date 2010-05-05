@@ -34,6 +34,8 @@
 * Contributor( s): ______________________________________
 */
 
+require_once(realpath(dirname(__FILE__)) . "/../wizard/share/stepBase.php");
+
 /**
 *
 * @copyright 2008-2010, KnowledgeTree Inc.

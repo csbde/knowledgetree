@@ -51,7 +51,7 @@ class DeleteThumbnailTrigger {
      * On checkin of a document, delete the thumbnail so a new one can be generated
      */
     function postValidate() {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $oDoc = $this->aInfo['document'];
         $docId = $oDoc->getId();
         $docInfo = array('id' => $docId, 'name' => $oDoc->getName());

@@ -917,7 +917,7 @@ abstract class Indexer
      */
     protected function filterText($filename)
     {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $content = $oStorage->file_get_contents($filename);
 
         // if the file is empty skip the filter - document was probably empty
@@ -1022,7 +1022,7 @@ abstract class Indexer
     private function doesDiagnosticsPass($simple=false)
     {
         global $default;
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
         $config =& KTConfig::getSingleton();
         // create a index log lock file in case there are errors, and we don't need to log them forever!
         // this function will create the lockfile if an error is detected. It will be removed as soon
@@ -1478,7 +1478,7 @@ abstract class Indexer
     public function processDocument($document, $docinfo, $extract = true)
     {
         global $default;
-        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oStorage = KTStorageManagerUtil::getSingleton();
         static $extractorCache = array();
 
         //$oSolr = new RestSolr('localhost', '8983', '/solr/');
@@ -1760,7 +1760,7 @@ abstract class Indexer
 
     public function migrateDocuments($max=null)
     {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         global $default;
 
         $default->log->info(_kt('migrateDocuments: starting'));
@@ -1900,7 +1900,7 @@ abstract class Indexer
 
     public function updateDocumentIndex($docId, $text)
     {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $config = KTConfig::getSingleton();
         $tempPath = $config->get("urls/tmpDirectory");
         $tempFile = $oStorage->tempnam($tempPath,'ud_');

@@ -3247,7 +3247,7 @@ class KTAPI
     	{
     		$document = $document->document;
 
-    		$oStorage =& KTStorageManagerUtil::getSingleton();
+    		$oStorage = KTStorageManagerUtil::getSingleton();
             $filename = $oStorage->temporaryFile($document);
 
     		$fp = $oStorage->fopen($filename, 'rb');
@@ -3402,7 +3402,7 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
     	$content='';
 		$document = $document->document;
         $filename = $oStorage->temporaryFile($document);

@@ -51,12 +51,14 @@ class MD5SourceTree
 	private $numFiles;
 	private $comparisonFailure;
 	private $exclusions;
-
+	private $oStorage;
+	
 	public function __construct($exclusions = array())
 	{
 		$this->numDirectories = 0;
 		$this->numFiles = 0;
 		$this->exclusions = $exclusions;
+		$this->oStorage = KTStorageManagerUtil::getSingleton();
 	}
 
 	/**
@@ -70,11 +72,10 @@ class MD5SourceTree
 		{
 			return;
 		}
-		if (is_dir($dir))
+		if ($this->oStorage->is_dir($dir))
 		{
     		if ($dh = opendir($dir))
     		{
-    		    $storage = KTStorageManagerUtil::getSingleton();
         		while (($filename = readdir($dh)) !== false)
         		{
         			if (substr($filename,0,1) == '.')
@@ -83,7 +84,7 @@ class MD5SourceTree
         			}
 
         			$path = $dir . '/' . $filename;
-        			if (is_dir($path))
+        			if ($this->oStorage->is_dir($path))
         			{
         				$this->numDirectories++;
         				$this->_scan($path);
@@ -93,9 +94,9 @@ class MD5SourceTree
         				$this->numFiles++;
         				if (is_readable($path))
         				{
-							$md5 = $storage->md5File($path);
+							$md5 = $this->oStorage->md5File($path);
 							$path = substr($path, strlen($this->rootDir) + 1);
-							fwrite($this->logFile, "$md5:$path\n");
+							$this->oStorage->fwrite($this->logFile, "$md5:$path\n");
         				}
         			}
         		}
@@ -114,7 +115,7 @@ class MD5SourceTree
 	{
 		$this->rootDir = $rootDir;
 		$this->logFilename = $reportFile;
-		$this->logFile = fopen($reportFile,'wt');
+		$this->logFile = $this->oStorage->fopen($reportFile,'wt');
 		$this->_scan($rootDir);
 		fclose($this->logFile);
 	}
@@ -131,17 +132,17 @@ class MD5SourceTree
 		$dirs = array();
 		$numFiles = 0;
 		$numDirectories = 0;
-		$fp = fopen($path, 'rt');
+		$fp = $this->oStorage->fopen($path, 'rt');
 		while (!feof($fp))
 		{
-			$line = fgets($fp, 10240);
+			$line = $this->oStorage->fgets($fp, 10240);
 			list($md5, $path) = explode(':',$line);
 			$dirname = dirname($path);
 			$filename = basename($path);
 			$numFiles++;
 			$dirs[$dirname][$filename] = $md5;
 		}
-		fclose($fp);
+		$this->oStorage->fclose($fp);
 		return array('numFiles'=>$numFiles, 'numDirectories'=>$numDirectories, 'dirs'=>$dirs);
 	}
 
@@ -225,19 +226,20 @@ class SupportUtil
 	private $path;
 	private $innodb;
 	private $noninnodb;
-
+	private $oStorage;
 	/**
 	 * Constructor for SupportUtil. Creates a folder with format support-YYYY-MM-DD_HH-mm-ss
 	 *
 	 */
 	function __construct()
 	{
+		$this->oStorage = KTStorageManagerUtil::getSingleton();
 		$config = KTConfig::getSingleton();
 		$tempdir = $config->get('urls/tmpDirectory');
 
 		$this->path = $tempdir . "/support-" . date('Y-m-d_H-i-s');
 
-		mkdir($this->path);
+		$this->oStorage->mkdir($this->path);
 	}
 
 	/**
@@ -307,13 +309,13 @@ class SupportUtil
 			if (substr($filename,0,1) == '.') continue;
 
 			$fullname = $path . '/' . $filename;
-			if (is_dir($fullname))
+			if ($this->oStorage->is_dir($fullname))
 			{
 				$this->_cleanup($fullname);
 			}
 			else
 			{
-				unlink($fullname);
+				$this->oStorage->unlink($fullname);
 			}
         }
 		closedir($dh);
@@ -356,7 +358,7 @@ class SupportUtil
 	private function capture_ps($path)
 	{
 		$ps = KTUtil::findCommand('externalBinary/ps', 'ps');
-		if (!file_exists($ps) || !is_executable($ps))
+		if (!$this->oStorage->file_exists($ps) || !is_executable($ps))
 		{
 			return;
 		}
@@ -368,7 +370,7 @@ class SupportUtil
 		$content = fread($ps , 10240);
 		pclose($ps);
 
-		file_put_contents($path . '/ps.txt', $content);
+		$this->oStorage->file_put_contents($path . '/ps.txt', $content);
 	}
 
 	/**
@@ -379,7 +381,7 @@ class SupportUtil
 	private function capture_version_files($path)
 	{
 		$path = $path . '/versions';
-		mkdir($path);
+		$this->oStorage->mkdir($path);
 
 		$ver_path = KT_DIR . '/docs';
 		$dh = opendir($ver_path);
@@ -414,7 +416,7 @@ class SupportUtil
 		}
 
 		$html .= '</table>';
-		file_put_contents($path . '/systemsettings.htm', $html);
+		$this->oStorage->file_put_contents($path . '/systemsettings.htm', $html);
 	}
 
 	/**
@@ -425,7 +427,7 @@ class SupportUtil
 	private function capture_df($path)
 	{
 		$df = KTUtil::findCommand('externalBinary/df', 'df');
-		if (!file_exists($df) || !is_executable($df))
+		if (!$this->oStorage->file_exists($df) || !is_executable($df))
 		{
 			return;
 		}
@@ -434,7 +436,7 @@ class SupportUtil
 		$content = fread($df, 10240);
 		pclose($df);
 
-		file_put_contents($path . '/df.txt', $content);
+		$this->oStorage->file_put_contents($path . '/df.txt', $content);
 	}
 
 	/**
@@ -447,7 +449,7 @@ class SupportUtil
 		ob_start();
 		phpinfo();
 		$phpinfo = ob_get_clean();
-		file_put_contents($filename, $phpinfo);
+		$this->oStorage->file_put_contents($filename, $phpinfo);
 	}
 
 	/**
@@ -469,7 +471,7 @@ class SupportUtil
 			$sql = "show create table $tablename";
 			$sql = DBUtil::getOneResultKey($sql,'Create Table');
 
-			file_put_contents($folder . '/' . $tablename . '.sql.txt', $sql);
+			$this->oStorage->file_put_contents($folder . '/' . $tablename . '.sql.txt', $sql);
 
 			$sql = strtolower($sql);
 			if (strpos($sql, 'innodb') === false)
@@ -494,7 +496,7 @@ class SupportUtil
 	private function capture_db_schema($folder, $suffix='')
 	{
 		$schema_folder = $folder . '/' . $suffix . 'schema';
-		mkdir($schema_folder);
+		$this->oStorage->mkdir($schema_folder);
 
 		return $this->capture_table_schema($schema_folder);
 	}
@@ -514,7 +516,7 @@ class SupportUtil
 		$plugins .= '<tr><th>Display Name<th>Availability<th>Namespace<th>Path';
 		foreach($result as $rec)
 		{
-			$fileexists = file_exists(KT_DIR . '/' . $rec['path'])?'':'<font color="red">';
+			$fileexists = $this->oStorage->file_exists(KT_DIR . '/' . $rec['path'])?'':'<font color="red">';
 			$status = ($rec['disabled'] == 0)?'<font color="green">':'<font color="orange">';
 			$unavailable = ($rec['unavailable'] == 0)?'available':'<font color="orange">unavailable';
 
@@ -528,7 +530,7 @@ class SupportUtil
 		$plugins .= '<br>Plugin name is <font color=green>green</font> if  enabled  and <font color=orange>orange</font> if disabled .';
 		$plugins .= '<br>Availability indicates that KnowledgeTree has detected the plugin not to be available.';
 		$plugins .= '<br>Path is coloured <font color=red>red</font> if the plugin file cannot be resolved. If the path is not resolved, it should be flagged unavailable.';
-		file_put_contents($filename, $plugins);
+		$this->oStorage->file_put_contents($filename, $plugins);
 	}
 
 	/**
@@ -585,7 +587,7 @@ class SupportUtil
 			$zseqs .= "<tr><td>$tablename<td>$maxid<td>$zseqid<td>$note\r\n";
 		}
 		$zseqs .= "</table>";
-		file_put_contents($filename, $zseqs);
+		$this->oStorage->file_put_contents($filename, $zseqs);
 	}
 
 	/**
@@ -596,7 +598,7 @@ class SupportUtil
 	private function capture_logs($path)
 	{
 		$path = $path . '/logs';
-		mkdir($path);
+		$this->oStorage->mkdir($path);
 
 		$this->capture_kt_log($path);
 		$this->capture_apache_log($path);
@@ -615,7 +617,7 @@ class SupportUtil
 		$config = KTConfig::getSingleton();
 		$logdir = $config->get('urls/logDirectory');
 		$logfile = $logdir . '/php_error_log';
-		if (file_exists($logfile))
+		if ($this->oStorage->file_exists($logfile))
 		{
 			copy($logfile, $path . '/php-error_log.txt');
 		}
@@ -629,7 +631,7 @@ class SupportUtil
 	private function capture_mysql_log($path)
 	{
 		$stack_path = realpath(KT_DIR . '/../mysql/data');
-		if ($stack_path === false || !is_dir($stack_path))
+		if ($stack_path === false || !$this->oStorage->is_dir($stack_path))
 		{
 			return;
 		}
@@ -653,7 +655,7 @@ class SupportUtil
 	private function capture_apache_log($path)
 	{
 		$stack_path = realpath(KT_DIR . '/../apache2/logs');
-		if ($stack_path === false || !is_dir($stack_path))
+		if ($stack_path === false || !$this->oStorage->is_dir($stack_path))
 		{
 			return;
 		}
@@ -698,13 +700,13 @@ class SupportUtil
 	 */
 	private function get_sysinfo($path)
 	{
-		if (!OS_UNIX && !is_dir('/proc'))
+		if (!OS_UNIX && !$this->oStorage->is_dir('/proc'))
 		{
 			return;
 		}
 
 		$path .= '/sysinfo';
-		mkdir($path);
+		$this->oStorage->mkdir($path);
 
 		$this->get_sysinfo_file('cpuinfo', $path);
 		$this->get_sysinfo_file('loadavg', $path);
@@ -724,8 +726,8 @@ class SupportUtil
 		{
 			return;
 		}
-		$content = file_get_contents('/proc/' . $filename);
-		file_put_contents($path . '/' . $filename . '.txt', $content);
+		$content = $this->oStorage->file_get_contents('/proc/' . $filename);
+		$this->oStorage->file_put_contents($path . '/' . $filename . '.txt', $content);
 	}
 
 	/**
@@ -739,7 +741,7 @@ class SupportUtil
 
 	private function get_index_contents($title, $path, $relative = true)
 	{
-		if (!is_dir($path))
+		if (!$this->oStorage->is_dir($path))
 		{
 			return '';
 		}
@@ -751,7 +753,7 @@ class SupportUtil
 
 			$fullname = $path . '/' . $filename;
 
-			if (!file_exists($fullname) || is_dir($fullname))
+			if (!$this->oStorage->file_exists($fullname) || $this->oStorage->is_dir($fullname))
 			{
 				continue;
 			}
@@ -793,7 +795,7 @@ class SupportUtil
 		$contents .= $this->get_index_contents('<h2>System Info</h2>', $path . '/sysinfo');
 		$contents .= $this->get_index_contents('<h2>Logs</h2>', $path . '/logs');
 		$contents .= $this->get_index_contents('<h2>Schema</h2>', $path . '/schema');
-		file_put_contents($path . '/index.htm', $contents);
+		$this->oStorage->file_put_contents($path . '/index.htm', $contents);
 
 	}
 
@@ -826,7 +828,7 @@ class SupportUtil
 
 		$html .= '</table>';
 
-		file_put_contents($path . '/tablestorage.htm', $html);
+		$this->oStorage->file_put_contents($path . '/tablestorage.htm', $html);
 	}
 
 }

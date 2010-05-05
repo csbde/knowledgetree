@@ -2186,7 +2186,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function download($version = null)
 	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
         $options = array();
 
         $comment = (!is_null($version)) ? 'Document version '.$version.' downloaded' : 'Document downloaded';
@@ -2331,7 +2331,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
         $this->document->cleanupDocumentData($this->documentid);
 
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 
 		$result= $oStorage->expunge($this->document);
 
@@ -2348,7 +2348,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	{
 		DBUtil::startTransaction();
 
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 
 		$folder = Folder::get($this->document->getRestoreFolderId());
 		if (PEAR::isError($folder))
@@ -2648,7 +2648,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	public function thumbnailExists()
 	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 		
 		$thumbnailCheck = $oStorage->getDocStoragePath($this->document, 'jpg');
 		
@@ -2710,7 +2710,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	public function instantViewExists()
 	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 		
 		$flashCheck = $oStorage->getDocStoragePath($this->document, 'flash');
 		
