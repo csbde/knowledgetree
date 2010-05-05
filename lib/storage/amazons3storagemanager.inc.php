@@ -55,7 +55,7 @@ require_once(KT_DIR . '/thirdparty/cloudfusion/cloudfusion.class.php');
 require_once(KT_DIR . '/thirdparty/cloudfusion/s3.class.php');
 
 // TODO better error handling/messages
-// TODO logging
+// TODO more logging
 // TODO use of vhost?
 class KTAmazonS3StorageManager extends KTStorageManager {
 
@@ -91,6 +91,11 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         }
         catch (Exception $e) {
             // TODO log error
+            if (ACCOUNT_ROUTING_ENABLED) {
+        		liveRenderError::create('Amazon authentication failure', 
+        		                        'Unable to authenticate using the supplied credentials - please contact your system administrator', 
+        		                        $e, AMAZON_CREDENTIALS_MISSING);
+            }
             throw $e;
         }
 
@@ -133,8 +138,6 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             $end_time = KTUtil::getBenchmarkTime();
             $default->log->info(sprintf("Uploaded %d byte file in %.3f seconds", $file_size, $end_time - $start_time));
 
-            //remove the temporary file
-            //            @unlink($sTmpFilePath);
             $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
             if ($response->isOK()) {
                 return true;
