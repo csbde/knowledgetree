@@ -425,7 +425,7 @@ class KTStorageManager {
      * Perform any storage changes necessary to account for a copied
      * document object.
      */
-    public function copy ($oSrcDocument, &$oNewDocument) {
+    public function copyDocument ($oSrcDocument, &$oNewDocument) {
        return PEAR::raiseError(_kt("Not implemented"));
     }
 
@@ -510,6 +510,18 @@ class KTStorageManager {
     public function fileSize($path)
     {
         return filesize($path);
+    }
+    
+    /**
+     * Copies a file
+     *
+     * @param string $source
+     * @param string $destination
+     * @return boolean
+     */
+    public function copy($source, $destination)
+    {
+        return copy($source, $destination);
     }
     
     /*

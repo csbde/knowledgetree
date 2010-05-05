@@ -318,7 +318,6 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             $response = $this->amazonS3->get_object($this->bucket, $amazonS3Path);
             if ($response->isOK()) {
                 // copy file content to local path & download
-                // TODO get actual content - not sure yet how this comes out, test with basic script
                 $file = fopen($sPath, 'w');
                 if ($file) {
                     fwrite($file, $response->body);
@@ -432,7 +431,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * Perform any storage changes necessary to account for a copied
      * document object.
      */
-    public function copy($oSrcDocument, &$oNewDocument)
+    public function copyDocument($oSrcDocument, &$oNewDocument)
     {        
         $oVersion = $oNewDocument->_oDocumentContentVersion;
         $sDocumentRoot = 'Documents';
@@ -589,7 +588,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      */
     public function file_exists($filename)
     {
-        $response = $this->amazonS3->head_object($this->getShortPath($filename));
+        $response = $this->amazonS3->head_object($this->bucket, $this->getShortPath($filename));
         return $response->isOK();
     }
 
@@ -701,6 +700,19 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     public function is_dir($filename)
     {
         return true;
+    }
+    
+    /**
+     * Copies a file
+     *
+     * @param string $source
+     * @param string $destination
+     * @return boolean
+     */
+    public function copy($source, $destination)
+    {
+        $response = $this->copyS3Object($source, $destination);
+        return $response;
     }
     
     /**
