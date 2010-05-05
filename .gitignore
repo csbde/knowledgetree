@@ -19,4 +19,5 @@ setup/wizard/install.lock
 config/cache-path
 config/config-path
 config/config.ini
+config/aws_config.ini
 bin/luceneserver/KnowledgeTreeIndexer.properties
