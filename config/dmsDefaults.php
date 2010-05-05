@@ -49,7 +49,10 @@ if (defined('DMS_DEFAULTS_INCLUDED'))
 define('DMS_DEFAULTS_INCLUDED',1);
 define('LATEST_WEBSERVICE_VERSION',2);
 
-session_start();
+
+
+
+
 
 if (function_exists('apd_set_pprof_trace')) {
     apd_set_pprof_trace();
@@ -537,7 +540,7 @@ class KTInit {
         // Check for the config cache
         $use_cache = false;
         $store_cache = true;
-        $cachePath = (defined('ACCOUNT_NAME')) ? ACCOUNT_NAME . $oKTConfig->getCacheFilename() : $oKTConfig->getCacheFilename();
+        $cachePath = $oKTConfig->getCacheFilename();
         if (file_exists($cachePath)) {
             $configPath = $oKTConfig->getConfigFilename();
 
