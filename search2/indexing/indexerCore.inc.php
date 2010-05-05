@@ -42,6 +42,7 @@ require_once('indexing/extractorCore.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/scheduler/schedulerUtil.php');
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(KT_DIR . '/search2/indexing/lib/RestSolr.inc.php');
+//TODO: move this out to ktlive plugin
 require_once(KT_DIR . '/search2/documentProcessor/sqsqueue/queueDispatcher.php');
 
 class IndexerInconsistencyException extends Exception {};
@@ -653,8 +654,11 @@ abstract class Indexer
 
         $default->log->debug("index: Queuing indexing of $document_id");
         $config = KTConfig::getSingleton();
+        
+        //TODO: Switch this out to ktlive plugin test using ACCOUNT_ROUTING_ENABLED
         $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
 		if($isSQSEnabled) {
+			//liveQueue::addProcess('indexing',$document)
 			$oQueueDispatcher = new queueDispatcher();
         	// Document added, create indexing complex event
         	$oQueueDispatcher->addProcess('indexing', $document);
@@ -678,6 +682,7 @@ abstract class Indexer
         DBUtil::runQuery($sql);
 
         $default->log->debug("Processing queue: Queuing document for processing - $document_id");
+        //TODO: Switch this out to ktlive plugin test using ACCOUNT_ROUTING_ENABLED
         if($isSQSEnabled)
         {
         	// Document added, create processing complex event
