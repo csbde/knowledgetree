@@ -38,7 +38,11 @@
  * Contributor( s): ______________________________________
  */
 
-// TODO determine which of these is still needed for S3
+// TODO all the file exists checks are currently head requests instead, but they are probably not needed for S3
+//      (operations will fail with an error code rather than a php warning or error);
+//      could speed up the code by removing them
+
+// TODO determine which of these is still needed for S3 and remove those not needed
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 require_once(KT_LIB_DIR . '/mime.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
@@ -105,6 +109,8 @@ class KTAmazonS3StorageManager extends KTStorageManager {
 
     public function upload(&$oDocument, $sTmpFilePath, $aOptions = null)
     {
+        global $default;
+            
         $sTmpFilePath = $this->getShortPath($sTmpFilePath);
         $response = $this->amazonS3->head_object($this->bucket, $sTmpFilePath);
         if (!$response->isOK()) {
@@ -125,7 +131,6 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         $file_size = $oDocument->getFileSize();
         if ($this->writeToFile($sTmpFilePath, $amazonS3Path, $aOptions, $oDocument)) {
             $end_time = KTUtil::getBenchmarkTime();
-            global $default;
             $default->log->info(sprintf("Uploaded %d byte file in %.3f seconds", $file_size, $end_time - $start_time));
 
             //remove the temporary file
@@ -173,9 +178,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * @return boolean
      */
     protected function writeToFile($sourceFilePath, $destinationFilePath, $aOptions = null, $document = null)
-    {
-        global $default;
-        
+    {        
         // TODO determine what if anything needs to change here - this is only used by bulk upload,
         //      I think for the zip file...
         if(isset($aOptions['copy_upload']) && ($aOptions['copy_upload'] == 'true')) {
@@ -187,15 +190,11 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             $destinationFilePath = $this->getShortPath($destinationFilePath);
             $content = file_get_contents($sourceFilePath);
             $opt = array('filename' => $destinationFilePath, 'body' => $content);
-            $response = $this->amazonS3->create_object($this->bucket, $opt);
+            $response = $this->createS3Object($opt);
             // ensure php temp file is removed, as we are not using move_uploaded_file()
             @unlink($sourceFilePath);
-            if ($response->isOK()) {
-                $default->log->info("Amazon S3 PUT operation [CREATE]: {$this->bucket}/$destinationFilePath");
-                return true;
-            }
 
-            return false;
+            return $response;
         }
         // already in S3
         else {
@@ -207,15 +206,13 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             $opt['contentDisposition'] = 'attachment';
             $opt['meta'] = array('title' => $document->getName(), 
                                  'filename' => $document->getFileName());
-            $response = $this->amazonS3->copy_object($this->bucket, $sourceFilePath, $this->bucket, $destinationFilePath, $opt);
-            if ($response->isOK()) {
-                $default->log->info("Amazon S3 PUT operation [COPY]: {$this->bucket}/$destinationFilePath");
+            $response = $this->copyS3Object($sourceFilePath, $destinationFilePath, $opt);
+            if ($response) {
                 $response = $this->amazonS3->delete_object($this->bucket, $sourceFilePath);
-                return $response->isOK();
+                return true;
             }
-            else {
-                return false;
-            }
+            
+            return false;
         }
 
         return false;
@@ -293,6 +290,8 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     // TODO modify to use direct access to S3 instead of downloading locally
     public function download($oDocument, $bIsCheckout = false)
     {
+        global $default;
+        
         $amazonS3Path = 'Documents/'. $oDocument->getStoragePath();
 
         // Ensure the file exists
@@ -404,21 +403,14 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      */
     public function move($sOldDocumentPath, $sNewDocumentPath)
     {
-        global $default;
-        
         $response = $this->amazonS3->head_object($this->bucket, $sOldDocumentPath);
         if ($response->isOK()) {
             // move the file to the new destination
-            $response = $this->amazonS3->move_object($this->bucket, $sOldDocumentPath, $this->bucket, $sNewDocumentPath);
-            if ($response->isOK()) {
-                $default->log->info("Amazon S3 PUT operation [MOVE]: {$this->bucket}/$sNewDocumentPath");
-                return true;
-            }
-            return false;
+            $response = $this->moveS3Object($sOldDocumentPath, $sNewDocumentPath);
+            return $response;
         }
-        else {
-            return false;
-        }
+        
+        return false;
     }
 
     public function moveFolder($oFolder, $oDestFolder)
@@ -438,20 +430,18 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * document object.
      */
     public function copy($oSrcDocument, &$oNewDocument)
-    {
-        global $default;
-        
+    {        
         $oVersion = $oNewDocument->_oDocumentContentVersion;
         $sDocumentRoot = 'Documents';
         $sNewPath = $this->generateStoragePath($oNewDocument);
         $sFullOldPath = sprintf("%s/%s", $sDocumentRoot, $this->getPath($oSrcDocument));
         $sFullNewPath = sprintf("%s/%s", $sDocumentRoot, $sNewPath);
 
-        $response = $this->amazonS3->copy_object($this->bucket, $sFullOldPath, $this->bucket, $sFullNewPath);
-        if (!$response->isOK()) {
+        $response = $this->copyS3Object($sFullOldPath, $sFullNewPath, null);
+        if (!$response) {
             return new PEAR_Error("There was an error copying the file from $sFullOldPath to $sFullNewPath");
         }
-        $default->log->info("Amazon S3 PUT operation [COPY]: {$this->bucket}/$sFullNewPath");
+        
         $oVersion->setStoragePath($sNewPath);
         $oVersion->update();
     }
@@ -561,20 +551,20 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     /**
 	 * Write contents to a file.
 	 */
-    function write_file($filename, $mode, $string)
+    public function write_file($filename, $mode, $string)
     {
         $filename = $this->getShortPath($filename);
         $opt = array('filename' => $filename, 'body' => $string);
-        $response = $this->amazonS3->create_object($this->bucket, $opt);
-
-        return $response->isOK();
+        $response = $this->createS3Object($opt);
+        
+        return $response;
     }
 
     /**
 	 * Read contents of a file.
 	 */
     // TODO handle length based reads
-    function read_file($filename = "", $mode = "", $length, $fileHandle = null)
+    public function read_file($filename = "", $mode = "", $length, $fileHandle = null)
     {
         // S3 driver cannot work with file handles
         if (empty($filename)) {
@@ -594,7 +584,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      *
      * @param string $filename - Path to the file to open.
      */
-    function file_exists($filename)
+    public function file_exists($filename)
     {
         $response = $this->amazonS3->head_object($this->getShortPath($filename));
         return $response->isOK();
@@ -608,13 +598,13 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * @param boolean $flags - The value of flags can be any combination of the following flags (with some restrictions)
      * @param resource $context - A valid context resource created with stream_context_create().
      */
-    function file_put_contents($filename, $data, $flags = null, $context = null)
+    public function file_put_contents($filename, $data, $flags = null, $context = null)
     {
         $filename = $this->getShortPath($filename);
         $opt = array('filename' => $filename, 'body' => $data);
-        $response = $this->amazonS3->create_object($this->bucket, $opt);
-
-        return $response->isOK();
+        $response = $this->createS3Object($opt);
+        
+        return $response;
     }
 
     /**
@@ -627,7 +617,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * @param integer $maxlen - Maximum length of data read. The default is to read until end of file is reached. Note that this parameter is applied to the stream processed by the filters.
      */
     // TODO offset based reading
-    function file_get_contents($filename, $flags = null, $context = null, $offset = null, $maxlen = null)
+    public function file_get_contents($filename, $flags = null, $context = null, $offset = null, $maxlen = null)
     {
         $response = $this->amazonS3->get_object($this->bucket, $this->getShortPath($filename));
         if ($response->isOK()) {
@@ -642,7 +632,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      *
      * @param string $filename - The filename being checked. 
      */
-    function is_writable($filename)
+    public function is_writable($filename)
     {
         return true;
     }
@@ -653,11 +643,10 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * @param string $filename - The filename of the uploaded file. 
      * @param string $destination - The destination of the moved file. 
      */
-    function move_uploaded_file($filename, $destination)
+    public function move_uploaded_file($filename, $destination)
     {
-        $response = $this->amazonS3->move_object($this->bucket, $this->getShortPath($filename),
-                                                 $this->bucket, $this->getShortPath($destination));
-        return $response->isOK();
+        $response = $this->moveS3Object($this->getShortPath($filename), $this->getShortPath($destination));   
+        return $response;
     }
     
     /**
@@ -666,7 +655,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * @param string $filename - Path to the file. 
      * @param resource $context - A valid context resource created with stream_context_create().
      */
-    function unlink($filename, $context = null)
+    public function unlink($filename, $context = null)
     {
         $response = $this->amazonS3->delete_object($this->bucket, $this->getShortPath($filename));
         return $response->isOK();
@@ -676,13 +665,16 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * Sets access and modification time of file
      * 
      * @param string $filename - Path to the file. 
-     * @param integer $time - The touch time. If time is not supplied, the current system time is used. 
+     * @param integer $time - The touch time. If time is not supplied, the current system time is used.
+     *                        Not currently supported by this driver.
      * @param integer $atime - If present, the access time of the given filename is set to the value of atime. Otherwise, it is set to time. 
+     *                         Not currently supported by this driver.
      */
-    function touch($filename, $time = null, $atime = null)
+    public function touch($filename, $time = null, $atime = null)
     {
-        // TODO implement this function with S3 header information?
-//        return ???;
+        // TODO implement this function with S3 header information supporting $time and $atime?
+        $opt = array('filename' => $filename);
+        $response = $this->createS3Object($opt);
     }
     
     /**
@@ -693,7 +685,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * @param boolean $recursive - Allows the creation of nested directories specified in the pathname. Defaults to FALSE. 
      * @param resource $context - A valid context resource created with stream_context_create().
      */
-    function mkdir($pathname, $mode = 0777, $recursive = false, $context = null)
+    public function mkdir($pathname, $mode = 0777, $recursive = false, $context = null)
     {
         return true;
     }
@@ -703,9 +695,86 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * 
      * @param string $filename - Path to the file/directory
      */
-    function is_dir($filename) {
-        // TODO figure out how to implement this (depends on usage in the code)
-//        return ???
+    public function is_dir($filename)
+    {
+        return true;
+    }
+    
+    /**
+     * Utility function to encapsulate create_object and logging of all creates
+     * Additionally ensures paths are short paths
+     *
+     * @param array $opt Parameters required for the object creation
+     * @return booleane
+     */
+    private function createS3Object($opt)
+    {
+        global $default;
+        
+        // ensure paths are not full paths
+        $opt['filename'] = $this->getShortPath($opt['filename']);
+        
+        $response = $this->amazonS3->create_object($this->bucket, $opt);
+        if ($response->isOK()) {
+            $default->log->info("Amazon S3 PUT operation [CREATE]: {$this->bucket}/{$opt['filename']}");
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Utility function to encapsulate copy_object and logging of all copies
+     * Additionally ensures paths are short paths
+     *
+     * @param string $sourceFilePath
+     * @param string $destinationFilePath
+     * @param array $opt Parameters required for the object copy
+     * @return booleane
+     */
+    private function copyS3Object($sourceFilePath, $destinationFilePath, $opt)
+    {
+        global $default;
+        
+        // ensure paths are not full paths
+        if (isset($opt['filename'])) {
+            $opt['filename'] = $this->getShortPath($opt['filename']);
+        }
+        $sourceFilePath = $this->getShortPath($sourceFilePath);
+        $destinationFilePath = $this->getShortPath($destinationFilePath);
+                
+        $response = $this->amazonS3->copy_object($this->bucket, $sourceFilePath, $this->bucket, $destinationFilePath, $opt);
+        if ($response->isOK()) {
+            $default->log->info("Amazon S3 PUT operation [COPY]: {$this->bucket}/$destinationFilePath");
+            return true;
+        }
+
+        return false;
+    }
+    
+    /**
+     * Utility function to encapsulate move_object and logging of all moves
+     * Additionally ensures paths are short paths
+     *
+     * @param string $sOldDocumentPath
+     * @param string $sNewDocumentPath
+     * @return booleane
+     */
+    private function moveS3Object($sourceFilePath, $destinationFilePath)
+    {
+        global $default;        
+        
+        // ensure paths are not full paths
+        $sourceFilePath = $this->getShortPath($sourceFilePath);
+        $destinationFilePath = $this->getShortPath($destinationFilePath);
+        
+        $response = $this->amazonS3->move_object($this->bucket, $sourceFilePath, $this->bucket, $destinationFilePath);
+        if ($response->isOK()) {
+            $default->log->info("Amazon S3 PUT operation [MOVE]: {$this->bucket}/$destinationFilePath");
+            return true;
+        }
+        
+        return false;
     }
 
 }

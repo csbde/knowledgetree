@@ -1,4 +1,7 @@
 <?php
+
+// TODO check whether this class is used and if not then remove it from the source code
+
 /**
  * $Id$
  *
