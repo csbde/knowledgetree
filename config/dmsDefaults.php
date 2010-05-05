@@ -54,9 +54,6 @@ define('LATEST_WEBSERVICE_VERSION',2);
 
 session_start();
 
-
-
-
 if (function_exists('apd_set_pprof_trace')) {
     apd_set_pprof_trace();
 }
@@ -112,8 +109,6 @@ if (!defined('PATH_SEPARATOR')) {
 
 // TODO find out why this has to be required?  It is not an inc file (unless it is mis-named)
 require_once(KT_LIB_DIR . '/validation/customerror.php');
-
-
 
 // {{{ prependPath()
 function prependPath ($path) {
@@ -255,8 +250,6 @@ class KTInit {
         }
     }
     // }}}
-
-
 
     // {{{ cleanGlobals()
     function cleanGlobals () {
@@ -452,8 +445,6 @@ class KTInit {
 		ini_set('error_append_string',$phperror);
 	}
 
-
-
     // {{{ guessRootUrl()
     function guessRootUrl() {
         $urlpath = $_SERVER['SCRIPT_NAME'];
@@ -609,8 +600,6 @@ class KTInit {
         }
     }
     // }}}
-
-
 
     // {{{ initTesting
     function initTesting() {
