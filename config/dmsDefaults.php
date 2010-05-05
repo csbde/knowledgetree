@@ -49,7 +49,7 @@ if (defined('DMS_DEFAULTS_INCLUDED'))
 define('DMS_DEFAULTS_INCLUDED',1);
 define('LATEST_WEBSERVICE_VERSION',2);
 
-
+session_start();
 
 
 

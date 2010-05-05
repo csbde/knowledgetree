@@ -55,7 +55,7 @@ require_once(KT_DIR . '/thirdparty/cloudfusion/cloudfusion.class.php');
 require_once(KT_DIR . '/thirdparty/cloudfusion/s3.class.php');
 
 // TODO better error handling/messages
-// TODO logging
+// TODO more logging
 // TODO use of vhost?
 class KTAmazonS3StorageManager extends KTStorageManager {
 
@@ -91,6 +91,11 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         }
         catch (Exception $e) {
             // TODO log error
+            if (ACCOUNT_ROUTING_ENABLED) {
+        		liveRenderError::create('Amazon authentication failure', 
+        		                        'Unable to authenticate using the supplied credentials - please contact your system administrator', 
+        		                        $e, AMAZON_CREDENTIALS_MISSING);
+            }
             throw $e;
         }
 
@@ -133,8 +138,6 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             $end_time = KTUtil::getBenchmarkTime();
             $default->log->info(sprintf("Uploaded %d byte file in %.3f seconds", $file_size, $end_time - $start_time));
 
-            //remove the temporary file
-            //            @unlink($sTmpFilePath);
             $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
             if ($response->isOK()) {
                 return true;
@@ -315,7 +318,6 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             $response = $this->amazonS3->get_object($this->bucket, $amazonS3Path);
             if ($response->isOK()) {
                 // copy file content to local path & download
-                // TODO get actual content - not sure yet how this comes out, test with basic script
                 $file = fopen($sPath, 'w');
                 if ($file) {
                     fwrite($file, $response->body);
@@ -429,7 +431,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * Perform any storage changes necessary to account for a copied
      * document object.
      */
-    public function copy($oSrcDocument, &$oNewDocument)
+    public function copyDocument($oSrcDocument, &$oNewDocument)
     {        
         $oVersion = $oNewDocument->_oDocumentContentVersion;
         $sDocumentRoot = 'Documents';
@@ -586,7 +588,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      */
     public function file_exists($filename)
     {
-        $response = $this->amazonS3->head_object($this->getShortPath($filename));
+        $response = $this->amazonS3->head_object($this->bucket, $this->getShortPath($filename));
         return $response->isOK();
     }
 
@@ -698,6 +700,19 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     public function is_dir($filename)
     {
         return true;
+    }
+    
+    /**
+     * Copies a file
+     *
+     * @param string $source
+     * @param string $destination
+     * @return boolean
+     */
+    public function copy($source, $destination)
+    {
+        $response = $this->copyS3Object($source, $destination);
+        return $response;
     }
     
     /**

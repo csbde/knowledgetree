@@ -300,7 +300,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
      * Perform any storage changes necessary to account for a copied
      * document object.
      */
-    public function copy($oSrcDocument, &$oNewDocument) {
+    public function copyDocument($oSrcDocument, &$oNewDocument) {
         // we get the Folder object
         $oVersion = $oNewDocument->_oDocumentContentVersion;
         $oConfig =& KTConfig::getSingleton();
@@ -373,11 +373,12 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
 	/**
 	 * Get the storage path of a documents content.
 	 *
-	 * @param unknown_type $oDocument
-	 * @param unknown_type $type
-	 * @return unknown
+	 * @param object $oDocument
+	 * @param string $type
+	 * @param $document_id
+	 * @return string
 	 */
-    function getDocStoragePath($oDocument = null, $type = 'document', $document_id = null) {
+    public function getDocStoragePath($oDocument = null, $type = 'document', $document_id = null) {
     	if (is_null($oDocument)) 
     	{
     		if(is_null($document_id))
