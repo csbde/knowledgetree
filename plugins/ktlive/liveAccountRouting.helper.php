@@ -1,7 +1,6 @@
-<?php 
+<?php
 
-if(!defined('KT_LIVE_DIR'))define('KT_LIVE_DIR',KT_PLUGIN_DIR.'ktlive/');
-if(!defined('KT_LIVE_ROOT'))define('KT_LIVE_ROOT',KT_PLUGIN_DIR.'ktlive/');
+if(!defined('LIVE_ACCOUNT_ROUTING_OVERRIDE'))define('LIVE_ACCOUNT_ROUTING_OVERRIDE','LiveAccountRoutingOverrideAccount');
 
 class liveAccountRouting{
 	/**
@@ -17,7 +16,8 @@ class liveAccountRouting{
 
 
 	/**
-	 * Account Routing: Detect Account
+	 * Get the current account name
+	 * @return String
 	 */
 	public static function getAccountName(){
 		$acct=null;
@@ -25,8 +25,30 @@ class liveAccountRouting{
 		if (count($domain_parts) == 3 && $domain_parts[0]!= "www") {
 			$acct = trim($domain_parts[0]);
 		}
+		if($_SESSION[LIVE_ACCOUNT_ROUTING_OVERRIDE])$acct=$_SESSION[LIVE_ACCOUNT_ROUTING_OVERRIDE];
 //		self::out(array('domain parts'=>$domain_parts,'account'=>$acct),'Account Routing');
 		return $acct;
+	}
+	
+	/**
+	 * Allow a session-based account name override
+	 * @param $accountName		The account with which to override
+	 * @return string			The account name before the override was done
+	 */
+	public static function overrideAccountName($accountName=NULL){
+		$oldAcct=self::getAccountName();
+		$_SESSION[LIVE_ACCOUNT_ROUTING_OVERRIDE]=$accountName;
+		return $oldAcct;
+	}
+	
+	/**
+	 * Clear the account override
+	 * @return string 			The account name before the override was cleared
+	 */
+	public static function clearAccountNameOverride(){
+		$oldAcct=self::getAccountName();
+		unset($_SESSION[LIVE_ACCOUNT_ROUTING_OVERRIDE]);
+		return $oldAcct;
 	}
 	
 }

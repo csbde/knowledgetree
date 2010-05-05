@@ -196,6 +196,18 @@ class KTInit {
     public function accountRouting(){
 		if(file_exists(KT_PLUGIN_DIR.'ktlive/liveEnable.php')){
 			require_once(KT_PLUGIN_DIR.'ktlive/liveEnable.php');
+
+			/**
+			 * The code below demonstrates how to use accountOverride functionality.
+			 * It allows you to simulate a different account by providing 'accountOverride' as a 
+			 * parameter in the $_GET request variable set
+			 * To clear this override, this example makes use of clearAccountOverride as a parameter
+			 * in the url.
+			 */
+//			if($_GET['accountOverride'])liveAccountRouting::overrideAccountName($_GET['accountOverride']);
+//			if(isset($_GET['clearAccountOverride']))liveAccountRouting::clearAccountNameOverride();
+
+			
 			define('ACCOUNT_ROUTING_ENABLED',true);
 			define('ACCOUNT_NAME',liveAccountRouting::getAccountName());
 		}else{
@@ -215,6 +227,7 @@ class KTInit {
 				liveRenderError::create('Account Does Not Exist','We have no record of this account ('.ACCOUNT_NAME.') Please contact your system administrator',NULL,LIVE_ACCOUNT_DISABLED);
 			}
 		}
+//		echo "Account: ".ACCOUNT_NAME; //DEBUG INFO
 	}    
     
     /**

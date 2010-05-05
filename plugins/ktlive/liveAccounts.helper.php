@@ -17,6 +17,11 @@ class liveAccounts{
 		return $exists;
 	}
 	
+	/**
+	 * Detect whether the supplied account name is active or disabled
+	 * @param string $accountName	The name of the account to test
+	 * @return boolean
+	 */
 	public static function accountEnabled($accountName=NULL){
 		$enabled=false;
 		if($accountName)$enabled=true;
