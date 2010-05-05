@@ -213,7 +213,6 @@ class KTInit {
 //			if($_GET['accountOverride'])liveAccountRouting::overrideAccountName($_GET['accountOverride']);
 //			if(isset($_GET['clearAccountOverride']))liveAccountRouting::clearAccountNameOverride();
 
-			
 			define('ACCOUNT_ROUTING_ENABLED',true);
 			define('ACCOUNT_NAME',liveAccountRouting::getAccountName());
 		}else{
