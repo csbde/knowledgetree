@@ -11,7 +11,6 @@ dummy.php
 var/*
 plugins/commercial
 clienttools/*
-.gitmodules
 *.out
 baobab
 ktoffice
