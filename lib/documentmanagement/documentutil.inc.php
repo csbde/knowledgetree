@@ -1381,7 +1381,7 @@ $sourceDocument->getName(),
         $oNewDocument->setCheckedOutUserID(-1);
 
         // finally, copy the actual file.
-        $res = $oStorage->copy($oDocument, $oNewDocument);
+        $res = $oStorage->copyDocument($oDocument, $oNewDocument);
 
         $oOriginalFolder = Folder::get($oDocument->getFolderId());
         $iOriginalFolderPermissionObjectId = $oOriginalFolder->getPermissionObjectId();

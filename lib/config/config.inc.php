@@ -64,7 +64,8 @@ class KTConfig {
 
         // Get the directory containing the file, append the file name
         $cacheFile = trim(file_get_contents($pathFile));
-        $cacheFile .= '/configcache';
+        // if we are on an account name routing system (i.e. a shared system,) use the account name to distinguish config cache files
+        $cacheFile .= '/' . (defined('ACCOUNT_NAME') ? ACCOUNT_NAME : '') . 'configcache';
 
         // Ensure path is absolute
         $cacheFile = (!KTUtil::isAbsolutePath($cacheFile)) ? sprintf('%s/%s', KT_DIR, $cacheFile) : $cacheFile;

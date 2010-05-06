@@ -1,3 +1,6 @@
 [submodule "plugins/commercial"]
 	path = plugins/commercial
 	url = git@github.com:ktgit/commercial-plugins.git
+[submodule "plugins/ktlive"]
+	path = plugins/ktlive
+	url = git@github.com:ktgit/ktlive-plugins.git

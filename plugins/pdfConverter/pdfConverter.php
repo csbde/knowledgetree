@@ -62,9 +62,6 @@ class pdfConverter extends BaseProcessor
 		$this->ooPort = $config->get('openoffice/port','8100');
 
 		$this->xmlrpc = XmlRpcLucene::get($javaServerUrl);
-
-
-
     }
 
     /**
@@ -205,13 +202,13 @@ class pdfConverter extends BaseProcessor
 
 	    // Create temporary copy of document
 	    $sourceFile = $oStorage->tempnam($tempDir, 'pdfconverter') . '.' .$ext;
+	    // TODO there should probably be a check here, in case this fails...
 	    $res = copy($filename, $sourceFile);
 
 	    // Create a temporary file to store the converted document
 	    $targetFile = $oStorage->tempnam($tempDir, 'pdfconverter') . '.pdf';
 
-
-		if($ext == "tiff"||$ext == "tif") {
+		if(($ext == "tiff") || ($ext == "tif")) {
 			$this->convertTiff($sourceFile, $targetFile);
 		} else {
 	    	// Get contents and send to converter

@@ -321,7 +321,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
      * Perform any storage changes necessary to account for a copied
      * document object.
      */
-     public function copy($oSrcDocument, &$oNewDocument) {
+     public function copyDocument($oSrcDocument, &$oNewDocument) {
         // we get the Folder object
 		$oVersion = $oNewDocument->_oDocumentContentVersion;
 		$oConfig =& KTConfig::getSingleton();

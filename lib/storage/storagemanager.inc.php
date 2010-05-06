@@ -226,7 +226,7 @@ class KTStorageManager {
 	}
 	
     /**
-     * Tells whether the filename is writable
+     * Determine whether file is writable
      *
      * @param string $filename - The filename being checked. 
      * 
@@ -246,7 +246,7 @@ class KTStorageManager {
      */
 	function is_writeable($filename)
 	{
-		return KTOnDiskPathStorageManager::is_writable($filename);
+		return self::is_writable($filename);
 	}
 	
     /**
@@ -278,7 +278,7 @@ class KTStorageManager {
 	}
 	
     /**
-     * Create file with unique file name
+     * Remove a file
      * 
      * @param string $filename - Path to the file. 
      * @param resource $context - A valid context resource created with stream_context_create().
@@ -334,7 +334,7 @@ class KTStorageManager {
     /**
      * Tells whether the filename is a directory
      * 
-     * @param string $filename - Path to the file
+     * @param string $filename - Path to the file/directory
      * 
      * URL : http://www.php.net/manual/en/function.is-dir.php
      * 
@@ -425,7 +425,7 @@ class KTStorageManager {
      * Perform any storage changes necessary to account for a copied
      * document object.
      */
-    public function copy ($oSrcDocument, &$oNewDocument) {
+    public function copyDocument ($oSrcDocument, &$oNewDocument) {
        return PEAR::raiseError(_kt("Not implemented"));
     }
 
@@ -510,6 +510,18 @@ class KTStorageManager {
     public function fileSize($path)
     {
         return filesize($path);
+    }
+    
+    /**
+     * Copies a file
+     *
+     * @param string $source
+     * @param string $destination
+     * @return boolean
+     */
+    public function copy($source, $destination)
+    {
+        return copy($source, $destination);
     }
     
     /*

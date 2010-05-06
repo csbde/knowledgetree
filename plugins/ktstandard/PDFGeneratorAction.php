@@ -63,6 +63,8 @@ class PDFGeneratorAction extends KTDocumentAction {
 
     function getDisplayName() 
     {
+        global $default;
+        
         // The generation of the pdf is done through the PDF Converter plugin.
         // The PDF's are generated in the background by the document processor
 
@@ -80,7 +82,8 @@ class PDFGeneratorAction extends KTDocumentAction {
             $sDisplayLink = "&nbsp;<a href=\"{$link}\">{$icon}</a>";
 
             // First check if the pdf has already been generated
-            $file = $oStorage->getDocStoragePath($this->oDocument, 'pdf');
+            $dir = $default->pdfDirectory;
+            $file = $dir . '/' . $iDocId . '.pdf';
 
             if($oStorage->file_exists($file))
             {
@@ -235,7 +238,8 @@ class PDFGeneratorAction extends KTDocumentAction {
 
         // Check if pdf has already been created
         
-        $file = $oStorage->getDocStoragePath($this->oDocument, 'pdf');
+        $dir = $default->pdfDirectory;
+        $file = $dir . '/' . $iDocId . '.pdf';
         $mimetype = 'application/pdf';
         $size = filesize($file);
 
@@ -244,7 +248,6 @@ class PDFGeneratorAction extends KTDocumentAction {
         $aName = explode('.', $name);
         array_pop($aName);
         $name = implode('.', $aName) . '.pdf';
-
 
         if($oStorage->file_exists($file))
         {

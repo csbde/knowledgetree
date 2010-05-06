@@ -49,7 +49,7 @@ if (defined('DMS_DEFAULTS_INCLUDED'))
 define('DMS_DEFAULTS_INCLUDED',1);
 define('LATEST_WEBSERVICE_VERSION',2);
 
-
+session_start();
 
 
 
@@ -190,20 +190,44 @@ class KTInit {
     // {{{ setupI18n()
 
 	/**
-	 * Include Account Routing Helper
+	 * Account Routing
 	 * @return void
 	 */
     public function accountRouting(){
-		if(file_exists(KT_PLUGIN_DIR.'ktlive/AccountRouting.helper.php')){
-			require_once(KT_PLUGIN_DIR.'ktlive/AccountRouting.helper.php');
+		if(file_exists(KT_PLUGIN_DIR.'ktlive/liveEnable.php')){
+			require_once(KT_PLUGIN_DIR.'ktlive/liveEnable.php');
+
+			/**
+			 * The code below demonstrates how to use accountOverride functionality.
+			 * It allows you to simulate a different account by providing 'accountOverride' as a 
+			 * parameter in the $_GET request variable set
+			 * To clear this override, this example makes use of clearAccountOverride as a parameter
+			 * in the url.
+			 */
+//			if($_GET['accountOverride'])liveAccountRouting::overrideAccountName($_GET['accountOverride']);
+//			if(isset($_GET['clearAccountOverride']))liveAccountRouting::clearAccountNameOverride();
+
+			
 			define('ACCOUNT_ROUTING_ENABLED',true);
-			define('ACCOUNT_NAME',AccountRouting::getAccountName());
+			define('ACCOUNT_NAME',liveAccountRouting::getAccountName());
 		}else{
 			define('ACCOUNT_ROUTING_ENABLED',false);
 			define('ACCOUNT_NAME','');
 		}
-		
+
 		//TODO: Implement checking account for existence/access & acting accordingly
+		if(ACCOUNT_ROUTING_ENABLED){
+			if(liveAccounts::accountExists(ACCOUNT_NAME)){
+				if(liveAccounts::accountEnabled(ACCOUNT_NAME)){
+					//TODO: space for currently unanticipated functionality (might load account details here)					
+				}else{
+					liveRenderError::create('Account Disabled','This account ('.ACCOUNT_NAME.') was discontinued - please contact your system administrator',$_SERVER,LIVE_ACCOUNT_DISABLED);
+				}
+			}else{
+				liveRenderError::create('Account Does Not Exist','We have no record of this account ('.ACCOUNT_NAME.') Please contact your system administrator',NULL,LIVE_ACCOUNT_DISABLED);
+			}
+		}
+//		echo "Account: ".ACCOUNT_NAME; //DEBUG INFO
 	}    
     
     /**
@@ -552,7 +576,11 @@ class KTInit {
         {
         	/* We need to setup the language handler to display this error correctly */
         	$this->setupI18n();
-        	$this->handleInitError($dbSetup);
+        	if(ACCOUNT_ROUTING_ENABLED){
+        		liveRenderError::create('Account Does Not Exist','We have no record of this account - please contact your system administrator',NULL,LIVE_ACCOUNT_DISABLED);
+        	}else{
+        		$this->handleInitError($dbSetup);
+        	}
         }
 
         // Read in the config settings from the database
