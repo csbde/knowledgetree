@@ -33,7 +33,9 @@ if ($oDocument->getStatusID() == ARCHIVED) {
 }
 
 // Get and render the thumbnail
-$thumbnailCheck = $oStorage->getDocStoragePath($oDocument, 'thumbnail');
+// Check for the thumbnail
+$varDir = $default->varDirectory;
+$thumbnailCheck = $varDir . '/thumbnails/'.$documentId.'.jpg';
 // Check for the thumbnail
 if(!$oStorage->file_exists($thumbnailCheck)){
     exit;

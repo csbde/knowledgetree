@@ -174,16 +174,19 @@ class thumbnailGenerator extends BaseProcessor
         if (strstr($mimeType, 'image')) 
         {
             $type = 'image';
-            $srcFile = $oStorage->getDocStoragePath($this->document);
+            $srcDir = $default->documentRoot;
+            $srcFile = $srcDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
         }
 	    // Get the pdf source file - if the document is a pdf then use the document as the source
 	    else if($mimeType == 'application/pdf') 
 	    {
-            $srcFile = $oStorage->getDocStoragePath($this->document);
+	        $pdfDir = $default->documentRoot;
+            $srcFile = $pdfDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
 	    } 
 	    else 
 	    {
-            $srcFile = $oStorage->getDocStoragePath($this->document, 'pdf');
+    	    $pdfDir = $default->pdfDirectory;
+            $srcFile = $pdfDir .DIRECTORY_SEPARATOR. $this->document->iId.'.pdf';
 	    }
 
         $thumbnaildir = $default->varDirectory.DIRECTORY_SEPARATOR.'thumbnails';
@@ -194,7 +197,7 @@ class thumbnailGenerator extends BaseProcessor
             $srcFile = str_replace('/', '\\', $srcFile);
 		}
 
-        $thumbnailfile = $oStorage->getDocStoragePath($this->document, 'thumbnail');
+        $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
         //if thumbail dir does not exist, generate one and add an index file to block access
         if (!$oStorage->file_exists($thumbnaildir)) 
         {
@@ -281,7 +284,9 @@ class ThumbnailViewlet extends KTDocumentViewlet {
         }
 
         // Check that the thumbnail exists on disk
-		$thumbnailCheck = $oStorage->getDocStoragePath($this->oDocument, 'thumbnail');
+        global $default;
+		$varDir = $default->varDirectory;
+		$thumbnailCheck = $varDir . '/thumbnails/'.$documentId.'.jpg';
 
 		// Use correct slashes for windows
 		if (strpos(PHP_OS, 'WIN') !== false) {
@@ -351,8 +356,10 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     // this is used for anywhere which might require display resizing based on the presence or absence of the thumbnail
     public function getDisplaySize($documentId)
     {
+    	global $default;
     	$oStorage = KTStorageManagerUtil::getSingleton();
-		$thumbnailfile = $oStorage->getDocStoragePath($this->oDocument, 'thumbnail', $documentId);
+    	$varDir = $default->varDirectory;
+		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
 		if($oStorage->file_exists($thumbnailfile))
 		{
 		    return 200;
@@ -396,7 +403,9 @@ class ThumbnailColumn extends AdvancedColumn {
             $rootUrl = $config->get('KnowledgeTree/rootUrl');
 
             // Check if the thumbnail exists
-    		$thumbnailCheck = $oStorage->getDocStoragePath($oDoc, 'thumbnail');
+            global $default;
+    		$varDir = $default->varDirectory;
+    		$thumbnailCheck = $varDir . '/thumbnails/'.$docid.'.jpg';
 
     		// Use correct slashes for windows
     		if (strpos(PHP_OS, 'WIN') !== false) {
