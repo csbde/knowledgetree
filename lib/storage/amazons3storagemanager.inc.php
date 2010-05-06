@@ -431,7 +431,11 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      * Perform any storage changes necessary to account for a copied
      * document object.
      */
+<<<<<<< Updated upstream:lib/storage/amazons3storagemanager.inc.php
     public function copyDocument($oSrcDocument, &$oNewDocument)
+=======
+    public function copy($oSrcDocument, &$oNewDocument)
+>>>>>>> Stashed changes:lib/storage/amazons3storagemanager.inc.php
     {        
         $oVersion = $oNewDocument->_oDocumentContentVersion;
         $sDocumentRoot = 'Documents';
@@ -703,6 +707,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     }
     
     /**
+<<<<<<< Updated upstream:lib/storage/amazons3storagemanager.inc.php
      * Copies a file
      *
      * @param string $source
@@ -716,6 +721,8 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     }
     
     /**
+=======
+>>>>>>> Stashed changes:lib/storage/amazons3storagemanager.inc.php
      * Utility function to encapsulate create_object and logging of all creates
      * Additionally ensures paths are short paths
      *
