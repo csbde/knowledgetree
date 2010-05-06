@@ -141,7 +141,7 @@ class Scheduler
             $sFileName = $sTask.'_'.mt_rand(1, 9999).'.php';
         }
         
-		$oStorage->writeFile($path.$sFileName, 'wb', $sScript);
+		$oStorage->write_file($path.$sFileName, 'wb', $sScript);
         $this->sPath = $ktPath.$sFileName;
     }
 
