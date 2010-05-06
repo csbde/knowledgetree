@@ -490,6 +490,8 @@ class APIDocumentTestCase extends KTUnitTestCase {
         $this->assertIsA($thumbnail, 'boolean');
         $this->assertNoErrors();
         
+        $document->delete('Test');
+        $document->expunge();
     }
     
     /**
@@ -515,6 +517,8 @@ class APIDocumentTestCase extends KTUnitTestCase {
         $this->assertIsA($instaView, 'boolean');
         $this->assertNoErrors();
         
+        $document->delete('Test');
+        $document->expunge();
     }
 }
 
