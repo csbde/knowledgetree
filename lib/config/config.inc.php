@@ -212,7 +212,7 @@ class KTConfig {
             'password' => $this->flatns[$sPass],
             'hostspec' => $this->flatns['db/dbHost'],
             'database' => $this->flatns['db/dbName'],
-            'port' => $this->flatns['db/dbPort']
+            'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
         );
 
         $options = array(
@@ -388,7 +388,7 @@ class KTConfig {
 
         $this->aFileRoot[$filename] =& $root;
 
-        $conf =& $root->toArray();
+        $conf = $root->toArray();
         foreach ($conf["root"] as $seck => $secv) {
             $aSectionFile[$seck] = $filename;
             if (is_array($secv)) {

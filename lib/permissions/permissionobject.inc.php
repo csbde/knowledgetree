@@ -85,7 +85,10 @@ class KTPermissionObject extends KTEntity {
             $fieldValues = $this->_fieldValues();
             
             if (empty($fieldValues)) {
-                $fieldValues = array('id' => 'id');
+                // NOTE was 'id' => 'id' which, while it should ALWAYS generate an error (field is integer, not string)
+                //      somehow manages to only happen on some systems at some times...
+                // FIX: modified to 'id' => null which results in the autoincrement kicking in
+                $fieldValues = array('id' => null);
             }
             
             $id = DBUtil::autoInsert($this->_table(), $fieldValues);

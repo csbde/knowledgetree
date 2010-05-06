@@ -46,7 +46,7 @@ class KTi18nRegistry {
 
     static function &getSingleton() {
 		if (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTi18nRegistry')) {
-			$GLOBALS['_KT_PLUGIN']['oKTi18nRegistry'] =& new KTi18nRegistry;
+			$GLOBALS['_KT_PLUGIN']['oKTi18nRegistry'] = new KTi18nRegistry;
 		}
 		return $GLOBALS['_KT_PLUGIN']['oKTi18nRegistry'];
     }
