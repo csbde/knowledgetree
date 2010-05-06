@@ -245,7 +245,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function checkin($filename, $reason, $tempfilename, $major_update=false)
 	{
-		if (!is_file($tempfilename))
+	    $storage = KTStorageManagerUtil::getSingleton();
+		if (!$storage->isFile($tempfilename))
 		{
 			return new PEAR_Error('File does not exist.');
 		}
@@ -2321,19 +2322,15 @@ class KTAPI_Document extends KTAPI_FolderItem
 		{
 			return new PEAR_Error('You should not purge this');
 		}
+
 		DBUtil::startTransaction();
 
 		$transaction = new DocumentTransaction($this->document, "Document expunged", 'ktcore.transactions.expunge');
-
         $transaction->create();
-
-        $this->document->delete();
-
         $this->document->cleanupDocumentData($this->documentid);
-
 		$oStorage =& KTStorageManagerUtil::getSingleton();
-
 		$result= $oStorage->expunge($this->document);
+        $this->document->delete();
 
 		DBUtil::commit();
 	}
