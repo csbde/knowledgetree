@@ -44,8 +44,8 @@ class KTColumnRegistry {
     var $views = array();         // should be in here
     // {{{ getSingleton
     static function &getSingleton () {
-		if  (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'],  'oKTColumnRegistry'))  {
-			$GLOBALS['_KT_PLUGIN']['oKTColumnRegistry']  =&  new  KTColumnRegistry;
+		if  (!KTUtil::arrayGet($GLOBALS['_KT_PLUGIN'], 'oKTColumnRegistry'))  {
+			$GLOBALS['_KT_PLUGIN']['oKTColumnRegistry'] = new KTColumnRegistry;
 		}
 		return  $GLOBALS['_KT_PLUGIN']['oKTColumnRegistry'];
     }

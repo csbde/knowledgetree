@@ -29,6 +29,11 @@ class savedSearchTestCase extends KTUnitTestCase {
     var $root;
 
     /**
+     * @var Storage Handler
+     */
+    public $oStorage;
+    
+    /**
     * This method sets up the KT session
     *
     */
@@ -38,6 +43,7 @@ class savedSearchTestCase extends KTUnitTestCase {
         $this->session = $this->ktapi->start_session('admin', 'admin');
         $this->root = $this->ktapi->get_root_folder();
         $this->assertTrue($this->root instanceof KTAPI_Folder);
+        $this->oStorage = KTStorageManagerUtil::getSingleton();
     }
 
     /**
@@ -165,7 +171,7 @@ class savedSearchTestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('title.txt', 'name_1.txt', 'Default', $randomFile);
-        @unlink($randomFile);
+        $this->oStorage->unlink($randomFile);
 
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
 
@@ -288,7 +294,7 @@ class savedSearchTestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('title.txt', 'name_1.txt', 'Default', $randomFile);
-        @unlink($randomFile);
+        $this->oStorage->unlink($randomFile);
 
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
 
@@ -309,10 +315,9 @@ class savedSearchTestCase extends KTUnitTestCase {
     *
     */
     function createRandomFile($content = 'this is some text') {
-        $temp = tempnam(dirname(__FILE__), 'myfile');
-        $fp = fopen($temp, 'wt');
-        fwrite($fp, $content);
-        fclose($fp);
+        $temp = $this->oStorage->tempnam(dirname(__FILE__), 'myfile');
+        $this->oStorage->write_file($temp, 'wt', $content);
+
         return $temp;
     }
 }

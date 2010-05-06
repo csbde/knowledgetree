@@ -1,4 +1,3 @@
-
 *~
 bin/luceneserver/lucene.pid
 bin/schedulerTask.sh 
@@ -9,11 +8,7 @@ bin/schedulerTask.sh
 .settings/
 dummy.php
 var/*
-plugins/commercial
-clienttools/*
 *.out
-baobab
-ktoffice
 setup/wizard/install.lock
 config/cache-path
 config/config-path

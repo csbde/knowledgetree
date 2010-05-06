@@ -124,14 +124,12 @@ class SOAPTestCase extends KTUnitTestCase {
     private function createDocument($folder_id,  $title, $filename, $documenttype = 'Default')
     {
         global $default;
+        $oStorage = KTStorageManagerUtil::getSingleton();
         $uploads_dir = $default->uploadDirectory;
 
         // create document in uploads folder
-        $tempfilename = tempnam($uploads_dir, 'myfile');
-        $fp = fopen($tempfilename, 'wt');
-        fwrite($fp, $this->content);
-        fclose($fp);
-
+        $tempfilename = $oStorage->tempnam($uploads_dir, 'myfile');
+        $oStorage->write_file($tempfilename, 'wt', $this->content);
         // call add document to upload into repo
         $result = $this->client->__soapCall("add_document", array($this->session, $folder_id,  $title, $filename, $documenttype, $tempfilename));
         return $result;
@@ -153,13 +151,12 @@ class SOAPTestCase extends KTUnitTestCase {
     private function checkinDocument($document_id,  $filename, $major_update = false)
     {
         global $default;
+        $oStorage = KTStorageManagerUtil::getSingleton();
         $uploads_dir = $default->uploadDirectory;
 
         // create document in uploads folder
-        $tempfilename = tempnam($uploads_dir, 'myfile');
-        $fp = fopen($tempfilename, 'wt');
-        fwrite($fp, $this->content_update);
-        fclose($fp);
+        $tempfilename = $oStorage->tempnam($uploads_dir, 'myfile');
+        $oStorage->write_file($tempfilename, 'wt', $this->content_update);
 
         // call add document to upload into repo
         $result = $this->client->__soapCall("checkin_document", array($this->session, $document_id,  $filename, $this->reason, $tempfilename, $major_update));

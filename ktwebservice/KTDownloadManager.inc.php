@@ -163,7 +163,7 @@ class KTDownloadManager
 
 		$oStorage = KTStorageManagerUtil::getSingleton();
 
-        $ktapi = &new KTAPI();
+        $ktapi = new KTAPI();
         $res = $ktapi->get_active_session($this->session, null, $apptype);
         if (PEAR::isError($res))
         {

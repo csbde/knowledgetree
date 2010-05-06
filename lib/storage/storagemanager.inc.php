@@ -292,8 +292,12 @@ class KTStorageManager {
 		{
 			$context = stream_context_create(array());
 		}
+		if(KTStorageManager::file_exists($filename))
+		{
+			return unlink($filename, $context);
+		}
 		
-		return unlink($filename, $context);
+		return true;
 	}
 	
     /**

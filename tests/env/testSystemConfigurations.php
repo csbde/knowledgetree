@@ -45,8 +45,9 @@ class EnvPhpSystemTestCase extends KTUnitTestCase {
      * Testing configFile
      */
     function testConfigFile() {
+		$oStorage = KTStorageManagerUtil::getSingleton();
       $key = 'configFile';
-      $fileValid = (file_exists($this->arrPathInfo[$key]['path']));
+      $fileValid = ($oStorage->file_exists($this->arrPathInfo[$key]['path']));
       $this->assertTrue($fileValid, 'Config file : [' . $this->arrPathInfo[$key]['path'] . '] could not be found.');
     }
 
