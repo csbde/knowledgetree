@@ -7,3 +7,6 @@
 [submodule "baobab"]
 	path = baobab
 	url = git@github.com:ktgit/ktis.git
+[submodule "clienttools/ExplorerCP"]
+	path = clienttools/ExplorerCP
+	url = git@github.com:ktgit/Karoo.git
