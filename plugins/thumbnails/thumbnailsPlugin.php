@@ -56,8 +56,11 @@ class DeleteThumbnailTrigger {
         $docId = $oDoc->getId();
         $docInfo = array('id' => $docId, 'name' => $oDoc->getName());
 
-        // Delete the thumbnail document
-        $file = $oStorage->getDocStoragePath($oDoc, 'thumbnail');
+        // Delete the pdf document
+        global $default;
+        $varDirectory = $default->varDirectory;
+
+        $file = $varDirectory . DIRECTORY_SEPARATOR . "thumbnails" . DIRECTORY_SEPARATOR .$docId.'.jpg';
 
         if($oStorage->file_exists($file)){
             $oStorage->unlink($file);

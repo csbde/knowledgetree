@@ -1671,9 +1671,13 @@ $sourceDocument->getName(),
     public static function getDocumentContent($oDocument)
     {
         global $default;
-		$oStorage = KTStorageManagerUtil::getSingleton();
+        $oStorage = KTStorageManagerUtil::getSingleton();
         //get the path to the document on the server
-        $path = $oStorage->getDocStoragePath($oDocument);
+        //$docRoot = $default->documentRoot;
+        $oConfig =& KTConfig::getSingleton();
+        $docRoot  = $oConfig->get('urls/documentRoot');
+        //get the path to the document on the server
+        $path = $docRoot .'/'. $oDocument->getStoragePath();
 
         // Ensure the file exists
         if ($oStorage->file_exists($path))

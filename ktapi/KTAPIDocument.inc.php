@@ -2647,7 +2647,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 	{
 		$oStorage = KTStorageManagerUtil::getSingleton();
 		
-		$thumbnailCheck = $oStorage->getDocStoragePath($this->document, 'jpg');
+		global $default;
+		
+		$varDir = $default->varDirectory;
+		
+		$thumbnailCheck = $varDir . '/thumbnails/'.$this->documentid.'.jpg';
 		
 		return $oStorage->file_exists($thumbnailCheck);
 	}
@@ -2709,9 +2713,13 @@ class KTAPI_Document extends KTAPI_FolderItem
 	{
 		$oStorage = KTStorageManagerUtil::getSingleton();
 		
-		$flashCheck = $oStorage->getDocStoragePath($this->document, 'flash');
+		global $default;
 		
-		return $oStorage->file_exists($flashCheck);
+		$varDir = $default->varDirectory;
+		
+		$thumbnailCheck = $varDir . '/flash/'.$this->documentid.'.swf';
+		
+		return $oStorage->file_exists($thumbnailCheck);
 	}
 	
 	/**
