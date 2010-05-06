@@ -4,6 +4,7 @@ require_once("../../config/dmsDefaults.php");
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 
+$oStorage = KTStorageManagerUtil::getSingleton();
 $oDocument =& Document::get(207);
 if (PEAR::isError($oDocument)) {
     print "FAILURE\n";
@@ -19,8 +20,8 @@ if (PEAR::isError($res)) {
 // saveMetadata can update status id
 $oDocument->update();
 
-if (file_exists($sFilename)) {
-    unlink($sFilename);
+if ($oStorage->file_exists($sFilename)) {
+    $oStorage->unlink($sFilename);
 }
 
 ?>

@@ -4,9 +4,10 @@ require_once("../../config/dmsDefaults.php");
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 
+$oStorage = KTStorageManagerUtil::getSingleton();
 $sLocalname = KT_DIR .  "/tests/document/dataset1/critique-of-pure-reason.txt";
-$sFilename = tempnam("/tmp", "kt_tests_document_add");
-copy($sLocalname, $sFilename);
+$sFilename = $oStorage->tempnam("/tmp", "kt_tests_document_add");
+$oStorage->copy($sLocalname, $sFilename);
 
 $oDocument =& Document::get(6);
 if (PEAR::isError($oDocument)) {

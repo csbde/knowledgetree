@@ -11,10 +11,10 @@ require_once (KT_DIR . '/ktapi/ktapi.inc.php');
  */
 class APIDocumentHelper {
     function createRandomFile($content = 'this is some text') {
-        $temp = tempnam(dirname(__FILE__), 'myfile');
-        $fp = fopen($temp, 'wt');
-        fwrite($fp, $content);
-        fclose($fp);
+    	$oStorage = KTStorageManagerUtil::getSingleton();
+        $temp = $oStorage->tempnam(dirname(__FILE__), 'myfile');
+        $oStorage->write_file($temp, 'wt', $content);
+
         return $temp;
     }
 }
@@ -44,6 +44,11 @@ class APIDocumentTestCase extends KTUnitTestCase {
     var $session;
 
     /**
+     * @var Storage Handler
+     */
+    var $oStorage;
+    
+    /**
      * Create a ktapi session
      */
     function setUp() {
@@ -51,6 +56,7 @@ class APIDocumentTestCase extends KTUnitTestCase {
         $this->session = $this->ktapi->start_system_session();
         $this->root = $this->ktapi->get_root_folder();
         $this->assertTrue($this->root instanceof KTAPI_Folder);
+        $this->oStorage = KTStorageManagerUtil::getSingleton();
     }
 
     /**
@@ -68,7 +74,7 @@ class APIDocumentTestCase extends KTUnitTestCase {
         $this->assertTrue(is_file($randomFile));
 
         $document = $this->root->add_document('testtitle', 'testname.txt', 'Default', $randomFile);
-        @unlink($randomFile);
+        $this->oStorage->unlink($randomFile);
         $this->assertNotError($document);
         if(PEAR::isError($document)) return;
 
@@ -89,7 +95,7 @@ class APIDocumentTestCase extends KTUnitTestCase {
         $this->assertTrue(is_file($randomFile));
 
         $document = $this->root->add_document('testtitle', 'testname.txt', 'Default', $randomFile);
-        @unlink($randomFile);
+        $this->oStorage->unlink($randomFile);
         $this->assertNotError($document);
         if(PEAR::isError($document)) return;
 
@@ -116,7 +122,7 @@ class APIDocumentTestCase extends KTUnitTestCase {
 
         if(PEAR::isError($document)) return;
         $this->assertTrue($document instanceof KTAPI_Document);
-        @unlink($randomFile);
+        $this->oStorage->unlink($randomFile);
         $documentid = $document->get_documentid();
 
         // get document
@@ -148,7 +154,7 @@ class APIDocumentTestCase extends KTUnitTestCase {
 
         if(PEAR::isError($document)) return;
         $this->assertTrue($document instanceof KTAPI_Document);
-        @unlink($randomFile);
+        $this->oStorage->unlink($randomFile);
 
         $download_url = $document->get_download_url();
         $this->assertTrue(is_string($download_url));
@@ -172,7 +178,7 @@ class APIDocumentTestCase extends KTUnitTestCase {
         $document = $this->root->add_document('testtitle123', 'testname123.txt', 'Default', $randomFile);
         $this->assertNotError($document);
 
-        @unlink($randomFile);
+        $this->oStorage->unlink($randomFile);
         if(PEAR::isError($document)) return;
 
         // Get the document metadata
@@ -209,7 +215,7 @@ class APIDocumentTestCase extends KTUnitTestCase {
         $document = $this->root->add_document('testtitle123', 'testname123.txt', 'Default', $randomFile);
         $this->assertNotError($document);
 
-        @unlink($randomFile);
+        $this->oStorage->unlink($randomFile);
         if(PEAR::isError($document)) return;
 
         // Add a folder to copy into
@@ -244,7 +250,7 @@ class APIDocumentTestCase extends KTUnitTestCase {
         $document = $this->root->add_document('testtitle246', 'testname246.txt', 'Default', $randomFile);
         $this->assertNotError($document);
 
-        @unlink($randomFile);
+        ($randomFile);
         if(PEAR::isError($document)) return;
 
         // Add a folder to copy into
@@ -279,7 +285,7 @@ class APIDocumentTestCase extends KTUnitTestCase {
 
         if(PEAR::isError($document)) return;
         $this->assertTrue($document instanceof KTAPI_Document);
-        @unlink($randomFile);
+        $this->oStorage->unlink($randomFile);
         $documentid = $document->get_documentid();
 
         // document should be checked in
@@ -305,7 +311,7 @@ class APIDocumentTestCase extends KTUnitTestCase {
         $randomFile = APIDocumentHelper::createRandomFile('updating the previous content');
         $this->assertTrue(is_file($randomFile));
         $document->checkin('testname369.txt', 'Updating test checkin document', $randomFile);
-        @unlink($randomFile);
+        $this->oStorage->unlink($randomFile);
 
         // document should be checked in
         $document = $this->ktapi->get_document_by_id($documentid);
@@ -323,7 +329,7 @@ class APIDocumentTestCase extends KTUnitTestCase {
         $this->assertTrue(is_file($randomFile));
 
         $document = $this->root->add_document('testtitle', 'testname', 'Default', $randomFile);
-        @unlink($randomFile);
+        $this->oStorage->unlink($randomFile);
         $this->assertNotError($document);
         if(PEAR::isError($document)) return;
 
@@ -361,7 +367,7 @@ class APIDocumentTestCase extends KTUnitTestCase {
         // filenames must be the same as above
         $document2 = $this->root->add_document('testtitle.txt', 'testname.txt', 'Default', $randomFile);
         $this->assertFalse($document2 instanceof KTAPI_Document);
-        @unlink($randomFile);
+        $this->oStorage->unlink($randomFile);
         $document->delete('because we can');
         $document->expunge();
         if ($document2 instanceof KTAPI_Document) {
@@ -391,7 +397,7 @@ class APIDocumentTestCase extends KTUnitTestCase {
         $document2 = $this->root->add_document('testtitle2.txt', 'testname.txt', 'Default', $randomFile);
         $this->assertFalse($document2 instanceof KTAPI_Document);
 
-        @unlink($randomFile);
+        $this->oStorage->unlink($randomFile);
         $document->delete('because we can');
         $document->expunge();
         if ($document2 instanceof KTAPI_Document) {
@@ -417,7 +423,7 @@ class APIDocumentTestCase extends KTUnitTestCase {
         $this->assertIsA($document, 'KTAPI_Document');
         $this->assertNoErrors();
 
-        @unlink($randomFile);
+        $this->oStorage->unlink($randomFile);
         $documentid = $document->get_documentid();
 
         // case no subscription
