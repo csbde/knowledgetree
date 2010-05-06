@@ -716,6 +716,24 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     }
     
     /**
+     * Wrapper function for tempnam
+     *
+     * @param string $dir
+     * @param string $file
+     * @return string
+     */
+    public function tempnam($dir, $file)
+    {
+        $opt['filename'] = $dir . '/' . $file;
+        $response = $this->createS3Object($opt);
+        if ($response) {
+            return $this->getShortPath($opt['filename']);
+        }
+        
+        return null;
+    }
+    
+    /**
      * Utility function to encapsulate create_object and logging of all creates
      * Additionally ensures paths are short paths
      *
