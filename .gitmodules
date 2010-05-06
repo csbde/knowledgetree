@@ -4,3 +4,6 @@
 [submodule "plugins/ktlive"]
 	path = plugins/ktlive
 	url = git@github.com:ktgit/ktlive-plugins.git
+[submodule "baobab"]
+	path = baobab
+	url = git@github.com:ktgit/ktis.git
