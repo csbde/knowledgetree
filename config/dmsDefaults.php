@@ -38,6 +38,9 @@
  *
  */
 
+// uncomment the line below to disable account routing (even if the plugin is available)
+//define('ACCOUNT_ROUTING_ENABLED',false);
+
 // stuff in the new installer section database upgrade fails without this
 global $default;
 
@@ -172,7 +175,7 @@ class KTInit {
         $logLevel = $oKTConfig->get('KnowledgeTree/logLevel');
         $properties['log4php.rootLogger'] = $logLevel . ', default';
 
-        session_start();
+//        session_start();
         $configurator->doConfigureProperties($properties, $repository);
 
         $userId = isset($_SESSION['userID'])?$_SESSION['userID']:'n/a';
@@ -194,7 +197,7 @@ class KTInit {
 	 * @return void
 	 */
     public function accountRouting(){
-		if(file_exists(KT_PLUGIN_DIR.'ktlive/liveEnable.php')){
+		if(file_exists(KT_PLUGIN_DIR.'ktlive/liveEnable.php') && !defined(ACCOUNT_ROUTING_ENABLED)){
 			require_once(KT_PLUGIN_DIR.'ktlive/liveEnable.php');
 
 			/**
@@ -356,7 +359,7 @@ class KTInit {
         }
 
         if (KTUtil::arrayGet($_SERVER, 'REQUEST_METHOD')) {
-            session_start();
+//            session_start();
             $_SESSION['sErrorMessage'] = $msg;
 
 			$url = KTUtil::kt_url().'/customerrorpage.php';
@@ -646,19 +649,6 @@ if($oKTConfig->get('CustomErrorMessages/customerrormessages') == 'on')
 	$KTInit->catchFatalErrors();
 }
 
-if (phpversion()<5){
-
-    $rootUrl = $KTInit->guessRootUrl();
-	$sErrorPage = 'http://'.$_SERVER['HTTP_HOST'].$rootUrl.'/'.'customerrorpage.php';
-
-	session_start();
-
-	$_SESSION['sErrorMessage'] = 'KnowledgeTree now requires that PHP version 5 is installed. PHP version 4 is no longer supported.';
-
-
-	header('location:'. $sErrorPage ) ;
-	exit(0);
-}
 $KTInit->setupServerVariables();
 
 // instantiate log
