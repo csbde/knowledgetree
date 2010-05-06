@@ -52,7 +52,7 @@ if (defined('DMS_DEFAULTS_INCLUDED'))
 define('DMS_DEFAULTS_INCLUDED',1);
 define('LATEST_WEBSERVICE_VERSION',2);
 
-session_start();
+if(!session_id())session_start();
 
 if (function_exists('apd_set_pprof_trace')) {
     apd_set_pprof_trace();
@@ -80,7 +80,7 @@ if (!defined('KT_DIR')) {
     define('KT_DIR', $rootLoc);
 }
 
-if(!defined('KT_PLUGIN_DIR')) define('KT_PLUGIN_DIR',KT_DIR . '/plugins/');
+if(!defined('KT_PLUGIN_DIR')) define('KT_PLUGIN_DIR',KT_DIR . '/plugins');
 
 
 if (!defined('KT_LIB_DIR')) {
@@ -200,8 +200,8 @@ class KTInit {
 	 * @return void
 	 */
     public function accountRouting(){
-		if(file_exists(KT_PLUGIN_DIR.'ktlive/liveEnable.php') && !defined(ACCOUNT_ROUTING_ENABLED)){
-			require_once(KT_PLUGIN_DIR.'ktlive/liveEnable.php');
+		if(file_exists(KT_PLUGIN_DIR.'/ktlive/liveEnable.php') && !defined(ACCOUNT_ROUTING_ENABLED)){
+			require_once(KT_PLUGIN_DIR.'/ktlive/liveEnable.php');
 
 			/**
 			 * The code below demonstrates how to use accountOverride functionality.
