@@ -144,7 +144,8 @@ class APITestCase extends KTUnitTestCase {
         $randomFile = $this->createRandomFile();
         $document2 = $this->root->add_document('title_2.txt', 'name_2.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         
-        @unlink($randomFile);
+        $storage = KTStorageManagerUtil::getSingleton();
+        @$storage->unlink($randomFile);
 
         $internalDocObject2 = $document2->getObject();
         $user = $this->ktapi->can_user_access_object_requiring_permission($internalDocObject2, $permission);
@@ -155,8 +156,8 @@ class APITestCase extends KTUnitTestCase {
 
         // clean up
         $document->delete('Testing');
-        $document2->delete('Testing');
         $document->expunge();
+        $document2->delete('Testing');
         $document2->expunge();
     }
 
@@ -191,8 +192,8 @@ class APITestCase extends KTUnitTestCase {
 
         // clean up
         $document->delete('Testing');
-        $document2->delete('Testing');
         $document->expunge();
+        $document2->delete('Testing');
         $document2->expunge();
     }
     */
@@ -492,7 +493,7 @@ class APITestCase extends KTUnitTestCase {
         $tempfilename = $this->createRandomFile('some text', $dir);
 
         $doc = $this->ktapi->add_document($folder_id,  'New API test doc', 'testdoc1.txt', 'Default',
-                                                $tempfilename, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
+                                          $tempfilename, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         
         $this->assertEqual($doc['status_code'], 0);
         $this->assertEqual($doc['results']['title'], 'New API test doc');
@@ -799,7 +800,7 @@ class APITestCase extends KTUnitTestCase {
     }
 
     /**
-     * Helper function to create a document
+     * Helper function to create a document - appears unused so not updated to use new storage driver functions
      */
     function createDocument($title, $filename, $folder = null)
     {
@@ -833,10 +834,9 @@ class APITestCase extends KTUnitTestCase {
         if(is_null($uploadDir)){
            $uploadDir = dirname(__FILE__);
         }
-        $temp = tempnam($uploadDir, 'myfile');
-        $fp = fopen($temp, 'wt');
-        fwrite($fp, $content);
-        fclose($fp);
+        $storage = KTStorageManagerUtil::getSingleton();
+        $temp = $storage->tempnam($uploadDir, 'myfile');
+        $storage->write_file($temp, null, $content);
         return $temp;
     }
 }
