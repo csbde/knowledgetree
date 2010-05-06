@@ -388,7 +388,7 @@ class KTConfig {
 
         $this->aFileRoot[$filename] =& $root;
 
-        $conf =& $root->toArray();
+        $conf = $root->toArray();
         foreach ($conf["root"] as $seck => $secv) {
             $aSectionFile[$seck] = $filename;
             if (is_array($secv)) {
