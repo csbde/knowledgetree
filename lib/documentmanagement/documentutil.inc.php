@@ -1019,13 +1019,8 @@ $sourceDocument->getName(),
     /**
      * Stores contents (filelike) from source into the document storage
      */
-<<<<<<< HEAD
-    function storeContents(&$oDocument, $oContents = null, $aOptions = null) {
-    	$oStorage = KTStorageManagerUtil::getSingleton();
-=======
     public static function storeContents(&$oDocument, $oContents = null, $aOptions = null) {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
->>>>>>> Declare all functions in documentutil static
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         if (is_null($aOptions)) {
             $aOptions = array();
         }
@@ -1279,13 +1274,8 @@ $sourceDocument->getName(),
         return true;
     }
 
-<<<<<<< HEAD
-    function copy($oDocument, $oDestinationFolder, $sReason = null, $sDestinationDocName = null, $bulk_action = false) {
-    	$oStorage = KTStorageManagerUtil::getSingleton();
-=======
     public static function copy($oDocument, $oDestinationFolder, $sReason = null, $sDestinationDocName = null, $bulk_action = false) {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
->>>>>>> Declare all functions in documentutil static
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         // 1. generate a new triad of content, metadata and core objects.
         // 2. update the storage path.
 		//print '--------------------------------- BEFORE';
@@ -1443,13 +1433,8 @@ $sourceDocument->getName(),
         return $oNewDocument;
     }
 
-<<<<<<< HEAD
-    function rename($oDocument, $sNewFilename, $oUser) {
-        $oStorage = KTStorageManagerUtil::getSingleton();
-=======
     public static function rename($oDocument, $sNewFilename, $oUser) {
-        $oStorage =& KTStorageManagerUtil::getSingleton();
->>>>>>> Declare all functions in documentutil static
+        $oStorage = KTStorageManagerUtil::getSingleton();
         $oKTConfig = KTConfig::getSingleton();
         $updateVersion = $oKTConfig->get('tweaks/incrementVersionOnRename', true);
 
@@ -1534,13 +1519,8 @@ $sourceDocument->getName(),
       *                 string $sReason
       *                 boolean $bulk_action
       */
-<<<<<<< HEAD
-    function move($oDocument, $oToFolder, $oUser = null, $sReason = null, $bulk_action = false) {
-    	$oStorage = KTStorageManagerUtil::getSingleton();
-=======
     public static function move($oDocument, $oToFolder, $oUser = null, $sReason = null, $bulk_action = false) {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
->>>>>>> Declare all functions in documentutil static
+    	$oStorage = KTStorageManagerUtil::getSingleton();
     	//make sure we move the symlink, and the document it's linking to
 		if($oDocument->isSymbolicLink()){
     		$oDocument->switchToRealCore();
