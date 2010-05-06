@@ -48,7 +48,7 @@ class schedulerUtil extends KTUtil
     * Parameters must be passed as an associative array => array('param1' => 'value1')
     */
     function createTask($sTask, $sScript, $aParams, $sFreq, $iStartTime = NULL){
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         // Path to scripts
         $ktPath = '/var/tasks/';
         $path = KT_DIR.$ktPath;

@@ -85,9 +85,10 @@ function checkFile($path, $first = true) {
 
 function checkDirectory($path) {
     global $fsPath, $aIgnore;
+    $oStorage = KTStorageManagerUtil::getSingleton();
     $fullpath = sprintf('%s/%s', $fsPath, $path);
 
-    if (!is_dir($fullpath)) {
+    if (!$oStorage->is_dir($fullpath)) {
         print "Not a directory: $fullpath\n";
     }
 
@@ -115,7 +116,7 @@ function checkDirectory($path) {
         if (in_array($filename, $aIgnore)) { continue; }
         $subrelpath = sprintf('%s/%s', $path, $filename);
         $subfullpath = sprintf('%s/%s', $fsPath, $subrelpath);
-        if (is_dir($subfullpath)) {
+        if ($oStorage->is_dir($subfullpath)) {
             checkDirectory($subrelpath);
         }
         if (is_file($subfullpath)) {
@@ -126,9 +127,10 @@ function checkDirectory($path) {
 
 function checkRepoFolder($oFolder) {
     global $fsPath, $aRepoFolderProblems;
+    $oStorage = KTStorageManagerUtil::getSingleton();
     $sFolderPath = sprintf('%s/%s', $oFolder->getFullPath(), $oFolder->getName());
     $sFullPath = sprintf('%s/%s', $fsPath, $sFolderPath);
-    if (!is_dir($sFullPath)) {
+    if (!$oStorage->is_dir($sFullPath)) {
         $aRepoFolderProblems[] = $sFolderPath;
     }
 }

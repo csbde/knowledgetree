@@ -61,7 +61,7 @@ require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 
 class KTDocumentUtil {
     function checkin($oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false, $bulk_action = false) {
-        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oStorage = KTStorageManagerUtil::getSingleton();
 
         // NOTE working with a local php uploaded file and so will not need to use the storage driver
         $iFileSize = filesize($sFilename);
@@ -474,7 +474,7 @@ $sourceDocument->getName(),
     // Overwrite the document
     function overwrite($oDocument, $sFilename, $sTempFileName, $oUser, $aOptions) {
         //$oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false
-        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oStorage = KTStorageManagerUtil::getSingleton();
         $iFileSize = filesize($sTempFileName);
 
         // Check that document is not checked out
@@ -1021,7 +1021,7 @@ $sourceDocument->getName(),
      * Stores contents (filelike) from source into the document storage
      */
     function storeContents(&$oDocument, $oContents = null, $aOptions = null) {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         if (is_null($aOptions)) {
             $aOptions = array();
         }
@@ -1082,7 +1082,7 @@ $sourceDocument->getName(),
     // {{{ delete
     function delete($oDocument, $sReason, $iDestFolderId = null, $bulk_action = false) {
     	global $default;
-        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oStorage = KTStorageManagerUtil::getSingleton();
 
     	// use the deleteSymbolicLink function is this is a symlink
         if ($oDocument->isSymbolicLink())
@@ -1276,7 +1276,7 @@ $sourceDocument->getName(),
     }
 
     function copy($oDocument, $oDestinationFolder, $sReason = null, $sDestinationDocName = null, $bulk_action = false) {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         // 1. generate a new triad of content, metadata and core objects.
         // 2. update the storage path.
 		//print '--------------------------------- BEFORE';
@@ -1435,7 +1435,7 @@ $sourceDocument->getName(),
     }
 
     function rename($oDocument, $sNewFilename, $oUser) {
-        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oStorage = KTStorageManagerUtil::getSingleton();
         $oKTConfig = KTConfig::getSingleton();
         $updateVersion = $oKTConfig->get('tweaks/incrementVersionOnRename', true);
 
@@ -1521,7 +1521,7 @@ $sourceDocument->getName(),
       *                 boolean $bulk_action
       */
     function move($oDocument, $oToFolder, $oUser = null, $sReason = null, $bulk_action = false) {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
     	//make sure we move the symlink, and the document it's linking to
 		if($oDocument->isSymbolicLink()){
     		$oDocument->switchToRealCore();
@@ -1608,7 +1608,7 @@ $sourceDocument->getName(),
     */
     function deleteVersion($oDocument, $iVersionID, $sReason){
     	global $default;
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 		
         $oDocument =& KTUtil::getObject('Document', $oDocument);
         $oVersion =& KTDocumentMetadataVersion::get($iVersionID);
@@ -1672,7 +1672,7 @@ $sourceDocument->getName(),
     public static function getDocumentContent($oDocument)
     {
         global $default;
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
         //get the path to the document on the server
         $path = $oStorage->getDocStoragePath($oDocument);
 

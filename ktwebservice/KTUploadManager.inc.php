@@ -71,7 +71,7 @@ class KTUploadManager
 
 	function get_temp_filename($prefix)
 	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 		$tempfilename = $oStorage->tempnam($this->temp_dir,$prefix);
 
 		return $tempfilename;
@@ -79,7 +79,7 @@ class KTUploadManager
 
     function is_valid_temporary_file($tempfilename)
     {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $tempdir = substr($tempfilename,0,strlen($this->temp_dir));
         $tempdir = str_replace('\\','/', $tempdir);
 
@@ -140,7 +140,7 @@ class KTUploadManager
 
 	function store_base64_file($base64, $prefix= 'sa_')
 	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 		$tempfilename = $this->get_temp_filename($prefix);
 		if (!$oStorage->is_writable($tempfilename))
 		{
@@ -169,7 +169,7 @@ class KTUploadManager
      */
     function store_file($content, $prefix= 'sa_')
 	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 		$tempfilename = $this->get_temp_filename($prefix);
 		if (!$oStorage->is_writable($tempfilename))
 		{
@@ -199,7 +199,7 @@ class KTUploadManager
 	 */
 	function uploaded($filename, $tempfile, $action, $unique_file_id = null)
 	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 		$filename=basename($filename);
 		$now=date('Y-m-d H:i:s');
 		$now_str=date('YmdHis') + rand(0, 32768);
@@ -335,7 +335,7 @@ class KTUploadManager
 	 */
 	function cleanup()
 	{
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 		list($year,$mon,$day,$hour, $min) = explode(':', date('Y:m:d:H:i'));
 		$expirydate = date('Y-m-d H:i:s', mktime($hour, $min - $this->age, 0, $mon, $day, $year));
 

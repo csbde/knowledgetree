@@ -113,9 +113,10 @@ class ManageCleanupDispatcher extends KTAdminDispatcher {
     }
 
     function checkDirectory($path) {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $fullpath = sprintf("%s/%s", $this->fsPath, $path);
 
-        if (!is_dir($fullpath)) {
+        if (!$oStorage->is_dir($fullpath)) {
             print "Not a directory: $fullpath\n";
         }
 
@@ -130,7 +131,7 @@ class ManageCleanupDispatcher extends KTAdminDispatcher {
                 $subrelpath = substr($subrelpath, 1);
             }
             $subfullpath = sprintf("%s/%s", $this->fsPath, $subrelpath);
-            if (is_dir($subfullpath)) {
+            if ($oStorage->is_dir($subfullpath)) {
                 $this->checkDirectory($subrelpath);
             }
             if (is_file($subfullpath)) {

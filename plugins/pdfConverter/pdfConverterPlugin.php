@@ -51,7 +51,7 @@ class DeletePDFTrigger {
      * On deleting/checkin a document, send the document owner and alert creator a notification email
      */
     function postValidate() {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $oDoc = $this->aInfo['document'];
         $docId = $oDoc->getId();
         $docInfo = array('id' => $docId, 'name' => $oDoc->getName());

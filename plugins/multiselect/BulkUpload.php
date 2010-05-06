@@ -243,7 +243,7 @@ class InetBulkUploadFolderAction extends KTFolderAction {
 	 * iNET Process
 	 */
 	function do_upload() {
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 		set_time_limit(0);
 		global $default;
 		$aErrorOptions = array(

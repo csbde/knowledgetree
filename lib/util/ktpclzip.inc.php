@@ -71,7 +71,7 @@ class KTPclZip {
 		
 		//TODO: Cherry pick some of this logic borrowed from lib/foldremanagement/compressionArchiveUtil.inc.php
 		$this->oKTConfig = & KTConfig::getSingleton ();
-		$this->oStorage = & KTStorageManagerUtil::getSingleton ();
+		$this->oStorage = KTStorageManagerUtil::getSingleton();
 		
 		$this->sOutputEncoding = $this->oKTConfig->get ( 'export/encoding', 'UTF-8' );
 		$this->extension = $extension;
@@ -117,7 +117,7 @@ class KTPclZip {
 	 */
 	function createZipFile($sFolder) {
 		//Overriding $this->aPaths with specified
-        if (!is_dir($sFolder)) {
+        if (!$this->oStorage->is_dir($sFolder)) {
             PEAR::raiseError( sprintf( _kt( "Couldn't create zip file, invalid folder was specified %s " ) , $sFolder ));
         }
 

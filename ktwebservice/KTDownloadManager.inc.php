@@ -161,7 +161,7 @@ class KTDownloadManager
 		    return $this->download_ext($document_id, $hash, $content_version_id);
 		}
 
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 
         $ktapi = &new KTAPI();
         $res = $ktapi->get_active_session($this->session, null, $apptype);
@@ -197,7 +197,7 @@ class KTDownloadManager
 
 	function download_ext($document_id, $hash, $content_version_id = null)
 	{
-	    $oStorage =& KTStorageManagerUtil::getSingleton();
+	    $oStorage = KTStorageManagerUtil::getSingleton();
 	    $document = Document::get($document_id);
 	    if (PEAR::isError($document))
 	    {

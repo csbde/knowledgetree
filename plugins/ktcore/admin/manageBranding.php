@@ -470,7 +470,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
 
     function do_upload(){
         global $default;
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 
 		$oForm = $this->getUploadLogoForm();
         $res = $oForm->validate();
@@ -1078,7 +1078,7 @@ class ManageBrandDispatcher extends KTAdminDispatcher {
      */
     function do_apply(){
         global $default;
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 		
         $rootPath = $default->varDirectory . '/';
         

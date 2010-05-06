@@ -46,7 +46,7 @@ class KTFSImportStorage extends KTImportStorage {
     }
 
     function init() {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         if (!$oStorage->file_exists($this->sBasePath)) {
             return PEAR::raiseError(_kt("Filesystem location given does not exist"));
         }
@@ -56,7 +56,7 @@ class KTFSImportStorage extends KTImportStorage {
     }
 
     function listDocuments($sFolderPath) {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $ret = array();
         if (substr($sFolderPath, -1) === "/") {
             $sFolderPath = substr($sFolderPath, 0, -1);
@@ -90,7 +90,7 @@ class KTFSImportStorage extends KTImportStorage {
     }
 
     function listFolders($sFolderPath) {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $ret = array();
         if (substr($sFolderPath, -1) === "/") {
             $sFolderPath = substr($sFolderPath, 0, -1);

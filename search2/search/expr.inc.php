@@ -309,7 +309,7 @@ class Expr
 
     public function toVizGraph($options=array())
     {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $str = "digraph tree {\n";
         if (isset($options['left-to-right']) && $options['left-to-right'])
         {

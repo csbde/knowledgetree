@@ -20,7 +20,6 @@
  *
  */
 
-// TODO : Restructure ktqueue folder
 /**
  * Load KTQueue Complex event
  */

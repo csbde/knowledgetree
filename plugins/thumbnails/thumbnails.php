@@ -163,7 +163,7 @@ class thumbnailGenerator extends BaseProcessor
                - check out ktcore/KTDocumentViewlets.php
                - viewlet class is below
 	    */
-	    $oStorage =& KTStorageManagerUtil::getSingleton();
+	    $oStorage = KTStorageManagerUtil::getSingleton();
 		global $default;
 
 		$type = 'pdf'; // default type expected
@@ -272,7 +272,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     }
 
     public function renderThumbnail($documentId, $height = null, $modal = null) {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         // Set up the template
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate('thumbnail_viewlet');
@@ -351,7 +351,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     // this is used for anywhere which might require display resizing based on the presence or absence of the thumbnail
     public function getDisplaySize($documentId)
     {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
 		$thumbnailfile = $oStorage->getDocStoragePath($this->oDocument, 'thumbnail', $documentId);
 		if($oStorage->file_exists($thumbnailfile))
 		{
@@ -387,7 +387,7 @@ class ThumbnailColumn extends AdvancedColumn {
      */
     function renderData($aDataRow) {
         if ($aDataRow["type"] == "document") {
-        	$oStorage =& KTStorageManagerUtil::getSingleton();
+        	$oStorage = KTStorageManagerUtil::getSingleton();
             $docid = $aDataRow['docid'];
             $oDoc = $aDataRow['document'];
 

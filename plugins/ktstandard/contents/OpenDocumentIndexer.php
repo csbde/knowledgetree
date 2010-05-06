@@ -115,7 +115,7 @@ class KTOpenDocumentIndexerTrigger extends KTBaseIndexerTrigger {
     }
 
     function extract_contents($sFilename, $sTmpFilename) {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $sUnzipCommand = KTUtil::findCommand("import/unzip", "unzip");
         if (empty($sUnzipCommand)) {
             return;

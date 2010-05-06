@@ -112,7 +112,7 @@ class KTZipImportStorage extends KTFSImportStorage {
     }
 
     function init() {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get("urls/tmpDirectory");
 
@@ -175,7 +175,7 @@ class KTZipImportStorage extends KTFSImportStorage {
     }
 
     function cleanup() {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         if ($this->sBasePath && $oStorage->file_exists($this->sBasePath)) {
             KTUtil::deleteDirectory($this->sBasePath);
             $this->sBasePath = null;

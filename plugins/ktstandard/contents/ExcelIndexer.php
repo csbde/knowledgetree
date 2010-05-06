@@ -67,7 +67,7 @@ class KTExcelIndexerTrigger extends KTBaseIndexerTrigger {
     }
 
     function _fallbackExcelReader($sFilename, $sTempFilename) {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         require_once(KT_DIR . '/thirdparty/excelreader/Excel/reader.php');
         $reader = new Spreadsheet_Excel_Reader();
         $reader->setOutputEncoding('UTF-8');

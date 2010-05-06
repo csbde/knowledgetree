@@ -73,7 +73,7 @@ class PDFGeneratorAction extends KTDocumentAction {
 
         if(!empty($this->oDocument))
         {
-        	$oStorage =& KTStorageManagerUtil::getSingleton();
+        	$oStorage = KTStorageManagerUtil::getSingleton();
             $iDocId = $this->oDocument->iId;
 
             $sHostPath = KTUtil::kt_url();
@@ -233,7 +233,7 @@ class PDFGeneratorAction extends KTDocumentAction {
     public function do_pdfdownload()
     {
         global $default;
-        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oStorage = KTStorageManagerUtil::getSingleton();
         $iDocId = $this->oDocument->iId;
 
         // Check if pdf has already been created
@@ -307,7 +307,7 @@ class PDFGeneratorAction extends KTDocumentAction {
      */
     function do_pdfdownload_deprecated() {
         $oDocument = $this->oDocument;
-        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oStorage = KTStorageManagerUtil::getSingleton();
         $oConfig =& KTConfig::getSingleton();
         $default = realpath(str_replace('\\','/',KT_DIR . '/../openoffice/program'));
         putenv('ooProgramPath=' . $oConfig->get('openoffice/programPath', $default));

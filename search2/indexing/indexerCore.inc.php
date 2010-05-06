@@ -42,6 +42,7 @@ require_once('indexing/extractorCore.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/scheduler/schedulerUtil.php');
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(KT_DIR . '/search2/indexing/lib/RestSolr.inc.php');
+//TODO: move this out to ktlive plugin
 require_once(KT_DIR . '/search2/documentProcessor/sqsqueue/queueDispatcher.php');
 
 class IndexerInconsistencyException extends Exception {};
@@ -653,8 +654,11 @@ abstract class Indexer
 
         $default->log->debug("index: Queuing indexing of $document_id");
         $config = KTConfig::getSingleton();
+        
+        //TODO: Switch this out to ktlive plugin test using ACCOUNT_ROUTING_ENABLED
         $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
 		if($isSQSEnabled) {
+			//liveQueue::addProcess('indexing',$document)
 			$oQueueDispatcher = new queueDispatcher();
         	// Document added, create indexing complex event
         	$oQueueDispatcher->addProcess('indexing', $document);
@@ -678,6 +682,7 @@ abstract class Indexer
         DBUtil::runQuery($sql);
 
         $default->log->debug("Processing queue: Queuing document for processing - $document_id");
+        //TODO: Switch this out to ktlive plugin test using ACCOUNT_ROUTING_ENABLED
         if($isSQSEnabled)
         {
         	// Document added, create processing complex event
@@ -917,7 +922,7 @@ abstract class Indexer
      */
     protected function filterText($filename)
     {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $content = $oStorage->file_get_contents($filename);
 
         // if the file is empty skip the filter - document was probably empty
@@ -1022,7 +1027,7 @@ abstract class Indexer
     private function doesDiagnosticsPass($simple=false)
     {
         global $default;
-		$oStorage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
         $config =& KTConfig::getSingleton();
         // create a index log lock file in case there are errors, and we don't need to log them forever!
         // this function will create the lockfile if an error is detected. It will be removed as soon
@@ -1478,7 +1483,7 @@ abstract class Indexer
     public function processDocument($document, $docinfo, $extract = true)
     {
         global $default;
-        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oStorage = KTStorageManagerUtil::getSingleton();
         static $extractorCache = array();
 
         //$oSolr = new RestSolr('localhost', '8983', '/solr/');
@@ -1760,7 +1765,7 @@ abstract class Indexer
 
     public function migrateDocuments($max=null)
     {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         global $default;
 
         $default->log->info(_kt('migrateDocuments: starting'));
@@ -1900,7 +1905,7 @@ abstract class Indexer
 
     public function updateDocumentIndex($docId, $text)
     {
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $config = KTConfig::getSingleton();
         $tempPath = $config->get("urls/tmpDirectory");
         $tempFile = $oStorage->tempnam($tempPath,'ud_');

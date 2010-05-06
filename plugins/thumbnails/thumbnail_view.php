@@ -1,7 +1,7 @@
 <?php
 
 require_once('../../config/dmsDefaults.php');
-$oStorage =& KTStorageManagerUtil::getSingleton();
+$oStorage = KTStorageManagerUtil::getSingleton();
 // Check the session, ensure the user is logged in
 $session = new Session();
 $sessionStatus = $session->verify();
