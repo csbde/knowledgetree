@@ -703,7 +703,6 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     }
     
     /**
-<<<<<<< Updated upstream:lib/storage/amazons3storagemanager.inc.php
      * Copies a file
      *
      * @param string $source
@@ -717,8 +716,6 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     }
     
     /**
-=======
->>>>>>> Stashed changes:lib/storage/amazons3storagemanager.inc.php
      * Utility function to encapsulate create_object and logging of all creates
      * Additionally ensures paths are short paths
      *
