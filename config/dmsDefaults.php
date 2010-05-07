@@ -607,7 +607,7 @@ class KTInit {
     // {{{ initTesting
     function initTesting() {
         $oKTConfig =& KTConfig::getSingleton();
-        $sConfigFile = trim(@file_get_contents(KT_DIR .  '/config/test-config-path'));
+        $sConfigFile = file_exists(KT_DIR .  '/config/test-config-path') ? trim(file_get_contents(KT_DIR .  '/config/test-config-path')) : '';
         if (empty($sConfigFile)) {
             $sConfigFile = 'config/test.ini';
         }
