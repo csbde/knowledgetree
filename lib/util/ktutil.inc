@@ -1364,6 +1364,14 @@ class KTUtil {
     	}
     	return $result;
     }
+    
+    public static function documentIsQueued($document_id=NULL){
+    	$sql="SELECT document_id FROM `process_queue` WHERE document_id='{$document_id}'";
+    	$res=DBUtil::getOneResultKey($sql,"document_id");
+    	$ret=PEAR::isError($res) ? false : (count($res)>0 ? true : false);
+    	return $ret;
+    }
+    
 }
 
 /**

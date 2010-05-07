@@ -105,7 +105,8 @@ class pdfConverter extends BaseProcessor
         if(!$available){
             global $default;
             $default->log->error("PDF Converter: Cannot connect to Open Office Server on host {$this->ooHost} : {$this->ooPort}");
-            return _kt('Cannot connect to Open Office Server.');
+            $errMsg=_kt('Cannot connect to Open Office Server.');
+            return $errMsg;
         }
 
         $res = $this->convertFile($path, $ext);

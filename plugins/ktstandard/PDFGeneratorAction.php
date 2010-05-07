@@ -252,13 +252,22 @@ class PDFGeneratorAction extends KTDocumentAction {
         if($oStorage->file_exists($file))
         {
             if(KTUtil::download($file, $mimetype, $size, $name) === false)
-            {
+            {	
                 $default->log->error('PDF Generator: PDF file could not be downloaded because it doesn\'t exist');
                 $this->errorRedirectToMain(_kt('PDF file could not be downloaded because it doesn\'t exist'));
             }
             exit();
         }
-
+        
+        /**
+         * Account Routing:: Stuff still in queue
+         */
+        if(ACCOUNT_ROUTING_ENABLED){
+			$default->log->error('PDF Generator: PDF file is in the process queue and not available at this time.');
+			$this->errorRedirectToMain(_kt('PDF File is currently queued for processing. Please try again later.'));
+        	exit();
+        }
+        
         // If not - create one
         $converter = new pdfConverter();
         $converter->setDocument($this->oDocument);
