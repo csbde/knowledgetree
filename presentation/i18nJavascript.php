@@ -67,7 +67,7 @@ class JavascriptTranslationDispatcher extends KTDispatcher {
 
 ob_start();
 
-$oD =& new JavascriptTranslationDispatcher();
+$oD = new JavascriptTranslationDispatcher();
 $oD->dispatch();
 
 $jsVar = ob_get_flush();

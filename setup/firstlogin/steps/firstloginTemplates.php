@@ -44,9 +44,10 @@
 */
 
 // Load needed system files.
-require_once(SYSTEM_DIR . "config/dmsDefaults.php");
+require_once(SYSTEM_DIR . 'config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+require_once(KT_DIR . '/setup/firstlogin/step.php');
 
 class firstloginTemplates extends Step {
     /**
