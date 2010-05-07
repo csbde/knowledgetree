@@ -317,8 +317,7 @@ class APITestCase extends KTUnitTestCase {
     public function testGetDocumentById()
     {
         // create the document object
-        $randomFile = $this->createRandomFile();
-        
+        $randomFile = $this->createRandomFile();        
         $document = $this->root->add_document('title_5.txt', 'name_5.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'reason');
         // NOTE the add_document going through the (S3) storage driver as it does means this file is already removed...
         // TODO check that the hash storage driver acts the same
@@ -487,7 +486,6 @@ class APITestCase extends KTUnitTestCase {
         // Create a folder
         $result1 = $this->ktapi->create_folder(1, 'New test api folder', KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $folder_id = $result1['results']['id'];
-
         $this->assertEqual($result1['status_code'], 0);
         $this->assertTrue($result1['results']['parent_id'] == 1);
 
@@ -563,8 +561,7 @@ class APITestCase extends KTUnitTestCase {
         $dir = $default->uploadDirectory;
         $tempfilename = $this->createRandomFile('some text', $dir);
         $doc = $this->ktapi->add_document($folder_id,  'New API test doc', 'testdoc1.txt', 'Default', $tempfilename,
-                                              KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        
+                                          KT_TEST_USER, KT_TEST_PASS, 'Testing API');        
         $doc_id = $doc['results']['document_id'];
         $this->assertEqual($doc['status_code'], 0);
 
@@ -610,6 +607,9 @@ class APITestCase extends KTUnitTestCase {
         // Delete the document
         $result3 = $this->ktapi->delete_document($doc_id, 'Testing API', true, KT_TEST_USER, KT_TEST_PASS);
         $this->assertEqual($result3['status_code'], 0);
+        // expunge the document
+        $docObject = $this->ktapi->get_document_by_id($doc_id);
+        $docObject->expunge();
 
         // Clean up - delete the folder
         $this->ktapi->delete_folder($folder_id, 'Testing API', KT_TEST_USER, KT_TEST_PASS);
