@@ -38,6 +38,11 @@
  * Contributor( s): ______________________________________
  */
 
+// NOTE file checks after writing are not implemented here as in the hash driver, because
+//      Amazon will not return a 200 response unless the file was successfully and fully created
+//      (see Amazon docs for confirmation that a 200 response is only returned if an object
+//      was fully and successfully created)
+
 // TODO all the file exists checks are currently head requests instead, but they are probably not needed for S3
 //      (operations will fail with an error code rather than a php warning or error);
 //      could speed up the code by removing them
@@ -137,14 +142,16 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         if ($this->writeToFile($sTmpFilePath, $amazonS3Path, $aOptions, $oDocument)) {
             $end_time = KTUtil::getBenchmarkTime();
             $default->log->info(sprintf("Uploaded %d byte file in %.3f seconds", $file_size, $end_time - $start_time));
+            
+            return true;
 
-            $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
-            if ($response->isOK()) {
-                return true;
-            }
-            else {
-                return new PEAR_Error("$amazonS3Path does not exist after write to storage path. Options: " . print_r($aOptions,true));
-            }
+//            $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
+//            if ($response->isOK()) {
+//                return true;
+//            }
+//            else {
+//                return new PEAR_Error("$amazonS3Path does not exist after write to storage path. Options: " . print_r($aOptions,true));
+//            }
         }
         else {
             return new PEAR_Error("Could not write $sTmpFilePath to $amazonS3Path with options: " . print_r($aOptions,true));
@@ -164,12 +171,14 @@ class KTAmazonS3StorageManager extends KTStorageManager {
             $sTmpFilePath = str_replace('\\', '/', $sTmpFilePath);
         }
         
-        if ($this->writeToFile($sUploadedFile, $sTmpFilePath, $aOptions)) {
-            $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
-            return $response->isOK();
-        }
+        return $this->writeToFile($sUploadedFile, $sTmpFilePath, $aOptions);
         
-        return false;
+//        if ($this->writeToFile($sUploadedFile, $sTmpFilePath, $aOptions)) {
+//            $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
+//            return $response->isOK();
+//        }
+//        
+//        return false;
     }
 
     /**
@@ -298,8 +307,8 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         $amazonS3Path = 'Documents/'. $oDocument->getStoragePath();
 
         // Ensure the file exists
-        $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
-        if ($response->isOK()) {
+//        $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
+//        if ($response->isOK()) {
             // Get the mime type
             $mimeId = $oDocument->getMimeTypeID();
             $mimetype = KTMime::getMimeTypeName($mimeId);
@@ -328,7 +337,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
                     // TODO logging
                 }
             }
-        }
+//        }
         else {
             // TODO logging
             return false;
@@ -362,8 +371,8 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         $amazonS3Path = sprintf("%s/%s", 'Documents', $this->getPath($oContentVersion));
 
         // Ensure the file exists
-        $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
-        if ($response->isOK()) {
+//        $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
+//        if ($response->isOK()) {
             // Get the mime type
             $mimeId = $oContentVersion->getMimeTypeID();
             $mimetype = KTMime::getMimeTypeName($mimeId);
@@ -385,7 +394,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
                     KTUtil::download($sPath, $mimetype, $iFileSize, $sFileName);
                 }
             }
-        }
+//        }
         else {
             return false;
         }
@@ -405,14 +414,14 @@ class KTAmazonS3StorageManager extends KTStorageManager {
      */
     public function move($sOldDocumentPath, $sNewDocumentPath)
     {
-        $response = $this->amazonS3->head_object($this->bucket, $sOldDocumentPath);
-        if ($response->isOK()) {
+//        $response = $this->amazonS3->head_object($this->bucket, $sOldDocumentPath);
+//        if ($response->isOK()) {
             // move the file to the new destination
             $response = $this->moveS3Object($sOldDocumentPath, $sNewDocumentPath);
             return $response;
-        }
-        
-        return false;
+//        }
+//        
+//        return false;
     }
 
     public function moveFolder($oFolder, $oDestFolder)
@@ -493,13 +502,13 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         $amazonS3Path = sprintf("%s/%s", 'Documents', $oContentVersion->getStoragePath());
         // NOTE do we need to check, or can we just issue the delete anyway?
         //      existing storage driver checks, so we check...
-        $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
-        if ($response->isOK()) {
+//        $response = $this->amazonS3->head_object($this->bucket, $amazonS3Path);
+//        if ($response->isOK()) {
             $response = $this->amazonS3->delete_object($this->bucket, $amazonS3Path);
-        }
+//        }
 
         // TODO proper error handling
-        return true;
+        return $response;
     }
 
     public function restore($oDocument)
