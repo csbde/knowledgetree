@@ -42,6 +42,7 @@ class APITestCase extends KTUnitTestCase {
         $this->session = $this->ktapi->start_session(KT_TEST_USER, KT_TEST_PASS);
         $this->root = $this->ktapi->get_root_folder();
         $this->assertTrue($this->root instanceof KTAPI_Folder);
+        $this->storage = KTStorageManagerUtil::getSingleton();
     }
 
     /**
@@ -128,7 +129,9 @@ class APITestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('title_1.txt', 'name_1.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        @unlink($randomFile);
+        // NOTE the add_document going through the (S3) storage driver as it does means this file is already removed...
+        // TODO check that the hash storage driver acts the same
+        @$this->storage->unlink($randomFile);
 
         $internalDocObject = $document->getObject();
         $user = $this->ktapi->can_user_access_object_requiring_permission($internalDocObject, $permission);
@@ -143,9 +146,9 @@ class APITestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document2 = $this->root->add_document('title_2.txt', 'name_2.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        
-        $storage = KTStorageManagerUtil::getSingleton();
-        @$storage->unlink($randomFile);
+        // NOTE the add_document going through the (S3) storage driver as it does means this file is already removed...
+        // TODO check that the hash storage driver acts the same
+        @$this->storage->unlink($randomFile);
 
         $internalDocObject2 = $document2->getObject();
         $user = $this->ktapi->can_user_access_object_requiring_permission($internalDocObject2, $permission);
@@ -315,11 +318,13 @@ class APITestCase extends KTUnitTestCase {
     {
         // create the document object
         $randomFile = $this->createRandomFile();
+        
         $document = $this->root->add_document('title_5.txt', 'name_5.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'reason');
-        @unlink($randomFile);
+        // NOTE the add_document going through the (S3) storage driver as it does means this file is already removed...
+        // TODO check that the hash storage driver acts the same
+        @$this->storage->unlink($randomFile);
 
         $documentID = $document->get_documentid();
-
         $docObject = $this->ktapi->get_document_by_id($documentID);
 
         $this->assertNotNull($docObject);
@@ -447,7 +452,9 @@ class APITestCase extends KTUnitTestCase {
         // Create a document and subscribe to it
         $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('test title 1', 'testfile1.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        @unlink($randomFile);
+        // NOTE the add_document going through the (S3) storage driver as it does means this file is already removed...
+        // TODO check that the hash storage driver acts the same
+        @$this->storage->unlink($randomFile);
 
         $this->assertEntity($document, 'KTAPI_Document');
         if(PEAR::isError($document)) return;
@@ -471,6 +478,8 @@ class APITestCase extends KTUnitTestCase {
      */
     public function testFolderApiFunctions()
     {
+        global $default;
+        
         // check for a negative result
         $result = $this->ktapi->create_folder(0, 'New test error api folder', KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $this->assertNotEqual($result['status_code'], 0);
@@ -488,10 +497,8 @@ class APITestCase extends KTUnitTestCase {
         $this->assertEqual($result2['status_code'], 0);
 
         // Add a document
-        global $default;
         $dir = $default->uploadDirectory;
         $tempfilename = $this->createRandomFile('some text', $dir);
-
         $doc = $this->ktapi->add_document($folder_id,  'New API test doc', 'testdoc1.txt', 'Default',
                                           $tempfilename, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         
@@ -540,6 +547,8 @@ class APITestCase extends KTUnitTestCase {
      */
     public function testDocumentApiFunctions()
     {
+        global $default;
+        
         // Create a folder
         $result1 = $this->ktapi->create_folder(1, 'New test api folder', KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $folder_id = $result1['results']['id'];
@@ -551,7 +560,6 @@ class APITestCase extends KTUnitTestCase {
         $this->assertEqual($result2['status_code'], 0);
 
         // Add a document
-        global $default;
         $dir = $default->uploadDirectory;
         $tempfilename = $this->createRandomFile('some text', $dir);
         $doc = $this->ktapi->add_document($folder_id,  'New API test doc', 'testdoc1.txt', 'Default', $tempfilename,
@@ -590,7 +598,6 @@ class APITestCase extends KTUnitTestCase {
         $dir = $default->uploadDirectory;
         $tempfilename = $this->createRandomFile('some text', $dir);
         $result2 = $this->ktapi->checkin_document($doc_id,  'testdoc1.txt', 'Testing API', $tempfilename, false, KT_TEST_USER, KT_TEST_PASS);
-        
         $this->assertEqual($result2['status_code'], 0);
         $this->assertEqual($result2['results']['document_id'], $doc_id);
 
@@ -815,7 +822,7 @@ class APITestCase extends KTUnitTestCase {
         $document = $folder->add_document($title, $filename, 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $this->assertNotError($document);
 
-        @unlink($randomFile);
+        @$this->storage->unlink($randomFile);
         if(PEAR::isError($document)) return false;
 
         return $document;
@@ -834,9 +841,8 @@ class APITestCase extends KTUnitTestCase {
         if(is_null($uploadDir)){
            $uploadDir = dirname(__FILE__);
         }
-        $storage = KTStorageManagerUtil::getSingleton();
-        $temp = $storage->tempnam($uploadDir, 'myfile');
-        $storage->write_file($temp, null, $content);
+        $temp = $this->storage->tempnam($uploadDir, 'myfile');
+        $this->storage->write_file($temp, null, $content);
         return $temp;
     }
 }
