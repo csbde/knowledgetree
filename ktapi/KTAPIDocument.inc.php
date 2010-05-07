@@ -265,7 +265,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		$filename = KTUtil::replaceInvalidCharacters($filename);
 
-		$options = array('major_update'=>$major_update);
+		$options = array('major_update' => $major_update);
 
 		$currentfilename = $this->document->getFileName();
 		if ($filename != $currentfilename)
@@ -2318,6 +2318,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function expunge()
 	{
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+		
 		if ($this->document->getStatusID() != 3)
 		{
 			return new PEAR_Error('You should not purge this');
@@ -2328,7 +2330,6 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$transaction = new DocumentTransaction($this->document, "Document expunged", 'ktcore.transactions.expunge');
         $transaction->create();
         $this->document->cleanupDocumentData($this->documentid);
-		$oStorage =& KTStorageManagerUtil::getSingleton();
 		$result= $oStorage->expunge($this->document);
         $this->document->delete();
 

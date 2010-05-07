@@ -3033,7 +3033,7 @@ class KTAPI
 		return $this->get_document_detail($document_id);
     }
 
-    public function  checkin_small_document_with_metadata($document_id,  $filename, $reason, $base64, $major_update,
+    public function checkin_small_document_with_metadata($document_id,  $filename, $reason, $base64, $major_update,
                                                           $metadata, $sysdata, $sig_username = '', $sig_password = '')
     {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
