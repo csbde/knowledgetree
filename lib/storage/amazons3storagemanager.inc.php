@@ -210,6 +210,10 @@ class KTAmazonS3StorageManager extends KTStorageManager {
         }
         // already in S3
         else {
+            // check whether the supplied document object is valid
+            if (!($document instanceof Document)) {
+                return new PEAR_Error('Invalid document supplied to S3 storage driver for upload');
+            }
             // NOTE this should probably not be needed as it is already done in the calling function
             //      leaving here as redundancy check
             $sourceFilePath = $this->getShortPath($sourceFilePath);
@@ -550,8 +554,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
     
     public function fileSize($path)
     {
-        $path = $this->getShortPath($path);
-        $response = $this->amazonS3->head_object($this->bucket, $path);
+        $response = $this->amazonS3->head_object($this->bucket, $this->getShortPath($path));
         if ($response->isOK()) {
             return $response->header['_info']['download_content_length'];
         }
@@ -564,8 +567,7 @@ class KTAmazonS3StorageManager extends KTStorageManager {
 	 */
     public function write_file($filename, $mode, $string)
     {
-        $filename = $this->getShortPath($filename);
-        $opt = array('filename' => $filename, 'body' => $string);
+        $opt = array('filename' => $this->getShortPath($filename), 'body' => $string);
         $response = $this->createS3Object($opt);
         
         return $response;
