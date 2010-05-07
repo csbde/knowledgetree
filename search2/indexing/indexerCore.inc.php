@@ -1090,11 +1090,11 @@ abstract class Indexer
         KTUtil::setSystemSetting('mimeTypesRegistered', true);
     }
 
-    private function updatePendingDocumentStatus($documentId, $message, $level)
+    public function updatePendingDocumentStatus($documentId, $message, $level, $processDate=false)
     {
         $this->indexingHistory .=  "\n" . $level . ': ' . $message;
         $message = sanitizeForSQL($this->indexingHistory);
-        $sql = "UPDATE index_files SET status_msg='$message' WHERE document_id=$documentId";
+        $sql = "UPDATE index_files SET status_msg='$message'".($processDate?", processdate='".date("Y-m-d H:i:s")."'":"")." WHERE document_id=$documentId";
         DBUtil::runQuery($sql);
     }
 

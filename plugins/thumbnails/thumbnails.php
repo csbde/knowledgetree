@@ -295,13 +295,16 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 
 		// if the thumbnail doesn't exist try to create it
 		if (!$oStorage->file_exists($thumbnailCheck)) {
-            $thumbnailer = new thumbnailGenerator();
-            $thumbnailer->setDocument($this->oDocument);
-            $thumbnailer->processDocument();
+			if(!ACCOUNT_ROUTING_ENABLED){
+	            $thumbnailer = new thumbnailGenerator();
+	            $thumbnailer->setDocument($this->oDocument);
+	            $thumbnailer->processDocument();
+			}
 
             // if it still doesn't exist, return an empty string
 			if (!$oStorage->file_exists($thumbnailCheck)) {
-                return '';
+				//TODO: This is where we differentiate between failed thumbnails and in process thumbnails
+				return '';
             }
 		}
 
@@ -414,10 +417,13 @@ class ThumbnailColumn extends AdvancedColumn {
 
     		// We won't try generate one - will slow down browsing too much
     		if (!$oStorage->file_exists($thumbnailCheck)){
-    		    $tag = "
-    		      <div class='thumb-shadow'>
-    		          <img src='{$rootUrl}/resources/graphics/no_preview.png' height='{$height}' />
-		          </div>";
+    			//TODO: Differentiate
+    			$noPreviewSrc="{$rootUrl}/resources/graphics/no_preview.png";
+//    			$noPreviewSrc=ACCOUNT_ROUTING_ENABLED?"{$rootUrl}/resources/graphics/live_no_preview_folder_view.jpg":"{$rootUrl}/resources/graphics/no_preview.png";
+    		    $tag = '
+    		      <div class="thumb-shadow">
+    		          <img src="'.$noPreviewSrc.'" height="'.$height.'" />
+		          </div>';
     		    return $tag;
     		}
 
