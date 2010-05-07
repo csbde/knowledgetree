@@ -44,6 +44,8 @@
 * @version Version 0.1
 */
 
+require_once(realpath(dirname(__FILE__)) . "/../wizard/share/stepActionBase.php");
+
 class stepAction extends stepActionBase {
 	/**
 	* Constructs step action object
