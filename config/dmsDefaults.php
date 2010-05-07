@@ -54,6 +54,9 @@ define('LATEST_WEBSERVICE_VERSION',2);
 
 if(!session_id())session_start();
 
+
+
+
 if (function_exists('apd_set_pprof_trace')) {
     apd_set_pprof_trace();
 }
@@ -97,7 +100,7 @@ if (!defined('KT_STACK_DIR')) {
     define('KT_STACK_DIR', $stackLoc);
 }
 
-// TODO consider removing this, or do we really care about pre php 4.3?
+
 // PATH_SEPARATOR added in PHP 4.3.0
 if (!defined('PATH_SEPARATOR')) {
     if (substr(PHP_OS, 0, 3) == 'WIN') {
@@ -107,8 +110,9 @@ if (!defined('PATH_SEPARATOR')) {
     }
 }
 
-// TODO find out why this has to be required?  It is not an inc file (unless it is mis-named)
 require_once(KT_LIB_DIR . '/validation/customerror.php');
+
+
 
 // {{{ prependPath()
 function prependPath ($path) {
@@ -121,15 +125,10 @@ function prependPath ($path) {
 prependPath(KT_DIR . '/thirdparty/ZendFramework/library');
 prependPath(KT_DIR . '/thirdparty/pear');
 prependPath(KT_DIR . '/thirdparty/Smarty');
-// TODO this should surely only be included in test scripts?
 prependPath(KT_DIR . '/thirdparty/simpletest');
-// TODO this should surely only be included in sections which use xmlrpc?
 prependPath(KT_DIR . '/thirdparty/xmlrpc-2.2/lib');
-// TODO this should surely only be included in sections which utilise ktapi?
 prependPath(KT_DIR . '/ktapi');
-// TODO this should surely only be included in sections which utilise search?
 prependPath(KT_DIR . '/search2');
-
 require_once('PEAR.php');
 
 // Give everyone access to legacy PHP functions
@@ -141,6 +140,7 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 require_once(KT_LIB_DIR . '/ktentity.inc');
 
 require_once(KT_LIB_DIR . '/config/config.inc.php');
+require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');
 
 // {{{ KTInit
 class KTInit {
@@ -175,10 +175,7 @@ class KTInit {
         $logLevel = $oKTConfig->get('KnowledgeTree/logLevel');
         $properties['log4php.rootLogger'] = $logLevel . ', default';
 
-        if (!isset($_SESSION)) {
-            session_start();
-        }
-
+//        session_start();
         $configurator->doConfigureProperties($properties, $repository);
 
         $userId = isset($_SESSION['userID'])?$_SESSION['userID']:'n/a';
@@ -213,6 +210,7 @@ class KTInit {
 //			if($_GET['accountOverride'])liveAccountRouting::overrideAccountName($_GET['accountOverride']);
 //			if(isset($_GET['clearAccountOverride']))liveAccountRouting::clearAccountNameOverride();
 
+			
 			define('ACCOUNT_ROUTING_ENABLED',true);
 			define('ACCOUNT_NAME',liveAccountRouting::getAccountName());
 		}else{
@@ -249,6 +247,8 @@ class KTInit {
         }
     }
     // }}}
+
+
 
     // {{{ cleanGlobals()
     function cleanGlobals () {
@@ -444,6 +444,8 @@ class KTInit {
 		ini_set('error_append_string',$phperror);
 	}
 
+
+
     // {{{ guessRootUrl()
     function guessRootUrl() {
         $urlpath = $_SERVER['SCRIPT_NAME'];
@@ -600,6 +602,8 @@ class KTInit {
     }
     // }}}
 
+
+
     // {{{ initTesting
     function initTesting() {
         $oKTConfig =& KTConfig::getSingleton();
@@ -623,8 +627,7 @@ class KTInit {
     // }}}
 }
 // }}}
-// TODO remove the above classes to include files and include instead of being here?
-//      at the least, move the code away from the middle (perhaps older php required this structure, modern php should not - CONFIRM)
+
 
 $KTInit = new KTInit();
 $KTInit->accountRouting();
@@ -635,30 +638,15 @@ $KTInit->setupI18n();
 
 define('KTLOG_CACHE',false);
 
-// TODO can this be moved out?
 if (isset($GLOBALS['kt_test'])) {
     $KTInit->initTesting();
 }
 
 $oKTConfig = KTConfig::getSingleton();
+
 if($oKTConfig->get('CustomErrorMessages/customerrormessages') == 'on')
 {
 	$KTInit->catchFatalErrors();
-}
-
-if (phpversion() < 5) {
-    $rootUrl = $KTInit->guessRootUrl();
-	$sErrorPage = 'http://'.$_SERVER['HTTP_HOST'].$rootUrl.'/'.'customerrorpage.php';
-
-	if (isset($_SESSION)) {
-	   session_start();
-	}
-
-	// NOTE since this message seems to clearly indicate that php 4 is not supported, the code setting the PATH_SEPARATOR should not be needed
-	$_SESSION['sErrorMessage'] = 'KnowledgeTree now requires that PHP version 5 is installed. PHP version 4 is no longer supported.';
-
-	header('location:'. $sErrorPage ) ;
-	exit(0);
 }
 
 $KTInit->setupServerVariables();
@@ -669,14 +657,13 @@ $loggingSupport = $KTInit->setupLogging();
 // Send all PHP errors to a file (and maybe a window)
 set_error_handler(array('KTInit', 'handlePHPError'));
 
+
 $KTInit->setupRandomSeed();
 
 $GLOBALS['KTRootUrl'] = $oKTConfig->get('KnowledgeTree/rootUrl');
 
-// TODO confirm that this lookup and mapping stuff is needed everywhere
 require_once(KT_LIB_DIR . '/database/lookup.inc');
 
-// TODO confirm that this lookup and mapping stuff is needed everywhere
 // table mapping entries
 include('tableMappings.inc');
 
