@@ -38,9 +38,6 @@
  *
  */
 
-// uncomment the line below to disable account routing (even if the plugin is available)
-//define('ACCOUNT_ROUTING_ENABLED',false);
-
 // stuff in the new installer section database upgrade fails without this
 global $default;
 
@@ -52,7 +49,10 @@ if (defined('DMS_DEFAULTS_INCLUDED'))
 define('DMS_DEFAULTS_INCLUDED',1);
 define('LATEST_WEBSERVICE_VERSION',2);
 
-if(!session_id())session_start();
+
+
+
+
 
 
 
@@ -83,7 +83,7 @@ if (!defined('KT_DIR')) {
     define('KT_DIR', $rootLoc);
 }
 
-if(!defined('KT_PLUGIN_DIR')) define('KT_PLUGIN_DIR',KT_DIR . '/plugins');
+if(!defined('KT_PLUGIN_DIR')) define('KT_PLUGIN_DIR',KT_DIR . '/plugins/');
 
 
 if (!defined('KT_LIB_DIR')) {
@@ -193,11 +193,11 @@ class KTInit {
     // {{{ setupI18n()
 
 	/**
-	 * Account Routing
+	 * Include Account Routing Helper
 	 * @return void
 	 */
     public function accountRouting(){
-		if(file_exists(KT_PLUGIN_DIR.'/ktlive/liveEnable.php') && !defined(ACCOUNT_ROUTING_ENABLED)){
+		if(file_exists(KT_PLUGIN_DIR.'/ktlive/liveEnable.php') && !defined('ACCOUNT_ROUTING_ENABLED')){
 			require_once(KT_PLUGIN_DIR.'/ktlive/liveEnable.php');
 
 			/**
@@ -209,28 +209,14 @@ class KTInit {
 			 */
 //			if($_GET['accountOverride'])liveAccountRouting::overrideAccountName($_GET['accountOverride']);
 //			if(isset($_GET['clearAccountOverride']))liveAccountRouting::clearAccountNameOverride();
-
-			
 			define('ACCOUNT_ROUTING_ENABLED',true);
-			define('ACCOUNT_NAME',liveAccountRouting::getAccountName());
+			define('ACCOUNT_NAME',AccountRouting::getAccountName());
 		}else{
 			define('ACCOUNT_ROUTING_ENABLED',false);
 			define('ACCOUNT_NAME','');
 		}
-
+		
 		//TODO: Implement checking account for existence/access & acting accordingly
-		if(ACCOUNT_ROUTING_ENABLED){
-			if(liveAccounts::accountExists(ACCOUNT_NAME)){
-				if(liveAccounts::accountEnabled(ACCOUNT_NAME)){
-					//TODO: space for currently unanticipated functionality (might load account details here)					
-				}else{
-					liveRenderError::create('Account Disabled','This account ('.ACCOUNT_NAME.') was discontinued - please contact your system administrator',$_SERVER,LIVE_ACCOUNT_DISABLED);
-				}
-			}else{
-				liveRenderError::create('Account Does Not Exist','We have no record of this account ('.ACCOUNT_NAME.') Please contact your system administrator',NULL,LIVE_ACCOUNT_DISABLED);
-			}
-		}
-//		echo "Account: ".ACCOUNT_NAME; //DEBUG INFO
 	}    
     
     /**
@@ -359,7 +345,7 @@ class KTInit {
         }
 
         if (KTUtil::arrayGet($_SERVER, 'REQUEST_METHOD')) {
-//            session_start();
+            session_start();
             $_SESSION['sErrorMessage'] = $msg;
 
 			$url = KTUtil::kt_url().'/customerrorpage.php';
@@ -579,11 +565,7 @@ class KTInit {
         {
         	/* We need to setup the language handler to display this error correctly */
         	$this->setupI18n();
-        	if(ACCOUNT_ROUTING_ENABLED){
-        		liveRenderError::create('Account Does Not Exist','We have no record of this account - please contact your system administrator',NULL,LIVE_ACCOUNT_DISABLED);
-        	}else{
-        		$this->handleInitError($dbSetup);
-        	}
+        	$this->handleInitError($dbSetup);
         }
 
         // Read in the config settings from the database

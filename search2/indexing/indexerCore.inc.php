@@ -42,8 +42,6 @@ require_once('indexing/extractorCore.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/scheduler/schedulerUtil.php');
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
 require_once(KT_DIR . '/search2/indexing/lib/RestSolr.inc.php');
-//TODO: move this out to ktlive plugin
-require_once(KT_DIR . '/search2/documentProcessor/sqsqueue/queueDispatcher.php');
 
 class IndexerInconsistencyException extends Exception {};
 
@@ -469,13 +467,6 @@ abstract class Indexer
     private $hookPath;
 
     private $enabledExtractors;
-
-    /**
-	 * Indicates of process are passed to sqs queue
-	 *
-	 * @var array
-	 */
-    private $isSQSEnabled = false;
     
     protected $inclStatus = true;
 
@@ -653,19 +644,15 @@ abstract class Indexer
         DBUtil::runQuery($sql);
 
         $default->log->debug("index: Queuing indexing of $document_id");
-        $config = KTConfig::getSingleton();
-        
-        //TODO: Switch this out to ktlive plugin test using ACCOUNT_ROUTING_ENABLED
-        $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
-		if($isSQSEnabled) {
-			//liveQueue::addProcess('indexing',$document)
-			$oQueueDispatcher = new queueDispatcher();
+
+		if(ACCOUNT_ROUTING_ENABLED) {
+			$oQueueDispatcher = liveIncludes::getSQSQueue();
         	// Document added, create indexing complex event
         	$oQueueDispatcher->addProcess('indexing', $document);
 		}
         // If we're indexing a discussion, re-processing is not needed.
         if($what === 'D'){
-        	if($isSQSEnabled) {
+        	if(ACCOUNT_ROUTING_ENABLED) {
 				// Send complex event
 				$oQueueDispatcher->sendToQueue();
         	}
@@ -682,8 +669,7 @@ abstract class Indexer
         DBUtil::runQuery($sql);
 
         $default->log->debug("Processing queue: Queuing document for processing - $document_id");
-        //TODO: Switch this out to ktlive plugin test using ACCOUNT_ROUTING_ENABLED
-        if($isSQSEnabled)
+        if(ACCOUNT_ROUTING_ENABLED)
         {
         	// Document added, create processing complex event
 			$oQueueDispatcher->addProcess('processing', $document);
@@ -715,16 +701,14 @@ abstract class Indexer
     {
         $sql = "UPDATE index_files SET processdate = null";
         DBUtil::runQuery($sql);
-        $config = KTConfig::getSingleton();
-        $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
-        if($isSQSEnabled)
+        if(ACCOUNT_ROUTING_ENABLED)
         {
 	        $sql = "SELECT document_id FROM index_files;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
-				$oQueueDispatcher = new queueDispatcher();
+				$oQueueDispatcher = liveIncludes::getSQSQueue();
 	        	$oQueueDispatcher->addProcess('indexing', $document);
 				// Send complex event
 	        	$oQueueDispatcher->sendToQueue();
@@ -736,12 +720,10 @@ abstract class Indexer
     {
         $sql = "UPDATE index_files SET processdate=null, status_msg=null WHERE document_id=$documentId";
         DBUtil::runQuery($sql);
-        $config = KTConfig::getSingleton();
-        $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
-        if($isSQSEnabled)
+        if(ACCOUNT_ROUTING_ENABLED)
         {
         	// Document added, create indexing complex event
-			$oQueueDispatcher = new queueDispatcher();
+			$oQueueDispatcher = liveIncludes::getSQSQueue();
         	$oQueueDispatcher->addProcess('indexing', $document);
         	// Send complex event
         	$oQueueDispatcher->sendToQueue();
@@ -761,16 +743,14 @@ abstract class Indexer
         $sql = "INSERT INTO index_files(document_id, user_id, what) SELECT id, $userid, 'A' FROM documents WHERE status_id=1 and id not in (select document_id from index_files)";
         DBUtil::runQuery($sql);
 
-        $config = KTConfig::getSingleton();
-        $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
-        if($isSQSEnabled)
+        if(ACCOUNT_ROUTING_ENABLED)
         {
 	        $sql = "SELECT document_id FROM index_files;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
-				$oQueueDispatcher = new queueDispatcher();
+				$oQueueDispatcher = liveIncludes::getSQSQueue();
 	        	$oQueueDispatcher->addProcess('indexing', $document);
 	        	// Send complex event
 	        	$oQueueDispatcher->sendToQueue();
@@ -788,16 +768,14 @@ abstract class Indexer
         $sql = "INSERT INTO process_queue(document_id, date_added) SELECT id, now() FROM documents WHERE status_id=1 and id not in (select document_id from process_queue)";
         DBUtil::runQuery($sql);
         
-        $config = KTConfig::getSingleton();
-        $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
-        if($isSQSEnabled)
+        if(ACCOUNT_ROUTING_ENABLED)
         {
 	        $sql = "SELECT document_id FROM process_queue;";
 	        $results = DBUtil::getResultArray($sql);
 			foreach ($results as $key=>$res) {
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
-				$oQueueDispatcher = new queueDispatcher();
+				$oQueueDispatcher = liveIncludes::getSQSQueue();
 	        	$oQueueDispatcher->addProcess('processing', $document);
 	        	// Send complex event to sqs queue
 	        	$oQueueDispatcher->sendToQueue();
@@ -819,11 +797,7 @@ abstract class Indexer
        
         $sql = "INSERT INTO index_files(document_id, user_id, what) SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files)";
         DBUtil::runQuery($sql);
-         // TODO : Should we pass this to sqs queue?
-
-        $config = KTConfig::getSingleton();
-        $isSQSEnabled = $config->get('KnowledgeTree/useSQSQueues', false);
-        if($isSQSEnabled)
+        if(ACCOUNT_ROUTING_ENABLED)
         {
         	// Folder documents added
 	        $sql = "SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files);";
@@ -831,7 +805,7 @@ abstract class Indexer
 			foreach ($results as $key=>$res) {
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
-				$oQueueDispatcher = new queueDispatcher();
+				$oQueueDispatcher = liveIncludes::getSQSQueue();
 	        	$oQueueDispatcher->addProcess('indexing', $document);
 	        	// Send complex event to sqs queue
 	        	$oQueueDispatcher->sendToQueue();
