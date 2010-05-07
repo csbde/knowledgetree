@@ -776,7 +776,6 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         $oForm = $this->form_main();
         $res = $oForm->validate();
         $data = $res['results'];
-
         $extra_errors = array();
 
         // If the filename is different to the original check if "Force Original Filename" is set and return an error if it is.
@@ -796,10 +795,8 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         }
 
         $sReason = $data['reason'];
-
         $sCurrentFilename = $docFileName;
         $sNewFilename = $data['file']['name'];
-
         $aOptions = array();
 
         if ($data['major_update']) {
@@ -810,10 +807,18 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             $aOptions['newfilename'] = $sNewFilename;
         }
 
+        // document checkin for the new storage drivers requires the document to be first uploaded
+        // to the temp directory from the php upload directory or the checkin will fail
+        $oStorage = KTStorageManagerUtil::getSingleton();
+        $oKTConfig =& KTConfig::getSingleton();
+        $sTempFilename = $oStorage->tempnam($oKTConfig->get("urls/tmpDirectory"), 'kt_storecontents');
+        $oStorage->uploadTmpFile($data['file']['tmp_name'], $sTempFilename);
+        $data['file']['tmp_name'] = $sTempFilename;
         $res = KTDocumentUtil::checkin($this->oDocument, $data['file']['tmp_name'], $sReason, $this->oUser, $aOptions);
         if (PEAR::isError($res)) {
             $this->errorRedirectToMain(_kt('An error occurred while trying to check in the document'), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
         }
+        
         redirect(KTBrowseUtil::getUrlForDocument($this->oDocument));
         exit(0);
     }

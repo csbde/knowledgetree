@@ -64,9 +64,7 @@ class KTDocumentUtil {
     public static function checkin($oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false, $bulk_action = false) {
         $oStorage = KTStorageManagerUtil::getSingleton();
 
-        // NOTE working with a local php uploaded file and so will not need to use the storage driver
-        $iFileSize = filesize($sFilename);
-
+        $iFileSize = $oStorage->fileSize($sFilename);
         $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
 
         $bSuccess = $oDocument->startNewContentVersion($oUser);
@@ -76,13 +74,6 @@ class KTDocumentUtil {
 
         KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
 
-        // NOTE regular uploads use a temp file which is created from the uploaded file;
-        //      checkin was not doing this, and so the new storage driver based methods were failing;
-        //      added code here to fix that problem
-        $oKTConfig =& KTConfig::getSingleton();
-        $sTempFilename = tempnam($oKTConfig->get("urls/tmpDirectory"), 'kt_storecontents');
-        $oStorage->uploadTmpFile($sFilename, $sTempFilename);
-        $sFilename = $sTempFilename;
         $aOptions['temp_file'] = $sFilename;
         $res = KTDocumentUtil::storeContents($oDocument, '', $aOptions);
         if (PEAR::isError($res)) {
