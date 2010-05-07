@@ -129,6 +129,7 @@ prependPath(KT_DIR . '/thirdparty/simpletest');
 prependPath(KT_DIR . '/thirdparty/xmlrpc-2.2/lib');
 prependPath(KT_DIR . '/ktapi');
 prependPath(KT_DIR . '/search2');
+
 require_once('PEAR.php');
 
 // Give everyone access to legacy PHP functions
@@ -140,7 +141,6 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 require_once(KT_LIB_DIR . '/ktentity.inc');
 
 require_once(KT_LIB_DIR . '/config/config.inc.php');
-require_once(KT_DIR . '/search2/indexing/indexerCore.inc.php');
 
 // {{{ KTInit
 class KTInit {
