@@ -827,7 +827,7 @@ class APITestCase extends KTUnitTestCase {
            $uploadDir = dirname(__FILE__);
         }
         $temp = $this->storage->tempnam($uploadDir, 'myfile');
-        $this->storage->write_file($temp, null, $content);
+        $this->storage->write_file($temp, 'w', $content);
         return $temp;
     }
 }
