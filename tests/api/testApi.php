@@ -129,9 +129,6 @@ class APITestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('title_1.txt', 'name_1.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        // NOTE the add_document going through the (S3) storage driver as it does means this file is already removed...
-        // TODO check that the hash storage driver acts the same
-        @$this->storage->unlink($randomFile);
 
         $internalDocObject = $document->getObject();
         $user = $this->ktapi->can_user_access_object_requiring_permission($internalDocObject, $permission);
@@ -146,9 +143,6 @@ class APITestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document2 = $this->root->add_document('title_2.txt', 'name_2.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        // NOTE the add_document going through the (S3) storage driver as it does means this file is already removed...
-        // TODO check that the hash storage driver acts the same
-        @$this->storage->unlink($randomFile);
 
         $internalDocObject2 = $document2->getObject();
         $user = $this->ktapi->can_user_access_object_requiring_permission($internalDocObject2, $permission);
@@ -174,7 +168,6 @@ class APITestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('title_4.txt', 'name_4.txt', 'Default', $randomFile);
-        @unlink($randomFile);
 
         $list = $this->ktapi->get_documents_by_oem_no('1');
 
@@ -185,7 +178,6 @@ class APITestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document2 = $this->root->add_document('title_5.txt', 'name_5.txt', 'Default', $randomFile);
-        @unlink($randomFile);
 
         $list = $this->ktapi->get_documents_by_oem_no('2');
 
@@ -319,9 +311,6 @@ class APITestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();        
         $document = $this->root->add_document('title_5.txt', 'name_5.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'reason');
-        // NOTE the add_document going through the (S3) storage driver as it does means this file is already removed...
-        // TODO check that the hash storage driver acts the same
-        @$this->storage->unlink($randomFile);
 
         $documentID = $document->get_documentid();
         $docObject = $this->ktapi->get_document_by_id($documentID);
@@ -451,9 +440,6 @@ class APITestCase extends KTUnitTestCase {
         // Create a document and subscribe to it
         $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('test title 1', 'testfile1.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        // NOTE the add_document going through the (S3) storage driver as it does means this file is already removed...
-        // TODO check that the hash storage driver acts the same
-        @$this->storage->unlink($randomFile);
 
         $this->assertEntity($document, 'KTAPI_Document');
         if(PEAR::isError($document)) return;
@@ -822,7 +808,6 @@ class APITestCase extends KTUnitTestCase {
         $document = $folder->add_document($title, $filename, 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $this->assertNotError($document);
 
-        @$this->storage->unlink($randomFile);
         if(PEAR::isError($document)) return false;
 
         return $document;
