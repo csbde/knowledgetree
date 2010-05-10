@@ -197,7 +197,7 @@ class KTInit {
 	 * @return void
 	 */
     public function accountRouting(){
-		if(file_exists(KT_PLUGIN_DIR.'/ktlive/liveEnable.php') && !defined(ACCOUNT_ROUTING_ENABLED)){
+		if(file_exists(KT_PLUGIN_DIR.'/ktlive/liveEnable.php') && !defined('ACCOUNT_ROUTING_ENABLED')){
 			require_once(KT_PLUGIN_DIR.'/ktlive/liveEnable.php');
 
 			/**
