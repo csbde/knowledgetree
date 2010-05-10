@@ -171,8 +171,7 @@ class savedSearchTestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('title.txt', 'name_1.txt', 'Default', $randomFile);
-        $this->oStorage->unlink($randomFile);
-
+        
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
 
         $result = $this->savedSearch->run_saved_search($searchID);
@@ -294,8 +293,7 @@ class savedSearchTestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('title.txt', 'name_1.txt', 'Default', $randomFile);
-        $this->oStorage->unlink($randomFile);
-
+        
         $searchID = $this->savedSearch->create('test_search', '(GeneralText contains "title")');
 
         $response = $this->ktapi->run_saved_search($searchID);
