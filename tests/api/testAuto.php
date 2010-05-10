@@ -173,11 +173,11 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-	function testJunkadd_document() {
-		$result = $this->ktapi->add_document(null, null, null, null, null, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-		$this->assertIsA($result, 'array');
-		$this->assertEqual($result['status_code'], 1);
-	}
+//	function testJunkadd_document() {
+//		$result = $this->ktapi->add_document(null, null, null, null, null, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
+//		$this->assertIsA($result, 'array');
+//		$this->assertEqual($result['status_code'], 1);
+//	}
 
 	function tesRealadd_document() { 
 		$result = $this->ktapi->add_document($folder_id, $title, $filename, $documenttype, $tempfilename,
@@ -192,11 +192,11 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-	function testJunkadd_document_with_metadata() { 
-		$result = $this->ktapi->add_document_with_metadata(null, null, null, null, null, null, null);
-		$this->assertIsA($result, 'array');
-		$this->assertEqual($result['status_code'], 1);
-	}
+//	function testJunkadd_document_with_metadata() { 
+//		$result = $this->ktapi->add_document_with_metadata(null, null, null, null, null, null, null);
+//		$this->assertIsA($result, 'array');
+//		$this->assertEqual($result['status_code'], 1);
+//	}
 
 	function tesRealadd_document_with_metadata() { 
 		$result = $this->ktapi->add_document_with_metadata($folder_id, $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata);
@@ -210,11 +210,11 @@ class APIAutoTestCase extends KTUnitTestCase {
 		$this->assertEqual($result['status_code'], 0);
 	}
 
-	function testJunkcheckin_document() { 
-		$result = $this->ktapi->checkin_document(null, null, null, null, null, KT_TEST_USER, KT_TEST_PASS);
-		$this->assertIsA($result, 'array');
-		$this->assertEqual($result['status_code'], 1);
-	}
+//	function testJunkcheckin_document() { 
+//		$result = $this->ktapi->checkin_document(null, null, null, null, null, KT_TEST_USER, KT_TEST_PASS);
+//		$this->assertIsA($result, 'array');
+//		$this->assertEqual($result['status_code'], 1);
+//	}
 
 	function tesRealcheckin_document() { 
 		$result = $this->ktapi->checkin_document($document_id, $filename, $reason, $tempfilename, $major_update, KT_TEST_USER, KT_TEST_PASS);
