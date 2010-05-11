@@ -8,7 +8,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- *  
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -116,7 +116,7 @@ class LoginPageDispatcher extends KTDispatcher {
         if (PEAR::isError($sessionID)) {
             return $sessionID;
         }
-        
+
         // add a flag to check for bulk downloads after login is succesful; this will be cleared in the code which checks
         $_SESSION['checkBulkDownload'] = true;
 
@@ -204,7 +204,7 @@ class LoginPageDispatcher extends KTDispatcher {
               'languages' => $aRegisteredLanguageNames,
               'selected_language' => $sLanguageSelect,
 	      	  'disclaimer' => $sDisclaimer,
-			  'smallVersion' => substr($default->versionName,-17),
+			  'smallVersion' => $default->versionTier,
         );
         return $oTemplate->render($aTemplateData);
     }
