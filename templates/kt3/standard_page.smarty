@@ -321,21 +321,23 @@
                     <a href="{$rootUrl}"><img src="{$rootUrl}/resources/powered-by-kt.png" border="0" alt="Powered by KnowledgeTree" title="Powered by KnowledgeTree"/></a>
                 </td>
                 <td>
-					{if ($smallVersion == 'Community Edition')}
+					{if ($smallVersion == 'community')}
 					    {i18n arg_version="$versionname" arg_appname="$appname"}#appname# Version: #version# is licensed free of charge and supplied with
 							<a href="http://www.knowledgetree.com/commercial_support" target="_blank">no support</a>,
 							<a href="http://www.knowledgetree.com/commercial_support" target="_blank">no maintenance</a>
 							and <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no warranty</a>.
 						{/i18n}
-					{else}
+					{elseif ($smallVersion == 'commercial')}
 					    {i18n arg_version="$versionname" arg_appname="$appname"}#appname# Version: #version#{/i18n}
 						<br>{i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}
-					{/if}
+					{else}
+					   &nbsp;
+				    {/if}
                 </td>
                 <td align="right">
                     {i18n}&copy; 2008-2010 <a href="http://www.knowledgetree.com/about/legal" target="_blank">KnowledgeTree Inc.</a>{/i18n}
 					{i18n}All rights reserved.{/i18n}
-					{if ($smallVersion == 'Community Edition')}
+					{if ($smallVersion == 'community')}
 						<br>{i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}
 					{/if}
                 </td>

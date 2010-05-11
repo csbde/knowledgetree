@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -436,12 +436,12 @@ class KTPage {
         			"page" => $this,
 			       	"systemversion" => $default->systemVersion,
 			       	"versionname" => $default->versionName,
-					'smallVersion' => substr($default->versionName, -17),
+					'smallVersion' => $default->versionTier,
 			       	'savedSearches'=> $savedSearches);
         if ($oConfig->get("ui/automaticRefresh", false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
         }
-		
+
 		// Trigger for pending downloads
 		$aTemplateData['downloadNotification'] = null;
 		require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
