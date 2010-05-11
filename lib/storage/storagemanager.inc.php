@@ -200,6 +200,10 @@ class KTStorageManager {
      */
 	function file_get_contents($filename, $flags = null, $context = null, $offset = null, $maxlen = null)
 	{
+		if(!KTStorageManager::file_exists($filename))
+		{
+			return false;
+		}
 		if (is_null($context) && is_null($offset) && is_null($maxlen))
 		{
 			return file_get_contents($filename, $flags);
