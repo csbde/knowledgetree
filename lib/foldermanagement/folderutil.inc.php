@@ -127,7 +127,7 @@ class KTFolderUtil {
     	$sFolderParentIds = $oFolder->getParentFolderIDs();
     	$sNewFolderParentIds = $oNewParentFolder->getParentFolderIDs();
 
-    	if (strpos($sNewFolderParentIds, "$sFolderParentIds,") === 0)
+    	if (strpos($sNewFolderParentIds, $oFolder->getID()) === 0)
     	{
     		return PEAR::raiseError(_kt('Cannot move folder into a descendant folder!'));
     	}

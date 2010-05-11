@@ -103,7 +103,7 @@ class KTStorageManager {
 	{
 		if (is_null($context))
 		{
-			$context = stream_context_create(array());
+			return fopen($filename, $mode, $use_include_path);
 		}
 		
 		return fopen($filename, $mode, $use_include_path, $context);
@@ -180,7 +180,7 @@ class KTStorageManager {
 	{
 		if (is_null($context))
 		{
-			$context = stream_context_create(array());
+			return file_put_contents($filename, $data, $flags);
 		}
 		
 		return file_put_contents($filename, $data, $flags, $context);
@@ -200,9 +200,9 @@ class KTStorageManager {
      */
 	function file_get_contents($filename, $flags = null, $context = null, $offset = null, $maxlen = null)
 	{
-		if (is_null($context))
+		if (is_null($context) && is_null($offset) && is_null($maxlen))
 		{
-			$context = stream_context_create(array());
+			return file_get_contents($filename, $flags);
 		}
 		
 		return file_get_contents($filename, $flags, $context, $offset, $maxlen);
@@ -288,12 +288,12 @@ class KTStorageManager {
      */
 	function unlink($filename, $context = null) 
 	{
-		if (is_null($context))
-		{
-			$context = stream_context_create(array());
-		}
 		if(KTStorageManager::file_exists($filename))
 		{
+			if (is_null($context))
+			{
+				return unlink($filename);
+			}
 			return unlink($filename, $context);
 		}
 		
@@ -329,7 +329,7 @@ class KTStorageManager {
 	function mkdir($pathname, $mode = 0777, $recursive = false, $context = null) {
 		if (is_null($context))
 		{
-			$context = stream_context_create(array());
+			return mkdir($pathname, $mode, $recursive);
 		}
 		
 		return mkdir($pathname, $mode, $recursive, $context);
