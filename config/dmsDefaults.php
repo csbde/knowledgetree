@@ -202,7 +202,7 @@ class KTInit {
 
 			/**
 			 * The code below demonstrates how to use accountOverride functionality.
-			 * It allows you to simulate a different account by providing 'accountOverride' as a 
+			 * It allows you to simulate a different account by providing 'accountOverride' as a
 			 * parameter in the $_GET request variable set
 			 * To clear this override, this example makes use of clearAccountOverride as a parameter
 			 * in the url.
@@ -210,7 +210,7 @@ class KTInit {
 //			if($_GET['accountOverride'])liveAccountRouting::overrideAccountName($_GET['accountOverride']);
 //			if(isset($_GET['clearAccountOverride']))liveAccountRouting::clearAccountNameOverride();
 
-			
+
 			define('ACCOUNT_ROUTING_ENABLED',true);
 			define('ACCOUNT_NAME',liveAccountRouting::getAccountName());
 		}else{
@@ -222,7 +222,7 @@ class KTInit {
 		if(ACCOUNT_ROUTING_ENABLED){
 			if(liveAccounts::accountExists(ACCOUNT_NAME)){
 				if(liveAccounts::accountEnabled(ACCOUNT_NAME)){
-					//TODO: space for currently unanticipated functionality (might load account details here)					
+					//TODO: space for currently unanticipated functionality (might load account details here)
 				}else{
 					liveRenderError::create('Account Disabled','This account ('.ACCOUNT_NAME.') was discontinued - please contact your system administrator',$_SERVER,LIVE_ACCOUNT_DISABLED);
 				}
@@ -231,8 +231,8 @@ class KTInit {
 			}
 		}
 //		echo "Account: ".ACCOUNT_NAME; //DEBUG INFO
-	}    
-    
+	}
+
     /**
      * setupI18n
      *
@@ -669,6 +669,7 @@ include('tableMappings.inc');
 
 $default->systemVersion = trim(file_get_contents(KT_DIR . '/docs/VERSION.txt'));
 $default->versionName = trim(file_get_contents(KT_DIR . '/docs/VERSION-NAME.txt'));
+$default->versionTier = 'community';
 
 $KTInit->cleanGlobals();
 $KTInit->cleanMagicQuotes();
