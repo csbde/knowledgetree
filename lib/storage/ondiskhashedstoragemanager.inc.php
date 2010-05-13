@@ -367,47 +367,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         // Storage doesn't care if the document is deleted or restored
         return true;
     }
-    
-	/**
-	 * Get the storage path of a documents content.
-	 *
-	 * @param object $oDocument
-	 * @param string $type
-	 * @param $document_id
-	 * @return string
-	 */
-    public function getDocStoragePath($oDocument = null, $type = 'document', $document_id = null) {
-    	if (is_null($oDocument)) 
-    	{
-    		if(is_null($document_id))
-    		{
-    			return PEAR::isError("No document supplied.");
-    		}
-    		$oDocument = Document::get($document_id);
-    	}
 
-    	global $default;
-    	$varDirectory = $default->varDirectory;
-    	switch ($type) {
-    		case 'pdf' :
-	               $sFile = $varDirectory . '/Pdf/' . $oDocument->getId() . '.pdf';
-    			break;
-    		case 'document' :
-					$sFile = $varDirectory . '/Documents/' . $oDocument->getStoragePath();
-    				$tempFile = $varDirectory . '/tmp/'. $oDocument->getId() . '.' . KTMime::getFileType($oDocument->getMimeTypeID());
-					copy($sFile, $tempFile);
-					return $tempFile;
-    			break;
-    		case 'flash':
-					$sFile = $varDirectory . '/flash/' . $oDocument->getId() . '.swf';
-    			break;
-    		case 'thumbnail':
-					$sFile = $varDirectory . '/thumbnails/' . $oDocument->getId() . '.jpg';
-    			break;
-    	}
-
-		return $sFile;
-    }
 }
 
 ?>
