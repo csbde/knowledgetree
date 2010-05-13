@@ -532,6 +532,7 @@ class KTStorageManager {
     TODO: Remove as it is only needed for testing.
     */
     public function getDocStoragePath($oDocument, $type = 'document') {
+    	return ;
     	return PEAR::raiseError(_kt("Not implemented"));
     }
 }
