@@ -420,8 +420,6 @@ class KTStandardDispatcher extends KTDispatcher {
             }
         }
 
-        // TODO since there is no check performed (function always returns true)
-        //      this code serves no purpose and just wastes space and time!
         if ($this->check() !== true) {
             $this->permissionDenied();
             exit(0);

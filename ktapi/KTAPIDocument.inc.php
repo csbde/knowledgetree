@@ -2330,7 +2330,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		$transaction = new DocumentTransaction($this->document, "Document expunged", 'ktcore.transactions.expunge');
         $transaction->create();
         $this->document->cleanupDocumentData($this->documentid);
-		$result= $oStorage->expunge($this->document);
+		$result = $oStorage->expunge($this->document);
         $this->document->delete();
 
 		DBUtil::commit();

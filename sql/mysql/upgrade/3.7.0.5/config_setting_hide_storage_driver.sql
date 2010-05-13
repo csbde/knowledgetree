@@ -1,0 +1,1 @@
+UPDATE config_settings SET can_edit = 0 WHERE group_name = 'storage' AND item = 'manager';
