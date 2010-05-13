@@ -40,9 +40,12 @@
 
 // uncomment the line below to disable account routing (even if the plugin is available)
 //define('ACCOUNT_ROUTING_ENABLED',false);
+// The line below will switch on tracing for debugging & dev purposes
+define('KTLIVE_TRACE_ENABLE',true);
 
 // stuff in the new installer section database upgrade fails without this
 global $default;
+
 
 if (defined('DMS_DEFAULTS_INCLUDED'))
 {
@@ -220,6 +223,8 @@ class KTInit {
 
 		//TODO: Implement checking account for existence/access & acting accordingly
 		if(ACCOUNT_ROUTING_ENABLED){
+			define('KTLIVE_TRACE_PATH','/plugins/ktlive/webservice/callback.php?action=trace');
+			
 			if(liveAccounts::accountExists(ACCOUNT_NAME)){
 				if(liveAccounts::accountEnabled(ACCOUNT_NAME)){
 					//TODO: space for currently unanticipated functionality (might load account details here)
@@ -712,5 +717,7 @@ if (!extension_loaded('mbstring'))
 
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 $GLOBALS['main'] =new KTPage();
+
+define('KTLIVE_TRACE_LOG_FILE',$GLOBALS['default']->varDirectory.'/log/live_trace.log');
 
 ?>
