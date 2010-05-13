@@ -42,13 +42,12 @@ if(!$oStorage->file_exists($thumbnailCheck)){
     exit;
 }
 
-
 // Use correct slashes for windows
 if (strpos(PHP_OS, 'WIN') !== false) {
 	$thumbnailCheck = str_replace('/', '\\', $thumbnailCheck);
 }
 
-$fileSize = filesize($thumbnailCheck);
+$fileSize = $oStorage->fileSize($thumbnailCheck);
 
 header("Content-Type: image/jpeg");
 header("Content-Length: {$fileSize}");

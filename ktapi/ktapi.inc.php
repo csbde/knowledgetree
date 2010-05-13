@@ -3257,7 +3257,7 @@ class KTAPI
     			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
     			return $response;
     		}
-    		$content = $oStorage->read_file("", "", filesize($filename), $fp);
+    		$content = $oStorage->readfile("", "", $oStorage->fileSize($filename), $fp);
     		$content = base64_encode($content);
     	}
 
@@ -3413,7 +3413,7 @@ class KTAPI
 			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
 			return $response;
 		}
-		$content = $oStorage->read_file("", "", filesize($filename), $fp);
+		$content = $oStorage->readfile("", "", $oStorage->fileSize($filename), $fp);
 		$content = base64_encode($content);
     	$response['status_code'] = 0;
 		$response['results'] = $content;

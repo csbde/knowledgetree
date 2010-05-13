@@ -241,7 +241,7 @@ class PDFGeneratorAction extends KTDocumentAction {
         $dir = $default->pdfDirectory;
         $file = $dir . '/' . $iDocId . '.pdf';
         $mimetype = 'application/pdf';
-        $size = filesize($file);
+        $size = $oStorage->fileSize($file);
 
         // Set the filename
         $name = $this->oDocument->getFileName();
@@ -369,7 +369,7 @@ class PDFGeneratorAction extends KTDocumentAction {
             if ($oStorage->file_exists($sTempFilename) && $res == '') {
 
                 $mimetype = 'application/pdf';
-                $size = filesize($sTempFilename);
+                $size = $oStorage->fileSize($sTempFilename);
                 $name = substr($oDocument->getFileName(), 0, strrpos($oDocument->getFileName(), '.') ) . '.pdf';
                 KTUtil::download($sTempFilename, $mimetype, $size, $name);
 
