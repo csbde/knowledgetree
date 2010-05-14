@@ -66,7 +66,7 @@ class KTStorageManager {
 	/**
 	 * Read contents of a file.
 	 */
-	function read_file($filename = "", $mode = "", $length, $fileHandle = null) {
+	function readfile($filename = "", $mode = "", $length, $fileHandle = null) {
 		$content = "";
 		// Check if a file handle exists
 		if(is_null($fileHandle))

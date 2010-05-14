@@ -64,6 +64,7 @@ require_once(KTAPI_DIR .'/KTAPIAcl.inc.php');
 require_once(KTAPI_DIR .'/KTAPICollection.inc.php');
 require_once(KTAPI_DIR .'/KTAPIBulkActions.inc.php');
 require_once(KTAPI_DIR .'/KTAPITrigger.inc.php');
+require_once(KTAPI_DIR .'/KTAPIConditionalMetadata.inc.php');
 
 /**
 * This class defines functions that MUST exist in the inheriting class
@@ -3257,7 +3258,7 @@ class KTAPI
     			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
     			return $response;
     		}
-    		$content = $oStorage->read_file("", "", filesize($filename), $fp);
+    		$content = $oStorage->readfile("", "", $oStorage->fileSize($filename), $fp);
     		$content = base64_encode($content);
     	}
 
@@ -3413,7 +3414,7 @@ class KTAPI
 			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
 			return $response;
 		}
-		$content = $oStorage->read_file("", "", filesize($filename), $fp);
+		$content = $oStorage->readfile("", "", $oStorage->fileSize($filename), $fp);
 		$content = base64_encode($content);
     	$response['status_code'] = 0;
 		$response['results'] = $content;
@@ -4908,6 +4909,22 @@ class KTAPI
 		
 		return (BaobabKeyUtil::getLicenseCount() >= MIN_LICENSES);
 	}
+	
+	/**
+	 * Method to get the Conditional Metadata Rules
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function getConditionalMetadataRules()
+	{
+        $ktapi_condRules = new KTAPI_ConditionalMetadata($this);
+		
+		return $ktapi_condRules->getConditionalMetadataRules();
+	}
+	
+	
+	
 }
 
 

@@ -1,7 +1,7 @@
 <?php
 
 require_once('../../config/dmsDefaults.php');
-$oStorage = KTStorageManagerUtil::getSingleton();
+
 // Check the session, ensure the user is logged in
 $session = new Session();
 $sessionStatus = $session->verify();
@@ -33,6 +33,7 @@ if ($oDocument->getStatusID() == ARCHIVED) {
 }
 
 // Get and render the thumbnail
+$oStorage = KTStorageManagerUtil::getSingleton();
 // Check for the thumbnail
 $varDir = $default->varDirectory;
 $thumbnailCheck = $varDir . '/thumbnails/'.$documentId.'.jpg';
@@ -42,17 +43,16 @@ if(!$oStorage->file_exists($thumbnailCheck)){
     exit;
 }
 
-
 // Use correct slashes for windows
 if (strpos(PHP_OS, 'WIN') !== false) {
 	$thumbnailCheck = str_replace('/', '\\', $thumbnailCheck);
 }
 
-$fileSize = filesize($thumbnailCheck);
+$fileSize = $oStorage->fileSize($thumbnailCheck);
 
 header("Content-Type: image/jpeg");
 header("Content-Length: {$fileSize}");
 
-echo readfile($thumbnailCheck);
+echo $oStorage->readfile($thumbnailCheck);
 exit;
 ?>

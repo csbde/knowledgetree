@@ -466,7 +466,7 @@ $sourceDocument->getName(),
     public static function overwrite($oDocument, $sFilename, $sTempFileName, $oUser, $aOptions) {
         //$oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false
         $oStorage = KTStorageManagerUtil::getSingleton();
-        $iFileSize = filesize($sTempFileName);
+        $iFileSize = $oStorage->fileSize($sTempFileName);
 
         // Check that document is not checked out
         if($oDocument->getIsCheckedOut()) {

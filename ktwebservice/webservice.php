@@ -2864,7 +2864,7 @@ class KTWebService
     			return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     		}
     		
-    		$content = $oStorage->read_file($filename, 'rb', filesize($filename));
+    		$content = $oStorage->readfile($filename, 'rb', $oStorage->fileSize($filename));
     		$content = base64_encode($content);
     	}
 
@@ -3071,7 +3071,7 @@ class KTWebService
 			$this->debug("download_small_document - cannot read $filename", $session_id);
 			return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
 		}
-		$content = $oStorage->read_file("", "", filesize($filename), $fp);
+		$content = $oStorage->readfile("", "", $oStorage->fileSize($filename), $fp);
 		$content = base64_encode($content);
 
     	$response['status_code'] = KTWS_SUCCESS;
