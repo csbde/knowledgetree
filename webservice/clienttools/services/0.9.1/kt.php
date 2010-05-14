@@ -1724,6 +1724,13 @@ Fatal error:  Cannot unset string offsets in on line 981
 		$this->setResponse(array ('instantViewExists'=>$instantViewExists, 'version'=>'0.9.1'));
 	}
 	
+	function get_cond_metadata_rules()
+	{
+		$kt = &$this->KT;
+		
+		$this->setResponse($kt->getConditionalMetadataRules());
+	}
+	
 }
 
 

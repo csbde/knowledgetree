@@ -1656,7 +1656,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 		
 		$folderDeleted = $this->check_if_folder_deleted($params ['folder_id']);
 		
-		$this->setResponse ( array ('status_code' => 0, 'folderDeleted' => $folderDeleted, 'itemDeleted' => $folderDeleted) );
+		$this->setResponse ( array ('status_code' => 0, 'folderDeleted' => $folderDeleted, 'itemDeleted' => $folderDeleted, 'type'=>'folder') );
 		
 		//return true;
 	}
@@ -1724,6 +1724,12 @@ Fatal error:  Cannot unset string offsets in on line 981
 		$this->setResponse(array ('instantViewExists'=>$instantViewExists, 'version'=>'0.9.2'));
 	}
 	
+	function get_cond_metadata_rules()
+	{
+		$kt = &$this->KT;
+		
+		$this->setResponse($kt->getConditionalMetadataRules());
+	}
 	
 }
 
