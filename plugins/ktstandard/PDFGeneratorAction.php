@@ -251,7 +251,7 @@ class PDFGeneratorAction extends KTDocumentAction {
 
         if($oStorage->file_exists($file))
         {
-            if(KTUtil::download($file, $mimetype, $size, $name) === false)
+            if(!$oStorage->downloadRendition($file, $mimetype, $size, $name))
             {	
                 $default->log->error('PDF Generator: PDF file could not be downloaded because it doesn\'t exist');
                 $this->errorRedirectToMain(_kt('PDF file could not be downloaded because it doesn\'t exist'));
