@@ -221,6 +221,11 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
             return false;
         }
     }
+    
+    public function downloadRendition($file, $mimetype, $size, $name)
+    {
+        return (KTUtil::download($file, $mimetype, $size, $name) !== false);
+    }
 
     public function createFolder($oFolder) {
         // Storage doesn't deal with folders
