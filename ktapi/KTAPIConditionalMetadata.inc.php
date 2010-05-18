@@ -60,6 +60,20 @@ class KTAPI_ConditionalMetadata
      * @access private
      */
     private $ktapi;
+	
+	/**
+     * Flag whether the rules have been run or not
+     *
+     * @access private
+     */
+	private $rulesRun = FALSE;
+	
+	/**
+     * List of Connections
+     *
+     * @access private
+     */
+	private $conditionalMetadataConnections;
 
     /**
      * Constructs the bulk actions object
@@ -73,13 +87,27 @@ class KTAPI_ConditionalMetadata
         $this->ktapi = $ktapi;
     }
 	
+	public function getConditionalMetadataRules()
+	{
+		return $this->_getConditionalMetadataRules();
+	}
+	
+	public function getConditionalMetadataConnections()
+	{
+		if (!$this->rulesRun) {
+			$this->_getConditionalMetadataRules();
+		}
+		
+		return $this->conditionalMetadataConnections;
+	}
+	
 	/**
 	 * Method to get the Conditional Metadata Rules
 	 *
 	 * @author KnowledgeTree Team
 	 * @access public
 	 */
-	public function getConditionalMetadataRules()
+	private function _getConditionalMetadataRules()
 	{
 		$oFReg =& KTFieldsetRegistry::getSingleton();
 		$oFieldSets = KTFieldset::getConditionalFieldsets();
@@ -87,7 +115,9 @@ class KTAPI_ConditionalMetadata
         $fieldSetFields = array();
         $fieldChanges = array();
         $betterFieldChanges = array();
-            
+        
+		$aConnections = array();
+		
 		foreach ($oFieldSets as $oFieldset)
         {
             
@@ -99,6 +129,8 @@ class KTAPI_ConditionalMetadata
             
 			// step 2 - now convert data into rules
     	    foreach($oFieldset->getFields() as $oField) {
+				
+				$c = array();
                 
                 foreach($oField->getEnabledValues() as $oMetadata) {
                     
@@ -109,20 +141,28 @@ class KTAPI_ConditionalMetadata
 								
                                 $fieldId = $this->_getFieldIdForMetadataId($id);
                                 $fieldValue = $this->_getFieldValueForMetadataId($id);
+								
+								if(!in_array($fieldId, $c)) {
+		                        	$c[] = $fieldId;
+		    			      	}
                                 
-                                if (!isset($betterFieldChanges[$oField->getName()])) {
-                                    $betterFieldChanges[$oField->getName()] = array();
+								// Check if Source Field is in Array
+                                if (!isset($betterFieldChanges[$oField->getId()])) {
+                                    $betterFieldChanges[$oField->getId()] = array();
                                 }
                                 
-                                if (!isset($betterFieldChanges[$oField->getName()][$oMetadata->getName()])) {
-                                    $betterFieldChanges[$oField->getName()][$oMetadata->getName()] = array();
+								// Check if Select Value in Source Field
+                                if (!isset($betterFieldChanges[$oField->getId()][$oMetadata->getName()])) {
+                                    $betterFieldChanges[$oField->getId()][$oMetadata->getName()] = array();
                                 }
                                 
-                                if (!isset($betterFieldChanges[$oField->getName()][$oMetadata->getName()][$fieldSetFields['F_'.$fieldId]])) {
-                                    $betterFieldChanges[$oField->getName()][$oMetadata->getName()][$fieldSetFields['F_'.$fieldId]] = array();
+								// Check if Target Field is in Array
+                                if (!isset($betterFieldChanges[$oField->getId()][$oMetadata->getName()][$fieldId])) {
+                                    $betterFieldChanges[$oField->getId()][$oMetadata->getName()][$fieldId] = array();
                                 }
                                 
-                                $betterFieldChanges[$oField->getName()][$oMetadata->getName()][$fieldSetFields['F_'.$fieldId]][] = $fieldValue;
+								// Add Target Value into Field
+                                $betterFieldChanges[$oField->getId()][$oMetadata->getName()][$fieldId][] = $fieldValue;
                                 
 								/*
                                 // $fieldChanges is for debug
@@ -138,10 +178,15 @@ class KTAPI_ConditionalMetadata
                         }
                     }
                 }
+				
+				
+				$aConnections[$oField->getId()] = $c;
+				
     	    }
             
             
 		}
+		
 		
 		/*
 		 // for debug
@@ -151,6 +196,19 @@ class KTAPI_ConditionalMetadata
 			echo ' if '.$change['field'].' = '.$change['value'].'('.$change['valueid'].') then '.$change['field2'].' can have a value of '.$change['value2'].' ('.$change['value2id'].')';
 			echo '</p>';
 		}*/
+		
+		$this->rulesRun = TRUE;
+		
+		
+		$newConnections = array();
+		
+		foreach ($aConnections as $id=>$sub) {
+			//$newConnections[$fieldSetFields['F_'.$id]] = $fieldSetFields['F_'.$sub[0]];
+			$newConnections[$id] = $sub;
+		}
+		
+		
+		$this->conditionalMetadataConnections = $newConnections;
         
         return $betterFieldChanges;
 	}

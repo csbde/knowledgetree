@@ -384,7 +384,7 @@ class kt extends client_service {
 		foreach ( $detail as $fieldset ) {
 			foreach ( $fieldset ['fields'] as $field ) {
 				
-				$prepArray = array ('fieldset' => $fieldset ['fieldset'], 'name' => $field ['name'], 
+				$prepArray = array ('fieldset' => $fieldset ['fieldset'], 'name' => $field ['name'],  'fieldid' => $field ['fieldid'],
 
 				// Change for value. If blank value is set to 1, change value to ''
 				// Overcomes issue of n/a
@@ -1728,7 +1728,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 	{
 		$kt = &$this->KT;
 		
-		$this->setResponse($kt->getConditionalMetadataRules());
+		$this->setResponse(array('rules'=>$kt->getConditionalMetadataRules(), 'connections'=>$kt->getConditionalMetadataConnections()));
 	}
 	
 }
