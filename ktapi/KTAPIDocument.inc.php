@@ -1322,6 +1322,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 
                 $fieldsresult[] = array(
+                	'fieldid' => $field->getId(),
                 	'name' => $field->getName(),
                 	'required' => $field->getIsMandatory(),
                     'value' => $value == '' ? 'n/a' : $value,
