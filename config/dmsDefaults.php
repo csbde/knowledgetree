@@ -57,9 +57,6 @@ define('LATEST_WEBSERVICE_VERSION',2);
 
 if(!session_id())session_start();
 
-
-
-
 if (function_exists('apd_set_pprof_trace')) {
     apd_set_pprof_trace();
 }
@@ -103,7 +100,6 @@ if (!defined('KT_STACK_DIR')) {
     define('KT_STACK_DIR', $stackLoc);
 }
 
-
 // PATH_SEPARATOR added in PHP 4.3.0
 if (!defined('PATH_SEPARATOR')) {
     if (substr(PHP_OS, 0, 3) == 'WIN') {
@@ -114,8 +110,6 @@ if (!defined('PATH_SEPARATOR')) {
 }
 
 require_once(KT_LIB_DIR . '/validation/customerror.php');
-
-
 
 // {{{ prependPath()
 function prependPath ($path) {
@@ -266,8 +260,6 @@ class KTInit {
     }
     // }}}
 
-
-
     // {{{ cleanGlobals()
     function cleanGlobals () {
         /*
@@ -414,7 +406,6 @@ class KTInit {
 		return KT_DIR . '/config/magic';
     }
 
-
     static protected $handlerMapping = array(
     		E_WARNING=>'warn',
     		E_USER_WARNING=>'warn',
@@ -461,8 +452,6 @@ class KTInit {
 		<script> document.catcher.fatal.value = document.getElementById("phperror").innerHTML; document.catcher.submit();</script>';
 		ini_set('error_append_string',$phperror);
 	}
-
-
 
     // {{{ guessRootUrl()
     function guessRootUrl() {
@@ -612,15 +601,20 @@ class KTInit {
         $this->getDynamicConfigSettings();
 
         if($store_cache && isset($cachePath)){
-            @touch($cachePath);
-            if (is_writable($cachePath)) {
-                $oKTConfig->createCache($cachePath);
+            $cacheDir = dirname($cachePath);
+            $created = is_dir($cacheDir);
+            if (!$created) {
+                $created = @mkdir($cacheDir);
+            }
+            if ($created) {
+                @touch($cachePath);
+                if (is_writable($cachePath)) {
+                    $oKTConfig->createCache($cachePath);
+                }
             }
         }
     }
     // }}}
-
-
 
     // {{{ initTesting
     function initTesting() {
@@ -646,7 +640,6 @@ class KTInit {
 }
 // }}}
 
-
 $KTInit = new KTInit();
 $KTInit->accountRouting();
 $KTInit->initConfig();
@@ -662,8 +655,7 @@ if (isset($GLOBALS['kt_test'])) {
 
 $oKTConfig = KTConfig::getSingleton();
 
-if($oKTConfig->get('CustomErrorMessages/customerrormessages') == 'on')
-{
+if($oKTConfig->get('CustomErrorMessages/customerrormessages') == 'on') {
 	$KTInit->catchFatalErrors();
 }
 
@@ -674,7 +666,6 @@ $loggingSupport = $KTInit->setupLogging();
 
 // Send all PHP errors to a file (and maybe a window)
 set_error_handler(array('KTInit', 'handlePHPError'));
-
 
 $KTInit->setupRandomSeed();
 
