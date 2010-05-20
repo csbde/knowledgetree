@@ -53,6 +53,6 @@ $fileSize = $oStorage->fileSize($thumbnailCheck);
 header("Content-Type: image/jpeg");
 header("Content-Length: {$fileSize}");
 
-echo $oStorage->readfile($thumbnailCheck);
+echo $oStorage->file_get_contents($thumbnailCheck);
 exit;
 ?>

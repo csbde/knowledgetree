@@ -4923,6 +4923,19 @@ class KTAPI
 		return $ktapi_condRules->getConditionalMetadataRules();
 	}
 	
+	/**
+	 * Method to get the Conditional Metadata Connections
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function getConditionalMetadataConnections()
+	{
+        $ktapi_condRules = new KTAPI_ConditionalMetadata($this);
+		
+		return $ktapi_condRules->getConditionalMetadataConnections();
+	}
+	
 	
 	
 }
