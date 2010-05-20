@@ -224,7 +224,7 @@ class thumbnailGenerator extends BaseProcessor
 		}
         // do generation
         $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
-        $pageNumber = $type == 'pdf' ? "[0]" : $mimeType == 'image/tiff' ? "[0]":""; // If its a pdf or tiff, just convert first page
+        $pageNumber = ($type == 'pdf' ? "[0]" : ($mimeType == 'image/tiff' ? "[0]" : "")); // If its a pdf or tiff, just convert first page
         
         // windows path may contain spaces
         /*
@@ -236,7 +236,7 @@ class thumbnailGenerator extends BaseProcessor
 		}
 		*/
         
-        $cmd = "'{$pathConvert}' -thumbnail 200 -limit area 10mb '{$srcFile}" . $pageNumber . "' '$thumbnailfile'";
+        $cmd = "\"$pathConvert\" -thumbnail 200 -limit area 10mb \"$srcFile" . $pageNumber . "\" \"$thumbnailfile\"";
 		
 		$default->log->debug($cmd);
 
