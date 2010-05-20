@@ -57,9 +57,6 @@ define('LATEST_WEBSERVICE_VERSION',2);
 
 if(!session_id())session_start();
 
-
-
-
 if (function_exists('apd_set_pprof_trace')) {
     apd_set_pprof_trace();
 }
@@ -103,7 +100,6 @@ if (!defined('KT_STACK_DIR')) {
     define('KT_STACK_DIR', $stackLoc);
 }
 
-
 // PATH_SEPARATOR added in PHP 4.3.0
 if (!defined('PATH_SEPARATOR')) {
     if (substr(PHP_OS, 0, 3) == 'WIN') {
@@ -114,8 +110,6 @@ if (!defined('PATH_SEPARATOR')) {
 }
 
 require_once(KT_LIB_DIR . '/validation/customerror.php');
-
-
 
 // {{{ prependPath()
 function prependPath ($path) {
@@ -199,10 +193,11 @@ class KTInit {
 	 * Account Routing
 	 * @return void
 	 */
-    public function accountRouting(){
-		if(file_exists(KT_PLUGIN_DIR.'/ktlive/liveEnable.php') && !defined('ACCOUNT_ROUTING_ENABLED')){
+    public function accountRouting()
+    {
+		if (file_exists( KT_PLUGIN_DIR . '/ktlive/liveEnable.php' ) && !defined( 'ACCOUNT_ROUTING_ENABLED' ))
+		{
 			require_once(KT_PLUGIN_DIR.'/ktlive/liveEnable.php');
-
 			/**
 			 * The code below demonstrates how to use accountOverride functionality.
 			 * It allows you to simulate a different account by providing 'accountOverride' as a
@@ -210,13 +205,20 @@ class KTInit {
 			 * To clear this override, this example makes use of clearAccountOverride as a parameter
 			 * in the url.
 			 */
-			if($_GET['accountOverride'])liveAccountRouting::overrideAccountName($_GET['accountOverride']);
-			if(isset($_GET['clearAccountOverride']))liveAccountRouting::clearAccountNameOverride();
-
-
-			define('ACCOUNT_ROUTING_ENABLED',true);
-			define('ACCOUNT_NAME',liveAccountRouting::getAccountName());
-		}else{
+//			if($_GET['accountOverride'])liveAccountRouting::overrideAccountName($_GET['accountOverride']);
+//			if(isset($_GET['clearAccountOverride']))liveAccountRouting::clearAccountNameOverride();
+	    	$oLiveAccount = new accountManager();
+    		$oAccountManager = $oLiveAccount->getAccountHandler();
+			$oAccountManager->setAccountName(liveAccountRouting::getAccountName());
+			$oUserAccount = $oAccountManager->initUser();
+			if($oUserAccount->accountExists())
+			{
+				define('ACCOUNT_ROUTING_ENABLED',true);
+				define('ACCOUNT_NAME',liveAccountRouting::getAccountName());
+			}
+		}
+		else
+		{
 			define('ACCOUNT_ROUTING_ENABLED',false);
 			define('ACCOUNT_NAME','');
 		}
@@ -227,16 +229,22 @@ class KTInit {
 		
 
 		//TODO: Implement checking account for existence/access & acting accordingly
-		if(ACCOUNT_ROUTING_ENABLED){
+		if(ACCOUNT_ROUTING_ENABLED)
+		{
 			define('KTLIVE_TRACE_PATH','/plugins/ktlive/webservice/callback.php?action=trace');
-			
-			if(liveAccounts::accountExists(ACCOUNT_NAME)){
-				if(liveAccounts::accountEnabled(ACCOUNT_NAME)){
+			if ($oUserAccount->accountExists())
+			{
+				if($oUserAccount->accountEnabled())
+				{
 					//TODO: space for currently unanticipated functionality (might load account details here)
-				}else{
+				}
+				else
+				{
 					liveRenderError::create('Account Disabled','This account ('.ACCOUNT_NAME.') was discontinued - please contact your system administrator',$_SERVER,LIVE_ACCOUNT_DISABLED);
 				}
-			}else{
+			}
+			else
+			{
 				liveRenderError::create('Account Does Not Exist','We have no record of this account ('.ACCOUNT_NAME.') Please contact your system administrator',NULL,LIVE_ACCOUNT_DISABLED);
 			}
 		}
@@ -257,8 +265,6 @@ class KTInit {
         }
     }
     // }}}
-
-
 
     // {{{ cleanGlobals()
     function cleanGlobals () {
@@ -406,7 +412,6 @@ class KTInit {
 		return KT_DIR . '/config/magic';
     }
 
-
     static protected $handlerMapping = array(
     		E_WARNING=>'warn',
     		E_USER_WARNING=>'warn',
@@ -453,8 +458,6 @@ class KTInit {
 		<script> document.catcher.fatal.value = document.getElementById("phperror").innerHTML; document.catcher.submit();</script>';
 		ini_set('error_append_string',$phperror);
 	}
-
-
 
     // {{{ guessRootUrl()
     function guessRootUrl() {
@@ -604,15 +607,20 @@ class KTInit {
         $this->getDynamicConfigSettings();
 
         if($store_cache && isset($cachePath)){
-            @touch($cachePath);
-            if (is_writable($cachePath)) {
-                $oKTConfig->createCache($cachePath);
+            $cacheDir = dirname($cachePath);
+            $created = is_dir($cacheDir);
+            if (!$created) {
+                $created = @mkdir($cacheDir);
+            }
+            if ($created) {
+                @touch($cachePath);
+                if (is_writable($cachePath)) {
+                    $oKTConfig->createCache($cachePath);
+                }
             }
         }
     }
     // }}}
-
-
 
     // {{{ initTesting
     function initTesting() {
@@ -638,7 +646,6 @@ class KTInit {
 }
 // }}}
 
-
 $KTInit = new KTInit();
 $KTInit->accountRouting();
 $KTInit->initConfig();
@@ -654,8 +661,7 @@ if (isset($GLOBALS['kt_test'])) {
 
 $oKTConfig = KTConfig::getSingleton();
 
-if($oKTConfig->get('CustomErrorMessages/customerrormessages') == 'on' && 1==3)
-{
+if($oKTConfig->get('CustomErrorMessages/customerrormessages') == 'on') {
 	$KTInit->catchFatalErrors();
 }
 
@@ -666,7 +672,6 @@ $loggingSupport = $KTInit->setupLogging();
 
 // Send all PHP errors to a file (and maybe a window)
 set_error_handler(array('KTInit', 'handlePHPError'));
-
 
 $KTInit->setupRandomSeed();
 

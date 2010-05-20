@@ -1031,7 +1031,6 @@ class KTUtil {
 
     // {{{ isAbsolutePath
     static function isAbsolutePath($sPath) {
-
         $sPath = str_replace('\\', '/', $sPath);
         $sReal = str_replace('\\', '/', realpath($sPath));
 
@@ -1039,7 +1038,10 @@ class KTUtil {
             $sReal .= '/';
         }
 
-        return (strtolower($sReal) == strtolower($sPath));
+        // do not compare paths if $sReal is empty!
+        if (!empty($sReal)) {
+            return (strtolower($sReal) == strtolower($sPath));
+        }
 
         if (substr($sPath, 0, 1) == '/') {
             return true;

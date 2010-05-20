@@ -123,7 +123,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $document_id = $oDocument->getId();
         $document_data['document_id'] = $oDocument->getId();
 
-
         if (!KTBrowseUtil::inAdminMode($this->oUser, $oDocument->getFolderId())) {
             if ($oDocument->getStatusID() == ARCHIVED) {
                 $this->oPage->addError(_kt('This document has been archived.  Please contact the system administrator to have it restored if it is still needed.'));
