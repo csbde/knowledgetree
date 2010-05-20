@@ -199,10 +199,11 @@ class KTInit {
 	 * Account Routing
 	 * @return void
 	 */
-    public function accountRouting(){
-		if(file_exists(KT_PLUGIN_DIR.'/ktlive/liveEnable.php') && !defined('ACCOUNT_ROUTING_ENABLED')){
+    public function accountRouting()
+    {
+		if (file_exists( KT_PLUGIN_DIR . '/ktlive/liveEnable.php' ) && !defined( 'ACCOUNT_ROUTING_ENABLED' ))
+		{
 			require_once(KT_PLUGIN_DIR.'/ktlive/liveEnable.php');
-
 			/**
 			 * The code below demonstrates how to use accountOverride functionality.
 			 * It allows you to simulate a different account by providing 'accountOverride' as a
@@ -210,28 +211,40 @@ class KTInit {
 			 * To clear this override, this example makes use of clearAccountOverride as a parameter
 			 * in the url.
 			 */
-			if($_GET['accountOverride'])liveAccountRouting::overrideAccountName($_GET['accountOverride']);
-			if(isset($_GET['clearAccountOverride']))liveAccountRouting::clearAccountNameOverride();
-
-
-			define('ACCOUNT_ROUTING_ENABLED',true);
-			define('ACCOUNT_NAME',liveAccountRouting::getAccountName());
-		}else{
+//			if($_GET['accountOverride'])liveAccountRouting::overrideAccountName($_GET['accountOverride']);
+//			if(isset($_GET['clearAccountOverride']))liveAccountRouting::clearAccountNameOverride();
+	    	$oLiveAccount = new accountManager();
+    		$oAccountManager = $oLiveAccount->getAccountHandler();
+			$oAccountManager->setAccountName(liveAccountRouting::getAccountName());
+			$oUserAccount = $oAccountManager->initUser();
+			if($oUserAccount->accountExists())
+			{
+				define('ACCOUNT_ROUTING_ENABLED',true);
+				define('ACCOUNT_NAME',liveAccountRouting::getAccountName());
+			}
+		}
+		else
+		{
 			define('ACCOUNT_ROUTING_ENABLED',false);
 			define('ACCOUNT_NAME','');
 		}
-
 		//TODO: Implement checking account for existence/access & acting accordingly
-		if(ACCOUNT_ROUTING_ENABLED){
+		if(ACCOUNT_ROUTING_ENABLED)
+		{
 			define('KTLIVE_TRACE_PATH','/plugins/ktlive/webservice/callback.php?action=trace');
-			
-			if(liveAccounts::accountExists(ACCOUNT_NAME)){
-				if(liveAccounts::accountEnabled(ACCOUNT_NAME)){
+			if ($oUserAccount->accountExists())
+			{
+				if($oUserAccount->accountEnabled())
+				{
 					//TODO: space for currently unanticipated functionality (might load account details here)
-				}else{
+				}
+				else
+				{
 					liveRenderError::create('Account Disabled','This account ('.ACCOUNT_NAME.') was discontinued - please contact your system administrator',$_SERVER,LIVE_ACCOUNT_DISABLED);
 				}
-			}else{
+			}
+			else
+			{
 				liveRenderError::create('Account Does Not Exist','We have no record of this account ('.ACCOUNT_NAME.') Please contact your system administrator',NULL,LIVE_ACCOUNT_DISABLED);
 			}
 		}
