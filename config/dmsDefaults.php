@@ -220,6 +220,11 @@ class KTInit {
 			define('ACCOUNT_ROUTING_ENABLED',false);
 			define('ACCOUNT_NAME','');
 		}
+		
+		/**
+		 * Some Debug output
+		 */
+		
 
 		//TODO: Implement checking account for existence/access & acting accordingly
 		if(ACCOUNT_ROUTING_ENABLED){
@@ -235,7 +240,7 @@ class KTInit {
 				liveRenderError::create('Account Does Not Exist','We have no record of this account ('.ACCOUNT_NAME.') Please contact your system administrator',NULL,LIVE_ACCOUNT_DISABLED);
 			}
 		}
-//		echo "Account: ".ACCOUNT_NAME; //DEBUG INFO
+		echo "Account: ".ACCOUNT_NAME; //DEBUG INFO
 	}
 
     /**
@@ -585,7 +590,7 @@ class KTInit {
         	/* We need to setup the language handler to display this error correctly */
         	$this->setupI18n();
         	if(ACCOUNT_ROUTING_ENABLED){
-        		liveRenderError::create('Account Does Not Exist','We have no record of this account - please contact your system administrator',NULL,LIVE_ACCOUNT_DISABLED);
+        		liveRenderError::create('Account Database Does Not Exist','We have no record of this account ('.ACCOUNT_NAME.') - please contact your system administrator',NULL,LIVE_ACCOUNT_DISABLED);
         	}else{
         		$this->handleInitError($dbSetup);
         	}
@@ -649,7 +654,7 @@ if (isset($GLOBALS['kt_test'])) {
 
 $oKTConfig = KTConfig::getSingleton();
 
-if($oKTConfig->get('CustomErrorMessages/customerrormessages') == 'on')
+if($oKTConfig->get('CustomErrorMessages/customerrormessages') == 'on' && 1==3)
 {
 	$KTInit->catchFatalErrors();
 }
