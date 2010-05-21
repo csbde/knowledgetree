@@ -173,7 +173,9 @@ class KTConfig {
             foreach($conf['root'] as $group => $item){
                 foreach ($item as $key => $value){
                 	if(ACCOUNT_ROUTING_ENABLED){
-                		if($key=='dbName')$value=ACCOUNT_NAME;
+                		if($key=='dbName'){
+                			$value=ACCOUNT_NAME;
+                		}
                 	}
                     $this->setns($group, $key, $value, false);
                 }
