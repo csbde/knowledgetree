@@ -254,9 +254,11 @@ class KTInit {
 	
 	public function accountRoutingLicenceCheck(){
 		/* Check if account is licensed */
-		if(!$_GET['accountOverrideLicenceCheck'] && !$_SESSION['accountOverrideLicenceCheck']){
-			if (!liveAccounts::accountLicenced()){
-				liveRenderError::create ( 'Invalid Account Licence', 'This account (' . ACCOUNT_NAME . ') does not have a valid licence - please contact your system administrator',NULL, LIVE_ACCOUNT_LICENCE );					
+		if(ACCOUNT_ROUTING_ENABLED){
+			if(!$_GET['accountOverrideLicenceCheck'] && !$_SESSION['accountOverrideLicenceCheck']){
+				if (!liveAccounts::accountLicenced()){
+					liveRenderError::create ( 'Invalid Account Licence', 'This account (' . ACCOUNT_NAME . ') does not have a valid licence - please contact your system administrator',NULL, LIVE_ACCOUNT_LICENCE );					
+				}
 			}
 		}		
 	}
