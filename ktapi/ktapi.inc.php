@@ -1049,7 +1049,7 @@ class KTAPI
 
 		foreach ($fieldsets as $fieldset)
 		{
-			if ($fieldset->getIsConditional()) {	/* this is not implemented...*/	continue;	}
+			//if ($fieldset->getIsConditional()) {	/* this is not implemented...*/	continue;	}
 
 			$fields = $fieldset->getFields();
 			$result = array(
