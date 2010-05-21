@@ -1049,7 +1049,7 @@ class KTAPI
 
 		foreach ($fieldsets as $fieldset)
 		{
-			if ($fieldset->getIsConditional()) {	/* this is not implemented...*/	continue;	}
+			//if ($fieldset->getIsConditional()) {	/* this is not implemented...*/	continue;	}
 
 			$fields = $fieldset->getFields();
 			$result = array(
@@ -1112,6 +1112,7 @@ class KTAPI
 				$fieldsresult[] = array(
 					'name' => $field->getName(),
 					'required' => $field->getIsMandatory(),
+					'fieldid' => $field->getId(),
 					'value' => $value,
 					'description' => $field->getDescription(),
 					'control_type' => $controltype,
