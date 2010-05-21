@@ -1112,6 +1112,7 @@ class KTAPI
 				$fieldsresult[] = array(
 					'name' => $field->getName(),
 					'required' => $field->getIsMandatory(),
+					'fieldid' => $field->getId(),
 					'value' => $value,
 					'description' => $field->getDescription(),
 					'control_type' => $controltype,
