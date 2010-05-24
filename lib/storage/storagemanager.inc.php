@@ -282,6 +282,20 @@ class KTStorageManager {
 	}
 	
     /**
+     * Renames/moves a file
+     * 
+     * @param string $oldfile - the old file name
+     * @param string $newfile - The new file name. 
+     * 
+     * URL : http://www.php.net/manual/en/function.rename.php
+     * 
+     */
+	function rename($oldfile, $newfile) 
+	{
+		return rename($oldfile, $newfile);
+	}
+	
+    /**
      * Remove a file
      * 
      * @param string $filename - Path to the file. 
