@@ -215,7 +215,7 @@ class KTInit {
 				liveAccountRouting::overrideAccountName($_GET['accountOverride']);
 			if(isset($_GET['clearAccountOverride']))
 				liveAccountRouting::clearAccountNameOverride();
-			if($_GET['databaseOverride'])
+			if(isset($_GET['databaseOverride']))
 				liveAccountRouting::overrideDatabaseName($_GET['databaseOverride']);
 			if(isset($_GET['clearDatabaseOverride']))
 				liveAccountRouting::clearDatabaseName();
@@ -247,6 +247,16 @@ class KTInit {
 		}
 	}
 	
+	public function accountRoutingLicenceCheck(){
+		/* Check if account is licensed */
+		if(ACCOUNT_ROUTING_ENABLED){
+			if(!$_GET['accountOverrideLicenceCheck'] && !$_SESSION['accountOverrideLicenceCheck']){
+				if (!liveAccounts::accountLicenced()){
+					liveRenderError::create ( 'Invalid Account Licence', 'This account (' . ACCOUNT_NAME . ') does not have a valid licence - please contact your system administrator',NULL, LIVE_ACCOUNT_LICENCE );					
+				}
+			}
+		}		
+	}
 	/**
 	 * setupI18n
 	 *
@@ -720,6 +730,8 @@ if (! extension_loaded ( 'mbstring' )) {
 require_once (KT_LIB_DIR . '/templating/kt3template.inc.php');
 $GLOBALS ['main'] = new KTPage ( );
 
-define ( 'KTLIVE_TRACE_LOG_FILE', $GLOBALS ['default']->varDirectory . '/log/live_trace.log' );
 
+/** KTLIVE Account Routing **/
+define ( 'KTLIVE_TRACE_LOG_FILE', $GLOBALS ['default']->varDirectory . '/log/live_trace.log' );
+$KTInit->accountRoutingLicenceCheck();
 ?>
