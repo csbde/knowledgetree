@@ -174,7 +174,11 @@ class KTConfig {
                 foreach ($item as $key => $value){
                 	if(ACCOUNT_ROUTING_ENABLED){
                 		if($key=='dbName'){
-                			$value=ACCOUNT_NAME;
+                			// TODO : Testing purposes only, remove if statement only.
+                			if(!isset($_SESSION[LIVE_DATABASE_OVERRIDE]))
+                			{
+                				$value=ACCOUNT_NAME;
+                			}
                 		}
                 	}
                     $this->setns($group, $key, $value, false);
