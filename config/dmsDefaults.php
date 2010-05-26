@@ -211,14 +211,7 @@ class KTInit {
 			 * To clear this override, this example makes use of clearAccountOverride as a parameter
 			 * in the url.
 			 */
-			if(isset($_GET['accountOverride']))
-				liveAccountRouting::overrideAccountName($_GET['accountOverride']);
-			if(isset($_GET['clearAccountOverride']))
-				liveAccountRouting::clearAccountNameOverride();
-			if(isset($_GET['databaseOverride']))
-				liveAccountRouting::overrideDatabaseName($_GET['databaseOverride']);
-			if(isset($_GET['clearDatabaseOverride']))
-				liveAccountRouting::clearDatabaseName();
+			liveAccountRouting::setOverrides();
 			if (liveAccounts::accountExists ()) {
 				define ( 'ACCOUNT_ROUTING_ENABLED', true );
 				define ( 'ACCOUNT_NAME', liveAccountRouting::getAccountName () );
@@ -247,15 +240,19 @@ class KTInit {
 		}
 	}
 	
-	public function accountRoutingLicenceCheck(){
+	public function accountRoutingLicenceCheck()
+	{
 		/* Check if account is licensed */
-		if(ACCOUNT_ROUTING_ENABLED){
-			if(!$_GET['accountOverrideLicenceCheck'] && !$_SESSION['accountOverrideLicenceCheck']){
-				if (!liveAccounts::accountLicenced()){
+		if(ACCOUNT_ROUTING_ENABLED)
+		{
+			if(!$_SESSION['LiveLicenseOverride'])
+			{
+				if (!liveAccounts::accountLicenced())
+				{
 					liveRenderError::create ( 'Invalid Account Licence', 'This account (' . ACCOUNT_NAME . ') does not have a valid licence - please contact your system administrator',NULL, LIVE_ACCOUNT_LICENCE );					
 				}
 			}
-		}		
+		}
 	}
 	/**
 	 * setupI18n
