@@ -301,8 +301,6 @@ class Apache_Solr_Service
             $returnUrl = 'http://' . $this->_host . ':' . $this->_port . $this->_path . $servlet . $queryString;
         }
         
-        echo "URL in library : " . $returnUrl;
-        
         return $returnUrl;
     }
 
