@@ -45,13 +45,10 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentcontentversion.inc.php');
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 
 class KTOnDiskHashedStorageManager extends KTStorageManager {
-    function upload(&$oDocument, $sTmpFilePath, $aOptions = null) {
-
-    	if (!file_exists($sTmpFilePath)) {
-
-            	return new PEAR_Error("$sTmpFilePath does not exist so we can't copy it into the repository! Options: "  . print_r($aOptions,true) );
-            }
-
+    public function upload(&$oDocument, $sTmpFilePath, $aOptions = null) {
+    	if (!parent::file_exists($sTmpFilePath)) {
+            return new PEAR_Error("$sTmpFilePath does not exist so we can't copy it into the repository! Options: "  . print_r($aOptions,true) );
+        }
 
         $oConfig =& KTConfig::getSingleton();
         $sStoragePath = $this->generateStoragePath($oDocument);
@@ -75,7 +72,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
 
             //remove the temporary file
             //@unlink($sTmpFilePath);
-            if (file_exists($sDocumentFileSystemPath)) {
+            if (parent::file_exists($sDocumentFileSystemPath)) {
                 return true;
             } else {
             	return new PEAR_Error("$sDocumentFileSystemPath does not exist after write to storage path. Options: " . print_r($aOptions,true));
@@ -92,14 +89,14 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
      * @param unknown_type $sTmpFilePath
      * @return unknown
      */
-    function uploadTmpFile($sUploadedFile, $sTmpFilePath, $aOptions = null) {
+    public function uploadTmpFile($sUploadedFile, $sTmpFilePath, $aOptions = null) {
 
         //copy the file accross
         if (OS_WINDOWS) {
             $sTmpFilePath = str_replace('\\','/',$sTmpFilePath);
         }
         if ($this->writeToFile($sUploadedFile, $sTmpFilePath, $aOptions)) {
-            if (file_exists($sTmpFilePath)) {
+            if (parent::file_exists($sTmpFilePath)) {
                 return true;
             } else {
                 return false;
@@ -108,14 +105,14 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         return false;
     }
 
-    function writeToFile($sTmpFilePath, $sDocumentFileSystemPath, $aOptions = null) {
+    protected function writeToFile($sTmpFilePath, $sDocumentFileSystemPath, $aOptions = null) {
         // Make it easy to write compressed/encrypted storage
         if(isset($aOptions['copy_upload']) && ($aOptions['copy_upload'] == 'true')) {
             return copy($sTmpFilePath, $sDocumentFileSystemPath);
         }
 
         if (is_uploaded_file($sTmpFilePath))
-            $res = @move_uploaded_file($sTmpFilePath, $sDocumentFileSystemPath);
+            $res = parent::move_uploaded_file($sTmpFilePath, $sDocumentFileSystemPath);
         else
             $res = @rename($sTmpFilePath, $sDocumentFileSystemPath);
 
@@ -127,19 +124,19 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         return $res;
     }
 
-    function getPath(&$oDocument) {
+    protected function getPath(&$oDocument) {
         return $oDocument->getStoragePath();
     }
 
-    function setPath(&$oDocument, $sNewPath) {
+    protected function setPath(&$oDocument, $sNewPath) {
         $oDocument->setStoragePath($sNewPath);
     }
 
-    function generateStoragePath(&$oDocument) {
+    protected function generateStoragePath(&$oDocument) {
         return $this->generateStoragePathForVersion($oDocument->getContentVersionId());
     }
 
-    function generateStoragePathForVersion($oContentVersion) {
+    protected function generateStoragePathForVersion($oContentVersion) {
         $iId = KTUtil::getId($oContentVersion);
         $str = (string)$iId;
         if (strlen($str) < 4) {
@@ -161,7 +158,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         foreach(split('/', $dir) as $sDirPart) {
             $path = sprintf('%s/%s', $path, $sDirPart);
             $createPath = sprintf('%s%s', $sDocumentRoot, $path);
-            if (!file_exists($createPath)) {
+            if (!parent::file_exists($createPath)) {
                 $res = @mkdir($createPath, 0777, true);
                 if ($res === false) {
                     return PEAR::raiseError(sprintf(_kt("Could not create directory for storage" .': ' . '%s') , $createPath));
@@ -171,12 +168,12 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         return sprintf("%s/%d", $dir, $iId);
     }
 
-    function temporaryFile(&$oDocument) {
+    public function temporaryFile(&$oDocument) {
         $oConfig =& KTConfig::getSingleton();
         return sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oDocument));
     }
 
-    function temporaryFileForVersion($iVersionId) {
+    public function temporaryFileForVersion($iVersionId) {
         $oConfig =& KTConfig::getSingleton();
 
         // get path to the content version
@@ -184,18 +181,18 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oContentVersion));
 
         // Ensure the file exists
-        if (file_exists($sPath)) {
+        if (parent::file_exists($sPath)) {
             return $sPath;
         }
         return false;
     }
 
-    function freeTemporaryFile($sPath) {
+    public function freeTemporaryFile($sPath) {
         // Storage uses file-on-filesystem for temporaryFile
         return;
     }
 
-    function download($oDocument, $bIsCheckout = false) {
+    public function download($oDocument, $bIsCheckout = false) {
         global $default;
 
         //get the path to the document on the server
@@ -206,7 +203,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         $path = $docRoot .'/'. $oDocument->getStoragePath();
 
         // Ensure the file exists
-        if (file_exists($path)) {
+        if (parent::file_exists($path)) {
             // Get the mime type
             $mimeId = $oDocument->getMimeTypeID();
             $mimetype = KTMime::getMimeTypeName($mimeId);
@@ -224,29 +221,34 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
             return false;
         }
     }
+    
+    public function downloadRendition($file, $mimetype, $size, $name)
+    {
+        return (KTUtil::download($file, $mimetype, $size, $name) !== false);
+    }
 
-    function createFolder($oFolder) {
+    public function createFolder($oFolder) {
         // Storage doesn't deal with folders
         return true;
     }
 
-    function removeFolder($oFolder) {
+    public function removeFolder($oFolder) {
         // Storage doesn't deal with folders
         return true;
     }
 
-    function removeFolderTree($oFolder) {
+    public function removeFolderTree($oFolder) {
         // Storage doesn't deal with folders
         return true;
     }
 
-    function downloadVersion($oDocument, $iVersionId) {
+    public function downloadVersion($oDocument, $iVersionId) {
         //get the document
         $oContentVersion = KTDocumentContentVersion::get($iVersionId);
         $oConfig =& KTConfig::getSingleton();
         $sPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oContentVersion));
         $sVersion = sprintf("%d.%d", $oContentVersion->getMajorVersionNumber(), $oContentVersion->getMinorVersionNumber());
-        if (file_exists($sPath)) {
+        if (parent::file_exists($sPath)) {
             // Get the mime type
             $mimeId = $oContentVersion->getMimeTypeID();
             $mimetype = KTMime::getMimeTypeName($mimeId);
@@ -260,7 +262,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         }
     }
 
-    function moveDocument(&$oDocument, $oSourceFolder, $oDestinationFolder) {
+    public function moveDocument(&$oDocument, $oSourceFolder, $oDestinationFolder) {
         // Storage path isn't based on location folder hierarchy
         return true;
     }
@@ -271,9 +273,9 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
      * @param string source path
      * @param string destination path
      */
-    function move($sOldDocumentPath, $sNewDocumentPath) {
+    public function move($sOldDocumentPath, $sNewDocumentPath) {
         global $default;
-        if (file_exists($sOldDocumentPath)) {
+        if (parent::file_exists($sOldDocumentPath)) {
             //copy the file    to the new destination
             if (rename($sOldDocumentPath, $sNewDocumentPath)) {
                 //delete the old one
@@ -287,12 +289,12 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         }
     }
 
-    function moveFolder($oFolder, $oDestFolder) {
+    public function moveFolder($oFolder, $oDestFolder) {
         // Storage path isn't based on folder hierarchy
         return true;
     }
 
-    function renameFolder($oFolder, $sNewName) {
+    public function renameFolder($oFolder, $sNewName) {
         // Storage path isn't based on folder hierarchy
         return true;
     }
@@ -301,7 +303,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
      * Perform any storage changes necessary to account for a copied
      * document object.
      */
-    function copy($oSrcDocument, &$oNewDocument) {
+    public function copyDocument($oSrcDocument, &$oNewDocument) {
         // we get the Folder object
         $oVersion = $oNewDocument->_oDocumentContentVersion;
         $oConfig =& KTConfig::getSingleton();
@@ -317,12 +319,12 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         $oVersion->update();
     }
 
-    function renameDocument(&$oDocument, $oOldContentVersion, $sNewFilename) {
+    public function renameDocument(&$oDocument, $oOldContentVersion, $sNewFilename) {
         // Storage isn't based on document name
         return true;
-     }
+    }
 
-    function delete($oDocument) {
+    public function delete($oDocument) {
         // Storage doesn't care if the document is deleted
         return true;
     }
@@ -332,7 +334,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
      *
      * return boolean true on successful expunge
      */
-    function expunge($oDocument) {
+    public function expunge($oDocument) {
     	parent::expunge($oDocument);
     	$oConfig =& KTConfig::getSingleton();
         $sCurrentPath = $this->getPath($oDocument);
@@ -342,7 +344,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         $aVersions = KTDocumentContentVersion::getByDocument($oDocument);
         foreach ($aVersions as $oVersion) {
             $sPath = sprintf('%s/%s', $sDocumentRoot, $oVersion->getStoragePath());
-            @unlink($sPath);
+            parent::unlink($sPath);
         }
         return true;
     }
@@ -352,7 +354,7 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
 	 *
 	 * return boolean true on successful delete
 	 */
-	function deleteVersion($oVersion) {
+	public function deleteVersion($oVersion) {
 	    $oConfig =& KTConfig::getSingleton();
 	    $sDocumentRoot = $oConfig->get('urls/documentRoot');
 	    $iContentId = $oVersion->getContentVersionId();
@@ -360,16 +362,17 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
 
 	    $sPath = $oContentVersion->getStoragePath();
 	    $sFullPath = sprintf("%s/%s", $sDocumentRoot, $sPath);
-	    if (file_exists($sFullPath)) {
-            unlink($sFullPath);
+	    if (parent::file_exists($sFullPath)) {
+            parent::unlink($sFullPath);
 	    }
 	    return true;
 	}
 
-    function restore($oDocument) {
+    public function restore($oDocument) {
         // Storage doesn't care if the document is deleted or restored
         return true;
     }
+
 }
 
 ?>

@@ -36,7 +36,7 @@ class jsonResponseObject{
 	
 	
 	public function addError($message=NULL,$code=NULL){
-		$this->errors[]=array('code'=>$code,'message'=>$message);
+		$this->errors[md5($message)]=array('code'=>$code,'message'=>$message);
 		$user=isset($this->request['auth']['user'])?$this->request['auth']['user']:'';
 		Clienttools_Syslog::logError($user,$this->location,array('code'=>$code,'message'=>$message),'');
 	}
@@ -64,6 +64,11 @@ class jsonResponseObject{
 	
 	public function setRequest($request=NULL){
 		$this->request=$request;
+	}
+	
+	
+	public function setResponse($value=NULL){
+		$this->overwriteData($value);
 	}
 	
 	public function setTitle($title=NULL){

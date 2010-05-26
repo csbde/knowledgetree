@@ -161,9 +161,9 @@ class KTDownloadManager
 		    return $this->download_ext($document_id, $hash, $content_version_id);
 		}
 
-		$storage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 
-        $ktapi = &new KTAPI();
+        $ktapi = new KTAPI();
         $res = $ktapi->get_active_session($this->session, null, $apptype);
         if (PEAR::isError($res))
         {
@@ -178,11 +178,11 @@ class KTDownloadManager
 
         if (!empty($content_version_id))
         {
-            $res = $storage->downloadVersion($document->document, $content_version_id);
+            $res = $oStorage->downloadVersion($document->document, $content_version_id);
         }
         else
         {
-            $res = $storage->download($document->document);
+            $res = $oStorage->download($document->document);
         }
         if (PEAR::isError($res))
         {
@@ -197,7 +197,7 @@ class KTDownloadManager
 
 	function download_ext($document_id, $hash, $content_version_id = null)
 	{
-	    $storage =& KTStorageManagerUtil::getSingleton();
+	    $oStorage = KTStorageManagerUtil::getSingleton();
 	    $document = Document::get($document_id);
 	    if (PEAR::isError($document))
 	    {
@@ -206,11 +206,11 @@ class KTDownloadManager
 
 	    if (!empty($content_version_id))
 	    {
-	        $res = $storage->downloadVersion($document, $content_version_id);
+	        $res = $oStorage->downloadVersion($document, $content_version_id);
 	    }
 	    else
 	    {
-	        $res = $storage->download($document);
+	        $res = $oStorage->download($document);
 	    }
 	    if (PEAR::isError($res))
 	    {

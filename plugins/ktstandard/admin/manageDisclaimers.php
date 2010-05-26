@@ -43,6 +43,7 @@ require_once(KT_LIB_DIR . "/help/helpentity.inc.php");
 require_once(KT_LIB_DIR . "/help/help.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class ManageDisclaimersDispatcher extends KTAdminDispatcher {
 
@@ -95,7 +96,7 @@ class ManageDisclaimersDispatcher extends KTAdminDispatcher {
         if (PEAR::isError($oHelpReplacement)) {
             return $this->errorRedirectToMain(_kt("Could not find specified item"));
         }
-        $description = KTUtil::arrayGet($_REQUEST, 'description');
+        $description = sanitizeForJavascript(KTUtil::arrayGet($_REQUEST, 'description'));
         if (empty($description)) {
             return $this->errorRedirectToMain(_kt("No description given"));
         }

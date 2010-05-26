@@ -99,7 +99,7 @@ class DocumentExtractorsTestCase extends KTUnitTestCase {
     function extractText($sourceFile, $extension, $mimeType)
     {
         static $extractors = array();
-
+		$oStorage = KTStorageManagerUtil::getSingleton();
         // get extractor
         $query = "select me.id, me.name from mime_types mt
             INNER JOIN mime_extractors me ON mt.extractor_id = me.id
@@ -130,7 +130,7 @@ class DocumentExtractorsTestCase extends KTUnitTestCase {
         if(empty($extractor)) return '';
 
         // Extract content
-        $targetFile = tempnam($this->tempPath, 'ktindexer');
+        $targetFile = $oStorage->tempnam($this->tempPath, 'ktindexer');
 
         $extractor->setSourceFile($this->path . $sourceFile);
         $extractor->setTargetFile($targetFile);
@@ -139,10 +139,10 @@ class DocumentExtractorsTestCase extends KTUnitTestCase {
 
         $extractor->extractTextContent();
 
-        $text = file_get_contents($targetFile);
+        $text = $oStorage->file_get_contents($targetFile);
         $text = $this->filterText($text);
 
-        @unlink($targetFile);
+        $oStorage->unlink($targetFile);
         return $text;
     }
 

@@ -100,7 +100,7 @@ class CMISRepository {
         foreach($config->repositoryInfo[0] as $field => $value)
         {
 //            if ($field == 'rootFolderId') {
-//                $value = CMISUtil::encodeObjectId(FOLDER, $value);
+//                $value = CMISUtil::encodeObjectId(CMIS_FOLDER, $value);
 //            }
             $this->setRepositoryInfoField($field, (string)$value);
         }

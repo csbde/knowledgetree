@@ -41,6 +41,7 @@ require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class InetDocumentFieldDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
@@ -203,7 +204,7 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
         $extra_errors = array();
 
         if (!empty($data['name'])) {
-            $oFieldset = KTFieldset::getByName($data['name']);
+            $oFieldset = KTFieldset::getByName(sanitizeForHTML($data['name']));
             if (!PEAR::isError($oFieldset)) {
                 // means we're looking at an existing name
                 $extra_errors['name'] = _kt("There is already a fieldset with that name.");
@@ -222,7 +223,7 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
         }
 
         // we also need a namespace.
-        $temp_name = $data['name'];
+        $temp_name = sanitizeForHTML($data['name']);
         $namespace = KTUtil::nameToLocalNamespace('fieldsets', $temp_name);
         $oOldFieldset = KTFieldset::getByNamespace($namespace);
 
@@ -235,8 +236,8 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
         // we now know its a non-conflicting one.
         // FIXME handle conditional fieldsets, which should be ... a different object.
         $oFieldset = KTFieldset::createFromArray(array(
-            "name" => $data['name'],
-	    	"description" => $data['description'],
+            "name" => sanitizeForHTML($data['name']),
+	    	"description" => sanitizeForHTML($data['description']),
             "namespace" => $namespace,
             "mandatory" => false,       // FIXME deprecated
 	    	"isConditional" => $is_conditional,   // handle this
@@ -479,10 +480,10 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
         $extra_errors = array();
 
         // check that the fieldset name either hasn't changed, or doesn't exist.
-        if ($data['name'] != $this->oFieldset->getName()) {
+        if (sanitizeForHTML($data['name']) != $this->oFieldset->getName()) {
             $oOldFieldset = KTFieldset::getByName($data['name']);
             // If the fieldset exists throw an error. Mysql doesn't distinguish between  and e so check the names are different in php.
-            if (!PEAR::isError($oOldFieldset) && $oOldFieldset->getName() == $data['name']) {
+            if (!PEAR::isError($oOldFieldset) && $oOldFieldset->getName() == sanitizeForHTML($data['name'])) {
                 $extra_errors['name'][] = _kt("A fieldset with that name already exists.");
             }
         }
@@ -493,8 +494,8 @@ class InetDocumentFieldDispatcher extends KTAdminDispatcher {
 
         $this->startTransaction();
 
-        $this->oFieldset->setName($data['name']);
-        $this->oFieldset->setDescription($data['description']);
+        $this->oFieldset->setName(sanitizeForHTML($data['name']));
+        $this->oFieldset->setDescription(sanitizeForHTML($data['description']));
         $bGeneric = $data['generic'];
         if ($bGeneric != $this->oFieldset->getIsGeneric() && $bGeneric == true) {
             // delink it from all doctypes.

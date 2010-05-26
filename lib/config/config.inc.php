@@ -64,7 +64,8 @@ class KTConfig {
 
         // Get the directory containing the file, append the file name
         $cacheFile = trim(file_get_contents($pathFile));
-        $cacheFile .= '/configcache';
+        // if we are on an account name routing system (i.e. a shared system,) use the account name to distinguish config cache files
+        $cacheFile .= '/' . (defined('ACCOUNT_NAME') ? ACCOUNT_NAME : '') . 'configcache';
 
         // Ensure path is absolute
         $cacheFile = (!KTUtil::isAbsolutePath($cacheFile)) ? sprintf('%s/%s', KT_DIR, $cacheFile) : $cacheFile;
@@ -171,6 +172,15 @@ class KTConfig {
         if(isset($conf['root']) && !empty($conf['root'])){
             foreach($conf['root'] as $group => $item){
                 foreach ($item as $key => $value){
+                	if(ACCOUNT_ROUTING_ENABLED){
+                		if($key=='dbName'){
+                			// TODO : Testing purposes only, remove if statement only.
+                			if(!isset($_SESSION[LIVE_DATABASE_OVERRIDE]))
+                			{
+                				$value=ACCOUNT_NAME;
+                			}
+                		}
+                	}
                     $this->setns($group, $key, $value, false);
                 }
             }
@@ -211,7 +221,7 @@ class KTConfig {
             'password' => $this->flatns[$sPass],
             'hostspec' => $this->flatns['db/dbHost'],
             'database' => $this->flatns['db/dbName'],
-            'port' => $this->flatns['db/dbPort']
+            'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
         );
 
         $options = array(
@@ -387,7 +397,7 @@ class KTConfig {
 
         $this->aFileRoot[$filename] =& $root;
 
-        $conf =& $root->toArray();
+        $conf = $root->toArray();
         foreach ($conf["root"] as $seck => $secv) {
             $aSectionFile[$seck] = $filename;
             if (is_array($secv)) {

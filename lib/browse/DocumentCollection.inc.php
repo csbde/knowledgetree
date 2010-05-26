@@ -129,7 +129,7 @@ class DocumentCollection {
 			if ($aDQ[2]) { $this->_sDocumentSortField = $aDQ[2]; }
 
 		 } else {
-		    $oColumn->setSortedOn(false);
+		    $this->columns[$key]->setSortedOn(false);
 		 }
 
 	  }
@@ -415,13 +415,14 @@ class AdvancedCollection {
                 $this->_aDocumentJoinParams = $aDQ[1];
 
                 if ($aDQ[2]) {
-                    $this->_sDocumentSortField = $aDQ[2]; }
-                } else {
-        		    $oColumn->setSortedOn(false);
+                    $this->_sDocumentSortField = $aDQ[2];
                 }
+            }
+            else {
+        	   $this->columns[$key]->setSortedOn(false);
+            }
         }
     }
-
 
     // finally, generate the results.  either (documents or folders) could be null/empty
     // FIXME handle column-for-sorting (esp. md?)

@@ -63,13 +63,8 @@ class KT_cmis_atom_serviceDoc extends KT_atom_serviceDoc {
         // fetch data for response
         $repositories = $RepositoryService->getRepositories();
         
-        // hack for removing one level of access
-        $repositories = $repositories['results'];
-        
         // fetch for default first repo;  NOTE that this will probably have to change at some point, quick and dirty for now
-        // hack for removing one level of access
-        $repositoryInfo = $RepositoryService->getRepositoryInfo($repositories[0]['repositoryId']);
-        $this->repositoryInfo = $repositoryInfo['results'];
+        $this->repositoryInfo = $RepositoryService->getRepositoryInfo($repositories[0]['repositoryId']);
     }
 
     protected function constructServiceDocumentHeaders()
@@ -83,7 +78,7 @@ class KT_cmis_atom_serviceDoc extends KT_atom_serviceDoc {
         $this->DOM->appendChild($this->service);
     }
 
-    public function &newCollection($url = NULL, $title = NULL, $cmisCollectionType = NULL, $accept = null, &$ws = NULL)
+    public function newCollection($url = NULL, $title = NULL, $cmisCollectionType = NULL, $accept = null, &$ws = NULL)
     {
         $collection=$this->newElement('collection');
         $collection->appendChild($this->newAttr('href', $url));
@@ -93,7 +88,44 @@ class KT_cmis_atom_serviceDoc extends KT_atom_serviceDoc {
             $collection->appendChild($this->newElement('accept', $accept));
         }
         if(isset($ws))$ws->appendChild($collection);
+        
+        // FIXME? do we need to return the value from the function if $ws is supplied?
         return $collection;
+    }
+    
+    /**
+     * Creates the specified URI template within the AtomPub response
+     *
+     * @param string $templateType
+     * @param string $workspace
+     * @return string $uriTemplate
+     * 
+     * NOTE not adding in all the arguments for optional functionality not supported, e.g. ACL/Policies/Relationships/Renditions;
+     *      arguments for functionality which is non-optional (filters/allowableActions) are included but not yet supported
+     *      by the API code
+     */
+    public function uriTemplate($templateType, $workspace)
+    {
+        $content = array('template' => CMIS_APP_BASE_URI . $workspace, 'mediatype' => 'application/atom+xml;type=entry');
+        
+        switch($templateType) {
+            case 'objectbyid':
+                $content['template'] .= '/objectbyid/{id}/{filter}/{includeAllowableActions}';
+            break;
+            case 'objectbypath':
+                $content['template'] .= '/objectbypath/{path}/{filter}/{includeAllowableActions}';
+            break;
+            case 'typebyid':
+                $content['template'] .= '/typebyid/{id}';
+            break;
+        }
+        
+        $uriTemplate = $this->newElement('cmisra:uritemplate');
+        $uriTemplate->appendChild($this->newElement('cmisra:template', $content['template']));
+        $uriTemplate->appendChild($this->newElement('cmisra:type', $templateType));
+        $uriTemplate->appendChild($this->newElement('cmisra:mediatype', $content['mediatype']));
+        
+        return $uriTemplate;
     }
 
 }

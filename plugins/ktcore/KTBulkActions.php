@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -93,7 +93,7 @@ class KTBulkDeleteAction extends KTBulkAction {
             // Get any existing subfolders - but ONLY on the current level, or we will be checking subfolders more than once!
 			$sWhereClause = "parent_id = '{$sFolderId}'";
             $aChildFolders = $this->oFolder->getList($sWhereClause);
-            
+
             // Loop through subfolders and check each in the same way as the parent
             if(!empty($aChildFolders)){
                 foreach($aChildFolders as $oChild){
@@ -1065,7 +1065,7 @@ class KTBulkArchiveAction extends KTBulkAction {
                 return PEAR::raiseError(_kt('The folder contains no documents to archive.'));
             }
 
-            
+
         }
         return "ArchivedDocument";
     }
@@ -1165,8 +1165,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 
         $str = '<p>'._kt('Creating zip file. Compressing and archiving in progress ...').'</p>';
         $str .= "<p style='margin-bottom: 10px;'><br /><b>".
-                _kt('Warning! Please wait for archiving to complete before closing the page.').'</b><br />'.
-                _kt('Note: Closing the page before the download link displays will cancel your Bulk Download.').'</p>';
+                _kt('Note: You can close this window and browse to other pages while the archiving completes. You will be notified by a pop-up window once the .zip file is created.').'</p>';
 
         $str .= sprintf('<p>' . _kt('Once your download is complete, click <a href="%s">here</a> to return to the original folder') . "</p>\n", $folderurl);
         $str .= sprintf('<script language="JavaScript">

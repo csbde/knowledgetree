@@ -84,7 +84,8 @@ class GuidInserterTestCase extends KTUnitTestCase {
 
     function insertGuid($filename, $guid)
     {
-        $buffer = file_get_contents($this->path . $filename);
+    	$oStorage = KTStorageManagerUtil::getSingleton();
+        $buffer = $oStorage->file_get_contents($this->path . $filename);
 
         $metadata = array(
             "KTGuid" => $guid,
@@ -97,19 +98,20 @@ class GuidInserterTestCase extends KTUnitTestCase {
             return false;
         }
 
-        file_put_contents($this->tempPath . $filename, $modified);
+        $oStorage->file_put_contents($this->tempPath . $filename, $modified);
         unset($modified);
         return true;
     }
 
     function readMetadata($filename)
     {
-        $buffer = file_get_contents($this->tempPath . $filename);
+    	$oStorage = KTStorageManagerUtil::getSingleton();
+        $buffer = $oStorage->file_get_contents($this->tempPath . $filename);
 
         $metadata = $this->xmlrpc->readProperties($buffer);
 
         unset($buffer);
-        @unlink($this->tempPath . $filename);
+        $oStorage->unlink($this->tempPath . $filename);
         return $metadata;
     }
 }

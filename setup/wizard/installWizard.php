@@ -44,6 +44,7 @@
 * @version Version 0.1
 */
 require_once("../wizard/share/wizardBase.php");
+require_once("installUtil.php");
 
 class InstallWizard extends WizardBase {
 	/**

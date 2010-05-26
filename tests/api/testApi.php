@@ -42,6 +42,7 @@ class APITestCase extends KTUnitTestCase {
         $this->session = $this->ktapi->start_session(KT_TEST_USER, KT_TEST_PASS);
         $this->root = $this->ktapi->get_root_folder();
         $this->assertTrue($this->root instanceof KTAPI_Folder);
+        $this->storage = KTStorageManagerUtil::getSingleton();
     }
 
     /**
@@ -128,7 +129,6 @@ class APITestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('title_1.txt', 'name_1.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        @unlink($randomFile);
 
         $internalDocObject = $document->getObject();
         $user = $this->ktapi->can_user_access_object_requiring_permission($internalDocObject, $permission);
@@ -143,8 +143,6 @@ class APITestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document2 = $this->root->add_document('title_2.txt', 'name_2.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        
-        @unlink($randomFile);
 
         $internalDocObject2 = $document2->getObject();
         $user = $this->ktapi->can_user_access_object_requiring_permission($internalDocObject2, $permission);
@@ -155,8 +153,8 @@ class APITestCase extends KTUnitTestCase {
 
         // clean up
         $document->delete('Testing');
-        $document2->delete('Testing');
         $document->expunge();
+        $document2->delete('Testing');
         $document2->expunge();
     }
 
@@ -170,7 +168,6 @@ class APITestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('title_4.txt', 'name_4.txt', 'Default', $randomFile);
-        @unlink($randomFile);
 
         $list = $this->ktapi->get_documents_by_oem_no('1');
 
@@ -181,7 +178,6 @@ class APITestCase extends KTUnitTestCase {
         // create the document object
         $randomFile = $this->createRandomFile();
         $document2 = $this->root->add_document('title_5.txt', 'name_5.txt', 'Default', $randomFile);
-        @unlink($randomFile);
 
         $list = $this->ktapi->get_documents_by_oem_no('2');
 
@@ -191,8 +187,8 @@ class APITestCase extends KTUnitTestCase {
 
         // clean up
         $document->delete('Testing');
-        $document2->delete('Testing');
         $document->expunge();
+        $document2->delete('Testing');
         $document2->expunge();
     }
     */
@@ -313,12 +309,10 @@ class APITestCase extends KTUnitTestCase {
     public function testGetDocumentById()
     {
         // create the document object
-        $randomFile = $this->createRandomFile();
+        $randomFile = $this->createRandomFile();        
         $document = $this->root->add_document('title_5.txt', 'name_5.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'reason');
-        @unlink($randomFile);
 
         $documentID = $document->get_documentid();
-
         $docObject = $this->ktapi->get_document_by_id($documentID);
 
         $this->assertNotNull($docObject);
@@ -446,7 +440,6 @@ class APITestCase extends KTUnitTestCase {
         // Create a document and subscribe to it
         $randomFile = $this->createRandomFile();
         $document = $this->root->add_document('test title 1', 'testfile1.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        @unlink($randomFile);
 
         $this->assertEntity($document, 'KTAPI_Document');
         if(PEAR::isError($document)) return;
@@ -470,6 +463,8 @@ class APITestCase extends KTUnitTestCase {
      */
     public function testFolderApiFunctions()
     {
+        global $default;
+        
         // check for a negative result
         $result = $this->ktapi->create_folder(0, 'New test error api folder', KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $this->assertNotEqual($result['status_code'], 0);
@@ -477,7 +472,6 @@ class APITestCase extends KTUnitTestCase {
         // Create a folder
         $result1 = $this->ktapi->create_folder(1, 'New test api folder', KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $folder_id = $result1['results']['id'];
-
         $this->assertEqual($result1['status_code'], 0);
         $this->assertTrue($result1['results']['parent_id'] == 1);
 
@@ -487,12 +481,10 @@ class APITestCase extends KTUnitTestCase {
         $this->assertEqual($result2['status_code'], 0);
 
         // Add a document
-        global $default;
         $dir = $default->uploadDirectory;
         $tempfilename = $this->createRandomFile('some text', $dir);
-
         $doc = $this->ktapi->add_document($folder_id,  'New API test doc', 'testdoc1.txt', 'Default',
-                                                $tempfilename, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
+                                          $tempfilename, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         
         $this->assertEqual($doc['status_code'], 0);
         $this->assertEqual($doc['results']['title'], 'New API test doc');
@@ -539,6 +531,8 @@ class APITestCase extends KTUnitTestCase {
      */
     public function testDocumentApiFunctions()
     {
+        global $default;
+        
         // Create a folder
         $result1 = $this->ktapi->create_folder(1, 'New test api folder', KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $folder_id = $result1['results']['id'];
@@ -550,12 +544,10 @@ class APITestCase extends KTUnitTestCase {
         $this->assertEqual($result2['status_code'], 0);
 
         // Add a document
-        global $default;
         $dir = $default->uploadDirectory;
         $tempfilename = $this->createRandomFile('some text', $dir);
         $doc = $this->ktapi->add_document($folder_id,  'New API test doc', 'testdoc1.txt', 'Default', $tempfilename,
-                                              KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        
+                                          KT_TEST_USER, KT_TEST_PASS, 'Testing API');        
         $doc_id = $doc['results']['document_id'];
         $this->assertEqual($doc['status_code'], 0);
 
@@ -589,7 +581,6 @@ class APITestCase extends KTUnitTestCase {
         $dir = $default->uploadDirectory;
         $tempfilename = $this->createRandomFile('some text', $dir);
         $result2 = $this->ktapi->checkin_document($doc_id,  'testdoc1.txt', 'Testing API', $tempfilename, false, KT_TEST_USER, KT_TEST_PASS);
-        
         $this->assertEqual($result2['status_code'], 0);
         $this->assertEqual($result2['results']['document_id'], $doc_id);
 
@@ -602,6 +593,9 @@ class APITestCase extends KTUnitTestCase {
         // Delete the document
         $result3 = $this->ktapi->delete_document($doc_id, 'Testing API', true, KT_TEST_USER, KT_TEST_PASS);
         $this->assertEqual($result3['status_code'], 0);
+        // expunge the document
+        $docObject = $this->ktapi->get_document_by_id($doc_id);
+        $docObject->expunge();
 
         // Clean up - delete the folder
         $this->ktapi->delete_folder($folder_id, 'Testing API', KT_TEST_USER, KT_TEST_PASS);
@@ -784,9 +778,22 @@ class APITestCase extends KTUnitTestCase {
         	}
         }
     }
+    
+    /**
+    * This method tests the license whether it is a commercial or community edition of KnowledgeTree
+    *
+    */
+    public function testIsCommercialEdition()
+    {
+        $isCommercial = $this->ktapi->isCommercialEdition();
+
+        $this->assertNotNull($isCommercial);
+        $this->assertIsA($isCommercial, 'boolean');
+        $this->assertNoErrors();
+    }
 
     /**
-     * Helper function to create a document
+     * Helper function to create a document - appears unused so not updated to use new storage driver functions
      */
     function createDocument($title, $filename, $folder = null)
     {
@@ -801,7 +808,6 @@ class APITestCase extends KTUnitTestCase {
         $document = $folder->add_document($title, $filename, 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $this->assertNotError($document);
 
-        @unlink($randomFile);
         if(PEAR::isError($document)) return false;
 
         return $document;
@@ -820,10 +826,8 @@ class APITestCase extends KTUnitTestCase {
         if(is_null($uploadDir)){
            $uploadDir = dirname(__FILE__);
         }
-        $temp = tempnam($uploadDir, 'myfile');
-        $fp = fopen($temp, 'wt');
-        fwrite($fp, $content);
-        fclose($fp);
+        $temp = $this->storage->tempnam($uploadDir, 'myfile');
+        $this->storage->write_file($temp, 'w', $content);
         return $temp;
     }
 }

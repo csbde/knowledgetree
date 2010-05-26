@@ -85,9 +85,10 @@ function checkFile($path, $first = true) {
 
 function checkDirectory($path) {
     global $fsPath, $aIgnore;
+    $oStorage = KTStorageManagerUtil::getSingleton();
     $fullpath = sprintf('%s/%s', $fsPath, $path);
 
-    if (!is_dir($fullpath)) {
+    if (!$oStorage->is_dir($fullpath)) {
         print "Not a directory: $fullpath\n";
     }
 
@@ -104,6 +105,9 @@ function checkDirectory($path) {
         }
     }
     
+    // TODO this whole piece will possibly need to go in the storage driver in order to work correctly
+    //      REALLY not sure exactly how this will be done as it uses functions local to this class
+    // NOTE alternate option - have an opendir function in storage driver...
     $dh = @opendir($fullpath);
     if ($dh === false) {
         print "Could not open directory: $fullpath\n";
@@ -112,7 +116,7 @@ function checkDirectory($path) {
         if (in_array($filename, $aIgnore)) { continue; }
         $subrelpath = sprintf('%s/%s', $path, $filename);
         $subfullpath = sprintf('%s/%s', $fsPath, $subrelpath);
-        if (is_dir($subfullpath)) {
+        if ($oStorage->is_dir($subfullpath)) {
             checkDirectory($subrelpath);
         }
         if (is_file($subfullpath)) {
@@ -123,9 +127,10 @@ function checkDirectory($path) {
 
 function checkRepoFolder($oFolder) {
     global $fsPath, $aRepoFolderProblems;
+    $oStorage = KTStorageManagerUtil::getSingleton();
     $sFolderPath = sprintf('%s/%s', $oFolder->getFullPath(), $oFolder->getName());
     $sFullPath = sprintf('%s/%s', $fsPath, $sFolderPath);
-    if (!is_dir($sFullPath)) {
+    if (!$oStorage->is_dir($sFullPath)) {
         $aRepoFolderProblems[] = $sFolderPath;
     }
 }
@@ -134,7 +139,8 @@ function checkRepoDocument($oDocument) {
     global $fsPath, $aRepoDocumentProblems;
     $sDocumentPath = $oDocument->getStoragePath();
     $sFullPath = sprintf('%s/%s', $fsPath, $sDocumentPath);
-    if (!is_file($sFullPath)) {
+    $oStorage = KTStorageManagerUtil::getSingleton();
+    if (!$oStorage->isFile($sFullPath)) {
         $aRepoDocumentProblems[] = $sDocumentPath;
     }
     checkRepoVersions($oDocument);
@@ -150,7 +156,8 @@ function checkRepoVersions($oDocument) {
         }
         $sDocumentPath = $oDocument->getStoragePath();
         $sFullPath = sprintf('%s/%s-%s', $fsPath, $sDocumentPath, $sVersion);
-        if (!is_file($sFullPath)) {
+        $oStorage = KTStorageManagerUtil::getSingleton();
+        if (!$oStorage->isFile($sFullPath)) {
             $aRepoVersionProblems[] = array($sDocumentPath, $sVersion);
             continue;
         }

@@ -19,8 +19,7 @@ class FolderTestCase extends KTUnitTestCase {
     }
 
     function testAdd() {
-	$oFolder =& KTFolderUtil::add($this->oFolder, 'testAdd', $this->oUser);
-
+        $oFolder =& KTFolderUtil::add($this->oFolder, 'testAdd', $this->oUser);
         $this->assertEntity($oFolder, 'Folder');
         $this->assertEqual($oFolder->getName(), 'testAdd');
         $this->assertEqual($oFolder->getParentID(), $this->oFolder->getId());
@@ -28,33 +27,33 @@ class FolderTestCase extends KTUnitTestCase {
     }
 
     function testMove() {
-	$oTestFolder = KTFolderUtil::add($this->oFolder, 'testMoveFolder', $this->oUser);
-	$this->assertNotError($oTestFolder);
-    if(PEAR::isError($oTestFolder)) return;
-	$this->assertEntity($oTestFolder, 'Folder');
+        $oTestFolder = KTFolderUtil::add($this->oFolder, 'testMoveFolder', $this->oUser);
+        $this->assertNotError($oTestFolder);
+        if(PEAR::isError($oTestFolder)) return;
+        $this->assertEntity($oTestFolder, 'Folder');
 
-	$oSrcFolder = KTFolderUtil::add($this->oFolder, 'testMoveSrcFolder', $this->oUser);
-	$this->assertNotError($oSrcFolder);
-    if(PEAR::isError($oSrcFolder)) return;
-	$this->assertEntity($oSrcFolder, 'Folder');
+        $oSrcFolder = KTFolderUtil::add($this->oFolder, 'testMoveSrcFolder', $this->oUser);
+        $this->assertNotError($oSrcFolder);
+        if(PEAR::isError($oSrcFolder)) return;
+        $this->assertEntity($oSrcFolder, 'Folder');
 
-	$oFS =& new KTFSImportStorage(KT_DIR . "/tests/folder/move-dataset");
-	$oBM =& new KTBulkImportManager($oSrcFolder, $oFS, $this->oUser);
-	$this->assertNotError($oBM);
-    if(PEAR::isError($oBM)) return;
+        $oFS =& new KTFSImportStorage(KT_DIR . "/tests/folder/move-dataset");
+        $oBM =& new KTBulkImportManager($oSrcFolder, $oFS, $this->oUser);
+        $this->assertNotError($oBM);
+        if(PEAR::isError($oBM)) return;
 
-	//$res = $oBM->import();
-	//$this->assertNotError($res);
-    //if(PEAR::isError($res)) return;
+        //$res = $oBM->import();
+        //$this->assertNotError($res);
+        //if(PEAR::isError($res)) return;
 
-	$oDstFolder = KTFolderUtil::add($oTestFolder, 'testMoveDstFolder', $this->oUser);
-	$this->assertNotError($oDstFolder);
-    if(PEAR::isError($oDstFolder)) return;
-	$this->assertEntity($oDstFolder, 'Folder');
+        $oDstFolder = KTFolderUtil::add($oTestFolder, 'testMoveDstFolder', $this->oUser);
+        $this->assertNotError($oDstFolder);
+        if(PEAR::isError($oDstFolder)) return;
+        $this->assertEntity($oDstFolder, 'Folder');
 
-	$res = KTFolderUtil::move($oSrcFolder, $oDstFolder, $this->oUser);
-	$this->assertNotError($res);
-    if(PEAR::isError($res)) return;
-	$this->assertEqual($oSrcFolder->getParentID(), $oDstFolder->getID());
+        $res = KTFolderUtil::move($oSrcFolder, $oDstFolder, $this->oUser);
+        $this->assertNotError($res);
+        if(PEAR::isError($res)) return;
+        $this->assertEqual($oSrcFolder->getParentID(), $oDstFolder->getID());
     }
 }

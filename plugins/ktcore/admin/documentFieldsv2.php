@@ -41,6 +41,7 @@ require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class KTDocumentFieldDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
@@ -205,8 +206,8 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
         // we now know its a non-conflicting one.
         // FIXME handle conditional fieldsets, which should be ... a different object.
         $oFieldset = KTFieldset::createFromArray(array(
-            "name" => $data['name'],
-	    	"description" => $data['description'],
+            "name" => sanitizeForHTML($data['name']),
+	    	"description" => sanitizeForHTML($data['description']),
             "namespace" => $namespace,
             "mandatory" => false,       // FIXME deprecated
 	    	"isConditional" => $is_conditional,   // handle this
@@ -418,8 +419,8 @@ class KTDocumentFieldDispatcher extends KTAdminDispatcher {
 
         $this->startTransaction();
 
-        $this->oFieldset->setName($data['name']);
-        $this->oFieldset->setDescription($data['description']);
+        $this->oFieldset->setName(sanitizeForHTML($data['name']));
+        $this->oFieldset->setDescription(sanitizeForHTML($data['description']));
         $bGeneric = $data['generic'];
         if ($bGeneric != $this->oFieldset->getIsGeneric() && $bGeneric == true) {
             // delink it from all doctypes.

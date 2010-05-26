@@ -119,9 +119,11 @@ class PHPLuceneIndexer extends Indexer
 	 */
     protected function indexDocument($docid, $textfile, $title, $version)
     {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
     	global $default;
 
-    	if (!is_file($textfile))
+    	$storage = KTStorageManagerUtil::getSingleton();
+    	if (!$storage->isFile($textfile))
     	{
     		$default->log->error(sprintf(_kt("Attempting to index %d %s but it is not available."),$docid, $textfile));
     		return false;
@@ -129,7 +131,7 @@ class PHPLuceneIndexer extends Indexer
 
     	list($content, $discussion, $title2, $version2) = $this->deleteDocument($docid);
 
-    	$this->addDocument($docid, file_get_contents($textfile), $discussion, $title, $version);
+    	$this->addDocument($docid, $oStorage->file_get_contents($textfile), $discussion, $title, $version);
 
 		return true;
     }
@@ -144,8 +146,9 @@ class PHPLuceneIndexer extends Indexer
     protected function indexDocumentAndDiscussion($docid, $textfile, $title, $version)
     {
 		global $default;
-
-    	if (!is_file($textfile))
+		$oStorage = KTStorageManagerUtil::getSingleton();
+		$storage = KTStorageManagerUtil::getSingleton();
+    	if (!$storage->isFile($textfile))
     	{
     		$default->log->error(sprintf(_kt("Attempting to index %d %s but it is not available."),$docid, $textfile));
     		return false;
@@ -153,7 +156,7 @@ class PHPLuceneIndexer extends Indexer
 
     	$this->deleteDocument($docid);
 
-    	$this->addDocument($docid, file_get_contents($textfile), Indexer::getDiscussionText($docid), $title, $version);
+    	$this->addDocument($docid, $oStorage->file_get_contents($textfile), Indexer::getDiscussionText($docid), $title, $version);
 
     	return true;
     }

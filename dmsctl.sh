@@ -49,6 +49,7 @@ SOFFICE_PIDFILE=$INSTALL_PATH/var/log/soffice.bin.pid
 SOFFICE_PID=""
 SOFFICE_PORT="8100"
 SOFFICEBIN=/usr/share/ktdms-office/ktdms-office/openoffice/program/soffice
+#SOFFICEBIN=/usr/bin/soffice
 SOFFICE="$SOFFICEBIN -nofirststartwizard -nologo -headless -accept=socket,host=127.0.0.1,port=$SOFFICE_PORT;urp;StarOffice.ServiceManager"
 SOFFICE_STATUS=""
 
@@ -385,7 +386,7 @@ noserver() {
 
 firstrun() {
 	echo "We running for the first time, FIX ZEND"
-	if grep --quiet LD_LIBRARAY_PATH /etc/zce.rc ; then
+	if grep --quiet LD_LIBRARY_PATH /etc/zce.rc ; then
         	echo "Nothing to be done ... maybe"
 	else
         	echo "PATH=/usr/local/zend/bin:$PATH" >> /etc/zce.rc
@@ -414,11 +415,11 @@ if [ "x$3" != "x" ]; then
 fi
 
 # Are we running for first time
-if [ -e "/usr/share/knowledgetree/var/bin/dmsinit.lock" ]
+if [ -e "$INSTALL_PATH/var/bin/dmsinit.lock" ]
 then
 echo "";
 else
-	if grep --quiet LD_LIBRARAY_PATH /etc/zce.rc ; then
+	if grep --quiet LD_LIBRARY_PATH /etc/zce.rc ; then
         	echo "Nothing to be done ... maybe"
 	else
         	echo "PATH=/usr/local/zend/bin:$PATH" >> /etc/zce.rc

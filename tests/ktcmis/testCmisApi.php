@@ -587,18 +587,19 @@ class CMISTestCase extends KTUnitTestCase {
      */
     function createDocument($title, $filename, $folder = null)
     {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         if(is_null($folder)){
             $folder = $this->root;
         }
 
         // Create a new document
         $randomFile = $this->createRandomFile();
-        $this->assertTrue(is_file($randomFile));
+        $this->assertTrue($oStorage->is_file($randomFile));
 
         $document = $folder->add_document($title, $filename, 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
         $this->assertNotError($document);
 
-        @unlink($randomFile);
+        $oStorage->unlink($randomFile);
         if(PEAR::isError($document)) return false;
 
         return $document;
@@ -616,18 +617,19 @@ class CMISTestCase extends KTUnitTestCase {
 
     function createRandomFile($content = 'this is some text', $uploadDir = null)
     {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         if(is_null($uploadDir)){
            $uploadDir = dirname(__FILE__);
         }
-        $temp = tempnam($uploadDir, 'myfile');
-        $fp = fopen($temp, 'wt');
-        fwrite($fp, $content);
-        fclose($fp);
+        $temp = $oStorage->tempnam($uploadDir, 'myfile');
+        $oStorage->write_file($temp, 'wt', $content);
+
         return $temp;
     }
 
     function createFolderDocStructure()
     {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         // Create a folder
         $result1 = $this->ktapi->create_folder(1, 'New test api folder', KT_TEST_USER, KT_TEST_PASS, 'Testing API');
 
@@ -645,7 +647,7 @@ class CMISTestCase extends KTUnitTestCase {
         $tempfilename = $this->createRandomFile('some text', $dir);
         $document1 = $this->ktapi->add_document($folder_id2,  'New API test subdoc', 'testsubdoc1.txt', 'Default',
                                                $tempfilename, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        @unlink($tempfilename);
+        $oStorage->unlink($tempfilename);
 
         // Create a second set of folders
         $result1 = $this->ktapi->create_folder(1, 'New test api folder the second', KT_TEST_USER, KT_TEST_PASS, 'Testing API');
@@ -656,7 +658,7 @@ class CMISTestCase extends KTUnitTestCase {
         $tempfilename = $this->createRandomFile('some text', $dir);
         $document2 = $this->ktapi->add_document($folder_id,  'New API test subdoc', 'testsubdoc3.txt', 'Default',
                                                $tempfilename, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        @unlink($tempfilename);
+        $oStorage->unlink($tempfilename);
 
         // Create a sub folder
         $result2 = $this->ktapi->create_folder($folder_id, 'New test api sub-folder for the second', KT_TEST_USER, KT_TEST_PASS, 'Testing API');
@@ -667,17 +669,17 @@ class CMISTestCase extends KTUnitTestCase {
         $tempfilename = $this->createRandomFile('some text', $dir);
         $document3 = $this->ktapi->add_document($folder_id2,  'New API test subdoc', 'testsubdoc2.txt', 'Default',
                                                $tempfilename, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        @unlink($randomFile);
+        $oStorage->unlink($randomFile);
         $randomFile = $this->createRandomFile();
         $document4 = $this->ktapi->add_document($folder_id2,  'New API test subdoc', 'testsubdoc4.txt', 'Default',
                                                $tempfilename, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        @unlink($tempfilename);
+        $oStorage->unlink($tempfilename);
 
         // add root level docs
 
         $tempfilename = $this->createRandomFile('some text', $dir);
         $document5 = $this->root->add_document('title_1.txt', 'name_1.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
-        @unlink($tempfilename);
+        $oStorage->unlink($tempfilename);
 
         $this->docs[] =& $document5;
 
@@ -685,7 +687,7 @@ class CMISTestCase extends KTUnitTestCase {
         $randomFile = $this->createRandomFile();
         $document6 = $this->root->add_document('title_2.txt', 'name_2.txt', 'Default', $randomFile, KT_TEST_USER, KT_TEST_PASS, 'Testing API');
 
-        @unlink($randomFile);
+        $oStorage->unlink($randomFile);
 
         $this->docs[] =& $document6;
     }

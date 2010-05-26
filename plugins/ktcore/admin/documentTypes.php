@@ -80,7 +80,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
     }
 
     function do_new() {
-        $sName = $this->oValidator->validateEntityName('DocumentType', $_REQUEST['name'], array("redirect_to" => array("main")));
+        $sName = $this->oValidator->validateEntityName('DocumentType', sanitizeForHTML($_REQUEST['name']), array("redirect_to" => array("main")));
 
         $oDocumentType =& DocumentType::createFromArray(array(
             'name' => $sName,
@@ -164,7 +164,9 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $vocab = array();
         foreach ($aAvailableFieldsetIds as $iFieldsetId) {
             $oFieldset = KTFieldset::get($iFieldsetId);
-            $vocab[$oFieldset->getId()] = $oFieldset->getName();
+            
+            // Note, items gets sanitize on Render
+            $vocab[$oFieldset->getId()] = htmlspecialchars_decode($oFieldset->getName());
         }
         $aOptions = array();
         $aOptions['vocab'] = $vocab;
@@ -181,7 +183,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $oTemplate->setData(array(
             'context' => $this,
             'oDocumentType' => $oDocumentType,
-            'sDocTypeName' => sanitizeForHTML($oDocumentType->getName()),
+            'sDocTypeName' => $oDocumentType->getName(),
             'aCurrentFieldsets' => $aCurrentFieldsets,
             'bAnyFieldsets' => count($aAvailableFieldsets) > 0,
             'bAvailableFieldsets' => count($vocab) > 0,
@@ -198,7 +200,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
             'redirect_to' => array('edit', sprintf('fDocumentTypeId=%d', $iDocumentTypeId)),
         );
 
-        $sName = $this->oValidator->validateEntityName('DocumentType', $_REQUEST['name'], $aErrorOptions);
+        $sName = $this->oValidator->validateEntityName('DocumentType', sanitizeForHTML($_REQUEST['name']), $aErrorOptions);
 
         $oDocumentType->setName($sName);
         $res = $oDocumentType->update();

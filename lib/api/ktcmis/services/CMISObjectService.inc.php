@@ -266,7 +266,7 @@ class CMISObjectService {
                 throw new StorageException('The repository was unable to create the document.  ' . $response['message']);
             }
             else {
-                $objectId = CMISUtil::encodeObjectId(DOCUMENT, $response['results']['document_id']);
+                $objectId = CMISUtil::encodeObjectId(CMIS_DOCUMENT, $response['results']['document_id']);
             }
 
             // remove temporary file
@@ -364,7 +364,7 @@ class CMISObjectService {
             throw new StorageException('The repository was unable to create the folder: ' . $response['message']);
         }
         else {
-            $objectId = CMISUtil::encodeObjectId(FOLDER, $response['results']['id']);
+            $objectId = CMISUtil::encodeObjectId(CMIS_FOLDER, $response['results']['id']);
         }
 
         return $objectId;
@@ -665,7 +665,7 @@ class CMISObjectService {
             // TODO consider sending back full properties on each object?
             //      Not sure yet what this output may be used for by a client, and the current specification (0.61c) says:
             //      "A list of identifiers of objects in the folder tree that were not deleted", so let's leave it returning just ids for now.
-            $failedToDelete[] = CMISUtil::encodeObjectId(FOLDER, $folderId);
+            $failedToDelete[] = CMISUtil::encodeObjectId(CMIS_FOLDER, $folderId);
             $folderContents = $object->get_full_listing();
             foreach($folderContents as $folderObject)
             {
@@ -746,7 +746,7 @@ class CMISObjectService {
         }
 //        else
 //        {
-//            $objectId = CMISUtil::encodeObjectId(DOCUMENT, $response['results']['id']);
+//            $objectId = CMISUtil::encodeObjectId(CMIS_DOCUMENT, $response['results']['id']);
 //        }
 
         @unlink($csFile);

@@ -85,9 +85,14 @@ function sanitizeForHTML($string, $min='', $max='')
 
     $len = strlen($string);
     if((($min != '') && ($len < $min)) || (($max != '') && ($len > $max))) return false;
+	
+	
 
     if(function_exists("htmlspecialchars")) {
-    	return htmlspecialchars($string);
+		// This is done to prevent encoding already encode characters
+		// &amp; becoming &amp;amp;
+		
+    	return htmlspecialchars(htmlspecialchars_decode($string));
     } else {
     	$pattern[0] = '/\&/';
     	$pattern[1] = '/</';
@@ -126,6 +131,33 @@ function sanitizeForSYSTEM($string, $min='', $max='')
     $pattern = '/( ;|\||`|>|<|&|^|"|'."\n|\r|'".'|{|}|[|]|\)|\( )/i';
     $string = preg_replace( $pattern, '', $string);
     return '"'.preg_replace( '/\$/', '\\\$', $string).'"';
+}
+
+
+// Adapted from strip_javascript function on http://www.php.net/manual/en/function.strip-tags.php
+function sanitizeForJavascript($filter){
+  
+  
+    // realign javascript href to onclick
+    $filter = preg_replace("/href=(['\"]).*?javascript:(.*)?\\1/i", "onclick=' $2 '", $filter);
+/*
+    //remove javascript from tags
+    while( preg_match("/<(.*)?javascript.*?\(.*?((?>[^()]+)|(?R)).*?\)?\)(.*)?>/i", $filter))
+        $filter = preg_replace("/<(.*)?javascript.*?\(.*?((?>[^()]+)|(?R)).*?\)?\)(.*)?>/i", "<$1$3$4$5>", $filter);
+            
+    // dump expressions from contibuted content
+    if(0) $filter = preg_replace("/:expression\(.*?((?>[^(.*?)]+)|(?R)).*?\)\)/i", "", $filter);
+
+    while( preg_match("/<(.*)?:expr.*?\(.*?((?>[^()]+)|(?R)).*?\)?\)(.*)?>/i", $filter))
+        $filter = preg_replace("/<(.*)?:expr.*?\(.*?((?>[^()]+)|(?R)).*?\)?\)(.*)?>/i", "<$1$3$4$5>", $filter);
+       
+    // remove all on* events   
+    while( preg_match("/<(.*)?\s?on.+?=?\s?.+?(['\"]).*?\\2\s?(.*)?>/i", $filter) )
+       $filter = preg_replace("/<(.*)?\s?on.+?=?\s?.+?(['\"]).*?\\2\s?(.*)?>/i", "<$1$3>", $filter);
+*/
+    $filter = preg_replace('%<script.*?</script>%si', '', $filter);
+
+    return $filter;
 }
 
 ?>

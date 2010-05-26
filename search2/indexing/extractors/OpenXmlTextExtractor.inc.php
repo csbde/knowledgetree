@@ -249,7 +249,7 @@ class OpenXmlTextExtractor extends ExternalDocumentExtractor
 		    $content = file_get_contents($filename);
 
 		    if(!empty($content)){
-                $content = $this->filter($batch);
+                $content = $this->filter($content);
     		}
 		}
 

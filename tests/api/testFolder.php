@@ -28,10 +28,9 @@ class APIFolderTestCase extends KTUnitTestCase {
     }
 
     function testAddDocument() {
-    	$tmpfname = tempnam("/tmp", "KTUNIT");
-    	$fp = fopen($tmpfname, "w");
-    	fwrite($fp, "Hello");
-    	fclose($fp);
+    	$oStorage = KTStorageManagerUtil::getSingleton();
+    	$tmpfname = $oStorage->tempnam("/tmp", "KTUNIT");
+    	$oStorage->write_file($tmpfname, "w", "Hello");
 
     	$folder = $this->ktapi->get_root_folder();
     	$res = $folder->add_document("Test Document", "test.txt", "Default", $tmpfname);

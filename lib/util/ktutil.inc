@@ -150,7 +150,10 @@ class KTUtil {
 
 		// build up the url
 		$base_url = ($default->sslEnabled ? 'https' : 'http') .'://'.$serverName . $default->rootUrl;
-		if(is_object($default->log))
+		// NOTE this appears to (at least) sometimes be an object of stdClass, and not the correct log class;
+		//      to deal with this we check whether it is of type stdClass
+		// TODO see if we can determine the actual class and check that type specifically (code uses factory method)
+		if(!($default instanceof stdClass) && is_object($default->log))
 		{
 			$default->log->debug("kt_url: base url - $base_url");
 		}
@@ -850,6 +853,9 @@ class KTUtil {
     }
     // }}}
 
+    /**
+     * @deprecated Used in bitrock stack
+     */
     function checkForStackCommand($configCommand)
     {
     	$config = KTConfig::getSingleton();
@@ -1025,7 +1031,6 @@ class KTUtil {
 
     // {{{ isAbsolutePath
     static function isAbsolutePath($sPath) {
-
         $sPath = str_replace('\\', '/', $sPath);
         $sReal = str_replace('\\', '/', realpath($sPath));
 
@@ -1033,7 +1038,10 @@ class KTUtil {
             $sReal .= '/';
         }
 
-        return (strtolower($sReal) == strtolower($sPath));
+        // do not compare paths if $sReal is empty!
+        if (!empty($sReal)) {
+            return (strtolower($sReal) == strtolower($sPath));
+        }
 
         if (substr($sPath, 0, 1) == '/') {
             return true;
@@ -1358,6 +1366,14 @@ class KTUtil {
     	}
     	return $result;
     }
+    
+    public static function documentIsQueued($document_id=NULL){
+    	$sql="SELECT document_id FROM `process_queue` WHERE document_id='{$document_id}'";
+    	$res=DBUtil::getOneResultKey($sql,"document_id");
+    	$ret=PEAR::isError($res) ? false : (count($res)>0 ? true : false);
+    	return $ret;
+    }
+    
 }
 
 /**

@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -55,6 +55,7 @@ class ZipFolder {
     var $sOutputEncoding = 'UTF-8';
     var $extension = 'zip';
     var $exportCode = null;
+    private $oStorage;
 
     /**
     * Constructor
@@ -64,7 +65,7 @@ class ZipFolder {
     */
     function ZipFolder($sZipFileName = null, $exportCode = null, $extension = 'zip') {
         $this->oKTConfig =& KTConfig::getSingleton();
-        $this->oStorage =& KTStorageManagerUtil::getSingleton();
+        $this->oStorage = KTStorageManagerUtil::getSingleton();
 
         $this->sOutputEncoding = $this->oKTConfig->get('export/encoding', 'UTF-8');
         $this->extension = $extension;
@@ -84,10 +85,10 @@ class ZipFolder {
             $sTmpPath = $aData['dir'];
         }else {
             $sBasedir = $this->oKTConfig->get("urls/tmpDirectory");
-            $sTmpPath = tempnam($sBasedir, 'kt_compress_zip');
+            $sTmpPath = $this->oStorage->tempnam($sBasedir, 'kt_compress_zip');
 
-            unlink($sTmpPath);
-            mkdir($sTmpPath, 0755);
+            $this->oStorage->unlink($sTmpPath);
+            $this->oStorage->mkdir($sTmpPath, 0755);
         }
 
         // Hard coding the zip file name.
@@ -165,8 +166,8 @@ class ZipFolder {
         $aFullPath = split('/', $sDocPath);
         foreach ($aFullPath as $dirPart) {
             $newDir = sprintf("%s/%s", $newDir, $dirPart);
-            if (!file_exists($newDir)) {
-                mkdir($newDir, 0700);
+            if (!$this->oStorage->file_exists($newDir)) {
+                $this->oStorage->mkdir($newDir, 0700);
             }
         }
 
@@ -191,8 +192,8 @@ class ZipFolder {
         $aFullPath = split('/', $sFolderPath);
         foreach ($aFullPath as $dirPart) {
             $newDir = sprintf("%s/%s", $newDir, $dirPart);
-            if (!file_exists($newDir)) {
-                mkdir($newDir, 0700);
+            if (!$this->oStorage->file_exists($newDir)) {
+                $this->oStorage->mkdir($newDir, 0700);
             }
         }
 
@@ -210,10 +211,10 @@ class ZipFolder {
 
 		$sZipFile = sprintf("%s/%s.".$this->extension, $this->sTmpPath, $this->sZipFileName);
         $sZipFile = str_replace('<', '', str_replace('</', '', str_replace('>', '', $sZipFile)));
-        
+
         $archive = new KTPclZip($sZipFile);
         $archive->createZipFile($this->sTmpPath.'/Root Folder');
-                
+
         /*
         $config = KTConfig::getSingleton();
         $useBinary = true; //$config->get('export/useBinary', false);
@@ -268,7 +269,7 @@ class ZipFolder {
             );
         }
 		*/
-        
+
         // Save the zip file and path into session
         $_SESSION['zipcompression'] = KTUtil::arrayGet($_SESSION, 'zipcompression', array());
         $sExportCode = $this->exportCode;
@@ -300,7 +301,7 @@ class ZipFolder {
             $sTmpPath = $this->sTmpPath;
         }
 
-        if (!file_exists($sZipFile)) {
+        if (!$this->oStorage->file_exists($sZipFile)) {
             return PEAR::raiseError(_kt('The zip file has not been created, if you are downloading a large number of documents
             or a large document then it may take a few minutes to finish.'));
         }
@@ -313,10 +314,10 @@ class ZipFolder {
         KTUtil::deleteDirectory($sTmpPath);
         // remove notification file if it exists
         DownloadQueue::removeNotificationFile();
-        
+
         // remove zip file database entry and any stragglers
         DBUtil::whereDelete('download_queue', array('code' => $exportCode));
-        
+
         return true;
     }
 
@@ -336,7 +337,7 @@ class ZipFolder {
             $sTmpPath = $this->sTmpPath;
         }
 
-        if (!file_exists($sZipFile)) {
+        if (!$this->oStorage->file_exists($sZipFile)) {
             return false;
         }
         return true;
@@ -404,7 +405,7 @@ class ZipFolder {
 
         return false;
     }
-    
+
     /**
      * Returns the zip file name with extension
      *
@@ -414,7 +415,7 @@ class ZipFolder {
     {
     	return $this->sZipFileName . '.' . $this->extension;
     }
-    
+
     /**
      * Returns the path to the zip file
      *
@@ -436,6 +437,7 @@ class DownloadQueue
     private $bNotifications;
     private $errors;
     private $lockFile;
+    private $oStorage;
     static private $notificationFile = 'download_queue_notification';
 
     /**
@@ -449,6 +451,7 @@ class DownloadQueue
         $this->bNoisy = $config->get('tweaks/noisyBulkOperations', false);
         $this->bNotifications = ($config->get('export/enablenotifications', 'on') == 'on') ? true : false;
         $this->lockFile = $config->get('cache/cacheDirectory') . '/download_queue_lock.lock';
+        $this->oStorage = KTStorageManagerUtil::getSingleton();
     }
 
     /**
@@ -559,7 +562,7 @@ class DownloadQueue
         }
 
         // Set queue as locked
-        touch($this->lockFile);
+        $this->oStorage->touch($this->lockFile);
 
         // Loop through items and create downloads
         foreach ($queue as $code => $download){
@@ -643,24 +646,24 @@ class DownloadQueue
             if(PEAR::isError($result)){
                 $default->log->error('Download Queue: item status could not be set for user: '.$_SESSION['userID'].', code: '.$code.', error: '.$result->getMessage());
             }
+            else {
+                // create the db entry for the notification
+                self::addItem($code, self::getFolderId($code), -1, 'zip');
+                // update the db entry with the appropriate status and message
+                $this->setItemStatus($code, 2, serialize(array($zip->getTmpPath(), $zip->getZipFileName())), true);
+                // write a file which will be checked if the user has not been logged out and back in
+                // (in which case the required session value will not be set and this file acts as a trigger instead)
+                $config = KTConfig::getSingleton();
+                $this->oStorage->touch($config->get('cache/cacheDirectory') . '/' . self::getNotificationFileName(array($_SESSION['userID'])));
+            }
+
             // reset the error messages
             $this->errors = null;
             $_SESSION['zipcompression'] = null;
         }
-        
-        if (count($queue) && !PEAR::isError($res) && !PEAR::isError($result)) {
-        	// create the db entry
-        	self::addItem($code, self::getFolderId($code), -1, 'zip');
-        	// update the db entry with the appropriate status and message
-        	$this->setItemStatus($code, 2, serialize(array($zip->getTmpPath(), $zip->getZipFileName())), true);
-        	// write a file which will be checked if the user has not been logged out and back in 
-        	// (in which case the required session value will not be set and this file acts as a trigger instead)
-        	$config = KTConfig::getSingleton();
-        	@touch($config->get('cache/cacheDirectory') . '/' . self::$notificationFile);
-        }
 
         // Remove lock file
-        @unlink($this->lockFile);
+        $this->oStorage->unlink($this->lockFile);
     }
 
     /**
@@ -826,7 +829,7 @@ class DownloadQueue
             parent_folder_ids LIKE '{$folderId},%' OR
             parent_folder_ids LIKE '%,{$folderId},%' OR
             parent_folder_ids LIKE '%,{$folderId}'";
-            $aFolderList = $this->oFolder->getList($sWhereClause);
+            $aFolderList = $oFolder->getList($sWhereClause);
             foreach($aFolderList as $oFolderItem){
 	            if($oFolderItem->isSymbolicLink()){
 	            	$oFolderItem = $oFolderItem->getLinkedFolder();
@@ -890,14 +893,14 @@ class DownloadQueue
     {
         return file_exists($this->lockFile);
     }
-    
+
     /**
      * The code below has all been added for bulk download notifications
-     * 
+     *
      * The functions were declared as static because they are related to but not entirely part of the download queue process
      * and I wanted to use them without having to instantiate the class
      */
-    
+
     /**
      * Checks whether there are any bulk downloads which have passed the timeout limit
      * Default limit is set to 48 hours but this can be changed in the calling code
@@ -908,7 +911,7 @@ class DownloadQueue
     {
     	DBUtil::runQuery('DELETE FROM download_queue WHERE DATE_ADD(date_added, INTERVAL ' . $limit . ' HOUR) < NOW()');
     }
-    
+
     /**
      * Checks whether there is a bulk download available and waiting for the supplied user
      *
@@ -916,14 +919,14 @@ class DownloadQueue
      */
     static public function userDownloadAvailable($userID)
     {
-    	$result = DBUtil::getOneResult('SELECT code, errors FROM download_queue WHERE user_id = ' . $userID 
+    	$result = DBUtil::getOneResult('SELECT code, errors FROM download_queue WHERE user_id = ' . $userID
     								 . ' AND object_type = "zip" AND status = 2');
     	if (PEAR::isError($result)) {
     		return false;
     	}
-    	
+
     	$code = $result['code'];
-    	
+
     	$message = $result['errors'];
         $message = json_decode($message, true);
         $data = unserialize($message);
@@ -934,18 +937,18 @@ class DownloadQueue
 
         // Check that the archive file has been created
         // NOTE If it does not exist, consider deleting the db entry and looping back to check again, only returning when no more results are found in the db?
-        //      The reason for this is that it is sometimes possible to end up with multiple zips listed in the db as waiting for the same user, 
+        //      The reason for this is that it is sometimes possible to end up with multiple zips listed in the db as waiting for the same user,
         //      some of which may no longer exist as physical files, and since the request only checks for one, it may miss am existing download.
-        // NOTE the above issue may only occur due to the way I have been testing, often breaking the process before it is finished, 
+        // NOTE the above issue may only occur due to the way I have been testing, often breaking the process before it is finished,
         //      but conceivably this could actually happen in the real world also.
         $zip = new ZipFolder('', $code);
         if($zip->checkArchiveExists($code)) {
             return $code;
         }
-        
+
         return false;
     }
-    
+
     /**
      * Delete the download, including the database entry
      *
@@ -956,25 +959,25 @@ class DownloadQueue
     	// retrieve the data to allow deletion of the physical file
     	$result = DBUtil::getOneResult('SELECT errors FROM download_queue WHERE code = "' . $code . '"'
     								 . ' AND object_type = "zip" AND status = 2');
-    								 
+
     	if (PEAR::isError($result)) {
     		return $result;
     	}
-    								 
+
     	$message = $result['errors'];
         $message = json_decode($message, true);
         $data = unserialize($message);
-        
+
     	// remove the database entry
     	DBUtil::whereDelete('download_queue', array('code' => $code));
-    	
+
     	// remove the actual file/directory
     	KTUtil::deleteDirectory($data[0]);
-    	
+
     	// remove the notification file if present
     	self::removeNotificationFile();
     }
-    
+
     /**
      * Removes the notification file, if it exists, in a safe manner
      *
@@ -982,17 +985,18 @@ class DownloadQueue
      */
     static public function removeNotificationFile() {
     	$config = KTConfig::getSingleton();
-    	$file = DownloadQueue::getNotificationFileName();
+    	$file = DownloadQueue::getNotificationFileName(array($_SESSION['userID']));
         if (!PEAR::isError($file)) {
 			$notificationFile = $config->get('cache/cacheDirectory') . '/' . $file;
         }
-        
+
         // ensure the file is actually a file and not a directory
         if (is_file($notificationFile)) {
-        	@unlink($notificationFile);
+            $oStorage = KTStorageManagerUtil::getSingleton();
+        	$oStorage->unlink($notificationFile);
         }
     }
-    
+
     /**
      * Fetches a link to the download
      *
@@ -1002,7 +1006,7 @@ class DownloadQueue
     {
     	return KTUtil::kt_url() . '/action.php?kt_path_info=ktcore.actions.bulk.export&action=downloadZipFile&fFolderId=' . self::getFolderId($code) . '&exportcode=' . $code;
     }
-    
+
     /**
      * Fetches the folder id associated with the supplied code
      * Based on testing just before file corruption this may not actually be necessary, but we'll do it anyway
@@ -1012,19 +1016,19 @@ class DownloadQueue
     static public function getFolderId($code)
     {
     	$result = DBUtil::getOneResult('SELECT folder_id FROM download_queue WHERE code = "' . $code . '"');
-    	
+
     	if (PEAR::isError($result)) {
     		return -1;
     	}
-    	
+
     	return $result['folder_id'];
     }
-    
-    static public function getNotificationFileName() {
+
+    static public function getNotificationFileName($params = array()) {
     	if (!empty(self::$notificationFile)) {
-    		return self::$notificationFile;
+    		return self::$notificationFile . '_' . implode('_', $params);
     	}
-    	
+
     	return new PEAR_Error('Unable to get file name');
     }
 }

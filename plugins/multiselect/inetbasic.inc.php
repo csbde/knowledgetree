@@ -42,6 +42,7 @@ require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 require_once(KT_LIB_DIR . "/documentmanagement/MDTree.inc");
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
@@ -250,7 +251,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $errors = $res['errors'];
         $extra_errors = array();
 
-        $oField = DocumentField::getByFieldsetAndName($this->oFieldset, $data['name']);
+        $oField = DocumentField::getByFieldsetAndName($this->oFieldset, sanitizeForHTML($data['name']));
         if (!PEAR::isError($oField)) {
             $extra_errors['name'] = _kt("A field with that name already exists in this fieldset.");
         }
@@ -291,8 +292,8 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
 		// multiselect change end
         
         $oField = DocumentField::createFromArray(array(
-            'Name' => $data['name'],
-            'Description' => $data['description'],
+            'Name' => sanitizeForHTML($data['name']),
+            'Description' => sanitizeForHTML($data['description']),
             'DataType' => $DataType,
             'IsGeneric' => false,
             'HasLookup' => $lookup,
@@ -488,8 +489,8 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $extra_errors = array();
 
         // check that the field name either hasn't changed, or doesn't exist.
-        if ($data['name'] != $this->oField->getName()) {
-            $oOldField = DocumentField::getByFieldsetAndName($this->oFieldset, $data['name']);
+        if (sanitizeForHTML($data['name']) != $this->oField->getName()) {
+            $oOldField = DocumentField::getByFieldsetAndName($this->oFieldset, sanitizeForHTML($data['name']));
             // If the field exists throw an error. Mysql doesn't distinguish between é and e so check the names are different in php.
             if (!PEAR::isError($oOldField) && $oOldField->getName() == $data['name']) {
                 $extra_errors['name'] = _kt("That name is already in use in this fieldset.  Please specify a unique name.");
@@ -500,8 +501,8 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             return $oForm->handleError(null, $extra_errors);
         }
 
-        $this->oField->setName($data['name']);
-        $this->oField->setDescription($data['description']);
+        $this->oField->setName(sanitizeForHTML($data['name']));
+        $this->oField->setDescription(sanitizeForHTML($data['description']));
         $this->oField->setIsMandatory($data['required']);
 
 		// multiselect change start
@@ -587,7 +588,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         $raw_lookups = $data['lookups'];
         $lookup_candidates = explode("\n", $raw_lookups);
         foreach ($lookup_candidates as $candidate) {
-            $name = trim($candidate);
+            $name = sanitizeForHTML(trim($candidate));
 
             if (empty($name)) {
                 continue;
@@ -784,6 +785,9 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
         }
 
         foreach ($aLookupValues as $iMetaDataId => $sValue){
+			
+			$sValue = sanitizeForHTML($sValue);
+			
             $oMetaData = MetaData::get($iMetaDataId);
             if (PEAR::isError($oMetaData)) {
                 $this->addErrorMessage(_kt('Invalid lookup selected').': '.$sValue);
@@ -905,7 +909,7 @@ class InetBasicFieldsetManagementDispatcher extends KTAdminDispatcher {
             $target = 'managetree';
             $msg = _kt('Changes saved.');
             if ($subaction === "addCategory") {
-                $new_category = KTUtil::arrayGet($_REQUEST, 'category_name');
+                $new_category = sanitizeForHTML(KTUtil::arrayGet($_REQUEST, 'category_name'));
                 if (empty($new_category)) {
                     return $this->errorRedirectTo("managetree", _kt("Must enter a name for the new category."), array("field_id" => $field_id, "fFieldsetId" => $iFieldsetId));
                 } else {

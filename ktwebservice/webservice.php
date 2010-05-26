@@ -2853,18 +2853,18 @@ class KTWebService
     	{
     		$document = $document->document;
 
-    		$oStorage =& KTStorageManagerUtil::getSingleton();
+    		$oStorage = KTStorageManagerUtil::getSingleton();
             $filename = $oStorage->temporaryFile($document);
 
-    		$fp=fopen($filename,'rb');
+    		$fp = $oStorage->fopen($filename,'rb');    		
     		if ($fp === false)
     		{
     			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
 	    		$this->debug("checkout_small_document - cannot write $filename ", $session_id);
     			return new SOAP_Value('return',"{urn:$this->namespace}$responseType", $response);
     		}
-    		$content = fread($fp, filesize($filename));
-    		fclose($fp);
+    		
+    		$content = $oStorage->readfile($filename, 'rb', $oStorage->fileSize($filename));
     		$content = base64_encode($content);
     	}
 
@@ -3048,7 +3048,7 @@ class KTWebService
     	}
 
     	$content = '';
-    	$oStorage =& KTStorageManagerUtil::getSingleton();
+    	$oStorage = KTStorageManagerUtil::getSingleton();
 
     	// for a specified version
     	if(is_numeric($content_version_id)){
@@ -3064,15 +3064,14 @@ class KTWebService
     	    $filename = $oStorage->temporaryFile($document);
     	}
 
-		$fp=fopen($filename,'rb');
+		$fp = $oStorage->fopen($filename,'rb');
 		if ($fp === false)
 		{
 			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
 			$this->debug("download_small_document - cannot read $filename", $session_id);
 			return new SOAP_Value('return',"{urn:$this->namespace}kt_response", $response);
 		}
-		$content = fread($fp, filesize($filename));
-		fclose($fp);
+		$content = $oStorage->readfile("", "", $oStorage->fileSize($filename), $fp);
 		$content = base64_encode($content);
 
     	$response['status_code'] = KTWS_SUCCESS;

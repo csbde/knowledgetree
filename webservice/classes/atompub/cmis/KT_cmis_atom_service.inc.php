@@ -8,6 +8,25 @@ class KT_cmis_atom_service extends KT_atom_service {
     
     protected $serviceType = null;
     protected $contentDownload = false;
+    protected $responseHeaders = false;
+    // status code mapping is for mapping exceptions thrown by the API to their appropriate
+    // HTTP error status codes (see section 3.2.4.1)
+    static protected $statusCodeMapping = array('InvalidArgumentException' => self::STATUS_BAD_REQUEST,
+                                                'ObjectNotFoundException' => self::STATUS_NOT_FOUND,
+                                                'PermissionDeniedException' => self::STATUS_PERMISSION_DENIED,
+                                                'NotSupportedException' => self::STATUS_NOT_ALLOWED,
+                                                'RuntimeException' => self::STATUS_SERVER_ERROR,
+                                                'ConstraintViolationException' => self::STATUS_CONFLICT,
+                                                'FilterNotValidException' => self::STATUS_BAD_REQUEST,
+                                                'StreamNotSupportedException' => self::STATUS_PERMISSION_DENIED,
+                                                'StorageException' => self::STATUS_SERVER_ERROR,
+                                                'ContentAlreadyExistsException' => self::STATUS_CONFLICT,
+                                                'VersioningException' => self::STATUS_CONFLICT,
+                                                'UpdateConflictException' => self::STATUS_CONFLICT,
+                                                'NameConstraintViolationException' => self::STATUS_CONFLICT,
+                                                // additional notable exceptions
+                                                'TypeNotSupportedException' => self::STATUS_UNSUPPORTED_MEDIA_TYPE,
+                                                'UnprocessableEntityException' => self::STATUS_UNPROCESSABLE_ENTITY);
     
     public function __construct($method, $params, $content)
     {
@@ -48,9 +67,27 @@ class KT_cmis_atom_service extends KT_atom_service {
         return $this->serviceType;
     }
     
-    public function setHeader($header = null, $value = null)
+    public function setHeader($header, $value = null)
     {
-		if ($header) header($header . ': ' . $value);
+		if (!empty($header)) {
+		    header($header . ': ' . $value);
+		}
+		
+		$this->responseHeaders = true;
+	}
+	
+	/**
+	 * Checks whether the service has set its own headers
+	 *
+	 * TODO we may want to rather use setHeader to collect the headers and then we return them here and save some code
+	 */
+	public function checkHeaders() {
+	    return $this->responseHeaders;
+	}
+	
+	public function getStatusCode($exception)
+	{
+	    return self::$statusCodeMapping[get_class($exception)];
 	}
 
 }
