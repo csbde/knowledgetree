@@ -41,7 +41,6 @@ define('SEARCH2_INDEXER_DIR',realpath(dirname(__FILE__)) . '/');
 require_once('indexing/extractorCore.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/scheduler/schedulerUtil.php');
 require_once(KT_DIR . '/ktapi/ktapi.inc.php');
-require_once(KT_DIR . '/search2/indexing/lib/RestSolr.inc.php');
 
 class IndexerInconsistencyException extends Exception {};
 
@@ -467,7 +466,7 @@ abstract class Indexer
     private $hookPath;
 
     private $enabledExtractors;
-    
+
     protected $inclStatus = true;
 
     /**
@@ -484,9 +483,9 @@ abstract class Indexer
         $this->generalHookCache = array();
         $this->extractorPath 	= $config->get('indexer/extractorPath', 'extractors');
         $this->hookPath 		= $config->get('indexer/extractorHookPath','extractorHooks');
-		
+
         $this->loadExtractorStatus();
-        
+
     }
 
     /**
@@ -767,7 +766,7 @@ abstract class Indexer
         // Add all documents to the queue
         $sql = "INSERT INTO process_queue(document_id, date_added) SELECT id, now() FROM documents WHERE status_id=1 and id not in (select document_id from process_queue)";
         DBUtil::runQuery($sql);
-        
+
         if(ACCOUNT_ROUTING_ENABLED)
         {
 	        $sql = "SELECT document_id FROM process_queue;";
@@ -794,7 +793,7 @@ abstract class Indexer
         }
 
         $full_path = $folder->getFullPath();
-       
+
         $sql = "INSERT INTO index_files(document_id, user_id, what) SELECT id, $userid, 'A' FROM documents WHERE full_path like '{$full_path}/%' AND status_id=1 and id not in (select document_id from index_files)";
         DBUtil::runQuery($sql);
         if(ACCOUNT_ROUTING_ENABLED)
@@ -1459,9 +1458,6 @@ abstract class Indexer
         global $default;
         $oStorage = KTStorageManagerUtil::getSingleton();
         static $extractorCache = array();
-
-        //$oSolr = new RestSolr('localhost', '8983', '/solr/');
-//        $oSolr = new RestSolr('10.33.15.255', '8984', '/solr/'); //connecting to a dynamic core (core still needs a folder struct on the server though)
 
         // increment indexed documents count
         Indexer::incrementCount();
