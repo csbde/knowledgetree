@@ -126,7 +126,7 @@ class Apache_Solr_Service
 	 *
 	 * @var string
 	 */
-    protected $_host, $_port, $_path;
+    protected $_host, $_port, $_path, $_core;
 
     /**
 	 * Whether {@link Apache_Solr_Response} objects should create {@link Apache_Solr_Document}s in
@@ -238,12 +238,16 @@ class Apache_Solr_Service
 	 * @param string $port
 	 * @param string $path
 	 */
-    public function __construct($host = 'localhost', $port = 8180, $path = '/solr/')
+    public function __construct($host = 'localhost', $port = 8180, $path = '/solr/', $core = null)
     {
         $this->setHost($host);
         $this->setPort($port);
         $this->setPath($path);
-
+        
+        if ($core != null) {
+            $this->setCore($core);
+        }
+        
         $this->_initUrls();
 
         // create our shared get and post stream contexts
@@ -291,7 +295,15 @@ class Apache_Solr_Service
             $queryString = '';
         }
 
-        return 'http://' . $this->_host . ':' . $this->_port . $this->_path . $servlet . $queryString;
+        if ($this->_core != null) {
+            $returnUrl = 'http://' . $this->_host . ':' . $this->_port . $this->_path . $this->_core . $servlet . $queryString;
+        } else {
+            $returnUrl = 'http://' . $this->_host . ':' . $this->_port . $this->_path . $servlet . $queryString;
+        }
+        
+        echo "URL in library : " . $returnUrl;
+        
+        return $returnUrl;
     }
 
     /**
@@ -570,6 +582,25 @@ class Apache_Solr_Service
         }
     }
 
+
+    /**
+	 * Set the core used.
+	 *
+	 * @param string $path
+	 */
+    public function setCore($core)
+    {
+        $path = trim($core, '/');
+
+        $this->_core = $core . '/';
+
+        if ($this->_urlsInited)
+        {
+            $this->_initUrls();
+        }
+    }
+    
+    
     /**
 	 * Set the create documents flag. This determines whether {@link Apache_Solr_Response} objects will
 	 * parse the response and create {@link Apache_Solr_Document} instances in place.
