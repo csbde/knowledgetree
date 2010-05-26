@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -49,6 +49,12 @@ class KTFolderRenameAction extends KTFolderAction {
     var $_sShowPermission = "ktcore.permissions.folder_rename";
 
     function getDisplayName() {
+        $folderId = $this->oFolder->getId();
+
+        // if this is the root folder, then exit, we can't rename the root folder
+        if($folderId == 1){
+            return '';
+        }
         return _kt('Rename');
     }
 
