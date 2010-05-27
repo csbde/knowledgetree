@@ -211,14 +211,7 @@ class KTInit {
 			 * To clear this override, this example makes use of clearAccountOverride as a parameter
 			 * in the url.
 			 */
-			if(isset($_GET['accountOverride']))
-				liveAccountRouting::overrideAccountName($_GET['accountOverride']);
-			if(isset($_GET['clearAccountOverride']))
-				liveAccountRouting::clearAccountNameOverride();
-			if(isset($_GET['databaseOverride']))
-				liveAccountRouting::overrideDatabaseName($_GET['databaseOverride']);
-			if(isset($_GET['clearDatabaseOverride']))
-				liveAccountRouting::clearDatabaseName();
+			liveAccountRouting::setOverrides();
 			if (liveAccounts::accountExists ()) {
 				define ( 'ACCOUNT_ROUTING_ENABLED', true );
 				define ( 'ACCOUNT_NAME', liveAccountRouting::getAccountName () );
