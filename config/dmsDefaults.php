@@ -201,8 +201,10 @@ class KTInit {
 	 *
 	 * @return void
 	 */
-	public function accountRouting() {
-		if (file_exists ( KT_PLUGIN_DIR . '/ktlive/liveEnable.php' ) && ! defined ( 'ACCOUNT_ROUTING_ENABLED' )) {
+	public function accountRouting() 
+	{
+		if (file_exists ( KT_PLUGIN_DIR . '/ktlive/liveEnable.php' ) && ! defined ( 'ACCOUNT_ROUTING_ENABLED' )) 
+		{
 			require_once (KT_PLUGIN_DIR . '/ktlive/liveEnable.php');
 			/**
 			 * The code below demonstrates how to use accountOverride functionality.
@@ -211,36 +213,19 @@ class KTInit {
 			 * To clear this override, this example makes use of clearAccountOverride as a parameter
 			 * in the url.
 			 */
+			define ( 'ACCOUNT_ROUTING_ENABLED', true );
+			define ( 'ACCOUNT_NAME', liveAccountRouting::getAccountName () );
+			define ( 'KTLIVE_TRACE_PATH', '/plugins/ktlive/webservice/callback.php?action=trace' );
 			liveAccountRouting::setOverrides();
-			if (liveAccounts::accountExists ()) {
-				define ( 'ACCOUNT_ROUTING_ENABLED', true );
-				define ( 'ACCOUNT_NAME', liveAccountRouting::getAccountName () );
-			}
 		} else {
 			define ( 'ACCOUNT_ROUTING_ENABLED', false );
 			define ( 'ACCOUNT_NAME', '' );
 		}
 
-		/**
-		 * Some Debug output
-		 */
-
-		//TODO: Implement checking account for existence/access & acting accordingly
-		if (ACCOUNT_ROUTING_ENABLED) {
-			define ( 'KTLIVE_TRACE_PATH', '/plugins/ktlive/webservice/callback.php?action=trace' );
-			if (liveAccounts::accountExists ()) {
-				if (liveAccounts::accountEnabled ()) {
-					//TODO: space for currently unanticipated functionality (might load account details here)
-				} else {
-					liveRenderError::create ( 'Account Disabled', 'This account (' . ACCOUNT_NAME . ') was discontinued - please contact your system administrator', $_SERVER, LIVE_ACCOUNT_DISABLED );
-				}
-			} else {
-				liveRenderError::create ( 'Account Does Not Exist', 'We have no record of this account (' . ACCOUNT_NAME . ') Please contact your system administrator', NULL, LIVE_ACCOUNT_DISABLED );
-			}
-		}
 	}
-
-	public function accountRoutingLicenceCheck(){
+	
+	public function accountRoutingLicenceCheck()
+	{
 		/* Check if account is licensed */
 		if(ACCOUNT_ROUTING_ENABLED)
 		{
@@ -248,6 +233,18 @@ class KTInit {
 			{
 				if (!liveAccounts::accountLicenced())
 				{
+					// Check if account exists
+					if (liveAccounts::accountExists ())
+					{
+						// Check if account is enabled
+						if (!liveAccounts::accountEnabled ()) 
+						{
+							liveRenderError::create ( 'Account Disabled', 'This account (' . ACCOUNT_NAME . ') was discontinued - please contact your system administrator', $_SERVER, LIVE_ACCOUNT_DISABLED );
+						}
+					} else {
+						liveRenderError::create ( 'Account Does Not Exist', 'We have no record of this account (' . ACCOUNT_NAME . ') Please contact your system administrator', NULL, LIVE_ACCOUNT_DISABLED );
+					}
+					// If the account exists and it is enabled throw a license error
 					liveRenderError::create ( 'Invalid Account Licence', 'This account (' . ACCOUNT_NAME . ') does not have a valid licence - please contact your system administrator',NULL, LIVE_ACCOUNT_LICENCE );					
 				}
 			}
@@ -587,7 +584,20 @@ class KTInit {
 		if (PEAR::isError ( $dbSetup )) {
 			/* We need to setup the language handler to display this error correctly */
 			$this->setupI18n ();
-			if (ACCOUNT_ROUTING_ENABLED) {
+			if (ACCOUNT_ROUTING_ENABLED) 
+			{
+				// Check if account exists
+				if (liveAccounts::accountExists ())
+				{
+					// Check if account is enabled
+					if (!liveAccounts::accountEnabled ()) 
+					{
+						liveRenderError::create ( 'Account Disabled', 'This account (' . ACCOUNT_NAME . ') was discontinued - please contact your system administrator', $_SERVER, LIVE_ACCOUNT_DISABLED );
+					}
+				} else {
+					liveRenderError::create ( 'Account Does Not Exist', 'We have no record of this account (' . ACCOUNT_NAME . ') Please contact your system administrator', NULL, LIVE_ACCOUNT_DISABLED );
+				}
+				// If the account exists and it is enabled throw a database connection error
 				liveRenderError::create ( 'Account Database Does Not Exist', 'We have no record of this account (' . ACCOUNT_NAME . ') - please contact your system administrator', $dbSetup, LIVE_ACCOUNT_DISABLED );
 			} else {
 				$this->handleInitError ( $dbSetup );
