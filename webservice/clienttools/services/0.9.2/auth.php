@@ -5,7 +5,7 @@ class auth extends client_service {
 	public function login(){
 		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$params=$this->AuthInfo;
-		
+
 		$username=$params['user'];
 		$passhash=$params['passhash'];
 		$token=$params['token'];
@@ -13,16 +13,16 @@ class auth extends client_service {
 		$session_id=$params['session'];
 		$ip=$_SERVER['REMOTE_ADDR'];
 		$language=isset($params['language'])?$params['language']:'en';
-		
+
 		$this->Response->setDebug('parameters',$params);
 
 		setcookie("kt_language", $language, 2147483647, '/');
 
         $kt =& $this->KT;
-        
+
         if ($username != 'admin') {
 			//$this->addDebug('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@','');
-			            
+
         	try{
         		if(class_exists('BaobabKeyUtil')){
 		            if (!BaobabKeyUtil::checkIfLicensed(true)) {
@@ -41,7 +41,7 @@ class auth extends client_service {
         		return;
         	}
         }
-	
+
         $user=$kt->get_user_object_by_username($username);
         if(!PEAR::isError($user)){
 	        $password=$user->getPassword();
@@ -54,7 +54,7 @@ class auth extends client_service {
 		        	$this->Response->setStatus('session_id',$session->get_session());
 		        }else{
 					$this->setResponse(array('authenticated'=> false, 'message'=> 'Invalid username and/or password.'));
-		        	$this->addDebug('failed login',print_r($session,true));
+		        	$this->addDebug('failed login '$session->getMessage());
 		        	$this->addError('Unknown Login Error');
 		        	return false;
 		        }
@@ -70,11 +70,11 @@ class auth extends client_service {
         }
         return true;
 	}
-	
+
 	public function japiLogin(){
 		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		global $default;
-		
+
        	$user=$this->KT->get_user_object_by_username($this->AuthInfo['user']);
 		$ret=array(
 			'fullName'			=>PEAR::isError($user)?'':$user->getName()
@@ -82,7 +82,7 @@ class auth extends client_service {
 		$this->setResponse($ret);
 		return true;
 	}
-	
+
 	public function pickup_session(){
 		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Enter Function');
 		$params=$this->AuthInfo;
@@ -91,7 +91,7 @@ class auth extends client_service {
 		$ip=$_SERVER['REMOTE_ADDR'];
 
 		$session = $this->KT->get_active_session($session_id, $ip, $app_type);
-		
+
 		if (PEAR::isError($session)){
             return false;
         }
@@ -117,7 +117,7 @@ class auth extends client_service {
 			'clientVersion'		=>$clientVer,
 			'canUpgradeClient'	=>($clientVer<$bestVer?true:false),
 			'canUpgradeServer'	=>($clientVer>$bestVer?true:false)
-					
+
 		);
 		$this->setResponse($ret);
 		return true;
@@ -132,16 +132,16 @@ class auth extends client_service {
 
 		$session=$this->KT->get_session();
 		$this->logInfo((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Logout Session Object (From KT)',$session);
-		
+
 		if(get_class($session)!='KTAPI_UserSession'){
 			$session = $this->KT->get_active_session($session_id, $ip, $app_type);
 		}
 		$this->logInfo((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Logout Session Object (To Logout)',$session);
-		
+
 		if (PEAR::isError($session)){
             return false;
         }
-	
+
 		$this->logTrace((__METHOD__.'('.__FILE__.' '.__LINE__.')'),'Proceeding With Logout');
     	$newSessId=md5(session_id());
     	$session->logout();
