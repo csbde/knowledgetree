@@ -196,7 +196,9 @@ class KTPluginUtil {
             $path = $aItem['pathname'];
 
             if (!empty($path)) {
-                $path = KT_DIR.'/'.$path;
+                if ((strpos($path, KT_DIR) === false)) {
+                    $path = KT_DIR . '/' . $path;
+                }
                 require_once($path);
 
             	$oPlugin = new $classname($path);
@@ -711,8 +713,8 @@ class KTPluginUtil {
             return $oEntity;
         }
         $dir = dirname($oEntity->getPath()) . '/';
-
-        if(!$relative){
+                
+        if(!$relative && (strpos($dir, KT_DIR) === false)) {
             $dir = KT_DIR . '/' . $dir;
         }
 
