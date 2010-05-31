@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -299,14 +299,14 @@ class KTConfig {
 
     /**
      * Set a config value called $var to $value
-     * @param $var config variable and group in string like "ui/mainLogoTitle"
-     * @param $value a string with the value you want for the config item.
+     * @param string $var config variable and group in string like "ui/mainLogoTitle"
+     * @param string $value a string with the value you want for the config item.
+     * @param integer $can_edit Default null. Determines if the setting is available for editing by the admin user.
      * @return boolean
      */
-
-    function set($var = null, $value = null) {
+    function set($var = null, $value = null, $can_edit = null) {
         global $default;
-    
+
         if ($var == null) {
             return false;
         }
@@ -314,13 +314,13 @@ class KTConfig {
         $varParts = explode('/', $var);
         $groupName = $varParts[0];
         $var = $varParts[1];
-    
+
         if ($var == '' || $groupName == ''){
             //var and group must be set
             $default->log->error("config->set() requires the first parameter to be in the form 'groupName/configSetting'");
             return false;
         }
-    
+
         $sql = "SELECT id from config_settings WHERE item = '$var' and group_name = '$groupName'";
         $configId = DBUtil::getOneResultKey($sql,'id');
         if (PEAR::isError($configId))
@@ -331,7 +331,10 @@ class KTConfig {
 
         //If config var doesn't exist we create it
         if ($configId == null) {
-            $configId = DBUtil::autoInsert('config_settings', array('item' => $var ,'value' => $value, 'group_name' => $groupName));
+            if(!is_numeric($can_edit)){
+                $can_edit = 1;
+            }
+            $configId = DBUtil::autoInsert('config_settings', array('item' => $var ,'value' => $value, 'group_name' => $groupName, 'can_edit' => $can_edit));
 
             if (PEAR::isError($configId))
             {
@@ -340,16 +343,20 @@ class KTConfig {
             }
 
         } else {
-        
-            $res = DBUtil::autoUpdate('config_settings', array('value' => $value), $configId);
+
+            $fieldValues = array('value' => $value);
+            if(is_numeric($can_edit)){
+                $fieldValues['can_edit'] = $can_edit;
+            }
+            $res = DBUtil::autoUpdate('config_settings', $fieldValues, $configId);
             if (PEAR::isError($res)) {
                 $default->log->error(sprintf(_kt("Couldn't update config value: %s"), $res->getMessage()));
                 return false;
             }
         }
-        
+
         $this->clearCache();
-        
+
         return true;
     }
 
