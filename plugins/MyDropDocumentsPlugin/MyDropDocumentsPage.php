@@ -76,7 +76,15 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
         // Check for the DropDocuments folder in root
         if(!Folder::FolderExistsName('DroppedDocuments', $iRootID))
         {
-            return _kt('The Dropped Documents folder does not exist. Please contact your System Administrator');
+        	// Check if user is admin
+        	if ($oUser->getId() == 1)
+        	{
+        		// Create dropped documents folder through ktapi as this user is admin.
+        		$oDropFolderCreation = new DropFolderCreation($oUser);
+        		$checkForFolder = $oDropFolderCreation->checkFolders();
+        	} else {
+            	return _kt('The Dropped Documents folder does not exist. Please contact your System Administrator');
+        	}
         }
 
         $iDropDocsFolderID = $this->getFolderID('DroppedDocuments');
@@ -84,7 +92,16 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
         // Check for users folder
         if(!Folder::FolderExistsName($sUserName, $iDropDocsFolderID))
         {
-            return _kt('Your personal folder under the Dropped Documents folder does not exist. Please contact your System Administrator');
+// Check if user is admin
+        	if ($oUser->getId() == 1)
+        	{
+        		// Create dropped documents folder through ktapi as this user is admin.
+        		$oDropFolderCreation = new DropFolderCreation($oUser);
+        		$oDropFolderCreation->checkFolders();
+//        		$checkForFolder = $oDropFolderCreation->checkFolders();
+        	} else {
+            	return _kt('Your personal folder under the Dropped Documents folder does not exist. Please contact your System Administrator');
+        	}
         }
 
         // Get documents
