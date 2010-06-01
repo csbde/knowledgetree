@@ -50,14 +50,6 @@ class MyDropDocumentsDashlet extends KTBaseDashlet {
 		return true;
 	}
 
-
-/*
-	function is_active($oUser) {
-		$this->oUser = $oUser;
-		return Permission::userIsSystemAdministrator($oUser);
-	}
-*/
-
 	function render() {
 		global $main;
         $main->requireJSResource("plugins/MyDropDocumentsPlugin/js/update.js");
