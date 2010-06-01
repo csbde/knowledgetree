@@ -38,19 +38,20 @@
  */
 
 require_once 'HTTP/WebDAV/Server.php'; // thirdparty PEAR
-require_once 'Config.php';             // thirdparty PEAR
-require_once 'Log.php';                // thirdparty PEAR
+require_once 'Config.php'; // thirdparty PEAR
+require_once 'Log.php'; // thirdparty PEAR
 
-$userAgentValue = $_SERVER['HTTP_USER_AGENT'];
-if (stristr($userAgentValue, "Microsoft Data Access Internet Publishing Provider DAV")) {
-    // Fix for Novell Netdrive
-    chdir(realpath(dirname(__FILE__)));
-    require_once '../../config/dmsDefaults.php'; // This is our plug into KT.
-}else{
-    require_once '../config/dmsDefaults.php'; // This is our plug into KT.
+
+$userAgentValue = $_SERVER ['HTTP_USER_AGENT'];
+if (stristr ( $userAgentValue, "Microsoft Data Access Internet Publishing Provider DAV" )) {
+	// Fix for Novell Netdrive
+	chdir ( realpath ( dirname ( __FILE__ ) ) );
+	require_once '../../config/dmsDefaults.php'; // This is our plug into KT.
+} else {
+	require_once '../config/dmsDefaults.php'; // This is our plug into KT.
 }
 
-DEFINE('STATUS_WEBDAV', 5);  // Status code to handle 0 byte PUT    FIXME: Do we still need this!
+DEFINE ( 'STATUS_WEBDAV', 5 );  // Status code to handle 0 byte PUT    FIXME: Do we still need this!
 
 /**
  * KnowledgeTree access using WebDAV protocol
@@ -1180,7 +1181,17 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             $options['size'] = $oDocument->getFileSize();
 
             // no need to check result here, it is handled by the base class
-            $options['stream'] = fopen($fspath, "r");
+            
+            if (ACCOUNT_ROUTING_ENABLED){
+            	/**
+            	 * Make sure that streaming (therefore resumeable downloads) are disabled
+            	 * and get the data straight from the storage driver.
+            	 */
+				unset ($options['stream']); 
+            	$options['data']=$oStorage->file_get_contents($fspath);
+            }else{
+            	$options['stream'] = fopen($fspath, "r");
+            }
 
             $this->ktwebdavLog("Method is " . $this->currentMethod, 'info', true );
 
@@ -1330,6 +1341,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
         function PUT(&$options)
         {
             global $default;
+            $oStorage=KTStorageManagerUtil::getSingleton();
 
             if ($this->checkSafeMode()) {
 
@@ -1410,28 +1422,27 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
                     // FIXME: Direct filesystem access
                     $fh = $options["stream"];
-                    $sTempFilename = tempnam('/tmp', 'ktwebdav_dav_put');
-                    $ofh = fopen($sTempFilename, 'w');
 
                     $contents = '';
                     while (!feof($fh)) {
                         $contents .= fread($fh, 8192);
                     }
-                    $fres = fwrite($ofh, $contents);
+                    
+                    $sTempFilename = $oStorage->tempnam('/tmp', 'ktwebdav_dav_put');
+                    
+                  	$oStorage->file_put_contents($sTempFilename,$contents);
+                  	
                     $this->ktwebdavLog("A DELETED or CHECKEDOUT document exists. Overwriting...", 'info', true);
                     $this->ktwebdavLog("Temp Filename is: " . $sTempFilename, 'info', true );
                     $this->ktwebdavLog("File write result size was: " . $fres, 'info', true );
 
                     fflush($fh);
                     fclose($fh);
-                    fflush($ofh);
-                    fclose($ofh);
-                    $this->ktwebdavLog("Files have been flushed and closed.", 'info', true );
 
                     $name = basename($path);
                     $aFileArray = array(
                             "name" => $name,
-                            "size" => filesize($sTempFilename),
+                            "size" => strlen($contents),
                             "type" => false,
                             "userID" => $this->_getUserID(),
                             );
@@ -1454,49 +1465,48 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
                     if(PEAR::isError($oDocument)) {
                         $this->ktwebdavLog("oDocument ERROR: " .  $oDocument->getMessage(), 'info', true);
-		                unlink($sTempFilename);
+		                $oStorage->unlink($sTempFilename);
                         return "409 Conflict - " . $oDocument->getMessage();
                     }
 					if($this->printObjects == 'on')
                     	$this->ktwebdavLog("oDocument is " .  print_r($oDocument, true), 'info', true);
 
-                    unlink($sTempFilename);
+	                $oStorage->unlink($sTempFilename);
                     return "201 Created";
                 }
 
                 $options["new"] = true;
                 // FIXME: Direct filesystem access
                 $fh = $options["stream"];
-                $sTempFilename = tempnam('/tmp', 'ktwebdav_dav_put');
-                $ofh = fopen($sTempFilename, 'w');
 
                 $contents = '';
                 while (!feof($fh)) {
                     $contents .= fread($fh, 8192);
                 }
-                $fres = fwrite( $ofh, $contents);
+                $sTempFilename = $oStorage->tempnam('/tmp', 'ktwebdav_dav_put');
+                   
+                $oStorage->file_put_contents($sTempFilename,$contents);
+                
+                
                 $this->ktwebdavLog("Content length was not 0, doing the whole thing.", 'info', true );
                 $this->ktwebdavLog("Temp Filename is: " . $sTempFilename, 'info', true );
                 $this->ktwebdavLog("File write result size was: " . $fres, 'info', true );
 
                 fflush($fh);
                 fclose($fh);
-                fflush($ofh);
-                fclose($ofh);
                 $this->ktwebdavLog("Files have been flushed and closed.", 'info', true );
 
+				//TODO: compare header content length and actual data length for parity
                 $name = basename($path);
                 $aFileArray = array(
                         "name" => $name,
-                        "size" => filesize($sTempFilename),
+                        "size" => strlen($contents),
                         "type" => false,
                         "userID" => $this->_getUserID(),
                         );
                 $this->ktwebdavLog("aFileArray is " .  print_r($aFileArray, true), 'info', true);
 
-                //include_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
                 $aOptions = array(
-                        //'contents' => new KTFSFileLike($sTempFilename),
                         'temp_file' => $sTempFilename,
                         'metadata' => array(),
                         'novalidate' => true,
@@ -1505,13 +1515,13 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
                 if(PEAR::isError($oDocument)) {
                     $this->ktwebdavLog("oDocument ERROR: " .  $oDocument->getMessage(), 'info', true);
-                    unlink($sTempFilename);
+                    $oStorage->unlink($sTempFilename);
                     return "409 Conflict - " . $oDocument->getMessage();
                 }
 				if($this->printObjects == 'on')
                 	$this->ktwebdavLog("oDocument is " .  print_r($oDocument, true), 'info', true);
 
-                unlink($sTempFilename);
+                $oStorage->unlink($sTempFilename);
                 return "201 Created";
 
             }  else return "423 Locked - KTWebDAV is in SafeMode";
@@ -2589,4 +2599,6 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             return true;
         }
 }
+
+
 ?>
