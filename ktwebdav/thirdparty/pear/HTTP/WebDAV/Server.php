@@ -1824,11 +1824,4 @@ class HTTP_WebDAV_Server {
 		}
 	}
 }
-
-/*
- * Local variables:
- * tab-width: 4
- * c-basic-offset: 4
- * End:
- */
 ?>
