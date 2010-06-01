@@ -34,7 +34,6 @@ require_once "HTTP/WebDAV/Tools/_parse_lockinfo.php";
  */
 class HTTP_WebDAV_Server 
 {
-    // {{{ Member Variables 
     
     /**
      * complete URI for this request
@@ -104,9 +103,6 @@ class HTTP_WebDAV_Server
      */
     var $_SERVER;
 
-    // }}}
-
-    // {{{ Constructor 
 
     /** 
      * Constructor
@@ -123,9 +119,6 @@ class HTTP_WebDAV_Server
         $this->_SERVER = $_SERVER;
     }
 
-    // }}}
-
-    // {{{ ServeRequest() 
     /** 
      * Serve WebDAV HTTP request
      *
@@ -222,11 +215,6 @@ class HTTP_WebDAV_Server
         }
     }
 
-    // }}}
-
-    // {{{ abstract WebDAV methods 
-
-    // {{{ GET() 
     /**
      * GET implementation
      *
@@ -252,9 +240,6 @@ class HTTP_WebDAV_Server
      } 
     */
 
-    // }}}
-
-    // {{{ PUT() 
     /**
      * PUT implementation
      *
@@ -272,9 +257,6 @@ class HTTP_WebDAV_Server
      } 
     */
     
-    // }}}
-
-    // {{{ COPY() 
 
     /**
      * COPY implementation
@@ -293,9 +275,6 @@ class HTTP_WebDAV_Server
      } 
     */
 
-    // }}}
-
-    // {{{ MOVE() 
 
     /**
      * MOVE implementation
@@ -314,9 +293,6 @@ class HTTP_WebDAV_Server
      } 
     */
 
-    // }}}
-
-    // {{{ DELETE() 
 
     /**
      * DELETE implementation
@@ -334,9 +310,6 @@ class HTTP_WebDAV_Server
      // dummy entry for PHPDoc
      } 
     */
-    // }}}
-
-    // {{{ PROPFIND() 
 
     /**
      * PROPFIND implementation
@@ -355,9 +328,6 @@ class HTTP_WebDAV_Server
      } 
     */
 
-    // }}}
-
-    // {{{ PROPPATCH() 
 
     /**
      * PROPPATCH implementation
@@ -375,9 +345,6 @@ class HTTP_WebDAV_Server
      // dummy entry for PHPDoc
      } 
     */
-    // }}}
-
-    // {{{ LOCK() 
 
     /**
      * LOCK implementation
@@ -395,9 +362,6 @@ class HTTP_WebDAV_Server
      // dummy entry for PHPDoc
      } 
     */
-    // }}}
-
-    // {{{ UNLOCK() 
 
     /**
      * UNLOCK implementation
@@ -415,13 +379,6 @@ class HTTP_WebDAV_Server
      // dummy entry for PHPDoc
      } 
     */
-    // }}}
-
-    // }}}
-
-    // {{{ other abstract methods 
-
-    // {{{ check_auth() 
 
     /**
      * check authentication
@@ -442,9 +399,6 @@ class HTTP_WebDAV_Server
      } 
     */
     
-    // }}}
-
-    // {{{ checklock() 
 
     /**
      * check lock status for a resource
@@ -465,13 +419,6 @@ class HTTP_WebDAV_Server
      } 
     */
 
-    // }}}
-
-    // }}}
-
-    // {{{ WebDAV HTTP method wrappers 
-
-    // {{{ http_OPTIONS() 
 
     /**
      * OPTIONS method handler
@@ -506,10 +453,7 @@ class HTTP_WebDAV_Server
         header("Content-length: 0");
     }
 
-    // }}}
 
-
-    // {{{ http_PROPFIND() 
 
     /**
      * PROPFIND method handler
@@ -788,9 +732,6 @@ class HTTP_WebDAV_Server
     }
 
     
-    // }}}
-    
-    // {{{ http_PROPPATCH() 
 
     /**
      * PROPPATCH method handler
@@ -845,10 +786,6 @@ class HTTP_WebDAV_Server
         }
     }
     
-    // }}}
-
-
-    // {{{ http_MKCOL() 
 
     /**
      * MKCOL method handler
@@ -867,10 +804,6 @@ class HTTP_WebDAV_Server
         $this->http_status($stat);
     }
 
-    // }}}
-
-
-    // {{{ http_GET() 
 
     /**
      * GET method handler
@@ -1063,9 +996,6 @@ class HTTP_WebDAV_Server
 
             
 
-    // }}}
-
-    // {{{ http_HEAD() 
 
     /**
      * HEAD method handler
@@ -1109,9 +1039,6 @@ class HTTP_WebDAV_Server
         $this->http_status($status);
     }
 
-    // }}}
-
-    // {{{ http_PUT() 
 
     /**
      * PUT method handler
@@ -1240,10 +1167,6 @@ class HTTP_WebDAV_Server
         }
     }
 
-    // }}}
-
-
-    // {{{ http_DELETE() 
 
     /**
      * DELETE method handler
@@ -1276,9 +1199,6 @@ class HTTP_WebDAV_Server
         }
     }
 
-    // }}}
-
-    // {{{ http_COPY() 
 
     /**
      * COPY method handler
@@ -1293,9 +1213,6 @@ class HTTP_WebDAV_Server
         $this->_copymove("copy");
     }
 
-    // }}}
-
-    // {{{ http_MOVE() 
 
     /**
      * MOVE method handler
@@ -1313,10 +1230,6 @@ class HTTP_WebDAV_Server
         }
     }
 
-    // }}}
-
-
-    // {{{ http_LOCK() 
 
     /**
      * LOCK method handler
@@ -1418,9 +1331,6 @@ class HTTP_WebDAV_Server
     }
     
 
-    // }}}
-
-    // {{{ http_UNLOCK() 
 
     /**
      * UNLOCK method handler
@@ -1448,11 +1358,6 @@ class HTTP_WebDAV_Server
         $this->http_status($stat);
     }
 
-    // }}}
-
-    // }}}
-
-    // {{{ _copymove() 
 
     function _copymove($what) 
     {
@@ -1497,9 +1402,6 @@ class HTTP_WebDAV_Server
         $this->http_status($stat);
     }
 
-    // }}}
-
-    // {{{ _allow() 
 
     /**
      * check for implemented HTTP methods
@@ -1537,7 +1439,6 @@ class HTTP_WebDAV_Server
         return $allow;
     }
 
-    // }}}
 
     /**
      * helper for property element creation
@@ -1561,7 +1462,6 @@ class HTTP_WebDAV_Server
         }
     }
 
-    // {{{ _check_auth 
 
     /**
      * check authentication if check is implemented
@@ -1587,9 +1487,6 @@ class HTTP_WebDAV_Server
         }
     }
 
-    // }}}
-
-    // {{{ UUID stuff 
     
     /**
      * generate Unique Universal IDentifier for lock token
@@ -1632,9 +1529,6 @@ class HTTP_WebDAV_Server
         return "opaquelocktoken:".$this->_new_uuid();
     }
 
-    // }}}
-
-    // {{{ WebDAV If: header parsing 
 
     /**
      * 
@@ -1871,7 +1765,6 @@ class HTTP_WebDAV_Server
     }
 
 
-    // }}}
 
 
     /**
