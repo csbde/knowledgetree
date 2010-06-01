@@ -196,7 +196,9 @@ class KTPluginUtil {
             $path = $aItem['pathname'];
 
             if (!empty($path)) {
-                $path = KT_DIR.'/'.$path;
+                if ((strpos($path, KT_DIR) === false)) {
+                    $path = KT_DIR . '/' . $path;
+                }
                 require_once($path);
 
             	$oPlugin = new $classname($path);
@@ -697,6 +699,29 @@ class KTPluginUtil {
     }
 
     /**
+     * Enable/disable a plugin Or set it to display or be hidden in the admin interface
+     *
+     * @param string $plugin The namespace of the plugin to update
+     * @param boolean $list_admin Default null. true = display, false = hide
+     * @param boolean $disable Default null. true = disable, false = enable
+     */
+    static function setPluginVisibility($plugin, $list_admin = null, $disable = null)
+    {
+        $fieldValues = array();
+
+        if(is_bool($list_admin)){
+            $fieldValues['list_admin'] = $list_admin ? 1 : 0;
+        }
+
+        if(is_bool($disable)){
+            $fieldValues['disabled'] = $disable ? 1 : 0;
+        }
+
+        $whereValues = array('namespace' => $plugin);
+        $res = DBUtil::whereUpdate('plugins', $fieldValues, $whereValues);
+    }
+
+    /**
      * Get the full path to the plugin
      *
      * @param string $sNamespace The namespace of the plugin
@@ -711,8 +736,8 @@ class KTPluginUtil {
             return $oEntity;
         }
         $dir = dirname($oEntity->getPath()) . '/';
-
-        if(!$relative){
+                
+        if(!$relative && (strpos($dir, KT_DIR) === false)) {
             $dir = KT_DIR . '/' . $dir;
         }
 

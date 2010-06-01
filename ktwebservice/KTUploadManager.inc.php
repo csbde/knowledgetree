@@ -246,7 +246,7 @@ class KTUploadManager
 		}
 		else
 		{
-			$result = @rename($tempfile, $newtempfile);
+			$result = @$oStorage->rename($tempfile, $newtempfile);
 		}
 
 		$tmp = $php_errormsg;
