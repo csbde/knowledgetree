@@ -9,4 +9,8 @@ jQuery(document).ready(function() {
     if (jQuery("#middle_nav ul").length == 1) {
         jQuery("#middle_nav").css({display:'none'});
     }
+    
+    
+    jQuery('.buttonsList').appendTo(jQuery('#midrightitems'));
+
 });

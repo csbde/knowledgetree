@@ -122,3 +122,15 @@ div.form_actions {
 .normalTransformText {
 	text-transform: none;
 }
+
+#midrightitems {
+	float: right;
+}
+ul.buttonsList {
+	list-style-type: none;
+}
+
+ul.buttonsList li {
+	display: inline;
+	padding-left: 30px;
+}
