@@ -46,7 +46,8 @@ ul.floatleft li {
 }
 
 ul.floatright li {
-    float: right;margin-left: 20px;
+    float: right;
+	background: url('../graphics/newui/topnavdivider.png') no-repeat top left;
 }
 
 ul.floatleft li.roundleft {
@@ -116,4 +117,8 @@ div.form_actions {
     margin: 0;
     width: 9px;
 	float: right;
+}
+
+.normalTransformText {
+	text-transform: none;
 }

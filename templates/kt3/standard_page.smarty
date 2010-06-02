@@ -149,10 +149,6 @@
 	                                        <!-- &middot; -->
 	                                    {/if}
 	                                {/foreach}
-	                                
-									{if ($page->user)}
-	                                    <li>{$page->user->getName()|mb_truncate:40:"..."}</li>
-	                                {/if}
 								<!-- END of Right Most stuff-->
 
 	                        </ul>
@@ -175,7 +171,7 @@
             </div>
 			
 			<div id="middle_nav">
-				<ul class="dropdown dropdown-horizontal">
+				<ul id="nav" class="dropdown dropdown-horizontal">
 					<li class="roundleft">&nbsp;</li> <!-- block for left round corner -->
 		                {foreach item=oPortlet from=$page->portlets}
 		                    {assign var=portlet_output value=$oPortlet->render() }

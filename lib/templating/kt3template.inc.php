@@ -168,8 +168,8 @@ class KTPage {
 
     	$this->menu = array();
     	$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => $sBaseUrl.'/dashboard.php');
-		$this->menu['browse'] = array('label' => _kt("Browse Documents"), 'url' => $sBaseUrl.'/browse.php');
-		$this->menu['administration'] = array('label' => _kt("Administration"));
+		$this->menu['browse'] = array('label' => _kt("Browse"), 'url' => $sBaseUrl.'/browse.php');
+		$this->menu['administration'] = array('label' => _kt("Settings"));
 
 		// Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
     	global $default;
@@ -417,13 +417,22 @@ class KTPage {
         		}
 
         		//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
-        		$this->userMenu['preferences']['label'] = _kt('Preferences');
-        		$this->userMenu['aboutkt'] = array('label' => _kt('About'), 'url' => $sBaseUrl.'/about.php');
-        		$this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
+        		$this->userMenu['preferences']['label'] = '<span class="normalTransformText">'.$this->user->getName().'</span>';
+        		
+				// About Moved to Footer
+				//$this->userMenu['aboutkt'] = array('label' => _kt('About'), 'url' => $sBaseUrl.'/about.php');
+        		
+				$this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
         	}
         } else {
         	$this->userMenu['login'] = array('label' => _kt('Login'), 'url' => $sBaseUrl.'/login.php');
         }
+		
+		
+		// For new Layout, we need to reverse Menu,
+		// so that right most items appear first
+		$this->userMenu = array_reverse($this->userMenu);
+		
 
         // FIXME we need a more complete solution to navigation restriction
         if (!is_null($this->menu['administration']) && !is_null($this->user)) {
