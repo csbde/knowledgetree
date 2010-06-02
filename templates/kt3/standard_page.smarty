@@ -74,7 +74,7 @@
 	                    <div id="topnavbar">
 	                        <ul class="floatleft">
 								<li class="roundleft"></li> <!-- block for left round corner -->
-								<li class="home"><a class="home" href="{$page->systemURL}">{i18n}Home{/i18n}</a></li> <!-- Special Case for KT Logo -->
+								<li class="notification">&nbsp;</li> <!-- Special Case for KT Logo -->
 	                            <!-- area menu -->
 	                            {foreach item=aMenuItem from=$page->menu}
 	                                {if ($aMenuItem.active == 1)}
@@ -174,8 +174,8 @@
                 <div class="floatClear"></div>
             </div>
 			
-			<div id="nav2">
-				<ul id="nav" class="dropdown dropdown-horizontal">
+			<div id="middle_nav">
+				<ul class="dropdown dropdown-horizontal">
 					<li class="roundleft">&nbsp;</li> <!-- block for left round corner -->
 		                {foreach item=oPortlet from=$page->portlets}
 		                    {assign var=portlet_output value=$oPortlet->render() }

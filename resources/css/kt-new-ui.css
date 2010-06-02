@@ -32,6 +32,7 @@ div#topnavbar a {
     color: #fff;
     text-decoration: none;
 	padding: 0 15px 0 15px;
+	margin-left: 1px;
 }
 
 #topnavbar li a:hover {
@@ -60,29 +61,23 @@ ul.floatright li.roundright {
     width: 13px;
 }
 
-ul.floatleft li.home {
+ul.floatleft li.notification {
     margin: 0;
     padding: 0;
 	background: none;
-}
-
-ul.floatleft li a.home {
-    background: url('../graphics/newui/home.png') no-repeat 50% 50%;
-    color: transparent !important;
-    width: 26px;
+	background: url('../graphics/newui/home.png') no-repeat 50% 50%;
+	color: transparent !important;
+    width: 35px;
     overflow: hidden;
-    padding-left: 0;
-}
-
-ul.floatleft li.home a:hover {
-    background: url('../graphics/newui/home_hover.png') no-repeat 50% 50%;
 }
 
 div.form_actions {
 	float: left;
 	background: url('../graphics/newui/gridtoolbarbkg.png');
 	padding: 0;
-	margin: 0;
+	margin: 10px 0 0 0;
+	height: 29px;
+    line-height: 29px;
 }
 
 #content .form_actions *
@@ -117,7 +112,7 @@ div.form_actions {
 }
 
 #content .form_actions div.roundright {
-    background: #FFF url('../graphics/newui/gridtoolbarright.png');
+    background: #FFF url('../graphics/newui/gridtoolbarright.png') right;
     margin: 0;
     width: 9px;
 	float: right;

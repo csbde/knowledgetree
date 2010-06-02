@@ -1,5 +1,11 @@
 @charset "UTF-8";
 
+#middle_nav {
+    background: url('../../graphics/newui/midbarbkg.png') top left repeat-x;
+    height: 39px;
+    line-height: 39px;
+}
+
 ul.dropdown {
     font-family:"Arial", sans-serif;
     font-weight: bold;
@@ -7,12 +13,29 @@ ul.dropdown {
     text-transform:uppercase;
 }
 
+ul.dropdown ul {
+    width: 160px; /* Width of dropdown list */
+}
+
+ul.dropdown ul li {
+	font-weight: normal;
+}
+
+ul.dropdown li {
+    line-height: 39px;
+	padding: 0;
+	border: none;
+}
 
     
 ul.dropdown li li {
     text-transform: none;
 }
 
+ul.dropdown a,
+ul.dropdown span {
+	display: block;
+}
 
 
 ul.dropdown a:link,
@@ -21,13 +44,7 @@ ul.dropdown a:hover		{ color: #000; }
 ul.dropdown a:active	{ color: #1E529C; }
 
 
-ul.dropdown ul {
-    width: 150px; /* Width of dropdown list */
-}
 
-ul.dropdown ul li {
-	font-weight: normal;
-}
 
 
 ul.dropdown *.dir {
@@ -39,15 +56,7 @@ ul.dropdown *.dir {
 	background-repeat: no-repeat;
 }
 
-ul.dropdown a,
-ul.dropdown span {
-	display: block;
-}
 
-ul.dropdown li {
-	padding: 0;
-	border: none;
-}
 
 
 
@@ -66,17 +75,9 @@ ul.dropdown li:hover > *.dir, ul.dropdown li:hover *.dir:hover {
 
     
     
-#nav2 {
-    background: url('../../graphics/newui/midbarbkg.png') top left repeat-x;
-    /*border: 1px solid red;*/
-    height: 39px;
-    line-height: 39px;
-}
 
-ul.dropdown li {
 
-    line-height: 39px;
-}
+
 
 ul.dropdown li.roundleft {
     background: #FFF url('../../graphics/newui/midbarleft.png') no-repeat top left;
@@ -96,11 +97,10 @@ span#midrightcorner {
 }
 
 
+/* Rounds the bottom corners of the drop down menu*/
 ul.dropdown ul {
-    width: 150px;
-    list-style-type: none;
-    padding: 0;
-    border: 5px solid #CCCCCC;
+	background-color: white;
+    border: 5px solid #CCCCCC; /* For older browsers */
     border: 5px solid rgba(0, 0, 0, 0.2);
     
     -moz-border-radius-bottomleft: 10px;
@@ -111,15 +111,30 @@ ul.dropdown ul {
 }
 
 ul.dropdown ul li {
-    background-color: white;
-    padding-left: 5px;
+    
+    margin-left: 5px;
+    margin-right: 5px;
+    
+	line-height: normal;
+	border-bottom: 1px solid #F3F3F3;
+}
+
+ul.dropdown ul li a{
+	padding: 5px;
+}
+
+ul.dropdown ul li strong{
+	padding: 5px;
+	font-weight: bold;
+	display: block;
+}
+
+ul.dropdown ul li img{
+	vertical-align: text-bottom;
 }
 
 
-
+/* Rounds the bottom corners of the last item*/
 ul.dropdown ul li:last-child {
-    -moz-border-radius-bottomleft: 5px;
-    -webkit-border-bottom-left-radius: 5px;
-    -moz-border-radius-bottomright: 5px;
-    -webkit-border-bottom-right-radius: 5px;
+    border: none;
 }
