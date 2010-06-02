@@ -75,15 +75,15 @@ class RestSolr
 	 * @param string $url
 	 * @param int $port
 	 */
-    public function __construct($host, $port = 8983, $base = '/solr/')
+    public function __construct($host, $port = 8983, $base = '/solr/', $solrCore = null)
     {
+        if (!is_null($solrCore)) {
+            $base = $base . $solrCore . '/';
+        }
+
+        //TODO: Remove library, use cloudfusion rather. (Solr Lib doesn't support extractingRequest Handler)
         $this->client = new Apache_Solr_Service($host, $port, $base);
 
-        /* //TODO: Add config vars for Solr Host/Port, Update/Extract url's
-        $config = KTConfig::getSingleton();
-        $this->authToken = $config->get('indexer/luceneAuthToken','');
-        $this->ktid = $config->get('indexer/luceneID','');
-        */
     }
 
     public static function get($url)
