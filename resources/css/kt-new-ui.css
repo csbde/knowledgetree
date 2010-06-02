@@ -1,0 +1,124 @@
+/* ------------------ NEW KT UI - 1 June 2010 ------------------ */
+
+body {
+	background: url('../graphics/newui/watermark.jpg') no-repeat top center;
+}
+
+div#topnavbar {
+    margin: 0 10px 10px 10px;
+	margin: 0; /* testing override*/
+    background: url('../graphics/newui/topnavbkg.png');
+    height: 36px;
+    overflow: hidden;
+    font-family:"Arial", sans-serif;
+    font-weight: bold;
+    /*font-variant:small-caps;*/
+	text-transform:uppercase;
+	font-size: 11px;
+}
+
+
+div#topnavbar li {
+    /*border: 1px solid red;*/
+    height: 36px;
+    line-height: 36px;
+}
+
+div#topnavbar a {
+    display: block;
+}
+
+#topnavbar li a {
+    color: #fff;
+    text-decoration: none;
+	padding: 0 15px 0 15px;
+}
+
+#topnavbar li a:hover {
+    color: #000;
+	background: url('../graphics/newui/topnavhover.png');
+}
+
+ul.floatleft li {
+    float: left;
+    background: url('../graphics/newui/topnavdivider.png') no-repeat top left;
+}
+
+ul.floatright li {
+    float: right;margin-left: 20px;
+}
+
+ul.floatleft li.roundleft {
+    background: #FFF url('../graphics/newui/topnavleft.png');
+    width: 13px;
+    margin: 0;
+}
+
+ul.floatright li.roundright {
+    background: #FFF url('../graphics/newui/topnavright.png');
+    margin: 0;
+    width: 13px;
+}
+
+ul.floatleft li.home {
+    margin: 0;
+    padding: 0;
+	background: none;
+}
+
+ul.floatleft li a.home {
+    background: url('../graphics/newui/home.png') no-repeat 50% 50%;
+    color: transparent !important;
+    width: 26px;
+    overflow: hidden;
+    padding-left: 0;
+}
+
+ul.floatleft li.home a:hover {
+    background: url('../graphics/newui/home_hover.png') no-repeat 50% 50%;
+}
+
+div.form_actions {
+	float: left;
+	background: url('../graphics/newui/gridtoolbarbkg.png');
+	padding: 0;
+	margin: 0;
+}
+
+#content .form_actions *
+{
+	border: none;
+	background: transparent;
+	padding: 0;
+	margin: 0;
+	height: 29px;
+    line-height: 29px;
+}
+
+#content .form_actions input {
+	background: transparent url('../graphics/newui/gridtoolbarline.png') top right no-repeat;
+	padding: 0 10px 0 10px;
+	text-transform:uppercase;
+	font-size: 10px;
+	font-weight: bold;
+	color: #6A7274;
+}
+
+#content .form_actions input:hover {
+	color: #000;
+	cursor: pointer;
+}
+
+#content .form_actions div.roundleft {
+    background: #FFF url('../graphics/newui/gridtoolbarleft.png');
+    width: 10px;
+    margin: 0;
+	float: left;
+}
+
+#content .form_actions div.roundright {
+    background: #FFF url('../graphics/newui/gridtoolbarright.png');
+    margin: 0;
+    width: 9px;
+	float: right;
+}

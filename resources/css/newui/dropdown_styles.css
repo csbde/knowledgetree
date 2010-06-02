@@ -1,0 +1,125 @@
+@charset "UTF-8";
+
+ul.dropdown {
+    font-family:"Arial", sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+    text-transform:uppercase;
+}
+
+
+    
+ul.dropdown li li {
+    text-transform: none;
+}
+
+
+
+ul.dropdown a:link,
+ul.dropdown a:visited	{ color: #000; text-decoration: none; }
+ul.dropdown a:hover		{ color: #000; }
+ul.dropdown a:active	{ color: #1E529C; }
+
+
+ul.dropdown ul {
+    width: 150px; /* Width of dropdown list */
+}
+
+ul.dropdown ul li {
+	font-weight: normal;
+}
+
+
+ul.dropdown *.dir {
+	padding-right: 20px;
+	padding-left: 10px;
+	/*background-image: url(../../graphics/newui/nav-arrow-down.png);*/
+	background-image: url(../../graphics/newui/midbardivider.png);
+	background-position: right;
+	background-repeat: no-repeat;
+}
+
+ul.dropdown a,
+ul.dropdown span {
+	display: block;
+}
+
+ul.dropdown li {
+	padding: 0;
+	border: none;
+}
+
+
+
+ul.dropdown li.hover,
+ul.dropdown li:hover {
+	background: url('../../graphics/newui/menuHoverRight.png') no-repeat top right;
+}
+
+ul.dropdown li li:hover {
+    background: url(../../graphics/newui/grad2.png) 0 100% repeat-x;
+}
+
+ul.dropdown li:hover > *.dir, ul.dropdown li:hover *.dir:hover {
+	background: url('../../graphics/newui/menuHoverLeft.png') no-repeat;
+}
+
+    
+    
+#nav2 {
+    background: url('../../graphics/newui/midbarbkg.png') top left repeat-x;
+    /*border: 1px solid red;*/
+    height: 39px;
+    line-height: 39px;
+}
+
+ul.dropdown li {
+
+    line-height: 39px;
+}
+
+ul.dropdown li.roundleft {
+    background: #FFF url('../../graphics/newui/midbarleft.png') no-repeat top left;
+    width: 13px;
+    margin: 0;
+}
+
+div#midright {
+	float: right;
+	
+}
+
+span#midrightcorner {
+	background: #fff url('../../graphics/newui/midbarright.png') no-repeat top right;float: right;
+	width: 11px;
+	overflow: hidden;
+}
+
+
+ul.dropdown ul {
+    width: 150px;
+    list-style-type: none;
+    padding: 0;
+    border: 5px solid #CCCCCC;
+    border: 5px solid rgba(0, 0, 0, 0.2);
+    
+    -moz-border-radius-bottomleft: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    
+}
+
+ul.dropdown ul li {
+    background-color: white;
+    padding-left: 5px;
+}
+
+
+
+ul.dropdown ul li:last-child {
+    -moz-border-radius-bottomleft: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+}

@@ -1,7 +1,7 @@
 {if $btn}
-    <div style='width: 100%;'>{$btn}</div>
+    <!--<div style='width: 100%;'>{$btn}</div>-->
 {/if}
-<ul class="actionlist">
+<ul>
     {foreach item=action from=$context->actions }
         {if $action != null}
             <li {if $action.active}class="active"{/if}>

@@ -110,7 +110,14 @@ class KTPage {
            "thirdpartyjs/extjs/resources/css/ext-all.css",
            "resources/css/kt-framing.css",
            "resources/css/kt-contenttypes.css",
-           "resources/css/kt-headings.css"
+           "resources/css/kt-headings.css",
+           "resources/css/kt-new-ui.css",
+		   
+		   
+           "resources/css/newui/dropdown.css",
+           
+		   /* REWORK INTO SINGLE STYLE SHEET */
+		   "resources/css/newui/dropdown_styles.css"
         );
         $this->requireCSSResources($aCSS);
 
@@ -134,6 +141,10 @@ class KTPage {
         $aJS[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
         $aJS[] = 'resources/js/search2widget.js';
+        $aJS[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+        $aJS[] = 'thirdpartyjs/jquery/jquery_noconflict.js"';
+        $aJS[] = 'resources/js/newui/newUIFunctionality.js';
+        $aJS[] = 'resources/js/newui/jquery.helper.js';
 
         $this->requireJSResources($aJS);
 
