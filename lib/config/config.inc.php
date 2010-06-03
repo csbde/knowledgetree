@@ -48,7 +48,6 @@ class KTConfig {
     var $flatns = array();
     var $expanded = array();
     var $expanding = array();
-    var $confPath = '';
 
     /**
      * Get the path to the cache file for the config settings
@@ -57,10 +56,6 @@ class KTConfig {
      */
     static function getCacheFilename()
     {
-        if(ACCOUNT_ROUTING_ENABLED){
-            return ACCOUNT_NAME . '-configcache';
-        }
-
         $pathFile = KT_DIR .  '/config/cache-path';
 
         if(!file_exists($pathFile)){
@@ -78,62 +73,6 @@ class KTConfig {
         return $cacheFile;
     }
 
-    function setMemcache()
-    {
-        if(MemCacheUtil::isInitialized()){
-            return true;
-        }
-
-        $this->confPath = '/etc/kt';
-
-        $filename = $this->confPath . '/kt.cnf';
-
-		$c = new Config;
-        $root =& $c->parseConfig($filename, "IniCommented");
-
-        if (PEAR::isError($root)) {
-            return false;
-        }
-
-        $conf = $root->toArray();
-
-        // Populate the flat and flatns array with the settings from the config file
-        // These setting will be overwritten with the settings from the database.
-        if(isset($conf['root']) && !empty($conf['root'])){
-            foreach($conf['root'] as $group => $item){
-                foreach ($item as $key => $value){
-                    $this->setns($group, $key, $value, false);
-                }
-            }
-        }
-
-        $server_list = $this->get('memcache/servers', false);
-        if($server_list == false){
-                return false;
-        }
-        $filename = $this->getCacheFilename();
-
-        $server_arr = explode(';', $server_list);
-        $servers = array();
-
-        foreach ($server_arr as $server){
-
-            $portArr = explode('|', $server);
-
-            $servers[] = array(
-                'url' => $portArr[0],
-                'port' => (int)(isset($portArr[1])) ? $portArr[1] : 11211
-                );
-        }
-
-        try {
-            MemCacheUtil::init($servers);
-        }catch (Exception $e){
-            return false;
-        }
-        return true;
-    }
-
     // FIXME nbm:  how do we cache errors here?
     function loadCache() {
         $filename = $this->getCacheFilename();
@@ -141,22 +80,12 @@ class KTConfig {
             return false;
         }
 
-        if(ACCOUNT_ROUTING_ENABLED){
-            $config_str = MemCacheUtil::get($filename);
-        }else{
-            $config_str = file_get_contents($filename);
-        }
-
-        if(empty($config_str)){
-            return false;
-        }
-
-
+        $config_str = file_get_contents($filename);
         $config_cache = unserialize($config_str);
         $this->flat = $config_cache['flat'];
         $this->flatns = $config_cache['flatns'];
-        $this->expanded = (isset($config_cache['expanded'])) ? $config_cache['expanded'] : array();
-        $this->expanding = (isset($config_cache['expanding'])) ? $config_cache['expanding'] : array();
+        $this->expanded = $config_cache['expanded'];
+        $this->expanding = $config_cache['expanding'];
 
         if(empty($this->flatns)){
             return false;
@@ -174,15 +103,7 @@ class KTConfig {
         $config_cache['expanded'] = $this->expanded;
         $config_cache['expanding'] = $this->expanding;
 
-        $config_cache = serialize($config_cache);
-
-        if(ACCOUNT_ROUTING_ENABLED){
-            $this->setMemcache();
-            MemCacheUtil::put($filename, $config_cache);
-            return true;
-        }
-
-        file_put_contents($filename, $config_cache);
+        file_put_contents($filename, serialize($config_cache));
     }
 
     /**
@@ -193,12 +114,6 @@ class KTConfig {
     function clearCache()
     {
         $filename = $this->getCacheFilename();
-
-        if(ACCOUNT_ROUTING_ENABLED){
-            MemCacheUtil::delete($filename);
-            return true;
-        }
-
         if($filename !== false && file_exists($filename)){
             @unlink($filename);
         }
