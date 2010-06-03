@@ -191,6 +191,30 @@ class KTOnDiskHashedStorageManager extends KTStorageManager {
         // Storage uses file-on-filesystem for temporaryFile
         return;
     }
+    
+    /**
+     * Wrapper for temporaryFile
+     */
+    public function createTemporaryFile(&$oDocument)
+    {
+        return $this->temporaryFile($oDocument);
+    }
+
+    /**
+     * Wrapper for temporaryFileForVersion
+     */
+    public function createTemporaryFileForVersion($iVersionId)
+    {
+        return $this->temporaryFileForVersion($iVersionId);
+    }
+    
+    /**
+     * Wrapper for freeTemporaryFile
+     */
+    public function deleteTemporaryFile($sPath)
+    {
+        return $this->freeTemporaryFile($sPath);
+    }
 
     public function download($oDocument, $bIsCheckout = false) {
         global $default;
