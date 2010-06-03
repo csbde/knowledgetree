@@ -322,10 +322,6 @@ class KTCorePlugin extends KTPlugin {
                 _kt('Extractor Information'), _kt('This report lists the text extractors and their supported mime types.'),
                 '../search2/reporting/ExtractorInfo.php', null);
 
-            $this->registerAdminPage('indexerrors', 'IndexErrorsDispatcher', 'search',
-                _kt('Document Indexing Diagnostics'), _kt('This report will help to diagnose problems with document indexing.'),
-                '../search2/reporting/IndexErrors.php', null);
-
     		$this->registerAdminPage('pendingdocuments', 'PendingDocumentsDispatcher', 'search',
                 _kt('Pending Documents Indexing Queue'), _kt('This report lists documents that are waiting to be indexed.'),
                 '../search2/reporting/PendingDocuments.php', null);
@@ -334,6 +330,10 @@ class KTCorePlugin extends KTPlugin {
                 _kt('Reschedule all documents'), _kt('This function allows you to re-index your entire repository.'),
                 '../search2/reporting/RescheduleDocuments.php', null);
 		}
+
+        $this->registerAdminPage('indexerrors', 'IndexErrorsDispatcher', 'search',
+            _kt('Document Indexing Diagnostics'), _kt('This report will help to diagnose problems with document indexing.'),
+            '../search2/reporting/IndexErrors.php', null);
 
 
         // Admin Pages for Previous Dashlets
@@ -371,6 +371,10 @@ class KTCorePlugin extends KTPlugin {
             $this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'config',
                 _kt('General Settings'), _kt('View and modify settings for the KnowledgeTree cache, custom error message handling, Disk Usage threshold percentages, location of zip binary, paths to external binaries, general server configuration, LDAP authentication, session management, KnowledgeTree storage manager, miscellaneous tweaks, and whether to always display \'Your Checked-out Documents\' dashlet.'),
                 'admin/configSettings.php', null);
+
+            $this->registerAdminPage('helpmanagement', 'ManageHelpDispatcher', 'misc',
+                _kt('Edit Help files'), _kt('Change the help files that are displayed to users.'),
+                'admin/manageHelp.php', null);
         }
 
         $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'config',
@@ -382,9 +386,6 @@ class KTCorePlugin extends KTPlugin {
             'admin/configSettings.php', null);
 
         // misc
-        $this->registerAdminPage('helpmanagement', 'ManageHelpDispatcher', 'misc',
-            _kt('Edit Help files'), _kt('Change the help files that are displayed to users.'),
-            'admin/manageHelp.php', null);
         $this->registerAdminPage('plugins', 'KTPluginDispatcher', 'misc',
             _kt('Manage plugins'), _kt('Register new plugins, disable plugins, and so forth'),
             'admin/plugins.php', null);
