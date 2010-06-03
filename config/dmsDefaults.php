@@ -39,7 +39,7 @@
  */
 
 // uncomment the line below to disable account routing (even if the plugin is available)
-define('ACCOUNT_ROUTING_ENABLED',false);
+//define('ACCOUNT_ROUTING_ENABLED',false);
 
 // The line below will switch on tracing for debugging & dev purposes
 define ( 'KTLIVE_TRACE_ENABLE', false );
