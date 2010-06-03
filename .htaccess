@@ -54,7 +54,7 @@ SetEnv kt_htaccess_worked yes
 SetEnvIf Authorization (.*) kt_auth=$1
 </IfModule>
 LimitRequestBody 0
-DirectoryIndex index.html index.php
+DirectoryIndex control.php index.html index.php
 Options none
 Options +ExecCGI
 Options +SymLinksIfOwnerMatch

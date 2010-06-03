@@ -153,15 +153,9 @@ function downloadPart($fileName=NULL,$part=1,$length=1024){
 	//Open file and send the bitstream representing the chosen segment
 	try{
 		$sPos=($part-1)*$length;
-		if (ACCOUNT_ROUTING_ENABLED) {
-		    $storage = KTStorageManagerUtil::getSingleton();
-		    $res = $storage->file_get_contents($fileName, null, null, $sPos, $length);
-		}
-		else {
-		    $fp=fopen($fileName,'r');
-		    fseek($fp,$sPos,SEEK_SET);
-		    $res=fread($fp,$length);
-		}
+		$fp=fopen($fileName,'r');
+		fseek($fp,$sPos,SEEK_SET);
+		$res=fread($fp,$length);
 		echo $res;
 		exit;
 	}catch(Exception $e){
