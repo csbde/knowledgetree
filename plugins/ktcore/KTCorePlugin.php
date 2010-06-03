@@ -322,19 +322,19 @@ class KTCorePlugin extends KTPlugin {
                 _kt('Extractor Information'), _kt('This report lists the text extractors and their supported mime types.'),
                 '../search2/reporting/ExtractorInfo.php', null);
 
-    		$this->registerAdminPage('pendingdocuments', 'PendingDocumentsDispatcher', 'search',
-                _kt('Pending Documents Indexing Queue'), _kt('This report lists documents that are waiting to be indexed.'),
-                '../search2/reporting/PendingDocuments.php', null);
-
-            $this->registerAdminPage('reschedulealldocuments', 'RescheduleDocumentsDispatcher', 'search',
-                _kt('Reschedule all documents'), _kt('This function allows you to re-index your entire repository.'),
-                '../search2/reporting/RescheduleDocuments.php', null);
 		}
 
         $this->registerAdminPage('indexerrors', 'IndexErrorsDispatcher', 'search',
             _kt('Document Indexing Diagnostics'), _kt('This report will help to diagnose problems with document indexing.'),
             '../search2/reporting/IndexErrors.php', null);
 
+		$this->registerAdminPage('pendingdocuments', 'PendingDocumentsDispatcher', 'search',
+            _kt('Pending Documents Indexing Queue'), _kt('This report lists documents that are waiting to be indexed.'),
+            '../search2/reporting/PendingDocuments.php', null);
+
+        $this->registerAdminPage('reschedulealldocuments', 'RescheduleDocumentsDispatcher', 'search',
+            _kt('Reschedule all documents'), _kt('This function allows you to re-index your entire repository.'),
+            '../search2/reporting/RescheduleDocuments.php', null);
 
         // Admin Pages for Previous Dashlets
         if($restrictedEnv !== true){
