@@ -267,13 +267,13 @@ function sendEmailDocument($aDestEmailAddress, $iDocumentID, $sDocumentName, $sC
 
     // Request a standard file path so that it can be attached to the
     // email
-    $sDocumentPath = $oStorage->temporaryFile($oDocument);
+    $sDocumentPath = $oStorage->createTemporaryFile($oDocument);
 
     $sDocumentFileName = $oDocument->getFileName();
     $res = $oEmail->sendAttachment($aDestEmailAddress, $sTitle, $sMessage, $sDocumentPath, $sDocumentFileName);
 
     // Tell the storage we don't need the temporary file anymore.
-    $oStorage->freeTemporaryFile($sDocumentPath);
+    $oStorage->deleteTemporaryFile($sDocumentPath);
 
     if (PEAR::isError($res)) {
         $default->log->error($res->getMessage());
