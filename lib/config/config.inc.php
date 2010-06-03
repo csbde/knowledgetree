@@ -195,7 +195,7 @@ class KTConfig {
         $filename = $this->getCacheFilename();
 
         if(ACCOUNT_ROUTING_ENABLED){
-            MemCacheUtil::delete($filename);
+            MemCacheUtil::replace($filename, '');
             return true;
         }
 
