@@ -39,7 +39,7 @@
  */
 
 // uncomment the line below to disable account routing (even if the plugin is available)
-//define('ACCOUNT_ROUTING_ENABLED',false);
+define('ACCOUNT_ROUTING_ENABLED',false);
 
 // The line below will switch on tracing for debugging & dev purposes
 define ( 'KTLIVE_TRACE_ENABLE', false );
@@ -558,8 +558,11 @@ class KTInit {
 			// We don't want to store this setting so we set store_cache to false
 			$store_cache = false;
 		}
-
-		$use_cache = $oKTConfig->setMemCache();
+		
+		if(ACCOUNT_ROUTING_ENABLED){
+			$use_cache = $oKTConfig->setMemCache();
+        }
+		
 
 //		$oKTConfig->clearCache();
 //		$use_cache = false;
