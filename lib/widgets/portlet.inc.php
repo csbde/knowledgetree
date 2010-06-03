@@ -116,7 +116,7 @@ class KTActionPortlet extends KTPortlet {
     var $actions = array();
 
     var $bActive = true;
-    var $btns = '';
+    var $btns = array();
 
     // current action is the one we are currently on.
     function setActions($actions, $currentaction) {
