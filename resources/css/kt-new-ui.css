@@ -132,5 +132,55 @@ ul.buttonsList {
 
 ul.buttonsList li {
 	display: inline;
-	padding-left: 30px;
+	line-height: 39px;
+	background: url('../graphics/newui/midbardivider.png') no-repeat;
+	float: right;
 }
+
+ul.buttonsList span {
+	display: block;
+}
+
+ul.buttonsList a {
+	line-height: 39px;
+	height: 39px;
+	display: block;
+	padding-left: 35px;
+	padding-right: 10px;
+	font-family:"Arial", sans-serif;
+    font-weight: bold;
+}
+
+ul.buttonsList a:link,
+ul.buttonsList a:visited	{ color: #000; text-decoration: none; }
+ul.buttonsList a:hover		{ color: #FFF; }
+ul.buttonsList a:active	{ color: #1E529C; }
+
+ul.buttonsList li a.arrow_upload {
+	background: url('../graphics/newui/midbar_upload.png') 10px 0 no-repeat;
+}
+
+ul.buttonsList li a.arrow_download {
+	background: url('../graphics/newui/midbar_download.png') 10px 0 no-repeat;
+}
+
+
+ul.buttonsList li:hover {
+	background: url('../graphics/newui/menuHoverRight.png') no-repeat top right;
+}
+
+ul.buttonsList li:hover > *.dir, ul.buttonsList li:hover span.dir:hover {
+	background: url('../graphics/newui/menuHoverLeft.png') no-repeat;
+}
+
+
+div#logobar {
+	margin-left: 10px;
+}
+
+input[type="checkbox"] {
+	border: none;
+	background: none;
+}
+
+

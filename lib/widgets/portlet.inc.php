@@ -163,6 +163,7 @@ class KTActionPortlet extends KTPortlet {
     function renderBtn($text, $link, $class) {
 
         // Create button html
+        /*
         $button = "<div class='portlet_button'>
             <a href='{$link}'>
                 <div class='big_btn_left'></div>
@@ -171,9 +172,9 @@ class KTActionPortlet extends KTPortlet {
                 </div>
                 <div class='big_btn_right {$class}'></div>
             </a>
-        </div>";
+        </div>";*/
         
-        $button = '<li class="'.$class.'"><a href="'.$link.'">'.$text.'</a></li>';
+        $button = '<li><span class="dir"><a href="'.$link.'" class="'.$class.'">'.$text.'</a></span></li>';
 
         return $button;
     }
