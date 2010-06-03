@@ -168,12 +168,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fFolderId=%d', $oFolder->getId()));
 
 			// and the portlets
-			$portlet = new KTActionPortlet(sprintf(_kt('About this folder')));
+			$portlet = new KTActionPortlet(sprintf(_kt('Info')));
 			$aActions = KTFolderActionUtil::getFolderInfoActionsForFolder($this->oFolder, $this->oUser);
 			$portlet->setActions($aActions,$this->sName);
 			$this->oPage->addPortlet($portlet);
 
-			$portlet = new KTActionPortlet(sprintf(_kt('Actions on this folder')));
+			$portlet = new KTActionPortlet(sprintf(_kt('Actions')));
 			$aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
 			$portlet->setActions($aActions,null);
 			$this->oPage->addPortlet($portlet);

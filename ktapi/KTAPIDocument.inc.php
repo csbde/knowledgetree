@@ -1404,6 +1404,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 		if (is_array($fieldinfo))
 		 		{
 		 			$fieldname = $fieldinfo['name'];
+
 		 			// if the 'blankvalue' argument was set to 1 (true) then do not use the current value;
 		 			// this prevents the 'n/a' values set for blank fields on get_metadata from being saved as such
 		 			// while allowing user entered values of 'n/a' to be saved
@@ -2320,7 +2321,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	function expunge()
 	{
 		$oStorage =& KTStorageManagerUtil::getSingleton();
-		
+
 		if ($this->document->getStatusID() != 3)
 		{
 			return new PEAR_Error('You should not purge this');
@@ -2637,8 +2638,8 @@ class KTAPI_Document extends KTAPI_FolderItem
     {
         return Document::getList($whereClause);
     }
-	
-	
+
+
 	/**
 	 * Method to check whether the thumbnail preview of a document exists
 	 *
@@ -2648,16 +2649,16 @@ class KTAPI_Document extends KTAPI_FolderItem
 	public function thumbnailExists()
 	{
 		$oStorage = KTStorageManagerUtil::getSingleton();
-		
+
 		global $default;
-		
+
 		$varDir = $default->varDirectory;
-		
+
 		$thumbnailCheck = $varDir . '/thumbnails/'.$this->documentid.'.jpg';
-		
+
 		return $oStorage->file_exists($thumbnailCheck);
 	}
-	
+
 	/**
 	 * Method to generate a thumbnail for a document
 	 *
@@ -2671,40 +2672,40 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return TRUE;
 		} else {
 			require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
-			
+
 			// Check that plugin is enabled
 			if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin')) {
 				$path = KTPluginUtil::getPluginPath('thumbnails.generator.processor.plugin');
-				
+
 				require_once($path .  'thumbnails.php');
-				
+
 				// Get mimetype
 				$mimeType = KTMime::getMimeTypeName($this->document->getMimeTypeID());
-				
+
 				$thumbnailGenerator = new thumbnailGenerator();
-				
+
 				// Check that mimetype is valid
 				if (in_array($mimeType, $thumbnailGenerator->getSupportedMimeTypes())) {
-					
+
 					// Setup
 					$thumbnailGenerator->setDocument($this->document);
-					
+
 					// Process
 					$thumbnailGenerator->processDocument();
-					
+
 					// return another (final) check for the thumbnail
 					return $this->thumbnailExists();
-					
+
 				} else {
 					return FALSE;
 				}
-				
+
 			} else {
 				return FALSE;
 			}
 		}
 	}
-	
+
 	/**
 	 * Method to check whether the instantview file of a document exists
 	 *
@@ -2714,16 +2715,16 @@ class KTAPI_Document extends KTAPI_FolderItem
 	public function instantViewExists()
 	{
 		$oStorage = KTStorageManagerUtil::getSingleton();
-		
+
 		global $default;
-		
+
 		$varDir = $default->varDirectory;
-		
+
 		$thumbnailCheck = $varDir . '/flash/'.$this->documentid.'.swf';
-		
+
 		return $oStorage->file_exists($thumbnailCheck);
 	}
-	
+
 	/**
 	 * Method to generate an instaView for a document
 	 *
@@ -2737,34 +2738,34 @@ class KTAPI_Document extends KTAPI_FolderItem
 			return TRUE;
 		} else {
 			require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
-			
+
 			// Check that plugin is enabled
 			if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
 				$path = KTPluginUtil::getPluginPath('instaview.processor.plugin');
-				
+
 				require_once($path .  'instaView.php');
-				
+
 				// Get mimetype
 				$mimeType = KTMime::getMimeTypeName($this->document->getMimeTypeID());
-				
+
 				$instaView = new instaView();
-				
+
 				// Check that mimetype is valid
 				if (in_array($mimeType, $instaView->getSupportedMimeTypes())) {
-					
+
 					// Setup
 					$instaView->setDocument($this->document);
-					
+
 					// Process
 					$instaView->processDocument();
-					
+
 					// return another (final) check for the thumbnail
 					return $this->instantViewExists();
-					
+
 				} else {
 					return FALSE;
 				}
-				
+
 			} else {
 				return FALSE;
 			}

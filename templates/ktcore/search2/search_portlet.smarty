@@ -1,5 +1,5 @@
 
-<div id=searchPortletCriteria></div>
+<!-- <div id=searchPortletCriteria__OLD></div> -->
 
 <ul class="actionlist">
 <li><a href="{$rootUrl}/search2.php?action=guiBuilder">{i18n}Advanced Search{/i18n}</a></li>

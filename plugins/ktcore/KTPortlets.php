@@ -124,6 +124,9 @@ class KTAdminModePortlet extends KTPortlet {
         parent::KTPortlet(_kt("Administrator mode"));
     }
     function render() {
+		
+		return null;
+		
         $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
         $iDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (!$iFolderId && !$iDocumentId) {

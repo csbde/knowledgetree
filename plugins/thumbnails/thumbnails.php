@@ -171,19 +171,19 @@ class thumbnailGenerator extends BaseProcessor
         $mimeType = KTMime::getMimeTypeName($mimeTypeId);
 
         // Check document type: Image or PDF
-        if (strstr($mimeType, 'image')) 
+        if (strstr($mimeType, 'image'))
         {
             $type = 'image';
             $srcDir = $default->documentRoot;
             $srcFile = $srcDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
         }
 	    // Get the pdf source file - if the document is a pdf then use the document as the source
-	    else if($mimeType == 'application/pdf') 
+	    else if($mimeType == 'application/pdf')
 	    {
 	        $pdfDir = $default->documentRoot;
             $srcFile = $pdfDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
-	    } 
-	    else 
+	    }
+	    else
 	    {
     	    $pdfDir = $default->pdfDirectory;
             $srcFile = $pdfDir .DIRECTORY_SEPARATOR. $this->document->iId.'.pdf';
@@ -191,7 +191,7 @@ class thumbnailGenerator extends BaseProcessor
 
         $thumbnaildir = $default->varDirectory.DIRECTORY_SEPARATOR.'thumbnails';
 
-		if (stristr(PHP_OS,'WIN')) 
+		if (stristr(PHP_OS,'WIN'))
 		{
             $thumbnaildir = str_replace('/', '\\', $thumbnaildir);
             $srcFile = str_replace('/', '\\', $srcFile);
@@ -199,12 +199,12 @@ class thumbnailGenerator extends BaseProcessor
 
         $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
         //if thumbail dir does not exist, generate one and add an index file to block access
-        if (!$oStorage->file_exists($thumbnaildir)) 
+        if (!$oStorage->file_exists($thumbnaildir))
         {
         	$oStorage->mkdir($thumbnaildir, 0755);
         }
-        
-        if (!$oStorage->file_exists($thumbnaildir.DIRECTORY_SEPARATOR.'index.html')) 
+
+        if (!$oStorage->file_exists($thumbnaildir.DIRECTORY_SEPARATOR.'index.html'))
         {
         	$oStorage->touch($thumbnaildir.DIRECTORY_SEPARATOR.'index.html');
         	$oStorage->file_put_contents($thumbnaildir.DIRECTORY_SEPARATOR.'index.html', 'You do not have permission to access this directory.');
@@ -218,14 +218,14 @@ class thumbnailGenerator extends BaseProcessor
         }
 
         // if a previous version of the thumbnail exists - delete it
-		if ($oStorage->file_exists($thumbnailfile)) 
+		if ($oStorage->file_exists($thumbnailfile))
 		{
 			$oStorage->unlink($thumbnailfile);
 		}
         // do generation
         $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
         $pageNumber = ($type == 'pdf' ? "[0]" : ($mimeType == 'image/tiff' ? "[0]" : "")); // If its a pdf or tiff, just convert first page
-        
+
         // windows path may contain spaces
         /*
         if (stristr(PHP_OS,'WIN')) {
@@ -235,13 +235,13 @@ class thumbnailGenerator extends BaseProcessor
 			$cmd = "{$pathConvert} {$srcFile}" . $pageNumber . " -resize 200x200 $thumbnailfile";
 		}
 		*/
-        
+
         $cmd = "\"$pathConvert\" -thumbnail 200 -limit area 10mb \"$srcFile" . $pageNumber . "\" \"$thumbnailfile\"";
-		
+
 		$default->log->debug($cmd);
 
 		$output = KTUtil::pexec($cmd);
-		
+
 		// Log the output
 		if(isset($output['out'])){
 			$out = $output['out'];
@@ -252,7 +252,7 @@ class thumbnailGenerator extends BaseProcessor
 			    $default->log->error('InstaView Plugin: error in creation of document thumbnail '.$this->document->iId.': '. $out);
 			}
 		}
-		
+
         return true;
     }
 }
@@ -360,7 +360,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 		$main->requireJSResource('resources/lightbox/js/jquery.lightbox-0.5.min.js');
 		$main->requireCSSResource('resources/lightbox/css/lightbox.css');
     }
-    
+
     // determines whether the image exists and returns the maximum aspect to display;
     // this is used for anywhere which might require display resizing based on the presence or absence of the thumbnail
     public function getDisplaySize($documentId)

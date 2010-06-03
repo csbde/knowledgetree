@@ -1,7 +1,25 @@
 {if $btn}
-    <div style='width: 100%;'>{$btn}</div>
+    <ul class="buttonsList">{$btn}</ul>
 {/if}
-<ul class="actionlist">
+<ul>
+	{foreach item=action from=$context->firstActions }
+        {if $action != null}
+            <li {if $action.active}class="active"{/if}>
+            {if $action.js}
+            	{$action.js}
+            {else}
+                {if ($action.url)}
+                    <a href="{$action.url}" {if $action.description}title="{$action.description}"{/if}>
+                    	{$action.name}
+                    </a>
+                {else}
+                	{$action.name}
+                {/if}
+            {/if}
+            </li>
+        {/if}
+    {/foreach}
+
     {foreach item=action from=$context->actions }
         {if $action != null}
             <li {if $action.active}class="active"{/if}>
