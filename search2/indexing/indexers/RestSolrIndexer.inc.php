@@ -67,7 +67,6 @@ class RestSolrIndexer extends Indexer
 		} else {
 		    $solrCore = !empty($matches[4]) ? $matches[4] : null;
 		}
-		$solrCore = 'kt-dev-1';
 		
 		$this->solr = new RestSolr($host, $port, $solrBase, $solrCore);
 	}
