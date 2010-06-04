@@ -216,7 +216,9 @@ class KTInit {
 			 */
 			define ( 'ACCOUNT_ROUTING_ENABLED', true );
 			define ( 'ACCOUNT_NAME', liveAccountRouting::getAccountName () );
-			define ( 'KTLIVE_TRACE_PATH', '/plugins/ktlive/webservice/callback.php?action=trace' );
+			define ( 'KTLIVE_CALLBACK_PATH', '/plugins/ktlive/webservice/callback.php' );
+			define ( 'KTLIVE_TRACE_PATH', KTLIVE_CALLBACK_PATH.'?action=trace' );
+	
 			/**
 			 * Uncomment below for development overrides to work.
 			 *
