@@ -344,7 +344,7 @@ class KTDocumentViewAction extends KTDocumentAction {
 
     function getButton() {
         $btn = array();
-        $btn['display_text'] = _kt('Download Document');
+        $btn['display_text'] = _kt('Download');
         $btn['arrow_class'] = 'arrow_download';
         return $btn;
     }
@@ -606,7 +606,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
     function getButton() {
         $btn = array();
-        $btn['display_text'] = _kt('Checkin Document');
+        $btn['display_text'] = _kt('Checkin');
         $btn['arrow_class'] = 'arrow_upload';
         return $btn;
     }

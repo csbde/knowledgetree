@@ -72,7 +72,7 @@ class MultiDocumentAddAction extends KTFolderAction {
 	 */
     function getButton(){
         $btn = array();
-        $btn['display_text'] = _kt('Upload Document');
+        $btn['display_text'] = _kt('Upload');
         $btn['arrow_class'] = 'arrow_upload';
         return $btn;
     }
