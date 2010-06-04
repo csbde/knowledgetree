@@ -201,3 +201,32 @@ input[type="checkbox"] {
 thead {
 	background: #fff url('../graphics/newui/table_header.png') repeat-x bottom;
 }
+
+#copyrightbar {
+	background: #fff url('../graphics/newui/footerback.png') repeat-x top;
+	height: 32px;
+	line-height: 32px;
+	margin: 0 15px 0 15px;
+	color: #697474;
+}
+
+#copybarleft {
+	background: url('../graphics/newui/footerleft.png') no-repeat top left;
+	float:left;
+	padding-left: 15px;
+}
+
+#copybarleft img {
+	float: left;
+}
+
+#copybarright {
+	float:right;
+	line-height: 32px;
+	padding-right: 20px;
+	background: url('../graphics/newui/footerright.png') no-repeat top right;
+}
+
+#pageBody {
+	margin-bottom: 0;
+}
