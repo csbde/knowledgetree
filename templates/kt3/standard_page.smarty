@@ -181,9 +181,11 @@
 		                    {/if}
 		                {/foreach}
 				</ul>
+				<div id="bigbuttons"></div>
 				<div id="midright">
+					
 					<span id="midrightcorner">&nbsp;</span>
-					<div id="midrightitems"></div>
+					<div id="newSearchQuery"></div>
 				</div>
 			</div>
             
@@ -224,9 +226,6 @@
                     {/if}
                     </td>
                     <td width="5px">&nbsp;</td>
-                    <td valign=top align=right width="100">
-                	   <div id="newSearchQuery"></div>
-                	</td>
                 	<td id="add-dashlet"></td>
                 	</tr>
                 	</table>

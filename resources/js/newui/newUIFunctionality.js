@@ -9,9 +9,10 @@ jQuery(document).ready(function() {
     
     if (jQuery("#middle_nav ul").length == 1) {
         jQuery("#middle_nav").css({display:'none'});
+        //jQuery('#breadcrumbs').appendTo(jQuery('#middle_nav'));
     }
     
     
-    jQuery('.buttonsList').appendTo(jQuery('#midrightitems'));
+    jQuery('.buttonsList').appendTo(jQuery('#bigbuttons'));
 
 });

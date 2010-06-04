@@ -130,9 +130,15 @@ div.form_actions {
 	text-transform: none;
 }
 
-#midrightitems {
+#newSearchQuery {
+	margin-top: 5px;
 	float: right;
 }
+
+#bigbuttons {
+	float: left;
+}
+
 ul.buttonsList {
 	list-style-type: none;
 }
@@ -140,8 +146,8 @@ ul.buttonsList {
 ul.buttonsList li {
 	display: inline;
 	line-height: 39px;
-	background: url('../graphics/newui/midbardivider.png') no-repeat;
-	float: right;
+	background: url('../graphics/newui/midbardivider.png') no-repeat top right;
+	float: left;
 }
 
 ul.buttonsList span {
@@ -159,7 +165,7 @@ ul.buttonsList a {
 }
 
 ul.buttonsList a:link,
-ul.buttonsList a:visited	{ color: #000; text-decoration: none; }
+ul.buttonsList a:visited	{ color: #6F6F6F; text-decoration: none; }
 ul.buttonsList a:hover		{ color: #FFF; }
 ul.buttonsList a:active	{ color: #1E529C; }
 
