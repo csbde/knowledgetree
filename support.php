@@ -24,6 +24,8 @@ require_once("thirdparty/getsatisfaction/FastPass.php");
 require_once("config/dmsDefaults.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/users/User.inc");
+require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
+require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 
 /**
  * The Get Satisfaction API registers a given user onto the getsatisfaction support
@@ -64,8 +66,37 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
 
     function do_main()
     {
-    	redirect($this->getSupportUrl());
+    	return $this->renderGetSatisfactionRedirect();
     }
+
+    /**
+     * This method returns the get satisfaction script to include
+     *
+     */
+    private function getSatisfactionScript()
+    {
+        global $default;
+        
+        $fastPassScript = '';
+        $message = '';
+        
+    	try
+    	{
+    	    if ($this->validateInput($message)) {
+	            $fastPassScript = FastPass::script($this->key, $this->secret, $this->email, $this->name, $this->uid, $this->isSecure, $this->additionalFields);
+	            $default->log->info("Support: FastPass Script : [" . $fastPassScript . "]");
+    	    } else {
+    	        Throw New Exception($message);
+    	    }
+    	    
+    	}
+    	catch(Exception $e)
+    	{
+    		$this->errorRedirectTo('control', _kt('Could not retrieve 1st "get satisfaction" script.') . $e->getMessage());
+    	}
+    	
+    	return $fastPassScript;
+    }    
 
     /**
      * This method returns the get satisfaction url to redirect to
@@ -73,41 +104,16 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
      */
     private function getSatisfactionUrl()
     {
+        global $default;
+        
         $fastPassUrl = '';
         $message = '';
         
     	try
     	{
-    	    
-    	    //Validating parameters
-    	    $isValid = true;
-    	    if (is_null($this->key)) {
-    	        $message = 'The key supplied was invalid: ['.$this->key.']';
-    	        $isValid = false;
-    	    }
-    	    
-    	    if (is_null($this->secret)) {
-    	        $message = 'The secret supplied was invalid: ['.$this->secret.']';
-    	        $isValid = false;
-    	    }
-
-    	    if (is_null($this->email)) {
-    	        $message = 'The email supplied was invalid: ['.$this->email.']';
-    	        $isValid = false;
-    	    }
-
-    	    if (is_null($this->name)) {
-    	        $message = 'The name supplied was invalid: ['.$this->name.']';
-    	        $isValid = false;
-    	    }
-    	    
-    	    if (is_null($this->uid)) {
-    	        $message = 'The uid supplied was invalid: ['.$this->uid.']';
-    	        $isValid = false;
-    	    }
-    	    
-    	    if ($isValid) {
+    	    if ($this->validateInput($message)) {
 	            $fastPassUrl = FastPass::url($this->key, $this->secret, $this->email, $this->name, $this->uid, $this->isSecure, $this->additionalFields);
+	            $default->log->info("Support: FastPass Url : [" . $fastPassUrl . "]");
     	    } else {
     	        Throw New Exception($message);
     	    }
@@ -121,12 +127,49 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
     	return $fastPassUrl;
     }    
 
+    
+    /**
+     * Returns true/false based on weather or not the arguments, required by getsatisfaction are valid.
+     */
+    private function validateInput(&$message) {
+	    //Validating parameters
+	    $isValid = true;
+	    if (is_null($this->key)) {
+	        $message = 'The key supplied was invalid: ['.$this->key.']';
+	        $isValid = false;
+	    }
+	    
+	    if (is_null($this->secret)) {
+	        $message = 'The secret supplied was invalid: ['.$this->secret.']';
+	        $isValid = false;
+	    }
+
+	    if (is_null($this->email)) {
+	        $message = 'The email supplied was invalid: ['.$this->email.']';
+	        $isValid = false;
+	    }
+
+	    if (is_null($this->name)) {
+	        $message = 'The name supplied was invalid: ['.$this->name.']';
+	        $isValid = false;
+	    }
+	    
+	    if (is_null($this->uid)) {
+	        $message = 'The uid supplied was invalid: ['.$this->uid.']';
+	        $isValid = false;
+	    }
+	    
+	    return $isValid;
+    }    
+    
     /**
      * This returns the support url that takes the user to the support infrustructure
      * landing page at getsatisfaction.com/knowledgetree
      */
     private function getSupportUrl()
     {
+        global $default;
+        
         $getSatisfactionUrl = $this->getSatisfactionUrl();
         $supportUrl = '';
         
@@ -141,9 +184,10 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
             $result = curl_exec($ch);
             $info = curl_getinfo($ch);
             curl_close ($ch);
-    	    
+
     	    $requestBody = $result;
-            
+            $default->log->info("Support: FastPassScript Contents : [" . $requestBody . "]");
+    	    
             $res = preg_match_all('/GSFN.company_url.*\=.*".*"/isU', $requestBody, $matches);
 
             if ($res) {
@@ -163,7 +207,79 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
     	}
     	
     	return $supportUrl;
-    }        
+    }
+
+    /**
+     * This returns the support url that takes the user to the support infrustructure
+     * landing page at getsatisfaction.com/knowledgetree
+     */
+    private function getScript($url)
+    {
+        global $default;
+        
+    	try
+    	{
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_POST, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            //curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            $result = curl_exec($ch);
+            $info = curl_getinfo($ch);
+            curl_close ($ch);
+
+    	    $requestBody = $result;
+            //$default->log->info("Support: Get Script Contents : [" . $requestBody . "]");
+
+            return $requestBody;
+    	}
+    	catch(Exception $e)
+    	{
+    		$this->errorRedirectTo('control', _kt('Could not retrieve support url.') . $e->getMessage());
+    	}
+    	
+    	return false;
+    }    
+    
+    /**
+     * This method will render the dynamic javascript, set the cookies and redirect the user to
+     * the getsatisfaction page.
+     */
+    private function renderGetSatisfactionRedirect() {
+    	$url = $this->getSatisfactionUrl();
+
+        $this->aBreadcrumbs = array(array('name' => _kt("Support")));
+    	
+		//Adding the required Get Satisfaction script.
+		$sJavascript = $this->getScript($url);
+		$this->oPage->requireJSStandalone($sJavascript);
+		
+		$oTemplating =& KTTemplating::getSingleton();
+		$oTemplate = $oTemplating->loadTemplate('ktcore/support.getsatisfaction');
+		
+		try {
+    		$script = $this->getSatisfactionScript();
+            $script = trim($script);
+    		if ($script == '') {
+    	        Throw New Exception("Error retrieving javascript from getsatisfaction.com");
+    	    }
+    	}
+    	catch(Exception $e)
+    	{
+    		$this->errorRedirectTo('control', _kt('Support: Couldn\'t load support page.') . $e->getMessage());
+    	}
+				
+
+    	
+        $aTemplateData = array(
+              "script" => $script,
+              'url' => $url
+        );
+        
+        return $oTemplate->render($aTemplateData);
+        
+    }
     
 }
 
