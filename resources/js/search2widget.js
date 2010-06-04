@@ -61,7 +61,7 @@ function onSearchClick(sender)
 	var sq = document.getElementById('txtQuery');
 	var qg = document.getElementById('cbQuickGeneral');
 
-	text = text.replace(/\"/g, "'");
+	//text = text.replace(/\"/g, "'");
 
 	if (bSearchOptionMetadataAndContent)
 	{

@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -375,7 +375,7 @@ class KTDocumentViewAction extends KTDocumentAction {
 
         $oDocumentTransaction = & new DocumentTransaction($this->oDocument, _kt('Document downloaded'), 'ktcore.transactions.download', $aOptions);
         $oDocumentTransaction->create();
-		
+
 		$oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('download', 'postValidate');
         foreach ($aTriggers as $aTrigger) {
@@ -667,11 +667,18 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         $major_inc = sprintf('%d.%d', $this->oDocument->getMajorVersionNumber()+1, 0);
         $minor_inc = sprintf('%d.%d', $this->oDocument->getMajorVersionNumber(), $this->oDocument->getMinorVersionNumber()+1);
 
+        // Modify description according to whether the disableForceFilenameOption is set
+        if($default->disableForceFilenameOption){
+            $description = sprintf(_kt('Please specify the file you wish to upload. The file must have the same name as the original: <b>%s</b>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
+        }else{
+            $description = sprintf(_kt('Please specify the file you wish to upload.  Unless you also indicate that you are changing its filename (see "Force Original Filename" below), this will need to be called <b>%s</b>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
+        }
+
         // Set the widgets for the form
         $aWidgets = array(
             array('ktcore.widgets.file', array(
                 'label' => _kt('File'),
-                'description' => sprintf(_kt('Please specify the file you wish to upload.  Unless you also indicate that you are changing its filename (see "Force Original Filename" below), this will need to be called <strong>%s</strong>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8')),
+                'description' => $description,
                 'name' => 'file',
                 'basename' => 'file',
                 'required' => true,
@@ -818,7 +825,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         if (PEAR::isError($res)) {
             $this->errorRedirectToMain(_kt('An error occurred while trying to check in the document'), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
         }
-        
+
         redirect(KTBrowseUtil::getUrlForDocument($this->oDocument));
         exit(0);
     }

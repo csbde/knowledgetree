@@ -561,8 +561,10 @@ class KTInit {
 			$store_cache = false;
 		}
 		
-		if(ACCOUNT_ROUTING_ENABLED){
-			$use_cache = $oKTConfig->setMemCache();
+		if(ACCOUNT_ROUTING_ENABLED)
+		{
+			if(!isset($_SESSION[LIVE_MEMCACHE_OVERRIDE]))
+				$use_cache = $oKTConfig->setMemCache();
         }
 		
 
@@ -612,8 +614,9 @@ class KTInit {
 		// Get default server url settings
 		$this->getDynamicConfigSettings();
 
-		if (!$use_cache && $store_cache) {
-		    $oKTConfig->createCache();
+		if (!$use_cache && $store_cache) 
+		{
+		   	$oKTConfig->createCache();
 		}
 	}
 	// }}}
