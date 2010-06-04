@@ -35,6 +35,10 @@ div#topnavbar a {
 	margin-left: 1px;
 }
 
+div#topnavbar a.active {
+	background: url('../graphics/newui/topnavhover.png');
+}
+
 #topnavbar li a:hover {
     color: #000;
 	background: url('../graphics/newui/topnavhover.png');
@@ -186,4 +190,10 @@ input[type="checkbox"] {
 	background: none;
 }
 
-
+/*
+#wrapper {
+	margin-left: auto;
+	margin-right: auto;
+	width: 1000px;
+}
+*/
