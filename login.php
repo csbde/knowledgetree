@@ -419,7 +419,7 @@ function checkLastSessionUserID($userId)
 	return false;
 }
 
-$dispatcher =& new LoginPageDispatcher();
+$dispatcher = new LoginPageDispatcher();
 $dispatcher->dispatch();
 
 ?>

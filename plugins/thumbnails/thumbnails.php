@@ -323,13 +323,19 @@ class ThumbnailViewlet extends KTDocumentViewlet {
              }
              $title = $ivLinkAction->getName($documentId);
         }
+        
         // Get the url to the thumbnail and render it
-        // Ensure url has correct slashes
-		$sHostPath = KTUtil::kt_url();
-		$plugin_path = KTPluginUtil::getPluginPath('thumbnails.generator.processor.plugin');
-		$thumbnailUrl = $plugin_path . 'thumbnail_view.php?documentId='.$documentId;
-		$thumbnailUrl = str_replace('\\', '/', $thumbnailUrl);
-		$thumbnailUrl = str_replace(KT_DIR, $sHostPath, $thumbnailUrl);
+        if (ACCOUNT_ROUTING_ENABLED) {
+            $thumbnailUrl = $oStorage->getSignedUrl("thumbnails/$documentId.jpg");
+        }
+        else {
+            // Ensure url has correct slashes
+            $sHostPath = KTUtil::kt_url();
+            $plugin_path = KTPluginUtil::getPluginPath('thumbnails.generator.processor.plugin');
+            $thumbnailUrl = $plugin_path . 'thumbnail_view.php?documentId='.$documentId;
+            $thumbnailUrl = str_replace('\\', '/', $thumbnailUrl);
+            $thumbnailUrl = str_replace(KT_DIR, $sHostPath, $thumbnailUrl);
+        }
 
 		$templateData = array(
 			'documentId' => $documentId,

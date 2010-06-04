@@ -75,15 +75,15 @@ class RestSolr
 	 * @param string $url
 	 * @param int $port
 	 */
-    public function __construct($host, $port = 8983, $base = '/solr/')
+    public function __construct($host, $port = 8983, $base = '/solr/', $solrCore = null)
     {
+        if (!is_null($solrCore)) {
+            $base = $base . $solrCore . '/';
+        }
+
+        //TODO: Remove library, use cloudfusion rather. (Solr Lib doesn't support extractingRequest Handler)
         $this->client = new Apache_Solr_Service($host, $port, $base);
 
-        /* //TODO: Add config vars for Solr Host/Port, Update/Extract url's
-        $config = KTConfig::getSingleton();
-        $this->authToken = $config->get('indexer/luceneAuthToken','');
-        $this->ktid = $config->get('indexer/luceneID','');
-        */
     }
 
     public static function get($url)
@@ -131,7 +131,7 @@ class RestSolr
     {
         $this->client->optimize();
     }
-    
+
     public function ping() {
         return $this->client->ping();
     }
@@ -162,19 +162,25 @@ class RestSolr
                 // add document which must be extracted by SOLR
                 $result = $this->client->addExtractDocument($contentFile,
                                                             array('id' => $documentid, 'title' => $title,
-                                                                  'version' => $version, 'description' => $discussion));
+                                                                  'version' => $version, 'discussion' => $discussion));
+
+                $default->log->info('SOLR ADD Document: '.$documentid);
             }
             else {
                 // add document with pre-extracted content
                 $document = new Apache_Solr_Document();
                 $document->id = $documentid; // MUST be suitably unique
                 $document->title = $title;
+                $document->discussion = $discussion;
+                $document->version = $version;
                 //$document->content = file_get_contents($contentFile); // MUST be pre-extracted content
                 $document->text = $oStorage->file_get_contents($contentFile); // MUST be pre-extracted content
 
                 $result = $this->client->addDocument($document); 	//if you're going to be adding documents in bulk using addDocuments
                 //with an array of documents is faster
                 $this->client->commit(); //commit to see the document
+
+                $default->log->info('SOLR ADD Document: '.$documentid);
             }
             $default->log->info('SOLR ADD RESULT: ' . print_r($result, true));
         }
@@ -182,14 +188,6 @@ class RestSolr
             $default->log->info('SOLR INDEX ERROR: ' . print_r($result, true));
             return false;
         }
-
-//        $default->log->info('SOLR ADD RESULT: ' . print_r($result, true));
-//
-//        if ($result['http_code'] != 200) {
-//            $default->log->info('SOLR INDEX ERROR: ' . print_r($result, true));
-//            return false;
-//        }
-
         return true;
     }
 
@@ -202,8 +200,8 @@ class RestSolr
     function deleteDocument($documentid)
     {
         global $default;
-        
-        try {                        
+
+        try {
             $result = $this->client->deleteById($documentid);
             $this->client->commit();
             $default->log->info('SOLR DELETE RESULT: ' . print_r($result, true));
@@ -257,7 +255,7 @@ class RestSolr
 	 * @return boolean
 	 */
     function query($query)
-    {   
+    {
         $query = str_replace('Content:', 'text:', $query);
         $query = strtolower($query);
         $offset = 0;
@@ -273,21 +271,21 @@ class RestSolr
             ["Version"]=>  string(3) "0.1"
             ["Content"]=>  string(83) " This is my <b>test</b> text in the OpenOffice.org Calc filehttp://www.google.com/ "
          */
-        
+
         //var_dump($result['response']['docs']); exit;
         $retDocs = array();
         $count = 0;
         foreach($result['response']['docs'] as $document) {
             //var_dump($document);
             $retDocs[$count]->DocumentID = $document['id'];
-            $retDocs[$count]->Rank = $document['boost'];                        
-            $retDocs[$count]->Title = $document['title'][0];                        
-            $retDocs[$count]->Version = $document['version'];                        
+            $retDocs[$count]->Rank = $document['boost'];
+            $retDocs[$count]->Title = $document['title'][0];
+            $retDocs[$count]->Version = $document['version'];
             //$retDocs[$count]->Content = $document['text'][0];
             $retDocs[$count]->Content = $result['highlighting'][$document['id']]['text'][0];
             $retDocs[$count]->Content = str_replace('<em>', '<b>', $retDocs[$count]->Content);
             $retDocs[$count]->Content = str_replace('</em>', '</b>', $retDocs[$count]->Content);
-            
+
             $count++;
         }
         //var_dump($retDocs); exit;

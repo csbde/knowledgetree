@@ -62,7 +62,15 @@ class RestSolrIndexer extends Indexer
 		$host = $matches[1];
 		$port = !empty($matches[2]) ? $matches[2] : '';
 		$solrBase = !empty($matches[3]) ? $matches[3] : '/solr/';
-		$this->solr = new RestSolr($host, $port, $solrBase);
+		if (ACCOUNT_ROUTING_ENABLED) {
+            $solrCore = ACCOUNT_NAME;
+		} else {
+		    $solrCore = !empty($matches[4]) ? $matches[4] : null;
+		}
+
+		$solrCore = 'kt-dev-1';
+		
+		$this->solr = new RestSolr($host, $port, $solrBase, $solrCore);
 	}
 
 	/**
@@ -231,7 +239,6 @@ class RestSolrIndexer extends Indexer
      */
     public function query($query)
     {
-    	global $default;
     	$results = array();
     	$hits = $this->solr->query($query);
     	if (is_array($hits))

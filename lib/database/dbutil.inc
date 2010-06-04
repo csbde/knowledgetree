@@ -40,21 +40,22 @@
 require_once ('PEAR.php');
 
 class DBUtil {
-    static function &getDB($db = null) {
+    
+    public static function &getDB($db = null) {
         global $default;
         if (is_null($db)) {
             $db =& $default->_db;
         }
 
-	if(!isset($db->_kt_initialized) || !$db->_kt_initialized) {
-	    $db->query("SET NAMES 'utf8'");
-	    $db->_kt_initialized = true;
-	}
+        if(!isset($db->_kt_initialized) || !$db->_kt_initialized) {
+            $db->query("SET NAMES 'utf8'");
+            $db->_kt_initialized = true;
+        }
 
         return $db;
     }
 
-    static function &runQuery($query, $db = null) {
+    public static function &runQuery($query, $db = null) {
         global $default;
         $aParams = null;
 
@@ -78,7 +79,7 @@ class DBUtil {
         return $res;
     }
 
-    static function getOneResult($query, $db = null) {
+    public static function getOneResult($query, $db = null) {
         $result = DBUtil::runQuery($query, $db);
         if (PEAR::isError($result)) {
             // logging by runQuery
@@ -98,7 +99,7 @@ class DBUtil {
         return $aRow[$key];
     }
 
-    static function getResultArray($query, $db = null) {
+    public static function getResultArray($query, $db = null) {
         $result = DBUtil::runQuery($query, $db);
         if (PEAR::isError($result)) {
             // logging by runQuery
@@ -113,7 +114,7 @@ class DBUtil {
         return $aReturn;
     }
 
-    static function getResultArrayKey($query, $key, $db = null) {
+    public static function getResultArrayKey($query, $key, $db = null) {
         $result = DBUtil::runQuery($query, $db);
         if (PEAR::isError($result)) {
             // logging by runQuery
@@ -128,7 +129,7 @@ class DBUtil {
         return $aReturn;
     }
 
-    function logQueryError($query, $result) {
+    public static function logQueryError($query, $result) {
         global $default;
         if (isset($default->queryLog) && !$default->queryLog->isDebugEnabled())
         {
@@ -140,7 +141,7 @@ class DBUtil {
         }
     }
 
-    function runQueries($aQueries, $db = null) {
+    public static function runQueries($aQueries, $db = null) {
         foreach ($aQueries as $sQuery) {
             $res = DBUtil::runQuery($sQuery, $db);
             if (PEAR::isError($res)) {
@@ -150,7 +151,7 @@ class DBUtil {
         return true;
     }
 
-    function &autoInsert($sTable, $aFieldValues, $aOptions = null) {
+    public static function &autoInsert($sTable, $aFieldValues, $aOptions = null) {
         if (is_null($aOptions)) {
             $aOptions = array();
         }
@@ -178,7 +179,7 @@ class DBUtil {
         return PEAR::raiseError(_kt('Unknown return value for autoInsert'));
     }
 
-    function &autoUpdate($sTable, $aFieldValues, $iId, $db = null) {
+    public static function &autoUpdate($sTable, $aFieldValues, $iId, $db = null) {
         global $default;
         // $default->log->debug('AutoUpdate called for table ' . $sTable . ' with id ' . $iId);
         $db =& DBUtil::getDB();
@@ -194,7 +195,7 @@ class DBUtil {
         return PEAR::raiseError(_kt('Unknown return value for autoUpdate'));
     }
 
-    function &whereUpdate($sTable, $aFieldValues, $aWhereFieldValues, $db = null) {
+    public static function &whereUpdate($sTable, $aFieldValues, $aWhereFieldValues, $db = null) {
         global $default;
         //$default->log->debug('WhereUpdate called for table ' . $sTable);
         $db =& DBUtil::getDB();
@@ -219,35 +220,31 @@ class DBUtil {
         return PEAR::raiseError(_kt('Unknown return value for whereUpdate'));
     }
 
-    static function &lastQuery($db = null) {
+    public static function &lastQuery($db = null) {
         $db =& DBUtil::getDB();
         return $db->last_query;
     }
 
-    static function &affectedRows($db = null) {
+    public static function &affectedRows($db = null) {
         $db =& DBUtil::getDB();
         return $db->affectedRows();
     }
 
-    function autoDelete($sTable, $iId, $db = null) {
-        global $default;
-        // $default->log->debug('AutoDelete called for table ' . $sTable . ' with id ' . $iId);
+    public static function autoDelete($sTable, $iId, $db = null) {
         $db =& DBUtil::getDB();
         $sQuery = "DELETE FROM " . $sTable . " WHERE id = ?";
         $aParams = array($iId);
         return DBUtil::runQuery(array($sQuery, $aParams), $db);
     }
 
-    function deReference($sTable, $iId, $db = null) {
-        global $default;
-        // $default->log->debug('AutoDelete called for table ' . $sTable . ' with id ' . $iId);
+    public static function deReference($sTable, $iId, $db = null) {
         $db =& DBUtil::getDB();
         $sQuery = "UPDATE " . $sTable . " SET disabled = true WHERE id = ?";
         $aParams = array($iId);
         return DBUtil::runQuery(array($sQuery, $aParams), $db);
     }
 
-    function &whereDelete($sTable, $aWhereFieldValues, $db = null) {
+    public static function &whereDelete($sTable, $aWhereFieldValues, $db = null) {
         global $default;
         $db =& DBUtil::getDB();
         $aWhereFields = array();
@@ -261,7 +258,7 @@ class DBUtil {
         return DBUtil::runQuery(array($sQuery, $aValues), $db);
     }
 
-    function paramArray($aArray) {
+    public static function paramArray($aArray) {
         $iNumIds = count($aArray);
         if (empty($iNumIds)) {
             return "";
@@ -269,32 +266,34 @@ class DBUtil {
         return join(",", array_fill(0, $iNumIds, '?'));
     }
 
-    function &escapeSimple($sString, $db = null) {
+    public static function &escapeSimple($sString, $db = null) {
         $db =& DBUtil::getDB();
         return $db->escapeSimple($sString);
     }
 
-    function compactQuery($sQuery) {
+    public static function compactQuery($sQuery) {
         return str_replace("\n", " ", $sQuery);
     }
 
-    function startTransaction() {
+    public static function startTransaction() {
         DBUtil::runQuery("START TRANSACTION");
         $oCache =& KTCache::getSingleton();
         $oCache->startTransaction();
     }
-    function rollback() {
+    
+    public static function rollback() {
         DBUtil::runQuery("ROLLBACK");
         $oCache =& KTCache::getSingleton();
         $oCache->rollback();
     }
-    function commit() {
+    
+    public static function commit() {
         DBUtil::runQuery("COMMIT");
         $oCache =& KTCache::getSingleton();
         $oCache->commit();
     }
 
-    function setupAdminDatabase() {
+    public static function setupAdminDatabase() {
         global $default;
         $dsn = array(
             'phptype'  => $default->dbType,
@@ -317,6 +316,7 @@ class DBUtil {
         $default->_admindb->setFetchMode(DB_FETCHMODE_ASSOC);
         return;
     }
+    
 }
 
 ?>

@@ -1,5 +1,7 @@
 <?php
 
+// NOTE not used for KTLive
+
 require_once('../../config/dmsDefaults.php');
 
 // Check the session, ensure the user is logged in
