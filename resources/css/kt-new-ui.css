@@ -197,3 +197,7 @@ input[type="checkbox"] {
 	width: 1000px;
 }
 */
+
+thead {
+	background: #fff url('../graphics/newui/table_header.png') repeat-x bottom;
+}
