@@ -18,7 +18,6 @@
 				<input type="hidden" name="cookieverify" value="{$cookietest}" />
 				<input type="hidden" name="redirect" value="{$redirect}" /> 
 					
-				<div id="messages" class="ktErrorMessage"></div>
 				<div id="login_form">	
 					
 				    <p class="descriptive-text">{i18n}Login to your account{/i18n}</p> 
@@ -46,8 +45,7 @@
 					</select>
 						<div class="form-actions"> 
 							<br/> 
-				   			<input type="submit" value="{i18n}Login{/i18n}" /><br/><br/><br/> 
-				   			<p class='smaller'><a href='#' onclick='showBox();'>{i18n}Forgot your password?{/i18n}</a></p>
+				   			<input type="submit" value="{i18n}Login{/i18n}" /><br/><br/><br/>
 				   		</div> 
 					</div> 
 	    		</form>   		
