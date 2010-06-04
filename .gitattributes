@@ -3,7 +3,6 @@ docs/phpdoc/.empty export-ignore
 thirdparty/simpletest/simpletest/docs/fr/server_stubs_documentation.html export-ignore
 thirdparty/simpletest/simpletest/test/support/collector/collectable.2 export-ignore
 thirdparty/simpletest/simpletest/test/support/collector/collectable.1 export-ignore
-templates/ktcore/forms/widgets/info.smarty export-ignore
 tests/util/ktutil/dataset1/a export-ignore
 tests/util/ktutil/dataset1/f export-ignore
 tests/util/ktutil/dataset1/y export-ignore
