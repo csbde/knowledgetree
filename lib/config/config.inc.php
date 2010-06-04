@@ -176,13 +176,17 @@ class KTConfig {
 
         $config_cache = serialize($config_cache);
 
-        if(ACCOUNT_ROUTING_ENABLED){
-            $this->setMemcache();
-            MemCacheUtil::put($filename, $config_cache);
-            return true;
+        if(ACCOUNT_ROUTING_ENABLED)
+        {
+        	if(!isset($_SESSION[LIVE_MEMCACHE_OVERRIDE]))
+        	{
+            	$this->setMemcache();
+            	MemCacheUtil::put($filename, $config_cache);
+            	return true;
+        	}
         }
 
-        file_put_contents($filename, $config_cache);
+        @file_put_contents($filename, $config_cache);
     }
 
     /**
