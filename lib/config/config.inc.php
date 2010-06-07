@@ -178,12 +178,12 @@ class KTConfig {
 
         if(ACCOUNT_ROUTING_ENABLED)
         {
-        	if(!isset($_SESSION[LIVE_MEMCACHE_OVERRIDE]))
-        	{
+        	//if(!isset($_SESSION[LIVE_MEMCACHE_OVERRIDE]))
+        	//{
             	$this->setMemcache();
             	MemCacheUtil::put($filename, $config_cache);
             	return true;
-        	}
+        	//}
         }
 
         @file_put_contents($filename, $config_cache);
