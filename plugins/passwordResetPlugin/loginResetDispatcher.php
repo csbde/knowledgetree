@@ -153,7 +153,8 @@ class loginResetDispatcher extends KTDispatcher {
 	      	  'css' => $css,
 	      	  'sUrl' => $sUrl,
 			  'smallVersion' => $default->versionTier,
-			  'reset_password' => $reset_password
+			  'reset_password' => $reset_password,
+			  'username' => isset($_REQUEST['username']) ? $_REQUEST['username'] : null
         );
         return $oTemplate->render($aTemplateData);
     }
