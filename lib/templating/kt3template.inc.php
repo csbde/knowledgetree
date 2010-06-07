@@ -419,7 +419,7 @@ class KTPage {
 				$this->userMenu['supportpage'] = array('label' => _kt('Get Help'), 'url' => $sBaseUrl.'/support.php');
 				
         		//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
-        		$this->userMenu['preferences']['label'] = '<span class="normalTransformText">'.$this->user->getName().'</span>';
+        		$this->userMenu['preferences']['label'] = '<span class="normalTransformText">'.ucwords($this->user->getUserName()).'</span>';
         		
 				// About Moved to Footer
 				//$this->userMenu['aboutkt'] = array('label' => _kt('About'), 'url' => $sBaseUrl.'/about.php');
