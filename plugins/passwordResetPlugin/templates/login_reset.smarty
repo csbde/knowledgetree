@@ -41,7 +41,7 @@
 					{/if}
 					        					    
 					<label for="username">{i18n}Username{/i18n}</label>
-					<input type="text" id="username" name="username"/>
+					<input type="text" id="username" name="username" value="{$username}"/>
 					<label for="password">{i18n}Password{/i18n}</label>
 					<input type="password" id="password" name="password"/>
  
