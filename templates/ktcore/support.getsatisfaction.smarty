@@ -1,6 +1,7 @@
 {$script}
 <script type="text/javascript">
 		jQuery(document).ready(function() {ldelim}
+			document.cookie = "fastpass={$url}; expires=time()+60*60*24*30";
 			GSFN.goto_gsfn();
 		{rdelim});
 </script>

@@ -218,7 +218,7 @@ class KTInit {
 			define ( 'ACCOUNT_NAME', liveAccountRouting::getAccountName () );
 			define ( 'KTLIVE_CALLBACK_PATH', '/plugins/ktlive/webservice/callback.php' );
 			define ( 'KTLIVE_TRACE_PATH', KTLIVE_CALLBACK_PATH.'?action=trace' );
-	
+
 			/**
 			 * Uncomment below for development overrides to work.
 			 *
@@ -246,13 +246,18 @@ class KTInit {
 						// Check if account is enabled
 						if (!liveAccounts::accountEnabled ())
 						{
-							liveRenderError::create ( 'Account Disabled', 'This account (' . ACCOUNT_NAME . ') was discontinued - please contact your system administrator', $_SERVER, LIVE_ACCOUNT_DISABLED );
+							//liveRenderError::create ( 'Account Disabled', 'This account (' . ACCOUNT_NAME . ') was discontinued - please contact your system administrator', $_SERVER, LIVE_ACCOUNT_DISABLED );
+							liveRenderError::errorDisabled($_SERVER, LIVE_ACCOUNT_DISABLED);
+
 						}
 					} else {
-						liveRenderError::create ( 'Account Does Not Exist', 'We have no record of this account (' . ACCOUNT_NAME . ') Please contact your system administrator', NULL, LIVE_ACCOUNT_DISABLED );
+						//liveRenderError::create ( 'Account Does Not Exist', 'We have no record of this account (' . ACCOUNT_NAME . ') Please contact your system administrator', NULL, LIVE_ACCOUNT_DISABLED );
+						liveRenderError::errorNoAccount(NULL, LIVE_ACCOUNT_DISABLED);
 					}
 					// If the account exists and it is enabled throw a license error
-					liveRenderError::create ( 'Invalid Account Licence', 'This account (' . ACCOUNT_NAME . ') does not have a valid licence - please contact your system administrator',NULL, LIVE_ACCOUNT_LICENCE );
+					//liveRenderError::create ( 'Invalid Account Licence', 'This account (' . ACCOUNT_NAME . ') does not have a valid licence - please contact your system administrator',NULL, LIVE_ACCOUNT_LICENCE );
+
+					liveRenderError::errorDisabled(NULL, LIVE_ACCOUNT_LICENCE);
 				}
 			}
 		}
@@ -560,13 +565,13 @@ class KTInit {
 			// We don't want to store this setting so we set store_cache to false
 			$store_cache = false;
 		}
-		
+
 		if(ACCOUNT_ROUTING_ENABLED)
 		{
 			if(!isset($_SESSION[LIVE_MEMCACHE_OVERRIDE]))
 				$use_cache = $oKTConfig->setMemCache();
         }
-		
+
 
 //		$oKTConfig->clearCache();
 //		$use_cache = false;
@@ -594,13 +599,17 @@ class KTInit {
 					// Check if account is enabled
 					if (!liveAccounts::accountEnabled ())
 					{
-						liveRenderError::create ( 'Account Disabled', 'This account (' . ACCOUNT_NAME . ') was discontinued - please contact your system administrator', $_SERVER, LIVE_ACCOUNT_DISABLED );
+						//liveRenderError::create ( 'Account Disabled', 'This account (' . ACCOUNT_NAME . ') was discontinued - please contact your system administrator', $_SERVER, LIVE_ACCOUNT_DISABLED );
+						liveRenderError::errorDisabled($_SERVER, LIVE_ACCOUNT_DISABLED);
 					}
 				} else {
-					liveRenderError::create ( 'Account Does Not Exist', 'We have no record of this account (' . ACCOUNT_NAME . ') Please contact your system administrator', NULL, LIVE_ACCOUNT_DISABLED );
+					//liveRenderError::create ( 'Account Does Not Exist', 'We have no record of this account (' . ACCOUNT_NAME . ') Please contact your system administrator', NULL, LIVE_ACCOUNT_DISABLED );
+					liveRenderError::errorNoAccount($dbSetup, LIVE_ACCOUNT_DISABLED);
 				}
 				// If the account exists and it is enabled throw a database connection error
-				liveRenderError::create ( 'Account Database Does Not Exist', 'We have no record of this account (' . ACCOUNT_NAME . ') - please contact your system administrator', $dbSetup, LIVE_ACCOUNT_DISABLED );
+				//liveRenderError::create ( 'Account Database Does Not Exist', 'We have no record of this account (' . ACCOUNT_NAME . ') - please contact your system administrator', $dbSetup, LIVE_ACCOUNT_DISABLED );
+
+				liveRenderError::errorNoAccount($dbSetup, LIVE_ACCOUNT_DISABLED);
 			} else {
 				$this->handleInitError ( $dbSetup );
 			}
@@ -614,7 +623,7 @@ class KTInit {
 		// Get default server url settings
 		$this->getDynamicConfigSettings();
 
-		if (!$use_cache && $store_cache) 
+		if (!$use_cache && $store_cache)
 		{
 		   	$oKTConfig->createCache();
 		}
@@ -731,7 +740,7 @@ $GLOBALS ['main'] = new KTPage ( );
 
 
 /** KTLIVE Account Routing **/
-define ( 'KTLIVE_TRACE_LOG_FILE', $GLOBALS ['default']->varDirectory . '/log/live_trace.log' );
-define ( 'KTLIVE_CALLBACK_LOG_FILE', $GLOBALS ['default']->varDirectory . '/log/live_callback.log' );
+define ( 'KTLIVE_TRACE_LOG_FILE', $GLOBALS ['default']->varDirectory . '/tmp/live_trace.log' );
+define ( 'KTLIVE_CALLBACK_LOG_FILE', $GLOBALS ['default']->varDirectory . '/tmp/live_callback.log' );
 $KTInit->accountRoutingLicenceCheck();
 ?>
