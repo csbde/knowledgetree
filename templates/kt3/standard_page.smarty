@@ -305,7 +305,6 @@
     </div>
     <!-- Start footer -->
     <div id="copyrightbar">
-		<tan
 		<div id="copybarleft">
             <a href="{$rootUrl}"><img src="{$rootUrl}/resources/graphics/newui/footer_powered_by.png" border="0" alt="Powered by KnowledgeTree" title="Powered by KnowledgeTree"/></a>
 		</div>
