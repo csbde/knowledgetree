@@ -41,6 +41,7 @@
 // uncomment the line below to disable account routing (even if the plugin is available)
 //define('ACCOUNT_ROUTING_ENABLED',false);
 
+
 // The line below will switch on tracing for debugging & dev purposes
 define ( 'KTLIVE_TRACE_ENABLE', false );
 
@@ -189,8 +190,6 @@ class KTInit {
 	// }}}
 
 
-
-
 	/**
 	 * Account Routing
 	 *
@@ -202,10 +201,8 @@ class KTInit {
 	 *
 	 * @return void
 	 */
-	public function accountRouting()
-	{
-		if (file_exists ( KT_PLUGIN_DIR . '/ktlive/liveEnable.php' ) && ! defined ( 'ACCOUNT_ROUTING_ENABLED' ))
-		{
+	public function accountRouting() {
+		if (file_exists ( KT_PLUGIN_DIR . '/ktlive/liveEnable.php' ) && ! defined ( 'ACCOUNT_ROUTING_ENABLED' )) {
 			require_once (KT_PLUGIN_DIR . '/ktlive/liveEnable.php');
 			/**
 			 * The code below demonstrates how to use accountOverride functionality.
@@ -217,13 +214,13 @@ class KTInit {
 			define ( 'ACCOUNT_ROUTING_ENABLED', true );
 			define ( 'ACCOUNT_NAME', liveAccountRouting::getAccountName () );
 			define ( 'KTLIVE_CALLBACK_PATH', '/plugins/ktlive/webservice/callback.php' );
-			define ( 'KTLIVE_TRACE_PATH', KTLIVE_CALLBACK_PATH.'?action=trace' );
+			define ( 'KTLIVE_TRACE_PATH', KTLIVE_CALLBACK_PATH . '?action=trace' );
 
-			/**
-			 * Uncomment below for development overrides to work.
-			 *
-			 */
-			//liveAccountRouting::setOverrides();
+		/**
+		 * Uncomment below for development overrides to work.
+		 *
+		 */
+		//liveAccountRouting::setOverrides();
 		} else {
 			define ( 'ACCOUNT_ROUTING_ENABLED', false );
 			define ( 'ACCOUNT_NAME', '' );
@@ -231,33 +228,32 @@ class KTInit {
 
 	}
 
-	public function accountRoutingLicenceCheck()
-	{
+	public function accountRoutingLicenceCheck() {
 		/* Check if account is licensed */
-		if(ACCOUNT_ROUTING_ENABLED)
-		{
-			if(!isset($_SESSION[LIVE_LICENSE_OVERRIDE]))
-			{
-				if (!liveAccounts::accountLicenced())
-				{
+		if (ACCOUNT_ROUTING_ENABLED) {
+			if (! isset ( $_SESSION [LIVE_LICENSE_OVERRIDE] )) {
+				if (! liveAccounts::accountLicenced ()) {
 					// Check if account exists
-					if (liveAccounts::accountExists ())
-					{
+					if (liveAccounts::accountExists ()) {
 						// Check if account is enabled
-						if (!liveAccounts::accountEnabled ())
-						{
-							//liveRenderError::create ( 'Account Disabled', 'This account (' . ACCOUNT_NAME . ') was discontinued - please contact your system administrator', $_SERVER, LIVE_ACCOUNT_DISABLED );
-							liveRenderError::errorDisabled($_SERVER, LIVE_ACCOUNT_DISABLED);
-
+						if (! liveAccounts::accountEnabled ()) {
+							liveRenderError::errorDisabled ( $_SERVER, LIVE_ACCOUNT_DISABLED );
+							if(isset($GLOBALS['default']->log)){
+								$GLOBALS['default']->log->error(ACCOUNT_NAME." Account Not Licenced, Exists but Not Enabled");
+							}
+						}else{
+							liveRenderError::errorDisabled ( NULL, LIVE_ACCOUNT_LICENCE );
+							/* Another embarrassing error */
+							if(isset($GLOBALS['default']->log)){
+								$GLOBALS['default']->log->error(ACCOUNT_NAME." Account Not Licenced, Exists AND Enabled");
+							}
 						}
 					} else {
-						//liveRenderError::create ( 'Account Does Not Exist', 'We have no record of this account (' . ACCOUNT_NAME . ') Please contact your system administrator', NULL, LIVE_ACCOUNT_DISABLED );
-						liveRenderError::errorNoAccount(NULL, LIVE_ACCOUNT_DISABLED);
+						liveRenderError::errorNoAccount ( NULL, LIVE_ACCOUNT_DISABLED );
+						if(isset($GLOBALS['default']->log)){
+							$GLOBALS['default']->log->error(ACCOUNT_NAME." Account Not Licenced, and does not exist");
+						}
 					}
-					// If the account exists and it is enabled throw a license error
-					//liveRenderError::create ( 'Invalid Account Licence', 'This account (' . ACCOUNT_NAME . ') does not have a valid licence - please contact your system administrator',NULL, LIVE_ACCOUNT_LICENCE );
-
-					liveRenderError::errorDisabled(NULL, LIVE_ACCOUNT_LICENCE);
 				}
 			}
 		}
@@ -415,8 +411,8 @@ class KTInit {
 
 	static function detectMagicFile() {
 		$knownPaths = array ('/usr/share/file/magic', // the old default
-							'/etc/httpd/conf/magic', // fedora's location
-							'/etc/magic' );// worst case scenario. Noticed this is sometimes empty and containing a reference to somewher else
+'/etc/httpd/conf/magic', // fedora's location
+'/etc/magic' ); // worst case scenario. Noticed this is sometimes empty and containing a reference to somewher else
 
 
 		foreach ( $knownPaths as $path ) {
@@ -566,22 +562,21 @@ class KTInit {
 			$store_cache = false;
 		}
 
-		if(ACCOUNT_ROUTING_ENABLED)
-		{
-			if(!isset($_SESSION[LIVE_MEMCACHE_OVERRIDE]))
-				$use_cache = $oKTConfig->setMemCache();
-        }
-
-
-//		$oKTConfig->clearCache();
-//		$use_cache = false;
-
-
-		if($use_cache){
-		    $use_cache = $oKTConfig->loadCache();
+		if (ACCOUNT_ROUTING_ENABLED) {
+//			if (! isset ( $_SESSION [LIVE_MEMCACHE_OVERRIDE] ))
+			//if(!isset($_SESSION[LIVE_MEMCACHE_OVERRIDE]))
+				$use_cache = $oKTConfig->setMemCache ();
 		}
 
-		if (! $use_cache) {
+		//		$oKTConfig->clearCache();
+		//		$use_cache = false;
+
+
+		if ($use_cache) {
+			$use_cache = $oKTConfig->loadCache ();
+		}
+
+		if ($use_cache === false) {
 			//Read in DB settings and config settings
 			$oKTConfig->readDBConfig ();
 		}
@@ -591,25 +586,28 @@ class KTInit {
 		if (PEAR::isError ( $dbSetup )) {
 			/* We need to setup the language handler to display this error correctly */
 			$this->setupI18n ();
-			if (ACCOUNT_ROUTING_ENABLED)
-			{
+			if (ACCOUNT_ROUTING_ENABLED) {
 				// Check if account exists
-				if (liveAccounts::accountExists ())
-				{
+				if (liveAccounts::accountExists ()) {
 					// Check if account is enabled
-					if (!liveAccounts::accountEnabled ())
-					{
-						//liveRenderError::create ( 'Account Disabled', 'This account (' . ACCOUNT_NAME . ') was discontinued - please contact your system administrator', $_SERVER, LIVE_ACCOUNT_DISABLED );
-						liveRenderError::errorDisabled($_SERVER, LIVE_ACCOUNT_DISABLED);
+					if (! liveAccounts::accountEnabled ()) {
+						liveRenderError::errorDisabled ( $_SERVER, LIVE_ACCOUNT_DISABLED );
+						if(isset($GLOBALS['default']->log)){
+							$GLOBALS['default']->log->error(ACCOUNT_NAME." DISABLED (".$dbSetup->getMessage().")");
+						}
+					}else{
+						/** Throw embarrassing error **/
+						liveRenderError::errorDisabled ( $_SERVER, LIVE_ACCOUNT_DISABLED );
+						if(isset($GLOBALS['default']->log)){
+							$GLOBALS['default']->log->error(ACCOUNT_NAME." ENABLED AND NO DATABASE (".$dbSetup->getMessage().")");
+						}
 					}
 				} else {
-					//liveRenderError::create ( 'Account Does Not Exist', 'We have no record of this account (' . ACCOUNT_NAME . ') Please contact your system administrator', NULL, LIVE_ACCOUNT_DISABLED );
-					liveRenderError::errorNoAccount($dbSetup, LIVE_ACCOUNT_DISABLED);
+					liveRenderError::errorNoAccount ( $dbSetup, LIVE_ACCOUNT_DISABLED );
+					if(isset($GLOBALS['default']->log)){
+						$GLOBALS['default']->log->error(ACCOUNT_NAME." DATABASE DOES NOT EXIST (".$dbSetup->getMessage().")");
+					}
 				}
-				// If the account exists and it is enabled throw a database connection error
-				//liveRenderError::create ( 'Account Database Does Not Exist', 'We have no record of this account (' . ACCOUNT_NAME . ') - please contact your system administrator', $dbSetup, LIVE_ACCOUNT_DISABLED );
-
-				liveRenderError::errorNoAccount($dbSetup, LIVE_ACCOUNT_DISABLED);
 			} else {
 				$this->handleInitError ( $dbSetup );
 			}
@@ -617,15 +615,15 @@ class KTInit {
 
 		// Read in the config settings from the database
 		// Create the global $default array
-		if (! $use_cache)
-			$res = $oKTConfig->readConfig();
+		if ($use_cache === false){
+			$res = $oKTConfig->readConfig ();
+		}
 
 		// Get default server url settings
-		$this->getDynamicConfigSettings();
+		$this->getDynamicConfigSettings ();
 
-		if (!$use_cache && $store_cache)
-		{
-		   	$oKTConfig->createCache();
+		if ($use_cache === false && $store_cache){
+			$oKTConfig->createCache ();
 		}
 	}
 	// }}}
@@ -738,9 +736,8 @@ if (! extension_loaded ( 'mbstring' )) {
 require_once (KT_LIB_DIR . '/templating/kt3template.inc.php');
 $GLOBALS ['main'] = new KTPage ( );
 
-
 /** KTLIVE Account Routing **/
 define ( 'KTLIVE_TRACE_LOG_FILE', $GLOBALS ['default']->varDirectory . '/tmp/live_trace.log' );
 define ( 'KTLIVE_CALLBACK_LOG_FILE', $GLOBALS ['default']->varDirectory . '/tmp/live_callback.log' );
-$KTInit->accountRoutingLicenceCheck();
+$KTInit->accountRoutingLicenceCheck ();
 ?>

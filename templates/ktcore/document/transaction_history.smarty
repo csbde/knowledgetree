@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}{else}{$rootUrl}{/if}"/>{i18n}Document Transaction History{/i18n}: {$document->getName()|sanitize}</h2>
+<h2>{i18n}Document Transaction History{/i18n}: {$document->getName()|sanitize}</h2>
 
 <p class="descriptiveText">{i18n}This page provides details of all activities that have been carried out on the document.{/i18n}</p>
 

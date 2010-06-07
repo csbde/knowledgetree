@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}{else}{$rootUrl}{/if}"/>{i18n}Move Document{/i18n}: {$context->oDocument->getName()}</h2>
+<h2>{i18n}Move Document{/i18n}: {$context->oDocument->getName()}</h2>
 
 <p class="descriptiveText">{i18n}Moving a document relocates the document within the DMS.{/i18n}</p>
 

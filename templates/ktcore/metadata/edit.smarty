@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}{else}{$rootUrl}{/if}"/>{i18n}Fieldset{/i18n}: {$oFieldset->getName()}</h2>
+<h2>{i18n}Fieldset{/i18n}: {$oFieldset->getName()}</h2>
 
 <h3>{i18n}Fieldset properties{/i18n}</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">

@@ -288,3 +288,9 @@ div#activationNotice span {
 #kt-wrapper {
 	margin-left: 15px;
 }
+
+#content select.perpageselect {
+	border: none;
+	background: transparent url('../graphics/newui/per_page_select.png') no-repeat top right;
+	padding: 5px;
+}

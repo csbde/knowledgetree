@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}{else}{$rootUrl}{/if}"/>{i18n}RSS for Document{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
+<h2>{i18n}RSS for Document{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
 
 <p>
 {i18n}You can copy the following link into any RSS aggregator to create a feed to the selected document.{/i18n}

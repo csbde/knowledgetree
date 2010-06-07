@@ -67,11 +67,11 @@
             </div>
         </td>
         <td align="right">
-                <select name="itemsPerPage">
+                <select name="itemsPerPage" class="perpageselect">
                     <option value='10' {if $itemsPerPage == 10}selected='true'{/if} onclick="nextSearchPage({$pageNum});" >10</option>
                     <option value='20' {if $itemsPerPage == 20}selected='true'{/if} onclick="nextSearchPage({$pageNum});">20</option>
                     <option value='50' {if $itemsPerPage == 50}selected='true'{/if} onclick="nextSearchPage({$pageNum});">50</option>
-                    <option value='100' {if $itemsPerPage == 100}selected='true'{/if} onclick="nextSearchPage({$pageNum});">100</option>
+                    <!--<option value='100' {if $itemsPerPage == 100}selected='true'{/if} onclick="nextSearchPage({$pageNum});">100</option>-->
                 </select>
                 {i18n}items per page{/i18n}
         </td>

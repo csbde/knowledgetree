@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}{else}{$rootUrl}{/if}"/>{$context->getDisplayName()}</h2>
+<h2>{$context->getDisplayName()}</h2>
 
 {if count($failed.folders) || (count($failed.documents))}
 <p class="descriptiveText">{i18n}The following list shows documents and folders in your list which cannot be acted on by this bulk action{/i18n}:</p>
