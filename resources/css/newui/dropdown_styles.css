@@ -10,11 +10,12 @@ ul.dropdown {
     font-family:"Arial", sans-serif;
     font-weight: bold;
     font-size: 11px;
-    text-transform:uppercase;
+    /*text-transform:uppercase;*/
 }
 
 ul.dropdown ul {
     width: 160px; /* Width of dropdown list */
+	font-size: 11px;
 }
 
 ul.dropdown ul li {

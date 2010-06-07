@@ -171,7 +171,7 @@ class KTAdminModePortlet extends KTPortlet {
 class KTAdminSectionNavigation extends KTPortlet {
     var $bActive = true;
     function KTAdminSectionNavigation() {
-        parent::KTPortlet(_kt("Administration"));
+        parent::KTPortlet(_kt("Settings"));
     }
 
     function render() {

@@ -142,6 +142,7 @@ div.form_actions {
 
 ul.buttonsList {
 	list-style-type: none;
+	font-size: 11px;
 }
 
 ul.buttonsList li {
@@ -251,4 +252,25 @@ table.kt_collection {
 
 div#breadcrumbs {
 	margin: 0.5em;
+}
+
+div#activationNotice {
+	margin-right: 15px;
+	background: url('../graphics/newui/notice.png') no-repeat top right;
+	width: 160px;
+	height: 50px;
+	float: right;
+	text-align: center;
+	padding: 5px 20px 0 20px;
+	font-size: 80%;
+}
+
+div#activationNotice span {
+	color: #0074A4;
+	font-weight: bold;
+	font-size: 150%;
+}
+
+#kt-wrapper {
+	margin-left: 15px;
 }
