@@ -1,7 +1,7 @@
 /* ------------------ NEW KT UI - 1 June 2010 ------------------ */
 
 body {
-	background: url('../graphics/newui/watermark.jpg') no-repeat top center;
+	/*background: url('../graphics/newui/watermark.jpg') no-repeat top center;*/
 }
 
 div#topnavbar {
@@ -13,8 +13,8 @@ div#topnavbar {
     font-family:"Arial", sans-serif;
     font-weight: bold;
     /*font-variant:small-caps;*/
-	text-transform:uppercase;
-	font-size: 11px;
+	/*text-transform:uppercase;*/
+	font-size: 12px;
 }
 
 
@@ -236,4 +236,15 @@ thead {
 
 #pageBody {
 	margin-bottom: 0;
+}
+
+table.kt_collection {
+	margin: 0.5%;
+	width: 99%;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	box-shadow: 0 0 5px #667;
+	-webkit-box-shadow: 0 0 5px #667;
+	-moz-box-shadow: 0 0 5px #667;
 }
