@@ -72,7 +72,7 @@
 	 				<br />
 	 				<div class="form-actions" style="text-align:center;">
 	 				   <input type="button" onclick="javascript: hideBox();" value="{i18n}Back{/i18n}" />
-	 				   <input type="button" onclick="javascript: sendEmailRequest("{$sUrl}sendResetRequest");" value="{i18n}Send password link{/i18n}" />
+	 				   <input type="button" onclick='javascript: sendEmailRequest("{$sUrl}sendResetRequest");' value="{i18n}Send password link{/i18n}" />
 	 				   <br/>
 				    </div>
 	    	    	</form>

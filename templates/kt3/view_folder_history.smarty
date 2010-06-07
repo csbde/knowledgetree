@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Folder Transaction History{/i18n}:<br />{$folder->getName()|sanitize}</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}{else}{$rootUrl}{/if}"/>{i18n}Folder Transaction History{/i18n}: {$folder->getName()|sanitize}</h2>
 
 <p class="descriptiveText">{i18n}This page provides details of all activities that have been carried out on the folder.{/i18n}</p>
 

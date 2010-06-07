@@ -48,7 +48,7 @@ addLoadEvent(startupMetadata);
 {/capture}
 {$context->oPage->requireJSStandalone($sJavascript)}
 
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Upload files into{/i18n}:<br />{$context->oFolder->getName()|sanitize}</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}{else}{$rootUrl}{/if}"/>{i18n}Upload files into{/i18n}: {$context->oFolder->getName()|sanitize}</h2>
 
 <form method="POST" action="{$smarty.server.PHP_SELF|addQueryString:"postExpected=1&fFolderId="}{$context->oFolder->getId()}" enctype="multipart/form-data" name="bulk_upload_form">
 <fieldset><legend>{i18n}Bulk upload{/i18n}</legend>

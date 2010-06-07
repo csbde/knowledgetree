@@ -194,9 +194,9 @@
                 <div id="breadcrumbs">
                 	<table width="100%">
                     <tr>
-                    <td valign=top align=left width="100">
+                    <!--<td valign=top align=left width="100">
                     <span class="additional"><nobr>{i18n}You are here{/i18n}: </span>
-                    </td>
+                    </td>-->
 					<td valign=top align=left width="100%">
 
                     {if ($page->breadcrumbSection !== false)}
