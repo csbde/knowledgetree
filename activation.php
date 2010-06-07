@@ -31,8 +31,9 @@ class ActivationDispatcher extends KTDispatcher {
         $status = 'success';
         $user = User::get($_SESSION['userID']);
         $url = 'http://www2.knowledgetree.com/l/2622/2010-06-04/1V35H';
-        $data = array('account_name' => ACCOUNT_NAME, 'name' => $user->getUserName(), 'email' => $user->getEmail());
+        $data = http_build_query(array('account_name' => ACCOUNT_NAME, 'name' => $user->getUserName(), 'email' => $user->getEmail()));
         $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type' => 'application/x-www-form-urlencoded')); 
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

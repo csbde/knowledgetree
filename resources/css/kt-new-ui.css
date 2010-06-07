@@ -168,7 +168,7 @@ ul.buttonsList a {
 
 ul.buttonsList a:link,
 ul.buttonsList a:visited	{ color: #6F6F6F; text-decoration: none; }
-ul.buttonsList a:hover		{ color: #FFF; }
+/*ul.buttonsList a:hover		{ color: #FFF; }*/
 ul.buttonsList a:active	{ color: #1E529C; }
 
 ul.buttonsList li a.arrow_upload {
@@ -179,14 +179,28 @@ ul.buttonsList li a.arrow_download {
 	background: url('../graphics/newui/midbar_download.png') 10px 0 no-repeat;
 }
 
-
-ul.buttonsList li:hover {
-	background: url('../graphics/newui/menuHoverRight.png') no-repeat top right;
+ul.buttonsList li a.add_folder {
+	background: url('../graphics/newui/midbar_addfolder.png') 7px 0 no-repeat;
 }
 
+ul.buttonsList li a.check_out {
+	background: url('../graphics/newui/midbar_checkout.png') 7px -3px no-repeat;
+}
+
+ul.buttonsList li a.check_in {
+	background: url('../graphics/newui/midbar_checkin.png') 7px -3px no-repeat;
+}
+
+
+ul.buttonsList li:hover {
+	background: url('../graphics/newui/actionBarButtonDepressed.png') repeat-x top right;
+}
+
+/*
 ul.buttonsList li:hover > *.dir, ul.buttonsList li:hover span.dir:hover {
 	background: url('../graphics/newui/menuHoverLeft.png') no-repeat;
 }
+ */
 
 
 div#logobar {
