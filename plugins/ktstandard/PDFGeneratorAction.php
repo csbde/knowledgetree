@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -61,50 +61,46 @@ class PDFGeneratorAction extends KTDocumentAction {
             'odp', 'otp', 'sxi', 'sti', 'ppt', 'pot', 'sxd', 'odg',
             'otg', 'std', 'asc');
 
-    function getDisplayName() 
+    function getDisplayName()
     {
         global $default;
-        
+
         // The generation of the pdf is done through the PDF Converter plugin.
         // The PDF's are generated in the background by the document processor
 
         // Build the display name and url
-        $sDisplayName = _kt('Generate PDF');
+        $sDisplayName = _kt('Download PDF');
 
         if(!empty($this->oDocument))
         {
-        	$oStorage = KTStorageManagerUtil::getSingleton();
-            $iDocId = $this->oDocument->iId;
-
-            $sHostPath = KTUtil::kt_url();
-            $icon = "<img src='{$sHostPath}/resources/mimetypes/pdf.gif' alt='PDF' border=0 />";
-            $link = KTUtil::ktLink('action.php', 'ktstandard.pdf.generate', array( 'fDocumentId' => $this->oDocument->getId(), 'action' => 'pdfdownload'));
-            
-			
-			// Removed link around icon
-			//$sDisplayLink = "&nbsp;<a href=\"{$link}\">{$icon}</a>";
-            $sDisplayLink = "&nbsp;{$icon}";
-
-            // First check if the pdf has already been generated
-            $dir = $default->pdfDirectory;
-            $file = $dir . '/' . $iDocId . '.pdf';
-
-            if($oStorage->file_exists($file))
-            {
-                // Display the download link
-                return $sDisplayName . $sDisplayLink;
-            }
-
-            // If the file does not exist, check if the document has the correct mimetype
+            // Check the document has the correct mimetype for pdf conversion
             $converter = new pdfConverter();
             $mimeTypes = $converter->getSupportedMimeTypes();
             $docType = $this->getMimeExtension();
 
-            if($mimeTypes === true || in_array($docType, $mimeTypes))
+            if(!in_array($docType, $mimeTypes) && $mimeTypes !== true)
             {
-                // Display the download link
-                return $sDisplayName . $sDisplayLink;
+                return '';
             }
+
+            // Check if the pdf exists
+        	$oStorage = KTStorageManagerUtil::getSingleton();
+            $iDocId = $this->oDocument->iId;
+            $dir = $default->pdfDirectory;
+            $file = $dir . '/' . $iDocId . '.pdf';
+
+            if($oStorage->file_exists($file)){
+
+                $sHostPath = KTUtil::kt_url();
+                $icon = "<img src='{$sHostPath}/resources/mimetypes/pdf.gif' alt='PDF' border=0 />";
+                $link = KTUtil::ktLink('action.php', 'ktstandard.pdf.generate', array( 'fDocumentId' => $this->oDocument->getId(), 'action' => 'pdfdownload'));
+
+                // Create download link
+                $sDisplayLink = "<a href=\"{$link}\">{$sDisplayName}&nbsp;{$icon}</a>";
+
+                return $sDisplayLink;
+            }
+
         }else{
             // If the document is empty then we are probably in the workflow admin - action restrictions section, so we can display the name.
             return $sDisplayName;
@@ -241,7 +237,7 @@ class PDFGeneratorAction extends KTDocumentAction {
         $iDocId = $this->oDocument->iId;
 
         // Check if pdf has already been created
-        
+
         $dir = $default->pdfDirectory;
         $file = $dir . '/' . $iDocId . '.pdf';
         $mimetype = 'application/pdf';
@@ -256,13 +252,13 @@ class PDFGeneratorAction extends KTDocumentAction {
         if($oStorage->file_exists($file))
         {
             if(!$oStorage->downloadRendition($file, $mimetype, $size, $name))
-            {	
+            {
                 $default->log->error('PDF Generator: PDF file could not be downloaded because it doesn\'t exist');
                 $this->errorRedirectToMain(_kt('PDF file could not be downloaded because it doesn\'t exist'));
             }
             exit();
         }
-        
+
         /**
          * Account Routing:: Stuff still in queue
          */
@@ -271,7 +267,7 @@ class PDFGeneratorAction extends KTDocumentAction {
 			$this->errorRedirectToMain(_kt('PDF File is currently queued for processing. Please try again later.'));
         	exit();
         }
-        
+
         // If not - create one
         $converter = new pdfConverter();
         $converter->setDocument($this->oDocument);
@@ -336,7 +332,7 @@ class PDFGeneratorAction extends KTDocumentAction {
         //get the actual path to the document on the server
         $sPath = $oStorage->getDocStoragePath($oDocument);
 
-        if ($oStorage->file_exists($sPath)) 
+        if ($oStorage->file_exists($sPath))
         {
 
             // Get a tmp file

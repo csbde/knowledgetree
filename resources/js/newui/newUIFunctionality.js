@@ -8,7 +8,7 @@ jQuery(document).ready(function() {
     jQuery('.form_actions').prepend('<div class="roundleft"></div>').prepend('<div class="roundright2"></div>');
     
     if (jQuery("#middle_nav ul").length == 1) {
-        jQuery("#middle_nav").css({display:'none'});
+        //jQuery("#middle_nav").css({display:'none'});
         //jQuery('#breadcrumbs').appendTo(jQuery('#middle_nav'));
     }
     

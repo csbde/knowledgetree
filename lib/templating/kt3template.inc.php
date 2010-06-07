@@ -168,14 +168,14 @@ class KTPage {
 
     	$this->menu = array();
     	$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => $sBaseUrl.'/dashboard.php');
-		$this->menu['browse'] = array('label' => _kt("Browse"), 'url' => $sBaseUrl.'/browse.php');
+		$this->menu['browse'] = array('label' => _kt("Browse All Documents"), 'url' => $sBaseUrl.'/browse.php');
 		$this->menu['administration'] = array('label' => _kt("Settings"));
 
 		// Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
     	global $default;
     	if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < time()){
     	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
-    	    $heading = _kt('You are attempting to access Administration');
+    	    $heading = _kt('You are attempting to access Settings');
     	    $this->menu['administration']['url'] = '#';
     	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/admin.php', 'redirect');";
     	}else{
@@ -313,7 +313,7 @@ class KTPage {
     // assume this is admin for now.
     function setSection($sSection) {
 	    if ($sSection == 'administration') {
-			$this->componentLabel = _kt('Administration');
+			$this->componentLabel = _kt('Settings');
 			$this->componentClass = 'administration';
 			$this->menu['administration']['active'] = 1;
 		} else if ($sSection == 'dashboard') {
@@ -419,7 +419,7 @@ class KTPage {
 				$this->userMenu['supportpage'] = array('label' => _kt('Get Help'), 'url' => $sBaseUrl.'/support.php');
 				
         		//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
-        		$this->userMenu['preferences']['label'] = '<span class="normalTransformText">'.$this->user->getName().'</span>';
+        		$this->userMenu['preferences']['label'] = '<span class="normalTransformText">'.ucwords($this->user->getUserName()).'</span>';
         		
 				// About Moved to Footer
 				//$this->userMenu['aboutkt'] = array('label' => _kt('About'), 'url' => $sBaseUrl.'/about.php');
@@ -461,7 +461,8 @@ class KTPage {
 			       	"systemversion" => $default->systemVersion,
 			       	"versionname" => $default->versionName,
 					'smallVersion' => $default->versionTier,
-			       	'savedSearches'=> $savedSearches);
+			       	'savedSearches'=> $savedSearches,
+			       	'licenseNotification' => $this->getLicenseNotification());
         if ($oConfig->get("ui/automaticRefresh", false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
         }
@@ -519,7 +520,7 @@ class KTPage {
     function getReqTime() {
         $microtime_simple = explode(' ', microtime());
         $finaltime = (float) $microtime_simple[1] + (float) $microtime_simple[0];
-	return sprintf("%.3f", ($finaltime - $GLOBALS['_KT_starttime']));
+        return sprintf("%.3f", ($finaltime - $GLOBALS['_KT_starttime']));
     }
 
     function getDisclaimer() {
@@ -527,6 +528,16 @@ class KTPage {
         $oPlugin =& $oRegistry->getPlugin('ktstandard.disclaimers.plugin');
         if (!PEAR::isError($oPlugin) && !is_null($oPlugin)) {
             return $oPlugin->getPageDisclaimer();
+        } else {
+            return;
+        }
+    }
+    
+    private function getLicenseNotification() {
+        $oRegistry =& KTPluginRegistry::getSingleton();
+        $oPlugin =& $oRegistry->getPlugin('ktdms.wintools');
+        if (!PEAR::isError($oPlugin) && !is_null($oPlugin)) {
+            return $oPlugin->getLicenseNotification();
         } else {
             return;
         }
