@@ -11,7 +11,8 @@ class Search2Portlet extends KTPortlet
 
     function render()
     {
-    	$oTemplating =& KTTemplating::getSingleton();
+    	return null;
+		$oTemplating =& KTTemplating::getSingleton();
     	$oTemplate = $oTemplating->loadTemplate("ktcore/search2/search_portlet");
 
     	$iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);

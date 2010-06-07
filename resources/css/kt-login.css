@@ -1,143 +1,125 @@
-        body {
-            font-family: sans-serif;
-            font-size: small;
-            margin-top: 8em;
-            text-align: center;
-            background: #fefefe url(../graphics/loginbg.png) top left repeat-x;
-        }
-
-        label {
-            font-weight: bold;
-            display: block;
-            margin: 0.5em 0;
-        }
-
-		#loginbox_outer {
-           	position: relative;
-            padding: 1em;
-            border: 1px solid #B7B7B7;
-            width: 280px;
-            margin-left: auto;
-            margin-right: auto;
-            background-color: #FFFFFF;
-        }
-
-        #loginbox_outer.hasDisclaimer {
-           	width: 580px;
-        }
-
-        #loginbox {
-            text-align: left;
-            margin: 0 10px;
-/*            background: white url(../graphics/ktbg.png) bottom left no-repeat;*/
-        }
-
-		#loginbox_skin {
-            text-align: left;
-            margin: 0 10px;
-            background: white url(../powered-by-kt.png) bottom right no-repeat;
-		}
-
-        #loginbox.hasDisclaimer {
-/*            background: white url(../graphics/ktbg.png) bottom left repeat-x;*/
-        }
-
-        #loginbox_skin.hasDisclaimer {
-/*            background: white url(../graphics/ktbg.png) bottom left repeat-x;*/
-        }
-
-        #formbox {
-            border: 0;
-            padding: 0;
-            margin: 0;
-            width: 252px;
-            float: left;
-        }
-
-        #loginbox.hasDisclaimer #formbox {
-            padding-right: 20px;
-            border-right: 1px solid #eee;
-        }
-
-        #loginbox_skin.hasDisclaimer #formbox {
-            padding-right: 20px;
-            border-right: 1px solid #eee;
-        }
-
-        #disclaimerbox {
-            width: 252px;
-            float: left;
-            padding-left: 0px;
-            border-left: 1px solid #eee;
-            margin-left: -1px;
-            overflow: auto;
-        }
-
-        #disclaimerbox p {
-            margin-top: 0;
-            margin-left: 5px;
-            margin-bottom: 1em;
-        }
-
-        input {
-            border: 1px solid #666;
-            width: 250px;
-        }
-
-        select {
-            border: 1px solid #666;
-            margin: 0;
-            width: 252px;
-        }
-
-        .logoimage {
-        }
-
-        .form_actions {
-            margin: 1em 0 0 0;
-            padding: 1em 0 0 0;
-            border-top: 0px solid #eee;
-            border-width: 1px 0 0 0;
-            text-align: right;
-        }
-
-        #loginbox.hasDisclaimer .form_actions {
-            padding: 1em 0 6em 0;
-            border-width: 0 0 0 0;
-        }
-
-        .form_actions input {
-            width: auto;
-        }
-
-.descriptiveText
-{
-	margin-top: 5px;
-    color: #666;
-    clear: both;
+body {
+	
 }
-
-.descriptiveText.version
-{
-    font-size: x-small;
+#loginbox_outer {
+	margin-left: auto;
+  	margin-right: auto;
+  	margin-top: 75px;
 }
-
-#bottomspacer {
-    height: 0px;
+.header, .content {
+	margin-top: -25px;
+	padding: 50px 25px 25px 25px;
+	border-radius: 15px;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	box-shadow: 0 0 5px #667;
+	-webkit-box-shadow: 0 0 5px #667;
+	-moz-box-shadow: 0 0 5px #667;
+	border: 1px solid #616161;
+}
+ 
+.header {
+	position:relative;
+	height:20px; 
+	z-index:2; 
+	background-image: url(../graphics/header.png);
+}
+ 
+.login-box {
+	background: url(../graphics/loginbox_bg.png) repeat-x;
+	background-position: bottom;
+	text-align: left;
+	padding: 20px;
+	width: 250px;
+	border-radius: 15px;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	box-shadow: 0 0 5px #667;
+	-webkit-box-shadow: 0 0 5px #667;
+	-moz-box-shadow: 0 0 5px #667;
+	border: 1px solid #616161;
+	margin-left: auto;
+  	margin-right: auto;
+  	margin-top: 50px;
+  	margin-bottom: 50px;
+	
+}
+.login-box label {
+	font-size: 12px;
+	font-family: Arial;
+	font-weight: bold;
+	color: #697474;
+}
+.descriptive-text {
+	font-size: 16px;
+	font-family: Arial;
+	font-weight: bold;
+	color: #4f5758;
+	margin-top: -5px;
+	margin-bottom: 5px;
+}
+.login-box input, select {
+	background: url(../graphics/loginbox_select_bg.png) repeat-x;
+	font-size: 18px;
+	width: 250px;
+	height: 30px;
+	padding-left: 2px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border: 1px solid #616161;
+	vertical-align: middle;
+	margin-top: 3px;
+	margin-bottom: 2px;
+}
+.login-box select {
+	width: 254px;
+}
+.form-actions input {
+	font-size: 11px;
+	font-weight: bold;
+	color: white;
+	width: auto;
+	padding: 0px 5px 0px 5px;
+	text-transform: uppercase;
+	background: #697474;
+	font-family: Arial;
+}
+.form-actions {
+	text-align: right;
+	font-size: 12px;
+}
+.footer {
+	padding: 30 15 0 15;
+	font-size: 12px;
+	text-align: left;
+	font-family: Arial;
+	color: #697474;
+	margin-top:10px;
+}
+a {
+	color: #74a992;
+ 
 }
 
 /* block level. */
 .ktErrorMessage {
-	background-color: #ffdd80;
-    border: 1px solid #FFC21E;
-    margin: 20px auto;
-    padding: 10px;
-}
-
-.ktErrorMessage span {
-    margin-left: 0px;
-    padding-left: 25px;
-    background: #ffdd80 url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
+	text-align: center;
+	vertical-align: middle;
+	margin: auto;
+	font-size: 12px;
+	font-family: Arial;
+	color: #4f5758;
+	padding: 5px;
+	background: url(../graphics/yellow_gradient.png) repeat-x;
+	background-position: bottom;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	box-shadow: 0 0 2px #667;
+	-webkit-box-shadow: 0 0 2px #667;
+	-moz-box-shadow: 0 0 2px #667;
+	border: 1px solid #616161;
 }
 
 .floatClear
@@ -146,9 +128,4 @@
     height: 1px !important;
     margin: 0; border: 0; padding: 0;
     width: 1px;
-}
-
-.communityLabel
-{
-	color: #919192;
 }

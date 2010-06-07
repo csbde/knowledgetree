@@ -1607,7 +1607,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
         return $_SESSION['errorMessage'];
 	}
-	
+
 	/**
 	 * Method to add a Document to the User's History
 	 *
@@ -1620,12 +1620,12 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		if (KTPluginUtil::pluginIsActive('brad.UserHistory.plugin')) {
 			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
             require_once($path.'UserHistoryActions.php');
-			
+
 			$folderAction = new UserHistoryFolderAction($this->folder, $this->ktapi->get_user());
 			$folderAction->_show();
 		}
 	}
-	
+
 	/**
 	 * Method to get the Ids of all the Parent Folders
 	 *

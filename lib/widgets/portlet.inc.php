@@ -114,6 +114,7 @@ class KTNavPortlet extends KTPortlet {
 
 class KTActionPortlet extends KTPortlet {
     var $actions = array();
+    var $firstActions = array();
 
     var $bActive = true;
     var $btns = '';
@@ -131,7 +132,17 @@ class KTActionPortlet extends KTPortlet {
                 $aBtn = $action->getButton();
 
                 if($aBtn){
+                    
+                    
+                    // Add Buttons to both Actions and Buttons
                     $this->btns[$aInfo['name']] = array_merge($aInfo, $aBtn);
+                    
+                    $text = !empty($aBtn['display_text']) ? $aBtn['display_text'] : $aBtn['name'];
+                    $aInfo['name'] = $text;
+                    
+                    // Add to First Actions Array, so that it appears on top
+                    $this->firstActions[$aInfo['name']] = $aInfo;
+                    
                 }else{
                     $this->actions[$aInfo['name']] = $aInfo;
                 }
@@ -152,6 +163,7 @@ class KTActionPortlet extends KTPortlet {
     function renderBtn($text, $link, $class) {
 
         // Create button html
+        /*
         $button = "<div class='portlet_button'>
             <a href='{$link}'>
                 <div class='big_btn_left'></div>
@@ -160,7 +172,9 @@ class KTActionPortlet extends KTPortlet {
                 </div>
                 <div class='big_btn_right {$class}'></div>
             </a>
-        </div>";
+        </div>";*/
+        
+        $button = '<li><span class="dir"><a href="'.$link.'" class="'.$class.'">'.$text.'</a></span></li>';
 
         return $button;
     }

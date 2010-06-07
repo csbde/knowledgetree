@@ -1,0 +1,238 @@
+/* ------------------ NEW KT UI - 1 June 2010 ------------------ */
+
+body {
+	background: url('../graphics/newui/watermark.jpg') no-repeat top center;
+}
+
+div#topnavbar {
+    margin: 0 10px 10px 10px;
+	margin: 0; /* testing override*/
+    background: url('../graphics/newui/topnavbkg.png');
+    height: 36px;
+    overflow: hidden;
+    font-family:"Arial", sans-serif;
+    font-weight: bold;
+    /*font-variant:small-caps;*/
+	text-transform:uppercase;
+	font-size: 11px;
+}
+
+
+div#topnavbar li {
+    /*border: 1px solid red;*/
+    height: 36px;
+    line-height: 36px;
+}
+
+div#topnavbar a {
+    display: block;
+}
+
+#topnavbar li a {
+    color: #fff;
+    text-decoration: none;
+	padding: 0 15px 0 15px;
+	margin-left: 1px;
+}
+
+div#topnavbar a.active {
+	background: url('../graphics/newui/topnavhover.png');
+}
+
+#topnavbar li a:hover {
+    color: #000;
+	background: url('../graphics/newui/topnavhover.png');
+}
+
+ul.floatleft li {
+    float: left;
+    background: url('../graphics/newui/topnavdivider.png') no-repeat top left;
+}
+
+ul.floatright li {
+    float: right;
+	background: url('../graphics/newui/topnavdivider.png') no-repeat top left;
+}
+
+ul.floatleft li.roundleft {
+    background: #FFF url('../graphics/newui/topnavleft.png');
+    width: 13px;
+    margin: 0;
+}
+
+ul.floatright li.roundright {
+    background: #FFF url('../graphics/newui/topnavright.png');
+    margin: 0;
+    width: 13px;
+}
+
+ul.floatleft li.notification {
+    margin: 0;
+    padding: 0;
+	background: none;
+	background: url('../graphics/newui/home.png') no-repeat 50% 50%;
+	color: transparent !important;
+    width: 35px;
+    overflow: hidden;
+}
+
+div.form_actions {
+	float: left;
+	background: url('../graphics/newui/gridtoolbarbkg.png');
+	padding: 0;
+	margin: 10px 0 0 0;
+    line-height: 29px;
+    height: 29px;
+}
+
+#content .form_actions *
+{
+	border: none;
+	background: transparent;
+	padding: 0;
+	margin: 0;
+	height: 29px;
+    line-height: 29px;
+}
+
+#content .form_actions input, #content .form_actions a {
+	background: transparent url('../graphics/newui/gridtoolbarline.png') top right no-repeat;
+	padding: 0 10px 0 10px;
+	text-transform:uppercase;
+	font-size: 10px;
+	font-weight: bold;
+	color: #6A7274;
+	text-decoration: none;
+}
+
+#content .form_actions input:hover, #content .form_actions a:hover {
+	color: #000;
+	cursor: pointer;
+	text-decoration: none;
+	border-bottom: none;
+}
+
+#content .form_actions div.roundleft {
+    background: #FFF url('../graphics/newui/gridtoolbarleft.png');
+    width: 10px;
+    margin: 0;
+	float: left;
+}
+
+#content .form_actions div.roundright2 {
+    background: #FFF url('../graphics/newui/gridtoolbarright.png') 50% 50%;
+    margin: 0;
+	float: right;
+	width: 9px;
+}
+
+.normalTransformText {
+	text-transform: none;
+}
+
+#newSearchQuery {
+	margin-top: 5px;
+	float: right;
+}
+
+#bigbuttons {
+	float: left;
+}
+
+ul.buttonsList {
+	list-style-type: none;
+}
+
+ul.buttonsList li {
+	display: inline;
+	line-height: 39px;
+	background: url('../graphics/newui/midbardivider.png') no-repeat top right;
+	float: left;
+}
+
+ul.buttonsList span {
+	display: block;
+}
+
+ul.buttonsList a {
+	line-height: 39px;
+	height: 39px;
+	display: block;
+	padding-left: 35px;
+	padding-right: 10px;
+	font-family:"Arial", sans-serif;
+    font-weight: bold;
+}
+
+ul.buttonsList a:link,
+ul.buttonsList a:visited	{ color: #6F6F6F; text-decoration: none; }
+ul.buttonsList a:hover		{ color: #FFF; }
+ul.buttonsList a:active	{ color: #1E529C; }
+
+ul.buttonsList li a.arrow_upload {
+	background: url('../graphics/newui/midbar_upload.png') 10px 0 no-repeat;
+}
+
+ul.buttonsList li a.arrow_download {
+	background: url('../graphics/newui/midbar_download.png') 10px 0 no-repeat;
+}
+
+
+ul.buttonsList li:hover {
+	background: url('../graphics/newui/menuHoverRight.png') no-repeat top right;
+}
+
+ul.buttonsList li:hover > *.dir, ul.buttonsList li:hover span.dir:hover {
+	background: url('../graphics/newui/menuHoverLeft.png') no-repeat;
+}
+
+
+div#logobar {
+	margin-left: 10px;
+}
+
+input[type="checkbox"] {
+	border: none;
+	background: none;
+}
+
+/*
+#wrapper {
+	margin-left: auto;
+	margin-right: auto;
+	width: 1000px;
+}
+*/
+
+thead {
+	background: #fff url('../graphics/newui/table_header.png') repeat-x bottom;
+}
+
+#copyrightbar {
+	background: #fff url('../graphics/newui/footerback.png') repeat-x top;
+	height: 32px;
+	line-height: 32px;
+	margin: 0 15px 0 15px;
+	color: #697474;
+}
+
+#copybarleft {
+	background: url('../graphics/newui/footerleft.png') no-repeat top left;
+	float:left;
+	padding-left: 15px;
+}
+
+#copybarleft img {
+	float: left;
+}
+
+#copybarright {
+	float:right;
+	line-height: 32px;
+	padding-right: 20px;
+	background: url('../graphics/newui/footerright.png') no-repeat top right;
+}
+
+#pageBody {
+	margin-bottom: 0;
+}
