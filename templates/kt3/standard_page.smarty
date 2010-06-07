@@ -306,9 +306,10 @@
     <!-- Start footer -->
     <div id="copyrightbar">
 		<div id="copybarleft">
-            <a href="{$rootUrl}"><img src="{$rootUrl}/resources/graphics/newui/footer_powered_by.png" border="0" alt="Powered by KnowledgeTree" title="Powered by KnowledgeTree"/></a>
+            <a href="{$rootUrl}/dashboard.php"><img src="{$rootUrl}/resources/graphics/newui/footer_powered_by.png" border="0" alt="Powered by KnowledgeTree" title="Powered by KnowledgeTree"/></a>
 		</div>
 		<div id="copybarright">
+			<a href="{$rootUrl}/about.php">{i18n}About{/i18n}</a> | 
             {i18n}&copy; 2008-2010 <a href="http://www.knowledgetree.com/about/legal" target="_blank">KnowledgeTree Inc.</a>{/i18n}
 			{i18n}All rights reserved.{/i18n}
 		</div></div>
