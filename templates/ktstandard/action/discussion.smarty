@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}{else}{$rootUrl}{/if}"/>{i18n}Discussion{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
+<h2>{i18n}Discussion{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
 
 {if $threads}
 <h3>{i18n}Existing threads{/i18n}</h3>

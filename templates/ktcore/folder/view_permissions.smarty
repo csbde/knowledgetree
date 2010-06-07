@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}{else}{$rootUrl}{/if}"/>{i18n}View Permissions for{/i18n}: {$context->oFolder->getName()|sanitize}</h2>
+<h2>{i18n}View Permissions for{/i18n}: {$context->oFolder->getName()|sanitize}</h2>
 
 <p class="descriptiveText">{i18n}This page shows the permissions that apply to
 this specific folder.  Only the roles or groups which have permissions
