@@ -731,7 +731,7 @@ $GLOBALS ['main'] = new KTPage ( );
 
 
 /** KTLIVE Account Routing **/
-define ( 'KTLIVE_TRACE_LOG_FILE', $GLOBALS ['default']->varDirectory . '/log/live_trace.log' );
-define ( 'KTLIVE_CALLBACK_LOG_FILE', $GLOBALS ['default']->varDirectory . '/log/live_callback.log' );
+define ( 'KTLIVE_TRACE_LOG_FILE', $GLOBALS ['default']->varDirectory . '/tmp/live_trace.log' );
+define ( 'KTLIVE_CALLBACK_LOG_FILE', $GLOBALS ['default']->varDirectory . '/tmp/live_callback.log' );
 $KTInit->accountRoutingLicenceCheck();
 ?>
