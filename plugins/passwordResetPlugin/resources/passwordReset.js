@@ -38,7 +38,7 @@ var showResetBox = function(){
 }
 
 /* Hide the reset password box and display the login form */
-var hideResetBox = function(){
+/*var hideResetBox = function(){
     var box = document.getElementById('reset_box');
     var formbox = document.getElementById('login_form');
 
@@ -48,7 +48,7 @@ var hideResetBox = function(){
     box.style.visibility = 'hidden';
 
     document.getElementById('username').focus();
-}
+}*/
 
 /* Display the error / success messages in the correct format */
 var showMessages = function() {

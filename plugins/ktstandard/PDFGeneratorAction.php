@@ -79,7 +79,11 @@ class PDFGeneratorAction extends KTDocumentAction {
             $sHostPath = KTUtil::kt_url();
             $icon = "<img src='{$sHostPath}/resources/mimetypes/pdf.gif' alt='PDF' border=0 />";
             $link = KTUtil::ktLink('action.php', 'ktstandard.pdf.generate', array( 'fDocumentId' => $this->oDocument->getId(), 'action' => 'pdfdownload'));
-            $sDisplayLink = "&nbsp;<a href=\"{$link}\">{$icon}</a>";
+            
+			
+			// Removed link around icon
+			//$sDisplayLink = "&nbsp;<a href=\"{$link}\">{$icon}</a>";
+            $sDisplayLink = "&nbsp;{$icon}";
 
             // First check if the pdf has already been generated
             $dir = $default->pdfDirectory;

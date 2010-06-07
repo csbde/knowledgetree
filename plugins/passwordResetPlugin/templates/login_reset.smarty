@@ -2,149 +2,92 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-    <title>{i18n arg_appname="$appname"}Login | #appname#{/i18n}</title>
-
-    {foreach from=$css item=item}
+	<title>{i18n arg_appname="$appname"}Login | #appname#{/i18n}</title>	
+	
+	{foreach from=$css item=item}
         <link rel='stylesheet' href='{$rootUrl}{$item}' type='text/css' />
     {/foreach}
-
-    <link rel='stylesheet' href='{$rootUrl}/resources/css/kt-login.css' type='text/css' />
-
-    <link rel='icon' href='{$rootUrl}/resources/favicon.ico' type='image/x-icon'>
-    <link rel='shortcut icon' href='{$rootUrl}/resources/favicon.ico' type='image/x-icon'>
-
-    <link rel='stylesheet' href='{$rootUrl}/resources/css/kt-ie-icons.css' type='text/css' />
-
-    <!--
-        <script type='text/javascript' src='{$rootUrl}/thirdpartyjs/curvycorners/rounded_corners.inc.js'> </script>
-    -->
-
-    {foreach from=$js item=item}
+	
+ 	<link rel="stylesheet" href="{$rootUrl}/resources/css/kt-login.css" type="text/css" />
+ 	
+ 	{foreach from=$js item=item}
         <script type='text/javascript' src='{$rootUrl}{$item}'> </script>
     {/foreach}
-</head>
-<body>
-	<div id='loginbox_outer' {if ($disclaimer)} class='hasDisclaimer' {/if}>
-	    <div id="{if $config->get("ui/poweredByDisabled") == '0'}loginbox_skin{else}loginbox{/if}" {if ($disclaimer)} class='hasDisclaimer' {/if}>
-	        <div id='formbox'>
-		    	<form action='{$smarty.server.PHP_SELF}' method='POST' name='login'>
-		        	<input type='hidden' name='action' value='login' />
-					<input type='hidden' name='cookieverify' value='{$cookietest}' />
-					<input type='hidden' name='redirect' value='{$redirect}' />
-					{if $config->get('ui/mainLogo') != ''}
-						<img src="{$config->get("ui/mainLogo")}" alt="{$config->get("ui/mainLogoTitle")}" class='logoimage'/><br />
-					{else}
-						<img src='{$rootUrl}/resources/graphics/ktlogo-topbar-right.png' alt='{$appname}' class='logoimage' /><br />
-					{/if}
-					{if $smallVersion == 'community'}
-						<span class='communityLabel'><h2>{i18n}Community Edition{/i18n}</h2></span>
-					{/if}
-					<div id='messages' class='ktErrorMessage'></div>
-					<div id='login_form'>
-			        {if ($errorMessage == null)}
-					    <p class='descriptiveText'>{i18n}Please enter your details below to login.{/i18n}</p>
-					{else}
-					    <div class='ktErrorMessage'><span>
+</head> 	
+<body > 
+<div id="loginbox_outer" {if ($disclaimer)} class="hasDisclaimer" {/if} style="width:800px;"> 
+	<div class="header"> 
+		
+	</div> 
+	<div class="content"> 
+		<div class="login-box"> 
+			<form class="login-form" action="{$smarty.server.PHP_SELF}" method="POST" name="login">
+				<input type="hidden" name="action" value="login" />
+				<input type="hidden" name="cookieverify" value="{$cookietest}" />
+				<input type="hidden" name="redirect" value="{$redirect}" /> 
+					
+				<div id="login_form">	
+					
+				    <p class="descriptive-text">{i18n}Login to your account{/i18n}</p> 
+					
+					{if ($errorMessage != null)}
+					    <div class="ktErrorMessage">
 					    	{if ($errorMessage == $errorMessageConfirm)}
 					    		{$errorMessage}
 					    	{else}
 					    		{$errorMessage|sanitize}
 					    	{/if}
-					    	</span></div>
+					    	</div>
 					{/if}
-
-		        	<label for='username'>{i18n}Username{/i18n}</label>
-					<input type='text' id='username' name='username'/>
-					<label for='password'>{i18n}Password{/i18n}</label>
-					<input type='password' id='password' name='password'/>
-
-					<label for='language'>{i18n}Language{/i18n}</label>
-					<select id='language' name='language'>
+					        					    
+					<label for="username">{i18n}Username{/i18n}</label>
+					<input type="text" id="username" name="username"/>
+					<label for="password">{i18n}Password{/i18n}</label>
+					<input type="password" id="password" name="password"/>
+ 
+					<label for="language">{i18n}Language{/i18n}</label>
+					<select id="language" name="language">
 					{foreach from=$languages key=sLang item=sLanguageName}
-					    <option value='{$sLang}' {if $sLang == $selected_language}SELECTED='yes'{/if}>{$sLanguageName}</option>
+					    <option value="{$sLang}" {if $sLang == $selected_language}SELECTED="yes"{/if}>{$sLanguageName}</option>
 					{/foreach}
 					</select>
-				    <div class='form_actions'>
-			        	<input type='submit' value='{i18n}Login{/i18n}' />
-			        	<p class='smaller'><a href='#' onclick='showBox();'>{i18n}Forgot your password?{/i18n}</a></p>
-					</div>
-					</div>
-	    		</form>
-			</div>
-
-			<div id='forgot_box'>
-	            <form name='forgot_form' action='' method='POST'>
-    	    	<p class='descriptiveText'>{i18n}Enter your username and email address. A link will be mailed to you in order to verify your email address.{/i18n}</p>
-
-    	    	<label for='reset_username'>{i18n}Username{/i18n}</label>
-    			<input type='text' id='reset_username' name='reset_username' />
-    			<br />
-    			<label for='reset_email'>{i18n}Email Address{/i18n}</label>
- 				<input type='text' id='reset_email' name='reset_email' />
- 				<br />
- 				<div class='form_actions'>
- 				   <input type='button' onclick='javascript: sendEmailRequest("{$sUrl}sendResetRequest");' value="{i18n}Send password link{/i18n}" />
- 				   <input type='button' onclick='javascript: hideBox();' value='{i18n}Back{/i18n}' />
-			    </div>
-    	    	</form>
-    	    	<br />
-    	    	<br />
-    	    	<br />
-    	    </div>
-
-    	    <div id='reset_box'>
-    	    	<form name='reset_form' action='' method='POST'>
-        	    	<p class='descriptiveText'>{i18n}Please enter your username and email address.{/i18n}</p>
-
-        	    	<label for='new_username'>{i18n}Username{/i18n}</label>
-        			<input type='text' id='new_username' name='new_username' /><br />
-
-        			<label for='new_email'>{i18n}Email Address{/i18n}</label>
-	 				<input type='text' id='new_email' name='new_email' /><br />
-
-	 				<label for='new_password'>{i18n}New password{/i18n}</label>
-	 				<input type='password' id='new_password' name='new_password' /><br />
-
-	 				<label for='new_password_repeat'>{i18n}Confirm new password{/i18n}</label>
-	 				<input type='password' id='new_password_repeat' name='new_password_repeat'><br />
-
-	 				<div class='form_actions'>
-	 				    <input type='button' onclick='javascript: resetPassword("{$sUrl}resetPassword");' value='{i18n}Reset password{/i18n}' />
-	 				    <input type='button' onclick='javascript: hideResetBox();' value='{i18n}Cancel{/i18n}' />
-	 				</div>
-    	    	</form>
-    	    </div>
-
-	        {if ($disclaimer)}
-	        <div id='disclaimerbox'>
-		    	<p>{$disclaimer}</p>
-			</div>
-			{/if}
-			<p class='descriptiveText version'>
-		    	    <br>{if ($smallVersion == 'community' || $smallVersion == 'commercial')}
-		    	        {i18n arg_appname="$appname"}#appname# Version{/i18n} {$versionName}<br/>
-		    	    {else}
-		    	        {$config->get('login_items/login_terms')}<br /><br />
-		    	    {/if}
-
-                    {i18n}<a href="http://www.knowledgetree.com/">Document Management Software</a>{/i18n}<br>
-                    {i18n}&copy; 2008-2010 <a href="http://www.knowledgetree.com/">KnowledgeTree Inc.</a>{/i18n}<br><br>
-                    {if ($smallVersion == 'community')}
-                        {i18n}This program is free software and published under the <a href=" http://www.gnu.org/licenses/">GNU General Public License version 3</a>{/i18n}<br>
-                    {else}
-                        {i18n}All rights reserved.{/i18n}<br>
-                    {/if}
-            </p>
-            <br />
-	        <div id='bottomspacer'></div>
-	        <div class='floatClear'></div>
-	    </div>
-	</div>
-
-    {if $reset_password}
-    	<script type='text/javascript'>showResetBox();</script>
-    {else}
-    	<script type='text/javascript'>hideResetBox(); document.getElementById('username').focus();</script>
-    {/if}
-</body>
+						<div class="form-actions"> 
+							<br/> 
+				   			<input type="submit" value="{i18n}Login{/i18n}" /><br/><br/><br/> 
+				   			<p class='smaller'><a href='#' onclick='showBox();'>{i18n}Forgot your password?{/i18n}</a></p>
+				   		</div> 
+					</div> 
+	    		</form> 
+	    		
+	    		<div id="forgot_box" class="forgot_box">
+		            <form name="forgot_form" action="" method="POST">
+	    	    	<p class="descriptive-text">{i18n}Forgot password{/i18n}</p>
+	    	    	<div id="messages" class="ktErrorMessage"></div>
+					<p class="instruction-text">{i18n}Enter your username and email address. A link will be mailed to you in order to verify your email address.{/i18n}</p>
+	    	    	<label for="reset_username">{i18n}Username{/i18n}</label>
+	    			<input type="text" id="reset_username" name="reset_username" />
+	    			<br />
+	    			<label for="reset_email">{i18n}Email Address{/i18n}</label>
+	 				<input type="text" id="reset_email" name="reset_email" />
+	 				<br />
+	 				<div class="form-actions" style="text-align:center;">
+	 				   <input type="button" onclick='javascript: hideBox();' value="{i18n}Back{/i18n}" />
+	 				   <input type="button" onclick='javascript: sendEmailRequest("{$sUrl}sendResetRequest");' value="{i18n}Send password link{/i18n}" />
+	 				   <br/>
+				    </div>
+	    	    	</form>
+    	    	
+    	    	</div>   		
+    		
+    		</div>
+		
+		</div>     	    
+    	    
+		
+		<div class="footer"><span style="display:block; float:right;">Call: 1 877.900.0350</span> 
+		<a href="http://www.knowledgetree.com/blog">{i18n}Blog{/i18n}</a> &nbsp;| <a href="http://support.knowledgetree.com">{i18n}Support{/i18n}</a> &nbsp;|  &nbsp;<a href="http://www.knowledgetree.com/privacy">{i18n}Privacy{/i18n}</a>&nbsp; | &nbsp;<a href="http://www.knowledgetree.com/legal">{i18n}Legal{/i18n}</a>&nbsp; |&nbsp; &copy; 2010 KnowledgeTree Inc.&nbsp;
+		</div> 
+	</div> 
+</div> 
+</body> 
 </html>
