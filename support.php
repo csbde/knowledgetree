@@ -58,7 +58,7 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
 		$this->name = $this->objUser->getUserName();
 		$this->email = $this->objUser->getEmail();
 		$this->email = ($this->email != '')? $this->email : $this->name . '@knowledgetree.com';
-		$this->uid = $_SESSION['userID'];
+		$this->uid = MD5($_SERVER['HTTP_HOST']) . '-' . $_SESSION['userID'];
 		$this->isSecure = false;
 		$this->additionalFields =  array();
 		
@@ -83,6 +83,8 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
     	try
     	{
     	    if ($this->validateInput($message)) {
+    	            	        
+    	        $default->log->info('KEY : ' . '[' . $this->key . '] SECRET [' . $this->secret .']  EMAIL ['. $this->email  .']  NAME ['. $this->name . ']  UID ['. $this->uid . ']  IS_SECURE ['. $this->isSecure . ']  ADDITIONAL OPTIONS ['. var_export($this->additionalFields, true));
 	            $fastPassScript = FastPass::script($this->key, $this->secret, $this->email, $this->name, $this->uid, $this->isSecure, $this->additionalFields);
 	            $default->log->info("Support: FastPass Script : [" . $fastPassScript . "]");
     	    } else {
@@ -245,8 +247,10 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
     /**
      * This method will render the dynamic javascript, set the cookies and redirect the user to
      * the getsatisfaction page.
+     * 
+     * @depricated Uses the smarty template.
      */
-    private function renderGetSatisfactionRedirect() {
+    private function renderGetSatisfactionRedirect__() {
     	$url = $this->getSatisfactionUrl();
 
         $this->aBreadcrumbs = array(array('name' => _kt("Support")));
@@ -269,8 +273,6 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
     	{
     		$this->errorRedirectTo('control', _kt('Support: Couldn\'t load support page.') . $e->getMessage());
     	}
-				
-
     	
         $aTemplateData = array(
               "script" => $script,
@@ -280,6 +282,53 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
         return $oTemplate->render($aTemplateData);
         
     }
+    
+    
+    /**
+     * This method will render the dynamic javascript, set the cookies and redirect the user to
+     * the getsatisfaction page.
+     */
+    private function renderGetSatisfactionRedirect() {
+    	$url = $this->getSatisfactionUrl();
+
+		//Adding the required Get Satisfaction script.
+		$sJavascript = $this->getScript($url);
+		
+    	print '<html>';
+		print '<title>Knowledgetree Support</title>';
+		print '<head>';
+		print '<script type="text/javascript" src="thirdpartyjs/jquery/jquery-1.3.2.js"> </script>
+               <script type="text/javascript" src="thirdpartyjs/jquery/jquery_noconflict.js"> </script>';
+		
+		print "<script type='text/javascript'> $sJavascript </script>";
+		print '</head>';
+		
+		try {
+    		$script = $this->getSatisfactionScript();
+            $script = trim($script);
+    		if ($script == '') {
+    	        Throw New Exception("Error retrieving javascript from getsatisfaction.com");
+    	    }
+    	}
+    	
+    	catch(Exception $e)
+    	{
+    		$this->errorRedirectTo('control', _kt('Support: Couldn\'t load support page.') . $e->getMessage());
+    	}
+    	
+    	print '<body>';
+    	print "$script";
+    	//print '<!-- You should be automatically redirected to our support page, if this takes to long please click <a onclick="GSFN.goto_gsfn()" href="#">here</a> -->';
+    	print '<script type="text/javascript">
+            		jQuery(document).ready(function() {
+            			GSFN.goto_gsfn();
+            		});
+			   </script>';
+    	print '</body>';
+    	print '</html>';
+    	
+        exit;        
+    }    
     
 }
 
