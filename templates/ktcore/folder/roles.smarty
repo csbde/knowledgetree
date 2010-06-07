@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Allocate Roles for{/i18n}:<br />{$folderName|sanitize}</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}{else}{$rootUrl}{/if}"/>{i18n}Allocate Roles for{/i18n}: {$folderName|sanitize}</h2>
 
 <p class="descriptiveText role_allocation">{i18n}
     In many cases, workflow actions will be assigned to certain <strong>roles</strong>

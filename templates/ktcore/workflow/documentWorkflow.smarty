@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Workflow for{/i18n}:<br />{$oDocument->getName()|sanitize}</h2>
+<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}{else}{$rootUrl}{/if}"/>{i18n}Workflow for{/i18n}: {$oDocument->getName()|sanitize}</h2>
 
 <p class="descriptiveText">
     {i18n}Workflow is a description of a document's lifecycle.  It is made up of
