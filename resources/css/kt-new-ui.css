@@ -40,7 +40,7 @@ div#topnavbar a.active {
 }
 
 #topnavbar li a:hover {
-    color: #000;
+    color: #585D5D;
 	background: url('../graphics/newui/topnavhover.png');
 }
 
@@ -247,4 +247,8 @@ table.kt_collection {
 	box-shadow: 0 0 5px #667;
 	-webkit-box-shadow: 0 0 5px #667;
 	-moz-box-shadow: 0 0 5px #667;
+}
+
+div#breadcrumbs {
+	margin: 0.5em;
 }
