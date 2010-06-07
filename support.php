@@ -318,7 +318,7 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
     	
     	print '<body>';
     	print "$script";
-    	//print '<a href="GSFN.goto_gsfn();" name="Support"> Support Page </a>';
+    	//print '<!-- You should be automatically redirected to our support page, if this takes to long please click <a onclick="GSFN.goto_gsfn()" href="#">here</a> -->';
     	print '<script type="text/javascript">
             		jQuery(document).ready(function() {
             			GSFN.goto_gsfn();
