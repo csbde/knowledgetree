@@ -330,7 +330,7 @@ class SearchDispatcher extends KTStandardDispatcher {
     			$term = $out[1];
     			$term_close = $out[3];
 
-    		    $special_chars = array('+', '-', '(', ')', '{', '}', '[', ']', '^', '"', ':');
+    		    $special_chars = array('+', '-', '&&', '||', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':', '<', '>', '\\');
 //                $replacement = array('\+', '\-', '\&\&', '\|\|', '\!', '\(', '\)', '\{', '\}', '\[', '\]', '\^', '\"', '\~', '\*', '\?', '\:');
 
                 $updated_query = str_replace($special_chars, ' ', $new_query);
