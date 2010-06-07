@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}{else}{$rootUrl}{/if}"/>{i18n}Checkout Document{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
+<h2>{i18n}Checkout Document{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
 
 <p class="descriptiveText">{i18n}Checking out a document reserves it for your
 exclusive use.  This ensures that you can edit the document without

@@ -1,6 +1,6 @@
 {$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
 
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}{else}{$rootUrl}{/if}"/>{i18n}Edit Lookup Tree{/i18n}: {$field->getName()}</h2>
+<h2>{i18n}Edit Lookup Tree{/i18n}: {$field->getName()}</h2>
 
 <p class="descriptiveText">{i18n}Many "lookup" fields make sense in a hierachy:
 countries are part of continents and sub-continents, school classes are part of grades

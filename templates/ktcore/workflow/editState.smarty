@@ -20,7 +20,7 @@ td.false { background-color: #ffaaaa; text-align: centre }
 {/literal}{/capture}
 {$context->oPage->requireCSSStandalone($sCSS)}
 
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}{else}{$rootUrl}{/if}"/>{i18n}State{/i18n}: {$oState->getName()|sanitize}</h2>
+<h2>{i18n}State{/i18n}: {$oState->getName()|sanitize}</h2>
 
 <p class="descriptiveText">{i18n}As documents move through their lifecycle, they
 are placed in certain <strong>states</strong>.  For example, an invoice
