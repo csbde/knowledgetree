@@ -60,7 +60,7 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 
 class KTDocumentUtil {
-    
+
     public static function checkin($oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false, $bulk_action = false) {
         $oStorage = KTStorageManagerUtil::getSingleton();
 
@@ -335,7 +335,7 @@ class KTDocumentUtil {
         if (PEAR::isError($res) || ($res == false)) {
             return PEAR::raiseError(_kt('Unable to finalise the document status.'));
         }
-        
+
         return $oDocument;
     }
 
@@ -1414,6 +1414,10 @@ $sourceDocument->getName(),
                 return $ret;
             }
         }
+
+        // Action creates a whole new document so we need to index & process it
+        Indexer::index($oNewDocument);
+
         if(!$bulk_action) {
             // fire subscription alerts for the copied document
             $oSubscriptionEvent = new SubscriptionEvent();
@@ -1599,7 +1603,7 @@ $sourceDocument->getName(),
     public static function deleteVersion($oDocument, $iVersionID, $sReason){
     	global $default;
 		$oStorage = KTStorageManagerUtil::getSingleton();
-		
+
         $oDocument =& KTUtil::getObject('Document', $oDocument);
         $oVersion =& KTDocumentMetadataVersion::get($iVersionID);
 
@@ -1677,7 +1681,7 @@ $sourceDocument->getName(),
             $mimeId = $oDocument->getMimeTypeID();
             $mimetype = KTMime::getMimeTypeName($mimeId);
 
-            if ($bIsCheckout && $default->fakeMimetype) 
+            if ($bIsCheckout && $default->fakeMimetype)
             {
                 // note this does not work for "image" types in some browsers
                 $mimetype = 'application/x-download';
@@ -1685,8 +1689,8 @@ $sourceDocument->getName(),
 
             $sFileName = $oDocument->getFileName();
             $iFileSize = $oDocument->getFileSize();
-        } 
-        else 
+        }
+        else
         {
             return null;
         }

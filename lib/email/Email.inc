@@ -7,7 +7,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -317,27 +317,31 @@ class Email {
         $rootUrl = KTUtil::kt_url();
 
         $oKTConfig =& KTConfig::getSingleton();
-	    $mainLogo = $oKTConfig->get('mainLogo');
 	    $appName = $oKTConfig->get('appName');
-	    $companyLogoTitle = $oKTConfig->get('companyLogoTitle');
-	    $mainLogoTitle = $oKTConfig->get('mainLogoTitle');
 
-	    if($mainLogo != ''){
-            $logo = '<img src="'.$mainLogo.'" class="primary" alt="'.$companyLogoTitle.'" title="'.$mainLogoTitle.'"/>';
-	    }else{
-            $logo = '<img src="'.$rootUrl.'/resources/graphics/ktlogo-topbar-right-transparent.png" class="primary" title="'.$appName.'" height="44" width="252"/>';
-	    }
+	    /* Disabled branding for now */
+//	    $mainLogo = $oKTConfig->get('mainLogo');
+//	    $companyLogoTitle = $oKTConfig->get('companyLogoTitle');
+//	    $mainLogoTitle = $oKTConfig->get('mainLogoTitle');
+
+//	    if($mainLogo != ''){
+//            $logo = '<img src="'.$mainLogo.'" class="primary" alt="'.$companyLogoTitle.'" title="'.$mainLogoTitle.'"/>';
+//	    }else{
+//            $logo = '<img src="'.$rootUrl.'/resources/graphics/ktlogo-topbar-right-transparent.png" class="primary" title="'.$appName.'" height="44" width="252"/>';
+//	    }
+
+	    $logo = '<img src="'.$rootUrl.'/resources/graphics/email_header.png" class="primary" title="'.$appName.'" height="100" width="680"/>';
 
         $str = '<html>
                     <body>
-                        <table border="1" cellpadding="5" width="100%" height="100">
-                            <tr style="background-color:LightGrey">
+                        <table border="0" cellpadding="0" cellspacing="0" width="680px" height="100" style="background-color:white">
+                            <tr>
                                 <td>
                                     '.$logo.'
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td style="padding: 10px; background-color: #E9F2F7">
                                     '.$email.'
                                 </td>
                             </tr>

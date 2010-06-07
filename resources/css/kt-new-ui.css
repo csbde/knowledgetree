@@ -40,7 +40,7 @@ div#topnavbar a.active {
 }
 
 #topnavbar li a:hover {
-    color: #000;
+    color: #585D5D;
 	background: url('../graphics/newui/topnavhover.png');
 }
 
@@ -142,6 +142,7 @@ div.form_actions {
 
 ul.buttonsList {
 	list-style-type: none;
+	font-size: 11px;
 }
 
 ul.buttonsList li {
@@ -247,4 +248,29 @@ table.kt_collection {
 	box-shadow: 0 0 5px #667;
 	-webkit-box-shadow: 0 0 5px #667;
 	-moz-box-shadow: 0 0 5px #667;
+}
+
+div#breadcrumbs {
+	margin: 0.5em;
+}
+
+div#activationNotice {
+	margin-right: 15px;
+	background: url('../graphics/newui/notice.png') no-repeat top right;
+	width: 160px;
+	height: 50px;
+	float: right;
+	text-align: center;
+	padding: 5px 20px 0 20px;
+	font-size: 80%;
+}
+
+div#activationNotice span {
+	color: #0074A4;
+	font-weight: bold;
+	font-size: 150%;
+}
+
+#kt-wrapper {
+	margin-left: 15px;
 }
