@@ -155,7 +155,7 @@ class PreferencesDispatcher extends KTStandardDispatcher {
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt("Your Preferences"));
-        $this->oPage->title = _kt("Dashboard");
+        $this->oPage->title = _kt("Preferences");
         $oUser =& $this->oUser;
 
         $oForm = $this->form_main();
@@ -177,7 +177,7 @@ class PreferencesDispatcher extends KTStandardDispatcher {
 
     function do_setPassword() {
         $this->oPage->setBreadcrumbDetails(_kt("Your Password"));
-        $this->oPage->title = _kt("Dashboard");
+        $this->oPage->title = _kt("Preferences - Set Password");
 
         $oForm = $this->form_password();
 
@@ -189,8 +189,6 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         );
         return $oTemplate->render($aTemplateData);
     }
-
-
 
     function do_updatePassword() {
         $oForm = $this->form_password();
@@ -219,7 +217,6 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $this->successRedirectToMain(_kt('Your password has been changed.'));
 
     }
-
 
     function do_updatePreferences() {
         $aErrorOptions = array(

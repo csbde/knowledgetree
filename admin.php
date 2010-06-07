@@ -49,7 +49,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
 
     function AdminSplashDispatcher() {
         $this->aBreadcrumbs = array(
-            array('url' => KTUtil::getRequestScriptName($_SERVER), 'name' => _kt('Administration')),
+            array('url' => KTUtil::getRequestScriptName($_SERVER), 'name' => _kt('Settings')),
         );
 
         parent::KTAdminDispatcher();
@@ -76,7 +76,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
             }
         }
 
-        $this->oPage->title = _kt('Administration') . ': ';
+        $this->oPage->title = _kt('Settings') . ': ';
         $oTemplating =& KTTemplating::getSingleton();
 
         if ($condensed_admin) {
@@ -113,7 +113,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         asort($aItems);
         $this->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$category));
 		
-        $this->oPage->title = _kt('Administration') . ': ' . $aCategory['title'];
+        $this->oPage->title = _kt('Settings') . ': ' . $aCategory['title'];
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/admin_items');
         $aTemplateData = array(
@@ -145,7 +145,7 @@ if (empty($sub_url)) {
        $aCategory = $oRegistry->getCategory($aParts[0]);
 
        $oDispatcher->aBreadcrumbs = array();
-       $oDispatcher->aBreadcrumbs[] = array('action' => 'administration', 'name' => _kt('Administration'));
+       $oDispatcher->aBreadcrumbs[] = array('action' => 'administration', 'name' => _kt('Settings'));
        $oDispatcher->aBreadcrumbs[] = array('name' => $aCategory['title'], 'url' => KTUtil::ktLink('admin.php',$aParts[0]));
 
     } else {
@@ -161,7 +161,7 @@ global $default;
 if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < time()){
     $sBaseUrl = KTUtil::kt_url();
     $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
-    $heading = _kt('You are attempting to access Administration');
+    $heading = _kt('You are attempting to access Settings');
     $main->setBodyOnload("javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/browse.php', 'close');");
 }
 

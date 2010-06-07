@@ -426,6 +426,13 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 
         return parent::getInfo();
     }
+    
+    function getButton() {
+        $btn = array();
+        $btn['display_text'] = _kt('Checkout');
+        $btn['arrow_class'] = 'check_out';
+        return $btn;
+    }
 
     function check() {
         $res = parent::check();
@@ -607,7 +614,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
     function getButton() {
         $btn = array();
         $btn['display_text'] = _kt('Checkin');
-        $btn['arrow_class'] = 'arrow_upload';
+        $btn['arrow_class'] = 'check_in';
         return $btn;
     }
 

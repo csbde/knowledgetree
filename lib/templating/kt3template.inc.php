@@ -175,7 +175,7 @@ class KTPage {
     	global $default;
     	if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < time()){
     	    $sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
-    	    $heading = _kt('You are attempting to access Administration');
+    	    $heading = _kt('You are attempting to access Settings');
     	    $this->menu['administration']['url'] = '#';
     	    $this->menu['administration']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/admin.php', 'redirect');";
     	}else{
@@ -313,7 +313,7 @@ class KTPage {
     // assume this is admin for now.
     function setSection($sSection) {
 	    if ($sSection == 'administration') {
-			$this->componentLabel = _kt('Administration');
+			$this->componentLabel = _kt('Settings');
 			$this->componentClass = 'administration';
 			$this->menu['administration']['active'] = 1;
 		} else if ($sSection == 'dashboard') {
