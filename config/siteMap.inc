@@ -59,7 +59,7 @@ $default->siteMap->addPage('viewDocument', '/view.php', 'Manage Documents', Gues
 $default->siteMap->addPage('editDocument', '/edit.php', 'Manage Documents', Guest, _kt('Edit Document'), false);
 
 // pages for administration section
-$default->siteMap->addDefaultPage('administration', '/admin.php', 'Administration', UnitAdmin, _kt('Administration'));
+$default->siteMap->addDefaultPage('administration', '/admin.php', 'Administration', UnitAdmin, _kt('Settings'));
 
 // pages for advanced search section
 $default->siteMap->addDefaultPage('advancedSearch', '/search/advancedSearchBL.php', 'Advanced Search', Guest, _kt('Advanced Search'), true);
