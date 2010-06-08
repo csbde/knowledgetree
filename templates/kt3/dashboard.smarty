@@ -1,3 +1,6 @@
+{if $midToolbarButtons}
+    <ul class="buttonsList">{$midToolbarButtons}</ul>
+{/if}
 <div id="dashboard-container-left">
     {foreach item=oDashlet from=$dashlets_left}
     <div class="dashboard_block" id="{$context->_getDashletId($oDashlet)}">
