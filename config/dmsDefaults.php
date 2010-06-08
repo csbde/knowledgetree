@@ -144,14 +144,7 @@ require_once (KT_LIB_DIR . '/config/config.inc.php');
 // {{{ KTInit
 class KTInit {
 
-	// {{{ setupLogging()
-	function setupLogging() {
-		global $default;
-		$oKTConfig = & KTConfig::getSingleton ();
-		if (! defined ( 'APP_NAME' )) {
-			define ( 'APP_NAME', $oKTConfig->get ( 'ui/appName', 'KnowledgeTree' ) );
-		}
-
+    function configureLog($logDir, $logLevel, $userId, $dbName){
 		define ( 'KT_LOG4PHP_DIR', KT_DIR . '/thirdparty/apache-log4php/src/main/php' . DIRECTORY_SEPARATOR );
 		define ( 'LOG4PHP_CONFIGURATION', KT_DIR . '/config/ktlog.ini' );
 		define ( 'LOG4PHP_DEFAULT_INIT_OVERRIDE', true );
@@ -166,21 +159,33 @@ class KTInit {
 		$properties ['log4php.appender.default.layout'] = 'LoggerPatternLayout';
 		$properties ['log4php.appender.default.layout.conversionPattern'] = '%d{Y-m-d | H:i:s} | %p | %t | %r | %X{userid} | %X{db} | %c | %M | %m%n';
 		$properties ['log4php.appender.default.datePattern'] = 'Y-m-d';
-		$logDir = $oKTConfig->get ( 'urls/logDirectory' );
 		$properties ['log4php.appender.default.file'] = $logDir . '/kt%s.' . KTUtil::running_user () . '.log.txt';
 
 		// get the log level set in the configuration settings to override the level set in ktlog.ini
 		// for the default / main logging. Additional logging can be configured through the ini file
-		$logLevel = $oKTConfig->get ( 'KnowledgeTree/logLevel' );
 		$properties ['log4php.rootLogger'] = $logLevel . ', default';
 
-		//        session_start();
 		$configurator->doConfigureProperties ( $properties, $repository );
 
-		$userId = isset ( $_SESSION ['userID'] ) ? $_SESSION ['userID'] : 'n/a';
-
 		LoggerMDC::put ( 'userid', $userId );
-		LoggerMDC::put ( 'db', $oKTConfig->get ( 'db/dbName' ) );
+		LoggerMDC::put ( 'db', $dbName );
+    }
+
+	// {{{ setupLogging()
+	function setupLogging() {
+		global $default;
+		$oKTConfig = & KTConfig::getSingleton ();
+
+		if (! defined ( 'APP_NAME' )) {
+			define ( 'APP_NAME', $oKTConfig->get('ui/appName', 'KnowledgeTree'));
+		}
+
+		$logDir = $oKTConfig->get('urls/logDirectory');
+		$logLevel = $oKTConfig->get('KnowledgeTree/logLevel');
+		$userId = isset($_SESSION['userID']) ? $_SESSION['userID'] : 'n/a';
+		$dbName = $oKTConfig->get('db/dbName');
+
+		$this->configureLog($logDir, $logLevel, $userId, $dbName);
 
 		$default->log = LoggerManager::getLogger ( 'default' );
 		$default->queryLog = LoggerManager::getLogger ( 'sql' );
@@ -231,33 +236,54 @@ class KTInit {
 	public function accountRoutingLicenceCheck() {
 		/* Check if account is licensed */
 		if (ACCOUNT_ROUTING_ENABLED) {
+
+//		    $oKTConfig = KTConfig::getSingleton();
+//
+//		    // Set up logging so that we can log the error.
+//		    $logDir = $oKTConfig->get('urls/logDirectory', KT_DIR.'/var/log');
+//		    $userId = isset($_SESSION['userID']) ? $_SESSION['userID'] : 'n/a';
+//		    $this->configureLog($logDir, 'ERROR', $userId, ACCOUNT_NAME);
+//
+//		    $logger = LoggerManager::getLogger('default');
+		    $logger = $GLOBALS['default']->log;
+
+
 			if (! isset ( $_SESSION [LIVE_LICENSE_OVERRIDE] )) {
 				if (! liveAccounts::accountLicenced ()) {
 					// Check if account exists
 					if (liveAccounts::accountExists ()) {
 						// Check if account is enabled
 						if (! liveAccounts::accountEnabled ()) {
-							liveRenderError::errorDisabled ( $_SERVER, LIVE_ACCOUNT_DISABLED );
-							if(isset($GLOBALS['default']->log)){
-								$GLOBALS['default']->log->error(ACCOUNT_NAME." Account Not Licenced, Exists but Not Enabled");
-							}
+
+						    if(liveAccounts::isTrialAccount()){
+
+    						    $logger->error(ACCOUNT_NAME." License Check. Trial Account License expired, Exists but Not Enabled. ");
+    							liveRenderError::errorTrialLicense( $_SERVER, LIVE_ACCOUNT_DISABLED );
+
+						    }else {
+
+						        $logger->error(ACCOUNT_NAME." License Check. Account Not Licenced, Exists but Not Enabled. ");
+    							liveRenderError::errorDisabled ( $_SERVER, LIVE_ACCOUNT_DISABLED );
+
+						    }
+
 						}else{
-							liveRenderError::errorDisabled ( NULL, LIVE_ACCOUNT_LICENCE );
-							/* Another embarrassing error */
-							if(isset($GLOBALS['default']->log)){
-								$GLOBALS['default']->log->error(ACCOUNT_NAME." Account Not Licenced, Exists AND Enabled");
-							}
+
+						    $logger->error(ACCOUNT_NAME." License Check. Account Not Licenced, Exists AND Enabled AND Not Expired in SimpleDB. ");
+							liveRenderError::errorFail( NULL, LIVE_ACCOUNT_LICENCE );
+
 						}
 					} else {
+
+					    $logger->error(ACCOUNT_NAME." License Check. Account Not Licenced, and does not exist. ");
 						liveRenderError::errorNoAccount ( NULL, LIVE_ACCOUNT_DISABLED );
-						if(isset($GLOBALS['default']->log)){
-							$GLOBALS['default']->log->error(ACCOUNT_NAME." Account Not Licenced, and does not exist");
-						}
+
 					}
 				}
 			}
 		}
 	}
+
 	/**
 	 * setupI18n
 	 *
@@ -563,13 +589,11 @@ class KTInit {
 		}
 
 		if (ACCOUNT_ROUTING_ENABLED) {
-//			if (! isset ( $_SESSION [LIVE_MEMCACHE_OVERRIDE] ))
-			//if(!isset($_SESSION[LIVE_MEMCACHE_OVERRIDE]))
-				$use_cache = $oKTConfig->setMemCache ();
+			$use_cache = $oKTConfig->setMemCache ();
 		}
 
-		//		$oKTConfig->clearCache();
-		//		$use_cache = false;
+				$oKTConfig->clearCache();
+				$use_cache = false;
 
 
 		if ($use_cache) {
@@ -587,26 +611,28 @@ class KTInit {
 			/* We need to setup the language handler to display this error correctly */
 			$this->setupI18n ();
 			if (ACCOUNT_ROUTING_ENABLED) {
+
+			    // Set up the logging so that we can log the error.
+			    $logDir = $oKTConfig->get('urls/logDirectory', KT_DIR.'/var/log');
+			    $userId = isset($_SESSION['userID']) ? $_SESSION['userID'] : 'n/a';
+			    $this->configureLog($logDir, 'ERROR', $userId, ACCOUNT_NAME);
+
+			    $logger = LoggerManager::getLogger('default');
+			    $GLOBALS['default']->log = $logger;
+
 				// Check if account exists
 				if (liveAccounts::accountExists ()) {
 					// Check if account is enabled
 					if (! liveAccounts::accountEnabled ()) {
+						$logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT DISABLED (".$dbSetup->getMessage().")");
 						liveRenderError::errorDisabled ( $_SERVER, LIVE_ACCOUNT_DISABLED );
-						if(isset($GLOBALS['default']->log)){
-							$GLOBALS['default']->log->error(ACCOUNT_NAME." DISABLED (".$dbSetup->getMessage().")");
-						}
 					}else{
-						/** Throw embarrassing error **/
-						liveRenderError::errorDisabled ( $_SERVER, LIVE_ACCOUNT_DISABLED );
-						if(isset($GLOBALS['default']->log)){
-							$GLOBALS['default']->log->error(ACCOUNT_NAME." ENABLED AND NO DATABASE (".$dbSetup->getMessage().")");
-						}
+						$logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT ENABLED (".$dbSetup->getMessage().")");
+						liveRenderError::errorFail( $_SERVER, LIVE_ACCOUNT_DISABLED );
 					}
 				} else {
+					$logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and NO ACCOUNT (".$dbSetup->getMessage().")");
 					liveRenderError::errorNoAccount ( $dbSetup, LIVE_ACCOUNT_DISABLED );
-					if(isset($GLOBALS['default']->log)){
-						$GLOBALS['default']->log->error(ACCOUNT_NAME." DATABASE DOES NOT EXIST (".$dbSetup->getMessage().")");
-					}
 				}
 			} else {
 				$this->handleInitError ( $dbSetup );
@@ -678,6 +704,8 @@ $KTInit->setupServerVariables ();
 
 // instantiate log
 $loggingSupport = $KTInit->setupLogging ();
+
+$oKTConfig->logErrors(); 
 
 // Send all PHP errors to a file (and maybe a window)
 set_error_handler ( array ('KTInit', 'handlePHPError' ) );

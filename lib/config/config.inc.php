@@ -80,7 +80,7 @@ class KTConfig {
 
     function setMemcache()
     {
-        if(MemCacheUtil::isInitialized()){
+        if(MemCacheUtil::$enabled){
             return true;
         }
 
@@ -108,17 +108,18 @@ class KTConfig {
         }
 
         $server_list = $this->get('memcache/servers', false);
+        
         if($server_list == false){
                 return false;
         }
         $filename = $this->getCacheFilename();
 
-        $server_arr = explode(';', $server_list);
+        $server_arr = explode('|', $server_list);
         $servers = array();
 
         foreach ($server_arr as $server){
 
-            $portArr = explode('|', $server);
+            $portArr = explode(':', $server);
 
             $servers[] = array(
                 'url' => $portArr[0],
@@ -127,11 +128,22 @@ class KTConfig {
         }
 
         try {
-            MemCacheUtil::init($servers);
+            $isEnabled=MemCacheUtil::init($servers);
         }catch (Exception $e){
             return false;
         }
-        return true;
+
+        
+        return $isEnabled;
+    }
+    
+    public static function logErrors(){
+        /* Log Failed Memcache Server Connects */
+        foreach(MemCacheUtil::$errors as $error){
+        	if($error){
+        		if($GLOBALS['default']->log)$GLOBALS['default']->log->error($error);
+        	}
+        }    	
     }
 
     // FIXME nbm:  how do we cache errors here?
@@ -181,7 +193,7 @@ class KTConfig {
         	//if(!isset($_SESSION[LIVE_MEMCACHE_OVERRIDE]))
         	//{
             	$this->setMemcache();
-            	MemCacheUtil::put($filename, $config_cache);
+            	MemCacheUtil::set($filename, $config_cache);
             	return true;
         	//}
         }
@@ -199,7 +211,7 @@ class KTConfig {
         $filename = $this->getCacheFilename();
 
         if(ACCOUNT_ROUTING_ENABLED){
-            MemCacheUtil::replace($filename, '');
+            MemCacheUtil::clear($filename);
             return true;
         }
 
