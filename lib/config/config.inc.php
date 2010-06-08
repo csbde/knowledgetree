@@ -108,17 +108,18 @@ class KTConfig {
         }
 
         $server_list = $this->get('memcache/servers', false);
+        
         if($server_list == false){
                 return false;
         }
         $filename = $this->getCacheFilename();
 
-        $server_arr = explode(';', $server_list);
+        $server_arr = explode('|', $server_list);
         $servers = array();
 
         foreach ($server_arr as $server){
 
-            $portArr = explode('|', $server);
+            $portArr = explode(':', $server);
 
             $servers[] = array(
                 'url' => $portArr[0],
@@ -131,7 +132,18 @@ class KTConfig {
         }catch (Exception $e){
             return false;
         }
+
+        
         return $isEnabled;
+    }
+    
+    public static function logErrors(){
+        /* Log Failed Memcache Server Connects */
+        foreach(MemCacheUtil::$errors as $error){
+        	if($error){
+        		if($GLOBALS['default']->log)$GLOBALS['default']->log->error($error);
+        	}
+        }    	
     }
 
     // FIXME nbm:  how do we cache errors here?
