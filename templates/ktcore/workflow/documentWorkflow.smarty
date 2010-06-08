@@ -60,6 +60,7 @@
                 at the beginning of the new workflow.  <strong>This is true even if the new workflow is identical to the old one.</strong>{/i18n}</p>
 
                 {entity_select entities=$aWorkflows name=fWorkflowId none=$none}
+                <br />
                 <div class="form_actions">
                     {if !$oWorkflow}
                         <input type="{$submit.type}" onclick="{$submit.onclick}" name="form_submit" value="{i18n}Start Workflow{/i18n}" />
