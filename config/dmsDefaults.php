@@ -696,6 +696,8 @@ $KTInit->setupServerVariables ();
 // instantiate log
 $loggingSupport = $KTInit->setupLogging ();
 
+$oKTConfig->logErrors(); 
+
 // Send all PHP errors to a file (and maybe a window)
 set_error_handler ( array ('KTInit', 'handlePHPError' ) );
 
