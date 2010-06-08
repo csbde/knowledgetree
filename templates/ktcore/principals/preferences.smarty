@@ -1,3 +1,9 @@
+{if $adminPortletContent}
+<h2>{i18n}Administrator Mode{/i18n}</h2>
+{$adminPortletContent}
+{/if}
+
+
 <h2>{i18n}Preferences{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}You may change details about yourself by editing the entries below. Once you have completed the form, click on <strong>Update your details</strong>.{/i18n}</p>
