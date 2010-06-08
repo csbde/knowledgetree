@@ -534,11 +534,14 @@ class KTPage {
     }
     
     private function getLicenseNotification() {
+        global $default;
+        $default->log->debug('License Notification: Checking for license timer');
         $oRegistry =& KTPluginRegistry::getSingleton();
         $oPlugin =& $oRegistry->getPlugin('ktdms.wintools');
         if (!PEAR::isError($oPlugin) && !is_null($oPlugin)) {
             return $oPlugin->getLicenseNotification();
         } else {
+            $default->log->debug('Unable to load wintools plugin');
             return;
         }
     }
