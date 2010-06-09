@@ -167,6 +167,8 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
     /**
      * This returns the support url that takes the user to the support infrustructure
      * landing page at getsatisfaction.com/knowledgetree
+     * 
+     * @deprecated direct url redirection not recommended, use javascript GSFN.goto_gsfn() instead.
      */
     private function getSupportUrl()
     {
@@ -212,10 +214,10 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
     }
 
     /**
-     * This returns the support url that takes the user to the support infrustructure
-     * landing page at getsatisfaction.com/knowledgetree
+     * This returns the intemediary script that contains the GSFN
+     * company specific object.
      */
-    private function getScript($url)
+    private function getGsfnObjectScript($url)
     {
         global $default;
         
@@ -248,7 +250,7 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
      * This method will render the dynamic javascript, set the cookies and redirect the user to
      * the getsatisfaction page.
      * 
-     * @depricated Uses the smarty template.
+     * @deprecated Use 'renderGetSatisfactionRedirect' that will bypass the smarty template.
      */
     private function renderGetSatisfactionRedirect__() {
     	$url = $this->getSatisfactionUrl();
@@ -256,7 +258,7 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
         $this->aBreadcrumbs = array(array('name' => _kt("Support")));
     	
 		//Adding the required Get Satisfaction script.
-		$sJavascript = $this->getScript($url);
+		$sJavascript = $this->getGsfnObjectScript($url);
 		$this->oPage->requireJSStandalone($sJavascript);
 		
 		$oTemplating =& KTTemplating::getSingleton();
@@ -288,15 +290,15 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
      * This method will render the dynamic javascript, set the cookies and redirect the user to
      * the getsatisfaction page.
      */
-    private function renderGetSatisfactionRedirect() {
+    private function renderGetSatisfactionRedirect_Javascript() {
     	$url = $this->getSatisfactionUrl();
 
 		//Adding the required Get Satisfaction script.
-		$sJavascript = $this->getScript($url);
+		$sJavascript = $this->getGsfnObjectScript($url);
 		
     	print '<html>';
-		print '<title>Knowledgetree Support</title>';
 		print '<head>';
+    	print '<title>Knowledgetree Support</title>';
 		print '<script type="text/javascript" src="thirdpartyjs/jquery/jquery-1.3.2.js"> </script>
                <script type="text/javascript" src="thirdpartyjs/jquery/jquery_noconflict.js"> </script>';
 		
@@ -330,6 +332,49 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
         exit;        
     }    
     
+
+    /**
+     * This method will set the required cookies and manually redirect the user to
+     * the getsatisfaction page.
+     */
+    private function renderGetSatisfactionRedirect() {
+    	$url = $this->getSatisfactionUrl();
+
+		//Adding the required Get Satisfaction script.
+		$sJavascript = $this->getGsfnObjectScript($url);
+
+        ob_start();
+        ?>
+        <html>
+            <head>
+                <title>Knowledgetree Support Redirect</title>
+                <script type="text/javascript" src="thirdpartyjs/jquery/jquery-1.3.2.js"> </script>
+                <script type="text/javascript" src="thirdpartyjs/jquery/jquery_noconflict.js"> </script>
+                <script type="text/javascript" src="thirdpartyjs/getsatisfaction/fastpass.js"> </script>
+        		
+                <script type="text/javascript">
+                	<?php print $sJavascript; ?>
+                </script>
+        
+            </head>
+        <body>
+        
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                GSFN.cookies.set('fastpass', '<?=$url?>', 60*60*24*30);
+            	GSFN.goto_gsfn();
+        	});	
+        </script>
+        
+        </body>
+        </html>
+        <?php
+        $output = ob_get_contents();
+        ob_end_clean();
+		
+        print $output;
+        exit;        
+    }        
 }
 
 $oDispatcher = new GetSatisfactionDispatcher();
