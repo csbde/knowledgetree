@@ -1,17 +1,15 @@
-<div style="padding: 10px;">
+<div id="adminmode" style="padding: 10px;">
 {if $enabled}
     <a href="{ktLink base="help.php" subpath="ktcore/admin/admin-mode.html"}" class="ktInline ktHelp" style="float: left; margin-right: 5px;" title="{i18n}What is admin mode?{/i18n}"></a>
-    {i18n}Administrator mode is <br>enabled.{/i18n}
+    {i18n}Administrator mode is enabled.{/i18n}
 
-    <br><br>
-    <a class="ktInline ktAction ktDenied" href="{$toggleurl}">{i18n}Disable Admin Mode{/i18n}</a>
+    <a class="ktInline ktAction ktAllowed" href="{$toggleurl}">{i18n}Disable Admin Mode{/i18n}</a>
     <a href="{$toggleurl}">{i18n}Disable Admin Mode{/i18n}</a>
 {else}
     <a href="{ktLink base="help.php" subpath="ktcore/admin/admin-mode.html"}" class="ktInline ktHelp" style="float: left; margin-right: 5px;" title="{i18n}What is admin mode?{/i18n}"></a>
-    {i18n}Administrator mode is <br>not currently enabled.{/i18n}
+    {i18n}Administrator mode is not currently enabled.{/i18n}
 
-    <br><br>
-    <a class="ktInline ktAction ktAllowed" href="{$toggleurl}">{i18n}Enable Admin Mode{/i18n}</a>
+    <a class="ktInline ktAction ktDenied" href="{$toggleurl}">{i18n}Enable Admin Mode{/i18n}</a>
     <a href="{$toggleurl}">{i18n}Enable Admin Mode{/i18n}</a>
 {/if}
 </div>
