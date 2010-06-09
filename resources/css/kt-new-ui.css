@@ -294,3 +294,19 @@ div#activationNotice span {
 	background: transparent url('../graphics/newui/per_page_select.png') no-repeat top right;
 	padding: 5px;
 }
+
+
+#subscriptionResponse {
+	display: none;
+	background: #7FC0DD;
+	background: #FFECAA;
+	position: absolute;
+	top: 145px;
+	right: 30px;
+	width: 300px;
+	line-height: normal;
+	text-align: center;
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+}

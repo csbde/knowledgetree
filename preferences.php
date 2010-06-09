@@ -43,6 +43,7 @@ require_once(KT_LIB_DIR . "/unitmanagement/Unit.inc");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
+require_once(KT_DIR . '/plugins/ktcore/KTPortlets.php');
 
 class PreferencesDispatcher extends KTStandardDispatcher {
     var $sSection = 'preferences';
@@ -167,10 +168,14 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         if ($iSourceId) {
             $bChangePassword = false;
         }
+        
+        $adminPortlet = new KTAdminModePortlet();
+        
         $aTemplateData = array(
               "context" => $this,
               'edit_form' => $oForm,
               "show_password" => $bChangePassword,
+              "adminPortletContent" => $adminPortlet->render(TRUE),
         );
         return $oTemplate->render($aTemplateData);
     }
