@@ -5,11 +5,12 @@
 color: gray;
 border-bottom: 0px;
 text-decoration: none;
+display: inline;
 
 }
 </style>
 {/literal}
-
+<ul>
 <div style="padding: 5px;">
     {if empty($tags)}
         <p>
@@ -24,5 +25,4 @@ text-decoration: none;
     {/if}
 </div>
 
-<br>
-<br>
+</ul>
