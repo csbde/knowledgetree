@@ -118,9 +118,6 @@ class firstloginWizard extends WizardBase {
 	* @return void
  	*/
 	function load() {
-		if(isset($_GET['bypass'])) {
-			$this->setBypass($_GET['bypass']);
-		}
 		$this->setIUtil(new firstloginUtil());
 	}
 
@@ -160,11 +157,6 @@ class firstloginWizard extends WizardBase {
  	*/
 	public function dispatch() {
 		$this->load();
-		if($this->getBypass() === "1") {
-			$this->removeFile();
-		} elseif ($this->getBypass() === "0") {
-			$this->createFile();
-		}
 		if($this->isFirstLogin()) { // Check if the systems
 			$response = $this->systemChecks();
 			if($response === true) {
