@@ -167,6 +167,8 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
     /**
      * This returns the support url that takes the user to the support infrustructure
      * landing page at getsatisfaction.com/knowledgetree
+     * 
+     * @deprecated direct url redirection not recommended, use javascript GSFN.goto_gsfn() instead.
      */
     private function getSupportUrl()
     {
@@ -211,11 +213,51 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
     	return $supportUrl;
     }
 
+    
     /**
-     * This returns the support url that takes the user to the support infrustructure
-     * landing page at getsatisfaction.com/knowledgetree
+     * This returns the intemediary script that contains the GSFN
+     * company specific object.
      */
-    private function getScript($url)
+    private function getGsfnBaseInclude($url)
+    {    
+        global $default;
+        
+        $scriptUrl = 'http://getsatisfaction.com/javascripts/fastpass.js';
+
+        $headers = array (
+            'User-Agent' => 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.17) Gecko/2010010604 Ubuntu/9.04 (jaunty) Firefox/3.0.17',
+    		'Accept-Language' => 'en-us,en;q=0.5',
+    		'Accept-Encoding' => 'gzip,deflate',
+		);
+
+		$ch = curl_init($scriptUrl);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($ch, CURLOPT_POST, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        
+		$result = curl_exec($ch);
+		$info = curl_getinfo($ch);
+		curl_close ($ch);
+		
+	    $fastpassScript = $result;
+		
+		if ($info['content_type'] == 'application/x-javascript') {
+            $fastpassInclude = "<script type='text/javascript'> $fastpassScript </script>";
+		} else {
+		    $default->log->warn("Support GetSatisfaction: Didn't receive the expected 'application/x-javascript' content_type, reverting to static include for fastpass.js");
+    		$fastpassInclude = '<script type="text/javascript" src="thirdpartyjs/getsatisfaction/fastpass.js"> </script>';
+		}
+		
+		return $fastpassInclude;    
+    }
+    
+    /**
+     * This returns the intemediary script that contains the GSFN
+     * company specific object.
+     */
+    private function getGsfnObjectScript($url)
     {
         global $default;
         
@@ -243,93 +285,53 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
     	
     	return false;
     }    
-    
-    /**
-     * This method will render the dynamic javascript, set the cookies and redirect the user to
-     * the getsatisfaction page.
-     * 
-     * @depricated Uses the smarty template.
-     */
-    private function renderGetSatisfactionRedirect__() {
-    	$url = $this->getSatisfactionUrl();
 
-        $this->aBreadcrumbs = array(array('name' => _kt("Support")));
-    	
-		//Adding the required Get Satisfaction script.
-		$sJavascript = $this->getScript($url);
-		$this->oPage->requireJSStandalone($sJavascript);
-		
-		$oTemplating =& KTTemplating::getSingleton();
-		$oTemplate = $oTemplating->loadTemplate('ktcore/support.getsatisfaction');
-		
-		try {
-    		$script = $this->getSatisfactionScript();
-            $script = trim($script);
-    		if ($script == '') {
-    	        Throw New Exception("Error retrieving javascript from getsatisfaction.com");
-    	    }
-    	}
-    	catch(Exception $e)
-    	{
-    		$this->errorRedirectTo('control', _kt('Support: Couldn\'t load support page.') . $e->getMessage());
-    	}
-    	
-        $aTemplateData = array(
-              "script" => $script,
-              'url' => $url
-        );
-        
-        return $oTemplate->render($aTemplateData);
-        
-    }
-    
     
     /**
-     * This method will render the dynamic javascript, set the cookies and redirect the user to
+     * This method will set the required cookies and manually redirect the user to
      * the getsatisfaction page.
      */
     private function renderGetSatisfactionRedirect() {
     	$url = $this->getSatisfactionUrl();
-
+        $baseUrl = 'http://getsatisfaction.com/javascripts/fastpass.js';
+        
 		//Adding the required Get Satisfaction script.
-		$sJavascript = $this->getScript($url);
+		$sJavascript = $this->getGsfnObjectScript($url);
+        $gsfnBaseInclude = $this->getGsfnBaseInclude($baseUrl);
+        
+        ob_start();
+        ?>
+        <html>
+            <head>
+                <title>Knowledgetree Support Redirect</title>
+                <script type="text/javascript" src="thirdpartyjs/jquery/jquery-1.3.2.js"> </script>
+                <script type="text/javascript" src="thirdpartyjs/jquery/jquery_noconflict.js"> </script>
+                
+				<?php print $gsfnBaseInclude ?>                
+        		
+                <script type="text/javascript">
+                	<?php print $sJavascript; ?>
+                </script>
+        
+            </head>
+        <body>
+        
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                GSFN.cookies.set('fastpass', '<?=$url?>', 60*60*24*30);
+            	GSFN.goto_gsfn();
+        	});	
+        </script>
+        
+        </body>
+        </html>
+        <?php
+        $output = ob_get_contents();
+        ob_end_clean();
 		
-    	print '<html>';
-		print '<title>Knowledgetree Support</title>';
-		print '<head>';
-		print '<script type="text/javascript" src="thirdpartyjs/jquery/jquery-1.3.2.js"> </script>
-               <script type="text/javascript" src="thirdpartyjs/jquery/jquery_noconflict.js"> </script>';
-		
-		print "<script type='text/javascript'> $sJavascript </script>";
-		print '</head>';
-		
-		try {
-    		$script = $this->getSatisfactionScript();
-            $script = trim($script);
-    		if ($script == '') {
-    	        Throw New Exception("Error retrieving javascript from getsatisfaction.com");
-    	    }
-    	}
-    	
-    	catch(Exception $e)
-    	{
-    		$this->errorRedirectTo('control', _kt('Support: Couldn\'t load support page.') . $e->getMessage());
-    	}
-    	
-    	print '<body>';
-    	print "$script";
-    	//print '<!-- You should be automatically redirected to our support page, if this takes to long please click <a onclick="GSFN.goto_gsfn()" href="#">here</a> -->';
-    	print '<script type="text/javascript">
-            		jQuery(document).ready(function() {
-            			GSFN.goto_gsfn();
-            		});
-			   </script>';
-    	print '</body>';
-    	print '</html>';
-    	
+        print $output;
         exit;        
-    }    
-    
+    }        
 }
 
 $oDispatcher = new GetSatisfactionDispatcher();
