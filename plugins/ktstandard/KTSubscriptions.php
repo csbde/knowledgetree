@@ -156,7 +156,7 @@ class KTSubscriptionPortlet extends KTPortlet {
         $url = $base_url.$aInfo['url'];
         $script = '<script type="text/javascript">
             function doSubscribe(action){
-                var respDiv = document.getElementById("response");
+                var respDiv = document.getElementById("subscriptionResponse");
                 var link = document.getElementById("subscribeLink");
 
                 Ext.Ajax.request({
@@ -192,7 +192,7 @@ class KTSubscriptionPortlet extends KTPortlet {
         }
 
         $this->actions[] = array("name" => _kt("Manage subscriptions"), "url" => $this->oPlugin->getPagePath('manage'));
-        $btn = '<div id="response" style="padding: 2px; margin-right: 10px; margin-left: 10px; background: #CCC; display:none;"></div>';
+        $btn = '<div id="subscriptionResponse"></div>';
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/actions_portlet");
