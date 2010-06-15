@@ -108,7 +108,7 @@ class KTConfig {
         }
 
         $server_list = $this->get('memcache/servers', false);
-        
+
         if($server_list == false){
                 return false;
         }
@@ -133,17 +133,19 @@ class KTConfig {
             return false;
         }
 
-        
+
         return $isEnabled;
     }
-    
+
     public static function logErrors(){
-        /* Log Failed Memcache Server Connects */
-        foreach(MemCacheUtil::$errors as $error){
-        	if($error){
-        		if($GLOBALS['default']->log)$GLOBALS['default']->log->error($error);
-        	}
-        }    	
+        if(ACCOUNT_ROUTING_ENABLED){
+            /* Log Failed Memcache Server Connects */
+            foreach(MemCacheUtil::$errors as $error){
+            	if($error){
+            		if($GLOBALS['default']->log)$GLOBALS['default']->log->error($error);
+            	}
+            }
+        }
     }
 
     // FIXME nbm:  how do we cache errors here?
