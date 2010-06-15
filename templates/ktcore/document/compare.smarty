@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Version Comparison{/i18n}:<br />{$context->oDocument->getName()|sanitize}</h2>
+<h2>{i18n}Version Comparison{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
 
 {capture assign=from}
 <strong>{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</strong> ({$document->getMetadataVersion()})

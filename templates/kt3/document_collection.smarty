@@ -104,7 +104,7 @@ and only 3 from the back if we're not in the back 20 or so.  20 - 16 = 5
                 </td>
                 {if ($bIsBrowseCollection)}                
                 <td>
-                    <select name="perpage" onchange="document_collection_setbatching(this.value, '{$returnURL|htmlentities}');">
+                    <select class="perpageselect" name="perpage" onchange="document_collection_setbatching(this.value, '{$returnURL|htmlentities}');">
                     <option value="10" {if ($batch_size == 10)}selected="true"{/if}>10</option>
                     <option value="25" {if ($batch_size == 25)}selected="true"{/if}>25</option>                    
                     <option value="50" {if ($batch_size == 50)}selected="true"{/if}>50</option>                    

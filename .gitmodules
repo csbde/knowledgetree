@@ -1,3 +1,15 @@
 [submodule "plugins/commercial"]
 	path = plugins/commercial
 	url = git@github.com:ktgit/commercial-plugins.git
+[submodule "plugins/ktlive"]
+	path = plugins/ktlive
+	url = git@github.com:ktgit/ktlive-plugins.git
+[submodule "baobab"]
+	path = baobab
+	url = git@github.com:ktgit/ktis.git
+[submodule "clienttools/ExplorerCP"]
+	path = clienttools/ExplorerCP
+	url = git@github.com:ktgit/Karoo.git
+[submodule "ktoffice"]
+	path = ktoffice
+	url = git@github.com:ktgit/ktofficeaddin-server.git

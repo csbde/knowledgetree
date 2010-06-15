@@ -152,7 +152,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         // perform additional validation.
         $extra_errors = array();
 
-        $data['workflow_name'] = str_replace(array('   ', '  '), array(' ', ' '), $data['workflow_name']);
+        $data['workflow_name'] = sanitizeForHTML(str_replace(array('   ', '  '), array(' ', ' '), $data['workflow_name']));
         $oWorkflow = KTWorkflow::getByName($data['workflow_name']);
         if (!PEAR::isError($oWorkflow)) {
             $extra_errors['workflow_name'][] = _kt("A workflow with that name already exists.  Please choose a different name for this workflow.");
@@ -164,7 +164,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         $is_first = true;
         $initial_state = '';
         foreach ($initial_states as $sInitialStateName) {
-            $state_name = trim($sInitialStateName);
+            $state_name = sanitizeForHTML(trim($sInitialStateName));
             if (empty($state_name)) {
                 continue;
             }
@@ -192,7 +192,7 @@ class KTNewWorkflowWizard extends KTAdminDispatcher {
         $failed = array();
         $transitions = array();
         foreach ($initial_transitions as $sInitialTransitionName) {
-            $transition_name = trim($sInitialTransitionName);
+            $transition_name = sanitizeForHTML(trim($sInitialTransitionName));
             if (empty($transition_name)) {
                 continue;
             }

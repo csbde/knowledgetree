@@ -6,12 +6,13 @@ class DocumentIndexerTestCase extends KTUnitTestCase {
 
     function setup()
     {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $this->indexer = Indexer::get();
         //$this->path = KT_DIR . '/tests/documentProcessor/dataset/';
         $tempPath = KT_DIR . '/var/tmp';
 
-        $this->targetFile = tempnam($tempPath, 'ktindexer');
-        file_put_contents($this->targetFile, $this->getContent());
+        $this->targetFile = $oStorage->tempnam($tempPath, 'ktindexer');
+        $oStorage->file_put_contents($this->targetFile, $this->getContent());
 
         $this->id = 'test_id_1';
         $this->title = 'The Critique of Pure Reason';
@@ -20,7 +21,8 @@ class DocumentIndexerTestCase extends KTUnitTestCase {
 
     function tearDown()
     {
-        @unlink($this->targetFile);
+    	$oStorage = KTStorageManagerUtil::getSingleton();
+        $oStorage->unlink($this->targetFile);
     }
 
     /**

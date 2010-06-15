@@ -3,10 +3,11 @@
 require_once("../../../config/dmsDefaults.php");
 require_once(KT_LIB_DIR . '/import/zipimportstorage.inc.php');
 
+$oStorage = KTStorageManagerUtil::getSingleton();
 $f = new KTZipImportStorage(KT_DIR . "/tests/import/dataset2/dataset2.zip");
 $f->init();
 $oInfo = $f->getDocumentInfo("a/b");
-$norm = file_get_contents(KT_DIR .  '/tests/import/dataset1/a/b');
+$norm = $oStorage->file_get_contents(KT_DIR .  '/tests/import/dataset1/a/b');
 
 $gFilename = $oInfo->getFilename();
 if ($gFilename !== "b") {

@@ -1,32 +1,32 @@
 <h2>{i18n arg_appname="$appname" arg_versionname="$versionname"}#appname# #versionname#{/i18n}</h2>
 <p><strong>{i18n arg_version="$versionnumber"}Version #version#{/i18n}</strong></p>
+
 <img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" border="0" />
 <p>{i18n}&copy; 2008-2010 <a href=" http://www.knowledgetree.com/">KnowledgeTree Inc.</a>{/i18n} &nbsp &nbsp &nbsp <a href="http://www.knowledgetree.com">http://www.knowledgetree.com</a><br />
-{if ($smallVersion !== 'Community Edition')}
-	{i18n}All rights reserved.{/i18n}<br>
+
+{if ($smallVersion == 'commercial')}
+	{i18n}All rights reserved.{/i18n}<br><br>
+	{i18n}This is a professionally supported edition of KnowledgeTree.{/i18n} <br>
+	{i18n}Please refer to the documentation provided to you at subscription to learn more about how to access KnowledgeTree's professional support team.{/i18n}
 {/if}
 <br>
-{if ($smallVersion == 'Community Edition')}
+{if ($smallVersion == 'community')}
 	{i18n}This program is free software and published under the <a href=" http://www.gnu.org/licenses/">GNU General Public License version 3</a>{/i18n}<br><br>
 	{i18n}KnowledgeTree Community Edition is supplied with <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no support</a>,
 	<a href="http://www.knowledgetree.com/commercial_support" target="_blank">no maintenance</a>,
 	and <a href="http://www.knowledgetree.com/commercial_support" target="_blank">no warranty</a>.{/i18n}<br>
 	{i18n}Please contact the <a href="mailto:sales@knowledgetree.com">KnowledgeTree Sales team</a> should you wish to learn more about commercially supported editions of KnowledgeTree.{/i18n}<br>
-{else}
-	<br>
-	{i18n}This is a professionally supported edition of KnowledgeTree.{/i18n} <br>
-	{i18n}Please refer to the documentation provided to you at subscription to learn more about how to access KnowledgeTree's professional support team.{/i18n}<br>
-
 {/if}
 </p>
 <br>
-<p><strong>Join the KnowledgeTree Community</strong>
+
+<p><h3>Join the KnowledgeTree Community</h3>
 <ul>
-	<li><a href="http://forge.knowledgetree.com/">KTForge</a>: Collaborate and develop KnowledgeTree extensions</li>
+	<li><a href="http://forge.knowledgetree.com/">KnowledgeTree Forge</a>: Collaborate and develop KnowledgeTree extensions</li>
 	<li><a href="http://forums.knowledgetree.com/">Forums</a>: Discuss KnowledgeTree with expert community users and developers</li>
 	<li><a href="http://wiki.knowledgetree.com/">Wiki</a>: Search the knowledge base of user and developer topics</li>
 	<li><a href="http://issues.knowledgetree.com/">Issues</a>: Log a bug or suggest a new feature</li>
-	<li><a href="http://people.knowledgetree.com/">Blogs</a>: See what the KnowledgeTree team have to say</li>
+	<li><a href="http://www.knowledgetree.com/blog">Blogs</a>: See what the KnowledgeTree team have to say</li>
 </ul>
 </p>
 <br/>

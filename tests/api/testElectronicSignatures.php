@@ -909,6 +909,7 @@ class APIElectronicSignaturesTestCase extends KTUnitTestCase {
      */
     function createDocument($title, $filename, $folder = null)
     {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         if(is_null($folder)){
             $folder = $this->root;
         }
@@ -927,7 +928,7 @@ class APIElectronicSignaturesTestCase extends KTUnitTestCase {
         }
         $this->assertNotError($document);
 
-        @unlink($randomFile);
+        $oStorage->unlink($randomFile);
         if(PEAR::isError($document)) return false;
 
         return $document;
@@ -943,13 +944,13 @@ class APIElectronicSignaturesTestCase extends KTUnitTestCase {
     }
 
     function createRandomFile($content = 'this is some text', $uploadDir = null) {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         if(is_null($uploadDir)){
            $uploadDir = dirname(__FILE__);
         }
-        $temp = tempnam($uploadDir, 'myfile');
-        $fp = fopen($temp, 'wt');
-        fwrite($fp, $content);
-        fclose($fp);
+        $temp = $oStorage->tempnam($uploadDir, 'myfile');
+        $oStorage->write_file($temp, 'wt', $content);
+
         return $temp;
     }
 }

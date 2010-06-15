@@ -75,6 +75,13 @@ class KTFolderAddFolderAction extends KTFolderAction {
     function getDisplayName() {
         return _kt('Add a Folder');
     }
+	
+	function getButton() {
+        $btn = array();
+        $btn['display_text'] = _kt('Add Folder');
+        $btn['arrow_class'] = 'add_folder';
+        return $btn;
+    }
 
 
     function form_main() {

@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -65,6 +65,7 @@ class KTSubscriptionPlugin extends KTPlugin {
             'ktstandard.subscription.documentsubscription');
         $this->registerAction('documentsubscriptionaction', 'KTDocumentUnsubscriptionAction',
             'ktstandard.subscription.documentunsubscription');
+
         $this->registerTrigger('checkout', 'postValidate', 'KTCheckoutSubscriptionTrigger',
             'ktstandard.triggers.subscription.checkout');
         $this->registerTrigger('edit', 'postValidate', 'KTEditSubscriptionTrigger',
@@ -76,7 +77,8 @@ class KTSubscriptionPlugin extends KTPlugin {
         $this->registerTrigger('archive', 'postValidate', 'KTArchiveSubscriptionTrigger',
             'ktstandard.triggers.subscription.archive');
         $this->registerTrigger('discussion', 'postValidate', 'KTDiscussionSubscriptionTrigger',
-            'ktstandard.triggers.subscription.archive');
+            'ktstandard.triggers.subscription.discussion');
+
         $this->registerAction('foldersubscriptionaction', 'KTFolderSubscriptionAction',
             'ktstandard.subscription.foldersubscription');
         $this->registerAction('foldersubscriptionaction', 'KTFolderUnsubscriptionAction',
@@ -154,7 +156,7 @@ class KTSubscriptionPortlet extends KTPortlet {
         $url = $base_url.$aInfo['url'];
         $script = '<script type="text/javascript">
             function doSubscribe(action){
-                var respDiv = document.getElementById("response");
+                var respDiv = document.getElementById("subscriptionResponse");
                 var link = document.getElementById("subscribeLink");
 
                 Ext.Ajax.request({
@@ -190,7 +192,7 @@ class KTSubscriptionPortlet extends KTPortlet {
         }
 
         $this->actions[] = array("name" => _kt("Manage subscriptions"), "url" => $this->oPlugin->getPagePath('manage'));
-        $btn = '<div id="response" style="padding: 2px; margin-right: 10px; margin-left: 10px; background: #CCC; display:none;"></div>';
+        $btn = '<div id="subscriptionResponse"></div>';
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/actions_portlet");

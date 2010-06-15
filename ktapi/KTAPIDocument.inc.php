@@ -245,7 +245,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function checkin($filename, $reason, $tempfilename, $major_update=false)
 	{
-		if (!is_file($tempfilename))
+	    $storage = KTStorageManagerUtil::getSingleton();
+		if (!$storage->isFile($tempfilename))
 		{
 			return new PEAR_Error('File does not exist.');
 		}
@@ -264,7 +265,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		$filename = KTUtil::replaceInvalidCharacters($filename);
 
-		$options = array('major_update'=>$major_update);
+		$options = array('major_update' => $major_update);
 
 		$currentfilename = $this->document->getFileName();
 		if ($filename != $currentfilename)
@@ -1321,6 +1322,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 
                 $fieldsresult[] = array(
+                	'fieldid' => $field->getId(),
                 	'name' => $field->getName(),
                 	'required' => $field->getIsMandatory(),
                     'value' => $value == '' ? 'n/a' : $value,
@@ -1402,7 +1404,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 		if (is_array($fieldinfo))
 		 		{
 		 			$fieldname = $fieldinfo['name'];
-		 			$value = $fieldinfo['value'];
+
 		 			// if the 'blankvalue' argument was set to 1 (true) then do not use the current value;
 		 			// this prevents the 'n/a' values set for blank fields on get_metadata from being saved as such
 		 			// while allowing user entered values of 'n/a' to be saved
@@ -2187,7 +2189,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function download($version = null)
 	{
-		$storage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
         $options = array();
 
         $comment = (!is_null($version)) ? 'Document version '.$version.' downloaded' : 'Document downloaded';
@@ -2318,23 +2320,20 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function expunge()
 	{
+		$oStorage =& KTStorageManagerUtil::getSingleton();
+
 		if ($this->document->getStatusID() != 3)
 		{
 			return new PEAR_Error('You should not purge this');
 		}
+
 		DBUtil::startTransaction();
 
 		$transaction = new DocumentTransaction($this->document, "Document expunged", 'ktcore.transactions.expunge');
-
         $transaction->create();
-
-        $this->document->delete();
-
         $this->document->cleanupDocumentData($this->documentid);
-
-		$storage =& KTStorageManagerUtil::getSingleton();
-
-		$result= $storage->expunge($this->document);
+		$result = $oStorage->expunge($this->document);
+        $this->document->delete();
 
 		DBUtil::commit();
 	}
@@ -2349,7 +2348,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	{
 		DBUtil::startTransaction();
 
-		$storage =& KTStorageManagerUtil::getSingleton();
+		$oStorage = KTStorageManagerUtil::getSingleton();
 
 		$folder = Folder::get($this->document->getRestoreFolderId());
 		if (PEAR::isError($folder))
@@ -2362,7 +2361,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 			$this->document->setFolderId($this->document->getRestoreFolderId());
 		}
 
-		$storage->restore($this->document);
+		$oStorage->restore($this->document);
 
 		$this->document->setStatusId(LIVE);
 		$this->document->setPermissionObjectId($folder->getPermissionObjectId());
@@ -2639,6 +2638,139 @@ class KTAPI_Document extends KTAPI_FolderItem
     {
         return Document::getList($whereClause);
     }
+
+
+	/**
+	 * Method to check whether the thumbnail preview of a document exists
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function thumbnailExists()
+	{
+		$oStorage = KTStorageManagerUtil::getSingleton();
+
+		global $default;
+
+		$varDir = $default->varDirectory;
+
+		$thumbnailCheck = $varDir . '/thumbnails/'.$this->documentid.'.jpg';
+
+		return $oStorage->file_exists($thumbnailCheck);
+	}
+
+	/**
+	 * Method to generate a thumbnail for a document
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function generateThumbnail()
+	{
+		// If thumbnail exists, return it
+		if ($this->thumbnailExists()) {
+			return TRUE;
+		} else {
+			require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
+
+			// Check that plugin is enabled
+			if (KTPluginUtil::pluginIsActive('thumbnails.generator.processor.plugin')) {
+				$path = KTPluginUtil::getPluginPath('thumbnails.generator.processor.plugin');
+
+				require_once($path .  'thumbnails.php');
+
+				// Get mimetype
+				$mimeType = KTMime::getMimeTypeName($this->document->getMimeTypeID());
+
+				$thumbnailGenerator = new thumbnailGenerator();
+
+				// Check that mimetype is valid
+				if (in_array($mimeType, $thumbnailGenerator->getSupportedMimeTypes())) {
+
+					// Setup
+					$thumbnailGenerator->setDocument($this->document);
+
+					// Process
+					$thumbnailGenerator->processDocument();
+
+					// return another (final) check for the thumbnail
+					return $this->thumbnailExists();
+
+				} else {
+					return FALSE;
+				}
+
+			} else {
+				return FALSE;
+			}
+		}
+	}
+
+	/**
+	 * Method to check whether the instantview file of a document exists
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function instantViewExists()
+	{
+		$oStorage = KTStorageManagerUtil::getSingleton();
+
+		global $default;
+
+		$varDir = $default->varDirectory;
+
+		$thumbnailCheck = $varDir . '/flash/'.$this->documentid.'.swf';
+
+		return $oStorage->file_exists($thumbnailCheck);
+	}
+
+	/**
+	 * Method to generate an instaView for a document
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function generateInstantView()
+	{
+		// If thumbnail exists, return it
+		if ($this->instantViewExists()) {
+			return TRUE;
+		} else {
+			require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
+
+			// Check that plugin is enabled
+			if (KTPluginUtil::pluginIsActive('instaview.processor.plugin')) {
+				$path = KTPluginUtil::getPluginPath('instaview.processor.plugin');
+
+				require_once($path .  'instaView.php');
+
+				// Get mimetype
+				$mimeType = KTMime::getMimeTypeName($this->document->getMimeTypeID());
+
+				$instaView = new instaView();
+
+				// Check that mimetype is valid
+				if (in_array($mimeType, $instaView->getSupportedMimeTypes())) {
+
+					// Setup
+					$instaView->setDocument($this->document);
+
+					// Process
+					$instaView->processDocument();
+
+					// return another (final) check for the thumbnail
+					return $this->instantViewExists();
+
+				} else {
+					return FALSE;
+				}
+
+			} else {
+				return FALSE;
+			}
+		}
+	}
 }
 
 ?>

@@ -163,6 +163,7 @@ class thumbnailGenerator extends BaseProcessor
                - check out ktcore/KTDocumentViewlets.php
                - viewlet class is below
 	    */
+	    $oStorage = KTStorageManagerUtil::getSingleton();
 		global $default;
 
 		$type = 'pdf'; // default type expected
@@ -170,52 +171,61 @@ class thumbnailGenerator extends BaseProcessor
         $mimeType = KTMime::getMimeTypeName($mimeTypeId);
 
         // Check document type: Image or PDF
-        if (strstr($mimeType, 'image')) {
+        if (strstr($mimeType, 'image'))
+        {
             $type = 'image';
             $srcDir = $default->documentRoot;
             $srcFile = $srcDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
         }
 	    // Get the pdf source file - if the document is a pdf then use the document as the source
-	    else if($mimeType == 'application/pdf') {
+	    else if($mimeType == 'application/pdf')
+	    {
 	        $pdfDir = $default->documentRoot;
             $srcFile = $pdfDir . DIRECTORY_SEPARATOR . $this->document->getStoragePath();
-	    } else {
+	    }
+	    else
+	    {
     	    $pdfDir = $default->pdfDirectory;
             $srcFile = $pdfDir .DIRECTORY_SEPARATOR. $this->document->iId.'.pdf';
 	    }
 
         $thumbnaildir = $default->varDirectory.DIRECTORY_SEPARATOR.'thumbnails';
 
-		if (stristr(PHP_OS,'WIN')) {
+		if (stristr(PHP_OS,'WIN'))
+		{
             $thumbnaildir = str_replace('/', '\\', $thumbnaildir);
             $srcFile = str_replace('/', '\\', $srcFile);
 		}
 
         $thumbnailfile = $thumbnaildir.DIRECTORY_SEPARATOR.$this->document->iId.'.jpg';
         //if thumbail dir does not exist, generate one and add an index file to block access
-        if (!file_exists($thumbnaildir)) {
-        	mkdir($thumbnaildir, 0755);
+        if (!$oStorage->file_exists($thumbnaildir))
+        {
+        	$oStorage->mkdir($thumbnaildir, 0755);
         }
-        
-        if (!file_exists($thumbnaildir.DIRECTORY_SEPARATOR.'index.html')) {
-        	touch($thumbnaildir.DIRECTORY_SEPARATOR.'index.html');
-        	file_put_contents($thumbnaildir.DIRECTORY_SEPARATOR.'index.html', 'You do not have permission to access this directory.');
+
+        if (!$oStorage->file_exists($thumbnaildir.DIRECTORY_SEPARATOR.'index.html'))
+        {
+        	$oStorage->touch($thumbnaildir.DIRECTORY_SEPARATOR.'index.html');
+        	$oStorage->file_put_contents($thumbnaildir.DIRECTORY_SEPARATOR.'index.html', 'You do not have permission to access this directory.');
         }
 
         // if there is no pdf that exists - hop out
-        if(!file_exists($srcFile)){
+        if(!$oStorage->file_exists($srcFile))
+        {
             $default->log->debug('Thumbnail Generator Plugin: Source file for conversion does not exist, cannot generate a thumbnail');
             return false;
         }
 
         // if a previous version of the thumbnail exists - delete it
-		if (file_exists($thumbnailfile)) {
-			@unlink($thumbnailfile);
+		if ($oStorage->file_exists($thumbnailfile))
+		{
+			$oStorage->unlink($thumbnailfile);
 		}
         // do generation
         $pathConvert = (!empty($default->convertPath)) ? $default->convertPath : 'convert';
-        $pageNumber = $type == 'pdf' ? "[0]" : $mimeType == 'image/tiff' ? "[0]":""; // If its a pdf or tiff, just convert first page
-        
+        $pageNumber = ($type == 'pdf' ? "[0]" : ($mimeType == 'image/tiff' ? "[0]" : "")); // If its a pdf or tiff, just convert first page
+
         // windows path may contain spaces
         /*
         if (stristr(PHP_OS,'WIN')) {
@@ -225,13 +235,13 @@ class thumbnailGenerator extends BaseProcessor
 			$cmd = "{$pathConvert} {$srcFile}" . $pageNumber . " -resize 200x200 $thumbnailfile";
 		}
 		*/
-        
-        $cmd = "'{$pathConvert}' -thumbnail 200 -limit area 10mb '{$srcFile}" . $pageNumber . "' '$thumbnailfile'";
-		
+
+        $cmd = "\"$pathConvert\" -thumbnail 200 -limit area 10mb \"$srcFile" . $pageNumber . "\" \"$thumbnailfile\"";
+
 		$default->log->debug($cmd);
 
 		$output = KTUtil::pexec($cmd);
-		
+
 		// Log the output
 		if(isset($output['out'])){
 			$out = $output['out'];
@@ -242,7 +252,7 @@ class thumbnailGenerator extends BaseProcessor
 			    $default->log->error('InstaView Plugin: error in creation of document thumbnail '.$this->document->iId.': '. $out);
 			}
 		}
-		
+
         return true;
     }
 }
@@ -265,6 +275,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
     }
 
     public function renderThumbnail($documentId, $height = null, $modal = null) {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         // Set up the template
         $oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate('thumbnail_viewlet');
@@ -283,14 +294,17 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 		}
 
 		// if the thumbnail doesn't exist try to create it
-		if (!file_exists($thumbnailCheck)) {
-            $thumbnailer = new thumbnailGenerator();
-            $thumbnailer->setDocument($this->oDocument);
-            $thumbnailer->processDocument();
+		if (!$oStorage->file_exists($thumbnailCheck)) {
+			if(!ACCOUNT_ROUTING_ENABLED){
+	            $thumbnailer = new thumbnailGenerator();
+	            $thumbnailer->setDocument($this->oDocument);
+	            $thumbnailer->processDocument();
+			}
 
             // if it still doesn't exist, return an empty string
-			if (!file_exists($thumbnailCheck)) {
-                return '';
+			if (!$oStorage->file_exists($thumbnailCheck)) {
+				//TODO: This is where we differentiate between failed thumbnails and in process thumbnails
+				return '';
             }
 		}
 
@@ -309,13 +323,19 @@ class ThumbnailViewlet extends KTDocumentViewlet {
              }
              $title = $ivLinkAction->getName($documentId);
         }
+        
         // Get the url to the thumbnail and render it
-        // Ensure url has correct slashes
-		$sHostPath = KTUtil::kt_url();
-		$plugin_path = KTPluginUtil::getPluginPath('thumbnails.generator.processor.plugin');
-		$thumbnailUrl = $plugin_path . 'thumbnail_view.php?documentId='.$documentId;
-		$thumbnailUrl = str_replace('\\', '/', $thumbnailUrl);
-		$thumbnailUrl = str_replace(KT_DIR, $sHostPath, $thumbnailUrl);
+        if (ACCOUNT_ROUTING_ENABLED) {
+            $thumbnailUrl = $oStorage->getSignedUrl("thumbnails/$documentId.jpg");
+        }
+        else {
+            // Ensure url has correct slashes
+            $sHostPath = KTUtil::kt_url();
+            $plugin_path = KTPluginUtil::getPluginPath('thumbnails.generator.processor.plugin');
+            $thumbnailUrl = $plugin_path . 'thumbnail_view.php?documentId='.$documentId;
+            $thumbnailUrl = str_replace('\\', '/', $thumbnailUrl);
+            $thumbnailUrl = str_replace(KT_DIR, $sHostPath, $thumbnailUrl);
+        }
 
 		$templateData = array(
 			'documentId' => $documentId,
@@ -340,15 +360,17 @@ class ThumbnailViewlet extends KTDocumentViewlet {
 		$main->requireJSResource('resources/lightbox/js/jquery.lightbox-0.5.min.js');
 		$main->requireCSSResource('resources/lightbox/css/lightbox.css');
     }
-    
+
     // determines whether the image exists and returns the maximum aspect to display;
     // this is used for anywhere which might require display resizing based on the presence or absence of the thumbnail
     public function getDisplaySize($documentId)
     {
     	global $default;
+    	$oStorage = KTStorageManagerUtil::getSingleton();
     	$varDir = $default->varDirectory;
 		$thumbnailfile = $varDir . '/thumbnails/'.$documentId.'.jpg';
-		if(file_exists($thumbnailfile)){
+		if($oStorage->file_exists($thumbnailfile))
+		{
 		    return 200;
 		}
 		return 0;
@@ -381,6 +403,7 @@ class ThumbnailColumn extends AdvancedColumn {
      */
     function renderData($aDataRow) {
         if ($aDataRow["type"] == "document") {
+        	$oStorage = KTStorageManagerUtil::getSingleton();
             $docid = $aDataRow['docid'];
             $oDoc = $aDataRow['document'];
 
@@ -399,11 +422,14 @@ class ThumbnailColumn extends AdvancedColumn {
     		}
 
     		// We won't try generate one - will slow down browsing too much
-    		if (!file_exists($thumbnailCheck)){
-    		    $tag = "
-    		      <div class='thumb-shadow'>
-    		          <img src='{$rootUrl}/resources/graphics/no_preview.png' height='{$height}' />
-		          </div>";
+    		if (!$oStorage->file_exists($thumbnailCheck)){
+    			//TODO: Differentiate
+    			$noPreviewSrc="{$rootUrl}/resources/graphics/no_preview.png";
+//    			$noPreviewSrc=ACCOUNT_ROUTING_ENABLED?"{$rootUrl}/resources/graphics/live_no_preview_folder_view.jpg":"{$rootUrl}/resources/graphics/no_preview.png";
+    		    $tag = '
+    		      <div class="thumb-shadow">
+    		          <img src="'.$noPreviewSrc.'" height="'.$height.'" />
+		          </div>';
     		    return $tag;
     		}
 

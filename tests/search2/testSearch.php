@@ -104,6 +104,7 @@ class Search2TestCase extends KTUnitTestCase {
 
     function addNewDocument($title, $filename, $i, $content = null)
     {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $file = $this->createFile($filename, $content);
         $document = $this->root->add_document($title, $filename, 'Default', $file);
 
@@ -113,7 +114,7 @@ class Search2TestCase extends KTUnitTestCase {
         $file = $this->createFile($filename, $content); // ktapi add_document deletes the temp file so recreate it for indexing.
         $status = $this->indexer->indexDocument($this->docId[$i], $file, $title, $version);
 
-        @unlink($file);
+        $oStorage->unlink($file);
 
         if(PEAR::isError($document)) return;
 
@@ -128,14 +129,14 @@ class Search2TestCase extends KTUnitTestCase {
      * @return string
      */
     function createFile($filename = 'myfile.txt', $content = null) {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         if(empty($content)){
             $content = 'Searchable text: abcde xyz 12345';
         }
 
-        $temp = tempnam(dirname(__FILE__), $filename);
-        $fp = fopen($temp, 'wt');
-        fwrite($fp, $content);
-        fclose($fp);
+        $temp = $oStorage->tempnam(dirname(__FILE__), $filename);
+        $oStorage->write_file($temp, 'wt', $content);
+
         return $temp;
     }
 }

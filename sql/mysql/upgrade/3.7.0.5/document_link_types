@@ -1,0 +1,1 @@
+ALTER TABLE document_link_types CHANGE COLUMN reverse_name reverse_name varchar(100);

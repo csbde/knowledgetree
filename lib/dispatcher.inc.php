@@ -523,7 +523,7 @@ class KTAdminDispatcher extends KTStandardDispatcher {
 
     function KTAdminDispatcher() {
         $this->aBreadcrumbs = array(
-            array('action' => 'administration', 'name' => _kt('Administration')),
+            array('action' => 'administration', 'name' => _kt('Settings')),
         );
         return parent::KTStandardDispatcher();
     }

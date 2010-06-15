@@ -64,6 +64,7 @@ require_once(KTAPI_DIR .'/KTAPIAcl.inc.php');
 require_once(KTAPI_DIR .'/KTAPICollection.inc.php');
 require_once(KTAPI_DIR .'/KTAPIBulkActions.inc.php');
 require_once(KTAPI_DIR .'/KTAPITrigger.inc.php');
+require_once(KTAPI_DIR .'/KTAPIConditionalMetadata.inc.php');
 
 /**
 * This class defines functions that MUST exist in the inheriting class
@@ -772,7 +773,7 @@ class KTAPI
 		}
 
 		$session = & new KTAPI_SystemSession($this, $user);
-		$this->session = &$session;
+		$this->session = $session;
 
 		return $session;
 	}
@@ -1048,7 +1049,7 @@ class KTAPI
 
 		foreach ($fieldsets as $fieldset)
 		{
-			if ($fieldset->getIsConditional()) {	/* this is not implemented...*/	continue;	}
+			//if ($fieldset->getIsConditional()) {	/* this is not implemented...*/	continue;	}
 
 			$fields = $fieldset->getFields();
 			$result = array(
@@ -1111,6 +1112,7 @@ class KTAPI
 				$fieldsresult[] = array(
 					'name' => $field->getName(),
 					'required' => $field->getIsMandatory(),
+					'fieldid' => $field->getId(),
 					'value' => $value,
 					'description' => $field->getDescription(),
 					'control_type' => $controltype,
@@ -3033,7 +3035,7 @@ class KTAPI
 		return $this->get_document_detail($document_id);
     }
 
-    public function  checkin_small_document_with_metadata($document_id,  $filename, $reason, $base64, $major_update,
+    public function checkin_small_document_with_metadata($document_id,  $filename, $reason, $base64, $major_update,
                                                           $metadata, $sysdata, $sig_username = '', $sig_password = '')
     {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
@@ -3247,18 +3249,17 @@ class KTAPI
     	{
     		$document = $document->document;
 
-    		$oStorage =& KTStorageManagerUtil::getSingleton();
+    		$oStorage = KTStorageManagerUtil::getSingleton();
             $filename = $oStorage->temporaryFile($document);
 
-    		$fp=fopen($filename,'rb');
+    		$fp = $oStorage->fopen($filename, 'rb');
     		if ($fp === false)
     		{
     		    $response['status_code'] = 1;
     			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
     			return $response;
     		}
-    		$content = fread($fp, filesize($filename));
-    		fclose($fp);
+    		$content = $oStorage->readfile("", "", $oStorage->fileSize($filename), $fp);
     		$content = base64_encode($content);
     	}
 
@@ -3403,26 +3404,19 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-
+		$oStorage = KTStorageManagerUtil::getSingleton();
     	$content='';
-
 		$document = $document->document;
-
-		$oStorage =& KTStorageManagerUtil::getSingleton();
         $filename = $oStorage->temporaryFile($document);
-
-		$fp=fopen($filename,'rb');
+		$fp = $oStorage->fopen($filename,'rb');
 		if ($fp === false)
 		{
 		    $response['status_code'] = 1;
 			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
 			return $response;
 		}
-		$content = fread($fp, filesize($filename));
-		fclose($fp);
+		$content = $oStorage->readfile("", "", $oStorage->fileSize($filename), $fp);
 		$content = base64_encode($content);
-
-
     	$response['status_code'] = 0;
 		$response['results'] = $content;
 
@@ -4899,6 +4893,52 @@ class KTAPI
 			return array();
 		}
 	}
+	
+	/**
+     * Method to check whether the installation is a commercial edition of KnowledgeTree
+     *
+     * @author KnowledgeTree Team
+     * @access public
+     * @return bool True if commercial edition | False if community edition
+     */
+	public function isCommercialEdition()
+	{
+		// Check that the wintools plugin is active and available, return false if not.
+        if (!KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+            return false;
+        }
+		
+		return (BaobabKeyUtil::getLicenseCount() >= MIN_LICENSES);
+	}
+	
+	/**
+	 * Method to get the Conditional Metadata Rules
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function getConditionalMetadataRules()
+	{
+        $ktapi_condRules = new KTAPI_ConditionalMetadata($this);
+		
+		return $ktapi_condRules->getConditionalMetadataRules();
+	}
+	
+	/**
+	 * Method to get the Conditional Metadata Connections
+	 *
+	 * @author KnowledgeTree Team
+	 * @access public
+	 */
+	public function getConditionalMetadataConnections()
+	{
+        $ktapi_condRules = new KTAPI_ConditionalMetadata($this);
+		
+		return $ktapi_condRules->getConditionalMetadataConnections();
+	}
+	
+	
+	
 }
 
 

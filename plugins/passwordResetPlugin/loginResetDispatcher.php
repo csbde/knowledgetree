@@ -8,7 +8,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -152,8 +152,9 @@ class loginResetDispatcher extends KTDispatcher {
 	      	  'js' => $js,
 	      	  'css' => $css,
 	      	  'sUrl' => $sUrl,
-			  'smallVersion' => substr($default->versionName,-17),
-			  'reset_password' => $reset_password
+			  'smallVersion' => $default->versionTier,
+			  'reset_password' => $reset_password,
+			  'username' => isset($_REQUEST['username']) ? $_REQUEST['username'] : null
         );
         return $oTemplate->render($aTemplateData);
     }

@@ -88,12 +88,12 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $currentaction = $this->sName;
 
     	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentinfo');
-        $oPortlet = new KTActionPortlet(sprintf(_kt('Document info')));
+        $oPortlet = new KTActionPortlet(sprintf(_kt('Info')));
         $oPortlet->setActions($actions, $currentaction);
         $this->oPage->addPortlet($oPortlet);
 
         $this->actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
-        $oPortlet = new KTActionPortlet(sprintf(_kt('Document actions'), $this->oDocument->getName()));
+        $oPortlet = new KTActionPortlet(sprintf(_kt('Actions'), $this->oDocument->getName()));
         $oPortlet->setActions($this->actions, $currentaction);
         $this->oPage->addPortlet($oPortlet);
     }
@@ -122,7 +122,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         }
         $document_id = $oDocument->getId();
         $document_data['document_id'] = $oDocument->getId();
-
 
         if (!KTBrowseUtil::inAdminMode($this->oUser, $oDocument->getFolderId())) {
             if ($oDocument->getStatusID() == ARCHIVED) {

@@ -647,6 +647,7 @@ a.main_nav_item {
 	padding:2px 3px;
 }
 
+/*
 #content .form_actions input
 {
     border: 1px solid #ccc;
@@ -658,6 +659,7 @@ a.main_nav_item {
 .form_actions .form_cancel {
     margin-left: 2em;
 }
+*/
 
 /* unframed (single button) forms */
 #content .noframe fieldset
@@ -743,6 +745,7 @@ a.main_nav_item {
     display: none;
 }
 
+/*
 #content .form_actions {
     margin-top: 0.5em;
     padding-top: 0.5em;
@@ -753,7 +756,7 @@ a.main_nav_item {
 {
     border: 1px solid #ffc21e;
     background: #ffdd80;
-}
+}*/
 
 #content h2
 {
@@ -2089,7 +2092,8 @@ hr {
 .ktBlock .dashboard_block_body
 {
     z-index:99;
-    margin: 8px 0 10px 0;
+    margin: 8px 0 0 0;
+	padding-bottom: 10px;
     background-color:#FFFFFF;
     overflow: auto;
 }

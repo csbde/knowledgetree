@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -48,6 +48,7 @@ require_once(KT_LIB_DIR . '/browse/BrowseColumns.inc.php');
 require_once(KT_LIB_DIR . '/browse/PartialQuery.inc.php');
 
 require_once(KT_LIB_DIR . '/widgets/forms.inc.php');
+require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 // {{{ KTDocumentDetailsAction
 class KTDocumentDetailsAction extends KTDocumentAction {
@@ -343,7 +344,7 @@ class KTDocumentViewAction extends KTDocumentAction {
 
     function getButton() {
         $btn = array();
-        $btn['display_text'] = _kt('Download Document');
+        $btn['display_text'] = _kt('Download');
         $btn['arrow_class'] = 'arrow_download';
         return $btn;
     }
@@ -354,7 +355,7 @@ class KTDocumentViewAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oStorage = KTStorageManagerUtil::getSingleton();
         $aOptions = array();
         $iVersion = KTUtil::arrayGet($_REQUEST, 'version');
         session_write_close();
@@ -374,6 +375,21 @@ class KTDocumentViewAction extends KTDocumentAction {
 
         $oDocumentTransaction = & new DocumentTransaction($this->oDocument, _kt('Document downloaded'), 'ktcore.transactions.download', $aOptions);
         $oDocumentTransaction->create();
+
+		$oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('download', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                'document' => $this->oDocument,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            if (PEAR::isError($ret)) {
+                return $ret;
+            }
+        }
 
         // fire subscription alerts for the downloaded document
         $oKTConfig =& KTConfig::getSingleton();
@@ -409,6 +425,13 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         }
 
         return parent::getInfo();
+    }
+    
+    function getButton() {
+        $btn = array();
+        $btn['display_text'] = _kt('Checkout');
+        $btn['arrow_class'] = 'check_out';
+        return $btn;
     }
 
     function check() {
@@ -570,7 +593,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
             }
         }
 
-        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oStorage = KTStorageManagerUtil::getSingleton();
         $oStorage->download($this->oDocument, true);
         exit(0);
     }
@@ -590,8 +613,8 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
     function getButton() {
         $btn = array();
-        $btn['display_text'] = _kt('Checkin Document');
-        $btn['arrow_class'] = 'arrow_upload';
+        $btn['display_text'] = _kt('Checkin');
+        $btn['arrow_class'] = 'check_in';
         return $btn;
     }
 
@@ -635,6 +658,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
 
     function form_main() {
+        global $default;
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'label' => _kt('Checkin Document'),
@@ -650,11 +674,18 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         $major_inc = sprintf('%d.%d', $this->oDocument->getMajorVersionNumber()+1, 0);
         $minor_inc = sprintf('%d.%d', $this->oDocument->getMajorVersionNumber(), $this->oDocument->getMinorVersionNumber()+1);
 
+        // Modify description according to whether the disableForceFilenameOption is set
+        if($default->disableForceFilenameOption){
+            $description = sprintf(_kt('Please specify the file you wish to upload. The file must have the same name as the original: <b>%s</b>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
+        }else{
+            $description = sprintf(_kt('Please specify the file you wish to upload.  Unless you also indicate that you are changing its filename (see "Force Original Filename" below), this will need to be called <b>%s</b>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8'));
+        }
+
         // Set the widgets for the form
         $aWidgets = array(
             array('ktcore.widgets.file', array(
                 'label' => _kt('File'),
-                'description' => sprintf(_kt('Please specify the file you wish to upload.  Unless you also indicate that you are changing its filename (see "Force Original Filename" below), this will need to be called <strong>%s</strong>'), htmlentities($this->oDocument->getFilename(),ENT_QUOTES,'UTF-8')),
+                'description' => $description,
                 'name' => 'file',
                 'basename' => 'file',
                 'required' => true,
@@ -668,7 +699,6 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         );
 
         // Electronic Signature if enabled
-        global $default;
         if($default->enableESignatures){
             $aWidgets[] = array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
@@ -722,7 +752,6 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         }
 
         // Add the "Force Original Filename" option if applicable
-        global $default;
         if(!$default->disableForceFilenameOption){
             $aWidgets[] = array('ktcore.widgets.boolean',array(
                 'label' => _kt('Force Original Filename'),
@@ -761,7 +790,6 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         $oForm = $this->form_main();
         $res = $oForm->validate();
         $data = $res['results'];
-
         $extra_errors = array();
 
         // If the filename is different to the original check if "Force Original Filename" is set and return an error if it is.
@@ -781,10 +809,8 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         }
 
         $sReason = $data['reason'];
-
         $sCurrentFilename = $docFileName;
         $sNewFilename = $data['file']['name'];
-
         $aOptions = array();
 
         if ($data['major_update']) {
@@ -795,10 +821,18 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             $aOptions['newfilename'] = $sNewFilename;
         }
 
+        // document checkin for the new storage drivers requires the document to be first uploaded
+        // to the temp directory from the php upload directory or the checkin will fail
+        $oStorage = KTStorageManagerUtil::getSingleton();
+        $oKTConfig =& KTConfig::getSingleton();
+        $sTempFilename = $oStorage->tempnam($oKTConfig->get("urls/tmpDirectory"), 'kt_storecontents');
+        $oStorage->uploadTmpFile($data['file']['tmp_name'], $sTempFilename);
+        $data['file']['tmp_name'] = $sTempFilename;
         $res = KTDocumentUtil::checkin($this->oDocument, $data['file']['tmp_name'], $sReason, $this->oUser, $aOptions);
         if (PEAR::isError($res)) {
             $this->errorRedirectToMain(_kt('An error occurred while trying to check in the document'), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
         }
+
         redirect(KTBrowseUtil::getUrlForDocument($this->oDocument));
         exit(0);
     }
@@ -1994,7 +2028,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         $data = $res['results'];
         $oTransition = KTWorkflowTransition::get($_REQUEST['fTransitionId']);
 
-        $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $this->oDocument, $this->oUser, $data['reason']);
+        $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $this->oDocument, $this->oUser, sanitizeForHTML($data['reason']));
 
         if(!Permission::userHasDocumentReadPermission($this->oDocument)) {
             $this->commitTransaction();

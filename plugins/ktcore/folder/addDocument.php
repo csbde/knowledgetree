@@ -56,7 +56,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
     function getButton(){
         $btn = array();
-        $btn['display_text'] = _kt('Upload Document');
+        $btn['display_text'] = _kt('Upload');
         $btn['arrow_class'] = 'arrow_upload';
         return $btn;
     }
@@ -224,6 +224,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
     }
 
     function do_processInitialData() {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $oForm = $this->form_initialdata();
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
@@ -242,7 +243,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get("urls/tmpDirectory");
 
-        $sFilename = tempnam($sBasedir, 'kt_storecontents');
+        $sFilename = $oStorage->tempnam($sBasedir, 'kt_storecontents');
 
         //$oContents = new KTFSFileLike($data['file']['tmp_name']);
         //$oOutputFile = new KTFSFileLike($sFilename);
@@ -253,7 +254,6 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         //}
 
 
-        $oStorage =& KTStorageManagerUtil::getSingleton();
         $oStorage->uploadTmpFile($data['file']['tmp_name'], $sFilename);
 
         $data['file']['tmp_name'] = $sFilename;

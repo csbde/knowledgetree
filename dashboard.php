@@ -51,6 +51,8 @@ require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 
 require_once(KT_LIB_DIR . '/dashboard/DashletDisables.inc.php');
 
+require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
+
 $sectionName = 'dashboard';
 
 class DashboardDispatcher extends KTStandardDispatcher {
@@ -68,6 +70,16 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $this->oPage->setShowPortlets(false);
         // retrieve action items for the user.
         // FIXME what is the userid?
+        
+        
+        // This creates a pseudo portlet to get the upload and add a folder button
+        // for the root directory to display them on the dashboard
+        $oFolder =& Folder::get(1);
+        $portlet = new KTActionPortlet(sprintf(_kt('Actions'))); // Usually part of actions
+        $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
+        $portlet->setActions($aActions,null);
+        
+        $midToolbarButtons = $portlet->showButtons();
 
 
         $oDashletRegistry =& KTDashletRegistry::getSingleton();
@@ -134,6 +146,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
               'context' => $this,
               'dashlets_left' => $aDashletsLeft,
               'dashlets_right' => $aDashletsRight,
+              'midToolbarButtons' => $midToolbarButtons,
         );
         
 		// TODO : Is this ok?

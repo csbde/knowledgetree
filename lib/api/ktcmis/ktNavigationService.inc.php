@@ -91,26 +91,18 @@ class KTNavigationService extends KTCMISBase {
                                    $includeAllowableActions = false, $includePathSegment = false)
     {
         // TODO optional parameters
-        $descendantsResult = $this->NavigationService->getDescendants($repositoryId, $folderId, $depth, $filter, 
-                                                                      $includeRelationships = false, $renditionFilter = '', 
-                                                                      $includeAllowableActions = false, $includePathSegment = false);
-
-        if (PEAR::isError($descendantsResult))
-        {
-            return array(
-                "status_code" => 1,
-                "message" => "Failed getting descendants for folder"
-            );
+        try {
+            $descendantsResult = $this->NavigationService->getDescendants($repositoryId, $folderId, $depth, $filter, 
+                                                                          $includeRelationships = false, $renditionFilter = '', 
+                                                                          $includeAllowableActions = false, $includePathSegment = false);
+        }
+        catch (Exception $e) {
+            throw $e;
         }
         
         // format for webservices consumption
-        // NOTE this will almost definitely be changing in the future, this is just to get something working
         $descendants = CMISUtil::decodeObjectHierarchy($descendantsResult, 'children');
-        
-        return array (
-            "status_code" => 0,
-            "results" => $descendants
-        );
+        return $descendants;
     }
 
     /**
@@ -131,22 +123,16 @@ class KTNavigationService extends KTCMISBase {
     {
         // TODO paging
         // TODO optional parameters
-        $childrenResult = $this->NavigationService->getChildren($repositoryId, $folderId, $includeAllowableActions, $includeRelationships);
-
-        if (PEAR::isError($childrenResult))
-        {
-            return array(
-                "status_code" => 1,
-                "message" => "Failed getting children for folder"
-            );
+        try {
+            $childrenResult = $this->NavigationService->getChildren($repositoryId, $folderId, $includeAllowableActions, $includeRelationships);
+        }
+        catch (Exception $e) {
+            throw $e;
         }
 
+        // format for webservices consumption
         $children = CMISUtil::decodeObjectHierarchy($childrenResult, 'children');
-
-        return array(
-			"status_code" => 0,
-			"results" => $children
-		);
+        return $children;
     }
 
     /**
@@ -163,24 +149,12 @@ class KTNavigationService extends KTCMISBase {
             $parent = $this->NavigationService->getFolderParent($repositoryId, $folderId, $filter);
         }
         catch (Exception $e) {
-            return array(
-                "status_code" => 1,
-                "message" => "Failed getting folder parent: " . $e->getMessage()
-            );
+            throw $e;
         }
         
-        if (PEAR::isError($parent))
-        {
-            return array(
-                "status_code" => 1,
-                "message" => "Failed getting folder parent"
-            );
-        }
-        
-        return array(
-			"status_code" => 0,
-			"results" => CMISUtil::createObjectPropertiesEntry($parent->getProperties())
-		);
+        // format for webservices consumption
+        $parent = CMISUtil::createObjectPropertiesEntry($parent->getProperties());
+        return $parent;
     }
 
     /**
@@ -200,24 +174,10 @@ class KTNavigationService extends KTCMISBase {
                                                                    $includeRelationships);
         }
         catch (Exception $e) {
-            return array(
-                "status_code" => 1,
-                "message" => $e->getMessage()
-            );
+            throw $e;
         }
 
-        if (PEAR::isError($ancestry))
-        {
-            return array(
-                "status_code" => 1,
-                "message" => "Failed getting ancestry for object"
-            );
-        }
-
-        return array(
-            "status_code" => 0,
-            "results" => $ancestry
-        );
+        return $ancestry;
     }
 
     /**
@@ -243,29 +203,22 @@ class KTNavigationService extends KTCMISBase {
     function getCheckedOutDocs($repositoryId, $folderId = null, $maxItems = 0, $skipCount = 0, $orderBy = '', 
                                $filter = '', $includeRelationships = null, $includeAllowableActions = false, $renditionFilter = '')
     {
-        $checkedout = $this->NavigationService->getCheckedOutDocs($repositoryId, $folderId = null, $maxItems = 0, $skipCount = 0, 
-                                                                  $orderBy, $filter, $includeRelationships, $includeAllowableActions, 
-                                                                  $renditionFilter);
-
-        if (PEAR::isError($checkedout))
-        {
-            return array(
-                "status_code" => 1,
-                "message" => "Failed getting list of checked out documents"
-            );
+        try {
+            $checkedout = $this->NavigationService->getCheckedOutDocs($repositoryId, $folderId = null, $maxItems = 0, $skipCount = 0, 
+                                                                      $orderBy, $filter, $includeRelationships, $includeAllowableActions, 
+                                                                      $renditionFilter);
+        }
+        catch (Exception $e) {
+            throw $e;
         }
 
         // convert to array format for external code
         $co = array();
-        foreach ($checkedout as $documentProperties)
-        {
+        foreach ($checkedout as $documentProperties) {
             $co[] = CMISUtil::createObjectPropertiesEntry($documentProperties);;
         }
 
-        return array(
-            "status_code" => 0,
-            "results" => $co
-        );
+        return $co;
     }
 
 }

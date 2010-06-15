@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -48,6 +48,7 @@ class KTConfig {
     var $flatns = array();
     var $expanded = array();
     var $expanding = array();
+    var $confPath = '';
 
     /**
      * Get the path to the cache file for the config settings
@@ -56,6 +57,10 @@ class KTConfig {
      */
     static function getCacheFilename()
     {
+        if(ACCOUNT_ROUTING_ENABLED){
+            return ACCOUNT_NAME . '-configcache';
+        }
+
         $pathFile = KT_DIR .  '/config/cache-path';
 
         if(!file_exists($pathFile)){
@@ -64,12 +69,83 @@ class KTConfig {
 
         // Get the directory containing the file, append the file name
         $cacheFile = trim(file_get_contents($pathFile));
-        $cacheFile .= '/configcache';
+        // if we are on an account name routing system (i.e. a shared system,) use the account name to distinguish config cache files
+        $cacheFile .= '/' . (defined('ACCOUNT_NAME') ? ACCOUNT_NAME : '') . 'configcache';
 
         // Ensure path is absolute
         $cacheFile = (!KTUtil::isAbsolutePath($cacheFile)) ? sprintf('%s/%s', KT_DIR, $cacheFile) : $cacheFile;
 
         return $cacheFile;
+    }
+
+    function setMemcache()
+    {
+        if(MemCacheUtil::$enabled){
+            return true;
+        }
+
+        $this->confPath = '/etc/kt';
+
+        $filename = $this->confPath . '/kt.cnf';
+
+		$c = new Config;
+        $root =& $c->parseConfig($filename, "IniCommented");
+
+        if (PEAR::isError($root)) {
+            return false;
+        }
+
+        $conf = $root->toArray();
+
+        // Populate the flat and flatns array with the settings from the config file
+        // These setting will be overwritten with the settings from the database.
+        if(isset($conf['root']) && !empty($conf['root'])){
+            foreach($conf['root'] as $group => $item){
+                foreach ($item as $key => $value){
+                    $this->setns($group, $key, $value, false);
+                }
+            }
+        }
+
+        $server_list = $this->get('memcache/servers', false);
+
+        if($server_list == false){
+                return false;
+        }
+        $filename = $this->getCacheFilename();
+
+        $server_arr = explode('|', $server_list);
+        $servers = array();
+
+        foreach ($server_arr as $server){
+
+            $portArr = explode(':', $server);
+
+            $servers[] = array(
+                'url' => $portArr[0],
+                'port' => (int)(isset($portArr[1])) ? $portArr[1] : 11211
+                );
+        }
+
+        try {
+            $isEnabled=MemCacheUtil::init($servers);
+        }catch (Exception $e){
+            return false;
+        }
+
+
+        return $isEnabled;
+    }
+
+    public static function logErrors(){
+        if(ACCOUNT_ROUTING_ENABLED){
+            /* Log Failed Memcache Server Connects */
+            foreach(MemCacheUtil::$errors as $error){
+            	if($error){
+            		if($GLOBALS['default']->log)$GLOBALS['default']->log->error($error);
+            	}
+            }
+        }
     }
 
     // FIXME nbm:  how do we cache errors here?
@@ -79,12 +155,22 @@ class KTConfig {
             return false;
         }
 
-        $config_str = file_get_contents($filename);
+        if(ACCOUNT_ROUTING_ENABLED){
+            $config_str = MemCacheUtil::get($filename);
+        }else{
+            $config_str = file_get_contents($filename);
+        }
+
+        if(empty($config_str)){
+            return false;
+        }
+
+
         $config_cache = unserialize($config_str);
         $this->flat = $config_cache['flat'];
         $this->flatns = $config_cache['flatns'];
-        $this->expanded = $config_cache['expanded'];
-        $this->expanding = $config_cache['expanding'];
+        $this->expanded = (isset($config_cache['expanded'])) ? $config_cache['expanded'] : array();
+        $this->expanding = (isset($config_cache['expanding'])) ? $config_cache['expanding'] : array();
 
         if(empty($this->flatns)){
             return false;
@@ -102,7 +188,19 @@ class KTConfig {
         $config_cache['expanded'] = $this->expanded;
         $config_cache['expanding'] = $this->expanding;
 
-        file_put_contents($filename, serialize($config_cache));
+        $config_cache = serialize($config_cache);
+
+        if(ACCOUNT_ROUTING_ENABLED)
+        {
+        	//if(!isset($_SESSION[LIVE_MEMCACHE_OVERRIDE]))
+        	//{
+            	$this->setMemcache();
+            	MemCacheUtil::set($filename, $config_cache);
+            	return true;
+        	//}
+        }
+
+        @file_put_contents($filename, $config_cache);
     }
 
     /**
@@ -113,6 +211,12 @@ class KTConfig {
     function clearCache()
     {
         $filename = $this->getCacheFilename();
+
+        if(ACCOUNT_ROUTING_ENABLED){
+            MemCacheUtil::clear($filename);
+            return true;
+        }
+
         if($filename !== false && file_exists($filename)){
             @unlink($filename);
         }
@@ -171,6 +275,15 @@ class KTConfig {
         if(isset($conf['root']) && !empty($conf['root'])){
             foreach($conf['root'] as $group => $item){
                 foreach ($item as $key => $value){
+                	if(ACCOUNT_ROUTING_ENABLED){
+                		if($key=='dbName'){
+                			// TODO : Testing purposes only, remove if statement only.
+                			if(!isset($_SESSION[LIVE_DATABASE_OVERRIDE]))
+                			{
+                				$value=ACCOUNT_NAME;
+                			}
+                		}
+                	}
                     $this->setns($group, $key, $value, false);
                 }
             }
@@ -211,7 +324,7 @@ class KTConfig {
             'password' => $this->flatns[$sPass],
             'hostspec' => $this->flatns['db/dbHost'],
             'database' => $this->flatns['db/dbName'],
-            'port' => $this->flatns['db/dbPort']
+            'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
         );
 
         $options = array(
@@ -289,14 +402,14 @@ class KTConfig {
 
     /**
      * Set a config value called $var to $value
-     * @param $var config variable and group in string like "ui/mainLogoTitle"
-     * @param $value a string with the value you want for the config item.
+     * @param string $var config variable and group in string like "ui/mainLogoTitle"
+     * @param string $value a string with the value you want for the config item.
+     * @param integer $can_edit Default null. Determines if the setting is available for editing by the admin user.
      * @return boolean
      */
-
-    function set($var = null, $value = null) {
+    function set($var = null, $value = null, $can_edit = null) {
         global $default;
-    
+
         if ($var == null) {
             return false;
         }
@@ -304,13 +417,13 @@ class KTConfig {
         $varParts = explode('/', $var);
         $groupName = $varParts[0];
         $var = $varParts[1];
-    
+
         if ($var == '' || $groupName == ''){
             //var and group must be set
             $default->log->error("config->set() requires the first parameter to be in the form 'groupName/configSetting'");
             return false;
         }
-    
+
         $sql = "SELECT id from config_settings WHERE item = '$var' and group_name = '$groupName'";
         $configId = DBUtil::getOneResultKey($sql,'id');
         if (PEAR::isError($configId))
@@ -321,7 +434,10 @@ class KTConfig {
 
         //If config var doesn't exist we create it
         if ($configId == null) {
-            $configId = DBUtil::autoInsert('config_settings', array('item' => $var ,'value' => $value, 'group_name' => $groupName));
+            if(!is_numeric($can_edit)){
+                $can_edit = 1;
+            }
+            $configId = DBUtil::autoInsert('config_settings', array('item' => $var ,'value' => $value, 'group_name' => $groupName, 'can_edit' => $can_edit));
 
             if (PEAR::isError($configId))
             {
@@ -330,16 +446,20 @@ class KTConfig {
             }
 
         } else {
-        
-            $res = DBUtil::autoUpdate('config_settings', array('value' => $value), $configId);
+
+            $fieldValues = array('value' => $value);
+            if(is_numeric($can_edit)){
+                $fieldValues['can_edit'] = $can_edit;
+            }
+            $res = DBUtil::autoUpdate('config_settings', $fieldValues, $configId);
             if (PEAR::isError($res)) {
                 $default->log->error(sprintf(_kt("Couldn't update config value: %s"), $res->getMessage()));
                 return false;
             }
         }
-        
+
         $this->clearCache();
-        
+
         return true;
     }
 
@@ -387,7 +507,7 @@ class KTConfig {
 
         $this->aFileRoot[$filename] =& $root;
 
-        $conf =& $root->toArray();
+        $conf = $root->toArray();
         foreach ($conf["root"] as $seck => $secv) {
             $aSectionFile[$seck] = $filename;
             if (is_array($secv)) {

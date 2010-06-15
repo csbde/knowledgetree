@@ -48,7 +48,7 @@ addLoadEvent(startupMetadata);
 {/capture}
 {$context->oPage->requireJSStandalone($sJavascript)}
 
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Import files into{/i18n}:<br />{$context->oFolder->getName()|sanitize}</h2>
+<h2>{i18n}Import files into{/i18n}: {$context->oFolder->getName()|sanitize}</h2>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data" name="bulk_import_form">
 <fieldset><legend>{i18n}Import from Server Location{/i18n}</legend>

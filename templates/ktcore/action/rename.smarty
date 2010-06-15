@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Rename Document{/i18n}:<br />{$documentName}</h2>
+<h2>{i18n}Rename Document{/i18n}: {$documentName}</h2>
 
 <p class="descriptiveText">{i18n}This page allows you to rename the file
 name (not the document title) for a document.{/i18n}</p>

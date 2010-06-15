@@ -48,21 +48,20 @@ class DeletePDFTrigger {
     }
 
     /**
-     * On deleting a document, send the document owner and alert creator a notification email
+     * On deleting/checkin a document, send the document owner and alert creator a notification email
      */
     function postValidate() {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         $oDoc = $this->aInfo['document'];
         $docId = $oDoc->getId();
         $docInfo = array('id' => $docId, 'name' => $oDoc->getName());
 
         // Delete the pdf document
-        global $default;
-        $pdfDirectory = $default->pdfDirectory;
 
-        $file = $pdfDirectory .'/'.$docId.'.pdf';
+        $file = $oStorage->getDocStoragePath($oDoc, 'pdf');
 
-        if(file_exists($file)){
-            @unlink($file);
+        if($oStorage->file_exists($file)){
+            $oStorage->unlink($file);
         }
     }
 }
@@ -85,6 +84,7 @@ class pdfConverterPlugin extends KTPlugin {
         $dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'pdfConverter.php';
         $this->registerProcessor('PDFConverter', 'pdf.converter.processor', $dir);
         $this->registerTrigger('delete', 'postValidate', 'DeletePDFTrigger','pdf.converter.triggers.delete', __FILE__);
+        $this->registerTrigger('checkin', 'postValidate', 'DeletePDFTrigger','pdf.triggers.delete.document.checkin', __FILE__);
     }
 }
 

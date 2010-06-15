@@ -38,19 +38,20 @@
  */
 
 require_once 'HTTP/WebDAV/Server.php'; // thirdparty PEAR
-require_once 'Config.php';             // thirdparty PEAR
-require_once 'Log.php';                // thirdparty PEAR
+require_once 'Config.php'; // thirdparty PEAR
+require_once 'Log.php'; // thirdparty PEAR
 
-$userAgentValue = $_SERVER['HTTP_USER_AGENT'];
-if (stristr($userAgentValue, "Microsoft Data Access Internet Publishing Provider DAV")) {
-    // Fix for Novell Netdrive
-    chdir(realpath(dirname(__FILE__)));
-    require_once '../../config/dmsDefaults.php'; // This is our plug into KT.
-}else{
-    require_once '../config/dmsDefaults.php'; // This is our plug into KT.
+
+$userAgentValue = $_SERVER ['HTTP_USER_AGENT'];
+if (stristr ( $userAgentValue, "Microsoft Data Access Internet Publishing Provider DAV" )) {
+	// Fix for Novell Netdrive
+	chdir ( realpath ( dirname ( __FILE__ ) ) );
+	require_once '../../config/dmsDefaults.php'; // This is our plug into KT.
+} else {
+	require_once '../config/dmsDefaults.php'; // This is our plug into KT.
 }
 
-DEFINE('STATUS_WEBDAV', 5);  // Status code to handle 0 byte PUT    FIXME: Do we still need this!
+DEFINE ( 'STATUS_WEBDAV', 5 );  // Status code to handle 0 byte PUT    FIXME: Do we still need this!
 
 /**
  * KnowledgeTree access using WebDAV protocol
@@ -94,6 +95,13 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
      */
     var $safeMode = 'on';
 
+    /**
+     * Print Objects
+     *
+     * @var string
+     */
+    var $printObjects = 'off';
+    
     /**
      * Configuration Array
      *
@@ -187,6 +195,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             $this->ktwebdavLog('=====================');
             $this->ktwebdavLog('  Debug Info is : ' . $this->debugInfo);
+            $this->ktwebdavLog('  Print System Objects : ' . $this->printObjects);
             $this->ktwebdavLog('    SafeMode is : ' . $this->safeMode);
             $this->ktwebdavLog(' Root Folder is : ' . $this->rootFolder);
             $this->ktwebdavLog('=====================');
@@ -209,6 +218,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
         $this->debugInfo = $oConfig->get('KTWebDAVSettings/debug', 'off');
         $this->safeMode = $oConfig->get('KTWebDAVSettings/safemode', 'on');
         $this->rootFolder = $oConfig->get('KTWebDAVSettings/rootfolder', 'Root Folder');
+        $this->printObjects = $oConfig->get('KTWebDAVSettings/printobjects', 'off');
         $this->kt_version = $default->systemVersion;
 
         return true;
@@ -607,7 +617,8 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             global $default;
 
-            $this->ktwebdavLog("Entering _fileinfoForDocument. Document is " . print_r($oDocument, true), 'info', true);
+            if($this->printObjects == 'on')
+            	$this->ktwebdavLog("Entering _fileinfoForDocument. Document is " . print_r($oDocument, true), 'info', true);
 
             $fspath = $default->documentRoot . "/" . $this->rootFolder . $path;
             $this->ktwebdavLog("fspath is " . $fspath, 'info', true);
@@ -692,8 +703,8 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
         function _fileinfoForFolder($oFolder, $path) {
 
             global $default;
-
-            $this->ktwebdavLog("Entering _fileinfoForFolder. Folder is " . print_r($oFolder, true), 'info', true);
+			if($this->printObjects == 'on')
+            	$this->ktwebdavLog("Entering _fileinfoForFolder. Folder is " . print_r($oFolder, true), 'info', true);
 
             // Fix for Mac
             // Modified - 25/10/07 - spaces prevent files displaying in finder
@@ -1147,11 +1158,11 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
          */
         function _GETDocument(&$options, $iDocumentID) {
             global $default;
-
+			$oStorage = KTStorageManagerUtil::getSingleton();
             $oDocument =& Document::get($iDocumentID);
 
             // get a temp file, and read.  NOTE: NEVER WRITE TO THIS
-            $oStorage =& KTStorageManagerUtil::getSingleton();
+            
             $fspath = $oStorage->temporaryFile($oDocument);
 
             $this->ktwebdavLog("Filesystem Path is " . $fspath, 'info', true );
@@ -1170,7 +1181,17 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             $options['size'] = $oDocument->getFileSize();
 
             // no need to check result here, it is handled by the base class
-            $options['stream'] = fopen($fspath, "r");
+            
+            if (ACCOUNT_ROUTING_ENABLED){
+            	/**
+            	 * Make sure that streaming (therefore resumeable downloads) are disabled
+            	 * and get the data straight from the storage driver.
+            	 */
+				unset ($options['stream']); 
+            	$options['data']=$oStorage->file_get_contents($fspath);
+            }else{
+            	$options['stream'] = fopen($fspath, "r");
+            }
 
             $this->ktwebdavLog("Method is " . $this->currentMethod, 'info', true );
 
@@ -1320,6 +1341,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
         function PUT(&$options)
         {
             global $default;
+            $oStorage=KTStorageManagerUtil::getSingleton();
 
             if ($this->checkSafeMode()) {
 
@@ -1389,8 +1411,8 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 if ($iDocumentID !== false) {
                     // This means there is a document with the given path
                     $oDocument = Document::get($iDocumentID);
-
-                    $this->ktwebdavLog("oDocument is " .  print_r($oDocument, true), 'info', true);
+					if($this->printObjects == 'on')
+                    	$this->ktwebdavLog("oDocument is " .  print_r($oDocument, true), 'info', true);
                     $this->ktwebdavLog("oDocument statusid is " .  print_r($oDocument->getStatusID(), true), 'info', true);
 
                     if ( ( (int)$oDocument->getStatusID() != STATUS_WEBDAV ) && ( (int)$oDocument->getStatusID() != DELETED )) {
@@ -1400,28 +1422,27 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
                     // FIXME: Direct filesystem access
                     $fh = $options["stream"];
-                    $sTempFilename = tempnam('/tmp', 'ktwebdav_dav_put');
-                    $ofh = fopen($sTempFilename, 'w');
 
                     $contents = '';
                     while (!feof($fh)) {
                         $contents .= fread($fh, 8192);
                     }
-                    $fres = fwrite($ofh, $contents);
+                    
+                    $sTempFilename = $oStorage->tempnam('/tmp', 'ktwebdav_dav_put');
+                    
+                  	$oStorage->file_put_contents($sTempFilename,$contents);
+                  	
                     $this->ktwebdavLog("A DELETED or CHECKEDOUT document exists. Overwriting...", 'info', true);
                     $this->ktwebdavLog("Temp Filename is: " . $sTempFilename, 'info', true );
                     $this->ktwebdavLog("File write result size was: " . $fres, 'info', true );
 
                     fflush($fh);
                     fclose($fh);
-                    fflush($ofh);
-                    fclose($ofh);
-                    $this->ktwebdavLog("Files have been flushed and closed.", 'info', true );
 
                     $name = basename($path);
                     $aFileArray = array(
                             "name" => $name,
-                            "size" => filesize($sTempFilename),
+                            "size" => strlen($contents),
                             "type" => false,
                             "userID" => $this->_getUserID(),
                             );
@@ -1444,49 +1465,48 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
                     if(PEAR::isError($oDocument)) {
                         $this->ktwebdavLog("oDocument ERROR: " .  $oDocument->getMessage(), 'info', true);
-		                unlink($sTempFilename);
+		                $oStorage->unlink($sTempFilename);
                         return "409 Conflict - " . $oDocument->getMessage();
                     }
+					if($this->printObjects == 'on')
+                    	$this->ktwebdavLog("oDocument is " .  print_r($oDocument, true), 'info', true);
 
-                    $this->ktwebdavLog("oDocument is " .  print_r($oDocument, true), 'info', true);
-
-                    unlink($sTempFilename);
+	                $oStorage->unlink($sTempFilename);
                     return "201 Created";
                 }
 
                 $options["new"] = true;
                 // FIXME: Direct filesystem access
                 $fh = $options["stream"];
-                $sTempFilename = tempnam('/tmp', 'ktwebdav_dav_put');
-                $ofh = fopen($sTempFilename, 'w');
 
                 $contents = '';
                 while (!feof($fh)) {
                     $contents .= fread($fh, 8192);
                 }
-                $fres = fwrite( $ofh, $contents);
+                $sTempFilename = $oStorage->tempnam('/tmp', 'ktwebdav_dav_put');
+                   
+                $oStorage->file_put_contents($sTempFilename,$contents);
+                
+                
                 $this->ktwebdavLog("Content length was not 0, doing the whole thing.", 'info', true );
                 $this->ktwebdavLog("Temp Filename is: " . $sTempFilename, 'info', true );
                 $this->ktwebdavLog("File write result size was: " . $fres, 'info', true );
 
                 fflush($fh);
                 fclose($fh);
-                fflush($ofh);
-                fclose($ofh);
                 $this->ktwebdavLog("Files have been flushed and closed.", 'info', true );
 
+				//TODO: compare header content length and actual data length for parity
                 $name = basename($path);
                 $aFileArray = array(
                         "name" => $name,
-                        "size" => filesize($sTempFilename),
+                        "size" => strlen($contents),
                         "type" => false,
                         "userID" => $this->_getUserID(),
                         );
                 $this->ktwebdavLog("aFileArray is " .  print_r($aFileArray, true), 'info', true);
 
-                //include_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
                 $aOptions = array(
-                        //'contents' => new KTFSFileLike($sTempFilename),
                         'temp_file' => $sTempFilename,
                         'metadata' => array(),
                         'novalidate' => true,
@@ -1495,13 +1515,13 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
                 if(PEAR::isError($oDocument)) {
                     $this->ktwebdavLog("oDocument ERROR: " .  $oDocument->getMessage(), 'info', true);
-                    unlink($sTempFilename);
+                    $oStorage->unlink($sTempFilename);
                     return "409 Conflict - " . $oDocument->getMessage();
                 }
+				if($this->printObjects == 'on')
+                	$this->ktwebdavLog("oDocument is " .  print_r($oDocument, true), 'info', true);
 
-                $this->ktwebdavLog("oDocument is " .  print_r($oDocument, true), 'info', true);
-
-                unlink($sTempFilename);
+                $oStorage->unlink($sTempFilename);
                 return "201 Created";
 
             }  else return "423 Locked - KTWebDAV is in SafeMode";
@@ -1583,15 +1603,18 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 $this->ktwebdavLog("Will create a physical path of " .  $dest_fspath, 'info', true);
 
                 $oParentFolder =& Folder::get($iFolderID);
-                $this->ktwebdavLog("Got an oParentFolder of " .  print_r($oParentFolder, true), 'info', true);
+                if($this->printObjects == 'on')
+                	$this->ktwebdavLog("Got an oParentFolder of " .  print_r($oParentFolder, true), 'info', true);
 
                 // Check if the user has permissions to write in this folder
                 $oPerm =& KTPermission::getByName('ktcore.permissions.addFolder');
                 $oUser =& User::get($this->userID);
-
-                $this->ktwebdavLog("oPerm is " .  print_r($oPerm, true), 'info', true);
-                $this->ktwebdavLog("oUser is " .  print_r($oUser, true), 'info', true);
-                $this->ktwebdavLog("oFolder is " .  print_r($oParentFolder, true), 'info', true);
+				if($this->printObjects == 'on')
+				{
+                	$this->ktwebdavLog("oPerm is " .  print_r($oPerm, true), 'info', true);
+                	$this->ktwebdavLog("oUser is " .  print_r($oUser, true), 'info', true);
+                	$this->ktwebdavLog("oFolder is " .  print_r($oParentFolder, true), 'info', true);
+				}
 
                 if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oParentFolder)) {
                     $this->ktwebdavLog("Permission denied.", 'info', true);
@@ -1705,8 +1728,11 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oFolder)) {
                 return "403 Forbidden - The user does not have sufficient permissions";
             }
-            $this->ktwebdavLog("Got an oFolder of " . print_r($oFolder, true), 'info', true);
-            $this->ktwebdavLog("Got an oUser of " . print_r($oUser, true), 'info', true);
+            if($this->printObjects == 'on')
+            {
+            	$this->ktwebdavLog("Got an oFolder of " . print_r($oFolder, true), 'info', true);
+            	$this->ktwebdavLog("Got an oUser of " . print_r($oUser, true), 'info', true);
+            }
             $res = KTFolderUtil::delete($oFolder, $oUser, 'KTWebDAV Delete');
 
             if (PEAR::isError($res)) {
@@ -1886,7 +1912,8 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             if ((dirname($source_path) == dirname($dest_path)) && !is_null($iDestDoc)) {
                 // This is a rename
                 $this->ktwebdavLog("This is a rename.", 'info', true);
-                $this->ktwebdavLog("Got an oDocument of " . print_r($oDocument, true), 'info', true);
+                if($this->printObjects == 'on')
+                	$this->ktwebdavLog("Got an oDocument of " . print_r($oDocument, true), 'info', true);
                 $this->ktwebdavLog("Got a new name of " . basename($dest_path), 'info', true);
 
                 // Check if the user has permissions to write this document
@@ -1913,7 +1940,8 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 Check if user has permission to write to the document and folder.
                 Move the document. ** */
             $oDestFolder = Folder::get($iDestFolder);
-            $this->ktwebdavLog("Got a destination folder of " . print_r($oDestFolder, true), 'info', true);
+            if($this->printObjects == 'on')
+            	$this->ktwebdavLog("Got a destination folder of " . print_r($oDestFolder, true), 'info', true);
 
             // Check if the user has permissions to write in this folder
             $oPerm =& KTPermission::getByName('ktcore.permissions.write');
@@ -2045,7 +2073,8 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             if (dirname($source_path) == dirname($dest_path) && !is_null($iDestDoc)) {
                 // This is a rename
                 $this->ktwebdavLog("Rename collection.", 'info', true);
-                $this->ktwebdavLog("Got an oSrcFolder of " . print_r($oSrcFolder, true), 'info', true);
+                if($this->printObjects == 'on')
+                	$this->ktwebdavLog("Got an oSrcFolder of " . print_r($oSrcFolder, true), 'info', true);
                 $this->ktwebdavLog("Got an new name of " . basename($dest_path), 'info', true);
 
                 include_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
@@ -2077,9 +2106,12 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 Check if user has permission to write to the folder.
                 Move the folder. ** */
             $oUser =& User::get($this->userID);
-            $this->ktwebdavLog("Got an oSrcFolder of " . print_r($oSrcFolder, true), 'info', true);
-            $this->ktwebdavLog("Got an oDestFolder of " . print_r($oDestFolder, true), 'info', true);
-            $this->ktwebdavLog("Got an oUser of " . print_r($oUser, true), 'info', true);
+            if($this->printObjects == 'on')
+            {
+	            $this->ktwebdavLog("Got an oSrcFolder of " . print_r($oSrcFolder, true), 'info', true);
+	            $this->ktwebdavLog("Got an oDestFolder of " . print_r($oDestFolder, true), 'info', true);
+	            $this->ktwebdavLog("Got an oUser of " . print_r($oUser, true), 'info', true);
+            }
 
             // Check if the user has permissions to write in this folder
             $oPerm =& KTPermission::getByName('ktcore.permissions.write');
@@ -2266,9 +2298,11 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             $oSrcDoc = Document::get($iDocumentID);
 
             include_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
-
-            $this->ktwebdavLog("Got an oSrcDoc of " .$oSrcDoc->getName() . print_r($oSrcDoc, true), 'info', true);
-            $this->ktwebdavLog("Got an oDestFolder of " .$oDestFolder->getName() . print_r($oDestFolder, true), 'info', true);
+			if($this->printObjects == 'on')
+			{
+            	$this->ktwebdavLog("Got an oSrcDoc of " .$oSrcDoc->getName() . print_r($oSrcDoc, true), 'info', true);
+            	$this->ktwebdavLog("Got an oDestFolder of " .$oDestFolder->getName() . print_r($oDestFolder, true), 'info', true);
+			}	
 
             // Check if the user has permissions to write in this folder
             $oPerm =& KTPermission::getByName('ktcore.permissions.write');
@@ -2378,9 +2412,12 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 Check if user has permission to write to the folder.
                 Copy the document. Pass parameters for the destination folder name and the depth of copy. ** */
             $oUser =& User::get($this->userID);
-            $this->ktwebdavLog("Got an oSrcFolder of " . print_r($oSrcFolder, true), 'info', true);
-            $this->ktwebdavLog("Got an oDestFolder of " . print_r($oDestFolder, true), 'info', true);
-            $this->ktwebdavLog("Got an oUser of " . print_r($oUser, true), 'info', true);
+            if($this->printObjects == 'on')
+            {
+	            $this->ktwebdavLog("Got an oSrcFolder of " . print_r($oSrcFolder, true), 'info', true);
+	            $this->ktwebdavLog("Got an oDestFolder of " . print_r($oDestFolder, true), 'info', true);
+	            $this->ktwebdavLog("Got an oUser of " . print_r($oUser, true), 'info', true);
+            }
 
             // Check if the user has permissions to write in this folder
             $oPerm =& KTPermission::getByName('ktcore.permissions.write');
@@ -2459,14 +2496,16 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             $oDocument =& Document::get($iDocumentID);
 
 			if (is_null($oDocument) || ($oDocument === false) || PEAR::isError($oDocument)) {
-				$this->ktwebdavLog("Document invalid ". print_r($oDocument, true), 'info', true);
+				if($this->printObjects == 'on')
+					$this->ktwebdavLog("Document invalid ". print_r($oDocument, true), 'info', true);
 				return false;
 			}
 
 			if($oDocument->getIsCheckedOut()) {
 				$info = array();
 				$info["props"][] = $this->mkprop($sNameSpace, 'CheckedOut', $oDocument->getCheckedOutUserID());
-				//$this->ktwebdavLog("getIsCheckedOut ". print_r($info,true), 'info', true);
+				if($this->printObjects == 'on')
+					$this->ktwebdavLog("getIsCheckedOut ". print_r($info,true), 'info', true);
 
 				$oCOUser = User::get( $oDocument->getCheckedOutUserID() );
 
@@ -2483,7 +2522,8 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 				//$this->ktwebdavLog("this UserID " .$oUser->getID(), 'info', true);
 
 				if (PEAR::isError($oUser) || is_null($oUser) || ($oUser === false)) {
-						$this->ktwebdavLog("User invalid ". print_r($oUser, true), 'info', true);
+						if($this->printObjects == 'on')
+							$this->ktwebdavLog("User invalid ". print_r($oUser, true), 'info', true);
 						return false;
 					} else {
 						$ouser_id = $oUser->getID();
@@ -2506,113 +2546,59 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
         }
 
         /**
-         * checkSafeMode() helper
+         * Checks the type of webdav client. Certain clients require specific fixes to work properly.
          *
          * @return bool  true or false
          */
         function checkSafeMode()
         {
+            $supported = false;
 
             // Check/Set the WebDAV Client
             $userAgentValue = $_SERVER['HTTP_USER_AGENT'];
+
             // KT Explorer
             if (stristr($userAgentValue,"Microsoft Data Access Internet Publishing Provider")) {
+                $supported = true;
                 $this->dav_client = "MS";
-                $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
             }
             // Mac Finder
             if (stristr($userAgentValue,"Macintosh") || stristr($userAgentValue,"Darwin")) {
+                $supported = true;
                 $this->dav_client = "MC";
-                $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
             }
             // Mac Goliath
             if (stristr($userAgentValue,"Goliath")) {
+                $supported = true;
                 $this->dav_client = "MG";
-                $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
             }
             // Konqueror
             if (stristr($userAgentValue,"Konqueror")) {
+                $supported = true;
                 $this->dav_client = "KO";
-                $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
             }
             // Neon Library ( Gnome Nautilus, cadaver, etc)
             if (stristr($userAgentValue,"neon")) {
+                $supported = true;
                 $this->dav_client = "NE";
-                $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
             }
-            // Windows WebDAV
-            if ($this->dav_client == 'MS' && $this->safeMode == 'off') {
 
-                $this->ktwebdavLog("This is MS type client with SafeMode Off.", 'info', true);
-                return true;
+            $this->ktwebdavLog("WebDAV Client : " . $userAgentValue, 'info', true);
 
-            }
-            if ($this->dav_client == 'MS' && $this->safeMode != 'off') {
-
-                $this->ktwebdavLog("This is MS type client with SafeMode On.", 'info', true);
+            if($this->safeMode != 'off'){
+                $this->ktwebdavLog("SafeMode is On.", 'info', true);
                 return false;
-
             }
-            // Mac Finder
-            if ($this->dav_client == 'MC' && $this->safeMode == 'off') {
 
-                $this->ktwebdavLog("This is Mac Finder type client with SafeMode off.", 'info', true);
+            if($supported){
+                $this->ktwebdavLog("This is supported client with SafeMode Off.", 'info', true);
                 return true;
-
-            }
-            if ($this->dav_client == 'MC' && $this->safeMode != 'off') {
-
-                $this->ktwebdavLog("This is Mac Finder type client with SafeMode on.", 'info', true);
-                return false;
-
-            }
-            // Mac Goliath
-            if ($this->dav_client == 'MG' && $this->safeMode == 'off') {
-
-                $this->ktwebdavLog("This is a Mac Goliath type client with SafeMode off.", 'info', true);
-                return true;
-
-            }
-            // Mac Goliath
-            if ($this->dav_client == 'MG' && $this->safeMode != 'off') {
-
-                $this->ktwebdavLog("This is a Mac Goliath type client with SafeMode on.", 'info', true);
-                return false;
-
-            }
-            // Konqueror
-            if ($this->dav_client == 'KO' && $this->safeMode == 'off') {
-
-                $this->ktwebdavLog("This is Konqueror type client with SafeMode Off.", 'info', true);
-                return true;
-
-            }
-            if ($this->dav_client == 'KO' && $this->safeMode != 'off') {
-
-                $this->ktwebdavLog("This is Konqueror type client with SafeMode On.", 'info', true);
-                return false;
-
-            }
-            // Neon Library (Gnome Nautilus, cadaver, etc.)
-            if ($this->dav_client == 'NE' && $this->safeMode == 'off') {
-
-                $this->ktwebdavLog("This is Neon type client with SafeMode Off.", 'info', true);
-                return true;
-
-            }
-            if ($this->dav_client == 'NE' && $this->safeMode != 'off') {
-
-                $this->ktwebdavLog("This is Neon type client with SafeMode On.", 'info', true);
-                return false;
-
             }
 
-            $this->ktwebdavLog("Unknown client. SafeMode needed.", 'info', true);
-            return false;
-
+            $this->ktwebdavLog("This is an unsupported client running with SafeMode Off. There could be issues.", 'warn', true);
+            return true;
         }
+}
 
-        }
 
-
-        ?>
+?>

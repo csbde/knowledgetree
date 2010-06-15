@@ -1,4 +1,4 @@
-<h2><img src="{if $config->get("ui/morphEnabled") == '1'}{$rootUrl}/skins/kts_{$config->get("ui/morphTo")}/title_bullet.png{else}{$rootUrl}/resources/graphics/title_bullet.png{/if}"/>{i18n}Make Immutable{/i18n}:<br />{$context->oDocument->getName()|sanitize}</h2>
+<h2>{i18n}Make Immutable{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
 
 <p class="descriptiveText">{i18n}<img src="/thirdpartyjs/extjs/resources/images/default/window/icon-warning.gif" widht="20" height="20"/> <b><i>Warning!</b></i> This action cannot be undone. No further content changes will be allowed, and only the system administrator, working in Administration Mode, may edit the metadata of an immutable document.{/i18n}</p>
 

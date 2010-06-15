@@ -1189,7 +1189,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 */
 	function add_document($title, $filename, $documenttype, $tempfilename)
 	{
-		if (!is_file($tempfilename))
+	    $storage = KTStorageManagerUtil::getSingleton();
+		if (!$storage->isFile($tempfilename))
 		{
 			return new PEAR_Error('File does not exist.');
 		}

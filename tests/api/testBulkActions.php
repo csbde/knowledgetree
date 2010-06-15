@@ -503,6 +503,7 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
      */
     function createDocument($title, $filename, $folder = null)
     {
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         if(is_null($folder)){
             $folder = $this->root;
         }
@@ -514,7 +515,7 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
         $document = $folder->add_document($title, $filename, 'Default', $randomFile);
         $this->assertNotError($document);
 
-        @unlink($randomFile);
+        $oStorage->unlink($randomFile);
         if(PEAR::isError($document)) return false;
 
         return $document;
@@ -527,8 +528,9 @@ class APIBulkActionsTestCase extends KTUnitTestCase {
      * @return unknown
      */
     function createRandomFile($content = 'this is some text') {
-        $temp = tempnam(dirname(__FILE__), 'myfile');
-        file_put_contents($temp, $content);
+    	$oStorage = KTStorageManagerUtil::getSingleton();
+        $temp = $oStorage->tempnam(dirname(__FILE__), 'myfile');
+        $oStorage->file_put_contents($temp, $content);
         return $temp;
     }
 }

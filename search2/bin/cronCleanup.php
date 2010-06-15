@@ -39,7 +39,7 @@
 
 chdir(dirname(__FILE__));
 require_once(realpath('../../config/dmsDefaults.php'));
-
+$oStorage = KTStorageManagerUtil::getSingleton();
 $config = KTConfig::getSingleton();
 $temp_dir =$config->get("urls/tmpDirectory");
 
@@ -66,14 +66,14 @@ function cleanupTempDirectory($dir, $force = false)
             if ($info['ctime'] >= time() - 24 * 60 * 60) continue; // remove files that have been accessed in the last 24 hours
         }
 
-        if (is_dir($fullname))
+        if ($oStorage->is_dir($fullname))
         {
             cleanupTempDirectory($fullname, true);
             rmdir($fullname);
         }
         else
         {
-            unlink($fullname);
+            $oStorage->unlink($fullname);
         }
 
     }

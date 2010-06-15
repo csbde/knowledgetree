@@ -43,6 +43,7 @@ require_once(KT_LIB_DIR . "/unitmanagement/Unit.inc");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/widgets/forms.inc.php");
+require_once(KT_DIR . '/plugins/ktcore/KTPortlets.php');
 
 class PreferencesDispatcher extends KTStandardDispatcher {
     var $sSection = 'preferences';
@@ -155,7 +156,7 @@ class PreferencesDispatcher extends KTStandardDispatcher {
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt("Your Preferences"));
-        $this->oPage->title = _kt("Dashboard");
+        $this->oPage->title = _kt("Preferences");
         $oUser =& $this->oUser;
 
         $oForm = $this->form_main();
@@ -167,17 +168,21 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         if ($iSourceId) {
             $bChangePassword = false;
         }
+        
+        $adminPortlet = new KTAdminModePortlet();
+        
         $aTemplateData = array(
               "context" => $this,
               'edit_form' => $oForm,
               "show_password" => $bChangePassword,
+              "adminPortletContent" => $adminPortlet->render(TRUE),
         );
         return $oTemplate->render($aTemplateData);
     }
 
     function do_setPassword() {
         $this->oPage->setBreadcrumbDetails(_kt("Your Password"));
-        $this->oPage->title = _kt("Dashboard");
+        $this->oPage->title = _kt("Preferences - Set Password");
 
         $oForm = $this->form_password();
 
@@ -189,8 +194,6 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         );
         return $oTemplate->render($aTemplateData);
     }
-
-
 
     function do_updatePassword() {
         $oForm = $this->form_password();
@@ -219,7 +222,6 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $this->successRedirectToMain(_kt('Your password has been changed.'));
 
     }
-
 
     function do_updatePreferences() {
         $aErrorOptions = array(

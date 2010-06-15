@@ -123,43 +123,58 @@ class KTAdminModePortlet extends KTPortlet {
     function KTAdminModePortlet() {
         parent::KTPortlet(_kt("Administrator mode"));
     }
-    function render() {
-        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
-        $iDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
-        if (!$iFolderId && !$iDocumentId) {
-            return null;
-        }
-        if ($iDocumentId) {
-            $oDocument = Document::get($iDocumentId);
-            if (PEAR::isError($oDocument) || ($oDocument === false)) {
-                return null;
-            }
-            $iFolderId = $oDocument->getFolderId();
-        }
-        require_once(KT_LIB_DIR . '/security/Permission.inc');
-        $oUser =& User::get($_SESSION['userID']);
-        if (!Permission::userIsSystemAdministrator($oUser) && !Permission::isUnitAdministratorForFolder($oUser, $iFolderId)) {
-            return null;
-        }
-        require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
-
-        $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("kt3/portlets/admin_mode_portlet");
-
-        $toggleMode = 'action=disableAdminMode';
-        if (KTUtil::arrayGet($_SESSION, 'adminmode', false) == false) {
-            $toggleMode = 'action=enableAdminMode';
-        }
-        $QS = sprintf('fDocumentId=%s&fFolderId=%s&%s',$iDocumentId, $iFolderId, $toggleMode);
-
-        $toggleUrl = KTUtil::addQueryString(KTBrowseUtil::getBrowseBaseUrl(), $QS);
-
-        $aTemplateData = array(
-            "context" => $this,
-            'toggleurl' => $toggleUrl,
-            'enabled' => KTUtil::arrayGet($_SESSION, 'adminmode', false),
-        );
-        return $oTemplate->render($aTemplateData);
+	
+	/**
+	 * Method to render the Portlet
+	 *
+	 * This portlet is hidden by default,
+	 * but manually called from the preferences page
+	 * 
+	 * @param boolean $forceRender 
+	 */
+    function render($forceRender=FALSE) {
+		
+		if (!$forceRender) {
+			return null;
+		} else {
+			
+			$iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', 1);
+			$iDocumentId = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+			if (!$iFolderId && !$iDocumentId) {
+				return null;
+			}
+			if ($iDocumentId) {
+				$oDocument = Document::get($iDocumentId);
+				if (PEAR::isError($oDocument) || ($oDocument === false)) {
+					return null;
+				}
+				$iFolderId = $oDocument->getFolderId();
+			}
+			require_once(KT_LIB_DIR . '/security/Permission.inc');
+			$oUser =& User::get($_SESSION['userID']);
+			if (!Permission::userIsSystemAdministrator($oUser) && !Permission::isUnitAdministratorForFolder($oUser, $iFolderId)) {
+				return null;
+			}
+			require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
+	
+			$oTemplating =& KTTemplating::getSingleton();
+			$oTemplate = $oTemplating->loadTemplate("kt3/portlets/admin_mode_portlet");
+	
+			$toggleMode = 'action=disableAdminMode';
+			if (KTUtil::arrayGet($_SESSION, 'adminmode', false) == false) {
+				$toggleMode = 'action=enableAdminMode';
+			}
+			$QS = sprintf('fDocumentId=%s&fFolderId=%s&%s',$iDocumentId, $iFolderId, $toggleMode);
+	
+			$toggleUrl = KTUtil::addQueryString(KTBrowseUtil::getBrowseBaseUrl(), $QS);
+	
+			$aTemplateData = array(
+				"context" => $this,
+				'toggleurl' => $toggleUrl,
+				'enabled' => KTUtil::arrayGet($_SESSION, 'adminmode', false),
+			);
+			return $oTemplate->render($aTemplateData);
+		}
     }
 }
 
@@ -168,7 +183,7 @@ class KTAdminModePortlet extends KTPortlet {
 class KTAdminSectionNavigation extends KTPortlet {
     var $bActive = true;
     function KTAdminSectionNavigation() {
-        parent::KTPortlet(_kt("Administration"));
+        parent::KTPortlet(_kt("Settings"));
     }
 
     function render() {

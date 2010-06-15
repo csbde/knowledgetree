@@ -17,9 +17,9 @@ class DocumentTestCase extends KTUnitTestCase {
     }
 
     function &_addFile($sFileName, $aOptions = null) {
-	if(!is_array($aOptions)) $aOptions = array();
-	$oDocument =& KTDocumentUtil::add($this->oFolder, $sFileName, $this->oUser, $aOptions);
-	return $oDocument;
+	   if(!is_array($aOptions)) $aOptions = array();
+	   $oDocument =& KTDocumentUtil::add($this->oFolder, $sFileName, $this->oUser, $aOptions);
+	   return $oDocument;
     }
 
 /*    function testAddInOneGo() {

@@ -8,11 +8,10 @@ bin/schedulerTask.sh
 .settings/
 dummy.php
 var/*
-plugins/commercial
-clienttools/ExplorerCP
-clienttools/Office
-.gitmodules
 *.out
-baobab/
-ktoffice*/
 setup/wizard/install.lock
+config/cache-path
+config/config-path
+config/config.ini
+config/aws_config.ini
+bin/luceneserver/KnowledgeTreeIndexer.properties

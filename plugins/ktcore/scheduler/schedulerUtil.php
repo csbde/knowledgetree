@@ -48,12 +48,13 @@ class schedulerUtil extends KTUtil
     * Parameters must be passed as an associative array => array('param1' => 'value1')
     */
     function createTask($sTask, $sScript, $aParams, $sFreq, $iStartTime = NULL){
+    	$oStorage = KTStorageManagerUtil::getSingleton();
         // Path to scripts
         $ktPath = '/var/tasks/';
         $path = KT_DIR.$ktPath;
 
-        if(!is_dir($path)){
-            mkdir($path, '0755');
+        if(!$oStorage->is_dir($path)){
+            $oStorage->mkdir($path, '0755');
         }
 
         // Create script file
@@ -62,14 +63,11 @@ class schedulerUtil extends KTUtil
         $sName = str_replace('', "&", $sName);
         $sFileName = $sName.'_'.mt_rand(1, 999).'.php';
 
-        while(file_exists($path.$sFileName)){
+        while($oStorage->file_exists($path.$sFileName)){
             $sFileName = $sTask.'_'.mt_rand(1, 9999).'.php';
         }
 
-        $fp = fopen($path.$sFileName, 'w');
-        fwrite($fp, $sScript);
-        fclose($fp);
-
+        $oStorage->write_file($path.$sFileName, 'w', $sScript);
         // Register task in the schedule
         schedulerUtil::registerTask($sTask, $ktPath.$sFileName, $sParams, $sFreq, $iStartTime);
     }

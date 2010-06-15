@@ -324,8 +324,19 @@ class SearchDispatcher extends KTStandardDispatcher {
     		$_SESSION['search2_quick'] = 1;
     		if (stripos($query, 'generaltext') !== false || stripos($query, 'metadata') !== false)
     		{
-    			preg_match('/["][^"]*["]/', $query, $out);
-    			$_SESSION['search2_quickQuery'] = substr($out[0],1,-1);
+    			preg_match('/([^"]*")(.*)(".)$/', $query, $out);
+    			//$new_query = substr($out[2],1,-1);
+    			$new_query = $out[2];
+    			$term = $out[1];
+    			$term_close = $out[3];
+
+    		    $special_chars = array('+', '-', '&&', '||', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':', '<', '>', '\\');
+//                $replacement = array('\+', '\-', '\&\&', '\|\|', '\!', '\(', '\)', '\{', '\}', '\[', '\]', '\^', '\"', '\~', '\*', '\?', '\:');
+
+                $updated_query = str_replace($special_chars, ' ', $new_query);
+
+    			$_SESSION['search2_quickQuery'] = $updated_query;
+    			$query = $term.$updated_query.$term_close;
     		}
     	}
     	else

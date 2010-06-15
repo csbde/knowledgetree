@@ -25,10 +25,18 @@ class KT_atom_server {
 	 */
 	public function execute(){
 		$reqMethod=trim(strtoupper($_SERVER['REQUEST_METHOD']));
-		$queryArray=split('/',trim($_SERVER['QUERY_STRING'],'/'));
+		// Use preg_split to split on both / and & characters, for hybrid uri format
+		// e.g. ?dms/servicename/id&arg=val will be extracted to [dms], [id], [arg=val]
+		// This is mainly so that we properly extract the initial parameters, the remainder
+		// could be extracted from the $_GET array anyway, this is just making things cleaner
+		$queryArray=preg_split('/\/|&/',trim($_SERVER['QUERY_STRING'],'/'));
 		$rawRequest=@file_get_contents('php://input');
 
         $workspace=strtolower(trim($queryArray[0]));
+        if (empty($workspace)) {
+            $workspace = 'servicedocument';
+        }
+        
 		$serviceName=strtolower(trim($queryArray[1]));
 		$requestParams=array_slice($queryArray,2);
 		$this->queryArray=$queryArray;

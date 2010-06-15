@@ -79,6 +79,9 @@ $APP = new KT_cmis_atom_server();
 
 $queryArray = split('/', trim($_SERVER['QUERY_STRING'], '/'));
 $workspace = strtolower(trim($queryArray[0]));
+if (empty($workspace)) {
+    $workspace = 'servicedocument';
+}
 if ($workspace == 'servicedocument')
 {
     // CMIS service document setup
@@ -115,6 +118,9 @@ if ($workspace != 'servicedocument')
     $APP->registerService('dms', 'type', 'KT_cmis_atom_service_type', 'Object Type Entry', null, 'type');
     $APP->registerService('dms', 'document', 'KT_cmis_atom_service_document', 'Document Entry', null, 'document');
     $APP->registerService('dms', 'pwc', 'KT_cmis_atom_service_pwc', 'Private Working Copy', null, 'pwc');
+    $APP->registerService('dms', 'objectbyid', 'KT_cmis_atom_service_objectbyid', 'Object By Id', null, 'objectbyid');
+    $APP->registerService('dms', 'objectbypath', 'KT_cmis_atom_service_objectbypath', 'Object By Path', null, 'objectbypath');
+    $APP->registerService('dms', 'typebyid', 'KT_cmis_atom_service_type', 'Type By Id', null, 'typebyid');
 }
 
 //Execute the current url/header request

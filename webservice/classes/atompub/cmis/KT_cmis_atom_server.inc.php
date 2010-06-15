@@ -9,6 +9,13 @@ class KT_cmis_atom_server extends KT_atom_server {
     public $repositoryInfo;
     public $headersSet = false;
     
+    /**
+     * Performs actions which must take place before the response document is rendered
+     * What is done here will determine certain aspects of how the document is rendered
+     *
+     * @param service $doc
+     * @return boolean
+     */
     protected function hook_beforeDocRender($doc)
     {
         if ($doc->isContentDownload())
@@ -22,18 +29,21 @@ class KT_cmis_atom_server extends KT_atom_server {
             header('Expires:');
             header('Pragma:');
             
-            // prevent output of standard text/xml header
+            // prevent output of regular headers for AtomPub responses
             $this->headersSet = true;
             
             return false;
         }
         else if ($doc->notModified())
         {
-            // prevent output of standard text/xml header
+            // prevent output of regular headers for AtomPub responses
             $this->headersSet = true;
             $this->setNoContent(true);
             
             return false;
+        }
+        else {
+            $this->headersSet = $doc->checkHeaders();
         }
         
         return true;
@@ -49,41 +59,37 @@ class KT_cmis_atom_server extends KT_atom_server {
 
             // fetch data for response
             $repositories = $RepositoryService->getRepositories();
-
-            // hack for removing one level of access
-            $repositories = $repositories['results'];
             
             // fetch for default first repo;  NOTE that this will probably have to change at some point, quick and dirty for now
-            // hack for removing one level of access
-            $repositoryInfo = $RepositoryService->getRepositoryInfo($repositories[0]['repositoryId']);
-            $this->repositoryInfo = $repositoryInfo['results'];
+            $this->repositoryInfo = $RepositoryService->getRepositoryInfo($repositories[0]['repositoryId']);
         }
     }
     
 	public function serviceDocument()
     {
 		$service = new KT_cmis_atom_serviceDoc(KT_APP_BASE_URI);
+		
+		header('Content-Type: application/atomsvc+xml;charset=UTF-8');
+        header('Content-Disposition: attachment;filename="knowledgetree_cmis"');
+		$this->headersSet = true;
 
 		foreach($this->services as $workspace => $collection)
         {
 			//Creating the Default Workspace for use with standard atomPub Clients
 			$ws = $service->newWorkspace();
 
-            $hadDetail=false;
-			if(isset($this->workspaceDetail[$workspace]))
-            {
-                if(is_array($this->workspaceDetail[$workspace]))
-                {
-                    foreach ($this->workspaceDetail[$workspace] as $wsTag=>$wsValue)
-                    {
-                        $ws->appendChild($service->newElement($wsTag,$wsValue));
+            $hadDetail = false;
+			if(isset($this->workspaceDetail[$workspace])) {
+                if(is_array($this->workspaceDetail[$workspace])) {
+                    foreach ($this->workspaceDetail[$workspace] as $wsTag => $wsValue){
+                        $ws->appendChild($service->newElement($wsTag, $wsValue));
                         $hadDetail=true;
                     }
                 }
             }
 
 			if(!$hadDetail) {
-				$ws->appendChild($service->newElement('atom:title',$workspace));
+				$ws->appendChild($service->newElement('atom:title', $workspace));
 			}
 
             $ws->appendChild($service->newAttr('cmis:repositoryRelationship', $this->repositoryInfo['repositoryRelationship']));
@@ -99,11 +105,9 @@ class KT_cmis_atom_server extends KT_atom_server {
                 if (!is_array($repoData)) {
                     $element->appendChild($service->newElement('cmis:' . $key, $repoData));
                 }
-                else
-                {
+                else {
                     $elementSub = $service->newElement('cmis:' . $key);
-                    foreach($repoData as $key2 => $data)
-                    {
+                    foreach($repoData as $key2 => $data) {
                         $elementSub->appendChild($service->newElement('cmis:' . $key2, CMISUtil::boolToString($data)));
                     }
                     $element->appendChild($elementSub);
@@ -111,21 +115,33 @@ class KT_cmis_atom_server extends KT_atom_server {
             }
             $ws->appendChild($element);
 
+            // collections
+            // TODO check collectionType usage against spec
             foreach($collection as $serviceName => $serviceInstance)
             {
                 foreach($serviceInstance as $instance)
                 {
                     $collectionStr = CMIS_APP_BASE_URI . $workspace . '/' . $serviceName . '/'
                                    . (is_array($instance['parameters']) ? implode('/', $instance['parameters']).'/' : '');
+                    // FIXME? do we need to return the value from the function?
                     $col = $service->newCollection($collectionStr, $instance['title'], $instance['collectionType'], $instance['accept'], $ws);
                 }
 			}
+			
+			// TODO add other links once their services are supported
+			// links
+			$link = $service->newElement('atom:link');
+			$link->appendChild($service->newAttr('title', 'root descendants'));
+			$link->appendChild($service->newAttr('type', 'application/cmistree+xml'));
+			$link->appendChild($service->newAttr('rel', 'http://docs.oasis-open.org/ns/cmis/link/200908/rootdescendants'));
+			$link->appendChild($service->newAttr('href', CMIS_APP_BASE_URI . $workspace . '/folder/Root%20Folder/descendants'));
+			$ws->appendChild($link);
+			
+			// uri templates - getObjectById, getObjectByPath, getTypeById
+			$ws->appendChild($service->uriTemplate('objectbyid', $workspace));
+			$ws->appendChild($service->uriTemplate('objectbypath', $workspace));
+			$ws->appendChild($service->uriTemplate('typebyid', $workspace));
 		}
-		
-//		ob_start();
-//		readfile('C:\Users\Paul\Documents\Downloads\cmis_mod_kt.xml');
-//		$this->output = ob_get_contents();
-//		ob_end_clean();
 
 		$this->output = $service->getAPPdoc();
 	}

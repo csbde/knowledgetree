@@ -28,5 +28,4 @@ notification to you.{/i18n}
 <div class="form_actions">
 <input type="submit" name="submit[move]" value="{i18n}Restore{/i18n}" />
 </div>
-</fieldset>
 </form>

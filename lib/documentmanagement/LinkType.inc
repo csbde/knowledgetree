@@ -74,8 +74,8 @@ class LinkType extends KTEntity {
 
     function _fieldValues () {
         return array(
-            'name' => sanitizeForSQLtoHTML($this->sName),
-            'description' => sanitizeForSQLtoHTML($this->sDescription),
+            'name' => sanitizeForSQLtoHTML(sanitizeForHTML($this->sName)),
+            'description' => sanitizeForSQLtoHTML(sanitizeForHTML($this->sDescription)),
         );
     }
 
