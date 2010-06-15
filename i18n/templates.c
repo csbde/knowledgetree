@@ -397,6 +397,204 @@ gettext("Cancel");
 /* ./plugins/commercial/electronic-signatures/templates/signature_form.smarty */
 gettext("Authenticating signature, please wait");
 
+/* ./plugins/commercial/folder-templates/templates/add_template.smarty */
+gettext("Create");
+
+/* ./plugins/commercial/folder-templates/templates/add_template.smarty */
+gettext("Cancel");
+
+/* ./plugins/commercial/folder-templates/templates/add_template_node.smarty */
+gettext("Create");
+
+/* ./plugins/commercial/folder-templates/templates/add_template_node.smarty */
+gettext("Cancel");
+
+/* ./plugins/commercial/folder-templates/templates/add_template_node.smarty */
+gettext("Create");
+
+/* ./plugins/commercial/folder-templates/templates/add_template_node.smarty */
+gettext("Cancel");
+
+/* ./plugins/commercial/folder-templates/templates/edit_template.smarty */
+gettext("Edit Folder Template");
+
+/* ./plugins/commercial/folder-templates/templates/edit_template.smarty */
+gettext("Save");
+
+/* ./plugins/commercial/folder-templates/templates/edit_template.smarty */
+gettext("Delete");
+
+/* ./plugins/commercial/folder-templates/templates/edit_template.smarty */
+gettext("Add Folder");
+
+/* ./plugins/commercial/folder-templates/templates/edit_template.smarty */
+gettext("Cancel");
+
+/* ./plugins/commercial/folder-templates/templates/edit_template_node.smarty */
+gettext("Edit Template Folder");
+
+/* ./plugins/commercial/folder-templates/templates/edit_template_node.smarty */
+gettext("Save");
+
+/* ./plugins/commercial/folder-templates/templates/edit_template_node.smarty */
+gettext("Save");
+
+/* ./plugins/commercial/folder-templates/templates/edit_template_node.smarty */
+gettext("Delete");
+
+/* ./plugins/commercial/folder-templates/templates/edit_template_node.smarty */
+gettext("Add Folder");
+
+/* ./plugins/commercial/folder-templates/templates/edit_template_node.smarty */
+gettext("Cancel");
+
+/* ./plugins/commercial/folder-templates/templates/edit_template_node.smarty */
+gettext("Cancel");
+
+/* ./plugins/commercial/folder-templates/templates/manage.smarty */
+gettext("Manage Folder Structure Templates");
+
+/* ./plugins/commercial/folder-templates/templates/manage.smarty */
+gettext("Lets you create a predefined folder layout. This can be applied to a newly created folder to give it an initial list of sub-folders.");
+
+/* ./plugins/commercial/folder-templates/templates/manage.smarty */
+gettext("Current Templates");
+
+/* ./plugins/commercial/guidInserter/templates/admin_browse.smarty */
+gettext("Documents containing a GUID");
+
+/* ./plugins/commercial/guidInserter/templates/admin_browse.smarty */
+gettext("Title");
+
+/* ./plugins/commercial/guidInserter/templates/admin_browse.smarty */
+gettext("GUID");
+
+/* ./plugins/commercial/guidInserter/templates/admin_browse.smarty */
+gettext("items");
+
+/* ./plugins/commercial/guidInserter/templates/admin_browse.smarty */
+gettext("items per page");
+
+/* ./plugins/commercial/guidInserter/templates/admin_browse.smarty */
+gettext("items per page");
+
+/* ./plugins/commercial/guidInserter/templates/admin_browse.smarty */
+gettext("Restore Selected");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("Restore Corrupt Documents");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("A GUID is inserted into Office documents as part of the smart context system. Under certain circumstances this can cause corruption of the document, for example the software creating the GUID is not compatible with Office 95 documents and will corrupt these documents. For this reason a backup is created for each document prior to the GUID being inserted.");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("The backup of a corrupt document can be restored by navigating to the Version History of the document whilst in Administrator mode. Once the backup has been restored, the smart context system will lock the document against the GUID being inserted again.");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("All backed up documents have been restored.");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("The selected documents have been restored.");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("<b>Note</b> these documents will no longer be able to be used with the smart context system.");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("Problem Documents");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("The documents listed below have no backups and will need to be checked on an individual basis.");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("Title");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("The documents listed below are at a different version to the inserted GUID. They may have been recently updated and will need to be restored on an individual basis.");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("Title");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("Content Version");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("Guid Version");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("#num# documents contain a GUID.");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("Browse documents");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("Restore all backed up documents");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("Restore All");
+
+/* ./plugins/commercial/guidInserter/templates/admin_restore.smarty */
+gettext("There are no documents containing a GUID.");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Configure Document Properties");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("The GUID enables to use of smart fingerprinting with the Office Add-In.");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Enable writing the GUID into the document headers.");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Apply");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("The document properties refers to the properties contained within a document.");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Enable writing properties into document headers.");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("The properties that are written into the document are written into the \"custom properties\" section of the document properties. The properties come from the metadata fields associated with the document. Currently these include the document creator, title, document id, version, type and workflow state.");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("General Properties");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Author");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Title");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Keywords");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Tags");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Properties");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Document Creator");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Title");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Document ID");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Document Version");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Document Type");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Workflow State");
+
+/* ./plugins/commercial/guidInserter/templates/properties_config.smarty */
+gettext("Apply");
+
 /* ./plugins/commercial/guidInserter/templates/restore_action.smarty */
 gettext("Restore Document");
 
@@ -1133,7 +1331,7 @@ gettext("No results for your search.");
 gettext("There is currently no license installed! Either you have yet to install your license or it has expired. A license is required to enable some of the functionality within the DMS.");
 
 /* ./plugins/commercial/wintools/templates/licensedashlet/license.smarty */
-gettext("Your license will expire in #days# day(s). On expiration of your license certain functionality within the DMS will be disabled.");
+gettext("Your license will expire in #days#. On expiration of your license certain functionality within the DMS will be disabled.");
 
 /* ./plugins/commercial/wintools/templates/licensedashlet/license.smarty */
 gettext("Please contact #email# to purchase a new subscription, or renew your existing one.");
@@ -1344,6 +1542,15 @@ gettext("cleanup");
 
 /* ./plugins/housekeeper/templates/FolderUsage.smarty */
 gettext("N/A");
+
+/* ./plugins/ktlive/templates/live_about.smarty */
+gettext("#appname# #versionname#");
+
+/* ./plugins/ktlive/templates/live_about.smarty */
+gettext("&copy; 2008-2010 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
+
+/* ./plugins/ktlive/templates/live_about.smarty */
+gettext("All rights reserved. This software is licensed under the <a href=\"http://www.knowledgetree.com/about/legal\">KnowledgeTree Commercial EndUser License Agreement</a>.");
 
 /* ./plugins/multiselect/templates/ktcore/metadata/admin/basic_overview.smarty */
 gettext("Fieldsets bring together different fields into a collection of related information.");
@@ -1667,10 +1874,7 @@ gettext("Required");
 gettext("Login | #appname#");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
-gettext("Community Edition");
-
-/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
-gettext("Please enter your details below to login.");
+gettext("Login to your account");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
 gettext("Username");
@@ -1688,6 +1892,9 @@ gettext("Login");
 gettext("Forgot your password?");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
+gettext("Forgot password");
+
+/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
 gettext("Enter your username and email address. A link will be mailed to you in order to verify your email address.");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
@@ -1697,10 +1904,10 @@ gettext("Username");
 gettext("Email Address");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
-gettext("Send password link");
+gettext("Back");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
-gettext("Back");
+gettext("Send password link");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
 gettext("Please enter your username and email address.");
@@ -1724,19 +1931,16 @@ gettext("Reset password");
 gettext("Cancel");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
-gettext("#appname# Version");
+gettext("Blog");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
-gettext("<a href=\"http://www.knowledgetree.com/\">Document Management Software</a>");
+gettext("Support");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
-gettext("&copy; 2008, 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
+gettext("Privacy");
 
 /* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
-gettext("This program is free software and published under the <a href=\" http://www.gnu.org/licenses/\">GNU General Public License version 3</a>");
-
-/* ./plugins/passwordResetPlugin/templates/login_reset.smarty */
-gettext("All rights reserved.");
+gettext("Legal");
 
 /* ./plugins/rssplugin/templates/RSSPlugin/addfeed.smarty */
 gettext("New RSS Feed");
@@ -2071,6 +2275,15 @@ gettext("no value in this version");
 /* ./templates/kt3/minimal_page.smarty */
 gettext("You are here");
 
+/* ./templates/kt3/notifications/notification.BulkDownload.smarty */
+gettext("Cancel");
+
+/* ./templates/kt3/notifications/notification.BulkDownload.smarty */
+gettext("Close");
+
+/* ./templates/kt3/notifications/notification.BulkDownload.smarty */
+gettext("Starting download, please wait");
+
 /* ./templates/kt3/notifications/notification.SymbolicLinkArchived.smarty */
 gettext("The following shortcut is no longer valid as the target document has been archived. Please note that it has been automatically removed from the repository:");
 
@@ -2342,7 +2555,7 @@ gettext("Clear Alert");
 gettext("What is admin mode?");
 
 /* ./templates/kt3/portlets/admin_mode_portlet.smarty */
-gettext("Administrator mode is <br>enabled.");
+gettext("Administrator mode is enabled.");
 
 /* ./templates/kt3/portlets/admin_mode_portlet.smarty */
 gettext("Disable Admin Mode");
@@ -2354,7 +2567,7 @@ gettext("Disable Admin Mode");
 gettext("What is admin mode?");
 
 /* ./templates/kt3/portlets/admin_mode_portlet.smarty */
-gettext("Administrator mode is <br>not currently enabled.");
+gettext("Administrator mode is not currently enabled.");
 
 /* ./templates/kt3/portlets/admin_mode_portlet.smarty */
 gettext("Enable Admin Mode");
@@ -2441,22 +2654,13 @@ gettext("Browse view format");
 gettext("You are here");
 
 /* ./templates/kt3/standard_page.smarty */
-gettext("#appname# Version: #version# is licensed free of charge and supplied with 							<a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no support</a>, 							<a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no maintenance</a> 							and <a href=\"http://www.knowledgetree.com/commercial_support\" target=\"_blank\">no warranty</a>.");
-
-/* ./templates/kt3/standard_page.smarty */
-gettext("#appname# Version: #version#");
-
-/* ./templates/kt3/standard_page.smarty */
-gettext("Request created in #timing#s");
-
-/* ./templates/kt3/standard_page.smarty */
-gettext("&copy; 2008, 2009 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>");
+gettext("&copy; 2008-2010 <a href=\"http://www.knowledgetree.com/about/legal\" target=\"_blank\">KnowledgeTree Inc.</a>");
 
 /* ./templates/kt3/standard_page.smarty */
 gettext("All rights reserved.");
 
 /* ./templates/kt3/standard_page.smarty */
-gettext("Request created in #timing#s");
+gettext("About");
 
 /* ./templates/kt3/view_folder_history.smarty */
 gettext("Folder Transaction History");
@@ -2510,10 +2714,7 @@ gettext("Request Assistance");
 gettext("Creating zip file. Compressing and archiving in progress ...");
 
 /* ./templates/ktcore/action/bulk_download.smarty */
-gettext("Warning! Please wait for archiving to complete before closing the page.");
-
-/* ./templates/ktcore/action/bulk_download.smarty */
-gettext("Note: Closing the page before the download link displays will cancel your Bulk Download.");
+gettext("Note: You can close this window and browse to other pages while the archiving completes. You will be notified by a pop-up window once the .zip file is created.");
 
 /* ./templates/ktcore/action/bulk_download.smarty */
 gettext("Download Zipped File");
@@ -2937,6 +3138,9 @@ gettext("add another set of criteria");
 
 /* ./templates/ktcore/boolean_search_edit.smarty */
 gettext("Search");
+
+/* ./templates/ktcore/branding/list.smarty */
+gettext("Manage Branding");
 
 /* ./templates/ktcore/bulk_action_complete.smarty */
 gettext("These are the results of the bulk action");
@@ -4994,10 +5198,7 @@ gettext("Search for documents");
 gettext("Login | #appname#");
 
 /* ./templates/ktcore/login.smarty */
-gettext("Community Edition");
-
-/* ./templates/ktcore/login.smarty */
-gettext("Please enter your details below to login.");
+gettext("Login to your account");
 
 /* ./templates/ktcore/login.smarty */
 gettext("Username");
@@ -5012,19 +5213,16 @@ gettext("Language");
 gettext("Login");
 
 /* ./templates/ktcore/login.smarty */
-gettext("#appname# Version");
+gettext("Blog");
 
 /* ./templates/ktcore/login.smarty */
-gettext("<a href=\"http://www.knowledgetree.com/\">Document Management Software</a>");
+gettext("Support");
 
 /* ./templates/ktcore/login.smarty */
-gettext("&copy; 2008, 2009 <a href=\"http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
+gettext("Privacy");
 
 /* ./templates/ktcore/login.smarty */
-gettext("This program is free software and published under the <a href=\" http://www.gnu.org/licenses/\">GNU General Public License version 3</a>");
-
-/* ./templates/ktcore/login.smarty */
-gettext("All rights reserved.");
+gettext("Legal");
 
 /* ./templates/ktcore/manage_fieldsets.smarty */
 gettext("Existing Fieldsets");
@@ -5966,13 +6164,16 @@ gettext("#appname# #versionname#");
 gettext("Version #version#");
 
 /* ./templates/ktcore/principals/about.smarty */
-gettext("&copy; 2008, 2009 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
+gettext("&copy; 2008-2010 <a href=\" http://www.knowledgetree.com/\">KnowledgeTree Inc.</a>");
 
 /* ./templates/ktcore/principals/about.smarty */
 gettext("All rights reserved.");
 
 /* ./templates/ktcore/principals/about.smarty */
-gettext(".");
+gettext("This is a professionally supported edition of KnowledgeTree.");
+
+/* ./templates/ktcore/principals/about.smarty */
+gettext("Please refer to the documentation provided to you at subscription to learn more about how to access KnowledgeTree's professional support team.");
 
 /* ./templates/ktcore/principals/about.smarty */
 gettext("This program is free software and published under the <a href=\" http://www.gnu.org/licenses/\">GNU General Public License version 3</a>");
@@ -5982,12 +6183,6 @@ gettext("KnowledgeTree Community Edition is supplied with <a href=\"http://www.k
 
 /* ./templates/ktcore/principals/about.smarty */
 gettext("Please contact the <a href=\"mailto:sales@knowledgetree.com\">KnowledgeTree Sales team</a> should you wish to learn more about commercially supported editions of KnowledgeTree.");
-
-/* ./templates/ktcore/principals/about.smarty */
-gettext("This is a professionally supported edition of KnowledgeTree.");
-
-/* ./templates/ktcore/principals/about.smarty */
-gettext("Please refer to the documentation provided to you at subscription to learn more about how to access KnowledgeTree's professional support team.");
 
 /* ./templates/ktcore/principals/addgroup.smarty */
 gettext("Add a new group");
@@ -6275,6 +6470,9 @@ gettext("Password");
 gettext("You may change your password by entering it in the fields below. Your system administrator may have defined certain rules (such as minimum password length) that your password must abide by.");
 
 /* ./templates/ktcore/principals/preferences.smarty */
+gettext("Administrator Mode");
+
+/* ./templates/ktcore/principals/preferences.smarty */
 gettext("Preferences");
 
 /* ./templates/ktcore/principals/preferences.smarty */
@@ -6389,7 +6587,10 @@ gettext("User Management");
 gettext("Add new users");
 
 /* ./templates/ktcore/principals/useradmin.smarty */
-gettext("To add users to the DMS authentication provider, you need to provide them with credentials through this section.  If you are using an external source of login information like <strong>LDAP</strong>, ensure the appropriate plugin is loaded and use the section below.");
+gettext("To add users to the DMS authentication provider, you need to provide them with credentials through this section.");
+
+/* ./templates/ktcore/principals/useradmin.smarty */
+gettext("If you are using an external source of login information like <strong>LDAP</strong>, ensure the appropriate plugin is loaded and use the section below.");
 
 /* ./templates/ktcore/principals/useradmin.smarty */
 gettext("Add a new user");
@@ -7127,6 +7328,15 @@ gettext("Index Date");
 gettext("n/a");
 
 /* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("items");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("items per page");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
+gettext("items per page");
+
+/* ./templates/ktcore/search2/reporting/indexerrors.smarty */
 gettext("Reschedule");
 
 /* ./templates/ktcore/search2/reporting/indexerrors.smarty */
@@ -7171,6 +7381,15 @@ gettext("Index Date");
 /* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
 gettext("n/a");
 
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("items");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("items per page");
+
+/* ./templates/ktcore/search2/reporting/pendingdocuments.smarty */
+gettext("items per page");
+
 /* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
 gettext("Reschedule All Documents");
 
@@ -7179,6 +7398,30 @@ gettext("This function allows you to re-index your entire repository.");
 
 /* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
 gettext("Please note that rescheduling all documents may take a long time, depending on the size of the repository.");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("Reschedule All Documents for Indexing");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("Schedule all documents in the repository to be indexed.");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("All documents have been rescheduled for indexing.");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("View the indexing queue.");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("Reschedule All");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("Reschedule All Documents for Processing");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("Schedule all documents in the repository to be processed. Processing involves the conversion of documents into PDF format and the generation of thumbnails.");
+
+/* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
+gettext("All documents have been rescheduled for processing.");
 
 /* ./templates/ktcore/search2/reporting/rescheduledocuments.smarty */
 gettext("Reschedule All");
@@ -7550,7 +7793,7 @@ gettext("One of the powerful aspects of transitions is     that you can specify 
 gettext("Workflow Effects Overview: #name#");
 
 /* ./templates/ktcore/workflow/admin/effects_overview.smarty */
-gettext("As a document moves through a workflow, it can cause varies other actions to occur.  For example, you can attach a \"Move\" action to a transition, which will cause any document moving through that workflow to be moved to a particular folder. Or you can specify that when a document reaches the \"Pending Review\" state, users with the role \"Reviewer\" on that document are informed.");
+gettext("As a document moves through a workflow, it can cause various other actions to occur.  For example, you can attach a \"Move\" action to a transition, which will cause any document moving through that workflow to be moved to a particular folder. Or you can specify that when a document reaches the \"Pending Review\" state, users with the role \"Reviewer\" on that document are informed.");
 
 /* ./templates/ktcore/workflow/admin/effects_overview.smarty */
 gettext("Transition Effects");

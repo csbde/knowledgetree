@@ -21,10 +21,14 @@
 <fieldset> <legend>{i18n}Add new users{/i18n}</legend> <p
 class="descriptiveText">{i18n}To add users to the DMS authentication
 provider, you need to provide them with credentials through this
-section.  If you are using an external source of login information
+section.{/i18n}
+
+{if !$authentication}
+{i18n}If you are using an external source of login information
 like <strong>LDAP</strong>, ensure the appropriate plugin is loaded
-and use the section below.{/i18n}</p> <p><a
-href="{addQS}action=addUser{/addQS}" class="ktAction ktAddUser"
+and use the section below.{/i18n}
+{/if}
+</p> <p><a href="{addQS}action=addUser{/addQS}" class="ktAction ktAddUser"
 style="float: left; padding-right: 0.5em;">{i18n}Add a new
 user{/i18n}</a><a href="{addQS}action=addUser{/addQS}">{i18n}Add a new
 user{/i18n}</a></p>

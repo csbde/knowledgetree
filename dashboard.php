@@ -51,7 +51,6 @@ require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 
 require_once(KT_LIB_DIR . '/dashboard/DashletDisables.inc.php');
 
-
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 
 $sectionName = 'dashboard';

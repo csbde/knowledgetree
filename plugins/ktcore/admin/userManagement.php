@@ -112,6 +112,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             "authentication_sources" => $aAuthenticationSources,
             "old_search" => $name,
             "can_add" => $bCanAdd,
+            'authentication' => ACCOUNT_ROUTING
         );
         return $oTemplate->render($aTemplateData);
     }

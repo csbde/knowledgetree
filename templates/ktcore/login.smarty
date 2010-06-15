@@ -3,25 +3,25 @@
 <html>
 <head>
 	<title>{i18n arg_appname="$appname"}Login | #appname#{/i18n}</title>
-	
+
  	<link rel="stylesheet" href="{$rootUrl}/resources/css/kt-login.css" type="text/css" />
-</head> 	
-<body > 
-<div id="loginbox_outer" {if ($disclaimer)} class="hasDisclaimer" {/if} style="width:800px;"> 
-	<div class="header"> 
-		
-	</div> 
-	<div class="content"> 
-		<div class="login-box"> 
+</head>
+<body >
+<div id="loginbox_outer" {if ($disclaimer)} class="hasDisclaimer" {/if} style="width:800px;">
+	<div class="header">
+
+	</div>
+	<div class="content">
+		<div class="login-box">
 			<form class="login-form" action="{$smarty.server.PHP_SELF}" method="POST" name="login">
 				<input type="hidden" name="action" value="login" />
 				<input type="hidden" name="cookieverify" value="{$cookietest}" />
-				<input type="hidden" name="redirect" value="{$redirect}" /> 
-					
-				<div id="login_form">	
-					
-				    <p class="descriptive-text">{i18n}Login to your account{/i18n}</p> 
-					
+				<input type="hidden" name="redirect" value="{$redirect}" />
+
+				<div id="login_form">
+
+				    <p class="descriptive-text">{i18n}Login to your account{/i18n}</p>
+
 					{if ($errorMessage != null)}
 					    <div class="ktErrorMessage">
 					    	{if ($errorMessage == $errorMessageConfirm)}
@@ -31,34 +31,36 @@
 					    	{/if}
 					    	</div>
 					{/if}
-					        					    
+
 					<label for="username">{i18n}Username{/i18n}</label>
 					<input type="text" id="username" name="username" value="{$username}"/>
 					<label for="password">{i18n}Password{/i18n}</label>
 					<input type="password" id="password" name="password"/>
- 
+
+					{*  Disabling language dropdown until translations are finished
 					<label for="language">{i18n}Language{/i18n}</label>
 					<select id="language" name="language">
 					{foreach from=$languages key=sLang item=sLanguageName}
 					    <option value="{$sLang}" {if $sLang == $selected_language}SELECTED="yes"{/if}>{$sLanguageName}</option>
 					{/foreach}
 					</select>
-						<div class="form-actions"> 
-							<br/> 
+					*}
+						<div class="form-actions">
+							<br/>
 				   			<input type="submit" value="{i18n}Login{/i18n}" /><br/><br/><br/>
-				   		</div> 
-					</div> 
-	    		</form>   		
-    		
+				   		</div>
+					</div>
+	    		</form>
+
     		</div>
-		
-		</div>     	    
-    	    
-		
-		<div class="footer"><span style="display:block; float:right;">Call: 1 877.900.0350</span> 
+
+		</div>
+
+
+		<div class="footer"><span style="display:block; float:right;">Call: 1 877.900.0350</span>
 		<a href="http://www.knowledgetree.com/blog">{i18n}Blog{/i18n}</a> &nbsp;| <a href="http://support.knowledgetree.com">{i18n}Support{/i18n}</a> &nbsp;|  &nbsp;<a href="http://www.knowledgetree.com/privacy">{i18n}Privacy{/i18n}</a>&nbsp; | &nbsp;<a href="http://www.knowledgetree.com/legal">{i18n}Legal{/i18n}</a>&nbsp; |&nbsp; &copy; 2010 KnowledgeTree Inc.&nbsp;
-		</div> 
-	</div> 
-</div> 
-</body> 
+		</div>
+	</div>
+</div>
+</body>
 </html>

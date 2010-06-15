@@ -19,6 +19,8 @@ function _(trans_string) {
 
 // strings for file: resources/js/DDList.js
 
+// strings for file: resources/js/activation.js
+
 // strings for file: resources/js/add_document.js
 
 // strings for file: resources/js/browsehelper.js
@@ -61,6 +63,8 @@ i18n['Add Dashlet'] = '{i18n}Add Dashlet{/i18n}';
 i18n['Add Dashlets'] = '{i18n}Add Dashlets{/i18n}';
 i18n['close'] = '{i18n}close{/i18n}';
 
+// strings for file: resources/js/download_notification.js
+
 // strings for file: resources/js/expungeList.js
 
 // strings for file: resources/js/help.js
@@ -77,11 +81,19 @@ i18n['close'] = '{i18n}close{/i18n}';
 
 // strings for file: resources/js/kt_hidelink.js
 
+// strings for file: resources/js/kt_image_crop.js
+
+// strings for file: resources/js/kt_selectimage.js
+
 // strings for file: resources/js/kt_tinymce_init.js
 
 // strings for file: resources/js/loader.js
 
 // strings for file: resources/js/login_loader.js
+
+// strings for file: resources/js/newui/jquery.helper.js
+
+// strings for file: resources/js/newui/newUIFunctionality.js
 
 // strings for file: resources/js/permissions.js
 i18n['Role or Group'] = '{i18n}Role or Group{/i18n}';
@@ -97,4 +109,8 @@ i18n['Role or Group'] = '{i18n}Role or Group{/i18n}';
 // strings for file: resources/js/taillog.js
 
 // strings for file: resources/js/toggleselect.js
+
+// strings for file: resources/lightbox/js/jquery.js
+
+// strings for file: resources/lightbox/js/jquery.lightbox-0.5.min.js
 
