@@ -20,8 +20,11 @@ pwd
 #cp -R ../commercial-plugins/officeaddin plugins/commercial/
 #cp -R ../ktofficeAddIn/ktoffice ktoffice
 
-cp -R ../commercial-plugins plugins/commercial
-cp -R ../ktofficeaddin/ktoffice ktoffice
+cp -R ../commercial-plugins/* plugins/commercial/
+cp -R ../ktofficeaddin-server/* ktoffice/
+cp -R ../Karoo/* clienttools/ExplorerCP/
+cp -R ../ktis/* baobab/
+cp -R ../ktlive-plugins/* plugins/ktlive/
 
 rm -f i18n/templates.c
 find resources -name "*.js" | sort | python ./bin/jsi18n.py > templates/ktcore/javascript_i18n.smarty
@@ -35,8 +38,11 @@ php generatetemplate.php > ../../templates/ktcore/ktoffice_i18n.smarty
 cd ../../
 
 #remove comm stuff again
-rm -rf plugins/commercial
-rm -rf ktoffice
+rm -rf plugins/commercial/*
+rm -rf ktoffice/*
+rm -rf clienttools/ExplorerCP/*
+rm -rf baobab/*
+rm -rf plugins/ktlive/*
 
 #alerts  conditional-metadata  custom-numbering  documentcomparison  i18n  network  professional-reporting  shortcuts  wintools guidInserter clienttools electronic-signatures officeaddin
 
