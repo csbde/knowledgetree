@@ -58,6 +58,25 @@ class KTImportStorage {
     function cleanup() {
         return true;
     }
+    
+}
+
+class KTImportManagerUtil {
+    static function getSingleton() {
+    	static $singleton = null;
+    	if (is_null($singleton))
+    	{
+    		$oConfig = KTConfig::getSingleton();
+        	$sDefaultImport = 'KTFSImportStorage';
+        	$klass = $oConfig->get('importstorage/manager', $sDefaultIManager);
+        	if (!class_exists($klass)) {
+            	$klass = $sDefaultManager;
+        	}
+        	$singleton = new $klass;
+    	}
+
+    	return $singleton;
+    }	
 }
 
 class KTImportStorageInfo {

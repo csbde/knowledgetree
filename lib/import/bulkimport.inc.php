@@ -48,7 +48,8 @@ class KTBulkImportManager {
     var $uploadedDocs;
     var $uploadedFolders;
 
-    function KTBulkImportManager($oFolder, $oStorage, $oUser, $aOptions = null) {
+    // TODO : Added $oFolder = "", $oStorage = "", $oUser =""
+    function __construct($oFolder = "", $oStorage = "", $oUser = "", $aOptions = null) {
         $this->oFolder =& $oFolder;
         $this->oStorage =& $oStorage;
         $this->oUser =& $oUser;
@@ -195,6 +196,29 @@ class KTBulkImportManager {
             | [\xF1-\xF3][\x80-\xBF]{3} # planes 4-15
             | \xF4[\x80-\x8F][\x80-\xBF]{2} # plane 16
             )*$%xs', $string);
+    }
+}
+
+class KTBulkImportManagerUtil 
+{
+    static function getSingleton() 
+    {
+    	static $singleton = null;
+    	if (is_null($singleton))
+    	{
+    		$oConfig =& KTConfig::getSingleton();
+        	$sDefault = 'KTBulkImportManager';
+        	$klass = $oConfig->get('bulkimportmanager/manager', $sDefault);
+        	// TODO : Remove after config settings upgrade
+        	$klass = "KTAmazonS3BulkImportManager";
+        	if (!class_exists($klass)) {
+            	$klass = $sDefault;
+        	}
+
+        	$singleton = new $klass;
+    	}
+
+    	return $singleton;
     }
 }
 
