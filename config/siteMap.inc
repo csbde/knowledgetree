@@ -74,6 +74,10 @@ $default->siteMap->addDefaultPage('preferences', '/preferences.php', 'Preference
 // pages for about section
 $default->siteMap->addDefaultPage('aboutkt', '/about.php', 'About', Guest, _kt('About'));
 
+// pages for Applications section
+if(ACCOUNT_ROUTING_ENABLED) {
+	$default->siteMap->addDefaultPage('applications', '/plugins/ktlive/applications.php', 'Applications', Guest, _kt('Applications'));
+}
 // pages for Help section
 $default->siteMap->addDefaultPage('help', '/presentation/lookAndFeel/knowledgeTree/help.php', 'Help', Guest, _kt('Help'));
 
