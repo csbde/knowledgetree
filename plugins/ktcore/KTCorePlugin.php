@@ -58,6 +58,7 @@ class KTCorePlugin extends KTPlugin {
         $restrictedEnv = $oConfig->get('ui/restrictedEnv');
 
         $this->registerAction('documentinfo', 'KTDocumentDetailsAction', 'ktcore.actions.document.displaydetails', 'KTDocumentActions.php');
+        $this->registerAction('documentviewlet', 'KTDocumentActivityFeedAction', 'ktcore.viewlet.document.activityfeed', 'KTDocumentViewlets.php');
         $this->registerAction('documentaction', 'KTDocumentViewAction', 'ktcore.actions.document.view', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTOwnershipChangeAction', 'ktcore.actions.document.ownershipchange', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCheckOutAction', 'ktcore.actions.document.checkout', 'KTDocumentActions.php');
