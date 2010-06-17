@@ -842,17 +842,19 @@ $sourceDocument->getName(),
         return $sFilename;
     }
 
-     /*
-      * Document Add
-      * Author      :   Jarrett Jordaan
-      * Modified    :   28/04/09
-      *
-      * @params     :   KTFolderUtil $oFolder
-      *                 string $sFilename
-      *                 KTUser $oUser
-      *                 array $aOptions
-      *                 boolean $bulk_action
-      */
+	/**
+	* Document Add
+	* 
+	* @author KnowledgeTree Team
+	* @access public
+	* @param KTFolderUtil $oFolder
+	* @param string $sFilename
+	* @param KTUser $oUser
+	* @param array $aOptions
+	* @param boolean $bulk_action
+	* 
+	* @return Document $oDocument 
+	*/
     // {{{ _in_add
     public static function &_in_add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action = false) {
         $aOrigOptions = $aOptions;
