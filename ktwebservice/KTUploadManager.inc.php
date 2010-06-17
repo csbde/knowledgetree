@@ -209,7 +209,7 @@ class KTUploadManager
 			$oStorage->mkdir($this->temp_dir, 0777, true);
         }
 
-		$newtempfile = realpath($this->temp_dir) . '/' . $_SESSION['userID'] . '-'. $now_str;
+		$newtempfile = $oStorage->realpath($this->temp_dir) . '/' . $_SESSION['userID'] . '-'. $now_str;
 		if (OS_WINDOWS)
 		{
 			$tempfile = str_replace('/','\\',$tempfile);
@@ -246,7 +246,8 @@ class KTUploadManager
 		}
 		else
 		{
-			$result = @$oStorage->rename($tempfile, $newtempfile);
+		    $options['copy_rename'] = true;
+			$result = @$oStorage->rename($tempfile, $newtempfile, $options);
 		}
 
 		$tmp = $php_errormsg;
