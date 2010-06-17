@@ -80,6 +80,7 @@ class KTConfig {
 
     function setMemcache()
     {
+    	$oPear = new PEAR();
         if(MemCacheUtil::$enabled){
             return true;
         }
@@ -91,7 +92,7 @@ class KTConfig {
 		$c = new Config;
         $root =& $c->parseConfig($filename, "IniCommented");
 
-        if (PEAR::isError($root)) {
+        if ($oPear->isError($root)) {
             return false;
         }
 
@@ -227,8 +228,8 @@ class KTConfig {
         //Load config data from the database
         $sQuery = 'select group_name, item, value, default_value from config_settings';
         $confResult = DBUtil::getResultArray($sQuery);
-
-        if(PEAR::isError($confResult)){
+		$oPear = new PEAR();
+        if($oPear->isError($confResult)){
             return $confResult;
         }
 
@@ -293,9 +294,8 @@ class KTConfig {
 	// }}}
 
 	function setupDB () {
-
         global $default;
-
+		$oPear = new PEAR();
         require_once('DB.php');
 
         // DBCompat allows phplib API compatibility
@@ -334,7 +334,7 @@ class KTConfig {
         );
 
         $default->_db = &DB::connect($dsn, $options);
-        if (PEAR::isError($default->_db)) {
+        if ($oPear->isError($default->_db)) {
             // return PEAR error
             return $default->_db;
         }
