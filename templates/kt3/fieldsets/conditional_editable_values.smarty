@@ -1,3 +1,5 @@
+ 
+<!-- FILE: kt3/fieldsets/conditional_editable_values.smarty -->
 <fieldset class="cm">
     <legend>{$title}</legend>
     <input type="hidden" class="fixed" name="fieldset" value="{$fieldset_id}" />
@@ -35,3 +37,6 @@ changes afterwards.{/i18n}
 <table id="brad-log"><tbody></tbody>
 </table>
 -->
+
+ 
+<!-- FILE: kt3/fieldsets/conditional_editable_values.smarty -->

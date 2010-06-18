@@ -249,17 +249,22 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/view');
+        
+        $oLivePreview=new instaViewLinkAction($oDocument,$this->oUser,NULL);
+        $live_preview=$oLivePreview->do_main();
+        
         $aTemplateData = array(
-              'context' => $this,
-              'sCheckoutUser' => $checkout_user,
-              'isCheckoutUser' => ($this->oUser->getId() == $oDocument->getCheckedOutUserId()),
-              'canCheckin' => $bCanCheckin,
-              'document_id' => $document_id,
-              'document' => $oDocument,
-              'documentName' => $oDocument->getName(),
-              'document_data' => $document_data,
-              'fieldsets' => $fieldsets,
-              'viewlet_data' => $viewlet_data,
+			'context' => $this,
+			'sCheckoutUser' => $checkout_user,
+			'isCheckoutUser' => ($this->oUser->getId() == $oDocument->getCheckedOutUserId()),
+			'canCheckin' => $bCanCheckin,
+			'document_id' => $document_id,
+			'document' => $oDocument,
+			'documentName' => $oDocument->getName(),
+			'document_data' => $document_data,
+			'fieldsets' => $fieldsets,
+			'viewlet_data' => $viewlet_data,
+        	'live_preview' => $live_preview
         );
         return $oTemplate->render($aTemplateData);
     }
