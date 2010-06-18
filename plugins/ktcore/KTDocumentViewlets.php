@@ -38,6 +38,7 @@
 
 require_once(KT_LIB_DIR . "/actions/documentviewlet.inc.php");
 require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
+require_once(KT_DIR . '/plugins/comments/comments.php');
 
 // {{{ KTDocumentDetailsAction
 class KTWorkflowViewlet extends KTDocumentViewlet {
@@ -117,5 +118,131 @@ class KTWorkflowViewlet extends KTDocumentViewlet {
 // }}}
 
 
+// {{{ KTDocumentActivityFeedAction
+class KTDocumentActivityFeedAction extends KTDocumentViewlet {
+    var $sName = 'ktcore.viewlet.document.activityfeed';
+
+    function display_viewlet() {
+
+        $aTransactions = array();
+        // FIXME create a sane "view user information" page somewhere.
+        // FIXME do we really need to use a raw db-access here?  probably...
+        $sQuery = 'SELECT DTT.name AS transaction_name, DT.transaction_namespace, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime ' .
+            'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('users') . ' AS U ON DT.user_id = U.id ' .
+            'LEFT JOIN ' . KTUtil::getTableName('transaction_types') . ' AS DTT ON DTT.namespace = DT.transaction_namespace ' .
+            'WHERE DT.document_id = ? ORDER BY DT.datetime DESC';
+        $aParams = array($this->oDocument->getId());
+
+        $res = DBUtil::getResultArray(array($sQuery, $aParams));
+        if (PEAR::isError($res)) {
+           var_dump($res); // FIXME be graceful on failure.
+           exit(0);
+        }
+
+        $aTransactions = $res;
+        
+        $mainArray = array();
+        
+        
+
+        // Set the namespaces where not in the transactions lookup
+        foreach($aTransactions as $key => $transaction){
+            if(empty($transaction['transaction_name'])){
+                $aTransactions[$key]['transaction_name'] = $this->_getActionNameForNamespace($transaction['transaction_namespace']);
+            }
+            
+            
+            $mainArray[] = array(
+                'name' => $transaction['user_name'],
+                'transaction_name' => $transaction['transaction_name'],
+                'datetime' => $transaction['datetime'],
+                'version' => $transaction['version'],
+                'comment' => $transaction['comment'],
+                'type' => 'transaction'
+            );
+        }
+        
+        $aMetadataVersions = KTDocumentMetadataVersion::getByDocument($this->oDocument);
+        $aVersions = array();
+        foreach ($aMetadataVersions as $oVersion) {
+             $version = Document::get($this->oDocument->getId(), $oVersion->getId());
+             if($showall){
+                $aVersions[] = $version;
+             }else if($version->getMetadataStatusID() != VERSION_DELETED){
+                $aVersions[] = $version;
+             }
+             
+            $mainArray[] = array(
+                'name' => $this->getUserForId($version->getVersionCreatorId()),
+                'transaction_name' => 'New Document Version',
+                'datetime' => $version->getVersionCreated(),
+                'version' => $version->getMajorVersionNumber().'.'.$version->getMinorVersionNumber(),
+                'comment' => '',
+                'type' => 'version'
+            );
+        }
+        
+        
+        
+        $comments = Comments::get_comments($this->oDocument->getId());
+        foreach ($comments as $comment)
+        {
+            $mainArray[] = array(
+                'name' => $this->getUserForId($comment['user_id']),
+                'transaction_name' => 'Comment',
+                'datetime' => $comment['date'],
+                'version' => '',
+                'comment' => $comment['comment'],
+                'type' => 'comment'
+            );
+        }
+        
+        
+        //echo '<pre>';
+        //var_dump($mainArray);
+        //echo '</pre>';
+        
+        usort($mainArray, array($this, 'sortTable'));
+
+		$oKTTemplating =& KTTemplating::getSingleton();
+        $oTemplate =& $oKTTemplating->loadTemplate("ktcore/document/viewlets/activity_feed");
+		
+        $aTemplateData = array(
+              'context' => $this,
+              'document_id' => $this->oDocument->getId(),
+              'document' => $this->oDocument,
+              'versions' => $mainArray,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+    
+    function sortTable($a, $b)
+    {        
+        $d1 = new DateTime($a['datetime']);
+        $d2 = new DateTime($b['datetime']);
+        
+        if ($d1 == $d2) {
+            //return 1;
+        }
+        
+        return $d1 >= $d2 ? 1: -1;
+    }
+
+    function _getActionNameForNamespace($sNamespace) {
+        $aNames = split('\.', $sNamespace);
+        $sName = array_pop($aNames);
+        $sName = str_replace('_', ' ', $sName);
+        $sName = ucwords($sName);
+        return $sName;
+    }
+    
+    function getUserForId($iUserId) {
+        $u = User::get($iUserId);
+        if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
+        return $u->getName();
+    }
+
+}
+// }}}
 
 ?>

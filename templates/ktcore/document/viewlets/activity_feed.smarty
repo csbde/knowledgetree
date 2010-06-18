@@ -1,0 +1,15 @@
+<div id="viewlet_activityfeed">
+    <h2>{i18n}Activity Feed{/i18n}: {$document->getName()|sanitize}</h2>
+    
+    {foreach item=version from=$versions}
+    <span class="activityfeed_item {$version.type}">
+        <span class="af_user">{$version.name}</span>
+        <span class="af_action">{$version.transaction_name}</span>
+        <span class="af_version">{$version.version}</span>
+        <span class="af_date">{$version.datetime}</span>
+        <span class="af_comment">{$version.comment|sanitize}</span>
+    </span>
+    
+    {/foreach}
+
+</div>

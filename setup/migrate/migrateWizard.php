@@ -118,9 +118,6 @@ class MigrateWizard extends WizardBase {
 	* @return void
  	*/
 	function load() {
-		if(isset($_GET['bypass'])) {
-			$this->setBypass($_GET['bypass']);
-		}
 		$this->setIUtil(new MigrateUtil());
 	}
 
@@ -160,11 +157,6 @@ class MigrateWizard extends WizardBase {
  	*/
 	public function dispatch() {
 		$this->load();
-		if($this->getBypass() === "1") {
-			$this->removeMigrateFile();
-		} elseif ($this->getBypass() === "0") {
-			$this->createMigrateFile();
-		}
 		if(!$this->isSystemMigrated()) { // Check if the systems not migrated
 			$response = $this->systemChecks();
 			if($response === true) {
