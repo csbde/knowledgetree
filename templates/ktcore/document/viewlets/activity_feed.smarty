@@ -6,8 +6,7 @@
         <span class="af_user">{$version.name}</span>
         <span class="af_action">{$version.transaction_name}</span>
         <span class="af_version">{$version.version}</span>
-        <span class="af_version">{$version.version}</span>
-        <span class="af_date">{$version.date}</span>
+        <span class="af_date">{$version.datetime}</span>
         <span class="af_comment">{$version.comment|sanitize}</span>
     </span>
     

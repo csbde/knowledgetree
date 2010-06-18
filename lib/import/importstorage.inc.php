@@ -61,24 +61,6 @@ class KTImportStorage {
     
 }
 
-class KTImportManagerUtil {
-    static function getSingleton() {
-    	static $singleton = null;
-    	if (is_null($singleton))
-    	{
-    		$oConfig = KTConfig::getSingleton();
-        	$sDefaultImport = 'KTFSImportStorage';
-        	$klass = $oConfig->get('importstorage/manager', $sDefaultIManager);
-        	if (!class_exists($klass)) {
-            	$klass = $sDefaultManager;
-        	}
-        	$singleton = new $klass;
-    	}
-
-    	return $singleton;
-    }	
-}
-
 class KTImportStorageInfo {
     /**
      * File name to store in the repository.
@@ -101,4 +83,28 @@ class KTImportStorageInfo {
     }
 }
 
+/**
+ * Utility class to help seperate ktlive logic
+ *
+ */
+/*
+// REVIEW : Would have been nice to mirror the kt lib.
+class KTImportManagerUtil {
+    static function getSingleton() {
+    	static $singleton = null;
+    	if (is_null($singleton))
+    	{
+    		$oConfig = KTConfig::getSingleton();
+        	$sDefaultImport = 'KTFSImportStorage';
+        	$klass = $oConfig->get('importstorage/manager', $sDefaultIManager);
+        	if (!class_exists($klass)) {
+            	$klass = $sDefaultManager;
+        	}
+        	$singleton = new $klass;
+    	}
+
+    	return $singleton;
+    }	
+}
+*/
 ?>

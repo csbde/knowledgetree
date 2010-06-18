@@ -62,7 +62,6 @@ class KTZipImportStorage extends KTFSImportStorage {
 
     var $allowed_extensions = array('tgz', 'tar', 'gz', 'zip', 'deb', 'ar');
 
-    // TODO : Added $fileName = '', so singleton could be used.
     function __construct($fileName = '', $fileData = null) {
         $this->sFileName = $fileName;
         if(empty($fileData)){
@@ -188,6 +187,12 @@ class KTZipImportStorage extends KTFSImportStorage {
     }
 }
 
+/**
+ * Utility class to help seperate ktlive logic
+ * 
+ */
+/*
+// REVIEW : Would have been nice to mirror the kt lib.
 class KTZipImportStorageManager 
 {
     static function getSingleton() 
@@ -195,11 +200,9 @@ class KTZipImportStorageManager
     	static $singleton = null;
     	if (is_null($singleton))
     	{
-    		$oConfig =& KTConfig::getSingleton();
+    		$oConfig = KTConfig::getSingleton();
         	$sDefault = 'KTZipImportStorage';
         	$klass = $oConfig->get('importstorage/manager', $sDefault);
-        	// TODO : Remove after config settings upgrade
-        	$klass = "KTAmazonS3ZipImportStorage";
         	if (!class_exists($klass)) {
             	$klass = $sDefault;
         	}
@@ -209,5 +212,5 @@ class KTZipImportStorageManager
     	return $singleton;
     }
 }
-
+*/
 ?>

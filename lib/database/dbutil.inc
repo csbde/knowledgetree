@@ -57,6 +57,7 @@ class DBUtil {
 
     public static function &runQuery($query, $db = null) {
         global $default;
+        $oPear = new PEAR();
         $aParams = null;
 
         $db =& DBUtil::getDB($db);
@@ -72,7 +73,7 @@ class DBUtil {
         {
             $default->queryLog->debug(DBUtil::lastQuery($db));
         }
-        if (PEAR::isError($res))
+        if ($oPear->isError($res))
         {
         	DBUtil::logQueryError(DBUtil::lastQuery($db), $res);
         }
@@ -101,7 +102,8 @@ class DBUtil {
 
     public static function getResultArray($query, $db = null) {
         $result = DBUtil::runQuery($query, $db);
-        if (PEAR::isError($result)) {
+        $oPear = new PEAR();
+        if ($oPear->isError($result)) {
             // logging by runQuery
             return $result;
         }
