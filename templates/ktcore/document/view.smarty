@@ -1,7 +1,31 @@
  
 <!-- FILE: ktcore/document/view.smarty -->
+	<table border="0" width="100%">
+		<tr>
+			<td rowspan="2" width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td>
+			<td height="1"><h2 style="clear:both; display: block; margin-top: 15px;">{$context->oDocument->getName()|sanitize}</h2></td>
+		</tr>
+		<tr>
+			<td valign="top">
+				<ul class="view_doc_tabs">
+					<li title="Details">
+						{foreach item=oFieldset from=$fieldsets}
+							{$oFieldset->render($document_data)}
+						{/foreach}
+					</li>
+			
+					{if !empty($live_preview)}
+						<li title="Preview">{$live_preview}</li>
+					{/if}
+						
+					<li id="activity_feed_container" title="Activity"> </li>
+				</ul>			
+			</td>
+		</tr>
+	</table>
 
-	<h2>{i18n}Document Details{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
+	
+	
 
 	{if ($document->getIsCheckedOut() == 1)}
 	{capture assign=checkout_user}<strong>{$sCheckoutUser}</strong>{/capture}
@@ -39,24 +63,11 @@
 	{/if}
 
 
-	<ul class="view_doc_tabs">
-		<li title="Details">
-			{foreach item=oFieldset from=$fieldsets}
-				{$oFieldset->render($document_data)}
-			{/foreach}
-		</li>
-
-		{if !empty($live_preview)}
-			<li title="Preview">{$live_preview}</li>
-		{/if}
-			
-		<li id="activity_feed_container" title="Activity"> </li>
-	</ul>
 	
 	{if !empty($viewlet_data)}
 	
 	<!--  Document "Views" -->
-	<div id="document-views">
+	<div id="document-views" style="display: none;">
 	
 	{$viewlet_data}
 	

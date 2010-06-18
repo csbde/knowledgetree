@@ -1,7 +1,7 @@
 #content ul.view_doc_tabs, ul.view_doc_tabs {
 	list-style:none;
 	margin: 0px;
-	display: inline;
+	display: block;
 }
 
 .buttonTab{
@@ -27,4 +27,12 @@
 
 .buttonTabActive{
 	background-color: #AAAABB;
+}
+
+.buttonTabContentContainer{
+	display: block;
+	clear: both;
+}
+.buttonTabContainer{
+	margin-top: 15px;
 }

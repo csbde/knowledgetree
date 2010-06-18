@@ -61,10 +61,13 @@
 	$(document).ready(function(){
 		$('#activity_feed_container').html($('#viewlet_activityFeed').html());
 		$('#viewlet_activityFeed').remove();
+		
+		$('#doc_thumb').append($('.thumb-shadow img')).addClass('thumb-shadow').css({'margin-right': '15px', 'margin-bottom': '15px'});
+		$('#doc_thumb img').css({height: '150px'});
 
 		$('.view_doc_tabs').buttontabs({
 			containerId:'doc_view_container',
-			containeClass:'kt_collection'
+			containerClass:'',
 		});
 	});
 	
