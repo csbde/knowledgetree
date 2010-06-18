@@ -45,7 +45,6 @@ require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
 require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
-require_once(KT_LIB_DIR . "/import/zipimportstorage.inc.php");
 class KTFolderAddDocumentAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.addDocument';
     var $_sShowPermission = "ktcore.permissions.write";
@@ -279,6 +278,14 @@ class KTFolderAddDocumentAction extends KTFolderAction {
                 'onchange' => $sFileOnchange,
         ));
         
+        // Adding the Hidden FileName Input String
+        $widgets[] = $oWF->get('ktcore.widgets.hidden', array(
+                'id' => 'kt_last_swf_filename',
+                'name' => 'kt_last_swf_filename',
+        		'value' => '',
+        ));
+                        
+        
         $aVocab[] = ' I would like the documents to be extracted.';
         
 		//Adding option to provide user with a choice to extract documents on server or just upload the archive as is.
@@ -356,7 +363,13 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 	    $default->log->info('KTCore - Performing Live Upload');
 	    
         $oStorage = KTStorageManagerUtil::getSingleton();
+        $oKTConfig =& KTConfig::getSingleton();
+        $sBasedir = $oKTConfig->get("urls/tmpDirectory");
+
+        $sFilename = $oStorage->tempnam($sBasedir, 'kt_storecontents');
+        $oStorage->file_put_contents($sFilename, file_get_contents($_FILES['file']['tmp_name']));
         
+        //$oStorage->tempnam();
         /*
         //TODO: Finish validation for KTLive upload
 	    $default->log->info('KTCore - StorageManager::getSingleton()');
@@ -382,8 +395,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         //$data = $res['results'];
         $aData = $_REQUEST['data'];
 
-        $performExtractOnServer = $aData['fExtractDocuments'];
-        $default->log->info('KTCore Live Upload : Weather or not to perform upload : ' . $performExtractOnServer);
+	    $default->log->info('$_FILES ['.var_export($_FILES, true).']');
         
         $fileData = $_FILES;
         $key = KTUtil::randomString(32);
@@ -393,7 +405,11 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
         $sFilename = $oStorage->tempnam($sBasedir, 'kt_storecontents');
 
-        $oStorage->uploadTmpFile($fileData['file']['tmp_name'], $sFilename);
+	    $default->log->info('KTCore - StorageManager::Uploading File ['.$sFilename.']');
+        
+        $oStorage->uploadTmpFile($fileData['Filedata']['tmp_name'], $sFilename);
+
+	    $default->log->info('KTCore - StorageManager::Completed file upload for ['.$sFilename.']');
         
         $fileData['file']['tmp_name'] = $sFilename;
         $_SESSION['_add_data'] = array($key => $fileData);
