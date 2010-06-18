@@ -16,3 +16,25 @@ jQuery(document).ready(function() {
     jQuery('.buttonsList').appendTo(jQuery('#bigbuttons'));
 
 });
+
+
+
+/** 
+ * Documents View Page
+ */
+
+(function($){
+	$(document).ready(function(){
+		$('#activity_feed_container').html($('#viewlet_activityfeed').html());
+		$('#viewlet_activityfeed').remove();
+		$('.withviewlets').removeClass('withviewlets');
+		
+		$('#doc_thumb').append($('.thumb-shadow img')).addClass('thumb-shadow').css({'margin-right': '15px', 'margin-bottom': '15px'});
+		$('#doc_thumb img').css({width: '105px'});
+
+		$('.view_doc_tabs').buttontabs({
+			containerId:'doc_view_container',
+			containerClass:'',
+		});		
+	});
+})(jQuery);

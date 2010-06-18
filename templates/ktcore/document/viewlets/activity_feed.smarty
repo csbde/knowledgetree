@@ -1,15 +1,129 @@
+<script type="text/javascript" src="resources/js/jquery.reverseorder.packed.js"></script>
 <div id="viewlet_activityfeed">
     <h2>{i18n}Activity Feed{/i18n}: {$document->getName()|sanitize}</h2>
     
-    {foreach item=version from=$versions}
-    <span class="activityfeed_item {$version.type}">
-        <span class="af_user">{$version.name}</span>
-        <span class="af_action">{$version.transaction_name}</span>
-        <span class="af_version">{$version.version}</span>
-        <span class="af_date">{$version.datetime}</span>
-        <span class="af_comment">{$version.comment|sanitize}</span>
-    </span>
+    <span class="feedtoggle" id="toggle_comments">{i18n}Show Comments{/i18n}</span>
+    <span class="feedtoggle" id="toggle_transaction">{i18n}Show Transaction History{/i18n}</span>
+    <span class="feedtoggle" id="toggle_version">{i18n}Show Version History{/i18n}</span>
+    | Sort by 
+    <select id="activityfeed_sort">
+        <option value="asc">{i18n}Date Ascending{/i18n}</option>
+        <option value="desc">{i18n}Date Descending{/i18n}</option>
+    </select>
     
-    {/foreach}
+    
+    <br />
+    <br />
+    <table id="activityfeedactions">
+        <thead>
+            <th>User</th>
+            <th>Action and Comment</th>
+            <th>Version</th>
+            <th>Date</th>
+        </thead>
+{foreach item=version from=$versions}
+        <tr class="activityfeed_item {$version.type}">
+            <td class="af_user">{$version.name}</td>
+            <td class="af_action">
+                {if $version.comment}{$version.comment|sanitize} - ({/if}<strong>{$version.transaction_name}</strong>{if $version.comment}){/if}
+            </td>
+            
+            <td class="af_version">{$version.version}</td>
+            <td class="af_date">{$version.datetime}</td>
+        </tr>
+{/foreach}
+    </table>
 
 </div>
+
+{literal}
+<style>
+
+.feedtoggle {
+    cursor: pointer;
+    margin: 5px;
+    background-color: #5EA9C6;
+    padding: 5px;
+    color: #FFF;
+    font-weight: bold;
+    -webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+}
+
+#toggle_version {
+    background-color: #F7C548;
+}
+
+#toggle_transaction {
+    background-color: #AAD837;
+}
+
+.feedtoggle_off {
+    background-color: #fff !important;
+    color: #000;
+}
+
+table#activityfeedactions {
+    width: 100%;
+}
+
+table#activityfeedactions td, table#activityfeedactions th {
+    padding: 4px;
+    vertical-align: top;
+}
+
+table#activityfeedactions tr.comment {
+    background-color: #BFE5F4;
+}
+
+table#activityfeedactions tr.transaction {
+    background-color: #D7EF9D;
+}
+
+table#activityfeedactions tr.version {
+    background-color: #F8E8BF;
+}
+
+td.af_action strong {
+    font-weight: bold;
+}
+
+</style>
+
+<script type="text/javascript">
+
+
+
+
+jQuery(document).ready(function() {
+
+    
+    jQuery("#toggle_comments").click(function() {
+        jQuery(this).toggleClass('feedtoggle_off');
+        jQuery("table#activityfeedactions tr.comment").toggle();
+    });
+    jQuery("#toggle_transaction").click(function() {
+        jQuery(this).toggleClass('feedtoggle_off');
+        jQuery("table#activityfeedactions tr.transaction").toggle();
+    });
+    jQuery("#toggle_version").click(function() {
+        jQuery(this).toggleClass('feedtoggle_off');
+        jQuery("table#activityfeedactions tr.version").toggle();
+    });
+    
+    jQuery("#activityfeed_sort").change(function() {
+        jQuery('table#activityfeedactions tr').reverseOrder();
+
+    });
+    
+    
+
+
+
+});
+
+
+</script>
+
+
+{/literal}
