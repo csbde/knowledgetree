@@ -48,7 +48,6 @@ class KTBulkImportManager {
     var $uploadedDocs;
     var $uploadedFolders;
 
-    // TODO : Added $oFolder = "", $oStorage = "", $oUser =""
     function __construct($oFolder = "", $oStorage = "", $oUser = "", $aOptions = null) {
         $this->oFolder =& $oFolder;
         $this->oStorage =& $oStorage;
@@ -199,6 +198,12 @@ class KTBulkImportManager {
     }
 }
 
+/**
+ * Utility class to help seperate ktlive logic
+ *
+ */
+/*
+// REVIEW : Would have been nice to mirror the kt lib.
 class KTBulkImportManagerUtil 
 {
     static function getSingleton() 
@@ -206,11 +211,9 @@ class KTBulkImportManagerUtil
     	static $singleton = null;
     	if (is_null($singleton))
     	{
-    		$oConfig =& KTConfig::getSingleton();
+    		$oConfig = KTConfig::getSingleton();
         	$sDefault = 'KTBulkImportManager';
         	$klass = $oConfig->get('bulkimportmanager/manager', $sDefault);
-        	// TODO : Remove after config settings upgrade
-        	$klass = "KTAmazonS3BulkImportManager";
         	if (!class_exists($klass)) {
             	$klass = $sDefault;
         	}
@@ -221,5 +224,5 @@ class KTBulkImportManagerUtil
     	return $singleton;
     }
 }
-
+*/
 ?>
