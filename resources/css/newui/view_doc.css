@@ -1,84 +1,97 @@
-#content ul.view_doc_tabs, ul.view_doc_tabs {
-	list-style:none;
+#content ul.view_doc_tabs,ul.view_doc_tabs {
+	list-style: none;
 	margin: 0px;
 	display: block;
 }
 
-.buttonTab{
+.buttonTab {
 	display: inline;
-	background-color: #CCCCCC;
+	background-color: #7CBEDC;
 	color: #FFFFFF;
 	padding: 3px 15px;
 	margin: 0px 5px;
 	font-weight: bold;
 	cursor: pointer;
-	
-	-webkit-border-radius: 6px;
-	-moz-border-radius: 6px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
 }
 
-.buttonTab:first-child{
+.buttonTab:first-child {
 	margin-left: 0px;
 }
 
-.buttonTab:hover{
-	background-color: #BBBBBB;
+.buttonTab:hover {
+	color: #28708F;
 }
 
-.buttonTabActive{
-	background-color: #AAAABB;
+.buttonTabActive {
+	background-color: #28708F;
+	color: #FFFFFF;
 }
 
-.buttonTabContentContainer{
+.buttonTabActive:hover {
+	background-color: #28708F;
+	color: #FFFFFF;
+}
+
+.buttonTabContentContainer {
 	display: block;
 	clear: both;
 }
-.buttonTabContainer{
+
+.buttonTabContainer {
 	margin-top: 15px;
 }
 
-.doc_view .doc_header_item{
+.doc_view .doc_header_item {
 	display: block;
 	clear: both;
-	color: #666666;
+	color: #999999;
 }
 
-.doc_view .doc_header_item .doc_field_title{
-	width: 80px;
-	margin: 0px 10px 0px 15px;
+.doc_view .doc_header_item .doc_field_title {
+	margin: 0px 10px 0px 10px;
 	text-align: right;
 	font-weight: bold;
+	font-size: 12px;
 }
 
-.doc_view .doc_header_item .doc_field_value .doc_user_link{
+.doc_view .doc_header_item .doc_field_value {
+	margin: 0px 10px 0px 0px;
+	text-align: right;
+	font-size: 12px;
+}
+
+.doc_view .doc_header_item .doc_field_value .doc_user_link {
 	text-decoration: underline;
 	cursor: pointer;
-	color: blue;
 }
 
-#content .doc_view .doc_version{
-	font-family: "Lucida Grande",Tahoma,sans-serif;
+#content .doc_view .doc_version {
+	font-family: "Lucida Grande", Tahoma, sans-serif;
 	letter-spacing: 0.0em;
 	font-weight: 300;
 	font-size: 12px;
 }
 
-#content .doc_view .doc_file_title{
+#content .doc_view .doc_file_title {
 	font-family: "Times New Roman, Times, Courier";
 	font-size: 28px;
-	letter-spacing: 0.1em;
+	letter-spacing: 0.08em;
 	font-weight: 500;
-	clear:both;
-	display: block; 
-	margin: 15px 0px 0px 0px;
+	clear: both;
+	display: block;
+	margin: 15px 0px 5px 0px;
 }
 
-.buttonTabContentContainer table.kt_collection{
+.buttonTabContentContainer table.kt_collection {
 	margin-top: 15px;
 }
 
-.buttonTabContentContainer .kt_collection td{
+.buttonTabContentContainer .kt_collection td {
 	padding: 15px;
 }
 
-	
+.buttonTabContentContainer .metadatatable {
+	padding: 15px;
+}
