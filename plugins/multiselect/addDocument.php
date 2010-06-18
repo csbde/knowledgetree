@@ -36,362 +36,378 @@
  *
  */
 
-/* The file adds a document with multiselect fields.The main code for fetching multiselect
- * fields is written in this file.
- */
+require_once(KT_LIB_DIR . "/actions/folderaction.inc.php");
+require_once(KT_LIB_DIR . "/import/zipimportstorage.inc.php");
+require_once(KT_LIB_DIR . "/import/bulkimport.inc.php");
 
-require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
-require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
 require_once(KT_LIB_DIR . "/widgets/FieldsetDisplayRegistry.inc.php");
-require_once(KT_LIB_DIR . "/foldermanagement/folderutil.inc.php");
-require_once(KT_LIB_DIR . "/documentmanagement/observers.inc.php");
-require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
+require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
+require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
+
+require_once(KT_LIB_DIR . "/validation/dispatchervalidation.inc.php");
+
 require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
-require_once(KT_LIB_DIR . "/util/sanitize.inc");
+require_once(KT_LIB_DIR . "/widgets/widgetfactory.inc.php");
+require_once(KT_LIB_DIR . "/validation/validatorfactory.inc.php");
+
 
 class MultiDocumentAddAction extends KTFolderAction {
-    var $sName = 'inet.multiselect.actions.document.addDocument';
-    var $_sShowPermission = "ktcore.permissions.write";
+	var $sName = 'inet.multiselect.actions.document.addDocument';
     var $oDocumentType = null;
 
+	var $_sShowPermission = "ktcore.permissions.write";
+	var $bAutomaticTransaction = false;
+	
 	/**
-	 * returns a display name 'Add Document' 
-	 * @return 
-	 * 
+	 * returns the string
+	 * @return
+	 * loads the necessary javascripts too.
+	 *
 	 * iNET Process
 	 */
-    function getDisplayName() {
-        return _kt('Add Document');
-    }
+	function getDisplayName() {
+		if(!KTPluginUtil::pluginIsActive('inet.foldermetadata.plugin'))
+		{
+			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+			$aJavascript[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
+
+			$oPage =& $GLOBALS['main'];
+			if (method_exists($oPage, 'requireJSResources')) {
+				$oPage->requireJSResources($aJavascript);
+			}
+
+			$js = "<script src='resources/js/kt_hidelink.js' type='text/javascript'></script>";
+			return _kt('Bulk Upload') .$js;
+		}
+		else
+		{
+			return null;
+		}
+	}
 
 	/**
-	 * get the button
-	 * @return 
-	 * 
+	 * Checks for bulk uploads
+	 * @return
+	 *
 	 * iNET Process
 	 */
-    function getButton(){
-        $btn = array();
-        $btn['display_text'] = _kt('Upload');
-        $btn['arrow_class'] = 'arrow_upload';
-        return $btn;
-    }
-	/**
-	 * check if document can be added or not
-	 * @return 
-	 * 
-	 * iNET Process
-	 */
-    function check() {
-        $res = parent::check();
-        if (empty($res)) {
-            return $res;
-        }
-
-        $postExpected = KTUtil::arrayGet($_REQUEST, "postExpected");
-        $postReceived = KTUtil::arrayGet($_REQUEST, "postReceived");
-        if (!empty($postExpected)) {
-            $aErrorOptions = array(
+	function check() {
+		$res = parent::check();
+		if (empty($res)) {
+			return $res;
+		}
+		$postExpected = KTUtil::arrayGet($_REQUEST, "postExpected");
+		$postReceived = KTUtil::arrayGet($_REQUEST, "postReceived");
+		if (!empty($postExpected)) {
+			$aErrorOptions = array(
                 'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
                 'message' => _kt('Upload larger than maximum POST size (post_max_size variable in .htaccess or php.ini)'),
-            );
-            $this->oValidator->notEmpty($postReceived, $aErrorOptions);
-        }
-        return true;
-    }
+			);
+			$this->oValidator->notEmpty($postReceived, $aErrorOptions);
+		}
+		return true;
+	}
+
 	/**
-	 * Initializes for data
-	 * @return 
+	 * default and basic function
+	 * @return template
+	 * @param.
+	 * iNET Process
+	 *
+	 */
+	 function do_main() {
+       if (ACCOUNT_ROUTING_ENABLED) {
+            $uploadForm = $this->getUploadForm();
+       } else {
+            $uploadForm = $this->getBulkUploadForm();
+        }
+	 	
+	 	return $uploadForm->render();
+	 }
+
+	
+	/**
+	 * Handles the SWF intemediary upload for KTLive
 	 * 
-	 * iNET Process
 	 */
-    function form_initialdata() {
-        $oForm = new KTForm;
-
-        $oForm->setOptions(array(
-            'label' => _kt("Add a document"),
-            'action' => 'processInitialData',
-            'actionparams' => 'postExpected=1&fFolderId='.$this->oFolder->getId(),
-        //    'cancel_action' => KTBrowseUtil::getUrlForFolder($this->oFolder),
-            'fail_action' => 'main',
-            'context' => &$this,
-            'extraargs' => $this->meldPersistQuery("","",true),
-            'submit_label' => _kt("Add"),
-            'file_upload' => true,
-        ));
-
-        $aTypes = array();
-        foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
-            if(!$oDocumentType->getDisabled()) {
-                $aTypes[] = $oDocumentType;
-            }
-        }
-
-        // Onchange gets the name of the file and inserts it as the document title.
-        $sFileOnchange = "javascript:
-            var doc = document.getElementById('document_name');
-            if(doc.value == ''){
-                var arrPath=this.value.split('/');
-                if(arrPath.length == 1){
-                    var arrPath=this.value.split('\\\');
-                }
-                var name=arrPath[arrPath.length-1];
-                var name=name.split('.');
-                var len = name.length;
-                if(len > 1){
-                    if(name[len-1].length <= 4){
-                        name.pop();
-                    }
-                }
-                var title=name.join('.');
-                doc.value=title;
-            }";
-
-        $oForm->setWidgets(array(
-            array('ktcore.widgets.file',array(
-                'label' => _kt('File'),
-                'description' => _kt('The contents of the document to be added to the document management system.'),
-                'name' => 'file',
-                'required' => true,
-                'onchange' => $sFileOnchange,
-            )),
-            array('ktcore.widgets.string',array(
-                'label' => _kt('Document Title'),
-                'description' => sprintf(_kt('The document title is used as the main name of a document throughout %s.'), APP_NAME),
-                'name' => 'document_name',
-                'required' => true,
-                'id' => 'document_name',
-            )),
-            array('ktcore.widgets.entityselection',array(
-                'label' => _kt('Document Type'),
-                'description' => _kt('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'),
-                'name' => 'document_type',
-                'required' => true,
-                'vocab' => $aTypes,
-                'initial_string' => _kt('- Please select a document type -'),
-                'id_method' => 'getId',
-                'label_method' => 'getName',
-                'simple_select' => false,
-            )),
-        ));
-
-        // Electronic Signature if enabled
-        global $default;
-        if($default->enableESignatures){
-            $oForm->addWidget(array('ktcore.widgets.info', array(
-                    'label' => _kt('This action requires authentication'),
-                    'description' => _kt('Please provide your user credentials as confirmation of this action.'),
-                    'name' => 'info'
-                )));
-            $oForm->addWidget(array('ktcore.widgets.string', array(
-                    'label' => _kt('Username'),
-                    'name' => 'sign_username',
-                    'required' => true
-                )));
-            $oForm->addWidget(array('ktcore.widgets.password', array(
-                    'label' => _kt('Password'),
-                    'name' => 'sign_password',
-                    'required' => true
-                )));
-            $oForm->addWidget(array('ktcore.widgets.reason', array(
-                'label' => _kt('Reason'),
-                'description' => _kt('Please specify why you are checking out this document.  It will assist other users in understanding why you have locked this file.  Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
-                'name' => 'reason',
-                )));
-        }
-
-        $oForm->setValidators(array(
-            array('ktcore.validators.file', array(
-                'test' => 'file',
-                'output' => 'file',
-            )),
-            array('ktcore.validators.fileillegalchar', array(
-                'test' => 'file',
-                'output' => 'file',
-            )),
-            array('ktcore.validators.string', array(
-                'test' => 'document_name',
-                'output' => 'document_name',
-            )),
-            array('ktcore.validators.entity', array(
-                'test' => 'document_type',
-                'output' => 'document_type',
-                'class' => 'DocumentType',
-                'ids' => true,
-            )),
-        ));
-
-        if($default->enableESignatures){
-            $oForm->addValidator(array('electonic.signatures.validators.authenticate', array(
-                'object_id' => $this->oFolder->getId(),
-                'type' => 'folder',
-                'action' => 'ktcore.transactions.add_document',
-                'test' => 'info',
-                'output' => 'info'
-            )));
-        }
-
-        return $oForm;
-    }
-	/**
-	 * Get the fieldsets for a particular document type
-	 * @return array
-	 * @param $iTypeId Object
-	 * 
-	 * iNET Process
-	 */
-    function getFieldsetsForType($iTypeId) {
-        $typeid = KTUtil::getId($iTypeId);
-        $aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
-        $aSpecificFieldsetIds = KTFieldset::getForDocumentType($typeid, array('ids' => false));
-
-        $fieldsets = kt_array_merge($aGenericFieldsetIds, $aSpecificFieldsetIds);
-        return $fieldsets;
-    }
-	/**
-	 * Main default function
-	 * @param
-	 * @return form
-	 * iNET Process
-	 */
-    function do_main() {
-        $this->oPage->setBreadcrumbDetails(_kt("Add a document"));
+	public function do_liveDocumentUpload() {
+	    global $default;
+	    
+	    $default->log->info('KTCore - Performing Live Upload');
+	    
+        $oStorage = KTStorageManagerUtil::getSingleton();
+        
+        /*
+        //TODO: Finish validation for KTLive upload
+	    $default->log->info('KTCore - StorageManager::getSingleton()');
+	            
         $oForm = $this->form_initialdata();
-        return $oForm->renderPage(_kt('Add a document to: ') . $this->oFolder->getName());
-    }
-	/**
-	 * Checks for validations and errors
-	 * @return 
-	 * 
-	 * iNET Process
-	 */
-    function do_processInitialData() {
-    	$oStorage = KTStorageManagerUtil::getSingleton();
-        $oForm = $this->form_initialdata();
+	    $default->log->info('KTCore - form::form_initiaildata()');
+        
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
+            $default->log->info('KTCore - Validation Error | ' . var_export($res['errors'], true)); 
+                        
             if(!isset($res['errors']['file'])){
                 $aError['file'] = array(_kt('Please reselect the file to upload.'));
+	            $default->log->error('KTCore - Please reselect the file to upload |' . var_dump($res, true));
             }
+            $default->log->error('KTCore - Validation Error |' . var_dump($aError, true));
+            $default->log->error('KTCore - Validation Error |' . var_dump($res, true));
+            
             return $oForm->handleError('', $aError);
         }
-        $data = $res['results'];
+        */
+        
+        //$data = $res['results'];
+        $aData = $_REQUEST['data'];
+
+        $performExtractOnServer = $aData['fExtractDocuments'];
+        $default->log->info('KTCore Live Upload : Weather or not to perform upload : ' . $performExtractOnServer);
+        
+        $fileData = $_FILES;
         $key = KTUtil::randomString(32);
-
-
-        // joy joy, we need to store the file first, or PHP will (helpfully)
-        // clean it up for us
 
         $oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get("urls/tmpDirectory");
 
         $sFilename = $oStorage->tempnam($sBasedir, 'kt_storecontents');
 
-        //$oContents = new KTFSFileLike($data['file']['tmp_name']);
-        //$oOutputFile = new KTFSFileLike($sFilename);
-        //$res = KTFileLikeUtil::copy_contents($oContents, $oOutputFile);
+        $oStorage->uploadTmpFile($fileData['file']['tmp_name'], $sFilename);
+        
+        $fileData['file']['tmp_name'] = $sFilename;
+        $_SESSION['_add_data'] = array($key => $fileData);
 
-        //if (PEAR::isError($res)) {
-        //    $oForm->handleError(sprintf(_kt("Failed to store file: %s"), $res->getMessage()));
-        //}
+        exit(0);
+	}	
 
-
-        $oStorage = KTStorageManagerUtil::getSingleton();
-        $oStorage->uploadTmpFile($data['file']['tmp_name'], $sFilename);
-
-        $data['file']['tmp_name'] = $sFilename;
-        $_SESSION['_add_data'] = array($key => $data);
-
-        // if we don't need metadata
-        $fieldsets = $this->getFieldsetsForType($data['document_type']);
-        if (empty($fieldsets)) {
-            return $this->successRedirectTo('finalise', _kt("File uploaded successfully. Processing."), sprintf("fFileKey=%s", $key));
-        }
-
-        // if we need metadata
-
-        $this->successRedirectTo('metadata', _kt("File uploaded successfully.  Please fill in the metadata below."), sprintf("fFileKey=%s", $key));
-    }
 	/**
-	 * get the metadata
-	 * @return form
-	 * @param $sess_key Object
-	 * 
-	 * iNET Process
+	 * Handles the Submit of the KTLive Form 
 	 */
-    function form_metadata($sess_key) {
-        $oForm = new KTForm;
-        $oForm->setOptions(array(
-            'identifier' => 'ktcore.document.add',
-            'label' => _kt('Specify Metadata'),
-            'submit_label' => _kt('Save Document'),
-            'action' => 'finalise',
-            'fail_action' => 'metadata',
-         //   'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
+	public function do_liveDocumentSubmit() {
+	    global $default;
+	    
+	    $default->log->info('KTCore - Performing Live Submit');
+	    
+        //$data = $res['results'];
+        $aData = $_REQUEST['data'];
+        
+        $performExtractOnServer = $aData['fExtractDocuments'];
+        $default->log->info('KTCore Live Upload : Weather or not to perform upload : ' . $performExtractOnServer);
+        
+        $fileData = $_FILES;
+        $key = KTUtil::randomString(32);
+
+        $oKTConfig =& KTConfig::getSingleton();
+        $sBasedir = $oKTConfig->get("urls/tmpDirectory");
+
+        $sFilename = $oStorage->tempnam($sBasedir, 'kt_storecontents');
+
+        $oStorage->uploadTmpFile($fileData['file']['tmp_name'], $sFilename);
+        
+        $fileData['file']['tmp_name'] = $sFilename;
+        $_SESSION['_add_data'] = array($key => $fileData);
+
+        exit(0);
+	}		
+	 
+    
+	/**
+	 * Returns the main Bulk Upload Form
+	 * @return KTForm
+	 *
+	 */
+
+	function getBulkUploadForm() {
+		$this->oPage->setBreadcrumbDetails(_kt("bulk upload"));
+
+		//Adding the required Bulk Upload javascript includes
+		$aJavascript[] = 'resources/js/taillog.js';
+		$aJavascript[] = 'resources/js/conditional_usage.js';
+		$aJavascript[] = 'resources/js/kt_bulkupload.js';
+
+		//Loading the widget js libraries to support dynamic "Ajax Loaded" widget rendering
+		//FIXME: The widgets can support this via dynamic call to place libs in the head if they aren't loaded
+		//       jQuery can do this but need time to implement/test.
+
+		$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+		$aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js';
+		$aJavascript[] = 'resources/js/kt_tinymce_init.js';
+    	$aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/jquery.tinymce.js';
+    	$aJavascript[] = 'resources/js/conditional_selection.js';
+    	
+		$this->oPage->requireJSResources($aJavascript);
+        
+		//FIXME: Might really not need to load these styles, will check l8r
+		//$this->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
+
+        //Creating the form
+		$oForm = new KTForm;
+		$oForm->setOptions(array(
+            'identifier' => 'ktcore.folder.bulkUpload',
+            'label' => _kt('Bulk Upload'),
+            'submit_label' => _kt('Upload'),
+            'action' => 'upload',
+            'fail_action' => 'main',
+            'encoding' => 'multipart/form-data',
+            'file_upload' => true,
+		//  'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
             'context' => &$this,
             'extraargs' => $this->meldPersistQuery("","",true),
-        ));
+			'description' => _kt('The bulk upload facility allows for a number of documents to be added to the document management system. Provide an archive (ZIP) file from your local computer, and all documents and folders within that archive will be added to the document management system.')
+		));
 
-        $oFReg =& KTFieldsetRegistry::getSingleton();
+		$oWF =& KTWidgetFactory::getSingleton();
 
-        $doctypeid = $_SESSION['_add_data'][$sess_key]['document_type'];
+		$widgets = array();
+		$validators = array();
 
-        $widgets = array();
-        $validators = array();
-        $fieldsets = $this->getFieldsetsForType($doctypeid);
+		// Adding the File Upload Widget
 
-        foreach ($fieldsets as $oFieldset) {
-            $widgets = kt_array_merge($widgets, $oFReg->widgetsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
-            $validators = kt_array_merge($validators, $oFReg->validatorsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
+		//Legacy kt3 widgets don't conform to ktcore type widgets by virtue of the 'name' attribute.
+		//$widgets[] = new KTFileUploadWidget(_kt('Archive file'), , 'file', "", $this->oPage, true, "file");
+
+		$widgets[] = $oWF->get('ktcore.widgets.file', array(
+                        'label' => _kt('Archive file'),
+                        'required' => true,
+                        'name' => 'file',
+        				'id' => 'file',
+                        'value' => '',
+                        'description' => _kt('The archive file containing the documents you wish to add to the document management system.'),
+		));
+
+		$aVocab = array('' => _kt('- Please select a document type -'));
+        foreach (DocumentType::getListForUserAndFolder($this->oUser, $this->oFolder) as $oDocumentType) {
+            if(!$oDocumentType->getDisabled()) {
+                $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
+            }
         }
 
-        $oForm->setWidgets($widgets);
-        $oForm->setValidators($validators);
+		//Adding document type lookup widget
+		$widgets[] = $oWF->get('ktcore.widgets.selection',array(
+                'label' => _kt('Document Type'),
+				'id' => 'add-document-type',
+                'description' => _kt('Document Types, defined by the administrator, are used to categorise documents. Please select a Document Type from the list below.'),
+                'name' => 'fDocumentTypeId',
+                'required' => true,
+                'vocab' => $aVocab,
+                'id_method' => 'getId',
+                'label_method' => 'getName',
+                'simple_select' => false,
+		));
 
-        return $oForm;
-    }
+		$oFReg =& KTFieldsetRegistry::getSingleton();
+
+		$activesets = KTFieldset::getGenericFieldsets();
+		foreach ($activesets as $oFieldset) {
+			$widgets = kt_array_merge($widgets, $oFReg->widgetsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
+			$validators = kt_array_merge($validators, $oFReg->validatorsForFieldset($oFieldset, 'fieldset_' . $oFieldset->getId(), $this->oDocument));
+		}
+
+		//Adding the type_metadata_fields layer to be updated via ajax for non generic metadata fieldsets
+		$widgets[] = $oWF->get('ktcore.widgets.layer',array(
+                'value' => '',
+				'id' => 'type_metadata_fields',
+		));
+
+		$oForm->setWidgets($widgets);
+		$oForm->setValidators($validators);
+
+		// Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
+		global $default;
+		$iFolderId = $this->oFolder->getId();
+		if($default->enableESignatures){
+			$sUrl = KTPluginUtil::getPluginPath('electronic.signatures.plugin', true);
+			$heading = _kt('You are attempting to perform a bulk upload');
+			$submit['type'] = 'button';
+			$submit['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'ktcore.transactions.bulk_upload', 'bulk', 'bulk_upload_form', 'submit', {$iFolderId});";
+		}else{
+			$submit['type'] = 'submit';
+			$submit['onclick'] = '';
+		}
+
+		return $oForm;
+	}
+
 	/**
-	 * render metadata for a document
-	 * @return form
-	 * 
+	 * make uploads
+	 * @return
+	 *
 	 * iNET Process
 	 */
-    function do_metadata() {
-        $this->persistParams(array('fFileKey'));
+	function do_upload() {
+		$oStorage = KTStorageManagerUtil::getSingleton();
+		set_time_limit(0);
+		global $default;
+		$aErrorOptions = array(
+            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+		);
 
-        $oForm = $this->form_metadata($_REQUEST['fFileKey']);
-        return $oForm->render();
-    }
-	/**
-	 * finally adds a document
-	 * @return.
-	 * 
-	 * iNET Process
-	 */
-    function do_finalise() {
-        $this->persistParams(array('fFileKey'));
-        $sess_key = $_REQUEST['fFileKey'];
-        $oForm = $this->form_metadata($sess_key);
-        $res = $oForm->validate();
-        if (!empty($res['errors'])) {
-            return $oForm->handleError();
+		$aErrorOptions['message'] = _kt('Invalid document type provided');
+
+		$requestDocumentType = $_REQUEST['fDocumentTypeId']; //Backwards compatibility
+		if ($requestDocumentType == '' || $requestDocumentType == NULL) {
+			$requestDocumentType = $_REQUEST['data'];
+			$requestDocumentType = $requestDocumentType['fDocumentTypeId']; //New elements come through as arrays
+		}
+
+		$oDocumentType = $this->oValidator->validateDocumentType($requestDocumentType, $aErrorOptions);
+
+		unset($aErrorOptions['message']);
+		$fileData = $_FILES['file'];
+		$fileName = 'file';
+		if ($fileData == '' || $fileData == NULL){
+			$fileData = $_FILES['_kt_attempt_unique_file'];//$_FILES['_kt_attempt_unique_file'];
+			$fileName = '_kt_attempt_unique_file';
+		}
+
+		$aFile = $this->oValidator->validateFile($fileData, $aErrorOptions);
+
+		// Lets move the file from the windows temp directory into our own directory
+        $oKTConfig =& KTConfig::getSingleton();
+        $sBasedir = $oKTConfig->get("urls/tmpDirectory");
+        $tmpFilename = $oStorage->tempnam($sBasedir, 'kt_storebulk');
+
+        
+        $res = $oStorage->uploadTmpFile($fileData['tmp_name'], $tmpFilename, array('copy_upload' => 'true'));
+
+        // Save the new temp filename in the file data array
+        $fileData['tmp_name'] = $tmpFilename;
+
+        if($res === false){
+            $default->log->error('File could not be copied from the system temp directory.');
+            exit('File could not be copied from the system temp directory.');
         }
-        $data = $res['results'];
 
-        $extra_d = $_SESSION['_add_data'][$sess_key];
-        $doctypeid = $extra_d['document_type'];
+		$matches = array();
+		$aFields = array();
+
+		$aData = $_REQUEST['data'];
+
+        $doctypeid = $requestDocumentType;
         $aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
         $aSpecificFieldsetIds = KTFieldset::getForDocumentType($doctypeid, array('ids' => false));
         $fieldsets = kt_array_merge($aGenericFieldsetIds, $aSpecificFieldsetIds);
 
-
-        $MDPack = array();
+		$MDPack = array();
         foreach ($fieldsets as $oFieldset) {
             $fields = $oFieldset->getFields();
-            $values = (array) KTUtil::arrayGet($data, 'fieldset_' . $oFieldset->getId());
-
+            $values = (array) KTUtil::arrayGet($aData, 'fieldset_' . $oFieldset->getId());
+            //var_dump($values);
             foreach ($fields as $oField) {
+            	//var_dump($oField->getId());
                 $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
+
+                //Fix for multiselect not submitting data due to the value not being flat.
+                $sVal = '';
+                if (is_array($val)) {
+                    foreach ($val as $v) {
+                        $sVal .= $v . ", ";
+                    }
+                    $sVal = substr($sVal, 0, strlen($sVal) - 2);
+                    $val = $sVal;
+                }
+
 				if ($oFieldset->getIsConditional())
                 {
                 	if ($val == _kt('No selection.'))
@@ -399,14 +415,9 @@ class MultiDocumentAddAction extends KTFolderAction {
                 		$val = null;
                 	}
                 }
-                // ALT.METADATA.LAYER.DIE.DIE.DIE
+
+
                 if (!is_null($val)) {
-                	// multiselect change start
-                	if(is_array($val) && $oField->getHasInetLookup())
-					{
-						$val = join(", ",$val);
-					}
-					// multiselect change end
                     $MDPack[] = array(
                         $oField,
                         $val
@@ -415,52 +426,41 @@ class MultiDocumentAddAction extends KTFolderAction {
 
             }
         }
-        // older code
 
-        $mpo =& new JavascriptObserver($this);
-        $oUploadChannel =& KTUploadChannel::getSingleton();
-        $oUploadChannel->addObserver($mpo);
-
-        require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
-        //require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
-        require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
-        require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
-        require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
-
-        $aErrorOptions = array(
-            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
-    	    'max_str_len' => 200,
-        );
-
-        $aFile = $this->oValidator->validateFile($extra_d['file'], $aErrorOptions);
-        $sTitle = $extra_d['document_name'];
-
-        $iFolderId = $this->oFolder->getId();
-        $aOptions = array(
-            // 'contents' => new KTFSFileLike($aFile['tmp_name']),
-            'temp_file' => $aFile['tmp_name'],
-            'documenttype' => DocumentType::get($extra_d['document_type']),
+		$aOptions = array(
+            'documenttype' => $oDocumentType,
             'metadata' => $MDPack,
-            'description' => $sTitle,
-            'cleanup_initial_file' => true,
-        );
+		);
 
-        $mpo->start();
-        //$this->startTransaction();
-        $oDocument =& KTDocumentUtil::add($this->oFolder, $aFile['name'], $this->oUser, $aOptions);
-        if (PEAR::isError($oDocument)) {
-            $message = $oDocument->getMessage();
-            $this->errorRedirectTo('main',sprintf(_kt("Unexpected failure to add document - %s"), $message), 'fFolderId=' . $this->oFolder->getId());
-            exit(0);
-        }
-        $this->addInfoMessage(_kt("Document added"));
+		$fs =& new KTZipImportStorage($fileName, $fileData);
+		if(!$fs->CheckFormat()){
+			$sFormats = $fs->getFormats();
+			$this->addErrorMessage(sprintf(_kt("Bulk Upload failed. Archive is not an accepted format. Accepted formats are: .%s") , $sFormats));
+			controllerRedirect("browse", 'fFolderId=' . $this->oFolder->getID());
+			exit;
+		}
 
-        //$this->commitTransaction();
-        $mpo->redirectToDocument($oDocument->getId());
-        exit(0);
+		if(KTPluginUtil::pluginIsActive('inet.foldermetadata.plugin'))
+		{
+			require_once(KT_DIR . "/plugins/foldermetadata/import/bulkimport.inc.php");
+			$bm =& new KTINETBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
+		}
+		else
+		{
+			$bm =& new KTBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
+		}
 
-    }
+		$this->startTransaction();
+		$res = $bm->import();
 
+		$aErrorOptions['message'] = _kt("Bulk Upload failed");
+		$this->oValidator->notError($res, $aErrorOptions);
+
+		$this->addInfoMessage(_kt("Bulk Upload successful"));
+		$this->commitTransaction();
+
+		controllerRedirect("browse", 'fFolderId=' . $this->oFolder->getID());
+		exit(0);
+	}
 }
-
 ?>
