@@ -1,0 +1,61 @@
+#content ul.view_doc_tabs, ul.view_doc_tabs {
+	list-style:none;
+	margin: 0px;
+	display: block;
+}
+
+.buttonTab{
+	display: inline;
+	background-color: #CCCCCC;
+	color: #FFFFFF;
+	padding: 3px 15px;
+	margin: 0px 5px;
+	font-weight: bold;
+	cursor: pointer;
+	
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+}
+
+.buttonTab:first-child{
+	margin-left: 0px;
+}
+
+.buttonTab:hover{
+	background-color: #BBBBBB;
+}
+
+.buttonTabActive{
+	background-color: #AAAABB;
+}
+
+.buttonTabContentContainer{
+	display: block;
+	clear: both;
+}
+.buttonTabContainer{
+	margin-top: 15px;
+}
+
+.doc_view .doc_version{
+	font-size: 11px;
+	font-weight: bold;
+	margin-left: 15px;
+}
+
+.doc_view .doc_header_item{
+	display: block;
+	clear: both;
+	color: #666666;
+}
+
+.doc_view .doc_header_item .doc_field_title{
+	width: 80px;
+	margin-right: 10px;
+	text-align: right;
+	font-weight: bold;
+}
+
+.doc_view .doc_header_item .doc_field_value{
+	
+}
