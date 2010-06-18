@@ -42,6 +42,15 @@ class UnitTests extends TestSuite {
         $this->addFile('webservices/testRest.php');
         $this->addFile('webservices/testSoap.php');
 
+        // KT Core
+        $this->addFile('comments/testComments.php');
+
+        // Search (2) and indexing
+//        $this->addFile('documentProcessor/testExtracters.php');
+//        $this->addFile('documentProcessor/testGuidInserter.php');
+//        $this->addFile('search2/testSearch.php');
+
+        // Old broken unit tests
 //        $this->addFile('SQLFile/test_sqlfile.php');
 //        $this->addFile('cache/testCache.php');
 //        $this->addFile('config/testConfig.php');
@@ -50,11 +59,6 @@ class UnitTests extends TestSuite {
 //        $this->addFile('folder/testFolder.php');
 //        $this->addFile('browseutil/testBrowseUtil.php');
 //        $this->addFile('filelike/testStringFileLike.php');
-
-        // Search (2) and indexing
-//        $this->addFile('documentProcessor/testExtracters.php');
-//        $this->addFile('documentProcessor/testGuidInserter.php');
-//        $this->addFile('search2/testSearch.php');
     }
 }
 

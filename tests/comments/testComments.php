@@ -51,18 +51,17 @@ class CommentsTestCase extends KTUnitTestCase {
         $this->assertTrue($this->root instanceof KTAPI_Folder);
 
         // create a folder with a test document
-//        $this->folder = $this->root->add_folder('Unit Testing Comments');
-//        $this->folder_id = $this->folder->get_folderid();
+        $this->folder = $this->root->add_folder('Unit Testing Comments');
+        $this->folder_id = $this->folder->get_folderid();
 
-        $this->doc_id = 4;
-//        $content = 'This is the content for a small document to be used in the unit tests';
-//        $content = base64_encode($content);
-//        $result = $this->ktapi->add_small_document($this->folder_id, 'Comments Test Doc', 'comments_test.txt', 'Default', $content, null, null, 'Unit testing the comments functionality');
-//
-//        $this->assertEqual($result['status_code'], 0);
-//        if($result['status_code'] = 0){
-//            $this->doc_id = $result['results']['document_id'];
-//        }
+        $content = 'This is the content for a small document to be used in the unit tests';
+        $content = base64_encode($content);
+        $result = $this->ktapi->add_small_document($this->folder_id, 'Comments Test Doc', 'comments_test.txt', 'Default', $content, null, null, 'Unit testing the comments functionality');
+
+        $this->assertEqual($result['status_code'], 0);
+        if($result['status_code'] == 0){
+            $this->doc_id = $result['results']['document_id'];
+        }
     }
 
     /**
@@ -70,14 +69,14 @@ class CommentsTestCase extends KTUnitTestCase {
     *
     */
     public function tearDown() {
-        $this->session->logout();
-
         // remove folder and expunge document
-//        $document = $this->ktapi->get_document_by_id($this->doc_id);
-//        $document->delete('Removing test document');
-//        $document->expunge();
-//
-//        $folder->delete('Removing test folder');
+        $document = $this->ktapi->get_document_by_id($this->doc_id);
+        $document->delete('Removing test document');
+        $document->expunge();
+
+        $this->folder->delete('Removing test folder');
+
+        $this->session->logout();
     }
 
     public function testComments()
