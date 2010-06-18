@@ -45,6 +45,7 @@ require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
 require_once(KT_LIB_DIR . "/metadata/fieldsetregistry.inc.php");
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
+require_once(KT_LIB_DIR . "/import/zipimportstorage.inc.php");
 class KTFolderAddDocumentAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.addDocument';
     var $_sShowPermission = "ktcore.permissions.write";
