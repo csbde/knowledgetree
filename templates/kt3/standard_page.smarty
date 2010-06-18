@@ -15,8 +15,8 @@
 	{/foreach}
     {/if}
 
-       <link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-print.css"
-           media="print" />
+    <link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/kt-print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="{$rootUrl}/resources/css/newui/view_doc.css" media="screen" />
 
     <link rel="icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="{$rootUrl}/resources/favicon.ico" type="image/x-icon">
