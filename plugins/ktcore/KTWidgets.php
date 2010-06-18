@@ -1203,3 +1203,51 @@ class KTCoreImageSelectWidget extends KTWidget {
     
 }
 
+class KTCoreSWFFileSelectWidget extends KTWidget {
+    var $sNamespace = 'ktcore.widgets.swffileselect';
+    var $sTemplate = 'ktcore/forms/widgets/swffileselect';
+
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+    }
+
+    function render() {
+        $oTemplating =& KTTemplating::getSingleton();        
+        $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
+        
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+      	$this->aJavascript[] = 'thirdpartyjs/swfupload/swfupload.js';
+        $this->aJavascript[] = 'thirdpartyjs/swfupload/swfupload.queue.js';      	
+        $this->aJavascript[] = 'thirdpartyjs/swfupload/fileprogress.js';      	
+        $this->aJavascript[] = 'thirdpartyjs/swfupload/handlers.js';
+      	//$this->aJavascript[] = 'resources/js/kt_swffileselect.js';
+      	$this->aJavascript[] = 'resources/js/kt_swfupload.js';
+	
+        if (!empty($this->aJavascript)) {
+            // grab our inner page.
+            $oPage =& $GLOBALS['main'];            
+            $oPage->requireJSResources($this->aJavascript);
+        }
+
+        $widget_content = $this->getWidget();
+
+        $aTemplateData = array(
+            "context" => $this,
+            "label" => $this->sLabel,
+            "description" => $this->sDescription,
+            "name" => $this->sName,
+            "has_value" => ($this->value !== null),
+            "value" => $this->value,
+            "has_errors" => $bHasErrors,
+            "errors" => $this->aErrors,
+            "options" => $this->aOptions,
+            "widget" => $widget_content,
+        );
+        return $oTemplate->render($aTemplateData);   
+    }    
+    
+}
+

@@ -62,7 +62,8 @@ class KTZipImportStorage extends KTFSImportStorage {
 
     var $allowed_extensions = array('tgz', 'tar', 'gz', 'zip', 'deb', 'ar');
 
-    function KTZipImportStorage($fileName, $fileData = null) {
+    // TODO : Added $fileName = '', so singleton could be used.
+    function __construct($fileName = '', $fileData = null) {
         $this->sFileName = $fileName;
         if(empty($fileData)){
             $this->aFile = $_FILES[$fileName];
@@ -184,6 +185,28 @@ class KTZipImportStorage extends KTFSImportStorage {
             KTUtil::deleteDirectory($this->sZipPath);
             $this->sZipPath = null;
         }
+    }
+}
+
+class KTZipImportStorageManager 
+{
+    static function getSingleton() 
+    {
+    	static $singleton = null;
+    	if (is_null($singleton))
+    	{
+    		$oConfig =& KTConfig::getSingleton();
+        	$sDefault = 'KTZipImportStorage';
+        	$klass = $oConfig->get('importstorage/manager', $sDefault);
+        	// TODO : Remove after config settings upgrade
+        	$klass = "KTAmazonS3ZipImportStorage";
+        	if (!class_exists($klass)) {
+            	$klass = $sDefault;
+        	}
+        	$singleton = new $klass;
+    	}
+
+    	return $singleton;
     }
 }
 

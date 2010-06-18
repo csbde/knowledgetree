@@ -107,9 +107,6 @@ class InstallWizard extends WizardBase {
 	* @return void
  	*/
 	function load() {
-		if(isset($_GET['bypass'])) {
-			$this->setBypass($_GET['bypass']);
-		}
 		if(isset($_GET['debug'])) {
 			$this->setDebugLevel($_GET['debug']);
 		} else {
@@ -154,11 +151,6 @@ class InstallWizard extends WizardBase {
  	*/
 	public function dispatch() {
 		$this->load();
-		if($this->getBypass() === "1") { // Helper to force install
-			$this->removeInstallFile();
-		} elseif ($this->getBypass() === "0") {
-			$this->createInstallFile();
-		}
 		if ($this->util->finishInstall()) { // Check if the installer has completed
 			$this->util->redirect('../../login.php');
 		} elseif ($this->util->upgradeInstall()) { // Check if the upgrader needs to be accessed

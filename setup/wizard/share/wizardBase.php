@@ -91,15 +91,6 @@ function loadTemplate() {
 
 class WizardBase {
 	/**
-	* Bypass flag
-	*
-	* @author KnowledgeTree Team
-	* @access protected
-	* @var mixed
-	*/
-	protected $bypass = null;
-
-	/**
 	* Level of debugger
 	*
 	* @author KnowledgeTree Team
@@ -130,18 +121,6 @@ class WizardBase {
 	}
 
 	/**
-	* Set bypass flag
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param boolean
-	* @return void
- 	*/
-	public function setBypass($bypass) {
-		$this->bypass = $bypass;
-	}
-
-	/**
 	* Set debug level
 	*
 	* @author KnowledgeTree Team
@@ -164,18 +143,6 @@ class WizardBase {
  	*/
 	public function setIUtil($util) {
 		$this->util = $util;
-	}
-
-	/**
-	* Get bypass flag
-	*
-	* @author KnowledgeTree Team
-	* @access public
-	* @param none
-	* @return boolean
- 	*/
-	public function getBypass() {
-		return $this->bypass;
 	}
 
 	/**
