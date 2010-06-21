@@ -111,9 +111,11 @@
 }
 
 #content .doc_view .doc_file_title {
+/*
 	font-family: "Times New Roman, Times, Courier";
-	font-size: 28px;
 	letter-spacing: 0.08em;
+*/
+	font-size: 28px;
 	font-weight: 500;
 	clear: both;
 	display: block;
