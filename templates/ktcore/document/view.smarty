@@ -28,6 +28,13 @@
 		<tr>
 			<td colspan="2" valign="top">
 				<ul class="view_doc_tabs">
+					<li title="Activity">
+						<table class="kt_collection" style="clear: both;"><tr><td>
+							<div id="activity_feed_container" style="margin-top:1em;"></div>
+							<div id="new_comment_form"></div>
+						</table>
+					</li>
+
 					<li title="Details">
 						<table class="kt_collection" style="clear: both;"><tr><td>
 						{foreach item=oFieldset from=$fieldsets}
@@ -43,13 +50,7 @@
 							</table>
 						</li>
 					{/if}
-						
-					<li title="Activity">
-						<table class="kt_collection" style="clear: both;"><tr><td>
-							<div id="activity_feed_container" style="margin-top:1em;"></div>
-							<div id="new_comment_form"></div>
-						</table>
-					</li>
+					
 				</ul>			
 			</td>
 		</tr>
