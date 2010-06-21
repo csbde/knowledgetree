@@ -142,24 +142,16 @@ class KTBulkUploadFolderAction extends KTFolderAction {
             'documenttype' => $oDocumentType,
             'metadata' => $aFields,
         );
-		// REVIEW : Would have been nice to mirror the kt lib.
-		/*
-		$fs = KTZipImportStorageManager::getSingleton();
-		$fs->__construct('file');
-		*/
-		$fs =& new KTZipImportStorage('file');
+
+        $fs =& new KTZipImportStorage('file');
         if(!$fs->CheckFormat()){
             $sFormats = $fs->getFormats();
             $this->addErrorMessage(sprintf(_kt("Bulk Upload failed. Archive is not an accepted format. Accepted formats are: %s") , $sFormats));
             controllerRedirect("browse", 'fFolderId=' . $this->oFolder->getID());
             exit;
         }
-		// REVIEW : Would have been nice to mirror the kt lib.
-		/*
-		$bm = KTBulkImportManagerUtil::getSingleton();
-		$bm->__construct($this->oFolder, $fs, $this->oUser, $aOptions);
-		*/
-		$bm =& new KTBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
+
+        $bm =& new KTBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
         $this->startTransaction();
         $res = $bm->import();
 
