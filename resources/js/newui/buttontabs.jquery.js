@@ -55,23 +55,3 @@
 		return this;
 	}
 })(jQuery);
-
-<<<<<<< HEAD
-
-(function($){
-	$(document).ready(function(){
-		$('#activity_feed_container').html($('#viewlet_activityFeed').html());
-		$('#viewlet_activityFeed').remove();
-		
-		$('#doc_thumb').append($('.thumb-shadow img')).addClass('thumb-shadow').css({'margin-right': '15px', 'margin-bottom': '15px'});
-		$('#doc_thumb img').css({height: '150px'});
-
-		$('.view_doc_tabs').buttontabs({
-			containerId:'doc_view_container',
-			containerClass:'',
-		});
-	});
-	
-})(jQuery);
-=======
->>>>>>> 78a0e3bf1cd2630f447c6b1d7e1a243c1cdee1cb

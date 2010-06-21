@@ -163,7 +163,25 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
             );
         }
         
-        
+    	$aMetadataVersions = KTDocumentMetadataVersion::getByDocument($this->oDocument);
+        $aVersions = array();
+        foreach ($aMetadataVersions as $oVersion) {
+             $version = Document::get($this->oDocument->getId(), $oVersion->getId());
+             if($showall){
+                $aVersions[] = $version;
+             }else if($version->getMetadataStatusID() != VERSION_DELETED){
+                $aVersions[] = $version;
+             }
+             
+            $mainArray[] = array(
+                'name' => $this->getUserForId($version->getVersionCreatorId()),
+                'transaction_name' => 'New Document Version',
+                'datetime' => $version->getVersionCreated(),
+                'version' => $version->getMajorVersionNumber().'.'.$version->getMinorVersionNumber(),
+                'comment' => '',
+                'type' => 'version'
+            );
+        }        
         
         $comments = Comments::get_comments($this->oDocument->getId());
         foreach ($comments as $comment)

@@ -1,53 +1,17 @@
-<<<<<<< HEAD
-#content ul.view_doc_tabs, ul.view_doc_tabs {
-	list-style:none;
-=======
 #content ul.view_doc_tabs,ul.view_doc_tabs {
 	list-style: none;
->>>>>>> 78a0e3bf1cd2630f447c6b1d7e1a243c1cdee1cb
 	margin: 0px;
 	display: block;
 }
 
-<<<<<<< HEAD
-.buttonTab{
-	display: inline;
-	background-color: #CCCCCC;
-=======
 .buttonTab {
 	display: inline;
 	background-color: #7CBEDC;
->>>>>>> 78a0e3bf1cd2630f447c6b1d7e1a243c1cdee1cb
 	color: #FFFFFF;
 	padding: 3px 15px;
 	margin: 0px 5px;
 	font-weight: bold;
 	cursor: pointer;
-<<<<<<< HEAD
-	
-	-webkit-border-radius: 6px;
-	-moz-border-radius: 6px;
-}
-
-.buttonTab:first-child{
-	margin-left: 0px;
-}
-
-.buttonTab:hover{
-	background-color: #BBBBBB;
-}
-
-.buttonTabActive{
-	background-color: #AAAABB;
-}
-
-.buttonTabContentContainer{
-	display: block;
-	clear: both;
-}
-.buttonTabContainer{
-	margin-top: 15px;
-=======
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 }
@@ -132,5 +96,4 @@
 
 .buttonTabContentContainer .metadatatable {
 	padding: 15px;
->>>>>>> 78a0e3bf1cd2630f447c6b1d7e1a243c1cdee1cb
 }
