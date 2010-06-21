@@ -83,6 +83,22 @@ class KTUserUtil
 
         return $oUser;
     }
+    
+    public static function getUserField($userId,$fieldName='name'){
+    	if(!is_array($userId)){	$userId=array($userId);	}
+    	$userId=array_unique($userId,SORT_NUMERIC);
+    	if(!is_array($fieldName)){$fieldName=array($fieldName);	}
+    	
+		//TODO: needs some work
+    	$sql="SELECT ".join(',',$fieldName)." FROM users WHERE id IN (".join(',',$userId).")";
+    	$res=DBUtil::getResultArray($sql);
+//    	print_r($res); die;
+    	if(PEAR::isError($res) || empty($res)){
+    		return '';
+    	}else{
+    		return $res;
+    	}
+    }
 }
 
 

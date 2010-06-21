@@ -56,6 +56,7 @@
 	}
 })(jQuery);
 
+<<<<<<< HEAD
 
 (function($){
 	$(document).ready(function(){
@@ -72,3 +73,5 @@
 	});
 	
 })(jQuery);
+=======
+>>>>>>> 78a0e3bf1cd2630f447c6b1d7e1a243c1cdee1cb

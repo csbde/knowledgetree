@@ -1,3 +1,5 @@
+    <div id="data_transfer">
+    
     <table class="kt_collection" cellspacing="0" name="browseForm">
         <thead>
             <tr>
@@ -13,7 +15,7 @@
               {/foreach}
             </tr>
         </thead>
-        <tbody>
+        <tbody class="drophere" id="datadrop">
           {if ($context->itemCount != 0)}
             {foreach item=folder_row_id from=$context->activeset.folders name=rowiter}{* For folders *}
             <tr class="{cycle name=rows values=",odd"} folder_row">
@@ -114,3 +116,5 @@ and only 3 from the back if we're not in the back 20 or so.  20 - 16 = 5
             </tr>
         </tfoot>
     </table>
+    </div>
+    

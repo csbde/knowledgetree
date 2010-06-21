@@ -1,16 +1,25 @@
+<script type="text/javascript" src="resources/js/jquery.reverseorder.packed.js"></script>
 <div id="viewlet_activityfeed">
     <h2>{i18n}Activity Feed{/i18n}: {$document->getName()|sanitize}</h2>
     
-    {foreach item=version from=$versions}
-    <span class="activityfeed_item {$version.type}">
-        <span class="af_user">{$version.name}</span>
-        <span class="af_action">{$version.transaction_name}</span>
-        <span class="af_version">{$version.version}</span>
-        <span class="af_version">{$version.version}</span>
-        <span class="af_date">{$version.date}</span>
-        <span class="af_comment">{$version.comment|sanitize}</span>
-    </span>
-    
-    {/foreach}
+<div class="activityfeed" style="border: 0px solid #000000">
+        
+
+{foreach item=version from=$versions}
+        <div class="item {$version.type}">
+            <div class="icon"><img src="http://www.gravatar.com/avatar/{$version.email}?s=48&d=wavatar" alt="{$version.name}" title="{$version.name}" /></div>
+
+            <div class="activityfeed_content">
+                <span class="date">{$version.datetime}</span>
+                <span class="user">{$version.name}</span>
+                <span class="description">{$version.comment|sanitize}</span>
+            </div>
+        </div>
+        {if $version.version}
+        <span class="metaflag">Ver {$version.version}</span>
+        {/if}
+        
+{/foreach}
+    </div>
 
 </div>

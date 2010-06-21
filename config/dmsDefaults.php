@@ -574,6 +574,7 @@ class KTInit {
 	// {{{ initConfig
 	function initConfig() {
 		global $default;
+		$oPear = new PEAR();
 		$oKTConfig = KTConfig::getSingleton ();
 
 		// Override the config setting - KT_DIR is resolved on page load
@@ -607,7 +608,7 @@ class KTInit {
 
 		$dbSetup = $oKTConfig->setupDB ();
 
-		if (PEAR::isError ( $dbSetup )) {
+		if ($oPear->isError ( $dbSetup )) {
 			/* We need to setup the language handler to display this error correctly */
 			$this->setupI18n ();
 			if (ACCOUNT_ROUTING_ENABLED) {

@@ -40,6 +40,7 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
+require_once(KT_LIB_DIR . '/users/userutil.inc.php');
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 require_once(KT_LIB_DIR . '/util/sanitize.inc');
 
@@ -253,7 +254,16 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $oLivePreview=new instaViewLinkAction($oDocument,$this->oUser,NULL);
         $live_preview=$oLivePreview->do_main();
         
+        $ownerUser=KTUserUtil::getUserField($oDocument->getOwnerID(),'name');
+        $creatorUser=KTUserUtil::getUserField($oDocument->getCreatorID(),'name');
+        $lastModifierUser=KTUserUtil::getUserField($oDocument->getModifiedUserId(),'name');
+        
         $aTemplateData = array(
+        	'doc_data'=>array(
+        		'owner'=>$ownerUser[0]['name'],
+        		'creator'=>$creatorUser[0]['name'],
+        		'lastModifier'=>$lastModifierUser[0]['name']
+        	),
 			'context' => $this,
 			'sCheckoutUser' => $checkout_user,
 			'isCheckoutUser' => ($this->oUser->getId() == $oDocument->getCheckedOutUserId()),

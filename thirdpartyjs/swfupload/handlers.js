@@ -1,17 +1,32 @@
-/* Demo Note:  This demo uses a FileProgress class that handles the UI for displaying the file name and percent complete.
-The FileProgress class is not part of SWFUpload.
-*/
+function detectArchiveFile(fileName) {
+	isSupported = fileName.match(/\.(tgz|tar|gz|zip|deb|ar|bz2|tbz|tgz)$/i);
+	isSupported = (isSupported != null)? true : false;
+	
+	if (isSupported) {
+		showExtractCheck();
+	} else {
+		hideExtractCheck();
+	}
+}
 
+function showExtractCheck() {
+	jQuery('#extract-documents').removeClass('hideCheck').show('slow');
+	jQuery('#extract-documents').addClass('showCheck').show();
+}
 
-/* **********************
-   Event Handlers
-   These are my custom event handlers to make my
-   web application behave the way I went when SWFUpload
-   completes different tasks.  These aren't part of the SWFUpload
-   package.  They are part of my application.  Without these none
-   of the actions SWFUpload makes will show up in my application.
-   ********************** */
+function hideExtractCheck() {
+	jQuery('#extract-documents').hide('slow');
+}
+
+function addFileToPost(fileName) {
+	jQuery('#kt_last_swf_filename').val(fileName);
+}
+
 function fileQueued(file) {
+	
+	detectArchiveFile(file.name);
+	addFileToPost(file.name);
+	
 	try {
 		var progress = new FileProgress(file, this.customSettings.progressTarget);
 		progress.setStatus("Pending...");
