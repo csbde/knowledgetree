@@ -38,6 +38,7 @@
 
 require_once(KT_LIB_DIR . "/actions/documentviewlet.inc.php");
 require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
+require_once(KT_LIB_DIR . "/database/datetime.inc");
 require_once(KT_DIR . '/plugins/comments/comments.php');
 
 // {{{ KTDocumentDetailsAction
@@ -156,7 +157,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
                 'name' => $transaction['user_name'],
                 'email' => md5($transaction['email']),
                 'transaction_name' => $transaction['transaction_name'],
-                'datetime' => $transaction['datetime'],
+                'datetime' => getDateTimeDifference($transaction['datetime']),
                 'version' => $transaction['version'],
                 'comment' => $transaction['comment'],
                 'type' => 'transaction'
@@ -190,7 +191,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
                 'name' => $this->getUserForId($comment['user_id']),
                 'email' => md5($this->getEmailForId($comment['user_id'])),
                 'transaction_name' => 'Comment',
-                'datetime' => $comment['date'],
+                'datetime' => getDateTimeDifference($comment['date']),
                 'version' => '',
                 'comment' => $comment['comment'],
                 'type' => 'comment'
