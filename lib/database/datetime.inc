@@ -112,7 +112,7 @@ function getDateTimeDifference($date1)
         if ($difference['m'] > 1) { // if more than one minute
             $returnString .= $difference['m'].' '._kt('minutes').' ';
         } else if ($difference['m'] > 0) {
-            $returnString = $difference['h'].' '._kt('minute').' ';
+            $returnString = $difference['m'].' '._kt('minute').' ';
         }        
         
         if ($difference['h'] == 0 && $difference['m'] == 0) {

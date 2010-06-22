@@ -191,7 +191,7 @@ class KTPage {
 
 
     function setTitle($sTitle) {
-	$this->title = $sTitle;
+		$this->title = $sTitle;
     }
 
     /* javascript handling */

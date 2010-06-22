@@ -105,7 +105,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $_REQUEST['fDocumentId'] = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fDocumentID'));
             unset($_REQUEST['fDocumentID']);
         }
-
+        
         $document_data = array();
         $document_id = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
         if ($document_id === null) {
@@ -165,7 +165,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions, $iSymLinkFolderId));
         }
 
-        $this->oPage->setBreadcrumbDetails(_kt('document details'));
+        
         $this->addPortlets('Document Details');
 
         $document_data['document'] = $oDocument;
@@ -276,6 +276,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			'viewlet_data' => $viewlet_data,
         	'live_preview' => $live_preview
         );
+        $this->oPage->setBreadcrumbDetails(_kt("Document Details"));
         return $oTemplate->render($aTemplateData);
     }
 
