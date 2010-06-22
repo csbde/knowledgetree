@@ -4,28 +4,64 @@
 	display: block;
 }
 
+.buttonTabs{
+	height: 30px;
+	padding: 0px;
+}
+
 .buttonTab {
 	display: inline;
 	background-color: #7CBEDC;
+	background-image: url(/resources/graphics/newui/glassbg_bn_passive.png);
 	color: #FFFFFF;
-	padding: 3px 15px;
-	margin: 0px 5px;
+	padding: 7px 15px;
+	margin: 0px -1px;
+	border: 1px solid transparent;
+	/*
+	border-right:1px solid #C6C6C6;
+	border-left:1px solid #EEEEEE;
+	*/
 	font-weight: bold;
 	cursor: pointer;
+	/*
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
+	*/
+	z-index: 5500;
 }
 
 .buttonTab:first-child {
-	margin-left: 0px;
+	-webkit-border-top-left-radius: 8px;
+	-webkit-border-bottom-left-radius: 8px;
+	-moz-border-radius-topleft: 8px;
+	-moz-border-radius-bottomleft: 8px;
+	border-top-left-radius: 8px;
+	border-bottom-left-radius: 8px;
+	margin-right: -2px;
+}
+
+.buttonTab:last-child {
+	-webkit-border-top-right-radius: 8px;
+	-webkit-border-bottom-right-radius: 8px;
+	-moz-border-radius-topright: 8px;
+	-moz-border-radius-bottomright: 8px;
+	border-top-right-radius: 8px;
+	border-bottom-right-radius: 8px;
+	margin-left: -2px;
 }
 
 .buttonTab:hover {
 	color: #28708F;
+	/*
+	-moz-box-shadow: 0 0 3px #333333;
+	*/
+	border: 1px solid rgb(53,128,164);
+	z-index: 6000;
 }
 
 .buttonTabActive {
 	background-color: #28708F;
+	background-image: url(/resources/graphics/newui/glassbg_bn_active.png);
 	color: #FFFFFF;
 }
 
@@ -96,6 +132,7 @@
 
 .buttonTabContentContainer .metadatatable {
 	padding: 15px;
+	border: none;
 }
 
 /*
@@ -171,4 +208,26 @@
 
 .activityfeed .item.comment .activityfeed_content{
     background-color: #dfe6fd;
+}
+
+#commentsarea {
+	margin-bottom: 10px;
+}
+
+#commentsbox {
+	width: 100%;
+}
+
+#commentssaveajax {
+	display: none;
+	padding: 10px;
+	margin-bottom: 20px;
+}
+
+.activityfeed .item.newcomment .activityfeed_content{
+    background-color: #FFEDAC;
+}
+
+.newcomment {
+	display: none;
 }

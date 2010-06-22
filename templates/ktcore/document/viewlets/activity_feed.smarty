@@ -1,6 +1,29 @@
-<script type="text/javascript" src="resources/js/jquery.reverseorder.packed.js"></script>
+<script type="text/javascript" src="resources/js/jquery.autoresize.min.js"></script>
 <div id="viewlet_activityfeed">
     <h2>{i18n}Activity Feed{/i18n}: {$document->getName()|sanitize}</h2>
+    
+    <div id="commentssaveajax">
+        
+    </div>
+    <div id="commentsarea">
+        <table width="100%">
+        <tr>
+            <td width="80">
+                <p><label for="commentsbox">Comment</label></p>
+            </td>
+            <td>
+                <textarea id="commentsbox"></textarea>
+                
+            </td>
+            <td width="200">
+                <div class="form_actions">
+                    <input type="hidden" id="comment_documentid" name="documentid" value="{$document->getId()}" />
+                    <input type="button" id="comment_post" name="comment.post" value="{i18n}Post{/i18n}" />
+                </div>
+            </td>
+        </tr></table>
+    </div>
+
     
 <div class="activityfeed" style="border: 0px solid #000000">
         
@@ -10,11 +33,11 @@
 	        <span class="metaflag">Ver {$version.version}</span>
         {else}
 	        <div class="item {$version.type}">
-	            <div class="icon"><img src="http://www.gravatar.com/avatar/{$version.email}?s=48&d=wavatar" alt="{$version.name}" title="{$version.name}" /></div>
+	            <div class="icon"><img src="http://www.gravatar.com/avatar/{$version.email}?s=48" alt="{$version.name}" title="{$version.name}" /></div>
 	            <div class="activityfeed_content">
 	                <span class="date">{$version.datetime}</span>
 	                <span class="user">{$version.name}</span>
-	                <span class="description">{$version.comment|sanitize}</span>
+	                <span class="description">{$version.comment|sanitize|nl2br}</span>
 	            </div>
 	        </div>
         {/if}
@@ -22,3 +45,61 @@
 {/foreach}
     </div>
 </div>
+
+{literal}
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        
+        {/literal}
+        savingCommentMessage = '<img src="thirdpartyjs/extjs/resources/images/default/tree/loading.gif"> {i18n}Saving Comment{/i18n}';
+        commentSavedMessage = '{i18n}Comment Saved. <a href="javascript:showComment()">Add New Comment</a>{/i18n}';
+        {literal}
+        
+        
+        var newCommentAdded = false;
+        
+        jQuery("#commentsbox").autoResize();
+        
+        jQuery("#comment_post").click(function() {
+            comment = jQuery("#commentsbox").val();
+            docId = jQuery("#comment_documentid").val();
+            
+            if (comment == '') {
+                alert('{/literal}{i18n}Please enter a comment{/i18n}{literal}');
+                jQuery("#commentsbox").focus();
+            } else {
+                
+                if (newCommentAdded) {
+                    jQuery("div.activityfeed div:first").removeClass('newcomment').addClass('comment');
+                }
+                
+                newCommentAdded = true;
+                jQuery("#commentsarea").hide();
+                jQuery("#commentssaveajax").html(savingCommentMessage).show();
+                
+                jQuery.post("plugins/comments/ajaxComments.php", { action: 'postComment', comment: comment, documentId: docId },
+                    function(data){
+                        jQuery("#commentssaveajax").html(commentSavedMessage);
+                        jQuery("#commentsbox").val('');
+                        
+                        jQuery("#commentsarea").show();
+                        jQuery("#commentssaveajax").hide();
+                        
+                        jQuery("div.activityfeed").prepend(data);
+                        jQuery("div.activityfeed div:first").slideDown('slow').animate({ backgroundColor: "#f6f6f6" }, 'fast');
+                    }
+                );
+            }
+            
+        });
+    });
+    
+    function showComment() {
+        jQuery("#commentsarea").show();
+        jQuery("#commentssaveajax").hide();
+    }
+
+</script>
+
+
+{/literal}
