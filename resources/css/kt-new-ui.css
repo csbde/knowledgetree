@@ -350,7 +350,7 @@ div#activationNotice span {
     -moz-border-radius: 6px;
     border: 1px solid #CCCCCC;
     margin-left: 60px;
-    padding: 10px;
+    padding: 2px 2px 2px 10px;
     overflow: auto;
     background-color: #eeeeee;
 }
@@ -379,7 +379,7 @@ div#activationNotice span {
 }
 .activityfeed .activityfeed_content .description{
     display: block;
-    padding: 10px;
+    padding: 2px 10px;
     color: #AAAAAAA;
 }
 
