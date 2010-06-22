@@ -460,6 +460,10 @@ class KTPage {
 
         $savedSearches = SearchHelper::getSavedSearches($_SESSION['userID']);
 
+        require_once(KT_LIB_DIR . '/browse/feedback.inc.php');
+        $userFeedback = new Feedback();
+        $uploadProgress = new DragDrop();
+        
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate($this->template);
         $aTemplateData = array(
@@ -468,7 +472,8 @@ class KTPage {
 			       	"versionname" => $default->versionName,
 					'smallVersion' => $default->versionTier,
 			       	'savedSearches'=> $savedSearches,
-			       	'licenseNotification' => $this->getLicenseNotification());
+			       	'feedback' => $userFeedback->getDisplay(),
+        			'uploadProgress' => $uploadProgress->render());
         if ($oConfig->get("ui/automaticRefresh", false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
         }
@@ -538,17 +543,6 @@ class KTPage {
             return;
         }
     }
-    
-    private function getLicenseNotification() {
-        $oRegistry =& KTPluginRegistry::getSingleton();
-        $oPlugin =& $oRegistry->getPlugin('ktdms.wintools');
-        if (!PEAR::isError($oPlugin) && !is_null($oPlugin)) {
-            return $oPlugin->getLicenseNotification();
-        } else {
-            return;
-        }
-    }
-
 }
 
 ?>
