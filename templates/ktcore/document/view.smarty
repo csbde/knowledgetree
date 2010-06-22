@@ -28,7 +28,22 @@
 		<tr>
 			<td colspan="2" valign="top">
 				<ul class="view_doc_tabs">
-					<li title="Details">
+					<li title="Activity">
+						<table class="kt_collection" style="clear: both;"><tr><td>
+							<div id="activity_feed_container" style="margin-top:1em;"></div>
+							<div id="new_comment_form"></div>
+						</table>
+					</li>
+
+					{if !empty($live_preview)}
+						<li title="View">
+							<table class="kt_collection" style="clear: both;"><tr><td>
+								<div style="margin-top:1em;">{$live_preview}</div>
+							</table>
+						</li>
+					{/if}
+					
+					<li title="Properties">
 						<table class="kt_collection" style="clear: both;"><tr><td>
 						{foreach item=oFieldset from=$fieldsets}
 							{$oFieldset->render($document_data)}
@@ -36,20 +51,6 @@
 						</td></tr></table>
 					</li>
 			
-					{if !empty($live_preview)}
-						<li title="Preview">
-							<table class="kt_collection" style="clear: both;"><tr><td>
-								<div style="margin-top:1em;">{$live_preview}</div>
-							</table>
-						</li>
-					{/if}
-						
-					<li title="Activity">
-						<table class="kt_collection" style="clear: both;"><tr><td>
-							<div id="activity_feed_container" style="margin-top:1em;"></div>
-							<div id="new_comment_form"></div>
-						</table>
-					</li>
 				</ul>			
 			</td>
 		</tr>
@@ -98,7 +99,7 @@
 	{if !empty($viewlet_data)}
 	
 	<!--  Document "Views" -->
-	<div id="document-views" style="display: block; width: 200px;">
+	<div id="document-views" style="display: none; width: 200px;">
 	
 	{$viewlet_data}
 	

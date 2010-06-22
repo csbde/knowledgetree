@@ -55,4 +55,3 @@
 		return this;
 	}
 })(jQuery);
-

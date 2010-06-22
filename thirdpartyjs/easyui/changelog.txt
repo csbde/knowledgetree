@@ -1,0 +1,60 @@
+Version 1.1
+-------------
+* Bug
+ * messager: When call show method with timeout property setted, an error occurs while clicking the close button. fixed.
+ * combobox: The editable property of combobox plugin is invalid. fixed.
+ * window: The proxy box will not be removed when dragging or resizing exceed browser border in ie. fixed.
+* Improvement
+ * menu: The menu item can use <a> markup to display a different page.
+ * tree: The tree node can use <a> markup to act as a tree menu.
+ * pagination: Add some event on refresh button and page list.
+ * datagrid: Add a 'param' parameter for reload method, with which users can pass query parameter when reload data.
+ * numberbox: Add required validation support, the usage is same as validatebox plugin.
+ * combobox: Add required validation support.
+ * combotree: Add required validation support.
+ * layout: Add some method that can get a region panel and attach event handlers.
+* New Plugins
+ * droppable: A droppable plugin that supports drag drop operation.
+ * calendar: A calendar plugin that can either be embedded within a page or popup.
+ * datebox: Combines a textbox with a calendar that let users to select date.
+ * easyloader: A JavaScript loader that allows you to load plugin and their dependencies into your page.
+ 
+Version 1.0.5
+* Bug
+ * panel: The fit property of panel performs incorrectly. fixed.
+* Improvement
+ * menu: Add a href attribute for menu item, with which user can display a different page in the current browser window.
+ * form: Add a validate method to do validation for validatebox component.
+ * dialog: The dialog can read collapsible,minimizable,maximizable and resizable attribute from markup.
+* New Plugins
+ * validatebox: A validation plugin that checks to make sure the user's input value is valid. 
+ 
+Version 1.0.4
+-------------
+* Bug
+ * panel: When panel is invisible, it is abnormal when resized. fixed.
+ * panel: Memory leak in method 'destroy'. fixed.
+ * messager: Memory leak when messager box is closed. fixed.
+ * dialog: No onLoad event occurs when loading remote data. fixed.
+* Improvement
+ * panel: Add method 'setTitle'.
+ * window: Add method 'setTitle'.
+ * dialog: Add method 'setTitle'.
+ * combotree: Add method 'getValue'.
+ * combobox: Add method 'getValue'.
+ * form: The 'load' method can load data and fill combobox and combotree field correctly.
+ 
+Version 1.0.3
+-------------
+* Bug
+ * menu: When menu is show in a DIV container, it will be cropped. fixed.
+ * layout: If you collpase a region panel and then expand it immediately, the region panel will not show normally. fixed.
+ * accordion: If no panel selected then the first one will become selected and the first panel's body height will not set correctly. fixed.
+* Improvement
+ * tree: Add some methods to support CRUD operation.
+ * datagrid: Toolbar can accept a new property named 'disabled' to disable the specified tool button.
+* New Plugins
+ * combobox: Combines a textbox with a list of options that users are able to choose from.
+ * combotree: Combines combobox with drop-down tree component.
+ * numberbox: Make input element can only enter number char.
+ * dialog: rewrite the dialog plugin, dialog can contains toolbar and buttons.

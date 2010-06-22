@@ -146,6 +146,7 @@ class KTPage {
 		$aJS[] = 'resources/js/newui/buttontabs.jquery.js';
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';
+        $aJS[] = 'resources/js/newui/buttontabs.jquery.js';
 
         $this->requireJSResources($aJS);
 
