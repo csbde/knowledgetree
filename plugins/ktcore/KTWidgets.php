@@ -1214,6 +1214,7 @@ class KTCoreSWFFileSelectWidget extends KTWidget {
         }
         
         $this->aOptions['fFolderId'] = KTUtil::arrayGet($aOptions, 'fFolderId', '');
+        $this->aOptions['field_id'] = KTUtil::arrayGet($aOptions, 'field_id', '');
     }
 
     function render() {
@@ -1229,9 +1230,7 @@ class KTCoreSWFFileSelectWidget extends KTWidget {
         $this->aJavascript[] = 'thirdpartyjs/swfupload/swfupload.queue.js';      	
         $this->aJavascript[] = 'thirdpartyjs/swfupload/fileprogress.js';      	
         $this->aJavascript[] = 'thirdpartyjs/swfupload/handlers.js';
-        
-        //The following is now dynamic via 
-      	//$this->aJavascript[] = 'resources/js/kt_swfupload.js';
+      	$this->aJavascript[] = 'resources/js/kt_upload.js';
         
         if (!empty($this->aJavascript)) {
             // grab our inner page.
@@ -1295,7 +1294,8 @@ window.onload = function() {
 
 		var settings = {
 			flash_url : "thirdpartyjs/swfupload/swfupload.swf",
-			upload_url: "action.php?kt_path_info=ktcore.actions.folder.addDocument&_kt_form_name=SWFUPLOAD&fFolderId=<?php print $folderId ?>&action=liveDocumentUpload",
+			upload_url: "action.php?kt_path_info=ktlive.actions.folder.bulkupload&_kt_form_name=SWFUPLOAD&fFolderId=<?php print $folderId ?>&action=liveDocumentUpload",
+			//upload_url: "upload/upload.php",
 			post_params: {"PHPSESSID" : "<?php print session_id(); ?>"},
 			file_size_limit : "4096 MB",
 			file_types : "*.*",

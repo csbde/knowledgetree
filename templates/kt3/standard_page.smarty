@@ -166,7 +166,8 @@
                 {if $config->get("ui/companyLogo") != ''}
                 	<!--<a href="{$config->get("ui/companyLogoUrl")}"><img src="{$config->get("ui/companyLogo")}" height="50px" width="{$config->get("ui/companyLogoWidth")}" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("ui/companyLogoTitle")}" class="secondary" /></a>-->
                 {/if}
-                {$licenseNotification}
+                {$feedback}
+                {$uploadProgress}
                 <div class="floatClear"></div>
             </div>
 			
