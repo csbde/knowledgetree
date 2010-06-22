@@ -1,6 +1,6 @@
 .showCheck {
 	visibility : visible;
-	height : 40px;
+	height : 30px;
 }
 
 .hideCheck {
@@ -10,4 +10,8 @@
 
 .deleteButton {
 	cursor:pointer;
+}
+
+.kt_swf_remove_file {
+	font-size: 3em;
 }
