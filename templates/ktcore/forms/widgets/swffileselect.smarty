@@ -1,7 +1,7 @@
 <div class="fieldset flash" id="fsUploadProgress">
     <span class="legend"></span>
 </div>
-	<div class="descriptiveText" id="divStatus">0 Files Uploaded</div>
+	<div id="divStatus"></div>
 <div>
 	<span id="spanButtonPlaceHolder"></span>
     <input id="btnCancel" type="button" value="Cancel All Uploads" onclick="swfu.cancelQueue();" disabled="disabled" style="visibility: hidden; margin-left: 2px; font-size: 8pt; height: 29px;" />
