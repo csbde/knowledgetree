@@ -144,7 +144,7 @@
 .activityfeed .metaflag{
     font-family: Arial,Helvetica,sans-serif;
     float: right;
-    background: #A10000 url('../graphics/newui/tagarrow.gif') left center no-repeat;
+    background: #A10000 url('../../graphics/newui/tagarrow.gif') left center no-repeat;
     color: #FFFFFF;
     margin-right: -60px;
     margin-top: -25px;
