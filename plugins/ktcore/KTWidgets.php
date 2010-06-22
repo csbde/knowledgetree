@@ -1214,6 +1214,7 @@ class KTCoreSWFFileSelectWidget extends KTWidget {
         }
         
         $this->aOptions['fFolderId'] = KTUtil::arrayGet($aOptions, 'fFolderId', '');
+        $this->aOptions['field_id'] = KTUtil::arrayGet($aOptions, 'field_id', '');
     }
 
     function render() {
@@ -1229,9 +1230,7 @@ class KTCoreSWFFileSelectWidget extends KTWidget {
         $this->aJavascript[] = 'thirdpartyjs/swfupload/swfupload.queue.js';      	
         $this->aJavascript[] = 'thirdpartyjs/swfupload/fileprogress.js';      	
         $this->aJavascript[] = 'thirdpartyjs/swfupload/handlers.js';
-        
-        //The following is now dynamic via 
-      	//$this->aJavascript[] = 'resources/js/kt_swfupload.js';
+      	$this->aJavascript[] = 'resources/js/kt_upload.js';
         
         if (!empty($this->aJavascript)) {
             // grab our inner page.
