@@ -208,3 +208,25 @@
 .activityfeed .item.comment .activityfeed_content{
     background-color: #dfe6fd;
 }
+
+#commentsarea {
+	margin-bottom: 10px;
+}
+
+#commentsbox {
+	width: 100%;
+}
+
+#commentssaveajax {
+	display: none;
+	padding: 10px;
+	margin-bottom: 20px;
+}
+
+.activityfeed .item.newcomment .activityfeed_content{
+    background-color: #FFEDAC;
+}
+
+.newcomment {
+	display: none;
+}
