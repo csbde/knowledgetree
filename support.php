@@ -304,7 +304,7 @@ class GetSatisfactionDispatcher extends KTStandardDispatcher {
         <html>
             <head>
                 <title>Knowledgetree Support Redirect</title>
-                <script type="text/javascript" src="thirdpartyjs/jquery/jquery-1.3.2.js"> </script>
+                <script type="text/javascript" src="thirdpartyjs/jquery/jquery-1.4.2.js"> </script>
                 <script type="text/javascript" src="thirdpartyjs/jquery/jquery_noconflict.js"> </script>
                 
 				<?php print $gsfnBaseInclude ?>                

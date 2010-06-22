@@ -972,7 +972,7 @@ class KTCoreTextAreaWidget extends KTWidget {
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
 		
-      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
       	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
       	$this->aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js';
     	$this->aJavascript[] = 'resources/js/kt_tinymce_init.js';
@@ -1066,7 +1066,7 @@ class KTCoreImageCropWidget extends KTWidget {
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
 		
-      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
         $this->aJavascript[] = 'thirdpartyjs/jquery/plugins/imageareaselect/scripts/jquery.imgareaselect.pack.js';
     	//$this->aJavascript[] = 'resources/js/kt_image_crop.js';
     	
@@ -1165,7 +1165,7 @@ class KTCoreImageSelectWidget extends KTWidget {
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
         
-      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
       	$this->aJavascript[] = 'thirdpartyjs/jquery/plugins/selectimage/jquery.selectimage.js';
       	$this->aJavascript[] = 'resources/js/kt_selectimage.js';
 	
@@ -1220,7 +1220,7 @@ class KTCoreSWFFileSelectWidget extends KTWidget {
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
         
-      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
       	
       	//TODO: abstract handlers and config from javascript to enable these
       	//      to be set in php.

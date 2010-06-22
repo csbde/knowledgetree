@@ -270,19 +270,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('kt3/browse');
-		
-		//add the JS to the page
-		$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
-		//$this->aJavascript[] = 'thirdpartyjs/jquery/plugins/html5-upload/html5_upload.js';
-	  	$this->aJavascript[] = 'resources/js/kt_dragdrop.js';
-	  	$this->aJavascript[] = 'resources/js/kt_upload.js';
-	  
-   		if (!empty($this->aJavascript)) {
-            // grab our inner page.
-            $oPage =& $GLOBALS['main'];            
-            $oPage->requireJSResources($this->aJavascript);
-        }
-		
 		$aTemplateData = array(
               'context' => $this,
               'collection' => $collection,
