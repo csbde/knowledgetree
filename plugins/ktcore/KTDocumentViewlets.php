@@ -38,6 +38,7 @@
 
 require_once(KT_LIB_DIR . "/actions/documentviewlet.inc.php");
 require_once(KT_LIB_DIR . "/workflow/workflowutil.inc.php");
+require_once(KT_LIB_DIR . "/database/datetime.inc");
 require_once(KT_DIR . '/plugins/comments/comments.php');
 
 // {{{ KTDocumentDetailsAction
@@ -127,7 +128,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         $aTransactions = array();
         // FIXME create a sane "view user information" page somewhere.
         // FIXME do we really need to use a raw db-access here?  probably...
-        $sQuery = 'SELECT DTT.name AS transaction_name, DT.transaction_namespace, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime ' .
+        $sQuery = 'SELECT DTT.name AS transaction_name, DT.transaction_namespace, U.name AS user_name, U.email as email, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime ' .
             'FROM ' . KTUtil::getTableName('document_transactions') . ' AS DT INNER JOIN ' . KTUtil::getTableName('users') . ' AS U ON DT.user_id = U.id ' .
             'LEFT JOIN ' . KTUtil::getTableName('transaction_types') . ' AS DTT ON DTT.namespace = DT.transaction_namespace ' .
             'WHERE DT.document_id = ? ORDER BY DT.datetime DESC';
@@ -154,15 +155,16 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
             
             $mainArray[] = array(
                 'name' => $transaction['user_name'],
+                'email' => md5($transaction['email']),
                 'transaction_name' => $transaction['transaction_name'],
-                'datetime' => $transaction['datetime'],
+                'datetime' => getDateTimeDifference($transaction['datetime']),
                 'version' => $transaction['version'],
                 'comment' => $transaction['comment'],
                 'type' => 'transaction'
             );
         }
         
-        $aMetadataVersions = KTDocumentMetadataVersion::getByDocument($this->oDocument);
+    	$aMetadataVersions = KTDocumentMetadataVersion::getByDocument($this->oDocument);
         $aVersions = array();
         foreach ($aMetadataVersions as $oVersion) {
              $version = Document::get($this->oDocument->getId(), $oVersion->getId());
@@ -180,29 +182,27 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
                 'comment' => '',
                 'type' => 'version'
             );
-        }
-        
-        
+        }        
         
         $comments = Comments::get_comments($this->oDocument->getId());
         foreach ($comments as $comment)
         {
             $mainArray[] = array(
                 'name' => $this->getUserForId($comment['user_id']),
+                'email' => md5($this->getEmailForId($comment['user_id'])),
                 'transaction_name' => 'Comment',
-                'datetime' => $comment['date'],
+                'datetime' => getDateTimeDifference($comment['date']),
                 'version' => '',
                 'comment' => $comment['comment'],
                 'type' => 'comment'
             );
         }
         
-        
-        //echo '<pre>';
-        //var_dump($mainArray);
-        //echo '</pre>';
-        
+		// Sort by Date
         usort($mainArray, array($this, 'sortTable'));
+		
+		// Reverse so that top most is on top
+		$mainArray = array_reverse($mainArray);
 
 		$oKTTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oKTTemplating->loadTemplate("ktcore/document/viewlets/activity_feed");
@@ -240,6 +240,13 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
         $u = User::get($iUserId);
         if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
         return $u->getName();
+    }
+	
+	function getEmailForId($iUserId) {
+        $u = User::get($iUserId);
+		
+        if (PEAR::isError($u) || ($u == false)) { return _kt('User no longer exists'); }
+        return $u->getEmail();
     }
 
 }

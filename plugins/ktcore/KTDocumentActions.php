@@ -830,6 +830,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         $data['file']['tmp_name'] = $sTempFilename;
         $res = KTDocumentUtil::checkin($this->oDocument, $data['file']['tmp_name'], $sReason, $this->oUser, $aOptions);
         if (PEAR::isError($res)) {
+        	$GLOBALS['default']->log->error('Pear Error on Checkin: '.$res->getMessage());
             $this->errorRedirectToMain(_kt('An error occurred while trying to check in the document'), 'fDocumentId=' . $this->oDocument->getId() . '&reason=' . $sReason);
         }
 
