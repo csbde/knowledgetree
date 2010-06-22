@@ -12,6 +12,6 @@
 	cursor:pointer;
 }
 
-.kt_swf_remove_file {
-	font-size: 3em;
+#kt_swf_remove_file {
+	font-size: larger;
 }
