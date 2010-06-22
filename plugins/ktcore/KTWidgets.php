@@ -1295,7 +1295,8 @@ window.onload = function() {
 
 		var settings = {
 			flash_url : "thirdpartyjs/swfupload/swfupload.swf",
-			upload_url: "action.php?kt_path_info=ktcore.actions.folder.addDocument&_kt_form_name=SWFUPLOAD&fFolderId=<?php print $folderId ?>&action=liveDocumentUpload",
+			upload_url: "action.php?kt_path_info=ktlive.actions.folder.bulkupload&_kt_form_name=SWFUPLOAD&fFolderId=<?php print $folderId ?>&action=liveDocumentUpload",
+			//upload_url: "upload/upload.php",
 			post_params: {"PHPSESSID" : "<?php print session_id(); ?>"},
 			file_size_limit : "4096 MB",
 			file_types : "*.*",
