@@ -87,7 +87,7 @@ if (typeof(SWFUpload) === "function") {
 			if (stats.files_queued > 0 && this.queueSettings.queue_cancelled_flag === false) {
 				this.startUpload();
 			} else if (this.queueSettings.queue_cancelled_flag === false) {
-				this.queueEvent("queue_complete_handler", [this.queueSettings.queue_upload_count]);
+				this.queueEvent("queue_complete_handler", [this.queueSettings.queue_upload_count, file.name]);
 				this.queueSettings.queue_upload_count = 0;
 			} else {
 				this.queueSettings.queue_cancelled_flag = false;

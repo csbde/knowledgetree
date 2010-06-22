@@ -1,17 +1,32 @@
-/* Demo Note:  This demo uses a FileProgress class that handles the UI for displaying the file name and percent complete.
-The FileProgress class is not part of SWFUpload.
-*/
+function detectArchiveFile(fileName) {
+	isSupported = fileName.match(/\.(tgz|tar|gz|zip|deb|ar|bz2|tbz|tgz)$/i);
+	isSupported = (isSupported != null)? true : false;
+	
+	if (isSupported) {
+		showExtractCheck();
+	} else {
+		hideExtractCheck();
+	}
+}
 
+function showExtractCheck() {
+	jQuery('#extract-documents').removeClass('hideCheck').show('slow');
+	jQuery('#extract-documents').addClass('showCheck').show();
+}
 
-/* **********************
-   Event Handlers
-   These are my custom event handlers to make my
-   web application behave the way I went when SWFUpload
-   completes different tasks.  These aren't part of the SWFUpload
-   package.  They are part of my application.  Without these none
-   of the actions SWFUpload makes will show up in my application.
-   ********************** */
+function hideExtractCheck() {
+	jQuery('#extract-documents').hide('slow');
+}
+
+function addFileToPost(fileName) {
+	jQuery('#kt_last_swf_filename').val(fileName);
+}
+
 function fileQueued(file) {
+	
+	detectArchiveFile(file.name);
+	addFileToPost(file.name);
+	
 	try {
 		var progress = new FileProgress(file, this.customSettings.progressTarget);
 		progress.setStatus("Pending...");
@@ -26,7 +41,8 @@ function fileQueued(file) {
 function fileQueueError(file, errorCode, message) {
 	try {
 		if (errorCode === SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED) {
-			alert("You have attempted to queue too many files.\n" + (message === 0 ? "You have reached the upload limit." : "You may select " + (message > 1 ? "up to " + message + " files." : "one file.")));
+			//alert("You have attempted to queue too many files.\n" + (message === 0 ? "You have reached the upload limit." : "You may select " + (message > 1 ? "up to " + message + " files." : "one file.")));
+			alert("Multiple file upload not currently supported. Please select one file only.");
 			return;
 		}
 
@@ -95,6 +111,9 @@ function uploadProgress(file, bytesLoaded, bytesTotal) {
 		var progress = new FileProgress(file, this.customSettings.progressTarget);
 		progress.setProgress(percent);
 		progress.setStatus("Uploading...");
+		
+		//console.log('bytesLoaded ['+bytesLoaded+'] / bytesTotal['+bytesTotal+']' + ' => Percent : ' + percent);
+		
 	} catch (ex) {
 		this.debug(ex);
 	}
@@ -171,7 +190,11 @@ function uploadComplete(file) {
 }
 
 // This event comes from the Queue Plugin
-function queueComplete(numFilesUploaded) {
+function queueComplete(numFilesUploaded, fileName) {
 	var status = document.getElementById("divStatus");
-	status.innerHTML = numFilesUploaded + " file" + (numFilesUploaded === 1 ? "" : "s") + " uploaded.";
+	//status.innerHTML = numFilesUploaded + " file" + (numFilesUploaded === 1 ? "" : "s") + " uploaded.";
+	//status.innerHTML = "<div id='kt_swf_remove_file'>" + fileName + " <img src='resources/graphics/bullet_toggle_close.png' class='deleteButton' onclick='confirmFileRemove();'></div>has been uploaded.";
+	status.innerHTML = fileName + " has been uploaded. Please complete the metadata and submit.";
+	//Hiding the download button
+	jQuery(".swfupload").hide();
 }

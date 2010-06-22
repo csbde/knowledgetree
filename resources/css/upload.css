@@ -1,0 +1,13 @@
+.showCheck {
+	visibility : visible;
+	height : 40px;
+}
+
+.hideCheck {
+	visibility : hidden;
+	height : 0px;
+}
+
+.deleteButton {
+	cursor:pointer;
+}
