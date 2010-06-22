@@ -10,7 +10,7 @@
 						Ver {$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()} 
 						<i>({$doc_data.owner})</i>
 						{if $document->getIsCheckedOut()}
-							<span class="doc_checkedout">Checked Out By: {{$sCheckoutUser}}</span>
+							<span class="doc_checkedout"> <b>Checked Out By:</b> {$sCheckoutUser}</span>
 						{/if}
 					</span>
 				</h2>
@@ -45,6 +45,42 @@
 					
 					<li title="Properties">
 						<table class="kt_collection" style="clear: both;"><tr><td>
+							<div class="notice">
+								{if ($document->getIsCheckedOut() == 1)}
+									{capture assign=checkout_user}<strong>{$sCheckoutUser}</strong>{/capture}
+									{if ($isCheckoutUser)}
+										<div class="ktInfoMessage">
+											<span>{i18n}This document is currently checked out by <strong>you</strong>. If this is incorrect, or you no longer need to make changes to it, please cancel the checkout.{/i18n}</span>
+										</div>
+									{else}
+										{if ($canCheckin)}
+											<div class="ktInfoMessage">
+											<span>{i18n arg_checkoutuser=$checkout_user}This document is currently checked out by #checkoutuser#, but you
+											have sufficient priviledges to cancel their checkout.{/i18n}</span>
+											</div>
+										{else}
+											<div class="ktInfoMessage">
+												<span>{i18n arg_checkoutuser=$checkout_user arg_appname="$appname"}This document is currently checked out by #checkoutuser#.  You cannot make
+											changes until that user checks it in.  If you have urgent modifications to make, please
+											contact your #appname# Administrator.{/i18n}</span>
+											</div>
+										{/if}
+									{/if}
+								{/if}
+								
+								{if ($document->getImmutable() == true)}
+									<div class="ktInfoMessage">
+										<span>{i18n}This document is immutable.  No further content changes can be
+									made to this document, and only administrators (in administration mode)
+									can make changes to the metadata or can move or delete it.{/i18n}
+									{if 1}
+										  {i18n}If you require assistance from an administrator to perform one of
+										these tasks, use the Request Assistance action.{/i18n}
+									{/if}
+									</span>
+									</div>
+								{/if}
+							</div>
 						{foreach item=oFieldset from=$fieldsets}
 							{$oFieldset->render($document_data)}
 						{/foreach}
@@ -59,40 +95,6 @@
 	
 	
 
-	{if ($document->getIsCheckedOut() == 1)}
-	{capture assign=checkout_user}<strong>{$sCheckoutUser}</strong>{/capture}
-	{if ($isCheckoutUser)}
-	<div class="ktInfoMessage">
-		<span>{i18n}This document is currently checked out by <strong>you</strong>. If this is incorrect, or you no longer need to make changes to it, please cancel the checkout.{/i18n}</span>
-	</div>
-	{else}
-	{if ($canCheckin)}
-	<div class="ktInfoMessage">
-	<span>{i18n arg_checkoutuser=$checkout_user}This document is currently checked out by #checkoutuser#, but you
-	have sufficient priviledges to cancel their checkout.{/i18n}</span>
-	</div>
-	{else}
-	<div class="ktInfoMessage">
-		<span>{i18n arg_checkoutuser=$checkout_user arg_appname="$appname"}This document is currently checked out by #checkoutuser#.  You cannot make
-	changes until that user checks it in.  If you have urgent modifications to make, please
-	contact your #appname# Administrator.{/i18n}</span>
-	</div>
-	{/if}
-	{/if}
-	{/if}
-	
-	{if ($document->getImmutable() == true)}
-	<div class="ktInfoMessage">
-		<span>{i18n}This document is immutable.  No further content changes can be
-	made to this document, and only administrators (in administration mode)
-	can make changes to the metadata or can move or delete it.{/i18n}
-	{if 1}
-	  {i18n}If you require assistance from an administrator to perform one of
-	these tasks, use the Request Assistance action.{/i18n}
-	{/if}
-	</span>
-	</div>
-	{/if}
 
 
 	

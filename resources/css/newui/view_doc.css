@@ -55,7 +55,7 @@
 	/*
 	-moz-box-shadow: 0 0 3px #333333;
 	*/
-	border: 1px solid rgb(53,128,164);
+	border: 1px solid rgb(75,157,197);
 	z-index: 6000;
 }
 
@@ -133,7 +133,20 @@
 .buttonTabContentContainer .metadatatable {
 	padding: 15px;
 	border: none;
+/*	border: 1px solid #CCCCCC ; */
 }
+
+
+.buttonTabContentContainer .metadatatable th {
+	padding: 5px 10px;
+	font-weight: bold;
+}
+
+.buttonTabContentContainer .metadatatable td {
+	padding: 5px 10px;
+	font-weight: normal;
+}
+
 
 /*
     ACTIVITY FEED
@@ -230,4 +243,9 @@
 
 .newcomment {
 	display: none;
+}
+
+.doc_view .notice{
+	color: #A10000;
+	padding: 10px 10px 10px 15px;
 }
