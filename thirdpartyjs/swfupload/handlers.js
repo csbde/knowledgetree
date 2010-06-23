@@ -195,8 +195,10 @@ function uploadComplete(file) {
 function queueComplete(numFilesUploaded, fileName) {
 	var status = document.getElementById("divStatus");
 	//status.innerHTML = numFilesUploaded + " file" + (numFilesUploaded === 1 ? "" : "s") + " uploaded.";
-	status.innerHTML = "The file was successfully uploaded. To select another file remove the uploaded file by clicking the cross icon.<br/>";
-	status.innerHTML += "<div id='kt_swf_remove_file'>" + fileName + " <img src='resources/graphics/bullet_toggle_close.png' class='deleteButton' onclick='confirmFileRemove();'></div>";
+	//status.innerHTML = "The file was successfully uploaded. To select another file remove the uploaded file by clicking the cross icon.<br/>";
+	//status.innerHTML += "<div id='kt_swf_remove_file'>" + fileName + " <img src='resources/graphics/bullet_toggle_close.png' class='deleteButton' onclick='confirmFileRemove();'></div>";
+	jQuery('input[type=submit]').removeAttr("disabled");
+	status.innerHTML += "<div id='kt_swf_remove_file'>Uploaded: " + fileName + " <a href='#' class='deleteButton' onclick='confirmFileRemove();'>remove</a></div>";	
 	jQuery("#spanButtonContainer").hide();
 	jQuery('#uploadProgress').fadeOut(5000);
 	//OR

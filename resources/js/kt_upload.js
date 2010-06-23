@@ -24,7 +24,7 @@ function confirmSubmit() {
 	if (lastFileName != null) {
 		console.log('Will submit now');
 	} else {
-		console.log('Ba, make dat form right!');
+		console.log('Please upload a file');
 	}
 }
 
