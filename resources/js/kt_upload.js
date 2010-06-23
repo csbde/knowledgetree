@@ -1,7 +1,23 @@
+/*
+ *  Init - Document Ready
+ */
 jQuery(document).ready(function() {
 	jQuery('#extract-documents').attr('class', 'hideCheck');
 	jQuery('input[type=submit]').attr("disabled","disabled");
+
+	bindDynamicMetadata();
+
 });
+
+function bindDynamicMetadata() {
+	jQuery('#add-document-type').change(function(){
+		loadDynamicMetadata();
+	});
+}
+
+function loadDynamicMetadata() {
+	document_type_changed();
+}
 
 function confirmFileRemove(fileName) {
 	if(confirm("Are you sure you want to remove this file?"))

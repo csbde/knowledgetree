@@ -90,7 +90,7 @@ class GetHtmlFieldsDispatcher extends KTDispatcher {
 		$jsOptions = '{ "htmlId" : {';
 		
 		foreach($htmlFieldIds as $fieldId) {
-			$jsOptions .= "'$fieldId' : '$fieldId',";
+			$jsOptions .= "\"$fieldId\" : \"$fieldId\",";
 		}
 		$jsOptions = substr($jsOptions, 0, strlen($jsOptions) - 1);
 		
@@ -116,7 +116,7 @@ class GetHtmlFieldsDispatcher extends KTDispatcher {
 		$jsOptions = '{ "genericId" : {';
 		
 		foreach($fieldIds as $fieldId) {
-			$jsOptions .= "'$fieldId' : '$fieldId',";
+			$jsOptions .= "\"$fieldId\" : \"$fieldId\",";
 		}
 		$jsOptions = substr($jsOptions, 0, strlen($jsOptions) - 1);
 		
