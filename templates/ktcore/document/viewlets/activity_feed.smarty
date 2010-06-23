@@ -6,19 +6,19 @@
         
     </div>
     <div id="commentsarea">
-        <table width="100%">
+        <table>
         <tr>
             <td width="80">
                 <p><label for="commentsbox">Comment</label></p>
             </td>
             <td>
-                <textarea id="commentsbox"></textarea>
+                <textarea id="commentsbox" style="width:600px;"></textarea>
                 
             </td>
-            <td width="200">
+            <td style="padding:5px">
                 <div class="form_actions">
                     <input type="hidden" id="comment_documentid" name="documentid" value="{$document->getId()}" />
-                    <input type="button" id="comment_post" name="comment.post" value="{i18n}Post{/i18n}" />
+                    <input type="button" id="comment_post" name="comment.post" value="{i18n}Post{/i18n}" style="background: none;" />
                 </div>
             </td>
         </tr></table>
