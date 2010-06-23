@@ -251,8 +251,14 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/view');
         
-        $oLivePreview=new instaViewLinkAction($oDocument,$this->oUser,NULL);
-        $live_preview=$oLivePreview->do_main();
+		if (KTPluginUtil::pluginIsActive ( 'instaview.processor.plugin' )) {
+			$path = KTPluginUtil::getPluginPath ( 'instaview.processor.plugin' );
+			try{
+				require_once ($path . 'instaViewLinkAction.php');
+				$oLivePreview=new instaViewLinkAction($oDocument,$this->oUser,NULL);
+		        $live_preview=$oLivePreview->do_main();
+			}catch(Exception $e){}
+		}
         
         $ownerUser=KTUserUtil::getUserField($oDocument->getOwnerID(),'name');
         $creatorUser=KTUserUtil::getUserField($oDocument->getCreatorID(),'name');
@@ -273,9 +279,12 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			'documentName' => $oDocument->getName(),
 			'document_data' => $document_data,
 			'fieldsets' => $fieldsets,
-			'viewlet_data' => $viewlet_data,
-        	'live_preview' => $live_preview
+			'viewlet_data' => $viewlet_data
         );
+        //Conditionally include live_preview
+        if($live_preview)$aTemplateData['live_preview']=$live_preview;
+        
+        
         $this->oPage->setBreadcrumbDetails(_kt("Document Details"));
         return $oTemplate->render($aTemplateData);
     }
