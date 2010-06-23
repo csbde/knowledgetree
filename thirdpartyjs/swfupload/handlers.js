@@ -111,7 +111,7 @@ function uploadProgress(file, bytesLoaded, bytesTotal) {
 		//progress.setProgress(percent);
 		//progress.setStatus("Uploading...");
 		jQuery('#uploadProgress').html( file.name.substring(0,20) + '...<br/>' + percent + '%');
-		
+		jQuery('#kt_swf_upload_percent').val(percent);
 	} catch (ex) {
 		this.debug(ex);
 	}
