@@ -140,7 +140,7 @@
 	                                    {if ($aMenuItem.active == 1)}
 	                                        <li class="active"><a href="{$aMenuItem.url}">{$aMenuItem.label}</a></li>
 	                                    {else}
-	                                        <li><a href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}">{$aMenuItem.label}</a></li>
+	                                        <li><a href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}" {$aMenuItem.extra}>{$aMenuItem.label}</a></li>
 	                                    {/if}
 	                                    {if !$smarty.foreach.prefmenu.last}
 	                                        <!-- &middot; -->
@@ -314,7 +314,7 @@
 			
             {i18n}&copy; 2008-2010 <a href="http://www.knowledgetree.com/about/legal" target="_blank">KnowledgeTree Inc.</a>{/i18n}
 			{i18n}All rights reserved.{/i18n}
-			| <a href="{$rootUrl}/about.php">{i18n}About{/i18n}</a>
+			| <a href="http://www.knowledgetree.com/company">{i18n}About{/i18n}</a>
 		</div></div>
 </div>
 </body>
