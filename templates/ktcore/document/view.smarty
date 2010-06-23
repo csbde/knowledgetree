@@ -17,10 +17,10 @@
 				<hr style="border: none; background-color: #E3E3E3; width: 100%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" />
 				<div>
 					<span class="doc_header_item">
-						<span class="doc_field_title">Created on:</span><span class="doc_field_value">{$document->getCreatedDateTime()|date_format} <b>by</b> <span class="doc_user_link">{$doc_data.creator}</span></span>
+						<span class="doc_field_title">Created on:</span><span class="doc_field_value">{$document->getCreatedDateTime()|date_format:"%B %e, %Y <b>at</b> %H:%M"} <b>by</b> <span class="doc_user_link">{$doc_data.creator}</span></span>
 					</span>
 					<span class="doc_header_item">
-						<span class="doc_field_title">Last Modified:</span><span class="doc_field_value">{$document->getLastModifiedDate()|date_format} <b>by</b> <span class="doc_user_link">{$doc_data.lastModifier}</span></span>
+						<span class="doc_field_title">Last Modified:</span><span class="doc_field_value">{$document->getLastModifiedDate()|date_format:"%B %e, %Y <b>at</b> %H:%M"} <b>by</b> <span class="doc_user_link">{$doc_data.lastModifier}</span></span>
 					</span>
 				</div>
 			</td>
