@@ -118,6 +118,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
 
         // javascript - working input focus - restoring yui fixes the focus problem
         // yahoo
+        $this->oPage->requireJSResource('thirdpartyjs/jquery/jquery_noconflict.js');
         $this->oPage->requireJSResource('thirdpartyjs/yui/yahoo/yahoo.js');
         $this->oPage->requireJSResource('thirdpartyjs/yui/event/event.js');
         $this->oPage->requireJSResource('thirdpartyjs/yui/dom/dom.js');
