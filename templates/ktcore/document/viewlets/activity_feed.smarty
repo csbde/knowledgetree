@@ -64,7 +64,7 @@
         
         var newCommentAdded = false;
         
-        jQuery("#commentsbox").autoResize();
+        jQuery("#commentsbox").autoResize({extraSpace:10});
         
         jQuery("#comment_post").click(function() {
             comment = jQuery("#commentsbox").val();
@@ -86,7 +86,7 @@
                 jQuery.post("plugins/comments/ajaxComments.php", { action: 'postComment', comment: comment, documentId: docId },
                     function(data){
                         jQuery("#commentssaveajax").html(commentSavedMessage);
-                        jQuery("#commentsbox").val('');
+                        jQuery("#commentsbox").val('').height('30px');
                         
                         jQuery("#commentsarea").show();
                         jQuery("#commentssaveajax").hide();
