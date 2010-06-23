@@ -1,8 +1,8 @@
-CREATE TABLE document_comments (
+CREATE TABLE IF NOT EXISTS document_comments (
     `id` int NOT NULL AUTO_INCREMENT,
 	`document_id` int NOT NULL,
 	`user_id` int NOT NULL,
-	`parent_id` int NOT NULL,
+	`parent_id` int,
 	`date_created` timestamp NOT NULL,
 	`comment` text,
 	PRIMARY KEY(`id`),

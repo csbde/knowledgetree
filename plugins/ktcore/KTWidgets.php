@@ -1310,8 +1310,8 @@ window.onload = function() {
 
 			// Button settings
 			button_image_url: "resources/graphics/newui/swfupload.png",
-			button_width: "72",
-			button_height: "29",
+			button_width: "89",
+			button_height: "24",
 			button_placeholder_id: "spanButtonPlaceHolder",
 			//button_text: '<span class="button">Upload</span>',
 			button_text_style: ".theFont { font-size: 16; }",
