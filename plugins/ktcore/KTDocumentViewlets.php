@@ -157,7 +157,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
                 'name' => $transaction['user_name'],
                 'email' => md5(strtolower($transaction['email'])),
                 'transaction_name' => $transaction['transaction_name'],
-                'datetime' => $transaction['datetime'],
+                'datetime' => getDateTimeDifference($transaction['datetime']),
                 'version' => $transaction['version'],
                 'comment' => $transaction['comment'],
                 'type' => 'transaction'
@@ -191,7 +191,7 @@ class KTDocumentActivityFeedAction extends KTDocumentViewlet {
                 'name' => $this->getUserForId($comment['user_id']),
                 'email' => md5(strtolower($this->getEmailForId($comment['user_id']))),
                 'transaction_name' => 'Comment',
-                'datetime' => $comment['date'],
+                'datetime' => getDateTimeDifference($comment['date']),
                 'version' => '',
                 'comment' => $comment['comment'],
                 'type' => 'comment'
