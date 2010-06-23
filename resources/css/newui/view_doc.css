@@ -37,7 +37,7 @@
 	-moz-border-radius-bottomleft: 8px;
 	border-top-left-radius: 8px;
 	border-bottom-left-radius: 8px;
-	margin-right: -2px;
+	margin-right: -1px;
 }
 
 .buttonTab:last-child {
@@ -47,7 +47,7 @@
 	-moz-border-radius-bottomright: 8px;
 	border-top-right-radius: 8px;
 	border-bottom-right-radius: 8px;
-	margin-left: -2px;
+	margin-left: -1px;
 }
 
 .buttonTab:hover {
@@ -99,8 +99,10 @@
 }
 
 .doc_view .doc_header_item .doc_field_value .doc_user_link {
+	/*
 	text-decoration: underline;
 	cursor: pointer;
+	*/
 }
 
 #content .doc_view .doc_version {
