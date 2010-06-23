@@ -5,12 +5,15 @@ var AdvancedSettingsToggle = 1;
 
 jQuery(document).ready(function() {
 	jQuery('#extract-documents').attr('class', 'hideCheck');
-	jQuery('input[type=submit]').attr("disabled","disabled");
 	jQuery('#advanced_settings_metadata').hide();
 	
 	bindDynamicMetadata();
 
 	addAdvancedSettingsButton();
+	
+	jQuery('#advanced_settings_metadata .descriptiveText').hide();
+	jQuery('#advanced_settings_metadata legend').hide();
+	jQuery('#advanced_settings_metadata fieldset').css('border','none').css('paddingBottom', '0');
 });
 
 function addAdvancedSettingsButton() {
@@ -58,16 +61,14 @@ function removeFile(fileName) {
 }
 
 function confirmSubmit() {
-	uploadPercent = jQuery('#kt_swf_upload_percent').value();
+	uploadPercent = jQuery('#kt_swf_upload_percent').val();
 	if (uploadPercent == '') {
-		alert('Your file upload is still in progress.');
+		alert('You must select a file to upload before you can submit this form.');
+		return false;
 	} else if (uploadPercent < 100){
 		alert('Your file upload is still in progress.');
+		return false;
 	} else if (uploadPercent == 100) {
-		submitForm();
+		return true;
 	}
-}
-
-function submitForm() {
-	return true;
 }

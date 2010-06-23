@@ -1,5 +1,5 @@
 <div class="form_actions">
-    <input type="submit" name="" value="{$context->_submitlabel}" /> 
+    <input type="submit" name="" value="{$context->_submitlabel}" {if ($context->_onsubmit)}onsubmit="{$context->_onsubmit}"{/if} {if ($context->_submit_onclick)}onclick="{$context->_submit_onclick}"{/if}/> 
     {if ($context->bCancel)}
         <a class="form_cancel" href="{$context->_cancelurl}">{i18n}Cancel{/i18n}</a>
     {/if}

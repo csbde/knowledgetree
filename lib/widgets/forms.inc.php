@@ -55,6 +55,8 @@ class KTForm {
     var $_widgets;          // what widgets get stored
     var $_validators;       // validators
     var $_submitlabel;      // what is the "submit" button called
+    var $_onsubmit;         // what client side validation script should be run    
+    var $_submit_onclick;         // what client side validation script should be run    
     var $_action;           // where does the success message go
     var $_event;           // where does the success message go
     var $_extraargs;        // various extra arguments
@@ -163,6 +165,9 @@ class KTForm {
         // method
         $this->_method = KTUtil::arrayGet($aOptions, 'method', 'post');
 
+        $this->_onsubmit = KTUtil::arrayGet($aOptions, 'onsubmit', '');
+        $this->_submit_onclick = KTUtil::arrayGet($aOptions, 'onclick', '');
+        
         $this->_extraargs['postReceived'] = 1;
     }
 
