@@ -39,7 +39,9 @@
  * Manages user feedback
  */
 
-require_once(KT_PLUGIN_DIR . '/ktlive/dragdrop/DragDrop.php');
+if(ACCOUNT_ROUTING_ENABLED){
+	require_once(KT_PLUGIN_DIR . '/ktlive/dragdrop/DragDrop.php');
+}
 
 class Feedback {
 	
