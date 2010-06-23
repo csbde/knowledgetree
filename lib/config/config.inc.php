@@ -119,6 +119,9 @@ class KTConfig {
         $servers = array();
 
         foreach ($server_arr as $server){
+            if(empty($server)){
+                continue;
+            }
 
             $portArr = explode(':', $server);
 
