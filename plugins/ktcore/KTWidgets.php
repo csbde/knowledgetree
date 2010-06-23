@@ -1041,6 +1041,15 @@ class KTCoreButtonWidget extends KTWidget {
 class KTCoreLayerWidget extends KTWidget {
     var $sNamespace = 'ktcore.widgets.layer';
     var $sTemplate = 'ktcore/forms/widgets/layer';
+    
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+
+        $this->aOptions['class'] = KTUtil::arrayGet($aOptions, 'class', '');
+    }    
 }
 
 class KTCoreImageCropWidget extends KTWidget {

@@ -1,3 +1,3 @@
-<div {if $has_id}id="{$id}"{/if} {if $has_class}class="{$class}"{/if}>
+<div {if $has_id}id="{$id}"{/if} {if ($options.class)}class="{$options.class}"{/if}>
 {if $has_value}{$value}{/if}
 </div>
