@@ -1,6 +1,6 @@
 <script type="text/javascript" src="resources/js/jquery.autoresize.min.js"></script>
 <div id="viewlet_activityfeed">
-    <h2>{i18n}Activity Feed{/i18n}: {$document->getName()|sanitize}</h2>
+    <h2>{i18n}Post a comment{/i18n}:</h2>
     
     <div id="commentssaveajax">
         
@@ -8,8 +8,8 @@
     <div id="commentsarea">
         <table>
         <tr>
-            <td width="80">
-                <p><label for="commentsbox">Comment</label></p>
+            <td width="48">
+                <img src="resources/graphics/newui/message.png">
             </td>
             <td>
                 <textarea id="commentsbox" style="width:600px;"></textarea>
