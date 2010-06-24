@@ -63,7 +63,7 @@
 										</span>
 									{/if}
 
-									{if ($document->getIsCheckedOut() & !$canCheckin)}
+									{if ($document->getImmutable() == true)}
 										<span class="item">
 											This document has been finalized and cannot be edited further.
 										</span>
