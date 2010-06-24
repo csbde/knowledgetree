@@ -1002,8 +1002,9 @@ a.main_nav_item {
     background-color: #fafafa;
 }
 
-.kt_collection td.dragdrop {
-    background-color: #99fff;
+
+.kt_collection tr.dragdrop td {
+    background-color: #C7D4FF !important;
 }
 
 /* cheap and nasty hack for gmail-style highlighting. */
