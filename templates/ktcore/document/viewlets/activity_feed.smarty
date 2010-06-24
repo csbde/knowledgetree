@@ -1,8 +1,6 @@
 <script type="text/javascript" src="resources/js/jquery.autoresize.min.js"></script>
-<script type="text/javascript" src="resources/js/jquery.cuteTime.min.js"></script>
-<script type="text/javascript" src="resources/js/jquery.livequery.min.js"></script>
 <div id="viewlet_activityfeed">
-    <h2>{i18n}Activity Feed{/i18n}: {$document->getName()|sanitize}</h2>
+    <h2>{i18n}Post a comment{/i18n}:</h2>
     
     <div id="commentssaveajax">
         
@@ -10,8 +8,8 @@
     <div id="commentsarea">
         <table>
         <tr>
-            <td width="80">
-                <p><label for="commentsbox">Comment</label></p>
+            <td width="48">
+                <img src="resources/graphics/newui/message.png">
             </td>
             <td>
                 <textarea id="commentsbox" style="width:600px;"></textarea>
@@ -37,7 +35,7 @@
 	        <div class="item {$version.type}">
 	            <div class="icon"><img src="http://www.gravatar.com/avatar/{$version.email}?s=48" alt="{$version.name}" title="{$version.name}" /></div>
 	            <div class="activityfeed_content">
-	                <span class="date cutetime">{$version.datetime}</span>
+	                <span class="date">{$version.datetime}</span>
 	                <span class="user">{$version.name}</span>
 	                <span class="description">{$version.comment|sanitize|nl2br}</span>
 	            </div>
@@ -56,11 +54,6 @@
         savingCommentMessage = '<img src="thirdpartyjs/extjs/resources/images/default/tree/loading.gif"> {i18n}Saving Comment{/i18n}';
         commentSavedMessage = '{i18n}Comment Saved. <a href="javascript:showComment()">Add New Comment</a>{/i18n}';
         {literal}
-        
-        
-        postdate_cutetime = jQuery('.cutetime').livequery(function(){ 
-            jQuery('.cutetime').cuteTime({ refresh: 10000 });
-        });
         
         var newCommentAdded = false;
         

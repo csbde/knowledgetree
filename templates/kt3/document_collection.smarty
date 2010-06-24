@@ -15,7 +15,7 @@
               {/foreach}
             </tr>
         </thead>
-        <tbody class="drophere" id="datadrop">
+        <tbody class="dropzone" id="datadrop">
           {if ($context->itemCount != 0)}
             {foreach item=folder_row_id from=$context->activeset.folders name=rowiter}{* For folders *}
             <tr class="{cycle name=rows values=",odd"} folder_row">
