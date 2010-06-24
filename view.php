@@ -279,10 +279,14 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			'documentName' => $oDocument->getName(),
 			'document_data' => $document_data,
 			'fieldsets' => $fieldsets,
-			'viewlet_data' => $viewlet_data
+			'viewlet_data' => $viewlet_data,
+        	'hasNotifications' => false
         );
         //Conditionally include live_preview
         if($live_preview)$aTemplateData['live_preview']=$live_preview;
+        
+        //Setting Document Notifications Status
+        if($oDocument->getIsCheckedOut() || $oDocument->getImmutable())$aTemplateData['hasNotifications']=true;
         
         
         $this->oPage->setBreadcrumbDetails(_kt("Document Details"));

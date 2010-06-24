@@ -229,9 +229,18 @@
 	margin-bottom: 10px;
 }
 
+#commentsarea table {
+	margin-left: 3px;
+}
+#commentsarea td {
+	margin: 0;
+	padding: 15px 15px 15px 0;
+	vertical-align: top;
+}
+
 #commentsbox {
 	width: 100%;
-	height: 30px;
+	height: 35px;
 }
 
 #commentssaveajax {
@@ -252,3 +261,16 @@
 	color: #A10000;
 	padding: 10px 10px 10px 15px;
 }
+
+/* GENERATED FROM SCSS - to modify please check scripts/scss/notifications.scss */
+.doc_view .notification {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  /* @include shaddow(3px,#999999);*/
+  border: 1px solid #ffc21e;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.26, #ffedbd), color-stop(0.37, #ffdd80));
+  background-image: -moz-linear-gradient(center top, #ffedbd 26%, #ffdd80 37%);
+  padding: 5px 10px;
+}
+/* END OF SCSS */

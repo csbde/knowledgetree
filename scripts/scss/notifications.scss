@@ -1,0 +1,32 @@
+@mixin corners($size){
+	-webkit-border-radius: $size;
+	-moz-border-radius: $size;
+	border-radius: $size; 
+}
+
+@mixin shaddow($size,$color){
+	-webkit-box-shadow: 0px 0px $size $color ;
+	-moz-box-shadow: 0px 0px $size $color;
+	box-shadow: 0px 0px $size $color; 
+}
+
+.doc_view{
+	.notification{
+		@include corners(5px);
+		/* @include shaddow(3px,#999999);*/
+		border: 1px solid #ffc21e;
+		background-image: -webkit-gradient(
+		    linear,
+		    left top,
+		    left bottom,
+		    color-stop(0.26, rgb(255,237,189)),
+		    color-stop(0.37, rgb(255,221,128))
+		);
+		background-image:-moz-linear-gradient(
+		    center top,
+		    rgb(255,237,189) 26%,
+		    rgb(255,221,128) 37%
+		);
+		padding: 5px 10px;
+	}
+}
