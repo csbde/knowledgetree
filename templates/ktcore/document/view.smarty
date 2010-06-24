@@ -8,7 +8,7 @@
 					{$context->oDocument->getName()|sanitize}
 					<span class="doc_version">
 						Ver {$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()} 
-						<i>({$doc_data.owner})</i>
+						<i>(<b>Owner: </b>{$doc_data.owner})</i>
 						{if $document->getIsCheckedOut()}
 							<span class="doc_checkedout"> <b>Checked Out By:</b> {$sCheckoutUser}</span>
 						{/if}
