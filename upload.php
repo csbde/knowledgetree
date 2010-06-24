@@ -64,24 +64,32 @@
 		$oColumnRegistry =& KTColumnRegistry::getSingleton();
 		$columns = $oColumnRegistry->getColumnsForView('ktcore.views.browse');
 	
-		$aDataRow = array();
-		$aDataRow['type'] = 'document';	
-		$aDataRow['document'] = $oDocument;
-	
-		$output = '<tr class="even">';
+		if(is_array($columns) && !empty($columns)){
 		
-		foreach($columns as $column) {
-			$class = 'browse_column';
-			if($column->name == 'title') {
-				$class .= ' title sort_on dragdrop'; 
+			$aDataRow = array();
+			$aDataRow['type'] = 'document';	
+			$aDataRow['document'] = $oDocument;
+		
+			$output = '<tr class="dragdrop">';
+			
+			foreach($columns as $column) {
+				$class = 'browse_column';
+				if($column->name == 'title') {
+					$class .= ' title sort_on dragdrop'; 
+				}
+				$data = $column->renderData($aDataRow);
+				$output .= "<td class='$class'>$data</td>";
 			}
-			$data = $column->renderData($aDataRow);
-			$output .= "<td class='$class'>$data</td>";
+			
+			$output .= '</tr>';
+			
+			return $output;
+			
+		}else{
+			global $default;
+			$default->log->error("DRAGDROP Column data empty");
+			return false;
 		}
-		
-		$output .= '</tr>';
-		
-		return $output;
 	}
 	
 	
@@ -98,15 +106,11 @@
 		
 	$folderID = (int)$folderID;
 	
-	//$Date = date('Y-m-d H:i:s');	
-	//echo "<tr><td></td><td><a $fileName></td><td></td><td></td><td>$Date</td><td></td><td></td><td></td></tr>";
-	
-	
 	$oDocument = uploadFile($fileTmp, $fileName, $folderID);
 	
 	if ($oDocument === false)
 	{
-		echo '';
+		echo '<tr><td></td><td colspan=3>ERROR: document could not be uploaded</td></tr>';
 		exit(1);		
 	}
 	
