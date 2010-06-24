@@ -59,7 +59,7 @@
 								
 									{if ($document->getIsCheckedOut() & !$canCheckin)}
 										<span class="item">
-											This document is currently checked out by #checkoutuser#. You will not be able to edit the document until it is checked back in.
+											This document is currently checked out by {$sCheckoutUser}. You will not be able to edit the document until it is checked back in.
 										</span>
 									{/if}
 
