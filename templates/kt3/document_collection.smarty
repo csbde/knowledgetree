@@ -18,7 +18,7 @@
         <tbody class="dropzone" id="datadrop">
           {if ($context->itemCount != 0)}
             {foreach item=folder_row_id from=$context->activeset.folders name=rowiter}{* For folders *}
-            <tr class="{cycle name=rows values=",odd"} folder_row">
+            <tr class="{cycle name=rows values="even,odd"} folder_row">
               {foreach item=oColumn from=$context->columns name=coliter}
                 <td class="browse_column {$oColumn->name} {if $oColumn->getSortedOn()}sort_on{/if}">
                    {$oColumn->renderData($context->getFolderInfo($folder_row_id.id))} 
@@ -28,7 +28,7 @@
             {/foreach}
             
             {foreach item=document_row_id from=$context->activeset.documents name=rowiter}{* For files *}
-            <tr class="{cycle name=rows values=",odd"}">
+            <tr class="{cycle name=rows values="even,odd"}">
               {foreach item=oColumn from=$context->columns name=coliter}
                 <td class="browse_column {$oColumn->name} {if $oColumn->getSortedOn()}sort_on{/if}">
                    {$oColumn->renderData($context->getDocumentInfo($document_row_id.id))}
