@@ -770,7 +770,7 @@ class KTCoreCollectionPage extends KTStandardDispatcher {
         print KTTemplating::renderTemplate('ktcore/forms/widgets/collection',
             array(
                 'collection'=> $oCollection,
-                'folder' => $oFolder,
+                'targetfolderid' => $oFolder->getId(),
                 'breadcrumbs' => $aBreadcrumbs,
                 'targetname' => $sName,
             )
