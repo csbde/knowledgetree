@@ -46,7 +46,6 @@
  * @version Version 0.9
 */
 
-
 require_once(KT_DIR . '/ktwebservice/KTUploadManager.inc.php');
 require_once(KT_LIB_DIR . '/mime.inc.php');
 
@@ -301,7 +300,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param int $folderid The parent folder id
 	 * @return KTAPI_Folder
 	 */
-	function _get_folder_by_name($ktapi, $foldername, $folderid)
+	static function _get_folder_by_name($ktapi, $foldername, $folderid)
 	{
 		$foldername=trim($foldername);
 		if (empty($foldername))
