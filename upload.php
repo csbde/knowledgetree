@@ -18,9 +18,6 @@
         
         $oStorage->uploadTmpFile($fileTmp, $sS3TempFile);
         
-        //$aFile = $this->oValidator->validateFile($extra_d['file'], $aErrorOptions);
-        //$sTitle = $extra_d['document_name'];
-        
         $oFolder = Folder::get($folderID); 
         if (PEAR::isError($oFolder)) {
        		$default->log->error("DRAGDROP Folder $folderID: {$oFolder->getMessage()}");
@@ -164,7 +161,6 @@
 		} else
 			die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
 	} else {
-		//echo('here2 '.$_FILES['file']['tmp_name']);
 		// Open temp file
 		$out = fopen($targetDir . DIRECTORY_SEPARATOR . $fileName, $chunk == 0 ? "wb" : "ab");
 		if ($out) {
@@ -180,11 +176,7 @@
 			fclose($out);
 		} else
 			die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
-	}
-
-	// Return JSON-RPC response
-	//echo('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
-	
+	}	
 
 	$folderID = (int)$_REQUEST['fFolderId'];
 	if($folderID<=0){
@@ -192,17 +184,13 @@
 		exit(1);
 	}
 	
-	$fileTmp = str_replace('\\','/',$targetDir.'/'.$fileName);
-
-		
+	$fileTmp = str_replace('\\','/',$targetDir.'/'.$fileName);		
 	
 	$oDocument = uploadFile($fileTmp, $fileName, $folderID);
 	
 	if ($oDocument === false)
 	{
-		//TODO: error message should appear in progress indicator
-		echo '<tr><td></td><td colspan=3>ERROR: document could not be uploaded</td></tr>';
-		exit(1);		
+		die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Document could not be uploaded", "filename":"'.$fileName.'"}, "id" : "id"}');
 	}
 	
 	$output = getColumnData($oDocument);

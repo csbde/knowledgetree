@@ -37,7 +37,7 @@
             </tr>
             {/foreach}
           {else}
-            <tr><td colspan="{$columncount}">{$context->empty_message}</td></tr>
+            <tr><td id="empty_message" colspan="{$columncount}">{$context->empty_message}</td></tr>
           {/if}
         </tbody>
         <tfoot>
