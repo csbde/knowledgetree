@@ -895,7 +895,6 @@ $sourceDocument->getName(),
         $oDocument->clearAllCaches();
 
         // NEW SEARCH
-
         Indexer::index($oDocument);
 
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Creating transaction')));

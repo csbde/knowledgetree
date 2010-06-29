@@ -332,8 +332,7 @@ class SOAPTestCase extends KTUnitTestCase {
 		// NOTE default parent is 1, so does not need to be declared when searching the root folder, but we use it elsewhere
 
         // Webservice needs to be version 3
-        if(LATEST_WEBSERVICE_VERSION < 3){
-
+        if(LATEST_WEBSERVICE_VERSION < 3) {
             // Clean up - delete all of the folders
             foreach ($root_folder_id as $folder_id) {
             	$this->deleteFolder($folder_id);
@@ -425,7 +424,7 @@ class SOAPTestCase extends KTUnitTestCase {
     public function testCreateFolderShortcut()
     {
         // if V3
-        if(LATEST_WEBSERVICE_VERSION < 3){
+        if(LATEST_WEBSERVICE_VERSION < 3) {
             return ;
         }
 
@@ -495,7 +494,7 @@ class SOAPTestCase extends KTUnitTestCase {
     public function testCreateDocumentShortcut()
     {
         // if V3
-        if(LATEST_WEBSERVICE_VERSION < 3){
+        if(LATEST_WEBSERVICE_VERSION < 3) {
             //$this->assertEqual(LATEST_WEBSERVICE_VERSION, 3, 'Webservice version is less than 3. Exiting test, functionality is V3 only');
             return ;
         }

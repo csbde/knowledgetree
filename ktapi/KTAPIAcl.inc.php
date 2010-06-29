@@ -136,8 +136,7 @@ class KTAPI_User extends KTAPI_Member
      * @access private
      * @param User $user
      */
-    private
-    function __construct($user)
+    private function __construct($user)
     {
         $this->user = $user;
     }
@@ -151,8 +150,7 @@ class KTAPI_User extends KTAPI_Member
      * @param int $id
      * @return KTAPI_User Returns null if  there is no match.
      */
-    public static
-    function getById($id)
+    public static function getById($id)
     {
         $user = User::get($id);
 
@@ -174,8 +172,7 @@ class KTAPI_User extends KTAPI_Member
      * @param string $name
      * @return KTAPI_User Returns null if  there is no match.
      */
-    public static
-    function getByName($name)
+    public static function getByName($name)
     {
         $sql = 'SELECT username FROM users where name=?';
         $username = DBUtil::getOneResultKey(array($sql, array($name)), 'username');
@@ -197,8 +194,7 @@ class KTAPI_User extends KTAPI_Member
      * @param string $username
      * @return KTAPI_User  Returns null if  there is no match.
      */
-    public static
-    function getByUsername($username)
+    public static function getByUsername($username)
     {
         $user = User::getByUserName($username);
 
@@ -219,8 +215,7 @@ class KTAPI_User extends KTAPI_Member
      * @param string $email
      * @return KTAPI_User  Returns null if  there is no match.
      */
-    public static
-    function getByEmail($email)
+    public static function getByEmail($email)
     {
         $sql = 'SELECT username FROM users where email=?';
         $username = DBUtil::getOneResultKey(array($sql, $email), 'username');
@@ -243,8 +238,7 @@ class KTAPI_User extends KTAPI_Member
      * @param array $options
      * @return array of KTAPI_User
      */
-    public static
-    function getList($filter = null, $options = null)
+    public static function getList($filter = null, $options = null)
     {
         $users = User::getList($filter, $options);
 

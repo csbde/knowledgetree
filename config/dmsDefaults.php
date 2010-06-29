@@ -129,7 +129,7 @@ prependPath ( KT_DIR . '/thirdparty/xmlrpc-2.2/lib' );
 prependPath ( KT_DIR . '/ktapi' );
 prependPath ( KT_DIR . '/search2' );
 
-require_once ('PEAR.php');
+require_once (KT_DIR . '/thirdparty/pear/PEAR.php');
 
 // Give everyone access to legacy PHP functions
 require_once (KT_LIB_DIR . '/util/legacy.inc');
@@ -612,7 +612,6 @@ class KTInit {
 			/* We need to setup the language handler to display this error correctly */
 			$this->setupI18n ();
 			if (ACCOUNT_ROUTING_ENABLED) {
-
 			    // Set up the logging so that we can log the error.
 			    $logDir = $oKTConfig->get('urls/logDirectory', KT_DIR.'/var/log');
 			    $userId = isset($_SESSION['userID']) ? $_SESSION['userID'] : 'n/a';
