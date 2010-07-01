@@ -10,7 +10,6 @@ move this document, you should <a href="#link#">cancel the
 move</a>.{/i18n}</p>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-<fieldset><legend>{i18n}Move{/i18n}</legend>
 <input type="hidden" name="action" value="move" />
 <input type="hidden" name="fDocumentId" value="{$iDocumentId}" />
 {foreach from=$move_fields item=oWidget }
@@ -22,5 +21,4 @@ move</a>.{/i18n}</p>
 <input type="submit" name="submit[move]" value="{i18n}Move{/i18n}" />
 <input type="submit" name="submit[cancel]" value="{i18n}Cancel{/i18n}" />
 </div>
-</fieldset>
 </form>

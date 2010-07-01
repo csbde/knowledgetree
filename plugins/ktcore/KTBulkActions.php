@@ -117,7 +117,6 @@ class KTBulkDeleteAction extends KTBulkAction {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.actions.bulk.delete.form',
-            'label' => _kt('Delete Items'),
             'submit_label' => _kt('Delete'),
             'action' => 'performaction',
             'fail_action' => 'collectinfo',
@@ -147,8 +146,7 @@ class KTBulkDeleteAction extends KTBulkAction {
 
         $widgets[] = array('ktcore.widgets.reason',array(
                 'name' => 'reason',
-                'label' => _kt('Reason'),
-                'description' => _kt('The reason for the deletion of these documents and folders for historical purposes.'),
+                'label' => _kt('Note'),
                 'value' => null,
                 'required' => true,
             ));
@@ -185,7 +183,6 @@ class KTBulkDeleteAction extends KTBulkAction {
 
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Are you sure?'),
             'description' => _kt('There are shortcuts linking to some of the documents or folders in your selection; continuing will automatically delete the shortcuts. Would you like to continue?'),
             'action' => 'collectinfo',
             'fail_action' => 'main',
@@ -296,7 +293,6 @@ class KTBulkMoveAction extends KTBulkAction {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.actions.bulk.move.form',
-            'label' => _kt('Move Items'),
             'submit_label' => _kt('Move'),
             'action' => 'performaction',
             'fail_action' => 'collectinfo',
@@ -375,8 +371,7 @@ class KTBulkMoveAction extends KTBulkAction {
         $oForm->addWidget(
             array('ktcore.widgets.reason',array(
                 'name' => 'reason',
-                'label' => _kt('Reason'),
-                'description' => _kt('The reason for moving these documents and folders, for historical purposes.'),
+                'label' => _kt('Note'),
                 'value' => null,
                 'required' => true,
                 )
@@ -546,7 +541,6 @@ class KTBulkCopyAction extends KTBulkAction {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.actions.bulk.copy.form',
-            'label' => _kt('Copy Items'),
             'submit_label' => _kt('Copy'),
             'action' => 'performaction',
             'fail_action' => 'collectinfo',
@@ -622,8 +616,7 @@ class KTBulkCopyAction extends KTBulkAction {
         $oForm->addWidget(
             array('ktcore.widgets.reason',array(
                 'name' => 'reason',
-                'label' => _kt('Reason'),
-                'description' => _kt('The reason for copying these documents and folders, for historical purposes.'),
+                'label' => _kt('Note'),
                 'value' => null,
                 'required' => true,
                 )
@@ -787,7 +780,6 @@ class KTBulkArchiveAction extends KTBulkAction {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.actions.bulk.archive.form',
-            'label' => _kt('Archive Items'),
             'submit_label' => _kt('Archive'),
             'action' => 'performaction',
             'fail_action' => 'collectinfo',
@@ -818,8 +810,7 @@ class KTBulkArchiveAction extends KTBulkAction {
         $oForm->addWidget(
             array('ktcore.widgets.reason',array(
                 'name' => 'reason',
-                'label' => _kt('Reason'),
-                'description' => _kt('The reason for archiving these documents and folders, for historical purposes.'),
+                'label' => _kt('Note'),
                 'value' => null,
                 'required' => true,
                 )
@@ -927,7 +918,6 @@ class KTBulkArchiveAction extends KTBulkAction {
 
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Are you sure?'),
             'description' => _kt('There are shortcuts linking to some of the documents or folders in your selection; continuing will automatically delete the shortcuts. Would you like to continue?'),
             'action' => 'collectinfo',
             'fail_action' => 'main',
@@ -1291,7 +1281,6 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.actions.bulk.checkout.form',
-            'label' => _kt('Checkout Items'),
             'submit_label' => _kt('Checkout'),
             'action' => 'performaction',
             'fail_action' => 'collectinfo',
@@ -1321,8 +1310,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
 
         $widgets[] = array('ktcore.widgets.reason',array(
                 'name' => 'reason',
-                'label' => _kt('Reason'),
-                'description' => _kt('Please specify why you are checking out these documents. It will assist other users in understanding why you have locked these files.'),
+                'label' => _kt('Note'),
                 'value' => null,
                 'required' => true,
                 ));

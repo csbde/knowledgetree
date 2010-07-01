@@ -48,6 +48,7 @@ if (!function_exists('array_fill')) {
 }
 
 require_once('PHP/Compat.php');
-PHP_Compat::loadVersion();
+$phpCompat = new PHP_Compat();
+$phpCompat->loadVersion();
  
 ?>

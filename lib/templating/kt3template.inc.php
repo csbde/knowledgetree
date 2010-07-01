@@ -138,8 +138,9 @@ class KTPage {
 
         $aJS[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
-        $aJS[] = 'resources/js/search2widget.js';
         $aJS[] = 'thirdpartyjs/jquery/jquery-1.4.2.min.js';
+        $aJS[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
+        $aJS[] = 'resources/js/search2widget.js';
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';
         $aJS[] = 'resources/js/newui/buttontabs.jquery.js';
@@ -458,7 +459,11 @@ class KTPage {
 
         require_once(KT_LIB_DIR . '/browse/feedback.inc.php');
         $userFeedback = new Feedback();
-        $uploadProgress = new DragDrop();
+		
+		if(ACCOUNT_ROUTING_ENABLED){
+			$uploadProgress = new DragDrop();
+			$uploadProgressRendered = $uploadProgress->render();
+		}
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate($this->template);
@@ -469,7 +474,8 @@ class KTPage {
 					'smallVersion' => $default->versionTier,
 			       	'savedSearches'=> $savedSearches,
 			       	'feedback' => $userFeedback->getDisplay(),
-        			'uploadProgress' => $uploadProgress->render());
+        			'uploadProgress' => $uploadProgressRendered
+				);
         if ($oConfig->get("ui/automaticRefresh", false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
         }

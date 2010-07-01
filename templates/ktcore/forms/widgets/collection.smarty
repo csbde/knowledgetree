@@ -16,7 +16,7 @@
 <div class="noportlets">
 <div id="content">
 
-<input type="hidden" name="{$targetname}" value="{$folder->getId()}" />
+<input type="hidden" name="{$targetname}" value="{$targetfolderid}" />
 
 {foreach from=$breadcrumbs item=breadcrumb name=bc}
 <a href="{$breadcrumb.url}">{$breadcrumb.name|sanitize}</a>

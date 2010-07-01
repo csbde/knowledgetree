@@ -112,14 +112,14 @@ class KTAPI_Session
 	function KTAPI_Session(&$ktapi, &$user)
 	{
 		assert(!is_null($ktapi));
-		assert(is_a($ktapi,'KTAPI'));
+		assert(is_a($ktapi, 'KTAPI'));
 		assert(!is_null($user));
-		assert(is_a($user,'User'));
+		assert(is_a($user, 'User'));
 
-		$this->ktapi=&$ktapi;
-		$this->user=&$user;
-		$this->origUserId = isset($_SESSION['userID'])?$_SESSION['userID']:null;
-		$_SESSION['userID']=$user->getId();
+		$this->ktapi = &$ktapi;
+		$this->user = &$user;
+		$this->origUserId = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
+		$_SESSION['userID'] = $user->getId();
 		$this->active = false;
 	}
 
@@ -359,9 +359,9 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * @param string $app Optional. The originating application type - Default is ws => webservices | webapp => The web application
 	 * @return KTAPI_Session|PEAR_Error Returns the KATPI_UserSession | a PEAR_Error on failure
 	 */
-	function &start_session(&$ktapi, $username, $password, $ip=null, $app='ws')
+	function &start_session(&$ktapi, $username, $password, $ip = null, $app = 'ws')
 	{
-		$this->active=false;
+		$this->active = false;
 		if ( empty($username) )
 		{
 			return new PEAR_Error(_kt('The username is empty.'));

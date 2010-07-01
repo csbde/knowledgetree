@@ -770,7 +770,7 @@ class KTCoreCollectionPage extends KTStandardDispatcher {
         print KTTemplating::renderTemplate('ktcore/forms/widgets/collection',
             array(
                 'collection'=> $oCollection,
-                'folder' => $oFolder,
+                'targetfolderid' => $oFolder->getId(),
                 'breadcrumbs' => $aBreadcrumbs,
                 'targetname' => $sName,
             )
@@ -1041,6 +1041,15 @@ class KTCoreButtonWidget extends KTWidget {
 class KTCoreLayerWidget extends KTWidget {
     var $sNamespace = 'ktcore.widgets.layer';
     var $sTemplate = 'ktcore/forms/widgets/layer';
+    
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+
+        $this->aOptions['class'] = KTUtil::arrayGet($aOptions, 'class', '');
+    }    
 }
 
 class KTCoreImageCropWidget extends KTWidget {
@@ -1309,19 +1318,19 @@ window.onload = function() {
 			debug: false,
 
 			// Button settings
-			button_image_url: "resources/graphics/newui/swfupload.png",
-			button_width: "89",
-			button_height: "24",
+			//button_image_url: "resources/graphics/newui/swfupload.png",
+			button_width: jQuery("#fakeflashbutton").width(),
+			button_height: jQuery("#fakeflashbutton").height()+5,
 			button_placeholder_id: "spanButtonPlaceHolder",
 			//button_text: '<span class="button">Upload</span>',
-			button_text_style: ".theFont { font-size: 16; }",
-			button_text_left_padding: 12,
-			button_text_top_padding: 3,
+			//button_text_style: ".theFont { font-size: 16; }",
+			//button_text_left_padding: 12,
+			//button_text_top_padding: 3,
 
 			button_action : SWFUpload.BUTTON_ACTION.SELECT_FILES,
 			button_disabled : false,
 			button_cursor : SWFUpload.CURSOR.HAND,
-			button_window_mode : SWFUpload.WINDOW_MODE.WINDOW,
+			button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
 			
 			// The event handler functions are defined in handlers.js
 			file_queued_handler : fileQueued,

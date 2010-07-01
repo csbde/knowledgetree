@@ -1,5 +1,6 @@
 function detectArchiveFile(fileName) {
-	isSupported = fileName.match(/\.(tgz|tar|gz|zip|deb|ar|bz2|tbz|tgz)$/i);
+	// TODO : This information should come from server
+	isSupported = fileName.match(/\.(tgz|tar|gz|zip|deb|ar|bz|bz2|rar|tbz)$/i);
 	isSupported = (isSupported != null)? true : false;
 	
 	if (isSupported) {
@@ -20,6 +21,10 @@ function hideExtractCheck() {
 
 function addFileToPost(fileName) {
 	jQuery('#kt_last_swf_filename').val(fileName);
+}
+
+function hideUploadButton() {
+	jQuery("#spanButtonContainer").hide();
 }
 
 function fileQueued(file) {
@@ -111,7 +116,7 @@ function uploadProgress(file, bytesLoaded, bytesTotal) {
 		//progress.setProgress(percent);
 		//progress.setStatus("Uploading...");
 		jQuery('#uploadProgress').html( file.name.substring(0,20) + '...<br/>' + percent + '%');
-		
+		jQuery('#kt_swf_upload_percent').val(percent);
 	} catch (ex) {
 		this.debug(ex);
 	}
@@ -194,13 +199,8 @@ function queueComplete(numFilesUploaded, fileName) {
 	//status.innerHTML = numFilesUploaded + " file" + (numFilesUploaded === 1 ? "" : "s") + " uploaded.";
 	//status.innerHTML = "The file was successfully uploaded. To select another file remove the uploaded file by clicking the cross icon.<br/>";
 	//status.innerHTML += "<div id='kt_swf_remove_file'>" + fileName + " <img src='resources/graphics/bullet_toggle_close.png' class='deleteButton' onclick='confirmFileRemove();'></div>";
-	jQuery('input[type=submit]').removeAttr("disabled");
 	status.innerHTML += "<div id='kt_swf_remove_file'>Uploaded: " + fileName + " <a href='#' class='deleteButton' onclick='confirmFileRemove();'>remove</a></div>";	
-	jQuery("#spanButtonContainer").hide();
+	hideUploadButton();
 	jQuery('#uploadProgress').fadeOut(5000);
-	//OR
 	jQuery('input[type=submit]').removeAttr('disabled');
-	//status.innerHTML = fileName + " has been uploaded. Please complete the metadata and submit.";
-	//Hiding the download button
-	//jQuery(".swfupload").hide();
 }

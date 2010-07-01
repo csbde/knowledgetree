@@ -279,10 +279,14 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			'documentName' => $oDocument->getName(),
 			'document_data' => $document_data,
 			'fieldsets' => $fieldsets,
-			'viewlet_data' => $viewlet_data
+			'viewlet_data' => $viewlet_data,
+        	'hasNotifications' => false
         );
         //Conditionally include live_preview
         if($live_preview)$aTemplateData['live_preview']=$live_preview;
+        
+        //Setting Document Notifications Status
+        if($oDocument->getIsCheckedOut() || $oDocument->getImmutable())$aTemplateData['hasNotifications']=true;
         
         
         $this->oPage->setBreadcrumbDetails(_kt("Document Details"));
@@ -434,7 +438,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Request restoration of document'),
             'submit_label' => _kt('Send request'),
             'identifier' => '',
             'cancel_url' => KTBrowseUtil::getUrlForFolder($oFolder),
@@ -444,7 +447,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $oForm->addWidget(
                 array('ktcore.widgets.text', array(
-                    'label' => _kt('Reason'),
+                    'label' => _kt('Note'),
                     'name' => 'reason',
                     'required' => true,
                 ))
