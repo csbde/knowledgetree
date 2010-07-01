@@ -78,7 +78,6 @@ class KTDocumentEditAction extends KTDocumentAction {
     function form_edit() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Edit Metadata'),
             'submit_label' => _kt('Update Document'),
             'action' => 'update',
             'fail_action' => 'main',
@@ -139,7 +138,7 @@ class KTDocumentEditAction extends KTDocumentAction {
                     'required' => true
                 ));
             $widgets[] = array('ktcore.widgets.reason', array(
-                    'label' => _kt('Reason'),
+                    'label' => _kt('Note'),
                     'name' => 'reason',
                     'required' => true
                 ));
@@ -328,7 +327,6 @@ class KTDocumentEditAction extends KTDocumentAction {
     function form_changetype() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt("Change Document Type"),
             'description' => _kt("Changing the document type will allow different metadata to be associated with it."),
             'identifier' => 'ktcore.doc.edit.typechange',
             'submit_label' => _kt("Update Document"),
