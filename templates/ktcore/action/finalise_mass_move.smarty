@@ -2,7 +2,6 @@
 
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-<fieldset><legend>{i18n}Move{/i18n}</legend>
 <input type="hidden" name="action" value="move" />
 <input type="hidden" name="fMoveCode" value="{$move_code}" />
 <input type="hidden" name="fFolderId" value="{$folder}" />
@@ -28,5 +27,4 @@
 <input type="submit" name="submit[move]" value="{i18n}Move{/i18n}" />
 <a href="{addQS context=$context}action=main&fFolderId={$folder}{/addQS}" class="form_cancel">Cancel</a>
 </div>
-</fieldset>
 </form>

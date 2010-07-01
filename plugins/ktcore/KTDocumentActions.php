@@ -456,7 +456,6 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
     function form_checkout() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Checkout'),
             'action' => 'checkout',
             'fail_action' => 'main',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
@@ -485,13 +484,12 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         }
 
         $widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Reason'),
-                'description' => _kt('Please specify why you are checking out this document.  It will assist other users in understanding why you have locked this file.  Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
+                'label' => _kt('Note'),
+				'required' => false,
                 'name' => 'reason',
             ));
         $widgets[] = array('ktcore.widgets.boolean', array(
-                'label' => _kt('Download File'),
-                'description' => _kt('Indicate whether you would like to download this file as part of the checkout.'),
+                'label' => _kt('Download File?'),
                 'name' => 'download_file',
                 'value' => true,
             ));
@@ -661,7 +659,6 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         global $default;
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Checkin Document'),
             'action' => 'checkin',
             'actionparams' => 'postExpected=1&fDocumentId='.$this->oDocument->getId(),
             'fail_action' => 'main',
@@ -718,8 +715,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         }
 
         $aWidgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Reason'),
-                'description' => _kt('Please describe the changes you made to the document.  Bear in mind that you can use a maximum of <strong>250</strong> characters.'),
+                'label' => _kt('Note'),
                 'name' => 'reason',
             ));
 
@@ -905,7 +901,6 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
     function form_main() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Cancel Checkout'),
             'action' => 'checkin',
             'fail_action' => 'main',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
@@ -934,8 +929,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         }
 
         $widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Reason'),
-                'description' => _kt('Please specify why you are cancelling this document\'s checked-out status.  Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
+                'label' => _kt('Note'),
                 'name' => 'reason',
             ));
 
@@ -1046,7 +1040,6 @@ class KTDocumentDeleteAction extends KTDocumentAction {
 	function form_confirm() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Are you sure?'),
             'description' => _kt('There are shortcuts linking to this document; deleting the document will automatically delete them. Would you like to continue?'),
             'action' => 'main',
             'fail_action' => 'main',
@@ -1062,7 +1055,6 @@ class KTDocumentDeleteAction extends KTDocumentAction {
     function form_main() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-			'label' => _kt('Delete Document'),
             'action' => 'delete',
             'fail_action' => 'main',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
@@ -1091,8 +1083,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
         }
 
         $widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Reason'),
-                'description' => _kt('Please specify why you are deleting this document.  Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
+                'label' => _kt('Note'),
                 'name' => 'reason',
             ));
 
@@ -1214,7 +1205,6 @@ class KTDocumentMoveAction extends KTDocumentAction {
     function form_move() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Move Document'),
             'submit_label' => _kt('Move'),
             'identifier' => 'ktcore.actions.movedoc',
             'action' => 'move',
@@ -1261,8 +1251,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
 
 
         $widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Reason'),
-                'description' => _kt('Please specify why you are moving this document.  Bear in mind that you can use a maximum of <strong>250</strong> characters.'),
+                'label' => _kt('Note'),
                 'name' => 'reason',
         ));
 
@@ -1449,7 +1438,6 @@ class KTDocumentCopyAction extends KTDocumentAction {
     function form_copyselection() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Copy Document'),
             'submit_label' => _kt('Copy'),
             'identifier' => 'ktcore.actions.copydoc',
             'action' => 'copy',
@@ -1495,8 +1483,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
         }
 
         $widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Reason'),
-                'description' => _kt('Please specify why you are copying this document.  Bear in mind that you can use a maximum of <strong>250</strong> characters.'),
+                'label' => _kt('Note'),
                 'name' => 'reason',
             ));
 
@@ -1662,7 +1649,6 @@ class KTDocumentArchiveAction extends KTDocumentAction {
 	function form_confirm() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Are you sure?'),
             'description' => _kt('There are shortcuts linking to this document; archiving the document automatically will delete them. Would you like to continue?'),
             'action' => 'main',
             'fail_action' => 'main',
@@ -1678,7 +1664,6 @@ class KTDocumentArchiveAction extends KTDocumentAction {
     function form_main() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Archive Document'),
             'action' => 'archive',
             'fail_action' => 'main',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
@@ -1707,8 +1692,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
         }
 
         $widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Reason'),
-                'description' => _kt('Please specify why you are archiving this document.  Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
+                'label' => _kt('Note'),
                 'name' => 'reason',
             ));
 
@@ -1943,7 +1927,6 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         }else{
             $oForm->setOptions(array(
                 'identifier' => 'ktcore.workflow.quicktransition',
-                'label' => _kt('Perform Quick Transition'),
                 'submit_label' => _kt('Perform Transition'),
                 'context' => $this,
                 'action' => 'performquicktransition',
@@ -1973,9 +1956,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
 
         $widgets[] = array('ktcore.widgets.reason', array(
-                    'label' => _kt('Reason'),
-                    'description' => _kt('Specify your reason for performing this action.'),
-                    'important_description' => _kt('Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
+                    'label' => _kt('Note'),
                     'name' => 'reason',
                 ));
 
@@ -2056,7 +2037,6 @@ class KTOwnershipChangeAction extends KTDocumentAction {
     function form_owner() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Change Document Ownership'),
             'description' => _kt('Changing document ownership allows you to keep the "owner" role relevant, even when the original user no longer is an appropriate choice.'),
             'action' => 'reown',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
