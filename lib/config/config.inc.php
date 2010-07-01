@@ -329,19 +329,72 @@ class KTConfig {
             'database' => $this->flatns['db/dbName'],
             'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
         );
-
         $options = array(
             'debug'       => 2,
             'portability' => DB_PORTABILITY_ERRORS,
             'seqname_format' => 'zseq_%s',
-        );
-
-        $default->_db = &DB::connect($dsn, $options);
-        if ($oPear->isError($default->_db)) {
+            );
+        $master_db = DB::connect($dsn, $options);
+        if ($oPear->isError($master_db)) {
             // return PEAR error
-            return $default->_db;
+            return PEAR::raiseError($master_db);
         }
-        $default->_db->setFetchMode(DB_FETCHMODE_ASSOC);
+        $master_db->disconnect();
+        $default->_db = $dsn;
+    
+               
+        /**
+        * Check to see if replication is set to TRUE
+        * If Replication is set to TRUE then it means 
+        * that mysql-slaves are active
+        * So we will read config to get the hostnames
+        **/
+        $replication = $this->flatns['db/dbReplication'];
+        
+        if($replication == 'true'){
+            $slave_list  = $this->flatns['db/dbSlaves'];
+            $slave_hostnames = explode('|', $slave_list);
+            $working_connections = array();
+            $slave_dns = array();
+            $errors=array();    
+            foreach ($slave_hostnames as $available_slaves){
+                if(empty($available_slaves)){
+                    continue;
+                }
+                $slave_dns[] = array(
+                    'phptype' =>  $this->flatns['db/dbType'],
+                    'username' => $this->flatns[$sUser],
+                    'password' => $this->flatns[$sPass],
+                    'hostspec' => $available_slaves,
+                    'database' => $this->flatns['db/dbName'],
+                    'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
+                    );
+            }
+            $options = array(
+                'debug'       => 2,
+                'portability' => DB_PORTABILITY_ERRORS,
+                'seqname_format' => 'zseq_%s',
+                );
+            foreach ($slave_dns as $slave){
+                   $test_connection = DB::connect($slave, $options);
+                   if ($oPear->isError($test_connection)) {
+                       // return PEAR error
+                       $errors[] = $test_connection;
+                       continue;
+                   }else{
+                       $test_connection->disconnect();
+                       $default->_slave = $slave;
+                       $working_connections[] = $test_connection;
+                   }
+                   
+               }
+               if(count($working_connections)<=0){
+                  return PEAR::raiseError("Database replication has been set and no mysql slaves are reachable!");
+               } 
+                
+        }        
+        
+       
     }
 
     function setns($seck, $k, $v, $bDefault = false) {
