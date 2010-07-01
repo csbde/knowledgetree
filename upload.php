@@ -4,10 +4,7 @@
 	require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 	
 	function uploadFile($fileTmp, $fileName, $folderID = 1) {
-		
-		global $default;
-		
-		$default->log->debug("DRAGDROP Uploading file $fileTmp $fileName");
+		$GLOBALS['default']->log->debug("DRAGDROP Uploading file $fileTmp $fileName");
 		
     	$oStorage = KTStorageManagerUtil::getSingleton();
     	
@@ -20,19 +17,19 @@
         
         $oFolder = Folder::get($folderID); 
         if (PEAR::isError($oFolder)) {
-       		$default->log->error("DRAGDROP Folder $folderID: {$oFolder->getMessage()}");
+       		$GLOBALS['default']->log->error("DRAGDROP Folder $folderID: {$oFolder->getMessage()}");
        		return false;      
         }      
         
         $oUser = User::get($_SESSION['userID']);
         if (PEAR::isError($oUser)) {
-       		$default->log->error("DRAGDROP User {$_SESSION['userID']}: {$oUser->getMessage()}");
+       		$GLOBALS['default']->log->error("DRAGDROP User {$_SESSION['userID']}: {$oUser->getMessage()}");
        		return false;      
         } 
         
         $oDocumentType = DocumentType::get(1);
         if (PEAR::isError($oDocumentType)) {
-       		$default->log->error("DRAGDROP DocumentType: {$oDocumentType->getMessage()}");
+       		$GLOBALS['default']->log->error("DRAGDROP DocumentType: {$oDocumentType->getMessage()}");
        		return false;      
         } 
 		
@@ -44,11 +41,11 @@
             'cleanup_initial_file' => true
         );
         
-        $default->log->debug("DRAGDROP Folder $folderID User {$oUser->getID()}");
+        $GLOBALS['default']->log->debug("DRAGDROP Folder $folderID User {$oUser->getID()}");
         
         $oDocument =& KTDocumentUtil::add($oFolder, $fileName, $oUser, $aOptions);
         if (PEAR::isError($oDocument)) {
-            $default->log->error("DRAGDROP Document add: {$oDocument->getMessage()}");
+            $GLOBALS['default']->log->error("DRAGDROP Document add: {$oDocument->getMessage()}");
        		return false;
         }
     	
@@ -83,8 +80,7 @@
 			return $output;
 			
 		}else{
-			global $default;
-			$default->log->error("DRAGDROP Column data empty");
+			$GLOBALS['default']->log->error("DRAGDROP Column data empty");
 			return false;
 		}
 	}

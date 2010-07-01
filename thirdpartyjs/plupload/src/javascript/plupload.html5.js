@@ -160,6 +160,7 @@
 					width : '100px',
 					height : '100px',
 					overflow : 'hidden',
+					display: 'none',
 					zIndex : 99999,
 					opacity : uploader.settings.shim_bgcolor ? '' : 0 // Force transparent if bgcolor is undefined
 				});
