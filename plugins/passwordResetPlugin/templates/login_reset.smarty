@@ -15,18 +15,22 @@
     {/foreach}
 </head>
 <body >
-<div id="loginbox_outer" {if ($disclaimer)} class="hasDisclaimer" {/if} style="width:800px;">
+<div id="loginbox_outer"  {if ($disclaimer)} class="hasDisclaimer" {/if} style="width:800px;">
 	<div class="header">
 
 	</div>
-	<div class="content">
-		<div class="login-box">
+	<div class="content" style="display:block; min-height: 550px; ">
+		<div class="promotions-block" style="display:block; height:400px; position:relative; float: right; margin:50px 15px 0px 0px; ">
+		<iframe style="-webkit-box-shadow: #667 0px 0px 5px; -moz-box-shadow: #667 0px 0px 5px; border: 1px solid #616161; border-radius: 15px;-moz-border-radius: 15px; padding: 25px;" class="iframe-filter" width="350" height="400" src="http://www.knowledgetree.com/app/login-page" scrolling="no" frameBorder="0" style="border: 0;"></iframe>
+		</div>
+
+		<div class="login-box" style="display:block; margin-left: 20px;">
 			<form class="login-form" action="{$smarty.server.PHP_SELF}" method="POST" name="login">
 				<input type="hidden" name="action" value="login" />
 				<input type="hidden" name="cookieverify" value="{$cookietest}" />
 				<input type="hidden" name="redirect" value="{$redirect}" />
-
-				<div id="login_form">
+				
+				<div id="login_form" >
 
 				    <p class="descriptive-text">{i18n}Login to your account{/i18n}</p>
 
@@ -109,7 +113,7 @@
 		</div>
 
 
-		<div class="footer"><span style="display:block; float:right;">Call: 1 877.900.0350</span>
+		<div class="footer" style="clear:both;"><span style="display:block; float:right;">Call: 1 877.900.0350</span>
 		<a href="http://www.knowledgetree.com/blog">{i18n}Blog{/i18n}</a> &nbsp;| <a href="http://support.knowledgetree.com">{i18n}Support{/i18n}</a> &nbsp;|  &nbsp;<a href="http://www.knowledgetree.com/privacy">{i18n}Privacy{/i18n}</a>&nbsp; | &nbsp;<a href="http://www.knowledgetree.com/legal">{i18n}Legal{/i18n}</a>&nbsp; |&nbsp; &copy; 2010 KnowledgeTree Inc.&nbsp;
 		</div>
 	</div>
