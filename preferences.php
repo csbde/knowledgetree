@@ -83,7 +83,7 @@ class PreferencesDispatcher extends KTStandardDispatcher {
             array('ktcore.widgets.string', array(
                 'label' => _kt('Email Address'),
                 'description' => _kt('Your email address.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'),
-                'required' => false,
+                'required' => true,
                 'name' => 'email_address',
                 'value' => sanitizeForHTML($this->oUser->getEmail()),
                 'autocomplete' => false)),

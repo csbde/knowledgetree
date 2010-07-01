@@ -438,7 +438,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Request restoration of document'),
             'submit_label' => _kt('Send request'),
             'identifier' => '',
             'cancel_url' => KTBrowseUtil::getUrlForFolder($oFolder),
@@ -448,7 +447,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $oForm->addWidget(
                 array('ktcore.widgets.text', array(
-                    'label' => _kt('Reason'),
+                    'label' => _kt('Note'),
                     'name' => 'reason',
                     'required' => true,
                 ))

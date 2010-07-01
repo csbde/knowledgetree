@@ -97,7 +97,6 @@ class KTDocumentImmutableAction extends KTDocumentAction {
 	function form_confirm() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Are you sure?'),
             'description' => '',
             'action' => 'main',
             'fail_action' => 'main',
@@ -113,7 +112,6 @@ class KTDocumentImmutableAction extends KTDocumentAction {
     function form_main() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-			'label' => _kt('Make Immutable'),
             'action' => 'immutable',
             'fail_action' => 'main',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
@@ -142,8 +140,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
         }
 
         $widgets[] = array('ktcore.widgets.reason', array(
-                'label' => _kt('Reason'),
-                'description' => _kt('Please specify why you are making this document immutable.  Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
+                'label' => _kt('Note'),
                 'name' => 'reason',
             ));
 

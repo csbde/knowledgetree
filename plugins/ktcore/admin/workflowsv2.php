@@ -454,7 +454,6 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
             'action' => 'setcore',
             'fail_action' => 'editcore',
             'cancel_action' => 'view',
-            'label' => _kt('Edit Workflow Details'),
             'submit_label' => _kt('Update Workflow Details'),
         ));
 
@@ -583,7 +582,6 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     function form_transitionconnections() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Configure Workflow Process'),
             'description' => _kt('The process a document follows is controlled by the way that the transitions between states are setup.  A document starts the workflow in the initial state, and then follows transitions between states.  Which users can perform these transitions can be configured in the "Security" section.'),
             'submit_label' => _kt('Update Process'),
             'cancel_action' => 'basic',
@@ -720,7 +718,6 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'context' => $this,
-            'label' => _kt("Add New States"),
             'submit_label' => _kt("Add States"),
             'action' => 'createstates',
             'cancel_action' => 'basic',
@@ -828,7 +825,6 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'context' => $this,
-            'label' => _kt("Add New Transitions"),
             'submit_label' => _kt("Add Transitions"),
             'action' => 'createtransitions',
             'cancel_action' => 'basic',
@@ -948,7 +944,6 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
         $oForm->setOptions(array(
             'context' => $this,
-            'label' => _kt('Edit State'),
             'submit_label' => _kt('Update State'),
             'action' => 'savestate',
             'fail_action' => 'editstate',
@@ -1041,7 +1036,6 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
 
         $oForm->setOptions(array(
             'context' => $this,
-            'label' => _kt('Edit Transition'),
             'submit_label' => _kt('Update Transition'),
             'action' => 'savetransition',
             'fail_action' => 'edittransition',
@@ -1157,7 +1151,6 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     function form_deletestate() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt("Delete Existing State"),
             'identifier' => 'ktcore.workflow.deletestate',
             'action' => 'deletestate',
             'cancel_action' => 'basic',
@@ -1294,7 +1287,6 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
     function form_managepermissions() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt("Controlled Permissions"),
             'submit_label' => _kt("Set controlled permissions"),
             'action' => 'setcontrolledpermissions',
             'fail_action' => 'managepermissions',
@@ -1674,7 +1666,6 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.admin.workflow.addguard',
-            'label' => _kt("Add New Transition Restriction"),
             'action' => 'addguard',
             'cancel_action' => 'manageguards',
             'fail_action' => 'manageguards',
@@ -1896,7 +1887,6 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'identifier' => 'ktcore.admin.workflow.addaction',
-            'label' => _kt("Add New Transition Action"),
             'action' => 'addactiontrigger',
             'cancel_action' => 'managetransitionactions',
             'fail_action' => 'managetransitionactions',
@@ -2256,7 +2246,6 @@ class KTWorkflowAdminV2 extends KTAdminDispatcher {
         $oForm = new KTForm;
         $oForm->setOptions(array(
             'context' => $this,
-            'label' => _kt("Edit State Notifications."),
             'identifier' => 'ktcore.workflow.notifications',
             'submit_label' => _kt("Update Notifications"),
             'cancel_action' => 'managenotifications',
