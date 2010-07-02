@@ -112,10 +112,10 @@ class KTPage {
            "resources/css/kt-contenttypes.css",
            "resources/css/kt-headings.css",
            "resources/css/kt-new-ui.css",
-		   
-		   
+
+
            "resources/css/newui/dropdown.css",
-           
+
 		   /* REWORK INTO SINGLE STYLE SHEET */
 		   "resources/css/newui/dropdown_styles.css"
         );
@@ -135,16 +135,15 @@ class KTPage {
 		$aJS[] = 'thirdpartyjs/MochiKit/MochiKitPacked.js';
         $aJS[] = 'resources/js/kt-utility.js';
         $aJS[] = 'presentation/i18nJavascript.php';
-        //$aJS[] = 'thirdpartyjs/curvycorners/rounded_corners.inc.js';
-        //$aJS[] = 'resources/js/loader.js';
 
         $aJS[] = 'thirdpartyjs/extjs/adapter/ext/ext-base.js';
         $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
+        $aJS[] = 'thirdpartyjs/jquery/jquery-1.4.2.min.js';
+        $aJS[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
         $aJS[] = 'resources/js/search2widget.js';
-        $aJS[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
-        $aJS[] = 'thirdpartyjs/jquery/jquery_noconflict.js"';
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';
+        $aJS[] = 'resources/js/newui/buttontabs.jquery.js';
 
         $this->requireJSResources($aJS);
 
@@ -169,6 +168,10 @@ class KTPage {
     	$this->menu = array();
     	$this->menu['dashboard'] = array('label' => _kt("Dashboard"), 'url' => $sBaseUrl.'/dashboard.php');
 		$this->menu['browse'] = array('label' => _kt("Browse All Documents"), 'url' => $sBaseUrl.'/browse.php');
+    	if(ACCOUNT_ROUTING_ENABLED) {
+    		$sLiveUrl = KTLiveUtil::ktlive_url();
+			$this->menu['applications'] = array('label' => _kt("Applications"), 'url' => $sLiveUrl.'/applications.php');
+		}
 		$this->menu['administration'] = array('label' => _kt("Settings"));
 
 		// Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
@@ -185,7 +188,7 @@ class KTPage {
 
 
     function setTitle($sTitle) {
-	$this->title = $sTitle;
+		$this->title = $sTitle;
     }
 
     /* javascript handling */
@@ -415,28 +418,28 @@ class KTPage {
         		} else {
         			$this->userMenu['preferences']['url'] = $sBaseUrl.'/preferences.php';
         		}
-				
-				$this->userMenu['supportpage'] = array('label' => _kt('Get Help'), 'url' => $sBaseUrl.'/support.php');
-				
+
+				$this->userMenu['supportpage'] = array('label' => _kt('Get Help'), 'url' => $sBaseUrl.'/support.php', 'extra'=>'target="_blank"');
+
         		//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
         		$this->userMenu['preferences']['label'] = '<span class="normalTransformText">'.$this->user->getName().'</span>';
-        		
+
 				// About Moved to Footer
 				//$this->userMenu['aboutkt'] = array('label' => _kt('About'), 'url' => $sBaseUrl.'/about.php');
-				
-				
-        		
+
+
+
 				$this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
         	}
         } else {
         	$this->userMenu['login'] = array('label' => _kt('Login'), 'url' => $sBaseUrl.'/login.php');
         }
-		
-		
+
+
 		// For new Layout, we need to reverse Menu,
 		// so that right most items appear first
 		$this->userMenu = array_reverse($this->userMenu);
-		
+
 
         // FIXME we need a more complete solution to navigation restriction
         if (!is_null($this->menu['administration']) && !is_null($this->user)) {
@@ -454,6 +457,14 @@ class KTPage {
 
         $savedSearches = SearchHelper::getSavedSearches($_SESSION['userID']);
 
+        require_once(KT_LIB_DIR . '/browse/feedback.inc.php');
+        $userFeedback = new Feedback();
+		
+		if(ACCOUNT_ROUTING_ENABLED){
+			$uploadProgress = new DragDrop();
+			$uploadProgressRendered = $uploadProgress->render();
+		}
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate($this->template);
         $aTemplateData = array(
@@ -462,7 +473,9 @@ class KTPage {
 			       	"versionname" => $default->versionName,
 					'smallVersion' => $default->versionTier,
 			       	'savedSearches'=> $savedSearches,
-			       	'licenseNotification' => $this->getLicenseNotification());
+			       	'feedback' => $userFeedback->getDisplay(),
+        			'uploadProgress' => $uploadProgressRendered
+				);
         if ($oConfig->get("ui/automaticRefresh", false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
         }
@@ -532,17 +545,6 @@ class KTPage {
             return;
         }
     }
-    
-    private function getLicenseNotification() {
-        $oRegistry =& KTPluginRegistry::getSingleton();
-        $oPlugin =& $oRegistry->getPlugin('ktdms.wintools');
-        if (!PEAR::isError($oPlugin) && !is_null($oPlugin)) {
-            return $oPlugin->getLicenseNotification();
-        } else {
-            return;
-        }
-    }
-
 }
 
 ?>

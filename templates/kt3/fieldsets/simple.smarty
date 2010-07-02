@@ -1,27 +1,31 @@
-<div class="detail_fieldset">
-    <h3>{$fieldset->getName()}</h3>
-        <p class="descriptiveText">
-        {$description}
-    </p>
-
-    <table class="metadatatable" cellspacing="0" cellpadding="5">
-      {foreach item=aFieldPair from=$fieldset_values name=fields}
-    <tr class="{cycle values=even,odd} {if $smarty.foreach.fields.first}first{/if}">
-        <th>{$aFieldPair.field->getName()}</th>
-        <td>
-        {if ($aFieldPair.value !== null)}
-			{if ($aFieldPair.field->getIsHTML())}
-				{$aFieldPair.value}
-			{else}
-				{$aFieldPair.value|sanitize}
+ 
+<!-- FILE: kt3/fieldsets/simple.smarty -->
+	<div class="detail_fieldset">
+	    <h3>{$fieldset->getName()}</h3>
+	        <p class="descriptiveText">
+	        {$description}
+	    </p>
+	
+	    <table class="metadatatable" cellspacing="0" cellpadding="5">
+	      {foreach item=aFieldPair from=$fieldset_values name=fields}
+	    <tr class="{cycle values=even,odd} {if $smarty.foreach.fields.first}first{/if}">
+	        <th>{$aFieldPair.field->getName()}</th>
+	        <td>
+	        {if ($aFieldPair.value !== null)}
+				{if ($aFieldPair.field->getIsHTML())}
+					{$aFieldPair.value}
+				{else}
+					{$aFieldPair.value|sanitize}
+				{/if}
+	        {else}
+				<span class="descriptiveText">{i18n}no value{/i18n}</span>
 			{/if}
-        {else}
-			<span class="descriptiveText">{i18n}no value{/i18n}</span>
-		{/if}
-        </td>
-    </tr>
-      {/foreach}
-    </table>
-
-    <div class="floatClear"><!-- --> </div>
-</div>
+	        </td>
+	    </tr>
+	      {/foreach}
+	    </table>
+	
+	    <div class="floatClear"><!-- --> </div>
+	</div>
+ 
+<!-- FILE_END:  kt3/fieldsets/simple.smarty -->

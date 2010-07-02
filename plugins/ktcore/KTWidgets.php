@@ -770,7 +770,7 @@ class KTCoreCollectionPage extends KTStandardDispatcher {
         print KTTemplating::renderTemplate('ktcore/forms/widgets/collection',
             array(
                 'collection'=> $oCollection,
-                'folder' => $oFolder,
+                'targetfolderid' => $oFolder->getId(),
                 'breadcrumbs' => $aBreadcrumbs,
                 'targetname' => $sName,
             )
@@ -972,7 +972,7 @@ class KTCoreTextAreaWidget extends KTWidget {
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
 		
-      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
       	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
       	$this->aJavascript[] = 'thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js';
     	$this->aJavascript[] = 'resources/js/kt_tinymce_init.js';
@@ -1041,6 +1041,15 @@ class KTCoreButtonWidget extends KTWidget {
 class KTCoreLayerWidget extends KTWidget {
     var $sNamespace = 'ktcore.widgets.layer';
     var $sTemplate = 'ktcore/forms/widgets/layer';
+    
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+
+        $this->aOptions['class'] = KTUtil::arrayGet($aOptions, 'class', '');
+    }    
 }
 
 class KTCoreImageCropWidget extends KTWidget {
@@ -1066,7 +1075,7 @@ class KTCoreImageCropWidget extends KTWidget {
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
 		
-      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
         $this->aJavascript[] = 'thirdpartyjs/jquery/plugins/imageareaselect/scripts/jquery.imgareaselect.pack.js';
     	//$this->aJavascript[] = 'resources/js/kt_image_crop.js';
     	
@@ -1165,7 +1174,7 @@ class KTCoreImageSelectWidget extends KTWidget {
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
         
-      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.3.2.js';
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
       	$this->aJavascript[] = 'thirdpartyjs/jquery/plugins/selectimage/jquery.selectimage.js';
       	$this->aJavascript[] = 'resources/js/kt_selectimage.js';
 	
@@ -1176,7 +1185,7 @@ class KTCoreImageSelectWidget extends KTWidget {
         }
 
     	//$this->aCSS[] = 'resources/css/kt_imageselect.css';
-	$this->aCSS[] = 'thirdpartyjs/jquery/plugins/selectimage/css/selectimage.css';
+	    $this->aCSS[] = 'thirdpartyjs/jquery/plugins/selectimage/css/selectimage.css';
         
         if (!empty($this->aCSS)) {
             // grab our inner page.
@@ -1200,6 +1209,149 @@ class KTCoreImageSelectWidget extends KTWidget {
         );
         return $oTemplate->render($aTemplateData);   
     }    
+    
+}
+
+class KTCoreSWFFileSelectWidget extends KTWidget {
+    var $sNamespace = 'ktcore.widgets.swffileselect';
+    var $sTemplate = 'ktcore/forms/widgets/swffileselect';
+
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        
+        $this->aOptions['fFolderId'] = KTUtil::arrayGet($aOptions, 'fFolderId', '');
+        $this->aOptions['field_id'] = KTUtil::arrayGet($aOptions, 'field_id', '');
+    }
+
+    function render() {
+        $oTemplating =& KTTemplating::getSingleton();        
+        $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
+        
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
+      	
+      	//TODO: abstract handlers and config from javascript to enable these
+      	//      to be set in php.
+      	
+      	$this->aJavascript[] = 'thirdpartyjs/swfupload/swfupload.js';
+        $this->aJavascript[] = 'thirdpartyjs/swfupload/swfupload.queue.js';      	
+        $this->aJavascript[] = 'thirdpartyjs/swfupload/fileprogress.js';      	
+        $this->aJavascript[] = 'thirdpartyjs/swfupload/handlers.js';
+      	$this->aJavascript[] = 'resources/js/kt_upload.js';
+        
+        if (!empty($this->aJavascript)) {
+            // grab our inner page.
+            $oPage =& $GLOBALS['main'];            
+            $oPage->requireJSResources($this->aJavascript);
+            $oPage->requireJSStandalone($this->getConfiguration());
+        }
+        
+        $this->aCSS[] = 'resources/css/upload.css';
+        
+        if (!empty($this->aCSS)) {
+            // grab our inner page.
+            $oPage =& $GLOBALS['main'];            
+            $oPage->requireCSSResources($this->aCSS);
+        }
+        
+        $widget_content = $this->getWidget();
+
+        $aTemplateData = array(
+            "context" => $this,
+            "label" => $this->sLabel,
+            "description" => $this->sDescription,
+            "name" => $this->sName,
+            "has_value" => ($this->value !== null),
+            "value" => $this->value,
+            "has_errors" => $bHasErrors,
+            "errors" => $this->aErrors,
+            "options" => $this->aOptions,
+            "widget" => $widget_content,
+        );
+        return $oTemplate->render($aTemplateData);   
+    }    
+    
+    /**
+     * This function dynamically generates the init configuration script required by 
+     * swfupload for the particular session.
+     * 
+     * @param $folderId The id of the folder to upload the document to.	If none is provided
+     *		  the following will be sniffed: get params and widget options.
+     *
+     * @return String configuration script.
+     */
+    private function getConfiguration($folderId = null){
+        
+        if (is_null($folderId)) {
+            $folderId = $_GET['fFolderId'];
+        }
+        
+        if ($folderId == '') {
+            $folderId = $_POST['fFolderId'];    
+        }
+        
+        if ($folderId == '') {
+            $folderId = $this->aOptions['fFolderId'];
+        }
+        
+        ob_start();
+        ?>
+window.onload = function() {
+	var swfu;
+
+		var settings = {
+			flash_url : "thirdpartyjs/swfupload/swfupload.swf",
+			upload_url: "action.php?kt_path_info=ktlive.actions.folder.bulkupload&_kt_form_name=SWFUPLOAD&fFolderId=<?php print $folderId ?>&action=liveDocumentUpload",
+			//upload_url: "upload/upload.php",
+			post_params: {"PHPSESSID" : "<?php print session_id(); ?>"},
+			file_size_limit : "4096 MB",
+			file_types : "*.*",
+			file_types_description : "All Files",
+			file_upload_limit : 1,
+			file_queue_limit : 1,
+			custom_settings : {
+				progressTarget : "fsUploadProgress",
+				cancelButtonId : "btnCancel"
+			},
+			debug: false,
+
+			// Button settings
+			//button_image_url: "resources/graphics/newui/swfupload.png",
+			button_width: jQuery("#fakeflashbutton").width(),
+			button_height: jQuery("#fakeflashbutton").height()+5,
+			button_placeholder_id: "spanButtonPlaceHolder",
+			//button_text: '<span class="button">Upload</span>',
+			//button_text_style: ".theFont { font-size: 16; }",
+			//button_text_left_padding: 12,
+			//button_text_top_padding: 3,
+
+			button_action : SWFUpload.BUTTON_ACTION.SELECT_FILES,
+			button_disabled : false,
+			button_cursor : SWFUpload.CURSOR.HAND,
+			button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
+			
+			// The event handler functions are defined in handlers.js
+			file_queued_handler : fileQueued,
+			file_queue_error_handler : fileQueueError,
+			file_dialog_complete_handler : fileDialogComplete,
+			upload_start_handler : uploadStart,
+			upload_progress_handler : uploadProgress,
+			upload_error_handler : uploadError,
+			upload_success_handler : uploadSuccess,
+			upload_complete_handler : uploadComplete,
+			queue_complete_handler : queueComplete	// Queue plugin event
+		};
+
+		swfu = new SWFUpload(settings);
+};
+        <?PHP
+        $script = ob_get_contents();
+        ob_end_clean();
+        
+        return $script;
+    }
     
 }
 

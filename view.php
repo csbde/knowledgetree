@@ -40,6 +40,7 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
+require_once(KT_LIB_DIR . '/users/userutil.inc.php');
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 require_once(KT_LIB_DIR . '/util/sanitize.inc');
 
@@ -104,7 +105,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $_REQUEST['fDocumentId'] = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fDocumentID'));
             unset($_REQUEST['fDocumentID']);
         }
-
+        
         $document_data = array();
         $document_id = sanitizeForSQL(KTUtil::arrayGet($_REQUEST, 'fDocumentId'));
         if ($document_id === null) {
@@ -164,7 +165,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             $this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions, $iSymLinkFolderId));
         }
 
-        $this->oPage->setBreadcrumbDetails(_kt('document details'));
+        
         $this->addPortlets('Document Details');
 
         $document_data['document'] = $oDocument;
@@ -249,18 +250,46 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/view');
+        
+		if (KTPluginUtil::pluginIsActive ( 'instaview.processor.plugin' )) {
+			$path = KTPluginUtil::getPluginPath ( 'instaview.processor.plugin' );
+			try{
+				require_once ($path . 'instaViewLinkAction.php');
+				$oLivePreview=new instaViewLinkAction($oDocument,$this->oUser,NULL);
+		        $live_preview=$oLivePreview->do_main();
+			}catch(Exception $e){}
+		}
+        
+        $ownerUser=KTUserUtil::getUserField($oDocument->getOwnerID(),'name');
+        $creatorUser=KTUserUtil::getUserField($oDocument->getCreatorID(),'name');
+        $lastModifierUser=KTUserUtil::getUserField($oDocument->getModifiedUserId(),'name');
+        
         $aTemplateData = array(
-              'context' => $this,
-              'sCheckoutUser' => $checkout_user,
-              'isCheckoutUser' => ($this->oUser->getId() == $oDocument->getCheckedOutUserId()),
-              'canCheckin' => $bCanCheckin,
-              'document_id' => $document_id,
-              'document' => $oDocument,
-              'documentName' => $oDocument->getName(),
-              'document_data' => $document_data,
-              'fieldsets' => $fieldsets,
-              'viewlet_data' => $viewlet_data,
+        	'doc_data'=>array(
+        		'owner'=>$ownerUser[0]['name'],
+        		'creator'=>$creatorUser[0]['name'],
+        		'lastModifier'=>$lastModifierUser[0]['name']
+        	),
+			'context' => $this,
+			'sCheckoutUser' => $checkout_user,
+			'isCheckoutUser' => ($this->oUser->getId() == $oDocument->getCheckedOutUserId()),
+			'canCheckin' => $bCanCheckin,
+			'document_id' => $document_id,
+			'document' => $oDocument,
+			'documentName' => $oDocument->getName(),
+			'document_data' => $document_data,
+			'fieldsets' => $fieldsets,
+			'viewlet_data' => $viewlet_data,
+        	'hasNotifications' => false
         );
+        //Conditionally include live_preview
+        if($live_preview)$aTemplateData['live_preview']=$live_preview;
+        
+        //Setting Document Notifications Status
+        if($oDocument->getIsCheckedOut() || $oDocument->getImmutable())$aTemplateData['hasNotifications']=true;
+        
+        
+        $this->oPage->setBreadcrumbDetails(_kt("Document Details"));
         return $oTemplate->render($aTemplateData);
     }
 

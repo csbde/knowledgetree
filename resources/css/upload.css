@@ -1,0 +1,17 @@
+.showCheck {
+	visibility : visible;
+	height : 30px;
+}
+
+.hideCheck {
+	visibility : hidden;
+	height : 0px;
+}
+
+.deleteButton {
+	cursor:pointer;
+}
+
+#kt_swf_remove_file {
+	font-size: larger;
+}

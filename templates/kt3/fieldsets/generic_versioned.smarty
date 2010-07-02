@@ -1,3 +1,5 @@
+ 
+<!-- FILE: kt3/fieldsets/generic_versioned.smarty -->
 <div class="detail_fieldset">
     <h3>{i18n}Generic Information{/i18n}</h3>
     <p class="descriptiveText">
@@ -91,3 +93,5 @@
 
     <div class="floatClear"><!-- --> </div>
 </div>
+ 
+<!-- FILE_END: kt3/fieldsets/generic_versioned.smarty -->

@@ -998,8 +998,16 @@ a.main_nav_item {
 }
 
 
-.kt_collection .odd td {
+.kt_collection tr.odd>td {
     background-color: #fafafa;
+}
+
+.kt_collection tr.even>td{
+    background-color: #ffffff;
+}
+
+.kt_collection tr.dragdrop td {
+    background-color: #C7D4FF !important;
 }
 
 /* cheap and nasty hack for gmail-style highlighting. */

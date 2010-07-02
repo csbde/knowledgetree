@@ -80,9 +80,10 @@ class KTUploadManager
     function is_valid_temporary_file($tempfilename)
     {
     	$oStorage = KTStorageManagerUtil::getSingleton();
-        $tempdir = substr($tempfilename,0,strlen($this->temp_dir));
-        $tempdir = str_replace('\\','/', $tempdir);
+        $tempdir = substr($tempfilename, 0, strlen($this->temp_dir));
+        $tempdir = str_replace('\\', '/', $tempdir);
 
+        // NOTE this can break on S3 files
         $tempdir = preg_replace_callback(
             '/\A(.*?):/i',
             create_function(
@@ -105,7 +106,13 @@ class KTUploadManager
             $this->temp_dir
         );
 
-        $check = ($tempdir == $main_temp_dir);
+        // if using S3 storage manager, then a match there also counts
+        if (ACCOUNT_ROUTING_ENABLED) {
+            $check = ($tempdir == $main_temp_dir) || (preg_match('/^' . ACCOUNT_NAME . '\/upload/', $tempdir));
+        }
+        else {
+            $check = ($tempdir == $main_temp_dir);
+        }
 
         /*
         Removing the return, if the file is not directly in the temp directory then it may be a security risk, for instance a file can be uploaded using the following tempfilename: /var/www/var/uploads/../../../../etc/passwd
@@ -115,14 +122,20 @@ class KTUploadManager
         }
         */
 
-        // in case of a symlinked directory, check if the file exists and is in the uploads directory
-        $file = basename($tempfilename);
-        $path = $this->temp_dir . DIRECTORY_SEPARATOR . $file;
+        $path = '';
+        // if using S3 storage manager then the path is already fine...
+        if (ACCOUNT_ROUTING_ENABLED) {
+            $path = $tempfilename;
+        }
+        else {
+            // in case of a symlinked directory, check if the file exists and is in the uploads directory
+            $file = basename($tempfilename);
+            $path = $this->temp_dir . DIRECTORY_SEPARATOR . $file;
+        }
 
-        if($oStorage->file_exists($path)){
-
+        if($oStorage->file_exists($path)) {
             // Added check - if file name contains ../ to get down a few levels into the root filesystem
-            if(strpos($tempfilename, '../') !== false){
+            if(strpos($tempfilename, '../') !== false) {
                 global $default;
                 $default->log->error('Upload Manager: temporary filename contains relative path: '.$tempfilename .' could be attempting to access root level files');
                 return false;
@@ -142,19 +155,16 @@ class KTUploadManager
 	{
 		$oStorage = KTStorageManagerUtil::getSingleton();
 		$tempfilename = $this->get_temp_filename($prefix);
-		if (!$oStorage->is_writable($tempfilename))
-		{
+		if (!$oStorage->is_writable($tempfilename)) {
 			return new PEAR_Error("Cannot write to file: $tempfilename");
 		}
 
-		if (!$this->is_valid_temporary_file($tempfilename))
-		{
+		if (!$this->is_valid_temporary_file($tempfilename)) {
 			return new PEAR_Error("Invalid temporary file: $tempfilename. There is a problem with the temporary storage path: $this->temp_dir.");
 		}
 
 		$fp = $oStorage->write_file($tempfilename, 'wb', base64_decode($base64));
-		if ($fp === false)
-		{
+		if ($fp === false) {
 			return new PEAR_Error("Cannot write content to temporary file: $tempfilename.");
 		}
 
@@ -171,19 +181,16 @@ class KTUploadManager
 	{
 		$oStorage = KTStorageManagerUtil::getSingleton();
 		$tempfilename = $this->get_temp_filename($prefix);
-		if (!$oStorage->is_writable($tempfilename))
-		{
+		if (!$oStorage->is_writable($tempfilename)) {
 			return new PEAR_Error("Cannot write to file: $tempfilename");
 		}
 
-		if (!$this->is_valid_temporary_file($tempfilename))
-		{
+		if (!$this->is_valid_temporary_file($tempfilename)) {
 			return new PEAR_Error("Invalid temporary file: $tempfilename. There is a problem with the temporary storage path: $this->temp_dir.");
 		}
 
 		$fp = $oStorage->write_file($tempfilename, 'wb', $content);
-		if ($fp === false)
-		{
+		if ($fp === false) {
 			return new PEAR_Error("Cannot write content to temporary file: $tempfilename.");
 		}
 
@@ -209,14 +216,14 @@ class KTUploadManager
 			$oStorage->mkdir($this->temp_dir, 0777, true);
         }
 
-		$newtempfile = realpath($this->temp_dir) . '/' . $_SESSION['userID'] . '-'. $now_str;
+		$newtempfile = $oStorage->realpath($this->temp_dir) . '/' . $_SESSION['userID'] . '-'. $now_str;
 		if (OS_WINDOWS)
 		{
 			$tempfile = str_replace('/','\\',$tempfile);
 			$newtempfile = str_replace('\\','/',$newtempfile);
 		}
 
-		if(!empty($unique_file_id) && !$this->check_unique_id($unique_file_id)){
+		if(!empty($unique_file_id) && !$this->check_unique_id($unique_file_id)) {
 		    // If the unique_file_id is not unique then return an error
 		    return PEAR::raiseError(_kt('Unique file id already exists.'));
 		}
@@ -234,25 +241,24 @@ class KTUploadManager
 				array('noid'=>true)
 			);
 
-		if (PEAR::isError($id))
-		{
+		if (PEAR::isError($id)) {
 			DBUtil::rollback();
 			return $id;
 		}
+		
 		global $php_errormsg;
-		if (is_uploaded_file($tempfile))
-		{
+		if (is_uploaded_file($tempfile)) {
 			$result = $oStorage->move_uploaded_file($tempfile, $newtempfile);
 		}
 		else
 		{
-			$result = @$oStorage->rename($tempfile, $newtempfile);
+		    $options['copy_rename'] = true;
+			$result = @$oStorage->rename($tempfile, $newtempfile, $options);
 		}
 
 		$tmp = $php_errormsg;
 
-		if ($result == false)
-		{
+		if ($result == false) {
 			DBUtil::rollback();
 			return new PEAR_Error($tmp);
 		}
@@ -274,7 +280,7 @@ class KTUploadManager
 	    $sql = "SELECT tempfilename FROM uploaded_files WHERE unique_file_id = '$unique'";
 	    $result = DBUtil::getResultArray($sql);
 
-	    if(PEAR::isError($result) || empty($result)){
+	    if(PEAR::isError($result) || empty($result)) {
 	        return true;
 	    }
 
@@ -287,11 +293,11 @@ class KTUploadManager
 	    $sql = "SELECT tempfilename FROM uploaded_files WHERE unique_file_id = '$unique'";
 	    $result = DBUtil::getResultArray($sql);
 
-	    if(PEAR::isError($result)){
+	    if(PEAR::isError($result)) {
 	        return $result;
 	    }
 
-	    if(empty($result)){
+	    if(empty($result)) {
 	        PEAR::raiseError(_kt('No file has been uploaded with the unique file id: ').$unique_file_id);
 	    }
 
@@ -306,8 +312,7 @@ class KTUploadManager
 	function get_uploaded_list($action=null)
 	{
 		$sql = "SELECT id, tempfilename, filename, userid, action FROM uploaded_files WHERE userid=$this->userid";
-		if (!is_null($action))
-		{
+		if (!is_null($action)) {
 			$sql .= " AND action='$action'";
 		}
 		$result = DBUtil::getResultArray($sql);
@@ -319,8 +324,7 @@ class KTUploadManager
 		$tempfilename = addslashes(str_replace('\\','/',$tempfilename));
 		$sql = "DELETE FROM uploaded_files WHERE tempfilename='$tempfilename'";
 		$rs = DBUtil::runQuery($sql);
-		if (PEAR::isError($rs))
-		{
+		if (PEAR::isError($rs)) {
 			DBUtil::rollback();
 			return false;
 		}
@@ -342,14 +346,12 @@ class KTUploadManager
 		$sql = "SELECT tempfilename FROM uploaded_files WHERE uploaddate<'$expirydate'";
 		$rows = DBUtil::getResultArray($sql);
 
-		foreach($rows as $record)
-		{
+		foreach($rows as $record) {
 			$tempfilename=addslashes($record['tempfilename']);
 
 			$sql = "DELETE FROM uploaded_files WHERE tempfilename='$tempfilename'";
 			$rs = DBUtil::runQuery($sql);
-			if (PEAR::isError($rs))
-			{
+			if (PEAR::isError($rs)) {
 				continue;
 			}
 

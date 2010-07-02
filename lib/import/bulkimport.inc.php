@@ -48,7 +48,7 @@ class KTBulkImportManager {
     var $uploadedDocs;
     var $uploadedFolders;
 
-    function KTBulkImportManager($oFolder, $oStorage, $oUser, $aOptions = null) {
+    function __construct($oFolder = "", $oStorage = "", $oUser = "", $aOptions = null) {
         $this->oFolder =& $oFolder;
         $this->oStorage =& $oStorage;
         $this->oUser =& $oUser;
@@ -198,4 +198,31 @@ class KTBulkImportManager {
     }
 }
 
+/**
+ * Utility class to help seperate ktlive logic
+ *
+ */
+/*
+// REVIEW : Would have been nice to mirror the kt lib.
+class KTBulkImportManagerUtil 
+{
+    static function getSingleton() 
+    {
+    	static $singleton = null;
+    	if (is_null($singleton))
+    	{
+    		$oConfig = KTConfig::getSingleton();
+        	$sDefault = 'KTBulkImportManager';
+        	$klass = $oConfig->get('bulkimportmanager/manager', $sDefault);
+        	if (!class_exists($klass)) {
+            	$klass = $sDefault;
+        	}
+
+        	$singleton = new $klass;
+    	}
+
+    	return $singleton;
+    }
+}
+*/
 ?>

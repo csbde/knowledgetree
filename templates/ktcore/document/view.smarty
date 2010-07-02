@@ -1,52 +1,140 @@
-<h2>{i18n}Document Details{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
+ 
+<!-- FILE: ktcore/document/view.smarty -->
+	<table border="0" width="100%" class="doc_view">
+		<tr>
+			<td width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td>
+			<td height="1" valign="top">
+				<h2 class="doc_file_title">
+					{$context->oDocument->getName()|sanitize}
+					<span class="doc_version">
+						Ver {$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()} 
+						<i>(<b>Owner: </b>{$doc_data.owner})</i>
+						{if $document->getIsCheckedOut()}
+							<span class="doc_checkedout"> <b>Checked Out By:</b> {$sCheckoutUser}</span>
+						{/if}
+					</span>
+				</h2>
+				<hr style="border: none; background-color: #E3E3E3; width: 100%; height: 1px; margin-left: 10px; margin-bottom: 15px;" align="left" />
+				<div>
+					<span class="doc_header_item">
+						<span class="doc_field_title">Created on:</span><span class="doc_field_value">{$document->getCreatedDateTime()|date_format:"%B %e, %Y <b>at</b> %H:%M"} <b>by</b> <span class="doc_user_link">{$doc_data.creator}</span></span>
+					</span>
+					<span class="doc_header_item">
+						<span class="doc_field_title">Last Modified:</span><span class="doc_field_value">{$document->getLastModifiedDate()|date_format:"%B %e, %Y <b>at</b> %H:%M"} <b>by</b> <span class="doc_user_link">{$doc_data.lastModifier}</span></span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" valign="top">
+				<ul class="view_doc_tabs">
+					<li title="Activity">
+						<table class="kt_collection" style="clear: both;"><tr><td>
+							<div id="activity_feed_container" style="margin-top:1em;"></div>
+							<div id="new_comment_form"></div>
+						</table>
+					</li>
 
-{if ($document->getIsCheckedOut() == 1)}
-{capture assign=checkout_user}<strong>{$sCheckoutUser}</strong>{/capture}
-{if ($isCheckoutUser)}
-<div class="ktInfoMessage">
-	<span>{i18n}This document is currently checked out by <strong>you</strong>. If this is incorrect, or you no longer need to make changes to it, please cancel the checkout.{/i18n}</span>
-</div>
-{else}
-{if ($canCheckin)}
-<div class="ktInfoMessage">
-<span>{i18n arg_checkoutuser=$checkout_user}This document is currently checked out by #checkoutuser#, but you
-have sufficient priviledges to cancel their checkout.{/i18n}</span>
-</div>
-{else}
-<div class="ktInfoMessage">
-	<span>{i18n arg_checkoutuser=$checkout_user arg_appname="$appname"}This document is currently checked out by #checkoutuser#.  You cannot make
-changes until that user checks it in.  If you have urgent modifications to make, please
-contact your #appname# Administrator.{/i18n}</span>
-</div>
-{/if}
-{/if}
-{/if}
+					{if !empty($live_preview)}
+						<li title="View">
+							<table class="kt_collection" style="clear: both;"><tr><td>
+								<div style="margin-top:1em;">{$live_preview}</div>
+							</table>
+						</li>
+					{/if}
+					
+					<li title="Properties">
+						<table class="kt_collection" style="clear: both;"><tr><td>
+							{if $hasNotifications}
+								<div class="notification">
+								
+									{if ($document->getIsCheckedOut() & $canCheckin)}
+										<span class="item">
+											Other users will not be able to edit this document until you
+												<a href="/action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId={$document_id}">check it back in</a>
+												 or 
+												<a href="/action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId={$document_id}">cancel the checkout</a>.
+										</span>
+									{/if}
+								
+									{if ($document->getIsCheckedOut() & !$canCheckin)}
+										<span class="item">
+											This document is currently checked out by {$sCheckoutUser}. You will not be able to edit the document until it is checked back in.
+										</span>
+									{/if}
 
-{if ($document->getImmutable() == true)}
-<div class="ktInfoMessage">
-	<span>{i18n}This document is immutable.  No further content changes can be
-made to this document, and only administrators (in administration mode)
-can make changes to the metadata or can move or delete it.{/i18n}
-{if 1}
-  {i18n}If you require assistance from an administrator to perform one of
-these tasks, use the Request Assistance action.{/i18n}
-{/if}
-</span>
-</div>
-{/if}
+									{if ($document->getImmutable() == true)}
+										<span class="item">
+											This document has been finalized and cannot be edited further.
+										</span>
+									{/if}
+									
+									
+								{if 1==2}
+									{if ($document->getIsCheckedOut() == 1)}
+										{capture assign=checkout_user}<strong>{$sCheckoutUser}</strong>{/capture}
+										{if ($isCheckoutUser)}
+											<div class="ktInfoMessage">
+												<span>{i18n}This document is currently checked out by <strong>you</strong>. If this is incorrect, or you no longer need to make changes to it, please cancel the checkout.{/i18n}</span>
+											</div>
+										{else}
+											{if ($canCheckin)}
+												<div class="ktInfoMessage">
+												<span>{i18n arg_checkoutuser=$checkout_user}This document is currently checked out by #checkoutuser#, but you
+												have sufficient priviledges to cancel their checkout.{/i18n}</span>
+												</div>
+											{else}
+												<div class="ktInfoMessage">
+													<span>{i18n arg_checkoutuser=$checkout_user arg_appname="$appname"}This document is currently checked out by #checkoutuser#.  You cannot make
+												changes until that user checks it in.  If you have urgent modifications to make, please
+												contact your #appname# Administrator.{/i18n}</span>
+												</div>
+											{/if}
+										{/if}
+									{/if}
+									
+									{if ($document->getImmutable() == true)}
+										<div class="ktInfoMessage">
+											<span>{i18n}This document is immutable.  No further content changes can be
+										made to this document, and only administrators (in administration mode)
+										can make changes to the metadata or can move or delete it.{/i18n}
+										{if 1}
+											  {i18n}If you require assistance from an administrator to perform one of
+											these tasks, use the Request Assistance action.{/i18n}
+										{/if}
+										</span>
+										</div>
+									{/if}
+								{/if}
+								</div>
+							{/if}
+						{foreach item=oFieldset from=$fieldsets}
+							{$oFieldset->render($document_data)}
+						{/foreach}
+						</td></tr></table>
+					</li>
+			
+				</ul>			
+			</td>
+		</tr>
+	</table>
 
-<div>
-{foreach item=oFieldset from=$fieldsets}
-{$oFieldset->render($document_data)}
-{/foreach}
-</div>
+	
+	
 
-{if !empty($viewlet_data)}
 
-<!--  Document "Views" -->
-<div id="document-views">
 
-{$viewlet_data}
-
-</div>
-{/if}
+	
+	{if !empty($viewlet_data)}
+	
+	<!--  Document "Views" -->
+	<div id="document-views" style="display: none; width: 200px;">
+	
+	{$viewlet_data}
+	
+	</div>
+	{/if}
+	
+	
+ 
+<!-- FILE_END: ktcore/document/view.smarty -->

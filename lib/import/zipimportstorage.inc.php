@@ -62,7 +62,7 @@ class KTZipImportStorage extends KTFSImportStorage {
 
     var $allowed_extensions = array('tgz', 'tar', 'gz', 'zip', 'deb', 'ar');
 
-    function KTZipImportStorage($fileName, $fileData = null) {
+    function __construct($fileName = '', $fileData = null) {
         $this->sFileName = $fileName;
         if(empty($fileData)){
             $this->aFile = $_FILES[$fileName];
@@ -187,4 +187,30 @@ class KTZipImportStorage extends KTFSImportStorage {
     }
 }
 
+/**
+ * Utility class to help seperate ktlive logic
+ * 
+ */
+/*
+// REVIEW : Would have been nice to mirror the kt lib.
+class KTZipImportStorageManager 
+{
+    static function getSingleton() 
+    {
+    	static $singleton = null;
+    	if (is_null($singleton))
+    	{
+    		$oConfig = KTConfig::getSingleton();
+        	$sDefault = 'KTZipImportStorage';
+        	$klass = $oConfig->get('importstorage/manager', $sDefault);
+        	if (!class_exists($klass)) {
+            	$klass = $sDefault;
+        	}
+        	$singleton = new $klass;
+    	}
+
+    	return $singleton;
+    }
+}
+*/
 ?>

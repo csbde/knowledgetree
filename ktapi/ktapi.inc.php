@@ -2867,8 +2867,21 @@ class KTAPI
 
 		return $update_result;
     }
+    
+    /**
+     * Wrapper for add_document_with_metadata supporting json encoded metadata and sysdata for REST requests
+     */
+    public function add_document_with_json_metadata($folder_id, $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata,
+                                                    $sig_username = '', $sig_password = '', $reason = '')
+    {
+		$metadata = json_decode($metadata);
+		$sysdata = json_decode($sysdata);
 
-    public function add_document_with_metadata($folder_id,  $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata,
+		return $this->add_document_with_metadata($folder_id, $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata, 
+		                                         $sig_username, $sig_password, $reason);
+    }
+
+    public function add_document_with_metadata($folder_id, $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata,
                                                $sig_username = '', $sig_password = '', $reason = '')
     {
 		$add_result = $this->add_document($folder_id, $title, $filename, $documenttype, $tempfilename,
@@ -3070,8 +3083,8 @@ class KTAPI
        	return $update_result;
 	}
 
-    public function  checkin_document_with_metadata($document_id,  $filename, $reason, $tempfilename, $major_update,
-                                                    $metadata, $sysdata, $sig_username = '', $sig_password = '')
+    public function checkin_document_with_metadata($document_id,  $filename, $reason, $tempfilename, $major_update,
+                                                   $metadata, $sysdata, $sig_username = '', $sig_password = '')
     {
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.check_in');
@@ -3856,7 +3869,7 @@ class KTAPI
 	 * @param array $metadata
 	 * @return array
 	 */
-	public function update_document_metadata($document_id,$metadata, $sysdata=null, $sig_username = '', $sig_password = '', $reason = '')
+	public function update_document_metadata($document_id, $metadata, $sysdata=null, $sig_username = '', $sig_password = '', $reason = '')
 	{
         $response = $this->_check_electronic_signature($document_id, $sig_username, $sig_password, $reason, $reason,
                                                       'ktcore.transactions.metadata_update');
@@ -3878,7 +3891,6 @@ class KTAPI
 			return $response;
     	}
 
-
     	$result = $document->update_sysdata($sysdata);
     	if (PEAR::isError($result))
     	{
@@ -3888,7 +3900,6 @@ class KTAPI
     	}
 
     	return $this->get_document_detail($document_id, 'M');
-
 	}
 
 	/**
