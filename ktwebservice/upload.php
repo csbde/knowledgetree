@@ -42,7 +42,7 @@
 
 //debugger_start_debug();
 $output = 'php';
-if (array_key_exists('output',$_POST))
+if (array_key_exists('output', $_POST))
 {
 	$format = $_POST['output'];
 	switch($format)
@@ -60,12 +60,12 @@ if (array_key_exists('output',$_POST))
 
 // TODO: allow for linking of related documents.
 
-if (!array_key_exists('session_id',$_POST))
+if (!array_key_exists('session_id', $_POST))
 {
 	respond(1, 'Session not specified.');
 }
 
-if (!array_key_exists('action',$_POST))
+if (!array_key_exists('action', $_POST))
 {
 	respond(2, 'Action not specified.');
 }

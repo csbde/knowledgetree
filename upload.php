@@ -2,43 +2,39 @@
 
 	require_once('ktapi/ktapi.inc.php');
 	require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
-	
+
 	function uploadFile($fileTmp, $fileName, $folderID = 1) {
-		
-		global $default;
-		
-		$default->log->debug("DRAGDROP Uploading file $fileTmp $fileName");
-		
+		$GLOBALS['default']->log->debug("DRAGDROP Uploading file $fileTmp $fileName");
+
     	$oStorage = KTStorageManagerUtil::getSingleton();
-    	
+
     	$oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get("urls/tmpDirectory");
 
         $sS3TempFile = $oStorage->tempnam($sBasedir, 'kt_storecontents');
-        
-        $oStorage->uploadTmpFile($fileTmp, $sS3TempFile);
-        
-        //$aFile = $this->oValidator->validateFile($extra_d['file'], $aErrorOptions);
-        //$sTitle = $extra_d['document_name'];
-        
-        $oFolder = Folder::get($folderID); 
+
+        $options['uploaded_file'] = 'true';
+
+        $oStorage->uploadTmpFile($fileTmp, $sS3TempFile, $options);
+
+        $oFolder = Folder::get($folderID);
         if (PEAR::isError($oFolder)) {
-       		$default->log->error("DRAGDROP Folder $folderID: {$oFolder->getMessage()}");
-       		return false;      
-        }      
-        
+       		$GLOBALS['default']->log->error("DRAGDROP Folder $folderID: {$oFolder->getMessage()}");
+       		return false;
+        }
+
         $oUser = User::get($_SESSION['userID']);
         if (PEAR::isError($oUser)) {
-       		$default->log->error("DRAGDROP User {$_SESSION['userID']}: {$oUser->getMessage()}");
-       		return false;      
-        } 
-        
+       		$GLOBALS['default']->log->error("DRAGDROP User {$_SESSION['userID']}: {$oUser->getMessage()}");
+       		return false;
+        }
+
         $oDocumentType = DocumentType::get(1);
         if (PEAR::isError($oDocumentType)) {
-       		$default->log->error("DRAGDROP DocumentType: {$oDocumentType->getMessage()}");
-       		return false;      
-        } 
-		
+       		$GLOBALS['default']->log->error("DRAGDROP DocumentType: {$oDocumentType->getMessage()}");
+       		return false;
+        }
+
         $aOptions = array(
             'temp_file' => $sS3TempFile,
             'documenttype' => $oDocumentType,
@@ -46,52 +42,51 @@
             'description' => $fileName,
             'cleanup_initial_file' => true
         );
-        
-        $default->log->debug("DRAGDROP Folder $folderID User {$oUser->getID()}");
-        
+
+        $GLOBALS['default']->log->debug("DRAGDROP Folder $folderID User {$oUser->getID()}");
+
         $oDocument =& KTDocumentUtil::add($oFolder, $fileName, $oUser, $aOptions);
         if (PEAR::isError($oDocument)) {
-            $default->log->error("DRAGDROP Document add: {$oDocument->getMessage()}");
+            $GLOBALS['default']->log->error("DRAGDROP Document add: {$oDocument->getMessage()}");
        		return false;
         }
-    	
+
         return $oDocument;
 	}
-	
-	
-	
-	function getColumnData($oDocument){		
+
+
+
+	function getColumnData($oDocument){
 		$oColumnRegistry =& KTColumnRegistry::getSingleton();
 		$columns = $oColumnRegistry->getColumnsForView('ktcore.views.browse');
-	
+
 		if(is_array($columns) && !empty($columns)){
-		
+
 			$aDataRow = array();
-			$aDataRow['type'] = 'document';	
+			$aDataRow['type'] = 'document';
 			$aDataRow['document'] = $oDocument;
-		
+
 			$output = '<tr class="dragdrop">';
-			
+
 			foreach($columns as $column) {
 				$class = 'browse_column';
 				if($column->name == 'title') {
-					$class .= ' title sort_on dragdrop'; 
+					$class .= ' title sort_on dragdrop';
 				}
 				$data = $column->renderData($aDataRow);
 				$output .= "<td class='$class'>$data</td>";
 			}
-			
+
 			$output .= '</tr>';
-			
+
 			return $output;
-			
+
 		}else{
-			global $default;
-			$default->log->error("DRAGDROP Column data empty");
+			$GLOBALS['default']->log->error("DRAGDROP Column data empty");
 			return false;
 		}
 	}
-	
+
 	// HTTP headers for no cache etc
 	header('Content-type: text/plain; charset=UTF-8');
 	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -102,7 +97,7 @@
 
 	// Settings
 	$targetDir = ini_get("upload_tmp_dir") . DIRECTORY_SEPARATOR . "tmp";
-		
+
 	$cleanupTargetDir = false; // Remove old files
 	$maxFileAge = 60 * 60; // Temp file age in seconds
 
@@ -119,9 +114,9 @@
 	//$fileName = preg_replace('/[^\w\._]+/', '', $fileName);
 
 	// Create target dir
-	if (!file_exists($targetDir)) 
+	if (!file_exists($targetDir))
 		@mkdir($targetDir);
-	
+
 	// Remove old temp files
 	if (is_dir($targetDir) && ($dir = opendir($targetDir))) {
 		while (($file = readdir($dir)) !== false) {
@@ -164,9 +159,10 @@
 		} else
 			die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
 	} else {
-		//echo('here2 '.$_FILES['file']['tmp_name']);
 		// Open temp file
-		$out = fopen($targetDir . DIRECTORY_SEPARATOR . $fileName, $chunk == 0 ? "wb" : "ab");
+		$fileTmp = tempnam($targetDir, 'kt_storecontents');
+
+		$out = fopen($fileTmp, $chunk == 0 ? "wb" : "ab");
 		if ($out) {
 			// Read binary input stream and append it to temp file
 			$in = fopen("php://input", "rb");
@@ -182,33 +178,25 @@
 			die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
 	}
 
-	// Return JSON-RPC response
-	//echo('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
-	
-
 	$folderID = (int)$_REQUEST['fFolderId'];
 	if($folderID<=0){
 		$GLOBALS['default']->log->error("DRAGDROP error getting folder ID");
 		exit(1);
 	}
-	
-	$fileTmp = str_replace('\\','/',$targetDir.'/'.$fileName);
 
-		
-	
+	//$fileTmp = str_replace('\\','/',$targetDir.'/'.$fileName);
+
 	$oDocument = uploadFile($fileTmp, $fileName, $folderID);
-	
+
 	if ($oDocument === false)
 	{
-		//TODO: error message should appear in progress indicator
-		echo '<tr><td></td><td colspan=3>ERROR: document could not be uploaded</td></tr>';
-		exit(1);		
+		die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Document could not be uploaded", "filename":"'.$fileName.'"}, "id" : "id"}');
 	}
-	
+
 	$output = getColumnData($oDocument);
-	
+
 	echo($output);
-	
+
 	exit(0);
 
 ?>

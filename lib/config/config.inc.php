@@ -263,12 +263,13 @@ class KTConfig {
 	// {{{ readDBConfig()
 	function readDBConfig()
 	{
+	    $pear = new PEAR();
         $filename = $this->getConfigFilename();
 
 		$c = new Config;
         $root =& $c->parseConfig($filename, "IniCommented");
 
-        if (PEAR::isError($root)) {
+        if ($pear->isError($root)) {
             return $root;
         }
 
@@ -377,6 +378,7 @@ class KTConfig {
     }
 
     function expand($val) {
+        $pear = new PEAR();
         if (strpos($val, '$') === false) {
             return $val;
         }
@@ -384,7 +386,7 @@ class KTConfig {
         while(($m = preg_match('/\$\{([^}]+)\}/', $v, $matches))) {
             array_push($this->expanding, $matches[1]);
             $r = $this->get($matches[1]);
-            if (PEAR::isError($r)) {
+            if ($pear->isError($r)) {
                 return $r;
             }
             $v = str_replace($matches[0], $r, $v);
@@ -412,6 +414,7 @@ class KTConfig {
      */
     function set($var = null, $value = null, $can_edit = null) {
         global $default;
+        $pear = new PEAR();
 
         if ($var == null) {
             return false;
@@ -429,7 +432,7 @@ class KTConfig {
 
         $sql = "SELECT id from config_settings WHERE item = '$var' and group_name = '$groupName'";
         $configId = DBUtil::getOneResultKey($sql,'id');
-        if (PEAR::isError($configId))
+        if ($pear->isError($configId))
         {
             $default->log->error(sprintf(_kt("Couldn't get the config id:%s"), $configId->getMessage()));
             return false;
@@ -442,7 +445,7 @@ class KTConfig {
             }
             $configId = DBUtil::autoInsert('config_settings', array('item' => $var ,'value' => $value, 'group_name' => $groupName, 'can_edit' => $can_edit));
 
-            if (PEAR::isError($configId))
+            if ($pear->isError($configId))
             {
                 $default->log->error(sprintf(_kt("Couldn't insert config value:%s"), $configId->getMessage()));
                 return false;
@@ -455,7 +458,7 @@ class KTConfig {
                 $fieldValues['can_edit'] = $can_edit;
             }
             $res = DBUtil::autoUpdate('config_settings', $fieldValues, $configId);
-            if (PEAR::isError($res)) {
+            if ($pear->isError($res)) {
                 $default->log->error(sprintf(_kt("Couldn't update config value: %s"), $res->getMessage()));
                 return false;
             }
@@ -501,10 +504,11 @@ class KTConfig {
      * @return unknown
      */
     function loadFile($filename, $bDefault = false) {
+        $pear = new PEAR();
         $c = new Config;
         $root =& $c->parseConfig($filename, "IniCommented");
 
-        if (PEAR::isError($root)) {
+        if ($pear->isError($root)) {
             return $root;
         }
 
