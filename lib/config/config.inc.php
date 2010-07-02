@@ -296,7 +296,13 @@ class KTConfig {
         $this->populateDefault();
 	}
 	// }}}
-
+    /**
+     * Function reads config settings for Database conncections
+     * Does a quick connect to Database to make sure the values are valid
+     * Stores the DSN in session for later use
+     * @return string $default_db : dsn
+     * @author Prince Mbekwa
+     **/
 	function setupDB () {
         global $default;
 		$oPear = new PEAR();
@@ -376,6 +382,7 @@ class KTConfig {
                 'portability' => DB_PORTABILITY_ERRORS,
                 'seqname_format' => 'zseq_%s',
                 );
+            //Iterate over the strings and check for live connections
             foreach ($slave_dns as $slave){
                    $test_connection = DB::connect($slave, $options);
                    if ($oPear->isError($test_connection)) {
@@ -389,8 +396,9 @@ class KTConfig {
                    }
                    
                }
+               // If no live connections, throw this error
                if(count($working_connections)<=0){
-                  return PEAR::raiseError("Database replication has been set and no mysql slaves are reachable!");
+                  return PEAR::raiseError( _kt("Database replication has been set and no mysql slaves are reachable!"));
                } 
                 
         }        

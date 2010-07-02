@@ -41,7 +41,14 @@ require_once ('PEAR.php');
 require_once('DB.php');
 
 class DBUtil {
-    
+    /**
+     * @Description 
+     * Function to establish database connections
+     * using PEAR::DB
+     * @param mixed $db This could be a database specification or connection
+     * outside of KT
+     * @return mixed $db active DB connection
+     */
     public static function getDB($db = null) {
         global $default;
 		$oPear = new PEAR();
@@ -74,6 +81,14 @@ class DBUtil {
 
         return $db;
     }
+    /**
+     * Function to establish slave database connections
+     * using PEAR::DB
+     * @param string $db This could be a database specification or connection
+     * outside of KT
+     * @return mixed $db active slave DB connection
+     * @author Prince Mbekwa
+     */
     
     public static function getSlave($db = null) {
         global $default;
@@ -104,12 +119,27 @@ class DBUtil {
       
         return $db;
     }
+    /**
+     *  Runs Database queries 
+     * @param string $query Any database queries done here
+     * @param mixed $db  Any specified active db
+     * @return mixed $result executed query results
+     * @author Prince Mbekwa
+     */
 
-    public static function &runQuery($query, $db = null,$select = false) {
+    public static function runQuery($query, $db = null) {
         global $default;
         $oPear = new PEAR();
         $aParams = null;
-        if(isset($default->_slave) && $select == true){
+        /**
+         * We are doing a Binary safe case-insensitive string comparison of the first 6 characters
+         * searching the incoming query statement matching "SELECT". We then ltrim it
+         * to remove whitespaces. If the string contains SELECT AND Replication is set to TRUE
+         * will connect to slave and execute query. This is really not expensive as regular expression check
+         * 
+         */
+        if(isset($default->_slave) && (strncasecmp(ltrim($query), "select", 6) === 0 )){
+            $default->queryLog->debug('Slave query: ' .$query );
             $db = self::getSlave($db);
         }else{
             $db = self::getDB($db);
@@ -131,9 +161,18 @@ class DBUtil {
         }
         return $res;
     }
+    /**
+     *  @Description 
+     * Returns a row of data from a result set then moves the result pointer to the next row. 
+     * The data can be formatted as an array or an object.
+     * @param string $query
+     * @param  mixed $db
+     * @return mixed $aRow Recordset row
+     * @author Prince Mbekwa
+     **/
 
     public static function getOneResult($query, $db = null) {
-        $result = self::runQuery($query, $db, true);
+        $result = self::runQuery($query, $db);
         if (PEAR::isError($result)) {
             // logging by runQuery
             return $result;
@@ -142,6 +181,14 @@ class DBUtil {
         $result->free();
         return $aRow;
     }
+    /**
+     * Runs the query provided and returns the data from the first column of the first row then frees the result set. 
+     * @param string $query
+     * @param string $key
+     * @param mixed $db
+     * @return void
+     * @author Prince Mbekwa
+     **/
 
     static function getOneResultKey($query, $key, $db = null) {
         $aRow = self::getOneResult($query, $db);
@@ -151,9 +198,17 @@ class DBUtil {
         }
         return $aRow[$key];
     }
+    
+    /**
+     * Returns a row of data from a result set then moves the result pointer to the next row. 
+     * The data is formatted as an array
+     * @param string $query
+     * @return array $aRow
+     * @author Prince Mbekwa
+     **/
 
     public static function getResultArray($query, $db = null) {
-        $result = self::runQuery($query, $db, true);
+        $result = self::runQuery($query, $db);
         $oPear = new PEAR();
         if ($oPear->isError($result)) {
             // logging by runQuery
@@ -167,9 +222,16 @@ class DBUtil {
         $result->free();
         return $aReturn;
     }
+    /**
+    * Returns a row from a result set from a gievn recordset key. 
+    * @param string $query
+    * @param sring $key
+    * @return array $aRow
+    * @author Prince Mbekwa
+    **/
 
     public static function getResultArrayKey($query, $key, $db = null) {
-        $result = self::runQuery($query, $db, true);
+        $result = self::runQuery($query, $db);
         if (PEAR::isError($result)) {
             // logging by runQuery
             return $result;
@@ -182,6 +244,13 @@ class DBUtil {
         $result->free();
         return $aReturn;
     }
+    
+    /**
+     * Sets up the database logger for any errors cought in queries
+     *
+     * @return void
+     * @author Prince Mbekwa
+     **/
 
     public static function logQueryError($query, $result) {
         global $default;
@@ -194,17 +263,30 @@ class DBUtil {
             $default->log->error('Query error: ' . $result->getMessage());
         }
     }
+    /**
+     * Runs multiple Database queries 
+     * @param array $aQueries
+     * @return boolean on result failure or success
+     * @author Prince Mbekwa
+     **/
 
     public static function runQueries($aQueries, $db = null) {
         foreach ($aQueries as $sQuery) {
-            $res = self::runQuery($sQuery, $db, true);
+            $res = self::runQuery($sQuery, $db);
             if (PEAR::isError($res)) {
                 return $res;
             }
         }
         return true;
     }
-
+    /**
+     *  Automatically prepares and executes INSERT  queries.
+     *  This method builds a SQL statement using autoPrepare() and then executes the statement using execute() with it.
+     * @param string $sTable
+     * @param array $aFieldValues
+     * @return mixed last inserted id
+     * @author Prince Mbekwa
+     **/
     public static function autoInsert($sTable, $aFieldValues, $aOptions = null) {
         if (is_null($aOptions)) {
             $aOptions = array();
@@ -232,6 +314,14 @@ class DBUtil {
         }
         return PEAR::raiseError(_kt('Unknown return value for autoInsert'));
     }
+    /**
+       *  Automatically prepares and executes UPDATE queries.
+       *  This method builds a SQL statement using autoPrepare() and then executes the statement using execute() with it.
+       * @param string $sTable
+       * @param array $aFieldValues
+       * @return mixed last inserted id
+       * @author Prince Mbekwa
+       **/
 
     public static function autoUpdate($sTable, $aFieldValues, $iId, $db = null) {
         global $default;
@@ -248,6 +338,13 @@ class DBUtil {
         }
         return PEAR::raiseError(_kt('Unknown return value for autoUpdate'));
     }
+    /**
+     * Automatically builds an INSERT or UPDATE SQL statement 
+     * based on a gen where clause, later be used by execute() or  executeMultiple(). 
+     *
+     * @return mixed string
+     * @author Prince Mbekwa
+     **/
 
     public static function whereUpdate($sTable, $aFieldValues, $aWhereFieldValues, $db = null) {
         global $default;
@@ -273,16 +370,36 @@ class DBUtil {
         }
         return PEAR::raiseError(_kt('Unknown return value for whereUpdate'));
     }
+    /**
+     * Gets last executed query
+     *
+     * @return mixed
+     * @author Prince Mbekwa
+     **/
 
     public static function lastQuery($db = null) {
         $db = self::getDB();
         return $db->last_query;
     }
+    /**
+     * Number of rows affected by a data manipulation query (for example INSERT, UPDATE or DELETE). 
+     * Returns 0 for SELECT queries. 
+     *
+     * @return mixed
+     * @author Prince Mbekwa
+     **/
 
     public static function affectedRows($db = null) {
         $db = self::getDB();
         return $db->affectedRows();
     }
+    /**
+     * Perform DELETE statements
+     * @param string $sTable The affected table 
+     * @param string $iId
+     * @return mixed
+     * @author Prince Mbekwa
+     **/
 
     public static function autoDelete($sTable, $iId, $db = null) {
         $db = self::getDB();
@@ -290,6 +407,12 @@ class DBUtil {
         $aParams = array($iId);
         return self::runQuery(array($sQuery, $aParams), $db);
     }
+    /**
+     * Update record and sets "disabled" field to TRUE on a given id
+     *
+     * @return boolean
+     * @author Prince Mbekwa
+     **/
 
     public static function deReference($sTable, $iId, $db = null) {
         $db = self::getDB();
@@ -297,6 +420,13 @@ class DBUtil {
         $aParams = array($iId);
         return self::runQuery(array($sQuery, $aParams), $db);
     }
+    /**
+     * Perform DELETE statements with a given WHERE clause
+     * @param string $sTable The affected table 
+     * @param array $aWhereFieldValues
+     * @return mixed
+     * @author Prince Mbekwa
+     **/
 
     public static function whereDelete($sTable, $aWhereFieldValues, $db = null) {
         global $default;
@@ -311,6 +441,12 @@ class DBUtil {
         $sQuery = "DELETE FROM " . $sTable . " WHERE $sWhere";
         return self::runQuery(array($sQuery, $aValues), $db);
     }
+    /**
+     * Performs Autoprepare of given array
+     * @param array $aArray
+     * @return mixed
+     * @author Prince Mbekwa
+     **/
 
     public static function paramArray($aArray) {
         $iNumIds = count($aArray);
@@ -319,33 +455,66 @@ class DBUtil {
         }
         return join(",", array_fill(0, $iNumIds, '?'));
     }
+    /**
+     * Escape a string according to the current DBMS's standards. 
+     * @param string $sString 
+     * @return mixed
+     * @author Prince Mbekwa
+     **/
 
     public static function &escapeSimple($sString, $db = null) {
         $db = self::getDB();
         return $db->escapeSimple($sString);
     }
+    /**
+     * Performs a cleaning of an array and removes line endings (\n)
+     * @param string $sQuery
+     * @return mixed
+     * @author Prince Mbekwa
+     **/
 
     public static function compactQuery($sQuery) {
         return str_replace("\n", " ", $sQuery);
     }
+    /**
+     * Initiates the begining of a Transaction
+     * @return void
+     * @author Prince Mbekwa
+     **/
 
     public static function startTransaction() {
         self::runQuery("START TRANSACTION");
         $oCache =& KTCache::getSingleton();
         $oCache->startTransaction();
     }
-    
+    /**
+     * Performs a rollback
+     *
+     * @return void
+     * @author Prince Mbekwa
+     **/
     public static function rollback() {
         self::runQuery("ROLLBACK");
         $oCache =& KTCache::getSingleton();
         $oCache->rollback();
     }
-    
+    /**
+     * Performs a commit
+     *
+     * @return void
+     * @author Prince Mbekwa
+     **/
     public static function commit() {
         self::runQuery("COMMIT");
         $oCache =& KTCache::getSingleton();
         $oCache->commit();
     }
+    /**
+     * Setup admin db connection
+     *
+     * @return void
+     * @author Prince Mbekwa
+     **/
 
     public static function setupAdminDatabase() {
         global $default;
