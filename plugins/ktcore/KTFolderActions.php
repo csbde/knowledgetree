@@ -132,8 +132,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
                     'required' => true
                 )));
             $oForm->addWidget(array('ktcore.widgets.reason', array(
-                'label' => _kt('Reason'),
-                'description' => _kt('Please specify why you are checking out this document.  It will assist other users in understanding why you have locked this file.  Please bear in mind that you can use a maximum of <strong>250</strong> characters.'),
+                'label' => _kt('Note'),
                 'name' => 'reason',
                 )));
         }

@@ -74,7 +74,6 @@ class ManageCleanupDispatcher extends KTAdminDispatcher {
 
     	 $oForm = new KTForm;
         $oForm->setOptions(array(
-            'label' => _kt('Document Storage Verification'),
             'description' => _kt('This process performs a check to see if the documents in your repositories all are stored on the back-end storage (usually on disk). This process can take many minutes or hours depending on the size of your repository.'),
             'submit_label' => _kt('verify document storage'),
             'action' => 'verify',

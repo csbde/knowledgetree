@@ -10,7 +10,6 @@ administrators to request this change.{/i18n}</p>
 {assign var=iDocumentId value=$context->oDocument->getId()}
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-<fieldset><legend>{i18n}Request Assistance{/i18n}</legend>
 <input type="hidden" name="action" value="assistance" />
 <input type="hidden" name="fDocumentId" value="{$iDocumentId}" />
 {foreach from=$fields item=oWidget }
@@ -19,5 +18,4 @@ administrators to request this change.{/i18n}</p>
 <div class="form_actions">
 <input type="submit" name="submit" value="{i18n}Request Assistance{/i18n}" />
 </div>
-</fieldset>
 </form>

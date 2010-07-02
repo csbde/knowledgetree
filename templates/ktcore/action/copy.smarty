@@ -3,7 +3,6 @@
 {assign var=iDocumentId value=$context->oDocument->getId()}
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-<fieldset><legend>{i18n}Copy{/i18n}</legend>
 <input type="hidden" name="action" value="copy" />
 <input type="hidden" name="fDocumentId" value="{$iDocumentId}" />
 {foreach from=$move_fields item=oWidget }
@@ -15,5 +14,4 @@
 <input type="submit" name="submit[move]" value="{i18n}Copy{/i18n}" />
 <input type="submit" name="submit[cancel]" value="{i18n}Cancel{/i18n}" />
 </div>
-</fieldset>
 </form>

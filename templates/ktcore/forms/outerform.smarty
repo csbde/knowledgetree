@@ -1,8 +1,7 @@
 <form method="{$context->_method}" action="{$context->_actionurl}"
 {if $context->_noframe}class="noframe" {/if}
 {if $context->_enctype}enctype="{$context->_enctype}"{/if}>
-<fieldset>
-    {if !empty($context->sLabel)}<legend>{$context->sLabel}</legend>{/if}
+<br/>
     {if !empty($context->sDescription)}<p class="descriptiveText">{$context->sDescription}</p>{/if}
     
     {* hidden, "extra" args *}
@@ -15,5 +14,5 @@
     
     {$inner}
     
-</fieldset>
+
 </form>
