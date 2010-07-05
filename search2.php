@@ -586,7 +586,7 @@ class SearchDispatcher extends KTStandardDispatcher {
 			$pageMovement[] = $i;
 		}
 
-		 $aBulkActions = KTBulkActionUtil::getAllBulkActions();
+		$aBulkActions = KTBulkActionUtil::getAllBulkActions();
 
         $aTemplateData = array(
               "context" => $this,
