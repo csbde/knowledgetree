@@ -53,11 +53,11 @@ class KTFolderPermissionsAction extends KTFolderAction {
     var $bAutomaticTransaction = true;
 
     function getDisplayName() {
-        return _kt('Permissions');
+        return _kt('Sharing');
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_kt('Permissions'));
+        $this->oPage->setBreadcrumbDetails(_kt('Sharing'));
         $oTemplate = $this->oValidator->validateTemplate('ktcore/folder/view_permissions');
 
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectID());
@@ -190,7 +190,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 
     function do_resolved_users() {
-        $this->oPage->setBreadcrumbDetails(_kt('Permissions'));
+        $this->oPage->setBreadcrumbDetails(_kt('Sharing'));
         $oTemplate = $this->oValidator->validateTemplate('ktcore/folder/resolved_permissions_user');
 
         $oPL = KTPermissionLookup::get($this->oFolder->getPermissionLookupID());

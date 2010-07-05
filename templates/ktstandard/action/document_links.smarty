@@ -1,4 +1,4 @@
-<h2>{i18n}Document Links{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
+<h2>{i18n}Document links{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
 
 <p class="descriptiveText">{i18n}The current links to and from this document are displayed below.{/i18n}</p>
 

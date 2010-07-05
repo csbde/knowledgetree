@@ -1,7 +1,3 @@
-<h2>{i18n}Delete Document{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
-
-<p class="descriptiveText">{i18n}Deleting a document marks it as no longer
-being displayed.  The document management system does not remove the
-document entirely, and it can be restored at a later stage.{/i18n}</p>
+<h2>{i18n}Delete{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
 
 {$form->render()}

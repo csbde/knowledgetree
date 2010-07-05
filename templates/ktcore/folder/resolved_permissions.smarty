@@ -1,8 +1,6 @@
-<h2>{i18n}Permissions{/i18n}</h2>
+<h2>{i18n}Document permissions{/i18n}:</h2>
 
-<p class="descriptiveText">{i18n}This page shows the permissions that apply to
-this specific folder.  Only the roles or groups which have permissions
-assigned are shown.{/i18n}</p> 
+<p class="descriptiveText">{i18n}Roles and groups with permissions for this document are shown below.{/i18n}</p> 
 
 {if (empty($roles) && empty($groups) && empty($users)) }
 <div class="ktInfoMessage"><span>{i18n}No roles, groups, or users have been defined or have permissions.{/i18n}</span></div>

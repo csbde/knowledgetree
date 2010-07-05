@@ -84,7 +84,7 @@ class KTDocumentRenameAction extends KTDocumentAction {
         $fields = array();
 
         $fields[] = new KTStaticTextWidget(_kt('Current file name'), _kt(''), 'oldfilename', $this->oDocument->getFileName(), $this->oPage, false);
-        $fields[] = new KTStringWidget(_kt('New file name'), _kt('The name to which the current file should be renamed.'), 'filename', $this->oDocument->getFileName(), $this->oPage, true);
+        $fields[] = new KTStringWidget(_kt('New file name'), _kt(''), 'filename', $this->oDocument->getFileName(), $this->oPage, true);
 
         // Add an electronic signature
     	global $default;

@@ -11,7 +11,7 @@ addLoadEvent(scheduleCheckout);
 {/capture}
 {$context->oPage->requireJSStandalone($sJavascript)}
 
-<h2>{i18n}Checkout Document{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
+<h2>{i18n}Checkout{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
 
 {capture assign=link}{$sLocation|addQSSelf}{/capture}
 <p class="descriptiveText">{i18n arg_link=$link}The document you wish to

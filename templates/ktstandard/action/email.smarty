@@ -1,17 +1,16 @@
 
-<h2>{i18n}Email document{/i18n}</h2>
+<h2>{i18n}Email document{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
 
 <form id="kt-email-form" method="POST">
 <input type="hidden" name="action" value="email" />
 <input type="hidden" name="fDocumentId" value="{$context->oDocument->getId()}" />
-
 
 {foreach from=$fields item=oWidget }
   {$oWidget->render()}
 {/foreach}
 
 <div class="form_actions ">
-  <input type="submit" name="submit" value="{i18n}Email{/i18n}" />
+  <input type="submit" name="submit" value="{i18n}Send{/i18n}" />
 </div>
 
 </form>

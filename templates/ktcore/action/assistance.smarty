@@ -1,4 +1,4 @@
-<h2>{i18n}Request Assistance{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
+<h2>{i18n}Request assistance{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
 
 
 <p class="descriptiveText">{i18n}If you are unable to perform an action

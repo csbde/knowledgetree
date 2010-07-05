@@ -1,4 +1,4 @@
-<h2>{i18n}Copy Workflow{/i18n}</h2>
+<h2>{i18n}Copy workflow{/i18n}</h2>
 <p class="descriptiveText">
 {i18n}You are about to make a copy of <strong>{$workFlowName}</strong>. This will make and exact copy of the selected workflow,
  including all associated permissions, actions and triggers. Enter the desired name for the resulting workflow 

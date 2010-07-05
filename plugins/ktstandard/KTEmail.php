@@ -397,9 +397,9 @@ class KTDocumentEmailAction extends KTDocumentAction {
         $bEmailAddresses = $oConfig->get('email/allowEmailAddresses', false);
         $bOnlyOwnGroup = $oConfig->get('email/onlyOwnGroups', false);
 
-
-        $fields = array();
-
+		$fields = array();
+		
+		// Picker to select recipients from system groups
     	$fields[] = new KTJSONLookupWidget(_kt('Groups'), '',
     					      'groups', '', $this->oPage, false, null, null,
     					      array('action'=>sprintf('getGroups&fDocumentId=%d', $this->oDocument->getId()),
@@ -407,6 +407,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
     						    'multi'=>'true',
     						    'size'=>'8'));
 
+		// Picker to select recipients from system users
     	$fields[] = new KTJSONLookupWidget(_kt('Users'), '',
     					      'users', '', $this->oPage, false, null, null,
     					      array('action'=>sprintf('getUsers&fDocumentId=%d', $this->oDocument->getId()),
@@ -414,29 +415,32 @@ class KTDocumentEmailAction extends KTDocumentAction {
     						    'multi'=>'true',
     						    'size'=>'8'));
 
-
-        if ($bAttachment) {
-            $fields[] = new KTCheckboxWidget(_kt('Attach document'),
-					     _kt('By default, documents are sent as links into the document management system.  Select this option if you want the document contents to be sent as an attachment in the email.'),
-					     'fAttachDocument', null, $this->oPage);
-        }
+		// External email addresses can be added here
         if ($bEmailAddresses) {
             $fields[] = new KTTextWidget(_kt('Email addresses'),
-					 _kt('Documents can be emailed to external users by entering their email addresses below'),
+					 _kt('Enter the email addresses of external recipients.'),
 					 'fEmailAddresses', '', $this->oPage,
 					 false, null, null, array('cols' => 60, 'rows' => 5));
         }
-
-        $fields[] = new KTTextWidget(_kt('Comment'),
-				     _kt('A message for those who receive the document'),
+		
+		// Should the document be attached or just a link
+        if ($bAttachment) {
+            $fields[] = new KTCheckboxWidget(_kt('Attach document'),
+					     _kt('Check to send as an attachment, uncheck to just send a link.'),
+					     'fAttachDocument', null, $this->oPage);
+        }
+		
+		// Message to include in the email
+        $fields[] = new KTTextWidget(_kt('Message'),
+				     _kt(''),
 				     'fComment', '', $this->oPage,
-				     true, null, null, array('cols' => 60, 'rows' => 5));
+				     false, null, null, array('cols' => 60, 'rows' => 5));
 
-
+					 
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/email');
         $aTemplateData = array(
             'context' => &$this,
-            'fields' => $fields,
+			'fields' => $fields,
             'groups' => $aGroups,
             'users' => $aUsers,
         );
