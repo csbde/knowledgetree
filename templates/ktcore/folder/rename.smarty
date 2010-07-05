@@ -1,4 +1,4 @@
-<h2>{i18n}Rename Folder{/i18n}: {$folderName|sanitize}</h2>
+<h2>{i18n}Rename{/i18n}: {$folderName|sanitize}</h2>
 
 </h2><p class="descriptiveText">{i18n}This page allows you to rename a
 folder.{/i18n}</p>

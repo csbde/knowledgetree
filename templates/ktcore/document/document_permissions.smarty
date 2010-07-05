@@ -1,19 +1,12 @@
 <h2>{i18n}Document permissions{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
 
-<p class="descriptiveText">{i18n}This page shows the permissions that apply to
-this specific document.  Where the folder view shows you information by role and group,
-this page shows the actual groups (and, if they are assigned directly to a role, the users)
-who have the different permissions. As a result, groups, users and roles with <strong>no</strong>
-permissions are not shown.{/i18n}</p>
-
-{if $edit}
-{i18n}Manage security{/i18n}: <a href="{addQS}action=resolved_users&fDocumentId={$context->oDocument->getId()}{/addQS}">{i18n}View resolved permissions for user{/i18n}</a>
-{/if}
+<p class="descriptiveText">{i18n}Roles and groups with permissions for this document are shown below.{/i18n}</p>
 
 {if ((empty($roles) && empty($groups) && empty($users)))}
 <div class="ktInfoMessage"><span>{i18n}No roles or groups have been defined or have permissions.{/i18n}</span></div>
 {else}
 
+<br/>
 <table  class="kt_collection"cellspacing="0" cellpadding="0" border="0">
 <thead>
 <tr>
@@ -86,3 +79,6 @@ permissions are not shown.{/i18n}</p>
 </table>
 { /if }
 
+{if $edit}
+<br/>{i18n}Manage security{/i18n}: <a href="{addQS}action=resolved_users&fDocumentId={$context->oDocument->getId()}{/addQS}">{i18n}View resolved permissions for user{/i18n}</a><br/><br/>
+{/if}

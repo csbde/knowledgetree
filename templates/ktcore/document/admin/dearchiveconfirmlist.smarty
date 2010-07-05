@@ -1,4 +1,4 @@
-<h2>{i18n}Confirm De-archival{/i18n}</h2>
+<h2>{i18n}Confirm restore{/i18n}</h2>
 
 <div class="ktInfoMessage"><span><strong>{i18n}Note{/i18n}:</strong> {i18n}please
 confirm that you want to restore these documents from an archived
