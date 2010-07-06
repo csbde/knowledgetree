@@ -295,7 +295,7 @@ class DBUtil {
         $bNoId = KTUtil::arrayGet($aOptions, 'noid', false);
         global $default;
         // $default->log->debug('AutoInsert called for table ' . $sTable);
-        $db =& self::getDB();
+        $db = self::getDB();
         $res = $db->autoExecute($sTable, $aFieldValues);
         if ($default->queryLog->isDebugEnabled())
         {
@@ -326,7 +326,7 @@ class DBUtil {
     public static function autoUpdate($sTable, $aFieldValues, $iId, $db = null) {
         global $default;
         // $default->log->debug('AutoUpdate called for table ' . $sTable . ' with id ' . $iId);
-        $db = self::getDB();
+        $db = self::getDB($db);
         $res = $db->autoExecute($sTable, $aFieldValues, DB_AUTOQUERY_UPDATE, 'id = ' . $iId);
         $default->queryLog->debug('Query: ' . self::lastQuery($db));
         if ($res === DB_OK) {
@@ -349,7 +349,7 @@ class DBUtil {
     public static function whereUpdate($sTable, $aFieldValues, $aWhereFieldValues, $db = null) {
         global $default;
         //$default->log->debug('WhereUpdate called for table ' . $sTable);
-        $db = self::getDB();
+        $db = self::getDB($db);
         $aWhereFields = array();
         foreach (array_keys($aWhereFieldValues) as $k) {
             $aWhereFields[] = $k . ' = ?';
@@ -378,7 +378,7 @@ class DBUtil {
      **/
 
     public static function lastQuery($db = null) {
-        $db = self::getDB();
+        $db = self::getDB($db);
         return $db->last_query;
     }
     /**
@@ -390,7 +390,7 @@ class DBUtil {
      **/
 
     public static function affectedRows($db = null) {
-        $db = self::getDB();
+        $db = self::getDB($db);
         return $db->affectedRows();
     }
     /**
@@ -402,7 +402,7 @@ class DBUtil {
      **/
 
     public static function autoDelete($sTable, $iId, $db = null) {
-        $db = self::getDB();
+        $db = self::getDB($db);
         $sQuery = "DELETE FROM " . $sTable . " WHERE id = ?";
         $aParams = array($iId);
         return self::runQuery(array($sQuery, $aParams), $db);
@@ -415,7 +415,7 @@ class DBUtil {
      **/
 
     public static function deReference($sTable, $iId, $db = null) {
-        $db = self::getDB();
+        $db = self::getDB($db);
         $sQuery = "UPDATE " . $sTable . " SET disabled = true WHERE id = ?";
         $aParams = array($iId);
         return self::runQuery(array($sQuery, $aParams), $db);
@@ -430,7 +430,7 @@ class DBUtil {
 
     public static function whereDelete($sTable, $aWhereFieldValues, $db = null) {
         global $default;
-        $db = self::getDB();
+        $db = self::getDB($db);
         $aWhereFields = array();
         foreach (array_keys($aWhereFieldValues) as $k) {
             $aWhereFields[] = $k . ' = ?';
@@ -462,8 +462,8 @@ class DBUtil {
      * @author Prince Mbekwa
      **/
 
-    public static function &escapeSimple($sString, $db = null) {
-        $db = self::getDB();
+    public static function escapeSimple($sString, $db = null) {
+        $db = self::getDB($db);
         return $db->escapeSimple($sString);
     }
     /**
@@ -484,7 +484,7 @@ class DBUtil {
 
     public static function startTransaction() {
         self::runQuery("START TRANSACTION");
-        $oCache =& KTCache::getSingleton();
+        $oCache = KTCache::getSingleton();
         $oCache->startTransaction();
     }
     /**
@@ -495,7 +495,7 @@ class DBUtil {
      **/
     public static function rollback() {
         self::runQuery("ROLLBACK");
-        $oCache =& KTCache::getSingleton();
+        $oCache = KTCache::getSingleton();
         $oCache->rollback();
     }
     /**
@@ -506,7 +506,7 @@ class DBUtil {
      **/
     public static function commit() {
         self::runQuery("COMMIT");
-        $oCache =& KTCache::getSingleton();
+        $oCache = KTCache::getSingleton();
         $oCache->commit();
     }
     /**
@@ -532,7 +532,7 @@ class DBUtil {
             'seqname_format' => 'zseq_%s',
         );
 
-        $default->_admindb = &DB::connect($dsn, $options);
+        $default->_admindb = DB::connect($dsn, $options);
         if (PEAR::isError($default->_admindb)) {
             die($default->_admindb->toString());
         }
