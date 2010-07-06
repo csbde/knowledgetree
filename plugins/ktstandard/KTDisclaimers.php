@@ -58,7 +58,7 @@ class KTDisclaimersPlugin extends KTPlugin {
     }
 
     function setupAdmin() {
-        $this->registerAdminPage("disclaimers", 'ManageDisclaimersDispatcher', 'misc',
+        $this->registerAdminPage("disclaimers", 'ManageDisclaimersDispatcher', 'sysConfig',
             _kt('Edit Disclaimers'), _kt('Change disclaimers displayed on login and at the bottom of each page.'),
             'admin/manageDisclaimers.php', null);
     }
