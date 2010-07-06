@@ -239,9 +239,9 @@ class UserPreferences extends KTEntity {
     	if (PEAR::isError($oUser)) {
     		return false;
     	}
-		$aUserPreference = UserPreferences::getPreferences($iUserId, 'zohoWarning'); // Get user preference
+		$aUserPreference = UserPreferences::getPreferences($iUserId, $sKey); // Get user preference
 		if(empty($aUserPreference) || is_null($aUserPreference)) { // Create the preference
-			$oUserPreference = new UserPreferences($iUserId, 'zohoWarning', $sValue);
+			$oUserPreference = new UserPreferences($iUserId, $sKey, $sValue);
 			$oUserPreference->create();
 		} else {
     		foreach ($aUserPreference as $oUserPreference) { // Access object
