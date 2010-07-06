@@ -121,8 +121,8 @@ class KTCorePlugin extends KTPlugin {
         if($restrictedEnv !== true){
             $this->registerDashlet('schedulerDashlet', 'ktcore.schedulerdashlet.plugin', 'scheduler/schedulerDashlet.php');
 
-            $this->registerAdminPage('scheduler', 'manageSchedulerDispatcher', 'misc', _kt('Manage Task Scheduler'), _kt('Manage the task scheduler'), 'scheduler/taskScheduler.php');
-            $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', _kt('Authentication'), sprintf(_kt('By default, %s controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
+            $this->registerAdminPage('scheduler', 'manageSchedulerDispatcher', 'sysConfig', _kt('Manage Task Scheduler'), _kt('Manage the task scheduler'), 'scheduler/taskScheduler.php');
+            $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'userProvisioning', _kt('Authentication'), sprintf(_kt('By default, %s controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
         }
 
 		    $this->registerPortlet(array('browse', 'dashboard'),
@@ -250,7 +250,7 @@ class KTCorePlugin extends KTPlugin {
         $restrictedEnv = $oConfig->get('ui/restrictedEnv');
 
         // set up the categories.
-        $this->registerAdminCategory('principals', _kt('Users and Groups'),
+/*        $this->registerAdminCategory('principals', _kt('Users and Groups'),
             _kt('Control which users can log in, and are part of which groups and organisational units, from these management panels.'));
         $this->registerAdminCategory('security', _kt('Security Management'),
             _kt('Assign permissions to users and groups, and specify which permissions are required to interact with various parts of the Document Management System.'));
@@ -265,87 +265,98 @@ class KTCorePlugin extends KTPlugin {
 		$this->registerAdminCategory('config', _kt('System Configuration'),
             _kt('System Configuration Settings'));
         $this->registerAdminCategory('misc', _kt('Miscellaneous'),
-            _kt('Various settings which do not fit into the other categories, including managing help and saved searches.'));
+            _kt('Various settings which do not fit into the other categories, including managing help and saved searches.'));*/
+        $this->registerAdminCategory('contentManagement', _kt('Content Management'),
+            _kt('Organize existing content.'));
+		$this->registerAdminCategory('contentProvisioning', _kt('Content Setup'),
+            _kt('Structure how content will be stored.'));
+		$this->registerAdminCategory('userProvisioning', _kt('User Setup'),
+            _kt('Determine how people will access content.'));
+		$this->registerAdminCategory('sysConfig', _kt('System Configuration'),
+            _kt('Configure system settings.'));
+		$this->registerAdminCategory('auditReporting', _kt('Auditing and Reporting'),
+            _kt('View statistics on users and content.'));
+			
 
         // users and groups
-        $this->registerAdminPage('users', 'KTUserAdminDispatcher', 'principals',
+        $this->registerAdminPage('users', 'KTUserAdminDispatcher', 'userProvisioning',
             _kt('Manage Users'), _kt('Add or remove users from the system.'),
             'admin/userManagement.php', null);
-        $this->registerAdminPage('groups', 'KTGroupAdminDispatcher', 'principals',
+        $this->registerAdminPage('groups', 'KTGroupAdminDispatcher', 'userProvisioning',
             _kt('Manage Groups'), _kt('Add or remove groups from the system.'),
             'admin/groupManagement.php', null);
-        $this->registerAdminPage('units', 'KTUnitAdminDispatcher', 'principals',
+        $this->registerAdminPage('units', 'KTUnitAdminDispatcher', 'contentProvisioning',
             _kt('Control Units'), _kt('Specify which organisational units are available within the repository.'),
             'admin/unitManagement.php', null);
 
         // security
-        $this->registerAdminPage('permissions', 'ManagePermissionsDispatcher', 'security',
+        $this->registerAdminPage('permissions', 'ManagePermissionsDispatcher', 'userProvisioning',
             _kt('Permissions'), _kt('Create or delete permissions.'), 'admin/managePermissions.php', null);
-        $this->registerAdminPage('roles', 'RoleAdminDispatcher', 'security',
+        $this->registerAdminPage('roles', 'RoleAdminDispatcher', 'userProvisioning',
             _kt('Roles'), _kt('Create or delete roles'),
             'admin/roleManagement.php', null);
-        $this->registerAdminPage('conditions', 'KTConditionDispatcher', 'security',
+        $this->registerAdminPage('conditions', 'KTConditionDispatcher', 'contentProvisioning',
             _kt('Dynamic Conditions'),
             _kt('Manage criteria which determine whether a user is permitted to perform a system action.'),
             'admin/conditions.php', null);
 
         // documents
-        $this->registerAdminPage('typemanagement', 'KTDocumentTypeDispatcher', 'documents',
+        $this->registerAdminPage('typemanagement', 'KTDocumentTypeDispatcher', 'contentProvisioning',
             _kt('Document Types'),
             _kt('Manage the different classes of document which can be added to the system.'),
             'admin/documentTypes.php', null);
-        $this->registerAdminPage('fieldmanagement2', 'KTDocumentFieldDispatcher', 'documents',
+        $this->registerAdminPage('fieldmanagement2', 'KTDocumentFieldDispatcher', 'contentProvisioning',
              _kt('Document Fieldsets'),
             _kt('Manage the different types of information that can be associated with classes of documents.'),
             'admin/documentFieldsv2.php', null);
-        $this->registerAdminPage('workflows_2', 'KTWorkflowAdminV2', 'documents',
+        $this->registerAdminPage('workflows_2', 'KTWorkflowAdminV2', 'contentManagement',
             _kt('Workflows'), _kt('Configure automated Workflows that map to document life-cycles.'),
             'admin/workflowsv2.php', null);
 
         // storage
-        $this->registerAdminPage('checkout', 'KTCheckoutAdminDispatcher', 'storage',
+        $this->registerAdminPage('checkout', 'KTCheckoutAdminDispatcher', 'contentManagement',
             _kt('Checked Out Document Control'),
             _kt('Override the checked-out status of documents if a user has failed to do so.'),
             'admin/documentCheckout.php', null);
-        $this->registerAdminPage('archived', 'ArchivedDocumentsDispatcher', 'storage',
+        $this->registerAdminPage('archived', 'ArchivedDocumentsDispatcher', 'contentManagement',
             _kt('Archived Document Restoration'), _kt('Restore old (archived) documents, usually at a user\'s request.'),
             'admin/archivedDocuments.php', null);
-        $this->registerAdminPage('expunge', 'DeletedDocumentsDispatcher', 'storage',
+        $this->registerAdminPage('expunge', 'DeletedDocumentsDispatcher', 'contentManagement',
             _kt('Restore or Expunge Deleted Documents'), _kt('Restore previously deleted documents, or permanently expunge them.'),
             'admin/deletedDocuments.php', null);
 
 		//Search and Indexing
 		if($restrictedEnv !== true){
-    		$this->registerAdminPage('managemimetypes', 'ManageMimeTypesDispatcher', 'search',
+    		$this->registerAdminPage('managemimetypes', 'ManageMimeTypesDispatcher', 'auditReporting',
                 _kt('Mime Types'), sprintf(_kt('This report lists all mime types and extensions that can be identified by %s.'), APP_NAME),
                 '../search2/reporting/ManageMimeTypes.php', null);
 
-            $this->registerAdminPage('extractorinfo', 'ExtractorInfoDispatcher', 'search',
+            $this->registerAdminPage('extractorinfo', 'ExtractorInfoDispatcher', 'auditReporting',
                 _kt('Extractor Information'), _kt('This report lists the text extractors and their supported mime types.'),
                 '../search2/reporting/ExtractorInfo.php', null);
 
 		}
 
-        $this->registerAdminPage('indexerrors', 'IndexErrorsDispatcher', 'search',
+        $this->registerAdminPage('indexerrors', 'IndexErrorsDispatcher', 'auditReporting',
             _kt('Document Indexing Diagnostics'), _kt('This report will help to diagnose problems with document indexing.'),
             '../search2/reporting/IndexErrors.php', null);
 
-		$this->registerAdminPage('pendingdocuments', 'PendingDocumentsDispatcher', 'search',
+		$this->registerAdminPage('pendingdocuments', 'PendingDocumentsDispatcher', 'auditReporting',
             _kt('Pending Documents Indexing Queue'), _kt('This report lists documents that are waiting to be indexed.'),
             '../search2/reporting/PendingDocuments.php', null);
 
-        $this->registerAdminPage('reschedulealldocuments', 'RescheduleDocumentsDispatcher', 'search',
+        $this->registerAdminPage('reschedulealldocuments', 'RescheduleDocumentsDispatcher', 'contentProvisioning',
             _kt('Reschedule all documents'), _kt('This function allows you to re-index your entire repository.'),
             '../search2/reporting/RescheduleDocuments.php', null);
 
         // Admin Pages for Previous Dashlets
         if($restrictedEnv !== true){
-            $this->registerAdminPage('indexingstatus', 'IndexingStatusDispatcher', 'search',
+            $this->registerAdminPage('indexingstatus', 'IndexingStatusDispatcher', 'auditReporting',
                 _kt('Document Indexer and External Resource Dependancy Status'), _kt('This report will show the status of external dependencies and the document indexer.'),
                 '../search2/reporting/IndexingStatus.php', null);
         }
 
-        $this->registerAdminPage('lucenestatistics', 'LuceneStatisticsDispatcher', 'search',
+        $this->registerAdminPage('lucenestatistics', 'LuceneStatisticsDispatcher', 'auditReporting',
             _kt('Document Indexer Statistics'), _kt('This report will show the Lucene Document Indexing Statistics '),
             '../search2/reporting/LuceneStatistics.php', null);
 
@@ -353,58 +364,58 @@ class KTCorePlugin extends KTPlugin {
 
 
 		//config
-		$this->registerAdminPage('emailconfigpage', 'EmailConfigPageDispatcher', 'config',
+		$this->registerAdminPage('emailconfigpage', 'EmailConfigPageDispatcher', 'sysConfig',
             _kt('Email'), _kt('Define the sending email server address, email password, email port, and user name, and view and modify policies for emailing documents and attachments from KnowledgeTree.'),
             'admin/configSettings.php', null);
 
-        $this->registerAdminPage('uiconfigpage', 'UIConfigPageDispatcher', 'config',
+        $this->registerAdminPage('uiconfigpage', 'UIConfigPageDispatcher', 'sysConfig',
             _kt('User Interface'), _kt('View and modify settings on Browse View actions, OEM name, automatic refresh, search results restrictions, custom logo details, paths to dot binary, graphics, and log directory, and whether to enable/disable condensed UI, \'open\' from downloads, sort metadata, and skinning.'),
             'admin/configSettings.php', null);
 
-        $this->registerAdminPage('searchandindexingconfigpage', 'SearchAndIndexingConfigPageDispatcher', 'config',
+        $this->registerAdminPage('searchandindexingconfigpage', 'SearchAndIndexingConfigPageDispatcher', 'sysConfig',
             _kt('Search and Indexing'), _kt('View and modify the number of documents indexed / migrated in a cron session, core indexing class, paths to the extractor hook, text extractors, indexing engine, Lucene indexes, and the Java Lucene URL. View and modify search date format, paths to search, indexing fields and libraries, results display format, and results per page.'),
             'admin/configSettings.php', null);
 
-        $this->registerAdminPage('clientconfigpage', 'ClientSettingsConfigPageDispatcher', 'config',
+        $this->registerAdminPage('clientconfigpage', 'ClientSettingsConfigPageDispatcher', 'sysConfig',
             _kt('Client Tools'), _kt('View and change settings for the KnowledgeTree Tools Server, Client Tools Policies, WebDAV, and the OpenOffice.org service.'),
             'admin/configSettings.php', null);
 
         if($restrictedEnv !== true){
-            $this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'config',
+            $this->registerAdminPage('generalconfigpage', 'GeneralConfigPageDispatcher', 'sysConfig',
                 _kt('General Settings'), _kt('View and modify settings for the KnowledgeTree cache, custom error message handling, Disk Usage threshold percentages, location of zip binary, paths to external binaries, general server configuration, LDAP authentication, session management, KnowledgeTree storage manager, miscellaneous tweaks, and whether to always display \'Your Checked-out Documents\' dashlet.'),
                 'admin/configSettings.php', null);
 
-            $this->registerAdminPage('helpmanagement', 'ManageHelpDispatcher', 'misc',
+            $this->registerAdminPage('helpmanagement', 'ManageHelpDispatcher', 'sysConfig',
                 _kt('Edit Help files'), _kt('Change the help files that are displayed to users.'),
                 'admin/manageHelp.php', null);
         }
 
-        $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'config',
+        $this->registerAdminPage('i18nconfigpage', 'i18nConfigPageDispatcher', 'sysConfig',
             _kt('Internationalization'), _kt('View and modify the default language.'),
             'admin/configSettings.php', null);
 
-        $this->registerAdminPage('securityconfigpage', 'SecurityConfigPageDispatcher', 'config',
+        $this->registerAdminPage('securityconfigpage', 'SecurityConfigPageDispatcher', 'sysConfig',
             _kt('Security'), _kt('View and modify the security settings.'),
             'admin/configSettings.php', null);
 
         // misc
-        $this->registerAdminPage('plugins', 'KTPluginDispatcher', 'misc',
+        $this->registerAdminPage('plugins', 'KTPluginDispatcher', 'sysConfig',
             _kt('Manage plugins'), _kt('Register new plugins, disable plugins, and so forth'),
             'admin/plugins.php', null);
 
         if($restrictedEnv !== true){
-            $this->registerAdminPage('techsupport', 'KTSupportDispatcher', 'misc',
+            $this->registerAdminPage('techsupport', 'KTSupportDispatcher', 'auditReporting',
                 _kt('Support and System information'), _kt('Information about this system and how to get support.'),
                 'admin/techsupport.php', null);
-            $this->registerAdminPage('cleanup', 'ManageCleanupDispatcher', 'storage',
+            $this->registerAdminPage('cleanup', 'ManageCleanupDispatcher', 'contentManagement',
                 _kt('Verify Document Storage'), _kt('Performs a check to see if the documents in your repositories all are stored on the back-end storage (usually on disk).'),
                 'admin/manageCleanup.php', null);
 
-            $this->registerAdminPage('branding', 'ManageBrandDispatcher', 'misc',
+            $this->registerAdminPage('branding', 'ManageBrandDispatcher', 'sysConfig',
                 _kt('Manage Branding'), _kt('Change customizable branding components of the site e.g. Custom company logo'),
                 'admin/manageBranding.php', null);
         }
-        $this->registerAdminPage('views', 'ManageViewDispatcher', 'misc',
+        $this->registerAdminPage('views', 'ManageViewDispatcher', 'contentProvisioning',
             _kt('Manage views'), _kt('Allows you to specify the columns that are to be used by a particular view (e.g. Browse documents, Search)'),
             'admin/manageViews.php', null);
 

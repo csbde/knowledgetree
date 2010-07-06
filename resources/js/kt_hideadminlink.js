@@ -3,7 +3,7 @@ JQ = jQuery;
 JQ(document).ready(function(){ 
 	var elems = JQ("dl.panel_menu").find("a");
 	for (i = 0; i < elems.length; i++) {
-		if(elems[i].href.search("kt_path_info=documents/fieldmanagement2") > -1)
+		if(elems[i].href.search("kt_path_info=contentProvisioning/fieldmanagement2") > -1)
 		{
 			JQ(elems[i]).parent("dt").hide();
 		}

@@ -144,7 +144,7 @@ class KTPage {
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';
         $aJS[] = 'resources/js/newui/buttontabs.jquery.js';
-
+        
         $this->requireJSResources($aJS);
 
         // this is horrid, but necessary.
@@ -421,6 +421,19 @@ class KTPage {
 
 				$this->userMenu['supportpage'] = array('label' => _kt('Get Help'), 'url' => $sBaseUrl.'/support.php', 'extra'=>'target="_blank"');
 
+				if (KTPluginUtil::pluginIsActive ( 'gettingstarted.plugin' )) {
+					require_once(KT_PLUGIN_DIR . '/commercial/gettingstarted/GettingStarted.php');
+					$gettingStarted = new GettingStarted();
+					$gettingStartedRendered = $gettingStarted->render();
+					
+					$sUrl = KTPluginUtil::getPluginPath('gettingstarted.plugin', true);
+					$heading = _kt('Getting Started');
+					$this->userMenu['gettingstarted']['url'] = '#';
+					$this->userMenu['gettingstarted']['extra'] = 'name="gettingStartedModal"';
+        			//$this->userMenu['gettingstarted']['onclick'] = "javascript: doMask();";
+        			$this->userMenu['gettingstarted']['label'] = '<span>Getting Started</span>';
+				}
+				
         		//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
         		$this->userMenu['preferences']['label'] = '<span class="normalTransformText">'.$this->user->getName().'</span>';
 
@@ -460,6 +473,7 @@ class KTPage {
         require_once(KT_LIB_DIR . '/browse/feedback.inc.php');
         $userFeedback = new Feedback();
 		
+        //TODO: need to refactor - is this the correct way to add this?
 		if(ACCOUNT_ROUTING_ENABLED){
 			$uploadProgress = new DragDrop();
 			$uploadProgressRendered = $uploadProgress->render();
@@ -478,6 +492,11 @@ class KTPage {
 				);
         if ($oConfig->get("ui/automaticRefresh", false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
+        }
+        
+        //TODO: need to refactor - is this the correct way to add this?
+        if (KTPluginUtil::pluginIsActive ( 'gettingstarted.plugin' )) {
+        	$aTemplateData['gettingStarted'] = $gettingStartedRendered;
         }
 
 		// Trigger for pending downloads
