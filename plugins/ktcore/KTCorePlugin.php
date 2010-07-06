@@ -268,9 +268,9 @@ class KTCorePlugin extends KTPlugin {
             _kt('Various settings which do not fit into the other categories, including managing help and saved searches.'));*/
         $this->registerAdminCategory('contentManagement', _kt('Content Management'),
             _kt('Organize existing content.'));
-		$this->registerAdminCategory('contentProvisioning', _kt('Content Provisioning'),
+		$this->registerAdminCategory('contentProvisioning', _kt('Content Setup'),
             _kt('Structure how content will be stored.'));
-		$this->registerAdminCategory('userProvisioning', _kt('User Provisioning'),
+		$this->registerAdminCategory('userProvisioning', _kt('User Setup'),
             _kt('Determine how people will access content.'));
 		$this->registerAdminCategory('sysConfig', _kt('System Configuration'),
             _kt('Configure system settings.'));
