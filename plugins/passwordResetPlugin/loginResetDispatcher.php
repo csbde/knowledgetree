@@ -168,7 +168,7 @@ class loginResetDispatcher extends KTDispatcher {
 
     function do_login() {
         $aExtra = array();
-
+        
         if(!$this->check() && $_SESSION['userID'] != -2) { // bounce here, potentially.
             // User is already logged in - get the redirect
             $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
@@ -259,6 +259,31 @@ class loginResetDispatcher extends KTDispatcher {
         }
         return true;
     }
+    
+    
+    
+	/**
+     * Check if this is the user's first login EVER
+     * If it is, set user-preferences db table to reflect date of first login
+     *
+     * @return boolean true if this is user's first login EVER
+     */
+    function checkFirstLogin() {
+        require_once(UserPreferences_PluginDir . DIRECTORY_SEPARATOR . "UserPreferences.inc.php");
+        
+        $result = UserPreferences::getUserPreferenceValue($_SESSION['userID'], 'firstLogin');
+        
+        //if returns empty, then it is user's first login
+        if (empty($result)) {
+        	
+        	//now set db to reflect that user now has logged in
+        	UserPreferences::saveUserPreferences($_SESSION['userID'], 'firstLogin', date("Y-m-d H:i:s"));
+        	
+        	return true;
+        }
+        
+        return false;
+    }
 
     /**
      * Verify the user session
@@ -291,7 +316,12 @@ class loginResetDispatcher extends KTDispatcher {
         if (PEAR::isError($sessionID)) {
             return $sessionID;
         }
-
+        
+        if ($this->checkFirstLogin()) {
+        	$GLOBALS['default']->log->debug(__FUNCTION__ . " first login for: " . $_SESSION['userID']);
+        	$_SESSION["isFirstLogin"] = true;
+        }
+        
 		$redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
         // DEPRECATED initialise page-level authorisation array
