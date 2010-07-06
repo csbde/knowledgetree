@@ -43,6 +43,12 @@ class DBUtil {
     
     public static function &getDB($db = null) {
         global $default;
+		$oPear = new PEAR();
+		/**
+		 * Establish database connections
+		 * TODO: Add other database handlers here instead of defaulting to mysql
+		 *@params string $db : Any db connection (remote or local)
+		 */
         if (is_null($db)) {
             $db =& $default->_db;
         }
