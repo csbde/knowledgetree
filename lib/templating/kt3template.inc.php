@@ -417,9 +417,7 @@ class KTPage {
         			$this->userMenu['preferences']['onclick'] = "javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.accessing_preferences', 'system', '{$sBaseUrl}/preferences.php', 'redirect');";
         		} else {
         			$this->userMenu['preferences']['url'] = $sBaseUrl.'/preferences.php';
-        		}
-
-				$this->userMenu['supportpage'] = array('label' => _kt('Get Help'), 'url' => $sBaseUrl.'/support.php', 'extra'=>'target="_blank"');
+        		}		
 
 				if (KTPluginUtil::pluginIsActive ( 'gettingstarted.plugin' )) {
 					require_once(KT_PLUGIN_DIR . '/commercial/gettingstarted/GettingStarted.php');
@@ -433,6 +431,8 @@ class KTPage {
         			//$this->userMenu['gettingstarted']['onclick'] = "javascript: doMask();";
         			$this->userMenu['gettingstarted']['label'] = '<span>Getting Started</span>';
 				}
+				
+				$this->userMenu['supportpage'] = array('label' => _kt('Get Help'), 'url' => $sBaseUrl.'/support.php', 'extra'=>'target="_blank"');
 				
         		//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
         		$this->userMenu['preferences']['label'] = '<span class="normalTransformText">'.$this->user->getName().'</span>';
