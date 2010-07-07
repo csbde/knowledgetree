@@ -221,7 +221,7 @@ class ktRenderArrayHTML extends ktRenderArray{
 				}
 				$this->render_nested($node,$value);
 			}else{
-				$node=$root->addChild($this->options['tagName'],$this->parseString($this->options['value'],$key,$value));
+				$node=$root->addChild($this->options['tagName'],$this->parseString($this->options['value'],$this->getTransformArray($key,$value,$data)));
 				foreach($this->options['attributes'] as $attr => $content){
 					$node->addAttribute($attr,$this->parseString($content,$key,$attr));
 				}
@@ -229,8 +229,23 @@ class ktRenderArrayHTML extends ktRenderArray{
 		}
 	}
 	
-	private function parseString($string='',$key=NULL,$value=NULL){
-		return str_replace(array('[key]','[value]'),array($key,$value),$string);
+	private function getTransformArray($key,$value,$additional){
+		if(!is_array($additional))$additional=array();
+		$additional['key']=$key;
+		$additional['value']=$value;
+		return $additional;
+	}
+	
+	private function parseString($string='',$xform=array()){
+		if(!is_array($xform))$xform=array();
+		
+		$from=array_keys($xform);
+		$to=array_values($xform);
+		
+		$delim=create_function('&$item,$key,$prefix','$item="[".$item."]";');
+		array_walk($from,$delim);
+		
+		return str_replace($from,$to,$string);
 	}
 	
 	private function render_flat(){
@@ -238,7 +253,7 @@ class ktRenderArrayHTML extends ktRenderArray{
 	}
 }
 
-/* TEST FUNCTIONS **************************************************** Remove Space Before Slash to Uncomment **/
+/* TEST FUNCTIONS **************************************************** Remove Space Before Slash to Uncomment ** /
 $a=array();
 $a['item1']='item1';
 $a['item2']='item2';
@@ -268,6 +283,6 @@ $class='ktRenderArrayHTML';echo "<h3>{$class}</h3><pre>".print_r(htmlentities(kt
  * ktRenderArrayJSON {"item1":"item1","item2":"item2","item3":{"item4":"item4","item5":"item5","item6":{"item7":"item7","item8":"item8"},"item9":"item9"},"item10":"item10"}
  * ktRenderArrayHTML <div rel="something_item1_something" id="doc_item1" class="item1">item1=item1</div><div rel="something_item2_something" id="doc_item2" class="item2">item2=item2</div><div rel="something_item3_something" id="doc_item3" class="item3"><div rel="something_item4_something" id="doc_item4" class="item4">item4=item4</div><div rel="something_item5_something" id="doc_item5" class="item5">item5=item5</div><div rel="something_item6_something" id="doc_item6" class="item6"><div rel="something_item7_something" id="doc_item7" class="item7">item7=item7</div><div rel="something_item8_something" id="doc_item8" class="item8">item8=item8</div></div><div rel="something_item9_something" id="doc_item9" class="item9">item9=item9</div></div><div rel="something_item10_something" id="doc_item10" class="item10">item10=item10</div>
  */
-die("Debug Info for ".__FILE__.". To remove test functionality, comment it out.");
+//die("Debug Info for ".__FILE__.". To remove test functionality, comment it out.");
 /**********************************************************************/
 ?>

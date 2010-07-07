@@ -64,6 +64,9 @@ require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 require_once(KT_LIB_DIR . '/actions/entitylist.php');
 require_once(KT_LIB_DIR . '/actions/bulkaction.php');
 
+require_once(KT_LIB_DIR .'/util/ktRenderArray.php');
+require_once(KT_LIB_DIR .'/util/ktVar.php');
+
 $sectionName = 'browse';
 
 class BrowseDispatcher extends KTStandardDispatcher {
@@ -280,7 +283,20 @@ class BrowseDispatcher extends KTStandardDispatcher {
               'returnaction' => 'browse',
 		);
 		if ($this->oFolder) {
+			$folderContentOptions=array(
+				'tagName'=>'span',
+				'nesting'=>'true',
+				'value'=>'[value]',
+				'attributes'=>array(
+					'class'	=>"document_item field_[key]"
+				)
+			);
 			$aTemplateData['returndata'] = $this->oFolder->getId();
+//			$aTemplateData['folderContents'] = htmlentities(ktRenderArrayHTML::render($this->getCurrentFolderContent($this->oFolder->getId()),$folderContentOptions));
+			$items=$this->getCurrentFolderContent($this->oFolder->getId());
+			foreach($items as $item){
+				$aTemplateData['folderContents'].=$this->renderDocumentItem($item);
+			}
 		}
 		return $oTemplate->render($aTemplateData);
 	}
@@ -431,6 +447,56 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$this->successRedirectToMain(_kt('Administrator mode disabled'), sprintf('fFolderId=%d', $_REQUEST['fFolderId']));
 		}
 		$this->successRedirectToMain(_kt('Administrator mode disabled'));
+	}
+	
+	public function getCurrentFolderContent($folderId){
+		//TODO: Permissions for these documents are not yet sorted out.
+		//TODO: User detail;
+		//TODO: Filename from document_content_version
+		$sql= "SELECT documents.id, filename, full_path, immutable, is_checked_out, creator_id, documents.owner_id, created, modified_user_id, modified, size,
+filetypes, mimetypes, folder_id
+FROM documents
+INNER JOIN document_metadata_version ON (documents.metadata_version_id = document_metadata_version.id)
+INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
+INNER JOIN mime_types ON (document_content_version.mime_id = mime_types.id) WHERE folder_id='$folderId';";
+		$ret= DBUtil::getResultArray($sql);
+		return ($ret);
+	}
+	
+	private function renderDocumentItem($item=NULL){
+		$tpl='
+	<span class="documentBrowseView">
+	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="documentItem fdebug">
+		<tr>
+			<td><div class="documentIconCell"><span class="documentPreview"></span></div></td>
+			<td class="documentDetailPane">
+				<div class="documentTitle"><a class="clearLink" href="view.php?fDocumentId=[id]">[filename]</a></div>
+				<div class="documentDetail">Owner: [owner_id] Created: [created] by [creator_id] Updated:[modified] by [modified_user_id]</div>
+			</td>
+			<td class="documentActions">
+				<div class="documentNotification">Workflow,Immutable</div>
+				<span class="documentActionMenu">
+					<span class="actionIcon properties not_supported">p</span>
+					<span class="actionIcon comments" style="position: absolute;"><span style="position: relative; top: -3px;">5</span></span>
+					<span class="actionIcon permissions not_supported">s</span>
+					<span class="actionIcon actions" st><ul class="ulSubmenu">
+							<li><a href="#">Download</a></li>
+							<li><a href="#">Checkin</a></li>
+							<li><a href="#">Alerts</a></li>
+							<li><a href="#">Cancel Checkout</a></li>
+							<li><a href="#">Change Document Ownership</a></li>
+							<li><a href="#">Email</a></li>
+							<li><a href="#">Instant View</a></li>
+						</ul>
+					</span>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td class="expanderField">Some additional Detail</td>
+		</tr>
+	</table>';
+		return ktVar::parseString($tpl,$item);
 	}
 }
 
