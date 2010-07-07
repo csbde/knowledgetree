@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
     <title>{$page->title|sanitize}{if ($page->secondary_title != null)} &mdash; {$page->secondary_title|sanitize}{/if} | {$page->systemName}</title>
@@ -65,7 +64,7 @@
     <![endif]-->
 </head>
 <body {if (!$page->show_portlets)}class="noportlets"{/if} {if $page->onload}onload="{$page->getBodyOnload()}"{/if} >
-<div id="wrapper">
+<div id="wrapper" style="min-width: 850px;  margin-left: auto; margin-right: auto;">
 <input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$rootUrl}" />
     <div id="pageBody">
         <div id="bodyPad">
