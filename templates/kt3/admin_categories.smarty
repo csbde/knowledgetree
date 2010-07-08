@@ -1,6 +1,18 @@
-<dl class="panel_menu">
-   {foreach item=aCategory from=$categories}
-   <dt>{capture assign="cat_id"}{$aCategory.name}{/capture}<a href="{$smarty.server.PHP_SELF|addQueryString:"action=viewCategory&fCategory=$cat_id"}">{$aCategory.title}</a></dt>
-   <dd class="descriptiveText">{$aCategory.description}</dd>
-   {/foreach}
-</dl>
+<br/>
+<br/>
+<div style="margin-left:145px;">
+	{foreach item=aCategory from=$categories}
+	{capture assign="cat_id"}{$aCategory.name}{/capture}
+		<h2 style="margin-top:5px;">
+			<img src="resources/graphics/admin_{$cat_id}.png" align="left" style="padding-right:10px;">
+			<a href="{$smarty.server.PHP_SELF|addQueryString:"action=viewCategory&fCategory=$cat_id"}">{$aCategory.title}</a>
+
+
+		</h2>
+		
+		<div class="descriptiveText">
+			{$aCategory.description}
+		</div>
+		<br clear="both" />
+	{/foreach}
+</div>
