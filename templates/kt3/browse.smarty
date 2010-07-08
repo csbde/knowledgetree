@@ -1,7 +1,7 @@
- 
-<!-- FILE: kt3/browse.smarty -->
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/MochiKitPacked.js')}
+
 {$context->oPage->requireJSResource('resources/js/toggleselect.js')}
+
 {if ($custom_title != null)}
 <h2>{$custom_title|sanitize}</h2>
 {/if}
@@ -28,7 +28,6 @@
 </div>
 {/if}
 
-<link rel="stylesheet" type="text/css" href="/resources/css/newui/browseView.css?{php}echo rand();{/php}" />
 <form action="{$browseutil->getActionBaseUrl()}" method="post">
 
 {if ($isEditable)}
@@ -39,14 +38,7 @@
 
 {/if}
 
-{if 1==1}
-	{$collection->render()}
-{else}
-	<div class="standardBorder" style="min-width: 800px;">
-		{$folderContents}
-	</div>
-{/if}
-
+{$collection->render()}
 {if ($isEditable)}
 <div class="form_actions">
   <input type="hidden" name="sListCode" value="{$code}" />
@@ -82,7 +74,6 @@
 <p class="descriptiveText">{i18n}To save this search permanently, so that you can run it again at any time, fill in a name below and click 'Save'.{/i18n}</p>
 <input type="hidden" name="action" value="saveSearch" />
 <input type="hidden" name="boolean_search" value="{$boolean_search|sanitize}" />
-xxxxx
 {foreach item=oWidget from=$save_fields}
     {$oWidget->render()}
 {/foreach}
@@ -94,6 +85,3 @@ xxxxx
 {/if}
 
 {* we break encapsulation pretty badly here. *}
-
- 
-<!-- FILE_END: kt3/fieldsets/browse.smarty -->

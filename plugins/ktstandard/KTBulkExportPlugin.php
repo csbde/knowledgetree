@@ -81,28 +81,6 @@ class KTBulkExportAction extends KTFolderAction {
     }
     
     function do_main() {
-    	// TODO : Add ktlive simple event creation
-    	/*
-    	if(ACCOUNT_ROUTING_ENABLED) 
-    	{
-    		$sCurrentFolderId = $this->oFolder->getId();
-    		$aFolderList = array();
-	      	$aDocList = array();
-	      	$originalFolder = Folder::get($sCurrentFolderId);
-	      	$docIds = $originalFolder->getDocumentIDs($sCurrentFolderId);
-	      	$docIds = split(",", $docIds);
-	      	// Get all docs
-	      	foreach ($docIds as $dId) 
-	      	{
-	      		$aDocList[] = Document::get($dId);
-	      	}
-	        // Get all folders
-	        $sWhereClause = "parent_folder_ids = '{$sCurrentFolderId}'";
-	        $aFolderList = $this->oFolder->getList($sWhereClause);
-	      	
-    		return ;
-    	}
-    	*/
         $config = KTConfig::getSingleton();
         $useQueue = $config->get('export/useDownloadQueue', true);
 

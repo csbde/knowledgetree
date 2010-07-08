@@ -22,7 +22,7 @@ body {
 	position:relative;
 	height:20px; 
 	z-index:2; 
-	background-image: url(../graphics/header.jpg);
+	background-image: url(../graphics/header.png);
 }
  
 .login-box {
