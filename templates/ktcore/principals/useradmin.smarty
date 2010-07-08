@@ -18,40 +18,25 @@
 {/literal}
 
 {if $can_add}
-<fieldset> <legend>{i18n}Add new users{/i18n}</legend> <p
-class="descriptiveText">{i18n}To add users to the DMS authentication
-provider, you need to provide them with credentials through this
-section.{/i18n}
 
 {if !$authentication}
-{i18n}If you are using an external source of login information
-like <strong>LDAP</strong>, ensure the appropriate plugin is loaded
-and use the section below.{/i18n}
+{i18n}If you are using an external source of login information, ensure the appropriate plugin is loaded and use the section below.{/i18n}
 {/if}
 </p> <p><a href="{addQS}action=addUser{/addQS}" class="ktAction ktAddUser"
 style="float: left; padding-right: 0.5em;">{i18n}Add a new
 user{/i18n}</a><a href="{addQS}action=addUser{/addQS}">{i18n}Add a new
 user{/i18n}</a></p>
-</fieldset>
+
 
 {if $authentication_sources}
    <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="addUserFromSource" />
-   <fieldset><legend>{i18n}Add a user from an authentication source{/i18n}</legend>
 
-<p class="descriptiveText">{i18n}Instead of manually creating the user within
-the document management system, the user can be found within an
-authentication source (such as an LDAP directory) that has already been
-configured.  This ensures that the user is correctly set up with limited
-intervention from the administrator, and that the user will not need to
-remember an additional password for the document management
-system.{/i18n}</p>
-
+<p class="descriptiveText">{i18n}Add a user from an authentication source{/i18n}</p>
    {entity_select name="source_id" entities=$authentication_sources}
    <div class="form_actions ">
      <input type="submit" name="submit" value="{i18n}Add from source{/i18n}" />
    </div>
-   </fieldset>
    </form>
 </p>
 {/if}
@@ -66,13 +51,8 @@ system.{/i18n}</p>
 <!-- we roll both in here. -->
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="do_search" value="1" />
-<fieldset>
-<legend>{i18n}Search for users{/i18n}</legend>
 {capture assign=link}{addQS}show_all=1{/addQS}{/capture}
-<p class="descriptiveText">{i18n arg_link=$link}Since there may be many users in the system, please
-select a group from the list below, or type a few letters from the person's username
-to begin. Alternatively, <a href="#link#">view all users</a> (note that this may be
-very slow if you have many users).{/i18n}</p>
+<p class="descriptiveText">{i18n arg_link=$link}Search for users. Alternatively, <a href="#link#">view all users</a>.{/i18n}</p>
 
 {foreach item=oWidget from=$search_fields}
   {$oWidget->render()}
@@ -81,8 +61,8 @@ very slow if you have many users).{/i18n}</p>
 <div class="form_actions">
    <input type="submit" value="{i18n}Search For Users{/i18n}" />
 </div class="form_actions">
-</fieldset>
 </form>
+<br clear="both"/>
 
 {if ($no_search === true)}
 {else}
