@@ -98,8 +98,8 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         // are we categorised, or not?
         $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
 
-        //Removing bad documents/fieldmanagement links from the Document Metadata and Workflow Configuration page.
-		if ($category == 'documents') {
+        //Removing bad contentSetup/fieldmanagement links from the Document Metadata and Workflow Configuration page.
+		if ($category == 'contentSetup') {
 	        $oPage =& $GLOBALS['main'];			
 			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
 			$oPage->requireJSResources($aJavascript);
