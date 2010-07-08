@@ -28,7 +28,7 @@
 		<tr>
 			<td colspan="2" valign="top">
 				<ul class="view_doc_tabs">
-					<li title="Activity">
+					<li class="page_activity" title="Activity">
 						<table class="kt_collection" style="clear: both;"><tr><td>
 							<div id="activity_feed_container" style="margin-top:1em;"></div>
 							<div id="new_comment_form"></div>
@@ -36,14 +36,14 @@
 					</li>
 
 					{if !empty($live_preview)}
-						<li title="View">
+						<li class="page_preview"  title="View">
 							<table class="kt_collection" style="clear: both;"><tr><td>
 								<div style="margin-top:1em;">{$live_preview}</div>
 							</table>
 						</li>
 					{/if}
 					
-					<li title="Properties">
+					<li class="page_properties" title="Properties">
 						<table class="kt_collection" style="clear: both;"><tr><td>
 							{if $hasNotifications}
 								<div class="notification">
