@@ -8,7 +8,7 @@
 <p class='descriptiveText'>{i18n}Schedule all documents in the repository to be indexed.{/i18n}</p>
 {if $rescheduleDone == 'true'}
 <p style="padding-top: 5px;">{i18n}All documents have been rescheduled for indexing.{/i18n}</p>
-<p><a href=admin.php?kt_path_info=search/pendingdocuments>{i18n}View the indexing queue.{/i18n}</a></p>
+<p><a href=admin.php?kt_path_info=contentIndexing/pendingdocuments>{i18n}View the indexing queue.{/i18n}</a></p>
 {/if}
 <br>
 <input type="submit" name="Reschedule" value="{i18n}Reschedule All{/i18n}" onclick="document.getElementById('rescheduleValue').value='reschedule';" />
