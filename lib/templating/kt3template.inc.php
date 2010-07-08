@@ -140,6 +140,7 @@ class KTPage {
         $aJS[] = 'thirdpartyjs/extjs/ext-all.js';
         $aJS[] = 'thirdpartyjs/jquery/jquery-1.4.2.min.js';
         $aJS[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
+        $aJS[] = 'thirdpartyjs/jquery/plugins/urlparser/jquery.url.js';
         $aJS[] = 'resources/js/search2widget.js';
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';
