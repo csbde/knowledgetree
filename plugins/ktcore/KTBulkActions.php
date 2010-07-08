@@ -148,7 +148,7 @@ class KTBulkDeleteAction extends KTBulkAction {
                 'name' => 'reason',
                 'label' => _kt('Note'),
                 'value' => null,
-                'required' => true,
+                'required' => false,
             ));
 
         $oForm->setWidgets($widgets);
@@ -336,7 +336,6 @@ class KTBulkMoveAction extends KTBulkAction {
 	$oWF =& KTWidgetFactory::getSingleton();
 	$oWidget = $oWF->get('ktcore.widgets.collection',
 			     array('label' => _kt('Target Folder'),
-				   'description' => _kt('Use the folder collection and path below to browse to the folder you wish to move the documents into.'),
 				   'required' => true,
 				   'name' => 'fFolderId',
 				   'broken_name' => true,
@@ -373,7 +372,7 @@ class KTBulkMoveAction extends KTBulkAction {
                 'name' => 'reason',
                 'label' => _kt('Note'),
                 'value' => null,
-                'required' => true,
+                'required' => false,
                 )
         ));
 
@@ -584,7 +583,6 @@ class KTBulkCopyAction extends KTBulkAction {
 	$oWF =& KTWidgetFactory::getSingleton();
 	$oWidget = $oWF->get('ktcore.widgets.collection',
 			     array('label' => _kt('Target Folder'),
-				   'description' => _kt('Use the folder collection and path below to browse to the folder you wish to copy the documents into.'),
 				   'required' => true,
 				   'name' => 'fFolderId',
 				   'broken_name' => true,
@@ -618,7 +616,7 @@ class KTBulkCopyAction extends KTBulkAction {
                 'name' => 'reason',
                 'label' => _kt('Note'),
                 'value' => null,
-                'required' => true,
+                'required' => false,
                 )
         ));
 
@@ -812,7 +810,7 @@ class KTBulkArchiveAction extends KTBulkAction {
                 'name' => 'reason',
                 'label' => _kt('Note'),
                 'value' => null,
-                'required' => true,
+                'required' => false,
                 )
         ));
 
@@ -1312,7 +1310,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                 'name' => 'reason',
                 'label' => _kt('Note'),
                 'value' => null,
-                'required' => true,
+                'required' => false,
                 ));
         $widgets[] = array('ktcore.widgets.boolean', array(
                 'label' => _kt('Download Files'),

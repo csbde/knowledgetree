@@ -489,7 +489,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
                 'name' => 'reason',
             ));
         $widgets[] = array('ktcore.widgets.boolean', array(
-                'label' => _kt('Download File?'),
+                'label' => _kt('Download this file?'),
                 'name' => 'download_file',
                 'value' => true,
             ));
@@ -716,6 +716,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
         $aWidgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
+				'required' => false,
                 'name' => 'reason',
             ));
 
@@ -930,6 +931,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
 
         $widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
+			    'required' => false,
                 'name' => 'reason',
             ));
 
@@ -1084,6 +1086,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
 
         $widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
+			    'required' => false,
                 'name' => 'reason',
             ));
 
@@ -1222,7 +1225,6 @@ class KTDocumentMoveAction extends KTDocumentAction {
 
         $widgets[] = array('ktcore.widgets.foldercollection', array(
                 'label' => _kt('Target Folder'),
-			    'description' => _kt('Use the folder collection and path below select the folder into which you wish to move the document.'),
 			    'required' => true,
 			    'name' => 'browse',
                 'folder_id' => $this->oDocument->getFolderID()
@@ -1252,6 +1254,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
 
         $widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
+			    'required' => false,
                 'name' => 'reason',
         ));
 
@@ -1456,8 +1459,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $widgets = array();
         $widgets[] = array('ktcore.widgets.foldercollection', array(
                 'label' => _kt('Target Folder'),
-			    'description' => _kt('Use the folder collection and path below to browse to the folder you wish to copy the documents into.'),
-			    'required' => true,
+			    'required' => false,
 			    'name' => 'browse',
                 'folder_id' => $this->oDocument->getFolderID(),
             ));
@@ -1484,6 +1486,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
 
         $widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
+				'required' => false,
                 'name' => 'reason',
             ));
 
@@ -1693,6 +1696,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
 
         $widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
+			    'required' => false,
                 'name' => 'reason',
             ));
 
@@ -1957,6 +1961,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
         $widgets[] = array('ktcore.widgets.reason', array(
                     'label' => _kt('Note'),
+					'required' => false,
                     'name' => 'reason',
                 ));
 
@@ -2031,13 +2036,12 @@ class KTOwnershipChangeAction extends KTDocumentAction {
     var $_sShowPermission = 'ktcore.permissions.security';
 
     function getDisplayName() {
-        return _kt('Change Document Ownership');
+        return _kt('Change owner');
     }
 
     function form_owner() {
         $oForm = new KTForm;
         $oForm->setOptions(array(
-            'description' => _kt('Changing document ownership allows you to keep the "owner" role relevant, even when the original user no longer is an appropriate choice.'),
             'action' => 'reown',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
             'fail_action' => 'main',
@@ -2047,8 +2051,6 @@ class KTOwnershipChangeAction extends KTDocumentAction {
         $oForm->setWidgets(array(
             array('ktcore.widgets.entityselection', array(
                 'label' => _kt('New Owner'),
-                'description' => _kt('The owner of a document is usually the person with ultimate responsibility for its contents.  It is initially set to the person who created the document, but can be changed to any other user.'),
-                'important_description' => _kt('Please note that changing the owner may affect access to this document.'),
                 'label_method' => 'getName',
                 'vocab' => User::getList('id > 0'),
                 'value' => $this->oDocument->getOwnerID(),
@@ -2067,7 +2069,7 @@ class KTOwnershipChangeAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_kt('Changing Ownership'));
+        $this->oPage->setBreadcrumbDetails(_kt('change owner'));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/document/ownershipchangeaction');
 
         $change_form = $this->form_owner();

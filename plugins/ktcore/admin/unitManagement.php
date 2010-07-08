@@ -126,8 +126,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
         $oWF =& KTWidgetFactory::getSingleton();
         $oWidget = $oWF->get('ktcore.widgets.collection',
                              array('label' => _kt('Target Folder'),
-                                   'description' => _kt('<p>The folder given below is where the unit folder will be created. Use the folder collection and path below to browse to the folder you wish to create the unit folder into.</p><p>The unit administrators have additional rights within that portion of the document management system.
-</p>'),
+                                   'description' => _kt('<p>The unit folder will be created here.</p>'),
                                    'required' => true,
                                    'name' => 'browse',
                                    'folder_id' => $oFolder->getId(),

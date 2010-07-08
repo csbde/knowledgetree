@@ -316,6 +316,7 @@
 			| <a href="http://www.knowledgetree.com/company" target="_blank">{i18n}About{/i18n}</a>
 		</div></div>
 </div>
+{$gettingStarted}
 </body>
 </html>
 {if ($downloadNotification != '')}

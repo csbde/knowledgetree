@@ -44,7 +44,7 @@ class KTImmutableActionPlugin extends KTPlugin {
 
     function KTImmutableActionPlugin($sFilename = null) {
         $res = parent::KTPlugin($sFilename);
-        $this->sFriendlyName = _kt('Immutable action plugin');
+        $this->sFriendlyName = _kt('Finalize action plugin');
         return $res;
     }
 
@@ -63,7 +63,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
 	var $_bMutationAllowedByAdmin = false;
 	
     function getDisplayName() {
-        return _kt('Make immutable');
+        return _kt('Finalize');
     }
 
     function getInfo() {
@@ -101,7 +101,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
             'action' => 'main',
             'fail_action' => 'main',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
-            'submit_label' => _kt('Make Immutable'),
+            'submit_label' => _kt('Finalize'),
             'context' => &$this,
         ));
 
@@ -115,7 +115,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
             'action' => 'immutable',
             'fail_action' => 'main',
             'cancel_url' => KTBrowseUtil::getUrlForDocument($this->oDocument),
-            'submit_label' => _kt('Make Immutable'),
+            'submit_label' => _kt('Finalize'),
             'context' => &$this,
         ));
 
@@ -142,6 +142,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
         $widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
                 'name' => 'reason',
+				'required' => false
             ));
 
         $oForm->setWidgets($widgets);
@@ -169,7 +170,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
     }
     
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_kt('Immutable'));
+        $this->oPage->setBreadcrumbDetails(_kt('Finalize'));
     	//check if we need confirmation for symblolic links linking to this document
 		if(count($this->oDocument->getSymbolicLinks())>0 && KTutil::arrayGet($_REQUEST,'postReceived') != 1){
         	$this->redirectTo("confirm");
@@ -184,7 +185,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
     }
     
     function do_confirm(){
-    	$this->oPage->setBreadcrumbDetails(_kt('Confirm Making Document Immutable'));
+    	$this->oPage->setBreadcrumbDetails(_kt('Confirm making document final'));
     	$oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/immutable_confirm');
         $oForm = $this->form_confirm();
     	$oTemplate->setData(array(

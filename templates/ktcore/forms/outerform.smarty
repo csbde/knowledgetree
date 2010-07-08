@@ -1,7 +1,6 @@
 <form method="{$context->_method}" action="{$context->_actionurl}"
 {if $context->_noframe}class="noframe" {/if}
 {if $context->_enctype}enctype="{$context->_enctype}"{/if}>
-<br/>
     {if !empty($context->sDescription)}<p class="descriptiveText">{$context->sDescription}</p>{/if}
     
     {* hidden, "extra" args *}

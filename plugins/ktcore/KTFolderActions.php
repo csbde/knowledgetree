@@ -102,7 +102,6 @@ class KTFolderAddFolderAction extends KTFolderAction {
 		$folderWidgets[] = 
             array('ktcore.widgets.string', array(
                 'label' => _kt('Folder name'),
-                'description' => _kt('The name for the new folder.'),
                 'required' => true,
                 'name' => 'name'),
             );

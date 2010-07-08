@@ -18,9 +18,9 @@
 
 <thead>
     <tr>
-        <td style="width:45%"><label for="select_{$name}_avail">{i18n}Available{/i18n} {$label}</label></td>
-        <td style="width:10%">&nbsp;</td>
-        <td style="width:45%"><label for="select_{$name}_assigned">{i18n}Assigned{/i18n} {$label}</label></td>
+        <td><label for="select_{$name}_avail">{i18n}Available{/i18n} {$label}</label></td>
+        <td>&nbsp;</td>
+        <td><label for="select_{$name}_assigned">{i18n}Assigned{/i18n} {$label}</label></td>
     </tr>
 </thead>
 
@@ -28,33 +28,43 @@
     <tr>
     <td style="vertical-align: top">
 
-  <select name="{$name}" id="select_{$name}_avail" {if $options.multi}multiple="true"{/if} {if $options.size}size="{$options.size}"{/if}>
+  <select style="width:100%" name="{$name}" id="select_{$name}_avail" {if $options.multi}multiple="true"{/if} {if $options.size}size="{$options.size}"{/if}>
   {foreach item=lookup key=lookup_key from=$options.vocab}
        <option value="{$lookup_key}" {if ($value == $lookup_key)}selected="selected"{/if}>{$lookup}</option>
   {/foreach}
   </select>
-
-  <div><label for="filter_{$name}_avail">{i18n}Filter{/i18n}</label><input type="text" id="filter_{$name}_avail" /><br/><a href="#" id="{$name}_show_all">{i18n}Show All{/i18n}</a></div>
     </td>
 
     <td>
-    
+    <div style="vertical-align:middle;">
     <input type="button" id="{$name}_add" value="&raquo;" />
-    <br /><br/>
+    <br/>
     <input type="button" id="{$name}_remove" value="&laquo;" />
-    
+    </div>
     </td>
 
     <td style="vertical-align: top">
 
-  <select name="{$name}" id="select_{$name}_assigned" {if $options.multi}multiple="true"{/if} {if $options.size}size="{$options.size}"{/if}>
+  <select style="width:100%"  name="{$name}" id="select_{$name}_assigned" {if $options.multi}multiple="true"{/if} {if $options.size}size="{$options.size}"{/if}>
   {foreach item=lookup key=lookup_key from=$options.assigned}
        <option value="{$lookup_key}" {if ($value == $lookup_key)}selected="selected"{/if}>{$lookup->getName()}</option>
   {/foreach}
   </select>
-  <div><label for="filter_{$name}_assigned">{i18n}Filter{/i18n}</label><input type="text" id="filter_{$name}_assigned" /></div>
     </td>
     </tr>
+	
+	<tr>
+	<td style="vertical-align: top">
+	  <div><label for="filter_{$name}_avail">{i18n}Filter{/i18n}</label><input type="text" id="filter_{$name}_avail" /><br/><a href="#" id="{$name}_show_all">{i18n}Show All{/i18n}</a></div>
+	</td>
+	<td>
+	</td>
+	<td style="vertical-align: top">
+	  <div><label for="filter_{$name}_assigned">{i18n}Filter{/i18n}</label><input type="text" id="filter_{$name}_assigned" /></div>
+	</td>
+	</tr>
+	
+	
 </tbody>
 </table>
 

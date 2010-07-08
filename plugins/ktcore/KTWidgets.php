@@ -770,7 +770,7 @@ class KTCoreCollectionPage extends KTStandardDispatcher {
         print KTTemplating::renderTemplate('ktcore/forms/widgets/collection',
             array(
                 'collection'=> $oCollection,
-                'folder' => $oFolder,
+                'targetfolderid' => $oFolder->getId(),
                 'breadcrumbs' => $aBreadcrumbs,
                 'targetname' => $sName,
             )
@@ -1227,72 +1227,25 @@ class KTCoreSWFFileSelectWidget extends KTWidget {
     }
 
     function render() {
-        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
         
       	$this->aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
       	
       	//TODO: abstract handlers and config from javascript to enable these
       	//      to be set in php.
-
-      	//SWFUpload
+      	
       	$this->aJavascript[] = 'thirdpartyjs/swfupload/swfupload.js';
-        //$this->aJavascript[] = 'thirdpartyjs/swfupload/swfupload.queue.js';
-        $this->aJavascript[] = 'thirdpartyjs/swfupload/ktfileprogress.js';
-        $this->aJavascript[] = 'thirdpartyjs/swfupload/jquery.swfupload.js';
-        //$this->aJavascript[] = 'thirdpartyjs/swfupload/handlers.js';
-      	$this->aJavascript[] = 'resources/js/kt_swfupload.js';
-      	
-      	/* //TODO: migrate swfupload_s3 to plupload and use it instead.
-      	//PLUpload Includes
-      	$this->aJavascript[] = 'thirdpartyjs/plupload/js/plupload.min.js';
-      	$this->aJavascript[] = 'thirdpartyjs/plupload/js/plupload.flash.min.js';
-      	$this->aJavascript[] = 'thirdpartyjs/plupload/js/plupload.html5.min.js';
-      	$this->aJavascript[] = 'thirdpartyjs/plupload/js/plupload.html4.min.js';
-      	*/
-      	
-      	//$this->aJavascript[] = 'thirdpartyjs/plupload/js/jquery.gears.min.js';
-      	//$this->aJavascript[] = 'thirdpartyjs/plupload/js/jquery.silverlight.min.js';
-      	//$this->aJavascript[] = 'thirdpartyjs/plupload/js/jquery.browserplus.min.js';
-      	//$this->aJavascript[] = 'thirdpartyjs/plupload/js/jquery.plupload.queue.min.js';
-      	
-      	//Direct Upload to S3
-        if (ACCOUNT_ROUTING_ENABLED) {
-            ConfigManager::load('/etc/ktlive.cnf', KT_LIVE_DIR . '/config/config-path');
-            if (ConfigManager::error()) {
-                $errorMsg = ConfigManager::getErrorMessage();
-                if(isset($GLOBALS['default']->log)){
-                    $default->log->error(ACCOUNT_NAME.' SWFUpload Widget: Couldn\'t read configuration from /etc/ktlive.cnf ['.$errorMsg.']');
-                }
-            }
-
-            // load amazon authentication information
-            $aws = ConfigManager::getSection('aws');
-            // create the SQS Queue Manager
-            $key = $aws['key'];
-            $secret = $aws['secret'];
-            //$bucket = 'kt-act';
-            $bucket = $aws['bucket'];
-        }
-        
-        $uploadExpiry = 30;
-        $contentType = 'image/jpeg';
-        $successActionStatus = '201';
-        $successRedirect = '';
-        $acl = 'public-read';
-        $maxPostSize = 50 * 1048576;
-      	
-        
-        
-        $fileName = ACCOUNT_NAME . '/Documents/00320300/testing/0334';
-        
-        $uploadConfig = $this->getConfiguration($key, $secret, $fileName, $bucket, $uploadExpiry, $contentType, $successRedirect, $successActionStatus, $acl, $maxPostSize);
+        $this->aJavascript[] = 'thirdpartyjs/swfupload/swfupload.queue.js';      	
+        $this->aJavascript[] = 'thirdpartyjs/swfupload/fileprogress.js';      	
+        $this->aJavascript[] = 'thirdpartyjs/swfupload/handlers.js';
+      	$this->aJavascript[] = 'resources/js/kt_upload.js';
         
         if (!empty($this->aJavascript)) {
             // grab our inner page.
             $oPage =& $GLOBALS['main'];            
             $oPage->requireJSResources($this->aJavascript);
-            $oPage->requireJSStandalone($uploadConfig);
+            $oPage->requireJSStandalone($this->getConfiguration());
         }
         
         $this->aCSS[] = 'resources/css/upload.css';
@@ -1320,20 +1273,6 @@ class KTCoreSWFFileSelectWidget extends KTWidget {
         return $oTemplate->render($aTemplateData);   
     }    
     
-    /*
-    private function generateDocumentKey(){
-        $storagePath = $this->generateStoragePath($document);
-        if (PEAR::isError($storagePath)) {
-            return $storagePath;
-        }
-        $document->setStoragePath($storagePath);
-        $document->setFileSize($response->header['content-length']);
-        $amazonS3Path = sprintf("%s/%s", 'Documents', $document->getStoragePath());
-        
-        return 
-    } 
-    */   
-    
     /**
      * This function dynamically generates the init configuration script required by 
      * swfupload for the particular session.
@@ -1343,9 +1282,7 @@ class KTCoreSWFFileSelectWidget extends KTWidget {
      *
      * @return String configuration script.
      */
-    private function getConfiguration($key, $secret, $fileName, $bucket, $uploadExpiry, $contentType, $successRedirect, $successActionStatus, $acl, $maxPostSize, $folderId = null){
-        global $default; 
-        //require_once('thirdparty/cloudfusion/cloudfusion.class.php');
+    private function getConfiguration($folderId = null){
         
         if (is_null($folderId)) {
             $folderId = $_GET['fFolderId'];
@@ -1359,448 +1296,62 @@ class KTCoreSWFFileSelectWidget extends KTWidget {
             $folderId = $this->aOptions['fFolderId'];
         }
         
-        $s3 = new AmazonS3($key, $secret);
-        
-        $url = '';
-        try {
-            //$response = $s3->create_object($bucket, $opt);
-            //$url = $s3->get_bucket_post_url($bucket);
-            $url = 'http://' . $bucket . '.s3.amazonaws.com/';
-            
-            $policyParts = $this->getPolicyParts($key, $secret, $fileName, $bucket, $contentType, $maxPostSize, $successRedirect, $successActionStatus, $acl);
-            $policyDoc64 = $policyParts[0];
-            $sigPolicyDoc = $policyParts[1];
-            $contentTypePart = $policyParts[2];
-            
-            //TODO: investigate https and flash s3 uploader (produces IO Error)
-            $default->log->info("SWFUpload Widget: S3 url [$url]");
-            
-            //TODO: add check for debug mode before dumping the form
-            /*
-            $htmlForm = $this->getTestHtmlForm($url, $members);
-            //$default->log->info($htmlForm);
-            $fp = fopen ('var/cache/s3_upload_test.html' , 'w');
-            fwrite($fp, $htmlForm);
-            fclose($fp);
-            */
-            
-            //TODO: Investigate relativity of this case.
-            $isMacUser = (preg_match("/macintosh/",strtolower($_SERVER['HTTP_USER_AGENT'])) ? true : false);
-            
         ob_start();
         ?>
-var trackFiles = [];
-var trackFilesCount = 0;
-var trackSentURL = false;
-var forceDone = false;
-var forceFile = null;
-var master = null;
-var MacMinSizeUpload = 150000; // 150k, this is not cool :(
-var MacDelay = 10000; // 10 secs.
-var isMacUser = <?php echo ($isMacUser ? 'true' : 'false'); ?>;
+window.onload = function() {
+	var swfu;
 
-jQuery(function(){
-	jQuery('#swfupload-control').swfupload({
-		upload_url: "<?=$url?>",
-		
-		post_params: {"AWSAccessKeyId":"<?=$key?>", 
-					  "key":"<?=$fileName?>", 
-					  "acl":"<?=$acl?>", 
-					  "policy":"<?=$policyDoc64?>", 
-					  "signature":"<?=$sigPolicyDoc?>",
-					  "success_action_status":"<?=$successActionStatus?>", 
-					  "content-type":"<?=$contentTypePart?>"},
-					  
-		http_success : [<?=$successActionStatus?>], 
-		assume_success_timeout : <?php echo ($isMacUser ? 5 : 0); ?>,
+		var settings = {
+			flash_url : "thirdpartyjs/swfupload/swfupload.swf",
+			upload_url: "action.php?kt_path_info=ktlive.actions.folder.bulkupload&_kt_form_name=SWFUPLOAD&fFolderId=<?php print $folderId ?>&action=liveDocumentUpload",
+			//upload_url: "upload/upload.php",
+			post_params: {"PHPSESSID" : "<?php print session_id(); ?>"},
+			file_size_limit : "4096 MB",
+			file_types : "*.*",
+			file_types_description : "All Files",
+			file_upload_limit : 1,
+			file_queue_limit : 1,
+			custom_settings : {
+				progressTarget : "fsUploadProgress",
+				cancelButtonId : "btnCancel"
+			},
+			debug: false,
 
-		// File Upload Settings
-		file_post_name: 'file',
-		file_size_limit : "20240",    // 20 MB
-		file_types : "*.*",			// or you could use something like: "*.doc;*.wpd;*.pdf",
-		file_types_description : "All Files",
-		file_upload_limit : "0",
-		file_queue_limit : "1",			
-		
-		button_image_url: "resources/graphics/newui/swfupload.png",
-		button_placeholder_id : 'mybutton',
-		button_placeholder : jQuery('#mybutton'),
-		button_width: 61,
-		button_height: 22,		
-		
-		button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
-		button_cursor: SWFUpload.CURSOR.HAND,
-		moving_average_history_size: 10,
-	   
-		// Flash Settings
-		flash_url : "thirdpartyjs/swfupload/swfupload.swf",
-		custom_settings : {
-		  progressTarget : "uploadProgress",
-		 /*cancelButtonId : "btnCancel"*/
-		  upload_successful : false
-		},
-		
-		// Debug Settings
-        debug: true,
-        debug_handler : function(message){
-                try {
-                    if (window.console && typeof(window.console.error) === "function" && typeof(window.console.log) === "function") {
-                        if (typeof(message) === "object" && typeof(message.name) === "string" && typeof(message.message) === "string") {
-                            window.console.error(message);
-                        } else {
-                            window.console.log(message);
-                        }
-                    }
-                } catch (ex) {
+			// Button settings
+			//button_image_url: "resources/graphics/newui/swfupload.png",
+			button_width: jQuery("#fakeflashbutton").width(),
+			button_height: jQuery("#fakeflashbutton").height()+5,
+			button_placeholder_id: "spanButtonPlaceHolder",
+			//button_text: '<span class="button">Upload</span>',
+			//button_text_style: ".theFont { font-size: 16; }",
+			//button_text_left_padding: 12,
+			//button_text_top_padding: 3,
 
-                }
-        }
-	})
-	
-	.bind('fileDialogStart', function(event, file){
-		var swfu = jQuery.swfupload.getInstance('#swfupload-control');
-		var txtFileName = document.getElementById("txtFileName");
-		txtFileName.value = "";
-		swfu.cancelUpload();	
-	})
-	
-	.bind('uploadError', function(event, file, errorCode, message){
-		var swfu = jQuery.swfupload.getInstance('#swfupload-control');
-		try {
+			button_action : SWFUpload.BUTTON_ACTION.SELECT_FILES,
+			button_disabled : false,
+			button_cursor : SWFUpload.CURSOR.HAND,
+			button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
 			
-			if (errorCode === SWFUpload.UPLOAD_ERROR.FILE_CANCELLED) {
-				// Don't show cancelled error boxes
-				return;
-			}
-			var txtFileName = document.getElementById("txtFileName");
-			txtFileName.value = "";
-			validateForm();		
-			
-			file.id = "singlefile";
-			var progress = new FileProgress(file, swfu.customSettings.progressTarget);
-			progress.setError();
-			progress.toggleCancel(false);
-	
-			switch (errorCode) {
-			case SWFUpload.UPLOAD_ERROR.HTTP_ERROR:
-				progress.setStatus("Upload Error: " + message);
-				swfu.debug("Error Code: HTTP Error, File name: " + file.name + ", Message: " + message);
-				break;
-			case SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED:
-				progress.setStatus("Upload Failed.");
-				swfu.debug("Error Code: Upload Failed, File name: " + file.name + ", File size: " + file.size + ", Message: " + message);
-				break;
-			case SWFUpload.UPLOAD_ERROR.IO_ERROR:
-				progress.setStatus("Server (IO) Error");
-				swfu.debug("Error Code: IO Error, File name: " + file.name + ", Message: " + message);
-				break;
-			case SWFUpload.UPLOAD_ERROR.SECURITY_ERROR:
-				progress.setStatus("Security Error");
-				swfu.debug("Error Code: Security Error, File name: " + file.name + ", Message: " + message);
-				break;
-			case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
-				progress.setStatus("Upload limit exceeded.");
-				swfu.debug("Error Code: Upload Limit Exceeded, File name: " + file.name + ", File size: " + file.size + ", Message: " + message);
-				break;
-			case SWFUpload.UPLOAD_ERROR.FILE_VALIDATION_FAILED:
-				progress.setStatus("Failed Validation.  Upload skipped.");
-				swfu.debug("Error Code: File Validation Failed, File name: " + file.name + ", File size: " + file.size + ", Message: " + message);
-				break;
-			case SWFUpload.UPLOAD_ERROR.FILE_CANCELLED:
-				// If there aren't any files left (they were all cancelled) disable the cancel button
-				if (this.getStats().files_queued === 0) {
-					document.getElementById(swfu.customSettings.cancelButtonId).disabled = true;
-				}
-				progress.setStatus("Cancelled");
-				progress.setCancelled();
-				break;
-			case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
-				progress.setStatus("Stopped");
-				break;
-			default:
-				progress.setStatus("Unhandled Error: " + errorCode);
-				swfu.debug("Error Code: " + errorCode + ", File name: " + file.name + ", File size: " + file.size + ", Message: " + message);
-				break;
-			}
-		} catch (ex) {
-			swfu.debug(ex);
-		}		
-	})
-	
-	.bind('fileQueued', function(event, file){
-		try {
-			var txtFileName = document.getElementById("txtFileName");
-			txtFileName.value = file.name;
-			
-			detectArchiveFile(file.name);
-        	addFileToPost(file.name);
-        	
-		} catch (e) {
-		}		
-	})
-	
-	.bind('fileQueueError', function(event, file, errorCode, message){
-		alert('Size of the file '+file.name+' is greater than limit');
-	})
-	.bind('fileDialogComplete', function(event, numFilesSelected, numFilesQueued){
-		var swfu = jQuery.swfupload.getInstance('#swfupload-control');
-		swfu.startUpload();
-	})
-	
-	.bind('uploadStart', function(event, file){
-		var swfu = jQuery.swfupload.getInstance('#swfupload-control');
-		try {
-			var progress = new FileProgress(file, swfu.customSettings.progressTarget);
-			progress.setStatus("Uploading: " + file.name);
-			progress.toggleCancel(true, this);
-			trackFiles[trackFilesCount++] = file.name;
-			updateDisplay.call(swfu,file);
-		}
-		catch (ex) {}
-		return true;	
-	})
-	
-	.bind('uploadProgress', function(event, file, bytesLoaded, bytesTotal){		
-		var swfu = jQuery.swfupload.getInstance('#swfupload-control');
-		try {
-			var percent = Math.ceil((bytesLoaded / bytesTotal) * 100);
-			file.id = "singlefile";	
-			var progress = new FileProgress(file, swfu.customSettings.progressTarget);
-			var animPic = document.getElementById("loadanim");
-			if (animPic != null) {
-			  animPic.style.display = 'block';
-			}			
-			progress.setStatus("Uploading: " + file.name);
-			progress.setProgress(percent);
-			
-			updateDisplay.call(swfu, file);
-		} catch (ex) {
-			swfu.debug(ex);
-		}
-	})	
-	
-	.bind('uploadSuccess', function(event, file, serverData){
-		var swfu = jQuery.swfupload.getInstance('#swfupload-control');
-		try {
-			file.id = "singlefile";
-			var progress = new FileProgress(file, swfu.customSettings.progressTarget);
-			progress.setComplete();
-			progress.setStatus("Uploaded: &nbsp;" + file.name);
-			progress.toggleCancel(false);
+			// The event handler functions are defined in handlers.js
+			file_queued_handler : fileQueued,
+			file_queue_error_handler : fileQueueError,
+			file_dialog_complete_handler : fileDialogComplete,
+			upload_start_handler : uploadStart,
+			upload_progress_handler : uploadProgress,
+			upload_error_handler : uploadError,
+			upload_success_handler : uploadSuccess,
+			upload_complete_handler : uploadComplete,
+			queue_complete_handler : queueComplete	// Queue plugin event
+		};
 
-			status = jQuery('#upload_status');
-    		status.html("<div id='kt_swf_remove_file'>Uploaded: " + file.name + " <a href='#' class='deleteButton' onclick='confirmFileRemove();'>remove</a></div>");
-            hideUploadButton();
-            
-            jQuery('#uploadProgress').fadeOut(5000);
-            jQuery('input[type=submit]').removeAttr('disabled');
-                	 
-			if (serverData === " ") {
-				swfu.customSettings.upload_successful = false;
-			} else {
-				swfu.customSettings.upload_successful = true;
-				document.getElementById("hidFileID").value = serverData;
-			}
-		} catch (ex) {
-			swfu.debug(ex);
-		}
-	})
-	
-	.bind('uploadComplete', function(event, file){
-		// upload has completed, try the next one in the queue
-		//jQuery(this).swfupload('startUpload');
-		var swfu = jQuery.swfupload.getInstance('#swfupload-control');
-		try {
-			if (swfu.customSettings.upload_successful) {
-				swfu.setButtonDisabled(true);
-				
-				status = jQuery('#upload_status');
-        		status.html("<div id='kt_swf_remove_file'>Uploaded: " + file.name + " <a href='#' class='deleteButton' onclick='confirmFileRemove();'>remove</a></div>");
-                hideUploadButton();
-                
-                jQuery('#uploadProgress').fadeOut(5000);
-                jQuery('input[type=submit]').removeAttr('disabled');
-
-				log_debug('Upload complete: hiding upload button, setting file text');
-        				
-				//CALL BACK uploadDone(); OR
-				//FORM SUBMIT document.forms[0].submit();
-				//alert('DONE!!');
-			} else {
-				file.id = "singlefile";	// This makes it so FileProgress only makes a single UI element, instead of one for each file
-				var progress = new FileProgress(file, swfu.customSettings.progress_target);
-				progress.setError();
-				progress.setStatus("File rejected");
-				progress.toggleCancel(false);
-				
-				var txtFileName = document.getElementById("txtFileName");
-				txtFileName.value = "";
-				validateForm();
-				alert("There was a problem with the upload.\nThe server did not accept it.");
-			}
-		} catch (e) {
-		}	
-	})
-
-});	
-
-function updateDisplay(swfu,file) {
-  // isMacUser Patch Begin
-  if ( isMacUser ) {
-	if (file == null && forceDone) {
-      master.cancelUpload(forceFile.id,false);
-      pauseProcess(500); // allow flash? to update itself
-      master.uploadSuccess(forceFile,null);
-      master.uploadComplete(forceFile);
-      forceDone = false;
-      return;
-    }
-    // check for small files less < 150k
-    // note: dialup users will get bad results.
-    if (file.size < MacMinSizeUpload && !forceDone) {
-      master = swfu;
-      if (!forceDone) {
-        forceFile = file;
-        // wait <n> seconds before enforcing upload done!
-        setTimeout("updateDisplay("+null+","+null+")",MacDelay);
-        forceDone = true;
-      }
-    }
-  } // isMacUser Patch End
-}
-
-// this should *not* be needed, just testing an idea 
-function pauseProcess(millis) {
-  var sDate = new Date();
-  var cDate = null;
-
-  do { 
-    cDate = new Date(); 
-  } while(cDate-sDate < millis);
-}
-function validateForm() {
-	//validate here
-}
-
+		swfu = new SWFUpload(settings);
+};
         <?PHP
-        
-            $script = ob_get_contents();
-            ob_end_clean();                    
-            return $script;
-        }
-        catch (Exception $e) {
-            $default->log->error("SWFUpload Widget: [" . $e->getMessage() . ']');
-            return false;
-        }
-    }
-    
-    
-    /**
-     * This function is responsibile for creating the policy and signature artifacts required by
-     * S3 as a contractual agreement as to the conditions of the upload. The exact policy format below
-     * is required for a successful POST to amazon. It is consumed by the swfupload.swf which inturn
-     * uploads the selected file directly to S3
-     * 
-     * @param $key
-     * @param $secret
-     * @param $bucket
-     * @param $contentType
-     * @param $maxPostSize
-     * @param $successRedirect
-     * @param $successActionStatus
-     * @param $acl
-     * @param $expTime
-     */
-    private function getPolicyParts($key, $secret, $fileName, $bucket, $contentType, $maxPostSize, $successRedirect, $successActionStatus = '201', $acl = 'public-read', $expTime = null) {
-        global $default;
-        
-        if (is_null($expTime)) {
-            $expTime = time() + (1 * 60 * 60);
-        }
-        
-        $expTimeStr = gmdate('Y-m-d\TH:i:s\Z', $expTime);
-        
-        $contentTypeParts = explode('/', $contentType);
-        
-        //TODO: implement starts-with fileName condition, for added S3 security...
-        $expTimeStr = gmdate('Y-m-d\TH:i:s\Z', $expTime);
-        $policyDoc = '{
-                "expiration": "' . $expTimeStr . '",
-                "conditions": [
-                {"bucket": "' . $bucket . '"},
-                ["starts-with", "$key", ""],
-                {"acl": "public-read"},
-                ["content-length-range", 0, '. $maxPostSize .'],
-                {"success_action_status": "201"},
-                ["starts-with", "$Filename", ""], 
-                ["starts-with", "$Content-Type", "'.$contentTypeParts[0].'"]
-              ]
-        }';
-        
-        $default->log->info('SWFUpload Widget: Policy Document |' . $policyDoc . '|');
-        
-        $policyDoc = implode(explode('\r', $policyDoc));
-        $policyDoc = implode(explode('\n', $policyDoc));
-        $policyDoc64 = base64_encode($policyDoc);
-        $sigPolicyDoc = base64_encode(hash_hmac("sha1", $policyDoc64, $secret, TRUE));
-        
-        return array ($policyDoc64, $sigPolicyDoc, $contentTypeParts[0]);
-    }
-    
-    /**
-     * Test function that produces an html form populated with the S3 parameters for the current session.
-     * This can be used to directly test that the parameters, specifically policy and signature are in order.
-     * 
-     * The form also contains a link to the crossdomain.xml that can be used to inspect and ensure public 
-     * availability. This is a flash runtime cross-domain uploading requirement. 
-     * 
-     * @param string $url
-     * @param string $fileName
-     * @param string $key
-     * @param string $acl
-     * @param string $successActionRedirect
-     * @param string $successActionStatus
-     * @param string $policyDoc
-     * @param string $sigPolicyDoc
-     * @param string $contentType
-     * @return string
-     */
-    private function getTestHtmlForm($url, $fileName, $key, $acl, $successActionRedirect, $successActionStatus, $policyDoc, $sigPolicyDoc, $contentType) {
-        ob_start();
-            ?>
-        <html>
-          <head>
-            <title>KnowledgeTree S3 Test POST Form</title>
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-          </head>
-        
-          <body>
-            <form action="<?php echo $url; ?>" method="post" enctype="multipart/form-data">
-              <input type="hidden" name="key" value="<?php echo $filename;?>">
-              <input type="hidden" name="AWSAccessKeyId" value="<?php echo $key;?>">
-              <input type="hidden" name="acl" value="<?php echo $acl;?>">
-              <input type="hidden" name="success_action_redirect" value="<?php echo $successActionRedirect?>">
-              <input type="hidden" name="success_action_status" value="<?php echo $successActionStatus?>">
-              <input type="hidden" name="policy" value="<?php echo $policyDoc;?>">
-              <input type="hidden" name="signature" value="<?php echo $sigPolicyDoc;?>">
-              <input type="hidden" name="Content-Type" value="<?php echo $contentType;?>">
-              <input type="hidden" name="filename" value="<?php echo $fileName?>">
-        
-              File to upload to S3:
-              <input name="file" type="file">
-              <br>
-              <input type="submit" value="Upload File to S3">
-            </form>
-            
-            <a href='<?php echo $url.'/crossdomain.xml?AWSAccessKeyId=AKIAIIMC454ICRXFMKTQ' . '&policy=' . $members['Policy'] . '&signature=' . $members['Signature']?>'>
-            	click to test if crossdomain.xml is publicly accessable.
-            </a>
-            
-          </body>
-        </html>
-        <?php   
-        $htmlForm = ob_get_contents();
+        $script = ob_get_contents();
         ob_end_clean();
-        return $htmlForm;       
+        
+        return $script;
     }
+    
 }
+

@@ -1,4 +1,4 @@
-<h2>{i18n}Copy document{/i18n}: {$documentName}</h2>
+<h2>{i18n}Copy{/i18n}: {$documentName}</h2>
 
 {assign var=iDocumentId value=$context->oDocument->getId()}
 

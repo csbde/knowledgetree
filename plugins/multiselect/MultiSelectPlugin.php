@@ -120,7 +120,7 @@ class MultiSelectPlugin extends KTPlugin {
 		//		e.g. $this->deRegisterPluginHelper('documents/fieldmanagement2', 'KTDocumentFieldDispatcher');
 		
 		$js .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
-		$this->registerAdminPage('ratpfieldset', 'InetDocumentFieldDispatcher', 'documents',
+		$this->registerAdminPage('ratpfieldset', 'InetDocumentFieldDispatcher', 'contentProvisioning',
              $js._kt('Document Fieldsets'),
             _kt('Manage the different types of information with multiselect functionality that can be associated with classes of documents.'),
             'InetdocumentFieldsv2.php', null);

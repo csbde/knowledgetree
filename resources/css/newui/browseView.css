@@ -1,3 +1,7 @@
+#content {
+  overflow: visible;
+}
+
 .standardBorder {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -52,6 +56,7 @@
   display: inline-block;
   clear: none;
   position: relative;
+  margin-right: 15px;
 }
 .documentBrowseView .documentItem .documentIcon .documentPreview {
   position: absolute;
@@ -75,13 +80,8 @@
 .documentBrowseView .documentItem .documentIcon:hover .documentPreview {
   display: block;
 }
-.documentBrowseView .documentItem .documentDetailPane {
-  clear: none;
-}
 .documentBrowseView .documentItem .documentActions {
-  float: right;
-  display: inline-block;
-  clear: none;
+  vertical-align: right;
 }
 .documentBrowseView .documentItem .documentActions .actionIcon {
   border: 1px solid #AAAAAA;
@@ -111,7 +111,7 @@
   border-radius: 3px;
   z-index: 20000;
   left: -180px;
-  top: 2px;
+  top: 15px;
   cursor: auto;
 }
 .documentBrowseView .documentItem .documentActions .actionIcon .ulSubmenu li {
@@ -152,8 +152,14 @@
   padding-top: -3px;
   color: #0000A1;
 }
-.documentBrowseView .documentItem .documentActions .actionIcon.comments:hover {
-  background-image: url(/resources/graphics/newui/comment_view.png);
+.documentBrowseView .documentItem .documentActions .actionIcon.comments .add {
+  display: none;
+}
+.documentBrowseView .documentItem .documentActions .actionIcon.comments:hover .add {
+  display: block;
+}
+.documentBrowseView .documentItem .documentActions .actionIcon.comments:hover .count {
+  display: none;
 }
 .documentBrowseView .documentItem .documentActions .actionIcon.actions {
   border: none;
@@ -161,6 +167,8 @@
 }
 .documentBrowseView .documentItem .documentActions .documentActionMenu {
   text-align: right;
+  width: 60px;
+  margin: 0 0 0 60%;
 }
 .documentBrowseView .documentItem .documentTitle {
   display: inline-block;
@@ -181,4 +189,81 @@
   background-color: #f5f5f5;
   border: 1px solid #e0e0e0;
   display: none;
+}
+
+.doc.browseView .doc.item.debug * {
+  border: 1px solid transparent;
+}
+.doc.browseView .doc.item.debug *:hover {
+  border: 1px solid #A10000 !important;
+}
+.doc.browseView .doc.item {
+  font-family: sans-serif;
+  font-size: 11px;
+  color: #333333;
+  border: 1px solid transparent;
+  border-bottom: 1px solid #e6e6e6;
+  padding: 5px;
+  margin: 5px;
+}
+.doc.browseView .doc.item td {
+  vertical-align: top;
+}
+.doc.browseView .doc.item:hover {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #fafafa;
+  border: 1px solid #e6e6e6;
+}
+.doc.browseView .doc.icon_cell {
+  padding-right: 5px;
+  margin: 0px;
+}
+.doc.browseView .doc.icon_cell .doc.icon {
+  background-color: #e6e6e6;
+  width: 32px;
+  height: 32px;
+  position: relative;
+  padding: 0px;
+  margin: 0px;
+}
+.doc.browseView .doc.icon_cell .doc.icon .doc.preview {
+  position: absolute;
+  width: 150px;
+  height: 200px;
+  display: none;
+  cursor: pointer;
+  border: 1px solid #e6e6e6;
+  background-color: #fafafa;
+  -webkit-box-shadow: 0px 0px 5px #2e2e2e;
+  -moz-box-shadow: 0px 0px 5px #2e2e2e;
+  box-shadow: 0px 0px 5px #2e2e2e;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  padding: 2px;
+  z-index: 20000;
+  left: 15px;
+  top: 20px;
+}
+.doc.browseView .doc.icon_cell .doc.icon:hover .doc.preview {
+  display: block;
+}
+.doc.browseView .doc.summary_cell .title {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: bold;
+  padding-bottom: 5px;
+  margin-right: 15px;
+}
+.doc.browseView .doc.summary_cell .detail .item {
+  font-weight: bold;
+  margin-right: 10px;
+}
+.doc.browseView .doc.summary_cell .detail .item .user {
+  font-weight: normal;
+}
+.doc.browseView .doc.summary_cell .detail .item .date {
+  font-weight: normal;
 }

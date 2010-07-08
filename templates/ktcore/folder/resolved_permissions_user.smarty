@@ -1,8 +1,6 @@
 <h2>{i18n}Resolved permissions per user{/i18n}: {$context->oFolder->getName()|sanitize}</h2>
 
-<p class="descriptiveText">{i18n}This page shows the permissions that
-individual users have on this folder.  Only the users which have permissions
-assigned are shown.{/i18n}</p>
+<p class="descriptiveText">{i18n}Roles and groups with permissions for this document are shown below.{/i18n}</p>
 
 <p class="descriptiveText">{i18n}Users may have permissions on this
 folder due to membership of a group, or fulfilling a specific role on
@@ -13,10 +11,10 @@ this folder.{/i18n}</p>
 {else}
 
 {if $edit}
-{i18n}Manage security{/i18n}: <a href="{addQS}action=edit&fFolderId={$oFolder->getId()}{/addQS}">{i18n}Edit permissions{/i18n}</a>
+<br/>{i18n}Manage security{/i18n}: <a href="{addQS}action=edit&fFolderId={$oFolder->getId()}{/addQS}">{i18n}Edit permissions{/i18n}</a><br/>
 | <a href="{addQS}fFolderId={$oFolder->getId()}{/addQS}">{i18n}View permissions overview{/i18n}</a>
 {else}
-{i18n}Manage security{/i18n}: <a href="{addQS}fFolderId={$oFolder->getId()}{/addQS}">{i18n}View permissions overview{/i18n}</a>
+<br/>{i18n}Manage security{/i18n}: <a href="{addQS}fFolderId={$oFolder->getId()}{/addQS}">{i18n}View permissions overview{/i18n}</a><br/>
 {/if}
 
 <table   class="kt_collection narrow" cellspacing="0" cellpadding="0" border="0">

@@ -75,21 +75,19 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $oForm->setWidgets(array(
             array('ktcore.widgets.string', array(
                 'label' => _kt('Name'),
-                'description' => _kt('Your full name.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'),
                 'required' => true,
                 'name' => 'name',
                 'value' => sanitizeForHTML($this->oUser->getName()),
                 'autocomplete' => false)),
             array('ktcore.widgets.string', array(
                 'label' => _kt('Email Address'),
-                'description' => _kt('Your email address.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'),
                 'required' => true,
                 'name' => 'email_address',
                 'value' => sanitizeForHTML($this->oUser->getEmail()),
                 'autocomplete' => false)),
             array('ktcore.widgets.boolean', array(
                 'label' => _kt('Email Notifications'),
-                'description' => _kt('If this is specified then the you will receive certain notifications.  If it is not set, then you will only see notifications on the <strong>Dashboard</strong>'),
+                'description' => _kt('Check to allow notifications to be sent to your email address.'),
                 'required' => false,
                 'name' => 'email_notifications',
                 'value' => $this->oUser->getEmailNotification(),
@@ -121,7 +119,7 @@ class PreferencesDispatcher extends KTStandardDispatcher {
             'action' => 'updatePassword',
             'fail_action' => 'setPassword',
             'cancel_action' => 'main',
-            'label' => _kt('Change your password'),
+            'label' => _kt('Change password'),
             'submit_label' => _kt('Set password'),
             'extraargs' => $this->meldPersistQuery("","", true),
         ));

@@ -1,14 +1,12 @@
-<h2>{i18n}View Permissions for{/i18n}: {$context->oFolder->getName()|sanitize}</h2>
+<h2>{i18n}View permissions for{/i18n}: {$context->oFolder->getName()|sanitize}</h2>
 
-<p class="descriptiveText">{i18n}This page shows the permissions that apply to
-this specific folder.  Only the roles or groups which have permissions
-assigned are shown.{/i18n}</p>
+<p class="descriptiveText">{i18n}Roles and groups with permissions for this document are shown below.{/i18n}</p>
 
-{if $edit}
+{if $edit}<br/>
 {i18n}Manage security{/i18n}: <a href="{addQS context=$context}action=edit{/addQS}">{i18n}Edit permissions{/i18n}</a>
-| <a href="{addQS context=$context}action=resolved_users{/addQS}">{i18n}View resolved permissions for user{/i18n}</a>
+| <a href="{addQS context=$context}action=resolved_users{/addQS}">{i18n}View resolved permissions for user{/i18n}</a><br/>
 {else}
-{i18n}Manage security{/i18n}: <a href="{addQS context=$context}action=resolved_users{/addQS}">{i18n}View resolved permissions for user{/i18n}</a>
+<br/>{i18n}Manage security{/i18n}: <a href="{addQS context=$context}action=resolved_users{/addQS}">{i18n}View resolved permissions for user{/i18n}</a><br/>
 {/if}
 
 

@@ -39,7 +39,7 @@
 
 {/if}
 
-{if 1==2}
+{if 1==1}
 	{$collection->render()}
 {else}
 	<div class="standardBorder" style="min-width: 800px;">

@@ -1,12 +1,12 @@
 @mixin corners($size){
 	-webkit-border-radius: $size;
 	-moz-border-radius: $size;
-	border-radius: $size; 
+	border-radius: $size;
 }
 
 @mixin shaddow($size,$color){
 	-webkit-box-shadow: 0px 0px $size $color ;
-	-moz-box-shadow: 0px 0px $size $color;
+	-moz-box-shadow: 0px 0px $size $color; 
 	box-shadow: 0px 0px $size $color; 
 }
 
@@ -14,7 +14,7 @@ $bgcolor:#FFFFFF;
 $bcolor:darken($bgcolor, 3%);
 
 $hbgcolor: darken($bgcolor, 2%);
-$hbcolor: darken($hbgcolor, 8%);
+$hbcolor: darken($hbgcolor, 8%); 
 
 $iconbg:$hbcolor;
 
@@ -28,6 +28,10 @@ $menuItemBo: darken($menuItemBg, 8%);
 $expanderFieldBg: darken($hbgcolor, 2%);
 $expanderFieldBo: darken($expanderFieldBg,8%);
 
+
+#content{
+	overflow: visible;
+}
 
 .standardBorder{
 	@include corners(5px);
@@ -82,6 +86,7 @@ $expanderFieldBo: darken($expanderFieldBg,8%);
 			display: inline-block;
 			clear: none;
 			position: relative;
+			margin-right: 15px;
 			.documentPreview{
 				position: absolute;
 				width: 150px;
@@ -105,12 +110,9 @@ $expanderFieldBo: darken($expanderFieldBg,8%);
 		}
 		
 		.documentDetailPane{
-			clear: none;
 		}
 		.documentActions{
-			float: right;
-			display: inline-block;
-			clear: none;
+			vertical-align: right;
 			.actionIcon{
 				border: 1px solid #AAAAAA;
 				display: inline-block;
@@ -134,7 +136,7 @@ $expanderFieldBo: darken($expanderFieldBg,8%);
 					@include corners(3px);
 					z-index: 20000;
 					left: 20-$menuWidth;
-					top: 2px;
+					top: 15px;
 					cursor: auto;
 					li{
 						display: block;
@@ -177,8 +179,16 @@ $expanderFieldBo: darken($expanderFieldBg,8%);
 					font-weight: bold;
 					padding-top: -3px;
 					color: #0000A1;
+					.add{
+						display: none;
+					}
 					&:hover{
-						background-image: url(/resources/graphics/newui/comment_view.png);
+						.add{
+							display: block;
+						}
+						.count{
+							display: none;
+						}
 					}
 				}
 				&.permissions{
@@ -190,6 +200,8 @@ $expanderFieldBo: darken($expanderFieldBg,8%);
 			}
 			.documentActionMenu{
 				text-align: right;
+				width: 60px;
+				margin: 0 0 0 60%;
 			}
 		}
 		
@@ -210,6 +222,98 @@ $expanderFieldBo: darken($expanderFieldBg,8%);
 			background-color: $expanderFieldBg;
 			border: 1px solid $expanderFieldBo;
 			display: none;
+		}
+	}
+}
+
+
+
+.doc.browseView{
+	.doc.item.debug{
+		*{
+			border: 1px solid transparent;
+			&:hover{
+				border: 1px solid #A10000 !important;
+			}
+		}
+	}
+	
+	.doc.item{
+		font-family: $font;
+		font-size: 11px;
+		color: $font-color;
+		border: 1px solid transparent;
+		border-bottom: 1px solid $hbcolor;
+		padding: 5px;
+		margin: 5px;
+
+		td{
+			vertical-align: top;
+		}
+	
+		&:hover{
+			@include corners(3px);
+			background-color: $hbgcolor;
+			border: 1px solid $hbcolor; 
+		}
+	}
+	
+	.doc.icon_cell{
+		padding-right: 5px;
+		margin: 0px;
+		
+		.doc.icon{
+			background-color: $iconbg;
+			width: 32px;
+			height: 32px;
+			position: relative;
+			padding: 0px;
+			margin: 0px;
+
+			.doc.preview{
+				position: absolute;
+				width: 150px;
+				height: 200px;
+				display: none;
+				cursor: pointer;
+				border: 1px solid $iconbg;
+				background-color: $hbgcolor;
+				@include shaddow(5px,darken($hbgcolor,80%));
+				@include corners(3px);
+				padding: 2px;
+				z-index: 20000;
+				left: 15px;
+				top: 20px;
+			}
+			
+			&:hover{
+				.doc.preview{
+					display: block;
+				}
+			}
+		}
+	}
+	
+	.doc.summary_cell{
+		.title{
+			display: inline-block;
+			font-size: 14px;
+			font-weight: bold;
+			padding-bottom: 5px;
+			margin-right: 15px;	
+		}
+		
+		.detail{
+			.item{
+				font-weight: bold;
+				margin-right: 10px;
+				.user{
+					font-weight: normal;
+				}
+				.date{
+					font-weight: normal;
+				}
+			}
 		}
 	}
 }

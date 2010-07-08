@@ -253,6 +253,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		$collection = new AdvancedCollection;
 		$collection->addColumns($oColumnRegistry->getColumnsForView('ktcore.views.browse'));
+		//ktcore.columns.title
 
 		$aOptions = $collection->getEnvironOptions(); // extract data from the environment
 		$aOptions['result_url'] = $this->resultURL;
@@ -468,34 +469,41 @@ INNER JOIN mime_types ON (document_content_version.mime_id = mime_types.id) WHER
 	<span class="documentBrowseView">
 	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="documentItem fdebug">
 		<tr>
-			<td><div class="documentIconCell"><span class="documentPreview"></span></div></td>
-			<td class="documentDetailPane">
+			<td width="1"><div class="documentIcon"><span class="documentPreview"></span></div></td>
+			<td class="documentDetailPane" width="">
 				<div class="documentTitle"><a class="clearLink" href="view.php?fDocumentId=[id]">[filename]</a></div>
 				<div class="documentDetail">Owner: [owner_id] Created: [created] by [creator_id] Updated:[modified] by [modified_user_id]</div>
 			</td>
-			<td class="documentActions">
+			<td class="documentActions" width="5">
 				<div class="documentNotification">Workflow,Immutable</div>
-				<span class="documentActionMenu">
-					<span class="actionIcon properties not_supported">p</span>
-					<span class="actionIcon comments" style="position: absolute;"><span style="position: relative; top: -3px;">5</span></span>
-					<span class="actionIcon permissions not_supported">s</span>
-					<span class="actionIcon actions" st><ul class="ulSubmenu">
-							<li><a href="#">Download</a></li>
-							<li><a href="#">Checkin</a></li>
-							<li><a href="#">Alerts</a></li>
-							<li><a href="#">Cancel Checkout</a></li>
-							<li><a href="#">Change Document Ownership</a></li>
-							<li><a href="#">Email</a></li>
-							<li><a href="#">Instant View</a></li>
-						</ul>
-					</span>
-				</span>
+				<div class="documentActionMenu">
+
+					<table width="40"><tr>
+						<!-- 
+						<td><span class="actionIcon properties not_supported">p</span></td>
+						<td><span class="actionIcon permissions not_supported">s</span></td>
+						 -->
+						<td><span class="actionIcon comments" style="position: absolute;"><span style="position: relative; top: -3px;"><span class="count">?</span><span class="add">+</span></span></span></td>
+						<td><span class="actionIcon actions"><ul class="ulSubmenu">
+								<li><a href="#">Download</a></li>
+								<li><a href="#">Checkin</a></li>
+								<li><a href="#">Alerts</a></li>
+								<li><a href="#">Cancel Checkout</a></li>
+								<li><a href="#">Change Document Ownership</a></li>
+								<li><a href="#">Email</a></li>
+								<li><a href="#">Instant View</a></li>
+							</ul>
+						</span></td>
+					</tr></table>
+				
+				</div>
 			</td>
 		</tr>
 		<tr>
 			<td class="expanderField">Some additional Detail</td>
 		</tr>
 	</table>';
+		
 		return ktVar::parseString($tpl,$item);
 	}
 }
