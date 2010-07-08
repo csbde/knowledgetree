@@ -4,10 +4,7 @@
    <input type="hidden" name="action" value="saveUser" />
    <input type="hidden" name="user_id" value="{$edit_user->getId()}" />
    <input type="hidden" name="old_search" value="{$old_search}" />
-   <fieldset>
-      <legend>{i18n}Change User Details{/i18n}</legend>
-<p class="descriptiveText">{i18n arg_appname="$appname"}Please complete the form below to edit the user. Fields marked with a red square are required. By default, users are created using #appname#'s builtin authentication provider. Should you wish to use an external authentication provider such as LDAP, please ensure that the provider's plugin is registered and enabled.{/i18n}</p>
-      {foreach item=oWidget from=$edit_fields}
+       {foreach item=oWidget from=$edit_fields}
       
         {$oWidget->render()}
       {/foreach}
@@ -15,16 +12,13 @@
          <input type="submit" value="{i18n}save changes{/i18n}" />
          <input type="submit" name="kt_cancel[{addQS}old_search={$old_search}&do_search=1{/addQS}]" value="{i18n}Cancel{/i18n}" />
       </div>
-   </fieldset>
    </form>
 
 {assign var=provider_stuff value=$provider->showUserSource($edit_user, $source)}
 {if $provider_stuff}
-<fieldset><legend>{i18n}Authentication{/i18n}</legend>
 <p class="descriptiveText">{i18n arg_name=$edit_user->getName()
 arg_provider=$provider->getName()}#name#'s authentication is
 handled by the <strong>#provider#</strong>.{/i18n}</p>
 {$provider_stuff}
-</fieldset>
 {/if}
 

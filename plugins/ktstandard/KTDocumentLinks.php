@@ -62,7 +62,7 @@ class KTDocumentLinks extends KTPlugin {
         $this->registerAction('documentviewlet', 'KTDocumentLinkViewlet', 'ktcore.viewlets.document.link');
         $this->registerColumn(_kt('Link Title'), 'ktdocumentlinks.columns.title', 'KTDocumentLinkTitle',
                               dirname(__FILE__) . '/KTDocumentLinksColumns.php');
-        $this->registerAdminPage("linkmanagement", 'KTDocLinkAdminDispatcher', 'contentProvisioning',
+        $this->registerAdminPage("linkmanagement", 'KTDocLinkAdminDispatcher', 'contentSetup',
             _kt('Link Type Management'),
             _kt('Manage the different ways documents can be associated with one another.'),
             __FILE__, null);

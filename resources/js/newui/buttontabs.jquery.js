@@ -54,4 +54,28 @@
 		});
 		return this;
 	}
+	
+	$(document).ready(function(){
+		var page=(jQuery.url.attr('anchor')+'').toLowerCase();
+		if(page){
+			if(typeof(console)!='undefined'){
+				console.log("@@@ SEARCHING FOR TAB: "+page);
+				console.log($('.page_'+page));
+			}
+			$('.page_'+page).click();
+		}
+		//kt_path_info=instaview.processor.link
+			
+		//Convert the current preview link to a javascript action
+		$('#middle_nav a').each(function(){
+            if(this.href.search("kt_path_info=instaview\.processor\.link")>-1){
+                var elem=$(this);
+                elem.click(function(){
+                	$('.page_preview').click();
+                }).attr('href','#');
+            }			
+		});
+		
+	});
+	
 })(jQuery);
