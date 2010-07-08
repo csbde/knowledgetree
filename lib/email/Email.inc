@@ -330,7 +330,7 @@ class Email {
 //            $logo = '<img src="'.$rootUrl.'/resources/graphics/ktlogo-topbar-right-transparent.png" class="primary" title="'.$appName.'" height="44" width="252"/>';
 //	    }
 
-	    $logo = '<img src="'.$rootUrl.'/resources/graphics/email_header.png" class="primary" title="'.$appName.'" height="100" width="680"/>';
+	    $logo = '<img src="'.$rootUrl.'/resources/graphics/email_header.jpg" class="primary" title="'.$appName.'" height="100" width="680"/>';
 
         $str = '<html>
                     <body>
