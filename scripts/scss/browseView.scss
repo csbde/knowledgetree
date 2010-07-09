@@ -39,12 +39,71 @@
 		top: 14px;
 		left: -146px;
 		display: none;
+		z-index: 20000;
 	}
 	&:hover{
 		span:first-child{
 			display: block;
 		}
 	}
+}
+
+@mixin dropMenu(){
+	cursor: pointer;
+	position: relative;
+	&>ul{
+		text-align: left;
+		display: none;
+		position: absolute;
+		margin: 0px;
+		padding: 0px !important;
+		list-style: none;
+		width: $menuWidth;
+		border: 1px solid $iconbg;
+		background-color: $hbgcolor;
+		@include shaddow(5px,darken($hbgcolor,80%));
+		@include corners(3px);
+		z-index: 20000;
+		left: 20-$menuWidth;
+		top: 15px;
+		cursor: auto;
+		li{
+			display: block;
+			margin: inherit;
+			padding: 2px 10px;
+			margin: 2px 5px;
+			cursor: pointer;
+			@include corners(4px);
+			border: 1px solid transparent;
+			&:first-child{
+				margin-top: 5px;
+			}
+			&:last-child{
+				margin-bottom: 5px;
+			}
+			&:hover{
+				background-color: $menuItemBg;
+				border: 1px solid $menuItemBo;
+				
+			}
+			a,a:link,a:active,a:visited,a:hover{
+				text-decoration: none;
+				display: block;
+				color: inherit !important;
+				border: none !important;
+			}
+		}
+	}
+	&:hover{
+		&>ul{
+			display: block;
+		}
+	}
+}
+
+@mixin iconDropMenu($standardIcon,$hoverIcon){
+	@include smallHoverIcon($standardIcon,$hoverIcon);
+	@include dropMenu();
 }
 
 $bgcolor:#FFFFFF;
@@ -365,4 +424,17 @@ $expanderFieldBo: darken($expanderFieldBg,8%);
 			}
 		}
 	}
+	
+	.not_supported{
+		display: none;
+	}
+	
+	.interact{
+		width: 80px;
+	}
+	
+	.actionIcon.actions{
+		@include iconDropMenu("/resources/graphics/newui/actions.png","/resources/graphics/newui/actions.png");
+	}
+	
 }
