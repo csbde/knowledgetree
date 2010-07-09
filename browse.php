@@ -521,6 +521,51 @@ INNER JOIN mime_types ON (document_content_version.mime_id = mime_types.id) WHER
 		</tr>
 	</table>';
 		
+		$tpl='
+<span class="doc browseView">
+<?php for($i=0; $i<5; $i++){?>
+	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
+		<tr>
+			<td class="doc icon_cell" width="1">
+				<div class="doc icon"><img src="" /><span class="doc preview"><img src="" /></span></div>
+			</td>
+			<td class="doc summary_cell">
+				<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]">[filename]</a></div>
+				<div class="detail"><span class="item">Owner: <span class="user">[some user]</span></span><span class="item">Created: <span class="date">[]</span></span><span class="item">Updated: <span class="date">[]</span></span></div>
+			</td>
+			<td class="doc interact" width="1">
+				<div class="documentNotification">
+					<span class="workflow_info"><span>This is the workflow tooltip</span></span>
+					<span class="immutable_info"><span>This document is <strong>Immutable</strong> and can no longer be modified. The only remaining action is to download or view it.</span></span>
+					<span class="checked_out"><span>This document is <strong>Checked Out</strong> by <strong>[checkedout.id]</strong>.</span></span>
+				</div>
+				<div class="doc actionMenu">
+					<span class="actionIcon properties not_supported">p</span>
+					<span class="actionIcon comments">5</span>
+					<span class="actionIcon permissions not_supported">s</span>
+					<span class="actionIcon actions">
+							<ul>
+								<li><a href="#">Download</a></li>
+								<li><a href="#">Checkin</a></li>
+								<li><a href="#">Alerts</a></li>
+								<li><a href="#">Cancel Checkout</a></li>
+								<li><a href="#">Change Document Ownership</a></li>
+								<li><a href="#">Email</a></li>
+								<li><a href="#">Instant View</a></li>
+							</ul>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="expanderField" colspan="3">Some additional Detail</td>
+		</tr>
+	</table>
+
+<?php }?>
+</span>
+		';
+		
 		return ktVar::parseString($tpl,$item);
 	}
 	
