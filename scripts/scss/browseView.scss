@@ -10,6 +10,43 @@
 	box-shadow: 0px 0px $size $color; 
 }
 
+@mixin hoverIcon($width,$height,$standardIcon,$hoverIcon){
+	background: url($standardIcon);
+	width: $width;
+	height: $height;
+	display: inline-block;
+	clear: none;
+	&:hover{
+		background: url($hoverIcon);
+	}
+}
+
+@mixin smallHoverIcon($standardIcon,$hoverIcon){
+	@include hoverIcon(16px,16px,$standardIcon,$hoverIcon);
+}
+
+@mixin tooltipIcon($standardIcon,$hoverIcon){
+	@include smallHoverIcon($standardIcon,$hoverIcon);
+	position: relative;
+	span:first-child{
+		@include corners(5px);
+		@include shaddow(5px,#000000);
+		border: 1px solid #CE9B00;
+		background-color: #FFEDB7;
+		padding: 10px;
+		position: absolute;
+		width: 160px;
+		top: 14px;
+		left: -146px;
+		display: none;
+	}
+	&:hover{
+		span:first-child{
+			display: block;
+		}
+	}
+}
+
 $bgcolor:#FFFFFF;
 $bcolor:darken($bgcolor, 3%);
 
@@ -256,6 +293,18 @@ $expanderFieldBo: darken($expanderFieldBg,8%);
 			background-color: $hbgcolor;
 			border: 1px solid $hbcolor; 
 		}
+		
+		.workflow_info{
+			@include tooltipIcon("/resources/graphics/newui/doc_workflow_info.png","/resources/graphics/newui/doc_workflow_info_h.png");
+		}
+		
+		.immutable_info{
+			@include tooltipIcon("/resources/graphics/newui/doc_immutable.png","/resources/graphics/newui/doc_immutable_h.png");
+		}
+		
+		.checked_out{
+			@include tooltipIcon("/resources/graphics/newui/doc_checkedout.png","/resources/graphics/newui/doc_checkedout_h.png");
+		}
 	}
 	
 	.doc.icon_cell{
@@ -263,7 +312,7 @@ $expanderFieldBo: darken($expanderFieldBg,8%);
 		margin: 0px;
 		
 		.doc.icon{
-			background-color: $iconbg;
+			background-image:url(/resources/graphics/newui/doc_placeholder_icon.png);
 			width: 32px;
 			height: 32px;
 			position: relative;
