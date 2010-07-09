@@ -294,6 +294,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			);
 			$aTemplateData['returndata'] = $this->oFolder->getId();
 //			$aTemplateData['folderContents'] = htmlentities(ktRenderArrayHTML::render($this->getCurrentFolderContent($this->oFolder->getId()),$folderContentOptions));
+			
+			$items=$this->getCurrentFolderSubFolders($this->oFolder->getId());
+			foreach($items as $item){
+				$aTemplateData['folderContents'].=$this->renderFolderItem($item);
+			}
+			
 			$items=$this->getCurrentFolderContent($this->oFolder->getId());
 			foreach($items as $item){
 				$aTemplateData['folderContents'].=$this->renderDocumentItem($item);
@@ -464,6 +470,17 @@ INNER JOIN mime_types ON (document_content_version.mime_id = mime_types.id) WHER
 		return ($ret);
 	}
 	
+	public function getCurrentFolderSubFolders($folderId){
+		//TODO: Permissions for these documents are not yet sorted out.
+		//TODO: User detail;
+		//TODO: Filename from document_content_version
+		$sql= "SELECT folders.id, folders.name AS foldername, description, users.name AS creator_name FROM folders
+		JOIN users ON ( folders.creator_id = users.id )
+		WHERE parent_id = '$folderId';";
+		$ret= DBUtil::getResultArray($sql);
+		return ($ret);
+	}
+	
 	private function renderDocumentItem($item=NULL){
 		$tpl='
 	<span class="documentBrowseView">
@@ -497,6 +514,25 @@ INNER JOIN mime_types ON (document_content_version.mime_id = mime_types.id) WHER
 					</tr></table>
 				
 				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="expanderField">Some additional Detail</td>
+		</tr>
+	</table>';
+		
+		return ktVar::parseString($tpl,$item);
+	}
+	
+	private function renderFolderItem($item=NULL){
+		$tpl='
+	<span class="documentBrowseView">
+	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="documentItem fdebug">
+		<tr>
+			<td width="1"><div class="documentIcon"></div></td>
+			<td class="documentDetailPane" width="" colspan="2">
+				<div class="documentTitle"><a class="clearLink" href="browse.php?fFolderId=[id]">[foldername]</a></div>
+				<div class="documentDetail">Created by: [creator_name]</div>
 			</td>
 		</tr>
 		<tr>
