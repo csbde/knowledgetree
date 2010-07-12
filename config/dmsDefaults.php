@@ -524,7 +524,6 @@ class KTInit {
 	}
 	// }}}
 
-
 	// {{{ getDynamicConfigSettings
 	//This function gets the intial config settings which can only be resolved by using php
 	function getDynamicConfigSettings() {
@@ -570,7 +569,6 @@ class KTInit {
 	}
 	// }}}
 
-
 	// {{{ initConfig
 	function initConfig() {
 		global $default;
@@ -593,9 +591,8 @@ class KTInit {
 			$use_cache = $oKTConfig->setMemCache ();
 		}
 
-				$oKTConfig->clearCache();
-				$use_cache = false;
-
+		$oKTConfig->clearCache();
+		$use_cache = false;
 
 		if ($use_cache) {
 			$use_cache = $oKTConfig->loadCache ();
@@ -654,7 +651,6 @@ class KTInit {
 	}
 	// }}}
 
-
 	// {{{ initTesting
 	function initTesting() {
 		$oKTConfig = & KTConfig::getSingleton ();
@@ -679,14 +675,12 @@ class KTInit {
 }
 // }}}
 
-
 $KTInit = new KTInit ( );
 $KTInit->accountRouting ();
 $KTInit->initConfig ();
 $KTInit->setupI18n ();
 
 //====================================
-
 
 define ( 'KTLOG_CACHE', false );
 
