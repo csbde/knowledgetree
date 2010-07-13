@@ -1128,8 +1128,6 @@ abstract class Indexer
         }
     }
 
-
-
     public function getExtractor($extractorClass)
     {
         if (empty($extractorClass))
