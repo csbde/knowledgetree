@@ -117,7 +117,7 @@ class MultiSelectPlugin extends KTPlugin {
 		//FIXME: The kt_hideadminlink.js script hides the link on the client side. The faulty link/action
 		//		should be de-registerred and removed at the server side. The function below breaks things
 		//		so don't use.
-		//		e.g. $this->deRegisterPluginHelper('documents/fieldmanagement2', 'KTDocumentFieldDispatcher');
+		//		e.g. $this->deRegisterPluginHelper('contentSetup/fieldmanagement2', 'KTDocumentFieldDispatcher');
 		
 		$js .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
 		$this->registerAdminPage('ratpfieldset', 'InetDocumentFieldDispatcher', 'contentSetup',
