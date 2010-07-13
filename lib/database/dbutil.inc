@@ -295,7 +295,7 @@ class DBUtil {
         $bNoId = KTUtil::arrayGet($aOptions, 'noid', false);
         global $default;
         // $default->log->debug('AutoInsert called for table ' . $sTable);
-        $db = self::getDB();
+        $db = self::getDB($db);
         $res = $db->autoExecute($sTable, $aFieldValues);
         if ($default->queryLog->isDebugEnabled())
         {
