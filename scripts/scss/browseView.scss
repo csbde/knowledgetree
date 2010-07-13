@@ -243,7 +243,7 @@ $expanderFieldBo: darken($hbgcolor,8%);
 	}
 	
 	.not_supported{
-		display: none;
+		visibility: hidden  !important;
 	}
 	
 	.interact{

@@ -482,44 +482,9 @@ INNER JOIN mime_types ON (document_content_version.mime_id = mime_types.id) WHER
 	}
 	
 	private function renderDocumentItem($item=NULL){
-		$tpl='
-	<span class="documentBrowseView">
-	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="documentItem fdebug">
-		<tr>
-			<td width="1"><div class="documentIcon"><span class="documentPreview"></span></div></td>
-			<td class="documentDetailPane" width="">
-				<div class="documentTitle"><a class="clearLink" href="view.php?fDocumentId=[id]">[filename]</a></div>
-				<div class="documentDetail">Owner: [owner_id] Created: [created] by [creator_id] Updated:[modified] by [modified_user_id]</div>
-			</td>
-			<td class="documentActions" width="5">
-				<div class="documentNotification">Workflow,Immutable</div>
-				<div class="documentActionMenu">
-
-					<table width="40"><tr>
-						<!-- 
-						<td><span class="actionIcon properties not_supported">p</span></td>
-						<td><span class="actionIcon permissions not_supported">s</span></td>
-						 -->
-						<td><span class="actionIcon comments" style="position: absolute;"><span style="position: relative; top: -3px;"><span class="count">?</span><span class="add">+</span></span></span></td>
-						<td><span class="actionIcon actions"><ul class="ulSubmenu">
-								<li><a href="#">Download</a></li>
-								<li><a href="#">Checkin</a></li>
-								<li><a href="#">Alerts</a></li>
-								<li><a href="#">Cancel Checkout</a></li>
-								<li><a href="#">Change Document Ownership</a></li>
-								<li><a href="#">Email</a></li>
-								<li><a href="#">Instant View</a></li>
-							</ul>
-						</span></td>
-					</tr></table>
-				
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<td class="expanderField">Some additional Detail</td>
-		</tr>
-	</table>';
+		$item['has_workflow']='';
+		$item['is_immutable']=$item['immutable']?'':' not_supported';
+		$item['is_checkedout']=$item['is_checked_out']?'':' not_supported';
 		
 		$tpl='
 <span class="doc browseView">
@@ -535,9 +500,9 @@ INNER JOIN mime_types ON (document_content_version.mime_id = mime_types.id) WHER
 			</td>
 			<td class="doc interact" width="1">
 				<div class="documentNotification">
-					<span class="workflow_info"><span>This is the workflow tooltip</span></span>
-					<span class="immutable_info"><span>This document is <strong>Immutable</strong> and can no longer be modified. The only remaining action is to download or view it.</span></span>
-					<span class="checked_out"><span>This document is <strong>Checked Out</strong> by <strong>[checkedout.id]</strong>.</span></span>
+					<span class="workflow_info[has_workflow]"><span>This is the workflow tooltip</span></span>
+					<span class="immutable_info[is_immutable]"><span>This document is <strong>Immutable</strong> and can no longer be modified. The only remaining action is to download or view it.</span></span>
+					<span class="checked_out[is_checkedout]"><span>This document is <strong>Checked Out</strong> by <strong>[checkedout.id]</strong>.</span></span>
 				</div>
 				<div class="doc actionMenu">
 					<span class="actionIcon properties not_supported">p</span>
@@ -545,13 +510,13 @@ INNER JOIN mime_types ON (document_content_version.mime_id = mime_types.id) WHER
 					<span class="actionIcon permissions not_supported">s</span>
 					<span class="actionIcon actions">
 							<ul>
-								<li><a href="#">Download</a></li>
-								<li><a href="#">Checkin</a></li>
-								<li><a href="#">Alerts</a></li>
-								<li><a href="#">Cancel Checkout</a></li>
-								<li><a href="#">Change Document Ownership</a></li>
-								<li><a href="#">Email</a></li>
-								<li><a href="#">Instant View</a></li>
+								<li class="[actions.download]"><a href="#">Download</a></li>
+								<li class="[actions.checkin]"><a href="#">Checkin</a></li>
+								<li class="[actions.alerts]"><a href="#">Alerts</a></li>
+								<li class="[actions.cancel_checkout]"><a href="#">Cancel Checkout</a></li>
+								<li class="[actions.change_owner]"><a href="#">Change Document Ownership</a></li>
+								<li class="[actions.email]"><a href="#">Email</a></li>
+								<li class="[actions.instant_view]"><a href="#">Instant View</a></li>
 							</ul>
 					</span>
 				</div>
