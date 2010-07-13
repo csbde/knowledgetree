@@ -41,7 +41,7 @@
 .doc.browseView .folder.summary_cell .detail .item { font-weight: bold; margin-right: 10px; }
 .doc.browseView .folder.summary_cell .detail .item .creator { font-weight: normal; }
 .doc.browseView .folder.interact { text-align: right; }
-.doc.browseView .not_supported { display: none; }
+.doc.browseView .not_supported { visibility: hidden  !important; }
 .doc.browseView .interact { width: 80px; }
 .doc.browseView .actionIcon.actions { background: url("/resources/graphics/newui/actions.png"); width: 16px; height: 16px; display: inline-block; clear: none; cursor: pointer; position: relative; }
 .doc.browseView .actionIcon.actions:hover { background: url("/resources/graphics/newui/actions.png"); }
