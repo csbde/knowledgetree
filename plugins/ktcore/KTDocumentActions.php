@@ -1559,7 +1559,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt('Copy'));
         $oForm = $this->form_copyselection();
-        return $oForm->renderPage(_kt('Copy Document') . ': ' . $this->oDocument->getName());
+        return $oForm->renderPage(_kt('Copy') . ': ' . $this->oDocument->getName());
     }
 
     function do_copy() {
