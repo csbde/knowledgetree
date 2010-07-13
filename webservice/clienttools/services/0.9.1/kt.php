@@ -1532,7 +1532,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 
 				// Determine Icon Path
 				$folderObj = $kt->get_folder_by_id ( $documentDetail['folder_id']);
-
+				
 				if (PEAR::isError ( $folderObj )) {
 					// Ignore, dont add to list
 					// Folder has been deleted
