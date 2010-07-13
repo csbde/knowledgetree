@@ -483,45 +483,6 @@ INNER JOIN mime_types ON (document_content_version.mime_id = mime_types.id) WHER
 	
 	private function renderDocumentItem($item=NULL){
 		$tpl='
-	<span class="documentBrowseView">
-	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="documentItem fdebug">
-		<tr>
-			<td width="1"><div class="documentIcon"><span class="documentPreview"></span></div></td>
-			<td class="documentDetailPane" width="">
-				<div class="documentTitle"><a class="clearLink" href="view.php?fDocumentId=[id]">[filename]</a></div>
-				<div class="documentDetail">Owner: [owner_id] Created: [created] by [creator_id] Updated:[modified] by [modified_user_id]</div>
-			</td>
-			<td class="documentActions" width="5">
-				<div class="documentNotification">Workflow,Immutable</div>
-				<div class="documentActionMenu">
-
-					<table width="40"><tr>
-						<!-- 
-						<td><span class="actionIcon properties not_supported">p</span></td>
-						<td><span class="actionIcon permissions not_supported">s</span></td>
-						 -->
-						<td><span class="actionIcon comments" style="position: absolute;"><span style="position: relative; top: -3px;"><span class="count">?</span><span class="add">+</span></span></span></td>
-						<td><span class="actionIcon actions"><ul class="ulSubmenu">
-								<li><a href="#">Download</a></li>
-								<li><a href="#">Checkin</a></li>
-								<li><a href="#">Alerts</a></li>
-								<li><a href="#">Cancel Checkout</a></li>
-								<li><a href="#">Change Document Ownership</a></li>
-								<li><a href="#">Email</a></li>
-								<li><a href="#">Instant View</a></li>
-							</ul>
-						</span></td>
-					</tr></table>
-				
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<td class="expanderField">Some additional Detail</td>
-		</tr>
-	</table>';
-		
-		$tpl='
 <span class="doc browseView">
 <?php for($i=0; $i<5; $i++){?>
 	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
@@ -570,18 +531,31 @@ INNER JOIN mime_types ON (document_content_version.mime_id = mime_types.id) WHER
 	}
 	
 	private function renderFolderItem($item=NULL){
+		$item['type'] = 'folder';
+		
 		$tpl='
-	<span class="documentBrowseView">
-	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="documentItem fdebug">
+	<span class="doc browseView">
+	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="[type] item fdebug">
 		<tr>
-			<td width="1"><div class="documentIcon"></div></td>
-			<td class="documentDetailPane" width="" colspan="2">
-				<div class="documentTitle"><a class="clearLink" href="browse.php?fFolderId=[id]">[foldername]</a></div>
-				<div class="documentDetail">Created by: [creator_name]</div>
+			<td class="[type] icon_cell" width="1">
+				<div class="[type] icon"><img src="" /></div>
 			</td>
-		</tr>
-		<tr>
-			<td class="expanderField">Some additional Detail</td>
+			<td class="[type] summary_cell">
+				<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[foldername]</a></div>
+				<div class="detail"><span class="item">Created by: <span class="creator">[creator_name]</span></span></div>
+			</td>
+			<td class="[type] interact">
+				<div class="[type] actionMenu">
+					<span class="actionIcon actions">
+							<ul>
+								<li><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
+								<li><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Share Folder</a></li>
+								<li><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li>
+								<li><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Transactions</a></li>
+							</ul>
+					</span>
+				</div>
+			</td>
 		</tr>
 	</table>';
 		
