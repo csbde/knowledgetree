@@ -482,9 +482,14 @@ INNER JOIN mime_types ON (document_content_version.mime_id = mime_types.id) WHER
 	}
 	
 private function renderDocumentItem($item=NULL){
+		$ns=" not_supported";
 		$item['has_workflow']='';
-		$item['is_immutable']=$item['immutable']?'':' not_supported';
-		$item['is_checkedout']=$item['is_checked_out']?'':' not_supported';
+		$item['is_immutable']=$item['immutable']?'':$ns;
+		$item['is_checkedout']=$item['is_checked_out']?'':$ns;
+		
+		$item['actions.checkin']=$item['is_checked_out']?'':$ns;
+		$item['actions.cancel_checkout']=$item['is_checked_out']?'':$ns;
+		$item['actions.checkout']=$item['is_checked_out']?$ns:'';
 		
 		$tpl='
 			<span class="doc browseView">
@@ -495,13 +500,13 @@ private function renderDocumentItem($item=NULL){
 						</td>
 						<td class="doc summary_cell">
 							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]">[filename]</a></div>
-							<div class="detail"><span class="item">Owner: <span class="user">[some user]</span></span><span class="item">Created: <span class="date">[]</span></span><span class="item">Updated: <span class="date">[]</span></span></div>
+							<div class="detail"><span class="item">Owner: <span class="user">[owner_id]</span></span><span class="item">Created: <span class="date">[created]</span> by <span class="user">[creator_id]</span></span><span class="item">Updated: <span class="date">[modified]</span> by <span class="user">[modified_user_id]</span></span></div>
 						</td>
 						<td class="doc interact" width="1">
 							<div class="documentNotification">
 								<span class="workflow_info[has_workflow]"><span>This is the workflow tooltip</span></span>
 								<span class="immutable_info[is_immutable]"><span>This document is <strong>Immutable</strong> and can no longer be modified. The only remaining action is to download or view it.</span></span>
-								<span class="checked_out[is_checkedout]"><span>This document is <strong>Checked Out</strong> by <strong>[checkedout.id]</strong>.</span></span>
+								<span class="checked_out[is_checkedout]"><span>This document is <strong>Checked Out</strong> by <strong>[checkout_id]</strong>.</span></span>
 							</div>
 							<div class="doc actionMenu">
 								<span class="actionIcon properties not_supported">p</span>
@@ -509,13 +514,17 @@ private function renderDocumentItem($item=NULL){
 								<span class="actionIcon permissions not_supported">s</span>
 								<span class="actionIcon actions">
 										<ul>
-											<li class="[actions.download]"><a href="#">Download</a></li>
-											<li class="[actions.checkin]"><a href="#">Checkin</a></li>
-											<li class="[actions.alerts]"><a href="#">Alerts</a></li>
-											<li class="[actions.cancel_checkout]"><a href="#">Cancel Checkout</a></li>
-											<li class="[actions.change_owner]"><a href="#">Change Document Ownership</a></li>
-											<li class="[actions.email]"><a href="#">Email</a></li>
-											<li class="[actions.instant_view]"><a href="#">Instant View</a></li>
+											<li class="[actions.download]"><a href="http://account-name.kt.dev/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
+											<li class="[actions.instant_view]"><a href="view.php?fDocumentId=[id]#preview">Instant View</a></li>
+											<li class="separator"></li>
+											<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Checkout</a></li>
+											<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Checkout</a></li>
+											<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Checkin</a></li>
+											<li class="separator"></li>
+											<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
+											<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
+											<li class="separator"></li>
+											<li class="[actions.change_owner]"><a href="/action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Document Ownership</a></li>
 										</ul>
 								</span>
 							</div>

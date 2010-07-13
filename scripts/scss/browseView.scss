@@ -4,7 +4,10 @@
 	border-radius: $size;
 }
 
-@mixin shaddow($size,$color){
+@mixin shaddow($size,$color:none){
+	@if $color==none{
+		$color:#CCCCCC;
+	}
 	-webkit-box-shadow: 0px 0px $size $color ;
 	-moz-box-shadow: 0px 0px $size $color; 
 	box-shadow: 0px 0px $size $color; 
@@ -19,6 +22,15 @@
 	&:hover{
 		background: url($hoverIcon);
 	}
+}
+
+@mixin gradient($topColor,$bottomColor:none){
+	@if $bottomColor==none{
+		$bottomColor:darken($topColor,10%);
+	}
+	
+	background:-webkit-gradient(linear,left bottom,left top,color-stop(0, $topColor),color-stop(1, $bottomColor));
+	background:-moz-linear-gradient(center bottom,$topColor 0%,$bottomColor 100%);
 }
 
 @mixin smallHoverIcon($standardIcon,$hoverIcon){
@@ -54,6 +66,11 @@
 @mixin dropMenu(){
 	cursor: pointer;
 	position: relative;
+	
+	.not_supported{
+		display: none !important;
+	}
+	
 	&>ul{
 		text-align: left;
 		display: none;
@@ -74,10 +91,27 @@
 			display: block;
 			margin: inherit;
 			padding: 2px 10px;
-			margin: 2px 5px;
+			margin: 5px 5px;
 			cursor: pointer;
 			@include corners(4px);
 			border: 1px solid transparent;
+			&.separator{
+				overflow: hidden;
+				height: 0px;
+				padding: 0px;
+				border-top: 1px solid darken($menuItemBo,10%);
+				@include corners(0px);
+				cursor: auto;
+				&:hover{
+					border: 1px solid transparent;
+					border-top: 1px solid darken($menuItemBo,10%);
+					background-color: $hbgcolor;
+					padding: 0px;
+					@include corners(0px);
+					cursor: auto;
+				} 
+			}
+			
 			&:first-child{
 				margin-top: 5px;
 			}
@@ -85,8 +119,10 @@
 				margin-bottom: 5px;
 			}
 			&:hover{
-				background-color: $menuItemBg;
-				border: 1px solid $menuItemBo;
+				background-color: darken($menuItemBg,5%);
+				@include gradient(darken($menuItemBg,5%),$menuItemBg);
+				@include shaddow(2px);
+				border: 1px solid darken($menuItemBo,5%);
 				
 			}
 			a,a:link,a:active,a:visited,a:hover{
@@ -159,6 +195,10 @@ $expanderFieldBo: darken($hbgcolor,8%);
 		border-bottom: 1px solid $hbcolor;
 		padding: 5px;
 		margin: 5px;
+		
+		strong{
+			font-weight: bold;
+		}
 
 		td{
 			vertical-align: top;
