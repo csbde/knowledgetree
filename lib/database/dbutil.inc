@@ -40,7 +40,7 @@
 require_once ('PEAR.php');
 require_once('DB.php');
 
-class DBUtil extends DB{
+class DBUtil {
     /**
      * @Description 
      * Function to establish database connections
@@ -49,10 +49,7 @@ class DBUtil extends DB{
      * outside of KT
      * @return mixed $db active DB connection
      */
-    private  $db;
-    private static $utils;
-    
-    public function __construct(){
+    public static function getDB($db = null) {
         global $default;
 		$oPear = new PEAR();
 		/**
@@ -60,41 +57,29 @@ class DBUtil extends DB{
 		 * TODO: Add other database handlers here instead of defaulting to mysql
 		 *@params string $db : Any db connection (remote or local)
 		 */
-        
+        if (is_null($db)) {
 			$options = array(
                 'debug'       => 2,
                 'portability' => DB_PORTABILITY_ERRORS,
                 'seqname_format' => 'zseq_%s',
                 );
-			$this->db =& DB::connect($default->_db, $options);
+			$master_conn = DB::connect($default->_db, $options);
 			
 			//Catch PEAR error (if any)
-			if ($oPear->isError($this->db)) {
+			if ($oPear->isError($master_conn)) {
 	            // return PEAR error
-	            return PEAR::raiseError($this->db->getMessage());
+	            return PEAR::raiseError($master_conn->getMessage());
 	        } 
-	        $this->db->setFetchMode(DB_FETCHMODE_ASSOC);
-	        return $this->db;
-        
-    }
-    public function __destruct(){
-    		//close without report error (if any)
-    		$this->db->disconnect();
-    }
-    public static function getDB($db = null) {
-    
-       if(!isset(self::$utils)){
-           $c = __CLASS__;
-       
-           self::$utils = new $c();
-      
-       }
-       	if(!isset(self::$utils->db->_kt_initialized) || !self::$utils->db->_kt_initialized) {
-               self::$utils->db->query("SET NAMES 'utf8'");
-               self::$utils->db->_kt_initialized = true;
+	        $master_conn->setFetchMode(DB_FETCHMODE_ASSOC);
+	        return $master_conn;
         }
 
-        return self::$utils->db;
+        if(!isset($db->_kt_initialized) || !$db->_kt_initialized) {
+            $db->query("SET NAMES 'utf8'");
+            $db->_kt_initialized = true;
+        }
+
+        return $db;
     }
     /**
      * Function to establish slave database connections
@@ -117,7 +102,7 @@ class DBUtil extends DB{
                 );
             $slave_dns = $default->_slave;
              
-			$slave_conn =& DB::connect($default->_slave, $options);
+			$slave_conn = DB::connect($default->_slave, $options);
 			//Catch PEAR error (if any)
 			if ($oPear->isError($slave_conn)) {
 	            // return PEAR error
@@ -155,12 +140,9 @@ class DBUtil extends DB{
          */
         if(isset($default->_slave) && (strncasecmp(ltrim($query), "select", 6) === 0 )){
             $default->queryLog->debug('Slave query: ' .$query );
-            self::$utils->db = self::getSlave();
-        }elseif(!isset(self::$utils) || !isset($db)){
-            self::getDB();
-           
-        }elseif(isset($db)){
-            self::$utils->db = $db;
+            $db = self::getSlave($db);
+        }else{
+            $db = self::getDB($db);
         }  
         if (is_array($query)) {
             $sQuery = $query[0];
@@ -168,14 +150,14 @@ class DBUtil extends DB{
         } else {
             $sQuery = $query;
         }
-        $res = self::$utils->db->query($sQuery, $aParams);
+        $res = $db->query($sQuery, $aParams);
         if (isset($default->queryLog) && $default->queryLog->isDebugEnabled())
         {
-            $default->queryLog->debug(self::lastQuery(self::$utils->db));
+            $default->queryLog->debug(self::lastQuery($db));
         }
         if ($oPear->isError($res))
         {
-        	self::logQueryError(self::lastQuery(self::$utils->db), $res);
+        	self::logQueryError(self::lastQuery($db), $res);
         }
         return $res;
     }
@@ -313,21 +295,21 @@ class DBUtil extends DB{
         $bNoId = KTUtil::arrayGet($aOptions, 'noid', false);
         global $default;
         // $default->log->debug('AutoInsert called for table ' . $sTable);
-        self::getDB();
-        $res = self::$utils->db->autoExecute($sTable, $aFieldValues);
+        $db = self::getDB($db);
+        $res = $db->autoExecute($sTable, $aFieldValues);
         if ($default->queryLog->isDebugEnabled())
         {
-            $default->queryLog->debug('Query: ' . self::lastQuery(self::$utils->db));
+            $default->queryLog->debug('Query: ' . self::lastQuery($db));
         }
         if ($res === DB_OK) {
             if ($bNoId)
                 return;
             else
-            	$ret=self::$utils->db->getLastId();
+            	$ret=$db->getLastId();
                 return $ret;
         }
         if (PEAR::isError($res)) {
-        	self::logQueryError(self::lastQuery(self::$utils->db), $res);
+        	self::logQueryError(self::lastQuery($db), $res);
             return $res;
         }
         return PEAR::raiseError(_kt('Unknown return value for autoInsert'));
@@ -344,14 +326,14 @@ class DBUtil extends DB{
     public static function autoUpdate($sTable, $aFieldValues, $iId, $db = null) {
         global $default;
         // $default->log->debug('AutoUpdate called for table ' . $sTable . ' with id ' . $iId);
-        self::getDB();
-        $res = self::$utils->db->autoExecute($sTable, $aFieldValues, DB_AUTOQUERY_UPDATE, 'id = ' . $iId);
-        $default->queryLog->debug('Query: ' . self::lastQuery(self::$utils->db));
+        $db = self::getDB($db);
+        $res = $db->autoExecute($sTable, $aFieldValues, DB_AUTOQUERY_UPDATE, 'id = ' . $iId);
+        $default->queryLog->debug('Query: ' . self::lastQuery($db));
         if ($res === DB_OK) {
             return $res;
         }
         if (PEAR::isError($res)) {
-        	self::logQueryError(self::lastQuery(self::$utils->db), $res);
+        	self::logQueryError(self::lastQuery($db), $res);
         	return $res;
         }
         return PEAR::raiseError(_kt('Unknown return value for autoUpdate'));
@@ -367,7 +349,7 @@ class DBUtil extends DB{
     public static function whereUpdate($sTable, $aFieldValues, $aWhereFieldValues, $db = null) {
         global $default;
         //$default->log->debug('WhereUpdate called for table ' . $sTable);
-        self::getDB();
+        $db = self::getDB($db);
         $aWhereFields = array();
         foreach (array_keys($aWhereFieldValues) as $k) {
             $aWhereFields[] = $k . ' = ?';
@@ -375,11 +357,11 @@ class DBUtil extends DB{
         $sWhere = join(' AND ', $aWhereFields);
         $aValues = kt_array_merge(array_values($aFieldValues), array_values($aWhereFieldValues));
 
-        $sth = self::$utils->db->autoPrepare($sTable, array_keys($aFieldValues), DB_AUTOQUERY_UPDATE, $sWhere);
-        $res = self::$utils->db->execute($sth, array_values($aValues));
-        self::$utils->db->freePrepared($sth);
+        $sth = $db->autoPrepare($sTable, array_keys($aFieldValues), DB_AUTOQUERY_UPDATE, $sWhere);
+        $res = $db->execute($sth, array_values($aValues));
+        $db->freePrepared($sth);
 
-        $default->queryLog->debug('Query: ' . self::lastQuery(self::$utils->db));
+        $default->queryLog->debug('Query: ' . self::lastQuery($db));
         if ($res === DB_OK) {
             return $res;
         }
@@ -396,6 +378,7 @@ class DBUtil extends DB{
      **/
 
     public static function lastQuery($db = null) {
+        $db = self::getDB($db);
         return $db->last_query;
     }
     /**
@@ -407,6 +390,7 @@ class DBUtil extends DB{
      **/
 
     public static function affectedRows($db = null) {
+        $db = self::getDB($db);
         return $db->affectedRows();
     }
     /**
@@ -418,10 +402,10 @@ class DBUtil extends DB{
      **/
 
     public static function autoDelete($sTable, $iId, $db = null) {
-        self::getDB();
+        $db = self::getDB($db);
         $sQuery = "DELETE FROM " . $sTable . " WHERE id = ?";
         $aParams = array($iId);
-        return self::runQuery(array($sQuery, $aParams), self::$utils->db);
+        return self::runQuery(array($sQuery, $aParams), $db);
     }
     /**
      * Update record and sets "disabled" field to TRUE on a given id
@@ -431,10 +415,10 @@ class DBUtil extends DB{
      **/
 
     public static function deReference($sTable, $iId, $db = null) {
-        self::getDB();
+        $db = self::getDB($db);
         $sQuery = "UPDATE " . $sTable . " SET disabled = true WHERE id = ?";
         $aParams = array($iId);
-        return self::runQuery(array($sQuery, $aParams), self::$utils->db);
+        return self::runQuery(array($sQuery, $aParams), $db);
     }
     /**
      * Perform DELETE statements with a given WHERE clause
@@ -446,7 +430,7 @@ class DBUtil extends DB{
 
     public static function whereDelete($sTable, $aWhereFieldValues, $db = null) {
         global $default;
-        self::getDB();
+        $db = self::getDB($db);
         $aWhereFields = array();
         foreach (array_keys($aWhereFieldValues) as $k) {
             $aWhereFields[] = $k . ' = ?';
@@ -455,7 +439,7 @@ class DBUtil extends DB{
         $aValues = array_values($aWhereFieldValues);
 
         $sQuery = "DELETE FROM " . $sTable . " WHERE $sWhere";
-        return self::runQuery(array($sQuery, $aValues), self::$utils->db);
+        return self::runQuery(array($sQuery, $aValues), $db);
     }
     /**
      * Performs Autoprepare of given array
@@ -479,8 +463,8 @@ class DBUtil extends DB{
      **/
 
     public static function escapeSimple($sString, $db = null) {
-        self::getDB();
-        return self::$utils->db->escapeSimple($sString);
+        $db = self::getDB($db);
+        return $db->escapeSimple($sString);
     }
     /**
      * Performs a cleaning of an array and removes line endings (\n)
@@ -553,7 +537,7 @@ class DBUtil extends DB{
             die($default->_admindb->toString());
         }
         $default->_admindb->setFetchMode(DB_FETCHMODE_ASSOC);
-        return;
+        return $default->_admindb;
     }
     
 }
