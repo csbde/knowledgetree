@@ -295,13 +295,15 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$aTemplateData['returndata'] = $this->oFolder->getId();
 //			$aTemplateData['folderContents'] = htmlentities(ktRenderArrayHTML::render($this->getCurrentFolderContent($this->oFolder->getId()),$folderContentOptions));
 			
-			$items=$this->getCurrentFolderSubFolders($this->oFolder->getId());
-			foreach($items as $item){
+			$folderContentItems=$this->getCurrentFolderContentNew($this->oFolder->getId());
+			
+			//$items=$this->getCurrentFolderSubFolders($this->oFolder->getId());
+			foreach($folderContentItems['folders'] as $item){
 				$aTemplateData['folderContents'].=$this->renderFolderItem($item);
 			}
 			
-			$items=$this->getCurrentFolderContent($this->oFolder->getId());
-			foreach($items as $item){
+			//$items=$this->getCurrentFolderContent($this->oFolder->getId());
+			foreach($folderContentItems['documents'] as $item){
 				$aTemplateData['folderContents'].=$this->renderDocumentItem($item);
 			}
 		}
@@ -481,26 +483,67 @@ INNER JOIN mime_types ON (document_content_version.mime_id = mime_types.id) WHER
 		return ($ret);
 	}
 	
-private function renderDocumentItem($item=NULL){
+	private function getCurrentFolderContentNew($folderId){
+		$KT=new KTAPI();
+		$KT->getCurrentBrowserSession();
+		//Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
+		$folder = &$KT->get_folder_contents($folderId,1,'DFS',3);	
+		$items=$folder['results']['items'];
+		
+		
+		$ret=array('folders'=>array(),'documents'=>array(),'shortcuts'=>array());
+
+		foreach($items as $item){
+			foreach($item as $key=>$value){
+				if($value=='n/a')$item[$key]=null;
+			}
+			switch($item['item_type']){
+				case 'F':
+					$ret['folders'][]=$item;
+					break;
+				case 'D':
+					$ret['documents'][]=$item;
+					break;
+				case 'S':
+					$ret['shortcuts'][]=$item;
+					break;
+			}
+		}
+		
+//		echo '<pre>'.print_r($ret,true).'</pre>';exit;
+		return $ret;
+	}
+	
+	private function renderDocumentItem($item=NULL){
 		$ns=" not_supported";
 		$item['has_workflow']='';
-		$item['is_immutable']=$item['immutable']?'':$ns;
+		$item['is_immutable']=$item['is_immutable']=='true'?true:false;
+		$item['is_immutable']=$item['is_immutable']?'':$ns;
 		$item['is_checkedout']=$item['is_checked_out']?'':$ns;
 		
 		$item['actions.checkin']=$item['is_checked_out']?'':$ns;
 		$item['actions.cancel_checkout']=$item['is_checked_out']?'':$ns;
 		$item['actions.checkout']=$item['is_checked_out']?$ns:'';
 		
+		if($item['is_immutable']==''){
+			$item['actions.checkin']=$ns;
+			$item['actions.checkout']=$ns;
+			$item['actions.cancel_checkout']=$ns;
+			$item['actions.alerts']=$ns;
+			$item['actions.email']=$ns;
+			$item['actions.change_owner']=$ns;
+		}
+		
 		$tpl='
 			<span class="doc browseView">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
 						<td class="doc icon_cell" width="1">
-							<div class="doc icon"><img src="" /><span class="doc preview"><img src="" /></span></div>
+							<div class="doc icon"><span class="doc preview"></span></div>
 						</td>
 						<td class="doc summary_cell">
 							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]">[filename]</a></div>
-							<div class="detail"><span class="item">Owner: <span class="user">[owner_id]</span></span><span class="item">Created: <span class="date">[created]</span> by <span class="user">[creator_id]</span></span><span class="item">Updated: <span class="date">[modified]</span> by <span class="user">[modified_user_id]</span></span></div>
+							<div class="detail"><span class="item">Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span></div>
 						</td>
 						<td class="doc interact" width="1">
 							<div class="documentNotification">
@@ -548,11 +591,11 @@ private function renderDocumentItem($item=NULL){
 	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="[type] item fdebug">
 		<tr>
 			<td class="[type] icon_cell" width="1">
-				<div class="[type] icon"><img src="" /></div>
+				<div class="[type] icon"></div>
 			</td>
 			<td class="[type] summary_cell">
-				<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[foldername]</a></div>
-				<div class="detail"><span class="item">Created by: <span class="creator">[creator_name]</span></span></div>
+				<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[filename]</a></div>
+				<div class="detail"><span class="item">Created by: <span class="creator">[creator]</span></span></div>
 			</td>
 			<td class="[type] interact">
 				<div class="[type] actionMenu">
