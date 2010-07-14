@@ -117,7 +117,7 @@ class DBUtil extends DB{
                 );
             $slave_dns = $default->_slave;
              
-			$slave_conn = DB::connect($default->_slave, $options);
+			$slave_conn =& DB::connect($default->_slave, $options);
 			//Catch PEAR error (if any)
 			if ($oPear->isError($slave_conn)) {
 	            // return PEAR error
@@ -155,7 +155,7 @@ class DBUtil extends DB{
          */
         if(isset($default->_slave) && (strncasecmp(ltrim($query), "select", 6) === 0 )){
             $default->queryLog->debug('Slave query: ' .$query );
-            //$db = self::getSlave($db);
+            self::$utils->db = self::getSlave();
         }elseif(!isset(self::$utils) || !isset($db)){
             self::getDB();
            
