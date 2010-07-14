@@ -79,7 +79,7 @@ class DBUtil {
         }
 
         if(!isset($db->_kt_initialized) || !$db->_kt_initialized) {
-            $db->query("SET NAMES 'utf8'");
+//            $db->query("SET NAMES 'utf8'");
             $db->_kt_initialized = true;
         }
 
@@ -115,7 +115,7 @@ class DBUtil {
 	        return self::$db;
 		}
 		if(!isset($db->_kt_initialized) || !$db->_kt_initialized) {
-            $db->query("SET NAMES 'utf8'");
+//            $db->query("SET NAMES 'utf8'");
             $db->_kt_initialized = true;
         }
       
