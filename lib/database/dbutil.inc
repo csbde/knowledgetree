@@ -42,48 +42,67 @@ require_once('DB.php');
 
 class DBUtil {
     
-    private static $db;
-    /**
-     * @Description 
-     * Function to establish database connections
-     * using PEAR::DB
-     * @param mixed $db This could be a database specification or connection
-     * outside of KT
-     * @return mixed $db active DB connection
-     */
-    public static function getDB($db = null) {
-        global $default;
+    private static $db;	// Master DB handle. Must always be present.
+    private static $dbSlaves = array();
+    private static $slavesCounter = 0;
+    private static $numSlaves; // count of how many slaves we have
+
+	/**
+	* Establish database connections
+	* TODO: Add other database handlers here instead of defaulting to mysql
+	* @params string $dsn : Any dsn descriptor (remote or local)
+	*/
+	private static function connect($dsn) {
 		$oPear = new PEAR();
-		/**
-		 * Establish database connections
-		 * TODO: Add other database handlers here instead of defaulting to mysql
-		 *@params string $db : Any db connection (remote or local)
-		 */
-        if (is_null($db)) {
-			$options = array(
-                'debug'       => 2,
-                'portability' => DB_PORTABILITY_ERRORS,
-                'seqname_format' => 'zseq_%s',
-                );
-			self::$db = DB::connect($default->_db, $options);
-			
-			//Catch PEAR error (if any)
-			if ($oPear->isError(self::$db)) {
-	            // return PEAR error
-	            return PEAR::raiseError(self::$db->getMessage());
-	        } 
-	        self::$db->setFetchMode(DB_FETCHMODE_ASSOC);
-	        return self::$db;
-        }else{
-            self::$db = $db;
-        }
+    
+		$options = array(
+			'debug'       => 2,
+			'portability' => DB_PORTABILITY_ERRORS,
+		);
 
-        if(!isset(self::$db->_kt_initialized) || !self::$db->_kt_initialized) {
-            self::$db->_kt_initialized = true;
-        }
+		$db = DB::connect($dsn, $options);
 
-        return self::$db;
-    }
+		// Catch PEAR error (if any)
+		if ($oPear->isError($db)) {
+			// return PEAR error
+			return $oPear->raiseError($db->getMessage());
+		}
+
+		$db->setFetchMode(DB_FETCHMODE_ASSOC);
+		return $db;
+	}
+
+	/**
+	 * @Description 
+	 * Function to establish database connections
+	 * using PEAR::DB
+	 * @param mixed $db This could be a database specification or connection
+	 * outside of KT
+	 * @return mixed $db active DB connection
+	 */
+     public static function getDB($db = null) {
+         global $default;
+         $oPear = new PEAR();
+
+         if (is_null($db)) {
+             self::$db = self::connect($default->_db);
+             // Catch PEAR error (if any)
+             if ($oPear->isError($db)) {
+                 // return PEAR error
+                 return $db;
+             
+             }
+         } else {
+             self::$db = $db;
+         }
+
+         if(!isset(self::$db->_kt_initialized) || !self::$db->_kt_initialized) {
+             self::$db->_kt_initialized = true;
+         }
+
+         return self::$db;
+     }
+
     /**
      * Function to establish slave database connections
      * using PEAR::DB
@@ -92,31 +111,39 @@ class DBUtil {
      * @return mixed $db active slave DB connection
      * @author Prince Mbekwa
      */
-    
-    public static function getSlave($db = null) {
+    public static function initSlaves() {
         global $default;
 		$oPear = new PEAR();
-		
-		if(is_null($db)) {
-		    $options = array(
-                'debug'       => 2,
-                'portability' => DB_PORTABILITY_ERRORS,
-                'seqname_format' => 'zseq_%s',
-                );
-                        
-			self::$db = DB::connect($default->_slave, $options);
-			//Catch PEAR error (if any)
-			if ($oPear->isError(self::$db)) {
-	            // return PEAR error
-	            return  PEAR::raiseError(self::$db->getMessage());
-	        } 
-	        self::$db->setFetchMode(DB_FETCHMODE_ASSOC);
-	        return self::$db;
-		}
-		if(!isset(self::$db->_kt_initialized) || !self::$db->_kt_initialized) {
-            self::$db->_kt_initialized = true;
-        }
-      
+		foreach($default->_slave as $slave_info) {
+             // initialize slave connection with randomized order
+             $slave = self::connect($slave_info);
+             if ($oPear->isError($slave)) {
+                  // return PEAR error
+                  continue;
+          
+              }else{
+                self::$slavesCounter++;
+                self::$dbSlaves[] = $slave;
+              }
+         }
+         if(count(self::$dbSlaves)<=0){
+             //No live slaves found, then return master connection
+            self::getDB();
+         }else{
+             //count the slave coonections
+             self::$numSlaves = count(self::$dbSlaves);
+             
+         }
+
+           
+    }
+
+   public static function getSlave() {
+
+       if(empty(self::$dbSlaves)) {
+           self::initSlaves();
+       }
+        self::$db = self::$dbSlaves[self::$slavesCounter % self::$numSlaves];
         return self::$db;
     }
     /**
@@ -146,10 +173,13 @@ class DBUtil {
             $sQuery = $query;
         }
          if(isset($default->_slave) && (strncasecmp(ltrim($query), "select", 6) === 0 )){
-            $default->queryLog->debug('Slave query: ' .$query );
-            self::getSlave($db);
+            self::getSlave();
         }else{
             self::getDB($db);
+            if($oPear->isError(self::$db))
+            {
+                return self::$db;
+            }
         }
         
         $res = self::$db->query($sQuery, $aParams);
