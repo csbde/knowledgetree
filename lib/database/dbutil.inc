@@ -44,7 +44,6 @@ class DBUtil {
     
     private static $db;	// Master DB handle. Must always be present.
     private static $dbSlaves = array();
-    private static $slavesCounter = 0;
     private static $numSlaves; // count of how many slaves we have
 
 	/**
@@ -122,20 +121,16 @@ class DBUtil {
                   continue;
           
               }else{
-                self::$slavesCounter++;
                 self::$dbSlaves[] = $slave;
               }
          }
          if(count(self::$dbSlaves)<=0){
              //No live slaves found, then return master connection
-            self::getDB();
+            self::$dbSlaves[] = self::getDB();
          }else{
              //count the slave coonections
              self::$numSlaves = count(self::$dbSlaves);
-             
          }
-
-           
     }
 
    public static function getSlave() {
@@ -143,7 +138,9 @@ class DBUtil {
        if(empty(self::$dbSlaves)) {
            self::initSlaves();
        }
-        self::$db = self::$dbSlaves[self::$slavesCounter % self::$numSlaves];
+
+        self::$db = self::$dbSlaves[rand(0, self::$numSlaves - 1)];
+
         return self::$db;
     }
     /**
