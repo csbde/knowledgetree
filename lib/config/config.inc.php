@@ -377,32 +377,35 @@ class KTConfig {
                     'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
                     );
             }
-            $options = array(
-                'debug'       => 2,
-                'portability' => DB_PORTABILITY_ERRORS,
-                'seqname_format' => 'zseq_%s',
-                );
-            //Iterate over the strings and check for live connections
-            foreach ($slave_dns as $slave){
-                   $test_connection = DB::connect($slave, $options);
-                   if ($oPear->isError($test_connection)) {
-                       // return PEAR error
-                       $errors[] = $test_connection;
-                       continue;
-                   }else{
-                       $test_connection->disconnect();
-                       $default->_slave = $slave;
-                       $working_connections[] = $test_connection;
-                   }
-                   
-               }
-               // If no live connections, log this error
-               if(count($working_connections)<=0){
-                  $error = "Database replication has been set and no mysql slaves are reachable!";
-                  if($GLOBALS['default']->log)$GLOBALS['default']->log->error($error);
-               } 
+            //Set slave connections defined
+            $default->_slave =  $slave_dns;
+        }
+            // $options = array(
+            //          'debug'       => 2,
+            //          'portability' => DB_PORTABILITY_ERRORS,
+            //          'seqname_format' => 'zseq_%s',
+            //          );
+            //      //Iterate over the strings and check for live connections
+            // foreach ($slave_dns as $slave){
+            //                 $test_connection = DB::connect($slave, $options);
+            //                 if ($oPear->isError($test_connection)) {
+            //                     // return PEAR error
+            //                     $errors[] = $test_connection;
+            //                     continue;
+            //                 }else{
+            //                     $test_connection->disconnect();
+            //                     $default->_slave = $slave;
+            //                     $working_connections[] = $test_connection;
+            //                 }
+            //                 
+            //             }
+            //             // If no live connections, log this error
+            //             if(count($working_connections)<=0){
+            //                $error = "Database replication has been set and no mysql slaves are reachable!";
+            //                if($GLOBALS['default']->log)$GLOBALS['default']->log->error($error);
+            //           } 
                 
-        }        
+               
         
        
     }
