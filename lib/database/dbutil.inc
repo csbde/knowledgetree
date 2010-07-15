@@ -78,12 +78,11 @@ class DBUtil {
             self::$db = $db;
         }
 
-        if(!isset($db->_kt_initialized) || !$db->_kt_initialized) {
-//            $db->query("SET NAMES 'utf8'");
-            $db->_kt_initialized = true;
+        if(!isset(self::$db->_kt_initialized) || !self::$db->_kt_initialized) {
+            self::$db->_kt_initialized = true;
         }
 
-        return $db;
+        return self::$db;
     }
     /**
      * Function to establish slave database connections
@@ -114,12 +113,11 @@ class DBUtil {
 	        self::$db->setFetchMode(DB_FETCHMODE_ASSOC);
 	        return self::$db;
 		}
-		if(!isset($db->_kt_initialized) || !$db->_kt_initialized) {
-//            $db->query("SET NAMES 'utf8'");
-            $db->_kt_initialized = true;
+		if(!isset(self::$db->_kt_initialized) || !self::$db->_kt_initialized) {
+            self::$db->_kt_initialized = true;
         }
       
-        return $db;
+        return self::$db;
     }
     /**
      *  Runs Database queries 
@@ -140,19 +138,22 @@ class DBUtil {
          * will connect to slave and execute query. This is really not expensive as regular expression check
          * 
          */
-        if(isset($default->_slave) && (strncasecmp(ltrim($query), "select", 6) === 0 )){
+       
+        if (is_array($query)) {
+            $sQuery = $query[0];
+            $aParams = (count($query) > 1)?$query[1]:array();
+        }else {
+            $sQuery = $query;
+        }
+         if(isset($default->_slave) && (strncasecmp(ltrim($query), "select", 6) === 0 )){
             $default->queryLog->debug('Slave query: ' .$query );
             self::getSlave($db);
         }else{
             self::getDB($db);
-        }  
-        if (is_array($query)) {
-            $sQuery = $query[0];
-            $aParams = (count($query) > 1)?$query[1]:array();
-        } else {
-            $sQuery = $query;
         }
+        
         $res = self::$db->query($sQuery, $aParams);
+        
         if (isset($default->queryLog) && $default->queryLog->isDebugEnabled())
         {
             $default->queryLog->debug(self::lastQuery(self::$db));
