@@ -396,9 +396,10 @@ class KTConfig {
                    }
                    
                }
-               // If no live connections, throw this error
+               // If no live connections, log this error
                if(count($working_connections)<=0){
-                  return PEAR::raiseError( "Database replication has been set and no mysql slaves are reachable!");
+                  $error = "Database replication has been set and no mysql slaves are reachable!";
+                  if($GLOBALS['default']->log)$GLOBALS['default']->log->error($error);
                } 
                 
         }        
