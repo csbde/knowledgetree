@@ -4,6 +4,7 @@
 
 .doc.browseView .doc.item.debug * { border: 1px solid transparent; }
 .doc.browseView .doc.item.debug *:hover { border: 1px solid #A10000 !important; }
+.doc.browseView .selected { background-color: #CCEEFF; }
 .doc.browseView .doc.item { font-family: sans-serif; font-size: 11px; color: #333333; border: 1px solid transparent; border-bottom: 1px solid #dbdbdb; padding: 5px; margin: 5px; }
 .doc.browseView .doc.item strong { font-weight: bold; }
 .doc.browseView .doc.item td { vertical-align: top; }

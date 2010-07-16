@@ -187,6 +187,10 @@ $expanderFieldBo: darken($hbgcolor,8%);
 		}
 	}
 	
+	.selected{
+		background-color: #CCEEFF;
+	}
+	
 	.doc.item{
 		font-family: $font;
 		font-size: 11px;
