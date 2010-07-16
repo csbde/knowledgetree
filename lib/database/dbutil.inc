@@ -354,14 +354,14 @@ class DBUtil {
     public static function autoUpdate($sTable, $aFieldValues, $iId, $db = null) {
         global $default;
         // $default->log->debug('AutoUpdate called for table ' . $sTable . ' with id ' . $iId);
-        self::getDB($db);
-        $res = self::$db->autoExecute($sTable, $aFieldValues, DB_AUTOQUERY_UPDATE, 'id = ' . $iId);
-        $default->queryLog->debug('Query: ' . self::lastQuery(self::$db));
+        $database = self::getDB($db);
+        $res = $database->autoExecute($sTable, $aFieldValues, DB_AUTOQUERY_UPDATE, 'id = ' . $iId);
+        $default->queryLog->debug('Query: ' . self::lastQuery($database));
         if ($res === DB_OK) {
             return $res;
         }
         if (PEAR::isError($res)) {
-        	self::logQueryError(self::lastQuery(self::$db), $res);
+        	self::logQueryError(self::lastQuery($database), $res);
         	return $res;
         }
         return PEAR::raiseError(_kt('Unknown return value for autoUpdate'));
@@ -377,7 +377,7 @@ class DBUtil {
     public static function whereUpdate($sTable, $aFieldValues, $aWhereFieldValues, $db = null) {
         global $default;
         //$default->log->debug('WhereUpdate called for table ' . $sTable);
-        self::getDB($db);
+        $database = self::getDB($db);
         $aWhereFields = array();
         foreach (array_keys($aWhereFieldValues) as $k) {
             $aWhereFields[] = $k . ' = ?';
@@ -385,11 +385,11 @@ class DBUtil {
         $sWhere = join(' AND ', $aWhereFields);
         $aValues = kt_array_merge(array_values($aFieldValues), array_values($aWhereFieldValues));
 
-        $sth = self::$db->autoPrepare($sTable, array_keys($aFieldValues), DB_AUTOQUERY_UPDATE, $sWhere);
-        $res = self::$db->execute($sth, array_values($aValues));
-        self::$db->freePrepared($sth);
+        $sth = $database->autoPrepare($sTable, array_keys($aFieldValues), DB_AUTOQUERY_UPDATE, $sWhere);
+        $res = $database->execute($sth, array_values($aValues));
+        $database->freePrepared($sth);
 
-        $default->queryLog->debug('Query: ' . self::lastQuery(self::$db));
+        $default->queryLog->debug('Query: ' . self::lastQuery($database));
         if ($res === DB_OK) {
             return $res;
         }
@@ -406,8 +406,8 @@ class DBUtil {
      **/
 
     public static function lastQuery($db = null) {
-        self::getDB($db);
-        return self::$db->last_query;
+        $database = self::getDB($db);
+        return $database->last_query;
     }
     /**
      * Number of rows affected by a data manipulation query (for example INSERT, UPDATE or DELETE). 
@@ -418,8 +418,8 @@ class DBUtil {
      **/
 
     public static function affectedRows($db = null) {
-        self::getDB($db);
-        return self::$db->affectedRows();
+        $database = self::getDB($db);
+        return $database->affectedRows();
     }
     /**
      * Perform DELETE statements
@@ -430,10 +430,10 @@ class DBUtil {
      **/
 
     public static function autoDelete($sTable, $iId, $db = null) {
-        self::getDB($db);
+        $database = self::getDB($db);
         $sQuery = "DELETE FROM " . $sTable . " WHERE id = ?";
         $aParams = array($iId);
-        return self::runQuery(array($sQuery, $aParams), self::$db);
+        return self::runQuery(array($sQuery, $aParams), $database);
     }
     /**
      * Update record and sets "disabled" field to TRUE on a given id
@@ -443,10 +443,10 @@ class DBUtil {
      **/
 
     public static function deReference($sTable, $iId, $db = null) {
-        self::getDB($db);
+        $database = self::getDB($db);
         $sQuery = "UPDATE " . $sTable . " SET disabled = true WHERE id = ?";
         $aParams = array($iId);
-        return self::runQuery(array($sQuery, $aParams), self::$db);
+        return self::runQuery(array($sQuery, $aParams), $database);
     }
     /**
      * Perform DELETE statements with a given WHERE clause
@@ -458,7 +458,7 @@ class DBUtil {
 
     public static function whereDelete($sTable, $aWhereFieldValues, $db = null) {
         global $default;
-        self::getDB($db);
+        $database = self::getDB($db);
         $aWhereFields = array();
         foreach (array_keys($aWhereFieldValues) as $k) {
             $aWhereFields[] = $k . ' = ?';
@@ -467,7 +467,7 @@ class DBUtil {
         $aValues = array_values($aWhereFieldValues);
 
         $sQuery = "DELETE FROM " . $sTable . " WHERE $sWhere";
-        return self::runQuery(array($sQuery, $aValues), self::$db);
+        return self::runQuery(array($sQuery, $aValues), $database);
     }
     /**
      * Performs Autoprepare of given array
@@ -491,8 +491,8 @@ class DBUtil {
      **/
 
     public static function escapeSimple($sString, $db = null) {
-        self::getDB($db);
-        return self::$db->escapeSimple($sString);
+        $database = self::getDB($db);
+        return $database->escapeSimple($sString);
     }
     /**
      * Performs a cleaning of an array and removes line endings (\n)
