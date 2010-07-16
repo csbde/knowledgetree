@@ -37,8 +37,36 @@
 	@include hoverIcon(16px,16px,$standardIcon,$hoverIcon);
 }
 
-@mixin tooltipIcon($standardIcon,$hoverIcon){
+@mixin tooltipIcon($standardIcon,$hoverIcon,$width:200px,$orientation:center,$xOffset:none,$yOffset:none){
 	@include smallHoverIcon($standardIcon,$hoverIcon);
+	
+	@if $orientation != left {
+		@if $orientation != right{
+			@if $orientation != center{
+				$orientation:left;
+			}
+		}
+	}
+	
+	@if $orientation == left{
+		@if $xOffset==none{
+			$xOffset:$width - ($width * 2) + 14px;
+		}
+		
+	} @else if $orientation == center {
+		@if $xOffset==none{
+			$xOffset: 0 - ($width / 2);
+		}
+	} @else {
+		@if $xOffset==none{
+			$xOffset: -14px;
+		}
+	}
+
+	@if $yOffset==none{
+		$yOffset:16px;
+	}
+	
 	position: relative;
 	span:first-child{
 		@include corners(5px);
@@ -47,9 +75,9 @@
 		background-color: #FFEDB7;
 		padding: 10px;
 		position: absolute;
-		width: 160px;
-		top: 16px;
-		left: -146px;
+		width: $width;
+		top: $yOffset;
+		left: $xOffset;
 		display: none;
 		z-index: 20000;
 		&:hover{
