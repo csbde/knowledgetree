@@ -139,9 +139,7 @@ class DBUtil {
            self::initSlaves();
        }
 
-        self::$db = self::$dbSlaves[rand(0, self::$numSlaves - 1)];
-
-        return self::$db;
+        return self::$dbSlaves[rand(0, self::$numSlaves - 1)];
     }
     /**
      *  Runs Database queries 
@@ -170,24 +168,24 @@ class DBUtil {
             $sQuery = $query;
         }
          if(isset($default->_slave) && (strncasecmp(ltrim($query), "select", 6) === 0 )){
-            self::getSlave();
+            $db = self::getSlave();
         }else{
-            self::getDB($db);
-            if($oPear->isError(self::$db))
+            $db = self::getDB($db);
+            if($oPear->isError($db))
             {
-                return self::$db;
+                return $db;
             }
         }
         
-        $res = self::$db->query($sQuery, $aParams);
+        $res = $db->query($sQuery, $aParams);
         
         if (isset($default->queryLog) && $default->queryLog->isDebugEnabled())
         {
-            $default->queryLog->debug(self::lastQuery(self::$db));
+            $default->queryLog->debug(self::lastQuery($db));
         }
         if ($oPear->isError($res))
         {
-        	self::logQueryError(self::lastQuery(self::$db), $res);
+        	self::logQueryError(self::lastQuery($db), $res);
         }
         return $res;
     }
