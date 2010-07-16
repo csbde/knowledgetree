@@ -37,7 +37,7 @@
 	@include hoverIcon(16px,16px,$standardIcon,$hoverIcon);
 }
 
-@mixin tooltipIcon($standardIcon,$hoverIcon,$width:200px,$orientation:center,$xOffset:none,$yOffset:none){
+@mixin tooltipIcon($standardIcon,$hoverIcon,$width:160px,$orientation:left,$xOffset:none,$yOffset:none){
 	@include smallHoverIcon($standardIcon,$hoverIcon);
 	
 	@if $orientation != left {
