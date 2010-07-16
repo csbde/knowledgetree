@@ -27,8 +27,7 @@
 </div>
 </div>
 {/if}
-
-<link rel="stylesheet" type="text/css" href="/resources/css/newui/browseView.css?{php}echo rand();{/php}" />
+<link rel="stylesheet" type="text/css" href="{php}echo "{$GLOBALS['default']->rootUrl}/resources/css/newui/browseView.css?".rand();{/php}" />
 <form action="{$browseutil->getActionBaseUrl()}" method="post">
 
 {if ($isEditable)}
