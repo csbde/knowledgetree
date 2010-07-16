@@ -68,7 +68,7 @@ class KTDocumentEditAction extends KTDocumentAction {
     }
 
     function getDisplayName() {
-        return _kt('Edit Metadata');
+        return _kt('Edit properties');
     }
 
     function predispatch() {
@@ -159,7 +159,7 @@ class KTDocumentEditAction extends KTDocumentAction {
     }
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails(_kt("Edit Metadata"));
+        $this->oPage->setBreadcrumbDetails(_kt("Edit properties"));
 
         $oTemplate = $this->oValidator->validateTemplate('ktcore/document/edit');
 

@@ -91,7 +91,16 @@ class MultiSelectPlugin extends KTPlugin {
 	 */
 	function applySQL($filename)
     {
-		global $default;
+    	global $default;
+    	$sql = "select has_inetlookup, inetlookup_type from document_fields limit 1";
+    	$result = DBUtil::getResultArray($sql);
+
+    	if (!PEAR::isError($result))
+		{
+			// if we find the table, we assume it has been applied
+			return;
+		}
+		
 		DBUtil::setupAdminDatabase();
 		$db = $default->_admindb;
 
