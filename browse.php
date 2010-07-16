@@ -491,11 +491,16 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$item['has_workflow']='';
 		$item['is_immutable']=$item['is_immutable']=='true'?true:false;
 		$item['is_immutable']=$item['is_immutable']?'':$ns;
-		$item['is_checkedout']=$item['is_checked_out']?'':$ns;
+		$item['is_checkedout']=$item['checked_out_date']?'':$ns;
 		
-		$item['actions.checkin']=$item['is_checked_out']?'':$ns;
-		$item['actions.cancel_checkout']=$item['is_checked_out']?'':$ns;
-		$item['actions.checkout']=$item['is_checked_out']?$ns:'';
+		$item['actions.checkin']=$item['checked_out_date']?'':$ns;
+		$item['actions.cancel_checkout']=$item['checked_out_date']?'':$ns;
+		$item['actions.checkout']=$item['checked_out_date']?$ns:'';
+		
+		//Modifications to perform when the document has been checked out
+		if($item['checked_out_date']){
+			list($item['checked_out_date_d'],$item['checked_out_date_t'])=split(" ",$item['checked_out_date']);
+		}
 		
 		if($item['is_immutable']==''){
 			$item['actions.checkin']=$ns;
@@ -516,54 +521,41 @@ class BrowseDispatcher extends KTStandardDispatcher {
 						<td class="doc icon_cell" width="1">
 							<div class="doc icon">
 								<span class="immutable_info[is_immutable]">
-									<span>This document is <strong>Immutable</strong> and can no longer be modified. The only remaining action is to download or view it.</span>
+									<span>This document has been <strong>finalized</strong> and can no longer be modified. The only remaining action is to download or view it.</span>
 								</span>
 								<span class="checked_out[is_checkedout]">
-									<span>This document is <strong>Checked Out</strong> by <strong>[checkout_id]</strong>.</span>
+									<span>This document is <strong>Checked Out</strong> by <strong>[checked_out_by]</strong> ([checked_out_date_d]).</span>
 								</span>
 								<span class="doc preview"></span>
 							</div>
 						</td>
-						<td class="doc summary_cell">
+						<td class="doc summary_cell fdebug">
 							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]">[filename]</a></div>
+							<ul class="doc actionMenu">
+								<li>sharing</li>
+								<li>properties</li>
+								<li>comments</li>
+								<li class="actionIcon actions">
+									<ul>
+										<li class="[actions.download]"><a href="http://account-name.kt.dev/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
+										<li class="[actions.instant_view]"><a href="view.php?fDocumentId=[id]#preview">Instant View</a></li>
+										<li class="separator"></li>
+										<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Checkout</a></li>
+										<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Checkout</a></li>
+										<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Checkin</a></li>
+										<li class="separator"></li>
+										<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
+										<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
+										<li class="separator"></li>
+										<li class="[actions.change_owner]"><a href="/action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Document Ownership</a></li>
+									</ul>
+								</li>
+							</ul>
 							<div class="detail"><span class="item">Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span></div>
-						</td>
-						<td class="doc interact" width="1">
-							<div class="documentNotification">
-								<span class="workflow_info[has_workflow]">
-									<span>This is the workflow tooltip</span>
-								</span>
-								<span class="immutable_info[is_immutable]">
-									<span>This document is <strong>Immutable</strong> and can no longer be modified. The only remaining action is to download or view it.</span>
-								</span>
-								<span class="checked_out[is_checkedout]">
-									<span>This document is <strong>Checked Out</strong> by <strong>[checkout_id]</strong>.</span>
-								</span>
-							</div>
-							<div class="doc actionMenu">
-								<span class="actionIcon properties not_supported">p</span>
-								<span class="actionIcon comments">5</span>
-								<span class="actionIcon permissions not_supported">s</span>
-								<span class="actionIcon actions">
-										<ul>
-											<li class="[actions.download]"><a href="http://account-name.kt.dev/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
-											<li class="[actions.instant_view]"><a href="view.php?fDocumentId=[id]#preview">Instant View</a></li>
-											<li class="separator"></li>
-											<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Checkout</a></li>
-											<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Checkout</a></li>
-											<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Checkin</a></li>
-											<li class="separator"></li>
-											<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
-											<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
-											<li class="separator"></li>
-											<li class="[actions.change_owner]"><a href="/action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Document Ownership</a></li>
-										</ul>
-								</span>
-							</div>
 						</td>
 					</tr>
 					<tr>
-						<td class="expanderField" colspan="3">Some additional Detail</td>
+						<td class="expanderField" colspan="2">Some additional Detail</td>
 					</tr>
 				</table>
 			</span>
@@ -584,19 +576,17 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			</td>
 			<td class="[type] summary_cell">
 				<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[filename]</a></div>
-				<div class="detail"><span class="item">Created by: <span class="creator">[creator]</span></span></div>
-			</td>
-			<td class="[type] interact">
-				<div class="[type] actionMenu">
-					<span class="actionIcon actions">
+				<ul class="[type] actionMenu">
+					<li class="actionIcon actions">
 							<ul>
 								<li><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
 								<li><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Share Folder</a></li>
 								<li><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li>
 								<li><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Transactions</a></li>
 							</ul>
-					</span>
-				</div>
+					</li>
+				</ul>
+				<div class="detail"><span class="item">Created by: <span class="creator">[creator]</span></span></div>
 			</td>
 		</tr>
 	</table>

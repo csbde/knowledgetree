@@ -1,3 +1,9 @@
+// Z-Index Reference
+// drop menu = 20000
+// document preview = 20000
+// tooltips = 20001
+
+
 @mixin corners($size){
 	-webkit-border-radius: $size;
 	-moz-border-radius: $size;
@@ -15,12 +21,16 @@
 
 @mixin hoverIcon($width,$height,$standardIcon,$hoverIcon){
 	background: url($standardIcon);
+	background-repeat: no-repeat;
+	background-position: center center;
 	width: $width;
 	height: $height;
 	display: inline-block;
 	clear: none;
 	&:hover{
 		background: url($hoverIcon);
+		background-repeat: no-repeat;
+		background-position: center center;
 	}
 }
 
@@ -79,7 +89,7 @@
 		top: $yOffset;
 		left: $xOffset;
 		display: none;
-		z-index: 20000;
+		z-index: 20001;
 		&:hover{
 			left: -5000px;
 		}
@@ -91,9 +101,10 @@
 	}
 }
 
-@mixin dropMenu(){
+@mixin dropMenu($line-height: 1.5em){
 	cursor: pointer;
 	position: relative;
+	line-height: $line-height;
 	
 	.not_supported{
 		display: none !important;
@@ -112,7 +123,7 @@
 		@include shaddow(5px,darken($hbgcolor,80%));
 		@include corners(3px);
 		z-index: 20000;
-		left: 20-$menuWidth;
+		left: 30-$menuWidth;
 		top: 15px;
 		cursor: auto;
 		li{
@@ -173,6 +184,58 @@
 	@include dropMenu();
 }
 
+
+@mixin iconPanel($bgColor:#EEEEEE,$height:15px){
+	$boColor:darken($bgColor,10%);
+	$padding: $height / 3;
+	margin: 0px;
+	padding: 0px $padding * 2 !important;
+	@include corners ($height / 2);
+	@include shaddow (2px);
+	background-color:$bgColor;
+	@include gradient($bgColor, lighten($bgColor,5%)) ;
+	border: 1px solid $boColor;
+	list-style: none;
+	display: inline-block;
+	width: auto;
+//	height: $height;
+	line-height: 1.4em;
+	&>li{
+		height: $height;
+		display: inline-block;
+		padding: 0px $padding;
+		margin: 0px -3px;
+		border-right: 1px solid transparent; //darken($bgColor,5%);
+		border-left: 1px solid transparent; //darken($bgColor,5%);
+		cursor: pointer;
+		vertical-align: top;
+		&:hover{
+			border-right: 1px solid $boColor;
+			border-left: 1px solid $boColor;
+			background-color: lighten($boColor, 5%);
+			@include gradient (lighten($boColor, 5%),lighten($boColor, 10%));
+		}
+		&:last-child{
+//			border-right: 1px solid transparent;
+		}
+		&:first-child{
+//			border-left: 1px solid transparent;
+		}
+	}
+}
+
+.iconPanel{
+	@include iconPanel();
+}
+
+
+
+
+
+
+
+
+
 $bgcolor:#FFFFFF;
 $bcolor:darken($bgcolor, 3%);
 
@@ -206,7 +269,9 @@ $expanderFieldBo: darken($hbgcolor,8%);
 
 
 .doc.browseView{
-	.doc.item.debug{
+	position: relative;
+
+	.debug{
 		*{
 			border: 1px solid transparent;
 			&:hover{
@@ -220,6 +285,7 @@ $expanderFieldBo: darken($hbgcolor,8%);
 	}
 	
 	.doc.item{
+		position: relative;
 		font-family: $font;
 		font-size: 11px;
 		color: $font-color;
@@ -247,11 +313,11 @@ $expanderFieldBo: darken($hbgcolor,8%);
 		}
 		
 		.immutable_info{
-			@include tooltipIcon("/resources/graphics/newui/doc_immutable.png","/resources/graphics/newui/doc_immutable_h.png");
+			@include tooltipIcon("/resources/graphics/newui/doc_immutable.png","/resources/graphics/newui/doc_immutable_h.png",200px,right);
 		}
 		
 		.checked_out{
-			@include tooltipIcon("/resources/graphics/newui/doc_checkedout.png","/resources/graphics/newui/doc_checkedout_h.png");
+			@include tooltipIcon("/resources/graphics/newui/doc_checkedout.png","/resources/graphics/newui/doc_checkedout_h.png",200px,right);
 		}
 	}
 	
@@ -292,6 +358,7 @@ $expanderFieldBo: darken($hbgcolor,8%);
 	}
 	
 	.doc.summary_cell{
+
 		.title{
 			display: inline-block;
 			font-size: 14px;
@@ -380,10 +447,6 @@ $expanderFieldBo: darken($hbgcolor,8%);
 		}
 	}
 	
-	.folder.interact {
-		text-align: right;
-	}
-	
 	//  *************************** END OF FOLDER ***************************
 	
 	
@@ -395,15 +458,31 @@ $expanderFieldBo: darken($hbgcolor,8%);
 		width: 80px;
 	}
 	
-	.actionIcon.actions{
-		@include iconDropMenu("/resources/graphics/newui/actions.png","/resources/graphics/newui/actions.png");
+	.actionMenu{
+		@include iconPanel(#EEEEEE,17px);
+		float: right;
+		&>li{
+			padding-top: 1px;
+			padding-bottom: 1px;
+		}
+
+		.actionIcon{
+		}
+	
+		.actionIcon.actions{
+			@include iconDropMenu("/resources/graphics/newui/actions.png","/resources/graphics/newui/actions.png");
+		}
+		
+		.actionIcon.comments{
+			@include smallHoverIcon("/resources/graphics/newui/comment.png","/resources/graphics/newui/comment.png");
+			text-align: center;
+			cursor: pointer;
+			height: 16px;
+			overflow: none;
+			line-height: 1em !important;
+		}
 	}
 	
-	.actionIcon.comments{
-		@include smallHoverIcon("/resources/graphics/newui/comment.png","/resources/graphics/newui/comment.png");
-		text-align: center;
-		cursor: pointer;
-	}
 	
 	.expanderField{
 		@include corners(5px);
