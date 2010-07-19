@@ -335,8 +335,8 @@ $expanderFieldBo: darken($hbgcolor,8%);
 
 			.doc.preview{
 				position: absolute;
-				width: 150px;
-				height: 200px;
+				width: 200px;
+				/*height: 200px;*/
 				display: none;
 				cursor: pointer;
 				border: 1px solid $iconbg;
@@ -347,6 +347,7 @@ $expanderFieldBo: darken($hbgcolor,8%);
 				z-index: 20000;
 				left: 15px;
 				top: 20px;
+				overflow:hidden;
 			}
 			
 			&:hover{

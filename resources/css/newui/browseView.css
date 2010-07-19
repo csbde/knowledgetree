@@ -1,473 +1,70 @@
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003227}}
-.iconPanel {
-  margin: 0px;
-  padding: 0px 10px !important;
-  -webkit-border-radius: 7.5px;
-  -moz-border-radius: 7.5px;
-  border-radius: 7.5px;
-  -webkit-box-shadow: 0px 0px 2px #cccccc;
-  -moz-box-shadow: 0px 0px 2px #cccccc;
-  box-shadow: 0px 0px 2px #cccccc;
-  background-color: #eeeeee;
-  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeee), color-stop(1, #fbfbfb));
-  background: -moz-linear-gradient(center bottom, #eeeeee 0%, #fbfbfb 100%);
-  border: 1px solid #d4d4d4;
-  list-style: none;
-  display: inline-block;
-  width: auto;
-  line-height: 1.4em; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003203}}
-  .iconPanel > li {
-    height: 15px;
-    display: inline-block;
-    padding: 0px 5px;
-    margin: 0px -3px;
-    border-right: 1px solid transparent;
-    border-left: 1px solid transparent;
-    cursor: pointer;
-    vertical-align: top; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003212}}
-    .iconPanel > li:hover {
-      border-right: 1px solid #d4d4d4;
-      border-left: 1px solid #d4d4d4;
-      background-color: #e1e1e1;
-      background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #e1e1e1), color-stop(1, #eeeeee));
-      background: -moz-linear-gradient(center bottom, #e1e1e1 0%, #eeeeee 100%); }
+.iconPanel { margin: 0px; padding: 0px 10px !important; -webkit-border-radius: 7.5px; -moz-border-radius: 7.5px; border-radius: 7.5px; -webkit-box-shadow: 0px 0px 2px #cccccc; -moz-box-shadow: 0px 0px 2px #cccccc; box-shadow: 0px 0px 2px #cccccc; background-color: #eeeeee; background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeee), color-stop(1, #fbfbfb)); background: -moz-linear-gradient(center bottom, #eeeeee 0%, #fbfbfb 100%); border: 1px solid #d4d4d4; list-style: none; display: inline-block; width: auto; line-height: 1.4em; }
+.iconPanel > li { height: 15px; display: inline-block; padding: 0px 5px; margin: 0px -3px; border-right: 1px solid transparent; border-left: 1px solid transparent; cursor: pointer; vertical-align: top; }
+.iconPanel > li:hover { border-right: 1px solid #d4d4d4; border-left: 1px solid #d4d4d4; background-color: #e1e1e1; background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #e1e1e1), color-stop(1, #eeeeee)); background: -moz-linear-gradient(center bottom, #e1e1e1 0%, #eeeeee 100%); }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003258}}
-#content {
-  overflow: visible; }
+#content { overflow: visible; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003262}}
-.standardBorder {
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  -webkit-box-shadow: 0px 0px 5px #666677;
-  -moz-box-shadow: 0px 0px 5px #666677;
-  box-shadow: 0px 0px 5px #666677;
-  padding: 15px;
-  margin: 5px; }
+.standardBorder { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: 0px 0px 5px #666677; -moz-box-shadow: 0px 0px 5px #666677; box-shadow: 0px 0px 5px #666677; padding: 15px; margin: 5px; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003271}}
-.doc.browseView {
-  position: relative; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003275}}
-  .doc.browseView .debug * {
-    border: 1px solid transparent; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003277}}
-    .doc.browseView .debug *:hover {
-      border: 1px solid #A10000 !important; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003283}}
-  .doc.browseView .selected {
-    background-color: #CCEEFF; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003287}}
-  .doc.browseView .doc.item {
-    position: relative;
-    font-family: sans-serif;
-    font-size: 11px;
-    color: #333333;
-    border: 1px solid transparent;
-    border-bottom: 1px solid #dbdbdb;
-    padding: 5px;
-    margin: 5px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003297}}
-    .doc.browseView .doc.item strong {
-      font-weight: bold; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003301}}
-    .doc.browseView .doc.item td {
-      vertical-align: top; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003305}}
-    .doc.browseView .doc.item:hover {
-      -webkit-border-radius: 3px;
-      -moz-border-radius: 3px;
-      border-radius: 3px;
-      background-color: #f0f0f0;
-      border: 1px solid #dbdbdb; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003311}}
-    .doc.browseView .doc.item .workflow_info {
-      background: url("/resources/graphics/newui/doc_workflow_info.png");
-      background-repeat: no-repeat;
-      background-position: center center;
-      width: 16px;
-      height: 16px;
-      display: inline-block;
-      clear: none;
-      position: relative; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000330}}
-      .doc.browseView .doc.item .workflow_info:hover {
-        background: url("/resources/graphics/newui/doc_workflow_info_h.png");
-        background-repeat: no-repeat;
-        background-position: center center; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000381}}
-      .doc.browseView .doc.item .workflow_info span:first-child {
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-        -webkit-box-shadow: 0px 0px 5px black;
-        -moz-box-shadow: 0px 0px 5px black;
-        box-shadow: 0px 0px 5px black;
-        border: 1px solid #CE9B00;
-        background-color: #FFEDB7;
-        padding: 10px;
-        position: absolute;
-        width: 160px;
-        top: 16px;
-        left: -146px;
-        display: none;
-        z-index: 20001; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000393}}
-        .doc.browseView .doc.item .workflow_info span:first-child:hover {
-          left: -5000px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000398}}
-      .doc.browseView .doc.item .workflow_info:hover span:first-child {
-        display: block; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003315}}
-    .doc.browseView .doc.item .immutable_info {
-      background: url("/resources/graphics/newui/doc_immutable.png");
-      background-repeat: no-repeat;
-      background-position: center center;
-      width: 16px;
-      height: 16px;
-      display: inline-block;
-      clear: none;
-      position: relative; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000330}}
-      .doc.browseView .doc.item .immutable_info:hover {
-        background: url("/resources/graphics/newui/doc_immutable_h.png");
-        background-repeat: no-repeat;
-        background-position: center center; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000381}}
-      .doc.browseView .doc.item .immutable_info span:first-child {
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-        -webkit-box-shadow: 0px 0px 5px black;
-        -moz-box-shadow: 0px 0px 5px black;
-        box-shadow: 0px 0px 5px black;
-        border: 1px solid #CE9B00;
-        background-color: #FFEDB7;
-        padding: 10px;
-        position: absolute;
-        width: 200px;
-        top: 16px;
-        left: -14px;
-        display: none;
-        z-index: 20001; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000393}}
-        .doc.browseView .doc.item .immutable_info span:first-child:hover {
-          left: -5000px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000398}}
-      .doc.browseView .doc.item .immutable_info:hover span:first-child {
-        display: block; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003319}}
-    .doc.browseView .doc.item .checked_out {
-      background: url("/resources/graphics/newui/doc_checkedout.png");
-      background-repeat: no-repeat;
-      background-position: center center;
-      width: 16px;
-      height: 16px;
-      display: inline-block;
-      clear: none;
-      position: relative; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000330}}
-      .doc.browseView .doc.item .checked_out:hover {
-        background: url("/resources/graphics/newui/doc_checkedout_h.png");
-        background-repeat: no-repeat;
-        background-position: center center; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000381}}
-      .doc.browseView .doc.item .checked_out span:first-child {
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-        -webkit-box-shadow: 0px 0px 5px black;
-        -moz-box-shadow: 0px 0px 5px black;
-        box-shadow: 0px 0px 5px black;
-        border: 1px solid #CE9B00;
-        background-color: #FFEDB7;
-        padding: 10px;
-        position: absolute;
-        width: 200px;
-        top: 16px;
-        left: -14px;
-        display: none;
-        z-index: 20001; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000393}}
-        .doc.browseView .doc.item .checked_out span:first-child:hover {
-          left: -5000px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000398}}
-      .doc.browseView .doc.item .checked_out:hover span:first-child {
-        display: block; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003324}}
-  .doc.browseView .doc.icon_cell {
-    padding-right: 5px;
-    margin: 0px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003328}}
-    .doc.browseView .doc.icon_cell .doc.icon {
-      background-image: url(/resources/graphics/newui/doc_placeholder_icon.png);
-      width: 32px;
-      height: 32px;
-      position: relative;
-      padding: 0px;
-      margin: 0px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003336}}
-      .doc.browseView .doc.icon_cell .doc.icon .doc.preview {
-        position: absolute;
-        width: 150px;
-        height: 200px;
-        display: none;
-        cursor: pointer;
-        border: 1px solid #dbdbdb;
-        background-color: #f0f0f0;
-        -webkit-box-shadow: 0px 0px 5px #242424;
-        -moz-box-shadow: 0px 0px 5px #242424;
-        box-shadow: 0px 0px 5px #242424;
-        -webkit-border-radius: 3px;
-        -moz-border-radius: 3px;
-        border-radius: 3px;
-        padding: 2px;
-        z-index: 20000;
-        left: 15px;
-        top: 20px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003353}}
-      .doc.browseView .doc.icon_cell .doc.icon:hover .doc.preview {
-        display: block; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003362}}
-  .doc.browseView .doc.summary_cell .title {
-    display: inline-block;
-    font-size: 14px;
-    font-weight: bold;
-    padding-bottom: 5px;
-    margin-right: 15px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003371}}
-  .doc.browseView .doc.summary_cell .detail .item {
-    font-weight: bold;
-    margin-right: 10px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003374}}
-    .doc.browseView .doc.summary_cell .detail .item .user {
-      font-weight: normal; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003377}}
-    .doc.browseView .doc.summary_cell .detail .item .date {
-      font-weight: normal; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003387}}
-  .doc.browseView .folder.item.debug * {
-    border: 1px solid transparent; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003389}}
-    .doc.browseView .folder.item.debug *:hover {
-      border: 1px solid #A10000 !important; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003395}}
-  .doc.browseView .folder.item {
-    font-family: sans-serif;
-    font-size: 11px;
-    color: #333333;
-    border: 1px solid transparent;
-    border-bottom: 1px solid #dbdbdb;
-    padding: 5px;
-    margin: 5px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003404}}
-    .doc.browseView .folder.item td {
-      vertical-align: top; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003408}}
-    .doc.browseView .folder.item:hover {
-      -webkit-border-radius: 3px;
-      -moz-border-radius: 3px;
-      border-radius: 3px;
-      background-color: #f0f0f0;
-      border: 1px solid #dbdbdb; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003416}}
-  .doc.browseView .folder.icon_cell {
-    padding-right: 5px;
-    margin: 0px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003420}}
-    .doc.browseView .folder.icon_cell .folder.icon {
-      background-image: url(/resources/graphics/newui/folder_closed.png);
-      width: 32px;
-      height: 32px;
-      position: relative;
-      padding: 0px;
-      margin: 0px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003431}}
-  .doc.browseView .folder.summary_cell .title {
-    display: inline-block;
-    font-size: 14px;
-    font-weight: bold;
-    padding-bottom: 5px;
-    margin-right: 15px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003440}}
-  .doc.browseView .folder.summary_cell .detail .item {
-    font-weight: bold;
-    margin-right: 10px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003443}}
-    .doc.browseView .folder.summary_cell .detail .item .creator {
-      font-weight: normal; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003453}}
-  .doc.browseView .not_supported {
-    visibility: hidden  !important; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003457}}
-  .doc.browseView .interact {
-    width: 80px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003461}}
-  .doc.browseView .actionMenu {
-    margin: 0px;
-    padding: 0px 11.333px !important;
-    -webkit-border-radius: 8.5px;
-    -moz-border-radius: 8.5px;
-    border-radius: 8.5px;
-    -webkit-box-shadow: 0px 0px 2px #cccccc;
-    -moz-box-shadow: 0px 0px 2px #cccccc;
-    box-shadow: 0px 0px 2px #cccccc;
-    background-color: #eeeeee;
-    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeee), color-stop(1, #fbfbfb));
-    background: -moz-linear-gradient(center bottom, #eeeeee 0%, #fbfbfb 100%);
-    border: 1px solid #d4d4d4;
-    list-style: none;
-    display: inline-block;
-    width: auto;
-    line-height: 1.4em;
-    float: right; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003203}}
-    .doc.browseView .actionMenu > li {
-      height: 17px;
-      display: inline-block;
-      padding: 0px 5.667px;
-      margin: 0px -3px;
-      border-right: 1px solid transparent;
-      border-left: 1px solid transparent;
-      cursor: pointer;
-      vertical-align: top; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003212}}
-      .doc.browseView .actionMenu > li:hover {
-        border-right: 1px solid #d4d4d4;
-        border-left: 1px solid #d4d4d4;
-        background-color: #e1e1e1;
-        background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #e1e1e1), color-stop(1, #eeeeee));
-        background: -moz-linear-gradient(center bottom, #e1e1e1 0%, #eeeeee 100%); }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003464}}
-    .doc.browseView .actionMenu > li {
-      padding-top: 1px;
-      padding-bottom: 1px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003472}}
-    .doc.browseView .actionMenu .actionIcon.actions {
-      background: url("/resources/graphics/newui/actions.png");
-      background-repeat: no-repeat;
-      background-position: center center;
-      width: 16px;
-      height: 16px;
-      display: inline-block;
-      clear: none;
-      cursor: pointer;
-      position: relative;
-      line-height: 1.5em; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000330}}
-      .doc.browseView .actionMenu .actionIcon.actions:hover {
-        background: url("/resources/graphics/newui/actions.png");
-        background-repeat: no-repeat;
-        background-position: center center; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003109}}
-      .doc.browseView .actionMenu .actionIcon.actions .not_supported {
-        display: none !important; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003113}}
-      .doc.browseView .actionMenu .actionIcon.actions > ul {
-        text-align: left;
-        display: none;
-        position: absolute;
-        margin: 0px;
-        padding: 0px !important;
-        list-style: none;
-        width: 200px;
-        border: 1px solid #dbdbdb;
-        background-color: #f0f0f0;
-        -webkit-box-shadow: 0px 0px 5px #242424;
-        -moz-box-shadow: 0px 0px 5px #242424;
-        box-shadow: 0px 0px 5px #242424;
-        -webkit-border-radius: 3px;
-        -moz-border-radius: 3px;
-        border-radius: 3px;
-        z-index: 20000;
-        left: -170px;
-        top: 15px;
-        cursor: auto; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003129}}
-        .doc.browseView .actionMenu .actionIcon.actions > ul li {
-          display: block;
-          margin: inherit;
-          padding: 2px 10px;
-          margin: 5px 5px;
-          cursor: pointer;
-          -webkit-border-radius: 4px;
-          -moz-border-radius: 4px;
-          border-radius: 4px;
-          border: 1px solid transparent; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003137}}
-          .doc.browseView .actionMenu .actionIcon.actions > ul li.separator {
-            overflow: hidden;
-            height: 0px;
-            padding: 0px;
-            border-top: 1px solid silver;
-            -webkit-border-radius: 0px;
-            -moz-border-radius: 0px;
-            border-radius: 0px;
-            cursor: auto; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003144}}
-            .doc.browseView .actionMenu .actionIcon.actions > ul li.separator:hover {
-              border: 1px solid transparent;
-              border-top: 1px solid silver;
-              background-color: #f0f0f0;
-              padding: 0px;
-              -webkit-border-radius: 0px;
-              -moz-border-radius: 0px;
-              border-radius: 0px;
-              cursor: auto; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003154}}
-          .doc.browseView .actionMenu .actionIcon.actions > ul li:first-child {
-            margin-top: 5px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003157}}
-          .doc.browseView .actionMenu .actionIcon.actions > ul li:last-child {
-            margin-bottom: 5px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003160}}
-          .doc.browseView .actionMenu .actionIcon.actions > ul li:hover {
-            background-color: #e1e1e1;
-            background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #e1e1e1), color-stop(1, #eeeeee));
-            background: -moz-linear-gradient(center bottom, #e1e1e1 0%, #eeeeee 100%);
-            -webkit-box-shadow: 0px 0px 2px #cccccc;
-            -moz-box-shadow: 0px 0px 2px #cccccc;
-            box-shadow: 0px 0px 2px #cccccc;
-            border: 1px solid #cdcdcd; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003167}}
-          .doc.browseView .actionMenu .actionIcon.actions > ul li a, .doc.browseView .actionMenu .actionIcon.actions > ul li a:link, .doc.browseView .actionMenu .actionIcon.actions > ul li a:active, .doc.browseView .actionMenu .actionIcon.actions > ul li a:visited, .doc.browseView .actionMenu .actionIcon.actions > ul li a:hover {
-            text-decoration: none;
-            display: block;
-            color: inherit !important;
-            border: none !important; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003176}}
-      .doc.browseView .actionMenu .actionIcon.actions:hover > ul {
-        display: block; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003476}}
-    .doc.browseView .actionMenu .actionIcon.comments {
-      background: url("/resources/graphics/newui/comment.png");
-      background-repeat: no-repeat;
-      background-position: center center;
-      width: 16px;
-      height: 16px;
-      display: inline-block;
-      clear: none;
-      text-align: center;
-      cursor: pointer;
-      height: 16px;
-      overflow: none;
-      line-height: 1em !important; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000330}}
-      .doc.browseView .actionMenu .actionIcon.comments:hover {
-        background: url("/resources/graphics/newui/comment.png");
-        background-repeat: no-repeat;
-        background-position: center center; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003487}}
-  .doc.browseView .expanderField {
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    padding: 10px;
-    margin-left: 32px+5px;
-    background-color: white;
-    border: 1px solid #dbdbdb;
-    display: none; }
+.doc.browseView { position: relative; }
+.doc.browseView .debug * { border: 1px solid transparent; }
+.doc.browseView .debug *:hover { border: 1px solid #A10000 !important; }
+.doc.browseView .selected { background-color: #CCEEFF; }
+.doc.browseView .doc.item { position: relative; font-family: sans-serif; font-size: 11px; color: #333333; border: 1px solid transparent; border-bottom: 1px solid #dbdbdb; padding: 5px; margin: 5px; }
+.doc.browseView .doc.item strong { font-weight: bold; }
+.doc.browseView .doc.item td { vertical-align: top; }
+.doc.browseView .doc.item:hover { -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background-color: #f0f0f0; border: 1px solid #dbdbdb; }
+.doc.browseView .doc.item .workflow_info { background: url("/resources/graphics/newui/doc_workflow_info.png"); background-repeat: no-repeat; background-position: center center; width: 16px; height: 16px; display: inline-block; clear: none; position: relative; }
+.doc.browseView .doc.item .workflow_info:hover { background: url("/resources/graphics/newui/doc_workflow_info_h.png"); background-repeat: no-repeat; background-position: center center; }
+.doc.browseView .doc.item .workflow_info span:first-child { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: 0px 0px 5px black; -moz-box-shadow: 0px 0px 5px black; box-shadow: 0px 0px 5px black; border: 1px solid #CE9B00; background-color: #FFEDB7; padding: 10px; position: absolute; width: 160px; top: 16px; left: -146px; display: none; z-index: 20001; }
+.doc.browseView .doc.item .workflow_info span:first-child:hover { left: -5000px; }
+.doc.browseView .doc.item .workflow_info:hover span:first-child { display: block; }
+.doc.browseView .doc.item .immutable_info { background: url("/resources/graphics/newui/doc_immutable.png"); background-repeat: no-repeat; background-position: center center; width: 16px; height: 16px; display: inline-block; clear: none; position: relative; }
+.doc.browseView .doc.item .immutable_info:hover { background: url("/resources/graphics/newui/doc_immutable_h.png"); background-repeat: no-repeat; background-position: center center; }
+.doc.browseView .doc.item .immutable_info span:first-child { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: 0px 0px 5px black; -moz-box-shadow: 0px 0px 5px black; box-shadow: 0px 0px 5px black; border: 1px solid #CE9B00; background-color: #FFEDB7; padding: 10px; position: absolute; width: 200px; top: 16px; left: -14px; display: none; z-index: 20001; }
+.doc.browseView .doc.item .immutable_info span:first-child:hover { left: -5000px; }
+.doc.browseView .doc.item .immutable_info:hover span:first-child { display: block; }
+.doc.browseView .doc.item .checked_out { background: url("/resources/graphics/newui/doc_checkedout.png"); background-repeat: no-repeat; background-position: center center; width: 16px; height: 16px; display: inline-block; clear: none; position: relative; }
+.doc.browseView .doc.item .checked_out:hover { background: url("/resources/graphics/newui/doc_checkedout_h.png"); background-repeat: no-repeat; background-position: center center; }
+.doc.browseView .doc.item .checked_out span:first-child { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: 0px 0px 5px black; -moz-box-shadow: 0px 0px 5px black; box-shadow: 0px 0px 5px black; border: 1px solid #CE9B00; background-color: #FFEDB7; padding: 10px; position: absolute; width: 200px; top: 16px; left: -14px; display: none; z-index: 20001; }
+.doc.browseView .doc.item .checked_out span:first-child:hover { left: -5000px; }
+.doc.browseView .doc.item .checked_out:hover span:first-child { display: block; }
+.doc.browseView .doc.icon_cell { padding-right: 5px; margin: 0px; }
+.doc.browseView .doc.icon_cell .doc.icon { background-image: url(/resources/graphics/newui/doc_placeholder_icon.png); width: 32px; height: 32px; position: relative; padding: 0px; margin: 0px; }
+.doc.browseView .doc.icon_cell .doc.icon .doc.preview { position: absolute; width: 200px; /*height: 200px;*/ display: none; cursor: pointer; border: 1px solid #dbdbdb; background-color: #f0f0f0; -webkit-box-shadow: 0px 0px 5px #242424; -moz-box-shadow: 0px 0px 5px #242424; box-shadow: 0px 0px 5px #242424; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding: 2px; z-index: 20000; left: 15px; top: 20px; overflow: hidden; }
+.doc.browseView .doc.icon_cell .doc.icon:hover .doc.preview { display: block; }
+.doc.browseView .doc.summary_cell .title { display: inline-block; font-size: 14px; font-weight: bold; padding-bottom: 5px; margin-right: 15px; }
+.doc.browseView .doc.summary_cell .detail .item { font-weight: bold; margin-right: 10px; }
+.doc.browseView .doc.summary_cell .detail .item .user { font-weight: normal; }
+.doc.browseView .doc.summary_cell .detail .item .date { font-weight: normal; }
+.doc.browseView .folder.item.debug * { border: 1px solid transparent; }
+.doc.browseView .folder.item.debug *:hover { border: 1px solid #A10000 !important; }
+.doc.browseView .folder.item { font-family: sans-serif; font-size: 11px; color: #333333; border: 1px solid transparent; border-bottom: 1px solid #dbdbdb; padding: 5px; margin: 5px; }
+.doc.browseView .folder.item td { vertical-align: top; }
+.doc.browseView .folder.item:hover { -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background-color: #f0f0f0; border: 1px solid #dbdbdb; }
+.doc.browseView .folder.icon_cell { padding-right: 5px; margin: 0px; }
+.doc.browseView .folder.icon_cell .folder.icon { background-image: url(/resources/graphics/newui/folder_closed.png); width: 32px; height: 32px; position: relative; padding: 0px; margin: 0px; }
+.doc.browseView .folder.summary_cell .title { display: inline-block; font-size: 14px; font-weight: bold; padding-bottom: 5px; margin-right: 15px; }
+.doc.browseView .folder.summary_cell .detail .item { font-weight: bold; margin-right: 10px; }
+.doc.browseView .folder.summary_cell .detail .item .creator { font-weight: normal; }
+.doc.browseView .not_supported { visibility: hidden  !important; }
+.doc.browseView .interact { width: 80px; }
+.doc.browseView .actionMenu { margin: 0px; padding: 0px 11.333px !important; -webkit-border-radius: 8.5px; -moz-border-radius: 8.5px; border-radius: 8.5px; -webkit-box-shadow: 0px 0px 2px #cccccc; -moz-box-shadow: 0px 0px 2px #cccccc; box-shadow: 0px 0px 2px #cccccc; background-color: #eeeeee; background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeee), color-stop(1, #fbfbfb)); background: -moz-linear-gradient(center bottom, #eeeeee 0%, #fbfbfb 100%); border: 1px solid #d4d4d4; list-style: none; display: inline-block; width: auto; line-height: 1.4em; float: right; }
+.doc.browseView .actionMenu > li { height: 17px; display: inline-block; padding: 0px 5.667px; margin: 0px -3px; border-right: 1px solid transparent; border-left: 1px solid transparent; cursor: pointer; vertical-align: top; }
+.doc.browseView .actionMenu > li:hover { border-right: 1px solid #d4d4d4; border-left: 1px solid #d4d4d4; background-color: #e1e1e1; background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #e1e1e1), color-stop(1, #eeeeee)); background: -moz-linear-gradient(center bottom, #e1e1e1 0%, #eeeeee 100%); }
+.doc.browseView .actionMenu > li { padding-top: 1px; padding-bottom: 1px; }
+.doc.browseView .actionMenu .actionIcon.actions { background: url("/resources/graphics/newui/actions.png"); background-repeat: no-repeat; background-position: center center; width: 16px; height: 16px; display: inline-block; clear: none; cursor: pointer; position: relative; line-height: 1.5em; }
+.doc.browseView .actionMenu .actionIcon.actions:hover { background: url("/resources/graphics/newui/actions.png"); background-repeat: no-repeat; background-position: center center; }
+.doc.browseView .actionMenu .actionIcon.actions .not_supported { display: none !important; }
+.doc.browseView .actionMenu .actionIcon.actions > ul { text-align: left; display: none; position: absolute; margin: 0px; padding: 0px !important; list-style: none; width: 200px; border: 1px solid #dbdbdb; background-color: #f0f0f0; -webkit-box-shadow: 0px 0px 5px #242424; -moz-box-shadow: 0px 0px 5px #242424; box-shadow: 0px 0px 5px #242424; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; z-index: 20000; left: -170px; top: 15px; cursor: auto; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li { display: block; margin: inherit; padding: 2px 10px; margin: 5px 5px; cursor: pointer; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; border: 1px solid transparent; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.separator { overflow: hidden; height: 0px; padding: 0px; border-top: 1px solid silver; -webkit-border-radius: 0px; -moz-border-radius: 0px; border-radius: 0px; cursor: auto; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li.separator:hover { border: 1px solid transparent; border-top: 1px solid silver; background-color: #f0f0f0; padding: 0px; -webkit-border-radius: 0px; -moz-border-radius: 0px; border-radius: 0px; cursor: auto; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li:first-child { margin-top: 5px; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li:last-child { margin-bottom: 5px; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li:hover { background-color: #e1e1e1; background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #e1e1e1), color-stop(1, #eeeeee)); background: -moz-linear-gradient(center bottom, #e1e1e1 0%, #eeeeee 100%); -webkit-box-shadow: 0px 0px 2px #cccccc; -moz-box-shadow: 0px 0px 2px #cccccc; box-shadow: 0px 0px 2px #cccccc; border: 1px solid #cdcdcd; }
+.doc.browseView .actionMenu .actionIcon.actions > ul li a, .doc.browseView .actionMenu .actionIcon.actions > ul li a:link, .doc.browseView .actionMenu .actionIcon.actions > ul li a:active, .doc.browseView .actionMenu .actionIcon.actions > ul li a:visited, .doc.browseView .actionMenu .actionIcon.actions > ul li a:hover { text-decoration: none; display: block; color: inherit !important; border: none !important; }
+.doc.browseView .actionMenu .actionIcon.actions:hover > ul { display: block; }
+.doc.browseView .actionMenu .actionIcon.comments { background: url("/resources/graphics/newui/comment.png"); background-repeat: no-repeat; background-position: center center; width: 16px; height: 16px; display: inline-block; clear: none; text-align: center; cursor: pointer; height: 16px; overflow: none; line-height: 1em !important; }
+.doc.browseView .actionMenu .actionIcon.comments:hover { background: url("/resources/graphics/newui/comment.png"); background-repeat: no-repeat; background-position: center center; }
+.doc.browseView .expanderField { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; padding: 10px; margin-left: 32px+5px; background-color: white; border: 1px solid #dbdbdb; display: none; }

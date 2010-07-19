@@ -511,11 +511,24 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$item['actions.change_owner']=$ns;
 		}
 		
+		// Check if the thumbnail exists
+        global $default;
+		$varDir = $default->varDirectory;
+    	$thumbnailCheck = $varDir . '/thumbnails/'.$item['id'].'.jpg';
+		
+		if (file_exists($thumbnailCheck)) {
+			$item['thumbnail'] = '<img src="plugins/thumbnails/thumbnail_view.php?documentId='.$item['id'].'">';
+			$item['thumbnailclass'] = 'preview';
+		} else {
+			$item['thumbnail'] = '';
+			$item['thumbnailclass'] = 'nopreview';
+		}
+		
 		$tpl='
 			<span class="doc browseView">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
-						<td>
+						<td width="1">
 							<input type="checkbox" />
 						</td>
 						<td class="doc icon_cell" width="1">
@@ -526,7 +539,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 								<span class="checked_out[is_checkedout]">
 									<span>This document is <strong>Checked Out</strong> by <strong>[checked_out_by]</strong> ([checked_out_date_d]).</span>
 								</span>
-								<span class="doc preview"></span>
+								<span class="doc [thumbnailclass]">[thumbnail]</span>
 							</div>
 						</td>
 						<td class="doc summary_cell fdebug">
@@ -571,6 +584,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	<span class="doc browseView">
 	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="[type] item">
 		<tr>
+			<td width="1">
+				<input type="checkbox" />
+			</td>
 			<td class="[type] icon_cell" width="1">
 				<div class="[type] icon"></div>
 			</td>
