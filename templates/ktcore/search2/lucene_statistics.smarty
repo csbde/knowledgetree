@@ -37,11 +37,11 @@ toggle.style.display = 'none';
 <tr><td></td><td>{i18n}Total # Documents in Repository:{/i18n}</td><td>{$stats.docsInRepository}</td></tr>
 <tr><td></td><td>{i18n}Documents Indexed:{/i18n}</td><td>{$stats.docsInIndex}</td></tr>
 <tr><td></td><td>
-{if $stats.docsInQueue > 0}<a href="{$rootUrl}/admin.php?kt_path_info=search/pendingdocuments">{/if}
+{if $stats.docsInQueue > 0}<a href="{$rootUrl}/admin.php?kt_path_info=contentIndexing/pendingdocuments">{/if}
 {i18n}Documents in Indexing Queue:{/i18n}
 {if $stats.docsInQueue > 0}</a>{/if}
 </td><td>{$stats.docsInQueue}</td></tr>
-<tr><td></td><td>{if $stats.errorsInQueue > 0}<a href="{$rootUrl}/admin.php?kt_path_info=search/indexerrors">{/if}
+<tr><td></td><td>{if $stats.errorsInQueue > 0}<a href="{$rootUrl}/admin.php?kt_path_info=contentIndexing/indexerrors">{/if}
 				{i18n}Documents with Indexing Problems:{/i18n}
 				{if $stats.errorsInQueue > 0}</a>{/if}
 				</td><td>{$stats.errorsInQueue}</td></tr>
