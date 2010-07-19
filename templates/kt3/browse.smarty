@@ -102,6 +102,31 @@
 		    $('.expanderField').not(thisField[0]).hide();
 		    thisField.toggle();
 		});
+		
+		$("table.doc.item input:checkbox").click(function() {
+			
+			if ($(this).is(':checked')) {
+				$(this).parent().parent().parent().parent().addClass("highlighted");
+			} else {
+				$(this).parent().parent().parent().parent().removeClass("highlighted");
+			}
+			
+		});
+		
+		$("table.doc.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
+		
+		$("table.folder.item input:checkbox").click(function() {
+			
+			if ($(this).is(':checked')) {
+				$(this).parent().parent().parent().parent().addClass("highlighted");
+			} else {
+				$(this).parent().parent().parent().parent().removeClass("highlighted");
+			}
+			
+		});
+		
+		$("table.folder.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
+		
 	});
 })(jQuery);
 </script>

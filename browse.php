@@ -529,7 +529,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
 						<td width="1">
-							<input type="checkbox" />
+							<input name="selection_d[]" type="checkbox" value="[id]" />
 						</td>
 						<td class="doc icon_cell" width="1">
 							<div class="doc icon">
@@ -585,7 +585,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="[type] item">
 		<tr>
 			<td width="1">
-				<input type="checkbox" />
+				<input name="selection_f[]" type="checkbox" value="[id]" />
 			</td>
 			<td class="[type] icon_cell" width="1">
 				<div class="[type] icon"></div>
