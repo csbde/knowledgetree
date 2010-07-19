@@ -169,6 +169,10 @@ class DBUtil {
         }
          if(isset($default->_slave) && (strncasecmp(ltrim($query), "select", 6) === 0 )){
             $db = self::getSlave();
+            if($oPear->isError($db))
+            {
+                return $db;
+            }
         }else{
             $db = self::getDB($db);
             if($oPear->isError($db))
