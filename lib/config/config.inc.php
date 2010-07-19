@@ -368,8 +368,9 @@ class KTConfig {
             }
             //Set slave connections defined
             $default->_slave = $slave_dns;
+            return true;
         }
-       
+       return true;
     }
 
     function setns($seck, $k, $v, $bDefault = false) {
