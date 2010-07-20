@@ -84,7 +84,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         }    
                 
         $search_fields = array();
-        $search_fields[] =  new KTStringWidget(_kt('Group Name'), _kt("Enter part of the group's name.  e.g. <strong>ad</strong> will match <strong>administrators</strong>."), 'search_name', $name, $this->oPage, true);
+        $search_fields[] =  new KTStringWidget(_kt(''), _kt("Enter part of the group's name: <strong>ad</strong> will match <strong>administrators</strong>."), 'search_name', $name, $this->oPage, false);
         
         if (!empty($name)) {
             $search_results =& Group::getList('WHERE name LIKE \'%' . DBUtil::escapeSimple($name) . '%\' AND id > 0');
