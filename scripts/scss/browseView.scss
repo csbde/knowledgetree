@@ -274,6 +274,65 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 }
 
 
+.browseView{
+	&.bulkActionMenu{
+		$bulkActionMenuColor:#EEEEEE;
+		height: 23px;
+		width: 100%;
+		background-color: $bulkActionMenuColor;
+		@include corners(3px);
+		border: 1px solid darken($bulkActionMenuColor, 5%);
+		padding: 0px !important;
+		margin: 0px -2px 8px 5px;
+		&>tbody{
+			padding:0px;
+			margin: 0px;
+			&>tr>td{
+				line-height: 1em;
+				padding: 0px 5px;
+				font-size: 85%;
+				color: darken($bulkActionMenuColor,60%);
+				& input{
+					background: none !important;
+					border: 1px solid transparent !important;
+					font-size: 100% !important;
+					margin: 2px 1px !important;
+					padding: 1px 5px !important;
+					color: darken($bulkActionMenuColor,60%);
+					@include corners(3px);
+					border: 1px solid darken($bulkActionMenuColor, 4%) !important;
+					&:hover{
+						@include corners(3px);
+						@include gradient($bulkActionMenuColor);
+						@include shaddow(2px);
+						border: 1px solid darken($bulkActionMenuColor, 10%) !important;
+						cursor: pointer;
+					}
+				}
+				&.disabled{
+					& input{
+						color: darken($bulkActionMenuColor,40%);
+						&:hover{
+							border: 1px solid darken($bulkActionMenuColor, 4%) !important;
+							@include shaddow(0px);
+							cursor: auto;
+						}
+					}
+				}
+			}
+		}
+		.status{
+			color: #A10000 !important;
+		}
+	}
+}
+
+.item{
+	td.checkbox{
+		vertical-align: middle;
+	}
+}
+
 
 .doc.browseView{
 	position: relative;
@@ -307,6 +366,10 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 
 		td{
 			vertical-align: top;
+			&.checkbox{
+				vertical-align: middle;
+				padding-right: 10px;
+			}
 		}
 	
 		&:hover{
@@ -423,6 +486,10 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 
 		td{
 			vertical-align: top;
+			&.checkbox{
+				vertical-align: middle;
+				padding-right: 10px;
+			}
 		}
 	
 		&:hover{
