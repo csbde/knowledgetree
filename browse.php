@@ -296,6 +296,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			
 			$folderContentItems=$this->getCurrentFolderContent($this->oFolder->getId());
 			
+			$aTemplateData['bulkActionMenu']=$this->renderBulkActionMenu();
+			
 			foreach($folderContentItems['folders'] as $item){
 				$aTemplateData['folderContents'].=$this->renderFolderItem($item);
 			}
@@ -486,6 +488,29 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		return $ret;
 	}
 	
+	private function renderBulkActionMenu(){
+		$tpl='
+		<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+					<form method="POST" action="/action.php">
+						<input type="hidden" value="" name="sListCode">
+						<input type="hidden" value="bulkaction" name="action">
+						<input type="hidden" value="browse" name="fReturnAction">
+						<input type="hidden" value="1" name="fReturnData">
+						<input type="submit" name="submit[ktcore.actions.bulk.delete]" value="Delete" />
+						<input type="submit" name="submit[ktcore.actions.bulk.move]" value="Move" />
+						<input type="submit" name="submit[ktcore.actions.bulk.copy]" value="Copy" />
+	        			<input type="submit" name="submit[ktcore.actions.bulk.archive]" value="Archive" />
+					</form>
+				</td>
+				<td width="1"></td>
+			</tr>
+		</table>
+		';
+		return $tpl;
+	}
+	
 	private function renderDocumentItem($item=NULL){
 		$ns=" not_supported";
 		$item['has_workflow']='';
@@ -528,7 +553,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			<span class="doc browseView">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
-						<td width="1">
+						<td width="1" class="checkbox">
 							<input name="selection_d[]" type="checkbox" value="[id]" />
 						</td>
 						<td class="doc icon_cell" width="1">
@@ -593,7 +618,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	<span class="doc browseView">
 	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="[type] item">
 		<tr>
-			<td width="1">
+			<td width="1" class="checkbox">
 				<input name="selection_f[]" type="checkbox" value="[id]" />
 			</td>
 			<td class="[type] icon_cell" width="1">

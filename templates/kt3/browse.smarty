@@ -42,11 +42,14 @@
 	{$collection->render()}
 {else}
 	<div class="standardBorder" style="min-width: 800px;">
+		{if ($isEditable)}
+			{$bulkActionMenu}
+		{/if}
 		{$folderContents}
 	</div>
 {/if}
 
-{if ($isEditable)}
+{if ($isEditable && 1==2)}
 <div class="form_actions">
   <input type="hidden" name="sListCode" value="{$code}" />
   <input type="hidden" name="action" value="bulkaction" />
@@ -96,6 +99,17 @@
 <script>
 (function($){
 	$(document).ready(function(){
+	
+		function setBulkActionMenuStatus(){
+			if( $("table.doc.item input:checkbox:checked").length + $("table.folder.item input:checkbox:checked").length >0){
+				$('.browseView.bulkActionMenu td:first-child').removeClass('disabled');
+				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','');
+			}else{
+				$('.browseView.bulkActionMenu td:first-child').addClass('disabled');
+				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','disabled');
+			}
+		}
+	
 		$('.actionIcon.comments').click(function(){
 		    var docItem=$(this).parents('.item')[0];
 		    var thisField=$('.expanderField',docItem);
@@ -104,7 +118,8 @@
 		});
 		
 		$("table.doc.item input:checkbox").click(function() {
-			
+			setBulkActionMenuStatus();
+						
 			if ($(this).is(':checked')) {
 				$(this).parent().parent().parent().parent().addClass("highlighted");
 			} else {
@@ -116,6 +131,7 @@
 		$("table.doc.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
 		
 		$("table.folder.item input:checkbox").click(function() {
+			setBulkActionMenuStatus();
 			
 			if ($(this).is(':checked')) {
 				$(this).parent().parent().parent().parent().addClass("highlighted");
@@ -127,6 +143,8 @@
 		
 		$("table.folder.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
 		
+		
+		setBulkActionMenuStatus();
 	});
 })(jQuery);
 </script>
