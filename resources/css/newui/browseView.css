@@ -60,71 +60,70 @@
   border: 1px solid #e1e1e1;
   padding: 0px !important;
   margin: 0px -2px 8px 5px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003287}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003288}}
   .browseView.bulkActionMenu > tbody {
     padding: 0px;
     margin: 0px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003290}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003291}}
     .browseView.bulkActionMenu > tbody > tr > td {
       line-height: 1em;
       padding: 0px 5px;
       font-size: 85%;
       color: #555555; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003295}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003296}}
       .browseView.bulkActionMenu > tbody > tr > td input {
         background: none !important;
         border: 1px solid transparent !important;
         font-size: 100% !important;
         margin: 2px 1px !important;
         padding: 1px 5px !important;
-        color: #555555;
+        color: #344a6a;
         -webkit-border-radius: 3px;
         -moz-border-radius: 3px;
         border-radius: 3px;
         border: 1px solid #e4e4e4 !important; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003304}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003305}}
         .browseView.bulkActionMenu > tbody > tr > td input:hover {
           -webkit-border-radius: 3px;
           -moz-border-radius: 3px;
           border-radius: 3px;
-          background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeee), color-stop(1, #d4d4d4));
-          background: -moz-linear-gradient(center bottom, #eeeeee 0%, #d4d4d4 100%);
           -webkit-box-shadow: 0px 0px 2px #cccccc;
           -moz-box-shadow: 0px 0px 2px #cccccc;
           box-shadow: 0px 0px 2px #cccccc;
+          text-decoration: underline !important;
           border: 1px solid #d4d4d4 !important;
           cursor: pointer; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003313}}
-      .browseView.bulkActionMenu > tbody > tr > td.disabled input {
-        color: #888888; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003315}}
+      .browseView.bulkActionMenu > tbody > tr > td.disabled input {
+        color: #45628c; }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003317}}
         .browseView.bulkActionMenu > tbody > tr > td.disabled input:hover {
           border: 1px solid #e4e4e4 !important;
           -webkit-box-shadow: 0px 0px 0px #cccccc;
           -moz-box-shadow: 0px 0px 0px #cccccc;
           box-shadow: 0px 0px 0px #cccccc;
           cursor: auto; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003324}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003326}}
   .browseView.bulkActionMenu .status {
     color: #A10000 !important; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003331}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003333}}
 .item td.checkbox {
   vertical-align: middle; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003337}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003339}}
 .doc.browseView {
   position: relative; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003341}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003343}}
   .doc.browseView .debug * {
     border: 1px solid transparent; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003343}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003345}}
     .doc.browseView .debug *:hover {
       border: 1px solid #A10000 !important; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003349}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003351}}
   .doc.browseView .selected {
     background-color: #CCEEFF; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003353}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003355}}
   .doc.browseView .doc.item {
     position: relative;
     font-family: sans-serif;
@@ -134,24 +133,24 @@
     border-bottom: 1px solid #dbdbdb;
     padding: 5px;
     margin: 5px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003363}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003365}}
     .doc.browseView .doc.item strong {
       font-weight: bold; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003367}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003369}}
     .doc.browseView .doc.item td {
       vertical-align: top; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003369}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003371}}
       .doc.browseView .doc.item td.checkbox {
         vertical-align: middle;
         padding-right: 10px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003375}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003377}}
     .doc.browseView .doc.item:hover {
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px;
       border-radius: 3px;
       background-color: #f0f0f0;
       border: 1px solid #dbdbdb; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003381}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003383}}
     .doc.browseView .doc.item .workflow_info {
       background: url("/resources/graphics/newui/doc_workflow_info.png");
       background-repeat: no-repeat;
@@ -189,7 +188,7 @@
 @media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000398}}
       .doc.browseView .doc.item .workflow_info:hover span:first-child {
         display: block; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003385}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003387}}
     .doc.browseView .doc.item .immutable_info {
       background: url("/resources/graphics/newui/doc_immutable.png");
       background-repeat: no-repeat;
@@ -227,7 +226,7 @@
 @media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000398}}
       .doc.browseView .doc.item .immutable_info:hover span:first-child {
         display: block; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003389}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003391}}
     .doc.browseView .doc.item .checked_out {
       background: url("/resources/graphics/newui/doc_checkedout.png");
       background-repeat: no-repeat;
@@ -265,24 +264,24 @@
 @media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000398}}
       .doc.browseView .doc.item .checked_out:hover span:first-child {
         display: block; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003394}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003396}}
   .doc.browseView .doc.item.highlighted {
     border: 1px solid #ffeb8f;
     background-color: #fff2b8;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003399}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003401}}
     .doc.browseView .doc.item.highlighted:hover {
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px;
       border-radius: 3px;
       background-color: #ffeb8f !important; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003405}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003407}}
   .doc.browseView .doc.icon_cell {
     padding-right: 5px;
     margin: 0px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003409}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003411}}
     .doc.browseView .doc.icon_cell .doc.icon {
       background-image: url(/resources/graphics/newui/doc_placeholder_icon.png);
       width: 32px;
@@ -290,7 +289,7 @@
       position: relative;
       padding: 0px;
       margin: 0px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003417}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003419}}
       .doc.browseView .doc.icon_cell .doc.icon .doc.preview {
         position: absolute;
         width: 200px;
@@ -311,33 +310,33 @@
         top: 20px;
         overflow: hidden;
         cursor: default; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003436}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003438}}
       .doc.browseView .doc.icon_cell .doc.icon:hover .doc.preview {
         display: block; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003445}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003447}}
   .doc.browseView .doc.summary_cell .title {
     display: inline-block;
     font-size: 14px;
     font-weight: bold;
     padding-bottom: 5px;
     margin-right: 15px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003454}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003456}}
   .doc.browseView .doc.summary_cell .detail .item {
     font-weight: bold;
     margin-right: 10px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003457}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003459}}
     .doc.browseView .doc.summary_cell .detail .item .user {
       font-weight: normal; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003460}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003462}}
     .doc.browseView .doc.summary_cell .detail .item .date {
       font-weight: normal; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003470}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003472}}
   .doc.browseView .folder.item.debug * {
     border: 1px solid transparent; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003472}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003474}}
     .doc.browseView .folder.item.debug *:hover {
       border: 1px solid #A10000 !important; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003478}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003480}}
   .doc.browseView .folder.item {
     font-family: sans-serif;
     font-size: 11px;
@@ -346,38 +345,38 @@
     border-bottom: 1px solid #dbdbdb;
     padding: 5px;
     margin: 5px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003487}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003489}}
     .doc.browseView .folder.item td {
       vertical-align: top; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003489}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003491}}
       .doc.browseView .folder.item td.checkbox {
         vertical-align: middle;
         padding-right: 10px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003495}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003497}}
     .doc.browseView .folder.item:hover {
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px;
       border-radius: 3px;
       background-color: #f0f0f0;
       border: 1px solid #dbdbdb; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003503}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003505}}
   .doc.browseView .folder.item.highlighted {
     border: 1px solid #c8ff7a;
     background-color: #d9ffa3;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003508}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003510}}
     .doc.browseView .folder.item.highlighted:hover {
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px;
       border-radius: 3px;
       background-color: #c8ff7a !important; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003514}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003516}}
   .doc.browseView .folder.icon_cell {
     padding-right: 5px;
     margin: 0px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003518}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003520}}
     .doc.browseView .folder.icon_cell .folder.icon {
       background-image: url(/resources/graphics/newui/folder_closed.png);
       width: 32px;
@@ -385,27 +384,27 @@
       position: relative;
       padding: 0px;
       margin: 0px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003529}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003531}}
   .doc.browseView .folder.summary_cell .title {
     display: inline-block;
     font-size: 14px;
     font-weight: bold;
     padding-bottom: 5px;
     margin-right: 15px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003538}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003540}}
   .doc.browseView .folder.summary_cell .detail .item {
     font-weight: bold;
     margin-right: 10px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003541}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003543}}
     .doc.browseView .folder.summary_cell .detail .item .creator {
       font-weight: normal; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003551}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003553}}
   .doc.browseView .not_supported {
     visibility: hidden  !important; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003555}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003557}}
   .doc.browseView .interact {
     width: 80px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003559}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003561}}
   .doc.browseView .actionMenu {
     margin: 0px;
     padding: 0px 11.333px !important;
@@ -441,11 +440,11 @@
         background-color: #e1e1e1;
         background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #e1e1e1), color-stop(1, #eeeeee));
         background: -moz-linear-gradient(center bottom, #e1e1e1 0%, #eeeeee 100%); }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003562}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003564}}
     .doc.browseView .actionMenu > li {
       padding-top: 1px;
       padding-bottom: 1px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003570}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003572}}
     .doc.browseView .actionMenu .actionIcon.actions {
       background: url("/resources/graphics/newui/actions.png");
       background-repeat: no-repeat;
@@ -541,7 +540,7 @@
 @media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003176}}
       .doc.browseView .actionMenu .actionIcon.actions:hover > ul {
         display: block; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003574}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003576}}
     .doc.browseView .actionMenu .actionIcon.comments {
       background: url("/resources/graphics/newui/comment.png");
       background-repeat: no-repeat;
@@ -554,13 +553,17 @@
       cursor: pointer;
       height: 16px;
       overflow: none;
-      line-height: 1em !important; }
+      line-height: 1em !important;
+      font-size: 80%;
+      font-weight: bold;
+      line-height: 1.8em;
+      color: #A10000; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\0000330}}
       .doc.browseView .actionMenu .actionIcon.comments:hover {
-        background: url("/resources/graphics/newui/comment.png");
+        background: url("/resources/graphics/newui/comment_h.png");
         background-repeat: no-repeat;
         background-position: center center; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003585}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003591}}
   .doc.browseView .expanderField {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -570,14 +573,14 @@
     background-color: white;
     border: 1px solid #dbdbdb;
     display: none; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003592}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003598}}
     .doc.browseView .expanderField .expanderWidget {
       display: block; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003594}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003600}}
       .doc.browseView .expanderField .expanderWidget h1 {
         font-size: 14px;
         font-weight: bold;
         display: block !important; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003599}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/kt\/scripts\/scss\/browseView\.scss}line{font-family:\00003605}}
       .doc.browseView .expanderField .expanderWidget.properties {
         display: none; }
