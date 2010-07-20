@@ -52,7 +52,6 @@ user{/i18n}</a></p>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="do_search" value="1" />
 {capture assign=link}{addQS}show_all=1{/addQS}{/capture}
-<p class="descriptiveText">{i18n arg_link=$link}Search for users. Alternatively, <a href="#link#">view all users</a>.{/i18n}</p>
 
 {foreach item=oWidget from=$search_fields}
   {$oWidget->render()}
@@ -84,6 +83,7 @@ user{/i18n}</a></p>
    </tr>
 </thead>
 <tbody>
+
    <!-- do we want to batch here? -->
      {foreach item=oUser from=$search_results}
      {if ($oUser->getDisabled() != 2)}
@@ -129,3 +129,15 @@ user{/i18n}</a></p>
 
 {/if}
 {/if}
+
+<div class="widget" style="position: relative;">
+	<div class="form_actions">
+		<!-- View all users -->
+		<a style="background: none repeat scroll 0% 0% transparent;" href="{i18n arg_link=$link}#link#{/i18n}">{i18n}View all users{/i18n}</a>
+	</div>
+</div>
+
+
+
+
+

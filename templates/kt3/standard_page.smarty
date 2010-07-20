@@ -47,6 +47,7 @@
     {/foreach}
 
     <!-- Javascript Files. -->
+		<script type="text/javascript" src="{$rootUrl}/resources/js/newui/kt.containers.js"></script>
     {foreach item=sResourceURL from=$page->getJSResources()}
        <script type="text/javascript" src="{$rootUrl}/{$sResourceURL}"> </script>
     {/foreach}
@@ -62,261 +63,263 @@
     <!--[if IE 7]>
         <style type="text/css" media="all">@import url({$rootUrl}/resources/css/kt-ie-7.css);</style>
     <![endif]-->
+
 </head>
-<body {if (!$page->show_portlets)}class="noportlets"{/if} {if $page->onload}onload="{$page->getBodyOnload()}"{/if} >
-<div id="wrapper" style="min-width: 850px;  margin-left: auto; margin-right: auto;">
-<input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$rootUrl}" />
-    <div id="pageBody">
-        <div id="bodyPad">
-			{if (!$page->hide_navbar)}
-			<div id="navbarBorderUI">
-	                    <div id="topnavbar">
-	                        <ul class="floatleft">
-								<li class="roundleft"></li> <!-- block for left round corner -->
-								<li class="notification">&nbsp;</li> <!-- Special Case for KT Logo -->
-	                            <!-- area menu -->
-	                            {foreach item=aMenuItem from=$page->menu}
-	                                {if ($aMenuItem.active == 1)}
-	                                    <li><a class="active" href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}">{$aMenuItem.label}</a></li>
-	                                {else}
-	                                    <li><a href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}">{$aMenuItem.label}</a></li>
-	                                {/if}
-	                            {/foreach}
-							</ul>
-	                            <script language="javascript">
+<body {if (!$page->show_portlets)}class="noportlets"{/if} {if $page->onload}onload="{$page->getBodyOnload()}"{/if} onload="kt.lib.setFooter()" onresize="kt.lib.setFooter()">
+	<div id="wrapper" style="min-width: 850px;  margin-left: auto; margin-right: auto;">
+	<input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$rootUrl}" />
+		<div id="pageBody">
+			<div id="bodyPad">
+				{if (!$page->hide_navbar)}
+				<div id="navbarBorderUI">
+							<div id="topnavbar">
+								<ul class="floatleft">
+									<li class="roundleft"></li> <!-- block for left round corner -->
+									<li class="notification">&nbsp;</li> <!-- Special Case for KT Logo -->
+									<!-- area menu -->
+									{foreach item=aMenuItem from=$page->menu}
+										{if ($aMenuItem.active == 1)}
+											<li><a class="active" href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}">{$aMenuItem.label}</a></li>
+										{else}
+											<li><a href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}">{$aMenuItem.label}</a></li>
+										{/if}
+									{/foreach}
+								</ul>
+									<script language="javascript">
+									
+									var sSearchTranslations =
+										[
 
-	                            var sSearchTranslations =
-	                            	[
+										/* 0  */	"{i18n}Quick Search Options{/i18n}",
+										/* 1  */	"{i18n}Searches will now search both content and metadata{/i18n}",
+										/* 2  */	"{i18n}Searches will now only search metadata{/i18n}",
+										/* 3  */	"{i18n}Hint{/i18n}",
+										/* 4  */	"{i18n}Please enter some search criteria!{/i18n}",
+										/* 5  */	"{i18n}Saved Searches{/i18n}",
+										/* 6  */	"{i18n}Advanced Search{/i18n}",
+										/* 7  */	"{i18n}Previous Search Results{/i18n}",
+										/* 8  */	"{i18n}Quick Search Options{/i18n}",
+										/* 9  */	"{i18n}content and metadata{/i18n}",
+										/* 10  */	"{i18n}metadata{/i18n}",
+										/* 11  */	"{i18n}search{/i18n}",
+										/* 12  */	"{i18n}Enter search criteria...{/i18n}",
+										/* 13  */	"{i18n}Toggle search results format{/i18n}",
+										/* 14  */	"{i18n}Search engine format{/i18n}",
+										/* 15  */	"{i18n}Browse view format{/i18n}"
 
-	                            	/* 0  */	"{i18n}Quick Search Options{/i18n}",
-	                            	/* 1  */	"{i18n}Searches will now search both content and metadata{/i18n}",
-	                            	/* 2  */	"{i18n}Searches will now only search metadata{/i18n}",
-	                            	/* 3  */	"{i18n}Hint{/i18n}",
-	                            	/* 4  */	"{i18n}Please enter some search criteria!{/i18n}",
-	                            	/* 5  */	"{i18n}Saved Searches{/i18n}",
-	                            	/* 6  */	"{i18n}Advanced Search{/i18n}",
-	                            	/* 7  */	"{i18n}Previous Search Results{/i18n}",
-	                            	/* 8  */	"{i18n}Quick Search Options{/i18n}",
-	                            	/* 9  */	"{i18n}content and metadata{/i18n}",
-	                            	/* 10  */	"{i18n}metadata{/i18n}",
-	                            	/* 11  */	"{i18n}search{/i18n}",
-	                            	/* 12  */	"{i18n}Enter search criteria...{/i18n}",
-	                            	/* 13  */	"{i18n}Toggle search results format{/i18n}",
-	                            	/* 14  */	"{i18n}Search engine format{/i18n}",
-	                            	/* 15  */	"{i18n}Browse view format{/i18n}"
+										];
 
-	                            	];
+									var aSavedSearches = [
+									{assign var=count value=0}
+										{foreach item=searchitem from=$savedSearches}
+										{if $count>0},{/if}
+										{literal}{{/literal}id:{$searchitem.id},name:'{$searchitem.name|sanitize}'{literal}}{/literal}
+										{assign var=count value=$count+1}
+										{/foreach}
+									];
 
-	                            var aSavedSearches = [
-	                            {assign var=count value=0}
-									{foreach item=searchitem from=$savedSearches}
-									{if $count>0},{/if}
-	                            	{literal}{{/literal}id:{$searchitem.id},name:'{$searchitem.name|sanitize}'{literal}}{/literal}
-	                            	{assign var=count value=$count+1}
-	                            	{/foreach}
-	                            ];
+									{if $smarty.session.search2resultFormat == 'browseview'}
+										var bResultsFormatSearchEngine = false;
+									{else}
+										var bResultsFormatSearchEngine = true;
+									{/if}
+									</script>
+								<ul class="floatright">
+									<li class="roundright"></li> <!-- block for right round corner -->
+									
+									<!-- Right most items come first -->
+									{if ($page->getHelpURL() != null)}<!--<li><a href="{$page->getHelpURL()}"><img src="thirdparty/icon-theme/16x16/apps/help-browser.gif" align="absmiddle" border="0" /></a></li>-->{/if}
+									
+									
+									<!-- user menu -->
 
-	                            {if $smarty.session.search2resultFormat == 'browseview'}
-	                                var bResultsFormatSearchEngine = false;
-	                            {else}
-	                                var bResultsFormatSearchEngine = true;
-	                            {/if}
-	                            </script>
-							<ul class="floatright">
-								<li class="roundright"></li> <!-- block for right round corner -->
-								
-								<!-- Right most items come first -->
-								{if ($page->getHelpURL() != null)}<!--<li><a href="{$page->getHelpURL()}"><img src="thirdparty/icon-theme/16x16/apps/help-browser.gif" align="absmiddle" border="0" /></a></li>-->{/if}
-								
-								
-	                            <!-- user menu -->
+										
+										{if !empty($page->userMenu)}
+											<!-- &middot; -->
+										{/if}
+										{foreach item=aMenuItem from=$page->userMenu name=prefmenu}
+											{if ($aMenuItem.active == 1)}
+												<li class="active"><a href="{$aMenuItem.url}">{$aMenuItem.label}</a></li>
+											{else}
+												<li><a href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}" {$aMenuItem.extra}>{$aMenuItem.label}</a></li>
+											{/if}
+											{if !$smarty.foreach.prefmenu.last}
+												<!-- &middot; -->
+											{/if}
+										{/foreach}
+									<!-- END of Right Most stuff-->
 
-	                                
-	                                {if !empty($page->userMenu)}
-	                                    <!-- &middot; -->
-	                                {/if}
-	                                {foreach item=aMenuItem from=$page->userMenu name=prefmenu}
-	                                    {if ($aMenuItem.active == 1)}
-	                                        <li class="active"><a href="{$aMenuItem.url}">{$aMenuItem.label}</a></li>
-	                                    {else}
-	                                        <li><a href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}" {$aMenuItem.extra}>{$aMenuItem.label}</a></li>
-	                                    {/if}
-	                                    {if !$smarty.foreach.prefmenu.last}
-	                                        <!-- &middot; -->
-	                                    {/if}
-	                                {/foreach}
-								<!-- END of Right Most stuff-->
-
-	                        </ul>
-	                    </div>
-			</div>
-			<form id=frmQuickSearch method=post action="{$rootUrl}/search2.php?action=process">
-				<input id=txtQuery name=txtQuery type=hidden>
-				<input type=hidden name="cbQuickQuery" id="cbQuickQuery" value="1">
-				<input type=hidden name="cbQuickGeneral" id="cbQuickGeneral" value="1">
-			</form>
-            {/if}
-            <div id="logobar">
-            	{if $config->get("ui/mainLogo") != ''}
-            		<a href="{$config->get("ui/mainLogoUrl")}"><img src="{$config->get("ui/mainLogo")}" class="primary" alt="{$config->get("ui/mainLogoTitle")}" title="{$config->get("ui/mainLogoTitle")}"/></a>
-            	{else}
-                	<!--<a href="{$page->systemURL}">--><img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" class="primary" title="{$page->systemName}"/><!--</a>-->
-                {/if}
-                {if $config->get("ui/companyLogo") != ''}
-                	<!--<a href="{$config->get("ui/companyLogoUrl")}"><img src="{$config->get("ui/companyLogo")}" height="50px" width="{$config->get("ui/companyLogoWidth")}" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("ui/companyLogoTitle")}" class="secondary" /></a>-->
-                {/if}
-                {$feedback}
-                {$uploadProgress}
-                <div class="floatClear"></div>
-            </div>
-			
-			<div id="middle_nav">
-				<ul id="nav" class="dropdown dropdown-horizontal">
-					<li class="roundleft">&nbsp;</li> <!-- block for left round corner -->
-		                {foreach item=oPortlet from=$page->portlets}
-		                    {assign var=portlet_output value=$oPortlet->render() }
-		                    {if $portlet_output}
-							<li><span class="dir">{$oPortlet->getTitle()}</span> 
-		                                {$portlet_output}
-							</li>
-		                    {/if}
-		                {/foreach}
-				</ul>
-				<div id="bigbuttons"></div>
-				<div id="midright">
-					
-					<span id="midrightcorner">&nbsp;</span>
-					<div id="newSearchQuery"></div>
+								</ul>
+							</div>
 				</div>
+				<form id=frmQuickSearch method=post action="{$rootUrl}/search2.php?action=process">
+					<input id=txtQuery name=txtQuery type=hidden>
+					<input type=hidden name="cbQuickQuery" id="cbQuickQuery" value="1">
+					<input type=hidden name="cbQuickGeneral" id="cbQuickGeneral" value="1">
+				</form>
+				{/if}
+				<div id="logobar">
+					{if $config->get("ui/mainLogo") != ''}
+						<a href="{$config->get("ui/mainLogoUrl")}"><img src="{$config->get("ui/mainLogo")}" class="primary" alt="{$config->get("ui/mainLogoTitle")}" title="{$config->get("ui/mainLogoTitle")}"/></a>
+					{else}
+						<!--<a href="{$page->systemURL}">--><img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" class="primary" title="{$page->systemName}"/><!--</a>-->
+					{/if}
+					{if $config->get("ui/companyLogo") != ''}
+						<!--<a href="{$config->get("ui/companyLogoUrl")}"><img src="{$config->get("ui/companyLogo")}" height="50px" width="{$config->get("ui/companyLogoWidth")}" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("ui/companyLogoTitle")}" class="secondary" /></a>-->
+					{/if}
+					{$feedback}
+					{$uploadProgress}
+					<div class="floatClear"></div>
+				</div>
+				
+				<div id="middle_nav">
+					<ul id="nav" class="dropdown dropdown-horizontal">
+						<li class="roundleft">&nbsp;</li> <!-- block for left round corner -->
+							{foreach item=oPortlet from=$page->portlets}
+								{assign var=portlet_output value=$oPortlet->render() }
+								{if $portlet_output}
+								<li><span class="dir">{$oPortlet->getTitle()}</span> 
+											{$portlet_output}
+								</li>
+								{/if}
+							{/foreach}
+					</ul>
+					<div id="bigbuttons"></div>
+					<div id="midright">
+						
+						<span id="midrightcorner">&nbsp;</span>
+						<div id="newSearchQuery"></div>
+					</div>
+				</div>
+				
+				{if (!$page->hide_section)}
+				<div id="breadcrumbs">
+						<table width="100%">
+						<tr>
+						<!--<td valign=top align=left width="100">
+						<span class="additional"><nobr>{i18n}You are here{/i18n}: </span>
+						</td>-->
+						<td valign=top align=left width="100%">
+
+						{if ($page->breadcrumbSection !== false)}
+							{if ($page->breadcrumbSection.url) }
+								<a href="{$page->breadcrumbSection.url}" class="primary">{$page->breadcrumbSection.label|sanitize}</a>
+							{else}
+								<span  class="primary">{$page->breadcrumbSection.label|sanitize}</span>
+							{/if}
+						{/if}
+						{if (($page->breadcrumbSection !== false) && ($page->breadcrumbs !== false))}
+							&raquo;
+						{/if}
+
+						{if ($page->breadcrumbs !== false)}
+							{foreach item=aCrumb from=$page->breadcrumbs name=bc}
+								{if ($aCrumb.url) }
+									<a href="{$aCrumb.url}">{$aCrumb.label|mb_truncate:40:"...":true|sanitize}</a>
+								{else}
+									<span>{$aCrumb.label|mb_truncate:40:"...":true|sanitize}</span>
+								{/if}
+								{if (!$smarty.foreach.bc.last)}
+									&raquo;
+								{/if}
+							{/foreach}
+						{/if}
+						{if ($page->breadcrumbDetails !== false)}
+							<span class="additional">({$page->breadcrumbDetails|sanitize})</span>
+						{/if}
+						</td>
+						<td width="5px">&nbsp;</td>
+						<td id="add-dashlet"></td>
+						</tr>
+						</table>
+					</div>
+				{/if}
 			</div>
-            
-            {if (!$page->hide_section)}
-                <div id="breadcrumbs">
-                	<table width="100%">
-                    <tr>
-                    <!--<td valign=top align=left width="100">
-                    <span class="additional"><nobr>{i18n}You are here{/i18n}: </span>
-                    </td>-->
-					<td valign=top align=left width="100%">
+			<div id="kt-wrapper"> <!-- refactor inner divs-->
+				<table width="100%">
+					<tr align="left">
+						<td valign="top">
+							
+						</td>
+						<td valign="top" width="100%">
+							<div id="content" {if $page->content_class}class="{$page->content_class}"{/if}>
+								{if (!$page->hide_section)}
+									<h1 class="{$page->componentClass}"><span class="fahrner">{$page->componentLabel}</span>
+										{if ($page->getHelpURL() != null)}<a class="ktHelp" href="{$page->getHelpURL()}">Help</a> {/if}
+									</h1>
+								{/if}
 
-                    {if ($page->breadcrumbSection !== false)}
-                        {if ($page->breadcrumbSection.url) }
-                            <a href="{$page->breadcrumbSection.url}" class="primary">{$page->breadcrumbSection.label|sanitize}</a>
-                        {else}
-                            <span  class="primary">{$page->breadcrumbSection.label|sanitize}</span>
-                        {/if}
-                    {/if}
-                    {if (($page->breadcrumbSection !== false) && ($page->breadcrumbs !== false))}
-                        &raquo;
-                    {/if}
+								<!-- any status / error messages get added here. -->
+					{if (!empty($page->errStack))}
+						<div class="ktError">
+							<div class="error_dashlet_rightrepeat_top_small"></div>
+							<div class="error_dashlet_leftrepeat_top"></div>
+							<div class="error_dashlet_rightrepeat_bottom"></div>
+							<div class="error_dashlet_leftrepeat_bottom"></div>
+							<div class="err_list">
+							{foreach item=sError from=$page->errStack}
+								<div class="err_item">
+								  {if ($page->booleanLink == '0')}
+									{$sError|sanitize}
+								  {else}
+									{$sError}
+								  {/if}
+								</div>
+							{/foreach}
+							</div>
+							<div class="error_dashlet_topleft_small"></div>
+							<div class="error_dashlet_toprepeat_small"></div>
+							<div class="error_dashlet_topright_small"></div>
 
-                    {if ($page->breadcrumbs !== false)}
-                        {foreach item=aCrumb from=$page->breadcrumbs name=bc}
-                            {if ($aCrumb.url) }
-                                <a href="{$aCrumb.url}">{$aCrumb.label|mb_truncate:40:"...":true|sanitize}</a>
-                            {else}
-                                <span>{$aCrumb.label|mb_truncate:40:"...":true|sanitize}</span>
-                            {/if}
-                            {if (!$smarty.foreach.bc.last)}
-                                &raquo;
-                            {/if}
-                        {/foreach}
-                    {/if}
-                    {if ($page->breadcrumbDetails !== false)}
-                        <span class="additional">({$page->breadcrumbDetails|sanitize})</span>
-                    {/if}
-                    </td>
-                    <td width="5px">&nbsp;</td>
-                	<td id="add-dashlet"></td>
-                	</tr>
-                	</table>
-                </div>
-            {/if}
-        </div>
-        <div id="kt-wrapper">
-        	<table width="100%">
-        		<tr align="left">
-	        		<td valign="top">
-			            
-		            </td>
-		            <td valign="top" width="100%">
-			            <div id="content" {if $page->content_class}class="{$page->content_class}"{/if}>
-			                {if (!$page->hide_section)}
-			                    <h1 class="{$page->componentClass}"><span class="fahrner">{$page->componentLabel}</span>
-			                        {if ($page->getHelpURL() != null)}<a class="ktHelp" href="{$page->getHelpURL()}">Help</a> {/if}
-			                    </h1>
-			                {/if}
+							<div class="error_dashlet_bottomleft"></div>
+							<div class="error_dashlet_bottomrepeat_small"></div>
+							<div class="error_dashlet_bottomright"></div>
+						</div>
+					{/if}
 
-			                <!-- any status / error messages get added here. -->
-                {if (!empty($page->errStack))}
-                    <div class="ktError">
-				    	<div class="error_dashlet_rightrepeat_top_small"></div>
-				    	<div class="error_dashlet_leftrepeat_top"></div>
-				    	<div class="error_dashlet_rightrepeat_bottom"></div>
-				    	<div class="error_dashlet_leftrepeat_bottom"></div>
-				    	<div class="err_list">
-                        {foreach item=sError from=$page->errStack}
-                            <div class="err_item">
-                              {if ($page->booleanLink == '0')}
-                                {$sError|sanitize}
-                              {else}
-                                {$sError}
-                              {/if}
-                            </div>
-                        {/foreach}
-                        </div>
-                        <div class="error_dashlet_topleft_small"></div>
-			            <div class="error_dashlet_toprepeat_small"></div>
-			        	<div class="error_dashlet_topright_small"></div>
+					{if (!empty($page->infoStack))}
+						<div class="ktInfo">
+							<div class="info_dashlet_rightrepeat_top_small"></div>
+							<div class="info_dashlet_rightrepeat_bottom"></div>
+							<div class="info_dashlet_leftrepeat_top"></div>
+							<div class="info_dashlet_leftrepeat_bottom"></div>
+							<div class="info_list">
+							{foreach item=sInfo from=$page->infoStack}
+								<div class="info_item">{$sInfo|sanitize}</div>
+							{/foreach}
+							</div>
+							<div class="info_dashlet_topleft_small"></div>
+							<div class="info_dashlet_toprepeat_small"></div>
+							<div class="info_dashlet_topright_small"></div>
 
-			        	<div class="error_dashlet_bottomleft"></div>
-			            <div class="error_dashlet_bottomrepeat_small"></div>
-			        	<div class="error_dashlet_bottomright"></div>
-                    </div>
-                {/if}
-
-                {if (!empty($page->infoStack))}
-                    <div class="ktInfo">
-                    	<div class="info_dashlet_rightrepeat_top_small"></div>
-                    	<div class="info_dashlet_rightrepeat_bottom"></div>
-                    	<div class="info_dashlet_leftrepeat_top"></div>
-				    	<div class="info_dashlet_leftrepeat_bottom"></div>
-				    	<div class="info_list">
-                        {foreach item=sInfo from=$page->infoStack}
-                            <div class="info_item">{$sInfo|sanitize}</div>
-                        {/foreach}
-                        </div>
-                        <div class="info_dashlet_topleft_small"></div>
-			            <div class="info_dashlet_toprepeat_small"></div>
-			        	<div class="info_dashlet_topright_small"></div>
-
-			        	<div class="info_dashlet_bottomleft"></div>
-			            <div class="info_dashlet_bottomrepeat_small"></div>
-			        	<div class="info_dashlet_bottomright"></div>
-                    </div>
-                {/if}
-                <!-- and finally, the content. -->
-			                {$page->contents}
-			                <div class="floatClear"></div>
-				    	</div>
-			    	</td>
-		    	</tr>
-	    	</table>
-        </div>
-    </div>
-    <!-- Start footer -->
-    <div id="copyrightbar">
-		<div id="copybarleft">
-            <a href="{$rootUrl}/dashboard.php"><img src="{$rootUrl}/resources/graphics/newui/footer_powered_by.png" border="0" alt="Powered by KnowledgeTree" title="Powered by KnowledgeTree"/></a>
+							<div class="info_dashlet_bottomleft"></div>
+							<div class="info_dashlet_bottomrepeat_small"></div>
+							<div class="info_dashlet_bottomright"></div>
+						</div>
+					{/if}
+					<!-- and finally, the content. -->
+								{$page->contents}
+								<div class="floatClear"></div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</div>
-		<div id="copybarright">
-			{i18n arg_timing=$page->getReqTime()}Request created in #timing#s{/i18n}
-            {i18n}&copy; 2008-2010 <a href="http://www.knowledgetree.com/about/legal" target="_blank">KnowledgeTree Inc.</a>{/i18n}
+	</div>
+
+	<div id="footer"> <!-- Change me to HTML5! -->
+		<div id="footerLeft">
+			<a href="{$rootUrl}/dashboard.php"><img src="{$rootUrl}/resources/graphics/newui/footer_powered_by.png" border="0" alt="Powered by KnowledgeTree" title="Powered by KnowledgeTree"/></a>
+		</div>
+		<div id="footerRight">
+			{i18n}&copy; 2008-2010 <a href="http://www.knowledgetree.com/about/legal" target="_blank">KnowledgeTree Inc.</a>{/i18n}
 			{i18n}All rights reserved.{/i18n}
 			| <a href="http://www.knowledgetree.com/company" target="_blank">{i18n}About{/i18n}</a>
-		</div></div>
-</div>
-{$gettingStarted}
+		</div>
+	</div>
+
+	{$gettingStarted}
 </body>
 </html>
 {if ($downloadNotification != '')}
