@@ -103,6 +103,7 @@ div.form_actions {
 	font-weight: bold;
 	color: #6A7274;
 	text-decoration: none;
+	font-family: sans-serif;
 }
 
 #content .form_actions input:hover, #content .form_actions a:hover {

@@ -255,6 +255,13 @@ $expanderFieldBg: lighten($hbgcolor, 10%);
 $expanderFieldBo: darken($hbgcolor,8%);
 
 
+$docHighlightColor:#FFF2B8;
+$docHighlightColorHover:darken($docHighlightColor,8%);
+
+$folderHighlightColor:#D9FFA3;
+$folderHighlightColorHover:darken($folderHighlightColor,8%);
+
+
 #content{
 	overflow: visible;
 }
@@ -321,6 +328,17 @@ $expanderFieldBo: darken($hbgcolor,8%);
 		}
 	}
 	
+	.doc.item.highlighted {
+		border: 1px solid $docHighlightColorHover;
+		background-color: $docHighlightColor;
+		@include corners(3px);
+		
+		&:hover{
+			@include corners(3px);
+			background-color: $docHighlightColorHover !important;
+		}
+	}
+	
 	.doc.icon_cell{
 		padding-right: 5px;
 		margin: 0px;
@@ -335,8 +353,8 @@ $expanderFieldBo: darken($hbgcolor,8%);
 
 			.doc.preview{
 				position: absolute;
-				width: 150px;
-				height: 200px;
+				width: 200px;
+				/*height: 200px;*/
 				display: none;
 				cursor: pointer;
 				border: 1px solid $iconbg;
@@ -347,6 +365,8 @@ $expanderFieldBo: darken($hbgcolor,8%);
 				z-index: 20000;
 				left: 15px;
 				top: 20px;
+				overflow:hidden;
+				cursor:default;
 			}
 			
 			&:hover{
@@ -411,6 +431,17 @@ $expanderFieldBo: darken($hbgcolor,8%);
 			border: 1px solid $hbcolor; 
 		}
 		
+	}
+	
+	.folder.item.highlighted {
+		border: 1px solid $folderHighlightColorHover;
+		background-color: $folderHighlightColor;
+		@include corners(3px);
+		
+		&:hover{
+			@include corners(3px);
+			background-color: $folderHighlightColorHover !important;
+		}
 	}
 	
 	.folder.icon_cell{
