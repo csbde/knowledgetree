@@ -504,7 +504,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	        			<input type="submit" name="submit[ktcore.actions.bulk.archive]" value="Archive" />
 					</form>
 				</td>
-				<td width="1"></td>
+				<td width="1" class="status"></td>
 			</tr>
 		</table>
 		';

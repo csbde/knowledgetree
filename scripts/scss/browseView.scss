@@ -277,11 +277,12 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 .browseView{
 	&.bulkActionMenu{
 		$bulkActionMenuColor:#EEEEEE;
+		height: 23px;
 		width: 100%;
 		background-color: $bulkActionMenuColor;
 		@include corners(3px);
 		border: 1px solid darken($bulkActionMenuColor, 5%);
-		padding: 0px;
+		padding: 0px !important;
 		margin: 0px -2px 8px 5px;
 		&>tbody{
 			padding:0px;
@@ -319,6 +320,9 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 					}
 				}
 			}
+		}
+		.status{
+			color: #A10000 !important;
 		}
 	}
 }
