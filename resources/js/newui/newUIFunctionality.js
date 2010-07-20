@@ -36,7 +36,7 @@ jQuery(document).ready(function() {
 			containerId:'doc_view_container',
 			containerClass:'',
 		});
-		setFooter();
+		kt.lib.setFooter();
 	});
 })(jQuery);
 
