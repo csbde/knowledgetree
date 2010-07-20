@@ -534,7 +534,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 							<ul class="doc actionMenu">
 								<li>sharing</li>
 								<li>properties</li>
-								<li>comments</li>
+								<li class="actionIcon comments">5</li>
 								<li class="actionIcon actions">
 									<ul>
 										<li class="[actions.download]"><a href="http://account-name.kt.dev/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
@@ -555,7 +555,16 @@ class BrowseDispatcher extends KTStandardDispatcher {
 						</td>
 					</tr>
 					<tr>
-						<td class="expanderField" colspan="2">Some additional Detail</td>
+						<td class="expanderField" colspan="3">
+							<span class="expanderWidget comments">
+								<H1>Comments</H1>
+								<span>The comment display and add widget will be inserted here.</span>
+							</span>
+							<span class="expanderWidget properties">
+								<H1>Properties</H1>
+								<span>The properties display and edit widget will be inserted here.</span>
+							</span>
+						</td>
 					</tr>
 				</table>
 			</span>

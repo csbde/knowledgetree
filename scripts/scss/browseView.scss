@@ -491,5 +491,16 @@ $expanderFieldBo: darken($hbgcolor,8%);
 		background-color: $expanderFieldBg;
 		border: 1px solid $expanderFieldBo;
 		display: none;
+		.expanderWidget{
+			display: block;
+			h1{
+				font-size: 14px;
+				font-weight: bold;
+				display: block !important;
+			}
+			&.properties{
+				display: none;
+			}
+		}
 	}
 }
