@@ -473,7 +473,7 @@ class KTPluginUtil {
 
     /**
      * This loads the plugins in the plugins folder. It searches for files ending with 'Plugin.php'.
-     * This is called by the 'Re-read plugins' action in the web interface.
+     * This is called by the 'Reread plugins' action in the web interface.
      */
     function registerPlugins () {
         global $default;
