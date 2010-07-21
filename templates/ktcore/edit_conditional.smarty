@@ -1,4 +1,4 @@
-<h2>{i18n}Edit Fieldset{/i18n}</h2>
+<h2>{i18n}Edit fieldset{/i18n}</h2>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>

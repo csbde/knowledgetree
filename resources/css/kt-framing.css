@@ -51,7 +51,7 @@ body
     margin-left: auto;
     margin-right: auto;
     /*padding: 20px;*/
-    min-height: 750px;
+    /*min-height: 750px;*/
     min-width: 600px;
     height: auto;
     /*background: url(../../resources/graphics/page_bg.gif) repeat-x;*/
@@ -559,7 +559,7 @@ a.main_nav_item {
     overflow: auto;*/
     /*padding: 0.25em 2em 0em 0em;*/
     overflow: hidden;
-    min-height: 400px;
+    /*min-height: 400px;*/
 }
 
 #content.view.withviewlets {
@@ -695,7 +695,7 @@ a.main_nav_item {
 
 #content .field
 {
-    margin-bottom: 1.5em;
+    margin-bottom: 0.5em;
 }
 
 #content .field.error

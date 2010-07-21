@@ -255,6 +255,13 @@ $expanderFieldBg: lighten($hbgcolor, 10%);
 $expanderFieldBo: darken($hbgcolor,8%);
 
 
+$docHighlightColor:#FFF2B8;
+$docHighlightColorHover:darken($docHighlightColor,8%);
+
+$folderHighlightColor:#D9FFA3;
+$folderHighlightColorHover:darken($folderHighlightColor,8%);
+
+
 #content{
 	overflow: visible;
 }
@@ -266,6 +273,67 @@ $expanderFieldBo: darken($hbgcolor,8%);
 	margin: 5px;
 }
 
+
+.browseView{
+	&.bulkActionMenu{
+		$bulkActionMenuColor:#EEEEEE;
+		$fontColor: #344A6A;
+		height: 23px;
+		width: 100%;
+		background-color: $bulkActionMenuColor;
+		@include corners(3px);
+		border: 1px solid darken($bulkActionMenuColor, 5%);
+		padding: 0px !important;
+		margin: 0px -2px 8px 5px;
+		&>tbody{
+			padding:0px;
+			margin: 0px;
+			&>tr>td{
+				line-height: 1em;
+				padding: 0px 5px;
+				font-size: 85%;
+				color: darken($bulkActionMenuColor,60%);
+				& input{
+					background: none !important;
+					border: 1px solid transparent !important;
+					font-size: 100% !important;
+					margin: 2px 1px !important;
+					padding: 1px 5px !important;
+					color: darken($fontColor,0%);
+					@include corners(3px);
+					border: 1px solid darken($bulkActionMenuColor, 4%) !important;
+					&:hover{
+						@include corners(3px);
+						//@include gradient($bulkActionMenuColor);
+						@include shaddow(2px);
+						text-decoration: underline !important;
+						border: 1px solid darken($bulkActionMenuColor, 10%) !important;
+						cursor: pointer;
+					}
+				}
+				&.disabled{
+					& input{
+						color: lighten($fontColor,10%);
+						&:hover{
+							border: 1px solid darken($bulkActionMenuColor, 4%) !important;
+							@include shaddow(0px);
+							cursor: auto;
+						}
+					}
+				}
+			}
+		}
+		.status{
+			color: #A10000 !important;
+		}
+	}
+}
+
+.item{
+	td.checkbox{
+		vertical-align: middle;
+	}
+}
 
 
 .doc.browseView{
@@ -300,6 +368,10 @@ $expanderFieldBo: darken($hbgcolor,8%);
 
 		td{
 			vertical-align: top;
+			&.checkbox{
+				vertical-align: middle;
+				padding-right: 10px;
+			}
 		}
 	
 		&:hover{
@@ -318,6 +390,17 @@ $expanderFieldBo: darken($hbgcolor,8%);
 		
 		.checked_out{
 			@include tooltipIcon("/resources/graphics/newui/doc_checkedout.png","/resources/graphics/newui/doc_checkedout_h.png",200px,right);
+		}
+	}
+	
+	.doc.item.highlighted {
+		border: 1px solid $docHighlightColorHover;
+		background-color: $docHighlightColor;
+		@include corners(3px);
+		
+		&:hover{
+			@include corners(3px);
+			background-color: $docHighlightColorHover !important;
 		}
 	}
 	
@@ -348,6 +431,7 @@ $expanderFieldBo: darken($hbgcolor,8%);
 				left: 15px;
 				top: 20px;
 				overflow:hidden;
+				cursor:default;
 			}
 			
 			&:hover{
@@ -404,6 +488,10 @@ $expanderFieldBo: darken($hbgcolor,8%);
 
 		td{
 			vertical-align: top;
+			&.checkbox{
+				vertical-align: middle;
+				padding-right: 10px;
+			}
 		}
 	
 		&:hover{
@@ -412,6 +500,17 @@ $expanderFieldBo: darken($hbgcolor,8%);
 			border: 1px solid $hbcolor; 
 		}
 		
+	}
+	
+	.folder.item.highlighted {
+		border: 1px solid $folderHighlightColorHover;
+		background-color: $folderHighlightColor;
+		@include corners(3px);
+		
+		&:hover{
+			@include corners(3px);
+			background-color: $folderHighlightColorHover !important;
+		}
 	}
 	
 	.folder.icon_cell{
@@ -475,12 +574,16 @@ $expanderFieldBo: darken($hbgcolor,8%);
 		}
 		
 		.actionIcon.comments{
-			@include smallHoverIcon("/resources/graphics/newui/comment.png","/resources/graphics/newui/comment.png");
+			@include smallHoverIcon("/resources/graphics/newui/comment.png","/resources/graphics/newui/comment_h.png");
 			text-align: center;
 			cursor: pointer;
 			height: 16px;
 			overflow: none;
 			line-height: 1em !important;
+			font-size: 80%;
+			font-weight: bold;
+			line-height: 1.8em;
+			color: #A10000;
 		}
 	}
 	
@@ -492,5 +595,16 @@ $expanderFieldBo: darken($hbgcolor,8%);
 		background-color: $expanderFieldBg;
 		border: 1px solid $expanderFieldBo;
 		display: none;
+		.expanderWidget{
+			display: block;
+			h1{
+				font-size: 14px;
+				font-weight: bold;
+				display: block !important;
+			}
+			&.properties{
+				display: none;
+			}
+		}
 	}
 }

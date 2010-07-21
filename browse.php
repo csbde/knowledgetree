@@ -296,6 +296,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			
 			$folderContentItems=$this->getCurrentFolderContent($this->oFolder->getId());
 			
+			$aTemplateData['bulkActionMenu']=$this->renderBulkActionMenu();
+			
 			foreach($folderContentItems['folders'] as $item){
 				$aTemplateData['folderContents'].=$this->renderFolderItem($item);
 			}
@@ -486,6 +488,29 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		return $ret;
 	}
 	
+	private function renderBulkActionMenu(){
+		$tpl='
+		<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+					<form method="POST" action="/action.php">
+						<input type="hidden" value="" name="sListCode">
+						<input type="hidden" value="bulkaction" name="action">
+						<input type="hidden" value="browse" name="fReturnAction">
+						<input type="hidden" value="1" name="fReturnData">
+						<input type="submit" name="submit[ktcore.actions.bulk.copy]" value="Copy" />
+						<input type="submit" name="submit[ktcore.actions.bulk.move]" value="Move" />
+	        			<input type="submit" name="submit[ktcore.actions.bulk.archive]" value="Archive" />
+						<input type="submit" name="submit[ktcore.actions.bulk.delete]" value="Delete" />
+	        			</form>
+				</td>
+				<td width="1" class="status"></td>
+			</tr>
+		</table>
+		';
+		return $tpl;
+	}
+	
 	private function renderDocumentItem($item=NULL){
 		$ns=" not_supported";
 		$item['has_workflow']='';
@@ -528,8 +553,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			<span class="doc browseView">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
-						<td width="1">
-							<input type="checkbox" />
+						<td width="1" class="checkbox">
+							<input name="selection_d[]" type="checkbox" value="[id]" />
 						</td>
 						<td class="doc icon_cell" width="1">
 							<div class="doc icon">
@@ -545,9 +570,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 						<td class="doc summary_cell fdebug">
 							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]">[filename]</a></div>
 							<ul class="doc actionMenu">
-								<li>sharing</li>
-								<li>properties</li>
-								<li>comments</li>
+								<li class="actionIcon comments"></li>
 								<li class="actionIcon actions">
 									<ul>
 										<li class="[actions.download]"><a href="http://account-name.kt.dev/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
@@ -568,7 +591,16 @@ class BrowseDispatcher extends KTStandardDispatcher {
 						</td>
 					</tr>
 					<tr>
-						<td class="expanderField" colspan="2">Some additional Detail</td>
+						<td class="expanderField" colspan="3">
+							<span class="expanderWidget comments">
+								<H1>Comments</H1>
+								<span>The comment display and add widget will be inserted here.</span>
+							</span>
+							<span class="expanderWidget properties">
+								<H1>Properties</H1>
+								<span>The properties display and edit widget will be inserted here.</span>
+							</span>
+						</td>
 					</tr>
 				</table>
 			</span>
@@ -584,8 +616,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	<span class="doc browseView">
 	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="[type] item">
 		<tr>
-			<td width="1">
-				<input type="checkbox" />
+			<td width="1" class="checkbox">
+				<input name="selection_f[]" type="checkbox" value="[id]" />
 			</td>
 			<td class="[type] icon_cell" width="1">
 				<div class="[type] icon"></div>
