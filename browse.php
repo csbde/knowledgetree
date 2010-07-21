@@ -293,15 +293,16 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				)
 			);
 			$aTemplateData['returndata'] = $this->oFolder->getId();
-//			$aTemplateData['folderContents'] = htmlentities(ktRenderArrayHTML::render($this->getCurrentFolderContent($this->oFolder->getId()),$folderContentOptions));
 			
-			$items=$this->getCurrentFolderSubFolders($this->oFolder->getId());
-			foreach($items as $item){
+			$folderContentItems=$this->getCurrentFolderContent($this->oFolder->getId());
+			
+			$aTemplateData['bulkActionMenu']=$this->renderBulkActionMenu();
+			
+			foreach($folderContentItems['folders'] as $item){
 				$aTemplateData['folderContents'].=$this->renderFolderItem($item);
 			}
 			
-			$items=$this->getCurrentFolderContent($this->oFolder->getId());
-			foreach($items as $item){
+			foreach($folderContentItems['documents'] as $item){
 				$aTemplateData['folderContents'].=$this->renderDocumentItem($item);
 			}
 		}
@@ -455,83 +456,153 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		}
 		$this->successRedirectToMain(_kt('Administrator mode disabled'));
 	}
-	
-	public function getCurrentFolderContent($folderId){
-		//TODO: Permissions for these documents are not yet sorted out.
-		//TODO: User detail;
-		//TODO: Filename from document_content_version
-		$sql= "SELECT documents.id, filename, full_path, immutable, is_checked_out, creator_id, documents.owner_id, created, modified_user_id, modified, size,
-filetypes, mimetypes, folder_id
-FROM documents
-INNER JOIN document_metadata_version ON (documents.metadata_version_id = document_metadata_version.id)
-INNER JOIN document_content_version ON (document_metadata_version.content_version_id = document_content_version.id)
-INNER JOIN mime_types ON (document_content_version.mime_id = mime_types.id) WHERE folder_id='$folderId';";
-		$ret= DBUtil::getResultArray($sql);
-		return ($ret);
+		
+	private function getCurrentFolderContent($folderId){
+		$KT=new KTAPI();
+		$KT->getCurrentBrowserSession();
+		//Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
+		$folder = &$KT->get_folder_contents($folderId,1,'DFS',3);	
+		$items=$folder['results']['items'];
+		
+		
+		$ret=array('folders'=>array(),'documents'=>array(),'shortcuts'=>array());
+
+		foreach($items as $item){
+			foreach($item as $key=>$value){
+				if($value=='n/a')$item[$key]=null;
+			}
+			switch($item['item_type']){
+				case 'F':
+					$ret['folders'][]=$item;
+					break;
+				case 'D':
+					$ret['documents'][]=$item;
+					break;
+				case 'S':
+					$ret['shortcuts'][]=$item;
+					break;
+			}
+		}
+		
+//		echo '<pre>'.print_r($ret,true).'</pre>';exit;
+		return $ret;
 	}
 	
-	public function getCurrentFolderSubFolders($folderId){
-		//TODO: Permissions for these documents are not yet sorted out.
-		//TODO: User detail;
-		//TODO: Filename from document_content_version
-		$sql= "SELECT folders.id, folders.name AS foldername, description, users.name AS creator_name FROM folders
-		JOIN users ON ( folders.creator_id = users.id )
-		WHERE parent_id = '$folderId';";
-		$ret= DBUtil::getResultArray($sql);
-		return ($ret);
+	private function renderBulkActionMenu(){
+		$tpl='
+		<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+					<form method="POST" action="/action.php">
+						<input type="hidden" value="" name="sListCode">
+						<input type="hidden" value="bulkaction" name="action">
+						<input type="hidden" value="browse" name="fReturnAction">
+						<input type="hidden" value="1" name="fReturnData">
+						<input type="submit" name="submit[ktcore.actions.bulk.delete]" value="Delete" />
+						<input type="submit" name="submit[ktcore.actions.bulk.move]" value="Move" />
+						<input type="submit" name="submit[ktcore.actions.bulk.copy]" value="Copy" />
+	        			<input type="submit" name="submit[ktcore.actions.bulk.archive]" value="Archive" />
+					</form>
+				</td>
+				<td width="1" class="status"></td>
+			</tr>
+		</table>
+		';
+		return $tpl;
 	}
 	
-private function renderDocumentItem($item=NULL){
+	private function renderDocumentItem($item=NULL){
 		$ns=" not_supported";
 		$item['has_workflow']='';
-		$item['is_immutable']=$item['immutable']?'':$ns;
-		$item['is_checkedout']=$item['is_checked_out']?'':$ns;
+		$item['is_immutable']=$item['is_immutable']=='true'?true:false;
+		$item['is_immutable']=$item['is_immutable']?'':$ns;
+		$item['is_checkedout']=$item['checked_out_date']?'':$ns;
 		
-		$item['actions.checkin']=$item['is_checked_out']?'':$ns;
-		$item['actions.cancel_checkout']=$item['is_checked_out']?'':$ns;
-		$item['actions.checkout']=$item['is_checked_out']?$ns:'';
+		$item['actions.checkin']=$item['checked_out_date']?'':$ns;
+		$item['actions.cancel_checkout']=$item['checked_out_date']?'':$ns;
+		$item['actions.checkout']=$item['checked_out_date']?$ns:'';
+		
+		//Modifications to perform when the document has been checked out
+		if($item['checked_out_date']){
+			list($item['checked_out_date_d'],$item['checked_out_date_t'])=split(" ",$item['checked_out_date']);
+		}
+		
+		if($item['is_immutable']==''){
+			$item['actions.checkin']=$ns;
+			$item['actions.checkout']=$ns;
+			$item['actions.cancel_checkout']=$ns;
+			$item['actions.alerts']=$ns;
+			$item['actions.email']=$ns;
+			$item['actions.change_owner']=$ns;
+		}
+		
+		// Check if the thumbnail exists
+        global $default;
+		$varDir = $default->varDirectory;
+    	$thumbnailCheck = $varDir . '/thumbnails/'.$item['id'].'.jpg';
+		
+		if (file_exists($thumbnailCheck)) {
+			$item['thumbnail'] = '<img src="plugins/thumbnails/thumbnail_view.php?documentId='.$item['id'].'">';
+			$item['thumbnailclass'] = 'preview';
+		} else {
+			$item['thumbnail'] = '';
+			$item['thumbnailclass'] = 'nopreview';
+		}
 		
 		$tpl='
 			<span class="doc browseView">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
+						<td width="1" class="checkbox">
+							<input name="selection_d[]" type="checkbox" value="[id]" />
+						</td>
 						<td class="doc icon_cell" width="1">
-							<div class="doc icon"><img src="" /><span class="doc preview"><img src="" /></span></div>
-						</td>
-						<td class="doc summary_cell">
-							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]">[filename]</a></div>
-							<div class="detail"><span class="item">Owner: <span class="user">[owner_id]</span></span><span class="item">Created: <span class="date">[created]</span> by <span class="user">[creator_id]</span></span><span class="item">Updated: <span class="date">[modified]</span> by <span class="user">[modified_user_id]</span></span></div>
-						</td>
-						<td class="doc interact" width="1">
-							<div class="documentNotification">
-								<span class="workflow_info[has_workflow]"><span>This is the workflow tooltip</span></span>
-								<span class="immutable_info[is_immutable]"><span>This document is <strong>Immutable</strong> and can no longer be modified. The only remaining action is to download or view it.</span></span>
-								<span class="checked_out[is_checkedout]"><span>This document is <strong>Checked Out</strong> by <strong>[checkout_id]</strong>.</span></span>
-							</div>
-							<div class="doc actionMenu">
-								<span class="actionIcon properties not_supported">p</span>
-								<span class="actionIcon comments">5</span>
-								<span class="actionIcon permissions not_supported">s</span>
-								<span class="actionIcon actions">
-										<ul>
-											<li class="[actions.download]"><a href="http://account-name.kt.dev/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
-											<li class="[actions.instant_view]"><a href="view.php?fDocumentId=[id]#preview">Instant View</a></li>
-											<li class="separator"></li>
-											<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Checkout</a></li>
-											<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Checkout</a></li>
-											<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Checkin</a></li>
-											<li class="separator"></li>
-											<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
-											<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
-											<li class="separator"></li>
-											<li class="[actions.change_owner]"><a href="/action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Document Ownership</a></li>
-										</ul>
+							<div class="doc icon">
+								<span class="immutable_info[is_immutable]">
+									<span>This document has been <strong>finalized</strong> and can no longer be modified. The only remaining action is to download or view it.</span>
 								</span>
+								<span class="checked_out[is_checkedout]">
+									<span>This document is <strong>Checked Out</strong> by <strong>[checked_out_by]</strong> ([checked_out_date_d]).</span>
+								</span>
+								<span class="doc [thumbnailclass]">[thumbnail]</span>
 							</div>
+						</td>
+						<td class="doc summary_cell fdebug">
+							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]">[filename]</a></div>
+							<ul class="doc actionMenu">
+								<li>sharing</li>
+								<li>properties</li>
+								<li class="actionIcon comments">5</li>
+								<li class="actionIcon actions">
+									<ul>
+										<li class="[actions.download]"><a href="http://account-name.kt.dev/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
+										<li class="[actions.instant_view]"><a href="view.php?fDocumentId=[id]#preview">Instant View</a></li>
+										<li class="separator"></li>
+										<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Checkout</a></li>
+										<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Checkout</a></li>
+										<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Checkin</a></li>
+										<li class="separator"></li>
+										<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
+										<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
+										<li class="separator"></li>
+										<li class="[actions.change_owner]"><a href="/action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Document Ownership</a></li>
+									</ul>
+								</li>
+							</ul>
+							<div class="detail"><span class="item">Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span></div>
 						</td>
 					</tr>
 					<tr>
-						<td class="expanderField" colspan="3">Some additional Detail</td>
+						<td class="expanderField" colspan="3">
+							<span class="expanderWidget comments">
+								<H1>Comments</H1>
+								<span>The comment display and add widget will be inserted here.</span>
+							</span>
+							<span class="expanderWidget properties">
+								<H1>Properties</H1>
+								<span>The properties display and edit widget will be inserted here.</span>
+							</span>
+						</td>
 					</tr>
 				</table>
 			</span>
@@ -542,32 +613,35 @@ private function renderDocumentItem($item=NULL){
 	
 	private function renderFolderItem($item=NULL){
 		$item['type'] = 'folder';
-		
+		//TODO: Tohir, if you put the .selected thing on the table $(.folder.item), it should work fine
 		$tpl='
 	<span class="doc browseView">
-	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="[type] item fdebug">
+	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="[type] item">
 		<tr>
+			<td width="1" class="checkbox">
+				<input name="selection_f[]" type="checkbox" value="[id]" />
+			</td>
 			<td class="[type] icon_cell" width="1">
-				<div class="[type] icon"><img src="" /></div>
+				<div class="[type] icon"></div>
 			</td>
 			<td class="[type] summary_cell">
-				<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[foldername]</a></div>
-				<div class="detail"><span class="item">Created by: <span class="creator">[creator_name]</span></span></div>
-			</td>
-			<td class="[type] interact">
-				<div class="[type] actionMenu">
-					<span class="actionIcon actions">
+				<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[filename]</a></div>
+				<ul class="[type] actionMenu">
+					<li class="actionIcon actions">
 							<ul>
 								<li><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
 								<li><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Share Folder</a></li>
 								<li><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li>
 								<li><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Transactions</a></li>
 							</ul>
-					</span>
-				</div>
+					</li>
+				</ul>
+				<div class="detail"><span class="item">Created by: <span class="creator">[creator]</span></span></div>
 			</td>
 		</tr>
-	</table>';
+	</table>
+	</span>
+	';
 		
 		return ktVar::parseString($tpl,$item);
 	}

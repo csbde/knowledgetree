@@ -1,3 +1,13 @@
 <h2>{i18n}Add a folder to{/i18n}: {$context->oFolder->getName()|sanitize}</h2>
 
 {$form->render()}
+{literal}
+<script>
+(function($){
+	$(document).ready(function(){
+        $('a.arrow_upload').parent().parent().hide();
+        $('a.add_folder').parent().parent().hide();
+    });
+})(jQuery);
+</script>
+{/literal}

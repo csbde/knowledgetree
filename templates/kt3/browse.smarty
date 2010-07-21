@@ -27,8 +27,7 @@
 </div>
 </div>
 {/if}
-
-<link rel="stylesheet" type="text/css" href="/resources/css/newui/browseView.css?{php}echo rand();{/php}" />
+<link rel="stylesheet" type="text/css" href="{php}echo "{$GLOBALS['default']->rootUrl}/resources/css/newui/browseView.css?".rand();{/php}" />
 <form action="{$browseutil->getActionBaseUrl()}" method="post">
 
 {if ($isEditable)}
@@ -43,11 +42,14 @@
 	{$collection->render()}
 {else}
 	<div class="standardBorder" style="min-width: 800px;">
+		{if ($isEditable)}
+			{$bulkActionMenu}
+		{/if}
 		{$folderContents}
 	</div>
 {/if}
 
-{if ($isEditable)}
+{if ($isEditable && 1==2)}
 <div class="form_actions">
   <input type="hidden" name="sListCode" value="{$code}" />
   <input type="hidden" name="action" value="bulkaction" />
@@ -97,12 +99,57 @@
 <script>
 (function($){
 	$(document).ready(function(){
+	
+		function setBulkActionMenuStatus(){
+			var selectedItems=$("table.doc.item input:checkbox:checked").length + $("table.folder.item input:checkbox:checked").length;
+			if( selectedItems >0){
+				$('.browseView.bulkActionMenu td:first-child').removeClass('disabled');
+				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','');
+				$('.browseView.bulkActionMenu').slideDown(350);
+				$('.browseView.bulkActionMenu .status').html(selectedItems + '&nbsp;Items&nbsp;Selected');
+			}else{
+				$('.browseView.bulkActionMenu td:first-child').addClass('disabled');
+				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','disabled');
+				$('.browseView.bulkActionMenu').hide(200);
+				$('.browseView.bulkActionMenu .status').html('');
+			}
+		}
+	
 		$('.actionIcon.comments').click(function(){
 		    var docItem=$(this).parents('.item')[0];
 		    var thisField=$('.expanderField',docItem);
 		    $('.expanderField').not(thisField[0]).hide();
 		    thisField.toggle();
 		});
+		
+		$("table.doc.item input:checkbox").click(function() {
+			setBulkActionMenuStatus();
+						
+			if ($(this).is(':checked')) {
+				$(this).parent().parent().parent().parent().addClass("highlighted");
+			} else {
+				$(this).parent().parent().parent().parent().removeClass("highlighted");
+			}
+			
+		});
+		
+		$("table.doc.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
+		
+		$("table.folder.item input:checkbox").click(function() {
+			setBulkActionMenuStatus();
+			
+			if ($(this).is(':checked')) {
+				$(this).parent().parent().parent().parent().addClass("highlighted");
+			} else {
+				$(this).parent().parent().parent().parent().removeClass("highlighted");
+			}
+			
+		});
+		
+		$("table.folder.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
+		
+		
+		setBulkActionMenuStatus();
 	});
 })(jQuery);
 </script>
