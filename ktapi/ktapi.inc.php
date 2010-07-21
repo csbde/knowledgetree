@@ -180,7 +180,7 @@ class KTAPI
 	
 	public $webserviceVersion;
 
-    public function KTAPI($webserviceVersion = '')
+    public function get($webserviceVersion = '')
     {
         $this->esig_enabled = $this->electronic_sig_enabled();
 		
@@ -713,6 +713,23 @@ class KTAPI
 			return $error;
 		}
 
+		$this->session = &$session_object;
+		return $session_object;
+	}
+	
+	public function &getCurrentBrowserSession($sessionId = null) {
+		if (! is_null ( $this->session )) {
+			$error = new PEAR_Error ( 'A session is currently active.' );
+			return $error;
+		}
+		
+		$session_object = &KTAPI_UserSession::getCurrentBrowserSession ();
+		
+		if (is_null ( $session_object ) || PEAR::isError ( $session_object )) {
+			$error = new PEAR_Error ( 'Session is invalid' );
+			return $error;
+		}
+		
 		$this->session = &$session_object;
 		return $session_object;
 	}
@@ -2110,7 +2127,7 @@ class KTAPI
      * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
      * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
      */
-    function get_folder_contents($folder_id, $depth=1, $what='DFS')
+    function get_folder_contents($folder_id, $depth=1, $what='DFS',$overrideWebServiceVersion=null)
     {
         $folder = &$this->get_folder_by_id($folder_id);
         if(PEAR::isError($folder)){
@@ -2118,7 +2135,7 @@ class KTAPI
     	    $response['message']= $folder->getMessage();
     	    return $response;
         }
-        $listing = $folder->get_listing($depth, $what);
+        $listing = $folder->get_listing($depth, $what,$overrideWebServiceVersion);
 
     	$contents = array(
     		'folder_id' => $folder_id+0,

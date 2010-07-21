@@ -55,11 +55,11 @@ class manageSchedulerDispatcher extends KTAdminDispatcher
         $oTemplate = $oTemplating->loadTemplate('ktcore/scheduler');
 
         // Link for clearing out old tasks
-//        $lClear = KTUtil::ktLink('admin.php', 'misc/scheduler', 'action=clearTasks');
+//        $lClear = KTUtil::ktLink('admin.php', 'sysConfig/scheduler', 'action=clearTasks');
 //        $sClear = "<a href='#' onclick='javascript: clearTasks(\"{$lClear}\");'>"._kt('Clean-up old tasks').'</a>';
 
         // Link for saving the updated frequencies
-        $sUrl = KTUtil::ktLink('admin.php', 'misc/scheduler', 'action=saveFreq');
+        $sUrl = KTUtil::ktLink('admin.php', 'sysConfig/scheduler', 'action=saveFreq');
 
         // Get all tasks
         $aList = SchedulerEntity::getTaskList();

@@ -5,12 +5,12 @@
 
 {$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
 
-<h2>{i18n}Edit Metadata{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
+<h2>{i18n}Edit properties{/i18n}: {$context->oDocument->getName()|sanitize}</h2>
 
 {capture assign=link}{addQS}action=selectType&fDocumentId={$document->getId()}{/addQS}{/capture}
 <p class="descriptiveText">{i18n arg_link=$link arg_name=$type_name}Change the <strong><a href="#link#">document type</a></strong>. The current type is "#name#"{/i18n}</p>
 
-<p class="descriptiveText">{i18n}The following document metadata is available for editing.{/i18n}</p>
+<br clear="both"/>
 
 {$form->render()}
 

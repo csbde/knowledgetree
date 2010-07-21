@@ -51,7 +51,7 @@ body
     margin-left: auto;
     margin-right: auto;
     /*padding: 20px;*/
-    min-height: 750px;
+    /*min-height: 750px;*/
     min-width: 600px;
     height: auto;
     /*background: url(../../resources/graphics/page_bg.gif) repeat-x;*/
@@ -559,7 +559,7 @@ a.main_nav_item {
     overflow: auto;*/
     /*padding: 0.25em 2em 0em 0em;*/
     overflow: hidden;
-    min-height: 400px;
+    /*min-height: 400px;*/
 }
 
 #content.view.withviewlets {
@@ -578,7 +578,6 @@ a.main_nav_item {
 #content
 {
     line-height: 1.6em;
-//	background:#FFFFFF url(../../thirdpartyjs/extjs/resources/images/default/form/text-bg.gif) repeat-x scroll 0 0;
 }
 
 
@@ -696,7 +695,7 @@ a.main_nav_item {
 
 #content .field
 {
-    margin-bottom: 1.5em;
+    margin-bottom: 0.5em;
 }
 
 #content .field.error
@@ -990,6 +989,10 @@ a.main_nav_item {
     background-color: #dbdbdb;
 }
 
+.kt_collection .folder_row.odd td.sort_on {
+    background-color: #e8e8e8;
+}
+
 
 .kt_collection tr.odd>td {
     background-color: #fafafa;
@@ -1012,8 +1015,6 @@ a.main_nav_item {
 .kt_collection tr.activated td {
     background-color: #fff2b8;
 }
-
-
 
 .kt_collection tfoot td {
     border-top: 1px solid #ccc;
