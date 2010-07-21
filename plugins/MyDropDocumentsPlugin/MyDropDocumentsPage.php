@@ -83,7 +83,7 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
         		$oDropFolderCreation = new DropFolderCreation($oUser);
         		$checkForFolder = $oDropFolderCreation->checkFolders();
         	} else {
-            	return _kt('The Dropped Documents folder does not exist. Please contact your System Administrator');
+            	return _kt('The Dropped Documents folder does not exist.');
         	}
         }
 
@@ -100,7 +100,7 @@ class MyDropDocumentsPage extends KTStandardDispatcher {
         		$oDropFolderCreation->checkFolders();
 //        		$checkForFolder = $oDropFolderCreation->checkFolders();
         	} else {
-            	return _kt('Your personal folder under the Dropped Documents folder does not exist. Please contact your System Administrator');
+            	return _kt('Your personal folder under the Dropped Documents folder does not exist.');
         	}
         }
 

@@ -66,7 +66,7 @@ class Session {
         }
 
         if ($oUser->getDisabled() == 1) {
-            return PEAR::raiseError(_kt("Your account has been disabled.  Please contact the system administrator for assistance."));
+            return PEAR::raiseError(_kt('Your account has been disabled. Please contact a <a href="http://www.knowledgetree.com/contact-us">KnowledgeTree support representative</a> for your region.'));
         }
 
         // bind user id to session
@@ -264,7 +264,7 @@ class Session {
         $ANON = -2;
         if ((!$allowAnon) && ($iUserID == $ANON)) {
             Session::destroy();   // delete the anonymous session - config.ini has changed under this session.
-            return PEAR::raiseError(_kt("Anonymous logins are no longer allowed by the system administrator.  Please login."));
+            return PEAR::raiseError(_kt("Anonymous logins are not permitted.  Please login."));
         }
 
         $ipTracking = $oKTConfig->get('session/ipTracking', false);

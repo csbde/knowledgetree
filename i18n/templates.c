@@ -5189,7 +5189,7 @@ gettext("Logout");
 gettext("No Read permissions");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
-gettext("You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.");
+gettext("You do not have the required permissions to view the root folder.");
 
 /* ./templates/ktcore/ktoffice_i18n.smarty */
 gettext("Search for documents");
@@ -6467,7 +6467,7 @@ gettext("Edit");
 gettext("Password");
 
 /* ./templates/ktcore/principals/password.smarty */
-gettext("You may change your password by entering it in the fields below. Your system administrator may have defined certain rules (such as minimum password length) that your password must abide by.");
+gettext("You may change your password by entering it in the fields below.");
 
 /* ./templates/ktcore/principals/preferences.smarty */
 gettext("Administrator Mode");
@@ -8669,7 +8669,7 @@ gettext("Make Immutable");
 gettext("<img src=\"/thirdpartyjs/extjs/resources/images/default/window/icon-warning.gif\" widht=\"20\" height=\"20\"/> <b><i>Warning!</b></i> This action cannot be undone. No further content changes will be allowed, and only the system administrator, working in Administration Mode, may edit the metadata of an immutable document.");
 
 /* ./templates/ktstandard/action/immutable_confirm.smarty */
-gettext("Make Immutable");
+gettext("Finalize");
 
 /* ./templates/ktstandard/action/link.smarty */
 gettext("Add Link");

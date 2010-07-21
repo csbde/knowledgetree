@@ -332,7 +332,6 @@ class KTStandardDispatcher extends KTDispatcher {
 	global $default;
 
 	$msg = '<h2>' . _kt('Permission Denied') . '</h2>';
-	$msg .= '<p>' . _kt('If you feel that this is incorrect, please report both the action and your username to a system administrator.') . '</p>';
 
         $this->oPage->setPageContents($msg);
         $this->oPage->setUser($this->oUser);
