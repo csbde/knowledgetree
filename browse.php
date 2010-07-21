@@ -296,7 +296,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			
 			$folderContentItems=$this->getCurrentFolderContent($this->oFolder->getId());
 			
-			$aTemplateData['bulkActionMenu']=$this->renderBulkActionMenu();
+			$aTemplateData['bulkActionMenu']=$this->renderBulkActionMenu($aBulkActions);
 			
 			foreach($folderContentItems['folders'] as $item){
 				$aTemplateData['folderContents'].=$this->renderFolderItem($item);
@@ -305,6 +305,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			foreach($folderContentItems['documents'] as $item){
 				$aTemplateData['folderContents'].=$this->renderDocumentItem($item);
 			}
+			
+			$aTemplateData['folderContents'].=$this->renderDocumentItem(null,true);
+			$aTemplateData['folderContents'].=$this->renderFolderItem(null,true);
 		}
 		return $oTemplate->render($aTemplateData);
 	}
@@ -488,30 +491,20 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		return $ret;
 	}
 	
-	private function renderBulkActionMenu(){
-		$tpl='
-		<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0">
-			<tr>
-				<td>
-					<form method="POST" action="/action.php">
-						<input type="hidden" value="" name="sListCode">
-						<input type="hidden" value="bulkaction" name="action">
-						<input type="hidden" value="browse" name="fReturnAction">
-						<input type="hidden" value="1" name="fReturnData">
-						<input type="submit" name="submit[ktcore.actions.bulk.copy]" value="Copy" />
-						<input type="submit" name="submit[ktcore.actions.bulk.move]" value="Move" />
-	        			<input type="submit" name="submit[ktcore.actions.bulk.archive]" value="Archive" />
-						<input type="submit" name="submit[ktcore.actions.bulk.delete]" value="Delete" />
-	        			</form>
-				</td>
-				<td width="1" class="status"></td>
-			</tr>
-		</table>
-		';
+	private function renderBulkActionMenu($items){
+		$tpl='<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0"><tr><td><form method="POST" action="/action.php">
+		<input type="hidden" value="" name="sListCode"><input type="hidden" value="bulkaction" name="action">
+		<input type="hidden" value="browse" name="fReturnAction"><input type="hidden" value="1" name="fReturnData">';
+
+		foreach($items as $item){
+			$tpl.='<input type="submit" name="submit['.$item->getName().']" value="'.$item->getDisplayName().'" />';
+		}
+
+		$tpl.='</form></td><td width="1" class="status"></td></tr></table>';
 		return $tpl;
 	}
 	
-	private function renderDocumentItem($item=NULL){
+	private function renderDocumentItem($item=NULL,$empty=false){
 		$ns=" not_supported";
 		$item['has_workflow']='';
 		$item['is_immutable']=$item['is_immutable']=='true'?true:false;
@@ -536,6 +529,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$item['actions.change_owner']=$ns;
 		}
 		
+		$item['separatorA']=$item['actions.download']='' || $item['actions.instantview']='' ?'':$ns;
+		$item['separatorB']=$item['actions.checkout']='' || $item['actions.checkin']='' || $item['actions.cancel_checkout']='' ?'':$ns;
+		$item['separatorC']=$item['actions.alert']='' || $item ['actions.email']='' ?'':$ns;		
 		// Check if the thumbnail exists
         global $default;
 		$varDir = $default->varDirectory;
@@ -575,14 +571,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
 									<ul>
 										<li class="[actions.download]"><a href="http://account-name.kt.dev/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="[actions.instant_view]"><a href="view.php?fDocumentId=[id]#preview">Instant View</a></li>
-										<li class="separator"></li>
+										<!-- <li class="separator[separatorA]"></li> -->
 										<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Checkout</a></li>
 										<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Checkout</a></li>
 										<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Checkin</a></li>
-										<li class="separator"></li>
+										<!-- <li class="separator[separatorB]"></li> -->
 										<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
 										<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
-										<li class="separator"></li>
+										<!-- <li class="separator[separatorC]"></li> -->
 										<li class="[actions.change_owner]"><a href="/action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Document Ownership</a></li>
 									</ul>
 								</li>
@@ -605,42 +601,40 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				</table>
 			</span>
 		';
-		
+		if($empty)return '<span class="fragment document" style="display:none;">'.$tpl.'</span>';
 		return ktVar::parseString($tpl,$item);
 	}
 	
-	private function renderFolderItem($item=NULL){
-		$item['type'] = 'folder';
+	private function renderFolderItem($item=NULL,$empty=false){
 		//TODO: Tohir, if you put the .selected thing on the table $(.folder.item), it should work fine
 		$tpl='
-	<span class="doc browseView">
-	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="[type] item">
-		<tr>
-			<td width="1" class="checkbox">
-				<input name="selection_f[]" type="checkbox" value="[id]" />
-			</td>
-			<td class="[type] icon_cell" width="1">
-				<div class="[type] icon"></div>
-			</td>
-			<td class="[type] summary_cell">
-				<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[filename]</a></div>
-				<ul class="[type] actionMenu">
-					<li class="actionIcon actions">
-							<ul>
-								<li><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
-								<li><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Share Folder</a></li>
-								<li><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li>
-								<li><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Transactions</a></li>
-							</ul>
-					</li>
-				</ul>
-				<div class="detail"><span class="item">Created by: <span class="creator">[creator]</span></span></div>
-			</td>
-		</tr>
-	</table>
-	</span>
-	';
-		
+			<span class="doc browseView">
+			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
+				<tr>
+					<td width="1" class="checkbox">
+						<input name="selection_f[]" type="checkbox" value="[id]" />
+					</td>
+					<td class="folder icon_cell" width="1">
+						<div class="folder icon"></div>
+					</td>
+					<td class="folder summary_cell">
+						<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[filename]</a></div>
+						<ul class="folder actionMenu">
+							<li class="actionIcon actions">
+									<ul>
+										<li><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
+										<li><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Share Folder</a></li>
+										<li><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li>
+										<li><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Transactions</a></li>
+									</ul>
+							</li>
+						</ul>
+						<div class="detail"><span class="item">Created by: <span class="creator">[creator]</span></span></div>
+					</td>
+				</tr>
+			</table>
+			</span>';
+		if($empty)return '<span class="fragment folder" style="display:none;">'.$tpl.'</span>';
 		return ktVar::parseString($tpl,$item);
 	}
 }

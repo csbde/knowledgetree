@@ -41,7 +41,7 @@
 {if 1==2}
 	{$collection->render()}
 {else}
-	<div class="standardBorder" style="min-width: 800px;">
+	<div class="standardBorder itemContainer" style="min-width: 800px;">
 		{if ($isEditable)}
 			{$bulkActionMenu}
 		{/if}
@@ -98,6 +98,61 @@
 {literal}
 <script>
 (function($){
+
+	kt.lib.str_replace=function(search, replace, subject, count){
+	    var i = 0, j = 0, temp = '', repl = '', sl = 0, fl = 0,
+	            f = [].concat(search),
+	            r = [].concat(replace),
+	            s = subject,
+	            ra = r instanceof Array, sa = s instanceof Array;
+	    s = [].concat(s);
+	    if (count) {
+	        this.window[count] = 0;
+	    }
+	
+	    for (i=0, sl=s.length; i < sl; i++) {
+	        if (s[i] === '') {
+	            continue;
+	        }
+	        for (j=0, fl=f.length; j < fl; j++) {
+	            temp = s[i]+'';
+	            repl = ra ? (r[j] !== undefined ? r[j] : '') : r[0];
+	            s[i] = (temp).split(f[j]).join(repl);
+	            if (count && s[i] !== temp) {
+	                this.window[count] += (temp.length-s[i].length)/f[j].length;}
+	        }
+	    }
+	    return sa ? s : s[0];
+	};
+
+
+	kt.lib.parseTemplate=function(str,obj){
+		str=str+'';
+		var fr=new Array();
+		var to=new Array();
+		if(typeof(obj)=='object'){
+			for(var item in obj){
+				fr[fr.length]='['+item+']';
+				to[to.length]=obj[item]+'';
+			}
+			
+		}
+		return kt.lib.str_replace(fr,to,str);
+	};
+
+	kt.pages.browse={};
+	
+	kt.pages.browse.addDocumentItem=function(item){
+		item.is_immutable=item.is_immutable?'':' not_supported';
+		item.is_checkedout=item.is_checkedout?'':' not_supported';
+	
+		var newItem=jQuery(jQuery('.fragment.document')[0]).html();
+		newItem=kt.lib.parseTemplate(newItem,item);
+		var elem=jQuery(newItem);
+		jQuery('.itemContainer').append(elem);
+	};
+	
+	
 	$(document).ready(function(){
 	
 		function setBulkActionMenuStatus(){

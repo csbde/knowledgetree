@@ -39,7 +39,7 @@
  */
 
 // uncomment the line below to disable account routing (even if the plugin is available)
-define('ACCOUNT_ROUTING_ENABLED',false);
+
 
 
 // The line below will switch on tracing for debugging & dev purposes
@@ -207,7 +207,9 @@ class KTInit {
 	 * @return void
 	 */
 	public function accountRouting() {
-		if (file_exists ( KT_PLUGIN_DIR . '/ktlive/liveEnable.php' ) && ! defined ( 'ACCOUNT_ROUTING_ENABLED' )) {
+		if (file_exists ( KT_PLUGIN_DIR . '/ktlive/liveEnable.php' )) 
+		 {
+		    define('ACCOUNT_ROUTING_ENABLED',true);     
 			require_once (KT_PLUGIN_DIR . '/ktlive/liveEnable.php');
 			/**
 			 * The code below demonstrates how to use accountOverride functionality.
@@ -216,7 +218,6 @@ class KTInit {
 			 * To clear this override, this example makes use of clearAccountOverride as a parameter
 			 * in the url.
 			 */
-			define ( 'ACCOUNT_ROUTING_ENABLED', true );
 			define ( 'ACCOUNT_NAME', liveAccountRouting::getAccountName () );
 			define ( 'KTLIVE_CALLBACK_PATH', '/plugins/ktlive/webservice/callback.php' );
 			define ( 'KTLIVE_TRACE_PATH', KTLIVE_CALLBACK_PATH . '?action=trace' );
