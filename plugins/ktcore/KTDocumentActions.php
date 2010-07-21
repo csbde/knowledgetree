@@ -368,7 +368,7 @@ class KTDocumentViewAction extends KTDocumentAction {
         }
 
         if ($res === false) {
-            $this->addErrorMessage(_kt('The file you requested is not available - please contact the system administrator if this is incorrect.'));
+            $this->addErrorMessage(_kt('The file you requested is not available.'));
             redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
             exit(0);
         }

@@ -730,7 +730,7 @@ class KTLDAPBaseAuthenticator extends Authenticator {
         $dn = $oUser->getAuthenticationDetails();
         if (empty($dn))
         {
-            return new PEAR_Error(_kt('Please consult your system administrator. The authentication parameters are corrupt. (authentication_detail_s1 is null)'));
+            return new PEAR_Error(_kt('The authentication parameters are corrupt. (authentication_detail_s1 is null)'));
         }
         $config = array(
             'host' => $this->sLdapServer,

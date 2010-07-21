@@ -122,7 +122,7 @@ class KTCorePlugin extends KTPlugin {
             $this->registerDashlet('schedulerDashlet', 'ktcore.schedulerdashlet.plugin', 'scheduler/schedulerDashlet.php');
 
             $this->registerAdminPage('scheduler', 'manageSchedulerDispatcher', 'sysConfig', _kt('Manage Task Scheduler'), _kt('Manage the task scheduler'), 'scheduler/taskScheduler.php');
-            $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'userSetup', _kt('Authentication'), sprintf(_kt('By default, %s controls its own users and groups and stores all information about them inside the database. In many situations, an organisation will already have a list of users and groups, and needs to use that existing information to allow access to the DMS.   These <strong>Authentication Sources</strong> allow the system administrator to  specify additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
+            $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'userSetup', _kt('Authentication'), sprintf(_kt('You can use additional lists of users and groups. These will be used as additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
         }
 
 		    $this->registerPortlet(array('browse', 'dashboard'),

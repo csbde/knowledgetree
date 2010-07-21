@@ -4,7 +4,7 @@
 own users and groups and stores all information about them inside the database.
 In many situations, an organisation will already have a list of users and groups,
 and needs to use that existing information to allow access to the DMS.  
-These <strong>Authentication Sources</strong> allow the system administrator to 
+These <strong>Authentication Sources</strong> allow us to 
 specify additional sources of authentication data.{/i18n}</p>
 
 {if $providers}
