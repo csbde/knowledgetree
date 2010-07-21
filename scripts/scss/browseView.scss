@@ -277,6 +277,7 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 .browseView{
 	&.bulkActionMenu{
 		$bulkActionMenuColor:#EEEEEE;
+		$fontColor: #344A6A;
 		height: 23px;
 		width: 100%;
 		background-color: $bulkActionMenuColor;
@@ -298,20 +299,21 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 					font-size: 100% !important;
 					margin: 2px 1px !important;
 					padding: 1px 5px !important;
-					color: darken($bulkActionMenuColor,60%);
+					color: darken($fontColor,0%);
 					@include corners(3px);
 					border: 1px solid darken($bulkActionMenuColor, 4%) !important;
 					&:hover{
 						@include corners(3px);
-						@include gradient($bulkActionMenuColor);
+						//@include gradient($bulkActionMenuColor);
 						@include shaddow(2px);
+						text-decoration: underline !important;
 						border: 1px solid darken($bulkActionMenuColor, 10%) !important;
 						cursor: pointer;
 					}
 				}
 				&.disabled{
 					& input{
-						color: darken($bulkActionMenuColor,40%);
+						color: lighten($fontColor,10%);
 						&:hover{
 							border: 1px solid darken($bulkActionMenuColor, 4%) !important;
 							@include shaddow(0px);
@@ -572,12 +574,16 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 		}
 		
 		.actionIcon.comments{
-			@include smallHoverIcon("/resources/graphics/newui/comment.png","/resources/graphics/newui/comment.png");
+			@include smallHoverIcon("/resources/graphics/newui/comment.png","/resources/graphics/newui/comment_h.png");
 			text-align: center;
 			cursor: pointer;
 			height: 16px;
 			overflow: none;
 			line-height: 1em !important;
+			font-size: 80%;
+			font-weight: bold;
+			line-height: 1.8em;
+			color: #A10000;
 		}
 	}
 	

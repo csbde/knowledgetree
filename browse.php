@@ -498,11 +498,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
 						<input type="hidden" value="bulkaction" name="action">
 						<input type="hidden" value="browse" name="fReturnAction">
 						<input type="hidden" value="1" name="fReturnData">
-						<input type="submit" name="submit[ktcore.actions.bulk.delete]" value="Delete" />
-						<input type="submit" name="submit[ktcore.actions.bulk.move]" value="Move" />
 						<input type="submit" name="submit[ktcore.actions.bulk.copy]" value="Copy" />
+						<input type="submit" name="submit[ktcore.actions.bulk.move]" value="Move" />
 	        			<input type="submit" name="submit[ktcore.actions.bulk.archive]" value="Archive" />
-					</form>
+						<input type="submit" name="submit[ktcore.actions.bulk.delete]" value="Delete" />
+	        			</form>
 				</td>
 				<td width="1" class="status"></td>
 			</tr>
@@ -570,9 +570,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 						<td class="doc summary_cell fdebug">
 							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]">[filename]</a></div>
 							<ul class="doc actionMenu">
-								<li>sharing</li>
-								<li>properties</li>
-								<li class="actionIcon comments">5</li>
+								<li class="actionIcon comments"></li>
 								<li class="actionIcon actions">
 									<ul>
 										<li class="[actions.download]"><a href="http://account-name.kt.dev/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
