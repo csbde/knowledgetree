@@ -41,12 +41,14 @@
 {if 1==2}
 	{$collection->render()}
 {else}
-	<div class="standardBorder itemContainer" style="min-width: 800px; margin-bottom:90px">
+    <div class="dropzone" id="datadrop">
+	<div class="standardBorder itemContainer" style="min-width: 800px;">
 		{if ($isEditable)}
 			{$bulkActionMenu}
 		{/if}
 		{$folderContents}
 	</div>
+    </div>	
 {/if}
 
 {if ($isEditable && 1==2)}
@@ -92,6 +94,7 @@
 </div>
 </fieldset>
 </form>
+
 {/if}
 
 {* we break encapsulation pretty badly here. *}
