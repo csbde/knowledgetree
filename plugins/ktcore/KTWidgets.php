@@ -1374,12 +1374,6 @@ class KTCoreAjaxUploadWidget extends KTWidget {
         
         
         $this->aOptions['amazonsettings']     = KTUtil::arrayGet($aOptions, 'amazonsettings', '');
-        
-        /*
-        $this->aOptions['AWSAccessKeyId'] = KTUtil::arrayGet($aOptions, 'AWSAccessKeyId', '');
-        $this->aOptions['acl']            = KTUtil::arrayGet($aOptions, 'acl', '');
-        $this->aOptions['policy']         = KTUtil::arrayGet($aOptions, 'policy', '');
-        $this->aOptions['signature']      = KTUtil::arrayGet($aOptions, 'signature', '');*/
     }
 
     function render() {
@@ -1439,10 +1433,13 @@ class KTCoreAjaxUploadWidget extends KTWidget {
         
         ob_start();
         ?>
+        
 jQuery(document).ready(function(){
 
-    var button = jQuery('#button1'), interval;;
+    jQuery('#extract-documents').hide();
 
+    var button = jQuery('#button1'), interval;
+    
 	
     new AjaxUpload(button, {
 			action: '<?php echo $this->aOptions['amazonsettings']['formAction']; ?>', 
@@ -1450,6 +1447,9 @@ jQuery(document).ready(function(){
             
 			onSubmit : function(file, ext){
             
+                if (ext == 'zip') {
+                    jQuery('#extract-documents').show();
+                }
                 this.setData({
                     'AWSAccessKeyId' : '<?php echo $this->aOptions['amazonsettings']['AWSAccessKeyId']; ?>',
                     'acl'            : '<?php echo $this->aOptions['amazonsettings']['acl']; ?>',
@@ -1460,34 +1460,33 @@ jQuery(document).ready(function(){
                     'success_action_redirect'      : '<?php echo $this->aOptions['amazonsettings']['success_action_redirect']; ?>'
                 });
                 
-				// change button text, when user selects file			
-				button.text('Uploading');
-				
-				// If you want to allow uploading only 1 file at time,
-				// you can disable upload button
-				this.disable();
-				
-				// Uploding -> Uploading. -> Uploading...
-				interval = window.setInterval(function(){
-					var text = button.text();
-					if (text.length < 13){
-						button.text(text + '.');					
-					} else {
-						button.text('Uploading');				
-					}
-				}, 200);
+                button.hide();
+                
+				jQuery('#uploading_spinner').css({visibility: 'visible'});
+                
+				jQuery('#cancelButton').show();
+                
+                Img = document.getElementById('spinner');
+                Img.style.display="inline";
+                Img.src = "resources/graphics/thirdparty/loader.gif";
+                
 			},
 			onComplete: function(file, response){
-				//button.text('Upload');
-							
-				window.clearInterval(interval);
-							
-				// enable upload button
-				//this.enable();
-				
-                alert('done');
+            
+				button.show();
+                jQuery('#uploading_spinner').css({visibility: 'hidden'});
+                jQuery('#cancelButton').hide();
 			}
 		});
+        
+        cancelUpload = function() {
+            window.stop();
+            button.show();
+            jQuery('#uploading_spinner').css({visibility: 'hidden'});
+            jQuery('#cancelButton').hide();
+            
+            jQuery('#extract-documents').hide();
+        }
 
     
 });
