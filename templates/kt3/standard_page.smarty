@@ -47,7 +47,6 @@
     {/foreach}
 
     <!-- Javascript Files. -->
-		<script type="text/javascript" src="{$rootUrl}/resources/js/newui/kt.containers.js"></script>
     {foreach item=sResourceURL from=$page->getJSResources()}
        <script type="text/javascript" src="{$rootUrl}/{$sResourceURL}"> </script>
     {/foreach}
