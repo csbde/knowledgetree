@@ -160,12 +160,15 @@
 			if( selectedItems >0){
 				$('.browseView.bulkActionMenu td:first-child').removeClass('disabled');
 				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','');
+//				$('.browseView.bulkActionMenu').slideDown(350,function(){kt.lib.setFooter();});
 				$('.browseView.bulkActionMenu').slideDown(350);
+				
 				$('.browseView.bulkActionMenu .status').html(selectedItems + '&nbsp;Item(s)&nbsp;Selected');
 			}else{
 				$('.browseView.bulkActionMenu td:first-child').addClass('disabled');
 				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','disabled');
 				$('.browseView.bulkActionMenu').hide(200);
+//				$('.browseView.bulkActionMenu').hide(200,function(){kt.lib.setFooter();});
 				$('.browseView.bulkActionMenu .status').html('');
 			}
 		}
@@ -202,6 +205,7 @@
 		});
 		
 		$("table.folder.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
+		
 		
 		
 		setBulkActionMenuStatus();
