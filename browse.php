@@ -492,7 +492,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	}
 	
 	private function renderBulkActionMenu($items){
-		$tpl='<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0"><tr><td><form method="POST" action="/action.php">
+		$tpl='<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0"><tr><td>
+		<form method="POST" action="/action.php">
 		<input type="hidden" value="" name="sListCode"><input type="hidden" value="bulkaction" name="action">
 		<input type="hidden" value="browse" name="fReturnAction"><input type="hidden" value="1" name="fReturnData">';
 
@@ -505,6 +506,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	}
 	
 	private function renderDocumentItem($item=NULL,$empty=false){
+		$fileNameCutoff=100;
+		
+		$item['filename']=(strlen($item['filename'])>$fileNameCutoff)?substr($item['filename'],0,$fileNameCutoff-3)."...":$item['filename'];
+		
 		$ns=" not_supported";
 		$item['has_workflow']='';
 		$item['is_immutable']=$item['is_immutable']=='true'?true:false;
@@ -564,12 +569,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 							</div>
 						</td>
 						<td class="doc summary_cell fdebug">
-							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]">[filename]</a></div>
+							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]" style="">[filename]</a></div>
 							<ul class="doc actionMenu">
 								<li class="actionIcon comments"></li>
 								<li class="actionIcon actions">
 									<ul>
-										<li class="[actions.download]"><a href="http://account-name.kt.dev/action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
+										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="[actions.instant_view]"><a href="view.php?fDocumentId=[id]#preview">Instant View</a></li>
 										<!-- <li class="separator[separatorA]"></li> -->
 										<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Checkout</a></li>
@@ -624,12 +629,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 									<ul>
 										<li><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
 										<li><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Share Folder</a></li>
-										<li><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li>
+										<!-- <li><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li> -->
 										<li><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Transactions</a></li>
 									</ul>
 							</li>
 						</ul>
-						<div class="detail"><span class="item">Created by: <span class="creator">[creator]</span></span></div>
+						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
 					</td>
 				</tr>
 			</table>

@@ -41,7 +41,7 @@
 {if 1==2}
 	{$collection->render()}
 {else}
-	<div class="standardBorder itemContainer" style="min-width: 800px;">
+	<div class="standardBorder itemContainer" style="min-width: 800px; margin-bottom:90px">
 		{if ($isEditable)}
 			{$bulkActionMenu}
 		{/if}
@@ -161,7 +161,7 @@
 				$('.browseView.bulkActionMenu td:first-child').removeClass('disabled');
 				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','');
 				$('.browseView.bulkActionMenu').slideDown(350);
-				$('.browseView.bulkActionMenu .status').html(selectedItems + '&nbsp;Items&nbsp;Selected');
+				$('.browseView.bulkActionMenu .status').html(selectedItems + '&nbsp;Item(s)&nbsp;Selected');
 			}else{
 				$('.browseView.bulkActionMenu td:first-child').addClass('disabled');
 				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','disabled');
