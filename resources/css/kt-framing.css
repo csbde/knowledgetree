@@ -2037,7 +2037,7 @@ hr {
 }
 
 .collapsible.expanded .collapsiblebody {
-    display: block;
+    display: none;
 }
 
 .collapse
@@ -2320,6 +2320,26 @@ body #content #add_dashlet
 
 
 /* ================= Ajax popup - override ExtJS CSS ================= */
+/* The move to the new UI (from orange/green to blue/grey) broke these styles, hence addition of extjs_ prefix to the form_actions style. */
+
+
+div.extjs_form_actions {
+	float: left;
+	padding: 0;
+	margin: 0;
+    line-height: 29px;
+    height: 29px;
+}
+
+#content .extjs_form_actions *
+{
+	border: none;
+	background: transparent;
+	padding: 0;
+	margin: 0;
+	height: 29px;
+    line-height: 29px;
+}
 
 #popup_content {
     background: #FFF;
@@ -2353,7 +2373,7 @@ body #content #add_dashlet
     color: #666;
 }
 
-#popup_content .form_actions a {
+#popup_content .extjs_form_actions a {
     border: 1px solid #ccc;
     background: #fdfdfd;
     color: #333;
