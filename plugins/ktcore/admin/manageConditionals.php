@@ -57,8 +57,8 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         global $default;
         $this->ru = $default->rootUrl;
         // this is not useful:  we _still_ don't chain through the right dispatcher (!)
-        $this->aBreadcrumbs[] = array('url' => KTUtil::ktLink('/admin.php','documents'), 'name' => _kt('Document Metadata and Workflow Configuration'));
-        $this->aBreadcrumbs[] = array('url' => KTUtil::ktLink('/admin.php','documents/fieldmanagement'), 'name' => _kt('Document Field Management'));
+        $this->aBreadcrumbs[] = array('url' => KTUtil::ktLink('/admin.php','contentSetup'), 'name' => _kt('Document Metadata and Workflow Configuration'));
+        $this->aBreadcrumbs[] = array('url' => KTUtil::ktLink('/admin.php','contentSetup/fieldmanagement'), 'name' => _kt('Document Field Management'));
 
 
     }
@@ -93,11 +93,11 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         $aFields =& $oFieldset->getFields();
 
         $this->aBreadcrumbs[] = array(
-            'url' => KTUtil::ktLink('admin.php','documents/fieldmanagement','action=edit&fFieldsetId=' . $oFieldset->getId()),
+            'url' => KTUtil::ktLink('admin.php','contentSetup/fieldmanagement','action=edit&fFieldsetId=' . $oFieldset->getId()),
             'name' => $oFieldset->getName()
         );
         $this->aBreadcrumbs[] = array(
-            'url' => KTUtil::ktLink('admin.php','documents/fieldmanagement','action=manageConditional&fFieldsetId=' . $oFieldset->getId()),        
+            'url' => KTUtil::ktLink('admin.php','contentSetup/fieldmanagement','action=manageConditional&fFieldsetId=' . $oFieldset->getId()),        
             'name' => _kt('Manage conditional fieldset'),
         );
         $this->oPage->setBreadcrumbDetails(_kt('Manage simple conditional'));
@@ -166,11 +166,11 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         $aFields =& $oFieldset->getFields();        
         
         $this->aBreadcrumbs[] = array(
-            'url' => KTUtil::ktLink('admin.php','documents/fieldmanagement','action=edit&fFieldsetId=' . $oFieldset->getId()),
+            'url' => KTUtil::ktLink('admin.php','contentSetup/fieldmanagement','action=edit&fFieldsetId=' . $oFieldset->getId()),
             'name' => $oFieldset->getName()
         );
         $this->aBreadcrumbs[] = array(
-            'url' => KTUtil::ktLink('admin.php','documents/fieldmanagement','action=manageConditional&fFieldsetId=' . $oFieldset->getId()),        
+            'url' => KTUtil::ktLink('admin.php','contentSetup/fieldmanagement','action=manageConditional&fFieldsetId=' . $oFieldset->getId()),        
             'name' => _kt('Manage conditional fieldset'),
         );
         

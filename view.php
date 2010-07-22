@@ -126,10 +126,10 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 
         if (!KTBrowseUtil::inAdminMode($this->oUser, $oDocument->getFolderId())) {
             if ($oDocument->getStatusID() == ARCHIVED) {
-                $this->oPage->addError(_kt('This document has been archived.  Please contact the system administrator to have it restored if it is still needed.'));
+                $this->oPage->addError(_kt('This document has been archived.'));
                 return $this->do_request($oDocument);
             } else if ($oDocument->getStatusID() == DELETED) {
-                $this->oPage->addError(_kt('This document has been deleted.  Please contact the system administrator to have it restored if it is still needed.'));
+                $this->oPage->addError(_kt('This document has been deleted.'));
                 return $this->do_error();
             } else if (!Permission::userHasDocumentReadPermission($oDocument)) {
                 $this->oPage->addError(_kt('You are not allowed to view this document'));
@@ -488,7 +488,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
                 }
 
                 // Redirect to folder
-                $this->addInfoMessage(_kt('The System Administrators have been notified of your request.'));
+                $this->addInfoMessage(_kt('The administrator has been notified of your request.'));
                 redirect($sFolderUrl);
                 exit();
             }

@@ -461,9 +461,9 @@ class BaseCopyActionTrigger extends KTWorkflowTrigger {
         $oFolder = Folder::get($iFolderId);
         if (PEAR::isError($oFolder)) {
         	if ($this->isCopy)
-            	return PEAR::raiseError(_kt('The folder to which this document should be copied does not exist.  Cancelling the transition - please contact a system administrator.'));
+            	return PEAR::raiseError(_kt('The folder to which this document should be copied does not exist. Transition cancelled.'));
             else
-	            return PEAR::raiseError(_kt('The folder to which this document should be moved does not exist.  Cancelling the transition - please contact a system administrator.'));
+	            return PEAR::raiseError(_kt('The folder to which this document should be moved does not exist. Transition cancelled.'));
         }
 
         return true;
@@ -475,9 +475,9 @@ class BaseCopyActionTrigger extends KTWorkflowTrigger {
         $oToFolder = Folder::get($iFolderId);
         if (PEAR::isError($oFolder)) {
         	if ($this->isCopy)
-	            return PEAR::raiseError(_kt('The folder to which this document should be copied does not exist.  Cancelling the transition - please contact a system administrator.'));
+	            return PEAR::raiseError(_kt('The folder to which this document should be copied does not exist. Transition cancelled.'));
             else
-            	return PEAR::raiseError(_kt('The folder to which this document should be moved does not exist.  Cancelling the transition - please contact a system administrator.'));
+            	return PEAR::raiseError(_kt('The folder to which this document should be moved does not exist. Transition cancelled.'));
         }
 
         if ($this->isCopy)

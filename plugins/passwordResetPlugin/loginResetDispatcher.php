@@ -131,10 +131,13 @@ class loginResetDispatcher extends KTDispatcher {
         $js[] = '/thirdpartyjs/extjs/ext-all.js';
         $css[] = '/thirdpartyjs/extjs/resources/css/ext-all.css';
 
-        // Include additional js and css files
+        // Include additional js and css files if plugin
 	    $oPlugin =& $oRegistry->getPlugin('password.reset.plugin');
-        $js[] = $oPlugin->getURLPath('resources/passwordReset.js');
-        $css[] = $oPlugin->getURLPath('resources/passwordReset.css');
+		
+		if ($oPlugin != null) {
+			$js[] = $oPlugin->getURLPath('resources/passwordReset.js');
+			$css[] = $oPlugin->getURLPath('resources/passwordReset.css');
+		}
 
         $sUrl = KTUtil::addQueryStringSelf('action=');
 
@@ -483,7 +486,7 @@ class loginResetDispatcher extends KTDispatcher {
             return _kt('A verification email has been sent to your email address.');
         }
 
-        return _kt('An error occurred while sending the email, please try again or contact the System Administrator.');
+        return _kt('An error occurred while sending the email. Please try again.');
     }
 
     function do_resetPassword(){
@@ -539,7 +542,7 @@ class loginResetDispatcher extends KTDispatcher {
             return _kt('Your password has been successfully reset.');
         }
 
-        return _kt('An error occurred while sending the email, please try again or contact the System Administrator.');
+        return _kt('An error occurred while sending the email. Please try again.');
     }
 }
 

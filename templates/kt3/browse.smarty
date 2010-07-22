@@ -1,7 +1,7 @@
+ 
+<!-- FILE: kt3/browse.smarty -->
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/MochiKitPacked.js')}
-
 {$context->oPage->requireJSResource('resources/js/toggleselect.js')}
-
 {if ($custom_title != null)}
 <h2>{$custom_title|sanitize}</h2>
 {/if}
@@ -27,7 +27,7 @@
 </div>
 </div>
 {/if}
-
+<link rel="stylesheet" type="text/css" href="{php}echo "{$GLOBALS['default']->rootUrl}/resources/css/newui/browseView.css?".rand();{/php}" />
 <form action="{$browseutil->getActionBaseUrl()}" method="post">
 
 {if ($isEditable)}
@@ -38,8 +38,18 @@
 
 {/if}
 
-{$collection->render()}
-{if ($isEditable)}
+{if 1==2}
+	{$collection->render()}
+{else}
+	<div class="standardBorder itemContainer" style="min-width: 800px;">
+		{if ($isEditable)}
+			{$bulkActionMenu}
+		{/if}
+		{$folderContents}
+	</div>
+{/if}
+
+{if ($isEditable && 1==2)}
 <div class="form_actions">
   <input type="hidden" name="sListCode" value="{$code}" />
   <input type="hidden" name="action" value="bulkaction" />
@@ -85,3 +95,119 @@
 {/if}
 
 {* we break encapsulation pretty badly here. *}
+{literal}
+<script>
+(function($){
+
+	kt.lib.str_replace=function(search, replace, subject, count){
+	    var i = 0, j = 0, temp = '', repl = '', sl = 0, fl = 0,
+	            f = [].concat(search),
+	            r = [].concat(replace),
+	            s = subject,
+	            ra = r instanceof Array, sa = s instanceof Array;
+	    s = [].concat(s);
+	    if (count) {
+	        this.window[count] = 0;
+	    }
+	
+	    for (i=0, sl=s.length; i < sl; i++) {
+	        if (s[i] === '') {
+	            continue;
+	        }
+	        for (j=0, fl=f.length; j < fl; j++) {
+	            temp = s[i]+'';
+	            repl = ra ? (r[j] !== undefined ? r[j] : '') : r[0];
+	            s[i] = (temp).split(f[j]).join(repl);
+	            if (count && s[i] !== temp) {
+	                this.window[count] += (temp.length-s[i].length)/f[j].length;}
+	        }
+	    }
+	    return sa ? s : s[0];
+	};
+
+
+	kt.lib.parseTemplate=function(str,obj){
+		str=str+'';
+		var fr=new Array();
+		var to=new Array();
+		if(typeof(obj)=='object'){
+			for(var item in obj){
+				fr[fr.length]='['+item+']';
+				to[to.length]=obj[item]+'';
+			}
+			
+		}
+		return kt.lib.str_replace(fr,to,str);
+	};
+
+	kt.pages.browse={};
+	
+	kt.pages.browse.addDocumentItem=function(item){
+		item.is_immutable=item.is_immutable?'':' not_supported';
+		item.is_checkedout=item.is_checkedout?'':' not_supported';
+	
+		var newItem=jQuery(jQuery('.fragment.document')[0]).html();
+		newItem=kt.lib.parseTemplate(newItem,item);
+		var elem=jQuery(newItem);
+		jQuery('.itemContainer').append(elem);
+	};
+	
+	
+	$(document).ready(function(){
+	
+		function setBulkActionMenuStatus(){
+			var selectedItems=$("table.doc.item input:checkbox:checked").length + $("table.folder.item input:checkbox:checked").length;
+			if( selectedItems >0){
+				$('.browseView.bulkActionMenu td:first-child').removeClass('disabled');
+				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','');
+				$('.browseView.bulkActionMenu').slideDown(350);
+				$('.browseView.bulkActionMenu .status').html(selectedItems + '&nbsp;Items&nbsp;Selected');
+			}else{
+				$('.browseView.bulkActionMenu td:first-child').addClass('disabled');
+				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','disabled');
+				$('.browseView.bulkActionMenu').hide(200);
+				$('.browseView.bulkActionMenu .status').html('');
+			}
+		}
+	
+		$('.actionIcon.comments').click(function(){
+		    var docItem=$(this).parents('.item')[0];
+		    var thisField=$('.expanderField',docItem);
+		    $('.expanderField').not(thisField[0]).hide();
+		    thisField.toggle();
+		});
+		
+		$("table.doc.item input:checkbox").click(function() {
+			setBulkActionMenuStatus();
+						
+			if ($(this).is(':checked')) {
+				$(this).parent().parent().parent().parent().addClass("highlighted");
+			} else {
+				$(this).parent().parent().parent().parent().removeClass("highlighted");
+			}
+			
+		});
+		
+		$("table.doc.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
+		
+		$("table.folder.item input:checkbox").click(function() {
+			setBulkActionMenuStatus();
+			
+			if ($(this).is(':checked')) {
+				$(this).parent().parent().parent().parent().addClass("highlighted");
+			} else {
+				$(this).parent().parent().parent().parent().removeClass("highlighted");
+			}
+			
+		});
+		
+		$("table.folder.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
+		
+		
+		setBulkActionMenuStatus();
+	});
+})(jQuery);
+</script>
+{/literal}
+ 
+<!-- FILE_END: kt3/fieldsets/browse.smarty -->

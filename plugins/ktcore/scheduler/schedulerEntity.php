@@ -227,7 +227,7 @@ class schedulerEntity extends KTEntity
     function getRunNowLink() {
         $sId = $this->getId();
         $sStatus = $this->getStatus();
-        $sUrl = KTUtil::ktLink('admin.php', 'misc/scheduler', 'action=updateRunTime');
+        $sUrl = KTUtil::ktLink('admin.php', 'sysConfig/scheduler', 'action=updateRunTime');
 
         $sTitle = _kt('This task will run the next time the Scheduler runs'); //, and then revert to the frequency you set on this page');
         $sLink = "<input type='button' id='runnowLink{$this->getId()}' onclick='javascript: runOnNext(\"{$sId}\", \"{$sUrl}\");'";
@@ -251,7 +251,7 @@ class schedulerEntity extends KTEntity
         $sEnableText = _kt('Enable Task');
 
         $sLinkText = ($sStatus == 'enabled') ? $sDisableText : $sEnableText;
-        $sUrl = KTUtil::ktLink('admin.php', 'misc/scheduler', 'action=updateStatus');
+        $sUrl = KTUtil::ktLink('admin.php', 'sysConfig/scheduler', 'action=updateStatus');
         $sLink = "<input type='button' id='statusLink{$this->getId()}'
             onclick='javascript: toggleStatus(\"{$sId}\", \"{$sUrl}\", \"{$sDisableText}\", \"{$sEnableText}\");' value='{$sLinkText}' />";
         return $sLink;

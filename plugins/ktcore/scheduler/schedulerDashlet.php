@@ -177,7 +177,7 @@ class schedulerDashlet extends KTBaseDashlet {
                 icon.src = '{$sImgPlus}';
             }";
 
-        $sAdmin = KTUtil::ktLink('admin.php', 'misc/scheduler');
+        $sAdmin = KTUtil::ktLink('admin.php', 'sysConfig/scheduler');
         $sAdminLink = "<a href='{$sAdmin}'>"._kt('Administration page').'</a>';
 
         $oTemplating =& KTTemplating::getSingleton();

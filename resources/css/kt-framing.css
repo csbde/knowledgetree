@@ -51,7 +51,7 @@ body
     margin-left: auto;
     margin-right: auto;
     /*padding: 20px;*/
-    min-height: 750px;
+    /*min-height: 750px;*/
     min-width: 600px;
     height: auto;
     /*background: url(../../resources/graphics/page_bg.gif) repeat-x;*/
@@ -559,7 +559,7 @@ a.main_nav_item {
     overflow: auto;*/
     /*padding: 0.25em 2em 0em 0em;*/
     overflow: hidden;
-    min-height: 400px;
+    /*min-height: 400px;*/
 }
 
 #content.view.withviewlets {
@@ -578,7 +578,6 @@ a.main_nav_item {
 #content
 {
     line-height: 1.6em;
-//	background:#FFFFFF url(../../thirdpartyjs/extjs/resources/images/default/form/text-bg.gif) repeat-x scroll 0 0;
 }
 
 
@@ -696,7 +695,7 @@ a.main_nav_item {
 
 #content .field
 {
-    margin-bottom: 1.5em;
+    margin-bottom: 0.5em;
 }
 
 #content .field.error
@@ -990,6 +989,10 @@ a.main_nav_item {
     background-color: #dbdbdb;
 }
 
+.kt_collection .folder_row.odd td.sort_on {
+    background-color: #e8e8e8;
+}
+
 
 .kt_collection tr.odd>td {
     background-color: #fafafa;
@@ -1012,8 +1015,6 @@ a.main_nav_item {
 .kt_collection tr.activated td {
     background-color: #fff2b8;
 }
-
-
 
 .kt_collection tfoot td {
     border-top: 1px solid #ccc;
@@ -2036,7 +2037,7 @@ hr {
 }
 
 .collapsible.expanded .collapsiblebody {
-    display: block;
+    display: none;
 }
 
 .collapse
@@ -2319,6 +2320,26 @@ body #content #add_dashlet
 
 
 /* ================= Ajax popup - override ExtJS CSS ================= */
+/* The move to the new UI (from orange/green to blue/grey) broke these styles, hence addition of extjs_ prefix to the form_actions style. */
+
+
+div.extjs_form_actions {
+	float: left;
+	padding: 0;
+	margin: 0;
+    line-height: 29px;
+    height: 29px;
+}
+
+#content .extjs_form_actions *
+{
+	border: none;
+	background: transparent;
+	padding: 0;
+	margin: 0;
+	height: 29px;
+    line-height: 29px;
+}
 
 #popup_content {
     background: #FFF;
@@ -2352,7 +2373,7 @@ body #content #add_dashlet
     color: #666;
 }
 
-#popup_content .form_actions a {
+#popup_content .extjs_form_actions a {
     border: 1px solid #ccc;
     background: #fdfdfd;
     color: #333;
