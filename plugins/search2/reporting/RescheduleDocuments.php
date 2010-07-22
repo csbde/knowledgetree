@@ -52,11 +52,6 @@ class RescheduleDocumentsDispatcher extends KTAdminDispatcher
 
     function do_main()
     {
-        // temporarily set a reasonable time limit on this process - 30 minutes.
-        // if it takes longer to reschedule then perhaps we need to look at the underlying code, 
-        // or set this limit based on number of documents?
-        // at 10 docs per second (which should be a very reasonable expectation) this can reschedule 18000 docs.
-        set_time_limit(1800);
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/search2/reporting/rescheduledocuments');
 
