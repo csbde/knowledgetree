@@ -1355,3 +1355,147 @@ window.onload = function() {
     
 }
 
+class KTCoreAjaxUploadWidget extends KTWidget {
+    var $sNamespace = 'ktcore.widgets.ajaxupload';
+    var $sTemplate = 'ktcore/forms/widgets/ajaxupload';
+    
+    
+
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        
+        $this->aOptions['name']      = KTUtil::arrayGet($aOptions, 'name', '');
+        $this->aOptions['fFolderId'] = KTUtil::arrayGet($aOptions, 'fFolderId', '');
+        $this->aOptions['field_id']  = KTUtil::arrayGet($aOptions, 'field_id', '');
+        
+        
+        
+        $this->aOptions['amazonsettings']     = KTUtil::arrayGet($aOptions, 'amazonsettings', '');
+        
+        /*
+        $this->aOptions['AWSAccessKeyId'] = KTUtil::arrayGet($aOptions, 'AWSAccessKeyId', '');
+        $this->aOptions['acl']            = KTUtil::arrayGet($aOptions, 'acl', '');
+        $this->aOptions['policy']         = KTUtil::arrayGet($aOptions, 'policy', '');
+        $this->aOptions['signature']      = KTUtil::arrayGet($aOptions, 'signature', '');*/
+    }
+
+    function render() {
+        $oTemplating =& KTTemplating::getSingleton();        
+        $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
+        
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/plugins/ajaxupload/ajaxupload.js';
+      	
+        
+        if (!empty($this->aJavascript)) {
+            // grab our inner page.
+            $oPage =& $GLOBALS['main'];            
+            $oPage->requireJSResources($this->aJavascript);
+            $oPage->requireJSStandalone($this->getConfiguration());
+        }
+        
+        
+        $widget_content = $this->getWidget();
+
+        $aTemplateData = array(
+            "context" => $this,
+            "label" => $this->sLabel,
+            "description" => $this->sDescription,
+            "name" => $this->sName,
+            "has_value" => ($this->value !== null),
+            "value" => $this->value,
+            "has_errors" => $bHasErrors,
+            "errors" => $this->aErrors,
+            "options" => $this->aOptions,
+            "widget" => $widget_content,
+        );
+        return $oTemplate->render($aTemplateData);   
+    }    
+    
+    /**
+     * This function dynamically generates the init configuration script required by 
+     * swfupload for the particular session.
+     * 
+     * @param $folderId The id of the folder to upload the document to.	If none is provided
+     *		  the following will be sniffed: get params and widget options.
+     *
+     * @return String configuration script.
+     */
+    private function getConfiguration($folderId = null){
+        
+        if (is_null($folderId)) {
+            $folderId = $_GET['fFolderId'];
+        }
+        
+        if ($folderId == '') {
+            $folderId = $_POST['fFolderId'];    
+        }
+        
+        if ($folderId == '') {
+            $folderId = $this->aOptions['fFolderId'];
+        }
+        
+        ob_start();
+        ?>
+jQuery(document).ready(function(){
+
+    var button = jQuery('#button1'), interval;;
+
+	
+    new AjaxUpload(button, {
+			action: '<?php echo $this->aOptions['amazonsettings']['formAction']; ?>', 
+			name: 'file',
+            
+			onSubmit : function(file, ext){
+            
+                this.setData({
+                    'AWSAccessKeyId' : '<?php echo $this->aOptions['amazonsettings']['AWSAccessKeyId']; ?>',
+                    'acl'            : '<?php echo $this->aOptions['amazonsettings']['acl']; ?>',
+                    'key'            : '${filename}',
+                    'policy'         : '<?php echo $this->aOptions['amazonsettings']['policy']; ?>',
+                    'Content-Type'   : 'binary/octet-stream',
+                    'signature'      : '<?php echo $this->aOptions['amazonsettings']['signature']; ?>',
+                    'success_action_redirect'      : '<?php echo $this->aOptions['amazonsettings']['success_action_redirect']; ?>'
+                });
+                
+				// change button text, when user selects file			
+				button.text('Uploading');
+				
+				// If you want to allow uploading only 1 file at time,
+				// you can disable upload button
+				this.disable();
+				
+				// Uploding -> Uploading. -> Uploading...
+				interval = window.setInterval(function(){
+					var text = button.text();
+					if (text.length < 13){
+						button.text(text + '.');					
+					} else {
+						button.text('Uploading');				
+					}
+				}, 200);
+			},
+			onComplete: function(file, response){
+				//button.text('Upload');
+							
+				window.clearInterval(interval);
+							
+				// enable upload button
+				//this.enable();
+				
+                alert('done');
+			}
+		});
+
+    
+});
+        <?PHP
+        $script = ob_get_contents();
+        ob_end_clean();
+        
+        return $script;
+    }
+    
+}
