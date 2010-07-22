@@ -128,6 +128,41 @@ div.form_actions {
 	width: 9px;
 }
 
+
+
+#content .extjs_form_actions *
+{
+	border: none;
+	background: transparent;
+	padding: 0;
+	margin: 0;
+	height: 29px;
+    line-height: 29px;
+}
+
+#content .extjs_form_actions a {
+	background: transparent url('../graphics/newui/gridtoolbarline.png') top right no-repeat;
+	padding: 0 10px 0 10px;
+	text-transform:uppercase;
+	font-size: 10px;
+	font-weight: bold;
+	color: #6A7274;
+	text-decoration: none;
+	font-family: sans-serif;
+}
+
+#content .extjs_form_actions a:hover {
+	color: #000;
+	cursor: pointer;
+	text-decoration: none;
+	border-bottom: none;
+}
+
+
+
+
+
+
 .normalTransformText {
 	text-transform: none;
 	text-decoration: underline;
