@@ -64,7 +64,7 @@ if (function_exists ( 'apd_set_pprof_trace' )) {
 
 // Default settings differ, we need some of these, so force the matter.
 // Can be overridden here if actually necessary.
-error_reporting ( E_ALL & ~ E_NOTICE );
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING); // & ~E_WARNING
 ini_set ( 'display_errors', '1' );
 ini_set ( 'display_startup_errors', '1' );
 ini_set ( 'magic_quotes_runtime', '0' );
