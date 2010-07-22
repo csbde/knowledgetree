@@ -625,7 +625,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 										<li><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
 										<li><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Share Folder</a></li>
 										<li><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li>
-										<li><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Transactions</a></li>
+										<li><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Activity</a></li>
 									</ul>
 							</li>
 						</ul>
