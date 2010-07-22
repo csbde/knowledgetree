@@ -50,12 +50,12 @@ class KTFolderTransactionsAction extends KTFolderAction {
     var $_sShowPermission = "ktcore.permissions.folder_details";
 
     function getDisplayName() {
-        return _kt('Folder activity');
+        return _kt('Folder Activity');
     }
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt("activity"));
-        $this->oPage->setTitle(_kt('Folder activity'));
+        $this->oPage->setTitle(_kt('Folder Activity'));
 
         $folder_data = array();
         $folder_data["folder_id"] = $this->oFolder->getId();
