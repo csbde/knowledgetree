@@ -1366,24 +1366,16 @@ class KTCoreAjaxUploadWidget extends KTWidget {
         if (PEAR::isError($res)) {
             return $res;
         }
-        
         $this->aOptions['name']      = KTUtil::arrayGet($aOptions, 'name', '');
         $this->aOptions['fFolderId'] = KTUtil::arrayGet($aOptions, 'fFolderId', '');
         $this->aOptions['field_id']  = KTUtil::arrayGet($aOptions, 'field_id', '');
+        $this->aOptions['amazonsettings'] = KTUtil::arrayGet($aOptions, 'amazonsettings', '');
+        $this->aOptions['awstmppath'] = KTUtil::arrayGet($aOptions, 'awstmppath', '');
         
-        
-        
-        $this->aOptions['amazonsettings']     = KTUtil::arrayGet($aOptions, 'amazonsettings', '');
-        
-        /*
-        $this->aOptions['AWSAccessKeyId'] = KTUtil::arrayGet($aOptions, 'AWSAccessKeyId', '');
-        $this->aOptions['acl']            = KTUtil::arrayGet($aOptions, 'acl', '');
-        $this->aOptions['policy']         = KTUtil::arrayGet($aOptions, 'policy', '');
-        $this->aOptions['signature']      = KTUtil::arrayGet($aOptions, 'signature', '');*/
     }
 
     function render() {
-        $oTemplating =& KTTemplating::getSingleton();        
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
         
       	$this->aJavascript[] = 'thirdpartyjs/jquery/plugins/ajaxupload/ajaxupload.js';
@@ -1439,55 +1431,70 @@ class KTCoreAjaxUploadWidget extends KTWidget {
         
         ob_start();
         ?>
+        
 jQuery(document).ready(function(){
 
-    var button = jQuery('#button1'), interval;;
-
+    jQuery('#extract-documents').hide();
+    jQuery('#document_type_field').hide();
+    jQuery('#type_metadata_fields').hide();
+    jQuery('#advanced_settings_metadata_button').hide();
+    jQuery('#successful_upload_files_ul').hide();
+	jQuery('form .form_actions').hide();
+    jQuery('#uploadbuttondiv').show();
+    var button = jQuery('#button1'), interval;
+    
 	
-    new AjaxUpload(button, {
+    new AjaxUpload(button, 
+    {
 			action: '<?php echo $this->aOptions['amazonsettings']['formAction']; ?>', 
 			name: 'file',
-            
-			onSubmit : function(file, ext){
-            
+			onSubmit : function(file, ext)
+			{
+                if (ext == 'zip') 
+                {
+                    jQuery('#extract-documents').show();
+                }
                 this.setData({
                     'AWSAccessKeyId' : '<?php echo $this->aOptions['amazonsettings']['AWSAccessKeyId']; ?>',
                     'acl'            : '<?php echo $this->aOptions['amazonsettings']['acl']; ?>',
-                    'key'            : '${filename}',
+                    'key'            : '<?php echo $this->aOptions['awstmppath'] . '/'; ?>${filename}',
                     'policy'         : '<?php echo $this->aOptions['amazonsettings']['policy']; ?>',
                     'Content-Type'   : 'binary/octet-stream',
                     'signature'      : '<?php echo $this->aOptions['amazonsettings']['signature']; ?>',
                     'success_action_redirect'      : '<?php echo $this->aOptions['amazonsettings']['success_action_redirect']; ?>'
                 });
+                button.hide();
+				jQuery('#uploading_spinner').css({visibility: 'visible'});
+				jQuery('#cancelButton').show();
+                Img = document.getElementById('spinner');
+                Img.style.display="inline";
+                Img.src = "resources/graphics/thirdparty/loader.gif";
                 
-				// change button text, when user selects file			
-				button.text('Uploading');
-				
-				// If you want to allow uploading only 1 file at time,
-				// you can disable upload button
-				this.disable();
-				
-				// Uploding -> Uploading. -> Uploading...
-				interval = window.setInterval(function(){
-					var text = button.text();
-					if (text.length < 13){
-						button.text(text + '.');					
-					} else {
-						button.text('Uploading');				
-					}
-				}, 200);
 			},
 			onComplete: function(file, response){
-				//button.text('Upload');
-							
-				window.clearInterval(interval);
-							
-				// enable upload button
-				//this.enable();
-				
-                alert('done');
+<!--                console.dir(file);-->
+				button.show();
+                jQuery('#uploading_spinner').css({visibility: 'hidden'});
+                jQuery('#cancelButton').hide();
+                
+                jQuery('#document_type_field').show();
+                jQuery('#type_metadata_fields').show();
+                jQuery('#advanced_settings_metadata_button').show();
+                jQuery('#successful_upload_files_ul').show();
+<!--            TODO : Remove link-->
+                jQuery('#successful_upload_files').show().append('<li>'+file+'</li>');
+                jQuery('#successful_upload_files_list').append('<input name="file[]" type="hidden" value="'+file+'" />');
+                jQuery('#kt_swf_upload_percent').val('100');
+                jQuery('form .form_actions').show();
 			}
 		});
+        cancelUpload = function() {
+            window.stop();
+            button.show();
+            jQuery('#uploading_spinner').css({visibility: 'hidden'});
+            jQuery('#cancelButton').hide();
+            jQuery('#extract-documents').hide();
+        }
 
     
 });
