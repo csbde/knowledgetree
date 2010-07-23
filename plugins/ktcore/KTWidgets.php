@@ -1366,18 +1366,16 @@ class KTCoreAjaxUploadWidget extends KTWidget {
         if (PEAR::isError($res)) {
             return $res;
         }
-        
         $this->aOptions['name']      = KTUtil::arrayGet($aOptions, 'name', '');
         $this->aOptions['fFolderId'] = KTUtil::arrayGet($aOptions, 'fFolderId', '');
         $this->aOptions['field_id']  = KTUtil::arrayGet($aOptions, 'field_id', '');
+        $this->aOptions['amazonsettings'] = KTUtil::arrayGet($aOptions, 'amazonsettings', '');
+        $this->aOptions['awstmppath'] = KTUtil::arrayGet($aOptions, 'awstmppath', '');
         
-        
-        
-        $this->aOptions['amazonsettings']     = KTUtil::arrayGet($aOptions, 'amazonsettings', '');
     }
 
     function render() {
-        $oTemplating =& KTTemplating::getSingleton();        
+        $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
         
       	$this->aJavascript[] = 'thirdpartyjs/jquery/plugins/ajaxupload/ajaxupload.js';
@@ -1453,7 +1451,7 @@ jQuery(document).ready(function(){
                 this.setData({
                     'AWSAccessKeyId' : '<?php echo $this->aOptions['amazonsettings']['AWSAccessKeyId']; ?>',
                     'acl'            : '<?php echo $this->aOptions['amazonsettings']['acl']; ?>',
-                    'key'            : '${filename}',
+                    'key'            : '<?php echo $this->aOptions['awstmppath'] . '/'; ?>${filename}',
                     'policy'         : '<?php echo $this->aOptions['amazonsettings']['policy']; ?>',
                     'Content-Type'   : 'binary/octet-stream',
                     'signature'      : '<?php echo $this->aOptions['amazonsettings']['signature']; ?>',
