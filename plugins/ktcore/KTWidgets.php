@@ -1435,17 +1435,23 @@ class KTCoreAjaxUploadWidget extends KTWidget {
 jQuery(document).ready(function(){
 
     jQuery('#extract-documents').hide();
-
+    jQuery('#document_type_field').hide();
+    jQuery('#type_metadata_fields').hide();
+    jQuery('#advanced_settings_metadata_button').hide();
+    jQuery('#successful_upload_files_ul').hide();
+	jQuery('form .form_actions').hide();
+    jQuery('#uploadbuttondiv').show();
     var button = jQuery('#button1'), interval;
     
 	
-    new AjaxUpload(button, {
+    new AjaxUpload(button, 
+    {
 			action: '<?php echo $this->aOptions['amazonsettings']['formAction']; ?>', 
 			name: 'file',
-            
-			onSubmit : function(file, ext){
-            
-                if (ext == 'zip') {
+			onSubmit : function(file, ext)
+			{
+                if (ext == 'zip') 
+                {
                     jQuery('#extract-documents').show();
                 }
                 this.setData({
@@ -1457,32 +1463,36 @@ jQuery(document).ready(function(){
                     'signature'      : '<?php echo $this->aOptions['amazonsettings']['signature']; ?>',
                     'success_action_redirect'      : '<?php echo $this->aOptions['amazonsettings']['success_action_redirect']; ?>'
                 });
-                
                 button.hide();
-                
 				jQuery('#uploading_spinner').css({visibility: 'visible'});
-                
 				jQuery('#cancelButton').show();
-                
                 Img = document.getElementById('spinner');
                 Img.style.display="inline";
                 Img.src = "resources/graphics/thirdparty/loader.gif";
                 
 			},
 			onComplete: function(file, response){
-            
+<!--                console.dir(file);-->
 				button.show();
                 jQuery('#uploading_spinner').css({visibility: 'hidden'});
                 jQuery('#cancelButton').hide();
+                
+                jQuery('#document_type_field').show();
+                jQuery('#type_metadata_fields').show();
+                jQuery('#advanced_settings_metadata_button').show();
+                jQuery('#successful_upload_files_ul').show();
+<!--            TODO : Remove link-->
+                jQuery('#successful_upload_files').show().append('<li>'+file+'</li>');
+                jQuery('#successful_upload_files_list').append('<input name="file[]" type="hidden" value="'+file+'" />');
+                jQuery('#kt_swf_upload_percent').val('100');
+                jQuery('form .form_actions').show();
 			}
 		});
-        
         cancelUpload = function() {
             window.stop();
             button.show();
             jQuery('#uploading_spinner').css({visibility: 'hidden'});
             jQuery('#cancelButton').hide();
-            
             jQuery('#extract-documents').hide();
         }
 
