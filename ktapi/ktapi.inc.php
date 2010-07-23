@@ -717,13 +717,13 @@ class KTAPI
 		return $session_object;
 	}
 	
-	public function &getCurrentBrowserSession($sessionId = null) {
+	public function &getCurrentBrowserSession(&$ktapi,$sessionId = null) {
 		if (! is_null ( $this->session )) {
 			$error = new PEAR_Error ( 'A session is currently active.' );
 			return $error;
 		}
 		
-		$session_object = &KTAPI_UserSession::getCurrentBrowserSession ();
+		$session_object = &KTAPI_UserSession::getCurrentBrowserSession ($ktapi);
 		
 		if (is_null ( $session_object ) || PEAR::isError ( $session_object )) {
 			$error = new PEAR_Error ( 'Session is invalid' );
@@ -2127,15 +2127,23 @@ class KTAPI
      * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
      * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
      */
-    function get_folder_contents($folder_id, $depth=1, $what='DFS',$overrideWebServiceVersion=null)
+    function get_folder_contents($folder_id, $depth=1, $what='DFS',$overrideWebServiceVersion=null,$itemsPerPage=null,$page=null)
     {
+    	//Calculate the offset and limit
+    	$opts=array();
+    	$opts['inspectSQL']=true;
+    	if($itemsPerPage>0 && $page>0){
+    		$opts['offset']=$itemsPerPage*($page-1);
+    		$opts['limit']=$itemsPerPage;
+    	}
+    	
         $folder = &$this->get_folder_by_id($folder_id);
         if(PEAR::isError($folder)){
     	    $response['status_code'] = 1;
     	    $response['message']= $folder->getMessage();
     	    return $response;
         }
-        $listing = $folder->get_listing($depth, $what,$overrideWebServiceVersion);
+        $listing = $folder->get_listing($depth, $what,$overrideWebServiceVersion,$opts);
 
     	$contents = array(
     		'folder_id' => $folder_id+0,

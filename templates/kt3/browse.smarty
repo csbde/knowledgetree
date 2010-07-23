@@ -38,7 +38,7 @@
 
 {/if}
 
-{if 1==2}
+{if $oldBrowse}
 	{$collection->render()}
 {else}
     <div class="dropzone" id="datadrop">
@@ -47,7 +47,9 @@
 			{$bulkActionMenu}
 		{/if}
 		{$folderContents}
+		<div style="width:100%; text-align: center">{$pagination}</div>
 	</div>
+	{$fragments}
     </div>	
 {/if}
 
@@ -152,14 +154,65 @@
 		var newItem=jQuery(jQuery('.fragment.document')[0]).html();
 		newItem=kt.lib.parseTemplate(newItem,item);
 		var elem=jQuery(newItem);
-		jQuery('.itemContainer').append(elem);
+		jQuery('.page.page_'+kt.pages.browse.curPage).append(elem);
 	};
 	
 	
-	$(document).ready(function(){
+	kt.pages.browse.curPage=1;
+	kt.pages.browse.viewPage=function(pageNum){
+		if(pageNum<1)pageNum=1;
+		var pageItem=jQuery('.paginate>li.page_'+pageNum);
+		
+		if(pageItem.length<=0){
+			return;
+		}
+		
+		jQuery('.page').hide(0,function(){jQuery('.page.page_'+pageNum).show(0);})
+		jQuery('.paginate>li.item').removeClass('highlight');
+		
+		pageItem.addClass('highlight');
+		
+		kt.pages.browse.curPage=pageNum;
+	};
 	
-		function setBulkActionMenuStatus(){
-			var selectedItems=$("table.doc.item input:checkbox:checked").length + $("table.folder.item input:checkbox:checked").length;
+	kt.pages.browse.nextPage=function(){
+		kt.pages.browse.viewPage(kt.pages.browse.curPage+1);
+		return false;
+	};
+	
+	kt.pages.browse.prevPage=function(){
+		kt.pages.browse.viewPage(kt.pages.browse.curPage-1);
+		return false;
+	};
+	
+	kt.pages.browse.selectAllItems=function(){
+		jQuery('.itemContainer .item .checkbox>input:checkbox:enabled').each(function(){
+			if(!this.checked)jQuery(this).click();
+			jQuery(this).parents('.item').addClass('highlighted');
+		});
+		kt.pages.browse.setBulkActionMenuStatus();
+		return false;
+	}
+
+	kt.pages.browse.deSelectAllItems=function(){
+		jQuery('.itemContainer .item .checkbox>input:checkbox:enabled').each(function(){
+			if(this.checked)jQuery(this).click();
+			jQuery(this).parents('.item').removeClass('highlighted');
+		});
+		kt.pages.browse.setBulkActionMenuStatus();
+		return false;
+	}
+	
+	kt.lib.shortcut.add("ctrl+right",kt.pages.browse.nextPage);
+	kt.lib.shortcut.add("ctrl+left",kt.pages.browse.prevPage);
+	kt.lib.shortcut.add("ctrl+a",kt.pages.browse.selectAllItems);
+	kt.lib.shortcut.add("ctrl+shift+a",kt.pages.browse.deSelectAllItems);
+	
+	
+	$(document).ready(function(){
+		kt.pages.browse.viewPage(1);	
+		kt.pages.browse.setBulkActionMenuStatus=function(){
+			var selectedItems=$(".itemContainer .item .checkbox>input:checkbox:checked:enabled").length;
 			if( selectedItems >0){
 				$('.browseView.bulkActionMenu td:first-child').removeClass('disabled');
 				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','');
@@ -184,7 +237,7 @@
 		});
 		
 		$("table.doc.item input:checkbox").click(function() {
-			setBulkActionMenuStatus();
+			kt.pages.browse.setBulkActionMenuStatus();
 						
 			if ($(this).is(':checked')) {
 				$(this).parent().parent().parent().parent().addClass("highlighted");
@@ -197,7 +250,7 @@
 		$("table.doc.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
 		
 		$("table.folder.item input:checkbox").click(function() {
-			setBulkActionMenuStatus();
+			kt.pages.browse.setBulkActionMenuStatus();
 			
 			if ($(this).is(':checked')) {
 				$(this).parent().parent().parent().parent().addClass("highlighted");
@@ -211,7 +264,7 @@
 		
 		
 		
-		setBulkActionMenuStatus();
+		kt.pages.browse.setBulkActionMenuStatus();
 	});
 })(jQuery);
 </script>

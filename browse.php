@@ -292,26 +292,60 @@ class BrowseDispatcher extends KTStandardDispatcher {
 					'class'	=>"document_item field_[key]"
 				)
 			);
+
+			$aTemplateData['bulkActionMenu']=$this->renderBulkActionMenu($aBulkActions);
 			$aTemplateData['returndata'] = $this->oFolder->getId();
 			
 			$folderContentItems=$this->getCurrentFolderContent($this->oFolder->getId());
 			
-			$aTemplateData['bulkActionMenu']=$this->renderBulkActionMenu($aBulkActions);
+			$folderView=$pre_folderView=array();
+			foreach($folderContentItems['folders'] as $item)$pre_folderView[]=$this->renderFolderItem($item);
+			foreach($folderContentItems['documents'] as $item)$pre_folderView[]=$this->renderDocumentItem($item);
 			
-			foreach($folderContentItems['folders'] as $item){
-				$aTemplateData['folderContents'].=$this->renderFolderItem($item);
+			$pageCount=1;
+			$perPage=20;
+			$itemCount=count($folderView);
+			$curItem=0;
+			
+			$folderView[]='<div class="page page_'.$pageCount.' ">';
+			foreach($pre_folderView as $item){
+				$curItem++;
+				if($curItem>$perPage){
+					$pageCount++;
+					$curItem=1;
+					$folderView[]='</div><div class="page page_'.$pageCount.' ">';
+				}
+				$folderView[]=$item;
 			}
+			$folderView[]="</div>";
 			
-			foreach($folderContentItems['documents'] as $item){
-				$aTemplateData['folderContents'].=$this->renderDocumentItem($item);
-			}
+			$aTemplateData['folderContents']=join($folderView);
 			
-			$aTemplateData['folderContents'].=$this->renderDocumentItem(null,true);
-			$aTemplateData['folderContents'].=$this->renderFolderItem(null,true);
+			$aTemplateData['oldBrowse']=isset($_GET['oldBrowse'])?true:false;
+//			$aTemplateData['oldBrowse']=true;
+			
+			$aTemplateData['fragments']='';
+			$aTemplateData['fragments'].=$this->renderDocumentItem(null,true);
+			$aTemplateData['fragments'].=$this->renderFolderItem(null,true);
+			$aTemplateData['pagination']=$this->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
 		}
 		return $oTemplate->render($aTemplateData);
 	}
 
+	
+	public function paginateByDiv($pageCount,$pageClass,$paginationClass="paginate",$itemClass="item",$pageScript="alert([page])",$prevScript="alert('previous');",$nextScript="alert('next');"){
+		$idClass=$pageClass.'_[page]';
+		$pages=array();
+		$pages[]='<ul class="'.$paginationClass.'">';
+		$pages[]='<li class="'.$itemClass.'" onclick="'.$prevScript.'">Previous</li>';
+		for($i=1;$i<=$pageCount; $i++){
+			$pages[]=ktVar::parseString('<li class="'.$itemClass.' '.$idClass.'" onclick="'.$pageScript.'">'.$i.'</li>',array('page'=>$i));
+		}
+		$pages[]='<li class="'.$itemClass.'" onclick="'.$nextScript.'">Next</li>';
+		$pages[]='</ul>';
+		$pages=join($pages);
+		return $pages;
+	}
 
 
 	function do_selectField() {
@@ -460,11 +494,16 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$this->successRedirectToMain(_kt('Administrator mode disabled'));
 	}
 		
-	private function getCurrentFolderContent($folderId){
+	private function getCurrentFolderContent($folderId,$page=1,$itemsPerPage=5){
+		$oUser=KTEntityUtil::get('User',  $_SESSION['userID']);
 		$KT=new KTAPI();
-		$KT->getCurrentBrowserSession();
+		$session=$KT->start_system_session($oUser->getUsername());
+		
+//		print_r($session); exit;
+
 		//Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
-		$folder = &$KT->get_folder_contents($folderId,1,'DFS',3);	
+		$folder = &$KT->get_folder_contents($folderId,1,'DFS',3,$itemsPerPage,$page);
+			
 		$items=$folder['results']['items'];
 		
 		
@@ -534,18 +573,26 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$item['actions.change_owner']=$ns;
 		}
 		
-		$item['separatorA']=$item['actions.download']='' || $item['actions.instantview']='' ?'':$ns;
-		$item['separatorB']=$item['actions.checkout']='' || $item['actions.checkin']='' || $item['actions.cancel_checkout']='' ?'':$ns;
-		$item['separatorC']=$item['actions.alert']='' || $item ['actions.email']='' ?'':$ns;		
+		$item['separatorA']=$item['actions.download']=='' || $item['actions.instantview']=='' ?'':$ns;
+		$item['separatorB']=$item['actions.checkout']=='' || $item['actions.checkin']=='' || $item['actions.cancel_checkout']=='' ?'':$ns;
+		$item['separatorC']=$item['actions.alert']=='' || $item ['actions.email']=='' ?'':$ns;		
+
 		// Check if the thumbnail exists
-        global $default;
-		$varDir = $default->varDirectory;
-    	$thumbnailCheck = $varDir . '/thumbnails/'.$item['id'].'.jpg';
-		
-		if (file_exists($thumbnailCheck)) {
-			$item['thumbnail'] = '<img src="plugins/thumbnails/thumbnail_view.php?documentId='.$item['id'].'">';
-			$item['thumbnailclass'] = 'preview';
-		} else {
+		$dev_no_thumbs=false;
+		if(!$dev_no_thumbs){
+			$oStorage=KTStorageManagerUtil::getSingleton();
+	        
+	        $varDir = $GLOBALS['default']->varDirectory;
+			$thumbnailCheck = $varDir . '/thumbnails/'.$item['id'].'.jpg';
+			
+			if ($oStorage->file_exists($thumbnailCheck)) {
+				$item['thumbnail'] = '<img src="plugins/thumbnails/thumbnail_view.php?documentId='.$item['id'].'">';
+				$item['thumbnailclass'] = 'preview';
+			} else {
+				$item['thumbnail'] = '';
+				$item['thumbnailclass'] = 'nopreview';
+			}
+		}else{
 			$item['thumbnail'] = '';
 			$item['thumbnailclass'] = 'nopreview';
 		}
@@ -571,7 +618,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 						<td class="doc summary_cell fdebug">
 							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]" style="">[filename]</a></div>
 							<ul class="doc actionMenu">
-								<li class="actionIcon comments"></li>
+								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
 									<ul>
 										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>

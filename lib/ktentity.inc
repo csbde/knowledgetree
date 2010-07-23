@@ -217,6 +217,7 @@ class KTEntity {
         $oCache =& KTCache::getSingleton();
         $group = sprintf("%s/%s", $sClassName , 'id');
         list($bCached, $mCached) = $oCache->get($group, $iId);
+        $bCached=$mCached=false;
         if ($bCached && EVIL_CACHE_GRIND) {
             if (KTLOG_CACHE) $default->log->debug(sprintf(_kt("Found and testing object cache for class %s, id %d"), $sClassName, $iId));
 
@@ -501,7 +502,7 @@ class KTEntityUtil {
         }
 
         /* *** Check the cache *** */
-
+        //TODO: figure out what the hell the idea is here
         $oCache = KTCache::getSingleton();
         $vals = serialize(array($sQuery, $aParams));
         $group = $sClassName.'/'.$cache;
@@ -509,8 +510,12 @@ class KTEntityUtil {
         list($bCached, $mCached) = $oCache->get($group, $vals);
 
 
+        
+        
+        
+        
+        
         /* *** Execute the query *** */
-
         // If only id's are requested, return them
         if($bIDs){
             $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), $sIDField);

@@ -255,10 +255,10 @@ $expanderFieldBg: lighten($hbgcolor, 10%);
 $expanderFieldBo: darken($hbgcolor,8%);
 
 
-$docHighlightColor:#FFF2B8;
+$docHighlightColor:lighten(#8EC9E3,18%);
 $docHighlightColorHover:darken($docHighlightColor,8%);
 
-$folderHighlightColor:#D9FFA3;
+$folderHighlightColor:$docHighlightColor; //#D9FFA3;
 $folderHighlightColorHover:darken($folderHighlightColor,8%);
 
 
@@ -269,10 +269,50 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 .standardBorder{
 	@include corners(5px);
 	@include shaddow(5px, #666677);
+	border: 1px solid lighten(#666677,50%);
 	padding: 15px;
 	margin: 5px;
 }
 
+.debugElem{
+	border: 1px solid transparent;
+	&:hover{
+		border: 1px solid #A10000;
+	}
+}
+
+.itemContainer{
+	.paginate{
+		$background-color: darken(#EEEEEE,5%);
+		$selected-color: #8EC9E3;
+		list-type: none;
+		margin: 20px auto 0px auto;
+		padding: 0px 5px !important;
+		@include corners(5px);
+		background-color: $background-color;
+		@include shaddow(2px,darken($background-color,50%));
+		display: inline-block;
+		&>li.item{
+			display: inline-block;
+			padding: 0px 5px;
+			background-color: $background-color;
+			margin: 3px 2px;
+			cursor: pointer;
+			@include corners(3px);
+		}
+		&>li.highlight{
+			background-color: $selected-color;
+			&:hover{
+				background-color: $selected-color;
+				@include shaddow(2px,darken($selected-color,30%));
+			}
+		}
+		&>li:hover{
+			background-color: lighten($background-color,10%);
+			@include shaddow(2px,darken($background-color,50%));
+		}
+	}
+}
 
 .browseView{
 	&.bulkActionMenu{
@@ -418,12 +458,15 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 
 			.doc.preview{
 				position: absolute;
-				width: 200px;
-				/*height: 200px;*/
+				min-width: 100px;
+				min-height: 100px;
 				display: none;
 				cursor: pointer;
 				border: 1px solid $iconbg;
 				background-color: $hbgcolor;
+				background-image: url(/resources/graphics/newui/preview-loading.gif);
+				background-position: center center;
+				background-repeat: no-repeat;
 				@include shaddow(5px,darken($hbgcolor,80%));
 				@include corners(3px);
 				padding: 2px;
