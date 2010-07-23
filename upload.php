@@ -54,39 +54,6 @@
         return $oDocument;
 	}
 
-
-
-	function getColumnData($oDocument){
-		$oColumnRegistry =& KTColumnRegistry::getSingleton();
-		$columns = $oColumnRegistry->getColumnsForView('ktcore.views.browse');
-
-		if(is_array($columns) && !empty($columns)){
-
-			$aDataRow = array();
-			$aDataRow['type'] = 'document';
-			$aDataRow['document'] = $oDocument;
-
-			$output = '<tr class="dragdrop">';
-
-			foreach($columns as $column) {
-				$class = 'browse_column';
-				if($column->name == 'title') {
-					$class .= ' title sort_on dragdrop';
-				}
-				$data = $column->renderData($aDataRow);
-				$output .= "<td class='$class'>$data</td>";
-			}
-
-			$output .= '</tr>';
-
-			return $output;
-
-		}else{
-			$GLOBALS['default']->log->error("DRAGDROP Column data empty");
-			return false;
-		}
-	}
-
 	// HTTP headers for no cache etc
 	header('Content-type: text/plain; charset=UTF-8');
 	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -192,9 +159,19 @@
 	{
 		die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Document could not be uploaded", "filename":"'.$fileName.'"}, "id" : "id"}');
 	}
+	
+	$oOwner = User::get($oDocument->getOwnerID());
+	$oCreator = User::get($oDocument->getCreatorID());
+	$oModifier = User::get($oDocument->getModifiedUserId());
 
-	$output = getColumnData($oDocument);
+	$fileNameCutoff=100;
+		
+	$fileName = $oDocument->getFileName();
+	
+	$fileName = (strlen($fileName)>$fileNameCutoff) ? substr($fileName, 0, $fileNameCutoff-3)."..." : $fileName;
 
+	$output = '{"jsonrpc" : "2.0", "success" : {"filename":"'.$fileName.'", "owned_by":"'.$oOwner->getName().'", "created_by":"'.$oCreator->getName().'", "created_date":"'.$oDocument->getCreatedDateTime().'", "modified_by":"'.$oModifier->getName().'", "modified_date":"'.$oDocument->getCreatedDateTime().'"}, "id" : "id"}';
+	
 	echo($output);
 
 	exit(0);

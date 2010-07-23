@@ -72,3 +72,4 @@ kt.lib.setFooter=function(){
 		jQuery('#footer').css('margin-top', '0');
 	}
 }
+
