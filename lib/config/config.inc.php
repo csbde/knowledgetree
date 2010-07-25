@@ -84,13 +84,23 @@ class KTConfig {
         if(MemCacheUtil::$enabled){
             return true;
         }
-
-        $this->confPath = '/etc/kt';
-
-        $filename = $this->confPath . '/kt.cnf';
+		
+        $ktconfpath = KT_PLUGIN_DIR . '/ktlive/config/kt-path';
+        if (file_exists($ktconfpath))
+        {
+        	$this->confPath = trim(file_get_contents($ktconfpath));
+        	if(!file_exists($this->confPath))
+        	{
+        		$this->confPath = '/etc/kt/kt.cnf';
+        	}
+        }
+        else 
+        {
+        	$this->confPath = '/etc/kt/kt.cnf';
+        }
 
 		$c = new Config;
-        $root =& $c->parseConfig($filename, "IniCommented");
+        $root =& $c->parseConfig($this->confPath, "IniCommented");
 
         if ($oPear->isError($root)) {
             return false;
