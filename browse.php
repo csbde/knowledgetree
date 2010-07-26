@@ -308,7 +308,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				
 				$pageCount=1;
 				$perPage=20;
-				$itemCount=count($folderView);
+				$itemCount=count($pre_folderView);
 				$curItem=0;
 				
 				$folderView[]='<div class="page page_'.$pageCount.' ">';
