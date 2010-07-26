@@ -406,7 +406,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$thumbnailCheck = $varDir . '/thumbnails/'.$item['id'].'.jpg';
 			
 			if ($oStorage->file_exists($thumbnailCheck)) {
-				$item['thumbnail'] = '<img src="plugins/thumbnails/thumbnail_view.php?documentId='.$item['id'].'">';
+				$item['thumbnail'] = '<img src="plugins/thumbnails/thumbnail_view.php?documentId='.$item['id'].'" onClick="document.location.replace(\'view.php?fDocumentId='.$item['id'].'#preview\');">';
 				$item['thumbnailclass'] = 'preview';
 			} else {
 				$item['thumbnail'] = '';
