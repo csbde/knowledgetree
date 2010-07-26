@@ -375,10 +375,24 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 	}
 }
 
+.page{
+	.notification{
+		display: block;
+		text-align: center;
+		font-weight: bold;
+		width: auto;
+		@include shaddow(10px, #000000);
+		border: 1px solid #999999;
+		background-color: #EEEEEE;
+		margin: 20px 100px;
+		padding: 20px;
+	}
+}
+
 
 .doc.browseView{
 	position: relative;
-
+	
 	.debug{
 		*{
 			border: 1px solid transparent;

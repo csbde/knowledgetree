@@ -26,6 +26,8 @@
 
 .item td.checkbox { vertical-align: middle; }
 
+.page .notification { display: block; text-align: center; font-weight: bold; width: auto; -webkit-box-shadow: 0px 0px 10px black; -moz-box-shadow: 0px 0px 10px black; box-shadow: 0px 0px 10px black; border: 1px solid #999999; background-color: #EEEEEE; margin: 20px 100px; padding: 20px; }
+
 .doc.browseView { position: relative; }
 .doc.browseView .debug * { border: 1px solid transparent; }
 .doc.browseView .debug *:hover { border: 1px solid #A10000 !important; }
