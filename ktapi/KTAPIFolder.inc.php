@@ -534,7 +534,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $what
 	 * @return array
 	 */
-	function get_listing($depth = 1, $what = 'DFS',$overrideWebServiceVersion=null) {
+	function get_listing($depth = 1, $what = 'DFS',$overrideWebServiceVersion=null,$options=array()) {
 		if ($depth < 1) {
 			return array ();
 		}
@@ -552,6 +552,12 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		$user = $this->ktapi->get_user ();
 		
 		$contents = array ();
+		
+		// Initialize the options array and merge it with options passed
+		$aOptions=array();
+		if(is_array($options)){
+			$aOptions=array_merge($aOptions,$options);
+		}
 		
 		if (strpos ( $what, 'F' ) !== false) {
 			

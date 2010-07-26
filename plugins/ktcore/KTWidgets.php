@@ -1355,3 +1355,163 @@ window.onload = function() {
     
 }
 
+class KTCoreAjaxUploadWidget extends KTWidget {
+    var $sNamespace = 'ktcore.widgets.ajaxupload';
+    var $sTemplate = 'ktcore/forms/widgets/ajaxupload';
+    
+    
+
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        $this->aOptions['name']      = KTUtil::arrayGet($aOptions, 'name', '');
+        $this->aOptions['fFolderId'] = KTUtil::arrayGet($aOptions, 'fFolderId', '');
+        $this->aOptions['field_id']  = KTUtil::arrayGet($aOptions, 'field_id', '');
+        $this->aOptions['amazonsettings'] = KTUtil::arrayGet($aOptions, 'amazonsettings', '');
+        $this->aOptions['awstmppath'] = KTUtil::arrayGet($aOptions, 'awstmppath', '');
+        
+    }
+
+    function render() {
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
+        
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/plugins/ajaxupload/ajaxupload.js';
+      	
+        
+        if (!empty($this->aJavascript)) {
+            // grab our inner page.
+            $oPage =& $GLOBALS['main'];            
+            $oPage->requireJSResources($this->aJavascript);
+            $oPage->requireJSStandalone($this->getConfiguration());
+        }
+        
+        
+        $widget_content = $this->getWidget();
+
+        $aTemplateData = array(
+            "context" => $this,
+            "label" => $this->sLabel,
+            "description" => $this->sDescription,
+            "name" => $this->sName,
+            "has_value" => ($this->value !== null),
+            "value" => $this->value,
+            "has_errors" => $bHasErrors,
+            "errors" => $this->aErrors,
+            "options" => $this->aOptions,
+            "widget" => $widget_content,
+        );
+        return $oTemplate->render($aTemplateData);   
+    }    
+    
+    /**
+     * This function dynamically generates the init configuration script required by 
+     * swfupload for the particular session.
+     * 
+     * @param $folderId The id of the folder to upload the document to.	If none is provided
+     *		  the following will be sniffed: get params and widget options.
+     *
+     * @return String configuration script.
+     */
+    private function getConfiguration($folderId = null){
+        
+        if (is_null($folderId)) {
+            $folderId = $_GET['fFolderId'];
+        }
+        
+        if ($folderId == '') {
+            $folderId = $_POST['fFolderId'];    
+        }
+        
+        if ($folderId == '') {
+            $folderId = $this->aOptions['fFolderId'];
+        }
+        
+        ob_start();
+        ?>
+        
+jQuery(document).ready(function(){
+
+    jQuery('#extract-documents').hide();
+    jQuery('#document_type_field').hide();
+    jQuery('#type_metadata_fields').hide();
+    jQuery('#advanced_settings_metadata_button').hide();
+    jQuery('#successful_upload_files_ul').hide();
+	jQuery('form .form_actions').hide();
+    jQuery('#uploadbuttondiv').show();
+    var button = jQuery('#button1'), interval;
+    
+	
+    new AjaxUpload(button, 
+    {
+			action: '<?php echo $this->aOptions['amazonsettings']['formAction']; ?>', 
+			name: 'file',
+			onSubmit : function(file, ext)
+			{
+                if (ext == 'zip') 
+                {
+                    jQuery('#extract-documents').show();
+                }
+                this.setData({
+                    'AWSAccessKeyId' : '<?php echo $this->aOptions['amazonsettings']['AWSAccessKeyId']; ?>',
+                    'acl'            : '<?php echo $this->aOptions['amazonsettings']['acl']; ?>',
+                    'key'            : '<?php echo $this->aOptions['awstmppath']; ?>${filename}',
+                    'policy'         : '<?php echo $this->aOptions['amazonsettings']['policy']; ?>',
+                    'Content-Type'   : 'binary/octet-stream',
+                    'signature'      : '<?php echo $this->aOptions['amazonsettings']['signature']; ?>',
+<!--                    'success_action_redirect'      : '<?php //echo $this->aOptions['amazonsettings']['success_action_redirect']; ?>'-->
+                });
+                button.hide();
+				jQuery('#uploading_spinner').css({visibility: 'visible'});
+				jQuery('#cancelButton').show();
+                Img = document.getElementById('spinner');
+                Img.style.display="inline";
+                Img.src = "resources/graphics/thirdparty/loader.gif";
+                
+			},
+			onComplete: function(file, response){
+<!--                console.dir(file);-->
+				button.show();
+                jQuery('#uploading_spinner').css({visibility: 'hidden'});
+                jQuery('#cancelButton').hide();
+                
+                jQuery('#document_type_field').show();
+                jQuery('#type_metadata_fields').show();
+                jQuery('#advanced_settings_metadata_button').show();
+                jQuery('#successful_upload_files_ul').show();
+<!--            TODO : Remove link-->
+				var listitem = '<li>';
+				listitem += file;
+				listitem += '<input id="" name="file[]" type="hidden" value="'+file+'" />';
+				listitem += '<span onclick="removeFile(this)"> Remove File </span>';
+				listitem += '</li>';
+				jQuery('#successful_upload_files').show().append(listitem);
+<!--				jQuery('#successful_upload_files').show().append('<li>');-->
+<!--                jQuery('#successful_upload_files').show().append('<li>'+file+'</li><label onclick="removeFile()"> Remove </label>');-->
+<!--                jQuery('#successful_upload_files_list').append('<input id="" name="file[]" type="hidden" value="'+file+'" />');-->
+                jQuery('#kt_swf_upload_percent').val('100');
+                jQuery('form .form_actions').show();
+			}
+		});
+        cancelUpload = function() {
+            window.stop();
+            button.show();
+            jQuery('#uploading_spinner').css({visibility: 'hidden'});
+            jQuery('#cancelButton').hide();
+            jQuery('#extract-documents').hide();
+        }
+		removeFile = function(myThis) {
+			console.dir(myThis);
+		}
+    
+});
+        <?PHP
+        $script = ob_get_contents();
+        ob_end_clean();
+        
+        return $script;
+    }
+    
+}

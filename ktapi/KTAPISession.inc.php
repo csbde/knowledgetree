@@ -453,7 +453,7 @@ class KTAPI_UserSession extends KTAPI_Session
 	}
 	
 	
-	public function getCurrentBrowserSession($sessionId=NULL){
+	public function getCurrentBrowserSession(&$ktapi, $sessionId=NULL){
 		$sessionId=$sessionId?$sessionId:session_id();
 		$sql = "SELECT id, user_id FROM active_sessions WHERE session_id='{$sessionId}'";
 		$row = DBUtil::getOneResult($sql);

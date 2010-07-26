@@ -1,0 +1,13 @@
+<div id="uploading_spinner" style="visibility:hidden;">
+	<img id="spinner" src="resources/graphics/thirdparty/loader.gif" />
+</div>
+
+<div class="form_actions" id="uploadbuttondiv">
+    <input type="button" id="button1" value="{i18n}Add File{/i18n}" />
+    <input type="button" id="cancelButton" value="{i18n}Cancel Uploading{/i18n}" onclick="cancelUpload();" style="display:none" />
+</div>
+
+
+
+
+<br clear="both" />

@@ -99,7 +99,7 @@ div.form_actions {
 #content .form_actions input, #content .form_actions a {
 	background: transparent url('../graphics/newui/gridtoolbarline.png') top right no-repeat;
 	padding: 0 10px 0 10px;
-	text-transform:uppercase;
+	/*text-transform:uppercase;*/
 	font-size: 10px;
 	font-weight: bold;
 	color: #6A7274;
