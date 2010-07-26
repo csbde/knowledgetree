@@ -286,7 +286,7 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 		$background-color: darken(#EEEEEE,5%);
 		$selected-color: #8EC9E3;
 		list-type: none;
-		margin: 20px auto 0px auto;
+		margin: 35px auto 20px auto;
 		padding: 0px 5px !important;
 		@include corners(5px);
 		background-color: $background-color;
