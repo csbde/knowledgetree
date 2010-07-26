@@ -17,125 +17,139 @@
 </script>
 {/literal}
 
-{if $can_add}
-
-{if !$authentication}
-{i18n}If you are using an external source of login information, ensure the appropriate plugin is loaded and use the section below.{/i18n}
-{/if}
-</p> <p><a href="{addQS}action=addUser{/addQS}" class="ktAction ktAddUser"
-style="float: left; padding-right: 0.5em;">{i18n}Add a new
-user{/i18n}</a><a href="{addQS}action=addUser{/addQS}">{i18n}Add a new
-user{/i18n}</a></p>
-
-
-{if $authentication_sources}
-   <form action="{$smarty.server.PHP_SELF}" method="POST">
-   <input type="hidden" name="action" value="addUserFromSource" />
-
-<p class="descriptiveText">{i18n}Add a user from an authentication source{/i18n}</p>
-   {entity_select name="source_id" entities=$authentication_sources}
-   <div class="form_actions ">
-     <input type="submit" name="submit" value="{i18n}Add from source{/i18n}" />
-   </div>
-   </form>
-</p>
-{/if}
-
-{else}
-
-<div class="ktInfoMessage"><span>{i18n}You do not have enough available licenses to add more active users.  Please disable some existing ones if you wish to add new active users.{/i18n}</span></div>
-
-{/if}
-
-
 <!-- we roll both in here. -->
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="do_search" value="1" />
-{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
+	<div class="widgetRow">
+		<input type="hidden" name="do_search" value="1" />
+	{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
 
-{foreach item=oWidget from=$search_fields}
-  {$oWidget->render()}
-{/foreach}
+	{foreach item=oWidget from=$search_fields}
+	  {$oWidget->render()}
+	{/foreach}
 
-<div class="form_actions">
-   <input type="submit" value="{i18n}Search For Users{/i18n}" />
-</div class="form_actions">
+		<div class="form_actions">
+			<!-- Search button -->
+			<input type="submit" value="{i18n}Search For Users{/i18n}" />
+		</div>
+	</div>
+
+
+<div class="widgetRow">
+
+	<!-- View all users -->	
+	<div class="widgetItem">
+		<form><div class="form_actions">
+				<a href="{i18n arg_link=$link}#link#{/i18n}">{i18n}View all users{/i18n}</a>
+		</form></div>
+	</div>
+	
+	<!-- Add user -->
+		{if $can_add}
+		{if !$authentication}
+		{i18n}If you are using an external source of login information, ensure the appropriate plugin is loaded and use the section below.{/i18n}
+		{/if}
+	<div class="widgetItem">
+		<div class="form_actions">
+			<a href="{addQS}action=addUser{/addQS}" style="background: none repeat scroll 0% 0% transparent;">{i18n}Add a new user{/i18n}</a>
+		</div>
+	</div>
+		{if $authentication_sources}
+		
+	<div class="widgetItem">		
+		<input type="hidden" name="action" value="addUserFromSource" />
+
+		<p class="descriptiveText">{i18n}Add a user from an authentication source{/i18n}</p>
+		{entity_select name="source_id" entities=$authentication_sources}
+			<div class="form_actions">
+				<input type="submit" name="submit" value="{i18n}Add from source{/i18n}" />
+			</div>
+		</p>
+	</div>
+</div>
+		{/if}
+
+		{else}
+<div class="widgetRow">
+	<div class="widgetItem">
+		<div class="ktInfoMessage"><span>{i18n}You do not have enough available licenses to add more active users.  Please disable some existing ones if you wish to add new active users.{/i18n}</span></div>
+	</div>
+</div>
+		{/if}
+
+
 </form>
-<br clear="both"/>
+
+<br/><br/><br/>
 
 {if ($no_search === true)}
 {else}
-   {if (!empty($search_results))}
-
-<br />
+{if (!empty($search_results))}
 <form name="editUserForm" action="{$smarty.server.PHP_SELF}" method="post">
-<table class="kt_collection narrow" cellspacing="0" cellpadding="5">
-<thead>
-   <tr>
-   	   <th>&nbsp;</th>
-      <th>{i18n}Name{/i18n}</th>
-      <th>{i18n}Username{/i18n}</th>
-      <th>{i18n}Edit{/i18n}</th>
-      <th>{i18n}Enabled{/i18n}</th>
+	<div class="widgetRow">
+		<table class="kt_collection narrow" cellspacing="0" cellpadding="5">
+			<thead>
+			   <tr>
+				   <th>&nbsp;</th>
+				  <th>{i18n}Name{/i18n}</th>
+				  <th>{i18n}Username{/i18n}</th>
+				  <th>{i18n}Edit{/i18n}</th>
+				  <th>{i18n}Enabled{/i18n}</th>
 
-      <th>{i18n}Group Memberships{/i18n}</th>
-      <th>{i18n}Current Groups{/i18n}</th>
-   </tr>
-</thead>
-<tbody>
+				  <th>{i18n}Group Memberships{/i18n}</th>
+				  <th>{i18n}Current Groups{/i18n}</th>
+			   </tr>
+			</thead>
+			
+			<tbody>
+			   <!-- do we want to batch here? -->
+				 {foreach item=oUser from=$search_results}
+				 {if ($oUser->getDisabled() != 2)}
+					 <tr class="{cycle values=odd,even}">
+						<td class="centered">
+					{if ($oUser->getId() != ADMIN_USER_ID)}<input type="checkbox" name="edit_user[{$oUser->getId()}]" value="1"/>
+					{else}&mdash;{/if}
+						</td>
+						<td>
+					{$oUser->getName()}</td>
+						<td>{$oUser->getUsername()}</td>
+						<td><a href="{addQS}action=editUser&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+						<td class="centered">
+						{if ($oUser->getDisabled() == 1)}
+							<span class="ktAction ktDenied" title="{i18n}Disabled{/i18n}">{i18n}Disabled{/i18n}</span>
+						{else}
+							<span class="ktAction ktAllowed" title="{i18n}Enabled{/i18n}">{i18n}Enabled{/i18n}</span>
+						{/if}
+						</td>
 
-   <!-- do we want to batch here? -->
-     {foreach item=oUser from=$search_results}
-     {if ($oUser->getDisabled() != 2)}
-	     <tr class="{cycle values=odd,even}">
-	        <td class="centered">
-		{if ($oUser->getId() != ADMIN_USER_ID)}<input type="checkbox" name="edit_user[{$oUser->getId()}]" value="1"/>
-		{else}&mdash;{/if}
-		</td>
-	        <td>
-		{$oUser->getName()}</td>
-	        <td>{$oUser->getUsername()}</td>
-	        <td><a href="{addQS}action=editUser&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-	        <td class="centered">
-	        {if ($oUser->getDisabled() == 1)}
-	            <span class="ktAction ktDenied" title="{i18n}Disabled{/i18n}">{i18n}Disabled{/i18n}</a>
-	        {else}
-	            <span class="ktAction ktAllowed" title="{i18n}Enabled{/i18n}">{i18n}Enabled{/i18n}</a>
-	        {/if}
-	        </td>
-
-
-
-
-	        <td><a href="{addQS}action=editgroups&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Groups{/i18n}</a></td>
-	        <td class="title"><span class="descriptiveText">{$context->getGroupStringForUser($oUser)}</span></td>
-	     </tr>
-     {/if}
-     {/foreach}
-
-</tbody>
-</table>
-<div class="form_actions">
-<input type="hidden" name="action" value="change_enabled" />
-<input type="hidden" name="update_value" id="update_value" value="" />
-<input type="button" value="{i18n}Enable{/i18n}" id="enableButton" onclick="updateUser('enable');">
-<input type="button" value="{i18n}Disable{/i18n}" id="disableButton" onclick="updateUser('disable');">
-<input type="button" value="{i18n}Delete{/i18n}" id="deleteButton" onclick="confirmDelete();">
-
-</div>
-</form>
-{else}
-<div class="ktErrorMessage"><span>{i18n}No results for your search.{/i18n}</span></div>
-
-{/if}
-{/if}
-
-<div class="widget" style="position: relative;">
-	<div class="form_actions">
-		<!-- View all users -->
-		<a style="background: none repeat scroll 0% 0% transparent;" href="{i18n arg_link=$link}#link#{/i18n}">{i18n}View all users{/i18n}</a>
+						<td><a href="{addQS}action=editgroups&user_id={$oUser->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Groups{/i18n}</a></td>
+						<td class="title"><span class="descriptiveText">{$context->getGroupStringForUser($oUser)}</span></td>
+					 </tr>
+				 {/if}
+				 {/foreach}
+			</tbody>
+			
+		</table>
 	</div>
-</div>
+	
+	<div class="widgetRow">
+		<div class="form_actions">
+			<input type="hidden" name="action" value="change_enabled" />
+			<input type="hidden" name="update_value" id="update_value" value="" />
+			<input type="button" value="{i18n}Enable{/i18n}" id="enableButton" onclick="updateUser('enable');">
+			<input type="button" value="{i18n}Disable{/i18n}" id="disableButton" onclick="updateUser('disable');">
+			<input type="button" value="{i18n}Delete{/i18n}" id="deleteButton" onclick="confirmDelete();">
+		</div>
+	</div>
+</form>
+
+	{else}
+	<div class="ktErrorMessage"><span>{i18n}No results for your search.{/i18n}</span></div>
+
+	{/if}
+
+{/if}
+
+
 
 
 

@@ -761,7 +761,7 @@ a.main_nav_item {
 #content h2
 {
     font-family: "Lucida Grande", Tahoma, sans-serif; /* "Bitstream Vera Sans" */
-    padding-bottom: 0.25em;
+    padding-bottom: 5px;
     border-width: 0 0 0 0;
     border-style: solid;
     border-color: #eee;

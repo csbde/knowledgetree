@@ -358,16 +358,24 @@ div#uploadProgress .progress {
 }
 
 /* These replace fieldsets and allow us to manage positioning of widgets in batches. */
-/* Inline widgetSet style should set height. */
-div.widgetSet {
-	position: relative; width:500px;
-	/*border-style: solid; border-width: 1px; border-color: black;*/
+/* Just a fix for crappy UI. Should be replaced by something like 960.gs framework. */
+
+/* A widgetRow styles a row for one or more widget cells. */
+div.widgetRow {
+	display: block;
+	position: relative;
+	margin: 1px;
+	clear: both;
+	/*outline: 1px solid black;*/
 }
 
-/* Inline widget style should set placement in widgetSet div. */
-div.widget {
-	position: absolute;
-	/*border-style: solid; border-width: 1px; border-color: #777777;*/
+/* There can be many widgetItems in a row. */
+/* Set inline style eg margin-left: -100%; width: 30%; */
+div.widgetItem {
+	position: relative;
+	float: left;
+	/*left: 100%;*/
+	/*border: 1px solid blue;*/
 }
 
 
