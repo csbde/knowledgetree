@@ -1461,7 +1461,7 @@ jQuery(document).ready(function(){
                     'policy'         : '<?php echo $this->aOptions['amazonsettings']['policy']; ?>',
                     'Content-Type'   : 'binary/octet-stream',
                     'signature'      : '<?php echo $this->aOptions['amazonsettings']['signature']; ?>',
-<!--                    'success_action_redirect'      : '<?php //echo $this->aOptions['amazonsettings']['success_action_redirect']; ?>'-->
+                    'success_action_redirect'      : '<?php echo $this->aOptions['amazonsettings']['success_action_redirect']; ?>'
                 });
                 button.hide();
 				jQuery('#uploading_spinner').css({visibility: 'visible'});
@@ -1472,25 +1472,19 @@ jQuery(document).ready(function(){
                 
 			},
 			onComplete: function(file, response){
-<!--                console.dir(file);-->
 				button.show();
                 jQuery('#uploading_spinner').css({visibility: 'hidden'});
                 jQuery('#cancelButton').hide();
-                
                 jQuery('#document_type_field').show();
                 jQuery('#type_metadata_fields').show();
                 jQuery('#advanced_settings_metadata_button').show();
                 jQuery('#successful_upload_files_ul').show();
-<!--            TODO : Remove link-->
 				var listitem = '<li>';
 				listitem += file;
-				listitem += '<input id="" name="file[]" type="hidden" value="'+file+'" />';
-				listitem += '<span onclick="removeFile(this)"> Remove File </span>';
+				listitem += '<input id="" name="file[]" type="hidden" value="<?php echo $this->aOptions['randomfile']; ?>'+file+'" />';
+				listitem += '<span onclick="removeFile(this)" style="cursor:pointer;"> <img src="resources/graphics/delete.png" /> </span>';
 				listitem += '</li>';
 				jQuery('#successful_upload_files').show().append(listitem);
-<!--				jQuery('#successful_upload_files').show().append('<li>');-->
-<!--                jQuery('#successful_upload_files').show().append('<li>'+file+'</li><label onclick="removeFile()"> Remove </label>');-->
-<!--                jQuery('#successful_upload_files_list').append('<input id="" name="file[]" type="hidden" value="'+file+'" />');-->
                 jQuery('#kt_swf_upload_percent').val('100');
                 jQuery('form .form_actions').show();
 			}
@@ -1501,9 +1495,20 @@ jQuery(document).ready(function(){
             jQuery('#uploading_spinner').css({visibility: 'hidden'});
             jQuery('#cancelButton').hide();
             jQuery('#extract-documents').hide();
-        }
-		removeFile = function(myThis) {
-			console.dir(myThis);
+        },
+		removeFile = function(spanObj) {
+			jQuery(spanObj).parent().remove();
+			if (jQuery('#successful_upload_files').children().length == 0)
+			{
+				jQuery('#extract-documents').hide();
+				jQuery('#document_type_field').hide();
+				jQuery('#type_metadata_fields').hide();
+				jQuery('#advanced_settings_metadata_button').hide();
+				jQuery('#successful_upload_files_ul').hide();
+				jQuery('form .form_actions').hide();
+				jQuery('#uploadbuttondiv').show();
+			}
+			//console.log('kids '+jQuery('#successful_upload_files').children().length);
 		}
     
 });
