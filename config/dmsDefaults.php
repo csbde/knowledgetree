@@ -37,11 +37,6 @@
  * Contributor( s): Guenter Roeck______________________________________
  *
  */
-
-// uncomment the line below to disable account routing (even if the plugin is available)
-
-
-
 // The line below will switch on tracing for debugging & dev purposes
 define ( 'KTLIVE_TRACE_ENABLE', false );
 

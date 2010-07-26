@@ -1461,7 +1461,7 @@ jQuery(document).ready(function(){
                     'policy'         : '<?php echo $this->aOptions['amazonsettings']['policy']; ?>',
                     'Content-Type'   : 'binary/octet-stream',
                     'signature'      : '<?php echo $this->aOptions['amazonsettings']['signature']; ?>',
-                    'success_action_redirect'      : '<?php echo $this->aOptions['amazonsettings']['success_action_redirect']; ?>'
+<!--                    'success_action_redirect'      : '<?php //echo $this->aOptions['amazonsettings']['success_action_redirect']; ?>'-->
                 });
                 button.hide();
 				jQuery('#uploading_spinner').css({visibility: 'visible'});
