@@ -651,8 +651,9 @@ class KTPluginUtil {
             return;
         }
         $dirh = opendir($path);
+        // skip '.', '..', and hidden directories - i.e. anything which begins with a '.'
         while (($entry = readdir($dirh)) !== false) {
-            if (in_array($entry, array('.', '..'))) {
+            if (preg_match('/^\./', $entry)) {
                 continue;
             }
             $newpath = $path . '/' . $entry;
