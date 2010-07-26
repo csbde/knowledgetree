@@ -278,10 +278,6 @@ thead {
 	background: url('../graphics/newui/footerright.png') no-repeat top right;
 }
 
-#pageBody {
-	margin-bottom: 0;
-}
-
 table.kt_collection {
 	margin: 5px;
 	width: 99%;
@@ -329,10 +325,6 @@ span#uploadProgress .title {
 div#uploadProgress .progress {
 	padding-top: 5px;
 	font-size: 16px;
-}
-
-#kt-wrapper {
-	margin-left: 15px;
 }
 
 #content select.perpageselect {
