@@ -1457,7 +1457,7 @@ jQuery(document).ready(function(){
                 this.setData({
                     'AWSAccessKeyId' : '<?php echo $this->aOptions['amazonsettings']['AWSAccessKeyId']; ?>',
                     'acl'            : '<?php echo $this->aOptions['amazonsettings']['acl']; ?>',
-                    'key'            : '<?php echo $this->aOptions['awstmppath'] . '/'; ?>${filename}',
+                    'key'            : '<?php echo $this->aOptions['awstmppath']; ?>${filename}',
                     'policy'         : '<?php echo $this->aOptions['amazonsettings']['policy']; ?>',
                     'Content-Type'   : 'binary/octet-stream',
                     'signature'      : '<?php echo $this->aOptions['amazonsettings']['signature']; ?>',
@@ -1482,8 +1482,15 @@ jQuery(document).ready(function(){
                 jQuery('#advanced_settings_metadata_button').show();
                 jQuery('#successful_upload_files_ul').show();
 <!--            TODO : Remove link-->
-                jQuery('#successful_upload_files').show().append('<li>'+file+'</li>');
-                jQuery('#successful_upload_files_list').append('<input name="file[]" type="hidden" value="'+file+'" />');
+				var listitem = '<li>';
+				listitem += file;
+				listitem += '<input id="" name="file[]" type="hidden" value="'+file+'" />';
+				listitem += '<span onclick="removeFile(this)"> Remove File </span>';
+				listitem += '</li>';
+				jQuery('#successful_upload_files').show().append(listitem);
+<!--				jQuery('#successful_upload_files').show().append('<li>');-->
+<!--                jQuery('#successful_upload_files').show().append('<li>'+file+'</li><label onclick="removeFile()"> Remove </label>');-->
+<!--                jQuery('#successful_upload_files_list').append('<input id="" name="file[]" type="hidden" value="'+file+'" />');-->
                 jQuery('#kt_swf_upload_percent').val('100');
                 jQuery('form .form_actions').show();
 			}
@@ -1495,7 +1502,9 @@ jQuery(document).ready(function(){
             jQuery('#cancelButton').hide();
             jQuery('#extract-documents').hide();
         }
-
+		removeFile = function(myThis) {
+			console.dir(myThis);
+		}
     
 });
         <?PHP

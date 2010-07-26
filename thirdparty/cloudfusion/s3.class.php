@@ -375,6 +375,8 @@ class AmazonS3 extends CloudFusion
 			}
 
 			// Do we have a contentDisposition?
+			// NOTE content disposition added by Paul Barrett [paul@knowledgetree.com] in order to 
+			//      support setting of content disposition on upload/copy of object
 			if (isset($contentDisposition) && !empty($contentDisposition))
 			{
 				$req->add_header('Content-Disposition', $contentDisposition);
@@ -495,7 +497,14 @@ class AmazonS3 extends CloudFusion
 			if ($qsa)
 			{
 				// Prepare the string to sign
-				$stringToSign = "$verb\n$md5\n$contentType\n$since_epoch\n$acl$hmeta/$bucket$filename";
+				// NOTE fix taken from git commit 686ca6c6ab1c908ce687ab7bb99b0139ac384951
+				//      (Removed $md5 and $contentType from string to sign for QSA requests because they 
+				//      are not sent by browser.)
+				//      It would seem that these being present was preventing correctly signed time limited
+				//      url creation (it is assumed that these somehow contained something even though they should
+				//      have been empty)
+				//      added by Paul Barrett [paul@knowledgetree.com]
+				$stringToSign = "$verb\n\n\n$since_epoch\n$acl$hmeta/$bucket$filename";
 			}
 			else
 			{
@@ -537,7 +546,11 @@ class AmazonS3 extends CloudFusion
 			$headers['x-tarzan-stringtosign'] = $stringToSign;
 			$headers['x-tarzan-requestheaders'] = $req->request_headers;
 
-			if (strpos($req->get_response_body(), '<?xml') !== false)
+			// NOTE added by Paul Barrett [paul@knowledgetree.com]
+			//      required for correct retrieval of .odt documents (and perhaps others) 
+			//      which contain an xml segment within their content (but not at position 0)
+			$xmlCheck = strpos($req->get_response_body(), '<?xml');
+			if (($xmlCheck !== false) && ($xmlCheck == 0))
 			{
 				$data = new $this->response_class($headers, new SimpleXMLElement($req->get_response_body()), $req->get_response_code());
 			}
@@ -614,7 +627,7 @@ class AmazonS3 extends CloudFusion
 		$contentType = null;
 
 		// NOTE manually updated this based on this forum thread: http://groups.google.com/group/cloudfusion/browse_thread/thread/4ca53ef62c0cc3b7
-		//      (code modified by Paul Barrett)
+		//      (code modified by Paul Barrett [paul@knowledgetree.com])
 		//      This problem exists in 2.5 but will probably be officially fixed in an upcoming version
 		if ($locale) 
 		{
@@ -1919,8 +1932,8 @@ class AmazonS3 extends CloudFusion
 	// URLS
 
 	/**
-	 * Method: get_object_url()
-	 * 	Gets the web-accessible URL for the file (assuming you've set the ACL settings to <S3_ACL_PUBLIC>).
+	 * Method: get_object_post_url()
+	 * 	Gets the web-accessible upload URL (assuming you've set the ACL settings to <S3_ACL_PUBLIC>).
 	 *
 	 * Access:
 	 * 	public
@@ -1938,8 +1951,11 @@ class AmazonS3 extends CloudFusion
 	 * 	Query String Authentication - http://docs.amazonwebservices.com/AmazonS3/latest/S3_QSAuth.html
 	 * 	Related - <get_torrent_url()>
 	 */
-	public function get_object_url($bucket, $filename, $qsa = 0, $torrent = false)
+	public function get_object_post_url($bucket, $filename, $qsa = 0, $torrent = false)
 	{
+		// ssl?
+		$scheme = ($this->enable_ssl) ? 'https://' : 'http://';
+			
 		if ($qsa)
 		{
 			// Add this to our request
@@ -1961,20 +1977,83 @@ class AmazonS3 extends CloudFusion
 
 			if ($this->vhost)
 			{
-				return 'http://' . $this->vhost . $data['filename'] . ((!$torrent) ? '?' : '&') . 'AWSAccessKeyId=' . $data['key'] . '&Expires=' . $data['expires'] . '&Signature=' . rawurlencode($data['signature']);
+				return $scheme . $this->vhost . $data['filename'] . ((!$torrent) ? '?' : '&') . 'AWSAccessKeyId=' . $data['key'] . '&Expires=' . $data['expires'] . '&Signature=' . rawurlencode($data['signature']);
 			}
 
-			return 'http://' . $data['bucket'] . '.s3.amazonaws.com' . $data['filename'] . ((!$torrent) ? '?' : '&') . 'AWSAccessKeyId=' . $data['key'] . '&Expires=' . $data['expires'] . '&Signature=' . rawurlencode($data['signature']);
+			return $scheme . $data['bucket'] . '.s3.amazonaws.com' . $data['filename'] . ((!$torrent) ? '?' : '&') . 'AWSAccessKeyId=' . $data['key'] . '&Expires=' . $data['expires'] . '&Signature=' . rawurlencode($data['signature']);
 		}
 		else
 		{
 			// If we're using a virtual host, use that instead.
 			if ($this->vhost)
 			{
-				return 'http://' . $this->vhost . '/' . $filename . (($torrent) ? '?torrent' : '');
+				return $scheme . $this->vhost . '/' . $filename . (($torrent) ? '?torrent' : '');
 			}
 
-			return 'http://' . $bucket . '.s3.amazonaws.com/' . $filename . (($torrent) ? '?torrent' : '');
+			return $scheme . $bucket . '.s3.amazonaws.com/' . $filename . (($torrent) ? '?torrent' : '');
+		}
+	}
+
+	/**
+	 * Method: get_object_url()
+	 * 	Gets the web-accessible URL for the file (assuming you've set the ACL settings to <S3_ACL_PUBLIC>).
+	 *
+	 * Access:
+	 * 	public
+ 	 *
+	 * Parameters:
+	 * 	bucket - _string_ (Required) The name of the bucket to be used.
+	 * 	filename - _string_ (Required) The filename for the object.
+	 * 	qsa - _integer_ (Optional) How many seconds should the query string authenticated URL work for? Only generates query string authentication parameters if value is greater than 0. Defaults to 0.
+	 * 	torrent - _boolean_ (Optional) Whether to return the torrent version of the URL or not. Defaults to false.
+	 *
+	 * Returns:
+	 * 	_string_ The file URL (with authentication and/or torrent parameters if requested).
+	 *
+	 * See Also:
+	 * 	Query String Authentication - http://docs.amazonwebservices.com/AmazonS3/latest/S3_QSAuth.html
+	 * 	Related - <get_torrent_url()>
+	 */
+	public function get_object_url($bucket, $filename, $qsa = 0, $torrent = false)
+	{
+		// ssl?
+		$scheme = ($this->enable_ssl) ? 'https://' : 'http://';
+			
+		if ($qsa)
+		{
+			// Add this to our request
+			$opt = array();
+			$opt['verb'] = HTTP_GET;
+			$opt['method'] = 'get_object_url';
+			$opt['filename'] = $filename . (($torrent) ? '?torrent' : '');
+			$opt['qsa'] = $qsa;
+
+			// Adjust the clock
+			$old_offset = $this->adjust_offset;
+			$this->adjust_offset($qsa);
+
+			// Authenticate to S3
+			$data = $this->authenticate($bucket, $opt);
+
+			// Reset the clock
+			$this->adjust_offset = $old_offset;
+
+			if ($this->vhost)
+			{
+				return $scheme . $this->vhost . $data['filename'] . ((!$torrent) ? '?' : '&') . 'AWSAccessKeyId=' . $data['key'] . '&Expires=' . $data['expires'] . '&Signature=' . rawurlencode($data['signature']);
+			}
+
+			return $scheme . $data['bucket'] . '.s3.amazonaws.com' . $data['filename'] . ((!$torrent) ? '?' : '&') . 'AWSAccessKeyId=' . $data['key'] . '&Expires=' . $data['expires'] . '&Signature=' . rawurlencode($data['signature']);
+		}
+		else
+		{
+			// If we're using a virtual host, use that instead.
+			if ($this->vhost)
+			{
+				return $scheme . $this->vhost . '/' . $filename . (($torrent) ? '?torrent' : '');
+			}
+
+			return $scheme . $bucket . '.s3.amazonaws.com/' . $filename . (($torrent) ? '?torrent' : '');
 		}
 	}
 

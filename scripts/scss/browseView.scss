@@ -286,7 +286,7 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 		$background-color: darken(#EEEEEE,5%);
 		$selected-color: #8EC9E3;
 		list-type: none;
-		margin: 20px auto 0px auto;
+		margin: 35px auto 20px auto;
 		padding: 0px 5px !important;
 		@include corners(5px);
 		background-color: $background-color;
@@ -375,10 +375,24 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 	}
 }
 
+.page{
+	.notification{
+		display: block;
+		text-align: center;
+		font-weight: bold;
+		width: auto;
+		@include shaddow(10px, #000000);
+		border: 1px solid #999999;
+		background-color: #EEEEEE;
+		margin: 20px 100px;
+		padding: 20px;
+	}
+}
+
 
 .doc.browseView{
 	position: relative;
-
+	
 	.debug{
 		*{
 			border: 1px solid transparent;
@@ -474,7 +488,7 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 				left: 15px;
 				top: 20px;
 				overflow:hidden;
-				cursor:default;
+				cursor:pointer;
 			}
 			
 			&:hover{
