@@ -2127,23 +2127,17 @@ class KTAPI
      * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
      * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
      */
-    function get_folder_contents($folder_id, $depth=1, $what='DFS',$overrideWebServiceVersion=null,$itemsPerPage=null,$page=null)
+    function get_folder_contents($folder_id, $depth=1, $what='DFS',$overrideWebServiceVersion=null)
     {
     	//Calculate the offset and limit
-    	$opts=array();
-    	$opts['inspectSQL']=true;
-    	if($itemsPerPage>0 && $page>0){
-    		$opts['offset']=$itemsPerPage*($page-1);
-    		$opts['limit']=$itemsPerPage;
-    	}
-    	
+   	
         $folder = &$this->get_folder_by_id($folder_id);
         if(PEAR::isError($folder)){
     	    $response['status_code'] = 1;
     	    $response['message']= $folder->getMessage();
     	    return $response;
         }
-        $listing = $folder->get_listing($depth, $what,$overrideWebServiceVersion,$opts);
+        $listing = $folder->get_listing($depth, $what,$overrideWebServiceVersion);
 
     	$contents = array(
     		'folder_id' => $folder_id+0,

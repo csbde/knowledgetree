@@ -665,8 +665,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$oUser=KTEntityUtil::get('User',  $_SESSION['userID']);
 		$KT=new KTAPI();
 		$session=$KT->start_system_session($oUser->getUsername());
-		
-//		print_r($session); exit;
 
 		//Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
 		$folder = &$KT->get_folder_contents($folderId,1,'DFS',3,$itemsPerPage,$page);
