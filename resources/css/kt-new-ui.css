@@ -6,8 +6,7 @@ body {
 }
 
 div#topnavbar {
-    margin: 0 10px 10px 10px;
-	margin: 0; /* testing override*/
+	margin: 0;
     background: url('../graphics/newui/topnavbkg.png');
     height: 36px;
     overflow: hidden;
@@ -158,11 +157,6 @@ div.form_actions {
 	border-bottom: none;
 }
 
-
-
-
-
-
 .normalTransformText {
 	text-transform: none;
 	text-decoration: underline;
@@ -238,10 +232,9 @@ ul.buttonsList li:hover > *.dir, ul.buttonsList li:hover span.dir:hover {
 	background: url('../graphics/newui/menuHoverLeft.png') no-repeat;
 }
  */
-
-
+ 
 div#logobar {
-	margin-left: 10px;
+	margin:2px 15px;
 }
 
 input[type="checkbox"] {
@@ -289,12 +282,7 @@ table.kt_collection {
 	-moz-box-shadow: 0 0 5px #667;
 }
 
-div#breadcrumbs {
-	margin: 0.5em;
-}
-
 div#activationNotice {
-	margin-right: 15px;
 	background: url('../graphics/newui/notice.png') no-repeat top right;
 	width: 160px;
 	height: 50px;

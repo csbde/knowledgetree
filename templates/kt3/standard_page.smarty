@@ -42,7 +42,7 @@
     <!-- Standalone CSS. -->
     {foreach item=sCSS from=$page->getCSSStandalone()}
        <style>
-{$sCSS}
+	{$sCSS}
        </style>
     {/foreach}
 
@@ -56,7 +56,7 @@
        <script type="text/javascript">
        var rootURL = "{$absoluteRootUrl}";
        var quickQuery = "{$search2_quickQuery}";
-{$sJavascript}
+	{$sJavascript}
        </script>
     {/foreach}
     <!--[if IE 7]>
@@ -65,90 +65,91 @@
 
 </head>
 <body {if (!$page->show_portlets)}class="noportlets"{/if} {if $page->onload}onload="{$page->getBodyOnload()}"{/if} onresize="kt.lib.setFooter()">
+
 	<div id="wrapper">
+	
 		<input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$rootUrl}" />
 		<div id="pageHeader">
+		
 			{if (!$page->hide_navbar)}
-			<div id="navbarBorderUI">
-				<div id="topnavbar">
-					<ul class="floatleft">
-						<li class="roundleft"></li> <!-- block for left round corner -->
-						<li class="notification">&nbsp;</li> <!-- Special Case for KT Logo -->
-						<!-- area menu -->
-						{foreach item=aMenuItem from=$page->menu}
-							{if ($aMenuItem.active == 1)}
-								<li><a class="active" href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}">{$aMenuItem.label}</a></li>
-							{else}
-								<li><a href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}">{$aMenuItem.label}</a></li>
-							{/if}
-						{/foreach}
-					</ul>
-						<script language="javascript">
-						
-						var sSearchTranslations =
-							[
+			<div id="topnavbar">
+				<ul class="floatleft">
+					<li class="roundleft"></li> <!-- block for left round corner -->
+					<li class="notification">&nbsp;</li> <!-- Special Case for KT Logo -->
+					<!-- area menu -->
+					{foreach item=aMenuItem from=$page->menu}
+						{if ($aMenuItem.active == 1)}
+							<li><a class="active" href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}">{$aMenuItem.label}</a></li>
+						{else}
+							<li><a href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}">{$aMenuItem.label}</a></li>
+						{/if}
+					{/foreach}
+				</ul>
+					<script language="javascript">
+					
+					var sSearchTranslations =
+						[
 
-							/* 0  */	"{i18n}Quick Search Options{/i18n}",
-							/* 1  */	"{i18n}Searches will now search both content and metadata{/i18n}",
-							/* 2  */	"{i18n}Searches will now only search metadata{/i18n}",
-							/* 3  */	"{i18n}Hint{/i18n}",
-							/* 4  */	"{i18n}Please enter some search criteria!{/i18n}",
-							/* 5  */	"{i18n}Saved Searches{/i18n}",
-							/* 6  */	"{i18n}Advanced Search{/i18n}",
-							/* 7  */	"{i18n}Previous Search Results{/i18n}",
-							/* 8  */	"{i18n}Quick Search Options{/i18n}",
-							/* 9  */	"{i18n}content and metadata{/i18n}",
-							/* 10  */	"{i18n}metadata{/i18n}",
-							/* 11  */	"{i18n}search{/i18n}",
-							/* 12  */	"{i18n}Enter search criteria...{/i18n}",
-							/* 13  */	"{i18n}Toggle search results format{/i18n}",
-							/* 14  */	"{i18n}Search engine format{/i18n}",
-							/* 15  */	"{i18n}Browse view format{/i18n}"
+						/* 0  */	"{i18n}Quick Search Options{/i18n}",
+						/* 1  */	"{i18n}Searches will now search both content and metadata{/i18n}",
+						/* 2  */	"{i18n}Searches will now only search metadata{/i18n}",
+						/* 3  */	"{i18n}Hint{/i18n}",
+						/* 4  */	"{i18n}Please enter some search criteria!{/i18n}",
+						/* 5  */	"{i18n}Saved Searches{/i18n}",
+						/* 6  */	"{i18n}Advanced Search{/i18n}",
+						/* 7  */	"{i18n}Previous Search Results{/i18n}",
+						/* 8  */	"{i18n}Quick Search Options{/i18n}",
+						/* 9  */	"{i18n}content and metadata{/i18n}",
+						/* 10  */	"{i18n}metadata{/i18n}",
+						/* 11  */	"{i18n}search{/i18n}",
+						/* 12  */	"{i18n}Enter search criteria...{/i18n}",
+						/* 13  */	"{i18n}Toggle search results format{/i18n}",
+						/* 14  */	"{i18n}Search engine format{/i18n}",
+						/* 15  */	"{i18n}Browse view format{/i18n}"
 
-							];
-
-						var aSavedSearches = [
-						{assign var=count value=0}
-							{foreach item=searchitem from=$savedSearches}
-							{if $count>0},{/if}
-							{literal}{{/literal}id:{$searchitem.id},name:'{$searchitem.name|sanitize}'{literal}}{/literal}
-							{assign var=count value=$count+1}
-							{/foreach}
 						];
 
-						{if $smarty.session.search2resultFormat == 'browseview'}
-							var bResultsFormatSearchEngine = false;
-						{else}
-							var bResultsFormatSearchEngine = true;
-						{/if}
-						</script>
-					<ul class="floatright">
-						<li class="roundright"></li> <!-- block for right round corner -->
-						
-						<!-- Right most items come first -->
-						{if ($page->getHelpURL() != null)}<!--<li><a href="{$page->getHelpURL()}"><img src="thirdparty/icon-theme/16x16/apps/help-browser.gif" align="absmiddle" border="0" /></a></li>-->{/if}
-						
-						
-						<!-- user menu -->
+					var aSavedSearches = [
+					{assign var=count value=0}
+						{foreach item=searchitem from=$savedSearches}
+						{if $count>0},{/if}
+						{literal}{{/literal}id:{$searchitem.id},name:'{$searchitem.name|sanitize}'{literal}}{/literal}
+						{assign var=count value=$count+1}
+						{/foreach}
+					];
 
-							
-							{if !empty($page->userMenu)}
+					{if $smarty.session.search2resultFormat == 'browseview'}
+						var bResultsFormatSearchEngine = false;
+					{else}
+						var bResultsFormatSearchEngine = true;
+					{/if}
+					</script>
+				<ul class="floatright">
+					<li class="roundright"></li> <!-- block for right round corner -->
+					
+					<!-- Right most items come first -->
+					{if ($page->getHelpURL() != null)}<!--<li><a href="{$page->getHelpURL()}"><img src="thirdparty/icon-theme/16x16/apps/help-browser.gif" align="absmiddle" border="0" /></a></li>-->{/if}
+					
+					
+					<!-- user menu -->
+
+						
+						{if !empty($page->userMenu)}
+							<!-- &middot; -->
+						{/if}
+						{foreach item=aMenuItem from=$page->userMenu name=prefmenu}
+							{if ($aMenuItem.active == 1)}
+								<li class="active"><a href="{$aMenuItem.url}">{$aMenuItem.label}</a></li>
+							{else}
+								<li><a href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}" {$aMenuItem.extra}>{$aMenuItem.label}</a></li>
+							{/if}
+							{if !$smarty.foreach.prefmenu.last}
 								<!-- &middot; -->
 							{/if}
-							{foreach item=aMenuItem from=$page->userMenu name=prefmenu}
-								{if ($aMenuItem.active == 1)}
-									<li class="active"><a href="{$aMenuItem.url}">{$aMenuItem.label}</a></li>
-								{else}
-									<li><a href="{$aMenuItem.url}" onclick="{$aMenuItem.onclick}" {$aMenuItem.extra}>{$aMenuItem.label}</a></li>
-								{/if}
-								{if !$smarty.foreach.prefmenu.last}
-									<!-- &middot; -->
-								{/if}
-							{/foreach}
-						<!-- END of Right Most stuff-->
+						{/foreach}
+					<!-- END of Right Most stuff-->
 
-					</ul>
-				</div>
+				</ul>
 			</div>
 			<form id=frmQuickSearch method=post action="{$rootUrl}/search2.php?action=process">
 				<input id=txtQuery name=txtQuery type=hidden>
@@ -294,6 +295,7 @@
 				
 				<!-- Content added here. -->
 				{$page->contents}
+				
 				<div class="floatClear"></div>
 				
 			</div><!-- end of content -->
