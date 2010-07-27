@@ -1450,10 +1450,7 @@ jQuery(document).ready(function(){
 			name: 'file',
 			onSubmit : function(file, ext)
 			{
-                if (ext == 'zip') 
-                {
-                    jQuery('#extract-documents').show();
-                }
+				detectArchiveFile(file);
                 this.setData({
                     'AWSAccessKeyId' : '<?php echo $this->aOptions['amazonsettings']['AWSAccessKeyId']; ?>',
                     'acl'            : '<?php echo $this->aOptions['amazonsettings']['acl']; ?>',
@@ -1511,6 +1508,14 @@ jQuery(document).ready(function(){
 				jQuery('#uploadbuttondiv').show();
 			}
 			//console.log('kids '+jQuery('#successful_upload_files').children().length);
+		},
+		detectArchiveFile = function(fileName) {
+			// TODO : This information should come from server
+			isSupported = fileName.match(/\.(tgz|tar|gz|zip|deb|ar|bz|bz2|rar|tbz)$/i);
+			isSupported = (isSupported != null)? true : false;
+			if (isSupported) {
+				jQuery('#extract-documents').show();
+			}
 		}
     
 });

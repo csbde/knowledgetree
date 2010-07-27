@@ -435,7 +435,14 @@ class DBUtil {
 
     public static function autoDelete($sTable, $iId, $db = null) {
         $database = self::getDB($db);
-        $sQuery = "DELETE FROM " . $sTable . " WHERE id = ?";
+        
+        if(isset($default->_slave)){
+            $sQuery = "SET BINLOG_FORMAT=STATEMENT";
+            $sQuery. "DELETE FROM " . $sTable . " WHERE id = ?";
+            $sQuery. "SET BINLOG_FORMAT=ROW";
+        }else{
+             $sQuery = "DELETE FROM " . $sTable . " WHERE id = ?";
+        }
         $aParams = array($iId);
         return self::runQuery(array($sQuery, $aParams), $database);
     }
@@ -469,8 +476,14 @@ class DBUtil {
         }
         $sWhere = join(' AND ', $aWhereFields);
         $aValues = array_values($aWhereFieldValues);
-
-        $sQuery = "DELETE FROM " . $sTable . " WHERE $sWhere";
+        if(isset($default->_slave)){
+            $sQuery = "SET BINLOG_FORMAT=STATEMENT";
+            $sQuery. "DELETE FROM " . $sTable . " WHERE $sWhere";
+            $sQuery. "SET BINLOG_FORMAT=ROW";
+        }else{
+            $sQuery = "DELETE FROM " . $sTable . " WHERE $sWhere";
+        }
+        
         return self::runQuery(array($sQuery, $aValues), $database);
     }
     /**
