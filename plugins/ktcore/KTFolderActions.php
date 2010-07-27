@@ -103,7 +103,10 @@ class KTFolderAddFolderAction extends KTFolderAction {
             array('ktcore.widgets.string', array(
                 'label' => _kt('Folder name'),
                 'required' => true,
-                'name' => 'name'),
+                'name' => 'name',
+				'has_id' => true,
+				'id' => 'add_folder_name'
+				),
             );
 		$aFolderTemplates = $this->folderTemplateOptions(); // Get folder structure creation option
 		if(is_array($aFolderTemplates)) { // Check if any results are returned
