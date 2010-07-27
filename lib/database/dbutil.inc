@@ -167,7 +167,7 @@ class DBUtil {
         }else {
             $sQuery = $query;
         }
-         if(isset($default->_slave) && (strncasecmp(ltrim($query), "select", 6) === 0 )){
+         if(isset($default->_slave) && (strncasecmp(ltrim($sQuery), "select", 6) === 0 )){
             $db = self::getSlave();
             if($oPear->isError($db))
             {
@@ -435,14 +435,7 @@ class DBUtil {
 
     public static function autoDelete($sTable, $iId, $db = null) {
         $database = self::getDB($db);
-        
-        if(isset($default->_slave)){
-            $sQuery = "SET BINLOG_FORMAT=STATEMENT";
-            $sQuery. "DELETE FROM " . $sTable . " WHERE id = ?";
-            $sQuery. "SET BINLOG_FORMAT=ROW";
-        }else{
-             $sQuery = "DELETE FROM " . $sTable . " WHERE id = ?";
-        }
+        $sQuery = "DELETE FROM " . $sTable . " WHERE id = ?";
         $aParams = array($iId);
         return self::runQuery(array($sQuery, $aParams), $database);
     }
@@ -476,14 +469,8 @@ class DBUtil {
         }
         $sWhere = join(' AND ', $aWhereFields);
         $aValues = array_values($aWhereFieldValues);
-        if(isset($default->_slave)){
-            $sQuery = "SET BINLOG_FORMAT=STATEMENT";
-            $sQuery. "DELETE FROM " . $sTable . " WHERE $sWhere";
-            $sQuery. "SET BINLOG_FORMAT=ROW";
-        }else{
-            $sQuery = "DELETE FROM " . $sTable . " WHERE $sWhere";
-        }
-        
+
+        $sQuery = "DELETE FROM " . $sTable . " WHERE $sWhere";
         return self::runQuery(array($sQuery, $aValues), $database);
     }
     /**
