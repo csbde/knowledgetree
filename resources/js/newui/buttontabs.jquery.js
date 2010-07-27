@@ -55,14 +55,16 @@
 		return this;
 	}
 	
-	$(document).ready(function(){
+	$(document).ready(function(){		
+		if(jQuery.url != undefined){
 		var page=(jQuery.url.attr('anchor')+'').toLowerCase();
 		if(page){
-			if(typeof(console)!='undefined'){
-				console.log("@@@ SEARCHING FOR TAB: "+page);
-				console.log($('.page_'+page));
-			}
+//			if(typeof(console)!='undefined'){
+//				console.log("@@@ SEARCHING FOR TAB: "+page);
+//				console.log($('.page_'+page));
+//			}
 			$('.page_'+page).click();
+		}
 		}
 		//kt_path_info=instaview.processor.link
 			
