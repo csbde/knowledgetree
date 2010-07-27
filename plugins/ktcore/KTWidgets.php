@@ -1451,10 +1451,10 @@ jQuery(document).ready(function(){
 			onSubmit : function(file, ext)
 			{
 				detectArchiveFile(file);
+				sameNameFile(file);
                 this.setData({
                     'AWSAccessKeyId' : '<?php echo $this->aOptions['amazonsettings']['AWSAccessKeyId']; ?>',
                     'acl'            : '<?php echo $this->aOptions['amazonsettings']['acl']; ?>',
-<!--                    'key'            : '<?php //echo $this->aOptions['awstmppath']; ?>${filename}',-->
                     'key'            : '<?php echo $this->aOptions['awstmppath']; ?>',
                     'policy'         : '<?php echo $this->aOptions['amazonsettings']['policy']; ?>',
                     'Content-Type'   : 'binary/octet-stream',
@@ -1479,7 +1479,6 @@ jQuery(document).ready(function(){
                 jQuery('#successful_upload_files_ul').show();
 				var listitem = '<li>';
 				listitem += file;
-<!--				listitem += '<input id="" name="file[]" type="hidden" value="<?php //echo $this->aOptions['randomfile']; ?>'+file+'" />';-->
 				listitem += '<input id="" name="file[]" type="hidden" value="<?php echo $this->aOptions['randomfile'] . '_'; ?>'+file+'" />';
 				listitem += '<span onclick="removeFile(this)" style="cursor:pointer;"> <img src="resources/graphics/delete.png" /> </span>';
 				listitem += '</li>';
@@ -1507,7 +1506,6 @@ jQuery(document).ready(function(){
 				jQuery('form .form_actions').hide();
 				jQuery('#uploadbuttondiv').show();
 			}
-			//console.log('kids '+jQuery('#successful_upload_files').children().length);
 		},
 		detectArchiveFile = function(fileName) {
 			// TODO : This information should come from server
@@ -1516,6 +1514,12 @@ jQuery(document).ready(function(){
 			if (isSupported) {
 				jQuery('#extract-documents').show();
 			}
+		},
+		sameNameFile = function(fileName) {
+			jQuery('#successful_upload_files').each(function(i){
+				//console.dir(this.innerHTML);
+			})
+			
 		}
     
 });
