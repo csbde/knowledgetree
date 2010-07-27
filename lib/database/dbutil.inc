@@ -476,8 +476,14 @@ class DBUtil {
         }
         $sWhere = join(' AND ', $aWhereFields);
         $aValues = array_values($aWhereFieldValues);
-
-        $sQuery = "DELETE FROM " . $sTable . " WHERE $sWhere";
+        if(isset($default->_slave)){
+            $sQuery = "SET BINLOG_FORMAT=STATEMENT";
+            $sQuery. "DELETE FROM " . $sTable . " WHERE $sWhere";
+            $sQuery. "SET BINLOG_FORMAT=ROW";
+        }else{
+            $sQuery = "DELETE FROM " . $sTable . " WHERE $sWhere";
+        }
+        
         return self::runQuery(array($sQuery, $aValues), $database);
     }
     /**
