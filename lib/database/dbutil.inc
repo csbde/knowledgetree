@@ -180,9 +180,18 @@ class DBUtil {
                 return $db;
             }
         }
-        
-        $res = $db->query($sQuery, $aParams);
-        
+        //If replication is true, then check for delete and sanitize for replication
+        if(isset($default->_slave) && (strncasecmp(ltrim($sQuery), "delete", 6) === 0 )){
+            //We need to bypass the prepared statements, otherwise we get
+            // DB missmatch errors
+            $db->query("SET BINLOG_FORMAT=STATEMENT");
+            $res = $db->query($sQuery, $aParams);
+            $db->query("SET BINLOG_FORMAT=ROW");
+        }else{
+            // So no replication. Proceed to execute the query
+             $res = $db->query($sQuery, $aParams);
+        }
+        //Log it        
         if (isset($default->queryLog) && $default->queryLog->isDebugEnabled())
         {
             $default->queryLog->debug(self::lastQuery($db));
