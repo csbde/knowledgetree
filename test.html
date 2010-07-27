@@ -1,0 +1,867 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <title>Browse &mdash; User1 | KnowledgeTree</title>
+ 
+    <!-- CSS Files. -->
+ 
+           <link rel="stylesheet" type="text/css" href="/thirdpartyjs/extjs/resources/css/ext-all.css" />
+           <link rel="stylesheet" type="text/css" href="/resources/css/kt-framing.css" />
+           <link rel="stylesheet" type="text/css" href="/resources/css/kt-contenttypes.css" />
+           <link rel="stylesheet" type="text/css" href="/resources/css/kt-headings.css" />
+           <link rel="stylesheet" type="text/css" href="/resources/css/kt-new-ui.css" />
+           <link rel="stylesheet" type="text/css" href="/resources/css/newui/dropdown.css" />
+           <link rel="stylesheet" type="text/css" href="/resources/css/newui/dropdown_styles.css" />
+           <link rel="stylesheet" type="text/css" href="/plugins/ktlive/dragdrop/resources/css/kt_dragdrop.css" />
+        
+    <link rel="stylesheet" type="text/css" href="/resources/css/kt-print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="/resources/css/newui/view_doc.css" media="screen" />
+ 
+    <link rel="icon" href="/resources/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/resources/favicon.ico" type="image/x-icon">
+    <link rel="search" type="application/opensearchdescription+xml" title="KnowledgeTree Quick Search" href="/plugins/search2/openSearchDescription.php">
+ 
+ 
+ 
+    <!-- evil CSS workarounds - inspired by Plone's approach -->
+    <!-- Internet Explorer CSS Fixes -->
+    <!--[if lt IE 7]>
+                <style type="text/css" media="all">@import url(/resources/css/kt-ie-icons.css);</style>
+                    <![endif]-->
+ 
+    <!-- Standalone CSS. -->
+    
+    <!-- Javascript Files. -->
+           <script type="text/javascript" src="/thirdpartyjs/MochiKit/MochiKitPacked.js"> </script>
+           <script type="text/javascript" src="/resources/js/kt-utility.js"> </script>
+           <script type="text/javascript" src="/presentation/i18nJavascript.php"> </script>
+           <script type="text/javascript" src="/thirdpartyjs/extjs/adapter/ext/ext-base.js"> </script>
+           <script type="text/javascript" src="/thirdpartyjs/extjs/ext-all.js"> </script>
+           <script type="text/javascript" src="/thirdpartyjs/jquery/jquery-1.4.2.min.js"> </script>
+           <script type="text/javascript" src="/thirdpartyjs/jquery/jquery_noconflict.js"> </script>
+           <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/urlparser/jquery.url.js"> </script>
+           <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/maxZindex/jquery.maxzindex.js"> </script>
+           <script type="text/javascript" src="/resources/js/search2widget.js"> </script>
+           <script type="text/javascript" src="/resources/js/newui/kt.containers.js"> </script>
+           <script type="text/javascript" src="/resources/js/newui/kt.lib.js"> </script>
+           <script type="text/javascript" src="/resources/js/newui/newUIFunctionality.js"> </script>
+           <script type="text/javascript" src="/resources/js/newui/jquery.helper.js"> </script>
+           <script type="text/javascript" src="/resources/js/newui/buttontabs.jquery.js"> </script>
+           <script type="text/javascript" src="/resources/js/toggleselect.js"> </script>
+           <script type="text/javascript" src="/thirdpartyjs/plupload/src/javascript/plupload.js"> </script>
+           <script type="text/javascript" src="/thirdpartyjs/plupload/src/javascript/plupload.html5.js"> </script>
+           <script type="text/javascript" src="/thirdpartyjs/plupload/src/javascript/jquery.plupload.queue.js"> </script>
+           <script type="text/javascript" src="/plugins/ktlive/dragdrop/resources/js/kt_dragdrop.js"> </script>
+           <script type="text/javascript" src="/plugins/ktlive/resources/js/activation.js"> </script>
+           <script type="text/javascript" src="/plugins/commercial/electronic-signatures/resources/signatures.js"> </script>
+    
+    <!-- Standalone Javascript. -->
+           <script type="text/javascript">
+       var rootURL = "http://markh.knowledgetree.dev";
+       var quickQuery = "";
+addLoadEvent(partial(initDeleteProtection, "Are you sure you wish to delete this item?"));
+       </script>
+        <!--[if IE 7]>
+        <style type="text/css" media="all">@import url(/resources/css/kt-ie-7.css);</style>
+    <![endif]-->
+ 
+</head>
+<body   onresize="kt.lib.setFooter()">
+	<div id="wrapper" style="min-width: 850px;  margin-left: auto; margin-right: auto;">
+	<input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="" />
+		<div id="pageBody">
+			<div id="bodyPad">
+								<div id="navbarBorderUI">
+							<div id="topnavbar">
+								<ul class="floatleft">
+									<li class="roundleft"></li> <!-- block for left round corner -->
+									<li class="notification">&nbsp;</li> <!-- Special Case for KT Logo -->
+									<!-- area menu -->
+																														<li><a href="http://markh.knowledgetree.dev/dashboard.php" onclick="">Dashboard</a></li>
+																																								<li><a class="active" href="http://markh.knowledgetree.dev/browse.php" onclick="">Browse All Documents</a></li>
+																																								<li><a href="http://markh.knowledgetree.dev/plugins/ktlive/applications.php" onclick="">Applications</a></li>
+																																								<li><a href="http://markh.knowledgetree.dev/admin.php" onclick="">Settings</a></li>
+																											</ul>
+									<script language="javascript">
+									
+									var sSearchTranslations =
+										[
+ 
+										/* 0  */	"Quick Search Options",
+										/* 1  */	"Searches will now search both content and metadata",
+										/* 2  */	"Searches will now only search metadata",
+										/* 3  */	"Hint",
+										/* 4  */	"Please enter some search criteria!",
+										/* 5  */	"Saved Searches",
+										/* 6  */	"Advanced Search",
+										/* 7  */	"Previous Search Results",
+										/* 8  */	"Quick Search Options",
+										/* 9  */	"content and metadata",
+										/* 10  */	"metadata",
+										/* 11  */	"search",
+										/* 12  */	"Enter search criteria...",
+										/* 13  */	"Toggle search results format",
+										/* 14  */	"Search engine format",
+										/* 15  */	"Browse view format"
+ 
+										];
+ 
+									var aSavedSearches = [
+																												];
+ 
+																			var bResultsFormatSearchEngine = true;
+																		</script>
+								<ul class="floatright">
+									<li class="roundright"></li> <!-- block for right round corner -->
+									
+									<!-- Right most items come first -->
+									<!--<li><a href="http://markh.knowledgetree.dev/help.php?kt_path_info=ktcore/browse.html"><img src="thirdparty/icon-theme/16x16/apps/help-browser.gif" align="absmiddle" border="0" /></a></li>-->									
+									
+									<!-- user menu -->
+ 
+										
+																					<!-- &middot; -->
+																																											<li><a href="http://markh.knowledgetree.dev/presentation/logout.php" onclick="" >Logout</a></li>
+																																		<!-- &middot; -->
+																																												<li><a href="http://markh.knowledgetree.dev/support.php" onclick="" target="_blank">Get Help</a></li>
+																																		<!-- &middot; -->
+																																												<li><a href="http://markh.knowledgetree.dev/preferences.php" onclick="" ><span class="normalTransformText">Administrator</span></a></li>
+																																									<!-- END of Right Most stuff-->
+ 
+								</ul>
+							</div>
+				</div>
+				<form id=frmQuickSearch method=post action="/search2.php?action=process">
+					<input id=txtQuery name=txtQuery type=hidden>
+					<input type=hidden name="cbQuickQuery" id="cbQuickQuery" value="1">
+					<input type=hidden name="cbQuickGeneral" id="cbQuickGeneral" value="1">
+				</form>
+								<div id="logobar">
+											<!--<a href="http://www.knowledgetree.com">--><img src="/resources/graphics/ktlogo-topbar-right.png" class="primary" title="KnowledgeTree"/><!--</a>-->
+															<div id="activationNotice"> You have <span> <strong>18 days</strong> </span><br /> of your trial remaining <br/> <a href="#" onclick="javascript: showActivation('http://markh.knowledgetree.dev/plugins/ktlive/activation.php', 'Loading...', 740, 360);" title="Activate now"> Activate now </a></div>
+					<div class="uploadProgress" id="uploadProgress"> 
+	<span class="title">Upload progress</span><br/>
+	<div class="progress" id="progress"></div>
+</div>
+ 
+					<div class="floatClear"></div>
+				</div>
+				
+				<div id="middle_nav">
+					<ul id="nav" class="dropdown dropdown-horizontal">
+						<li class="roundleft">&nbsp;</li> <!-- block for left round corner -->
+																															<li><span class="dir">Info</span> 
+											<ul>
+	
+                        <li class="active">
+                                            	Display Details
+                                        </li>
+                                <li >
+                                                <a href="/action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=3" >
+                    	Folder transactions
+                    </a>
+                                        </li>
+            </ul>
+								</li>
+																																							<li><span class="dir">Actions</span> 
+											    <ul class="buttonsList"><li><span class="dir"><a href="/action.php?kt_path_info=inet.multiselect.actions.document.addDocument&fFolderId=3" class="arrow_upload">Upload</a></span></li><li><span class="dir"><a href="/action.php?kt_path_info=ktcore.actions.folder.addFolder&fFolderId=3" class="add_folder">Add Folder</a></span></li></ul>
+<ul>
+	                    <li >
+                                                <a href="/action.php?kt_path_info=ktcore.actions.folder.addFolder&fFolderId=3" >
+                    	Add Folder
+                    </a>
+                                        </li>
+                                <li >
+                                                <a href="/action.php?kt_path_info=inet.multiselect.actions.document.addDocument&fFolderId=3" >
+                    	Upload
+                    </a>
+                                        </li>
+            
+                        <li >
+                                                <a href="/action.php?kt_path_info=shortcuts.actions.folder.addshortcut&fFolderId=3" >
+                    	Add a Shortcut
+                    </a>
+                                        </li>
+                                <li >
+                                                <a href="/action.php?kt_path_info=ktcore.actions.folder.roles&fFolderId=3" >
+                    	Allocate Roles
+                    </a>
+                                        </li>
+                                <li >
+                                                <a href="/action.php?kt_path_info=zoho.new.document&fFolderId=3" >
+                    	Create Document Online
+                    </a>
+                                        </li>
+                                <li >
+                                                <a href="/action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=3" >
+                    	Rename
+                    </a>
+                                        </li>
+                                <li >
+                                                <a href="/action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=3" >
+                    	Sharing
+                    </a>
+                                        </li>
+                                <li >
+                                                <a href="/action.php?kt_path_info=ktnetwork.actions.folder.useractivityreports&fFolderId=3" >
+                    	Usage Information
+                    </a>
+                                        </li>
+            </ul>
+								</li>
+																																																																																					<li><span class="dir">Browse by...</span> 
+											<ul class="actionlist">
+   <li>      <strong>Folder</strong>
+      </li>
+   <li>       <a href="/browse.php?action=selectType">Document Type</a>
+            </li>
+   <li>       <a href="/browse.php?action=selectField">Lookup Value</a>
+            </li>
+   <li>              <a href="/plugin.php?kt_path_info=ktcore.tagcloud.plugin/TagCloudRedirection">Tag</a>
+            </li>
+</ul>
+ 
+								</li>
+																																							<li><span class="dir">Subscriptions</span> 
+											    <ul class="buttonsList"><div id="subscriptionResponse"></div></ul>
+<ul>
+	
+                        <li >
+                        	<script type="text/javascript">
+            function doSubscribe(action){
+                var respDiv = document.getElementById("subscriptionResponse");
+                var link = document.getElementById("subscribeLink");
+ 
+                Ext.Ajax.request({
+                    url: "http://markh.knowledgetree.dev/action.php?kt_path_info=ktstandard.subscription.foldersubscription&fFolderId=3",
+                    success: function(response) {
+                        respDiv.innerHTML = response.responseText;
+                        respDiv.style.display = "block";
+                        link.style.display = "none";
+                        if(document.getElementById("subLink")){
+                            document.getElementById("subLink").style.display = "none";
+                        }
+                    },
+                    failure: function() {
+                        respDiv.innerHTML = "There was a problem with the subscription, please refresh the page and try again.";
+                        respDiv.style.display = "block";
+                    },
+                    params: {
+                        action: action
+                    }
+                });
+            }
+        </script><a id='subscribeLink' style='cursor:pointer' onclick='javascript: doSubscribe("ajax")'>Subscribe to folder</a>
+                        </li>
+                                <li >
+                        	<a id='subLink' style='cursor:pointer' onclick='javascript: doSubscribe("add_subfolders")'>Subscribe to folder and <br>subfolders</a>
+                        </li>
+                                <li >
+                                                <a href="/plugin.php?kt_path_info=ktstandard.subscriptions.plugin/manage" >
+                    	Manage subscriptions
+                    </a>
+                                        </li>
+            </ul>
+								</li>
+																				</ul>
+					<div id="bigbuttons"></div>
+					<div id="midright">
+						
+						<span id="midrightcorner">&nbsp;</span>
+						<div id="newSearchQuery"></div>
+					</div>
+				</div>
+				
+								<div id="breadcrumbs">
+						<table width="100%">
+						<tr>
+						<!--<td valign=top align=left width="100">
+						<span class="additional"><nobr>You are here: </span>
+						</td>-->
+						<td valign=top align=left width="100%">
+ 
+																					<a href="http://markh.knowledgetree.dev/control.php?action=browse" class="primary">Browse</a>
+																										&raquo;
+						
+																														<a href="http://markh.knowledgetree.dev/browse.php?fFolderId=1">Folders</a>
+																									&raquo;
+																																<span>User1</span>
+																																									</td>
+						<td width="5px">&nbsp;</td>
+						<td id="add-dashlet"></td>
+						</tr>
+						</table>
+					</div>
+							</div>
+			<div id="kt-wrapper"> <!-- refactor inner divs-->
+				<table width="100%">
+					<tr align="left">
+						<td valign="top">
+							
+						</td>
+						<td valign="top" width="100%">
+							<div id="content" >
+																	<h1 class="browse_collections"><span class="fahrner">Browse Documents</span>
+										<a class="ktHelp" href="http://markh.knowledgetree.dev/help.php?kt_path_info=ktcore/browse.html">Help</a> 									</h1>
+								
+								<!-- any status / error messages get added here. -->
+					
+										<!-- and finally, the content. -->
+								 
+<!-- FILE: kt3/browse.smarty -->
+ 
+ 
+ 
+ 
+<link rel="stylesheet" type="text/css" href="/resources/css/newui/browseView.css?17800" />
+<!--[if IE ]>
+	<link rel="stylesheet" type="text/css" href="/resources/css/newui/IE.browseView.css?9807" />
+<![endif]-->
+<form action="/action.php" method="post">
+ 
+ 
+<input type="hidden" name="fFolderId" value="3" />
+ 
+ 
+    <div class="dropzone" id="datadrop">
+	<div class="standardBorder itemContainer" style="min-width: 800px;">
+					<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0"><tr><td>
+		<form method="POST" action="/action.php">
+		<input type="hidden" value="" name="sListCode"><input type="hidden" value="bulkaction" name="action">
+		<input type="hidden" value="browse" name="fReturnAction"><input type="hidden" value="1" name="fReturnData"><input type="submit" name="submit[ktcore.actions.bulk.delete]" value="Delete" /><input type="submit" name="submit[ktcore.actions.bulk.move]" value="Move" /><input type="submit" name="submit[ktcore.actions.bulk.copy]" value="Copy" /><input type="submit" name="submit[ktcore.actions.bulk.archive]" value="Archive" /></form></td><td width="1" class="status"></td></tr></table>
+				<div class="page page_1 ">
+			<span class="doc browseView">
+			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
+				<tr>
+					<td width="1" class="checkbox">
+						<input name="selection_f[]" type="checkbox" value="4" />
+					</td>
+					<td class="folder icon_cell" width="1">
+						<div class="folder icon"></div>
+					</td>
+					<td class="folder summary_cell">
+						<div class="title"><a class="clearLink" href="browse.php?fFolderId=4">uploadTest</a></div>
+						<ul class="folder actionMenu">
+							<li class="actionIcon actions">
+									<ul>
+										<li><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=4">Rename Folder</a></li>
+										<li><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=4">Share Folder</a></li>
+										<!-- <li><a href="#" onclick='alert("JavaScript to be modified")'>Subscribe to Folder</a></li> -->
+										<li><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=4">View Folder Transactions</a></li>
+									</ul>
+							</li>
+						</ul>
+						<div class="detail"><span class="item">Created by: <span class="creator">user1</span></span></div>
+					</td>
+				</tr>
+			</table>
+			</span>
+			<span class="doc browseView">
+				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
+					<tr>
+						<td width="1" class="checkbox">
+							<input name="selection_d[]" type="checkbox" value="14" />
+						</td>
+						<td class="doc icon_cell" width="1">
+							<div class="doc icon">
+								<span class="immutable_info not_supported">
+									<span>This document has been <strong>finalized</strong> and can no longer be modified. The only remaining action is to download or view it.</span>
+								</span>
+								<span class="checked_out not_supported">
+									<span>This document is <strong>Checked Out</strong> by <strong></strong> ([checked_out_date_d]).</span>
+								</span>
+								<span class="doc nopreview"></span>
+							</div>
+						</td>
+						<td class="doc summary_cell fdebug" valign="top">
+							<div class="title"><a class="clearLink" href="view.php?fDocumentId=14" style="">cache.xml</a></div>
+							<ul class="doc actionMenu">
+								<!-- li class="actionIcon comments"></li -->
+								<li class="actionIcon actions">
+									<ul>
+										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=14">Download</a></li>
+										<li class="[actions.instant_view]"><a href="view.php?fDocumentId=14#preview">Instant View</a></li>
+										<!-- <li class="separator"></li> -->
+										<li class=""><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=14">Checkout</a></li>
+										<li class=" not_supported"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=14">Cancel Checkout</a></li>
+										<li class=" not_supported"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=14">Checkin</a></li>
+										<!-- <li class="separator"></li> -->
+										<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=14">Alerts</a></li>
+										<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=14">Email</a></li>
+										<!-- <li class="separator"></li> -->
+										<li class="[actions.change_owner]"><a href="/action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=14">Change Document Ownership</a></li>
+									</ul>
+								</li>
+							</ul>
+							<div class="detail"><span class="item">Owner: <span class="user">user1</span></span><span class="item">Created: <span class="date">2010-07-26 18:36:00</span> by <span class="user">user1</span></span><span class="item">Updated: <span class="date">2010-07-26 18:36:00</span> by <span class="user">user1</span></span></div>
+						</td>
+					</tr>
+					<tr>
+						<td class="expanderField" colspan="3">
+							<span class="expanderWidget comments">
+								<H1>Comments</H1>
+								<span>The comment display and add widget will be inserted here.</span>
+							</span>
+							<span class="expanderWidget properties">
+								<H1>Properties</H1>
+								<span>The properties display and edit widget will be inserted here.</span>
+							</span>
+						</td>
+					</tr>
+				</table>
+			</span>
+		
+			<span class="doc browseView">
+				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
+					<tr>
+						<td width="1" class="checkbox">
+							<input name="selection_d[]" type="checkbox" value="15" />
+						</td>
+						<td class="doc icon_cell" width="1">
+							<div class="doc icon">
+								<span class="immutable_info not_supported">
+									<span>This document has been <strong>finalized</strong> and can no longer be modified. The only remaining action is to download or view it.</span>
+								</span>
+								<span class="checked_out not_supported">
+									<span>This document is <strong>Checked Out</strong> by <strong></strong> ([checked_out_date_d]).</span>
+								</span>
+								<span class="doc nopreview"></span>
+							</div>
+						</td>
+						<td class="doc summary_cell fdebug" valign="top">
+							<div class="title"><a class="clearLink" href="view.php?fDocumentId=15" style="">cache(1).xml</a></div>
+							<ul class="doc actionMenu">
+								<!-- li class="actionIcon comments"></li -->
+								<li class="actionIcon actions">
+									<ul>
+										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=15">Download</a></li>
+										<li class="[actions.instant_view]"><a href="view.php?fDocumentId=15#preview">Instant View</a></li>
+										<!-- <li class="separator"></li> -->
+										<li class=""><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=15">Checkout</a></li>
+										<li class=" not_supported"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=15">Cancel Checkout</a></li>
+										<li class=" not_supported"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=15">Checkin</a></li>
+										<!-- <li class="separator"></li> -->
+										<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=15">Alerts</a></li>
+										<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=15">Email</a></li>
+										<!-- <li class="separator"></li> -->
+										<li class="[actions.change_owner]"><a href="/action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=15">Change Document Ownership</a></li>
+									</ul>
+								</li>
+							</ul>
+							<div class="detail"><span class="item">Owner: <span class="user">user1</span></span><span class="item">Created: <span class="date">2010-07-26 18:40:47</span> by <span class="user">user1</span></span><span class="item">Updated: <span class="date">2010-07-26 18:40:47</span> by <span class="user">user1</span></span></div>
+						</td>
+					</tr>
+					<tr>
+						<td class="expanderField" colspan="3">
+							<span class="expanderWidget comments">
+								<H1>Comments</H1>
+								<span>The comment display and add widget will be inserted here.</span>
+							</span>
+							<span class="expanderWidget properties">
+								<H1>Properties</H1>
+								<span>The properties display and edit widget will be inserted here.</span>
+							</span>
+						</td>
+					</tr>
+				</table>
+			</span>
+		
+			<span class="doc browseView">
+				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
+					<tr>
+						<td width="1" class="checkbox">
+							<input name="selection_d[]" type="checkbox" value="16" />
+						</td>
+						<td class="doc icon_cell" width="1">
+							<div class="doc icon">
+								<span class="immutable_info not_supported">
+									<span>This document has been <strong>finalized</strong> and can no longer be modified. The only remaining action is to download or view it.</span>
+								</span>
+								<span class="checked_out not_supported">
+									<span>This document is <strong>Checked Out</strong> by <strong></strong> ([checked_out_date_d]).</span>
+								</span>
+								<span class="doc nopreview"></span>
+							</div>
+						</td>
+						<td class="doc summary_cell fdebug" valign="top">
+							<div class="title"><a class="clearLink" href="view.php?fDocumentId=16" style="">Test2.pdf</a></div>
+							<ul class="doc actionMenu">
+								<!-- li class="actionIcon comments"></li -->
+								<li class="actionIcon actions">
+									<ul>
+										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=16">Download</a></li>
+										<li class="[actions.instant_view]"><a href="view.php?fDocumentId=16#preview">Instant View</a></li>
+										<!-- <li class="separator"></li> -->
+										<li class=""><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=16">Checkout</a></li>
+										<li class=" not_supported"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=16">Cancel Checkout</a></li>
+										<li class=" not_supported"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=16">Checkin</a></li>
+										<!-- <li class="separator"></li> -->
+										<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=16">Alerts</a></li>
+										<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=16">Email</a></li>
+										<!-- <li class="separator"></li> -->
+										<li class="[actions.change_owner]"><a href="/action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=16">Change Document Ownership</a></li>
+									</ul>
+								</li>
+							</ul>
+							<div class="detail"><span class="item">Owner: <span class="user">user1</span></span><span class="item">Created: <span class="date">2010-07-26 18:41:29</span> by <span class="user">user1</span></span><span class="item">Updated: <span class="date">2010-07-26 18:41:29</span> by <span class="user">user1</span></span></div>
+						</td>
+					</tr>
+					<tr>
+						<td class="expanderField" colspan="3">
+							<span class="expanderWidget comments">
+								<H1>Comments</H1>
+								<span>The comment display and add widget will be inserted here.</span>
+							</span>
+							<span class="expanderWidget properties">
+								<H1>Properties</H1>
+								<span>The properties display and edit widget will be inserted here.</span>
+							</span>
+						</td>
+					</tr>
+				</table>
+			</span>
+		
+			<span class="doc browseView">
+				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
+					<tr>
+						<td width="1" class="checkbox">
+							<input name="selection_d[]" type="checkbox" value="17" />
+						</td>
+						<td class="doc icon_cell" width="1">
+							<div class="doc icon">
+								<span class="immutable_info not_supported">
+									<span>This document has been <strong>finalized</strong> and can no longer be modified. The only remaining action is to download or view it.</span>
+								</span>
+								<span class="checked_out not_supported">
+									<span>This document is <strong>Checked Out</strong> by <strong></strong> ([checked_out_date_d]).</span>
+								</span>
+								<span class="doc nopreview"></span>
+							</div>
+						</td>
+						<td class="doc summary_cell fdebug" valign="top">
+							<div class="title"><a class="clearLink" href="view.php?fDocumentId=17" style="">Test2.doc</a></div>
+							<ul class="doc actionMenu">
+								<!-- li class="actionIcon comments"></li -->
+								<li class="actionIcon actions">
+									<ul>
+										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=17">Download</a></li>
+										<li class="[actions.instant_view]"><a href="view.php?fDocumentId=17#preview">Instant View</a></li>
+										<!-- <li class="separator"></li> -->
+										<li class=""><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=17">Checkout</a></li>
+										<li class=" not_supported"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=17">Cancel Checkout</a></li>
+										<li class=" not_supported"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=17">Checkin</a></li>
+										<!-- <li class="separator"></li> -->
+										<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=17">Alerts</a></li>
+										<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=17">Email</a></li>
+										<!-- <li class="separator"></li> -->
+										<li class="[actions.change_owner]"><a href="/action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=17">Change Document Ownership</a></li>
+									</ul>
+								</li>
+							</ul>
+							<div class="detail"><span class="item">Owner: <span class="user">user1</span></span><span class="item">Created: <span class="date">2010-07-26 18:49:07</span> by <span class="user">user1</span></span><span class="item">Updated: <span class="date">2010-07-26 18:49:07</span> by <span class="user">user1</span></span></div>
+						</td>
+					</tr>
+					<tr>
+						<td class="expanderField" colspan="3">
+							<span class="expanderWidget comments">
+								<H1>Comments</H1>
+								<span>The comment display and add widget will be inserted here.</span>
+							</span>
+							<span class="expanderWidget properties">
+								<H1>Properties</H1>
+								<span>The properties display and edit widget will be inserted here.</span>
+							</span>
+						</td>
+					</tr>
+				</table>
+			</span>
+		</div>
+		<div style="width:100%; text-align: center"><ul class="paginate"><li class="item" onclick="kt.pages.browse.prevPage();">Previous</li><li class="item page_1" onclick="kt.pages.browse.viewPage('1');">1</li><li class="item" onclick="kt.pages.browse.nextPage();">Next</li></ul></div>
+	</div>
+	<span class="fragment document" style="display:none;">
+			<span class="doc browseView">
+				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
+					<tr>
+						<td width="1" class="checkbox">
+							<input name="selection_d[]" type="checkbox" value="[id]" />
+						</td>
+						<td class="doc icon_cell" width="1">
+							<div class="doc icon">
+								<span class="immutable_info[is_immutable]">
+									<span>This document has been <strong>finalized</strong> and can no longer be modified. The only remaining action is to download or view it.</span>
+								</span>
+								<span class="checked_out[is_checkedout]">
+									<span>This document is <strong>Checked Out</strong> by <strong>[checked_out_by]</strong> ([checked_out_date_d]).</span>
+								</span>
+								<span class="doc [thumbnailclass]">[thumbnail]</span>
+							</div>
+						</td>
+						<td class="doc summary_cell fdebug" valign="top">
+							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]" style="">[filename]</a></div>
+							<ul class="doc actionMenu">
+								<!-- li class="actionIcon comments"></li -->
+								<li class="actionIcon actions">
+									<ul>
+										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
+										<li class="[actions.instant_view]"><a href="view.php?fDocumentId=[id]#preview">Instant View</a></li>
+										<!-- <li class="separator[separatorA]"></li> -->
+										<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Checkout</a></li>
+										<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Checkout</a></li>
+										<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Checkin</a></li>
+										<!-- <li class="separator[separatorB]"></li> -->
+										<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
+										<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
+										<!-- <li class="separator[separatorC]"></li> -->
+										<li class="[actions.change_owner]"><a href="/action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Document Ownership</a></li>
+									</ul>
+								</li>
+							</ul>
+							<div class="detail"><span class="item">Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span></div>
+						</td>
+					</tr>
+					<tr>
+						<td class="expanderField" colspan="3">
+							<span class="expanderWidget comments">
+								<H1>Comments</H1>
+								<span>The comment display and add widget will be inserted here.</span>
+							</span>
+							<span class="expanderWidget properties">
+								<H1>Properties</H1>
+								<span>The properties display and edit widget will be inserted here.</span>
+							</span>
+						</td>
+					</tr>
+				</table>
+			</span>
+		</span><span class="fragment folder" style="display:none;">
+			<span class="doc browseView">
+			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
+				<tr>
+					<td width="1" class="checkbox">
+						<input name="selection_f[]" type="checkbox" value="[id]" />
+					</td>
+					<td class="folder icon_cell" width="1">
+						<div class="folder icon"></div>
+					</td>
+					<td class="folder summary_cell">
+						<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[filename]</a></div>
+						<ul class="folder actionMenu">
+							<li class="actionIcon actions">
+									<ul>
+										<li><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
+										<li><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Share Folder</a></li>
+										<!-- <li><a href="#" onclick='alert("JavaScript to be modified")'>Subscribe to Folder</a></li> -->
+										<li><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Transactions</a></li>
+									</ul>
+							</li>
+						</ul>
+						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
+					</td>
+				</tr>
+			</table>
+			</span></span>
+    </div>	
+ 
+</form>
+ 
+ 
+ 
+ 
+<script> 
+(function($){
+ 
+	kt.lib.str_replace=function(search, replace, subject, count){
+	    var i = 0, j = 0, temp = '', repl = '', sl = 0, fl = 0,
+	            f = [].concat(search),
+	            r = [].concat(replace),
+	            s = subject,
+	            ra = r instanceof Array, sa = s instanceof Array;
+	    s = [].concat(s);
+	    if (count) {
+	        this.window[count] = 0;
+	    }
+	
+	    for (i=0, sl=s.length; i < sl; i++) {
+	        if (s[i] === '') {
+	            continue;
+	        }
+	        for (j=0, fl=f.length; j < fl; j++) {
+	            temp = s[i]+'';
+	            repl = ra ? (r[j] !== undefined ? r[j] : '') : r[0];
+	            s[i] = (temp).split(f[j]).join(repl);
+	            if (count && s[i] !== temp) {
+	                this.window[count] += (temp.length-s[i].length)/f[j].length;}
+	        }
+	    }
+	    return sa ? s : s[0];
+	};
+ 
+ 
+	kt.lib.parseTemplate=function(str,obj){
+		str=str+'';
+		var fr=new Array();
+		var to=new Array();
+		if(typeof(obj)=='object'){
+			for(var item in obj){
+				fr[fr.length]='['+item+']';
+				to[to.length]=obj[item]+'';
+			}
+			
+		}
+		return kt.lib.str_replace(fr,to,str);
+	};
+ 
+	kt.pages.browse={};
+	
+	kt.pages.browse.addDocumentItem=function(item){
+		item.is_immutable=item.is_immutable?'':' not_supported';
+		item.is_checkedout=item.is_checkedout?'':' not_supported';
+	
+		var newItem=jQuery(jQuery('.fragment.document')[0]).html();
+		newItem=kt.lib.parseTemplate(newItem,item);
+		var elem=jQuery(newItem);
+		jQuery('.page.page_'+kt.pages.browse.curPage).append(elem);
+	};
+	
+	
+	kt.pages.browse.curPage=1;
+	kt.pages.browse.viewPage=function(pageNum){
+		if(pageNum<1)pageNum=1;
+		var pageItem=jQuery('.paginate>li.page_'+pageNum);
+		
+		if(pageItem.length<=0){
+			return;
+		}
+		
+		jQuery('.page').hide(0,function(){jQuery('.page.page_'+pageNum).show(0);})
+		jQuery('.paginate>li.item').removeClass('highlight');
+		
+		pageItem.addClass('highlight');
+		
+		kt.pages.browse.curPage=pageNum;
+	};
+	
+	kt.pages.browse.nextPage=function(){
+		kt.pages.browse.viewPage(kt.pages.browse.curPage+1);
+		return false;
+	};
+	
+	kt.pages.browse.prevPage=function(){
+		kt.pages.browse.viewPage(kt.pages.browse.curPage-1);
+		return false;
+	};
+	
+	kt.pages.browse.selectAllItems=function(){
+		jQuery('.itemContainer .item .checkbox>input:checkbox:enabled').each(function(){
+			if(!this.checked)jQuery(this).click();
+			jQuery(this).parents('.item').addClass('highlighted');
+		});
+		kt.pages.browse.setBulkActionMenuStatus();
+		return false;
+	}
+ 
+	kt.pages.browse.deSelectAllItems=function(){
+		jQuery('.itemContainer .item .checkbox>input:checkbox:enabled').each(function(){
+			if(this.checked)jQuery(this).click();
+			jQuery(this).parents('.item').removeClass('highlighted');
+		});
+		kt.pages.browse.setBulkActionMenuStatus();
+		return false;
+	}
+	
+	kt.lib.shortcut.add("ctrl+right",kt.pages.browse.nextPage);
+	kt.lib.shortcut.add("ctrl+left",kt.pages.browse.prevPage);
+	kt.lib.shortcut.add("ctrl+a",kt.pages.browse.selectAllItems);
+	kt.lib.shortcut.add("ctrl+shift+a",kt.pages.browse.deSelectAllItems);
+	
+	
+	$(document).ready(function(){
+		kt.pages.browse.viewPage(1);	
+		kt.pages.browse.setBulkActionMenuStatus=function(){
+			var selectedItems=$(".itemContainer .item .checkbox>input:checkbox:checked:enabled").length;
+			if( selectedItems >0){
+				$('.browseView.bulkActionMenu td:first-child').removeClass('disabled');
+				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','');
+//				$('.browseView.bulkActionMenu').slideDown(350,function(){kt.lib.setFooter();});
+				$('.browseView.bulkActionMenu').slideDown(350);
+				
+				$('.browseView.bulkActionMenu .status').html(selectedItems + '&nbsp;Item(s)&nbsp;Selected');
+			}else{
+				$('.browseView.bulkActionMenu td:first-child').addClass('disabled');
+				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','disabled');
+				$('.browseView.bulkActionMenu').hide(200);
+//				$('.browseView.bulkActionMenu').hide(200,function(){kt.lib.setFooter();});
+				$('.browseView.bulkActionMenu .status').html('');
+			}
+		}
+	
+		$('.actionIcon.comments').click(function(){
+		    var docItem=$(this).parents('.item')[0];
+		    var thisField=$('.expanderField',docItem);
+		    $('.expanderField').not(thisField[0]).hide();
+		    thisField.toggle();
+		});
+		
+		$("table.doc.item input:checkbox").click(function() {
+			kt.pages.browse.setBulkActionMenuStatus();
+						
+			if ($(this).is(':checked')) {
+				$(this).parent().parent().parent().parent().addClass("highlighted");
+			} else {
+				$(this).parent().parent().parent().parent().removeClass("highlighted");
+			}
+			
+		});
+		
+		$("table.doc.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
+		
+		$("table.folder.item input:checkbox").click(function() {
+			kt.pages.browse.setBulkActionMenuStatus();
+			
+			if ($(this).is(':checked')) {
+				$(this).parent().parent().parent().parent().addClass("highlighted");
+			} else {
+				$(this).parent().parent().parent().parent().removeClass("highlighted");
+			}
+			
+		});
+		
+		$("table.folder.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
+		
+		
+		
+		kt.pages.browse.setBulkActionMenuStatus();
+		
+		$('.actionMenu').maxZIndex({inc:10});
+		$('.actionMenu .actions').maxZIndex({inc:10});
+		
+	});
+})(jQuery);
+</script>
+ 
+ 
+<!-- FILE_END: kt3/fieldsets/browse.smarty -->
+ 
+								<div class="floatClear"></div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+ 
+	<div id="footer"> <!-- Change me to HTML5! -->
+		<div id="footerLeft">
+			<a href="/dashboard.php"><img src="/resources/graphics/newui/footer_powered_by.png" border="0" alt="Powered by KnowledgeTree" title="Powered by KnowledgeTree"/></a>
+		</div>
+		<div id="footerRight">
+			&copy; 2008-2010 <a href="http://www.knowledgetree.com/about/legal" target="_blank">KnowledgeTree Inc.</a>			All rights reserved.			| <a href="http://www.knowledgetree.com/company" target="_blank">About</a>
+		</div>
+	</div>
+ 
+	
+</body>
+</html>
+

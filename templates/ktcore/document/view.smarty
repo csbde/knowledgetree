@@ -5,6 +5,8 @@
 			<td width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td>
 			<td height="1" valign="top">
 				<h2 class="doc_file_title">
+					<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_immutable.png";{/php}" style="display: inline-block"/>
+					<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_checkedout.png";{/php}" style="display: inline-block"/>
 					{$context->oDocument->getName()|sanitize}
 					<span class="doc_version">
 						Ver {$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()} 
