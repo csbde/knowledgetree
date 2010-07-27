@@ -1457,7 +1457,8 @@ jQuery(document).ready(function(){
                 this.setData({
                     'AWSAccessKeyId' : '<?php echo $this->aOptions['amazonsettings']['AWSAccessKeyId']; ?>',
                     'acl'            : '<?php echo $this->aOptions['amazonsettings']['acl']; ?>',
-                    'key'            : '<?php echo $this->aOptions['awstmppath']; ?>${filename}',
+<!--                    'key'            : '<?php //echo $this->aOptions['awstmppath']; ?>${filename}',-->
+                    'key'            : '<?php echo $this->aOptions['awstmppath']; ?>',
                     'policy'         : '<?php echo $this->aOptions['amazonsettings']['policy']; ?>',
                     'Content-Type'   : 'binary/octet-stream',
                     'signature'      : '<?php echo $this->aOptions['amazonsettings']['signature']; ?>',
@@ -1481,7 +1482,8 @@ jQuery(document).ready(function(){
                 jQuery('#successful_upload_files_ul').show();
 				var listitem = '<li>';
 				listitem += file;
-				listitem += '<input id="" name="file[]" type="hidden" value="<?php echo $this->aOptions['randomfile']; ?>'+file+'" />';
+<!--				listitem += '<input id="" name="file[]" type="hidden" value="<?php //echo $this->aOptions['randomfile']; ?>'+file+'" />';-->
+				listitem += '<input id="" name="file[]" type="hidden" value="<?php echo $this->aOptions['randomfile'] . '_'; ?>'+file+'" />';
 				listitem += '<span onclick="removeFile(this)" style="cursor:pointer;"> <img src="resources/graphics/delete.png" /> </span>';
 				listitem += '</li>';
 				jQuery('#successful_upload_files').show().append(listitem);
