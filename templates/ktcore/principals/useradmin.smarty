@@ -34,48 +34,50 @@
 	</div>
 
 
-<div class="widgetRow">
+	<div class="widgetRow">
 
-	<!-- View all users -->	
-	<div class="widgetItem">
-		<form><div class="form_actions">
-				<a href="{i18n arg_link=$link}#link#{/i18n}">{i18n}View all users{/i18n}</a>
-		</form></div>
+		<!-- View all users -->	
+		<div class="widgetItem">
+			<div class="form_actions">
+					<a href="{i18n arg_link=$link}#link#{/i18n}">{i18n}View all users{/i18n}</a>
+			</div>
+		</div>
+		
+		<!-- Add user -->
+		{if $can_add}
+			{if !$authentication}
+			{i18n}If you are using an external source of login information, ensure the appropriate plugin is loaded and use the section below.{/i18n}
+			{/if}
+		<div class="widgetItem">
+			<div class="form_actions">
+				<a href="{addQS}action=addUser{/addQS}" style="background: none repeat scroll 0% 0% transparent;">{i18n}Add a new user{/i18n}</a>
+			</div>
+		</div>
+			{if $authentication_sources}
+			
+		<div class="widgetItem">		
+			<input type="hidden" name="action" value="addUserFromSource" />
+
+			<p class="descriptiveText">{i18n}Add a user from an authentication source{/i18n}</p>
+			{entity_select name="source_id" entities=$authentication_sources}
+				<div class="form_actions">
+					<input type="submit" name="submit" value="{i18n}Add from source{/i18n}" />
+				</div>
+			</p>
+		</div>
+	
+			{/if}
+	</div>
+		{else}
 	</div>
 	
-	<!-- Add user -->
-		{if $can_add}
-		{if !$authentication}
-		{i18n}If you are using an external source of login information, ensure the appropriate plugin is loaded and use the section below.{/i18n}
-		{/if}
-	<div class="widgetItem">
-		<div class="form_actions">
-			<a href="{addQS}action=addUser{/addQS}" style="background: none repeat scroll 0% 0% transparent;">{i18n}Add a new user{/i18n}</a>
+	<div class="widgetRow">
+		<div class="widgetItem">
+			<div class="ktInfoMessage"><span>{i18n}You do not have enough available licenses to add more active users.  Please disable some existing ones if you wish to add new active users.{/i18n}</span></div>
 		</div>
 	</div>
-		{if $authentication_sources}
-		
-	<div class="widgetItem">		
-		<input type="hidden" name="action" value="addUserFromSource" />
-
-		<p class="descriptiveText">{i18n}Add a user from an authentication source{/i18n}</p>
-		{entity_select name="source_id" entities=$authentication_sources}
-			<div class="form_actions">
-				<input type="submit" name="submit" value="{i18n}Add from source{/i18n}" />
-			</div>
-		</p>
-	</div>
-</div>
 		{/if}
-
-		{else}
-<div class="widgetRow">
-	<div class="widgetItem">
-		<div class="ktInfoMessage"><span>{i18n}You do not have enough available licenses to add more active users.  Please disable some existing ones if you wish to add new active users.{/i18n}</span></div>
-	</div>
-</div>
-		{/if}
-
+	
 
 </form>
 
