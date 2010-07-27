@@ -1,26 +1,22 @@
 <h2>{i18n}Group Administration{/i18n}</h2>
 
 <!-- we roll both in here. -->
-<div class="widgetSet" style="height:80px;">
-	<form action="{$smarty.server.PHP_SELF}" method="POST">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+	<div class="widgetRow">
+		<input type="hidden" name="do_search" value="1" />
+		{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
 
-		<div class="widget" style="bottom:0; left:0;">
-			<input type="hidden" name="do_search" value="1" />
-			{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
-
-			{foreach item=oWidget from=$search_fields}
-			  {$oWidget->render()}
-			{/foreach}
-		</div>
-		<div class="form_actions widget" style="bottom:0; right:0;">
+		{foreach item=oWidget from=$search_fields}
+		  {$oWidget->render()}
+		{/foreach}
+		
+		<div class="form_actions">
 			<!-- Search button -->
 			<input type="submit" value="{i18n}search for groups{/i18n}" />
 		</div>
-
-	</form>
-</div>
-
-<div class="widget" style="position: relative; margin: 20px 0 20px 0;">
+	</div>
+	
+<div class="widgetRow">
 
 	<!-- Results of the search, or view all groups -->
 	{if ($no_search === true)}
@@ -75,7 +71,7 @@
 	{/if}
 </div>
 
-<div class="widget" style="position: relative;">
+<div class="widgetRow">
 	<div class="form_actions">
 		<!-- View all groups -->
 		<a style="background: none repeat scroll 0% 0% transparent;" href="{i18n arg_link=$link}#link#{/i18n}">{i18n}View all groups{/i18n}</a>
@@ -84,4 +80,5 @@
 		<a style="background: none repeat scroll 0% 0% transparent;" href="{addQS}action=addGroup{/addQS}">{i18n}Add group{/i18n}</a>
 	</div>
 </div>
-</div>
+
+</form>
