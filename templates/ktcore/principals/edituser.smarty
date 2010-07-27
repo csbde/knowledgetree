@@ -1,24 +1,26 @@
 <h2>{i18n}Edit User Details{/i18n}</h2>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-   <input type="hidden" name="action" value="saveUser" />
-   <input type="hidden" name="user_id" value="{$edit_user->getId()}" />
-   <input type="hidden" name="old_search" value="{$old_search}" />
-       {foreach item=oWidget from=$edit_fields}
-      
-        {$oWidget->render()}
-      {/foreach}
-      <div class="form_actions">
-         <input type="submit" value="{i18n}save changes{/i18n}" />
-         <input type="submit" name="kt_cancel[{addQS}old_search={$old_search}&do_search=1{/addQS}]" value="{i18n}Cancel{/i18n}" />
-      </div>
-   </form>
-
+<div class="widgetRow">
 {assign var=provider_stuff value=$provider->showUserSource($edit_user, $source)}
 {if $provider_stuff}
-<p class="descriptiveText">{i18n arg_name=$edit_user->getName()
-arg_provider=$provider->getName()}#name#'s authentication is
-handled by the <strong>#provider#</strong>.{/i18n}</p>
+<p class="descriptiveText">{i18n arg_name=$edit_user->getName() arg_provider=$provider->getName()}Authentication for #name# is handled by the <strong>#provider#</strong>.{/i18n}</p>
 {$provider_stuff}
 {/if}
+</div>
 
+<br/>
+
+<div class="widgetRow">
+	<form action="{$smarty.server.PHP_SELF}" method="POST">
+		<input type="hidden" name="action" value="saveUser" />
+		<input type="hidden" name="user_id" value="{$edit_user->getId()}" />
+		<input type="hidden" name="old_search" value="{$old_search}" />
+			{foreach item=oWidget from=$edit_fields}
+				{$oWidget->render()}
+			{/foreach}
+		<div class="form_actions">
+			<input type="submit" value="{i18n}save changes{/i18n}" />
+			<input type="submit" name="kt_cancel[{addQS}old_search={$old_search}&do_search=1{/addQS}]" value="{i18n}Cancel{/i18n}" />
+		</div>
+	</form>
+</div>
