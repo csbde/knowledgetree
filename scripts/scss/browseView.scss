@@ -439,10 +439,14 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 		}
 		
 		.immutable_info{
+			margin-top: 20px;
+			margin-left: -5px;
 			@include tooltipIcon("/resources/graphics/newui/doc_immutable.png","/resources/graphics/newui/doc_immutable_h.png",200px,right);
 		}
 		
 		.checked_out{
+			margin-top: 20px;
+			margin-left: -5px;
 			@include tooltipIcon("/resources/graphics/newui/doc_checkedout.png","/resources/graphics/newui/doc_checkedout_h.png",200px,right);
 		}
 	}
@@ -609,6 +613,7 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 	
 	.not_supported{
 		visibility: hidden  !important;
+		display: none  !important;
 	}
 	
 	.interact{

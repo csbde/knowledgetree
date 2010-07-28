@@ -101,7 +101,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
      * @var string
      */
     var $printObjects = 'off';
-    
+
     /**
      * Configuration Array
      *
@@ -282,7 +282,19 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
         if ($this->debugInfo == 'on') {
 
-            $this->ktwebdavLog('_SERVER is ' . print_r($_SERVER, true), 'info', true);
+            $server_info = ' user agent: ' . $_SERVER['HTTP_USER_AGENT'];
+            $server_info .= ' content type: ' . $_SERVER['CONTENT_TYPE'];
+            $server_info .= ' content length: ' . $_SERVER['CONTENT_LENGTH'];
+            $server_info .= ' host: ' . $_SERVER['HTTP_HOST'];
+            $server_info .= ' port: ' . $_SERVER['SERVER_PORT'];
+            $server_info .= ' remote address: ' . $_SERVER['REMOTE_ADDR'];
+            $server_info .= ' request method: ' . $_SERVER['REQUEST_METHOD'];
+            $server_info .= ' query string: ' . $_SERVER['QUERY_STRING'];
+            $server_info .= ' request uri: ' . $_SERVER['REQUEST_URI'];
+            $server_info .= ' path translated: ' . $_SERVER['PATH_TRANSLATED'];
+            $server_info .= ' request time: ' . $_SERVER['REQUEST_TIME'];
+
+            $this->ktwebdavLog('_SERVER is ' . $server_info, 'info', true);
         }
 
         // Check for electronic signatures - if enabled exit
@@ -336,7 +348,15 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
         // set path
         $request_uri = $this->_urldecode(!empty($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/');
-        $this->path = str_replace($_SERVER['SCRIPT_NAME'], '', $request_uri);
+        //$this->path = str_replace($_SERVER['SCRIPT_NAME'], '', $request_uri);
+        $path = strstr($request_uri, 'ktwebdav.php');
+        $path = str_replace('ktwebdav.php', '', $path);
+        if($path == 'ktwebdav.php') {
+            $this->path = '/';
+        } else {
+            $this->path = $path;
+        }
+
         if(ini_get('magic_quotes_gpc')) {
             $this->path = stripslashes($this->path);
         }
@@ -419,8 +439,8 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
         $this->ktwebdavLog('Entering checkAuth params are: ', 'info', true);
         $this->ktwebdavLog('sType: ' . $sType, 'info', true);
-        $this->ktwebdavLog('sUser: ' . $sUser, 'info', true);
-        $this->ktwebdavLog('sPass: ' . $sPass, 'info', true);
+//        $this->ktwebdavLog('sUser: ' . $sUser, 'info', true);
+//        $this->ktwebdavLog('sPass: ' . $sPass, 'info', true);
 
         // Authenticate user
 
@@ -481,7 +501,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
      */
     function PROPFIND(&$options, &$files) {
 
-        $this->ktwebdavLog("Entering PROPFIND. options are " . print_r($options, true), 'info', true);
+        $this->ktwebdavLog("Entering PROPFIND. Path " . $options['path'], 'info', true);
 
         global $default;
 
@@ -512,7 +532,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
         }
 
         list($iFolderID, $iDocumentID) = $this->_folderOrDocument($path);
-        $this->ktwebdavLog("Folder/Doc is " . print_r(array($iFolderID, $iDocumentID), true), 'info', true);
+        $this->ktwebdavLog("Folder id: $iFolderID, doc id: $iDocumentID", 'info', true);
 
         // Folder does not exist
         if($iFolderID == '') return false;
@@ -536,7 +556,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
         global $default;
 
-        $this->ktwebdavLog("Entering PROPFINDFolder. options are " . print_r($options, true), 'info', true);
+        $this->ktwebdavLog("Entering PROPFINDFolder. Path: " . $options['path'], 'info', true);
 
         $folder_path = $options["path"];
         if (substr($folder_path, -1) != "/") {
@@ -594,13 +614,13 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             global $default;
 
-            $this->ktwebdavLog("Entering PROPFINDDocument. files are " . print_r($files, true), 'info', true);
+            $this->ktwebdavLog('Entering PROPFINDDocument. ', 'info', true);
 
             $res = $this->_fileinfoForDocumentID($iDocumentID, $options["path"]);
-            $this->ktwebdavLog("_fileinfoForDocumentID result is " . print_r($res, true), 'info', true);
             if ($res === false) {
                 return false;
             }
+            $this->ktwebdavLog('_fileinfoForDocumentID result is '.$res['path'], 'info', true);
             $files["files"] = array();
             $files["files"][] = $res;
             return true;
@@ -679,7 +699,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             global $default;
 
-            $this->ktwebdavLog("Entering _fileinfoForDocumentID. DocumentID is " . print_r($iDocumentID, true), 'info', true);
+            $this->ktwebdavLog("Entering _fileinfoForDocumentID. DocumentID is $iDocumentID", 'info', true);
 
             if ($iDocumentID == '') return false;
 
@@ -904,7 +924,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
                 echo "  <D:href>$href</D:href>\n";
 
-                $this->ktwebdavLog("\nfile is: " . print_r($file, true), 'info', true);
+//                $this->ktwebdavLog("\nfile is: " . print_r($file, true), 'info', true);
 
                 // report all found properties and their values (if any)
                 if (isset($file["props"]) && is_array($file["props"])) {
@@ -1049,7 +1069,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             // required for KT
             global $default;
 
-            $this->ktwebdavLog("Entering GET. options are " .  print_r($options, true), 'info', true);
+            $this->ktwebdavLog('Entering GET. Path: ' . $options["path"], 'info', true);
 
             // Get the client info
             $this->checkSafeMode();
@@ -1103,7 +1123,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             global $default;
 
-            $this->ktwebdavLog("Entering _GETFolder. options are " . print_r($options, true), 'info', true);
+//            $this->ktwebdavLog("Entering _GETFolder. options are " . print_r($options, true), 'info', true);
 
             $oMainFolder =& Folder::get($iMainFolderID);
             $aFolderID = array();
@@ -1162,7 +1182,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             $oDocument =& Document::get($iDocumentID);
 
             // get a temp file, and read.  NOTE: NEVER WRITE TO THIS
-            
+
             $fspath = $oStorage->temporaryFile($oDocument);
 
             $this->ktwebdavLog("Filesystem Path is " . $fspath, 'info', true );
@@ -1181,13 +1201,13 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             $options['size'] = $oDocument->getFileSize();
 
             // no need to check result here, it is handled by the base class
-            
+
             if (ACCOUNT_ROUTING_ENABLED){
             	/**
             	 * Make sure that streaming (therefore resumeable downloads) are disabled
             	 * and get the data straight from the storage driver.
             	 */
-				unset ($options['stream']); 
+				unset ($options['stream']);
             	$options['data']=$oStorage->file_get_contents($fspath);
             }else{
             	$options['stream'] = fopen($fspath, "r");
@@ -1247,7 +1267,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 Avoids situations where several directory's have the same name. ** */
             $aFolderNames = split('/', $sFolderPath);
 
-            $this->ktwebdavLog("aFolderNames are: " . print_r($aFolderNames, true), 'info', true);
+//            $this->ktwebdavLog("aFolderNames are: " . print_r($aFolderNames, true), 'info', true);
             $aRemaining = $aFolderNames;
             while (count($aRemaining)) {
                 $sFolderName = $aRemaining[0];
@@ -1345,7 +1365,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             if ($this->checkSafeMode()) {
 
-                $this->ktwebdavLog("Entering PUT. options are " .  print_r($options, true), 'info', true);
+                $this->ktwebdavLog("Entering PUT. Path: " . $options["path"], 'info', true);
                 $this->ktwebdavLog("dav_client is: " .  $this->dav_client, 'info', true);
 
                 $path = $options["path"];
@@ -1411,11 +1431,13 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                 if ($iDocumentID !== false) {
                     // This means there is a document with the given path
                     $oDocument = Document::get($iDocumentID);
+                    $status_id = $oDocument->getStatusID();
 					if($this->printObjects == 'on')
                     	$this->ktwebdavLog("oDocument is " .  print_r($oDocument, true), 'info', true);
-                    $this->ktwebdavLog("oDocument statusid is " .  print_r($oDocument->getStatusID(), true), 'info', true);
 
-                    if ( ( (int)$oDocument->getStatusID() != STATUS_WEBDAV ) && ( (int)$oDocument->getStatusID() != DELETED )) {
+                    $this->ktwebdavLog("oDocument statusid is " .$status_id, 'info', true);
+
+                    if ( ( (int)$status_id != STATUS_WEBDAV ) && ( (int)$status_id != DELETED )) {
                         $this->ktwebdavLog("Trying to PUT to an existing document", 'info', true);
                         if (!$this->dav_client == "MS" && !$this->dav_client == "MC") return "409 Conflict - There is a document with the given path";
                     }
@@ -1427,11 +1449,11 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                     while (!feof($fh)) {
                         $contents .= fread($fh, 8192);
                     }
-                    
+
                     $sTempFilename = $oStorage->tempnam('/tmp', 'ktwebdav_dav_put');
-                    
+
                   	$oStorage->file_put_contents($sTempFilename,$contents);
-                  	
+
                     $this->ktwebdavLog("A DELETED or CHECKEDOUT document exists. Overwriting...", 'info', true);
                     $this->ktwebdavLog("Temp Filename is: " . $sTempFilename, 'info', true );
                     $this->ktwebdavLog("File write result size was: " . $fres, 'info', true );
@@ -1440,13 +1462,15 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                     fclose($fh);
 
                     $name = basename($path);
+                    $size = strlen($contents);
+                    $user_id = $this->_getUserID();
                     $aFileArray = array(
                             "name" => $name,
-                            "size" => strlen($contents),
+                            "size" => $size,
                             "type" => false,
-                            "userID" => $this->_getUserID(),
+                            "userID" => $user_id,
                             );
-                    $this->ktwebdavLog("aFileArray is " .  print_r($aFileArray, true), 'info', true);
+                    $this->ktwebdavLog("File array - name: $name, size: $size, userID: $user_id", 'info', true);
 
                     //include_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
                     $aOptions = array(
@@ -1455,9 +1479,8 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                             'metadata' => array(),
                             'novalidate' => true,
                             );
-                    $this->ktwebdavLog("DEBUG: overwriting file. Options: ".print_r($aOptions, true));
-                    $this->ktwebdavLog("DEBUG: overwriting file. Temp name: ".$sTempFilename.' '.print_r($sTempFilename, true));
-                    $this->ktwebdavLog("DEBUG: overwriting file. Name: ".$name.' '.print_r($name, true));
+                    $this->ktwebdavLog("DEBUG: overwriting file. Temp name: ".$sTempFilename);
+                    $this->ktwebdavLog("DEBUG: overwriting file. Name: ".$name);
 
                     // Modified - 25/10/07 - changed add to overwrite
                     //$oDocument =& KTDocumentUtil::add($oParentFolder, $name, $oUser, $aOptions);
@@ -1484,10 +1507,10 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
                     $contents .= fread($fh, 8192);
                 }
                 $sTempFilename = $oStorage->tempnam('/tmp', 'ktwebdav_dav_put');
-                   
+
                 $oStorage->file_put_contents($sTempFilename,$contents);
-                
-                
+
+
                 $this->ktwebdavLog("Content length was not 0, doing the whole thing.", 'info', true );
                 $this->ktwebdavLog("Temp Filename is: " . $sTempFilename, 'info', true );
                 $this->ktwebdavLog("File write result size was: " . $fres, 'info', true );
@@ -1498,13 +1521,15 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
 				//TODO: compare header content length and actual data length for parity
                 $name = basename($path);
+                $size = strlen($contents);
+                $user_id = $this->_getUserID();
                 $aFileArray = array(
                         "name" => $name,
-                        "size" => strlen($contents),
+                        "size" => $size,
                         "type" => false,
-                        "userID" => $this->_getUserID(),
+                        "userID" => $user_id,
                         );
-                $this->ktwebdavLog("aFileArray is " .  print_r($aFileArray, true), 'info', true);
+                $this->ktwebdavLog("File array - name: $name, size: $size, userID: $user_id", 'info', true);
 
                 $aOptions = array(
                         'temp_file' => $sTempFilename,
@@ -1536,7 +1561,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
          */
         function MKCOL($options)
         {
-            $this->ktwebdavLog("Entering MKCOL. options are " .  print_r($options, true), 'info', true);
+            $this->ktwebdavLog("Entering MKCOL. Path: " . $options['path'], 'info', true);
 
             if ($this->checkSafeMode()) {
 
@@ -1646,18 +1671,20 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
          */
         function DELETE($options)
         {
-            $this->ktwebdavLog("Entering DELETE. options are " . print_r($options, true), 'info', true);
+            $this->ktwebdavLog("Entering DELETE. Path: " . $options["path"], 'info', true);
 
             if ($this->checkSafeMode()) {
 
                 $path = $options["path"];
                 $res = $this->_folderOrDocument($path);
-                $this->ktwebdavLog("DELETE res is " . print_r($res, true), 'info', true);
+
                 if ($res === false) {
                     $this->ktwebdavLog("404 Not found - The Document was not found.", 'info', true);
                     return "404 Not found - The Document was not found.";
                 }
                 list($iFolderID, $iDocumentID) = $res;
+
+                $this->ktwebdavLog("DELETE res is folderId: $iFolderID, document id: $iDocumentID", 'info', true);
 
                 if ($iDocumentID === false) {
                     $this->ktwebdavLog("404 Not found - The Folder was not found.", 'info', true);
@@ -1682,7 +1709,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
          */
         function _DELETEDocument($options, $iFolderID, $iDocumentID) {
 
-            $this->ktwebdavLog("Entering _DELETEDocument. options are " . print_r($options, true), 'info', true);
+//            $this->ktwebdavLog("Entering _DELETEDocument. options are " . print_r($options, true), 'info', true);
 
             global $default;
 
@@ -1715,7 +1742,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
          */
         function _DELETEFolder($options, $iFolderID) {
 
-            $this->ktwebdavLog("Entering _DELETEFolder. options are " . print_r($options, true), 'info', true);
+//            $this->ktwebdavLog("Entering _DELETEFolder. options are " . print_r($options, true), 'info', true);
 
             global $default;
 
@@ -1736,7 +1763,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             $res = KTFolderUtil::delete($oFolder, $oUser, 'KTWebDAV Delete');
 
             if (PEAR::isError($res)) {
-                $this->ktwebdavLog("Delete Result error " . print_r($res, true), 'info', true);
+                $this->ktwebdavLog("Delete Result error " . $res->getMessage(), 'info', true);
                 return "403 Forbidden - ".$res->getMessage();
             }
 
@@ -1752,7 +1779,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
          */
         function MOVE($options)
         {
-            $this->ktwebdavLog("Entering MOVE. options are " . print_r($options, true), 'info', true);
+            $this->ktwebdavLog("Entering MOVE. Path " . $options["path"], 'info', true);
 
             /* ** Check that write is allowed ** */
             if ($this->checkSafeMode()) {
@@ -1849,7 +1876,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             /* ** Ensure that the destination path exists ** */
             if ($options['dest'] == '') $options["dest"] = substr($options["dest_url"], strlen($_SERVER["SCRIPT_NAME"]));
-            $this->ktwebdavLog("Entering _MOVEDocument. options are " . print_r($options, true), 'info', true);
+            $this->ktwebdavLog('Entering _MOVEDocument. Path '.$options["path"] . ' destination: '.$options['dest'], 'info', true);
 
             // Fix for Mac Goliath
             // Modified - 25/10/07 - remove ktwebdav from document path
@@ -1981,7 +2008,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
             /* ** Ensure that the destination path exists ** */
             if ($options['dest'] == '') $options["dest"] = substr($options["dest_url"], strlen($_SERVER["SCRIPT_NAME"]));
             $options['dest'] = $this->_slashify($options['dest']);
-            $this->ktwebdavLog("Entering _MOVEFolder. options are " . print_r($options, true), 'info', true);
+            $this->ktwebdavLog('Entering _MOVEFolder. Path: '.$options['path'].' destination '.$options['dest'].' destination url ' . $options['dest_url'], 'info', true);
 
             /* ** RFC 2518 Section 8.9.2. A folder move must have a depth of 'infinity'.
                 Check the requested depth. If depth is set to '0' or '1' return a 400 error. ** */
@@ -2146,7 +2173,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
          */
         function COPY($options, $del = false)
         {
-            $this->ktwebdavLog("Entering COPY. options are " . print_r($options, true), 'info', true);
+            $this->ktwebdavLog('Entering COPY. Path: '.$options['path'], 'info', true);
             $this->ktwebdavLog("del is: " . $del, 'info', true);
 
             /* ** Check that writing to the server is allowed * **/
@@ -2234,7 +2261,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             /* ** Ensure that the destination path exists ** */
             if ($options['dest'] == '') $options["dest"] = substr($options["dest_url"], strlen($_SERVER["SCRIPT_NAME"]));
-            $this->ktwebdavLog("Entering _COPYDocument. options are " . print_r($options, true), 'info', true);
+            $this->ktwebdavLog('Entering _COPYDocument. Path: ' . $options['path'] .' destination '.$options['destination'] .' destination url '.$options['dest_url'], 'info', true);
 
             /* ** Get the relevant paths. Get the basename of the destination path as the destination filename.
                 Check whether the destination path refers to a folder / document. ** */
@@ -2302,7 +2329,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 			{
             	$this->ktwebdavLog("Got an oSrcDoc of " .$oSrcDoc->getName() . print_r($oSrcDoc, true), 'info', true);
             	$this->ktwebdavLog("Got an oDestFolder of " .$oDestFolder->getName() . print_r($oDestFolder, true), 'info', true);
-			}	
+			}
 
             // Check if the user has permissions to write in this folder
             $oPerm =& KTPermission::getByName('ktcore.permissions.write');
@@ -2340,7 +2367,7 @@ class KTWebDAVServer extends HTTP_WebDAV_Server
 
             /* ** Ensure that the destination path exists ** */
             if ($options['dest'] == '') $options["dest"] = substr($options["dest_url"], strlen($_SERVER["SCRIPT_NAME"]));
-            $this->ktwebdavLog("Entering _COPYFolder. options are " . print_r($options, true), 'info', true);
+            $this->ktwebdavLog('Entering _COPYFolder. Path '.$options['path'].' destination '.$options['dest'].' url '.$options['dest_url'], 'info', true);
 
             /* ** RFC 2518 Section 8.8.3. DAV compliant servers must support depth headers of '0' and 'infinity'.
                 Check the requested depth. If depth is set to '0', set copyall to false. A depth of 0 indicates

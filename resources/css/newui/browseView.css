@@ -42,12 +42,12 @@
 .doc.browseView .doc.item .workflow_info span:first-child { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: 0px 0px 5px black; -moz-box-shadow: 0px 0px 5px black; box-shadow: 0px 0px 5px black; border: 1px solid #CE9B00; background-color: #FFEDB7; padding: 10px; position: absolute; width: 160px; top: 16px; left: -146px; display: none; z-index: 20001; }
 .doc.browseView .doc.item .workflow_info span:first-child:hover { left: -5000px; }
 .doc.browseView .doc.item .workflow_info:hover span:first-child { display: block; }
-.doc.browseView .doc.item .immutable_info { background: url("/resources/graphics/newui/doc_immutable.png"); background-repeat: no-repeat; background-position: center center; width: 16px; height: 16px; display: inline-block; clear: none; position: relative; }
+.doc.browseView .doc.item .immutable_info { margin-top: 20px; margin-left: -5px; background: url("/resources/graphics/newui/doc_immutable.png"); background-repeat: no-repeat; background-position: center center; width: 16px; height: 16px; display: inline-block; clear: none; position: relative; }
 .doc.browseView .doc.item .immutable_info:hover { background: url("/resources/graphics/newui/doc_immutable_h.png"); background-repeat: no-repeat; background-position: center center; }
 .doc.browseView .doc.item .immutable_info span:first-child { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: 0px 0px 5px black; -moz-box-shadow: 0px 0px 5px black; box-shadow: 0px 0px 5px black; border: 1px solid #CE9B00; background-color: #FFEDB7; padding: 10px; position: absolute; width: 200px; top: 16px; left: -14px; display: none; z-index: 20001; }
 .doc.browseView .doc.item .immutable_info span:first-child:hover { left: -5000px; }
 .doc.browseView .doc.item .immutable_info:hover span:first-child { display: block; }
-.doc.browseView .doc.item .checked_out { background: url("/resources/graphics/newui/doc_checkedout.png"); background-repeat: no-repeat; background-position: center center; width: 16px; height: 16px; display: inline-block; clear: none; position: relative; }
+.doc.browseView .doc.item .checked_out { margin-top: 20px; margin-left: -5px; background: url("/resources/graphics/newui/doc_checkedout.png"); background-repeat: no-repeat; background-position: center center; width: 16px; height: 16px; display: inline-block; clear: none; position: relative; }
 .doc.browseView .doc.item .checked_out:hover { background: url("/resources/graphics/newui/doc_checkedout_h.png"); background-repeat: no-repeat; background-position: center center; }
 .doc.browseView .doc.item .checked_out span:first-child { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: 0px 0px 5px black; -moz-box-shadow: 0px 0px 5px black; box-shadow: 0px 0px 5px black; border: 1px solid #CE9B00; background-color: #FFEDB7; padding: 10px; position: absolute; width: 200px; top: 16px; left: -14px; display: none; z-index: 20001; }
 .doc.browseView .doc.item .checked_out span:first-child:hover { left: -5000px; }
@@ -75,7 +75,7 @@
 .doc.browseView .folder.summary_cell .title { display: inline-block; font-size: 14px; font-weight: bold; padding-bottom: 5px; margin-right: 15px; }
 .doc.browseView .folder.summary_cell .detail .item { font-weight: bold; margin-right: 10px; }
 .doc.browseView .folder.summary_cell .detail .item .creator { font-weight: normal; }
-.doc.browseView .not_supported { visibility: hidden  !important; }
+.doc.browseView .not_supported { visibility: hidden  !important; display: none  !important; }
 .doc.browseView .interact { width: 80px; }
 .doc.browseView .actionMenu { margin: 0px; padding: 0px 11.333px !important; -webkit-border-radius: 8.5px; -moz-border-radius: 8.5px; border-radius: 8.5px; -webkit-box-shadow: 0px 0px 2px #cccccc; -moz-box-shadow: 0px 0px 2px #cccccc; box-shadow: 0px 0px 2px #cccccc; background-color: #eeeeee; background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeee), color-stop(1, #fbfbfb)); background: -moz-linear-gradient(center bottom, #eeeeee 0%, #fbfbfb 100%); border: 1px solid #d4d4d4; list-style: none; display: inline-block; width: auto; line-height: 1.4em; float: right; }
 .doc.browseView .actionMenu > li { height: 17px; display: inline-block; padding: 0px 5.667px; margin: 0px -3px; border-right: 1px solid transparent; border-left: 1px solid transparent; cursor: pointer; vertical-align: top; }
