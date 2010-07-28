@@ -571,8 +571,7 @@ a.main_nav_item {
 {
     color: #344a6a;
     text-decoration: none;
-    border-bottom: 0px solid #344a6a;
-
+    border-bottom: 1px solid #344a6a;
 }
 
 #content a:hover
