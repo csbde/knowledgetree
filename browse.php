@@ -403,7 +403,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$item['separatorC']=$item['actions.alert']=='' || $item ['actions.email']=='' ?'':$ns;		
 
 		// Check if the thumbnail exists
-		$dev_no_thumbs=true;
+		$dev_no_thumbs=false;
 		if(!$dev_no_thumbs){
 			$oStorage=KTStorageManagerUtil::getSingleton();
 	        
