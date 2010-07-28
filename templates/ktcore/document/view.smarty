@@ -5,8 +5,8 @@
 			<td width="1" valign="top" style="padding-right: 15px;"><span id="doc_thumb" style="float:left;" /></td>
 			<td height="1" valign="top">
 				<h2 class="doc_file_title">
-					<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_immutable.png";{/php}" style="display: inline-block"/>
-					<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_checkedout.png";{/php}" style="display: inline-block"/>
+					{if $document->getImmutable()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_immutable.png";{/php}" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
+					{if $document->getIsCheckedOut()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_checkedout.png";{/php}" style="display: inline-block" alt="{i18n}Checked Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
 					{$context->oDocument->getName()|sanitize}
 					<span class="doc_version">
 						Ver {$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()} 
