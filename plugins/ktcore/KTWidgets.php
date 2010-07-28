@@ -1450,8 +1450,12 @@ jQuery(document).ready(function(){
 			name: 'file',
 			onSubmit : function(file, ext)
 			{
-				detectArchiveFile(file);
 				sameNameFile(file);
+				if(jQuery('#file_exists').val() == 1)
+				{
+					return;
+				}
+				detectArchiveFile(file);
                 this.setData({
                     'AWSAccessKeyId' : '<?php echo $this->aOptions['amazonsettings']['AWSAccessKeyId']; ?>',
                     'acl'            : '<?php echo $this->aOptions['amazonsettings']['acl']; ?>',
@@ -1467,9 +1471,12 @@ jQuery(document).ready(function(){
                 Img = document.getElementById('spinner');
                 Img.style.display="inline";
                 Img.src = "resources/graphics/thirdparty/loader.gif";
-                
 			},
 			onComplete: function(file, response){
+				if(jQuery('#file_exists').val() == 1)
+				{
+					return;
+				}
 				button.show();
                 jQuery('#uploading_spinner').css({visibility: 'hidden'});
                 jQuery('#cancelButton').hide();
@@ -1516,12 +1523,22 @@ jQuery(document).ready(function(){
 			}
 		},
 		sameNameFile = function(fileName) {
-			jQuery('#successful_upload_files').each(function(i){
-				//console.dir(this.innerHTML);
-			})
-			
+			jQuery('#file_exists').attr('value', '0');
+			var children = jQuery('#successful_upload_files').children().length;
+			if(children > 0){
+				jQuery('#successful_upload_files').children().each(function(index){
+					if(jQuery(this).text() != '')
+					{
+						console.log(jQuery(this).text().trim());
+						if (fileName == jQuery(this).text().trim())
+						{
+							alert('A file with the same name exists.');
+							jQuery('#file_exists').attr('value', '1');
+						}
+					}
+				})
+			}
 		}
-    
 });
         <?PHP
         $script = ob_get_contents();
