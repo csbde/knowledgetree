@@ -513,6 +513,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
         }
 		return $perms;
 	}
+	
 
 	/**
 	 * Get's a folder listing, recursing to the given depth
@@ -559,90 +560,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			$aOptions=array_merge($aOptions,$options);
 		}
 		
-		if (strpos ( $what, 'F' ) !== false) {
-			
-			$aOptions ['orderby'] = 'name';
-			$folder_children = Folder::getList ( array ('parent_id = ?', $this->folderid ), $aOptions );
-			
-			foreach ( $folder_children as $folder ) {
-				
-				if (KTPermissionUtil::userHasPermissionOnItem ( $user, $folder_permission, $folder )
-				    /*|| KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $folder)*/)
-				{
-					if ($depth - 1 > 0) {
-						$sub_folder = &$this->ktapi->get_folder_by_id ( $folder->getId () );
-						$items = $sub_folder->get_listing ( $depth - 1, $what );
-					} else {
-						$items = array ();
-					}
-					
-					$creator = $this->_resolve_user ( $folder->getCreatorID () );
-					
-					if ($wsversion >= 2) {
-						$array = array (
-							'id' => ( int ) $folder->getId (),
-							'item_type' => 'F', 
-							'custom_document_no' => 'n/a',
-							'oem_document_no' => 'n/a', 
-							'title' => $folder->getName (),
-							'document_type' => 'n/a',
-							'filename' => $folder->getName (),
-							'filesize' => 'n/a', 
-							'created_by' => is_null ( $creator ) ? 'n/a' : $creator->getName (),
-							'created_date' => 'n/a', 
-							'checked_out_by' => 'n/a',
-							'checked_out_date' => 'n/a', 
-							'modified_by' => 'n/a',
-							'modified_date' => 'n/a', 
-							'owned_by' => 'n/a', 
-							'version' => 'n/a', 
-							'is_immutable' => 'n/a',
-							'permissions' => KTAPI_Folder::get_permission_string ( $folder ), 
-							'workflow' => 'n/a',
-							'workflow_state' => 'n/a', 
-							'mime_type' => 'folder',	
-							'mime_icon_path' => 'folder',	
-							'mime_display' => 'Folder', 
-							'storage_path' => 'n/a'
-						);
-						
-						if ($wsversion >= 3) {
-							$array ['linked_folder_id'] = $folder->getLinkedFolderId ();
-							if ($folder->isSymbolicLink ()) {
-								$array ['item_type'] = "S";
-							}
-						}
-						$array ['items'] = $items;
-						if ($wsversion < 3 || (strpos ( $what, 'F' ) !== false && ! $folder->isSymbolicLink ()) || ($folder->isSymbolicLink () && strpos ( $what, 'S' ) !== false)) {
-							$contents [] = $array;
-						}
-					} else {
-						
-						$contents [] = array (
-							'id' => ( int ) $folder->getId (),
-							'item_type' => 'F',
-							'title' => $folder->getName (),
-							'creator' => is_null ( $creator ) ? 'n/a' : $creator->getName (), 
-							'checkedoutby' => 'n/a', 'modifiedby' => 'n/a', 'filename' => $folder->getName (), 
-							'size' => 'n/a', 
-							'major_version' => 'n/a', 
-							'minor_version' => 'n/a', 
-							'storage_path' => 'n/a', 
-							'mime_type' => 'folder', 
-							'mime_icon_path' => 'folder', 
-							'mime_display' => 'Folder', 
-							'items' => $items, 
-							'workflow' => 'n/a', 
-							'workflow_state' => 'n/a'
-						);
-					}
-				
-				}
-			}
-		
-		}
-		
-		if (strpos ( $what, 'D' ) !== false) {
+			if (strpos ( $what, 'D' ) !== false) {
 			$document_children = Document::getList ( array ('folder_id = ? AND status_id = 1', $this->folderid ) );
 			
 			// I hate that KT doesn't cache things nicely...
@@ -746,6 +664,94 @@ class KTAPI_Folder extends KTAPI_FolderItem
 				}
 			}
 		}
+		
+		//now sort the array of Documents according to title
+		usort($contents, array($this, "compare_title"));
+		
+		if (strpos ( $what, 'F' ) !== false) {
+			
+			$aOptions ['orderby'] = 'name';
+			$folder_children = Folder::getList ( array ('parent_id = ?', $this->folderid ), $aOptions );
+			
+			foreach ( $folder_children as $folder ) {
+				
+				if (KTPermissionUtil::userHasPermissionOnItem ( $user, $folder_permission, $folder )
+				    /*|| KTPermissionUtil::userHasPermissionOnItem($user, $read_permission, $folder)*/)
+				{
+					if ($depth - 1 > 0) {
+						$sub_folder = &$this->ktapi->get_folder_by_id ( $folder->getId () );
+						$items = $sub_folder->get_listing ( $depth - 1, $what );
+					} else {
+						$items = array ();
+					}
+					
+					$creator = $this->_resolve_user ( $folder->getCreatorID () );
+					
+					if ($wsversion >= 2) {
+						$array = array (
+							'id' => ( int ) $folder->getId (),
+							'item_type' => 'F', 
+							'custom_document_no' => 'n/a',
+							'oem_document_no' => 'n/a', 
+							'title' => $folder->getName (),
+							'document_type' => 'n/a',
+							'filename' => $folder->getName (),
+							'filesize' => 'n/a', 
+							'created_by' => is_null ( $creator ) ? 'n/a' : $creator->getName (),
+							'created_date' => 'n/a', 
+							'checked_out_by' => 'n/a',
+							'checked_out_date' => 'n/a', 
+							'modified_by' => 'n/a',
+							'modified_date' => 'n/a', 
+							'owned_by' => 'n/a', 
+							'version' => 'n/a', 
+							'is_immutable' => 'n/a',
+							'permissions' => KTAPI_Folder::get_permission_string ( $folder ), 
+							'workflow' => 'n/a',
+							'workflow_state' => 'n/a', 
+							'mime_type' => 'folder',	
+							'mime_icon_path' => 'folder',	
+							'mime_display' => 'Folder', 
+							'storage_path' => 'n/a'
+						);
+						
+						if ($wsversion >= 3) {
+							$array ['linked_folder_id'] = $folder->getLinkedFolderId ();
+							if ($folder->isSymbolicLink ()) {
+								$array ['item_type'] = "S";
+							}
+						}
+						$array ['items'] = $items;
+						if ($wsversion < 3 || (strpos ( $what, 'F' ) !== false && ! $folder->isSymbolicLink ()) || ($folder->isSymbolicLink () && strpos ( $what, 'S' ) !== false)) {
+							$contents [] = $array;
+						}
+					} else {
+						
+						$contents [] = array (
+							'id' => ( int ) $folder->getId (),
+							'item_type' => 'F',
+							'title' => $folder->getName (),
+							'creator' => is_null ( $creator ) ? 'n/a' : $creator->getName (), 
+							'checkedoutby' => 'n/a', 'modifiedby' => 'n/a', 'filename' => $folder->getName (), 
+							'size' => 'n/a', 
+							'major_version' => 'n/a', 
+							'minor_version' => 'n/a', 
+							'storage_path' => 'n/a', 
+							'mime_type' => 'folder', 
+							'mime_icon_path' => 'folder', 
+							'mime_display' => 'Folder', 
+							'items' => $items, 
+							'workflow' => 'n/a', 
+							'workflow_state' => 'n/a'
+						);
+					}
+				
+				}
+			}
+		
+		}
+				
+		//$GLOBALS['default']->log->debug('get_listing unsorted3 '.print_r($contents, true));
 		
 		return $contents;
 	}
@@ -1572,6 +1578,17 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	public function getParentFolderIDs()
 	{
 		return $this->folder->getParentFolderIDs();
+	}
+	
+	/**
+	 * Helper function for sorting documents
+	 * @param $a
+	 * @param $b
+	 */
+	private function compare_title($a, $b)
+	{
+		//$GLOBALS['default']->log->debug('compare_title '.$a['title'].' to '.$b['title'].' result '.strnatcmp($a['title'], $b['title']));
+	  	return strnatcasecmp($a['title'], $b['title']);
 	}
 }
 

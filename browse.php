@@ -334,6 +334,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				$aTemplateData['pagination']=$this->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
 			}
 		}
+		
+		
 		return $oTemplate->render($aTemplateData);
 	}
 
@@ -439,7 +441,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 							</div>
 						</td>
 						<td class="doc summary_cell fdebug">
-							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]" style="">[filename]</a></div>
 							<ul class="doc actionMenu">
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
@@ -458,6 +459,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 									</ul>
 								</li>
 							</ul>
+							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]" style="">[filename]</a></div>
+							
 							<div class="detail"><span class="item">Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span></div>
 						</td>
 					</tr>
@@ -493,7 +496,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 						<div class="folder icon"></div>
 					</td>
 					<td class="folder summary_cell">
-						<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[filename]</a></div>
 						<ul class="folder actionMenu">
 							<li class="actionIcon actions">
 									<ul>
@@ -504,6 +506,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 									</ul>
 							</li>
 						</ul>
+						<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[filename]</a></div>
 						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
 					</td>
 				</tr>
