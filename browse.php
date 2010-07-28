@@ -334,6 +334,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				$aTemplateData['pagination']=$this->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
 			}
 		}
+		
+		
 		return $oTemplate->render($aTemplateData);
 	}
 
