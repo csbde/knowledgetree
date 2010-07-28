@@ -266,9 +266,17 @@
 		
 		$("table.folder.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
 		
+		if($.browser.msie){
+			(function(){
+				function hide(){
+					$(".doc.browseView:first-child .item .actionMenu .actions>ul").css({display: '',visibility: ''});
+				}
+			
+				$(".doc.browseView:first-child .item .actionMenu .actions>ul").css({display: 'block',visibility: 'hidden'});
+				setTimeout(hide,200);
+			})();
+		}
 		
-		
-		kt.pages.browse.setBulkActionMenuStatus();
 	});
 })(jQuery);
 </script>

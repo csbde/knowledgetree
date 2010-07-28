@@ -97,10 +97,18 @@ class KTPermissionLookupAssignment extends KTEntity {
     }
 
     function &getByPermissionAndLookup($oPermission, $oLookup) {
-        return KTEntityUtil::getByDict('KTPermissionLookupAssignment', array(
-            'permission_id' => $oPermission->getId(),
-            'permission_lookup_id' => $oLookup->getId(),
-        ), $aOptions);
+    	$params=array();
+    	$params['permission_id']=method_exists($oPermission,'getId')?$oPermission->getId():null;
+    	$params['permission_lookup_id']=method_exists($oLookup,'getId')?$oLookup->getId():null;
+    	
+    	if($params['permission_id']==null || $params['permission_lookup_id']==null){
+    		$debug=array($oPermission,$oLookup);
+    		echo '<pre>'.print_r($debug,true).'</pre>'; exit;
+    	}
+    	
+        $ret=KTEntityUtil::getByDict('KTPermissionLookupAssignment',$params);
+        
+        return $ret;
     }
 
     function &_getLookupIDsByPermissionIDAndDescriptorID($iPermissionID, $iDescriptorID) {
