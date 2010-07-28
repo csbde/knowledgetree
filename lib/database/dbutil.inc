@@ -45,6 +45,7 @@ class DBUtil {
     private static $db;	// Master DB handle. Must always be present.
     private static $dbSlaves = array();
     private static $numSlaves; // count of how many slaves we have
+    private static $Transactions = false; // Sets up transaction escape on Replication
 
 	/**
 	* Establish database connections
@@ -167,7 +168,7 @@ class DBUtil {
         }else {
             $sQuery = $query;
         }
-         if(isset($default->_slave) && (strncasecmp(ltrim($sQuery), "select", 6) === 0 )){
+         if(isset($default->_slave) && (strncasecmp(ltrim($sQuery), "select", 6) === 0 ) && self::$Transactions === false){
             $db = self::getSlave();
             if($oPear->isError($db))
             {
@@ -336,21 +337,21 @@ class DBUtil {
         $bNoId = KTUtil::arrayGet($aOptions, 'noid', false);
         global $default;
         // $default->log->debug('AutoInsert called for table ' . $sTable);
-        self::getDB();
-        $res = self::$db->autoExecute($sTable, $aFieldValues);
+        $database = self::getDB();
+        $res = $database->autoExecute($sTable, $aFieldValues);
         if ($default->queryLog->isDebugEnabled())
         {
-            $default->queryLog->debug('Query: ' . self::lastQuery(self::$db));
+            $default->queryLog->debug('Query: ' . self::lastQuery($database));
         }
         if ($res === DB_OK) {
             if ($bNoId)
                 return;
             else
-            	$ret = self::$db->getLastId();
+            	$ret = $database->getLastId();
                 return $ret;
         }
         if (PEAR::isError($res)) {
-        	self::logQueryError(self::lastQuery(self::$db), $res);
+        	self::logQueryError(self::lastQuery($database), $res);
             return $res;
         }
         return PEAR::raiseError(_kt('Unknown return value for autoInsert'));
@@ -524,6 +525,7 @@ class DBUtil {
      **/
 
     public static function startTransaction() {
+        self::$Transactions = true;
         self::runQuery("START TRANSACTION");
         $oCache = KTCache::getSingleton();
         $oCache->startTransaction();
@@ -535,6 +537,7 @@ class DBUtil {
      * @author Prince Mbekwa
      **/
     public static function rollback() {
+        self::$Transactions = true;
         self::runQuery("ROLLBACK");
         $oCache = KTCache::getSingleton();
         $oCache->rollback();
@@ -546,6 +549,7 @@ class DBUtil {
      * @author Prince Mbekwa
      **/
     public static function commit() {
+        self::$Transactions = false;
         self::runQuery("COMMIT");
         $oCache = KTCache::getSingleton();
         $oCache->commit();
