@@ -357,7 +357,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	private function renderBulkActionMenu($items){
 		$tpl='<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0"><tr><td>
-		<form method="POST" action="/action.php">
+		<input type="checkbox" class="select_all" />
 		<input type="hidden" value="" name="sListCode"><input type="hidden" value="bulkaction" name="action">
 		<input type="hidden" value="browse" name="fReturnAction"><input type="hidden" value="1" name="fReturnData">';
 
@@ -365,7 +365,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$tpl.='<input type="submit" name="submit['.$item->getName().']" value="'.$item->getDisplayName().'" />';
 		}
 
-		$tpl.='</form></td><td width="1" class="status"></td></tr></table>';
+		$tpl.='</td><td class="status" style="width: 200px; text-align: right;"></td></tr></table>';
 		return $tpl;
 	}
 	
@@ -403,7 +403,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$item['separatorC']=$item['actions.alert']=='' || $item ['actions.email']=='' ?'':$ns;		
 
 		// Check if the thumbnail exists
-		$dev_no_thumbs=false;
+		$dev_no_thumbs=true;
 		if(!$dev_no_thumbs){
 			$oStorage=KTStorageManagerUtil::getSingleton();
 	        

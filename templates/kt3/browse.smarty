@@ -219,15 +219,15 @@
 			var selectedItems=$(".itemContainer .item .checkbox>input:checkbox:checked:enabled").length;
 			if( selectedItems >0){
 				$('.browseView.bulkActionMenu td:first-child').removeClass('disabled');
-				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','');
+				$('.browseView.bulkActionMenu td:first-child input[type="submit"]').attr('disabled','');
 //				$('.browseView.bulkActionMenu').slideDown(350,function(){kt.lib.setFooter();});
-				$('.browseView.bulkActionMenu').slideDown(350);
+//				$('.browseView.bulkActionMenu').slideDown(350);
 				
 				$('.browseView.bulkActionMenu .status').html(selectedItems + '&nbsp;Item(s)&nbsp;Selected');
 			}else{
 				$('.browseView.bulkActionMenu td:first-child').addClass('disabled');
-				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','disabled');
-				$('.browseView.bulkActionMenu').hide(200);
+				$('.browseView.bulkActionMenu td:first-child input[type="submit"]').attr('disabled','disabled');
+//				$('.browseView.bulkActionMenu').hide(200);
 //				$('.browseView.bulkActionMenu').hide(200,function(){kt.lib.setFooter();});
 				$('.browseView.bulkActionMenu .status').html('');
 			}
@@ -276,6 +276,16 @@
 				setTimeout(hide,200);
 			})();
 		}
+		
+		kt.pages.browse.setBulkActionMenuStatus();
+		
+		$(".browseView.bulkActionMenu .select_all").change(function(){
+			if(this.checked){
+				kt.pages.browse.selectAllItems();
+			}else{
+				kt.pages.browse.deSelectAllItems();
+			}
+		});
 		
 	});
 })(jQuery);
