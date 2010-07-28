@@ -27,7 +27,7 @@
             if (validateIllegalChars($('#add_folder_name').val())) {
                 return true;
             } else {
-                alert('Folder name may not contain \/<>|%+*\':"?')
+                alert('Folder name may not contain \\/<>|%+*\':"?')
                 return false;
             }
             
