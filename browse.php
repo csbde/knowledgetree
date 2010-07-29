@@ -322,7 +322,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 					$folderView[]=$item;
 				}
 				if($itemCount<=0){
-					$folderView[]='<span class="notification">There are currently no viewable items in this folder.</span>';
+					$folderView[]='<span class="notification" id="empty_message">There are currently no viewable items in this folder.</span>';
 				}
 				$folderView[]="</div>";
 				
