@@ -242,7 +242,7 @@ class KTBulkDeleteAction extends KTBulkAction {
     function do_performaction() {
         $this->store_lists();
         $this->get_lists();
-
+		$_REQUEST['fReturnData'] = '';
         $oForm = $this->form_collectinfo();
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
@@ -973,7 +973,7 @@ class KTBulkArchiveAction extends KTBulkAction {
     function do_performaction() {
         $this->store_lists();
         $this->get_lists();
-
+		$_REQUEST['fReturnData'] = '';
         $oForm = $this->form_collectinfo();
         $res = $oForm->validate();
         if (!empty($res['errors'])) {
