@@ -307,7 +307,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				foreach($folderContentItems['documents'] as $item)$pre_folderView[]=$this->renderDocumentItem($item);
 				
 				$pageCount=1;
-				$perPage=20;
+				$perPage=15;
 				$itemCount=count($pre_folderView);
 				$curItem=0;
 				
@@ -360,10 +360,16 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		<input type="checkbox" class="select_all" />
 		<input type="hidden" value="" name="sListCode"><input type="hidden" value="bulkaction" name="action">
 		<input type="hidden" value="browse" name="fReturnAction"><input type="hidden" value="1" name="fReturnData">';
-
+		
+		$parts=array();
+		
 		foreach($items as $item){
-			$tpl.='<input type="submit" name="submit['.$item->getName().']" value="'.$item->getDisplayName().'" />';
+			$parts[$item->getName()]='<input type="submit" name="submit['.$item->getName().']" value="'.$item->getDisplayName().'" />';
 		}
+		
+		//parts order: Copy move, archive, delete, download all
+		
+		$tpl.=join($parts);
 
 		$tpl.='</td><td class="status" style="width: 200px; text-align: right;"></td></tr></table>';
 		return $tpl;
@@ -396,11 +402,17 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$item['actions.alerts']=$ns;
 			$item['actions.email']=$ns;
 			$item['actions.change_owner']=$ns;
+			$item['actions.finalize_document']=$ns;
 		}
 		
 		$item['separatorA']=$item['actions.download']=='' || $item['actions.instantview']=='' ?'':$ns;
 		$item['separatorB']=$item['actions.checkout']=='' || $item['actions.checkin']=='' || $item['actions.cancel_checkout']=='' ?'':$ns;
-		$item['separatorC']=$item['actions.alert']=='' || $item ['actions.email']=='' ?'':$ns;		
+		$item['separatorC']=$item['actions.alert']=='' || $item ['actions.email']=='' ?'':$ns;
+
+		if($item['is_immutable']==''){
+			$item['separatorA']=$item['separatorB']=$item['separatorC']=$ns;
+		}
+		
 
 		// Check if the thumbnail exists
 		$dev_no_thumbs=false;
@@ -432,10 +444,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
 						<td class="doc icon_cell" width="1">
 							<div class="doc icon">
 								<span class="immutable_info[is_immutable]">
-									<span>This document has been <strong>finalized</strong> and can no longer be modified. The only remaining action is to download or view it.</span>
-								</span>
+									<span>This document has been <strong>finalized</strong> and can no longer be modified.</span>
+									</span>
 								<span class="checked_out[is_checkedout]">
-									<span>This document is <strong>Checked Out</strong> by <strong>[checked_out_by]</strong> ([checked_out_date_d]).</span>
+									<span>This document is <strong>Checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
 								</span>
 								<span class="doc [thumbnailclass]">[thumbnail]</span>
 							</div>
@@ -447,15 +459,22 @@ class BrowseDispatcher extends KTStandardDispatcher {
 									<ul>
 										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="[actions.instant_view]"><a href="view.php?fDocumentId=[id]#preview">Instant View</a></li>
-										<!-- <li class="separator[separatorA]"></li> -->
-										<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Checkout</a></li>
-										<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Checkout</a></li>
-										<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Checkin</a></li>
-										<!-- <li class="separator[separatorB]"></li> -->
+										
+										<li class="separator[separatorA]"></li>
+										
+										<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
+										<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
+										<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
+										
+										<li class="separator[separatorB]"></li>
+										
 										<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
 										<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
-										<!-- <li class="separator[separatorC]"></li> -->
-										<li class="[actions.change_owner]"><a href="/action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Document Ownership</a></li>
+										
+										<li class="separator[separatorC]"></li>
+										
+										<li class="[actions.change_owner]"><a href="action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Document Ownership</a></li>
+										<li class="[actions.finalize_document]"><a href="action.php?kt_path_info=ktcore.actions.document.immutable&fDocumentId=[id]">Finalize Document</a></li>
 									</ul>
 								</li>
 							</ul>
