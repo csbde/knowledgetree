@@ -380,11 +380,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$oDocument = Document::get($item[id]);
 		$item['mimetypeid']=(method_exists($oDocument,'getMimeTypeId'))?$oDocument->getMimeTypeId():'0';
 		
-		$iconFile='resources\\mimetypes\\newui\\'.KTMime::getIconPath($item['mimetypeid']).'.png';
+		$iconFile='resources/mimetypes/newui/'.KTMime::getIconPath($item['mimetypeid']).'.png';
 		$item['icon_exists']=file_exists($iconFile);
 		
 		if($item['icon_exists']){		
-			$item['mimeicon']=str_replace('\\','/',$GLOBALS['default']->rootUrl.'\\'.$iconFile);
+			$item['mimeicon']=str_replace('\\','/',$GLOBALS['default']->rootUrl.'/'.$iconFile);
 			$item['mimeicon']="background-image: url(".$item['mimeicon'].")";
 		}else{
 			$item['mimeicon']='';
