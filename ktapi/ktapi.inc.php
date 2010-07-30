@@ -2152,6 +2152,63 @@ class KTAPI
 
     	return $response;
     }
+	
+	/**
+     * Returns the list of documents attached to a tag
+     *
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param integer $folder_id The id of the folder
+     * @param integer $depth The depth to display - 1 = direct contents, 2 = include contents of the contained folders, etc
+     * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
+     * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
+     */
+    function get_tag_contents($tag, $depth=1, $what='DFS',$overrideWebServiceVersion=null)
+    {
+    	require_once(KT_PLUGIN_DIR . "/tagcloud/TagCloudUtil.inc.php");
+		
+		$tagQuery = new TagQuery($this->get_user(), $tag);
+		
+		$documentIdsWithTag = $tagQuery->getDocuments(1000, 0, 'filename', 'ASC');
+		
+		if (count($documentIdsWithTag) == 0) {
+			$documents = array();
+		} else {
+			
+			$documentIds = '';
+			$comma = '';
+			
+			foreach ($documentIdsWithTag as $docId)
+			{
+				$documentIds .= $comma."'{$docId['id']}'";
+				$comma = ', ';
+			}
+			
+			// Has to be a better way of doing this
+			$documents =  Document::getList ( array (' id IN ('.$documentIds.')', ''));
+			
+			$documentsArray = array();
+			
+			foreach ($documents as $document)
+			{
+				$ktapiDocument = KTAPI_Document::get($this, $document->getId());
+				
+				if (PEAR::isError($ktapiDocument)) {
+					
+				} else {
+					$documentsArray[] = $ktapiDocument->get_detail();
+				}
+			}
+			
+			$documents = $documentsArray;
+		}
+		
+    	$response['status_code'] = 0;
+    	$response['message'] = '';
+    	$response['results'] = $documents;
+		
+    	return $response;
+    }
 
     /**
      * Creates a new folder inside the given folder
