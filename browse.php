@@ -377,6 +377,18 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	
 	private function renderDocumentItem($item=NULL,$empty=false){
 		$fileNameCutoff=100;
+		$oDocument = Document::get($item[id]);
+		$item['mimetypeid']=(method_exists($oDocument,'getMimeTypeId'))?$oDocument->getMimeTypeId():'0';
+		
+		$iconFile='resources\\mimetypes\\newui\\'.KTMime::getIconPath($item['mimetypeid']).'.png';
+		$item['icon_exists']=file_exists($iconFile);
+		
+		if($item['icon_exists']){		
+			$item['mimeicon']=str_replace('\\','/',$GLOBALS['default']->rootUrl.'\\'.$iconFile);
+			$item['mimeicon']="background-image: url(".$item['mimeicon'].")";
+		}else{
+			$item['mimeicon']='';
+		}
 		
 		$item['filename']=(strlen($item['filename'])>$fileNameCutoff)?substr($item['filename'],0,$fileNameCutoff-3)."...":$item['filename'];
 		
@@ -389,6 +401,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$item['actions.checkin']=$item['checked_out_date']?'':$ns;
 		$item['actions.cancel_checkout']=$item['checked_out_date']?'':$ns;
 		$item['actions.checkout']=$item['checked_out_date']?$ns:'';
+		
 		
 		//Modifications to perform when the document has been checked out
 		if($item['checked_out_date']){
@@ -415,7 +428,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		
 
 		// Check if the thumbnail exists
-		$dev_no_thumbs=false;
+		$dev_no_thumbs=isset($_GET['noThumbs'])?true:false;
 		if(!$dev_no_thumbs){
 			$oStorage=KTStorageManagerUtil::getSingleton();
 	        
@@ -442,7 +455,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 							<input name="selection_d[]" type="checkbox" value="[id]" />
 						</td>
 						<td class="doc icon_cell" width="1">
-							<div class="doc icon">
+							<div class="doc icon" style="[mimeicon]">
 								<span class="immutable_info[is_immutable]">
 									<span>This document has been <strong>finalized</strong> and can no longer be modified.</span>
 									</span>

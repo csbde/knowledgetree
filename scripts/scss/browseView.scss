@@ -439,15 +439,21 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 		}
 		
 		.immutable_info{
-			margin-top: 20px;
-			margin-left: -5px;
 			@include tooltipIcon("/resources/graphics/newui/doc_immutable.png","/resources/graphics/newui/doc_immutable_h.png",200px,right);
+			position:absolute;
+			top: 20px;
+			left: -3px;
+			margin: 0px;
+			padding: 0px;
 		}
 		
 		.checked_out{
-			margin-top: 20px;
-			margin-left: -5px;
 			@include tooltipIcon("/resources/graphics/newui/doc_checkedout.png","/resources/graphics/newui/doc_checkedout_h.png",200px,right);
+			position:absolute;
+			top: 20px;
+			left: -3px;
+			margin: 0px;
+			padding: 0px;
 		}
 	}
 	
