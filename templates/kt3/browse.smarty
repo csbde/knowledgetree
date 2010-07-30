@@ -176,7 +176,7 @@
 		
 		pageItem.addClass('highlight');
 		
-		kt.pages.browse.curPage=pageNum;
+		kt.pages.browse.curPage=new Number(pageNum);
 	};
 	
 	kt.pages.browse.nextPage=function(){

@@ -6,13 +6,13 @@
 			<td height="1" valign="top">
 				<h2 class="doc_file_title">
 					{if $document->getImmutable()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_immutable.png";{/php}" style="display: inline-block" alt="{i18n}Finalized{/i18n}"  title="{i18n}Finalized{/i18n}" />{/if}
-					{if $document->getIsCheckedOut()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_checkedout.png";{/php}" style="display: inline-block" alt="{i18n}Checked Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
-					{$context->oDocument->getName()|sanitize}
-					<span class="doc_version">
-						Ver {$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()} 
-						<i>(<b>Owner: </b>{$doc_data.owner})</i>
+					{if $document->getIsCheckedOut()}<img src="{php}echo "{$GLOBALS['default']->rootUrl}/resources/graphics/newui/docview_checkedout.png";{/php}" style="display: inline-block" alt="{i18n}Checked-Out{/i18n}"  title="{i18n}Checked Out{/i18n}" />{/if}
+					{$context->oDocument->getName(70)|sanitize}
+					<span class="doc_version" style="display: block; margin-top: 5px; margin-left: 25px;">
+						Ver {$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}  
+						<i>(<strong>Owner: </strong>{$doc_data.owner})</i>
 						{if $document->getIsCheckedOut()}
-							<span class="doc_checkedout"> <b>Checked Out By:</b> {$sCheckoutUser}</span>
+							<span class="doc_checkedout"> <strong>Checked-out By:</strong> {$sCheckoutUser}</span>
 						{/if}
 					</span>
 				</h2>

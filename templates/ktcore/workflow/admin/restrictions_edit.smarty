@@ -1,11 +1,12 @@
 <h2>{i18n arg_name=$context->oTransition->getHumanName()}Transition Restrictions: #name#{/i18n}</h2>
     
 <p class="descriptiveText important">{i18n}All of these must allow the user to perform the transition.{/i18n}</p>
-
+<div class="widgetRow">
 {$add_form->render()}
-    
-<br />    
-    
+</div>
+<br/><br/>
+
+<div class="widgetRow">
 {if empty($aGuardTriggers)}
   <div class="ktInfoMessage"><span>{i18n}Anybody (with the ability to see the document) can perform this transition.{/i18n}</span></div>    
 {else}
@@ -31,4 +32,5 @@
     </tbody>
     </table>    
     
-    {/if}
+{/if}
+</div>

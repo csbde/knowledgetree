@@ -1,9 +1,12 @@
 <h2>{i18n}Manage Transition{/i18n}</h2>
 
+<div class="widgetRow">
 {$edit_form->render()}
+</div>
 
 {* The real meat is down here.  We define and list a set of actions and links to them. *}
-
+<br/><br/>
+<div class="widgetRow">
 <dl>
     <dt><strong><a href="{addQS context=$context}action=manageguards{/addQS}">{i18n}Transition Requirements{/i18n}</a></strong></dt>
     <dd class="descriptiveText">{i18n}You can control when and by whom transitions can
@@ -17,3 +20,4 @@
     moving the document to a particular folder.{/i18n}</dd>     
     
 </dl>
+</div>
