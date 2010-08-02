@@ -4,7 +4,7 @@
 
 <div class="form_actions" id="uploadbuttondiv">
     <input type="button" id="button1" value="{i18n}Add File{/i18n}" />
-    <input type="button" id="cancelButton" value="{i18n}Cancel Uploading{/i18n}" onclick="cancelUpload();" style="display:none" />
+    <input type="button" id="cancelButton" value="{i18n}Cancel Upload{/i18n}" onclick="cancelUpload();" style="display:none" />
 </div>
 
 
