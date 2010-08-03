@@ -1442,7 +1442,11 @@ jQuery(document).ready(function(){
 	jQuery('form .form_actions').hide();
     jQuery('#uploadbuttondiv').show();
     var button = jQuery('#button1'), interval;
-    
+	var newran = Math.random();
+	newran = Math.ceil(newran * 100000);
+	jQuery('#file_random_name').attr('value', newran);
+	console.log("onload" + newran);
+    //var ranfilename = jQuery('#file_random_name').val();
 	
     new AjaxUpload(button, 
     {
@@ -1455,11 +1459,13 @@ jQuery(document).ready(function(){
 				{
 					return;
 				}
+				ranfilename = jQuery('#file_random_name').val();
+				console.log("onSubmit" + ranfilename);
 				detectArchiveFile(file);
                 this.setData({
                     'AWSAccessKeyId' : '<?php echo $this->aOptions['amazonsettings']['AWSAccessKeyId']; ?>',
                     'acl'            : '<?php echo $this->aOptions['amazonsettings']['acl']; ?>',
-                    'key'            : '<?php echo $this->aOptions['awstmppath']; ?>',
+                    'key'            : '<?php echo $this->aOptions['awstmppath']; ?>'+ranfilename,
                     'policy'         : '<?php echo $this->aOptions['amazonsettings']['policy']; ?>',
                     'Content-Type'   : 'binary/octet-stream',
                     'signature'      : '<?php echo $this->aOptions['amazonsettings']['signature']; ?>',
@@ -1477,6 +1483,7 @@ jQuery(document).ready(function(){
 				{
 					return;
 				}
+				ranfilename = jQuery('#file_random_name').val();
 				button.show();
                 jQuery('#uploading_spinner').css({visibility: 'hidden'});
                 jQuery('#cancelButton').hide();
@@ -1485,10 +1492,14 @@ jQuery(document).ready(function(){
                 jQuery('#advanced_settings_metadata_button').show();
                 jQuery('#successful_upload_files_ul').show();
 				var listitem = '<li>';
+				console.log("onComplete" + ranfilename);
 				listitem += file;
-				listitem += '<input id="" name="file[]" type="hidden" value="<?php echo $this->aOptions['randomfile'] . '_'; ?>'+file+'" />';
+				listitem += '<input id="" name="file[]" type="hidden" value="'+ranfilename+'<?php echo '_'; ?>'+file+'" />';
 				listitem += '<span onclick="removeFile(this)" style="cursor:pointer;"> <img src="resources/graphics/delete.png" /> </span>';
 				listitem += '</li>';
+				var newran = Math.random();
+				newran = Math.ceil(newran * 100000);
+				jQuery('#file_random_name').attr('value', newran);
 				jQuery('#successful_upload_files').show().append(listitem);
                 jQuery('#kt_swf_upload_percent').val('100');
                 jQuery('form .form_actions').show();
