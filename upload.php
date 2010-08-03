@@ -196,6 +196,7 @@
 		die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Document could not be uploaded", "filename":"'.$fileName.'"}, "id" : "id"}');
 	}
 	
+	$documentID = $oDocument->getId();	
 	$oOwner = User::get($oDocument->getOwnerID());
 	$oCreator = User::get($oDocument->getCreatorID());
 	$oModifier = User::get($oDocument->getModifiedUserId());
@@ -206,7 +207,7 @@
 	
 	$fileName = (strlen($fileName)>$fileNameCutoff) ? substr($fileName, 0, $fileNameCutoff-3)."..." : $fileName;
 
-	$output = '{"jsonrpc" : "2.0", "success" : {"filename":"'.$fileName.'", "owned_by":"'.$oOwner->getName().'", "created_by":"'.$oCreator->getName().'", "created_date":"'.$oDocument->getCreatedDateTime().'", "modified_by":"'.$oModifier->getName().'", "modified_date":"'.$oDocument->getCreatedDateTime().'"}, "id" : "id"}';
+	$output = '{"jsonrpc" : "2.0", "success" : {"id":"'.$documentID.'", "filename":"'.$fileName.'", "owned_by":"'.$oOwner->getName().'", "created_by":"'.$oCreator->getName().'", "created_date":"'.$oDocument->getCreatedDateTime().'", "modified_by":"'.$oModifier->getName().'", "modified_date":"'.$oDocument->getCreatedDateTime().'"}, "id" : "id"}';
 	
 	echo($output);
 

@@ -380,11 +380,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$oDocument = Document::get($item[id]);
 		$item['mimetypeid']=(method_exists($oDocument,'getMimeTypeId'))?$oDocument->getMimeTypeId():'0';
 		
-		$iconFile='resources\\mimetypes\\newui\\'.KTMime::getIconPath($item['mimetypeid']).'.png';
+		$iconFile='resources/mimetypes/newui/'.KTMime::getIconPath($item['mimetypeid']).'.png';
 		$item['icon_exists']=file_exists($iconFile);
+		$item['icon_file']=$iconFile;
 		
 		if($item['icon_exists']){		
-			$item['mimeicon']=str_replace('\\','/',$GLOBALS['default']->rootUrl.'\\'.$iconFile);
+			$item['mimeicon']=str_replace('\\','/',$GLOBALS['default']->rootUrl.'/'.$iconFile);
 			$item['mimeicon']="background-image: url(".$item['mimeicon'].")";
 		}else{
 			$item['mimeicon']='';
@@ -428,7 +429,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		
 
 		// Check if the thumbnail exists
-		$dev_no_thumbs=isset($_GET['noThumbs'])?true:false;
+		$dev_no_thumbs=(isset($_GET['noThumbs']) || $_SESSION['browse_no_thumbs'])?true:false;
+		$_SESSION['browse_no_thumbs']=$dev_no_thumbs;
 		if(!$dev_no_thumbs){
 			$oStorage=KTStorageManagerUtil::getSingleton();
 	        
@@ -493,7 +495,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 							</ul>
 							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]" style="">[filename]</a></div>
 							
-							<div class="detail"><span class="item">Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span></div>
+							<div class="detail"><span class="item">
+								Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
+							</div>
 						</td>
 					</tr>
 					<tr>
