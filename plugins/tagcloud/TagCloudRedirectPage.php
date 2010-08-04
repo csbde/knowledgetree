@@ -171,11 +171,13 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 		
 		
 		//if(!$aTemplateData['oldBrowse']){
-			$aTemplateData['bulkActionMenu']=$this->renderBulkActionMenu($aBulkActions);
+			$browseViewRender = new browseViewHelper();
+		
+			$aTemplateData['bulkActionMenu']=$browseViewRender->renderBulkActionMenu($aBulkActions);
 			
 			$folderContentItems=$this->getTagContent($tag);
 			
-			$browseViewRender = new browseViewHelper();
+			
 			
 			$folderView=$pre_folderView=array();
 			//foreach($folderContentItems['folders'] as $item)$pre_folderView[]=$this->renderFolderItem($item);
@@ -214,8 +216,8 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 			
 			$aTemplateData['fragments']='';
 			$aTemplateData['fragments'].=$browseViewRender->renderDocumentItem(null,true);
-			//$aTemplateData['fragments'].=$this->renderFolderItem(null,true);
-			$aTemplateData['pagination']=$this->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
+			$aTemplateData['fragments'].=$browseViewRender->renderFolderItem(null,true);
+			$aTemplateData['pagination']=$browseViewRender->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
 		//}
 		
 		
@@ -234,45 +236,9 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 		
 		return $ret;
 	}
-	
-	
-	
-	/* NEED TO BE PUT IN A SEPARATE CLASS */
-	
-	public function paginateByDiv($pageCount,$pageClass,$paginationClass="paginate",$itemClass="item",$pageScript="alert([page])",$prevScript="alert('previous');",$nextScript="alert('next');"){
-		$idClass=$pageClass.'_[page]';
-		$pages=array();
-		$pages[]='<ul class="'.$paginationClass.'">';
-		$pages[]='<li class="'.$itemClass.'" onclick="'.$prevScript.'">Previous</li>';
-		for($i=1;$i<=$pageCount; $i++){
-			$pages[]=ktVar::parseString('<li class="'.$itemClass.' '.$idClass.'" onclick="'.$pageScript.'">'.$i.'</li>',array('page'=>$i));
-		}
-		$pages[]='<li class="'.$itemClass.'" onclick="'.$nextScript.'">Next</li>';
-		$pages[]='</ul>';
-		$pages=join($pages);
-		return $pages;
-	}
 
 
-	private function renderBulkActionMenu($items){
-		$tpl='<table class="browseView bulkActionMenu" cellspacing="0" cellpadding="0"><tr><td>
-		<input type="checkbox" class="select_all" />
-		<input type="hidden" value="" name="sListCode"><input type="hidden" value="bulkaction" name="action">
-		<input type="hidden" value="browse" name="fReturnAction"><input type="hidden" value="1" name="fReturnData">';
-		
-		$parts=array();
-		
-		foreach($items as $item){
-			$parts[$item->getName()]='<input type="submit" name="submit['.$item->getName().']" value="'.$item->getDisplayName().'" />';
-		}
-		
-		//parts order: Copy move, archive, delete, download all
-		
-		$tpl.=join($parts);
-
-		$tpl.='</td><td class="status" style="width: 200px; text-align: right;"></td></tr></table>';
-		return $tpl;
-	}
+	
 	
 }
 ?>
