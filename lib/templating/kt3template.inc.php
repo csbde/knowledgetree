@@ -142,6 +142,8 @@ class KTPage {
         $aJS[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
         $aJS[] = 'thirdpartyjs/jquery/plugins/urlparser/jquery.url.js';
         $aJS[] = 'resources/js/search2widget.js';
+        $aJS[] = 'resources/js/newui/kt.containers.js';
+        $aJS[] = 'resources/js/newui/kt.lib.js';
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';
         $aJS[] = 'resources/js/newui/buttontabs.jquery.js';

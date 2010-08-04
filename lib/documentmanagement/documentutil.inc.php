@@ -1017,7 +1017,7 @@ $sourceDocument->getName(),
             $aOptions = array();
         }
         if (PEAR::isError($oDocument)) {
-            return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), $oDocument->getMessage()));
+            return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s : "), $oDocument->getMessage()));
         }
 
         $bCanMove = KTUtil::arrayGet($aOptions, 'move');

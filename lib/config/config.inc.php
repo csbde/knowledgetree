@@ -84,13 +84,23 @@ class KTConfig {
         if(MemCacheUtil::$enabled){
             return true;
         }
-
-        $this->confPath = '/etc/kt';
-
-        $filename = $this->confPath . '/kt.cnf';
+		
+        $ktconfpath = KT_PLUGIN_DIR . '/ktlive/config/kt-path';
+        if (file_exists($ktconfpath))
+        {
+        	$this->confPath = trim(file_get_contents($ktconfpath));
+        	if(!file_exists($this->confPath))
+        	{
+        		$this->confPath = '/etc/kt/kt.cnf';
+        	}
+        }
+        else 
+        {
+        	$this->confPath = '/etc/kt/kt.cnf';
+        }
 
 		$c = new Config;
-        $root =& $c->parseConfig($filename, "IniCommented");
+        $root =& $c->parseConfig($this->confPath, "IniCommented");
 
         if ($oPear->isError($root)) {
             return false;
@@ -296,7 +306,13 @@ class KTConfig {
         $this->populateDefault();
 	}
 	// }}}
-
+    /**
+     * Function reads config settings for Database conncections
+     * Does a quick connect to Database to make sure the values are valid
+     * Stores the DSN in session for later use
+     * @return string $default_db : dsn
+     * @author Prince Mbekwa
+     **/
 	function setupDB () {
         global $default;
 		$oPear = new PEAR();
@@ -330,19 +346,41 @@ class KTConfig {
             'database' => $this->flatns['db/dbName'],
             'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
         );
-
-        $options = array(
-            'debug'       => 2,
-            'portability' => DB_PORTABILITY_ERRORS,
-            'seqname_format' => 'zseq_%s',
-        );
-
-        $default->_db = &DB::connect($dsn, $options);
-        if ($oPear->isError($default->_db)) {
-            // return PEAR error
-            return $default->_db;
+        $default->_db = $dsn;
+    
+               
+        /**
+        * Check to see if replication is set to TRUE
+        * If Replication is set to TRUE then it means 
+        * that mysql-slaves are active
+        * So we will read config to get the hostnames
+        **/
+        $replication = $this->flatns['db/dbReplication'];
+        
+        if($replication == 'true'){
+            $slave_list  = $this->flatns['db/dbSlaves'];
+            $slave_hostnames = explode('|', $slave_list);
+            $working_connections = array();
+            $slave_dns = array();
+            $errors=array();    
+            foreach ($slave_hostnames as $available_slaves){
+                if(empty($available_slaves)){
+                    continue;
+                }
+                $slave_dns[] = array(
+                    'phptype' =>  $this->flatns['db/dbType'],
+                    'username' => $this->flatns[$sUser],
+                    'password' => $this->flatns[$sPass],
+                    'hostspec' => $available_slaves,
+                    'database' => $this->flatns['db/dbName'],
+                    'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
+                    );
+            }
+            //Set slave connections defined
+            $default->_slave = $slave_dns;
+            return true;
         }
-        $default->_db->setFetchMode(DB_FETCHMODE_ASSOC);
+       return true;
     }
 
     function setns($seck, $k, $v, $bDefault = false) {

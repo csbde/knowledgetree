@@ -368,7 +368,7 @@ class KTDocumentViewAction extends KTDocumentAction {
         }
 
         if ($res === false) {
-            $this->addErrorMessage(_kt('The file you requested is not available - please contact the system administrator if this is incorrect.'));
+            $this->addErrorMessage(_kt('The file you requested is not available.'));
             redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
             exit(0);
         }
@@ -1559,7 +1559,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_kt('Copy'));
         $oForm = $this->form_copyselection();
-        return $oForm->renderPage(_kt('Copy Document') . ': ' . $this->oDocument->getName());
+        return $oForm->renderPage(_kt('Copy') . ': ' . $this->oDocument->getName());
     }
 
     function do_copy() {

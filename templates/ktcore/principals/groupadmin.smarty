@@ -1,78 +1,84 @@
 <h2>{i18n}Group Administration{/i18n}</h2>
 
-<fieldset>
-<legend>{i18n}Add New Group{/i18n}</legend>
-<p class="descriptiveText">{i18n}Groups allow you to assign permissions and roles to a 
-number of different users at once.{/i18n}</p>
-<p><a href="{addQS}action=addGroup{/addQS}" class="ktAction ktAddGroup ktInline">{i18n}Add Group{/i18n}</a><a href="{addQS}action=addGroup{/addQS}">{i18n}Add a new group{/i18n}</a>.</p>
-</fieldset>
 <!-- we roll both in here. -->
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="do_search" value="1" />
-<fieldset>
-<legend>{i18n}Search for groups{/i18n}</legend>
-{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
-<p class="descriptiveText">{i18n arg_link=$link}Since there may be many groups in the
-system, please type a few letters from the group's name to begin.
-Alternatively, <a href="#link#">view all groups</a> (note that this
-action may take some time if you have many groups).{/i18n}</p>
+	<div class="widgetRow">
+		<input type="hidden" name="do_search" value="1" />
+		{capture assign=link}{addQS}show_all=1{/addQS}{/capture}
 
-{foreach item=oWidget from=$search_fields}
-  {$oWidget->render()}
-{/foreach}
+		{foreach item=oWidget from=$search_fields}
+		  {$oWidget->render()}
+		{/foreach}
+		
+		<div class="form_actions">
+			<!-- Search button -->
+			<input type="submit" value="{i18n}search for groups{/i18n}" />
+		</div>
+	</div>
+	
+<div class="widgetRow">
 
-<div class="form_actions">
-   <input type="submit" value="{i18n}search for groups{/i18n}" />
-</div class="form_actions">
-</fieldset>
+	<!-- Results of the search, or view all groups -->
+	{if ($no_search === true)}
+
+	{else}
+	{if (!empty($search_results))}
+	<table class="kt_collection" cellspacing="0">
+	<thead>
+	   <tr>
+		  <th>{i18n}Group Name{/i18n}</th>
+		  <th>{i18n}Unit Name{/i18n}</th>
+		  <th>{i18n}Edit{/i18n}</th>
+		  <th>{i18n}Delete{/i18n}</th>	  
+		  <th>{i18n}Manage Users{/i18n}</th>
+		  <th>{i18n}Manage sub-groups{/i18n}</th>
+		  <th>{i18n}Subgroups{/i18n}</th>
+	   </tr>
+	</thead>
+	<tbody>
+	   
+	   <!-- do we want to batch here? -->
+		 {foreach item=oGroup from=$search_results}
+		 <tr>
+			<td>{$oGroup->getName()}</td>
+			<td>
+	{assign var=sUnitName value=$context->_getUnitName($oGroup)}
+	{if !$sUnitName}
+	<span class="descriptiveText">{i18n}not part of a unit{/i18n}</span>
+	{else} 
+	{$context->_getUnitName($oGroup)}
+	{/if}
+		</td>
+			<td><a href="{addQS}action=editGroup&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}"
+	class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+			<td><a href="{addQS}action=deleteGroup&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}"
+	class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+			<td><a
+	href="{addQS}action=manageUsers&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Users{/i18n}</a></td>  
+			<td><a
+	href="{addQS}action=manageSubgroups&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage sub-groups{/i18n}</a></td>
+			<td class="title"><span class="descriptiveText">{$context->getGroupStringForGroup($oGroup)}</span></td>
+		 </tr>   
+		 {/foreach}
+	   
+	</tbody>
+	</table>
+
+	{else}
+	<div class="ktErrorMessage"><span>{i18n}No results for your search.{/i18n}</span></div>
+
+	{/if}
+	{/if}
+</div>
+
+<div class="widgetRow">
+	<div class="form_actions">
+		<!-- View all groups -->
+		<a style="background: none repeat scroll 0% 0% transparent;" href="{i18n arg_link=$link}#link#{/i18n}">{i18n}View all groups{/i18n}</a>
+		
+		<!-- Add a new group -->
+		<a style="background: none repeat scroll 0% 0% transparent;" href="{addQS}action=addGroup{/addQS}">{i18n}Add group{/i18n}</a>
+	</div>
+</div>
+
 </form>
-{if ($no_search === true)}
-
-{else}
-{if (!empty($search_results))}
-<table class="kt_collection" cellspacing="0">
-<thead>
-   <tr>
-      <th>{i18n}Group Name{/i18n}</th>
-      <th>{i18n}Unit Name{/i18n}</th>
-      <th>{i18n}Edit{/i18n}</th>
-      <th>{i18n}Delete{/i18n}</th>	  
-      <th>{i18n}Manage Users{/i18n}</th>
-      <th>{i18n}Manage sub-groups{/i18n}</th>
-      <th>{i18n}Subgroups{/i18n}</th>
-   </tr>
-</thead>
-<tbody>
-   
-   <!-- do we want to batch here? -->
-     {foreach item=oGroup from=$search_results}
-     <tr>
-        <td>{$oGroup->getName()}</td>
-        <td>
-{assign var=sUnitName value=$context->_getUnitName($oGroup)}
-{if !$sUnitName}
-<span class="descriptiveText">{i18n}not part of a unit{/i18n}</span>
-{else} 
-{$context->_getUnitName($oGroup)}
-{/if}
-	</td>
-        <td><a href="{addQS}action=editGroup&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}"
-class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
-        <td><a href="{addQS}action=deleteGroup&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}"
-class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
-        <td><a
-href="{addQS}action=manageUsers&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage Users{/i18n}</a></td>  
-        <td><a
-href="{addQS}action=manageSubgroups&group_id={$oGroup->getId()}&old_search={$old_search}{/addQS}">{i18n}Manage sub-groups{/i18n}</a></td>
-        <td class="title"><span class="descriptiveText">{$context->getGroupStringForGroup($oGroup)}</span></td>
-     </tr>   
-     {/foreach}
-   
-</tbody>
-</table>
-
-{else}
-<div class="ktErrorMessage"><span>{i18n}No results for your search.{/i18n}</span></div>
-
-{/if}
-{/if}

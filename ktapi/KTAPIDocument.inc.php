@@ -2110,6 +2110,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		// get mime info
 		$mimetypeid = $document->getMimeTypeID();
+		$detail['extension'] =KTMime::getFileType($mimetypeid);
 		$detail['mime_type'] =KTMime::getMimeTypeName($mimetypeid);
 		$detail['mime_icon_path'] =KTMime::getIconPath($mimetypeid);
 		$detail['mime_display'] =KTMime::getFriendlyNameForString($detail['mime_type']);

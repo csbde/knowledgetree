@@ -2519,11 +2519,11 @@ msgstr "Ändere Zustand"
 
 #: i18n/templates.c:1895
 msgid "Change the <strong><a href=\"#link#\">document type</a></strong>"
-msgstr "Ändere den <strong><a href=\"#link#\">Dokumenten-Typ</a></strong>"
+msgstr "Ändere den <strong><a href=\"#link#\">Dokumenten typ</a></strong>"
 
 #: i18n/templates.c:3530
-msgid "Change the <strong><a href=\"#link#\">document type</a></strong>. The current type is \"#name#\""
-msgstr "Ändere den <strong><a href=\"#link#\">Dokumenten-Typ</a></strong>. Der momentane typ ist \"#name#\""
+msgid "Change the <strong><a href=\"#link#\">document type</a></strong>. The current type is \"#name#\". "
+msgstr "Ändere den <strong><a href=\"#link#\">Dokumenteni typ</a></strong>. Der momentane typ ist \"#name#\". "
 
 #: plugins/ktcore/KTCorePlugin.php:379
 msgid "Change the help files that are displayed to users."

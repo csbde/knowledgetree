@@ -37,11 +37,6 @@
  * Contributor( s): Guenter Roeck______________________________________
  *
  */
-
-// uncomment the line below to disable account routing (even if the plugin is available)
-//define('ACCOUNT_ROUTING_ENABLED',false);
-
-
 // The line below will switch on tracing for debugging & dev purposes
 define ( 'KTLIVE_TRACE_ENABLE', false );
 
@@ -207,7 +202,9 @@ class KTInit {
 	 * @return void
 	 */
 	public function accountRouting() {
-		if (file_exists ( KT_PLUGIN_DIR . '/ktlive/liveEnable.php' ) && ! defined ( 'ACCOUNT_ROUTING_ENABLED' )) {
+		if (file_exists ( KT_PLUGIN_DIR . '/ktlive/liveEnable.php' )) 
+		 {
+		    define('ACCOUNT_ROUTING_ENABLED',true);     
 			require_once (KT_PLUGIN_DIR . '/ktlive/liveEnable.php');
 			/**
 			 * The code below demonstrates how to use accountOverride functionality.
@@ -216,7 +213,6 @@ class KTInit {
 			 * To clear this override, this example makes use of clearAccountOverride as a parameter
 			 * in the url.
 			 */
-			define ( 'ACCOUNT_ROUTING_ENABLED', true );
 			define ( 'ACCOUNT_NAME', liveAccountRouting::getAccountName () );
 			define ( 'KTLIVE_CALLBACK_PATH', '/plugins/ktlive/webservice/callback.php' );
 			define ( 'KTLIVE_TRACE_PATH', KTLIVE_CALLBACK_PATH . '?action=trace' );
@@ -524,7 +520,6 @@ class KTInit {
 	}
 	// }}}
 
-
 	// {{{ getDynamicConfigSettings
 	//This function gets the intial config settings which can only be resolved by using php
 	function getDynamicConfigSettings() {
@@ -570,7 +565,6 @@ class KTInit {
 	}
 	// }}}
 
-
 	// {{{ initConfig
 	function initConfig() {
 		global $default;
@@ -593,9 +587,8 @@ class KTInit {
 			$use_cache = $oKTConfig->setMemCache ();
 		}
 
-				$oKTConfig->clearCache();
-				$use_cache = false;
-
+		$oKTConfig->clearCache();
+		$use_cache = false;
 
 		if ($use_cache) {
 			$use_cache = $oKTConfig->loadCache ();
@@ -654,7 +647,6 @@ class KTInit {
 	}
 	// }}}
 
-
 	// {{{ initTesting
 	function initTesting() {
 		$oKTConfig = & KTConfig::getSingleton ();
@@ -679,14 +671,12 @@ class KTInit {
 }
 // }}}
 
-
 $KTInit = new KTInit ( );
 $KTInit->accountRouting ();
 $KTInit->initConfig ();
 $KTInit->setupI18n ();
 
 //====================================
-
 
 define ( 'KTLOG_CACHE', false );
 

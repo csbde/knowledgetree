@@ -451,6 +451,37 @@ class KTAPI_UserSession extends KTAPI_Session
 			$session = new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);
 		return $session;
 	}
+	
+	
+	public function getCurrentBrowserSession(&$ktapi, $sessionId=NULL){
+		$sessionId=$sessionId?$sessionId:session_id();
+		$sql = "SELECT id, user_id FROM active_sessions WHERE session_id='{$sessionId}'";
+		$row = DBUtil::getOneResult($sql);
+		if (is_null($row) || PEAR::isError($row))
+		{
+			$ret= new KTAPI_Error(KTAPI_ERROR_SESSION_INVALID, $row);
+			return $ret;
+		}
+
+		$sessionid = $row['id'];
+		$userid = $row['user_id'];
+
+		$user = &User::get($userid);
+		if (is_null($user) || PEAR::isError($user))
+		{
+			return new KTAPI_Error(KTAPI_ERROR_USER_INVALID, $user);
+		}
+
+        $now=date('Y-m-d H:i:s');
+        $sql = "UPDATE active_sessions SET lastused='$now' WHERE id=$sessionid";
+        DBUtil::runQuery($sql);
+
+        if ($user->isAnonymous())
+			$session = new KTAPI_AnonymousSession($ktapi, $user, $session, $sessionid, $ip);
+        else
+			$session = new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);
+		return $session;
+	}
 
 	/**
 	 * Ends the current session.

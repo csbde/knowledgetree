@@ -69,6 +69,9 @@ Clienttools_Syslog::logTrace('--','--','========================================
 
 //Instantiate base classes
 $KT = new KTAPI(3);
+// Set it to Use Web Version 3
+$KT->get(3);
+
 $RET=new jsonResponseObject();
 if($_GET['datasource'])$RET->isDataSource=true;
 

@@ -364,7 +364,7 @@ i18n['Logout'] = '{i18n}Logout{/i18n}';
 
 i18n['No Read permissions'] = '{i18n}No Read permissions{/i18n}';
 
-i18n['You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.'] = '{i18n}You do not have the required permissions to view the root folder. Please contact your system administrator for assistance.{/i18n}';
+i18n['You do not have the required permissions to view the root folder.'] = '{i18n}You do not have the required permissions to view the root folder.{/i18n}';
 
 i18n['Search for documents'] = '{i18n}Search for documents{/i18n}';
 

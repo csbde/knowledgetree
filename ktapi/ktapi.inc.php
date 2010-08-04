@@ -180,7 +180,7 @@ class KTAPI
 	
 	public $webserviceVersion;
 
-    public function KTAPI($webserviceVersion = '')
+    public function get($webserviceVersion = '')
     {
         $this->esig_enabled = $this->electronic_sig_enabled();
 		
@@ -713,6 +713,23 @@ class KTAPI
 			return $error;
 		}
 
+		$this->session = &$session_object;
+		return $session_object;
+	}
+	
+	public function &getCurrentBrowserSession(&$ktapi,$sessionId = null) {
+		if (! is_null ( $this->session )) {
+			$error = new PEAR_Error ( 'A session is currently active.' );
+			return $error;
+		}
+		
+		$session_object = &KTAPI_UserSession::getCurrentBrowserSession ($ktapi);
+		
+		if (is_null ( $session_object ) || PEAR::isError ( $session_object )) {
+			$error = new PEAR_Error ( 'Session is invalid' );
+			return $error;
+		}
+		
 		$this->session = &$session_object;
 		return $session_object;
 	}
@@ -2110,15 +2127,17 @@ class KTAPI
      * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
      * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
      */
-    function get_folder_contents($folder_id, $depth=1, $what='DFS')
+    function get_folder_contents($folder_id, $depth=1, $what='DFS',$overrideWebServiceVersion=null)
     {
+    	//Calculate the offset and limit
+   	
         $folder = &$this->get_folder_by_id($folder_id);
         if(PEAR::isError($folder)){
     	    $response['status_code'] = 1;
     	    $response['message']= $folder->getMessage();
     	    return $response;
         }
-        $listing = $folder->get_listing($depth, $what);
+        $listing = $folder->get_listing($depth, $what,$overrideWebServiceVersion);
 
     	$contents = array(
     		'folder_id' => $folder_id+0,
@@ -2131,6 +2150,63 @@ class KTAPI
     	$response['message'] = '';
     	$response['results'] = $contents;
 
+    	return $response;
+    }
+	
+	/**
+     * Returns the list of documents attached to a tag
+     *
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param integer $folder_id The id of the folder
+     * @param integer $depth The depth to display - 1 = direct contents, 2 = include contents of the contained folders, etc
+     * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
+     * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
+     */
+    function get_tag_contents($tag, $depth=1, $what='DFS',$overrideWebServiceVersion=null)
+    {
+    	require_once(KT_PLUGIN_DIR . "/tagcloud/TagCloudUtil.inc.php");
+		
+		$tagQuery = new TagQuery($this->get_user(), $tag);
+		
+		$documentIdsWithTag = $tagQuery->getDocuments(1000, 0, 'filename', 'ASC');
+		
+		if (count($documentIdsWithTag) == 0) {
+			$documents = array();
+		} else {
+			
+			$documentIds = '';
+			$comma = '';
+			
+			foreach ($documentIdsWithTag as $docId)
+			{
+				$documentIds .= $comma."'{$docId['id']}'";
+				$comma = ', ';
+			}
+			
+			// Has to be a better way of doing this
+			$documents =  Document::getList ( array (' id IN ('.$documentIds.')', ''));
+			
+			$documentsArray = array();
+			
+			foreach ($documents as $document)
+			{
+				$ktapiDocument = KTAPI_Document::get($this, $document->getId());
+				
+				if (PEAR::isError($ktapiDocument)) {
+					
+				} else {
+					$documentsArray[] = $ktapiDocument->get_detail();
+				}
+			}
+			
+			$documents = $documentsArray;
+		}
+		
+    	$response['status_code'] = 0;
+    	$response['message'] = '';
+    	$response['results'] = $documents;
+		
     	return $response;
     }
 

@@ -89,6 +89,9 @@ class KTBrowseModePortlet extends KTPortlet {
     }
 
     function render() {
+		
+		return null;
+		
         // this is unfortunate, but such is life.
         $current_action = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', null);
         $modes = array(

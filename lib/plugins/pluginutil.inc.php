@@ -473,7 +473,7 @@ class KTPluginUtil {
 
     /**
      * This loads the plugins in the plugins folder. It searches for files ending with 'Plugin.php'.
-     * This is called by the 'Re-read plugins' action in the web interface.
+     * This is called by the 'Reread plugins' action in the web interface.
      */
     function registerPlugins () {
         global $default;
@@ -651,8 +651,9 @@ class KTPluginUtil {
             return;
         }
         $dirh = opendir($path);
+        // skip '.', '..', and hidden directories - i.e. anything which begins with a '.'
         while (($entry = readdir($dirh)) !== false) {
-            if (in_array($entry, array('.', '..'))) {
+            if (preg_match('/^\./', $entry)) {
                 continue;
             }
             $newpath = $path . '/' . $entry;

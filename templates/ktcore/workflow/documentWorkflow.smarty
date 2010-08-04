@@ -1,16 +1,8 @@
 <h2>{i18n}Workflow for{/i18n}: {$oDocument->getName()|sanitize}</h2>
-
-<p class="descriptiveText">
-    {i18n}Workflow is a description of a document's lifecycle.  It is made up of
-    workflow states, which describe where in the lifecycle the document is,
-    and workflow transitions, which describe the next steps within the
-    lifecycle of the document.{/i18n}
-</p>
-
+<br/>
 {if !$oWorkflow}
-    <h3>{i18n}No workflow{/i18n}</h3>
 
-    <p>{i18n}Document has no assigned workflow.{/i18n}</p>
+    <p>{i18n}Document is not currently assigned to a workflow.{/i18n}</p>
 
 {else}
 
@@ -36,52 +28,58 @@
         </form>
     {/if}
 {/if}
+<br/>
 
-<fieldset>
+
 {if $bIsCheckedOut}
+<div class="widgetRow">
     <div class="ktInfoMessage">
         <span>{i18n}The workflow cannot be changed while the document is checked out.{/i18n}</span>
     </div>
+</div>
 {else}
     {if !$oWorkflow}
-      <legend>{i18n}Start workflow on document{/i18n}</legend>
       {assign var=none value=""}
     {else}
-      <legend>{i18n}Change workflow on document{/i18n}</legend>
       {assign var=none value=true}
     {/if}
     {if $aWorkflows}
         {if $bHasPerm}
             <form action="{$smarty.server.PHP_SELF}" method="POST" name="start_workflow_form">
-                <input type="hidden" name="action" value="startWorkflow" />
-                <input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
-
-                <p class="descriptiveText">{i18n}Please note that changing the workflow on a document will start the workflow
-                at the beginning of the new workflow.  <strong>This is true even if the new workflow is identical to the old one.</strong>{/i18n}</p>
-
-                {entity_select entities=$aWorkflows name=fWorkflowId none=$none}
-                <br />
-                <div class="form_actions">
-                    {if !$oWorkflow}
-                        <input type="{$submit.type}" onclick="{$submit.onclick}" name="form_submit" value="{i18n}Start Workflow{/i18n}" />
-                    {else}
-                        <input type="{$submit.type}" onclick="{$submit.onclick}" name="form_submit" value="{i18n}Change Workflow{/i18n}" />
-                    {/if}
-                </div>
+				<div class="widgetRow">
+					<div class="widgetItem">
+						<input type="hidden" name="action" value="startWorkflow" />
+						<input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
+					{entity_select entities=$aWorkflows name=fWorkflowId none=$none}
+					</div>
+					<div class="widgetItem">
+						<div class="form_actions">
+							{if !$oWorkflow}
+								<input type="{$submit.type}" onclick="{$submit.onclick}" name="form_submit" value="{i18n}Start Workflow{/i18n}" />
+							{else}
+								<input type="{$submit.type}" onclick="{$submit.onclick}" name="form_submit" value="{i18n}Change Workflow{/i18n}" />
+							{/if}
+						</div>
+					</div>
+				</div>
             </form>
         {else}
-            <div class="ktInfoMessage">
-            <span>{i18n}You do not have permission to change the workflow that is assigned to this document.{/i18n}</span>
-            </div>
+			<div class="widgetRow">
+				<div class="ktInfoMessage">
+				<span>{i18n}You do not have permission to change the workflow that is assigned to this document.{/i18n}</span>
+				</div>
+			</div>
         {/if}
     {else}
+	<div class="widgetRow">
         <h3>{i18n}No defined workflows{/i18n}</h3>
-            <div class="ktInfoMessage">
-                <span>{i18n}There are no defined workflows which can be started on this
-                document.  An administrator can create workflows to map the lifecycle of
-                a document.  Contact your administrator to discuss
-                workflows.{/i18n}</span>
-            </div>
+		<div class="ktInfoMessage">
+			<span>{i18n}There are no defined workflows which can be started on this
+			document.  An administrator can create workflows to map the lifecycle of
+			a document.  Contact your administrator to discuss
+			workflows.{/i18n}</span>
+		</div>
+	</div>
     {/if}
 {/if}
-</fieldset>
+

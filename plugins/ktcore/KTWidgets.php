@@ -1355,3 +1355,207 @@ window.onload = function() {
     
 }
 
+class KTCoreAjaxUploadWidget extends KTWidget {
+    var $sNamespace = 'ktcore.widgets.ajaxupload';
+    var $sTemplate = 'ktcore/forms/widgets/ajaxupload';
+    
+    
+
+    function configure($aOptions) {
+        $res = parent::configure($aOptions);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        $this->aOptions['name']      = KTUtil::arrayGet($aOptions, 'name', '');
+        $this->aOptions['fFolderId'] = KTUtil::arrayGet($aOptions, 'fFolderId', '');
+        $this->aOptions['field_id']  = KTUtil::arrayGet($aOptions, 'field_id', '');
+        $this->aOptions['amazonsettings'] = KTUtil::arrayGet($aOptions, 'amazonsettings', '');
+        $this->aOptions['awstmppath'] = KTUtil::arrayGet($aOptions, 'awstmppath', '');
+        
+    }
+
+    function render() {
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktcore/forms/widgets/base');
+        
+      	$this->aJavascript[] = 'thirdpartyjs/jquery/plugins/ajaxupload/ajaxupload.js';
+      	
+        
+        if (!empty($this->aJavascript)) {
+            // grab our inner page.
+            $oPage =& $GLOBALS['main'];            
+            $oPage->requireJSResources($this->aJavascript);
+            $oPage->requireJSStandalone($this->getConfiguration());
+        }
+        
+        
+        $widget_content = $this->getWidget();
+
+        $aTemplateData = array(
+            "context" => $this,
+            "label" => $this->sLabel,
+            "description" => $this->sDescription,
+            "name" => $this->sName,
+            "has_value" => ($this->value !== null),
+            "value" => $this->value,
+            "has_errors" => $bHasErrors,
+            "errors" => $this->aErrors,
+            "options" => $this->aOptions,
+            "widget" => $widget_content,
+        );
+        return $oTemplate->render($aTemplateData);   
+    }    
+    
+    /**
+     * This function dynamically generates the init configuration script required by 
+     * swfupload for the particular session.
+     * 
+     * @param $folderId The id of the folder to upload the document to.	If none is provided
+     *		  the following will be sniffed: get params and widget options.
+     *
+     * @return String configuration script.
+     */
+    private function getConfiguration($folderId = null){
+        
+        if (is_null($folderId)) {
+            $folderId = $_GET['fFolderId'];
+        }
+        
+        if ($folderId == '') {
+            $folderId = $_POST['fFolderId'];    
+        }
+        
+        if ($folderId == '') {
+            $folderId = $this->aOptions['fFolderId'];
+        }
+        
+        ob_start();
+        ?>
+        
+jQuery(document).ready(function(){
+
+    jQuery('#extract-documents').hide();
+    jQuery('#document_type_field').hide();
+    jQuery('#type_metadata_fields').hide();
+    jQuery('#advanced_settings_metadata_button').hide();
+    jQuery('#successful_upload_files_ul').hide();
+	jQuery('form .form_actions').hide();
+    jQuery('#uploadbuttondiv').show();
+    var button = jQuery('#button1'), interval;
+	var newran = Math.random();
+	newran = Math.ceil(newran * 100000);
+	jQuery('#file_random_name').attr('value', newran);
+	console.log("onload" + newran);
+    //var ranfilename = jQuery('#file_random_name').val();
+	
+    new AjaxUpload(button, 
+    {
+			action: '<?php echo $this->aOptions['amazonsettings']['formAction']; ?>', 
+			name: 'file',
+			onSubmit : function(file, ext)
+			{
+				sameNameFile(file);
+				if(jQuery('#file_exists').val() == 1)
+				{
+					return;
+				}
+				ranfilename = jQuery('#file_random_name').val();
+				console.log("onSubmit" + ranfilename);
+				detectArchiveFile(file);
+                this.setData({
+                    'AWSAccessKeyId' : '<?php echo $this->aOptions['amazonsettings']['AWSAccessKeyId']; ?>',
+                    'acl'            : '<?php echo $this->aOptions['amazonsettings']['acl']; ?>',
+                    'key'            : '<?php echo $this->aOptions['awstmppath']; ?>'+ranfilename,
+                    'policy'         : '<?php echo $this->aOptions['amazonsettings']['policy']; ?>',
+                    'Content-Type'   : 'binary/octet-stream',
+                    'signature'      : '<?php echo $this->aOptions['amazonsettings']['signature']; ?>',
+                    'success_action_redirect'      : '<?php echo $this->aOptions['amazonsettings']['success_action_redirect']; ?>'
+                });
+                button.hide();
+				jQuery('#uploading_spinner').css({visibility: 'visible'});
+				jQuery('#cancelButton').show();
+                Img = document.getElementById('spinner');
+                Img.style.display="inline";
+                Img.src = "resources/graphics/thirdparty/loader.gif";
+			},
+			onComplete: function(file, response){
+				if(jQuery('#file_exists').val() == 1)
+				{
+					return;
+				}
+				ranfilename = jQuery('#file_random_name').val();
+				button.show();
+                jQuery('#uploading_spinner').css({visibility: 'hidden'});
+                jQuery('#cancelButton').hide();
+                jQuery('#document_type_field').show();
+                jQuery('#type_metadata_fields').show();
+                jQuery('#advanced_settings_metadata_button').show();
+                jQuery('#successful_upload_files_ul').show();
+				var listitem = '<li>';
+				console.log("onComplete" + ranfilename);
+				listitem += file;
+				listitem += '<input id="" name="file[]" type="hidden" value="'+ranfilename+'<?php echo '_'; ?>'+file+'" />';
+				listitem += '<span onclick="removeFile(this)" style="cursor:pointer;"> <img src="resources/graphics/delete.png" /> </span>';
+				listitem += '</li>';
+				var newran = Math.random();
+				newran = Math.ceil(newran * 100000);
+				jQuery('#file_random_name').attr('value', newran);
+				jQuery('#successful_upload_files').show().append(listitem);
+                jQuery('#kt_swf_upload_percent').val('100');
+                jQuery('form .form_actions').show();
+			}
+		});
+        cancelUpload = function() {
+            window.stop();
+            button.show();
+            jQuery('#uploading_spinner').css({visibility: 'hidden'});
+            jQuery('#cancelButton').hide();
+            jQuery('#extract-documents').hide();
+        },
+		removeFile = function(spanObj) {
+			jQuery(spanObj).parent().remove();
+			if (jQuery('#successful_upload_files').children().length == 0)
+			{
+				jQuery('#extract-documents').hide();
+				jQuery('#document_type_field').hide();
+				jQuery('#type_metadata_fields').hide();
+				jQuery('#advanced_settings_metadata_button').hide();
+				jQuery('#successful_upload_files_ul').hide();
+				jQuery('form .form_actions').hide();
+				jQuery('#uploadbuttondiv').show();
+			}
+		},
+		detectArchiveFile = function(fileName) {
+			// TODO : This information should come from server
+			isSupported = fileName.match(/\.(tgz|tar|gz|zip|deb|ar|bz|bz2|rar|tbz)$/i);
+			isSupported = (isSupported != null)? true : false;
+			if (isSupported) {
+				jQuery('#extract-documents').show();
+			}
+		},
+		sameNameFile = function(fileName) {
+			jQuery('#file_exists').attr('value', '0');
+			var children = jQuery('#successful_upload_files').children().length;
+			if(children > 0){
+				jQuery('#successful_upload_files').children().each(function(index){
+					if(jQuery(this).text() != '')
+					{
+						console.log(jQuery(this).text().trim());
+						if (fileName == jQuery(this).text().trim())
+						{
+							alert('A file with the same name exists.');
+							jQuery('#file_exists').attr('value', '1');
+						}
+					}
+				})
+			}
+		}
+});
+        <?PHP
+        $script = ob_get_contents();
+        ob_end_clean();
+        
+        return $script;
+    }
+    
+}

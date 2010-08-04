@@ -91,7 +91,16 @@ class MultiSelectPlugin extends KTPlugin {
 	 */
 	function applySQL($filename)
     {
-		global $default;
+    	global $default;
+    	$sql = "select has_inetlookup, inetlookup_type from document_fields limit 1";
+    	$result = DBUtil::getResultArray($sql);
+
+    	if (!PEAR::isError($result))
+		{
+			// if we find the table, we assume it has been applied
+			return;
+		}
+		
 		DBUtil::setupAdminDatabase();
 		$db = $default->_admindb;
 
@@ -117,7 +126,7 @@ class MultiSelectPlugin extends KTPlugin {
 		//FIXME: The kt_hideadminlink.js script hides the link on the client side. The faulty link/action
 		//		should be de-registerred and removed at the server side. The function below breaks things
 		//		so don't use.
-		//		e.g. $this->deRegisterPluginHelper('documents/fieldmanagement2', 'KTDocumentFieldDispatcher');
+		//		e.g. $this->deRegisterPluginHelper('contentSetup/fieldmanagement2', 'KTDocumentFieldDispatcher');
 		
 		$js .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
 		$this->registerAdminPage('ratpfieldset', 'InetDocumentFieldDispatcher', 'contentSetup',

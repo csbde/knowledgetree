@@ -4,12 +4,12 @@
     <p class="descriptiveText">{i18n}Administrator mode is enabled.{/i18n}</p>
 
     <!--a class="ktInline ktAction ktAllowed" href="{$toggleurl}">{i18n}Disable Admin Mode{/i18n}</a-->
-    <a href="{$toggleurl}">{i18n}Disable admin mode{/i18n}</a>
+     <div class="form_actions"><a href="{$toggleurl}">{i18n}Disable admin mode{/i18n}</a></div>
 {else}
     <!--a href="{ktLink base="help.php" subpath="ktcore/admin/admin-mode.html"}" class="ktInline ktHelp" style="float: left; margin-right: 5px;" title="{i18n}What is admin mode?{/i18n}"></a-->
     <p class="descriptiveText">{i18n}Administrator mode is not enabled.{/i18n}</p>
 
     <!--a class="ktInline ktAction ktDenied" href="{$toggleurl}">{i18n}Enable Admin Mode{/i18n}</a-->
-    <a href="{$toggleurl}">{i18n}Enable admin mode{/i18n}</a>
+     <div class="form_actions"><a href="{$toggleurl}">{i18n}Enable admin mode{/i18n}</a></div>
 {/if}
 <!--/div-->
