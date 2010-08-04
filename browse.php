@@ -65,7 +65,7 @@ require_once(KT_LIB_DIR . '/actions/entitylist.php');
 require_once(KT_LIB_DIR . '/actions/bulkaction.php');
 
 require_once(KT_LIB_DIR .'/util/ktRenderArray.php');
-require_once(KT_LIB_DIR .'/util/ktVar.php');
+require_once(KT_LIB_DIR .'/render_helpers/browseView.helper.php');
 
 $sectionName = 'browse';
 
@@ -298,13 +298,14 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$aTemplateData['oldBrowse']=isset($_GET['oldBrowse'])?true:false;
 //			$aTemplateData['oldBrowse']=true;
 			if(!$aTemplateData['oldBrowse']){
-				$aTemplateData['bulkActionMenu']=$this->renderBulkActionMenu($aBulkActions);
+				$renderHelper=new browseViewHelper();
+				$aTemplateData['bulkActionMenu']=$renderHelper->renderBulkActionMenu($aBulkActions);
 				
 				$folderContentItems=$this->getCurrentFolderContent($this->oFolder->getId());
 				
 				$folderView=$pre_folderView=array();
-				foreach($folderContentItems['folders'] as $item)$pre_folderView[]=$this->renderFolderItem($item);
-				foreach($folderContentItems['documents'] as $item)$pre_folderView[]=$this->renderDocumentItem($item);
+				foreach($folderContentItems['folders'] as $item)$pre_folderView[]=$renderHelper->renderFolderItem($item);
+				foreach($folderContentItems['documents'] as $item)$pre_folderView[]=$renderHelper->renderDocumentItem($item);
 				
 				$pageCount=1;
 				$perPage=15;
@@ -329,9 +330,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				$aTemplateData['folderContents']=join($folderView);
 				
 				$aTemplateData['fragments']='';
-				$aTemplateData['fragments'].=$this->renderDocumentItem(null,true);
-				$aTemplateData['fragments'].=$this->renderFolderItem(null,true);
-				$aTemplateData['pagination']=$this->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
+				$aTemplateData['fragments'].=$renderHelper->renderDocumentItem(null,true);
+				$aTemplateData['fragments'].=$renderHelper->renderFolderItem(null,true);
+				$aTemplateData['pagination']=$renderHelper->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
 			}
 		}
 		
