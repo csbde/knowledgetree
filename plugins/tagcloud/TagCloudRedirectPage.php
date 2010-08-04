@@ -266,13 +266,15 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 	private function renderDocumentItem($item=NULL,$empty=false){
 		$fileNameCutoff=100;
 		
+		$item['id'] = $item['document_id'];
+		
 		$item['filename']=(strlen($item['filename'])>$fileNameCutoff)?substr($item['filename'],0,$fileNameCutoff-3)."...":$item['filename'];
 		
 		$ns=" not_supported";
 		$item['has_workflow']='';
 		$item['is_immutable']=$item['is_immutable']=='true'?true:false;
 		$item['is_immutable']=$item['is_immutable']?'':$ns;
-		$item['is_checkedout']=$item['checked_out_date']?'':$ns;
+		$item['is_checkedout']=($item['checked_out_date'] != 'n/a')?'':$ns;
 		
 		$item['actions.checkin']=$item['checked_out_date']?'':$ns;
 		$item['actions.cancel_checkout']=$item['checked_out_date']?'':$ns;
