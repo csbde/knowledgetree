@@ -305,6 +305,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				
 				$folderView=$pre_folderView=array();
 				foreach($folderContentItems['folders'] as $item)$pre_folderView[]=$renderHelper->renderFolderItem($item);
+				foreach($folderContentItems['shortcuts'] as $item)$pre_folderView[]=$renderHelper->renderDocumentItem($item,false,true);
 				foreach($folderContentItems['documents'] as $item)$pre_folderView[]=$renderHelper->renderDocumentItem($item);
 				
 				$pageCount=1;

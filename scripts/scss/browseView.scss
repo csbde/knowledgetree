@@ -455,6 +455,15 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 			margin: 0px;
 			padding: 0px;
 		}
+		
+		.shortcut{
+			@include tooltipIcon("/resources/graphics/newui/shortcut.gif","/resources/graphics/newui/shortcut.gif",200px,right);
+			position: absolute;
+			top: 20px;
+			right: -3px;
+			margin: 0px;
+			padding: 0px;
+		}
 	}
 	
 	.doc.item.highlighted {

@@ -77,7 +77,7 @@ class browseViewHelper {
 		return $tpl;
 	}
 	
-	public function renderDocumentItem($item=NULL,$empty=false){
+	public function renderDocumentItem($item=NULL,$empty=false,$shortcut=false){
 		$fileNameCutoff=100;
 		$oDocument = Document::get($item[id]);
 		$item['mimetypeid']=(method_exists($oDocument,'getMimeTypeId'))?$oDocument->getMimeTypeId():'0';
@@ -94,6 +94,7 @@ class browseViewHelper {
 			$item['mimeicon']='';
 		}
 		
+		
 		$item['filename']=(strlen($item['filename'])>$fileNameCutoff)?substr($item['filename'],0,$fileNameCutoff-3)."...":$item['filename'];
 		
 		$ns=" not_supported";
@@ -101,6 +102,7 @@ class browseViewHelper {
 		$item['is_immutable']=$item['is_immutable']=='true'?true:false;
 		$item['is_immutable']=$item['is_immutable']?'':$ns;
 		$item['is_checkedout']=$item['checked_out_date']?'':$ns;
+		$item['is_shortcut']=$shortcut?'':$ns;
 		
 		$item['actions.checkin']=$item['checked_out_date']?'':$ns;
 		$item['actions.cancel_checkout']=$item['checked_out_date']?'':$ns;
@@ -167,6 +169,8 @@ class browseViewHelper {
 								<span class="checked_out[is_checkedout]">
 									<span>This document is <strong>Checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
 								</span>
+								<span class="shortcut[is_shortcut]">
+								</span>
 								<span class="doc [thumbnailclass]">[thumbnail]</span>
 							</div>
 						</td>
@@ -177,6 +181,7 @@ class browseViewHelper {
 									<ul>
 										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="[actions.instant_view]"><a href="view.php?fDocumentId=[id]#preview">Instant View</a></li>
+										<li class="[actions.edit_online]"><a href="view.php?fDocumentId=[id]#preview">Edit Online</a></li>
 										
 										<li class="separator[separatorA]"></li>
 										
