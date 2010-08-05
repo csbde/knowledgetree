@@ -152,22 +152,22 @@ function createSearchBar(div, suffix)
 							})
 						]
 					}
-				},
+				}/*,
 				{
-					text: sSearchTranslations[13] , /*Toggle results format*/
+					text: sSearchTranslations[13] , //Toggle results format
 					menu: {
 					    shadow: false,
 					    minWidth: '150px',
 						items: [
 							new Ext.menu.CheckItem({
-								text: sSearchTranslations[14], /* search engine format */
+								text: sSearchTranslations[14], // search engine format
 								id: 'cbResultsFormatSearchEngine' + suffix,
 								checked: bResultsFormatSearchEngine,
 								group: 'format',
 								handler: onSearchEngineFormatClick
 							}),
 							new Ext.menu.CheckItem({
-								text: sSearchTranslations[15], /* browse view format */
+								text: sSearchTranslations[15], // browse view format 
 								id: 'cbBrowseSearchEngine' +  suffix,
 								checked: !bResultsFormatSearchEngine,
 								group: 'format',
@@ -175,7 +175,7 @@ function createSearchBar(div, suffix)
 							})
 						]
 					}
-				}
+				}*/
 			]
 		});
 

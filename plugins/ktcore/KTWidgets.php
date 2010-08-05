@@ -1445,8 +1445,6 @@ jQuery(document).ready(function(){
 	var newran = Math.random();
 	newran = Math.ceil(newran * 100000);
 	jQuery('#file_random_name').attr('value', newran);
-	console.log("onload" + newran);
-    //var ranfilename = jQuery('#file_random_name').val();
 	
     new AjaxUpload(button, 
     {
@@ -1460,7 +1458,6 @@ jQuery(document).ready(function(){
 					return;
 				}
 				ranfilename = jQuery('#file_random_name').val();
-				console.log("onSubmit" + ranfilename);
 				detectArchiveFile(file);
                 this.setData({
                     'AWSAccessKeyId' : '<?php echo $this->aOptions['amazonsettings']['AWSAccessKeyId']; ?>',
@@ -1492,7 +1489,6 @@ jQuery(document).ready(function(){
                 jQuery('#advanced_settings_metadata_button').show();
                 jQuery('#successful_upload_files_ul').show();
 				var listitem = '<li>';
-				console.log("onComplete" + ranfilename);
 				listitem += file;
 				listitem += '<input id="" name="file[]" type="hidden" value="'+ranfilename+'<?php echo '_'; ?>'+file+'" />';
 				listitem += '<span onclick="removeFile(this)" style="cursor:pointer;"> <img src="resources/graphics/delete.png" /> </span>';
@@ -1540,7 +1536,6 @@ jQuery(document).ready(function(){
 				jQuery('#successful_upload_files').children().each(function(index){
 					if(jQuery(this).text() != '')
 					{
-						console.log(jQuery(this).text().trim());
 						if (fileName == jQuery(this).text().trim())
 						{
 							alert('A file with the same name exists.');
