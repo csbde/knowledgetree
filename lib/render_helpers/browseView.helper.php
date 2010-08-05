@@ -199,6 +199,9 @@ class browseViewHelper {
 			$item['thumbnailclass'] = 'nopreview';
 		}
 		
+//		$item['zoho_url']=Zoho::kt_url() . '/' . Zoho::plugin_path() . '/zohoEdit.php?session='.session_id().'&document_id='.$item['id'];
+//		$item['zoho_edit']="zoho_edit" . time();
+		
 		$tpl='
 			<span class="doc browseView">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
@@ -227,7 +230,7 @@ class browseViewHelper {
 									<ul>
 										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="[actions.instant_view]"><a href="view.php?fDocumentId=[id]#preview">Instant View</a></li>
-										<li class="[actions.edit_online]"><a href="view.php?fDocumentId=[id]#preview">Edit Online</a></li>
+										<!-- <li class="[actions.edit_online]"><a href="javascript:;" onclick="window.open(\'[zoho_url]\',\'[zoho_edit]\',\'menubar=no, toolbar=no, directories=no, location=no, scrollbars=no, resizable=yes, status=no, width=1024, height=768\')">Edit Online</a></li> -->
 										
 										<li class="separator[separatorA]"></li>
 										
