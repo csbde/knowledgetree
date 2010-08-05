@@ -41,6 +41,51 @@ class browseViewHelper {
 		$response['pagination']=$this->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
 	}
 	
+	public function getFolderContent($folderId,$sortField='title',$asc=true){
+		$oUser=KTEntityUtil::get('User',  $_SESSION['userID']);
+		$KT=new KTAPI();
+		$session=$KT->start_system_session($oUser->getUsername());
+
+		//Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
+		$folder = &$KT->get_folder_contents($folderId,1,'DFS',3);
+		
+		$items=$folder['results']['items'];
+		
+		
+		$ret=array('folders'=>array(),'documents'=>array(),'shortcuts'=>array());
+
+		foreach($items as $item){
+			foreach($item as $key=>$value){
+				if($value=='n/a')$item[$key]=null;
+			}
+			switch($item['item_type']){
+				case 'F':
+					$item['is_shortcut']=false;
+					$ret['folders'][]=$item;
+					break;
+				case 'D':
+					$item['is_shortcut']=false;
+					$ret['documents'][]=$item;
+					break;
+				case 'S':
+					$item['is_shortcut']=true;
+					if($item['mime_type']=='folder'){
+						$ret['folders'][]=$item;
+					}else{
+						$ret['documents'][]=$item;
+					}
+					break;
+			}
+		}
+		
+		if(isset($sortField)){
+			$ret['documents']=ktvar::sortArrayMatrixByKeyValue($ret['documents'],$sortField,$asc);
+			$ret['folders']=ktvar::sortArrayMatrixByKeyValue($ret['folders'],$sortField,$asc);
+		}
+		
+		return $ret;
+	}
+		
 
 	public function paginateByDiv($pageCount,$pageClass,$paginationClass="paginate",$itemClass="item",$pageScript="alert([page])",$prevScript="alert('previous');",$nextScript="alert('next');"){
 		$idClass=$pageClass.'_[page]';
@@ -102,7 +147,7 @@ class browseViewHelper {
 		$item['is_immutable']=$item['is_immutable']=='true'?true:false;
 		$item['is_immutable']=$item['is_immutable']?'':$ns;
 		$item['is_checkedout']=$item['checked_out_date']?'':$ns;
-		$item['is_shortcut']=$shortcut?'':$ns;
+		$item['is_shortcut']=$item['is_shortcut']?'':$ns;
 		
 		$item['actions.checkin']=$item['checked_out_date']?'':$ns;
 		$item['actions.cancel_checkout']=$item['checked_out_date']?'':$ns;
@@ -170,6 +215,7 @@ class browseViewHelper {
 									<span>This document is <strong>Checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
 								</span>
 								<span class="shortcut[is_shortcut]">
+									<span>This is a shortcut to the file.</span>
 								</span>
 								<span class="doc [thumbnailclass]">[thumbnail]</span>
 							</div>
@@ -227,8 +273,11 @@ class browseViewHelper {
 		return ktVar::parseString($tpl,$item);
 	}
 	
-	public function renderFolderItem($item=NULL,$empty=false){
+	public function renderFolderItem($item=NULL,$empty=false,$shortcut=false){
 		//TODO: Tohir, if you put the .selected thing on the table $(.folder.item), it should work fine
+		$ns=" not_supported";
+		$item['is_shortcut']=$item['is_shortcut']?'':$ns;
+		
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
@@ -237,7 +286,9 @@ class browseViewHelper {
 						<input name="selection_f[]" type="checkbox" value="[id]" />
 					</td>
 					<td class="folder icon_cell" width="1">
-						<div class="folder icon"></div>
+						<div class="folder icon">
+							<span class="shortcut[is_shortcut]"><span>This is a shortcut to the folder.</span></span>
+						</div>
 					</td>
 					<td class="folder summary_cell">
 						<ul class="folder actionMenu">
@@ -250,7 +301,7 @@ class browseViewHelper {
 									</ul>
 							</li>
 						</ul>
-						<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[filename]</a></div>
+						<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[title]</a></div>
 						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
 					</td>
 				</tr>
