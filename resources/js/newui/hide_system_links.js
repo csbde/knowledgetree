@@ -2,7 +2,7 @@ var hidelinks={};
 
 hidelinks.linkList={
 		'System Config :: Client Tools'				:'admin.php?kt_path_info=sysConfig/clientconfigpage',
-		'System Config :: Email'					:'admin.php?kt_path_info=sysConfig/emailconfigpage',
+//		'System Config :: Email'					:'admin.php?kt_path_info=sysConfig/emailconfigpage',
 		'System Config :: Internationalization'		:'admin.php?kt_path_info=sysConfig/i18nconfigpage',
 		'System Config :: Manage Plugins'			:'admin.php?kt_path_info=sysConfig/plugins',
 		'System Config :: User Interface'			:'admin.php?kt_path_info=sysConfig/uiconfigpage',

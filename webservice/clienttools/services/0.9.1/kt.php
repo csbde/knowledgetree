@@ -1509,6 +1509,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 		{
 			$document = $kt->get_document_by_id($item->getDocumentId());
 
+
 			if (PEAR::isError ( $document )) {
 				// Ignore, dont add to list
 			} else {
@@ -1532,7 +1533,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 
 				// Determine Icon Path
 				$folderObj = $kt->get_folder_by_id ( $documentDetail['folder_id']);
-				
+
 				if (PEAR::isError ( $folderObj )) {
 					// Ignore, dont add to list
 					// Folder has been deleted
@@ -1551,11 +1552,6 @@ Fatal error:  Cannot unset string offsets in on line 981
 
 					$returnDocumentArray[] = $documentArray;
 				}
-				$path .= '/F_'.$documentDetail['folder_id'];
-
-				$documentArray['folderPath'] = $path;
-
-				$returnDocumentArray[] = $documentArray;
 			}
 		}
 
@@ -1726,7 +1722,7 @@ Fatal error:  Cannot unset string offsets in on line 981
 			$instantViewExists = 1;
 		}
 
-		$this->setResponse(array ('instantViewExists'=>$instantViewExists, 'version'=>'0.9.1'));
+		$this->setResponse(array ('instantViewExists'=>$instantViewExists, 'version'=>'0.9.2'));
 	}
 
 	function get_cond_metadata_rules()
