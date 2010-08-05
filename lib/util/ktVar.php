@@ -11,5 +11,10 @@ class ktVar{
 		
 		return str_replace($from,$to,$string);
 	}	
+	
+	public static function quickDebug($object=NULL,$title='Debug Output',$exit=true){
+		echo "<hr /><h1>{$title}</h1><pre>".print_r($object,true)."</pre><hr />";
+		if($exit)exit;
+	}
 }
 ?>
