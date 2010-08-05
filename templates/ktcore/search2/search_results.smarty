@@ -1,7 +1,7 @@
 {$context->oPage->requireJSResource('resources/js/toggleselect.js')}
 
 <div class="collapsible">
-<h4 onclick="toggleElementClass('expanded', this.parentNode)">{i18n}Search Criteria{/i18n}</h4>
+<h4 onclick="jQuery('.collapsiblebody').toggle();">{i18n}Search Criteria{/i18n}</h4>
 <div class="collapsiblebody">
 <fieldset>
 	<legend>{i18n}Search Criteria{/i18n}</legend>
