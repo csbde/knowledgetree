@@ -152,8 +152,10 @@
 	kt.pages.browse={};
 	
 	kt.pages.browse.addDocumentItem=function(item){
+		item.is_shortcut=item.is_shortcut?'':' not_supported';
 		item.is_immutable=item.is_immutable?'':' not_supported';
 		item.is_checkedout=item.is_checkedout?'':' not_supported';
+		item.document_link='view.php?fDocumentId='+item.id;
 	
 		var newItem=jQuery(jQuery('.fragment.document')[0]).html();
 		newItem=kt.lib.parseTemplate(newItem,item);
