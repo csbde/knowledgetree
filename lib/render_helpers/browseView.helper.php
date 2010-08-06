@@ -52,12 +52,13 @@ class browseViewHelper {
 		$items=$folder['results']['items'];
 		
 		
-		$ret=array('folders'=>array(),'documents'=>array(),'shortcuts'=>array());
+		$ret=array('folders'=>array(),'documents'=>array());
 
 		foreach($items as $item){
 			foreach($item as $key=>$value){
 				if($value=='n/a')$item[$key]=null;
 			}
+			$item['container_folder_id']=$folderId;
 			switch($item['item_type']){
 				case 'F':
 					$item['is_shortcut']=false;
@@ -83,6 +84,7 @@ class browseViewHelper {
 			$ret['folders']=ktvar::sortArrayMatrixByKeyValue($ret['folders'],$sortField,$asc);
 		}
 		
+//		ktvar::quickDebug($ret);
 		return $ret;
 	}
 		
@@ -140,6 +142,12 @@ class browseViewHelper {
 		}
 		
 		
+		if($item['linked_document_id']){
+			$item['document_link']="view.php?fDocumentId={$item['linked_document_id']}&fShortcutFolder={$item['container_folder_id']}";
+		}else{
+			$item['document_link']="view.php?fDocumentId={$item['id']}";
+		}
+		
 		$item['filename']=(strlen($item['filename'])>$fileNameCutoff)?substr($item['filename'],0,$fileNameCutoff-3)."...":$item['filename'];
 		
 		$ns=" not_supported";
@@ -176,6 +184,7 @@ class browseViewHelper {
 		if($item['is_immutable']==''){
 			$item['separatorA']=$item['separatorB']=$item['separatorC']=$ns;
 		}
+		
 		
 
 		// Check if the thumbnail exists
@@ -229,7 +238,7 @@ class browseViewHelper {
 								<li class="actionIcon actions">
 									<ul>
 										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
-										<li class="[actions.instant_view]"><a href="view.php?fDocumentId=[id]#preview">Instant View</a></li>
+										<li class="[actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
 										<!-- <li class="[actions.edit_online]"><a href="javascript:;" onclick="window.open(\'[zoho_url]\',\'[zoho_edit]\',\'menubar=no, toolbar=no, directories=no, location=no, scrollbars=no, resizable=yes, status=no, width=1024, height=768\')">Edit Online</a></li> -->
 										
 										<li class="separator[separatorA]"></li>
@@ -250,7 +259,7 @@ class browseViewHelper {
 									</ul>
 								</li>
 							</ul>
-							<div class="title"><a class="clearLink" href="view.php?fDocumentId=[id]" style="">[filename]</a></div>
+							<div class="title"><a class="clearLink" href="[document_link]" style="">[title]</a></div>
 							
 							<div class="detail"><span class="item">
 								Owner: <span class="user">[owned_by]</span></span><span class="item">Created: <span class="date">[created_date]</span> by <span class="user">[created_by]</span></span><span class="item">Updated: <span class="date">[modified_date]</span> by <span class="user">[modified_by]</span></span>
