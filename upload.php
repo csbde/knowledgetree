@@ -41,7 +41,12 @@
 
 	function uploadFile($fileTmp, $fileName, $folderID = 1) {
 		$GLOBALS['default']->log->debug("DRAGDROP Uploading file $fileTmp $fileName");
-
+		
+        $aFilename = explode('.', $fileName);
+        $cnt = count($aFilename);
+        $sExtension = $aFilename[$cnt - 1];
+        $fileName = preg_replace("/\.$sExtension/", '', $fileName);
+        
     	$oStorage = KTStorageManagerUtil::getSingleton();
 
     	$oKTConfig =& KTConfig::getSingleton();
