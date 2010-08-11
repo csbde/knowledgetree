@@ -329,6 +329,20 @@ class EmailConfigPageDispatcher extends BaseConfigDispatcher
     }
 }
 
+class ActionReasonsDispatcher extends BaseConfigDispatcher
+{
+    function check() {
+        $this->category = 'Document Action Settings';
+        $this->name = _kt('Document Action Settings');
+
+        $this->aBreadcrumbs[] = array(
+            'url' => $_SERVER['PHP_SELF'],
+            'name' => _kt('Document Action Settings'),
+        );
+        return parent::check();
+    }
+}
+
 class GeneralConfigPageDispatcher extends BaseConfigDispatcher
 {
     function check() {
