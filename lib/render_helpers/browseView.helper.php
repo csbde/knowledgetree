@@ -1,5 +1,6 @@
 <?php
 require_once(KT_LIB_DIR .'/util/ktVar.php');
+require_once(KT_LIB_DIR .'/util/ktutil.inc');
 
 
 class browseViewHelper {
@@ -145,7 +146,7 @@ class browseViewHelper {
 		if($item['linked_document_id']){
 			$item['document_link']="view.php?fDocumentId={$item['linked_document_id']}&fShortcutFolder={$item['container_folder_id']}";
 		}else{
-			$item['document_link']="view.php?fDocumentId={$item['id']}";
+			$item['document_link']=KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['id']));
 		}
 		
 		$item['filename']=(strlen($item['filename'])>$fileNameCutoff)?substr($item['filename'],0,$fileNameCutoff-3)."...":$item['filename'];

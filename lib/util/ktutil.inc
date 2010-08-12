@@ -1373,6 +1373,51 @@ class KTUtil {
     	$ret=PEAR::isError($res) ? false : (count($res)>0 ? true : false);
     	return $ret;
     }
+	
+	public static function buildUrl($file, $params)
+	{
+		$useCleanURL = TRUE;
+		
+		if ($useCleanURL) {
+			return KTUtil::buildCleanUrl($file, $params);
+		} else {
+			return KTUtil::buildNormalUrl($file, $params);
+			
+		}
+	}
+	
+	private function buildNormalUrl($file, $params)
+	{
+		if (count($params) == 0) {
+			return $file;
+		} else {
+			$file .= '?';
+			$sep = '';
+			
+			foreach ($params as $param=>$name)
+			{
+				$file .= $sep.$param.'='.$name;
+				$sep = '&';
+			}
+			
+			return $file;
+		}
+	}
+	
+	private function buildCleanUrl($file, $params)
+	{
+		switch($file)
+		{
+			case 'view.php':
+				return '01'.base_convert($params['fDocumentId'], 10, 36);
+				break;
+			case 'browse.php':
+				return '00'.base_convert($params['fDocumentId'], 10, 36);
+				break;
+			default:
+				return KTUtil::buildNormalUrl($file, $params);
+		}
+	}
     
 }
 
