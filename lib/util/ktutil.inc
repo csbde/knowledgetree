@@ -1408,11 +1408,33 @@ class KTUtil {
 	{
 		switch($file)
 		{
+			case '/view.php':
 			case 'view.php':
-				return '01'.base_convert($params['fDocumentId'], 10, 36);
+				
+				$config = KTConfig::getSingleton();
+				$rootUrl = $config->get('KnowledgeTree/rootUrl');
+				
+				$url = $rootUrl.'/01'.base_convert($params['fDocumentId'], 10, 36);
+				
+				// Remove parameter
+				unset($params['fDocumentId']);
+				// Rebuild with additional parameters
+				return KTUtil::buildNormalUrl($url, $params);
+				
 				break;
+			case '/browse.php':
 			case 'browse.php':
-				return '00'.base_convert($params['fDocumentId'], 10, 36);
+				
+				$config = KTConfig::getSingleton();
+				$rootUrl = $config->get('KnowledgeTree/rootUrl');
+				
+				$url = $rootUrl.'/00'.base_convert($params['fFolderId'], 10, 36);
+				
+				// Remove parameter
+				unset($params['fFolderId']);
+				// Rebuild with additional parameters
+				return KTUtil::buildNormalUrl($url, $params);
+				
 				break;
 			default:
 				return KTUtil::buildNormalUrl($file, $params);

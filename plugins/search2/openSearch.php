@@ -337,7 +337,7 @@ class openSearch extends KTStandardDispatcher {
         $channel_title = $channel_entry->appendChild($this->dom->createElement("title"));
         $channel_title->appendChild($this->dom->createTextNode("{$doc->title}"));
         $channel_link = $channel_entry->appendChild($this->dom->createElement("link"));
-        $channel_link->setAttribute("href", "http://{$this->server}/view.php?fDocumentId={$doc->id}");
+        $channel_link->setAttribute("href", "http://{$this->server}/".KTUtil::buildUrl('view.php', array('fDocumentId'=>$doc->id)));
         $channel_updated = $channel_entry->appendChild($this->dom->createElement("updated"));
         $channel_updated->appendChild($this->dom->createTextNode("{$doc->dateModified}"));
 
@@ -353,7 +353,7 @@ class openSearch extends KTStandardDispatcher {
         $channel_title = $channel_entry->appendChild($this->dom->createElement("title"));
         $channel_title->appendChild($this->dom->createTextNode("{$folder->title}"));
         $channel_link = $channel_entry->appendChild($this->dom->createElement("link"));
-        $channel_link->setAttribute("href", "http://{$this->server}/view.php?fFolderId={$folder->id}");
+		$channel_link->setAttribute("href", "http://{$this->server}/".KTUtil::buildUrl('browse.php', array('fFolderId'=>$folder->id)));
         $channel_updated = $channel_entry->appendChild($this->dom->createElement("updated"));
         $channel_updated->appendChild($this->dom->createTextNode("{$folder->dateModified}"));
 
@@ -369,7 +369,7 @@ class openSearch extends KTStandardDispatcher {
         $channel_title = $channel_entry->appendChild($this->dom->createElement("title"));
         $channel_title->appendChild($this->dom->createTextNode("{$doc->title}"));
         $channel_link = $channel_entry->appendChild($this->dom->createElement("link"));
-        $channel_link->setAttribute("href", "http://{$this->server}/view.php?fDocumentId={$doc->id}");
+        $channel_link->setAttribute("href", "http://{$this->server}/".KTUtil::buildUrl('view.php', array('fDocumentId'=>$doc->id)));
 
         return $channel;
     }
@@ -383,7 +383,7 @@ class openSearch extends KTStandardDispatcher {
         $channel_title = $channel_entry->appendChild($this->dom->createElement("title"));
         $channel_title->appendChild($this->dom->createTextNode("{$folder->title}"));
         $channel_link = $channel_entry->appendChild($this->dom->createElement("link"));
-        $channel_link->setAttribute("href", "http://{$this->server}/view.php?fFolderId={$folder->id}");
+        $channel_link->setAttribute("href", "http://{$this->server}/".KTUtil::buildUrl('browse.php', array('fFolderId'=>$folder->id)));
 
         return $channel;
     }
