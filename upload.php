@@ -41,12 +41,7 @@
 
 	function uploadFile($fileTmp, $fileName, $folderID = 1) {
 		$GLOBALS['default']->log->debug("DRAGDROP Uploading file $fileTmp $fileName");
-		
-        $aFilename = explode('.', $fileName);
-        $cnt = count($aFilename);
-        $sExtension = $aFilename[$cnt - 1];
-        $fileName = preg_replace("/\.$sExtension/", '', $fileName);
-        
+		 
     	$oStorage = KTStorageManagerUtil::getSingleton();
 
     	$oKTConfig =& KTConfig::getSingleton();
@@ -75,17 +70,25 @@
        		$GLOBALS['default']->log->error("DRAGDROP DocumentType: {$oDocumentType->getMessage()}");
        		return false;
         }
-
+        
+        //remove extension to generate title
+        $aFilename = explode('.', $fileName);
+        $cnt = count($aFilename);
+        $sExtension = $aFilename[$cnt - 1];
+        $title = preg_replace("/\.$sExtension/", '', $fileName);
+        
         $aOptions = array(
             'temp_file' => $sS3TempFile,
             'documenttype' => $oDocumentType,
             'metadata' => array(),
-            'description' => $fileName,
+            'description' => $title,
             'cleanup_initial_file' => true
         );
 
         $GLOBALS['default']->log->debug("DRAGDROP Folder $folderID User {$oUser->getID()}");
 
+        
+        
         $oDocument =& KTDocumentUtil::add($oFolder, $fileName, $oUser, $aOptions);
         if (PEAR::isError($oDocument)) {
             $GLOBALS['default']->log->error("DRAGDROP Document add: {$oDocument->getMessage()}");
@@ -201,22 +204,37 @@
 		die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Document could not be uploaded", "filename":"'.$fileName.'"}, "id" : "id"}');
 	}
 	
-	$documentID = $oDocument->getId();	
-	$oOwner = User::get($oDocument->getOwnerID());
-	$oCreator = User::get($oDocument->getCreatorID());
-	$oModifier = User::get($oDocument->getModifiedUserId());
-
-	$fileNameCutoff=100;
-		
+	//assemble the file's name
+	$fileNameCutoff = 100;
 	$fileName = $oDocument->getFileName();
-	$fileTitle = $oDocument->getName();
-	
 	$fileName = (strlen($fileName)>$fileNameCutoff) ? substr($fileName, 0, $fileNameCutoff-3)."..." : $fileName;
-
-	$output = '{"jsonrpc" : "2.0", "success" : {"id":"'.$documentID.'", "filename":"'.$fileName.'", "title":"'.$fileTitle.'", "owned_by":"'.$oOwner->getName().'", "created_by":"'.$oCreator->getName().'", "created_date":"'.$oDocument->getCreatedDateTime().'", "modified_by":"'.$oModifier->getName().'", "modified_date":"'.$oDocument->getCreatedDateTime().'"}, "id" : "id"}';
 	
-	echo($output);
-
+	//get the icon path
+	$mimetypeid = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId():'0';
+	$iconFile = 'resources/mimetypes/newui/'.KTMime::getIconPath($mimetypeid).'.png';
+	$iconExists = file_exists(KT_DIR.'/'.$iconFile);
+	if($iconExists){		
+		$mimeIcon = str_replace('\\','/',$GLOBALS['default']->rootUrl.'/'.$iconFile);
+		$mimeIcon = "background-image: url(".$mimeIcon.")";
+	}else{
+		$mimeIcon = '';
+	}
+	
+	//assemble the item
+	$item['id'] = $oDocument->getId();	
+	$item['owned_by'] = User::get($oDocument->getOwnerID());
+	$item['created_by'] = User::get($oDocument->getCreatorID());
+	$item['modified_by'] = User::get($oDocument->getModifiedUserId());
+	$item['filename'] = $fileName;
+	$item['title'] = $oDocument->getName();
+	$item['mimeicon'] = $mimeIcon;
+	
+	$json['success'] = $item; 
+	
+	echo(json_encode($json));
+	
+	//$output = '{"jsonrpc" : "2.0", "success" : {"id":"'.$documentID.'", "filename":"'.$fileName.'", "title":"'.$fileTitle.'", "owned_by":"'.$oOwner->getName().'", "created_by":"'.$oCreator->getName().'", "created_date":"'.$oDocument->getCreatedDateTime().'", "modified_by":"'.$oModifier->getName().'", "modified_date":"'.$oDocument->getCreatedDateTime().'", "icon_exists":"'.$iconExists.'", "icon_file":"'.$iconFile.'", "mimeicon":"'.$mimeIcon.'"}, "id" : "id"}';
+	
 	exit(0);
 
 ?>
