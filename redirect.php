@@ -84,7 +84,7 @@ class Redirector
 		
 		if (!$this->foundDestination) {
 			header("HTTP/1.0 404 Not Found");
-			echo 'Page not found';
+			$this->finalizeRun('dashboard.php');
 		}
     }
 	

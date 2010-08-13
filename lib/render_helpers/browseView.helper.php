@@ -144,7 +144,7 @@ class browseViewHelper {
 		
 		
 		if($item['linked_document_id']){
-			$item['document_link']="view.php?fDocumentId={$item['linked_document_id']}&fShortcutFolder={$item['container_folder_id']}";
+			$item['document_link']=KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['linked_document_id'], 'fShortcutFolder'=>$item['container_folder_id']));
 		}else{
 			$item['document_link']=KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['id']));
 		}
@@ -291,6 +291,8 @@ class browseViewHelper {
 		$ns=" not_supported";
 		$item['is_shortcut']=$item['is_shortcut']?'':$ns;
 		
+		$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['id']));
+		
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
@@ -314,7 +316,7 @@ class browseViewHelper {
 									</ul>
 							</li>
 						</ul>
-						<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[title]</a></div>
+						<div class="title"><a class="clearLink" href="[link]">[title]</a></div>
 						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
 					</td>
 				</tr>

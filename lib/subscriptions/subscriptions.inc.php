@@ -51,6 +51,7 @@ require_once(KT_LIB_DIR . "/dashboard/Notification.inc.php");
 require_once(KT_LIB_DIR . "/alert/delivery/EmailAlert.inc");
 
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
+require_once(KT_LIB_DIR . "/util/ktutil.inc");
 
 class SubscriptionEvent {
     var $eventTypes = array(
@@ -597,7 +598,8 @@ class SubscriptionContent {
             $documentAlertText .= _kt(' in the folder "').$info['location_name']._kt('"');
         }
         if($bulk_action && $info['event_type']!="RemoveSubscribedFolder") {
-            $browse = "$rootUrl/browse.php?fFolderId=$bulk_action";
+            //$browse = "$rootUrl/browse.php?fFolderId=$bulk_action";
+			$browse = KTUtil::buildUrl('browse.php', array('fFolderId'=>$bulk_action));
             $subFolder = '<a href="'.$browse.'">'._kt('View Subscription Folder ').'</a>';
         }
         // set up links

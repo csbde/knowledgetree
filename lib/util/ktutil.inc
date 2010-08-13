@@ -1374,9 +1374,15 @@ class KTUtil {
     	return $ret;
     }
 	
-	public static function buildUrl($file, $params)
+	public static function buildUrl($file, $params=null)
 	{
 		$useCleanURL = TRUE;
+		
+		// Convert to Array
+		if ($params == null) {
+			$params = array();
+		}
+		
 		
 		if ($useCleanURL) {
 			return KTUtil::buildCleanUrl($file, $params);
@@ -1427,6 +1433,10 @@ class KTUtil {
 				
 				$config = KTConfig::getSingleton();
 				$rootUrl = $config->get('KnowledgeTree/rootUrl');
+				
+				if (!isset($params['fFolderId'])) {
+					$params['fFolderId'] = 1;
+				}
 				
 				$url = $rootUrl.'/00'.base_convert($params['fFolderId'], 10, 36);
 				
