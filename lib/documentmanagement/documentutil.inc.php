@@ -650,7 +650,8 @@ $sourceDocument->getName(),
             $aFields =& $oFieldset->getFields();
             $aFieldValues = array();
             foreach ($aFields as $oField) {
-                $val = KTUtil::arrayGet($aSimpleMetadata, $oField->getId());
+            	$iId = $oField->getId();
+                $val = KTUtil::arrayGet($aSimpleMetadata, $iId);
                 if (!empty($v)) {
                     $aFieldValues[$oField->getId()] = $val;
                 }
