@@ -59,16 +59,55 @@ function removeFile(fileName) {
 	jQuery("#extract-documents").fadeOut('slow');
 	jQuery('input[type=submit]').attr("disabled","disabled");
 }
-
-function confirmSubmit() {
-	uploadPercent = jQuery('#kt_swf_upload_percent').val();
-	if (uploadPercent == '') {
+	
+function confirmSubmit() 
+{
+	var uploadPercent = jQuery('#kt_swf_upload_percent').val();
+	if (uploadPercent == '') 
+	{
 		alert('You must select a file to upload before you can submit this form.');
 		return false;
-	} else if (uploadPercent < 100){
+	} 
+	else if (uploadPercent < 100)
+	{
 		alert('Your file upload is still in progress.');
 		return false;
-	} else if (uploadPercent == 100) {
-		return true;
-	}
+	} 
+	// Retrieve url from hidden div, and add metadata check flag
+	var url = jQuery('#action_url').attr('value');
+	var murl = url + '&check_metadata=true';
+	// Hide any previous errors
+	jQuery('.errorMessage').hide();
+	jQuery('#type_metadata_fields .field').attr('class', 'field');
+	jQuery.post(
+			murl,
+			jQuery("form").serialize(),
+		   	function(data)
+		   	{
+		   		if(data == 'true')
+		   		{
+		   			jQuery("form").each(
+		   				function()
+		   				{
+		   					var pattern = /bulkupload/gi;
+		   					var action = jQuery(this).attr('action');
+		   					if(action.match(pattern) != null)
+		   					{
+								jQuery(this).submit();
+		   					}
+		   				}
+		   			);
+		   		}
+		   		var response = eval('(' + data + ')');
+				for (var i in response)
+				{
+					var id = response[i].id;
+					var message = response[i].message;
+					jQuery('#meta_option_' + id).attr('class', 'field error');
+					jQuery('#meta_option_' + id + ' .errorMessage').html(message);
+					jQuery('#meta_option_' + id + ' .errorMessage').show();
+				}
+		   	}
+	);
+	return false;
 }
