@@ -2,6 +2,7 @@
 <!-- FILE: kt3/browse.smarty -->
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/MochiKitPacked.js')}
 {$context->oPage->requireJSResource('resources/js/toggleselect.js')}
+{$javascript}
 {if ($custom_title != null)}
 <h2>{$custom_title|sanitize}</h2>
 {/if}

@@ -1,9 +1,30 @@
 <?php
 require_once(KT_LIB_DIR .'/util/ktVar.php');
 require_once(KT_LIB_DIR .'/util/ktutil.inc');
-
+require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 
 class browseViewHelper {
+	
+	public function __construct()
+	{
+		if (KTPluginUtil::pluginIsActive('zoho.plugin')) {
+			$this->zohoEnabled = TRUE;
+			require_once(KT_PLUGIN_DIR . '/ktlive/zoho/zoho.inc.php');
+		} else {
+			$this->zohoEnabled = FALSE;
+		}
+	}
+	
+	public function getJavaScript()
+	{
+		$javaScript = '';
+		
+		if ($this->zohoEnabled) {
+			$javaScript .= '<script type="text/javascript">'.Zoho::editScript().'</script>';
+		}
+		
+		return $javaScript;
+	}
 	
 	public function renderBrowseFolder($folderId=NULL){
 		$response=Array();
@@ -35,6 +56,8 @@ class browseViewHelper {
 		$folderView[]="</div>";
 		
 		$response['folderContents']=join($folderView);
+		
+		
 		
 		$response['fragments']='';
 		$response['fragments'].=$this->renderDocumentItem(null,true);
@@ -211,6 +234,19 @@ class browseViewHelper {
 		
 //		$item['zoho_url']=Zoho::kt_url() . '/' . Zoho::plugin_path() . '/zohoEdit.php?session='.session_id().'&document_id='.$item['id'];
 //		$item['zoho_edit']="zoho_edit" . time();
+
+		
+		// Default - hide edit online
+		$item['allowdoczohoedit'] = '';
+		
+		if ($this->zohoEnabled) {
+			if (Zoho::resolve_type($item["mime_type"]))
+			{
+				if ($item['actions.checkout'] != $ns) {
+					$item['allowdoczohoedit'] = '<li><a href="javascript:;" onclick="zohoEdit(\''.$item['id'].'\')">Edit Document Online</a></li>';
+				}
+			}
+		}
 		
 		$tpl='
 			<span class="doc browseView">
@@ -241,6 +277,7 @@ class browseViewHelper {
 										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="[actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
 										<!-- <li class="[actions.edit_online]"><a href="javascript:;" onclick="window.open(\'[zoho_url]\',\'[zoho_edit]\',\'menubar=no, toolbar=no, directories=no, location=no, scrollbars=no, resizable=yes, status=no, width=1024, height=768\')">Edit Online</a></li> -->
+										[allowdoczohoedit]
 										
 										<li class="separator[separatorA]"></li>
 										

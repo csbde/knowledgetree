@@ -345,6 +345,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				$aTemplateData['fragments'].=$renderHelper->renderDocumentItem(null,true);
 				$aTemplateData['fragments'].=$renderHelper->renderFolderItem(null,true);
 				$aTemplateData['pagination']=$renderHelper->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
+				$aTemplateData['javascript'] = $renderHelper->getJavaScript();
 			}
 		}
 		
