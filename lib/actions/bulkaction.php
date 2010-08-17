@@ -80,6 +80,7 @@ class KTBulkAction extends KTStandardDispatcher {
         $this->oActiveEntityList = null;
         $this->oUser =& $oUser;
         $this->oPlugin =& $oPlugin;
+        $this->oConfig =& KTConfig::getSingleton();
         // Bulk Action Notification
         $this->uploadedDocs = array();
         $this->uploadedFolders = array();
