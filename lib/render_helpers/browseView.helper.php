@@ -2,6 +2,7 @@
 require_once(KT_LIB_DIR .'/util/ktVar.php');
 require_once(KT_LIB_DIR .'/util/ktutil.inc');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
+require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 
 class browseViewHelper {
 	
@@ -185,6 +186,13 @@ class browseViewHelper {
 		$item['actions.cancel_checkout']=$item['checked_out_date']?'':$ns;
 		$item['actions.checkout']=$item['checked_out_date']?$ns:'';
 		
+		if (get_class($oDocument) == 'Document') {
+			$item['actions.copy']=KTDocumentUtil::canBeCopied($oDocument)?'':$ns;
+			$item['actions.move']=KTDocumentUtil::canBeMoved($oDocument)?'':$ns;
+			$item['actions.delete']=KTDocumentUtil::canBeDeleted($oDocument)?'':$ns;
+		} else {
+			$item['actions.move']=$item['actions.copy']=$item['actions.move']=$ns;
+		}
 		
 		//Modifications to perform when the document has been checked out
 		if($item['checked_out_date']){
@@ -201,12 +209,13 @@ class browseViewHelper {
 			$item['actions.finalize_document']=$ns;
 		}
 		
-		$item['separatorA']=$item['actions.download']=='' || $item['actions.instantview']=='' ?'':$ns;
-		$item['separatorB']=$item['actions.checkout']=='' || $item['actions.checkin']=='' || $item['actions.cancel_checkout']=='' ?'':$ns;
-		$item['separatorC']=$item['actions.alert']=='' || $item ['actions.email']=='' ?'':$ns;
+		$item['separatorA']=$item['actions.copy']=='' ?'':$ns;
+		$item['separatorB']=$item['actions.download']=='' || $item['actions.instantview']=='' ?'':$ns;
+		$item['separatorC']=$item['actions.checkout']=='' || $item['actions.checkin']=='' || $item['actions.cancel_checkout']=='' ?'':$ns;
+		$item['separatorD']=$item['actions.alert']=='' || $item ['actions.email']=='' ?'':$ns;
 
 		if($item['is_immutable']==''){
-			$item['separatorA']=$item['separatorB']=$item['separatorC']=$ns;
+			$item['separatorB']=$item['separatorC']=$item['separatorD']=$ns;
 		}
 		
 		
@@ -276,21 +285,26 @@ class browseViewHelper {
 									<ul>
 										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="[actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
-										<!-- <li class="[actions.edit_online]"><a href="javascript:;" onclick="window.open(\'[zoho_url]\',\'[zoho_edit]\',\'menubar=no, toolbar=no, directories=no, location=no, scrollbars=no, resizable=yes, status=no, width=1024, height=768\')">Edit Online</a></li> -->
 										[allowdoczohoedit]
 										
 										<li class="separator[separatorA]"></li>
+										
+										<li class="[actions.copy]"><a href="action.php?kt_path_info=ktcore.actions.document.copy&fDocumentId=[id]">Copy</a></li>
+										<li class="[actions.move]"><a href="action.php?kt_path_info=ktcore.actions.document.move&fDocumentId=[id]">Move</a></li>
+										<li class="[actions.delete]"><a href="action.php?kt_path_info=ktcore.actions.document.delete&fDocumentId=[id]">Delete</a></li>
+										
+										<li class="separator[separatorB]"></li>
 										
 										<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
 										<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
 										<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
 										
-										<li class="separator[separatorB]"></li>
+										<li class="separator[separatorC]"></li>
 										
 										<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
 										<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
 										
-										<li class="separator[separatorC]"></li>
+										<li class="separator[separatorD]"></li>
 										
 										<li class="[actions.change_owner]"><a href="action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Document Ownership</a></li>
 										<li class="[actions.finalize_document]"><a href="action.php?kt_path_info=ktcore.actions.document.immutable&fDocumentId=[id]">Finalize Document</a></li>
