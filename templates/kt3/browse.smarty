@@ -2,6 +2,7 @@
 <!-- FILE: kt3/browse.smarty -->
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/MochiKitPacked.js')}
 {$context->oPage->requireJSResource('resources/js/toggleselect.js')}
+{$javascript}
 {if ($custom_title != null)}
 <h2>{$custom_title|sanitize}</h2>
 {/if}
@@ -160,6 +161,7 @@
 		var newItem=jQuery(jQuery('.fragment.document')[0]).html();
 		newItem=kt.lib.parseTemplate(newItem,item);
 		var elem=jQuery(newItem);
+		var mime=jQuery('.doc.icon',elem).attr('style',item.mimeicon);
 		jQuery('.page.page_'+kt.pages.browse.curPage).append(elem);
 	};
 	

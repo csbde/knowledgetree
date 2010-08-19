@@ -112,6 +112,8 @@ class KTBulkDeleteAction extends KTBulkAction {
     }
 
     function form_collectinfo() {
+        global $default;
+    	
         $cancelUrl = $this->getReturnUrl();
 
         $oForm = new KTForm;
@@ -125,7 +127,6 @@ class KTBulkDeleteAction extends KTBulkAction {
         ));
 
         // Electronic Signature if enabled
-        global $default;
         if($default->enableESignatures){
             $widgets[] = array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
@@ -143,13 +144,16 @@ class KTBulkDeleteAction extends KTBulkAction {
                     'required' => true
                 ));
         }
-
-        $widgets[] = array('ktcore.widgets.reason',array(
-                'name' => 'reason',
-                'label' => _kt('Note'),
-                'value' => null,
-                'required' => false,
-            ));
+        
+		
+        if(($this->oConfig->get('actionreasons/globalReasons')?true:false)){
+	        $widgets[] = array('ktcore.widgets.reason',array(
+	                'name' => 'reason',
+	                'label' => _kt('Note'),
+	                'value' => null,
+	                'required' => false,
+	         ));
+        }
 
         $oForm->setWidgets($widgets);
 
@@ -220,6 +224,13 @@ class KTBulkDeleteAction extends KTBulkAction {
 
     // info collection step
     function do_collectinfo() {
+        global $default;
+        if(!$default->enableESignatures && !$this->oConfig->get('actionreasons/globalReasons',false)){
+	        $this->store_lists();
+	        return $this->do_performaction();
+        }
+        
+        
         $this->store_lists();
         $this->get_lists();
 
@@ -367,7 +378,7 @@ class KTBulkMoveAction extends KTBulkAction {
         }
 
 
-        $oForm->addWidget(
+        if(($this->oConfig->get('actionreasons/globalReasons')?true:false))$oForm->addWidget(
             array('ktcore.widgets.reason',array(
                 'name' => 'reason',
                 'label' => _kt('Note'),
@@ -611,7 +622,7 @@ class KTBulkCopyAction extends KTBulkAction {
                 )));
         }
 
-        $oForm->addWidget(
+       if(($this->oConfig->get('actionreasons/globalReasons')?true:false)) $oForm->addWidget(
             array('ktcore.widgets.reason',array(
                 'name' => 'reason',
                 'label' => _kt('Note'),
@@ -705,10 +716,9 @@ class KTBulkCopyAction extends KTBulkAction {
     function do_collectinfo() {
         $this->store_lists();
         $this->get_lists();
-	$oTemplating =& KTTemplating::getSingleton();
-	$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_info');
-        return $oTemplate->render(array('context' => $this,
-                                        'form' => $this->form_collectinfo()));
+	    $oTemplating =& KTTemplating::getSingleton();
+		$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_info');
+        return $oTemplate->render(array('context' => $this,'form' => $this->form_collectinfo()));
     }
 
     function do_performaction() {
@@ -805,7 +815,7 @@ class KTBulkArchiveAction extends KTBulkAction {
                 )));
         }
 
-        $oForm->addWidget(
+        if(($this->oConfig->get('actionreasons/globalReasons')?true:false))$oForm->addWidget(
             array('ktcore.widgets.reason',array(
                 'name' => 'reason',
                 'label' => _kt('Note'),
@@ -953,7 +963,13 @@ class KTBulkArchiveAction extends KTBulkAction {
 
     // info collection step
     function do_collectinfo() {
-        $this->store_lists();
+        global $default;
+        if(!$default->enableESignatures && !$this->oConfig->get('actionreasons/globalReasons',false)){
+	        $this->store_lists();
+	        return $this->do_performaction();
+        }
+
+    	$this->store_lists();
         $this->get_lists();
 
         //check if a the symlinks deletion confirmation has been passed yet
@@ -1306,12 +1322,13 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                 ));
         }
 
-        $widgets[] = array('ktcore.widgets.reason',array(
+        if(($this->oConfig->get('actionreasons/globalReasons')?true:false)) $widgets[] = array('ktcore.widgets.reason',array(
                 'name' => 'reason',
                 'label' => _kt('Note'),
                 'value' => null,
                 'required' => false,
                 ));
+                
         $widgets[] = array('ktcore.widgets.boolean', array(
                 'label' => _kt('Download Files'),
                 'description' => _kt('Indicate whether you would like to download these file as part of the checkout.'),

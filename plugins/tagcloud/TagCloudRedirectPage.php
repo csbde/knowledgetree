@@ -218,6 +218,8 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 			$aTemplateData['fragments'].=$browseViewRender->renderDocumentItem(null,true);
 			$aTemplateData['fragments'].=$browseViewRender->renderFolderItem(null,true);
 			$aTemplateData['pagination']=$browseViewRender->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
+			
+			$aTemplateData['javascript'] = $browseViewRender->getJavaScript();
 		//}
 		
 		

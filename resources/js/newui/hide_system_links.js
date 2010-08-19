@@ -1,5 +1,7 @@
 var hidelinks={};
 
+hidelinks.doHide=true;
+
 hidelinks.linkList={
 		'System Config :: Client Tools'				:'admin.php?kt_path_info=sysConfig/clientconfigpage',
 //		'System Config :: Email'					:'admin.php?kt_path_info=sysConfig/emailconfigpage',
@@ -17,6 +19,7 @@ hidelinks.hideLink=function(urii){
 }
 
 hidelinks.run=function(){
+	if(!hidelinks.doHide)return;
 	for(var key in hidelinks.linkList){
 		var urii=hidelinks.linkList[key];
 		hidelinks.hideLink(urii);

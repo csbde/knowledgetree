@@ -40,7 +40,7 @@
 {foreach key=key from=$indexErrors item=indexError}
 <tr>
 	<td class="centered"><input type="checkbox" name="index_error[{$indexError.document_id}]" value="1"/></td>
-	<td><a href="{$root_url}/view.php?fDocumentId={$indexError.document_id}">{$indexError.filename|truncate:40:'...'}</a></td>
+	<td><a href="{url file="$root_url/view.php" fDocumentId=$indexError.document_id}">{$indexError.filename|truncate:40:'...'}</a></td>
 	<td>{if $indexError.extractor}{$indexError.extractor}{else}<p><font color="#FF9933">{i18n}n/a{/i18n}</font></p>{/if}</td>
 	<td>{$indexError.indexdate}</td>
 
