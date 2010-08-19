@@ -115,11 +115,21 @@ class browseViewHelper {
 	
 	public function noFilesOrFoldersMessage()
 	{
-		return '<span class="notification">There are currently no viewable items in this folder.</span>';
-		/*
+		return '<span class="notification">
 		<h2>There\'s nothing in this folder yet!</h2>
 		(Here are three easy ways you can change that...)
-		</span>';*/
+		<!--
+		<table>
+			<tr>
+				<td><div class="roundnum">1</div></td>
+				<td class="info">aaaa</td>
+				<td><div class="roundnum">2</div></td>
+				<td class="info">aaaa</td>
+				<td><div class="roundnum">3</div></td>
+				<td class="info">aaaa</td>
+			</tr>
+		</table>-->
+		</span>';
 		
 	}
 
