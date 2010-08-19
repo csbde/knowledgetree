@@ -220,20 +220,29 @@
 		$mimeIcon = '';
 	}
 	
+	$oOwner = User::get($oDocument->getOwnerID());
+	$oCreator = User::get($oDocument->getCreatorID());
+	$oModifier = User::get($oDocument->getModifiedUserId());
+	
 	//assemble the item
 	$item['id'] = $oDocument->getId();	
-	$item['owned_by'] = User::get($oDocument->getOwnerID());
-	$item['created_by'] = User::get($oDocument->getCreatorID());
-	$item['modified_by'] = User::get($oDocument->getModifiedUserId());
+	$item['owned_by'] = $oOwner->getName();
+	$item['created_by'] = $oCreator->getName();
+	$item['modified_by'] = $oModifier->getName();
 	$item['filename'] = $fileName;
 	$item['title'] = $oDocument->getName();
 	$item['mimeicon'] = $mimeIcon;
+	$item['created_date'] = $oDocument->getCreatedDateTime();
+	$item['modified_date'] = $oDocument->getLastModifiedDate();
 	
 	$json['success'] = $item; 
 	
 	echo(json_encode($json));
 	
-	//$output = '{"jsonrpc" : "2.0", "success" : {"id":"'.$documentID.'", "filename":"'.$fileName.'", "title":"'.$fileTitle.'", "owned_by":"'.$oOwner->getName().'", "created_by":"'.$oCreator->getName().'", "created_date":"'.$oDocument->getCreatedDateTime().'", "modified_by":"'.$oModifier->getName().'", "modified_date":"'.$oDocument->getCreatedDateTime().'", "icon_exists":"'.$iconExists.'", "icon_file":"'.$iconFile.'", "mimeicon":"'.$mimeIcon.'"}, "id" : "id"}';
+	//$documentID = $oDocument->getId();
+	//$fileTitle = $oDocument->getName();
+	
+	//$output = '{"jsonrpc" : "2.0", "success" : {"id":"'.$documentID.'", "filename":"'.$fileName.'", "title":"'.$fileTitle.'", "owned_by":"'.$oOwner->getName().'", "created_by":"'.$oCreator->getName().'", "created_date":"'.$oDocument->getCreatedDateTime().'", "modified_by":"'.$oModifier->getName().'", "modified_date":"'.$oDocument->getLastModifiedDate().'", "mimeicon":"'.$mimeIcon.'"}, "id" : "id"}';
 	
 	exit(0);
 
