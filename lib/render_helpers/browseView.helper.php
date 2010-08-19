@@ -52,7 +52,7 @@ class browseViewHelper {
 			$folderView[]=$item;
 		}
 		if($itemCount<=0){
-			$folderView[]='<span class="notification">There are currently no viewable items in this folder.</span>';
+			$folderView[]=$this->noFilesOrFoldersMessage();
 		}
 		$folderView[]="</div>";
 		
@@ -112,7 +112,16 @@ class browseViewHelper {
 //		ktvar::quickDebug($ret);
 		return $ret;
 	}
+	
+	public function noFilesOrFoldersMessage()
+	{
+		return '<span class="notification">There are currently no viewable items in this folder.</span>';
+		/*
+		<h2>There\'s nothing in this folder yet!</h2>
+		(Here are three easy ways you can change that...)
+		</span>';*/
 		
+	}
 
 	public function paginateByDiv($pageCount,$pageClass,$paginationClass="paginate",$itemClass="item",$pageScript="alert([page])",$prevScript="alert('previous');",$nextScript="alert('next');"){
 		$idClass=$pageClass.'_[page]';
