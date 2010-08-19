@@ -82,6 +82,7 @@ class KTDocumentAction extends KTStandardDispatcher {
         $this->oDocument =& $oDocument;
         $this->oUser =& $oUser;
         $this->oPlugin =& $oPlugin;
+        $this->oConfig =& KTConfig::getSingleton();
         $this->aBreadcrumbs = array(
             array('action' => 'browse', 'name' => _kt('Browse')),
         );
