@@ -369,6 +369,10 @@ class KTCorePlugin extends KTPlugin {
             _kt('Email'), _kt('Define the sending email server address, email password, email port, and user name, and view and modify policies for emailing documents and attachments from KnowledgeTree.'),
             'admin/configSettings.php', null);
 
+		$this->registerAdminPage('actionreasons', 'ActionReasonsDispatcher', 'contentSetup',
+            _kt('Document Action Settings'), _kt('Define system behaviour when document actions are performed. (e.g. Enforce reasons for Check-out)'),
+            'admin/configSettings.php', null);
+
         $this->registerAdminPage('uiconfigpage', 'UIConfigPageDispatcher', 'sysConfig',
             _kt('User Interface'), _kt('View and modify settings on Browse View actions, OEM name, automatic refresh, search results restrictions, custom logo details, paths to dot binary, graphics, and log directory, and whether to enable/disable condensed UI, \'open\' from downloads, sort metadata, and skinning.'),
             'admin/configSettings.php', null);
