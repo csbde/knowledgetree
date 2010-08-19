@@ -48,7 +48,7 @@ require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
 require_once(KT_LIB_DIR . '/help/help.inc.php');
 require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
-
+require_once(KT_LIB_DIR . "/util/ktutil.inc"); 
 
 class loginResetDispatcher extends KTDispatcher {
 
@@ -416,7 +416,7 @@ class loginResetDispatcher extends KTDispatcher {
                 $exceptionsList = explode(',', str_replace(' ','',$redirectToDashboardList));
                 $user = User::get($_SESSION['userID']);
                 $username = $user->getUserName();
-                $url .= (in_array($username, $exceptionsList))?'/dashboard.php':'/browse.php';
+                $url .= (in_array($username, $exceptionsList))?'/dashboard.php':KTUtil::buildUrl('/browse.php');
             }
             else
             {

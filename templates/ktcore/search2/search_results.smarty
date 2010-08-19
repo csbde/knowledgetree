@@ -156,7 +156,7 @@ function onShowAll(showall)
 	    <span class="contenttype {$hit->MimeIconPath}">
 
 		{if $hit->IsDocument}
-			&nbsp;&nbsp;<a href="{$rootUrl}/view.php?fDocumentId={$hit->Id}" title="{$hit->Title}"><B>{$hit->Title|mb_truncate:80:'...':true}</b></a>
+			&nbsp;&nbsp;<a href="{url file="$root_url/view.php" fDocumentId=$hit->Id}" title="{$hit->Title}"><B>{$hit->Title|mb_truncate:80:'...':true}</b></a>
 			{if $hit->Title != $hit->Filename}
 				<br/>
 				<font style=" color: green ">{i18n}Filename:{/i18n} {$hit->Filename|mb_truncate:80:'...':true}</font>
@@ -173,7 +173,7 @@ function onShowAll(showall)
 			{/if}
 
 		{else}
-			&nbsp;&nbsp;<a href="{$rootUrl}/browse.php?fFolderId={$hit->RealId}{if $hit->IsProxy}&fShortcutFolder={$hit->parentId}{/if}"><B>{$hit->Title|mb_truncate:30:'...':true}</b></a>
+			&nbsp;&nbsp;<a href="{url file="$rootUrl/browse.php" fFolderId=$hit->RealId}{if $hit->IsProxy}&fShortcutFolder={$hit->parentId}{/if}"><B>{$hit->Title|mb_truncate:30:'...':true}</b></a>
 
         {/if}
 
@@ -190,7 +190,7 @@ function onShowAll(showall)
 		<tr><td colspan=2>{$hit->Text}</td></tr>
 		<tr><td>
 		{if $hit->IsDocument}
-		      <font style=" color: green "><a href="{$rootUrl}/browse.php?fFolderId={$hit->FolderId}" tag="{$hit->FullPath}">{$hit->FullPath|mb_truncate:30:'...':true}</a>/{$hit->Title|mb_truncate:30:'...':true} - {$hit->Filesize}</font>
+		      <font style=" color: green "><a href="{url file="$rootUrl/browse.php" fFolderId=$hit->FolderId}" tag="{$hit->FullPath}">{$hit->FullPath|mb_truncate:30:'...':true}</a>/{$hit->Title|mb_truncate:30:'...':true} - {$hit->Filesize}</font>
 		{else}
 		      <font style=" color: green "><a href="{$rootUrl}/browse.php?{if $hit->IsProxy}fFolderId={$hit->linkedId}&fShortcutFolder={$hit->parentId}{else}fFolderId={$hit->FolderId}{/if}" tag="{if $hit->IsProxy}{$hit-full_path}{else}{$hit->FullPath}{/if}">{if $hit->IsProxy}/{$hit->full_path|mb_truncate:30:'...':true}{else}{$hit->FullPath|mb_truncate:30:'...':true}{/if}</a></font>
 		{/if}

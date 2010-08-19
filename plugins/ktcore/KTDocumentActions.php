@@ -272,8 +272,9 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         foreach ($QS as $k => $v) {
             $frag[] = sprintf('%s=%s', urlencode($k), urlencode($v));
         }
-
-        redirect(KTUtil::ktLink('view.php',null,implode('&', $frag)));
+        
+        //redirect(KTUtil::ktLink('view.php',null,implode('&', $frag)));
+        redirect(KTUtil::buildUrl(KTUtil::ktLink('view.php'), $frag));
     }
 
     function getUserForId($iUserId) {
