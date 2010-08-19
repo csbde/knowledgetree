@@ -377,5 +377,5 @@ class browseViewHelper {
 		return ktVar::parseString($tpl,$item);
 	}
 
-}
+} 
 ?>
