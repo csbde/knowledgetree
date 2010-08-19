@@ -161,6 +161,7 @@
 		var newItem=jQuery(jQuery('.fragment.document')[0]).html();
 		newItem=kt.lib.parseTemplate(newItem,item);
 		var elem=jQuery(newItem);
+		var mime=jQuery('.doc.icon',elem).attr('style',item.mimeicon);
 		jQuery('.page.page_'+kt.pages.browse.curPage).append(elem);
 	};
 	
