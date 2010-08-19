@@ -1416,7 +1416,7 @@ class KTCoreAjaxUploadWidget extends KTWidget {
      * @return String configuration script.
      */
     private function getConfiguration($folderId = null){
-        
+        // TODO : This needs to be in a javascript file, and get passed the variable.
         if (is_null($folderId)) {
             $folderId = $_GET['fFolderId'];
         }
@@ -1431,9 +1431,7 @@ class KTCoreAjaxUploadWidget extends KTWidget {
         
         ob_start();
         ?>
-        
 jQuery(document).ready(function(){
-
     jQuery('#extract-documents').hide();
     jQuery('#document_type_field').hide();
     jQuery('#type_metadata_fields').hide();
