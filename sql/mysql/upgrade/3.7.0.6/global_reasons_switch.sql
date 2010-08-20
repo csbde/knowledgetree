@@ -1,0 +1,3 @@
+INSERT INTO  `config_settings` (`group_name` ,`display_name` ,`description` ,`item` ,`value` ,`default_value` ,`type` ,`options` ,`can_edit`) VALUES ('actionreasons', 'Enable Global Document Reasons', 'If switched on, reasons will be required for all major document actions including Check-in, Check-out, Delete, Finalize, Copy, Move and Archive.', 'globalReasons', 'false', 'false', 'boolean', NULL, 1);
+INSERT INTO `config_groups` (`name`, `display_name`, `description`, `category`) VALUES ('actionreasons', 'Document Action Settings', 'Configure how the system deals with reasons for document actions.', 'Document Action Settings');
+
