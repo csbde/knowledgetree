@@ -77,9 +77,9 @@ class ArrayLib{
 		$arrayAF=array_flip($arrayA);
 		$arrayBF=array_flip($arrayB);
 		
-		$added=NULL;
-		$moved=NULL;
-		$removed=NULL;
+		$added=array();
+		$moved=array();
+		$removed=array();
 		
 		$added=array_flip(array_diff($arrayBF,$arrayAF));
 		$removed=array_flip(array_diff($arrayAF,$arrayBF));
@@ -111,7 +111,10 @@ class ArrayLib{
 			if(isset($added[$key]))unset($added[$key]);
 			if(isset($removed[$key]))unset($removed[$key]);
 		}
-		
+
+		foreach($moved as $file){
+			if(isset($added[$file]))unset($added[$file]);
+		}
 		
 		$ret=array('added'=>$added,'removed'=>$removed,'moved'=>$moved,'changed'=>$changed,'duplicate'=>$duplicate);		
 		return $ret;
