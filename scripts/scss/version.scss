@@ -10,6 +10,11 @@ body{
 }
 
 
+.page{
+	max-width: 800px;
+	margin: auto;
+}
+
 .collapsebox{
 	position: relative;
 	@include corners(10px);
@@ -25,7 +30,7 @@ body{
 		background-color: darken($background,10%);
 		border: 1px solid darken($background,20%);
 		padding: 2px 5px;
-		text-shadow: #666666 1px 1px 2px;
+		text-shadow: #333333 1px 1px 3px;
 		font-size: 14px;
 		@include corners(5px);
 	}
@@ -58,6 +63,16 @@ body{
 	
 	&.altered{
 		$background: #E0B4B9;
+		background-color: $background;
+		border: 1px solid darken($background,20%);
+		.title{
+			background-color: darken($background,10%);
+			border: 1px solid darken($background,20%);
+		}
+	}
+		
+	&.snapshot{
+		$background: #A9F0A1;
 		background-color: $background;
 		border: 1px solid darken($background,20%);
 		.title{

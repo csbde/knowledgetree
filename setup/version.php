@@ -1,19 +1,242 @@
 <?php
+
 session_start();
-require_once('../lib/util/ktvar.php');
 define('ROOT_FOLDER',str_replace($_SERVER['DOCUMENT_ROOT'],'',realpath(dirname(__FILE__).'/../')));
 error_reporting(E_ALL ^ E_NOTICE);
 
+class ArrayLib{
+	public static function parseString($string='',$xform=array()){
+		if(!is_array($xform))$xform=array();
+		
+		$from=array_keys($xform);
+		$to=array_values($xform);
+		
+		$delim=create_function('&$item,$key,$prefix','$item="[".$item."]";');
+		array_walk($from,$delim);
+		
+		return str_replace($from,$to,$string);
+	}	
+	
+	public static function quickDebug($object=NULL,$title='Debug Output',$exit=true){
+		echo "<hr /><h1>{$title}</h1><pre>".print_r($object,true)."</pre><hr />";
+		if($exit)exit;
+	}
+	
+	public static function sortArrayMatrixByKeyValue($array, $sortKey,$asc=true){
+		$arr=$array;
+		if(is_array($array))if(count($array)>0)if(isset($array[0][$sortKey])){
+			$tmpArray=$arr=array();
+			foreach($array as $key=>$item){
+				$tmpArray[strtolower($item[$sortKey])]=$key;
+			}
+			if($asc){
+				ksort($tmpArray);
+			}else{
+				krsort($tmpArray);
+			}
+			foreach($tmpArray as $key){
+				$arr[]=$array[$key];
+			}
+		}
+		return $arr;
+	}
+	
+	
+	public static function arrayRemoveEmpty($arr=NULL,$trim=false){
+		$ridx=array();
+		foreach($arr as $key=>$val){
+			if($trim){
+				$val=trim($val);
+				$arr[$key]=$val;
+			}
+			if(!$val)$ridx[]=$key;
+		}
+		
+		foreach($ridx as $key){
+			unset($arr[$key]);
+		}
+		return $arr;
+	}
+	
+	public static function preg_quote_array($arr=array(),$delimiter=null){
+		foreach($arr as $key=>$val){
+			$arr[$key]=preg_quote($val,$delimiter);
+		}
+		return $arr;
+	}
+	
+	/**
+	 * 
+	 * @param $arrayA
+	 * @param $arrayB
+	 * @return unknown_type
+	 * 
+	 * O[n]=2n;
+	 */
+	public static function array_compare($arrayA=array(),$arrayB=array()){
+		$arrayAF=array_flip($arrayA);
+		$arrayBF=array_flip($arrayB);
+		
+		$added=NULL;
+		$moved=NULL;
+		$removed=NULL;
+		
+		$added=array_flip(array_diff($arrayBF,$arrayAF));
+		$removed=array_flip(array_diff($arrayAF,$arrayBF));
+		
+		
+		$delIdx=array();
+		
+		foreach($arrayA as $key => $val){
+			if(isset($arrayBF[$val]))if($arrayBF[$val] != $key){
+				if($arrayA[$key] == $arrayB[$key]){
+					$duplicate[$key]=$arrayBF[$val];
+				}else{
+					$moved[$key]=$arrayBF[$val];
+				}
+				$delIdx[$key]=true;
+			}
+		}
 
-$rootFolders=ktFileMan::getSubFolders(ROOT_FOLDER);
+		foreach($arrayA as $key => $val){
+			if(in_array($key,$arrayBF))if($arrayA[$key]!==$arrayB[$key])if(!isset($delIdx[$key])){
+				$iChanged[$val]=$arrayB[$key];
+				$changed[$key]=$iChanged;
+				$delIdx[$key]=true;
+			}
+		}
+		
+		
+		foreach($delIdx as $key => $val){
+			if(isset($added[$key]))unset($added[$key]);
+			if(isset($removed[$key]))unset($removed[$key]);
+		}
+		
+		
+		$ret=array('added'=>$added,'removed'=>$removed,'moved'=>$moved,'changed'=>$changed,'duplicate'=>$duplicate);		
+		return $ret;
+	}
+	
+}
+
+class FileMan{
+	public static function fixDirectorySeparators($string=NULL){
+		$tx=array("\\"=>DIRECTORY_SEPARATOR,'/'=>DIRECTORY_SEPARATOR);
+		$nstr=str_replace(array_keys($tx),array_values($tx),$string);
+		$nstr=ArrayLib::arrayRemoveEmpty(explode(DIRECTORY_SEPARATOR,$nstr),true);
+		$nstr=implode(DIRECTORY_SEPARATOR,$nstr);
+		$nstr=($nstr[0]==DIRECTORY_SEPARATOR || $nstr[1]==':') ? $nstr : DIRECTORY_SEPARATOR.$nstr;
+		return $nstr;
+	}
+	
+	public static function getFolderContents($path=NULL,$deep=false,$excludeMatch=array()){
+		if(is_array($excludeMatch)){
+			foreach($excludeMatch as $key=>$match){
+				$excludeMatch[$key]=self::fixDirectorySeparators($match);
+			}
+			$ignore='/'.implode('|',ArrayLib::preg_quote_array($excludeMatch)).'/';
+		}else{
+			$excludeMatch=NULL;
+			$ignore=NULL;
+		}
+		
+		
+		if(is_array($path)){
+			$path=implode(DIRECTORY_SEPARATOR,$path);
+		}
+		
+		$path=realpath(self::fixDirectorySeparators($path));
+		$contents=array();
+		
+		if($handle=opendir($path)){
+			while(($file=readdir($handle))!==false){
+				if($file!=='.' && $file !== '..'){
+					$fullFile=$path.DIRECTORY_SEPARATOR.$file;
+					$match=$ignore==NULL?true:(preg_match($ignore,$fullFile)<=0);
+					if($match){
+						$type=@filetype($fullFile);
+						if($type=='file'){
+							$contents[]=$fullFile;
+						}
+						if($type=='dir' && $deep){
+							$contents=array_merge($contents,self::getFolderContents($fullFile,$deep,$excludeMatch));
+						}
+					}
+				}
+			}
+			closedir($handle);
+		}
+		
+		return $contents;
+	}
+	
+	public static function relativizeList($path,$list){
+		foreach($list as $key=>$item){
+			$list[$key]=str_replace($path,'',$item);
+		}
+		return $list;
+	}
+	
+	public static function getSubFolders($path=NULL){
+		if(is_array($path)){
+			$path=implode(DIRECTORY_SEPARATOR,$path);
+		}
+		
+		$path=realpath(self::fixDirectorySeparators($path)); 
+		$contents=array();
+		
+		if($handle=opendir($path)){
+			while(($file=readdir($handle))!==false){
+				if($file!=='.' && $file !== '..'){
+					$fullFile=$path.DIRECTORY_SEPARATOR.$file;
+					$type=@filetype($fullFile); 
+					if($type=='dir'){
+						$contents[]=$file;
+					}
+				}
+			}
+			closedir($handle);
+		}
+		sort($contents);
+		return $contents;
+	}
+	
+	public static function hashList($list=array(),$path){
+		if(!is_array($list))$list=array($list);
+		$ihashes=array();
+		foreach($list as $item){
+			$fitem=$path.$item;
+			if(is_file($fitem)){
+				$ihashes[$item]=hash_file('md5',$fitem);
+			}
+		}
+		$ret=array();
+		$ret['fileHashes']=$ihashes;
+		$ret['fullHash']=md5(implode('',$ihashes));
+		return $ret;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+$rootFolders=FileMan::getSubFolders(ROOT_FOLDER);
 
 $includes=array();
 if(isset($_POST['excludefilter'])){ //POST Received
 	$excludeFilter=str_replace("\r",'',str_replace("\n",',',$_POST['excludefilter']));
-	$excludeFilter=ktVar::arrayRemoveEmpty(explode(',',$excludeFilter),true);
+	$excludeFilter=ArrayLib::arrayRemoveEmpty(explode(',',$excludeFilter),true);
 	$includes=is_array($_POST['includes'])?$_POST['includes']:array();
-	$fullFileList=ktFileMan::relativizeList(ROOT_FOLDER,ktFileMan::getFolderContents(ROOT_FOLDER,true,$excludeFilter,true));
-	$hashed=ktFileMan::hashList($fullFileList,ROOT_FOLDER);
+	$fullFileList=FileMan::relativizeList(ROOT_FOLDER,FileMan::getFolderContents(ROOT_FOLDER,true,$excludeFilter,true));
+	$hashed=FileMan::hashList($fullFileList,ROOT_FOLDER);
 	
 	$snapshot=array(
 		'exclude'=>implode(',',$excludeFilter),
@@ -25,8 +248,8 @@ if(isset($_POST['excludefilter'])){ //POST Received
 	$compare_snapshot=$_POST['compare_snapshot'];
 	if($compare_snapshot){
 		$compare_snapshot=@json_decode(@base64_decode($compare_snapshot),true);
-		
-		$new_files=array_diff_assoc($compare_snapshot['hash']['fileHashes'],$hashed['fileHashes']);
+		$alter=ArrayLib::array_compare($compare_snapshot['hash']['fileHashes'],$hashed['fileHashes']);
+//		ArrayLib::quickDebug($alter,null,true);
 	}
 }
 
@@ -215,73 +438,115 @@ ver=new function(){
 </script>
 </head>
 <body>
-
-	<h2>Version Snapshot for :: <?php echo realpath(ROOT_FOLDER); ?></h2>
-
-	<form action="" method="POST">
-		<div class="collapsebox collapsed includelist"><span class="title">Include List</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
-			<span class="body">
-				<?php foreach($rootFolders as $folder): ?>
-				<span class="row" style="width: 150px;"><input type="checkbox" name="includes[]"<?php if(in_array($folder,$includes)) echo "checked "; ?> value="<?php echo $folder;?>"></input><?php echo $folder; ?></span>
-				<?php endforeach; ?>
-			</span>
-		</div>
+	<div class="page">
+		<h2>Version Snapshot for :: <?php echo realpath(ROOT_FOLDER); ?></h2>
 	
-	
-	
-		<div class="collapsebox includelist collapsed"><span class="title">Exclude Filter</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
-			<span class="body">
-				<textarea name="excludefilter"><?php if(isset($excludeFilter)){echo implode("\n",$excludeFilter);}else{echo '.git\,\var\,\luceneserver\,\thirdparty,\resources\,\AirFrame\,.htaccess,.project,tests';} ?></textarea>
-			</span>
-		</div>
-	
-	
-	
-		<div class="collapsebox includelist collapsed"><span class="title">Compare With Version Snapshot</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
-			<span class="body">
-				<textarea name="compare_snapshot"><?php echo isset($_POST['compare_snapshot'])?$_POST['compare_snapshot']:'';?></textarea>
-			</span>
-		</div>
-		
-	<input type="submit" value="Go"></input>
-	</form>	
-	<hr /><br />
-	<?php if(isset($_POST['excludefilter'])): ?>
-		<div class="collapsebox includelist collapsed response"><span class="title">Full File List (<?php echo count($fullFileList); ?>)</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
-			<span class="body">
-				<?php foreach($fullFileList as $file): ?>
-				<span class="row"><?php echo $file; ?></span>
-				<?php endforeach; ?>		
-			</span>
-		</div>
-	
-		<div class="collapsebox includelist collapsed response"><span class="title">System Hash (<?php echo $hashed['fullHash']; ?>)</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
-			<span class="body">
-				<?php foreach ($hashed['fileHashes'] as $file => $hash): ?>
-				<span class="row"><?php echo "({$hash}) {$file}"; ?></span>
-				<?php endforeach; ?>
-			</span>
-		</div>
-		
-		<div class="collapsebox includelist collapsed response"><span class="title">Snapshot</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
-			<span class="body">
-				<textarea><?php echo $snapshot; ?></textarea>
-			</span>
-		</div>
+		<form action="" method="POST">
+			<div class="collapsebox collapsed includelist" style="display: none;"><span class="title">Include List</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
+				<span class="body">
+					<?php foreach($rootFolders as $folder): ?>
+					<span class="row" style="width: 150px;"><input type="checkbox" name="includes[]"<?php if(in_array($folder,$includes)) echo "checked "; ?> value="<?php echo $folder;?>"></input><?php echo $folder; ?></span>
+					<?php endforeach; ?>
+				</span>
+			</div>
 		
 		
-
-	<?php endif; ?>
+		
+			<div class="collapsebox includelist collapsed"><span class="title">Exclude Filter</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
+				<span class="body">
+					<textarea name="excludefilter"><?php if(isset($excludeFilter)){echo implode("\n",$excludeFilter);}else{echo '.git\,\var\,\luceneserver\,\thirdparty,\resources\,\AirFrame\,.htaccess,.project,tests';} ?></textarea>
+				</span>
+			</div>
+		
+		
+		
+			<div class="collapsebox includelist collapsed"><span class="title">Compare With Version Snapshot</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
+				<span class="body">
+					<textarea name="compare_snapshot"><?php echo isset($_POST['compare_snapshot'])?$_POST['compare_snapshot']:'';?></textarea>
+				</span>
+			</div>
+			
+		<input type="submit" value="Go"></input>
+		</form>	
+		<hr /><br />
+		<?php if(isset($_POST['excludefilter'])): ?>
+			<div class="collapsebox includelist collapsed response"><span class="title">Full File List (<?php echo count($fullFileList); ?>)</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
+				<span class="body">
+					<ul>
+						<?php foreach($fullFileList as $file): ?>
+						<li><?php echo $file; ?></li>
+						<?php endforeach; ?>
+					</ul>		
+				</span>
+			</div>
+		
+			<div class="collapsebox includelist collapsed response"><span class="title">System Hash (<?php echo $hashed['fullHash']; ?>)</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
+				<span class="body">
+					<ul>
+						<?php foreach ($hashed['fileHashes'] as $file => $hash): ?>
+						<li><?php echo "({$hash}) {$file}"; ?></li>
+						<?php endforeach; ?>
+					</ul>
+				</span>
+			</div>
+			
+			<div class="collapsebox includelist collapsed snapshot"><span class="title">Snapshot</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
+				<span class="body">
+					<textarea><?php echo $snapshot; ?></textarea>
+				</span>
+			</div>
+			
+			
 	
-	<?php if (is_array($new_files)) if(count($new_files)>0): ?>
-		<div class="collapsebox includelist response"><span class="title">Changed Files since Snapshot(<?php echo count( $new_files); ?>)</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
-			<span class="body">
-				<?php foreach ($new_files as $file =>$hash): ?>
-				<span class="row"><?php echo "{$file}"; ?></span>
-				<?php endforeach; ?>
-			</span>
-		</div>
-	<?php endif; ?>
-
+		<?php endif; ?>
+		<hr /><br />
+		<?php if (is_array($alter['added'])) if(count($alter['added'])>0): ?>
+			<div class="collapsebox includelist altered"><span class="title">NEW since Snapshot(<?php echo count($alter['added']); ?>)</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
+				<span class="body">
+					<ul>
+						<?php foreach ($alter['added'] as $file =>$hash): ?>
+						<li><?php echo "{$file}"; ?></li>
+						<?php endforeach; ?>
+					</ul>
+				</span>
+			</div>
+		<?php endif; ?>
+	
+		<?php if (is_array($alter['removed'])) if(count($alter['removed'])>0): ?>
+			<div class="collapsebox includelist altered"><span class="title">REMOVED since Snapshot(<?php echo count($alter['removed']); ?>)</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
+				<span class="body">
+					<ul>
+						<?php foreach ($alter['removed'] as $file =>$hash): ?>
+						<li><?php echo "{$file}"; ?></li>
+						<?php endforeach; ?>
+					</ul>
+				</span>
+			</div>
+		<?php endif; ?>
+	
+		<?php if (is_array($alter['changed'])) if(count($alter['changed'])>0): ?>
+			<div class="collapsebox includelist altered"><span class="title">CHANGED since Snapshot(<?php echo count($alter['changed']); ?>)</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
+				<span class="body">
+					<ul>
+						<?php foreach ($alter['changed'] as $file =>$hashes): ?>
+						<li><?php echo "{$file}"; ?></li>
+						<?php endforeach; ?>
+					</ul>
+				</span>
+			</div>
+		<?php endif; ?>
+	
+		<?php if (is_array($alter['moved'])) if(count($alter['moved'])>0): ?>
+			<div class="collapsebox includelist altered"><span class="title">MOVED since Snapshot(<?php echo count($alter['moved']); ?>)</span><a class="control" onclick="ver.collapseBox.toggle(this)">+</a>&nbsp;
+				<span class="body">
+					<ul>
+						<?php foreach ($alter['moved'] as $file =>$newFile): ?>
+						<li>(<?php echo "{$file}"; ?>) <strong><?php echo "{$newFile}";?></strong> </li>
+						<?php endforeach; ?>
+					</ul>
+				</span>
+			</div>
+		<?php endif; ?>
+	</div>
 </body>
 </html>

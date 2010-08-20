@@ -1,13 +1,17 @@
 body { padding: 10px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; }
 
+.page { max-width: 800px; margin: auto; }
+
 .collapsebox { position: relative; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; background-color: #eeeeee; border: 1px solid #bbbbbb; display: block; margin-bottom: 15px; }
-.collapsebox .title { position: absolute; top: -10px; left: 10px; background-color: #d4d4d4; border: 1px solid #bbbbbb; padding: 2px 5px; text-shadow: #666666 1px 1px 2px; font-size: 14px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+.collapsebox .title { position: absolute; top: -10px; left: 10px; background-color: #d4d4d4; border: 1px solid #bbbbbb; padding: 2px 5px; text-shadow: #333333 1px 1px 3px; font-size: 14px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
 .collapsebox .control { position: absolute; top: -10px; right: 20px; background-color: #eeeeee; padding: 0px 5px; border: 1px solid #cccccc; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; margin: 0px; font-size: 14px; font-weight: bold; }
 .collapsebox .control:hover { cursor: pointer; }
 .collapsebox.response { background-color: #ebe8c7; border: 1px solid #d0c97c; }
 .collapsebox.response .title { background-color: #ded9a1; border: 1px solid #d0c97c; }
 .collapsebox.altered { background-color: #e0b4b9; border: 1px solid #c26c76; }
 .collapsebox.altered .title { background-color: #d19097; border: 1px solid #c26c76; }
+.collapsebox.snapshot { background-color: #a9f0a1; border: 1px solid #59e249; }
+.collapsebox.snapshot .title { background-color: #81e975; border: 1px solid #59e249; }
 .collapsebox.collapsed .body { display: none; }
 .collapsebox .body { margin: 0px 10px 10px 10px; display: block; }
 
