@@ -342,7 +342,13 @@ class browseViewHelper {
 		$ns=" not_supported";
 		$item['is_shortcut']=$item['is_shortcut']?'':$ns;
 		
-		$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['id']));
+		if ($item['linked_folder_id'] == '') {
+			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['id']));
+		} else {
+			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['linked_folder_id'], 'fShortcutFolder'=>$item['container_folder_id']));
+		}
+		
+		
 		
 		$tpl='
 			<span class="doc browseView">
