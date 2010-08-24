@@ -1443,7 +1443,7 @@ jQuery(document).ready(function(){
 	var newran = Math.random();
 	newran = Math.ceil(newran * 100000);
 	jQuery('#file_random_name').attr('value', newran);
-	
+	//swapElementFromRequest('advanced_settings_metadata','presentation/lookAndFeel/knowledgeTree/documentmanagement/getTypeMetadataFields.php?fDocumentTypeID=' + '1', '1');
     new AjaxUpload(button, 
     {
 			action: '<?php echo $this->aOptions['amazonsettings']['formAction']; ?>', 
@@ -1455,6 +1455,7 @@ jQuery(document).ready(function(){
 				{
 					return;
 				}
+				jQuery('form .form_actions').hide();
 				ranfilename = jQuery('#file_random_name').val();
 				detectArchiveFile(file);
                 this.setData({
@@ -1479,6 +1480,7 @@ jQuery(document).ready(function(){
 					return;
 				}
 				ranfilename = jQuery('#file_random_name').val();
+				var title = xtractFileTitle(file);
 				button.show();
                 jQuery('#uploading_spinner').css({visibility: 'hidden'});
                 jQuery('#cancelButton').hide();
@@ -1487,9 +1489,10 @@ jQuery(document).ready(function(){
                 jQuery('#advanced_settings_metadata_button').show();
                 jQuery('#successful_upload_files_ul').show();
 				var listitem = '<li>';
-				listitem += file;
-				listitem += '<input id="" name="file[]" type="hidden" value="'+ranfilename+'<?php echo '_'; ?>'+file+'" />';
+				listitem += '<span id="'+ranfilename+'_title">'+title+'</span>';
+				listitem += '<input id="'+ranfilename+'_htitle" name="file[]" type="hidden" value="'+ranfilename+'<?php echo '_'; ?>'+file+'" />';
 				listitem += '<span onclick="removeFile(this)" style="cursor:pointer;"> <img src="resources/graphics/delete.png" /> </span>';
+				listitem += '<span onclick="editTitle(\''+ranfilename+'\', \''+title+'\')" style="cursor:pointer;"> <img src="thirdparty/icon-theme/16x16/actions/document-properties.png" /> </span>';
 				listitem += '</li>';
 				var newran = Math.random();
 				newran = Math.ceil(newran * 100000);
@@ -1541,7 +1544,25 @@ jQuery(document).ready(function(){
 						}
 					}
 				})
-			}
+			}    
+		},
+		xtractFileTitle = function (data) {
+ 			var m = data.match(/([^\/\\]+)\.(\w+)$/)
+            return m[1];
+        },
+		renameFile = function(ranfilename) {
+			var oldTitle = jQuery('#' + ranfilename + '_htitle');
+			var newTitleValue = jQuery('#' + ranfilename + '_etitle').attr('value');
+			jQuery(oldTitle).attr('value', ranfilename + '_' + newTitleValue);
+			jQuery('#' + ranfilename + '_submit').remove();
+			jQuery('#' + ranfilename + '_etitle').remove();
+			var listItem = '<span id="'+ranfilename+'_title">'+newTitleValue+'</span>';
+			jQuery('#' + ranfilename + '_title').append(listItem);
+		},
+		editTitle = function(ranfilename, title) {
+			var titleField = '<input id="'+ranfilename+'_etitle" name="title[]" type="text" value="'+title+'" />';
+			var saveField = '<input id="'+ranfilename+'_submit" type="submit" value="Save" name="'+title+'" onclick="renameFile('+ranfilename+');return false;"/>';
+			jQuery('#' + ranfilename + '_title').html(titleField + saveField);
 		}
 });
         <?PHP
