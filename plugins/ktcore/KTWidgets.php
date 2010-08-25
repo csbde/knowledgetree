@@ -1450,7 +1450,8 @@ jQuery(document).ready(function(){
 			name: 'file',
 			onSubmit : function(file, ext)
 			{
-				sameNameFile(file);
+				var title = xtractFileTitle(file);
+				sameNameFile(title);
 				if(jQuery('#file_exists').val() == 1)
 				{
 					return;
@@ -1490,7 +1491,8 @@ jQuery(document).ready(function(){
                 jQuery('#successful_upload_files_ul').show();
 				var listitem = '<li>';
 				listitem += '<span id="'+ranfilename+'_title">'+title+'</span>';
-				listitem += '<input id="'+ranfilename+'_htitle" name="file[]" type="hidden" value="'+ranfilename+'<?php echo '_'; ?>'+file+'" />';
+				listitem += '<input id="'+ranfilename+'_htitle" name="file['+ranfilename+'][tmp_and_filename]" type="hidden" value="'+ranfilename+'<?php echo '_'; ?>'+file+'" />';
+				listitem += '<input class="xtitles" id="'+ranfilename+'_xtitle" name="file['+ranfilename+'][title]" type="hidden" value="'+title+'" />';
 				listitem += '<span onclick="removeFile(this)" style="cursor:pointer;"> <img src="resources/graphics/delete.png" /> </span>';
 				listitem += '<span onclick="editTitle(\''+ranfilename+'\', \''+title+'\')" style="cursor:pointer;"> <img src="thirdparty/icon-theme/16x16/actions/document-properties.png" /> </span>';
 				listitem += '</li>';
@@ -1532,12 +1534,18 @@ jQuery(document).ready(function(){
 		},
 		sameNameFile = function(fileName) {
 			jQuery('#file_exists').attr('value', '0');
-			var children = jQuery('#successful_upload_files').children().length;
-			if(children > 0){
-				jQuery('#successful_upload_files').children().each(function(index){
-					if(jQuery(this).text() != '')
+			//var children = jQuery('#successful_upload_files').children().length;
+			if(jQuery('.xtitles').size() > 0)
+			{
+				//jQuery('#successful_upload_files').children().each(function()
+				jQuery('.xtitles').each(function()
+				{
+					//if(jQuery(this).text() != '')
+					if(jQuery(this).attr('value') != '')
 					{
-						if (fileName == jQuery(this).text().trim())
+						//if (fileName == jQuery(this).text().trim())
+						var newName = jQuery(this).attr('value');
+						if (fileName == newName.trim())
 						{
 							alert('A file with the same name exists.');
 							jQuery('#file_exists').attr('value', '1');
@@ -1551,9 +1559,14 @@ jQuery(document).ready(function(){
             return m[1];
         },
 		renameFile = function(ranfilename) {
-			var oldTitle = jQuery('#' + ranfilename + '_htitle');
+			var oldTitle = jQuery('#' + ranfilename + '_xtitle');
 			var newTitleValue = jQuery('#' + ranfilename + '_etitle').attr('value');
-			jQuery(oldTitle).attr('value', ranfilename + '_' + newTitleValue);
+			sameNameFile(newTitleValue);
+			if(jQuery('#file_exists').val() == 1)
+			{
+				return;
+			}
+			jQuery(oldTitle).attr('value', newTitleValue);
 			jQuery('#' + ranfilename + '_submit').remove();
 			jQuery('#' + ranfilename + '_etitle').remove();
 			var listItem = '<span id="'+ranfilename+'_title">'+newTitleValue+'</span>';
@@ -1562,7 +1575,7 @@ jQuery(document).ready(function(){
 		editTitle = function(ranfilename, title) {
 			var titleField = '<input id="'+ranfilename+'_etitle" name="title[]" type="text" value="'+title+'" />';
 			var saveField = '<input id="'+ranfilename+'_submit" type="submit" value="Save" name="'+title+'" onclick="renameFile('+ranfilename+');return false;"/>';
-			jQuery('#' + ranfilename + '_title').html(titleField + saveField);
+			jQuery('#' + ranfilename + '_title').html(titleField + '&nbsp&nbsp' + saveField);
 		}
 });
         <?PHP
