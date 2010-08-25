@@ -140,7 +140,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
                 ));
         }
 
-        if(($this->oConfig->get('actionreasons/globalReasons')?true:false))$widgets[] = array('ktcore.widgets.reason', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
                 'name' => 'reason',
 				'required' => false
@@ -148,7 +148,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
 
         $oForm->setWidgets($widgets);
 
-        if(($this->oConfig->get('actionreasons/globalReasons')?true:false))$validators[] = array('ktcore.validators.string', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'min_length' => 1,
                 'max_length' => 250,
