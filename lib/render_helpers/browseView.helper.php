@@ -52,7 +52,7 @@ class browseViewHelper {
 			$folderView[]=$item;
 		}
 		if($itemCount<=0){
-			$folderView[]='<span class="notification">There are currently no viewable items in this folder.</span>';
+			$folderView[]=$this->noFilesOrFoldersMessage($folderId);
 		}
 		$folderView[]="</div>";
 		
@@ -112,7 +112,46 @@ class browseViewHelper {
 //		ktvar::quickDebug($ret);
 		return $ret;
 	}
+	
+	public function noFilesOrFoldersMessage($folderId=NULL)
+	{
+		return '<span class="notification">
+		<h2>There\'s nothing in this folder yet!</h2>
+		(Here are three easy ways you can change that...)
+		<table>
+			<tr>
+				<td><div class="roundnum">1</div></td>
+				<td class="info">
+					<h2>Upload file and Folders</h2>
+					Upload one ore more files including .zip files and other archives
+					
+					<br />
+					<br />
+					<div>
+						<a href="action.php?kt_path_info=ktlive.actions.folder.bulkupload&fFolderId='.$folderId.'"><span class="uploadButton">Upload</span></a>
+					</div>
+					
+				</td>
+				<td><div class="roundnum">2</div></td>
+				<td class="info">
+					<h2>Drag and Drop files here</h2>
+					<img src="/resources/graphics/newui/dragdrop.png" />
+				</td>
+				<td><div class="roundnum">3</div></td>
+				<td class="info">
+					<h2>Create content online</h2>
+					Create and share files right within KnowledgeTree
+					<br />
+					<br />
+					<div>
+						<a href="action.php?kt_path_info=zoho.new.document&fFolderId='.$folderId.'"><span class="createdocButton">Online Doc</span></a>
+					</div>
+				</td>
+			</tr>
+		</table>
+		</span>';
 		
+	}
 
 	public function paginateByDiv($pageCount,$pageClass,$paginationClass="paginate",$itemClass="item",$pageScript="alert([page])",$prevScript="alert('previous');",$nextScript="alert('next');"){
 		$idClass=$pageClass.'_[page]';
@@ -342,7 +381,13 @@ class browseViewHelper {
 		$ns=" not_supported";
 		$item['is_shortcut']=$item['is_shortcut']?'':$ns;
 		
-		$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['id']));
+		if ($item['linked_folder_id'] == '') {
+			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['id']));
+		} else {
+			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['linked_folder_id'], 'fShortcutFolder'=>$item['container_folder_id']));
+		}
+		
+		
 		
 		$tpl='
 			<span class="doc browseView">

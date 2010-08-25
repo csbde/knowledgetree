@@ -79,6 +79,7 @@ function confirmSubmit()
 	// Hide any previous errors
 	jQuery('.errorMessage').hide();
 	jQuery('#type_metadata_fields .field').attr('class', 'field');
+	jQuery('#advanced_settings_metadata .field').attr('class', 'field');
 	jQuery.post(
 			murl,
 			jQuery("form").serialize(),
@@ -98,15 +99,19 @@ function confirmSubmit()
 		   				}
 		   			);
 		   		}
-		   		var response = eval('(' + data + ')');
-				for (var i in response)
-				{
-					var id = response[i].id;
-					var message = response[i].message;
-					jQuery('#meta_option_' + id).attr('class', 'field error');
-					jQuery('#meta_option_' + id + ' .errorMessage').html(message);
-					jQuery('#meta_option_' + id + ' .errorMessage').show();
-				}
+		   		if(data != undefined || data != '')
+		   		{
+			   		var response = eval('(' + data + ')');
+					for (var i in response)
+					{
+						var id = response[i].id;
+						var message = response[i].message;
+						jQuery('#meta_option_' + id).attr('class', 'field error');
+						jQuery('#meta_option_' + id + ' .errorMessage').html(message);
+						jQuery('#meta_option_' + id + ' .errorMessage').show();
+					}
+					jQuery('#advanced_settings_metadata').fadeIn();
+		   		}
 		   	}
 	);
 	return false;
