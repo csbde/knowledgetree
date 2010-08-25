@@ -1086,8 +1086,10 @@ class KTDocumentDeleteAction extends KTDocumentAction {
                     'required' => true
                 ));
         }
+        
+        $getReason=$this->oDocument->getImmutable() || $this->oConfig->get('actionreasons/globalReasons');
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
+        if($getReason)$widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
 			    'required' => false,
                 'name' => 'reason',
@@ -1095,7 +1097,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
 
         $oForm->setWidgets($widgets);
 
-        if($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
+        if($getReason)$validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'min_length' => 1,
                 'max_length' => 250,
