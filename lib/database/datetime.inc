@@ -44,8 +44,9 @@
  */
 function getCurrentDateTime() {
 	// TODO : Should be a config setting, flat file or database maybe.
+	$timezone = 'UTC';
+	date_default_timezone_set($timezone);
 	// TODO : All calls to date should be routed through a central function.
-	date_default_timezone_set('UTC');
     return date("Y-m-d H:i:s", time());
 }
 
