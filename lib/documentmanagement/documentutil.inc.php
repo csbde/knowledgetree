@@ -802,7 +802,7 @@ $sourceDocument->getName(),
     // }}}
      /*
       * Document Add
-      * Author      :   Jarrett Jordaan
+      * Author      :   KnowledgeTree Team
       * Modified    :   28/04/09
       *
       * @params     :   KTFolderUtil $oFolder
@@ -1063,7 +1063,7 @@ $sourceDocument->getName(),
 
      /*
       * Document Delete
-      * Author      :   Jarrett Jordaan
+      * Author      :   KnowledgeTree Team
       * Modified    :   28/04/09
       *
       * @params     :   KTDocumentUtil $oDocument
@@ -1507,7 +1507,7 @@ $sourceDocument->getName(),
 
      /*
       * Document Move
-      * Author      :   Jarrett Jordaan
+      * Author      :   KnowledgeTree Team
       * Modified    :   28/04/09
       *
       * @params     :   KTDocumentUtil $oDocument

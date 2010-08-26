@@ -43,6 +43,9 @@
  * @return string the current date time (Y-m-d H:i:s)
  */
 function getCurrentDateTime() {
+	// TODO : Should be a config setting, flat file or database maybe.
+	// TODO : All calls to date should be routed through a central function.
+	date_default_timezone_set('UTC');
     return date("Y-m-d H:i:s", time());
 }
 
