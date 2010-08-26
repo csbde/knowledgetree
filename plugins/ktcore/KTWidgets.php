@@ -1493,7 +1493,7 @@ jQuery(document).ready(function(){
 				listitem += '<span id="'+ranfilename+'_title">'+title+'</span>';
 				listitem += '<input id="'+ranfilename+'_htitle" name="file['+ranfilename+'][tmp_and_filename]" type="hidden" value="'+ranfilename+'<?php echo '_'; ?>'+file+'" />';
 				listitem += '<input class="xtitles" id="'+ranfilename+'_xtitle" name="file['+ranfilename+'][title]" type="hidden" value="'+title+'" />';
-				listitem += '<input class="hfilenames" id="'+ranfilename+'_hfilenames" name="file['+ranfilename+'][title]" type="hidden" value="'+file+'" />';
+				listitem += '<input class="hfilenames" id="'+ranfilename+'_hfilenames" name="filename" type="hidden" value="'+file+'" />';
 				listitem += '<span onclick="removeFile(this)" style="cursor:pointer;"> <img src="resources/graphics/delete.png" /> </span>';
 				listitem += '<span onclick="editTitle(\''+ranfilename+'\', \''+title+'\')" style="cursor:pointer;"> <img src="thirdparty/icon-theme/16x16/actions/document-properties.png" /> </span>';
 				listitem += '</li>';
