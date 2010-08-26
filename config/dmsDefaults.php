@@ -579,8 +579,8 @@ class KTInit {
 		}
 
 		// why we clear the cache?  This way it is populated but never used because the next page call clears it
-		$oKTConfig->clearCache();
-		$use_cache = false;
+		/*$oKTConfig->clearCache();
+		$use_cache = false;*/
 
 		if ($use_cache) {
 			$use_cache = $oKTConfig->loadCache();
