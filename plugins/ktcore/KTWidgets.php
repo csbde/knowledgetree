@@ -1451,7 +1451,7 @@ jQuery(document).ready(function(){
 			onSubmit : function(file, ext)
 			{
 				var title = xtractFileTitle(file);
-				sameNameFile(title);
+				sameNameFile(file);
 				if(jQuery('#file_exists').val() == 1)
 				{
 					return;
@@ -1493,6 +1493,7 @@ jQuery(document).ready(function(){
 				listitem += '<span id="'+ranfilename+'_title">'+title+'</span>';
 				listitem += '<input id="'+ranfilename+'_htitle" name="file['+ranfilename+'][tmp_and_filename]" type="hidden" value="'+ranfilename+'<?php echo '_'; ?>'+file+'" />';
 				listitem += '<input class="xtitles" id="'+ranfilename+'_xtitle" name="file['+ranfilename+'][title]" type="hidden" value="'+title+'" />';
+				listitem += '<input class="hfilenames" id="'+ranfilename+'_hfilenames" name="file['+ranfilename+'][title]" type="hidden" value="'+file+'" />';
 				listitem += '<span onclick="removeFile(this)" style="cursor:pointer;"> <img src="resources/graphics/delete.png" /> </span>';
 				listitem += '<span onclick="editTitle(\''+ranfilename+'\', \''+title+'\')" style="cursor:pointer;"> <img src="thirdparty/icon-theme/16x16/actions/document-properties.png" /> </span>';
 				listitem += '</li>';
@@ -1538,7 +1539,8 @@ jQuery(document).ready(function(){
 			if(jQuery('.xtitles').size() > 0)
 			{
 				//jQuery('#successful_upload_files').children().each(function()
-				jQuery('.xtitles').each(function()
+				//jQuery('.xtitles').each(function()
+				jQuery('.hfilenames').each(function()
 				{
 					//if(jQuery(this).text() != '')
 					if(jQuery(this).attr('value') != '')
@@ -1556,16 +1558,18 @@ jQuery(document).ready(function(){
 		},
 		xtractFileTitle = function (data) {
  			var m = data.match(/([^\/\\]+)\.(\w+)$/)
-            return m[1];
+ 			if(m == null)
+ 			{
+ 				return data;
+ 			}
+ 			else
+ 			{
+ 				return m[1];
+ 			}
         },
 		renameFile = function(ranfilename) {
 			var oldTitle = jQuery('#' + ranfilename + '_xtitle');
 			var newTitleValue = jQuery('#' + ranfilename + '_etitle').attr('value');
-			sameNameFile(newTitleValue);
-			if(jQuery('#file_exists').val() == 1)
-			{
-				return;
-			}
 			jQuery(oldTitle).attr('value', newTitleValue);
 			jQuery('#' + ranfilename + '_submit').remove();
 			jQuery('#' + ranfilename + '_etitle').remove();
