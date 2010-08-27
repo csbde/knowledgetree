@@ -316,7 +316,7 @@ class browseViewHelper {
 									<span>This document has been <strong>finalized</strong> and can no longer be modified.</span>
 									</span>
 								<span class="checked_out[is_checkedout]">
-									<span>This document is <strong>Checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
+									<span>This document is <strong>checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
 								</span>
 								<span class="shortcut[is_shortcut]">
 									<span>This is a shortcut to the file.</span>

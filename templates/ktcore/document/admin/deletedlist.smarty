@@ -58,8 +58,8 @@ can <strong>restore</strong> them as necessary.{/i18n}</p>
 </table>
 </div>
 <div class="form_actions">
-   <input type="submit" name="submit[expunge]" value="{i18n}Expunge{/i18n}" />
    <input type="submit" name="submit[restore]" value="{i18n}Restore{/i18n}" />
+   <input type="submit" name="submit[expunge]" value="{i18n}Expunge{/i18n}" />
    <input type="submit" name="submit[expungeall]" value="{i18n}Expunge All{/i18n}"
 </div>
 </form>
