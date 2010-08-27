@@ -434,12 +434,22 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 							display: inline-block;
 						}
 						
+						img.leftimg {
+							background: #eee;
+							float: left;
+						}
+						
+						img.rightimg {
+							background: #eee;
+							float: right;
+						}
+						
 						span.uploadButton {
 							background: transparent url('../../graphics/newui/midbar_upload.png') 10px 0  no-repeat !important;
 						}
 						
 						span.createdocButton {
-							background: transparent url('../../graphics/newui/midbar_addfolder.png') 10px 0  no-repeat !important;
+							background: transparent url('../../graphics/newui/midbar_document_add.png') 10px 0  no-repeat !important;
 						}
 					}
 				}

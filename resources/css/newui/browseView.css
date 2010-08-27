@@ -35,8 +35,10 @@
 .page .notification table td.info div { text-align: center; }
 .page .notification table td.info div a { background: transparent url("../../graphics/newui/midbarbkg.png") !important; height: 39px; line-height: 39px; display: inline-block; text-decoration: none; border: none !important; }
 .page .notification table td.info div a span { padding: 0 10px 0 40px; display: inline-block; }
+.page .notification table td.info div a img.leftimg { background: #eee; float: left; }
+.page .notification table td.info div a img.rightimg { background: #eee; float: right; }
 .page .notification table td.info div a span.uploadButton { background: transparent url("../../graphics/newui/midbar_upload.png") 10px 0 no-repeat !important; }
-.page .notification table td.info div a span.createdocButton { background: transparent url("../../graphics/newui/midbar_addfolder.png") 10px 0 no-repeat !important; }
+.page .notification table td.info div a span.createdocButton { background: transparent url("../../graphics/newui/midbar_document_add.png") 10px 0 no-repeat !important; }
 
 .doc.browseView { position: relative; }
 .doc.browseView .debug * { border: 1px solid transparent; }
