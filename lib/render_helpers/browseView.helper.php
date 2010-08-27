@@ -52,7 +52,8 @@ class browseViewHelper {
 			$folderView[]=$item;
 		}
 		if($itemCount<=0){
-			$folderView[]=$this->noFilesOrFoldersMessage($folderId);
+			$userHasWritePermissions = TRUE; // Need to fix this
+			$folderView[]=$this->noFilesOrFoldersMessage($folderId, $userHasWritePermissions);
 		}
 		$folderView[]="</div>";
 		
@@ -113,43 +114,49 @@ class browseViewHelper {
 		return $ret;
 	}
 	
-	public function noFilesOrFoldersMessage($folderId=NULL)
+	public function noFilesOrFoldersMessage($folderId=NULL, $editable=TRUE)
 	{
-		return '<span class="notification">
-		<h2>There\'s nothing in this folder yet!</h2>
-		(Here are three easy ways you can change that...)
-		<table>
-			<tr>
-				<td><div class="roundnum">1</div></td>
-				<td class="info">
-					<h2>Upload file and Folders</h2>
-					Upload one ore more files including .zip files and other archives
-					
-					<br />
-					<br />
-					<div>
-						<a href="action.php?kt_path_info=ktlive.actions.folder.bulkupload&fFolderId='.$folderId.'"><span class="uploadButton">Upload</span></a>
-					</div>
-					
-				</td>
-				<td><div class="roundnum">2</div></td>
-				<td class="info">
-					<h2>Drag and Drop files here</h2>
-					<img src="/resources/graphics/newui/dragdrop.png" />
-				</td>
-				<td><div class="roundnum">3</div></td>
-				<td class="info">
-					<h2>Create content online</h2>
-					Create and share files right within KnowledgeTree
-					<br />
-					<br />
-					<div>
-						<a href="action.php?kt_path_info=zoho.new.document&fFolderId='.$folderId.'"><span class="createdocButton">Online Doc</span></a>
-					</div>
-				</td>
-			</tr>
-		</table>
-		</span>';
+		if (!$editable) {
+			return '<span class="notification">
+			<h2>There\'s nothing in this folder yet!</h2>
+			</span>';
+		} else {
+			return '<span class="notification">
+			<h2>There\'s nothing in this folder yet!</h2>
+			(Here are three easy ways you can change that...)
+			<table>
+				<tr>
+					<td><div class="roundnum">1</div></td>
+					<td class="info">
+						<h2>Upload file and Folders</h2>
+						Upload one ore more files including .zip files and other archives
+						
+						<br />
+						<br />
+						<div>
+							<a href="action.php?kt_path_info=ktlive.actions.folder.bulkupload&fFolderId='.$folderId.'"><span class="uploadButton">Upload</span></a>
+						</div>
+						
+					</td>
+					<td><div class="roundnum">2</div></td>
+					<td class="info">
+						<h2>Drag and Drop files here</h2>
+						<img src="/resources/graphics/newui/dragdrop.png" />
+					</td>
+					<td><div class="roundnum">3</div></td>
+					<td class="info">
+						<h2>Create content online</h2>
+						Create and share files right within KnowledgeTree
+						<br />
+						<br />
+						<div>
+							<a href="action.php?kt_path_info=zoho.new.document&fFolderId='.$folderId.'"><span class="createdocButton">Online Doc</span></a>
+						</div>
+					</td>
+				</tr>
+			</table>
+			</span>';
+		}
 		
 	}
 

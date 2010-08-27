@@ -335,7 +335,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 					$folderView[]=$item;
 				}
 				if($itemCount<=0){
-					$folderView[]=$renderHelper->noFilesOrFoldersMessage($this->oFolder->getId());
+					$folderView[]=$renderHelper->noFilesOrFoldersMessage($this->oFolder->getId(), $this->editable);
 				}
 				$folderView[]="</div>";
 				
