@@ -165,6 +165,7 @@ class KTWebService
         		'folder_name' => 'string',
         		'parent_id' => 'int',
         		'full_path' => 'string',
+         		'permissions' => 'string'
          	);
 
          if ($this->version >= 2)
@@ -234,8 +235,9 @@ class KTWebService
                 'mime_icon_path' => 'string',
                 'mime_display' => 'string',
 
-                'storage_path' => 'string',
+                'full_path' => 'string',
 
+         		'storage_path' => 'string',
 
          	);
 
