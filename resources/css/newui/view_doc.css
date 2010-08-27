@@ -238,6 +238,10 @@
 	vertical-align: top;
 }
 
+#commentsarea td div.form_actions{
+	margin-top: 15px;
+}
+
 #commentsbox {
 	width: 100%;
 	height: 35px;
