@@ -271,7 +271,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		);
 		
 		
-		if ($this->oFolder) { // ?don't quite know why this is in here
+		if ($this->oFolder) { // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled
 			// Source the BrowseView Renderer
 			$renderHelper=new browseViewHelper();
 
