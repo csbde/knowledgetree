@@ -39,24 +39,23 @@
 
 {/if}
 
-{if $oldBrowse}
-	{$collection->render()}
-{else}
-	{if ($isEditable)}
-    <div class="dropzone" id="datadrop">
-    {/if}
-	<div class="standardBorder itemContainer" style="min-width: 800px;">
-		{if ($isEditable)}
-			{$bulkActionMenu}
-		{/if}
-		{$folderContents}
-		<div style="width:100%; text-align: center">{$pagination}</div>
-	</div>
-	{$fragments}
-	{if ($isEditable)}
-    </div>	
-    {/if}
+
+{if ($isEditable)}
+<div class="dropzone" id="datadrop">
 {/if}
+<div class="standardBorder itemContainer" style="min-width: 800px;">
+	{if ($isEditable)}
+		{$bulkActionMenu}
+	{/if}
+	{$folderContents}
+	<div style="width:100%; text-align: center">{$pagination}</div>
+</div>
+{$fragments}
+{if ($isEditable)}
+</div>	
+{/if}
+
+
 
 {if ($isEditable && 1==2)}
 <div class="form_actions">
