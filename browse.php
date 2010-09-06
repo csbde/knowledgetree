@@ -249,107 +249,99 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	}
 
 	function do_main() {
-		$oColumnRegistry =& KTColumnRegistry::getSingleton();
-
-		$collection = new AdvancedCollection;
-		$collection->addColumns($oColumnRegistry->getColumnsForView('ktcore.views.browse'));
-		//ktcore.columns.title
-
-		$aOptions = $collection->getEnvironOptions(); // extract data from the environment
-		$aOptions['result_url'] = $this->resultURL;
-		$aOptions['is_browse'] = true;
-
-
-
-		$collection->setOptions($aOptions);
-		$collection->setQueryObject($this->oQuery);
-		$collection->setColumnOptions('ktcore.columns.selection', array(
-            'rangename' => 'selection',
-            'show_folders' => true,
-            'show_documents' => true,
-		));
-
-		// get bulk actions
+		//Client-side pagination options
+		$pageCount=1;
+		$perPage=15;
+		
+		// Prepare Multi-File Actions
 		$aBulkActions = KTBulkActionUtil::getAllBulkActions();
 
+		// Prepare Templating Engine
 		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('kt3/browse');
+
+		// Setting Needed Template data access points
 		$aTemplateData = array(
               'context' => $this,
-              'collection' => $collection,
               'browse_mode' => $this->browse_mode,
               'isEditable' => $this->editable,
               'bulkactions' => $aBulkActions,
               'browseutil' => new KTBrowseUtil(),
               'returnaction' => 'browse',
 		);
-		if ($this->oFolder) {
-			$folderContentOptions=array(
-				'tagName'=>'span',
-				'nesting'=>'true',
-				'value'=>'[value]',
-				'attributes'=>array(
-					'class'	=>"document_item field_[key]"
-				)
-			);
+		
+		
+		if ($this->oFolder) { // ?don't quite know why this is in here
+			// Source the BrowseView Renderer
+			$renderHelper=new browseViewHelper();
 
+			// Add Return folder id for the multi-file actions
 			$aTemplateData['returndata'] = $this->oFolder->getId();
+			
+			// Render the Bulk Action Menu
+			$aTemplateData['bulkActionMenu']=$renderHelper->renderBulkActionMenu($aBulkActions);
 
-			$aTemplateData['oldBrowse']=isset($_GET['oldBrowse'])?true:false;
-//			$aTemplateData['oldBrowse']=true;
-			if(!$aTemplateData['oldBrowse']){
-				$renderHelper=new browseViewHelper();
-				$aTemplateData['bulkActionMenu']=$renderHelper->renderBulkActionMenu($aBulkActions);
+			// Get all the files/folders in the given folder
+			$folderContentItems=$renderHelper->getFolderContent($this->oFolder->getId());
+			
+			// Container for the individual items in the folder
+			$folderItems=array();
+			
+			// Populate the folder items
+			foreach($folderContentItems['folders'] as $item)$folderItems[]=$renderHelper->renderFolderItem($item);
+			
+			// Populate the document items
+			foreach($folderContentItems['documents'] as $item)$folderItems[]=$renderHelper->renderDocumentItem($item);
+			
+			// Transient variables used for pagination
+			$itemCount=count($folderItems);
+			$curItem=0;
+
+			// Container for full folder content
+			$folderView=array();
+			
+			// Create Initial Page Element
+			$folderView[]='<div class="page page_'.$pageCount.' ">';
+			
+			// Iterate through the folder items and add them to the current page
+			foreach($folderItems as $item){
+				$curItem++;
 				
-//				$folderContentItems=$this->getCurrentFolderContent($this->oFolder->getId());
-//				ktvar::quickDebug($folderContentItems);
-				$folderContentItems=$renderHelper->getFolderContent($this->oFolder->getId());
-//				ktvar::quickDebug($folderContentItems);
-	
-				
-				$folderView=$pre_folderView=array();
-				foreach($folderContentItems['folders'] as $item)$pre_folderView[]=$renderHelper->renderFolderItem($item);
-//				foreach($folderContentItems['shortcuts'] as $item){
-//					if($item['document_type']=='' && $item['mime_type']=='folder'){
-//						$pre_folderView[]=$renderHelper->renderFolderItem($item,false,true);
-//					}else{
-//						$pre_folderView[]=$renderHelper->renderDocumentItem($item,false,true);
-//					}
-//					
-//				}
-				foreach($folderContentItems['documents'] as $item)$pre_folderView[]=$renderHelper->renderDocumentItem($item);
-				
-				$pageCount=1;
-				$perPage=15;
-				$itemCount=count($pre_folderView);
-				$curItem=0;
-				
-				$folderView[]='<div class="page page_'.$pageCount.' ">';
-				foreach($pre_folderView as $item){
-					$curItem++;
-					if($curItem>$perPage){
-						$pageCount++;
-						$curItem=1;
-						$folderView[]='</div><div class="page page_'.$pageCount.' ">';
-					}
-					$folderView[]=$item;
+				//Start Next Page
+				if($curItem>$perPage){
+					$pageCount++;
+					$curItem=1;
+					$folderView[]='</div><div class="page page_'.$pageCount.' ">';
 				}
-				if($itemCount<=0){
-					$folderView[]=$renderHelper->noFilesOrFoldersMessage($this->oFolder->getId());
-				}
-				$folderView[]="</div>";
 				
-				$aTemplateData['folderContents']=join($folderView);
-				
-				$aTemplateData['fragments']='';
-				$aTemplateData['fragments'].=$renderHelper->renderDocumentItem(null,true);
-				$aTemplateData['fragments'].=$renderHelper->renderFolderItem(null,true);
-				$aTemplateData['pagination']=$renderHelper->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
-				$aTemplateData['javascript'] = $renderHelper->getJavaScript();
+				$folderView[]=$item;
 			}
+			
+			
+			// Deal with scenario where there are no items in a folder
+			if($itemCount<=0){
+				$folderView[]=$renderHelper->noFilesOrFoldersMessage($this->oFolder->getId(), $this->editable);
+			}
+			
+			// Close the initial page element
+			$folderView[]="</div>";
+			
+			// Add the folder items to the template dataset
+			$aTemplateData['folderContents']=join($folderView);
+			
+			// Adding Fragments for drag & drop client side processing
+			$aTemplateData['fragments']='';
+			$aTemplateData['fragments'].=$renderHelper->renderDocumentItem(null,true);
+			$aTemplateData['fragments'].=$renderHelper->renderFolderItem(null,true);
+			
+			// Apply Clientside Pagination element
+			$aTemplateData['pagination']=$renderHelper->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
+			
+			// Add Additional browse view Javascript
+			$aTemplateData['javascript'] = $renderHelper->getJavaScript();
 		}
 		
-		
+		// Render the template
 		return $oTemplate->render($aTemplateData);
 	}
 

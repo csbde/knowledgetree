@@ -143,9 +143,9 @@ class Redirector
 	{
 		// Adjust Current Server Variables to reflect new path
 		
-		$_SERVER['SCRIPT_NAME'] = $file;
-		$_SERVER['REQUEST_URI'] = $file;
-		$_SERVER['PHP_SELF'] = $file;
+		$_SERVER['SCRIPT_NAME'] = '/'.$file;
+		$_SERVER['REQUEST_URI'] = '/'.$file;
+		$_SERVER['PHP_SELF'] = '/'.$file;
 		
 		$this->foundDestination = TRUE;
 		
