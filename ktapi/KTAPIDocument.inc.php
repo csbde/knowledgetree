@@ -1938,6 +1938,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		$config = KTConfig::getSingleton();
 		$wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
+		
+		$wsversion = 3;
 
 		$detail = array();
 		$document = $this->document;
