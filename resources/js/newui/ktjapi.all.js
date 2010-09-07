@@ -101,8 +101,6 @@ ktjapi=new function(){
 		this.cfg.set('server.timeout',(settings.version!==undefined)?settings.timeout:2000);
 		this.cfg.set('errorEventName',(settings.errorEventName!==undefined)?settings.errorEventName:'AJAX.ERROR');
 		this.cfg.set('JSONerrorEventName',(settings.errorEventName!==undefined)?settings.errorEventName:'AJAX_JSON.ERROR');
-		
-		this._initEventBindings.init();
 	};
 	
 	this.error=function(xhr,text,error){
@@ -163,7 +161,7 @@ ktjapi=new function(){
 		//Definition of the success function
 		//TODO: Extract from this location and point to an external function?
 		var success=(function(callback){
-			return function(xhr){
+			return function(ds,st,xhr){
 				xhr=xhr.responseText;
 				try{
 					var data=ktjapi._lib.String.json.decode(xhr);
@@ -172,8 +170,8 @@ ktjapi=new function(){
 					ktjapi.evt.trigger(ktjapi.cfg.get('JSONerrorEventName'),data);
 					//return;
 				}
-				ktjapi.cfg.set('security.token',data.status.random_token);
-				ktjapi.cfg.set('server.session',data.status.session_id);
+//				ktjapi.cfg.set('security.token',data.status.random_token);
+//				ktjapi.cfg.set('server.session',data.status.session_id);
 				if(data.errors.hadErrors>0){
 					for(var i=0; i<data.errors.errors.length; i++){
 					}
@@ -483,37 +481,6 @@ ktjapi._lib=new function(){
 		return cObj;
 	};
 };
-
-
-//TODO: manage
-/**
- * Bind initial events
- */
-ktjapi._initEventBindings=new function(){
-	this._bound=false;
-	this._listen={};
-	this._registeredListeners={};
-
-	this.init=function(){
-		var evt=ktjapi._lib.stringToObjectPath('ktjapi.evt',true);
-		if(evt!==undefined && this._bound===false){
-			this._registeredListeners['ktjapi.auth.login']=ktjapi.evt.listen('ktjapi.auth.login',{obj:this,method:this._listen.auth_login});
-			this._registeredListeners['ktjapi.auth.logout']=ktjapi.evt.listen('ktjapi.auth.logout',{obj:this,method:this._listen.auth_logout});
-		}
-	};
-	
-	this._listen.auth_login=function(data){
-		data=data.data;
-		auth.login(data.user,data.pass,data.session);
-	};
-
-	this._listen.auth_logout=function(data){
-		data=data.data;
-		auth.logout();
-	};
-};
-
-
 
 
 
@@ -1005,13 +972,13 @@ ktjapi.ajax=new function(){
 		var success=(typeof(success)=='function')?success:function(){};
 		var errors=(typeof(errors)=='function')?errors:function(){};
 		
-		Ext.Ajax.request({
+		ktjapi.q.ajax({
 			url:		url,
 			success:	success,
-			failure:	errors,
-			method:		'GET',
+			error:		errors,
+			type:		'GET',
 			timeout:	ktjapi.cfg.get('server.timeout'),
-			autoAbort:	false
+			async:		!sync
 		});
 	};
 	
@@ -1023,16 +990,15 @@ ktjapi.ajax=new function(){
 		var success=(typeof(success)=='function')?success:function(){};
 		var errors=(typeof(errors)=='function')?errors:function(){};
 		
-		Ext.Ajax.request({
+		ktjapi.q.ajax({
 			url:		url,
 			success:	success,
-			failure:	errors,
-			method:		'POST',
-			params:		data,
+			error:		errors,
+			type:		'POST',
 			timeout:	ktjapi.cfg.get('server.timeout'),
-			autoAbort: 	false
+			async:		!sync,
+			data: 		data
 		});
-
 	};
 	
 	/**
