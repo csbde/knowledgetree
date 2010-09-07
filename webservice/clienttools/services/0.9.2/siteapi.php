@@ -33,8 +33,14 @@ class siteapi extends client_service{
 	 * @return unknown_type
 	 */
 	public function getSubFolders($params){
-		$folderId=$params['folderId'];
-		$this->addResponse('children',array());
+		$folderId=$params['folderId'] || 1;
+		$options= array( 'orderby'=>'name' );
+		$folders= Folder::getList ( array ('parent_id = ?', $folderId ), $options );
+		$subfolders=array();
+		foreach($folders as $folder){
+			$subfolders[$folder->aFieldArr['id']]=$folder->aFieldArr;
+		}	
+		$this->addResponse('children',$subfolders);
 	}
 	
 	/**
