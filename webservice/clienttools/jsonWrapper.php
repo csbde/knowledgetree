@@ -54,7 +54,7 @@ class jsonResponseObject{
 	}
 	
 	public function setDebug($varName=NULL,$value=NULL){
-		if(is_array($this->debug[$varName]) && is_array($value))$value=array_merge($this->debug[$varName],$value);
+//		if(is_array($this->debug[$varName]) && is_array($value))$value=array_merge($this->debug[$varName],$value);
 		$this->debug[$varName]=$value;
 		$user=isset($this->request['auth']['user'])?$this->request['auth']['user']:'';
 		Clienttools_Syslog::logInfo($user,$this->location,$varName,$value);
