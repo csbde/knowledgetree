@@ -92,13 +92,14 @@ ktjapi=new function(){
 	this.init=function(){
 		var settings={};
 		settings.url="webservice/clienttools/webcomms.php";
+		settings.timeout=5000;
 		if(settings.url!==undefined)this.cfg.set('server.url',settings.url);
 //		if(settings.session!==undefined)this.cfg.set('server.session',settings.session);
 //		if(settings.spinner!==undefined)this.cfg.set('spinner',settings.spinner);
 		
 //		this.setupSpinner();
 		
-		this.cfg.set('server.timeout',(settings.version!==undefined)?settings.timeout:2000);
+		this.cfg.set('server.timeout',(settings.timeout!==undefined)?settings.timeout:2000);
 		this.cfg.set('errorEventName',(settings.errorEventName!==undefined)?settings.errorEventName:'AJAX.ERROR');
 		this.cfg.set('JSONerrorEventName',(settings.errorEventName!==undefined)?settings.errorEventName:'AJAX_JSON.ERROR');
 	};
@@ -980,6 +981,7 @@ ktjapi.ajax=new function(){
 			timeout:	ktjapi.cfg.get('server.timeout'),
 			async:		!sync
 		});
+		alert(ktjapi.cfg.get('server.timeout'));
 	};
 	
 	/**
@@ -1140,3 +1142,7 @@ ktjapi.evt=new function(){
  */
 ktjapi.q=jQuery;
 ktjapi.init();
+
+
+
+
