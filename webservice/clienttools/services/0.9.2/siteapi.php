@@ -4,7 +4,8 @@ class siteapi extends client_service{
 		$name=$params['firstName'];
 		
 		$ret=array("hello {$name}");
-		$this->setResponse($ret);
+		$this->addResponse('response1',$ret);
+		$this->addResponse('response2',$_GET);
 	}
 
 	/**
@@ -22,9 +23,47 @@ class siteapi extends client_service{
 	 * @param $params
 	 * @return unknown_type
 	 */
-	public function getDocTypeForm($params){
-		$docType=$params['docType'];
-		$this->addResponse('form',"form template data");
+	public function docTypeFields($params){
+		$type=$params['type'];
+		$filter=is_array($params['filter'])?$params['filter']:NULL;
+		$oDT=DocumentType::get($type);
+		$fieldSets=$oDT->getFieldsets();
+		$ret=array();
+		foreach($fieldSets as $fieldSet){
+			$ret[$fieldSet->getID()]['properties']=$fieldSet->getProperties();
+			$fields=$fieldSet->getFields();
+			foreach($fields as $field){
+				$properties=$field->getProperties();
+				if(is_array($filter)){
+					$requirements=true;
+					foreach($filter as $elem=>$value){
+						if($properties[$elem]!=$value)$requirements=false;
+					}
+					if($requirements)$ret[$fieldSet->getID()]['fields'][$field->getID()]=$properties;
+				}else{
+					$ret[$fieldSet->getID()]['fields'][$field->getID()]=$properties;
+				}
+			}
+		}
+		$this->addResponse('documentType',$ret);
+	}
+	
+	public function docTypeRequiredFields($params){
+		$nparams=$params;
+		$nparams['filter']=array(
+			'is_mandatory'=>1
+		);
+		$this->docTypeFields($nparams);
+	}
+	
+	
+	public function getDocTypes($params){
+		$types=DocumentType::getList();
+		$ret=array();
+		foreach($types as $type){
+			$ret[$type->aFieldArr['id']]=$type->aFieldArr;
+		}
+		$this->addResponse('documentTypes',$ret);
 	}
 	
 	/**
@@ -33,12 +72,13 @@ class siteapi extends client_service{
 	 * @return unknown_type
 	 */
 	public function getSubFolders($params){
-		$folderId=$params['folderId'] || 1;
-		$options= array( 'orderby'=>'name' );
-		$folders= Folder::getList ( array ('parent_id = ?', $folderId ), $options );
+		$folderId=isset($params['folderId']) ? $params['folderId'] : 1;
+		$filter=isset($params['fields']) ? $params['fields'] : '';
+		$options = array( 'orderby'=>'name' );
+		$folders = Folder::getList ( array ('parent_id = ?', $folderId ), $options );
 		$subfolders=array();
 		foreach($folders as $folder){
-			$subfolders[$folder->aFieldArr['id']]=$folder->aFieldArr;
+			$subfolders[$folder->aFieldArr['id']]=$this->filter_array($folder->aFieldArr,$filter,false);
 		}	
 		$this->addResponse('children',$subfolders);
 	}
@@ -50,8 +90,21 @@ class siteapi extends client_service{
 	 */
 	public function getFolderHierarchy($params){
 		$folderId=$params['folderId'];
+		$filter=isset($params['fields']) ? $params['fields'] : '';
+
+		$oFolder = Folder::get($folderId);
+		$ancestors = array();
 		
-		$this->addResponse('ancestors',array());
+		if ($oFolder) {
+			$ancestors=($this->ext_explode(",",$oFolder->getParentFolderIDs()));
+			$ancestors=Folder::getList(array('id IN ('.join(',',$ancestors).')'),array());
+			$parents=array();
+			foreach($ancestors as $obj){
+				$parents[$obj->getID()]=$this->filter_array($obj->aFieldArr,$filter,false);
+			}
+		}
+		
+		$this->addResponse('parents',$parents);
 		$this->getSubFolders($params);
 	}
 	
