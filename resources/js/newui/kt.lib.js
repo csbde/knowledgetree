@@ -1,3 +1,43 @@
+kt.lib.Object=new function(){
+	try{
+		this.extend=function(obj,extObj,ownPropsOnly){
+			try{
+				//Preparing variables
+				if(typeof(obj)!=='object')obj={};
+				if(typeof(extObj)!=='object')extObj={};
+				ownPropsOnly=ownPropsOnly?true:false;
+				
+				for(var prop in extObj){
+					if((ownPropsOnly?extObj.hasOwnProperty(prop):true)){
+						obj[prop]=extObj[prop];
+					};
+				}
+				return obj;
+			}catch(e){kt.evt.triggerErrorLog('kt.lib.Object.extend', e);};
+		};
+		
+		this.boundFunction=function(obj,func){
+			try{
+				if(typeof(func)!=='function'){
+					func=obj[''+func];
+				}
+				
+				return (function(obj,func){
+					func.apply(obj,arguments);
+				})(obj,func);
+			}catch(e){kt.evt.triggerErrorLog('kt.lib.Object.boundFunction', e);};
+		};
+	}catch(e){kt.evt.triggerErrorLog('kt.lib.Object', e);};
+	
+	this.is_object =function(mixed_var){
+	    if (mixed_var instanceof Array) {
+	        return false;
+	    } else {
+	        return (mixed_var !== null) && (typeof( mixed_var ) == 'object');
+	    }
+	};
+};
+
 kt.lib.shortcut = {
 	'all_shortcuts':{},//All the shortcuts are stored in this array
 	'add': function(shortcut_combination,callback,opt) {

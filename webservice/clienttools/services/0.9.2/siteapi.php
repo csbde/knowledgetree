@@ -1,13 +1,5 @@
 <?php
 class siteapi extends client_service{
-	public function hello($params){
-		$name=$params['firstName'];
-		
-		$ret=array("hello {$name}");
-		$this->addResponse('response1',$ret);
-		$this->addResponse('response2',$_GET);
-	}
-
 	/**
 	 * Check whether the specified document type has required fields
 	 * @param $params
@@ -19,7 +11,7 @@ class siteapi extends client_service{
 	}
 	
 	/**
-	 * Request a form for the documentType
+	 * Get all fields for the specified DocType
 	 * @param $params
 	 * @return unknown_type
 	 */
@@ -48,6 +40,11 @@ class siteapi extends client_service{
 		$this->addResponse('documentType',$ret);
 	}
 	
+	/**
+	 * Get the required fields for the specified docType
+	 * @param $params
+	 * @return unknown_type
+	 */
 	public function docTypeRequiredFields($params){
 		$nparams=$params;
 		$nparams['filter']=array(

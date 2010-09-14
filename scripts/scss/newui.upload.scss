@@ -1,0 +1,11 @@
+@import 'mixins';
+
+table.uploadTable{
+	width: 100%;
+	height: 300px;
+	td{
+		height: 1px;
+	}
+	.ul_browser{}
+	.ul_list{height:auto}
+}

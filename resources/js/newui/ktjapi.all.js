@@ -126,13 +126,13 @@ ktjapi=new function(){
 		return url;
 	};
 	
-	this.retrieve=function(func,params){
+	this.retrieve=function(func,params,cacheTimeout){
 		var results;
 		var success=function(data){
 				results=data;
 			};
 		
-		this.callMethod(func, params, success, true,function(){});
+		this.callMethod(func, params, success, true,function(){},cacheTimeout);
 		return results;
 	};
 	
@@ -981,7 +981,6 @@ ktjapi.ajax=new function(){
 			timeout:	ktjapi.cfg.get('server.timeout'),
 			async:		!sync
 		});
-		alert(ktjapi.cfg.get('server.timeout'));
 	};
 	
 	/**

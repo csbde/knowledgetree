@@ -1,13 +1,19 @@
 kt.api=new function(){
 	this.cacheTimeout=20;
 	
+	
 	this.docTypeHasRequiredFields=function(docType,callback,errorCallback){
 		var params={};
 		var synchronous=false;
 		var func='siteapi.docTypeHasRequiredFields';
 		params.docType=docType;
-		
-		ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.cacheTimeout);
+		if(callback===true){
+			var data=ktjapi.retrieve(func,params,this.cacheTimeout)
+			return data;
+		}else{
+			ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.cacheTimeout);
+			return;
+		}
 	};
 	
 	this.getDocTypeForm=function(docType,callback,errorCallback){
@@ -20,7 +26,13 @@ kt.api=new function(){
 		var func='siteapi.getDocTypeForm';
 		params.docType=docType;
 		
-		ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.cacheTimeout);
+		if(callback===true){
+			var data=ktjapi.retrieve(func,params,this.cacheTimeout)
+			return data;
+		}else{
+			ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.cacheTimeout);
+			return;
+		}
 	};
 	
 	this.getSubFolders=function(folderId,callback,errorCallback){
@@ -29,7 +41,13 @@ kt.api=new function(){
 		var func='siteapi.getSubFolders';
 		params.folderId=folderId;
 		
-		ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.cacheTimeout);
+		if(callback===true){
+			var data=ktjapi.retrieve(func,params,this.cacheTimeout)
+			return data;
+		}else{
+			ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.cacheTimeout);
+			return;
+		}		
 	};
 	
 	this.getFolderHierarchy=function(folderId,callback,errorCallback){
@@ -38,18 +56,43 @@ kt.api=new function(){
 		var func='siteapi.getFolderHierarchy';
 		params.folderId=folderId;
 		
-		ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.cacheTimeout);
+		if(callback===true){
+			var data=ktjapi.retrieve(func,params,this.cacheTimeout)
+			return data;
+		}else{
+			ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.cacheTimeout);
+			return;
+		}		
+	};
+	
+	this.getFragment=function(fragName,params){
+		if(!kt.lib.Object.is_object(params))params={};
+		params=kt.lib.Object.extend({name:fragName},params);
+		var func='template.getFragment';
+		
+		var ret=ktjapi.retrieve(func,params,30000);
+		return ret.data.fragment;
+	};
+	
+	this.parseFragment=function(fragName,data){
+		var params={};
+		params.name=fragName;
+		params.data=data;
+		var func='template.parseFragment';
+		
+		ret=ktjapi.retrieve(func,params,30000);
+		return ret.data.parsed;
+	};
+	
+	this.execFragment=function(fragName,data){
+		var params={};
+		params.name=fragName;
+		params.data=data;
+		var func='template.execFragment';
+		
+		ret=ktjapi.retrieve(func,params,30000);
+		console.dir(ret);
+		return ret.data.fragment;
 	};
 	
 }
-/*
-
-
-4) (similar to above), given document properties, return a form for the default document type, with the document properties as default
-
-5) on load, given a folder id, return the ids of parent paths, as well as list of child folders
-
-6) given a folder id, return the list of child folders.
-
-
-*/

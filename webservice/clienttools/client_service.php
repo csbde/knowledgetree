@@ -26,7 +26,11 @@ class client_service{
 	
 	protected function addResponse($name,$value){
 		$this->Response->setData($name,$value);
-	}	
+	}
+	
+	protected function getResponse($name=NULL){
+		return $this->Response->getData($name);
+	}
 	
 	protected function addDebug($name,$value){
 		$this->Response->setDebug($name,$value);
@@ -38,6 +42,10 @@ class client_service{
 
 	protected function addError($message,$code){
 		$this->Response->addError($message,$code);
+	}
+	
+	protected function hasErrors(){
+		return $this->Response->hasErrors();
 	}
 	
 	protected function log($message=NULL){
@@ -123,7 +131,19 @@ class client_service{
 			return $new;
 		}else return array();
 	}
-	
+
+	public static function parseString($string='',$xform=array()){
+		if(!is_array($xform))$xform=array();
+		
+		$from=array_keys($xform);
+		$to=array_values($xform);
+		
+		$delim=create_function('&$item,$key,$prefix','$item="[".$item."]";');
+		array_walk($from,$delim);
+		
+		return str_replace($from,$to,$string);
+	}	
+		
 }
 
 ?>

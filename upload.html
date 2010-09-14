@@ -112,15 +112,11 @@ function showUploadWindow()
         closeAction :'destroy',
         y           : 150,
         autoScroll  : true,
-        shadow: false,
+        shadow: true,
         modal: true,
         title: 'Upload Files',
-        html: '<div id="modalcontents"></div>',
-        listeners: {
-            show : function () {
-                jQuery('#uploaddialog').appendTo('#modalcontents').show();
-            }
-        }
+        html: '<div id="modalcontents">' + kt.api.getFragment('upload.dialog') + '</div>',
+        listeners: {}
     });
     uploadWin.show();
 }

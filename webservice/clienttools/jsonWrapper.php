@@ -41,12 +41,24 @@ class jsonResponseObject{
 		Clienttools_Syslog::logError($user,$this->location,array('code'=>$code,'message'=>$message),'');
 	}
 	
+	public function hasErrors(){
+		return count($this->errors)>0;
+	}
+	
 	public function setStatus($varName=NULL,$value=NULL){
 		$this->status[$varName]=$value;
 	}
 	
 	public function setData($varName=NULL,$value=NULL){
 		$this->data[$varName]=$value;
+	}
+	
+	public function getData($varname=NULL){
+		if($varname==NULL){
+			return $this->data;
+		}else{
+			return isset($this->data[$varname]) ? $this->data[$varname] : NULL;
+		}
 	}
 	
 	public function overwriteData($value=NULL){
