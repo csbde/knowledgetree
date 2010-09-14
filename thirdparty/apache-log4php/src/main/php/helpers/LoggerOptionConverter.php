@@ -244,7 +244,7 @@ class LoggerOptionConverter {
      */
     public static function findAndSubst($key, $props)
     {
-        $value = @$props[$key];
+        $value = isset($props[$key]) ? $props[$key] : null;
         if(empty($value)) {
             return null;
         }
