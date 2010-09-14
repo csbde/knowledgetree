@@ -352,15 +352,15 @@ class Response extends ResponseBase
 
         // Check that the method exists
         $exists = false;
-        foreach ($methods as $var){
-            if($var->getName() == $method){
+        foreach ($methods as $var) {
+            if ($var->getName() == $method) {
                 $exists = true;
                 break;
             }
         }
 
         if(!$exists){
-            $this->error = 'Method does not exist in the API: '.$method;
+            $this->error = 'Method does not exist in the API: ' . $method;
             $this->error_code = 404;
             return false;
         }
@@ -378,7 +378,7 @@ class Response extends ResponseBase
 
             if(empty($param)) {
                 if(!$parameter->isOptional()){
-                    $this->error = 'Missing required parameter: '.$parameter->getName();
+                    $this->error = 'Missing required parameter: ' . $parameter->getName();
                     return false;
                 }
                 $param = $parameter->getDefaultValue();
@@ -390,8 +390,8 @@ class Response extends ResponseBase
         // instantiate KTAPI and invoke method
         $ktapi = $this->get_ktapi($session_id);
 
-        if(PEAR::isError($ktapi)){
-            $this->error = 'API could not be authenticated: '.$ktapi->getMessage();
+        if (PEAR::isError($ktapi)) {
+            $this->error = 'API could not be authenticated: ' . $ktapi->getMessage();
             $this->error_code = 404;
             return false;
         }

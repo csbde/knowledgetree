@@ -584,6 +584,7 @@ class KTBulkAction extends KTStandardDispatcher {
             $this->do_notification($this->uploadedFolders, $this->eventAction, $targetFolder);
         // Action specific Emails
         // Check if its a move action
+        // TODO I don't think this belongs here, a download is never a move...legacy from copy/paste most likely
         if($this->eventAction == "MovedDocument") {
             // Notify the folder from which the action happened
             $originalFolderId = $_REQUEST['fOriginalFolderId'];
