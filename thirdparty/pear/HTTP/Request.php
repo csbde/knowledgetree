@@ -689,7 +689,7 @@ class HTTP_Request
     */
     function sendRequest($saveBody = true)
     {
-        if (!is_a($this->_url, 'Net_URL')) {
+        if (!$this->_url instanceof Net_URL) {
             return PEAR::raiseError('No URL given', HTTP_REQUEST_ERROR_URL);
         }
 
@@ -1075,7 +1075,7 @@ class HTTP_Request
     */
     function attach(&$listener)
     {
-        if (!is_a($listener, 'HTTP_Request_Listener')) {
+        if (!$listener instanceof HTTP_Request_Listener) {
             return false;
         }
         $this->_listeners[$listener->getId()] =& $listener;
@@ -1092,7 +1092,7 @@ class HTTP_Request
     */
     function detach(&$listener)
     {
-        if (!is_a($listener, 'HTTP_Request_Listener') ||
+        if (!($listener instanceof HTTP_Request_Listener) ||
             !isset($this->_listeners[$listener->getId()])) {
             return false;
         }

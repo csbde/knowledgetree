@@ -210,7 +210,7 @@ class Net_LDAP_Filter extends PEAR
         // tests for sane operation
         if ($log_op == '!') {
             // Not-combination, here we also accept one filter object or filter string
-            if (!is_array($filters) && is_a($filters, 'Net_LDAP_Filter')) {
+            if (!is_array($filters) && $filters instanceof Net_LDAP_Filter) {
                 $filters = array($filters); // force array
             } elseif (is_string($filters)) {
                 $filter_o = Net_LDAP_Filter::parse($filters);
@@ -246,7 +246,7 @@ class Net_LDAP_Filter extends PEAR
                 } else {
                     $filters[$key] = $filter_o;
                 }
-            } elseif (!is_a($testfilter, 'Net_LDAP_Filter')) {
+            } elseif (!$testfilter instanceof Net_LDAP_Filter) {
                 $err = PEAR::raiseError('Net_LDAP_Filter combine error: invalid object passed in array $filters!');
                 return $err;
             }

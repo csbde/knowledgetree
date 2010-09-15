@@ -266,7 +266,7 @@ class Net_IPv4
     {
         $validNM = $GLOBALS['Net_IPv4_Netmask_Map'];
 
-        if (! is_a($this, "net_ipv4")) {
+        if (! $this instanceof net_ipv4) {
             $myself = new Net_IPv4;
             return PEAR::raiseError("cannot calculate on uninstantiated Net_IPv4 class");
         }

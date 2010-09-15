@@ -273,7 +273,7 @@ class SOAP_Client extends SOAP_Client_Overload
     function addHeader($soap_value)
     {
         // Add a new header to the message.
-        if (is_a($soap_value, 'SOAP_Header')) {
+        if ($soap_value instanceof SOAP_Header) {
             $this->headersOut[] = $soap_value;
         } elseif (is_array($soap_value)) {
             // name, value, namespace, mustunderstand, actor
@@ -601,7 +601,7 @@ class SOAP_Client extends SOAP_Client_Overload
                             return $this->_raiseSoapFault("The named parameter $name is not in the call parameters.");
                         }
                         if (gettype($nparams[$name]) != 'object' ||
-                            !is_a($nparams[$name], 'SOAP_Value')) {
+                            !$nparams[$name] instanceof SOAP_Value) {
                             // Type is likely a qname, split it apart, and get
                             // the type namespace from WSDL.
                             $qname = new QName($part['type']);
@@ -768,7 +768,7 @@ class SOAP_Client extends SOAP_Client_Overload
         if (PEAR::isError($response)) {
             $fault = $this->_raiseSoapFault($response);
             return $fault;
-        } elseif (!is_a($response, 'soap_value')) {
+        } elseif (!$response instanceof soap_value) {
             $fault = $this->_raiseSoapFault("Didn't get SOAP_Value object back from client");
             return $fault;
         }

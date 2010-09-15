@@ -22,7 +22,7 @@ class APIFolderTestCase extends KTUnitTestCase {
         $folder2 = $root->add_folder('temp1');
         $this->assertError($folder2);
         $folder->delete('because');
-        if (is_a($folder2, 'KTAPI_Folder')) {
+        if ($folder2 instanceof KTAPI_Folder) {
             $folder2->delete('because');
         }
     }
@@ -111,14 +111,14 @@ class APIFolderTestCase extends KTUnitTestCase {
         foreach($paths as $key => $path) {
             $folder = $root->get_folder_by_name($path);
             $this->assertEntity($folder, 'KTAPI_Folder');
-            if (!is_a($folder, 'KTAPI_Folder')) continue;
+            if (!$folder instanceof KTAPI_Folder) continue;
             $this->assertEqual($folder->get_folderid(), $folderids[$key]);
             $this->assertEqual('/'.$folder->get_full_path(), $path);
         }
         // lets clean up
         foreach($paths as $key => $path) {
             $folder = $root->get_folder_by_name($path);
-            if (is_a($folder, 'KTAPI_Folder')) {
+            if ($folder instanceof KTAPI_Folder) {
                 $folder->delete('because ' . $path);
             }
             $folder = $root->get_folder_by_name($path);

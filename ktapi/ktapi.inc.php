@@ -586,14 +586,14 @@ class KTAPI
  	public function can_user_access_object_requiring_permission(&$object, $permission)
  	{
 		assert(!is_null($object));
- 		assert(is_a($object,'DocumentProxy') || is_a($object,'FolderProxy') || is_a($object,'Document') || is_a($object,'Folder'));
+ 		assert(($object instanceof DocumentProxy) || ($object instanceof FolderProxy) || ($object instanceof Document) || $object instanceof Folder);
  		/*
         if(is_null($object) || PEAR::isError($object)){
             $error = $object;
             return $object;
         }
 
-        if(!is_a($object,'DocumentProxy') && !is_a($object,'FolderProxy') && !is_a($object,'Document') && !is_a($object,'Folder')){
+        if(!($object instanceof DocumentProxy) && !($object instanceof FolderProxy) && !($object instanceof Document) && !$object instanceof Folder){
             $error = new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
             return $error;
         }
@@ -1033,7 +1033,7 @@ class KTAPI
     	// now get document type specifc ids
     	$typeid =$this->get_documenttypeid($document_type);
 
-    	if (is_a($typeid, 'KTAPI_DocumentTypeError'))
+    	if ($typeid instanceof KTAPI_DocumentTypeError)
     	{
 			return $typeid;
     	}

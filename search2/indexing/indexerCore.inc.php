@@ -1966,7 +1966,7 @@ abstract class Indexer
             }
 
             $extractor = new $class();
-            if (!is_a($extractor, $baseclass))
+            if (!$extractor instanceof $baseclass)
             {
                 $default->log->error(sprintf(_kt("diagnose(): '%s' is not of type DocumentExtractor"), $class));
                 continue;

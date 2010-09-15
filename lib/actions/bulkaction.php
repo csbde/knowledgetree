@@ -639,7 +639,7 @@ class KTBulkAction extends KTStandardDispatcher {
         //       should probably store the 'equivalent' action (ie. document.delete)
         //       and check that, rather than add a new list of actions to the workflow
         //       section
-        if(is_a($oEntity, 'Document')) {
+        if($oEntity instanceof Document) {
             if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, $this->sName)) {
                 return PEAR::raiseError(_kt('Action is disabled by workflow'));
             }
@@ -668,7 +668,7 @@ class KTBulkAction extends KTStandardDispatcher {
 
 class KTBulkDocumentAction extends KTBulkAction {
     function check_entity($oEntity) {
-        if(!is_a($oEntity, 'Document')) {
+        if(!$oEntity instanceof Document) {
             return false;
         }
         return parent::check_entity($oEntity);
@@ -677,7 +677,7 @@ class KTBulkDocumentAction extends KTBulkAction {
 
 class KTBulkFolderAction extends KTBulkAction {
     function check_entity($oEntity) {
-        if(!is_a($oEntity, 'Folder')) {
+        if(!$oEntity instanceof Folder) {
             return false;
         }
         return parent::check_entity($oEntity);

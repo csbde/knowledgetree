@@ -60,8 +60,8 @@ class PHPUnit_TestDecorator {
      */
     function PHPUnit_TestDecorator(&$test) {
         if (is_object($test) &&
-            (is_a($test, 'PHPUnit_TestCase') ||
-             is_a($test, 'PHPUnit_TestSuite'))) {
+            (($test instanceof PHPUnit_TestCase) ||
+             $test instanceof PHPUnit_TestSuite)) {
 
             $this->_test = &$test;
         }

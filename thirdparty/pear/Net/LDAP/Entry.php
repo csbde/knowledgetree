@@ -150,7 +150,7 @@ class Net_LDAP_Entry extends PEAR
             $this->_dn = $entry;
         }
 
-        if (is_a($ldap, 'Net_LDAP')) {
+        if ($ldap instanceof Net_LDAP) {
             $this->_ldap = &$ldap;
             $this->_link = $ldap->getLink();
         } elseif (is_resource($ldap)) {
@@ -266,7 +266,7 @@ class Net_LDAP_Entry extends PEAR
         */
         if (is_null($attributes) && is_resource($this->_entry) && is_resource($this->_link)) {
             // fetch schema
-            if (is_a($this->_ldap, 'Net_LDAP')) {
+            if ($this->_ldap instanceof Net_LDAP) {
                 $schema =& $this->_ldap->schema();
             }
             // fetch attributes
@@ -282,7 +282,7 @@ class Net_LDAP_Entry extends PEAR
                     $func = 'ldap_get_values'; // standard function to fetch value
 
                     // Try to get binary values as binary data
-                    if (is_a($schema, 'Net_LDAP_Schema')) {
+                    if ($schema instanceof Net_LDAP_Schema) {
                         if ($schema->isBinary($attr)) {
                              $func = 'ldap_get_values_len';
                         }
@@ -618,7 +618,7 @@ class Net_LDAP_Entry extends PEAR
 
         // ensure we have a valid LDAP object
         $ldap =& $this->getLDAP();
-        if (!is_a($ldap, 'Net_LDAP')) {
+        if (!$ldap instanceof Net_LDAP) {
             return PEAR::raiseError("The entries LDAP object is not valid");
         }
 
@@ -759,7 +759,7 @@ class Net_LDAP_Entry extends PEAR
     */
     function &getLDAP()
     {
-        if (!is_a($this->_ldap, 'Net_LDAP')) {
+        if (!$this->_ldap instanceof Net_LDAP) {
             $err = new PEAR_Error('LDAP is not a valid Net_LDAP object');
             return $err;
         } else {
@@ -780,7 +780,7 @@ class Net_LDAP_Entry extends PEAR
     */
     function setLDAP(&$ldap)
     {
-        if (!is_a($ldap, 'Net_LDAP')) {
+        if (!$ldap instanceof Net_LDAP) {
             return PEAR::raiseError("LDAP is not a valid Net_LDAP object");
         } else {
             $this->_ldap =& $ldap;

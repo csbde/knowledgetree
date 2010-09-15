@@ -383,7 +383,7 @@ class HTTP_Client
     */
     function attach(&$listener, $propagate = false)
     {
-        if (!is_a($listener, 'HTTP_Request_Listener')) {
+        if (!$listener instanceof HTTP_Request_Listener) {
             return false;
         }
         $this->_listeners[$listener->getId()] =& $listener;
@@ -401,7 +401,7 @@ class HTTP_Client
     */
     function detach(&$listener)
     {
-        if (!is_a($listener, 'HTTP_Request_Listener') || 
+        if (!($listener instanceof HTTP_Request_Listener) || 
             !isset($this->_listeners[$listener->getId()])) {
             return false;
         }

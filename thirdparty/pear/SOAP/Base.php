@@ -118,7 +118,7 @@ class SOAP_Base_Object extends PEAR
                               $mode = null, $options = null, $skipmsg = false)
     {
         // Pass through previous faults.
-        $is_instance = isset($this) && is_a($this, 'SOAP_Base_Object');
+        $is_instance = isset($this) && ($this instanceof SOAP_Base_Object) ;
         if (is_object($str)) {
             $fault = $str;
         } else {
@@ -436,7 +436,7 @@ class SOAP_Base extends SOAP_Base_Object
                     }
 
                     if (is_object($vars[$k])) {
-                        if (is_a($vars[$k], 'SOAP_Value')) {
+                        if ($vars[$k] instanceof SOAP_Value) {
                             $xmlout_value .= $vars[$k]->serialize($this);
                         } else {
                             // XXX get the members and serialize them instead
@@ -476,7 +476,7 @@ class SOAP_Base extends SOAP_Base_Object
                 // Serialize each array element.
                 $ar_size = count($value);
                 foreach ($value as $array_val) {
-                    if (is_a($array_val, 'SOAP_Value')) {
+                    if ($array_val instanceof SOAP_Value) {
                         $array_type = $array_val->type;
                         $array_types[$array_type] = 1;
                         $array_type_ns = $array_val->type_namespace;
@@ -534,7 +534,7 @@ class SOAP_Base extends SOAP_Base_Object
                 }
             }
             $xmlout_arrayType .= "[$ar_size]\"";
-        } elseif (is_a($value, 'SOAP_Value')) {
+        } elseif ($value instanceof SOAP_Value) {
             $xmlout_value = $value->serialize($this);
         } elseif ($type->name == 'string') {
             $xmlout_value = htmlspecialchars($value);
@@ -631,7 +631,7 @@ class SOAP_Base extends SOAP_Base_Object
         $type = gettype($value);
         switch ($type) {
         case 'object':
-            if (is_a($value, 'soap_value')) {
+            if ($value instanceof soap_value) {
                 $type = $value->type;
             } else {
                 $type = 'Struct';
@@ -649,8 +649,8 @@ class SOAP_Base extends SOAP_Base_Object
                 reset($value);
                 $value1 = next($value);
                 $value2 = next($value);
-                if (is_a($value1, 'SOAP_Value') &&
-                    is_a($value2, 'SOAP_Value') &&
+                if (($value1 instanceof SOAP_Value) &&
+                    ($value2 instanceof SOAP_Value) &&
                     $value1->name != $value2->name) {
                     // This is a struct, not an array.
                     $type = 'Struct';
@@ -755,7 +755,7 @@ class SOAP_Base extends SOAP_Base_Object
      */
     function _decode($soapval)
     {
-        if (!is_a($soapval, 'SOAP_Value')) {
+        if (!$soapval instanceof SOAP_Value) {
             return $soapval;
         }
 
@@ -837,7 +837,7 @@ class SOAP_Base extends SOAP_Base_Object
                         }
                     }
                 } else {
-                    if ($soapval->arrayType && is_a($item, 'SOAP_Value')) {
+                    if ($soapval->arrayType && $item instanceof SOAP_Value) {
                         if ($this->_isBase64Type($item->type) &&
                             !$this->_isBase64Type($soapval->arrayType)) {
                             // Decode the value if we're losing the base64

@@ -404,7 +404,7 @@ class KTPlugin {
         require_once(KT_LIB_DIR . '/plugins/pluginentity.inc.php');
         $oEntity = KTPluginEntity::getByNamespace($this->sNamespace);
         if (PEAR::isError($oEntity)) {
-            if (is_a($oEntity, 'KTEntityNoObjects')) {
+            if ($oEntity instanceof KTEntityNoObjects) {
                 // plugin not registered in database
 
                 // XXX: nbm: Show an error on the page that a plugin
@@ -413,7 +413,7 @@ class KTPlugin {
             }
             return false;
         }
-        if (!is_a($oEntity, 'KTPluginEntity')) {
+        if (!$oEntity instanceof KTPluginEntity) {
             print "isRegistered\n";
             var_dump($oEntity);
             exit(0);
@@ -774,7 +774,7 @@ class KTPlugin {
             $this->setup();
             return $oEntity;
         }
-        if(PEAR::isError($oEntity) && !is_a($oEntity, 'KTEntityNoObjects')){
+        if(PEAR::isError($oEntity) && !$oEntity instanceof KTEntityNoObjects){
             $default->log->error("Plugin register: the plugin {$friendly_name}, namespace: {$this->sNamespace} returned an error: ".$oEntity->getMessage());
             return $oEntity;
         }

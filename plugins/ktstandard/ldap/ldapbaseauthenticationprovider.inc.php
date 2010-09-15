@@ -617,7 +617,7 @@ class KTLDAPBaseAuthenticationProvider extends KTAuthenticationProvider {
             return;
         }
 
-        if (!is_a($oUser, 'User')) {
+        if (!$oUser instanceof User) {
             return;
         }
 
