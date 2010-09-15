@@ -103,7 +103,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function &get(&$ktapi, $documentid, $iMetadataVersionId = null)
 	{
-	    if(is_null($ktapi) || !$ktapi instanceof KTAPI){
+	    if(is_null($ktapi) || !($ktapi instanceof KTAPI)){
 	        return PEAR::raiseError('A valid KTAPI object is needed');
 	    }
 

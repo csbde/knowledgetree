@@ -400,7 +400,7 @@ class SOAP_Server extends SOAP_Base
         $header_results = array();
 
         if ($request_headers) {
-            if (!$request_headers instanceof SOAP_Value) {
+            if (!($request_headers instanceof SOAP_Value)) {
                 $this->_raiseSoapFault('Parser did not return SOAP_Value object: ' . $request_headers, '', '', 'Server');
                 return null;
             }
@@ -478,7 +478,7 @@ class SOAP_Server extends SOAP_Base
         if (!$request_val = $parser->getResponse()) {
             return null;
         }
-        if (!$request_val instanceof SOAP_Value) {
+        if (!($request_val instanceof SOAP_Value)) {
             $this->_raiseSoapFault('Parser did not return SOAP_Value object: ' . $request_val, '', '', 'Server');
             return null;
         }
@@ -532,7 +532,7 @@ class SOAP_Server extends SOAP_Base
         if (PEAR::isError($request)) {
             $fault = &$this->_raiseSoapFault($request);
             return $fault;
-        } else if (!$request instanceof SOAP_Value) {
+        } else if (!($request instanceof SOAP_Value)) {
             $fault = &$this->_raiseSoapFault('Invalid data in server::__decodeRequest');
             return $fault;
         }

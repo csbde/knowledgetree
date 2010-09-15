@@ -788,7 +788,7 @@ abstract class Indexer
         $userid=$_SESSION['userID'];
         if (empty($userid)) $userid=1;
 
-        if (!$folder instanceof Folder && !$folder instanceof FolderProxy)
+        if (!($folder instanceof Folder) && !($folder instanceof FolderProxy))
         {
             throw new Exception('Folder expected');
         }
@@ -1966,7 +1966,7 @@ abstract class Indexer
             }
 
             $extractor = new $class();
-            if (!$extractor instanceof $baseclass)
+            if (!($extractor instanceof )$baseclass)
             {
                 $default->log->error(sprintf(_kt("diagnose(): '%s' is not of type DocumentExtractor"), $class));
                 continue;

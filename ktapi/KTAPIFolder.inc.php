@@ -85,7 +85,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 */
 	function get(&$ktapi, $folderid)
 	{
-	    if(is_null($ktapi) || !$ktapi instanceof KTAPI){
+	    if(is_null($ktapi) || !($ktapi instanceof KTAPI)){
 	        return PEAR::raiseError('A valid KTAPI object is needed');
 	    }
 

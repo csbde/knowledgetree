@@ -353,7 +353,7 @@ class KTDocumentUtil {
         {
             $sourceDocument = Document::get($sourceDocument);
         }
-        if (!$sourceDocument instanceof Document)
+        if (!($sourceDocument instanceof Document))
         {
             return PEAR::raiseError(_kt('Source document not specified'));
         }
@@ -361,7 +361,7 @@ class KTDocumentUtil {
         {
             $targetFolder = Folder::get($targetFolder);
         }
-        if (!$targetFolder instanceof Folder)
+        if (!($targetFolder instanceof Folder))
         {
             return PEAR::raiseError(_kt('Target folder not specified'));
         }
@@ -431,7 +431,7 @@ $sourceDocument->getName(),
         {
             $document = Document::get($document);
         }
-        if (!$document instanceof Document)
+        if (!($document instanceof Document))
         {
             return PEAR::raiseError(_kt('Document not specified'));
         }

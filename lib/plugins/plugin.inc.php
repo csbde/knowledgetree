@@ -413,7 +413,7 @@ class KTPlugin {
             }
             return false;
         }
-        if (!$oEntity instanceof KTPluginEntity) {
+        if (!($oEntity instanceof KTPluginEntity)) {
             print "isRegistered\n";
             var_dump($oEntity);
             exit(0);
@@ -774,7 +774,7 @@ class KTPlugin {
             $this->setup();
             return $oEntity;
         }
-        if(PEAR::isError($oEntity) && !$oEntity instanceof KTEntityNoObjects){
+        if(PEAR::isError($oEntity) && !($oEntity instanceof KTEntityNoObjects)){
             $default->log->error("Plugin register: the plugin {$friendly_name}, namespace: {$this->sNamespace} returned an error: ".$oEntity->getMessage());
             return $oEntity;
         }

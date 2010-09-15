@@ -218,7 +218,7 @@ class Zend_Search_Lucene_Search_QueryParserContext
 
         $lastEntry = array_pop($this->_entries);
 
-        if (!$lastEntry instanceof Zend_Search_Lucene_Search_QueryEntry) {
+        if (!($lastEntry instanceof Zend_Search_Lucene_Search_QueryEntry)) {
             // there are no entries or last entry is boolean operator
             throw new Zend_Search_Lucene_Search_QueryParserException('\'~\' modifier must follow word or phrase.');
         }
@@ -242,7 +242,7 @@ class Zend_Search_Lucene_Search_QueryParserContext
 
         $lastEntry = array_pop($this->_entries);
 
-        if (!$lastEntry instanceof Zend_Search_Lucene_Search_QueryEntry) {
+        if (!($lastEntry instanceof Zend_Search_Lucene_Search_QueryEntry)) {
             // there are no entries or last entry is boolean operator
             throw new Zend_Search_Lucene_Search_QueryParserException('\'^\' modifier must follow word, phrase or subquery.');
         }

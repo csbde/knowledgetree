@@ -1061,7 +1061,7 @@
 				{
 					$r = call_user_func($func, $m);
 				}
-				if (!$r instanceof xmlrpcresp)
+				if (!($r instanceof xmlrpcresp))
 				{
 					error_log("XML-RPC: xmlrpc_server::execute: function $func registered as method handler does not return an xmlrpcresp object");
 					if ($r instanceof xmlrpcval)
@@ -1111,7 +1111,7 @@
 					}
 				}
 				// the return type can be either an xmlrpcresp object or a plain php value...
-				if (!$r instanceof xmlrpcresp)
+				if (!($r instanceof xmlrpcresp))
 				{
 					// what should we assume here about automatic encoding of datetimes
 					// and php classes instances???

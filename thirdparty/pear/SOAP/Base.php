@@ -755,7 +755,7 @@ class SOAP_Base extends SOAP_Base_Object
      */
     function _decode($soapval)
     {
-        if (!$soapval instanceof SOAP_Value) {
+        if (!($soapval instanceof SOAP_Value)) {
             return $soapval;
         }
 

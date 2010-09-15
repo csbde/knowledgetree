@@ -768,7 +768,7 @@ class SOAP_Client extends SOAP_Client_Overload
         if (PEAR::isError($response)) {
             $fault = $this->_raiseSoapFault($response);
             return $fault;
-        } elseif (!$response instanceof soap_value) {
+        } elseif (!($response instanceof soap_value)) {
             $fault = $this->_raiseSoapFault("Didn't get SOAP_Value object back from client");
             return $fault;
         }

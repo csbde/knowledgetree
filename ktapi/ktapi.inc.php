@@ -593,7 +593,7 @@ class KTAPI
             return $object;
         }
 
-        if(!($object instanceof DocumentProxy) && !($object instanceof FolderProxy) && !($object instanceof Document) && !$object instanceof Folder){
+        if(!($object instanceof DocumentProxy) && !($object instanceof FolderProxy) && !($object instanceof Document) && !($object instanceof Folder)){
             $error = new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
             return $error;
         }

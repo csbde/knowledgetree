@@ -92,7 +92,7 @@ class LoginPageDispatcher extends KTDispatcher {
     }
 
     function performLogin(&$oUser) {
-        if (!$oUser instanceof User) {
+        if (!($oUser instanceof User)) {
             #var_dump($oUser);
             #var_dump(PEAR::raiseError());
         }

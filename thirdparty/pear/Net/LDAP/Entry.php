@@ -618,7 +618,7 @@ class Net_LDAP_Entry extends PEAR
 
         // ensure we have a valid LDAP object
         $ldap =& $this->getLDAP();
-        if (!$ldap instanceof Net_LDAP) {
+        if (!($ldap instanceof Net_LDAP)) {
             return PEAR::raiseError("The entries LDAP object is not valid");
         }
 
@@ -780,7 +780,7 @@ class Net_LDAP_Entry extends PEAR
     */
     function setLDAP(&$ldap)
     {
-        if (!$ldap instanceof Net_LDAP) {
+        if (!($ldap instanceof Net_LDAP)) {
             return PEAR::raiseError("LDAP is not a valid Net_LDAP object");
         } else {
             $this->_ldap =& $ldap;

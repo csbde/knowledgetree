@@ -849,7 +849,7 @@ class KTBulkArchiveAction extends KTBulkAction {
         // NOTE: these checks don't have an equivalent in the delete and move functions.
         //       possibly they are no longer needed but I am leaving them here
         //       to avoid any potential problems I may not be aware of
-        if((!$oEntity instanceof Document) && (!$oEntity instanceof Folder)) {
+        if((!($oEntity instanceof Document)) && (!($oEntity instanceof Folder))) {
             return PEAR::raiseError(_kt('Document cannot be archived'));
         }
 
@@ -1087,7 +1087,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
     }
 
     function check_entity($oEntity) {
-        if((!$oEntity instanceof Document) && (!$oEntity instanceof Folder)) {
+        if((!($oEntity instanceof Document)) && (!($oEntity instanceof Folder))) {
                 return PEAR::raiseError(_kt('Document cannot be exported'));
         }
         //we need to do an extra folder permission check in case of a shortcut
@@ -1277,7 +1277,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
             if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, 'ktcore.actions.document.checkout')){
                 return PEAR::raiseError($oEntity->getName().': '._kt('Checkout is restricted by the workflow state.'));
             }
-        }else if(!$oEntity instanceof Folder) {
+        }else if(!($oEntity instanceof Folder)) {
                 return PEAR::raiseError(_kt('Document cannot be checked out'));
         }
     	//we need to do an extra folder permission check in case of a shortcut

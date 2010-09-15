@@ -744,7 +744,7 @@ class Log
      */
     function attach(&$observer)
     {
-        if (!$observer instanceof Log_observer) {
+        if (!($observer instanceof Log_observer)) {
             return false;
         }
 

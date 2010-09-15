@@ -1075,7 +1075,7 @@ class HTTP_Request
     */
     function attach(&$listener)
     {
-        if (!$listener instanceof HTTP_Request_Listener) {
+        if (!($listener instanceof HTTP_Request_Listener)) {
             return false;
         }
         $this->_listeners[$listener->getId()] =& $listener;

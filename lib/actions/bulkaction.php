@@ -668,7 +668,7 @@ class KTBulkAction extends KTStandardDispatcher {
 
 class KTBulkDocumentAction extends KTBulkAction {
     function check_entity($oEntity) {
-        if(!$oEntity instanceof Document) {
+        if(!($oEntity instanceof Document)) {
             return false;
         }
         return parent::check_entity($oEntity);
@@ -677,7 +677,7 @@ class KTBulkDocumentAction extends KTBulkAction {
 
 class KTBulkFolderAction extends KTBulkAction {
     function check_entity($oEntity) {
-        if(!$oEntity instanceof Folder) {
+        if(!($oEntity instanceof Folder)) {
             return false;
         }
         return parent::check_entity($oEntity);

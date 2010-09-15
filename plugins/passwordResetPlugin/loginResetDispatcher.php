@@ -311,7 +311,7 @@ class loginResetDispatcher extends KTDispatcher {
      * @return unknown
      */
     function performLogin(&$oUser) {
-        if (!$oUser instanceof User) {
+        if (!($oUser instanceof User)) {
         }
 
         $session = new Session();

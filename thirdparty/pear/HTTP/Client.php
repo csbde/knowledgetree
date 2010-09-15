@@ -383,7 +383,7 @@ class HTTP_Client
     */
     function attach(&$listener, $propagate = false)
     {
-        if (!$listener instanceof HTTP_Request_Listener) {
+        if (!($listener instanceof HTTP_Request_Listener)) {
             return false;
         }
         $this->_listeners[$listener->getId()] =& $listener;

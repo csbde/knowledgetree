@@ -199,7 +199,7 @@ class Log_composite extends Log
     function addChild(&$child)
     {
         /* Make sure this is a Log instance. */
-        if (!$child instanceof Log) {
+        if (!($child instanceof Log)) {
             return false;
         }
 

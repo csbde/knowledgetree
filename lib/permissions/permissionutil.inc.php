@@ -608,7 +608,7 @@ class KTPermissionUtil {
             $oNewDC->saveAssignment($oOrigDC->getAssignment());
         }
 
-        if (!$oDocumentOrFolder instanceof Folder) {
+        if (!($oDocumentOrFolder instanceof Folder)) {
             KTPermissionUtil::updatePermissionLookup($oDocumentOrFolder);
             return;
         }

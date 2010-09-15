@@ -111,7 +111,7 @@ class APIFolderTestCase extends KTUnitTestCase {
         foreach($paths as $key => $path) {
             $folder = $root->get_folder_by_name($path);
             $this->assertEntity($folder, 'KTAPI_Folder');
-            if (!$folder instanceof KTAPI_Folder) continue;
+            if (!($folder instanceof KTAPI_Folder)) continue;
             $this->assertEqual($folder->get_folderid(), $folderids[$key]);
             $this->assertEqual('/'.$folder->get_full_path(), $path);
         }

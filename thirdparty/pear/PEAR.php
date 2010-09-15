@@ -265,7 +265,7 @@ class PEAR
      */
     function isError($data, $code = null)
     {
-        if (!$data instanceof PEAR_Error) {
+        if (!($data instanceof PEAR_Error)) {
             return false;
         }
 
