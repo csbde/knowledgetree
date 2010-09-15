@@ -48,10 +48,10 @@ class HTTP_Download_PgLOB
      */
     function setConnection($conn)
     {
-        if (is_a($conn, 'DB_Common')) {
+        if ($conn instanceof DB_Common) {
             $conn = $conn->dbh;
-        } elseif (  is_a($conn, 'MDB_Common') || 
-                    is_a($conn, 'MDB2_Driver_Common')) {
+        } elseif (  ($conn instanceof MDB_Common) || 
+                    $conn instanceof MDB2_Driver_Common) {
             $conn = $conn->connection;
         }
         if ($isResource = is_resource($conn)) {

@@ -147,7 +147,7 @@ class SimpleTestCompatibility {
             return $is_a;
         }
         if (function_exists('is_a')) {
-            return is_a($object, $class);
+            return ($object instanceof $class) ;
         }
         return ((strtolower($class) == get_class($object))
                 or (is_subclass_of($object, $class)));

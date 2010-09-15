@@ -57,7 +57,7 @@ class Net_LDAP2_RootDSE extends PEAR
     */
     public static function fetch($ldap, $attrs = null)
     {
-        if (!$ldap instanceof Net_LDAP2) {
+        if (!($ldap instanceof Net_LDAP2)) {
             return PEAR::raiseError("Unable to fetch Schema: Parameter \$ldap must be a Net_LDAP2 object!");
         }
 

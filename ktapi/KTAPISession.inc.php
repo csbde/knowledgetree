@@ -112,9 +112,9 @@ class KTAPI_Session
 	function KTAPI_Session(&$ktapi, &$user)
 	{
 		assert(!is_null($ktapi));
-		assert(is_a($ktapi, 'KTAPI'));
+		assert($ktapi instanceof KTAPI);
 		assert(!is_null($user));
-		assert(is_a($user, 'User'));
+		assert($user instanceof User);
 
 		$this->ktapi = &$ktapi;
 		$this->user = &$user;

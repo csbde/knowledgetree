@@ -1684,7 +1684,7 @@ $cp1252_to_xmlent =
 					}
 					else
 					{
-						if (is_a($results, 'xmlrpcresp'))
+						if ($results instanceof xmlrpcresp)
 						{
 							$result = $results;
 						}
@@ -1904,7 +1904,7 @@ $cp1252_to_xmlent =
 				if ($valtyp == '')
 				{
 					// user did not declare type of response value: try to guess it
-					if (is_object($this->val) && is_a($this->val, 'xmlrpcval'))
+					if (is_object($this->val) && $this->val instanceof xmlrpcval)
 					{
 						$this->valtyp = 'xmlrpcvals';
 					}
@@ -1997,7 +1997,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 			}
 			else
 			{
-				if(!is_object($this->val) || !is_a($this->val, 'xmlrpcval'))
+				if(!is_object($this->val) || !$this->val instanceof xmlrpcval)
 				{
 					if (is_string($this->val) && $this->valtyp == 'xml')
 					{
@@ -2136,7 +2136,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 		function addParam($par)
 		{
 			// add check: do not add to self params which are not xmlrpcvals
-			if(is_object($par) && is_a($par, 'xmlrpcval'))
+			if(is_object($par) && $par instanceof xmlrpcval)
 			{
 				$this->params[]=$par;
 				return true;
@@ -3334,7 +3334,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 				}
 				break;
 			case 'object':
-				if(is_a($php_val, 'xmlrpcval'))
+				if($php_val instanceof xmlrpcval)
 				{
 					$xmlrpc_val = $php_val;
 				}
