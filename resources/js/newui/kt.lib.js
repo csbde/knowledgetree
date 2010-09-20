@@ -1,3 +1,17 @@
+kt.lib.String=new function(){
+	try{
+		this.parse=function(str,obj){
+			ret=new String(str);
+			if(typeof(obj)=='object'){
+				for(var prop in obj){
+					ret=ret.replace('['+prop+']', obj[prop]);
+				}
+			}
+			return ret;
+		};
+	}catch(e){kt.evt.triggerErrorLog('kt.lib.String', e);};
+};
+
 kt.lib.Object=new function(){
 	try{
 		this.extend=function(obj,extObj,ownPropsOnly){
@@ -35,6 +49,14 @@ kt.lib.Object=new function(){
 	    } else {
 	        return (mixed_var !== null) && (typeof( mixed_var ) == 'object');
 	    }
+	};
+	
+	this.enum=function(value,keylist,defaultValue){
+		var keylist=(''+keylist).split(',');
+		for(var idx in keylist){
+			if(value==keylist[idx])return value;
+		}
+		return defaultValue;
 	};
 };
 

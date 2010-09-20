@@ -37,7 +37,7 @@ class siteapi extends client_service{
 				}
 			}
 		}
-		$this->addResponse('documentType',$ret);
+		$this->addResponse('fieldsets',$ret);
 	}
 	
 	/**

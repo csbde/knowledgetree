@@ -1,6 +1,17 @@
 kt.api=new function(){
 	this.cacheTimeout=20;
+	this.persistentDataCacheTimeout=30000;
 	
+	
+	this.getDocTypeMandatoryFields=function(docTypeId){
+		var params={};
+		params.type=docTypeId;
+		var synchronous=false;
+		var func='siteapi.docTypeRequiredFields';
+		var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout)
+		return data.data;
+		
+	}
 	
 	this.docTypeHasRequiredFields=function(docType,callback,errorCallback){
 		var params={};
@@ -64,6 +75,20 @@ kt.api=new function(){
 			return;
 		}		
 	};
+	
+	this.preloadFragment=function(fragName,params){
+		if(!kt.lib.Object.is_object(params))params={};
+		params=kt.lib.Object.extend({name:fragName},params);
+		var func='template.getFragment';
+		var ret=ktjapi.callMethod(func,params,function(){},false,function(){},30000);
+	}
+	
+	this.preloadExecutable=function(fragName,params){
+		if(!kt.lib.Object.is_object(params))params={};
+		params=kt.lib.Object.extend({name:fragName},params);
+		var func='template.execFragment';
+		var ret=ktjapi.callMethod(func,params,function(){},false,function(){},30000);
+	}
 	
 	this.getFragment=function(fragName,params){
 		if(!kt.lib.Object.is_object(params))params={};
