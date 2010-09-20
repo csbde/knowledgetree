@@ -353,7 +353,7 @@ class KTDocumentUtil {
         {
             $sourceDocument = Document::get($sourceDocument);
         }
-        if (!$sourceDocument instanceof Document)
+        if (!($sourceDocument instanceof Document))
         {
             return PEAR::raiseError(_kt('Source document not specified'));
         }
@@ -361,7 +361,7 @@ class KTDocumentUtil {
         {
             $targetFolder = Folder::get($targetFolder);
         }
-        if (!$targetFolder instanceof Folder)
+        if (!($targetFolder instanceof Folder))
         {
             return PEAR::raiseError(_kt('Target folder not specified'));
         }
@@ -431,7 +431,7 @@ $sourceDocument->getName(),
         {
             $document = Document::get($document);
         }
-        if (!$document instanceof Document)
+        if (!($document instanceof Document))
         {
             return PEAR::raiseError(_kt('Document not specified'));
         }
@@ -650,7 +650,8 @@ $sourceDocument->getName(),
             $aFields =& $oFieldset->getFields();
             $aFieldValues = array();
             foreach ($aFields as $oField) {
-                $val = KTUtil::arrayGet($aSimpleMetadata, $oField->getId());
+            	$iId = $oField->getId();
+                $val = KTUtil::arrayGet($aSimpleMetadata, $iId);
                 if (!empty($v)) {
                     $aFieldValues[$oField->getId()] = $val;
                 }
@@ -801,7 +802,7 @@ $sourceDocument->getName(),
     // }}}
      /*
       * Document Add
-      * Author      :   Jarrett Jordaan
+      * Author      :   KnowledgeTree Team
       * Modified    :   28/04/09
       *
       * @params     :   KTFolderUtil $oFolder
@@ -1062,7 +1063,7 @@ $sourceDocument->getName(),
 
      /*
       * Document Delete
-      * Author      :   Jarrett Jordaan
+      * Author      :   KnowledgeTree Team
       * Modified    :   28/04/09
       *
       * @params     :   KTDocumentUtil $oDocument
@@ -1506,7 +1507,7 @@ $sourceDocument->getName(),
 
      /*
       * Document Move
-      * Author      :   Jarrett Jordaan
+      * Author      :   KnowledgeTree Team
       * Modified    :   28/04/09
       *
       * @params     :   KTDocumentUtil $oDocument

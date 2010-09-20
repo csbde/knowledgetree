@@ -85,7 +85,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 */
 	function get(&$ktapi, $folderid)
 	{
-	    if(is_null($ktapi) || !is_a($ktapi, 'KTAPI')){
+	    if(is_null($ktapi) || !($ktapi instanceof KTAPI)){
 	        return PEAR::raiseError('A valid KTAPI object is needed');
 	    }
 
@@ -1308,7 +1308,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	function move($ktapi_target_folder, $reason='')
 	{
 		assert(!is_null($ktapi_target_folder));
-		assert(is_a($ktapi_target_folder,'KTAPI_Folder'));
+		assert($ktapi_target_folder instanceof KTAPI_Folder);
 
 		$user = $this->ktapi->get_user();
 
@@ -1358,7 +1358,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	function copy($ktapi_target_folder, $reason='')
 	{
 		assert(!is_null($ktapi_target_folder));
-		assert(is_a($ktapi_target_folder,'KTAPI_Folder'));
+		assert($ktapi_target_folder instanceof KTAPI_Folder);
 
 		$user = $this->ktapi->get_user();
 

@@ -43,7 +43,8 @@ class KTImmutableActionPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.immutableaction.plugin";
 
     function KTImmutableActionPlugin($sFilename = null) {
-        $res = parent::KTPlugin($sFilename);
+        $this->oConfig =& KTConfig::getSingleton();
+    	$res = parent::KTPlugin($sFilename);
         $this->sFriendlyName = _kt('Finalize action plugin');
         return $res;
     }
@@ -139,7 +140,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
                 ));
         }
 
-        $widgets[] = array('ktcore.widgets.reason', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
                 'name' => 'reason',
 				'required' => false
@@ -147,7 +148,7 @@ class KTDocumentImmutableAction extends KTDocumentAction {
 
         $oForm->setWidgets($widgets);
 
-        $validators[] = array('ktcore.validators.string', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'min_length' => 1,
                 'max_length' => 250,
@@ -202,13 +203,13 @@ class KTDocumentImmutableAction extends KTDocumentAction {
         if (!empty($res['errors'])) {
             return $oForm->handleError();
         }
-        $sReason = $data['reason'];
+        $sReason = isset($data['reason']) ? $data['reason'] : 'Document Finalized.';
         $fFolderId = $this->oDocument->getFolderId();
         $reason = KTUtil::arrayGet($_REQUEST['data'], 'reason');
         $this->oDocument->setImmutable(true);
         $this->oDocument->update();
         // create the document transaction record
-        $oDocumentTransaction = new DocumentTransaction($this->oDocument, $reason, 'ktcore.transactions.immutable');
+        $oDocumentTransaction = new DocumentTransaction($this->oDocument, $sReason, 'ktcore.transactions.immutable');
         $oDocumentTransaction->create();
         controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
 

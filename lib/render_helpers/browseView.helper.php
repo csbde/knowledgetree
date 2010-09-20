@@ -1,8 +1,31 @@
 <?php
 require_once(KT_LIB_DIR .'/util/ktVar.php');
-
+require_once(KT_LIB_DIR .'/util/ktutil.inc');
+require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
+require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 
 class browseViewHelper {
+	
+	public function __construct()
+	{
+		if (KTPluginUtil::pluginIsActive('zoho.plugin')) {
+			$this->zohoEnabled = TRUE;
+			require_once(KT_PLUGIN_DIR . '/ktlive/zoho/zoho.inc.php');
+		} else {
+			$this->zohoEnabled = FALSE;
+		}
+	}
+	
+	public function getJavaScript()
+	{
+		$javaScript = '';
+		
+		if ($this->zohoEnabled) {
+			$javaScript .= '<script type="text/javascript">'.Zoho::editScript().'</script>';
+		}
+		
+		return $javaScript;
+	}
 	
 	public function renderBrowseFolder($folderId=NULL){
 		$response=Array();
@@ -29,11 +52,14 @@ class browseViewHelper {
 			$folderView[]=$item;
 		}
 		if($itemCount<=0){
-			$folderView[]='<span class="notification">There are currently no viewable items in this folder.</span>';
+			$userHasWritePermissions = TRUE; // Need to fix this
+			$folderView[]=$this->noFilesOrFoldersMessage($folderId, $userHasWritePermissions);
 		}
 		$folderView[]="</div>";
 		
 		$response['folderContents']=join($folderView);
+		
+		
 		
 		$response['fragments']='';
 		$response['fragments'].=$this->renderDocumentItem(null,true);
@@ -87,7 +113,52 @@ class browseViewHelper {
 //		ktvar::quickDebug($ret);
 		return $ret;
 	}
+	
+	public function noFilesOrFoldersMessage($folderId=NULL, $editable=TRUE)
+	{
+		if (!$editable) {
+			return '<span class="notification">
+			<h2>There\'s nothing in this folder yet!</h2>
+			</span>';
+		} else {
+			return '<span class="notification">
+			<h2>There\'s nothing in this folder yet!</h2>
+			(Here are three easy ways you can change that...)
+			<table>
+				<tr>
+					<td><div class="roundnum">1</div></td>
+					<td class="info">
+						<h2>Upload file and Folders</h2>
+						Upload one ore more files including .zip files and other archives
+						
+						<br />
+						<br />
+						<div>
+							<a href="action.php?kt_path_info=ktlive.actions.folder.bulkupload&fFolderId='.$folderId.'"><span class="uploadButton">Upload</span></a>
+						</div>
+						
+					</td>
+					<td><div class="roundnum">2</div></td>
+					<td class="info">
+						<h2>Drag and Drop files here</h2>
+						<img src="/resources/graphics/newui/dragdrop.png" />
+					</td>
+					<td><div class="roundnum">3</div></td>
+					<td class="info">
+						<h2>Create content online</h2>
+						Create and share files right within KnowledgeTree
+						<br />
+						<br />
+						<div>
+							<a href="action.php?kt_path_info=zoho.new.document&fFolderId='.$folderId.'"><span class="createdocButton">Online Doc</span></a>
+						</div>
+					</td>
+				</tr>
+			</table>
+			</span>';
+		}
 		
+	}
 
 	public function paginateByDiv($pageCount,$pageClass,$paginationClass="paginate",$itemClass="item",$pageScript="alert([page])",$prevScript="alert('previous');",$nextScript="alert('next');"){
 		$idClass=$pageClass.'_[page]';
@@ -143,9 +214,9 @@ class browseViewHelper {
 		
 		
 		if($item['linked_document_id']){
-			$item['document_link']="view.php?fDocumentId={$item['linked_document_id']}&fShortcutFolder={$item['container_folder_id']}";
+			$item['document_link']=KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['linked_document_id'], 'fShortcutFolder'=>$item['container_folder_id']));
 		}else{
-			$item['document_link']="view.php?fDocumentId={$item['id']}";
+			$item['document_link']=KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['id']));
 		}
 		
 		$item['filename']=(strlen($item['filename'])>$fileNameCutoff)?substr($item['filename'],0,$fileNameCutoff-3)."...":$item['filename'];
@@ -161,6 +232,13 @@ class browseViewHelper {
 		$item['actions.cancel_checkout']=$item['checked_out_date']?'':$ns;
 		$item['actions.checkout']=$item['checked_out_date']?$ns:'';
 		
+		if (get_class($oDocument) == 'Document') {
+			$item['actions.copy']=KTDocumentUtil::canBeCopied($oDocument)?'':$ns;
+			$item['actions.move']=KTDocumentUtil::canBeMoved($oDocument)?'':$ns;
+			$item['actions.delete']=KTDocumentUtil::canBeDeleted($oDocument)?'':$ns;
+		} else {
+			$item['actions.move']=$item['actions.copy']=$item['actions.move']=$ns;
+		}
 		
 		//Modifications to perform when the document has been checked out
 		if($item['checked_out_date']){
@@ -177,12 +255,13 @@ class browseViewHelper {
 			$item['actions.finalize_document']=$ns;
 		}
 		
-		$item['separatorA']=$item['actions.download']=='' || $item['actions.instantview']=='' ?'':$ns;
-		$item['separatorB']=$item['actions.checkout']=='' || $item['actions.checkin']=='' || $item['actions.cancel_checkout']=='' ?'':$ns;
-		$item['separatorC']=$item['actions.alert']=='' || $item ['actions.email']=='' ?'':$ns;
+		$item['separatorA']=$item['actions.copy']=='' ?'':$ns;
+		$item['separatorB']=$item['actions.download']=='' || $item['actions.instantview']=='' ?'':$ns;
+		$item['separatorC']=$item['actions.checkout']=='' || $item['actions.checkin']=='' || $item['actions.cancel_checkout']=='' ?'':$ns;
+		$item['separatorD']=$item['actions.alert']=='' || $item ['actions.email']=='' ?'':$ns;
 
 		if($item['is_immutable']==''){
-			$item['separatorA']=$item['separatorB']=$item['separatorC']=$ns;
+			$item['separatorB']=$item['separatorC']=$item['separatorD']=$ns;
 		}
 		
 		
@@ -210,6 +289,19 @@ class browseViewHelper {
 		
 //		$item['zoho_url']=Zoho::kt_url() . '/' . Zoho::plugin_path() . '/zohoEdit.php?session='.session_id().'&document_id='.$item['id'];
 //		$item['zoho_edit']="zoho_edit" . time();
+
+		
+		// Default - hide edit online
+		$item['allowdoczohoedit'] = '';
+		
+		if ($this->zohoEnabled) {
+			if (Zoho::resolve_type($item["mime_type"]))
+			{
+				if ($item['actions.checkout'] != $ns) {
+					$item['allowdoczohoedit'] = '<li><a href="javascript:;" onclick="zohoEdit(\''.$item['id'].'\')">Edit Document Online</a></li>';
+				}
+			}
+		}
 		
 		$tpl='
 			<span class="doc browseView">
@@ -224,7 +316,7 @@ class browseViewHelper {
 									<span>This document has been <strong>finalized</strong> and can no longer be modified.</span>
 									</span>
 								<span class="checked_out[is_checkedout]">
-									<span>This document is <strong>Checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
+									<span>This document is <strong>checked-out</strong> by <strong>[checked_out_by]</strong> and cannot be edited until it is Checked-in.</span>
 								</span>
 								<span class="shortcut[is_shortcut]">
 									<span>This is a shortcut to the file.</span>
@@ -239,20 +331,26 @@ class browseViewHelper {
 									<ul>
 										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="[actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
-										<!-- <li class="[actions.edit_online]"><a href="javascript:;" onclick="window.open(\'[zoho_url]\',\'[zoho_edit]\',\'menubar=no, toolbar=no, directories=no, location=no, scrollbars=no, resizable=yes, status=no, width=1024, height=768\')">Edit Online</a></li> -->
+										[allowdoczohoedit]
 										
 										<li class="separator[separatorA]"></li>
+										
+										<li class="[actions.copy]"><a href="action.php?kt_path_info=ktcore.actions.document.copy&fDocumentId=[id]">Copy</a></li>
+										<li class="[actions.move]"><a href="action.php?kt_path_info=ktcore.actions.document.move&fDocumentId=[id]">Move</a></li>
+										<li class="[actions.delete]"><a href="action.php?kt_path_info=ktcore.actions.document.delete&fDocumentId=[id]">Delete</a></li>
+										
+										<li class="separator[separatorB]"></li>
 										
 										<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
 										<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
 										<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
 										
-										<li class="separator[separatorB]"></li>
+										<li class="separator[separatorC]"></li>
 										
 										<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
 										<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
 										
-										<li class="separator[separatorC]"></li>
+										<li class="separator[separatorD]"></li>
 										
 										<li class="[actions.change_owner]"><a href="action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Document Ownership</a></li>
 										<li class="[actions.finalize_document]"><a href="action.php?kt_path_info=ktcore.actions.document.immutable&fDocumentId=[id]">Finalize Document</a></li>
@@ -290,6 +388,14 @@ class browseViewHelper {
 		$ns=" not_supported";
 		$item['is_shortcut']=$item['is_shortcut']?'':$ns;
 		
+		if ($item['linked_folder_id'] == '') {
+			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['id']));
+		} else {
+			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['linked_folder_id'], 'fShortcutFolder'=>$item['container_folder_id']));
+		}
+		
+		
+		
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
@@ -313,7 +419,7 @@ class browseViewHelper {
 									</ul>
 							</li>
 						</ul>
-						<div class="title"><a class="clearLink" href="browse.php?fFolderId=[id]">[title]</a></div>
+						<div class="title"><a class="clearLink" href="[link]">[title]</a></div>
 						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
 					</td>
 				</tr>
@@ -323,5 +429,5 @@ class browseViewHelper {
 		return ktVar::parseString($tpl,$item);
 	}
 
-}
+} 
 ?>

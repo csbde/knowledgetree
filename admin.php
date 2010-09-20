@@ -168,7 +168,6 @@ if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < t
     $main->setBodyOnload("javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/browse.php', 'close');");
 }
 
-
 $oDispatcher->dispatch(); // we _may_ be redirected at this point (see KTAdminNavigation)
 
 ?>

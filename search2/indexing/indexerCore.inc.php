@@ -647,7 +647,7 @@ abstract class Indexer
 		if(ACCOUNT_ROUTING_ENABLED) {
 			$oQueueDispatcher = liveIncludes::getSQSQueue();
         	// Document added, create indexing complex event
-        	$oQueueDispatcher->addProcess('indexing', $document);
+        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
 		}
         // If we're indexing a discussion, re-processing is not needed.
         if($what === 'D'){
@@ -671,7 +671,7 @@ abstract class Indexer
         if(ACCOUNT_ROUTING_ENABLED)
         {
         	// Document added, create processing complex event
-			$oQueueDispatcher->addProcess('processing', $document);
+        	$oQueueDispatcher->addProcess('processing', $document, $document->getSize());
 			// Send complex event
 			$oQueueDispatcher->sendToQueue();
         }
@@ -708,7 +708,7 @@ abstract class Indexer
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('indexing', $document);
+	        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
 				// Send complex event
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -722,8 +722,9 @@ abstract class Indexer
         if(ACCOUNT_ROUTING_ENABLED)
         {
         	// Document added, create indexing complex event
+        	$document = Document::get($documentId);
 			$oQueueDispatcher = liveIncludes::getSQSQueue();
-        	$oQueueDispatcher->addProcess('indexing', $document);
+        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
         	// Send complex event
         	$oQueueDispatcher->sendToQueue();
         }
@@ -750,7 +751,7 @@ abstract class Indexer
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('indexing', $document);
+	        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
 	        	// Send complex event
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -775,7 +776,7 @@ abstract class Indexer
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('processing', $document);
+	        	$oQueueDispatcher->addProcess('processing', $document, $document->getSize());
 	        	// Send complex event to sqs queue
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -787,7 +788,7 @@ abstract class Indexer
         $userid=$_SESSION['userID'];
         if (empty($userid)) $userid=1;
 
-        if (!$folder instanceof Folder && !$folder instanceof FolderProxy)
+        if (!($folder instanceof Folder) && !($folder instanceof FolderProxy))
         {
             throw new Exception('Folder expected');
         }
@@ -805,7 +806,7 @@ abstract class Indexer
 				$document = Document::get($res['document_id']);
 	        	// Document added, create indexing complex event
 				$oQueueDispatcher = liveIncludes::getSQSQueue();
-	        	$oQueueDispatcher->addProcess('indexing', $document);
+	        	$oQueueDispatcher->addProcess('indexing', $document, $document->getSize());
 	        	// Send complex event to sqs queue
 	        	$oQueueDispatcher->sendToQueue();
 			}
@@ -1965,7 +1966,7 @@ abstract class Indexer
             }
 
             $extractor = new $class();
-            if (!is_a($extractor, $baseclass))
+            if (!($extractor instanceof $baseclass))
             {
                 $default->log->error(sprintf(_kt("diagnose(): '%s' is not of type DocumentExtractor"), $class));
                 continue;

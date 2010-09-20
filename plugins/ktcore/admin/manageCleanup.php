@@ -148,7 +148,7 @@ class ManageCleanupDispatcher extends KTAdminDispatcher {
         $oDocument = KTEntityUtil::getByDict('KTDocumentContentVersion', array(
             'storage_path' => $path,
         ));
-        if (is_a($oDocument, 'ktentitynoobjects')) {
+        if ($oDocument instanceof ktentitynoobjects) {
             $this->aFilesToRemove[] = $path;
             return;
         }

@@ -90,8 +90,8 @@ abstract class Rest_Reflection_Function_Abstract
         // both extend ReflectionFunctionAbstract. So, we can't do normal type
         // hinting in the prototype, but instead need to do some explicit
         // testing here.
-        if ((!$r instanceof ReflectionFunction)
-            && (!$r instanceof ReflectionMethod)) {
+        if ((!($r instanceof ReflectionFunction))
+            && (!($r instanceof ReflectionMethod))) {
             require_once 'classes/rest/Exception.php';
             throw new Rest_Exception('Invalid reflection class');
         }
@@ -195,7 +195,7 @@ abstract class Rest_Reflection_Function_Abstract
         }
 
         foreach ($endPoints as $node) {
-            if (!$node instanceof Rest_Reflection_Node) {
+            if (!($node instanceof Rest_Reflection_Node)) {
                 continue;
             }
 
