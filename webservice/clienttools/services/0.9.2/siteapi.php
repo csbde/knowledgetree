@@ -101,6 +101,7 @@ class siteapi extends client_service{
 			}
 		}
 		
+		$this->addResponse('currentFolder',$this->filter_array($oFolder->_fieldValues(),$filter,false));
 		$this->addResponse('parents',$parents);
 		$this->getSubFolders($params);
 	}
