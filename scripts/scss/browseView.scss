@@ -379,14 +379,84 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 	.notification{
 		display: block;
 		text-align: center;
-		font-weight: bold;
 		width: auto;
 		@include shaddow(10px, #000000);
 		border: 1px solid #999999;
 		background-color: #EEEEEE;
 		margin: 20px 100px;
 		padding: 20px;
+		color: #989090 !important;
+		
+		h2 {
+			color: #989090 !important;
+		}
+		
+		table {
+			width: 100%;
+			text-align: left;
+			margin-top: 20px;
+			
+			div.roundnum {
+				background-color: #80C1DE;
+				color: #FFF;
+				font-size: 20px;
+				@include corners(50px);
+				width: 30px;
+				height: 30px;
+				text-align: center;
+				vertical-align: bottom;
+			}
+			
+			td {
+				vertical-align: top;
+				
+				
+			}
+			
+			td.info {
+				width: 33%;
+				padding-right: 15px;
+				
+				div {
+					
+					text-align: center;
+					
+					a {
+						background: transparent url('../../graphics/newui/midbarbkg.png') !important;
+						height: 39px;
+						line-height: 39px;
+						display: inline-block;
+						text-decoration: none;
+						border: none !important;
+						
+						span {
+							padding: 0 10px 0 40px;
+							display: inline-block;
+						}
+						
+						img.leftimg {
+							background: #eee;
+							float: left;
+						}
+						
+						img.rightimg {
+							background: #eee;
+							float: right;
+						}
+						
+						span.uploadButton {
+							background: transparent url('../../graphics/newui/midbar_upload.png') 10px 0  no-repeat !important;
+						}
+						
+						span.createdocButton {
+							background: transparent url('../../graphics/newui/midbar_document_add.png') 10px 0  no-repeat !important;
+						}
+					}
+				}
+			}
+		}
 	}
+	
 }
 
 
@@ -452,6 +522,15 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 			position:absolute;
 			top: 20px;
 			left: -3px;
+			margin: 0px;
+			padding: 0px;
+		}
+		
+		.shortcut{
+			@include tooltipIcon("/resources/graphics/newui/shortcut.gif","/resources/graphics/newui/shortcut.gif",200px,right);
+			position: absolute;
+			top: 20px;
+			right: -3px;
 			margin: 0px;
 			padding: 0px;
 		}
@@ -591,6 +670,14 @@ $folderHighlightColorHover:darken($folderHighlightColor,8%);
 			position: relative;
 			padding: 0px;
 			margin: 0px;
+			.shortcut{
+				@include tooltipIcon("/resources/graphics/newui/shortcut.gif","/resources/graphics/newui/shortcut.gif",200px,right);
+				position: absolute;
+				top: 20px;
+				right: -3px;
+				margin: 0px;
+				padding: 0px;
+			}
 		}
 	}
 	

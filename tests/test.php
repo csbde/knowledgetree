@@ -23,7 +23,7 @@ class KTUnitTestCase extends UnitTestCase {
     }
 
     function assertEntity($oEntity, $sClass) {
-        if (is_a($oEntity, $sClass)) {
+        if ($oEntity instanceof $sClass) {
             return $this->pass(sprintf('Object is a %s', $sClass));
         }
         return $this->fail(sprintf('Object is not a %s', $sClass));

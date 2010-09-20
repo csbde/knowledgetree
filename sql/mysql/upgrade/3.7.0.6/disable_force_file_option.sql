@@ -1,0 +1,1 @@
+UPDATE config_settings SET `value` =  "false" WHERE `item` = "disableForceFilenameOption" LIMIT 1;

@@ -52,7 +52,7 @@ class KTBulkDeleteAction extends KTBulkAction {
     }
 
     function check_entity($oEntity) {
-        if(is_a($oEntity, 'Document')) {
+        if($oEntity instanceof Document) {
             if(!KTDocumentUtil::canBeDeleted($oEntity, $sError)) {
                 if (PEAR::isError($sError))
                 {
@@ -62,7 +62,7 @@ class KTBulkDeleteAction extends KTBulkAction {
             }
         }
 
-        if(is_a($oEntity, 'Folder')) {
+        if($oEntity instanceof Folder) {
             $aDocuments = array();
             $aChildFolders = array();
 
@@ -112,6 +112,8 @@ class KTBulkDeleteAction extends KTBulkAction {
     }
 
     function form_collectinfo() {
+        global $default;
+    	
         $cancelUrl = $this->getReturnUrl();
 
         $oForm = new KTForm;
@@ -125,7 +127,6 @@ class KTBulkDeleteAction extends KTBulkAction {
         ));
 
         // Electronic Signature if enabled
-        global $default;
         if($default->enableESignatures){
             $widgets[] = array('ktcore.widgets.info', array(
                     'label' => _kt('This action requires authentication'),
@@ -143,13 +144,16 @@ class KTBulkDeleteAction extends KTBulkAction {
                     'required' => true
                 ));
         }
-
-        $widgets[] = array('ktcore.widgets.reason',array(
-                'name' => 'reason',
-                'label' => _kt('Note'),
-                'value' => null,
-                'required' => false,
-            ));
+        
+		
+        if(($this->oConfig->get('actionreasons/globalReasons')?true:false)){
+	        $widgets[] = array('ktcore.widgets.reason',array(
+	                'name' => 'reason',
+	                'label' => _kt('Note'),
+	                'value' => null,
+	                'required' => false,
+	         ));
+        }
 
         $oForm->setWidgets($widgets);
 
@@ -220,6 +224,13 @@ class KTBulkDeleteAction extends KTBulkAction {
 
     // info collection step
     function do_collectinfo() {
+        global $default;
+        if(!$default->enableESignatures && !$this->oConfig->get('actionreasons/globalReasons',false)){
+	        $this->store_lists();
+	        return $this->do_performaction();
+        }
+        
+        
         $this->store_lists();
         $this->get_lists();
 
@@ -260,13 +271,13 @@ class KTBulkDeleteAction extends KTBulkAction {
     function perform_action($oEntity) {
         $sReason = $this->res['reason'];
 
-        if(is_a($oEntity, 'Document')) {
+        if($oEntity instanceof Document) {
             $res = KTDocumentUtil::delete($oEntity, $sReason, null, true);
             if (PEAR::isError($res)) {
                 return $res;
             }
             return "RemoveChildDocument";
-        } else if(is_a($oEntity, 'Folder')) {
+        } else if($oEntity instanceof Folder) {
             $res = KTFolderUtil::delete($oEntity, $this->oUser, $sReason, null, true);
             if (PEAR::isError($res)) {
                 return $res;
@@ -367,7 +378,7 @@ class KTBulkMoveAction extends KTBulkAction {
         }
 
 
-        $oForm->addWidget(
+        if(($this->oConfig->get('actionreasons/globalReasons')?true:false))$oForm->addWidget(
             array('ktcore.widgets.reason',array(
                 'name' => 'reason',
                 'label' => _kt('Note'),
@@ -399,7 +410,7 @@ class KTBulkMoveAction extends KTBulkAction {
 
     function check_entity($oEntity) {
 
-        if(is_a($oEntity, 'Document')) {
+        if($oEntity instanceof Document) {
             if(!KTDocumentUtil::canBeMoved($oEntity, $sError)) {
                 if (PEAR::isError($sError))
                 {
@@ -409,7 +420,7 @@ class KTBulkMoveAction extends KTBulkAction {
             }
         }
 
-        if(is_a($oEntity, 'Folder')) {
+        if($oEntity instanceof Folder) {
             $aDocuments = array();
             $aChildFolders = array();
 
@@ -513,9 +524,9 @@ class KTBulkMoveAction extends KTBulkAction {
       *
       */
     function perform_action($oEntity) {
-        if(is_a($oEntity, 'Document')) {
+        if($oEntity instanceof Document) {
             $res = KTDocumentUtil::move($oEntity, $this->oTargetFolder, $this->oUser, $this->sReason, true);
-        } else if(is_a($oEntity, 'Folder')) {
+        } else if($oEntity instanceof Folder) {
             $res = KTFolderUtil::move($oEntity, $this->oTargetFolder, $this->oUser, $this->sReason, true);
         }
         if (PEAR::isError($res))
@@ -611,7 +622,7 @@ class KTBulkCopyAction extends KTBulkAction {
                 )));
         }
 
-        $oForm->addWidget(
+       if(($this->oConfig->get('actionreasons/globalReasons')?true:false)) $oForm->addWidget(
             array('ktcore.widgets.reason',array(
                 'name' => 'reason',
                 'label' => _kt('Note'),
@@ -642,7 +653,7 @@ class KTBulkCopyAction extends KTBulkAction {
     }
 
     function check_entity($oEntity) {
-        if(is_a($oEntity, 'Document')) {
+        if($oEntity instanceof Document) {
             if(!KTDocumentUtil::canBeCopied($oEntity, $sError)) {
                 if (PEAR::isError($sError))
                 {
@@ -652,7 +663,7 @@ class KTBulkCopyAction extends KTBulkAction {
             }
         }
 
-        if(is_a($oEntity, 'Folder')) {
+        if($oEntity instanceof Folder) {
             $aDocuments = array();
             $aChildFolders = array();
 
@@ -705,10 +716,9 @@ class KTBulkCopyAction extends KTBulkAction {
     function do_collectinfo() {
         $this->store_lists();
         $this->get_lists();
-	$oTemplating =& KTTemplating::getSingleton();
-	$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_info');
-        return $oTemplate->render(array('context' => $this,
-                                        'form' => $this->form_collectinfo()));
+	    $oTemplating =& KTTemplating::getSingleton();
+		$oTemplate = $oTemplating->loadTemplate('ktcore/bulk_action_info');
+        return $oTemplate->render(array('context' => $this,'form' => $this->form_collectinfo()));
     }
 
     function do_performaction() {
@@ -746,13 +756,13 @@ class KTBulkCopyAction extends KTBulkAction {
 	  *
       */
     function perform_action($oEntity) {
-        if(is_a($oEntity, 'Document')) {
+        if($oEntity instanceof Document) {
             $res = KTDocumentUtil::copy($oEntity, $this->oTargetFolder, $this->sReason, null, true);
             if (PEAR::isError($res)) {
                 return $res;
             }
 
-        } else if(is_a($oEntity, 'Folder')) {
+        } else if($oEntity instanceof Folder) {
             $res = KTFolderUtil::copy($oEntity, $this->oTargetFolder, $this->oUser, $this->sReason, null, true);
             if (PEAR::isError($res)) {
                 return $res;
@@ -805,7 +815,7 @@ class KTBulkArchiveAction extends KTBulkAction {
                 )));
         }
 
-        $oForm->addWidget(
+        if(($this->oConfig->get('actionreasons/globalReasons')?true:false))$oForm->addWidget(
             array('ktcore.widgets.reason',array(
                 'name' => 'reason',
                 'label' => _kt('Note'),
@@ -839,7 +849,7 @@ class KTBulkArchiveAction extends KTBulkAction {
         // NOTE: these checks don't have an equivalent in the delete and move functions.
         //       possibly they are no longer needed but I am leaving them here
         //       to avoid any potential problems I may not be aware of
-        if((!is_a($oEntity, 'Document')) && (!is_a($oEntity, 'Folder'))) {
+        if((!($oEntity instanceof Document)) && (!($oEntity instanceof Folder))) {
             return PEAR::raiseError(_kt('Document cannot be archived'));
         }
 
@@ -847,7 +857,7 @@ class KTBulkArchiveAction extends KTBulkAction {
         	return PEAR::raiseError(_kt("It is not possible to archive a shortcut. Please archive the target document or folder instead."));
         }
 
-        if(is_a($oEntity, 'Document')) {
+        if($oEntity instanceof Document) {
             if(!KTDocumentUtil::canBeArchived($oEntity, $sError)) {
                 if (PEAR::isError($sError))
                 {
@@ -857,7 +867,7 @@ class KTBulkArchiveAction extends KTBulkAction {
             }
         }
 
-        if(is_a($oEntity, 'Folder')) {
+        if($oEntity instanceof Folder) {
             $aDocuments = array();
             $aChildFolders = array();
 
@@ -953,7 +963,13 @@ class KTBulkArchiveAction extends KTBulkAction {
 
     // info collection step
     function do_collectinfo() {
-        $this->store_lists();
+        global $default;
+        if(!$default->enableESignatures && !$this->oConfig->get('actionreasons/globalReasons',false)){
+	        $this->store_lists();
+	        return $this->do_performaction();
+        }
+
+    	$this->store_lists();
         $this->get_lists();
 
         //check if a the symlinks deletion confirmation has been passed yet
@@ -992,14 +1008,14 @@ class KTBulkArchiveAction extends KTBulkAction {
       *
       */
     function perform_action($oEntity) {
-        if(is_a($oEntity, 'Document')) {
+        if($oEntity instanceof Document) {
 
             $res = KTDocumentUtil::archive($oEntity, $this->sReason, true);
 
             if(PEAR::isError($res)){
                 return $res;
             }
-        }else if(is_a($oEntity, 'Folder')) {
+        }else if($oEntity instanceof Folder) {
             $aDocuments = array();
             $aChildFolders = array();
             $oFolder = $oEntity;
@@ -1071,16 +1087,16 @@ class KTBrowseBulkExportAction extends KTBulkAction {
     }
 
     function check_entity($oEntity) {
-        if((!is_a($oEntity, 'Document')) && (!is_a($oEntity, 'Folder'))) {
+        if((!($oEntity instanceof Document)) && (!($oEntity instanceof Folder))) {
                 return PEAR::raiseError(_kt('Document cannot be exported'));
         }
         //we need to do an extra folder permission check in case of a shortcut
-        if(is_a($oEntity,'Folder') && $oEntity->isSymbolicLink()){
+        if(($oEntity instanceof Folder) && $oEntity->isSymbolicLink()){
 	    	if(!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $this->_sPermission, $oEntity->getLinkedFolder())) {
 	            return PEAR::raiseError(_kt('You do not have the required permissions'));
 	        }
         }
-        if(is_a($oEntity, 'Document')){
+        if($oEntity instanceof Document){
             if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, 'ktcore.actions.document.view')){
                 return PEAR::raiseError(_kt('Document cannot be exported as it is restricted by the workflow.'));
             }
@@ -1180,7 +1196,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
         $config = KTConfig::getSingleton();
         $useQueue = $config->get('export/useDownloadQueue');
 
-        if(is_a($oEntity, 'Document')) {
+        if($oEntity instanceof Document) {
 
 			$oDocument = $oEntity;
 	        if($oDocument->isSymbolicLink()){
@@ -1194,7 +1210,7 @@ class KTBrowseBulkExportAction extends KTBulkAction {
 	    	}
 
 
-        }else if(is_a($oEntity, 'Folder')) {
+        }else if($oEntity instanceof Folder) {
             $aDocuments = array();
             $oFolder = $oEntity;
 
@@ -1240,7 +1256,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
     }
 
     function check_entity($oEntity) {
-        if(is_a($oEntity, 'Document')) {
+        if($oEntity instanceof Document) {
             if($oEntity->getImmutable())
             {
             	return PEAR::raiseError(_kt('Document cannot be checked out as it is immutable'));
@@ -1261,11 +1277,11 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
             if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, 'ktcore.actions.document.checkout')){
                 return PEAR::raiseError($oEntity->getName().': '._kt('Checkout is restricted by the workflow state.'));
             }
-        }else if(!is_a($oEntity, 'Folder')) {
+        }else if(!($oEntity instanceof Folder)) {
                 return PEAR::raiseError(_kt('Document cannot be checked out'));
         }
     	//we need to do an extra folder permission check in case of a shortcut
-        if(is_a($oEntity,'Folder') && $oEntity->isSymbolicLink()){
+        if(($oEntity instanceof Folder) && $oEntity->isSymbolicLink()){
 	    	if(!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $this->_sPermission, $oEntity->getLinkedFolder())) {
 	            return PEAR::raiseError(_kt('You do not have the required permissions'));
 	        }
@@ -1306,12 +1322,13 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
                 ));
         }
 
-        $widgets[] = array('ktcore.widgets.reason',array(
+        if(($this->oConfig->get('actionreasons/globalReasons')?true:false)) $widgets[] = array('ktcore.widgets.reason',array(
                 'name' => 'reason',
                 'label' => _kt('Note'),
                 'value' => null,
                 'required' => false,
                 ));
+                
         $widgets[] = array('ktcore.widgets.boolean', array(
                 'label' => _kt('Download Files'),
                 'description' => _kt('Indicate whether you would like to download these file as part of the checkout.'),
@@ -1439,7 +1456,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
         // checkout document
         $sReason = $this->sReason;
 
-        if(is_a($oEntity, 'Document')) {
+        if($oEntity instanceof Document) {
 
             if($oEntity->getImmutable())
             {
@@ -1486,7 +1503,7 @@ class KTBrowseBulkCheckoutAction extends KTBulkAction {
             }
             if(!PEAR::isError($res)) {
             }
-        }else if(is_a($oEntity, 'Folder')) {
+        }else if($oEntity instanceof Folder) {
             // get documents and subfolders
             $aDocuments = array();
             $oFolder = $oEntity;

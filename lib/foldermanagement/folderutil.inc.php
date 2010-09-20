@@ -665,7 +665,7 @@ class KTFolderUtil {
         {
             $sourceFolder = Folder::get($sourceFolder);
         }
-        if (!$sourceFolder instanceof Folder)
+        if (!($sourceFolder instanceof Folder))
         {
             return PEAR::raiseError(_kt('Source folder not specified'));
         }
@@ -673,7 +673,7 @@ class KTFolderUtil {
         {
             $targetFolder = Folder::get($targetFolder);
         }
-        if (!$targetFolder instanceof Folder)
+        if (!($targetFolder instanceof Folder))
         {
             return PEAR::raiseError(_kt('Target folder not specified'));
         }
@@ -736,7 +736,7 @@ class KTFolderUtil {
         {
             $folder = Folder::get($folder);
         }
-        if (!$folder instanceof Folder)
+        if (!($folder instanceof Folder))
         {
             return PEAR::raiseError(_kt('Folder not specified'));
         }

@@ -81,7 +81,7 @@ foreach ($upgrades as $step) {
         print 'Success';
     }
     if (PEAR::isError($res)) {
-        if (is_a($res, strtolower('Upgrade_Already_Applied'))) {
+        if ($res instanceof Upgrade_Already_Applied) {
             print 'Already applied';
         } else {
             print "ERROR\n";

@@ -232,7 +232,7 @@ class Net_LDAP2_Entry extends PEAR
     */
     public static function createConnected($ldap, $entry)
     {
-        if (!$ldap instanceof Net_LDAP2) {
+        if (!($ldap instanceof Net_LDAP2)) {
             return PEAR::raiseError("Unable to create connected entry: Parameter \$ldap needs to be a Net_LDAP2 object!");
         }
         if (!is_resource($entry)) {
@@ -729,7 +729,7 @@ class Net_LDAP2_Entry extends PEAR
 
         // ensure we have a valid LDAP object
         $ldap =& $this->getLDAP();
-        if (!$ldap instanceof Net_LDAP2) {
+        if (!($ldap instanceof Net_LDAP2)) {
             return PEAR::raiseError("The entries LDAP object is not valid");
         }
 
@@ -891,7 +891,7 @@ class Net_LDAP2_Entry extends PEAR
     */
     public function setLDAP(&$ldap)
     {
-        if (!$ldap instanceof Net_LDAP2) {
+        if (!($ldap instanceof Net_LDAP2)) {
             return PEAR::raiseError("LDAP is not a valid Net_LDAP2 object");
         } else {
             $this->_ldap =& $ldap;

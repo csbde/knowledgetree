@@ -48,7 +48,7 @@ require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
 require_once(KT_LIB_DIR . '/help/help.inc.php');
 require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
-
+require_once(KT_LIB_DIR . "/util/ktutil.inc"); 
 
 class loginResetDispatcher extends KTDispatcher {
 
@@ -61,7 +61,7 @@ class loginResetDispatcher extends KTDispatcher {
 
         KTUtil::save_base_kt_url();
 
-        if (is_a($oUser, 'User')) {
+        if ($oUser instanceof User) {
             $res = $this->performLogin($oUser);
             if ($res) {
                 $oUser = array($res);
@@ -212,7 +212,7 @@ class loginResetDispatcher extends KTDispatcher {
 
         $oUser =& User::getByUsername($username);
         if (PEAR::isError($oUser) || ($oUser === false)) {
-            if (is_a($oUser, 'ktentitynoobjects')) {
+            if ($oUser instanceof ktentitynoobjects) {
                 $this->handleUserDoesNotExist($username, $password, $aExtra);
             }
             $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $queryParams);
@@ -311,7 +311,7 @@ class loginResetDispatcher extends KTDispatcher {
      * @return unknown
      */
     function performLogin(&$oUser) {
-        if (!is_a($oUser, 'User')) {
+        if (!($oUser instanceof User)) {
         }
 
         $session = new Session();
@@ -360,10 +360,10 @@ class loginResetDispatcher extends KTDispatcher {
             if (empty($res)) {
                 return $res;
             }
-            if (is_a($res, 'User')) {
+            if ($res instanceof User) {
                 $this->performLogin($res);
             }
-            if (is_a($res, 'KTAuthenticationSource')) {
+            if ($res instanceof KTAuthenticationSource) {
                 $_SESSION['autosignup'] = $aExtra;
                 $this->redirectTo('autoSignup', array(
                     'source_id' => $res->getId(),
@@ -416,7 +416,7 @@ class loginResetDispatcher extends KTDispatcher {
                 $exceptionsList = explode(',', str_replace(' ','',$redirectToDashboardList));
                 $user = User::get($_SESSION['userID']);
                 $username = $user->getUserName();
-                $url .= (in_array($username, $exceptionsList))?'/dashboard.php':'/browse.php';
+                $url .= (in_array($username, $exceptionsList))?'/dashboard.php':KTUtil::buildUrl('/browse.php');
             }
             else
             {

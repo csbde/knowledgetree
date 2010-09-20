@@ -103,7 +103,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function &get(&$ktapi, $documentid, $iMetadataVersionId = null)
 	{
-	    if(is_null($ktapi) || !is_a($ktapi, 'KTAPI')){
+	    if(is_null($ktapi) || !($ktapi instanceof KTAPI)){
 	        return PEAR::raiseError('A valid KTAPI object is needed');
 	    }
 
@@ -215,8 +215,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 	 */
 	function KTAPI_Document(&$ktapi, &$ktapi_folder, &$document)
 	{
-		assert($ktapi instanceof KTAPI);   //is_a($ktapi,'KTAPI'));
-		assert(is_null($ktapi_folder) || $ktapi_folder instanceof KTAPI_Folder); //is_a($ktapi_folder,'KTAPI_Folder'));
+		assert($ktapi instanceof KTAPI);   //$ktapi instanceof KTAPI);
+		assert(is_null($ktapi_folder) || $ktapi_folder instanceof KTAPI_Folder); //$ktapi_folder instanceof KTAPI_Folder);
 
 		$this->ktapi = &$ktapi;
 		$this->ktapi_folder = &$ktapi_folder;
@@ -657,7 +657,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	function copy(&$ktapi_target_folder, $reason, $newname=null, $newfilename=null)
 	{
 		assert(!is_null($ktapi_target_folder));
-		assert($ktapi_target_folder instanceof KTAPI_FOLDER);    //is_a($ktapi_target_folder,'KTAPI_Folder'));
+		assert($ktapi_target_folder instanceof KTAPI_FOLDER);    //$ktapi_target_folder instanceof KTAPI_Folder);
 
 		if (empty($newname))
 		{
@@ -789,7 +789,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	function move(&$ktapi_target_folder, $reason, $newname=null, $newfilename=null)
 	{
 		assert(!is_null($ktapi_target_folder));
-		assert($ktapi_target_folder instanceof KTAPI_Folder);  // is_a($ktapi_target_folder,'KTAPI_Folder'));
+		assert($ktapi_target_folder instanceof KTAPI_Folder);  // $ktapi_target_folder instanceof KTAPI_Folder);
 
 		if (empty($newname))
 		{
@@ -1380,7 +1380,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 		$fieldsetname=$fieldset_metadata['fieldset'];
 		 		$fields=$fieldset_metadata['fields'];
 		 	}
-		 	elseif ($fieldset_metadata instanceof stdClass)  //is_a($fieldset_metadata, 'stdClass'))
+		 	elseif ($fieldset_metadata instanceof stdClass)  //$fieldset_metadata instanceof stdClass)
 		 	{
 		 		$fieldsetname=$fieldset_metadata->fieldset;
 		 		$fields=$fieldset_metadata->fields;
@@ -1392,7 +1392,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 	}
 
 		 	$fieldset = KTFieldset::getByName($fieldsetname);
-		 	if (is_null($fieldset) || PEAR::isError($fieldset) || $fieldset instanceof KTEntityNoObjects)  //is_a($fieldset, 'KTEntityNoObjects'))
+		 	if (is_null($fieldset) || PEAR::isError($fieldset) || $fieldset instanceof KTEntityNoObjects)  //$fieldset instanceof KTEntityNoObjects)
 		 	{
 		 		$default->log->debug("could not resolve fieldset: $fieldsetname for document id: $this->documentid");
 		 		// exit graciously
@@ -1410,7 +1410,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 			// while allowing user entered values of 'n/a' to be saved
 		 			$value = ($fieldinfo['value'] == 'n/a' && $fieldinfo['blankvalue']) ? '' : $fieldinfo['value'];
 		 		}
-		 		elseif ($fieldinfo instanceof stdClass)   // is_a($fieldinfo, 'stdClass'))
+		 		elseif ($fieldinfo instanceof stdClass)   // $fieldinfo instanceof stdClass)
 		 		{
 		 			$fieldname = $fieldinfo->name;
 		 			$value = $fieldinfo->value;
@@ -1422,7 +1422,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		 		}
 
 		 		$field = DocumentField::getByFieldsetAndName($fieldset, $fieldname);
-		 		if (is_null($field) || PEAR::isError($field) || is_a($field, 'KTEntityNoObjects'))
+		 		if (is_null($field) || PEAR::isError($field) || $field instanceof KTEntityNoObjects)
 		 		{
 		 			$default->log->debug("Could not resolve field: $fieldname on fieldset $fieldsetname for document id: $this->documentid");
 		 			// exit graciously
@@ -1938,6 +1938,8 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		$config = KTConfig::getSingleton();
 		$wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
+		
+		$wsversion = 3;
 
 		$detail = array();
 		$document = $this->document;

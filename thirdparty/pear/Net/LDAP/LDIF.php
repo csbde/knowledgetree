@@ -328,7 +328,7 @@ class Net_LDAP_LDIF extends PEAR
 
         foreach ($entries as $entry) {
             $this->_entrynum++;
-            if (!is_a($entry, 'Net_LDAP_Entry')) {
+            if (!($entry instanceof Net_LDAP_Entry)) {
                 $this->_dropError('Net_LDAP_LDIF error: entry '.$this->_entrynum.' is not an Net_LDAP_Entry object');
             } else {
                 if ($this->_options['change']) {

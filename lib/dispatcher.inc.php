@@ -44,7 +44,7 @@ require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
 require_once(KT_DIR . "/thirdparty/pear/JSON.php");
 
 require_once(KT_DIR . '/thirdparty/pear/Net/URL.php');
-
+require_once(KT_LIB_DIR . "/util/ktutil.inc");
 
 class KTDispatchStandardRedirector {
     function redirect($url) {
@@ -245,7 +245,7 @@ class KTDispatcher {
         // meld persistant options
         $sQuery = $this->meldPersistQuery($sQuery, $event);
 
-        $server = str_replace('action.php', 'browse.php', $_SERVER['PHP_SELF']);
+        $server = str_replace('action.php', KTUtil::buildUrl('browse.php'), $_SERVER['PHP_SELF']);
         $sRedirect = KTUtil::addQueryString($server, $sQuery);
         $this->oRedirector->redirect($sRedirect);
         exit(0);

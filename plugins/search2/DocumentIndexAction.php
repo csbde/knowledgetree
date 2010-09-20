@@ -58,7 +58,7 @@ class DocumentIndexAction extends KTDocumentAction
     		    $this->addInfoMessage(sprintf(_kt("Document '%s' has been added to the indexing queue."), $full_path));
     		}
     	}
-    	redirect("view.php?fDocumentId=$docid");
+		redirect(KTUtil::buildUrl("view.php", array('fDocumentId'=>$docid)));
     	exit;
     }
 }

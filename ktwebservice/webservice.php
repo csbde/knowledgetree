@@ -165,6 +165,7 @@ class KTWebService
         		'folder_name' => 'string',
         		'parent_id' => 'int',
         		'full_path' => 'string',
+         		'permissions' => 'string'
          	);
 
          if ($this->version >= 2)
@@ -234,8 +235,9 @@ class KTWebService
                 'mime_icon_path' => 'string',
                 'mime_display' => 'string',
 
-                'storage_path' => 'string',
+                'full_path' => 'string',
 
+         		'storage_path' => 'string',
 
          	);
 
@@ -2341,7 +2343,7 @@ class KTWebService
     	$document = &$folder->add_document($title, $filename, $documenttype, $tempfilename);
 		if (PEAR::isError($document))
 		{
-			$status = is_a($document, 'KTAPI_DocumentTypeError')?KTWS_ERR_INVALID_DOCUMENT_TYPE:KTWS_ERR_INVALID_DOCUMENT;
+			$status = ($document instanceof KTAPI_DocumentTypeError) ?KTWS_ERR_INVALID_DOCUMENT_TYPE:KTWS_ERR_INVALID_DOCUMENT;
 			$response = KTWebService::_status($status, $document);
 			$this->debug("add_document - cannot add document - "  . $document->getMessage(), $session_id);
 			return new SOAP_Value('return',"{urn:$this->namespace}kt_document_detail", $response);
@@ -2538,7 +2540,7 @@ class KTWebService
     	$document = &$folder->add_document($title, $filename, $documenttype, $tempfilename);
 		if (PEAR::isError($document))
 		{
-			$status = is_a($document, 'KTAPI_DocumentTypeError')?KTWS_ERR_INVALID_DOCUMENT_TYPE:KTWS_ERR_INVALID_DOCUMENT;
+			$status = ($document instanceof KTAPI_DocumentTypeError) ?KTWS_ERR_INVALID_DOCUMENT_TYPE:KTWS_ERR_INVALID_DOCUMENT;
 			$response = KTWebService::_status($status,$document);
 
 			$this->debug("add_small_document - cannot add document - "  . $document->getMessage(), $session_id);
@@ -4482,7 +4484,7 @@ class KTWebService
 	 */
 	function decodeSOAPValue($value)
 	{
-		if (is_a($value, 'SOAP_Value'))
+		if ($value instanceof SOAP_Value)
 		{
 			$x = new stdClass();
 			$v = & $value->value;

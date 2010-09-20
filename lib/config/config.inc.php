@@ -179,7 +179,6 @@ class KTConfig {
             return false;
         }
 
-
         $config_cache = unserialize($config_str);
         $this->flat = $config_cache['flat'];
         $this->flatns = $config_cache['flatns'];

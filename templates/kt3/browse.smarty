@@ -1,5 +1,6 @@
  
 {$context->oPage->requireJSResource('resources/js/toggleselect.js')}
+{$javascript}
 {if ($custom_title != null)}
 <h2>{$custom_title|sanitize}</h2>
 {/if}
@@ -36,24 +37,23 @@
 
 {/if}
 
-{if $oldBrowse}
-	{$collection->render()}
-{else}
-	{if ($isEditable)}
-    <div class="dropzone" id="datadrop">
-    {/if}
-	<div class="standardBorder itemContainer" style="min-width: 800px;">
-		{if ($isEditable)}
-			{$bulkActionMenu}
-		{/if}
-		{$folderContents}
-		<div style="width:100%; text-align: center">{$pagination}</div>
-	</div>
-	{$fragments}
-	{if ($isEditable)}
-    </div>	
-    {/if}
+
+{if ($isEditable)}
+<div class="dropzone" id="datadrop">
 {/if}
+<div class="standardBorder itemContainer" style="min-width: 800px;">
+	{if ($isEditable)}
+		{$bulkActionMenu}
+	{/if}
+	{$folderContents}
+	<div style="width:100%; text-align: center">{$pagination}</div>
+</div>
+{$fragments}
+{if ($isEditable)}
+</div>	
+{/if}
+
+
 
 {if ($isEditable && 1==2)}
 <div class="form_actions">
@@ -150,12 +150,15 @@
 	kt.pages.browse={};
 	
 	kt.pages.browse.addDocumentItem=function(item){
+		item.is_shortcut=item.is_shortcut?'':' not_supported';
 		item.is_immutable=item.is_immutable?'':' not_supported';
 		item.is_checkedout=item.is_checkedout?'':' not_supported';
+		item.document_link='view.php?fDocumentId='+item.id;
 	
 		var newItem=jQuery(jQuery('.fragment.document')[0]).html();
 		newItem=kt.lib.parseTemplate(newItem,item);
 		var elem=jQuery(newItem);
+		var mime=jQuery('.doc.icon',elem).attr('style',item.mimeicon);
 		jQuery('.page.page_'+kt.pages.browse.curPage).append(elem);
 	};
 	

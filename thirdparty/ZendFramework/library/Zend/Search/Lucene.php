@@ -488,7 +488,7 @@ class Zend_Search_Lucene
             $query = Zend_Search_Lucene_Search_QueryParser::parse($query);
         }
 
-        if (!$query instanceof Zend_Search_Lucene_Search_Query) {
+        if (!($query instanceof Zend_Search_Lucene_Search_Query)) {
             throw new Zend_Search_Lucene_Exception('Query must be a string or Zend_Search_Lucene_Search_Query object');
         }
 
@@ -727,7 +727,7 @@ class Zend_Search_Lucene
         foreach ($this->_segmentInfos as $segInfo) {
             $termInfo = $segInfo->getTermInfo($term);
 
-            if (!$termInfo instanceof Zend_Search_Lucene_Index_TermInfo) {
+            if (!($termInfo instanceof Zend_Search_Lucene_Index_TermInfo)) {
                 $segmentStartDocId += $segInfo->count();
                 continue;
             }
@@ -769,7 +769,7 @@ class Zend_Search_Lucene
         foreach( $this->_segmentInfos as $segInfo ) {
             $termInfo = $segInfo->getTermInfo($term);
 
-            if (!$termInfo instanceof Zend_Search_Lucene_Index_TermInfo) {
+            if (!($termInfo instanceof Zend_Search_Lucene_Index_TermInfo)) {
                 $segmentStartDocId += $segInfo->count();
                 continue;
             }

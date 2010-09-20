@@ -85,7 +85,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 */
 	function get(&$ktapi, $folderid)
 	{
-	    if(is_null($ktapi) || !is_a($ktapi, 'KTAPI')){
+	    if(is_null($ktapi) || !($ktapi instanceof KTAPI)){
 	        return PEAR::raiseError('A valid KTAPI object is needed');
 	    }
 
@@ -548,6 +548,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 		
 		$wsversion = $config->get ( 'webservice/version', $this->ktapi->webserviceVersion );
 		$wsversion=$overrideWebServiceVersion?$overrideWebServiceVersion:$wsversion;
+		$wsversion = 3;
 		
 		
 		$user = $this->ktapi->get_user ();
@@ -560,7 +561,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 			$aOptions=array_merge($aOptions,$options);
 		}
 		
-			if (strpos ( $what, 'D' ) !== false) {
+		if (strpos ( $what, 'D' ) !== false) {
 			$document_children = Document::getList ( array ('folder_id = ? AND status_id = 1', $this->folderid ) );
 			
 			// I hate that KT doesn't cache things nicely...
@@ -712,7 +713,8 @@ class KTAPI_Folder extends KTAPI_FolderItem
 							'mime_type' => 'folder',	
 							'mime_icon_path' => 'folder',	
 							'mime_display' => 'Folder', 
-							'storage_path' => 'n/a'
+							'storage_path' => 'n/a',
+							'full_path' => $folder->getFullPath()
 						);
 						
 						if ($wsversion >= 3) {
@@ -1306,7 +1308,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	function move($ktapi_target_folder, $reason='')
 	{
 		assert(!is_null($ktapi_target_folder));
-		assert(is_a($ktapi_target_folder,'KTAPI_Folder'));
+		assert($ktapi_target_folder instanceof KTAPI_Folder);
 
 		$user = $this->ktapi->get_user();
 
@@ -1356,7 +1358,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	function copy($ktapi_target_folder, $reason='')
 	{
 		assert(!is_null($ktapi_target_folder));
-		assert(is_a($ktapi_target_folder,'KTAPI_Folder'));
+		assert($ktapi_target_folder instanceof KTAPI_Folder);
 
 		$user = $this->ktapi->get_user();
 

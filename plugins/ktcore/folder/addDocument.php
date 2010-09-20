@@ -234,38 +234,20 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         }
         $data = $res['results'];
         $key = KTUtil::randomString(32);
-
-
         // joy joy, we need to store the file first, or PHP will (helpfully)
         // clean it up for us
-
         $oKTConfig =& KTConfig::getSingleton();
         $sBasedir = $oKTConfig->get("urls/tmpDirectory");
-
         $sFilename = $oStorage->tempnam($sBasedir, 'kt_storecontents');
-
-        //$oContents = new KTFSFileLike($data['file']['tmp_name']);
-        //$oOutputFile = new KTFSFileLike($sFilename);
-        //$res = KTFileLikeUtil::copy_contents($oContents, $oOutputFile);
-
-        //if (PEAR::isError($res)) {
-        //    $oForm->handleError(sprintf(_kt("Failed to store file: %s"), $res->getMessage()));
-        //}
-
-
         $oStorage->uploadTmpFile($data['file']['tmp_name'], $sFilename);
-
         $data['file']['tmp_name'] = $sFilename;
         $_SESSION['_add_data'] = array($key => $data);
-
         // if we don't need metadata
         $fieldsets = $this->getFieldsetsForType($data['document_type']);
         if (empty($fieldsets)) {
             return $this->successRedirectTo('finalise', _kt("File uploaded successfully. Processing."), sprintf("fFileKey=%s", $key));
         }
-
         // if we need metadata
-
         $this->successRedirectTo('metadata', _kt("File uploaded successfully.  Please fill in the metadata below."), sprintf("fFileKey=%s", $key));
     }
 

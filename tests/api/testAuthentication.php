@@ -6,18 +6,18 @@ class APIAuthenticationTestCase extends KTUnitTestCase {
         $ktapi = new KTAPI();
         $session = $ktapi->start_session('admin', 'admin');
         $this->assertNotError($session);
-        $this->assertTrue(is_a($session, 'KTAPI_UserSession'));
+        $this->assertTrue($session instanceof KTAPI_UserSession);
         $this->assertTrue($session->is_active());
         $ktapi = new KTAPI();
         $session = $ktapi->get_active_session($session->session);
-        $this->assertTrue(is_a($session, 'KTAPI_UserSession'));
+        $this->assertTrue($session instanceof KTAPI_UserSession);
         $session->logout();
         $this->assertFalse($session->is_active());
     }
     function testSystemLogin() {
         $ktapi = new KTAPI();
         $session = $ktapi->start_system_session();
-        $this->assertTrue(is_a($session, 'KTAPI_SystemSession'));
+        $this->assertTrue($session instanceof KTAPI_SystemSession);
         $this->assertTrue($session->is_active());
         $session->logout();
         $this->assertFalse($session->is_active());
@@ -26,11 +26,11 @@ class APIAuthenticationTestCase extends KTUnitTestCase {
         $ktapi = new KTAPI();
         $session = $ktapi->start_anonymous_session();
         $this->assertNotError($session);
-        $this->assertTrue(is_a($session, 'KTAPI_AnonymousSession'));
+        $this->assertTrue($session instanceof KTAPI_AnonymousSession);
         $this->assertTrue($session->is_active());
         $ktapi = new KTAPI();
         $session = $ktapi->get_active_session($session->session);
-        $this->assertTrue(is_a($session, 'KTAPI_AnonymousSession'));
+        $this->assertTrue($session instanceof KTAPI_AnonymousSession);
         $session->logout();
         $this->assertFalse($session->is_active());
     }*/
