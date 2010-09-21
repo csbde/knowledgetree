@@ -272,7 +272,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         foreach ($QS as $k => $v) {
             $frag[] = sprintf('%s=%s', urlencode($k), urlencode($v));
         }
-        
+
         //redirect(KTUtil::ktLink('view.php',null,implode('&', $frag)));
         redirect(KTUtil::buildUrl(KTUtil::ktLink('view.php'), $frag));
     }
@@ -369,6 +369,7 @@ class KTDocumentViewAction extends KTDocumentAction {
         }
 
         if ($res === false) {
+            session_start();
             $this->addErrorMessage(_kt('The file you requested is not available.'));
             redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
             exit(0);
@@ -427,7 +428,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 
         return parent::getInfo();
     }
-    
+
     function getButton() {
         $btn = array();
         $btn['display_text'] = _kt('Checkout');
@@ -739,7 +740,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
                 'max_length' => 250,
                 'output' => 'reason',
         ));
-        
+
         if($default->enableESignatures){
             $aValidators[] = array('electonic.signatures.validators.authenticate', array(
                 'object_id' => $this->oDocument->iId,
@@ -1086,7 +1087,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
                     'required' => true
                 ));
         }
-        
+
         $getReason=$this->oDocument->getImmutable() || $this->oConfig->get('actionreasons/globalReasons');
 
         if($getReason)$widgets[] = array('ktcore.widgets.reason', array(
