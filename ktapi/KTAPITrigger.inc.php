@@ -63,7 +63,7 @@ class KTAPI_Trigger
 	function KTAPI_Trigger(&$ktapi)
 	{
 		assert(!is_null($ktapi));
-		assert(is_a($ktapi,'KTAPI'));
+		assert($ktapi instanceof KTAPI);
 
 		$this->ktapi=&$ktapi;
 	}

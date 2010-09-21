@@ -125,7 +125,7 @@ class KTPluginDispatcher extends KTAdminDispatcher {
         //enabling or disabling Tag fieldset depending on whether tag cloud plugin is enabled or disabled.
         //Get tag cloud object
         $oTagClouPlugin = KTPluginEntity::getByNamespace('ktcore.tagcloud.plugin');
-        if(!PEAR::isError($oTagClouPlugin) && !is_a($oTagClouPlugin, 'KTEntityNoObjects') && !is_null($oTagClouPlugin)){
+        if(!PEAR::isError($oTagClouPlugin) && !($oTagClouPlugin instanceof KTEntityNoObjects) && !is_null($oTagClouPlugin)){
             if($oTagClouPlugin->getDisabled() == '1')
             {
             	//disable tag fieldset

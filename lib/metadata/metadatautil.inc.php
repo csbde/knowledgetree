@@ -97,7 +97,7 @@ class KTMetadataUtil {
                 unset($aValues[$iThisFieldId]);
                 
                 // here we need a Lookup field.
-                if (!is_a($aCurrentSelections[$iThisFieldId], 'MetaData')) { 
+                if (!$aCurrentSelections[$iThisFieldId] instanceof MetaData) { 
                     $oL = MetaData::getByValueAndDocumentField($aCurrentSelections[$iThisFieldId], $iThisFieldId);
                 } else { $oL = $aCurrentSelections[$iThisFieldId]; }
                 

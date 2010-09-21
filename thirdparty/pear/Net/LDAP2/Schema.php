@@ -125,7 +125,7 @@ class Net_LDAP2_Schema extends PEAR
     */
     public function fetch($ldap, $dn = null)
     {
-        if (!$ldap instanceof Net_LDAP2) {
+        if (!($ldap instanceof Net_LDAP2)) {
             return PEAR::raiseError("Unable to fetch Schema: Parameter \$ldap must be a Net_LDAP2 object!");
         }
 
@@ -172,7 +172,7 @@ class Net_LDAP2_Schema extends PEAR
         }
 
         $entry = $result->shiftEntry();
-        if (!$entry instanceof Net_LDAP2_Entry) {
+        if (!($entry instanceof Net_LDAP2_Entry)) {
             return PEAR::raiseError('Could not fetch Subschema entry');
         }
 

@@ -697,7 +697,7 @@ class Net_LDAP2 extends PEAR
     */
     public function add(&$entry)
     {
-        if (!$entry instanceof Net_LDAP2_Entry) {
+        if (!($entry instanceof Net_LDAP2_Entry)) {
             return PEAR::raiseError('Parameter to Net_LDAP2::add() must be a Net_LDAP2_Entry object.');
         }
 
@@ -875,7 +875,7 @@ class Net_LDAP2 extends PEAR
                 return $entry;
             }
         }
-        if (!$entry instanceof Net_LDAP2_Entry) {
+        if (!($entry instanceof Net_LDAP2_Entry)) {
             return PEAR::raiseError("Parameter is not a string nor an entry object!");
         }
 
@@ -1321,10 +1321,10 @@ class Net_LDAP2 extends PEAR
         } else {
             $entry_o =& $entry;
         }
-        if (!$entry_o instanceof Net_LDAP2_Entry) {
+        if (!($entry_o instanceof Net_LDAP2_Entry)) {
             return PEAR::raiseError('Parameter $entry is expected to be a Net_LDAP2_Entry object! (If DN was passed, conversion failed)');
         }
-        if (null !== $target_ldap && !$target_ldap instanceof Net_LDAP2) {
+        if (null !== $target_ldap && !($target_ldap instanceof Net_LDAP2)) {
             return PEAR::raiseError('Parameter $target_ldap is expected to be a Net_LDAP2 object!');
         }
 
@@ -1373,7 +1373,7 @@ class Net_LDAP2 extends PEAR
     */
     public function &copy(&$entry, $newdn)
     {
-        if (!$entry instanceof Net_LDAP2_Entry) {
+        if (!($entry instanceof Net_LDAP2_Entry)) {
             return PEAR::raiseError('Parameter $entry is expected to be a Net_LDAP2_Entry object!');
         }
 

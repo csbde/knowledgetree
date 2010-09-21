@@ -269,7 +269,7 @@ class Net_LDAP2_Filter extends PEAR
                 } else {
                     $filters[$key] = $filter_o;
                 }
-            } elseif (!$testfilter instanceof Net_LDAP2_Filter) {
+            } elseif (!($testfilter instanceof Net_LDAP2_Filter)) {
                 $err = PEAR::raiseError('Net_LDAP2_Filter combine error: invalid object passed in array $filters!');
                 return $err;
             }

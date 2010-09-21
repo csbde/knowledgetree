@@ -201,9 +201,9 @@ class KTInit {
 	 * @return void
 	 */
 	public function accountRouting() {
-		if (file_exists(KT_PLUGIN_DIR . '/ktlive/liveEnable.php')) 
+		if (file_exists(KT_PLUGIN_DIR . '/ktlive/liveEnable.php'))
 		 {
-		    define('ACCOUNT_ROUTING_ENABLED',true);     
+		    define('ACCOUNT_ROUTING_ENABLED',true);
 			require_once(KT_PLUGIN_DIR . '/ktlive/liveEnable.php');
 			/**
 			 * The code below demonstrates how to use accountOverride functionality.
@@ -578,7 +578,7 @@ class KTInit {
 			$use_cache = $oKTConfig->setMemCache();
 		}
 
-		// why we clear the cache?  This way it is populated but never used because the next page call clears it
+		// If the cache needs to be cleared for debugging purposes uncomment the following lines..
 		/*$oKTConfig->clearCache();
 		$use_cache = false;*/
 
@@ -596,38 +596,15 @@ class KTInit {
 		if ($oPear->isError($dbSetup)) {
 			/* We need to setup the language handler to display this error correctly */
 			$this->setupI18n();
-			if (ACCOUNT_ROUTING_ENABLED) {
-			    // Set up the logging so that we can log the error.
-			    $logDir = $oKTConfig->get('urls/logDirectory', KT_DIR.'/var/log');
-			    $userId = isset($_SESSION['userID']) ? $_SESSION['userID'] : 'n/a';
-			    $this->configureLog($logDir, 'ERROR', $userId, ACCOUNT_NAME);
-
-			    $logger = LoggerManager::getLogger('default');
-			    $GLOBALS['default']->log = $logger;
-
-				// Check if account exists
-				if (liveAccounts::accountExists()) {
-					// Check if account is enabled
-					if (!liveAccounts::accountEnabled()) {
-						$logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT DISABLED(".$dbSetup->getMessage().")");
-						liveRenderError::errorDisabled($_SERVER, LIVE_ACCOUNT_DISABLED);
-					}else{
-						$logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT ENABLED(".$dbSetup->getMessage().")");
-						liveRenderError::errorFail($_SERVER, LIVE_ACCOUNT_DISABLED);
-					}
-				} else {
-					$logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and NO ACCOUNT(".$dbSetup->getMessage().")");
-					liveRenderError::errorNoAccount($dbSetup, LIVE_ACCOUNT_DISABLED);
-				}
-			} else {
-				$this->handleInitError($dbSetup);
-			}
+            $this->showDBError($dbSetup);
 		}
 
 		// Read in the config settings from the database
 		// Create the global $default array(NOTE this was actually created at the top of dmsDefaults, perhaps needs to move here?)
 		if ($use_cache === false){
 			$res = $oKTConfig->readConfig();
+			// If the config can't be read then it is most likely caused by a DB connection error
+			$this->showDBError($res);
 		}
 
 		// Get default server url settings
@@ -638,6 +615,42 @@ class KTInit {
 		}
 	}
 	// }}}
+
+	function showDBError($dbError)
+	{
+        if (ACCOUNT_ROUTING_ENABLED) {
+            $oKTConfig = KTConfig::getSingleton();
+
+            if(!isset($GLOBALS['default']->log)){
+                // Set up the logging so that we can log the error.
+                $logDir = $oKTConfig->get('urls/logDirectory', KT_DIR.'/var/log');
+                $userId = isset($_SESSION['userID']) ? $_SESSION['userID'] : 'n/a';
+                $this->configureLog($logDir, 'ERROR', $userId, ACCOUNT_NAME);
+
+                $logger = LoggerManager::getLogger('default');
+                $GLOBALS['default']->log = $logger;
+            }else {
+                $logger = $GLOBALS['default']->log;
+            }
+
+                // Check if account exists
+            if (liveAccounts::accountExists()) {
+                // Check if account is enabled
+                if (!liveAccounts::accountEnabled()) {
+                    $logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT DISABLED(".$dbError->getMessage().")");
+                    liveRenderError::errorDisabled($_SERVER, LIVE_ACCOUNT_DISABLED);
+                }else{
+                    $logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and ACCOUNT ENABLED(".$dbError->getMessage().")");
+                    liveRenderError::errorFail($_SERVER, LIVE_ACCOUNT_DISABLED);
+                }
+            } else {
+                $logger->error(ACCOUNT_NAME." DB Setup. DB CONNECT FAILURE and NO ACCOUNT(".$dbError->getMessage().")");
+                liveRenderError::errorNoAccount($dbError, LIVE_ACCOUNT_DISABLED);
+            }
+        } else {
+            $this->handleInitError($dbError);
+        }
+	}
 
 	// {{{ initTesting
 	function initTesting() {
@@ -686,7 +699,7 @@ $KTInit->setupServerVariables();
 
 // instantiate log
 $loggingSupport = $KTInit->setupLogging();
-$oKTConfig->logErrors(); 
+$oKTConfig->logErrors();
 
 // Send all PHP errors to a file(and maybe a window)
 set_error_handler(array('KTInit', 'handlePHPError'));
@@ -720,7 +733,12 @@ if ($checkup !== true) {
 	$pos = strpos($sScript, '.');
 	$sType = substr($sScript, 0, $pos);
 
-	KTPluginUtil::loadPlugins($sType);
+	$res = KTPluginUtil::loadPlugins($sType);
+
+	if(PEAR::isError($res)){
+	    // If the plugins aren't loaded, there was a DB error, possibly a DB connection error
+	    $KTInit->showDBError($res);
+	}
 }
 
 if ($checkup !== true) {

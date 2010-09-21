@@ -993,7 +993,7 @@ class DB_mysqli extends DB_common
             $got_string = false;
         }
 
-        if (!is_a($id, 'mysqli_result')) {
+        if (!($id instanceof mysqli_result)) {
             return $this->mysqliRaiseError(DB_ERROR_NEED_MORE_DATA);
         }
 

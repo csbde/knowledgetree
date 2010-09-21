@@ -270,7 +270,7 @@ class KTPermissionUtil {
      * To be used any time a folder permission object is changed.
      */
     function updatePermissionLookupRecursive(&$oDocumentOrFolder) {
-        if (is_a($oDocumentOrFolder, 'Document')) {
+        if ($oDocumentOrFolder instanceof Document) {
             // XXX: metadata versions may need attention here
             KTPermissionUtil::updatePermissionLookup($oDocumentOrFolder);
             return;
@@ -301,8 +301,8 @@ class KTPermissionUtil {
      * non-recursively.
      */
     function updatePermissionLookup(&$oFolderOrDocument, $aOptions = null) {
-        $is_a_folder = is_a($oFolderOrDocument, 'Folder');
-		$is_a_document = is_a($oFolderOrDocument, 'Document') || is_a($oFolderOrDocument, 'KTDocumentCore');
+        $is_a_folder = ($oFolderOrDocument instanceof Folder) ;
+		$is_a_document = ($oFolderOrDocument instanceof Document) || ($oFolderOrDocument instanceof KTDocumentCore) ;
 
 		//ensure that the document shortcut is being updated.
 		if($is_a_document && $oFolderOrDocument->isSymbolicLink()){
@@ -329,7 +329,7 @@ class KTPermissionUtil {
         if ($is_a_folder) {
             $msg = sprintf("Updating folder %s", join('/', $oFolderOrDocument->getPathArray()));
         } else {
-            if (is_a($oFolderOrDocument, 'Document')) {
+            if ($oFolderOrDocument instanceof Document) {
             	//modify the message to reflect that a shortcut is begin updated
             	if($oFolderOrDocument->isSymbolicLink()){
             		$msg = sprintf("Updating shortcut to %s", $oFolderOrDocument->getName());
@@ -505,7 +505,7 @@ class KTPermissionUtil {
         $iPermId = $oPermission->getID();
         $iDocId = $oFolderOrDocument->getID();
         $lookup = 'folders';
-        if(is_a($oFolderOrDocument, 'Document') || is_a($oFolderOrDocument, 'DocumentProxy')){
+        if(($oFolderOrDocument instanceof Document) || $oFolderOrDocument instanceof DocumentProxy){
             $lookup = 'docs';
         }
         // check if permission has been set
@@ -608,7 +608,7 @@ class KTPermissionUtil {
             $oNewDC->saveAssignment($oOrigDC->getAssignment());
         }
 
-        if (!is_a($oDocumentOrFolder, 'Folder')) {
+        if (!($oDocumentOrFolder instanceof Folder)) {
             KTPermissionUtil::updatePermissionLookup($oDocumentOrFolder);
             return;
         }
@@ -657,13 +657,13 @@ class KTPermissionUtil {
 
         // Documents might be permission owner, but then they'd be the
         // only users of that permission object.
-        if (is_a($oParentObject, 'Document')) {
+        if ($oParentObject instanceof Document) {
             return true;
         }
 
         // If you're a document and your permission owner isn't a
         // document, that means it's some ancestor, and thus not you.
-        if (is_a($oDocumentOrFolder, 'Document')) {
+        if ($oDocumentOrFolder instanceof Document) {
             return false;
         }
 
@@ -699,7 +699,7 @@ class KTPermissionUtil {
         $oDocumentOrFolder->setPermissionObjectID($iNewPOID);
         $oDocumentOrFolder->update();
 
-        if (is_a($oDocumentOrFolder, 'Document')) {
+        if ($oDocumentOrFolder instanceof Document) {
             // If we're a document, no niggly children to worry about.
             KTPermissionUtil::updatePermissionLookup($oDocumentOrFolder);
             return;
