@@ -113,7 +113,7 @@ class KTPage {
            "resources/css/kt-contenttypes.css",
            "resources/css/kt-headings.css",
            "resources/css/kt-new-ui.css",
-        	'resources/css/newui/newui.upload.css'),
+           'resources/css/newui/newui.upload.css',
 
 
            "resources/css/newui/dropdown.css",
