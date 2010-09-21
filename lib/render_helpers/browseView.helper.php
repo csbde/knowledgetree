@@ -68,8 +68,9 @@ class browseViewHelper {
 	}
 	
 	public function getFolderContent($folderId,$sortField='title',$asc=true){
-		$oUser=KTEntityUtil::get('User',  $_SESSION['userID']);
+		$oUser=User::get($_SESSION['userID']);
 		$KT=new KTAPI();
+		$KT->get(3);
 		$session=$KT->start_system_session($oUser->getUsername());
 
 		//Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
