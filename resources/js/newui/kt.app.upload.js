@@ -66,6 +66,10 @@ kt.app.upload=new function(){
 			self.options.docTypeFieldData=kt.api.getDocTypeMandatoryFields(docTypeId);
 		}
 		
+		this.showMetaData=function(){
+			alert('metadata window must open for '+self.options.fileName);
+		}
+		
 		this.init(options);
 	};
 	
@@ -79,11 +83,16 @@ kt.app.upload=new function(){
 		var item=jQuery(kt.api.getFragment('upload.dialog.item'));
 		jQuery(self.elems.item_container).append(item);
 		var obj=new uploadStructure({fileName:(fileName+''),elem:item});
-		//obj.setFileName(fileName);
+		kt.lib.meta.set(item[0],'item',obj);
 		obj.startUpload();
 		
 		this.data[fileName]=obj;
 		return obj;
+	}
+	
+	this.getItem=function(elem){
+		var e=jQuery(elem).parents('.ul_item')[0];
+		return kt.lib.meta.get(e,'item');
 	}
 	
 	this.findItem=function(fileName){
