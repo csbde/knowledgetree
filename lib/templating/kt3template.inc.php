@@ -49,6 +49,7 @@
 require_once(KT_LIB_DIR . "/plugins/pluginregistry.inc.php");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/session/control.inc");
+require_once(KT_LIB_DIR . "/util/ktVar.php");
 require_once(KT_DIR . '/search2/search/search.inc.php');
 
 class KTPage {
@@ -112,6 +113,7 @@ class KTPage {
            "resources/css/kt-contenttypes.css",
            "resources/css/kt-headings.css",
            "resources/css/kt-new-ui.css",
+        	'resources/css/newui/newui.upload.css'),
 
 
            "resources/css/newui/dropdown.css",
@@ -142,10 +144,15 @@ class KTPage {
         $aJS[] = 'thirdpartyjs/jquery/jquery_noconflict.js';
         $aJS[] = 'thirdpartyjs/jquery/plugins/urlparser/jquery.url.js';
         $aJS[] = 'resources/js/search2widget.js';
-        $aJS[] = 'resources/js/newui/ktjapi.all.js?1';
+//        $aJS[] = 'thirdpartyjs/plupload/js/plupload.min.js';
+//        $aJS[] = 'thirdpartyjs/plupload/js/plupload.html5.min.js';
+//        $aJS[] = 'thirdpartyjs/plupload/js/jquery.plupload.queue.min.js';
+        $aJS[] = 'thirdpartyjs/jquery/plugins/ajaxupload/fileuploader.js';
+        $aJS[] = 'resources/js/newui/ktjapi.all.js';
         $aJS[] = 'resources/js/newui/kt.containers.js';
         $aJS[] = 'resources/js/newui/kt.lib.js';
         $aJS[] = 'resources/js/newui/kt.api.js';
+        $aJS[] = 'resources/js/newui/kt.app.upload.js';
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';
         $aJS[] = 'resources/js/newui/buttontabs.jquery.js';
