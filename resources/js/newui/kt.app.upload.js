@@ -33,8 +33,6 @@ kt.app.upload=new function(){
 				this[idx]=options[idx];
 			}
 			self.options.xxx=jQuery(self.options.elem).parents('.uploadTable')[0];
-			console.log('Contianer');
-			console.dir(self.options);
 			self.setDocType(self.getGlobalDoctype());
 		}
 

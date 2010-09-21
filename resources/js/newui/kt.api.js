@@ -116,7 +116,6 @@ kt.api=new function(){
 		var func='template.execFragment';
 		
 		ret=ktjapi.retrieve(func,params,30000);
-		console.dir(ret);
 		return ret.data.fragment;
 	};
 	
