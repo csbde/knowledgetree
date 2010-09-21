@@ -112,6 +112,14 @@ class ktVar{
 		return $ret;
 	}
 	
+	public function volatileResource($url=NULL,$localhost=true){
+		if($localhost)if($_SERVER['SERVER_ADDR']!='127.0.0.1'){
+			return $url;
+		}
+		$url.=(strpos($url,'?')>0?"&":"?").rand();
+		return $url;
+	}
+	
 }
 
 class ktFileMan{
