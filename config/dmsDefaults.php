@@ -604,7 +604,9 @@ class KTInit {
 		if ($use_cache === false){
 			$res = $oKTConfig->readConfig();
 			// If the config can't be read then it is most likely caused by a DB connection error
-			$this->showDBError($res);
+			if(PEAR::isError($res)){
+				$this->showDBError($res);
+			}
 		}
 
 		// Get default server url settings
