@@ -2,8 +2,8 @@ if(typeof(kt.app)=='undefined')kt.app={};
 
 kt.app.upload=new function(){
 	var data=this.data={};
-	var fragments=this.fragments=['upload.dialog.item'];
-	var execs=this.execs=['upload.dialog'];
+	var fragments=this.fragments=['upload.dialog','upload.dialog.item'];
+	var execs=this.execs=['upload.doctypes'];
 	var self=this;
 	var elems=this.elems={};
 	this.uploader=null;
@@ -30,28 +30,25 @@ kt.app.upload=new function(){
 		
 		this.init=function(options){
 			for(var idx in options){
-				this[idx]=options[idx];
+//				this[idx]=options[idx];
 			}
-			self.options.xxx=jQuery(self.options.elem).parents('.uploadTable')[0];
-			self.setDocType(self.getGlobalDoctype());
+			self.setFileName(self.options.fileName);
+//			alert(self.options.fileName);
 		}
 
-		this.getGlobalDoctype=function(){
-			var e=jQuery('.ul_doctype',self.options.container)[0];
-			return e.options[e.selectedIndex].value;
-		}
 		
 		this.setFileName=function(text){
-			var e=jQuery('.ul_filename',self.elem);
+//			console.clear();console.dir(self);
+			var e=jQuery('.ul_filename',self.options.elem);
 			e.html(text);
 		}
 		
 		this.setProgress=function(text,state){
 			var state=kt.lib.Object.enum(state,'uploading,waiting,ui_meta,add_doc,done','waiting');
 			
-			var e=jQuery('.ul_progress',self.elem);
+			var e=jQuery('.ul_progress',self.options.elem);
 			e.html(text);
-			jQuery(self.elem).removeClass('ul_f_uploading ul_f_waiting ul_f_meta ul_f_add_doc ul_f_done').addClass('ul_f_'+state);
+			jQuery(self.options.elem).removeClass('ul_f_uploading ul_f_waiting ul_f_meta ul_f_add_doc ul_f_done').addClass('ul_f_'+state);
 
 		}
 		
@@ -81,8 +78,8 @@ kt.app.upload=new function(){
 	this.addUpload=function(fileName,container){
 		var item=jQuery(kt.api.getFragment('upload.dialog.item'));
 		jQuery(self.elems.item_container).append(item);
-		var obj=new uploadStructure({fileName:fileName,elem:item});
-		obj.setFileName(fileName);
+		var obj=new uploadStructure({fileName:(fileName+''),elem:item});
+		//obj.setFileName(fileName);
 		obj.startUpload();
 		
 		this.data[fileName]=obj;
@@ -110,7 +107,7 @@ kt.app.upload=new function(){
 	        shadow: true,
 	        modal: true,
 	        title: 'Upload Files',
-	        html: kt.api.execFragment('upload.dialog')
+	        html: kt.api.getFragment('upload.dialog')
 	    });
 	    uploadWin.addListener('show',function(){
 	    	self.elems.item_container=jQuery('.uploadTable .ul_list')[0];
