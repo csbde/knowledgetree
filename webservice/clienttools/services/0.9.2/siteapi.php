@@ -26,6 +26,13 @@ class siteapi extends client_service{
 			$fields=$fieldSet->getFields();
 			foreach($fields as $field){
 				$properties=$field->getProperties();
+				
+				//TODO: Add Data for lookup-type fields
+				if(isset($properties['has_lookup']))if($properties['has_lookup']==1){
+					
+				}
+				
+				
 				if(is_array($filter)){
 					$requirements=true;
 					foreach($filter as $elem=>$value){

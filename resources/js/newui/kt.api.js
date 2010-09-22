@@ -3,11 +3,21 @@ kt.api=new function(){
 	this.persistentDataCacheTimeout=30000;
 	
 	
-	this.getDocTypeMandatoryFields=function(docTypeId){
+	this.docTypeRequiredFields=function(docTypeId){
 		var params={};
 		params.type=docTypeId;
 		var synchronous=false;
 		var func='siteapi.docTypeRequiredFields';
+		var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout)
+		return data.data;
+		
+	}
+	
+	this.docTypeFields=function(docTypeId){
+		var params={};
+		params.type=docTypeId;
+		var synchronous=false;
+		var func='siteapi.docTypeFields';
 		var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout)
 		return data.data;
 		

@@ -34,31 +34,7 @@ function getDocTypes(){
 	        	<?php endif; endforeach; ?>
 	        </select>       		
        	</span></td></tr>
-       	<tr>
-       		<td class="ul_metadata">
-       			<span class="ul_meta_fieldset">
-       				<span class="ul_meta_title">Fieldset Title</span>
-       				<span class="ul_meta_row"><span class="ul_meta_label">Document Title</span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField"></input></span></span>
-       				<span class="ul_meta_row"><span class="ul_meta_label">Document Title</span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField"></input></span></span>
-       				<span class="ul_meta_row"><span class="ul_meta_label">Document Title</span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField"></input></span></span>
-       				<span class="ul_meta_row"><span class="ul_meta_label">Document Tit asdfle</span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField"></input></span></span>
-       				<span class="ul_meta_row"><span class="ul_meta_label">Document Title</span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField"></input></span></span>
-       				<span class="ul_meta_row"><span class="ul_meta_label">Document ads Title</span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField"></input></span></span>
-       				<span class="ul_meta_row"><span class="ul_meta_label">Doc dsaument Title</span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField"></input></span></span>
-       			</span>
-       			<span class="ul_meta_fieldset">
-       				<span class="ul_meta_title">Fieldset Title</span>
-       				<span class="ul_meta_row"><span class="ul_meta_label">Documed fnt Title</span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField"></input></span></span>
-       				<span class="ul_meta_row"><span class="ul_meta_label">Document Title</span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField"></input></span></span>
-       				<span class="ul_meta_row"><span class="ul_meta_label">Document Title</span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField"></input></span></span>
-       				<span class="ul_meta_row"><span class="ul_meta_label">Docum dfent Title</span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField"></input></span></span>
-       				<span class="ul_meta_row"><span class="ul_meta_label">Document Title</span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField"></input></span></span>
-       				<span class="ul_meta_row"><span class="ul_meta_label">Document Title</span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField"></input></span></span>
-       				<span class="ul_meta_row"><span class="ul_meta_label">Docume dasnt Title</span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField"></input></span></span>
-       			</span>
-
-			</td>
-		</tr>
-       	<tr><td class="ul_meta_actionbar">Apply / Save Metadata</td></tr>
+       	<tr><td class="ul_metadata"></td></tr>
+       	<tr><td class="ul_meta_actionbar"><input type="button" value="OK" onclick="kt.app.upload.getMetaItem(this).options.metaWindow.close();" /></td></tr>
        </table>
     </div>

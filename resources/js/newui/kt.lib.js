@@ -1,15 +1,16 @@
 kt.lib.String=new function(){
-	try{
-		this.parse=function(str,obj){
-			ret=new String(str);
-			if(typeof(obj)=='object'){
-				for(var prop in obj){
-					ret=ret.replace('['+prop+']', obj[prop]);
+	this.parse=function(str,obj){
+		ret=new String(str);
+		if(typeof(obj)=='object'){
+			for(var prop in obj){
+				var key='['+prop+']';
+				while(ret.indexOf(key,0)>=0){
+					ret=ret.replace(key, obj[prop]);
 				}
 			}
-			return ret;
-		};
-	}catch(e){kt.evt.triggerErrorLog('kt.lib.String', e);};
+		}
+		return ret;
+	};
 };
 
 kt.lib.Object=new function(){

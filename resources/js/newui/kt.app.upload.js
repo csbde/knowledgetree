@@ -24,6 +24,8 @@ kt.app.upload=new function(){
 	//container for qq.fileUploader (AjaxUploader2 code)
 	this.uploader=null;
 	
+	this.uploadfolder=null;
+	
 	//Initializes the upload widget on creation. Currently does preloading of resources.
 	this.init=function(){
 		for(var idx in fragments){
@@ -155,7 +157,7 @@ kt.app.upload.uploadStructure=function(options){
 	
 	this.setDocType=function(docTypeId){
 		self.options.docTypeId=docTypeId;
-		self.options.docTypeFieldData=kt.api.getDocTypeMandatoryFields(docTypeId);
+		self.options.docTypeFieldData=kt.api.docTypeFields(docTypeId);
 	}
 	
 	this.setMetaData=function(key,value){
@@ -167,7 +169,7 @@ kt.app.upload.uploadStructure=function(options){
 	        layout      : 'fit',
 	        width       : 400,
 	        resizable   : true,
-	        closable    : true,
+	        closable    : false,
 	        closeAction :'destroy',
 	        y           : 150,
 	        autoScroll  : false,
@@ -178,17 +180,54 @@ kt.app.upload.uploadStructure=function(options){
 	        title: 'Edit Document Metadata',
 	        html: kt.api.execFragment('upload.metadata.dialog')
 	    });
-		this.options.metaWindow=metaWin;
+		self.options.metaWindow=metaWin;
 		metaWin.show();
 		
 		var e=jQuery('.metadataTable')[0];
 		self.options.metaDataTable=e;
 		kt.lib.meta.set(e,'item',self);
-		self.changeDocType(1);
+		self.changeDocType(self.options.docTypeId?self.options.docTypeId:1);
+		self.populateValues();
+	}
+	
+	this.populateValues=function(){
+		for(var idx in self.options.metadata){
+			var field=jQuery('.ul_meta_field_'+idx,self.options.metaDataTable);
+			console.dir(field);
+			if(field.length>0){
+				field=field[0];
+				var tag=(field.tagName+'').toLowerCase();
+				switch(tag){
+					case 'input':
+						var type=field.type;
+						switch(type){
+							case 'text':
+								field.value=self.options.metadata[idx];
+								break;
+							case 'checkbox':
+								break;
+						}
+						break;
+					case 'textarea':
+						break;
+					case 'select':
+						break;
+				}
+			}
+		}
 	}
 	
 	this.changeDocType=function(docType){
-		var data=kt.api.getDocTypeMandatoryFields(docType);
+		self.options.docTypeId=docType;
+		
+		var selectBox=jQuery('.ul_doctype',self.options.metaDataTable)[0];
+		for(var idx in selectBox.options){
+			if(selectBox.options[idx].value==docType){
+				selectBox.selectedIndex=idx;
+			}
+		}
+		
+		var data=kt.api.docTypeFields(docType);
 		self.options.docTypeFieldData=data.fieldsets;
 		var container=jQuery('.ul_metadata',self.options.metaDataTable);
 		
@@ -201,12 +240,32 @@ kt.app.upload.uploadStructure=function(options){
 			container.append(t_fieldSet);
 			for(var fidx in fields){
 				var field=fields[fidx];
-				var t_field_filename='upload.metadata.field.' + (field.data_type + '').toLowerCase();
+				var fieldType=self.getFieldType(field);
+				var t_field_filename='upload.metadata.field.' + fieldType;
 				var t_field=jQuery(kt.lib.String.parse(kt.api.getFragment(t_field_filename),field));
 				t_fieldSet.append(t_field);
 			}
 		}
-	}
+	};
+	
+	this.getFieldType=function(field){
+		var datatype = (''+field.data_type).toLowerCase();
+
+		//Fields set to type STRING
+		if(datatype=='string'){
+			if(field.has_inetlookup==1){
+				return field.inetlookup_type;
+			}
+			if(field.has_lookuptree==1)return 'tree';
+			if(field.has_lookup==1)return 'lookup';
+		}
+		
+		if(datatype=='large text'){
+			if(field.is_html==1)return 'large-html';
+			return 'large-text';
+		}
+		return datatype;
+	};
 	
 	this.init(options);
 };
