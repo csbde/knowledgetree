@@ -10,10 +10,10 @@ kt.app.upload=new function(){
 	var data=this.data={};
 	
 	//contains a list of fragments that will get preloaded
-	var fragments=this.fragments=['upload.dialog','upload.dialog.item'];
+	var fragments=this.fragments=['upload.dialog','upload.dialog.item','upload.metadata.fieldset'];
 	
 	//contains a list of executable fragments that will get preloaded
-	var execs=this.execs=['upload.doctypes'];
+	var execs=this.execs=['upload.doctypes','upload.metadata.dialog'];
 	
 	//scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
 	var self=this;
@@ -34,6 +34,9 @@ kt.app.upload=new function(){
 		}
 	}
 	
+	//Container for the EXTJS window
+	this.uploadWindow=null;
+	
 
 	//Add a file item to the list of files to upload and manage. must not be called directly, but as a result of adding a file using AjaxUploader)
 	this.addUpload=function(fileName,container){
@@ -50,6 +53,11 @@ kt.app.upload=new function(){
 	//A DOM helper function that will take elem as any dom element inside a file item fragment and return the js object related to that element.
 	this.getItem=function(elem){
 		var e=jQuery(elem).parents('.ul_item')[0];
+		return kt.lib.meta.get(e,'item');
+	}
+	
+	this.getMetaItem=function(elem){
+		var e=jQuery(elem).parents('.metadataTable')[0];
 		return kt.lib.meta.get(e,'item');
 	}
 	
@@ -93,6 +101,7 @@ kt.app.upload=new function(){
 	    		showMessage: function(message){alert(message);}
 	    	});
 	    });
+		self.uploadWindow=uploadWin;
 	    uploadWin.show();
 	}
 	
@@ -110,7 +119,8 @@ kt.app.upload.uploadStructure=function(options){
 		is_uploaded			:false,
 		elem				:null,
 		docTypeId			:null,
-		docTypeFieldData	:null
+		docTypeFieldData	:null,
+		metadata			:{}
 	},options);
 	
 	
@@ -148,8 +158,54 @@ kt.app.upload.uploadStructure=function(options){
 		self.options.docTypeFieldData=kt.api.getDocTypeMandatoryFields(docTypeId);
 	}
 	
+	this.setMetaData=function(key,value){
+		self.options.metadata[key]=value;
+	};
+	
 	this.showMetaData=function(){
-		alert('metadata window must open for '+self.options.fileName);
+		var metaWin = new Ext.Window({
+	        layout      : 'fit',
+	        width       : 400,
+	        resizable   : true,
+	        closable    : true,
+	        closeAction :'destroy',
+	        y           : 150,
+	        autoScroll  : false,
+	        bodyCssClass: 'ul_meta_body',
+	        cls			: 'ul_meta',
+	        shadow: true,
+	        modal: true,
+	        title: 'Edit Document Metadata',
+	        html: kt.api.execFragment('upload.metadata.dialog')
+	    });
+		this.options.metaWindow=metaWin;
+		metaWin.show();
+		
+		var e=jQuery('.metadataTable')[0];
+		self.options.metaDataTable=e;
+		kt.lib.meta.set(e,'item',self);
+		self.changeDocType(1);
+	}
+	
+	this.changeDocType=function(docType){
+		var data=kt.api.getDocTypeMandatoryFields(docType);
+		self.options.docTypeFieldData=data.fieldsets;
+		var container=jQuery('.ul_metadata',self.options.metaDataTable);
+		
+		container.html('');
+		
+		for(var idx in self.options.docTypeFieldData){
+			var fieldSet=self.options.docTypeFieldData[idx].properties;
+			var fields=self.options.docTypeFieldData[idx].fields;
+			var t_fieldSet=jQuery(kt.lib.String.parse(kt.api.getFragment('upload.metadata.fieldset'),fieldSet));
+			container.append(t_fieldSet);
+			for(var fidx in fields){
+				var field=fields[fidx];
+				var t_field_filename='upload.metadata.field.' + (field.data_type + '').toLowerCase();
+				var t_field=jQuery(kt.lib.String.parse(kt.api.getFragment(t_field_filename),field));
+				t_fieldSet.append(t_field);
+			}
+		}
 	}
 	
 	this.init(options);
