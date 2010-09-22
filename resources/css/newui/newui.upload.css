@@ -19,7 +19,7 @@ table.uploadTable .ul_button { font-size: 11px; display: inline-block; width: au
 table.uploadTable .ul_button input { cursor: pointer; }
 table.uploadTable .ul_item { border-bottom: 1px solid #DAECF6; width: auto; display: block; padding: 10px 5px; margin-bottom: 5px; /* while it is uploading to s3  - preparing upload */ /* while it is waiting to be added - ready */ /* while it is waiting for compulsory metadata - enter metadata */ /* while it is adding a document to knowledgetree- uploading document */ /* when it is done - upload successful */ /* when an error has occurred - upload failed */ }
 table.uploadTable .ul_item .ul_filename { font-size: 11px; color: #595959; /*			font-weight: bold; */ }
-table.uploadTable .ul_item .ul_progress, table.uploadTable .ul_item .ul_meta_button { float: right; }
+table.uploadTable .ul_item .ul_progress, table.uploadTable .ul_item .ul_meta_button { float: right; cursor: pointer; }
 table.uploadTable .ul_item .ul_progress { color: #00A100; font-weight: bold; padding: 2px 10px; }
 table.uploadTable .ul_item .ul_progress.active { color: #A10000; }
 table.uploadTable .ul_item.ul_f_uploading .ul_progress { color: #A10000; }
@@ -27,3 +27,15 @@ table.uploadTable .ul_item.ul_f_waiting .ul_progress { color: #FFD200; }
 table.uploadTable .ul_item.ul_f_ui_meta .ul_progress { color: #00A100; }
 table.uploadTable .ul_item.ul_f_add_doc .ul_progress { color: #A10000; }
 table.uploadTable .ul_item.ul_f_done .ul_progress { color: #0D51CC; }
+
+table.metadataTable { width: 100%; height: 300px; }
+table.metadataTable td { height: 1px; }
+table.metadataTable .ul_meta_selectDocType .ul_meta_docTypeOptions { float: right; display: inline-block; }
+table.metadataTable .ul_metadata { margin: 10px 0px; vertical-align: top; padding: 15px; overflow: auto; display: block; border: 1px solid #85A2BD; background-color: #f7f7f7; height: 250px; }
+table.metadataTable .ul_metadata .ul_meta_fieldset { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; border: 1px solid #85A2BD; padding: 15px 5px 5px 5px; margin-bottom: 15px; position: relative; background-color: #FFFFFF; display: block; }
+table.metadataTable .ul_metadata .ul_meta_fieldset:first-child { margin-top: 3px; }
+table.metadataTable .ul_metadata .ul_meta_fieldset span.ul_meta_title { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; position: absolute; top: -8px; left: 15px; font-weight: bold; border: 1px solid #85A2BD; background-color: inherit; padding: 2px 5px; }
+table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_row { display: block; padding: 2px 0px; }
+table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_fullField { width: 100%; }
+table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field { width: 180px; display: inline-block; }
+table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_label { width: 120px; display: inline-block; padding-right: 8px; /* text-align: right; */ }

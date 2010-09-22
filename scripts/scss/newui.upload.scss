@@ -97,6 +97,7 @@ table.uploadTable{
 		}
 		.ul_progress,.ul_meta_button{
 			float: right;
+			cursor: pointer;
 		}
 		.ul_progress{
 			color: #00A100;
@@ -145,4 +146,75 @@ table.uploadTable{
 		&.ul_f_error{
 		}
 	}
+}
+
+table.metadataTable{
+	width: 100%;
+	height: 300px;
+	td{
+		height: 1px;
+	}
+	.ul_meta_selectDocType{
+		.ul_meta_docTypeOptions{
+			float: right;
+			display: inline-block;
+		}
+	}
+	
+	.ul_metadata{
+		margin: 10px 0px;
+		vertical-align:top; 
+		padding: 15px; 
+		overflow: auto;
+		display: block;
+		border: 1px solid #85A2BD;
+		background-color: darken(#FFFFFF, 3%);
+		height: 250px;
+		.ul_meta_fieldset{
+			@include corners(5px);
+			border: 1px solid #85A2BD;
+			padding: 15px 5px 5px 5px;
+			margin-bottom: 15px;
+			position: relative;
+			background-color: #FFFFFF;
+			display: block;
+			&:first-child{
+				margin-top: 3px;
+			}
+			
+			span.ul_meta_title{
+				@include corners(5px);
+				position: absolute;
+				top: -8px;
+				left: 15px;
+				font-weight: bold;
+				border: 1px solid #85A2BD;
+				background-color: inherit;
+				padding: 2px 5px;
+			}
+			
+			.ul_meta_row{
+				display: block;
+				padding: 2px 0px;
+			}
+			
+			.ul_meta_fullField{
+				width: 100%;
+			}
+			.ul_meta_field{
+				width: 180px;
+				display: inline-block;
+			}
+			.ul_meta_label{
+				width: 120px;
+				display: inline-block;
+				padding-right: 8px;
+				/* text-align: right; */
+			}
+		}
+	}
+	
+	.ul_meta_actionbar{
+	}
+	
 }
