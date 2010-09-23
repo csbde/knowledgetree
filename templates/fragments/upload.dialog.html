@@ -1,5 +1,8 @@
-    <div id="uploaddialog">
+
+	<ul id="loadedpath" style="display:none;"></ul>
+	<div id="uploaddialog">
     <form method="post" action="dump.php">
+		<input type="text" id="currentPath" style="display:none;" />
         <table class="uploadTable" border="0" cellspacing="0" cellpadding="0">
         	<!--  tr><td class="ul_heading">Heading</td></tr -->
         	<tr>
@@ -8,8 +11,11 @@
         		</td>
         	</tr>
         	<tr><td class="ul_list"><!-- span class="files"></span --></td></tr>
-        	<tr><td class="ul_folder_display">Files will be uploaded to: <span id="uploadpathstring">/tohir</span> <a href="javascript:;" id="changepathlink"  onClick="alert('Not Yet Implemented');" >Change</a></td></tr>
-        	<tr><td class="ul_actions"><input type="button" value="Cancel" onClick="alert('Not Yet Implemented');" /><input type="button" value="Add Documents" onClick="alert('Not Yet Implemented');" /></td></tr>
+        	<tr><td class="ul_folder_display">Files will be uploaded to: <span id="uploadpathstring">/tohir</span> <a href="javascript:;" id="changepathlink"  >Change</a>
+			<div id="folderpathchooser" style="background:#FFF;display:none;"></div></td></tr>
+        	<tr><td class="ul_actions"><input type="button" value="Cancel" onclick="kt.app.upload.closeWindow();" /><input type="button" value="Add Documents" onClick="alert('Not Yet Implemented');" /></td></tr>
         </table>
+		
+		
     </form>
     </div>

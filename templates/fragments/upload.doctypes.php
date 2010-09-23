@@ -39,7 +39,7 @@ function getDocTypes(){
         		</td>
         	</tr>
         	<tr><td class="ul_list"><!-- span class="files"></span --></td></tr>
-        	<tr><td class="ul_folder_display">Files will be uploaded to: <span id="uploadpathstring">/tohir</span> <a href="javascript:;" id="changepathlink"  onClick="alert('Not Yet Implemented');" >Change</a></td></tr>
+        	<tr><td class="ul_folder_display">Files will be uploaded to: <span id="uploadpathstring">/tohir - php</span> <a href="javascript:;" id="changepathlink"  onClick="alert('Not Yet Implemented');" >Change</a></td></tr>
         	<tr><td class="ul_actions"><input type="button" value="Cancel" onClick="alert('Not Yet Implemented');" /><input type="button" value="Add Documents" onClick="alert('Not Yet Implemented');" /></td></tr>
         </table>
     </form>

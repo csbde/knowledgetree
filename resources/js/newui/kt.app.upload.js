@@ -71,15 +71,32 @@ kt.app.upload=new function(){
 		return null;
 	}
 	
+	this.getNodeTxt = function(html)
+	{
+		if (strpos(html, '<') == false) {
+			nodeText = trim(html);
+		} else {
+			nodeText = trim(html.substr(0, strpos(html, '<')));
+		}
+		
+		return nodeText;
+	}
+	
+	this.closeWindow = function() {
+		uploadWindow = Ext.getCmp('extuploadwindow');
+		uploadWindow.destroy();
+	}
+	
 	//ENTRY POINT: Calling this function will set up the environment, display the upload dialog, and hook up the AjaxUploader callbacks to the correct functions.
 	this.showUploadWindow = function(){
 	    var uploadWin = new Ext.Window({
+			id          : 'extuploadwindow',
 	        layout      : 'fit',
 	        width       : 520,
 	        resizable   : false,
 	        closable    : true,
 	        closeAction :'destroy',
-	        y           : 150,
+	        y           : 50,
 	        autoScroll  : false,
 	        bodyCssClass: 'ul_win_body',
 	        cls			: 'ul_win',
@@ -102,6 +119,112 @@ kt.app.upload=new function(){
 	    		onComplete: function(id,fileName,responseJSON){self.findItem(fileName).completeUpload();},
 	    		showMessage: function(message){alert(message);}
 	    	});
+			
+			
+			
+			if (jQuery("input[name='fFolderId']").length == 0) {
+                jQuery("#currentPath").val(1);
+            } else {
+                jQuery("#currentPath").val(jQuery("input[name='fFolderId']").val());
+            }
+			
+			
+			kt.api.getFolderHierarchy(jQuery('#currentPath').val(),function(result){
+                //console.dir(result);
+                
+				if (jQuery('#currentPath').val() == 1) {
+					jQuery('ul#loadedpath').append('<li class="loadedchildren" folderid="'+jQuery('#currentPath').val()+'">'+result.data.currentFolder.name+'</li>');
+				} else {
+					jQuery.each(result.data.parents, function(i,item){
+						//console.dir(item);
+						if (item.parent_id == null) {
+							jQuery('ul#loadedpath').append('<li class="notloaded" folderid="'+item.id+'">'+item.name+'</li>');
+						} else {
+							jQuery('ul#loadedpath li[folderid='+item.parent_id+']').append('<ul><li class="notloaded" folderid="'+item.id+'">'+item.name+'</li></ul>');
+						}
+					});
+					
+					jQuery('ul#loadedpath li[folderid='+result.data.currentFolder.parent_id+']').append('<ul><li class="loadedchildren" folderid="'+jQuery('#currentPath').val()+'">'+result.data.currentFolder.name+'</li></ul>');
+					
+					
+				}
+				
+				parentNode = jQuery('ul#loadedpath li[folderid='+jQuery('#currentPath').val()+'] ul');
+				
+				if (parentNode.length == 0) {
+					parentNode = jQuery('ul#loadedpath li[folderid='+jQuery('#currentPath').val()+']').append('<ul></ul>');
+				}
+				
+				jQuery.each(result.data.children, function(i,item){
+					jQuery('ul#loadedpath li[folderid='+jQuery('#currentPath').val()+'] ul').append('<li class="notloaded" folderid="'+item.id+'">'+item.name+'</li>');
+					
+				});
+				
+                
+            }, function(){});
+            
+            jQuery("#changepathlink").live("click", function(){
+				//console.log('changepathlink');
+                jQuery('#folderpathchooser').toggle();
+                
+                if (jQuery('#folderpathchooser').css('display') == 'none') {
+                    
+                } else {
+                    
+                    loadFolderPath(jQuery('#currentPath').val());
+                }
+                
+                
+            });
+            
+            jQuery("#folderpathchooser li").live("click", function(){
+                node = jQuery(this);
+                
+				//alert('folderpathchooser li click');
+				
+				//console.dir(node);
+				
+				//alert(node.attr('folderid'));
+				
+                jQuery('#currentPath').val(node.attr('folderid'));
+                
+                
+                
+                nodeInTree = jQuery('ul#loadedpath li[folderid='+node.attr('folderid')+']');
+                
+                if (node.attr('folderid') == 1) {
+                    pathToItem = ' / (Root Directory)';
+                } else {
+                    pathToItem = kt.app.upload.getNodeTxt(nodeInTree.html());
+                    
+                    nodeInTree.parentsUntil('#loadedpath').each(function(i){
+                        
+                        if (jQuery(this).get(0).tagName == 'LI') {
+							//console.log('Parent folder id '+jQuery(this).attr('folderid'));
+							
+							if (jQuery(this).attr('folderid') == 1) {
+								pathToItem = '/'+pathToItem;
+							} else {
+								pathToItem = kt.app.upload.getNodeTxt(jQuery(this).html())+'/'+pathToItem;
+							}
+							
+                            
+                        }
+                    });
+                }
+                
+                
+                
+                jQuery('#uploadpathstring').html(pathToItem);
+                
+                loadFolderPath(node.attr('folderid'));
+                
+                
+                
+                
+            });
+			
+			
 	    });
 		self.uploadWindow=uploadWin;
 	    uploadWin.show();
@@ -193,7 +316,7 @@ kt.app.upload.uploadStructure=function(options){
 	this.populateValues=function(){
 		for(var idx in self.options.metadata){
 			var field=jQuery('.ul_meta_field_'+idx,self.options.metaDataTable);
-			console.dir(field);
+			//console.dir(field);
 			if(field.length>0){
 				field=field[0];
 				var tag=(field.tagName+'').toLowerCase();
@@ -269,3 +392,125 @@ kt.app.upload.uploadStructure=function(options){
 	
 	this.init(options);
 };
+
+        function loadFolderPath(currentId)
+        {
+            //console.log('loadFolderPath '+currentId);
+            
+            html = '<ul id="currentPathStuff">';
+            
+            currentNode = jQuery('ul#loadedpath li[folderid='+currentId+']');
+            
+            if (currentId+'' != '1') {
+                
+                html += '<li folderid="'+currentNode.parent().parent().attr('folderid')+'">[Folder Up]'+'</li>';
+            }
+            
+            if (currentNode.length == 0) {
+                // NEED TO RELOAD TREE
+                //console.log('NEED TO RELOAD TREE');
+            } else {
+                if (currentNode.hasClass('loadedchildren')) {
+					
+					//console.log("CHILDREN ADDED")
+					
+                    childItems = jQuery('ul#loadedpath li[folderid='+currentId+']>ul');
+                    
+                    if (childItems.length == 0) {
+                        
+                    } else {
+                        childItems.children().each(function(i){
+                            child = jQuery(this);
+                            
+                            nodeText = kt.app.upload.getNodeTxt(child.html());
+                            
+                            
+                            html += '<li folderid="'+child.attr('folderid')+'">'+nodeText+'</li>';
+                        });
+                    }
+					
+					html += '</ul>';
+					jQuery('#folderpathchooser').html(html);
+					
+                } else {
+					jQuery('#folderpathchooser').html('<div class="loading"></div>');
+					
+                    kt.api.getSubFolders(currentId,function(result){
+						
+						if (result.data.children.length == 0) {
+							//console.log('no children');
+						} else {
+							parentUl = jQuery('ul#loadedpath li[folderid='+currentId+'] > ul');
+							
+							if (parentUl.length == 0) {
+								parentUl = jQuery('ul#loadedpath li[folderid='+currentId+']').append('<ul></ul>');
+							}
+							
+							jQuery.each(result.data.children, function(i,item){
+								
+								if (jQuery('ul#loadedpath li[folderid='+currentId+'] > ul > li[folderid='+item.id+']').length == 0) {
+									jQuery('ul#loadedpath li[folderid='+currentId+'] > ul').append('<li class="notloaded" folderid="'+item.id+'">'+item.name+'</li>');
+								}
+								
+								
+								html += '<li folderid="'+item.id+'">'+item.name+'</li>';
+							});
+						}
+						
+						jQuery('ul#loadedpath li[folderid='+currentId+']').removeClass('notloaded').addClass('loadedchildren');
+						
+						html += '</ul>';
+						 jQuery('#folderpathchooser').html(html);
+					}, function(){});
+                }
+            }
+            
+            
+            
+           
+        }
+		
+		
+		
+		
+		function strpos (haystack, needle, offset) {
+            // http://kevin.vanzonneveld.net
+        
+            var i = (haystack+'').indexOf(needle, (offset || 0));
+            return i === -1 ? false : i;
+        }
+        
+        
+        function trim (str, charlist) {
+            // http://kevin.vanzonneveld.net
+        
+            var whitespace, l = 0, i = 0;
+            str += '';
+            
+            if (!charlist) {
+                // default list
+                whitespace = " \n\r\t\f\x0b\xa0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000";
+            } else {
+                // preg_quote custom list
+                charlist += '';
+                whitespace = charlist.replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '$1');
+            }
+            
+            l = str.length;
+            for (i = 0; i < l; i++) {
+                if (whitespace.indexOf(str.charAt(i)) === -1) {
+                    str = str.substring(i);
+                    break;
+                }
+            }
+            
+            l = str.length;
+            for (i = l - 1; i >= 0; i--) {
+                if (whitespace.indexOf(str.charAt(i)) === -1) {
+                    str = str.substring(0, i + 1);
+                    break;
+                }
+            }
+            
+            return whitespace.indexOf(str.charAt(0)) === -1 ? str : '';
+        }

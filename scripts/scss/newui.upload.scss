@@ -261,3 +261,29 @@ table.metadataTable{
 	}
 	
 }
+
+div#folderpathchooser {
+    background: #fff;
+	border: 1px solid #000;
+	padding: 3px;
+	height: 100px;
+	overflow: auto;
+	
+	div.loading {
+		background: url(../../graphics/newui/preview-loading.gif) no-repeat 50% 50%;
+		height: 90px;
+	}
+	
+	ul#currentPathStuff li {
+		margin-bottom: 3px;
+		padding: 2px;
+		border: 1px solid transparent;
+		border-bottom: 1px solid #F1F1F1;
+		
+		&:hover {
+				border: 1px solid #BDD9E8;
+				background: #FFFDE6;
+				cursor: pointer;
+		}
+	}
+}

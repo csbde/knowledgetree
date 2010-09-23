@@ -45,3 +45,8 @@ table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_label .ul_meta_label
 table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_label:hover .ul_meta_label_descr { display: block; }
 table.metadataTable .ul_meta_actionbar { text-align: right; }
 table.metadataTable .ul_meta_actionbar input[type="button"] { background-color: #A10000; }
+
+div#folderpathchooser { background: #fff; border: 1px solid #000; padding: 3px; height: 100px; overflow: auto; }
+div#folderpathchooser div.loading { background: url(../../graphics/newui/preview-loading.gif) no-repeat 50% 50%; height: 90px; }
+div#folderpathchooser ul#currentPathStuff li { margin-bottom: 3px; padding: 2px; border: 1px solid transparent; border-bottom: 1px solid #F1F1F1; }
+div#folderpathchooser ul#currentPathStuff li:hover { border: 1px solid #BDD9E8; background: #FFFDE6; cursor: pointer; }

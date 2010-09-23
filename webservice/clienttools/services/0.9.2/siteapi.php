@@ -100,11 +100,15 @@ class siteapi extends client_service{
 		$ancestors = array();
 		
 		if ($oFolder) {
-			$ancestors=($this->ext_explode(",",$oFolder->getParentFolderIDs()));
-			$ancestors=Folder::getList(array('id IN ('.join(',',$ancestors).')'),array());
-			$parents=array();
-			foreach($ancestors as $obj){
-				$parents[$obj->getID()]=$this->filter_array($obj->aFieldArr,$filter,false);
+			
+			if ($oFolder->getParentFolderIDs() != '') {
+				$ancestors=($this->ext_explode(",",$oFolder->getParentFolderIDs()));
+				$ancestors=Folder::getList(array('id IN ('.join(',',$ancestors).')'),array());
+				$parents=array();
+				
+				foreach($ancestors as $obj){
+					$parents[$obj->getID()]=$this->filter_array($obj->aFieldArr,$filter,false);
+				}
 			}
 		}
 		
