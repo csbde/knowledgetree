@@ -222,6 +222,10 @@ ul.buttonsList li a.check_in {
 	background: url('../graphics/newui/midbar_checkin.png') 7px -3px no-repeat;
 }
 
+ul.buttonsList li a.create_doc_online {
+    background: url('../graphics/newui/midbar_document_add.png') 7px 0px no-repeat;
+}
+
 
 ul.buttonsList li:hover {
 	background: url('../graphics/newui/actionBarButtonDepressed.png') repeat-x top right;

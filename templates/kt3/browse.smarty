@@ -289,6 +289,10 @@
 				kt.pages.browse.deSelectAllItems();
 			}
 		});
+
+        if ($('ul.paginate li.item').length==3) {
+            $('ul.paginate').hide();
+        }
 		
 	});
 })(jQuery);
