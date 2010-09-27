@@ -60,7 +60,8 @@ kt.app.upload=new function(){
 	
 	this.getMetaItem=function(elem){
 		var e=jQuery(elem).parents('.metadataTable')[0];
-		return kt.lib.meta.get(e,'item');
+		var meta = kt.lib.meta.get(e,'item');
+		return meta;
 	}
 	
 	//Find the js object matching a given filename
@@ -297,6 +298,8 @@ kt.app.upload=new function(){
 	    uploadWin.show();
 	}
 	
+	
+	
 	// Call the initialization function at object instantiation.
 	this.init();
 }
@@ -358,10 +361,10 @@ kt.app.upload.uploadStructure=function(options){
 		var metaWin = new Ext.Window({
 	        layout      : 'fit',
 	        width       : 400,
-	        resizable   : true,
+	        resizable   : false,
 	        closable    : false,
 	        closeAction :'destroy',
-	        y           : 150,
+	        y           : 50,
 	        autoScroll  : false,
 	        bodyCssClass: 'ul_meta_body',
 	        cls			: 'ul_meta',
@@ -380,6 +383,7 @@ kt.app.upload.uploadStructure=function(options){
 		self.populateValues();
 	}
 	
+	//populate the metadata fields that have been cached
 	this.populateValues=function(){
 		for(var idx in self.options.metadata){
 			var field=jQuery('.ul_meta_field_'+idx,self.options.metaDataTable);
@@ -410,6 +414,7 @@ kt.app.upload.uploadStructure=function(options){
 	this.changeDocType=function(docType){
 		self.options.docTypeId=docType;
 		
+		//TODO: what does this do exactly?
 		var selectBox=jQuery('.ul_doctype',self.options.metaDataTable)[0];
 		for(var idx in selectBox.options){
 			if(selectBox.options[idx].value==docType){
@@ -423,17 +428,22 @@ kt.app.upload.uploadStructure=function(options){
 		
 		container.html('');
 		
-		for(var idx in self.options.docTypeFieldData){
-			var fieldSet=self.options.docTypeFieldData[idx].properties;
-			var fields=self.options.docTypeFieldData[idx].fields;
-			var t_fieldSet=jQuery(kt.lib.String.parse(kt.api.getFragment('upload.metadata.fieldset'),fieldSet));
-			container.append(t_fieldSet);
-			for(var fidx in fields){
-				var field=fields[fidx];
-				var fieldType=self.getFieldType(field);
-				var t_field_filename='upload.metadata.field.' + fieldType;
-				var t_field=jQuery(kt.lib.String.parse(kt.api.getFragment(t_field_filename),field));
-				t_fieldSet.append(t_field);
+		//if the fieldsets come through as an array, then it is empty
+		if (!(data.fieldsets instanceof Array)) {			
+			for(var idx in self.options.docTypeFieldData){
+				var fieldSet=self.options.docTypeFieldData[idx].properties;
+				var fields=self.options.docTypeFieldData[idx].fields;
+				var t_fieldSet=jQuery(kt.lib.String.parse(kt.api.getFragment('upload.metadata.fieldset'),fieldSet));
+				
+				container.append(t_fieldSet);
+				
+				for(var fidx in fields){
+					var field=fields[fidx];
+					var fieldType=self.getFieldType(field);
+					var t_field_filename='upload.metadata.field.' + fieldType;
+					var t_field=jQuery(kt.lib.String.parse(kt.api.getFragment(t_field_filename),field));
+					t_fieldSet.append(t_field);
+				}
 			}
 		}
 	};
