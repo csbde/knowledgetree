@@ -1487,7 +1487,7 @@ jQuery(document).ready(function(){
                 jQuery('#cancelButton').hide();
                 jQuery('#document_type_field').show();
                 jQuery('#type_metadata_fields').show();
-                jQuery('#advanced_settings_metadata_button').show();
+                //jQuery('#advanced_settings_metadata_button').show();
                 jQuery('#successful_upload_files_ul').show();
 				var listitem = '<li>';
 				listitem += '<span id="'+ranfilename+'_title">'+title+'</span>';
