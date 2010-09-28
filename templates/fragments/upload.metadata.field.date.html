@@ -1,5 +1,5 @@
 <span class="ul_meta_row"><span class="ul_meta_label">[name]<span class="ul_meta_label_descr">[description]</span></span>
-<span id="ul_meta_field_datefield_[id]" class="ul_meta_field"></span></span>
+<span id="ul_meta_field_date_[id]" class="ul_meta_field"></span></span>
 
 <script type="text/javascript">
 
@@ -10,7 +10,7 @@ Ext.onReady(function(){
     var df = new Ext.form.DateField({
     	format: 'Y-m-d',
         width: 200,
-        cls: 'ul_meta_fullField ul_meta_field_[id]',
+        cls: 'ul_meta_fullField ul_meta_field_[id] date',
         listeners: {
             'change': function(dateField, date){
 		    	var month = parseInt(date.getMonth()) + 1;
@@ -22,12 +22,12 @@ Ext.onReady(function(){
 		    		day = '0'+day;
 		    	}
 		    	var myDate = date.getFullYear() + '-' + month + '-' + day;
-		    	kt.app.upload.getMetaItem(jQuery('#ul_meta_field_datefield_[id]')).setMetaData('[id]', myDate);
+		    	kt.app.upload.getMetaItem(jQuery('#ul_meta_field_date_[id]')).setMetaData('[id]', myDate);
 			}
     	}
    	});
 
-    df.render('ul_meta_field_datefield_[id]');
+    df.render('ul_meta_field_date_[id]');
 });
 
 </script>

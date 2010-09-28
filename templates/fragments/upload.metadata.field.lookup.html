@@ -4,6 +4,35 @@
 		</span>
 	</span>
 	<span class="ul_meta_field">
-		<select class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.selectedIndex.value);"></select>
+		<select id="ul_meta_field_select_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.options[this.selectedIndex].value);"></select>
 	</span>
 </span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+	//get the lookup values
+    var selData = new Array();
+    var i = 0;
+    for (var key1 in [lookup_values]) {	
+    	if (typeof [lookup_values][key1] !== 'function') {    
+			for (var key2 in ([lookup_values][key1])) {
+				var key = key2.replace('id','');
+				var value = [lookup_values][key1][key2];
+				if (typeof value !== 'function') {
+					selData[i++] = new Array(key, value);
+				}
+			}
+    	}
+	}
+
+    var select = jQuery('#ul_meta_field_select_[id]')[0];	
+
+    for(var i = 0; i < selData.length; i++) {
+    	select.options[i] = new Option (selData[i][1], selData[i][0], false, false);
+    }
+    
+});
+
+</script>

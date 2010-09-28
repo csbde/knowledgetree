@@ -29,7 +29,7 @@ class siteapi extends client_service{
 				
 				//TODO: Add Data for lookup-type fields
 				if(isset($properties['has_lookup']))if($properties['has_lookup']==1){
-					
+					$properties['lookup_values'] = $this->get_metadata_lookup($field->getId());
 				}
 				
 				
@@ -68,6 +68,34 @@ class siteapi extends client_service{
 			$ret[$type->aFieldArr['id']]=$type->aFieldArr;
 		}
 		$this->addResponse('documentTypes',$ret);
+	}
+	
+/**
+	* This returns an array for a metadata tree lookup or an error object.
+	*
+    * @author KnowledgeTree Team
+	* @access public
+	* @param integer $fieldid The field id to get metadata for
+	* @return array|object $results SUCCESS - the array of metedata for the field | FAILURE - an error object
+	*/
+	public function get_metadata_lookup($fieldid)
+	{
+		$sql = "SELECT id, name FROM metadata_lookup WHERE disabled=0 AND document_field_id=$fieldid ORDER BY id";
+		$rows = DBUtil::getResultArray($sql);
+		/*if (is_null($rows) || PEAR::isError($rows))
+		{
+			$results = new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
+		}
+		else
+		{*/
+		$results = array();
+		foreach($rows as $row)
+		{
+			//need to prepend "id" otherwise it sees it as the i-th element of the array!
+			$results[] = array('id'.$row['id']=> $row['name']);
+		}
+		//}
+		return json_encode($results);
 	}
 	
 	/**

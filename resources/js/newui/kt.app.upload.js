@@ -406,9 +406,18 @@ kt.app.upload.uploadStructure=function(options){
 				field=field[0];
 				var tag=(field.tagName+'').toLowerCase();
 				switch(tag){
+					case 'select':
+						for (var i = 0; i < field.options.length; i++) {
+							if (field.options[i].value == self.options.metadata[idx]) {
+								field.selectedIndex = i;
+								break;
+							}
+						}
+						break;
 					case 'input':
 						var type=field.type;
 						switch(type){
+							
 							case 'text':
 								field.value=self.options.metadata[idx];
 								break;
@@ -417,8 +426,6 @@ kt.app.upload.uploadStructure=function(options){
 						}
 						break;
 					case 'textarea':
-						break;
-					case 'select':
 						break;
 				}
 			}
