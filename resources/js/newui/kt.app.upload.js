@@ -264,6 +264,20 @@ kt.app.upload=new function(){
 				});
 				
 				jQuery('#uploadpathstring').html(kt.app.upload.getNodePath(jQuery('#currentPath').val()));
+				
+				self.uploader.setParams({
+					AWSAccessKeyId          : result.data.amazoncreds.AWSAccessKeyId,
+					acl                     : result.data.amazoncreds.acl,
+					key                     : "${filename}",
+					policy                  : result.data.amazoncreds.policy,
+					'Content-Type'          : "binary/octet-stream",
+					signature               : result.data.amazoncreds.signature,
+					success_action_redirect : result.data.amazoncreds.success_action_redirect
+				});
+				
+				
+				self.uploader._options.action = result.data.amazoncreds.formAction; //doesnt work
+				self.uploader._handler._options.action = result.data.amazoncreds.formAction; //works
                 
             }, function(){});
             

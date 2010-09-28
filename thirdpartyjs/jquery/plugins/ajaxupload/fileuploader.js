@@ -237,6 +237,19 @@ qq.obj2url = function(obj, temp, prefixDone){
                      .replace(/%20/g, '+'); 
 };
 
+qq.obj2input = function(name, value){
+    
+    var input = document.createElement("input");
+    
+    input.setAttribute("type", "hidden");
+    input.setAttribute("name", name);
+    input.setAttribute("value", value);
+    
+    return input;
+
+    
+};
+
 //
 //
 // Uploader Classes
@@ -318,6 +331,10 @@ qq.FileUploaderBasic.prototype = {
         } else {
             handlerClass = 'UploadHandlerForm';
         }
+        
+        // By Tohir
+        // Force to use this approach because of amazon
+        handlerClass = 'UploadHandlerForm';
 
         var handler = new qq[handlerClass]({
             action: this._options.action,         
@@ -955,7 +972,7 @@ qq.extend(qq.UploadHandlerForm.prototype, qq.UploadHandlerAbstract.prototype);
 
 qq.extend(qq.UploadHandlerForm.prototype, {
     add: function(fileInput){
-        fileInput.setAttribute('name', 'qqfile');
+        fileInput.setAttribute('name', 'file'); // was qqfile - changed by tohir
         var id = 'qq-upload-handler-iframe' + qq.getUniqueId();       
         
         this._inputs[id] = fileInput;
@@ -1086,9 +1103,17 @@ qq.extend(qq.UploadHandlerForm.prototype, {
         // Because in this case file won't be attached to request
         var form = qq.toElement('<form method="post" enctype="multipart/form-data"></form>');
 
-        var queryString = qq.obj2url(params, this._options.action);
-
-        form.setAttribute('action', queryString);
+        for (var key in params) {
+            
+            var hiddenInput = qq.obj2input(key, params[key]);
+            
+            form.appendChild(hiddenInput);
+        }
+        
+        //form.setAttribute('action', queryString); // Tohir
+        form.setAttribute('action', this._options.action);
+        
+        
         form.setAttribute('target', iframe.name);
         form.style.display = 'none';
         document.body.appendChild(form);
@@ -1181,8 +1206,11 @@ qq.extend(qq.UploadHandlerXhr.prototype, {
 
         // build query string
         params = params || {};
-        params['qqfile'] = name;
-        var queryString = qq.obj2url(params, this._options.action);
+        params['file'] = name; //was qqfile -tohir
+        
+        // Override
+        //var queryString = qq.obj2url(params, this._options.action);
+        var queryString = this._options.action;//qq.obj2url(params, this._options.action);
 
         xhr.open("POST", queryString, true);
         xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");

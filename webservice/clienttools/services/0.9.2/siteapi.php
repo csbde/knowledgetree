@@ -113,8 +113,68 @@ class siteapi extends client_service{
 		}
 		
 		$this->addResponse('currentFolder',$this->filter_array($oFolder->_fieldValues(),$filter,false));
-		$this->addResponse('parents',$parents);
+		$this->addResponse('parents', $parents);
+		$this->addResponse('amazoncreds', $this->getAmazonCredentials());
+		
 		$this->getSubFolders($params);
+	}
+	
+	public function getAmazonCredentials()
+	{
+		require_once(KT_LIVE_DIR . '/thirdparty/AWS_S3_PostPolicy/AWS_S3_PostPolicy.php');
+		
+		/* Amazon Prep Work */
+		ConfigManager::load('/etc/ktlive.cnf', KT_LIVE_DIR . '/config/config-path');
+        if (ConfigManager::error()) {
+        	global $default;
+        	$default->log->error("Configuration file not found.");
+        }
+		// load amazon authentication information
+        $aws = ConfigManager::getSection('aws');
+		
+		
+        $buckets = ConfigManager::getSection('buckets');
+		$bucket = $buckets['accounts'];
+		
+		$oUser = User::get($_SESSION['userID']);
+		$username = $oUser->getUserName();
+		$randomfile = rand();// . '_';
+		$aws_tmp_path = ACCOUNT_NAME . '/' . 'tmp/' . $username . '/';
+		
+		
+		
+		/* OVERRIDE FOR TESTING */
+		//$bucket = 'testa';
+		//$aws_tmp_path = '';
+		
+		
+		
+		
+		
+		// TODO : Is there a callback handler? Create one.
+		$success_action_redirect = KTLiveUtil::getServerUrl() . '/plugins/ktlive/webservice/callback.php';
+		$aws_form_action = 'https://' . $bucket . '.s3.amazonaws.com/';
+		
+		// Create a new POST policy document
+		$s3policy = new Aws_S3_PostPolicy($aws['key'], $aws['secret'], $bucket, 86400);
+		$s3policy->addCondition('', 'acl', 'private')
+				 ->addCondition('', 'bucket', $bucket)
+				 ->addCondition('starts-with', '$key', $aws_tmp_path)
+				 ->addCondition('starts-with', '$Content-Type', '')
+				 ->addCondition('', 'success_action_redirect', $success_action_redirect);
+		
+		
+		return array(
+			'formAction' => $aws_form_action,
+			'awstmppath'				=>	$aws_tmp_path,
+			'randomfile'				=> $randomfile,
+			
+			'AWSAccessKeyId' 			=> $s3policy->getAwsAccessKeyId(),
+			'acl'            			=> $s3policy->getCondition('acl'),
+			'policy'         			=> $s3policy->getPolicy(true),
+			'signature'      			=> $s3policy->getSignedPolicy(),
+			'success_action_redirect'   => $s3policy->getCondition('success_action_redirect'),
+		);
 	}
 	
 }
