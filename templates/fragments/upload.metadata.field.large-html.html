@@ -1,1 +1,36 @@
-<span class="ul_meta_row"><span class="ul_meta_label">[name]<span class="ul_meta_label_descr">[description]</span></span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.value);" value="Large HTML Fields Not Yet supported"></input></span></span>
+<span class="ul_meta_row">
+	<span class="ul_meta_label">[name]
+		<span class="ul_meta_label_descr">[description]</span>
+	</span>
+	<span id="ul_meta_field_htmlEditor_[id]"  class="ul_meta_field"></span>
+</span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+    Ext.QuickTips.init();
+
+    var htmlEd = new Ext.form.HtmlEditor({
+        width: 290,
+        height: 200, 
+        cls: 'ul_meta_fullField ul_meta_field_[id]',
+        autoscroll: true,
+        enableLinks: false,
+        enableFont: false,
+		enableColors: false,
+		enableAlignments: false,
+		enableSourceEdit: false,
+		listeners: {
+            'sync': function(editor, text){
+		    	//console.log(text);
+		    	kt.app.upload.getMetaItem(jQuery('#ul_meta_field_htmlEditor_[id]')).setMetaData('[id]', text);
+			}
+    	}
+    });
+
+    htmlEd.render('ul_meta_field_htmlEditor_[id]');
+    
+});
+
+</script>

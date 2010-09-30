@@ -1,1 +1,54 @@
-<span class="ul_meta_row"><span class="ul_meta_label">[name]<span class="ul_meta_label_descr">[description]</span></span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.value);" value="Multiselect Fields Not Yet supported"></input></span></span>
+<span class="ul_meta_row">
+	<span class="ul_meta_label">[name]
+		<span class="ul_meta_label_descr">[description]</span>
+	</span>
+	<span class="ul_meta_field">
+		<select multiple id="ul_meta_field_multiselect_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="getSelectedValues();"></select>
+	</span>
+</span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+	//get the lookup values
+    var data = new Array();
+    var i = 0;
+    for (var key1 in [multi_lookup_values]) {	
+    	if (typeof [multi_lookup_values][key1] !== 'function') {    
+			for (var key2 in ([multi_lookup_values][key1])) {
+				var key = key2.replace('id','');
+				var value = [multi_lookup_values][key1][key2];
+				if (typeof value !== 'function') {
+					data[i++] = new Array(key, value);
+				}
+			}
+    	}
+	}
+
+    var select = jQuery('#ul_meta_field_multiselect_[id]')[0];	
+
+    //populate the options
+    for(var i = 0; i < data.length; i++) {
+    	select.options[i] = new Option (data[i][1], data[i][0], false, false);
+    }    
+    
+});
+
+function getSelectedValues() {
+	var multiSelect = jQuery('#ul_meta_field_multiselect_[id]')[0];
+
+	var j = 0;
+	//to store the selected checkbox IDs
+    var selected = new Array();
+	
+	for (var i=0; i < multiSelect.options.length; i++) {
+	    if (multiSelect.options[i].selected) {
+	    	selected[j++] = multiSelect.options[i].value;
+	    } 
+	}
+
+	kt.app.upload.getMetaItem(jQuery('#ul_meta_field_multiselect_[id]')).setMetaData('[id]',selected);
+}
+
+</script>

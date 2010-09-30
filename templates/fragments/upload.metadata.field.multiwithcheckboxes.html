@@ -1,2 +1,71 @@
-<span class="ul_meta_row"><span class="ul_meta_label">[name]<span class="ul_meta_label_descr">[description]</span></span>
-<span class="ul_meta_field"><input type="text" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.value);" value="Multiselect - checkbox Fields Not Yet supported"></input></span></span>
+<span class="ul_meta_row">
+	<span class="ul_meta_label">[name]
+		<span class="ul_meta_label_descr">[description]</span>
+	</span>
+	
+	<span class="ul_meta_field">
+	<span class="ul_meta_fullField ul_meta_field_[id]" id="ul_meta_field_checkbox_[id]"></span>
+	</span>
+</span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+	//get the checkbox values
+    var data = new Array();
+    var i = 0;
+    for (var key1 in [checkbox_lookup_values]) {	
+    	if (typeof [checkbox_lookup_values][key1] !== 'function') {    
+			for (var key2 in ([checkbox_lookup_values][key1])) {
+				var key = key2.replace('id','');
+				var value = [checkbox_lookup_values][key1][key2];
+				if (typeof value !== 'function') {
+					data[i++] = new Array(key, value);
+				}
+			}
+    	}
+	}
+    
+    var container = jQuery('#ul_meta_field_checkbox_[id]')[0];
+
+    for(var i = 0; i < data.length; i++) {
+        
+    	var chkbox = document.createElement("input");
+    	chkbox.id = "ul_meta_field_checkbox_[id]_"+i;
+    	
+    	chkbox.type = "checkbox";
+		chkbox.name = data[i][0];
+
+    	var label = document.createElement("label");
+    	label.htmFor = "ul_meta_field_checkbox_[id]_"+i;
+    	var labelText = document.createTextNode(chkbox.value = data[i][1]);
+    	label.appendChild(labelText);
+
+    	container.appendChild(document.createElement("br"));
+    	container.appendChild(chkbox);  
+    	container.appendChild(label);  	
+    	container.appendChild(document.createElement("br"));
+
+    	//jQuery('input#ul_meta_field_checkbox_[id]_'+i).attr('class', 'ul_meta_field_[id]');
+
+    	//now add the change event
+    	jQuery('input#ul_meta_field_checkbox_[id]_'+i).change(function() {
+        	var j = 0;
+        	//to store the selected checkbox IDs
+            var selected = new Array();
+            
+    		for(var i = 0; i < data.length; i++) {
+				if(jQuery('input#ul_meta_field_checkbox_[id]_'+i).attr('checked')) {
+					//console.log('checked! '+jQuery('input#ul_meta_field_checkbox_[id]_'+i).attr('name'));
+					selected[j++] = jQuery('input#ul_meta_field_checkbox_[id]_'+i).attr('name');
+				}
+    		}
+			
+			kt.app.upload.getMetaItem(this).setMetaData('[id]', selected)
+		});
+    }  
+    
+});
+
+</script>

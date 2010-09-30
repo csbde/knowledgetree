@@ -1,7 +1,6 @@
 <span class="ul_meta_row">
 	<span class="ul_meta_label">[name]
-		<span class="ul_meta_label_descr">[description]
-		</span>
+		<span class="ul_meta_label_descr">[description]</span>
 	</span>
 	<span class="ul_meta_field">
 		<select id="ul_meta_field_select_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.options[this.selectedIndex].value);"></select>
@@ -13,7 +12,7 @@
 Ext.onReady(function(){
 
 	//get the lookup values
-    var selData = new Array();
+    var data = new Array();
     var i = 0;
     for (var key1 in [lookup_values]) {	
     	if (typeof [lookup_values][key1] !== 'function') {    
@@ -21,7 +20,7 @@ Ext.onReady(function(){
 				var key = key2.replace('id','');
 				var value = [lookup_values][key1][key2];
 				if (typeof value !== 'function') {
-					selData[i++] = new Array(key, value);
+					data[i++] = new Array(key, value);
 				}
 			}
     	}
@@ -29,8 +28,8 @@ Ext.onReady(function(){
 
     var select = jQuery('#ul_meta_field_select_[id]')[0];	
 
-    for(var i = 0; i < selData.length; i++) {
-    	select.options[i] = new Option (selData[i][1], selData[i][0], false, false);
+    for(var i = 0; i < data.length; i++) {
+    	select.options[i] = new Option (data[i][1], data[i][0], false, false);
     }
     
 });

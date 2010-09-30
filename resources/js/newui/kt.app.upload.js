@@ -400,32 +400,71 @@ kt.app.upload.uploadStructure=function(options){
 	//populate the metadata fields that have been cached
 	this.populateValues=function(){
 		for(var idx in self.options.metadata){
+			//console.log(idx);
 			var field=jQuery('.ul_meta_field_'+idx,self.options.metaDataTable);
 			//console.dir(field);
 			if(field.length>0){
 				field=field[0];
 				var tag=(field.tagName+'').toLowerCase();
+				//console.log('tag '+tag);
 				switch(tag){
+				//sometimes, esp where we have multiple html fields for one KTDMS field (eg ckeckboxes)
+				//we embed these in a span and then need to iterate through the spans children
+					case 'span':
+						var children = jQuery('.ul_meta_field_'+idx,self.options.metaDataTable).children();
+						for (var c = 0; c < children.length; c++) {
+							var child = children[c];
+							var type = (child.type+'').toLowerCase();
+							//console.log(type);
+							switch(type){
+								case 'checkbox':
+									for (var i = 0; i < self.options.metadata[idx].length; i++) {
+										if (child.name == self.options.metadata[idx][i]) {
+											child.checked = true;
+										}
+									}
+									break;
+							}
+						}
+						
+						
+						break;
 					case 'select':
-						for (var i = 0; i < field.options.length; i++) {
-							if (field.options[i].value == self.options.metadata[idx]) {
-								field.selectedIndex = i;
-								break;
+						//are we dealing with a multi-select array?
+						if(jQuery('.ul_meta_field_'+idx,self.options.metaDataTable).attr('multiple')) {
+							for (var i = 0; i < field.options.length; i++) {
+								if (jQuery.inArray(field.options[i].value, self.options.metadata[idx]) > -1) {
+									field.options[i].selected = true;
+									break;
+								}
+							}
+						} else {
+							for (var i = 0; i < field.options.length; i++) {
+								if (field.options[i].value == self.options.metadata[idx]) {
+									field.selectedIndex = i;
+									break;
+								}
 							}
 						}
 						break;
 					case 'input':
 						var type=field.type;
-						switch(type){
-							
+						//console.log('type '+type);
+						switch(type){							
 							case 'text':
 								field.value=self.options.metadata[idx];
 								break;
 							case 'checkbox':
+								for (var i = 0; i < self.options.metadata[idx].length; i++) {
+									if (field.name == self.options.metadata[idx][i]) {
+										field.checked = true;
+									}
+								}
 								break;
 						}
 						break;
 					case 'textarea':
+						field.value=self.options.metadata[idx];
 						break;
 				}
 			}

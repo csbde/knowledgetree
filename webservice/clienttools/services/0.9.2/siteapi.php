@@ -27,11 +27,19 @@ class siteapi extends client_service{
 			foreach($fields as $field){
 				$properties=$field->getProperties();
 				
-				//TODO: Add Data for lookup-type fields
 				if(isset($properties['has_lookup']))if($properties['has_lookup']==1){
 					$properties['lookup_values'] = $this->get_metadata_lookup($field->getId());
 				}
 				
+				if(isset($properties['has_inetlookup'])) { 
+					if($properties['has_inetlookup']==1) {
+						if($properties['inetlookup_type']=="multiwithlist") {
+							$properties['multi_lookup_values'] = $this->get_metadata_lookup($field->getId());
+						} else if($properties['inetlookup_type']=="multiwithcheckboxes") {
+							$properties['checkbox_lookup_values'] = $this->get_metadata_lookup($field->getId());
+						}
+					}
+				}
 				
 				if(is_array($filter)){
 					$requirements=true;
