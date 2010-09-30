@@ -277,12 +277,15 @@ div#folderpathchooser {
 	ul#currentPathStuff li {
 		margin-bottom: 3px;
 		padding: 2px;
+		padding-left: 25px;
+		background: url(../../graphics/folder_closed.png) no-repeat 0 50%;
+		
 		border: 1px solid transparent;
-		border-bottom: 1px solid #F1F1F1;
+		/* border-bottom: 1px solid #F1F1F1; */
 		
 		&:hover {
 				border: 1px solid #BDD9E8;
-				background: #FFFDE6;
+				background-color: #FFFDE6;
 				cursor: pointer;
 		}
 	}
