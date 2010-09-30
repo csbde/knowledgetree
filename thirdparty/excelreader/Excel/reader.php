@@ -178,7 +178,7 @@ class Spreadsheet_Excel_Reader {
         /*
         $res = $this->_ole->read($sFileName);
 
-        if ($this->isError($res)) {
+        if (PEAR::isError($res)) {
 //		var_dump($res);		
             return $this->raiseError($res);
         }

@@ -1132,7 +1132,7 @@ class Net_LDAP extends PEAR
     * @access public
     * @return boolean
     */
-    function isError($var)
+    static function isError($var)
     {
         return (($var instanceof Net_LDAP_Error) || parent::isError($var));
     }
