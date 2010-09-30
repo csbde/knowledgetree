@@ -98,11 +98,8 @@ class KTConfig {
         {
         	$this->confPath = '/etc/kt/kt.cnf';
         }
-
-		$c = new Config;
-        $root =& $c->parseConfig($this->confPath, "IniCommented");
-
-        if ($oPear->isError($root)) {
+        $root = $this->parseConfig($this->confPath);
+        if ($root == false) {
             return false;
         }
 
@@ -149,6 +146,13 @@ class KTConfig {
 
 
         return $isEnabled;
+    }
+
+    public static function parseConfig($filename){
+        if(!file_exists($filename))
+            return false;
+        $c = new Config();
+        return $c->parseConfig($filename, "IniCommented");
     }
 
     public static function logErrors(){
@@ -205,12 +209,13 @@ class KTConfig {
 
         if(ACCOUNT_ROUTING_ENABLED)
         {
-        	//if(!isset($_SESSION[LIVE_MEMCACHE_OVERRIDE]))
-        	//{
-            	$this->setMemcache();
-            	MemCacheUtil::set($filename, $config_cache);
-            	return true;
-        	//}
+            	if($this->setMemcache())
+                {
+                    MemCacheUtil::set($filename, $config_cache);
+                    return true;
+                }
+
+            	return false;
         }
 
         @file_put_contents($filename, $config_cache);
@@ -226,7 +231,8 @@ class KTConfig {
         $filename = $this->getCacheFilename();
 
         if(ACCOUNT_ROUTING_ENABLED){
-            MemCacheUtil::clear($filename);
+            if(file_exists($filename))
+                MemCacheUtil::clear($filename);
             return true;
         }
 
@@ -272,14 +278,10 @@ class KTConfig {
 	// {{{ readDBConfig()
 	function readDBConfig()
 	{
-	    $pear = new PEAR();
         $filename = $this->getConfigFilename();
-
-		$c = new Config;
-        $root =& $c->parseConfig($filename, "IniCommented");
-
-        if ($pear->isError($root)) {
-            return $root;
+        $root = $this->parseConfig($filename);
+        if ($root == false) {
+            return false;
         }
 
         $conf = $root->toArray();
@@ -314,7 +316,6 @@ class KTConfig {
      **/
 	function setupDB () {
         global $default;
-		$oPear = new PEAR();
         require_once('DB.php');
 
         // DBCompat allows phplib API compatibility
@@ -541,12 +542,9 @@ class KTConfig {
      * @return unknown
      */
     function loadFile($filename, $bDefault = false) {
-        $pear = new PEAR();
-        $c = new Config;
-        $root =& $c->parseConfig($filename, "IniCommented");
-
-        if ($pear->isError($root)) {
-            return $root;
+        $root = $this->parseConfig($filename);
+        if ($root == false) {
+            return false;
         }
 
         $this->aFileRoot[$filename] =& $root;

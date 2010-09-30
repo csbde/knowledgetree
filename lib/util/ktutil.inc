@@ -7,7 +7,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -1366,32 +1366,32 @@ class KTUtil {
     	}
     	return $result;
     }
-    
+
     public static function documentIsQueued($document_id=NULL){
     	$sql="SELECT document_id FROM `process_queue` WHERE document_id='{$document_id}'";
     	$res=DBUtil::getOneResultKey($sql,"document_id");
     	$ret=PEAR::isError($res) ? false : (count($res)>0 ? true : false);
     	return $ret;
     }
-	
+
 	public static function buildUrl($file, $params=null)
 	{
 		$useCleanURL = TRUE;
-		
+
 		// Convert to Array
 		if ($params == null) {
 			$params = array();
 		}
-		
-		
+
+
 		if ($useCleanURL) {
 			return KTUtil::buildCleanUrl($file, $params);
 		} else {
 			return KTUtil::buildNormalUrl($file, $params);
-			
+
 		}
 	}
-	
+
 	private function buildNormalUrl($file, $params)
 	{
 		if (count($params) == 0) {
@@ -1399,58 +1399,62 @@ class KTUtil {
 		} else {
 			$file .= '?';
 			$sep = '';
-			
+
 			foreach ($params as $param=>$name)
 			{
 				$file .= $sep.$param.'='.$name;
 				$sep = '&';
 			}
-			
+
 			return $file;
 		}
 	}
-	
+
 	private function buildCleanUrl($file, $params)
 	{
 		switch($file)
 		{
 			case '/view.php':
 			case 'view.php':
-				
+
 				$config = KTConfig::getSingleton();
 				$rootUrl = $config->get('KnowledgeTree/rootUrl');
-				
+
 				$url = $rootUrl.'/01'.base_convert($params['fDocumentId'], 10, 36);
-				
+
 				// Remove parameter
 				unset($params['fDocumentId']);
 				// Rebuild with additional parameters
 				return KTUtil::buildNormalUrl($url, $params);
-				
+
 				break;
 			case '/browse.php':
 			case 'browse.php':
-				
+
 				$config = KTConfig::getSingleton();
 				$rootUrl = $config->get('KnowledgeTree/rootUrl');
-				
+
 				if (!isset($params['fFolderId'])) {
 					$params['fFolderId'] = 1;
 				}
-				
+
 				$url = $rootUrl.'/00'.base_convert($params['fFolderId'], 10, 36);
-				
+
 				// Remove parameter
 				unset($params['fFolderId']);
 				// Rebuild with additional parameters
 				return KTUtil::buildNormalUrl($url, $params);
-				
+
 				break;
 			default:
 				return KTUtil::buildNormalUrl($file, $params);
 		}
 	}
-    
+
+	public static function decodeId($id)
+	{
+	    return base_convert($id, 36, 10);
+	}
 }
 
 /**

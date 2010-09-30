@@ -6,7 +6,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- *  
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -35,13 +35,12 @@
  * copyright notice.
  * Contributor( s): ______________________________________
  */
-
 	require_once('ktapi/ktapi.inc.php');
 	require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 
 	function uploadFile($fileTmp, $fileName, $folderID = 1) {
 		$GLOBALS['default']->log->debug("DRAGDROP Uploading file $fileTmp $fileName");
-		 
+
     	$oStorage = KTStorageManagerUtil::getSingleton();
 
     	$oKTConfig =& KTConfig::getSingleton();
@@ -70,13 +69,13 @@
        		$GLOBALS['default']->log->error("DRAGDROP DocumentType: {$oDocumentType->getMessage()}");
        		return false;
         }
-        
+
         //remove extension to generate title
         $aFilename = explode('.', $fileName);
         $cnt = count($aFilename);
         $sExtension = $aFilename[$cnt - 1];
         $title = preg_replace("/\.$sExtension/", '', $fileName);
-        
+
         $aOptions = array(
             'temp_file' => $sS3TempFile,
             'documenttype' => $oDocumentType,
@@ -87,8 +86,8 @@
 
         $GLOBALS['default']->log->debug("DRAGDROP Folder $folderID User {$oUser->getID()}");
 
-        
-        
+
+
         $oDocument =& KTDocumentUtil::add($oFolder, $fileName, $oUser, $aOptions);
         if (PEAR::isError($oDocument)) {
             $GLOBALS['default']->log->error("DRAGDROP Document add: {$oDocument->getMessage()}");
@@ -96,6 +95,30 @@
         }
 
         return $oDocument;
+	}
+
+	function getId()
+	{
+	    if(isset($_REQUEST['fFolderId'])){
+	       return (int)$_REQUEST['fFolderId'];
+	    }
+
+	    $id = 1;
+	    $uri = $_REQUEST['cleanFolderId'];
+
+		// Check for slash
+		if (substr($uri, 0, 1) == '/') {
+		    $uri = substr($uri, 1);
+		}
+
+		// Remove Query String
+		$uri = preg_replace('/(\?.*)/i', '', $uri);
+
+		if (substr($uri, 0, 2) == '00') {
+			$id = KTUtil::decodeId(substr($uri, 2));
+		}
+
+		return $id;
 	}
 
 	// HTTP headers for no cache etc
@@ -189,7 +212,7 @@
 			die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
 	}
 
-	$folderID = (int)$_REQUEST['fFolderId'];
+	$folderID = getId();
 	if($folderID<=0){
 		$GLOBALS['default']->log->error("DRAGDROP error getting folder ID");
 		exit(1);
@@ -203,29 +226,29 @@
 	{
 		die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Document could not be uploaded", "filename":"'.$fileName.'"}, "id" : "id"}');
 	}
-	
+
 	//assemble the file's name
 	$fileNameCutoff = 100;
 	$fileName = $oDocument->getFileName();
 	$fileName = (strlen($fileName)>$fileNameCutoff) ? substr($fileName, 0, $fileNameCutoff-3)."..." : $fileName;
-	
+
 	//get the icon path
 	$mimetypeid = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId():'0';
 	$iconFile = 'resources/mimetypes/newui/'.KTMime::getIconPath($mimetypeid).'.png';
 	$iconExists = file_exists(KT_DIR.'/'.$iconFile);
-	if($iconExists){		
+	if($iconExists){
 		$mimeIcon = str_replace('\\','/',$GLOBALS['default']->rootUrl.'/'.$iconFile);
 		$mimeIcon = "background-image: url(".$mimeIcon.")";
 	}else{
 		$mimeIcon = '';
 	}
-	
+
 	$oOwner = User::get($oDocument->getOwnerID());
 	$oCreator = User::get($oDocument->getCreatorID());
 	$oModifier = User::get($oDocument->getModifiedUserId());
-	
+
 	//assemble the item
-	$item['id'] = $oDocument->getId();	
+	$item['id'] = $oDocument->getId();
 	$item['owned_by'] = $oOwner->getName();
 	$item['created_by'] = $oCreator->getName();
 	$item['modified_by'] = $oModifier->getName();
@@ -234,16 +257,16 @@
 	$item['mimeicon'] = $mimeIcon;
 	$item['created_date'] = $oDocument->getCreatedDateTime();
 	$item['modified_date'] = $oDocument->getLastModifiedDate();
-	
-	$json['success'] = $item; 
-	
+
+	$json['success'] = $item;
+
 	echo(json_encode($json));
-	
+
 	//$documentID = $oDocument->getId();
 	//$fileTitle = $oDocument->getName();
-	
+
 	//$output = '{"jsonrpc" : "2.0", "success" : {"id":"'.$documentID.'", "filename":"'.$fileName.'", "title":"'.$fileTitle.'", "owned_by":"'.$oOwner->getName().'", "created_by":"'.$oCreator->getName().'", "created_date":"'.$oDocument->getCreatedDateTime().'", "modified_by":"'.$oModifier->getName().'", "modified_date":"'.$oDocument->getLastModifiedDate().'", "mimeicon":"'.$mimeIcon.'"}, "id" : "id"}';
-	
+
 	exit(0);
 
 ?>
