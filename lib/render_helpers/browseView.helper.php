@@ -128,7 +128,7 @@ class browseViewHelper {
 				<tr>
 					<td><div class="roundnum">1</div></td>
 					<td class="info">
-						<h2>Upload file and Folders</h2>
+						<h2>Upload files and folders</h2>
 						Upload one ore more files including .zip files and other archives
 						
 						<br />
