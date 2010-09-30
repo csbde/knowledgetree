@@ -52,9 +52,7 @@ class DBUtil {
 	* TODO: Add other database handlers here instead of defaulting to mysql
 	* @params string $dsn : Any dsn descriptor (remote or local)
 	*/
-	private static function connect($dsn) {
-		$oPear = new PEAR();
-    
+	private static function connect($dsn) {    
 		$options = array(
 			'debug'       => 2,
 			'portability' => DB_PORTABILITY_ERRORS,
@@ -63,7 +61,7 @@ class DBUtil {
 		$db = DB::connect($dsn, $options);
 
 		// Catch PEAR error (if any)
-		if ($oPear->isError($db)) {
+		if (PEAR::isError($db)) {
 			// return PEAR error
 			return $oPear->raiseError($db->getMessage());
 		}
@@ -82,12 +80,11 @@ class DBUtil {
 	 */
      public static function getDB($db = null) {
          global $default;
-         $oPear = new PEAR();
 
          if (is_null($db)) {
              self::$db = self::connect($default->_db);
              // Catch PEAR error (if any)
-             if ($oPear->isError($db)) {
+             if (PEAR::isError($db)) {
                  // return PEAR error
                  return $db;
              
@@ -113,11 +110,10 @@ class DBUtil {
      */
     public static function initSlaves() {
         global $default;
-		$oPear = new PEAR();
 		foreach($default->_slave as $slave_info) {
              // initialize slave connection with randomized order
              $slave = self::connect($slave_info);
-             if ($oPear->isError($slave)) {
+             if (PEAR::isError($slave)) {
                   // return PEAR error
                   continue;
           
@@ -152,7 +148,6 @@ class DBUtil {
 
     public static function runQuery($query, $db = null) {
         global $default;
-        $oPear = new PEAR();
         $aParams = null;
         /**
          * We are doing a Binary safe case-insensitive string comparison of the first 6 characters
@@ -170,13 +165,13 @@ class DBUtil {
         }
          if(isset($default->_slave) && (strncasecmp(ltrim($sQuery), "select", 6) === 0 ) && self::$Transactions === false){
             $db = self::getSlave();
-            if($oPear->isError($db))
+            if(PEAR::isError($db))
             {
                 return $db;
             }
         }else{
             $db = self::getDB($db);
-            if($oPear->isError($db))
+            if(PEAR::isError($db))
             {
                 return $db;
             }
@@ -197,7 +192,7 @@ class DBUtil {
         {
             $default->queryLog->debug(self::lastQuery($db));
         }
-        if ($oPear->isError($res))
+        if (PEAR::isError($res))
         {
         	self::logQueryError(self::lastQuery($db), $res);
         }
@@ -251,8 +246,7 @@ class DBUtil {
 
     public static function getResultArray($query, $db = null) {
         $result = self::runQuery($query, $db);
-        $oPear = new PEAR();
-        if ($oPear->isError($result)) {
+        if (PEAR::isError($result)) {
             // logging by runQuery
             return $result;
         }
