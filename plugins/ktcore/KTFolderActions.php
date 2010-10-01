@@ -103,7 +103,10 @@ class KTFolderAddFolderAction extends KTFolderAction {
             array('ktcore.widgets.string', array(
                 'label' => _kt('Folder name'),
                 'required' => true,
-                'name' => 'name'),
+                'name' => 'name',
+				'has_id' => true,
+				'id' => 'folder_name'
+				),
             );
 		$aFolderTemplates = $this->folderTemplateOptions(); // Get folder structure creation option
 		if(is_array($aFolderTemplates)) { // Check if any results are returned
@@ -176,6 +179,9 @@ class KTFolderAddFolderAction extends KTFolderAction {
     }
     
     function do_main() {
+    	// Use client-side validation
+    	global $main;
+    	$main->requireJSResource("resources/js/validation/validate_folder_name.js"); // Get the JS
         $this->oPage->setBreadcrumbDetails(_kt("add folder"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/addFolder');
 		
