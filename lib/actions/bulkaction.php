@@ -80,6 +80,7 @@ class KTBulkAction extends KTStandardDispatcher {
         $this->oActiveEntityList = null;
         $this->oUser =& $oUser;
         $this->oPlugin =& $oPlugin;
+        $this->oConfig =& KTConfig::getSingleton();
         // Bulk Action Notification
         $this->uploadedDocs = array();
         $this->uploadedFolders = array();
@@ -583,6 +584,7 @@ class KTBulkAction extends KTStandardDispatcher {
             $this->do_notification($this->uploadedFolders, $this->eventAction, $targetFolder);
         // Action specific Emails
         // Check if its a move action
+        // TODO I don't think this belongs here, a download is never a move...legacy from copy/paste most likely
         if($this->eventAction == "MovedDocument") {
             // Notify the folder from which the action happened
             $originalFolderId = $_REQUEST['fOriginalFolderId'];
@@ -637,7 +639,7 @@ class KTBulkAction extends KTStandardDispatcher {
         //       should probably store the 'equivalent' action (ie. document.delete)
         //       and check that, rather than add a new list of actions to the workflow
         //       section
-        if(is_a($oEntity, 'Document')) {
+        if($oEntity instanceof Document) {
             if(!KTWorkflowUtil::actionEnabledForDocument($oEntity, $this->sName)) {
                 return PEAR::raiseError(_kt('Action is disabled by workflow'));
             }
@@ -666,7 +668,7 @@ class KTBulkAction extends KTStandardDispatcher {
 
 class KTBulkDocumentAction extends KTBulkAction {
     function check_entity($oEntity) {
-        if(!is_a($oEntity, 'Document')) {
+        if(!($oEntity instanceof Document)) {
             return false;
         }
         return parent::check_entity($oEntity);
@@ -675,7 +677,7 @@ class KTBulkDocumentAction extends KTBulkAction {
 
 class KTBulkFolderAction extends KTBulkAction {
     function check_entity($oEntity) {
-        if(!is_a($oEntity, 'Folder')) {
+        if(!($oEntity instanceof Folder)) {
             return false;
         }
         return parent::check_entity($oEntity);

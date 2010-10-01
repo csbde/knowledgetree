@@ -215,7 +215,7 @@ class KTDocumentEditAction extends KTDocumentAction {
             $values = (array) KTUtil::arrayGet($data, 'fieldset_' . $oFieldset->getId());
             foreach ($fields as $oField) {
                 $val = KTUtil::arrayGet($values, 'metadata_' . $oField->getId());
-                
+                // TODO : abstract this into util class
                 // for html fields we want to do some stripping :)
                 if ($oField->getIsHTML())
                 {

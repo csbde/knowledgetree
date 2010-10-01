@@ -98,7 +98,7 @@ class Rest_Method_Definition
     {
         if (is_array($callback)) {
             $callback = new Rest_Method_Callback($callback);
-        } elseif (!$callback instanceof Rest_Method_Callback) {
+        } elseif (!($callback instanceof Rest_Method_Callback)) {
             require_once 'classes/rest/Exception.php';
             throw new Rest_Exception('Invalid method callback provided');
         }
@@ -127,7 +127,7 @@ class Rest_Method_Definition
         if (is_array($prototype)) {
             require_once 'Prototype.php';
             $prototype = new Rest_Method_Prototype($prototype);
-        } elseif (!$prototype instanceof Rest_Method_Prototype) {
+        } elseif (!($prototype instanceof Rest_Method_Prototype)) {
             require_once 'classes/rest/Exception.php';
             throw new Rest_Exception('Invalid method prototype provided');
         }

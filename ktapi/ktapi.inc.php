@@ -586,14 +586,14 @@ class KTAPI
  	public function can_user_access_object_requiring_permission(&$object, $permission)
  	{
 		assert(!is_null($object));
- 		assert(is_a($object,'DocumentProxy') || is_a($object,'FolderProxy') || is_a($object,'Document') || is_a($object,'Folder'));
+ 		assert(($object instanceof DocumentProxy) || ($object instanceof FolderProxy) || ($object instanceof Document) || $object instanceof Folder);
  		/*
         if(is_null($object) || PEAR::isError($object)){
             $error = $object;
             return $object;
         }
 
-        if(!is_a($object,'DocumentProxy') && !is_a($object,'FolderProxy') && !is_a($object,'Document') && !is_a($object,'Folder')){
+        if(!($object instanceof DocumentProxy) && !($object instanceof FolderProxy) && !($object instanceof Document) && !($object instanceof Folder)){
             $error = new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $rows);
             return $error;
         }
@@ -1033,7 +1033,7 @@ class KTAPI
     	// now get document type specifc ids
     	$typeid =$this->get_documenttypeid($document_type);
 
-    	if (is_a($typeid, 'KTAPI_DocumentTypeError'))
+    	if ($typeid instanceof KTAPI_DocumentTypeError)
     	{
 			return $typeid;
     	}
@@ -2127,23 +2127,17 @@ class KTAPI
      * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
      * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
      */
-    function get_folder_contents($folder_id, $depth=1, $what='DFS',$overrideWebServiceVersion=null,$itemsPerPage=null,$page=null)
+    function get_folder_contents($folder_id, $depth=1, $what='DFS',$overrideWebServiceVersion=null)
     {
     	//Calculate the offset and limit
-    	$opts=array();
-    	$opts['inspectSQL']=true;
-    	if($itemsPerPage>0 && $page>0){
-    		$opts['offset']=$itemsPerPage*($page-1);
-    		$opts['limit']=$itemsPerPage;
-    	}
-    	
+   	
         $folder = &$this->get_folder_by_id($folder_id);
         if(PEAR::isError($folder)){
     	    $response['status_code'] = 1;
     	    $response['message']= $folder->getMessage();
     	    return $response;
         }
-        $listing = $folder->get_listing($depth, $what,$overrideWebServiceVersion,$opts);
+        $listing = $folder->get_listing($depth, $what,$overrideWebServiceVersion);
 
     	$contents = array(
     		'folder_id' => $folder_id+0,
@@ -2156,6 +2150,63 @@ class KTAPI
     	$response['message'] = '';
     	$response['results'] = $contents;
 
+    	return $response;
+    }
+	
+	/**
+     * Returns the list of documents attached to a tag
+     *
+	 * @author KnowledgeTree Team
+	 * @access public
+     * @param integer $folder_id The id of the folder
+     * @param integer $depth The depth to display - 1 = direct contents, 2 = include contents of the contained folders, etc
+     * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
+     * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
+     */
+    function get_tag_contents($tag, $depth=1, $what='DFS',$overrideWebServiceVersion=null)
+    {
+    	require_once(KT_PLUGIN_DIR . "/tagcloud/TagCloudUtil.inc.php");
+		
+		$tagQuery = new TagQuery($this->get_user(), $tag);
+		
+		$documentIdsWithTag = $tagQuery->getDocuments(1000, 0, 'filename', 'ASC');
+		
+		if (count($documentIdsWithTag) == 0) {
+			$documents = array();
+		} else {
+			
+			$documentIds = '';
+			$comma = '';
+			
+			foreach ($documentIdsWithTag as $docId)
+			{
+				$documentIds .= $comma."'{$docId['id']}'";
+				$comma = ', ';
+			}
+			
+			// Has to be a better way of doing this
+			$documents =  Document::getList ( array (' id IN ('.$documentIds.')', ''));
+			
+			$documentsArray = array();
+			
+			foreach ($documents as $document)
+			{
+				$ktapiDocument = KTAPI_Document::get($this, $document->getId());
+				
+				if (PEAR::isError($ktapiDocument)) {
+					
+				} else {
+					$documentsArray[] = $ktapiDocument->get_detail();
+				}
+			}
+			
+			$documents = $documentsArray;
+		}
+		
+    	$response['status_code'] = 0;
+    	$response['message'] = '';
+    	$response['results'] = $documents;
+		
     	return $response;
     }
 

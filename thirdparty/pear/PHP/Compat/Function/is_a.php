@@ -30,7 +30,6 @@
  * @require     PHP 4.0.0 (user_error) (is_subclass_of)
  */
 if (!function_exists('is_a')) {
-    function is_a($object, $class)
     {
         if (!is_object($object)) {
             return false;

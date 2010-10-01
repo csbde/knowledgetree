@@ -45,6 +45,7 @@ class DBUtil {
     private static $db;	// Master DB handle. Must always be present.
     private static $dbSlaves = array();
     private static $numSlaves; // count of how many slaves we have
+    private static $Transactions = false; // Sets up transaction escape on Replication
 
 	/**
 	* Establish database connections
@@ -167,7 +168,7 @@ class DBUtil {
         }else {
             $sQuery = $query;
         }
-         if(isset($default->_slave) && (strncasecmp(ltrim($query), "select", 6) === 0 )){
+         if(isset($default->_slave) && (strncasecmp(ltrim($sQuery), "select", 6) === 0 ) && self::$Transactions === false){
             $db = self::getSlave();
             if($oPear->isError($db))
             {
@@ -180,9 +181,18 @@ class DBUtil {
                 return $db;
             }
         }
-        
-        $res = $db->query($sQuery, $aParams);
-        
+        //If replication is true, then check for delete and sanitize for replication
+        if(isset($default->_slave) && (strncasecmp(ltrim($sQuery), "delete", 6) === 0 )){
+            //We need to bypass the prepared statements, otherwise we get
+            // DB missmatch errors
+            $db->query("SET BINLOG_FORMAT=STATEMENT");
+            $res = $db->query($sQuery, $aParams);
+            $db->query("SET BINLOG_FORMAT=ROW");
+        }else{
+            // So no replication. Proceed to execute the query
+             $res = $db->query($sQuery, $aParams);
+        }
+        //Log it        
         if (isset($default->queryLog) && $default->queryLog->isDebugEnabled())
         {
             $default->queryLog->debug(self::lastQuery($db));
@@ -327,21 +337,21 @@ class DBUtil {
         $bNoId = KTUtil::arrayGet($aOptions, 'noid', false);
         global $default;
         // $default->log->debug('AutoInsert called for table ' . $sTable);
-        self::getDB();
-        $res = self::$db->autoExecute($sTable, $aFieldValues);
+        $database = self::getDB();
+        $res = $database->autoExecute($sTable, $aFieldValues);
         if ($default->queryLog->isDebugEnabled())
         {
-            $default->queryLog->debug('Query: ' . self::lastQuery(self::$db));
+            $default->queryLog->debug('Query: ' . self::lastQuery($database));
         }
         if ($res === DB_OK) {
             if ($bNoId)
                 return;
             else
-            	$ret = self::$db->getLastId();
+            	$ret = $database->getLastId();
                 return $ret;
         }
         if (PEAR::isError($res)) {
-        	self::logQueryError(self::lastQuery(self::$db), $res);
+        	self::logQueryError(self::lastQuery($database), $res);
             return $res;
         }
         return PEAR::raiseError(_kt('Unknown return value for autoInsert'));
@@ -435,14 +445,7 @@ class DBUtil {
 
     public static function autoDelete($sTable, $iId, $db = null) {
         $database = self::getDB($db);
-        
-        if(isset($default->_slave)){
-            $sQuery = "SET BINLOG_FORMAT=STATEMENT";
-            $sQuery. "DELETE FROM " . $sTable . " WHERE id = ?";
-            $sQuery. "SET BINLOG_FORMAT=ROW";
-        }else{
-             $sQuery = "DELETE FROM " . $sTable . " WHERE id = ?";
-        }
+        $sQuery = "DELETE FROM " . $sTable . " WHERE id = ?";
         $aParams = array($iId);
         return self::runQuery(array($sQuery, $aParams), $database);
     }
@@ -522,6 +525,7 @@ class DBUtil {
      **/
 
     public static function startTransaction() {
+        self::$Transactions = true;
         self::runQuery("START TRANSACTION");
         $oCache = KTCache::getSingleton();
         $oCache->startTransaction();
@@ -533,6 +537,7 @@ class DBUtil {
      * @author Prince Mbekwa
      **/
     public static function rollback() {
+        self::$Transactions = true;
         self::runQuery("ROLLBACK");
         $oCache = KTCache::getSingleton();
         $oCache->rollback();
@@ -544,6 +549,7 @@ class DBUtil {
      * @author Prince Mbekwa
      **/
     public static function commit() {
+        self::$Transactions = false;
         self::runQuery("COMMIT");
         $oCache = KTCache::getSingleton();
         $oCache->commit();

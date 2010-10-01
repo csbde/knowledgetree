@@ -169,7 +169,7 @@ class File_Archive_Reader_Directory extends File_Archive_Reader_Relay
     function &getLastSource()
     {
         if ($this->source === null ||
-            is_a($this->source, 'File_Archive_Reader_File')) {
+            $this->source instanceof File_Archive_Reader_File) {
             return $this->source;
         } else {
             return $this->source->getLastSource();
@@ -205,7 +205,7 @@ class File_Archive_Reader_Directory extends File_Archive_Reader_Relay
         require_once "File/Archive/Writer/Files.php";
 
         if ($this->source === null ||
-            is_a($this->source, 'File_Archive_Reader_File') ) {
+            $this->source instanceof File_Archive_Reader_File) {
             $writer = new File_Archive_Writer_Files($this->directory);
         } else {
             $writer = $this->source->makeAppendWriter($seek);

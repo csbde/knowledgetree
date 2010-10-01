@@ -401,14 +401,14 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
             // and the generics
             $activesets = KTFieldset::getGenericFieldsets();
             foreach ($activesets as $oFieldset) {
-            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-            array_push($fieldsets, new $displayClass($oFieldset));
+	            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
+	            array_push($fieldsets, new $displayClass($oFieldset));
             }
 
             $activesets = KTFieldset::getForDocumentType($oDocument->getDocumentTypeID());
             foreach ($activesets as $oFieldset) {
-            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-            array_push($fieldsets, new $displayClass($oFieldset));
+	            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
+	            array_push($fieldsets, new $displayClass($oFieldset));
             }
         }
 

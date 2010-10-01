@@ -92,7 +92,7 @@ class LoginPageDispatcher extends KTDispatcher {
     }
 
     function performLogin(&$oUser) {
-        if (!is_a($oUser, 'User')) {
+        if (!($oUser instanceof User)) {
             #var_dump($oUser);
             #var_dump(PEAR::raiseError());
         }
@@ -141,7 +141,7 @@ class LoginPageDispatcher extends KTDispatcher {
         KTUtil::save_base_kt_url();
 
         $oUser =& KTInterceptorRegistry::checkInterceptorsForAuthenticated();
-        if (is_a($oUser, 'User')) {
+        if ($oUser instanceof User) {
             $res = $this->performLogin($oUser);
             if ($res) {
                 $oUser = array($res);
@@ -220,7 +220,7 @@ class LoginPageDispatcher extends KTDispatcher {
     function do_login() {
         $aExtra = array();
         $oUser =& KTInterceptorRegistry::checkInterceptorsForAuthenticated();
-        if (is_a($oUser, 'User')) {
+        if ($oUser instanceof User) {
             $res = $this->performLogin($oUser);
             if ($res) {
                 $oUser = array($res);
@@ -228,7 +228,7 @@ class LoginPageDispatcher extends KTDispatcher {
         }
         if (is_array($oUser)) {
             foreach ($oUser as $oError) {
-                if (is_a($oError, 'KTNoLocalUser')) {
+                if ($oError instanceof KTNoLocalUser) {
                     $aExtra = kt_array_merge($aExtra, $oError->aExtra);
                 }
             }
@@ -263,7 +263,7 @@ class LoginPageDispatcher extends KTDispatcher {
 
         $oUser =& User::getByUsername($username);
         if (PEAR::isError($oUser) || ($oUser === false)) {
-            if (is_a($oUser, 'ktentitynoobjects')) {
+            if ($oUser instanceof ktentitynoobjects) {
                 $this->handleUserDoesNotExist($username, $password, $aExtra);
             }
             $this->simpleRedirectToMain(_kt('Login failed.  Please check your username and password, and try again.'), $url, $queryParams);
@@ -314,10 +314,10 @@ class LoginPageDispatcher extends KTDispatcher {
             if (empty($res)) {
                 return $res;
             }
-            if (is_a($res, 'User')) {
+            if ($res instanceof User) {
                 $this->performLogin($res);
             }
-            if (is_a($res, 'KTAuthenticationSource')) {
+            if ($res instanceof KTAuthenticationSource) {
                 $_SESSION['autosignup'] = $aExtra;
                 $this->redirectTo('autoSignup', array(
                     'source_id' => $res->getId(),

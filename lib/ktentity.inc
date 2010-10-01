@@ -651,8 +651,15 @@ class KTEntityUtil {
 
         $oKTConfig =& KTConfig::getSingleton();
         $sDirectory = $oKTConfig->get('cache/proxyCacheDirectory');
+        if (defined('ACCOUNT_ROUTING_ENABLED')) 
+        {
+        	if(ACCOUNT_ROUTING_ENABLED)
+        	{
+        		$sDirectory .= '/' . ACCOUNT_NAME;
+        	}
+        }
         if (!file_exists($sDirectory)) {
-            $res = @mkdir($sDirectory);
+            $res = @mkdir($sDirectory, 0777, true);
         }
         $sRunningUser = KTUtil::running_user();
         if ($sRunningUser) {

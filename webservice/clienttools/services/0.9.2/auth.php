@@ -54,7 +54,7 @@ class auth extends client_service {
 		        	$this->Response->setStatus('session_id',$session->get_session());
 		        }else{
 					$this->setResponse(array('authenticated'=> false, 'message'=> 'Invalid username and/or password.'));
-		        	$this->addDebug('failed login '$session->getMessage());
+		        	$this->addDebug('failed login '.$session->getMessage());
 		        	$this->addError('Unknown Login Error');
 		        	return false;
 		        }

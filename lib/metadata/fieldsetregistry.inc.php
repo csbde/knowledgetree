@@ -190,8 +190,9 @@ class KTFieldsetRegistry {
             }
         } else {
             foreach ($fields as $oField) {
-
-                $fname = 'metadata_' . $oField->getId();
+				$fieldId = $oField->getId();
+                $fname = 'metadata_' . $fieldId;
+                $divFieldId = 'meta_option_' . $fieldId;
                 $value = null;
 
                 // check if we had an old value
@@ -232,6 +233,7 @@ class KTFieldsetRegistry {
                         'name' => $fname,
                         'value' => $value,
                         'description' => $oField->getDescription(),
+                        'field_id' => $divFieldId,
                     ));
                 } else if ($type == 'ktcore.fields.lookup') {
                     $widgets[] = $this->oWF->get('ktcore.widgets.entityselection', array(
@@ -245,6 +247,7 @@ class KTFieldsetRegistry {
                         'label_method' => 'getName',
                         'unselected_label' => _kt("No selection."),
                         'simple_select' => false,
+                        'field_id' => $divFieldId,
                     ));
                 } else if ($type == 'ktcore.fields.tree') {
                     $widgets[] = $this->oWF->get('ktcore.widgets.treemetadata', array(
@@ -254,7 +257,7 @@ class KTFieldsetRegistry {
                         'value' => $value,
                         'description' => $oField->getDescription(),
                         'vocab' => MetaData::getEnabledByDocumentField($oField),
-                        'field_id' => $oField->getId(),
+                        'field_id' => $divFieldId,
                     ));
                 } else if ($type == 'ktcore.fields.largetext') {
                 	                    
@@ -266,6 +269,7 @@ class KTFieldsetRegistry {
                         'value' => $value,
                         'description' => $oField->getDescription(),
                         'field' => $oField,
+                        'field_id' => $divFieldId,
                     ));
                 } else if ($type == 'ktcore.fields.date') {                 
                     $widgets[] = $this->oWF->get('ktcore.widgets.date', array(
@@ -274,6 +278,7 @@ class KTFieldsetRegistry {
                         'name' => $fname,
                         'value' => $value,
                         'description' => $oField->getDescription(),
+                        'field_id' => $divFieldId,
                     ));
                 } else if ($type == 'ktcore.fields.multiselect') {
                     if($oField->getInetLookupType() == "multiwithlist") {
@@ -289,6 +294,7 @@ class KTFieldsetRegistry {
                             'unselected_label' => false,
                             'simple_select' => false,
                             'multi'=> true,
+                            'field_id' => $divFieldId,
                         ));
             } else if($oField->getInetLookupType() == "multiwithcheckboxes") {
                         $widgets[] = $this->oWF->get('ktcore.widgets.entityselection', array(
@@ -298,12 +304,12 @@ class KTFieldsetRegistry {
                             'value' => explode(", ",$value),
                             'description' => $oField->getDescription(),
                             'vocab' => MetaData::getEnabledByDocumentField($oField),
-                                'field_id' => $oField->getId(),
                             'id_method' => 'getName',
                             'label_method' => 'getName',
                             'unselected_label' => false,
                             'simple_select' => true,
                             'multi'=> true,
+                            'field_id' => $divFieldId,
                         ));
             } else {
                                 $widgets[] = $this->oWF->get('ktcore.widgets.entityselection', array(
@@ -318,6 +324,7 @@ class KTFieldsetRegistry {
                             'label_method' => 'getName',
                             'unselected_label' => _kt("No selection."),
                             'simple_select' => false,
+                            'field_id' => $divFieldId,
                         ));
             }
                    

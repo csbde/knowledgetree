@@ -54,6 +54,8 @@ require_once(KT_LIB_DIR . '/actions/bulkaction.php');
 
 require_once(KT_DIR . '/plugins/tagcloud/TagCloudPortlet.php');
 
+require_once(KT_LIB_DIR .'/render_helpers/browseView.helper.php');
+
 class TagCloudRedirectPage extends KTStandardDispatcher {
 
     /**
@@ -97,8 +99,9 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
         $oUser = User::get($iUserId);
 
         // set breadcrumbs
+		/*
         $this->aBreadcrumbs[] = array('url' => 'dashboard.php', 'name' => _kt('Dashboard'));
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Tag Cloud Search'));
+		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('Tag Cloud Search'));
 
         $tagList = $_SESSION['tagList'];
         if(!empty($tagList)){
@@ -116,16 +119,17 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
         }
         if(!empty($tag)){
             $this->aBreadcrumbs[] = array('url' => '', 'name' => $tag);
-        }
+        }*/
 
         // set page title
-        $sTitle =  _kt('Search Results');
+        $sTitle =  _kt('Search Results - Tag:').' '.$tag;
         $this->oPage->setBreadcrumbDetails($sTitle);
 
         // Set tag cloud portlet
         $portlet = new TagCloudPortlet($oUser, $tag);
         $this->oPage->addPortlet($portlet);
 
+		/*
         $collection = new AdvancedCollection;
         $oColumnRegistry = KTColumnRegistry::getSingleton();
         $aColumns = $oColumnRegistry->getColumnsForView('ktcore.views.search');
@@ -149,6 +153,7 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 
         $collection->setOptions($aOptions);
         $collection->setQueryObject(new TagQuery($oUser, $tag));
+		*/
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('kt3/browse');
@@ -162,7 +167,80 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
             'browseutil' => new KTBrowseUtil(),
             'returnaction' => $returnUrl,
         );
+		
+		
+		
+		//if(!$aTemplateData['oldBrowse']){
+			$browseViewRender = new browseViewHelper();
+		
+			$aTemplateData['bulkActionMenu']=$browseViewRender->renderBulkActionMenu($aBulkActions);
+			
+			$folderContentItems=$this->getTagContent($tag);
+			
+			
+			
+			$folderView=$pre_folderView=array();
+			//foreach($folderContentItems['folders'] as $item)$pre_folderView[]=$this->renderFolderItem($item);
+			foreach($folderContentItems['documents'] as $item)
+			{
+				$item['id'] = $item['document_id'];
+				
+				if ($item['checked_out_date'] == 'n/a') {
+					$item['checked_out_date'] = '';
+				}
+				
+				$pre_folderView[]=$browseViewRender->renderDocumentItem($item);
+			}
+			
+			$pageCount=1;
+			$perPage=15;
+			$itemCount=count($pre_folderView);
+			$curItem=0;
+			
+			$folderView[]='<div class="page page_'.$pageCount.' ">';
+			foreach($pre_folderView as $item){
+				$curItem++;
+				if($curItem>$perPage){
+					$pageCount++;
+					$curItem=1;
+					$folderView[]='</div><div class="page page_'.$pageCount.' ">';
+				}
+				$folderView[]=$item;
+			}
+			if($itemCount<=0){
+				$folderView[]='<span class="notification" id="empty_message">There are currently no viewable items in this folder.</span>';
+			}
+			$folderView[]="</div>";
+			
+			$aTemplateData['folderContents']=join($folderView);
+			
+			$aTemplateData['fragments']='';
+			$aTemplateData['fragments'].=$browseViewRender->renderDocumentItem(null,true);
+			$aTemplateData['fragments'].=$browseViewRender->renderFolderItem(null,true);
+			$aTemplateData['pagination']=$browseViewRender->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
+			
+			$aTemplateData['javascript'] = $browseViewRender->getJavaScript();
+		//}
+		
+		
         return $oTemplate->render($aTemplateData);
     }
+	
+	function getTagContent($tag)
+	{
+		$oUser=KTEntityUtil::get('User',  $_SESSION['userID']);
+		$KT=new KTAPI();
+		$session=$KT->start_system_session($oUser->getUsername());
+		
+		$results = $KT->get_tag_contents ( $tag );
+		
+		$ret=array('folders'=>array(),'documents'=>$results['results'],'shortcuts'=>array());
+		
+		return $ret;
+	}
+
+
+	
+	
 }
 ?>

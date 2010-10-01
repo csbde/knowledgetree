@@ -8,7 +8,8 @@
 <!-- Password -->
 {if $show_password}
 	<h2>{i18n}Password{/i18n}</h2>
-    <p><a href="{addQS}action=setPassword{/addQS}">{i18n}Change password{/i18n}</a></p>
+    <div class="form_actions"><a href="{addQS}action=setPassword{/addQS}">{i18n}Change password{/i18n}</a></div>
+    <br clear="both" />
 {/if}
 
 <br clear="both" />

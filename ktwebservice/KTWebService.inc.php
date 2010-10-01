@@ -133,6 +133,8 @@ class JsonEncoder extends EncoderBase
  */
 class XmlEncoder extends EncoderBase
 {
+    private $writer; // XMLWriter object
+    
     /**
      * Formats the output as XML
      *
@@ -143,21 +145,26 @@ class XmlEncoder extends EncoderBase
      */
     public function encode($input)
     {
-        if(is_string($input)){
+        if (is_string($input)) {
             $input = array($input);
         }
 
-        if(!is_array($input)){
+        if (!is_array($input)) {
             // throw exception
             return false;
         }
-
-        $xml = '<?xml version="1.0"  encoding="utf-8" ?>'."\n";
-        $xml .= '<response>'."\n";
-
-        $xml .= XmlEncoder::createXmlFromArray($input);
-        $xml .= '</response>'."\n";
-        return $xml;
+        
+        $this->writer = new XMLWriter();
+        $this->writer->openMemory();
+        $this->writer->setIndent(true);
+        $this->writer->setIndentString('  ');
+        $this->writer->startDocument('1.0','UTF-8');
+        $this->writer->startElement('response');
+        $this->createXmlFromArray($input);
+        $this->writer->endElement();
+        $this->writer->endDocument();
+        
+        return $this->writer->outputMemory(true);
     }
 
     /**
@@ -166,24 +173,25 @@ class XmlEncoder extends EncoderBase
 	 * @author KnowledgeTree Team
 	 * @access private
      * @param array $input The array to be formatted
-     * @return string The XML
      */
-    private static function createXmlFromArray($input)
+    private function createXmlFromArray($input)
     {
-        $xml = '';
         foreach ($input as $key => $value) {
-
-            if(is_numeric($key)){
+            if (is_numeric($key)) {
                 $key = 'item';
             }
+            
+            $this->writer->startElement($key);
 
-            if(is_array($value)){
-                $value = XmlEncoder::createXmlFromArray($value);
+            if (is_array($value)) {
+                $this->createXmlFromArray($value);
             }
-
-            $xml .= "<$key>$value</$key>";
+            else {
+                $this->writer->text($value);
+            }
+            
+            $this->writer->endElement();
         }
-        return $xml;
     }
 
     /**
@@ -242,7 +250,7 @@ class ResponseBase
     public function _dispatch($method, $args)
     {
         $dispatch_method = "_{$method}";
-        if(!is_callable(array($this, $dispatch_method))) {
+        if (!is_callable(array($this, $dispatch_method))) {
             $this->_respondError("501 Not Implemented");
             return false;
         }
@@ -260,7 +268,7 @@ class ResponseBase
     protected function _getProtocol()
     {
         $protocol = "HTTP/1.1";
-        if(isset($_SERVER['SERVER_PROTOCOL'])) {
+        if (isset($_SERVER['SERVER_PROTOCOL'])) {
             $protocol = $_SERVER['SERVER_PROTOCOL'];
         }
         return $protocol;
@@ -352,15 +360,15 @@ class Response extends ResponseBase
 
         // Check that the method exists
         $exists = false;
-        foreach ($methods as $var){
-            if($var->getName() == $method){
+        foreach ($methods as $var) {
+            if ($var->getName() == $method) {
                 $exists = true;
                 break;
             }
         }
 
-        if(!$exists){
-            $this->error = 'Method does not exist in the API: '.$method;
+        if (!$exists) {
+            $this->error = 'Method does not exist in the API: ' . $method;
             $this->error_code = 404;
             return false;
         }
@@ -373,12 +381,12 @@ class Response extends ResponseBase
 
         $orderedParams = array();
         // map parameters to supplied arguments and determine order
-        foreach ($methodParams as $parameter){
+        foreach ($methodParams as $parameter) {
             $param = isset($args[$parameter->getName()]) ? $args[$parameter->getName()] : '';
 
-            if(empty($param)) {
-                if(!$parameter->isOptional()){
-                    $this->error = 'Missing required parameter: '.$parameter->getName();
+            if (empty($param)) {
+                if (!$parameter->isOptional()) {
+                    $this->error = 'Missing required parameter: ' . $parameter->getName();
                     return false;
                 }
                 $param = $parameter->getDefaultValue();
@@ -390,8 +398,8 @@ class Response extends ResponseBase
         // instantiate KTAPI and invoke method
         $ktapi = $this->get_ktapi($session_id);
 
-        if(PEAR::isError($ktapi)){
-            $this->error = 'API could not be authenticated: '.$ktapi->getMessage();
+        if (PEAR::isError($ktapi)) {
+            $this->error = 'API could not be authenticated: ' . $ktapi->getMessage();
             $this->error_code = 404;
             return false;
         }
@@ -419,7 +427,7 @@ class Response extends ResponseBase
     	$kt = new KTAPI();
 
     	// if the session id has been passed through - get the active session.
-    	if(!empty($session_id)){
+    	if (!empty($session_id)) {
         	$session = $kt->get_active_session($session_id, null);
 
         	if (PEAR::isError($session))
@@ -445,11 +453,11 @@ class Response extends ResponseBase
     {
         //echo gettype($input);
 
-        if(is_array($input)){
+        if (is_array($input)) {
             return $input;
         }
 
-        if(is_string($input)){
+        if (is_string($input)) {
             return array($input);
         }
 
@@ -469,7 +477,7 @@ class Response extends ResponseBase
         $result = $this->callMethod($args);
 
         // if an error occurred, initiate the error response
-        if($result === false){
+        if ($result === false) {
             return false;
         }
 
@@ -493,7 +501,7 @@ class Response extends ResponseBase
         $result = $this->callMethod($args);
 
         // if an error occurred, initiate the error response
-        if($result === false){
+        if ($result === false) {
             return false;
         }
 
@@ -517,7 +525,7 @@ class Response extends ResponseBase
         $result = $this->callMethod($args);
 
         // if an error occurred, initiate the error response
-        if($result === false){
+        if ($result === false) {
             return false;
         }
 
@@ -541,7 +549,7 @@ class Response extends ResponseBase
         $result = $this->callMethod($args);
 
         // if an error occurred, initiate the error response
-        if($result === false){
+        if ($result === false) {
             return false;
         }
 
@@ -560,7 +568,7 @@ class Response extends ResponseBase
      */
     public function output()
     {
-        if(!empty($this->error)){
+        if (!empty($this->error)) {
             $response = array('message' => $this->error, 'status_code' => 1);
             $encoder = EncoderBase::getEncoder($this->responseType);
             $this->output = $encoder->encode($response);
@@ -637,7 +645,7 @@ class WebService
     protected function getArguments()
     {
         $arguments = array();
-        switch ($this->method){
+        switch ($this->method) {
             case 'put':
             case 'delete':
                 parse_str(file_get_contents('php://input'), $arguments);

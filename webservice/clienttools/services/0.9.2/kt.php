@@ -1558,7 +1558,9 @@ Fatal error:  Cannot unset string offsets in on line 981
 		$this->setResponse(array('documents'=>$returnDocumentArray, 'folders'=>$returnFoldersArray));
 	}
 
-
+	/**
+	 * This retrieves the folder path by providing the folder id
+	 */
 	function get_folder_path($arr)
 	{
 		$kt=&$this->KT;
@@ -1584,6 +1586,70 @@ Fatal error:  Cannot unset string offsets in on line 981
 
 
 		$this->setResponse ( array ('status_code' => 0, 'folderPath' => $path ) );
+	}
+	
+	/**
+	 * This function gets given a path string and from there checks if the path is valid
+	 * and if it is, generates the id path based on parents
+	 */
+	function interpret_folder_path($params)
+	{
+		$path = explode('/', $params['path']);
+		
+		$newPath = array();
+		
+		for ($i=0; $i<count($path); $i++)
+		{
+			if (trim($path[$i]) != '') {
+				$newPath[] = $path[$i];
+			}
+		}
+		
+		$pathFound = FALSE;
+		
+		$folder = 'asfasf';
+		
+		// If nothing in array, set to root
+		if (count($newPath) == 0) {
+			$folderPath = '/F_0/F_1';
+			$folderId = 1;
+			$pathFound = TRUE;
+		} else {
+			
+			$string = '';
+			
+			foreach ($newPath as $name)
+			{
+				
+				$string .= '/'.$name;
+			}
+			
+			$folder = $this->KT->get_folder_by_name($string, 1);
+			
+			if (PEAR::isError ( $folder )) {
+				$pathFound = FALSE;
+			} else {
+				$pathFound = TRUE;
+				
+				$parentIds = explode(',', $folder->getParentFolderIds());
+				
+				$folderPath = '/F_0';
+				
+				foreach ($parentIds as $id)
+				{
+					$folderPath .= '/F_'.$id;
+				}
+				
+				$folderId = $folder->get_folderid();
+			}
+		}
+		
+		if ($pathFound) {
+			$this->setResponse(array('pathfound'=>'true', 'path'=>$folderPath, 'folderId'=>$folderId));
+		} else {
+			$this->setResponse(array('pathfound'=>'false'));
+		}
+		
 	}
 
 	private function check_if_document_deleted($documentId)
@@ -1731,6 +1797,8 @@ Fatal error:  Cannot unset string offsets in on line 981
 
 		$this->setResponse(array('rules'=>$kt->getConditionalMetadataRules(), 'connections'=>$kt->getConditionalMetadataConnections()));
 	}
+	
+	
 
 }
 

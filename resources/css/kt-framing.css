@@ -64,8 +64,6 @@ body
 #logobar
 {
     position: relative;
-    width: 100%;
-    margin: 0.2em 0 0.5em 0;
 }
 
 #logobar .secondary
@@ -184,9 +182,7 @@ a.main_nav_item {
 
 #breadcrumbs
 {
-    margin-top: 0.2em;
-    /*margin-bottom: 1em;*/
-    margin-left: 0.5em;
+	margin: 5px;
     color: #333;
     text-transform: lowercase;
 }
@@ -205,7 +201,7 @@ a.main_nav_item {
 {
     color: #344a6a;
     text-decoration: none;
-    border-bottom: 1px solid #344a6a;
+    border-bottom: 0px solid #344a6a;
 
 }
 
@@ -576,7 +572,6 @@ a.main_nav_item {
     color: #344a6a;
     text-decoration: none;
     border-bottom: 1px solid #344a6a;
-
 }
 
 #content a:hover

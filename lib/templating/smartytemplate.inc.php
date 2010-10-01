@@ -127,6 +127,7 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->register_block('addQS', array('KTSmartyTemplate', 'addQueryStringBlock'), false);
         $smarty->register_function('getUrlForFolder', array('KTSmartyTemplate', 'getUrlForFolder'));
         $smarty->register_function('getCrumbStringForDocument', array('KTSmartyTemplate', 'getCrumbStringForDocument'));
+        $smarty->register_function('url', array('KTSmartyTemplate', 'buildUrl'));
         return $smarty->fetch($this->sPath);
     }
 
@@ -313,6 +314,17 @@ class KTSmartyTemplate extends KTTemplate {
      */
     function ktLink($params, &$smarty) {
         return KTUtil::ktLink($params['base'], $params['subpath'], $params['query']);
+    }
+	
+	
+	function buildUrl($params, &$smarty) {
+		if (isset($params['file'])) {
+			$file = $params['file'];
+			unset($params['file']);
+		} else {
+			$file = '';
+		}
+        return KTUtil::buildUrl($file, $params);
     }
 
 

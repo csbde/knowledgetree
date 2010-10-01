@@ -1,32 +1,36 @@
 <h2>{i18n}Transition Effects{/i18n}</h2>
-    
+
+<div class="widgetRow">
 {$add_form->render()}
-    
-<br />    
-    
+</div>
+
+<br/><br/>
+<div class="widgetRow">
+
 {if empty($aActionTriggers)}
-  <div class="ktInfoMessage"><span>{i18n}This transition has no actions associated with it..{/i18n}</span></div>    
+	<div class="ktInfoMessage"><span>{i18n}This transition has no actions associated with it.{/i18n}</span></div>
 {else}
-    
+
 <table class="kt_collection narrow" cellspacing="0">
     <thead>
         <tr>
-            <th>{i18n}Action{/i18n}</th>        
-            <th>{i18n}Edit{/i18n}</th>        
-            <th>{i18n}Delete{/i18n}</th>                                          
-            <th>{i18n}Configuration{/i18n}</th>                    
-        </tr>    
-    </thead>    
+            <th>{i18n}Action{/i18n}</th>
+            <th>{i18n}Edit{/i18n}</th>
+            <th>{i18n}Delete{/i18n}</th>
+            <th>{i18n}Configuration{/i18n}</th>
+        </tr>
+    </thead>
     <tbody>
         {foreach from=$aActionTriggers item=oTrigger}
          <tr>
              <td>{$oTrigger->getName()}</td>
              <td>{if $oTrigger->bIsConfigurable}<a class="ktAction ktEdit" href="{addQS context=$context}action=editactiontrigger&fTriggerInstanceId={$oTrigger->getConfigId()}{/addQS}">edit</a>{else}&mdash;{/if}</td>
-             <td><a class="ktAction ktDelete" href="{addQS context=$context}action=deleteactiontrigger&fTriggerInstanceId={$oTrigger->getConfigId()}{/addQS}">delete</a></td>                                       
-             <td>{$oTrigger->getConfigDescription()}</td>             
+             <td><a class="ktAction ktDelete" href="{addQS context=$context}action=deleteactiontrigger&fTriggerInstanceId={$oTrigger->getConfigId()}{/addQS}">delete</a></td>
+             <td>{$oTrigger->getConfigDescription()}</td>
          </tr>
-        {/foreach}    
+        {/foreach}
     </tbody>
-    </table>    
-    
-    {/if}
+    </table>
+{/if}
+
+</div>

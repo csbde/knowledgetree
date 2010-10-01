@@ -2,6 +2,7 @@
 <!-- FILE: kt3/browse.smarty -->
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/MochiKitPacked.js')}
 {$context->oPage->requireJSResource('resources/js/toggleselect.js')}
+{$javascript}
 {if ($custom_title != null)}
 <h2>{$custom_title|sanitize}</h2>
 {/if}
@@ -38,20 +39,23 @@
 
 {/if}
 
-{if $oldBrowse}
-	{$collection->render()}
-{else}
-    <div class="dropzone" id="datadrop">
-	<div class="standardBorder itemContainer" style="min-width: 800px;">
-		{if ($isEditable)}
-			{$bulkActionMenu}
-		{/if}
-		{$folderContents}
-		<div style="width:100%; text-align: center">{$pagination}</div>
-	</div>
-	{$fragments}
-    </div>	
+
+{if ($isEditable)}
+<div class="dropzone" id="datadrop">
 {/if}
+<div class="standardBorder itemContainer" style="min-width: 800px;">
+	{if ($isEditable)}
+		{$bulkActionMenu}
+	{/if}
+	{$folderContents}
+	<div style="width:100%; text-align: center">{$pagination}</div>
+</div>
+{$fragments}
+{if ($isEditable)}
+</div>	
+{/if}
+
+
 
 {if ($isEditable && 1==2)}
 <div class="form_actions">
@@ -148,12 +152,15 @@
 	kt.pages.browse={};
 	
 	kt.pages.browse.addDocumentItem=function(item){
+		item.is_shortcut=item.is_shortcut?'':' not_supported';
 		item.is_immutable=item.is_immutable?'':' not_supported';
 		item.is_checkedout=item.is_checkedout?'':' not_supported';
+		item.document_link='view.php?fDocumentId='+item.id;
 	
 		var newItem=jQuery(jQuery('.fragment.document')[0]).html();
 		newItem=kt.lib.parseTemplate(newItem,item);
 		var elem=jQuery(newItem);
+		var mime=jQuery('.doc.icon',elem).attr('style',item.mimeicon);
 		jQuery('.page.page_'+kt.pages.browse.curPage).append(elem);
 	};
 	
@@ -172,7 +179,7 @@
 		
 		pageItem.addClass('highlight');
 		
-		kt.pages.browse.curPage=pageNum;
+		kt.pages.browse.curPage=new Number(pageNum);
 	};
 	
 	kt.pages.browse.nextPage=function(){
@@ -215,15 +222,15 @@
 			var selectedItems=$(".itemContainer .item .checkbox>input:checkbox:checked:enabled").length;
 			if( selectedItems >0){
 				$('.browseView.bulkActionMenu td:first-child').removeClass('disabled');
-				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','');
+				$('.browseView.bulkActionMenu td:first-child input[type="submit"]').attr('disabled','');
 //				$('.browseView.bulkActionMenu').slideDown(350,function(){kt.lib.setFooter();});
-				$('.browseView.bulkActionMenu').slideDown(350);
+//				$('.browseView.bulkActionMenu').slideDown(350);
 				
 				$('.browseView.bulkActionMenu .status').html(selectedItems + '&nbsp;Item(s)&nbsp;Selected');
 			}else{
 				$('.browseView.bulkActionMenu td:first-child').addClass('disabled');
-				$('.browseView.bulkActionMenu td:first-child input').attr('disabled','disabled');
-				$('.browseView.bulkActionMenu').hide(200);
+				$('.browseView.bulkActionMenu td:first-child input[type="submit"]').attr('disabled','disabled');
+//				$('.browseView.bulkActionMenu').hide(200);
 //				$('.browseView.bulkActionMenu').hide(200,function(){kt.lib.setFooter();});
 				$('.browseView.bulkActionMenu .status').html('');
 			}
@@ -262,9 +269,31 @@
 		
 		$("table.folder.item input:checkbox:checked").parent().parent().parent().parent().addClass("highlighted");
 		
-		
+		if($.browser.msie){
+			(function(){
+				function hide(){
+					$(".doc.browseView:first-child .item .actionMenu .actions>ul").css({display: '',visibility: ''});
+				}
+			
+				$(".doc.browseView:first-child .item .actionMenu .actions>ul").css({display: 'block',visibility: 'hidden'});
+				setTimeout(hide,200);
+			})();
+		}
 		
 		kt.pages.browse.setBulkActionMenuStatus();
+		
+		$(".browseView.bulkActionMenu .select_all").change(function(){
+			if(this.checked){
+				kt.pages.browse.selectAllItems();
+			}else{
+				kt.pages.browse.deSelectAllItems();
+			}
+		});
+
+        if ($('ul.paginate li.item').length==3) {
+            $('ul.paginate').hide();
+        }
+		
 	});
 })(jQuery);
 </script>

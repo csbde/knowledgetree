@@ -273,7 +273,8 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
             $frag[] = sprintf('%s=%s', urlencode($k), urlencode($v));
         }
 
-        redirect(KTUtil::ktLink('view.php',null,implode('&', $frag)));
+        //redirect(KTUtil::ktLink('view.php',null,implode('&', $frag)));
+        redirect(KTUtil::buildUrl(KTUtil::ktLink('view.php'), $frag));
     }
 
     function getUserForId($iUserId) {
@@ -368,6 +369,7 @@ class KTDocumentViewAction extends KTDocumentAction {
         }
 
         if ($res === false) {
+            session_start();
             $this->addErrorMessage(_kt('The file you requested is not available.'));
             redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
             exit(0);
@@ -426,7 +428,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 
         return parent::getInfo();
     }
-    
+
     function getButton() {
         $btn = array();
         $btn['display_text'] = _kt('Checkout');
@@ -483,7 +485,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
                 ));
         }
 
-        $widgets[] = array('ktcore.widgets.reason', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
 				'required' => false,
                 'name' => 'reason',
@@ -496,7 +498,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 
         $oForm->setWidgets($widgets);
 
-        $validators[] = array('ktcore.validators.string', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'min_length' => 1,
                 'max_length' => 250,
@@ -547,7 +549,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         $data = $res['results'];
 
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkout_final');
-        $sReason = $data['reason'];
+        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Checked Out.');
 
         $this->startTransaction();
         $res = KTDocumentUtil::checkout($this->oDocument, $sReason, $this->oUser);
@@ -714,7 +716,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
                 ));
         }
 
-        $aWidgets[] = array('ktcore.widgets.reason', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$aWidgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
 				'required' => false,
                 'name' => 'reason',
@@ -722,12 +724,6 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 
         // Set the validators for the widgets
         $aValidators = array(
-            array('ktcore.validators.string', array(
-                'test' => 'reason',
-                'min_length' => 1,
-                'max_length' => 250,
-                'output' => 'reason',
-            )),
             array('ktcore.validators.boolean', array(
                 'test' => 'major_update',
                 'output' => 'major_update',
@@ -737,6 +733,13 @@ class KTDocumentCheckInAction extends KTDocumentAction {
                 'output' => 'file',
             )),
         );
+
+        if($this->oConfig->get('actionreasons/globalReasons'))$aValidators[]=array('ktcore.validators.string', array(
+                'test' => 'reason',
+                'min_length' => 1,
+                'max_length' => 250,
+                'output' => 'reason',
+        ));
 
         if($default->enableESignatures){
             $aValidators[] = array('electonic.signatures.validators.authenticate', array(
@@ -805,7 +808,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
             return $oForm->handleError(null, $extra_errors);
         }
 
-        $sReason = $data['reason'];
+        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Checked In.');
         $sCurrentFilename = $docFileName;
         $sNewFilename = $data['file']['name'];
         $aOptions = array();
@@ -929,7 +932,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
                 ));
         }
 
-        $widgets[] = array('ktcore.widgets.reason', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
 			    'required' => false,
                 'name' => 'reason',
@@ -937,7 +940,7 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
 
         $oForm->setWidgets($widgets);
 
-        $validators[] = array('ktcore.validators.string', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'min_length' => 1,
                 'max_length' => 250,
@@ -994,7 +997,8 @@ class KTDocumentCancelCheckOutAction extends KTDocumentAction {
         }
 
         // checkout cancelled transaction
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, $data['reason'], 'ktcore.transactions.force_checkin');
+        $reason=isset($data['reason']) ? $data['reason'] : _kt('Document Checkout Cancelled.');
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, $reason, 'ktcore.transactions.force_checkin');
         $res = $oDocumentTransaction->create();
         if (PEAR::isError($res) || ($res === false)) {
             $this->rollbackTransaction();
@@ -1084,7 +1088,9 @@ class KTDocumentDeleteAction extends KTDocumentAction {
                 ));
         }
 
-        $widgets[] = array('ktcore.widgets.reason', array(
+        $getReason=$this->oDocument->getImmutable() || $this->oConfig->get('actionreasons/globalReasons');
+
+        if($getReason)$widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
 			    'required' => false,
                 'name' => 'reason',
@@ -1092,7 +1098,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
 
         $oForm->setWidgets($widgets);
 
-        $validators[] = array('ktcore.validators.string', array(
+        if($getReason)$validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'min_length' => 1,
                 'max_length' => 250,
@@ -1148,7 +1154,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
             return $oForm->handleError();
         }
 
-        $sReason = $data['reason'];
+        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Deleted.');
 
         $fFolderId = $this->oDocument->getFolderId();
         $res = KTDocumentUtil::delete($this->oDocument, $sReason);
@@ -1252,7 +1258,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         }
 
 
-        $widgets[] = array('ktcore.widgets.reason', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
 			    'required' => false,
                 'name' => 'reason',
@@ -1260,7 +1266,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
 
         $oForm->setWidgets($widgets);
 
-        $validators[] = array('ktcore.validators.string', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'min_length' => 1,
                 'max_length' => 250,
@@ -1328,7 +1334,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         $res = $oForm->validate();
         $errors = $res['errors'];
         $data = $res['results'];
-        $sReason = $data['reason'];
+        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Archived.');
         $extra_errors = array();
 
         if (!is_null($data['browse'])) {
@@ -1484,7 +1490,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
                 ));
         }
 
-        $widgets[] = array('ktcore.widgets.reason', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
 				'required' => false,
                 'name' => 'reason',
@@ -1493,7 +1499,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $oForm->setWidgets($widgets);
 
         $validators = array();
-        $validators[] = array('ktcore.validators.string', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'min_length' => 1,
                 'max_length' => 250,
@@ -1567,7 +1573,7 @@ class KTDocumentCopyAction extends KTDocumentAction {
         $res = $oForm->validate();
         $errors = $res['errors'];
         $data = $res['results'];
-        $sReason = $data['reason'];
+        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Copied.');
         $extra_errors = array();
 
         if (!is_null($data['browse'])) {
@@ -1694,7 +1700,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
                 ));
         }
 
-        $widgets[] = array('ktcore.widgets.reason', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$widgets[] = array('ktcore.widgets.reason', array(
                 'label' => _kt('Note'),
 			    'required' => false,
                 'name' => 'reason',
@@ -1702,7 +1708,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
 
         $oForm->setWidgets($widgets);
 
-        $validators[] = array('ktcore.validators.string', array(
+        if($this->oConfig->get('actionreasons/globalReasons'))$validators[] = array('ktcore.validators.string', array(
                 'test' => 'reason',
                 'min_length' => 1,
                 'max_length' => 250,
@@ -1761,7 +1767,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
             return $oForm->handleError();
         }
 
-        $sReason = $data['reason'];
+        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Archived.');
 
         $res = KTDocumentUtil::archive($this->oDocument, $sReason);
 

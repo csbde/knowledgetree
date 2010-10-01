@@ -98,7 +98,9 @@ php_value error_reporting 5
 # Workaround for mod_auth when running php cgi
 <IfModule mod_rewrite.c>
 RewriteEngine on
-RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+# RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L] #turned off by Tohir
+# Some history of this rules
+# look at: http://wiki.horde.org/HTTPAuthHowTo
 </IfModule>
 
 #<IfModule mod_rewrite.c>
@@ -116,3 +118,12 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
 #SetEnv kt_no_extensions yes
 #</IfModule>
 #</IfModule>
+
+#Catch all 404 requests, and send them to redirect.php
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /redirect.php [L]
+</IfModule>

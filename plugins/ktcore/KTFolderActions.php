@@ -216,10 +216,10 @@ class KTFolderAddFolderAction extends KTFolderAction {
 
         $this->commitTransaction();
         // On successful creation of a folder
+        $templateId = isset($_POST['data']) ? KTUtil::arrayGet($_POST['data'], 'templateId', false) : false;
         // Check if a folder template needs to be applied
-        // TODO : Get post value templateId properly
-        $data = KTUtil::arrayGet($_POST, 'data',0);
-        $this->applyTemplate($oFolder->getId(), $data['templateId']);
+        if($templateId != false)
+        	$this->applyTemplate($oFolder->getId(), $templateId);
         controllerRedirect('browse', sprintf('fFolderId=%d', $oFolder->getId()));
         
         exit(0);
@@ -228,7 +228,8 @@ class KTFolderAddFolderAction extends KTFolderAction {
     function applyTemplate($rootId, $templateId) {
     	if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
 			require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR ."FolderTemplate.inc.php");
-			return FolderTemplates::applyFolderTemplate($rootId, $templateId);
+			$ftemplates = new FolderTemplates();
+			return $ftemplates->applyFolderTemplate($rootId, $templateId);
     	}
     }
 }

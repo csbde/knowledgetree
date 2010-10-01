@@ -1416,7 +1416,7 @@ class KTCoreAjaxUploadWidget extends KTWidget {
      * @return String configuration script.
      */
     private function getConfiguration($folderId = null){
-        
+        // TODO : This needs to be in a javascript file, and get passed the variable.
         if (is_null($folderId)) {
             $folderId = $_GET['fFolderId'];
         }
@@ -1431,9 +1431,7 @@ class KTCoreAjaxUploadWidget extends KTWidget {
         
         ob_start();
         ?>
-        
 jQuery(document).ready(function(){
-
     jQuery('#extract-documents').hide();
     jQuery('#document_type_field').hide();
     jQuery('#type_metadata_fields').hide();
@@ -1442,20 +1440,30 @@ jQuery(document).ready(function(){
 	jQuery('form .form_actions').hide();
     jQuery('#uploadbuttondiv').show();
     var button = jQuery('#button1'), interval;
-    
-	
+	var newran = Math.random();
+	newran = Math.ceil(newran * 100000);
+	jQuery('#file_random_name').attr('value', newran);
+	//swapElementFromRequest('advanced_settings_metadata','presentation/lookAndFeel/knowledgeTree/documentmanagement/getTypeMetadataFields.php?fDocumentTypeID=' + '1', '1');
     new AjaxUpload(button, 
     {
 			action: '<?php echo $this->aOptions['amazonsettings']['formAction']; ?>', 
 			name: 'file',
 			onSubmit : function(file, ext)
 			{
+				var title = xtractFileTitle(file);
+				sameNameFile(file);
+				if(jQuery('#file_exists').val() == 1)
+				{
+					return;
+				}
+				jQuery('#button1').hide();
+				jQuery('#cancelButton').show();
+				ranfilename = jQuery('#file_random_name').val();
 				detectArchiveFile(file);
                 this.setData({
                     'AWSAccessKeyId' : '<?php echo $this->aOptions['amazonsettings']['AWSAccessKeyId']; ?>',
                     'acl'            : '<?php echo $this->aOptions['amazonsettings']['acl']; ?>',
-<!--                    'key'            : '<?php //echo $this->aOptions['awstmppath']; ?>${filename}',-->
-                    'key'            : '<?php echo $this->aOptions['awstmppath']; ?>',
+                    'key'            : '<?php echo $this->aOptions['awstmppath']; ?>'+ranfilename,
                     'policy'         : '<?php echo $this->aOptions['amazonsettings']['policy']; ?>',
                     'Content-Type'   : 'binary/octet-stream',
                     'signature'      : '<?php echo $this->aOptions['amazonsettings']['signature']; ?>',
@@ -1463,26 +1471,35 @@ jQuery(document).ready(function(){
                 });
                 button.hide();
 				jQuery('#uploading_spinner').css({visibility: 'visible'});
-				jQuery('#cancelButton').show();
                 Img = document.getElementById('spinner');
                 Img.style.display="inline";
                 Img.src = "resources/graphics/thirdparty/loader.gif";
-                
 			},
 			onComplete: function(file, response){
+				if(jQuery('#file_exists').val() == 1)
+				{
+					return;
+				}
+				ranfilename = jQuery('#file_random_name').val();
+				var title = xtractFileTitle(file);
 				button.show();
                 jQuery('#uploading_spinner').css({visibility: 'hidden'});
                 jQuery('#cancelButton').hide();
                 jQuery('#document_type_field').show();
                 jQuery('#type_metadata_fields').show();
-                jQuery('#advanced_settings_metadata_button').show();
+                //jQuery('#advanced_settings_metadata_button').show();
                 jQuery('#successful_upload_files_ul').show();
 				var listitem = '<li>';
-				listitem += file;
-<!--				listitem += '<input id="" name="file[]" type="hidden" value="<?php //echo $this->aOptions['randomfile']; ?>'+file+'" />';-->
-				listitem += '<input id="" name="file[]" type="hidden" value="<?php echo $this->aOptions['randomfile'] . '_'; ?>'+file+'" />';
+				listitem += '<span id="'+ranfilename+'_title">'+title+'</span>';
+				listitem += '<input id="'+ranfilename+'_htitle" name="file['+ranfilename+'][tmp_and_filename]" type="hidden" value="'+ranfilename+'<?php echo '_'; ?>'+file+'" />';
+				listitem += '<input class="xtitles" id="'+ranfilename+'_xtitle" name="file['+ranfilename+'][title]" type="hidden" value="'+title+'" />';
+				listitem += '<input class="hfilenames" id="'+ranfilename+'_hfilenames" name="filename" type="hidden" value="'+file+'" />';
 				listitem += '<span onclick="removeFile(this)" style="cursor:pointer;"> <img src="resources/graphics/delete.png" /> </span>';
+				listitem += '<span onclick="editTitle(\''+ranfilename+'\', \''+title+'\')" style="cursor:pointer;"> <img src="thirdparty/icon-theme/16x16/actions/document-properties.png" /> </span>';
 				listitem += '</li>';
+				var newran = Math.random();
+				newran = Math.ceil(newran * 100000);
+				jQuery('#file_random_name').attr('value', newran);
 				jQuery('#successful_upload_files').show().append(listitem);
                 jQuery('#kt_swf_upload_percent').val('100');
                 jQuery('form .form_actions').show();
@@ -1507,7 +1524,6 @@ jQuery(document).ready(function(){
 				jQuery('form .form_actions').hide();
 				jQuery('#uploadbuttondiv').show();
 			}
-			//console.log('kids '+jQuery('#successful_upload_files').children().length);
 		},
 		detectArchiveFile = function(fileName) {
 			// TODO : This information should come from server
@@ -1516,8 +1532,55 @@ jQuery(document).ready(function(){
 			if (isSupported) {
 				jQuery('#extract-documents').show();
 			}
+		},
+		sameNameFile = function(fileName) {
+			jQuery('#file_exists').attr('value', '0');
+			//var children = jQuery('#successful_upload_files').children().length;
+			if(jQuery('.xtitles').size() > 0)
+			{
+				//jQuery('#successful_upload_files').children().each(function()
+				//jQuery('.xtitles').each(function()
+				jQuery('.hfilenames').each(function()
+				{
+					//if(jQuery(this).text() != '')
+					if(jQuery(this).attr('value') != '')
+					{
+						//if (fileName == jQuery(this).text().trim())
+						var newName = jQuery(this).attr('value');
+						if (fileName == newName.trim())
+						{
+							alert('A file with the same name exists.');
+							jQuery('#file_exists').attr('value', '1');
+						}
+					}
+				})
+			}    
+		},
+		xtractFileTitle = function (data) {
+ 			var m = data.match(/([^\/\\]+)\.(\w+)$/)
+ 			if(m == null)
+ 			{
+ 				return data;
+ 			}
+ 			else
+ 			{
+ 				return m[1];
+ 			}
+        },
+		renameFile = function(ranfilename) {
+			var oldTitle = jQuery('#' + ranfilename + '_xtitle');
+			var newTitleValue = jQuery('#' + ranfilename + '_etitle').attr('value');
+			jQuery(oldTitle).attr('value', newTitleValue);
+			jQuery('#' + ranfilename + '_submit').remove();
+			jQuery('#' + ranfilename + '_etitle').remove();
+			var listItem = '<span id="'+ranfilename+'_title">'+newTitleValue+'</span>';
+			jQuery('#' + ranfilename + '_title').append(listItem);
+		},
+		editTitle = function(ranfilename, title) {
+			var titleField = '<input id="'+ranfilename+'_etitle" name="title[]" type="text" value="'+title+'" />';
+			var saveField = '<input id="'+ranfilename+'_submit" type="submit" value="Save" name="'+title+'" onclick="renameFile('+ranfilename+');return false;"/>';
+			jQuery('#' + ranfilename + '_title').html(titleField + '&nbsp&nbsp' + saveField);
 		}
-    
 });
         <?PHP
         $script = ob_get_contents();

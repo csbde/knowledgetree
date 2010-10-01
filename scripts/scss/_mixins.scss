@@ -1,0 +1,219 @@
+@mixin corners($size){
+	-webkit-border-radius: $size;
+	-moz-border-radius: $size;
+	border-radius: $size;
+}
+
+@mixin shaddow($size,$color:none){
+	@if $color==none{
+		$color:#CCCCCC;
+	}
+	-webkit-box-shadow: 0px 0px $size $color ;
+	-moz-box-shadow: 0px 0px $size $color; 
+	box-shadow: 0px 0px $size $color; 
+}
+
+@mixin hoverIcon($width,$height,$standardIcon,$hoverIcon){
+	background: url($standardIcon);
+	background-repeat: no-repeat;
+	background-position: center center;
+	width: $width;
+	height: $height;
+	display: inline-block;
+	clear: none;
+	&:hover{
+		background: url($hoverIcon);
+		background-repeat: no-repeat;
+		background-position: center center;
+	}
+}
+
+@mixin gradient($topColor,$bottomColor:none){
+	@if $bottomColor==none{
+		$bottomColor:darken($topColor,10%);
+	}
+	
+	background:-webkit-gradient(linear,left bottom,left top,color-stop(0, $topColor),color-stop(1, $bottomColor));
+	background:-moz-linear-gradient(center bottom,$topColor 0%,$bottomColor 100%);
+}
+
+@mixin smallHoverIcon($standardIcon,$hoverIcon){
+	@include hoverIcon(16px,16px,$standardIcon,$hoverIcon);
+}
+
+@mixin tooltipIcon($standardIcon,$hoverIcon,$width:160px,$orientation:left,$xOffset:none,$yOffset:none){
+	@include smallHoverIcon($standardIcon,$hoverIcon);
+	
+	@if $orientation != left {
+		@if $orientation != right{
+			@if $orientation != center{
+				$orientation:left;
+			}
+		}
+	}
+	
+	@if $orientation == left{
+		@if $xOffset==none{
+			$xOffset:$width - ($width * 2) + 14px;
+		}
+		
+	} @else if $orientation == center {
+		@if $xOffset==none{
+			$xOffset: 0 - ($width / 2);
+		}
+	} @else {
+		@if $xOffset==none{
+			$xOffset: -14px;
+		}
+	}
+
+	@if $yOffset==none{
+		$yOffset:16px;
+	}
+	
+	position: relative;
+	span:first-child{
+		@include corners(5px);
+		@include shaddow(5px,#000000);
+		border: 1px solid #CE9B00;
+		background-color: #FFEDB7;
+		padding: 10px;
+		position: absolute;
+		width: $width;
+		top: $yOffset;
+		left: $xOffset;
+		display: none;
+		z-index: 20001;
+		&:hover{
+			left: -5000px;
+		}
+	}
+	&:hover{
+		span:first-child{
+			display: block; 
+		}
+	}
+}
+
+@mixin dropMenu($line-height: 1.5em){
+	cursor: pointer;
+	position: relative;
+	line-height: $line-height;
+	
+	.not_supported{
+		display: none !important;
+	}
+	
+	&>ul{
+		text-align: left;
+		display: none;
+		position: absolute;
+		margin: 0px;
+		padding: 0px !important;
+		list-style: none;
+		width: $menuWidth;
+		border: 1px solid $iconbg;
+		background-color: $hbgcolor;
+		@include shaddow(5px,darken($hbgcolor,80%));
+		@include corners(3px);
+		z-index: 20000;
+		left: 30-$menuWidth;
+		top: 15px;
+		cursor: auto;
+		li{
+			display: block;
+			margin: inherit;
+			padding: 2px 10px;
+			margin: 5px 5px;
+			cursor: pointer;
+			@include corners(4px);
+			border: 1px solid transparent;
+			&.separator{
+				overflow: hidden;
+				height: 0px;
+				padding: 0px;
+				border-top: 1px solid darken($menuItemBo,10%);
+				@include corners(0px);
+				cursor: auto;
+				&:hover{
+					border: 1px solid transparent;
+					border-top: 1px solid darken($menuItemBo,10%);
+					background-color: $hbgcolor;
+					padding: 0px;
+					@include corners(0px);
+					cursor: auto;
+				} 
+			}
+			
+			&:first-child{
+				margin-top: 5px;
+			}
+			&:last-child{
+				margin-bottom: 5px;
+			}
+			&:hover{
+				background-color: darken($menuItemBg,5%);
+				@include gradient(darken($menuItemBg,5%),$menuItemBg);
+				@include shaddow(2px);
+				border: 1px solid darken($menuItemBo,5%);
+				
+			}
+			a,a:link,a:active,a:visited,a:hover{
+				text-decoration: none;
+				display: block;
+				color: inherit !important;
+				border: none !important;
+			}
+		}
+	}
+	&:hover{
+		&>ul{
+			display: block;
+		}
+	}
+}
+
+@mixin iconDropMenu($standardIcon,$hoverIcon){
+	@include smallHoverIcon($standardIcon,$hoverIcon);
+	@include dropMenu();
+}
+
+
+@mixin iconPanel($bgColor:#EEEEEE,$height:15px){
+	$boColor:darken($bgColor,10%);
+	$padding: $height / 3;
+	margin: 0px;
+	padding: 0px $padding * 2 !important;
+	@include corners ($height / 2);
+	@include shaddow (2px);
+	background-color:$bgColor;
+	@include gradient($bgColor, lighten($bgColor,5%)) ;
+	border: 1px solid $boColor;
+	list-style: none;
+	display: inline-block;
+	width: auto;
+//	height: $height;
+	line-height: 1.4em;
+	&>li{
+		height: $height;
+		display: inline-block;
+		padding: 0px $padding;
+		margin: 0px -3px;
+		border-right: 1px solid transparent; //darken($bgColor,5%);
+		border-left: 1px solid transparent; //darken($bgColor,5%);
+		cursor: pointer;
+		vertical-align: top;
+		&:hover{
+			border-right: 1px solid $boColor;
+			border-left: 1px solid $boColor;
+			background-color: lighten($boColor, 5%);
+			@include gradient (lighten($boColor, 5%),lighten($boColor, 10%));
+		}
+		&:last-child{
+//			border-right: 1px solid transparent;
+		}
+		&:first-child{
+//			border-left: 1px solid transparent;
+		}
+	}
+}

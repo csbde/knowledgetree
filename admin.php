@@ -99,13 +99,15 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $category = KTUtil::arrayGet($_REQUEST, 'fCategory', $this->category);
 
         //Removing bad contentSetup/fieldmanagement links from the Document Metadata and Workflow Configuration page.
+		$oPage =& $GLOBALS['main'];	
 		if ($category == 'contentSetup') {
-	        $oPage =& $GLOBALS['main'];			
 			$aJavascript[] = 'thirdpartyjs/jquery/jquery-1.4.2.js';
 			$oPage->requireJSResources($aJavascript);
 			$jscript .= "<script src='resources/js/kt_hideadminlink.js' type='text/javascript'></script>";
 		}
-        
+		$aJavascript[] = 'resources/js/newui/hide_system_links.js';
+		$oPage->requireJSResources($aJavascript);
+	
         $oRegistry =& KTAdminNavigationRegistry::getSingleton();
         $aCategory = $oRegistry->getCategory($category);
 		
@@ -123,6 +125,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
               'baseurl' =>  $_SERVER['PHP_SELF'],
         	  'jscript' => $jscript,
         );
+        //echo "<pre>".print_r($aTemplateData,true),'</pre>';exit;
         return $oTemplate->render($aTemplateData);
     }
 }
@@ -164,7 +167,6 @@ if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < t
     $heading = _kt('You are attempting to access Settings');
     $main->setBodyOnload("javascript: showSignatureForm('{$sUrl}', '{$heading}', 'dms.administration.administration_section_access', 'admin', '{$sBaseUrl}/browse.php', 'close');");
 }
-
 
 $oDispatcher->dispatch(); // we _may_ be redirected at this point (see KTAdminNavigation)
 
