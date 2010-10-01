@@ -115,6 +115,9 @@ class MDTree {
         global $default;
         // before we start, we need to check that
         // the specified field exists and is organised into a tree.
+        $fieldIdArr = explode('_', $iFieldId);
+        $iFieldId = array_pop($fieldIdArr);
+
         $organisedField =& DocumentField::get($iFieldId);
         if (PEAR::isError($organisedField) || ($organisedField === false)) {
             $this->clear();  // make sure we don't get pollution.
