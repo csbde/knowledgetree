@@ -845,7 +845,7 @@ $sourceDocument->getName(),
 
 	/**
 	* Document Add
-	* 
+	*
 	* @author KnowledgeTree Team
 	* @access public
 	* @param KTFolderUtil $oFolder
@@ -853,8 +853,8 @@ $sourceDocument->getName(),
 	* @param KTUser $oUser
 	* @param array $aOptions
 	* @param boolean $bulk_action
-	* 
-	* @return Document $oDocument 
+	*
+	* @return Document $oDocument
 	*/
     // {{{ _in_add
     public static function &_in_add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action = false) {
@@ -1464,6 +1464,7 @@ $sourceDocument->getName(),
         	$oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
         }
 
+        $sOldFilename = $oDocument->_oDocumentContentVersion->getFilename();
 		$oDocument->_oDocumentContentVersion->setFilename($sNewFilename);
 
 		$sType = KTMime::getMimeTypeFromFile($sNewFilename);
@@ -1479,7 +1480,8 @@ $sourceDocument->getName(),
         }
 
         // create the document transaction record
-        $oDocumentTransaction = new DocumentTransaction($oDocument, _kt('Document renamed'), 'ktcore.transactions.update');
+        $comment = sprintf(_kt("Document renamed from %s to %s."), $sOldFilename, $sNewFilename);
+        $oDocumentTransaction = new DocumentTransaction($oDocument, $comment, 'ktcore.transactions.rename');
         $oDocumentTransaction->create();
 
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
