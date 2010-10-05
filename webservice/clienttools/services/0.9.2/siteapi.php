@@ -27,8 +27,16 @@ class siteapi extends client_service{
 			foreach($fields as $field){
 				$properties=$field->getProperties();
 				
-				if(isset($properties['has_lookup']))if($properties['has_lookup']==1){
-					$properties['lookup_values'] = $this->get_metadata_lookup($field->getId());
+				if(isset($properties['has_lookup'])) {
+					if($properties['has_lookup']==1){
+						if($properties['has_lookuptree']==1){
+							//need to recursively populate tree lookup fields!
+							$properties['tree_lookup_values'] = $this->get_metadata_tree($field->getId());
+						} else {
+							$properties['lookup_values'] = $this->get_metadata_lookup($field->getId());
+					
+						}
+					}
 				}
 				
 				if(isset($properties['has_inetlookup'])) { 
@@ -78,7 +86,7 @@ class siteapi extends client_service{
 		$this->addResponse('documentTypes',$ret);
 	}
 	
-/**
+	/**
 	* This returns an array for a metadata tree lookup or an error object.
 	*
     * @author KnowledgeTree Team
@@ -105,6 +113,84 @@ class siteapi extends client_service{
 		//}
 		return json_encode($results);
 	}
+	
+	/**
+	* This returns a metadata tree or an error object.
+	*
+    * @author KnowledgeTree Team
+	* @access public
+	* @param integer $fieldid The id of the tree field to get the metadata for
+	* @return array|object $results SUCCESS - the array of metadata for the field | FAILURE - an error object
+	*/
+	public function get_metadata_tree($fieldid, $parentid=0)
+	{
+		//$myFile = "siteapi.txt";
+		//$fh = fopen($myFile, 'a');
+		
+		$sql = "(SELECT mlt.metadata_lookup_tree_parent AS parentid, ml.treeorg_parent AS treeid, mlt.name AS treename, ml.id AS id, ml.name AS fieldname 
+				FROM metadata_lookup ml 
+				INNER JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id) 
+				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid)
+				UNION
+				(SELECT -1 AS parentid, 0 AS treeid, \"Root\" AS treename, ml.id AS id, ml.name AS fieldname
+				FROM metadata_lookup ml 
+				LEFT JOIN (metadata_lookup_tree mlt) ON (ml.treeorg_parent = mlt.id) 
+				WHERE ml.disabled=0 AND ml.document_field_id=$fieldid AND (ml.treeorg_parent IS NULL OR ml.treeorg_parent = 0))
+				ORDER BY parentid, id";
+		$rows = DBUtil::getResultArray($sql);
+		
+		$results = array();
+		
+		if (sizeof($rows) > 0) {			
+			$results = $this->convertToTree($rows);			
+		}
+		
+		//fclose($fh);
+				
+		return json_encode($results);
+	}
+	
+	private function convertToTree(array $flat) {
+		$idTree = 'treeid';
+		$idField = 'id';
+		$parentIdField = 'parentid';
+                        
+        //$myFile = "convertToTree.txt";
+		//$fh = fopen($myFile, 'a');
+		
+		//fwrite($fh, "\r\nflat ".print_r($flat, true));
+		
+	    $indexed = array();
+	    // first pass - get the array indexed by the primary id
+	   	foreach ($flat as $row) {
+        	$treeID = $row[$idTree];
+        	if (!isset($indexed[$treeID])) {
+        		$indexed[$treeID] = array('treeid' => $treeID,
+        									'parentid' => $row[$parentIdField],
+        									'treename' => $row['treename'],
+        									'type' => 'tree');//$row;
+	        	$indexed[$treeID]['fields'] = array();
+        	}
+	        
+	        $indexed[$treeID]['fields'][$row[$idField]] = array('fieldid' => $row[$idField],
+	        													'parentid' => $treeID,
+	        													'name' =>  $row['fieldname'],
+	        													'type' => 'field');
+	    }
+	    
+	    //second pass
+	    $root = -1;
+	    foreach ($indexed as $id => $row) {	    	
+	        $indexed[$row[$parentIdField]]['fields'][$id] =& $indexed[$id];
+	    }
+	    
+	    $results = array($root => $indexed[$root]);
+	    
+	    //fclose($fh);
+	    
+	    return $results;
+	} 
+	
 	
 	/**
 	 * Get the subfolders of the specified folder
@@ -180,8 +266,8 @@ class siteapi extends client_service{
 		
 		
 		/* OVERRIDE FOR TESTING */
-		//$bucket = 'testa';
-		//$aws_tmp_path = '';
+		$bucket = 'testa';
+		$aws_tmp_path = '';
 		
 		
 		

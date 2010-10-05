@@ -1,10 +1,9 @@
 <span class="ul_meta_row">
 	<span class="ul_meta_label">[name]
 		<span class="ul_meta_label_descr">[description]</span>
-	</span>
-	
+	</span>	
 	<span class="ul_meta_field">
-	<span class="ul_meta_fullField ul_meta_field_[id]" id="ul_meta_field_checkbox_[id]"></span>
+		<span class="ul_meta_fullField ul_meta_field_[id]" id="ul_meta_field_checkbox_[id]"></span>
 	</span>
 </span>
 
@@ -16,7 +15,7 @@ Ext.onReady(function(){
     var data = new Array();
     var i = 0;
     for (var key1 in [checkbox_lookup_values]) {	
-    	if (typeof [checkbox_lookup_values][key1] !== 'function') {    
+    	if (typeof [checkbox_lookup_values][key1] !== 'function') {
 			for (var key2 in ([checkbox_lookup_values][key1])) {
 				var key = key2.replace('id','');
 				var value = [checkbox_lookup_values][key1][key2];

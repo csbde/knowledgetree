@@ -3,6 +3,70 @@
 		<span class="ul_meta_label_descr">[description]</span>
 	</span>
 	<span class="ul_meta_field">
-		<input type="text" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.value);" value="Tree Fields Not Yet supported"></input>
+		<span class="ul_meta_fullField ul_meta_field_[id]" id="ul_meta_field_tree_[id]"></span>	
 	</span>
 </span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+	var container = jQuery('#ul_meta_field_tree_[id]')[0];
+	
+	jQuery.each([tree_lookup_values], function(key, val) { 
+		recursiveFunction(key, val)
+	});
+
+    function recursiveFunction(key, val) {
+    	buildWidget(key, val);
+      	
+       	if (typeof val == 'object') {
+            jQuery.each(val, function(key, val) {
+                recursiveFunction(key, val)
+            });
+        }
+    }
+
+    function buildWidget(key, val) {
+        if (typeof val !== 'string') {
+            if (val['type'] == 'field') {//val['name'] !== undefined) {
+	        	var radio = document.createElement('input');
+	        	radio.id = 'ul_meta_field_tree_[id]_'+val['fieldid'];
+	        	
+	        	radio.type = 'radio';
+	        	radio.name = 'ul_meta_field_tree_[id]';	//val['fieldid'];
+	
+	        	var label = document.createElement('label');
+	        	label.htmFor = "ul_meta_field_tree_[id]_"+val['fieldid'];
+	        	var labelText = document.createTextNode(radio.value = val['name']);
+	        	label.appendChild(labelText);
+	
+	        	//if (val['parentid'] == '0') {
+	        	container.appendChild(document.createElement("br"));
+	        	container.appendChild(radio);  
+	        	container.appendChild(label);  	
+	        	container.appendChild(document.createElement("br"));
+	        	/*} else {
+		        	var placeHolder = jQuery('#ul_meta_field_tree_[id]_'+val['treeid']);
+
+		        	container.appendChild(document.createElement('br'));
+		        	container.appendChild(radio);  
+		        	container.appendChild(label);  	
+		        	container.appendChild(document.createElement('br'));
+	        	}*/
+	        } else if (val['type'] == 'tree') {
+	        	var span = document.createElement('span');
+	            span.id = 'ul_meta_field_tree_[id]_'+val['treeid'];
+	            //span.className ="dynamicSpan";
+	             
+	            span.innerHTML = '<b>'+val['treename'];
+	             
+	            container.appendChild(span);
+			}
+	        
+        }
+    	
+    }    
+});
+
+</script>
