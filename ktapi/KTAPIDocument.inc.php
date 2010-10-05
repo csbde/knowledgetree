@@ -1938,7 +1938,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		$config = KTConfig::getSingleton();
 		$wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
-		
+
 		$wsversion = 3;
 
 		$detail = array();
@@ -2332,7 +2332,11 @@ class KTAPI_Document extends KTAPI_FolderItem
 
 		DBUtil::startTransaction();
 
-		$transaction = new DocumentTransaction($this->document, "Document expunged", 'ktcore.transactions.expunge');
+		$filename = $this->document->getFileName();
+		$full_path = $this->document->getFullPath();
+		$comment = sprintf(_kt("Document expunged: %s/%s"), $full_path, $filename);
+
+		$transaction = new DocumentTransaction($this->document, $comment, 'ktcore.transactions.expunge');
         $transaction->create();
         $this->document->cleanupDocumentData($this->documentid);
 		$result = $oStorage->expunge($this->document);

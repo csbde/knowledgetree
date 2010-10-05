@@ -107,7 +107,7 @@ class DocumentTransaction extends KTEntity {
 		if (PEAR::isError($oFolder) || ($oFolder == false)) {
 		    $this->sFileName = '.../' . $oDocument->getName();
 		} else {
-		    $this->sFileName = addslashes($oFolder->sFullPath . "/" . $oFolder->getName() . "/" . $oDocument->getName());
+		    $this->sFileName = addslashes($oFolder->getFullPath() . "/" . $oDocument->getName());
 		}
 
 		$this->iUserID = $_SESSION["userID"];
