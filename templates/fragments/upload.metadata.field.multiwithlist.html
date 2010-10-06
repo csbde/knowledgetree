@@ -3,7 +3,7 @@
 		<span class="ul_meta_label_descr">[description]</span>
 	</span>
 	<span class="ul_meta_field">
-		<select multiple id="ul_meta_field_multiselect_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="getSelectedValues();"></select>
+		<select multiple id="ul_meta_field_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="getSelectedValues();"></select>
 	</span>
 </span>
 
@@ -26,17 +26,21 @@ Ext.onReady(function(){
     	}
 	}
 
-    var select = jQuery('#ul_meta_field_multiselect_[id]')[0];	
+    var select = jQuery('#ul_meta_field_[id]')[0];	
 
     //populate the options
     for(var i = 0; i < data.length; i++) {
     	select.options[i] = new Option (data[i][1], data[i][0], false, false);
-    }    
+    }  
+
+    if([is_mandatory] == '1') {
+		jQuery('#ul_meta_field_[id]').addClass('required');
+	}  
     
 });
 
 function getSelectedValues() {
-	var multiSelect = jQuery('#ul_meta_field_multiselect_[id]')[0];
+	var multiSelect = jQuery('#ul_meta_field_[id]')[0];
 
 	var j = 0;
 	//to store the selected checkbox IDs
@@ -48,7 +52,7 @@ function getSelectedValues() {
 	    } 
 	}
 
-	kt.app.upload.getMetaItem(jQuery('#ul_meta_field_multiselect_[id]')).setMetaData('[id]',selected);
+	kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).setMetaData('[id]',selected);
 }
 
 </script>

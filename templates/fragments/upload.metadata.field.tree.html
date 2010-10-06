@@ -3,7 +3,7 @@
 		<span class="ul_meta_label_descr">[description]</span>
 	</span>
 	<span class="ul_meta_field">
-		<span class="ul_meta_fullField ul_meta_field_[id]" id="ul_meta_field_tree_[id]"></span>	
+		<span class="ul_meta_fullField ul_meta_field_[id]" id="ul_meta_field_[id]"></span>	
 	</span>
 </span>
 
@@ -11,7 +11,7 @@
 
 Ext.onReady(function(){
 
-	var container = jQuery('#ul_meta_field_tree_[id]')[0];
+	var container = jQuery('#ul_meta_field_[id]')[0];
 	
 	jQuery.each([tree_lookup_values], function(key, val) { 
 		recursiveFunction(key, val)
@@ -66,7 +66,11 @@ Ext.onReady(function(){
 	        
         }
     	
-    }    
+    }
+
+    if([is_mandatory] == '1') {
+		jQuery('#ul_meta_field_[id]').addClass('required');
+	}    
 });
 
 </script>

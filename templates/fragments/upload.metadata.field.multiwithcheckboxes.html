@@ -3,7 +3,7 @@
 		<span class="ul_meta_label_descr">[description]</span>
 	</span>	
 	<span class="ul_meta_field">
-		<span class="ul_meta_fullField ul_meta_field_[id]" id="ul_meta_field_checkbox_[id]"></span>
+		<span class="ul_meta_fullField ul_meta_field_[id]" id="ul_meta_field_[id]"></span>
 	</span>
 </span>
 
@@ -26,7 +26,7 @@ Ext.onReady(function(){
     	}
 	}
     
-    var container = jQuery('#ul_meta_field_checkbox_[id]')[0];
+    var container = jQuery('#ul_meta_field_[id]')[0];
 
     for(var i = 0; i < data.length; i++) {
         
@@ -64,6 +64,10 @@ Ext.onReady(function(){
 			kt.app.upload.getMetaItem(this).setMetaData('[id]', selected)
 		});
     }  
+
+    if([is_mandatory] == '1') {
+		jQuery('#ul_meta_field_[id]').addClass('required');
+	}
     
 });
 

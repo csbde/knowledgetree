@@ -7,7 +7,25 @@ class siteapi extends client_service{
 	 */
 	public function docTypeHasRequiredFields($params){
 		$docType=$params['docType'];
-		$this->addResponse('hasRequiredFields',false);
+		
+		$aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
+        $aSpecificFieldsetIds = KTFieldset::getForDocumentType($docType, array('ids' => false));
+        $fieldSets = kt_array_merge($aGenericFieldsetIds, $aSpecificFieldsetIds);	
+        
+		$hasRequiredFields = false;
+	    
+	    foreach($fieldSets as $fieldSet){
+			$fields=$fieldSet->getFields();
+			fwrite($fh, "\r\nfields ".print_r($fields, true));
+			foreach($fields as $field){
+				if ($field->getIsMandatory()) {
+					$hasRequiredFields = true;
+					break;
+				}
+			}
+	    }
+		
+		$this->addResponse('hasRequiredFields',$hasRequiredFields);
 	}
 	
 	/**
@@ -19,7 +37,11 @@ class siteapi extends client_service{
 		$type=$params['type'];
 		$filter=is_array($params['filter'])?$params['filter']:NULL;
 		$oDT=DocumentType::get($type);
-		$fieldSets=$oDT->getFieldsets();
+		
+		$aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
+        $aSpecificFieldsetIds = KTFieldset::getForDocumentType($oDT->getID(), array('ids' => false));
+        $fieldSets = kt_array_merge($aGenericFieldsetIds, $aSpecificFieldsetIds);		
+		
 		$ret=array();
 		foreach($fieldSets as $fieldSet){
 			$ret[$fieldSet->getID()]['properties']=$fieldSet->getProperties();

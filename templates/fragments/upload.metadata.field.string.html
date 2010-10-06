@@ -1,1 +1,20 @@
-<span class="ul_meta_row"><span class="ul_meta_label">[name]<span class="ul_meta_label_descr">[description]</span></span><span class="ul_meta_field"><input type="text" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.value);"></input></span></span>
+<span class="ul_meta_row">
+	<span class="ul_meta_label">[name] [is_mandatory]
+		<span class="ul_meta_label_descr">[description]</span>
+	</span>
+	<span class="ul_meta_field">
+		<input id="ul_meta_field_[id]" type="text" class="ul_meta_fullField string ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.value);"></input>
+	</span>
+</span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+	if([is_mandatory] == '1') {
+		jQuery('#ul_meta_field_[id]').addClass('required');
+	}
+
+});
+
+</script>

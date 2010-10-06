@@ -9,6 +9,8 @@ kt.app.upload=new function(){
 	//Stores the objects that deal with the individual files being uploaded. Elements in here is of type uploadStructure
 	var data=this.data={};
 	
+	this.data.files={};
+	
 	//contains a list of fragments that will get preloaded
 	var fragments=this.fragments=['upload.dialog','upload.dialog.item','upload.metadata.fieldset'];
 	
@@ -40,22 +42,33 @@ kt.app.upload=new function(){
 	this.uploadWindow=null;
 	
 
-	//Add a file item to the list of files to upload and manage. must not be called directly, but as a result of adding a file using AjaxUploader)
-	this.addUpload=function(fileName,container){
+	//Add a file item to the list of files to upload and manage. 
+	//Must not be called directly, but as a result of adding a file using AjaxUploader)
+	this.addUpload=function(fileName,container,docTypeHasRequiredFields){
+		//console.log('addUpload docTypeHasRequiredFields '+docTypeHasRequiredFields);
 		var item=jQuery(kt.api.getFragment('upload.dialog.item'));
 		jQuery(self.elems.item_container).append(item);
-		var obj=new self.uploadStructure({fileName:(fileName+''),elem:item});
+		var obj=new self.uploadStructure({fileName:(fileName+''),elem:item,has_required_metadata: docTypeHasRequiredFields,required_metadata_done:!docTypeHasRequiredFields});
 		kt.lib.meta.set(item[0],'item',obj);
 		obj.startUpload();
 		
-		this.data[fileName]=obj;
+		self.data.files[fileName]=obj;
 		return obj;
 	}
 	
-	//A DOM helper function that will take elem as any dom element inside a file item fragment and return the js object related to that element.
+	//A DOM helper function that will take elem as any dom element inside a file item fragment 
+	//and return the js object related to that element.
 	this.getItem=function(elem){
 		var e=jQuery(elem).parents('.ul_item')[0];
 		return kt.lib.meta.get(e,'item');
+	}
+	
+	this.getWindow=function(){
+		return self;
+	}
+	
+	this.getWindowData=function(){
+		return self.data;
 	}
 	
 	this.getMetaItem=function(elem){
@@ -64,10 +77,24 @@ kt.app.upload=new function(){
 		return meta;
 	}
 	
+	this.applyMetadataToAll=function(isChecked, metadata) {
+		//console.log('ApplyToAll '+isChecked);
+		if(isChecked) {
+			//console.log('ApplyToAll setting');
+			self.data['applyMetaDataToAll']=true;
+			self.data['globalMetaData']=metadata;
+		} else {
+			//console.log('ApplyToAll UNsetting');
+			self.data['applyMetaDataToAll']=false;
+			self.data['globalMetaData']=null;
+		}
+		//console.dir(self.data);
+	}
+	
 	//Find the js object matching a given filename
 	this.findItem=function(fileName){
-		if(typeof(self.data[fileName])!='undefined'){
-			return self.data[fileName];
+		if(typeof(self.data.files[fileName])!='undefined'){
+			return self.data.files[fileName];
 		}
 		return null;
 	}
@@ -190,8 +217,22 @@ kt.app.upload=new function(){
 		uploadWindow.destroy();
 	}
 	
-	//ENTRY POINT: Calling this function will set up the environment, display the upload dialog, and hook up the AjaxUploader callbacks to the correct functions.
+	//ENTRY POINT: Calling this function will set up the environment, display the upload dialog, 
+	//and hook up the AjaxUploader callbacks to the correct functions.
 	this.showUploadWindow = function(){
+		
+		var docTypeHasRequiredFields = false;
+		
+		//does the Default Doc Type have required fields?
+		kt.api.docTypeHasRequiredFields("1", function(data){
+			//if so, we need to disable the Upload button
+			docTypeHasRequiredFields = data.data.hasRequiredFields;
+			if(docTypeHasRequiredFields){
+		    	var btn = jQuery('#ul_actions_upload_btn');
+		    	btn.attr("disabled", "true");
+		    }
+		});
+		
 	    var uploadWin = new Ext.Window({
 			id          : 'extuploadwindow',
 	        layout      : 'fit',
@@ -218,7 +259,13 @@ kt.app.upload=new function(){
 	    		buttonText: 'Choose File(s)',
 	    		allowedExtensions: [],
 	    		sizeLimit: 0,
-	    		onSubmit: function(id,fileName){self.addUpload(fileName,self.elems.qq);},
+	    		onSubmit: function(id,fileName){
+	    			if(docTypeHasRequiredFields){
+	    		    	var btn = jQuery('#ul_actions_upload_btn');
+	    		    	btn.attr("disabled", "true");
+	    		    }
+	    			self.addUpload(fileName,self.elems.qq, docTypeHasRequiredFields);
+	    		},
 	    		onComplete: function(id,fileName,responseJSON){self.findItem(fileName).completeUpload();},
 	    		showMessage: function(message){alert(message);}
 	    	});
@@ -309,7 +356,11 @@ kt.app.upload=new function(){
 			
 	    });
 		self.uploadWindow=uploadWin;
-	    uploadWin.show();
+		
+		
+		
+	    uploadWin.show();	    
+	    
 	}
 	
 	
@@ -325,11 +376,14 @@ kt.app.upload=new function(){
 kt.app.upload.uploadStructure=function(options){
 	var self=this;
 	var options=self.options=kt.lib.Object.extend({
-		is_uploaded			:false,
-		elem				:null,
-		docTypeId			:null,
-		docTypeFieldData	:null,
-		metadata			:{}
+		is_uploaded					:false,
+		has_required_metadata		:false,
+		required_metadata_done		:false,
+		elem						:null,
+		docTypeId					:null,
+		docTypeFieldData			:null,
+		metadata					:{},
+		parent						:null
 	},options);
 	
 	
@@ -345,6 +399,7 @@ kt.app.upload.uploadStructure=function(options){
 	}
 	
 	this.setProgress=function(text,state){
+		console.log('setProgress '+text+' '+state);
 		var state=kt.lib.Object.enum(state,'uploading,waiting,ui_meta,add_doc,done','waiting');
 		
 		var e=jQuery('.ul_progress',self.options.elem);
@@ -358,20 +413,27 @@ kt.app.upload.uploadStructure=function(options){
 	}
 	
 	this.completeUpload=function(){
-		self.setProgress('ready to be added','ready');
+		console.log('completeUpload has '+self.options.has_required_metadata+' done '+self.options.required_metadata_done);
+		//has all the required metadata for the doc been entered?
+		if(self.options.has_required_metadata && !self.options.required_metadata_done){
+			self.setProgress('enter metadata','ui_meta');
+		} else {
+			self.setProgress('ready to be added','ready');
+		}
 		self.options.is_uploaded=true;
 	}
 	
 	this.setDocType=function(docTypeId){
 		self.options.docTypeId=docTypeId;
-		self.options.docTypeFieldData=kt.api.docTypeFields(docTypeId);
+		self.options.docTypeFieldData=kt.api.docTypeFields(docTypeId);	//docTypeRequiredFields(docTypeId);
 	}
 	
 	this.setMetaData=function(key,value){
+		console.log('setMetaData '+key);
 		self.options.metadata[key]=value;
 	};
 	
-	this.showMetaData=function(){
+	this.showMetadataWindow=function(parent){
 		var metaWin = new Ext.Window({
 	        layout      : 'fit',
 	        width       : 400,
@@ -390,11 +452,67 @@ kt.app.upload.uploadStructure=function(options){
 		self.options.metaWindow=metaWin;
 		metaWin.show();
 		
+		self.options.parent = parent;
+		
+		//console.log('global metadata '+self.options.parent.data['applyMetaDataToAll']+' '+self.options.parent.data['globalMetaData']);
+				
+		//do we need to Apply To All?
+		if (self.options.parent.data['applyMetaDataToAll'] && self.options.parent.data['globalMetaData'] != undefined) {
+			self.options.metadata = self.options.parent.data['globalMetaData'];
+			var el = jQuery('#ul_meta_actionbar_apply_to_all')[0];
+			el.checked = true;
+		}
+		
 		var e=jQuery('.metadataTable')[0];
 		self.options.metaDataTable=e;
 		kt.lib.meta.set(e,'item',self);
 		self.changeDocType(self.options.docTypeId?self.options.docTypeId:1);
 		self.populateValues();
+	}
+	
+	this.applyMetadata=function(){		
+		//is "Apply To All" checked?
+		var el = jQuery('#ul_meta_actionbar_apply_to_all')[0];
+		kt.app.upload.applyMetadataToAll(el.checked, self.options.metadata);		
+		
+		//have all required metadata fields been completed?
+		var requiredDone = self.checkRequiredFieldsCompleted();
+		self.options.required_metadata_done = requiredDone;
+		
+		if(requiredDone) {
+			console.log('required metadata entered');
+			self.options.metaWindow.close();
+			self.setProgress('ready to be added','ready');
+			
+			//need to check whether required metadata for ALL files have been entered
+			//if so, enable the "Add Documents" button
+			var allRequiredMetadataDone = true;			
+			jQuery.each(self.options.parent.data.files, function(key, value) {
+				if(value.options.has_required_metadata) {
+					if(!value.options.required_metadata_done) {
+						allRequiredMetadataDone = false;
+						return false;
+					}
+				} else {
+					allRequiredMetadataDone = true;
+				}
+			});
+			
+			var btn = jQuery('#ul_actions_upload_btn');
+	    	
+			//enable/disable the "Add Documents" button as appropriate
+			if(allRequiredMetadataDone) {
+				//console.log('allRequiredMetadataDone');
+				btn.removeAttr("disabled");
+			} else {
+				//console.log('NOT allRequiredMetadataDone');
+				btn.attr("disabled", "true");
+			}
+			
+			
+		} else {
+			console.log('required metadata NOT entered');
+		}
 	}
 	
 	//populate the metadata fields that have been cached
@@ -408,6 +526,9 @@ kt.app.upload.uploadStructure=function(options){
 				var tag=(field.tagName+'').toLowerCase();
 				//console.log('tag '+tag);
 				switch(tag){
+				
+				//TODO: still need to implement for tree!
+				
 				//sometimes, esp where we have multiple html fields for one KTDMS field (eg ckeckboxes)
 				//we embed these in a span and then need to iterate through the spans children
 					case 'span':
@@ -452,7 +573,11 @@ kt.app.upload.uploadStructure=function(options){
 						//console.log('type '+type);
 						switch(type){							
 							case 'text':
-								field.value=self.options.metadata[idx];
+								field.value=self.options.metadata[idx];	//['value'];
+								/*if(self.options.metadata[idx]['required']==1) {
+									console.log('mandatory field');
+									jQuery(field).addClass('required');
+								}*/
 								break;
 							case 'checkbox':
 								for (var i = 0; i < self.options.metadata[idx].length; i++) {
@@ -469,6 +594,64 @@ kt.app.upload.uploadStructure=function(options){
 				}
 			}
 		}
+	}
+	
+	this.checkRequiredFieldsCompleted = function() {
+		console.log('checkRequiredFieldsCompleted');
+		
+		var requiredFieldsCompleted = true;
+		
+		if(jQuery('.ul_metadata').find('.required').length <= 0) {
+			requiredFieldsCompleted = true;
+		} else {
+			//console.log(jQuery('.ul_metadata').children().length);
+		
+			//console.log(jQuery('.ul_metadata').find('.required').length);
+			
+			jQuery('.ul_metadata').find('.required').each(function(index) {
+				var field = jQuery(this)[0];
+				var tag=(field.tagName+'').toLowerCase();
+				console.log('tag '+tag);
+				//TODO: need to do for all the diferent field types!
+				
+				switch(tag){
+					case 'input':
+						var type=field.type;
+						//console.log('type '+type);
+						switch(type){							
+							case 'text':
+								if (field.value.length == 0){
+									requiredFieldsCompleted = false;
+									return requiredFieldsCompleted;
+								}
+								break;
+						}
+						break;
+						
+					case 'select':
+						break;
+					case 'textarea':
+						
+						break;
+				}
+			});
+		}
+		
+		/*for(var idx in self.options.metadata){
+			//console.dir(self.options.metadata[idx]);
+			console.log('required '+self.options.metadata[idx]['required']);
+			if(self.options.metadata[idx]['required']==1) {
+				console.log('required field');
+				var field=jQuery('.ul_meta_field_'+idx,self.options.metaDataTable);
+				//console.dir(field);
+				if(field.length>0){
+					field=field[0];
+					file.attr('background-color', 'red');
+				}
+			}
+		}*/
+		
+		return requiredFieldsCompleted;
 	}
 	
 	this.changeDocType=function(docType){

@@ -9,11 +9,10 @@
 
 Ext.onReady(function(){
 
-    Ext.QuickTips.init();
-
     var htmlEd = new Ext.form.HtmlEditor({
         width: 290,
         height: 200, 
+        id: 'ul_meta_field_date_[id]',
         cls: 'ul_meta_fullField ul_meta_field_[id]',
         autoscroll: true,
         enableLinks: false,
@@ -30,6 +29,10 @@ Ext.onReady(function(){
     });
 
     htmlEd.render('ul_meta_field_htmlEditor_[id]');
+
+    if([is_mandatory] == '1') {
+		jQuery('#ul_meta_field_[id]').addClass('required');
+	}
     
 });
 
