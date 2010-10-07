@@ -212,6 +212,24 @@ kt.app.upload=new function(){
 	   
 	}
 	
+	this.addDocuments = function() {
+		console.log('about to add documents');
+		
+		//create array of files to add
+		
+		filesToAdd = {};
+		var i = 0;
+		//iterate through files to see which are ready to be added
+		jQuery.each(self.data.files, function(key, value) {
+			
+			if(value.options.is_uploaded) {
+				filesToAdd[i++] = value;
+			}
+		});
+		
+		console.dir(filesToAdd);
+	}
+	
 	this.closeWindow = function() {
 		uploadWindow = Ext.getCmp('extuploadwindow');
 		uploadWindow.destroy();
@@ -580,6 +598,7 @@ kt.app.upload.uploadStructure=function(options){
 								}*/
 								break;
 							case 'checkbox':
+								//TODO: is this ever used???
 								for (var i = 0; i < self.options.metadata[idx].length; i++) {
 									if (field.name == self.options.metadata[idx][i]) {
 										field.checked = true;
@@ -612,7 +631,7 @@ kt.app.upload.uploadStructure=function(options){
 				var field = jQuery(this)[0];
 				var tag=(field.tagName+'').toLowerCase();
 				console.log('tag '+tag);
-				//TODO: need to do for all the diferent field types!
+				//TODO: need to do for all the diferent field types, incl tree!!
 				
 				switch(tag){
 					case 'input':
@@ -622,16 +641,63 @@ kt.app.upload.uploadStructure=function(options){
 							case 'text':
 								if (field.value.length == 0){
 									requiredFieldsCompleted = false;
-									return requiredFieldsCompleted;
+									//return requiredFieldsCompleted;
 								}
 								break;
 						}
 						break;
 						
 					case 'select':
+						/*for (var i = 0; i < field.options.length; i++) {
+							if(field.options[i].selected) {
+								console.log('select SELECTED '+i);
+							}
+						}
+						console.log('select '+field.selectedIndex);*/
+						
+						//are we dealing with a multi-select array?
+						if(jQuery(field).attr('multiple')) {
+							if(field.selectedIndex < 0 ){
+								requiredFieldsCompleted = false;
+							}
+						} else {
+							if(field.selectedIndex <= 0 ){
+								requiredFieldsCompleted = false;
+							}
+						}
+						break;
+					case 'span':
+						//console.log('span');
+						var children = jQuery(field).children();
+						//console.log('children '+children.length);
+						
+						var childChecked = false;
+						
+						for (var c = 0; c < children.length; c++) {
+							//console.log('child '+c);
+							var child = children[c];
+							var type = (child.type+'').toLowerCase();
+							//console.log(type);
+							switch(type){
+								case 'checkbox':
+									//console.log('child.name '+child.name+' '+child.checked);
+									if(child.checked) {
+										childChecked = true;
+									}
+									break;
+							}
+						}
+						
+						requiredFieldsCompleted = childChecked;
+						
 						break;
 					case 'textarea':
-						
+						console.log('textarea :'+field.value+': '+field.value.length);
+						//TODO: if you click in an HTML field, without entering anything, it comes through as length = 1!
+						if (field.value == ''){ //field.value.length == 0 || 
+							requiredFieldsCompleted = false;
+							//return requiredFieldsCompleted;
+						}
 						break;
 				}
 			});
