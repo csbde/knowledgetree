@@ -2,13 +2,21 @@ kt.api=new function(){
 	this.cacheTimeout=20;
 	this.persistentDataCacheTimeout=30000;
 	
+	this.addDocuments = function(documents){
+		var params = {};
+		
+		var synchronous=false;
+		var func='siteapi.docTypeRequiredFields';
+		var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout);
+		return data.data;
+	}
 	
 	this.docTypeRequiredFields=function(docTypeId){
 		var params={};
 		params.type=docTypeId;
 		var synchronous=false;
 		var func='siteapi.docTypeRequiredFields';
-		var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout)
+		var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout);
 		return data.data;
 		
 	}
@@ -18,7 +26,7 @@ kt.api=new function(){
 		params.type=docTypeId;
 		var synchronous=false;
 		var func='siteapi.docTypeFields';
-		var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout)
+		var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout);
 		return data.data;
 		
 	}
@@ -29,7 +37,7 @@ kt.api=new function(){
 		var func='siteapi.docTypeHasRequiredFields';
 		params.docType=docType;
 		if(callback===true){
-			var data=ktjapi.retrieve(func,params,this.cacheTimeout)
+			var data=ktjapi.retrieve(func,params,this.cacheTimeout);
 			return data;
 		}else{
 			ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.cacheTimeout);
@@ -48,7 +56,7 @@ kt.api=new function(){
 		params.docType=docType;
 		
 		if(callback===true){
-			var data=ktjapi.retrieve(func,params,this.cacheTimeout)
+			var data=ktjapi.retrieve(func,params,this.cacheTimeout);
 			return data;
 		}else{
 			ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.cacheTimeout);
@@ -63,7 +71,7 @@ kt.api=new function(){
 		params.folderId=folderId;
 		
 		if(callback===true){
-			var data=ktjapi.retrieve(func,params,this.cacheTimeout)
+			var data=ktjapi.retrieve(func,params,this.cacheTimeout);
 			return data;
 		}else{
 			ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.cacheTimeout);
@@ -78,7 +86,7 @@ kt.api=new function(){
 		params.folderId=folderId;
 		
 		if(callback===true){
-			var data=ktjapi.retrieve(func,params,this.cacheTimeout)
+			var data=ktjapi.retrieve(func,params,this.cacheTimeout);
 			return data;
 		}else{
 			ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.cacheTimeout);

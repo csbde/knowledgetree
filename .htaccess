@@ -123,6 +123,11 @@ RewriteEngine on
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /
+#SSO authentication from OneLogin
+RewriteCond %{HTTP_REFERER} onelogin\.com
+RewriteCond %{REQUEST_URI} !\.php
+RewriteRule . /auth.php [L]
+# - #
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /redirect.php [L]
