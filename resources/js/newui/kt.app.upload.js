@@ -45,6 +45,7 @@ kt.app.upload=new function(){
 	//Add a file item to the list of files to upload and manage. 
 	//Must not be called directly, but as a result of adding a file using AjaxUploader)
 	this.addUpload=function(fileName,container,docTypeHasRequiredFields){
+		//console.log('addUpload');
 		//console.log('addUpload docTypeHasRequiredFields '+docTypeHasRequiredFields);
 		var item=jQuery(kt.api.getFragment('upload.dialog.item'));
 		jQuery(self.elems.item_container).append(item);
@@ -77,18 +78,23 @@ kt.app.upload=new function(){
 		return meta;
 	}
 	
+	//metadata is object in format {"docTypeID":docTypeID, "metadata":metadata}
 	this.applyMetadataToAll=function(isChecked, metadata) {
-		//console.log('ApplyToAll '+isChecked);
+		
 		if(isChecked) {
-			//console.log('ApplyToAll setting');
-			self.data['applyMetaDataToAll']=true;
-			self.data['globalMetaData']=metadata;
+		
+			self.data['applyMetaDataToAll'] = true;
+			self.data['globalMetaData'] = metadata;
 		} else {
 			//console.log('ApplyToAll UNsetting');
-			self.data['applyMetaDataToAll']=false;
-			self.data['globalMetaData']=null;
+			self.data['applyMetaDataToAll'] = false;
+			self.data['globalMetaData'] = null;
 		}
-		//console.dir(self.data);
+		
+		//cycle through every file and apply the metadata!
+		jQuery.each(self.data.files, function(key, value) {			
+			value.options.metadata = metadata['metadata'];
+		});
 	}
 	
 	//Find the js object matching a given filename
@@ -212,9 +218,7 @@ kt.app.upload=new function(){
 	   
 	}
 	
-	this.addDocuments = function() {
-		console.log('about to add documents');
-		
+	this.addDocuments = function() {		
 		//create array of files to add
 		
 		filesToAdd = {};
@@ -227,7 +231,23 @@ kt.app.upload=new function(){
 			}
 		});
 		
-		console.dir(filesToAdd);
+		//console.dir(filesToAdd);
+				
+		var fileName = filesToAdd[0].options['fileName'];
+		var folderID = 1;
+		var docTypeID = filesToAdd[0].options['docTypeId'];
+		var metadata = filesToAdd[0].options['metadata'];
+		var tempFile = self.data['s3TempPath']+fileName
+		
+		//console.log('fileName '+fileName+' '+'tempFile '+tempFile);
+		//uploadFile($fileTmp, $fileName, $folderID = 1, $documentTypeID = 1, $metadata = NULL)
+		
+		var uploadMe = {'fileName':fileName, 'folderID':1, 'docTypeID':docTypeID, 'metadata':metadata, 's3TempFile':tempFile};
+		
+		kt.api.addDocuments(uploadMe, function(data){
+			
+	
+		});
 	}
 	
 	this.closeWindow = function() {
@@ -284,7 +304,9 @@ kt.app.upload=new function(){
 	    		    }
 	    			self.addUpload(fileName,self.elems.qq, docTypeHasRequiredFields);
 	    		},
-	    		onComplete: function(id,fileName,responseJSON){self.findItem(fileName).completeUpload();},
+	    		onComplete: function(id,fileName,responseJSON){
+	    			self.findItem(fileName).completeUpload();
+	    		},
 	    		showMessage: function(message){alert(message);}
 	    	});
 			
@@ -340,6 +362,8 @@ kt.app.upload=new function(){
 					success_action_redirect : result.data.amazoncreds.success_action_redirect
 				});
 				
+				//get the S3 temp location where all the uploads will be stored
+				self.data['s3TempPath'] = result.data.amazoncreds.awstmppath;
 				
 				self.uploader._options.action = result.data.amazoncreds.formAction; //doesnt work
 				self.uploader._handler._options.action = result.data.amazoncreds.formAction; //works
@@ -398,7 +422,7 @@ kt.app.upload.uploadStructure=function(options){
 		has_required_metadata		:false,
 		required_metadata_done		:false,
 		elem						:null,
-		docTypeId					:null,
+		docTypeId					:1,
 		docTypeFieldData			:null,
 		metadata					:{},
 		parent						:null
@@ -417,7 +441,7 @@ kt.app.upload.uploadStructure=function(options){
 	}
 	
 	this.setProgress=function(text,state){
-		console.log('setProgress '+text+' '+state);
+		//console.log('setProgress '+text+' '+state);
 		var state=kt.lib.Object.enum(state,'uploading,waiting,ui_meta,add_doc,done','waiting');
 		
 		var e=jQuery('.ul_progress',self.options.elem);
@@ -431,7 +455,7 @@ kt.app.upload.uploadStructure=function(options){
 	}
 	
 	this.completeUpload=function(){
-		console.log('completeUpload has '+self.options.has_required_metadata+' done '+self.options.required_metadata_done);
+		//console.log('completeUpload has '+self.options.has_required_metadata+' done '+self.options.required_metadata_done);
 		//has all the required metadata for the doc been entered?
 		if(self.options.has_required_metadata && !self.options.required_metadata_done){
 			self.setProgress('enter metadata','ui_meta');
@@ -447,7 +471,7 @@ kt.app.upload.uploadStructure=function(options){
 	}
 	
 	this.setMetaData=function(key,value){
-		console.log('setMetaData '+key);
+		//console.log('setMetaData '+key);
 		self.options.metadata[key]=value;
 	};
 	
@@ -474,31 +498,35 @@ kt.app.upload.uploadStructure=function(options){
 		
 		//console.log('global metadata '+self.options.parent.data['applyMetaDataToAll']+' '+self.options.parent.data['globalMetaData']);
 				
-		//do we need to Apply To All?
-		if (self.options.parent.data['applyMetaDataToAll'] && self.options.parent.data['globalMetaData'] != undefined) {
-			self.options.metadata = self.options.parent.data['globalMetaData'];
-			var el = jQuery('#ul_meta_actionbar_apply_to_all')[0];
-			el.checked = true;
-		}
+		
 		
 		var e=jQuery('.metadataTable')[0];
 		self.options.metaDataTable=e;
 		kt.lib.meta.set(e,'item',self);
+		//do we need to Apply To All?
+		if (self.options.parent.data['applyMetaDataToAll'] && self.options.parent.data['globalMetaData'] != undefined) {
+			self.options.metadata = self.options.parent.data['globalMetaData']['metadata'];
+			self.options.docTypeId = self.options.parent.data['globalMetaData']['docTypeID'] 
+			var el = jQuery('#ul_meta_actionbar_apply_to_all')[0];
+			el.checked = true;			
+		}
+		
 		self.changeDocType(self.options.docTypeId?self.options.docTypeId:1);
+		
 		self.populateValues();
 	}
 	
 	this.applyMetadata=function(){		
 		//is "Apply To All" checked?
 		var el = jQuery('#ul_meta_actionbar_apply_to_all')[0];
-		kt.app.upload.applyMetadataToAll(el.checked, self.options.metadata);		
+		kt.app.upload.applyMetadataToAll(el.checked, {'docTypeID':self.options.docTypeId, 'metadata':self.options.metadata});		
 		
 		//have all required metadata fields been completed?
 		var requiredDone = self.checkRequiredFieldsCompleted();
 		self.options.required_metadata_done = requiredDone;
 		
 		if(requiredDone) {
-			console.log('required metadata entered');
+			//console.log('required metadata entered');
 			self.options.metaWindow.close();
 			self.setProgress('ready to be added','ready');
 			
@@ -529,9 +557,12 @@ kt.app.upload.uploadStructure=function(options){
 			
 			
 		} else {
-			console.log('required metadata NOT entered');
+			//console.log('required metadata NOT entered');
 		}
 	}
+	
+	//TODO: enforce length limit for large text fields!
+	//TODO: in Tree, if there is no field/string value in root, then error
 	
 	//populate the metadata fields that have been cached
 	this.populateValues=function(){
@@ -616,7 +647,7 @@ kt.app.upload.uploadStructure=function(options){
 	}
 	
 	this.checkRequiredFieldsCompleted = function() {
-		console.log('checkRequiredFieldsCompleted');
+		//console.log('checkRequiredFieldsCompleted');
 		
 		var requiredFieldsCompleted = true;
 		
@@ -692,7 +723,7 @@ kt.app.upload.uploadStructure=function(options){
 						
 						break;
 					case 'textarea':
-						console.log('textarea :'+field.value+': '+field.value.length);
+						//console.log('textarea :'+field.value+': '+field.value.length);
 						//TODO: if you click in an HTML field, without entering anything, it comes through as length = 1!
 						if (field.value == ''){ //field.value.length == 0 || 
 							requiredFieldsCompleted = false;

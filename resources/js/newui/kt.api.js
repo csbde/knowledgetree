@@ -5,8 +5,10 @@ kt.api=new function(){
 	this.addDocuments = function(documents){
 		var params = {};
 		
+		params.documents = documents;
+		
 		var synchronous=false;
-		var func='siteapi.docTypeRequiredFields';
+		var func='siteapi.uploadFile';
 		var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout);
 		return data.data;
 	}

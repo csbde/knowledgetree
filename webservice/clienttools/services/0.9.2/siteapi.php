@@ -1,5 +1,83 @@
 <?php
 class siteapi extends client_service{
+	
+	function uploadFile($params) {
+		//$fileTmp, $fileName, $folderID = 1, $documentTypeID = 1, $metadata = NULL) {
+		//$GLOBALS['default']->log->debug("DRAGDROP Uploading file $fileTmp $fileName");
+
+		$document = $params['documents'];
+		
+		file_put_contents('uploadFile.txt', "\n\r".print_r($document, true), FILE_APPEND);
+		
+    	$oStorage = KTStorageManagerUtil::getSingleton();
+    	
+    	$folderID = $document['folderID'];
+    	
+    	$documentTypeID = $document['docTypeID'];
+    	
+    	$fileName = $document['fileName'];
+    	
+    	$sS3TempFile  = $document['s3TempFile'];
+    	
+    	$metadata = $document['metadata'];
+    	
+    	$aString = "\n\rfolderID: $folderID documentTypeID: $documentTypeID fileName: $fileName S3TempFile: $S3TempFile";
+    	
+    	file_put_contents('uploadFile.txt', $aString, FILE_APPEND);
+
+    	//$oKTConfig =& KTConfig::getSingleton();
+       	//$sBasedir = $oKTConfig->get("urls/tmpDirectory");
+
+        //$sS3TempFile = $oStorage->tempnam($sBasedir, 'kt_storecontents');
+
+        $options['uploaded_file'] = 'true';
+
+        //$oStorage->uploadTmpFile($fileTmp, $sS3TempFile, $options);
+
+        $oFolder = Folder::get($folderID);
+        if (PEAR::isError($oFolder)) {
+        	file_put_contents('uploadFile.txt', "\n\rFolder $folderID: {$oFolder->getMessage()}", FILE_APPEND);
+       		//return false;
+        }
+
+        //TODO!!
+        $oUser = User::get($_SESSION['userID']);
+        if (PEAR::isError($oUser)) {
+        	file_put_contents('uploadFile.txt', "\n\rUser {$_SESSION['userID']}: {$oUser->getMessage()}", FILE_APPEND);
+       		//return false;
+        }
+
+        $oDocumentType = DocumentType::get($documentTypeID);
+        if (PEAR::isError($oDocumentType)) {
+        	file_put_contents('uploadFile.txt', "\n\rDocumentType: {$oDocumentType->getMessage()}", FILE_APPEND);
+       		//return false;
+        }
+
+        //remove extension to generate title
+        $aFilename = explode('.', $fileName);
+        $cnt = count($aFilename);
+        $sExtension = $aFilename[$cnt - 1];
+        $title = preg_replace("/\.$sExtension/", '', $fileName);
+
+        $aOptions = array(
+            'temp_file' => $sS3TempFile,
+            'documenttype' => $oDocumentType,
+            'metadata' => $metadata,
+            'description' => $title,
+            'cleanup_initial_file' => true
+        );
+
+        //$GLOBALS['default']->log->debug("DRAGDROP Folder $folderID User {$oUser->getID()}");
+
+        $oDocument =& KTDocumentUtil::add($oFolder, $fileName, $oUser, $aOptions);
+        if (PEAR::isError($oDocument)) {
+        	file_put_contents('uploadFile.txt', "\n\rDocument add: {$oDocument->getMessage()}", FILE_APPEND);
+       		//return false;
+        }
+
+        //return $oDocument;
+	}
+	
 	/**
 	 * Check whether the specified document type has required fields
 	 * @param $params
@@ -288,8 +366,8 @@ class siteapi extends client_service{
 		
 		
 		/* OVERRIDE FOR TESTING */
-		$bucket = 'testa';
-		$aws_tmp_path = '';
+		//$bucket = 'testa';
+		//$aws_tmp_path = '';
 		
 		
 		
@@ -310,7 +388,7 @@ class siteapi extends client_service{
 		
 		return array(
 			'formAction' => $aws_form_action,
-			'awstmppath'				=>	$aws_tmp_path,
+			'awstmppath'				=> $aws_tmp_path,
 			'randomfile'				=> $randomfile,
 			
 			'AWSAccessKeyId' 			=> $s3policy->getAwsAccessKeyId(),
