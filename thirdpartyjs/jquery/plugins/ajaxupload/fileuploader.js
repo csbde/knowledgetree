@@ -1043,7 +1043,7 @@ qq.extend(qq.UploadHandlerForm.prototype, {
             }
 
             // fixing Opera 10.53
-            if (iframe.contentDocument &&
+            /*if (iframe.contentDocument &&
                 iframe.contentDocument.body &&
                 iframe.contentDocument.body.innerHTML == "false"){
                 // In Opera event is fired second time
@@ -1051,7 +1051,7 @@ qq.extend(qq.UploadHandlerForm.prototype, {
                 // to server response approx. after 1 sec
                 // when we upload file with iframe
                 return;
-            }
+            }*/
 
             callback();
         });

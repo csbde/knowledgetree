@@ -242,7 +242,7 @@ kt.app.upload=new function(){
 		//console.log('fileName '+fileName+' '+'tempFile '+tempFile);
 		//uploadFile($fileTmp, $fileName, $folderID = 1, $documentTypeID = 1, $metadata = NULL)
 		
-		var uploadMe = {'fileName':fileName, 'folderID':1, 'docTypeID':docTypeID, 'metadata':metadata, 's3TempFile':tempFile};
+		var uploadMe = {'fileName':fileName, 'folderID':folderID, 'docTypeID':docTypeID, 'metadata':metadata, 's3TempFile':tempFile};
 		
 		kt.api.addDocuments(uploadMe, function(data){
 			

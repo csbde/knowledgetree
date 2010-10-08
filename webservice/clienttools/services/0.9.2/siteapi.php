@@ -19,14 +19,14 @@ class siteapi extends client_service{
     	
     	$sS3TempFile  = $document['s3TempFile'];
     	
-    	$metadata = $document['metadata'];
-    	
-    	$aString = "\n\rfolderID: $folderID documentTypeID: $documentTypeID fileName: $fileName S3TempFile: $S3TempFile";
-    	
-    	file_put_contents('uploadFile.txt', $aString, FILE_APPEND);
+    	$metadata = $document['metadata'];    	
 
     	//$oKTConfig =& KTConfig::getSingleton();
        	//$sBasedir = $oKTConfig->get("urls/tmpDirectory");
+       	
+       	$aString = "\n\rfolderID: $folderID documentTypeID: $documentTypeID fileName: $fileName S3TempFile: $S3TempFile";
+    	
+    	file_put_contents('uploadFile.txt', $aString, FILE_APPEND);
 
         //$sS3TempFile = $oStorage->tempnam($sBasedir, 'kt_storecontents');
 
@@ -367,7 +367,7 @@ class siteapi extends client_service{
 		
 		/* OVERRIDE FOR TESTING */
 		//$bucket = 'testa';
-		//$aws_tmp_path = '';
+		//$aws_tmp_path = 'martin/';
 		
 		
 		
