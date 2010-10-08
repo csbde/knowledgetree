@@ -41,6 +41,15 @@ jQuery(document).ready(function() {
 		
 		$('td.info a').prepend('<img class="leftimg" src="resources/graphics/newui/midbarleft.png" />');
 		$('td.info a').prepend('<img class="rightimg" src="resources/graphics/newui/midbarright.png" />');
+		
+		$('a.arrow_upload').attr('href', 'javascript:kt.app.upload.showUploadWindow();');
+//		
+//		$.ajax({
+//			url: '/upload.html',
+//			success: function(data) {
+//			  $('body').append(data);
+//			}
+//		});
 	});
 })(jQuery);
 

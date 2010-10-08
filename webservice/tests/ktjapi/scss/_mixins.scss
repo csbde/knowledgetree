@@ -1,20 +1,27 @@
-@mixin corners($size){
-	-webkit-border-radius: $size;
-	-moz-border-radius: $size;
-	border-radius: $size;
+@mixin corners($tl:false,$tr:false,$br:false,$bl:false){
+	@if $tl==false{$tl:5px}
+	@if $tr==false{$tr:$tl}
+	@if $br==false{$br:$tl}
+	@if $bl==false{$bl:$br}
+
+	border-top-left-radius: $tl;
+	border-top-right-radius: $tr;
+	border-bottom-right-radius: $br;
+	border-bottom-left-radius: $bl;
+
+	-moz-border-radius-topleft: $tl;
+	-moz-border-radius-topright: $tr;
+	-moz-border-radius-bottomright: $br;
+	-moz-border-radius-bottomleft: $bl;
 }
 
-@mixin shaddow($size,$color:none){
+@mixin shadow($size,$color:none,$offsetX:0pX,$offsetY:0px){
 	@if $color==none{
 		$color:#CCCCCC;
 	}
-	-webkit-box-shadow: 0px 0px $size $color ;
-	-moz-box-shadow: 0px 0px $size $color; 
-	box-shadow: 0px 0px $size $color; 
-}
-
-@mixin shadow($size,$color:none){
-	@include shaddow($size,$color);
+	-webkit-box-shadow: $offsetX $offsetY $size $color ;
+	-moz-box-shadow: $offsetX $offsetY $size $color; 
+	box-shadow: $offsetX $offsetY $size $color; 
 }
 
 @mixin hoverIcon($width,$height,$standardIcon,$hoverIcon){
@@ -36,7 +43,7 @@
 	@if $bottomColor==none{
 		$bottomColor:darken($topColor,10%);
 	}
-	
+	background-color: $topColor;
 	background:-webkit-gradient(linear,left bottom,left top,color-stop(0, $topColor),color-stop(1, $bottomColor));
 	background:-moz-linear-gradient(center bottom,$topColor 0%,$bottomColor 100%);
 }

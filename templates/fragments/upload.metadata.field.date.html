@@ -1,0 +1,46 @@
+<span class="ul_meta_row">
+	<span class="ul_meta_label">[name] [is_mandatory]
+		<span class="ul_meta_label_descr">[description]</span>
+	</span>
+	<span id="span_ul_meta_field_date_[id]" class="ul_meta_field"></span>
+</span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+    var df = new Ext.form.DateField({
+    	format: 'Y-m-d',
+        width: 200,
+        id: 'ul_meta_field_date_[id]',
+        cls: 'ul_meta_fullField ul_meta_field_[id] date',
+        listeners: {
+            'change': function(dateField, date){
+        		try {
+			    	var month = parseInt(date.getMonth()) + 1;
+			    	if (month < 10) {
+			    		month = '0'+month;
+			    	}
+			    	var day = date.getDate();
+			    	if (day < 10) {
+			    		day = '0'+day;
+			    	}
+			    	var myDate = date.getFullYear() + '-' + month + '-' + day;
+			    	kt.app.upload.getMetaItem(jQuery('#ul_meta_field_date_[id]')).setMetaData('[id]', myDate);
+        		} catch (err) {
+            		console.log('error in date');
+        			kt.app.upload.getMetaItem(jQuery('#ul_meta_field_date_[id]')).setMetaData('[id]', '');
+                }
+			}
+    	}
+   	});
+
+    df.render('span_ul_meta_field_date_[id]');
+
+    if([is_mandatory] == '1') {
+		console.log('mandatory field');
+		jQuery('#ul_meta_field_date_[id]').addClass('required');
+	}
+});
+
+</script>

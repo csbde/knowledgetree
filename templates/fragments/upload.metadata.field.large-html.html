@@ -1,0 +1,39 @@
+<span class="ul_meta_row">
+	<span class="ul_meta_label">[name] [is_mandatory]
+		<span class="ul_meta_label_descr">[description]</span>
+	</span>
+	<span id="ul_meta_field_htmlEditor_[id]"  class="ul_meta_field"></span>
+</span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+    var htmlEd = new Ext.form.HtmlEditor({
+        width: 290,
+        height: 200, 
+        id: 'ul_meta_field_[id]',
+        cls: 'ul_meta_fullField ul_meta_field_[id]',
+        autoscroll: true,
+        enableLinks: false,
+        enableFont: false,
+		enableColors: false,
+		enableAlignments: false,
+		enableSourceEdit: false,
+		listeners: {
+            'sync': function(editor, text){
+		    	//console.log(text);
+		    	kt.app.upload.getMetaItem(jQuery('#ul_meta_field_htmlEditor_[id]')).setMetaData('[id]', text);
+			}
+    	}
+    });
+
+    htmlEd.render('ul_meta_field_htmlEditor_[id]');
+
+    if([is_mandatory] == '1') {
+		jQuery('#ul_meta_field_[id]').addClass('required');
+	}
+    
+});
+
+</script>

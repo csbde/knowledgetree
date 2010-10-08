@@ -45,8 +45,8 @@ class kt extends client_service {
 
 		$folder = &$kt->get_folder_by_id ( $params ['folderId'] );
 		if (PEAR::isError ( $folder )) {
-			$this->setError ( "Could not get folder by Id:  {$params['folderId']}" );
-			$this->setDebug ( 'FolderError', array ('kt' => $kt, 'folder' => $folder ) );
+			$this->addError ( "Could not get folder by Id:  {$params['folderId']}" );
+			$this->addDebug ( 'FolderError', array ('kt' => $kt, 'folder' => $folder ) );
 			return false;
 		}
 
@@ -1567,8 +1567,8 @@ Fatal error:  Cannot unset string offsets in on line 981
 
 		$folderObj = &$kt->get_folder_by_id ( $arr ['folderId'] );
 		if (PEAR::isError ( $folderObj )) {
-			$this->setError ( "Could not get folder by Id:  {$arr['folderId']}" );
-			$this->setDebug ( 'FolderError', array ('kt' => $kt, 'folder' => $folderObj ) );
+			$this->addError ( "Could not get folder by Id:  {$arr['folderId']}" );
+			$this->addDebug ( 'FolderError', array ('kt' => $kt, 'folder' => $folderObj ) );
 			return false;
 		}
 
