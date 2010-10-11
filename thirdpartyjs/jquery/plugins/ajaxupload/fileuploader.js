@@ -1043,6 +1043,7 @@ qq.extend(qq.UploadHandlerForm.prototype, {
             }
 
             // fixing Opera 10.53
+            //MK: removed because causing cross-site scripting errors!
             /*if (iframe.contentDocument &&
                 iframe.contentDocument.body &&
                 iframe.contentDocument.body.innerHTML == "false"){

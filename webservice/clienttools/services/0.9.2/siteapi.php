@@ -2,80 +2,114 @@
 class siteapi extends client_service{
 	
 	function uploadFile($params) {
-		//$fileTmp, $fileName, $folderID = 1, $documentTypeID = 1, $metadata = NULL) {
-		//$GLOBALS['default']->log->debug("DRAGDROP Uploading file $fileTmp $fileName");
-
-		$document = $params['documents'];
+		$documents = $params['documents'];
 		
-		file_put_contents('uploadFile.txt', "\n\r".print_r($document, true), FILE_APPEND);
+		//file_put_contents('uploadFile.txt', "\n\r".print_r($documents, true), FILE_APPEND);
+				
+		$index = 0;
+		$retDocuments = array();
 		
-    	$oStorage = KTStorageManagerUtil::getSingleton();
-    	
-    	$folderID = $document['folderID'];
-    	
-    	$documentTypeID = $document['docTypeID'];
-    	
-    	$fileName = $document['fileName'];
-    	
-    	$sS3TempFile  = $document['s3TempFile'];
-    	
-    	$metadata = $document['metadata'];    	
+		foreach($documents as $document){
+		
+			//file_put_contents('uploadFile.txt', "\n\r".print_r($document, true), FILE_APPEND);
+			
+	    	$oStorage = KTStorageManagerUtil::getSingleton();
+	    	
+	    	$folderID = $document['folderID'];
+	    	
+	    	$documentTypeID = $document['docTypeID'];
+	    	
+	    	$fileName = $document['fileName'];
+	    	
+	    	$sS3TempFile  = $document['s3TempFile'];
+	    	
+	    	$metadata = $document['metadata']; 
+	       	
+	       	$aString = "\n\rfolderID: $folderID documentTypeID: $documentTypeID fileName: $fileName S3TempFile: $S3TempFile";
+	    	
+	    	//file_put_contents('uploadFile.txt', $aString, FILE_APPEND);
+	
+	        $options['uploaded_file'] = 'true';
+	
+	        $oFolder = Folder::get($folderID);
+//	        if (PEAR::isError($oFolder)) {
+//	        	file_put_contents('uploadFile.txt', "\n\rFolder $folderID: {$oFolder->getMessage()}", FILE_APPEND);
+//	       		//return false;
+//	        }
+	
+	        $oUser = User::get($_SESSION['userID']);
+//	        if (PEAR::isError($oUser)) {
+//	        	file_put_contents('uploadFile.txt', "\n\rUser {$_SESSION['userID']}: {$oUser->getMessage()}", FILE_APPEND);
+//	       		//return false;
+//	        }
+	
+	        $oDocumentType = DocumentType::get($documentTypeID);
+//	        if (PEAR::isError($oDocumentType)) {
+//	        	file_put_contents('uploadFile.txt', "\n\rDocumentType: {$oDocumentType->getMessage()}", FILE_APPEND);
+//	       		//return false;
+//	        }
+	
+	        //remove extension to generate title
+	        $aFilename = explode('.', $fileName);
+	        $cnt = count($aFilename);
+	        $sExtension = $aFilename[$cnt - 1];
+	        $title = preg_replace("/\.$sExtension/", '', $fileName);
+	
+	        $aOptions = array(
+	            'temp_file' => $sS3TempFile,
+	            'documenttype' => $oDocumentType,
+	            'metadata' => $metadata,
+	            'description' => $title,
+	            'cleanup_initial_file' => true
+	        );
+	
+	        $oDocument =& KTDocumentUtil::add($oFolder, $fileName, $oUser, $aOptions);
+//	        if (PEAR::isError($oDocument)) {
+//	        	file_put_contents('uploadFile.txt', "\n\rDocument add: {$oDocument->getMessage()}", FILE_APPEND);
+//	       		//return false;
+//	        }
+        
+        	//assemble the file's name
+//			$fileNameCutoff = 100;
+//			$fileName = $oDocument->getFileName();
+//			$fileName = (strlen($fileName)>$fileNameCutoff) ? substr($fileName, 0, $fileNameCutoff-3)."..." : $fileName;
+		
+			//get the icon path
+			$mimetypeid = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId():'0';
+			$iconFile = 'resources/mimetypes/newui/'.KTMime::getIconPath($mimetypeid).'.png';
+			$iconExists = file_exists(KT_DIR.'/'.$iconFile);
+			if($iconExists){
+				$mimeIcon = str_replace('\\','/',$GLOBALS['default']->rootUrl.'/'.$iconFile);
+				$mimeIcon = "background-image: url(".$mimeIcon.")";
+			}else{
+				$mimeIcon = '';
+			}
+		
+			$oOwner = User::get($oDocument->getOwnerID());
+			$oCreator = User::get($oDocument->getCreatorID());
+			$oModifier = User::get($oDocument->getModifiedUserId());
+		
+			//assemble the item
+			$item['id'] = $oDocument->getId();
+			$item['owned_by'] = $oOwner->getName();
+			$item['created_by'] = $oCreator->getName();
+			$item['modified_by'] = $oModifier->getName();
+			$item['filename'] = $fileName;
+			$item['title'] = $oDocument->getName();
+			$item['mimeicon'] = $mimeIcon;
+			$item['created_date'] = $oDocument->getCreatedDateTime();
+			$item['modified_date'] = $oDocument->getLastModifiedDate();
+		
+			//$json['success'] = $item;
+			
+			$retDocuments[] = json_encode($item);
+		}
 
-    	//$oKTConfig =& KTConfig::getSingleton();
-       	//$sBasedir = $oKTConfig->get("urls/tmpDirectory");
-       	
-       	$aString = "\n\rfolderID: $folderID documentTypeID: $documentTypeID fileName: $fileName S3TempFile: $S3TempFile";
-    	
-    	file_put_contents('uploadFile.txt', $aString, FILE_APPEND);
-
-        //$sS3TempFile = $oStorage->tempnam($sBasedir, 'kt_storecontents');
-
-        $options['uploaded_file'] = 'true';
-
-        //$oStorage->uploadTmpFile($fileTmp, $sS3TempFile, $options);
-
-        $oFolder = Folder::get($folderID);
-        if (PEAR::isError($oFolder)) {
-        	file_put_contents('uploadFile.txt', "\n\rFolder $folderID: {$oFolder->getMessage()}", FILE_APPEND);
-       		//return false;
-        }
-
-        //TODO!!
-        $oUser = User::get($_SESSION['userID']);
-        if (PEAR::isError($oUser)) {
-        	file_put_contents('uploadFile.txt', "\n\rUser {$_SESSION['userID']}: {$oUser->getMessage()}", FILE_APPEND);
-       		//return false;
-        }
-
-        $oDocumentType = DocumentType::get($documentTypeID);
-        if (PEAR::isError($oDocumentType)) {
-        	file_put_contents('uploadFile.txt', "\n\rDocumentType: {$oDocumentType->getMessage()}", FILE_APPEND);
-       		//return false;
-        }
-
-        //remove extension to generate title
-        $aFilename = explode('.', $fileName);
-        $cnt = count($aFilename);
-        $sExtension = $aFilename[$cnt - 1];
-        $title = preg_replace("/\.$sExtension/", '', $fileName);
-
-        $aOptions = array(
-            'temp_file' => $sS3TempFile,
-            'documenttype' => $oDocumentType,
-            'metadata' => $metadata,
-            'description' => $title,
-            'cleanup_initial_file' => true
-        );
-
-        //$GLOBALS['default']->log->debug("DRAGDROP Folder $folderID User {$oUser->getID()}");
-
-        $oDocument =& KTDocumentUtil::add($oFolder, $fileName, $oUser, $aOptions);
-        if (PEAR::isError($oDocument)) {
-        	file_put_contents('uploadFile.txt', "\n\rDocument add: {$oDocument->getMessage()}", FILE_APPEND);
-       		//return false;
-        }
-
-        //return $oDocument;
+        //file_put_contents('uploadFile.txt', "\n\r".print_r($retDocuments, true), FILE_APPEND);
+	
+		//echo(json_encode($json));
+		
+		$this->addResponse('addedDocuments', $retDocuments);
 	}
 	
 	/**
