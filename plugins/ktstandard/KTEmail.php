@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -196,7 +196,7 @@ function sendExternalEmails($aEmailAddresses, $iDocumentID, $sDocumentName, $sCo
 //            $link = "<a href=\"{$link}\">{$link}</a>";
             $links = '&#160;&#160;&#160;&#160;<a href="http://www.knowledgetree.com/products">'._kt('Learn More').'</a>';
             $links.= "&#160;|&#160;<a href=\"{$link}\">"._kt('View Document')."</a>";
-            $links .= '&#160;|&#160;<a href="http://www.knowledgetree.com/node/39">'._kt('Download Free Trial').'</a><br /><br />';
+            $links .= '&#160;|&#160;<a href="https://www.knowledgetree.com/free-trial">'._kt('Sign Up for a Free Trial').'</a><br /><br />';
 
 //            $sMsg = $sMessage.$link.$sMsgEnd;
             $sMsg = $sMessage.$links;
@@ -398,7 +398,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
         $bOnlyOwnGroup = $oConfig->get('email/onlyOwnGroups', false);
 
 		$fields = array();
-		
+
 		// Picker to select recipients from system groups
     	$fields[] = new KTJSONLookupWidget(_kt('Groups'), '',
     					      'groups', '', $this->oPage, false, null, null,
@@ -422,21 +422,21 @@ class KTDocumentEmailAction extends KTDocumentAction {
 					 'fEmailAddresses', '', $this->oPage,
 					 false, null, null, array('cols' => 60, 'rows' => 5));
         }
-		
+
 		// Should the document be attached or just a link
         if ($bAttachment) {
             $fields[] = new KTCheckboxWidget(_kt('Attach document'),
 					     _kt('Check to send as an attachment, uncheck to just send a link.'),
 					     'fAttachDocument', null, $this->oPage);
         }
-		
+
 		// Message to include in the email
         $fields[] = new KTTextWidget(_kt('Message'),
 				     _kt(''),
 				     'fComment', '', $this->oPage,
 				     false, null, null, array('cols' => 60, 'rows' => 5));
 
-					 
+
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/email');
         $aTemplateData = array(
             'context' => &$this,
