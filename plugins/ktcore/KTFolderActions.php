@@ -229,7 +229,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
     	if (KTPluginUtil::pluginIsActive('folder.templates.plugin')) { // Check if folder templates plugin is active
 			require_once(FolderTemplatesPlugin_DIR . DIRECTORY_SEPARATOR ."FolderTemplate.inc.php");
 			$ftemplates = new FolderTemplates();
-			return $ftemplates->applyFolderTemplate($rootId, $templateId);
+			return $ftemplates->applyFolderTemplate($rootId, $templateId, $this->oUser);
     	}
     }
 }
