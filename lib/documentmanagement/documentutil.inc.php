@@ -1562,11 +1562,13 @@ $sourceDocument->getName(),
 	        }
         }
 
-        $sMoveMessage = sprintf(_kt("Moved from %s/%s to %s/%s. %s"),
-            $oOriginalFolder->getFullPath(),
-            $oOriginalFolder->getName(),
-            $oFolder->getFullPath(),
-            $oFolder->getName(),
+        // Display the folder path in the move message - for the root folder, display the name
+        $source_path = ($oOriginalFolder->iId == 1) ? $oOriginalFolder->getName() : $oOriginalFolder->getFullPath();
+        $target_path = ($oFolder->iId == 1) ? $oFolder->getName() : $oFolder->getFullPath();
+
+        $sMoveMessage = sprintf(_kt("Moved from %s to %s. %s"),
+            $source_path,
+            $target_path,
             $sReason);
 
         // create the document transaction record

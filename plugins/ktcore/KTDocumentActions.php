@@ -1334,7 +1334,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         $res = $oForm->validate();
         $errors = $res['errors'];
         $data = $res['results'];
-        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Archived.');
+        $sReason = isset($data['reason']) ? $data['reason'] : _kt('Document Moved.');
         $extra_errors = array();
 
         if (!is_null($data['browse'])) {
