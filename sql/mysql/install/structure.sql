@@ -289,6 +289,7 @@ CREATE TABLE `document_content_version` (
   `minor_version` int(11) NOT NULL default '0',
   `storage_path` varchar(1024) default NULL,
   `md5hash` char(32) default NULL,
+  `has_rendition` INT(4),
   PRIMARY KEY  (`id`),
   KEY `document_id` (`document_id`),
   KEY `mime_id` (`mime_id`),
