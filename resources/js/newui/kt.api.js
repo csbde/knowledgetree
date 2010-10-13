@@ -2,14 +2,38 @@ kt.api=new function(){
 	this.cacheTimeout=20;
 	this.persistentDataCacheTimeout=30000;
 	
-	this.addDocuments = function(documents){
-		var params = {};
-		
+	this.addDocuments = function(documents,callback,errorCallback,customTimeout){
+		var params = {};		
+		params.documents = documents;		
 		var synchronous=false;
-		var func='siteapi.docTypeRequiredFields';
-		var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout);
-		return data.data;
-	}
+		var func='siteapi.uploadFile';
+		
+		console.log(customTimeout);
+		
+		if(callback){
+			//console.log('callback');
+			ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.persistentDataCacheTimeout,customTimeout);
+			return;
+			
+		}else{
+			//console.log('no callback');
+			var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout);
+			return data.data;
+		}
+		
+		/*if(callback===true){
+			console.log('callback===true');
+			var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout);
+			return data;
+		}else{
+			console.log('else');
+			ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.persistentDataCacheTimeout);
+			return;
+		}*/
+		
+		//var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout);
+		//return data.data;
+	};
 	
 	this.docTypeRequiredFields=function(docTypeId){
 		var params={};
@@ -19,7 +43,7 @@ kt.api=new function(){
 		var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout);
 		return data.data;
 		
-	}
+	};
 	
 	this.docTypeFields=function(docTypeId){
 		var params={};
@@ -29,7 +53,7 @@ kt.api=new function(){
 		var data=ktjapi.retrieve(func,params,this.persistentDataCacheTimeout);
 		return data.data;
 		
-	}
+	};
 	
 	this.docTypeHasRequiredFields=function(docType,callback,errorCallback){
 		var params={};
@@ -99,14 +123,14 @@ kt.api=new function(){
 		params=kt.lib.Object.extend({name:fragName},params);
 		var func='template.getFragment';
 		var ret=ktjapi.callMethod(func,params,function(){},false,function(){},30000);
-	}
+	};
 	
 	this.preloadExecutable=function(fragName,params){
 		if(!kt.lib.Object.is_object(params))params={};
 		params=kt.lib.Object.extend({name:fragName},params);
 		var func='template.execFragment';
 		var ret=ktjapi.callMethod(func,params,function(){},false,function(){},30000);
-	}
+	};
 	
 	this.getFragment=function(fragName,params){
 		if(!kt.lib.Object.is_object(params))params={};

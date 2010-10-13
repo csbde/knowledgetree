@@ -114,12 +114,9 @@ class KTPage {
            "resources/css/kt-headings.css",
            "resources/css/kt-new-ui.css",
            'resources/css/newui/newui.upload.css',
-
-
            "resources/css/newui/dropdown.css",
-
 		   /* REWORK INTO SINGLE STYLE SHEET */
-		   "resources/css/newui/dropdown_styles.css"
+		   "resources/css/newui/dropdown_styles.css",
         );
         $this->requireCSSResources($aCSS);
 
@@ -185,7 +182,7 @@ class KTPage {
 			$this->menu['applications'] = array('label' => _kt("Applications"), 'url' => $sLiveUrl.'/applications.php');
 		}
 		$this->menu['administration'] = array('label' => _kt("Settings"));
-
+		
 		// Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
     	global $default;
     	if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < time()){
