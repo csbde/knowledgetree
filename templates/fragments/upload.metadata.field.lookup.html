@@ -1,5 +1,5 @@
 <span class="ul_meta_row">
-	<span class="ul_meta_label">[name] [is_mandatory]
+	<span class="ul_meta_label" id="ul_meta_label_[id]">[name]
 		<span class="ul_meta_label_descr">[description]</span>
 	</span>
 	<span class="ul_meta_field">
@@ -36,8 +36,12 @@ Ext.onReady(function(){
     }
 
     if([is_mandatory] == '1') {
-		jQuery('#ul_meta_field_[id]').addClass('required');
+		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
 	}
+	
+    /*if([is_mandatory] == '1') {
+		jQuery('#ul_meta_field_[id]').addClass('required');
+	}*/
     
 });
 

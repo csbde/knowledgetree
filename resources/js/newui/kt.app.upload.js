@@ -516,7 +516,7 @@ kt.app.upload=new function(){
 	    		element: document.getElementById('upload_add_file'),
 	    		action: 'test.php',
 	    		params: {},
-	    		buttonText: 'Choose File(s)',
+	    		buttonText: 'Choose File',
 	    		allowedExtensions: [],
 	    		sizeLimit: 0,
 	    		onSubmit: function(id,fileName){
