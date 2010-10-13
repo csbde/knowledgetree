@@ -21,6 +21,7 @@ table.uploadTable .ul_item { border-bottom: 1px solid #DAECF6; width: auto; disp
 table.uploadTable .ul_item .ul_filename { font-size: 11px; color: #595959; /*			font-weight: bold; */ }
 table.uploadTable .ul_item .ul_progress, table.uploadTable .ul_item .ul_meta_button { float: right; cursor: pointer; }
 table.uploadTable .ul_item .ul_progress { color: #00A100; font-weight: bold; padding: 2px 10px; }
+table.uploadTable .ul_item .ul_bulk_checkbox { float: right; visibility:hidden; }
 table.uploadTable .ul_item .ul_progress.active { color: #A10000; }
 table.uploadTable .ul_item.ul_f_uploading .ul_progress { color: #A10000; }
 table.uploadTable .ul_item.ul_f_waiting .ul_progress { color: #FFD200; }
