@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Id$
  *
@@ -44,7 +45,6 @@
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentFieldLink.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
-
 // NEW PATHS
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 require_once(KT_LIB_DIR . '/filelike/filelikeutil.inc.php');
@@ -55,13 +55,13 @@ require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 require_once(KT_LIB_DIR . '/alert/EmailTemplate.inc.php');
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
-
 // WORKFLOW
 require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 
 class KTDocumentUtil {
 
-    public static function checkin($oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false, $bulk_action = false) {
+    public static function checkin($oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false, $bulk_action = false)
+    {
         $oStorage = KTStorageManagerUtil::getSingleton();
 
         $iFileSize = $oStorage->fileSize($sFilename);
@@ -92,9 +92,9 @@ class KTDocumentUtil {
         }
         $oDocument->setFileSize($iFileSize);
 
-        if(is_array($aOptions)) {
+        if (is_array($aOptions)) {
             $sFilename = KTUtil::arrayGet($aOptions, 'newfilename', '');
-            if(!empty($sFilename)) {
+            if (!empty($sFilename)) {
                 global $default;
                 $oDocument->setFileName($sFilename);
                 $default->log->info('renamed document ' . $oDocument->getId() . ' to ' . $sFilename);
@@ -147,7 +147,7 @@ class KTDocumentUtil {
         }
 
         Indexer::index($oDocument);
-        if(!$bulk_action) {
+        if (!$bulk_action) {
             // fire subscription alerts for the checked in document
             $oSubscriptionEvent = new SubscriptionEvent();
             $oFolder = Folder::get($oDocument->getFolderID());
@@ -157,21 +157,23 @@ class KTDocumentUtil {
         return true;
     }
 
-    public static function checkout($oDocument, $sCheckoutComment, $oUser, $bulk_action = false) {
+    public static function checkout($oDocument, $sCheckoutComment, $oUser, $bulk_action = false)
+    {
     	//automatically check out the linked document if this is a shortcut
-		if($oDocument->isSymbolicLink()){
+		if ($oDocument->isSymbolicLink()) {
     		$oDocument->switchToLinkedCore();
     	}
+    	
         if ($oDocument->getIsCheckedOut()) {
             return PEAR::raiseError(_kt('Already checked out.'));
         }
 
-        if($oDocument->getImmutable()){
+        if ($oDocument->getImmutable()) {
         	return PEAR::raiseError(_kt('Document cannot be checked out as it is immutable'));
         }
 
         // Check if the action is restricted by workflow on the document
-        if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.checkout')){
+        if (!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.checkout')) {
             return PEAR::raiseError(_kt('Checkout is restricted by the workflow state.'));
         }
 
@@ -199,7 +201,7 @@ class KTDocumentUtil {
         $oDocumentTransaction = new DocumentTransaction($oDocument, $sCheckoutComment, 'ktcore.transactions.check_out');
         $oDocumentTransaction->create();
 
-        if(!$bulk_action) {
+        if (!$bulk_action) {
             // fire subscription alerts for the downloaded document
             $oSubscriptionEvent = new SubscriptionEvent();
             $oFolder = Folder::get($oDocument->getFolderID());
@@ -209,14 +211,14 @@ class KTDocumentUtil {
         return true;
     }
 
-    public static function archive($oDocument, $sReason, $bulk_action = false) {
-
+    public static function archive($oDocument, $sReason, $bulk_action = false)
+    {
         if($oDocument->isSymbolicLink()){
         	return PEAR::raiseError(_kt("It is not possible to archive a shortcut. Please archive the target document."));
         }
 
         // Ensure the action is not blocked
-        if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.archive')){
+        if (!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.archive')) {
             return PEAR::raiseError(_kt('Document cannot be archived as it is restricted by the workflow.'));
         }
 
@@ -229,14 +231,14 @@ class KTDocumentUtil {
 
     	//delete all shortcuts linking to this document
         $aSymlinks = $oDocument->getSymbolicLinks();
-        foreach($aSymlinks as $aSymlink){
+        foreach($aSymlinks as $aSymlink) {
         	$oShortcutDocument = Document::get($aSymlink['id']);
         	$oOwnerUser = User::get($oShortcutDocument->getOwnerID());
 
         	KTDocumentUtil::deleteSymbolicLink($aSymlink['id']);
 
         	//send an email to the owner of the shortcut
-        	if($oOwnerUser->getEmail()!=null && $oOwnerUser->getEmailNotification() == true){
+        	if ($oOwnerUser->getEmail()!=null && $oOwnerUser->getEmailNotification() == true) {
         		$emailTemplate = new EmailTemplate("kt3/notifications/notification.SymbolicLinkArchived",array('user_name'=>$this->oUser->getName(),
         			'url'=>KTUtil::ktLink(KTBrowseUtil::getUrlForDocument($oShortcutDocument)),
         			'title' =>$oShortcutDocument->getName()));
@@ -263,7 +265,7 @@ class KTDocumentUtil {
                 return $ret;
             }
         }
-        if(!$bulk_action) {
+        if (!$bulk_action) {
             // fire subscription alerts for the archived document
             $oSubscriptionEvent = new SubscriptionEvent();
             $oFolder = Folder::get($oDocument->getFolderID());
@@ -273,7 +275,8 @@ class KTDocumentUtil {
         return true;
     }
 
-    public static function &_add($oFolder, $sFilename, $oUser, $aOptions) {
+    public static function &_add($oFolder, $sFilename, $oUser, $aOptions)
+    {
         global $default;
 
         //$oContents = KTUtil::arrayGet($aOptions, 'contents');
@@ -281,7 +284,7 @@ class KTDocumentUtil {
         $oDocumentType = KTUtil::arrayGet($aOptions, 'documenttype');
         $sDescription = KTUtil::arrayGet($aOptions, 'description', '');
 
-        if(empty($sDescription)){
+        if (empty($sDescription)) {
             // If no document name is provided use the filename minus the extension
             $aFile = pathinfo($sFilename);
             $sDescription = (isset($aFile['filename']) && !empty($aFile['filename'])) ? $aFile['filename'] : $sFilename;
@@ -291,7 +294,8 @@ class KTDocumentUtil {
 
         if ($oDocumentType) {
             $iDocumentTypeId = KTUtil::getId($oDocumentType);
-        } else {
+        }
+        else {
             $iDocumentTypeId = 1;
         }
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Creating database entry')));
@@ -319,7 +323,8 @@ class KTDocumentUtil {
                 $oDocument->delete();
                 return $res;
             }
-        } else {
+        }
+        else {
             $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Saving metadata')));
             $res = KTDocumentUtil::saveMetadata($oDocument, $aMetadata, $aOptions);
             if (PEAR::isError($res)) {
@@ -378,22 +383,22 @@ class KTDocumentUtil {
         $oPermission =& KTPermission::getByName("ktcore.permissions.write");
 		$oReadPermission =& KTPermission::getByName("ktcore.permissions.read");
         if (KTBrowseUtil::inAdminMode($user, $targetFolder)) {
-	        if(!KTPermissionUtil::userHasPermissionOnItem($user, $oPermission, $targetFolder)){
+	        if (!KTPermissionUtil::userHasPermissionOnItem($user, $oPermission, $targetFolder)) {
 	        	return PEAR::raiseError(_kt('You\'re not authorized to create shortcuts'));
 	        }
         }
      	if (!KTBrowseUtil::inAdminMode($user, $sourceDocument->getParentID())) {
-        	if(!KTPermissionUtil::userHasPermissionOnItem($user, $oReadPermission, $sourceDocument)){
+        	if (!KTPermissionUtil::userHasPermissionOnItem($user, $oReadPermission, $sourceDocument)) {
         		return PEAR::raiseError(_kt('You\'re not authorized to create a shortcut to this document'));
        		}
         }
 
         //check if the shortcut doesn't already exists in the target folder
         $aSymlinks = $sourceDocument->getSymbolicLinks();
-        foreach($aSymlinks as $iSymlink){
+        foreach ($aSymlinks as $iSymlink) {
         	$oSymlink = Document::get($iSymlink['id']);
         	$oSymlink->switchToRealCore();
-        	if($oSymlink->getFolderID() == $targetFolder->getID()){
+        	if ($oSymlink->getFolderID() == $targetFolder->getID()) {
         		return PEAR::raiseError(_kt('There already is a shortcut to this document in the target folder.'));
         	}
         }
@@ -403,8 +408,7 @@ class KTDocumentUtil {
             'iCreatorId'=>$user->getId(),
             'iFolderId'=>$targetFolder->getId(),
             'iLinkedDocumentId'=>$sourceDocument->getId(),
-            'sFullPath'=> $targetFolder->getFullPath() . '/' .
-$sourceDocument->getName(),
+            'sFullPath'=> $targetFolder->getFullPath() . '/' . $sourceDocument->getName(),
             'iPermissionObjectId'=>$targetFolder->getPermissionObjectID(),
             'iPermissionLookupId'=>$targetFolder->getPermissionLookupID(),
             'iStatusId'=>1,
@@ -451,7 +455,7 @@ $sourceDocument->getName(),
         //check permissions
     	$oPerm = KTPermission::getByName('ktcore.permissions.delete');
     	if (!KTBrowseUtil::inAdminMode($user, $document->getParentID())) {
-            if(!KTPermissionUtil::userHasPermissionOnItem($user, $oPerm, $document)){
+            if (!KTPermissionUtil::userHasPermissionOnItem($user, $oPerm, $document)) {
         		return PEAR::raiseError(_kt('You\'re not authorized to delete this shortcut'));
        		}
         }
@@ -463,13 +467,14 @@ $sourceDocument->getName(),
     }
 
     // Overwrite the document
-    public static function overwrite($oDocument, $sFilename, $sTempFileName, $oUser, $aOptions) {
+    public static function overwrite($oDocument, $sFilename, $sTempFileName, $oUser, $aOptions)
+    {
         //$oDocument, $sFilename, $sCheckInComment, $oUser, $aOptions = false
         $oStorage = KTStorageManagerUtil::getSingleton();
         $iFileSize = $oStorage->fileSize($sTempFileName);
 
         // Check that document is not checked out
-        if($oDocument->getIsCheckedOut()) {
+        if ($oDocument->getIsCheckedOut()) {
             return PEAR::raiseError(_kt('Document is checkout and cannot be overwritten'));
         }
 
@@ -484,11 +489,17 @@ $sourceDocument->getName(),
 
         $sOriginalFilename = $oDocument->getFileName();
 
-        if($sOriginalFilename != $sFilename){
-            if(strlen($sFilename)) {
-        	global $default;
-        	$oDocument->setFileName($sFilename);
-        	$default->log->info('renamed document ' . $oDocument->getId() . ' to ' . $sFilename);
+        // change file name
+        if ($sOriginalFilename != $sFilename) {
+            if (strlen($sFilename)) {
+                global $default;
+                $oDocument->setFileName($sFilename);
+                // rename file in storage driver
+                $res = $oStorage->renameDocument($oDocument, $oDocument->_oDocumentContentVersion, $sFilename);
+                if (!$res) {
+                    return PEAR::raiseError(_kt('An error occurred while storing the new file'));
+                }
+                $default->log->info('renamed document ' . $oDocument->getId() . ' to ' . $sFilename);
             }
             $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
         }
@@ -536,11 +547,10 @@ $sourceDocument->getName(),
         return true;
     }
 
-    // {{{ validateMetadata
-    public static function validateMetadata(&$oDocument, $aMetadata) {
+    public static function validateMetadata(&$oDocument, $aMetadata)
+    {
         $aFieldsets =& KTFieldset::getGenericFieldsets();
-        $aFieldsets =& kt_array_merge($aFieldsets,
-                KTFieldset::getForDocumentType($oDocument->getDocumentTypeId()));
+        $aFieldsets =& kt_array_merge($aFieldsets, KTFieldset::getForDocumentType($oDocument->getDocumentTypeId()));
         $aSimpleMetadata = array();
         foreach ($aMetadata as $aSingleMetadatum) {
             list($oField, $sValue) = $aSingleMetadatum;
@@ -578,12 +588,13 @@ $sourceDocument->getName(),
                 }
             }
         }
+        
         if (!empty($aFailed)) {
             return new KTMetadataValidationError($aFailed);
         }
+        
         return $aMetadata;
     }
-    // }}}
 
 	/*
 	 * Function to sanitize the date input from any textual date representation to a valid KT date format
@@ -591,8 +602,8 @@ $sourceDocument->getName(),
 	 * - Further corrects any quote descrepancies and checks the textual description again.
 	 * - If still no valid date then takes the integers and separators to produce a best guess.
 	 */
-	public static function sanitizeDate($sDate) {
-
+	public static function sanitizeDate($sDate)
+	{
 	    //Checking for Normal Strings, e.g. 13 August 2009 etc. All formats accepted by strtotime()
 	    $datetime = date_create($sDate);
 	    $resDate = date_format($datetime, 'Y-m-d');
@@ -632,10 +643,10 @@ $sourceDocument->getName(),
 
     // Forcefully sanitize metadata, specifically date values, to account for client tools that submit unvalidated date input
     // Will produce a best effort match to a valid date format.
-    public static function sanitizeMetadata($oDocument, $aMetadata){
+    public static function sanitizeMetadata($oDocument, $aMetadata)
+    {
         $aFieldsets =& KTFieldset::getGenericFieldsets();
-        $aFieldsets =& kt_array_merge($aFieldsets,
-                KTFieldset::getForDocumentType($oDocument->getDocumentTypeId()));
+        $aFieldsets =& kt_array_merge($aFieldsets, KTFieldset::getForDocumentType($oDocument->getDocumentTypeId()));
         $aSimpleMetadata = array();
         foreach ($aMetadata as $aSingleMetadatum) {
             list($oField, $sValue) = $aSingleMetadatum;
@@ -674,12 +685,12 @@ $sourceDocument->getName(),
         return $MDPack;
     }
 
-    // {{{ saveMetadata
-    public static function saveMetadata(&$oDocument, $aMetadata, $aOptions = null) {
+    public static function saveMetadata(&$oDocument, $aMetadata, $aOptions = null)
+    {
         $table = 'document_fields_link';
 
         //Sanitizing Date Fields
-        if(!empty($aMetadata)){
+        if (!empty($aMetadata)) {
             $aMetadata = KTDocumentUtil::sanitizeMetadata($oDocument, $aMetadata);
         }
 
@@ -719,9 +730,9 @@ $sourceDocument->getName(),
         DocumentFieldLink::clearAllCaches();
         return true;
     }
-    // }}}
 
-    public static function copyMetadata($oDocument, $iPreviousMetadataVersionId) {
+    public static function copyMetadata($oDocument, $iPreviousMetadataVersionId)
+    {
         $iNewMetadataVersion = $oDocument->getMetadataVersionId();
         $sTable = KTUtil::getTableName('document_fields_link');
         $aFields = DBUtil::getResultArray(array("SELECT * FROM $sTable WHERE metadata_version_id = ?", array($iPreviousMetadataVersionId)));
@@ -733,8 +744,8 @@ $sourceDocument->getName(),
 
     }
 
-    // {{{ setIncomplete
-    public static function setIncomplete(&$oDocument, $reason) {
+    public static function setIncomplete(&$oDocument, $reason)
+    {
         $oDocument->setStatusID(STATUS_INCOMPLETE);
         $table = 'document_incomplete';
         $iId = $oDocument->getId();
@@ -756,10 +767,9 @@ $sourceDocument->getName(),
         }
         return true;
     }
-    // }}}
 
-    // {{{ setComplete
-    public static function setComplete(&$oDocument, $reason) {
+    public static function setComplete(&$oDocument, $reason)
+    {
         $table = 'document_incomplete';
         $iId = $oDocument->getID();
         $aIncomplete = DBUtil::getOneResult(array("SELECT * FROM $table WHERE id = ?", array($iId)));
@@ -778,7 +788,6 @@ $sourceDocument->getName(),
 
         foreach ($aIncomplete as $k => $v) {
             if ($k === 'id') { continue; }
-
             if ($v) {
                 $bIncomplete = true;
             }
@@ -799,7 +808,7 @@ $sourceDocument->getName(),
             return $res;
         }
     }
-    // }}}
+    
      /*
       * Document Add
       * Author      :   KnowledgeTree Team
@@ -811,16 +820,16 @@ $sourceDocument->getName(),
       *                 array $aOptions
       *                 boolean $bulk_action
       */
-    // {{{ add
-    public static function &add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action = false) {
+    public static function &add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action = false)
+    {
         $GLOBALS['_IN_ADD'] = true;
         $ret = KTDocumentUtil::_in_add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action);
         unset($GLOBALS['_IN_ADD']);
         return $ret;
     }
-    // }}}
 
-    public static function getUniqueFilename($oFolder, $sFilename) {
+    public static function getUniqueFilename($oFolder, $sFilename)
+    {
         // this is just a quick refactoring. We should look at a more optimal way of doing this as there are
         // quite a lot of queries.
         $iFolderId = $oFolder->getId();
@@ -856,8 +865,8 @@ $sourceDocument->getName(),
 	*
 	* @return Document $oDocument
 	*/
-    // {{{ _in_add
-    public static function &_in_add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action = false) {
+    public static function &_in_add($oFolder, $sFilename, $oUser, $aOptions, $bulk_action = false)
+    {
         $aOrigOptions = $aOptions;
 
         $sFilename = KTDocumentUtil::getUniqueFilename($oFolder, $sFilename);
@@ -910,7 +919,7 @@ $sourceDocument->getName(),
 
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_kt('Sending subscriptions')));
         // TODO : better way of checking if its a bulk upload
-        if(!$bulk_action) {
+        if (!$bulk_action) {
             // fire subscription alerts for the checked in document
             $oSubscriptionEvent = new SubscriptionEvent();
             $oFolder = Folder::get($oDocument->getFolderID());
@@ -943,7 +952,7 @@ $sourceDocument->getName(),
         $iPermissionObjectId = $oFolder->getPermissionObjectID();
         $dynamicCondition = KTPermissionDynamicCondition::getByPermissionObjectId($iPermissionObjectId);
 
-        if(!PEAR::isError($dynamicCondition) && !empty($dynamicCondition)){
+        if (!PEAR::isError($dynamicCondition) && !empty($dynamicCondition)) {
             $res = KTPermissionUtil::updatePermissionLookup($oDocument);
         }
 
@@ -951,13 +960,11 @@ $sourceDocument->getName(),
 
         return $oDocument;
     }
-    // }}}
 
-    public static function incrementNameCollissionNumbering($sDocFilename, $skipExtension = false){
-
+    public static function incrementNameCollissionNumbering($sDocFilename, $skipExtension = false)
+    {
         $iDot = strpos($sDocFilename, '.');
-        if ($skipExtension || $iDot === false)
-        {
+        if ($skipExtension || $iDot === false) {
             if(preg_match("/\(([0-9]+)\)$/", $sDocFilename, $matches, PREG_OFFSET_CAPTURE)) {
 
                 $iCount = $matches[1][0];
@@ -970,10 +977,8 @@ $sourceDocument->getName(),
                 $sDocFilename = $sDocFilename . '(1)';
             }
         }
-        else
-        {
+        else {
             if(preg_match("/\(([0-9]+)\)(\.[^\.]+)+$/", $sDocFilename, $matches, PREG_OFFSET_CAPTURE)) {
-
                 $iCount = $matches[1][0];
                 $iPos = $matches[1][1];
 
@@ -984,35 +989,36 @@ $sourceDocument->getName(),
                 $sDocFilename = substr($sDocFilename, 0, $iDot) . '(1)' . substr($sDocFilename, $iDot);
             }
         }
+        
         return $sDocFilename;
     }
 
-	public static function generateNewDocumentFilename($sDocFilename) {
+	public static function generateNewDocumentFilename($sDocFilename)
+	{
 	    return self::incrementNameCollissionNumbering($sDocFilename, false);
 	}
 
-	public static function generateNewDocumentName($sDocName){
+	public static function generateNewDocumentName($sDocName)
+	{
 	    return self::incrementNameCollissionNumbering($sDocName, true);
 
 	}
 
-    // {{{ fileExists
-    public static function fileExists($oFolder, $sFilename) {
+    public static function fileExists($oFolder, $sFilename)
+    {
         return Document::fileExists($sFilename, $oFolder->getID());
     }
-    // }}}
-
-    // {{{ nameExists
-    public static function nameExists($oFolder, $sName) {
+    
+    public static function nameExists($oFolder, $sName)
+    {
         return Document::nameExists($sName, $oFolder->getID());
     }
-    // }}}
 
-    // {{{ storeContents
     /**
      * Stores contents (filelike) from source into the document storage
      */
-    public static function storeContents(&$oDocument, $oContents = null, $aOptions = null) {
+    public static function storeContents(&$oDocument, $oContents = null, $aOptions = null)
+    {
     	$oStorage = KTStorageManagerUtil::getSingleton();
         if (is_null($aOptions)) {
             $aOptions = array();
@@ -1027,13 +1033,14 @@ $sourceDocument->getName(),
 
         $sFilename = (isset($aOptions['temp_file'])) ? $aOptions['temp_file'] : '';
 
-        if(empty($sFilename)){
+        if (empty($sFilename)) {
             return PEAR::raiseError(sprintf(_kt("Couldn't store contents: %s"), _kt('The uploaded file does not exist.')));
         }
 
         $md5hash = $oStorage->md5File($sFilename);
         $content = $oDocument->_oDocumentContentVersion;
         $content->setStorageHash($md5hash);
+        $content->setHasRendition(0);   // new version so no pdf / thumbnail exists
         $content->update();
 
         if (empty($aOptions)) $aOptions = array();
@@ -1059,7 +1066,6 @@ $sourceDocument->getName(),
 
         return true;
     }
-    // }}}
 
      /*
       * Document Delete
@@ -1071,8 +1077,8 @@ $sourceDocument->getName(),
       *                 int $iDestFolderId
       *                 boolean $bulk_action
       */
-    // {{{ delete
-    public static function delete($oDocument, $sReason, $iDestFolderId = null, $bulk_action = false) {
+    public static function delete($oDocument, $sReason, $iDestFolderId = null, $bulk_action = false)
+    {
     	global $default;
         $oStorage = KTStorageManagerUtil::getSingleton();
 
@@ -1099,7 +1105,7 @@ $sourceDocument->getName(),
             return PEAR::raiseError(sprintf(_kt('The document is checked out and cannot be deleted: %s'), $oDocument->getName()));
         }
 
-        if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.delete')){
+        if (!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.delete')) {
             return PEAR::raiseError(_kt('Document cannot be deleted as it is restricted by the workflow.'));
         }
 
@@ -1154,14 +1160,14 @@ $sourceDocument->getName(),
 
         //delete all shortcuts linking to this document
         $aSymlinks = $oDocument->getSymbolicLinks();
-        foreach($aSymlinks as $aSymlink){
+        foreach ($aSymlinks as $aSymlink) {
         	$oShortcutDocument = Document::get($aSymlink['id']);
         	$oOwnerUser = User::get($oShortcutDocument->getOwnerID());
 
         	KTDocumentUtil::deleteSymbolicLink($aSymlink['id']);
 
         	//send an email to the owner of the shortcut
-        	if($oOwnerUser->getEmail()!=null && $oOwnerUser->getEmailNotification() == true){
+        	if ($oOwnerUser->getEmail()!=null && $oOwnerUser->getEmailNotification() == true) {
         		$emailTemplate = new EmailTemplate("kt3/notifications/notification.SymbolicLinkDeleted",array('user_name'=>$oUser->getName(),
         			'url'=>KTUtil::ktLink(KTBrowseUtil::getUrlForDocument($oShortcutDocument)),
         			'title' =>$oShortcutDocument->getName()));
@@ -1177,7 +1183,7 @@ $sourceDocument->getName(),
 
         DBUtil::commit();
         // TODO : better way of checking if its a bulk delete
-        if(!$bulk_action) {
+        if (!$bulk_action) {
             // we weren't doing notifications on this one
             $oSubscriptionEvent = new SubscriptionEvent();
             $oSubscriptionEvent->RemoveDocument($oDocument, $oOrigFolder);
@@ -1203,71 +1209,85 @@ $sourceDocument->getName(),
 
 
     }
-    // }}}
 
-    public static function reindexDocument($oDocument) {
-
+    public static function reindexDocument($oDocument)
+    {
         Indexer::index($oDocument);
     }
 
-    public static function canBeCopied($oDocument, &$sError) {
+    public static function canBeCopied($oDocument, &$sError)
+    {
         if ($oDocument->getIsCheckedOut()) {
             $sError = PEAR::raiseError(_kt('Document cannot be copied as it is checked out.'));
             return false;
         }
+        
         if (!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.copy')) {
             $sError = PEAR::raiseError(_kt('Document cannot be copied as it is restricted by the workflow.'));
             return false;
         }
+        
         return true;
     }
 
-    public static function canBeMoved($oDocument, &$sError) {
+    public static function canBeMoved($oDocument, &$sError)
+    {
         if ($oDocument->getImmutable()) {
             $sError = PEAR::raiseError(_kt('Document cannot be moved as it is immutable.'));
             return false;
         }
+        
         if ($oDocument->getIsCheckedOut()) {
             $sError = PEAR::raiseError(_kt('Document cannot be moved as it is checked out.'));
             return false;
         }
+        
         if (!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.move')) {
             $sError = PEAR::raiseError(_kt('Document cannot be moved as it is restricted by the workflow.'));
             return false;
         }
+        
         return true;
     }
 
-    public static function canBeDeleted($oDocument, &$sError) {
+    public static function canBeDeleted($oDocument, &$sError)
+    {
         if($oDocument->getImmutable())
         {
             $sError = PEAR::raiseError(_kt('Document cannot be deleted as it is immutable.'));
             return false;
         }
+        
         if ($oDocument->getIsCheckedOut()) {
             $sError = PEAR::raiseError(_kt('Document cannot be deleted as it is checked out.'));
             return false;
         }
+        
         if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.delete')){
             $sError = PEAR::raiseError(_kt('Document cannot be deleted as it is restricted by the workflow.'));
             return false;
         }
+        
         return true;
     }
 
-    public static function canBeArchived($oDocument, &$sError) {
+    public static function canBeArchived($oDocument, &$sError)
+    {
         if ($oDocument->getIsCheckedOut()) {
             $sError = PEAR::raiseError(_kt('Document cannot be archived as it is checked out.'));
             return false;
         }
+
         if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.archive')){
             $sError = PEAR::raiseError(_kt('Document cannot be archived as it is restricted by the workflow.'));
             return false;
         }
+        
         return true;
     }
 
-    public static function copy($oDocument, $oDestinationFolder, $sReason = null, $sDestinationDocName = null, $bulk_action = false) {
+    public static function copy($oDocument, $oDestinationFolder, $sReason = null, $sDestinationDocName = null, $bulk_action = false)
+    {
     	$oStorage = KTStorageManagerUtil::getSingleton();
         // 1. generate a new triad of content, metadata and core objects.
         // 2. update the storage path.
@@ -1295,7 +1315,7 @@ $sourceDocument->getName(),
         unset($aMDRow['id']);
 
         // set the name for the document, possibly using name collission
-        if (empty($sDestinationDocName)){
+        if (empty($sDestinationDocName)) {
             $aMDRow['name'] = KTDocumentUtil::getUniqueDocumentName($oDestinationFolder, $aMDRow['name']);
         }
         else {
@@ -1312,7 +1332,7 @@ $sourceDocument->getName(),
         unset($aContentRow['id']);
 
         // set the filename for the document, possibly using name collission
-        if(empty($sDestinationDocName)) {
+        if (empty($sDestinationDocName)) {
             $aContentRow['filename'] = KTDocumentUtil::getUniqueFilename($oDestinationFolder, $aContentRow['filename']);
         }
         else {
@@ -1420,7 +1440,7 @@ $sourceDocument->getName(),
         // Action creates a whole new document so we need to index & process it
         Indexer::index($oNewDocument);
 
-        if(!$bulk_action) {
+        if (!$bulk_action) {
             // fire subscription alerts for the copied document
             $oSubscriptionEvent = new SubscriptionEvent();
             $oFolder = Folder::get($oDocument->getFolderID());
@@ -1430,43 +1450,39 @@ $sourceDocument->getName(),
         return $oNewDocument;
     }
 
-    public static function rename($oDocument, $sNewFilename, $oUser) {
+    public static function rename($oDocument, $sNewFilename, $oUser)
+    {
         $oStorage = KTStorageManagerUtil::getSingleton();
         $oKTConfig = KTConfig::getSingleton();
         $updateVersion = $oKTConfig->get('tweaks/incrementVersionOnRename', true);
-
         $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
         $oOldContentVersion = $oDocument->_oDocumentContentVersion;
 
-        if($updateVersion) // We only need to start a new content version if the version is in fact changing.
-        {
-        	$bSuccess = $oDocument->startNewContentVersion($oUser);
-
+        // We only need to start a new content version if the version is in fact changing.
+        if ($updateVersion) {
+            $bSuccess = $oDocument->startNewContentVersion($oUser);
         	if (PEAR::isError($bSuccess)) {
         		return $bSuccess;
         	}
 
         	KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
         }
-
+        
+        // rename file in storage driver
         $res = $oStorage->renameDocument($oDocument, $oOldContentVersion, $sNewFilename);
-
         if (!$res) {
             return PEAR::raiseError(_kt('An error occurred while storing the new file'));
         }
 
-
-
         $oDocument->setLastModifiedDate(getCurrentDateTime());
         $oDocument->setModifiedUserId($oUser->getId());
 
-        if($updateVersion) { // Update version number
+        if ($updateVersion) { // Update version number
         	$oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
         }
 
         $sOldFilename = $oDocument->_oDocumentContentVersion->getFilename();
 		$oDocument->_oDocumentContentVersion->setFilename($sNewFilename);
-
 		$sType = KTMime::getMimeTypeFromFile($sNewFilename);
 		$iMimeTypeId = KTMime::getMimeTypeID($sType, $sNewFilename);
         $oDocument->setMimeTypeId($iMimeTypeId);
@@ -1518,12 +1534,14 @@ $sourceDocument->getName(),
       *                 string $sReason
       *                 boolean $bulk_action
       */
-    public static function move($oDocument, $oToFolder, $oUser = null, $sReason = null, $bulk_action = false) {
+    public static function move($oDocument, $oToFolder, $oUser = null, $sReason = null, $bulk_action = false)
+    {
     	$oStorage = KTStorageManagerUtil::getSingleton();
     	//make sure we move the symlink, and the document it's linking to
-		if($oDocument->isSymbolicLink()){
+		if ($oDocument->isSymbolicLink()) {
     		$oDocument->switchToRealCore();
-    	}else{
+    	}
+    	else {
     		$oDocument->switchToLinkedCore();
     	}
         $oFolder = $oToFolder; // alias.
@@ -1540,7 +1558,6 @@ $sourceDocument->getName(),
         $oDocument->setFolderID($oFolder->getId());
         $sName = $oDocument->getName();
         $sFilename = $oDocument->getFileName();
-
         $oDocument->setFileName(KTDocumentUtil::getUniqueFilename($oToFolder, $sFilename));
         $oDocument->setName(KTDocumentUtil::getUniqueDocumentName($oToFolder, $sName));
 
@@ -1550,7 +1567,7 @@ $sourceDocument->getName(),
         }
 
         //move the document on the file system(not if it's a symlink)
-        if(!$oDocument->isSymbolicLink()){
+        if (!$oDocument->isSymbolicLink()) {
 	        $res = $oStorage->moveDocument($oDocument, $oFolder, $oOriginalFolder);
 	        if (PEAR::isError($res) || ($res === false)) {
 	            $oDocument->setFolderID($oOriginalFolder->getId());
@@ -1562,11 +1579,13 @@ $sourceDocument->getName(),
 	        }
         }
 
-        $sMoveMessage = sprintf(_kt("Moved from %s/%s to %s/%s. %s"),
-            $oOriginalFolder->getFullPath(),
-            $oOriginalFolder->getName(),
-            $oFolder->getFullPath(),
-            $oFolder->getName(),
+        // Display the folder path in the move message - for the root folder, display the name
+        $source_path = ($oOriginalFolder->iId == 1) ? $oOriginalFolder->getName() : $oOriginalFolder->getFullPath();
+        $target_path = ($oFolder->iId == 1) ? $oFolder->getName() : $oFolder->getFullPath();
+
+        $sMoveMessage = sprintf(_kt("Moved from %s to %s. %s"),
+            $source_path,
+            $target_path,
             $sReason);
 
         // create the document transaction record
@@ -1592,7 +1611,7 @@ $sourceDocument->getName(),
             }
         }
 
-        if(!$bulk_action) {
+        if (!$bulk_action) {
             // fire subscription alerts for the moved document
             $oSubscriptionEvent = new SubscriptionEvent();
             $oSubscriptionEvent->MoveDocument($oDocument, $oFolder, $oOriginalFolder);
@@ -1604,7 +1623,8 @@ $sourceDocument->getName(),
     /**
     * Delete a selected version of the document.
     */
-    public static function deleteVersion($oDocument, $iVersionID, $sReason){
+    public static function deleteVersion($oDocument, $iVersionID, $sReason)
+    {
     	global $default;
 		$oStorage = KTStorageManagerUtil::getSingleton();
 
@@ -1634,7 +1654,7 @@ $sourceDocument->getName(),
         $sDocStoragePath = $oDocument->getStoragePath();
         $sVersionStoragePath = $oContentVersion->getStoragePath();
 
-        if($sDocStoragePath == $sVersionStoragePath){
+        if ($sDocStoragePath == $sVersionStoragePath) {
             return PEAR::raiseError(_kt("Can't delete version: content is the same as the current document content."));
         }
 
