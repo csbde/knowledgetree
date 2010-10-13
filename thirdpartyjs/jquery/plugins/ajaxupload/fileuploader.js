@@ -266,7 +266,10 @@ qq.FileUploaderBasic = function(o){
         action: '/server/upload',
         params: {},
         button: null,
-        multiple: true,
+        //Martin: taken out multiple uploads until able to figure out how to make it work with S3
+        //issue is that need to force handlerClass = 'UploadHandlerForm' (see below) so that it works with S3
+        //BUT this breaks multiple uploads!
+        multiple: false,
         maxConnections: 3,
         buttonText: 'Upload a file',
         // validation        
@@ -1043,7 +1046,8 @@ qq.extend(qq.UploadHandlerForm.prototype, {
             }
 
             // fixing Opera 10.53
-            if (iframe.contentDocument &&
+            //MK: removed because causing cross-site scripting errors!
+            /*if (iframe.contentDocument &&
                 iframe.contentDocument.body &&
                 iframe.contentDocument.body.innerHTML == "false"){
                 // In Opera event is fired second time
@@ -1051,7 +1055,7 @@ qq.extend(qq.UploadHandlerForm.prototype, {
                 // to server response approx. after 1 sec
                 // when we upload file with iframe
                 return;
-            }
+            }*/
 
             callback();
         });

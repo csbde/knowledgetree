@@ -136,7 +136,7 @@ ktjapi=new function(){
 		return results;
 	};
 	
-	this.callMethod=function(func,params,callback,sync,errorFunct,cacheTimeout){
+	this.callMethod=function(func,params,callback,sync,errorFunct,cacheTimeout,customTimeout){
 		var afunc=(''+func).split(/\./);
 		var reqObj=this.createPackage(afunc[0], afunc[1], params);
 		
@@ -193,7 +193,7 @@ ktjapi=new function(){
 		var uri=this.createURL(reqObj, false, false);
 		
 		
-		this.ajax.getRequest(uri.url,success,errorFunct,sync?true:false);
+		this.ajax.getRequest(uri.url,success,errorFunct,sync?true:false, customTimeout);
 		
 		var evt='ktjapi_event:'+func;
 		return uri.url;
@@ -968,17 +968,22 @@ ktjapi.ajax=new function(){
 	/**
 	 * Perform a GET request
 	 */
-	this.getRequest=function(url,success,errors,sync){
+	this.getRequest=function(url,success,errors,sync, customTimeout){
 		var sync=sync?true:false;
 		var success=(typeof(success)=='function')?success:function(){};
 		var errors=(typeof(errors)=='function')?errors:function(){};
+		
+		var timeout = ktjapi.cfg.get('server.timeout')
+		if(typeof(customTimeout)!=='undefined'){
+			timeout = customTimeout;
+		}
 		
 		ktjapi.q.ajax({
 			url:		url,
 			success:	success,
 			error:		errors,
 			type:		'GET',
-			timeout:	ktjapi.cfg.get('server.timeout'),
+			timeout:	timeout,
 			async:		!sync
 		});
 	};

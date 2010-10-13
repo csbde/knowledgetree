@@ -1040,6 +1040,7 @@ class KTDocumentUtil {
         $md5hash = $oStorage->md5File($sFilename);
         $content = $oDocument->_oDocumentContentVersion;
         $content->setStorageHash($md5hash);
+        $content->setHasRendition(0);   // new version so no pdf / thumbnail exists
         $content->update();
 
         if (empty($aOptions)) $aOptions = array();
