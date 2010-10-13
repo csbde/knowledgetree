@@ -1,5 +1,7 @@
 <span class="ul_item">
 	<span class="ul_filename">[filename]</span>
-	<span class="ul_meta_button" onclick="kt.app.upload.getItem(this).showMetadataWindow(kt.app.upload.getWindow());">Edit</span>
+	<span class="ul_meta_button" onclick="kt.app.upload.getItem(this).showMetadataWindow();">Edit</span>
+	<span class="ul_file remove" onclick="kt.app.upload.getItem(this).removeItem();">Remove Me</span>
 	<span class="ul_progress"></span>
+	<span class="ul_bulk_checkbox"><br/><input id="unzip_checkbox" type="checkbox" name="unzip" value="unzip" onchange="kt.app.upload.getItem(this).setAsBulk()"/>Unzip files</span>
 </span>

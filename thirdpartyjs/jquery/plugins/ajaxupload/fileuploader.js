@@ -266,7 +266,10 @@ qq.FileUploaderBasic = function(o){
         action: '/server/upload',
         params: {},
         button: null,
-        multiple: true,
+        //Martin: taken out multiple uploads until able to figure out how to make it work with S3
+        //issue is that need to force handlerClass = 'UploadHandlerForm' (see below) so that it works with S3
+        //BUT this breaks multiple uploads!
+        multiple: false,
         maxConnections: 3,
         buttonText: 'Upload a file',
         // validation        
