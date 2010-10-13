@@ -118,14 +118,14 @@ class Document {
     function getDocumentTypeID() { return $this->_oDocumentMetadataVersion->getDocumentTypeId(); }
     function setDocumentTypeID($sNewValue) { $this->_oDocumentMetadataVersion->setDocumentTypeId($sNewValue); }
 
-    function getName($truncate=NULL) { 
+    function getName($truncate=NULL) {
     	$ret=$this->_oDocumentMetadataVersion->getName();
     	$truncate=(int)$truncate;
     	if($truncate>0){
     		if(strlen($ret)>$truncate){
     			$ret=substr($ret,0,$truncate-3).'...';
     		}
-    	} 
+    	}
     	return $ret;
     }
     function setName($sNewValue) { $this->_oDocumentMetadataVersion->setName($sNewValue); }
@@ -178,6 +178,9 @@ class Document {
 
     function getStoragePath() { return $this->_oDocumentContentVersion->getStoragePath(); }
     function setStoragePath($sNewValue) { $this->_oDocumentContentVersion->setStoragePath($sNewValue); }
+
+    function getHasRendition() { return $this->_oDocumentContentVersion->getHasRendition(); }
+    function setHasRendition($iNewValue) { $this->_oDocumentContentVersion->setHasRendition($iNewValue); }
 
 
 
@@ -621,12 +624,12 @@ class Document {
         }
         $iId = $oDocument->_oDocumentCore->getId();
         $aContentVersion["documentid"] = $iId;
-        
+
         $oDocument->_oDocumentContentVersion = KTDocumentContentVersion::createFromArray($aContentVersion);
         if (PEAR::isError($oDocument->_oDocumentContentVersion)) { return $oDocument->_oDocumentContentVersion; }
         $aMetadataVersion["documentid"] = $iId;
         $aMetadataVersion["contentversionid"] = $oDocument->_oDocumentContentVersion->getId();
-        
+
         $oDocument->_oDocumentMetadataVersion = KTDocumentMetadataVersion::createFromArray($aMetadataVersion);
         if (PEAR::isError($oDocument->_oDocumentMetadataVersion)) { return $oDocument->_oDocumentMetadataVersion; }
         $oDocument->_oDocumentCore->setMetadataVersionId($oDocument->_oDocumentMetadataVersion->getId());

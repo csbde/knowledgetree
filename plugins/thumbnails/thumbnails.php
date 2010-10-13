@@ -249,8 +249,27 @@ class thumbnailGenerator extends BaseProcessor
 				$out = array_pop($out);
 			}
 			if(strpos($out, 'ERROR') === 0){
-			    $default->log->error('InstaView Plugin: error in creation of document thumbnail '.$this->document->iId.': '. $out);
+			    $default->log->error('Thumbnails Plugin: error in creation of document thumbnail '.$this->document->iId.': '. $out);
+			    return false;
 			}
+		}
+
+		// Check thumbnail exists and set the flag in the DB
+		if($oStorage->file_exists($thumbnailfile)){
+		    // 0 = nothing, 1 = pdf, 2 = thumbnail, 4 = flash
+		    // 1+2 = 3: pdf & thumbnail; 1+4 = 5: pdf & flash; 2+4 = 6: thumbnail & flash; 1+2+4 = 7: all
+		    $flag = $this->document->getHasRendition();
+
+		    if(is_numeric($flag)){
+		        if(in_array($flag, array(0,1,4,5))){
+		          $flag = $flag + 2;
+		        }
+		    }else {
+		        $flag = 2;
+		    }
+
+		    $this->document->setHasRendition($flag);
+		    $this->document->update();
 		}
 
         return true;
@@ -323,7 +342,7 @@ class ThumbnailViewlet extends KTDocumentViewlet {
              }
              $title = $ivLinkAction->getName($documentId);
         }
-        
+
         // Get the url to the thumbnail and render it
         if (ACCOUNT_ROUTING_ENABLED) {
             $thumbnailUrl = $oStorage->getSignedUrl("thumbnails/$documentId.jpg");
