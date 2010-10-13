@@ -83,7 +83,7 @@ class KTConfig {
         if(MemCacheUtil::$enabled){
             return true;
         }
-		
+
         $ktconfpath = KT_PLUGIN_DIR . '/ktlive/config/kt-path';
         if (file_exists($ktconfpath))
         {
@@ -93,7 +93,7 @@ class KTConfig {
         		$this->confPath = '/etc/kt/kt.cnf';
         	}
         }
-        else 
+        else
         {
         	$this->confPath = '/etc/kt/kt.cnf';
         }
@@ -230,8 +230,7 @@ class KTConfig {
         $filename = $this->getCacheFilename();
 
         if(ACCOUNT_ROUTING_ENABLED){
-            if(file_exists($filename))
-                MemCacheUtil::clear($filename);
+            MemCacheUtil::clear($filename);
             return true;
         }
 
@@ -345,22 +344,22 @@ class KTConfig {
             'port' => isset($this->flatns['db/dbPort']) ? $this->flatns['db/dbPort'] : ''
         );
         $default->_db = $dsn;
-    
-               
+
+
         /**
         * Check to see if replication is set to TRUE
-        * If Replication is set to TRUE then it means 
+        * If Replication is set to TRUE then it means
         * that mysql-slaves are active
         * So we will read config to get the hostnames
         **/
         $replication = $this->flatns['db/dbReplication'];
-        
+
         if($replication == 'true'){
             $slave_list  = $this->flatns['db/dbSlaves'];
             $slave_hostnames = explode('|', $slave_list);
             $working_connections = array();
             $slave_dns = array();
-            $errors=array();    
+            $errors=array();
             foreach ($slave_hostnames as $available_slaves){
                 if(empty($available_slaves)){
                     continue;

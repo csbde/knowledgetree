@@ -269,7 +269,7 @@ INSERT INTO `config_settings` VALUES
 (92, 'cache', 'Cache Directory', 'The location of the KnowledgeTree cache.', 'cacheDirectory', 'default', '${varDirectory}/cache', 'string', NULL, 1),
 (93, 'openoffice', 'Program Path', 'Defines the path to the OpenOffice program directory. ', 'programPath', 'default', '../openoffice/program', 'string', NULL, 1),
 (94, 'urls', 'Document Directory', 'The path to the documents directory', 'documentRoot', 'default', '${varDirectory}/Documents', 'string', NULL, 1),
-(95, 'KnowledgeTree', 'Redirect To Browse View', 'Defines whether to redirect to the Browse view (Browse Documemts) on login, instead of the Dashboard.<br>Default is \'False\'. ', 'redirectToBrowse', 'default', 'false', 'boolean', NULL, 1),
+(95, 'KnowledgeTree', 'Redirect To Browse View', 'Defines whether to redirect to the Browse view (Browse Documemts) on login, instead of the Dashboard.<br>Default is \'True\'. ', 'redirectToBrowse', 'default', 'true', 'boolean', NULL, 1),
 (96, 'KnowledgeTree', 'Redirect To Browse View: Exceptions', 'Specifies that, when \'Redirect To Browse\' is set to \'True\' all users, except for the users listed in the text field below are redirected to the Browse view on log in. The users listed for this setting are directed to the KnowledgeTree Dashboard. To define exceptions, add user names in the text field as follows, e.g. admin, joebloggs, etc.', 'redirectToBrowseExceptions', '', '', 'string', NULL, 1),
 (97, 'session', 'Allow Automatic Sign In', 'Defines whether to automatically create a user account on first login for any user who does not yet exist in the system. Default is \'False\'.', 'allowAutoSignup', 'default', 'false', 'boolean', 'string', 1),
 (98, 'ldapAuthentication', 'Create Groups Automatically', 'Defines whether to allow LDAP groups to be created automatically. Default is \'False\'.', 'autoGroupCreation', 'default', 'false', 'boolean', 'string', 1),
@@ -295,7 +295,8 @@ INSERT INTO `config_settings` VALUES
 (118, 'urls', 'Internal Var Directory', 'The path to the internal var directory that must sit within the web root', 'internalVarDirectory', 'default', '${fileSystemRoot}/var', 'string', NULL, 0),
 (119, 'externalBinary', 'convert', 'The path to the ImageMagick "convert" binary', 'convertPath', 'default', 'convert', 'string', NULL, 1),
 (120, 'explorerCPSettings', 'Debug Log Level', 'Set the level of debug information included in the server side log file', 'debugLevel', 'error', 'error', 'dropdown', 'a:1:{s:7:\"options\";a:3:{i:0;a:2:{s:5:\"value\";s:3:\"off\";s:5:\"label\";s:10:\"No Logging\";}i:1;a:2:{s:5:\"value\";s:5:\"error\";s:5:\"label\";s:18:\"Error Logging Only\";}i:2;a:2:{s:5:\"value\";s:5:\"debug\";s:5:\"label\";s:28:\"Error and Debug Info Logging\";}}}', 1),
-('121', 'actionreasons', 'Enable Global Document Reasons', 'If switched on, reasons will be required for all major document actions including Check-in, Check-out, Delete, Finalize, Copy, Move and Archive.', 'globalReasons', 'false', 'false', 'boolean', NULL, 1);
+(121, 'actionreasons', 'Enable Global Document Reasons', 'If switched on, reasons will be required for all major document actions including Check-in, Check-out, Delete, Finalize, Copy, Move and Archive.', 'globalReasons', 'default', 'false', 'boolean', NULL, 1),
+(122, 'ui', 'Restricted Environment', 'Removes certain administrative features from the interface to prevent users from accessing the functionality', 'restrictedEnv', 'default', 'false', 'boolean', NULL, 0);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1467,8 +1468,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.7.0.5'),
-(3,'databaseVersion','3.7.0.5'),
+(2,'knowledgeTreeVersion','3.7.0.6'),
+(3,'databaseVersion','3.7.0.6'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1787,7 +1788,15 @@ INSERT INTO `upgrades` VALUES
 (239,'upgrade*3.7.0.3*99*upgrade3.7.0.3','Upgrade from version 3.7.0.2 to 3.7.0.3','2009-12-14 00:00:00',1,'upgrade*3.7.0.3*99*upgrade3.7.0.3'),
 (240,'sql*3.7.0.4*0*3.7.0.4/download_files.sql','Database upgrade to version 3.7.0.4: Download Files','2010-02-19 00:00:00',1,'upgrade*3.7.0.4*99*upgrade3.7.0.4'),
 (241,'upgrade*3.7.0.4*99*upgrade3.7.0.4','Upgrade from version 3.7.0.3 to 3.7.0.4','2010-02-19 00:00:00',1,'upgrade*3.7.0.4*99*upgrade3.7.0.4'),
-(242,'upgrade*3.7.0.5*99*upgrade3.7.0.5','Upgrade from version 3.7.0.4 to 3.7.0.5','2010-05-06 00:00:00',1,'upgrade*3.7.0.5*99*upgrade3.7.0.5');
+(242,'sql*3.7.0.5*0*3.7.0.5/config_setting_hide_storage_driver.sql','Database upgrade to version 3.7.0.5: Config Setting Hide Storage Driver','2010-05-06 00:00:00',1,'upgrade*3.7.0.5*99*upgrade3.7.0.5'),
+(243,'sql*3.7.0.5*0*3.7.0.5/config_setting_restricted_env.sql','Database upgrade to version 3.7.0.5: Config Setting Restricted Env','2010-05-06 00:00:00',1,'upgrade*3.7.0.5*99*upgrade3.7.0.5'),
+(244,'sql*3.7.0.5*0*3.7.0.5/document_link_types.sql','Database upgrade to version 3.7.0.5: Document Link Types','2010-05-06 00:00:00',1,'upgrade*3.7.0.5*99*upgrade3.7.0.5'),
+(245,'sql*3.7.0.5*0*3.7.0.5/drop_zseq_tables.sql','Database upgrade to version 3.7.0.5: Drop Zseq Tables','2010-05-06 00:00:00',1,'upgrade*3.7.0.5*99*upgrade3.7.0.5'),
+(246,'upgrade*3.7.0.5*99*upgrade3.7.0.5','Upgrade from version 3.7.0.4 to 3.7.0.5','2010-05-06 00:00:00',1,'upgrade*3.7.0.5*99*upgrade3.7.0.5'),
+(247,'sql*3.7.0.6*0*3.7.0.6/disable_force_file_option.sql','Database upgrade to version 3.7.0.6: Disable Force File Option','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
+(248,'sql*3.7.0.6*0*3.7.0.6/document_renditions.sql','Database upgrade to version 3.7.0.6: Document Renditions','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
+(249,'sql*3.7.0.6*0*3.7.0.6/global_reasons_switch.sql','Database upgrade to version 3.7.0.6: Global Reasons Switch','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
+(250,'upgrade*3.7.0.6*99*upgrade3.7.0.6','Upgrade from version 3.7.0.5 to 3.7.0.6','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 

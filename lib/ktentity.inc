@@ -290,6 +290,96 @@ class KTEntity {
             return $res;
         }
     }
+    
+    function getProperties(){
+        global $default;
+        $iId = $this->iId;
+        $sClassName = get_class($this);
+        // cache at lowest possible level.
+        $oCache =& KTCache::getSingleton();
+        $group = sprintf("%s/%s", $sClassName , 'id');
+        list($bCached, $mCached) = $oCache->get($group, $iId);
+        $bCached=$mCached=false;
+        if ($bCached && EVIL_CACHE_GRIND) {
+            if (KTLOG_CACHE) $default->log->debug(sprintf(_kt("Found and testing object cache for class %s, id %d"), $sClassName, $iId));
+
+            $table = $this->_table();
+            $select = $this->_getSqlSelection();
+            $sQuery = "SELECT $select FROM $table WHERE id = ?";
+            $aParams = array($iId);
+
+            $res = DBUtil::getResultArray(array($sQuery, $aParams));
+            // we _have_ a cache:  error is a disaster
+            if (PEAR::isError($res) || (count($res) === 0) || (count($res) > 1)) {
+                $oCache->alertFailure($sClassName, array('<strong>SERIOUS FAILURE:</strong> real object is an error, cache claims "valid".'));
+                return $res;
+            }
+
+            // now compare the sub-values.
+            $aFailures = array();
+            $sEntClass = get_class($this);
+
+            foreach ($res as $sKey => $aVal) {
+                if ($mCached[$sKey] != $res[$sKey]) {
+                    $id = $aVal['id'];
+                    foreach ($aVal as $sField => $sStored) {
+                        if ($mCached[$sKey][$sField] != $sStored) {
+                            $aFailures[] = sprintf("For %d field %s, stored value is %s, but cached value is %s", $id, $sField, $sStored, $mCached[$sKey][$sField]);
+                        }
+                    }
+                    // $aFailures[] = $sKey;
+                }
+            }
+
+            if (!empty($aFailures)) {
+                $oCache->alertFailure($sClassName, $aFailures);
+            }
+
+            $res = $mCached;
+        } else if ($bCached) {
+            global $default;
+            if (KTLOG_CACHE) $default->log->debug(sprintf("Using object cache for class %s, id %d", $sClassName, $iId));
+            $res = $mCached;
+            /* */
+        } else {
+            if (KTLOG_CACHE) $default->log->debug(sprintf("No object cache for class %s, id %d", $sClassName, $iId));
+            $table = $this->_table();
+            $select = $this->_getSqlSelection();
+            $sQuery = "SELECT $select FROM $table WHERE id = ?";
+            $aParams = array($iId);
+
+            $res = DBUtil::getResultArray(array($sQuery, $aParams));
+
+            if (PEAR::isError($res)) {
+               return $res;
+            }
+            if (count($res) === 0) {
+                return PEAR::raiseError(_kt("No such ID: ") . $iId);
+            }
+
+            if (count($res) > 1) {
+                return PEAR::raiseError(_kt("Multiple matches for ID: ") . $iId);
+            }
+            $oCache->set($group, $iId, $res);  // finally, cache if its "good".
+        }
+        $vk = array_flip($this->_aFieldToSelect);
+        $aLoadInfo = array();
+        foreach ($res[0] as $k => $v) {
+            $aLoadInfo[$vk[$k]] = $v;
+        }
+        $res = $this->loadFromArray($aLoadInfo);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        
+        
+        
+        $properties=array();
+        foreach($this->_aFieldToSelect as $key => $val){
+        	$properties[$val]=$aLoadInfo[$key];
+        }
+        return $properties;
+    }
 
     function loadFromArray ($aOptions) {
         if (!is_array($aOptions)) {

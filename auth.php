@@ -41,14 +41,6 @@
 // main library routines and defaults
 require_once('config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/session/Session.inc');
-/*require_once(KT_LIB_DIR . '/templating/templating.inc.php');
-require_once(KT_LIB_DIR . '/session/control.inc');
-require_once(KT_LIB_DIR . '/users/User.inc');
-require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
-require_once(KT_LIB_DIR . '/help/help.inc.php');
-require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
-require_once(KT_LIB_DIR . '/authentication/interceptorregistry.inc.php');
-require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');*/
 
 class AuthenticationDispatcher extends KTDispatcher {
 
@@ -56,6 +48,7 @@ class AuthenticationDispatcher extends KTDispatcher {
     {
         global $default;
 
+        // TODO error messages on login redirect for failed auth
         // dispatch based on received authentication content
         // OneLogin SAML authentication
         if (!empty($_POST['SAMLResponse']) && KTPluginUtil::pluginIsActive('auth.onelogin.plugin')) {
@@ -63,12 +56,9 @@ class AuthenticationDispatcher extends KTDispatcher {
 				require_once(KTPluginUtil::getPluginPath('auth.onelogin.plugin') . 'SAMLConsumer.inc.php');
                 $user = null;
 				$consumer = new SAMLConsumer();
-				$moo = base64_decode($_POST['SAMLResponse']);
 				if ($consumer->authenticate($_POST['SAMLResponse'], $user)) {
 				    // determine user from supplied username
-				    // TODO get user name and not email address!
-//				    $res = DBUtil::getOneResult("SELECT id FROM users WHERE username = '$userName'");
-				    $res = DBUtil::getOneResult("SELECT id FROM users WHERE email = '$user'");
+				    $res = DBUtil::getOneResult("SELECT id FROM users WHERE username = '$user'");
 				    if (PEAR::isError($res)) {
 				        $default->log->error("Error finding user $user for OneLogin SAML authentication: " . $res->getMessage());
 				        // redirect to login screen with appropriate error

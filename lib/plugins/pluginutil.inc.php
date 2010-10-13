@@ -199,14 +199,17 @@ class KTPluginUtil {
                 if ((strpos($path, KT_DIR) === false)) {
                     $path = KT_DIR . '/' . $path;
                 }
-                require_once($path);
-
-            	$oPlugin = new $classname($path);
-            	if($oPlugin->load()){
-            	   $aPlugins[] = $oPlugin;
-            	}else{
-            	    $aDisabled[] = "'{$aItem['plugin']}'";
-            	}
+                if(file_exists($path))
+                {
+	                require_once($path);
+	
+	            	$oPlugin = new $classname($path);
+	            	if($oPlugin->load()){
+	            	   $aPlugins[] = $oPlugin;
+	            	}else{
+	            	    $aDisabled[] = "'{$aItem['plugin']}'";
+	            	}
+                }
             }
         }
 

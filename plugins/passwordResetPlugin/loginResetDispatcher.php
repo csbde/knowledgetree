@@ -48,7 +48,7 @@ require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
 require_once(KT_LIB_DIR . '/help/help.inc.php');
 require_once(KT_LIB_DIR . '/help/helpreplacement.inc.php');
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
-require_once(KT_LIB_DIR . "/util/ktutil.inc"); 
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 class loginResetDispatcher extends KTDispatcher {
 
@@ -87,8 +87,8 @@ class loginResetDispatcher extends KTDispatcher {
             setcookie("CookieTestCookie", $cookietest, 0);
 
             $this->redirectTo('checkCookie', array(
-                'cookieVerify' => $cookietest,
-                'redirect' => $redirect,
+            'cookieVerify' => $cookietest,
+            'redirect' => $redirect,
             ));
             exit(0);
         }
@@ -132,32 +132,32 @@ class loginResetDispatcher extends KTDispatcher {
         $css[] = '/thirdpartyjs/extjs/resources/css/ext-all.css';
 
         // Include additional js and css files if plugin
-	    $oPlugin =& $oRegistry->getPlugin('password.reset.plugin');
-		
-		if ($oPlugin != null) {
-			$js[] = $oPlugin->getURLPath('resources/passwordReset.js');
-			$css[] = $oPlugin->getURLPath('resources/passwordReset.css');
-		}
+        $oPlugin =& $oRegistry->getPlugin('password.reset.plugin');
+
+        if ($oPlugin != null) {
+            $js[] = $oPlugin->getURLPath('resources/passwordReset.js');
+            $css[] = $oPlugin->getURLPath('resources/passwordReset.css');
+        }
 
         $sUrl = KTUtil::addQueryStringSelf('action=');
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('login_reset');
         $aTemplateData = array(
-              'errorMessage' => $errorMessage,
-              'errorMessageConfirm' => $errorMessageConfirm,
-              'redirect' => $redirect,
-              'systemVersion' => $default->systemVersion,
-              'versionName' => $default->versionName,
-              'languages' => $aRegisteredLanguageNames,
-              'selected_language' => $sLanguageSelect,
-	      	  'disclaimer' => $sDisclaimer,
-	      	  'js' => $js,
-	      	  'css' => $css,
-	      	  'sUrl' => $sUrl,
-			  'smallVersion' => $default->versionTier,
-			  'reset_password' => $reset_password,
-			  'username' => isset($_REQUEST['username']) ? $_REQUEST['username'] : null
+        'errorMessage' => $errorMessage,
+        'errorMessageConfirm' => $errorMessageConfirm,
+        'redirect' => $redirect,
+        'systemVersion' => $default->systemVersion,
+        'versionName' => $default->versionName,
+        'languages' => $aRegisteredLanguageNames,
+        'selected_language' => $sLanguageSelect,
+        'disclaimer' => $sDisclaimer,
+        'js' => $js,
+        'css' => $css,
+        'sUrl' => $sUrl,
+        'smallVersion' => $default->versionTier,
+        'reset_password' => $reset_password,
+        'username' => isset($_REQUEST['username']) ? $_REQUEST['username'] : null
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -171,8 +171,8 @@ class loginResetDispatcher extends KTDispatcher {
 
     function do_login() {
         $aExtra = array();
-        
-        if(!$this->check() && $_SESSION['userID'] != -2) { // bounce here, potentially.
+
+        if (!$this->check() && $_SESSION['userID'] != -2) { // bounce here, potentially.
             // User is already logged in - get the redirect
             $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
@@ -180,8 +180,8 @@ class loginResetDispatcher extends KTDispatcher {
             setcookie("CookieTestCookie", $cookietest, 0);
 
             $this->redirectTo('checkCookie', array(
-                'cookieVerify' => $cookietest,
-                'redirect' => $redirect,
+            'cookieVerify' => $cookietest,
+            'redirect' => $redirect,
             ));
             exit(0);
         }
@@ -236,7 +236,6 @@ class loginResetDispatcher extends KTDispatcher {
         }
 
         $res = $this->performLogin($oUser);
-
         if ($res) {
             $this->simpleRedirectToMain($res->getMessage(), $url, $queryParams);
             exit(0);
@@ -262,29 +261,26 @@ class loginResetDispatcher extends KTDispatcher {
         }
         return true;
     }
-    
-    
-    
-	/**
+
+    /**
      * Check if this is the user's first login EVER
      * If it is, set user-preferences db table to reflect date of first login
      *
      * @return boolean true if this is user's first login EVER
      */
     function checkFirstLogin() {
-        require_once(UserPreferences_PluginDir . DIRECTORY_SEPARATOR . "UserPreferences.inc.php");
-        
+        require_once(UserPreferences_PluginDir . DIRECTORY_SEPARATOR . 'UserPreferences.inc.php');
+
         $result = UserPreferences::getUserPreferenceValue($_SESSION['userID'], 'firstLogin');
-        
+
         //if returns empty, then it is user's first login
         if (empty($result)) {
-        	
-        	//now set db to reflect that user now has logged in
-        	UserPreferences::saveUserPreferences($_SESSION['userID'], 'firstLogin', date("Y-m-d H:i:s"));
-        	
-        	return true;
+            // set db to reflect that user has now logged in
+            UserPreferences::saveUserPreferences($_SESSION['userID'], 'firstLogin', date('Y-m-d H:i:s'));
+
+            return true;
         }
-        
+
         return false;
     }
 
@@ -319,13 +315,11 @@ class loginResetDispatcher extends KTDispatcher {
         if (PEAR::isError($sessionID)) {
             return $sessionID;
         }
-        
-        if ($this->checkFirstLogin()) {
-        	$GLOBALS['default']->log->debug(__FUNCTION__ . " first login for: " . $_SESSION['userID']);
-        	$_SESSION["isFirstLogin"] = true;
-        }
-        
-		$redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
+
+        // add a flag to check for bulk downloads after login is succesful; this will be cleared in the code which checks
+        $_SESSION['checkBulkDownload'] = true;
+
+        $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
         // DEPRECATED initialise page-level authorisation array
         $_SESSION["pageAccess"] = NULL;
@@ -334,8 +328,8 @@ class loginResetDispatcher extends KTDispatcher {
         setcookie("CookieTestCookie", $cookietest, 0);
 
         $this->redirectTo('checkCookie', array(
-            'cookieVerify' => $cookietest,
-            'redirect' => $redirect,
+        'cookieVerify' => $cookietest,
+        'redirect' => $redirect,
         ));
         exit(0);
     }
@@ -366,8 +360,8 @@ class loginResetDispatcher extends KTDispatcher {
             if ($res instanceof KTAuthenticationSource) {
                 $_SESSION['autosignup'] = $aExtra;
                 $this->redirectTo('autoSignup', array(
-                    'source_id' => $res->getId(),
-                    'username' => $username,
+                'source_id' => $res->getId(),
+                'username' => $username,
                 ));
                 exit(0);
             }
@@ -383,7 +377,7 @@ class loginResetDispatcher extends KTDispatcher {
     }
 
     function do_checkCookie() {
-        $cookieTest = KTUtil::arrayGet($_COOKIE, "CookieTestCookie", null);
+        $cookieTest = KTUtil::arrayGet($_COOKIE, 'CookieTestCookie', null);
         $cookieVerify = KTUtil::arrayGet($_REQUEST, 'cookieVerify', null);
 
         $url = $_SERVER["PHP_SELF"];
@@ -399,11 +393,22 @@ class loginResetDispatcher extends KTDispatcher {
             $this->simpleRedirectToMain(_kt('You must have cookies enabled to use the document management system.'), $url, $queryParams);
             exit(0);
         }
+        
+        if ($this->checkFirstLogin()) {
+            $GLOBALS['default']->log->debug(__FUNCTION__ . " first login for: " . $_SESSION['userID']);
+            // this line may no longer be necessary
+            $_SESSION['isFirstLogin'] = true;
+            if (KTPluginUtil::pluginIsActive('gettingstarted.plugin')) {
+                // redirect user to getting started page
+                $path = str_replace(KT_DIR, '', KTPluginUtil::getPluginPath('gettingstarted.plugin') . 'GettingStarted.php');
+                $redirect = KTUtil::kt_url() . $path;
+            }
+        }
 
         // check for a location to forward to
         if (!empty($redirect)) {
             $url = $redirect;
-        // else redirect to the dashboard if there is none
+            // else redirect to the dashboard if there is none
         } else {
             $url = KTUtil::kt_url();
 
@@ -448,12 +453,12 @@ class loginResetDispatcher extends KTDispatcher {
         return false;
     }
 
-	function do_sendResetRequest(){
-	    $email = $_REQUEST['email'];
-	    $user = $_REQUEST['username'];
+    function do_sendResetRequest(){
+        $email = $_REQUEST['email'];
+        $user = $_REQUEST['username'];
 
-	    // Check that the user and email match up in the database
-	    $sQuery = 'SELECT id FROM users WHERE username = ? AND email = ?';
+        // Check that the user and email match up in the database
+        $sQuery = 'SELECT id FROM users WHERE username = ? AND email = ?';
         $aParams = array($user, $email);
         $id = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
 
@@ -470,7 +475,7 @@ class loginResetDispatcher extends KTDispatcher {
         // Create the link to reset the password
         $query = 'pword_reset='.$randomKey;
         $url = KTUtil::addQueryStringSelf($query);
-//        $url = KTUtil::kt_url() . '/login.php?' . $query;
+        //        $url = KTUtil::kt_url() . '/login.php?' . $query;
 
         $subject = APP_NAME . ': ' . _kt('password reset request');
 
@@ -490,15 +495,15 @@ class loginResetDispatcher extends KTDispatcher {
     }
 
     function do_resetPassword(){
-	    $email = $_REQUEST['email'];
-	    $user = $_REQUEST['username'];
-	    $password = $_REQUEST['password'];
-	    $confirm = $_REQUEST['confirm'];
+        $email = $_REQUEST['email'];
+        $user = $_REQUEST['username'];
+        $password = $_REQUEST['password'];
+        $confirm = $_REQUEST['confirm'];
 
-	    if(!($password == $confirm)){
-	        return _kt('The passwords do not match, please re-enter them.');
-	    }
-	    $password = md5($password);
+        if(!($password == $confirm)){
+            return _kt('The passwords do not match, please re-enter them.');
+        }
+        $password = md5($password);
 
         // Get user from db
         $sQuery = 'SELECT id FROM users WHERE username = ? AND email = ?';

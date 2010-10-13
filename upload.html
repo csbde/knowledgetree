@@ -1,0 +1,270 @@
+<!--<link rel="stylesheet" type="text/css" href="/thirdpartyjs/extjs/resources/css/ext-all.css" />-->
+<script type="text/javascript" src="/thirdpartyjs/extjs/adapter/ext/ext-base.js"> </script>
+<script type="text/javascript" src="/thirdpartyjs/extjs/ext-all.js"> </script>
+
+<script type="text/javascript" src="/thirdpartyjs/jquery/jquery-1.4.2.min.js"> </script>
+<script type="text/javascript" src="/thirdpartyjs/jquery/jquery_noconflict.js"> </script>
+
+<script>
+function strpos (haystack, needle, offset) {
+            // http://kevin.vanzonneveld.net
+            // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+            // +   improved by: Onno Marsman    
+            // +   bugfixed by: Daniel Esteban
+            // +   improved by: Brett Zamir (http://brett-zamir.me)
+            // *     example 1: strpos('Kevin van Zonneveld', 'e', 5);
+            // *     returns 1: 14
+        
+            var i = (haystack+'').indexOf(needle, (offset || 0));
+            return i === -1 ? false : i;
+        }
+        
+        
+        function trim (str, charlist) {
+            // http://kevin.vanzonneveld.net
+            // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+            // +   improved by: mdsjack (http://www.mdsjack.bo.it)
+            // +   improved by: Alexander Ermolaev (http://snippets.dzone.com/user/AlexanderErmolaev)
+            // +      input by: Erkekjetter
+            // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+            // +      input by: DxGx
+            // +   improved by: Steven Levithan (http://blog.stevenlevithan.com)
+            // +    tweaked by: Jack
+            // +   bugfixed by: Onno Marsman
+            // *     example 1: trim('    Kevin van Zonneveld    ');
+            // *     returns 1: 'Kevin van Zonneveld'
+            // *     example 2: trim('Hello World', 'Hdle');
+            // *     returns 2: 'o Wor'
+            // *     example 3: trim(16, 1);
+            // *     returns 3: 6
+        
+            var whitespace, l = 0, i = 0;
+            str += '';
+            
+            if (!charlist) {
+                // default list
+                whitespace = " \n\r\t\f\x0b\xa0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000";
+            } else {
+                // preg_quote custom list
+                charlist += '';
+                whitespace = charlist.replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '$1');
+            }
+            
+            l = str.length;
+            for (i = 0; i < l; i++) {
+                if (whitespace.indexOf(str.charAt(i)) === -1) {
+                    str = str.substring(i);
+                    break;
+                }
+            }
+            
+            l = str.length;
+            for (i = l - 1; i >= 0; i--) {
+                if (whitespace.indexOf(str.charAt(i)) === -1) {
+                    str = str.substring(0, i + 1);
+                    break;
+                }
+            }
+            
+            return whitespace.indexOf(str.charAt(0)) === -1 ? str : '';
+        }
+</script>
+
+
+
+    <link rel="stylesheet" type="text/css" href="/thirdpartyjs/jquery/plugins/ajaxupload2/fileUploader.css" />
+    
+    <style type="text/css">
+        #uploaddialog {
+            overflow: hidden;
+            padding: 10px;
+            /*display: none;*/
+        }
+        
+        #filesuploadlist {
+            margin: 20px 0 20px 0;
+        }
+        
+        #folderpathchooser {
+            display: none;
+        }
+        
+        
+    </style>
+
+
+    <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/ajaxupload2/jquery.fileUploader.js"> </script>
+    <script type="text/javascript" src="/thirdpartyjs/jquery/plugins/ajaxupload2/jquery.json-2.2.min.js"> </script>
+
+    
+    <script type="text/javascript">
+
+
+
+function showUploadWindow()
+{
+    var uploadWin = new Ext.Window({
+        layout      : 'fit',
+        width       : 520,
+        height      : 320,
+        resizable   : false,
+        closable    : true,
+        closeAction :'destroy',
+        y           : 150,
+        autoScroll  : true,
+        shadow: true,
+        modal: true,
+        title: 'Upload Files',
+        html: '<div id="modalcontents">' + kt.api.getFragment('upload.dialog') + '</div>',
+        listeners: {}
+    });
+    uploadWin.show();
+}
+
+
+
+    </script>
+    <script type="text/javascript">
+		jQuery(function(){
+			jQuery('#uploader').fileUploader({allowedExtension:''});
+            
+            jQuery("#changepathlink").live("click", function(){
+                jQuery('#folderpathchooser').toggle();
+                
+                if (jQuery('#folderpathchooser').css('display') == 'none') {
+                    
+                } else {
+                    
+                    loadFolderPath(jQuery('#currentPath').val());
+                }
+                
+                
+            });
+            
+            jQuery("#folderpathchooser li").live("click", function(){
+                node = jQuery(this);
+                
+                jQuery('#currentPath').val(node.attr('folderid'));
+                
+                
+                
+                nodeInTree = jQuery('ul#loadedpath li[folderid='+node.attr('folderid')+']');
+                
+                if (node.attr('folderid') == 1) {
+                    pathToItem = ' / (Root Directory)';
+                } else {
+                    pathToItem = getNodeTxt(nodeInTree.html());
+                    
+                    nodeInTree.parentsUntil('#loadedpath').each(function(i){
+                        
+                        if (jQuery(this).get(0).tagName == 'LI') {
+                            pathToItem = getNodeTxt(jQuery(this).html())+'/'+pathToItem;
+                        }
+                    });
+                }
+                
+                
+                
+                jQuery('#uploadpathstring').html(pathToItem);
+                
+                loadFolderPath(node.attr('folderid'));
+                
+                
+                
+                
+            });
+		});
+        
+        
+        function getNodeTxt(html)
+        {
+            if (strpos(html, '<') == false) {
+                nodeText = trim(html);
+            } else {
+                nodeText = trim(html.substr(0, strpos(html, '<')));
+            }
+            
+            return nodeText;
+        }
+        
+
+        function loadFolderPath(currentId)
+        {
+            console.log('loadFolderPath '+currentId);
+            
+            html = '<ul id="currentPathStuff">';
+            
+            currentNode = jQuery('ul#loadedpath li[folderid='+currentId+']');
+            
+            if (currentId+'' != '1') {
+                
+                html += '<li folderid="'+currentNode.parent().parent().attr('folderid')+'">[Folder Up]'+'</li>';
+            }
+            
+            if (currentNode.length == 0) {
+                // NEED TO RELOAD TREE
+                console.log('NEED TO RELOAD TREE');
+            } else {
+                if (currentNode.hasClass('loadedchildren')) {
+                    childItems = jQuery('ul#loadedpath li[folderid='+currentId+']>ul');
+                    
+                    if (childItems.length == 0) {
+                        
+                    } else {
+                        childItems.children().each(function(i){
+                            child = jQuery(this);
+                            
+                            nodeText = getNodeTxt(child.html());
+                            
+                            
+                            html += '<li folderid="'+child.attr('folderid')+'">'+nodeText+'</li>';
+                        });
+                    }
+                } else {
+                    console.log('NEED TO LOAD CHILDREN');
+                }
+            }
+            
+            html += '</ul>';
+            
+            jQuery('#folderpathchooser').html(html);
+        }
+        
+	</script>
+
+
+
+    <div id="uploaddialog">
+        
+        <input type="text" id="currentPath" value="2" />
+        
+        <div id="uploadpath">
+            Files will be uploaded to: <span id="uploadpathstring">/tohir</span> <a href="javascript:;" id="changepathlink">Change</a>
+            <div id="folderpathchooser">ss</div>
+        </div>
+        
+        <form action="upload.php" method="post" enctype="multipart/form-data">
+            
+            <input  name="filename" type="text" />
+            
+            <input id="uploader" name="userfile" type="file" style="width:2250px;" />
+            
+            <br /><br />
+            
+            <input type="submit" value="Upload" id="pxUpload" />
+            <input type="reset" value="Clear" id="pxClear" />
+        </form>
+
+    </div>
+<ul id="loadedpath">
+    <li class="loadedchildren" folderid="1"> &nbsp;
+        <ul>
+            <li class="loadedchildren" folderid="2">Dropped Documents
+                <ul>
+                    <li class="notloaded" folderid="3">Admin</li>
+                    <li class="notloaded" folderid="4">Tohir</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
