@@ -185,7 +185,18 @@
 							{/if}
 						{/foreach}
 				</ul>
-				<div id="bigbuttons"></div>
+				<div id="bigbuttons">
+					{if $page->submenuitems}
+						<ul id="nav" class="tabbed">
+						{foreach item=oSubMenuItem from=$page->submenuitems}
+							{assign var=portlet_output value=$oSubMenuItem->render()}
+							{if $portlet_output}
+							{$portlet_output}
+							{/if}
+						{/foreach}
+						</ul>
+					{/if}
+				</div>
 				<div id="midright">
 					
 					<span id="midrightcorner">&nbsp;</span>
