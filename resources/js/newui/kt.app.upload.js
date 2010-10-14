@@ -59,7 +59,7 @@ kt.app.upload=new function(){
 		var index = fileName.lastIndexOf('.');
 		var ext = fileName.substr(index).toLowerCase();
 		
-		console.log('ext '+ext);
+		//console.log('ext '+ext);
 		
 		var e = kt.lib.meta.get(item[0],'item');
 		
@@ -242,7 +242,7 @@ kt.app.upload=new function(){
 	}
 	
 	//add the uploaded to the repo
-	this.addDocuments = function() {		
+	/*this.addDocuments = function() {		
 		//show the progress widget
 		this.unhideProgressWidget();
 		
@@ -326,6 +326,91 @@ kt.app.upload=new function(){
 			
 		}, function(){}, i*20000);
 		//20 seconds for each file!
+		
+		this.closeWindow();
+	}*/
+	
+	//add the uploaded to the repo
+	this.addDocuments = function() {		
+		//show the progress widget
+		this.unhideProgressWidget();
+		
+		//disable the button!
+		this.hideWindow();
+		
+		//what folder to upload to?
+		var folderID = jQuery("#currentPath").val();
+		//console.log('addDocuments folderID '+folderID);
+		
+		//iterate through files to see which are ready to be added
+		jQuery.each(self.data.files, function(key, value) {
+			//create the array of files to be uploaded
+			//console.log('doBulk '+value.options.do_bulk_upload);
+			if(value.options.is_uploaded) {
+				var fileName = value.options['fileName'];
+				var doBulk = value.options.do_bulk_upload;
+				var docTypeID = value.options['docTypeId'];
+				var metadata = value.options['metadata'];
+				var tempFile = self.data['s3TempPath']+fileName
+				
+				var fileToAdd = {'fileName':fileName, 'folderID':folderID, 'docTypeID':docTypeID, 'metadata':metadata, 's3TempFile':tempFile, 'doBulk':doBulk};
+				
+				kt.api.addDocuments(fileToAdd, function(data){
+					//put this in a try...catch because error occurs if user browses away before the upload completes
+					//BUT upload still does complete, error occurs because tries to add item to non-existent page
+					try {
+						if(self.data['baseFolderID'] == folderID){
+							//jQuery.each(data.data.addedDocuments, function(key, value){
+							//get the response from the server
+							var parsedJSON = jQuery.parseJSON(data.data.addedDocument[0]);
+							
+							//console.dir(parsedJSON);
+							
+							//delete the file from the array because we don't want to upload it again!
+							delete self.data.files[parsedJSON.filename];
+							
+							//don't need to do this since we are closing the window!
+							//self.findItem(parsedJSON.filename).completeAdd();
+							
+							//now add the new item to the grid
+							var item = {
+								id: parsedJSON.id,
+					    		is_immutable: false,
+					    		is_checkedout: false,
+					    		filename: parsedJSON.filename,
+					    		title: parsedJSON.title,
+					    		owned_by: parsedJSON.owned_by,
+					    		created_by: parsedJSON.created_by,
+					    		created_date: parsedJSON.created_date,
+					    		modified_by: parsedJSON.modified_by,
+					    		modified_date: parsedJSON.modified_date,
+					    		mimeicon: parsedJSON.mimeicon,
+					    		thumbnail: '',
+					    		thumbnailclass: 'nopreview'
+					    	};
+							
+							//remove the "folder is empty" widget from the Browse View
+					    	jQuery('.page .notification').remove();
+							
+							//now add the item to the Browse View
+					    	kt.pages.browse.addDocumentItem(item);
+					    	
+							//});
+							
+							kt.lib.setFooter();
+						}
+						
+						//this.updateProgress('Documents uploaded');
+						
+						//jQuery('#uploadProgress').fadeOut(5000); 
+					} catch(e){
+					 //console.dir(e);
+					}
+					
+				}, function(){}, 60000);
+				//20 seconds for each file!
+			}
+		});		
 		
 		this.closeWindow();
 	}
@@ -431,7 +516,7 @@ kt.app.upload=new function(){
 	    		element: document.getElementById('upload_add_file'),
 	    		action: 'test.php',
 	    		params: {},
-	    		buttonText: 'Choose File(s)',
+	    		buttonText: 'Choose File',
 	    		allowedExtensions: [],
 	    		sizeLimit: 0,
 	    		onSubmit: function(id,fileName){

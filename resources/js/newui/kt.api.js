@@ -2,13 +2,11 @@ kt.api=new function(){
 	this.cacheTimeout=20;
 	this.persistentDataCacheTimeout=30000;
 	
-	this.addDocuments = function(documents,callback,errorCallback,customTimeout){
+	this.addDocuments = function(document,callback,errorCallback,customTimeout){
 		var params = {};		
-		params.documents = documents;		
+		params.document = document;		
 		var synchronous=false;
 		var func='siteapi.uploadFile';
-		
-		console.log(customTimeout);
 		
 		if(callback){
 			//console.log('callback');
