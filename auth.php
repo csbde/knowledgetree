@@ -59,35 +59,41 @@ class AuthenticationDispatcher extends KTDispatcher {
 				if ($consumer->authenticate($_POST['SAMLResponse'], $user)) {
 				    // determine user from supplied username
 				    $res = DBUtil::getOneResult("SELECT id FROM users WHERE username = '$user'");
-				    if (PEAR::isError($res)) {
-				        $default->log->error("Error finding user $user for OneLogin SAML authentication: " . $res->getMessage());
+				    if (PEAR::isError($res) || empty($res['id'])) {
+				        $default->log->error("Error finding user $user (OneLogin SAML authentication)" 
+				                             . (PEAR::isError($res) ? ': ' . $res->getMessage() : ''));
 				        // redirect to login screen with appropriate error
 				        header('Location: login.php');
 				    }
 				    
 				    // set user as logged in
 				    $user = User::get($res['id']);
+				    if (PEAR::isError($user)) {
+				        $default->log->error("User $user does not exist (OneLogin SAML authentication): " . $user->getMessage());
+				        // redirect to login screen with appropriate error
+				        header('Location: login.php');
+				    }
 				    $session = new Session();
 				    $sessionID = $session->create($user);
 				    if (PEAR::isError($sessionID)) {
-				        $default->log->error("Error creating session for user $user for OneLogin SAML authentication: " . $sessionID->getMessage());
+				        $default->log->error("Error creating session for user $user (OneLogin SAML authentication): " . $sessionID->getMessage());
 				        // redirect to login screen with appropriate error
 				        header('Location: login.php');
 				    }
 				    
 				    // log authentication method used
-				    $default->log->info('User logged in using OneLogin SAML authentication');
+				    $default->log->info('User logged in (OneLogin SAML authentication)');
 				    
                     // add a flag to check for bulk downloads after login is succesful; this will be cleared in the code which checks
 				    $_SESSION['checkBulkDownload'] = true;
 
-				    $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 
 				    // DEPRECATED initialise page-level authorisation array
-				    $_SESSION["pageAccess"] = null;
+				    $_SESSION['pageAccess'] = null;
 
+				    $redirect = strip_tags(KTUtil::arrayGet($_REQUEST, 'redirect'));
 				    $cookietest = KTUtil::randomString();
-				    setcookie("CookieTestCookie", $cookietest, 0);
+				    setcookie('CookieTestCookie', $cookietest, 0);
 
 				    $this->redirectTo('checkCookie', array(
 				    'cookieVerify' => $cookietest,
