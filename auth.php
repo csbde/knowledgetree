@@ -48,7 +48,7 @@ class AuthenticationDispatcher extends KTDispatcher {
     {
         global $default;
 
-        // TODO error messages on login redirect for failed auth
+        // TODO move this code to within the plugin?  may wish to share it between methods if we add more auth methods?
         // dispatch based on received authentication content
         // OneLogin SAML authentication
         if (!empty($_POST['SAMLResponse']) && KTPluginUtil::pluginIsActive('auth.onelogin.plugin')) {
@@ -63,7 +63,7 @@ class AuthenticationDispatcher extends KTDispatcher {
 				        $default->log->error("Error finding user $user (OneLogin SAML authentication)" 
 				                             . (PEAR::isError($res) ? ': ' . $res->getMessage() : ''));
 				        // redirect to login screen with appropriate error
-				        header('Location: login.php');
+				        header('Location: login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username%2C+and+try+again.');
 				    }
 				    
 				    // set user as logged in
@@ -71,14 +71,14 @@ class AuthenticationDispatcher extends KTDispatcher {
 				    if (PEAR::isError($user)) {
 				        $default->log->error("User $user does not exist (OneLogin SAML authentication): " . $user->getMessage());
 				        // redirect to login screen with appropriate error
-				        header('Location: login.php');
+				        header('Location: login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username%2C+and+try+again.');
 				    }
 				    $session = new Session();
 				    $sessionID = $session->create($user);
 				    if (PEAR::isError($sessionID)) {
 				        $default->log->error("Error creating session for user $user (OneLogin SAML authentication): " . $sessionID->getMessage());
 				        // redirect to login screen with appropriate error
-				        header('Location: login.php');
+				        header('Location: login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username%2C+and+try+again.');
 				    }
 				    
 				    // log authentication method used
@@ -104,17 +104,17 @@ class AuthenticationDispatcher extends KTDispatcher {
 				}
 				else {
 				    // redirect to login screen with appropriate error
-                    header('Location: login.php');
+                    header('Location: login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username%2C+and+try+again.');
 				}
 			}
 			catch (Exception $e) {
 			    // redirect to login screen with appropriate error
-			    header('Location: login.php');
+			    header('Location: login.php?errorMessage=Login+failed.++Please+check+your+onelogin+username%2C+and+try+again.');
 			}
         }
         
         // redirect to main login page
-        header('Location: login.php');
+        header('Location: login.php?errorMessage=Login+failed.++Please+check+your+username+and+password%2C+and+try+again.');
     }
 
 }
