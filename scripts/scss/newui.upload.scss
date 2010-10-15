@@ -47,7 +47,7 @@ table.uploadTable{
 	.ul_browser{}
 	
 	.no_files_selected {
-		margin: 18% auto;
+		margin: 18% auto auto auto;
 		font-family: tahoma,arial,helvetica,sans-serif;
 		font-size: 11px;
 		/*font-weight: bold;*/
@@ -301,9 +301,23 @@ table.metadataTable{
 				margin-left: 20px;
 				margin-bottom: 8px;
 				
-				.ul_meta_field_checkbox_label{
-					/*background-color:#666699;*/
+				label{
+					display:block;
+					padding-left: 5px;
+					margin-top: -10px;
+		   	 		/*text-indent: 5px;*/
+					float:left;
+					font-size: 11px;
 				}
+				input[type="checkbox"]{
+					float:left;
+					padding-left:2px;
+					margin-top: -10px;
+				}
+				
+				/*.ul_meta_field_checkbox_label{
+					background-color:#666699;
+				}*/
 			}
 			.required {
 				/*background-color:#666699;*/

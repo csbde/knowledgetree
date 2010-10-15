@@ -66,12 +66,42 @@ kt.app.upload=new function(){
 		//console.dir(e.options);
 		//console.log('id '+e.options.elem[0].id);		
 		
+		//TODO: for all bulk extensions!
 		//do we need to suggest a bulk upload?
-		if(ext == '.zip') {
+		if(this.isBulkExtension(ext)) {
 			jQuery('#'+e.options.elem[0].id+' .ul_bulk_checkbox').css('display','inline-block');
 		}
 		
 		return obj;
+	}
+		
+	//check if is bulk type extension
+	this.isBulkExtension = function(ext) {
+		var bulkExtensions = new Array('.ar', '.bz', '.bz2', '.deb', '.gz', '.rar', '.tgz', '.tar', '.tbz', '.zip');
+		
+		var isBulk = false;
+		
+		for (var i =0; i < bulkExtensions.length; i++) {
+			if (bulkExtensions[i] == ext){
+				isBulk = true;
+				break;
+			}
+		}
+		
+		return isBulk;
+	}
+	
+	//TODO: implement this!
+	this.uniqueFileName=function(){
+		var fileName='_';
+		var size=16;
+        var alpha = "abcdefghijklmnopqrstuvwxyz1234567890_";
+        var asize=alpha.length;
+        for(var i=0; i<size; i++){
+        	fileName=fileName+''+alpha[Math.floor(Math.random()*asize)];
+        }
+     
+        return fileName;
 	}
 	
 	//A DOM helper function that will take elem as any dom element inside a file item fragment 
@@ -120,13 +150,6 @@ kt.app.upload=new function(){
 		}
 		return null;
 	}
-	
-	/*this.removeItem=function(fileName){
-		if(typeof(self.data.files[fileName])!='undefined'){
-			return self.data.files[fileName];
-		}
-		return null;
-	}*/
 	
 	this.getNodeTxt = function(html)
 	{
@@ -242,7 +265,7 @@ kt.app.upload=new function(){
 	}
 	
 	//add the uploaded to the repo
-	/*this.addDocuments = function() {		
+	this.addDocuments = function() {		
 		//show the progress widget
 		this.unhideProgressWidget();
 		
@@ -257,17 +280,30 @@ kt.app.upload=new function(){
 		
 		//what folder to upload to?
 		var folderID = jQuery("#currentPath").val();
-		console.log('addDocuments folderID '+folderID);
+		//console.log('addDocuments folderID '+folderID);
 		
 		//iterate through files to see which are ready to be added
 		jQuery.each(self.data.files, function(key, value) {
 			//create the array of files to be uploaded
-			console.log('doBulk '+value.options.do_bulk_upload);
+			//console.log('doBulk '+value.options.do_bulk_upload);
 			if(value.options.is_uploaded) {
 				var fileName = value.options['fileName'];
 				var doBulk = value.options.do_bulk_upload;
 				var docTypeID = value.options['docTypeId'];
-				var metadata = value.options['metadata'];
+				
+				var metadata = {};
+				var j = 0;
+				jQuery.each(value.options['metadata'], function(key, value){
+					//console.log(key);
+					//console.dir(value);
+					
+					metadata[j++] = {'id':key, 'value':value};
+				});
+				//var metadata = value.options['metadata'];
+				
+				
+				//console.dir(metadata);
+				
 				var tempFile = self.data['s3TempPath']+fileName
 				
 				filesToAdd[i++] = {'fileName':fileName, 'folderID':folderID, 'docTypeID':docTypeID, 'metadata':metadata, 's3TempFile':tempFile, 'doBulk':doBulk};
@@ -282,6 +318,8 @@ kt.app.upload=new function(){
 					jQuery.each(data.data.addedDocuments, function(key, value){
 						//get the response from the server
 						var parsedJSON = jQuery.parseJSON(value);
+						
+						//console.dir(parsedJSON);
 						
 						//delete the file from the array because we don't want to upload it again!
 						delete self.data.files[parsedJSON.filename];
@@ -314,8 +352,10 @@ kt.app.upload=new function(){
 				    	
 					});
 					
-					kt.lib.setFooter();
+					//kt.lib.setFooter();
 				}
+				
+				kt.lib.setFooter();
 				
 				this.updateProgress('Documents uploaded');
 				
@@ -328,10 +368,10 @@ kt.app.upload=new function(){
 		//20 seconds for each file!
 		
 		this.closeWindow();
-	}*/
+	}
 	
 	//add the uploaded to the repo
-	this.addDocuments = function() {		
+	/*this.addDocuments = function() {		
 		//TODO: don't show progress for bulk uploads
 		//show the progress widget
 		this.unhideProgressWidget();
@@ -414,7 +454,7 @@ kt.app.upload=new function(){
 		});		
 		
 		this.closeWindow();
-	}
+	}*/
 	
 	this.closeWindow = function() {
 		uploadWindow = Ext.getCmp('extuploadwindow');
@@ -522,13 +562,12 @@ kt.app.upload=new function(){
 	    		allowedExtensions: [],
 	    		sizeLimit: 0,
 	    		onSubmit: function(id,fileName){
-	    			
+	    			//remove the 'No Files Selected' message
 	    			jQuery('.no_files_selected').css('display', 'none');
-	    			//if(docTypeHasRequiredFields){
-	    				//TODO: is this needed here?
-	    				kt.app.upload.disableUploadButton();
-	    		    //}
-	    			self.addUpload(fileName,self.elems.qq, docTypeHasRequiredFields);
+	    			//disable the Upload button as can only upload once upload to S3 completes
+    				kt.app.upload.disableUploadButton();
+	    		    
+	    			self.addUpload(fileName, self.elems.qq, docTypeHasRequiredFields);
 	    		},
 	    		onComplete: function(id,fileName,responseJSON){
 	    			try{
@@ -579,6 +618,9 @@ kt.app.upload=new function(){
 				});
 				
 				jQuery('#uploadpathstring').html(kt.app.upload.getNodePath(jQuery('#currentPath').val()));
+				
+				//var uniqueFileName = result.data.amazoncreds.awstmppath+kt.app.upload.uniqueFileName();
+				//console.log('uniqueFileName '+uniqueFileName);
 				
 				//TODO: rather use a randomized name!
 				self.uploader.setParams({
@@ -674,7 +716,7 @@ kt.app.upload.uploadStructure=function(options){
 	
 	this.setProgress=function(text,state){
 		//console.log('setProgress '+text+' '+state);
-		var state=kt.lib.Object.enum(state,'uploading,waiting,ui_meta,add_doc,done','waiting');
+		var state=kt.lib.Object.ktenum(state,'uploading,waiting,ui_meta,add_doc,done','waiting');
 				
 		var e=jQuery('.ul_progress',self.options.elem);
 		e.html(text);
@@ -711,6 +753,7 @@ kt.app.upload.uploadStructure=function(options){
 	}
 	
 	this.setMetaData=function(key,value){
+		//console.log('setMetaData '+key+' '+value);
 		self.options.metadata[key]=value;
 	};
 	
@@ -722,7 +765,7 @@ kt.app.upload.uploadStructure=function(options){
 		delete self.options.parent.data.files[self.options.fileName];
 		
 		if(JSON.stringify(self.options.parent.data.files)==="{}") {
-			console.log('no files');
+			//console.log('no files');
 			jQuery('.no_files_selected').css('display', 'block');
 		}		
 		
@@ -879,14 +922,14 @@ kt.app.upload.uploadStructure=function(options){
 						//are we dealing with a multi-select array?
 						if(jQuery('.ul_meta_field_'+idx,self.options.metaDataTable).attr('multiple')) {
 							for (var i = 0; i < field.options.length; i++) {
-								if (jQuery.inArray(field.options[i].value, self.options.metadata[idx]) > -1) {
+								if (jQuery.inArray(field.options[i].text, self.options.metadata[idx]) > -1) {
 									field.options[i].selected = true;
-									break;
+									//break;
 								}
 							}
 						} else {
 							for (var i = 0; i < field.options.length; i++) {
-								if (field.options[i].value == self.options.metadata[idx]) {
+								if (field.options[i].text == self.options.metadata[idx]) {
 									field.selectedIndex = i;
 									break;
 								}
@@ -937,7 +980,7 @@ kt.app.upload.uploadStructure=function(options){
 			jQuery('.ul_metadata').find('.required').each(function(index) {
 				var field = jQuery(this)[0];
 				var tag=(field.tagName+'').toLowerCase();
-				console.log('tag '+tag);
+				//console.log('tag '+tag);
 				//TODO: need to do for all the diferent field types, incl tree!!
 				
 				switch(tag){
@@ -1030,6 +1073,7 @@ kt.app.upload.uploadStructure=function(options){
 	this.changeDocType=function(docType){
 		self.options.docTypeId=docType;
 		
+		try {
 		//TODO: what does this do exactly?
 		var selectBox=jQuery('.ul_doctype',self.options.metaDataTable)[0];
 		for(var idx in selectBox.options){
@@ -1062,6 +1106,7 @@ kt.app.upload.uploadStructure=function(options){
 				}
 			}
 		}
+		} catch(e){}
 	};
 	
 	this.getFieldType=function(field){
