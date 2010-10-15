@@ -102,6 +102,8 @@ function uploadFile($params) {
 			
         	    $storage = KTStorageManagerUtil::getSingleton();
         	    $response = $storage->headS3Object($sS3TempFile);
+        	    file_put_contents('uploadFile.txt', "\n\rresponse $response", FILE_APPEND);
+        	    $size = 0;
         	    if (($response instanceof ResponseCore) && $response->isOK()) {
         	        $size = $response->header['content-length'];
         	    }
@@ -109,8 +111,9 @@ function uploadFile($params) {
         	    $aOptions = array("documenttype" => $oDocumentType,
         	    				'metadata' => $MDPack);
         	    
-				$bm = new KTAmazonS3BulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
-		        $res = $bm->import($filesitem['sPathOnS3'], $size);
+				$bm = new KTAmazonS3BulkImportManager($oFolder, $fs, $oUser, $aOptions);
+		        $res = $bm->import($sS3TempFile, $size);
+		        file_put_contents('uploadFile.txt', "\n\rres $res", FILE_APPEND);
 		        $archives[] = $res;
 	        	
 	        	
