@@ -7,15 +7,16 @@
         	<!--  tr><td class="ul_heading">Heading</td></tr -->
         	<tr>
         		<td valign="middle" style="height:29px; vertical-align: middle;">
-        			<span id="upload_add_file" class="ul_button">Choose Files</span> <span style="display: inline-block; margin: auto 5px">Choose files to upload, then click Upload.</span>
+        			<span id="upload_add_file" class="ul_button">Choose Files</span> <span style="display: inline-block; top: -10px; padding-left: 10px; position: relative; ">Choose files to upload, then click 'Upload'</span>
         		</td>
         	</tr>
-        	<tr><td class="ul_list"><!-- span class="files"></span --></td></tr>
+        	<tr><td class="ul_list"><span class="no_files_selected">No files selected</span><!-- span class="files"></span --></td></tr>
         	
-        	<tr><td class="ul_actions"><input type="button" value="Cancel" onclick="kt.app.upload.closeWindow();" /><input id="ul_actions_upload_btn" type="button" value="Upload" onClick="kt.app.upload.addDocuments();" /></td></tr>
-        	
-        	<tr><td class="ul_folder_display">Files will be uploaded to: <span id="uploadpathstring">...</span> &nbsp; <a href="javascript:;" id="changepathlink">Change</a>
-			<div id="folderpathchooser" style="background:#FFF;display:none;"></div></td></tr>
+        	<tr><td class="ul_actions"><div style="display:inline-block; margin-top: 10px;">Upload files to: KnowledgeTree
+        	<span id="uploadpathstring">...</span> &nbsp; <a href="javascript:;" id="changepathlink">Change</a></div>
+			<div id="folderpathchooser" style="background:#FFF;display:none;"></div><input type="button" class="ul_actions_btns" value="Cancel" onclick="kt.app.upload.closeWindow();" />
+			<input id="ul_actions_upload_btn" class="ul_actions_btns" type="button" value="Upload" onClick="kt.app.upload.addDocuments();" /></td></tr>
+        
         </table>
 		
 		

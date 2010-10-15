@@ -29,6 +29,11 @@
 table.uploadTable{
 	width: 100%;
 	height: 300px;
+	
+	input, label {
+		font-family: tahoma,arial,helvetica,sans-serif;
+	}
+	
 	td{
 		height: 1px;
 	}
@@ -40,6 +45,17 @@ table.uploadTable{
 	}
 	
 	.ul_browser{}
+	
+	.no_files_selected {
+		margin: 18% auto;
+		font-family: tahoma,arial,helvetica,sans-serif;
+		font-size: 11px;
+		/*font-weight: bold;*/
+		/*color:	#666666;*/
+		width: 120px;
+		display: block;
+	}
+	
 	.ul_list{
 		max-height: 200px;
 		min-height: 200px;
@@ -52,6 +68,7 @@ table.uploadTable{
 		background-color: #FFFFFF;
 	}
 	.ul_actions{
+		
 		input[type="button"]{
 			float: right;
 			margin: 5px;
@@ -62,7 +79,19 @@ table.uploadTable{
 			border: 1px solid #A8A8A8;	
 			padding: 2px 5px;
 			text-align: center;
+			font-size: 11px;
+			font-weight: bold;
+			color: #666666;
+			
+			&:hover{
+				color:black;
+			}
+		
 		}
+		input[type="button"][disabled] {
+			color: #CCCCCC;
+		}
+		
 	}
 	.files{
 		height:auto; 
@@ -81,6 +110,10 @@ table.uploadTable{
 		border: 1px solid #A8A8A8;	
 		padding: 6px 15px;
 		text-align: center;
+		color: #666666;			
+		&:hover{
+			color:black;
+		}
 	}
 	.qq-upload-drop-area{
 		height: 50px;
@@ -98,6 +131,7 @@ table.uploadTable{
 		}
 	}
 	.ul_item{
+		min-height: 14px;
 		border-bottom: 1px solid #DAECF6;
 		width: auto;
 		display: block;
@@ -125,37 +159,53 @@ table.uploadTable{
 			}
 			font-weight: bold;
 			margin: 0px 15px;
+			width: 100px;
 		}
 		.ul_bulk_checkbox {
-			float: right;
-			visibility:hidden;
+			display: none;
+		}
+		#unzip_checkbox {
+			margin-right: 5px;
+		}
+		#unzip_checkbox_label {
+			top: -2px;
+			position: relative;
 		}
 		/* while it is uploading to s3  - preparing upload */
 		&.ul_f_uploading{
 			.ul_progress{
-				color: #A10000;
+				color: #FF9933;
 			}
+			background-color: #FFFF97;
 		}
 		
 		/* while it is waiting to be added - ready */
 		&.ul_f_waiting{
 			.ul_progress{
-				color: #FFD200;
+				
+				color: RGB(0, 97, 0);
 			}
+			background-color: RGB(198, 239, 206);
 		}
 		
 		/* while it is waiting for compulsory metadata - enter metadata */
 		&.ul_f_ui_meta{
 			.ul_progress{
-				color: #00A100;
+				color: RGB(156, 0, 6);
+				&:hover {
+					text-decoration: underline;
+				}
 			}
+			background-color: RGB(255, 199, 206);
+						
 		}
 		
 		/* while it is adding a document to knowledgetree- uploading document */
 		&.ul_f_add_doc{
 			.ul_progress{
-				color: #A10000;
+				color: RGB(156, 101, 0);
 			}
+			background-color: RGB(255, 235, 156);
 		}
 
 		/* when it is done - upload successful */
@@ -172,6 +222,12 @@ table.uploadTable{
 }
 
 table.metadataTable{
+
+	input, select, label {
+		font-family: tahoma,arial,helvetica,sans-serif;
+		font-size: 12px;
+	}
+
 	width: 100%;
 	height: 300px;
 	td{
@@ -215,6 +271,7 @@ table.metadataTable{
 				top: -8px;
 				left: 15px;
 				font-weight: bold;
+				font-size: 12px;
 				border: 1px solid #85A2BD;
 				background-color: inherit;
 				padding: 2px 5px;
@@ -243,6 +300,10 @@ table.metadataTable{
 				display: block;
 				margin-left: 20px;
 				margin-bottom: 8px;
+				
+				.ul_meta_field_checkbox_label{
+					/*background-color:#666699;*/
+				}
 			}
 			.required {
 				/*background-color:#666699;*/
@@ -259,11 +320,12 @@ table.metadataTable{
 				position: relative;
 				color: #666666;
 				font-weight: bold;
+				font-size: 12px;
 				.ul_meta_label_descr{
 					@include corners(3px);
 					@include shadow(10px, #000000);
 					padding: 5px;
-					background-color: #E1D084;
+					background-color: #FFF0B8;
 					border: 1px solid darken(#E1D084,35%);
 					position: absolute;
 					top: 5px;
@@ -295,16 +357,31 @@ table.metadataTable{
 			border: 1px solid #A8A8A8;	
 			padding: 2px 5px;
 			text-align: center;
+			font-family: tahoma,arial,helvetica,sans-serif;
+			font-size: 11px;
+			font-weight: bold;
+			color: #666666;
+			
+			&:hover{
+				color:black;
+			}
+			
+			input[type="button"][disabled] {
+				color: #CCCCCC;
+			}
 		}
 		label{
 			display:block;
 			padding-left: 5px;
+			margin-top: 10px;
    	 		/*text-indent: 5px;*/
 			float:left;
+			font-size: 11px;
 		}
 		input[type="checkbox"]{
 			float:left;
 			padding-left:2px;
+			margin-top: 10px;
 		}
 	}
 	
@@ -316,6 +393,7 @@ div#folderpathchooser {
 	padding: 3px;
 	height: 100px;
 	overflow: auto;
+	margin: 10px 0px;
 	
 	div.loading {
 		background: url(../../graphics/newui/preview-loading.gif) no-repeat 50% 50%;

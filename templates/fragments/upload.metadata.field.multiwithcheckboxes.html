@@ -37,6 +37,7 @@ Ext.onReady(function(){
 		chkbox.name = data[i][0];
 
     	var label = document.createElement("label");
+    	label.className = "ul_meta_field_checkbox_label";
     	label.htmFor = "ul_meta_field_checkbox_[id]_"+i;
     	var labelText = document.createTextNode(chkbox.value = data[i][1]);
     	label.appendChild(labelText);
