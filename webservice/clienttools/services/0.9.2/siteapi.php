@@ -90,7 +90,8 @@ function uploadFile($params) {
 	        );
 	
 	        if($document['doBulk']=='true'){
-	        	
+	        	$dir = realpath(dirname(__FILE__).'/../../../../');
+	        	require_once($dir . '/lib/import/amazons3zipimportstorage.inc.php');
 	        	//TODO: change deb to ar
 	        	
 	        	$fileData['name'] = $fileName;
@@ -100,7 +101,7 @@ function uploadFile($params) {
 	        	$fs = new KTAmazonS3ZipImportStorage('', $fileData);
 			
         	    $storage = KTStorageManagerUtil::getSingleton();
-        	    $response = $storage->headS3Object($filesitem['sPathOnS3']);
+        	    $response = $storage->headS3Object($sS3TempFile);
         	    if (($response instanceof ResponseCore) && $response->isOK()) {
         	        $size = $response->header['content-length'];
         	    }
