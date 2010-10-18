@@ -35,9 +35,11 @@ Ext.onReady(function(){
 	        	
 	        	radio.type = 'radio';
 	        	radio.name = 'ul_meta_field_tree_[id]';	//val['fieldid'];
+	        	radio.className ="ul_meta_field_tree_radio";
 	
 	        	var label = document.createElement('label');
 	        	label.htmFor = "ul_meta_field_tree_[id]_"+val['fieldid'];
+	        	label.className ="ul_meta_field_tree_label";
 	        	var labelText = document.createTextNode(radio.value = val['name']);
 	        	label.appendChild(labelText);
 	
@@ -45,7 +47,7 @@ Ext.onReady(function(){
 	        	container.appendChild(document.createElement("br"));
 	        	container.appendChild(radio);  
 	        	container.appendChild(label);  	
-	        	container.appendChild(document.createElement("br"));
+	        	//container.appendChild(document.createElement("br"));
 	        	/*} else {
 		        	var placeHolder = jQuery('#ul_meta_field_tree_[id]_'+val['treeid']);
 
@@ -57,7 +59,7 @@ Ext.onReady(function(){
 	        } else if (val['type'] == 'tree') {
 	        	var span = document.createElement('span');
 	            span.id = 'ul_meta_field_tree_[id]_'+val['treeid'];
-	            //span.className ="dynamicSpan";
+	            span.className ="ul_meta_field_tree_category";
 	             
 	            span.innerHTML = '<b>'+val['treename'];
 	             

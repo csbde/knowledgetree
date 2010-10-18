@@ -138,6 +138,7 @@ table.uploadTable{
 		padding: 10px 5px;
 		margin-bottom: 5px;
 		.ul_filename{
+			float: left;
 			font-size: 11px;
 			color: #595959;
 /*			font-weight: bold; */
@@ -163,6 +164,7 @@ table.uploadTable{
 		}
 		.ul_bulk_checkbox {
 			display: none;
+			clear: both;
 		}
 		#unzip_checkbox {
 			margin-right: 5px;
@@ -300,6 +302,7 @@ table.metadataTable{
 				display: block;
 				margin-left: 20px;
 				margin-bottom: 8px;
+			
 				
 				label{
 					display:block;
@@ -313,6 +316,21 @@ table.metadataTable{
 					float:left;
 					padding-left:2px;
 					margin-top: -10px;
+				}
+				
+				.ul_meta_field_tree_category {
+					margin-bottom: 5px;
+					margin-top: 10px;
+					display: inline-block;
+				}
+				
+				.ul_meta_field_tree_label {
+					margin-top: 0px;
+					float: none;
+				}
+				.ul_meta_field_tree_radio {
+					float: left;
+					margin-right: 2px;
 				}
 				
 				/*.ul_meta_field_checkbox_label{

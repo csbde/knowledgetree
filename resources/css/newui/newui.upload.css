@@ -24,13 +24,13 @@ table.uploadTable .qq-upload-drop-area { height: 50px; font-weight: bold; text-a
 table.uploadTable .ul_button { font-size: 11px; display: inline-block; width: auto; font-weight: bold; }
 table.uploadTable .ul_button input { cursor: pointer; }
 table.uploadTable .ul_item { min-height: 14px; border-bottom: 1px solid #DAECF6; width: auto; display: block; padding: 10px 5px; margin-bottom: 5px; /* while it is uploading to s3  - preparing upload */ /* while it is waiting to be added - ready */ /* while it is waiting for compulsory metadata - enter metadata */ /* while it is adding a document to knowledgetree- uploading document */ /* when it is done - upload successful */ /* when an error has occurred - upload failed */ }
-table.uploadTable .ul_item .ul_filename { font-size: 11px; color: #595959; /*			font-weight: bold; */ }
+table.uploadTable .ul_item .ul_filename { float: left; font-size: 11px; color: #595959; /*			font-weight: bold; */ }
 table.uploadTable .ul_item .ul_file_remove, table.uploadTable .ul_item .ul_progress, table.uploadTable .ul_item .ul_meta_button { float: right; }
 table.uploadTable .ul_item .ul_file_remove, table.uploadTable .ul_item .ul_meta_button { cursor: pointer; }
 table.uploadTable .ul_item .ul_meta_button { margin: 0px 10px; }
 table.uploadTable .ul_item .ul_progress { cursor: default; color: #00A100; font-weight: bold; margin: 0px 15px; width: 100px; }
 table.uploadTable .ul_item .ul_progress.active { color: #A10000; }
-table.uploadTable .ul_item .ul_bulk_checkbox { display: none; }
+table.uploadTable .ul_item .ul_bulk_checkbox { display: none; clear: both; }
 table.uploadTable .ul_item #unzip_checkbox { margin-right: 5px; }
 table.uploadTable .ul_item #unzip_checkbox_label { top: -2px; position: relative; }
 table.uploadTable .ul_item.ul_f_uploading { background-color: #FFFF97; }
@@ -62,6 +62,9 @@ table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field { width: 285px
 }*/ }
 table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field label { display: block; padding-left: 5px; margin-top: -10px; /*text-indent: 5px;*/ float: left; font-size: 11px; }
 table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field input[type="checkbox"] { float: left; padding-left: 2px; margin-top: -10px; }
+table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field .ul_meta_field_tree_category { margin-bottom: 5px; margin-top: 10px; display: inline-block; }
+table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field .ul_meta_field_tree_label { margin-top: 0px; float: none; }
+table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field .ul_meta_field_tree_radio { float: left; margin-right: 2px; }
 table.metadataTable .ul_metadata .ul_meta_fieldset .required { /*background-color:#666699;*/ /*background: url(/resources/graphics/newui/required_tag.png) no-repeat;*/ }
 table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_label { width: 285px; display: block; padding-right: 8px; padding-left: 8px; margin-bottom: 8px; /* text-align: right; */ cursor: help; position: relative; color: #666666; font-weight: bold; font-size: 12px; }
 table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_label .ul_meta_label_descr { -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: 0px 0px 10px black; -moz-box-shadow: 0px 0px 10px black; box-shadow: 0px 0px 10px black; padding: 5px; background-color: #FFF0B8; border: 1px solid #8f7c23; position: absolute; top: 5px; left: 5px; display: none; width: 220px; z-index: 9999999; cursor: inherit; font-weight: normal; color: #000000; }

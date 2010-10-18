@@ -59,17 +59,11 @@ kt.app.upload=new function(){
 		var index = fileName.lastIndexOf('.');
 		var ext = fileName.substr(index).toLowerCase();
 		
-		//console.log('ext '+ext);
-		
 		var e = kt.lib.meta.get(item[0],'item');
 		
-		//console.dir(e.options);
-		//console.log('id '+e.options.elem[0].id);		
-		
-		//TODO: for all bulk extensions!
 		//do we need to suggest a bulk upload?
 		if(this.isBulkExtension(ext)) {
-			jQuery('#'+e.options.elem[0].id+' .ul_bulk_checkbox').css('display','inline-block');
+			jQuery('#'+e.options.elem[0].id+' .ul_bulk_checkbox').css('display','block');
 		}
 		
 		return obj;
@@ -111,14 +105,6 @@ kt.app.upload=new function(){
 		var meta = kt.lib.meta.get(e,'item');
 		return meta;
 	}
-	
-	/*this.getWindow=function(){
-		return self;
-	}
-	
-	this.getWindowData=function(){
-		return self.data;
-	}*/
 	
 	this.getMetaItem=function(elem){
 		var e=jQuery(elem).parents('.metadataTable')[0];
@@ -264,15 +250,12 @@ kt.app.upload=new function(){
 	   
 	}
 	
-	//add the uploaded to the repo
+	//add the uploaded files to the repo
 	this.addDocuments = function() {		
-		//show the progress widget
-		this.unhideProgressWidget();
+		var progressWidgetShown = false;
 		
-		//disable the button!
-		this.hideWindow();	//UploadButton();
-		
-		//this.hideWindow();
+		//hide the window!
+		this.hideWindow();
 		
 		//create array of files to add		
 		filesToAdd = {};
@@ -284,6 +267,12 @@ kt.app.upload=new function(){
 		
 		//iterate through files to see which are ready to be added
 		jQuery.each(self.data.files, function(key, value) {
+			if(!progressWidgetShown && !value.options.do_bulk_upload) {
+				progressWidgetShown = true;
+				//show the progress widget
+				kt.app.upload.unhideProgressWidget();
+			}
+			
 			//create the array of files to be uploaded
 			//console.log('doBulk '+value.options.do_bulk_upload);
 			if(value.options.is_uploaded) {
@@ -291,18 +280,12 @@ kt.app.upload=new function(){
 				var doBulk = value.options.do_bulk_upload;
 				var docTypeID = value.options['docTypeId'];
 				
+				//assemble the metadata
 				var metadata = {};
 				var j = 0;
-				jQuery.each(value.options['metadata'], function(key, value){
-					//console.log(key);
-					//console.dir(value);
-					
+				jQuery.each(value.options['metadata'], function(key, value){					
 					metadata[j++] = {'id':key, 'value':value};
 				});
-				//var metadata = value.options['metadata'];
-				
-				
-				//console.dir(metadata);
 				
 				var tempFile = self.data['s3TempPath']+fileName
 				
@@ -370,92 +353,6 @@ kt.app.upload=new function(){
 		this.closeWindow();
 	}
 	
-	//add the uploaded to the repo
-	/*this.addDocuments = function() {		
-		//TODO: don't show progress for bulk uploads
-		//show the progress widget
-		this.unhideProgressWidget();
-		
-		//disable the button!
-		this.hideWindow();
-		
-		//what folder to upload to?
-		var folderID = jQuery("#currentPath").val();
-		//console.log('addDocuments folderID '+folderID);
-		
-		//iterate through files to see which are ready to be added
-		jQuery.each(self.data.files, function(key, value) {
-			//create the array of files to be uploaded
-			//console.log('doBulk '+value.options.do_bulk_upload);
-			if(value.options.is_uploaded) {
-				var fileName = value.options['fileName'];
-				var doBulk = value.options.do_bulk_upload;
-				var docTypeID = value.options['docTypeId'];
-				var metadata = value.options['metadata'];
-				var tempFile = self.data['s3TempPath']+fileName
-				
-				var fileToAdd = {'fileName':fileName, 'folderID':folderID, 'docTypeID':docTypeID, 'metadata':metadata, 's3TempFile':tempFile, 'doBulk':doBulk};
-				
-				kt.api.addDocuments(fileToAdd, function(data){
-					//put this in a try...catch because error occurs if user browses away before the upload completes
-					//BUT upload still does complete, error occurs because tries to add item to non-existent page
-					try {
-						if(self.data['baseFolderID'] == folderID){
-							//jQuery.each(data.data.addedDocuments, function(key, value){
-							//get the response from the server
-							var parsedJSON = jQuery.parseJSON(data.data.addedDocument[0]);
-							
-							//console.dir(parsedJSON);
-							
-							//delete the file from the array because we don't want to upload it again!
-							delete self.data.files[parsedJSON.filename];
-							
-							//don't need to do this since we are closing the window!
-							//self.findItem(parsedJSON.filename).completeAdd();
-							
-							//now add the new item to the grid
-							var item = {
-								id: parsedJSON.id,
-					    		is_immutable: false,
-					    		is_checkedout: false,
-					    		filename: parsedJSON.filename,
-					    		title: parsedJSON.title,
-					    		owned_by: parsedJSON.owned_by,
-					    		created_by: parsedJSON.created_by,
-					    		created_date: parsedJSON.created_date,
-					    		modified_by: parsedJSON.modified_by,
-					    		modified_date: parsedJSON.modified_date,
-					    		mimeicon: parsedJSON.mimeicon,
-					    		thumbnail: '',
-					    		thumbnailclass: 'nopreview'
-					    	};
-							
-							//remove the "folder is empty" widget from the Browse View
-					    	jQuery('.page .notification').remove();
-							
-							//now add the item to the Browse View
-					    	kt.pages.browse.addDocumentItem(item);
-					    	
-							//});
-							
-							kt.lib.setFooter();
-						}
-						
-						//this.updateProgress('Documents uploaded');
-						
-						//jQuery('#uploadProgress').fadeOut(5000); 
-					} catch(e){
-					 //console.dir(e);
-					}
-					
-				}, function(){}, 60000);
-				//20 seconds for each file!
-			}
-		});		
-		
-		this.closeWindow();
-	}*/
-	
 	this.closeWindow = function() {
 		uploadWindow = Ext.getCmp('extuploadwindow');
 		self.data.files = {};
@@ -512,6 +409,21 @@ kt.app.upload=new function(){
 				progress.innerHTML = message+"%";
 			}
 	    }
+	}
+	
+	//iterates through all the files and checks whether they have been added to S3
+	this.allFilesReadyForUpload = function() {
+		var allReady = true;
+		//check whether we can enable Upload button
+		//iterate through all files and check whether all ready for upload
+		jQuery.each(self.data.files, function(key, value) {
+			if(!value.options.is_uploaded) {
+				allReady = false;
+				//return false;
+			}
+		});
+		
+		return allReady;
 	}
 	
 	//ENTRY POINT: Calling this function will set up the environment, display the upload dialog, 
@@ -737,14 +649,19 @@ kt.app.upload.uploadStructure=function(options){
 	}
 	
 	this.completeUpload=function(){
+		self.options.is_uploaded=true;		
 		//has all the required metadata for the doc been entered?
 		if(self.options.has_required_metadata && !self.options.required_metadata_done){
 			self.setProgress('Enter metadata','ui_meta');
 		} else {
 			self.setProgress('Ready to upload','waiting');
-			kt.app.upload.enableUploadButton();
+			//iterate through all the files and check whether they have been uploaded!
+			if(kt.app.upload.allFilesReadyForUpload()) {
+				kt.app.upload.enableUploadButton();
+			} else {
+				kt.app.upload.disableUploadButton();
+			}
 		}
-		self.options.is_uploaded=true;
 	}
 	
 	this.setDocType=function(docTypeId){
@@ -764,27 +681,20 @@ kt.app.upload.uploadStructure=function(options){
 		//also remove it from the list
 		delete self.options.parent.data.files[self.options.fileName];
 		
-		if(JSON.stringify(self.options.parent.data.files)==="{}") {
+		if (jQuery.isEmptyObject(self.options.parent.data.files)) {
 			//console.log('no files');
 			jQuery('.no_files_selected').css('display', 'block');
-		}		
-		
-		var disableButton = false;
-		//check whether we can enable Upload button
-		//iterate through all files and check whether all ready for upload
-		jQuery.each(self.options.parent.data.files, function(key, value) {
-			if(!value.options.is_uploaded) {
-				disableButton = true;
-				//return false;
-			}
-		});
-		
-		if(disableButton) {
 			kt.app.upload.disableUploadButton();
-		} else {
-			kt.app.upload.enableUploadButton();
-		}
+		} else {	
+			if(kt.app.upload.allFilesReadyForUpload()) {
+				kt.app.upload.enableUploadButton();
+			} else {
+				kt.app.upload.disableUploadButton();
+			}
+		}		
 	}
+	
+	
 	
 	//TODO
 	this.setAsBulk = function() {		
