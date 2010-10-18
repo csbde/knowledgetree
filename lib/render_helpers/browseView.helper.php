@@ -130,7 +130,7 @@ class browseViewHelper {
 					<td><div class="roundnum">1</div></td>
 					<td class="info">
 						<h2>Upload files and folders</h2>
-						Upload one ore more files including .zip files and other archives
+						Upload one or more files including .zip files and other archives
 
 						<br />
 						<br />
@@ -198,6 +198,9 @@ class browseViewHelper {
 
 	public function renderDocumentItem($item=NULL,$empty=false,$shortcut=false){
 		$fileNameCutoff=100;
+
+		// When $item is null, $oDocument resolves to a PEAR Error, we should add a check for $item and initialise the document data at the top
+		// instead of using $oDocument in the code.
 		$oDocument = Document::get($item[id]);
 		$item['mimetypeid']=(method_exists($oDocument,'getMimeTypeId'))?$oDocument->getMimeTypeId():'0';
 
@@ -272,6 +275,8 @@ class browseViewHelper {
         $_SESSION['browse_no_thumbs']=$dev_no_thumbs;
         $item['thumbnail'] = '';
         $item['thumbnailclass'] = 'nopreview';
+
+        // When item is null, thumbnails won't exist so skip the check
         if(!$dev_no_thumbs && !PEAR::isError($oDocument)){
             // Check if the document has a thumbnail rendition -> has_rendition = 2, 3, 6, 7
             // 0 = nothing, 1 = pdf, 2 = thumbnail, 4 = flash
