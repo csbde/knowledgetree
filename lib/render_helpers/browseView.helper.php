@@ -135,7 +135,7 @@ class browseViewHelper {
 						<br />
 						<br />
 						<div>
-							<a href="action.php?kt_path_info=ktlive.actions.folder.bulkupload&fFolderId='.$folderId.'"><span class="uploadButton">Upload</span></a>
+							<a href="javascript:kt.app.upload.showUploadWindow();"><span class="uploadButton">Upload</span></a>
 						</div>
 
 					</td>
