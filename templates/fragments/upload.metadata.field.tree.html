@@ -1,5 +1,5 @@
 <span class="ul_meta_row">
-	<span class="ul_meta_label" id="ul_meta_label_[id]">[name]
+	<span class="ul_meta_label treelabel" id="ul_meta_label_[id]">[name]
 		<span class="ul_meta_label_descr">[description]</span>
 	</span>
 	<span class="ul_meta_field">
@@ -14,20 +14,22 @@ Ext.onReady(function(){
 	var container = jQuery('#ul_meta_field_[id]')[0];
 	
 	jQuery.each([tree_lookup_values], function(key, val) { 
-		recursiveFunction(key, val)
+		if (val != null) {
+			recursivelyBuildTree(key, val)
+		}
 	});
 
-    function recursiveFunction(key, val) {
-    	buildWidget(key, val);
+    function recursivelyBuildTree(key, val) {
+    	buildTreeWidget(key, val);
       	
        	if (typeof val == 'object') {
             jQuery.each(val, function(key, val) {
-                recursiveFunction(key, val)
+            	recursivelyBuildTree(key, val)
             });
         }
     }
 
-    function buildWidget(key, val) {
+    function buildTreeWidget(key, val) {
         if (typeof val !== 'string') {
             if (val['type'] == 'field') {//val['name'] !== undefined) {
 	        	var radio = document.createElement('input');
@@ -46,17 +48,16 @@ Ext.onReady(function(){
 	        	//if (val['parentid'] == '0') {
 	        	container.appendChild(document.createElement("br"));
 	        	container.appendChild(radio);  
-	        	container.appendChild(label);  	
-	        	//container.appendChild(document.createElement("br"));
-	        	/*} else {
-		        	var placeHolder = jQuery('#ul_meta_field_tree_[id]_'+val['treeid']);
+	        	container.appendChild(label);
 
-		        	container.appendChild(document.createElement('br'));
-		        	container.appendChild(radio);  
-		        	container.appendChild(label);  	
-		        	container.appendChild(document.createElement('br'));
-	        	}*/
-	        } else if (val['type'] == 'tree') {
+	        	//now add the change event
+	        	jQuery('input#ul_meta_field_tree_[id]_'+val['fieldid']).change(function() {
+    				if(jQuery('input#ul_meta_field_tree_[id]_'+val['fieldid']).attr('checked')) {
+    					//console.log('checked! '+val['name']);	
+    					kt.app.upload.getMetaItem(this).setMetaData('[id]', val['name'])
+    				}
+	    		}); 
+	        } else if (val['type'] == 'tree' && val['treename'].toLowerCase() != 'root') {
 	        	var span = document.createElement('span');
 	            span.id = 'ul_meta_field_tree_[id]_'+val['treeid'];
 	            span.className ="ul_meta_field_tree_category";
@@ -70,7 +71,10 @@ Ext.onReady(function(){
     	
     }
 
+
+
     if([is_mandatory] == '1') {
+    	jQuery('#ul_meta_field_[id]').addClass('required');
 		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
 	}
 

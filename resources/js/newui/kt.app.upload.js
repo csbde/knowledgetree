@@ -696,7 +696,7 @@ kt.app.upload.uploadStructure=function(options){
 	
 	
 	
-	//TODO
+	//flags the upload as being a bulk upload
 	this.setAsBulk = function() {		
 		if(jQuery('#'+self.options.elem[0].id+' .ul_bulk_checkbox input#unzip_checkbox').attr('checked')) {
 			self.options.do_bulk_upload = true;
@@ -761,16 +761,28 @@ kt.app.upload.uploadStructure=function(options){
 			self.options.metaWindow.close();
 			self.setProgress('Ready to upload','waiting');
 			
+			//TODO: upload two files that both have required metadata, apply to all, it doesn't get applied to second!
+			
 			//need to check whether required metadata for ALL files have been entered
-			//if so, enable the "Add Documents" button
+			//if so, set progress for all as ready and enable the "Add Documents" button
 			var allRequiredMetadataDone = true;			
 			jQuery.each(self.options.parent.data.files, function(key, value) {
-				if(value.options.has_required_metadata) {
+				//console.log(key);
+				//console.dir(value);
+				//console.log('has_required_metadata '+value.options.has_required_metadata);
+				if(value.options.has_required_metadata == true) {
+					//console('outer if');
 					if(!value.options.required_metadata_done) {
+						//console('if');
 						allRequiredMetadataDone = false;
-						return false;
+						//return false;
+					} else {
+						//console('else');
+						value.setProgress('Ready to upload','waiting');
 					}
 				} else {
+					//console('outer else');
+					//value.setProgress('Ready to upload','waiting');
 					allRequiredMetadataDone = true;
 				}
 			});
@@ -786,7 +798,9 @@ kt.app.upload.uploadStructure=function(options){
 			
 			
 		} else {
-			//console.log('required metadata NOT entered');
+			self.options.metaWindow.close();
+			self.setProgress('Enter metadata','ui_meta');
+			kt.app.upload.disableUploadButton();
 		}
 	}
 	
@@ -803,10 +817,7 @@ kt.app.upload.uploadStructure=function(options){
 				field=field[0];
 				var tag=(field.tagName+'').toLowerCase();
 				//console.log('tag '+tag);
-				switch(tag){
-				
-				//TODO: still need to implement for tree!
-				
+				switch(tag){				
 				//sometimes, esp where we have multiple html fields for one KTDMS field (eg ckeckboxes)
 				//we embed these in a span and then need to iterate through the spans children
 					case 'span':
@@ -818,9 +829,15 @@ kt.app.upload.uploadStructure=function(options){
 							switch(type){
 								case 'checkbox':
 									for (var i = 0; i < self.options.metadata[idx].length; i++) {
-										if (child.name == self.options.metadata[idx][i]) {
+										if (child.value == self.options.metadata[idx][i]) {
 											child.checked = true;
 										}
+									}
+									break;
+								case 'radio':
+									if (child.value == self.options.metadata[idx]) {
+										//console.log('found');
+										child.checked = true;
 									}
 									break;
 							}
@@ -848,22 +865,9 @@ kt.app.upload.uploadStructure=function(options){
 						break;
 					case 'input':
 						var type=field.type;
-						//console.log('type '+type);
 						switch(type){							
 							case 'text':
-								field.value=self.options.metadata[idx];	//['value'];
-								/*if(self.options.metadata[idx]['required']==1) {
-									console.log('mandatory field');
-									jQuery(field).addClass('required');
-								}*/
-								break;
-							case 'checkbox':
-								//TODO: is this ever used???
-								for (var i = 0; i < self.options.metadata[idx].length; i++) {
-									if (field.name == self.options.metadata[idx][i]) {
-										field.checked = true;
-									}
-								}
+								field.value=self.options.metadata[idx];
 								break;
 						}
 						break;
@@ -876,17 +880,11 @@ kt.app.upload.uploadStructure=function(options){
 	}
 	
 	this.checkRequiredFieldsCompleted = function() {
-		//console.log('checkRequiredFieldsCompleted');
-		
 		var requiredFieldsCompleted = true;
 		
 		if(jQuery('.ul_metadata').find('.required').length <= 0) {
 			requiredFieldsCompleted = true;
 		} else {
-			//console.log(jQuery('.ul_metadata').children().length);
-		
-			//console.log(jQuery('.ul_metadata').find('.required').length);
-			
 			jQuery('.ul_metadata').find('.required').each(function(index) {
 				var field = jQuery(this)[0];
 				var tag=(field.tagName+'').toLowerCase();
@@ -945,10 +943,18 @@ kt.app.upload.uploadStructure=function(options){
 										childChecked = true;
 									}
 									break;
+								case 'radio':
+									//console.log('child.name '+child.name+' '+child.checked);
+									if(child.checked) {
+										childChecked = true;
+									}
+									break;
 							}
 						}
 						
-						requiredFieldsCompleted = childChecked;
+						if(!childChecked) {
+							requiredFieldsCompleted = false;
+						}
 						
 						break;
 					case 'textarea':

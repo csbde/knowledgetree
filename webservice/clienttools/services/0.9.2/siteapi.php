@@ -112,14 +112,12 @@ function uploadFile($params) {
         	    }
         	    
         	    $aOptions = array('documenttype' => $oDocumentType,
-        	    				'metadata' => $MDPack);
-        	    
+        	    				'metadata' => $MDPack);        	    
         	    
 				$bm = new KTAmazonS3BulkImportManager($oFolder, $fs, $oUser, $aOptions);
 		        $res = $bm->import($sS3TempFile, $size);
 		        //file_put_contents('uploadFile.txt', "\n\rres $res", FILE_APPEND);
-		        $archives[] = $res;
-	        	
+		        $archives[] = $res;      	
 	        	
 	        } else {
 	        	$oDocument =& KTDocumentUtil::add($oFolder, $fileName, $oUser, $aOptions);
@@ -177,7 +175,7 @@ function uploadFile($params) {
 	    
 	    foreach($fieldSets as $fieldSet){
 			$fields=$fieldSet->getFields();
-			fwrite($fh, "\r\nfields ".print_r($fields, true));
+			//fwrite($fh, "\r\nfields ".print_r($fields, true));
 			foreach($fields as $field){
 				if ($field->getIsMandatory()) {
 					$hasRequiredFields = true;
@@ -337,11 +335,8 @@ function uploadFile($params) {
 		$idTree = 'treeid';
 		$idField = 'id';
 		$parentIdField = 'parentid';
-                        
-        //$myFile = "convertToTree.txt";
-		//$fh = fopen($myFile, 'a');
-		
-		//fwrite($fh, "\r\nflat ".print_r($flat, true));
+
+		$root = 0;
 		
 	    $indexed = array();
 	    // first pass - get the array indexed by the primary id
@@ -359,17 +354,21 @@ function uploadFile($params) {
 	        													'parentid' => $treeID,
 	        													'name' =>  $row['fieldname'],
 	        													'type' => 'field');
+	        
+	        if ($row[$parentIdField] < $root) {
+	        	$root = $row[$parentIdField];
+	        }
 	    }
 	    
+	    //file_put_contents('convertToTree.txt', "\n\rroot $root ".print_r($indexed, true), FILE_APPEND);
+	    
 	    //second pass
-	    $root = -1;
+	    //$root = 0;
 	    foreach ($indexed as $id => $row) {	    	
 	        $indexed[$row[$parentIdField]]['fields'][$id] =& $indexed[$id];
 	    }
 	    
 	    $results = array($root => $indexed[$root]);
-	    
-	    //fclose($fh);
 	    
 	    return $results;
 	} 
