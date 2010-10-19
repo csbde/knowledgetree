@@ -9,4 +9,3 @@ tests/util/ktutil/dataset1/y export-ignore
 tests/util/ktutil/dataset1/b/q export-ignore
 tests/util/ktutil/dataset1/b/t export-ignore
 tests/util/ktutil/dataset1/b/w export-ignore
-webservice/clienttools/services/0.9.2 export-ignore
