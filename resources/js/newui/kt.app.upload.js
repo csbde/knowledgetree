@@ -41,15 +41,23 @@ kt.app.upload=new function(){
 	//Container for the EXTJS window
 	this.uploadWindow=null;
 	
-
+	
 	//Add a file item to the list of files to upload and manage. 
 	//Must not be called directly, but as a result of adding a file using AjaxUploader)
-	this.addUpload=function(fileName,container,docTypeHasRequiredFields){
-		//console.log('addUpload');
-		//console.log('addUpload docTypeHasRequiredFields '+docTypeHasRequiredFields);
+	this.addUpload=function(fileName, container, docTypeHasRequiredFields){		
+		var metadata = {};
+		var docTypeId = 1;
+		
+		if (self.data['applyMetaDataToAll'] && self.data['globalMetaData'] != undefined) {
+			metadata = self.data['globalMetaData']['metadata'];
+			docTypeId = self.data['globalMetaData']['docTypeID'];
+			docTypeHasRequiredFields = !self.data['globalMetaDataRequiredDone'];
+		}		
+		
 		var item=jQuery(kt.api.getFragment('upload.dialog.item'));
 		jQuery(self.elems.item_container).append(item);
-		var obj=new self.uploadStructure({fileName:(fileName+''),elem:item,has_required_metadata: docTypeHasRequiredFields,required_metadata_done:!docTypeHasRequiredFields,parent:self});
+		var obj=new self.uploadStructure({'fileName':(fileName+''), 'elem':item, 'metadata': metadata, 'docTypeId':docTypeId, 
+			'has_required_metadata': docTypeHasRequiredFields, 'required_metadata_done':!docTypeHasRequiredFields, 'parent':self});
 		kt.lib.meta.set(item[0],'item',obj);
 		obj.startUpload();
 		
@@ -113,20 +121,23 @@ kt.app.upload=new function(){
 	}
 	
 	//metadata is object in format {"docTypeID":docTypeID, "metadata":metadata}
-	this.applyMetadataToAll=function(isChecked, metadata) {
-		
-		if(isChecked) {		
+	this.applyMetadataToAll=function(applyToAll, metadata, requiredDone) {
+		if(applyToAll) {			
 			self.data['applyMetaDataToAll'] = true;
 			self.data['globalMetaData'] = metadata;
+			
+			//cycle through every file and apply the metadata!
+			jQuery.each(self.data.files, function(key, value) {			
+				value.options.metadata = metadata['metadata'];
+				value.options.required_metadata_done = requiredDone;
+			});
+			
 		} else {
 			self.data['applyMetaDataToAll'] = false;
-			self.data['globalMetaData'] = null;
+			self.data['globalMetaData'] = {};
 		}
 		
-		//cycle through every file and apply the metadata!
-		jQuery.each(self.data.files, function(key, value) {			
-			value.options.metadata = metadata['metadata'];
-		});
+		self.data['globalMetaDataRequiredDone'] = requiredDone;
 	}
 	
 	//Find the js object matching a given filename
@@ -263,7 +274,6 @@ kt.app.upload=new function(){
 		
 		//what folder to upload to?
 		var folderID = jQuery("#currentPath").val();
-		//console.log('addDocuments folderID '+folderID);
 		
 		//iterate through files to see which are ready to be added
 		jQuery.each(self.data.files, function(key, value) {
@@ -274,7 +284,6 @@ kt.app.upload=new function(){
 			}
 			
 			//create the array of files to be uploaded
-			//console.log('doBulk '+value.options.do_bulk_upload);
 			if(value.options.is_uploaded) {
 				var fileName = value.options['fileName'];
 				var doBulk = value.options.do_bulk_upload;
@@ -302,13 +311,8 @@ kt.app.upload=new function(){
 						//get the response from the server
 						var parsedJSON = jQuery.parseJSON(value);
 						
-						//console.dir(parsedJSON);
-						
 						//delete the file from the array because we don't want to upload it again!
 						delete self.data.files[parsedJSON.filename];
-						
-						//don't need to do this since we are closing the window!
-						//self.findItem(parsedJSON.filename).completeAdd();
 						
 						//now add the new item to the grid
 						var item = {
@@ -355,6 +359,7 @@ kt.app.upload=new function(){
 	
 	this.closeWindow = function() {
 		uploadWindow = Ext.getCmp('extuploadwindow');
+		self.data = {};
 		self.data.files = {};
 		uploadWindow.destroy();
 	}
@@ -363,11 +368,6 @@ kt.app.upload=new function(){
 		uploadWindow = Ext.getCmp('extuploadwindow');
 		uploadWindow.hide();
 	}
-	
-	/*this.disableWindow = function() {
-		uploadWindow = Ext.getCmp('extuploadwindow');
-		uploadWindow.disable();
-	}*/
 	
 	this.enableUploadButton = function() {
 		var btn = jQuery('#ul_actions_upload_btn');
@@ -432,17 +432,13 @@ kt.app.upload=new function(){
 		
 		var docTypeHasRequiredFields = false;
 		
+		self.data = {};
+		self.data.files = {};
+		
 		//does the Default Doc Type have required fields?
 		kt.api.docTypeHasRequiredFields("1", function(data){
 			//if so, we need to disable the Upload button
-			docTypeHasRequiredFields = data.data.hasRequiredFields;
-			
-			//TODO: is this needed since we need to disable the button in any case when we show
-			//as there won't be any files to add yet?
-			/*if(docTypeHasRequiredFields){
-				kt.app.upload.disableUploadButton();
-		    }*/
-			
+			docTypeHasRequiredFields = data.data.hasRequiredFields;			
 		});
 		
 	    var uploadWin = new Ext.Window({
@@ -627,7 +623,6 @@ kt.app.upload.uploadStructure=function(options){
 	}
 	
 	this.setProgress=function(text,state){
-		//console.log('setProgress '+text+' '+state);
 		var state=kt.lib.Object.ktenum(state,'uploading,waiting,ui_meta,add_doc,done','waiting');
 				
 		var e=jQuery('.ul_progress',self.options.elem);
@@ -639,6 +634,9 @@ kt.app.upload.uploadStructure=function(options){
 			jQuery(e).bind('click', function() {
 				self.showMetadataWindow();
 			});
+		} else {
+			jQuery(e).css("cursor", "default");
+			jQuery(e).unbind();
 		}
 		
 		jQuery(self.options.elem).removeClass('ul_f_uploading ul_f_waiting ul_f_ui_meta ul_f_add_doc ul_f_done').addClass('ul_f_'+state);
@@ -650,6 +648,7 @@ kt.app.upload.uploadStructure=function(options){
 	
 	this.completeUpload=function(){
 		self.options.is_uploaded=true;		
+		
 		//has all the required metadata for the doc been entered?
 		if(self.options.has_required_metadata && !self.options.required_metadata_done){
 			self.setProgress('Enter metadata','ui_meta');
@@ -666,11 +665,10 @@ kt.app.upload.uploadStructure=function(options){
 	
 	this.setDocType=function(docTypeId){
 		self.options.docTypeId=docTypeId;
-		self.options.docTypeFieldData=kt.api.docTypeFields(docTypeId);	//docTypeRequiredFields(docTypeId);
+		self.options.docTypeFieldData=kt.api.docTypeFields(docTypeId);
 	}
 	
 	this.setMetaData=function(key,value){
-		//console.log('setMetaData '+key+' '+value);
 		self.options.metadata[key]=value;
 	};
 	
@@ -682,7 +680,6 @@ kt.app.upload.uploadStructure=function(options){
 		delete self.options.parent.data.files[self.options.fileName];
 		
 		if (jQuery.isEmptyObject(self.options.parent.data.files)) {
-			//console.log('no files');
 			jQuery('.no_files_selected').css('display', 'block');
 			kt.app.upload.disableUploadButton();
 		} else {	
@@ -721,16 +718,50 @@ kt.app.upload.uploadStructure=function(options){
 	        title: 'Edit Document Metadata',
 	        html: kt.api.execFragment('upload.metadata.dialog')
 	    });
+		metaWin.addListener('close',function(){
+			//have all required metadata fields been completed?
+			var requiredDone = self.checkRequiredFieldsCompleted();
+			self.options.required_metadata_done = requiredDone;
+			
+			//is "Apply To All" checked?
+			var el = jQuery('#ul_meta_actionbar_apply_to_all')[0];
+			var applyMetaToAll = el.checked;
+			kt.app.upload.applyMetadataToAll(applyMetaToAll, {'docTypeID':self.options.docTypeId, 'metadata':self.options.metadata}, self.options.required_metadata_done);
+			
+			var allRequiredMetadataDone = true;			
+			jQuery.each(self.options.parent.data.files, function(key, value) {
+				if(value.options.has_required_metadata) {
+					if(!value.options.required_metadata_done) {
+						value.setProgress('Enter metadata','ui_meta');
+						allRequiredMetadataDone = false;
+						return;
+					} else {
+						value.setProgress('Ready to upload','waiting');
+					}
+				} else {
+					//value.setProgress('Ready to upload','waiting');
+					allRequiredMetadataDone = true;
+				}
+			});
+	    	
+			//enable/disable the "Add Documents" button as appropriate
+			if(allRequiredMetadataDone) {
+				kt.app.upload.enableUploadButton();
+			} else {
+				kt.app.upload.disableUploadButton();
+			}
+		});
+		
+		
 		self.options.metaWindow=metaWin;
 		metaWin.show();
 		
 		var e=jQuery('.metadataTable')[0];
 		self.options.metaDataTable=e;
 		kt.lib.meta.set(e,'item',self);
-		//do we need to Apply To All?
+		
+		//do we need to check Apply To All?
 		if (self.options.parent.data['applyMetaDataToAll'] && self.options.parent.data['globalMetaData'] != undefined) {
-			self.options.metadata = self.options.parent.data['globalMetaData']['metadata'];
-			self.options.docTypeId = self.options.parent.data['globalMetaData']['docTypeID'] 
 			var el = jQuery('#ul_meta_actionbar_apply_to_all')[0];
 			el.checked = true;			
 		}
@@ -740,72 +771,7 @@ kt.app.upload.uploadStructure=function(options){
 		self.populateValues();
 	}
 	
-	this.clearAndCloseMetadataWindow = function(){
-		self.options.required_metadata_done = false;
-		self.options.metadata = {};
-		
-		self.options.metaWindow.close();
-	}
-	
-	this.applyMetadata=function(){		
-		//is "Apply To All" checked?
-		var el = jQuery('#ul_meta_actionbar_apply_to_all')[0];
-		kt.app.upload.applyMetadataToAll(el.checked, {'docTypeID':self.options.docTypeId, 'metadata':self.options.metadata});		
-		
-		//have all required metadata fields been completed?
-		var requiredDone = self.checkRequiredFieldsCompleted();
-		self.options.required_metadata_done = requiredDone;
-		
-		if(requiredDone) {
-			//console.log('required metadata entered');
-			self.options.metaWindow.close();
-			self.setProgress('Ready to upload','waiting');
-			
-			//TODO: upload two files that both have required metadata, apply to all, it doesn't get applied to second!
-			
-			//need to check whether required metadata for ALL files have been entered
-			//if so, set progress for all as ready and enable the "Add Documents" button
-			var allRequiredMetadataDone = true;			
-			jQuery.each(self.options.parent.data.files, function(key, value) {
-				//console.log(key);
-				//console.dir(value);
-				//console.log('has_required_metadata '+value.options.has_required_metadata);
-				if(value.options.has_required_metadata == true) {
-					//console('outer if');
-					if(!value.options.required_metadata_done) {
-						//console('if');
-						allRequiredMetadataDone = false;
-						//return false;
-					} else {
-						//console('else');
-						value.setProgress('Ready to upload','waiting');
-					}
-				} else {
-					//console('outer else');
-					//value.setProgress('Ready to upload','waiting');
-					allRequiredMetadataDone = true;
-				}
-			});
-	    	
-			//enable/disable the "Add Documents" button as appropriate
-			if(allRequiredMetadataDone) {
-				//console.log('allRequiredMetadataDone');
-				kt.app.upload.enableUploadButton();
-			} else {
-				//console.log('NOT allRequiredMetadataDone');
-				kt.app.upload.disableUploadButton();
-			}
-			
-			
-		} else {
-			self.options.metaWindow.close();
-			self.setProgress('Enter metadata','ui_meta');
-			kt.app.upload.disableUploadButton();
-		}
-	}
-	
 	//TODO: enforce length limit for large text fields!
-	//TODO: in Tree, if there is no field/string value in root, then error
 	
 	//populate the metadata fields that have been cached
 	this.populateValues=function(){
@@ -905,14 +871,7 @@ kt.app.upload.uploadStructure=function(options){
 						}
 						break;
 						
-					case 'select':
-						/*for (var i = 0; i < field.options.length; i++) {
-							if(field.options[i].selected) {
-								console.log('select SELECTED '+i);
-							}
-						}
-						console.log('select '+field.selectedIndex);*/
-						
+					case 'select':						
 						//are we dealing with a multi-select array?
 						if(jQuery(field).attr('multiple')) {
 							if(field.selectedIndex < 0 ){
@@ -958,7 +917,7 @@ kt.app.upload.uploadStructure=function(options){
 						
 						break;
 					case 'textarea':
-						//console.log('textarea :'+field.value+': '+field.value.length);
+						//console.log('textarea :'+field.value+':'+field.value.length);
 						//TODO: if you click in an HTML field, without entering anything, it comes through as length = 1!
 						if (field.value == ''){ //field.value.length == 0 || 
 							requiredFieldsCompleted = false;
