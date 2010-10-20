@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- *  
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -252,9 +252,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		//Client-side pagination options
 		$pageCount=1;
 		$perPage=15;
-		
+
 		// Prepare Multi-File Actions
 		$aBulkActions = KTBulkActionUtil::getAllBulkActions();
+
+		// Include new browse view css
+		$this->oPage->requireCSSResource("resources/css/newui/browseView.css?".rand());
 
 		// Prepare Templating Engine
 		$oTemplating =& KTTemplating::getSingleton();
@@ -269,85 +272,85 @@ class BrowseDispatcher extends KTStandardDispatcher {
               'browseutil' => new KTBrowseUtil(),
               'returnaction' => 'browse',
 		);
-		
-		
+
+
 		if ($this->oFolder) { // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled
 			// Source the BrowseView Renderer
 			$renderHelper=new browseViewHelper();
 
 			// Add Return folder id for the multi-file actions
 			$aTemplateData['returndata'] = $this->oFolder->getId();
-			
+
 			// Render the Bulk Action Menu
 			$aTemplateData['bulkActionMenu']=$renderHelper->renderBulkActionMenu($aBulkActions);
 
 			// Get all the files/folders in the given folder
 			$folderContentItems=$renderHelper->getFolderContent($this->oFolder->getId());
-			
+
 			// Container for the individual items in the folder
 			$folderItems=array();
-			
+
 			// Populate the folder items
 			foreach($folderContentItems['folders'] as $item)$folderItems[]=$renderHelper->renderFolderItem($item);
-			
+
 			// Populate the document items
 			foreach($folderContentItems['documents'] as $item)$folderItems[]=$renderHelper->renderDocumentItem($item);
-			
+
 			// Transient variables used for pagination
 			$itemCount=count($folderItems);
 			$curItem=0;
 
 			// Container for full folder content
 			$folderView=array();
-			
+
 			// Create Initial Page Element
 			$folderView[]='<div class="page page_'.$pageCount.' ">';
-			
+
 			// Iterate through the folder items and add them to the current page
 			foreach($folderItems as $item){
 				$curItem++;
-				
+
 				//Start Next Page
 				if($curItem>$perPage){
 					$pageCount++;
 					$curItem=1;
 					$folderView[]='</div><div class="page page_'.$pageCount.' ">';
 				}
-				
+
 				$folderView[]=$item;
 			}
-			
-			
+
+
 			// Deal with scenario where there are no items in a folder
 			if($itemCount<=0){
 				$folderView[]=$renderHelper->noFilesOrFoldersMessage($this->oFolder->getId(), $this->editable);
 			}
-			
+
 			// Close the initial page element
 			$folderView[]="</div>";
-			
+
 			// Add the folder items to the template dataset
 			$aTemplateData['folderContents']=join($folderView);
-			
+
 			// Adding Fragments for drag & drop client side processing
 			$aTemplateData['fragments']='';
 			$aTemplateData['fragments'].=$renderHelper->renderDocumentItem(null,true);
 			$aTemplateData['fragments'].=$renderHelper->renderFolderItem(null,true);
-			
+
 			// Apply Clientside Pagination element
 			$aTemplateData['pagination']=$renderHelper->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
-			
+
 			// Add Additional browse view Javascript
 			$aTemplateData['javascript'] = $renderHelper->getJavaScript();
 		}
-		
+
 		// Render the template
 		return $oTemplate->render($aTemplateData);
 	}
 
-	
 
-	
+
+
 	function do_selectField() {
 		$aFields = DocumentField::getList('has_lookup = 1');
 
@@ -493,7 +496,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		}
 		$this->successRedirectToMain(_kt('Administrator mode disabled'));
 	}
-		
+
 	private function getCurrentFolderContent($folderId,$page=1,$itemsPerPage=5){
 		$oUser=KTEntityUtil::get('User',  $_SESSION['userID']);
 		$KT=new KTAPI();
@@ -501,10 +504,10 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		//Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
 		$folder = &$KT->get_folder_contents($folderId,1,'DFS',3);
-		
+
 		$items=$folder['results']['items'];
-		
-		
+
+
 		$ret=array('folders'=>array(),'documents'=>array(),'shortcuts'=>array());
 
 		foreach($items as $item){
@@ -523,11 +526,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
 					break;
 			}
 		}
-		
+
 //		echo '<pre>'.print_r($ret,true).'</pre>';exit;
 		return $ret;
 	}
-	
+
 }
 
 $oDispatcher = new BrowseDispatcher();
