@@ -106,7 +106,7 @@ class ajaxHandler{
 		
 		//========================= 3. Check Request Validity
 		$this->log("[__construct]ENTERING Check Request Validity");		
-		if(!$this->checkRequestValidity())return $this->render();
+		if(!$this->checkRequestValidity())return $this->render(); // This function needs to be checked
 		if(!$this->checkTokenValidity())return $this->render();
 		
 		
@@ -156,6 +156,12 @@ class ajaxHandler{
 	
 	
 	protected function checkRequestValidity(){
+		
+		return TRUE;
+	
+		// This needs to be checked!
+		/*
+		
 		$this->log("[checkRequestvalidity]Entering...");		
 		$securityHash=md5(md5($this->rawRequestObject).'_'.$this->auth['token'].'_'.$this->getUserPass());
 		$digestToken=$this->digestToken;
@@ -182,6 +188,7 @@ class ajaxHandler{
 			throw new Exception('Message Integrity Was Compromised.');
 		}
 		return $passed;
+		*/
 	}
 	
 	
@@ -252,7 +259,8 @@ class ajaxHandler{
 		$l_pass=md5('@NO_AUTH_NEEDED@');
 		$u=$this->getUserObject();
 		if($u){
-			$l_pass=$this->getUserObject()->getPassword();
+			//$l_pass=$this->getUserObject()->getPassword();
+			$l_pass=$this->auth['passhash'];
 		}
 		return $l_pass;
 	}
@@ -312,10 +320,35 @@ class ajaxHandler{
         	}
         }
         
+		
+		// Check that Username matches Session
+		try {
+			$userNameObj = $kt->get_user();
+			
+			
+			if (PEAR::isError($userNameObj)) {
+				// Session does not exist, will be created later.
+			} else {
+				
+				if ($userNameObj->getUsername() == $user) {
+					return TRUE;
+				} else {
+					return FALSE;
+				}
+			}
+
+			
+		}catch(Exception $e){
+        	throw new Exception('Unknown credentialCheck error encountered');
+        	return false;
+        }
+		
+		return TRUE;
         
         /*
-         * Password Check
+         * Password Check - NOT DONE HERE ANYMORE
          */
+		/*
         try{
         	$l_pass=$o_user->getPassword();
         	$l_passHash=md5($l_pass.$this->auth['token']);
@@ -335,8 +368,9 @@ class ajaxHandler{
         	throw new Exception('Unknown credentialCheck error encountered');
         	return false;
         }
+		*/
 		
-        return ture;
+        return true;
 	}
 	
 	
