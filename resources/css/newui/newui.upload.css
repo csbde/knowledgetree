@@ -86,4 +86,5 @@ table.metadataTable .ul_meta_actionbar input[type="checkbox"] { float: left; pad
 div#folderpathchooser { background: #fff; border: 1px solid #000; padding: 3px; height: 100px; overflow: auto; margin: 10px 0px; }
 div#folderpathchooser div.loading { background: url(../../graphics/newui/preview-loading.gif) no-repeat 50% 50%; height: 90px; }
 div#folderpathchooser ul#currentPathStuff li { margin-bottom: 3px; padding: 2px; padding-left: 25px; background: url(../../graphics/folder_closed.png) no-repeat 0 50%; border: 1px solid transparent; /* border-bottom: 1px solid #F1F1F1; */ }
+div#folderpathchooser ul#currentPathStuff li.folder_up { background: url(../../graphics/folder_up.png) no-repeat 0 50%; }
 div#folderpathchooser ul#currentPathStuff li:hover { border: 1px solid #BDD9E8; background-color: #FFFDE6; cursor: pointer; }

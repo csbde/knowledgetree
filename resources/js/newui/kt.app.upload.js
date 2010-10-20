@@ -171,7 +171,7 @@ kt.app.upload=new function(){
 		nodeInTree = jQuery('ul#loadedpath li[folderid='+folderId+']');
 		
 		if (folderId == 1) {
-			pathToItem = '';
+			pathToItem = ' / (Root Directory)';
 		} else {
 			pathToItem = kt.app.upload.getNodeTxt(nodeInTree.html());
 			
@@ -204,7 +204,7 @@ kt.app.upload=new function(){
 		
 		if (currentId+'' != '1') {
 			
-			html += '<li folderid="'+currentNode.parent().parent().attr('folderid')+'">[Folder Up]'+'</li>';
+			html += '<li class="folder_up" folderid="'+currentNode.parent().parent().attr('folderid')+'">[Folder Up]'+'</li>';
 		}
 		
 		if (currentNode.length == 0) {

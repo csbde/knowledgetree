@@ -484,6 +484,10 @@ div#folderpathchooser {
 		border: 1px solid transparent;
 		/* border-bottom: 1px solid #F1F1F1; */
 		
+		&.folder_up {
+				background: url(../../graphics/folder_up.png) no-repeat 0 50%;
+		}
+		
 		&:hover {
 				border: 1px solid #BDD9E8;
 				background-color: #FFFDE6;
