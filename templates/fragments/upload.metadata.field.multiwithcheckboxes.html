@@ -37,6 +37,7 @@ Ext.onReady(function(){
 		chkbox.name = data[i][0];
 
     	var label = document.createElement("label");
+    	label.className = "ul_meta_field_checkbox_label";
     	label.htmFor = "ul_meta_field_checkbox_[id]_"+i;
     	var labelText = document.createTextNode(chkbox.value = data[i][1]);
     	label.appendChild(labelText);
@@ -52,20 +53,24 @@ Ext.onReady(function(){
     	jQuery('input#ul_meta_field_checkbox_[id]_'+i).change(function() {
         	var j = 0;
         	//to store the selected checkbox IDs
-            var selected = new Array();
-            
-    		for(var i = 0; i < data.length; i++) {
-				if(jQuery('input#ul_meta_field_checkbox_[id]_'+i).attr('checked')) {
-					//console.log('checked! '+jQuery('input#ul_meta_field_checkbox_[id]_'+i).attr('name'));
-					selected[j++] = jQuery('input#ul_meta_field_checkbox_[id]_'+i).attr('name');
-				}
-    		}
+            var selected = '';	//new Array();
+
+            //iterate through all the checkboxes to see which are checked
+            for(var k = 0; k < data.length; k++) {
+            	var el = jQuery('input#ul_meta_field_checkbox_[id]_'+k);
+				if(el.attr('checked')) {
+        	    	selected += el.attr('value')+', ';
+        	    } 
+        	}
+
+        	selected = selected.substr(0, selected.length-2);
 			
 			kt.app.upload.getMetaItem(this).setMetaData('[id]', selected)
 		});
     }  
 
     if([is_mandatory] == '1') {
+    	jQuery('#ul_meta_field_[id]').addClass('required');
 		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
 	}
 	

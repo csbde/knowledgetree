@@ -31,6 +31,7 @@ Ext.onReady(function(){
     htmlEd.render('ul_meta_field_htmlEditor_[id]');
 
     if([is_mandatory] == '1') {
+    	jQuery('#ul_meta_field_[id]').addClass('required');
 		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
 	}
 

@@ -1,5 +1,5 @@
 <span class="ul_meta_row">
-	<span class="ul_meta_label" id="ul_meta_field_[id]">[name]
+	<span class="ul_meta_label" id="ul_meta_label_[id]">[name]
 		<span class="ul_meta_label_descr">[description]</span>
 	</span>
 	<span class="ul_meta_field">
@@ -48,13 +48,15 @@ function getSelectedValues() {
 
 	var j = 0;
 	//to store the selected checkbox IDs
-    var selected = new Array();
-	
-	for (var i=0; i < multiSelect.options.length; i++) {
+    var selected = '';	//new Array();
+
+    for (var i=0; i < multiSelect.options.length; i++) {
 	    if (multiSelect.options[i].selected) {
-	    	selected[j++] = multiSelect.options[i].value;
+	    	selected += multiSelect.options[i].text+', ';
 	    } 
 	}
+	selected = selected.substr(0, selected.length-2);
+	
 
 	kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).setMetaData('[id]',selected);
 }
