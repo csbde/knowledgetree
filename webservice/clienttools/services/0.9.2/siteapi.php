@@ -11,6 +11,8 @@ function uploadFile($params) {
 		
 		foreach($documents as $document){
 		
+			$baseFolderID = $document['baseFolderID'];
+			
 			//file_put_contents('uploadFile.txt', "\n\r".print_r($document, true), FILE_APPEND);
 			
 	    	$oStorage = KTStorageManagerUtil::getSingleton();
@@ -22,6 +24,8 @@ function uploadFile($params) {
 	    	//file_put_contents('uploadFile.txt', "\n\r$documentTypeID", FILE_APPEND);
 	    	
 	    	$fileName = $document['fileName'];
+	    	
+	    	//file_put_contents('uploadFile.txt', "\n\rencoded fileName $fileName", FILE_APPEND);
 	    	
 	    	$sS3TempFile  = $document['s3TempFile'];
 	    	
@@ -45,9 +49,9 @@ function uploadFile($params) {
 	    	
 	    	//file_put_contents('uploadFile.txt', "\n\rMDPack ".print_r($MDPack, true), FILE_APPEND);
 	       	
-	       	$aString = "\n\rfolderID: $folderID documentTypeID: $documentTypeID fileName: $fileName S3TempFile: $S3TempFile";
+	       	$aString = "\n\rfolderID: $folderID documentTypeID: $documentTypeID fileName: $fileName S3TempFile: $sS3TempFile";
 	    	
-	    	//file_put_contents('uploadFile.txt', $aString, FILE_APPEND);
+	    	file_put_contents('uploadFile.txt', $aString, FILE_APPEND);
 	
 	        $options['uploaded_file'] = 'true';
 	
@@ -133,11 +137,16 @@ function uploadFile($params) {
 					$mimeIcon = '';
 				}
 			
+				//file_put_contents('uploadFile.txt', "\n\rencoded Document {$oDocument->getMessage()}", FILE_APPEND);
+				//file_put_contents('uploadFile.txt', "\n\rencoded Document ".print_r($oDocument, true), FILE_APPEND);
+				
 				$oOwner = User::get($oDocument->getOwnerID());
+				
 				$oCreator = User::get($oDocument->getCreatorID());
 				$oModifier = User::get($oDocument->getModifiedUserId());
 			
 				//assemble the item
+				$item['baseFolderID'] = $baseFolderID;
 				$item['id'] = $oDocument->getId();
 				$item['owned_by'] = $oOwner->getName();
 				$item['created_by'] = $oCreator->getName();
@@ -151,6 +160,8 @@ function uploadFile($params) {
 				//$json['success'] = $item;
 				
 				$retDocuments[] = json_encode($item);
+				
+				//file_put_contents('uploadFile.txt', "\n\r".print_r($retDocuments, true), FILE_APPEND);
 				
 				$this->addResponse('addedDocuments', $retDocuments);
 	        }

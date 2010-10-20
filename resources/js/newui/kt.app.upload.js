@@ -41,6 +41,8 @@ kt.app.upload=new function(){
 	//Container for the EXTJS window
 	this.uploadWindow=null;
 	
+	//TODO: removeItem also needs to remove it from the actual upload?
+	
 	
 	//Add a file item to the list of files to upload and manage. 
 	//Must not be called directly, but as a result of adding a file using AjaxUploader)
@@ -56,6 +58,11 @@ kt.app.upload=new function(){
 		
 		var item=jQuery(kt.api.getFragment('upload.dialog.item'));
 		jQuery(self.elems.item_container).append(item);
+		
+		if(fileName.length > 50){
+			jQuery('.ul_filename').addClass('ellipsis');
+		}
+		
 		var obj=new self.uploadStructure({'fileName':(fileName+''), 'elem':item, 'metadata': metadata, 'docTypeId':docTypeId, 
 			'has_required_metadata': docTypeHasRequiredFields, 'required_metadata_done':!docTypeHasRequiredFields, 'parent':self});
 		kt.lib.meta.set(item[0],'item',obj);
@@ -187,6 +194,7 @@ kt.app.upload=new function(){
 		return pathToItem;
 	}
 	
+	
 	this.loadFolderPath = function(currentId)
 	{
 		
@@ -296,9 +304,9 @@ kt.app.upload=new function(){
 					metadata[j++] = {'id':key, 'value':value};
 				});
 				
-				var tempFile = self.data['s3TempPath']+fileName
+				var tempFile = self.data['s3TempPath']+fileName;
 				
-				filesToAdd[i++] = {'fileName':fileName, 'folderID':folderID, 'docTypeID':docTypeID, 'metadata':metadata, 's3TempFile':tempFile, 'doBulk':doBulk};
+				filesToAdd[i++] = {'baseFolderID':self.data['baseFolderID'], 'fileName':fileName, 'folderID':folderID, 'docTypeID':docTypeID, 'metadata':metadata, 's3TempFile':tempFile, 'doBulk':doBulk};
 			}
 		});
 		
@@ -306,14 +314,16 @@ kt.app.upload=new function(){
 			//put this in a try...catch because error occurs if user browses away before the upload completes
 			//BUT upload still does complete, error occurs because tries to add item to non-existent page
 			try {
-				if(self.data['baseFolderID'] == folderID){
-					jQuery.each(data.data.addedDocuments, function(key, value){
-						//get the response from the server
-						var parsedJSON = jQuery.parseJSON(value);
-						
-						//delete the file from the array because we don't want to upload it again!
-						delete self.data.files[parsedJSON.filename];
-						
+				//console.log(self.data['baseFolderID']+' '+folderID);
+				//if(self.data['baseFolderID'] == folderID){
+				jQuery.each(data.data.addedDocuments, function(key, value){
+					//get the response from the server
+					var parsedJSON = jQuery.parseJSON(value);
+					
+					//delete the file from the array because we don't want to upload it again!
+					delete self.data.files[parsedJSON.filename];
+					
+					if (parsedJSON.baseFolderID = folderID) {						
 						//now add the new item to the grid
 						var item = {
 							id: parsedJSON.id,
@@ -336,22 +346,23 @@ kt.app.upload=new function(){
 						
 						//now add the item to the Browse View
 				    	kt.pages.browse.addDocumentItem(item);
-				    	
-					});
+					}
+			    	
+				});
 					
 					//kt.lib.setFooter();
-				}
+				//}
 				
 				kt.lib.setFooter();
 				
-				this.updateProgress('Documents uploaded');
+				this.updateProgress('Documents added');
 				
 				jQuery('#uploadProgress').fadeOut(5000); 
 			} catch(e){
 			 //console.dir(e);
 			}
 			
-		}, function(){}, i*20000);
+		}, function(){}, i*30000);
 		//20 seconds for each file!
 		
 		this.closeWindow();
@@ -393,7 +404,7 @@ kt.app.upload=new function(){
 	    var progress = document.getElementById('uploadProgress');
 
 	    if(progress != null) {
-	    	progress.innerHTML = 'Upload in progress';
+	    	progress.innerHTML = 'Adding files ...';
 	    	progress.style.display = 'block';
 	    	progress.style.visibility = 'visible';
 	    }
@@ -469,6 +480,10 @@ kt.app.upload=new function(){
 	    		buttonText: 'Choose File',
 	    		allowedExtensions: [],
 	    		sizeLimit: 0,
+	    		//taken out multiple uploads until able to figure out how to make it work with S3
+	            //issue is that need to force handlerClass = 'UploadHandlerForm' (see below) so that it works with S3
+	            //BUT this breaks multiple uploads!
+	    		multiple: false,
 	    		onSubmit: function(id,fileName){
 	    			//remove the 'No Files Selected' message
 	    			jQuery('.no_files_selected').css('display', 'none');
@@ -484,6 +499,10 @@ kt.app.upload=new function(){
 	    				
 	    			}
 	    		},
+	    		//TODO: need to implement this!
+	    		/*onCancel: function(id,fileName){
+	    			console.log('onCancel '+fileName);
+	    		},*/
 	    		showMessage: function(message){alert(message);}
 	    	});
 	    				
@@ -525,7 +544,15 @@ kt.app.upload=new function(){
 					
 				});
 				
-				jQuery('#uploadpathstring').html(kt.app.upload.getNodePath(jQuery('#currentPath').val()));
+				var path = kt.app.upload.getNodePath(jQuery('#currentPath').val());
+				
+				var limit = 45;
+				if (path.length > limit) {
+					var index = path.length - limit;
+					path = '.../'+path.substr(index, limit);
+				}
+				
+				jQuery('#uploadpathstring').html(path);
 				
 				//var uniqueFileName = result.data.amazoncreds.awstmppath+kt.app.upload.uniqueFileName();
 				//console.log('uniqueFileName '+uniqueFileName);
@@ -576,11 +603,9 @@ kt.app.upload=new function(){
 			
 			
 	    });
-		self.uploadWindow=uploadWin;
+		self.uploadWindow=uploadWin;		
 		
-		
-		
-	    uploadWin.show();	   
+	    uploadWin.show();
 	    
 	    //set the folder id of the folder we are in
 	    self.data['baseFolderID'] = jQuery("#currentPath").val();
@@ -628,6 +653,12 @@ kt.app.upload.uploadStructure=function(options){
 		var e=jQuery('.ul_progress',self.options.elem);
 		e.html(text);
 		
+		if(state == 'uploading') {
+			jQuery('.ul_progress_spinner',self.options.elem).css('visibility', 'visible');
+		} else {
+			jQuery('.ul_progress_spinner',self.options.elem).css('visibility', 'hidden');
+		}
+		
 		//make the 'Enter metadata' progress message clickable!
 		if(state == 'ui_meta') {
 			jQuery(e).css("cursor", "pointer");
@@ -643,7 +674,7 @@ kt.app.upload.uploadStructure=function(options){
 	}
 	
 	this.startUpload=function(){
-		self.setProgress('Preparing upload','uploading');
+		self.setProgress('Uploading','uploading');
 	}
 	
 	this.completeUpload=function(){
@@ -653,7 +684,7 @@ kt.app.upload.uploadStructure=function(options){
 		if(self.options.has_required_metadata && !self.options.required_metadata_done){
 			self.setProgress('Enter metadata','ui_meta');
 		} else {
-			self.setProgress('Ready to upload','waiting');
+			self.setProgress('Ready to add','waiting');
 			//iterate through all the files and check whether they have been uploaded!
 			if(kt.app.upload.allFilesReadyForUpload()) {
 				kt.app.upload.enableUploadButton();
@@ -715,7 +746,7 @@ kt.app.upload.uploadStructure=function(options){
 	        cls			: 'ul_meta',
 	        shadow: true,
 	        modal: true,
-	        title: 'Edit Document Metadata',
+	        title: 'Document Properties',
 	        html: kt.api.execFragment('upload.metadata.dialog')
 	    });
 		metaWin.addListener('close',function(){
@@ -736,7 +767,7 @@ kt.app.upload.uploadStructure=function(options){
 						allRequiredMetadataDone = false;
 						return;
 					} else {
-						value.setProgress('Ready to upload','waiting');
+						value.setProgress('Ready to add','waiting');
 					}
 				} else {
 					//value.setProgress('Ready to upload','waiting');
@@ -794,8 +825,10 @@ kt.app.upload.uploadStructure=function(options){
 							//console.log(type);
 							switch(type){
 								case 'checkbox':
-									for (var i = 0; i < self.options.metadata[idx].length; i++) {
-										if (child.value == self.options.metadata[idx][i]) {
+									//convert the comma-delimited string into an array for processing 
+									var stringToArray =  self.options.metadata[idx].split(',');
+									for (var i = 0; i < stringToArray.length; i++) {
+										if (child.value == trim(stringToArray[i])) {
 											child.checked = true;
 										}
 									}
@@ -814,9 +847,15 @@ kt.app.upload.uploadStructure=function(options){
 					case 'select':
 						//are we dealing with a multi-select array?
 						if(jQuery('.ul_meta_field_'+idx,self.options.metaDataTable).attr('multiple')) {
-							for (var i = 0; i < field.options.length; i++) {
-								if (jQuery.inArray(field.options[i].text, self.options.metadata[idx]) > -1) {
-									field.options[i].selected = true;
+							//convert the comma-delimited string into an array for processing 
+							var stringToArray =  self.options.metadata[idx].split(',');
+							//remove whitespace!
+							for (var i = 0; i < stringToArray.length; i++) {
+								stringToArray[i] = trim(stringToArray[i]);
+							}
+							for (var j = 0; i < field.options.length; j++) {
+								if (jQuery.inArray(field.options[j].text, stringToArray) > -1) {
+									field.options[j].selected = true;
 									//break;
 								}
 							}

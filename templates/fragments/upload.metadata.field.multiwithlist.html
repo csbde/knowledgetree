@@ -48,13 +48,15 @@ function getSelectedValues() {
 
 	var j = 0;
 	//to store the selected checkbox IDs
-    var selected = new Array();
-	
-	for (var i=0; i < multiSelect.options.length; i++) {
+    var selected = '';	//new Array();
+
+    for (var i=0; i < multiSelect.options.length; i++) {
 	    if (multiSelect.options[i].selected) {
-	    	selected[j++] = multiSelect.options[i].text;
+	    	selected += multiSelect.options[i].text+', ';
 	    } 
 	}
+	selected = selected.substr(0, selected.length-2);
+	
 
 	kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).setMetaData('[id]',selected);
 }
