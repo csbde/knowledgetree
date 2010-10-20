@@ -54,11 +54,13 @@ Ext.onReady(function(){
         	var j = 0;
         	//to store the selected checkbox IDs
             var selected = new Array();
-            
-    		for(var i = 0; i < data.length; i++) {
-				if(jQuery('input#ul_meta_field_checkbox_[id]_'+i).attr('checked')) {
-					//console.log('checked! '+jQuery('input#ul_meta_field_checkbox_[id]_'+i).attr('name'));
-					selected[j++] = jQuery('input#ul_meta_field_checkbox_[id]_'+i).attr('name');
+
+            //iterate through all the checkboxes to see which are checked
+    		for(var k = 0; k < data.length; k++) {
+        		var el = jQuery('input#ul_meta_field_checkbox_[id]_'+k);
+				if(el.attr('checked')) {
+					//console.log('checked! '+el.attr('value'));
+					selected[j++] = el.attr('value');
 				}
     		}
 			
@@ -67,6 +69,7 @@ Ext.onReady(function(){
     }  
 
     if([is_mandatory] == '1') {
+    	jQuery('#ul_meta_field_[id]').addClass('required');
 		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
 	}
 	

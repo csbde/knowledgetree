@@ -3,7 +3,7 @@
 		<span class="ul_meta_label_descr">[description]</span>
 	</span>
 	<span class="ul_meta_field">
-		<input id="ul_meta_field_[id]" type="text" class="ul_meta_fullField string ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.value);"></input>
+		<input id="ul_meta_field_[id]" type="text" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.value);"></input>
 	</span>
 </span>
 
@@ -16,6 +16,7 @@ Ext.onReady(function(){
 	}*/
 
 	if([is_mandatory] == '1') {
+		jQuery('#ul_meta_field_[id]').addClass('required');
 		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
 	}
 

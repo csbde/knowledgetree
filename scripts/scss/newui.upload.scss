@@ -353,6 +353,8 @@ table.metadataTable{
 				color: #666666;
 				font-weight: bold;
 				font-size: 12px;
+				
+				
 				.ul_meta_label_descr{
 					@include corners(3px);
 					@include shadow(10px, #000000);
@@ -375,6 +377,11 @@ table.metadataTable{
 					}
 				}
 			}
+			
+			/*have to pull tree up a bit ;) */
+			.treelabel {
+					margin-bottom: -5px;
+				}
 		}
 	}
 	
