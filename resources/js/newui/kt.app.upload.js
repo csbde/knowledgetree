@@ -100,6 +100,18 @@ kt.app.upload=new function(){
 		return isBulk;
 	}
 	
+	/*this.uniqueFileName=function(){
+		var fileName='';
+		var size=16;
+       var alpha = "abcdefghijklmnopqrstuvwxyz1234567890_";
+       var asize=alpha.length;
+       for(var i=0; i<size; i++){
+       	fileName=fileName+''+alpha[Math.floor(Math.random()*asize)];
+       }
+    
+       return fileName;
+	}*/
+	
 	//A DOM helper function that will take elem as any dom element inside a file item fragment 
 	//and return the js object related to that element.
 	this.getItem=function(elem){
@@ -301,7 +313,7 @@ kt.app.upload=new function(){
 					metadata[j++] = {'id':key, 'value':value};
 				});
 				
-				var tempFile = self.data['s3TempPath'];
+				var tempFile = self.data['s3TempPath']+fileName;
 				
 				filesToAdd[i++] = {'baseFolderID':self.data['baseFolderID'], 'fileName':fileName, 'folderID':folderID, 'docTypeID':docTypeID, 'metadata':metadata, 's3TempFile':tempFile, 'doBulk':doBulk};
 			}
@@ -385,12 +397,12 @@ kt.app.upload=new function(){
 		uploadWindow.hide();
 	}
 	
-	this.enableUploadButton = function() {
+	this.enableAddButton = function() {
 		var btn = jQuery('#ul_actions_upload_btn');
 		btn.removeAttr("disabled");
 	}
 	
-	this.disableUploadButton = function() {
+	this.disableAddButton = function() {
 		var btn = jQuery('#ul_actions_upload_btn');
     	btn.attr("disabled", "true");
 	}
@@ -476,7 +488,7 @@ kt.app.upload=new function(){
 	    });
 	    uploadWin.addListener('show',function(){
 	    	//disable the Add Documents button on show since won't be any to add yet!
-	    	kt.app.upload.disableUploadButton();
+	    	kt.app.upload.disableAddButton();
 	    	self.elems.item_container=jQuery('.uploadTable .ul_list')[0];
 	    	self.elems.qq=jQuery('#upload_add_file .qq-uploader')[0];
 	    	self.uploader=new qq.FileUploader({
@@ -494,7 +506,7 @@ kt.app.upload=new function(){
 	    			//remove the 'No Files Selected' message
 	    			jQuery('.no_files_selected').css('display', 'none');
 	    			//disable the Upload button as can only upload once upload to S3 completes
-    				kt.app.upload.disableUploadButton();
+    				kt.app.upload.disableAddButton();
 	    		    
 	    			self.addUpload(fileName, self.elems.qq, docTypeHasRequiredFields);
 	    		},
@@ -560,11 +572,15 @@ kt.app.upload=new function(){
 				
 				jQuery('#uploadpathstring').html(path);
 				
-				//TODO: rather use a randomized name!
+				//var uniqueFileName = result.data.amazoncreds.awstmppath+kt.app.upload.uniqueFileName();
+				//console.log('uniqueFileName '+uniqueFileName);
+				
+				//console.log('random '+result.data.amazoncreds.randomfile);
+
 				self.uploader.setParams({
 					AWSAccessKeyId          : result.data.amazoncreds.AWSAccessKeyId,
 					acl                     : result.data.amazoncreds.acl,
-					key                     : result.data.amazoncreds.awstmppath+result.data.amazoncreds.randomfile,
+					key                     : result.data.amazoncreds.awstmppath+"${filename}",	//result.data.amazoncreds.awstmppath+result.data.amazoncreds.randomfile,
 					policy                  : result.data.amazoncreds.policy,
 					'Content-Type'          : "binary/octet-stream",
 					signature               : result.data.amazoncreds.signature,
@@ -572,7 +588,7 @@ kt.app.upload=new function(){
 				});
 				
 				//get the S3 temp location where all the uploads will be stored
-				self.data['s3TempPath'] = result.data.amazoncreds.awstmppath+result.data.amazoncreds.randomfile;
+				self.data['s3TempPath'] = result.data.amazoncreds.awstmppath;	//+result.data.amazoncreds.randomfile;
 				
 				self.uploader._options.action = result.data.amazoncreds.formAction; //doesnt work
 				self.uploader._handler._options.action = result.data.amazoncreds.formAction; //works
@@ -690,9 +706,9 @@ kt.app.upload.uploadStructure=function(options){
 			self.setProgress('Ready to add','waiting');
 			//iterate through all the files and check whether they have been uploaded!
 			if(kt.app.upload.allFilesReadyForUpload()) {
-				kt.app.upload.enableUploadButton();
+				kt.app.upload.enableAddButton();
 			} else {
-				kt.app.upload.disableUploadButton();
+				kt.app.upload.disableAddButton();
 			}
 		}
 	}
@@ -715,12 +731,12 @@ kt.app.upload.uploadStructure=function(options){
 		
 		if (jQuery.isEmptyObject(self.options.parent.data.files)) {
 			jQuery('.no_files_selected').css('display', 'block');
-			kt.app.upload.disableUploadButton();
+			kt.app.upload.disableAddButton();
 		} else {	
 			if(kt.app.upload.allFilesReadyForUpload()) {
-				kt.app.upload.enableUploadButton();
+				kt.app.upload.enableAddButton();
 			} else {
-				kt.app.upload.disableUploadButton();
+				kt.app.upload.disableAddButton();
 			}
 		}		
 	}
@@ -780,9 +796,9 @@ kt.app.upload.uploadStructure=function(options){
 	    	
 			//enable/disable the "Add Documents" button as appropriate
 			if(allRequiredMetadataDone) {
-				kt.app.upload.enableUploadButton();
+				kt.app.upload.enableAddButton();
 			} else {
-				kt.app.upload.disableUploadButton();
+				kt.app.upload.disableAddButton();
 			}
 		});
 		

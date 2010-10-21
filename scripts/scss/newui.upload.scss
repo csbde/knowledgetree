@@ -168,12 +168,10 @@ table.uploadTable{
 		.ul_file_remove,.ul_meta_button{
 			cursor: pointer;
 		}
-		.ul_meta_button{
-			margin: 0px 10px;
-		}
 		.ul_progress{
 			cursor: default;
 			color: #00A100;
+			text-align: center;
 			&.active{
 				color: #A10000;
 			}

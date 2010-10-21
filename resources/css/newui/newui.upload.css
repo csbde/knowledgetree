@@ -31,8 +31,7 @@ table.uploadTable .ul_item .ul_filename { float: left; font-size: 11px; color: #
 table.uploadTable .ul_item .ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 table.uploadTable .ul_item .ul_file_remove, table.uploadTable .ul_item .ul_progress, table.uploadTable .ul_item .ul_meta_button { float: right; }
 table.uploadTable .ul_item .ul_file_remove, table.uploadTable .ul_item .ul_meta_button { cursor: pointer; }
-table.uploadTable .ul_item .ul_meta_button { margin: 0px 10px; }
-table.uploadTable .ul_item .ul_progress { cursor: default; color: #00A100; font-weight: bold; margin: 0px 15px; width: 100px; }
+table.uploadTable .ul_item .ul_progress { cursor: default; color: #00A100; text-align: center; font-weight: bold; margin: 0px 15px; width: 100px; }
 table.uploadTable .ul_item .ul_progress.active { color: #A10000; }
 table.uploadTable .ul_item .ul_bulk_checkbox { display: none; clear: both; }
 table.uploadTable .ul_item #unzip_checkbox { margin-right: 5px; }
