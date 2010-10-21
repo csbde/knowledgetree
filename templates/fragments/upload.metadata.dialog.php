@@ -39,7 +39,7 @@ function getDocTypes(){
        		<input type="checkbox" id="ul_meta_actionbar_apply_to_all">
        		<label for="ul_meta_actionbar_apply_to_all">Apply to All</label>
        		<input type="button" value="Apply" onclick="kt.app.upload.getMetaItem(this).options.metaWindow.close();" />
-       		<a class="ul_actions_cancel_link" href="javascript:kt.app.upload.getMetaItem(this).options.metaWindow.close();">Cancel</a>
+       		<a class="ul_actions_cancel_link" href="#" onclick="javascript:kt.app.upload.getMetaItem(this).options.metaWindow.close();">Cancel</a>
        	</td></tr>
        </table>
     </div>
