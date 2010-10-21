@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -235,7 +235,14 @@ class KTPermissionUtil {
 
 			foreach ($aIds as $iId)
 	        {
-    	        $oDocument =& Document::get($iId);
+    	        $oDocument = Document::get($iId);
+
+    	        if(PEAR::isError($oDocument)){
+    	            $GLOBALS['default']->log->error("Couldn't update document permissions ({$iId}): {$oDocument->getMessage()}");
+    	            unset($oDocument);
+    	            continue;
+    	        }
+
         	    KTPermissionUtil::updatePermissionLookup($oDocument, $aOptions);
 
         	    $metadataid = $oDocument->getMetadataVersionId();
