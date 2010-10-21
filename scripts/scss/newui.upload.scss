@@ -278,8 +278,7 @@ table.metadataTable{
 		margin: 10px 0px;
 		vertical-align:top; 
 		padding: 15px; 
-		overflow-x: auto;
-    	overflow-y: hidden;
+		overflow: auto;
 		display: block;
 		border: 1px solid #85A2BD;
 		background-color: darken(#FFFFFF, 3%);

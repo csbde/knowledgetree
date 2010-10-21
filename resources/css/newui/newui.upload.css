@@ -54,7 +54,7 @@ table.metadataTable input, table.metadataTable select, table.metadataTable label
 table.metadataTable td { height: 1px; }
 table.metadataTable .ul_meta_selectDocType { font-size: 11px; margin-top: 5px; }
 table.metadataTable .ul_meta_selectDocType .ul_meta_docTypeOptions { float: right; display: inline-block; }
-table.metadataTable .ul_metadata { margin: 10px 0px; vertical-align: top; padding: 15px; overflow-x: auto; overflow-y: hidden; display: block; border: 1px solid #85A2BD; background-color: #f7f7f7; height: 300px; max-height: 300px; }
+table.metadataTable .ul_metadata { margin: 10px 0px; vertical-align: top; padding: 15px; overflow: auto; display: block; border: 1px solid #85A2BD; background-color: #f7f7f7; height: 300px; max-height: 300px; }
 table.metadataTable .ul_metadata .ul_meta_fieldset { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: 0px 0px 5px #999999; -moz-box-shadow: 0px 0px 5px #999999; box-shadow: 0px 0px 5px #999999; border: 1px solid #85A2BD; padding: 15px 0px 5px 0px; margin-bottom: 15px; position: relative; background-color: #FFFFFF; display: block; /*have to pull tree up a bit ;) */ }
 table.metadataTable .ul_metadata .ul_meta_fieldset:first-child { margin-top: 3px; }
 table.metadataTable .ul_metadata .ul_meta_fieldset span.ul_meta_title { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; position: absolute; top: -8px; left: 15px; font-size: 11px; border: 1px solid #85A2BD; background-color: inherit; padding: 2px 5px; }
