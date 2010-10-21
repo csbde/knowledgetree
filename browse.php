@@ -256,9 +256,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		// Prepare Multi-File Actions
 		$aBulkActions = KTBulkActionUtil::getAllBulkActions();
 
-		// Include new browse view css
-		$this->oPage->requireCSSResource("resources/css/newui/browseView.css?".rand());
-
 		// Prepare Templating Engine
 		$oTemplating =& KTTemplating::getSingleton();
 		$oTemplate = $oTemplating->loadTemplate('kt3/browse');

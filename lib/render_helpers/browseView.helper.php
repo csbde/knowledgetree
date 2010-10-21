@@ -14,6 +14,10 @@ class browseViewHelper {
 		} else {
 			$this->zohoEnabled = FALSE;
 		}
+
+		// Include new browse view css
+		$oPage = $GLOBALS['main'];
+		$oPage->requireCSSResource("resources/css/newui/browseView.css?".rand());
 	}
 
 	public function getJavaScript()
