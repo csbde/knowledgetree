@@ -9,12 +9,15 @@ function uploadFile($params) {
 		$default->log->debug('Uploading files '.print_r($documents, true));
 				
 		$index = 0;
-		$retDocuments = array();
+		
+		$returnResponse = array();
 		
 		foreach($documents as $document){
+			$default->log->debug('Uploading file '.$document['fileName']);
+			//file_put_contents('uploadFile.txt', "\n\rUploading file ".$document['fileName'], FILE_APPEND);
+			
 			try
-			{
-		
+			{		
 				$baseFolderID = $document['baseFolderID'];
 				
 		    	$oStorage = KTStorageManagerUtil::getSingleton();
@@ -23,29 +26,25 @@ function uploadFile($params) {
 		    	
 		    	$documentTypeID = $document['docTypeID'];
 		    	
-		    	//file_put_contents('uploadFile.txt', "\n\r$documentTypeID", FILE_APPEND);
-		    	
 		    	$fileName = $document['fileName'];
 		    	
 		    	$sS3TempFile  = $document['s3TempFile'];
 		    	
-		    	$metadata = $document['metadata']; 
+		    	$metadata = $document['metadata'];
 		    	
-		    	//file_put_contents('uploadFile.txt', "\n\rmetadata".print_r($metadata, true), FILE_APPEND);
+		    	$default->log->debug('Uploading file :: metadata '.print_r($metadata, true));
 		    	
 		    	$MDPack = array();
 		    	//assemble the metadata and convert to fileds and fieldsets
 		    	foreach($metadata as $MD) {
-		    		//file_put_contents('uploadFile.txt', "\n\rMD ".print_r($MD, true), FILE_APPEND);
 		    		$oField = DocumentField::get($MD['id']);
-		    		
-		    		//file_put_contents('uploadFile.txt', "\n\rField ".print_r($oField, true), FILE_APPEND);
-		    		
 		    		$MDPack[] = array(
 		    			$oField,
 		    			$MD['value']
 	                );
 		    	}
+		    	
+		    	$default->log->debug('Uploading file :: metadatapack '.print_r($MDPack, true));
 		    	
 		    	//file_put_contents('uploadFile.txt', "\n\rMDPack ".print_r($MDPack, true), FILE_APPEND);
 		       	
@@ -57,19 +56,19 @@ function uploadFile($params) {
 		
 		        $oFolder = Folder::get($folderID);
 		        if (PEAR::isError($oFolder)) {
-		        	$default->log->error("\n\rFolder $folderID: {$oFolder->getMessage()}");
+		        	//$default->log->error("\n\rFolder $folderID: {$oFolder->getMessage()}");
 		       		throw new Exception($oFolder->getMessage());
 		        }
 		
 		        $oUser = User::get($_SESSION['userID']);
 		        if (PEAR::isError($oUser)) {
-		        	$default->log->error("\n\rUser {$_SESSION['userID']}: {$oUser->getMessage()}");
+		        	//$default->log->error("\n\rUser {$_SESSION['userID']}: {$oUser->getMessage()}");
 		       		throw new Exception($oUser->getMessage());
 		        }
 		
 		        $oDocumentType = DocumentType::get($documentTypeID);
 		        if (PEAR::isError($oDocumentType)) {
-		        	$default->log->error("\n\rDocumentType: {$oDocumentType->getMessage()}");
+		        	//$default->log->error("\n\rDocumentType: {$oDocumentType->getMessage()}");
 		       		throw new Exception($oDocumentType->getMessage());
 		        }
 		
@@ -100,16 +99,20 @@ function uploadFile($params) {
 		        	require_once($dir . '/plugins/ktlive/lib/import/amazons3zipimportstorage.inc.php');
 					require_once($dir . '/plugins/ktlive/lib/import/amazons3bulkimport.inc.php');
 					
-		        	//TODO: change deb to ar
+		         	// Check if archive is a deb package
+			        if($sExtension == 'deb')
+			        {
+						$this->sExtension = 'ar';
+			        }
 		        	
 					$fileData = array();
 		        	$fileData['name'] = $fileName;
 		        	$fileData['tmp_name'] = $sS3TempFile;
 		        	
-		        	//file_put_contents('uploadFile.txt', "\n\rdocument['doBulk']", FILE_APPEND);
 		        	$fs = new KTAmazonS3ZipImportStorage('', $fileData);
 	        	    $response = $oStorage->headS3Object($sS3TempFile);
-	        	    //file_put_contents('uploadFile.txt', "\n\rresponse $response", FILE_APPEND);
+	        	    
+	        	    
 	        	    $size = 0;
 	        	    if (($response instanceof ResponseCore) && $response->isOK()) {
 	        	        $size = $response->header['content-length'];
@@ -120,21 +123,29 @@ function uploadFile($params) {
 	        	    
 					$bm = new KTAmazonS3BulkImportManager($oFolder, $fs, $oUser, $aOptions);
 			        $res = $bm->import($sS3TempFile, $size);
-			        //file_put_contents('uploadFile.txt', "\n\rres $res", FILE_APPEND);
+			        
 			        $archives[] = $res; 
 	
 			        //give dummy response
-			        $this->addResponse('addedDocuments', '');
+			        //$this->addResponse('addedDocuments', '');
+			        $item = array();
+					$json = array();
+					$item['filename'] = $fileName;
+			        $item['isBulk'] = true;
+			        
+			        $json['success'] = $item;
+					
+					$returnResponse[] = json_encode($json);
 		        	
 		        } else {
 					//add to KT     
 		        	$oDocument =& KTDocumentUtil::add($oFolder, $fileName, $oUser, $aOptions);
 				
 		        	if (PEAR::isError($oDocument)) {	        		
-	        			//$default->log->error("Document add failed {$oDocument->getMessage()}");
+	        			file_put_contents('uploadFile.txt', "\n\rabout to throw exception {$oDocument->getMessage()}", FILE_APPEND);
 		        		
 	        			throw new Exception($oDocument->getMessage());
-		        	} 
+		        	}
 		        	
 					//get the icon path
 					$mimetypeid = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId():'0';
@@ -146,16 +157,18 @@ function uploadFile($params) {
 					}else{
 						$mimeIcon = '';
 					}
-				
-					//file_put_contents('uploadFile.txt', "\n\rencoded Document ".print_r($oDocument, true), FILE_APPEND);
 					
 					$oOwner = User::get($oDocument->getOwnerID());
 					
 					$oCreator = User::get($oDocument->getCreatorID());
 					$oModifier = User::get($oDocument->getModifiedUserId());
 				
+					$item = array();
+					$json = array();
+					
 					//assemble the item
 					$item['baseFolderID'] = $baseFolderID;
+					$item['isBulk'] = false;
 					$item['id'] = $oDocument->getId();
 					$item['owned_by'] = $oOwner->getName();
 					$item['created_by'] = $oCreator->getName();
@@ -168,29 +181,30 @@ function uploadFile($params) {
 				
 					$json['success'] = $item;
 					
-					$retDocuments[] = json_encode($json);
-				
-					//file_put_contents('uploadFile.txt', "\n\r".print_r($retDocuments, true), FILE_APPEND);
+					$returnResponse[] = json_encode($json);
 					
-					$this->addResponse('addedDocuments', $retDocuments);
-	        	}
-					
-						        
+					$default->log->debug('Document add added response '.print_r($returnResponse, true));
+	        	}		        
 			}
+			
 	        catch(Exception $e) {
 	        	$default->log->error("Document add failed {$e->getMessage()}");
+	        	file_put_contents('uploadFile.txt', "\n\rDocument add failed {$e->getMessage()}", FILE_APPEND);
 	        	
+	        	$item = array();
+				$json = array();
 	        	//construct error message
         		$item['message'] = $e->getMessage();
         		$item['filename'] = $fileName;
         		$json['error'] = $item;
         		
-        		$retDocuments[] = json_encode($json);
-        		$this->addResponse('addedDocuments', $retDocuments);
+        		$returnResponse[] = json_encode($json);
 	        }
 		}
 		
-		//$this->addResponse('addedDocuments', $retDocuments);
+		$this->addResponse('addedDocuments', $returnResponse);
+		
+		$default->log->debug('Document add Response '.print_r($this->getResponse(), true));
 	}
 	
 	/**

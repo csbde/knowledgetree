@@ -270,6 +270,9 @@ kt.app.upload=new function(){
 	
 	//add the uploaded files to the repo
 	this.addDocuments = function() {		
+		//are we on dashboard.php?
+		var onDashboardPage = window.location.pathname.indexOf('dashboard') > 0;
+		
 		var progressWidgetShown = false;
 		
 		//hide the window!
@@ -281,7 +284,6 @@ kt.app.upload=new function(){
 		
 		var atLeastOneSingle = false;
 		var atLeastOneBulk = false;
-		var hasError = false;
 		
 		//what folder to upload to?
 		var folderID = jQuery("#currentPath").val();
@@ -314,6 +316,7 @@ kt.app.upload=new function(){
 					metadata[j++] = {'id':key, 'value':value};
 				});
 				
+				//NB: encode the filename!!
 				fileName = encodeURIComponent(fileName);
 				
 				var tempFile = self.data['s3TempPath']+fileName;
@@ -323,11 +326,10 @@ kt.app.upload=new function(){
 		});
 		
 		kt.api.addDocuments(filesToAdd, function(data){
+			var hasError = false;
 			//put this in a try...catch because error occurs if user browses away before the upload completes
 			//BUT upload still does complete, error occurs because tries to add item to non-existent page
 			try {
-				//console.log(self.data['baseFolderID']+' '+folderID);
-				//if(self.data['baseFolderID'] == folderID){
 				jQuery.each(data.data.addedDocuments, function(key, value){
 					//get the response from the server
 					var responseJSON = jQuery.parseJSON(value);
@@ -340,7 +342,8 @@ kt.app.upload=new function(){
 						//delete the file from the array because we don't want to upload it again!
 						delete self.data.files[responseJSON.success.filename];
 						
-						if (responseJSON.success.baseFolderID = folderID) {						
+						//don't display the item if it isn't the same folder or if you are on the dashboard
+						if (!responseJSON.success.isBulk && !onDashboardPage && responseJSON.success.baseFolderID == folderID) {						
 							//now add the new item to the grid
 							var item = {
 								id: responseJSON.success.id,
@@ -365,11 +368,7 @@ kt.app.upload=new function(){
 					    	kt.pages.browse.addDocumentItem(item);
 						}
 					}
-			    	
 				});
-					
-					//kt.lib.setFooter();
-				//}
 				
 				kt.lib.setFooter();
 				
@@ -385,7 +384,7 @@ kt.app.upload=new function(){
 				
 				jQuery('#uploadProgress').fadeOut(10000); 
 				
-				if (hasError) {
+				if (hasError) {					
 					progressMessage = 'One or more files failed to upload.';
 				
 					kt.app.upload.updateProgress(progressMessage);
@@ -398,11 +397,12 @@ kt.app.upload=new function(){
 				
 				
 			} catch(e){
-			 //console.dir(e);
+				//console.dir(e);
+				jQuery('#uploadProgress').fadeOut(10000); 
 			}
 			
 		}, function(){}, i*30000);
-		//20 seconds for each file!
+		//30 seconds for each file!
 		
 		this.closeWindow();
 	}
@@ -593,6 +593,8 @@ kt.app.upload=new function(){
 				}
 				
 				jQuery('#uploadpathstring').html(path);
+				jQuery('#changepathlink').show();
+				
 				
 				//var uniqueFileName = result.data.amazoncreds.awstmppath+kt.app.upload.uniqueFileName();
 				//console.log('uniqueFileName '+uniqueFileName);
