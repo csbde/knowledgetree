@@ -125,12 +125,6 @@ class loginResetDispatcher extends KTDispatcher {
             $sDisclaimer = $oPlugin->getLoginDisclaimer();
         }
 
-        $js = array();
-        $css = array();
-        $js[] = '/thirdpartyjs/extjs/adapter/ext/ext-base.js';
-        $js[] = '/thirdpartyjs/extjs/ext-all.js';
-        $css[] = '/thirdpartyjs/extjs/resources/css/ext-all.css';
-
         // Include additional js and css files if plugin
         $oPlugin =& $oRegistry->getPlugin('password.reset.plugin');
 
@@ -140,6 +134,10 @@ class loginResetDispatcher extends KTDispatcher {
         }
 
         $sUrl = KTUtil::addQueryStringSelf('action=');
+
+        // Check if using the username or email address
+        $oConfig = KTConfig::getSingleton();
+        $useEmail = $oConfig->get('user_prefs/useEmailLogin', false);
 
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('login_reset');
@@ -157,6 +155,7 @@ class loginResetDispatcher extends KTDispatcher {
         'sUrl' => $sUrl,
         'smallVersion' => $default->versionTier,
         'reset_password' => $reset_password,
+        'use_email' => $useEmail,
         'username' => isset($_REQUEST['username']) ? $_REQUEST['username'] : null
         );
         return $oTemplate->render($aTemplateData);
@@ -393,7 +392,7 @@ class loginResetDispatcher extends KTDispatcher {
             $this->simpleRedirectToMain(_kt('You must have cookies enabled to use the document management system.'), $url, $queryParams);
             exit(0);
         }
-        
+
         if ($this->checkFirstLogin()) {
             $GLOBALS['default']->log->debug(__FUNCTION__ . " first login for: " . $_SESSION['userID']);
             // this line may no longer be necessary
