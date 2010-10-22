@@ -682,7 +682,7 @@ UNLOCK TABLES;
 LOCK TABLES `folders` WRITE;
 /*!40000 ALTER TABLE `folders` DISABLE KEYS */;
 INSERT INTO `folders` VALUES
-(1,'Root Folder','Root Document Folder',NULL,1,'',1,'',0,NULL,NULL,1,5,0,1,NULL);
+(1,'Root Folder','Root Document Folder',NULL,1,'',1,'',0,NULL,NULL,1,3,0,1,NULL);
 /*!40000 ALTER TABLE `folders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1134,14 +1134,14 @@ UNLOCK TABLES;
 LOCK TABLES `permission_assignments` WRITE;
 /*!40000 ALTER TABLE `permission_assignments` DISABLE KEYS */;
 INSERT INTO `permission_assignments` VALUES
-(1,1,1,2),
-(2,2,1,2),
-(3,3,1,2),
+(1,1,1,3),
+(2,2,1,3),
+(3,3,1,3),
 (4,4,1,2),
 (5,5,1,2),
 (6,6,1,2),
-(7,7,1,2),
-(8,8,1,2);
+(7,7,1,3),
+(8,8,1,3);
 /*!40000 ALTER TABLE `permission_assignments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1152,7 +1152,8 @@ UNLOCK TABLES;
 LOCK TABLES `permission_descriptor_groups` WRITE;
 /*!40000 ALTER TABLE `permission_descriptor_groups` DISABLE KEYS */;
 INSERT INTO `permission_descriptor_groups` VALUES
-(2,1);
+(2,1),
+(3,1);
 /*!40000 ALTER TABLE `permission_descriptor_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1162,6 +1163,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `permission_descriptor_roles` WRITE;
 /*!40000 ALTER TABLE `permission_descriptor_roles` DISABLE KEYS */;
+INSERT INTO `permission_descriptor_roles` VALUES
+(3,-4);
 /*!40000 ALTER TABLE `permission_descriptor_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1182,7 +1185,8 @@ LOCK TABLES `permission_descriptors` WRITE;
 /*!40000 ALTER TABLE `permission_descriptors` DISABLE KEYS */;
 INSERT INTO `permission_descriptors` VALUES
 (1,'d41d8cd98f00b204e9800998ecf8427e',''),
-(2,'a689e7c4dc953de8d93b1ed4843b2dfe','group(1)');
+(2,'a689e7c4dc953de8d93b1ed4843b2dfe','group(1)'),
+(3,'454170523920fb0dd45353aa492d5899','group(1)role(-4)');
 /*!40000 ALTER TABLE `permission_descriptors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1217,24 +1221,19 @@ INSERT INTO `permission_lookup_assignments` VALUES
 (4,1,2,2),
 (5,2,2,2),
 (6,3,2,2),
-(7,1,3,2),
-(8,2,3,2),
-(9,3,3,2),
-(10,4,3,2),
-(11,5,3,2),
-(12,1,4,2),
-(13,2,4,2),
-(14,3,4,2),
-(15,4,4,2),
-(16,5,4,2),
-(17,6,4,2),
-(18,1,5,2),
-(19,2,5,2),
-(20,3,5,2),
-(21,4,5,2),
-(22,5,5,2),
-(23,6,5,2),
-(24,7,5,2);
+(7,4,2,2),
+(8,5,2,2),
+(9,6,2,2),
+(10,7,2,2),
+(11,8,2,2),
+(12,1,3,3),
+(13,2,3,3),
+(14,3,3,3),
+(15,4,3,2),
+(16,5,3,2),
+(17,6,3,2),
+(18,7,3,3),
+(19,8,3,3);
 /*!40000 ALTER TABLE `permission_lookup_assignments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1247,9 +1246,7 @@ LOCK TABLES `permission_lookups` WRITE;
 INSERT INTO `permission_lookups` VALUES
 (1),
 (2),
-(3),
-(4),
-(5);
+(3);
 /*!40000 ALTER TABLE `permission_lookups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1348,7 +1345,7 @@ UNLOCK TABLES;
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 INSERT INTO `roles` VALUES
-(-4,'Authenticated Users'),
+(-4,'Licensed Users'),
 (4,'Creator'),
 (-3,'Everyone'),
 (-2,'Owner'),
