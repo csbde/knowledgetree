@@ -31,7 +31,7 @@ table.uploadTable{
 	height: 300px;
 	
 	input, label {
-		font-family: sans-serif;
+		font-family: tahoma,arial,helvetica,sans-serif;
 	}
 	
 	td{
@@ -48,7 +48,7 @@ table.uploadTable{
 	
 	.no_files_selected {
 		margin: 18% auto auto auto;
-		font-family: sans-serif;
+		font-family: tahoma,arial,helvetica,sans-serif;
 		font-size: 11px;
 		/*font-weight: bold;*/
 		/*color:	#666666;*/
@@ -168,12 +168,10 @@ table.uploadTable{
 		.ul_file_remove,.ul_meta_button{
 			cursor: pointer;
 		}
-		.ul_meta_button{
-			margin: 0px 10px;
-		}
 		.ul_progress{
 			cursor: default;
 			color: #00A100;
+			text-align: center;
 			&.active{
 				color: #A10000;
 			}
@@ -255,7 +253,7 @@ table.uploadTable{
 table.metadataTable{
 
 	input, select, label {
-		font-family: sans-serif;
+		font-family: tahoma,arial,helvetica,sans-serif;
 		font-size: 11px;
 	}
 
@@ -283,6 +281,7 @@ table.metadataTable{
 		border: 1px solid #85A2BD;
 		background-color: darken(#FFFFFF, 3%);
 		height: 300px;
+		max-height: 300px;
 		.ul_meta_fieldset{
 			@include corners(5px);
 			@include shadow(5px, #999999);
@@ -425,7 +424,7 @@ table.metadataTable{
 			border: 1px solid #A8A8A8;	
 			padding: 2px 5px;
 			text-align: center;
-			font-family: sans-serif;
+			font-family: tahoma,arial,helvetica,sans-serif;
 			font-size: 11px;
 			font-weight: bold;
 			color: #666666;

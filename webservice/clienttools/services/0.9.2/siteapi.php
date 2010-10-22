@@ -121,7 +121,10 @@ function uploadFile($params) {
 				$bm = new KTAmazonS3BulkImportManager($oFolder, $fs, $oUser, $aOptions);
 		        $res = $bm->import($sS3TempFile, $size);
 		        //file_put_contents('uploadFile.txt', "\n\rres $res", FILE_APPEND);
-		        $archives[] = $res;      	
+		        $archives[] = $res; 
+
+		        //give dummy response
+		        $this->addResponse('addedDocuments', '');
 	        	
 	        } else {
 	        	$oDocument =& KTDocumentUtil::add($oFolder, $fileName, $oUser, $aOptions);
@@ -453,7 +456,7 @@ function uploadFile($params) {
 		
 		$oUser = User::get($_SESSION['userID']);
 		$username = $oUser->getUserName();
-		$randomfile = rand();// . '_';
+		$randomfile = mt_rand();// . '_';
 		$aws_tmp_path = ACCOUNT_NAME . '/' . 'tmp/' . $username . '/';
 		
 		

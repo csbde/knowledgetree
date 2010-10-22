@@ -100,18 +100,17 @@ kt.app.upload=new function(){
 		return isBulk;
 	}
 	
-	//TODO: implement this!
-	this.uniqueFileName=function(){
-		var fileName='_';
+	/*this.uniqueFileName=function(){
+		var fileName='';
 		var size=16;
-        var alpha = "abcdefghijklmnopqrstuvwxyz1234567890_";
-        var asize=alpha.length;
-        for(var i=0; i<size; i++){
-        	fileName=fileName+''+alpha[Math.floor(Math.random()*asize)];
-        }
-     
-        return fileName;
-	}
+       var alpha = "abcdefghijklmnopqrstuvwxyz1234567890_";
+       var asize=alpha.length;
+       for(var i=0; i<size; i++){
+       	fileName=fileName+''+alpha[Math.floor(Math.random()*asize)];
+       }
+    
+       return fileName;
+	}*/
 	
 	//A DOM helper function that will take elem as any dom element inside a file item fragment 
 	//and return the js object related to that element.
@@ -280,12 +279,15 @@ kt.app.upload=new function(){
 		filesToAdd = {};
 		var i = 0;
 		
+		var atLeastOneSingle = false;
+		var atLeastOneBulk = false;
+		
 		//what folder to upload to?
 		var folderID = jQuery("#currentPath").val();
 		
 		//iterate through files to see which are ready to be added
 		jQuery.each(self.data.files, function(key, value) {
-			if(!progressWidgetShown && !value.options.do_bulk_upload) {
+			if(!progressWidgetShown) {	// && !value.options.do_bulk_upload) {
 				progressWidgetShown = true;
 				//show the progress widget
 				kt.app.upload.unhideProgressWidget();
@@ -295,6 +297,13 @@ kt.app.upload=new function(){
 			if(value.options.is_uploaded) {
 				var fileName = value.options['fileName'];
 				var doBulk = value.options.do_bulk_upload;
+				
+				if (doBulk) {
+					atLeastOneBulk = true;
+				} else {
+					atLeastOneSingle = true;
+				}
+				
 				var docTypeID = value.options['docTypeId'];
 				
 				//assemble the metadata
@@ -355,7 +364,15 @@ kt.app.upload=new function(){
 				
 				kt.lib.setFooter();
 				
-				this.updateProgress('Documents added');
+				if (atLeastOneSingle && atLeastOneBulk) {
+					var progressMessage = 'Files added. Bulk upload link sent via e-mail.';
+				} else if (atLeastOneSingle) {
+					var progressMessage = 'Files added.';
+				} else if (atLeastOneBulk) {
+					progressMessage = ' Bulk upload link sent via e-mail.';
+				}
+				
+				kt.app.upload.updateProgress(progressMessage);
 				
 				jQuery('#uploadProgress').fadeOut(5000); 
 			} catch(e){
@@ -380,12 +397,12 @@ kt.app.upload=new function(){
 		uploadWindow.hide();
 	}
 	
-	this.enableUploadButton = function() {
+	this.enableAddButton = function() {
 		var btn = jQuery('#ul_actions_upload_btn');
 		btn.removeAttr("disabled");
 	}
 	
-	this.disableUploadButton = function() {
+	this.disableAddButton = function() {
 		var btn = jQuery('#ul_actions_upload_btn');
     	btn.attr("disabled", "true");
 	}
@@ -397,27 +414,28 @@ kt.app.upload=new function(){
 		if(activationNotice != null) {
 			activationNotice.style.visibility = 'hidden';
 			activationNotice.style.display = 'none';
-	    }*/
+	    }*/		
 		
-		//TODO: show some kind of spinner!
-
-	    var progress = document.getElementById('uploadProgress');
-
-	    if(progress != null) {
-	    	progress.innerHTML = 'Adding files ...';
-	    	progress.style.display = 'block';
-	    	progress.style.visibility = 'visible';
-	    }
+		var progress = jQuery('.uploadProgress');
+		progress.text('Adding files ...');
+		progress.css('display', 'block');
+		progress.css('visibility', 'visible');
+		
+		//jQuery('.uploadProgress .title').text('Adding files ...');
+		
+		progress.append('<img src="/resources/graphics/newui/large-loading.gif" style="float: right;"/>');
 	}
 	
 	this.updateProgress = function(message){
-	    var progress = document.getElementById('uploadProgress');
+		var progress = jQuery('.uploadProgress');
+		
+		//jQuery('.uploadProgress .title').text(message);
 
 	    if(progress != null) {
 	    	if (isNaN(message)) {
-	    		progress.innerHTML = message;
+	    		progress.text(message);
 	    	} else if (message <= 100) {
-				progress.innerHTML = message+"%";
+	    		progress.text(message+"%");
 			}
 	    }
 	}
@@ -470,7 +488,7 @@ kt.app.upload=new function(){
 	    });
 	    uploadWin.addListener('show',function(){
 	    	//disable the Add Documents button on show since won't be any to add yet!
-	    	kt.app.upload.disableUploadButton();
+	    	kt.app.upload.disableAddButton();
 	    	self.elems.item_container=jQuery('.uploadTable .ul_list')[0];
 	    	self.elems.qq=jQuery('#upload_add_file .qq-uploader')[0];
 	    	self.uploader=new qq.FileUploader({
@@ -488,7 +506,7 @@ kt.app.upload=new function(){
 	    			//remove the 'No Files Selected' message
 	    			jQuery('.no_files_selected').css('display', 'none');
 	    			//disable the Upload button as can only upload once upload to S3 completes
-    				kt.app.upload.disableUploadButton();
+    				kt.app.upload.disableAddButton();
 	    		    
 	    			self.addUpload(fileName, self.elems.qq, docTypeHasRequiredFields);
 	    		},
@@ -557,11 +575,12 @@ kt.app.upload=new function(){
 				//var uniqueFileName = result.data.amazoncreds.awstmppath+kt.app.upload.uniqueFileName();
 				//console.log('uniqueFileName '+uniqueFileName);
 				
-				//TODO: rather use a randomized name!
+				//console.log('random '+result.data.amazoncreds.randomfile);
+
 				self.uploader.setParams({
 					AWSAccessKeyId          : result.data.amazoncreds.AWSAccessKeyId,
 					acl                     : result.data.amazoncreds.acl,
-					key                     : result.data.amazoncreds.awstmppath+"${filename}",
+					key                     : result.data.amazoncreds.awstmppath+"${filename}",	//result.data.amazoncreds.awstmppath+result.data.amazoncreds.randomfile,
 					policy                  : result.data.amazoncreds.policy,
 					'Content-Type'          : "binary/octet-stream",
 					signature               : result.data.amazoncreds.signature,
@@ -569,7 +588,7 @@ kt.app.upload=new function(){
 				});
 				
 				//get the S3 temp location where all the uploads will be stored
-				self.data['s3TempPath'] = result.data.amazoncreds.awstmppath;
+				self.data['s3TempPath'] = result.data.amazoncreds.awstmppath;	//+result.data.amazoncreds.randomfile;
 				
 				self.uploader._options.action = result.data.amazoncreds.formAction; //doesnt work
 				self.uploader._handler._options.action = result.data.amazoncreds.formAction; //works
@@ -687,9 +706,9 @@ kt.app.upload.uploadStructure=function(options){
 			self.setProgress('Ready to add','waiting');
 			//iterate through all the files and check whether they have been uploaded!
 			if(kt.app.upload.allFilesReadyForUpload()) {
-				kt.app.upload.enableUploadButton();
+				kt.app.upload.enableAddButton();
 			} else {
-				kt.app.upload.disableUploadButton();
+				kt.app.upload.disableAddButton();
 			}
 		}
 	}
@@ -712,12 +731,12 @@ kt.app.upload.uploadStructure=function(options){
 		
 		if (jQuery.isEmptyObject(self.options.parent.data.files)) {
 			jQuery('.no_files_selected').css('display', 'block');
-			kt.app.upload.disableUploadButton();
+			kt.app.upload.disableAddButton();
 		} else {	
 			if(kt.app.upload.allFilesReadyForUpload()) {
-				kt.app.upload.enableUploadButton();
+				kt.app.upload.enableAddButton();
 			} else {
-				kt.app.upload.disableUploadButton();
+				kt.app.upload.disableAddButton();
 			}
 		}		
 	}
@@ -777,9 +796,9 @@ kt.app.upload.uploadStructure=function(options){
 	    	
 			//enable/disable the "Add Documents" button as appropriate
 			if(allRequiredMetadataDone) {
-				kt.app.upload.enableUploadButton();
+				kt.app.upload.enableAddButton();
 			} else {
-				kt.app.upload.disableUploadButton();
+				kt.app.upload.disableAddButton();
 			}
 		});
 		
@@ -853,7 +872,7 @@ kt.app.upload.uploadStructure=function(options){
 							for (var i = 0; i < stringToArray.length; i++) {
 								stringToArray[i] = trim(stringToArray[i]);
 							}
-							for (var j = 0; i < field.options.length; j++) {
+							for (var j = 0; j < field.options.length; j++) {
 								if (jQuery.inArray(field.options[j].text, stringToArray) > -1) {
 									field.options[j].selected = true;
 									//break;
@@ -990,7 +1009,8 @@ kt.app.upload.uploadStructure=function(options){
 		try {
 		//TODO: what does this do exactly?
 		var selectBox=jQuery('.ul_doctype',self.options.metaDataTable)[0];
-		for(var idx in selectBox.options){
+		//for(var idx in selectBox.options){
+		for(var idx = 0; idx < selectBox.options.length; idx++) {
 			if(selectBox.options[idx].value==docType){
 				selectBox.selectedIndex=idx;
 			}
