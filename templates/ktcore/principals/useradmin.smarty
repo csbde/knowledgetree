@@ -36,13 +36,13 @@
 
 	<div class="widgetRow">
 
-		<!-- View all users -->	
+		<!-- View all users -->
 		<div class="widgetItem">
 			<div class="form_actions">
 					<a href="{i18n arg_link=$link}#link#{/i18n}">{i18n}View all users{/i18n}</a>
 			</div>
 		</div>
-		
+
 		<!-- Add user -->
 		{if $can_add}
 			{if !$authentication}
@@ -50,12 +50,13 @@
 			{/if}
 		<div class="widgetItem">
 			<div class="form_actions">
+			    <a href="javascript:kt.app.inviteusers.showInviteWindow();"><span class="inviteButton">{i18n}Add a new user{/i18n}</span></a>
 				<a href="{addQS}action=addUser{/addQS}" style="background: none repeat scroll 0% 0% transparent;">{i18n}Add a new user{/i18n}</a>
 			</div>
 		</div>
 			{if $authentication_sources}
-			
-		<div class="widgetItem">		
+
+		<div class="widgetItem">
 			<input type="hidden" name="action" value="addUserFromSource" />
 
 			<p class="descriptiveText">{i18n}Add a user from an authentication source{/i18n}</p>
@@ -65,19 +66,19 @@
 				</div>
 			</p>
 		</div>
-	
+
 			{/if}
 	</div>
 		{else}
 	</div>
-	
+
 	<div class="widgetRow">
 		<div class="widgetItem">
 			<div class="ktInfoMessage"><span>{i18n}You do not have enough available licenses to add more active users.  Please disable some existing ones if you wish to add new active users.{/i18n}</span></div>
 		</div>
 	</div>
 		{/if}
-	
+
 
 </form>
 
@@ -101,7 +102,7 @@
 				  <th>{i18n}Current Groups{/i18n}</th>
 			   </tr>
 			</thead>
-			
+
 			<tbody>
 			   <!-- do we want to batch here? -->
 				 {foreach item=oUser from=$search_results}
@@ -129,10 +130,10 @@
 				 {/if}
 				 {/foreach}
 			</tbody>
-			
+
 		</table>
 	</div>
-	
+
 	<div class="widgetRow">
 		<div class="form_actions">
 			<input type="hidden" name="action" value="change_enabled" />
