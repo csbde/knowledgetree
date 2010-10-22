@@ -281,6 +281,7 @@ kt.app.upload=new function(){
 		
 		var atLeastOneSingle = false;
 		var atLeastOneBulk = false;
+		var hasError = false;
 		
 		//what folder to upload to?
 		var folderID = jQuery("#currentPath").val();
@@ -313,6 +314,8 @@ kt.app.upload=new function(){
 					metadata[j++] = {'id':key, 'value':value};
 				});
 				
+				fileName = encodeURIComponent(fileName);
+				
 				var tempFile = self.data['s3TempPath']+fileName;
 				
 				filesToAdd[i++] = {'baseFolderID':self.data['baseFolderID'], 'fileName':fileName, 'folderID':folderID, 'docTypeID':docTypeID, 'metadata':metadata, 's3TempFile':tempFile, 'doBulk':doBulk};
@@ -327,34 +330,40 @@ kt.app.upload=new function(){
 				//if(self.data['baseFolderID'] == folderID){
 				jQuery.each(data.data.addedDocuments, function(key, value){
 					//get the response from the server
-					var parsedJSON = jQuery.parseJSON(value);
+					var responseJSON = jQuery.parseJSON(value);
 					
-					//delete the file from the array because we don't want to upload it again!
-					delete self.data.files[parsedJSON.filename];
-					
-					if (parsedJSON.baseFolderID = folderID) {						
-						//now add the new item to the grid
-						var item = {
-							id: parsedJSON.id,
-				    		is_immutable: false,
-				    		is_checkedout: false,
-				    		filename: parsedJSON.filename,
-				    		title: parsedJSON.title,
-				    		owned_by: parsedJSON.owned_by,
-				    		created_by: parsedJSON.created_by,
-				    		created_date: parsedJSON.created_date,
-				    		modified_by: parsedJSON.modified_by,
-				    		modified_date: parsedJSON.modified_date,
-				    		mimeicon: parsedJSON.mimeicon,
-				    		thumbnail: '',
-				    		thumbnailclass: 'nopreview'
-				    	};
+					if (responseJSON.error) {
+						//console.log(responseJSON.error.message);
+						hasError = true;
+						//errorMessage += responseJSON.error.filename+': '+responseJSON.error.message+' ';
+					} else if (responseJSON.success) {
+						//delete the file from the array because we don't want to upload it again!
+						delete self.data.files[responseJSON.success.filename];
 						
-						//remove the "folder is empty" widget from the Browse View
-				    	jQuery('.page .notification').remove();
-						
-						//now add the item to the Browse View
-				    	kt.pages.browse.addDocumentItem(item);
+						if (responseJSON.success.baseFolderID = folderID) {						
+							//now add the new item to the grid
+							var item = {
+								id: responseJSON.success.id,
+					    		is_immutable: false,
+					    		is_checkedout: false,
+					    		filename: responseJSON.success.filename,
+					    		title: responseJSON.success.title,
+					    		owned_by: responseJSON.success.owned_by,
+					    		created_by: responseJSON.success.created_by,
+					    		created_date: responseJSON.success.created_date,
+					    		modified_by: responseJSON.success.modified_by,
+					    		modified_date: responseJSON.success.modified_date,
+					    		mimeicon: responseJSON.success.mimeicon,
+					    		thumbnail: '',
+					    		thumbnailclass: 'nopreview'
+					    	};
+							
+							//remove the "folder is empty" widget from the Browse View
+					    	jQuery('.page .notification').remove();
+							
+							//now add the item to the Browse View
+					    	kt.pages.browse.addDocumentItem(item);
+						}
 					}
 			    	
 				});
@@ -365,16 +374,29 @@ kt.app.upload=new function(){
 				kt.lib.setFooter();
 				
 				if (atLeastOneSingle && atLeastOneBulk) {
-					var progressMessage = 'Files added. Bulk upload link sent via e-mail.';
+					var progressMessage = 'Files added. E-mail link to files sent.';
 				} else if (atLeastOneSingle) {
 					var progressMessage = 'Files added.';
 				} else if (atLeastOneBulk) {
-					progressMessage = ' Bulk upload link sent via e-mail.';
-				}
+					progressMessage = ' E-mail link to files sent.';
+				}				
 				
 				kt.app.upload.updateProgress(progressMessage);
 				
-				jQuery('#uploadProgress').fadeOut(5000); 
+				jQuery('#uploadProgress').fadeOut(10000); 
+				
+				if (hasError) {
+					progressMessage = 'One or more files failed to upload.';
+				
+					kt.app.upload.updateProgress(progressMessage);
+					
+					jQuery('#uploadProgress').fadeIn(); 
+					
+					jQuery('#uploadProgress').fadeOut(10000); 
+				}
+				
+				
+				
 			} catch(e){
 			 //console.dir(e);
 			}
