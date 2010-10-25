@@ -8,8 +8,6 @@ kt.api=new function(){
 		var synchronous=false;
 		var func='siteapi.uploadFile';
 		
-		console.log(customTimeout);
-		
 		if(callback){
 			//console.log('callback');
 			ktjapi.callMethod(func,params,callback,synchronous,errorCallback,this.persistentDataCacheTimeout,customTimeout);

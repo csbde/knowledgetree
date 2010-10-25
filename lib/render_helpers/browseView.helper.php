@@ -14,6 +14,10 @@ class browseViewHelper {
 		} else {
 			$this->zohoEnabled = FALSE;
 		}
+
+		// Include new browse view css
+		$oPage = $GLOBALS['main'];
+		$oPage->requireCSSResource("resources/css/newui/browseView.css?".rand());
 	}
 
 	public function getJavaScript()
@@ -130,12 +134,12 @@ class browseViewHelper {
 					<td><div class="roundnum">1</div></td>
 					<td class="info">
 						<h2>Upload files and folders</h2>
-						Upload one ore more files including .zip files and other archives
+						Upload one or more files including .zip files and other archives
 
 						<br />
 						<br />
 						<div>
-							<a href="action.php?kt_path_info=ktlive.actions.folder.bulkupload&fFolderId='.$folderId.'"><span class="uploadButton">Upload</span></a>
+							<a href="javascript:kt.app.upload.showUploadWindow();"><span class="uploadButton">Upload</span></a>
 						</div>
 
 					</td>
@@ -198,12 +202,10 @@ class browseViewHelper {
 
 	public function renderDocumentItem($item=NULL,$empty=false,$shortcut=false){
 		$fileNameCutoff=100;
-		$oDocument = Document::get($item['id']);
-		if(PEAR::isError($oDocument)){
-		    global $default;
-		    $default->log->error("Cannot access document ({$item['id']}): ".$oDocument->getMessage());
-		    return ''; //'<span class="fragment document" style="display:none;">'.$tpl.'</span>';
-		}
+
+		// When $item is null, $oDocument resolves to a PEAR Error, we should add a check for $item and initialise the document data at the top
+		// instead of using $oDocument in the code.
+		$oDocument = Document::get($item[id]);
 		$item['mimetypeid']=(method_exists($oDocument,'getMimeTypeId'))?$oDocument->getMimeTypeId():'0';
 
 		$iconFile='resources/mimetypes/newui/'.KTMime::getIconPath($item['mimetypeid']).'.png';
@@ -273,38 +275,40 @@ class browseViewHelper {
 
 
 		// Check if the thumbnail exists
-		$dev_no_thumbs=(isset($_GET['noThumbs']) || $_SESSION['browse_no_thumbs'])?true:false;
-		$_SESSION['browse_no_thumbs']=$dev_no_thumbs;
-		$item['thumbnail'] = '';
-		$item['thumbnailclass'] = 'nopreview';
-		if(!$dev_no_thumbs){
-		    // Check if the document has a thumbnail rendition -> has_rendition = 2, 3, 6, 7
-		    // 0 = nothing, 1 = pdf, 2 = thumbnail, 4 = flash
-		    // 1+2 = 3: pdf & thumbnail; 1+4 = 5: pdf & flash; 2+4 = 6: thumbnail & flash; 1+2+4 = 7: all
+        $dev_no_thumbs=(isset($_GET['noThumbs']) || $_SESSION['browse_no_thumbs'])?true:false;
+        $_SESSION['browse_no_thumbs']=$dev_no_thumbs;
+        $item['thumbnail'] = '';
+        $item['thumbnailclass'] = 'nopreview';
 
-		    // If the flag hasn't been set, check against storage and update the flag - for documents where the flag hasn't been set
-		    $check = false;
-		    if(is_null($item['has_rendition'])){
+        // When item is null, thumbnails won't exist so skip the check
+        if(!$dev_no_thumbs && !PEAR::isError($oDocument)){
+            // Check if the document has a thumbnail rendition -> has_rendition = 2, 3, 6, 7
+            // 0 = nothing, 1 = pdf, 2 = thumbnail, 4 = flash
+            // 1+2 = 3: pdf & thumbnail; 1+4 = 5: pdf & flash; 2+4 = 6: thumbnail & flash; 1+2+4 = 7: all
 
-    			$oStorage=KTStorageManagerUtil::getSingleton();
+            // If the flag hasn't been set, check against storage and update the flag - for documents where the flag hasn't been set
+            $check = false;
+            if(is_null($item['has_rendition'])){
 
-    	        $varDir = $GLOBALS['default']->varDirectory;
-    			$thumbnailCheck = $varDir . '/thumbnails/'.$item['id'].'.jpg';
+                $oStorage=KTStorageManagerUtil::getSingleton();
 
-		        if ($oStorage->file_exists($thumbnailCheck)) {
-		            $oDocument->setHasRendition(2);
-		            $check = true;
-		        }else {
-		            $oDocument->setHasRendition(0);
-		        }
-		        $oDocument->update();
-		    }
+                $varDir = $GLOBALS['default']->varDirectory;
+                $thumbnailCheck = $varDir . '/thumbnails/'.$item['id'].'.jpg';
 
-			if ($check || in_array($item['has_rendition'], array(2, 3, 6, 7))) {
-				$item['thumbnail'] = '<img src="plugins/thumbnails/thumbnail_view.php?documentId='.$item['id'].'" onClick="document.location.replace(\'view.php?fDocumentId='.$item['id'].'#preview\');">';
-				$item['thumbnailclass'] = 'preview';
-			}
-		}
+                if ($oStorage->file_exists($thumbnailCheck)) {
+                    $oDocument->setHasRendition(2);
+                    $check = true;
+                }else {
+                    $oDocument->setHasRendition(0);
+                }
+                $oDocument->update();
+            }
+
+            if ($check || in_array($item['has_rendition'], array(2, 3, 6, 7))) {
+                $item['thumbnail'] = '<img src="plugins/thumbnails/thumbnail_view.php?documentId='.$item['id'].'" onClick="document.location.replace(\'view.php?fDocumentId='.$item['id'].'#preview\');">';
+                $item['thumbnailclass'] = 'preview';
+            }
+        }
 
 //		$item['zoho_url']=Zoho::kt_url() . '/' . Zoho::plugin_path() . '/zohoEdit.php?session='.session_id().'&document_id='.$item['id'];
 //		$item['zoho_edit']="zoho_edit" . time();

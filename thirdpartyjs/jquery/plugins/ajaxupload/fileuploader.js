@@ -266,10 +266,7 @@ qq.FileUploaderBasic = function(o){
         action: '/server/upload',
         params: {},
         button: null,
-        //Martin: taken out multiple uploads until able to figure out how to make it work with S3
-        //issue is that need to force handlerClass = 'UploadHandlerForm' (see below) so that it works with S3
-        //BUT this breaks multiple uploads!
-        multiple: false,
+        multiple: true,
         maxConnections: 3,
         buttonText: 'Upload a file',
         // validation        
@@ -361,7 +358,9 @@ qq.FileUploaderBasic.prototype = {
     _preventLeaveInProgress: function(){
         var self = this;
         
-        qq.attach(window, 'beforeunload', function(e){
+        //Martin: don't show the "Do you reall want to browse away?" message
+        //Instead we need to allow user to cancel upload!!
+        /*qq.attach(window, 'beforeunload', function(e){
             if (!self._filesInProgress){return;}
             
             var e = e || window.event;
@@ -369,7 +368,7 @@ qq.FileUploaderBasic.prototype = {
             e.returnValue = self._options.messages.onLeave;
             // for webkit
             return self._options.messages.onLeave;             
-        });        
+        }); */       
     },    
     _onSubmit: function(id, fileName){
         this._filesInProgress++;  

@@ -1,9 +1,9 @@
 <span class="ul_meta_row">
-	<span class="ul_meta_label">[name] [is_mandatory]
+	<span class="ul_meta_label" id="ul_meta_label_[id]">[name]
 		<span class="ul_meta_label_descr">[description]</span>
 	</span>
 	<span class="ul_meta_field">
-		<select multiple id="ul_meta_field_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="getSelectedValues();"></select>
+		<select multiple id="ul_meta_field_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="getSelectedValues_[id]();"></select>
 	</span>
 </span>
 
@@ -34,23 +34,28 @@ Ext.onReady(function(){
     }  
 
     if([is_mandatory] == '1') {
+		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
+	}
+
+    /*if([is_mandatory] == '1') {
 		jQuery('#ul_meta_field_[id]').addClass('required');
-	}  
+	}*/  
     
 });
 
-function getSelectedValues() {
+function getSelectedValues_[id]() {
 	var multiSelect = jQuery('#ul_meta_field_[id]')[0];
 
 	var j = 0;
 	//to store the selected checkbox IDs
-    var selected = new Array();
-	
-	for (var i=0; i < multiSelect.options.length; i++) {
+    var selected = '';	//new Array();
+
+    for (var i=0; i < multiSelect.options.length; i++) {
 	    if (multiSelect.options[i].selected) {
-	    	selected[j++] = multiSelect.options[i].value;
+	    	selected += multiSelect.options[i].text+', ';
 	    } 
 	}
+	selected = selected.substr(0, selected.length-2);
 
 	kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).setMetaData('[id]',selected);
 }

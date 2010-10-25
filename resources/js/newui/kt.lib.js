@@ -52,7 +52,7 @@ kt.lib.Object=new function(){
 	    }
 	};
 	
-	this.enum=function(value,keylist,defaultValue){
+	this.ktenum=function(value,keylist,defaultValue){
 		var keylist=(''+keylist).split(',');
 		for(var idx in keylist){
 			if(value==keylist[idx])return value;
