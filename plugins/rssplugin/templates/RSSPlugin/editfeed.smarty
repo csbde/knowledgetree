@@ -11,7 +11,7 @@
         {$oWidget->render()}
       {/foreach}
       <div class="form_actions">
-         <input type="submit" value="{i18n}Save changes{/i18n}" />
+         <input type="submit" value="{i18n}Save Changes{/i18n}" />
          <input type="submit" name="kt_cancel[]" value="{i18n}Cancel{/i18n}" />
       </div>
    </fieldset>
