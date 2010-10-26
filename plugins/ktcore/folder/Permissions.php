@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -220,7 +220,8 @@ class KTFolderPermissionsAction extends KTFolderAction {
 				if ($everyone || ($authenticated && $oUser->isAnonymous()) ||
 					KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $this->oFolder)){
 					$aMapPermissionUser[$iPermissionID][$oUser->getId()] = true;
-					$aActiveUsers[$oUser->getId()] = $oUser->getName();
+					$name = ($oUser->getDisabled() == 3) ? '(invited) '.$oUser->getEmail() : $oUser->getName();
+					$aActiveUsers[$oUser->getId()] = $name;
 				}
              }
         }

@@ -7,7 +7,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -181,12 +181,13 @@ class Group extends KTEntity {
         $aMembers = array();
         foreach ($aUserIds as $iUserId) {
             $oUser = User::get($iUserId);
-            $is_disabled = ($disabled) ? false : $oUser->getDisabled();
+            $is_disabled = ($disabled) ? false : ($oUser->getDisabled() == 1 || $oUser->getDisabled() == 2);
             if ((!PEAR::isError($oUser)) && ($oUser !== false) && !$is_disabled) {
+                $oUser->setName('(invited) '. $oUser->getEmail());
                 $aMembers[] = $oUser;
             }
         }
-            
+
         return $aMembers;
     }
 

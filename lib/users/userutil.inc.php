@@ -40,10 +40,13 @@ require_once(KT_LIB_DIR . '/users/User.inc');
 
 class KTUserUtil
 {
-    static function createUser($username, $name, $password = null, $email_address = null, $email_notifications = false, $mobile_number = null, $max_sessions = 3, $source_id = null, $details = null, $details2 = null)
+    public static function createUser($username, $name, $password = null, $email_address = null, $email_notifications = false, $mobile_number = null, $max_sessions = 3, $source_id = null, $details = null, $details2 = null, $disabled_flag = 0)
     {
+        global $default;
+
         $dupUser =& User::getByUserName($username);
         if(!PEAR::isError($dupUser)) {
+            $default->log->warn('Couldn\'t create user, duplicate username: '.$dupUser->getMessage());
             return PEAR::raiseError(_kt("A user with that username already exists"));
         }
 
@@ -61,9 +64,12 @@ class KTUserUtil
             "authenticationsourceid" => $source_id,
             "authenticationdetails" => $details,
             "authenticationdetails2" => $details2,
+            'disabled' => $disabled_flag,
         ));
 
         if (PEAR::isError($oUser) || ($oUser == false)) {
+            $error = ($oUser === false) ? '' : $oUser->getMessage();
+            $default->log->error('Couldn\'t create user: '. $error);
             return PEAR::raiseError(_kt("failed to create user."));
         }
 
@@ -83,12 +89,12 @@ class KTUserUtil
 
         return $oUser;
     }
-    
+
     public static function getUserField($userId,$fieldName='name'){
     	if(!is_array($userId)){	$userId=array($userId);	}
     	$userId=array_unique($userId,SORT_NUMERIC);
     	if(!is_array($fieldName)){$fieldName=array($fieldName);	}
-    	
+
 		//TODO: needs some work
     	$sql="SELECT ".join(',',$fieldName)." FROM users WHERE id IN (".join(',',$userId).")";
     	$res=DBUtil::getResultArray($sql);
@@ -98,6 +104,140 @@ class KTUserUtil
     	}else{
     		return $res;
     	}
+    }
+
+    /**
+     * Takes a list of email addresses and sends invites to them to become licensed users
+     *
+     * @param array $addressList The list of invitee email addresses
+     * @param string $group The initial group to add the invitee's to
+     * @return array The lists of newly invited users, failed invitations and already existing users
+     */
+    public static function inviteUsersByEmail($addressList, $group = null)
+    {
+        if(empty($addressList)){
+            return array();
+        }
+
+        global $default;
+
+        $existingUsers = array();
+        $invitedUsers = array();
+        $failedUsers = array();
+        $groupName = '';
+
+    	$inSystemList = self::checkUniqueEmail($addressList);
+
+    	// loop through any addresses that currently exist and unset them in the invitee list
+    	$addressList = array_flip($addressList);
+    	foreach ($inSystemList as $item){
+    	    unset($addressList[$item['email']]);
+    	    $existingUsers[] = $item;
+    	}
+    	$addressList = array_flip($addressList);
+
+    	// Get the group object if a group has been selected
+    	$oGroup = false;
+    	if(is_numeric($group)){
+    	   $oGroup = Group::get($group);
+
+    	   if(PEAR::isError($oGroup)){
+    	       $default->log->error("Invite users. Error on selected group ({$group}) - {$oGroup->getMessage()}");
+    	       $oGroup = false;
+    	   }else {
+    	       $groupName = $oGroup->getName();
+    	   }
+        }
+
+    	// loop through remaining emails and add to the users table
+    	// flag as "invited" => disabled = 3
+    	// 0 = live; 1 = disabled; 2 = deleted; 3 = invited; 4 = shared
+    	foreach ($addressList as $email){
+            if(empty($email)){
+                continue;
+            }
+            $oUser = self::createUser($email, '', null, $email, true, null, 3, null, null, null, 3);
+
+            if(PEAR::isError($oUser)){
+               $default->log->error("Invite users. Error on creating invited user ({$email}) - {$oUser->getMessage()}");
+               $failedUsers[] = $email;
+               continue;
+            }
+            $invitedUsers[] = array('id' => $oUser->getId(), 'email' => $email);
+
+            if($oGroup !== false){
+               $res = $oGroup->addMember($oUser);
+               if(PEAR::isError($res)){
+                   $default->log->error("Invite users. Error on adding user ({$email}) to group {$group} - {$res->getMessage()}");
+                   continue;
+               }
+            }
+    	}
+
+    	// Send invitation
+    	if(!empty($invitedUsers)){
+    	    self::sendInvitations($invitedUsers);
+    	}
+
+
+    	$response = array('existing' => $existingUsers, 'failed' => $failedUsers, 'invited' => $invitedUsers, 'group' => $groupName);
+    	return $response;
+    }
+
+    /**
+     * Create the unique url for the invite and send to the queue
+     *
+     * @param array $emailList
+     * @return bool
+     */
+    public static function sendInvitations($emailList)
+    {
+        $list = array();
+        foreach ($emailList as $item){
+            $key = 'skfjiwefjaldi';
+            $user = json_encode($item);
+            $user = KTUtil::encode($user, $key);
+            $list[$item['email']] = $user;
+        }
+
+        global $default;
+
+        $default->log->error('Invited keys '. print_r($list, true));
+
+        if(ACCOUNT_ROUTING_ENABLED){
+            // dispatch queue event
+        }
+    }
+
+    /**
+     * Check whether an email address is being used within the system
+     *
+     * @param array $addresses
+     * @return array
+     */
+    public static function checkUniqueEmail($addresses)
+    {
+        if(empty($addresses)){
+            return false;
+        }
+
+        if(is_string($addresses)){
+            $addresses = array($addresses);
+        }
+
+        if(!is_array($addresses)){
+            return false;
+        }
+
+        $list = implode("', '", $addresses);
+
+        // Filter out deleted users
+        $sql = "SELECT u.id, u.name, u.email, u.disabled FROM users u
+                WHERE email IN ('{$list}') AND disabled !=2;";
+
+        $result = DBUtil::getResultArray($sql);
+
+        return $result;
     }
 }
 
