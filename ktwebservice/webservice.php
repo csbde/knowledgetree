@@ -265,6 +265,16 @@ class KTWebService
         		'items' => "{urn:$this->namespace}kt_folder_items",
          	);
 
+    	$this->__typedef["{urn:$this->namespace}kt_folder_tree"] =
+         	array(
+				'status_code' => 'int',
+				'message' => 'string',
+				'folder_id' => 'int',
+        		'folder_name' => 'string' ,
+        		'full_path' => 'string' ,
+        		'items' => "{urn:$this->namespace}kt_folder_items",
+         	);
+
          $this->__typedef["{urn:$this->namespace}kt_document_detail"] =
          	array(
          		'status_code' => 'int',
