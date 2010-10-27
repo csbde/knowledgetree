@@ -99,12 +99,6 @@ function uploadFile($params) {
 		        	require_once($dir . '/plugins/ktlive/lib/import/amazons3zipimportstorage.inc.php');
 					require_once($dir . '/plugins/ktlive/lib/import/amazons3bulkimport.inc.php');
 					
-		         	// Check if archive is a deb package
-			        if($sExtension == 'deb')
-			        {
-						$this->sExtension = 'ar';
-			        }
-		        	
 					$fileData = array();
 		        	$fileData['name'] = $fileName;
 		        	$fileData['tmp_name'] = $sS3TempFile;
