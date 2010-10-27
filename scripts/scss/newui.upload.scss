@@ -415,6 +415,7 @@ table.metadataTable{
 	
 	.ul_meta_actionbar{
 		text-align: right;
+		
 		input[type="button"]{
 			margin: 5px;
 			cursor: pointer;
@@ -431,12 +432,12 @@ table.metadataTable{
 			
 			&:hover{
 				color:black;
-			}
-			
-			input[type="button"][disabled] {
-				color: #CCCCCC;
-			}
+			}			
 		}
+		input[type="button"][disabled] {
+			color: #CCCCCC;
+		}
+		
 		.ul_actions_cancel_link {
 			float: right;
 			margin: 5px;
