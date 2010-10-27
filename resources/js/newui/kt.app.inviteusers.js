@@ -7,10 +7,10 @@ if(typeof(kt.app)=='undefined')kt.app={};
 kt.app.inviteusers=new function(){
 
 	//contains a list of fragments that will get preloaded
-	var fragments=this.fragments=['invite.confirm.dialog'];
+//	var fragments=this.fragments=[''];
 
 	//contains a list of executable fragments that will get preloaded
-	var execs=this.execs=['invite.dialog'];
+	var execs=this.execs=['invite.dialog', 'invite.confirm.dialog'];
 
 	//scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
 	var self=this;
@@ -23,9 +23,9 @@ kt.app.inviteusers=new function(){
 		for(var idx in execs){
 			kt.api.preloadExecutable(execs[idx]);
 		}
-		for(var idx in fragments){
-			kt.api.preloadFragment(fragments[idx]);
-		}
+//		for(var idx in fragments){
+//			kt.api.preloadFragment(fragments[idx]);
+//		}
 	}
 
 	//Container for the EXTJS window
@@ -69,7 +69,7 @@ kt.app.inviteusers=new function(){
 	        shadow: true,
 	        modal: true,
 	        title: 'User Invitations Sent',
-	        html: kt.api.getFragment('invite.confirm.dialog')
+	        html: kt.api.execFragment('invite.confirm.dialog')
 	    });
 
 	    self.closeWindow();
@@ -77,15 +77,7 @@ kt.app.inviteusers=new function(){
 	    inviteConfirmWin.show();
 
 	    // display the list of invited users
-	    if(invited != ''){
-	        var inner = '';
-	        var len = invited.length;
-	        for(var i = 0; i < len; i++){
-	            inner += '<li>'+invited[i]['email']+'</li>';
-	        }
-
-	        document.getElementById('invitedList').innerHTML = inner;
-	    }
+        document.getElementById('invitedUsers').innerHTML = invited;
 
 	    // display the select group
 	    if(group == ''){
@@ -94,12 +86,8 @@ kt.app.inviteusers=new function(){
 	       document.getElementById('invitedGroup').innerHTML = group;
 	    }
 
-	    if(check == 1){
-	        document.getElementById('inviteLicenses').innerHTML = 'Warning: you have no user licenses available.';
-	    }
-
-	    if(check == 2){
-	        document.getElementById('inviteLicenses').innerHTML = 'Warning: the number of invited users exceeds the number of available user licenses ('+ licenses +').';
+	    if(check != 0){
+	        document.getElementById('inviteLicenses').style.display = 'block';
 	    }
 	}
 

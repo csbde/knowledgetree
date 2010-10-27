@@ -28,6 +28,16 @@ $aGroupsList = getGroupsList();
 <table border="0" cellspacing="5" cellpadding="5px">
 
     <tr>
+        <td colspan="2" valign="top">
+            Enter or copy and paste the email addresses of the user in your organization you want to invite to use KnowledgeTree. Each user invited will be assigned a KnowledgeTree license.
+        </td>
+    </tr>
+
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+
+    <tr>
         <td width="30%" valign="top">
             Invite Users:
         </td>

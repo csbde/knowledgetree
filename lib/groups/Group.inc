@@ -183,7 +183,7 @@ class Group extends KTEntity {
             $oUser = User::get($iUserId);
             $is_disabled = ($disabled) ? false : ($oUser->getDisabled() == 1 || $oUser->getDisabled() == 2);
             if ((!PEAR::isError($oUser)) && ($oUser !== false) && !$is_disabled) {
-                $oUser->setName('(invited) '. $oUser->getEmail());
+                if($oUser->getDisabled() == 3) $oUser->setName('(Invited) '. $oUser->getEmail());
                 $aMembers[] = $oUser;
             }
         }

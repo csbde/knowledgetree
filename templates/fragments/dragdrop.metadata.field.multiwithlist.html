@@ -1,0 +1,88 @@
+<span class="ul_meta_row">
+	<span class="ul_meta_label" id="ul_meta_label_[id]">[name]
+		<span class="ul_meta_label_descr">[description]</span>
+	</span>
+	<span class="ul_meta_field">
+		<select multiple id="ul_meta_field_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="getSelectedValues_[id]();"></select>
+	</span>
+</span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+	//get the lookup values
+    var data = new Array();
+    var i = 0;
+    for (var key1 in [multi_lookup_values]) {	
+    	if (typeof [multi_lookup_values][key1] !== 'function') {    
+			for (var key2 in ([multi_lookup_values][key1])) {
+				var key = key2.replace('id','');
+				var value = [multi_lookup_values][key1][key2];
+				if (typeof value !== 'function') {
+					data[i++] = new Array(key, value);
+				}
+			}
+    	}
+	}
+
+    var select = jQuery('#ul_meta_field_[id]')[0];	
+
+    //populate the options
+    for(var i = 0; i < data.length; i++) {
+    	select.options[i] = new Option (data[i][1], data[i][0], false, false);
+    }  
+
+    if([is_mandatory] == '1') {
+        //jQuery('#ul_meta_field_[id]').addClass('required');
+		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
+
+		//register as required field
+		kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+
+		/*jQuery('#ul_meta_field_[id]').click(function() {
+			if (this.selectedIndex <= 0){
+				kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+				kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+			} else {
+				kt.dragdrop.metadata.registerRequiredFieldDone('ul_meta_field_[id]');
+				kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+			}
+		});*/
+	} 
+    
+});
+
+function getSelectedValues_[id]() {
+	var multiSelect = jQuery('#ul_meta_field_[id]')[0];
+
+	var j = 0;
+	//to store the selected checkbox IDs
+    var selected = '';	//new Array();
+
+    for (var i=0; i < multiSelect.options.length; i++) {
+	    if (multiSelect.options[i].selected) {
+	    	selected += multiSelect.options[i].text+', ';
+	    } 
+	}
+
+	//chop off trailing comma
+    if (selected.length > 2) {
+		selected = selected.substr(0, selected.length-2);
+	}
+
+    //if marked as mandatory, check whether all done
+	if([is_mandatory] == '1') {
+    	if (selected.length > 0) {
+    		kt.dragdrop.metadata.registerRequiredFieldDone('ul_meta_field_[id]');
+    		kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+    	} else {
+    		kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+    		kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+        }
+	}
+
+	kt.dragdrop.metadata.setMetaData('[id]', selected);
+}
+
+</script>

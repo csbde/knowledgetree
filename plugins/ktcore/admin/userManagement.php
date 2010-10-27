@@ -115,6 +115,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             "authentication_sources" => $aAuthenticationSources,
             "old_search" => $name,
             "can_add" => $bCanAdd,
+            "invited" => false,
             'authentication' => ACCOUNT_ROUTING
         );
         return $oTemplate->render($aTemplateData);
@@ -135,7 +136,8 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         }
 
         $email = $oUser->getEmail();
-        $user = array('id' => $userId, 'email' => $email);
+        $user = array();
+        $user[] = array('id' => $userId, 'email' => $email);
 
         $res = KTUserUtil::sendInvitations($user);
 
@@ -774,8 +776,23 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 	        }
  		}
 
+ 		if($_REQUEST['update_value'] == 'invite')
+ 		{
+ 		    $inviteList = array();
+ 			foreach(KTUtil::arrayGet($_REQUEST, 'edit_user', array()) as $sUserId => $v) {
+	            $oUser = User::get((int)$sUserId);
+	            if(PEAR::isError($oUser)) { $this->errorRedirectToMain(_kt('Error getting user object')); }
+
+	            if($oUser->getDisabled() == 3){
+	                $inviteList[] = array('id' => $sUserId, 'email' => $oUser->getEmail());
+	            }
+	        }
+
+            $res = KTUserUtil::sendInvitations($inviteList);
+ 		}
+
         $this->commitTransaction();
-        $this->successRedirectToMain(_kt('Users updated'));
+        $this->successRedirectToMain(_kt('Users updated'), 'show_all=1');
 
     }
 

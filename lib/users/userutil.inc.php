@@ -127,7 +127,7 @@ class KTUserUtil
         $groupName = '';
 
     	$inSystemList = self::checkUniqueEmail($addressList);
-    	$availableLicenses = (int)BaobabKeyUtil::availableUserLicenses();
+    	$availableLicenses = 2;//(int)BaobabKeyUtil::availableUserLicenses();
 
     	// loop through any addresses that currently exist and unset them in the invitee list
     	$addressList = array_flip($addressList);
@@ -180,9 +180,11 @@ class KTUserUtil
     	    self::sendInvitations($invitedUsers);
     	}
 
-    	$check = self::checkUserLicenses(count($invitedUsers), $availableLicenses);
+    	$numInvited = count($invitedUsers);
+    	$check = self::checkUserLicenses($numInvited, $availableLicenses);
 
-    	$response = array('existing' => $existingUsers, 'failed' => $failedUsers, 'invited' => $invitedUsers, 'group' => $groupName, 'check' => $check, 'licenses' => $availableLicenses);
+    	//$response = array('existing' => $existingUsers, 'failed' => $failedUsers, 'invited' => $invitedUsers, 'group' => $groupName, 'check' => $check, 'licenses' => $availableLicenses);
+    	$response = array('invited' => $numInvited, 'group' => $groupName, 'check' => $check);
     	return $response;
     }
 

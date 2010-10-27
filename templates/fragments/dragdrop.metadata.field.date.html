@@ -26,9 +26,10 @@ Ext.onReady(function(){
 			    		day = '0'+day;
 			    	}
 			    	var myDate = date.getFullYear() + '-' + month + '-' + day;
-			    	kt.app.upload.getMetaItem(jQuery('#ul_meta_field_date_[id]')).setMetaData('[id]', myDate);
+			    	kt.dragdrop.metadata.setMetaData('[id]', myDate);
         		} catch (err) {
-        			kt.app.upload.getMetaItem(jQuery('#ul_meta_field_date_[id]')).setMetaData('[id]', '');
+            		//console.log('error in date');
+            		kt.dragdrop.metadata.setMetaData('[id]', '');
                 }
 			}
     	}

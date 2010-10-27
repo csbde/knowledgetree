@@ -220,7 +220,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
 				if ($everyone || ($authenticated && $oUser->isAnonymous()) ||
 					KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $this->oFolder)){
 					$aMapPermissionUser[$iPermissionID][$oUser->getId()] = true;
-					$name = ($oUser->getDisabled() == 3) ? '(invited) '.$oUser->getEmail() : $oUser->getName();
+					$name = ($oUser->getDisabled() == 3) ? '(Invited) '.$oUser->getEmail() : $oUser->getName();
 					$aActiveUsers[$oUser->getId()] = $name;
 				}
              }

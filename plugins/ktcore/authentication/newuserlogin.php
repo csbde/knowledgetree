@@ -55,10 +55,11 @@ class NewUserLoginDispatcher extends KTDispatcher {
         $oUser = User::get($user->id);
 
         if(PEAR::isError($oUser)){
+            $errorMessage = _kt('An error occurred: '.$oUser->getMessage());
             $default->log->error('Invited login: error getting user obj - '. $oUser->getMessage());
 
             $rootUrl = $default->rootUrl;
-            redirect($rootUrl. '/login.php');
+            redirect($rootUrl. '/login.php?errorMessage='.$errorMessage);
             exit;
         }
 
@@ -67,9 +68,16 @@ class NewUserLoginDispatcher extends KTDispatcher {
         $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : $oUser->getEmail();
 
         if($disabled != 3){
-            $default->log->debug('Invited login: user already created - '.$user->id);
-
             $rootUrl = $default->rootUrl;
+
+            if($disabled == 2 || $disabled == 1){
+                $default->log->error("Invited login: user ({$user->id}) has been disabled or deleted (status = {$disabled})");
+                $errorMessage = _kt('Your login is no longer valid, please contact your System Administrator');
+                redirect($rootUrl. '/login.php?errorMessage='.$errorMessage);
+                exit;
+            }
+
+            $default->log->debug('Invited login: user already created - '.$user->id);
             redirect($rootUrl. '/login.php');
             exit;
         }
@@ -106,7 +114,8 @@ class NewUserLoginDispatcher extends KTDispatcher {
 
                 if(PEAR::isError($session)){
                     $errorMessage = _kt('An error occurred during login: '.$session->getMessage());
-                    redirect('/login?errorMessage='.$errorMessage);
+                    $rootUrl = $default->rootUrl;
+                    redirect($rootUrl . '/login?errorMessage='.$errorMessage);
                     exit;
                 }
             }

@@ -77,7 +77,7 @@ table.metadataTable .ul_metadata .ul_meta_fieldset .treelabel { margin-bottom: -
 table.metadataTable .ul_meta_actionbar { text-align: right; }
 table.metadataTable .ul_meta_actionbar input[type="button"] { margin: 5px; cursor: pointer; -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f1f1f1), color-stop(1, white)); background: -moz-linear-gradient(center bottom, #f1f1f1 0%, white 100%); -webkit-box-shadow: 0px 0px 4px #a8a8a8; -moz-box-shadow: 0px 0px 4px #a8a8a8; box-shadow: 0px 0px 4px #a8a8a8; border: 1px solid #A8A8A8; padding: 2px 5px; text-align: center; font-family: tahoma,arial,helvetica,sans-serif; font-size: 11px; font-weight: bold; color: #666666; }
 table.metadataTable .ul_meta_actionbar input[type="button"]:hover { color: black; }
-table.metadataTable .ul_meta_actionbar input[type="button"] input[type="button"][disabled] { color: #CCCCCC; }
+table.metadataTable .ul_meta_actionbar input[type="button"][disabled] { color: #CCCCCC; }
 table.metadataTable .ul_meta_actionbar .ul_actions_cancel_link { float: right; margin: 5px; cursor: pointer; padding: 2px 5px; font-size: 11px; }
 table.metadataTable .ul_meta_actionbar label { display: block; padding-left: 5px; margin-top: 10px; /*text-indent: 5px;*/ float: left; font-size: 11px; }
 table.metadataTable .ul_meta_actionbar input[type="checkbox"] { float: left; padding-left: 2px; margin-top: 10px; }

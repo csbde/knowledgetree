@@ -1,0 +1,31 @@
+<span class="ul_meta_row">
+	<span class="ul_meta_label" id="ul_meta_label_[id]">[name]
+	<span class="ul_meta_label_descr">[description]</span>
+</span>
+<span class="ul_meta_field">
+	<textarea id="ul_meta_field_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.dragdrop.metadata.setMetaData('[id]',this.value);" style="height: 50px;"></textarea>
+	</span>
+</span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+	//enforce max length
+	if([max_length] > 0) {
+		jQuery('#ul_meta_label_[id]').text('('+[max_length]+' character limit)');
+	}
+
+	
+	if([is_mandatory] == '1') {
+		jQuery('#ul_meta_field_[id]').addClass('required');
+		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
+	}
+	
+	/*if([is_mandatory] == '1') {
+		jQuery('#ul_meta_field_[id]').addClass('required');
+	}*/
+
+});
+
+</script>
