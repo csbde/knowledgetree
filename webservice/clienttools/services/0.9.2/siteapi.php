@@ -543,7 +543,7 @@ class siteapi extends client_service {
     	 */
         $regex = "[a-z0-9!#\$%&'\*\+\/=\?\^_`{\|}~\-]+(?:\.[a-z0-9!#\$%&'\*\+\/=\?\^_`{\|}~\-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
         $matches = array();
-        $bob = preg_match_all("/$regex/i", $params['addresses'], $matches);
+        preg_match_all("/$regex/i", $params['addresses'], $matches);
 
         // Check against DB to ensure uniqueness
         $emailList = array_unique($matches[0]);
