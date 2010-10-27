@@ -215,20 +215,53 @@ class KTUserUtil
      */
     public static function sendInvitations($emailList)
     {
+        // Use the current user as the "inviter" / sender of the emails
+        // goes into the user array for use in the email
+        $oSender = User::get($_SESSION['userID']);
+
+        if(PEAR::isError($oSender) || empty($oSender)){
+            $sender = 'KnowledgeTree';
+        }else{
+            $sender = $oSender->getName();
+        }
+
+        $url = KTUtil::kt_url() . '/plugins/ktcore/authentication/newuserlogin.php?key=';
+
         $list = array();
         foreach ($emailList as $item){
             $key = 'skfjiwefjaldi';
             $user = json_encode($item);
             $user = KTUtil::encode($user, $key);
-            $list[$item['email']] = $user;
+
+            $link = $url . $user;
+
+            $list[] = array('name' => '', 'email' => $item['email'], 'sender' => $sender, 'link' => $link);
+        }
+
+        if(empty($list)){
+            return true;
         }
 
         global $default;
 
-        $default->log->error('Invited keys '. print_r($list, true));
+        $default->log->debug('Invited keys '. json_encode($list));
+        $emailFrom = $default->emailFrom;
 
         if(ACCOUNT_ROUTING_ENABLED){
             // dispatch queue event
+            require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/queueDispatcher.php');
+
+            $params = array();
+            $params['subject'] = _kt('KnowledgeTree Invitation');
+            $params['content_html'] = 'email/notifications/invite-user-content.html';
+            $params['sender'] = array($emailFrom => 'KnowledgeTree');
+            $params['recipients'] = $list;
+
+            $oQueueDispatcher = new queueDispatcher();
+        	$oQueueDispatcher->addProcess('mailer', $params);
+        	$res = $oQueueDispatcher->sendToQueue();
+
+        	return $res;
         }
         return true;
     }
