@@ -52,6 +52,8 @@ kt.app.inviteusers=new function(){
 
 	    var group = list.group;
 	    var invited = list.invited;
+	    var check = list.check;
+	    var licenses = list.licenses;
 
 	    var inviteConfirmWin = new Ext.Window({
 			id          : 'extinviteconfirmwindow',
@@ -90,6 +92,14 @@ kt.app.inviteusers=new function(){
 	        document.getElementById('showInvitedGroup').innerHTML = '';
 	    }else{
 	       document.getElementById('invitedGroup').innerHTML = group;
+	    }
+
+	    if(check == 1){
+	        document.getElementById('inviteLicenses').innerHTML = 'Warning: you have no user licenses available.';
+	    }
+
+	    if(check == 2){
+	        document.getElementById('inviteLicenses').innerHTML = 'Warning: the number of invited users exceeds the number of available user licenses ('+ licenses +').';
 	    }
 	}
 

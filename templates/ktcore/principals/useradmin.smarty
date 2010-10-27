@@ -120,7 +120,11 @@
 						{if ($oUser->getDisabled() == 1)}
 							<span class="ktAction ktDenied" title="{i18n}Disabled{/i18n}">{i18n}Disabled{/i18n}</span>
 						{else}
+                            {if $oUser->getDisabled() == 3}
+    						    <a href="{addQS}action=resendInvite&user_id={$oUser->getId()}{/addQS}" title="{i18n}Resend Invitation{/i18n}">{i18n}Invitation sent{/i18n}</a>
+    						{else}
 							<span class="ktAction ktAllowed" title="{i18n}Enabled{/i18n}">{i18n}Enabled{/i18n}</span>
+							{/if}
 						{/if}
 						</td>
 

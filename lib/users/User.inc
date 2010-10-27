@@ -7,7 +7,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -480,6 +480,12 @@ class User extends KTEntity {
     function getNumberEnabledUsers() {
         $sQuery = sprintf('SELECT COUNT(id) AS number FROM %s WHERE disabled = ? AND id > 1', KTUtil::getTableName('users'));
         $aParams = array(false);
+        return DBUtil::getOneResultKey(array($sQuery, $aParams), 'number');
+    }
+
+    function getNumberInvitedUsers() {
+        $sQuery = sprintf('SELECT COUNT(id) AS number FROM %s WHERE disabled = ? AND id > 1', KTUtil::getTableName('users'));
+        $aParams = array(3);
         return DBUtil::getOneResultKey(array($sQuery, $aParams), 'number');
     }
 

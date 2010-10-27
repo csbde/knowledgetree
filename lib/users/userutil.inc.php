@@ -127,6 +127,7 @@ class KTUserUtil
         $groupName = '';
 
     	$inSystemList = self::checkUniqueEmail($addressList);
+    	$availableLicenses = (int)BaobabKeyUtil::availableUserLicenses();
 
     	// loop through any addresses that currently exist and unset them in the invitee list
     	$addressList = array_flip($addressList);
@@ -179,15 +180,35 @@ class KTUserUtil
     	    self::sendInvitations($invitedUsers);
     	}
 
+    	$check = self::checkUserLicenses(count($invitedUsers), $availableLicenses);
 
-    	$response = array('existing' => $existingUsers, 'failed' => $failedUsers, 'invited' => $invitedUsers, 'group' => $groupName);
+    	$response = array('existing' => $existingUsers, 'failed' => $failedUsers, 'invited' => $invitedUsers, 'group' => $groupName, 'check' => $check, 'licenses' => $availableLicenses);
     	return $response;
+    }
+
+    /**
+     * Check how many licenses are available in the system.
+     *
+     * @param int $iInvited
+     * @return int
+     */
+    public static function checkUserLicenses($iInvited, $iAvailable)
+    {
+        if($iAvailable <= 0){
+            return 1;
+        }
+
+        $rem = $iLicenses - (int)$iInvited;
+        if($rem < 0){
+            return 2;
+        }
+        return 0;
     }
 
     /**
      * Create the unique url for the invite and send to the queue
      *
-     * @param array $emailList
+     * @param array $emailList Array of email addresses: format $list[] = array('id' => $id, 'email' => $email)
      * @return bool
      */
     public static function sendInvitations($emailList)
@@ -207,6 +228,7 @@ class KTUserUtil
         if(ACCOUNT_ROUTING_ENABLED){
             // dispatch queue event
         }
+        return true;
     }
 
     /**

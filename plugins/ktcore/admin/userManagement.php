@@ -120,6 +120,31 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         return $oTemplate->render($aTemplateData);
     }
 
+    /**
+     * Resend an invite to a user
+     *
+     */
+    function do_resendInvite()
+    {
+        $userId = $_REQUEST['user_id'];
+        $oUser = User::get($userId);
+
+        if(PEAR::isError($oUser)){
+            $this->errorRedirectToMain(_kt("Error on resending the invitation to user ({$userId}) - {$oUser->getMessage()}"), 'show_all=1');
+            exit;
+        }
+
+        $email = $oUser->getEmail();
+        $user = array('id' => $userId, 'email' => $email);
+
+        $res = KTUserUtil::sendInvitations($user);
+
+        if($res){
+            $this->successRedirectToMain('Invitation sent', 'show_all=1');
+            exit;
+        }
+        $this->errorRedirectToMain(_kt("Invitation could not be sent to user ({$userId})"), 'show_all=1');
+    }
 
     function do_addUser() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
