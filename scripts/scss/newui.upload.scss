@@ -252,7 +252,7 @@ table.uploadTable{
 
 table.metadataTable{
 
-	input, select, label {
+	input, select, label, textarea {
 		font-family: tahoma,arial,helvetica,sans-serif;
 		font-size: 11px;
 	}
@@ -345,7 +345,10 @@ table.metadataTable{
 					padding-left:2px;
 					margin-top: -10px;
 				}
-				
+				.large_field_limit_text {
+					color: #666666;
+					font-style: italic;
+				}
 				.ul_meta_field_tree_category {
 					margin-bottom: 5px;
 					margin-top: 10px;
