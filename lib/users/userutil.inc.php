@@ -127,7 +127,7 @@ class KTUserUtil
         $groupName = '';
 
     	$inSystemList = self::checkUniqueEmail($addressList);
-    	$availableLicenses = 2;//(int)BaobabKeyUtil::availableUserLicenses();
+    	$availableLicenses = (int)BaobabKeyUtil::availableUserLicenses();
 
     	// loop through any addresses that currently exist and unset them in the invitee list
     	$addressList = array_flip($addressList);
@@ -200,7 +200,7 @@ class KTUserUtil
             return 1;
         }
 
-        $rem = $iLicenses - (int)$iInvited;
+        $rem = $iAvailable - (int)$iInvited;
         if($rem < 0){
             return 2;
         }

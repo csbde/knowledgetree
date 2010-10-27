@@ -10,7 +10,7 @@ kt.app.inviteusers=new function(){
 //	var fragments=this.fragments=[''];
 
 	//contains a list of executable fragments that will get preloaded
-	var execs=this.execs=['invite.dialog', 'invite.confirm.dialog'];
+	var execs=this.execs=['users/invite.dialog', 'users/invite.confirm.dialog'];
 
 	//scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
 	var self=this;
@@ -69,7 +69,7 @@ kt.app.inviteusers=new function(){
 	        shadow: true,
 	        modal: true,
 	        title: 'User Invitations Sent',
-	        html: kt.api.execFragment('invite.confirm.dialog')
+	        html: kt.api.execFragment('users/invite.confirm.dialog')
 	    });
 
 	    self.closeWindow();
@@ -109,12 +109,12 @@ kt.app.inviteusers=new function(){
 	        shadow: true,
 	        modal: true,
 	        title: 'Invite Users',
-	        html: kt.api.execFragment('invite.dialog')
+	        html: kt.api.execFragment('users/invite.dialog')
 	    });
 
 		self.inviteWindow=inviteWin;
-
 	    inviteWin.show();
+	    document.getElementById('invite.emails').focus();
 	}
 
 	this.closeWindow = function() {

@@ -59,9 +59,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $this->oPage->setBreadcrumbDetails(_kt('select a user'));
         $this->oPage->setTitle(_kt("User Management"));
 
-        // include invite user dialog js
-        $this->oPage->requireJSResource('resources/js/newui/kt.app.inviteusers.js');
-
 		$KTConfig =& KTConfig::getSingleton();
         $alwaysAll = $KTConfig->get("alwaysShowAll");
 
