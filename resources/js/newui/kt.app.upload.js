@@ -515,7 +515,7 @@ kt.app.upload=new function(){
 	    	self.elems.qq=jQuery('#upload_add_file .qq-uploader')[0];
 	    	self.uploader=new qq.FileUploader({
 	    		element: document.getElementById('upload_add_file'),
-	    		action: 'test.php',
+	    		//action: 'test.php',
 	    		params: {},
 	    		buttonText: 'Choose File',
 	    		allowedExtensions: [],
