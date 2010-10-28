@@ -260,7 +260,7 @@ class KTUserUtil
 
             $oQueueDispatcher = new queueDispatcher();
         	$oQueueDispatcher->addProcess('mailer', $params);
-        	$res = true; //$oQueueDispatcher->sendToQueue();
+        	$res = $oQueueDispatcher->sendToQueue();
 
         	return $res;
         }
