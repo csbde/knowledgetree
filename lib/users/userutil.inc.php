@@ -116,7 +116,7 @@ class KTUserUtil
     public static function inviteUsersByEmail($addressList, $group = null)
     {
         if(empty($addressList)){
-            return array();
+            $response = array('invited' => 0, 'group' => '', 'check' => 0);
         }
 
         global $default;
@@ -260,7 +260,7 @@ class KTUserUtil
 
             $oQueueDispatcher = new queueDispatcher();
         	$oQueueDispatcher->addProcess('mailer', $params);
-        	$res = $oQueueDispatcher->sendToQueue();
+        	$res = true; //$oQueueDispatcher->sendToQueue();
 
         	return $res;
         }
