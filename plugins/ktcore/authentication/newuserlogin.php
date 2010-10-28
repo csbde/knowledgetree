@@ -48,11 +48,13 @@ class NewUserLoginDispatcher extends KTDispatcher {
         $input = $_REQUEST['key'];
 
         // check if user already exists and redirect to login
-        $key = 'skfjiwefjaldi';
-        $user = KTUtil::decode($input, $key);
-        $user = json_decode($user);
+        //$key = 'skfjiwefjaldi';
+        //$user = KTUtil::decode($input, $key);
+        //$user = json_decode($user);
+        $user = str_replace('88', '', $input);
+        $user_id = base_convert($user, 25, 10);
 
-        $oUser = User::get($user->id);
+        $oUser = User::get($user_id);
 
         if(PEAR::isError($oUser)){
             $errorMessage = _kt('An error occurred: '.$oUser->getMessage());
@@ -71,13 +73,13 @@ class NewUserLoginDispatcher extends KTDispatcher {
             $rootUrl = $default->rootUrl;
 
             if($disabled == 2 || $disabled == 1){
-                $default->log->error("Invited login: user ({$user->id}) has been disabled or deleted (status = {$disabled})");
+                $default->log->error("Invited login: user ({$user_id}) has been disabled or deleted (status = {$disabled})");
                 $errorMessage = _kt('Your login is no longer valid, please contact your System Administrator');
                 redirect($rootUrl. '/login.php?errorMessage='.$errorMessage);
                 exit;
             }
 
-            $default->log->debug('Invited login: user already created - '.$user->id);
+            $default->log->debug('Invited login: user already created - '.$user_id);
             redirect($rootUrl. '/login.php');
             exit;
         }
@@ -109,7 +111,7 @@ class NewUserLoginDispatcher extends KTDispatcher {
             }
 
             if(empty($errorMessage)){
-                $default->log->debug('Invited login: new user created - '.$oUser->getId());
+                $default->log->debug('Invited login: new user created - '.$user_id);
                 $session = $this->saveDetails($oUser, $username, $fullname, $password);
 
                 if(PEAR::isError($session)){
@@ -160,6 +162,13 @@ class NewUserLoginDispatcher extends KTDispatcher {
         $rootUrl = $default->rootUrl;
         $redirect = '/browse.php';
         if (KTPluginUtil::pluginIsActive('gettingstarted.plugin')) {
+
+            // Set the first login pref to prevent redirecting to getting started again
+            $user_pref_path = KTPluginUtil::getPluginPath('user.preferences.plugin');
+            require_once($user_pref_path . DIRECTORY_SEPARATOR . 'UserPreferences.inc.php');
+            UserPreferences::saveUserPreferences($oUser->getId(), 'firstLogin', date('Y-m-d H:i:s'));
+
+            // redirect to the getting started page for first time login
             $path = KTPluginUtil::getPluginPath('gettingstarted.plugin');
             $uri = str_replace(KT_DIR, '', $path);
             $redirect = $uri . 'GettingStarted.php';

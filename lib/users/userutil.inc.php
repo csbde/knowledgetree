@@ -225,13 +225,14 @@ class KTUserUtil
             $sender = $oSender->getName();
         }
 
-        $url = KTUtil::kt_url() . '/plugins/ktcore/authentication/newuserlogin.php?key=';
+        $url = KTUtil::kt_url() . '/users/key/';
 
         $list = array();
         foreach ($emailList as $item){
-            $key = 'skfjiwefjaldi';
-            $user = json_encode($item);
-            $user = KTUtil::encode($user, $key);
+            //$key = 'skfjiwefjaldi';
+            $user_id = $item['id'];
+            //$user = KTUtil::encode($user, $key);
+            $user = '88'.base_convert($user_id, 10, 25);
 
             $link = $url . $user;
 
