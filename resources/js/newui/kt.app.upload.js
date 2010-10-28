@@ -67,15 +67,22 @@ kt.app.upload=new function(){
 			'has_required_metadata': docTypeHasRequiredFields, 'required_metadata_done':!docTypeHasRequiredFields, 'parent':self});
 		kt.lib.meta.set(item[0],'item',obj);
 		obj.startUpload();
-		
 		self.data.files[fileName]=obj;
-		
 		//are we dealing with a possible bulk upload?
 		var index = fileName.lastIndexOf('.');
 		var ext = fileName.substr(index).toLowerCase();
-		
 		var e = kt.lib.meta.get(item[0],'item');
-		
+		if(ext == '.gz' || ext == '.bz2')
+		{
+			var substr = fileName.substring(0, index);
+			var subindex = substr.lastIndexOf('.');
+			var subext = substr.substr(subindex).toLowerCase();
+			if(subext != '.tar')
+			{
+				return obj;
+			}
+			
+		}
 		//do we need to suggest a bulk upload?
 		if(this.isBulkExtension(ext)) {
 			jQuery('#'+e.options.elem[0].id+' .ul_bulk_checkbox').css('display','block');
@@ -515,7 +522,7 @@ kt.app.upload=new function(){
 	    	self.elems.qq=jQuery('#upload_add_file .qq-uploader')[0];
 	    	self.uploader=new qq.FileUploader({
 	    		element: document.getElementById('upload_add_file'),
-	    		action: 'test.php',
+	    		//action: 'test.php',
 	    		params: {},
 	    		buttonText: 'Choose File',
 	    		allowedExtensions: [],

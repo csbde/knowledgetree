@@ -1,198 +1,208 @@
 <?php
-class siteapi extends client_service {
 
-    function uploadFile($params)
-    {
-        global $default;
+class siteapi extends client_service{
 
-        $documents = $params['documents'];
-        $default->log->debug('Uploading files ' . print_r($documents, true));
-        $index = 0;
-        $returnResponse = array();
+    function uploadFile($params) {
+		global $default;
 
-        foreach ($documents as $document) {
-            $default->log->debug('Uploading file ' . $document['fileName']);
-            //file_put_contents('uploadFile.txt', "\n\rUploading file ".$document['fileName'], FILE_APPEND);
+		$documents = $params['documents'];
 
-            try {
-                $baseFolderID = $document['baseFolderID'];
-                $oStorage = KTStorageManagerUtil::getSingleton();
-                $folderID = $document['folderID'];
-                $documentTypeID = $document['docTypeID'];
-                $fileName = $document['fileName'];
-                $sS3TempFile  = $document['s3TempFile'];
-                $metadata = $document['metadata'];
+		$default->log->debug('Uploading files '.print_r($documents, true));
 
-                $default->log->debug('Uploading file :: metadata ' . print_r($metadata, true));
+		$index = 0;
 
-                $MDPack = array();
-                //assemble the metadata and convert to fileds and fieldsets
-                foreach ($metadata as $MD) {
-                    $oField = DocumentField::get($MD['id']);
-                    $MDPack[] = array(
-                    $oField,
-                    $MD['value']
-                    );
-                }
+		$returnResponse = array();
 
-                $default->log->debug('Uploading file :: metadatapack ' . print_r($MDPack, true));
+		foreach($documents as $document){
+			$default->log->debug('Uploading file '.$document['fileName']);
+			//file_put_contents('uploadFile.txt', "\n\rUploading file ".$document['fileName'], FILE_APPEND);
 
-                //file_put_contents('uploadFile.txt', "\n\rMDPack ".print_r($MDPack, true), FILE_APPEND);
-                $aString = "\n\rfolderID: $folderID documentTypeID: $documentTypeID fileName: $fileName S3TempFile: $sS3TempFile";
+			try
+			{
+				$baseFolderID = $document['baseFolderID'];
 
-                $default->log->debug("uploading with options $aString");
+		    	$oStorage = KTStorageManagerUtil::getSingleton();
 
-                $options['uploaded_file'] = 'true';
+		    	$folderID = $document['folderID'];
 
-                $oFolder = Folder::get($folderID);
-                if (PEAR::isError($oFolder)) {
-                    //$default->log->error("\n\rFolder $folderID: {$oFolder->getMessage()}");
-                    throw new Exception($oFolder->getMessage());
-                }
+		    	$documentTypeID = $document['docTypeID'];
 
-                $oUser = User::get($_SESSION['userID']);
-                if (PEAR::isError($oUser)) {
-                    //$default->log->error("\n\rUser {$_SESSION['userID']}: {$oUser->getMessage()}");
-                    throw new Exception($oUser->getMessage());
-                }
+		    	$fileName = $document['fileName'];
 
-                $oDocumentType = DocumentType::get($documentTypeID);
-                if (PEAR::isError($oDocumentType)) {
-                    //$default->log->error("\n\rDocumentType: {$oDocumentType->getMessage()}");
-                    throw new Exception($oDocumentType->getMessage());
-                }
+		    	$sS3TempFile  = $document['s3TempFile'];
 
-                //remove extension to generate title
-                $aFilename = explode(' . ', $fileName);
-                $cnt = count($aFilename);
-                $sExtension = $aFilename[$cnt - 1];
-                $title = preg_replace("/\.$sExtension/", '', $fileName);
+		    	$metadata = $document['metadata'];
 
-                /*file_put_contents('uploadFile.txt', "\n\r".print_r(array(
-                'temp_file' => $sS3TempFile,
-                'documenttype' => $oDocumentType,
-                'metadata' => $metadata,
-                'description' => $title,
-                'cleanup_initial_file' => true
-                ), true), FILE_APPEND);*/
+		    	$default->log->debug('Uploading file :: metadata '.print_r($metadata, true));
 
-                $aOptions = array(
-                'temp_file' => $sS3TempFile,
-                'documenttype' => $oDocumentType,
-                'metadata' => $MDPack,
-                'description' => $title,
-                'cleanup_initial_file' => true
-                );
+		    	$MDPack = array();
+		    	//assemble the metadata and convert to fileds and fieldsets
+		    	foreach($metadata as $MD) {
+		    		$oField = DocumentField::get($MD['id']);
+		    		$MDPack[] = array(
+		    			$oField,
+		    			$MD['value']
+	                );
+		    	}
 
-                if ($document['doBulk'] == 'true') {
-                    $dir = realpath(dirname(__FILE__) . '/../../../../');
-                    require_once($dir . '/plugins/ktlive/lib/import/amazons3zipimportstorage.inc.php');
-                    require_once($dir . '/plugins/ktlive/lib/import/amazons3bulkimport.inc.php');
+		    	$default->log->debug('Uploading file :: metadatapack '.print_r($MDPack, true));
 
-                    // Check if archive is a deb package
-                    if ($sExtension == 'deb') {
-                        $this->sExtension = 'ar';
-                    }
+		    	//file_put_contents('uploadFile.txt', "\n\rMDPack ".print_r($MDPack, true), FILE_APPEND);
 
-                    $fileData = array();
-                    $fileData['name'] = $fileName;
-                    $fileData['tmp_name'] = $sS3TempFile;
-                    $fs = new KTAmazonS3ZipImportStorage('', $fileData);
-                    $response = $oStorage->headS3Object($sS3TempFile);
+		       	$aString = "\n\rfolderID: $folderID documentTypeID: $documentTypeID fileName: $fileName S3TempFile: $sS3TempFile";
 
-                    $size = 0;
-                    if (($response instanceof ResponseCore) && $response->isOK()) {
-                        $size = $response->header['content-length'];
-                    }
+		    	$default->log->debug("uploading with options $aString");
 
-                    $aOptions = array('documenttype' => $oDocumentType,
-                    'metadata' => $MDPack);
+		        $options['uploaded_file'] = 'true';
 
-                    $bm = new KTAmazonS3BulkImportManager($oFolder, $fs, $oUser, $aOptions);
-                    $res = $bm->import($sS3TempFile, $size);
+		        $oFolder = Folder::get($folderID);
+		        if (PEAR::isError($oFolder)) {
+		        	//$default->log->error("\n\rFolder $folderID: {$oFolder->getMessage()}");
+		       		throw new Exception($oFolder->getMessage());
+		        }
 
-                    $archives[] = $res;
+		        $oUser = User::get($_SESSION['userID']);
+		        if (PEAR::isError($oUser)) {
+		        	//$default->log->error("\n\rUser {$_SESSION['userID']}: {$oUser->getMessage()}");
+		       		throw new Exception($oUser->getMessage());
+		        }
 
-                    //give dummy response
-                    //$this->addResponse('addedDocuments', '');
-                    $item = array();
-                    $json = array();
-                    $item['filename'] = $fileName;
-                    $item['isBulk'] = true;
+		        $oDocumentType = DocumentType::get($documentTypeID);
+		        if (PEAR::isError($oDocumentType)) {
+		        	//$default->log->error("\n\rDocumentType: {$oDocumentType->getMessage()}");
+		       		throw new Exception($oDocumentType->getMessage());
+		        }
 
-                    $json['success'] = $item;
+		        //remove extension to generate title
+		        $aFilename = explode('.', $fileName);
+		        $cnt = count($aFilename);
+		        $sExtension = $aFilename[$cnt - 1];
+		        $title = preg_replace("/\.$sExtension/", '', $fileName);
 
-                    $returnResponse[] = json_encode($json);
+		        /*file_put_contents('uploadFile.txt', "\n\r".print_r(array(
+		            'temp_file' => $sS3TempFile,
+		            'documenttype' => $oDocumentType,
+		            'metadata' => $metadata,
+		            'description' => $title,
+		            'cleanup_initial_file' => true
+		        ), true), FILE_APPEND);*/
 
-                } else {
-                    //add to KT
-                    $oDocument =& KTDocumentUtil::add($oFolder, $fileName, $oUser, $aOptions);
+		        $aOptions = array(
+		            'temp_file' => $sS3TempFile,
+		            'documenttype' => $oDocumentType,
+		            'metadata' => $MDPack,
+		            'description' => $title,
+		            'cleanup_initial_file' => true
+		        );
 
-                    if (PEAR::isError($oDocument)) {
-                        file_put_contents('uploadFile.txt', "\n\rabout to throw exception {$oDocument->getMessage()}", FILE_APPEND);
+		        if($document['doBulk']=='true'){
+		        	$dir = realpath(dirname(__FILE__).'/../../../../');
+		        	require_once($dir . '/plugins/ktlive/lib/import/amazons3zipimportstorage.inc.php');
+					require_once($dir . '/plugins/ktlive/lib/import/amazons3bulkimport.inc.php');
 
-                        throw new Exception($oDocument->getMessage());
-                    }
+					$fileData = array();
+		        	$fileData['name'] = $fileName;
+		        	$fileData['tmp_name'] = $sS3TempFile;
 
-                    //get the icon path
-                    $mimetypeid = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId() :'0';
-                    $iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($mimetypeid).' . png';
-                    $iconExists = file_exists(KT_DIR.'/' . $iconFile);
-                    if ($iconExists) {
-                        $mimeIcon = str_replace('\\', '/', $GLOBALS['default']->rootUrl . '/' . $iconFile);
-                        $mimeIcon = "background-image: url($mimeIcon)";
-                    } else {
-                        $mimeIcon = '';
-                    }
+		        	$fs = new KTAmazonS3ZipImportStorage('', $fileData);
+	        	    $response = $oStorage->headS3Object($sS3TempFile);
 
-                    $oOwner = User::get($oDocument->getOwnerID());
-                    $oCreator = User::get($oDocument->getCreatorID());
-                    $oModifier = User::get($oDocument->getModifiedUserId());
 
-                    $item = array();
-                    $json = array();
+	        	    $size = 0;
+	        	    if (($response instanceof ResponseCore) && $response->isOK()) {
+	        	        $size = $response->header['content-length'];
+	        	    }
 
-                    //assemble the item
-                    $item['baseFolderID'] = $baseFolderID;
-                    $item['isBulk'] = false;
-                    $item['id'] = $oDocument->getId();
-                    $item['owned_by'] = $oOwner->getName();
-                    $item['created_by'] = $oCreator->getName();
-                    $item['modified_by'] = $oModifier->getName();
-                    $item['filename'] = $fileName;
-                    $item['title'] = $oDocument->getName();
-                    $item['mimeicon'] = $mimeIcon;
-                    $item['created_date'] = $oDocument->getCreatedDateTime();
-                    $item['modified_date'] = $oDocument->getLastModifiedDate();
+	        	    $aOptions = array('documenttype' => $oDocumentType,
+	        	    				'metadata' => $MDPack);
 
-                    $json['success'] = $item;
+					$bm = new KTAmazonS3BulkImportManager($oFolder, $fs, $oUser, $aOptions);
+			        $res = $bm->import($sS3TempFile, $size);
 
-                    $returnResponse[] = json_encode($json);
+			        $archives[] = $res;
 
-                    $default->log->debug('Document add added response ' . print_r($returnResponse, true));
-                }
-            }
-            catch(Exception $e) {
-                $default->log->error("Document add failed {$e->getMessage()}");
-                file_put_contents('uploadFile.txt', "\n\rDocument add failed {$e->getMessage()}", FILE_APPEND);
+			        //give dummy response
+			        //$this->addResponse('addedDocuments', '');
+			        $item = array();
+					$json = array();
+					$item['filename'] = $fileName;
+			        $item['isBulk'] = true;
 
-                $item = array();
-                $json = array();
-                //construct error message
-                $item['message'] = $e->getMessage();
-                $item['filename'] = $fileName;
-                $json['error'] = $item;
+			        $json['success'] = $item;
 
-                $returnResponse[] = json_encode($json);
-            }
-        }
+					$returnResponse[] = json_encode($json);
 
-        $this->addResponse('addedDocuments', $returnResponse);
+		        } else {
+					//add to KT
+		        	$oDocument =& KTDocumentUtil::add($oFolder, $fileName, $oUser, $aOptions);
 
-        $default->log->debug('Document add Response ' . print_r($this->getResponse(), true));
-    }
+		        	if (PEAR::isError($oDocument)) {
+	        			file_put_contents('uploadFile.txt', "\n\rabout to throw exception {$oDocument->getMessage()}", FILE_APPEND);
 
-    /**
+	        			throw new Exception($oDocument->getMessage());
+		        	}
+
+					//get the icon path
+					$mimetypeid = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId():'0';
+					$iconFile = 'resources/mimetypes/newui/'.KTMime::getIconPath($mimetypeid).'.png';
+					$iconExists = file_exists(KT_DIR.'/'.$iconFile);
+					if($iconExists){
+						$mimeIcon = str_replace('\\','/',$GLOBALS['default']->rootUrl.'/'.$iconFile);
+						$mimeIcon = "background-image: url(".$mimeIcon.")";
+					}else{
+						$mimeIcon = '';
+					}
+
+					$oOwner = User::get($oDocument->getOwnerID());
+
+					$oCreator = User::get($oDocument->getCreatorID());
+					$oModifier = User::get($oDocument->getModifiedUserId());
+
+					$item = array();
+					$json = array();
+
+					//assemble the item
+					$item['baseFolderID'] = $baseFolderID;
+					$item['isBulk'] = false;
+					$item['id'] = $oDocument->getId();
+					$item['owned_by'] = $oOwner->getName();
+					$item['created_by'] = $oCreator->getName();
+					$item['modified_by'] = $oModifier->getName();
+					$item['filename'] = $fileName;
+					$item['title'] = $oDocument->getName();
+					$item['mimeicon'] = $mimeIcon;
+					$item['created_date'] = $oDocument->getCreatedDateTime();
+					$item['modified_date'] = $oDocument->getLastModifiedDate();
+
+					$json['success'] = $item;
+
+					$returnResponse[] = json_encode($json);
+
+					$default->log->debug('Document add added response '.print_r($returnResponse, true));
+	        	}
+			}
+
+	        catch(Exception $e) {
+	        	$default->log->error("Document add failed {$e->getMessage()}");
+	        	file_put_contents('uploadFile.txt', "\n\rDocument add failed {$e->getMessage()}", FILE_APPEND);
+
+	        	$item = array();
+				$json = array();
+	        	//construct error message
+        		$item['message'] = $e->getMessage();
+        		$item['filename'] = $fileName;
+        		$json['error'] = $item;
+
+        		$returnResponse[] = json_encode($json);
+	        }
+		}
+
+		$this->addResponse('addedDocuments', $returnResponse);
+
+		$default->log->debug('Document add Response '.print_r($this->getResponse(), true));
+	}
+
+	/**
 	 * Check whether the specified document type has required fields
 	 * @param $params
 	 * @return unknown_type
@@ -524,19 +534,19 @@ class siteapi extends client_service {
 
         /**
     	 * Break string into separate email addresses
-    	 * 
+    	 *
     	 * NOTE this is a modification of a strict RFC 2822 based implementation.
     	 *      Refer to http://www.regular-expressions.info/email.html for more information
     	 *      The version chosen here is the one which omits the syntax using double quotes and square brackets
     	 * NOTE it is possible that this will match invalid domains, however any email matching regex will be one of:
     	 *      1. too strict (skipping certain valid addresses
     	 *      2. too lax (allowing addresses which match the valid email address format but not a valid domain)
-    	 *      3. too long and/or difficult to maintain (explicitly list allowed domains; list will be very long & 
+    	 *      3. too long and/or difficult to maintain (explicitly list allowed domains; list will be very long &
     	 *         require an update if new domains come into existence)
-    	 * 
+    	 *
     	 * The case-insensitive modifier has been added to the final query to allow capital letters in email addresses
     	 * (this may not exactly match RFC 2822)
-    	 * 
+    	 *
     	 * NOTE there may be address formats missed by this expression which were added in later RFC documents.
     	 *      If we find addresses not matching then we can modify the query to accept them.
     	 *      This was the most comprehensive expression I could find and should match the vast majority of valid addresses.
