@@ -19,7 +19,7 @@ Ext.onReady(function(){
 		kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
 
 		jQuery('#ul_meta_field_[id]').keyup(function() {
-			if (jQuery('#ul_meta_field_[id]').val().length == 0){
+			if (jQuery.trim(jQuery('#ul_meta_field_[id]').val()).length == 0){
 				kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
 				kt.dragdrop.metadata.checkRequiredFieldsCompleted();
 			} else {

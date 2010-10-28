@@ -38,7 +38,7 @@
 	require_once('ktapi/ktapi.inc.php');
 	require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 
-	function uploadFile($fileTmp, $fileName, $folderID = 1, $metadata = array()) {
+	function uploadFile($fileTmp, $fileName, $folderID = 1, $documentTypeID = 1, $metadata = array()) {
 		$GLOBALS['default']->log->debug("DRAGDROP Uploading file $fileTmp $fileName");
 
     	$oStorage = KTStorageManagerUtil::getSingleton();
@@ -64,7 +64,7 @@
        		return false;
         }
 
-        $oDocumentType = DocumentType::get(1);
+        $oDocumentType = DocumentType::get($documentTypeID);
         if (PEAR::isError($oDocumentType)) {
        		$GLOBALS['default']->log->error("DRAGDROP DocumentType: {$oDocumentType->getMessage()}");
        		return false;
@@ -155,6 +155,17 @@
 		}
 
 		return $id;*/
+	}
+	
+	function getDocumentTypeId()
+	{		
+	    if(isset($_REQUEST['documentTypeID'])){
+	    	$GLOBALS['default']->log->debug("DRAGDROP getDocumentTypeId ".$_REQUEST['documentTypeID']);
+	       return (int)$_REQUEST['documentTypeID'];
+	    }    
+	    
+	    
+		return 1;
 	}
 
 	function getId()
@@ -285,6 +296,10 @@
 	
 	$GLOBALS['default']->log->debug("DRAGDROP folderID resolves to $folderID");
 	
+	$documentTypeID = getDocumentTypeId();
+	
+	$GLOBALS['default']->log->debug("DRAGDROP documentTypeID resolves to $documentTypeID");
+	
 	$metadata = getMetadata();
 	
 	$GLOBALS['default']->log->debug("DRAGDROP metadata resolves to ".print_r($metadata, true));
@@ -296,7 +311,7 @@
 
 	//$fileTmp = str_replace('\\','/',$targetDir.'/'.$fileName);
 
-	$oDocument = uploadFile($fileTmp, $fileName, $folderID, $metadata);
+	$oDocument = uploadFile($fileTmp, $fileName, $folderID, $documentTypeID, $metadata);
 
 	if ($oDocument === false)
 	{

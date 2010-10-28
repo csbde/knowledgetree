@@ -55,6 +55,11 @@ Ext.onReady(function(){
     				if(jQuery('input#ul_meta_field_tree_[id]_'+val['fieldid']).attr('checked')) {
     					//console.log('checked! '+val['name']);	
     					kt.dragdrop.metadata.setMetaData('[id]', val['name'])
+
+    					if([is_mandatory] == '1') {
+    						kt.dragdrop.metadata.registerRequiredFieldDone('ul_meta_field_[id]');
+    						kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+    					}
     				}
 	    		}); 
 	        } else if (val['type'] == 'tree' && val['treename'].toLowerCase() != 'root') {
@@ -72,15 +77,13 @@ Ext.onReady(function(){
     }
 
 
-
     if([is_mandatory] == '1') {
-    	jQuery('#ul_meta_field_[id]').addClass('required');
+    	//jQuery('#ul_meta_field_[id]').addClass('required');
 		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
-	}
 
-    /*if([is_mandatory] == '1') {
-		jQuery('#ul_meta_field_[id]').addClass('required');
-	}*/    
+		//register as required field
+		kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+	}   
 });
 
 </script>

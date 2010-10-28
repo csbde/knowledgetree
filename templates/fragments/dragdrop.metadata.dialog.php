@@ -37,7 +37,7 @@ function getDocTypes(){
        	<tr><td class="ul_metadata"></td></tr>
        	<tr><td class="ul_meta_actionbar">
        		<input class="ul_actions_upload_btn" type="button" disabled="disabled" value="Apply" onclick="kt.dragdrop.metadata.applyMetadata();" />
-       		<a class="ul_actions_cancel_link" href="#" onclick="javascript:kt.dragdrop.metadata.window.close();">Cancel</a>
+       		<a class="ul_actions_cancel_link" href="#" onclick="javascript:kt.dragdrop.metadata.cancel();">Cancel</a>
        	</td></tr>
        </table>
     </div>
