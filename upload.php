@@ -38,7 +38,7 @@
 	require_once('ktapi/ktapi.inc.php');
 	require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 
-	function uploadFile($fileTmp, $fileName, $folderID = 1) {
+	function uploadFile($fileTmp, $fileName, $folderID = 1, $documentTypeID = 1, $metadata = array()) {
 		$GLOBALS['default']->log->debug("DRAGDROP Uploading file $fileTmp $fileName");
 
     	$oStorage = KTStorageManagerUtil::getSingleton();
@@ -64,7 +64,7 @@
        		return false;
         }
 
-        $oDocumentType = DocumentType::get(1);
+        $oDocumentType = DocumentType::get($documentTypeID);
         if (PEAR::isError($oDocumentType)) {
        		$GLOBALS['default']->log->error("DRAGDROP DocumentType: {$oDocumentType->getMessage()}");
        		return false;
@@ -79,7 +79,7 @@
         $aOptions = array(
             'temp_file' => $sS3TempFile,
             'documenttype' => $oDocumentType,
-            'metadata' => array(),
+            'metadata' => $metadata,
             'description' => $title,
             'cleanup_initial_file' => true
         );
@@ -96,15 +96,88 @@
 
         return $oDocument;
 	}
+	
+	function getMetadata()
+	{
+		/*$t[0] = array('id'=>'author', 'value'=>'martin');
+		$t[1] = array('id'=>'date', 'value'=>'25-10-2010');
+		$GLOBALS['default']->log->debug("DRAGDROP Document t ".print_r($t, true));
+		$test = array('metadata'=>$t);
+		$GLOBALS['default']->log->debug("DRAGDROP Document test ".print_r($test, true));
+		
+		$jsonencoded = json_encode($test);
+		
+		$GLOBALS['default']->log->debug("DRAGDROP Document jsonencoded $jsonencoded");
+		$jsondecode = json_decode($jsonencoded, true);
+		$GLOBALS['default']->log->debug("DRAGDROP Document jsonencoded decoded ".print_r($jsondecode, true));*/
+		
+	    if(isset($_REQUEST['metadata'])){
+	    	$metadata = $_REQUEST['metadata'];
+	    	$GLOBALS['default']->log->debug("DRAGDROP Document metadata ".print_r($metadata, true));
+	    	
+	    	$json = json_decode($metadata, true);
+	    	
+	    	$GLOBALS['default']->log->debug("DRAGDROP Document json ".print_r($json, true));
+	       	
+	    	$MDPack = array();
+	    	
+	    	foreach($json as $element) {
+	    		foreach($element as $MD) {
+		       		$GLOBALS['default']->log->debug("DRAGDROP Document metadata ".print_r($MD, true));
+		       		$GLOBALS['default']->log->debug("DRAGDROP Document metadata id ".(int)$MD['id']);
+		       		$GLOBALS['default']->log->debug("DRAGDROP Document metadata value ".$MD['value']);
+		       		$oField = DocumentField::get((int)$MD['id']);
+			    		$MDPack[] = array(
+			    			$oField,
+			    			$MD['value']
+		                );
+		       	}
+	    	}
+	       	
+	       	return $MDPack;
+	    }
+	    
+	    return array();
+
+	    /*$id = 1;
+	    $uri = $_REQUEST['cleanFolderId'];
+
+		// Check for slash
+		if (substr($uri, 0, 1) == '/') {
+		    $uri = substr($uri, 1);
+		}
+
+		// Remove Query String
+		$uri = preg_replace('/(\?.*)/i', '', $uri);
+
+		if (substr($uri, 0, 2) == '00') {
+			$id = KTUtil::decodeId(substr($uri, 2));
+		}
+
+		return $id;*/
+	}
+	
+	function getDocumentTypeId()
+	{		
+	    if(isset($_REQUEST['documentTypeID'])){
+	    	$GLOBALS['default']->log->debug("DRAGDROP getDocumentTypeId ".$_REQUEST['documentTypeID']);
+	       return (int)$_REQUEST['documentTypeID'];
+	    }    
+	    
+	    
+		return 1;
+	}
 
 	function getId()
 	{
-	    if(isset($_REQUEST['fFolderId'])){
-	       return (int)$_REQUEST['fFolderId'];
+		$GLOBALS['default']->log->debug("DRAGDROP entire request ".print_r($_REQUEST, true));
+		
+	    if(isset($_REQUEST['folderID'])){
+	       return (int)$_REQUEST['folderID'];
 	    }
 
 	    $id = 1;
-	    $uri = $_REQUEST['cleanFolderId'];
+	    $uri = $_REQUEST['cleanFolderID'];
 
 		// Check for slash
 		if (substr($uri, 0, 1) == '/') {
@@ -165,6 +238,13 @@
 	} else
 		die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
 
+	/*if (isset($_SERVER["HTTP_METADATA"])) {
+		$tempmeta = $_SERVER["HTTP_METADATA"];
+		$GLOBALS['default']->log->debug("DRAGDROP metadata ".print_r($tempmeta, true));
+	}*/
+	
+	//$GLOBALS['default']->log->debug("DRAGDROP getallheaders " .print_r($_SERVER, true));
+		
 	// Look for the content type header
 	if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
 		$contentType = $_SERVER["HTTP_CONTENT_TYPE"];
@@ -213,6 +293,17 @@
 	}
 
 	$folderID = getId();
+	
+	$GLOBALS['default']->log->debug("DRAGDROP folderID resolves to $folderID");
+	
+	$documentTypeID = getDocumentTypeId();
+	
+	$GLOBALS['default']->log->debug("DRAGDROP documentTypeID resolves to $documentTypeID");
+	
+	$metadata = getMetadata();
+	
+	$GLOBALS['default']->log->debug("DRAGDROP metadata resolves to ".print_r($metadata, true));
+	
 	if($folderID<=0){
 		$GLOBALS['default']->log->error("DRAGDROP error getting folder ID");
 		exit(1);
@@ -220,7 +311,7 @@
 
 	//$fileTmp = str_replace('\\','/',$targetDir.'/'.$fileName);
 
-	$oDocument = uploadFile($fileTmp, $fileName, $folderID);
+	$oDocument = uploadFile($fileTmp, $fileName, $folderID, $documentTypeID, $metadata);
 
 	if ($oDocument === false)
 	{

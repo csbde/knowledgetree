@@ -29,7 +29,7 @@
 				<input type="hidden" name="action" value="login" />
 				<input type="hidden" name="cookieverify" value="{$cookietest}" />
 				<input type="hidden" name="redirect" value="{$redirect}" />
-				
+
 				<div id="login_form" >
 
 				    <p class="descriptive-text">{i18n}Login to your account{/i18n}</p>
@@ -44,7 +44,11 @@
 					    	</div>
 					{/if}
 
-					<label for="username">{i18n}Username{/i18n}</label>
+					{if $use_email}
+					   <label for="username">{i18n}Email Address{/i18n}</label>
+				   {else}
+					   <label for="username">{i18n}Username{/i18n}</label>
+				   {/if}
 					<input type="text" id="username" name="username" value="{$username}"/>
 					<label for="password">{i18n}Password{/i18n}</label>
 					<input type="password" id="password" name="password"/>

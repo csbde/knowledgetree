@@ -49,7 +49,7 @@ table.uploadTable .ul_item.ul_f_done .ul_progress { color: #0D51CC; }
 table.uploadTable .ul_item .ul_progress_spinner { /*float: right;*/ display: inline-block; visibility: none; width: 20px; padding-right: 8px; float: right; /*background-image: url(/resources/graphics/newui/loading.gif);*/ }
 
 table.metadataTable { width: 100%; height: 350px; }
-table.metadataTable input, table.metadataTable select, table.metadataTable label { font-family: tahoma,arial,helvetica,sans-serif; font-size: 11px; }
+table.metadataTable input, table.metadataTable select, table.metadataTable label, table.metadataTable textarea { font-family: tahoma,arial,helvetica,sans-serif; font-size: 11px; }
 table.metadataTable td { height: 1px; }
 table.metadataTable .ul_meta_selectDocType { font-size: 11px; margin-top: 5px; }
 table.metadataTable .ul_meta_selectDocType .ul_meta_docTypeOptions { float: right; display: inline-block; }
@@ -66,6 +66,7 @@ table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field { width: 285px
 }*/ }
 table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field label { display: block; padding-left: 5px; margin-top: -10px; /*text-indent: 5px;*/ float: left; font-size: 11px; }
 table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field input[type="checkbox"] { float: left; padding-left: 2px; margin-top: -10px; }
+table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field .large_field_limit_text { color: #666666; font-style: italic; }
 table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field .ul_meta_field_tree_category { margin-bottom: 5px; margin-top: 10px; display: inline-block; }
 table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field .ul_meta_field_tree_label { margin-top: 0px; float: none; }
 table.metadataTable .ul_metadata .ul_meta_fieldset .ul_meta_field .ul_meta_field_tree_radio { float: left; margin-right: 2px; }
@@ -77,7 +78,7 @@ table.metadataTable .ul_metadata .ul_meta_fieldset .treelabel { margin-bottom: -
 table.metadataTable .ul_meta_actionbar { text-align: right; }
 table.metadataTable .ul_meta_actionbar input[type="button"] { margin: 5px; cursor: pointer; -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f1f1f1), color-stop(1, white)); background: -moz-linear-gradient(center bottom, #f1f1f1 0%, white 100%); -webkit-box-shadow: 0px 0px 4px #a8a8a8; -moz-box-shadow: 0px 0px 4px #a8a8a8; box-shadow: 0px 0px 4px #a8a8a8; border: 1px solid #A8A8A8; padding: 2px 5px; text-align: center; font-family: tahoma,arial,helvetica,sans-serif; font-size: 11px; font-weight: bold; color: #666666; }
 table.metadataTable .ul_meta_actionbar input[type="button"]:hover { color: black; }
-table.metadataTable .ul_meta_actionbar input[type="button"] input[type="button"][disabled] { color: #CCCCCC; }
+table.metadataTable .ul_meta_actionbar input[type="button"][disabled] { color: #CCCCCC; }
 table.metadataTable .ul_meta_actionbar .ul_actions_cancel_link { float: right; margin: 5px; cursor: pointer; padding: 2px 5px; font-size: 11px; }
 table.metadataTable .ul_meta_actionbar label { display: block; padding-left: 5px; margin-top: 10px; /*text-indent: 5px;*/ float: left; font-size: 11px; }
 table.metadataTable .ul_meta_actionbar input[type="checkbox"] { float: left; padding-left: 2px; margin-top: 10px; }

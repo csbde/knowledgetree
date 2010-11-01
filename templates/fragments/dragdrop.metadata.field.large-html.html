@@ -1,0 +1,59 @@
+<span class="ul_meta_row">
+	<span class="ul_meta_label" id="ul_meta_label_[id]">[name]
+		<span class="ul_meta_label_descr">[description]</span>
+	</span>
+	
+	<span id="ul_meta_field_htmlEditor_[id]"  class="ul_meta_field"></span>
+</span>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+	if([is_mandatory] == '1') {
+    	//jQuery('#ul_meta_field_[id]').addClass('required');
+		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
+
+		//register as required field
+		kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+	}
+
+    var htmlEd = new Ext.form.HtmlEditor({
+        width: 290,
+        height: 200, 
+        id: 'ul_meta_field_[id]',
+        cls: 'ul_meta_fullField ul_meta_field_[id]',
+        autoscroll: true,
+        enableLinks: false,
+        enableFont: false,
+		enableColors: false,
+		enableAlignments: false,
+		enableSourceEdit: false,
+		listeners: {
+            'sync': function(editor, text){
+    			kt.dragdrop.metadata.setMetaData('[id]', text);
+
+    			//ensure that not blank text
+    			if([is_mandatory] == '1') {
+					//remove <br> and &nbsp;
+    				var trimmed = text.replace(/(<br>)|&nbsp;/g, '').trim();
+
+    				//console.log('trimmed and replaced '+trimmed);
+
+					if(trimmed.length == 0) {
+						kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+						kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+					} else {
+						kt.dragdrop.metadata.registerRequiredFieldDone('ul_meta_field_[id]');
+						kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+					}
+    			}
+			}
+    	}
+    });
+
+    htmlEd.render('ul_meta_field_htmlEditor_[id]');
+    
+});
+
+</script>

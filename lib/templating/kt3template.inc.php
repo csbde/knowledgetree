@@ -150,10 +150,11 @@ class KTPage {
         $aJS[] = 'resources/js/newui/kt.lib.js';
         $aJS[] = 'resources/js/newui/kt.api.js';
         $aJS[] = 'resources/js/newui/kt.app.upload.js';
+        $aJS[] = 'resources/js/newui/kt.app.inviteusers.js';
         $aJS[] = 'resources/js/newui/newUIFunctionality.js';
         $aJS[] = 'resources/js/newui/jquery.helper.js';
         $aJS[] = 'resources/js/newui/buttontabs.jquery.js';
-        
+
         $this->requireJSResources($aJS);
 
         // this is horrid, but necessary.
@@ -182,7 +183,7 @@ class KTPage {
 			$this->menu['applications'] = array('label' => _kt("Applications"), 'url' => $sLiveUrl.'/applications.php');
 		}
 		$this->menu['administration'] = array('label' => _kt("Settings"));
-		
+
 		// Implement an electronic signature for accessing the admin section, it will appear every 10 minutes
     	global $default;
     	if($default->enableAdminSignatures && $_SESSION['electronic_signature_time'] < time()){
@@ -416,7 +417,14 @@ class KTPage {
         $sBaseUrl = KTUtil::kt_url();
 
         if (!(PEAR::isError($this->user) || is_null($this->user) || $this->user->isAnonymous())) {
-        	if ($oConfig->get("user_prefs/restrictPreferences", false) && !Permission::userIsSystemAdministrator($this->user->getId())) {
+            $isAdmin = Permission::userIsSystemAdministrator($this->user->getId());
+
+            if($isAdmin){
+                $this->userMenu['inviteuser'] = array('label' => _kt('Invite users'), 'url' => '#');
+                $this->userMenu['inviteuser']['onclick'] = "javascript:kt.app.inviteusers.showInviteWindow();";
+            }
+
+        	if ($oConfig->get("user_prefs/restrictPreferences", false) && !$isAdmin) {
         		$this->userMenu['logout'] = array('label' => _kt('Logout'), 'url' => $sBaseUrl.'/presentation/logout.php');
         	} else {
         		if($default->enableESignatures) {
@@ -427,7 +435,7 @@ class KTPage {
         		} else {
         			$this->userMenu['preferences']['url'] = $sBaseUrl.'/preferences.php';
         		}
-        		
+
         		if (KTPluginUtil::pluginIsActive ( 'gettingstarted.plugin' )) {
         		    $heading = _kt('Getting Started');
         		    $this->userMenu['gettingstarted']['url'] = KTUtil::kt_url() . str_replace(KT_DIR, '', KTPluginUtil::getPluginPath('gettingstarted.plugin') . 'GettingStarted.php');
@@ -435,7 +443,7 @@ class KTPage {
         		    //$this->userMenu['gettingstarted']['onclick'] = "javascript: doMask();";
         		    $this->userMenu['gettingstarted']['label'] = '<span>Getting Started</span>';
         		}
-				
+
 				$this->userMenu['supportpage'] = array('label' => _kt('Get Help'), 'url' => $sBaseUrl.'/support.php', 'extra'=>'target="_blank"');
         		//	        $this->userMenu['preferences'] = array('label' => _kt('Preferences'), 'url' => $sBaseUrl.'/preferences.php');
         		$this->userMenu['preferences']['label'] = '<span class="normalTransformText">'.$this->user->getName().'</span>';
@@ -469,7 +477,7 @@ class KTPage {
 
         require_once(KT_LIB_DIR . '/browse/feedback.inc.php');
         $userFeedback = new Feedback();
-		
+
         //TODO: need to refactor - is this the correct way to add this?
 		if (ACCOUNT_ROUTING_ENABLED) {
 			$uploadProgress = new DragDrop();
@@ -490,7 +498,7 @@ class KTPage {
         if ($oConfig->get("ui/automaticRefresh", false)) {
             $aTemplateData['refreshTimeout'] = (int)$oConfig->get("session/sessionTimeout") + 3;
         }
-        
+
         //TODO: need to refactor - is this the correct way to add this?
         if (KTPluginUtil::pluginIsActive ( 'gettingstarted.plugin' )) {
         	$aTemplateData['gettingStarted'] = $gettingStartedRendered;
