@@ -1466,8 +1466,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.7.0.6'),
-(3,'databaseVersion','3.7.0.6'),
+(2,'knowledgeTreeVersion','3.7.0.7'),
+(3,'databaseVersion','3.7.0.7'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1794,7 +1794,10 @@ INSERT INTO `upgrades` VALUES
 (247,'sql*3.7.0.6*0*3.7.0.6/disable_force_file_option.sql','Database upgrade to version 3.7.0.6: Disable Force File Option','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
 (248,'sql*3.7.0.6*0*3.7.0.6/document_renditions.sql','Database upgrade to version 3.7.0.6: Document Renditions','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
 (249,'sql*3.7.0.6*0*3.7.0.6/global_reasons_switch.sql','Database upgrade to version 3.7.0.6: Global Reasons Switch','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
-(250,'upgrade*3.7.0.6*99*upgrade3.7.0.6','Upgrade from version 3.7.0.5 to 3.7.0.6','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6');
+(250,'upgrade*3.7.0.6*99*upgrade3.7.0.6','Upgrade from version 3.7.0.5 to 3.7.0.6','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
+(251,'sql*3.7.0.7*0*3.7.0.7/config_email_login.sql','Database upgrade to version 3.7.0.7: Config email login','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7'),
+(252,'sql*3.7.0.7*0*3.7.0.7/rename_authenticated_role.sql','Database upgrade to version 3.7.0.7: Rename authenticated role','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7'),
+(253,'upgrade*3.7.0.7*99*upgrade3.7.0.7','Upgrade from version 3.7.0.6 to 3.7.0.7','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
