@@ -68,7 +68,7 @@ include_once('clienttools_syslog.php');
 
 // Creating the object that will be returned;
 $RET=new jsonResponseObject();
-if($_GET['datasource'])$RET->isDataSource=true;
+if(isset($_GET['datasource'])) $RET->isDataSource=true;
 
 //Instantiate base classes
 $KT = new KTAPI();
