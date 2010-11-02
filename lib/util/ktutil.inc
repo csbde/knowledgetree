@@ -1455,6 +1455,50 @@ class KTUtil {
 	{
 	    return base_convert($id, 36, 10);
 	}
+
+	/**
+	 * Encode a string using a key
+	 * http://www.myphpscripts.net/tutorial.php?id=9
+	 *
+	 * @param string $string The string to encode
+     * @param string $key The key to use in the encoding
+     * @return string The encoded string
+	 */
+    public static function encode($string,$key) {
+        $key = sha1($key);
+        $strLen = strlen($string);
+        $keyLen = strlen($key);
+        for ($i = 0; $i < $strLen; $i++) {
+            $ordStr = ord(substr($string,$i,1));
+            if ($j == $keyLen) { $j = 0; }
+            $ordKey = ord(substr($key,$j,1));
+            $j++;
+            $hash .= strrev(base_convert(dechex($ordStr + $ordKey),16,36));
+        }
+        return $hash;
+    }
+
+    /**
+     * Decode a hashed string using a key
+     * http://www.myphpscripts.net/tutorial.php?id=9
+     *
+     * @param string $string The string to decode
+     * @param string $key The key to use in the decoding
+     * @return string The unencoded string
+     */
+    public static function decode($string,$key) {
+        $key = sha1($key);
+        $strLen = strlen($string);
+        $keyLen = strlen($key);
+        for ($i = 0; $i < $strLen; $i+=2) {
+            $ordStr = hexdec(base_convert(strrev(substr($string,$i,2)),36,16));
+            if ($j == $keyLen) { $j = 0; }
+            $ordKey = ord(substr($key,$j,1));
+            $j++;
+            $hash .= chr($ordStr - $ordKey);
+        }
+        return $hash;
+    }
 }
 
 /**

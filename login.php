@@ -192,6 +192,10 @@ class LoginPageDispatcher extends KTDispatcher {
             $sDisclaimer = $oPlugin->getLoginDisclaimer();
         }
 
+        // Check if using the username or email address
+        $oConfig = KTConfig::getSingleton();
+        $useEmail = $oConfig->get('user_prefs/useEmailLogin', false);
+
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/login");
         $aTemplateData = array(
@@ -205,6 +209,7 @@ class LoginPageDispatcher extends KTDispatcher {
               'selected_language' => $sLanguageSelect,
 	      	  'disclaimer' => $sDisclaimer,
 			  'smallVersion' => $default->versionTier,
+              'use_email' => $useEmail,
         	  'username' => isset($_REQUEST['username']) ? $_REQUEST['username'] : null,
         );
         return $oTemplate->render($aTemplateData);

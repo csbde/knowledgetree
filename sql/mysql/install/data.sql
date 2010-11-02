@@ -296,7 +296,8 @@ INSERT INTO `config_settings` VALUES
 (119, 'externalBinary', 'convert', 'The path to the ImageMagick "convert" binary', 'convertPath', 'default', 'convert', 'string', NULL, 1),
 (120, 'explorerCPSettings', 'Debug Log Level', 'Set the level of debug information included in the server side log file', 'debugLevel', 'error', 'error', 'dropdown', 'a:1:{s:7:\"options\";a:3:{i:0;a:2:{s:5:\"value\";s:3:\"off\";s:5:\"label\";s:10:\"No Logging\";}i:1;a:2:{s:5:\"value\";s:5:\"error\";s:5:\"label\";s:18:\"Error Logging Only\";}i:2;a:2:{s:5:\"value\";s:5:\"debug\";s:5:\"label\";s:28:\"Error and Debug Info Logging\";}}}', 1),
 (121, 'actionreasons', 'Enable Global Document Reasons', 'If switched on, reasons will be required for all major document actions including Check-in, Check-out, Delete, Finalize, Copy, Move and Archive.', 'globalReasons', 'default', 'false', 'boolean', NULL, 1),
-(122, 'ui', 'Restricted Environment', 'Removes certain administrative features from the interface to prevent users from accessing the functionality', 'restrictedEnv', 'default', 'false', 'boolean', NULL, 0);
+(122, 'ui', 'Restricted Environment', 'Removes certain administrative features from the interface to prevent users from accessing the functionality', 'restrictedEnv', 'default', 'false', 'boolean', NULL, 0),
+(123, 'user_prefs', 'Use Email Address to Login', 'Defines whether the username or the users email address is used for logging in', 'useEmailLogin', 'true', 'false', 'boolean', NULL, 0);
 /*!40000 ALTER TABLE `config_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -681,7 +682,7 @@ UNLOCK TABLES;
 LOCK TABLES `folders` WRITE;
 /*!40000 ALTER TABLE `folders` DISABLE KEYS */;
 INSERT INTO `folders` VALUES
-(1,'Root Folder','Root Document Folder',NULL,1,'',1,'',0,NULL,NULL,1,5,0,1,NULL);
+(1,'Root Folder','Root Document Folder',NULL,1,'',1,'',0,NULL,NULL,1,3,0,1,NULL);
 /*!40000 ALTER TABLE `folders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1133,14 +1134,14 @@ UNLOCK TABLES;
 LOCK TABLES `permission_assignments` WRITE;
 /*!40000 ALTER TABLE `permission_assignments` DISABLE KEYS */;
 INSERT INTO `permission_assignments` VALUES
-(1,1,1,2),
-(2,2,1,2),
-(3,3,1,2),
+(1,1,1,3),
+(2,2,1,3),
+(3,3,1,3),
 (4,4,1,2),
 (5,5,1,2),
 (6,6,1,2),
-(7,7,1,2),
-(8,8,1,2);
+(7,7,1,3),
+(8,8,1,3);
 /*!40000 ALTER TABLE `permission_assignments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1151,7 +1152,8 @@ UNLOCK TABLES;
 LOCK TABLES `permission_descriptor_groups` WRITE;
 /*!40000 ALTER TABLE `permission_descriptor_groups` DISABLE KEYS */;
 INSERT INTO `permission_descriptor_groups` VALUES
-(2,1);
+(2,1),
+(3,1);
 /*!40000 ALTER TABLE `permission_descriptor_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1161,6 +1163,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `permission_descriptor_roles` WRITE;
 /*!40000 ALTER TABLE `permission_descriptor_roles` DISABLE KEYS */;
+INSERT INTO `permission_descriptor_roles` VALUES
+(3,-4);
 /*!40000 ALTER TABLE `permission_descriptor_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1181,7 +1185,8 @@ LOCK TABLES `permission_descriptors` WRITE;
 /*!40000 ALTER TABLE `permission_descriptors` DISABLE KEYS */;
 INSERT INTO `permission_descriptors` VALUES
 (1,'d41d8cd98f00b204e9800998ecf8427e',''),
-(2,'a689e7c4dc953de8d93b1ed4843b2dfe','group(1)');
+(2,'a689e7c4dc953de8d93b1ed4843b2dfe','group(1)'),
+(3,'454170523920fb0dd45353aa492d5899','group(1)role(-4)');
 /*!40000 ALTER TABLE `permission_descriptors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1216,24 +1221,19 @@ INSERT INTO `permission_lookup_assignments` VALUES
 (4,1,2,2),
 (5,2,2,2),
 (6,3,2,2),
-(7,1,3,2),
-(8,2,3,2),
-(9,3,3,2),
-(10,4,3,2),
-(11,5,3,2),
-(12,1,4,2),
-(13,2,4,2),
-(14,3,4,2),
-(15,4,4,2),
-(16,5,4,2),
-(17,6,4,2),
-(18,1,5,2),
-(19,2,5,2),
-(20,3,5,2),
-(21,4,5,2),
-(22,5,5,2),
-(23,6,5,2),
-(24,7,5,2);
+(7,4,2,2),
+(8,5,2,2),
+(9,6,2,2),
+(10,7,2,2),
+(11,8,2,2),
+(12,1,3,3),
+(13,2,3,3),
+(14,3,3,3),
+(15,4,3,2),
+(16,5,3,2),
+(17,6,3,2),
+(18,7,3,3),
+(19,8,3,3);
 /*!40000 ALTER TABLE `permission_lookup_assignments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1246,9 +1246,7 @@ LOCK TABLES `permission_lookups` WRITE;
 INSERT INTO `permission_lookups` VALUES
 (1),
 (2),
-(3),
-(4),
-(5);
+(3);
 /*!40000 ALTER TABLE `permission_lookups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1347,7 +1345,7 @@ UNLOCK TABLES;
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 INSERT INTO `roles` VALUES
-(-4,'Authenticated Users'),
+(-4,'Licensed Users'),
 (4,'Creator'),
 (-3,'Everyone'),
 (-2,'Owner'),
@@ -1468,8 +1466,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.7.0.6'),
-(3,'databaseVersion','3.7.0.6'),
+(2,'knowledgeTreeVersion','3.7.0.7'),
+(3,'databaseVersion','3.7.0.7'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1796,7 +1794,10 @@ INSERT INTO `upgrades` VALUES
 (247,'sql*3.7.0.6*0*3.7.0.6/disable_force_file_option.sql','Database upgrade to version 3.7.0.6: Disable Force File Option','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
 (248,'sql*3.7.0.6*0*3.7.0.6/document_renditions.sql','Database upgrade to version 3.7.0.6: Document Renditions','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
 (249,'sql*3.7.0.6*0*3.7.0.6/global_reasons_switch.sql','Database upgrade to version 3.7.0.6: Global Reasons Switch','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
-(250,'upgrade*3.7.0.6*99*upgrade3.7.0.6','Upgrade from version 3.7.0.5 to 3.7.0.6','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6');
+(250,'upgrade*3.7.0.6*99*upgrade3.7.0.6','Upgrade from version 3.7.0.5 to 3.7.0.6','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
+(251,'sql*3.7.0.7*0*3.7.0.7/config_email_login.sql','Database upgrade to version 3.7.0.7: Config email login','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7'),
+(252,'sql*3.7.0.7*0*3.7.0.7/rename_authenticated_role.sql','Database upgrade to version 3.7.0.7: Rename authenticated role','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7'),
+(253,'upgrade*3.7.0.7*99*upgrade3.7.0.7','Upgrade from version 3.7.0.6 to 3.7.0.7','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 

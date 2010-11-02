@@ -1,0 +1,1 @@
+INSERT INTO config_settings (group_name, display_name, description, item, value, default_value, type, can_edit) VALUES ('user_prefs', 'Use Email Address to Login', 'Defines whether the username or the users email address is used for logging in', 'useEmailLogin', 'default', 'false', 'boolean', 0);

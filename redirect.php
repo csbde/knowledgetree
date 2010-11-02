@@ -38,17 +38,17 @@
  */
 class Redirector
 {
-    
+
 	/**
 	 * Constructor
 	 */
 	public function __construct($uri)
     {
         $this->uri = $this->cleanUri($uri);
-		
+
 		$this->foundDestination = FALSE;
     }
-    
+
     function run()
     {
 		// First check for some special cases
@@ -58,21 +58,21 @@ class Redirector
             case 'admin': $this->finalizeRun('admin.php'); break;
             case 'preferences': $this->finalizeRun('preferences.php'); break;
         }
-		
+
 		if (!$this->foundDestination) {
-			
+
 			// Only proceed if it is a document or a folder
 			if ($this->isDocumentOrFolder($this->uri)) {
-				
-				
+
+
 				// Needs further work if catering for actions
 				// See discussion doc
-				
+
 				// If Folder
 				if (substr($this->uri, 0, 2) == '00') {
 					$_REQUEST['fFolderId'] = base_convert(substr($this->uri, 2), 36, 10);
 					$this->finalizeRun('browse.php');
-					
+
 				// Else Document
 				} else {
 					$_REQUEST['fDocumentId'] = base_convert(substr($this->uri, 2), 36, 10);
@@ -80,14 +80,28 @@ class Redirector
 				}
 			}
 		}
-		
-		
+
+		if (!$this->foundDestination) {
+		    $aUri = explode('/', $this->uri);
+
+		    switch($aUri[0]){
+		        case 'users':
+		            // not ideal but it works
+		            $file = '/plugins/ktcore/authentication/newuserlogin.php';
+		            $query = isset($aUri[1]) ? $aUri[1] : 'key';
+		            $query .= isset($aUri[2]) ? '='.$aUri[2] : '';
+		            $this->redirectPage($file, $query);
+		            break;
+		    }
+		}
+
+
 		if (!$this->foundDestination) {
 			header("HTTP/1.0 404 Not Found");
 			$this->finalizeRun('dashboard.php');
 		}
     }
-	
+
 	/**
 	 * Method to check if the URL points to a folder or document
 	 * @param string $uri URI
@@ -96,14 +110,14 @@ class Redirector
 	private function isDocumentOrFolder($uri)
 	{
 		$firstPart = substr($uri, 0, 2);
-		
+
 		if ($firstPart == '00' || $firstPart == '01') {
 			return TRUE;
 		} else {
 			return FALSE;
 		}
 	}
-    
+
 	/**
 	 * Method to perform some cleanup URI
 	 * @param string $uri URI
@@ -123,33 +137,50 @@ class Redirector
 				}
 			}
 		}
-		
+
 		// Remove Query String
 		$uri = preg_replace('/(\?.*)/i', '', $uri);
-		
+
 		// Remove the first slash
 		$uri = substr($uri, 1);
-		
+
 		return $uri;
 	}
-	
+
 	/**
 	 * Method to finish up the redirector
 	 * Loads the appropriate file, and sets the flag to TRUE
-	 * 
+	 *
 	 * @param string $uri URI
 	 */
 	private function finalizeRun($file)
 	{
 		// Adjust Current Server Variables to reflect new path
-		
+
 		$_SERVER['SCRIPT_NAME'] = '/'.$file;
 		$_SERVER['REQUEST_URI'] = '/'.$file;
 		$_SERVER['PHP_SELF'] = '/'.$file;
-		
+
 		$this->foundDestination = TRUE;
-		
+
 		require_once($file);
+	}
+
+	/**
+	 * Method to redirect to the given uri with the given query string
+	 *
+	 * @param unknown_type $file
+	 * @param unknown_type $query
+	 */
+	private function redirectPage($file, $query = '')
+	{
+	    $this->foundDestination = TRUE;
+
+	    if(!empty($query)){
+	        $file = $file.'?'.$query;
+	    }
+	    header('Location: '.$file);
+	    exit;
 	}
 }
 

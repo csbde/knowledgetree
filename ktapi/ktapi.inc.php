@@ -789,7 +789,7 @@ class KTAPI
 			return new PEAR_Error('Username invalid');
 		}
 
-		$session = & new KTAPI_SystemSession($this, $user);
+		$session = new KTAPI_SystemSession($this, $user);
 		$this->session = $session;
 
 		return $session;

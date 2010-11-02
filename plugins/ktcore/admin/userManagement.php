@@ -112,11 +112,38 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             "authentication_sources" => $aAuthenticationSources,
             "old_search" => $name,
             "can_add" => $bCanAdd,
+            "invited" => false,
             'authentication' => ACCOUNT_ROUTING
         );
         return $oTemplate->render($aTemplateData);
     }
 
+    /**
+     * Resend an invite to a user
+     *
+     */
+    function do_resendInvite()
+    {
+        $userId = $_REQUEST['user_id'];
+        $oUser = User::get($userId);
+
+        if(PEAR::isError($oUser)){
+            $this->errorRedirectToMain(_kt("Error on resending the invitation to user ({$userId}) - {$oUser->getMessage()}"), 'show_all=1');
+            exit;
+        }
+
+        $email = $oUser->getEmail();
+        $user = array();
+        $user[] = array('id' => $userId, 'email' => $email);
+
+        $res = KTUserUtil::sendInvitations($user);
+
+        if($res){
+            $this->successRedirectToMain('Invitation sent', 'show_all=1');
+            exit;
+        }
+        $this->errorRedirectToMain(_kt("Invitation could not be sent to user ({$userId})"), 'show_all=1');
+    }
 
     function do_addUser() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _kt('User Management'));
@@ -746,8 +773,23 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 	        }
  		}
 
+ 		if($_REQUEST['update_value'] == 'invite')
+ 		{
+ 		    $inviteList = array();
+ 			foreach(KTUtil::arrayGet($_REQUEST, 'edit_user', array()) as $sUserId => $v) {
+	            $oUser = User::get((int)$sUserId);
+	            if(PEAR::isError($oUser)) { $this->errorRedirectToMain(_kt('Error getting user object')); }
+
+	            if($oUser->getDisabled() == 3){
+	                $inviteList[] = array('id' => $sUserId, 'email' => $oUser->getEmail());
+	            }
+	        }
+
+            $res = KTUserUtil::sendInvitations($inviteList);
+ 		}
+
         $this->commitTransaction();
-        $this->successRedirectToMain(_kt('Users updated'));
+        $this->successRedirectToMain(_kt('Users updated'), 'show_all=1');
 
     }
 
