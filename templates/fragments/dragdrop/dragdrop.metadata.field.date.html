@@ -25,6 +25,7 @@ Ext.onReady(function(){
         enableKeyEvents: true,
         listeners: {
             'select': function(dateField, date){
+    			//console.log('select '+dateField.getValue());
         		try {
 			    	var month = parseInt(date.getMonth()) + 1;
 			    	if (month < 10) {
@@ -44,7 +45,7 @@ Ext.onReady(function(){
                 }
 			},
 			'valid': function(dateField) {
-				console.log('valid '+dateField.getValue());
+				//console.log('valid '+dateField.getValue());
 				if (dateField.getValue() == 0) {
 					kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
 					kt.dragdrop.metadata.checkRequiredFieldsCompleted();
@@ -54,6 +55,7 @@ Ext.onReady(function(){
 				}
 			},
 			'invalid': function(dateField) {
+				//console.log('invalid '+dateField.getValue());
 				kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
 				kt.dragdrop.metadata.checkRequiredFieldsCompleted();
 			}
@@ -62,7 +64,6 @@ Ext.onReady(function(){
 
     df.render('span_ul_meta_field_date_[id]');
 
-    
 });
 
 </script>

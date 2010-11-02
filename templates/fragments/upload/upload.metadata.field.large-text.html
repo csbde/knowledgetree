@@ -1,9 +1,9 @@
 <span class="ul_meta_row">
 	<span class="ul_meta_label" id="ul_meta_label_[id]">[name]
-		<span class="ul_meta_label_descr">[description]</span>
-	</span>
-	<span class="ul_meta_field">
-		<textarea id="ul_meta_field_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.dragdrop.metadata.setMetaData('[id]',this.value);" style="height: 50px;"></textarea>
+	<span class="ul_meta_label_descr">[description]</span>
+</span>
+<span class="ul_meta_field">
+	<textarea id="ul_meta_field_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.value);" style="height: 50px;"></textarea>
 	</span>
 </span>
 
@@ -11,10 +11,19 @@
 
 Ext.onReady(function(){
 
+	//populate field!
+	var cachedVal = kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).getMetaData([id]);
+
+	if(cachedVal != undefined){
+		jQuery('#ul_meta_field_[id]').val(cachedVal);
+	}
+
 	//enforce max length
 	if([max_length] > 0) {
-		jQuery('#ul_meta_field_[id]').text('('+[max_length]+' character limit)');
-		jQuery('#ul_meta_field_[id]').addClass('large_field_limit_text');
+		if (jQuery.trim(jQuery('#ul_meta_field_[id]').val()).length == 0){
+			jQuery('#ul_meta_field_[id]').text('('+[max_length]+' character limit)');
+			jQuery('#ul_meta_field_[id]').addClass('large_field_limit_text');
+		}
 
 		jQuery('#ul_meta_field_[id]').focus(function() {
 			jQuery(this).removeClass('large_field_limit_text');
@@ -34,15 +43,20 @@ Ext.onReady(function(){
 			}
 		});
 	}
+
+	//kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]'))
+
 	
 	if([is_mandatory] == '1') {
 		//jQuery('#ul_meta_field_[id]').addClass('required');
 		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
 
-		//register as required field
-		kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+		if(cachedVal != undefined){	//if (jQuery.trim(jQuery(this).val()).length == 0){
+			//register as required field
+			kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
+		}
 
-		jQuery('#ul_meta_field_[id]').keyup(function() {			
+		jQuery('#ul_meta_field_[id]').change(function() {			
 			if([max_length] > 0) {
 				if(jQuery(this).val().length > [max_length]) {
 					var newtext = jQuery(this).val().substring(0, [max_length]);
@@ -51,14 +65,10 @@ Ext.onReady(function(){
 			}
 			
 			if (jQuery.trim(jQuery(this).val()).length == 0){
-				kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
-				kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+				kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
 			} else {
-				kt.dragdrop.metadata.registerRequiredFieldDone('ul_meta_field_[id]');
-				kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+				kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldDone('ul_meta_field_[id]');
 			}
-
-			
 		});
 	}
 

@@ -11,6 +11,14 @@
 
 Ext.onReady(function(){
 
+	 if([is_mandatory] == '1') {
+	    	//jQuery('#ul_meta_field_[id]').addClass('required');
+			jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
+
+			//register as required field
+			kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
+		}
+
 	//get the checkbox values
     var data = new Array();
     var i = 0;
@@ -28,8 +36,9 @@ Ext.onReady(function(){
     
     var container = jQuery('#ul_meta_field_[id]')[0];
 
-    for(var i = 0; i < data.length; i++) {
-        
+    var val = kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).getMetaData([id]);
+
+    for(var i = 0; i < data.length; i++) {        
     	var chkbox = document.createElement("input");
     	chkbox.id = "ul_meta_field_checkbox_[id]_"+i;
     	
@@ -46,14 +55,17 @@ Ext.onReady(function(){
     	container.appendChild(chkbox);  
     	container.appendChild(label);  	
     	container.appendChild(document.createElement("br"));
-
-    	//jQuery('input#ul_meta_field_checkbox_[id]_'+i).attr('class', 'ul_meta_field_[id]');
+    	
+    	//populate the field
+    	if(val != undefined && 	val.indexOf(data[i][1]) >= 0) {
+			chkbox.checked = true;
+        }
 
     	//now add the change event
     	jQuery('input#ul_meta_field_checkbox_[id]_'+i).change(function() {
         	var j = 0;
         	//to store the selected checkbox IDs
-            var selected = '';	//new Array();
+            var selected = '';
 
             //iterate through all the checkboxes to see which are checked
             for(var k = 0; k < data.length; k++) {
@@ -62,20 +74,26 @@ Ext.onReady(function(){
         	    	selected += el.attr('value')+', ';
         	    } 
         	}
-        	selected = selected.substr(0, selected.length-2);
+
+            //chop off trailing comma
+        	if (selected.length > 2) {
+        		selected = selected.substr(0, selected.length-2);
+        	}
+
+        	//if marked as mandatory, check whether all done
+        	if([is_mandatory] == '1') {
+	        	if (selected.length > 0) {
+	        		kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldDone('ul_meta_field_[id]');
+	        	} else {
+	        		kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
+	            }
+        	}
 			
 			kt.app.upload.getMetaItem(this).setMetaData('[id]', selected)
 		});
     }  
 
-    if([is_mandatory] == '1') {
-    	jQuery('#ul_meta_field_[id]').addClass('required');
-		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
-	}
-	
-    /*if([is_mandatory] == '1') {
-		jQuery('#ul_meta_field_[id]').addClass('required');
-	}*/
+   
     
 });
 
