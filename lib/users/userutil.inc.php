@@ -38,15 +38,15 @@
 
 require_once(KT_LIB_DIR . '/users/User.inc');
 
-class KTUserUtil
-{
+class KTUserUtil {
+    
     public static function createUser($username, $name, $password = null, $email_address = null, $email_notifications = false, $mobile_number = null, $max_sessions = 3, $source_id = null, $details = null, $details2 = null, $disabled_flag = 0)
     {
         global $default;
 
         $dupUser =& User::getByUserName($username);
-        if(!PEAR::isError($dupUser)) {
-            $default->log->warn('Couldn\'t create user, duplicate username: '.$dupUser->getMessage());
+        if (!PEAR::isError($dupUser)) {
+            $default->log->warn('Couldn\'t create user, duplicate username.');
             return PEAR::raiseError(_kt("A user with that username already exists"));
         }
 
@@ -90,18 +90,18 @@ class KTUserUtil
         return $oUser;
     }
 
-    public static function getUserField($userId,$fieldName='name'){
-    	if(!is_array($userId)){	$userId=array($userId);	}
-    	$userId=array_unique($userId,SORT_NUMERIC);
-    	if(!is_array($fieldName)){$fieldName=array($fieldName);	}
+    public static function getUserField($userId, $fieldName = 'name')
+    {
+    	if (!is_array($userId)) { $userId = array($userId); }
+    	$userId = array_unique($userId, SORT_NUMERIC);
+    	if (!is_array($fieldName)) { $fieldName = array($fieldName); }
 
 		//TODO: needs some work
-    	$sql="SELECT ".join(',',$fieldName)." FROM users WHERE id IN (".join(',',$userId).")";
-    	$res=DBUtil::getResultArray($sql);
-//    	print_r($res); die;
-    	if(PEAR::isError($res) || empty($res)){
+    	$sql = "SELECT " . join(',', $fieldName) . " FROM users WHERE id IN (" . join(',', $userId) . ")";
+    	$res = DBUtil::getResultArray($sql);
+    	if (PEAR::isError($res) || empty($res)) {
     		return '';
-    	}else{
+    	} else {
     		return $res;
     	}
     }
@@ -115,8 +115,9 @@ class KTUserUtil
      */
     public static function inviteUsersByEmail($addressList, $group = null)
     {
-        if(empty($addressList)){
+        if (empty($addressList)) {
             $response = array('invited' => 0, 'group' => '', 'check' => 0);
+            return $response;
         }
 
         global $default;
@@ -131,7 +132,7 @@ class KTUserUtil
 
     	// loop through any addresses that currently exist and unset them in the invitee list
     	$addressList = array_flip($addressList);
-    	foreach ($inSystemList as $item){
+    	foreach ($inSystemList as $item) {
     	    unset($addressList[$item['email']]);
     	    $existingUsers[] = $item;
     	}
@@ -139,13 +140,13 @@ class KTUserUtil
 
     	// Get the group object if a group has been selected
     	$oGroup = false;
-    	if(is_numeric($group)){
+    	if (is_numeric($group)) {
     	   $oGroup = Group::get($group);
 
-    	   if(PEAR::isError($oGroup)){
+    	   if (PEAR::isError($oGroup)) {
     	       $default->log->error("Invite users. Error on selected group ({$group}) - {$oGroup->getMessage()}");
     	       $oGroup = false;
-    	   }else {
+    	   } else {
     	       $groupName = $oGroup->getName();
     	   }
         }
@@ -153,22 +154,22 @@ class KTUserUtil
     	// loop through remaining emails and add to the users table
     	// flag as "invited" => disabled = 3
     	// 0 = live; 1 = disabled; 2 = deleted; 3 = invited; 4 = shared
-    	foreach ($addressList as $email){
-            if(empty($email)){
+    	foreach ($addressList as $email) {
+            if (empty($email)) {
                 continue;
             }
             $oUser = self::createUser($email, '', null, $email, true, null, 3, null, null, null, 3);
 
-            if(PEAR::isError($oUser)){
+            if (PEAR::isError($oUser)) {
                $default->log->error("Invite users. Error on creating invited user ({$email}) - {$oUser->getMessage()}");
                $failedUsers[] = $email;
                continue;
             }
             $invitedUsers[] = array('id' => $oUser->getId(), 'email' => $email);
 
-            if($oGroup !== false){
+            if ($oGroup !== false) {
                $res = $oGroup->addMember($oUser);
-               if(PEAR::isError($res)){
+               if (PEAR::isError($res)) {
                    $default->log->error("Invite users. Error on adding user ({$email}) to group {$group} - {$res->getMessage()}");
                    continue;
                }
@@ -176,7 +177,7 @@ class KTUserUtil
     	}
 
     	// Send invitation
-    	if(!empty($invitedUsers)){
+    	if (!empty($invitedUsers)) {
     	    self::sendInvitations($invitedUsers);
     	}
 
@@ -196,12 +197,12 @@ class KTUserUtil
      */
     public static function checkUserLicenses($iInvited, $iAvailable)
     {
-        if($iAvailable <= 0){
+        if ($iAvailable <= 0) {
             return 1;
         }
 
         $rem = $iAvailable - (int)$iInvited;
-        if($rem < 0){
+        if ($rem < 0) {
             return 2;
         }
         return 0;
@@ -219,27 +220,27 @@ class KTUserUtil
         // goes into the user array for use in the email
         $oSender = User::get($_SESSION['userID']);
 
-        if(PEAR::isError($oSender) || empty($oSender)){
+        if (PEAR::isError($oSender) || empty($oSender)) {
             $sender = 'KnowledgeTree';
-        }else{
+        } else {
             $sender = $oSender->getName();
         }
 
         $url = KTUtil::kt_url() . '/users/key/';
 
         $list = array();
-        foreach ($emailList as $item){
+        foreach ($emailList as $item) {
             //$key = 'skfjiwefjaldi';
             $user_id = $item['id'];
             //$user = KTUtil::encode($user, $key);
-            $user = '88'.base_convert($user_id, 10, 25);
-
-            $link = $url . $user;
+            $user = (int)$user_id * 354;
+            $user = base_convert($user, 10, 25);
+            $link = $url . '88' . $user;
 
             $list[] = array('name' => '', 'email' => $item['email'], 'sender' => $sender, 'link' => $link);
         }
 
-        if(empty($list)){
+        if (empty($list)) {
             return true;
         }
 
@@ -248,7 +249,7 @@ class KTUserUtil
         $default->log->debug('Invited keys '. json_encode($list));
         $emailFrom = $default->emailFrom;
 
-        if(ACCOUNT_ROUTING_ENABLED){
+        if (ACCOUNT_ROUTING_ENABLED) {
             // dispatch queue event
             require_once(KT_LIVE_DIR . '/sqsqueue/dispatchers/queueDispatcher.php');
 
@@ -275,15 +276,15 @@ class KTUserUtil
      */
     public static function checkUniqueEmail($addresses)
     {
-        if(empty($addresses)){
+        if (empty($addresses)) {
             return false;
         }
 
-        if(is_string($addresses)){
+        if (is_string($addresses)) {
             $addresses = array($addresses);
         }
 
-        if(!is_array($addresses)){
+        if (!is_array($addresses)) {
             return false;
         }
 
@@ -297,6 +298,7 @@ class KTUserUtil
 
         return $result;
     }
+    
 }
 
 

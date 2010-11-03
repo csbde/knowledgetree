@@ -937,7 +937,8 @@ class KTEntityUtil {
                 if ($bNoneOk) {
                     return null;
                 }
-                return new KTEntityNoObjects();
+                $ktEntityNoObjects = new KTEntityNoObjects();
+                return $ktEntityNoObjects;
             }
             if (count($aObjects) > 1) {
                 return PEAR::raiseError(_kt("Multiple objects returned"));
