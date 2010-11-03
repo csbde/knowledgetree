@@ -46,7 +46,7 @@ class KTUserUtil
 
         $dupUser =& User::getByUserName($username);
         if(!PEAR::isError($dupUser)) {
-            $default->log->warn('Couldn\'t create user, duplicate username: '.$dupUser->getMessage());
+            $default->log->warn('Couldn\'t create user, duplicate username.');
             return PEAR::raiseError(_kt("A user with that username already exists"));
         }
 
@@ -117,6 +117,7 @@ class KTUserUtil
     {
         if(empty($addressList)){
             $response = array('invited' => 0, 'group' => '', 'check' => 0);
+            return $response;
         }
 
         global $default;
