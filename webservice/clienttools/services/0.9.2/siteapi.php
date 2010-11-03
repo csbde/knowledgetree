@@ -1,38 +1,29 @@
 <?php
-class siteapi extends client_service{
+class siteapi extends client_service {
 
-    function uploadFile($params) {
+    function uploadFile($params)
+    {
 		global $default;
 
 		$documents = $params['documents'];
-
 		$default->log->debug('Uploading files '.print_r($documents, true));
-
 		$index = 0;
-
 		$returnResponse = array();
 
-		foreach($documents as $document){
-			$default->log->debug('Uploading file '.$document['fileName']);
-			//file_put_contents('uploadFile.txt', "\n\rUploading file ".$document['fileName'], FILE_APPEND);
+		foreach ($documents as $document) {
+			$default->log->debug('Uploading file ' . $document['fileName']);
+			//file_put_contents('uploadFile.txt', "\n\rUploading file " . $document['fileName'], FILE_APPEND);
 
-			try
-			{
+			try {
 				$baseFolderID = $document['baseFolderID'];
-
 		    	$oStorage = KTStorageManagerUtil::getSingleton();
-
 		    	$folderID = $document['folderID'];
-
 		    	$documentTypeID = $document['docTypeID'];
-
 		    	$fileName = $document['fileName'];
-
 		    	$sS3TempFile  = $document['s3TempFile'];
-
 		    	$metadata = $document['metadata'];
-
-		    	$default->log->debug('Uploading file :: metadata '.print_r($metadata, true));
+		    	
+		    	$default->log->debug('Uploading file :: metadata ' . print_r($metadata, true));
 
 		    	$MDPack = array();
 		    	//assemble the metadata and convert to fileds and fieldsets
@@ -94,14 +85,13 @@ class siteapi extends client_service{
 		            'cleanup_initial_file' => true
 		        );
 
-		        if($document['doBulk']=='true'){
-		        	$dir = realpath(dirname(__FILE__).'/../../../../');
+		        if ($document['doBulk']=='true') {
+		        	$dir = realpath(dirname(__FILE__) . '/../../../../');
 		        	require_once($dir . '/plugins/ktlive/lib/import/amazons3zipimportstorage.inc.php');
 					require_once($dir . '/plugins/ktlive/lib/import/amazons3bulkimport.inc.php');
 
 		         	// Check if archive is a deb package
-			        if($sExtension == 'deb')
-			        {
+			        if ($sExtension == 'deb') {
 						$this->sExtension = 'ar';
 			        }
 
@@ -112,14 +102,12 @@ class siteapi extends client_service{
 		        	$fs = new KTAmazonS3ZipImportStorage('', $fileData);
 	        	    $response = $oStorage->headS3Object($sS3TempFile);
 
-
 	        	    $size = 0;
 	        	    if (($response instanceof ResponseCore) && $response->isOK()) {
 	        	        $size = $response->header['content-length'];
 	        	    }
 
-	        	    $aOptions = array('documenttype' => $oDocumentType,
-	        	    				'metadata' => $MDPack);
+	        	    $aOptions = array('documenttype' => $oDocumentType, 'metadata' => $MDPack);
 
 					$bm = new KTAmazonS3BulkImportManager($oFolder, $fs, $oUser, $aOptions);
 			        $res = $bm->import($sS3TempFile, $size);
@@ -136,7 +124,6 @@ class siteapi extends client_service{
 			        $json['success'] = $item;
 
 					$returnResponse[] = json_encode($json);
-
 		        } else {
 					//add to KT
 		        	$oDocument =& KTDocumentUtil::add($oFolder, $fileName, $oUser, $aOptions);
@@ -148,13 +135,13 @@ class siteapi extends client_service{
 		        	}
 
 					//get the icon path
-					$mimetypeid = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId():'0';
-					$iconFile = 'resources/mimetypes/newui/'.KTMime::getIconPath($mimetypeid).'.png';
-					$iconExists = file_exists(KT_DIR.'/'.$iconFile);
-					if($iconExists){
+					$mimetypeid = (method_exists($oDocument,'getMimeTypeId')) ? $oDocument->getMimeTypeId() : '0';
+					$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($mimetypeid).'.png';
+					$iconExists = file_exists(KT_DIR.'/' . $iconFile);
+					if ($iconExists) {
 						$mimeIcon = str_replace('\\','/',$GLOBALS['default']->rootUrl.'/'.$iconFile);
 						$mimeIcon = "background-image: url(".$mimeIcon.")";
-					}else{
+					} else {
 						$mimeIcon = '';
 					}
 
@@ -212,7 +199,7 @@ class siteapi extends client_service{
 	 * @param $params
 	 * @return unknown_type
 	 */
-	public function docTypeHasRequiredFields($params){
+	public function docTypeHasRequiredFields($params) {
 		$docType=$params['docType'];
 
 		$aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => false));
@@ -221,10 +208,10 @@ class siteapi extends client_service{
 
 		$hasRequiredFields = false;
 
-	    foreach($fieldSets as $fieldSet){
+	    foreach($fieldSets as $fieldSet) {
 			$fields=$fieldSet->getFields();
 			//fwrite($fh, "\r\nfields ".print_r($fields, true));
-			foreach($fields as $field){
+			foreach($fields as $field) {
 				if ($field->getIsMandatory()) {
 					$hasRequiredFields = true;
 					break;
@@ -240,7 +227,7 @@ class siteapi extends client_service{
 	 * @param $params
 	 * @return unknown_type
 	 */
-	public function docTypeFields($params){
+	public function docTypeFields($params) {
 		$type=$params['type'];
 		$filter=is_array($params['filter'])?$params['filter']:NULL;
 		$oDT=DocumentType::get($type);
@@ -250,21 +237,21 @@ class siteapi extends client_service{
         $fieldSets = kt_array_merge($aGenericFieldsetIds, $aSpecificFieldsetIds);
 
 		$ret=array();
-		foreach($fieldSets as $fieldSet){
+		foreach($fieldSets as $fieldSet) {
 			$ret[$fieldSet->getID()]['properties']=$fieldSet->getProperties();
 			$fields=$fieldSet->getFields();
-			foreach($fields as $field){
+			foreach($fields as $field) {
 				$properties=$field->getProperties();
 
-				/*if(isset($properties['has_lookup'])) {
-					if($properties['data_type']=='LARGE TEXT'){
+				/*if (isset($properties['has_lookup'])) {
+					if ($properties['data_type']=='LARGE TEXT') {
 						file_put_contents('docTypeFields.txt', "\n\rI have large text ".$properties['name'], FILE_APPEND);
 					}
 				}*/
 
-				if(isset($properties['has_lookup'])) {
-					if($properties['has_lookup']==1){
-						if($properties['has_lookuptree']==1){
+				if (isset($properties['has_lookup'])) {
+					if ($properties['has_lookup']==1) {
+						if ($properties['has_lookuptree']==1) {
 							//need to recursively populate tree lookup fields!
 							$properties['tree_lookup_values'] = $this->get_metadata_tree($field->getId());
 						} else {
@@ -274,22 +261,22 @@ class siteapi extends client_service{
 					}
 				}
 
-				if(isset($properties['has_inetlookup'])) {
-					if($properties['has_inetlookup']==1) {
-						if($properties['inetlookup_type']=="multiwithlist") {
+				if (isset($properties['has_inetlookup'])) {
+					if ($properties['has_inetlookup']==1) {
+						if ($properties['inetlookup_type']=="multiwithlist") {
 							$properties['multi_lookup_values'] = $this->get_metadata_lookup($field->getId());
-						} else if($properties['inetlookup_type']=="multiwithcheckboxes") {
+						} else if ($properties['inetlookup_type']=="multiwithcheckboxes") {
 							$properties['checkbox_lookup_values'] = $this->get_metadata_lookup($field->getId());
 						}
 					}
 				}
 
-				if(is_array($filter)){
+				if (is_array($filter)) {
 					$requirements=true;
-					foreach($filter as $elem=>$value){
-						if($properties[$elem]!=$value)$requirements=false;
+					foreach($filter as $elem=>$value) {
+						if ($properties[$elem]!=$value)$requirements=false;
 					}
-					if($requirements)$ret[$fieldSet->getID()]['fields'][$field->getID()]=$properties;
+					if ($requirements)$ret[$fieldSet->getID()]['fields'][$field->getID()]=$properties;
 				}else{
 					$ret[$fieldSet->getID()]['fields'][$field->getID()]=$properties;
 				}
@@ -303,7 +290,7 @@ class siteapi extends client_service{
 	 * @param $params
 	 * @return unknown_type
 	 */
-	public function docTypeRequiredFields($params){
+	public function docTypeRequiredFields($params) {
 		$nparams=$params;
 		$nparams['filter']=array(
 			'is_mandatory'=>1
@@ -312,10 +299,10 @@ class siteapi extends client_service{
 	}
 
 
-	public function getDocTypes($params){
+	public function getDocTypes($params) {
 		$types=DocumentType::getList();
 		$ret=array();
-		foreach($types as $type){
+		foreach($types as $type) {
 			$ret[$type->aFieldArr['id']]=$type->aFieldArr;
 		}
 		$this->addResponse('documentTypes',$ret);
@@ -433,13 +420,13 @@ class siteapi extends client_service{
 	 * @param $params
 	 * @return unknown_type
 	 */
-	public function getSubFolders($params){
+	public function getSubFolders($params) {
 		$folderId=isset($params['folderId']) ? $params['folderId'] : 1;
 		$filter=isset($params['fields']) ? $params['fields'] : '';
 		$options = array( 'orderby'=>'name' );
 		$folders = Folder::getList ( array ('parent_id = ?', $folderId ), $options );
 		$subfolders=array();
-		foreach($folders as $folder){
+		foreach($folders as $folder) {
 			$subfolders[$folder->aFieldArr['id']]=$this->filter_array($folder->aFieldArr,$filter,false);
 		}
 		$this->addResponse('children',$subfolders);
@@ -450,7 +437,7 @@ class siteapi extends client_service{
 	 * @param $params
 	 * @return unknown_type
 	 */
-	public function getFolderHierarchy($params){
+	public function getFolderHierarchy($params) {
 		$folderId=$params['folderId'];
 		$filter=isset($params['fields']) ? $params['fields'] : '';
 
@@ -464,7 +451,7 @@ class siteapi extends client_service{
 				$ancestors=Folder::getList(array('id IN ('.join(',',$ancestors).')'),array());
 				$parents=array();
 
-				foreach($ancestors as $obj){
+				foreach($ancestors as $obj) {
 					$parents[$obj->getID()]=$this->filter_array($obj->aFieldArr,$filter,false);
 				}
 			}
@@ -559,9 +546,13 @@ class siteapi extends client_service{
     	 *
     	 * NOTE there may be address formats missed by this expression which were added in later RFC documents.
     	 *      If we find addresses not matching then we can modify the query to accept them.
-    	 *      This was the most comprehensive expression I could find and should match the vast majority of valid addresses.
+    	 *      This was the most comprehensive expression (for RFC 2822) that I could find and should match 
+    	 *      the vast majority of common valid addresses.
+    	 * 
+    	 * NOTE http://stackoverflow.com/questions/201323/what-is-the-best-regular-expression-for-validating-email-addresses
+    	 *      (see for other options)
     	 */
-        $regex = "[a-z0-9!#\$%&'\*\+\/=\?\^_`{\|}~\-]+(?:\.[a-z0-9!#\$%&'\*\+\/=\?\^_`{\|}~\-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
+        $regex = "[\w!#\$%&'\*\+\/=\?\^_`{\|}~\-]+(?:\.[\w!#\$%&'\*\+\/=\?\^_`{\|}~\-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?";
         $matches = array();
         preg_match_all("/$regex/i", $params['addresses'], $matches);
 

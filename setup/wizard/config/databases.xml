@@ -13,10 +13,10 @@
     </dtypes>
     <dhost>localhost</dhost>
     <dport>3306</dport>
-    <dname>dms</dname>
+    <dname>paul</dname>
     <duname>root</duname>
-    <dmsadminuser>ktcomadmin</dmsadminuser>
-    <dmsaupass>js9281djw</dmsaupass>
-    <dmsuser>ktcomdms</dmsuser>
-    <dmsupass>djw9281js</dmsupass>
+    <dmsadminuser>root</dmsadminuser>
+    <dmsaupass>meep</dmsaupass>
+    <dmsuser>root</dmsuser>
+    <dmsupass>meep</dmsupass>
 </database>

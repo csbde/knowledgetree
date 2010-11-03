@@ -146,6 +146,10 @@ class KTWebService
 
     	$config = &KTConfig::getSingleton();
     	$this->version = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
+    	
+    	//for testing!
+    	//$this->version = 3;
+    	
     	$this->mustDebug = $config->get('webservice/debug', 0);
     	$this->ktapi = null;
 
@@ -174,6 +178,23 @@ class KTWebService
          }
          if ($this->version >= 3){
          	$this->__typedef["{urn:$this->namespace}kt_folder_detail"]['linked_folder_id'] = 'int';
+         	
+         	$this->__typedef["{urn:$this->namespace}kt_document_comment"] = array(
+         		'id' => 'int',
+         		'user_id' => 'int',
+         		'comment' => 'string',
+         		'date' => 'string',
+         		'user_name' => 'string',
+         		'action' => 'string',
+         		'version' => 'int'
+         	);
+         	
+         	$this->__typedef["{urn:$this->namespace}kt_document_comments"] =
+         	array(
+				array(
+                        'comment' => "{urn:$this->namespace}kt_document_comment"
+                  )
+         	);
          }
 
     	$this->__typedef["{urn:$this->namespace}kt_folder_item"] =
@@ -934,6 +955,21 @@ class KTWebService
          	//get folder shortcuts
          	$this->__dispatch_map['get_folder_shortcuts'] = array('in'=>array('session_id' => 'string', 'folder_id' => 'int'),
          	'out'=>array('return' => "{urn:$this->namespace}kt_folder_shortcuts" ));
+         }
+         
+         //document comments
+         if ($this->version >= 3) {
+         	 // get_document_comments
+         	$this->__dispatch_map['get_document_comments'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'order' => 'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_document_comments"  ),
+            );
+            
+             // add_document_comment
+         	$this->__dispatch_map['add_document_comment'] =
+            array('in' => array('session_id' => 'string', 'document_id' => 'int', 'comment' => 'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );
          }
 
          // add_document
@@ -4460,6 +4496,87 @@ class KTWebService
 		$response['hits'] = new SOAP_Value('hits', "{urn:$this->namespace}kt_search_results", $results);
 
 		return new SOAP_Value('return', "{urn:$this->namespace}kt_search_response", $response);
+	}
+	
+	/**
+	 * Gets the comments associated with a document
+	 *
+	 * @param string $session_id
+	 * @param int $document_id
+	 * @param int $order
+	 * @return kt_document_comments
+	 */
+	function get_document_comments($session_id, $document_id, $order = 'DESC')
+	{
+		//$GLOBALS['default']->log->debug("webservice get_document_comments('$session_id', $document_id, '$order')");
+		$this->debug("get_document_comments('$session_id', $document_id, '$order')");
+
+    	$kt = &$this->get_ktapi($session_id );
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
+    	}
+		
+		try
+		{
+			$comments = &$kt->get_comments($document_id, $order);
+			
+			$this->debug("webservice get_document_comments comments ".print_r($comments, true));
+			
+			$response = KTWebService::_status(KTWS_SUCCESS);
+	    	$response['message'] = $comments;
+	    	
+	    	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_comments", $response);
+		}
+		catch (Exception $e)
+		{
+			$this->error("get_document_comments - cannot get comments for document $document_id  - "  . $e->getMessage());
+			
+			$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
+			$response['message'] = $e->getMessage();
+			return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
+		}
+	}
+	
+	/**
+	 * Adds a comment to a document
+	 *
+	 * @param string $session_id
+	 * @param int $document_id
+	 * @param int $comment
+	 * @return kt_response
+	 */
+	function add_document_comment($session_id, $document_id, $comment)
+	{
+		//$GLOBALS['default']->log->debug("webservice add_document_comment('$session_id', $document_id, '$comment')");
+		$this->debug("add_document_comment('$session_id', $document_id, '$comment')");
+
+    	$kt = &$this->get_ktapi($session_id );
+    	if (is_array($kt))
+    	{
+    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
+    	}
+		
+		try
+		{
+			$result = &$kt->add_comment($document_id, $comment);
+			
+			$this->debug("webservice add_document_comment result ".print_r($result, true));
+			
+			$response = KTWebService::_status(KTWS_SUCCESS);
+	    	$response['message'] = $result;
+	    	
+	    	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
+		}
+		catch (Exception $e)
+		{
+			$this->error("add_document_comment - cannot add comment $comment for document $document_id  - "  . $e->getMessage());
+			
+			$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
+			$response['message'] = $e->getMessage();
+    		
+    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
+		}    	
 	}
 
 	/**
