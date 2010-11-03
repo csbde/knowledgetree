@@ -163,7 +163,7 @@ class KTDocumentUtil {
 		if ($oDocument->isSymbolicLink()) {
     		$oDocument->switchToLinkedCore();
     	}
-    	
+
         if ($oDocument->getIsCheckedOut()) {
             return PEAR::raiseError(_kt('Already checked out.'));
         }
@@ -588,11 +588,11 @@ class KTDocumentUtil {
                 }
             }
         }
-        
+
         if (!empty($aFailed)) {
             return new KTMetadataValidationError($aFailed);
         }
-        
+
         return $aMetadata;
     }
 
@@ -604,6 +604,11 @@ class KTDocumentUtil {
 	 */
 	public static function sanitizeDate($sDate)
 	{
+        // if the date is empty - don't sanitise otherwise it fills in today's date
+        if($sDate == ''){
+            return $sDate;
+        }
+
 	    //Checking for Normal Strings, e.g. 13 August 2009 etc. All formats accepted by strtotime()
 	    $datetime = date_create($sDate);
 	    $resDate = date_format($datetime, 'Y-m-d');
@@ -808,7 +813,7 @@ class KTDocumentUtil {
             return $res;
         }
     }
-    
+
      /*
       * Document Add
       * Author      :   KnowledgeTree Team
@@ -989,7 +994,7 @@ class KTDocumentUtil {
                 $sDocFilename = substr($sDocFilename, 0, $iDot) . '(1)' . substr($sDocFilename, $iDot);
             }
         }
-        
+
         return $sDocFilename;
     }
 
@@ -1008,7 +1013,7 @@ class KTDocumentUtil {
     {
         return Document::fileExists($sFilename, $oFolder->getID());
     }
-    
+
     public static function nameExists($oFolder, $sName)
     {
         return Document::nameExists($sName, $oFolder->getID());
@@ -1221,12 +1226,12 @@ class KTDocumentUtil {
             $sError = PEAR::raiseError(_kt('Document cannot be copied as it is checked out.'));
             return false;
         }
-        
+
         if (!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.copy')) {
             $sError = PEAR::raiseError(_kt('Document cannot be copied as it is restricted by the workflow.'));
             return false;
         }
-        
+
         return true;
     }
 
@@ -1236,17 +1241,17 @@ class KTDocumentUtil {
             $sError = PEAR::raiseError(_kt('Document cannot be moved as it is immutable.'));
             return false;
         }
-        
+
         if ($oDocument->getIsCheckedOut()) {
             $sError = PEAR::raiseError(_kt('Document cannot be moved as it is checked out.'));
             return false;
         }
-        
+
         if (!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.move')) {
             $sError = PEAR::raiseError(_kt('Document cannot be moved as it is restricted by the workflow.'));
             return false;
         }
-        
+
         return true;
     }
 
@@ -1257,17 +1262,17 @@ class KTDocumentUtil {
             $sError = PEAR::raiseError(_kt('Document cannot be deleted as it is immutable.'));
             return false;
         }
-        
+
         if ($oDocument->getIsCheckedOut()) {
             $sError = PEAR::raiseError(_kt('Document cannot be deleted as it is checked out.'));
             return false;
         }
-        
+
         if(!KTWorkflowUtil::actionEnabledForDocument($oDocument, 'ktcore.actions.document.delete')){
             $sError = PEAR::raiseError(_kt('Document cannot be deleted as it is restricted by the workflow.'));
             return false;
         }
-        
+
         return true;
     }
 
@@ -1282,7 +1287,7 @@ class KTDocumentUtil {
             $sError = PEAR::raiseError(_kt('Document cannot be archived as it is restricted by the workflow.'));
             return false;
         }
-        
+
         return true;
     }
 
@@ -1467,7 +1472,7 @@ class KTDocumentUtil {
 
         	KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
         }
-        
+
         // rename file in storage driver
         $res = $oStorage->renameDocument($oDocument, $oOldContentVersion, $sNewFilename);
         if (!$res) {
