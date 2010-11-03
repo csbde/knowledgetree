@@ -4972,7 +4972,7 @@ class KTAPI
 	 * @author KnowledgeTree Team
 	 * @access public
 	 */
-	public function getRecentlyViewedDocuments()
+	public function getRecentlyViewedDocuments($aOptions = NULL)
 	{
 		if (KTPluginUtil::pluginIsActive('brad.UserHistory.plugin')) {
 			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
@@ -4985,7 +4985,13 @@ class KTAPI
 				return $result;
 			}
 			
-			return UserHistoryDocumentEntry::getByUser($user);
+			//limit to 5 by default
+			if(!isset($aOptions['limit']))
+			{
+				$aOptions['limit'] = 5;				
+			}
+			
+			return UserHistoryDocumentEntry::getByUser($user, $aOptions);
 			
 		} else {
 			return array();
