@@ -52,7 +52,7 @@ require_once(realpath(dirname(__FILE__) . '/../config/dmsDefaults.php'));
 require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
 require_once(KT_LIB_DIR . '/foldermanagement/folderutil.inc.php');
 require_once(KT_LIB_DIR . '/browse/DocumentCollection.inc.php');
-require_once(KT_LIB_DIR . "/browse/columnregistry.inc.php");
+require_once(KT_LIB_DIR . '/browse/columnregistry.inc.php');
 
 define('KTAPI_DIR', KT_DIR . '/ktapi');
 
@@ -5061,7 +5061,87 @@ class KTAPI
 		return $ktapi_condRules->getConditionalMetadataConnections();
 	}
 	
-	
+	//COMMENTS
+	/**
+     * Method to check whether Comments plugin is enabled
+     *
+     * @author KnowledgeTree Team
+	 * @access public
+     * @return bool $enabled true or false
+     */
+    public function comments_enabled()
+    {
+        // Check that the Comments plugin is active and available, return false if not.
+        if (KTPluginUtil::pluginIsActive('comment.feeds.plugin')) 
+        {
+        	$path = KTPluginUtil::getPluginPath('comment.feeds.plugin');
+        	require_once($path.'comments.php');
+        	
+        	return true;
+        }
+        else
+        {
+        	return false;
+        }
+    }
+    
+    /**
+     * Get the list of comments on a document ordered by the date created
+     *
+     * @param int $document_id
+     * @return array
+     */
+    public function get_comments($document_id, $order = 'DESC')
+    {
+    	$GLOBALS['default']->log->debug("KTAPI get_comments $document_id $order");
+    	
+    	if ($this->comments_enabled())
+    	{
+    		try
+    		{
+		        $comments = Comments::get_comments($document_id, $order);
+		        
+		        $GLOBALS['default']->log->debug("COMMENTS_API get comments ".print_r($comments, true));
+		        
+		        return $comments;
+    		}
+    		catch(Exception $e)
+    		{
+    			$GLOBALS['default']->log->error("COMMENTS_API get comments error ".$e->getMessage());
+    			
+    			throw $e;
+    		}
+    	}
+    	
+    	return '';
+    }
+    
+    /**
+     * Add a comment on a document
+     *
+     * @param int $document_id
+     * @param string $comment
+     */
+    public function add_comment($document_id, $comment)
+    {
+    	$GLOBALS['default']->log->debug("KTAPI add_comment $document_id $comment");
+    	
+    	if ($this->comments_enabled())
+    	{
+    		try
+    		{
+    			return Comments::add_comment($document_id, $comment);
+    		}
+    		catch (Exception $e)
+    		{
+    			$GLOBALS['default']->log->error("COMMENTS_API add comment error ".$e->getMessage());
+    			
+    			throw $e;
+    		}
+    	}
+    	
+    	return false;
+    }
 	
 }
 
