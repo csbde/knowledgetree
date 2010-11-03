@@ -52,7 +52,8 @@ class NewUserLoginDispatcher extends KTDispatcher {
         //$user = KTUtil::decode($input, $key);
         //$user = json_decode($user);
         $user = str_replace('88', '', $input);
-        $user_id = base_convert($user, 25, 10);
+        $user = base_convert($user, 25, 10);
+        $user_id = (int)$user / 354;
 
         $oUser = User::get($user_id);
 
@@ -64,6 +65,19 @@ class NewUserLoginDispatcher extends KTDispatcher {
             redirect($rootUrl. '/login.php?errorMessage='.$errorMessage);
             exit;
         }
+
+        // Check the number of available licenses
+        if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+            $path = KTPluginUtil::getPluginPath('ktdms.wintools');
+            require_once($path . 'baobabkeyutil.inc.php');
+            $bCanAdd = BaobabKeyUtil::canAddUser();
+
+            if(PEAR::isError($bCanAdd)){
+                $errorMessage = _kt('An error occurred: No new users are allowed in the system, please contact your System Administrator');
+                $default->log->error('Invited login: No licenses available '. $bCanAdd->getMessage());
+            }
+        }
+
 
         $disabled = $oUser->getDisabled();
         $fullname = '';
@@ -155,6 +169,7 @@ class NewUserLoginDispatcher extends KTDispatcher {
         $session = new Session();
         $sessionID = $session->create($oUser);
         if (PEAR::isError($sessionID)) {
+            global $default;
             $default->log->error("Invited login: couldn\'t create session for user ({$oUser->getId()}) - {$sessionID->getMessage()}");
             return $sessionID;
         }

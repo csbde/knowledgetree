@@ -232,9 +232,10 @@ class KTUserUtil
             //$key = 'skfjiwefjaldi';
             $user_id = $item['id'];
             //$user = KTUtil::encode($user, $key);
-            $user = '88'.base_convert($user_id, 10, 25);
+            $user = (int)$user_id * 354;
+            $user = base_convert($user, 10, 25);
 
-            $link = $url . $user;
+            $link = $url . '88' . $user;
 
             $list[] = array('name' => '', 'email' => $item['email'], 'sender' => $sender, 'link' => $link);
         }
