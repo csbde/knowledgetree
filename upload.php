@@ -310,6 +310,9 @@
 	}
 
 	//$fileTmp = str_replace('\\','/',$targetDir.'/'.$fileName);
+	
+	//used to test failures
+	//die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Document could not be uploaded", "filename":"'.$fileName.'"}, "id" : "id"}');
 
 	$oDocument = uploadFile($fileTmp, $fileName, $folderID, $documentTypeID, $metadata);
 

@@ -13,14 +13,14 @@ Ext.onReady(function(){
 
 	//get the lookup values
     var data = new Array();
-    var i = 0;
+    var d = 0;
     for (var key1 in [multi_lookup_values]) {	
     	if (typeof [multi_lookup_values][key1] !== 'function') {    
 			for (var key2 in ([multi_lookup_values][key1])) {
 				var key = key2.replace('id','');
 				var value = [multi_lookup_values][key1][key2];
 				if (typeof value !== 'function') {
-					data[i++] = new Array(key, value);
+					data[d++] = new Array(key, value);
 				}
 			}
     	}
@@ -34,12 +34,12 @@ Ext.onReady(function(){
     }  
 
     if([is_mandatory] == '1') {
+        //jQuery('#ul_meta_field_[id]').addClass('required');
 		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
-	}
 
-    /*if([is_mandatory] == '1') {
-		jQuery('#ul_meta_field_[id]').addClass('required');
-	}*/  
+		//register as required field
+		kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+	} 
     
 });
 
@@ -55,9 +55,24 @@ function getSelectedValues_[id]() {
 	    	selected += multiSelect.options[i].text+', ';
 	    } 
 	}
-	selected = selected.substr(0, selected.length-2);
 
-	kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).setMetaData('[id]',selected);
+	//chop off trailing comma
+    if (selected.length > 2) {
+		selected = selected.substr(0, selected.length-2);
+	}
+
+    //if marked as mandatory, check whether all done
+	if([is_mandatory] == '1') {
+    	if (selected.length > 0) {
+    		kt.dragdrop.metadata.registerRequiredFieldDone('ul_meta_field_[id]');
+    		kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+    	} else {
+    		kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+    		kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+        }
+	}
+
+	kt.dragdrop.metadata.setMetaData('[id]', selected);
 }
 
 </script>

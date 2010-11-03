@@ -12,6 +12,8 @@
 Ext.onReady(function(){
 
 	var container = jQuery('#ul_meta_field_[id]')[0];
+
+	var values = kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).getMetaData([id]);
 	
 	jQuery.each([tree_lookup_values], function(key, val) { 
 		if (val != null) {
@@ -38,6 +40,10 @@ Ext.onReady(function(){
 	        	radio.type = 'radio';
 	        	radio.name = 'ul_meta_field_tree_[id]';	//val['fieldid'];
 	        	radio.className ="ul_meta_field_tree_radio";
+	        	
+	        	if (values != undefined && values == val['name']) {
+					radio.checked = true;
+		        }
 	
 	        	var label = document.createElement('label');
 	        	label.htmFor = "ul_meta_field_tree_[id]_"+val['fieldid'];
@@ -52,9 +58,12 @@ Ext.onReady(function(){
 
 	        	//now add the change event
 	        	jQuery('input#ul_meta_field_tree_[id]_'+val['fieldid']).change(function() {
-    				if(jQuery('input#ul_meta_field_tree_[id]_'+val['fieldid']).attr('checked')) {
-    					//console.log('checked! '+val['name']);	
-    					kt.app.upload.getMetaItem(this).setMetaData('[id]', val['name'])
+    				if(jQuery(this).attr('checked')) {
+    					kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).setMetaData('[id]', val['name'])
+
+						if([is_mandatory] == '1') {
+							kt.app.upload.getMetaItem( jQuery('#ul_meta_field_[id]')).registerRequiredFieldDone('ul_meta_field_[id]');
+    					}
     				}
 	    		}); 
 	        } else if (val['type'] == 'tree' && val['treename'].toLowerCase() != 'root') {
@@ -74,13 +83,14 @@ Ext.onReady(function(){
 
 
     if([is_mandatory] == '1') {
-    	jQuery('#ul_meta_field_[id]').addClass('required');
+    	//jQuery('#ul_meta_field_[id]').addClass('required');
 		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
-	}
 
-    /*if([is_mandatory] == '1') {
-		jQuery('#ul_meta_field_[id]').addClass('required');
-	}*/    
+		if (values == undefined) {
+			//register as required field
+			kt.app.upload.getMetaItem( jQuery('#ul_meta_field_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
+		}
+	}   
 });
 
 </script>

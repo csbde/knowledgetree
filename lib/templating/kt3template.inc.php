@@ -420,8 +420,17 @@ class KTPage {
             $isAdmin = Permission::userIsSystemAdministrator($this->user->getId());
 
             if($isAdmin){
-                $this->userMenu['inviteuser'] = array('label' => _kt('Invite users'), 'url' => '#');
-                $this->userMenu['inviteuser']['onclick'] = "javascript:kt.app.inviteusers.showInviteWindow();";
+                $bCanAdd = true;
+                if (KTPluginUtil::pluginIsActive('ktdms.wintools')) {
+                    $path = KTPluginUtil::getPluginPath('ktdms.wintools');
+                    require_once($path . 'baobabkeyutil.inc.php');
+                    $bCanAdd = BaobabKeyUtil::canAddUser();
+                }
+
+                if($bCanAdd === true){
+                    $this->userMenu['inviteuser'] = array('label' => _kt('Invite users'), 'url' => '#');
+                    $this->userMenu['inviteuser']['onclick'] = "javascript:kt.app.inviteusers.showInviteWindow();";
+                }
             }
 
         	if ($oConfig->get("user_prefs/restrictPreferences", false) && !$isAdmin) {

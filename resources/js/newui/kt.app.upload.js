@@ -6,16 +6,16 @@ if(typeof(kt.app)=='undefined')kt.app={};
  * for the client-side management of single instance of the widget.
  */
 kt.app.upload=new function(){
-	//Stores the objects that deal with the individual files being uploaded. Elements in here is of type uploadStructure
+	//Stores the objects that deal with the individual files being uploaded. Elements in here are of type uploadStructure
 	var data=this.data={};
 	
 	this.data.files={};
 	
 	//contains a list of fragments that will get preloaded
-	var fragments=this.fragments=['upload.dialog','upload.dialog.item','upload.metadata.fieldset'];
+	var fragments=this.fragments=['upload/upload.dialog','upload/upload.dialog.item','upload/upload.metadata.fieldset'];
 	
 	//contains a list of executable fragments that will get preloaded
-	var execs=this.execs=['upload.doctypes','upload.metadata.dialog'];
+	var execs=this.execs=['upload/upload.doctypes','upload/upload.metadata.dialog'];
 	
 	//scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
 	var self=this;
@@ -46,7 +46,7 @@ kt.app.upload=new function(){
 	
 	//Add a file item to the list of files to upload and manage. 
 	//Must not be called directly, but as a result of adding a file using AjaxUploader)
-	this.addUpload=function(fileName, container, docTypeHasRequiredFields){		
+	this.addUpload=function(fileName, docTypeHasRequiredFields){
 		var metadata = {};
 		var docTypeId = 1;
 		
@@ -56,7 +56,7 @@ kt.app.upload=new function(){
 			docTypeHasRequiredFields = !self.data['globalMetaDataRequiredDone'];
 		}		
 		
-		var item=jQuery(kt.api.getFragment('upload.dialog.item'));
+		var item=jQuery(kt.api.getFragment('upload/upload.dialog.item'));
 		jQuery(self.elems.item_container).append(item);
 		
 		if(fileName.length > 50){
@@ -387,25 +387,25 @@ kt.app.upload=new function(){
 					progressMessage = ' E-mail link to files sent.';
 				}				
 				
-				kt.app.upload.updateProgress(progressMessage);
+				kt.app.upload.updateProgress(progressMessage, false);
 				
-				jQuery('#uploadProgress').fadeOut(10000); 
+				kt.app.upload.fadeProgress(10000); 
 				
 				if (hasError) {					
 					progressMessage = 'One or more files failed to upload.';
 				
-					kt.app.upload.updateProgress(progressMessage);
+					kt.app.upload.updateProgress(progressMessage, true);
 					
-					jQuery('#uploadProgress').fadeIn(); 
+					jQuery('#uploadProgress').fadeIn(); 					
 					
-					jQuery('#uploadProgress').fadeOut(10000); 
+					kt.app.upload.fadeProgress(10000);
 				}
 				
 				
 				
 			} catch(e){
 				//console.dir(e);
-				jQuery('#uploadProgress').fadeOut(10000); 
+				kt.app.upload.fadeProgress(10000);
 			}
 			
 		}, function(){}, i*30000);
@@ -428,12 +428,12 @@ kt.app.upload=new function(){
 	
 	this.enableAddButton = function() {
 		var btn = jQuery('#ul_actions_upload_btn');
-		btn.removeAttr("disabled");
+		btn.removeAttr('disabled');
 	}
 	
 	this.disableAddButton = function() {
 		var btn = jQuery('#ul_actions_upload_btn');
-    	btn.attr("disabled", "true");
+    	btn.attr('disabled', 'true');
 	}
 	
 	this.unhideProgressWidget = function(){
@@ -455,7 +455,7 @@ kt.app.upload=new function(){
 		progress.append('<img src="/resources/graphics/newui/large-loading.gif" style="float: right;"/>');
 	}
 	
-	this.updateProgress = function(message){
+	this.updateProgress = function(message, isError){
 		var progress = jQuery('.uploadProgress');
 		
 		//jQuery('.uploadProgress .title').text(message);
@@ -467,6 +467,14 @@ kt.app.upload=new function(){
 	    		progress.text(message+"%");
 			}
 	    }
+	    
+	    if(isError) {
+	    	progress.addClass('error');
+	    }
+	}
+	
+	this.fadeProgress = function(time) {
+		jQuery('#uploadProgress').fadeOut(time);
 	}
 	
 	//iterates through all the files and checks whether they have been added to S3
@@ -496,7 +504,7 @@ kt.app.upload=new function(){
 		//does the Default Doc Type have required fields?
 		kt.api.docTypeHasRequiredFields("1", function(data){
 			//if so, we need to disable the Upload button
-			docTypeHasRequiredFields = data.data.hasRequiredFields;			
+			docTypeHasRequiredFields = data.data.hasRequiredFields;	
 		});
 		
 	    var uploadWin = new Ext.Window({
@@ -513,7 +521,7 @@ kt.app.upload=new function(){
 	        shadow: true,
 	        modal: true,
 	        title: 'Upload Files',
-	        html: kt.api.getFragment('upload.dialog')
+	        html: kt.api.getFragment('upload/upload.dialog')
 	    });
 	    uploadWin.addListener('show',function(){
 	    	//disable the Add Documents button on show since won't be any to add yet!
@@ -536,8 +544,8 @@ kt.app.upload=new function(){
 	    			jQuery('.no_files_selected').css('display', 'none');
 	    			//disable the Upload button as can only upload once upload to S3 completes
     				kt.app.upload.disableAddButton();
-	    		    
-	    			self.addUpload(fileName, self.elems.qq, docTypeHasRequiredFields);
+    				
+	    			self.addUpload(fileName, docTypeHasRequiredFields);
 	    		},
 	    		onComplete: function(id,fileName,responseJSON){
 	    			try{
@@ -674,15 +682,16 @@ kt.app.upload=new function(){
 kt.app.upload.uploadStructure=function(options){
 	var self=this;
 	var options=self.options=kt.lib.Object.extend({
-		is_uploaded					:false,
-		has_required_metadata		:false,
-		required_metadata_done		:false,
-		do_bulk_upload				:false,
-		elem						:null,
-		docTypeId					:1,
-		docTypeFieldData			:null,
-		metadata					:{},
-		parent						:null
+		is_uploaded					: false,
+		has_required_metadata		: false,
+		required_metadata_done		: false,
+		do_bulk_upload				: false,
+		elem						: null,
+		docTypeId					: 1,
+		docTypeFieldData			: null,
+		metadata					: {},
+		parent						: null,
+		fields_required				: {}
 	},options);
 	
 	
@@ -750,7 +759,14 @@ kt.app.upload.uploadStructure=function(options){
 	}
 	
 	this.setMetaData=function(key,value){
+		//console.log('setMetaData for '+key+ ' to '+value);
 		self.options.metadata[key]=value;
+	};
+	
+	this.getMetaData=function(key){
+		value = self.options.metadata[key];
+		//console.log('getMetaData '+value);
+		return value;
 	};
 	
 	//remove the upload from the file dialog AND from the list of files
@@ -797,7 +813,7 @@ kt.app.upload.uploadStructure=function(options){
 	        shadow: true,
 	        modal: true,
 	        title: 'Document Properties',
-	        html: kt.api.execFragment('upload.metadata.dialog')
+	        html: kt.api.execFragment('upload/upload.metadata.dialog')
 	    });
 		metaWin.addListener('close',function(){
 			//have all required metadata fields been completed?
@@ -831,6 +847,9 @@ kt.app.upload.uploadStructure=function(options){
 			} else {
 				kt.app.upload.disableAddButton();
 			}
+			
+			//reset required fields as could change 
+			self.options.fields_required = {};
 		});
 		
 		
@@ -841,236 +860,82 @@ kt.app.upload.uploadStructure=function(options){
 		self.options.metaDataTable=e;
 		kt.lib.meta.set(e,'item',self);
 		
-		//do we need to check Apply To All?
-		if (self.options.parent.data['applyMetaDataToAll'] && self.options.parent.data['globalMetaData'] != undefined) {
-			var el = jQuery('#ul_meta_actionbar_apply_to_all')[0];
-			el.checked = true;			
+		if (self.options.parent != null) {
+			//do we need to check Apply To All?
+			if (self.options.parent.data['applyMetaDataToAll'] && self.options.parent.data['globalMetaData'] != undefined) {
+				var el = jQuery('#ul_meta_actionbar_apply_to_all')[0];
+				el.checked = true;			
+			}
 		}
 		
 		self.changeDocType(self.options.docTypeId?self.options.docTypeId:1);
-		
-		self.populateValues();
 	}
 	
-	//TODO: enforce length limit for large text fields!
+	this.registerRequiredFieldNotDone = function(key) {
+		//console.log('registerRequiredFieldNotDone '+key);
+		self.options.fields_required[key] = false;
+	}
 	
-	//populate the metadata fields that have been cached
-	this.populateValues=function(){
-		for(var idx in self.options.metadata){
-			//console.log(idx);
-			var field=jQuery('.ul_meta_field_'+idx,self.options.metaDataTable);
-			//console.dir(field);
-			if(field.length>0){
-				field=field[0];
-				var tag=(field.tagName+'').toLowerCase();
-				//console.log('tag '+tag);
-				switch(tag){				
-				//sometimes, esp where we have multiple html fields for one KTDMS field (eg ckeckboxes)
-				//we embed these in a span and then need to iterate through the spans children
-					case 'span':
-						var children = jQuery('.ul_meta_field_'+idx,self.options.metaDataTable).children();
-						for (var c = 0; c < children.length; c++) {
-							var child = children[c];
-							var type = (child.type+'').toLowerCase();
-							//console.log(type);
-							switch(type){
-								case 'checkbox':
-									//convert the comma-delimited string into an array for processing 
-									var stringToArray =  self.options.metadata[idx].split(',');
-									for (var i = 0; i < stringToArray.length; i++) {
-										if (child.value == trim(stringToArray[i])) {
-											child.checked = true;
-										}
-									}
-									break;
-								case 'radio':
-									if (child.value == self.options.metadata[idx]) {
-										//console.log('found');
-										child.checked = true;
-									}
-									break;
-							}
-						}
-						
-						
-						break;
-					case 'select':
-						//are we dealing with a multi-select array?
-						if(jQuery('.ul_meta_field_'+idx,self.options.metaDataTable).attr('multiple')) {
-							//convert the comma-delimited string into an array for processing 
-							var stringToArray =  self.options.metadata[idx].split(',');
-							//remove whitespace!
-							for (var i = 0; i < stringToArray.length; i++) {
-								stringToArray[i] = trim(stringToArray[i]);
-							}
-							for (var j = 0; j < field.options.length; j++) {
-								if (jQuery.inArray(field.options[j].text, stringToArray) > -1) {
-									field.options[j].selected = true;
-									//break;
-								}
-							}
-						} else {
-							for (var i = 0; i < field.options.length; i++) {
-								if (field.options[i].text == self.options.metadata[idx]) {
-									field.selectedIndex = i;
-									break;
-								}
-							}
-						}
-						break;
-					case 'input':
-						var type=field.type;
-						switch(type){							
-							case 'text':
-								field.value=self.options.metadata[idx];
-								break;
-						}
-						break;
-					case 'textarea':
-						field.value=self.options.metadata[idx];
-						break;
-				}
-			}
-		}
+	this.registerRequiredFieldDone = function(key) {
+		//console.log('registerRequiredFieldDone '+key);
+		self.options.fields_required[key] = true;
 	}
 	
 	this.checkRequiredFieldsCompleted = function() {
+		//console.log('checking if required done');
 		var requiredFieldsCompleted = true;
+		//var perp = '';
 		
-		if(jQuery('.ul_metadata').find('.required').length <= 0) {
-			requiredFieldsCompleted = true;
-		} else {
-			jQuery('.ul_metadata').find('.required').each(function(index) {
-				var field = jQuery(this)[0];
-				var tag=(field.tagName+'').toLowerCase();
-				//console.log('tag '+tag);
-				//TODO: need to do for all the diferent field types, incl tree!!
-				
-				switch(tag){
-					case 'input':
-						var type=field.type;
-						//console.log('type '+type);
-						switch(type){							
-							case 'text':
-								if (field.value.length == 0){
-									requiredFieldsCompleted = false;
-									//return requiredFieldsCompleted;
-								}
-								break;
-						}
-						break;
-						
-					case 'select':						
-						//are we dealing with a multi-select array?
-						if(jQuery(field).attr('multiple')) {
-							if(field.selectedIndex < 0 ){
-								requiredFieldsCompleted = false;
-							}
-						} else {
-							if(field.selectedIndex <= 0 ){
-								requiredFieldsCompleted = false;
-							}
-						}
-						break;
-					case 'span':
-						//console.log('span');
-						var children = jQuery(field).children();
-						//console.log('children '+children.length);
-						
-						var childChecked = false;
-						
-						for (var c = 0; c < children.length; c++) {
-							//console.log('child '+c);
-							var child = children[c];
-							var type = (child.type+'').toLowerCase();
-							//console.log(type);
-							switch(type){
-								case 'checkbox':
-									//console.log('child.name '+child.name+' '+child.checked);
-									if(child.checked) {
-										childChecked = true;
-									}
-									break;
-								case 'radio':
-									//console.log('child.name '+child.name+' '+child.checked);
-									if(child.checked) {
-										childChecked = true;
-									}
-									break;
-							}
-						}
-						
-						if(!childChecked) {
-							requiredFieldsCompleted = false;
-						}
-						
-						break;
-					case 'textarea':
-						//console.log('textarea :'+field.value+':'+field.value.length);
-						//TODO: if you click in an HTML field, without entering anything, it comes through as length = 1!
-						if (field.value == ''){ //field.value.length == 0 || 
-							requiredFieldsCompleted = false;
-							//return requiredFieldsCompleted;
-						}
-						break;
-				}
-			});
-		}
-		
-		/*for(var idx in self.options.metadata){
-			//console.dir(self.options.metadata[idx]);
-			console.log('required '+self.options.metadata[idx]['required']);
-			if(self.options.metadata[idx]['required']==1) {
-				console.log('required field');
-				var field=jQuery('.ul_meta_field_'+idx,self.options.metaDataTable);
-				//console.dir(field);
-				if(field.length>0){
-					field=field[0];
-					file.attr('background-color', 'red');
-				}
+		jQuery.each(self.options.fields_required, function(key, value) {
+			if (!value) {
+				requiredFieldsCompleted = false;
+				//perp = key;
+				return;
 			}
-		}*/
+		});
 		
 		return requiredFieldsCompleted;
 	}
 	
+	//change the Document Type
 	this.changeDocType=function(docType){
 		self.options.docTypeId=docType;
+		//reset required fields 
+		self.options.fields_required = {};
 		
 		try {
-		//TODO: what does this do exactly?
-		var selectBox=jQuery('.ul_doctype',self.options.metaDataTable)[0];
-		//for(var idx in selectBox.options){
-		for(var idx = 0; idx < selectBox.options.length; idx++) {
-			if(selectBox.options[idx].value==docType){
-				selectBox.selectedIndex=idx;
-			}
-		}
-		
-		var data=kt.api.docTypeFields(docType);
-		self.options.docTypeFieldData=data.fieldsets;
-		var container=jQuery('.ul_metadata',self.options.metaDataTable);
-		
-		container.html('');
-		
-		//if the fieldsets come through as an array, then it is empty
-		if (!(data.fieldsets instanceof Array)) {			
-			for(var idx in self.options.docTypeFieldData){
-				var fieldSet=self.options.docTypeFieldData[idx].properties;
-				var fields=self.options.docTypeFieldData[idx].fields;
-				var t_fieldSet=jQuery(kt.lib.String.parse(kt.api.getFragment('upload.metadata.fieldset'),fieldSet));
-				
-				container.append(t_fieldSet);
-				
-				for(var fidx in fields){
-					var field=fields[fidx];
-					var fieldType=self.getFieldType(field);
-					var t_field_filename='upload.metadata.field.' + fieldType;
-					var t_field=jQuery(kt.lib.String.parse(kt.api.getFragment(t_field_filename),field));
-					t_fieldSet.append(t_field);
+			var selectBox=jQuery('.ul_doctype',self.options.metaDataTable)[0];
+			//for(var idx in selectBox.options){
+			for(var idx = 0; idx < selectBox.options.length; idx++) {
+				if(selectBox.options[idx].value==docType){
+					selectBox.selectedIndex=idx;
 				}
 			}
-		}
+			
+			var data=kt.api.docTypeFields(docType);
+			self.options.docTypeFieldData=data.fieldsets;
+			var container=jQuery('.ul_metadata',self.options.metaDataTable);
+			
+			container.html('');
+			
+			//if the fieldsets come through as an array, then it is empty
+			if (!(data.fieldsets instanceof Array)) {			
+				for(var idx in self.options.docTypeFieldData){
+					var fieldSet=self.options.docTypeFieldData[idx].properties;
+					var fields=self.options.docTypeFieldData[idx].fields;
+					var t_fieldSet=jQuery(kt.lib.String.parse(kt.api.getFragment('upload/upload.metadata.fieldset'),fieldSet));
+					
+					container.append(t_fieldSet);
+					
+					for(var fidx in fields){
+						var field=fields[fidx];
+						var fieldType=self.getFieldType(field);
+						var t_field_filename='upload/upload.metadata.field.' + fieldType;
+						var t_field=jQuery(kt.lib.String.parse(kt.api.getFragment(t_field_filename),field));
+						t_fieldSet.append(t_field);
+					}
+				}
+			}
 		} catch(e){}
 	};
 	

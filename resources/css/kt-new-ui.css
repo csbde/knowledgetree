@@ -319,6 +319,10 @@ div#uploadProgress .progress {
 	font-size: 16px;
 }
 
+.uploadProgress.error {
+	background: url('../graphics/newui/notice_red.png') no-repeat top right !important;
+}
+
 #content select.perpageselect {
 	border: none;
 	background: transparent url('../graphics/newui/per_page_select.png') no-repeat top right;

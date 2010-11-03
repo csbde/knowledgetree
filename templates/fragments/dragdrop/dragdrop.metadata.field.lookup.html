@@ -3,7 +3,7 @@
 		<span class="ul_meta_label_descr">[description]</span>
 	</span>
 	<span class="ul_meta_field">
-		<select id="ul_meta_field_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.app.upload.getMetaItem(this).setMetaData('[id]',this.options[this.selectedIndex].text);"></select>
+		<select id="ul_meta_field_[id]" class="ul_meta_fullField ul_meta_field_[id]" onChange="kt.dragdrop.metadata.setMetaData('[id]',this.options[this.selectedIndex].text);"></select>
 	</span>
 </span>
 
@@ -13,14 +13,14 @@ Ext.onReady(function(){
 
 	//get the lookup values
     var data = new Array();
-    var i = 0;
+    var d = 0;
     for (var key1 in [lookup_values]) {	
     	if (typeof [lookup_values][key1] !== 'function') {    
 			for (var key2 in ([lookup_values][key1])) {
 				var key = key2.replace('id','');
 				var value = [lookup_values][key1][key2];
 				if (typeof value !== 'function') {
-					data[i++] = new Array(key, value);
+					data[d++] = new Array(key, value);
 				}
 			}
     	}
@@ -36,13 +36,22 @@ Ext.onReady(function(){
     }
 
     if([is_mandatory] == '1') {
-    	jQuery('#ul_meta_field_[id]').addClass('required');
+    	//jQuery('#ul_meta_field_[id]').addClass('required');
 		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
+
+		//register as required field
+		kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+
+		jQuery('#ul_meta_field_[id]').click(function() {
+			if (this.selectedIndex <= 0){
+				kt.dragdrop.metadata.registerRequiredFieldNotDone('ul_meta_field_[id]');
+				kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+			} else {
+				kt.dragdrop.metadata.registerRequiredFieldDone('ul_meta_field_[id]');
+				kt.dragdrop.metadata.checkRequiredFieldsCompleted();
+			}
+		});
 	}
-	
-    /*if([is_mandatory] == '1') {
-		jQuery('#ul_meta_field_[id]').addClass('required');
-	}*/
     
 });
 

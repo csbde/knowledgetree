@@ -502,7 +502,7 @@ qq.FileUploader = function(o){
         listElement: null,
                 
         template: '<div class="qq-uploader">' + 
-                '<div class="qq-upload-drop-area"><span>Drop files here to upload</span></div>' +
+                //'<div class="qq-upload-drop-area"><span>Drop files here to upload</span></div>' +
                 '<div class="qq-upload-button">'+this._options.buttonText+'</div>' +
                 '<ul class="qq-upload-list"></ul>' + 
              '</div>',
@@ -519,8 +519,8 @@ qq.FileUploader = function(o){
         classes: {
             // used to get elements from templates
             button: 'qq-upload-button',
-            drop: 'qq-upload-drop-area',
-            dropActive: 'qq-upload-drop-area-active',
+            //drop: 'qq-upload-drop-area',
+            //dropActive: 'qq-upload-drop-area-active',
             list: 'qq-upload-list',
                         
             file: 'qq-upload-file',
@@ -546,7 +546,7 @@ qq.FileUploader = function(o){
     this._button = this._createUploadButton(this._find(this._element, 'button'));        
     
     this._bindCancelEvent();
-    this._setupDragDrop();
+    //this._setupDragDrop();
 };
 
 // inherit from Basic Uploader
@@ -564,7 +564,7 @@ qq.extend(qq.FileUploader.prototype, {
         
         return element;
     },
-    _setupDragDrop: function(){
+    /*_setupDragDrop: function(){
         var self = this,
             dropArea = this._find(this._element, 'drop');                        
 
@@ -603,7 +603,7 @@ qq.extend(qq.FileUploader.prototype, {
                 dropArea.style.display = 'none';                                            
             }
         });                
-    },
+    },*/
     _onSubmit: function(id, fileName){
         qq.FileUploaderBasic.prototype._onSubmit.apply(this, arguments);
         this._addToList(id, fileName);  
@@ -697,7 +697,7 @@ qq.UploadDropZone = function(o){
     this._attachEvents();   
 };
 
-qq.UploadDropZone.prototype = {
+/*qq.UploadDropZone.prototype = {
     _disableDropOutside: function(e){
         // run only once for all instances
         if (!qq.UploadDropZone.dropOutsideDisabled ){
@@ -765,7 +765,7 @@ qq.UploadDropZone.prototype = {
             (dt.files || (!isWebkit && dt.types.contains && dt.types.contains('Files')));
         
     }        
-}; 
+}; */
 
 qq.UploadButton = function(o){
     this._options = {
