@@ -46,7 +46,7 @@ class KTUserUtil
 
         $dupUser =& User::getByUserName($username);
         if(!PEAR::isError($dupUser)) {
-            $default->log->warn('Couldn\'t create user, duplicate username: '.$dupUser->getMessage());
+            $default->log->warn('Couldn\'t create user, duplicate username.');
             return PEAR::raiseError(_kt("A user with that username already exists"));
         }
 
@@ -117,6 +117,7 @@ class KTUserUtil
     {
         if(empty($addressList)){
             $response = array('invited' => 0, 'group' => '', 'check' => 0);
+            return $response;
         }
 
         global $default;
@@ -232,9 +233,10 @@ class KTUserUtil
             //$key = 'skfjiwefjaldi';
             $user_id = $item['id'];
             //$user = KTUtil::encode($user, $key);
-            $user = '88'.base_convert($user_id, 10, 25);
+            $user = (int)$user_id * 354;
+            $user = base_convert($user, 10, 25);
 
-            $link = $url . $user;
+            $link = $url . '88' . $user;
 
             $list[] = array('name' => '', 'email' => $item['email'], 'sender' => $sender, 'link' => $link);
         }
