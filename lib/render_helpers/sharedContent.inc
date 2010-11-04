@@ -109,5 +109,28 @@ class SharedContent extends KTEntity {
         $aOptions['orderby'] = KTUtil::arrayGet($aOptions, 'orderby','type');
         return KTEntityUtil::getList2('SharedContent', $sWhereClause, $aOptions);
     }
+    
+    /**
+    * Retrieve a list of SharedContent objects
+    *
+    * @author KnowledgeTree Team
+    * @access public
+    * @param $sWhereClause - string
+    * @param $aOptions - array
+    * @return SharedContent objects - array
+    */
+    public function getUsersSharedContents($iUserId = null, $aOptions = null) 
+    {
+    	$sql = "SELECT sc.object_id as id, dmv.name AS title, dtl.name AS document_type, dcv.filename AS filename, dcv.storage_path AS storage_path, dcv.has_rendition AS has_rendition, dcv.size AS filesize, cu.name as created_by, cu.name AS owned_by, mu.name as modified_by, d.created AS created_date, d.modified AS modified_date, d.immutable AS is_immutable, d.is_checked_out AS is_checked_out, mt.id AS mimetypeid, mt.mimetypes AS mime_type, mt.icon_path AS mime_icon_path 
+    			FROM `shared_content` as sc, documents AS d, document_metadata_version AS dmv, document_types_lookup AS dtl, document_content_version AS dcv, users AS cu, users AS mu, mime_types AS mt 
+    			WHERE sc.type = 'document' AND d.id = sc.object_id AND sc.user_id='$iUserId' AND d.metadata_version_id = dmv.id AND dmv.document_type_id = dtl.id AND d.id = dcv.document_id AND d.creator_id = cu.id AND d.modified_user_id = mu.id AND dcv.mime_id = mt.id";
+    	$documents = DBUtil::getResultArray($sql);
+    	$sql = "SELECT * FROM `shared_content` as sc, 
+				folders AS f
+				WHERE (sc.type = 'folder' AND sc.user_id = '$iUserId' AND f.id = sc.object_id)
+				";
+    	$folders = DBUtil::getResultArray($sql);
+    	return array('documents' => $documents, 'folders' => $folders);
+    }
 }
 ?>
