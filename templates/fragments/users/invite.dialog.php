@@ -25,7 +25,7 @@ $aGroupsList = getGroupsList();
 
 ?>
 
-<table border="0" cellspacing="5" cellpadding="5px">
+<table class="uploadTable" style="height:220px;" border="0">
 
     <tr>
         <td colspan="2" valign="top">
@@ -34,14 +34,10 @@ $aGroupsList = getGroupsList();
     </tr>
 
     <tr>
-        <td>&nbsp;</td>
-    </tr>
-
-    <tr>
         <td width="30%" valign="top">
             Invite Users:
         </td>
-        <td width="70%">
+        <td width="70%" valign="top">
             <textarea name="invite.emails" id="invite.emails" rows="3" cols="46" ></textarea>
         </td>
     </tr>
@@ -50,7 +46,7 @@ $aGroupsList = getGroupsList();
         <td width="30%" valign="top">
             Select Group:
         </td>
-        <td width="70%">
+        <td width="70%" valign="top">
             <select name="invite.grouplist" id="invite.grouplist">
                 <option value="">-- Select a group --</option>
                 <?php foreach ($aGroupsList as $key => $group) { ?>
@@ -62,10 +58,9 @@ $aGroupsList = getGroupsList();
 
     <tr>
         <td width="30%"></td>
-        <td width="70%" align="right">
-            <input id="ul_actions_upload_btn" class="ul_actions_btns" type="button" value="Invite" onClick="kt.app.inviteusers.inviteUsers();" />
-            &nbsp;&nbsp;
+        <td class="ul_actions" width="70%" align="right" valign="top">
             <a class="ul_actions_cancel_link" href="javascript: kt.app.inviteusers.closeWindow();">Cancel</a>
+            <input id="ul_actions_upload_btn" class="ul_actions_btns" type="button" value="Invite" onClick="kt.app.inviteusers.inviteUsers();" />
         </td>
     </tr>
 
