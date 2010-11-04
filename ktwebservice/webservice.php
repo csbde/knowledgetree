@@ -2461,6 +2461,9 @@ class KTWebService
 			$this->debug("add_document - cannot add document - "  . $document->getMessage(), $session_id);
 			return new SOAP_Value('return', "{urn:$this->namespace}kt_document_detail", $response);
 		}
+		
+		//add the document to the User History
+		$document->addDocumentToUserHistory();
 
     	$detail = $document->get_detail();
     	$detail['status_code'] = KTWS_SUCCESS;
@@ -2894,6 +2897,9 @@ class KTWebService
 			$this->debug("checkout_document - cannot checkout - "  . $result->getMessage(), $session_id);
     		return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
     	}
+    	
+    	//add document to User History
+    	$document->addDocumentToUserHistory();
 
     	$session = &$kt->get_session();
 
@@ -2962,6 +2968,9 @@ class KTWebService
     		$this->debug("checkout_small_document - cannot checkout - "  . $result->getMessage(), $session_id);
     		return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
     	}
+    	
+    	//add document to User History
+    	$document->addDocumentToUserHistory();
 
     	$content='';
     	if ($download)
@@ -3101,6 +3110,9 @@ class KTWebService
     		$this->debug("download_document - cannot download (version $version) - "  . $result->getMessage(), $session_id);
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
     	}
+    	
+    	//add document to User History
+    	$document->addDocumentToUserHistory();
 
     	$session = &$kt->get_session();
     	$download_manager = new KTDownloadManager();
@@ -3161,6 +3173,9 @@ class KTWebService
     		$this->debug("download_small_document - cannot download - "  . $result->getMessage(), $session_id);
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
     	}
+    	
+    	//add document to User History
+    	$document->addDocumentToUserHistory();
 
     	$content = '';
     	$oStorage = KTStorageManagerUtil::getSingleton();
@@ -3913,6 +3928,9 @@ class KTWebService
     		$this->debug("get_document_metadata - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_metadata_response", $response);
     	}
+    	
+    	//trigger the User History
+    	$document->addDocumentToUserHistory();
 
     	$metadata = $document->get_metadata();
 
