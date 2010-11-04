@@ -107,6 +107,16 @@ kt.app.inviteusers=new function(){
 	    }
 	}
 
+	this.enableInviteButton = function() {
+		var btn = jQuery('#invite_actions_invite_btn');
+		btn.removeAttr('disabled');
+	}
+
+	this.disableInviteButton = function() {
+		var btn = jQuery('#invite_actions_invite_btn');
+    	btn.attr('disabled', 'true');
+	}
+
 	//ENTRY POINT: Calling this function will set up the environment, display the dialog,
 	//and hook up the AjaxUploader callbacks to the correct functions.
 	this.showInviteWindow = function(){
@@ -114,7 +124,7 @@ kt.app.inviteusers=new function(){
 	    var inviteWin = new Ext.Window({
 			id          : 'extinvitewindow',
 	        layout      : 'fit',
-	        width       : 520,
+	        width       : 500,
 	        resizable   : false,
 	        closable    : true,
 	        closeAction :'destroy',
@@ -130,6 +140,7 @@ kt.app.inviteusers=new function(){
 
 		self.inviteWindow=inviteWin;
 	    inviteWin.show();
+	    self.disableInviteButton();
 	    document.getElementById('invite.emails').focus();
 	}
 
