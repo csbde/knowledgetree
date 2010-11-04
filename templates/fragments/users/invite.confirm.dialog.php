@@ -3,8 +3,8 @@ include_once('../../ktapi/ktapi.inc.php');
 
 $url = KTUtil::kt_url();
 
-$users_url = $url. '/admin.php?kt_path_info=userSetup/users';
-$groups_url = $url. '/admin.php?kt_path_info=userSetup/groups';
+$users_url = $url. '/admin.php?kt_path_info=userSetup/users&show_all=1';
+$groups_url = $url. '/admin.php?kt_path_info=userSetup/groups&show_all=1';
 $contact_url = 'http://www.knowledgetree.com/contact-us';
 ?>
 
@@ -32,7 +32,7 @@ $contact_url = 'http://www.knowledgetree.com/contact-us';
 
     <tr>
         <td class="ul_actions" colspan="2" align="right">
-            <input id="ul_actions_upload_btn" class="ul_actions_btns" type="button" value="Close" onClick="kt.app.inviteusers.closeConfirmWindow();" />
+            <input id="invite_actions_confirm_btn" class="ul_actions_btns" type="button" value="Close" onClick="kt.app.inviteusers.closeConfirmWindow();" />
         </td>
     </tr>
 
