@@ -152,14 +152,14 @@ class browseView {
 		$folderView[]='<div class="page page_'.$pageCount.' ">';
 		foreach($pre_folderView as $item){
 			$curItem++;
-			if($curItem>$perPage){
+			if ($curItem>$perPage){
 				$pageCount++;
 				$curItem=1;
 				$folderView[]='</div><div class="page page_'.$pageCount.' ">';
 			}
 			$folderView[]=$item;
 		}
-		if($itemCount<=0){
+		if ($itemCount<=0){
 			$userHasWritePermissions = TRUE; // Need to fix this
 			$folderView[]=$this->noFilesOrFoldersMessage($folderId, $userHasWritePermissions);
 		}
@@ -191,7 +191,7 @@ class browseView {
 
 		foreach($items as $item){
 			foreach($item as $key=>$value){
-				if($value=='n/a')$item[$key]=null;
+				if ($value=='n/a')$item[$key]=null;
 			}
 			$item['container_folder_id']=$folderId;
 			switch($item['item_type']){
@@ -205,7 +205,7 @@ class browseView {
 					break;
 				case 'S':
 					$item['is_shortcut']=true;
-					if($item['mime_type']=='folder'){
+					if ($item['mime_type']=='folder'){
 						$ret['folders'][]=$item;
 					}else{
 						$ret['documents'][]=$item;
@@ -214,7 +214,7 @@ class browseView {
 			}
 		}
 
-		if(isset($sortField)){
+		if (isset($sortField)){
 			$ret['documents']=ktvar::sortArrayMatrixByKeyValue($ret['documents'],$sortField,$asc);
 			$ret['folders']=ktvar::sortArrayMatrixByKeyValue($ret['folders'],$sortField,$asc);
 		}
@@ -317,7 +317,7 @@ class browseView {
 		$item['icon_exists']=file_exists(KT_DIR.'/'.$iconFile);
 		$item['icon_file']=$iconFile;
 
-		if($item['icon_exists']){
+		if ($item['icon_exists']){
 			$item['mimeicon']=str_replace('\\','/',$GLOBALS['default']->rootUrl.'/'.$iconFile);
 			$item['mimeicon']="background-image: url(".$item['mimeicon'].")";
 		}else{
@@ -325,7 +325,7 @@ class browseView {
 		}
 
 
-		if($item['linked_document_id']){
+		if ($item['linked_document_id']){
 			$item['document_link']=KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['linked_document_id'], 'fShortcutFolder'=>$item['container_folder_id']));
 		}else{
 			$item['document_link']=KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['id']));
@@ -353,11 +353,11 @@ class browseView {
 		}
 
 		//Modifications to perform when the document has been checked out
-		if($item['checked_out_date']){
+		if ($item['checked_out_date']){
 			list($item['checked_out_date_d'],$item['checked_out_date_t'])=split(" ",$item['checked_out_date']);
 		}
 
-		if($item['is_immutable']==''){
+		if ($item['is_immutable']==''){
 			$item['actions.checkin']=$ns;
 			$item['actions.checkout']=$ns;
 			$item['actions.cancel_checkout']=$ns;
@@ -372,7 +372,7 @@ class browseView {
 		$item['separatorC']=$item['actions.checkout']=='' || $item['actions.checkin']=='' || $item['actions.cancel_checkout']=='' ?'':$ns;
 		$item['separatorD']=$item['actions.alert']=='' || $item ['actions.email']=='' ?'':$ns;
 
-		if($item['is_immutable']==''){
+		if ($item['is_immutable']==''){
 			$item['separatorB']=$item['separatorC']=$item['separatorD']=$ns;
 		}
 
@@ -385,14 +385,14 @@ class browseView {
         $item['thumbnailclass'] = 'nopreview';
 
         // When item is null, thumbnails won't exist so skip the check
-        if(!$dev_no_thumbs && !PEAR::isError($oDocument)){
+        if (!$dev_no_thumbs && !PEAR::isError($oDocument)){
             // Check if the document has a thumbnail rendition -> has_rendition = 2, 3, 6, 7
             // 0 = nothing, 1 = pdf, 2 = thumbnail, 4 = flash
             // 1+2 = 3: pdf & thumbnail; 1+4 = 5: pdf & flash; 2+4 = 6: thumbnail & flash; 1+2+4 = 7: all
 
             // If the flag hasn't been set, check against storage and update the flag - for documents where the flag hasn't been set
             $check = false;
-            if(is_null($item['has_rendition'])){
+            if (is_null($item['has_rendition'])){
 
                 $oStorage=KTStorageManagerUtil::getSingleton();
 
@@ -506,13 +506,16 @@ class browseView {
 				</table>
 			</span>
 		';
-		if($empty)return '<span class="fragment document" style="display:none;">'.$tpl.'</span>';
+		
+		if ($empty) { return '<span class="fragment document" style="display:none;">'.$tpl.'</span>'; }
+		
 		return ktVar::parseString($tpl,$item);
 	}
 
-	public function renderFolderItem($item=NULL,$empty=false,$shortcut=false){
+	public function renderFolderItem($item = null, $empty = false, $shortcut = false)
+	{
 		//TODO: Tohir, if you put the .selected thing on the table $(.folder.item), it should work fine
-		$ns=" not_supported";
+		$ns = " not_supported";
 		$item['is_shortcut']=$item['is_shortcut']?'':$ns;
 
 		if ($item['linked_folder_id'] == '') {
@@ -520,8 +523,6 @@ class browseView {
 		} else {
 			$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['linked_folder_id'], 'fShortcutFolder'=>$item['container_folder_id']));
 		}
-
-
 
 		$tpl='
 			<span class="doc browseView">
@@ -540,7 +541,8 @@ class browseView {
 							<li class="actionIcon actions">
 									<ul>
 										<li><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
-										<li><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Share Folder</a></li>
+										<li><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Permissions</a></li>
+										<li><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow([id]);">Share This Folder</a></li>
 										<!-- <li><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li> -->
 										<li><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Activity</a></li>
 									</ul>
@@ -552,7 +554,9 @@ class browseView {
 				</tr>
 			</table>
 			</span>';
-		if($empty)return '<span class="fragment folder" style="display:none;">'.$tpl.'</span>';
+		
+		if ($empty) { return '<span class="fragment folder" style="display:none;">'.$tpl.'</span>'; }
+		
 		return ktVar::parseString($tpl,$item);
 	}
 

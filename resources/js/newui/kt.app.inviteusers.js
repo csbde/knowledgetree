@@ -1,132 +1,130 @@
 /* Initializing kt.app if it wasn't initialized before */
-if(typeof(kt.app)=='undefined')kt.app={};
+if (typeof(kt.app) == 'undefined') { kt.app = {}; }
 
 /**
- * Dialog for inviting new licensed users to the system
- */
-kt.app.inviteusers=new function(){
+* Dialog for inviting new licensed/shared users to the system
+*/
+kt.app.inviteusers = new function() {
+    //contains a list of fragments that will get preloaded
+    var fragments = this.fragments = ['users/invite.shared.dialog'];
 
-	//contains a list of fragments that will get preloaded
-//	var fragments=this.fragments=[''];
+    //contains a list of executable fragments that will get preloaded
+    var execs = this.execs = ['users/invite.dialog', 'users/invite.confirm.dialog'];
 
-	//contains a list of executable fragments that will get preloaded
-	var execs=this.execs=['users/invite.dialog', 'users/invite.confirm.dialog'];
+    //scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
+    var self = this;
 
-	//scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
-	var self=this;
+    //a storage container for various DOM elements that need to be accessed repeatedly
+    var elems = this.elems = {};
 
-	//a storage container for various DOM elements that need to be accessed repeatedly
-	var elems=this.elems={};
+    //Initializes the upload widget on creation. Currently does preloading of resources.
+    this.init = function() {
+        for (var idx in execs) {
+            kt.api.preloadExecutable(execs[idx]);
+        }
+        for (var idx in fragments) {
+            kt.api.preloadFragment(fragments[idx]);
+        }
+    }
 
-	//Initializes the upload widget on creation. Currently does preloading of resources.
-	this.init=function(){
-		for(var idx in execs){
-			kt.api.preloadExecutable(execs[idx]);
-		}
-//		for(var idx in fragments){
-//			kt.api.preloadFragment(fragments[idx]);
-//		}
-	}
+    //Container for the EXTJS window
+    this.inviteWindow = null;
 
-	//Container for the EXTJS window
-	this.inviteWindow=null;
+    // send the invites and add the users to the system
+    this.inviteUsers  =  function() {
+        e = document.getElementById('invite.grouplist');
+        e2 = document.getElementById('invite.emails');
+        group = ((e == null) || (e.value === undefined)) ? null : e.value;
+        type = ((e == null) || (e.value === undefined)) ? 'shared' : 'invited';
+        emails = e2.value;
 
-	// send the invites and add the users to the system
-	this.inviteUsers = function(){
-	    e = document.getElementById('invite.grouplist');
-	    e2 = document.getElementById('invite.emails');
-	    group = e.value;
-	    emails = e2.value;
+        kt.api.inviteUsers(emails, group, type, self.inviteCallback, function() {});
+    }
 
-	    kt.api.inviteUsers(emails, group, self.inviteCallback, function(){});
-	}
+    // callback for the inviteUsers function
+    // displays a confirmation dialog listing the users and group
+    this.inviteCallback = function(result) {
+        // get the response from the server
+        // array('existing' => $existingUsers, 'failed' => $failedUsers, 'invited' => $invitedUsers, 'group' => $groupName);
+        var response = result.data.invitedUsers;
+        var list = jQuery.parseJSON(response);
 
-	// callback for the inviteUsers function
-	// displays a confirmation dialog listing the users and group
-	this.inviteCallback = function(result){
+        var group = list.group;
+        var invited = list.invited;
+        var check = list.check;
+        var licenses = list.licenses;
 
-	    // get the response from the server
-	    // array('existing' => $existingUsers, 'failed' => $failedUsers, 'invited' => $invitedUsers, 'group' => $groupName);
-	    var response = result.data.invitedUsers;
-	    var list = jQuery.parseJSON(response);
+        var inviteConfirmWin = new Ext.Window({
+            id              : 'extinviteconfirmwindow',
+            layout          : 'fit',
+            width           : 400,
+            resizable       : false,
+            closable        : true,
+            closeAction     :'destroy',
+            y               : 50,
+            autoScroll      : false,
+            bodyCssClass    : 'ul_win_body',
+            cls             : 'ul_win',
+            shadow          : true,
+            modal           : true,
+            title           : 'User Invitations Sent',
+            html            : kt.api.execFragment('users/invite.confirm.dialog')
+        });
 
-	    var group = list.group;
-	    var invited = list.invited;
-	    var check = list.check;
-	    var licenses = list.licenses;
+        self.closeWindow();
+        self.inviteConfirmWin=inviteConfirmWin;
+        inviteConfirmWin.show();
 
-	    var inviteConfirmWin = new Ext.Window({
-			id          : 'extinviteconfirmwindow',
-	        layout      : 'fit',
-	        width       : 400,
-	        resizable   : false,
-	        closable    : true,
-	        closeAction :'destroy',
-	        y           : 50,
-	        autoScroll  : false,
-	        bodyCssClass: 'ul_win_body',
-	        cls			: 'ul_win',
-	        shadow: true,
-	        modal: true,
-	        title: 'User Invitations Sent',
-	        html: kt.api.execFragment('users/invite.confirm.dialog')
-	    });
-
-	    self.closeWindow();
-		self.inviteConfirmWin=inviteConfirmWin;
-	    inviteConfirmWin.show();
-
-	    // display the list of invited users
+        // display the list of invited users
         document.getElementById('invitedUsers').innerHTML = invited;
 
-	    // display the select group
-	    if(group == ''){
-	        document.getElementById('showInvitedGroup').innerHTML = '';
-	    }else{
-	       document.getElementById('invitedGroup').innerHTML = group;
-	    }
+        // display the select group
+        if (group == '') {
+            document.getElementById('showInvitedGroup').innerHTML = '';
+        } else {
+            document.getElementById('invitedGroup').innerHTML = group;
+        }
 
-	    if(check != 0){
-	        document.getElementById('inviteLicenses').style.display = 'block';
-	    }
-	}
+        if (check != 0) {
+            document.getElementById('inviteLicenses').style.display = 'block';
+        }
+    }
 
-	//ENTRY POINT: Calling this function will set up the environment, display the dialog,
-	//and hook up the AjaxUploader callbacks to the correct functions.
-	this.showInviteWindow = function(){
+    //ENTRY POINT: Calling this function will set up the environment, display the dialog,
+    //and hook up the AjaxUploader callbacks to the correct functions.
+    this.showInviteWindow = function(objectId) {
+        var inviteWin = new Ext.Window({
+            id              : 'extinvitewindow',
+            layout          : 'fit',
+            width           : 520,
+            resizable       : false,
+            closable        : true,
+            closeAction     :'destroy',
+            y               : 50,
+            autoScroll      : false,
+            bodyCssClass    : 'ul_win_body',
+            cls             : 'ul_win',
+            shadow          : true,
+            modal           : true,
+            title           : 'Invite Users',
+            html            : (objectId == null) ? kt.api.execFragment('users/invite.dialog') : kt.api.getFragment('users/invite.shared.dialog')
+        });
 
-	    var inviteWin = new Ext.Window({
-			id          : 'extinvitewindow',
-	        layout      : 'fit',
-	        width       : 520,
-	        resizable   : false,
-	        closable    : true,
-	        closeAction :'destroy',
-	        y           : 50,
-	        autoScroll  : false,
-	        bodyCssClass: 'ul_win_body',
-	        cls			: 'ul_win',
-	        shadow: true,
-	        modal: true,
-	        title: 'Invite Users',
-	        html: kt.api.execFragment('users/invite.dialog')
-	    });
+        self.inviteWindow = inviteWin;
+        inviteWin.show();
+        document.getElementById('invite.emails').focus();
+    }
 
-		self.inviteWindow=inviteWin;
-	    inviteWin.show();
-	    document.getElementById('invite.emails').focus();
-	}
+    this.closeWindow = function() {
+        inviteWindow = Ext.getCmp('extinvitewindow');
+        inviteWindow.destroy();
+    }
 
-	this.closeWindow = function() {
-		inviteWindow = Ext.getCmp('extinvitewindow');
-		inviteWindow.destroy();
-	}
+    this.closeConfirmWindow = function() {
+        inviteConfirmWin = Ext.getCmp('extinviteconfirmwindow');
+        inviteConfirmWin.destroy();
+    }
 
-	this.closeConfirmWindow = function() {
-		inviteConfirmWin = Ext.getCmp('extinviteconfirmwindow');
-		inviteConfirmWin.destroy();
-	}
-
-	// Call the initialization function at object instantiation.
-	this.init();
+    // Call the initialization function at object instantiation.
+    this.init();
 }

@@ -50,7 +50,7 @@ class KTUserUtil {
             return PEAR::raiseError(_kt("A user with that username already exists"));
         }
 
-        $oUser =& User::createFromArray(array(
+        $user =& User::createFromArray(array(
             "sUsername" => $username,
             "sName" => $name,
             "sPassword" => md5($password),
@@ -67,8 +67,8 @@ class KTUserUtil {
             'disabled' => $disabled_flag,
         ));
 
-        if (PEAR::isError($oUser) || ($oUser == false)) {
-            $error = ($oUser === false) ? '' : $oUser->getMessage();
+        if (PEAR::isError($user) || ($user == false)) {
+            $error = ($user === false) ? '' : $user->getMessage();
             $default->log->error('Couldn\'t create user: '. $error);
             return PEAR::raiseError(_kt("failed to create user."));
         }
@@ -81,13 +81,13 @@ class KTUserUtil {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
             $aInfo = array(
-                'user' => $oUser,
+                'user' => $user,
             );
             $oTrigger->setInfo($aInfo);
             $ret = $oTrigger->postValidate();
         }
 
-        return $oUser;
+        return $user;
     }
 
     public static function getUserField($userId, $fieldName = 'name')
@@ -107,16 +107,19 @@ class KTUserUtil {
     }
 
     /**
-     * Takes a list of email addresses and sends invites to them to become licensed users
+     * Takes a list of email addresses and sends invites to them to become KnowledgeTree users.
+     * Users may be either licensed, with full access to the (non-admin) parts of the system,
+     * or they may be unlicensed, with access only to content specifically shared with them.
      *
      * @param array $addressList The list of invitee email addresses
      * @param string $group The initial group to add the invitee's to
+     * @param boolean $type licensed | unlicensed
      * @return array The lists of newly invited users, failed invitations and already existing users
      */
-    public static function inviteUsersByEmail($addressList, $group = null)
+    public static function inviteUsersByEmail($addressList, $group = null, $type = null)
     {
         if (empty($addressList)) {
-            $response = array('invited' => 0, 'group' => '', 'check' => 0);
+            $response = array('invited' => 0, 'group' => '', 'type' => '', 'check' => 0);
             return $response;
         }
 
@@ -128,7 +131,9 @@ class KTUserUtil {
         $groupName = '';
 
     	$inSystemList = self::checkUniqueEmail($addressList);
-    	$availableLicenses = (int)BaobabKeyUtil::availableUserLicenses();
+    	if ($type == 'invited') {
+    	   $availableLicenses = (int)BaobabKeyUtil::availableUserLicenses();
+    	}
 
     	// loop through any addresses that currently exist and unset them in the invitee list
     	$addressList = array_flip($addressList);
@@ -139,36 +144,38 @@ class KTUserUtil {
     	$addressList = array_flip($addressList);
 
     	// Get the group object if a group has been selected
-    	$oGroup = false;
+    	// NOTE There is no need to prevent this for unlicensed users as there will be no group selected
+    	$group = false;
     	if (is_numeric($group)) {
-    	   $oGroup = Group::get($group);
+    	   $group = Group::get($group);
 
-    	   if (PEAR::isError($oGroup)) {
-    	       $default->log->error("Invite users. Error on selected group ({$group}) - {$oGroup->getMessage()}");
-    	       $oGroup = false;
+    	   if (PEAR::isError($group)) {
+    	       $default->log->error("Invite users. Error on selected group ({$group}) - {$group->getMessage()}");
+    	       $group = false;
     	   } else {
-    	       $groupName = $oGroup->getName();
+    	       $groupName = $group->getName();
     	   }
         }
 
     	// loop through remaining emails and add to the users table
-    	// flag as "invited" => disabled = 3
+    	// flag as "invited/shared" => disabled = 3/4
     	// 0 = live; 1 = disabled; 2 = deleted; 3 = invited; 4 = shared
+    	$types = array('live' => 0, 'disabled' => 1, 'deleted' => 2, 'invited' => 3, 'shared' => 4);
     	foreach ($addressList as $email) {
             if (empty($email)) {
                 continue;
             }
-            $oUser = self::createUser($email, '', null, $email, true, null, 3, null, null, null, 3);
+            $user = self::createUser($email, '', null, $email, true, null, 3, null, null, null, $types[$type]);
 
-            if (PEAR::isError($oUser)) {
-               $default->log->error("Invite users. Error on creating invited user ({$email}) - {$oUser->getMessage()}");
+            if (PEAR::isError($user)) {
+               $default->log->error("Invite users. Error on creating invited user ({$email}) - {$user->getMessage()}");
                $failedUsers[] = $email;
                continue;
             }
-            $invitedUsers[] = array('id' => $oUser->getId(), 'email' => $email);
+            $invitedUsers[] = array('id' => $user->getId(), 'email' => $email);
 
-            if ($oGroup !== false) {
-               $res = $oGroup->addMember($oUser);
+            if ($group !== false) {
+               $res = $group->addMember($user);
                if (PEAR::isError($res)) {
                    $default->log->error("Invite users. Error on adding user ({$email}) to group {$group} - {$res->getMessage()}");
                    continue;
@@ -181,11 +188,14 @@ class KTUserUtil {
     	    self::sendInvitations($invitedUsers);
     	}
 
+    	$check = 0;
     	$numInvited = count($invitedUsers);
-    	$check = self::checkUserLicenses($numInvited, $availableLicenses);
+    	if ($type == 'invited') {
+    	   $check = self::checkUserLicenses($numInvited, $availableLicenses);
+    	}
 
     	//$response = array('existing' => $existingUsers, 'failed' => $failedUsers, 'invited' => $invitedUsers, 'group' => $groupName, 'check' => $check, 'licenses' => $availableLicenses);
-    	$response = array('invited' => $numInvited, 'group' => $groupName, 'check' => $check);
+    	$response = array('invited' => $numInvited, 'group' => $groupName, 'type' => $type, 'check' => $check);
     	return $response;
     }
 

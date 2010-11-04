@@ -1345,7 +1345,7 @@ UNLOCK TABLES;
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 INSERT INTO `roles` VALUES
-(-5,'Unlicensed Users'),
+(-5,'Shared Users'),
 (-4,'Licensed Users'),
 (-3,'Everyone'),
 (-2,'Owner'),
@@ -1800,7 +1800,7 @@ INSERT INTO `upgrades` VALUES
 (252,'sql*3.7.0.7*0*3.7.0.7/rename_authenticated_role.sql','Database upgrade to version 3.7.0.7: Rename authenticated role','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7'),
 (253,'upgrade*3.7.0.7*99*upgrade3.7.0.7','Upgrade from version 3.7.0.6 to 3.7.0.7','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7'),
 (254,'sql*3.7.0.8*0*3.7.0.8/shared_content.sql','Database upgrade to version 3.7.0.8: Add shared content table','2010-11-01 00:00:00',1,'upgrade*3.7.0.8*99*upgrade3.7.0.8'),
-(255,'sql*3.7.0.8*0*3.7.0.8/unlicensed_users.sql','Database upgrade to version 3.7.0.8: Add unlicensed user role','2010-11-01 00:00:00',1,'upgrade*3.7.0.8*99*upgrade3.7.0.8'),
+(255,'sql*3.7.0.8*0*3.7.0.8/shared_users.sql','Database upgrade to version 3.7.0.8: Add shared user role','2010-11-01 00:00:00',1,'upgrade*3.7.0.8*99*upgrade3.7.0.8'),
 (256,'upgrade*3.7.0.8*99*upgrade3.7.0.8','Upgrade from version 3.7.0.7 to 3.7.0.8','2010-11-01 00:00:00',1,'upgrade*3.7.0.8*99*upgrade3.7.0.8');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
