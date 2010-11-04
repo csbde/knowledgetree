@@ -1,0 +1,1 @@
+CREATE TABLE `shared_content` (`user_id` INT NOT NULL, `object_id` INT NOT NULL, `type` enum('folder', 'document') DEFAULT 'document', INDEX (`user_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;

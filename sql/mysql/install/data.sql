@@ -1345,12 +1345,13 @@ UNLOCK TABLES;
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 INSERT INTO `roles` VALUES
+(-5,'Unlicensed Users'),
 (-4,'Licensed Users'),
-(4,'Creator'),
 (-3,'Everyone'),
 (-2,'Owner'),
 (2,'Publisher'),
-(3,'Reviewer');
+(3,'Reviewer'),
+(4,'Creator');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1466,8 +1467,8 @@ LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
 INSERT INTO `system_settings` VALUES
 (1,'lastIndexUpdate','0'),
-(2,'knowledgeTreeVersion','3.7.0.7'),
-(3,'databaseVersion','3.7.0.7'),
+(2,'knowledgeTreeVersion','3.7.0.8'),
+(3,'databaseVersion','3.7.0.8'),
 (4,'server_name','127.0.0.1');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1797,7 +1798,10 @@ INSERT INTO `upgrades` VALUES
 (250,'upgrade*3.7.0.6*99*upgrade3.7.0.6','Upgrade from version 3.7.0.5 to 3.7.0.6','2010-10-13 00:00:00',1,'upgrade*3.7.0.6*99*upgrade3.7.0.6'),
 (251,'sql*3.7.0.7*0*3.7.0.7/config_email_login.sql','Database upgrade to version 3.7.0.7: Config email login','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7'),
 (252,'sql*3.7.0.7*0*3.7.0.7/rename_authenticated_role.sql','Database upgrade to version 3.7.0.7: Rename authenticated role','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7'),
-(253,'upgrade*3.7.0.7*99*upgrade3.7.0.7','Upgrade from version 3.7.0.6 to 3.7.0.7','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7');
+(253,'upgrade*3.7.0.7*99*upgrade3.7.0.7','Upgrade from version 3.7.0.6 to 3.7.0.7','2010-11-01 00:00:00',1,'upgrade*3.7.0.7*99*upgrade3.7.0.7'),
+(254,'sql*3.7.0.8*0*3.7.0.8/shared_content.sql','Database upgrade to version 3.7.0.8: Add shared content table','2010-11-01 00:00:00',1,'upgrade*3.7.0.8*99*upgrade3.7.0.8'),
+(255,'sql*3.7.0.8*0*3.7.0.8/unlicensed_users.sql','Database upgrade to version 3.7.0.8: Add unlicensed user role','2010-11-01 00:00:00',1,'upgrade*3.7.0.8*99*upgrade3.7.0.8'),
+(256,'upgrade*3.7.0.8*99*upgrade3.7.0.8','Upgrade from version 3.7.0.7 to 3.7.0.8','2010-11-01 00:00:00',1,'upgrade*3.7.0.8*99*upgrade3.7.0.8');
 /*!40000 ALTER TABLE `upgrades` ENABLE KEYS */;
 UNLOCK TABLES;
 
