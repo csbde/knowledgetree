@@ -158,7 +158,7 @@ class KTUserUtil {
         }
 
     	// loop through remaining emails and add to the users table
-    	// flag as "invited" => disabled = 3
+    	// flag as "invited/shared" => disabled = 3/4
     	// 0 = live; 1 = disabled; 2 = deleted; 3 = invited; 4 = shared
     	$types = array('live' => 0, 'disabled' => 1, 'deleted' => 2, 'invited' => 3, 'shared' => 4);
     	foreach ($addressList as $email) {
@@ -189,7 +189,7 @@ class KTUserUtil {
     	}
 
     	$numInvited = count($invitedUsers);
-    	if ($type == 'licensed') {
+    	if ($type == 'invited') {
     	   $check = self::checkUserLicenses($numInvited, $availableLicenses);
     	}
 
