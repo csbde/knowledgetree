@@ -3,8 +3,112 @@ require_once(KT_LIB_DIR .'/util/ktVar.php');
 require_once(KT_LIB_DIR .'/util/ktutil.inc');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
+require_once('sharedContent.inc');
 
-class browseViewHelper {
+/**
+ * Utility class to switch between user specific views
+ *
+ */
+class browseViewUtil
+{
+	
+    static function getSingleton() 
+    {
+    	static $singleton = null;
+    	$oUser = User::get($_SESSION['userID']);
+    	$userType = $oUser->getDisabled();
+    	switch ($userType)
+    	{
+    		case 0 :
+    			return new userBrowseView();
+    			break;
+    		case 4 :
+    			return new sharedUserBrowseView();
+    			break;
+    		default:
+    			
+    			break;
+    	}
+
+    	return $singleton;
+	}
+}
+
+/**
+ * Shared user browse view class
+ *
+ */
+class sharedUserBrowseView extends browseView 
+{
+	public function getFolderContent($folderId,$sortField='title',$asc=true){
+		$oUser = User::get($_SESSION['userID']);
+		$oSharedContent = new SharedContent();
+		$sharedContent = $oSharedContent->getUsersObjects($oUser->getId());
+
+		/*
+		$oUser = User::get($_SESSION['userID']);
+		$KT = new KTAPI();
+		$KT->get(3);
+		$session = $KT->start_system_session($oUser->getUsername());
+
+		//Get folder content, depth = 1, types= Directory, File, Shortcut, webserviceversion override
+		$folder = &$KT->get_folder_contents($folderId,1,'DFS',3);
+
+		$items=$folder['results']['items'];
+
+		$ret=array('folders'=>array(),'documents'=>array());
+
+		foreach($items as $item){
+			foreach($item as $key=>$value){
+				if($value=='n/a')$item[$key]=null;
+			}
+			$item['container_folder_id']=$folderId;
+			switch($item['item_type']){
+				case 'F':
+					$item['is_shortcut']=false;
+					$ret['folders'][]=$item;
+					break;
+				case 'D':
+					$item['is_shortcut']=false;
+					$ret['documents'][]=$item;
+					break;
+				case 'S':
+					$item['is_shortcut']=true;
+					if($item['mime_type']=='folder'){
+						$ret['folders'][]=$item;
+					}else{
+						$ret['documents'][]=$item;
+					}
+					break;
+			}
+		}
+
+		if(isset($sortField)){
+			$ret['documents']=ktvar::sortArrayMatrixByKeyValue($ret['documents'],$sortField,$asc);
+			$ret['folders']=ktvar::sortArrayMatrixByKeyValue($ret['folders'],$sortField,$asc);
+		}
+
+		return $ret;
+		*/
+		
+		return array();
+	}
+}
+
+/**
+ * Default user browse view class
+ *
+ */
+class userBrowseView extends browseView 
+{
+	
+}
+
+/**
+ * Browse view base class
+ *
+ */
+class browseView {
 
 	public function __construct()
 	{
