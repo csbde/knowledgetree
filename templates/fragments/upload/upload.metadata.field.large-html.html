@@ -52,12 +52,11 @@ Ext.onReady(function(){
     	//jQuery('#ul_meta_field_[id]').addClass('required');
 		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
 
-		if (cachedVal != undefined) {
+		if (cachedVal == undefined) {
 			//register as required field
 			kt.app.upload.getMetaItem(jQuery('#ul_meta_field_htmlEditor_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
+			var requiredDone = false;
 		}
-
-		var requiredDone = false;
 	}
     
 });
