@@ -2,19 +2,23 @@
 	<span class="ul_meta_label" id="ul_meta_label_[id]">[name]
 		<span class="ul_meta_label_descr">[description]</span>
 	</span>
-	<span id="span_ul_meta_field_date_[id]" class="ul_meta_field"></span>
+	<span id="ul_meta_field_date_[id]" class="ul_meta_field"></span>
 </span>
 
 <script type="text/javascript">
 
 Ext.onReady(function(){
-	
+
+	//populate field!
+	var cachedVal = kt.app.upload.getMetaItem(jQuery('#ul_meta_field_date_[id]')).getMetaData([id]);
+		
     var df = new Ext.form.DateField({
     	format: 'Y-m-d', //YYYY-MMM-DD
         width: 200,
-        id: 'ul_meta_field_date_[id]',
+        id: 'ul_meta_field_[id]',
         cls: 'ul_meta_fullField ul_meta_field_[id] date',
         enableKeyEvents: true,
+        value: cachedVal,
         listeners: {
             'select': function(dateField, date){
         		try {
@@ -53,19 +57,16 @@ Ext.onReady(function(){
     	}
    	});
 
-    df.render('span_ul_meta_field_date_[id]');
-
-    var val = kt.app.upload.getMetaItem(jQuery('#ul_meta_field_date_[id]')).getMetaData([id]);
-	if(val != undefined){
-		jQuery('#ul_meta_field_date_[id]').val(val);
-	}
+    df.render('ul_meta_field_date_[id]');
 
     if([is_mandatory] == '1') {
     	//jQuery('#ul_meta_field_date_[id]').addClass('required');
 		jQuery('#ul_meta_label_[id]').append("<img class='ul_required_tag' src='/resources/graphics/newui/required_tag.png'/>");
 
-		//register as required field
-		kt.app.upload.getMetaItem(jQuery('#ul_meta_field_date_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
+		if (cachedVal == undefined) {
+			//register as required field
+			kt.app.upload.getMetaItem(jQuery('#ul_meta_field_date_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
+		}
 	}
 
 });

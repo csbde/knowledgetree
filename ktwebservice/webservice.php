@@ -971,6 +971,22 @@ class KTWebService
              'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );
          }
+         
+     	//user browse history
+        if ($this->version >= 3) {
+         	//get_user_document_browse_history
+         	$this->__dispatch_map['get_user_document_browse_history'] =
+            array('in' => array('session_id' => 'string', 'limit' => 'string'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );
+            
+            /* NOT IMPLEMENTED YET
+			//get_user_folder_browse_history
+         	$this->__dispatch_map['get_user_folder_browse_history'] =
+            array('in' => array('session_id' => 'string', 'limit' => 'int'),
+             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+            );*/
+         }
 
          // add_document
          $this->__dispatch_map['add_document'] =
@@ -4577,6 +4593,57 @@ class KTWebService
     		
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
 		}    	
+	}
+	
+	/**
+	 * Gets the user's recently viewed documents
+	 *
+	 * @param string $session_id
+	 * @param int $limit
+	 * @return kt_response
+	 */
+	function get_user_document_browse_history($session_id, $limit = -1)
+	{
+		$this->debug("get_user_document_browse_history('$session_id', $limit)");
+		
+		$kt = &$this->get_ktapi($session_id );
+		if (is_array($kt))
+    	{
+    		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
+    	}
+    	
+    	$aOptions = NULL;
+
+    	if ($limit > 0)
+    	{
+    		$aOptions = array();
+    		$aOptions['limit'] = $limit;
+    	}
+    	
+    	$items = &$kt->getRecentlyViewedDocuments($aOptions);
+    	
+    	$collection = array();
+    	
+		foreach ($items as $item)
+		{
+			$detail = $this->get_document_detail($session_id, $item->getDocumentId());
+			
+			if ($detail->value['status_code'] != 0)
+			{
+				continue;
+			}
+			$collection[] = $detail->value;
+		}
+		
+		$this->debug("get_user_document_browse_history collection ".print_r($collection, true));
+		$this->debug("get_user_document_browse_history collection size ".count($collection));
+		
+		$response=array();
+    	$response['status_code'] = KTWS_SUCCESS;
+		$response['message'] = empty($collection)?_kt('No documents were found'):'';
+    	$response['collection'] = new SOAP_Value('collection', "{urn:$this->namespace}kt_document_collection", $collection);
+
+    	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_collection_response", $response);
 	}
 
 	/**

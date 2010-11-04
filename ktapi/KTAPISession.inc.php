@@ -5,7 +5,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -340,6 +340,23 @@ class KTAPI_UserSession extends KTAPI_Session
 		    {
 		        return $sessionid;
 		    }
+
+		    // Log the login in the history
+		    $time = date("Y-m-d H:i:s", time());
+            $aParams = array(
+                'userid' => $user_id,
+                'datetime' => $time,
+                'actionnamespace' => 'ktcore.user_history.login',
+                'comments' => sprintf('Logged in from %s via webservice: '.$app, $ip),
+                'sessionid' => $sessionid,
+            );
+
+            require_once(KT_LIB_DIR . '/users/userhistory.inc.php');
+            $res = KTUserHistory::createFromArray($aParams);
+
+            // Update the users last login date
+            $user->setLastLogin($time);
+            $user->update();
 		}
 
         return array($session,$sessionid);
@@ -451,8 +468,8 @@ class KTAPI_UserSession extends KTAPI_Session
 			$session = new KTAPI_UserSession($ktapi, $user, $session, $sessionid, $ip);
 		return $session;
 	}
-	
-	
+
+
 	public function getCurrentBrowserSession(&$ktapi, $sessionId=NULL){
 		$sessionId=$sessionId?$sessionId:session_id();
 		$sql = "SELECT id, user_id FROM active_sessions WHERE session_id='{$sessionId}'";
