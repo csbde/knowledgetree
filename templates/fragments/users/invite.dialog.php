@@ -2,11 +2,10 @@
 include_once('../../ktapi/ktapi.inc.php');
 
 $KT = new KTAPI();
-
-$KT->get(3);// Set it to Use Web Version 3
-
+// Set it to Use Web Version 3
+$KT->get(3);
 //Pick up the session
-$session=KTAPI_UserSession::getCurrentBrowserSession($KT);
+$session = KTAPI_UserSession::getCurrentBrowserSession($KT);
 $KT->start_system_session($session->user->getUserName());
 
 function getGroupsList()
@@ -29,7 +28,7 @@ $aGroupsList = getGroupsList();
 
     <tr>
         <td colspan="2" valign="top">
-            Enter or copy and paste the email addresses of the user in your organization you want to invite to use KnowledgeTree. Each user invited will be assigned a KnowledgeTree license.
+            Enter or copy and paste the email addresses of the user(s) in your organization you want to invite to use KnowledgeTree. Each user invited will be assigned a KnowledgeTree license.
         </td>
     </tr>
 
