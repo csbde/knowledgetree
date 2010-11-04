@@ -48,14 +48,6 @@ Ext.onReady(function(){
 			//register as required field
 			kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
 		}
-
-		jQuery('#ul_meta_field_[id]').click(function() {
-			if (jQuery(this).selectedIndex <= 0){
-				kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
-			} else {
-				kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldDone('ul_meta_field_[id]');
-			}
-		});
 	} 
     
 });
@@ -80,6 +72,8 @@ function getSelectedValues_[id]() {
 
     //if marked as mandatory, check whether all done
 	if([is_mandatory] == '1') {
+		console.log('changed');
+		console.log('selected '+selected);
     	if (selected.length > 0) {
     		kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldDone('ul_meta_field_[id]');
     		//kt.dragdrop.metadata.checkRequiredFieldsCompleted();

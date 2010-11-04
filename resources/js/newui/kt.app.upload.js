@@ -446,6 +446,7 @@ kt.app.upload=new function(){
 	    }*/		
 		
 		var progress = jQuery('.uploadProgress');
+		progress.removeClass('error');
 		progress.text('Adding files ...');
 		progress.css('display', 'block');
 		progress.css('visibility', 'visible');
@@ -470,6 +471,8 @@ kt.app.upload=new function(){
 	    
 	    if(isError) {
 	    	progress.addClass('error');
+	    } else {
+	    	progress.removeClass('error');
 	    }
 	}
 	
