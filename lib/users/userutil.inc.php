@@ -188,6 +188,7 @@ class KTUserUtil {
     	    self::sendInvitations($invitedUsers);
     	}
 
+    	$check = 0;
     	$numInvited = count($invitedUsers);
     	if ($type == 'invited') {
     	   $check = self::checkUserLicenses($numInvited, $availableLicenses);
