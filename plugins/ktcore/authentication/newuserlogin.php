@@ -78,12 +78,13 @@ class NewUserLoginDispatcher extends KTDispatcher {
             }
         }
 
-
+        // Get the user status flag
+        // 0: live; 1: disabled; 2: deleted; 3: invited; 4: shared
         $disabled = $oUser->getDisabled();
         $fullname = '';
         $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : $oUser->getEmail();
 
-        if($disabled != 3){
+        if($disabled != 3 && $disabled != 4){
             $rootUrl = $default->rootUrl;
 
             if($disabled == 2 || $disabled == 1){
@@ -126,7 +127,9 @@ class NewUserLoginDispatcher extends KTDispatcher {
 
             if(empty($errorMessage)){
                 $default->log->debug('Invited login: new user created - '.$user_id);
-                $session = $this->saveDetails($oUser, $username, $fullname, $password);
+
+                $newDisabled = ($disabled == 3) ? 0 : $disabled;
+                $session = $this->saveDetails($oUser, $username, $fullname, $password, $newDisabled);
 
                 if(PEAR::isError($session)){
                     $errorMessage = _kt('An error occurred during login: '.$session->getMessage());
@@ -153,13 +156,13 @@ class NewUserLoginDispatcher extends KTDispatcher {
         return $oTemplate->render($aTemplateData);
     }
 
-    public function saveDetails($oUser, $username, $fullname, $password)
+    public function saveDetails($oUser, $username, $fullname, $password, $disabled = 0)
     {
         // Update the user details
         $oUser->setUserName($username);
         $oUser->setName($fullname);
         $oUser->setPassword(md5($password));
-        $oUser->setDisabled(0);
+        $oUser->setDisabled($disabled);
         $oUser->update();
 
         // Refresh the user object
