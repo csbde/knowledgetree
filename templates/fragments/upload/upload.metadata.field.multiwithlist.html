@@ -72,8 +72,6 @@ function getSelectedValues_[id]() {
 
     //if marked as mandatory, check whether all done
 	if([is_mandatory] == '1') {
-		console.log('changed');
-		console.log('selected '+selected);
     	if (selected.length > 0) {
     		kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldDone('ul_meta_field_[id]');
     		//kt.dragdrop.metadata.checkRequiredFieldsCompleted();
