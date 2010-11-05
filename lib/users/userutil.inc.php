@@ -115,8 +115,8 @@ class KTUserUtil
      */
     public static function inviteUsersByEmail($addressList, $group = null)
     {
-        if(empty($addressList)){
-            $response = array('invited' => 0, 'group' => '', 'check' => 0);
+        if (empty($addressList)) {
+            $response = array('invited' => 0, 'existing' => '', 'failed' => '', 'group' => '', 'check' => 0);
             return $response;
         }
 
@@ -184,8 +184,23 @@ class KTUserUtil
     	$numInvited = count($invitedUsers);
     	$check = self::checkUserLicenses($numInvited, $availableLicenses);
 
-    	//$response = array('existing' => $existingUsers, 'failed' => $failedUsers, 'invited' => $invitedUsers, 'group' => $groupName, 'check' => $check, 'licenses' => $availableLicenses);
-    	$response = array('invited' => $numInvited, 'group' => $groupName, 'check' => $check);
+    	// Format the list of existing users
+    	$existing = '';
+    	if (!empty($existingUsers)){
+    	    foreach ($existingUsers as $item){
+    	        $existing .= '<li>'.$item['name'] .' ('. $item['email'] .')</li>';
+    	    }
+    	}
+
+    	// Format the list of failed email addresses
+    	$failed = '';
+    	if (!empty($failedUsers)){
+    	    foreach ($failedUsers as $item){
+    	        $failed .= '<li>'.$item .'</li>';
+    	    }
+    	}
+
+    	$response = array('invited' => $numInvited, 'existing' => $existing, 'failed' => $failed, 'group' => $groupName, 'check' => $check);
     	return $response;
     }
 
