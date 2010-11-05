@@ -92,66 +92,59 @@ class sharedUserBrowseView extends browseView
 		return $ret;
 	}
 	
+	public function renderBulkActionMenu($items)
+	{
+		return '';
+	}
+	
 	public function renderDocumentItem($item=NULL,$empty=false,$shortcut=false){
 		$fileNameCutoff=100;
-		$oDocument = Document::get($item['id']);
+		// Icons
 		$iconFile='resources/mimetypes/newui/'.KTMime::getIconPath($item['mimetypeid']).'.png';
-		$item['icon_exists']=file_exists(KT_DIR.'/'.$iconFile);
-		$item['icon_file']=$iconFile;
+		$item['icon_exists'] = file_exists(KT_DIR.'/'.$iconFile);
+		$item['icon_file'] = $iconFile;
 		if ($item['icon_exists']){
-			$item['mimeicon']=str_replace('\\','/',$GLOBALS['default']->rootUrl.'/'.$iconFile);
-			$item['mimeicon']="background-image: url(".$item['mimeicon'].")";
+			$item['mimeicon'] = str_replace('\\','/',$GLOBALS['default']->rootUrl.'/'.$iconFile);
+			$item['mimeicon'] = "background-image: url(".$item['mimeicon'].")";
 		}else{
-			$item['mimeicon']='';
+			$item['mimeicon'] = '';
 		}
-
-		if ($item['linked_document_id']){
-			$item['document_link']=KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['linked_document_id'], 'fShortcutFolder'=>$item['container_folder_id']));
-		}else{
-			$item['document_link']=KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['id']));
-		}
-		$item['filename']=(strlen($item['filename'])>$fileNameCutoff)?substr($item['filename'],0,$fileNameCutoff-3)."...":$item['filename'];
+		// Create link, which will always be of a document and not a shortcut
+		$item['document_link'] = KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['id']));
+		$item['filename'] = (strlen($item['filename'])>$fileNameCutoff)?substr($item['filename'],0,$fileNameCutoff-3)."...":$item['filename'];
 
 		$ns=" not_supported";
-		$item['has_workflow']='';
-		$item['is_immutable']=$item['is_immutable']=='true'?true:false;
-		$item['is_immutable']=$item['is_immutable']?'':$ns;
-		$item['is_checkedout']=$item['checked_out_date']?'':$ns;
+		$item['has_workflow'] = '';
+		$item['is_immutable'] = $item['is_immutable'] =='true'?true:false;
+		$item['is_immutable'] = $item['is_immutable']?'':$ns;
+		$item['is_checkedout'] = $item['checked_out_date']?'':$ns;
 
-		$item['actions.checkin']=$item['checked_out_date']?'':$ns;
-		$item['actions.cancel_checkout']=$item['checked_out_date']?'':$ns;
-		$item['actions.checkout']=$item['checked_out_date']?$ns:'';
-
-		if (get_class($oDocument) == 'Document') {
-			$item['actions.copy']=KTDocumentUtil::canBeCopied($oDocument)?'':$ns;
-			$item['actions.move']=KTDocumentUtil::canBeMoved($oDocument)?'':$ns;
-			$item['actions.delete']=KTDocumentUtil::canBeDeleted($oDocument)?'':$ns;
-		} else {
-			$item['actions.move']=$item['actions.copy']=$item['actions.move']=$ns;
-		}
+		$item['actions.checkin'] = $item['checked_out_date']?'':$ns;
+		$item['actions.cancel_checkout'] = $item['checked_out_date']?'':$ns;
+		$item['actions.checkout'] = $item['checked_out_date']?$ns:'';
 
 		//Modifications to perform when the document has been checked out
 		if ($item['checked_out_date']){
 			list($item['checked_out_date_d'],$item['checked_out_date_t'])=split(" ",$item['checked_out_date']);
 		}
 
-		if ($item['is_immutable']==''){
-			$item['actions.checkin']=$ns;
-			$item['actions.checkout']=$ns;
-			$item['actions.cancel_checkout']=$ns;
-			$item['actions.alerts']=$ns;
-			$item['actions.email']=$ns;
-			$item['actions.change_owner']=$ns;
-			$item['actions.finalize_document']=$ns;
+		if ($item['is_immutable'] ==''){
+			$item['actions.checkin'] = $ns;
+			$item['actions.checkout'] = $ns;
+			$item['actions.cancel_checkout'] = $ns;
+			$item['actions.alerts'] = $ns;
+			$item['actions.email'] = $ns;
+			$item['actions.change_owner'] = $ns;
+			$item['actions.finalize_document'] = $ns;
 		}
 
-		$item['separatorA']=$item['actions.copy']=='' ?'':$ns;
-		$item['separatorB']=$item['actions.download']=='' || $item['actions.instantview']=='' ?'':$ns;
-		$item['separatorC']=$item['actions.checkout']=='' || $item['actions.checkin']=='' || $item['actions.cancel_checkout']=='' ?'':$ns;
-		$item['separatorD']=$item['actions.alert']=='' || $item ['actions.email']=='' ?'':$ns;
+		$item['separatorA'] = $item['actions.copy'] =='' ?'':$ns;
+		$item['separatorB'] = $item['actions.download'] =='' || $item['actions.instantview'] =='' ?'':$ns;
+		$item['separatorC'] = $item['actions.checkout'] =='' || $item['actions.checkin'] =='' || $item['actions.cancel_checkout'] =='' ?'':$ns;
+		$item['separatorD'] = $item['actions.alert'] =='' || $item ['actions.email'] =='' ?'':$ns;
 
-		if ($item['is_immutable']==''){
-			$item['separatorB']=$item['separatorC']=$item['separatorD']=$ns;
+		if ($item['is_immutable'] ==''){
+			$item['separatorB'] = $item['separatorC'] = $item['separatorD'] = $ns;
 		}
 
 		// Check if the thumbnail exists
@@ -171,7 +164,7 @@ class sharedUserBrowseView extends browseView
             if (is_null($item['has_rendition']))
             {
                 $oStorage=KTStorageManagerUtil::getSingleton();
-				
+				$oDocument = Document::get($item['id']);
 				if(!PEAR::isError($oDocument))
 				{
 	                $varDir = $GLOBALS['default']->varDirectory;
@@ -231,24 +224,9 @@ class sharedUserBrowseView extends browseView
 										<li class="[actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
 										[allowdoczohoedit]
 
-										<li class="separator[separatorA]"></li>
-
-										<li class="[actions.copy]"><a href="action.php?kt_path_info=ktcore.actions.document.copy&fDocumentId=[id]">Copy</a></li>
-										<li class="[actions.move]"><a href="action.php?kt_path_info=ktcore.actions.document.move&fDocumentId=[id]">Move</a></li>
-										<li class="[actions.delete]"><a href="action.php?kt_path_info=ktcore.actions.document.delete&fDocumentId=[id]">Delete</a></li>
-
-										<li class="separator[separatorB]"></li>
-
 										<li class="[actions.checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.checkout&fDocumentId=[id]">Check-out</a></li>
 										<li class="[actions.cancel_checkout]"><a href="action.php?kt_path_info=ktcore.actions.document.cancelcheckout&fDocumentId=[id]">Cancel Check-out</a></li>
 										<li class="[actions.checkin]"><a href="action.php?kt_path_info=ktcore.actions.document.checkin&fDocumentId=[id]">Check-in</a></li>
-
-										<li class="separator[separatorC]"></li>
-
-										<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
-										<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
-										<li class="separator[separatorD]"></li>
-										<li class="[actions.finalize_document]"><a href="action.php?kt_path_info=ktcore.actions.document.immutable&fDocumentId=[id]">Finalize Document</a></li>
 									</ul>
 								</li>
 							</ul>
@@ -359,42 +337,42 @@ class browseView {
 
 	public function renderBrowseFolder($folderId=NULL){
 		$response=Array();
-		$response['bulkActionMenu']=$this->renderBulkActionMenu($aBulkActions);
+		$response['bulkActionMenu'] = $this->renderBulkActionMenu($aBulkActions);
 		$folderContentItems=$this->getCurrentFolderContent($this->oFolder->getId());
 
 		$folderView=$pre_folderView=array();
-		foreach($folderContentItems['folders'] as $item)$pre_folderView[]=$this->renderFolderItem($item);
-		foreach($folderContentItems['documents'] as $item)$pre_folderView[]=$this->renderDocumentItem($item);
+		foreach($folderContentItems['folders'] as $item)$pre_folderView[] =$this->renderFolderItem($item);
+		foreach($folderContentItems['documents'] as $item)$pre_folderView[] =$this->renderDocumentItem($item);
 
 		$pageCount=1;
 		$perPage=15;
 		$itemCount=count($pre_folderView);
 		$curItem=0;
 
-		$folderView[]='<div class="page page_'.$pageCount.' ">';
+		$folderView[] ='<div class="page page_'.$pageCount.' ">';
 		foreach($pre_folderView as $item){
 			$curItem++;
 			if ($curItem>$perPage){
 				$pageCount++;
 				$curItem=1;
-				$folderView[]='</div><div class="page page_'.$pageCount.' ">';
+				$folderView[] ='</div><div class="page page_'.$pageCount.' ">';
 			}
-			$folderView[]=$item;
+			$folderView[] =$item;
 		}
 		if ($itemCount<=0){
 			$userHasWritePermissions = TRUE; // Need to fix this
-			$folderView[]=$this->noFilesOrFoldersMessage($folderId, $userHasWritePermissions);
+			$folderView[] =$this->noFilesOrFoldersMessage($folderId, $userHasWritePermissions);
 		}
-		$folderView[]="</div>";
+		$folderView[] ="</div>";
 
-		$response['folderContents']=join($folderView);
+		$response['folderContents'] =join($folderView);
 
 
 
-		$response['fragments']='';
+		$response['fragments'] ='';
 		$response['fragments'].=$this->renderDocumentItem(null,true);
 		$response['fragments'].=$this->renderFolderItem(null,true);
-		$response['pagination']=$this->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
+		$response['pagination'] =$this->paginateByDiv($pageCount,'page','paginate','item',"kt.pages.browse.viewPage('[page]');","kt.pages.browse.prevPage();","kt.pages.browse.nextPage();");
 	}
 
 
@@ -773,7 +751,7 @@ class browseView {
 									<ul>
 										<li><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
 										<li><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Permissions</a></li>
-										<li><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow([id]);">Share This Folder</a></li>
+										<li><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow([id],\'[item_type]\');">Share This Folder</a></li>
 										<!-- <li><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li> -->
 										<li><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Activity</a></li>
 									</ul>
