@@ -16,22 +16,22 @@ $contact_url = 'http://www.knowledgetree.com/contact-us';
         </td>
     </tr>
 
-    <tr id="showExistingUsers">
+    <tr id="showExistingUsers" style="display: none;">
         <td colspan="2" valign="top" style="padding-top: 10px;">
             The following users are already active in KnowledgeTree:<br />
             <ul id="existingUsers" style="padding-left: 30px;"></ul>
         </td>
     </tr>
 
-    <tr id="showFailedUsers">
+    <tr id="showFailedUsers" style="display: none;">
         <td colspan="2" valign="top" style="padding-top: 10px;">
             Emails could not be sent to the following addresses: <br />
             <ul id="failedUsers" style="padding-left: 30px;"></ul>
         </td>
     </tr>
 
-    <tr>
-        <td colspan="2" id="showInvitedGroup" style="padding-top: 10px;">
+    <tr id="showInvitedGroup" style="display: none;">
+        <td colspan="2" style="padding-top: 10px;">
             As part of the: <a href="<?= $groups_url; ?>"><span id="invitedGroup"></span> group</a>
         </td>
     </tr>
@@ -45,7 +45,7 @@ $contact_url = 'http://www.knowledgetree.com/contact-us';
     </tr>
 
     <tr>
-        <td class="ul_actions" colspan="2" align="right">
+        <td class="ul_actions" colspan="2" align="right" style="padding-top: 10px;">
             <input id="invite_actions_confirm_btn" class="ul_actions_btns" type="button" value="Close" onClick="kt.app.inviteusers.closeConfirmWindow();" />
         </td>
     </tr>
