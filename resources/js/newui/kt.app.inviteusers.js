@@ -86,6 +86,7 @@ kt.app.inviteusers=new function(){
             document.getElementById('showExistingUsers').style.display = 'none';
         }else{
             document.getElementById('existingUsers').innerHTML = existing;
+            document.getElementById('showExistingUsers').style.display = 'block';
         }
 
         // display any failed emails
@@ -93,13 +94,15 @@ kt.app.inviteusers=new function(){
             document.getElementById('showFailedUsers').style.display = 'none';
         }else{
             document.getElementById('failedUsers').innerHTML = failed;
+            document.getElementById('showFailedUsers').style.display = 'block';
         }
 
 	    // display the select group
 	    if(group == ''){
-	        document.getElementById('showInvitedGroup').innerHTML = '';
+	        document.getElementById('showInvitedGroup').style.display = 'none';
 	    }else{
-	       document.getElementById('invitedGroup').innerHTML = group;
+            document.getElementById('showInvitedGroup').style.display = 'block';
+            document.getElementById('invitedGroup').innerHTML = group;
 	    }
 
 	    if(check != 0){
@@ -141,7 +144,6 @@ kt.app.inviteusers=new function(){
 		self.inviteWindow=inviteWin;
 	    inviteWin.show();
 	    self.disableInviteButton();
-	    document.getElementById('invite.emails').focus();
 	}
 
 	this.closeWindow = function() {
