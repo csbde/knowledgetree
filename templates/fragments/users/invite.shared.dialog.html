@@ -1,5 +1,4 @@
 <table border="0" cellspacing="5" cellpadding="5px">
-
     <tr>
         <td colspan="2" valign="top">
             Enter or copy and paste the email addresses of the user(s) you want to invite to use KnowledgeTree. Each invited user will have their access limited to shared content only.
@@ -18,6 +17,15 @@
             <textarea name="invite.emails" id="invite.emails" rows="3" cols="46" ></textarea>
         </td>
     </tr>
+
+    <tr>
+        <td width="30%">
+        	<label for="read.only">Read-only</label>
+        </td>
+        <td width="70%">
+        	<input type="checkbox" name="readonly" id="readonly" class="readonly">
+        </td>
+    </tr>
     
     <tr>
         <td width="30%"></td>
@@ -28,4 +36,10 @@
         </td>
     </tr>
 
+    <tr>
+    	<td>
+    		<input type="hidden" value="" class="object_id">
+    		<input type="hidden" value="" class="object_type">
+    	</td>
+    </tr>
 </table>

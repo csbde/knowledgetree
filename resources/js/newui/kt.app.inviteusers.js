@@ -38,8 +38,15 @@ kt.app.inviteusers=new function(){
         group = ((e == null) || (e.value === undefined)) ? null : e.value;
         type = ((e == null) || (e.value === undefined)) ? 'shared' : 'invited';
         emails = e2.value;
-
-        kt.api.inviteUsers(emails, group, type, self.inviteCallback, function() {});
+        var sharedData = new Array();
+        objectid = jQuery('.object_id').val();
+        objecttype = jQuery('.object_type').val();
+        e3 = jQuery('#readonly:checkbox:checked').val();
+        perm = (e3 === undefined) ? 0 : 1;
+        sharedData['permission'] = perm;
+        sharedData['object_id'] = objectid;
+        sharedData['object_type'] = objecttype;
+        kt.api.inviteUsers(emails, group, type, sharedData, self.inviteCallback, function() {});
 	    self.disableInviteButton();
 	}
 
@@ -117,8 +124,7 @@ kt.app.inviteusers=new function(){
     	btn.attr('disabled', 'true');
 	}
     //ENTRY POINT: Calling this function will set up the environment, display the dialog,
-    //and hook up the AjaxUploader callbacks to the correct functions.
-    this.showInviteWindow = function(objectId) {
+    this.showInviteWindow = function(objectId, objectType) {
         var inviteWin = new Ext.Window({
             id              : 'extinvitewindow',
             layout          : 'fit',
@@ -140,6 +146,12 @@ kt.app.inviteusers=new function(){
         inviteWin.show();
 	    self.disableInviteButton();
         document.getElementById('invite.emails').focus();
+        // Check if an object has been shared
+        if(objectType != undefined)
+        {
+        	jQuery('.object_id').attr('value', objectId);
+        	jQuery('.object_type').attr('value', objectType);
+        }
     }
 
     this.closeWindow = function() {

@@ -137,5 +137,13 @@ class SharedContent extends KTEntity {
     	$folders = DBUtil::getResultArray($sql);
     	return array('documents' => $documents, 'folders' => $folders);
     }
+    
+    public function exists()
+    {
+    	$sql = "SELECT user_id FROM shared_content WHERE user_id = '{$this->iUserId}' AND object_id = '{$this->iObjectId}' AND type = '{$this->sType}' LIMIT 1";
+    	$res = DBUtil::getResultArray($sql);
+    	
+    	return (count($res) > 0);
+    }
 }
 ?>

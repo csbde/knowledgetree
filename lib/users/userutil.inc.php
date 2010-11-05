@@ -116,7 +116,7 @@ class KTUserUtil {
      * @param boolean $type licensed | unlicensed
      * @return array The lists of newly invited users, failed invitations and already existing users
      */
-    public static function inviteUsersByEmail($addressList, $group = null, $type = null)
+    public static function inviteUsersByEmail($addressList, $group = null, $type = null, $aShareContent = null)
     {
         if (empty($addressList)) {
             $response = array('invited' => 0, 'existing' => '', 'failed' => '', 'group' => '', 'type' => '', 'check' => 0);
@@ -173,7 +173,10 @@ class KTUserUtil {
                continue;
             }
             $invitedUsers[] = array('id' => $user->getId(), 'email' => $email);
-
+			if($type == 'share')
+			{
+				self::addSharedContent($user->getId(), $aShareContent['object_id'], $aShareContent['object_type'], $aShareContent['permission']);
+			}
             if ($group !== false) {
                $res = $group->addMember($user);
                if (PEAR::isError($res)) {
@@ -212,9 +215,32 @@ class KTUserUtil {
     	}
 
     	$response = array('invited' => $numInvited, 'existing' => $existing, 'failed' => $failed, 'group' => $groupName, 'type' => $type, 'check' => $check);
+
+    	foreach ($existingUsers as $existingUser)
+    	{    		
+    		self::addSharedContent($existingUser['id'], $aShareContent['object_id'], $aShareContent['object_type'], $aShareContent['permission']);
+    	}
+
     	return $response;
     }
 
+    public static function addSharedContent($user_id, $object_id, $object_type, $permission)
+    {
+    	global $default;
+		// Add shared content entry.
+		require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+		$object_type = ($object_type == 'F') ? 'folder' : 'document';
+		$oSharedContent = new SharedContent($user_id, $object_id, $object_type, $permission);
+		if(!$oSharedContent->exists())
+		{
+			$res = $oSharedContent->create();
+			if (!$res)
+			{
+				$default->log->error("Failed sharing " . ($object_type == 'F') ? "folder" : " file " . " $object_id with invited user id $user_id.");
+			}
+		}
+		
+    }
     /**
      * Check how many licenses are available in the system.
      *
