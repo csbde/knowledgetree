@@ -94,6 +94,7 @@ class sharedUserBrowseView extends browseView
 	
 	public function renderDocumentItem($item=NULL,$empty=false,$shortcut=false){
 		$fileNameCutoff=100;
+		$oDocument = Document::get($item['id']);
 		$iconFile='resources/mimetypes/newui/'.KTMime::getIconPath($item['mimetypeid']).'.png';
 		$item['icon_exists']=file_exists(KT_DIR.'/'.$iconFile);
 		$item['icon_file']=$iconFile;
@@ -170,7 +171,7 @@ class sharedUserBrowseView extends browseView
             if (is_null($item['has_rendition']))
             {
                 $oStorage=KTStorageManagerUtil::getSingleton();
-				$oDocument = Document::get($item['id']);
+				
 				if(!PEAR::isError($oDocument))
 				{
 	                $varDir = $GLOBALS['default']->varDirectory;
@@ -246,10 +247,7 @@ class sharedUserBrowseView extends browseView
 
 										<li class="[actions.alerts]"><a href="action.php?kt_path_info=alerts.action.document.alert&fDocumentId=[id]">Alerts</a></li>
 										<li class="[actions.email]"><a href="action.php?kt_path_info=ktcore.actions.document.email&fDocumentId=[id]">Email</a></li>
-
 										<li class="separator[separatorD]"></li>
-
-										<li class="[actions.change_owner]"><a href="action.php?kt_path_info=ktcore.actions.document.ownershipchange&fDocumentId=[id]">Change Document Ownership</a></li>
 										<li class="[actions.finalize_document]"><a href="action.php?kt_path_info=ktcore.actions.document.immutable&fDocumentId=[id]">Finalize Document</a></li>
 									</ul>
 								</li>
@@ -301,7 +299,6 @@ class sharedUserBrowseView extends browseView
 									<ul>
 										<li><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
 										<li><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Permissions</a></li>
-										<li><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow([id]);">Share This Folder</a></li>
 										<!-- <li><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li> -->
 										<li><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Activity</a></li>
 									</ul>
