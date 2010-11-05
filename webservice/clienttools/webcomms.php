@@ -17,7 +17,7 @@ set_time_limit(COMMS_TIMEOUT);	//Be careful altering this inside the services ar
  * @param unknown_type $errstr
  * @param unknown_type $errfile
  * @param unknown_type $errline
- * 
+ *
  * return json Error Response
  */
 function error_handler($errno,$errstr=null,$errfile=null,$errline=null){
@@ -71,8 +71,8 @@ $RET=new jsonResponseObject();
 if($_GET['datasource'])$RET->isDataSource=true;
 
 //Instantiate base classes
-$KT = new KTAPI();
-$KT->get(3);// Set it to Use Web Version 3
+$KT = new KTAPI(3);
+//$KT->get(3);// Set it to Use Web Version 3
 
 //Pick up the session
 $session=KTAPI_UserSession::getCurrentBrowserSession($KT);

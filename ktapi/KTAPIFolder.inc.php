@@ -182,8 +182,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
     {
         $this->clearCache();
 
-        $config = KTConfig::getSingleton();
-        $wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
+        $wsversion = $this->getWSVersion();
 
         $detail = array(
         'id'=>(int) $this->folderid,
@@ -536,7 +535,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $what
 	 * @return array
 	 */
-    function get_listing($depth = 1, $what = 'DFS', $overrideWebServiceVersion = null, $options = array())
+    function get_listing($depth = 1, $what = 'DFS', $options = array())
     {
         // are we fetching the entire tree?
         // Set a static boolean value which will instruct recursive calls to ignore the depth parameter;
@@ -545,7 +544,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
         if (is_null($fullTree)) {
             $fullTree = ($depth < 0) ? true : false;
         }
-        
+
         // if we are not getting the full listing, we need to kick out if depth less than 1
         if (!$fullTree && ($depth < 1)) {
             return array();
@@ -554,14 +553,14 @@ class KTAPI_Folder extends KTAPI_FolderItem
         /*if ($depth == 0)) {
             return array();
         }*/
-        
+
         /*
         if ($depth < 1) {
             return array ();
         }
         */
 
-        $wsversion = $this->getWSVersion($overrideWebServiceVersion);
+        $wsversion = $this->getWSVersion();
 
         $what = strtoupper($what);
         $read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
@@ -779,10 +778,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
 	 * @param string $what
 	 * @return array
 	 */
-    function get_full_listing($what = 'DFS', $overrideWebServiceVersion = null)
+    function get_full_listing($what = 'DFS')
     {
-        $wsversion = $this->getWSVersion($overrideWebServiceVersion);
-        
+        $wsversion = $this->getWSVersion();
+
         $what = strtoupper($what);
         $read_permission = &KTPermission::getByName(KTAPI_PERMISSION_READ);
         $folder_permission = &KTPermission::getByName(KTAPI_PERMISSION_VIEW_FOLDER);
@@ -1019,14 +1018,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
 
         return $contents;
     }
-    
-    private function getWSVersion($overrideWebServiceVersion = false)
+
+    private function getWSVersion()
     {
-        $config = KTConfig::getSingleton();
-        $wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
-        $wsversion = $overrideWebServiceVersion ? $overrideWebServiceVersion : $wsversion;
-        $wsversion = 3;
-        
+        $wsversion = $this->ktapi->getVersion();
         return $wsversion;
     }
 
@@ -1399,8 +1394,7 @@ class KTAPI_Folder extends KTAPI_FolderItem
             return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $transactions );
         }
 
-        $config = KTConfig::getSingleton();
-        $wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
+        $wsversion = $this->getWSVersion();
         foreach ($transactions as $key=>$transaction)
         {
             $transactions[$key]['version'] =(float) $transaction['version'];
