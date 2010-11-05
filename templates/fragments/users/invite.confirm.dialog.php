@@ -45,7 +45,7 @@ $contact_url = 'http://www.knowledgetree.com/contact-us';
     </tr>
 
     <tr>
-        <td colspan="2" align="right">
+        <td class="ul_actions" colspan="2" align="right">
             <input id="ul_actions_upload_btn" class="ul_actions_btns" type="button" value="Close" onClick="kt.app.inviteusers.closeConfirmWindow();" />
         </td>
     </tr>
