@@ -46,14 +46,15 @@ kt.app.inviteusers=new function(){
 	this.inviteCallback = function(result){
 
 	    // get the response from the server
-	    // array('existing' => $existingUsers, 'failed' => $failedUsers, 'invited' => $invitedUsers, 'group' => $groupName);
+	    // array('invited' => $numInvited, 'existing' => $existingUsers, 'failed' => $failedUsers, 'group' => $groupName, 'check' => $check);
 	    var response = result.data.invitedUsers;
 	    var list = jQuery.parseJSON(response);
 
 	    var group = list.group;
 	    var invited = list.invited;
 	    var check = list.check;
-	    var licenses = list.licenses;
+	    var existing = list.existing;
+	    var failed = list.failed;
 
 	    var inviteConfirmWin = new Ext.Window({
 			id          : 'extinviteconfirmwindow',
@@ -78,6 +79,20 @@ kt.app.inviteusers=new function(){
 
 	    // display the list of invited users
         document.getElementById('invitedUsers').innerHTML = invited;
+
+        // display any existing users
+        if(existing == ''){
+            document.getElementById('showExistingUsers').style.display = 'none';
+        }else{
+            document.getElementById('existingUsers').innerHTML = existing;
+        }
+
+        // display any failed emails
+        if(failed == ''){
+            document.getElementById('showFailedUsers').style.display = 'none';
+        }else{
+            document.getElementById('failedUsers').innerHTML = failed;
+        }
 
 	    // display the select group
 	    if(group == ''){
