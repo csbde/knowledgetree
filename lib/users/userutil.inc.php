@@ -189,7 +189,12 @@ class KTUserUtil {
     	$existing = '';
     	if (!empty($existingUsers)){
     	    foreach ($existingUsers as $item){
-    	        $existing .= '<li>'.$item['name'] .' ('. $item['email'] .')</li>';
+    	        $existing .= '<li>';
+    	        if (!empty($item['name'])) {
+    	            $existing .= $item['name'] . ' - ';
+    	        }
+
+    	        $existing .= $item['email'] .'</li>';
     	    }
     	}
 
