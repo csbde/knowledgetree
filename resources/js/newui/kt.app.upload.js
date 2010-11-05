@@ -1,6 +1,9 @@
 /* Initializing kt.app if it wasn't initialized before */
 if(typeof(kt.app)=='undefined')kt.app={};
 
+/* Initializing kt.api if it wasn't initialized before */
+if(typeof(kt.api)=='undefined')kt.api={};
+
 /**
  * The multi-file upload widget. This object contains all the code
  * for the client-side management of single instance of the widget.
