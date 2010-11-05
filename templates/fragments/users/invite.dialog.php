@@ -1,9 +1,8 @@
 <?php
 include_once('../../ktapi/ktapi.inc.php');
 
-$KT = new KTAPI();
-// Set it to Use Web Version 3
-$KT->get(3);
+$KT = new KTAPI(3);
+
 //Pick up the session
 $session = KTAPI_UserSession::getCurrentBrowserSession($KT);
 $KT->start_system_session($session->user->getUserName());
@@ -24,20 +23,20 @@ $aGroupsList = getGroupsList();
 
 ?>
 
-<table class="uploadTable" style="height:220px;" border="0">
+<table class="uploadTable" style="height:200px;" border="0">
 
     <tr>
         <td colspan="2" valign="top">
-            Enter or copy and paste the email addresses of the user(s) in your organization you want to invite to use KnowledgeTree. Each user invited will be assigned a KnowledgeTree license.
+            Enter or copy and paste the email addresses of the user(s) in your organization you want to invite to use KnowledgeTree (separate email addresses with a space or comma).
         </td>
     </tr>
 
     <tr>
-        <td valign="top">
+        <td valign="top" style="padding-top: 10px;">
             Invite Users:
         </td>
-        <td valign="top">
-            <textarea onkeypress="kt.app.inviteusers.enableInviteButton();" name="invite.emails" id="invite.emails" rows="3" cols="46" ></textarea>
+        <td valign="top" style="padding-top: 10px;">
+            <textarea onfocus="kt.app.inviteusers.enableInviteButton();" name="invite.emails" id="invite.emails" rows="5" cols="46" ></textarea>
         </td>
     </tr>
 

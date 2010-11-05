@@ -1,6 +1,9 @@
 /* Initializing kt.app if it wasn't initialized before */
 if (typeof(kt.app) == 'undefined') { kt.app = {}; }
 
+/* Initializing kt.api if it wasn't initialized before */
+if(typeof(kt.api)=='undefined')kt.api={};
+
 /**
  * Dialog for inviting new licensed/shared users to the system
  */
@@ -34,6 +37,16 @@ kt.app.inviteusers=new function(){
     // send the invites and add the users to the system
     // userType of 'shared' means shared user, else regular user
     this.inviteUsers  =  function(userType) {
+        emails = document.getElementById('invite.emails').value;
+        
+        if (emails.length < 3) {
+	        //document.getElementById('invite.errormsg').style.display = 'block';
+	        alert('Please enter a valid email address.');
+	        self.disableInviteButton();
+	    } else {
+    	    kt.api.inviteUsers(emails, group, self.inviteCallback, function(){});
+	    }
+	    
         if (userType == 'shared') {
             permissions = document.getElementById('invite.permissions').value;
             group = null;
@@ -45,8 +58,6 @@ kt.app.inviteusers=new function(){
             objectType = null;
             permissions = null;
         }
-        
-        emails = document.getElementById('invite.emails').value;
         
         var sharedData = new Array();
         readOnly = jQuery('#readonly:checkbox:checked').val();
@@ -104,6 +115,7 @@ kt.app.inviteusers=new function(){
             document.getElementById('showExistingUsers').style.display = 'none';
         } else {
             document.getElementById('existingUsers').innerHTML = existing;
+            document.getElementById('showExistingUsers').style.display = 'block';
         }
 
         // display any failed emails
@@ -111,13 +123,15 @@ kt.app.inviteusers=new function(){
             document.getElementById('showFailedUsers').style.display = 'none';
         } else {
             document.getElementById('failedUsers').innerHTML = failed;
+            document.getElementById('showFailedUsers').style.display = 'block';
         }
 
 	    // display the select group
 	    if (group == '') {
-	        document.getElementById('showInvitedGroup').innerHTML = '';
+	        document.getElementById('showInvitedGroup').style.display = 'none';
 	    } else {
-	       document.getElementById('invitedGroup').innerHTML = group;
+            document.getElementById('showInvitedGroup').style.display = 'block';
+            document.getElementById('invitedGroup').innerHTML = group;
 	    }
 
         if (check != 0) {
@@ -166,7 +180,6 @@ kt.app.inviteusers=new function(){
         }
         
 	    self.disableInviteButton();
-        document.getElementById('invite.emails').focus();   
     }
 
     this.closeWindow = function() {
