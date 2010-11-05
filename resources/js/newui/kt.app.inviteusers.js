@@ -39,6 +39,7 @@ kt.app.inviteusers=new function(){
 	    emails = e2.value;
 
 	    kt.api.inviteUsers(emails, group, self.inviteCallback, function(){});
+	    self.disableInviteButton();
 	}
 
 	// callback for the inviteUsers function
