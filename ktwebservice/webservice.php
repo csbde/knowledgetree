@@ -95,7 +95,7 @@ define('KTWS_ERR_DB_PROBLEM',				99);
 
 if (!defined('LATEST_WEBSERVICE_VERSION'))
 {
-	define('LATEST_WEBSERVICE_VERSION', 2);
+	define('LATEST_WEBSERVICE_VERSION', 3);
 }
 
 function bool2str($bool)
@@ -146,10 +146,10 @@ class KTWebService
 
     	$config = &KTConfig::getSingleton();
     	$this->version = $config->get('webservice/version', LATEST_WEBSERVICE_VERSION);
-    	
+
     	//for testing!
     	//$this->version = 3;
-    	
+
     	$this->mustDebug = $config->get('webservice/debug', 0);
     	$this->ktapi = null;
 
@@ -178,7 +178,7 @@ class KTWebService
          }
          if ($this->version >= 3){
          	$this->__typedef["{urn:$this->namespace}kt_folder_detail"]['linked_folder_id'] = 'int';
-         	
+
          	$this->__typedef["{urn:$this->namespace}kt_document_comment"] = array(
          		'id' => 'int',
          		'user_id' => 'int',
@@ -188,7 +188,7 @@ class KTWebService
          		'action' => 'string',
          		'version' => 'int'
          	);
-         	
+
          	$this->__typedef["{urn:$this->namespace}kt_document_comments"] =
          	array(
 				array(
@@ -832,7 +832,7 @@ class KTWebService
             array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'what' => 'string'),
              'out' => array('return' => "{urn:$this->namespace}kt_folder_tree"),
             );
-            
+
          // create_folder
          $this->__dispatch_map['add_folder'] =
             array('in' => array('session_id' => 'string', 'folder_id' => 'int', 'folder_name' =>'string'),
@@ -956,7 +956,7 @@ class KTWebService
          	$this->__dispatch_map['get_folder_shortcuts'] = array('in'=>array('session_id' => 'string', 'folder_id' => 'int'),
          	'out'=>array('return' => "{urn:$this->namespace}kt_folder_shortcuts" ));
          }
-         
+
          //document comments
          if ($this->version >= 3) {
          	 // get_document_comments
@@ -964,14 +964,14 @@ class KTWebService
             array('in' => array('session_id' => 'string', 'document_id' => 'int', 'order' => 'string'),
              'out' => array('return' => "{urn:$this->namespace}kt_document_comments"  ),
             );
-            
+
              // add_document_comment
          	$this->__dispatch_map['add_document_comment'] =
             array('in' => array('session_id' => 'string', 'document_id' => 'int', 'comment' => 'string'),
              'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );
          }
-         
+
      	//user browse history
         if ($this->version >= 3) {
          	//get_user_document_browse_history
@@ -979,7 +979,7 @@ class KTWebService
             array('in' => array('session_id' => 'string', 'limit' => 'string'),
              'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );
-            
+
             /* NOT IMPLEMENTED YET
 			//get_user_folder_browse_history
          	$this->__dispatch_map['get_user_folder_browse_history'] =
@@ -1685,9 +1685,9 @@ class KTWebService
     /**
      * Returns the contents of a folder - list of contained documents and folders.
      * Unlike get_folder_contents this function has a default of folders only, and no depth parameter.
-     * 
+     *
      * The main purpose is to return a navigable tree view of the repository.
-     * 
+     *
      * This function does not accept a depth parameter.
      *
 	 * @author KnowledgeTree Team
@@ -2461,6 +2461,9 @@ class KTWebService
 			$this->debug("add_document - cannot add document - "  . $document->getMessage(), $session_id);
 			return new SOAP_Value('return', "{urn:$this->namespace}kt_document_detail", $response);
 		}
+		
+		//add the document to the User History
+		$document->addDocumentToUserHistory();
 
     	$detail = $document->get_detail();
     	$detail['status_code'] = KTWS_SUCCESS;
@@ -2894,6 +2897,9 @@ class KTWebService
 			$this->debug("checkout_document - cannot checkout - "  . $result->getMessage(), $session_id);
     		return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
     	}
+    	
+    	//add document to User History
+    	$document->addDocumentToUserHistory();
 
     	$session = &$kt->get_session();
 
@@ -2962,6 +2968,9 @@ class KTWebService
     		$this->debug("checkout_small_document - cannot checkout - "  . $result->getMessage(), $session_id);
     		return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
     	}
+    	
+    	//add document to User History
+    	$document->addDocumentToUserHistory();
 
     	$content='';
     	if ($download)
@@ -2971,14 +2980,14 @@ class KTWebService
     		$oStorage = KTStorageManagerUtil::getSingleton();
             $filename = $oStorage->temporaryFile($document);
 
-    		$fp = $oStorage->fopen($filename, 'rb');    		
+    		$fp = $oStorage->fopen($filename, 'rb');
     		if ($fp === false)
     		{
     			$response['message'] = 'The file is not in the storage system. Please contact an administrator!';
 	    		$this->debug("checkout_small_document - cannot write $filename ", $session_id);
     			return new SOAP_Value('return', "{urn:$this->namespace}$responseType", $response);
     		}
-    		
+
     		$content = $oStorage->readfile($filename, 'rb', $oStorage->fileSize($filename));
     		$content = base64_encode($content);
     	}
@@ -3101,6 +3110,9 @@ class KTWebService
     		$this->debug("download_document - cannot download (version $version) - "  . $result->getMessage(), $session_id);
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
     	}
+    	
+    	//add document to User History
+    	$document->addDocumentToUserHistory();
 
     	$session = &$kt->get_session();
     	$download_manager = new KTDownloadManager();
@@ -3161,6 +3173,9 @@ class KTWebService
     		$this->debug("download_small_document - cannot download - "  . $result->getMessage(), $session_id);
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
     	}
+    	
+    	//add document to User History
+    	$document->addDocumentToUserHistory();
 
     	$content = '';
     	$oStorage = KTStorageManagerUtil::getSingleton();
@@ -3913,6 +3928,9 @@ class KTWebService
     		$this->debug("get_document_metadata - cannot get documentid $document_id - "  . $document->getMessage(), $session_id);
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_metadata_response", $response);
     	}
+    	
+    	//trigger the User History
+    	$document->addDocumentToUserHistory();
 
     	$metadata = $document->get_metadata();
 
@@ -4513,7 +4531,7 @@ class KTWebService
 
 		return new SOAP_Value('return', "{urn:$this->namespace}kt_search_response", $response);
 	}
-	
+
 	/**
 	 * Gets the comments associated with a document
 	 *
@@ -4532,28 +4550,28 @@ class KTWebService
     	{
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
     	}
-		
+
 		try
 		{
 			$comments = &$kt->get_comments($document_id, $order);
-			
+
 			$this->debug("webservice get_document_comments comments ".print_r($comments, true));
-			
+
 			$response = KTWebService::_status(KTWS_SUCCESS);
 	    	$response['message'] = $comments;
-	    	
+
 	    	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_comments", $response);
 		}
 		catch (Exception $e)
 		{
 			$this->error("get_document_comments - cannot get comments for document $document_id  - "  . $e->getMessage());
-			
+
 			$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
 			$response['message'] = $e->getMessage();
 			return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
 		}
 	}
-	
+
 	/**
 	 * Adds a comment to a document
 	 *
@@ -4572,29 +4590,29 @@ class KTWebService
     	{
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
     	}
-		
+
 		try
 		{
 			$result = &$kt->add_comment($document_id, $comment);
-			
+
 			$this->debug("webservice add_document_comment result ".print_r($result, true));
-			
+
 			$response = KTWebService::_status(KTWS_SUCCESS);
 	    	$response['message'] = $result;
-	    	
+
 	    	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
 		}
 		catch (Exception $e)
 		{
 			$this->error("add_document_comment - cannot add comment $comment for document $document_id  - "  . $e->getMessage());
-			
+
 			$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
 			$response['message'] = $e->getMessage();
-    		
+
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
-		}    	
+		}
 	}
-	
+
 	/**
 	 * Gets the user's recently viewed documents
 	 *
@@ -4605,13 +4623,13 @@ class KTWebService
 	function get_user_document_browse_history($session_id, $limit = -1)
 	{
 		$this->debug("get_user_document_browse_history('$session_id', $limit)");
-		
+
 		$kt = &$this->get_ktapi($session_id );
 		if (is_array($kt))
     	{
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
     	}
-    	
+
     	$aOptions = NULL;
 
     	if ($limit > 0)
@@ -4619,25 +4637,25 @@ class KTWebService
     		$aOptions = array();
     		$aOptions['limit'] = $limit;
     	}
-    	
+
     	$items = &$kt->getRecentlyViewedDocuments($aOptions);
-    	
+
     	$collection = array();
-    	
+
 		foreach ($items as $item)
 		{
 			$detail = $this->get_document_detail($session_id, $item->getDocumentId());
-			
+
 			if ($detail->value['status_code'] != 0)
 			{
 				continue;
 			}
 			$collection[] = $detail->value;
 		}
-		
+
 		$this->debug("get_user_document_browse_history collection ".print_r($collection, true));
 		$this->debug("get_user_document_browse_history collection size ".count($collection));
-		
+
 		$response=array();
     	$response['status_code'] = KTWS_SUCCESS;
 		$response['message'] = empty($collection)?_kt('No documents were found'):'';
