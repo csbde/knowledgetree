@@ -1469,7 +1469,7 @@ CREATE TABLE `shared_content` (
   `object_type` enum('folder', 'document') DEFAULT 'document', 
   `permissions` int(1) NOT NULL DEFAULT 0, 
   INDEX (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `status_lookup`

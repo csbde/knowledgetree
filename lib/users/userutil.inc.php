@@ -172,24 +172,7 @@ class KTUserUtil {
                $failedUsers[] = $email;
                continue;
             }
-            
-            if ($type == 'shared') {
-                // insert into shared content table
-                $fields = array('user_id' => $user->getId(), 'object_id' => $objectId, 'object_type' => $objectType, 'permissions' => $permissions);
-                $result = DBUtil::autoInsert('shared_content', $fields);
-                if (PEAR::isError($result)) {
-                    // TODO remove the database entry?
-                    $default->log->error("Invite users. Error on adding folders for user ({$email}) - {$result->getMessage()}");
-                    $failedUsers[] = $email;
-                    continue;
-                }
-            }
-            
-            $invitedUsers[] = array('id' => $user->getId(), 'email' => $email);
-			if($type == 'share')
-			{
-				self::addSharedContent($user->getId(), $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
-			}
+			
             if ($group !== false) {
                $res = $group->addMember($user);
                if (PEAR::isError($res)) {
@@ -197,6 +180,12 @@ class KTUserUtil {
                    continue;
                }
             }
+            
+			if($type == 'shared') {
+				self::addSharedContent($user->getId(), $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
+			}
+            
+            $invitedUsers[] = array('id' => $user->getId(), 'email' => $email);
     	}
 
     	// Send invitation
