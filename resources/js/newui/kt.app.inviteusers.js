@@ -38,36 +38,31 @@ kt.app.inviteusers=new function(){
     // userType of 'shared' means shared user, else regular user
     this.inviteUsers  =  function(userType) {
         emails = document.getElementById('invite.emails').value;
-        
         if (emails.length < 3) {
 	        //document.getElementById('invite.errormsg').style.display = 'block';
 	        alert('Please enter a valid email address.');
-	        self.disableInviteButton();
 	    } else {
-    	    kt.api.inviteUsers(emails, group, self.inviteCallback, function(){});
+	        if (userType == 'shared') {
+	            group = null;
+		        var sharedData = new Array();
+		        readOnly = jQuery('#readonly:checkbox:checked').val();
+		        // 0 = read only, 1 = write
+		        perm = (readOnly === undefined) ? 1 : 0;
+		        sharedData['permission'] = perm;
+		        sharedData['object_id'] = document.getElementById('object.id').value;
+		        sharedData['object_type'] = document.getElementById('object.type').value;
+	        }
+	        else {
+	            group = document.getElementById('invite.grouplist').value;
+	            userType = 'invited';
+	            objectId = null;
+	            objectType = null;
+	            permissions = null;
+	        }
+
+	        kt.api.inviteUsers(emails, group, userType, sharedData, self.inviteCallback, function() {});
 	    }
 	    
-        if (userType == 'shared') {
-            permissions = document.getElementById('invite.permissions').value;
-            group = null;
-        }
-        else {
-            group = document.getElementById('invite.grouplist').value;
-            userType = 'invited';
-            objectId = null;
-            objectType = null;
-            permissions = null;
-        }
-        
-        var sharedData = new Array();
-        readOnly = jQuery('#readonly:checkbox:checked').val();
-        // 0 = read only, 1 = write
-        perm = (readOnly === undefined) ? 0 : 1;
-        sharedData['permission'] = perm;
-        sharedData['object_id'] = jQuery('#object.id').val();
-        sharedData['object_type'] = jQuery('#object.type').val();
-        
-        kt.api.inviteUsers(emails, group, userType, sharedData, self.inviteCallback, function() {});
 	    self.disableInviteButton();
 	}
 
@@ -173,10 +168,10 @@ kt.app.inviteusers=new function(){
         self.inviteWindow = inviteWin;
         inviteWin.show();
         // Check if an object has been shared
-        if ((objectId != null) && (objectType != null)) {
+        if ((objectId != null) && (objectType != null))
         {
-        	jQuery('#object.id').attr('value', objectId);
-        	jQuery('#object.type').attr('value', objectType);
+        	document.getElementById('object.id').value = objectId;
+        	document.getElementById('object.type').value = objectType;
         }
         
 	    self.disableInviteButton();
