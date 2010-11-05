@@ -39,7 +39,7 @@
 require_once(KT_LIB_DIR . '/users/User.inc');
 
 class KTUserUtil {
-    
+
     public static function createUser($username, $name, $password = null, $email_address = null, $email_notifications = false, $mobile_number = null, $max_sessions = 3, $source_id = null, $details = null, $details2 = null, $disabled_flag = 0)
     {
         global $default;
@@ -119,7 +119,7 @@ class KTUserUtil {
     public static function inviteUsersByEmail($addressList, $group = null, $type = null)
     {
         if (empty($addressList)) {
-            $response = array('invited' => 0, 'group' => '', 'type' => '', 'check' => 0);
+            $response = array('invited' => 0, 'existing' => '', 'failed' => '', 'group' => '', 'type' => '', 'check' => 0);
             return $response;
         }
 
@@ -131,9 +131,9 @@ class KTUserUtil {
         $groupName = '';
 
     	$inSystemList = self::checkUniqueEmail($addressList);
-    	if ($type == 'invited') {
+    	/*if ($type == 'invited') {
     	   $availableLicenses = (int)BaobabKeyUtil::availableUserLicenses();
-    	}
+    	}*/
 
     	// loop through any addresses that currently exist and unset them in the invitee list
     	$addressList = array_flip($addressList);
@@ -188,14 +188,30 @@ class KTUserUtil {
     	    self::sendInvitations($invitedUsers);
     	}
 
-    	$check = 0;
     	$numInvited = count($invitedUsers);
-    	if ($type == 'invited') {
+
+    	$check = 0;
+    	/*if ($type == 'invited') {
     	   $check = self::checkUserLicenses($numInvited, $availableLicenses);
+    	}*/
+
+    	// Format the list of existing users
+    	$existing = '';
+    	if (!empty($existingUsers)){
+    	    foreach ($existingUsers as $item){
+    	        $existing .= '<li>'.$item['name'] .' ('. $item['email'] .')</li>';
+    	    }
     	}
 
-    	//$response = array('existing' => $existingUsers, 'failed' => $failedUsers, 'invited' => $invitedUsers, 'group' => $groupName, 'check' => $check, 'licenses' => $availableLicenses);
-    	$response = array('invited' => $numInvited, 'group' => $groupName, 'type' => $type, 'check' => $check);
+    	// Format the list of failed email addresses
+    	$failed = '';
+    	if (!empty($failedUsers)){
+    	    foreach ($failedUsers as $item){
+    	        $failed .= '<li>'.$item .'</li>';
+    	    }
+    	}
+
+    	$response = array('invited' => $numInvited, 'existing' => $existing, 'failed' => $failed, 'group' => $groupName, 'type' => $type, 'check' => $check);
     	return $response;
     }
 
@@ -308,7 +324,7 @@ class KTUserUtil {
 
         return $result;
     }
-    
+
 }
 
 
