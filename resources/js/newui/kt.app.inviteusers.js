@@ -1,6 +1,9 @@
 /* Initializing kt.app if it wasn't initialized before */
 if(typeof(kt.app)=='undefined')kt.app={};
 
+/* Initializing kt.api if it wasn't initialized before */
+if(typeof(kt.api)=='undefined')kt.api={};
+
 /**
  * Dialog for inviting new licensed users to the system
  */
