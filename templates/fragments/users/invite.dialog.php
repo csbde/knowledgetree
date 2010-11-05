@@ -29,7 +29,7 @@ $aGroupsList = getGroupsList();
 
     <tr>
         <td colspan="2" valign="top">
-            Enter or copy and paste the email addresses of the user in your organization you want to invite to use KnowledgeTree.
+            Enter or copy and paste the email addresses of the user(s) in your organization you want to invite to use KnowledgeTree (separate email addresses with a space or comma).
         </td>
     </tr>
 
