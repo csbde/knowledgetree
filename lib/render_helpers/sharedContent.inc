@@ -45,20 +45,23 @@ class SharedContent extends KTEntity {
     public $iUserId; // user id of owner
     public $iObjectId; // object id of document or folder
     public $sType; // object type if folder or document
+    public $iPermission; // permission on object
 
     public $_aFieldToSelect = array(
         "iUserId" => "user_id",
         "iObjectId" => "object_id",
         "sType" => "type",
+        "iPermission" => "permission",
     );
     
     public $_bUsePearError = true;
     
-	public function __construct() 
+	public function __construct($iUserId, $iObjectId, $sType, $iPermission) 
     {
-		$this->iUserId = '';
-		$this->iObjectId = '';
-		$this->sType = '';
+		$this->iUserId = $iUserId;
+		$this->iObjectId = $iObjectId;
+		$this->sType = $sType;
+		$this->iPermission = $iPermission;
     }
     
     /**
@@ -121,7 +124,7 @@ class SharedContent extends KTEntity {
     */
     public function getUsersSharedContents($iUserId = null, $aOptions = null) 
     {
-    	$sql = "SELECT sc.object_id as id, dmv.name AS title, dtl.name AS document_type, dcv.filename AS filename, dcv.storage_path AS storage_path, dcv.has_rendition AS has_rendition, dcv.size AS filesize, dcv.major_version as major_version, dcv.minor_version AS minor_version, cu.name as created_by, cu.name AS owned_by, mu.name as modified_by, d.created AS created_date, d.modified AS modified_date, d.immutable AS is_immutable, d.is_checked_out AS is_checked_out, d.checked_out_user_id AS checked_out_by, d.checkedout AS checked_out_date, d.linked_document_id as linked_document_id, mt.id AS mimetypeid, mt.mimetypes AS mime_type, mt.icon_path AS mime_icon_path 
+    	$sql = "SELECT sc.object_id as id, sc.permission AS object_permission, dmv.name AS title, dtl.name AS document_type, dcv.filename AS filename, dcv.storage_path AS storage_path, dcv.has_rendition AS has_rendition, dcv.size AS filesize, dcv.major_version as major_version, dcv.minor_version AS minor_version, cu.name as created_by, cu.name AS owned_by, mu.name as modified_by, d.created AS created_date, d.modified AS modified_date, d.immutable AS is_immutable, d.is_checked_out AS is_checked_out, d.checked_out_user_id AS checked_out_by, d.checkedout AS checked_out_date, d.linked_document_id as linked_document_id, mt.id AS mimetypeid, mt.mimetypes AS mime_type, mt.icon_path AS mime_icon_path 
     			FROM `shared_content` as sc, documents AS d, document_metadata_version AS dmv, document_types_lookup AS dtl, document_content_version AS dcv, users AS cu, users AS mu, mime_types AS mt 
     			WHERE sc.type = 'document' AND d.id = sc.object_id AND sc.user_id='$iUserId' AND d.metadata_version_id = dmv.id AND dmv.document_type_id = dtl.id AND d.id = dcv.document_id AND d.creator_id = cu.id AND d.modified_user_id = mu.id AND dcv.mime_id = mt.id";
     	$documents = DBUtil::getResultArray($sql);
