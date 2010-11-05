@@ -570,12 +570,9 @@ class siteapi extends client_service{
         // Check against DB to ensure uniqueness
         $emailList = array_unique($matches[0]);
 		// Send invite email
-        $response = KTUserUtil::inviteUsersByEmail($emailList, $params['group'], $params['type'], $params['shared']);
+        $response = KTUserUtil::inviteUsersByEmail($emailList, $params['group'], $params['userType'], $params['sharedData']);
 
-        $default->log->error("Invited response: " . print_r($response, true));
-
-        // not used
-        /*$retUsers = array();*/
+        $default->log->debug("Invited response: " . print_r($response, true));
 
         $this->addResponse('invitedUsers', json_encode($response));
     }

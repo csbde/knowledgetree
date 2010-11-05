@@ -116,7 +116,7 @@ class KTUserUtil {
      * @param boolean $type licensed | unlicensed
      * @return array The lists of newly invited users, failed invitations and already existing users
      */
-    public static function inviteUsersByEmail($addressList, $group = null, $type = null, $aShareContent = null)
+    public static function inviteUsersByEmail($addressList, $group = null, $type = null, $shareContent = null)
     {
         if (empty($addressList)) {
             $response = array('invited' => 0, 'existing' => '', 'failed' => '', 'group' => '', 'type' => '', 'check' => 0);
@@ -172,10 +172,23 @@ class KTUserUtil {
                $failedUsers[] = $email;
                continue;
             }
+            
+            if ($type == 'shared') {
+                // insert into shared content table
+                $fields = array('user_id' => $user->getId(), 'object_id' => $objectId, 'object_type' => $objectType, 'permissions' => $permissions);
+                $result = DBUtil::autoInsert('shared_content', $fields);
+                if (PEAR::isError($result)) {
+                    // TODO remove the database entry?
+                    $default->log->error("Invite users. Error on adding folders for user ({$email}) - {$result->getMessage()}");
+                    $failedUsers[] = $email;
+                    continue;
+                }
+            }
+            
             $invitedUsers[] = array('id' => $user->getId(), 'email' => $email);
 			if($type == 'share')
 			{
-				self::addSharedContent($user->getId(), $aShareContent['object_id'], $aShareContent['object_type'], $aShareContent['permission']);
+				self::addSharedContent($user->getId(), $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
 			}
             if ($group !== false) {
                $res = $group->addMember($user);
@@ -218,7 +231,7 @@ class KTUserUtil {
 
     	foreach ($existingUsers as $existingUser)
     	{    		
-    		self::addSharedContent($existingUser['id'], $aShareContent['object_id'], $aShareContent['object_type'], $aShareContent['permission']);
+    		self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
     	}
 
     	return $response;

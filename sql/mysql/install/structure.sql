@@ -1466,7 +1466,8 @@ CREATE TABLE `search_saved_events` (
 CREATE TABLE `shared_content` (
   `user_id` INT NOT NULL, 
   `object_id` INT NOT NULL, 
-  `type` enum('folder', 'document') DEFAULT 'document', 
+  `object_type` enum('folder', 'document') DEFAULT 'document', 
+  `permissions` int(1) NOT NULL DEFAULT 0, 
   INDEX (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;;
 

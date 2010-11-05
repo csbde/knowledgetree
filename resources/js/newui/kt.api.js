@@ -119,12 +119,12 @@ kt.api = new function() {
 
     /* Invite users related functionality */
 
-	this.inviteUsers = function(addresses, group, type, shared, callback, errorCallback) {
+	this.inviteUsers = function(addresses, group, type, sharedData, callback, errorCallback) {
 		var params = {};
 		params.addresses = addresses;
 		params.group = group;
 		params.type = type;
-		params.shared = shared;
+		params.sharedData = sharedData;
 		var synchronous = false;
 		var func = 'siteapi.inviteUsers';
 		if (callback === true) {

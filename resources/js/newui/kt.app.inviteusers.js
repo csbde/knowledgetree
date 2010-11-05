@@ -10,7 +10,7 @@ kt.app.inviteusers=new function(){
     var fragments = this.fragments = ['users/invite.shared.dialog'];
 
     //contains a list of executable fragments that will get preloaded
-    var execs = this.execs = ['users/invite.dialog', 'users/invite.confirm.dialog'];
+    var execs = this.execs = ['users/invite.dialog', 'users/invite.shared.dialog', 'users/invite.confirm.dialog'];
 
     //scope protector. inside this object referrals to self happen via 'self' rather than 'this' to make sure we call the functionality within the right scope.
     var self = this;
@@ -32,21 +32,31 @@ kt.app.inviteusers=new function(){
     this.inviteWindow = null;
 
     // send the invites and add the users to the system
-    this.inviteUsers  =  function() {
-        e = document.getElementById('invite.grouplist');
-        e2 = document.getElementById('invite.emails');
-        group = ((e == null) || (e.value === undefined)) ? null : e.value;
-        type = ((e == null) || (e.value === undefined)) ? 'shared' : 'invited';
-        emails = e2.value;
+    // userType of 'shared' means shared user, else regular user
+    this.inviteUsers  =  function(userType) {
+        if (userType == 'shared') {
+            permissions = document.getElementById('invite.permissions').value;
+            group = null;
+        }
+        else {
+            group = document.getElementById('invite.grouplist').value;
+            userType = 'invited';
+            objectId = null;
+            objectType = null;
+            permissions = null;
+        }
+        
+        emails = document.getElementById('invite.emails').value;
+        
         var sharedData = new Array();
-        objectid = jQuery('.object_id').val();
-        objecttype = jQuery('.object_type').val();
-        e3 = jQuery('#readonly:checkbox:checked').val();
-        perm = (e3 === undefined) ? 0 : 1;
+        readOnly = jQuery('#readonly:checkbox:checked').val();
+        // 0 = read only, 1 = write
+        perm = (readOnly === undefined) ? 0 : 1;
         sharedData['permission'] = perm;
-        sharedData['object_id'] = objectid;
-        sharedData['object_type'] = objecttype;
-        kt.api.inviteUsers(emails, group, type, sharedData, self.inviteCallback, function() {});
+        sharedData['object_id'] = jQuery('#object.id').val();
+        sharedData['object_type'] = jQuery('#object.type').val();
+        
+        kt.api.inviteUsers(emails, group, userType, sharedData, self.inviteCallback, function() {});
 	    self.disableInviteButton();
 	}
 
@@ -54,7 +64,7 @@ kt.app.inviteusers=new function(){
     // displays a confirmation dialog listing the users and group
     this.inviteCallback = function(result) {
         // get the response from the server
-	    // array('invited' => $numInvited, 'existing' => $existingUsers, 'failed' => $failedUsers, 'group' => $groupName, 'type' => $type, 'check' => $check);
+	    // array('invited' => $numInvited, 'existing' => $existingUsers, 'failed' => $failedUsers, 'group' => $groupName, 'userType' => $userType, 'check' => $check);
         var response = result.data.invitedUsers;
         var list = jQuery.parseJSON(response);
 
@@ -63,6 +73,7 @@ kt.app.inviteusers=new function(){
         var check = list.check;
 	    var existing = list.existing;
 	    var failed = list.failed;
+	    var userType = list.userType;
 
         var inviteConfirmWin = new Ext.Window({
             id              : 'extinviteconfirmwindow',
@@ -82,7 +93,7 @@ kt.app.inviteusers=new function(){
         });
 
         self.closeWindow();
-        self.inviteConfirmWin=inviteConfirmWin;
+        self.inviteConfirmWin = inviteConfirmWin;
         inviteConfirmWin.show();
 
         // display the list of invited users
@@ -96,16 +107,16 @@ kt.app.inviteusers=new function(){
         }
 
         // display any failed emails
-        if(failed == ''){
+        if (failed == '') {
             document.getElementById('showFailedUsers').style.display = 'none';
-        }else{
+        } else {
             document.getElementById('failedUsers').innerHTML = failed;
         }
 
 	    // display the select group
-	    if(group == ''){
+	    if (group == '') {
 	        document.getElementById('showInvitedGroup').innerHTML = '';
-	    }else{
+	    } else {
 	       document.getElementById('invitedGroup').innerHTML = group;
 	    }
 
@@ -123,7 +134,10 @@ kt.app.inviteusers=new function(){
 		var btn = jQuery('#invite_actions_invite_btn');
     	btn.attr('disabled', 'true');
 	}
-    //ENTRY POINT: Calling this function will set up the environment, display the dialog,
+	
+    // ENTRY POINT: Calling this function will set up the environment, display the dialog,
+    //              and hook up the AjaxUploader callbacks to the correct functions.
+    // objectId, if set, identifies a share with a non-licensed user for a selected object (folder or document)
     this.showInviteWindow = function(objectId, objectType) {
         var inviteWin = new Ext.Window({
             id              : 'extinvitewindow',
@@ -144,14 +158,15 @@ kt.app.inviteusers=new function(){
 
         self.inviteWindow = inviteWin;
         inviteWin.show();
-	    self.disableInviteButton();
-        document.getElementById('invite.emails').focus();
         // Check if an object has been shared
-        if(objectType != undefined)
+        if ((objectId != null) && (objectType != null)) {
         {
-        	jQuery('.object_id').attr('value', objectId);
-        	jQuery('.object_type').attr('value', objectType);
+        	jQuery('#object.id').attr('value', objectId);
+        	jQuery('#object.type').attr('value', objectType);
         }
+        
+	    self.disableInviteButton();
+        document.getElementById('invite.emails').focus();   
     }
 
     this.closeWindow = function() {

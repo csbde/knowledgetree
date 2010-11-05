@@ -28,18 +28,27 @@
     </tr>
     
     <tr>
+        <td valign="top">
+            Permissions:
+        </td>
+        <td valign="top">
+            <select name="invite.permissions" id="invite.permissions">
+                <option value="">-- Select permissions --</option>
+                <option value="read">Read</option>
+                <option value="write">Write</option>
+            </select>
+        </td>
+    </tr>
+    
+    <tr>
         <td width="30%"></td>
         <td width="70%" align="right">
-            <input id="ul_actions_upload_btn" class="ul_actions_btns" type="button" value="Invite" onClick="kt.app.inviteusers.inviteUsers();" />
+            <input id="ul_actions_upload_btn" class="ul_actions_btns" type="button" value="Invite" onClick="kt.app.inviteusers.inviteUsers('shared');" />
             &nbsp;&nbsp;
             <a class="ul_actions_cancel_link" href="javascript: kt.app.inviteusers.closeWindow();">Cancel</a>
+            <input type="hidden" name="object.id" id="object.id" value="">
+            <input type="hidden" name="object.type" id="object.type" value="">
         </td>
     </tr>
 
-    <tr>
-    	<td>
-    		<input type="hidden" value="" class="object_id">
-    		<input type="hidden" value="" class="object_type">
-    	</td>
-    </tr>
 </table>
