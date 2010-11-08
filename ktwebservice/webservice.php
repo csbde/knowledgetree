@@ -197,7 +197,7 @@ class KTWebService
          	array(
          		'status_code' => 'int',
          		'message' => 'string',
-         		'history' => "{urn:$this->namespace}kt_document_comments"
+         		'results' => "{urn:$this->namespace}kt_document_comments"
          		);
          }
 
