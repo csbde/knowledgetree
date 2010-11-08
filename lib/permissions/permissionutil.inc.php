@@ -538,7 +538,7 @@ class KTPermissionUtil {
         if ($oPD->hasRoles(array(-3))) { return true; } // everyone has access.
         else if ($oPD->hasUsers(array($oUser))) { return true; }
         else if ($oPD->hasGroups($aGroups)) { return true; }
-        else if ($oPD->hasRoles(array(-4)) && !$oUser->isAnonymous()) { return true; }
+        else if ($oPD->hasRoles(array(-4)) && !$oUser->isAnonymous() && $oUser->isLicensed()) { return true; }
 
         // permission isn't true, set to false
         KTPermissionUtil::$permArr[$iPermId][$lookup][$iDocId] = false;

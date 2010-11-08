@@ -491,6 +491,10 @@ class User extends KTEntity {
 
     function isAnonymous() { return $this->iId == -2; }
 
+    function isLicensed() {
+        return ($this->bDisabled != 4);
+    }
+
     function disable() {
         $this->setDisabled(1);
         $this->update();

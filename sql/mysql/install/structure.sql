@@ -1458,6 +1458,19 @@ CREATE TABLE `search_saved_events` (
   CONSTRAINT `search_saved_events_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+--
+-- Table structure for table `shared_content`
+--
+
+CREATE TABLE `shared_content` (
+  `user_id` INT NOT NULL, 
+  `object_id` INT NOT NULL, 
+  `object_type` enum('folder', 'document') DEFAULT 'document', 
+  `permissions` int(1) NOT NULL DEFAULT 0, 
+  INDEX (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Table structure for table `status_lookup`
 --

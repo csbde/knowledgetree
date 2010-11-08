@@ -565,11 +565,13 @@ class siteapi extends client_service{
         $regex = "[a-z0-9!#\$%&'\*\+\/=\?\^_`{\|}~\-]+(?:\.[a-z0-9!#\$%&'\*\+\/=\?\^_`{\|}~\-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
         $matches = array();
         preg_match_all("/$regex/i", $params['addresses'], $matches);
-
         // Check against DB to ensure uniqueness
         $emailList = array_unique($matches[0]);
+		// Send invite email
+        $response = KTUserUtil::inviteUsersByEmail($emailList, $params['group'], $params['userType'], $params['sharedData']);
 
-        $response = KTUserUtil::inviteUsersByEmail($emailList, $params['group']);
+        $default->log->debug("Invited response: " . print_r($response, true));
+
         $this->addResponse('invitedUsers', json_encode($response));
     }
 }

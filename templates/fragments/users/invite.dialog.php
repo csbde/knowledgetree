@@ -2,10 +2,9 @@
 include_once('../../ktapi/ktapi.inc.php');
 
 $KT = new KTAPI(3);
-//$KT->get(3);// Set it to Use Web Version 3
 
 //Pick up the session
-$session=KTAPI_UserSession::getCurrentBrowserSession($KT);
+$session = KTAPI_UserSession::getCurrentBrowserSession($KT);
 $KT->start_system_session($session->user->getUserName());
 
 function getGroupsList()
