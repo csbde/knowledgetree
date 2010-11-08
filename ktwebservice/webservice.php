@@ -4615,7 +4615,7 @@ class KTWebService
 			$this->debug("webservice add_document_comment result ".print_r($result, true));
 
 			$response = KTWebService::_status(KTWS_SUCCESS);
-	    	$response['message'] = $result;
+	    	$response['message'] = "Added comment for document $document_id";
 
 	    	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
 		}
