@@ -600,6 +600,7 @@ class KTWebService
                         'history' => "{urn:$this->namespace}kt_document_transaction_history_item"
                   )
             );
+            
          if ($this->version >= 3) {
 	        $this->__typedef["{urn:$this->namespace}kt_document_shortcut"] =
 	         	array(
@@ -966,13 +967,13 @@ class KTWebService
          	 // get_document_comments
          	$this->__dispatch_map['get_document_comments'] =
             array('in' => array('session_id' => 'string', 'document_id' => 'int', 'order' => 'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_document_comments_response"  ),
+             'out' => array('return' => "{urn:$this->namespace}kt_document_comments_response"),
             );
 
              // add_document_comment
          	$this->__dispatch_map['add_document_comment'] =
             array('in' => array('session_id' => 'string', 'document_id' => 'int', 'comment' => 'string'),
-             'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+             'out' => array('return' => "{urn:$this->namespace}kt_response"),
             );
          }
 
@@ -4531,6 +4532,24 @@ class KTWebService
 
 		return new SOAP_Value('return', "{urn:$this->namespace}kt_search_response", $response);
 	}
+	
+	/**
+	 * Encode an array as kt_document_comments
+	 *
+	 * @param array $comments
+	 * @param string $name
+	 * @return SOAP_Value of kt_document_commments
+     * @access private
+     * @static
+	 */
+	function _encode_document_comments($comments, $name = 'results')
+	{
+		foreach($comments as $key => $item)
+		{
+			$comments[$key] = new SOAP_Value('item', "{urn:$this->namespace}kt_document_comment", $item);
+		}
+		return new SOAP_Value($name, "{urn:$this->namespace}kt_document_comments", $comments);
+	}
 
 	/**
 	 * Gets the comments associated with a document
@@ -4558,7 +4577,7 @@ class KTWebService
 			$this->debug("webservice get_document_comments comments ".print_r($comments, true));
 
 			$response = KTWebService::_status(KTWS_SUCCESS);
-	    	$response['results'] = $comments;
+	    	$response['results'] = KTWebService::_encode_document_comments($comments);
 
 	    	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_comments_response", $response);
 		}
