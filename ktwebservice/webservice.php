@@ -670,8 +670,9 @@ class KTWebService
          		'user' => 'string',
          		'metadata_version' => 'string',
          		'content_version' => 'string',
+         		'datetime' => 'string'
          		);
-
+         		
          if ($this->version >= 2)
          {
          	$this->__typedef["{urn:$this->namespace}kt_document_version_history_item"] =
@@ -679,6 +680,7 @@ class KTWebService
          		'user' => 'string',
          		'metadata_version' => 'int',
          		'content_version' => 'float',
+         		'datetime' => 'string'
          		);
          }
 
@@ -1541,7 +1543,7 @@ class KTWebService
      * @access private
      * @static
 	 */
-	function _encode_folder_shortcuts($shortcuts, $name='shortcuts')
+	function _encode_folder_shortcuts($shortcuts, $name = 'shortcuts')
 	{
 		foreach($shortcuts as $key => $item)
 		{
@@ -2346,7 +2348,7 @@ class KTWebService
      * @access private
      * @static
 	 */
-	function _encode_document_shortcuts($shortcuts, $name='shortcuts')
+	function _encode_document_shortcuts($shortcuts, $name = 'shortcuts')
 	{
 		foreach($shortcuts as $key => $item)
 		{
@@ -3785,7 +3787,7 @@ class KTWebService
      * @access private
      * @static
      */
-    function _encode_metadata_fieldset($fieldset, $name='fieldset')
+    function _encode_metadata_fieldset($fieldset, $name = 'fieldset')
     {
     	if (!empty($fieldset['fields']))
     	{
@@ -3803,7 +3805,7 @@ class KTWebService
      * @access private
      * @static
      */
-    function _encode_metadata_fieldsets($fieldsets, $name='metadata')
+    function _encode_metadata_fieldsets($fieldsets, $name = 'metadata')
     {
     	$encoded=array();
     	foreach($fieldsets as $fieldset)
@@ -3826,7 +3828,7 @@ class KTWebService
      * @access private
      * @static
      */
-    function _encode_metadata_response($response, $name='return')
+    function _encode_metadata_response($response, $name = 'return')
     {
         if (empty($response['metadata']))
         {
@@ -4096,7 +4098,7 @@ class KTWebService
     	return new SOAP_Value('return', "{urn:$this->namespace}kt_workflow_transitions_response", $response);
 	}
 
-	function _encode_document_workflow_transitions($transitions, $name='transitions')
+	function _encode_document_workflow_transitions($transitions, $name = 'transitions')
 	{
 		return new SOAP_Value($name, "{urn:$this->namespace}kt_workflow_transitions", $transitions);
 	}
@@ -4151,7 +4153,7 @@ class KTWebService
      * @access private
      * @static
 	 */
-	function _encode_transaction_history($history, $name='history')
+	function _encode_transaction_history($history, $name = 'history')
 	{
 		foreach($history as $key => $item)
 		{
@@ -4209,12 +4211,13 @@ class KTWebService
      * @access private
      * @static
 	 */
-	function _encode_version_history($history, $name='history')
+	function _encode_version_history($history, $name = 'history')
 	{
 		foreach($history as $key => $item)
 		{
 			$history[$key] = new SOAP_Value('item', "{urn:$this->namespace}kt_document_version_history_item", $item);
 		}
+		
 		return new SOAP_Value($name, "{urn:$this->namespace}kt_document_version_history", $history);
 	}
 
@@ -4234,6 +4237,7 @@ class KTWebService
     	{
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_document_version_history_response", $kt);
     	}
+    	
 		$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
 
     	$document = &$kt->get_document_by_id($document_id);
@@ -4299,7 +4303,7 @@ class KTWebService
 		return new SOAP_Value('return', "{urn:$this->namespace}kt_linked_document_response", $response);
 	}
 
-	function _encode_document_links($links, $name='links')
+	function _encode_document_links($links, $name = 'links')
 	{
 		foreach($links as $key => $link)
 		{
@@ -4804,7 +4808,6 @@ class KTWebService
     	if (isset($_SERVER['REQUEST_METHOD'])  && $_SERVER['REQUEST_METHOD'] =='POST')
     	{
     		$request = file_get_contents("php://input");
-
     		$server->service($request);
     	}
     	else
@@ -4821,12 +4824,13 @@ class KTWebService
     			echo $disco->getDISCO();
     		}
     	}
+    	
     	$capture = ob_get_flush();
 		$this->debug($request, 'request', 5);
-    	$this->debug($capture, 'response',5);
+    	$this->debug($capture, 'response', 5);
     	global $_KT_starttime;
-    	$time = number_format(KTUtil::getBenchmarkTime() - $_KT_starttime,2);
-    	$this->debug($time, 'time from start',4);
+    	$time = number_format(KTUtil::getBenchmarkTime() - $_KT_starttime, 2);
+    	$this->debug($time, 'time from start', 4);
     }
 
     function __dispatch($methodname)
