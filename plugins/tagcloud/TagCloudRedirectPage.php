@@ -171,7 +171,7 @@ class TagCloudRedirectPage extends KTStandardDispatcher {
 		
 		
 		//if(!$aTemplateData['oldBrowse']){
-			$browseViewRender = new browseViewHelper();
+			$browseViewRender = browseViewUtil::getSingleton();
 		
 			$aTemplateData['bulkActionMenu']=$browseViewRender->renderBulkActionMenu($aBulkActions);
 			

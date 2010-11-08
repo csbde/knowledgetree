@@ -6,28 +6,29 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once('sharedContent.inc');
 
 /**
- * Utility class to switch between user specific views
+ * Utility class to switch between user specific browse views
  *
  */
 class browseViewUtil
 {
-	
     static function getSingleton() 
     {
     	static $singleton = null;
     	$oUser = User::get($_SESSION['userID']);
     	$userType = $oUser->getDisabled();
-    	switch ($userType)
-    	{
-    		case 0 :
-    			return new userBrowseView();
-    			break;
-    		case 4 :
-    			return new sharedUserBrowseView();
-    			break;
-    		default:
-    			return new userBrowseView();
-    			break;
+    	if (is_null($singleton)) {
+	    	switch ($userType)
+	    	{
+	    		case 0 :
+	    			$singleton = new userBrowseView();
+	    			break;
+	    		case 4 :
+	    			$singleton = new sharedUserBrowseView();
+	    			break;
+	    		default:
+	    			$singleton = new userBrowseView();
+	    			break;
+	    	}
     	}
 
     	return $singleton;
@@ -65,7 +66,7 @@ class sharedUserBrowseView extends browseView
 	public function getFolderContent($folderId,$sortField='title',$asc=true){
 		$oUser = User::get($_SESSION['userID']);
 		$oSharedContent = new SharedContent();
-		$aSharedContent = $oSharedContent->getUsersSharedContents($oUser->getId());
+		$aSharedContent = $oSharedContent->getUsersSharedContents($oUser->getId(), $folderId);
 		$ret = array(	'folders' => array(),
 						'documents'=>array()
 					);
@@ -121,7 +122,7 @@ class sharedUserBrowseView extends browseView
 
 		$item['actions.checkin'] = $item['checked_out_date']?'':$ns;
 		$item['actions.cancel_checkout'] = $item['checked_out_date']?'':$ns;
-		$item['actions.checkout'] = $item['checked_out_date']?$ns:'';
+		$item['actions.checkout'] = ($item['object_permissions'] == 0) ? $ns : $item['checked_out_date'] ? $ns : '';
 
 		//Modifications to perform when the document has been checked out
 		if ($item['checked_out_date']){
@@ -260,6 +261,7 @@ class sharedUserBrowseView extends browseView
 	
 	public function renderFolderItem($item = null, $empty = false, $shortcut = false)
 	{
+		$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['id']));
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
@@ -272,16 +274,6 @@ class sharedUserBrowseView extends browseView
 						</div>
 					</td>
 					<td class="folder summary_cell">
-						<ul class="folder actionMenu">
-							<li class="actionIcon actions">
-									<ul>
-										<li><a href="action.php?kt_path_info=ktcore.actions.folder.rename&fFolderId=[id]">Rename Folder</a></li>
-										<li><a href="action.php?kt_path_info=ktcore.actions.folder.permissions&fFolderId=[id]">Permissions</a></li>
-										<!-- <li><a href="#" onclick=\'alert("JavaScript to be modified")\'>Subscribe to Folder</a></li> -->
-										<li><a href="action.php?kt_path_info=ktcore.actions.folder.transactions&fFolderId=[id]">View Folder Activity</a></li>
-									</ul>
-							</li>
-						</ul>
 						<div class="title"><a class="clearLink" href="[link]">[title]</a></div>
 						<div class="detail"><span class="item">Created by: <span class="creator">[created_by]</span></span></div>
 					</td>
@@ -664,6 +656,8 @@ class browseView {
 								<!-- li class="actionIcon comments"></li -->
 								<li class="actionIcon actions">
 									<ul>
+										<li><a href="#" onclick="javascript:kt.app.inviteusers.showInviteWindow([id],\'[item_type]\');">Share This Document</a></li>
+										<li class="separator[separatorA]"></li>
 										<li class="[actions.download]"><a href="action.php?kt_path_info=ktcore.actions.document.view&fDocumentId=[id]">Download</a></li>
 										<li class="[actions.instant_view]"><a href="[document_link]#preview">Instant View</a></li>
 										[allowdoczohoedit]
