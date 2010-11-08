@@ -5122,15 +5122,20 @@ class KTAPI
     		try
     		{
 		        $comments = Comments::get_comments($document_id, $order);
-
 		        $GLOBALS['default']->log->debug("COMMENTS_API get comments ".print_r($comments, true));
+
+		        // set correct return value types for SOAP webservice
+		        foreach ($comments as $key => $comment) {
+		            $comments[$key]['id'] = (int) $comment['id'];
+		            $comments[$key]['user_id'] = (int) $comment['user_id'];
+		            $comments[$key]['version'] = (int) $comment['version'];
+		        }
 
 		        return $comments;
     		}
     		catch(Exception $e)
     		{
     			$GLOBALS['default']->log->error("COMMENTS_API get comments error ".$e->getMessage());
-
     			throw $e;
     		}
     	}
@@ -5166,7 +5171,6 @@ class KTAPI
     }
 
 }
-
 
 /**
 * This class handles the saved search functionality within the API
