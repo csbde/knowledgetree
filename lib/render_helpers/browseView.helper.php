@@ -11,27 +11,22 @@ require_once('sharedContent.inc');
  */
 class browseViewUtil
 {
-    static function getSingleton() 
+    static function getBrowseView()
     {
-    	static $singleton = null;
     	$oUser = User::get($_SESSION['userID']);
     	$userType = $oUser->getDisabled();
-    	if (is_null($singleton)) {
-	    	switch ($userType)
-	    	{
-	    		case 0 :
-	    			$singleton = new userBrowseView();
-	    			break;
-	    		case 4 :
-	    			$singleton = new sharedUserBrowseView();
-	    			break;
-	    		default:
-	    			$singleton = new userBrowseView();
-	    			break;
-	    	}
+    	switch ($userType)
+    	{
+    		case 0 :
+    			return new userBrowseView();
+    			break;
+    		case 4 :
+    			return new sharedUserBrowseView();
+    			break;
+    		default:
+    			return new userBrowseView();
+    			break;
     	}
-
-    	return $singleton;
 	}
 }
 

@@ -273,7 +273,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 		if ($this->oFolder) { // ?don't quite know why this is in here. Someone reports that it is there for search browsing which seem to be disabled
 			// Source the BrowseView Renderer
-			$renderHelper=browseViewUtil::getSingleton();
+			$renderHelper=browseViewUtil::getBrowseView();
 
 			// Add Return folder id for the multi-file actions
 			$aTemplateData['returndata'] = $this->oFolder->getId();

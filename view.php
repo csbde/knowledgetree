@@ -823,29 +823,26 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
  */
 class viewUtil
 {
-    static function getSingleton() 
+    static function getView() 
     {
-    	static $singleton = null;
     	$oUser = User::get($_SESSION['userID']);
     	$userType = $oUser->getDisabled();
     	switch ($userType)
     	{
     		case 0 :
-    			$singleton = new ViewDocumentDispatcher();
+    			return new ViewDocumentDispatcher();
     			break;
     		case 4 :
-    			$singleton = new sharedViewDocumentDispatcher();
+    			return new sharedViewDocumentDispatcher();
     			break;
     		default:
-    			$singleton = new ViewDocumentDispatcher();
+    			return new ViewDocumentDispatcher();
     			break;
     	}
-
-    	return $singleton;
 	}
 }
 
-$oDispatcher = viewUtil::getSingleton();
+$oDispatcher = viewUtil::getView();
 $oDispatcher->dispatch();
 
 ?>
