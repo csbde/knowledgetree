@@ -41,6 +41,7 @@ require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
+require_once(KT_LIB_DIR . "/users/shareduserutil.inc.php");
 
 /**
  * Base class for document actions within KnowledgeTree
@@ -59,8 +60,6 @@ class KTDocumentAction extends KTStandardDispatcher {
     var $sHelpPage = 'ktcore/browse.html';
 
     var $sSection = 'view_details';
-
-    var $bSharedUser = false;
     /**
  	 * The _bMutator variable determines whether the action described by the class is considered a mutator.
      * Mutators may not act on Immutable documents unless overridden in the code
@@ -89,15 +88,6 @@ class KTDocumentAction extends KTStandardDispatcher {
         );
 
         $this->persistParams('fDocumentId');
-		// TODO : Is this too much overhead
-        if(is_null($oUser))
-        {
-        	$oUser = User::get($_SESSION['userID']);
-        }
-        if($oUser->getDisabled() == 4)
-        {
-			$this->bSharedUser = true;
-        }
         parent::KTStandardDispatcher();
     }
 
@@ -111,7 +101,7 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     function _show() {
     	// If this is a shared user the object permissions are different.
-    	if($this->isSharedUser())
+    	if(KTSharedUserUtil::isSharedUser())
     	{
     		return $this->_shareduser_show();
     	}
@@ -240,16 +230,6 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     function do_main() {
         return _kt('Dispatcher component of action not implemented.');
-    }
-    
-    /**
-     * Check to see if the user is of type shared
-     *
-     * @return unknown
-     */
-    function isSharedUser() 
-    {
-    	return $this->bSharedUser;
     }
     
     /**
