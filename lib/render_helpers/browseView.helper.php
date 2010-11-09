@@ -122,6 +122,7 @@ class sharedUserBrowseView extends browseView
 
 		$item['actions.checkin'] = $item['checked_out_date']?'':$ns;
 		$item['actions.cancel_checkout'] = $item['checked_out_date']?'':$ns;
+		// TODO : Check parent folder.
 		$item['actions.checkout'] = ($item['object_permissions'] == 0) ? $ns : $item['checked_out_date'] ? $ns : '';
 
 		//Modifications to perform when the document has been checked out

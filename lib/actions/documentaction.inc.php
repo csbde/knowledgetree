@@ -60,6 +60,7 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     var $sSection = 'view_details';
 
+    var $bSharedUser = false;
     /**
  	 * The _bMutator variable determines whether the action described by the class is considered a mutator.
      * Mutators may not act on Immutable documents unless overridden in the code
@@ -88,10 +89,22 @@ class KTDocumentAction extends KTStandardDispatcher {
         );
 
         $this->persistParams('fDocumentId');
-
+		// TODO : Is this too much overhead
+        if(is_null($oUser))
+        {
+        	$oUser = User::get($_SESSION['userID']);
+        }
+        if($oUser->getDisabled() == 4)
+        {
+			$this->bSharedUser = true;
+        }
         parent::KTStandardDispatcher();
     }
 
+    function isSharedUser() {
+    	return $this->bSharedUser;
+    }
+    
     function setDocument(&$oDocument) {
         $this->oDocument =& $oDocument;
     }
@@ -101,6 +114,11 @@ class KTDocumentAction extends KTStandardDispatcher {
     }
 
     function _show() {
+    	// If this is a shared user the object permissions are different.
+    	if($this->isSharedUser())
+    	{
+    		return true;
+    	}
         if (is_null($this->_sShowPermission)) {
             return true;
         }
