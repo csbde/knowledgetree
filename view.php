@@ -89,7 +89,6 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
         return true;
     }
     
-
     // FIXME identify the current location somehow.
     public function addPortlets($currentaction = null) {
         $currentaction = $this->sName;
@@ -231,8 +230,7 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
 
         // viewlets.
         $aViewlets = array();
-//        $this->oUser = User::get(1);
-        $aViewletActions = SharedUserDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentviewlet');
+        $aViewletActions = $this->oSharedUserActions->getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentviewlet');
         foreach ($aViewletActions as $oAction) {
             $aInfo = $oAction->getInfo();
 
