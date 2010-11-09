@@ -1,7 +1,7 @@
 <?php
 /**
  * $Id$
- *
+ *	
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
