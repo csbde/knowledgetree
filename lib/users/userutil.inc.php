@@ -138,7 +138,9 @@ class KTUserUtil {
     	// loop through any addresses that currently exist and unset them in the invitee list
     	$addressList = array_flip($addressList);
     	foreach ($inSystemList as $item) {
-    	    unset($addressList[$item['email']]);
+//    	    if ($type != 'shared') {
+    	        unset($addressList[$item['email']]);
+//    	    }
     	    $existingUsers[] = $item;
     	}
     	$addressList = array_flip($addressList);
@@ -222,10 +224,13 @@ class KTUserUtil {
     	}
 
     	$response = array('invited' => $numInvited, 'existing' => $existing, 'failed' => $failed, 'group' => $groupName, 'type' => $type, 'check' => $check);
-
-    	foreach ($existingUsers as $existingUser)
-    	{    		
-    		self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
+    	
+    	// Send invitation
+    	if (($type == 'shared') && !empty($existingUsers)) {    	    
+    	    foreach ($existingUsers as $existingUser) {
+    	        self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
+    	    }
+    	    self::sendInvitations($existingUsers);
     	}
 
     	return $response;
@@ -349,9 +354,9 @@ class KTUserUtil {
 
         $list = implode("', '", $addresses);
 
-        // Filter out deleted users
+        // Filter out deleted users (2) and shared users (4)
         $sql = "SELECT u.id, u.name, u.email, u.disabled FROM users u
-                WHERE email IN ('{$list}') AND disabled !=2;";
+                WHERE email IN ('{$list}') AND disabled != 2";
 
         $result = DBUtil::getResultArray($sql);
 
