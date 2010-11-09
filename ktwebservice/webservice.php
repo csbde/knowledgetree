@@ -3101,8 +3101,8 @@ class KTWebService
     		$content_version_id = $document->get_content_version_id_from_version($version);
     		if (PEAR::isError($content_version_id))
         	{
-        		$response['message'] = $result->getMessage();
-        		$this->debug("download_document - cannot get version $version - "  . $result->getMessage(), $session_id);
+        		$response['message'] = $content_version_id->getMessage();
+        		$this->debug("download_document - cannot get version $version - "  . $content_version_id->getMessage(), $session_id);
         		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
         	}
     	}
