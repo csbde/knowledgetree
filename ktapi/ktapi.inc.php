@@ -177,18 +177,34 @@ class KTAPI
 	protected $version = 3;
 
     private $esig_enabled;
-	
+
 	public $webserviceVersion;
+
+	public function __construct($version = null)
+	{
+	    if (is_numeric($version)) {
+	        $this->version = $version;
+	    } else {
+	        $this->version = LATEST_WEBSERVICE_VERSION;
+	    }
+
+	    $this->esig_enabled = $this->electronic_sig_enabled();
+	}
 
     public function get($webserviceVersion = '')
     {
         $this->esig_enabled = $this->electronic_sig_enabled();
-		
+
 		if ($webserviceVersion == '') {
 			$this->webserviceVersion = LATEST_WEBSERVICE_VERSION;
 		} else {
 			$this->webserviceVersion = $webserviceVersion;
 		}
+    }
+
+    public function getVersion()
+    {
+        return $this->version;
     }
 
  	/**
@@ -716,20 +732,20 @@ class KTAPI
 		$this->session = &$session_object;
 		return $session_object;
 	}
-	
+
 	public function &getCurrentBrowserSession(&$ktapi, $sessionId = null) {
 		if (! is_null ( $this->session )) {
 			$error = new PEAR_Error ( 'A session is currently active.' );
 			return $error;
 		}
-		
+
 		$session_object = &KTAPI_UserSession::getCurrentBrowserSession ($ktapi);
-		
+
 		if (is_null ( $session_object ) || PEAR::isError ( $session_object )) {
 			$error = new PEAR_Error ( 'Session is invalid' );
 			return $error;
 		}
-		
+
 		$this->session = &$session_object;
 		return $session_object;
 	}
@@ -2126,7 +2142,7 @@ class KTAPI
      * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
      * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
      */
-    public function get_folder_contents($folder_id, $depth = 1, $what = 'DFS', $overrideWebServiceVersion = null)
+    public function get_folder_contents($folder_id, $depth = 1, $what = 'DFS')
     {
         $folder = &$this->get_folder_by_id($folder_id);
         if (PEAR::isError($folder)) {
@@ -2134,8 +2150,8 @@ class KTAPI
     	    $response['message'] = $folder->getMessage();
     	    return $response;
         }
-        
-        $listing = $folder->get_listing($depth, $what, $overrideWebServiceVersion);
+
+        $listing = $folder->get_listing($depth, $what);
 
     	$contents = array(
     		'folder_id' => $folder_id + 0,
@@ -2154,11 +2170,11 @@ class KTAPI
     /**
      * Returns the contents of a folder - list of contained documents and folders.
      * Unlike get_folder_contents this function has a default of folders only, and no depth parameter.
-     * 
+     *
      * The main purpose is to return a navigable tree view of the repository.
-     * 
+     *
      * This function does not accept a depth parameter.
-     * 
+     *
      * TODO determine whether to set the depth higher than 100
      * TODO adjust underlying code to allow a depth of 0 or -1 to mean "keep going until there is no more"
      *
@@ -2166,10 +2182,10 @@ class KTAPI
 	 * @access public
      * @param integer $folder_id The id of the folder
      * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
-     * @param 
+     * @param
      * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
      */
-    public function get_folder_tree($folder_id, $what = 'F', $overrideWebServiceVersion = null)
+    public function get_folder_tree($folder_id, $what = 'F')
     {
         $folder = &$this->get_folder_by_id($folder_id);
         if (PEAR::isError($folder)) {
@@ -2177,8 +2193,8 @@ class KTAPI
     	    $response['message'] = $folder->getMessage();
     	    return $response;
         }
-        
-        $listing = $folder->get_listing(-1, $what, $overrideWebServiceVersion);
+
+        $listing = $folder->get_listing(-1, $what);
 
     	$contents = array(
     		'folder_id' => $folder_id + 0,
@@ -2193,7 +2209,7 @@ class KTAPI
 
     	return $response;
     }
-	
+
 	/**
      * Returns the list of documents attached to a tag
      *
@@ -2204,46 +2220,46 @@ class KTAPI
      * @param string $what Filter on what should be returned, takes a combination of the following: D = documents, F = folders, S = shortcuts
      * @return array Response 'results' contains kt_folder_contents | 'message' contains error message on failure
      */
-    public function get_tag_contents($tag, $depth = 1, $what = 'DFS', $overrideWebServiceVersion = null)
+    public function get_tag_contents($tag, $depth = 1, $what = 'DFS')
     {
     	require_once(KT_PLUGIN_DIR . '/tagcloud/TagCloudUtil.inc.php');
-		
+
 		$tagQuery = new TagQuery($this->get_user(), $tag);
-		
+
 		$documentIdsWithTag = $tagQuery->getDocuments(1000, 0, 'filename', 'ASC');
-		
+
 		if (count($documentIdsWithTag) == 0) {
 			$documents = array();
 		} else {
 			$documentIds = '';
 			$comma = '';
-			
+
 			foreach ($documentIdsWithTag as $docId) {
 				$documentIds .= $comma."'{$docId['id']}'";
 				$comma = ', ';
 			}
-			
+
 			// Has to be a better way of doing this
 			$documents =  Document::getList ( array (' id IN (' . $documentIds . ')', ''));
 			$documentsArray = array();
 			foreach ($documents as $document)
 			{
 				$ktapiDocument = KTAPI_Document::get($this, $document->getId());
-				
+
 				if (PEAR::isError($ktapiDocument)) {
-					
+
 				} else {
 					$documentsArray[] = $ktapiDocument->get_detail();
 				}
 			}
-			
+
 			$documents = $documentsArray;
 		}
-		
+
     	$response['status_code'] = 0;
     	$response['message'] = '';
     	$response['results'] = $documents;
-		
+
     	return $response;
     }
 
@@ -2980,7 +2996,7 @@ class KTAPI
 
 		return $update_result;
     }
-    
+
     /**
      * Wrapper for add_document_with_metadata supporting json encoded metadata and sysdata for REST requests
      */
@@ -2990,7 +3006,7 @@ class KTAPI
 		$metadata = json_decode($metadata);
 		$sysdata = json_decode($sysdata);
 
-		return $this->add_document_with_metadata($folder_id, $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata, 
+		return $this->add_document_with_metadata($folder_id, $title, $filename, $documenttype, $tempfilename, $metadata, $sysdata,
 		                                         $sig_username, $sig_password, $reason);
     }
 
@@ -4164,7 +4180,7 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-
+    	
     	$response['status_code'] = 0;
     	$response['history'] = $result;
 		return $response;
@@ -4861,7 +4877,7 @@ class KTAPI
 	    }
         return $response;
 	}
-	
+
 	/**
 	* Method to check whether content version is the latest for a specific document
 	*
@@ -4872,7 +4888,7 @@ class KTAPI
 	* @return bool $response The formatted response array
 	*/
 	public function is_latest_version($documentID, $contentID)
-	{		
+	{
 		$document = $this->get_document_by_id($documentID);
 
  		$maxcontentID = $document->get_content_version();
@@ -4965,7 +4981,7 @@ class KTAPI
 
         return $response;
     }
-	
+
 	/**
 	 * Method to get the Recently Viewed Documents
 	 *
@@ -4978,26 +4994,26 @@ class KTAPI
 			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
             require_once($path.'UserHistoryActions.php');
 			$user = $this->get_user();
-			
+
 			if (is_null($user) || PEAR::isError($user))
 			{
 				$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
 				return $result;
 			}
-			
+
 			//limit to 5 by default
-			if(!isset($aOptions['limit']))
+			if (!isset($aOptions['limit']))
 			{
-				$aOptions['limit'] = 5;				
+				$aOptions['limit'] = 5;
 			}
-			
+
 			return UserHistoryDocumentEntry::getByUser($user, $aOptions);
-			
+
 		} else {
 			return array();
 		}
 	}
-	
+
 	/**
 	 * Method to get the Recently Viewed Folders
 	 *
@@ -5010,20 +5026,20 @@ class KTAPI
 			$path = KTPluginUtil::getPluginPath('brad.UserHistory.plugin');
             require_once($path.'UserHistoryActions.php');
 			$user = $this->get_user();
-			
+
 			if (is_null($user) || PEAR::isError($user))
 			{
 				$result =  new PEAR_Error(KTAPI_ERROR_USER_INVALID);
 				return $result;
 			}
-			
+
 			return UserHistoryFolderEntry::getByUser($user);
-			
+
 		} else {
 			return array();
 		}
 	}
-	
+
 	/**
      * Method to check whether the installation is a commercial edition of KnowledgeTree
      *
@@ -5037,10 +5053,10 @@ class KTAPI
         if (!KTPluginUtil::pluginIsActive('ktdms.wintools')) {
             return false;
         }
-		
+
 		return (BaobabKeyUtil::getLicenseCount() >= MIN_LICENSES);
 	}
-	
+
 	/**
 	 * Method to get the Conditional Metadata Rules
 	 *
@@ -5050,10 +5066,10 @@ class KTAPI
 	public function getConditionalMetadataRules()
 	{
         $ktapi_condRules = new KTAPI_ConditionalMetadata($this);
-		
+
 		return $ktapi_condRules->getConditionalMetadataRules();
 	}
-	
+
 	/**
 	 * Method to get the Conditional Metadata Connections
 	 *
@@ -5063,10 +5079,10 @@ class KTAPI
 	public function getConditionalMetadataConnections()
 	{
         $ktapi_condRules = new KTAPI_ConditionalMetadata($this);
-		
+
 		return $ktapi_condRules->getConditionalMetadataConnections();
 	}
-	
+
 	//COMMENTS
 	/**
      * Method to check whether Comments plugin is enabled
@@ -5078,19 +5094,21 @@ class KTAPI
     public function comments_enabled()
     {
         // Check that the Comments plugin is active and available, return false if not.
-        if (KTPluginUtil::pluginIsActive('comment.feeds.plugin')) 
-        {
+        if (KTPluginUtil::pluginIsActive('comment.feeds.plugin')) {
         	$path = KTPluginUtil::getPluginPath('comment.feeds.plugin');
-        	require_once($path.'comments.php');
-        	
+        	try {
+        	    require_once($path . 'comments.php');
+        	}
+        	catch (Exception $e) {
+        	    return false;
+        	}
+
         	return true;
         }
-        else
-        {
-        	return false;
-        }
+        
+        return false;
     }
-    
+
     /**
      * Get the list of comments on a document ordered by the date created
      *
@@ -5098,30 +5116,42 @@ class KTAPI
      * @return array
      */
     public function get_comments($document_id, $order = 'DESC')
-    {
+    {    	
     	$GLOBALS['default']->log->debug("KTAPI get_comments $document_id $order");
-    	
-    	if ($this->comments_enabled())
-    	{
-    		try
-    		{
+
+    	$response = array('status_code' => null, 'message' => null, 'results' => null);
+
+    	if ($this->comments_enabled()) {
+    		try {
 		        $comments = Comments::get_comments($document_id, $order);
-		        
-		        $GLOBALS['default']->log->debug("COMMENTS_API get comments ".print_r($comments, true));
-		        
-		        return $comments;
+		        $GLOBALS['default']->log->debug("COMMENTS_API get comments " . print_r($comments, true));
+
+		        foreach ($comments as $key => $comment) {
+		            // set correct return value types for SOAP webservice
+		            $comments[$key]['id'] = (int) $comment['id'];
+		            $comments[$key]['user_id'] = (int) $comment['user_id'];
+		            $comments[$key]['version'] = (int) $comment['version'];
+		            // filter values not relevant to comments but relevant to web page feed
+		            // in which comments appear.
+		            unset($comments[$key]['action']);
+		            unset($comments[$key]['version']);
+		        }
+
+		        $response['status_code'] = 0;
+		        $response['results'] = $comments;
     		}
-    		catch(Exception $e)
-    		{
-    			$GLOBALS['default']->log->error("COMMENTS_API get comments error ".$e->getMessage());
-    			
-    			throw $e;
+    		catch (Exception $e) {
+    			$GLOBALS['default']->log->error("COMMENTS_API get comments error {$e->getMessage()}");
+    			// while it would be nice to throw an exception here, that probably won't please the REST webservice
+    			/*throw $e;*/
+		        $response['status_code'] = 1;
+		        $response['message'] = $e->getMessage();
     		}
     	}
-    	
-    	return '';
+
+    	return $response;
     }
-    
+
     /**
      * Add a comment on a document
      *
@@ -5132,25 +5162,27 @@ class KTAPI
     {
     	$GLOBALS['default']->log->debug("KTAPI add_comment $document_id $comment");
     	
-    	if ($this->comments_enabled())
-    	{
-    		try
-    		{
-    			return Comments::add_comment($document_id, $comment);
+    	$response = array('status_code' => null, 'message' => null, 'results' => null);
+
+    	if ($this->comments_enabled()) {
+    		try {
+    			$result = Comments::add_comment($document_id, $comment);
+    			$response['status_code'] = 0;
+		        $response['results'] = $result;
     		}
-    		catch (Exception $e)
-    		{
-    			$GLOBALS['default']->log->error("COMMENTS_API add comment error ".$e->getMessage());
-    			
-    			throw $e;
+    		catch (Exception $e) {
+    			$GLOBALS['default']->log->error("COMMENTS_API add comment error {$e->getMessage()}");
+    			// while it would be nice to throw an exception here, that probably won't please the REST webservice
+    			/*throw $e;*/
+    			$response['status_code'] = 1;
+		        $response['message'] = $e->getMessage();
     		}
     	}
-    	
+
     	return false;
     }
-	
-}
 
+}
 
 /**
 * This class handles the saved search functionality within the API

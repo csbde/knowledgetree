@@ -1,6 +1,9 @@
 /* Initializing kt.app if it wasn't initialized before */
 if(typeof(kt.app)=='undefined')kt.app={};
 
+/* Initializing kt.api if it wasn't initialized before */
+if(typeof(kt.api)=='undefined')kt.api={};
+
 /**
  * The multi-file upload widget. This object contains all the code
  * for the client-side management of single instance of the widget.
@@ -446,6 +449,7 @@ kt.app.upload=new function(){
 	    }*/		
 		
 		var progress = jQuery('.uploadProgress');
+		progress.removeClass('error');
 		progress.text('Adding files ...');
 		progress.css('display', 'block');
 		progress.css('visibility', 'visible');
@@ -470,6 +474,8 @@ kt.app.upload=new function(){
 	    
 	    if(isError) {
 	    	progress.addClass('error');
+	    } else {
+	    	progress.removeClass('error');
 	    }
 	}
 	
