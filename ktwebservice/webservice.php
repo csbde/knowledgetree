@@ -182,8 +182,9 @@ class KTWebService
          		'comment' => 'string',
          		'date' => 'string',
          		'user_name' => 'string',
-         		'action' => 'string',
-         		'version' => 'int'
+         		// action and version are not relevant to comments and are being filtered in ktapi
+         		/*'action' => 'string',
+         		'version' => 'int'*/
          	);
 
          	$this->__typedef["{urn:$this->namespace}kt_document_comments"] =
@@ -1383,6 +1384,7 @@ class KTWebService
     	{
     		$message = $message->getMessage();
     	}
+    	
 		return array('status_code' => $code, 'message' => $message);
     }
 
@@ -4568,7 +4570,7 @@ class KTWebService
 		//$GLOBALS['default']->log->debug("webservice get_document_comments('$session_id', $document_id, '$order')");
 		$this->debug("get_document_comments('$session_id', $document_id, '$order')");
 
-    	$kt = &$this->get_ktapi($session_id );
+    	$kt = &$this->get_ktapi($session_id);
     	if (is_array($kt))
     	{
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $kt);
@@ -4578,16 +4580,23 @@ class KTWebService
 		{
 			$comments = &$kt->get_comments($document_id, $order);
 
-			$this->debug("webservice get_document_comments comments ".print_r($comments, true));
+			$this->debug("webservice get_document_comments comments " . print_r($comments, true));
 
-			$response = KTWebService::_status(KTWS_SUCCESS);
-	    	$response['results'] = KTWebService::_encode_document_comments($comments);
+			if ($comments['status_code'] === 0)
+			{
+                $response = KTWebService::_status(KTWS_SUCCESS);
+	    	    $response['results'] = KTWebService::_encode_document_comments($comments['results']);
+			}
+			else
+			{
+			    $response  = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $response['message']);
+			}
 
 	    	return new SOAP_Value('return', "{urn:$this->namespace}kt_document_comments_response", $response);
 		}
 		catch (Exception $e)
 		{
-			$this->error("get_document_comments - cannot get comments for document $document_id  - "  . $e->getMessage());
+			$this->error("get_document_comments - cannot get comments for document $document_id  - {$e->getMessage()}");
 			$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $e->getMessage());
 			return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
 		}
@@ -4618,8 +4627,14 @@ class KTWebService
 
 			$this->debug("webservice add_document_comment result ".print_r($result, true));
 
-			$response = KTWebService::_status(KTWS_SUCCESS);
-	    	$response['message'] = "Added comment for document $document_id";
+			if ($comments['status_code'] === 0)
+			{
+			    $response = KTWebService::_status(KTWS_SUCCESS, "Added comment for document $document_id");
+			}
+			else
+			{
+			    $response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $result['message']);
+			}
 
 	    	return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
 		}
@@ -4627,8 +4642,7 @@ class KTWebService
 		{
 			$this->error("add_document_comment - cannot add comment $comment for document $document_id  - "  . $e->getMessage());
 
-			$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT);
-			$response['message'] = $e->getMessage();
+			$response = KTWebService::_status(KTWS_ERR_INVALID_DOCUMENT, $e->getMessage());
 
     		return new SOAP_Value('return', "{urn:$this->namespace}kt_response", $response);
 		}
