@@ -41,6 +41,7 @@ require_once(KT_LIB_DIR . '/database/dbutil.inc');
 require_once(KT_LIB_DIR . '/ktentity.inc');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
+
 class SharedContent extends KTEntity {
     public $iUserId; // user id of owner
     public $iObjectId; // object id of document or folder
@@ -260,5 +261,9 @@ class SharedContent extends KTEntity {
     	}
     	return (count($res) > 0);
     }
+    
+
 }
+
+
 ?>
