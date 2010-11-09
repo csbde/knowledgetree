@@ -222,6 +222,9 @@ class SharedContent extends KTEntity {
     /**
      * Check if shared object exists
      *
+     * @param int $iUserId
+     * @param int $iObjectId
+     * @param string $sType
      * @return boolean
      */
     public function exists($iUserId = null, $iObjectId = null, $sType = null)

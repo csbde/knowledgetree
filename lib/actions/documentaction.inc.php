@@ -101,10 +101,6 @@ class KTDocumentAction extends KTStandardDispatcher {
         parent::KTStandardDispatcher();
     }
 
-    function isSharedUser() {
-    	return $this->bSharedUser;
-    }
-    
     function setDocument(&$oDocument) {
         $this->oDocument =& $oDocument;
     }
@@ -117,7 +113,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     	// If this is a shared user the object permissions are different.
     	if($this->isSharedUser())
     	{
-    		return true;
+    		return $this->_shareduser_show();
     	}
         if (is_null($this->_sShowPermission)) {
             return true;
@@ -245,6 +241,32 @@ class KTDocumentAction extends KTStandardDispatcher {
     function do_main() {
         return _kt('Dispatcher component of action not implemented.');
     }
+    
+    /**
+     * Check to see if the user is of type shared
+     *
+     * @return unknown
+     */
+    function isSharedUser() 
+    {
+    	return $this->bSharedUser;
+    }
+    
+    /**
+     * Check permissions on document for shared user
+     *
+     * @return unknown
+     */
+    function _shareduser_show()
+    {
+		// Shared user would not have admin mode
+		// Shared user would not be admin
+		// Check if deleted or archived document
+        $status = $this->oDocument->getStatusID();
+        if (($status == DELETED) || ($status == ARCHIVED)) { return false; }
+		// Shared user permissions are stored in shared_content table
+    	return true;
+    }
 }
 
 class JavascriptDocumentAction extends KTDocumentAction
@@ -357,9 +379,6 @@ class JavascriptDocumentAction extends KTDocumentAction
     	$class = get_class($this);
     	return 'js' .  $class. 'Dispatcher()';
     }
-
-
-
 }
 
 class KTDocumentActionUtil {
