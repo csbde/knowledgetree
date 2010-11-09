@@ -1,1 +1,1 @@
-CREATE TABLE `shared_content` (`user_id` INT NOT NULL, `object_id` INT NOT NULL, `type` enum('folder', 'document') DEFAULT 'document', INDEX (`user_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `shared_content` (`user_id` INT NOT NULL, `object_id` INT NOT NULL, `type` enum('folder', 'document') DEFAULT 'document', `permissions` int(1) NOT NULL DEFAULT 0, INDEX (`user_id`), CONSTRAINT `shared_content_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE);

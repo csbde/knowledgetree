@@ -48,14 +48,6 @@ Ext.onReady(function(){
 			//register as required field
 			kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
 		}
-
-		jQuery('#ul_meta_field_[id]').click(function() {
-			if (jQuery(this).selectedIndex <= 0){
-				kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
-			} else {
-				kt.app.upload.getMetaItem(jQuery('#ul_meta_field_[id]')).registerRequiredFieldDone('ul_meta_field_[id]');
-			}
-		});
 	} 
     
 });

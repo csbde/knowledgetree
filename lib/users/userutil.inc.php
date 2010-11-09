@@ -39,7 +39,7 @@
 require_once(KT_LIB_DIR . '/users/User.inc');
 
 class KTUserUtil {
-    
+
     public static function createUser($username, $name, $password = null, $email_address = null, $email_notifications = false, $mobile_number = null, $max_sessions = 3, $source_id = null, $details = null, $details2 = null, $disabled_flag = 0)
     {
         global $default;
@@ -116,10 +116,10 @@ class KTUserUtil {
      * @param boolean $type licensed | unlicensed
      * @return array The lists of newly invited users, failed invitations and already existing users
      */
-    public static function inviteUsersByEmail($addressList, $group = null, $type = null)
+    public static function inviteUsersByEmail($addressList, $group = null, $type = null, $shareContent = null)
     {
         if (empty($addressList)) {
-            $response = array('invited' => 0, 'group' => '', 'type' => '', 'check' => 0);
+            $response = array('invited' => 0, 'existing' => '', 'failed' => '', 'group' => '', 'type' => '', 'check' => 0);
             return $response;
         }
 
@@ -131,14 +131,16 @@ class KTUserUtil {
         $groupName = '';
 
     	$inSystemList = self::checkUniqueEmail($addressList);
-    	if ($type == 'invited') {
+    	/*if ($type == 'invited') {
     	   $availableLicenses = (int)BaobabKeyUtil::availableUserLicenses();
-    	}
+    	}*/
 
     	// loop through any addresses that currently exist and unset them in the invitee list
     	$addressList = array_flip($addressList);
     	foreach ($inSystemList as $item) {
-    	    unset($addressList[$item['email']]);
+//    	    if ($type != 'shared') {
+    	        unset($addressList[$item['email']]);
+//    	    }
     	    $existingUsers[] = $item;
     	}
     	$addressList = array_flip($addressList);
@@ -172,8 +174,7 @@ class KTUserUtil {
                $failedUsers[] = $email;
                continue;
             }
-            $invitedUsers[] = array('id' => $user->getId(), 'email' => $email);
-
+			
             if ($group !== false) {
                $res = $group->addMember($user);
                if (PEAR::isError($res)) {
@@ -181,6 +182,12 @@ class KTUserUtil {
                    continue;
                }
             }
+            
+			if($type == 'shared') {
+				self::addSharedContent($user->getId(), $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
+			}
+            
+            $invitedUsers[] = array('id' => $user->getId(), 'email' => $email);
     	}
 
     	// Send invitation
@@ -188,17 +195,64 @@ class KTUserUtil {
     	    self::sendInvitations($invitedUsers);
     	}
 
-    	$check = 0;
     	$numInvited = count($invitedUsers);
-    	if ($type == 'invited') {
+
+    	$check = 0;
+    	/*if ($type == 'invited') {
     	   $check = self::checkUserLicenses($numInvited, $availableLicenses);
+    	}*/
+
+    	// Format the list of existing users
+    	$existing = '';
+    	if (!empty($existingUsers)){
+    	    foreach ($existingUsers as $item){
+    	        $existing .= '<li>';
+    	        if (!empty($item['name'])) {
+    	            $existing .= $item['name'] . ' - ';
+    	        }
+
+    	        $existing .= $item['email'] .'</li>';
+    	    }
     	}
 
-    	//$response = array('existing' => $existingUsers, 'failed' => $failedUsers, 'invited' => $invitedUsers, 'group' => $groupName, 'check' => $check, 'licenses' => $availableLicenses);
-    	$response = array('invited' => $numInvited, 'group' => $groupName, 'type' => $type, 'check' => $check);
+    	// Format the list of failed email addresses
+    	$failed = '';
+    	if (!empty($failedUsers)){
+    	    foreach ($failedUsers as $item){
+    	        $failed .= '<li>'.$item .'</li>';
+    	    }
+    	}
+
+    	$response = array('invited' => $numInvited, 'existing' => $existing, 'failed' => $failed, 'group' => $groupName, 'type' => $type, 'check' => $check);
+    	
+    	// Send invitation
+    	if (($type == 'shared') && !empty($existingUsers)) {    	    
+    	    foreach ($existingUsers as $existingUser) {
+    	        self::addSharedContent($existingUser['id'], $shareContent['object_id'], $shareContent['object_type'], $shareContent['permission']);
+    	    }
+    	    self::sendInvitations($existingUsers);
+    	}
+
     	return $response;
     }
 
+    public static function addSharedContent($user_id, $object_id, $object_type, $permission)
+    {
+    	global $default;
+		// Add shared content entry.
+		require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
+		$object_type = ($object_type == 'F') ? 'folder' : 'document';
+		$oSharedContent = new SharedContent($user_id, $object_id, $object_type, $permission);
+		if(!$oSharedContent->exists())
+		{
+			$res = $oSharedContent->create();
+			if (!$res)
+			{
+				$default->log->error("Failed sharing " . ($object_type == 'F') ? "folder" : " file " . " $object_id with invited user id $user_id.");
+			}
+		}
+		
+    }
     /**
      * Check how many licenses are available in the system.
      *
@@ -300,15 +354,15 @@ class KTUserUtil {
 
         $list = implode("', '", $addresses);
 
-        // Filter out deleted users
+        // Filter out deleted users (2) and shared users (4)
         $sql = "SELECT u.id, u.name, u.email, u.disabled FROM users u
-                WHERE email IN ('{$list}') AND disabled !=2;";
+                WHERE email IN ('{$list}') AND disabled != 2";
 
         $result = DBUtil::getResultArray($sql);
 
         return $result;
     }
-    
+
 }
 
 

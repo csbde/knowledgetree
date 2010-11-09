@@ -55,9 +55,8 @@ Ext.onReady(function(){
 		if (cachedVal == undefined) {
 			//register as required field
 			kt.app.upload.getMetaItem(jQuery('#ul_meta_field_htmlEditor_[id]')).registerRequiredFieldNotDone('ul_meta_field_[id]');
+			var requiredDone = false;
 		}
-
-		var requiredDone = false;
 	}
     
 });

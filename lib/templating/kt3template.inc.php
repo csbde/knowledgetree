@@ -428,7 +428,7 @@ class KTPage {
                 }
 
                 if($bCanAdd === true){
-                    $this->userMenu['inviteuser'] = array('label' => _kt('Invite users'), 'url' => '#');
+                    $this->userMenu['inviteuser'] = array('label' => _kt('Invite Users'), 'url' => '#');
                     $this->userMenu['inviteuser']['onclick'] = "javascript:kt.app.inviteusers.showInviteWindow();";
                 }
             }

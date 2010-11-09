@@ -1,8 +1,8 @@
 <?php
 include_once('../../ktapi/ktapi.inc.php');
 
-$KT = new KTAPI();
-$KT->get(3);// Set it to Use Web Version 3
+$KT = new KTAPI(3);
+//$KT->get(3);// Set it to Use Web Version 3
 
 //Pick up the session
 $session=KTAPI_UserSession::getCurrentBrowserSession($KT);
@@ -18,7 +18,7 @@ function getDocTypes(){
 }
 
 
-?> 
+?>
 
     <div>
        <table class="metadataTable" border="0" cellspacing="0" cellpadding="0">
@@ -27,12 +27,12 @@ function getDocTypes(){
 	        	<?php
 	        	  $docTypes=getDocTypes();
 	        	  foreach($docTypes as $docTypeId => $docType):
-	        	   if(!$docType['disabled']): 
+	        	   if(!$docType['disabled']):
 	        	?>
 	        	<option value="<?php echo $docTypeId; ?>" ><?php echo $docType['name']; ?></option>
-	        	
+
 	        	<?php endif; endforeach; ?>
-	        </select>       		
+	        </select>
        	</span></td></tr>
        	<tr><td class="ul_metadata"></td></tr>
        	<tr><td class="ul_meta_actionbar">

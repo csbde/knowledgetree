@@ -1936,10 +1936,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 		// make sure we ge tthe latest
 		$this->clearCache();
 
-		$config = KTConfig::getSingleton();
-		$wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
-
-		$wsversion = 3;
+		$wsversion = $this->ktapi->getVersion();
 
 		$detail = array();
 		$document = $this->document;
@@ -2240,8 +2237,7 @@ class KTAPI_Document extends KTAPI_FolderItem
         	return new KTAPI_Error(KTAPI_ERROR_INTERNAL_ERROR, $transactions  );
         }
 
-        $config = KTConfig::getSingleton();
-		$wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
+		$wsversion = $this->ktapi->getVersion();
 		foreach($transactions as $key=>$transaction)
 		{
 			$transactions[$key]['version'] = (float) $transaction['version'];
@@ -2261,8 +2257,7 @@ class KTAPI_Document extends KTAPI_FolderItem
 	{
 		$metadata_versions = KTDocumentMetadataVersion::getByDocument($this->document);
 
-		$config = KTConfig::getSingleton();
-		$wsversion = $config->get('webservice/version', $this->ktapi->webserviceVersion);
+		$wsversion = $this->ktapi->getVersion();
 
         $versions = array();
         foreach ($metadata_versions as $version)

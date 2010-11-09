@@ -41,6 +41,7 @@ require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
+require_once(KT_LIB_DIR . "/users/shareduserutil.inc.php");
 
 /**
  * Base class for document actions within KnowledgeTree
@@ -59,7 +60,6 @@ class KTDocumentAction extends KTStandardDispatcher {
     var $sHelpPage = 'ktcore/browse.html';
 
     var $sSection = 'view_details';
-
     /**
  	 * The _bMutator variable determines whether the action described by the class is considered a mutator.
      * Mutators may not act on Immutable documents unless overridden in the code
@@ -88,7 +88,6 @@ class KTDocumentAction extends KTStandardDispatcher {
         );
 
         $this->persistParams('fDocumentId');
-
         parent::KTStandardDispatcher();
     }
 
@@ -101,6 +100,11 @@ class KTDocumentAction extends KTStandardDispatcher {
     }
 
     function _show() {
+    	// If this is a shared user the object permissions are different.
+    	if(KTSharedUserUtil::isSharedUser())
+    	{
+    		return $this->_shareduser_show();
+    	}
         if (is_null($this->_sShowPermission)) {
             return true;
         }
@@ -227,6 +231,22 @@ class KTDocumentAction extends KTStandardDispatcher {
     function do_main() {
         return _kt('Dispatcher component of action not implemented.');
     }
+    
+    /**
+     * Check permissions on document for shared user
+     *
+     * @return unknown
+     */
+    function _shareduser_show()
+    {
+		// Shared user would not have admin mode
+		// Shared user would not be admin
+		// Check if deleted or archived document
+        $status = $this->oDocument->getStatusID();
+        if (($status == DELETED) || ($status == ARCHIVED)) { return false; }
+		// Shared user permissions are stored in shared_content table
+    	return true;
+    }
 }
 
 class JavascriptDocumentAction extends KTDocumentAction
@@ -339,9 +359,6 @@ class JavascriptDocumentAction extends KTDocumentAction
     	$class = get_class($this);
     	return 'js' .  $class. 'Dispatcher()';
     }
-
-
-
 }
 
 class KTDocumentActionUtil {

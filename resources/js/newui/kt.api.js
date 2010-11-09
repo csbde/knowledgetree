@@ -119,14 +119,14 @@ kt.api = new function() {
 
     /* Invite users related functionality */
 
-	this.inviteUsers = function(addresses, group, type, callback, errorCallback) {
+	this.inviteUsers = function(addresses, group, userType, sharedData, callback, errorCallback) {
 		var params = {};
 		params.addresses = addresses;
 		params.group = group;
-		params.type = type;
+		params.userType = userType;
+		params.sharedData = sharedData;
 		var synchronous = false;
 		var func = 'siteapi.inviteUsers';
-
 		if (callback === true) {
 			var data = ktjapi.retrieve(func, params, this.cacheTimeout);
 			return data;
