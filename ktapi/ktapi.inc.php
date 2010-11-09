@@ -182,7 +182,7 @@ class KTAPI
 
 	public function __construct($version = null)
 	{
-	    if (is_numeric($version)){
+	    if (is_numeric($version)) {
 	        $this->version = $version;
 	    } else {
 	        $this->version = LATEST_WEBSERVICE_VERSION;
@@ -4180,7 +4180,7 @@ class KTAPI
     		$response['message'] = $result->getMessage();
 			return $response;
     	}
-
+    	
     	$response['status_code'] = 0;
     	$response['history'] = $result;
 		return $response;
@@ -5002,7 +5002,7 @@ class KTAPI
 			}
 
 			//limit to 5 by default
-			if(!isset($aOptions['limit']))
+			if (!isset($aOptions['limit']))
 			{
 				$aOptions['limit'] = 5;
 			}
@@ -5094,17 +5094,19 @@ class KTAPI
     public function comments_enabled()
     {
         // Check that the Comments plugin is active and available, return false if not.
-        if (KTPluginUtil::pluginIsActive('comment.feeds.plugin'))
-        {
+        if (KTPluginUtil::pluginIsActive('comment.feeds.plugin')) {
         	$path = KTPluginUtil::getPluginPath('comment.feeds.plugin');
-        	require_once($path.'comments.php');
+        	try {
+        	    require_once($path . 'comments.php');
+        	}
+        	catch (Exception $e) {
+        	    return false;
+        	}
 
         	return true;
         }
-        else
-        {
-        	return false;
-        }
+        
+        return false;
     }
 
     /**
@@ -5114,28 +5116,40 @@ class KTAPI
      * @return array
      */
     public function get_comments($document_id, $order = 'DESC')
-    {
+    {    	
     	$GLOBALS['default']->log->debug("KTAPI get_comments $document_id $order");
 
-    	if ($this->comments_enabled())
-    	{
-    		try
-    		{
+    	$response = array('status_code' => null, 'message' => null, 'results' => null);
+
+    	if ($this->comments_enabled()) {
+    		try {
 		        $comments = Comments::get_comments($document_id, $order);
+		        $GLOBALS['default']->log->debug("COMMENTS_API get comments " . print_r($comments, true));
 
-		        $GLOBALS['default']->log->debug("COMMENTS_API get comments ".print_r($comments, true));
+		        foreach ($comments as $key => $comment) {
+		            // set correct return value types for SOAP webservice
+		            $comments[$key]['id'] = (int) $comment['id'];
+		            $comments[$key]['user_id'] = (int) $comment['user_id'];
+		            $comments[$key]['version'] = (int) $comment['version'];
+		            // filter values not relevant to comments but relevant to web page feed
+		            // in which comments appear.
+		            unset($comments[$key]['action']);
+		            unset($comments[$key]['version']);
+		        }
 
-		        return $comments;
+		        $response['status_code'] = 0;
+		        $response['results'] = $comments;
     		}
-    		catch(Exception $e)
-    		{
-    			$GLOBALS['default']->log->error("COMMENTS_API get comments error ".$e->getMessage());
-
-    			throw $e;
+    		catch (Exception $e) {
+    			$GLOBALS['default']->log->error("COMMENTS_API get comments error {$e->getMessage()}");
+    			// while it would be nice to throw an exception here, that probably won't please the REST webservice
+    			/*throw $e;*/
+		        $response['status_code'] = 1;
+		        $response['message'] = $e->getMessage();
     		}
     	}
 
-    	return '';
+    	return $response;
     }
 
     /**
@@ -5147,18 +5161,21 @@ class KTAPI
     public function add_comment($document_id, $comment)
     {
     	$GLOBALS['default']->log->debug("KTAPI add_comment $document_id $comment");
+    	
+    	$response = array('status_code' => null, 'message' => null, 'results' => null);
 
-    	if ($this->comments_enabled())
-    	{
-    		try
-    		{
-    			return Comments::add_comment($document_id, $comment);
+    	if ($this->comments_enabled()) {
+    		try {
+    			$result = Comments::add_comment($document_id, $comment);
+    			$response['status_code'] = 0;
+		        $response['results'] = $result;
     		}
-    		catch (Exception $e)
-    		{
-    			$GLOBALS['default']->log->error("COMMENTS_API add comment error ".$e->getMessage());
-
-    			throw $e;
+    		catch (Exception $e) {
+    			$GLOBALS['default']->log->error("COMMENTS_API add comment error {$e->getMessage()}");
+    			// while it would be nice to throw an exception here, that probably won't please the REST webservice
+    			/*throw $e;*/
+    			$response['status_code'] = 1;
+		        $response['message'] = $e->getMessage();
     		}
     	}
 
@@ -5166,7 +5183,6 @@ class KTAPI
     }
 
 }
-
 
 /**
 * This class handles the saved search functionality within the API
