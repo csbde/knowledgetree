@@ -4627,7 +4627,7 @@ class KTWebService
 
 			$this->debug("webservice add_document_comment result ".print_r($result, true));
 
-			if ($comments['status_code'] === 0)
+			if ($result['status_code'] === 0)
 			{
 			    $response = KTWebService::_status(KTWS_SUCCESS, "Added comment for document $document_id");
 			}

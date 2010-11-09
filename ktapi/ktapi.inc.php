@@ -5179,7 +5179,7 @@ class KTAPI
     		}
     	}
 
-    	return false;
+    	return $response;
     }
 
 }
