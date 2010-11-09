@@ -43,6 +43,7 @@ require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 
 class SharedContent extends KTEntity {
+    
     public $iUserId; // user id of owner
     public $iObjectId; // object id of document or folder
     public $sType; // object type if folder or document
@@ -155,7 +156,7 @@ class SharedContent extends KTEntity {
     {
     	$shared_content = 'sc.object_id as id, sc.permissions AS object_permissions, sc.user_id AS user_id';
     	$folders = 'f.name AS title, cu.name as created_by, f.full_path AS full_path';
-    	if($iFolderId == 1)
+    	if ($iFolderId == 1)
     	{
 	    	$sql = "SELECT $shared_content, $folders
 	    			FROM `shared_content` as sc, 
@@ -167,17 +168,22 @@ class SharedContent extends KTEntity {
     	else 
     	{
     		// Check if folder has been shared, before retrieving sub folder listing
-    		if(!$this->exists($iUserId, $iFolderId, 'folder'))
+    		if (!$this->exists($iUserId, $iFolderId, 'folder')) {
     			return false;
+    		}
+    		
 			$sql = "SELECT $shared_content, $folders
 	    			FROM `shared_content` as sc, 
 					folders AS f,
 					users AS cu
 					WHERE sc.type = 'folder' AND sc.object_id = f.id AND f.parent_id = '$iFolderId' AND f.creator_id = cu.id";
     	}
+    	
     	$results = DBUtil::getResultArray($sql);
-    	if (PEAR::isError($results))
+    	if (PEAR::isError($results)) {
     		return false;
+    	}
+    	
     	return $results;
     }
     
@@ -198,24 +204,30 @@ class SharedContent extends KTEntity {
 		$users = 'cu.name as created_by, cu.name AS owned_by, mu.name as modified_by';
 		$documents = 'd.created AS created_date, d.modified AS modified_date, d.immutable AS is_immutable, d.is_checked_out AS is_checked_out, d.checked_out_user_id AS checked_out_by, d.checkedout AS checked_out_date, d.linked_document_id as linked_document_id';
 		$mime_types = 'mt.id AS mimetypeid, mt.mimetypes AS mime_type, mt.icon_path AS mime_icon_path';    	
-    	if($iFolderId == 1)
+		
+    	if ($iFolderId == 1)
     	{
-	    	$sql = "SELECT  $shared_content, $document_metadata_version, $document_types_lookup, $document_content_version, $users, $documents, $mime_types 
-	    			FROM shared_content as sc, documents AS d, document_metadata_version AS dmv, document_types_lookup AS dtl, document_content_version AS dcv, users AS cu, users AS mu, mime_types AS mt 
+	    	$sql = "SELECT $shared_content, $document_metadata_version, $document_types_lookup, $document_content_version, $users, $documents, $mime_types 
+	    			FROM shared_content AS sc, documents AS d, document_metadata_version AS dmv, document_types_lookup AS dtl, document_content_version AS dcv, users AS cu, users AS mu, mime_types AS mt 
 	    			WHERE sc.type = 'document' AND d.id = sc.object_id AND sc.user_id='$iUserId' AND d.metadata_version_id = dmv.id AND dmv.document_type_id = dtl.id AND d.id = dcv.document_id AND d.creator_id = cu.id AND d.modified_user_id = mu.id AND dcv.mime_id = mt.id";
     	}
     	else 
     	{
     		// Check if folder has been shared, before retrieving document listing
-    		if(!$this->exists($iUserId, $iFolderId, 'folder'))
+    		if (!$this->exists($iUserId, $iFolderId, 'folder')) {
     			return false;
+    		}
+    		
     		$sql = "SELECT d.id AS id, $document_metadata_version, $document_types_lookup, $document_content_version, $users, $documents, $mime_types 
     				FROM documents AS d, document_metadata_version AS dmv, document_types_lookup AS dtl, document_content_version AS dcv, users AS cu, users AS mu, mime_types AS mt
     				WHERE d.folder_id = '$iFolderId' AND d.status_id = '1' AND d.metadata_version_id = dmv.id AND dmv.document_type_id = dtl.id AND d.id = dcv.document_id AND d.creator_id = cu.id AND d.modified_user_id = mu.id AND dcv.mime_id = mt.id";
     	}
+    	
     	$results = DBUtil::getResultArray($sql);
-    	if (PEAR::isError($results))
+    	if (PEAR::isError($results)) {
     		return false;
+    	}
+    	
     	return $results;
     }
     
@@ -243,29 +255,74 @@ class SharedContent extends KTEntity {
      *
      * @param int $iUserId
      * @param int $iDocumentId
-     * @param int $iFolderId
+     * @param int $iFolderId [optional]
      * @return boolean
      */
-    static public function canViewDocument($iUserId, $iDocumentId, $iFolderId)
+    static public function canViewDocument($iUserId, $iDocumentId, $iFolderId = null)
     {
     	// TODO : Create one query
     	// Check if document has been shared with user
     	$sql = "SELECT user_id FROM shared_content as sc WHERE (user_id = '{$iUserId}' AND object_id = '{$iDocumentId}' AND type = 'document')";
     	$res = DBUtil::getResultArray($sql);
-    	if(count($res) > 0)
+    	if (count($res) > 0)
     	{
     		return true;
     	}
     	else 
     	{
     		// Check if documents parent folder has been shared with user
-    		$sql = "SELECT user_id FROM shared_content as sc WHERE (user_id = '{$iUserId}' AND object_id = '{$iFolderId}' AND type = 'folder')";
+    		// If folder id was submitted, use, else query for the parent folder
+    		if (empty($iFolderId)) {
+    		    $sql = "SELECT sc.user_id FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = (SELECT folder_id FROM documents d WHERE d.id = '{$iDocumentId}') AND sc.type = 'folder')";
+    		}
+    		else {
+    		    $sql = "SELECT user_id FROM shared_content as sc WHERE (user_id = '{$iUserId}' AND object_id = '{$iFolderId}' AND type = 'folder')";
+    		}
+    		
     		$res = DBUtil::getResultArray($sql);
     	}
+    	
     	return (count($res) > 0);
     }
     
-
+    /**
+     * Check shared user permissions on a document
+     *
+     * @param int $iUserId
+     * @param int $iDocumentId
+     * @param int $iFolderId [optional]
+     * @param int $permissions [optional]
+     * @return boolean
+     */
+    static public function canAccessDocument($iUserId, $iDocumentId, $iFolderId = null, $permissions = 0)
+    {
+    	// TODO : Create one query
+    	// Check if document has been shared with user
+    	$sql = "SELECT user_id FROM shared_content as sc WHERE (user_id = '{$iUserId}' AND object_id = '{$iDocumentId}' AND type = 'document' AND sc.permissions = $permissions)";
+    	$res = DBUtil::getResultArray($sql);
+    	if (count($res) > 0)
+    	{
+    		return true;
+    	}
+    	else 
+    	{
+    		// Check if documents parent folder has been shared with user
+    		// If folder id was submitted, use, else query for the parent folder
+    		if (empty($iFolderId)) {
+    		    $sql = "SELECT sc.user_id FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = (SELECT d.folder_id FROM documents d WHERE d.id = '{$iDocumentId}') AND sc.type = 'folder')";
+    		}
+    		else {
+    		    $sql = "SELECT sc.user_id FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iFolderId}' AND sc.type = 'folder')";
+    		}
+    		
+    		$sql .= " AND sc.permissions = $permissions";
+    		
+    		$res = DBUtil::getResultArray($sql);
+    	}
+    	
+    	return (count($res) > 0);
+    }
+    
 }
 
 
