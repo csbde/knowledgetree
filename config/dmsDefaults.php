@@ -736,7 +736,7 @@ if ($checkup !== true) {
 
 	$res = KTPluginUtil::loadPlugins($sType);
 
-	if(PEAR::isError($res)){
+	if (PEAR::isError($res)) {
 	    // If the plugins aren't loaded, there was a DB error, possibly a DB connection error
 	    $KTInit->showDBError($res);
 	}
@@ -754,6 +754,7 @@ if ($checkup !== true) {
 		$default->versionName = $default->versionName . ' ' . _kt('(Community Edition)');
 	}
 }
+
 if (!extension_loaded('mbstring')) {
 	require_once(KT_LIB_DIR . '/mbstring.inc.php');
 }
