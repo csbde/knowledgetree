@@ -139,7 +139,7 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
         {
             $this->oPage->addError(_kt('This document has been deleted.'));
             return $this->do_error();
-        } else if (!SharedContent::canViewDocument($this->oUser->getId(), $document_id, $oDocument->getFolderID())) 
+        } else if (!SharedContent::canAccessDocument($this->oUser->getId(), $document_id, $oDocument->getFolderID())) 
         {
             $this->oPage->addError(_kt('You are not allowed to view this document'));
             return $this->permissionDenied();
