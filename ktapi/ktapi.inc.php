@@ -713,7 +713,7 @@ class KTAPI
 	* @param string $app The originating application type Webservices|Webdav|Webapp
 	* @return object $session_object SUCCESS - The KTAPI_Session object | FAILURE - an error object
 	*/
-	public function & get_active_session($session, $ip = null, $app='ws')
+	public function & get_active_session($session, $ip = null, $app = 'ws')
 	{
 		if (!is_null($this->session))
 		{
@@ -761,7 +761,7 @@ class KTAPI
 	* @param string $app The originating application type Webservices|Webdav|Webapp
 	* @return object $session SUCCESS - The KTAPI_Session object | FAILURE - an error object
 	*/
-	public function & start_session($username, $password, $ip = null, $app='ws')
+	public function & start_session($username, $password, $ip = null, $app = 'ws')
 	{
 		if (!is_null($this->session))
 		{
