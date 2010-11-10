@@ -250,8 +250,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
 	function do_main() {
 		//Client-side pagination options
-		$pageCount=1;
-		$perPage=15;
+		$pageCount = 1;
+		$perPage = 15;
 
 		// Prepare Multi-File Actions
 		$aBulkActions = KTBulkActionUtil::getAllBulkActions();
