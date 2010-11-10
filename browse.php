@@ -152,11 +152,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			//If we came here from a shortcut, the breadcrumbspath should be relative
 			//to the shortcut folder.
 			$iSymLinkFolderId = KTUtil::arrayGet($_REQUEST, 'fShortcutFolder', null);
-			if(is_numeric($iSymLinkFolderId)){
+			if(is_numeric($iSymLinkFolderId)) {
 				$oBreadcrumbsFolder = Folder::get($iSymLinkFolderId);
 				$this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oBreadcrumbsFolder,array('final' => false)));
 				$this->aBreadcrumbs[] = array('name'=>$oFolder->getName());
-			}else{
+			} else {
 				$this->aBreadcrumbs = kt_array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForFolder($oFolder));
 			}
 			$this->oFolder =& $oFolder;
