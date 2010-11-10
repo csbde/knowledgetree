@@ -60,6 +60,10 @@ class KTDocumentAction extends KTStandardDispatcher {
     var $sHelpPage = 'ktcore/browse.html';
 
     var $sSection = 'view_details';
+    
+	var $showIfRead = false;
+	var $showIfWrite = false;
+	var $objectPermission = false;
     /**
  	 * The _bMutator variable determines whether the action described by the class is considered a mutator.
      * Mutators may not act on Immutable documents unless overridden in the code
@@ -86,8 +90,8 @@ class KTDocumentAction extends KTStandardDispatcher {
         $this->aBreadcrumbs = array(
             array('action' => 'browse', 'name' => _kt('Browse')),
         );
-
         $this->persistParams('fDocumentId');
+		
         parent::KTStandardDispatcher();
     }
 
@@ -95,6 +99,17 @@ class KTDocumentAction extends KTStandardDispatcher {
         $this->oDocument =& $oDocument;
     }
 
+    function setDocumentPermission()
+    {
+        if(SharedUserUtil::isSharedUser())
+        {
+			$iUserId = $this->oUser->getID();
+			$iDocumentId = $this->oDocument->getID();
+			$iFolderId = $this->oDocument->getFolderID();
+			$this->objectPermission = SharedContent::getDocumentPermissions($iUserId, $iDocumentId, $iFolderId);
+        }
+    }
+    
     function setUser(&$oUser) {
         $this->oUser =& $oUser;
     }
@@ -103,7 +118,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     	// If this is a shared user the object permissions are different.
     	if(SharedUserUtil::isSharedUser())
     	{
-    		return $this->_shareduser_show();
+    		return $this->shareduser_show();
     	}
         if (is_null($this->_sShowPermission)) {
             return true;
@@ -237,15 +252,35 @@ class KTDocumentAction extends KTStandardDispatcher {
      *
      * @return unknown
      */
-    function _shareduser_show()
+    function shareduser_show()
     {
 		// Shared user would not have admin mode
 		// Shared user would not be admin
+		// Shared user permissions are stored in shared_content table
 		// Check if deleted or archived document
         $status = $this->oDocument->getStatusID();
         if (($status == DELETED) || ($status == ARCHIVED)) { return false; }
-		// Shared user permissions are stored in shared_content table
-    	return true;
+		// Check if actions display for both users
+		if($this->showIfRead && $this->showIfWrite)
+		{
+			return true;
+		}
+		// Check if action does not have to be displayed
+		else if(!$this->showIfRead && !$this->showIfWrite)
+		{
+			return false;
+		}
+		// Check if action needs to be hidden for
+		else if(!$this->showIfRead)
+		{
+			$this->setDocumentPermission();
+			if($this->objectPermission == 1)
+			{
+				return true;
+			}
+		}
+		
+		return false;
     }
 }
 

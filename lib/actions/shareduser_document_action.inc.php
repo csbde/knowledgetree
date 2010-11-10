@@ -48,13 +48,9 @@ class SharedUserDocumentActionUtil extends KTDocumentActionUtil
 	 * @var array
 	 */
 	private $readwrite_actions = array(		'ktcore.actions.document.displaydetails', 
-											'ktcore.actions.document.transactionhistory',
-											'ktcore.actions.document.versionhistory',
 											'ktcore.actions.document.cancelcheckout',
 											'ktcore.actions.document.checkin',
 											'ktcore.actions.document.checkout',
-											'ktcore.actions.document.edit',
-											'ktcore.actions.document.rename',
 											'ktcore.actions.document.view',
 											'ktcore.actions.document.workflow',
 											'instaview.processor.link',
@@ -69,8 +65,6 @@ class SharedUserDocumentActionUtil extends KTDocumentActionUtil
 	 * @var array
 	 */
 	private $readonly_actions = array(		'ktcore.actions.document.displaydetails', 
-											'ktcore.actions.document.transactionhistory',
-											'ktcore.actions.document.versionhistory',
 											'ktcore.actions.document.view',
 											'instaview.processor.link',
 											'ktcore.viewlet.document.activityfeed',

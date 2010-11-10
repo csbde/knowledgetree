@@ -52,7 +52,10 @@ class KTFolderAction extends KTStandardDispatcher {
     var $_bAdminAlwaysAvailable = false;
 
     var $sSection = 'browse';
-
+    
+	var $showIfWrite = false;
+	var $showIfRead = false;
+	
     function KTFolderAction($oFolder = null, $oUser = null, $oPlugin = null) {
         parent::KTStandardDispatcher();
         $this->oFolder =& $oFolder;
@@ -72,8 +75,12 @@ class KTFolderAction extends KTStandardDispatcher {
         $this->oUser =& $oUser;
     }
 
-
     function _show() {
+    	// If this is a shared user the object permissions are different.
+    	if(SharedUserUtil::isSharedUser())
+    	{
+    		return $this->shareduser_show();
+    	}
         if (is_null($this->_sShowPermission)) {
             return true;
         }
@@ -179,7 +186,25 @@ class KTFolderAction extends KTStandardDispatcher {
     function do_main() {
         return _kt('Dispatcher component of action not implemented.');
     }
-
+    
+    /**
+     * Check permissions on document for shared user
+     *
+     * @return unknown
+     */
+    function shareduser_show()
+    {
+		if($this->rwSharedUser || $this->rSharedUser)
+//		{
+//			$iUserId = $this->oFolder->getID();
+//			$iDocumentId = $this->oDocument->getID();
+//			$iFolderId = $this->oDocument->getFolderID();
+//			if(SharedContent::canAccessFolder($iUserId, $iFolderId))
+//    			return true;
+//		}
+		
+    	return false;
+    }
 }
 
 class JavascriptFolderAction extends KTFolderAction

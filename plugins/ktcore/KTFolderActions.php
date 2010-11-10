@@ -71,7 +71,10 @@ class KTFolderAddFolderAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.addFolder';
 
     var $_sShowPermission = "ktcore.permissions.addFolder";
-
+    
+    var $showIfWrite = true;
+	var $showIfRead = false;
+	
     function getDisplayName() {
         return _kt('Add a Folder');
     }

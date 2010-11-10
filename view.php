@@ -72,8 +72,6 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
 	public function __construct()
 	{
 		require_once(KT_LIB_DIR . '/render_helpers/sharedContent.inc');
-		require_once(KT_LIB_DIR . '/actions/shareduser_document_action.inc.php');
-		$this->oSharedUserActions = new SharedUserDocumentActionUtil();
         $this->aBreadcrumbs = array(
             array('action' => 'browse', 'name' => _kt('Browse')),
         );
@@ -93,12 +91,12 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
     public function addPortlets($currentaction = null) {
         $currentaction = $this->sName;
 
-    	$actions = $this->oSharedUserActions->getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentinfo');
+    	$actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentinfo');
         $oPortlet = new KTActionPortlet(sprintf(_kt('Info')));
         $oPortlet->setActions($actions, $currentaction);
         $this->oPage->addPortlet($oPortlet);
 
-        $this->actions = $this->oSharedUserActions->getDocumentActionsForDocument($this->oDocument, $this->oUser);
+        $this->actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
         $oPortlet = new KTActionPortlet(sprintf(_kt('Actions'), $this->oDocument->getName()));
         $oPortlet->setActions($this->actions, $currentaction);
         $this->oPage->addPortlet($oPortlet);
@@ -230,7 +228,7 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
 
         // viewlets.
         $aViewlets = array();
-        $aViewletActions = $this->oSharedUserActions->getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentviewlet');
+        $aViewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentviewlet');
         foreach ($aViewletActions as $oAction) {
             $aInfo = $oAction->getInfo();
 
