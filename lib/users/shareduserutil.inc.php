@@ -36,7 +36,7 @@
  *
  */
 
-class KTSharedUserUtil
+class SharedUserUtil
 {
 	static public function isSharedUser()
 	{
