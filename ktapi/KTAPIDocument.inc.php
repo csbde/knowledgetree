@@ -1920,6 +1920,12 @@ class KTAPI_Document extends KTAPI_FolderItem
 				$perms .= 'E';
 			}
 		}
+
+		// delete document is a separate permission to the write permission
+		if(Permission::userHasDeleteDocumentPermission($document))
+		{
+		    $perms .= 'D';
+		}
 		return $perms;
 	}
 

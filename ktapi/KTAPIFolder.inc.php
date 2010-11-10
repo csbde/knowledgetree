@@ -510,6 +510,10 @@ class KTAPI_Folder extends KTAPI_FolderItem
             {
                 $perms .= 'D';
             }
+            if (Permission::userHasSecurityFolderPermission($folder))
+            {
+                $perms .= 'S';
+            }
         }
         return $perms;
     }
@@ -630,17 +634,30 @@ class KTAPI_Folder extends KTAPI_FolderItem
                         $oemDocumentNo = 'n/a';
 
                         $array = array(
-                        'id' =>(int) $document->getId(), 'item_type' => 'D',
-                        'custom_document_no' => 'n/a', 'oem_document_no' => $oemDocumentNo,
-                        'title' => $document->getName(), 'document_type' => $documentType->getName(), 'filename' => $document->getFileName(), 'filesize' => $document->getFileSize(),
-                        'created_by' => is_null($created_by) ? 'n/a' : $created_by->getName(), 'created_date' => $created_date,
-                        'checked_out_by' => is_null($checked_out_by) ? 'n/a' : $checked_out_by->getName(), 'checked_out_date' => $checked_out_date,
-                        'modified_by' => is_null($modified_by) ? 'n/a' : $modified_by->getName(), 'modified_date' => $modified_date,
+                        'id' =>(int) $document->getId(),
+                        'item_type' => 'D',
+                        'custom_document_no' => 'n/a',
+                        'oem_document_no' => $oemDocumentNo,
+                        'title' => $document->getName(),
+                        'document_type' => $documentType->getName(),
+                        'filename' => $document->getFileName(),
+                        'filesize' => $document->getFileSize(),
+                        'created_by' => is_null($created_by) ? 'n/a' : $created_by->getName(),
+                        'created_date' => $created_date,
+                        'checked_out_by' => is_null($checked_out_by) ? 'n/a' : $checked_out_by->getName(),
+                        'checked_out_date' => $checked_out_date,
+                        'modified_by' => is_null($modified_by) ? 'n/a' : $modified_by->getName(),
+                        'modified_date' => $modified_date,
                         'owned_by' => is_null($owned_by) ? 'n/a' : $owned_by->getName(),
-                        'version' => $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber(), 'content_id' => $document->getContentVersionId(),
-                        'is_immutable' => $document->getImmutable() ? 'true' : 'false', 'permissions' => KTAPI_Document::get_permission_string($document),
-                        'workflow' => $workflow, 'workflow_state' => $state,
-                        'mime_type' => $mime_cache [$mimetypeid] ['type'], 'mime_icon_path' => $mime_cache [$mimetypeid] ['icon'], 'mime_display' => $mime_cache [$mimetypeid] ['display'],
+                        'version' => $document->getMajorVersionNumber() . '.' . $document->getMinorVersionNumber(),
+                        'content_id' => $document->getContentVersionId(),
+                        'is_immutable' => $document->getImmutable() ? 'true' : 'false',
+                        'permissions' => KTAPI_Document::get_permission_string($document),
+                        'workflow' => $workflow,
+                        'workflow_state' => $state,
+                        'mime_type' => $mime_cache [$mimetypeid] ['type'],
+                        'mime_icon_path' => $mime_cache [$mimetypeid] ['icon'],
+                        'mime_display' => $mime_cache [$mimetypeid] ['display'],
                         'storage_path' => $document->getStoragePath()
                         );
 

@@ -279,7 +279,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$aTemplateData['returndata'] = $this->oFolder->getId();
 
 			// Render the Bulk Action Menu
-			$aTemplateData['bulkActionMenu']=$renderHelper->renderBulkActionMenu($aBulkActions);
+			$aTemplateData['bulkActionMenu']=$renderHelper->renderBulkActionMenu($aBulkActions, $this->oFolder);
 
 			// Get all the files/folders in the given folder
 			$folderContentItems=$renderHelper->getFolderContent($this->oFolder->getId());
