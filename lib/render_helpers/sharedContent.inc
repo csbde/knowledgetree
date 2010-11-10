@@ -220,9 +220,9 @@ class SharedContent extends KTEntity {
     			return false;
     		}
     		
-    		$sql = "SELECT d.id AS id, $document_metadata_version, $document_types_lookup, $document_content_version, $users, $documents, $mime_types 
-    				FROM documents AS d, document_metadata_version AS dmv, document_types_lookup AS dtl, document_content_version AS dcv, users AS cu, users AS mu, mime_types AS mt
-    				WHERE d.folder_id = '$iFolderId' AND d.status_id = '1' AND d.metadata_version_id = dmv.id AND dmv.document_type_id = dtl.id AND d.id = dcv.document_id AND d.creator_id = cu.id AND d.modified_user_id = mu.id AND dcv.mime_id = mt.id";
+    		$sql = "SELECT d.id AS id, $shared_content, $document_metadata_version, $document_types_lookup, $document_content_version, $users, $documents, $mime_types 
+    				FROM documents AS d, document_metadata_version AS dmv, document_types_lookup AS dtl, document_content_version AS dcv, users AS cu, users AS mu, mime_types AS mt, shared_content sc 
+    				WHERE sc.type = 'folder' AND sc.user_id='$iUserId' AND sc.object_id = '$iFolderId' AND d.folder_id = '$iFolderId' AND d.status_id = '1' AND d.metadata_version_id = dmv.id AND dmv.document_type_id = dtl.id AND d.id = dcv.document_id AND d.creator_id = cu.id AND d.modified_user_id = mu.id AND dcv.mime_id = mt.id";
     	}
     	
     	$results = DBUtil::getResultArray($sql);
