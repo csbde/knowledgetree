@@ -101,7 +101,7 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     function _show() {
     	// If this is a shared user the object permissions are different.
-    	if(KTSharedUserUtil::isSharedUser())
+    	if(SharedUserUtil::isSharedUser())
     	{
     		return $this->_shareduser_show();
     	}
