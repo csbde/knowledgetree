@@ -65,7 +65,7 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
     var $_bAdminAlwaysAvailable = true;
 
     function getDisplayName() {
-        return _kt('Sharing');
+        return _kt('Permissions');
     }
 
     function do_main() {
