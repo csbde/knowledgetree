@@ -267,7 +267,7 @@ class KTWebService
 
          	);
 
-         	if ($this->version>=3) {
+         	if ($this->version>= 3) {
          		$this->__typedef["{urn:$this->namespace}kt_folder_item"]['linked_folder_id'] = 'int';
          	}
 
@@ -373,7 +373,7 @@ class KTWebService
          		'transaction_history' => "{urn:$this->namespace}kt_document_transaction_history",
          	);
 
-         	if ($this->version>=3) {
+         	if ($this->version>= 3) {
          		$this->__typedef["{urn:$this->namespace}kt_document_detail"]['linked_document_id'] = 'int';
          	}
          }
@@ -776,6 +776,14 @@ class KTWebService
             array('in' => array('username' => 'string', 'password' => 'string', 'ip' => 'string'),
                   'out' => array('return' => "{urn:$this->namespace}kt_response" ),
             );
+            
+         if ($this->version >= 3)
+         {
+             $this->__dispatch_map['login'] =
+                array('in' => array('username' => 'string', 'password' => 'string', 'ip' => 'string', 'app' => 'string'),
+                      'out' => array('return' => "{urn:$this->namespace}kt_response" ),
+             );
+         }
 
          // anonymous_login
          $this->__dispatch_map['anonymous_login'] =
@@ -795,7 +803,7 @@ class KTWebService
              'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
             );
 
-         if ($this->version >=3)
+         if ($this->version >= 3)
          {
          	 $this->__dispatch_map['get_folder_detail']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create' => 'boolean' );
          }
@@ -812,7 +820,7 @@ class KTWebService
              'out' => array('return' => "{urn:$this->namespace}kt_folder_detail"),
             );
 
-         if ($this->version >=3)
+         if ($this->version >= 3)
          {
              // NOTE that there was a bug: folder_id should be folder_name and be of type int - this is fixed in the second version below
              //      additionally the function has no "create" parameter
@@ -1402,14 +1410,15 @@ class KTWebService
     	}
 
     	$kt = new KTAPI($this->version);
-
-    	$session = $kt->get_active_session($session_id, null);
+    	$session = $kt->get_active_session($session_id);
 
     	if ( PEAR::isError($session))
     	{
             return KTWebService::_status(KTWS_ERR_INVALID_SESSION, $session);
     	}
+    	
     	$this->ktapi = $kt;
+    	
     	return $kt;
     }
 
@@ -1419,7 +1428,7 @@ class KTWebService
      * @param string $ip
      * @return kt_response
      */
-    function anonymous_login($ip=null)
+    function anonymous_login($ip = null)
     {
     	$response = KTWebService::_status(KTWS_ERR_AUTHENTICATION_ERROR);
 
@@ -1451,13 +1460,13 @@ class KTWebService
      * @param string $ip
      * @return kt_response
      */
-    function login($username, $password, $ip=null)
+    function login($username, $password, $ip = null, $app = null)
     {
     	$response = KTWebService::_status(KTWS_ERR_AUTHENTICATION_ERROR);
 
     	$kt = new KTAPI($this->version);
 
-    	$session = $kt->start_session($username, $password, $ip);
+    	$session = $kt->start_session($username, $password, $ip, $app);
 
     	if (PEAR::isError($session))
     	{
