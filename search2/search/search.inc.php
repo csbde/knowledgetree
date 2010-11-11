@@ -758,6 +758,7 @@ function processSearchExpression($query)
     				$results[] = $item;
 
     		}
+    		
     		return $results;
     	}
     	catch(Exception $e)
@@ -766,23 +767,36 @@ function processSearchExpression($query)
     	}
 }
 
+// I'd like some explanation of this function, as permissions were already checked in the original search sql query.
+// Why check again?  Is this actually a different check or a repeat?  If the latter then it is unnecessary and inefficient.
 function resolveSearchShortcuts($result)
 {
-    $oPermission =& KTPermission::getByName('ktcore.permissions.read');
-    $permId = $oPermission->getID();
+    $oUser = User::get($_SESSION['userID']);    
+    
+    // check user type, disabled = 4 means shared user, which has a different permissions structure
+//    if ($oUser->getDisabled() != 4) {
+        $oPermission =& KTPermission::getByName('ktcore.permissions.read');
+        $permId = $oPermission->getID();
 
-    $oUser = User::get($_SESSION['userID']);
-    $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
-    $sPermissionDescriptors = empty($aPermissionDescriptors)? -1: implode(',', $aPermissionDescriptors);
-
-    $documentIds = implode(',',array_keys($result['docs']));
+        $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
+        $sPermissionDescriptors = empty($aPermissionDescriptors) ? -1 : implode(',', $aPermissionDescriptors);
+//    }
+    
+    $documentIds = implode(',', array_keys($result['docs']));
     $linkedDocuments = array();
     if (!empty($documentIds))
     {
-        $sql = "SELECT d.id, d.linked_document_id from documents d ";
-        $sql .= 'INNER JOIN permission_lookups AS PL ON d.permission_lookup_id = PL.id '. "\n";
-        $sql .= 'INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = '.$permId. " \n";
-        $sql .= " WHERE d.linked_document_id in ($documentIds) AND PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
+        // check user type, disabled = 4 means shared user, which has a different permissions structure
+        if ($oUser->getDisabled() == 4) {
+            $sql = "SELECT d.id, d.linked_document_id from documents d\n";
+            $sql .= " INNER JOIN shared_content sc ON (sc.object_id = d.id) OR (sc.object_id = (SELECT folder_id FROM documents dlink WHERE dlink.id = d.id) AND sc.type = 'folder')\n";
+        }
+        else {
+            $sql = "SELECT d.id, d.linked_document_id from documents d\n";
+            $sql .= " INNER JOIN permission_lookups AS PL ON d.permission_lookup_id = PL.id \n";
+            $sql .= " INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = $permId\n";
+            $sql .= " WHERE d.linked_document_id in ($documentIds) AND PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
+        }
 
         $rs = DBUtil::getResultArray($sql);
 
@@ -800,12 +814,18 @@ function resolveSearchShortcuts($result)
 
     if (!empty($folderIds))
     {
-
-        $sql = "SELECT f.id, f.parent_id, f.linked_folder_id, f.full_path from folders f ";
-        $sql .= 'INNER JOIN permission_lookups AS PL ON f.permission_lookup_id = PL.id '. "\n";
-        $sql .= 'INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = '.$permId. " \n";
-        $sql .= " WHERE f.linked_folder_id in ($folderIds) AND PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
-
+        // check user type, disabled = 4 means shared user, which has a different permissions structure
+//        if ($oUser->getDisabled() == 4) {
+//            $sql = "SELECT f.id, f.parent_id, f.linked_folder_id, f.full_path from folders f\n";
+//            $sql .= " INNER JOIN shared_content sc ON (sc.object_id = f.id) OR (sc.object_id = (SELECT parent_id FROM folders flink WHERE flink.id = f.id) AND sc.type = 'folder')\n";
+//        }
+//        else {
+            $sql = "SELECT f.id, f.parent_id, f.linked_folder_id, f.full_path from folders f\n";
+            $sql .= " INNER JOIN permission_lookups AS PL ON f.permission_lookup_id = PL.id\n";
+            $sql .= " INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = $permId\n";
+            $sql .= " WHERE f.linked_folder_id in ($folderIds) AND PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
+//        }
+        
         $rs = DBUtil::getResultArray($sql);
 
         foreach($rs as $row)
@@ -821,6 +841,7 @@ function resolveSearchShortcuts($result)
             $result['shortfolders'][$id] = $shortFolder;
         }
     }
+    
     return $result;
 }
 
