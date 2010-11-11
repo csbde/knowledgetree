@@ -89,7 +89,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	}
 
 	function check() {
-//		$this->oUser = User::get(1);
 		$this->browse_mode = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', 'folder');
 		$action = KTUtil::arrayGet($_REQUEST, $this->event_var, 'main');
 		$this->editable = false;

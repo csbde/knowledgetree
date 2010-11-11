@@ -1,8 +1,9 @@
 <?php
-require_once(KT_LIB_DIR .'/util/ktVar.php');
-require_once(KT_LIB_DIR .'/util/ktutil.inc');
+require_once(KT_LIB_DIR . '/util/ktVar.php');
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
+require_once(KT_LIB_DIR . '/users/shareduserutil.inc.php');
 require_once('sharedContent.inc');
 
 /**
@@ -203,14 +204,12 @@ class sharedUserBrowseView extends browseView
 				}
 			}
 		}
-
+		$checkbox = ''; //(is_null($item['parent_id'])) ? '' : '<td width="1" class="checkbox"><input name="selection_d[]" type="checkbox" value="[id]" /></td>';
 		$tpl='
 			<span class="doc browseView">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
 					<tr>
-						<td width="1" class="checkbox">
-							<input name="selection_d[]" type="checkbox" value="[id]" />
-						</td>
+						'.$checkbox.'
 						<td class="doc icon_cell" width="1">
 							<div class="doc icon" style="[mimeicon]">
 								<span class="immutable_info[is_immutable]">
@@ -268,13 +267,12 @@ class sharedUserBrowseView extends browseView
 	public function renderFolderItem($item = null, $empty = false, $shortcut = false)
 	{
 		$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['id']));
+		$checkbox = ''; //(is_null($item['parent_id'])) ? '' : '<td width="1" class="checkbox"><input name="selection_f[]" type="checkbox" value="[id]" /></td>';
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
 				<tr>
-					<td width="1" class="checkbox">
-						<input name="selection_f[]" type="checkbox" value="[id]" />
-					</td>
+					'.$checkbox.'
 					<td class="folder icon_cell" width="1">
 						<div class="folder icon">
 						</div>
@@ -292,7 +290,6 @@ class sharedUserBrowseView extends browseView
 		return ktVar::parseString($tpl,$item);
 	}
 }
-
 /**
  * Default user browse view class
  *
@@ -431,17 +428,25 @@ class browseView {
 
 	public function noFilesOrFoldersMessage($folderId = null, $editable = true)
 	{
+		if(SharedUserUtil::isSharedUser())
+		{
+			$perm = SharedContent::getPermissions($_SESSION['userID'], $folderId, null, 'folder');
+			if($perm == 1)
+			{
+				 $editable = true;
+			}
+			else 
+			{
+				 $editable = false;
+			}
+		}
 		if (!$editable) {
 			return '<span class="notification">
 			<h2>There\'s nothing in this folder yet!</h2>
 			</span>';
 		} else {
-			return '<span class="notification">
-			<h2>There\'s nothing in this folder yet!</h2>
-			(Here are three easy ways you can change that...)
-			<table>
-				<tr>
-					<td><div class="roundnum">1</div></td>
+			$hint = '(Here are three easy ways you can change that...)';
+			$upload = '					<td><div class="roundnum">1</div></td>
 					<td class="info">
 						<h2>Upload files and folders</h2>
 						Upload one or more files including .zip files and other archives
@@ -452,13 +457,13 @@ class browseView {
 							<a href="javascript:kt.app.upload.showUploadWindow();"><span class="uploadButton">Upload</span></a>
 						</div>
 
-					</td>
-					<td><div class="roundnum">2</div></td>
+					</td>';
+			$dragndrop = '					<td><div class="roundnum">2</div></td>
 					<td class="info">
 						<h2>Drag and Drop files here</h2>
 						<img src="/resources/graphics/newui/dragdrop.png" />
-					</td>
-					<td><div class="roundnum">3</div></td>
+					</td>';
+			$createonline = '					<td><div class="roundnum">3</div></td>
 					<td class="info">
 						<h2>Create content online</h2>
 						Create and share files right within KnowledgeTree
@@ -467,12 +472,20 @@ class browseView {
 						<div>
 							<a href="action.php?kt_path_info=zoho.new.document&fFolderId='.$folderId.'"><span class="createdocButton">Online Doc</span></a>
 						</div>
-					</td>
+					</td>';
+			
+			return '<span class="notification">
+			<h2>There\'s nothing in this folder yet!</h2>
+			' . $hint . '
+			<table>
+				<tr>
+					' . $upload . '
+					' . $dragndrop . '
+					' . $createonline . '
 				</tr>
 			</table>
 			</span>';
 		}
-
 	}
 
 	public function paginateByDiv($pageCount,$pageClass,$paginationClass="paginate",$itemClass="item",$pageScript="alert([page])",$prevScript="alert('previous');",$nextScript="alert('next');") {

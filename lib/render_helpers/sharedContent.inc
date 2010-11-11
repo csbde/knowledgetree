@@ -159,7 +159,7 @@ class SharedContent extends KTEntity {
      */
     public function getSharedFolders($iUserId, $iFolderId)
     {
-    	$shared_content = 'sc.object_id as id, sc.permissions AS object_permissions, sc.user_id AS user_id, sc.parent_id AS parent_id';
+    	$shared_content = 'sc.object_id as sc_id, sc.permissions AS object_permissions, sc.user_id AS user_id, sc.parent_id AS parent_id';
     	$folders = 'f.name AS title, cu.name as created_by, f.full_path AS full_path';
     	if ($iFolderId == 1)
     	{
@@ -195,7 +195,7 @@ class SharedContent extends KTEntity {
     public function getSharedDocuments($iUserId, $iFolderId)
     {
     	// Fields to select
-		$shared_content = 'sc.object_id as id, sc.permissions AS object_permissions, sc.parent_id AS parent_id';
+		$shared_content = 'sc.object_id as sc_id, sc.permissions AS object_permissions, sc.parent_id AS parent_id';
 		$document_metadata_version = 'dmv.name AS title';
 		$document_types_lookup = 'dtl.name AS document_type';
 		$document_content_version = 'dcv.filename AS filename, dcv.storage_path AS storage_path, dcv.has_rendition AS has_rendition, dcv.size AS filesize, dcv.major_version as major_version, dcv.minor_version AS minor_version';
@@ -326,6 +326,7 @@ class SharedContent extends KTEntity {
      */
     static public function getPermissions($iUserId, $iObjectId, $iFolderId = null, $sType = 'document')
     {
+    	// Check if shared object exists
     	$sql = "SELECT sc.permissions FROM shared_content as sc WHERE (user_id = '{$iUserId}' AND object_id = '{$iObjectId}' AND type = '{$sType}')";
     	$res = DBUtil::getResultArray($sql);
     	if (PEAR::isError($res)) { return false; }
@@ -357,7 +358,7 @@ class SharedContent extends KTEntity {
 		    $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = (SELECT d.folder_id FROM documents d WHERE d.id = '{$iDocumentId}') AND sc.type = 'folder')";
 		}
 		else {
-		    $sql = "SELECT sc.user_id FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iFolderId}' AND sc.type = 'folder')";
+		    $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iFolderId}' AND sc.type = 'folder')";
 		}
 		$res = DBUtil::getResultArray($sql);
 		if (PEAR::isError($res)) { return false; }
