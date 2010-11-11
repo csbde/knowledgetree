@@ -228,7 +228,8 @@ class KTFolderAction extends KTStandardDispatcher {
     {
 		$iUserId = $this->oUser->getID();
 		$iFolderId = $this->oFolder->getID();
-		$this->objectPermission = SharedContent::getPermissions($iUserId, $iFolderId, null, 'folder');
+		$iParentId = $this->oFolder->getParentID();
+		$this->objectPermission = SharedContent::getPermissions($iUserId, $iFolderId, $iParentId, 'folder');
     }
 }
 

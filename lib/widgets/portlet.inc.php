@@ -123,26 +123,20 @@ class KTActionPortlet extends KTPortlet {
     function setActions($actions, $currentaction) {
         foreach ($actions as $action) {
             $aInfo = $action->getInfo();
-
             if ($aInfo !== null && !empty($aInfo['name'])) {
                 if ($aInfo["ns"] == $currentaction) {
                     unset($aInfo["url"]);
                     $aInfo['active'] = true;
                 }
                 $aBtn = $action->getButton();
-
                 if($aBtn){
-                    
-                    
                     // Add Buttons to both Actions and Buttons
                     $this->btns[$aInfo['name']] = array_merge($aInfo, $aBtn);
-                    
                     $text = !empty($aBtn['display_text']) ? $aBtn['display_text'] : $aBtn['name'];
                     $aInfo['name'] = $text;
-                    
                     // Add to First Actions Array, so that it appears on top
-                    $this->firstActions[$aInfo['name']] = $aInfo;
-                    
+//                    $this->firstActions[$aInfo['name']] = $aInfo;
+                    $this->actions[$aInfo['name']] = $aInfo;
                 }else{
                     $this->actions[$aInfo['name']] = $aInfo;
                 }
