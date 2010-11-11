@@ -89,6 +89,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	}
 
 	function check() {
+//		$this->oUser = User::get(1);
 		$this->browse_mode = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', 'folder');
 		$action = KTUtil::arrayGet($_REQUEST, $this->event_var, 'main');
 		$this->editable = false;
@@ -128,23 +129,36 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			}
 
 			// check whether the user can edit this folder
-			$oPerm = KTPermission::getByName('ktcore.permissions.write');
-			if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oFolder)) {
+			if(SharedUserUtil::isSharedUser())
+			{
 				$this->editable = true;
-			} else {
-				$this->editable = false;
 			}
-
+			else 
+			{
+				$oPerm = KTPermission::getByName('ktcore.permissions.write');
+				if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPerm, $oFolder)) {
+					$this->editable = true;
+				} else {
+					$this->editable = false;
+				}
+			}
+			
 			// set the title and breadcrumbs...
 			$this->oPage->setTitle(_kt('Browse'));
-
-			if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.folder_details', $oFolder)) {
-				$this->oPage->setSecondaryTitle($oFolder->getName());
-			} else {
-				if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {
-					$this->oPage->setSecondaryTitle(sprintf('(%s)', $oFolder->getName()));
+			if(SharedUserUtil::isSharedUser())
+			{
+				
+			}
+			else 
+			{
+				if (KTPermissionUtil::userHasPermissionOnItem($this->oUser, 'ktcore.permissions.folder_details', $oFolder)) {
+					$this->oPage->setSecondaryTitle($oFolder->getName());
 				} else {
-					$this->oPage->setSecondaryTitle('...');
+					if (KTBrowseUtil::inAdminMode($this->oUser, $oFolder)) {
+						$this->oPage->setSecondaryTitle(sprintf('(%s)', $oFolder->getName()));
+					} else {
+						$this->oPage->setSecondaryTitle('...');
+					}
 				}
 			}
 
