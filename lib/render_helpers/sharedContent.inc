@@ -103,7 +103,7 @@ class SharedContent extends KTEntity {
     {
 		$sql = "DELETE FROM shared_content WHERE user_id = '{$this->iUserId}' AND object_id = '{$this->iObjectId}' AND type = '{$this->sType}' AND permissions = '{$this->iPermissions}' LIMIT 1";
     	$res = DBUtil::runQuery($sql);
-    	
+    	if (PEAR::isError($res)) { return false; }
     	return (count($res) > 0);
     }
     
@@ -179,13 +179,10 @@ class SharedContent extends KTEntity {
 					WHERE sc.type = 'folder' AND sc.object_id = f.id AND f.parent_id = '$iFolderId' AND f.creator_id = cu.id AND sc.parent_id = '$iFolderId'";
     	}
     	
-    	$results = DBUtil::getResultArray($sql);
-    	if (PEAR::isError($results)) 
-    	{
-    		return false;
-    	}
+    	$res = DBUtil::getResultArray($sql);
+    	if (PEAR::isError($res)) { return false; }
     	
-    	return $results;
+    	return $res;
     }
     
     /**
@@ -225,13 +222,10 @@ class SharedContent extends KTEntity {
     				WHERE sc.type = 'folder' AND sc.user_id='$iUserId' AND sc.object_id = '$iFolderId' AND d.folder_id = '$iFolderId' AND d.status_id = '1' AND d.metadata_version_id = dmv.id AND dmv.document_type_id = dtl.id AND d.id = dcv.document_id AND d.creator_id = cu.id AND d.modified_user_id = mu.id AND dcv.mime_id = mt.id";
     	}
     	
-    	$results = DBUtil::getResultArray($sql);
-    	if (PEAR::isError($results)) 
-    	{
-    		return false;
-    	}
+    	$res = DBUtil::getResultArray($sql);
+    	if (PEAR::isError($res)) { return false; }
     	
-    	return $results;
+    	return $res;
     }
     
     /**
@@ -249,6 +243,7 @@ class SharedContent extends KTEntity {
     	$sType = is_null($sType) ? $this->sType : $sType;
     	$sql = "SELECT user_id FROM shared_content WHERE user_id = '{$iUserId}' AND object_id = '{$iObjectId}' AND type = '{$sType}' LIMIT 1";
     	$res = DBUtil::getResultArray($sql);
+    	if (PEAR::isError($res)) { return false; }
     	
     	return (count($res) > 0);
     }
@@ -272,6 +267,7 @@ class SharedContent extends KTEntity {
     	if(!is_null($permissions))
     		$sql .= " AND sc.permissions = $permissions";
     	$res = DBUtil::getResultArray($sql);
+    	if (PEAR::isError($res)) { return false; }
     	if (count($res) > 0)
     	{
     		return true;
@@ -291,6 +287,7 @@ class SharedContent extends KTEntity {
     			$sql .= " AND sc.permissions = $permissions";
     		
     		$res = DBUtil::getResultArray($sql);
+    		if (PEAR::isError($res)) { return false; }
     	}
     	
     	return (count($res) > 0);
@@ -309,6 +306,7 @@ class SharedContent extends KTEntity {
     {
     	$sql = "SELECT user_id FROM shared_content as sc WHERE (user_id = '{$iUserId}' AND object_id = '{$iFolderId}' AND type = 'folder')";
     	$res = DBUtil::getResultArray($sql);
+    	if (PEAR::isError($res)) { return false; }
     	
     	return (count($res) > 0);
     }
@@ -330,6 +328,7 @@ class SharedContent extends KTEntity {
     {
     	$sql = "SELECT sc.permissions FROM shared_content as sc WHERE (user_id = '{$iUserId}' AND object_id = '{$iObjectId}' AND type = '{$sType}')";
     	$res = DBUtil::getResultArray($sql);
+    	if (PEAR::isError($res)) { return false; }
     	if(count($res) > 0)
     	{
     		return $res[0]['permissions'];
@@ -361,6 +360,7 @@ class SharedContent extends KTEntity {
 		    $sql = "SELECT sc.user_id FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iFolderId}' AND sc.type = 'folder')";
 		}
 		$res = DBUtil::getResultArray($sql);
+		if (PEAR::isError($res)) { return false; }
 		if(count($res) > 0)
 		{
 			return $res[0]['permissions'];
@@ -381,6 +381,7 @@ class SharedContent extends KTEntity {
 		    $sql = "SELECT sc.permissions FROM shared_content as sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iFolderId}' AND sc.type = 'folder')";
 		}
 		$res = DBUtil::getResultArray($sql);
+		if (PEAR::isError($res)) { return false; }
 		if(count($res) > 0)
 		{
 			return $res[0]['permissions'];
