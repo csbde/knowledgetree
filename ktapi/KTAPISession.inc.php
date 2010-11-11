@@ -434,9 +434,18 @@ class KTAPI_UserSession extends KTAPI_Session
 	 * @param string $app Optional. The originating application type - Default is ws => webservices | webapp => The web application
 	 * @return KTAPI_Session|PEAR_Error Returns the session object | a PEAR_Error on failure
 	 */
-	function &get_active_session(&$ktapi, $session, $ip, $app='ws')
+	function &get_active_session(&$ktapi, $session, $ip, $app = 'ws')
 	{
-		$sql = "SELECT id, user_id FROM active_sessions WHERE session_id='$session' and apptype='$app'";
+	    if (!empty($app) && ($app != 'webapp') && ($app != 'ws'))
+	    {
+		    $sql = "SELECT id, user_id FROM active_sessions WHERE session_id='$session' and apptype='$app'";
+	    }
+		// else don't check app
+		else
+		{
+		    $sql = "SELECT id, user_id FROM active_sessions WHERE session_id='$session'";
+	    }
+	    
 		if (!empty($ip))
 		{
 			$sql .= " AND ip='$ip'";
@@ -458,7 +467,7 @@ class KTAPI_UserSession extends KTAPI_Session
 			return new KTAPI_Error(KTAPI_ERROR_USER_INVALID, $user);
 		}
 
-        $now=date('Y-m-d H:i:s');
+        $now = date('Y-m-d H:i:s');
         $sql = "UPDATE active_sessions SET lastused='$now' WHERE id=$sessionid";
         DBUtil::runQuery($sql);
 
