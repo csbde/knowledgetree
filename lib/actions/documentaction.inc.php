@@ -98,17 +98,6 @@ class KTDocumentAction extends KTStandardDispatcher {
     function setDocument(&$oDocument) {
         $this->oDocument =& $oDocument;
     }
-
-    function setDocumentPermission()
-    {
-        if(SharedUserUtil::isSharedUser())
-        {
-			$iUserId = $this->oUser->getID();
-			$iDocumentId = $this->oDocument->getID();
-			$iFolderId = $this->oDocument->getFolderID();
-			$this->objectPermission = SharedContent::getDocumentPermissions($iUserId, $iDocumentId, $iFolderId);
-        }
-    }
     
     function setUser(&$oUser) {
         $this->oUser =& $oUser;
@@ -273,7 +262,7 @@ class KTDocumentAction extends KTStandardDispatcher {
 		// Check if action needs to be hidden for
 		else if(!$this->showIfRead)
 		{
-			$this->setDocumentPermission();
+			$this->setPermission();
 			if($this->objectPermission == 1)
 			{
 				return true;
@@ -281,6 +270,18 @@ class KTDocumentAction extends KTStandardDispatcher {
 		}
 		
 		return false;
+    }
+    
+    /**
+     * Set the shared object permission
+     *
+     */
+    function setPermission()
+    {
+		$iUserId = $this->oUser->getID();
+		$iDocumentId = $this->oDocument->getID();
+		$iFolderId = $this->oDocument->getFolderID();
+		$this->objectPermission = SharedContent::getPermissions($iUserId, $iDocumentId, $iFolderId, 'document');
     }
 }
 

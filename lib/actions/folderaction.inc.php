@@ -53,8 +53,10 @@ class KTFolderAction extends KTStandardDispatcher {
 
     var $sSection = 'browse';
     
-	var $showIfWrite = false;
 	var $showIfRead = false;
+	var $showIfWrite = false;
+
+	var $objectPermission = false;
 	
     function KTFolderAction($oFolder = null, $oUser = null, $oPlugin = null) {
         parent::KTStandardDispatcher();
@@ -77,6 +79,7 @@ class KTFolderAction extends KTStandardDispatcher {
 
     function _show() {
     	// If this is a shared user the object permissions are different.
+//    	return true;
     	if(SharedUserUtil::isSharedUser())
     	{
     		return $this->shareduser_show();
@@ -194,16 +197,38 @@ class KTFolderAction extends KTStandardDispatcher {
      */
     function shareduser_show()
     {
-		if($this->rwSharedUser || $this->rSharedUser)
-//		{
-//			$iUserId = $this->oFolder->getID();
-//			$iDocumentId = $this->oDocument->getID();
-//			$iFolderId = $this->oDocument->getFolderID();
-//			if(SharedContent::canAccessFolder($iUserId, $iFolderId))
-//    			return true;
-//		}
+		// Check if actions display for both users
+		if($this->showIfRead && $this->showIfWrite)
+		{
+			return true;
+		}
+		// Check if action does not have to be displayed
+		else if(!$this->showIfRead && !$this->showIfWrite)
+		{
+			return false;
+		}
+		// Check if action needs to be hidden for
+		else if(!$this->showIfRead)
+		{
+			$this->setPermission();
+			if($this->objectPermission == 1)
+			{
+				return true;
+			}
+		}
 		
     	return false;
+    }
+    
+    /**
+     * Set the shared object permission
+     *
+     */
+    function setPermission()
+    {
+		$iUserId = $this->oUser->getID();
+		$iFolderId = $this->oFolder->getID();
+		$this->objectPermission = SharedContent::getPermissions($iUserId, $iFolderId, null, 'folder');
     }
 }
 

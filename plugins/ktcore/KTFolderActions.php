@@ -53,7 +53,9 @@ require_once(KT_LIB_DIR . '/roles/Role.inc');
 // {{{ KTDocumentDetailsAction
 class KTFolderViewAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.view';
-
+	var $showIfRead = true;
+	var $showIfWrite = true;
+	
     function do_main() {
         redirect(KTBrowseUtil::getUrlForFolder($this->oFolder));
         exit(0);
@@ -72,7 +74,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
 
     var $_sShowPermission = "ktcore.permissions.addFolder";
     
-    var $showIfWrite = true;
+	var $showIfWrite = true;
 	var $showIfRead = false;
 	
     function getDisplayName() {
@@ -216,7 +218,22 @@ class KTFolderAddFolderAction extends KTFolderAction {
 
         $aErrorOptions['defaultmessage'] = _kt("Could not create folder in the document management system");
         $this->oValidator->notError($res, $aErrorOptions);
-
+        
+        // post-triggers.
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('contentadd', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                'oObject' => $oFolder,
+				'oUser' => $this->oUser,
+				'sType' => 'folder',
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+        }
+        
         $this->commitTransaction();
         // On successful creation of a folder
         $templateId = isset($_POST['data']) ? KTUtil::arrayGet($_POST['data'], 'templateId', false) : false;
