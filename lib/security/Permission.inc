@@ -11,7 +11,7 @@
  * KnowledgeTree Community Edition
  * Document Management Made Simple
  * Copyright (C) 2008, 2009, 2010 KnowledgeTree Inc.
- * 
+ *
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 3 as published by the
@@ -92,6 +92,20 @@ class Permission {
     }
 
     /**
+    * Checks if the current user has delete document permission
+    *
+    * @param $oDocument     Document object to check
+    * @return boolean true if the user has delete document permission, false otherwise and set $_SESSION["errorMessage"]
+    */
+    function userHasDeleteDocumentPermission($oDocument) {
+        $oUser = User::get($_SESSION["userID"]);
+        $oPermission = KTPermission::getByName('ktcore.permissions.delete');
+
+        return KTPermissionUtil::userHasPermissionOnItem($oUser,
+                $oPermission, $oDocument);
+    }
+
+    /**
     * Checks if the current user has write permission for a specific folder
     *
     * @param $oFolder     Folder object to check
@@ -160,6 +174,20 @@ class Permission {
     function userHasDeleteFolderPermission($oFolder) {
         $oUser = User::get($_SESSION["userID"]);
         $oPermission = KTPermission::getByName('ktcore.permissions.delete');
+
+        return KTPermissionUtil::userHasPermissionOnItem($oUser,
+                $oPermission, $oFolder);
+    }
+
+    /**
+    * Checks if the current user has security folder permission for a specific folder in order to update the folder permissions
+    *
+    * @param $oFolder     Folder object to check
+    * @return boolean true if the user has security folder permission, false otherwise and set $_SESSION["errorMessage"]
+    */
+    function userHasSecurityFolderPermission($oFolder) {
+        $oUser = User::get($_SESSION["userID"]);
+        $oPermission = KTPermission::getByName('ktcore.permissions.security');
 
         return KTPermissionUtil::userHasPermissionOnItem($oUser,
                 $oPermission, $oFolder);

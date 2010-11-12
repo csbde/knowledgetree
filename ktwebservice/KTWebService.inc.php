@@ -350,9 +350,11 @@ class Response extends ResponseBase
     protected function callMethod($args)
     {
         $method = (isset($args['method'])) ? $args['method'] : '';
-        $session_id = (isset($args['session_id'])) ? $args['session_id'] : NULL;
+        $session_id = (isset($args['session_id'])) ? $args['session_id'] : null;
+        $app = (isset($args['app'])) ? $args['app'] : null;
         unset($args['method']);
         unset($args['session_id']);
+        unset($args['app']);
 
         // Get the available methods in KTAPI
         $reflect = new ReflectionClass($this->class);
@@ -396,7 +398,7 @@ class Response extends ResponseBase
         }
 
         // instantiate KTAPI and invoke method
-        $ktapi = $this->get_ktapi($session_id);
+        $ktapi = $this->get_ktapi($session_id, null, $app);
 
         if (PEAR::isError($ktapi)) {
             $this->error = 'API could not be authenticated: ' . $ktapi->getMessage();
@@ -417,7 +419,7 @@ class Response extends ResponseBase
      * @param string $session_id
      * @return KTAPI
      */
-    protected function &get_ktapi($session_id = null)
+    protected function &get_ktapi($session_id = null, $ip = null, $app = null)
     {
     	if (!is_null($this->ktapi))
     	{
@@ -428,7 +430,7 @@ class Response extends ResponseBase
 
     	// if the session id has been passed through - get the active session.
     	if (!empty($session_id)) {
-        	$session = $kt->get_active_session($session_id, null);
+        	$session = $kt->get_active_session($session_id, $ip, $app);
 
         	if (PEAR::isError($session))
         	{
@@ -436,7 +438,9 @@ class Response extends ResponseBase
                 return $session;
         	}
     	}
+    	
     	$this->ktapi = $kt;
+    	
     	return $kt;
     }
 
@@ -645,6 +649,7 @@ class WebService
     protected function getArguments()
     {
         $arguments = array();
+        
         switch ($this->method) {
             case 'put':
             case 'delete':
@@ -657,6 +662,7 @@ class WebService
             default:
                 $arguments = $_GET;
         }
+        
         $this->arguments = $arguments;
     }
 

@@ -42,15 +42,12 @@
 // main library routines and defaults
 require_once('config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc');
-
 require_once(KT_LIB_DIR . '/dashboard/dashletregistry.inc.php');
 require_once(KT_LIB_DIR . '/dashboard/dashlet.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
-
 require_once(KT_LIB_DIR . '/dashboard/DashletDisables.inc.php');
-
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 
 $sectionName = 'dashboard';

@@ -41,7 +41,7 @@ require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
 
 class KTBrowseUtil {
     // {{{ folderOrDocument
-    function folderOrDocument($sPath, $bAction = false) {
+    static public function folderOrDocument($sPath, $bAction = false) {
         $sFileName = basename($sPath);
         $sFolderPath = dirname($sPath);
 
@@ -100,7 +100,7 @@ class KTBrowseUtil {
         return false;
     }
 
-    function _folderOrDocument($sPath) {
+    static public function _folderOrDocument($sPath) {
         global $default;
         $sFileName = basename($sPath);
         $sFolderPath = dirname($sPath);
@@ -169,17 +169,17 @@ class KTBrowseUtil {
     // }}}
 
     // {{{ breadcrumbsForFolder
-    function breadcrumbsForFolder($oFolder, $aOptions = null) {
+    static public function breadcrumbsForFolder($oFolder, $aOptions = null) {
         $oFolder =& KTUtil::getObject('Folder', $oFolder);
         $sAction = KTUtil::arrayGet($aOptions, 'folderaction');
 
-	if(PEAR::isError($oFolder)) {
-	    $url = KTUtil::addQueryStringSelf('fFolderId=1');
-	    if(!empty($sAction)) {
-		$url = generateControllerUrl($sAction, 'fFolderId=1');
-	    }
-	    return array( array( 'url'=> $url, 'name' => '&hellip;'));
-	}
+		if(PEAR::isError($oFolder)) {
+		    $url = KTUtil::addQueryStringSelf('fFolderId=1');
+		    if(!empty($sAction)) {
+			$url = generateControllerUrl($sAction, 'fFolderId=1');
+		    }
+		    return array( array( 'url'=> $url, 'name' => '&hellip;'));
+		}
 
 
         $bFinal = KTUtil::arrayGet($aOptions, 'final', true, false);
@@ -210,7 +210,7 @@ class KTBrowseUtil {
                 if (!empty($sAction)) {
                     $url = generateControllerUrl($sAction, 'fFolderId=' . $id);
                 }
-                if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.folder_details', $oThisFolder)) {
+                if (!KTBrowseUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.folder_details', $oThisFolder)) {
                     if (KTBrowseUtil::inAdminMode($oUser, $oThisFolder)) {
                         $aBreadcrumbs[] = array('url' => $url, 'name' => sprintf('(%s)', $sFolderName));
                     } else {
@@ -229,7 +229,7 @@ class KTBrowseUtil {
             if (!empty($sAction)) {
                 $url = generateControllerUrl($sAction, 'fFolderId=' . $id);
             }
-            if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.folder_details', $oFolder)) {
+            if (!KTBrowseUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.folder_details', $oFolder)) {
                 if (KTBrowseUtil::inAdminMode($oUser, $oFolder)) {
                     $aBreadcrumbs[] = array('url' => $url, 'name' => sprintf('(%s)', $oFolder->getName()));
                 } else {
@@ -261,7 +261,7 @@ class KTBrowseUtil {
     // }}}
 
     // {{{ breadcrumbsForDocument
-    function breadcrumbsForDocument($oDocument, $aOptions = null, $iFolderId = null) {
+    public static function breadcrumbsForDocument($oDocument, $aOptions = null, $iFolderId = null) {
         $bFinal = KTUtil::arrayGet($aOptions, 'final', true, false);
         $aOptions = KTUtil::meldOptions($aOptions, array(
             'final' => false,
@@ -289,7 +289,7 @@ class KTBrowseUtil {
     // }}}
 
     // {{{ getUrlForFolder
-    function getUrlForFolder($oFolder) {
+    static public function getUrlForFolder($oFolder) {
         $iFolderId = KTUtil::getId($oFolder);
         $sExt = '.php';
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
@@ -300,7 +300,7 @@ class KTBrowseUtil {
     // }}}
 
     // {{{ getUrlForDocument
-    function getUrlForDocument($oDocument) {
+    static public function getUrlForDocument($oDocument) {
         $iDocumentId = KTUtil::getId($oDocument);
         $sExt = '.php';
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
@@ -312,7 +312,7 @@ class KTBrowseUtil {
 
 
 
-    function buildBaseUrl($sPage) {
+    static public function buildBaseUrl($sPage) {
         $sExt = '.php';
         if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
             $sExt = '';
@@ -324,30 +324,30 @@ class KTBrowseUtil {
 
 
     // {{{ getBrowseBaseUrl
-    function getBrowseBaseUrl() {
+    static public function getBrowseBaseUrl() {
         return KTBrowseUtil::buildBaseUrl('browse');
     }
     // }}}
 
     // {{{ getViewBaseUrl
-    function getViewBaseUrl() {
+    static public function getViewBaseUrl() {
         return KTBrowseUtil::buildBaseUrl('view');
     }
     // }}}
 
     // {{{ getActionBaseUrl
-    function getActionBaseUrl() {
+    static public function getActionBaseUrl() {
         return KTBrowseUtil::buildBaseUrl('action');
     }
     // }}}
 
-    function getSimpleSearchBaseUrl() {
+    static public function getSimpleSearchBaseUrl() {
         return KTBrowseUtil::buildBaseUrl('search/simpleSearch');
     }
-    function getBooleanSearchBaseUrl() {
+    static public function getBooleanSearchBaseUrl() {
         return KTBrowseUtil::buildBaseUrl('search/booleanSearch');
     }
-    function getSearchResultURL() {
+    static public function getSearchResultURL() {
         return KTBrowseUtil::buildBaseUrl('search2');
     }
     // {{{ inAdminMode
@@ -356,7 +356,7 @@ class KTBrowseUtil {
      * whether the user is in the unit for which it is unit
      * administrator.
      */
-    function inAdminMode($oUser, $oFolder) {
+    static public function inAdminMode($oUser, $oFolder) {
         if (KTUtil::arrayGet($_SESSION, 'adminmode', false) !== true) {
             return false;
         }
@@ -376,7 +376,7 @@ class KTBrowseUtil {
      *
      * Returns an array of Folder objects.
      */
-    function getBrowseableFolders($oUser) {
+    static public function getBrowseableFolders($oUser) {
         $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
 
 
@@ -418,4 +418,15 @@ class KTBrowseUtil {
     }
     // }}}
 
+    static public function userHasPermissionOnItem($oUser, $action, $oThisFolder)
+    {
+    	if(SharedUserUtil::isSharedUser())
+    	{
+    		return SharedContent::canAccessFolder($oUser->getID(), $oThisFolder->getID());
+    	}
+    	else 
+    	{
+    		return KTPermissionUtil::userHasPermissionOnItem($oUser, $action, $oThisFolder);
+    	}
+    }
 }

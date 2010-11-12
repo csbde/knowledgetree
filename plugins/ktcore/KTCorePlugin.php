@@ -179,6 +179,10 @@ class KTCorePlugin extends KTPlugin {
 		// Bulk Download Trigger
 		$this->registerTrigger('ktcore', 'pageLoad', 'BulkDownloadTrigger', 'ktcore.triggers.pageload', 'KTDownloadTriggers.inc.php');
 
+		// Shared User Triggers
+		$this->registerTrigger('contentadd', 'postValidate', 'KTAddSharedContentObjectTrigger', 'ktcore.triggers.sharedcontent.add', KT_DIR . '/plugins/sharedcontent/SharedContentTriggers.php');
+		$this->registerTrigger('contentdelete', 'postValidate', 'KTDeleteSharedContentObjectTrigger', 'ktcore.triggers.sharedcontent.delete', KT_DIR . '/plugins/sharedcontent/SharedContentTriggers.php');
+		
         // widgets
         $this->registerWidget('KTCoreInfoWidget', 'ktcore.widgets.info', 'KTWidgets.php');
         $this->registerWidget('KTCoreHiddenWidget', 'ktcore.widgets.hidden', 'KTWidgets.php');

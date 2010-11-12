@@ -543,22 +543,6 @@ class Folder extends KTEntity {
 
 	/**
 	* Static function
-	* Get the primary key of the parent folder
-	*
-	* @param $iFolderID		Primary key of folder to get parent for
-	*
-	* @return integer primary key of parent folder
-	*/
-	function getParentFolderID($iFolderID) {
-		if ($iFolderID != 0) {
-		    $oFolder = Folder::get($iFolderID);
-			return $oFolder->getParentFolderID();
-		}
-		return 0;
-	}
-
-	/**
-	* Static function
 	* Checks if a given folder already exists using the folder name
 	*
 	* @param $sName			Name of folder
