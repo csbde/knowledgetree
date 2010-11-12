@@ -362,21 +362,6 @@ class KTDocumentViewAction extends KTDocumentAction {
         $aOptions = array();
         $iVersion = KTUtil::arrayGet($_REQUEST, 'version');
         session_write_close();
-        if ($iVersion) {
-            $oVersion = KTDocumentContentVersion::get($iVersion);
-            $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
-            $res = $oStorage->downloadVersion($this->oDocument, $iVersion);
-        } else {
-            $res = $oStorage->download($this->oDocument);
-        }
-
-        if ($res === false) {
-            session_start();
-            $this->addErrorMessage(_kt('The file you requested is not available.'));
-            redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
-            exit(0);
-        }
-
         $oDocumentTransaction = & new DocumentTransaction($this->oDocument, _kt('Document downloaded'), 'ktcore.transactions.download', $aOptions);
         $oDocumentTransaction->create();
 
@@ -403,7 +388,22 @@ class KTDocumentViewAction extends KTDocumentAction {
             $oFolder = Folder::get($this->oDocument->getFolderID());
             $oSubscriptionEvent->DownloadDocument($this->oDocument, $oFolder);
         }
+        
+        if ($iVersion) {
+            $oVersion = KTDocumentContentVersion::get($iVersion);
+            $aOptions['version'] = sprintf('%d.%d', $oVersion->getMajorVersionNumber(), $oVersion->getMinorVersionNumber());
+            $res = $oStorage->downloadVersion($this->oDocument, $iVersion);
+        } else {
+            $res = $oStorage->download($this->oDocument);
+        }
 
+        if ($res === false) {
+            session_start();
+            $this->addErrorMessage(_kt('The file you requested is not available.'));
+            redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
+            exit(0);
+        }
+        
         exit(0);
     }
 }
