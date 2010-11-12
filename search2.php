@@ -54,7 +54,6 @@ function search2queryCompare($a, $b)
 {
 	global $search2queryColumn, $search2queryOrder;
 
-
 	if ($a->$search2queryColumn == $b->$search2queryColumn)
 	{
 		return 0;
