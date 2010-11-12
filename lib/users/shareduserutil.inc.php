@@ -35,12 +35,15 @@
  * Contributor( s): ______________________________________
  *
  */
+require_once(KT_LIB_DIR . "/users/User.inc");
 
 class SharedUserUtil
 {
 	static public function isSharedUser()
 	{
+		if(is_null($_SESSION['userID'])) return false;
     	$oUser = User::get($_SESSION['userID']);
+    	if(PEAR::isError($oUser)) return false;
     	$userType = $oUser->getDisabled();
     	
     	return ($userType == 4);
