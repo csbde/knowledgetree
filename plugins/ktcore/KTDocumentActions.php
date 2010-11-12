@@ -53,8 +53,6 @@ require_once(KT_LIB_DIR . "/util/sanitize.inc");
 // {{{ KTDocumentDetailsAction
 class KTDocumentDetailsAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.displaydetails';
-	var $showIfWrite = true;
-	var $showIfRead = true;
 	
     function do_main() {
         redirect(generateControllerLink('viewDocument',sprintf(_kt('fDocumentId=%d'),$this->oDocument->getId())));
