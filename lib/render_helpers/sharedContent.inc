@@ -217,7 +217,7 @@ class SharedContent extends KTEntity {
     			return false;
     		}
     		
-    		$sql = "SELECT d.id AS id, $shared_content, $document_metadata_version, $document_types_lookup, $document_content_version, $users, $documents, $mime_types 
+    		$sql = "SELECT d.id AS id, sc.permissions AS object_permissions, sc.parent_id AS parent_id, $document_metadata_version, $document_types_lookup, $document_content_version, $users, $documents, $mime_types 
     				FROM documents AS d, document_metadata_version AS dmv, document_types_lookup AS dtl, document_content_version AS dcv, users AS cu, users AS mu, mime_types AS mt, shared_content sc 
     				WHERE sc.type = 'folder' AND sc.user_id='$iUserId' AND sc.object_id = '$iFolderId' AND d.folder_id = '$iFolderId' AND d.status_id = '1' AND d.metadata_version_id = dmv.id AND dmv.document_type_id = dtl.id AND d.id = dcv.document_id AND d.creator_id = cu.id AND d.modified_user_id = mu.id AND dcv.mime_id = mt.id";
     	}
@@ -326,6 +326,7 @@ class SharedContent extends KTEntity {
      */
     static public function getPermissions($iUserId, $iObjectId, $iFolderId = null, $sType = 'document')
     {
+    	// Check if shared object exists
     	$sql = "SELECT sc.permissions FROM shared_content as sc WHERE (user_id = '{$iUserId}' AND object_id = '{$iObjectId}' AND type = '{$sType}')";
     	$res = DBUtil::getResultArray($sql);
     	if (PEAR::isError($res)) { return false; }
@@ -357,7 +358,7 @@ class SharedContent extends KTEntity {
 		    $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = (SELECT d.folder_id FROM documents d WHERE d.id = '{$iDocumentId}') AND sc.type = 'folder')";
 		}
 		else {
-		    $sql = "SELECT sc.user_id FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iFolderId}' AND sc.type = 'folder')";
+		    $sql = "SELECT sc.permissions FROM shared_content sc WHERE (sc.user_id = '{$iUserId}' AND sc.object_id = '{$iFolderId}' AND sc.type = 'folder')";
 		}
 		$res = DBUtil::getResultArray($sql);
 		if (PEAR::isError($res)) { return false; }

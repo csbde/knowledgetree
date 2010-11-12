@@ -89,7 +89,6 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	}
 
 	function check() {
-//		$this->oUser = User::get(1);
 		$this->browse_mode = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', 'folder');
 		$action = KTUtil::arrayGet($_REQUEST, $this->event_var, 'main');
 		$this->editable = false;
@@ -194,14 +193,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 			$aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);
 			$portlet->setActions($aActions,null);
 			$this->oPage->addPortlet($portlet);
-
-
-
 		} else if ($this->browse_mode == 'lookup_value') {
 			// browsing by a lookup value
-
 			$this->editable = false;
-
 			// check the inputs
 			$field = KTUtil::arrayGet($_REQUEST, 'fField', null);
 			$oField = DocumentField::get($field);
@@ -215,12 +209,9 @@ class BrowseDispatcher extends KTStandardDispatcher {
 				$this->errorRedirectToMain('No Value selected.');
 				exit(0);
 			}
-
-
 			$this->oQuery = new ValueBrowseQuery($oField, $oValue);
 			$this->resultURL = KTUtil::addQueryString($_SERVER['PHP_SELF'],
 			sprintf('fBrowseMode=lookup_value&fField=%d&fValue=%d', $field, $value));
-
 			// setup breadcrumbs
 			$this->aBreadcrumbs =
 			array(
@@ -230,13 +221,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
                             'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], 'action=selectLookup&fField=' . $oField->getId())),
 			array('name' => $oValue->getName(),
                             'url' => KTUtil::addQueryString($_SERVER['PHP_SELF'], sprintf('fBrowseMode=lookup_value&fField=%d&fValue=%d', $field, $value))));
-
-
-
 		} else if ($this->browse_mode == 'document_type') {
 			// browsing by document type
-
-
 			$this->editable = false;
 			$doctype = KTUtil::arrayGet($_REQUEST, 'fType',null);
 			$oDocType = DocumentType::get($doctype);

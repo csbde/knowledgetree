@@ -53,8 +53,6 @@ require_once(KT_LIB_DIR . '/roles/Role.inc');
 // {{{ KTDocumentDetailsAction
 class KTFolderViewAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.view';
-	var $showIfRead = true;
-	var $showIfWrite = true;
 	
     function do_main() {
         redirect(KTBrowseUtil::getUrlForFolder($this->oFolder));
