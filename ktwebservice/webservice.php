@@ -4323,7 +4323,7 @@ class KTWebService {
          {
          	 // NOTE removed "create" parameter
          	 //$this->__dispatch_map['get_folder_detail']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create' => 'boolean' );
-			 //now this is
+			 //now
 			 $this->__dispatch_map['get_folder_detail']['in'] = array('session_id' => 'string', 'folder_id' => 'int' );
          }
 
