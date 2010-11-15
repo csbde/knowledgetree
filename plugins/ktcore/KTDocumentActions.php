@@ -1796,6 +1796,10 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     }
 
     function getDisplayName() {
+        $oUser = User::get($_SESSION['userID']);
+        if (!KTPermissionUtil::userHasPermissionOnItem($oUser, 'ktcore.permissions.workflow', $this->oDocument)) {
+            return '';
+        }
         return _kt('Workflow');
     }
 
