@@ -92,7 +92,7 @@ class RankManager
 		$this->dbfields=array();
 		$sql = "SELECT groupname, itemname, ranking, type FROM search_ranking";
 		$rs = DBUtil::getResultArray($sql);
-		foreach($rs as $item)
+		foreach ($rs as $item)
 		{
 			switch ($item['type'])
 			{
@@ -127,10 +127,12 @@ class RankManager
 	public static function get()
 	{
 		static $singleton = null;
+		
 		if (is_null($singleton))
 		{
 			$singleton = new RankManager();
 		}
+		
 		return $singleton;
 	}
 
@@ -549,7 +551,6 @@ class DBFieldExpr extends FieldExpr
     	return $value;
     }
 
-
     public function getJoinTable() { return $this->jointable; }
     public function getJoinField() { return $this->joinfield; }
     public function getMatchingField() { return $this->matchfield; }
@@ -808,7 +809,7 @@ class ValueListExpr extends Expr
     	}
         $str = '';
 
-        foreach($this->values as $value)
+        foreach ($this->values as $value)
         {
         	if ($str != '') $str .= ',';
         	$str .= "\"$value\"";
@@ -834,10 +835,10 @@ class ValueListExpr extends Expr
             $expr_id = $this->getExprId();
 
             $str .= "struct$expr_id [style=ellipse, label=\"$expr_id: ";
-            $i=0;
-            foreach($this->values as $value)
+            $i = 0;
+            foreach ($this->values as $value)
             {
-            	if ($i++>0) $str .= ',';
+            	if ($i++ > 0) $str .= ',';
             	$value = addslashes($value);
             	$str .= "\\\"$value\\\"";
             }
@@ -855,7 +856,7 @@ class ValueListExpr extends Expr
 			return;
 		}
 		$newops = array();
-		foreach($this->values as $value)
+		foreach ($this->values as $value)
 		{
 			$classname = get_class($left);
 			$class = new $classname;
@@ -1009,7 +1010,7 @@ class TextQueryBuilder implements QueryBuilder
 	public function buildSimpleQuery($op, $group)
 	{
 		$query = '';
-		foreach($group as $expr)
+		foreach ($group as $expr)
 		{
 			if (!empty($query))
 			{
@@ -1036,9 +1037,10 @@ class TextQueryBuilder implements QueryBuilder
 	public function getRanking($result)
 	{
 		$init = $result->Rank;
-		$score=0;
+		$score = 0;
 		$ranker = RankManager::get();
-		$score += $init *$ranker->scoreField('DocumentText', 'S');
+		$score += $init * $ranker->scoreField('DocumentText', 'S');
+		
 		return $score;
 	}
 
@@ -1199,7 +1201,7 @@ class SQLQueryBuilder implements QueryBuilder
 	private function exploreGroup($group)
 	{
 		// split up metadata and determine table usage
-        foreach($group as $expr)
+        foreach ($group as $expr)
         {
             $field = $expr->left();
 
@@ -1294,6 +1296,7 @@ class SQLQueryBuilder implements QueryBuilder
 			    $query = $right->getSQL($left, $left->modifyName($fieldname), $expr->op(), $isNot);
 		    }
 		}
+		
 		return $query;
 	}
 
@@ -1333,8 +1336,8 @@ class SQLQueryBuilder implements QueryBuilder
          *
          * 0 = "does not match"
          */
-        $offset=0;
-        foreach($this->db as $expr)
+        $offset = 0;
+        foreach ($this->db as $expr)
         {
             $offset++;
             $sql .= ", ifnull(" . $this->getSQLEvalExpr($expr) . ",0) as expr$offset ";
@@ -1346,7 +1349,7 @@ class SQLQueryBuilder implements QueryBuilder
          *
          * 0 = "does not match"
          */
-        foreach($this->metadata as $expr)
+        foreach ($this->metadata as $expr)
         {
         	$offset++;
         	$sql .= ", ifnull(" . $this->getSQLEvalExpr($expr) . ",0) as expr$offset ";
@@ -1407,7 +1410,7 @@ class SQLQueryBuilder implements QueryBuilder
          * look at the constructors for the AnyMetadataField class or the MimeTypeField class.
          */
 		$offset = 0;
-        foreach($this->db as $expr)
+        foreach ($this->db as $expr)
         {
         	$field = $expr->left();
         	$jointable=$field->getJoinTable();
@@ -1424,8 +1427,8 @@ class SQLQueryBuilder implements QueryBuilder
 
         if ($this->context == ExprContext::DOCUMENT)
         {
-            $offset=0;
-            foreach($this->metadata as $expr)
+            $offset = 0;
+            foreach ($this->metadata as $expr)
             {
                 $offset++;
                 $field = $expr->left();
@@ -1437,21 +1440,34 @@ class SQLQueryBuilder implements QueryBuilder
         }
 
         // Add permissions sql for read access
-        $oPermission =& KTPermission::getByName('ktcore.permissions.read');
-        $permId = $oPermission->getID();
         $oUser = User::get($_SESSION['userID']);
-        $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
-        $sPermissionDescriptors = empty($aPermissionDescriptors)? -1: implode(',', $aPermissionDescriptors);
+        // check user type, shared users have a different permissions validation structure
+        if ($oUser->getDisabled() == 4) {
+            if ($this->context == ExprContext::DOCUMENT) {
+                $sql .= " INNER JOIN shared_content sc ON (sc.object_id = d.id) OR (sc.object_id = (SELECT folder_id FROM documents dlink WHERE dlink.id = d.id) AND sc.type = 'folder')\n";
+            }
+            else if ($this->context == ExprContext::FOLDER) {
+                $sql .= " INNER JOIN shared_content sc ON (sc.object_id = f.id) OR (sc.object_id = (SELECT parent_id FROM folders flink WHERE flink.id = f.id) AND sc.type = 'folder')\n";
+            }
+            
+            $sql .= " WHERE ";
+        }
+        else {
+            $oPermission =& KTPermission::getByName('ktcore.permissions.read');
+            $permId = $oPermission->getID();
+            $aPermissionDescriptors = KTPermissionUtil::getPermissionDescriptorsForUser($oUser);
+            $sPermissionDescriptors = empty($aPermissionDescriptors)? -1: implode(',', $aPermissionDescriptors);
 
-        $sql .= "INNER JOIN permission_lookups AS PL ON $primaryAlias.permission_lookup_id = PL.id\n";
-        $sql .= 'INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = '.$permId. " \n";
-        $sql .= "WHERE PLA.permission_descriptor_id IN ($sPermissionDescriptors) AND ";
+            $sql .= " INNER JOIN permission_lookups AS PL ON $primaryAlias.permission_lookup_id = PL.id\n";
+            $sql .= " INNER JOIN permission_lookup_assignments AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = $permId \n";
+            $sql .= " WHERE PLA.permission_descriptor_id IN ($sPermissionDescriptors) AND ";
+        }
 
         if ($this->context == ExprContext::DOCUMENT)
         {
              $sql .= "d.linked_document_id is null";
 
-             if($this->incl_status){
+             if ($this->incl_status) {
                 $sql .= " AND dmv.status_id=1 AND d.status_id=1";
              }
         }
@@ -1471,8 +1487,8 @@ class SQLQueryBuilder implements QueryBuilder
 			throw new Exception(_kt('Metadata field expected'));
 		}
 
-		$offset=0;
-		foreach($this->metadata as $item)
+		$offset = 0;
+		foreach ($this->metadata as $item)
 		{
 			if ($item->getExprId() == $expr->getExprId())
 			{
@@ -1485,8 +1501,8 @@ class SQLQueryBuilder implements QueryBuilder
 
 	private function resolveJoinOffset($expr)
 	{
-		$offset=0;
-		foreach($this->db as $item)
+		$offset = 0;
+		foreach ($this->db as $item)
 		{
 			if ($item->getExprId() == $expr->getExprId())
 			{
@@ -1570,8 +1586,8 @@ class SQLQueryBuilder implements QueryBuilder
 
         $sql = $this->buildCoreSQL();
 
-        $offset=0;
-        foreach($this->db as $expr)
+        $offset = 0;
+        foreach ($this->db as $expr)
         {
             if ($offset++)
             {
@@ -1600,8 +1616,8 @@ class SQLQueryBuilder implements QueryBuilder
 
         if ($this->context == ExprContext::DOCUMENT)
         {
-            $moffset=0;
-            foreach($this->metadata as $expr)
+            $moffset = 0;
+            foreach ($this->metadata as $expr)
             {
                 $moffset++;
                 if ($offset++)
@@ -1638,7 +1654,7 @@ class SQLQueryBuilder implements QueryBuilder
 	{
 		$ranker = RankManager::get();
 		$score = 0;
-		foreach($result as $col=>$val)
+		foreach ($result as $col=>$val)
 		{
 			if ($val + 0 == 0)
 			{
@@ -1671,7 +1687,7 @@ class SQLQueryBuilder implements QueryBuilder
 	public function getResultText($result)
 	{
 		$text = array();
-		foreach($result as $col=>$val)
+		foreach ($result as $col=>$val)
 		{
 			if (substr($col, 0, 4) == 'expr' && is_numeric(substr($col, 4)))
 			{
@@ -1680,7 +1696,9 @@ class SQLQueryBuilder implements QueryBuilder
 					// we are not interested if the expression failed
 					continue;
 				}
+				
 				$exprno = substr($col, 4);
+				
 				if ($exprno <= count($this->db))
 				{
 					$expr = $this->db[$exprno-1];
@@ -1690,9 +1708,11 @@ class SQLQueryBuilder implements QueryBuilder
 					$exprno -= count($this->db);
 					$expr = $this->metadata[$exprno-1];
 				}
+				
 				$text[] = (string) $expr;
 			}
 		}
+		
 		return '(' . implode(') AND (', $text) . ')';
 	}
 }
@@ -1816,7 +1836,7 @@ class OpExpr extends Expr
 
     	preg_match_all('/[\']([^\']*)[\']/',$value, $matches);
 
-    	foreach($matches[0] as $item)
+    	foreach ($matches[0] as $item)
     	{
     		$text [] = $item;
 
@@ -1825,7 +1845,7 @@ class OpExpr extends Expr
 
     	$matches = explode(' ', $value);
 
-    	foreach($matches as $item)
+    	foreach ($matches as $item)
     	{
     		if (empty($item)) continue;
     		$text[] = $item;
@@ -2138,7 +2158,7 @@ class OpExpr extends Expr
     		return array(); // small optimisation
     	}
     	$result = array();
-    	foreach($leftres as $item)
+    	foreach ($leftres as $item)
     	{
     		$document_id = $item->Id;
 
@@ -2193,7 +2213,7 @@ class OpExpr extends Expr
     	}
     	$result = array();
 
-    	foreach($leftres as $item)
+    	foreach ($leftres as $item)
     	{
 			if ($item->IsLive)
     		{
@@ -2201,7 +2221,7 @@ class OpExpr extends Expr
     		}
     	}
 
-    	foreach($rightres as $item)
+    	foreach ($rightres as $item)
     	{
     		if (!array_key_exists($item->Id, $result) || $item->Rank > $result[$item->Id]->Rank)
     		{
@@ -2294,11 +2314,13 @@ class OpExpr extends Expr
     			}
     			break;
     	}
+    	
     	$node = $this->findDBNode($start->left(), $op, $what);
     	if (is_null($left))
     	{
     		$node = $this->findDBNode($start->right(), $op, $what);
     	}
+    	
     	return $node;
 
     }
@@ -2344,12 +2366,12 @@ class OpExpr extends Expr
 		if (DefaultOpCollection::isBoolean($expr))
 		{			
 			$iCriteria = $this->checkComplexQuery($left);
-			if(!empty($iCriteria)) {
+			if (!empty($iCriteria)) {
 				$oCriteria = array_merge($oCriteria, $iCriteria);
 			}
 
 			$iCriteria = $this->checkComplexQuery($right);
-			if(!empty($iCriteria)) {
+			if (!empty($iCriteria)) {
 				$oCriteria = array_merge($oCriteria, $iCriteria);
 			}
 		}
@@ -2367,7 +2389,7 @@ class OpExpr extends Expr
 
             $rsField = DBUtil::getResultArray("SELECT * FROM document_fields WHERE name = \"$fieldname\";");
 
-            if($rsField[0]['data_type'] == 'LARGE TEXT')
+            if ($rsField[0]['data_type'] == 'LARGE TEXT')
             {
             	$iCriteria = array();
             	
@@ -2411,7 +2433,7 @@ class OpExpr extends Expr
     // NOTE this function is currently unused as it is incomplete and not able to handle some complex queries
 	public function checkValues($document_id, $oColumns)
 	{
-		foreach($oColumns as $column)
+		foreach ($oColumns as $column)
 		{
 			$rsField = DBUtil::getResultArray("SELECT df.name, dfl.value FROM documents d 
 				INNER JOIN document_metadata_version dmv ON d.metadata_version_id=dmv.id 
@@ -2433,11 +2455,11 @@ class OpExpr extends Expr
 
     		//$default->log->debug("POSITION: " . $position);
     		
-    		if(!$column['not'] && ($position === false)) {
+    		if (!$column['not'] && ($position === false)) {
                 return false;
             }
     		// cater for NOT queries
-            else if($column['not'] && ($position !== false)) {
+            else if ($column['not'] && ($position !== false)) {
                 return false;
             }
 		}
@@ -2488,8 +2510,7 @@ class OpExpr extends Expr
     	else
     	{
            	//$default->log->debug("CASE 2");
-           	
-			foreach($group as $expr)
+			foreach ($group as $expr)
 			{
 				$left = $expr->left();
             	$right = $expr->right();
@@ -2501,16 +2522,14 @@ class OpExpr extends Expr
 
             	$rsField = DBUtil::getResultArray("SELECT * FROM document_fields WHERE name = \"$fieldname\";");
 
-            	if($rsField[0]['data_type'] == 'LARGE TEXT')
+            	if ($rsField[0]['data_type'] == 'LARGE TEXT')
             	{
             		$iCriteria = array();
-
-					$iCriteria[0] = array();
-
+            		$iCriteria[0] = array();
             		$iCriteria[0]['field'] = $fieldname;
             		$iCriteria[0]['value'] = $value;
             		$iCriteria[0]['not'] = $expr->not();
-
+            		
             		$oCriteria[] = $iCriteria[0];
 
             		/*$not = $expr->not()?' NOT ':'';
@@ -2527,7 +2546,7 @@ class OpExpr extends Expr
 
         //$default->log->debug("TOTAL CRITERIA: " . count($oCriteria));
 		
-    	foreach($rs as $item)
+    	foreach ($rs as $item)
     	{
     		$id = $item['id'];
     		$rank = $exprbuilder->getRanking($item);
@@ -2538,7 +2557,7 @@ class OpExpr extends Expr
     		        // NOTE removing the call to checkValues as the function only handles some query types, and is currently not so important as
                     //      we are stripping most html tags from the html type inputs
     				/*
-    				if((count($oCriteria) > 0 && $this->checkValues($id, $oCriteria)) || count($oCriteria) == 0)
+    				if ((count($oCriteria) > 0 && $this->checkValues($id, $oCriteria)) || count($oCriteria) == 0)
     				{
 		    			$results[$id] = new DocumentResultItem($id, $rank, $item['title'], $exprbuilder->getResultText($item), null, $this->incl_status);
     				}
@@ -2567,7 +2586,7 @@ class OpExpr extends Expr
     {
     	global $default;
     	// if the indexer has been disabled, return an empty array
-    	if(!$default->enableIndexing){
+    	if (!$default->enableIndexing) {
     	    $default->log->debug("SEARCH LUCENE: indexer has been disabled.");
     	    return array();
     	}
@@ -2600,7 +2619,7 @@ class OpExpr extends Expr
     	$default->log->debug("SEARCH LUCENE: $query");
 
     	$results = $indexer->query($query);
-    	foreach($results as $item)
+    	foreach ($results as $item)
     	{
     		$item->Rank = $exprbuilder->getRanking($item);
     		$exprbuilder->setQuery($query);
@@ -2618,9 +2637,8 @@ class OpExpr extends Expr
      */
 	public function evaluate($context = ExprContext::DOCUMENT_AND_FOLDER)
 	{
-
     	global $default;
-    	$default->log->debug("START EVALUATE");
+    	$default->log->debug('START EVALUATE');
 		
 		if ($context == ExprContext::DOCUMENT_AND_FOLDER)
 	    {	    	
@@ -2713,9 +2731,9 @@ class OpExpr extends Expr
 		}
 
 		$permResults = array();
-		if(isset($result[$resultContext]))
+		if (isset($result[$resultContext]))
 		{
-    		foreach($result[$resultContext] as $idx=>$item)
+    		foreach ($result[$resultContext] as $idx => $item)
     		{
     			$permResults[$resultContext][$idx] = $item;
     		}

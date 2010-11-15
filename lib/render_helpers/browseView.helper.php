@@ -580,6 +580,7 @@ class browseView {
 		$item['actions.checkin'] = $item['actions.cancel_checkout'] = $item['actions.checkout'] = $ns;
 		$item['actions.move'] = $item['actions.copy'] = $item['actions.delete'] = $ns;
 
+		$isCheckedOut = ($item['checked_out_date']) ? true : false;
 		if(get_class($oDocument) == 'Document'){
     		if($hasWrite) {
         		$item['actions.checkout'] = $item['checked_out_date'] ? $ns : '';
@@ -610,6 +611,8 @@ class browseView {
 			$item['actions.change_owner']=$ns;
 			$item['actions.finalize_document']=$ns;
 		}
+
+		$item['actions.finalize_document'] = ($isCheckedOut) ? $ns : $item['actions.finalize_document'];
 
 		$item['separatorE']='';
 		if(!$hasWrite){
