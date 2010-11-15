@@ -389,6 +389,27 @@ div.widgetItem {
 	float: left;
 }
 
+/* Admin Page Landing */
+
+div.menuitems {
+	-moz-border-radius:15px 15px 15px 15px;
+	-moz-box-shadow:0 0 5px #666677;
+	border:1px solid #616161;
+	padding:25px;
+	width:370px;
+	position:relative;
+}
+
+div#leftmenu {
+	left:110px;
+}
+
+div#rightmenu {
+	float:right;
+	bottom:270px;
+	left:535px;
+}
+
 div.adminheadings {
 	position:absolute;
 	width:200px;
@@ -449,7 +470,7 @@ div#contentleftside {
 }
 
 div#contentrightside {
-	left:536px;
+	left:535px;
 }
 
 div#contentbottom {
@@ -482,10 +503,27 @@ div#leftMenu {
 }
 
 div#usageStats {
-	height: 330px;
-	width: 320px;
-	-moz-border-radius: 1em 1em 1em 1em;
-	border-radius: 1em 1em 1em 1em;
-	border:1px solid gray;
-	
+	width:240px;
+}
+
+div#upgradePlan {
+	width:600px;
+	float:right;
+	bottom:213px;
+}
+
+div.stats {
+	-moz-border-radius:15px 15px 15px 15px;
+	-moz-box-shadow:0 0 5px #666677;
+	border:1px solid #616161;
+	padding:25px;
+	position:relative;
+}
+
+div.leftHeading {
+	width:150px;
+}
+
+div.rightHeading {
+	width:150px;
 }
