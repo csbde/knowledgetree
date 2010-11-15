@@ -4321,7 +4321,10 @@ class KTWebService {
 
          if ($this->version >= 3)
          {
-         	 $this->__dispatch_map['get_folder_detail']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create' => 'boolean' );
+         	 // NOTE removed "create" parameter
+         	 //$this->__dispatch_map['get_folder_detail']['in'] = array('session_id' => 'string', 'folder_id' => 'int', 'create' => 'boolean' );
+			 //now
+			 $this->__dispatch_map['get_folder_detail']['in'] = array('session_id' => 'string', 'folder_id' => 'int' );
          }
 
          // get_documents_by_oem_no
