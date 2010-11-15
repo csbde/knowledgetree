@@ -1,0 +1,92 @@
+/* ------------------ NEW KT Admin Page ------------------ */
+
+div.admintops {
+	background: url('../graphics/newui/admin_contentSettings1.png') no-repeat top left;
+	position:absolute;
+	width:428px;
+	height:28px;
+}
+
+div.adminheadings {
+	position:absolute;
+	width:200px;
+	height:50px;
+    font-family:"Arial", sans-serif;
+    font-weight:normal;
+    font-style:normal;
+    font-size:x-large;
+}
+
+div.adminsides {
+	position:absolute;
+	width:3px;
+	height:338px;
+	background: url('../graphics/newui/admin_side.png') no-repeat top left;
+}
+
+div.adminbottoms {
+	position:absolute;
+	background: url('../graphics/newui/admin_bottom.png') no-repeat top left;
+	bottom:95px;
+	width:428px;
+	height:13px;
+}
+
+div.adminitems {
+	position:absolute;
+	width:418px;
+	height:330px;
+	padding: 5px 5px 5px 5px;
+}
+
+div#contentSettings {
+	left:110px;
+	top:180px;
+}
+
+div#headingContents {
+	left:150px;
+	top:185px;
+}
+
+div#headingAccounts {
+	left:695px;
+	top:185px;
+}
+
+div#contentleftside {
+	left:110px;
+}
+
+div#contentrightside {
+	left:536px;
+}
+
+div#contentbottom {
+	left:110px;
+}
+
+div#accountSettings {
+	top:180px;
+	left:655px;
+}
+
+div#accountleftside {
+	left:655px;
+}
+
+div#accountrightside {
+	right:356px;
+}
+
+div#accountbottom {
+	left:655px;
+}
+
+div#rightMenu {
+	left:655px;
+}
+
+div#leftMenu {
+	left:110px;
+}
