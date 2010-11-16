@@ -1,10 +1,22 @@
-/* ------------------ NEW KT Admin Page ------------------ */
+/* Admin Page Landing */
 
-div.admintops {
-	background: url('../graphics/newui/admin_contentSettings1.png') no-repeat top left;
-	position:absolute;
-	width:428px;
-	height:28px;
+div.menuitems {
+	-moz-border-radius:15px 15px 15px 15px;
+	-moz-box-shadow:0 0 5px #666677;
+	border:1px solid #616161;
+	padding:25px;
+	width:370px;
+	position:relative;
+}
+
+div#leftmenu {
+	left:110px;
+}
+
+div#rightmenu {
+	float:right;
+	bottom:270px;
+	left:535px;
 }
 
 div.adminheadings {
@@ -12,21 +24,29 @@ div.adminheadings {
 	width:200px;
 	height:50px;
     font-family:"Arial", sans-serif;
-    font-weight:normal;
+    font-weight:bold;
     font-style:normal;
-    font-size:x-large;
+    font-size:24px;
+    color: Gray;
+}
+
+div.admintops {
+	background: url('../graphics/newui/admin/contentSettings.png') no-repeat top left;
+	position:absolute;
+	width:428px;
+	height:28px;
 }
 
 div.adminsides {
 	position:absolute;
 	width:3px;
 	height:338px;
-	background: url('../graphics/newui/admin_side.png') no-repeat top left;
+	background: url('../graphics/newui/admin/side.png') no-repeat top left;
 }
 
 div.adminbottoms {
 	position:absolute;
-	background: url('../graphics/newui/admin_bottom.png') no-repeat top left;
+	background: url('../graphics/newui/admin/bottom.png') no-repeat top left;
 	bottom:95px;
 	width:428px;
 	height:13px;
@@ -36,7 +56,7 @@ div.adminitems {
 	position:absolute;
 	width:418px;
 	height:330px;
-	padding: 5px 5px 5px 5px;
+	padding: 25px;
 }
 
 div#contentSettings {
@@ -59,7 +79,7 @@ div#contentleftside {
 }
 
 div#contentrightside {
-	left:536px;
+	left:535px;
 }
 
 div#contentbottom {
@@ -89,4 +109,30 @@ div#rightMenu {
 
 div#leftMenu {
 	left:110px;
+}
+
+div#usageStats {
+	width:240px;
+}
+
+div#upgradePlan {
+	width:600px;
+	float:right;
+	bottom:213px;
+}
+
+div.stats {
+	-moz-border-radius:15px 15px 15px 15px;
+	-moz-box-shadow:0 0 5px #666677;
+	border:1px solid #616161;
+	padding:25px;
+	position:relative;
+}
+
+div.leftHeading {
+	width:150px;
+}
+
+div.rightHeading {
+	width:150px;
 }

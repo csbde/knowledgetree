@@ -1,13 +1,7 @@
 <br/>
 <br/>
 
-{*
-<div id="contentSettings" class="admintops"></div>
-<div id="headingContents" class="adminheadings"> Content Settings </div>
-<div id="contentleftside" class="adminsides"></div>
-<div id="contentrightside" class="adminsides"></div>
-<div id="contentbottom" class="adminbottoms"></div>
-*}
+<div id="headingContents" class="adminheadings"> {i18n} Content Settings {/i18n}</div>
 
 <div id="leftmenu" class="menuitems">
 	{foreach item=aCategory from=$leftmenu}
@@ -23,13 +17,7 @@
 	{/foreach}
 </div>
 
-{*
-<div id="accountSettings" class="admintops"></div>
-<div id="headingAccounts" class="adminheadings"> Account Settings </div>
-<div id="accountleftside" class="adminsides"></div>
-<div id="accountrightside" class="adminsides"></div>
-<div id="accountbottom" class="adminbottoms"></div>
-*}
+<div id="headingAccounts" class="adminheadings"> {i18n} Account Settings {/i18n} </div>
 
 <div id="rightmenu" class="menuitems">
 	{foreach item=aCategory from=$rightmenu}

@@ -397,11 +397,13 @@ class loginResetDispatcher extends KTDispatcher {
             $GLOBALS['default']->log->debug(__FUNCTION__ . " first login for: " . $_SESSION['userID']);
             // this line may no longer be necessary
             $_SESSION['isFirstLogin'] = true;
+            /*
             if (KTPluginUtil::pluginIsActive('gettingstarted.plugin')) {
                 // redirect user to getting started page
                 $path = str_replace(KT_DIR, '', KTPluginUtil::getPluginPath('gettingstarted.plugin') . 'GettingStarted.php');
                 $redirect = KTUtil::kt_url() . $path;
             }
+            */
         }
 
         // check for a location to forward to

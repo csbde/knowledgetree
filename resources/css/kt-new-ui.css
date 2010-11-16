@@ -395,7 +395,7 @@ div.menuitems {
 	-moz-border-radius:15px 15px 15px 15px;
 	-moz-box-shadow:0 0 5px #666677;
 	border:1px solid #616161;
-	padding:25px;
+	padding:30px;
 	width:370px;
 	position:relative;
 }
@@ -405,92 +405,36 @@ div#leftmenu {
 }
 
 div#rightmenu {
-	float:right;
-	bottom:270px;
-	left:535px;
+	bottom:309px;
+	left:645px;
 }
 
 div.adminheadings {
-	position:absolute;
-	width:200px;
-	height:50px;
+	position:relative;
+	width:220px;
+	height:30px;
     font-family:"Arial", sans-serif;
     font-weight:bold;
     font-style:normal;
     font-size:24px;
     color: Gray;
-}
-
-div.admintops {
-	background: url('../graphics/newui/admin/contentSettings.png') no-repeat top left;
-	position:absolute;
-	width:428px;
-	height:28px;
-}
-
-div.adminsides {
-	position:absolute;
-	width:3px;
-	height:338px;
-	background: url('../graphics/newui/admin/side.png') no-repeat top left;
-}
-
-div.adminbottoms {
-	position:absolute;
-	background: url('../graphics/newui/admin/bottom.png') no-repeat top left;
-	bottom:95px;
-	width:428px;
-	height:13px;
-}
-
-div.adminitems {
-	position:absolute;
-	width:418px;
-	height:330px;
-	padding: 25px;
-}
-
-div#contentSettings {
-	left:110px;
-	top:180px;
+    z-index:1;
+    background-color:white;
+    text-align:center;
 }
 
 div#headingContents {
 	left:150px;
-	top:185px;
+	top:20px;
 }
 
 div#headingAccounts {
-	left:695px;
-	top:185px;
-}
-
-div#contentleftside {
-	left:110px;
-}
-
-div#contentrightside {
-	left:535px;
-}
-
-div#contentbottom {
-	left:110px;
+	left:690px;
+	bottom:290px;
 }
 
 div#accountSettings {
 	top:180px;
-	left:655px;
-}
-
-div#accountleftside {
-	left:655px;
-}
-
-div#accountrightside {
-	right:356px;
-}
-
-div#accountbottom {
 	left:655px;
 }
 
@@ -503,27 +447,53 @@ div#leftMenu {
 }
 
 div#usageStats {
-	width:240px;
+	left:110px;
+	width:250px;
 }
 
 div#upgradePlan {
-	width:600px;
-	float:right;
-	bottom:213px;
+	width:700px;
+	left:456px;
+	bottom:392px;
+	overflow:scroll;
 }
 
 div.stats {
 	-moz-border-radius:15px 15px 15px 15px;
 	-moz-box-shadow:0 0 5px #666677;
 	border:1px solid #616161;
-	padding:25px;
+	padding:30px;
+	width:370px;
 	position:relative;
+	height:300px;
 }
 
-div.leftHeading {
-	width:150px;
+div#leftHeading {
+	left:166px;
+	top:17px;
+	width:100px;
 }
 
-div.rightHeading {
-	width:150px;
+div#rightHeading {
+	left:500px;
+	bottom:373px;
+	width:125px;
+}
+
+span.usageHead {
+	color:#5899B9;
+	font-size:20px;
+	font-variant:normal;
+	text-transform:capitalize;
+	border-bottom:1px dotted #E1E0E2;
+	width:235px;
+	font-weight:bold;
+}
+
+span.astat {
+	font-weight:bold;
+}
+
+div#statLine {
+	width:250px;
 }
