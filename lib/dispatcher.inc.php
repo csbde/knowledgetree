@@ -307,14 +307,15 @@ class KTDispatcher {
 }
 
 class KTStandardDispatcher extends KTDispatcher {
-    var $bLogonRequired = true;
-    var $bAdminRequired = false;
-    var $aBreadcrumbs = array();
-    var $sSection = false;
-    var $oPage = false;
-    var $sHelpPage = null;
-    var $bJSONMode = false;
-
+    public $bLogonRequired = true;
+    public $bAdminRequired = false;
+    public $aBreadcrumbs = array();
+    public $sSection = false;
+    public $oPage = false;
+    public $sHelpPage = null;
+    public $bJSONMode = false;
+	public $aCannotView = array();
+	
     function KTStandardDispatcher() {
         if (empty($GLOBALS['main'])) {
             $GLOBALS['main'] =new KTPage;
@@ -337,6 +338,22 @@ class KTStandardDispatcher extends KTDispatcher {
         $this->oPage->setUser($this->oUser);
 	$this->oPage->hideSection();
 
+        $this->oPage->render();
+        exit(0);
+    }
+    
+    function planDenied () {
+        // handle anonymous specially.
+        if ($this->oUser->getId() == -2) {
+            redirect(KTUtil::ktLink('login.php','',sprintf("redirect=%s&errorMessage=%s", urlencode($_SERVER['REQUEST_URI']), urlencode(_kt("You must be logged in to perform this action"))))); exit(0);
+        }
+		global $default;
+		$msg = '<h3>' . _kt('The plan you are currently on does not have access to this functionality.') . '</h3>';
+		$msg .= '<br/>';
+		$msg .= '<a href="/plugins/ktlive/subscribe.php" title="Upgrade"> Upgrade now </a>';
+        $this->oPage->setPageContents($msg);
+        $this->oPage->setUser($this->oUser);
+		$this->oPage->hideSection();
         $this->oPage->render();
         exit(0);
     }
@@ -419,6 +436,16 @@ class KTStandardDispatcher extends KTDispatcher {
             }
         }
 
+        if (!empty($this->aCannotView)) 
+        {
+        	global $default;
+        	if(in_array($default->plan, $this->aCannotView))
+        	{
+				$this->planDenied();
+                exit(0);
+        	}
+        }
+        
         if ($this->check() !== true) {
             $this->permissionDenied();
             exit(0);
@@ -517,8 +544,8 @@ class KTStandardDispatcher extends KTDispatcher {
 }
 
 class KTAdminDispatcher extends KTStandardDispatcher {
-    var $bAdminRequired = true;
-    var $sSection = 'administration';
+    public $bAdminRequired = true;
+    public $sSection = 'administration';
 
     function KTAdminDispatcher() {
         $this->aBreadcrumbs = array(
