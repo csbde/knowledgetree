@@ -125,6 +125,12 @@ class loginResetDispatcher extends KTDispatcher {
             $sDisclaimer = $oPlugin->getLoginDisclaimer();
         }
 
+        $js = array();
+        $css = array();
+        $js[] = '/thirdpartyjs/extjs/adapter/ext/ext-base.js';
+        $js[] = '/thirdpartyjs/extjs/ext-all.js';
+        $css[] = '/thirdpartyjs/extjs/resources/css/ext-all.css';
+
         // Include additional js and css files if plugin
         $oPlugin =& $oRegistry->getPlugin('password.reset.plugin');
 
@@ -397,11 +403,13 @@ class loginResetDispatcher extends KTDispatcher {
             $GLOBALS['default']->log->debug(__FUNCTION__ . " first login for: " . $_SESSION['userID']);
             // this line may no longer be necessary
             $_SESSION['isFirstLogin'] = true;
+            /*
             if (KTPluginUtil::pluginIsActive('gettingstarted.plugin')) {
                 // redirect user to getting started page
                 $path = str_replace(KT_DIR, '', KTPluginUtil::getPluginPath('gettingstarted.plugin') . 'GettingStarted.php');
                 $redirect = KTUtil::kt_url() . $path;
             }
+            */
         }
 
         // check for a location to forward to
