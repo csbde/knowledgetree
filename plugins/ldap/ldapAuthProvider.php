@@ -41,8 +41,8 @@ require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
 
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
-class LdapAuthProvider extends KTAuthenticationProvider
-{
+class LdapAuthProvider extends KTAuthenticationProvider {
+    
     public $sName = 'LDAP Authentication Provider';
     public $sNamespace = 'ldap.auth.provider';
     public $sAuthClass = 'LdapAuthenticator';
@@ -180,13 +180,48 @@ class LdapAuthProvider extends KTAuthenticationProvider
 
 }
 
-class LdapAuthenticator extends Authenticator
-{
+class LdapAuthenticator extends Authenticator {
+    
+    private $ldapConnector;
+    
     public function __construct($oSource)
     {
+        require_once(KT_DIR . '/thirdparty/ZendFramework/library/Zend/Ldap.php');
+        
         $config = unserialize($oSource->getConfig());
-
+        
         // Connect to LDAP
+        // TODO error conditions
+        $options = array(
+            'host'              => $config['server'],
+            'username'          => $config['searchpwd'],
+            'password'          => $config['searchuser'],
+            /** according to the Zend documentation, bindRequiresDn is important 
+             * when NOT using Active Directory, but it seems to work fine with AD
+             */
+            // TODO distinguish between openldap and active directory options, 
+            //      see http://framework.zend.com/manual/en/zend.ldap.introduction.html
+            'bindRequiresDn'    => true,
+            'baseDn'            => $config['basedn'],
+        );
+
+        try {
+            $this->ldapConnector = new Zend_Ldap($options);
+        }
+        catch (Exception $e) {
+            global $default;
+            // use info level instead?  Still don't understand the log4php log levels and want to be sure something like this is logged
+            $default->log->error("Unable to create an ldap connection: {$e->getMessage()}");
+            // TODO return PEAR error? throw exception again?
+        }
+    }
+    
+    /**
+     * Destroy the ldap connector
+     */
+    public function __destruct()
+    {
+        unset($this->ldapConnector);
     }
 
     /**
@@ -196,12 +231,21 @@ class LdapAuthenticator extends Authenticator
      * @param string the password to check
      * @return boolean true if the password is correct | false
      */
-    function checkPassword($oUser, $sPassword) {
+    function checkPassword($oUser, $sPassword)
+    {
         global $default;
+
         $dn = $oUser->getAuthenticationDetails();
 
         // Authenticate against ldap
-        return true;
+        // TODO logging
+        try {
+            $result = $this->ldapConnector->bind($dn, $sPassword);
+            return true;
+        }
+        catch (Exception $e) {
+            return false;
+        }
     }
 
 }
