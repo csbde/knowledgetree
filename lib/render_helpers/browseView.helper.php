@@ -197,7 +197,7 @@ class sharedUserBrowseView extends browseView
             }
         }
 		// Default - hide edit online
-		$item['allowdoczohoedit'] = $ns;
+		$item['allowdoczohoedit'] = '';
 
 		if ($this->zohoEnabled) {
 			if (Zoho::resolve_type($item["mime_type"]))
@@ -675,7 +675,7 @@ class browseView {
 
 
 		// Default - hide edit online
-		$item['allowdoczohoedit'] = $ns;
+		$item['allowdoczohoedit'] = '';
 
 		if ($this->zohoEnabled && $hasWrite) {
 			if (Zoho::resolve_type($item["mime_type"]))
