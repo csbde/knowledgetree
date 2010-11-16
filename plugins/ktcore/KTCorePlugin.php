@@ -122,8 +122,10 @@ class KTCorePlugin extends KTPlugin {
             $this->registerDashlet('schedulerDashlet', 'ktcore.schedulerdashlet.plugin', 'scheduler/schedulerDashlet.php');
 
             $this->registerAdminPage('scheduler', 'manageSchedulerDispatcher', 'sysConfig', _kt('Manage Task Scheduler'), _kt('Manage the task scheduler'), 'scheduler/taskScheduler.php');
-            $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'userSetup', _kt('Authentication'), sprintf(_kt('You can use additional lists of users and groups. These will be used as additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
+
         }
+
+        $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'userSetup', _kt('Authentication'), sprintf(_kt('You can use additional lists of users and groups. These will be used as additional sources of authentication data.'), APP_NAME), 'authentication/authenticationadminpage.inc.php');
 
 		    $this->registerPortlet(array('browse', 'dashboard'),
                 'Search2Portlet', 'ktcore.search2.portlet',
@@ -211,7 +213,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerWidget('KTCoreImageCropWidget', 'ktcore.widgets.imagecrop', 'KTWidgets.php');
 		$this->registerWidget('KTCoreSWFFileSelectWidget', 'ktcore.widgets.swffileselect', 'KTWidgets.php');
 		$this->registerWidget('KTCoreAjaxUploadWidget', 'ktcore.widgets.ajaxupload', 'KTWidgets.php');
-        
+
         $this->registerPage('collection', 'KTCoreCollectionPage', 'KTWidgets.php');
         $this->registerPage('notifications', 'KTNotificationOverflowPage', 'KTMiscPages.php');
 
@@ -281,7 +283,7 @@ class KTCorePlugin extends KTPlugin {
             _kt('Configure system settings.'));
 		$this->registerAdminCategory('contentIndexing', _kt('Content Indexing'),
             _kt('View and configure content indexing for search.'));
-			
+
 
         // users and groups
         $this->registerAdminPage('users', 'KTUserAdminDispatcher', 'userSetup',
