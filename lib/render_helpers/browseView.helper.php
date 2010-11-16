@@ -99,6 +99,10 @@ class sharedUserBrowseView extends browseView
 
 	public function renderDocumentItem($item = null, $empty = false, $shortcut = false) {
 	 	$fileNameCutoff = 100;
+	 	$user = User::get($_SESSION['userID']);
+	 	$ns = ' not_supported';
+		$permissions = SharedContent::canAccessDocument($user->getId(), $item['id'], null, 1);
+		$hasCheckedOut = ($_SESSION['userID'] == $item['checked_out_by']);
 		// Icons
 		$iconFile = 'resources/mimetypes/newui/' . KTMime::getIconPath($item['mimetypeid']) . '.png';
 		$item['icon_exists'] = file_exists(KT_DIR . '/' . $iconFile);
@@ -112,25 +116,24 @@ class sharedUserBrowseView extends browseView
 		// Create link, which will always be of a document and not a shortcut
 		$item['document_link'] = KTUtil::buildUrl("view.php", array('fDocumentId'=>$item['id']));
 		$item['filename'] = (strlen($item['filename']) > $fileNameCutoff) ? substr($item['filename'], 0, $fileNameCutoff - 3) . "..." : $item['filename'];
-		$ns = ' not_supported';
 		$item['has_workflow'] = '';
 		$item['is_immutable'] = ($item['is_immutable'] == 'true') ? true : false;
 		$item['is_immutable'] = $item['is_immutable'] ? '' : $ns;
 		$item['is_checkedout'] = $item['checked_out_date'] ? '' : $ns;
-
-		$item['actions.checkin'] = $item['checked_out_date'] ? '' : $ns;
-		$item['actions.cancel_checkout'] = $item['checked_out_date'] ? '' : $ns;
 		// Check parent folder if user type is shared (disabled == 4)
-		$user = User::get($_SESSION['userID']);
-		// check permissions based on object_permissions, if set, or shared user access if shared user
 		if (isset($item['object_permissions'])) {
+			// check permissions based on object_permissions, if set, or shared user access if shared user
 		    $item['actions.checkout'] = ($item['object_permissions'] == 0) ? $ns : ($item['checked_out_date'] ? $ns : '');
+		    $item['actions.checkin'] = ($item['object_permissions'] == 0) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
+			$item['actions.cancel_checkout'] = ($item['object_permissions'] == 0) ? $ns : ($item['is_checked_out'] == 0 ? $ns : '');
 		}
 		else if ($user->getDisabled() == 4) {
 		    // check permissions on parent folder if document not present in shared content for user
-		    $item['actions.checkout'] = SharedContent::canAccessDocument($user->getId(), $item['id'], null, 1) ? '' : $ns;
+		    $item['actions.checkout'] = ($permissions == false) ? $ns : $item['checked_out_date'] ? '' : $ns;
+		    $item['actions.checkin'] = ($permissions == false) ? $ns : (($item['is_checked_out'] == 0) ? '' : $ns);
+			$item['actions.cancel_checkout'] = ($permissions == false) ? $ns : (($item['is_checked_out'] == 0) ? '' : $ns);
 		}
-
+		
 		//Modifications to perform when the document has been checked out
 		if ($item['checked_out_date']) {
 			list($item['checked_out_date_d'], $item['checked_out_date_t']) = split(" ", $item['checked_out_date']);
@@ -194,7 +197,7 @@ class sharedUserBrowseView extends browseView
             }
         }
 		// Default - hide edit online
-		$item['allowdoczohoedit'] = '';
+		$item['allowdoczohoedit'] = $ns;
 
 		if ($this->zohoEnabled) {
 			if (Zoho::resolve_type($item["mime_type"]))
@@ -204,7 +207,7 @@ class sharedUserBrowseView extends browseView
 				}
 			}
 		}
-		$checkbox = ''; //(is_null($item['parent_id'])) ? '' : '<td width="1" class="checkbox"><input name="selection_d[]" type="checkbox" value="[id]" /></td>';
+		$checkbox = '';
 		$tpl='
 			<span class="doc browseView">
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="doc item ddebug">
@@ -267,7 +270,7 @@ class sharedUserBrowseView extends browseView
 	public function renderFolderItem($item = null, $empty = false, $shortcut = false)
 	{
 		$item['link'] = KTUtil::buildUrl('browse.php', array('fFolderId'=>$item['id']));
-		$checkbox = ''; //(is_null($item['parent_id'])) ? '' : '<td width="1" class="checkbox"><input name="selection_f[]" type="checkbox" value="[id]" /></td>';
+		$checkbox = '';
 		$tpl='
 			<span class="doc browseView">
 			<table cellspacing="0" cellpadding="0" width="100%" border="0" class="folder item">
@@ -672,7 +675,7 @@ class browseView {
 
 
 		// Default - hide edit online
-		$item['allowdoczohoedit'] = '';
+		$item['allowdoczohoedit'] = $ns;
 
 		if ($this->zohoEnabled && $hasWrite) {
 			if (Zoho::resolve_type($item["mime_type"]))

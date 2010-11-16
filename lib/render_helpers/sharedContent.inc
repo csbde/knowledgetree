@@ -94,14 +94,36 @@ class SharedContent extends KTEntity {
     			return true;
     		}
     	}
-
     	// Create shared content object
-    	parent::create();
+    	$res = parent::create();
+    	// Check if shared object
+    	if($res)
+    	{
+    		if($this->sType == 'folder')
+    		{
+    			$aDocumentsInFolder = explode(',', Folder::getDocumentIDs($this->iObjectId));
+    			if(!PEAR::isError($aDocumentsInFolder))
+    			{
+    				foreach ($aDocumentsInFolder as $doc)
+    				{
+    					$this->deleteDocument($doc);
+    				}
+    			}
+    		}
+    	}
     }
     
     public function delete()
     {
 		$sql = "DELETE FROM shared_content WHERE user_id = '{$this->iUserId}' AND object_id = '{$this->iObjectId}' AND type = '{$this->sType}' AND permissions = '{$this->iPermissions}' LIMIT 1";
+    	$res = DBUtil::runQuery($sql);
+    	if (PEAR::isError($res)) { return false; }
+    	return (count($res) > 0);
+    }
+    
+    public function deleteDocument($id)
+    {
+		$sql = "DELETE FROM shared_content WHERE user_id = '{$this->iUserId}' AND object_id = '{$id}' AND type = 'document'";
     	$res = DBUtil::runQuery($sql);
     	if (PEAR::isError($res)) { return false; }
     	return (count($res) > 0);

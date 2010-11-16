@@ -225,7 +225,7 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
                 }
             }
         }
-
+		$bCanEdit = SharedContent::canAccessDocument($this->oUser->getId(), $document_id, $oDocument->getFolderID());
         // viewlets.
         $aViewlets = array();
         $aViewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentviewlet');
@@ -272,6 +272,7 @@ class sharedViewDocumentDispatcher extends KTStandardDispatcher
 			'sCheckoutUser' => $checkout_user,
 			'isCheckoutUser' => ($this->oUser->getId() == $oDocument->getCheckedOutUserId()),
 			'canCheckin' => $bCanCheckin,
+			'canEdit' => $bCanEdit,
 			'document_id' => $document_id,
 			'document' => $oDocument,
 			'documentName' => $oDocument->getName(),
@@ -536,7 +537,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
                 }
             }
         }
-
+		$bCanEdit = true;
         // viewlets.
         $aViewlets = array();
         $aViewletActions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser, 'documentviewlet');
@@ -583,6 +584,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			'sCheckoutUser' => $checkout_user,
 			'isCheckoutUser' => ($this->oUser->getId() == $oDocument->getCheckedOutUserId()),
 			'canCheckin' => $bCanCheckin,
+			'bCanEdit' => $bCanEdit,
 			'document_id' => $document_id,
 			'document' => $oDocument,
 			'documentName' => $oDocument->getName(),
