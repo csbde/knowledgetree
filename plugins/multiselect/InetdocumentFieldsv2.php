@@ -44,10 +44,10 @@ require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 require_once(KT_LIB_DIR . "/util/sanitize.inc");
 
 class InetDocumentFieldDispatcher extends KTAdminDispatcher {
-    var $bAutomaticTransaction = true;
-	var $bHaveConditional = null;
-    var $sHelpPage = 'ktcore/admin/document fieldsets.html';
-
+    public $bAutomaticTransaction = true;
+	public $bHaveConditional = null;
+    public $sHelpPage = 'ktcore/admin/document fieldsets.html';
+	public $aCannotView = array('starter', 'professional');
 	/**
 	 *
 	 * @return.
